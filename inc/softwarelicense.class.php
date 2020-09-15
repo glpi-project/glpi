@@ -349,11 +349,11 @@ class SoftwareLicense extends CommonTreeDropdown {
       echo "</td><td colspan='2'></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Location') . "</td><td>";
+      echo "<td>" . Location::getTypeName(1) . "</td><td>";
       Location::dropdown(['value'  => $this->fields["locations_id"],
                                'entity' => $this->fields["entities_id"]]);
       echo "</td>";
-      echo "<td>".__('Type')."</td>";
+      echo "<td>"._n('Type', 'Types', 1)."</td>";
       echo "<td>";
       SoftwareLicenseType::dropdown(['value' => $this->fields["softwarelicensetypes_id"]]);
       echo "</td></tr>\n";
@@ -387,7 +387,7 @@ class SoftwareLicense extends CommonTreeDropdown {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td >" . __('User') . "</td>";
+      echo "<td >" . User::getTypeName(1) . "</td>";
       echo "<td >";
       User::dropdown(['value'  => $this->fields["users_id"],
                            'entity' => $this->fields["entities_id"],
@@ -405,7 +405,7 @@ class SoftwareLicense extends CommonTreeDropdown {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Group') . "</td><td>";
+      echo "<td>" . Group::getTypeName(1) . "</td><td>";
       Group::dropdown([
          'value'     => $this->fields["groups_id"],
          'entity'    => $this->fields["entities_id"],
@@ -550,7 +550,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'id'                 => '5',
          'table'              => 'glpi_softwarelicensetypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -598,7 +598,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'id'                 => '10',
          'table'              => 'glpi_softwares',
          'field'              => 'name',
-         'name'               => __('Software'),
+         'name'               => Software::getTypeName(1),
          'datatype'           => 'itemlink'
       ];
 
@@ -673,7 +673,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'id'                 => '70',
          'table'              => 'glpi_users',
          'field'              => 'name',
-         'name'               => __('User'),
+         'name'               => User::getTypeName(1),
          'datatype'           => 'dropdown',
          'right'              => 'all'
       ];
@@ -682,7 +682,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'id'                 => '71',
          'table'              => 'glpi_groups',
          'field'              => 'completename',
-         'name'               => __('Group'),
+         'name'               => Group::getTypeName(1),
          'condition'          => ['is_itemgroup' => 1],
          'datatype'           => 'dropdown'
       ];
@@ -691,7 +691,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
@@ -723,7 +723,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
    static public function rawSearchOptionsToAdd() {
       $tab = [];
-      $name = _n('License', 'Licenses', Session::getPluralNumber());
+      $name = static::getTypeName(Session::getPluralNumber());
 
       if (!self::canView()) {
          return $tab;
@@ -797,7 +797,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'table'              => 'glpi_softwarelicensetypes',
          'field'              => 'name',
          'datatype'           => 'dropdown',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [
@@ -1054,11 +1054,11 @@ class SoftwareLicense extends CommonTreeDropdown {
       }
 
       $columns = ['name'      => __('Name'),
-                       'entity'    => __('Entity'),
+                       'entity'    => Entity::getTypeName(1),
                        'serial'    => __('Serial number'),
                        'number'    => _x('quantity', 'Number'),
                        '_affected' => __('Affected items'),
-                       'typename'  => __('Type'),
+                       'typename'  => _n('Type', 'Types', 1),
                        'buyname'   => __('Purchase version'),
                        'usename'   => __('Version in use'),
                        'expire'    => __('Expiration')];
@@ -1298,7 +1298,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
       return ['id'           => __('ID'),
                    'serial'       => __('Serial number'),
-                   'entities_id'  => __('Entity'),
+                   'entities_id'  => Entity::getTypeName(1),
                    'softwares_id' => _n('Software', 'Software', 1)];
    }
 
@@ -1365,7 +1365,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
       $header = "<tr><th>".__('Name')."</th>";
       if ($entity_assign) {
-         $header .= "<th>".__('Entity')."</th>";
+         $header .= "<th>".Entity::getTypeName(1)."</th>";
       }
 
       $header .= "<th>".__('Comments')."</th>";

@@ -238,7 +238,7 @@ class RuleRight extends Rule {
 
          $criterias['LDAP_SERVER']['table']     = 'glpi_authldaps';
          $criterias['LDAP_SERVER']['field']     = 'name';
-         $criterias['LDAP_SERVER']['name']      = __('LDAP directory');
+         $criterias['LDAP_SERVER']['name']      = AuthLDAP::getTypeName(1);
          $criterias['LDAP_SERVER']['linkfield'] = '';
          $criterias['LDAP_SERVER']['type']      = 'dropdown';
          $criterias['LDAP_SERVER']['virtual']   = true;
@@ -268,7 +268,7 @@ class RuleRight extends Rule {
 
          $criterias['GROUPS']['table']          = 'glpi_groups';
          $criterias['GROUPS']['field']          = 'completename';
-         $criterias['GROUPS']['name']           = __('Group');
+         $criterias['GROUPS']['name']           = Group::getTypeName(1);
          $criterias['GROUPS']['linkfield']      = '';
          $criterias['GROUPS']['type']           = 'dropdown';
          $criterias['GROUPS']['virtual']        = true;
@@ -308,7 +308,7 @@ class RuleRight extends Rule {
 
       $actions                                              = [];
 
-      $actions['entities_id']['name']                       = __('Entity');
+      $actions['entities_id']['name']                       = Entity::getTypeName(1);
       $actions['entities_id']['type']                       = 'dropdown';
       $actions['entities_id']['table']                      = 'glpi_entities';
 
@@ -354,7 +354,7 @@ class RuleRight extends Rule {
       $actions['_entities_id_default']['linkfield']         = 'entities_id';
       $actions['_entities_id_default']['type']              = 'dropdown';
 
-      $actions['specific_groups_id']['name'] = _n('Group', 'Groups', Session::getPluralNumber());
+      $actions['specific_groups_id']['name'] = Group::getTypeName(Session::getPluralNumber());
       $actions['specific_groups_id']['type'] = 'dropdown';
       $actions['specific_groups_id']['table'] = 'glpi_groups';
 

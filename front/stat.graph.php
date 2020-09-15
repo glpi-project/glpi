@@ -93,7 +93,7 @@ switch ($_GET["type"]) {
       $val1    = $_GET["id"];
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), __('Supplier'),
+      $title   = sprintf(__('%1$s: %2$s'), Supplier::getTypeName(1),
                          $item->getAssignName($_GET["id"], 'Supplier', $showuserlink));
       break;
 
@@ -101,14 +101,14 @@ switch ($_GET["type"]) {
       $val1    = $_GET["id"];
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"], $showuserlink));
+      $title   = sprintf(__('%1$s: %2$s'), User::getTypeName(1), getUserName($_GET["id"], $showuserlink));
       break;
 
    case "users_id_recipient" :
       $val1    = $_GET["id"];
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"], $showuserlink));
+      $title   = sprintf(__('%1$s: %2$s'), User::getTypeName(1), getUserName($_GET["id"], $showuserlink));
       break;
 
    case "itilcategories_tree" :
@@ -133,7 +133,7 @@ switch ($_GET["type"]) {
       $val2    = '';
       $values  = Stat::getItems($_GET['itemtype'], $_POST['date1'], $_POST['date2'], $_GET['type'],
                                 $parent);
-      $title   = sprintf(__('%1$s: %2$s'), __('Location'),
+      $title   = sprintf(__('%1$s: %2$s'), Location::getTypeName(1),
                          Dropdown::getDropdownName('glpi_locations', $_GET['id']));
       break;
 
@@ -141,7 +141,7 @@ switch ($_GET["type"]) {
       $val1    = $_GET["id"];
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), __('Type'), Ticket::getTicketTypeName($_GET["id"]));
+      $title   = sprintf(__('%1$s: %2$s'), _n('Type', 'Types', 1), Ticket::getTicketTypeName($_GET["id"]));
       break;
 
    case 'group_tree' :
@@ -154,7 +154,7 @@ switch ($_GET["type"]) {
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"],
                                 $parent);
-      $title   = sprintf(__('%1$s: %2$s'), __('Group'),
+      $title   = sprintf(__('%1$s: %2$s'), Group::getTypeName(1),
                          Dropdown::getDropdownName("glpi_groups", $_GET["id"]));
       break;
 
@@ -162,7 +162,7 @@ switch ($_GET["type"]) {
       $val1    = $_GET["id"];
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), __('Group'),
+      $title   = sprintf(__('%1$s: %2$s'), Group::getTypeName(1),
                          Dropdown::getDropdownName("glpi_groups", $_GET["id"]));
       break;
 
@@ -199,7 +199,7 @@ switch ($_GET["type"]) {
       $val1    = $_GET["id"];
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), __('Solution type'),
+      $title   = sprintf(__('%1$s: %2$s'), SolutionType::getTypeName(1),
                          Dropdown::getDropdownName("glpi_solutiontypes", $_GET["id"]));
       break;
 
@@ -215,7 +215,7 @@ switch ($_GET["type"]) {
       $val1    = $_GET["id"];
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), __('Request source'),
+      $title   = sprintf(__('%1$s: %2$s'), RequestType::getTypeName(1),
                          Dropdown::getDropdownName("glpi_requesttypes", $_GET["id"]));
       break;
 
@@ -335,10 +335,10 @@ $stat->displayLineGraph(
    _x('Quantity', 'Number') . " - " . $item->getTypeName(Session::getPluralNumber()),
    array_keys($values['total']), [
       [
-         'name' => _nx('ticket', 'Opened', 'Opened', 2),
+         'name' => _nx('ticket', 'Opened', 'Opened', Session::getPluralNumber()),
          'data' => $values['total']
       ], [
-         'name' => _nx('ticket', 'Solved', 'Solved', 2),
+         'name' => _nx('ticket', 'Solved', 'Solved', Session::getPluralNumber()),
          'data' => $values['solved']
       ], [
          'name' => __('Late'),
@@ -406,7 +406,7 @@ if ($_GET['itemtype'] == 'Ticket') {
 }
 
 $stat->displayLineGraph(
-   __('Average time') . " - " .  _n('Hour', 'Hours', 2),
+   __('Average time') . " - " .  _n('Hour', 'Hours', Session::getPluralNumber()),
    array_keys($values['avgsolved']),
    $series
 );
@@ -428,10 +428,10 @@ if ($_GET['itemtype'] == 'Ticket') {
       __('Satisfaction survey') . " - " .  __('Tickets'),
       array_keys($values['opensatisfaction']), [
          [
-            'name' => _nx('survey', 'Opened', 'Opened', 2),
+            'name' => _nx('survey', 'Opened', 'Opened', Session::getPluralNumber()),
             'data' => $values['opensatisfaction']
          ], [
-            'name' => _nx('survey', 'Answered', 'Answered', 2),
+            'name' => _nx('survey', 'Answered', 'Answered', Session::getPluralNumber()),
             'data' => $values['answersatisfaction']
          ]
       ]

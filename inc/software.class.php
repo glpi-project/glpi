@@ -236,7 +236,7 @@ class Software extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Location') . "</td><td>";
+      echo "<td>" . Location::getTypeName(1) . "</td><td>";
       Location::dropdown(['value'  => $this->fields["locations_id"],
                                'entity' => $this->fields["entities_id"]]);
       echo "</td>";
@@ -271,7 +271,7 @@ class Software extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td >" . __('User') . "</td>";
+      echo "<td >" . User::getTypeName(1) . "</td>";
       echo "<td >";
       User::dropdown(['value'  => $this->fields["users_id"],
                            'entity' => $this->fields["entities_id"],
@@ -279,7 +279,7 @@ class Software extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Group') . "</td><td>";
+      echo "<td>" . Group::getTypeName(1) . "</td><td>";
       Group::dropdown([
          'value'     => $this->fields["groups_id"],
          'entity'    => $this->fields["entities_id"],
@@ -515,7 +515,7 @@ class Software extends CommonDBTM {
          'id'                 => '70',
          'table'              => 'glpi_users',
          'field'              => 'name',
-         'name'               => __('User'),
+         'name'               => User::getTypeName(1),
          'datatype'           => 'dropdown',
          'right'              => 'all'
       ];
@@ -524,7 +524,7 @@ class Software extends CommonDBTM {
          'id'                 => '71',
          'table'              => 'glpi_groups',
          'field'              => 'completename',
-         'name'               => __('Group'),
+         'name'               => Group::getTypeName(1),
          'condition'          => ['is_itemgroup' => 1],
          'datatype'           => 'dropdown'
       ];
@@ -550,7 +550,7 @@ class Software extends CommonDBTM {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
       ];
@@ -643,7 +643,7 @@ class Software extends CommonDBTM {
          'table'              => 'glpi_operatingsystems',
          'field'              => 'name',
          'datatype'           => 'dropdown',
-         'name'               => __('Operating system'),
+         'name'               => OperatingSystem::getTypeName(1),
          'forcegroupby'       => true,
          'joinparams'         => [
             'beforejoin'         => [
@@ -966,9 +966,9 @@ class Software extends CommonDBTM {
          echo Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          echo "</th>";
          echo "<th>".__('Name')."</th>";
-         echo "<th>".__('Entity')."</th>";
+         echo "<th>".Entity::getTypeName(1)."</th>";
          echo "<th>"._n('Installation', 'Installations', Session::getPluralNumber())."</th>";
-         echo "<th>"._n('License', 'Licenses', Session::getPluralNumber())."</th></tr>";
+         echo "<th>".SoftwareLicense::getTypeName(Session::getPluralNumber())."</th></tr>";
 
          while ($data = $iterator->next()) {
             echo "<tr class='tab_bg_2'>";

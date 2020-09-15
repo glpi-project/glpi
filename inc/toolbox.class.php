@@ -288,7 +288,7 @@ class Toolbox {
       if (mb_strlen($nonce, '8bit') !== SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES) {
          trigger_error(
             'Unable to extract nonce from content. It may not have been crypted with sodium functions.',
-            E_USER_ERROR
+            E_USER_WARNING
          );
          return '';
       }
@@ -304,7 +304,7 @@ class Toolbox {
       if ($plaintext === false) {
          trigger_error(
             'Unable to decrypt content. It may have been crypted with another key.',
-            E_USER_ERROR
+            E_USER_WARNING
          );
          return '';
       }

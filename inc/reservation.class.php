@@ -664,7 +664,7 @@ JAVASCRIPT;
       // Add Hardware name
       $r = new ReservationItem();
 
-      echo "<tr class='tab_bg_1'><td>".__('Item')."</td>";
+      echo "<tr class='tab_bg_1'><td>"._n('Item', 'Items', 1)."</td>";
       echo "<td>";
 
       $temp_item  = $options['item'];
@@ -1056,8 +1056,8 @@ JAVASCRIPT;
       } else {
          echo "<tr><th>".__('Start date')."</th>";
          echo "<th>".__('End date')."</th>";
-         echo "<th>".__('Item')."</th>";
-         echo "<th>".__('Entity')."</th>";
+         echo "<th>"._n('Item', 'Items', 1)."</th>";
+         echo "<th>".Entity::getTypeName(1)."</th>";
          echo "<th>".__('By')."</th>";
          echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
 
@@ -1140,8 +1140,8 @@ JAVASCRIPT;
       } else {
          echo "<tr><th>".__('Start date')."</th>";
          echo "<th>".__('End date')."</th>";
-         echo "<th>".__('Item')."</th>";
-         echo "<th>".__('Entity')."</th>";
+         echo "<th>"._n('Item', 'Items', 1)."</th>";
+         echo "<th>".Entity::getTypeName(1)."</th>";
          echo "<th>".__('By')."</th>";
          echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
 

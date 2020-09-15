@@ -233,7 +233,7 @@ class PDU_Rack extends CommonDBRelation {
       $rand = mt_rand();
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_pdus_id$rand'>".__('PDU')."</label></td>";
+      echo "<td><label for='dropdown_pdus_id$rand'>".PDU::getTypeName(1)."</label></td>";
       echo "<td>";
       PDU::dropdown([
          'value'       => $this->fields["pdus_id"],
@@ -256,7 +256,7 @@ class PDU_Rack extends CommonDBRelation {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_racks_id$rand'>".__('Rack')."</label></td>";
+      echo "<td><label for='dropdown_racks_id$rand'>".Rack::getTypeName(1)."</label></td>";
       echo "<td>";
       Rack::dropdown(['value' => $this->fields["racks_id"], 'rand' => $rand]);
       echo "</td>";
@@ -326,7 +326,7 @@ class PDU_Rack extends CommonDBRelation {
             $header .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
             $header .= "</th>";
          }
-         $header .= "<th>".__('Item')."</th>";
+         $header .= "<th>"._n('Item', 'Items', 1)."</th>";
          $header .= "<th>".__('Side')."</th>";
          $header .= "<th>".__('Position')."</th>";
          $header .= "</tr>";
@@ -580,7 +580,7 @@ JAVASCRIPT;
 
                $tip = "<span class='tipcontent'>";
                $tip.= "<span>
-                        <label>".__('Type').":</label>".
+                        <label>"._n('Type', 'Types', 1).":</label>".
                         $pdu->getTypeName()."
                      </span>
                      <span>

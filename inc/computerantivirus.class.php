@@ -107,7 +107,7 @@ class ComputerAntivirus extends CommonDBChild {
          'id'                 => '2',
          'table'              => $this->getTable(),
          'field'              => 'antivirus_version',
-         'name'               => __('Version'),
+         'name'               => _n('Version', 'Versions', 1),
          'datatype'           => 'string',
          'massiveaction'      => false,
          'autocomplete'       => true,
@@ -153,7 +153,7 @@ class ComputerAntivirus extends CommonDBChild {
          'id'                 => '168',
          'table'              => 'glpi_computerantiviruses',
          'field'              => 'antivirus_version',
-         'name'               => __('Version'),
+         'name'               => _n('Version', 'Versions', 1),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'text',
@@ -251,7 +251,7 @@ class ComputerAntivirus extends CommonDBChild {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Computer')."</td>";
+      echo "<td>".Computer::getTypeName(1)."</td>";
       echo "<td>".$comp->getLink()."</td>";
       if (Plugin::haveImport()) {
          echo "<td>".__('Automatic inventory')."</td>";
@@ -278,7 +278,7 @@ class ComputerAntivirus extends CommonDBChild {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Manufacturer')."</td>";
+      echo "<td>".Manufacturer::getTypeName(1)."</td>";
       echo "<td>";
       Dropdown::show('Manufacturer', ['value' => $this->fields["manufacturers_id"]]);
       echo "</td>";
@@ -366,7 +366,7 @@ class ComputerAntivirus extends CommonDBChild {
          if (Plugin::haveImport()) {
             $header .= "<th>".__('Automatic inventory')."</th>";
          }
-         $header .= "<th>".__('Manufacturer')."</th>";
+         $header .= "<th>".Manufacturer::getTypeName(1)."</th>";
          $header .= "<th>".__('Antivirus version')."</th>";
          $header .= "<th>".__('Signature database version')."</th>";
          $header .= "<th>".__('Active')."</th>";

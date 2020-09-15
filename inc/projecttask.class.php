@@ -656,7 +656,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
       ProjectState::dropdown(['value' => $this->fields["projectstates_id"],
                               'rand'  => $rand_state]);
       echo "</td>";
-      echo "<td>".__('Type')."</td>";
+      echo "<td>"._n('Type', 'Types', 1)."</td>";
       echo "<td>";
       ProjectTaskType::dropdown(['value' => $this->fields["projecttasktypes_id"],
                                  'rand'  => $rand_type]);
@@ -909,7 +909,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          'id'                 => '2',
          'table'              => 'glpi_projects',
          'field'              => 'name',
-         'name'               => __('Project'),
+         'name'               => Project::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
       ];
@@ -948,7 +948,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          'id'                 => '14',
          'table'              => 'glpi_projecttasktypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -1081,7 +1081,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
@@ -1117,7 +1117,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
       $columns = [
          'name'             => self::getTypeName(Session::getPluralNumber()),
-         'tname'            => __('Type'),
+         'tname'            => _n('Type', 'Types', 1),
          'sname'            => __('Status'),
          'percent_done'     => __('Percent done'),
          'plan_start_date'  => __('Planned start date'),
@@ -1424,7 +1424,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          $header_bottom .= "</th>";
       }
-      $header_end .= "<th>".__('Type')."</th>";
+      $header_end .= "<th>"._n('Type', 'Types', 1)."</th>";
       $header_end .= "<th>"._n('Member', 'Members', Session::getPluralNumber())."</th>";
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;

@@ -612,15 +612,15 @@ class Lock {
       switch ($ma->getAction()) {
          case 'unlock' :
             $types = ['Monitor'                => _n('Monitor', 'Monitors', Session::getPluralNumber()),
-                           'Peripheral'             => _n('Device', 'Devices', Session::getPluralNumber()),
-                           'Printer'                => _n('Printer', 'Printers', Session::getPluralNumber()),
-                           'SoftwareVersion'        => _n('Version', 'Versions', Session::getPluralNumber()),
-                           'NetworkPort'            => _n('Network port', 'Network ports', Session::getPluralNumber()),
-                           'NetworkName'            => _n('Network name', 'Network names', Session::getPluralNumber()),
-                           'IPAddress'              => _n('IP address', 'IP addresses', Session::getPluralNumber()),
-                           'Item_Disk'              => _n('Volume', 'Volumes', Session::getPluralNumber()),
+                           'Peripheral'             => Peripheral::getTypeName(Session::getPluralNumber()),
+                           'Printer'                => Printer::getTypeName(Session::getPluralNumber()),
+                           'SoftwareVersion'        => SoftwareVersion::getTypeName(Session::getPluralNumber()),
+                           'NetworkPort'            => NetworkPort::getTypeName(Session::getPluralNumber()),
+                           'NetworkName'            => Networkname::getTypeName(Session::getPluralNumber()),
+                           'IPAddress'              => IPAddress::getTypeName(Session::getPluralNumber()),
+                           'Item_Disk'              => Item_Disk::getTypeName(Session::getPluralNumber()),
                            'Device'                 => _n('Component', 'Components', Session::getPluralNumber()),
-                           'ComputerVirtualMachine' => _n('Virtual machine', 'Virtual machines', Session::getPluralNumber())];
+                           'ComputerVirtualMachine' => ComputerVirtualMachine::getTypeName(Session::getPluralNumber())];
 
             echo __('Select the type of the item that must be unlock');
             echo "<br><br>\n";

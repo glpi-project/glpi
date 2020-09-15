@@ -130,7 +130,7 @@ class SavedSearch_Alert extends CommonDBChild {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Saved search') ."</td>";
+      echo "<td>" . SavedSearch::getTypeName(1) ."</td>";
       echo "<td>";
       echo $search->getLink();
       if ($count !== null) {

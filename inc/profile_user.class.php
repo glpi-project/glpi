@@ -172,7 +172,7 @@ class Profile_User extends CommonDBRelation {
             $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
             $header_end    .= "</th>";
          }
-         $header_end .= "<th>"._n('Entity', 'Entities', Session::getPluralNumber())."</th>";
+         $header_end .= "<th>".Entity::getTypeName(Session::getPluralNumber())."</th>";
          $header_end .= "<th>".sprintf(__('%1$s (%2$s)'), self::getTypeName(Session::getPluralNumber()),
                                        __('D=Dynamic, R=Recursive'));
          $header_end .= "</th></tr>";
@@ -275,7 +275,7 @@ class Profile_User extends CommonDBRelation {
          echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='6'>".__('Add an authorization to a user')."</tr>";
-         echo "<tr class='tab_bg_1'><td class='tab_bg_2 center'>".__('User')."&nbsp;";
+         echo "<tr class='tab_bg_1'><td class='tab_bg_2 center'>".User::getTypeName(1)."&nbsp;";
          echo "<input type='hidden' name='entities_id' value='$ID'>";
          User::dropdown(['right' => 'all']);
          echo "</td><td class='tab_bg_2 center'>".self::getTypeName(1)."</td><td>";
@@ -346,7 +346,7 @@ class Profile_User extends CommonDBRelation {
       echo "<thead><tr>";
 
       echo "<th class='noHover' colspan='$headerspan'>";
-      printf(__('%1$s (%2$s)'), _n('User', 'Users', Session::getPluralNumber()), __('D=Dynamic, R=Recursive'));
+      printf(__('%1$s (%2$s)'), User::getTypeName(Session::getPluralNumber()), __('D=Dynamic, R=Recursive'));
       echo "</th></tr></thead>";
 
       if ($nb) {
@@ -372,7 +372,7 @@ class Profile_User extends CommonDBRelation {
                   $reduce_header++;
                }
                echo "<th colspan='".($headerspan-$reduce_header)."'>";
-               printf(__('%1$s: %2$s'), __('Profile'), $data["pname"]);
+               printf(__('%1$s: %2$s'), Profile::getTypeName(1), $data["pname"]);
                echo "</th></tr></tbody>";
                echo "<tbody id='profile".$data['pid']."_$rand'>";
                $i = 0;
@@ -489,9 +489,9 @@ class Profile_User extends CommonDBRelation {
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'><tr>";
-      echo "<th>".sprintf(__('%1$s: %2$s'), __('Profile'), $prof->fields["name"])."</th></tr>\n";
+      echo "<th>".sprintf(__('%1$s: %2$s'), Profile::getTypeName(1), $prof->fields["name"])."</th></tr>\n";
 
-      echo "<tr><th colspan='2'>".sprintf(__('%1$s (%2$s)'), _n('User', 'Users', Session::getPluralNumber()),
+      echo "<tr><th colspan='2'>".sprintf(__('%1$s (%2$s)'), User::getTypeName(Session::getPluralNumber()),
                                           __('D=Dynamic, R=Recursive'))."</th></tr>";
       echo "</table>\n";
       echo "<table class='tab_cadre_fixe'>";
@@ -925,7 +925,7 @@ class Profile_User extends CommonDBRelation {
          'id'                 => '5',
          'table'              => 'glpi_users',
          'field'              => 'name',
-         'name'               => __('User'),
+         'name'               => User::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'right'              => 'all'
@@ -935,7 +935,7 @@ class Profile_User extends CommonDBRelation {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'massiveaction'      => true,
          'datatype'           => 'dropdown'
       ];
@@ -1071,7 +1071,7 @@ class Profile_User extends CommonDBRelation {
 
       if (($ma->getAction() == 'add')
           && ($peer_number == 2)) {
-         echo "<br><br>".sprintf(__('%1$s: %2$s'), _n('Entity', 'Entities', 1), '');
+         echo "<br><br>".sprintf(__('%1$s: %2$s'), Entity::getTypeName(1), '');
          Entity::dropdown(['entity' => $_SESSION['glpiactiveentities']]);
          echo "<br><br>".sprintf(__('%1$s: %2$s'), __('Recursive'), '');
          Html::showCheckbox(['name' => 'is_recursive']);

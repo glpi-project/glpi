@@ -621,7 +621,7 @@ if (!isset($_POST["install"])) {
    switch ($_POST["install"]) {
       case "lang_select" : // lang ok, go accept licence
          checkConfigFile();
-         header_html(__('License'));
+         header_html(SoftwareLicense::getTypeName(1));
          acceptLicense();
          break;
 

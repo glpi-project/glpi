@@ -6820,7 +6820,7 @@ JAVASCRIPT;
 
                self::$search[$itemtype][70]['table']         = 'glpi_users';
                self::$search[$itemtype][70]['field']         = 'name';
-               self::$search[$itemtype][70]['name']          = __('User');
+               self::$search[$itemtype][70]['name']          = User::getTypeName(1);
 
                self::$search[$itemtype][7]['table']          = 'asset_types';
                self::$search[$itemtype][7]['field']          = 'contact';
@@ -6834,7 +6834,7 @@ JAVASCRIPT;
 
                self::$search[$itemtype][71]['table']         = 'glpi_groups';
                self::$search[$itemtype][71]['field']         = 'completename';
-               self::$search[$itemtype][71]['name']          = __('Group');
+               self::$search[$itemtype][71]['name']          = Group::getTypeName(1);
 
                self::$search[$itemtype][19]['table']         = 'asset_types';
                self::$search[$itemtype][19]['field']         = 'date_mod';
@@ -6844,7 +6844,7 @@ JAVASCRIPT;
 
                self::$search[$itemtype][23]['table']         = 'glpi_manufacturers';
                self::$search[$itemtype][23]['field']         = 'name';
-               self::$search[$itemtype][23]['name']          = __('Manufacturer');
+               self::$search[$itemtype][23]['name']          = Manufacturer::getTypeName(1);
 
                self::$search[$itemtype][24]['table']         = 'glpi_users';
                self::$search[$itemtype][24]['field']         = 'name';
@@ -6861,7 +6861,7 @@ JAVASCRIPT;
 
                self::$search[$itemtype][80]['table']         = 'glpi_entities';
                self::$search[$itemtype][80]['field']         = 'completename';
-               self::$search[$itemtype][80]['name']          = __('Entity');
+               self::$search[$itemtype][80]['name']          = Entity::getTypeName(1);
                break;
 
             default :

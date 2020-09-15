@@ -76,7 +76,7 @@ class RuleMailCollector extends Rule {
       $criterias['mailcollector']['type']             = 'dropdown';
 
       $criterias['_users_id_requester']['field']      = 'name';
-      $criterias['_users_id_requester']['name']       = __('Requester');
+      $criterias['_users_id_requester']['name']       = _n('Requester', 'Requesters', 1);
       $criterias['_users_id_requester']['table']      = 'glpi_users';
       $criterias['_users_id_requester']['type']       = 'dropdown';
 
@@ -124,8 +124,8 @@ class RuleMailCollector extends Rule {
 
       $criterias['GROUPS']['table']                   = 'glpi_groups';
       $criterias['GROUPS']['field']                   = 'completename';
-      $criterias['GROUPS']['name']                    = sprintf(__('%1$s: %2$s'), __('User'),
-                                                                __('Group'));
+      $criterias['GROUPS']['name']                    = sprintf(__('%1$s: %2$s'), User::getTypeName(1),
+                                                                Group::getTypeName(1));
       $criterias['GROUPS']['linkfield']               = '';
       $criterias['GROUPS']['type']                    = 'dropdown';
       $criterias['GROUPS']['virtual']                 = true;
@@ -176,7 +176,7 @@ class RuleMailCollector extends Rule {
 
       $actions                                              = [];
 
-      $actions['entities_id']['name']                       = __('Entity');
+      $actions['entities_id']['name']                       = Entity::getTypeName(1);
       $actions['entities_id']['type']                       = 'dropdown';
       $actions['entities_id']['table']                      = 'glpi_entities';
 

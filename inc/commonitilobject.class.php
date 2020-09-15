@@ -2952,7 +2952,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   . '<br />';
 
                if ($d['use_notification']) {
-                  $text .= sprintf(__('%1$s: %2$s'), __('Email'), $email);
+                  $text .= sprintf(__('%1$s: %2$s'), _n('Email', 'Emails', 1), $email);
                }
                if ($canedit) {
                   $opt = ['awesome-class' => 'fa-envelope',
@@ -3075,8 +3075,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
          case 'add_actor' :
             $types            = [0                          => Dropdown::EMPTY_VALUE,
-                                      CommonITILActor::REQUESTER => __('Requester'),
-                                      CommonITILActor::OBSERVER  => __('Watcher'),
+                                      CommonITILActor::REQUESTER => _n('Requester', 'Requesters', 1),
+                                      CommonITILActor::OBSERVER  => _n('Watcher', 'Watchers', 1),
                                       CommonITILActor::ASSIGN    => __('Assigned to')];
             $rand             = Dropdown::showFromArray('actortype', $types);
 
@@ -3373,7 +3373,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
       ];
@@ -3415,7 +3415,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'id'                 => '142',
          'table'              => 'glpi_documents',
          'field'              => 'name',
-         'name'               => _n('Document', 'Documents', Session::getPluralNumber()),
+         'name'               => Document::getTypeName(Session::getPluralNumber()),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'nosearch'           => true,
@@ -3446,14 +3446,14 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => 'solution',
-         'name'               => _n('Solution', 'Solutions', 1)
+         'name'               => ITILSolution::getTypeName(1)
       ];
 
       $tab[] = [
          'id'                 => '23',
          'table'              => 'glpi_solutiontypes',
          'field'              => 'name',
-         'name'               => __('Solution type'),
+         'name'               => SolutionType::getTypeName(1),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'joinparams'         => [
@@ -3470,7 +3470,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'id'                 => '24',
          'table'              => ITILSolution::getTable(),
          'field'              => 'content',
-         'name'               => _n('Solution', 'Solutions', 1),
+         'name'               => ITILSolution::getTypeName(1),
          'datatype'           => 'text',
          'htmltext'           => true,
          'massiveaction'      => false,
@@ -3574,7 +3574,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => 'requester',
-         'name'               => __('Requester')
+         'name'               => _n('Requester', 'Requesters', 1)
       ];
 
       $newtab = [
@@ -3583,7 +3583,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'field'              => 'name',
          'datatype'           => 'dropdown',
          'right'              => 'all',
-         'name'               => __('Requester'),
+         'name'               => _n('Requester', 'Requesters', 1),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [
@@ -3608,7 +3608,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'table'              => 'glpi_groups',
          'field'              => 'completename',
          'datatype'           => 'dropdown',
-         'name'               => __('Requester group'),
+         'name'               => _n('Requester group', 'Requester groups', 1),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'condition'          => ['is_requester' => 1],
@@ -3650,7 +3650,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => 'observer',
-         'name'               => __('Watcher')
+         'name'               => _n('Watcher', 'Watchers', 1)
       ];
 
       $tab[] = [
@@ -3659,7 +3659,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'field'              => 'name',
          'datatype'           => 'dropdown',
          'right'              => 'all',
-         'name'               => __('Watcher'),
+         'name'               => _n('Watcher', 'Watchers', 1),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [
@@ -3678,7 +3678,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'table'              => 'glpi_groups',
          'field'              => 'completename',
          'datatype'           => 'dropdown',
-         'name'               => __('Watcher group'),
+         'name'               => _n('Watcher group', 'Watcher groups', 1),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'condition'          => ['is_watcher' => 1],
@@ -3928,7 +3928,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       switch ($user_group) {
          case 'user' :
-            $icontitle = __s('User').' - '.$type; // should never be used
+            $icontitle = addslashes(User::getTypeName(1)).' - '.$type; // should never be used
             switch ($type) {
                case CommonITILActor::REQUESTER :
                   $icontitle = __s('Requester user');
@@ -3945,14 +3945,14 @@ abstract class CommonITILObject extends CommonDBTM {
             return "<i class='fas fa-user' title='$icontitle'></i><span class='sr-only'>$icontitle</span>";
 
          case 'group' :
-            $icontitle = __('Group');
+            $icontitle = Group::getTypeName(1);
             switch ($type) {
                case CommonITILActor::REQUESTER :
-                  $icontitle = __s('Requester group');
+                  $icontitle = _sn('Requester group', 'Requester groups', 1);
                   break;
 
                case CommonITILActor::OBSERVER :
-                  $icontitle = __s('Watcher group');
+                  $icontitle = _sn('Watcher group', 'Watcher groups', 1);
                   break;
 
                case CommonITILActor::ASSIGN :
@@ -3964,7 +3964,7 @@ abstract class CommonITILObject extends CommonDBTM {
                 "<span class='sr-only'>$icontitle</span>";
 
          case 'supplier' :
-            $icontitle = __('Supplier');
+            $icontitle = Supplier::getTypeName(1);
             return "<i class='fas fa-dolly' alt=\"$icontitle\" title=\"$icontitle\"></i>";
 
       }
@@ -4048,7 +4048,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   if (empty($uemail) && $user->getFromDB($d['users_id'])) {
                      $uemail = $user->getDefaultEmail();
                   }
-                  $text .= sprintf(__('%1$s: %2$s'), __('Email'), $uemail);
+                  $text .= sprintf(__('%1$s: %2$s'), _n('Email', 'Emails', 1), $uemail);
                   if (!NotificationMailing::isUserAddressValid($uemail)) {
                      $text .= "&nbsp;<span class='red'>".__('Invalid email address')."</span>";
                   }
@@ -4093,15 +4093,15 @@ abstract class CommonITILObject extends CommonDBTM {
                              $withgroup = true, $withsupplier = false, $inobject = true) {
       global $CFG_GLPI;
 
-      $types = ['user'  => __('User')];
+      $types = ['user'  => User::getTypeName(1)];
 
       if ($withgroup) {
-         $types['group'] = __('Group');
+         $types['group'] = Group::getTypeName(1);
       }
 
       if ($withsupplier
           && ($type == CommonITILActor::ASSIGN)) {
-         $types['supplier'] = __('Supplier');
+         $types['supplier'] = Supplier::getTypeName(1);
       }
 
       $typename = static::getActorFieldNameType($type);
@@ -4474,7 +4474,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<span class='actor-bloc'>";
       echo "<div class='actor-head'>";
       if (!$is_hidden['_users_id_requester'] || !$is_hidden['_groups_id_requester']) {
-         echo __('Requester');
+         echo _n('Requester', 'Requesters', 1);
       }
       $rand_requester      = -1;
       $candeleterequester  = false;
@@ -4584,7 +4584,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<span class='actor-bloc'>";
       echo "<div class='actor-head'>";
       if (!$is_hidden['_users_id_observer'] || !$is_hidden['_groups_id_observer']) {
-         echo __('Watcher');
+         echo _n('Watcher', 'Watchers', 1);
       }
       $rand_observer       = -1;
       $candeleteobserver   = false;
@@ -6321,15 +6321,15 @@ abstract class CommonITILObject extends CommonDBTM {
       $items                           = [];
       $items[(empty($mass_id)?'&nbsp':Html::getCheckAllAsCheckbox($mass_id))] = '';
       $items[__('Status')]             = "status";
-      $items[__('Date')]               = "date";
+      $items[_n('Date', 'Dates', 1)]               = "date";
       $items[__('Last update')]        = "date_mod";
 
       if (count($_SESSION["glpiactiveentities"]) > 1) {
-         $items[_n('Entity', 'Entities', Session::getPluralNumber())] = "glpi_entities.completename";
+         $items[Entity::getTypeName(Session::getPluralNumber())] = "glpi_entities.completename";
       }
 
       $items[__('Priority')]           = "priority";
-      $items[__('Requester')]          = "users_id";
+      $items[_n('Requester', 'Requesters', 1)]          = "users_id";
       $items[__('Assigned')]           = "users_id_assign";
       if (static::getType() == 'Ticket') {
          $items[_n('Associated element', 'Associated elements', Session::getPluralNumber())] = "";
@@ -6473,18 +6473,18 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $objType = static::getType();
 
-      echo "<li><a href='#' class='far fa-comment pointer' data-type='ITILFollowup' title='".__s("Followup").
-         "'><span class='sr-only'>" . __('Followup') . "</span></a></li>";
-      echo "<li><a href='#' class='far fa-check-square pointer' data-type='ITILTask' title='".__s("Task").
-         "'><span class='sr-only'>" . __('Task') . "</span></a></li>";
-      echo "<li><a href='#' class='fa fa-paperclip pointer' data-type='Document_Item' title='".__s("Document").
-         "'><span class='sr-only'>" . __('Document') . "</span></a></li>";
+      echo "<li><a href='#' class='far fa-comment pointer' data-type='ITILFollowup' title='"._sn('Followup', 'Followups, 1').
+         "'><span class='sr-only'>" . _n('Followup', 'Followups', 1) . "</span></a></li>";
+      echo "<li><a href='#' class='far fa-check-square pointer' data-type='ITILTask' title='"._sn('Task', 'Tasks', 1).
+         "'><span class='sr-only'>" . _n('Task', 'Tasks', 1) . "</span></a></li>";
+      echo "<li><a href='#' class='fa fa-paperclip pointer' data-type='Document_Item' title='".__sn('Document', 'Documents', 1).
+         "'><span class='sr-only'>" . Document::getTypeName(1) . "</span></a></li>";
       if (($objType === "Ticket") or ($objType === "Change")) {
-         echo "<li><a href='#' class='far fa-thumbs-up pointer' data-type='ITILValidation' title='".__s("Validation").
-            "'><span class='sr-only'>" . __('Validation') . "</span></a></li>";
+         echo "<li><a href='#' class='far fa-thumbs-up pointer' data-type='ITILValidation' title='"._sn('Validation', 'Validations, 1').
+            "'><span class='sr-only'>" . _n('Validation', 'Validations', 1) . "</span></a></li>";
       }
-      echo "<li><a href='#' class='fa fa-check pointer' data-type='Solution' title='".__s("Solution").
-         "'><span class='sr-only'>" . __('Solution')  . "</span></a></li>";
+      echo "<li><a href='#' class='fa fa-check pointer' data-type='Solution' title='"._sn('Solution', 'Solutions', 1).
+         "'><span class='sr-only'>" . ITILSolution::getTypeName(1)  . "</span></a></li>";
       echo "<li><a href='#' class='fa fa-ban pointer' data-type='reset' title=\"".__s("Reset display options").
          "\"><span class='sr-only'>" . __('Reset display options')  . "</span></a></li>";
       echo "</ul>";
@@ -6638,28 +6638,28 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($canadd_fup) {
          echo "<li class='followup' onclick='".
               "javascript:viewAddSubitem".$this->fields['id']."$rand(\"ITILFollowup\");'>"
-              . "<i class='far fa-comment'></i>".__("Followup")."</li>";
+              . "<i class='far fa-comment'></i>"._n('Followup', 'Followups', 1)."</li>";
       }
 
       if ($canadd_task) {
          echo "<li class='task' onclick='".
               "javascript:viewAddSubitem".$this->fields['id']."$rand(\"$taskClass\");'>"
-              ."<i class='far fa-check-square'></i>".__("Task")."</li>";
+              ."<i class='far fa-check-square'></i>"._n('Task', 'Tasks', 1)."</li>";
       }
       if ($canadd_document) {
          echo "<li class='document' onclick='".
               "javascript:viewAddSubitem".$this->fields['id']."$rand(\"Document_Item\");'>"
-              ."<i class='fa fa-paperclip'></i>".__("Document")."</li>";
+              ."<i class='fa fa-paperclip'></i>".Document::getTypeName(1)."</li>";
       }
       if ($canadd_validation) {
          echo "<li class='validation' onclick='".
             "javascript:viewAddSubitem".$this->fields['id']."$rand(\"$validation_class\");'>"
-            ."<i class='far fa-thumbs-up'></i>".__("Approval")."</li>";
+            ."<i class='far fa-thumbs-up'></i>"._n('Approval', 'Approvals', 1)."</li>";
       }
       if ($canadd_solution) {
          echo "<li class='solution' onclick='".
               "javascript:viewAddSubitem".$this->fields['id']."$rand(\"Solution\");'>"
-              ."<i class='fa fa-check'></i>".__("Solution")."</li>";
+              ."<i class='fa fa-check'></i>"._n('Solution', 'Solutions', 1)."</li>";
       }
       Plugin::doHook('timeline_actions', ['item' => $this, 'rand' => $rand]);
 
@@ -7031,7 +7031,7 @@ abstract class CommonITILObject extends CommonDBTM {
                }
                echo "</span>";
             } else {
-               echo __("Requester");
+               echo _n('Requester', 'Requesters', 1);
             }
             echo "</div>"; // h_user
          }

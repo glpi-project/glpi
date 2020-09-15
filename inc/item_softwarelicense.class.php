@@ -93,7 +93,7 @@ class Item_SoftwareLicense extends CommonDBRelation {
          'id'                 => '5',
          'table'              => $this->getTable(),
          'field'              => 'items_id',
-         'name'               => _n('Associated element', 'Associated elements', 2),
+         'name'               => _n('Associated element', 'Associated elements', Session::getPluralNumber()),
          'datatype'           => 'specific',
          'comments'           => true,
          'nosort'             => true,
@@ -105,7 +105,7 @@ class Item_SoftwareLicense extends CommonDBRelation {
          'id'                 => '6',
          'table'              => $this->getTable(),
          'field'              => 'itemtype',
-         'name'               => __('Request source'),
+         'name'               => _x('software', 'Request source'),
          'datatype'           => 'dropdown'
       ];
 
@@ -376,7 +376,7 @@ class Item_SoftwareLicense extends CommonDBRelation {
 
       echo "<div class='center'>";
       echo "<table class='tab_cadre'><tr>";
-      echo "<th>".__('Entity')."</th>";
+      echo "<th>".Entity::getTypeName(1)."</th>";
       echo "<th>".__('Number of affected items')."</th>";
       echo "</tr>\n";
 
@@ -730,13 +730,13 @@ JAVASCRIPT;
 
          $columns = ['item_type' => __('Item type'),
                            'itemname'          => __('Name'),
-                           'entity'            => __('Entity'),
+                           'entity'            => Entity::getTypeName(1),
                            'serial'            => __('Serial number'),
                            'otherserial'       => __('Inventory number'),
-                           'location,itemname' => __('Location'),
+                           'location,itemname' => Location::getTypeName(1),
                            'state,itemname'    => __('Status'),
-                           'groupe,itemname'   => __('Group'),
-                           'username,itemname' => __('User')];
+                           'groupe,itemname'   => Group::getTypeName(1),
+                           'username,itemname' => User::getTypeName(1)];
          if (!$showEntity) {
             unset($columns['entity']);
          }

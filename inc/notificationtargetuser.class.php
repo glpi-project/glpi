@@ -50,7 +50,7 @@ class NotificationTargetUser extends NotificationTarget {
     * @see NotificationTarget::addNotificationTargets()
    **/
    function addNotificationTargets($entity) {
-      $this->addTarget(Notification::USER, __('User'));
+      $this->addTarget(Notification::USER, User::getTypeName(1));
 
       if ($this->raiseevent == 'passwordexpires') {
          parent::addNotificationTargets($entity);

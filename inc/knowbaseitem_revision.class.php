@@ -129,7 +129,7 @@ class KnowbaseItem_Revision extends CommonDBTM {
              "' class='submit compare'>";
       echo "<table class='tab_cadre_fixehov'>";
       $header = '<tr>';
-      $header .= "<th title='" . __s('Revision') . "'>#</th>";
+      $header .= "<th title='" . _sn('Revision', 'Revisions', 1) . "'>#</th>";
       $header .= "<th>&nbsp;</th>";
       $header .= "<th>" . __('Author')  . "</th>";
       $header .= "<th>".__('Creation date')."</th>";

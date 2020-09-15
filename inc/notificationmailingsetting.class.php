@@ -212,7 +212,7 @@ class NotificationMailingSetting extends NotificationSetting {
             $out .= " starthidden";
          }
          $out .= "' id='smtp_config'>";
-         $out .= "<tr class='tab_bg_1'><th colspan='4'>".__('Mail server')."</th></tr>";
+         $out .= "<tr class='tab_bg_1'><th colspan='4'>".AuthMail::getTypeName(1)."</th></tr>";
          $out .= "<tr class='tab_bg_2'>";
          $certrand = mt_rand();
          $out .= "<td><label for='dropdown_smtp_check_certificate$certrand'>" . __("Check certificate") . "</label></td>";
@@ -230,7 +230,7 @@ class NotificationMailingSetting extends NotificationSetting {
          $out .= "<td><input type='text' name='smtp_host' id='smtp_host' size='40' value='".$CFG_GLPI["smtp_host"]."'>";
          $out.= "</td>";
          //TRANS: SMTP port
-         $out .= "<td><label for='smtp_port'>" . __('Port') . "</label></td>";
+         $out .= "<td><label for='smtp_port'>" . _n('Port', 'Ports', 1) . "</label></td>";
          $out .= "<td><input type='text' name='smtp_port' id='smtp_port' size='5' value='".$CFG_GLPI["smtp_port"]."'>";
          $out .= "</td>";
          $out .= "</tr>";

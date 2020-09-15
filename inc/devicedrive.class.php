@@ -57,7 +57,7 @@ class DeviceDrive extends CommonDevice {
                                      'label' => __('Interface'),
                                      'type'  => 'dropdownValue'],
                                ['name'  => 'devicedrivemodels_id',
-                                     'label' => __('Model'),
+                                     'label' => _n('Model', 'Models', 1),
                                      'type'  => 'dropdownValue']]);
    }
 
@@ -94,7 +94,7 @@ class DeviceDrive extends CommonDevice {
          'id'                 => '15',
          'table'              => 'glpi_devicedrivemodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 

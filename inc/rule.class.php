@@ -428,7 +428,7 @@ class Rule extends CommonDBTM {
          }
 
          $menu['dictionnary']['options']['os']['title']
-                           = __('Operating system');
+                           = OperatingSystem::getTypeName(1);
          $menu['dictionnary']['options']['os']['page']
                            = '/front/ruledictionnaryoperatingsystem.php';
          $menu['dictionnary']['options']['os']['links']['search']
@@ -440,7 +440,7 @@ class Rule extends CommonDBTM {
          }
 
          $menu['dictionnary']['options']['os_sp']['title']
-                           = __('Service pack');
+                           = OperatingSystemServicePack::getTypeName(1);
          $menu['dictionnary']['options']['os_sp']['page']
                            = '/front/ruledictionnaryoperatingsystemservicepack.php';
          $menu['dictionnary']['options']['os_sp']['links']['search']
@@ -452,7 +452,7 @@ class Rule extends CommonDBTM {
          }
 
          $menu['dictionnary']['options']['os_version']['title']
-                           = __('Version of the operating system');
+                           = OperatingSystemVersion::getTypeName(1);
          $menu['dictionnary']['options']['os_version']['page']
                            = '/front/ruledictionnaryoperatingsystemversion.php';
          $menu['dictionnary']['options']['os_version']['links']['search']
@@ -464,7 +464,7 @@ class Rule extends CommonDBTM {
          }
 
          $menu['dictionnary']['options']['os_arch']['title']
-                           = __('Operating system architecture');
+                           = OperatingSystemArchitecture::getTypeName(1);
          $menu['dictionnary']['options']['os_arch']['page']
                            = '/front/ruledictionnaryoperatingsystemarchitecture.php';
          $menu['dictionnary']['options']['os_arch']['links']['search']
@@ -728,7 +728,7 @@ class Rule extends CommonDBTM {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
       ];
@@ -2010,7 +2010,7 @@ class Rule extends CommonDBTM {
       echo "<td class='center b'>"._n('Criterion', 'Criteria', 1)."</td>";
       echo "<td class='center b'>".__('Condition')."</td>";
       echo "<td class='center b'>".__('Reason')."</td>";
-      echo "<td class='center b'>".__('Validation')."</td>";
+      echo "<td class='center b'>"._n('Validation', 'Validations', 1)."</td>";
       echo "</tr>\n";
 
       foreach ($check_results as $ID => $criteria_result) {
@@ -2031,7 +2031,7 @@ class Rule extends CommonDBTM {
       echo "<table class='tab_cadrehov'>";
       echo "<tr><th colspan='2'>" . __('Rule results') . "</th></tr>";
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='center b'>".__('Validation')."</td><td>";
+      echo "<td class='center b'>"._n('Validation', 'Validations', 1)."</td><td>";
       echo Dropdown::getYesNo($global_result)."</td></tr>";
 
       $output = $this->preProcessPreviewResults($output);

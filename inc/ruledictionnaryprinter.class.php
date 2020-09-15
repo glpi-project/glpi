@@ -76,7 +76,7 @@ class RuleDictionnaryPrinter extends Rule {
       $criterias['name']['table']         = 'glpi_printers';
 
       $criterias['manufacturer']['field'] = 'name';
-      $criterias['manufacturer']['name']  = __('Manufacturer');
+      $criterias['manufacturer']['name']  = Manufacturer::getTypeName(1);
       $criterias['manufacturer']['table'] = '';
 
       $criterias['comment']['field']      = 'comment';
@@ -100,7 +100,7 @@ class RuleDictionnaryPrinter extends Rule {
       $actions['_ignore_import']['name']     = __('To be unaware of import');
       $actions['_ignore_import']['type']     = 'yesonly';
 
-      $actions['manufacturer']['name']       = __('Manufacturer');
+      $actions['manufacturer']['name']       = Manufacturer::getTypeName(1);
       $actions['manufacturer']['table']      = 'glpi_manufacturers';
       $actions['manufacturer']['type']       = 'dropdown';
 

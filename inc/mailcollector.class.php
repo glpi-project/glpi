@@ -39,7 +39,9 @@ use Laminas\Mail\Header\AbstractAddressList;
 use Laminas\Mail\Header\ContentDisposition;
 use Laminas\Mail\Header\ContentType;
 use Laminas\Mail\Storage\Message;
+use Laminas\Mail\Storage;
 use LitEmoji\LitEmoji;
+
 
 /**
  * MailCollector class
@@ -297,6 +299,11 @@ class MailCollector  extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . __('Add CC users as observer') . "</td>";
       echo "<td>";
       Dropdown::showYesNo("add_cc_to_observer", $this->fields["add_cc_to_observer"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'><td>" . __('Collect only unread mail') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("collect_only_unread", $this->fields["collect_only_unread"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".__('Comments')."</td>";
@@ -706,6 +713,7 @@ class MailCollector  extends CommonDBTM {
          if ($this->storage) {
             $error            = 0;
             $refused          = 0;
+            $alreadyseen      = 0;
             $blacklisted      = 0;
             // Get Total Number of Unread Email in mail box
             $count_messages   = $this->getTotalMails();
@@ -728,30 +736,48 @@ class MailCollector  extends CommonDBTM {
             } while ($this->fetch_emails < $this->maxfetch_emails);
 
             foreach ($messages as $uid => $message) {
-               $tkt = $this->buildTicket(
-                  $uid,
-                  $message,
-                  [
-                     'mailgates_id' => $mailgateID,
-                     'play_rules'   => true
-                  ]
-               );
 
-               $headers = $this->getHeaders($message);
-               $rejinput                      = [];
-               $rejinput['mailcollectors_id'] = $mailgateID;
+               $rejinput = [
+                  'mailcollectors_id' => $mailgateID,
+               ];
 
-               $requester = $this->getRequesterEmail($message);
-
-               if (!$tkt['_blacklisted']) {
-                  global $DB;
-                  $rejinput['from']              = $requester;
-                  $rejinput['to']                = $headers['to'];
-                  $rejinput['users_id']          = $tkt['_users_id_requester'];
-                  $rejinput['subject']           = $DB->escape($this->cleanSubject($headers['subject']));
-                  $rejinput['messageid']         = $headers['message_id'];
+               //prevent loop when message is read but when it's impossible to move / delete
+               //due to mailbox problem (ie: full)
+               if ($this->fields['collect_only_unread'] && $message->hasFlag(Storage::FLAG_SEEN)) {
+                  ++$alreadyseen;
+                  continue;
                }
-               $rejinput['date']              = $_SESSION["glpi_currenttime"];
+
+               try {
+                  $tkt = $this->buildTicket(
+                     $uid,
+                     $message,
+                     [
+                        'mailgates_id' => $mailgateID,
+                        'play_rules'   => true
+                     ]
+                  );
+
+                  $headers = $this->getHeaders($message);
+
+                  $requester = $this->getRequesterEmail($message);
+
+                  if (!$tkt['_blacklisted']) {
+                     global $DB;
+                     $rejinput['from']              = $requester;
+                     $rejinput['to']                = $headers['to'];
+                     $rejinput['users_id']          = $tkt['_users_id_requester'];
+                     $rejinput['subject']           = $DB->escape($this->cleanSubject($headers['subject']));
+                     $rejinput['messageid']         = $headers['message_id'];
+                  }
+                  $rejinput['date']              = $_SESSION["glpi_currenttime"];
+               } catch (Throwable $e) {
+                  $error++;
+                  Toolbox::logInFile('mailgate', sprintf(__('Error during message parsing: %1$s').'<br/>', $e->getMessage()));
+                  $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
+                  $rejected->add($rejinput);
+                  continue;
+               }
 
                $is_user_anonymous = !(isset($tkt['_users_id_requester'])
                                       && ($tkt['_users_id_requester'] > 0));
@@ -880,11 +906,12 @@ class MailCollector  extends CommonDBTM {
                $this->deleteMails($uid, $folder);
             }
 
-            //TRANS: %1$d, %2$d, %3$d, %4$d and %5$d are number of messages
+            //TRANS: %1$d, %2$d, %3$d, %4$d %5$d and %6$d are number of messages
             $msg = sprintf(
-               __('Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, errors=%4$d, blacklisted=%5$d'),
+               __('Number of messages: available=%1$d, already imported=%2$d, retrieved=%3$d, refused=%4$d, errors=%5$d, blacklisted=%6$d'),
                $count_messages,
-               $this->fetch_emails,
+               $alreadyseen,
+               $this->fetch_emails - $alreadyseen,
                $refused,
                $error,
                $blacklisted

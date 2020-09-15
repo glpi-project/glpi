@@ -149,7 +149,7 @@ class Item_Rack extends CommonDBRelation {
             $header .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
             $header .= "</th>";
          }
-         $header .= "<th>".__('Item')."</th>";
+         $header .= "<th>"._n('Item', 'Items', 1)."</th>";
          $header .= "<th>".__('Position')."</th>";
          $header .= "<th>".__('Orientation')."</th>";
          $header .= "</tr>";
@@ -627,7 +627,7 @@ JAVASCRIPT;
       //TODO: update orientation according to item model depth
 
       echo "</td>";
-      echo "<td><label for='dropdown_items_id$rand'>".__('Item')."</label></td>";
+      echo "<td><label for='dropdown_items_id$rand'>"._n('Item', 'Items', 1)."</label></td>";
       echo "<td id='items_id'>";
       if (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
          $itemtype = $this->fields['itemtype'];
@@ -651,7 +651,7 @@ JAVASCRIPT;
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_racks_id$rand'>".__('Rack')."</label></td>";
+      echo "<td><label for='dropdown_racks_id$rand'>".Rack::getTypeName(1)."</label></td>";
       echo "<td>";
       Rack::dropdown(['value' => $this->fields["racks_id"], 'rand' => $rand]);
       echo "</td>";
@@ -830,7 +830,7 @@ JAVASCRIPT;
                </span>";
          if (!empty($typename)) {
             $tip.= "<span>
-                     <label>".__('Type').":</label>
+                     <label>"._n('Type', 'Types', 1).":</label>
                      $typename
                   </span>";
          }

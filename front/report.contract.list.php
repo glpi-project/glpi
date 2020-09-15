@@ -200,12 +200,12 @@ if (count($all_criteria)) {
          echo "<tr><th>".__('Name')."</th>";
          echo "<th>".__('Deleted')."</th>";
          if ($display_entity) {
-            echo "<th>".__('Entity')."</th>";
+            echo "<th>".Entity::getTypeName(1)."</th>";
          }
-         echo "<th>".__('Location')."</th>";
+         echo "<th>".Location::getTypeName(1)."</th>";
          echo "<th>".__('Date of purchase')."</th>";
          echo "<th>".__('Warranty expiration date')."</th>";
-         echo "<th>".__('Contract type')."</th>";
+         echo "<th>".ContractType::getTypeName(1)."</th>";
          echo "<th>".__('Start date')."</th>";
          echo "<th>".__('End date')."</th>";
          echo "</tr>";

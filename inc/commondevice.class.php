@@ -151,7 +151,7 @@ abstract class CommonDevice extends CommonDropdown {
    function getAdditionalFields() {
 
       return [['name'  => 'manufacturers_id',
-                         'label' => __('Manufacturer'),
+                         'label' => Manufacturer::getTypeName(1),
                          'type'  => 'dropdownValue']];
    }
 
@@ -248,7 +248,7 @@ abstract class CommonDevice extends CommonDropdown {
          'id'                 => '23',
          'table'              => 'glpi_manufacturers',
          'field'              => 'name',
-         'name'               => __('Manufacturer'),
+         'name'               => Manufacturer::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
@@ -282,7 +282,7 @@ abstract class CommonDevice extends CommonDropdown {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 

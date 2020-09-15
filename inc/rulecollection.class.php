@@ -498,7 +498,7 @@ class RuleCollection extends CommonDBTM {
       echo "<th>".__('Active')."</th>";
 
       if ($display_entities) {
-         echo "<th>".__('Entity')."</th>\n";
+         echo "<th>".Entity::getTypeName(1)."</th>\n";
       }
       if (!$display_entities) {
          echo "<th colspan='2'>&nbsp;</th>";
@@ -529,7 +529,7 @@ class RuleCollection extends CommonDBTM {
          echo "<th>".__('Active')."</th>";
 
          if ($display_entities) {
-            echo "<th>".__('Entity')."</th>\n";
+            echo "<th>".Entity::getTypeName(1)."</th>\n";
          }
          if (!$display_entities) {
             echo "<th colspan='2'>&nbsp;</th>";
@@ -1755,7 +1755,7 @@ class RuleCollection extends CommonDBTM {
       echo "<table class='tab_cadrehov'>";
       echo "<tr><th colspan='2'>" . __('Rule results') . "</th></tr>\n";
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='center'>".__('Validation')."</td>";
+      echo "<td class='center'>"._n('Validation', 'Validations', 1)."</td>";
       echo "<td><span class='b'>".Dropdown::getYesNo($global_result)."</span></td>";
 
       $output = $this->preProcessPreviewResults($output);
@@ -1980,21 +1980,21 @@ class RuleCollection extends CommonDBTM {
 
       if (Session::haveRight("rule_dictionnary_software", READ)) {
          $entries[] = [
-            'label'  => _n('Software', 'Software', 2),
+            'label'  => _n('Software', 'Software', Session::getPluralNumber()),
             'link'   => 'ruledictionnarysoftware.php'
          ];
       }
 
       if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
          $entries[] = [
-            'label'  => _n('Manufacturer', 'Manufacturers', 2),
+            'label'  => _n('Manufacturer', 'Manufacturers', Session::getPluralNumber()),
             'link'   => 'ruledictionnarymanufacturer.php'
          ];
       }
 
       if (Session::haveRight("rule_dictionnary_printer", READ)) {
          $entries[] = [
-            'label'  => _n('Printer', 'Printers', 2),
+            'label'  => _n('Printer', 'Printers', Session::getPluralNumber()),
             'link'   => 'ruledictionnaryprinter.php'
          ];
       }
@@ -2008,25 +2008,25 @@ class RuleCollection extends CommonDBTM {
 
       if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
          $dictionnaries[] = [
-            'type'      => _n('Model', 'Models', 2),
+            'type'      => _n('Model', 'Models', Session::getPluralNumber()),
             'entries'   => [
                [
-                  'label'  => _n('Computer model', 'Computer models', 2),
+                  'label'  => _n('Computer model', 'Computer models', Session::getPluralNumber()),
                   'link'   => 'ruledictionnarycomputermodel.php'
                ], [
-                  'label'  => _n('Monitor model', 'Monitor models', 2),
+                  'label'  => _n('Monitor model', 'Monitor models', Session::getPluralNumber()),
                   'link'   => 'ruledictionnarymonitormodel.php'
                ], [
-                  'label'  => _n('Printer model', 'Printer models', 2),
+                  'label'  => _n('Printer model', 'Printer models', Session::getPluralNumber()),
                   'link'   => 'ruledictionnaryprintermodel.php'
                ], [
-                  'label'  => _n('Device model', 'Device models', 2),
+                  'label'  => _n('Device model', 'Device models', Session::getPluralNumber()),
                   'link'   => 'ruledictionnaryperipheralmodel.php'
                ], [
-                  'label'  => _n('Network equipment model', 'Network equipment models', 2),
+                  'label'  => _n('Network equipment model', 'Network equipment models', Session::getPluralNumber()),
                   'link'   => 'ruledictionnarynetworkequipmentmodel.php'
                ], [
-                  'label'  => _n('Phone model', 'Phone models', 2),
+                  'label'  => _n('Phone model', 'Phone models', Session::getPluralNumber()),
                   'link'   => 'ruledictionnaryphonemodel.php'
                ]
             ]
@@ -2035,25 +2035,25 @@ class RuleCollection extends CommonDBTM {
 
       if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
          $dictionnaries[] = [
-            'type'      => _n('Type', 'Types', 2),
+            'type'      => _n('Type', 'Types', Session::getPluralNumber()),
             'entries'   => [
                [
-                  'label'  => _n('Computer type', 'Computer types', 2),
+                  'label'  => _n('Computer type', 'Computer types', Session::getPluralNumber()),
                   'link'   => 'ruledictionnarycomputertype.php'
                ], [
-                  'label'  => _n('Monitor type', 'Monitor types', 2),
+                  'label'  => _n('Monitor type', 'Monitor types', Session::getPluralNumber()),
                   'link'   => 'ruledictionnarymonitortype.php'
                ], [
-                  'label'  => _n('Printer type', 'Printer types', 2),
+                  'label'  => _n('Printer type', 'Printer types', Session::getPluralNumber()),
                   'link'   => 'ruledictionnaryprintertype.php'
                ], [
-                  'label'  => _n('Device type', 'Device types', 2),
+                  'label'  => _n('Device type', 'Device types', Session::getPluralNumber()),
                   'link'   => 'ruledictionnaryperipheraltype.php'
                ], [
-                  'label'  => _n('Network equipment type', 'Network equipment types', 2),
+                  'label'  => _n('Network equipment type', 'Network equipment types', Session::getPluralNumber()),
                   'link'   => 'ruledictionnarynetworkequipmenttype.php'
                ], [
-                  'label'  => _n('Phone type', 'Phone types', 2),
+                  'label'  => _n('Phone type', 'Phone types', Session::getPluralNumber()),
                   'link'   => 'ruledictionnaryphonetype.php'
                ]
             ]
@@ -2062,19 +2062,19 @@ class RuleCollection extends CommonDBTM {
 
       if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
          $dictionnaries[] = [
-            'type'      => _n('Operating system', 'Operating systems', 2),
+            'type'      => OperatingSystem::getTypeName(Session::getPluralNumber()),
             'entries'   => [
                [
-                  'label'  => _n('Operating system', 'Operating systems', 2),
+                  'label'  => OperatingSystem::getTypeName(Session::getPluralNumber()),
                   'link'   => 'ruledictionnaryoperatingsystem.php'
                ], [
-                  'label'  => _n('Service pack', 'Service packs', 2),
+                  'label'  => _n('Service pack', 'Service packs', Session::getPluralNumber()),
                   'link'   => 'ruledictionnaryoperatingsystemservicepack.php'
                ], [
-                  'label'  => _n('Version', 'Versions', 2),
+                  'label'  => _n('Version', 'Versions', Session::getPluralNumber()),
                   'link'   => 'ruledictionnaryoperatingsystemversion.php'
                ], [
-                  'label'  => _n('Architecture', 'Architectures', 2),
+                  'label'  => _n('Architecture', 'Architectures', Session::getPluralNumber()),
                   'link'   => 'ruledictionnaryoperatingsystemarchitecture.php'
                ]
             ]

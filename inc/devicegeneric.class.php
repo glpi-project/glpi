@@ -48,7 +48,7 @@ class DeviceGeneric extends CommonDevice {
 
       return array_merge(parent::getAdditionalFields(),
                          [['name'  => 'devicegenerictypes_id',
-                                     'label' => __('Type'),
+                                     'label' => _n('Type', 'Types', 1),
                                      'type'  => 'dropdownValue']]);
    }
 
@@ -60,7 +60,7 @@ class DeviceGeneric extends CommonDevice {
          'id'                 => '12',
          'table'              => 'glpi_devicegenerictypes',
          'field'              => 'name',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
       ];
 

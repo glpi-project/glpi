@@ -84,10 +84,10 @@ $stat->displayLineGraph(
    _x('Quantity', 'Number') . " - " . $item->getTypeName(Session::getPluralNumber()),
    array_keys($values['total']), [
       [
-         'name' => _nx('ticket', 'Opened', 'Opened', 2),
+         'name' => _nx('ticket', 'Opened', 'Opened', Session::getPluralNumber()),
          'data' => $values['total']
       ], [
-         'name' => _nx('ticket', 'Solved', 'Solved', 2),
+         'name' => _nx('ticket', 'Solved', 'Solved', Session::getPluralNumber()),
          'data' => $values['solved']
       ], [
          'name' => __('Late'),
@@ -125,7 +125,7 @@ foreach ($values['avgactiontime'] as &$val) {
 }
 
 $stat->displayLineGraph(
-   __('Average time') . " - " .  _n('Hour', 'Hours', 2),
+   __('Average time') . " - " .  _n('Hour', 'Hours', Session::getPluralNumber()),
    array_keys($values['avgsolved']), [
       [
          'name' => __('Closure'),
@@ -156,10 +156,10 @@ if ($_GET['itemtype'] == 'Ticket') {
       __('Satisfaction survey') . " - " .  __('Tickets'),
       array_keys($values['opensatisfaction']), [
          [
-            'name' => _nx('survey', 'Opened', 'Opened', 2),
+            'name' => _nx('survey', 'Opened', 'Opened', Session::getPluralNumber()),
             'data' => $values['opensatisfaction']
          ], [
-            'name' => _nx('survey', 'Answered', 'Answered', 2),
+            'name' => _nx('survey', 'Answered', 'Answered', Session::getPluralNumber()),
             'data' => $values['answersatisfaction']
          ]
       ]

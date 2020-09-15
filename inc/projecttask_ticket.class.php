@@ -357,7 +357,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
       if ($numrows) {
          $columns = ['projectname'      => Project::getTypeName(Session::getPluralNumber()),
                           'name'             => ProjectTask::getTypeName(Session::getPluralNumber()),
-                          'tname'            => __('Type'),
+                          'tname'            => _n('Type', 'Types', 1),
                           'sname'            => __('Status'),
                           'percent_done'     => __('Percent done'),
                           'plan_start_date'  => __('Planned start date'),

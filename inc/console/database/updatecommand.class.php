@@ -118,7 +118,7 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
       $update->setMigration($migration);
 
       $informations = new Table($output);
-      $informations->setHeaders(['', __('Current'), __('Target')]);
+      $informations->setHeaders(['', __('Current'), _n('Target', 'Targets', 1)]);
       $informations->addRow([__('Database host'), $this->db->dbhost, '']);
       $informations->addRow([__('Database name'), $this->db->dbdefault, '']);
       $informations->addRow([__('Database user'), $this->db->dbuser, '']);

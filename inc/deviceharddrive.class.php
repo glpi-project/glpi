@@ -59,7 +59,7 @@ class DeviceHardDrive extends CommonDevice {
                                      'type'  => 'text',
                                      'unit'  => __('Mio')],
                                ['name'  => 'deviceharddrivemodels_id',
-                                     'label' => __('Model'),
+                                     'label' => _n('Model', 'Models', 1),
                                      'type'  => 'dropdownValue'],
                                ['name'  => 'interfacetypes_id',
                                      'label' => __('Interface'),
@@ -109,7 +109,7 @@ class DeviceHardDrive extends CommonDevice {
          'id'                 => '15',
          'table'              => 'glpi_deviceharddrivemodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 

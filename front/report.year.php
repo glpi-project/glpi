@@ -60,7 +60,7 @@ Dropdown::showFromArray('item_type', $values, ['value'    => 0,
                                                    'multiple' => true]);
 echo "</td>";
 
-echo "<td width='20%' class='center'><p class='b'>".__('Date')."</p></td>";
+echo "<td width='20%' class='center'><p class='b'>"._n('Date', 'Dates', 1)."</p></td>";
 echo "<td width='30%'>";
 $y = date("Y");
 $values = [ 0 => __('All')];

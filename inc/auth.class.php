@@ -1079,7 +1079,7 @@ class Auth extends CommonGLPI {
                //TRANS: %1$s is the auth method type, %2$s the auth method name or link
                return sprintf(__('%1$s: %2$s'), AuthLDAP::getTypeName(1), $auth->getLink());
             }
-            return sprintf(__('%1$s: %2$s'), __('LDAP directory'), $name);
+            return sprintf(__('%1$s: %2$s'), AuthLDAP::getTypeName(1), $name);
 
          case self::MAIL :
             $auth = new AuthMail();
@@ -1478,7 +1478,7 @@ class Auth extends CommonGLPI {
          echo "</td>";
          echo "</tr>\n";
          //TRANS: for CAS SSO system
-         echo "<tr class='tab_bg_2'><td class='center'>" . __('Port') . "</td>";
+         echo "<tr class='tab_bg_2'><td class='center'>" . _n('Port', 'Ports', 1) . "</td>";
          echo "<td><input type='text' name='cas_port' value=\"".$CFG_GLPI["cas_port"]."\"></td></tr>\n";
          //TRANS: for CAS SSO system
          echo "<tr class='tab_bg_2'><td class='center'>" . __('Root directory (optional)')."</td>";
@@ -1532,7 +1532,7 @@ class Auth extends CommonGLPI {
       }
       echo "</th></tr>\n";
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>". __('Field storage of the login in the HTTP request')."</td>";
+      echo "<td class='center'>". SsoVariable::getTypeName(1)."</td>";
       echo "<td>";
       SsoVariable::dropdown(['name'  => 'ssovariables_id',
                                   'value' => $CFG_GLPI["ssovariables_id"]]);
@@ -1578,7 +1578,7 @@ class Auth extends CommonGLPI {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>" . __('Email') . "</td>";
+      echo "<td class='center'>" . _n('Email', 'Emails', 1) . "</td>";
       echo "<td><input type='text' name='email1_ssofield' value='".$CFG_GLPI['email1_ssofield']."'>";
       echo "</td>";
        echo "</tr>\n";
@@ -1602,7 +1602,7 @@ class Auth extends CommonGLPI {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>" . __('Phone') . "</td>";
+      echo "<td class='center'>" . Phone::getTypeName(1) . "</td>";
       echo "<td><input type='text' name='phone_ssofield' value='".$CFG_GLPI['phone_ssofield']."'>";
       echo "</td>";
       echo "</tr>\n";

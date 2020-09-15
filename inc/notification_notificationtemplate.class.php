@@ -144,7 +144,7 @@ class Notification_NotificationTemplate extends CommonDBRelation {
       if ($iterator->numrows()) {
          $header = "<tr>";
          $header .= "<th>" . __('ID') . "</th>";
-         $header .= "<th>".__('Template')."</th>";
+         $header .= "<th>".static::getTypeName(1)."</th>";
          $header .= "<th>".__('Mode')."</th>";
          $header .= "</tr>";
          echo $header;
@@ -223,7 +223,7 @@ class Notification_NotificationTemplate extends CommonDBRelation {
       if ($iterator->numrows()) {
          $header = "<tr>";
          $header .= "<th>" . __('ID') . "</th>";
-         $header .= "<th>" . __('Notification') . "</th>";
+         $header .= "<th>" . _n('Notification', 'Notifications', 1) . "</th>";
          $header .= "<th>" . __('Mode') . "</th>";
          $header .= "</tr>";
          echo $header;
@@ -320,7 +320,7 @@ class Notification_NotificationTemplate extends CommonDBRelation {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Notification')."</td>";
+      echo "<td>"._n('Notification', 'Notifications', 1)."</td>";
       echo "<td>".$notif->getLink()."</td>";
       echo "<td colspan='2'>&nbsp;</td>";
       echo "</tr>\n";
@@ -392,7 +392,7 @@ class Notification_NotificationTemplate extends CommonDBRelation {
 
       $core_modes = [
          self::MODE_MAIL      => [
-            'label'  => __('Email'),
+            'label'  => _n('Email', 'Emails', 1),
             'from'   => 'core'
          ],
          self::MODE_AJAX      => [

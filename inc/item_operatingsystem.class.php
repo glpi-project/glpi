@@ -55,7 +55,7 @@ class Item_OperatingSystem extends CommonDBRelation {
             if ($_SESSION['glpishow_count_on_tabs']) {
                $nb = self::countForItem($item);
             }
-            return self::createTabEntry(_n('Operating system', 'Operating systems', Session::getPluralNumber()), $nb);
+            return self::createTabEntry(OperatingSystem::getTypeName(Session::getPluralNumber()), $nb);
       }
       return '';
    }
@@ -145,9 +145,9 @@ class Item_OperatingSystem extends CommonDBRelation {
 
       $columns = [
          __('Name'),
-         __('Version'),
-         __('Architecture'),
-         __('Service pack')
+         _n('Version', 'Versions', 1),
+         _n('Architecture', 'Architectures', 1),
+         OperatingSystemServicePack::getTypeName(1)
       ];
 
       if (isset($_GET["order"]) && ($_GET["order"] == "ASC")) {
@@ -304,7 +304,7 @@ class Item_OperatingSystem extends CommonDBRelation {
       $rand = mt_rand();
 
       echo "<tr class='headerRow'><th colspan='".$colspan."'>";
-      echo __('Operating system');
+      echo OperatingSystem::getTypeName(1);
       echo Html::hidden('itemtype', ['value' => $this->fields['itemtype']]);
       echo Html::hidden('items_id', ['value' => $this->fields['items_id']]);
       echo "</th></tr>";
@@ -314,19 +314,19 @@ class Item_OperatingSystem extends CommonDBRelation {
       echo "<td>";
       OperatingSystem::dropdown(['value' => $this->fields["operatingsystems_id"], 'rand' => $rand]);
       echo "</td>";
-      echo "<td><label for='dropdown_operatingsystemversions_id$rand'>".__('Version')."</label></td>";
+      echo "<td><label for='dropdown_operatingsystemversions_id$rand'>"._n('Version', 'Versions', 1)."</label></td>";
       echo "<td >";
       OperatingSystemVersion::dropdown(['value' => $this->fields["operatingsystemversions_id"], 'rand' => $rand]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_operatingsystemarchitectures_id$rand'>".__('Architecture')."</label></td>";
+      echo "<td><label for='dropdown_operatingsystemarchitectures_id$rand'>"._n('Architecture', 'Architectures', 1)."</label></td>";
       echo "<td >";
       OperatingSystemArchitecture::dropdown(['value'
                                                  => $this->fields["operatingsystemarchitectures_id"], 'rand' => $rand]);
       echo "</td>";
-      echo "<td><label for='dropdown_operatingsystemservicepacks_id$rand'>".__('Service pack')."</label></td>";
+      echo "<td><label for='dropdown_operatingsystemservicepacks_id$rand'>".OperatingSystemServicePack::getTypeName(1)."</label></td>";
       echo "<td >";
       OperatingSystemServicePack::dropdown(['value'
                                                  => $this->fields["operatingsystemservicepacks_id"], 'rand' => $rand]);
@@ -342,7 +342,7 @@ class Item_OperatingSystem extends CommonDBRelation {
       ]);
       echo "</td>";
 
-      echo "<td><label for='dropdown_operatingsystemeditions_id$rand'>" . __('Edition') . "</label></td>";
+      echo "<td><label for='dropdown_operatingsystemeditions_id$rand'>" . _n('Edition', 'Editions', 1) . "</label></td>";
       echo "<td >";
       OperatingSystemEdition::dropdown([
          'value'  => $this->fields['operatingsystemeditions_id'],
@@ -433,7 +433,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '46',
          'table'              => 'glpi_operatingsystemversions',
          'field'              => 'name',
-         'name'               => __('Version'),
+         'name'               => _n('Version', 'Versions', 1),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -451,7 +451,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '41',
          'table'              => 'glpi_operatingsystemservicepacks',
          'field'              => 'name',
-         'name'               => __('Service pack'),
+         'name'               => OperatingSystemServicePack::getTypeName(1),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -495,7 +495,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '61',
          'table'              => 'glpi_operatingsystemarchitectures',
          'field'              => 'name',
-         'name'               => __('Architecture'),
+         'name'               => _n('Architecture', 'Architectures', 1),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -554,7 +554,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '63',
          'table'              => 'glpi_operatingsystemeditions',
          'field'              => 'name',
-         'name'               => __('Edition'),
+         'name'               => _n('Edition', 'Editions', 1),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -598,11 +598,11 @@ class Item_OperatingSystem extends CommonDBRelation {
       Dropdown::showFromArray(
          'os_field', [
             'OperatingSystem'             => __('Name'),
-            'OperatingSystemVersion'      => __('Version'),
-            'OperatingSystemArchitecture' => __('Architecture'),
-            'OperatingSystemKernel'       => __('Kernel'),
-            'OperatingSystemKernelVersion'=> __('Kernel version'),
-            'OperatingSystemEdition'      => __('Edition')
+            'OperatingSystemVersion'      => _n('Version', 'Versions', 1),
+            'OperatingSystemArchitecture' => _n('Architecture', 'Architectures', 1),
+            'OperatingSystemKernel'       => OperatingSystemKernel::getTypeName(1),
+            'OperatingSystemKernelVersion'=> OperatingSystemKernelVersion::getTypeName(1),
+            'OperatingSystemEdition'      => _n('Edition', 'Editions', 1)
          ], [
             'display_emptychoice'   => true,
             'rand'                  => $rand

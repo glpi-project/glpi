@@ -619,8 +619,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       global $CFG_GLPI;
 
-      $types            = ['user'  => __('User'),
-                                'group' => __('Group')];
+      $types            = ['user'  => User::getTypeName(1),
+                                'group' => Group::getTypeName(1)];
 
       $rand             = Dropdown::showFromArray("validatortype", $types,
                                                   ['display_emptychoice' => true]);
@@ -1004,7 +1004,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $tab[] = [
          'id'                 => 'common',
-         'name'               => __('Approval')
+         'name'               => CommonITILValidation::getTypeName(1)
       ];
 
       $tab[] = [
@@ -1082,7 +1082,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $tab[] = [
          'id'                 => 'validation',
-         'name'               => __('Approval')
+         'name'               => CommonITILValidation::getTypeName(1)
       ];
 
       $tab[] = [
@@ -1101,7 +1101,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          'id'                 => '52',
          'table'              => getTableForItemType(static::$itemtype),
          'field'              => 'global_validation',
-         'name'               => __('Approval'),
+         'name'               => CommonITILValidation::getTypeName(1),
          'searchtype'         => 'equals',
          'datatype'           => 'specific'
       ];
@@ -1176,7 +1176,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          'id'                 => '58',
          'table'              => 'glpi_users',
          'field'              => 'name',
-         'name'               => __('Requester'),
+         'name'               => _n('Requester', 'Requesters', 1),
          'datatype'           => 'itemlink',
          'right'              => (static::$itemtype == 'Ticket' ? 'create_ticket_validate' : 'create_validate'),
          'forcegroupby'       => true,
@@ -1303,8 +1303,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
          $params[$key] = $val;
       }
 
-      $types = ['user'  => __('User'),
-                     'group' => __('Group')];
+      $types = ['user'  => User::getTypeName(1),
+                     'group' => Group::getTypeName(1)];
 
       $type  = '';
       if (isset($params['users_id_validate']['groups_id'])) {

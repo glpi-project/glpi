@@ -78,7 +78,7 @@ class RuleRightCollection extends RuleCollection {
       $actions = $rule->getActions();
       echo "<tr><th colspan='4'>" . __('Rule results') . "</th></tr>";
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center' colspan='2'>".__('Validation')."</td><td colspan='2'>".
+      echo "<td class='center' colspan='2'>"._n('Validation', 'Validations', 1)."</td><td colspan='2'>".
            "<span class='b'>".Dropdown::getYesNo($global_result)."</span></td>";
 
       if (isset($output["_ldap_rules"]["rules_entities"])) {
@@ -153,7 +153,7 @@ class RuleRightCollection extends RuleCollection {
       echo "<tr class='tab_bg_2'>";
       switch ($name) {
          case "entity" :
-            echo "<td class='center'>".__('Entity')." </td>\n";
+            echo "<td class='center'>".Entity::getTypeName(1)." </td>\n";
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities", $value)."</td>";
             break;
 

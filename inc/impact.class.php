@@ -1645,7 +1645,7 @@ class Impact extends CommonGLPI {
 
       // Third row: items_id field
       echo "<tr>";
-      echo "<td> <label>" . __('Item') . "</label> </td>";
+      echo "<td> <label>" . _n('Item', 'Items', 1) . "</label> </td>";
       echo "<td>";
       Ajax::updateItemOnSelectEvent("dropdown_type$rand", "form_results",
          $CFG_GLPI["root_doc"] . "/ajax/dropdownTrackingDeviceType.php",

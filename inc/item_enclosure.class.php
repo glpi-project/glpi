@@ -132,7 +132,7 @@ class Item_Enclosure extends CommonDBRelation {
             $header .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
             $header .= "</th>";
          }
-         $header .= "<th>".__('Item')."</th>";
+         $header .= "<th>"._n('Item', 'Items', 1)."</th>";
          $header .= "<th>".__('Position')."</th>";
          $header .= "</tr>";
 
@@ -232,7 +232,7 @@ class Item_Enclosure extends CommonDBRelation {
       //TODO: update orientation according to item model depth
 
       echo "</td>";
-      echo "<td><label for='dropdown_items_id$rand'>".__('Item')."</label></td>";
+      echo "<td><label for='dropdown_items_id$rand'>"._n('Item', 'Items', 1)."</label></td>";
       echo "<td id='items_id'>";
       if (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
          $itemtype = $this->fields['itemtype'];
@@ -256,7 +256,7 @@ class Item_Enclosure extends CommonDBRelation {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_enclosures_id$rand'>".__('Enclosure')."</label></td>";
+      echo "<td><label for='dropdown_enclosures_id$rand'>".Enclosure::getTypeName(1)."</label></td>";
       echo "<td>";
       Enclosure::dropdown(['value' => $this->fields["enclosures_id"], 'rand' => $rand]);
       echo "</td>";

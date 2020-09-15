@@ -1022,11 +1022,11 @@ class Planning extends CommonGLPI {
       echo "<form action='".self::getFormURL()."'>";
       echo __("Actor").": <br>";
 
-      $planning_types = ['user' => __("User")];
+      $planning_types = ['user' => User::getTypeName(1)];
 
       if (Session::haveRightsOr('planning', [self::READGROUP, self::READALL])) {
          $planning_types['group_users'] = __('All users of a group');
-         $planning_types['group']       = __('Group');
+         $planning_types['group']       = Group::getTypeName(1);
       }
 
       $planning_types['external'] = __('External calendar');
@@ -1063,7 +1063,7 @@ class Planning extends CommonGLPI {
             $used[] = $actor[1];
          }
       }
-      echo __("User")." :<br>";
+      echo User::getTypeName(1)." :<br>";
 
       // show only users with right to add planning events
       $rights = ['change', 'problem', 'reminder', 'task', 'projecttask'];
@@ -1109,7 +1109,7 @@ class Planning extends CommonGLPI {
     * @return void
     */
    static function showAddGroupUsersForm() {
-      echo __("Group")." : <br>";
+      echo Group::getTypeName(1)." : <br>";
 
       $condition = ['is_task' => 1];
       // filter groups
@@ -1211,7 +1211,7 @@ class Planning extends CommonGLPI {
          $condition['id'] = $_SESSION['glpigroups'];
       }
 
-      echo __("Group")." : <br>";
+      echo Group::getTypeName(1)." : <br>";
       Group::dropdown([
          'entity'      => $_SESSION['glpiactive_entity'],
          'entity_sons' => $_SESSION['glpiactive_entity_recursive'],

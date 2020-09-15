@@ -60,7 +60,7 @@ class DevicePci extends CommonDevice {
                                                                                     null, false),
                                      'type'  => 'registeredIDChooser'],
                          ['name'  => 'devicepcimodels_id',
-                                     'label' => __('Model'),
+                                     'label' => _n('Model', 'Models', 1),
                                      'type'  => 'dropdownValue']]);
    }
 
@@ -72,7 +72,7 @@ class DevicePci extends CommonDevice {
          'id'                 => '17',
          'table'              => 'glpi_devicepcimodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 

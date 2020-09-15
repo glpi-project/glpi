@@ -116,7 +116,7 @@ class SLM extends CommonDBTM {
             <textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".__('Calendar')."</td>";
+      echo "<tr class='tab_bg_1'><td>"._n('Calendar', 'Calendars', 1)."</td>";
       echo "<td>";
 
       Calendar::dropdown(['value'      => $this->fields["calendars_id"],
@@ -161,7 +161,7 @@ class SLM extends CommonDBTM {
          'id'                 => '4',
          'table'              => 'glpi_calendars',
          'field'              => 'name',
-         'name'               => __('Calendar'),
+         'name'               => _n('Calendar', 'Calendars', 1),
          'datatype'           => 'dropdown'
       ];
 

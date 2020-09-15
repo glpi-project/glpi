@@ -3539,7 +3539,7 @@ class Transfer extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Device', 'Devices', Session::getPluralNumber())."</td><td>";
+      echo "<td>".Peripheral::getTypeName(Session::getPluralNumber())."</td><td>";
       $params['value'] = $this->fields['keep_dc_peripheral'];
       Dropdown::showFromArray('keep_dc_peripheral', $keep, $params);
       echo "</td>";
@@ -3582,7 +3582,7 @@ class Transfer extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Document', 'Documents', Session::getPluralNumber())."</td><td>";
+      echo "<td>".Document::getTypeName(Session::getPluralNumber())."</td><td>";
       $params['value'] = $this->fields['keep_document'];
       Dropdown::showFromArray('keep_document', $keep, $params);
       echo "</td>";

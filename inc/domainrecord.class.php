@@ -155,7 +155,7 @@ class DomainRecord extends CommonDBChild {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
@@ -561,10 +561,10 @@ JAVASCRIPT;
          echo "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand) . "</th>";
       }
 
-      echo "<th>" . __('Type') . "</th>";
+      echo "<th>" . _n('Type', 'Types', 1) . "</th>";
       echo "<th>" . __('Name') . "</th>";
       echo "<th>" . __('TTL') . "</th>";
-      echo "<th>" . __('Target') . "</th>";
+      echo "<th>" . _n('Target', 'Targets', 1) . "</th>";
       echo "</tr>";
 
       while ($data = $iterator->next()) {

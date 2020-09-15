@@ -155,7 +155,7 @@ class ContractCost extends CommonDBChild {
          'id'                 => '14',
          'table'              => $this->getTable(),
          'field'              => 'cost',
-         'name'               => __('Cost'),
+         'name'               => _n('Cost', 'Costs', 1),
          'datatype'           => 'decimal'
       ];
 
@@ -163,7 +163,7 @@ class ContractCost extends CommonDBChild {
          'id'                 => '18',
          'table'              => 'glpi_budgets',
          'field'              => 'name',
-         'name'               => _n('Budget', 'Budgets', 1),
+         'name'               => Budget::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
@@ -171,7 +171,7 @@ class ContractCost extends CommonDBChild {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
       ];
@@ -252,7 +252,7 @@ class ContractCost extends CommonDBChild {
       echo "<input type='hidden' name='contracts_id' value='".$this->fields['contracts_id']."'>";
       Html::autocompletionTextField($this, 'name');
       echo "</td>";
-      echo "<td>".__('Cost')."</td>";
+      echo "<td>"._n('Cost', 'Costs', 1)."</td>";
       echo "<td>";
       echo "<input type='text' name='cost' value='".Html::formatNumber($this->fields["cost"], true)."'
              size='14'>";
@@ -274,7 +274,7 @@ class ContractCost extends CommonDBChild {
       Html::showDateField("end_date", ['value' => $this->fields['end_date']]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".__('Budget')."</td>";
+      echo "<tr class='tab_bg_1'><td>".Budget::getTypeName(1)."</td>";
       echo "<td>";
       Budget::dropdown(['value' => $this->fields["budgets_id"]]);
       echo "</td></tr>";
@@ -338,8 +338,8 @@ class ContractCost extends CommonDBChild {
          echo "<tr><th>".__('Name')."</th>";
          echo "<th>".__('Begin date')."</th>";
          echo "<th>".__('End date')."</th>";
-         echo "<th>".__('Budget')."</th>";
-         echo "<th>".__('Cost')."</th>";
+         echo "<th>".Budget::getTypeName(1)."</th>";
+         echo "<th>"._n('Cost', 'Costs', 1)."</th>";
          echo "</tr>";
 
          Session::initNavigateListItems(__CLASS__,

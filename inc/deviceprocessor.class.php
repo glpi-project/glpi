@@ -62,7 +62,7 @@ class DeviceProcessor extends CommonDevice {
                                      'label' => __('Number of threads'),
                                      'type'  => 'integer'],
                                ['name'  => 'deviceprocessormodels_id',
-                                     'label' => __('Model'),
+                                     'label' => _n('Model', 'Models', 1),
                                      'type'  => 'dropdownValue']
                            ]);
    }
@@ -109,7 +109,7 @@ class DeviceProcessor extends CommonDevice {
          'id'                 => '15',
          'table'              => 'glpi_deviceprocessormodels',
          'field'              => 'name',
-         'name'               => __('Model'),
+         'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -217,7 +217,7 @@ class DeviceProcessor extends CommonDevice {
          'id'                 => '17',
          'table'              => 'glpi_deviceprocessors',
          'field'              => 'designation',
-         'name'               => __('Processor'),
+         'name'               => self::getTypeName(1),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'massiveaction'      => false,

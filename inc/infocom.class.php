@@ -1110,7 +1110,7 @@ class Infocom extends CommonDBChild {
             echo "<tr><th colspan='4'>".__('Financial and administrative information')."</th></tr>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Supplier')."</td>";
+            echo "<td>".Supplier::getTypeName(1)."</td>";
             echo "<td>";
             if ($withtemplate == 2) {
                echo Dropdown::getDropdownName("glpi_suppliers", $ic->fields["suppliers_id"]);
@@ -1121,7 +1121,7 @@ class Infocom extends CommonDBChild {
             }
             echo "</td>";
             if (Budget::canView()) {
-               echo "<td>".__('Budget')."</td><td >";
+               echo "<td>".Budget::getTypeName(1)."</td><td >";
                Budget::dropdown(['value'    => $ic->fields["budgets_id"],
                                       'entity'   => $item->getEntityID(),
                                       'comments' => 1]);
@@ -1228,7 +1228,7 @@ class Infocom extends CommonDBChild {
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Business criticity')."</td><td>";
+            echo "<td>"._n('Business criticity', 'Business criticities', 1)."</td><td>";
             Dropdown::show('BusinessCriticity', ['value' => $ic->fields['businesscriticities_id']]);
             echo "</td>";
             echo "<td colspan='2'>";
@@ -1473,7 +1473,7 @@ class Infocom extends CommonDBChild {
          'table'              => 'glpi_budgets',
          'field'              => 'name',
          'datatype'           => 'dropdown',
-         'name'               => __('Budget'),
+         'name'               => Budget::getTypeName(1),
          'forcegroupby'       => true,
          'joinparams'         => $complexjoinparams
       ];
@@ -1526,7 +1526,7 @@ class Infocom extends CommonDBChild {
          'table'              => 'glpi_suppliers',
          'field'              => 'name',
          'datatype'           => 'dropdown',
-         'name'               => __('Supplier'),
+         'name'               => Supplier::getTypeName(1),
          'forcegroupby'       => true,
          'joinparams'         => $complexjoinparams
       ];
@@ -1610,7 +1610,7 @@ class Infocom extends CommonDBChild {
          'id'                 => '173',
          'table'              => 'glpi_businesscriticities',
          'field'              => 'completename',
-         'name'               => __('Business criticity'),
+         'name'               => _n('Business criticity', 'Business criticities', 1),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'joinparams'         => $complexjoinparams
@@ -1741,7 +1741,7 @@ class Infocom extends CommonDBChild {
          'id'                 => '9',
          'table'              => 'glpi_suppliers',
          'field'              => 'name',
-         'name'               => __('Supplier'),
+         'name'               => Supplier::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
@@ -1828,7 +1828,7 @@ class Infocom extends CommonDBChild {
          'id'                 => '19',
          'table'              => 'glpi_budgets',
          'field'              => 'name',
-         'name'               => __('Budget'),
+         'name'               => Budget::getTypeName(1),
          'datatype'           => 'itemlink'
       ];
 
@@ -1836,7 +1836,7 @@ class Infocom extends CommonDBChild {
          'id'                 => '20',
          'table'              => $this->getTable(),
          'field'              => 'itemtype',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'itemtype',
          'massiveaction'      => false
       ];
@@ -1862,7 +1862,7 @@ class Infocom extends CommonDBChild {
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
-         'name'               => __('Entity'),
+         'name'               => Entity::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
       ];

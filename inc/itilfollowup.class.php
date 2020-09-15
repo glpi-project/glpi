@@ -526,7 +526,7 @@ class ITILFollowup  extends CommonDBChild {
          'id'                 => '2',
          'table'              => 'glpi_requesttypes',
          'field'              => 'name',
-         'name'               => __('Request source'),
+         'name'               => RequestType::getTypeName(1),
          'forcegroupby'       => true,
          'datatype'           => 'dropdown'
       ];
@@ -535,7 +535,7 @@ class ITILFollowup  extends CommonDBChild {
          'id'                 => '3',
          'table'              => $this->getTable(),
          'field'              => 'date',
-         'name'               => __('Date'),
+         'name'               => _n('Date', 'Dates', 1),
          'datatype'           => 'datetime'
       ];
 
@@ -551,7 +551,7 @@ class ITILFollowup  extends CommonDBChild {
          'id'                 => '5',
          'table'              => 'glpi_users',
          'field'              => 'name',
-         'name'               => __('User'),
+         'name'               => User::getTypeName(1),
          'datatype'           => 'dropdown',
          'right'              => 'all'
       ];
@@ -560,7 +560,7 @@ class ITILFollowup  extends CommonDBChild {
          'id'                 => '6',
          'table'              => $this->getTable(),
          'field'              => 'itemtype',
-         'name'               => __('Request source'),
+         'name'               => RequestType::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
@@ -607,7 +607,7 @@ class ITILFollowup  extends CommonDBChild {
          'id'                 => '36',
          'table'              => static::getTable(),
          'field'              => 'date',
-         'name'               => __('Date'),
+         'name'               => _n('Date', 'Dates', 1),
          'datatype'           => 'datetime',
          'massiveaction'      => false,
          'forcegroupby'       => true,
@@ -636,7 +636,7 @@ class ITILFollowup  extends CommonDBChild {
          'id'                 => '29',
          'table'              => 'glpi_requesttypes',
          'field'              => 'name',
-         'name'               => __('Request source'),
+         'name'               => RequestType::getTypeName(1),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'massiveaction'      => false,
@@ -811,7 +811,7 @@ class ITILFollowup  extends CommonDBChild {
                          'rows'              => $rows]);
 
          if ($this->fields["date"]) {
-            echo "</td><td>".__('Date')."</td>";
+            echo "</td><td>"._n('Date', 'Dates', 1)."</td>";
             echo "<td>".Html::convDateTime($this->fields["date"]);
          } else {
 
@@ -831,7 +831,7 @@ class ITILFollowup  extends CommonDBChild {
          echo "<td colspan='4'>";
          echo "<div class='fa-label'>
             <i class='fas fa-reply fa-fw'
-               title='"._n('Followup template', 'Followup templates', 2)."'></i>";
+               title='"._n('Followup template', 'Followup templates', Session::getPluralNumber())."'></i>";
          $this->fields['itilfollowuptemplates_id'] = 0;
          ITILFollowupTemplate::dropdown([
             'value'     => $this->fields['itilfollowuptemplates_id'],
@@ -1028,7 +1028,7 @@ JAVASCRIPT;
       $out = "";
       if (count($iterator)) {
          $out .= "<div class='center'><table class='tab_cadre' width='100%'>\n
-                  <tr><th>".__('Date')."</th><th>".__('Requester')."</th>
+                  <tr><th>"._n('Date', 'Dates', 1)."</th><th>"._n('Requester', 'Requesters', 1)."</th>
                   <th>".__('Description')."</th></tr>\n";
 
          $showuserlink = 0;

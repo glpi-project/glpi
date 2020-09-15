@@ -782,7 +782,7 @@ class AuthLDAP extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Email') . "</td>";
+      echo "<td>" . _n('Email', 'Emails', 1) . "</td>";
       echo "<td><input type='text' name='email1_field' value='".$this->fields["email1_field"]."'>";
       echo "</td>";
       echo "<td>" . sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '2') . "</td>";
@@ -797,7 +797,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<td><input type='text' name='email4_field' value='".$this->fields["email4_field"]."'>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . __('Phone') . "</td>";
+      echo "<tr class='tab_bg_2'><td>" . _x('ldap', 'Phone') . "</td>";
       echo "<td><input type='text' name='phone_field'value='".$this->fields["phone_field"]."'>";
       echo "</td>";
       echo "<td>" .  __('Phone 2') . "</td>";
@@ -821,7 +821,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>" . __('Picture') . "</td>";
       echo "<td><input type='text' name='picture_field' value='".
                  $this->fields["picture_field"]."'></td>";
-      echo "<td>" . __('Location') . "</td>";
+      echo "<td>" . Location::getTypeName(1) . "</td>";
       echo "<td><input type='text' name='location_field' value='".$this->fields["location_field"]."'>";
       echo "</td></tr>";
 
@@ -925,7 +925,7 @@ class AuthLDAP extends CommonDBTM {
          'id'                 => '4',
          'table'              => $this->getTable(),
          'field'              => 'port',
-         'name'               => __('Port'),
+         'name'               => _n('Port', 'Ports', 1),
          'datatype'           => 'integer'
       ];
 
@@ -985,7 +985,7 @@ class AuthLDAP extends CommonDBTM {
          'id'                 => '11',
          'table'              => $this->getTable(),
          'field'              => 'phone_field',
-         'name'               => __('Phone'),
+         'name'               =>  _x('ldap', 'Phone'),
          'massiveaction'      => false,
          'datatype'           => 'string'
       ];
@@ -1038,7 +1038,7 @@ class AuthLDAP extends CommonDBTM {
          'id'                 => '17',
          'table'              => $this->getTable(),
          'field'              => 'email1_field',
-         'name'               => __('Email'),
+         'name'               => _n('Email', 'Emails', 1),
          'massiveaction'      => false,
          'datatype'           => 'string'
       ];
@@ -1557,7 +1557,7 @@ class AuthLDAP extends CommonDBTM {
                                            $_SERVER['PHP_SELF'].
                                                "?order=".($values['order']=="DESC"?"ASC":"DESC"));
             }
-            echo Search::showHeaderItem(Search::HTML_OUTPUT, _n('User', 'Users', Session::getPluralNumber()), $num,
+            echo Search::showHeaderItem(Search::HTML_OUTPUT, User::getTypeName(Session::getPluralNumber()), $num,
                                         $_SERVER['PHP_SELF'].
                                             "?order=".($values['order']=="DESC"?"ASC":"DESC"));
             echo "<th>".__('Last update in the LDAP directory')."</th>";
@@ -1606,7 +1606,7 @@ class AuthLDAP extends CommonDBTM {
                                            $_SERVER['PHP_SELF'].
                                                "?order=".($values['order']=="DESC"?"ASC":"DESC"));
             }
-            echo Search::showHeaderItem(Search::HTML_OUTPUT, _n('User', 'Users', Session::getPluralNumber()), $num,
+            echo Search::showHeaderItem(Search::HTML_OUTPUT, User::getTypeName(Session::getPluralNumber()), $num,
                                         $_SERVER['PHP_SELF'].
                                                 "?order=".($values['order']=="DESC"?"ASC":"DESC"));
             echo "<th>".__('Last update in the LDAP directory')."</th>";
@@ -2021,7 +2021,7 @@ class AuthLDAP extends CommonDBTM {
             Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_item']]);
             echo "</th>";
             $header_num = 0;
-            echo Search::showHeaderItem(Search::HTML_OUTPUT, __('Group'), $header_num,
+            echo Search::showHeaderItem(Search::HTML_OUTPUT, Group::getTypeName(1), $header_num,
                                         $target."?order=".($order=="DESC"?"ASC":"DESC"),
                                         1, $order);
             echo "<th>".__('Group DN')."</th>";
@@ -3269,7 +3269,7 @@ class AuthLDAP extends CommonDBTM {
                $field_counter = 0;
                $fields        = ['login_field'     => __('Login'),
                                  'sync_field'      => __('Synchronization field') . ' (' . $authldap->fields['sync_field'] . ')',
-                                 'email1_field'    => __('Email'),
+                                 'email1_field'    => _n('Email', 'Emails', 1),
                                  'email2_field'    => sprintf(__('%1$s %2$s'),
                                                               _n('Email', 'Emails', 1), '2'),
                                  'email3_field'    => sprintf(__('%1$s %2$s'),
@@ -3278,7 +3278,7 @@ class AuthLDAP extends CommonDBTM {
                                                               _n('Email', 'Emails', 1), '4'),
                                  'realname_field'  => __('Surname'),
                                  'firstname_field' => __('First name'),
-                                 'phone_field'     => __('Phone'),
+                                 'phone_field'     => _x('ldap', 'Phone'),
                                  'phone2_field'    => __('Phone 2'),
                                  'mobile_field'    => __('Mobile phone'),
                                  'title_field'     => _x('person', 'Title'),
@@ -3623,10 +3623,10 @@ class AuthLDAP extends CommonDBTM {
           && $item->can($item->getField('id'), READ)) {
          $ong     = [];
          $ong[1]  = _sx('button', 'Test');                     // test connexion
-         $ong[2]  = _n('User', 'Users', Session::getPluralNumber());
-         $ong[3]  = _n('Group', 'Groups', Session::getPluralNumber());
+         $ong[2]  = User::getTypeName(Session::getPluralNumber());
+         $ong[3]  = Group::getTypeName(Session::getPluralNumber());
          // TODO clean fields entity_XXX if not used
-         // $ong[4]  = __('Entity');                  // params for entity config
+         // $ong[4]  = Entity::getTypeName(1);                  // params for entity config
          $ong[5]  = __('Advanced information');   // params for entity advanced config
          $ong[6]  = _n('Replicate', 'Replicates', Session::getPluralNumber());
 
