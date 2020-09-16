@@ -79,7 +79,7 @@ class TicketSatisfaction extends CommonDBTM {
 
       // you can't change if your answer > 12h
       if (!is_null($this->fields['date_answered'])
-          && ((strtotime("now") - strtotime($this->fields['date_answered'])) > (12*HOUR_TIMESTAMP))) {
+          && ((time() - strtotime($this->fields['date_answered'])) > (12 * HOUR_TIMESTAMP))) {
          return false;
       }
 

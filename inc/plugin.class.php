@@ -1223,7 +1223,7 @@ class Plugin extends CommonDBTM {
       $blacklist = ['device_types'];
       foreach ($all_types as $att) {
          if (!in_array($att, $blacklist) && isset($attrib[$att]) && $attrib[$att]) {
-            array_push($CFG_GLPI[$att], $itemtype);
+            $CFG_GLPI[$att][] = $itemtype;
             unset($attrib[$att]);
          }
       }
@@ -1232,7 +1232,7 @@ class Plugin extends CommonDBTM {
           && method_exists($itemtype, 'getItem_DeviceType')) {
 
          if (class_exists($itemtype::getItem_DeviceType())) {
-            array_push($CFG_GLPI['device_types'], $itemtype);
+            $CFG_GLPI['device_types'][] = $itemtype;
          }
          unset($attrib[$att]);
       }

@@ -1692,7 +1692,8 @@ class Dropdown {
       }
 
       if ($params['addfirstminutes']) {
-         for ($i=MINUTE_TIMESTAMP; $i<max($params['min'], 10*MINUTE_TIMESTAMP); $i+=MINUTE_TIMESTAMP) {
+         $max = max($params['min'], 10*MINUTE_TIMESTAMP);
+         for ($i=MINUTE_TIMESTAMP; $i < $max; $i+=MINUTE_TIMESTAMP) {
             $values[$i] = '';
          }
       }
@@ -2501,16 +2502,20 @@ class Dropdown {
          // Empty search text : display first
          if ($post['page'] == 1 && empty($post['searchText'])) {
             if ($post['display_emptychoice']) {
-               array_push($datas, ['id'   => 0,
-                                 'text' => $post['emptylabel']]);
+               $datas[] = [
+                  'id' => 0,
+                  'text' => $post['emptylabel']
+               ];
             }
          }
 
          if ($post['page'] == 1) {
             if (count($toadd)) {
                foreach ($toadd as $key => $val) {
-                  array_push($datas, ['id'   => $key,
-                                    'text' => stripslashes($val)]);
+                  $datas[] = [
+                     'id' => $key,
+                     'text' => stripslashes($val)
+                  ];
                }
             }
          }
@@ -2539,10 +2544,10 @@ class Dropdown {
                   if (!$firstitem) {
                      if ($prev >= 0) {
                         if (count($datastoadd)) {
-                           array_push($datas,
-                                    ['text'     => Dropdown::getDropdownName("glpi_entities",
-                                                                                    $prev),
-                                          'children' => $datastoadd]);
+                           $datas[] = [
+                              'text' => Dropdown::getDropdownName("glpi_entities", $prev),
+                              'children' => $datastoadd
+                           ];
                         }
                      }
                   }
@@ -2618,7 +2623,7 @@ class Dropdown {
                                     || ($last_level_displayed[$work_level] != $work_parentID)));
                         // Add parents
                         foreach ($parent_datas as $val) {
-                           array_push($datastoadd, $val);
+                           $datastoadd[] = $val;
                         }
                      }
                   }
@@ -2648,11 +2653,13 @@ class Dropdown {
                      }
                      $title = sprintf(__('%1$s - %2$s'), $title, $addcomment);
                   }
-                  array_push($datastoadd, ['id'             => $ID,
-                                             'text'           => $outputval,
-                                             'level'          => (int)$level,
-                                             'title'          => $title,
-                                             'selection_text' => $selection_text]);
+                  $datastoadd[] = [
+                     'id' => $ID,
+                     'text' => $outputval,
+                     'level' => (int)$level,
+                     'title' => $title,
+                     'selection_text' => $selection_text
+                  ];
                   $count++;
                }
                $firstitem = false;
@@ -2665,8 +2672,10 @@ class Dropdown {
                if ($prev == $firstitem_entity) {
                   $datas = array_merge($datas, $datastoadd);
                } else {
-                  array_push($datas, ['text'     => Dropdown::getDropdownName("glpi_entities", $prev),
-                                          'children' => $datastoadd]);
+                  $datas[] = [
+                     'text' => Dropdown::getDropdownName("glpi_entities", $prev),
+                     'children' => $datastoadd
+                  ];
                }
             }
          } else {
@@ -2884,15 +2893,19 @@ class Dropdown {
          // Display first if no search
          if ($post['page'] == 1 && empty($post['searchText'])) {
             if (!isset($post['display_emptychoice']) || $post['display_emptychoice']) {
-               array_push($datas, ['id'    => 0,
-                                 'text'  => $post["emptylabel"]]);
+               $datas[] = [
+                  'id' => 0,
+                  'text' => $post["emptylabel"]
+               ];
             }
          }
          if ($post['page'] == 1) {
             if (count($toadd)) {
                foreach ($toadd as $key => $val) {
-                  array_push($datas, ['id'    => $key,
-                                    'text'  => stripslashes($val)]);
+                  $datas[] = [
+                     'id' => $key,
+                     'text' => stripslashes($val)
+                  ];
                }
             }
          }
@@ -2907,10 +2920,10 @@ class Dropdown {
                   && ($data["entities_id"] != $prev)) {
                   if ($prev >= 0) {
                      if (count($datastoadd)) {
-                        array_push($datas,
-                                 ['text'     => Dropdown::getDropdownName("glpi_entities",
-                                                                                 $prev),
-                                       'children' => $datastoadd]);
+                        $datas[] = [
+                           'text' => Dropdown::getDropdownName("glpi_entities", $prev),
+                           'children' => $datastoadd
+                        ];
                      }
                   }
                   $prev       = $data["entities_id"];
@@ -2961,16 +2974,19 @@ class Dropdown {
                      }
                   }
                }
-               array_push($datastoadd, ['id'    => $ID,
-                                             'text'  => $outputval,
-                                             'title' => $title]);
+               $datastoadd[] = [
+                  'id' => $ID,
+                  'text' => $outputval,
+                  'title' => $title
+               ];
                $count++;
             }
             if ($multi) {
                if (count($datastoadd)) {
-                  array_push($datas, ['text'     => Dropdown::getDropdownName("glpi_entities",
-                                                                                 $prev),
-                                          'children' => $datastoadd]);
+                  $datas[] = [
+                     'text' => Dropdown::getDropdownName("glpi_entities", $prev),
+                     'children' => $datastoadd
+                  ];
                }
             } else {
                if (count($datastoadd)) {
@@ -3123,12 +3139,10 @@ class Dropdown {
       $results = [];
       // Display first if no search
       if (empty($post['searchText'])) {
-         array_push(
-            $results, [
-               'id'   => 0,
-               'text' => Dropdown::EMPTY_VALUE
-            ]
-         );
+         $results[] = [
+            'id' => 0,
+            'text' => Dropdown::EMPTY_VALUE
+         ];
       }
       if (count($iterator)) {
          $prev       = -1;
@@ -3137,12 +3151,10 @@ class Dropdown {
          while ($data = $iterator->next()) {
             if ($multi && ($data["entities_id"] != $prev)) {
                if (count($datatoadd)) {
-                  array_push(
-                     $results, [
-                        'text'      => Dropdown::getDropdownName("glpi_entities", $prev),
-                        'children'  => $datatoadd
-                     ]
-                  );
+                  $results[] = [
+                     'text' => Dropdown::getDropdownName("glpi_entities", $prev),
+                     'children' => $datatoadd
+                  ];
                }
                $prev = $data["entities_id"];
                // Reset last level displayed :
@@ -3161,18 +3173,18 @@ class Dropdown {
             if (!empty($data['otherserial'])) {
                $output = sprintf(__('%1$s - %2$s'), $output, $data["otherserial"]);
             }
-            array_push($datatoadd, ['id'    => $ID,
-                                          'text'  => $output]);
+            $datatoadd[] = [
+               'id' => $ID,
+               'text' => $output
+            ];
          }
 
          if ($multi) {
             if (count($datatoadd)) {
-               array_push(
-                  $results, [
-                     'text'      => Dropdown::getDropdownName("glpi_entities", $prev),
-                     'children'  => $datatoadd
-                  ]
-               );
+               $results[] = [
+                  'text' => Dropdown::getDropdownName("glpi_entities", $prev),
+                  'children' => $datatoadd
+               ];
             }
          } else {
             if (count($datatoadd)) {
@@ -3285,8 +3297,10 @@ class Dropdown {
 
       // Display first if no search
       if ($post['page'] == 1 && empty($post['searchText'])) {
-         array_push($results, ['id'   => 0,
-                                 'text' => Dropdown::EMPTY_VALUE]);
+         $results[] = [
+            'id' => 0,
+            'text' => Dropdown::EMPTY_VALUE
+         ];
       }
       $count = 0;
       if (count($iterator)) {
@@ -3308,12 +3322,10 @@ class Dropdown {
                $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
             }
 
-            array_push(
-               $results, [
-                  'id'   => $data['id'],
-                  'text' => $output
-               ]
-            );
+            $results[] = [
+               'id' => $data['id'],
+               'text' => $output
+            ];
             $count++;
          }
       }
@@ -3431,12 +3443,10 @@ class Dropdown {
       // Display first if no search
       if (empty($post['searchText'])) {
          if ($post['page'] == 1) {
-            array_push(
-               $results, [
-                  'id'   => 0,
-                  'text' => Dropdown::EMPTY_VALUE
-               ]
-            );
+            $results[] = [
+               'id' => 0,
+               'text' => Dropdown::EMPTY_VALUE
+            ];
          }
       }
 
@@ -3456,13 +3466,11 @@ class Dropdown {
                $output = sprintf(__('%1$s (%2$s)'), $output, $loc);
             }
 
-            array_push(
-               $results, [
-                  'id'    => $ID,
-                  'text'  => $output,
-                  'title' => $title
-               ]
-            );
+            $results[] = [
+               'id' => $ID,
+               'text' => $output,
+               'title' => $title
+            ];
             $count++;
          }
       }
@@ -3512,8 +3520,8 @@ class Dropdown {
       if ($post['page'] == 1) {
          if (count($toadd)) {
             foreach ($toadd as $key => $val) {
-               array_push($data, ['id'   => $key,
-                                 'text' => strval(stripslashes($val))]);
+               $data[] = ['id' => $key,
+                  'text' => (string)stripslashes($val)];
             }
          }
       }
@@ -3549,8 +3557,8 @@ class Dropdown {
             if (isset($post['unit'])) {
                $txt = Dropdown::getValueWithUnit($i, $post['unit']);
             }
-            array_push($data, ['id'   => $i,
-                              'text' => strval($txt)]);
+            $data[] = ['id' => $i,
+               'text' => (string)$txt];
             $count++;
          }
 
@@ -3566,8 +3574,10 @@ class Dropdown {
             if (isset($post['unit'])) {
                $txt = Dropdown::getValueWithUnit($value, $post['unit']);
             }
-            array_push($data, ['id'   => $value,
-                              'text' => strval(stripslashes($txt))]);
+            $data[] = [
+               'id' => $value,
+               'text' => (string)stripslashes($txt)
+            ];
             $count++;
          }
       }
@@ -3650,19 +3660,15 @@ class Dropdown {
       // Display first if empty search
       if ($post['page'] == 1 && empty($post['searchText'])) {
          if ($post['all'] == 0) {
-            array_push(
-               $results, [
-                  'id'   => 0,
-                  'text' => Dropdown::EMPTY_VALUE
-               ]
-            );
+            $results[] = [
+               'id' => 0,
+               'text' => Dropdown::EMPTY_VALUE
+            ];
          } else if ($post['all'] == 1) {
-            array_push(
-               $results, [
-                  'id'   => 0,
-                  'text' => __('All')
-               ]
-            );
+            $results[] = [
+               'id' => 0,
+               'text' => __('All')
+            ];
          }
       }
 
@@ -3670,13 +3676,11 @@ class Dropdown {
          foreach ($users as $ID => $output) {
             $title = sprintf(__('%1$s - %2$s'), $output, $logins[$ID]);
 
-            array_push(
-               $results, [
-                  'id'    => $ID,
-                  'text'  => $output,
-                  'title' => $title
-               ]
-            );
+            $results[] = [
+               'id' => $ID,
+               'text' => $output,
+               'title' => $title
+            ];
             $count++;
          }
       }

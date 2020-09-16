@@ -977,4 +977,15 @@ class Toolbox extends \GLPITestCase {
    public function testIsValidWebUrl($url, $result) {
       $this->boolean(\Toolbox::isValidWebUrl($url))->isIdenticalTo((bool)$result, $url);
    }
+
+   public function testDeprecated() {
+      $this->when(
+         function () {
+            \Toolbox::deprecated('Calling this function is deprecated');
+         }
+      )->error()
+         ->withType(E_USER_DEPRECATED)
+         ->withMessage('Calling this function is deprecated')
+         ->exists();
+   }
 }

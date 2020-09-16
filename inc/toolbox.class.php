@@ -249,7 +249,8 @@ class Toolbox {
       }
 
       $result = '';
-      for ($i=0; $i<strlen($string); $i++) {
+      $strlen = strlen($string);
+      for ($i=0; $i < $strlen; $i++) {
          $char    = substr($string, $i, 1);
          $keychar = substr($key, ($i % strlen($key))-1, 1);
          $char    = chr(ord($char)+ord($keychar));
@@ -627,17 +628,7 @@ class Toolbox {
     * @return void
     */
    static function deprecated($message = "Called method is deprecated") {
-      try {
-         self::log(null, Logger::NOTICE, [$message]);
-      } finally {
-         if (defined('TU_USER')) {
-            if (isCommandLine()) {
-               echo self::backtrace(null);
-            } else {
-               self::backtrace();
-            }
-         }
-      }
+      trigger_error($message, E_USER_DEPRECATED);
    }
 
 
