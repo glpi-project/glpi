@@ -124,7 +124,8 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                'glpi_manufacturers.name AS manufacturer',
                'glpi_softwares.manufacturers_id AS manufacturers_id',
                'glpi_softwares.entities_id AS entities_id',
-               'glpi_softwares.is_helpdesk_visible AS helpdesk'
+               'glpi_softwares.is_helpdesk_visible AS helpdesk',
+               'glpi_softwares.softwarecategories_id AS softwarecategories_id',
             ],
             'DISTINCT'        => true,
             'FROM'            => 'glpi_softwares',
@@ -179,7 +180,9 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                 || (isset($res_rule['is_helpdesk_visible'])
                     && ($res_rule['is_helpdesk_visible'] != $input['helpdesk']))
                 || (isset($res_rule['manufacturer'])
-                    && ($res_rule['manufacturer'] != $input['manufacturer']))) {
+                    && ($res_rule['manufacturer'] != $input['manufacturer']))
+                || (isset($res_rule['softwarecategories_id'])
+                    && ($res_rule['softwarecategories_id'] != $input['softwarecategories_id']))) {
 
                $IDs = [];
                //Find all the softwares in the database with the same name and manufacturer
