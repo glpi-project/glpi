@@ -885,7 +885,9 @@ class Rule extends CommonDBTM {
          }
       }
       if ($canedit) {
-         echo "<input type='hidden' name='ranking' value='".$this->fields["ranking"]."'>";
+         if (!$this->isNewID($ID)) {
+            echo "<input type='hidden' name='ranking' value='".$this->fields["ranking"]."'>";
+         }
          echo "<input type='hidden' name='sub_type' value='".get_class($this)."'>";
       }
       echo "</td></tr>\n";
