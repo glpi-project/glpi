@@ -6487,14 +6487,14 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $objType = static::getType();
 
-      echo "<li><a href='#' class='far fa-comment pointer' data-type='ITILFollowup' title='"._sn('Followup', 'Followups, 1').
+      echo "<li><a href='#' class='far fa-comment pointer' data-type='ITILFollowup' title='"._sn('Followup', 'Followups', 1).
          "'><span class='sr-only'>" . _n('Followup', 'Followups', 1) . "</span></a></li>";
       echo "<li><a href='#' class='far fa-check-square pointer' data-type='ITILTask' title='"._sn('Task', 'Tasks', 1).
          "'><span class='sr-only'>" . _n('Task', 'Tasks', 1) . "</span></a></li>";
-      echo "<li><a href='#' class='fa fa-paperclip pointer' data-type='Document_Item' title='".__sn('Document', 'Documents', 1).
+      echo "<li><a href='#' class='fa fa-paperclip pointer' data-type='Document_Item' title='"._sn('Document', 'Documents', 1).
          "'><span class='sr-only'>" . Document::getTypeName(1) . "</span></a></li>";
       if (($objType === "Ticket") or ($objType === "Change")) {
-         echo "<li><a href='#' class='far fa-thumbs-up pointer' data-type='ITILValidation' title='"._sn('Validation', 'Validations, 1').
+         echo "<li><a href='#' class='far fa-thumbs-up pointer' data-type='ITILValidation' title='"._sn('Validation', 'Validations', 1).
             "'><span class='sr-only'>" . _n('Validation', 'Validations', 1) . "</span></a></li>";
       }
       echo "<li><a href='#' class='fa fa-check pointer' data-type='Solution' title='"._sn('Solution', 'Solutions', 1).
