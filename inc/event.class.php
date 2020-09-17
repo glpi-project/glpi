@@ -34,6 +34,8 @@ namespace Glpi;
 
 use \Ajax;
 use \CommonDBTM;
+use CronTask;
+use Document;
 use \Html;
 use \Session;
 use \Toolbox;

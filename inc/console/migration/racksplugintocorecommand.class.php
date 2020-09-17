@@ -59,6 +59,7 @@ use State;
 use Toolbox;
 use Glpi\Console\AbstractCommand;
 use PassiveDCEquipment;
+use PassiveDCEquipmentModel;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;

@@ -54,7 +54,7 @@ class NetworkEquipment extends CommonDBTM {
    public function getCloneRelations() :array {
       return [
          Item_OperatingSystem::class,
-         Item_devices::class,
+         Item_Devices::class,
          Infocom::class,
          NetworkPort::class,
          Contract_Item::class,
