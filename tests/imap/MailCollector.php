@@ -330,6 +330,7 @@ class MailCollector extends DbTestCase {
                'тест2',
                'Inlined image with no Content-Disposition',
                'This is a mail without subject.', // No subject = name is set using ticket contents
+               'Image tag splitted on multiple lines',
             ]
          ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -344,7 +345,7 @@ class MailCollector extends DbTestCase {
 
       foreach ($actors_specs as $actor_specs) {
          $iterator = $DB->request([
-            'SELECT' => ['t.id', 't.name', 'tu.users_id'],
+            'SELECT' => ['t.id', 't.name', 't.content', 'tu.users_id'],
             'FROM'   => \Ticket::getTable() . " AS t",
             'INNER JOIN'   => [
                \Ticket_User::getTable() . " AS tu"  => [
@@ -365,6 +366,7 @@ class MailCollector extends DbTestCase {
          $names = [];
          while ($data = $iterator->next()) {
             $names[] = $data['name'];
+            $this->string($data['content'])->notContains('cid:'); // check that image were correctly imported
          }
 
          $this->array($names)->isIdenticalTo($actor_specs['tickets_names']);
@@ -376,6 +378,7 @@ class MailCollector extends DbTestCase {
          '01-Screenshot-2018-4-12 Observatoire - France très haut débit.png',
          '01-test.JPG',
          '15-image001.png',
+         '18-blank.gif',
       ];
 
       $iterator = $DB->request(
@@ -399,12 +402,12 @@ class MailCollector extends DbTestCase {
          ]
       );
 
-      $this->integer(count($iterator))->isIdenticalTo(count($expected_docs));
-
       $filenames = [];
       while ($data = $iterator->next()) {
          $filenames[] = $data['filename'];
       }
       $this->array($filenames)->isIdenticalTo($expected_docs);
+
+      $this->integer(count($iterator))->isIdenticalTo(count($expected_docs));
    }
 }
