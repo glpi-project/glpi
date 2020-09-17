@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-use League\Csv\Writer;
+use League\Csv\Writer as Csv_Writer;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -306,12 +306,12 @@ class Log extends CommonDBTM {
       $header .= "<th>"._x('name', 'Update')."</th>";
       $header .= "<th class='log-toolbar'>";
       if (isset($_GET['filters'])) {
-         $header .= "<i class='fas fa-filter log-toolbar-item show_log_filters active'></i>";
+         $header .= "<i title='".__('Show filters')."' class='fas fa-filter log-toolbar-item show_log_filters active'></i>";
       } else {
-         $header .= "<i class='fas fa-filter log-toolbar-item show_log_filters'></i>";
+         $header .= "<i title='".__('Show filters')."' class='fas fa-filter log-toolbar-item show_log_filters'></i>";
       }
       $header .= "<a href='$href'>";
-      $header .= "<i class='fas fa-file-download log-toolbar-item'></i>";
+      $header .= "<i title='".__('Export to CSV')."' class='fas fa-file-download log-toolbar-item'></i>";
       $header .= "</a>";
       $header .= "</th>";
       $header .= "</tr>";
@@ -1309,7 +1309,7 @@ class Log extends CommonDBTM {
     *
     * @return League\Csv\Writer
     */
-   public static function exportToCsv(CommonDBTM $item, array $filter): Writer {
+   public static function exportToCsv(CommonDBTM $item, array $filter): Csv_Writer {
       // Get logs from DB
       $filter = self::convertFiltersValuesToSqlCriteria($filter);
       $logs = self::getHistoryData($item, 0, 0, $filter);
@@ -1322,7 +1322,7 @@ class Log extends CommonDBTM {
       }, $logs);
 
       // Init file
-      $csv = Writer::createFromString('');
+      $csv = Csv_Writer::createFromString('');
 
       // Insert header
       $csv->insertOne([
