@@ -256,6 +256,8 @@ class Log extends CommonDBTM {
 
    **/
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
+      global $CFG_GLPI;
+
       $itemtype = $item->getType();
       $items_id = $item->getField('id');
 
@@ -283,7 +285,7 @@ class Log extends CommonDBTM {
       }
 
       // CSV export link
-      $href = "../front/log/export.php?" . http_build_query([
+      $href = $CFG_GLPI['root_doc'] . "/front/log/export.php?" . http_build_query([
          'filter'   => $_GET['filters'] ?? [],
          'itemtype' => $item::getType(),
          'id'       => $item->getId()
