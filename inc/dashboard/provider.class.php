@@ -688,7 +688,7 @@ class Provider extends \CommonGLPI {
       ];
       $params = array_merge($default_params, $params);
 
-      $statuses = \ticket::getAllStatusArray();
+      $statuses = \Ticket::getAllStatusArray();
 
       $t_table = \Ticket::getTable();
       $iterator = $DB->request([

@@ -58,7 +58,7 @@ class Computer extends CommonDBTM {
    public function getCloneRelations() :array {
       return [
          Item_OperatingSystem::class,
-         Item_devices::class,
+         Item_Devices::class,
          Infocom::class,
          Item_Disk::class,
          Item_SoftwareVersion::class,
@@ -468,7 +468,7 @@ class Computer extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_autoupdatesystems_id$randDropdown'>".AutoupdateSystem::getTypeName(1)."</label></td>";
+      echo "<td><label for='dropdown_autoupdatesystems_id$randDropdown'>".AutoUpdateSystem::getTypeName(1)."</label></td>";
       echo "<td >";
       AutoUpdateSystem::dropdown(['value' => $this->fields["autoupdatesystems_id"], 'rand' => $randDropdown]);
       echo "</td></tr>";
@@ -573,7 +573,7 @@ class Computer extends CommonDBTM {
          'id'                 => '42',
          'table'              => 'glpi_autoupdatesystems',
          'field'              => 'name',
-         'name'               => AutoupdateSystem::getTypeName(1),
+         'name'               => AutoUpdateSystem::getTypeName(1),
          'datatype'           => 'dropdown'
       ];
 
