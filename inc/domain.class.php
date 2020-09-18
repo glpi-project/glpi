@@ -194,6 +194,14 @@ class Domain extends CommonDropdown {
       ];
 
       $tab[] = [
+         'id'                 => '31',
+         'table'              => $this->getTable(),
+         'field'              => 'is_active',
+         'name'               => __('Active'),
+         'datatype'           => 'bool'
+      ];
+
+      $tab[] = [
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
