@@ -60,7 +60,6 @@ use RackType;
 use State;
 use Symfony\Component\Console\Exception\LogicException;
 use Symfony\Component\Console\Exception\RuntimeException;
-use PassiveDCEquipmentModel;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
