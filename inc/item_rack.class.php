@@ -898,7 +898,7 @@ JAVASCRIPT;
             $icon = "fas fa-server";
             break;
          case "Reserved":
-            $icon = "fa-lock";
+            $icon = "fas fa-lock";
             break;
 
          default:
