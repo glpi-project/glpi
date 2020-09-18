@@ -247,12 +247,12 @@ class Plugin extends CommonDBTM {
    private function unload($plugin_key) {
       global $LOADED_PLUGINS;
 
-      if (isset(self::$activated_plugins[$plugin_key])) {
-         unset(self::$activated_plugins[$plugin_key]);
+      if (($key = array_search($plugin_key, self::$activated_plugins)) !== false) {
+         unset(self::$activated_plugins[$key]);
       }
 
-      if (isset(self::$loaded_plugins[$plugin_key])) {
-         unset(self::$loaded_plugins[$plugin_key]);
+      if (($key = array_search($plugin_key, self::$loaded_plugins)) !== false) {
+         unset(self::$loaded_plugins[$key]);
       }
 
       if (isset($LOADED_PLUGINS[$plugin_key])) {
