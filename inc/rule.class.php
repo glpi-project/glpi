@@ -885,7 +885,9 @@ class Rule extends CommonDBTM {
          }
       }
       if ($canedit) {
-         echo "<input type='hidden' name='ranking' value='".$this->fields["ranking"]."'>";
+         if (!$this->isNewID($ID)) {
+            echo "<input type='hidden' name='ranking' value='".$this->fields["ranking"]."'>";
+         }
          echo "<input type='hidden' name='sub_type' value='".get_class($this)."'>";
       }
       echo "</td></tr>\n";
@@ -1921,6 +1923,23 @@ class Rule extends CommonDBTM {
       //If no uuid given, generate a new one
       if (!isset($input['uuid'])) {
          $input["uuid"] = self::getUuid();
+      }
+
+      if ($this->getType() == 'Rule' && !isset($input['sub_type'])) {
+          \Toolbox::logError('Sub type not specified creating a new rule');
+          return false;
+      }
+
+      if (!isset($input['sub_type'])) {
+         $input['sub_type'] = $this->getType();
+      } else if ($this->getType() != 'Rule' && $input['sub_type'] != $this->getType()) {
+         \Toolbox::logWarning(
+            sprintf(
+               'Creating a %s rule with %s subtype.',
+               $this->getType(),
+               $input['sub_type']
+            )
+         );
       }
 
       return $input;

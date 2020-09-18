@@ -52,7 +52,7 @@ class Monitor extends CommonDBTM {
    public function getCloneRelations() :array {
       return [
          Item_OperatingSystem::class,
-         Item_devices::class,
+         Item_Devices::class,
          Infocom::class,
          Contract_Item::class,
          Document_Item::class,

@@ -482,7 +482,7 @@ class Ajax {
 
                // remove scroll event bind, select2 bind it on parent with scrollbars (the tab currently)
                // as the select2 disapear with this tab reload, remove the event to prevent issues (infinite scroll to top)
-               $('#tabs$rand .ui-tabs-panel[aria-expanded=true]').unbind('scroll');
+               $('#tabs$rand .ui-tabs-panel[aria-hidden=false]').unbind('scroll');
 
                // Save tab
                var currenthref = $('#tabs$rand ul>li a').eq(current_index).attr('href');

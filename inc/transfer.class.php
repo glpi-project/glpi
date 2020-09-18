@@ -414,16 +414,15 @@ class Transfer extends CommonDBTM {
          foreach ($CFG_GLPI['software_types'] as $itemtype) {
             $itemtable = getTableForItemType($itemtype);
             // Clean DB
-            $DB->delete('glpi_items_softwareversions', ["{$itemtable}.id"  => null], [
+            $DB->delete('glpi_items_softwareversions', [
+               "{$itemtable}.id"  => null,
+               'glpi_items_softwareversions.itemtype' => $itemtype
+            ], [
                'LEFT JOIN' => [
                   $itemtable  => [
                      'ON' => [
                         'glpi_items_softwareversions' => 'items_id',
-                        $itemtable                    => 'id', [
-                           'AND' => [
-                              'glpi_items_softwareversions.itemtype' => $itemtype
-                           ]
-                        ]
+                        $itemtable                    => 'id'
                      ]
                   ]
                ]

@@ -335,7 +335,7 @@ class Lock {
       $params = [
          'glpi_ipaddresses.is_dynamic' => 1,
          'glpi_ipaddresses.is_deleted' => 1,
-         'glpi_ipaddresses.itemtype'   => 'Networkname',
+         'glpi_ipaddresses.itemtype'   => 'NetworkName',
          'glpi_ipaddresses.items_id'   => new QueryExpression($DB->quoteName('glpi_networknames.id')),
          'glpi_networknames.itemtype'  => 'NetworkPort',
          'glpi_networknames.items_id'  => new QueryExpression($DB->quoteName('glpi_networkports.id')),
@@ -616,7 +616,7 @@ class Lock {
                            'Printer'                => Printer::getTypeName(Session::getPluralNumber()),
                            'SoftwareVersion'        => SoftwareVersion::getTypeName(Session::getPluralNumber()),
                            'NetworkPort'            => NetworkPort::getTypeName(Session::getPluralNumber()),
-                           'NetworkName'            => Networkname::getTypeName(Session::getPluralNumber()),
+                           'NetworkName'            => NetworkName::getTypeName(Session::getPluralNumber()),
                            'IPAddress'              => IPAddress::getTypeName(Session::getPluralNumber()),
                            'Item_Disk'              => Item_Disk::getTypeName(Session::getPluralNumber()),
                            'Device'                 => _n('Component', 'Components', Session::getPluralNumber()),

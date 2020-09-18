@@ -561,23 +561,23 @@ $CFG_GLPI["default_impact_asset_types"] = [
  * added in GLPI configuration
  */
 $CFG_GLPI["impact_asset_types"] = $CFG_GLPI["default_impact_asset_types"] + [
-   Authldap::getType()           => "pics/impact/authldap.png",
+   AuthLDAP::getType()           => "pics/impact/authldap.png",
    CartridgeItem::getType()      => "pics/impact/cartridgeitem.png",
    Contract::getType()           => "pics/impact/contract.png",
-   Crontask::getType()           => "pics/impact/crontask.png",
+   CronTask::getType()           => "pics/impact/crontask.png",
    DeviceSimcard::getType()      => "pics/impact/devicesimcard.png",
    Entity::getType()             => "pics/impact/entity.png",
    Group::getType()              => "pics/impact/group.png",
    ITILCategory::getType()       => "pics/impact/itilcategory.png",
    Line::getType()               => "pics/impact/line.png",
    Location::getType()           => "pics/impact/location.png",
-   Mailcollector::getType()      => "pics/impact/mailcollector.png",
+   MailCollector::getType()      => "pics/impact/mailcollector.png",
    Notification::getType()       => "pics/impact/notification.png",
    Profile::getType()            => "pics/impact/profile.png",
    Project::getType()            => "pics/impact/project.png",
    Rack::getType()               => "pics/impact/rack.png",
    SLM::getType()                => "pics/impact/slm.png",
-   Softwarelicense::getType()    => "pics/impact/softwarelicense.png",
+   SoftwareLicense::getType()    => "pics/impact/softwarelicense.png",
    Supplier::getType()           => "pics/impact/supplier.png",
    User::getType()               => "pics/impact/user.png",
 ];
