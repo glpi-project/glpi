@@ -6913,6 +6913,12 @@ div.objectlockmessage > .form-group-checkbox {
                         float: right;
                         cursor: pointer;
                      }
+                     .kanban-item-title .fas {
+                        float: none;
+                        &:last-of-type {
+                           margin-right: 5px;
+                        }
+                     }
                      padding: 5px 10px 0;
                      color: black;
                      font-size: 1.1em;

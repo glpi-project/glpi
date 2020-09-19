@@ -2367,7 +2367,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       $supported_itemtypes = [];
       if (Project::canCreate()) {
          $supported_itemtypes['Project'] = [
-            'name' => Project::getTypeName(1),
+            'name'   => Project::getTypeName(1),
+            'icon'   => Project::getIcon(),
             'fields' => [
                'projects_id'  => [
                   'type'   => 'hidden',
@@ -2398,7 +2399,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
 
       if (ProjectTask::canCreate()) {
          $supported_itemtypes['ProjectTask'] = [
-            'name' => ProjectTask::getTypeName(1),
+            'name'   => ProjectTask::getTypeName(1),
+            'icon'   => ProjectTask::getIcon(),
             'fields' => [
                'projects_id'  => [
                   'type'   => 'hidden',

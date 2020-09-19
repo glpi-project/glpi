@@ -71,6 +71,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
       return _n('Project task', 'Project tasks', $nb);
    }
 
+   public static function getIcon()
+   {
+      return 'fas fa-tasks';
+   }
+
 
    static function canPurge() {
       return static::canChild('canUpdate');

@@ -1518,7 +1518,11 @@
          const formID = "form_add_" + itemtype + "_" + uniqueID;
          let add_form = "<form id='" + formID + "' class='kanban-add-form kanban-form no-track'>";
          let form_header = "<div class='kanban-item-header'>";
-         form_header += "<span class='kanban-item-title'>"+self.supported_itemtypes[itemtype]['name']+"</span>";
+         form_header += `
+            <span class='kanban-item-title'>
+               <i class="${self.supported_itemtypes[itemtype]['icon']}"></i>
+               ${self.supported_itemtypes[itemtype]['name']}
+            </span>`;
          form_header += "<i class='fas fa-times' title='Close' onclick='$(this).parent().parent().remove()'></i></div>";
          add_form += form_header;
 
@@ -1577,7 +1581,10 @@
 
          add_form += `
             <div class='kanban-item-header'>
-                <span class='kanban-item-title'>${self.supported_itemtypes[itemtype]['name']}</span>
+                <span class='kanban-item-title'>
+                   <i class="${self.supported_itemtypes[itemtype]['icon']}"></i>
+                   ${self.supported_itemtypes[itemtype]['name']}
+                </span>
                 <i class='fas fa-times' title='Close' onclick='$(this).parent().parent().remove()'></i>
                 <div>
                     <span class="kanban-item-subtitle">${__("One item per line")}</span>
@@ -1863,12 +1870,16 @@
             }
          }
 
+         const itemtype = card['id'].split('-')[0];
          const col_body = $(column_el).find('.kanban-body').first();
          const readonly = card['_readonly'] !== undefined && (card['_readonly'] === true || card['_readonly'] === 1);
          let card_el = `
             <li id="${card['id']}" class="kanban-item ${readonly ? 'readonly' : ''} ${card['is_deleted'] ? 'deleted' : ''}">
                 <div class="kanban-item-header">
-                    <span class="kanban-item-title" title="${card['title_tooltip']}">${card['title']}</span>
+                    <span class="kanban-item-title" title="${card['title_tooltip']}">
+                    <i class="${self.supported_itemtypes[itemtype]['icon']}"></i>
+                        ${card['title']}
+                    </span>
                     <i class="kanban-item-overflow-actions fas fa-ellipsis-h pointer"></i>
                 </div>
                 <div class="kanban-item-content">${(card['content'] || '')}</div>
