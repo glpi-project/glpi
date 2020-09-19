@@ -319,9 +319,12 @@
          let card_overflow_dropdown = "<ul id='kanban-item-overflow-dropdown' class='kanban-dropdown' style='display: none'>";
          if (self.allow_delete_item) {
             card_overflow_dropdown += `
+                <li class='kanban-item-goto'>
+                    <i class="fas fa-share"></i>${__('Go to')}
+                </li>
                 <li class='kanban-item-remove'>
                     <i class="fas fa-trash-alt"></i>${__('Delete')}
-                 </li>`;
+                </li>`;
          }
          card_overflow_dropdown += '</ul>';
          kanban_container.append(card_overflow_dropdown);
@@ -617,6 +620,14 @@
             const column = $(e.target.closest('.kanban-dropdown')).data('trigger-button').closest('.kanban-column');
             // Hide that column
             hideColumn(getColumnIDFromElement(column));
+         });
+         $(self.element + ' .kanban-container').on('click', '.kanban-item-goto', function(e) {
+            // Get root dropdown, then the button that triggered it, and finally the card that the button is in
+            const card = $(e.target.closest('.kanban-dropdown')).data('trigger-button').closest('.kanban-item');
+            const form_link = card.data('form_link');
+            if (form_link !== undefined) {
+               window.location.href = form_link;
+            }
          });
          $(self.element + ' .kanban-container').on('click', '.kanban-item-remove', function(e) {
             // Get root dropdown, then the button that triggered it, and finally the card that the button is in
@@ -1895,7 +1906,7 @@
             }
          }
          card_el += "</div></li>";
-         $(card_el).appendTo(col_body);
+         $(card_el).appendTo(col_body).data('form_link', card['_form_link'] || undefined);
          self.updateColumnCount(column_el);
       };
 

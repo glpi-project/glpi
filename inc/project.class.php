@@ -2327,6 +2327,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          $card['content'] = $content;
          $card['_team'] = $item['_team'];
          $card['_readonly'] = $item['_readonly'];
+         $card['_form_link'] = $itemtype::getFormUrlWithID($item['id']);
          $columns[$item['projectstates_id']]['items'][] = $card;
       }
 
