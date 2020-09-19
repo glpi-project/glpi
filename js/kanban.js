@@ -29,6 +29,101 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * Kanban rights structure
+ * @since x.x.x
+ */
+class GLPIKanbanRights {
+   constructor(rights) {
+      /**
+       * If true, then a button will be added to each column to allow new items to be added.
+       * When an item is added, a request is made via AJAX to create the item in the DB.
+       * Permissions are re-checked server-side during this request.
+       * Users will still be limited by the {@link create_card_limited_columns} right both client-side and server-side.
+       * @since 9.5.0
+       * @since x.x.x Moved to new rights class
+       * @type {boolean}
+       */
+      this.create_item = rights['create_item'] || false;
+
+      /**
+       * If true, then a button will be added to each card to allow deleting them and the underlying item directly from the kanban.
+       * When a card is deleted, a request is made via AJAX to create the item in the DB.
+       * Permissions are re-checked server-side during this request.
+       * @since x.x.x
+       * @type {boolean}
+       */
+      this.delete_item = rights['delete_item'] || false;
+
+      /**
+       * If true, then a button will be added to the add column form that lets the user create a new column.
+       * For Projects as an example, it would create a new project state.
+       * Permissions are re-checked server-side during this request.
+       * @since 9.5.0
+       * @since x.x.x Moved to new rights class
+       * @type {boolean}
+       */
+      this.create_column = rights['create_column'] || false;
+
+      /**
+       * Global permission for being able to modify the Kanban state/view.
+       * This includes the order of cards in the columns.
+       * @since 9.5.0
+       * @since x.x.x Moved to new rights class
+       * @type {boolean}
+       */
+      this.modify_view = rights['modify_view'] || false;
+
+      /**
+       * Limits the columns that the user can add cards to.
+       * By default, it is empty which allows cards to be added to all columns.
+       * If you don't want the user to add cards to any column, {@link allow_add_item} should be false.
+       * @since 9.5.0
+       * @since x.x.x Moved to new rights class
+       * @type {Array}
+       */
+      this.create_card_limited_columns = rights['create_card_limited_columns'] || [];
+
+      /**
+       * Global right for ordering cards.
+       * @since 9.5.0
+       * @since x.x.x Moved to new rights class
+       * @type {boolean}
+       */
+      this.order_card = rights['order_card'] || false;
+   }
+
+   /** @see this.create_item */
+   canCreateItem() {
+      return this.create_item;
+   }
+
+   /** @see this.delete_item */
+   canDeleteItem() {
+      return this.delete_item;
+   }
+
+   /** @see this.create_column */
+   canCreateColumn() {
+      return this.create_column;
+   }
+
+   /** @see this.modify_view */
+   canModifyView() {
+      return this.modify_view;
+   }
+
+   /** @see this.order_card */
+   canOrderCard() {
+      return this.order_card;
+   }
+
+   /** @see this.create_card_limited_columns */
+   getAllowedColumnsForNewCards() {
+      return this.create_card_limited_columns;
+   }
+}
+
 (function(){
    window.GLPIKanban = function() {
       /**
@@ -97,55 +192,22 @@
       this.supported_itemtypes = {};
 
       /**
-       * If true, then a button will be added to each column to allow new items to be added.
-       * When an item is added, a request is made via AJAX to create the item in the DB.
-       * Permissions are re-checked server-side during this request.
-       * Users will still be limited by {@link limit_addcard_columns} both client-side and server-side.
-       * @since 9.5.0
-       * @type {boolean}
+       * User rights object
+       * @type {GLPIKanbanRights}
        */
+      this.rights = new GLPIKanbanRights({});
+
+      /** @deprecated x.x.x Use rights.canCreateItem() instead */
       this.allow_add_item = false;
-
-      /**
-       * If true, then a button will be added to each card to allow deleting them and the underlying item directly from the kanban.
-       * When a card is deleted, a request is made via AJAX to create the item in the DB.
-       * Permissions are re-checked server-side during this request.
-       * @since x.x.x
-       * @type {boolean}
-       */
+      /** @deprecated x.x.x Use rights.canDeleteItem() instead */
       this.allow_delete_item = false;
-
-      /**
-       * If true, then a button will be added to the add column form that lets the user create a new column.
-       * For Projects as an example, it would create a new project state.
-       * Permissions are re-checked server-side during this request.
-       * @since 9.5.0
-       * @type {boolean}
-       */
+      /** @deprecated x.x.x Use rights.canCreateColumn() instead */
       this.allow_create_column = false;
-
-      /**
-       * Global permission for being able to modify the Kanban state/view.
-       * This includes the order of cards in the columns.
-       * @since 9.5.0
-       * @type {boolean}
-       */
+      /** @deprecated x.x.x Use rights.canModifyView() instead */
       this.allow_modify_view = false;
-
-      /**
-       * Limits the columns that the user can add cards to.
-       * By default, it is empty which allows cards to be added to all columns.
-       * If you don't want the user to add cards to any column, {@link allow_add_item} should be false.
-       * @since 9.5.0
-       * @type {Array}
-       */
+      /** @deprecated x.x.x Use rights.getAllowedColumnsForNewCards() instead */
       this.limit_addcard_columns = [];
-
-      /**
-       * Global right for ordering cards.
-       * @since 9.5.0
-       * @type {boolean}
-       */
+      /** @deprecated x.x.x Use rights.canOrderCard() instead */
       this.allow_order_card = false;
 
       /**
@@ -275,6 +337,19 @@
                }
             }
          }
+         // Set rights
+         if (args[0]['rights'] !== undefined) {
+            self.rights = new GLPIKanbanRights(args[0]['rights']);
+         } else {
+            // 9.5.0 style compatibility
+            self.rights = new GLPIKanbanRights({
+               create_item: self.allow_add_item,
+               delete_item: self.allow_delete_item,
+               create_column: self.allow_create_column,
+               modify_view: self.allow_modify_view,
+               create_card_limited_columns: self.limit_addcard_columns
+            });
+         }
          if (self.filters._text === undefined) {
             self.filters._text = '';
          }
@@ -308,7 +383,7 @@
          add_itemtype_bulk_dropdown += '</ul>';
          const add_itemtype_bulk_link = '<a href="#">' + '<i class="fas fa-list"></i>' + __('Bulk add') + '</a>';
          column_overflow_dropdown += '<li class="dropdown-trigger">' + add_itemtype_bulk_link + add_itemtype_bulk_dropdown + '</li>';
-         if (self.allow_modify_view) {
+         if (self.rights.canModifyView()) {
             column_overflow_dropdown += "<li class='kanban-remove' data-forbid-protected='true'>"  + '<i class="fas fa-trash-alt"></i>' + __('Delete') + "</li>";
             //}
          }
@@ -317,7 +392,7 @@
 
          // Dropdown for overflow (Card)
          let card_overflow_dropdown = "<ul id='kanban-item-overflow-dropdown' class='kanban-dropdown' style='display: none'>";
-         if (self.allow_delete_item) {
+         if (self.rights.canDeleteItem()) {
             card_overflow_dropdown += `
                 <li class='kanban-item-goto'>
                     <i class="fas fa-share"></i>${__('Go to')}
@@ -351,9 +426,9 @@
          };
          self.refresh(on_refresh, null, null, true);
 
-         if (self.allow_modify_view) {
+         if (self.rights.canModifyView()) {
             buildAddColumnForm();
-            if (self.allow_create_column) {
+            if (self.rights.canCreateColumn()) {
                buildCreateColumnForm();
             }
          }
@@ -363,7 +438,7 @@
          let toolbar = $("<div class='kanban-toolbar'></div>").appendTo(self.element);
          $("<select name='kanban-board-switcher'></select>").appendTo(toolbar);
          let filter_input = $("<input name='filter' type='text' placeholder='" + __('Search or filter results') + "'/>").appendTo(toolbar);
-         if (self.allow_modify_view) {
+         if (self.rights.canModifyView()) {
             let add_column = "<input type='button' class='kanban-add-column submit' value='" + __('Add column') + "'/>";
             toolbar.append(add_column);
          }
@@ -521,13 +596,13 @@
                   display: 'none'
                });
             }
-            if (self.allow_modify_view) {
+            if (self.rights.canModifyView()) {
                if (!$.contains($(self.add_column_form)[0], e.target)) {
                   $(self.add_column_form).css({
                      display: 'none'
                   });
                }
-               if (self.allow_create_column) {
+               if (self.rights.canCreateColumn()) {
                   if (!$.contains($(self.create_column_form)[0], e.target) && !$.contains($(self.add_column_form)[0], e.target)) {
                      $(self.create_column_form).css({
                         display: 'none'
@@ -599,13 +674,13 @@
                   display: 'none'
                });
             }
-            if (self.allow_modify_view) {
+            if (self.rights.canModifyView()) {
                if (!$.contains($(self.add_column_form)[0], e.target)) {
                   $(self.add_column_form).css({
                      display: 'none'
                   });
                }
-               if (self.allow_create_column) {
+               if (self.rights.canCreateColumn()) {
                   if (!$.contains($(self.create_column_form)[0], e.target) && !$.contains($(self.add_column_form)[0], e.target)) {
                      $(self.create_column_form).css({
                         display: 'none'
@@ -932,7 +1007,7 @@
             }
          });
 
-         if (self.allow_modify_view) {
+         if (self.rights.canModifyView()) {
             // Enable column sorting
             $(self.element + ' .kanban-columns').sortable({
                connectWith: self.element + ' .kanban-columns',
@@ -959,7 +1034,7 @@
       const getColumnToolbarElement = function(column) {
          let toolbar_el = "<span class='kanban-column-toolbar'>";
          const column_id = parseInt(getColumnIDFromElement(column['id']));
-         if (self.allow_add_item && (self.limit_addcard_columns.length === 0 || self.limit_addcard_columns.includes(column_id))) {
+         if (self.rights.canCreateItem() && (self.rights.getAllowedColumnsForNewCards().length === 0 || self.rights.getAllowedColumnsForNewCards().includes(column_id))) {
             toolbar_el += "<i id='kanban_add_" + column['id'] + "' class='kanban-add pointer fas fa-plus' title='" + __('Add') + "'></i>";
             toolbar_el += "<i id='kanban_column_overflow_actions_" + column['id'] +"' class='kanban-column-overflow-actions pointer fas fa-ellipsis-h' title='" + __('More') + "'></i>";
          }
@@ -1664,7 +1739,7 @@
                     </div>
                     <div class='kanban-item-content'></div>
          `;
-         if (self.allow_create_column) {
+         if (self.rights.canCreateColumn()) {
             add_form += `
                <hr>${__('Or add a new status')}
                <input type='button' class='submit kanban-create-column' value="${__('Create status')}"/>
@@ -1830,7 +1905,7 @@
          const count = column['items'] !== undefined ? column['items'].length : 0;
          const column_left = $("<span class=''></span>").appendTo(column_content);
          const column_right = $("<span class=''></span>").appendTo(column_content);
-         if (self.allow_modify_view) {
+         if (self.rights.canModifyView()) {
             $(column_left).append("<i class='fas fa-caret-right fa-lg kanban-collapse-column pointer' title='" + __('Toggle collapse') + "'/>");
          }
          $(column_left).append("<span class='kanban-column-title "+header_text_class+"' style='background-color: "+column['header_color']+";'>" + column['name'] + "</span></span>");

@@ -2452,24 +2452,22 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
 
       echo "<div id='kanban' class='kanban'></div>";
       $darkmode = ($_SESSION['glpipalette'] === 'darker') ? 'true' : 'false';
-      $canadd_item = json_encode(self::canCreate() || ProjectTask::canCreate());
-      $candel_item = json_encode(self::canDelete() || ProjectTask::canDelete());
       $canmodify_view = json_encode(($ID == 0 || $project->canModifyGlobalState()));
-      $cancreate_column = json_encode((bool)ProjectState::canCreate());
-      $limit_addcard_columns = $canmodify_view !== 'false' ? '[]' : json_encode([0]);
-      $can_order_item = json_encode((bool)$project->canOrderKanbanCard($ID));
+      $rights = json_encode([
+         'create_item'                    => self::canCreate() || ProjectTask::canCreate(),
+         'delete_item'                    => self::canDelete() || ProjectTask::canDelete(),
+         'create_column'                  => (bool)ProjectState::canCreate(),
+         'modify_view'                    => $ID == 0 || $project->canModifyGlobalState(),
+         'order_card'                     => (bool)$project->canOrderKanbanCard($ID),
+         'create_card_limited_columns'    => $canmodify_view ? [] : [0]
+      ]);
 
       $js = <<<JAVASCRIPT
          $(function(){
             // Create Kanban
             var kanban = new GLPIKanban({
                element: "#kanban",
-               allow_add_item: $canadd_item,
-               allow_delete_item: $candel_item,
-               allow_modify_view: $canmodify_view,
-               allow_create_column: $cancreate_column,
-               limit_addcard_columns: $limit_addcard_columns,
-               allow_order_card: $can_order_item,
+               rights: $rights,
                supported_itemtypes: $supported_itemtypes,
                dark_theme: {$darkmode},
                max_team_images: 3,
