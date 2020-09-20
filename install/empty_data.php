@@ -175,6 +175,7 @@ $default_prefs = [
    'urgency_mask'                            => '62',
    'impact_mask'                             => '62',
    'user_deleted_ldap'                       => '0',
+   'user_restored_ldap'                      => '0',
    'auto_create_infocoms'                    => '0',
    'use_slave_for_search'                    => '0',
    'proxy_passwd'                            => '',

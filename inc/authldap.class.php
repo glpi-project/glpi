@@ -2537,12 +2537,14 @@ class AuthLDAP extends CommonDBTM {
                      //In case user id as changed : get id by dn (Used to check if restoration is needed)
                      $tmp_users_id = User::getIdByfield('user_dn', $user_dn);
                   }
-                  $tmp_user = new User();
-                  $tmp_user->getFromDB($tmp_users_id);
-                  if ($tmp_user->fields['is_deleted_ldap']) {
-                     User::manageRestoredUserInLdap($tmp_users_id);
-                     return ['action' => self::USER_RESTORED_LDAP,
-                        'id'     => $tmp_users_id];
+                  if ($tmp_users_id) {
+                     $tmp_user = new User();
+                     $tmp_user->getFromDB($tmp_users_id);
+                     if ($tmp_user->fields['is_deleted_ldap']) {
+                        User::manageRestoredUserInLdap($tmp_users_id);
+                        return ['action' => self::USER_RESTORED_LDAP,
+                           'id' => $tmp_users_id];
+                     }
                   }
 
                   // Add the auth method
