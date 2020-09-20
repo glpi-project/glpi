@@ -121,23 +121,44 @@ class SynchronizeUsersCommand extends AbstractCommand {
          )
       );
 
-      $strategies = AuthLDAP::getLdapDeletedUserActionOptions();
+      $deleted_strategies = AuthLDAP::getLdapDeletedUserActionOptions();
       $description = sprintf(
          __('Force strategy used for deleted users (current configured action: "%s")'),
-         (isset($CFG_GLPI['user_deleted_ldap']) ? $CFG_GLPI['user_deleted_ldap'] : __('unknown'))
+         ($CFG_GLPI['user_deleted_ldap'] ?? __('unknown'))
       );
       $description .= "\n" . __('Possible values are:') . "\n";
       $description .= implode(
          "\n",
          array_map(
             function ($key, $value) { return '- ' . sprintf(__('%1$s: %2$s'), $key, $value); },
-            array_keys($strategies),
-            $strategies
+            array_keys($deleted_strategies),
+            $deleted_strategies
          )
       );
       $this->addOption(
          'deleted-user-strategy',
          'd',
+         InputOption::VALUE_OPTIONAL,
+         $description
+      );
+
+      $restored_strategies = AuthLDAP::getLdapRestoredUserActionOptions();
+      $description = sprintf(
+         __('Force strategy used for restored users (current configured action: "%s")'),
+         ($CFG_GLPI['user_restored_ldap'] ?? __('unknown'))
+      );
+      $description .= "\n" . __('Possible values are:') . "\n";
+      $description .= implode(
+         "\n",
+         array_map(
+            function ($key, $value) { return '- ' . sprintf(__('%1$s: %2$s'), $key, $value); },
+            array_keys($restored_strategies),
+            $restored_strategies
+         )
+      );
+      $this->addOption(
+         'restored-user-strategy',
+         'r',
          InputOption::VALUE_OPTIONAL,
          $description
       );
@@ -169,6 +190,10 @@ class SynchronizeUsersCommand extends AbstractCommand {
          $deleted_user_strategy = $input->getOption('deleted-user-strategy');
          if (null !== $deleted_user_strategy) {
             $CFG_GLPI['user_deleted_ldap'] = $deleted_user_strategy;
+         }
+         $restored_user_strategy = $input->getOption('restored-user-strategy');
+         if (null !== $restored_user_strategy) {
+            $CFG_GLPI['user_restored_ldap'] = $restored_user_strategy;
          }
       }
 
@@ -258,9 +283,10 @@ class SynchronizeUsersCommand extends AbstractCommand {
 
          foreach ($actions as $action) {
             $results = [
-               AuthLDAP::USER_IMPORTED     => 0,
-               AuthLDAP::USER_SYNCHRONIZED => 0,
-               AuthLDAP::USER_DELETED_LDAP => 0,
+               AuthLDAP::USER_IMPORTED       => 0,
+               AuthLDAP::USER_SYNCHRONIZED   => 0,
+               AuthLDAP::USER_DELETED_LDAP   => 0,
+               AuthLDAP::USER_RESTORED_LDAP  => 0,
             ];
             $limitexceeded = false;
 
@@ -392,6 +418,7 @@ class SynchronizeUsersCommand extends AbstractCommand {
                   __('Imported'),
                   __('Synchronized'),
                   __('Deleted from LDAP'),
+                  __('Restored from LDAP'),
                ]
             );
             $result_output->addRow(
@@ -400,6 +427,7 @@ class SynchronizeUsersCommand extends AbstractCommand {
                   $results[AuthLDAP::USER_IMPORTED],
                   $results[AuthLDAP::USER_SYNCHRONIZED],
                   $results[AuthLDAP::USER_DELETED_LDAP],
+                  $results[AuthLDAP::USER_RESTORED_LDAP],
                ]
             );
             $result_output->render();
