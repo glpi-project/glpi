@@ -352,7 +352,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
             ],
          ],
          'WHERE'     => [
-            'softwareversions_id'   => $softwares_id
+            'softwares_id' => $softwares_id
          ]
       ]);
 
