@@ -759,12 +759,14 @@ class Log extends DbTestCase {
       // Switch to locale
       $_SESSION["glpilanguage"] = Session::loadLanguage($locale);
 
-      // Run test
+      // Get filename with locale
       $filename = \Log::getExportName($item);
-      $this->string($filename)->isEqualTo($expected);
 
       // Reset locale
       $_SESSION["glpilanguage"] = Session::loadLanguage('en_GB');
+
+      // Run test
+      $this->string($filename)->isEqualTo($expected);
    }
 
    protected function testExportToCsvProvider() {
