@@ -1139,15 +1139,13 @@ function getUuidV4() {
 /** Track input changes and warn the user of unsaved changes if they try to navigate away */
 window.glpiUnsavedFormChanges = false;
 $(document).ready(function() {
-   // Try to limit tracking to item forms by binding to inputs under glpi_tabs only.
    // Forms must have the data-track-changes attribute set to true.
    // Form fields may have their data-track-changes attribute set to empty (false) to override the tracking on that input.
-   var glpiTabs = $('#page .glpi_tabs');
-   glpiTabs.on('input', 'form[data-track-changes="true"] input:not([data-track-changes=""]),' +
+   $(document).on('input', 'form[data-track-changes="true"] input:not([data-track-changes=""]),' +
       'form[data-track-changes="true"] textarea:not([data-track-changes="false"])', function() {
       window.glpiUnsavedFormChanges = true;
    });
-   glpiTabs.on('change', 'form[data-track-changes="true"] select:not([data-track-changes=""])', function() {
+   $(document).on('change', 'form[data-track-changes="true"] select:not([data-track-changes=""])', function() {
       window.glpiUnsavedFormChanges = true;
    });
    $(window).on('beforeunload', function(e) {
@@ -1158,7 +1156,7 @@ $(document).ready(function() {
       }
    });
 
-   glpiTabs.on('submit', 'form', function() {
+   $(document).on('submit', 'form', function() {
       window.glpiUnsavedFormChanges = false;
    });
 });
