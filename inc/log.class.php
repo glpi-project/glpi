@@ -30,9 +30,12 @@
  * ---------------------------------------------------------------------
  */
 
+use League\Csv\Writer as Csv_Writer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
+
 
 /**
  * Log Class
@@ -253,6 +256,8 @@ class Log extends CommonDBTM {
 
    **/
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
+      global $CFG_GLPI;
+
       $itemtype = $item->getType();
       $items_id = $item->getField('id');
 
@@ -279,6 +284,13 @@ class Log extends CommonDBTM {
          return;
       }
 
+      // CSV export link
+      $href = $CFG_GLPI['root_doc'] . "/front/log/export.php?" . http_build_query([
+         'filter'   => $_GET['filters'] ?? [],
+         'itemtype' => $item::getType(),
+         'id'       => $item->getId()
+      ]);
+
       // Display the pager
       $additional_params = isset($_GET['filters']) ? http_build_query(['filters' => $_GET['filters']]) : '';
       Html::printAjaxPager(self::getTypeName(1), $start, $filtered_number, '', true, $additional_params);
@@ -294,6 +306,16 @@ class Log extends CommonDBTM {
       $header .= "<th>"._n('Field', 'Fields', 1)."</th>";
       //TRANS: a noun, modification, change
       $header .= "<th>"._x('name', 'Update')."</th>";
+      $header .= "<th class='log-toolbar'>";
+      if (isset($_GET['filters'])) {
+         $header .= "<i title='".__('Show filters')."' class='fas fa-filter log-toolbar-item show_log_filters active'></i>";
+      } else {
+         $header .= "<i title='".__('Show filters')."' class='fas fa-filter log-toolbar-item show_log_filters'></i>";
+      }
+      $header .= "<a href='$href'>";
+      $header .= "<i title='".__('Export to CSV')."' class='fas fa-file-download log-toolbar-item'></i>";
+      $header .= "</a>";
+      $header .= "</th>";
       $header .= "</tr>";
 
       echo "<thead>";
@@ -330,7 +352,7 @@ class Log extends CommonDBTM {
             ]
          );
          echo "</th>";
-         echo "<th>";
+         echo "<th colspan='2'>";
          Dropdown::showFromArray(
             "filters[linked_actions]",
             Log::getDistinctLinkedActionValuesInItemLog($item),
@@ -341,12 +363,6 @@ class Log extends CommonDBTM {
                'width'               => "100%",
             ]
          );
-         echo "</th>";
-         echo "</tr>";
-      } else {
-         echo "<tr>";
-         echo "<th colspan='5'>";
-         echo "<a href='#' class='show_log_filters'>" . __('Show filters') . " <span class='fa fa-filter pointer'></span></a>";
          echo "</th>";
          echo "</tr>";
       }
@@ -364,13 +380,13 @@ class Log extends CommonDBTM {
                echo "<td class='tab_date'>".$data['date_mod']."</td>";
                echo "<td>".$data['user_name']."</td>";
                echo "<td>".$data['field']."</td>";
-               echo "<td width='60%'>".$data['change']."</td>";
+               echo "<td width='60%' colspan='2'>".$data['change']."</td>";
                echo "</tr>";
             }
          }
       } else {
          echo "<tr>";
-         echo "<th colspan='5'>" . __('No historical matching your filters') . "</th>";
+         echo "<th colspan='6'>" . __('No historical matching your filters') . "</th>";
          echo "</tr>";
       }
       echo "</tbody>";
@@ -1262,7 +1278,6 @@ class Log extends CommonDBTM {
       $_SESSION['glpi_maxhistory'] = $this->fields['id'];
    }
 
-
    /**
     * @since 0.85
     *
@@ -1273,5 +1288,58 @@ class Log extends CommonDBTM {
       $values = [ READ => __('Read')];
       return $values;
    }
+
+   /**
+    * Build export filename for a given item
+    * Format: {translated_itemtype}_{id}_{date}.csv
+    *
+    * @param CommonDBTM $item
+    *
+    * @return string
+    */
+   public static function getExportName(CommonDBTM $item): string {
+      $date = date('Y_m_d', time());
+      return "{$item::getTypeName(1)}_{$item->getId()}_$date.csv";
+   }
+
+   /**
+    * Export specified item logs to CSV.
+    * Logs may be filtered
+    *
+    * @param CommonDBTM $item
+    * @param array      $filter
+    *
+    * @return League\Csv\Writer
+    */
+   public static function exportToCsv(CommonDBTM $item, array $filter): Csv_Writer {
+      // Get logs from DB
+      $filter = self::convertFiltersValuesToSqlCriteria($filter);
+      $logs = self::getHistoryData($item, 0, 0, $filter);
+
+      // Remove uneeded rows
+      $logs = array_map(function($log) {
+         unset($log['display_history']);
+         unset($log['datatype']);
+         return $log;
+      }, $logs);
+
+      // Init file
+      $csv = Csv_Writer::createFromString('');
+
+      // Insert header
+      $csv->insertOne([
+         __('ID'),
+         _n('Date', 'Dates', 1),
+         User::getTypeName(1),
+         _n('Field', 'Fields', 1),
+         _x('name', 'Update'),
+      ]);
+
+      // Insert logs
+      $csv->insertAll($logs);
+
+      return $csv;
+   }
+
 
 }

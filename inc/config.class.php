@@ -2081,6 +2081,8 @@ class Config extends CommonDBTM {
                  'check'   => 'Psr\\Log\\LoggerInterface' ],
                [ 'name'    => 'psr/simple-cache',
                  'check'   => 'Psr\\SimpleCache\\CacheInterface' ],
+               [ 'name'    => 'league/csv',
+                 'check'   => 'League\\Csv\\Writer' ],
                [ 'name'    => 'mexitek/phpcolors',
                  'check'   => 'Mexitek\\PHPColors\\Color' ],
                [ 'name'    => 'guzzlehttp/guzzle',

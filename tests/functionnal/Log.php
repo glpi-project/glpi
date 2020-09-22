@@ -32,7 +32,12 @@
 
 namespace tests\units;
 
+use CommonDBTM;
+use Computer;
 use DbTestCase;
+use League\Csv\Reader;
+use League\Csv\Statement;
+use Session;
 
 /* Test for inc/log.class.php */
 
@@ -716,5 +721,130 @@ class Log extends DbTestCase {
     */
    public function testConvertFiltersValuesToSqlCriteria($filters_values, $expected_result) {
       $this->array(\Log::convertFiltersValuesToSqlCriteria($filters_values))->isIdenticalTo($expected_result);
+   }
+
+   protected function testGetExportNameProvider() {
+      $date = date('Y_m_d', time());
+      $computer = new Computer();
+      $id = $computer->add([
+         'name'        => 'testGetExportName',
+         'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+      ]);
+
+      $this->integer($id)->isGreaterThan(0);
+      $this->boolean($computer->getFromDB($id))->isTrue();
+
+      return [
+         [
+            'item'     => $computer,
+            'locale'   => "en_GB",
+            'expected' => "Computer_{$id}_{$date}.csv"
+         ],
+         [
+            'item'     => $computer,
+            'locale'   => "fr_FR",
+            'expected' => "Ordinateur_{$id}_{$date}.csv"
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider testGetExportNameProvider
+    */
+   public function testGetExportName(
+      CommonDBTM $item,
+      string $locale,
+      string $expected
+   ) {
+      // Switch to locale
+      $_SESSION["glpilanguage"] = Session::loadLanguage($locale);
+
+      // Get filename with locale
+      $filename = \Log::getExportName($item);
+
+      // Reset locale
+      $_SESSION["glpilanguage"] = Session::loadLanguage('en_GB');
+
+      // Run test
+      $this->string($filename)->isEqualTo($expected);
+   }
+
+   protected function testExportToCsvProvider() {
+      $computer = new Computer();
+      $id = $computer->add([
+         'name'        => 'testExportToCsv 1',
+         'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+      ]);
+
+      $this->integer($id)->isGreaterThan(0);
+      $this->boolean($computer->getFromDB($id))->isTrue();
+
+      // Multiple updates
+      $this->boolean(
+         $computer->update([
+            'id'   => $id,
+            'name' => 'testExportToCsv 2'
+         ])
+      )->isTrue();
+
+      $this->boolean(
+         $computer->update([
+            'id'   => $id,
+            'name' => 'testExportToCsv 3'
+         ])
+      )->isTrue();
+
+      $this->boolean(
+         $computer->update([
+            'id'   => $id,
+            'name' => 'testExportToCsv 4'
+         ])
+      )->isTrue();
+
+      $this->boolean(
+         $computer->update([
+            'id'   => $id,
+            'name' => 'testExportToCsv 5'
+         ])
+      )->isTrue();
+
+      return [
+         [
+            'item'          => $computer,
+            'filter'        => [],
+            'expected_rows' => 6 // All lines
+         ],
+         [
+            'item'          => $computer,
+            'filter'        => ['linked_actions' => [\Log::HISTORY_CREATE_ITEM]],
+            'expected_rows' => 2 // Creation + header
+         ],
+         [
+            'item'          => $computer,
+            'filter'        => ['linked_actions' => [0]],
+            'expected_rows' => 5 // All but creation
+         ],
+         [
+            'item'          => $computer,
+            'filter'        => ['affected_fields' => ["id_search_option::1"]],
+            'expected_rows' => 5 // Updates on name + header
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider testExportToCsvProvider
+    */
+   public function testExportToCsv(
+      CommonDBTM $item,
+      array $filter,
+      int $expected_rows
+   ) {
+      // Get CSV and convert it to a result set
+      $csv = \Log::exportToCsv($item, $filter)->getContent();
+      $results = (new Statement())->process(Reader::createFromString($csv));
+
+      // Test if the number of rows in the results set match the expected one
+      $this->integer(count($results))->isEqualTo($expected_rows);
    }
 }
