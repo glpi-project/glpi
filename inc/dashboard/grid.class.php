@@ -368,6 +368,7 @@ HTML;
 
       $ajax_cards = GLPI_AJAX_DASHBOARD;
       $context    = self::$context;
+      $cache_key  = sha1($_SESSION['glpiactiveentities_string '] ?? "");
 
       $js = <<<JAVASCRIPT
       $(function () {
@@ -379,9 +380,10 @@ HTML;
             rand:        '{$rand}',
             embed:       {$embed_str},
             ajax_cards:  {$ajax_cards},
-            all_cards:   $cards_json,
-            all_widgets: $all_widgets_json,
-            context:     "$context",
+            all_cards:   {$cards_json},
+            all_widgets: {$all_widgets_json},
+            context:     "{$context}",
+            cache_key:   "{$cache_key}",
          })
       });
 JAVASCRIPT;
@@ -966,7 +968,8 @@ HTML;
       $gridstack_id = $card_options['args']['gridstack_id'] ?? $card_id;
       $dashboard    = $card_options['dashboard'] ?? "";
 
-      $options_footprint = sha1(serialize($card_options));
+      $options_footprint = sha1(serialize($card_options).
+                                $_SESSION['glpiactiveentities_string'] ?? "");
 
       // manage cache
       $use_cache =

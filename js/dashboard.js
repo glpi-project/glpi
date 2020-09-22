@@ -50,6 +50,7 @@ var Dashboard = {
    dash_width: 0,
    cell_margin: 3,
    cols: 26,
+   cache_key: "",
 
    display: function(params) {
 
@@ -82,6 +83,7 @@ var Dashboard = {
       this.dash_width   = this.element.width();
       this.cell_margin  = options.cell_margin;
       this.cols         = options.cols;
+      this.cache_key    = options.cache_key || "";
 
       $('#grid-stack-'+options.rand).gridstack({
          column: options.cols,
@@ -547,6 +549,7 @@ var Dashboard = {
             action:    'get_card',
             dashboard: Dashboard.current_name,
             card_id:   form_data.card_id,
+            cache_key: Dashboard.cache_key,
             args:      args,
          }
       }).done(function(card_html) {
@@ -923,6 +926,7 @@ var Dashboard = {
             'force':     (specific_one.length > 0 ? 1 : 0),
             'embed':     (Dashboard.embed ? 1 : 0),
             'args':      card_opt,
+            'cache_key': Dashboard.cache_key,
          }).then(function(html) {
             card.children('.grid-stack-item-content')
                .html(html);
