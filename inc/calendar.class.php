@@ -241,6 +241,14 @@ class Calendar extends CommonDropdown {
    function isHoliday($date) {
       global $DB;
 
+      // Use a static cache to improve performances when multiple elements requires a computation
+      // on same calendars/dates.
+      static $result_cache = [];
+      $cache_key = $this->fields['id'] . '-' . date('Y-m-d', strtotime($date));
+      if (array_key_exists($cache_key, $result_cache)) {
+         return $result_cache[$cache_key];
+      }
+
       $result = $DB->request([
          'COUNT'        => 'cpt',
          'FROM'         => 'glpi_calendars_holidays',
@@ -272,7 +280,11 @@ class Calendar extends CommonDropdown {
          ]
       ])->next();
 
-      return (int)$result['cpt'] > 0;
+      $is_holiday = (int)$result['cpt'] > 0;
+
+      $result_cache[$cache_key] = $is_holiday;
+
+      return $is_holiday;
    }
 
 
