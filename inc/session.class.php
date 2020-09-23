@@ -1416,11 +1416,11 @@ class Session {
    }
 
    /**
-    * Get active entity id.
+    * Get active entities id.
     *
     * @since 9.5
     *
-    * @return int
+    * @return array
     */
    public static function getActiveEntities() {
       return $_SESSION['glpiactiveentities'];
