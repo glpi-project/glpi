@@ -206,5 +206,44 @@ class Calendar_Holiday extends CommonDBRelation {
       }
       return true;
    }
+
+   function post_addItem() {
+
+      $this->invalidateCalendarCache($this->fields['calendars_id']);
+
+      parent::post_addItem();
+   }
+
+   function post_updateItem($history = 1) {
+
+      if (in_array('calendars_id', $this->updates)) {
+         $this->invalidateCalendarCache($this->fields['calendars_id']);
+         $this->invalidateCalendarCache($this->oldvalues['calendars_id']);
+      }
+
+      parent::post_updateItem($history);
+   }
+
+
+   function post_deleteFromDB() {
+
+      $this->invalidateCalendarCache($this->fields['calendars_id']);
+
+      parent::post_deleteFromDB();
+   }
+
+   /**
+    * Invalidate "is holiday" cache of given calendar.
+    *
+    * @param int $calendars_id
+    *
+    * @return void
+    */
+   private function invalidateCalendarCache(int $calendars_id): void {
+      $calendar = new Calendar();
+      if ($calendar->getFromDB($calendars_id)) {
+         $calendar->invalidateIsHolidayCache();
+      }
+   }
 }
 

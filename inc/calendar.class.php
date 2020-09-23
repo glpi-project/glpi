@@ -241,12 +241,8 @@ class Calendar extends CommonDropdown {
    function isHoliday($date) {
       global $DB;
 
-      // Use a static cache to improve performances when multiple elements requires a computation
-      // on same calendars/dates.
-      static $result_cache = [];
-      $cache_key = $this->fields['id'] . '-' . date('Y-m-d', strtotime($date));
-      if (array_key_exists($cache_key, $result_cache)) {
-         return $result_cache[$cache_key];
+      if (($cached_result = $this->getIsHolidayFromCache($date)) !== null) {
+         return $cached_result;
       }
 
       $result = $DB->request([
@@ -282,7 +278,7 @@ class Calendar extends CommonDropdown {
 
       $is_holiday = (int)$result['cpt'] > 0;
 
-      $result_cache[$cache_key] = $is_holiday;
+      $this->setIsHolidayInCache($date, $is_holiday);
 
       return $is_holiday;
    }
@@ -665,5 +661,63 @@ class Calendar extends CommonDropdown {
     */
    static function getDayNumberInWeek($date) {
       return (int)date('w', $date);
+   }
+
+   /**
+    * Get cache key of cache entry containing is_holiday results of a calendar.
+    * All dates are cached in a shared entry to prevent creation of tens of cache entries for each calendar.
+    *
+    * @return string
+    */
+   private function getIsHolidayCacheKey(): string {
+      return sprintf('calendar-%s-is-holiday', $this->fields['id']);
+   }
+
+   /**
+    * Return cached "is holiday" result for a given date.
+    *
+    * @param string $date
+    *
+    * @return bool|null
+    */
+   private function getIsHolidayFromCache(string $date): ?bool {
+      global $GLPI_CACHE;
+
+      $cache_key = $this->getIsHolidayCacheKey();
+      $cached_results = $GLPI_CACHE->get($cache_key, []);
+
+      return $cached_results[date('Y-m-d', strtotime($date))] ?? null;
+   }
+
+   /**
+    * Set "is holiday" result in cache for a given date.
+    *
+    * @param string $date
+    * @param bool $is_holiday
+    *
+    * @return bool   True on success and false on failure
+    */
+   private function setIsHolidayInCache(string $date, bool $is_holiday): bool {
+      global $GLPI_CACHE;
+
+      $cache_key = $this->getIsHolidayCacheKey();
+
+      $cached_results = $GLPI_CACHE->get($cache_key, []);
+      $cached_results[date('Y-m-d', strtotime($date))] = $is_holiday;
+
+      return $GLPI_CACHE->set($cache_key, $cached_results);
+   }
+
+   /**
+    * Invalidate cached "is holiday" results for the calendar.
+    *
+    * @return bool   True on success and false on failure
+    */
+   public function invalidateIsHolidayCache() {
+      global $GLPI_CACHE;
+
+      $cache_key = $this->getIsHolidayCacheKey();
+
+      return $GLPI_CACHE->delete($cache_key);
    }
 }
