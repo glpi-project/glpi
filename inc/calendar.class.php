@@ -239,52 +239,28 @@ class Calendar extends CommonDropdown {
     * @return boolean
    **/
    function isHoliday($date) {
-      global $DB;
+      $calendar_holiday = new Calendar_Holiday();
+      $holidays = $calendar_holiday->getHolidaysForCalendar($this->fields['id']);
 
-      // Use a static cache to improve performances when multiple elements requires a computation
-      // on same calendars/dates.
-      static $result_cache = [];
-      $cache_key = $this->fields['id'] . '-' . date('Y-m-d', strtotime($date));
-      if (array_key_exists($cache_key, $result_cache)) {
-         return $result_cache[$cache_key];
+      foreach ($holidays as $holiday) {
+         if ($holiday['is_perpetual']) {
+            // Compare only month and day for holidays that occurs every year.
+            $date_to_compare = date('m-d', strtotime($date));
+            $begin_date      = date('m-d', strtotime($holiday['begin_date']));
+            $end_date        = date('m-d', strtotime($holiday['end_date']));
+         } else {
+            // Normalize dates to Y-m-d
+            $date_to_compare = date('Y-m-d', strtotime($date));
+            $begin_date      = date('Y-m-d', strtotime($holiday['begin_date']));
+            $end_date        = date('Y-m-d', strtotime($holiday['end_date']));
+         }
+
+         if ($begin_date <= $date_to_compare && $date_to_compare <= $end_date) {
+            return true;
+         }
       }
 
-      $result = $DB->request([
-         'COUNT'        => 'cpt',
-         'FROM'         => 'glpi_calendars_holidays',
-         'INNER JOIN'   => [
-            'glpi_holidays'   => [
-               'ON' => [
-                  'glpi_calendars_holidays'  => 'holidays_id',
-                  'glpi_holidays'            => 'id'
-               ]
-            ]
-         ],
-         'WHERE'        => [
-            'glpi_calendars_holidays.calendars_id' => $this->fields['id'],
-            'OR'                                   => [
-               [
-                  'AND' => [
-                     'glpi_holidays.end_date'            => ['>=', $date],
-                     'glpi_holidays.begin_date'          => ['<=', $date]
-                  ]
-               ],
-               [
-                  'AND' => [
-                     'glpi_holidays.is_perpetual'  => 1,
-                     new \QueryExpression("MONTH(".$DB->quoteName('end_date').")*100 + DAY(".$DB->quoteName('end_date').") >= ".date('nd', strtotime($date))),
-                     new \QueryExpression("MONTH(".$DB->quoteName('begin_date').")*100 + DAY(".$DB->quoteName('begin_date').") <= ".date('nd', strtotime($date)))
-                  ]
-               ]
-            ]
-         ]
-      ])->next();
-
-      $is_holiday = (int)$result['cpt'] > 0;
-
-      $result_cache[$cache_key] = $is_holiday;
-
-      return $is_holiday;
+      return false;
    }
 
 
