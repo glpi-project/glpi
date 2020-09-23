@@ -1414,4 +1414,15 @@ class Session {
    public static function getActiveEntity() {
       return $_SESSION['glpiactive_entity'];
    }
+
+   /**
+    * Get active entity id.
+    *
+    * @since 9.5
+    *
+    * @return int
+    */
+   public static function getActiveEntities() {
+      return $_SESSION['glpiactiveentities'];
+   }
 }

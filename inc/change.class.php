@@ -953,8 +953,11 @@ class Change extends CommonITILObject {
       if ($canupdate) {
          $conditions = ['is_change' => 1];
 
-         $opt = ['value'  => $this->fields["itilcategories_id"],
-                      'entity' => $this->fields["entities_id"]];
+         $opt = [
+            'value'  => $this->fields["itilcategories_id"],
+            'entity' => Session::getActiveEntities(),
+         ];
+
          /// Auto submit to load template
          if (!$ID) {
             $opt['on_change'] = 'this.form.submit()';

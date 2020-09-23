@@ -4565,8 +4565,11 @@ class Ticket extends CommonITILObject {
       if ($canupdate || $can_requester) {
          $conditions = [];
 
-         $opt = ['value'  => $this->fields["itilcategories_id"],
-                      'entity' => $this->fields["entities_id"]];
+         $opt = [
+            'value'  => $this->fields["itilcategories_id"],
+            'entity' => Session::getActiveEntities(),
+         ];
+
          if (Session::getCurrentInterface() == "helpdesk") {
             $conditions['is_helpdeskvisible'] = 1;
          }
