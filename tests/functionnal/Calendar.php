@@ -269,4 +269,59 @@ class Calendar extends DbTestCase {
       $this->checkXmas($calendar);
 
    }
+
+   public function testIsHolidayCache() {
+      global $GLPI_CACHE;
+
+      $today = date('Y-m-d');
+
+      $calendar = new \Calendar();
+      $this->boolean($calendar->getFromDB(getItemByTypeName('Calendar', 'Default', true)))->isTrue();
+
+      $cache_key = sprintf('calendar-%s-is-holiday', $calendar->fields['id']);
+
+      // Invalidate to remove any existing value
+      $calendar->invalidateIsHolidayCache();
+      $this->array($GLPI_CACHE->get($cache_key, []))->isEmpty();
+
+      // Check a value and see if it is cached
+      $this->boolean($calendar->isHoliday($today))->isFalse();
+      $this->array($GLPI_CACHE->get($cache_key, []))->isEqualTo([$today => false]);
+
+      // Add holiday
+      $calendar_holiday = new \Calendar_Holiday();
+      $holiday = new \Holiday();
+      $holiday_id = (int)$holiday->add(
+         [
+            'name'         => 'New Year՛s Day',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+            'begin_date'   => '2000-01-01',
+            'end_date'     => '2000-01-01',
+            'is_perpetual' => 1
+         ]
+      );
+      // Cache has not been invalidated yet
+      $this->array($GLPI_CACHE->get($cache_key, []))->isNotEmpty();
+      $this->integer($holiday_id)->isGreaterThan(0);
+      $calendar_holiday_id = (int)$calendar_holiday->add(
+         [
+            'holidays_id'  => $holiday_id,
+            'calendars_id' => $calendar->fields['id']
+         ]
+      );
+      $this->integer($calendar_holiday_id)->isGreaterThan(0);
+      // Cache has been invalidated by creation of 'Calendar_Holiday'
+      $this->array($GLPI_CACHE->get($cache_key, []))->isEmpty();
+
+      // Check values and see if they are cached
+      $this->boolean($calendar->isHoliday($today))->isFalse();
+      $this->boolean($calendar->isHoliday('2020-01-01'))->isTrue();
+      $this->array($GLPI_CACHE->get($cache_key, []))->isEqualTo([$today => false, '2020-01-01' => true]);
+
+      // Remove holiday
+      $calendar_holiday->delete(['id' => $calendar_holiday_id]);
+      // Cache has been invalidated by deletion of 'Calendar_Holiday'
+      $this->array($GLPI_CACHE->get($cache_key, []))->isEmpty();
+   }
 }
