@@ -6069,7 +6069,7 @@ JAVASCRIPT;
                   $hdecode = Html::entity_decode_deep($data[$ID][0]['content']);
                   $content = Toolbox::unclean_cross_side_scripting_deep($hdecode);
                   $out     = sprintf(__('%1$s %2$s'), $out,
-                                     Html::showToolTip(nl2br(Html::Clean($content)),
+                                     Html::showToolTip(nl2br($content),
                                                              ['applyto' => $itemtype.
                                                                                 $data[$ID][0]['id'],
                                                                    'display' => false]));
