@@ -1281,7 +1281,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          }
 
          $data["##$objettype.numberofunresolved##"]
-               = countElementsInTableForEntity($item->getTable(), $this->getEntity(), $restrict);
+               = countElementsInTableForEntity($item->getTable(), $this->getEntity(), $restrict, false);
 
          // Document
          $iterator = $DB->request([
