@@ -41,6 +41,8 @@ use \Session;
 use \Toolbox;
 use \Infocom;
 use \DBConnection;
+use \CronTask;
+use \Document;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
