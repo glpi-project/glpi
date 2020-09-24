@@ -196,12 +196,13 @@ class Calendar extends CommonDropdown {
    /**
     * Clone a calendar to another entity : name is updated
     *
-    * @param $options array Array of new values to set
-    * @return boolean|integer The new ID on success or false on failure
+    * @param array $options Array of new values to set
+    * @return boolean True on success or false on failure
     * @deprecated x.x.x Use the {@link \Glpi\Features\Clonable} trait instead
     */
    function duplicate($options = []) {
 
+      Toolbox::deprecated('Use clone()');
       $input = Toolbox::addslashes_deep($this->fields);
       unset($input['id']);
 
@@ -213,11 +214,7 @@ class Calendar extends CommonDropdown {
          }
       }
 
-      if ($newID = $this->clone($input)) {
-         return $newID;
-      }
-
-      return false;
+      return (bool) $this->clone($input);
    }
 
    public function post_clone($source, $history) {

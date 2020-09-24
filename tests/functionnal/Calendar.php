@@ -261,8 +261,8 @@ class Calendar extends DbTestCase {
       $calendar = new \Calendar();
       $this->boolean($calendar->getFromDB($id))->isTrue();
 
-      $other_id = $calendar->duplicate();
-      $this->variable($other_id)->isNotIdenticalTo(false);
+      $this->boolean($calendar->duplicate())->isTrue();
+      $other_id = $calendar->fields['id'];
       $this->integer($other_id)->isGreaterThan($id);
       $this->boolean($calendar->getFromDB($other_id))->isTrue();
       //should have been duplicated too.
