@@ -968,13 +968,25 @@ HTML;
       $gridstack_id = $card_options['args']['gridstack_id'] ?? $card_id;
       $dashboard    = $card_options['dashboard'] ?? "";
 
-      $options_footprint = sha1(serialize($card_options).
-                                $_SESSION['glpiactiveentities_string'] ?? "");
+      $force = ($card_options['args']['force'] ?? $card_options['force'] ?? false);
+
+      // retrieve card
+      $notfound_html = "<div class='empty-card card-warning '>
+         <i class='fas fa-exclamation-triangle'></i>".
+         __('empty card !')."
+      </div>";
+      $cards = $this->getAllDasboardCards($force);
+      if (!isset($cards[$card_id])) {
+         return $notfound_html;
+      }
+      $card  = $cards[$card_id];
 
       // manage cache
-      $use_cache =
-         !($card_options['args']['force'] ?? $card_options['force'] ?? false)
-         && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE;
+      $options_footprint = sha1(serialize($card_options).
+                                $_SESSION['glpiactiveentities_string'] ?? "");
+      $use_cache = !$force
+         && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE
+         && (!isset($card['cache']) || $card['cache'] == true);
       $cache_key    = "dashboard_card_{$dashboard}_{$options_footprint}";
       $cache_age    = 40;
 
@@ -996,19 +1008,8 @@ HTML;
          }
       }
 
-      $notfound_html = "<div class='empty-card card-warning '>
-         <i class='fas fa-exclamation-triangle'></i>".
-         __('empty card !')."
-      </div>";
-
-      // retrieve card
       $html  = "";
       $start = microtime(true);
-      $cards = $this->getAllDasboardCards();
-      if (!isset($cards[$card_id])) {
-         return $notfound_html;
-      }
-      $card  = $cards[$card_id];
 
       // call provider to retrieve data
       if (isset($card['provider'])) {
@@ -1154,12 +1155,15 @@ HTML;
    /**
     * Construct catalog of all possible cards addable in a dashboard.
     *
+    * @param bool $force if true, don't use cache
+    *
     * @return array
     */
-   public function getAllDasboardCards(): array {
+   public function getAllDasboardCards(bool $force = false): array {
       global $GLPI_CACHE, $CFG_GLPI;
 
-      if ($GLPI_CACHE->has("dashboards_cards")
+      if (!$force
+          && $GLPI_CACHE->has("dashboards_cards")
           && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE) {
          return $GLPI_CACHE->get("dashboards_cards");
       }
@@ -1263,6 +1267,7 @@ HTML;
             'args'       => [
                'case' => $case,
             ],
+            'cache'      => false,
             'filters'    => ['dates', 'dates_mod', 'itilcategory', 'requesttype', 'location']
          ];
 

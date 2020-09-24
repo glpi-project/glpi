@@ -66,26 +66,29 @@ class Provider extends \CommonGLPI {
 
       $i_table = $item::getTable();
 
-      $criteria = [];
+      $where = [];
       if (isset($item->fields['is_deleted'])) {
-         $criteria['is_deleted'] = 0;
+         $where['is_deleted'] = 0;
       }
 
       if (isset($item->fields['is_template'])) {
-         $criteria['is_template'] = 0;
+         $where['is_template'] = 0;
       }
 
       if ($item->isEntityAssign()) {
-         $criteria += getEntitiesRestrictCriteria($item::getTable());
+         $where += getEntitiesRestrictCriteria($item::getTable());
       }
 
-      $criteria += self::getFiltersCriteria($i_table, $params['apply_filters']);
-
-      $iterator = $DB->request([
-         'COUNT'  => 'cpt',
-         'FROM'   => $i_table,
-         'WHERE'  => $criteria
-      ]);
+      $criteria = array_merge_recursive(
+         [
+            'COUNT'  => 'cpt',
+            'FROM'   => $i_table,
+            'WHERE'  => $where
+         ],
+         self::getFiltersCriteria($i_table, $params['apply_filters']),
+         $item instanceof \Ticket ? \Ticket::getCriteriaFromProfile() : []
+      );
+      $iterator = $DB->request($criteria);
 
       $result   = $iterator->next();
       $nb_items = $result['cpt'];
@@ -194,13 +197,18 @@ class Provider extends \CommonGLPI {
 
       $table = \Ticket::getTable();
       $query_criteria = [
-         'FROM'    => $table,
-         'WHERE'   => [
+         'FROM'   => $table,
+         'WHERE'  => [
             "$table.is_deleted" => 0,
-         ] + getEntitiesRestrictCriteria($table)
-           + self::getFiltersCriteria($table, $params['apply_filters']),
+         ] + getEntitiesRestrictCriteria($table),
          'GROUPBY' => "$table.id"
       ];
+
+      $query_criteria = array_merge_recursive(
+         $query_criteria,
+         \Ticket::getCriteriaFromProfile(),
+         self::getFiltersCriteria($table, $params['apply_filters'])
+      );
 
       switch ($case) {
          case 'notold':
@@ -431,29 +439,32 @@ class Provider extends \CommonGLPI {
          $where += getEntitiesRestrictCriteria($c_table, '', '', $item->maybeRecursive());
       }
 
-      $where += self::getFiltersCriteria($c_table, $params['apply_filters']);
-
-      $iterator = $DB->request([
-         'SELECT'    => [
-            "$fk_table.$name AS fk_name",
-            "$fk_table.id AS fk_id",
-            'COUNT' => "$c_table.id AS cpt",
-         ],
-         'DISTINCT'  => true,
-         'FROM'      => $c_table,
-         $params['join_key'] => [
-            $fk_table => [
-               'ON' => [
-                  $fk_table => 'id',
-                  $c_table  => getForeignKeyFieldForItemType($fk_itemtype),
+      $criteria = array_merge_recursive(
+         [
+            'SELECT'    => [
+               "$fk_table.$name AS fk_name",
+               "$fk_table.id AS fk_id",
+               'COUNT' => "$c_table.id AS cpt",
+            ],
+            'DISTINCT'  => true,
+            'FROM'      => $c_table,
+            $params['join_key'] => [
+               $fk_table => [
+                  'ON' => [
+                     $fk_table => 'id',
+                     $c_table  => getForeignKeyFieldForItemType($fk_itemtype),
+                  ]
                ]
-            ]
+            ],
+            'WHERE'     => $where,
+            'GROUPBY'   => "$fk_table.$name",
+            'ORDERBY'   => "cpt DESC",
+            'LIMIT'     => $params['limit'],
          ],
-         'WHERE'     => $where,
-         'GROUPBY'   => "$fk_table.$name",
-         'ORDERBY'   => "cpt DESC",
-         'LIMIT'     => $params['limit'],
-      ]);
+         self::getFiltersCriteria($c_table, $params['apply_filters']),
+         $item instanceof \Ticket ? \Ticket::getCriteriaFromProfile() : []
+      );
+      $iterator = $DB->request($criteria);
 
       $search_criteria = [
          'criteria' => [
@@ -513,14 +524,17 @@ class Provider extends \CommonGLPI {
       $params = array_merge($default_params, $params);
 
       $i_table           = $item::getTable();
-      $date_field_exists = $DB->fieldExists($i_table, 'date');
+      $criteria = array_merge_recursive(
+         [
+            'SELECT' => "$i_table.*",
+            'FROM'   => $i_table
+         ],
+         self::getFiltersCriteria($i_table, $params['apply_filters'])
+      );
+      $iterator = $DB->request($criteria);
 
-      $criteria = [];
-      $criteria += self::getFiltersCriteria($i_table, $params['apply_filters']);
-
-      $raw_data = $item->find($criteria, $date_field_exists ? 'date DESC': '');
       $data = [];
-      foreach ($raw_data as $line) {
+      foreach ($iterator as $line) {
          $data[] = [
             'date'    => $line['date'] ?? '',
             'label'   => $line['name'] ?? '',
@@ -567,20 +581,20 @@ class Provider extends \CommonGLPI {
       $params = array_merge($default_params, $params);
 
       $t_table = \Ticket::getTable();
-
-      $criteria = [];
-      $criteria += self::getFiltersCriteria($t_table, $params['apply_filters']);
-
-      $iterator = $DB->request([
-         'SELECT' => [
-            'COUNT' => 'id as nb_tickets',
-            new \QueryExpression("DATE_FORMAT(".$DB->quoteName("date").", '%Y-%m') AS ticket_month")
+      $criteria = array_merge_recursive(
+         [
+            'SELECT' => [
+               'COUNT' => "$t_table.id as nb_tickets",
+               new \QueryExpression("DATE_FORMAT(".$DB->quoteName("date").", '%Y-%m') AS ticket_month")
+            ],
+            'FROM'    => $t_table,
+            'GROUPBY' => 'ticket_month',
+            'ORDER'   => 'ticket_month ASC'
          ],
-         'FROM'    => $t_table,
-         'WHERE'   => $criteria,
-         'GROUPBY' => 'ticket_month',
-         'ORDER'   => 'ticket_month ASC'
-      ]);
+         \Ticket::getCriteriaFromProfile(),
+         self::getFiltersCriteria($t_table, $params['apply_filters'])
+      );
+      $iterator = $DB->request($criteria);
 
       $s_criteria = [
          'criteria' => [
@@ -650,9 +664,6 @@ class Provider extends \CommonGLPI {
          $end   = date("Y-m-d", strtotime($params['apply_filters']['dates'][1]));
          unset($params['apply_filters']['dates']);
       }
-
-      $t_table   = \Ticket::getTable();
-      $add_where = self::getFiltersCriteria($t_table, $params['apply_filters']);
 
       $series = [
 
@@ -739,6 +750,12 @@ class Provider extends \CommonGLPI {
          ],
       ];
 
+      $t_table   = \Ticket::getTable();
+      $filters = array_merge_recursive(
+         \Ticket::getCriteriaFromProfile(),
+         self::getFiltersCriteria($t_table, $params['apply_filters'])
+      );
+
       $i = 0;
       $monthsyears = [];
       foreach ($series as $stat_type => &$serie) {
@@ -750,7 +767,7 @@ class Provider extends \CommonGLPI {
             "",
             "",
             "",
-            $add_where
+            $filters
          );
 
          if ($i === 0) {
@@ -807,39 +824,50 @@ class Provider extends \CommonGLPI {
       $statuses = \Ticket::getAllStatusArray();
       $t_table  = \Ticket::getTable();
 
-      $criteria = [
-         'DISTINCT' => true,
-         'SELECT'   => [
-            new \QueryExpression(
-               "FROM_UNIXTIME(UNIX_TIMESTAMP(".$DB->quoteName("$t_table.date")."),'%Y-%m') AS period"
-            ),
-            new \QueryExpression(
-               "SUM(IF($t_table.status = ".\Ticket::INCOMING.", 1, 0)) as ".$DB->quoteValue(_x('status', 'New'))
-            ),
-            new \QueryExpression(
-               "SUM(IF($t_table.status = ".\Ticket::ASSIGNED.", 1, 0)) as ".$DB->quoteValue(_x('status', 'Processing (assigned)'))
-            ),
-            new \QueryExpression(
-               "SUM(IF($t_table.status = ".\Ticket::PLANNED.", 1, 0)) as ".$DB->quoteValue(_x('status', 'Processing (planned)'))
-            ),
-            new \QueryExpression(
-               "SUM(IF($t_table.status = ".\Ticket::WAITING.", 1, 0)) as ".$DB->quoteValue(__('Pending'))
-            ),
-            new \QueryExpression(
-               "SUM(IF($t_table.status = ".\Ticket::SOLVED.", 1, 0)) as ".$DB->quoteValue(_x('status', 'Solved'))
-            ),
-            new \QueryExpression(
-               "SUM(IF($t_table.status = ".\Ticket::CLOSED.", 1, 0)) as ".$DB->quoteValue(_x('status', 'Closed'))
-            ),
+      $criteria = array_merge_recursive(
+         [
+            'DISTINCT' => true,
+            'SELECT'   => [
+               new \QueryExpression(
+                  "FROM_UNIXTIME(UNIX_TIMESTAMP(".$DB->quoteName("$t_table.date")."),'%Y-%m') AS period"
+               ),
+               new \QueryExpression(
+                  "SUM(IF($t_table.status = ".\Ticket::INCOMING.", 1, 0))
+                     as ".$DB->quoteValue(_x('status', 'New'))
+               ),
+               new \QueryExpression(
+                  "SUM(IF($t_table.status = ".\Ticket::ASSIGNED.", 1, 0))
+                     as ".$DB->quoteValue(_x('status', 'Processing (assigned)'))
+               ),
+               new \QueryExpression(
+                  "SUM(IF($t_table.status = ".\Ticket::PLANNED.", 1, 0))
+                     as ".$DB->quoteValue(_x('status', 'Processing (planned)'))
+               ),
+               new \QueryExpression(
+                  "SUM(IF($t_table.status = ".\Ticket::WAITING.", 1, 0))
+                     as ".$DB->quoteValue(__('Pending'))
+               ),
+               new \QueryExpression(
+                  "SUM(IF($t_table.status = ".\Ticket::SOLVED.", 1, 0))
+                     as ".$DB->quoteValue(_x('status', 'Solved'))
+               ),
+               new \QueryExpression(
+                  "SUM(IF($t_table.status = ".\Ticket::CLOSED.", 1, 0))
+                     as ".$DB->quoteValue(_x('status', 'Closed'))
+               ),
+            ],
+            'FROM'     => $t_table,
+            'WHERE'    => [
+               "$t_table.is_deleted" => 0,
+            ] + getEntitiesRestrictCriteria($t_table),
+            'ORDER'   => 'period ASC',
+            'GROUP'    => ['period']
          ],
-         'FROM'     => $t_table,
-         'WHERE'    => [
-            "$t_table.is_deleted" => 0,
-         ] + getEntitiesRestrictCriteria($t_table)
-           + self::getFiltersCriteria($t_table, $params['apply_filters']),
-         'ORDER'   => 'period ASC',
-         'GROUP'    => ['period']
-      ];
+         // limit count for profiles with limited rights
+         \Ticket::getCriteriaFromProfile(),
+         self::getFiltersCriteria($t_table, $params['apply_filters'])
+      );
+
       $iterator = $DB->request($criteria);
 
       $s_criteria = [
@@ -938,7 +966,7 @@ class Provider extends \CommonGLPI {
 
       $where = [
          "$t_table.is_deleted" => 0,
-      ] + self::getFiltersCriteria($t_table, $params['apply_filters']);
+      ];
 
       $case_array = explode('_', $case);
       if ($case_array[0] == 'user') {
@@ -981,35 +1009,41 @@ class Provider extends \CommonGLPI {
             break;
       }
 
-      $iterator = $DBread->request([
-         'SELECT' => array_merge([
-            'COUNT' => "$t_table.id AS nb_tickets",
-            "$ug_table.id as actor_id",
-         ], $n_fields),
-         'FROM' => $t_table,
-         'INNER JOIN' => [
-            $li_table => [
-               'ON' => [
-                  $li_table => getForeignKeyFieldForItemType("Ticket"),
-                  $t_table  => 'id',
-                  [
-                     'AND' => [
-                        "$li_table.type" => $type
+      $criteria = array_merge_recursive(
+         [
+            'SELECT' => array_merge([
+               'COUNT' => "$t_table.id AS nb_tickets",
+               "$ug_table.id as actor_id",
+            ], $n_fields),
+            'FROM' => $t_table,
+            'INNER JOIN' => [
+               $li_table => [
+                  'ON' => [
+                     $li_table => getForeignKeyFieldForItemType("Ticket"),
+                     $t_table  => 'id',
+                     [
+                        'AND' => [
+                           "$li_table.type" => $type
+                        ]
                      ]
+                  ]
+               ],
+               $ug_table => [
+                  'ON' => [
+                     $li_table => getForeignKeyFieldForTable($ug_table),
+                     $ug_table  => 'id'
                   ]
                ]
             ],
-            $ug_table => [
-               'ON' => [
-                  $li_table => getForeignKeyFieldForTable($ug_table),
-                  $ug_table  => 'id'
-               ]
-            ]
+            'GROUPBY' => "$ug_table.id",
+            'ORDER'   => 'nb_tickets DESC',
+            'WHERE'   => $where + getEntitiesRestrictCriteria($t_table),
          ],
-         'GROUPBY' => "$ug_table.id",
-         'ORDER'   => 'nb_tickets DESC',
-         'WHERE'   => $where + getEntitiesRestrictCriteria($t_table),
-      ]);
+         \Ticket::getCriteriaFromProfile(),
+         self::getFiltersCriteria($t_table, $params['apply_filters'])
+      );
+      $iterator = $DBread->request($criteria);
+
       $s_criteria = [
          'criteria' => [
             [
@@ -1058,22 +1092,26 @@ class Provider extends \CommonGLPI {
       $params = array_merge($default_params, $params);
 
       $t_table  = \Ticket::getTable();
-      $iterator = $DBread->request([
-         'SELECT' => [
-            new \QueryExpression("DATE_FORMAT(".$DBread->quoteName("date").", '%Y-%m') AS period"),
-            new \QueryExpression("AVG(".$DBread->quoteName("takeintoaccount_delay_stat").") AS avg_takeintoaccount_delay_stat"),
-            new \QueryExpression("AVG(".$DBread->quoteName("waiting_duration").") AS avg_waiting_duration"),
-            new \QueryExpression("AVG(".$DBread->quoteName("solve_delay_stat").") AS avg_solve_delay_stat"),
-            new \QueryExpression("AVG(".$DBread->quoteName("close_delay_stat").") AS close_delay_stat"),
+      $criteria = array_merge_recursive(
+         [
+            'SELECT' => [
+               new \QueryExpression("DATE_FORMAT(".$DBread->quoteName("date").", '%Y-%m') AS period"),
+               new \QueryExpression("AVG(".$DBread->quoteName("takeintoaccount_delay_stat").") AS avg_takeintoaccount_delay_stat"),
+               new \QueryExpression("AVG(".$DBread->quoteName("waiting_duration").") AS avg_waiting_duration"),
+               new \QueryExpression("AVG(".$DBread->quoteName("solve_delay_stat").") AS avg_solve_delay_stat"),
+               new \QueryExpression("AVG(".$DBread->quoteName("close_delay_stat").") AS close_delay_stat"),
+            ],
+            'FROM' => $t_table,
+            'WHERE' => [
+               'is_deleted' => 0,
+            ] + getEntitiesRestrictCriteria($t_table),
+            'ORDER' => 'period ASC',
+            'GROUP' => ['period']
          ],
-         'FROM' => $t_table,
-         'WHERE' => [
-            'is_deleted' => 0,
-         ] + getEntitiesRestrictCriteria($t_table)
-           + self::getFiltersCriteria($t_table, $params['apply_filters']),
-         'ORDER' => 'period ASC',
-         'GROUP' => ['period']
-      ]);
+         \Ticket::getCriteriaFromProfile(),
+         self::getFiltersCriteria($t_table, $params['apply_filters'])
+      );
+      $iterator = $DBread->request($criteria);
 
       $data = [
          'labels' => [],
@@ -1186,23 +1224,25 @@ class Provider extends \CommonGLPI {
 
    private static function getFiltersCriteria(string $table = "", array $apply_filters = []) {
       $DB = \DBConnection::getReadConnection();
-      $criteria = [];
+
+      $where = [];
+      $join  = [];
 
       if ($DB->fieldExists($table, 'date')
           && isset($apply_filters['dates'])
           && count($apply_filters['dates']) == 2) {
-         $criteria += self::getDatesCriteria("$table.date", $apply_filters['dates']);
+         $where += self::getDatesCriteria("$table.date", $apply_filters['dates']);
       }
       if ($DB->fieldExists($table, 'date_mod')
           && isset($apply_filters['dates_mod'])
           && count($apply_filters['dates_mod']) == 2) {
-         $criteria += self::getDatesCriteria("$table.date_mod", $apply_filters['dates_mod']);
+         $where += self::getDatesCriteria("$table.date_mod", $apply_filters['dates_mod']);
       }
 
       if ($DB->fieldExists($table, 'itilcategories_id')
           && isset($apply_filters['itilcategory'])
           && (int) $apply_filters['itilcategory'] > 0) {
-         $criteria += [
+         $where += [
             "$table.itilcategories_id" => (int) $apply_filters['itilcategory']
          ];
       }
@@ -1210,7 +1250,7 @@ class Provider extends \CommonGLPI {
       if ($DB->fieldExists($table, 'requesttypes_id')
           && isset($apply_filters['requesttype'])
           && (int) $apply_filters['requesttype'] > 0) {
-         $criteria += [
+         $where += [
             "$table.requesttypes_id" => (int) $apply_filters['requesttype']
          ];
       }
@@ -1218,7 +1258,7 @@ class Provider extends \CommonGLPI {
       if ($DB->fieldExists($table, 'locations_id')
           && isset($apply_filters['location'])
           && (int) $apply_filters['location'] > 0) {
-         $criteria += [
+         $where += [
             "$table.locations_id" => (int) $apply_filters['location']
          ];
       }
@@ -1226,9 +1266,17 @@ class Provider extends \CommonGLPI {
       if ($DB->fieldExists($table, 'manufacturers_id')
           && isset($apply_filters['manufacturer'])
           && (int) $apply_filters['manufacturer'] > 0) {
-         $criteria += [
+         $where += [
             "$table.manufacturers_id" => (int) $apply_filters['manufacturer']
          ];
+      }
+
+      $criteria = [];
+      if (count($where)) {
+         $criteria['WHERE'] = $where;
+      }
+      if (count($join)) {
+         $criteria['LEFT JOIN'] = $join;
       }
 
       return $criteria;

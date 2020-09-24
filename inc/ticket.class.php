@@ -7334,6 +7334,128 @@ class Ticket extends CommonITILObject {
    }
 
 
+   /**
+    * Check profiles and detect where criteria from existing rights
+    *
+    * @return array criteria to apply to an iterator query
+    */
+   public static function getCriteriaFromProfile() {
+      if (\Session::haveRight("ticket", \Ticket::READALL)) {
+         return [];
+      }
+
+      $users  = false;
+      $groups = false;
+      $valid  = false;
+
+      $where_profile = [];
+      if (\Session::haveRight("ticket", \Ticket::READMY)) {
+         $users = true;
+         $where_profile[] = [
+            'OR' => [
+               [
+                  'tu.users_id' => \Session::getLoginUserID(),
+                  'OR' => [
+                     ['tu.type' => \CommonITILActor::REQUESTER],
+                     ['tu.type' => \CommonITILActor::OBSERVER],
+                  ]
+               ],
+               "glpi_tickets.users_id_recipient" => \Session::getLoginUserID()
+            ]
+         ];
+      }
+
+      if (\Session::haveRight("ticket", \Ticket::READGROUP) && count($_SESSION['glpigroups'])) {
+         $groups = true;
+         $where_profile[] = [
+            'gt.groups_id' => $_SESSION['glpigroups'],
+            'OR' => [
+               ['gt.type' => \CommonITILActor::REQUESTER],
+               ['gt.type' => \CommonITILActor::OBSERVER],
+            ]
+         ];
+      }
+
+      if (\Session::haveRight("ticket", \Ticket::OWN)) {
+         $users = true;
+         $where_profile[] = [
+            'tu.users_id' => \Session::getLoginUserID(),
+            'tu.type'     => \CommonITILActor::ASSIGN,
+         ];
+      }
+
+      if (\Session::haveRight("ticket", \Ticket::READASSIGN)) {
+         $users = true;
+         $temp = [
+            'OR' => [
+               [
+                  'tu.users_id' => \Session::getLoginUserID(),
+                  'tu.type'     => \CommonITILActor::ASSIGN,
+               ]
+            ]
+         ];
+
+         if (count($_SESSION['glpigroups'])) {
+            $groups = true;
+            $temp['OR'][] = [
+               'gt.groups_id' => $_SESSION['glpigroups'],
+               'gt.type'      => \CommonITILActor::ASSIGN
+            ];
+         }
+
+         if (\Session::haveRight('ticket', \Ticket::ASSIGN)) {
+            $temp['OR'][] = [
+               ['glpi_tickets.status' => \CommonITILObject::INCOMING]
+            ];
+         }
+
+         $where_profile[] = $temp;
+      }
+
+      if (\Session::haveRightsOr('ticketvalidation', [
+         \TicketValidation::VALIDATEINCIDENT,
+         \TicketValidation::VALIDATEREQUEST
+      ])) {
+         $valid = true;
+         $where_profile[] = [
+            'tv.users_id_validate' => \Session::getLoginUserID(),
+         ];
+      }
+
+      // joins needed tables
+      $join_profile  = [];
+      if ($users) {
+         $join_profile['glpi_tickets_users AS tu'] = [
+            'ON' => [
+               'tu'           => 'tickets_id',
+               'glpi_tickets' => 'id'
+            ]
+         ];
+      }
+      if ($groups) {
+         $join_profile['glpi_groups_tickets AS gt'] = [
+            'ON' => [
+               'gt'           => 'tickets_id',
+               'glpi_tickets' => 'id'
+            ]
+         ];
+      }
+      if ($valid) {
+         $join_profile['glpi_ticketvalidations as tv'] = [
+            'ON' => [
+               'tv'           => 'tickets_id',
+               'glpi_tickets' => 'id'
+            ]
+         ];
+      }
+
+      return [
+         'LEFT JOIN' => $join_profile,
+         'WHERE'     => ['OR' => $where_profile],
+      ];
+   }
+
+
    static function getIcon() {
       return "fas fa-exclamation-circle";
    }
