@@ -34,7 +34,9 @@ namespace Glpi;
 
 use Ajax;
 use CommonDBTM;
+use CronTask;
 use DBConnection;
+use Document;
 use Html;
 use Infocom;
 use Session;
