@@ -2087,6 +2087,8 @@ class Config extends CommonDBTM {
                  'check'   => 'Mexitek\\PHPColors\\Color' ],
                [ 'name'    => 'guzzlehttp/guzzle',
                  'check'   => 'GuzzleHttp\\Client' ],
+               [ 'name'    => 'guzzlehttp/psr7',
+                 'check'   => 'GuzzleHttp\\Psr7\\Response' ],
                [ 'name'    => 'wapmorgan/unified-archive',
                  'check'   => 'wapmorgan\\UnifiedArchive\\UnifiedArchive' ],
                [ 'name'    => 'paragonie/sodium_compat',

@@ -1,0 +1,54 @@
+{
+  "php-core-extensions": [
+    "core", "standard",
+
+    "ctype", "date", "fileinfo", "filter", "iconv", "json", "pcre", "reflection", "session", "simplexml", "spl", "xml",
+
+    "curl", "gd", "intl", "mbstring", "mysqli", "zlib",
+
+    "apcu", "exif", "ldap", "pcntl", "sodium", "xmlrpc"
+  ],
+  "symbol-whitelist": [
+    "// PHP symbols",
+    "null",
+    "false", "true",
+    "static", "self", "parent",
+    "array", "bool", "callable", "float", "int", "iterable", "object", "string", "void",
+
+    "// GLPI config classes",
+    "DB", "DBSlave",
+
+    "// GLPI base constants (they are not detected as they are dynamically declared)",
+    "GLPI_AJAX_DASHBOARD", "GLPI_CALDAV_IMPORT_STATE", "GLPI_CACHE_DIR", "GLPI_CRON_DIR", "GLPI_CSRF_EXPIRES", "GLPI_CSRF_MAX_TOKENS", "GLPI_DEMO_MODE", "GLPI_DOC_DIR", "GLPI_DUMP_DIR", "GLPI_FORCE_EMPTY_SQL_MODE", "GLPI_GRAPH_DIR", "GLPI_INSTALL_MODE", "GLPI_LOCAL_I18N_DIR", "GLPI_LOCK_DIR", "GLPI_LOG_DIR", "GLPI_MARKETPLACE_DIR", "GLPI_MARKETPLACE_PLUGINS_API_URI", "GLPI_MARKETPLACE_PRERELEASES", "GLPI_NETWORK_REGISTRATION_API_URL", "GLPI_NETWORK_MAIL", "GLPI_NETWORK_SERVICES", "GLPI_PICTURE_DIR", "GLPI_PLUGIN_DOC_DIR", "GLPI_RSS_DIR", "GLPI_SESSION_DIR", "GLPI_TELEMETRY_URI", "GLPI_TMP_DIR", "GLPI_UPLOAD_DIR", "GLPI_USE_CSRF_CHECK", "GLPI_USER_AGENT_EXTRA_COMMENTS",
+
+    "// GLPI optionnal constants",
+    "GLPI_FORCE_MAIL", "GLPI_LOG_LVL",
+
+    "// GLPI test suite specific functions",
+    "GLPI_SQL_DEBUG",
+    "GlpitestPHPerror", "GlpitestPHPnotice", "GlpitestPHPwarning", "GlpitestSQLError",
+
+    "// apache function",
+    "getallheaders",
+
+    "// OPCache extension (not installed on testing env)",
+    "opcache_get_status", "opcache_invalidate", "opcache_reset",
+
+    "// SELinux PECL extension",
+    "selinux_getenforce", "selinux_get_boolean_active", "selinux_is_enabled",
+
+    "// XHProf PECL extension",
+    "XHProfRuns_Default", "xhprof_disable", "xhprof_enable", "XHPROF_PATH", "XHPROF_URL",
+
+    "// phpCAS library",
+    "CAS_VERSION_2_0", "phpCAS"
+  ],
+  "scan-files": [
+    "ajax/**/*.php",
+    "bin/console",
+    "front/**/*.php",
+    "inc/**/*.php",
+    "install/**/*.php",
+    "/*.php"
+  ]
+}
