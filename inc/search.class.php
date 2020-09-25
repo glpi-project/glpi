@@ -7643,7 +7643,7 @@ JAVASCRIPT;
             $complexjoin .= $joinparams['condition'];
          } else {
             global $DB;
-            $dbi = new DBMysqlIterator($DB);
+            $dbi = new DBmysqlIterator($DB);
             $sql_clause = $dbi->analyseCrit($joinparams['condition']);
             $complexjoin .= ' AND ' . $sql_clause; //TODO: and should came from conf
          }
@@ -7668,7 +7668,7 @@ JAVASCRIPT;
                   $complexjoin .= $tab['joinparams']['condition'];
                } else {
                   global $DB;
-                  $dbi = new DBMysqlIterator($DB);
+                  $dbi = new DBmysqlIterator($DB);
                   $sql_clause = $dbi->analyseCrit($tab['joinparams']['condition']);
                   $complexjoin .= ' AND ' . $sql_clause; //TODO: and should came from conf
                }

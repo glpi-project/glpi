@@ -49,6 +49,7 @@ use MonitorModel;
 use NetworkEquipment;
 use NetworkEquipmentModel;
 use PassiveDCEquipment;
+use PassiveDCEquipmentModel;
 use PDU;
 use PDUModel;
 use Peripheral;
