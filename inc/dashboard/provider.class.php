@@ -32,6 +32,22 @@
 
 namespace Glpi\Dashboard;
 
+use CommonGLPI;
+use DBConnection;
+use QueryExpression;
+use CommonITILActor;
+use CommonITILValidation;
+use CommonTreeDropdown;
+use CommonDBTM;
+use Group;
+use Group_Ticket;
+use Session;
+use Stat;
+use Ticket;
+use Ticket_User;
+use Toolbox;
+use User;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -39,7 +55,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Provider class
 **/
-class Provider extends \CommonGLPI {
+class Provider extends CommonGLPI {
 
 
    /**
@@ -56,8 +72,8 @@ class Provider extends \CommonGLPI {
     * - 'label'
     * - 'icon'
     */
-   static function bigNumberItem(\CommonDBTM $item = null, array $params = []): array {
-      $DB = \DBConnection::getReadConnection();
+   static function bigNumberItem(CommonDBTM $item = null, array $params = []): array {
+      $DB = DBConnection::getReadConnection();
 
       $default_params = [
          'apply_filters'  => [],
@@ -86,7 +102,7 @@ class Provider extends \CommonGLPI {
             'WHERE'  => $where
          ],
          self::getFiltersCriteria($i_table, $params['apply_filters']),
-         $item instanceof \Ticket ? \Ticket::getCriteriaFromProfile() : []
+         $item instanceof Ticket ? Ticket::getCriteriaFromProfile() : []
       );
       $iterator = $DB->request($criteria);
 
@@ -175,11 +191,11 @@ class Provider extends \CommonGLPI {
       string $case = "",
       array $params = []
    ):array {
-      $DBread = \DBConnection::getReadConnection();
+      $DBread = DBConnection::getReadConnection();
 
       $default_params = [
          'label'         => "",
-         'icon'          => \Ticket::getIcon(),
+         'icon'          => Ticket::getIcon(),
          'apply_filters' => [],
       ];
       $params = array_merge($default_params, $params);
@@ -195,7 +211,7 @@ class Provider extends \CommonGLPI {
          'value'      => 'notold',
       ];
 
-      $table = \Ticket::getTable();
+      $table = Ticket::getTable();
       $query_criteria = [
          'FROM'   => $table,
          'WHERE'  => [
@@ -206,7 +222,7 @@ class Provider extends \CommonGLPI {
 
       $query_criteria = array_merge_recursive(
          $query_criteria,
-         \Ticket::getCriteriaFromProfile(),
+         Ticket::getCriteriaFromProfile(),
          self::getFiltersCriteria($table, $params['apply_filters'])
       );
 
@@ -214,7 +230,7 @@ class Provider extends \CommonGLPI {
          case 'notold':
             $search_criteria = [$notold];
             $query_criteria['WHERE']+= [
-               "$table.status" => \Ticket::getNotSolvedStatusArray(),
+               "$table.status" => Ticket::getNotSolvedStatusArray(),
             ];
          break;
 
@@ -249,12 +265,12 @@ class Provider extends \CommonGLPI {
                ]
             ]);
             $query_criteria['WHERE']+= [
-               "$table.status" => \Ticket::getNotSolvedStatusArray(),
+               "$table.status" => Ticket::getNotSolvedStatusArray(),
                'OR' => [
-                  'time_to_resolve'          => ['<', new \QueryExpression('NOW()')],
-                  'time_to_own'              => ['<', new \QueryExpression('NOW()')],
-                  'internal_time_to_own'     => ['<', new \QueryExpression('NOW()')],
-                  'internal_time_to_resolve' => ['<', new \QueryExpression('NOW()')],
+                  'time_to_resolve'          => ['<', new QueryExpression('NOW()')],
+                  'time_to_own'              => ['<', new QueryExpression('NOW()')],
+                  'internal_time_to_own'     => ['<', new QueryExpression('NOW()')],
+                  'internal_time_to_resolve' => ['<', new QueryExpression('NOW()')],
                ]
             ];
             break;
@@ -266,12 +282,12 @@ class Provider extends \CommonGLPI {
                [
                   'field'      => 55,
                   'searchtype' => 'equals',
-                  'value'      => \CommonITILValidation::WAITING,
+                  'value'      => CommonITILValidation::WAITING,
                ],  [
                   'link'       => 'AND',
                   'field'      => 59,
                   'searchtype' => 'equals',
-                  'value'      => \Session::getLoginUserID(),
+                  'value'      => Session::getLoginUserID(),
                ]
             ];
             $query_criteria = array_merge_recursive($query_criteria, [
@@ -284,56 +300,56 @@ class Provider extends \CommonGLPI {
                   ]
                ],
                'WHERE' => [
-                  'glpi_ticketvalidations.status'            => \CommonITILValidation::WAITING,
-                  'glpi_ticketvalidations.users_id_validate' => \Session::getLoginUserID()
+                  'glpi_ticketvalidations.status'            => CommonITILValidation::WAITING,
+                  'glpi_ticketvalidations.users_id_validate' => Session::getLoginUserID()
                ]
             ]);
             break;
 
          // Statuses speciale cases (no break)
          case 'incoming':
-            $status = \Ticket::INCOMING;
-            $params['icon']  = \Ticket::getIcon();
+            $status = Ticket::INCOMING;
+            $params['icon']  = Ticket::getIcon();
             $params['label'] = __("Incoming tickets");
             $skip = true;
          case 'waiting':
             if (!$skip) {
-               $status =\Ticket::WAITING;
+               $status =Ticket::WAITING;
                $params['icon']  = "fas fa-pause-circle";
                $params['label'] = __("Pending tickets");
                $skip = true;
             }
          case 'assigned':
             if (!$skip) {
-               $status = \Ticket::ASSIGNED;
+               $status = Ticket::ASSIGNED;
                $params['icon']  = "fas fa-users";
                $params['label'] = __("Assigned tickets");
                $skip = true;
             }
          case 'planned':
             if (!$skip) {
-               $status = \Ticket::PLANNED;
+               $status = Ticket::PLANNED;
                $params['icon']  = "fas fa-calendar-check";
                $params['label'] = __("Planned tickets");
                $skip = true;
             }
          case 'solved':
             if (!$skip) {
-               $status = \Ticket::SOLVED;
+               $status = Ticket::SOLVED;
                $params['icon']  = "far fa-check-square";
                $params['label'] = __("Solved tickets");
                $skip = true;
             }
          case 'closed':
             if (!$skip) {
-               $status = \Ticket::CLOSED;
+               $status = Ticket::CLOSED;
                $params['icon']  = "fas fa-archive";
                $params['label'] = __("Closed tickets");
                $skip = true;
             }
          case 'status':
             if (!$skip) {
-               $status = \Ticket::INCOMING;
+               $status = Ticket::INCOMING;
             }
             $search_criteria = [
                [
@@ -350,7 +366,7 @@ class Provider extends \CommonGLPI {
             break;
       }
 
-      $url = \Ticket::getSearchURL()."?".\Toolbox::append_params([
+      $url = Ticket::getSearchURL()."?".Toolbox::append_params([
          'criteria' => $search_criteria,
          'reset'    => 'reset'
       ]);
@@ -374,8 +390,8 @@ class Provider extends \CommonGLPI {
    /**
     * Get multiple counts of computer by a specific foreign key
     *
-    * @param \CommonDBTM $item main item to count
-    * @param \CommonDBTM $fk_item groupby by this item (we will find the foreign key in the main item)
+    * @param CommonDBTM $item main item to count
+    * @param CommonDBTM $fk_item groupby by this item (we will find the foreign key in the main item)
     * @param array $params values for:
     * - 'title' of the card
     * - 'icon' of the card
@@ -394,11 +410,11 @@ class Provider extends \CommonGLPI {
     * - 'icon'
     */
    public static function nbItemByFk(
-      \CommonDBTM $item = null,
-      \CommonDBTM $fk_item = null,
+      CommonDBTM $item = null,
+      CommonDBTM $fk_item = null,
       array $params = []
    ): array {
-      $DB = \DBConnection::getReadConnection();
+      $DB = DBConnection::getReadConnection();
 
       $c_table     = $item::getTable();
       $fk_table    = $fk_item::getTable();
@@ -431,7 +447,7 @@ class Provider extends \CommonGLPI {
       }
 
       $name = 'name';
-      if ($fk_item instanceof \CommonTreeDropdown) {
+      if ($fk_item instanceof CommonTreeDropdown) {
          $name = 'completename';
       }
 
@@ -462,7 +478,7 @@ class Provider extends \CommonGLPI {
             'LIMIT'     => $params['limit'],
          ],
          self::getFiltersCriteria($c_table, $params['apply_filters']),
-         $item instanceof \Ticket ? \Ticket::getCriteriaFromProfile() : []
+         $item instanceof Ticket ? Ticket::getCriteriaFromProfile() : []
       );
       $iterator = $DB->request($criteria);
 
@@ -486,7 +502,7 @@ class Provider extends \CommonGLPI {
          $data[] = [
             'number' => $result['cpt'],
             'label'  => $result['fk_name'] ?? __("without"),
-            'url'    => $url . '&' . \Toolbox::append_params($search_criteria),
+            'url'    => $url . '&' . Toolbox::append_params($search_criteria),
          ];
       }
 
@@ -507,15 +523,15 @@ class Provider extends \CommonGLPI {
    /**
     * Get a list of article for an compatible item (with date,name,text fields)
     *
-    * @param \CommonDBTM $item the itemtype to list
+    * @param CommonDBTM $item the itemtype to list
     * @param array   $params default values for
     * - 'icon' of the card
     * - 'apply_filters' values from dashboard filters
     *
     * @return array
     */
-   public static function articleListItem(\CommonDBTM $item = null, array $params = []): array {
-      $DB = \DBConnection::getReadConnection();
+   public static function articleListItem(CommonDBTM $item = null, array $params = []): array {
+      $DB = DBConnection::getReadConnection();
 
       $default_params = [
          'icon'          => $item::getIcon(),
@@ -539,7 +555,7 @@ class Provider extends \CommonGLPI {
             'date'    => $line['date'] ?? '',
             'label'   => $line['name'] ?? '',
             'content' => $line['text'] ?? '',
-            'author'  => \User::getFriendlyNameById($line['users_id'] ?? 0),
+            'author'  => User::getFriendlyNameById($line['users_id'] ?? 0),
             'url'     => $item::getFormURLWithID($line['id']),
          ];
       }
@@ -572,26 +588,26 @@ class Provider extends \CommonGLPI {
     * @return array
     */
    public static function ticketsOpened(array $params = []): array {
-      $DB = \DBConnection::getReadConnection();
+      $DB = DBConnection::getReadConnection();
       $default_params = [
          'label'         => "",
-         'icon'          => \Ticket::getIcon(),
+         'icon'          => Ticket::getIcon(),
          'apply_filters' => [],
       ];
       $params = array_merge($default_params, $params);
 
-      $t_table = \Ticket::getTable();
+      $t_table = Ticket::getTable();
       $criteria = array_merge_recursive(
          [
             'SELECT' => [
                'COUNT' => "$t_table.id as nb_tickets",
-               new \QueryExpression("DATE_FORMAT(".$DB->quoteName("date").", '%Y-%m') AS ticket_month")
+               new QueryExpression("DATE_FORMAT(".$DB->quoteName("date").", '%Y-%m') AS ticket_month")
             ],
             'FROM'    => $t_table,
             'GROUPBY' => 'ticket_month',
             'ORDER'   => 'ticket_month ASC'
          ],
-         \Ticket::getCriteriaFromProfile(),
+         Ticket::getCriteriaFromProfile(),
          self::getFiltersCriteria($t_table, $params['apply_filters'])
       );
       $iterator = $DB->request($criteria);
@@ -623,7 +639,7 @@ class Provider extends \CommonGLPI {
          $data[] = [
             'number' => $result['nb_tickets'],
             'label'  => $result['ticket_month'],
-            'url'    => \Ticket::getSearchURL()."?".\Toolbox::append_params($s_criteria),
+            'url'    => Ticket::getSearchURL()."?".Toolbox::append_params($s_criteria),
          ];
       }
 
@@ -649,7 +665,7 @@ class Provider extends \CommonGLPI {
    public static function getTicketsEvolution(array $params = []): array {
       $default_params = [
          'label'         => "",
-         'icon'          => \Ticket::getIcon(),
+         'icon'          => Ticket::getIcon(),
          'apply_filters' => [],
       ];
       $params = array_merge($default_params, $params);
@@ -750,16 +766,16 @@ class Provider extends \CommonGLPI {
          ],
       ];
 
-      $t_table   = \Ticket::getTable();
+      $t_table   = Ticket::getTable();
       $filters = array_merge_recursive(
-         \Ticket::getCriteriaFromProfile(),
+         Ticket::getCriteriaFromProfile(),
          self::getFiltersCriteria($t_table, $params['apply_filters'])
       );
 
       $i = 0;
       $monthsyears = [];
       foreach ($series as $stat_type => &$serie) {
-         $values = \Stat::constructEntryValues(
+         $values = Stat::constructEntryValues(
             'Ticket',
             $stat_type,
             $begin,
@@ -783,7 +799,7 @@ class Provider extends \CommonGLPI {
 
             $serie['data'][$index] = [
                'value' => $number,
-               'url'   => \Ticket::getSearchURL()."?".\Toolbox::append_params($serie['search']),
+               'url'   => Ticket::getSearchURL()."?".Toolbox::append_params($serie['search']),
             ];
          }
 
@@ -812,47 +828,47 @@ class Provider extends \CommonGLPI {
     * @return array
     */
    public static function getTicketsStatus(array $params = []): array {
-      $DB = \DBConnection::getReadConnection();
+      $DB = DBConnection::getReadConnection();
 
       $default_params = [
          'label'          => "",
-         'icon'           => \Ticket::getIcon(),
+         'icon'           => Ticket::getIcon(),
          'apply_filters'  => [],
       ];
       $params = array_merge($default_params, $params);
 
-      $statuses = \Ticket::getAllStatusArray();
-      $t_table  = \Ticket::getTable();
+      $statuses = Ticket::getAllStatusArray();
+      $t_table  = Ticket::getTable();
 
       $criteria = array_merge_recursive(
          [
             'DISTINCT' => true,
             'SELECT'   => [
-               new \QueryExpression(
+               new QueryExpression(
                   "FROM_UNIXTIME(UNIX_TIMESTAMP(".$DB->quoteName("$t_table.date")."),'%Y-%m') AS period"
                ),
-               new \QueryExpression(
-                  "SUM(IF($t_table.status = ".\Ticket::INCOMING.", 1, 0))
+               new QueryExpression(
+                  "SUM(IF($t_table.status = ".Ticket::INCOMING.", 1, 0))
                      as ".$DB->quoteValue(_x('status', 'New'))
                ),
-               new \QueryExpression(
-                  "SUM(IF($t_table.status = ".\Ticket::ASSIGNED.", 1, 0))
+               new QueryExpression(
+                  "SUM(IF($t_table.status = ".Ticket::ASSIGNED.", 1, 0))
                      as ".$DB->quoteValue(_x('status', 'Processing (assigned)'))
                ),
-               new \QueryExpression(
-                  "SUM(IF($t_table.status = ".\Ticket::PLANNED.", 1, 0))
+               new QueryExpression(
+                  "SUM(IF($t_table.status = ".Ticket::PLANNED.", 1, 0))
                      as ".$DB->quoteValue(_x('status', 'Processing (planned)'))
                ),
-               new \QueryExpression(
-                  "SUM(IF($t_table.status = ".\Ticket::WAITING.", 1, 0))
+               new QueryExpression(
+                  "SUM(IF($t_table.status = ".Ticket::WAITING.", 1, 0))
                      as ".$DB->quoteValue(__('Pending'))
                ),
-               new \QueryExpression(
-                  "SUM(IF($t_table.status = ".\Ticket::SOLVED.", 1, 0))
+               new QueryExpression(
+                  "SUM(IF($t_table.status = ".Ticket::SOLVED.", 1, 0))
                      as ".$DB->quoteValue(_x('status', 'Solved'))
                ),
-               new \QueryExpression(
-                  "SUM(IF($t_table.status = ".\Ticket::CLOSED.", 1, 0))
+               new QueryExpression(
+                  "SUM(IF($t_table.status = ".Ticket::CLOSED.", 1, 0))
                      as ".$DB->quoteValue(_x('status', 'Closed'))
                ),
             ],
@@ -864,7 +880,7 @@ class Provider extends \CommonGLPI {
             'GROUP'    => ['period']
          ],
          // limit count for profiles with limited rights
-         \Ticket::getCriteriaFromProfile(),
+         Ticket::getCriteriaFromProfile(),
          self::getFiltersCriteria($t_table, $params['apply_filters'])
       );
 
@@ -913,7 +929,7 @@ class Provider extends \CommonGLPI {
             $data['series'][$i]['name'] = $label2;
             $data['series'][$i]['data'][] = [
                'value' => (int) $value,
-               'url'   => \Ticket::getSearchURL()."?".\Toolbox::append_params($s_criteria),
+               'url'   => Ticket::getSearchURL()."?".Toolbox::append_params($s_criteria),
             ];
             $i++;
          }
@@ -948,7 +964,7 @@ class Provider extends \CommonGLPI {
       string $case = "",
       array $params = []
    ):array {
-      $DBread = \DBConnection::getReadConnection();
+      $DBread = DBConnection::getReadConnection();
       $default_params = [
          'label'         => "",
          'icon'          => null,
@@ -956,9 +972,9 @@ class Provider extends \CommonGLPI {
       ];
       $params = array_merge($default_params, $params);
 
-      $t_table  = \Ticket::getTable();
-      $li_table = \Ticket_User::getTable();
-      $ug_table = \User::getTable();
+      $t_table  = Ticket::getTable();
+      $li_table = Ticket_User::getTable();
+      $ug_table = User::getTable();
       $n_fields = [
          "$ug_table.firstname as first",
          "$ug_table.realname as second",
@@ -971,40 +987,40 @@ class Provider extends \CommonGLPI {
       $case_array = explode('_', $case);
       if ($case_array[0] == 'user') {
          $where["$ug_table.is_deleted"]  = 0;
-         $params['icon'] = $params['icon'] ?? \User::getIcon();
+         $params['icon'] = $params['icon'] ?? User::getIcon();
       } else if ($case_array[0] == 'group') {
-         $li_table = \Group_Ticket::getTable();
-         $ug_table = \Group::getTable();
+         $li_table = Group_Ticket::getTable();
+         $ug_table = Group::getTable();
          $n_fields = [
             "$ug_table.completename as first"
          ];
-         $params['icon'] = $params['icon'] ?? \Group::getIcon();
+         $params['icon'] = $params['icon'] ?? Group::getIcon();
       }
 
       $type = 0;
       switch ($case) {
          case "user_requester":
-            $type     = \CommonITILActor::REQUESTER;
+            $type     = CommonITILActor::REQUESTER;
             $soption  = 4;
             break;
          case "group_requester":
-            $type     = \CommonITILActor::REQUESTER;
+            $type     = CommonITILActor::REQUESTER;
             $soption  = 71;
             break;
          case "user_observer":
-            $type     = \CommonITILActor::OBSERVER;
+            $type     = CommonITILActor::OBSERVER;
             $soption  = 66;
             break;
          case "group_observer":
-            $type     = \CommonITILActor::OBSERVER;
+            $type     = CommonITILActor::OBSERVER;
             $soption  = 65;
             break;
          case "user_assign":
-            $type     = \CommonITILActor::ASSIGN;
+            $type     = CommonITILActor::ASSIGN;
             $soption  = 5;
             break;
          case "group_assign":
-            $type     = \CommonITILActor::OBSERVER;
+            $type     = CommonITILActor::OBSERVER;
             $soption  = 8;
             break;
       }
@@ -1039,7 +1055,7 @@ class Provider extends \CommonGLPI {
             'ORDER'   => 'nb_tickets DESC',
             'WHERE'   => $where + getEntitiesRestrictCriteria($t_table),
          ],
-         \Ticket::getCriteriaFromProfile(),
+         Ticket::getCriteriaFromProfile(),
          self::getFiltersCriteria($t_table, $params['apply_filters'])
       );
       $iterator = $DBread->request($criteria);
@@ -1061,7 +1077,7 @@ class Provider extends \CommonGLPI {
          $data[] = [
             'number' => $result['nb_tickets'],
             'label'  => $result['first']." ".($result['second'] ?? ""),
-            'url'    => \Ticket::getSearchURL()."?".\Toolbox::append_params($s_criteria),
+            'url'    => Ticket::getSearchURL()."?".Toolbox::append_params($s_criteria),
          ];
       }
       return [
@@ -1083,7 +1099,7 @@ class Provider extends \CommonGLPI {
     * @return array
     */
    public static function averageTicketTimes(array $params = []) {
-      $DBread = \DBConnection::getReadConnection();
+      $DBread = DBConnection::getReadConnection();
       $default_params = [
          'label'         => "",
          'icon'          => "fas fa-stopwatch",
@@ -1091,15 +1107,15 @@ class Provider extends \CommonGLPI {
       ];
       $params = array_merge($default_params, $params);
 
-      $t_table  = \Ticket::getTable();
+      $t_table  = Ticket::getTable();
       $criteria = array_merge_recursive(
          [
             'SELECT' => [
-               new \QueryExpression("DATE_FORMAT(".$DBread->quoteName("date").", '%Y-%m') AS period"),
-               new \QueryExpression("AVG(".$DBread->quoteName("takeintoaccount_delay_stat").") AS avg_takeintoaccount_delay_stat"),
-               new \QueryExpression("AVG(".$DBread->quoteName("waiting_duration").") AS avg_waiting_duration"),
-               new \QueryExpression("AVG(".$DBread->quoteName("solve_delay_stat").") AS avg_solve_delay_stat"),
-               new \QueryExpression("AVG(".$DBread->quoteName("close_delay_stat").") AS close_delay_stat"),
+               new QueryExpression("DATE_FORMAT(".$DBread->quoteName("date").", '%Y-%m') AS period"),
+               new QueryExpression("AVG(".$DBread->quoteName("takeintoaccount_delay_stat").") AS avg_takeintoaccount_delay_stat"),
+               new QueryExpression("AVG(".$DBread->quoteName("waiting_duration").") AS avg_waiting_duration"),
+               new QueryExpression("AVG(".$DBread->quoteName("solve_delay_stat").") AS avg_solve_delay_stat"),
+               new QueryExpression("AVG(".$DBread->quoteName("close_delay_stat").") AS close_delay_stat"),
             ],
             'FROM' => $t_table,
             'WHERE' => [
@@ -1108,7 +1124,7 @@ class Provider extends \CommonGLPI {
             'ORDER' => 'period ASC',
             'GROUP' => ['period']
          ],
-         \Ticket::getCriteriaFromProfile(),
+         Ticket::getCriteriaFromProfile(),
          self::getFiltersCriteria($t_table, $params['apply_filters'])
       );
       $iterator = $DBread->request($criteria);
@@ -1223,7 +1239,7 @@ class Provider extends \CommonGLPI {
 
 
    private static function getFiltersCriteria(string $table = "", array $apply_filters = []) {
-      $DB = \DBConnection::getReadConnection();
+      $DB = DBConnection::getReadConnection();
 
       $where = [];
       $join  = [];

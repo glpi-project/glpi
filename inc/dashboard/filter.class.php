@@ -32,6 +32,15 @@
 
 namespace Glpi\Dashboard;
 
+use CommonGLPI;
+use ITILCategory;
+use RequestType;
+use Location;
+use Manufacturer;
+use Session;
+use Html;
+use Plugin;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -39,7 +48,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Filter class
 **/
-class Filter extends \CommonGLPI {
+class Filter extends CommonGLPI {
 
    /**
     * Return all available filters
@@ -51,13 +60,13 @@ class Filter extends \CommonGLPI {
       $filters = [
          'dates'        => __("Creation date"),
          'dates_mod'    => __("Last update"),
-         'itilcategory' => \ITILCategory::getTypeName(\Session::getPluralNumber()),
-         'requesttype'  => \RequestType::getTypeName(\Session::getPluralNumber()),
-         'location'     => \Location::getTypeName(\Session::getPluralNumber()),
-         'manufacturer' => \Manufacturer::getTypeName(\Session::getPluralNumber()),
+         'itilcategory' => ITILCategory::getTypeName(Session::getPluralNumber()),
+         'requesttype'  => RequestType::getTypeName(Session::getPluralNumber()),
+         'location'     => Location::getTypeName(Session::getPluralNumber()),
+         'manufacturer' => Manufacturer::getTypeName(Session::getPluralNumber()),
       ];
 
-      $more_filters = \Plugin::doHookFunction("dashboard_filters");
+      $more_filters = Plugin::doHookFunction("dashboard_filters");
       if (is_array($more_filters)) {
          $filters = array_merge($filters, $more_filters);
       }
@@ -81,7 +90,7 @@ class Filter extends \CommonGLPI {
 
       $rand  = mt_rand();
       $label = self::getAll()[$fieldname];
-      $field = \Html::showDateField('filter-dates', [
+      $field = Html::showDateField('filter-dates', [
          'value'        => $values,
          'rand'         => $rand,
          'range'        => true,
@@ -102,7 +111,7 @@ class Filter extends \CommonGLPI {
          }
       };
 JAVASCRIPT;
-      $js = \Html::scriptBlock($js);
+      $js = Html::scriptBlock($js);
 
       return $js.self::field($fieldname, $field, $label, is_array($values) && count($values) > 0);
    }
@@ -167,7 +176,7 @@ JAVASCRIPT;
       };
 
 JAVASCRIPT;
-      $js = \Html::scriptBlock($js);
+      $js = Html::scriptBlock($js);
 
       return $js.self::field($fieldname, $field, $label, $value > 0);
    }
@@ -221,7 +230,7 @@ HTML;
             });
       });
 JAVASCRIPT;
-      $js = \Html::scriptBlock($js);
+      $js = Html::scriptBlock($js);
 
       return $html.$js;
    }

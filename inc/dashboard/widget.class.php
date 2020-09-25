@@ -34,7 +34,12 @@ namespace Glpi\Dashboard;
 
 use Mexitek\PHPColors\Color;
 use ScssPhp\ScssPhp\Compiler;
+use Michelf\MarkdownExtra;
+use CommonGLPI;
 use Toolbox;
+use Plugin;
+use Html;
+use Search;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -43,7 +48,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Widget class
 **/
-class Widget extends \CommonGLPI {
+class Widget extends CommonGLPI {
    static $animation_duration = 1000; // in millseconds
 
 
@@ -220,7 +225,7 @@ class Widget extends \CommonGLPI {
          ],
       ];
 
-      $more_types = \Plugin::doHookFunction("dashboard_types");
+      $more_types = Plugin::doHookFunction("dashboard_types");
       if (is_array($more_types)) {
          $types = array_merge($types, $more_types);
       }
@@ -345,7 +350,7 @@ HTML;
       $nb_lines = min($p['limit'], count($p['data']));
       array_splice($p['data'], $nb_lines);
 
-      $fg_color = \Toolbox::getFgColor($p['color']);
+      $fg_color = Toolbox::getFgColor($p['color']);
 
       $class = $p['class'];
       $class.= count($p['filters']) > 0 ? " filter-".implode(' filter-', $p['filters']) : "";
@@ -368,10 +373,10 @@ HTML;
             : "";
 
          $color2 = isset($entry['color'])
-            ? "style=\"color: ".\Toolbox::getFgColor($entry['color'], 20).";\""
+            ? "style=\"color: ".Toolbox::getFgColor($entry['color'], 20).";\""
             : "";
 
-         $formatted_number = \Toolbox::shortenNumber($entry['number']);
+         $formatted_number = Toolbox::shortenNumber($entry['number']);
 
          $numbers_html.= <<<HTML
             <a {$href} class="line line-{$alphabet[$i]}">
@@ -400,7 +405,6 @@ HTML;
             $bgcolor   = $palette['colors'][$index];
             $bgcolor_h = Toolbox::getFgColor($bgcolor, 10);
             $color     = Toolbox::getFgColor($bgcolor);
-            $color_h   = Toolbox::getFgColor($color, 60);
 
             $palette_style .= "
                #chart-{$p['rand']} .line-$letter {
@@ -486,7 +490,7 @@ HTML;
       array_splice($p['data'], $nb_slices);
 
       $nodata   = isset($p['data']['nodata']) && $p['data']['nodata'];
-      $fg_color = \Toolbox::getFgColor($p['color']);
+      $fg_color = Toolbox::getFgColor($p['color']);
 
       $class = "pie";
       $class.= $p['half'] ? " half": "";
@@ -547,7 +551,7 @@ HTML;
             'url'   => $entry['url'],
          ];
       }
-      $total_txt = \Toolbox::shortenNumber($total, 1, false);
+      $total_txt = Toolbox::shortenNumber($total, 1, false);
 
       $labels = json_encode($labels);
       $series = json_encode($series);
@@ -915,8 +919,8 @@ JAVASCRIPT;
       $json_labels = json_encode($labels);
       $json_series = json_encode($series);
 
-      $fg_color   = \Toolbox::getFgColor($p['color']);
-      $line_color = \Toolbox::getFgColor($p['color'], 10);
+      $fg_color   = Toolbox::getFgColor($p['color']);
+      $line_color = Toolbox::getFgColor($p['color'], 10);
 
       $animation_duration = self::$animation_duration;
 
@@ -1307,8 +1311,8 @@ JAVASCRIPT;
       $json_labels = json_encode($labels);
       $json_series = json_encode($series);
 
-      $fg_color   = \Toolbox::getFgColor($p['color']);
-      $line_color = \Toolbox::getFgColor($p['color'], 10);
+      $fg_color   = Toolbox::getFgColor($p['color']);
+      $line_color = Toolbox::getFgColor($p['color'], 10);
       $class = "line";
       $class.= $p['area'] ? " area": "";
       $class.= $p['multiple'] ? " multiple": "";
@@ -1465,7 +1469,7 @@ HTML;
          });
       });
 JAVASCRIPT;
-      $js = \Html::scriptBlock($js);
+      $js = Html::scriptBlock($js);
 
       return $html.$js;
    }
@@ -1492,12 +1496,12 @@ JAVASCRIPT;
          $p['markdown_content'] = \Html::cleanPostForTextArea($p['markdown_content']);
       }
 
-      $ph       = __("Type markdown text here");
-      $fg_color = \Toolbox::getFgColor($p['color']);
-      $border_color = \Toolbox::getFgColor($p['color'], 10);
-      $md       = new \Michelf\MarkdownExtra();
+      $ph           = __("Type markdown text here");
+      $fg_color     = Toolbox::getFgColor($p['color']);
+      $border_color = Toolbox::getFgColor($p['color'], 10);
+      $md           = new MarkdownExtra();
        // Prevent escaping as code is already escaped by GLPI sanityze
-      $md->code_span_content_func = function ($code) { return $code; };
+      $md->code_span_content_func  = function ($code) { return $code; };
       $md->code_block_content_func = function ($code) { return $code; };
 
       $html = <<<HTML
@@ -1554,8 +1558,8 @@ HTML;
       $color = new Color($p['color']);
       $is_light = $color->isLight();
 
-      $fg_color  = \Toolbox::getFgColor($p['color'], $is_light ? 65 : 40);
-      $fg_color2 = \Toolbox::getFgColor($p['color'], 5);
+      $fg_color  = Toolbox::getFgColor($p['color'], $is_light ? 65 : 40);
+      $fg_color2 = Toolbox::getFgColor($p['color'], 5);
 
       $href = strlen($p['url'])
          ? "href='{$p['url']}'"
@@ -1571,7 +1575,7 @@ HTML;
       ];
 
       ob_start();
-      $params = \Search::manageParams($p['itemtype'], $params);
+      $params = Search::manageParams($p['itemtype'], $params);
       // remove parts of search list
       $params = array_merge($params, [
          'showmassiveactions' => false,
@@ -1581,7 +1585,7 @@ HTML;
          'no_sort'            => true,
          'list_limit'         => $p['limit']
       ]);
-      \Search::showList($p['itemtype'], $params);
+      Search::showList($p['itemtype'], $params);
       $search_result = ob_get_clean();
 
       $html = <<<HTML
@@ -1631,8 +1635,8 @@ HTML;
 
       $nb_lines = min($p['limit'], count($p['data']));
       array_splice($p['data'], $nb_lines);
-      $fg_color = \Toolbox::getFgColor($p['color']);
-      $bg_color_2 = \Toolbox::getFgColor($p['color'], 5);
+      $fg_color = Toolbox::getFgColor($p['color']);
+      $bg_color_2 = Toolbox::getFgColor($p['color'], 5);
 
       $class = $p['class'];
       $class.= count($p['filters']) > 0 ? " filter-".implode(' filter-', $p['filters']) : "";
@@ -1762,7 +1766,7 @@ JAVASCRIPT;
       if ($nb_series == 1) {
          return [
             'names'  => ['a'],
-            'colors' => [\Toolbox::getFgColor($bgcolor)],
+            'colors' => [Toolbox::getFgColor($bgcolor)],
          ];
       }
 
