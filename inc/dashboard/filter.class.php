@@ -84,7 +84,8 @@ class Filter extends CommonGLPI {
     * @return string
     */
    static function dates($values = "", string $fieldname = 'dates'): string {
-      if (is_string($values) && strlen($values) == 0) {
+      // string mean empty value
+      if (is_string($values)) {
          $values = [];
       }
 
