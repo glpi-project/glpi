@@ -282,7 +282,17 @@ class SimpleCache extends SimpleCacheDecorator implements CacheInterface {
          return;
       }
 
-      $file_contents = file_get_contents($this->footprint_file);
+      // It may potentially happen that a writable file may be unreadable.
+      if (!is_readable($this->footprint_file)) {
+         trigger_error(
+            sprintf('Cannot read "%s" cache footprint file. Cache performance can be lowered.', $this->footprint_file),
+            E_USER_WARNING
+         );
+         $this->footprint_file = null;
+         return;
+      }
+
+      $file_contents = $this->getFootprintFileContents();
       if (empty($file_contents)) {
          // Create empty array in file if empty.
          $this->setAllCachedFootprints([]);
@@ -301,6 +311,35 @@ class SimpleCache extends SimpleCacheDecorator implements CacheInterface {
    }
 
    /**
+    * Get footprint file contents.
+    *
+    * @return string|null
+    */
+   private function getFootprintFileContents() {
+      if (!$handle = fopen($this->footprint_file, 'rb')) {
+         return null;
+      }
+
+      // Lock the file, if possible (depends on used FS).
+      // Use a share lock to not make readers wait each oher.
+      $is_locked = flock($handle, LOCK_SH);
+
+      $file_contents = '';
+      while (!feof($handle)) {
+         $file_contents .= fread($handle, 8192);
+      }
+
+      if ($is_locked) {
+         // Unlock the file if it has been locked
+         flock($handle, LOCK_UN);
+      }
+
+      fclose($handle);
+
+      return $file_contents;
+   }
+
+   /**
     * Returns all cache footprints.
     *
     * @return array  Associative array of cached items footprints, where keys corresponds to the
@@ -308,28 +347,12 @@ class SimpleCache extends SimpleCacheDecorator implements CacheInterface {
     */
    private function getAllCachedFootprints() {
       if (null !== $this->footprint_file) {
-         $handle = fopen($this->footprint_file, 'rb');
+         $file_contents = $this->getFootprintFileContents();
 
-         // Lock the file, if possible (depends on used FS).
-         // Use a share lock to not make readers wait each oher.
-         $is_locked = flock($handle, LOCK_SH);
-
-         $file_contents = '';
-         while (!feof($handle)) {
-            $file_contents .= fread($handle, 8192);
-         }
-
-         if ($is_locked) {
-            // Unlock the file if it has been locked
-            flock($handle, LOCK_UN);
-         }
-
-         fclose($handle);
-
-         $footprints = json_decode($file_contents, true);
+         $footprints = !empty($file_contents) ? json_decode($file_contents, true) : null;
 
          if (json_last_error() !== JSON_ERROR_NONE || !is_array($footprints)) {
-            // Should happen only if file has been corrupted after cache instanciation,
+            // Should happen only if file has been corrupted/deleted/truncated after cache instanciation,
             // launch integrity tests again to trigger warnings and fix file contents.
             $this->checkFootprintFileIntegrity();
             return [];
