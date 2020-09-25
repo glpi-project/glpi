@@ -40,16 +40,15 @@ use \APIBaseClass;
 
 /**
  * @engine isolate
+ *
+ * @php < 8.0.0-dev
  */
 class APIXmlrpc extends APIBaseClass {
 
-   public function setUp() {
-      parent::setUp();
-      $this->boolean(extension_loaded('xmlrpc'))->isTrue('xmlrpc extension is missing');
-   }
-
    public function beforeTestMethod($method) {
       global $CFG_GLPI;
+
+      $this->boolean(extension_loaded('xmlrpc'))->isTrue('xmlrpc extension is missing');
 
       $this->http_client = new GuzzleHttp\Client();
       $this->base_uri    = trim($CFG_GLPI['url_base'], "/")."/apixmlrpc.php";

@@ -82,10 +82,10 @@ class Auth extends DbTestCase {
 
       // test with no password expiration
       $tests[] = [
-         'password_last_update'           => date('Y-m-d H:i:s', strtotime('-10 years')),
-         'password_expiration_delay'      => -1,
-         'password_expiration_lock_delay' => -1,
-         'expected_lock'                  => false,
+         'last_update'   => date('Y-m-d H:i:s', strtotime('-10 years')),
+         'exp_delay'     => -1,
+         'lock_delay'    => -1,
+         'expected_lock' => false,
       ];
 
       // tests with no lock on password expiration
@@ -95,10 +95,10 @@ class Auth extends DbTestCase {
       ];
       foreach ($cases as $last_update => $expected_lock) {
          $tests[] = [
-            'password_last_update'           => date('Y-m-d H:i:s', strtotime($last_update)),
-            'password_expiration_delay'      => 15,
-            'password_expiration_lock_delay' => -1,
-            'expected_lock'                  => $expected_lock,
+            'last_update'   => date('Y-m-d H:i:s', strtotime($last_update)),
+            'exp_delay'     => 15,
+            'lock_delay'    => -1,
+            'expected_lock' => $expected_lock,
          ];
       }
 
@@ -109,10 +109,10 @@ class Auth extends DbTestCase {
       ];
       foreach ($cases as $last_update => $expected_lock) {
          $tests[] = [
-            'password_last_update'           => date('Y-m-d H:i:s', strtotime($last_update)),
-            'password_expiration_delay'      => 15,
-            'password_expiration_lock_delay' => 0,
-            'expected_lock'                  => $expected_lock,
+            'last_update'   => date('Y-m-d H:i:s', strtotime($last_update)),
+            'exp_delay'     => 15,
+            'lock_delay'    => 0,
+            'expected_lock' => $expected_lock,
          ];
       }
 
@@ -124,10 +124,10 @@ class Auth extends DbTestCase {
       ];
       foreach ($cases as $last_update => $expected_lock) {
          $tests[] = [
-            'password_last_update'           => date('Y-m-d H:i:s', strtotime($last_update)),
-            'password_expiration_delay'      => 15,
-            'password_expiration_lock_delay' => 10,
-            'expected_lock'                  => $expected_lock,
+            'last_update'   => date('Y-m-d H:i:s', strtotime($last_update)),
+            'exp_delay'     => 15,
+            'lock_delay'    => 10,
+            'expected_lock' => $expected_lock,
          ];
       }
 

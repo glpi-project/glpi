@@ -256,9 +256,9 @@ class Session extends \DbTestCase {
 
       // test with no password expiration
       $tests[] = [
-         'password_last_update'      => date('Y-m-d H:i:s', strtotime('-10 years')),
-         'password_expiration_delay' => -1,
-         'expected_result'           => false,
+         'last_update'      => date('Y-m-d H:i:s', strtotime('-10 years')),
+         'expiration_delay' => -1,
+         'expected_result'  => false,
       ];
 
       // tests with password expiration
@@ -268,9 +268,9 @@ class Session extends \DbTestCase {
       ];
       foreach ($cases as $last_update => $expected_result) {
          $tests[] = [
-            'password_last_update'      => date('Y-m-d H:i:s', strtotime($last_update)),
-            'password_expiration_delay' => 15,
-            'expected_result'           => $expected_result,
+            'last_update'      => date('Y-m-d H:i:s', strtotime($last_update)),
+            'expiration_delay' => 15,
+            'expected_result'  => $expected_result,
          ];
       }
 
@@ -280,7 +280,7 @@ class Session extends \DbTestCase {
    /**
     * @dataProvider mustChangePasswordProvider
     */
-   public function testMustChangePassword(string $last_update, int $exp_delay, bool $expected_result) {
+   public function testMustChangePassword(string $last_update, int $expiration_delay, bool $expected_result) {
       global $CFG_GLPI;
 
       $user = new \User();
@@ -295,7 +295,7 @@ class Session extends \DbTestCase {
       $this->boolean($user->update(['id' => $user_id, 'password_last_update' => $last_update]))->isTrue();
 
       $cfg_backup = $CFG_GLPI;
-      $CFG_GLPI['password_expiration_delay'] = $exp_delay;
+      $CFG_GLPI['password_expiration_delay'] = $expiration_delay;
       $CFG_GLPI['password_expiration_lock_delay'] = -1;
       \Session::destroy();
       \Session::start();

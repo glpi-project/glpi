@@ -80,12 +80,12 @@ class Calendar extends DbTestCase {
             'start'  => '2019-01-01 07:00:00',
             'end'    => '2019-01-01 09:00:00',
             'value'  => HOUR_TIMESTAMP * 2,
-            'day'    => true
+            'days'   => true
          ], [
             'start'  => '2019-01-01 00:00:00',
             'end'    => '2019-01-08 00:00:00',
             'value'  => WEEK_TIMESTAMP,
-            'day'    => true
+            'days'   => true
          ]
       ];
    }
