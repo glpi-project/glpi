@@ -7340,7 +7340,7 @@ class Ticket extends CommonITILObject {
     * @return array criteria to apply to an iterator query
     */
    public static function getCriteriaFromProfile() {
-      if (\Session::haveRight("ticket", \Ticket::READALL)) {
+      if (Session::haveRight("ticket", Ticket::READALL)) {
          return [];
       }
 
@@ -7349,48 +7349,48 @@ class Ticket extends CommonITILObject {
       $valid  = false;
 
       $where_profile = [];
-      if (\Session::haveRight("ticket", \Ticket::READMY)) {
+      if (Session::haveRight("ticket", Ticket::READMY)) {
          $users = true;
          $where_profile[] = [
             'OR' => [
                [
-                  'tu.users_id' => \Session::getLoginUserID(),
+                  'tu.users_id' => Session::getLoginUserID(),
                   'OR' => [
-                     ['tu.type' => \CommonITILActor::REQUESTER],
-                     ['tu.type' => \CommonITILActor::OBSERVER],
+                     ['tu.type' => CommonITILActor::REQUESTER],
+                     ['tu.type' => CommonITILActor::OBSERVER],
                   ]
                ],
-               "glpi_tickets.users_id_recipient" => \Session::getLoginUserID()
+               "glpi_tickets.users_id_recipient" => Session::getLoginUserID()
             ]
          ];
       }
 
-      if (\Session::haveRight("ticket", \Ticket::READGROUP) && count($_SESSION['glpigroups'])) {
+      if (Session::haveRight("ticket", Ticket::READGROUP) && count($_SESSION['glpigroups'])) {
          $groups = true;
          $where_profile[] = [
             'gt.groups_id' => $_SESSION['glpigroups'],
             'OR' => [
-               ['gt.type' => \CommonITILActor::REQUESTER],
-               ['gt.type' => \CommonITILActor::OBSERVER],
+               ['gt.type' => CommonITILActor::REQUESTER],
+               ['gt.type' => CommonITILActor::OBSERVER],
             ]
          ];
       }
 
-      if (\Session::haveRight("ticket", \Ticket::OWN)) {
+      if (Session::haveRight("ticket", Ticket::OWN)) {
          $users = true;
          $where_profile[] = [
-            'tu.users_id' => \Session::getLoginUserID(),
-            'tu.type'     => \CommonITILActor::ASSIGN,
+            'tu.users_id' => Session::getLoginUserID(),
+            'tu.type'     => CommonITILActor::ASSIGN,
          ];
       }
 
-      if (\Session::haveRight("ticket", \Ticket::READASSIGN)) {
+      if (Session::haveRight("ticket", Ticket::READASSIGN)) {
          $users = true;
          $temp = [
             'OR' => [
                [
-                  'tu.users_id' => \Session::getLoginUserID(),
-                  'tu.type'     => \CommonITILActor::ASSIGN,
+                  'tu.users_id' => Session::getLoginUserID(),
+                  'tu.type'     => CommonITILActor::ASSIGN,
                ]
             ]
          ];
@@ -7399,26 +7399,26 @@ class Ticket extends CommonITILObject {
             $groups = true;
             $temp['OR'][] = [
                'gt.groups_id' => $_SESSION['glpigroups'],
-               'gt.type'      => \CommonITILActor::ASSIGN
+               'gt.type'      => CommonITILActor::ASSIGN
             ];
          }
 
-         if (\Session::haveRight('ticket', \Ticket::ASSIGN)) {
+         if (Session::haveRight('ticket', Ticket::ASSIGN)) {
             $temp['OR'][] = [
-               ['glpi_tickets.status' => \CommonITILObject::INCOMING]
+               ['glpi_tickets.status' => CommonITILObject::INCOMING]
             ];
          }
 
          $where_profile[] = $temp;
       }
 
-      if (\Session::haveRightsOr('ticketvalidation', [
-         \TicketValidation::VALIDATEINCIDENT,
-         \TicketValidation::VALIDATEREQUEST
+      if (Session::haveRightsOr('ticketvalidation', [
+         TicketValidation::VALIDATEINCIDENT,
+         TicketValidation::VALIDATEREQUEST
       ])) {
          $valid = true;
          $where_profile[] = [
-            'tv.users_id_validate' => \Session::getLoginUserID(),
+            'tv.users_id_validate' => Session::getLoginUserID(),
          ];
       }
 
@@ -7449,10 +7449,16 @@ class Ticket extends CommonITILObject {
          ];
       }
 
-      return [
-         'LEFT JOIN' => $join_profile,
-         'WHERE'     => ['OR' => $where_profile],
-      ];
+      $criteria = [];
+      if (count($where_profile)) {
+         $criteria['WHERE'] = ['OR' => $where_profile];
+      }
+      if (count($join_profile)) {
+         $criteria['LEFT JOIN'] = $join_profile;
+      }
+
+      return $criteria;
+
    }
 
 

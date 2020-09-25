@@ -472,11 +472,11 @@ class Provider extends CommonGLPI {
                   ]
                ]
             ],
-            'WHERE'     => $where,
             'GROUPBY'   => "$fk_table.$name",
             'ORDERBY'   => "cpt DESC",
             'LIMIT'     => $params['limit'],
          ],
+         count($where) ? ['WHERE' => $where] : [],
          self::getFiltersCriteria($c_table, $params['apply_filters']),
          $item instanceof Ticket ? Ticket::getCriteriaFromProfile() : []
       );
