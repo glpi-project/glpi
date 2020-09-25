@@ -47,11 +47,11 @@ class Profile extends DbTestCase {
 
       return [
          [
-            'user'      => [
+            'user'     => [
                'login'    => 'post-only',
                'password' => 'postonly',
             ],
-            'rights' => [
+            'rightset' => [
                ['name' => \Computer::$rightname, 'value' => CREATE, 'expected' => false],
                ['name' => \Computer::$rightname, 'value' => DELETE, 'expected' => false],
                ['name' => \Ticket::$rightname, 'value' => CREATE, 'expected' => true],
@@ -61,11 +61,11 @@ class Profile extends DbTestCase {
             ],
          ],
          [
-            'user'      => [
+            'user'     => [
                'login'    => 'glpi',
                'password' => 'glpi',
             ],
-            'rights' => [
+            'rightset' => [
                ['name' => \Computer::$rightname, 'value' => CREATE, 'expected' => true],
                ['name' => \Computer::$rightname, 'value' => DELETE, 'expected' => true],
                ['name' => \Ticket::$rightname, 'value' => CREATE, 'expected' => true],
@@ -75,11 +75,11 @@ class Profile extends DbTestCase {
             ],
          ],
          [
-            'user'      => [
+            'user'     => [
                'login'    => 'tech',
                'password' => 'tech',
             ],
-            'rights' => [
+            'rightset' => [
                ['name' => \Computer::$rightname, 'value' => CREATE, 'expected' => true],
                ['name' => \Computer::$rightname, 'value' => DELETE, 'expected' => true],
                ['name' => \Ticket::$rightname, 'value' => CREATE, 'expected' => true],

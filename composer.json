@@ -57,7 +57,7 @@
     },
     "require-dev": {
         "ext-xml": "*",
-        "atoum/atoum": "^3.4",
+        "atoum/atoum": "4.x-dev",
         "consolidation/robo": "^2.0",
         "glpi-project/coding-standard": "^0.7",
         "maglnet/composer-require-checker": "^2.0",
@@ -95,10 +95,12 @@
         "cs": "vendor/bin/phpcs -d memory_limit=512M --cache -p --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=\"/.git/,^$(pwd)/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/\" ./",
         "lint": "vendor/bin/parallel-lint  --exclude files --exclude marketplace --exclude plugins --exclude vendor --exclude tools/vendor .",
         "post-install-cmd": [
-            "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\""
+            "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
+            "patch -f -p1 -d vendor/tecnickcom/tcpdf/ < tools/tcpdf-php8-compat.patch || echo 'Error applying patch, deprecation warnings related to TCPDF lib may pollute logs'"
         ],
         "post-update-cmd": [
-            "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\""
+            "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
+            "patch -f -p1 -d vendor/tecnickcom/tcpdf/ < tools/tcpdf-php8-compat.patch || echo 'Error applying patch, deprecation warnings related to TCPDF lib may pollute logs'"
         ]
     },
     "repositories": {

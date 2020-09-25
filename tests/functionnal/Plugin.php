@@ -64,12 +64,20 @@ class Plugin extends DbTestCase {
       if (defined('GLPI_PREVER')) {
          $this->string($plugin->getGlpiPrever())->isIdenticalTo(GLPI_PREVER);
       } else {
-         $this->when(
-            function () use ($plugin) {
-               $plugin->getGlpiPrever();
-            }
-         )->error
-            ->exists();
+         if (version_compare(PHP_VERSION, '8.0.0-dev', '<')) {
+            $this->when(
+               function () use ($plugin) {
+                  $plugin->getGlpiPrever();
+               }
+            )->error
+               ->exists();
+         } else {
+            $this->exception(
+               function () use ($plugin) {
+                  $plugin->getGlpiPrever();
+               }
+            )->message->contains('Undefined constant "GLPI_PREVER"');
+         }
       }
    }
 
