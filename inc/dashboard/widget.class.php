@@ -301,7 +301,6 @@ HTML;
 
    public static function summaryNumber(array $params = []): string {
       $params['class'] = 'summary-numbers';
-      //$params['label'] = '';
       return self::multipleNumber($params);
    }
 
