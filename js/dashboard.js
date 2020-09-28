@@ -105,13 +105,13 @@ var Dashboard = {
       // generate the css based on the grid width
       Dashboard.generateCss();
 
+      // init filters from storage
+      Dashboard.initFilters();
+
       // retieve cards content by ajax
       if (Dashboard.ajax_cards) {
          Dashboard.getCardsAjax();
       }
-
-      // init filters from storage
-      Dashboard.initFilters();
 
       // animate the dashboards
       if (!Dashboard.ajax_cards) {
