@@ -1423,6 +1423,6 @@ class Session {
     * @return array
     */
    public static function getActiveEntities() {
-      return $_SESSION['glpiactiveentities'];
+      return $_SESSION['glpiactiveentities'] ?? [];
    }
 }
