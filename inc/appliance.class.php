@@ -86,7 +86,6 @@ class Appliance extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
 
-      $rand = mt_rand();
       $tplmark = $this->getAutofillMark('name', $options);
 
       //TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL

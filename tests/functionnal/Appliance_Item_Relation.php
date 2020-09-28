@@ -87,7 +87,7 @@ class Appliance_Item_Relation extends DbTestCase {
       $this->login();
       $this->setEntity(0, true); //locations are in root entity not recursive
       $this->integer(\Appliance_Item_Relation::countForMainItem($appitem))->isIdenticalTo(1);
-      $relations = \Appliance_Item_Relation::getRelationsList($appliances_items_id);
+      $relations = \Appliance_Item_Relation::getForApplianceItem($appliances_items_id);
       $this->array($relations)->hasSize(1);
       $this->string(array_pop($relations))->contains('_location01');
 
@@ -104,6 +104,6 @@ class Appliance_Item_Relation extends DbTestCase {
       ]);
       $this->integer(count($iterator))->isIdenticalTo(0);
 
-      $this->array(\Appliance_Item_Relation::getRelationsList($appliances_items_id))->isEmpty();
+      $this->array(\Appliance_Item_Relation::getForApplianceItem($appliances_items_id))->isEmpty();
    }
 }
