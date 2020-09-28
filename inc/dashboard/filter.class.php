@@ -130,19 +130,19 @@ JAVASCRIPT;
 
 
    static function itilcategory(string $value = "0"): string {
-      return self::dropdown($value, 'itilcategory', "\ItilCategory");
+      return self::dropdown($value, 'itilcategory', ItilCategory::class);
    }
 
    static function requesttype(string $value = "0"): string {
-      return self::dropdown($value, 'requesttype', "\RequestType");
+      return self::dropdown($value, 'requesttype', RequestType::class);
    }
 
    static function location(string $value = "0"): string {
-      return self::dropdown($value, 'location', "\Location");
+      return self::dropdown($value, 'location', Location::class);
    }
 
    static function manufacturer(string $value = "0"): string {
-      return self::dropdown($value, 'manufacturer', "\Manufacturer");
+      return self::dropdown($value, 'manufacturer', Manufacturer::class);
    }
 
 
