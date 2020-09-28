@@ -776,6 +776,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
     * Show the feed content
     **/
    function showFeedContent() {
+
       if (!$this->canViewItem()) {
          return false;
       }
