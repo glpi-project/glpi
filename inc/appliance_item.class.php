@@ -82,7 +82,7 @@ class Appliance_Item extends CommonDBRelation {
 
       switch ($item->getType()) {
          case Appliance::class:
-            self::showItems($item, $withtemplate);
+            self::showItems($item);
             break;
          default :
             if (in_array($item->getType(), Appliance::getTypes())) {
@@ -94,6 +94,8 @@ class Appliance_Item extends CommonDBRelation {
 
    /**
     * Print enclosure items
+    *
+    * @param CommonDBTM $item         CommonDBTM object wanted
     *
     * @return void
    **/
@@ -181,7 +183,9 @@ class Appliance_Item extends CommonDBRelation {
          }
          $header .= "<th>".__('Itemtype')."</th>";
          $header .= "<th>"._n('Item', 'Items', 1)."</th>";
-         $header .= "<th colspan='2'>".Appliance_Item_Relation::getTypeName(Session::getPluralNumber())."</th>";
+         $header .= "<th>".__("Serial")."</th>";
+         $header .= "<th>".__("Inventory number")."</th>";
+         $header .= "<th>".Appliance_Item_Relation::getTypeName(Session::getPluralNumber())."</th>";
          $header .= "</tr>";
          echo $header;
 
@@ -196,23 +200,11 @@ class Appliance_Item extends CommonDBRelation {
             }
             echo "<td>" . $item->getTypeName(1) . "</td>";
             echo "<td>" . $item->getLink() . "</td>";
-            $relations_str = "";
-            foreach (Appliance_Item_Relation::getRelationsList($row['id']) as $rel_id => $link) {
-               $del = "";
-               if ($canedit) {
-                  $del = "<a href='".Appliance_Item_Relation::getFormURLWithID($rel_id)."&purge'>
-                     <i class='delete_relation pointer fas fa-times'></i>
-                  </a>";
-               }
-               $relations_str.= "<li>$link $del</li>";
-            }
-
-            echo "<td class='relations_list'><ul>$relations_str</ul>
-                     <span class='pointer add_relation' data-relations-id='{$row['id']}'>
-                        <i class='fa fa-plus' title='" . __('New relation') . "'></i>
-                        <span class='sr-only'>" . __('New relation') . "</span>
-                     </span>
-                  </td>";
+            echo "<td>" . $item->fields['serial'] ?? "" . "</td>";
+            echo "<td>" . $item->fields['otherserial'] ?? "" . "</td>";
+            echo "<td class='relations_list'>";
+            echo Appliance_Item_Relation::showListForApplianceItem($row["id"], $canedit);
+            echo "</td>";
             echo "</tr>";
          }
          echo $header;
@@ -226,43 +218,7 @@ class Appliance_Item extends CommonDBRelation {
             Html::closeForm();
          }
 
-         if ($canedit) {
-            echo "<div id='add_relation_dialog' title='"._x('button', "Add an item")."' style='display:none;'>
-            <form action='".Appliance_Item_Relation::getFormURL()."'>
-               <p>".Dropdown::showSelectItemFromItemtypes([
-                  'items_id_name'   => 'items_id',
-                  'itemtypes'       => Appliance_Item_Relation::getTypes(true),
-                  'entity_restrict' => $appliance->fields['is_recursive']
-                                          ? getSonsOf('glpi_entities', $appliance->fields['entities_id'])
-                                          : $appliance->fields['entities_id'],
-                  'checkright'     => true,
-                  'display'        => false,
-               ])."</p>
-               <input type='hidden' name='appliances_items_id'>
-               ".Html::submit(_x('button', "Add"), ['name' => 'add'])."
-            </form>
-            </div>";
-
-            $js = <<<JAVASCRIPT
-            $(function() {
-               $(document).on('click', '.add_relation', function() {
-                  var relations_id = $(this).data('relations-id');
-
-                  $('#add_relation_dialog input[name=appliances_items_id]').val(relations_id);
-
-                  $('#add_relation_dialog').dialog({
-                     modal: true,
-                     overlay: {
-                        opacity: 0.7,
-                        background: "black"
-                     },
-                  });
-
-               });
-            });
-JAVASCRIPT;
-            echo Html::scriptBlock($js);
-         }
+         echo Appliance_Item_Relation::getListJSForApplianceItem($appliance, $canedit);
       }
    }
 
@@ -340,6 +296,7 @@ JAVASCRIPT;
       }
 
       $header .= "<th>".__('Name')."</th>";
+      $header .= "<th>".Appliance_Item_Relation::getTypeName(Session::getPluralNumber())."</th>";
       $header .= "</tr>";
 
       if ($number > 0) {
@@ -368,7 +325,12 @@ JAVASCRIPT;
                $name = sprintf(__('%1$s (%2$s)'), $name, $app->fields["id"]);
             }
             echo "<a href='".Appliance::getFormURLWithID($cID)."'>".$name."</a>";
-            echo "</td></tr>";
+            echo "</td>";
+            echo "<td class='relations_list'>";
+            echo Appliance_Item_Relation::showListForApplianceItem($assocID, $canedit);
+            echo "</td>";
+
+            echo "</tr>";
          }
          echo $header;
          echo "</table>";
@@ -384,6 +346,8 @@ JAVASCRIPT;
          Html::closeForm();
       }
       echo "</div>";
+
+      echo Appliance_Item_Relation::getListJSForApplianceItem($item, $canedit);
    }
 
 
@@ -463,30 +427,6 @@ JAVASCRIPT;
       $specificities['itemtypes'] = Appliance::getTypes();
 
       return $specificities;
-   }
-
-   /**
-    * Get item types that can be linked to an appliance item
-    *
-    * @param boolean $all Get all possible types or only allowed ones
-    *
-    * @return array
-    */
-   public static function getTypes($all = false): array {
-      global $CFG_GLPI;
-
-      $types = ['Domain', 'Location', 'Network'];
-
-      foreach ($types as $key => $type) {
-         if (!class_exists($type)) {
-            continue;
-         }
-
-         if ($all === false && !$type::canView()) {
-            unset($types[$key]);
-         }
-      }
-      return $types;
    }
 
    function cleanDBonPurge() {

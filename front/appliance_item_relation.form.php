@@ -36,14 +36,14 @@ Session::checkCentralAccess();
 
 $app_item_rel = new Appliance_Item_Relation();
 
-if (isset($_REQUEST['add'])) {
-   $app_item_rel->check(-1, CREATE, $_REQUEST);
-   $app_item_rel->add($_REQUEST);
+if (isset($_POST['add'])) {
+   $app_item_rel->check(-1, CREATE, $_POST);
+   $app_item_rel->add($_POST);
    Html::back();
 
-} else if (isset($_REQUEST['purge'])) {
-   $app_item_rel->check($_REQUEST['id'], PURGE);
-   $app_item_rel->delete($_REQUEST, 1);
+} else if (isset($_POST['purge'])) {
+   $app_item_rel->check($_POST['id'], PURGE);
+   $app_item_rel->delete($_POST, 1);
    Html::back();
 }
 
