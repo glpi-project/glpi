@@ -42,7 +42,9 @@ if (!defined('GLPI_ROOT')) {
  *   - actions
 **/
 class Rule extends CommonDBTM {
-   use Glpi\Features\Clonable;
+   use Glpi\Features\Clonable {
+      prepareInputForClone as protected prepareInputForCloneTrait;
+   }
 
    public $dohistory             = true;
 
@@ -3227,6 +3229,6 @@ class Rule extends CommonDBTM {
 
       $input = Toolbox::addslashes_deep($input);
 
-      return parent::prepareInputForClone($input);
+      return $this->prepareInputForCloneTrait($input);
    }
 }

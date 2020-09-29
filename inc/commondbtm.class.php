@@ -1229,6 +1229,7 @@ class CommonDBTM extends CommonGLPI {
    function clone(array $override_input = [], bool $history = true) {
       global $DB, $CFG_GLPI;
 
+      \Toolbox::deprecated();
       if ($DB->isSlave()) {
          return false;
       }
@@ -1401,6 +1402,7 @@ class CommonDBTM extends CommonGLPI {
     * @deprecated x.x.x Use the {@link \Glpi\Features\Clonable} trait
    **/
    function prepareInputForClone($input) {
+      \Toolbox::deprecated();
       unset($input['id']);
       unset($input['date_mod']);
       unset($input['date_creation']);
@@ -1428,6 +1430,7 @@ class CommonDBTM extends CommonGLPI {
     * @deprecated x.x.x Use the {@link \Glpi\Features\Clonable} trait
    **/
    function post_clone($source, $history) {
+      \Toolbox::deprecated();
    }
 
 

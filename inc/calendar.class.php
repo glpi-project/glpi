@@ -38,7 +38,9 @@ if (!defined('GLPI_ROOT')) {
  * Calendar Class
 **/
 class Calendar extends CommonDropdown {
-   use Glpi\Features\Clonable;
+   use Glpi\Features\Clonable {
+      post_clone as protected post_cloneTrait;
+   }
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -121,7 +123,7 @@ class Calendar extends CommonDropdown {
 
       switch ($ma->getAction()) {
          case 'duplicate' : // For calendar duplicate in another entity
-            if (method_exists($item, 'duplicate')) {
+            if (Toolbox::hasTrait($item, \Glpi\Features\Clonable::class)) {
                $input = $ma->getInput();
                $options = [];
                if ($item->isEntityAssign()) {
@@ -132,7 +134,7 @@ class Calendar extends CommonDropdown {
                      if (!$item->isEntityAssign()
                          || ($input['entities_id'] != $item->getEntityID())) {
                         if ($item->can(-1, CREATE, $options)) {
-                           if ($item->duplicate($options)) {
+                           if ($item->clone($options)) {
                               $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                            } else {
                               $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -219,7 +221,7 @@ class Calendar extends CommonDropdown {
 
    public function post_clone($source, $history) {
       $this->updateDurationCache($this->getID());
-      $this->cloneRelations($source, $history);
+      $this->post_cloneTrait($source, $history);
    }
 
 

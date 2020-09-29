@@ -143,8 +143,6 @@ trait Clonable {
     * @param $history
     */
    public function post_clone($source, $history) {
-      // For 9.5.x BC
-      parent::post_clone($source, $history);
       $this->cloneRelations($source, $history);
    }
 }

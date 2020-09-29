@@ -46,6 +46,9 @@ use Sabre\VObject\Property\IntegerValue;
  * @since 0.85
 **/
 class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface {
+   use Glpi\Features\Clonable {
+      prepareInputForClone as protected prepareInputForCloneTrait;
+   }
    use Glpi\Features\PlanningEvent;
    use VobjectConverterTrait;
 
@@ -2040,6 +2043,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
    public function prepareInputForClone($input) {
       $input['uuid'] = \Ramsey\Uuid\Uuid::uuid4();
-      return parent::prepareInputForClone($input);
+      return $this->prepareInputForCloneTrait($input);
    }
 }

@@ -38,7 +38,9 @@ if (!defined('GLPI_ROOT')) {
  * CommonITILObject Class
 **/
 abstract class CommonITILObject extends CommonDBTM {
-   use \Glpi\Features\Clonable;
+   use \Glpi\Features\Clonable {
+      post_clone as protected post_cloneTrait;
+   }
 
    /// Users by type
    protected $users       = [];
@@ -2041,7 +2043,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $update,
          ['id' => $this->getID()]
       );
-
+      $this->post_cloneTrait($source, $history);
    }
 
    public function getCloneRelations(): array {
