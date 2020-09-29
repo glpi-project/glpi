@@ -32,15 +32,15 @@
 
 namespace Glpi\Dashboard;
 
+use CommonDBTM;
 use CommonGLPI;
-use DBConnection;
-use QueryExpression;
 use CommonITILActor;
 use CommonITILValidation;
 use CommonTreeDropdown;
-use CommonDBTM;
+use DBConnection;
 use Group;
 use Group_Ticket;
+use QueryExpression;
 use Session;
 use Stat;
 use Ticket;
