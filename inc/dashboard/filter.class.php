@@ -130,7 +130,7 @@ JAVASCRIPT;
 
 
    static function itilcategory(string $value = "0"): string {
-      return self::dropdown($value, 'itilcategory', ItilCategory::class);
+      return self::dropdown($value, 'itilcategory', ITILCategory::class);
    }
 
    static function requesttype(string $value = "0"): string {
