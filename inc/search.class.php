@@ -5841,16 +5841,16 @@ JAVASCRIPT;
                   // define correct sla field
                   switch ($table.'.'.$field) {
                      case "glpi_tickets.time_to_resolve" :
-                        $slaField = 'slas_ttr_id';
+                        $slaField = 'slas_id_ttr';
                         break;
                      case "glpi_tickets.time_to_own" :
-                        $slaField = 'slas_tto_id';
+                        $slaField = 'slas_id_tto';
                         break;
                      case "glpi_tickets.internal_time_to_own" :
-                        $slaField = 'olas_tto_id';
+                        $slaField = 'olas_id_tto';
                         break;
                      case "glpi_tickets.internal_time_to_resolve" :
-                        $slaField = 'olas_ttr_id';
+                        $slaField = 'olas_id_ttr';
                         break;
                   }
 

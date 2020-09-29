@@ -466,7 +466,7 @@ $CFG_GLPI['appliance_types']     = ['Computer', 'Monitor', 'NetworkEquipment', '
 
 $dashboard_libs = [
    'dashboard', 'gridstack',
-   'charts', 'clipboard'
+   'charts', 'clipboard', 'sortable'
 ];
 
 $reservations_libs = ['fullcalendar', 'reservations'];

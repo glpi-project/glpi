@@ -3894,7 +3894,7 @@ class CommonDBTM extends CommonGLPI {
     *                   and may have moreparams)
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
     *
-    * @return void display the dropdown
+    * @return string|void display the dropdown
    **/
    static function dropdown($options = []) {
       /// TODO try to revert usage : Dropdown::show calling this function

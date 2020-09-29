@@ -33,14 +33,26 @@
 namespace Glpi\Dashboard;
 
 use Ramsey\Uuid\Uuid;
+
+use Config;
+use CommonGLPI;
+use Dropdown;
+use DBConnection;
+use Entity;
+use Group;
+use Html;
+use Plugin;
+use Profile;
 use Session;
 use Telemetry;
+use Toolbox;
+use User;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-class Grid extends \CommonGLPI {
+class Grid extends CommonGLPI {
    protected $cell_margin     = 6;
    protected $grid_cols       = 26;
    protected $grid_rows       = 24;
@@ -253,6 +265,7 @@ HTML;
       $fs_label         = __("Toggle fullscreen");
       $clone_label      = __("Clone this dashboard");
       $edit_label       = __("Toggle edit mode");
+      $add_filter_lbl   = __("Add filter");
       $add_dash_label   = __("Add a new dashboard");
       $save_label       = _x('button', "Save");
 
@@ -296,7 +309,7 @@ HTML;
             $r_tb_icons.= "<i class='fas fa-trash fs-toggle delete-dashboard' title='$delete_label'></i>";
          }
          if ($can_edit) {
-            $r_tb_icons.= "<i class='fas fa-edit fs-toggle' title='$edit_label'></i>";
+            $r_tb_icons.= "<i class='fas fa-edit fs-toggle edit-dashboard' title='$edit_label'></i>";
          }
 
          if (!$mini) {
@@ -325,12 +338,25 @@ HTML;
       $toolbars = <<<HTML
          $left_toolbar
          <span class="toolbar">
-            <i class="fas fa-history" title="$history_label"></i>
-            <i class="fas fa-moon" title="$night_label"></i>
+            <i class="fas fa-history auto-refresh" title="$history_label"></i>
+            <i class="fas fa-moon night-mode" title="$night_label"></i>
             $r_tb_icons
          </span>
-         $grid_guide
 HTML;
+
+      $filters = "";
+      if (!$mini) {
+         $filters = <<<HTML
+         <div class='filters_toolbar'>
+            <span class='filters'></span>
+            <span class='filters-control'>
+               <i class="fas fa-plus-square plus-sign add-filter">
+                  <span class='add-filter-lbl'>{$add_filter_lbl}</span>
+               </i>
+            </span>
+         </div>
+HTML;
+      }
 
       $embed_watermark = "";
       if (self::$embed) {
@@ -342,6 +368,8 @@ HTML;
       <div class="dashboard {$embed_class} {$mini_class}" id="dashboard-{$rand}">
          $embed_watermark
          $toolbars
+         $filters
+         $grid_guide
          <div class="grid-stack grid-stack-{$this->grid_cols}"
             id="grid-stack-$rand"
             style="width: 100%">
@@ -352,6 +380,7 @@ HTML;
 
       $ajax_cards = GLPI_AJAX_DASHBOARD;
       $context    = self::$context;
+      $cache_key  = sha1($_SESSION['glpiactiveentities_string '] ?? "");
 
       $js = <<<JAVASCRIPT
       $(function () {
@@ -363,13 +392,14 @@ HTML;
             rand:        '{$rand}',
             embed:       {$embed_str},
             ajax_cards:  {$ajax_cards},
-            all_cards:   $cards_json,
-            all_widgets: $all_widgets_json,
-            context:     "$context",
+            all_cards:   {$cards_json},
+            all_widgets: {$all_widgets_json},
+            context:     "{$context}",
+            cache_key:   "{$cache_key}",
          })
       });
 JAVASCRIPT;
-      $js = \Html::scriptBlock($js);
+      $js = Html::scriptBlock($js);
 
       echo $html.$js;
    }
@@ -404,7 +434,7 @@ JAVASCRIPT;
       $params = array_merge($defaults, $params);
 
       if (!self::checkToken($params)) {
-         \Html::displayRightError();
+         Html::displayRightError();
          exit;
       }
 
@@ -463,7 +493,7 @@ JAVASCRIPT;
 
       if ($token !== $params['token']) {
          return false;
-         \Html::displayRightError();
+         Html::displayRightError();
          exit;
       }
 
@@ -533,7 +563,7 @@ HTML;
       }
 
       $color    = $data_option['color'] ?? "#FFFFFF";
-      $fg_color = \Toolbox::getFgColor($color, 100);
+      $fg_color = Toolbox::getFgColor($color, 100);
 
       // add card options in data attribute
       $data_option_attr = "";
@@ -578,12 +608,12 @@ HTML;
       echo "<div class='field'>";
       echo "<label for='title_$rand'>".__("Title")."</label>";
       echo "<div>";
-      echo \Html::input('title', ['id' => "title_$rand"]);
+      echo Html::input('title', ['id' => "title_$rand"]);
       echo "</div>";
       echo "</div>"; // .field
 
-      echo \Html::submit(_x('button', "Add"), [
-         'class' => 'submit submit-new-dashboard'
+      echo Html::submit(_x('button', "Add"), [
+         'class' => 'submit vsubmit submit-new-dashboard'
       ]);
 
       echo "</form>"; // .card.display-widget-form
@@ -608,20 +638,19 @@ HTML;
     * @return void
     */
    public function displayWidgetForm(array $params = []) {
-      $rand = mt_rand();
-
       $gridstack_id = $params['gridstack_id'] ?? "";
       $old_id       = $gridstack_id;
       $x            = (int) ($params['x'] ?? 0);
       $y            = (int) ($params['y'] ?? 0);
-      $width        = (int) ($params['width'] ?? 2);
-      $height       = (int) ($params['height'] ?? 2);
+      $width        = (int) ($params['width'] ?? 0);
+      $height       = (int) ($params['height'] ?? 0);
       $cardopt      = $params['card_options'] ?? ['color' => "#FAFAFA"];
       $card_id      = $cardopt['card_id'] ?? "";
       $widgettypes  = Widget::getAllTypes();
       $widgettype   = $cardopt['widgettype'] ?? "";
       $widget_def   = $widgettypes[$widgettype] ?? [];
       $use_gradient = $cardopt['use_gradient'] ?? 0;
+      $point_labels = $cardopt['point_labels'] ?? 0;
       $limit        = $cardopt['limit'] ?? 7;
       $color        = $cardopt['color'];
       $edit         = $params['action'] === "display_edit_widget";
@@ -644,7 +673,7 @@ HTML;
       echo "<div class='field'>";
       echo "<label for='color_color$rand'>".__("Background color")."</label>";
       echo "<div>";
-      \Html::showColorField('color', [
+      Html::showColorField('color', [
          'rand'  => $rand,
          'value' => $color,
       ]);
@@ -654,7 +683,7 @@ HTML;
       echo "<div class='field'>";
       echo "<label for='dropdown_card_id$rand'>".__("Data")."</label>";
       echo "<div>";
-      \Dropdown::showFromArray('card_id', $list_cards, [
+      Dropdown::showFromArray('card_id', $list_cards, [
          'display_emptychoice' => true,
          'rand'                => $rand,
          'value'               => $card_id
@@ -699,13 +728,30 @@ HTML;
          $gradient_displayed = "style='display: none'";
       }
       echo "<div class='field gradient_field' $gradient_displayed>";
-      echo "<label for='check_$rand'>".__("Use gradient palette")."</label>";
+      echo "<label for='check_gradient_$rand'>".__("Use gradient palette")."</label>";
       echo "<div>";
-      \Html::showCheckbox([
+      Html::showCheckbox([
          'label'   => "&nbsp;",
          'name'    => "use_gradient",
-         'id'      => "check_$rand",
+         'id'      => "check_gradient_$rand",
          'checked' => $use_gradient,
+      ]);
+      echo "</div>";
+      echo "</div>"; // .field
+
+      // display checkbox to use point label or not
+      $point_labels_displayed = "";
+      if (!$edit || !isset($widget_def['pointlbl']) || !$widget_def['pointlbl']) {
+         $point_labels_displayed = "style='display: none'";
+      }
+      echo "<div class='field pointlbl_field' $point_labels_displayed>";
+      echo "<label for='check_point_labels_$rand'>".__("Display value labels on points/bars")."</label>";
+      echo "<div>";
+      Html::showCheckbox([
+         'label'   => "&nbsp;",
+         'name'    => "point_labels",
+         'id'      => "check_point_labels_$rand",
+         'checked' => $point_labels,
       ]);
       echo "</div>";
       echo "</div>"; // .field
@@ -718,7 +764,7 @@ HTML;
       echo "<div class='field limit_field' $limit_displayed>";
       echo "<label for='dropdown_limit$rand'>".__("Limit number of data")."</label>";
       echo "<div>";
-      \Dropdown::showNumber('limit', [
+      Dropdown::showNumber('limit', [
          'value' => $limit,
          'rand'  => $rand,
       ]);
@@ -726,30 +772,67 @@ HTML;
       echo "</div>"; // .field
 
       $class_submit = "add-widget";
-      $label_submit = _x('button', "Add");
+      $label_submit = "<i class='fas fa-plus'></i>&nbsp;"._x('button', "Add");
       if ($edit) {
          $class_submit = "edit-widget";
-         $label_submit = _x('button', "Update");
+         $label_submit = "<i class='fas fa-save'></i>&nbsp;"._x('button', "Update");
       }
 
       // manage autoescaping
       if (isset($cardopt['markdown_content'])) {
-         $cardopt['markdown_content'] = \Html::cleanPostForTextArea($cardopt['markdown_content']);
+         $cardopt['markdown_content'] = Html::cleanPostForTextArea($cardopt['markdown_content']);
       }
 
-      echo \Html::submit($label_submit, [
-         'class' => 'submit '.$class_submit
+      echo Html::submit($label_submit, [
+         'class' => 'submit vsubmit '.$class_submit
       ]);
 
-      echo \Html::hidden('gridstack_id', ['value' => $gridstack_id]);
-      echo \Html::hidden('old_id', ['value' => $old_id]);
-      echo \Html::hidden('x', ['value' => $x]);
-      echo \Html::hidden('y', ['value' => $y]);
-      echo \Html::hidden('width', ['value' => $width]);
-      echo \Html::hidden('height', ['value' => $height]);
-      echo \Html::hidden('card_options', ['value' => json_encode($cardopt, JSON_HEX_APOS | JSON_HEX_QUOT)]);
+      echo Html::hidden('gridstack_id', ['value' => $gridstack_id]);
+      echo Html::hidden('old_id', ['value' => $old_id]);
+      echo Html::hidden('x', ['value' => $x]);
+      echo Html::hidden('y', ['value' => $y]);
+      echo Html::hidden('width', ['value' => $width]);
+      echo Html::hidden('height', ['value' => $height]);
+      echo Html::hidden('card_options', ['value' => json_encode($cardopt, JSON_HEX_APOS | JSON_HEX_QUOT)]);
 
       echo "</form>"; // .card.display-widget-form
+   }
+
+
+   /**
+    * Display mini form to add filter to the current dashboard
+    *
+    * @param array $params default values for
+    * - 'used' already used filters
+    *
+    * @return void
+    */
+   public function displayFilterForm(array $params = []) {
+      $default_params = [
+         'used'  => [],
+      ];
+      $params = array_merge($default_params, $params);
+
+      $used         = array_flip($params['used']);
+      $list_filters = array_diff_key(Filter::getAll(), $used);
+
+      $rand = mt_rand();
+      echo "<form class='card no-shadow display-filter-form'>";
+
+      echo "<div class='field'>";
+      echo "<label for='dropdown_card_id$rand'>".__("Filters")."</label>";
+      echo "<div>";
+      Dropdown::showFromArray('filter_id', $list_filters, [
+         'display_emptychoice' => true,
+         'rand'                => $rand,
+      ]);
+      echo "</div>";
+      echo "</div>"; // .field
+
+      echo Html::submit("<i class='fas fa-plus'></i>&nbsp;"._x('button', "Add"), [
+         'class' => 'submit vsubmit'
+      ]);
+      echo "</form>"; // form.card.display-filter-form
    }
 
 
@@ -776,7 +859,7 @@ HTML;
       echo "<fieldset class='embed_block'>";
       echo __("Direct link");
       echo "<div class='copy_to_clipboard_wrapper'>";
-      echo \Html::input('direct_link', [
+      echo Html::input('direct_link', [
          'value'    => $embed_url,
          'style'    => 'width: calc(100% - 38px)'
       ]);
@@ -785,7 +868,7 @@ HTML;
       $iframe = "<iframe src='$embed_url' frameborder='0' width='800' height='600' allowtransparency></iframe>";
       echo __("Iframe");
       echo "<div class='copy_to_clipboard_wrapper'>";
-      echo \Html::input('iframe_code', [
+      echo Html::input('iframe_code', [
          'value'    => $iframe,
          'style'    => 'width: calc(100% - 38px)'
       ]);
@@ -809,7 +892,7 @@ HTML;
       echo "<form class='card no-shadow display-rights-form'>";
 
       $profiles_value = self::$all_dashboards[$this->current]['rights']['profiles_id'] ?? [];
-      $profile_item = new \Profile;
+      $profile_item = new Profile;
       $profiles = $profile_item->find();
       $profiles_items = [];
       foreach ($profiles as $profile) {
@@ -821,8 +904,8 @@ HTML;
       }
 
       $entities_value = self::$all_dashboards[$this->current]['rights']['entities_id'] ?? [];
-      $entity_item = new \Entity;
-      $entities = $entity_item->find(getEntitiesRestrictCriteria(\Entity::getTable()));
+      $entity_item = new Entity;
+      $entities = $entity_item->find(getEntitiesRestrictCriteria(Entity::getTable()));
       $entities_items = [];
       foreach ($entities as $entity) {
          $new_key = 'entities_id-'.$entity['id'];
@@ -833,7 +916,7 @@ HTML;
       }
 
       $users_value = self::$all_dashboards[$this->current]['rights']['users_id'] ?? [];
-      $users = iterator_to_array(\User::getSqlSearchResult(false));
+      $users = iterator_to_array(User::getSqlSearchResult(false));
       $users_items = [];
       foreach ($users as $user) {
          $new_key = 'users_id-'.$user['id'];
@@ -844,8 +927,8 @@ HTML;
       }
 
       $groups_value = self::$all_dashboards[$this->current]['rights']['groups_id'] ?? [];
-      $group_item = new \Group;
-      $groups = $group_item->find(getEntitiesRestrictCriteria(\Group::getTable()));
+      $group_item = new Group;
+      $groups = $group_item->find(getEntitiesRestrictCriteria(Group::getTable()));
       $groups_items = [];
       foreach ($groups as $group) {
          $new_key = 'groups_id-'.$group['id'];
@@ -865,7 +948,7 @@ HTML;
       echo "<label for='dropdown_rights_id$rand'>".
            __("Or share the dashboard to these target objects:").
            "</label><br>";
-      \Dropdown::showFromArray('rights_id', $possible_rights, [
+      Dropdown::showFromArray('rights_id', $possible_rights, [
          'values'   => $values,
          'multiple' => true,
          'rand'     => $rand,
@@ -875,7 +958,7 @@ HTML;
 
       echo "<a href='#' class='vsubmit save_rights'>".__("Save")."</a>";
 
-      \Html::closeForm(true);
+      Html::closeForm(true);
    }
 
 
@@ -897,12 +980,28 @@ HTML;
       $gridstack_id = $card_options['args']['gridstack_id'] ?? $card_id;
       $dashboard    = $card_options['dashboard'] ?? "";
 
+      $force = ($card_options['args']['force'] ?? $card_options['force'] ?? false);
+
+      // retrieve card
+      $notfound_html = "<div class='empty-card card-warning '>
+         <i class='fas fa-exclamation-triangle'></i>".
+         __('empty card !')."
+      </div>";
+      $cards = $this->getAllDasboardCards($force);
+      if (!isset($cards[$card_id])) {
+         return $notfound_html;
+      }
+      $card  = $cards[$card_id];
+
       // manage cache
-      $use_cache =
-         !($card_options['args']['force'] ?? $card_options['force'] ?? false)
-         && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE;
-      $cache_key    = "dashboard_card_".$dashboard;
+      $options_footprint = sha1(serialize($card_options).
+                                $_SESSION['glpiactiveentities_string'] ?? "");
+      $use_cache = !$force
+         && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE
+         && (!isset($card['cache']) || $card['cache'] == true);
+      $cache_key    = "dashboard_card_{$dashboard}_{$options_footprint}";
       $cache_age    = 40;
+
       if ($use_cache) {
          // browser cache
          if (GLPI_AJAX_DASHBOARD) {
@@ -921,19 +1020,8 @@ HTML;
          }
       }
 
-      $notfound_html = "<div class='empty-card card-warning '>
-         <i class='fas fa-exclamation-triangle'></i>".
-         __('empty card !')."
-      </div>";
-
-      // retrieve card
       $html  = "";
       $start = microtime(true);
-      $cards = $this->getAllDasboardCards();
-      if (!isset($cards[$card_id])) {
-         return $notfound_html;
-      }
-      $card  = $cards[$card_id];
 
       // call provider to retrieve data
       if (isset($card['provider'])) {
@@ -942,6 +1030,9 @@ HTML;
                'label' => $card['label'] ?? ""
             ]
          ];
+         if (isset($card_options['args']['apply_filters'])) {
+            $provider_args['params']['apply_filters'] = $card_options['args']['apply_filters'];
+         }
          $widget_args = call_user_func_array($card['provider'], $provider_args);
       }
       $widget_args = array_merge($widget_args ?? [], $card_options['args'] ?? []);
@@ -968,6 +1059,10 @@ HTML;
             }
          }
 
+         if (isset($card['filters'])) {
+            $widget_args['filters'] = $card['filters'];
+         }
+
          // call widget function
          $html = call_user_func($widgetfct, $widget_args);
       }
@@ -986,7 +1081,7 @@ HTML;
          $GLPI_CACHE->set($cache_key, $dashboard_cards, new \DateInterval("PT".$cache_age."S"));
       }
 
-      if ($_SESSION['glpi_use_mode'] == \Session::DEBUG_MODE) {
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          $html.= <<<HTML
          <span class='debug-card'>
             {$execution_time}s
@@ -995,6 +1090,41 @@ HTML;
       }
 
       return $html;
+   }
+
+
+   /**
+    * Return Html for a provided set of filters
+    * @param array $filter_names
+    *
+    * @return string the html
+    */
+   public function getFiltersSetHtml(array $filters = []): string {
+      $html = "";
+
+      foreach ($filters as $filter_id => $filter_values) {
+         $html.= $this->getFilterHtml($filter_id, $filter_values);
+      }
+
+      return $html;
+   }
+
+
+   /**
+    * Return Html for a provided filter name
+    *
+    * @param string $filter_id the system name of a filter (ex dates)
+    * @param string|array $filter_values init the input with these values,
+    *                     will be a string if empty values
+    *
+    * @return string the html
+    */
+   public function getFilterHtml(string $filter_id = "", $filter_values = ""): string {
+      if (method_exists("Glpi\Dashboard\Filter", $filter_id)) {
+         return call_user_func("Glpi\Dashboard\Filter::$filter_id", $filter_values);
+      }
+
+      return "";
    }
 
 
@@ -1010,7 +1140,7 @@ HTML;
          'Config',
       ];
 
-      $menu = \Html::getMenuInfos();
+      $menu = Html::getMenuInfos();
       array_walk($menu, function($firstlvl) use (&$menu_itemtypes) {
          $key = $firstlvl['title'];
          if (isset($firstlvl['types'])) {
@@ -1037,14 +1167,39 @@ HTML;
    /**
     * Construct catalog of all possible cards addable in a dashboard.
     *
+    * @param bool $force if true, don't use cache
+    *
     * @return array
     */
-   public function getAllDasboardCards(): array {
+   public function getAllDasboardCards(bool $force = false): array {
       global $GLPI_CACHE, $CFG_GLPI;
 
-      if ($GLPI_CACHE->has("dashboards_cards")) {
+      if (!$force
+          && $GLPI_CACHE->has("dashboards_cards")
+          && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE) {
          return $GLPI_CACHE->get("dashboards_cards");
       }
+
+      // anonymous fct for adding relevant filters to cards
+      $add_filters_fct = function($itemtable) {
+         $DB = DBConnection::getReadConnection();
+
+         $add_filters = [];
+         if ($DB->fieldExists($itemtable, "ititlcategories_id")) {
+            $add_filters[] = "itilcategory";
+         }
+         if ($DB->fieldExists($itemtable, "requesttypes_id")) {
+            $add_filters[] = "requesttype";
+         }
+         if ($DB->fieldExists($itemtable, "locations_id")) {
+            $add_filters[] = "location";
+         }
+         if ($DB->fieldExists($itemtable, "manufacturers_id")) {
+            $add_filters[] = "manufacturer";
+         }
+
+         return $add_filters;
+      };
 
       $cards = [];
       $menu_itemtypes = $this->getMenuItemtypes();
@@ -1057,6 +1212,10 @@ HTML;
                'itemtype'   => "\\$itemtype",
                'label'      => sprintf(__("Number of %s"), $itemtype::getTypeName()),
                'provider'   => "Glpi\\Dashboard\\Provider::bigNumber$itemtype",
+               'filters'    => array_merge([
+                  'dates',
+                  'dates_mod',
+               ], $add_filters_fct($itemtype::getTable()))
             ];
          }
       }
@@ -1086,11 +1245,15 @@ HTML;
             );
 
             $cards["count_".$itemtype."_".$fk_itemtype] = [
-               'widgettype' => ['multipleNumber', 'pie', 'donut', 'halfpie', 'halfdonut', 'bar', 'hbar'],
+               'widgettype' => ['summaryNumbers', 'multipleNumber', 'pie', 'donut', 'halfpie', 'halfdonut', 'bar', 'hbar'],
                'itemtype'   => "\\Computer",
                'group'      => __('Assets'),
                'label'      => $label,
-               'provider'   => "Glpi\\Dashboard\\Provider::multipleNumber".$itemtype."By".$fk_itemtype
+               'provider'   => "Glpi\\Dashboard\\Provider::multipleNumber".$itemtype."By".$fk_itemtype,
+               'filters'    => array_merge([
+                  'dates',
+                  'dates_mod',
+               ], $add_filters_fct($itemtype::getTable()))
             ];
          }
       }
@@ -1115,7 +1278,9 @@ HTML;
             'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsGeneric",
             'args'       => [
                'case' => $case,
-            ]
+            ],
+            'cache'      => false,
+            'filters'    => ['dates', 'dates_mod', 'itilcategory', 'requesttype', 'location']
          ];
 
          $cards["table_count_tickets_$case"] = [
@@ -1126,7 +1291,8 @@ HTML;
             'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsGeneric",
             'args'       => [
                'case' => $case,
-            ]
+            ],
+            'filters'    => ['dates', 'dates_mod', 'itilcategory', 'requesttype', 'location']
          ];
       }
 
@@ -1136,7 +1302,8 @@ HTML;
          'itemtype'   => "\\Ticket",
          'group'      => __('Assistance'),
          'label'      => __("Number of tickets by month"),
-         'provider'   => "Glpi\\Dashboard\\Provider::ticketsOpened"
+         'provider'   => "Glpi\\Dashboard\\Provider::ticketsOpened",
+         'filters'    => ['dates', 'dates_mod', 'itilcategory', 'requesttype', 'location']
       ];
 
       $cards["ticket_evolution"] = [
@@ -1144,7 +1311,8 @@ HTML;
          'itemtype'   => "\\Ticket",
          'group'      => __('Assistance'),
          'label'      => __("Evolution of ticket in the past year"),
-         'provider'   => "Glpi\\Dashboard\\Provider::getTicketsEvolution"
+         'provider'   => "Glpi\\Dashboard\\Provider::getTicketsEvolution",
+         'filters'    => ['dates', 'dates_mod', 'itilcategory', 'requesttype', 'location']
       ];
 
       $cards["ticket_status"] = [
@@ -1152,7 +1320,8 @@ HTML;
          'itemtype'   => "\\Ticket",
          'group'      => __('Assistance'),
          'label'      => __("Tickets status by month"),
-         'provider'   => "Glpi\\Dashboard\\Provider::getTicketsStatus"
+         'provider'   => "Glpi\\Dashboard\\Provider::getTicketsStatus",
+         'filters'    => ['dates', 'dates_mod', 'itilcategory', 'requesttype', 'location']
       ];
 
       $cards["ticket_times"] = [
@@ -1160,7 +1329,17 @@ HTML;
          'itemtype'   => "\\Ticket",
          'group'      => __('Assistance'),
          'label'      => __("Tickets times (in hours)"),
-         'provider'   => "Glpi\\Dashboard\\Provider::averageTicketTimes"
+         'provider'   => "Glpi\\Dashboard\\Provider::averageTicketTimes",
+         'filters'    => ['dates', 'dates_mod', 'itilcategory', 'requesttype', 'location']
+      ];
+
+      $cards["tickets_summary"] = [
+         'widgettype' => ['summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+         'itemtype'   => "\\Ticket",
+         'group'      => __('Assistance'),
+         'label'      => __("Tickets summary"),
+         'provider'   => "Glpi\\Dashboard\\Provider::getTicketSummary",
+         'filters'    => ['dates', 'dates_mod', 'itilcategory', 'requesttype', 'location']
       ];
 
       foreach ([
@@ -1170,11 +1349,12 @@ HTML;
          'Location'     => __("Top ticket's locations"),
       ] as $itemtype => $label) {
          $cards["top_ticket_$itemtype"] = [
-            'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'multipleNumber', 'bar', 'hbar'],
+            'widgettype' => ['summaryNumbers', 'pie', 'donut', 'halfpie', 'halfdonut', 'multipleNumber', 'bar', 'hbar'],
             'itemtype'   => "\\Ticket",
             'group'      => __('Assistance'),
             'label'      => $label,
-            'provider'   => "Glpi\\Dashboard\\Provider::multipleNumberTicketBy$itemtype"
+            'provider'   => "Glpi\\Dashboard\\Provider::multipleNumberTicketBy$itemtype",
+            'filters'    => ['dates', 'dates_mod', 'itilcategory', 'requesttype', 'location']
          ];
       }
 
@@ -1187,16 +1367,25 @@ HTML;
          'group_assign'    => __("Top ticket's assignee groups"),
       ] as $type => $label) {
          $cards["top_ticket_$type"] = [
-            'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'multipleNumber', 'bar', 'hbar'],
+            'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
             'itemtype'   => "\\Ticket",
             'group'      => __('Assistance'),
             'label'      => $label,
             'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsActor",
             'args'       => [
                'case' => $type,
-            ]
+            ],
+            'filters'    => ['dates', 'dates_mod', 'itilcategory', 'requesttype', 'location']
          ];
       }
+
+      $cards["RemindersList"] = [
+         'widgettype'   => ["articleList"],
+         'label'        => __("List of reminders"),
+         'group'        => __('Tools'),
+         'provider'     => "Glpi\\Dashboard\\Provider::getArticleListReminder",
+         'filters'      => ['dates', 'dates_mod']
+      ];
 
       $cards["markdown_editable"] = [
          'widgettype'   => ["markdown"],
@@ -1207,12 +1396,12 @@ HTML;
          ]
       ];
 
-      $more_cards = \Plugin::doHookFunction("dashboard_cards");
+      $more_cards = Plugin::doHookFunction("dashboard_cards");
       if (is_array($more_cards)) {
          $cards = array_merge($cards, $more_cards);
       }
 
-      $GLPI_CACHE->set("dashboards_cards", $cards);
+      $GLPI_CACHE->set("dashboards_cards", $cards, new \DateInterval("PT1H"));
 
       return $cards;
    }
@@ -1329,6 +1518,6 @@ HTML;
          }
       }
 
-      return \Dropdown::showFromArray($name, $options_dashboards, $params);
+      return Dropdown::showFromArray($name, $options_dashboards, $params);
    }
 }

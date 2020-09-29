@@ -214,6 +214,43 @@ class SimpleCache extends \GLPITestCase {
    }
 
    /**
+    * Test case: cache dir is not writable, footprint file cannot be used.
+    */
+   public function testCacheWithUnreadableFootprintFile() {
+      $cache_dir = vfsStream::url('glpi/cache');
+      $cache_namespace = uniqid(true);
+
+      $root_directory = vfsStream::setup(
+         'glpi',
+         null,
+         [
+            'cache' => [
+               $cache_namespace . '.json' => '[]',
+            ],
+         ]
+      );
+      // Make file writable but not readable
+      $root_directory->getChild('cache/' . $cache_namespace . '.json')->chmod(0200);
+
+      $footprint_file = vfsStream::url('glpi/cache/' . $cache_namespace . '.json');
+
+      $self = $this;
+      $this->when(
+         function() use ($self, $cache_dir, $cache_namespace) {
+            $self->newTestedInstance(
+               new \mock\Laminas\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
+               $cache_dir
+            );
+         }
+      )->error()
+         ->withType(E_USER_WARNING)
+         ->withMessage('Cannot read "' . $footprint_file . '" cache footprint file. Cache performance can be lowered.')
+            ->exists();
+
+      $this->testOperationsOnCache(null);
+   }
+
+   /**
     * Test all possible cache operations.
     *
     * @param string|null $footprint_file

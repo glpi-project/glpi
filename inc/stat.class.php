@@ -716,9 +716,10 @@ class Stat extends CommonGLPI {
     * @param $param              (default '')
     * @param $value              (default '')
     * @param $value2             (default '')
+    * @param $add_criteria          (default [''])
     */
    static function constructEntryValues($itemtype, $type, $begin = "", $end = "", $param = "", $value = "",
-                                        $value2 = "") {
+                                        $value2 = "", array $add_criteria = []) {
       $DB = \DBConnection::getReadConnection();
 
       if (!$item = getItemForItemtype($itemtype)) {
@@ -1299,6 +1300,10 @@ class Stat extends CommonGLPI {
       $entrees = [];
       if (!count($criteria)) {
          return [];
+      }
+
+      if (count($add_criteria)) {
+         $criteria = array_merge_recursive($criteria, $add_criteria);
       }
 
       $iterator = $DB->request($criteria);
