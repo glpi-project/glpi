@@ -29,7 +29,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global GoInFullscreen, GoOutFullscreen, EasyMDE, getUuidV4, _ */
+/* global GoInFullscreen, GoOutFullscreen, EasyMDE, getUuidV4, _, sortable */
 
 var Dashboard = {
    grid: null,
@@ -50,6 +50,7 @@ var Dashboard = {
    dash_width: 0,
    cell_margin: 3,
    cols: 26,
+   cache_key: "",
 
    display: function(params) {
 
@@ -82,6 +83,7 @@ var Dashboard = {
       this.dash_width   = this.element.width();
       this.cell_margin  = options.cell_margin;
       this.cols         = options.cols;
+      this.cache_key    = options.cache_key || "";
 
       $('#grid-stack-'+options.rand).gridstack({
          column: options.cols,
@@ -103,10 +105,16 @@ var Dashboard = {
       // generate the css based on the grid width
       Dashboard.generateCss();
 
+      // init filters from storage
+      Dashboard.initFilters();
+
       // retieve cards content by ajax
       if (Dashboard.ajax_cards) {
          Dashboard.getCardsAjax();
-      } else {
+      }
+
+      // animate the dashboards
+      if (!Dashboard.ajax_cards) {
          Dashboard.fitNumbers();
          Dashboard.animateNumbers();
       }
@@ -118,6 +126,7 @@ var Dashboard = {
          $(".dashboard-name").val(selected_label);
          Dashboard.refreshDashboard();
          Dashboard.setLastDashboard();
+         Dashboard.initFilters();
       });
 
       // add dashboard
@@ -165,7 +174,7 @@ var Dashboard = {
       });
 
       // edit mode toggle
-      $("#dashboard-"+options.rand+" .toolbar .fa-edit").click(function() {
+      $("#dashboard-"+options.rand+" .toolbar .edit-dashboard").click(function() {
          var activate = !$(this).hasClass('active');
 
          Dashboard.setEditMode(activate);
@@ -186,13 +195,13 @@ var Dashboard = {
       });
 
       // night mode toggle
-      $("#dashboard-"+options.rand+" .toolbar .fa-moon").click(function() {
+      $("#dashboard-"+options.rand+" .toolbar .night-mode").click(function() {
          $(this).toggleClass('active');
          Dashboard.element.toggleClass('nightmode');
       });
 
       // refresh mode toggle
-      $("#dashboard-"+options.rand+" .toolbar .fa-history").click(function() {
+      $("#dashboard-"+options.rand+" .toolbar .auto-refresh").click(function() {
          $(this).toggleClass('active');
          var active = $(this).hasClass('active');
 
@@ -317,7 +326,7 @@ var Dashboard = {
       });
 
       // add new widget form
-      $("#dashboard-"+options.rand+" .cell-add").click(function() {
+      $(document).on("click", "#dashboard-"+options.rand+" .cell-add", function() {
          var add_ctrl = $(this);
 
          $(".ui-dialog-content").dialog("close");
@@ -345,6 +354,52 @@ var Dashboard = {
          var edit = form.has('.edit-widget').length > 0;
 
          Dashboard.setWidgetFromForm(form, edit);
+      });
+
+      // add new filter
+      $(document).on("click", "#dashboard-"+options.rand+" .filters_toolbar .add-filter", function() {
+         $(".ui-dialog-content").dialog("close");
+
+         var filters = Dashboard.getFiltersFromStorage();
+         var filter_names    = Object.keys(filters);
+
+         $('<div title="'+__("Add a filter")+'"></div>')
+            .load(CFG_GLPI.root_doc+"/ajax/dashboard.php", {
+               action: 'display_add_filter',
+               used: filter_names
+            }, function() {
+               $(this).dialog({
+                  width: 'auto',
+                  modal: true,
+                  open: function() {
+                     $(this).find('input[type=submit]').first().focus();
+                  }
+               });
+            });
+      });
+
+      // save new filter (submit form)
+      $(document).on('submit', '.display-filter-form ', function(event) {
+         event.preventDefault();
+
+         var form = $(this);
+
+         Dashboard.setFilterFromForm(form);
+      });
+
+      // delete existing filter
+      $(document).on("click", "#dashboard-"+options.rand+" .filters_toolbar .delete-filter", function() {
+         var filter = $(this).closest('.filter');
+         var filter_id = filter.data('filter-id');
+
+         // remove filter from dom
+         filter.remove();
+
+         // remove filter from storage and refresh cards
+         var filters = Dashboard.getFiltersFromStorage();
+         delete filters[filter_id];
+         Dashboard.setFiltersInStorage(filters);
+         Dashboard.refreshCardsImpactedByFilter(filter_id);
       });
 
       // rename dashboard
@@ -375,6 +430,7 @@ var Dashboard = {
             .next('label').css('display', 'none').end()
             .filter("[value='"+available_widgets.join("'],[value='")+"']")
             .prop("checked", force_checked)
+            .trigger('change')
             .next('label').css('display', 'inline-block');
       });
 
@@ -384,16 +440,36 @@ var Dashboard = {
          var widgettype  = widgetdom.val();
          var widget      = Dashboard.all_widgets[widgettype];
          var usegradient = widget.gradient || false;
+         var pointlabels = widget.pointlbl || false;
          var uselimit    = widget.limit || false;
+         var width       = widget.width  || 2;
+         var height      = widget.height || 2;
 
          widgetdom
             .closest('.field')
             .siblings('.gradient_field')
             .hide()
             .toggle(usegradient).end()
+            .siblings('.pointlbl_field')
+            .hide()
+            .toggle(pointlabels).end()
             .siblings('.limit_field')
             .hide()
             .toggle(uselimit).end();
+
+         var width_field =  widgetdom
+            .closest('.field')
+            .siblings('[name="width"]');
+         var height_field =  widgetdom
+            .closest('.field')
+            .siblings('[name="height"]');
+
+         if (width_field.val() == 0) {
+            width_field.val(width);
+         }
+         if (height_field.val() == 0) {
+            height_field.val(height);
+         }
       });
 
       // markdown textarea edited
@@ -435,6 +511,7 @@ var Dashboard = {
       form_data.card_options.color        = form_data.color || null;
       form_data.card_options.widgettype   = form_data.widgettype || null;
       form_data.card_options.use_gradient = form_data.use_gradient || 0;
+      form_data.card_options.point_labels = form_data.point_labels || 0;
       form_data.card_options.limit        = form_data.limit || 7;
 
       // specific case for markdown
@@ -472,6 +549,7 @@ var Dashboard = {
             action:    'get_card',
             dashboard: Dashboard.current_name,
             card_id:   form_data.card_id,
+            cache_key: Dashboard.cache_key,
             args:      args,
          }
       }).done(function(card_html) {
@@ -521,6 +599,27 @@ var Dashboard = {
       return widget;
    },
 
+   setFilterFromForm: function(form) {
+      $(".ui-dialog-content").dialog("close");
+      var form_data  = {};
+
+      $.each(form.serializeArray(), function() {
+         form_data[this.name] = this.value;
+      });
+
+      // get the html of the new card and save dashboard
+      $.ajax({
+         method: 'GET',
+         url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+         data: {
+            action:    'get_filter',
+            filter_id: form_data.filter_id,
+         }
+      }).done(function(filter_html) {
+         $('.filters').append(filter_html);
+         Dashboard.saveFilter(form_data.filter_id, []);
+      });
+   },
 
    refreshDashboard: function() {
       var gridstack = $(Dashboard.elem_id+" .grid-stack");
@@ -558,6 +657,23 @@ var Dashboard = {
       });
    },
 
+   saveFilter: function(filter_id, value) {
+      // store current filter in localStorage
+      var filters = Dashboard.getFiltersFromStorage();
+      filters[filter_id] = value;
+      Dashboard.setFiltersInStorage(filters);
+
+      // refresh all card impacted by the changed filter
+      Dashboard.refreshCardsImpactedByFilter(filter_id);
+   },
+
+   refreshCardsImpactedByFilter: function(filter_id) {
+      $('.dashboard .card.filter-'+filter_id).each(function () {
+         var gridstack_item = $(this).closest(".grid-stack-item");
+         var card_id = gridstack_item.data('gs-id');
+         Dashboard.getCardsAjax("[data-gs-id="+card_id+"]");
+      });
+   },
 
    saveDashboard: function(force_refresh) {
       force_refresh = force_refresh | false;
@@ -617,6 +733,13 @@ var Dashboard = {
          .find('.formatted-number').fitText(text_offset);
 
       parent_item
+         .find('.summary-numbers')
+         .find('.formatted-number').fitText(text_offset-0.65);
+      parent_item
+         .find('.summary-numbers')
+         .find('.line .label').fitText(text_offset-0.2);
+
+      parent_item
          .find('.big-number')
          .find('.label').fitText(text_offset - 0.2);
    },
@@ -625,7 +748,7 @@ var Dashboard = {
       parent_item = parent_item || $('body');
 
       parent_item
-         .find('.multiple-number, .big-number')
+         .find('.multiple-numbers, .summary-numbers, .big-number')
          .find('.formatted-number')
          .each(function () {
             var count     = $(this);
@@ -651,6 +774,9 @@ var Dashboard = {
       Dashboard.element.toggleClass('edit-mode', activate);
       Dashboard.grid.setStatic(!activate);
 
+      // set filters as sortable (draggable) or not
+      sortable('.filters', activate ? 'enable' : 'disable');
+
       if (!Dashboard.edit_mode) {
          // save markdown textareas set as dirty
          var dirty_textareas = $(".grid-stack-item.dirty");
@@ -664,7 +790,7 @@ var Dashboard = {
       var fs_enabled = !fs_ctrl.hasClass('active');
 
       Dashboard.element.toggleClass('fullscreen')
-         .find('.fa-moon').toggle(fs_enabled);
+         .find('.night-mode').toggle(fs_enabled);
       fs_ctrl.toggleClass('active');
 
       // desactivate edit mode
@@ -683,7 +809,7 @@ var Dashboard = {
    disableFullscreenMode: function() {
       Dashboard.element
          .removeClass('fullscreen')
-         .find('.fa-moon').hide().end()
+         .find('.night-mode').hide().end()
          .find('.toggle-fullscreen').removeClass('active');
 
       GoOutFullscreen();
@@ -789,6 +915,10 @@ var Dashboard = {
             Dashboard.markdown_contents[gridstack_id] = card_opt.markdown_content;
          }
 
+         // append filters
+         var filters = Dashboard.getFiltersFromStorage();
+         card_opt.apply_filters = filters;
+
          promises.push($.get(CFG_GLPI.root_doc+"/ajax/dashboard.php", {
             'action':    'get_card',
             'dashboard': Dashboard.current_name,
@@ -796,6 +926,7 @@ var Dashboard = {
             'force':     (specific_one.length > 0 ? 1 : 0),
             'embed':     (Dashboard.embed ? 1 : 0),
             'args':      card_opt,
+            'cache_key': Dashboard.cache_key,
          }).then(function(html) {
             card.children('.grid-stack-item-content')
                .html(html);
@@ -809,7 +940,6 @@ var Dashboard = {
 
       return promises;
    },
-
 
    easter: function() {
       var items = $(Dashboard.elem_id+" .grid-stack .grid-stack-item .card");
@@ -867,6 +997,104 @@ var Dashboard = {
 
       // apply new height to gridstack
       this.grid.cellHeight(cell_height);
-   }
+   },
+
+   /**
+    * init filters of the dashboard
+    */
+   initFilters: function() {
+      if ($(".filters").length === 0) {
+         return;
+      }
+
+      var filters = Dashboard.getFiltersFromStorage();
+
+      // replace empty array by empty string to avoid jquery remove the corresponding key
+      // when sending ajax query
+      $.each(filters, function( index, value ) {
+         if (Array.isArray(value) && value.length == 0) {
+            filters[index] = "";
+         }
+      });
+
+      // get html of provided filters
+      $.get({
+         url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+         data: {
+            "action": "get_dashboard_filters",
+            "filters": filters,
+         }
+      }).done(function(html) {
+         $('.filters').html(html);
+
+         // we must  emit an event to all filters to say them dashboard is ready
+         $(document).trigger("glpiDasbhoardInitFilter");
+
+         // start sortable on filter but disable it by default,
+         // we will enable it when edit mode will be toggled on
+         sortable('.filters', {
+            placeholderClass: 'filter-placeholder',
+         })[0].addEventListener('sortupdate', function(e) {
+            // after drag, save the order of filters in storage
+            var items_after = $(e.detail.destination.items).filter('.filter');
+            var filters     = Dashboard.getFiltersFromStorage();
+            var new_filters = {};
+            $.each(items_after, function() {
+               var filter_id = $(this).data('filter-id');
+               new_filters[filter_id] = filters[filter_id];
+            });
+
+            Dashboard.setFiltersInStorage(new_filters);
+         });
+         sortable('.filters', 'disable');
+      });
+   },
+
+   /**
+    * Return saved filter from LocalStorage
+    *
+    * @param {boolean} all_filters: do we return all filters
+    *    or only those for the current dashboard (default)
+    */
+   getFiltersFromStorage: function(all_filters) {
+      all_filters = all_filters || false;
+
+      var filters = JSON.parse(localStorage.getItem('glpi_dashboard_filters'));
+      var save    = false;
+      if (filters == null) {
+         filters = {};
+         save = true;
+      }
+
+      if ('current_name' in Dashboard
+          && Dashboard.current_name != null
+          && !(Dashboard.current_name in filters)) {
+         filters[Dashboard.current_name] = {};
+         save = true;
+      }
+
+      if (save) {
+         localStorage.setItem('glpi_dashboard_filters', JSON.stringify(filters));
+      }
+
+      if (all_filters) {
+         return filters;
+      }
+
+      return filters[Dashboard.current_name];
+   },
+
+   /**
+    * Save an object of filters for the current dashboard into LocalStorage
+    *
+    * @param {Object} sub_filters
+    */
+   setFiltersInStorage: function(sub_filters) {
+      var filters = Dashboard.getFiltersFromStorage(true);
+      if (Dashboard.current_name.length > 0) {
+         filters[Dashboard.current_name] = sub_filters;
+      }
+      return localStorage.setItem('glpi_dashboard_filters', JSON.stringify(filters));
+   },
 
 };

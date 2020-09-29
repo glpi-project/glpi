@@ -104,6 +104,7 @@ class Dropdown {
       $params['emptylabel']           = self::EMPTY_VALUE;
       //Display emptychoice ?
       $params['display_emptychoice']  = ($itemtype != 'Entity');
+      $params['placeholder']          = '';
       $params['display']              = true;
       $params['permit_select_parent'] = false;
       $params['addicon']              = true;
@@ -165,6 +166,7 @@ class Dropdown {
             'width'                => $params['width'],
             'itemtype'             => $itemtype,
             'display_emptychoice'  => $params['display_emptychoice'],
+            'placeholder'          => $params['placeholder'],
             'displaywith'          => $params['displaywith'],
             'emptylabel'           => $params['emptylabel'],
             'condition'            => $params['condition'],
