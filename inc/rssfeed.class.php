@@ -913,9 +913,10 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
 
       $table = self::getTable();
       $criteria = [
-         'SELECT' => "$table.*",
-         'FROM'   => $table,
-         'ORDER'  => "$table.name"
+         'SELECT'   => "$table.*",
+         'DISTINCT' => true,
+         'FROM'     => $table,
+         'ORDER'    => "$table.name"
       ];
 
       if ($personal) {
