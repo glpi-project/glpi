@@ -180,18 +180,18 @@ class DomainRecord extends CommonDBChild {
 
 
    static function canDelete() {
-       if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
-           return true;
-       }
-       return parent::canDelete();
+      if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
+         return true;
+      }
+      return parent::canDelete();
    }
 
 
    static function canPurge() {
-       if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
-           return true;
-       }
-       return parent::canPurge();
+      if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
+         return true;
+      }
+      return parent::canPurge();
    }
 
 
