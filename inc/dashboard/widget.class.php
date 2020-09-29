@@ -32,14 +32,14 @@
 
 namespace Glpi\Dashboard;
 
-use Mexitek\PHPColors\Color;
-use ScssPhp\ScssPhp\Compiler;
-use Michelf\MarkdownExtra;
 use CommonGLPI;
-use Toolbox;
-use Plugin;
 use Html;
+use Mexitek\PHPColors\Color;
+use Michelf\MarkdownExtra;
+use Plugin;
+use ScssPhp\ScssPhp\Compiler;
 use Search;
+use Toolbox;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");

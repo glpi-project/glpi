@@ -32,17 +32,15 @@
 
 namespace Glpi\Dashboard;
 
-use Ramsey\Uuid\Uuid;
-
-use Config;
 use CommonGLPI;
-use Dropdown;
 use DBConnection;
+use Dropdown;
 use Entity;
 use Group;
 use Html;
 use Plugin;
 use Profile;
+use Ramsey\Uuid\Uuid;
 use Session;
 use Telemetry;
 use Toolbox;
