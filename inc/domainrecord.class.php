@@ -164,10 +164,6 @@ class DomainRecord extends CommonDBChild {
       return $tab;
    }
 
-   public function canCreateItem() {
-      return count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes']);
-   }
-
    static function canCreate() {
       if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
          return true;
@@ -180,6 +176,27 @@ class DomainRecord extends CommonDBChild {
          return true;
       }
       return parent::canUpdate();
+   }
+
+
+   static function canDelete() {
+       if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
+           return true;
+       }
+       return parent::canDelete();
+   }
+
+
+   static function canPurge() {
+       if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
+           return true;
+       }
+       return parent::canPurge();
+   }
+
+
+   public function canCreateItem() {
+      return count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes']);
    }
 
 
@@ -196,6 +213,15 @@ class DomainRecord extends CommonDBChild {
          || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])
          );
    }
+
+
+   function canPurgeItem() {
+      return parent::canPurgeItem()
+         && ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] == [-1]
+         || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])
+         );
+   }
+
 
    function defineTabs($options = []) {
       $ong = [];
