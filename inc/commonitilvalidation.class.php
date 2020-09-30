@@ -1405,7 +1405,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       if ($validation_percent > 0) {
          if (($statuses[self::ACCEPTED]*100/$total) >= $validation_percent) {
             $validation_status = self::ACCEPTED;
-         } else if (($statuses[self::REFUSED]*100/$total) >= $validation_percent) {
+         } else if (($statuses[self::REFUSED]*100/$total) + $validation_percent > 100) {
             $validation_status = self::REFUSED;
          }
       } else {
