@@ -72,10 +72,7 @@ if (isset($_POST)) {
    }
    $_POST = Toolbox::sanitize($_POST);
 }
-if (isset($_GET)) {
-   $_UGET = $_GET; //keep raw, as a workaround
-   $_GET  = Toolbox::sanitize($_GET);
-}
+
 if (isset($_REQUEST)) {
    $_UREQUEST = $_REQUEST; //keep raw, as a workaround
    $_REQUEST  = Toolbox::sanitize($_REQUEST);
@@ -105,6 +102,10 @@ if (!isset($PLUGINS_INCLUDED)) {
    $plugin->init(true);
 }
 
+if (isset($_GET)) {
+   $_UGET = $_GET; //keep raw, as a workaround
+   $_GET  = Toolbox::sanitize($_GET);
+}
 
 if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
    $_SESSION["MESSAGE_AFTER_REDIRECT"]=[];
