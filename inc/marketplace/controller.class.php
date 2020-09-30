@@ -138,6 +138,17 @@ class Controller extends CommonGLPI {
       }
 
       $plugin_inst = new Plugin();
+
+      if ($plugin_inst->getFromDBbyDir($this->plugin_key)
+          && !in_array($plugin_inst->fields['state'], [Plugin::ANEW, Plugin::NOTINSTALLED, Plugin::NOTUPDATED])) {
+         // Plugin was already existing, make it "not updated" before checking its state
+         // to prevent message like 'Plugin "xxx" version changed. It has been deactivated as its update process has to be launched.'.
+         $plugin_inst->update([
+            'id'    => $plugin_inst->fields['id'],
+            'state' => Plugin::NOTUPDATED
+         ]);
+      }
+
       $plugin_inst->checkPluginState($this->plugin_key);
       $plugin_inst->getFromDBbyDir($this->plugin_key);
 

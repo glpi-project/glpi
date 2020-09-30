@@ -154,11 +154,12 @@ class Plugin extends CommonDBTM {
    /**
     * Init plugins list.
     *
-    * @param boolean $load_plugins  Whether to load active/configurable plugins or not.
+    * @param boolean $load_plugins     Whether to load active/configurable plugins or not.
+    * @param array $excluded_plugins   List of plugins to exclude
     *
     * @return void
    **/
-   function init(bool $load_plugins = false) {
+   function init(bool $load_plugins = false, array $excluded_plugins = []) {
       global $DB;
 
       self::$plugins_init   = false;
@@ -171,7 +172,7 @@ class Plugin extends CommonDBTM {
          return;
       }
 
-      $this->checkStates();
+      $this->checkStates(false, $excluded_plugins);
 
       $plugins = $this->find(['state' => [self::ACTIVATED, self::TOBECONFIGURED]]);
 
@@ -179,6 +180,10 @@ class Plugin extends CommonDBTM {
 
       if ($load_plugins && count($plugins)) {
          foreach ($plugins as $plugin) {
+            if (in_array($plugin['directory'], $excluded_plugins)) {
+               continue;
+            }
+
             if (!$this->isLoadable($plugin['directory'])) {
                continue;
             }
@@ -341,10 +346,11 @@ class Plugin extends CommonDBTM {
     * Check plugins states and detect new plugins.
     *
     * @param boolean $scan_inactive_and_new_plugins
+    * @param array $excluded_plugins   List of plugins to exclude
     *
     * @return void
     */
-   public function checkStates($scan_inactive_and_new_plugins = false) {
+   public function checkStates($scan_inactive_and_new_plugins = false, array $excluded_plugins = []) {
 
       $directories = [];
 
@@ -376,6 +382,9 @@ class Plugin extends CommonDBTM {
 
       // Check all directories from the checklist
       foreach ($directories as $directory) {
+         if (in_array($directory, $excluded_plugins)) {
+            continue;
+         }
          $this->checkPluginState($directory);
       }
    }
