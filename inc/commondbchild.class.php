@@ -861,6 +861,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
    }
 
    public static final function getItemField($itemtype): string {
+      if (preg_match('/^Rule.+/', $itemtype)) {
+         $itemtype = 'Rule';
+      }
       if (isset(static::$items_id) && getItemtypeForForeignKeyField(static::$items_id) == $itemtype) {
          return static::$items_id;
       }
