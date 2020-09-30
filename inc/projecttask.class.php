@@ -46,9 +46,6 @@ use Sabre\VObject\Property\IntegerValue;
  * @since 0.85
 **/
 class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface {
-   use Glpi\Features\Clonable {
-      prepareInputForClone as protected prepareInputForCloneTrait;
-   }
    use Glpi\Features\PlanningEvent;
    use VobjectConverterTrait;
 

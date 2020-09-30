@@ -80,7 +80,10 @@ class CommonDBConnexityItemNotFound extends \Exception {
  * @since 0.84
 **/
 abstract class CommonDBConnexity extends CommonDBTM {
-   use Glpi\Features\Clonable;
+   use Glpi\Features\Clonable {
+      post_clone as protected post_cloneTrait;
+      prepareInputForClone as protected prepareInputForCloneTrait;
+   }
 
    const DONT_CHECK_ITEM_RIGHTS  = 1; // Don't check the parent => always can*Child
    const HAVE_VIEW_RIGHT_ON_ITEM = 2; // canXXXChild = true if parent::canView == true
