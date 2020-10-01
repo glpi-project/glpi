@@ -327,9 +327,18 @@ workflows:
       - php_7_4_test_suite:
           requires:
             - checkout
+          filters:
+            branches:
+              ignore: 9.4/bugfixes
       - php_7_4_mysql_5_6_test_suite:
           requires:
             - checkout
+          filters:
+            branches:
+              ignore: 9.4/bugfixes
       - php_7_4_mysql_8_0_test_suite:
           requires:
             - checkout
+          filters:
+            branches:
+              ignore: 9.4/bugfixes
