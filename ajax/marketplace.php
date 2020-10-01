@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+global $PLUGINS_EXCLUDED;
+
 // follow download progress of a plugin with a minimal loading of files
 // So we get a ajax answer in 5ms instead 100ms
 if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "get_dl_progress") {
@@ -43,6 +45,12 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "get_dl_progress") {
 
    echo $_SESSION['marketplace_dl_progress'][$_REQUEST['key']] ?? 0;
    exit;
+}
+
+if ($_REQUEST["action"] == "download_plugin" || $_REQUEST["action"] == "update_plugin") {
+   // Do not load plugin that will be updated, to be able to load its new informations
+   // by redefining its plugin_version_ function after files replacement.
+   $PLUGINS_EXCLUDED = [$_REQUEST['key']];
 }
 
 

@@ -75,4 +75,41 @@ class RuleSoftwareCategory extends DbTestCase {
          )
       )->isIdenticalTo(0);
    }
+
+   public function testClone() {
+      $rule = getItemByTypeName('RuleSoftwareCategory', 'Import category from inventory tool');
+      $rules_id = $rule->fields['id'];
+
+      $this->integer($rule->fields['is_active'])->isIdenticalTo(0);
+
+      $relations = [
+         \RuleAction::class => 1,
+         \RuleCriteria::class  => 1
+      ];
+
+      foreach ($relations as $relation => $expected) {
+         $this->integer(
+            countElementsInTable(
+               $relation::getTable(),
+               ['rules_id' => $rules_id]
+            )
+         )->isIdenticalTo($expected);
+      }
+
+      $cloned = $rule->clone();
+      $this->integer($cloned)->isGreaterThan($rules_id);
+      $this->boolean($rule->getFromDB($cloned))->isTrue();
+
+      $this->integer($rule->fields['is_active'])->isIdenticalTo(0);
+      $this->string($rule->fields['name'])->isIdenticalTo('Copy of Import category from inventory tool');
+
+      foreach ($relations as $relation => $expected) {
+         $this->integer(
+            countElementsInTable(
+               $relation::getTable(),
+               ['rules_id' => $cloned]
+            )
+         )->isIdenticalTo($expected);
+      }
+   }
 }

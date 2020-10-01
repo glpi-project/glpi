@@ -599,7 +599,7 @@ JAVASCRIPT;
 
          $ID = "";
 
-         if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+         if ($_SESSION["glpiis_ids_visible"] || empty(self::getDisplayName($domain, $data['name']))) {
             $ID = " (" . $data["id"] . ")";
          }
 
