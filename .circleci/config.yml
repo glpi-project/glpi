@@ -311,7 +311,6 @@ workflows:
             branches:
               only:
                 - master
-                - 9.4/bugfixes
                 - 9.5/bugfixes
     jobs:
       - checkout
