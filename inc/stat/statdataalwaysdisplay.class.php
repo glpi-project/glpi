@@ -24,36 +24,20 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Csv\CsvResponse;
-use Glpi\Csv\LogCsvExport;
+namespace Glpi\Stat;
 
-include ('../../inc/includes.php');
-
-// Read params
-$itemtype = $_GET['itemtype']   ?? null;
-$id       = $_GET['id']         ?? null;
-$filter   = $_GET['filter']     ?? [];
-
-// Validate itemtype
-if (!is_a($itemtype, CommonDBTM::class, true)) {
-    Toolbox::throwError(400, "Invalid itemtype", "string");
+/**
+ * Data for front/stat.graph.php
+ */
+abstract class StatDataAlwaysDisplay extends StatData
+{
+   public function isEmpty(): bool {
+      // Force display even if no data
+      return false;
+   }
 }
-
-// Validate id
-$item = $itemtype::getById($id);
-if (!$item || !$item->canViewItem()) {
-    Toolbox::throwError(400, "No item found for given id", "string");
-}
-
-// Validate filter
-if (!is_array($filter)) {
-    Toolbox::throwError(400, "Invalid filter", "string");
-}
-
-CsvResponse::output(new LogCsvExport($item, $filter));

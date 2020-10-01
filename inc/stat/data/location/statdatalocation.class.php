@@ -30,30 +30,46 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Csv\CsvResponse;
-use Glpi\Csv\LogCsvExport;
+namespace Glpi\Stat\Data\Location;
 
-include ('../../inc/includes.php');
+use Glpi\Stat\StatData;
+use Html;
+use Stat;
+use Toolbox;
 
-// Read params
-$itemtype = $_GET['itemtype']   ?? null;
-$id       = $_GET['id']         ?? null;
-$filter   = $_GET['filter']     ?? [];
+/**
+ * Data for front/stat.location.php and front/stat.specific.php
+ */
+abstract class StatDataLocation extends StatData
+{
+   public function __construct(array $params) {
+      parent::__construct($params);
 
-// Validate itemtype
-if (!is_a($itemtype, CommonDBTM::class, true)) {
-    Toolbox::throwError(400, "Invalid itemtype", "string");
+      $data_key = $this->getKey();
+
+      $data = Stat::getData(
+         $params['itemtype'],
+         $params['type'],
+         $params['date1'],
+         $params['date2'],
+         $params['start'],
+         $params['val'],
+         $params['value2']
+      );
+
+      if (!isset($data[$data_key]) || !is_array($data[$data_key])) {
+         return;
+      }
+
+      foreach ($data[$data_key] as $key => $val) {
+         if ($val > 0) {
+            $newkey = Toolbox::unclean_cross_side_scripting_deep(Html::clean($key));
+            $this->labels[] = $newkey;
+            $this->series[] = ['name' => $newkey, 'data' => $val];
+            $this->total += $val;
+         }
+      }
+   }
+
+   public abstract function getKey(): string;
 }
-
-// Validate id
-$item = $itemtype::getById($id);
-if (!$item || !$item->canViewItem()) {
-    Toolbox::throwError(400, "No item found for given id", "string");
-}
-
-// Validate filter
-if (!is_array($filter)) {
-    Toolbox::throwError(400, "Invalid filter", "string");
-}
-
-CsvResponse::output(new LogCsvExport($item, $filter));

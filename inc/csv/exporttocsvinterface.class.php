@@ -30,30 +30,32 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Csv\CsvResponse;
-use Glpi\Csv\LogCsvExport;
+namespace Glpi\Csv;
 
-include ('../../inc/includes.php');
-
-// Read params
-$itemtype = $_GET['itemtype']   ?? null;
-$id       = $_GET['id']         ?? null;
-$filter   = $_GET['filter']     ?? [];
-
-// Validate itemtype
-if (!is_a($itemtype, CommonDBTM::class, true)) {
-    Toolbox::throwError(400, "Invalid itemtype", "string");
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
 }
 
-// Validate id
-$item = $itemtype::getById($id);
-if (!$item || !$item->canViewItem()) {
-    Toolbox::throwError(400, "No item found for given id", "string");
-}
+interface ExportToCsvInterface
+{
+   /**
+    * Get name of the csv file
+    *
+    * @return string
+    */
+   public function getFileName(): string;
 
-// Validate filter
-if (!is_array($filter)) {
-    Toolbox::throwError(400, "Invalid filter", "string");
-}
+   /**
+    * Get header of the csv file
+    *
+    * @return array
+    */
+   public function getFileHeader(): array;
 
-CsvResponse::output(new LogCsvExport($item, $filter));
+   /**
+    * Get content of the csv file
+    *
+    * @return array
+    */
+   public function getFileContent(): array;
+}

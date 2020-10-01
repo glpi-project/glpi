@@ -71,6 +71,7 @@ $GLPI_CACHE = Config::getCache('cache_db');
 include_once __DIR__ . '/../inc/includes.php';
 include_once __DIR__ . '/GLPITestCase.php';
 include_once __DIR__ . '/DbTestCase.php';
+include_once __DIR__ . '/CsvTestCase.php';
 include_once __DIR__ . '/APIBaseClass.php';
 
 // check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes

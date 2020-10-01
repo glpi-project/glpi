@@ -30,6 +30,12 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Csv;
+
+use DateTime;
+use DateTimeZone;
+use User;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -37,29 +43,29 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Planning CSV export Class
 **/
-class PlanningCsv extends CommonGLPI {
+class PlanningCsv implements ExportToCsvInterface {
 
    private $users_id;
    private $groups_id;
    private $limititemtype;
 
-   private $eol = "\r\n";
-   private $quote = '"';
-   private $titles = [];
-   private $lines = null;
-   private $filename = 'planning.csv';
-
    /**
-    * @param integer $who          user ID
-    * @param integer $whogroup     group ID
-    * @param string $limititemtype itemtype only display this itemtype (default '')
-   **/
-
+    * @param int     $who            user ID
+    * @param int     $whogroup       group ID
+    * @param string  $limititemtype  itemtype only display this itemtype (default '')
+    */
    public function __construct($who, $whogroup = null, $limititemtype = '') {
       $this->users_id      = $who;
       $this->groups_id     = $whogroup;
       $this->limititemtype = $limititemtype;
-      $this->titles        = [
+   }
+
+   public function getFileName(): string {
+      return "planning.csv";
+   }
+
+   public function getFileHeader(): array {
+      return [
          __('Actor'),
          __('Title'),
          __('Item type'),
@@ -69,18 +75,13 @@ class PlanningCsv extends CommonGLPI {
       ];
    }
 
-   /**
-    * Build CSV lines
-    *
-    * @return void
-    */
-   private function buildLines() {
+   public function getFileContent(): array {
       global $CFG_GLPI;
 
       $interv = [];
-      $this->lines = [];
-      $begin  = time()-MONTH_TIMESTAMP*12;
-      $end    = time()+MONTH_TIMESTAMP*12;
+      $lines  = [];
+      $begin  = time() - MONTH_TIMESTAMP * 12;
+      $end    = time() + MONTH_TIMESTAMP * 12;
       $begin  = date("Y-m-d H:i:s", $begin);
       $end    = date("Y-m-d H:i:s", $end);
       $params = [
@@ -111,8 +112,7 @@ class PlanningCsv extends CommonGLPI {
             $user = new User();
             $user->getFromDB($val['users_id']);
 
-            //(acteur;titre item;id item;date-heure début,date-heure fin;catégorie)
-            $this->lines[] = [
+            $lines[] = [
                'actor'     => $user->getFriendlyName(),
                'title'     => $val['name'],
                'itemtype'  => $itemtype->getTypeName(1),
@@ -122,69 +122,7 @@ class PlanningCsv extends CommonGLPI {
             ];
          }
       }
-   }
 
-   /**
-    * Outputs CSV export
-    *
-    * @param boolean $text Outputs text only, without headers
-    */
-   public function output($text = false) {
-      $this->getlines();
-
-      if ($text === false) {
-         header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
-         header('Pragma: private'); /// IE BUG + SSL
-         header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
-         header("Content-disposition: filename=".$this->filename);
-         header('Content-type: application/octetstream');
-         // zero width no break space (for excel)
-      }
-
-      echo implode(
-         $_SESSION["glpicsv_delimiter"],
-         array_map(function ($value) { return $this->quote($value); }, $this->titles)
-      ) . $this->eol;
-      foreach ($this->lines as $line) {
-         echo implode(
-            $_SESSION["glpicsv_delimiter"],
-            array_map(function ($value) { return $this->quote($value); }, $line)
-         ) . $this->eol;
-      }
-   }
-
-   /**
-    * Get lines
-    *
-    * @return array
-    */
-   public function getlines() {
-      if ($this->lines === null) {
-         $this->buildLines();
-      }
-      return $this->lines;
-   }
-
-   /**
-    * Quote value for CSV
-    *
-    * @param string $value Value to quote
-    *
-    * @return string
-    */
-   public function quote($value) {
-      return $this->quote . str_replace($this->quote, $this->quote.$this->quote, $value) . $this->quote;
-   }
-
-   public function __get($name) {
-      switch ($name) {
-         case 'eol':
-         case 'quote':
-            return $this->$name;
-         case 'lines':
-            return $this->getlines();
-         default:
-            Toolbox::logWarning('Unable to get ' . $name);
-      }
+      return $lines;
    }
 }

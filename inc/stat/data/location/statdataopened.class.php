@@ -30,30 +30,22 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Csv\CsvResponse;
-use Glpi\Csv\LogCsvExport;
+namespace Glpi\Stat\Data\Location;
 
-include ('../../inc/includes.php');
+use Session;
+use Ticket;
 
-// Read params
-$itemtype = $_GET['itemtype']   ?? null;
-$id       = $_GET['id']         ?? null;
-$filter   = $_GET['filter']     ?? [];
+class StatDataOpened extends StatDataLocation
+{
+   public function getKey(): string {
+      return "opened";
+   }
 
-// Validate itemtype
-if (!is_a($itemtype, CommonDBTM::class, true)) {
-    Toolbox::throwError(400, "Invalid itemtype", "string");
+   public function getTitle(): string {
+      return sprintf(
+         __('Opened %1$s (%2$s)'),
+         Ticket::getTypeName(Session::getPluralNumber()),
+         $this->getTotal()
+      );
+   }
 }
-
-// Validate id
-$item = $itemtype::getById($id);
-if (!$item || !$item->canViewItem()) {
-    Toolbox::throwError(400, "No item found for given id", "string");
-}
-
-// Validate filter
-if (!is_array($filter)) {
-    Toolbox::throwError(400, "Invalid filter", "string");
-}
-
-CsvResponse::output(new LogCsvExport($item, $filter));
