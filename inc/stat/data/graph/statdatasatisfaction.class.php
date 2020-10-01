@@ -30,30 +30,27 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Csv\CsvResponse;
-use Glpi\Csv\LogCsvExport;
+namespace Glpi\Stat\Data\Graph;
 
-include ('../../inc/includes.php');
+use Glpi\Stat\StatDataAlwaysDisplay;
 
-// Read params
-$itemtype = $_GET['itemtype']   ?? null;
-$id       = $_GET['id']         ?? null;
-$filter   = $_GET['filter']     ?? [];
+class StatDataSatisfaction extends StatDataAlwaysDisplay
+{
+   public function __construct(array $params) {
+      parent::__construct($params);
 
-// Validate itemtype
-if (!is_a($itemtype, CommonDBTM::class, true)) {
-    Toolbox::throwError(400, "Invalid itemtype", "string");
+      $avgsatisfaction   = $this->getDataByType($params, "inter_avgsatisfaction");
+
+      $this->labels = array_keys($avgsatisfaction);
+      $this->series = [
+         [
+            'name' => __('Satisfaction'),
+            'data' => $avgsatisfaction,
+         ]
+      ];
+   }
+
+   public function getTitle(): string {
+      return __('Satisfaction');
+   }
 }
-
-// Validate id
-$item = $itemtype::getById($id);
-if (!$item || !$item->canViewItem()) {
-    Toolbox::throwError(400, "No item found for given id", "string");
-}
-
-// Validate filter
-if (!is_array($filter)) {
-    Toolbox::throwError(400, "Invalid filter", "string");
-}
-
-CsvResponse::output(new LogCsvExport($item, $filter));

@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Stat\StatData;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -41,6 +43,7 @@ class Stat extends CommonGLPI {
 
    static $rightname = 'statistic';
 
+   public static $cache = [];
 
    static function getTypeName($nb = 0) {
       return __('Statistics');
@@ -297,6 +300,15 @@ class Stat extends CommonGLPI {
     * @param $value2             (default '')
    **/
    static function getData($itemtype, $type, $date1, $date2, $start, array $value, $value2 = "") {
+      $hash = md5(serialize(func_get_args()));
+
+      // Single query cache to avoid recalculating data multiple times
+      // Needed as multiple stats rely on partial data returneds by this function
+      // Can be removed once we improve this code by spliting each data calculations
+      // into separate functions that can be called independently
+      if (isset(self::$cache[$hash])) {
+         return self::$cache[$hash];
+      }
 
       $export_data = [];
 
@@ -340,6 +352,8 @@ class Stat extends CommonGLPI {
 
          }
       }
+
+      self::$cache[$hash] = $export_data;
       return $export_data;
    }
 
@@ -1565,6 +1579,24 @@ class Stat extends CommonGLPI {
    }
 
    /**
+    * Call displayLineGraph with arguments from a StatData object
+    */
+   public function displayLineGraphFromData(StatData $stat_data) {
+      if ($stat_data->isEmpty()) {
+         return;
+      }
+
+      $this->displayLineGraph(
+         $stat_data->getTitle(),
+         $stat_data->getLabels(),
+         $stat_data->getSeries(),
+         $stat_data->getOptions(),
+         true,
+         $stat_data->getCsvLink()
+      );
+   }
+
+   /**
     * Display line graph
     *
     * @param string   $title  Graph title
@@ -1576,12 +1608,18 @@ class Stat extends CommonGLPI {
     *                 ]
     * @param array    $options  Options
     * @param boolean  $display  Whether to display directly; defauts to true
+    * @param string   $csv_link Link to download the dataset as csv
     *
     * @return void
     */
-   public function displayLineGraph($title, $labels, $series, $options = null, $display = true) {
-      global $CFG_GLPI;
-
+   public function displayLineGraph(
+      $title,
+      $labels,
+      $series,
+      $options = null,
+      $display = true,
+      ?string $csv_link = null
+   ) {
       $param = [
          'width'   => 900,
          'height'  => 300,
@@ -1600,12 +1638,8 @@ class Stat extends CommonGLPI {
       $slug = str_replace('-', '_', Toolbox::slugify($title));
       $this->checkEmptyLabels($labels);
       $out = "<h2 class='center'>$title";
-      if ($param['csv']) {
-         $csvfilename = $this->generateCsvFile($labels, $series, $options);
-         $out .= " <a href='".$CFG_GLPI['root_doc'].
-            "/front/graph.send.php?file=$csvfilename' title='".__s('CSV').
-            "' class='pointer fa fa-file-alt'><span class='sr-only'>".__('CSV').
-            "</span></a>";
+      if ($param['csv'] && $csv_link) {
+         $out .= " <a href='$csv_link' title='".__s('CSV') ."' class='pointer fa fa-file-alt export-stat'><span class='sr-only'>".__('CSV')."</span></a>";
       }
       $out .= "</h2>";
       $out .= "<div id='$slug' class='chart'></div>";
@@ -1690,6 +1724,24 @@ class Stat extends CommonGLPI {
    }
 
    /**
+    * Call displayPieGraph with arguments from a StatData object
+    */
+   public function displayPieGraphFromData(StatData $stat_data) {
+      if ($stat_data->isEmpty()) {
+         return;
+      }
+
+      $this->displayPieGraph(
+         $stat_data->getTitle(),
+         $stat_data->getLabels(),
+         $stat_data->getSeries(),
+         $stat_data->getOptions(),
+         true,
+         $stat_data->getCsvLink()
+      );
+   }
+
+   /**
     * Display pie graph
     *
     * @param string   $title  Graph title
@@ -1701,11 +1753,18 @@ class Stat extends CommonGLPI {
     *                 ]
     * @param array    $options  Options
     * @param boolean  $display  Whether to display directly; defauts to true
+    * @param string   $csv_link Link to download the dataset as csv
     *
     * @return void
     */
-   public function displayPieGraph($title, $labels, $series, $options = [], $display = true) {
-      global $CFG_GLPI;
+   public function displayPieGraph(
+         $title,
+         $labels,
+         $series,
+         $options = [],
+         $display = true,
+         ?string $csv_link = null
+      ) {
       $param = [
          'csv'     => true
       ];
@@ -1721,11 +1780,10 @@ class Stat extends CommonGLPI {
       $out = "<h2 class='center'>$title";
       if ($param['csv']) {
          $options['title'] = $title;
-         $csvfilename = $this->generateCsvFile($labels, $series, $options);
-         $out .= " <a href='".$CFG_GLPI['root_doc'].
-            "/front/graph.send.php?file=$csvfilename' title='".__s('CSV').
-            "' class='pointer fa fa-file-alt'><span class='sr-only'>".__('CSV').
-            "</span></a>";
+
+         if ($csv_link) {
+            $out .= " <a href='$csv_link' title='".__s('CSV') ."' class='pointer fa fa-file-alt export-stat'><span class='sr-only'>".__('CSV')."</span></a>";
+         }
       }
       $out .= "</h2>";
       $out .= "<div id='$slug' class='chart'></div>";
@@ -1864,72 +1922,6 @@ class Stat extends CommonGLPI {
             $label = '-';
          }
       }
-   }
-
-   /**
-    * Generates te CSV file
-    *
-    * @param array  $labels  Labels
-    * @param array  $series  Series
-    * @param array  $options Options
-    *
-    * @return string filename
-    */
-   private function generateCsvFile($labels, $series, $options = []) {
-      $uid = Session::getLoginUserID(false);
-      $csvfilename = $uid.'_'.mt_rand().'.csv';
-
-      // Render CSV
-      if ($fp = fopen(GLPI_GRAPH_DIR.'/'.$csvfilename, 'w')) {
-         // reformat datas
-         $values  = [];
-         $headers = [];
-         $row_num = 0;
-         foreach ($series as $serie) {
-            $data = $serie['data'];
-            //$labels[$row_num] = $label;
-            if (is_array($data) && count($data)) {
-               $headers[$row_num] = $serie['name'];
-               foreach ($data as $key => $val) {
-                  if (!isset($values[$key])) {
-                     $values[$key] = [];
-                  }
-                  if (isset($options['datatype']) && $options['datatype'] == 'average') {
-                     $val = round($val, 2);
-                  }
-                  $values[$key][$row_num] = $val;
-               }
-            } else {
-               $values[$serie['name']][] = $data;
-            }
-            $row_num++;
-         }
-         ksort($values);
-
-         if (!count($headers) && $options['title']) {
-            $headers[] = $options['title'];
-         }
-
-         // Print labels
-         fwrite($fp, $_SESSION["glpicsv_delimiter"]);
-         foreach ($headers as $val) {
-            fwrite($fp, $val.$_SESSION["glpicsv_delimiter"]);
-         }
-         fwrite($fp, "\n");
-
-         //print values
-         foreach ($values as $key => $data) {
-            fwrite($fp, $key.$_SESSION["glpicsv_delimiter"]);
-            foreach ($data as $value) {
-               fwrite($fp, $value.$_SESSION["glpicsv_delimiter"]);
-            }
-            fwrite($fp, "\n");
-         }
-
-         fclose($fp);
-         return $csvfilename;
-      }
-      return false;
    }
 
    static function getIcon() {

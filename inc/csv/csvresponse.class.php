@@ -30,30 +30,26 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Csv\CsvResponse;
-use Glpi\Csv\LogCsvExport;
+namespace Glpi\Csv;
 
-include ('../../inc/includes.php');
+use League\Csv\Writer;
 
-// Read params
-$itemtype = $_GET['itemtype']   ?? null;
-$id       = $_GET['id']         ?? null;
-$filter   = $_GET['filter']     ?? [];
-
-// Validate itemtype
-if (!is_a($itemtype, CommonDBTM::class, true)) {
-    Toolbox::throwError(400, "Invalid itemtype", "string");
+if (!defined('GLPI_ROOT')) {
+    die("Sorry. You can't access this file directly");
 }
 
-// Validate id
-$item = $itemtype::getById($id);
-if (!$item || !$item->canViewItem()) {
-    Toolbox::throwError(400, "No item found for given id", "string");
+class CsvResponse
+{
+   /**
+    * Output a CSV file using League\Csv
+    *
+    * @param ExportToCsvInterface $export
+    */
+   public static function output(ExportToCsvInterface $export): void {
+      $csv = Writer::createFromString('');
+      $csv->setDelimiter($_SESSION["glpicsv_delimiter"] ?? ";");
+      $csv->insertOne($export->getFileHeader());
+      $csv->insertAll($export->getFileContent());
+      $csv->output($export->getFileName());
+   }
 }
-
-// Validate filter
-if (!is_array($filter)) {
-    Toolbox::throwError(400, "Invalid filter", "string");
-}
-
-CsvResponse::output(new LogCsvExport($item, $filter));

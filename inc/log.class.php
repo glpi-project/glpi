@@ -30,8 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-use League\Csv\Writer as Csv_Writer;
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -1283,58 +1281,5 @@ class Log extends CommonDBTM {
       $values = [ READ => __('Read')];
       return $values;
    }
-
-   /**
-    * Build export filename for a given item
-    * Format: {translated_itemtype}_{id}_{date}.csv
-    *
-    * @param CommonDBTM $item
-    *
-    * @return string
-    */
-   public static function getExportName(CommonDBTM $item): string {
-      $date = date('Y_m_d', time());
-      return "{$item::getTypeName(1)}_{$item->getId()}_$date.csv";
-   }
-
-   /**
-    * Export specified item logs to CSV.
-    * Logs may be filtered
-    *
-    * @param CommonDBTM $item
-    * @param array      $filter
-    *
-    * @return League\Csv\Writer
-    */
-   public static function exportToCsv(CommonDBTM $item, array $filter): Csv_Writer {
-      // Get logs from DB
-      $filter = self::convertFiltersValuesToSqlCriteria($filter);
-      $logs = self::getHistoryData($item, 0, 0, $filter);
-
-      // Remove uneeded rows
-      $logs = array_map(function($log) {
-         unset($log['display_history']);
-         unset($log['datatype']);
-         return $log;
-      }, $logs);
-
-      // Init file
-      $csv = Csv_Writer::createFromString('');
-
-      // Insert header
-      $csv->insertOne([
-         __('ID'),
-         _n('Date', 'Dates', 1),
-         User::getTypeName(1),
-         _n('Field', 'Fields', 1),
-         _x('name', 'Update'),
-      ]);
-
-      // Insert logs
-      $csv->insertAll($logs);
-
-      return $csv;
-   }
-
 
 }

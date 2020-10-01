@@ -30,34 +30,15 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units;
+namespace tests\units\Glpi\Csv;
+
+use CsvTestCase;
 
 /* Test for inc/planningcsv.class.php */
 
-class PlanningCsv extends \DbTestCase {
+class PlanningCsv extends CsvTestCase {
 
-   protected function quoteProvider() {
-      return [
-         ['A simple string'],
-         ['A "double quoted" string', '"A ""double quoted"" string"'],
-         ['Une chaîne accentuée']
-      ];
-   }
-
-   /**
-    * @dataProvider quoteProvider
-    */
-   public function testQuote($input, $expected = null) {
-      $csv = new \PlanningCsv(1);
-
-      if ($expected === null) {
-         $expected = $csv->quote . $input . $csv->quote;
-      }
-
-      $this->string($csv->quote($input))->isIdenticalTo($expected);
-   }
-
-   public function testList() {
+   public function getTestData(): array {
       $this->login();
 
       //create calendar entryies
@@ -122,47 +103,61 @@ class PlanningCsv extends \DbTestCase {
          $date->add(new \DateInterval('P1Y'));
       }
 
-      $csv = new \PlanningCsv(\Session::getLoginUserID(), 0);
-
       $user = new \User();
       $this->boolean($user->getFromDB(\Session::getLoginUserID()))->isTrue();
 
-      $expected = [
+      $expected_header = [
+         'Actor',
+         'Title',
+         'Item type',
+         'Item id',
+         'Begin date',
+         'End date'
+      ];
+
+      $expected_content = [
          [
             'actor'     => $user->getFriendlyName(),
             'title'     => 'This is a "test"',
             'itemtype'  => 'Reminder',
-            'items_id'  => (string)$rid,
+            'items_id'  => $rid,
             'begindate' => $fbegin,
             'enddate'   => $fend
          ]
       ];
 
       foreach ($tasks as $input) {
-         $expected[] = [
+         $expected_content[] = [
             'actor'     => $user->getFriendlyName(),
             'title'     => 'ticket title',
             'itemtype'  => 'Ticket task',
-            'items_id'  => (string)$input['id'],
+            'items_id'  => $input['id'],
             'begindate' => $input['begin'],
             'enddate'   => $input['end']
          ];
       }
 
-      $this->array($csv->getLines())->isEqualTo($expected);
-
-      $sexpected = "\"Actor\";\"Title\";\"Item type\";\"Item id\";\"Begin date\";\"End date\"".$csv->eol;
-      $sexpected .= "\"".$user->getFriendlyName()."\";\"This is a \"\"test\"\"\";\"Reminder\";\"$rid\";\"$fbegin\";\"$fend\"{$csv->eol}";
-      foreach ($tasks as $input) {
-         $sexpected .= "\"".$user->getFriendlyName()."\";\"ticket title\";\"Ticket task\";\"{$input['id']}\";\"{$input['begin']}\";\"{$input['end']}\"{$csv->eol}";
-      }
-      $this->output(
-         function () use ($csv) {
-            $csv->output(false);
-         }
-      )->isIdenticalTo($sexpected);
-
-      $csv = new \PlanningCsv(\Session::getLoginUserID(), 0, 'Reminder');
-      $this->array($csv->getLines())->isEqualTo([$expected[0]]);
+      return [
+         [
+            'export' => new \Glpi\Csv\PlanningCsv(\Session::getLoginUserID(), 0),
+            'expected' => [
+               'cols'     => 6,
+               'rows'     => 3,
+               'filename' => 'planning.csv',
+               'header'   => $expected_header,
+               'content'  => $expected_content,
+            ]
+         ],
+         [
+            'export' => new \Glpi\Csv\PlanningCsv(\Session::getLoginUserID(), 0, 'Reminder'),
+            'expected' => [
+               'cols'     => 6,
+               'rows'     => 1,
+               'filename' => 'planning.csv',
+               'header'   => $expected_header,
+               'content'  => [$expected_content[0]],
+            ]
+         ]
+      ];
    }
 }
