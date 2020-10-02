@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 
 use GLPINetwork;
 use GuzzleHttp\Client as Guzzle_Client;
-use GuzzleHttp\Psr7;
+use GuzzleHttp\Psr7\Message;
 use GuzzleHttp\Psr7\Response;
 use Session;
 use Toolbox;
@@ -111,10 +111,10 @@ class Plugins {
          $this->last_error = [
             'title'     => "Plugins API error",
             'exception' => $e->getMessage(),
-            'request'   => Psr7\str($e->getRequest()),
+            'request'   => Message::toString($e->getRequest()),
          ];
          if ($e->hasResponse()) {
-             $this->last_error['response'] = Psr7\str($e->getResponse());
+             $this->last_error['response'] = Message::toString($e->getResponse());
          }
 
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
