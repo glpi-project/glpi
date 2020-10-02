@@ -105,7 +105,7 @@ class ErrorHandler {
    /**
     * Last fatal error trace.
     *
-    * @var array
+    * @var string
     */
    private $last_fatal_trace;
 
