@@ -6755,7 +6755,7 @@ JAVASCRIPT;
     * @param string  $itemtype     Item type
     * @param boolean $withplugins  Get search options from plugins (true by default)
     *
-    * @return &array The reference to the array of search options for the given item type
+    * @return array The reference to the array of search options for the given item type
    **/
    static function &getOptions($itemtype, $withplugins = true) {
       global $CFG_GLPI;
