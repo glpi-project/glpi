@@ -47,6 +47,7 @@ function update95toXX() {
    $migration->setVersion('x.x.x');
 
    $update_scripts = [
+      'cameras',
       'devicebattery',
       'documents',
       'domains',

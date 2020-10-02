@@ -64,8 +64,6 @@ class RuleImportAsset extends Rule {
    private $only_these_criteria = false;
    /** @var boolean */
    private $link_criteria_port = false;
-   /** @var integer */
-   private $itemtype_global = 0;
 
 
    function getTitle() {
@@ -379,7 +377,6 @@ class RuleImportAsset extends Rule {
                   } else if (isset($definition_criteria['is_global'])
                           && $definition_criteria['is_global']) {
                      //If a value is missing, then there's a problem !
-                     //TODO: add log, this breaks the process
                      Toolbox::logWarning('A value seems missing, criterion was: ' . $criterion);
                      return false;
                   }
@@ -425,12 +422,6 @@ class RuleImportAsset extends Rule {
          }
       }
 
-      foreach ($this->complex_criteria as $criterion) {
-         if ($criterion->fields['criteria'] == "itemtype") {
-            ++$this->itemtype_global;
-         }
-      }
-
       return true;
    }
 
@@ -441,7 +432,6 @@ class RuleImportAsset extends Rule {
       $this->restrict_entity = false;
       $this->only_these_criteria = false;
       $this->link_criteria_port = false;
-      $this->itemtype_global = 0;
 
       if (!$this->preComputeCriteria($input)) {
          //logged in place, just exit
@@ -457,13 +447,10 @@ class RuleImportAsset extends Rule {
       $itemtypeselected = [];
       if (isset($input['itemtype'])
          && (is_array($input['itemtype']))
-         && ($this->itemtype_global > 0)
       ) {
-         //$itemtypeselected[] = $input['itemtype'];
          $itemtypeselected = array_merge($itemtypeselected, $input['itemtype']);
       } else if (isset($input['itemtype'])
          && (!empty($input['itemtype']))
-         && ($this->itemtype_global > 0)
       ) {
          $itemtypeselected[] = $input['itemtype'];
       } else {
