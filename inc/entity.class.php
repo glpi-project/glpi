@@ -349,7 +349,7 @@ class Entity extends CommonTreeDropdown {
                   $ong[5] = __('Assistance');
                }
                $ong[6] = __('Assets');
-               if (Session::haveRight(Config::$rightname, [UPDATE])) {
+               if (Session::haveRight(Config::$rightname, UPDATE)) {
                   $ong[7] = __('UI customization');
                }
 
@@ -2175,7 +2175,7 @@ class Entity extends CommonTreeDropdown {
       global $CFG_GLPI;
 
       $ID = $entity->getField('id');
-      if (!$entity->can($ID, READ) || !Session::haveRight(Config::$rightname, [UPDATE])) {
+      if (!$entity->can($ID, READ) || !Session::haveRight(Config::$rightname, UPDATE)) {
          return false;
       }
 
@@ -2184,7 +2184,7 @@ class Entity extends CommonTreeDropdown {
       echo Html::script("public/lib/codemirror.js");
 
       // Notification right applied
-      $canedit = Session::haveRight(Config::$rightname, [UPDATE])
+      $canedit = Session::haveRight(Config::$rightname, UPDATE)
          && Session::haveAccessToEntity($ID);
 
       echo "<div class='spaced'>";
