@@ -99,31 +99,16 @@ class Ticket extends CommonITILObject {
    }
 
 
-   /**
-    * Name of the type
-    *
-    * @param $nb : number of item in the type (default 0)
-   **/
    static function getTypeName($nb = 0) {
       return _n('Ticket', 'Tickets', $nb);
    }
 
 
-   /**
-    * @see CommonGLPI::getMenuShorcut()
-    *
-    * @since 0.85
-   **/
    static function getMenuShorcut() {
       return 't';
    }
 
 
-   /**
-    * @see CommonGLPI::getAdditionalMenuContent()
-    *
-    * @since 0.85
-   **/
    static function getAdditionalMenuContent() {
 
       if (static::canCreate()) {
@@ -141,11 +126,6 @@ class Ticket extends CommonITILObject {
    }
 
 
-   /**
-    * @see CommonGLPI::getAdditionalMenuLinks()
-    *
-    * @since 0.85
-   **/
    static function getAdditionalMenuLinks() {
       global $CFG_GLPI;
 
@@ -281,9 +261,6 @@ class Ticket extends CommonITILObject {
    }
 
 
-   /**
-    * @see CommonDBTM::canMassiveAction()
-   **/
    function canMassiveAction($action, $field, $value) {
 
       switch ($action) {
@@ -3226,13 +3203,6 @@ class Ticket extends CommonITILObject {
    }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $values
-    * @param $options   array
-   **/
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -3254,16 +3224,6 @@ class Ticket extends CommonITILObject {
    }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $name            (default '')
-    * @param $values          (default '')
-    * @param $options   array
-    *
-    * @return string
-   **/
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
@@ -3285,10 +3245,10 @@ class Ticket extends CommonITILObject {
    /**
     * Dropdown of ticket type
     *
-    * @param $name            select name
-    * @param $options   array of options:
+    * @param string $name     Select name
+    * @param array  $options  Array of options:
     *    - value     : integer / preselected value (default 0)
-    *    - toadd     : array / array of specific values to add at the begining
+    *    - toadd     : array / array of specific values to add at the beginning
     *    - on_change : string / value to transmit to "onChange"
     *    - display   : boolean / display or get string (default true)
     *
@@ -3323,7 +3283,7 @@ class Ticket extends CommonITILObject {
    /**
     * Get ticket types
     *
-    * @return array of types
+    * @return array Array of types
    **/
    static function getTypes() {
 
@@ -3339,7 +3299,7 @@ class Ticket extends CommonITILObject {
    /**
     * Get ticket type Name
     *
-    * @param $value type ID
+    * @param integer $value Type ID
    **/
    static function getTicketTypeName($value) {
 
@@ -3360,7 +3320,7 @@ class Ticket extends CommonITILObject {
    /**
     * get the Ticket status list
     *
-    * @param $withmetaforsearch boolean (false by default)
+    * @param boolean $withmetaforsearch  (false by default)
     *
     * @return array
    **/
@@ -3434,7 +3394,7 @@ class Ticket extends CommonITILObject {
    /**
     * Calculate Ticket TCO for an item
     *
-    *@param $item CommonDBTM object of the item
+    *@param CommonDBTM $item  Object of the item
     *
     *@return float
    **/
@@ -3480,11 +3440,11 @@ class Ticket extends CommonITILObject {
    /**
     * Print the helpdesk form
     *
-    * @param $ID              integer  ID of the user who want to display the Helpdesk
-    * @param $ticket_template boolean  ticket template for preview : false if not used for preview
+    * @param integer $ID               ID of the user who want to display the Helpdesk
+    * @param boolean $ticket_template  Ticket template for preview : false if not used for preview
     *                                  (false by default)
     *
-    * @return void
+    * @return boolean|void
    **/
    function showFormHelpdesk($ID, $ticket_template = false) {
       global $CFG_GLPI;
@@ -3984,9 +3944,9 @@ class Ticket extends CommonITILObject {
    }
 
    /**
-    * Display a single oberver selector
+    * Display a single observer selector
     *
-    *  * @param $options array options for default values ($options of showActorAddFormOnCreate)
+    * @param array $options  Options for default values ($options of showActorAddFormOnCreate)
    **/
    static function showFormHelpdeskObserver($options = []) {
       global $CFG_GLPI;
@@ -5055,9 +5015,9 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * @param $start
-    * @param $status             (default ''process)
-    * @param $showgrouptickets   (true by default)
+    * @param integer $start
+    * @param string  $status             (default ''process)
+    * @param boolean $showgrouptickets   (true by default)
     */
    static function showCentralList($start, $status = "process", $showgrouptickets = true) {
       global $DB;
@@ -5615,7 +5575,7 @@ class Ticket extends CommonITILObject {
    /**
     * Get tickets count
     *
-    * @param $foruser boolean : only for current login user as requester (false by default)
+    * @param boolean $foruser  Only for current login user as requester (false by default)
    **/
    static function showCentralCount($foruser = false) {
       global $DB, $CFG_GLPI;
@@ -6223,9 +6183,9 @@ class Ticket extends CommonITILObject {
    /**
     * Give cron information
     *
-    * @param $name : task's name
+    * @param string $name  Task's name
     *
-    * @return array of information
+    * @return array Array of information
    **/
    static function cronInfo($name) {
 
@@ -6249,7 +6209,7 @@ class Ticket extends CommonITILObject {
    /**
     * Cron for ticket's automatic close
     *
-    * @param $task : crontask object
+    * @param CronTask $task
     *
     * @return integer (0 : nothing done - 1 : done)
    **/
@@ -6324,7 +6284,7 @@ class Ticket extends CommonITILObject {
    /**
     * Cron for alert old tickets which are not solved
     *
-    * @param $task : crontask object
+    * @param CronTask $task
     *
     * @return integer (0 : nothing done - 1 : done)
    **/
@@ -6378,7 +6338,7 @@ class Ticket extends CommonITILObject {
    /**
     * Cron for ticketsatisfaction's automatic generated
     *
-    * @param $task : crontask object
+    * @param CronTask $task
     *
     * @return integer (0 : nothing done - 1 : done)
    **/
@@ -6631,8 +6591,8 @@ class Ticket extends CommonITILObject {
    /**
     * @since 0.90
     *
-    * @param $tickets_id
-    * @param $action         (default 'add')
+    * @param integer $tickets_id
+    * @param string  $action      (default 'add')
    **/
    static function getSplittedSubmitButtonHtml($tickets_id, $action = "add") {
 
