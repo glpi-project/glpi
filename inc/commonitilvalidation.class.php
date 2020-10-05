@@ -1382,8 +1382,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
    **/
    static function computeValidationStatus(CommonITILObject $item) {
 
-      $validation_status  = self::WAITING;
-
       // Percent of validation
       $validation_percent = $item->fields['validation_percent'];
 
@@ -1402,21 +1400,46 @@ abstract class CommonITILValidation  extends CommonDBChild {
          }
       }
 
+      return self::computeValidation(
+         $statuses[self::ACCEPTED] * 100 / $total,
+         $statuses[self::REFUSED]  * 100 / $total,
+         $validation_percent
+      );
+   }
+
+   /**
+    * Compute the validation status from the percentage of acceptation, the
+    * percentage of refusals and the target acceptation threshold
+    *
+    * @param int $accepted             0-100 (percentage of acceptation)
+    * @param int $refused              0-100 (percentage of refusals)
+    * @param int $validation_percent   0-100 (target accepation threshold)
+    *
+    * @return int the validation status : ACCEPTED|REFUSED|WAITING
+    */
+   public static function computeValidation(
+      int $accepted,
+      int $refused,
+      int $validation_percent
+   ): int {
       if ($validation_percent > 0) {
-         if (($statuses[self::ACCEPTED]*100/$total) >= $validation_percent) {
-            $validation_status = self::ACCEPTED;
-         } else if (($statuses[self::REFUSED]*100/$total) >= $validation_percent) {
-            $validation_status = self::REFUSED;
+         if ($accepted >= $validation_percent) {
+            // We have reached the acceptation threshold
+            return self::ACCEPTED;
+         } else if ($refused + $validation_percent > 100) {
+            // We can no longer reach the acceptation threshold
+            return self::REFUSED;
          }
       } else {
-         if ($statuses[self::ACCEPTED]) {
-            $validation_status = self::ACCEPTED;
-         } else if ($statuses[self::REFUSED]) {
-            $validation_status = self::REFUSED;
+         // No validation threshold set, one approval or denial is enough
+         if ($accepted > 0) {
+            return self::ACCEPTED;
+         } else if ($refused > 0) {
+            return self::REFUSED;
          }
       }
 
-      return $validation_status;
+      return self::WAITING;
    }
 
 
