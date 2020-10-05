@@ -1040,26 +1040,32 @@ class Html {
          }
       }
 
+      $out = '';
       if ($params['create']) {
-         echo "<div class='doaction_cadre'>";
-         echo "<div class='doaction_progress' id='$id'>";
-         echo "<div class='doaction_progress_text' id='".$id."_text' >&nbsp;</div>";
-         echo "</div>";
-         echo "</div><br>";
-         echo Html::scriptBlock(self::jsGetElementbyID($id).".progressbar();");
+         $out .= "<div class='doaction_cadre'>";
+         $out .= "<div class='doaction_progress' id='$id'>";
+         $out .= "<div class='doaction_progress_text' id='".$id."_text' >&nbsp;</div>";
+         $out .= "</div>";
+         $out .= "</div><br>";
+         $out .= Html::scriptBlock(self::jsGetElementbyID($id).".progressbar();");
       }
 
       if ($params['message'] !== null) {
-         echo Html::scriptBlock(self::jsGetElementbyID($id.'_text').".text(\"".
+         $out .= Html::scriptBlock(self::jsGetElementbyID($id.'_text').".text(\"".
                                 addslashes($params['message'])."\");");
       }
 
       if (($params['percent'] >= 0)
           && ($params['percent'] <= 100)) {
-         echo Html::scriptBlock(self::jsGetElementbyID($id).".progressbar('option', 'value', ".
+         $out .= Html::scriptBlock(self::jsGetElementbyID($id).".progressbar('option', 'value', ".
                                 $params['percent']." );");
       }
 
+      if (!$params['display']) {
+         return $out;
+      }
+
+      echo $out;
       if (!$params['create']) {
          self::glpi_flush();
       }
