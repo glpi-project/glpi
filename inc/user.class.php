@@ -3926,25 +3926,26 @@ JAVASCRIPT;
 
       // Default values
       $p = [
-         'name'             => 'users_id',
-         'value'            => '',
-         'values'           => [],
-         'right'            => 'id',
-         'all'              => 0,
-         'on_change'        => '',
-         'comments'         => 1,
-         'width'            => '80%',
-         'entity'           => -1,
-         'entity_sons'      => false,
-         'used'             => [],
-         'ldap_import'      => false,
-         'toupdate'         => '',
-         'rand'             => mt_rand(),
-         'display'          => true,
-         '_user_index'      => 0,
-         'specific_tags'    => [],
-         'url'              => $CFG_GLPI['root_doc']."/ajax/getDropdownUsers.php",
-         'inactive_deleted' => 0,
+         'name'                => 'users_id',
+         'value'               => '',
+         'values'              => [],
+         'right'               => 'id',
+         'all'                 => 0,
+         'display_emptychoice' => true,
+         'on_change'           => '',
+         'comments'            => 1,
+         'width'               => '80%',
+         'entity'              => -1,
+         'entity_sons'         => false,
+         'used'                => [],
+         'ldap_import'         => false,
+         'toupdate'            => '',
+         'rand'                => mt_rand(),
+         'display'             => true,
+         '_user_index'         => 0,
+         'specific_tags'       => [],
+         'url'                 => $CFG_GLPI['root_doc'] . "/ajax/getDropdownUsers.php",
+         'inactive_deleted'    => 0,
       ];
 
       if (is_array($options) && count($options)) {
@@ -3996,19 +3997,20 @@ JAVASCRIPT;
          }
       }
 
-      $field_id = Html::cleanId("dropdown_".$p['name'].$p['rand']);
+      $field_id = Html::cleanId("dropdown_" . $p['name'] . $p['rand']);
       $param    = ['value'               => $p['value'],
-                        'values'              => $p['values'],
-                        'valuename'           => $default,
-                        'valuesnames'         => $valuesnames,
-                        'width'               => $p['width'],
-                        'all'                 => $p['all'],
-                        'right'               => $p['right'],
-                        'on_change'           => $p['on_change'],
-                        'used'                => $p['used'],
-                        'inactive_deleted'    => $p['inactive_deleted'],
-                        'entity_restrict'     => (is_array($p['entity']) ? json_encode(array_values($p['entity'])) : $p['entity']),
-                        'specific_tags'       => $p['specific_tags']];
+                   'values'              => $p['values'],
+                   'valuename'           => $default,
+                   'valuesnames'         => $valuesnames,
+                   'width'               => $p['width'],
+                   'all'                 => $p['all'],
+                   'display_emptychoice' => $p['display_emptychoice'],
+                   'right'               => $p['right'],
+                   'on_change'           => $p['on_change'],
+                   'used'                => $p['used'],
+                   'inactive_deleted'    => $p['inactive_deleted'],
+                   'entity_restrict'     => (is_array($p['entity']) ? json_encode(array_values($p['entity'])) : $p['entity']),
+                   'specific_tags'       => $p['specific_tags']];
 
       $output   = Html::jsAjaxDropdown($p['name'], $field_id,
                                        $p['url'],
