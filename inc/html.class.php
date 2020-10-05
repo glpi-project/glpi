@@ -1033,6 +1033,7 @@ class Html {
       $params['create']  = false;
       $params['message'] = null;
       $params['percent'] = -1;
+      $params['display'] = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {

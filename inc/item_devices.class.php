@@ -918,6 +918,19 @@ class Item_Devices extends CommonDBRelation {
                         $content = Dropdown::getDropdownName($dropdownType::getTable(), $link[$field]);
                         break;
 
+                     case 'progressbar':
+                        $percent = 0;
+                        if ($peer->fields[$attributs['max']] > 0) {
+                           $percent = round(100 * $this->fields[$field] / $peer->fields[$attributs['max']]);
+                        }
+                        $content = Html::progressBar("percent" . mt_rand(), [
+                           'create'  => true,
+                           'percent' => $percent,
+                           'message' => sprintf(__('%1$s (%2$d%%) '), html_entity_decode(Html::formatNumber($this->fields[$field], false, 0)), $percent),
+                           'display' => false
+                        ]);
+                        break;
+
                      default:
                         $content = $link[$field];
                   }
@@ -1262,7 +1275,9 @@ class Item_Devices extends CommonDBRelation {
       }
       $this->showFormHeader($options);
 
+      /** @var CommonDBTM  */
       $item   = $this->getOnePeer(0);
+      /** @var CommonDBTM  */
       $device = $this->getOnePeer(1);
 
       echo "<tr class='tab_bg_1'><td>"._n('Item', 'Items', 1)."</td>";

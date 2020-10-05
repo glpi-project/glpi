@@ -7313,6 +7313,7 @@ CREATE TABLE `glpi_items_devicebatteries` (
   `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `locations_id` int(11) NOT NULL DEFAULT '0',
   `states_id` int(11) NOT NULL DEFAULT '0',
+  `real_capacity` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
   KEY `devicebatteries_id` (`devicebatteries_id`),

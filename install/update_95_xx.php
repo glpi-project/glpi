@@ -47,6 +47,7 @@ function update95toXX() {
 
    require __DIR__ . '/update_95_xx/softwares.php';
    include __DIR__ . '/update_95_xx/domains.php';
+   require __DIR__ . '/update_95_xx/devicebattery.php';
 
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
