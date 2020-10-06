@@ -63,9 +63,6 @@ class DropdownTranslation extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (self::canBeTranslated($item)) {

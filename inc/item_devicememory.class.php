@@ -49,9 +49,6 @@ class Item_DeviceMemory extends Item_Devices {
    static protected $notable = false;
 
 
-   /**
-    * @since 0.85
-   **/
    static function getSpecificities($specif = '') {
 
       return ['size'   => ['long name'  => sprintf(__('%1$s (%2$s)'), __('Size'),

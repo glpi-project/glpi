@@ -270,11 +270,6 @@ class NetworkPort_Vlan extends CommonDBRelation {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBRelation::showRelationMassiveActionsSubForm()
-   **/
    static function showRelationMassiveActionsSubForm(MassiveAction $ma, $peer_number) {
 
       if ($ma->getAction() == 'add') {
@@ -283,11 +278,6 @@ class NetworkPort_Vlan extends CommonDBRelation {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBRelation::getRelationInputForProcessingOfMassiveActions()
-   **/
    static function getRelationInputForProcessingOfMassiveActions($action, CommonDBTM $item,
                                                                  array $ids, array $input) {
       if ($action == 'add') {

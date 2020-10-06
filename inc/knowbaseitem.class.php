@@ -620,9 +620,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       return $criteria;
    }
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       // set new date if not exists
@@ -1900,11 +1897,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       return $tab;
    }
 
-   /**
-    * @since 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
    function getRights($interface = 'central') {
 
       if ($interface == 'central') {

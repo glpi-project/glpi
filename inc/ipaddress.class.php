@@ -158,34 +158,22 @@ class IPAddress extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
       return parent::prepareInputForAdd($this->prepareInput($input));
    }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
       return parent::prepareInputForUpdate($this->prepareInput($input));
    }
 
 
-   /**
-    * @see CommonDBTM::post_addItem()
-   **/
    function post_addItem() {
       IPAddress_IPNetwork::addIPAddress($this);
       parent::post_addItem();
    }
 
 
-   /**
-    * @see CommonDBTM::post_updateItem()
-   **/
    function post_updateItem($history = 1) {
 
       if ((isset($this->oldvalues['name']))

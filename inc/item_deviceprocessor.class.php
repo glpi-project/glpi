@@ -45,9 +45,6 @@ class Item_DeviceProcessor extends Item_Devices {
    static protected $notable = false;
 
 
-   /**
-    * @since 0.85
-    **/
    static function getSpecificities($specif = '') {
 
       return ['frequency' => ['long name'  => sprintf(__('%1$s (%2$s)'), __('Frequency'),

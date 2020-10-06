@@ -181,9 +181,6 @@ class NetworkPort extends CommonDBChild {
       return true;
    }
 
-   /**
-    * @see CommonDBTM::prepareInputForUpdate
-    */
    function prepareInputForUpdate($input) {
       if (!isset($input["_no_history"])) {
          $input['_no_history'] = false;
@@ -196,9 +193,6 @@ class NetworkPort extends CommonDBChild {
       return $input;
    }
 
-   /**
-    * @see CommonDBTM::post_updateItem
-    */
    function post_updateItem($history = 1) {
       global $DB;
 
@@ -227,9 +221,6 @@ class NetworkPort extends CommonDBChild {
       $this->updateDependencies(!$this->input['_no_history']);
    }
 
-   /**
-   * @see CommonDBTM::post_clone
-   */
    function post_clone($source, $history) {
       parent::post_clone($source, $history);
       $instantiation = $source->getInstantiation();
@@ -379,9 +370,6 @@ class NetworkPort extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd
-    */
    function prepareInputForAdd($input) {
 
       if (isset($input["logical_number"]) && (strlen($input["logical_number"]) == 0)) {
@@ -400,9 +388,6 @@ class NetworkPort extends CommonDBChild {
       return parent::prepareInputForAdd($input);
    }
 
-   /**
-    * @see CommonDBTM::post_addItem
-    */
    function post_addItem() {
       $this->updateDependencies(!$this->input['_no_history']);
    }
@@ -983,9 +968,6 @@ class NetworkPort extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = $checkitem !== null && $checkitem->canUpdate();

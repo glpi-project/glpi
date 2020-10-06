@@ -369,9 +369,6 @@ class Certificate extends CommonDBTM {
       return $ong;
    }
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       if (isset($input["id"]) && ($input["id"] > 0)) {

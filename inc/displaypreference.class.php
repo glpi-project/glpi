@@ -53,9 +53,6 @@ class DisplayPreference extends CommonDBTM {
 
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
       global $DB;
 
@@ -73,10 +70,9 @@ class DisplayPreference extends CommonDBTM {
 
 
    /**
+    * {@inheritDoc}
     * @since 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -727,11 +723,6 @@ class DisplayPreference extends CommonDBTM {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
    function getRights($interface = 'central') {
 
       //TRANS: short for : Search result user display

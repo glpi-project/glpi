@@ -1263,11 +1263,6 @@ class Log extends CommonDBTM {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
    function getRights($interface = 'central') {
 
       $values = [ READ => __('Read')];

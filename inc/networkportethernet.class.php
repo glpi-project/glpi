@@ -118,9 +118,6 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
    }
 
 
-   /**
-    * @see NetworkPortInstantiation::getInstantiationHTMLTableHeaders
-   **/
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
                                              HTMLTableSuperHeader $internet_super = null,
                                              HTMLTableHeader $father = null,
@@ -144,9 +141,6 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
    }
 
 
-   /**
-    * @see NetworkPortInstantiation::getPeerInstantiationHTMLTable()
-   **/
    protected function getPeerInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
                                                     HTMLTableCell $father = null,
                                                     array $options = []) {
@@ -169,9 +163,6 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
    }
 
 
-   /**
-    * @see NetworkPortInstantiation::getInstantiationHTMLTable()
-   **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
                                       HTMLTableCell $father = null, array $options = []) {
 

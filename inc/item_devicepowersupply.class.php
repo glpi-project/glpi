@@ -44,9 +44,6 @@ class Item_DevicePowerSupply extends Item_Devices {
 
    static protected $notable = false;
 
-   /**
-    * @since 0.85
-   **/
    static function getSpecificities($specif = '') {
 
       return ['serial' => parent::getSpecificities('serial'),
