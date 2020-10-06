@@ -30,91 +30,75 @@
  * ---------------------------------------------------------------------
  */
 
-include '../inc/includes.php';
+use Glpi\Event;
 
+include ('../inc/includes.php');
 
-if (!isset($_GET["id"])) {
+Session::checkRight('appliance', READ);
+
+if (empty($_GET["id"])) {
    $_GET["id"] = "";
 }
 if (!isset($_GET["withtemplate"])) {
    $_GET["withtemplate"] = "";
 }
 
-$appliance = new Appliance();
-$item       = new Appliance_Item();
+$app = new Appliance();
 
 if (isset($_POST["add"])) {
-   $appliance->check(-1, CREATE, $_POST);
-   $newID = $appliance->add($_POST);
-   if ($_SESSION['glpibackcreated']) {
-      Html::redirect($appliance->getFormURLWithID($newID));
-   }
-   Html::back();
+   $app->check(-1, CREATE, $_POST);
 
-} else if (isset($_POST["update"])) {
-   $appliance->check($_POST['id'], UPDATE);
-   $appliance->update($_POST);
+   if ($newID = $app->add($_POST)) {
+      Event::log($newID, "appliance", 4, "inventory",
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($app->getLinkURL());
+      }
+   }
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $appliance->check($_POST['id'], DELETE);
-   $appliance->delete($_POST);
-   Html::redirect(Appliance::getSearchURL());
+   $app->check($_POST["id"], DELETE);
+   $app->delete($_POST);
+
+   Event::log($_POST["id"], "appliance", 4, "inventory",
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
+   $app->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $appliance->check($_POST['id'], PURGE);
-   $appliance->restore($_POST);
-   Html::back();
+   $app->check($_POST["id"], DELETE);
+
+   $app->restore($_POST);
+   Event::log($_POST["id"], "appliance", 4, "inventory",
+              //TRANS: %s is the user login
+              sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
+   $app->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $appliance->check($_POST['id'], PURGE);
-   $appliance->delete($_POST, 1);
-   Html::redirect(Appliance::getSearchURL());
+   $app->check($_POST["id"], PURGE);
 
-} else if (isset($_POST["delrelation"])) {
-   // delete a relation
-   $relation = new ApplianceRelation();
-   if (isset($_POST['itemrelation'])) {
-      foreach ($_POST["itemrelation"] as $key => $val) {
-         $relation->delete(['id' => $key]);
-      }
-   }
-   Html::back();
+   $app->delete($_POST, 1);
+   Event::log($_POST["id"], "appliance", 4, "inventory",
+              //TRANS: %s is the user login
+              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
+   $app->redirectToList();
 
-} else if (isset($_POST["addrelation"])) {
-   // add a relation
-   $relation = new ApplianceRelation();
-   if ($_POST['tablekey'] >0) {
-      foreach ($_POST["tablekey"] as $key => $val) {
-         if ($val > 0) {
-            $relation->add(['appliances_items_id' => $key,
-                            'relations_id'         => $val]);
-         }
-      }
-   }
-   Html::back();
+} else if (isset($_POST["update"])) {
+   $app->check($_POST["id"], UPDATE);
 
-} else if (isset($_POST["additem"])) {
-   if ($_POST['itemtype']
-       && ($_POST['item'] > 0)) {
-      $input = ['appliances_id'  => $_POST['conID'],
-                'items_id'       => $_POST['item'],
-                'itemtype'       => $_POST['itemtype']];
-
-      $item->check(-1, UPDATE, $input);
-      $newID = $item->add($input);
-   }
-   Html::back();
-
-} else if (isset($_POST["deleteappliance"])) {
-   $input = ['id' => $_POST["id"]];
-   $item->check($_POST["id"], UPDATE);
-   $item->delete($input);
+   $app->update($_POST);
+   Event::log($_POST["id"], "appliance", 4, "inventory",
+              //TRANS: %s is the user login
+              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else {
-   $appliance->checkGlobal(READ);
-   Html::header(Appliance::getTypeName(1), $_SERVER['PHP_SELF'], "management", "appliance");
-   $appliance->display($_GET + ['formoptions' => "data-track-changes=true"]);
+   Html::header(Appliance::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "appliance");
+   $options = [
+      'id'           => $_GET['id'],
+      'withtemplate' => $_GET['withtemplate']
+   ];
+   $app->display($options);
    Html::footer();
 }

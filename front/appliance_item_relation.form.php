@@ -30,42 +30,21 @@
  * ---------------------------------------------------------------------
  */
 
-
-if (strpos($_SERVER['PHP_SELF'], "dropdownTypeAppliances.php")) {
-   include '../inc/includes.php';
-   header("Content-Type: text/html; charset=UTF-8");
-   Html::header_nocache();
-}
+include ('../inc/includes.php');
 
 Session::checkCentralAccess();
 
-// Make a select box
-if (isset($_POST["appliancetype"])) {
-   $used = [];
+$app_item_rel = new Appliance_Item_Relation();
 
-   // Clean used array
-   if (isset($_POST['used']) && is_array($_POST['used']) && (count($_POST['used']) > 0)) {
-      global $DB;
-      $iterator = $DB->request([
-        'SELECT' => 'id',
-        'FROM'   => 'glpi_appliances',
-        'WHERE'  => [
-            'id'                 => $_POST['used'],
-            'appliancetypes_id'  => $_POST["appliancetype"]]
-      ]);
-      while ($row = $iterator->next()) {
-         $used[$row['id']] = $row['id'];
-      }
-   }
+if (isset($_POST['add'])) {
+   $app_item_rel->check(-1, CREATE, $_POST);
+   $app_item_rel->add($_POST);
+   Html::back();
 
-   Dropdown::show(
-      'Appliance', [
-         'name'      => $_POST['myname'],
-         'used'      => $used,
-         'width'     => '50%',
-         'entity'    => $_POST['entity'],
-         'rand'      => $_POST['rand'],
-         'condition' => ['glpi_appliances.appliancetypes_id' => $_POST["appliancetype"]]
-      ]
-   );
+} else if (isset($_POST['purge'])) {
+   $app_item_rel->check($_POST['id'], PURGE);
+   $app_item_rel->delete($_POST, 1);
+   Html::back();
 }
+
+Html::displayErrorAndDie("lost");

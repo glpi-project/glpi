@@ -7005,6 +7005,33 @@ div.progress {
 /* /Styles for update page */
 
 
+/** style for relations **/
+.relations_list {
+   li {
+      padding: 6px;
+      border: 1px solid transparent;
+
+      .delete_relation {
+         margin-left: 8px;
+         visibility: hidden;
+      }
+
+      &:hover {
+         border-color: rgba(0, 0, 0, .3);
+
+         .delete_relation {
+            visibility: visible;
+         }
+      }
+   }
+
+   .add_relation {
+      padding: 7px;
+      display: block;
+   }
+}
+/** /style for relations **/
+
 .log-toolbar {
    padding-right: 8px !important;
 

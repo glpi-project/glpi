@@ -422,6 +422,15 @@ class State extends CommonTreeDropdown {
          'datatype'           => 'bool'
       ];
 
+      $tab[] = [
+         'id'                 => '37',
+         'table'              => $this->getTable(),
+         'field'              => 'is_visible_appliance',
+         'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'),
+                                    Appliance::getTypeName(Session::getPluralNumber())),
+         'datatype'           => 'bool'
+      ];
+
       return $tab;
    }
 

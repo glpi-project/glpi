@@ -800,4 +800,8 @@ class Domain extends CommonDropdown {
    function post_getEmpty() {
       $this->fields['is_active'] = $this->fields['is_template'] ? 0 : 1;
    }
+
+   static function getIcon() {
+      return "fas fa-globe-americas";
+   }
 }

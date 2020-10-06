@@ -40,7 +40,7 @@ class Appliance_Item extends DbTestCase {
       $this->newTestedInstance();
       $this->array(
          $this->testedInstance->getForbiddenStandardMassiveAction()
-      )->isIdenticalTo(['clone', 'update']);
+      )->isIdenticalTo(['clone', 'update', 'CommonDBConnexity:unaffect', 'CommonDBConnexity:affect']);
    }
 
    public function testCountForAppliance() {
@@ -87,13 +87,13 @@ class Appliance_Item extends DbTestCase {
 
       $this->boolean($appliance->getFromDB($appliance_1))->isTrue();
       //not logged, no Appliances types
-      $this->integer(\Appliance_Item::countForAppliance($appliance))->isIdenticalTo(0);
+      $this->integer(\Appliance_Item::countForMainItem($appliance))->isIdenticalTo(0);
 
       $this->login();
-      $this->integer(\Appliance_Item::countForAppliance($appliance))->isIdenticalTo(3);
+      $this->integer(\Appliance_Item::countForMainItem($appliance))->isIdenticalTo(3);
 
       $this->boolean($appliance->getFromDB($appliance_2))->isTrue();
-      $this->integer(\Appliance_Item::countForAppliance($appliance))->isIdenticalTo(2);
+      $this->integer(\Appliance_Item::countForMainItem($appliance))->isIdenticalTo(2);
 
       $this->boolean($appliance->getFromDB($appliance_1))->isTrue();
       $this->boolean($appliance->delete(['id' => $appliance_1], true))->isTrue();

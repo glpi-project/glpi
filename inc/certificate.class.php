@@ -684,7 +684,7 @@ class Certificate extends CommonDBTM {
    /**
     * Type than could be linked to a certificate
     *
-    * @param $all boolean, all type, or only allowed ones
+    * @param boolean $all Get all possible types or only allowed ones
     *
     * @return array of types
     **/

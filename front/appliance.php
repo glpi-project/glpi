@@ -30,13 +30,12 @@
  * ---------------------------------------------------------------------
  */
 
-include '../inc/includes.php';
+include ('../inc/includes.php');
 
-Html::header(Appliance::getTypeName(1), $_SERVER['PHP_SELF'], "management", "appliance");
+Session::checkRight('appliance', READ);
 
-if (Session::haveRight(Appliance::$rightname, READ)) {
-   Search::show('Appliance');
-} else {
-   Html::displayRightError();
-}
+Html::header(Appliance::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "appliance");
+
+Search::show('Appliance');
+
 Html::footer();

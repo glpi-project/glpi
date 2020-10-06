@@ -184,7 +184,8 @@ $CFG_GLPI["unicity_types"]                = ['Budget', 'Computer', 'Contact', 'C
 $CFG_GLPI["state_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
                                                   'Certificate', 'Enclosure', 'PDU', 'Line',
-                                                   'Rack', 'SoftwareVersion', 'Cluster', 'Contract'];
+                                                  'Rack', 'SoftwareVersion', 'Cluster', 'Contract',
+                                                  'Appliance'];
 
 $CFG_GLPI["asset_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
@@ -273,7 +274,7 @@ $CFG_GLPI["dictionnary_types"]            = ['ComputerModel', 'ComputerType', 'M
                                                   'OperatingSystemKernel', 'OperatingSystemKernelVersion',
                                                   'OperatingSystemEdition'];
 
-$CFG_GLPI["helpdesk_visible_types"]       = ['Software'];
+$CFG_GLPI["helpdesk_visible_types"]       = ['Software', 'Appliance'];
 
 $CFG_GLPI["networkport_types"]            = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
                                                   'Phone', 'Printer', 'Enclosure', 'PDU', 'Cluster'];
@@ -463,6 +464,8 @@ $CFG_GLPI['domain_types']        = ['Computer', 'Monitor', 'NetworkEquipment', '
 
 $CFG_GLPI['appliance_types']     = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
                                        'Printer', 'Software', 'Cluster'];
+
+$CFG_GLPI['appliance_relation_types'] = ['Location', 'Network', 'Domain'];
 
 $dashboard_libs = [
    'dashboard', 'gridstack',
