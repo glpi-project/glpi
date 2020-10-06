@@ -589,8 +589,6 @@ class DBmysqlIterator implements Iterator, Countable {
          return $value->getQuery();
       } else if ($value instanceof \QueryExpression) {
          return $value->getValue();
-      } else if (DBmysql::isNameQuoted($value)) { //FIXME: database related
-         return $value;
       } else if ($value instanceof \QueryParam) {
          return $value->getValue();
       } else {

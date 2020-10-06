@@ -3,7 +3,15 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [9.5.1] unreleased
+## [9.5.2] unreleased
+
+### API changes
+
+#### Removed
+
+- Ability to use SQL expressions as string in criterion values in SQL iterator (replaced by usage of `QueryExpression`).
+
+## [9.5.1] 2020-07-16
 
 ## [9.5.0] 2020-07-07
 

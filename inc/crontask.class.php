@@ -396,12 +396,12 @@ class CronTask extends CommonDBTM{
          // Build query for frequency and allowed hour
          $WHERE[] = ['OR' => [
             ['AND' => [
-               ['hourmin'   => ['<', $DB->quoteName('hourmax')]],
+               ['hourmin'   => ['<', new QueryExpression($DB->quoteName('hourmax'))]],
                'hourmin'   => ['<=', $hour],
                'hourmax'   => ['>', $hour]
             ]],
             ['AND' => [
-               'hourmin'   => ['>', $DB->quoteName('hourmax')],
+               'hourmin'   => ['>', new QueryExpression($DB->quoteName('hourmax'))],
                'OR'        => [
                   'hourmin'   => ['<=', $hour],
                   'hourmax'   => ['>', $hour]
