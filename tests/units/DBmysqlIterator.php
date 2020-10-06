@@ -562,7 +562,7 @@ class DBmysqlIterator extends DbTestCase {
       $it = $this->it->execute('foo', ['bar' => 'val']);
       $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` = 'val'");
 
-      $it = $this->it->execute('foo', ['bar' => '`field`']);
+      $it = $this->it->execute('foo', ['bar' => new \QueryExpression('`field`')]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = `field`');
 
       $it = $this->it->execute('foo', ['bar' => '?']);

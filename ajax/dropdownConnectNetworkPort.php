@@ -97,7 +97,7 @@ if (class_exists($_POST["itemtype"])
                'glpi_networkports_networkports' => 'networkports_id_1',
                'glpi_networkports'              => 'id', [
                   'OR'  => [
-                     'glpi_networkports_networkports.networkports_id_2' => $DB->quoteName('glpi_networkports.id')
+                     'glpi_networkports_networkports.networkports_id_2' => new QueryExpression($DB->quoteName('glpi_networkports.id'))
                   ]
                ]
             ]

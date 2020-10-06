@@ -393,7 +393,7 @@ class Report extends CommonGLPI{
                   'LINK'   => 'networkports_id_1',
                   'PORT_1' => 'id', [
                      'OR'     => [
-                        'LINK.networkports_id_2'   => $DB->quoteName('PORT_1.id')
+                        'LINK.networkports_id_2'   => new QueryExpression($DB->quoteName('PORT_1.id'))
                      ]
                   ]
                ]

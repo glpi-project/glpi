@@ -894,7 +894,7 @@ class DBmysql {
          $value = $value->getValue();
       } else if ($value === null || $value === 'NULL' || $value === 'null') {
          $value = 'NULL';
-      } else if (!preg_match("/^`.*?`$/", $value)) { //`field` is valid only for mysql :/
+      } else {
          //phone numbers may start with '+' and will be considered as numeric
          $value = "'$value'";
       }

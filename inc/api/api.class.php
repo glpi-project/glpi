@@ -1630,8 +1630,8 @@ abstract class API extends CommonGLPI {
       if (isset($params['criteria']) && is_array($params['criteria'])) {
 
          // use a recursive closure to check each nested criteria
-         $check_criteria = function($criteria) use (&$check_criteria, $soptions) {
-            foreach ($criteria as $criterion) {
+         $check_criteria = function(&$criteria) use (&$check_criteria, $soptions) {
+            foreach ($criteria as &$criterion) {
                // recursive call
                if (isset($criterion['criteria'])) {
                   return $check_criteria($criterion['criteria']);
@@ -1652,6 +1652,9 @@ abstract class API extends CommonGLPI {
                    && $soptions[$criterion['field']]['nosearch']) {
                   return __("Forbidden field ID in search criteria");
                }
+
+               // Escape value to prevent SQL injection
+               $criterion['value'] = Toolbox::addslashes_deep($criterion['value']);
             }
 
             return true;
