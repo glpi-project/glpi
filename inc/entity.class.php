@@ -178,20 +178,12 @@ class Entity extends CommonTreeDropdown {
    }
 
 
-   /**
-    * @since 0.84
-    *
-    * @see CommonDBTM::canViewItem()
-   **/
    function canViewItem() {
       // Check the current entity
       return Session::haveAccessToEntity($this->getField('id'));
    }
 
 
-   /**
-    * @see CommonDBTM::isNewID()
-   **/
    static function isNewID($ID) {
       return (($ID < 0) || !strlen($ID));
    }
@@ -320,9 +312,6 @@ class Entity extends CommonTreeDropdown {
    }
 
 
-   /**
-    * @see CommonTreeDropdown::defineTabs()
-   **/
    function defineTabs($options = []) {
 
       $ong = [];
@@ -3346,11 +3335,6 @@ class Entity extends CommonTreeDropdown {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
    function getRights($interface = 'central') {
 
       $values = parent::getRights();

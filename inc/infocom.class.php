@@ -121,9 +121,6 @@ class Infocom extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // Can exists on template
@@ -249,9 +246,6 @@ class Infocom extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
       if (!$this->getFromDBforDevice($input['itemtype'], $input['items_id'])) {
          if ($item = static::getItemFromArray(static::$itemtype, static::$items_id, $input)) {
@@ -370,9 +364,6 @@ class Infocom extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
 
       //Check if one or more dates needs to be updated
@@ -1925,11 +1916,6 @@ class Infocom extends CommonDBChild {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::getMassiveActionsForItemtype()
-   **/
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
                                                 CommonDBTM $checkitem = null) {
 
@@ -1943,11 +1929,6 @@ class Infocom extends CommonDBChild {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 

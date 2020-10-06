@@ -61,9 +61,6 @@ class Line extends CommonDropdown {
    }
 
 
-   /**
-    * @see CommonGLPI::defineTabs()
-    **/
    function defineTabs($options = []) {
 
       $ong = [];

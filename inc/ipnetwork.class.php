@@ -340,9 +340,6 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    }
 
 
-   /**
-    * @see CommonImplicitTreeDropdown::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       $preparedInput = $this->prepareInput($input);
@@ -360,9 +357,6 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    }
 
 
-   /**
-    * @see CommonImplicitTreeDropdown::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
 
       $preparedInput = $this->prepareInput($input);
@@ -391,9 +385,6 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    }
 
 
-   /**
-    * @see CommonImplicitTreeDropdown::post_updateItem()
-   **/
    function post_updateItem($history = 1) {
 
       if ($this->networkUpdate) {

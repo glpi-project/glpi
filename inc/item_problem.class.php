@@ -52,9 +52,6 @@ class Item_Problem extends CommonDBRelation{
 
 
 
-   /**
-    * @since 0.84
-   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -63,9 +60,6 @@ class Item_Problem extends CommonDBRelation{
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       // Avoid duplicate entry

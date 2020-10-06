@@ -538,11 +538,6 @@ abstract class ITILTemplate extends CommonDropdown {
    }
 
 
-   /**
-    * @since 0.90
-    *
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -558,11 +553,6 @@ abstract class ITILTemplate extends CommonDropdown {
    }
 
 
-   /**
-    * @since 0.90
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
       switch ($ma->getAction()) {
@@ -576,11 +566,6 @@ abstract class ITILTemplate extends CommonDropdown {
    }
 
 
-   /**
-    * @since 0.90
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 

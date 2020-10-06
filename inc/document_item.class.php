@@ -52,9 +52,6 @@ class Document_Item extends CommonDBRelation{
    static public $take_entity_2 = false;
 
 
-   /**
-    * @since 0.84
-   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -63,10 +60,6 @@ class Document_Item extends CommonDBRelation{
    }
 
 
-   /**
-    * @since 0.85.5
-    * @see CommonDBRelation::canCreateItem()
-   **/
    function canCreateItem() {
 
       if ($this->fields['itemtype'] == 'Ticket') {
@@ -901,11 +894,6 @@ class Document_Item extends CommonDBRelation{
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBRelation::getRelationMassiveActionsPeerForSubForm()
-   **/
    static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma) {
 
       switch ($ma->getAction()) {
@@ -921,11 +909,6 @@ class Document_Item extends CommonDBRelation{
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
-   **/
    static function getRelationMassiveActionsSpecificities() {
       $specificities              = parent::getRelationMassiveActionsSpecificities();
       $specificities['itemtypes'] = Document::getItemtypesThatCanHave();

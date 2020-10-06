@@ -92,11 +92,6 @@ class NetworkPortMigration extends CommonDBChild {
       parent::post_deleteItem();
    }
 
-   /**
-    * @see CommonGLPI::defineTabs()
-    *
-    * @since 0.85
-   **/
    function defineTabs($options = []) {
 
       $ong = [];
@@ -312,9 +307,6 @@ class NetworkPortMigration extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -327,11 +319,6 @@ class NetworkPortMigration extends CommonDBChild {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       switch ($ma->getAction()) {
          case 'transform_to' :
@@ -345,11 +332,6 @@ class NetworkPortMigration extends CommonDBChild {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
       switch ($ma->getAction()) {

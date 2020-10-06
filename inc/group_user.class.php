@@ -622,11 +622,6 @@ class Group_User extends CommonDBRelation{
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBRelation::getRelationInputForProcessingOfMassiveActions()
-   **/
    static function getRelationInputForProcessingOfMassiveActions($action, CommonDBTM $item,
                                                                  array $ids, array $input) {
       switch ($action) {

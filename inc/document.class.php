@@ -188,9 +188,6 @@ class Document extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
       global $CFG_GLPI;
 
@@ -320,9 +317,6 @@ class Document extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
 
       // security (don't accept filename from $_REQUEST)
@@ -1435,11 +1429,6 @@ class Document extends CommonDBTM {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::getMassiveActionsForItemtype()
-   **/
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
                                                 CommonDBTM $checkitem = null) {
       $action_prefix = 'Document_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;

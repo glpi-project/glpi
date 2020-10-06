@@ -370,11 +370,6 @@ class Location extends CommonTreeDropdown {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonTreeDropdown::getTabNameForItem()
-   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
@@ -390,9 +385,6 @@ class Location extends CommonTreeDropdown {
    }
 
 
-   /**
-    * @since 0.85
-   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {

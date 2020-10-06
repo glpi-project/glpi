@@ -611,9 +611,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    }
 
 
-   /**
-    * @since 0.84
-   **/
    function addNeededInfoToInput($input) {
 
       // is entity missing and forwarding on ?
@@ -648,11 +645,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $input
-   **/
    function prepareInputForAdd($input) {
 
       if (!is_array($input)) {
@@ -663,9 +655,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    }
 
 
-   /**
-    * @since 0.84
-   **/
    function prepareInputForUpdate($input) {
 
       if (!is_array($input)) {
@@ -1172,11 +1161,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
       $specificities = static::getRelationMassiveActionsSpecificities();

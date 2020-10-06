@@ -676,9 +676,6 @@ class MassiveAction {
    }
 
 
-   /**
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;
 
@@ -1090,9 +1087,6 @@ class MassiveAction {
    }
 
 
-   /**
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
       global $CFG_GLPI;
