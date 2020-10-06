@@ -10,6 +10,7 @@ The present file will list all changes made to the project; according to the
 #### Removed
 
 - Ability to use SQL expressions as string in criterion values in SQL iterator (replaced by usage of `QueryExpression`).
+- Ability to delete a plugin image using `/front/pluginimage.send.php` script.
 
 ## [9.5.1] 2020-07-16
 
