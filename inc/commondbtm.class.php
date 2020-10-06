@@ -329,7 +329,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @since 9.2
     *
-    * @param Array $crit search criteria
+    * @param array $crit search criteria
     *
     * @return boolean|array
     */

@@ -404,7 +404,7 @@ class DomainRecord extends CommonDBChild {
     *
     * @param Domain $domain Domain object
     *
-    * @return void
+    * @return void|boolean (display) Returns false if there is a rights error.
     **/
    public static function showForDomain(Domain $domain) {
       global $DB;

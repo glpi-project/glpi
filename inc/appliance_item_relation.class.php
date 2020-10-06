@@ -221,7 +221,7 @@ class Appliance_Item_Relation extends CommonDBRelation {
     * see self::showListForApplianceItem docblock
     *
     * @param CommonDBTM $item the item where the mini list will be displayed,
-    *                         we use this to check entities/is_recursive attributres
+    *                         we use this to check entities/is_recursive attributes
     * @param bool $canedit do we have the right to edit
     *
     * @return string the javascript

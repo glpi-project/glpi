@@ -309,7 +309,7 @@ class DropdownTranslation extends CommonDBChild {
    /**
     * Display all translated field for a dropdown
     *
-    * @param $item a Dropdown item
+    * @param CommonDropdown $item  A Dropdown item
     *
     * @return true;
    **/

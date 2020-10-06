@@ -337,7 +337,7 @@ class DCRoom extends CommonDBTM {
     *
     * @param Datacenter $datacenter Datacenter object
     *
-    * @return void
+    * @return void|boolean (display) Returns false if there is a rights error.
    **/
    static function showForDatacenter(Datacenter $datacenter) {
       global $DB;

@@ -1459,7 +1459,7 @@ JAVASCRIPT;
    /**
     * @since 0.90
     *
-    * @return string
+    * @return array
    **/
    static function getMenuInfos() {
       global $CFG_GLPI;

@@ -341,7 +341,8 @@ class Enclosure extends CommonDBTM {
    /**
     * Get already filled places
     *
-    * @param string $current Current position to exclude; defaults to null
+    * @param string  $itemtype  The item type
+    * @param integer $items_id  The item's ID
     *
     * @return array [x => ['depth' => 1, 'orientation' => 0, 'width' => 1, 'hpos' =>0]]
     *               orientation will not be available if depth is > 0.5; hpos will not be available

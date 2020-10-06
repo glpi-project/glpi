@@ -1495,8 +1495,8 @@ class MailCollector  extends CommonDBTM {
     * @param \Laminas\Mail\Storage\Part $part     Message part
     * @param string                     $path     Temporary path
     * @param integer                    $maxsize  Maximum size of document to be retrieved
-    * @param string                     $subject  Message ssubject
-    * @param \Laminas\Mail\Storage\Part $part     Message part (for recursive ones)
+    * @param string                     $subject  Message subject
+    * @param string                     $subpart  Subpart index (used in document filenames)
     *
     * @return void
    **/

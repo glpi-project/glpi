@@ -611,7 +611,7 @@ class Domain extends CommonDropdown {
    /**
     * Cron action on domains : ExpiredDomains or DomainsWhichExpire
     *
-    * @param CronTask $task for log, if NULL display
+    * @param CronTask $task CronTask for log, if NULL display
     *
     *
     * @return int
