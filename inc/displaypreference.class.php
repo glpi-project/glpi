@@ -69,10 +69,6 @@ class DisplayPreference extends CommonDBTM {
    }
 
 
-   /**
-    * {@inheritDoc}
-    * @since 0.85
-    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
