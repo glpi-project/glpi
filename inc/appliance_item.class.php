@@ -95,9 +95,9 @@ class Appliance_Item extends CommonDBRelation {
    /**
     * Print enclosure items
     *
-    * @param CommonDBTM $item         CommonDBTM object wanted
+    * @param Appliance $appliance  Appliance object wanted
     *
-    * @return void
+    * @return void|boolean (display) Returns false if there is a rights error.
    **/
    static function showItems(Appliance $appliance) {
       global $DB;

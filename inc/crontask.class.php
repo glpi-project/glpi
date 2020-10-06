@@ -180,6 +180,7 @@ class CronTask extends CommonDBTM{
    /**
     * Signal handler callback
     *
+    * @param integer $signo Signal number
     * @since 9.1
     */
    function signal($signo) {

@@ -343,8 +343,8 @@ class ComputerAntivirus extends CommonDBChild {
    /**
     * Print the computers antiviruses
     *
-    * @param $comp                  Computer object
-    * @param $withtemplate boolean  Template or basic item (default 0)
+    * @param Computer $comp          Computer object
+    * @param integer  $withtemplate  Template or basic item (default 0)
     *
     * @return void
    **/

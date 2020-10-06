@@ -107,12 +107,12 @@ class Budget extends CommonDropdown{
    /**
     * Print the contact form
     *
-    * @param $ID        integer ID of the item
-    * @param $options   array of possible options:
+    * @param integer $ID      Integer ID of the item
+    * @param array  $options  Array of possible options:
     *     - target for the Form
     *     - withtemplate : template or basic item
     *
-    * @return void
+    * @return void|boolean (display) Returns false if there is a rights error.
     **/
    function showForm($ID, $options = []) {
 

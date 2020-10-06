@@ -301,9 +301,9 @@ class ComputerVirtualMachine extends CommonDBChild {
    /**
     * Print the computers disks
     *
-    * @param $comp Computer object
+    * @param Computer $comp Computer object
     *
-    * @return void
+    * @return void|boolean (display) Returns false if there is a rights error.
    **/
    static function showForComputer(Computer $comp) {
 
@@ -464,7 +464,7 @@ class ComputerVirtualMachine extends CommonDBChild {
    /**
     * Find a virtual machine by uuid
     *
-    * @param fields array of virtualmachine fields
+    * @param array $fields  Array of virtualmachine fields
     *
     * @return integer|boolean ID of the computer that have this uuid or false otherwise
    **/

@@ -718,7 +718,7 @@ class Certificate extends CommonDBTM {
    /**
     * Cron action on certificates : alert on expired certificates
     *
-    * @param CronTask $task to log, if NULL display (default NULL)
+    * @param CronTask $task CronTask to log, if NULL display (default NULL)
     *
     * @return integer 0 : nothing to do 1 : done with success
    **/

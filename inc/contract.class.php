@@ -1202,7 +1202,7 @@ class Contract extends CommonDBTM {
    /**
     * Cron action on contracts : alert depending of the config : on notice and expire
     *
-    * @param CronTask $task for log, if NULL display (default NULL)
+    * @param CronTask $task CronTask for log, if NULL display (default NULL)
     *
     * @return integer
    **/

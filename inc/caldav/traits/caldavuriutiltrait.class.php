@@ -245,7 +245,7 @@ trait CalDAVUriUtilTrait {
    /**
     * Returns calendar item for given path.
     *
-    * @param string  $uid
+    * @param string  $path
     *
     * @return CalDAVCompatibleItemInterface|null
     */

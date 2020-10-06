@@ -149,8 +149,8 @@ class FieldUnicity extends CommonDropdown {
    /**
     * Display a dropdown which contains all the available itemtypes
     *
-    * @param ID      the field unicity item id
-    * @param value   the selected value (default 0)
+    * @param integer $ID     The field unicity item id
+    * @param integer $value  The selected value (default 0)
     *
     * @return void
    **/

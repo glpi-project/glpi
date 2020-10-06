@@ -270,7 +270,7 @@ class DisplayPreference extends CommonDBTM {
     * @param string $target    form target
     * @param string $itemtype  item type
     *
-    * @return void
+    * @return void|boolean (display) Returns false if there is a rights error.
    **/
    function showFormPerso($target, $itemtype) {
       global $CFG_GLPI, $DB;
@@ -442,7 +442,7 @@ class DisplayPreference extends CommonDBTM {
     * @param string $target    form target
     * @param string $itemtype  item type
     *
-    * @return void
+    * @return void|boolean (display) Returns false if there is a rights error.
    **/
    function showFormGlobal($target, $itemtype) {
       global $CFG_GLPI, $DB;

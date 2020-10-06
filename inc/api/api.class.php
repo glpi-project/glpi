@@ -2439,7 +2439,7 @@ abstract class API extends CommonGLPI {
     * You can pass an array of array, this method is recursive.
     *
     * @param array   $fields to check and transform
-    * @param boolean $params array of option to enable, could be :
+    * @param array   $params array of option to enable, could be :
     *                                 - expand_dropdowns (default false)
     *                                 - get_hateoas      (default true)
     *

@@ -214,8 +214,8 @@ class Fieldblacklist extends CommonDropdown {
    /**
     * Display specific fields for FieldUnicity
     *
-    * @param $ID
-    * @param $field array
+    * @param integer $ID     Unused
+    * @param array   $field  Array of fields
    **/
    function displaySpecificTypeField($ID, $field = []) {
 

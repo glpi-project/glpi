@@ -2230,7 +2230,7 @@ class Dropdown {
     *
     * @since 0.83
     *
-    * @param $onchange  String   optional, for ajax (default '')
+    * @param string $onchange  Optional, for ajax (default '')
    **/
    static function showListLimit($onchange = '', $display = true) {
       global $CFG_GLPI;

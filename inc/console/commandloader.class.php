@@ -67,7 +67,8 @@ class CommandLoader implements CommandLoaderInterface {
    private $commands = [];
 
    /**
-    * @param string $rootdir Root directory path of application.
+    * @param boolean $include_plugins  If true, load commands from plugins
+    * @param string  $rootdir          Root directory path of application.
     */
    public function __construct($include_plugins = true, $rootdir = GLPI_ROOT) {
 
@@ -244,7 +245,7 @@ class CommandLoader implements CommandLoaderInterface {
     *
     * @param SplFileInfo $file      File to inspect
     * @param string      $basedir   Directory containing classes (eg GLPI_ROOT . '/inc')
-    * @param string      $prefixes  Possible prefixes to add to classname (eg 'PluginExample', 'GlpiPlugin\Example')
+    * @param array       $prefixes  Possible prefixes to add to classname (eg 'PluginExample', 'GlpiPlugin\Example')
     *
     * @return null|string
     */
