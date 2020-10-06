@@ -54,9 +54,6 @@ class Item_DeviceSimcard extends Item_Devices {
       return _n('Simcard', 'Simcards', $nb);
    }
 
-   /**
-    * @since 0.85
-    **/
    static function getSpecificities($specif = '') {
       return [
              'serial'         => parent::getSpecificities('serial'),

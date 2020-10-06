@@ -323,9 +323,6 @@ class ITILCategory extends CommonTreeDropdown {
       return -1;
    }
 
-   /**
-    * @since 9.5.0
-   **/
    function prepareInputForAdd($input) {
       $input = parent::prepareInputForAdd($input);
 
@@ -340,9 +337,6 @@ class ITILCategory extends CommonTreeDropdown {
    }
 
 
-   /**
-    * @since 9.5.0
-   **/
    function prepareInputForUpdate($input) {
       $input = parent::prepareInputForUpdate($input);
 

@@ -63,11 +63,6 @@ class Change_Ticket extends CommonDBRelation{
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonGLPI::getTabNameForItem()
-   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (static::canView()) {
@@ -92,9 +87,6 @@ class Change_Ticket extends CommonDBRelation{
    }
 
 
-   /**
-    * @since 0.85
-   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
@@ -110,11 +102,6 @@ class Change_Ticket extends CommonDBRelation{
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
       switch ($ma->getAction()) {
@@ -141,11 +128,6 @@ class Change_Ticket extends CommonDBRelation{
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 

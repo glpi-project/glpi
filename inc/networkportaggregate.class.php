@@ -83,9 +83,6 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
    }
 
 
-   /**
-    * @see NetworkPortInstantiation::getInstantiationHTMLTableHeaders
-   **/
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
                                              HTMLTableSuperHeader $internet_super = null,
                                              HTMLTableHeader $father = null,
@@ -99,9 +96,6 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
    }
 
 
-   /**
-    * @see NetworkPortInstantiation::getInstantiationHTMLTable()
-   **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
                                       HTMLTableCell $father = null, array $options = []) {
 

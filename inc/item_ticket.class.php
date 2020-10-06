@@ -119,9 +119,6 @@ class Item_Ticket extends CommonDBRelation{
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       // Avoid duplicate entry
@@ -1107,11 +1104,6 @@ class Item_Ticket extends CommonDBRelation{
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 

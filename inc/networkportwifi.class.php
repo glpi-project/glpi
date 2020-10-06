@@ -50,9 +50,6 @@ class NetworkPortWifi extends NetworkPortInstantiation {
    }
 
 
-   /**
-    * @see NetworkPortInstantiation::showInstantiationForm()
-   **/
    function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems) {
 
       if (!$options['several']) {
@@ -86,9 +83,6 @@ class NetworkPortWifi extends NetworkPortInstantiation {
    }
 
 
-   /**
-    * @see NetworkPortInstantiation::getInstantiationHTMLTableHeaders
-   **/
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
                                              HTMLTableSuperHeader $internet_super = null,
                                              HTMLTableHeader $father = null,
@@ -105,9 +99,6 @@ class NetworkPortWifi extends NetworkPortInstantiation {
    }
 
 
-   /**
-    * @see NetworkPortInstantiation::getInstantiationHTMLTable()
-   **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
                                       HTMLTableCell $father = null, array $options = []) {
 

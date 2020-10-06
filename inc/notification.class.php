@@ -457,11 +457,6 @@ class Notification extends CommonDBTM {
       return $actions;
    }
 
-   /**
-   * @since version 0.85
-   *
-   * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       switch ($ma->getAction()) {
          case 'add_template':
@@ -657,10 +652,6 @@ class Notification extends CommonDBTM {
    }
 
 
-   /**
-    * @since 0.90.4
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       if (isset($input["itemtype"]) && empty($input["itemtype"])) {
@@ -673,10 +664,6 @@ class Notification extends CommonDBTM {
    }
 
 
-   /**
-    * @since 0.90.4
-    * @see CommonDBTM::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
 
       if (isset($input["itemtype"]) && empty($input["itemtype"])) {

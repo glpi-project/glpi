@@ -369,9 +369,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
    }
 
 
-   /**
-    * @since 0.84
-   **/
    function addNeededInfoToInput($input) {
 
       // is entity missing and forwarding on ?
@@ -398,9 +395,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
    }
 
 
-   /**
-    * @since 0.84
-   **/
    function prepareInputForAdd($input) {
 
       if (!is_array($input)) {
@@ -417,9 +411,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
    }
 
 
-   /**
-    * @since 0.84
-   **/
    function prepareInputForUpdate($input) {
 
       if (!is_array($input)) {

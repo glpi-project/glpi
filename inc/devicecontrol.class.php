@@ -98,11 +98,6 @@ class DeviceControl extends CommonDevice {
    }
 
 
-   /**
-    * @since 0.84
-    *
-    * @see CommonDevice::getHTMLTableHeader()
-   **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super = null,
                                       HTMLTableHeader $father = null, array $options = []) {
@@ -123,11 +118,6 @@ class DeviceControl extends CommonDevice {
    }
 
 
-   /**
-    * @since 0.84
-    *
-    * @see CommonDevice::getHTMLTableCellForItem()
-   **/
    function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
                                     HTMLTableCell $father = null, array $options = []) {
 

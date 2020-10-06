@@ -81,9 +81,6 @@ class Monitor extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonGLPI::defineTabs()
-   **/
    function defineTabs($options = []) {
 
       $ong = [];
@@ -111,9 +108,6 @@ class Monitor extends CommonDBTM {
       return $ong;
    }
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       if (isset($input["id"]) && ($input["id"] > 0)) {
@@ -352,9 +346,6 @@ class Monitor extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $actions = parent::getSpecificMassiveActions($checkitem);

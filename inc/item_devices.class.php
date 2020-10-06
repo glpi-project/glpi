@@ -84,9 +84,6 @@ class Item_Devices extends CommonDBRelation {
       return $name;
    }
 
-   /**
-    * @since 0.85
-   **/
    static function getTypeName($nb = 0) {
       $device_type = static::getDeviceType();
       return $device_type::getTypeName($nb);
@@ -107,11 +104,6 @@ class Item_Devices extends CommonDBRelation {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::getForbiddenStandardMassiveAction()
-   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden = parent::getForbiddenStandardMassiveAction();
@@ -1254,11 +1246,6 @@ class Item_Devices extends CommonDBRelation {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see commonDBTM::getRights()
-    **/
    function getRights($interface = 'central') {
 
       $values = parent::getRights();
@@ -1282,12 +1269,6 @@ class Item_Devices extends CommonDBRelation {
    }
 
 
-
-   /**
-    * @since 0.85
-    *
-    * @see CommonGLPI::defineTabs()
-   **/
    function defineTabs($options = []) {
 
       $ong = [];
