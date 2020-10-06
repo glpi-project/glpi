@@ -29,6 +29,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
 namespace Glpi\Console\Migration;
 
 if (!defined('GLPI_ROOT')) {
@@ -36,33 +37,33 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Appliance;
-use ApplianceType;
-use ApplianceEnvironment;
 use Appliance_Item;
 use Appliance_Item_Relation;
+use ApplianceEnvironment;
+use ApplianceType;
 use Change_Item;
 use Contract_Item;
 use DB;
 use Document_Item;
 use Domain;
-use Infocom;
-use Location;
-use Network;
-use Toolbox;
 use Glpi\Console\AbstractCommand;
+use Infocom;
 use Item_Problem;
 use Item_Project;
 use Item_Ticket;
 use KnowbaseItem_Item;
+use Location;
 use Log;
+use Network;
 use Profile;
-use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Exception\RuntimeException;
+use Toolbox;
 
 class AppliancesPluginToCoreCommand extends AbstractCommand {
 
@@ -251,7 +252,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand {
          $result = $this->db->query('TRUNCATE ' . DB::quoteName($table));
 
          if (!$result) {
-            throw new RuntimeException(
+            throw new \Symfony\Component\Console\Exception\RuntimeException(
                sprintf('Unable to truncate table "%s"', $table)
             );
          }
@@ -262,7 +263,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand {
          'itemtype' => self::CORE_APPLIANCE_ITEMTYPE
       ]);
       if (!$result) {
-         throw new RuntimeException(
+         throw new \Symfony\Component\Console\Exception\RuntimeException(
             sprintf('Unable to clean table "%s"', $table)
          );
       }

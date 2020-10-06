@@ -32,7 +32,7 @@
 
 namespace tests\units;
 
-use \DbTestCase;
+use DbTestCase;
 
 class Appliance_Item_Relation extends DbTestCase {
 
