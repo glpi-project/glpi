@@ -110,7 +110,6 @@ commands:
           command: |
             bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpitest --db-host=127.0.0.1 --db-user=root
             php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --max-children-number 1 -d tests/database
-            php vendor/bin/ocular --repository=g/glpi-project/glpi code-coverage:upload --format=php-clover tests/code-coverage/clover.xml
 
   # Unit test suite command.
   run_unit_test_suite:
@@ -119,7 +118,6 @@ commands:
           name: Unit tests
           command: |
             php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php -d tests/units
-            php vendor/bin/ocular --repository=g/glpi-project/glpi code-coverage:upload --format=php-clover tests/code-coverage/clover.xml
 
   # Unit test suite command.
   run_imap_test_suite:
@@ -130,7 +128,6 @@ commands:
             sudo service dovecot start
             for f in `ls tests/emails-tests/*.eml`; do getmail_maildir ~/Maildir/ < $f; done
             php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --max-children-number 1 -d tests/imap
-            php vendor/bin/ocular --repository=g/glpi-project/glpi code-coverage:upload --format=php-clover tests/code-coverage/clover.xml
 
   # Functionnal test suite command.
   run_functionnal_test_suite:
@@ -139,7 +136,6 @@ commands:
           name: Functionnal tests
           command: |
             php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --max-children-number 1 -d tests/functionnal
-            php vendor/bin/ocular --repository=g/glpi-project/glpi code-coverage:upload --format=php-clover tests/code-coverage/clover.xml
 
   # Web test suite command.
   run_web_test_suite:
@@ -149,7 +145,6 @@ commands:
           command: |
             php -S localhost:8088 tests/router.php &>/dev/null &
             php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --max-children-number 1 -d tests/web
-            php vendor/bin/ocular --repository=g/glpi-project/glpi code-coverage:upload --format=php-clover tests/code-coverage/clover.xml
 
   # CSS test suite command.
   run_css_test_suite:
