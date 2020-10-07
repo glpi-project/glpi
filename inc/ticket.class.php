@@ -1899,17 +1899,7 @@ class Ticket extends CommonITILObject {
               sprintf(__('%s promotes a followup from ticket %s'), $_SESSION["glpiname"], $fup->fields['items_id']));
       }
 
-      if (!empty($this->input['items_id'])) {
-         $item_ticket = new Item_Ticket();
-         foreach ($this->input['items_id'] as $itemtype => $items) {
-            foreach ($items as $items_id) {
-               $item_ticket->add(['items_id'      => $items_id,
-                                       'itemtype'      => $itemtype,
-                                       'tickets_id'    => $this->fields['id'],
-                                       '_disablenotif' => true]);
-            }
-         }
-      }
+      $this->handleItemsIdInput();
 
       parent::post_addItem();
 
@@ -3701,13 +3691,7 @@ class Ticket extends CommonITILObject {
 
       // Display predefined fields if hidden
       if ($tt->isHiddenField('items_id')) {
-         if (!empty($options['items_id'])) {
-            foreach ($options['items_id'] as $itemtype => $items) {
-               foreach ($items as $items_id) {
-                  echo "<input type='hidden' name='items_id[$itemtype][$items_id]' value='$items_id'>";
-               }
-            }
-         }
+         $this->displayHiddenItemsIdInput($options);
       }
       if ($tt->isHiddenField('locations_id')) {
          echo "<input type='hidden' name='locations_id' value='".$options['locations_id']."'>";
@@ -7424,5 +7408,9 @@ class Ticket extends CommonITILObject {
 
    static function getIcon() {
       return "fas fa-exclamation-circle";
+   }
+
+   public static function getItemClass(): string {
+      return Item_Ticket::class;
    }
 }

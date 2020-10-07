@@ -8239,4 +8239,31 @@ abstract class CommonITILObject extends CommonDBTM {
          ]
       ];
    }
+
+   public function displayHiddenItemsIdInput(array $options): void {
+      foreach ($options['items_id'] ?? [] as $itemtype => $items) {
+         foreach ($items as $items_id) {
+            echo "<input type='hidden' name='items_id[$itemtype][$items_id]' value='$items_id'>";
+         }
+      }
+   }
+
+   public function handleItemsIdInput(): void {
+      if (!empty($this->input['items_id'])) {
+         $item_class = static::getItemClass();
+         $item_ticket = new $item_class();
+         foreach ($this->input['items_id'] as $itemtype => $items) {
+            foreach ($items as $items_id) {
+               $item_ticket->add([
+                  'items_id'                    => $items_id,
+                  'itemtype'                    => $itemtype,
+                  static::getForeignKeyField()  => $this->fields['id'],
+                  '_disablenotif'               => true
+               ]);
+            }
+         }
+      }
+   }
+
+   abstract public static function getItemClass(): string;
 }
