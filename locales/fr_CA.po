@@ -4,8 +4,8 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Tiago Graca, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
+# Tiago Graca, 2020
 # 
 #, fuzzy
 msgid ""
@@ -14,7 +14,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-06 11:53+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2020\n"
+"Last-Translator: Tiago Graca, 2020\n"
 "Language-Team: French (Canada) (https://www.transifex.com/glpi/teams/1637/fr_CA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -850,7 +850,7 @@ msgstr "Modifier"
 #: ajax/dropdownMassiveActionOs.php:46 inc/massiveaction.class.php:546
 msgctxt "button"
 msgid "Clone"
-msgstr "Clone"
+msgstr "Clôner"
 
 #: ajax/dcroom_size.php:61 inc/rack.class.php:257
 msgid "No room found or selected"
@@ -2491,8 +2491,8 @@ msgstr "Catégorie"
 #: tests/functionnal/Rule.php:282
 msgid "Type"
 msgid_plural "Types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Type"
+msgstr[1] "Types"
 
 #: front/stat.graph.php:173 front/stat.tracking.php:88
 #: inc/problem.class.php:1405 inc/project.class.php:545
@@ -3260,7 +3260,7 @@ msgstr "Relation"
 
 #: front/impactcsv.php:81 inc/appliance_item.class.php:184
 msgid "Itemtype"
-msgstr "Type élément"
+msgstr "Type d'élément"
 
 #: front/impactcsv.php:82 inc/event.class.php:275
 msgid "Id"
@@ -3421,8 +3421,8 @@ msgstr[1] "Types d'ordinateurs"
 #: inc/dropdown.class.php:871 inc/monitortype.class.php:42
 msgid "Monitor type"
 msgid_plural "Monitors types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Type de moniteur"
+msgstr[1] "Types de moniteur"
 
 #: inc/rule.class.php:383 inc/rulecollection.class.php:2047
 #: inc/dropdown.class.php:869 inc/printertype.class.php:42
@@ -3449,7 +3449,7 @@ msgstr[1] "Types de matériels réseau"
 msgid "Phone type"
 msgid_plural "Phone types"
 msgstr[0] "Type de téléphone"
-msgstr[1] "Types de téléphone"
+msgstr[1] "Types de téléphones"
 
 #: inc/rule.class.php:479 inc/rulecollection.class.php:1997
 #: inc/cartridge.class.php:1128 inc/transfer.class.php:3541
@@ -3997,7 +3997,7 @@ msgstr "Position dans le centre de données"
 msgid "Domain type"
 msgid_plural "Domain types"
 msgstr[0] "Type de domaine"
-msgstr[1] "Types de domaine"
+msgstr[1] "Types de domaines"
 
 #: inc/ruleimportcomputercollection.class.php:60
 #: inc/ruleimportcomputer.class.php:52
@@ -4335,7 +4335,7 @@ msgstr "Date de clôture"
 #: inc/item_softwareversion.class.php:1045
 #: inc/item_softwareversion.class.php:1191 tests/functionnal/Rule.php:294
 msgid "Status"
-msgstr ""
+msgstr "État"
 
 #: inc/problem.class.php:1313 inc/ticket.class.php:4588
 #: inc/change.class.php:913
@@ -4682,8 +4682,7 @@ msgstr "Vérification du réplicat SQL"
 
 #: inc/dbconnection.class.php:387
 msgid "Max delay between master and slave (minutes)"
-msgstr ""
-"Durée maximale de désynchronisation entre le maître et l'esclave(en minutes)"
+msgstr "Durée maximale de désynchronisation (en minutes)"
 
 #: inc/dbconnection.class.php:419
 #, php-format
@@ -4812,7 +4811,7 @@ msgstr "Ajouter les utilisateurs en CC comme observateurs"
 
 #: inc/mailcollector.class.php:304
 msgid "Collect only unread mail"
-msgstr ""
+msgstr "Collecter uniquement les courriels non lus"
 
 #: inc/mailcollector.class.php:389 inc/mailcollector.class.php:702
 msgid "An error occured trying to connect to collector."
@@ -4821,7 +4820,7 @@ msgstr "Une erreur est survenue lors de la connexion au collecteur."
 #: inc/mailcollector.class.php:404
 #, php-format
 msgid "No child found for folder '%s'."
-msgstr "Aucun enfant trouvé pour le dossier '%s'."
+msgstr "Pas de sous élément pour le dossier '%s'."
 
 #: inc/mailcollector.class.php:443
 msgctxt "button"
@@ -4847,7 +4846,7 @@ msgstr "Le message est invalide: %1$s"
 #: inc/mailcollector.class.php:776
 #, php-format
 msgid "Error during message parsing: %1$s"
-msgstr ""
+msgstr "Erreur lors de l'analyse du message : %1$s"
 
 #: inc/mailcollector.class.php:911
 #, php-format
@@ -4855,6 +4854,8 @@ msgid ""
 "Number of messages: available=%1$d, already imported=%2$d, retrieved=%3$d, "
 "refused=%4$d, errors=%5$d, blacklisted=%6$d"
 msgstr ""
+"Nombre de messages : disponibles=%1$d, déjà importés=%2$d, récupérés=%3$d, "
+"refusés=%4$d, erreurs=%5$d, dans la liste noire=%6$d"
 
 #: inc/mailcollector.class.php:926
 msgid "Could not connect to mailgate server"
@@ -5028,6 +5029,9 @@ msgid ""
 "Unable to create security key file! You have to run \"php bin/console "
 "glpi:security:change_key\" command to manually create this file."
 msgstr ""
+"Impossible de créer le fichier de clé de sécurité ! Vous devez exécuter la "
+"commande \"php bin/console glpi:security:change_key\"  pour créer "
+"manuellement ce fichier."
 
 #: inc/ruleasset.class.php:70 inc/ruleasset.class.php:72
 #: inc/rssfeed.class.php:980 inc/rssfeed.class.php:981
@@ -5198,7 +5202,7 @@ msgstr "Groupe responsable"
 
 #: inc/domain.class.php:200
 msgid "Entity-ID"
-msgstr "ID-Entité"
+msgstr "ID Entité"
 
 #: inc/domain.class.php:332 inc/certificate.class.php:525
 msgid "Empty for infinite"
@@ -5336,8 +5340,8 @@ msgstr[1] "Modèles de cartes graphiques"
 #: inc/rssfeed.class.php:80 inc/central.class.php:68
 msgid "RSS feed"
 msgid_plural "RSS feed"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Flux RSS"
+msgstr[1] "Flux RSS"
 
 #: inc/rssfeed.class.php:82 inc/rssfeed.class.php:933
 msgid "Personal RSS feed"
@@ -5634,8 +5638,8 @@ msgstr[1] "Gabarits de solution"
 #: inc/appliancetype.class.php:40
 msgid "Appliance type"
 msgid_plural "Appliance types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Type d'applicatif"
+msgstr[1] "Types d'applicatif"
 
 #: inc/blacklist.class.php:216 inc/networkname.class.php:216
 msgid "IP"
@@ -6242,12 +6246,12 @@ msgstr "Demie largeur"
 #: inc/commondcmodeldropdown.class.php:130
 #: inc/commondcmodeldropdown.class.php:224
 msgid "Front picture"
-msgstr "Photo de face"
+msgstr "Photo vue de face"
 
 #: inc/commondcmodeldropdown.class.php:138
 #: inc/commondcmodeldropdown.class.php:237
 msgid "Rear picture"
-msgstr "Photo de l'arrière"
+msgstr "Photo vue de dos"
 
 #: inc/commondcmodeldropdown.class.php:307 inc/dcroom.class.php:213
 msgid "Unable to save picture file."
@@ -7210,7 +7214,7 @@ msgstr "Matricule"
 #: inc/authldap.class.php:3281
 msgctxt "ldap"
 msgid "Phone"
-msgstr ""
+msgstr "Téléphone"
 
 #: inc/authldap.class.php:817 inc/authldap.class.php:1104
 #: inc/notificationtemplatetranslation.class.php:124
@@ -7674,7 +7678,7 @@ msgstr "Calendrier du billet"
 #: inc/levelagreement.class.php:702
 msgctxt "hour"
 msgid "Time"
-msgstr ""
+msgstr "Heure"
 
 #. TRANS: %d is a number of minutes
 #: inc/levelagreement.class.php:760 inc/dropdown.class.php:1643
@@ -7759,7 +7763,7 @@ msgstr "Nombre de sondages de satisfaction ouverts"
 
 #: inc/stat.class.php:458
 msgid "Number of answered satisfaction survey"
-msgstr "Nombre de sondages de satisfaction répondus"
+msgstr "Nombre de réponses aux sondages de satisfaction"
 
 #: inc/stat.class.php:460
 msgid "Average satisfaction"
@@ -8198,8 +8202,8 @@ msgstr[1] "Systèmes d'exploitation de l'élément"
 #: inc/operatingsystemkernel.class.php:42
 msgid "Kernel"
 msgid_plural "Kernels"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Noyau"
+msgstr[1] "Noyaux"
 
 #: inc/item_operatingsystem.class.php:345
 #: inc/item_operatingsystem.class.php:596
@@ -8416,8 +8420,8 @@ msgstr "Port d'origine"
 #: inc/config.class.php:1732
 msgid "Memory"
 msgid_plural "Memories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Mémoire"
+msgstr[1] "Mémoires"
 
 #: inc/operatingsystemarchitecture.class.php:44
 msgid "Operating system architecture"
@@ -8846,7 +8850,7 @@ msgstr "Logiciels installés"
 
 #: inc/item_ticket.class.php:946
 msgid "Connected devices"
-msgstr "Dispositif connectés"
+msgstr "Dispositifs connectés"
 
 #: inc/item_ticket.class.php:1083
 msgid "Delete permanently"
@@ -8938,7 +8942,7 @@ msgstr "Affectation automatique des utilisateurs"
 
 #: inc/ruleright.class.php:232
 msgid "Global criteria"
-msgstr "Critère global"
+msgstr "Critères globaux"
 
 #: inc/ruleright.class.php:236
 msgid "Authentication type"
@@ -9362,7 +9366,7 @@ msgstr "Mise à jour de `%s` a échoué avec le message \"(%s) %s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:162
 msgid "Migrate Racks plugin data into GLPI core tables"
-msgstr "Migrer les données du plugin Baies le cœur de GLPI"
+msgstr "Migrer les données du plugin Baies dans les tables du cœur de GLPI"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:168
 msgid "Ignore \"PluginRacksOther\" models and elements"
@@ -9399,8 +9403,8 @@ msgid ""
 "You are about to launch migration of Racks plugin data into GLPI core "
 "tables."
 msgstr ""
-"Vous êtes prêt à lancer la migration des données du plugin Baies dans le "
-"cœur de GLPI."
+"Vous êtes prêt à lancer la migration des données du plugin Baies dans les "
+"tables du cœur de GLPI."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:217
 #: inc/console/migration/appliancesplugintocorecommand.class.php:162
@@ -9658,7 +9662,7 @@ msgstr "Élément %s (%s) non trouvé."
 #: inc/console/migration/racksplugintocorecommand.class.php:1304
 #, php-format
 msgid "Skipping item %s (%s) which is already linked to a rack."
-msgstr "Élément %s(%s) sauté car il est déjà lié à une baie."
+msgstr "Élément %s(%s) ignoré car il est déjà lié à une baie."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1345
 #, php-format
@@ -9676,35 +9680,38 @@ msgstr "Impossible de créer la pièce par défaut."
 #: inc/console/migration/appliancesplugintocorecommand.class.php:145
 msgid "Migrate Appliances plugin data into GLPI core tables"
 msgstr ""
+"Migrer les données du plugin Applicatifs vers les tables principales de GLPI"
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:160
 msgid ""
 "You are about to launch migration of Appliances plugin data into GLPI core "
 "tables."
 msgstr ""
+"Vous êtes prêt à lancer la migration des données du plugin Applicatifs dans "
+"les tables du cœur de GLPI."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:161
 msgid "Any previous appliance created in core will be lost."
-msgstr ""
+msgstr "Tout applicatif précédemment créé dans le cœur sera perdu."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:209
 #, php-format
 msgid "Appliances plugin table \"%s\" is missing."
-msgstr ""
+msgstr "La table du plugin Appliances \"%s\" est manquante."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:217
 #, php-format
 msgid "Appliances plugin field \"%s\" is missing."
-msgstr ""
+msgstr "La champ du plugin Appliances \"%s\" est manquant."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:296
 msgid "Updating profiles..."
-msgstr ""
+msgstr "Mise à jour des profils..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:311
 #, php-format
 msgid "Unable to update \"%s\" in profiles."
-msgstr ""
+msgstr "Impossible de mettre à jour \"%s\" dans les profils."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:311
 #: inc/profile.class.php:723 inc/profile.class.php:1175
@@ -9714,83 +9721,85 @@ msgstr "Matériels associables à un billet"
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:328
 msgid "Updating GLPI itemtypes..."
-msgstr ""
+msgstr "Mise à jour des itemtypes GLPI..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:353
 #, php-format
 msgid "Migration of table \"%s\" failed with message \"(%s) %s\"."
-msgstr ""
+msgstr "La migration de la table \"%s\" a échouée avec le message  \"(%s) %s\"."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:375
 msgid "Creating Appliance Items..."
-msgstr ""
+msgstr "Création des objets associés aux applicatifs"
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:392
 #, php-format
 msgid "Importing Appliance item \"%d\"..."
-msgstr ""
+msgstr "Import de l'élément d'applicatif \"%d\"..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:413
 #, php-format
 msgid "Unable to create Appliance item %d."
-msgstr ""
+msgstr "Impossible d'importer l'élément d'applicatif %d."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:434
 msgid "Creating Appliance Environment..."
-msgstr ""
+msgstr "Création des environnements d'applicatif..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:451
 #, php-format
 msgid "Importing environment \"%s\"..."
-msgstr ""
+msgstr "Import de l'environnement \"%s\"..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:471
 #: inc/console/migration/appliancesplugintocorecommand.class.php:606
 #, php-format
 msgid "Unable to create Appliance environment %s (%d)."
-msgstr ""
+msgstr "Impossible de créer l'environnement d'applicatif %s (%d)."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:492
 msgid "Creating Appliances..."
-msgstr ""
+msgstr "Création des applicatifs..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:508
 #, php-format
 msgid "Importing appliance \"%s\"..."
-msgstr ""
+msgstr "Importation de l'applicatif \"%s\"..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:545
 #, php-format
 msgid "Unable to create Appliance %s (%d)."
-msgstr ""
+msgstr "Impossible de créer l'applicatif %s (%d)."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:566
 msgid "Creating Appliance types..."
-msgstr ""
+msgstr "Création des types d'applicatif..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:583
 #, php-format
 msgid "Importing type \"%s\"..."
-msgstr ""
+msgstr "Import du type \"%s\"..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:627
 msgid "Creating Appliance relations..."
-msgstr ""
+msgstr "Création des relations d'applicatifs..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:659
 #, php-format
 msgid "Importing relation \"%s\"..."
-msgstr ""
+msgstr "Importation de la relation \"%s\"..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:670
 #, php-format
 msgid "Unable to found relation type %s from Appliance Item Relation %d."
 msgstr ""
+"Impossible de trouver le type de relation %s depuis la relation d'élément "
+"%d."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:697
 #, php-format
 msgid "Unable to create Appliance Item Relation %d."
-msgstr ""
+msgstr "Impossible de créer la relation d'élément %d."
 
 #: inc/console/migration/buildmissingtimestampscommand.class.php:52
 msgid "Set missing `date_creation` and `date_mod` values using log entries."
@@ -9825,8 +9834,8 @@ msgid ""
 "You are about to launch migration of Domains plugin data into GLPI core "
 "tables."
 msgstr ""
-"Vous êtes prêt à lancer la migration des données du plugin Domaines dans le "
-"cœur de GLPI."
+"Vous êtes prêt à lancer la migration des données du plugin Domaines dans les"
+" tables du cœur de GLPI."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:182
 msgid ""
@@ -10317,6 +10326,9 @@ msgid ""
 "should retrieve it from your previous installation or encrypted data will be"
 " unreadable."
 msgstr ""
+"Le fichier de clé \"%s\" utilisé pour crypter / décrypter les données "
+"sensibles est manquant. Vous devez le récupérer à partir de votre "
+"installation précédente, sinon les données chiffrées seront illisibles."
 
 #: inc/console/database/updatecommand.class.php:174
 msgid "Update aborted."
@@ -10352,7 +10364,7 @@ msgstr "Quel dictionnaire souhaitez-vous relancer ?"
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:101
 msgid "Invalid \"dictionnary\" value."
-msgstr "Valeur de \"dictionnary\" invalide."
+msgstr "Valeur de \"dictionnaire\" invalide."
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:53
 msgid "Process software category rules"
@@ -11059,8 +11071,8 @@ msgstr[1] "Types de tiers"
 #: inc/dropdown.class.php:901 inc/phonepowersupply.class.php:44
 msgid "Phone power supply type"
 msgid_plural "Phones power supply types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Type d'alimentation de téléphone"
+msgstr[1] "Types d'alimentation des téléphones"
 
 #: inc/dropdown.class.php:905 inc/certificatetype.class.php:45
 msgid "Certificate type"
@@ -12129,7 +12141,7 @@ msgstr "l'extension %s est manquante"
 #: inc/system/requirement/mysqlimysqlnd.class.php:61
 #, php-format
 msgid "%s extension is installed but is not using mysqlnd driver"
-msgstr ""
+msgstr "l'extension %s est installée mais n'utilise pas le pilote mysqlnd"
 
 #: inc/system/requirement/dbengine.class.php:52
 msgid "Testing DB engine version"
@@ -12244,7 +12256,8 @@ msgstr "\"session.use_trans_sid\" doit être désactivé."
 #: inc/system/requirement/sessionsconfiguration.class.php:71
 msgid "See .htaccess file in the GLPI root for more informations."
 msgstr ""
-"Lisez le fichier .htaccess dans le dossier de GLPI pour plus d'informations."
+"Visualisez le fichier .htaccess dans le dossier de GLPI pour plus "
+"d'informations."
 
 #: inc/system/requirement/sessionsconfiguration.class.php:77
 msgid "Sessions support is available - Perfect!"
@@ -13315,7 +13328,7 @@ msgstr "Série"
 
 #: inc/appliance_item.class.php:265
 msgid "Add to an appliance"
-msgstr ""
+msgstr "Ajouter à un applicatif"
 
 #: inc/appliance_item.class.php:375 inc/item_enclosure.class.php:301
 #: inc/appliance_item_relation.class.php:108 inc/item_cluster.class.php:279
@@ -13331,7 +13344,7 @@ msgstr "Un élément est requis"
 
 #: inc/appliance_item.class.php:383
 msgid "An appliance is required"
-msgstr ""
+msgstr "Un applicatif est obligatoire"
 
 #: inc/notificationtargetobjectlock.class.php:52
 msgid "Unlock Item Request"
@@ -14382,7 +14395,7 @@ msgstr "Action terminée, traitement complet"
 
 #: inc/crontask.class.php:305
 msgid "Action completed, no processing required"
-msgstr "Action terminée, pas d'autre traitement nécessaire"
+msgstr "Action terminée, pas de traitement nécessaire"
 
 #: inc/crontask.class.php:475 inc/crontask.class.php:1397
 msgid "Run frequency"
@@ -14880,7 +14893,7 @@ msgstr "Affichage par défaut"
 
 #: inc/displaypreference.class.php:742
 msgid "Search result default display"
-msgstr "Affichage recherche par défaut"
+msgstr "Affichage des résultats de recherche par défaut"
 
 #: inc/ruledictionnarynetworkequipmenttypecollection.class.php:41
 msgid "Dictionnary of network equipment types"
@@ -15366,7 +15379,7 @@ msgstr "Auto"
 
 #: inc/savedsearch.class.php:214
 msgid "Is private"
-msgstr ""
+msgstr "Est privé"
 
 #: inc/savedsearch.class.php:231
 msgid "Last duration (ms)"
@@ -15507,8 +15520,8 @@ msgstr "Sélectionner le type de l'élément qui doit être déverrouillé"
 #: inc/applianceenvironment.class.php:40
 msgid "Appliance environment"
 msgid_plural "Appliance environments"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Environnement d'applicatif"
+msgstr[1] "Environnements d'applicatif"
 
 #: inc/ruledictionnarynetworkequipmentmodelcollection.class.php:41
 msgid "Dictionnary of networking equipment models"
@@ -15617,7 +15630,7 @@ msgstr "Actions automatiques des ententes de niveau de service"
 
 #: inc/commonitiltask.class.php:243
 msgid "You can't remove description of a task."
-msgstr ""
+msgstr "Vous ne pouvez pas supprimer la description d'une tâche."
 
 #: inc/commonitiltask.class.php:279 inc/commonitiltask.class.php:427
 #: inc/features/planningevent.class.php:151
@@ -15639,7 +15652,7 @@ msgstr ""
 
 #: inc/commonitiltask.class.php:406
 msgid "You can't add a task without description."
-msgstr ""
+msgstr "Vous ne pouvez pas ajouter une tâche sans une description."
 
 #: inc/commonitiltask.class.php:634
 msgid "Public followup"
@@ -15785,7 +15798,7 @@ msgstr "Attribué"
 
 #: inc/dashboard/provider.class.php:1212
 msgid "To validate"
-msgstr ""
+msgstr "À valider"
 
 #: inc/dashboard/widget.class.php:67
 msgid "Pie"
@@ -15849,11 +15862,11 @@ msgstr "Résultat de la recherche"
 
 #: inc/dashboard/widget.class.php:210
 msgid "Summary numbers"
-msgstr ""
+msgstr "Nombres résumés"
 
 #: inc/dashboard/widget.class.php:219
 msgid "List of articles"
-msgstr ""
+msgstr "Liste d'articles"
 
 #: inc/dashboard/widget.class.php:396 inc/dashboard/widget.class.php:502
 #: inc/dashboard/widget.class.php:944 inc/dashboard/widget.class.php:1686
@@ -15894,11 +15907,11 @@ msgstr "Basculer le mode édition"
 
 #: inc/dashboard/grid.class.php:268
 msgid "Add filter"
-msgstr ""
+msgstr "Ajouter un filtre"
 
 #: inc/dashboard/grid.class.php:269 js/dashboard.js:863
 msgid "Add a new dashboard"
-msgstr "Ajouter un tableau de bord"
+msgstr "Ajouter un nouveau tableau de bord"
 
 #: inc/dashboard/grid.class.php:574 js/dashboard.js:576
 msgid "Refresh this card"
@@ -15931,7 +15944,7 @@ msgstr "Utiliser une palette avec un dégradé"
 
 #: inc/dashboard/grid.class.php:748
 msgid "Display value labels on points/bars"
-msgstr ""
+msgstr "Afficher les valeurs sur les points/barres"
 
 #: inc/dashboard/grid.class.php:765
 msgid "Limit number of data"
@@ -15939,7 +15952,7 @@ msgstr "Limiter le nombre de données"
 
 #: inc/dashboard/grid.class.php:823
 msgid "Filters"
-msgstr ""
+msgstr "Filtres"
 
 #: inc/dashboard/grid.class.php:858
 msgid "Embed in another application"
@@ -16017,7 +16030,7 @@ msgstr "Temps des billets (en heures)"
 
 #: inc/dashboard/grid.class.php:1340
 msgid "Tickets summary"
-msgstr ""
+msgstr "Résumé des billets"
 
 #: inc/dashboard/grid.class.php:1346
 msgid "Top ticket's categories"
@@ -16061,7 +16074,7 @@ msgstr "Top des groupes cessionnaires de billets"
 
 #: inc/dashboard/grid.class.php:1384
 msgid "List of reminders"
-msgstr ""
+msgstr "Liste des rappels"
 
 #: inc/dashboard/grid.class.php:1392
 msgid "Editable markdown card"
@@ -16099,7 +16112,7 @@ msgstr[1] "Licences"
 #: inc/item_softwareversion.class.php:98
 msgctxt "software"
 msgid "Request source"
-msgstr ""
+msgstr "Source de la demande"
 
 #: inc/item_softwarelicense.class.php:198
 msgid "A version is required!"
@@ -16472,7 +16485,7 @@ msgstr "Envoi d'informations de télémétrie"
 
 #: inc/telemetry.class.php:346
 msgid "See what would be sent..."
-msgstr "Voir ce qui pourrait-être envoyé"
+msgstr "Aperçu de ce qui serait envoyé"
 
 #: inc/telemetry.class.php:359
 msgid "Telemetry data"
@@ -16875,8 +16888,8 @@ msgstr "Aucun port réseau trouvé"
 #: inc/networkport.class.php:1034
 msgid "Port number"
 msgid_plural "Port numbers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Numéro de port"
+msgstr[1] "Numéros de port"
 
 #: inc/networkport.class.php:945 inc/networkport.class.php:1052
 msgid "Network port type"
@@ -17043,7 +17056,7 @@ msgstr "ou réessayez plus tard"
 #: inc/marketplace/view.class.php:156
 #, php-format
 msgid "Your %1$s registration is not valid."
-msgstr ""
+msgstr "Votre enregistrement %1$s n'est pas valide"
 
 #: inc/marketplace/view.class.php:157
 msgid "A registration, at least a free one, is required to use marketplace!"
@@ -17052,7 +17065,7 @@ msgstr "Un enregistrement, même gratuit, est requis pour utiliser le marché !"
 #: inc/marketplace/view.class.php:158
 #, php-format
 msgid "Register on %1$s"
-msgstr ""
+msgstr "Enregistré sur %1$s"
 
 #: inc/marketplace/view.class.php:160
 msgid "fill your registration key in setup."
@@ -17093,7 +17106,7 @@ msgstr "Les plus populaires"
 
 #: inc/marketplace/view.class.php:365
 msgid "Last updated"
-msgstr "Dernières mise à jour"
+msgstr "Dernières mises à jour"
 
 #: inc/marketplace/view.class.php:370
 msgid "Most recent"
@@ -17172,7 +17185,7 @@ msgstr "Désinstaller"
 #: inc/marketplace/view.class.php:787
 #, php-format
 msgid "You must have a %s subscription to get this plugin"
-msgstr ""
+msgstr "Vous devez posséder une souscription %s pour obtenir ce plugin"
 
 #: inc/marketplace/view.class.php:792
 #, php-format
@@ -17451,7 +17464,7 @@ msgstr ""
 #: inc/glpinetwork.class.php:69
 #, php-format
 msgid "Register on %1$s!"
-msgstr ""
+msgstr "S'enregistrer sur %1$s !"
 
 #: inc/glpinetwork.class.php:70
 msgid "And retrieve your key to paste it below"
@@ -17764,17 +17777,17 @@ msgstr "ID manquant"
 msgctxt "appliance"
 msgid "Relation"
 msgid_plural "Relations"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Relation"
+msgstr[1] "Relations"
 
 #: inc/appliance_item_relation.class.php:116
 msgid "An appliance item is required"
-msgstr ""
+msgstr "Un élément d'applicatif est requis"
 
 #: inc/appliance_item_relation.class.php:212
 #: inc/appliance_item_relation.class.php:213
 msgid "New relation"
-msgstr ""
+msgstr "Nouvelle relation"
 
 #: inc/ruleticket.class.php:103
 msgid ""
@@ -19679,7 +19692,7 @@ msgstr "Gérer les recherches sauvegardées"
 
 #: inc/html.class.php:7110 inc/config.class.php:3408
 msgid "Plugins"
-msgstr "Modules d'extension"
+msgstr "Plugins"
 
 #: inc/html.class.php:7209 inc/html.class.php:7211
 msgid "Add is disabled"
@@ -19766,7 +19779,7 @@ msgstr "Déverrouiller les objets"
 #: inc/commondbtm.class.php:3889
 msgctxt "button"
 msgid "Associate to an appliance"
-msgstr ""
+msgstr "Associer à un applicatif"
 
 #: inc/commondbtm.class.php:4107
 msgid "At least one field has an incorrect value"
@@ -20539,7 +20552,7 @@ msgstr ""
 
 #: inc/config.class.php:1816 inc/config.class.php:1820
 msgid "Maintenance mode"
-msgstr "En mode maintenance"
+msgstr "Mode maintenance"
 
 #. TRANS: Proxy port
 #: inc/config.class.php:1825
@@ -21990,11 +22003,11 @@ msgstr[1] "Applicatifs"
 
 #: inc/appliance.class.php:134
 msgid "Technician in charge of the appliance"
-msgstr ""
+msgstr "Technicien chargé de l'applicatif"
 
 #: inc/appliance.class.php:150
 msgid "Group in charge of the appliance"
-msgstr ""
+msgstr "Groupe chargé de l'applicatif"
 
 #: inc/appliance.class.php:301
 msgid "Environment"
@@ -22003,12 +22016,12 @@ msgstr "Environnement"
 #: inc/appliance.class.php:436
 msgctxt "button"
 msgid "Add to an appliance"
-msgstr ""
+msgstr "Ajouter à un applicatif"
 
 #: inc/appliance.class.php:437
 msgctxt "button"
 msgid "Remove from an appliance"
-msgstr ""
+msgstr "Supprimer d'un applicatif"
 
 #: inc/requesttype.class.php:42
 msgid "Request source"
@@ -22610,9 +22623,9 @@ msgstr "Combien de copies souhaitez vous créer ?"
 msgid "Are you sure you want to add this item to transfer list?"
 msgid_plural "Are you sure you want to add these items to transfer list?"
 msgstr[0] ""
-"Êtes-vous sûr de vouloir ajouter cet élément à la liste de transfère?"
+"Êtes-vous sûr de vouloir ajouter cet élément à la liste de transfert?"
 msgstr[1] ""
-"Êtes-vous sûr de vouloir ajouter ces éléments à la liste de transfère?"
+"Êtes-vous sûr de vouloir ajouter ces éléments à la liste de transfert?"
 
 #: inc/massiveaction.class.php:973
 msgid "Amendment to insert"
@@ -22770,11 +22783,11 @@ msgstr ""
 
 #: install/update.php:525
 msgid "Missing security key file"
-msgstr ""
+msgstr "Fichier de la clé de sécurité manquant"
 
 #: install/update.php:533
 msgid "Ignore warning"
-msgstr ""
+msgstr "Ignorer l'avertissement"
 
 #: install/update.php:575
 msgid "Impossible to accomplish an update by this way!"
@@ -23064,31 +23077,31 @@ msgstr "Accéder à la Foire Aux Questions"
 
 #: js/common.js:1185
 msgid "just now"
-msgstr ""
+msgstr "à l'instant"
 
 #: js/common.js:1187
 msgid "a minute ago"
-msgstr ""
+msgstr "il y a une minute"
 
 #: js/common.js:1189
 msgid "an hour ago"
-msgstr ""
+msgstr "il y a une heure"
 
 #: js/common.js:1191
 msgid "yesterday"
-msgstr ""
+msgstr "hier"
 
 #: js/common.js:1193
 msgid "a year ago"
-msgstr ""
+msgstr "il y a un an"
 
 #: js/dashboard.js:333
 msgid "Add a card"
-msgstr "Ajouter une carte"
+msgstr "Ajouter un carte"
 
 #: js/dashboard.js:366
 msgid "Add a filter"
-msgstr ""
+msgstr "Ajouter un filtre"
 
 #: js/dashboard.js:415
 msgid "Saved"
@@ -23161,7 +23174,7 @@ msgstr "Dessiner un carré autour des actifs que vous souhaitez regrouper"
 
 #: js/impact.js:2438
 msgid "Requests"
-msgstr "Requêtes"
+msgstr "Demandes"
 
 #: js/impact.js:2439
 msgid "Incidents"
@@ -23218,7 +23231,7 @@ msgstr "afficher / masquer"
 
 #: js/planning.js:238
 msgid "Clone"
-msgstr "Clone"
+msgstr "Clôner"
 
 #: js/planning.js:312
 msgid "Make a choice"
