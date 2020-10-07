@@ -18,7 +18,7 @@ jobs:
     runs-on: "ubuntu-latest"
     services:
       app:
-        image: "glpi/githubactions-php:5.6"
+        image: "ghcr.io/glpi-project/githubactions-php:5.6"
         options: >-
           --volume /glpi:/var/glpi
     steps:
@@ -58,17 +58,17 @@ jobs:
           - {php-version: "7.4", db-image: "mysql:8.0"}
     services:
       app:
-        image: "glpi/githubactions-php:${{ matrix.php-version }}"
+        image: "ghcr.io/glpi-project/githubactions-php:${{ matrix.php-version }}"
         options: >-
           --volume /glpi:/var/glpi
       db:
-        image: "glpi/githubactions-${{ matrix.db-image }}"
+        image: "ghcr.io/glpi-project/githubactions-${{ matrix.db-image }}"
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
         options: >-
           --shm-size=1g
       openldap:
-        image: "glpi/githubactions-openldap"
+        image: "ghcr.io/glpi-project/githubactions-openldap"
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v2"
