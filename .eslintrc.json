@@ -29,6 +29,10 @@
         "ecmaVersion": 6
     },
     "rules": {
+        "eol-last": [
+            "error",
+            "always"
+        ],
         "indent": [
             "error",
             3,
