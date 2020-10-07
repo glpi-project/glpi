@@ -6094,9 +6094,16 @@ JAVASCRIPT;
    /**
     * This function provides a mecanism to send html form by ajax
     *
+    * @param string $selector selector of a HTML form
+    * @param string $success  jacascript code of the success callback
+    * @param string $error    jacascript code of the error callback
+    * @param string $complete jacascript code of the complete callback
+    *
+    * @see https://api.jquery.com/jQuery.ajax/
+    *
     * @since 9.1
    **/
-   static function ajaxForm($selector, $success = "console.log(html);") {
+   static function ajaxForm($selector, $success = "console.log(html);", $error = "console.error(html)", $complete = '') {
       echo Html::scriptBlock("
       $(function() {
          var lastClicked = null;
@@ -6121,6 +6128,12 @@ JAVASCRIPT;
                data: formData,
                success: function(html) {
                   $success
+               },
+               error: function(html) {
+                  $error
+               },
+               complete: function(html) {
+                  $complete
                }
             });
          });
