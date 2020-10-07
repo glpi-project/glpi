@@ -3,7 +3,7 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [9.5.2] unreleased
+## [9.5.2] 2020-10-07
 
 ### API changes
 
