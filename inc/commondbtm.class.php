@@ -2642,17 +2642,13 @@ class CommonDBTM extends CommonGLPI {
             if ($this->isEntityAssign()) {
                if (isset($params['entities_id'])) {
                   $entity = $this->fields['entities_id'] = $params['entities_id'];
-               } else if(isset($this->fields['entities_id'])) {
-                  //entity has been explicitely set already
+               } else if (isset($this->fields['entities_id'])) {
+                  //It's an existing object to be displayed
                   $entity = $this->fields['entities_id'];
                } else if ($this->isNewID($ID)
                           || ($params['withtemplate'] == 2)) {
                   //It's a new object to be added
                   $entity = $_SESSION['glpiactive_entity'];
-
-               } else {
-                  //It's an existing object to be displayed
-                  $entity = $this->fields['entities_id'];
                }
 
                echo "<input type='hidden' name='entities_id' value='$entity'>";
