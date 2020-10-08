@@ -7410,7 +7410,7 @@ class Ticket extends CommonITILObject {
       return "fas fa-exclamation-circle";
    }
 
-   public static function getItemClass(): string {
+   public static function getItemLinkClass(): string {
       return Item_Ticket::class;
    }
 }

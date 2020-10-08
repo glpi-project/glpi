@@ -8250,11 +8250,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
    public function handleItemsIdInput(): void {
       if (!empty($this->input['items_id'])) {
-         $item_class = static::getItemClass();
-         $item_ticket = new $item_class();
+         $item_link_class = static::getItemLinkClass();
+         $item_link = new $item_link_class();
          foreach ($this->input['items_id'] as $itemtype => $items) {
             foreach ($items as $items_id) {
-               $item_ticket->add([
+               $item_link->add([
                   'items_id'                    => $items_id,
                   'itemtype'                    => $itemtype,
                   static::getForeignKeyField()  => $this->fields['id'],
@@ -8265,5 +8265,5 @@ abstract class CommonITILObject extends CommonDBTM {
       }
    }
 
-   abstract public static function getItemClass(): string;
+   abstract public static function getItemLinkClass(): string;
 }

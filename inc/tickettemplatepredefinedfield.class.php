@@ -45,8 +45,7 @@ if (!defined('GLPI_ROOT')) {
 class TicketTemplatePredefinedField extends ITILTemplatePredefinedField {
 
    // From CommonDBChild
-   static public $itemtype    = 'TicketTemplate';
-   static public $items_id    = 'tickettemplates_id';
-   static public $itiltype    = 'Ticket';
-   static public $items_field = 'items_tickets_id';
+   static public $itemtype = 'TicketTemplate';
+   static public $items_id = 'tickettemplates_id';
+   static public $itiltype = 'Ticket';
 }

@@ -1609,7 +1609,7 @@ class Change extends CommonITILObject {
       return "fas fa-clipboard-check";
    }
 
-   public static function getItemClass(): string {
+   public static function getItemLinkClass(): string {
       return Change_Item::class;
    }
 }

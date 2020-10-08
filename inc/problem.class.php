@@ -1899,7 +1899,7 @@ class Problem extends CommonITILObject {
       return "fas fa-exclamation-triangle";
    }
 
-   public static function getItemClass(): string {
+   public static function getItemLinkClass(): string {
       return Item_Problem::class;
    }
 }
