@@ -794,15 +794,10 @@ abstract class CommonITILObject extends CommonDBTM {
       if (count($tt->mandatory)) {
          $mandatory_missing = [];
          $fieldsname        = $tt->getAllowedFieldsNames(true);
-         $is_first_update   = $this->fields['date_creation'] == $this->fields['date_mod'];
          foreach ($tt->mandatory as $key => $val) {
             if ((!$check_allowed_fields_for_template || in_array($key, $allowed_fields))
                 && (isset($input[$key])
                     && (empty($input[$key]) || ($input[$key] == 'NULL'))
-                    // Take only into account already set items : do not block
-                    // old tickets unless they haven't been modified yet, this
-                    // is useful for recurrent ticket with mandatory params.
-                    && (!empty($this->fields[$key]) || $is_first_update)
                 )) {
                $mandatory_missing[$key] = $fieldsname[$val];
             }
