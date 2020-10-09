@@ -1823,9 +1823,10 @@ class Ticket extends CommonITILObject {
          if (isset($this->fields["status"]) && ($this->fields["status"]  == self::SOLVED)) {
             $type = "solved";
          }
-         $toadd = ["type"       => $type,
-                        "tickets_id" => $this->fields['id'],
-                        "actiontime" => $this->input["actiontime"]];
+         $toadd = ["type"        => $type,
+                  "tickets_id"   => $this->fields['id'],
+                  "actiontime"   => $this->input["actiontime"],
+                  "content"      => __("Auto-created task") ];
 
          if (isset($this->input["plan"]) && count($this->input["plan"])) {
             $toadd["plan"] = $this->input["plan"];
