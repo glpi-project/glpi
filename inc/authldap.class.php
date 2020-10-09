@@ -327,7 +327,7 @@ class AuthLDAP extends CommonDBTM {
     * @param array   $options Options
     *     - target for the form
     *
-    * @return void (display)
+    * @return void|boolean (display) Returns false if there is a rights error.
     */
    function showForm($ID, $options = []) {
 
@@ -3437,7 +3437,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Search user
     *
-    * @param resource $authldap AuthLDAP object
+    * @param AuthLDAP $authldap AuthLDAP object
     *
     * @return void
     */
@@ -3731,8 +3731,9 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Does LDAP user already exists in the database?
     *
-    * @param string $name User login/name
-    * @param string $sync Sync field
+    * @param string  $name          User login/name
+    * @param integer $authldaps_id  LDAP authentication server ID
+    * @param ?string $sync          Sync field
     *
     * @return false|User
     */
@@ -3863,7 +3864,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Check if text representation of an objectguid is valid
     *
-    * @param string $string Strign representation
+    * @param string $guid_str String representation
     *
     * @return boolean
     */

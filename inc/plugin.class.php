@@ -1011,6 +1011,8 @@ class Plugin extends CommonDBTM {
          return in_array($this->fields['state'], [self::ACTIVATED, self::TOBECONFIGURED, self::NOTACTIVATED])
             && $this->isLoadable($directory);
       }
+
+      return false;
    }
 
 

@@ -315,6 +315,9 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
     *
     * @param InputInterface $input
     * @param OutputInterface $output
+    * @param string $db_hostport DB host and port
+    * @param string $db_name DB name
+    * @param string $db_user DB username
     *
     * @return boolean
     */

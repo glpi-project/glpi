@@ -238,7 +238,7 @@ class Contract_Item extends CommonDBRelation{
     * @since 0.84
     *
     * @param CommonDBTM $item         CommonDBTM object wanted
-    * @param boolean    $withtemplate not used (to be deleted)
+    * @param integer    $withtemplate
     *
     * @return void
    **/
@@ -388,9 +388,9 @@ class Contract_Item extends CommonDBRelation{
     * @since 0.84
     *
     * @param Contract $contract     Contract object
-    * @param boolean  $withtemplate (default 0)
+    * @param integer  $withtemplate (default 0)
     *
-    * @return void (display)
+    * @return void|boolean (display) Returns false if there is a rights error.
    **/
    static function showForContract(Contract $contract, $withtemplate = 0) {
       global $DB, $CFG_GLPI;

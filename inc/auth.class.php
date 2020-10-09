@@ -682,10 +682,11 @@ class Auth extends CommonGLPI {
    /**
     * Manage use authentication and initialize the session
     *
-    * @param string  $login_name     Login
-    * @param string  $login_password Password
-    * @param boolean $noauto         (false by default)
-    * @param string $login_auth      type of auth - id of the auth
+    * @param string  $login_name      Login
+    * @param string  $login_password  Password
+    * @param boolean $noauto          (false by default)
+    * @param bool    $remember_me
+    * @param string  $login_auth      Type of auth - id of the auth
     *
     * @return boolean (success)
     */

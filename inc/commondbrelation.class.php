@@ -253,8 +253,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @since 0.84
     *
-    * @param $item1 object 1
-    * @param $item2 object 2
+    * @param CommonDBTM $item1 object 1
+    * @param CommonDBTM $item2 object 2
     *
     * @return boolean
    **/
@@ -678,14 +678,14 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @since 0.84
     *
-    * @param $item    CommonDBTM object   the other item (ie. : $item2)
-    * @param $case : can be overwrite by object
-    *              - 'add' when this CommonDBRelation is added (to and item)
-    *              - 'update item previous' transfert : this is removed from the old item
-    *              - 'update item next' transfert : this is added to the new item
-    *              - 'delete' when this CommonDBRelation is remove (from an item)
+    * @param CommonDBTM $item    CommonDBTM object   the other item (ie. : $item2)
+    * @param string     $case : can be overwrite by object
+    *                            - 'add' when this CommonDBRelation is added (to and item)
+    *                            - 'update item previous' transfert : this is removed from the old item
+    *                            - 'update item next' transfert : this is added to the new item
+    *                            - 'delete' when this CommonDBRelation is remove (from an item)
     *
-    * @return (string) the name of the entry for the database (ie. : correctly slashed)
+    * @return string The name of the entry for the database (ie. : correctly slashed)
    **/
    function getHistoryNameForItem1(CommonDBTM $item, $case) {
 
@@ -968,11 +968,11 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * @since 0.84
     *
-    * @param $itemtype
-    * @param $base                  HTMLTableBase object
-    * @param $super                 HTMLTableSuperHeader object (default NULL)
-    * @param $father                HTMLTableHeader object (default NULL)
-    * @param $options      array
+    * @param string               $itemtype
+    * @param HTMLTableBase        $base      HTMLTableBase object
+    * @param HTMLTableSuperHeader $super     HTMLTableSuperHeader object (default NULL)
+    * @param HTMLTableHeader      $father    HTMLTableHeader object (default NULL)
+    * @param array                $options
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super = null,
@@ -1002,10 +1002,10 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * @since 0.84
     *
-    * @param $row                HTMLTableRow object (default NULL)
-    * @param $item               CommonDBTM object (default NULL)
-    * @param $father             HTMLTableCell object (default NULL)
-    * @param $options   array
+    * @param HTMLTableRow  $row      HTMLTableRow object (default NULL)
+    * @param CommonDBTM    $item     CommonDBTM object (default NULL)
+    * @param HTMLTableCell $father   HTMLTableCell object (default NULL)
+    * @param array         $options
    **/
    static function getHTMLTableCellsForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
                                             HTMLTableCell $father = null, array $options = []) {

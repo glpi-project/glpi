@@ -3024,7 +3024,7 @@ class Config extends CommonDBTM {
     *
     * @since 9.3
     *
-    * @return void
+    * @return void|boolean (display) Returns false if there is a rights error.
     */
    function showFormLogs() {
       global $CFG_GLPI;
@@ -3230,7 +3230,7 @@ class Config extends CommonDBTM {
     *
     * @since 9.5.0
     *
-    * @return void
+    * @return void|boolean (display) Returns false if there is a rights error.
     */
    function showFormSecurity() {
       global $CFG_GLPI;

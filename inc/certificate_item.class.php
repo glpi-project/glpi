@@ -174,9 +174,9 @@ class Certificate_Item extends CommonDBRelation {
     *
     * @since 9.2
     *
-    * @param $certificate Certificate object
+    * @param Certificate $certificate Certificate object
     *
-    * @return void (HTML display)
+    * @return void|boolean (display) Returns false if there is a rights error.
     **/
    public static function showForCertificate(Certificate $certificate) {
 

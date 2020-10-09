@@ -1282,8 +1282,8 @@ class Change extends CommonITILObject {
     *
     * Will also display changes of linked items
     *
-    * @param CommonDBTM $item
-    * @param boolean    $withtemplate
+    * @param CommonDBTM      $item
+    * @param boolean|integer $withtemplate
     *
     * @return boolean|void
    **/

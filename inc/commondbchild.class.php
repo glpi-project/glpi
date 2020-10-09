@@ -756,7 +756,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @param string       $field_name  the name of the HTML field inside Item's form
     * @param boolean|null $canedit     boolean to force rights, NULL to use default behaviour
     *
-    * @return void
+    * @return void|boolean (display) Returns false if there is a rights error.
    **/
    static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit = null) {
       global $DB;

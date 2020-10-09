@@ -53,10 +53,10 @@ class DBConnection extends CommonDBTM {
     *
     * @since 9.1
     *
-    * @param $dbhost
-    * @param $user
-    * @param $password
-    * @param $DBname
+    * @param string $host      The DB host
+    * @param string $user      The DB user
+    * @param string $password  The DB password
+    * @param string $DBname    The name of the DB
     *
     * @return boolean
     *
@@ -77,10 +77,10 @@ class DBConnection extends CommonDBTM {
    /**
     * Create slave DB configuration file
     *
-    * @param host       the slave DB host(s)
-    * @param user       the slave DB user
-    * @param password   the slave DB password
-    * @param DBname     the name of the slave DB
+    * @param string $host      The slave DB host(s)
+    * @param string $user      The slave DB user
+    * @param string $password  The slave DB password
+    * @param string $DBname    The name of the slave DB
     *
     * @return boolean for success
    **/
@@ -126,7 +126,7 @@ class DBConnection extends CommonDBTM {
    /**
     * Read slave DB configuration file
     *
-    * @param $choice integer, host number (default NULL)
+    * @param integer $choice  Host number (default NULL)
     *
     * @return DBmysql object
    **/
@@ -317,7 +317,7 @@ class DBConnection extends CommonDBTM {
    /**
     * Get delay between slave and master
     *
-    * @param $choice integer, host number (default NULL)
+    * @param integer $choice  Host number (default NULL)
     *
     * @return integer
    **/
@@ -332,8 +332,10 @@ class DBConnection extends CommonDBTM {
    /**
     *  Get history max date of a GLPI DB
     *
-    * @param $DBconnection DB conneciton used
-   **/
+    * @param DBMysql $DBconnection DB connection used
+    *
+    * @return int|mixed|null
+    */
    static function getHistoryMaxDate($DBconnection) {
 
       if ($DBconnection->connected) {
@@ -491,7 +493,7 @@ class DBConnection extends CommonDBTM {
    /**
     * Enable or disable db replication check cron task
     *
-    * @param enable of disable cron task (true by default)
+    * @param boolean $enable Enable or disable cron task (true by default)
    **/
    static function changeCronTaskStatus($enable = true) {
 

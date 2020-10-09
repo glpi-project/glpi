@@ -18,7 +18,7 @@ jobs:
           - {branch: "9.5/bugfixes", php-version: "7.2"}
     services:
       app:
-        image: "glpi/githubactions-php:${{ matrix.php-version }}"
+        image: "ghcr.io/glpi-project/githubactions-php:${{ matrix.php-version }}"
         options: >-
           --volume /glpi:/var/glpi
     steps:

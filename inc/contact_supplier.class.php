@@ -220,10 +220,12 @@ class Contact_Supplier extends CommonDBRelation{
    }
 
    /**
-    * Show contacts asociated to an enterprise
+    * Show contacts associated to an enterprise
+    *
+    * @param Supplier $supplier
     *
     * @return void
-   **/
+    */
    static function showForSupplier(Supplier $supplier) {
 
       $instID = $supplier->fields['id'];

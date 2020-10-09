@@ -289,7 +289,7 @@ class ContractCost extends CommonDBChild {
     * Print the contract costs
     *
     * @param Contract $contract
-    * @param boolean  $withtemplate Template or basic item
+    * @param integer  $withtemplate Template or basic item
     *
     * @return void
    **/

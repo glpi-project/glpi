@@ -189,6 +189,7 @@ JAVASCRIPT;
     * @param string $id system name of the filter (ex "dates")
     * @param string $field html of the filter
     * @param string $label displayed label for the filter
+    * @param bool   $filled
     *
     * @return string the html for the complete field
     */

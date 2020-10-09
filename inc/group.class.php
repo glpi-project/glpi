@@ -202,12 +202,12 @@ class Group extends CommonTreeDropdown {
    /**
    * Print the group form
    *
-   * @param $ID      integer ID of the item
-   * @param $options array
+   * @param integer $ID  ID of the item
+   * @param array   $options
    *     - target filename : where to go when done.
    *     - withtemplate boolean : template or basic item
    *
-   * @return void
+   * @return void|boolean (display) Returns false if there is a rights error.
    **/
    function showForm($ID, $options = []) {
 
