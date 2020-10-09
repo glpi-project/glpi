@@ -13,16 +13,23 @@ on:
        - '*'
   # Runs test suite when a PR is opened or synchronyzed
   pull_request:
+  # Runs test suite every night
+  schedule:
+    - cron:  '0 0 * * *'
 
 jobs:
   lint:
-    name: "Lint"
+    name: "Lint on PHP ${{ matrix.php-version }}"
     runs-on: "ubuntu-latest"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {php-version: "7.2"} # Lint on lower PHP version to detected too early usage of new syntaxes
+          - {php-version: "7.4"} # Lint on higher PHP version to detected deprecated elements usage
     services:
       app:
-        # Lint on higher PHP version to be sure to get latest tools versions
-        # linting tools may also help to detected deprecated elements usage
-        image: "ghcr.io/glpi-project/githubactions-php:7.4"
+        image: "ghcr.io/glpi-project/githubactions-php:${{ matrix.php-version }}"
         options: >-
           --volume /glpi:/var/glpi
     steps:
@@ -66,10 +73,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {php-version: "7.2", db-image: "mariadb:10.1"}
-          - {php-version: "7.2", db-image: "mysql:5.6"}
-          - {php-version: "7.4", db-image: "mariadb:10.3"}
-          - {php-version: "7.4", db-image: "mysql:8.0"}
+          - {php-version: "7.4", db-image: "mariadb:10.3", always: true}
+          - {php-version: "7.2", db-image: "mariadb:10.3", always: false}
+          - {php-version: "7.3", db-image: "mariadb:10.3", always: false}
+          - {php-version: "7.4", db-image: "mariadb:10.1", always: false}
+          - {php-version: "7.4", db-image: "mysql:5.6", always: false}
+          - {php-version: "7.4", db-image: "mysql:8.0", always: false}
     services:
       app:
         image: "ghcr.io/glpi-project/githubactions-php:${{ matrix.php-version }}"
@@ -85,19 +94,27 @@ jobs:
         image: "ghcr.io/glpi-project/githubactions-dovecot"
       openldap:
         image: "ghcr.io/glpi-project/githubactions-openldap"
+    env:
+      # Skip jobs that should not be always run on pull requests (to limit workers usage).
+      # No jobs will be skipped on nightly build and on push on main branches.
+      skip: ${{ github.event_name == 'pull_request' && matrix.always == false }}
     steps:
       - name: "Checkout"
+        if: env.skip != 'true'
         uses: "actions/checkout@v2"
       - name: "Deploy source into app container"
+        if: env.skip != 'true'
         run: |
           sudo cp --no-target-directory --preserve --recursive `pwd` /glpi
           sudo chown -R 1000:1000 /glpi
       - name: "Initialize databases"
+        if: env.skip != 'true'
         run: |
           docker exec ${{ job.services.db.id }} mysql --user=root --execute="CREATE DATABASE \`glpi\`;"
           docker exec ${{ job.services.db.id }} mysql --user=root --execute="CREATE DATABASE \`glpitest0723\`;"
           cat tests/glpi-0.72.3-empty.sql | docker exec --interactive ${{ job.services.db.id }} mysql --user=root glpitest0723
       - name: "Install dependencies"
+        if: env.skip != 'true'
         run: |
           docker exec ${{ job.services.app.id }} rm composer.lock
           docker exec ${{ job.services.app.id }} composer --version
@@ -106,16 +123,20 @@ jobs:
           docker exec ${{ job.services.app.id }} composer config --unset platform
           docker exec ${{ job.services.app.id }} bin/console dependencies install --composer-options="--prefer-dist --no-progress"
       - name: "PHP Parallel Lint"
+        if: env.skip != 'true'
         run: |
           docker exec ${{ job.services.app.id }} vendor/bin/parallel-lint  --exclude ./files/ --exclude ./marketplace/ --exclude ./plugins/ --exclude ./tools/vendor/ --exclude ./vendor/ .
       - name: "PHP Security checker"
+        if: env.skip != 'true'
         run: |
           docker exec ${{ job.services.app.id }} vendor/bin/security-checker security:check
       - name: "Install DB tests"
+        if: env.skip != 'true'
         run: |
           docker exec ${{ job.services.app.id }} bin/console glpi:database:install --config-dir=./tests --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root
           docker exec ${{ job.services.app.id }} bin/console glpi:database:update --config-dir=./tests --no-interaction | grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
       - name: "Update DB tests"
+        if: env.skip != 'true'
         run: |
           docker exec ${{ job.services.app.id }} bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpitest0723 --db-host=db --db-user=root
           docker exec ${{ job.services.app.id }} bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction
@@ -125,30 +146,37 @@ jobs:
           docker exec ${{ job.services.app.id }} bin/console glpi:migration:timestamps --config-dir=./tests --no-interaction
           docker exec ${{ job.services.app.id }} bin/console glpi:migration:timestamps --config-dir=./tests --no-interaction | grep -q "Aucune migration requise." || (echo "glpi:migration:timestamps command FAILED" && exit 1)
       - name: "Database tests"
+        if: env.skip != 'true'
         run: |
           docker exec ${{ job.services.app.id }} bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root
           docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
           docker exec ${{ job.services.app.id }} bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root
       - name: "Unit tests"
+        if: env.skip != 'true'
         run: |
           docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units
       - name: "Functionnal tests"
+        if: env.skip != 'true'
         run: |
           docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/functionnal
       - name: "LDAP tests"
+        if: env.skip != 'true'
         run: |
           for f in `ls tests/LDAP/ldif/*.ldif`; do cat $f | docker exec --interactive ${{ job.services.openldap.id }} ldapadd -x -H ldap://127.0.0.1:3890/ -D "cn=Manager,dc=glpi,dc=org" -w insecure ; done
           docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/LDAP
       - name: "IMAP tests"
+        if: env.skip != 'true'
         run: |
           for f in `ls tests/emails-tests/*.eml`; do cat $f | docker exec --user glpi --interactive ${{ job.services.dovecot.id }} getmail_maildir /home/glpi/Maildir/ ; done
           docker exec ${{ job.services.app.id }} sed -e 's/127.0.0.1/dovecot/g' -i tests/imap/MailCollector.php
           docker exec ${{ job.services.app.id }} sed -e 's/127.0.0.1/dovecot/g' -i tests/imap/Toolbox.php
           docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/imap
       - name: "WEB tests"
+        if: env.skip != 'true'
         run: |
           docker exec ${{ job.services.app.id }} php -S localhost:8088 tests/router.php &>/dev/null &
           docker exec ${{ job.services.app.id }} vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/web
       - name: "CSS compilation tests"
+        if: env.skip != 'true'
         run: |
           docker exec ${{ job.services.app.id }} bin/console build:compile_scss
