@@ -5473,7 +5473,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param integer $ID ID of the item to get
     *
-    * @return boolean true if succeed else false
+    * @return static|boolean false on failure
    */
    public static function getById(int $id) {
       $item = new static();
