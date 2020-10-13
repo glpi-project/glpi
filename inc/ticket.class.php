@@ -1826,6 +1826,7 @@ class Ticket extends CommonITILObject {
          $toadd = ["type"        => $type,
                   "tickets_id"   => $this->fields['id'],
                   "actiontime"   => $this->input["actiontime"],
+                  "state"        => Planning::DONE,
                   "content"      => __("Auto-created task") ];
 
          if (isset($this->input["plan"]) && count($this->input["plan"])) {
