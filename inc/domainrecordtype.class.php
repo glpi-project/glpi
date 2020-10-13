@@ -58,7 +58,13 @@ class DomainRecordType extends CommonDropdown
          'id'        => 4,
          'name'      => 'CNAME',
          'comment'   => 'Canonical name for an alias',
-         'fields'    => [],
+         'fields'    => [
+            [
+               'key'         => 'target',
+               'label'       => 'Target',
+               'placeholder' => 'sip.example.com.',
+            ],
+         ],
       ], [
          'id'        => 5,
          'name'      => 'MX',
