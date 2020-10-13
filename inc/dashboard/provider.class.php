@@ -35,12 +35,14 @@ namespace Glpi\Dashboard;
 use CommonGLPI;
 use DBConnection;
 use QueryExpression;
+use Change;
 use CommonITILActor;
 use CommonITILValidation;
 use CommonTreeDropdown;
 use CommonDBTM;
 use Group;
 use Group_Ticket;
+use Problem;
 use Session;
 use Stat;
 use Ticket;
@@ -1285,6 +1287,72 @@ class Provider extends CommonGLPI {
          $where += [
             "$table.manufacturers_id" => (int) $apply_filters['manufacturer']
          ];
+      }
+
+      if (isset($apply_filters['group_tech'])
+          && (int) $apply_filters['group_tech'] > 0) {
+
+         if ($DB->fieldExists($table, 'groups_id_tech')) {
+            $where += [
+               "$table.groups_id_tech" => (int) $apply_filters['group_tech']
+            ];
+         } else if (in_array($table, [
+            Ticket::getTable(),
+            Change::getTable(),
+            Problem::getTable(),
+         ])) {
+            $itemtype  = getItemTypeForTable($table);
+            $main_item = getItemForItemtype($itemtype);
+            $grouplink = $main_item->grouplinkclass;
+            $gl_table  = $grouplink::getTable();
+            $fk        = $main_item->getForeignKeyField();
+
+            $join += [
+               "$gl_table as gl" => [
+                  'ON' => [
+                     'gl'   => $fk,
+                     $table => 'id',
+                  ]
+               ]
+            ];
+            $where += [
+               "gl.type"      => \CommonITILActor::ASSIGN,
+               "gl.groups_id" => (int) $apply_filters['group_tech']
+            ];
+         }
+      }
+
+      if (isset($apply_filters['user_tech'])
+          && (int) $apply_filters['user_tech'] > 0) {
+
+         if ($DB->fieldExists($table, 'users_id_tech')) {
+            $where += [
+               "$table.users_id_tech" => (int) $apply_filters['user_tech']
+            ];
+         } else if (in_array($table, [
+            Ticket::getTable(),
+            Change::getTable(),
+            Problem::getTable(),
+         ])) {
+            $itemtype  = getItemTypeForTable($table);
+            $main_item = getItemForItemtype($itemtype);
+            $userlink  = $main_item->userlinkclass;
+            $gl_table  = $userlink::getTable();
+            $fk        = $main_item->getForeignKeyField();
+
+            $join += [
+               "$gl_table as gl" => [
+                  'ON' => [
+                     'gl'   => $fk,
+                     $table => 'id',
+                  ]
+               ]
+            ];
+            $where += [
+               "gl.type"     => \CommonITILActor::ASSIGN,
+               "gl.users_id" => (int) $apply_filters['user_tech']
+            ];
+         }
       }
 
       $criteria = [];

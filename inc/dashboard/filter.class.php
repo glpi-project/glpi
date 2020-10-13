@@ -39,7 +39,9 @@ use Location;
 use Manufacturer;
 use Session;
 use Html;
+use Group;
 use Plugin;
+use User;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -64,6 +66,8 @@ class Filter extends CommonGLPI {
          'requesttype'  => RequestType::getTypeName(Session::getPluralNumber()),
          'location'     => Location::getTypeName(Session::getPluralNumber()),
          'manufacturer' => Manufacturer::getTypeName(Session::getPluralNumber()),
+         'group_tech'   => __("Technician group"),
+         'user_tech'    => __("Technician"),
       ];
 
       $more_filters = Plugin::doHookFunction("dashboard_filters");
@@ -145,11 +149,19 @@ JAVASCRIPT;
       return self::dropdown($value, 'manufacturer', Manufacturer::class);
    }
 
+   static function group_tech(string $value = "0"): string {
+      return self::dropdown($value, 'group_tech', Group::class);
+   }
+
+   static function user_tech(string $value = "0"): string {
+      return self::dropdown($value, 'user_tech', User::class, ['right' => 'own_ticket']);
+   }
 
    static function dropdown(
       string $value = "0",
       string $fieldname = "",
-      string $itemtype = ""
+      string $itemtype = "",
+      array $add_params = []
    ): string {
       $value     = (int) $value;
       $rand      = mt_rand();
@@ -163,8 +175,9 @@ JAVASCRIPT;
          'emptylabel'          => '',
          'placeholder'         => $label,
          'on_change'           => "on_change_{$rand}()",
-         'allowClear'          => true
-      ]);
+         'allowClear'          => true,
+         'width'               => ''
+      ] + $add_params);
 
       $js = <<<JAVASCRIPT
       var on_change_{$rand} = function() {
