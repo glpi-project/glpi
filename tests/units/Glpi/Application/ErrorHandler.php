@@ -53,28 +53,14 @@ class ErrorHandler extends \GLPITestCase {
    protected function errorProvider(): array {
 
       $log_prefix = '/';
-      $log_suffix = '.*' . preg_quote(' in ' . __FILE__ . ' at line ', '/') . '\d+' . '/';
+      $log_suffix = '.*' . preg_quote(' in ' . __FILE__ . ' at line ', '/') . '\d+' . '/i';
 
-      return [
+      $data = [
          [
             'error_call'           => function () { file_get_contents('this-file-does-not-exists'); },
             'expected_log_level'   => LogLevel::WARNING,
             'expected_msg_pattern' => $log_prefix
                . preg_quote('PHP Warning (' . E_WARNING . '): file_get_contents(this-file-does-not-exists): failed to open stream: No such file or directory', '/')
-               . $log_suffix,
-         ],
-         [
-            'error_call'           => function () { $a = $b; },
-            'expected_log_level'   => LogLevel::NOTICE,
-            'expected_msg_pattern' => $log_prefix
-               . preg_quote('PHP Notice (' . E_NOTICE . '): Undefined variable: b', '/')
-               . $log_suffix,
-         ],
-         [
-            'error_call'           => function () { $inst = new class { function nonstatic() {} }; $inst::nonstatic(); },
-            'expected_log_level'   => LogLevel::NOTICE,
-            'expected_msg_pattern' => $log_prefix
-               . preg_quote('PHP Deprecated function (' . E_DEPRECATED . '): Non-static method class@anonymous::nonstatic() should not be called statically', '/')
                . $log_suffix,
          ],
          [
@@ -97,8 +83,35 @@ class ErrorHandler extends \GLPITestCase {
             'expected_msg_pattern' => $log_prefix
                . preg_quote('PHP User deprecated function (' . E_USER_DEPRECATED . '): this method is deprecated', '/')
                . $log_suffix,
-         ]
+         ],
       ];
+
+      if (version_compare(PHP_VERSION, '8.0.0-dev', '>=')) {
+         $data[] = [
+            'error_call'           => function () { $param = new \ReflectionParameter([\Config::class, 'getTypeName'], 0); $param->isCallable(); },
+            'expected_log_level'   => LogLevel::NOTICE,
+            'expected_msg_pattern' => $log_prefix
+               . preg_quote('PHP Deprecated function (' . E_DEPRECATED . '): Method ReflectionParameter::isCallable() is deprecated', '/')
+               . $log_suffix,
+         ];
+      } else {
+         $data[] = [
+            'error_call'           => function () { $inst = new class { function nonstatic() {} }; $inst::nonstatic(); },
+            'expected_log_level'   => LogLevel::NOTICE,
+            'expected_msg_pattern' => $log_prefix
+               . preg_quote('PHP Deprecated function (' . E_DEPRECATED . '): Non-static method class@anonymous::nonstatic() should not be called statically', '/')
+               . $log_suffix,
+         ];
+         $data[] = [
+            'error_call'           => function () { $a = $b; },
+            'expected_log_level'   => LogLevel::NOTICE,
+            'expected_msg_pattern' => $log_prefix
+               . preg_quote('PHP Notice (' . E_NOTICE . '): Undefined variable: b', '/')
+               . $log_suffix,
+         ];
+      }
+
+      return $data;
    }
 
    /**
@@ -216,6 +229,7 @@ class ErrorHandler extends \GLPITestCase {
             'error_code'           => E_RECOVERABLE_ERROR,
             'expected_log_level'   => LogLevel::ERROR,
             'expected_msg_pattern' => $log_prefix . 'PHP Catchable Fatal Error' . $log_suffix,
+            'is_fatal_error'       => true,
          ],
          [
             'error_code'           => E_DEPRECATED,

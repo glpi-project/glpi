@@ -193,13 +193,8 @@ abstract class CommonDropdown extends DbTestCase {
       $this->string($this->testedInstance->fields['name'])->isIdenticalTo('Changed name');
 
       //cannot update if id is missing
-      $this->when(
-         function () {
-            $this->testedInstance->update(['name' => 'Will not change']);
-         }
-      )->error()
-         ->withType(E_NOTICE)
-         ->withMessage('Undefined index: id')
-         ->exists();
+      $this->boolean(
+         $this->testedInstance->update(['name' => 'Will not change'])
+      )->isFalse();
    }
 }

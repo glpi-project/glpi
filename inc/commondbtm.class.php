@@ -1418,6 +1418,10 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
+      if (!array_key_exists(static::getIndexName(), $input)) {
+         return false;
+      }
+
       if (!$this->getFromDB($input[static::getIndexName()])) {
          return false;
       }

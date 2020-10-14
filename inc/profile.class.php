@@ -3157,15 +3157,21 @@ class Profile extends CommonDBTM {
          // For standard rights sort by right
          if (($a[0] < 1024) || ($b[0] < 1024)) {
             if ($a[0] > $b[0]) {
-                return true;
+                return 1;
             }
             if ($a[0] < $b[0]) {
-                return false;
+                return -1;
             }
-            return ($a[1] > $b[1]);
-            // For extra right sort by type
          }
-         return ($a[1] > $b[1]);
+
+         // For extra right sort by type
+         if ($a[1] > $b[1]) {
+             return 1;
+         }
+         if ($a[1] < $b[1]) {
+             return -1;
+         }
+         return 0;
       });
 
       return Html::showCheckboxMatrix($columns, $rows,
