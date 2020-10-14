@@ -6031,8 +6031,8 @@ JAVASCRIPT;
                   $itemtypes = [];
                   foreach ($data[$ID] as $key => $val) {
                      if (is_numeric($key)) {
-                        if (!empty($val['itemtype'])
-                              && ($item = getItemForItemtype($val['itemtype']))) {
+                        if (!empty($val['name'])
+                              && ($item = getItemForItemtype($val['name']))) {
                            $item = new $val['name']();
                            $name = $item->getTypeName();
                            $itemtypes[] = __($name);
