@@ -95,9 +95,9 @@ jobs:
       openldap:
         image: "ghcr.io/glpi-project/githubactions-openldap"
     env:
-      # Skip jobs that should not be always run on pull requests (to limit workers usage).
+      # Skip jobs that should not be always run on pull requests or on push on tier repository (to limit workers usage).
       # No jobs will be skipped on nightly build and on push on main branches.
-      skip: ${{ github.event_name == 'pull_request' && matrix.always == false }}
+      skip: ${{ (github.event_name == 'pull_request' || github.repository != 'glpi-project/glpi') && matrix.always == false}}
     steps:
       - name: "Checkout"
         if: env.skip != 'true'
