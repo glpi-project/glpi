@@ -37,11 +37,11 @@ body {
 /* ===== LOGIN ===== */
 
 #firstboxlogin {
-   background-color: #006573;
+   background: linear-gradient(to top, #353166, #524b9d);
 }
 
 #logo_login {
-   background: #008B8D;
+   background: #564B7F;
 }
 
 #display-login {
@@ -49,26 +49,26 @@ body {
 }
 
 #text-login {
-   background-color: #008B8D;
+   background-color: #564B7F;
    color: #FFF;
 }
 
 /* ====== GENERAL ====== */
 
 a, .btn-linkstyled {
-   color: #8783c2;
+   color: #564B7F;
 
    &:link {
-      color: #8783c2;
+      color: #564B7F;
    }
 }
 
 .ui-widget-content a {
-   color: #8783c2;
+   color: #564B7F;
 }
 
 .main_form tr.headerRow th {
-   color: #81BEAA;
+   color: #FFF;
 }
 
 /* ====== HEADER ====== */
@@ -147,11 +147,11 @@ ul {
 /* ====== BUTTONS ====== */
 
 input.submit {
-   background-color: #5953ab;
+   background-color: #736eb9;
    color: #fff;
 
    &:hover {
-      background-color: #736eb9;
+      background-color: #5953ab;
       -moz-box-shadow: initial;
       -ms-box-shadow: initial;
       -webkit-box-shadow: initial;
