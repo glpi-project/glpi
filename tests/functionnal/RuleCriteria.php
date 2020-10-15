@@ -662,7 +662,7 @@ class RuleCriteria extends DbTestCase {
          )
       )->isTrue();
       $this->array($results)->isIdenticalTo(['name' => '/Mozilla (Firefox|Thunderbird) (.*)/']);
-      $this->array($regex_result)->isIdenticalTo([0 => ['Firefox'], 1 => ['52']]);
+      $this->array($regex_result)->isIdenticalTo([0 => ['Firefox', '52']]);
 
       $results      = [];
       $regex_result = [];
@@ -675,7 +675,7 @@ class RuleCriteria extends DbTestCase {
          )
       )->isTrue();
       $this->array($results)->isIdenticalTo(['name' => '/Mozilla (Firefox|Thunderbird) (.*)/']);
-      $this->array($regex_result)->isIdenticalTo([0 => ['Thunderbird'], 1 => ['52']]);
+      $this->array($regex_result)->isIdenticalTo([0 => ['Thunderbird', '52']]);
 
       //test for #8117
       $criteria->fields = ['id'        => 1,
