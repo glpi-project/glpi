@@ -32,9 +32,9 @@
 
 namespace Glpi\Dashboard;
 
+use Change;
 use CommonDBTM;
 use CommonGLPI;
-use Change;
 use CommonITILActor;
 use CommonITILValidation;
 use CommonTreeDropdown;

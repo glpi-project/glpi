@@ -33,15 +33,15 @@
 namespace Glpi\Dashboard;
 
 use CommonGLPI;
+use Group;
 use Html;
 use ITILCategory;
 use Location;
 use Manufacturer;
-use Group;
 use Plugin;
 use RequestType;
-use User;
 use Session;
+use User;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
