@@ -642,6 +642,61 @@ class RuleCriteria extends DbTestCase {
       )->isTrue();
       $this->array($results)->isIdenticalTo(['name' => '/Mozilla Firefox (.*)/']);
       $this->array($regex_result)->isIdenticalTo([]);
+
+      //another one
+      $criteria->fields = ['id'        => 1,
+                           'rules_id'  => 1,
+                           'criteria'  => 'name',
+                           'condition' => \Rule::REGEX_MATCH,
+                           'pattern'   => '/Mozilla (Firefox|Thunderbird) (.*)/'
+                          ];
+
+      $results      = [];
+      $regex_result = [];
+      $this->boolean(
+         $criteria->match(
+            $criteria,
+            'Mozilla Firefox 52',
+            $results,
+            $regex_result
+         )
+      )->isTrue();
+      $this->array($results)->isIdenticalTo(['name' => '/Mozilla (Firefox|Thunderbird) (.*)/']);
+      $this->array($regex_result)->isIdenticalTo([0 => ['Firefox', '52']]);
+
+      $results      = [];
+      $regex_result = [];
+      $this->boolean(
+         $criteria->match(
+            $criteria,
+            'Mozilla Thunderbird 52',
+            $results,
+            $regex_result
+         )
+      )->isTrue();
+      $this->array($results)->isIdenticalTo(['name' => '/Mozilla (Firefox|Thunderbird) (.*)/']);
+      $this->array($regex_result)->isIdenticalTo([0 => ['Thunderbird', '52']]);
+
+      //test for #8117
+      $criteria->fields = ['id'        => 1,
+                           'rules_id'  => 1,
+                           'criteria'  => 'name',
+                           'condition' => \Rule::REGEX_MATCH,
+                           'pattern'   => '/CN=([0-9a-z]+) VPN/'
+                          ];
+
+      $results      = [];
+      $regex_result = [];
+      $this->boolean(
+         $criteria->match(
+            $criteria,
+            'Subject = CN=val01 VPN Certificate,O=gefwm01..gnnxpz Subject = CN=val02 VPN Certificate,O=gefwm01..gnnxpz',
+            $results,
+            $regex_result
+         )
+      )->isTrue();
+      $this->array($results)->isIdenticalTo(['name' => '/CN=([0-9a-z]+) VPN/']);
+      $this->array($regex_result)->isIdenticalTo([0 => ['val01'], 1 => ['val02']]);
    }
 
    public function testMatchConditionUnderNotUnder() {
