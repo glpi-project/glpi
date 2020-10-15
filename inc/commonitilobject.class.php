@@ -8168,15 +8168,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
    }
 
-   /**
-    * Get assets linked to this object
-    *
-    * @since 9.5.0
-    *
-    * @param boolean $addNames Insert asset names
-    *
-    * @return array
-    */
+
    public function getLinkedItems() :array {
       global $DB;
 
