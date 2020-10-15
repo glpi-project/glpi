@@ -49,6 +49,50 @@ function update95toXX() {
    include __DIR__ . '/update_95_xx/domains.php';
    require __DIR__ . '/update_95_xx/devicebattery.php';
 
+   //add is_fqdn on some domain records types
+   $fields = [
+      'CNAME'  => ['target'],
+      'MX'     => ['server'],
+      'SOA'    => ['primary_name_server', 'primary_contact'],
+      'SRV'    => ['target']
+   ];
+
+   $fields_it = $DB->request([
+      'FROM'   => DomainRecordType::getTable(),
+      'WHERE'  => ['name' => array_keys($fields)]
+   ]);
+   while ($field = $fields_it->next()) {
+      if (empty($field['fields'])) {
+         if ($field['name'] === 'CNAME') {
+            //cname field definition has been added
+            $field['fields'] = json_encode([[
+               'key'         => 'target',
+               'label'       => 'Target',
+               'placeholder' => 'sip.example.com.',
+               'is_fqdn'     => true
+            ]]);
+         } else {
+            continue;
+         }
+      }
+      $type_fields = DomainRecordType::decodeFields($field['fields']);
+      $updated = false;
+      foreach ($type_fields as &$conf) {
+         if (in_array($conf['key'], $fields[$field['name']])) {
+            $conf['is_fqdn'] = true;
+            $updated = true;
+         }
+      }
+
+      if ($updated) {
+         $DB->update(
+            DomainRecordType::getTable(),
+            ['fields' => json_encode($type_fields)],
+            ['name' => $field['name']]
+         );
+      }
+   }
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;
