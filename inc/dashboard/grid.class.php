@@ -1195,6 +1195,12 @@ HTML;
          if ($DB->fieldExists($itemtable, "manufacturers_id")) {
             $add_filters[] = "manufacturer";
          }
+         if ($DB->fieldExists($itemtable, "groups_id_tech")) {
+            $add_filters[] = "group_tech";
+         }
+         if ($DB->fieldExists($itemtable, "users_id_tech")) {
+            $add_filters[] = "user_tech";
+         }
 
          return $add_filters;
       };
@@ -1278,7 +1284,10 @@ HTML;
                'case' => $case,
             ],
             'cache'      => false,
-            'filters'    => ['dates', 'dates_mod', 'itilcategory', 'requesttype', 'location']
+            'filters'    => [
+               'dates', 'dates_mod', 'itilcategory',
+               'group_tech', 'user_tech', 'requesttype', 'location'
+            ]
          ];
 
          $cards["table_count_tickets_$case"] = [
@@ -1290,7 +1299,10 @@ HTML;
             'args'       => [
                'case' => $case,
             ],
-            'filters'    => ['dates', 'dates_mod', 'itilcategory', 'requesttype', 'location']
+            'filters'    => [
+               'dates', 'dates_mod', 'itilcategory',
+               'group_tech', 'user_tech', 'requesttype', 'location'
+            ]
          ];
       }
 
@@ -1301,7 +1313,10 @@ HTML;
          'group'      => __('Assistance'),
          'label'      => __("Number of tickets by month"),
          'provider'   => "Glpi\\Dashboard\\Provider::ticketsOpened",
-         'filters'    => ['dates', 'dates_mod', 'itilcategory', 'requesttype', 'location']
+         'filters'    => [
+            'dates', 'dates_mod', 'itilcategory',
+            'group_tech', 'user_tech', 'requesttype', 'location'
+         ]
       ];
 
       $cards["ticket_evolution"] = [
@@ -1310,7 +1325,10 @@ HTML;
          'group'      => __('Assistance'),
          'label'      => __("Evolution of ticket in the past year"),
          'provider'   => "Glpi\\Dashboard\\Provider::getTicketsEvolution",
-         'filters'    => ['dates', 'dates_mod', 'itilcategory', 'requesttype', 'location']
+         'filters'    => [
+            'dates', 'dates_mod', 'itilcategory',
+            'group_tech', 'user_tech', 'requesttype', 'location'
+         ]
       ];
 
       $cards["ticket_status"] = [
@@ -1319,7 +1337,10 @@ HTML;
          'group'      => __('Assistance'),
          'label'      => __("Tickets status by month"),
          'provider'   => "Glpi\\Dashboard\\Provider::getTicketsStatus",
-         'filters'    => ['dates', 'dates_mod', 'itilcategory', 'requesttype', 'location']
+         'filters'    => [
+            'dates', 'dates_mod', 'itilcategory',
+            'group_tech', 'user_tech', 'requesttype', 'location'
+         ]
       ];
 
       $cards["ticket_times"] = [
@@ -1328,7 +1349,10 @@ HTML;
          'group'      => __('Assistance'),
          'label'      => __("Tickets times (in hours)"),
          'provider'   => "Glpi\\Dashboard\\Provider::averageTicketTimes",
-         'filters'    => ['dates', 'dates_mod', 'itilcategory', 'requesttype', 'location']
+         'filters'    => [
+            'dates', 'dates_mod', 'itilcategory',
+            'group_tech', 'user_tech', 'requesttype', 'location'
+         ]
       ];
 
       $cards["tickets_summary"] = [
@@ -1337,7 +1361,10 @@ HTML;
          'group'      => __('Assistance'),
          'label'      => __("Tickets summary"),
          'provider'   => "Glpi\\Dashboard\\Provider::getTicketSummary",
-         'filters'    => ['dates', 'dates_mod', 'itilcategory', 'requesttype', 'location']
+         'filters'    => [
+            'dates', 'dates_mod', 'itilcategory',
+            'group_tech', 'user_tech', 'requesttype', 'location'
+         ]
       ];
 
       foreach ([
@@ -1352,7 +1379,10 @@ HTML;
             'group'      => __('Assistance'),
             'label'      => $label,
             'provider'   => "Glpi\\Dashboard\\Provider::multipleNumberTicketBy$itemtype",
-            'filters'    => ['dates', 'dates_mod', 'itilcategory', 'requesttype', 'location']
+            'filters'    => [
+               'dates', 'dates_mod', 'itilcategory',
+               'group_tech', 'user_tech', 'requesttype', 'location'
+            ]
          ];
       }
 
@@ -1373,7 +1403,10 @@ HTML;
             'args'       => [
                'case' => $type,
             ],
-            'filters'    => ['dates', 'dates_mod', 'itilcategory', 'requesttype', 'location']
+            'filters'    => [
+               'dates', 'dates_mod', 'itilcategory',
+               'group_tech', 'user_tech', 'requesttype', 'location'
+            ]
          ];
       }
 

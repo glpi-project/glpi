@@ -2234,29 +2234,30 @@
         },
         {
             "name": "sabre/http",
-            "version": "5.1.0",
+            "version": "5.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabre-io/http.git",
-                "reference": "23446999f1f6e62892bbd89745070aa902dd3539"
+                "reference": "d0aafede6961df6195ce7a8dad49296b0aaee22e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabre-io/http/zipball/23446999f1f6e62892bbd89745070aa902dd3539",
-                "reference": "23446999f1f6e62892bbd89745070aa902dd3539",
+                "url": "https://api.github.com/repos/sabre-io/http/zipball/d0aafede6961df6195ce7a8dad49296b0aaee22e",
+                "reference": "d0aafede6961df6195ce7a8dad49296b0aaee22e",
                 "shasum": ""
             },
             "require": {
                 "ext-ctype": "*",
                 "ext-curl": "*",
                 "ext-mbstring": "*",
-                "php": "^7.1",
+                "php": "^7.1 || ^8.0",
                 "sabre/event": ">=4.0 <6.0",
                 "sabre/uri": "^2.0"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "~2.16.1",
-                "phpunit/phpunit": "^7.0 || ^8.0"
+                "phpstan/phpstan": "^0.12",
+                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.0"
             },
             "suggest": {
                 "ext-curl": " to make http requests with the Client class"
@@ -2287,7 +2288,7 @@
             "keywords": [
                 "http"
             ],
-            "time": "2020-01-31T20:07:09+00:00"
+            "time": "2020-10-03T11:27:32+00:00"
         },
         {
             "name": "sabre/uri",

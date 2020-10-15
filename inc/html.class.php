@@ -362,13 +362,15 @@ class Html {
    /**
     * Make a good string from the unix timestamp $sec
     *
-    * @param integer $time         timestamp
-    * @param boolean $display_sec  display seconds ?
-    * @param boolean $use_days     use days for display ?
+    * @param int|float  $time         timestamp
+    * @param boolean    $display_sec  display seconds ?
+    * @param boolean    $use_days     use days for display ?
     *
     * @return string
    **/
    static function timestampToString($time, $display_sec = true, $use_days = true) {
+
+      $time = (float)$time;
 
       $sign = '';
       if ($time < 0) {

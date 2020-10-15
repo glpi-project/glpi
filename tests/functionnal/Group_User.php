@@ -191,8 +191,6 @@ class Group_User extends \DbTestCase {
       );
       $this->integer((int)$groups_id)->isGreaterThan(0);
       $this->boolean($group->getFromDB($groups_id))->isTrue();
-      $this->variable($group->getField('is_deleted'))->isEqualTo(0);
-      $this->variable($group->isDeleted())->isEqualTo(0);
 
       $group_user = new \Group_User;
       $group_users_id = $group_user->add([

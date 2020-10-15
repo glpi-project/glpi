@@ -2231,7 +2231,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       return $items;
    }
 
-   static function getKanbanColumns($ID, $column_field, $column_ids = [], $get_default = false) {
+   static function getKanbanColumns($ID, $column_field = null, $column_ids = [], $get_default = false) {
 
       if ($column_field !== 'projectstates_id') {
          return [];

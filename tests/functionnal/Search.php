@@ -252,14 +252,16 @@ class Search extends DbTestCase {
             ->array['data']->isNotEmpty();
 
       // Check meta criteria add correct jointures
+
       $this->array($data)
          ->hasKey('sql')
             ->array['sql']
-               ->hasKey('search')
-                  ->string['search']
-                     ->contains("INNER JOIN  `glpi_users`")
-                     ->contains("LEFT JOIN `glpi_profiles`  AS `glpi_profiles_")
-                     ->contains("LEFT JOIN `glpi_entities`  AS `glpi_entities_");
+               ->hasKey('search');
+
+      $this->string($data['sql']['search'])
+         ->contains("LEFT JOIN  `glpi_users`")
+         ->contains("LEFT JOIN `glpi_profiles`  AS `glpi_profiles_")
+         ->contains("LEFT JOIN `glpi_entities`  AS `glpi_entities_");
    }
 
    public function testNestedAndMetaComputer() {
