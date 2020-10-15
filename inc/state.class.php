@@ -182,7 +182,7 @@ class State extends CommonTreeDropdown {
          }
          echo "<td class='numeric b'>$tot</td></tr>";
 
-         while ($data = $iterator>next()) {
+         while ($data = $iterator->next()) {
             $tot = 0;
             echo "<tr class='tab_bg_2'><td class='b'>";
 

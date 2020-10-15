@@ -129,6 +129,8 @@ class Notification extends CommonDBTM {
    const TEAM_SUPPLIER                       = 36;
    //Notification to the task assigned group
    const TASK_ASSIGN_GROUP                   = 37;
+   //Notification to planning event's guests
+   const PLANNING_EVENT_GUESTS               = 38;
 
    // From CommonDBTM
    public $dohistory = true;

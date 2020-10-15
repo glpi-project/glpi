@@ -695,7 +695,7 @@ class Log extends CommonDBTM {
                   }
                   $tmp['change'] = sprintf(__('%1$s: %2$s'),
                                            $action_label,
-                                           sprintf(__('%1$s (%2$s)'), $tmp['field'], $data["old_value"]));
+                                           sprintf(__('%1$s (%2$s)'), $tmp['field'], $data["new_value"]));
                   break;
 
                case self::HISTORY_LOCK_SUBITEM :
