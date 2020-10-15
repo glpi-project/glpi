@@ -719,7 +719,7 @@ class Ticket extends CommonITILObject {
                                  ],
                                  'WHERE' => [
                                     'itemtype' => $type,
-                                    'items_id' => $ID,
+                                    'items_id' => $ID['id'],
                                     'is_deleted' => 0
                                  ]
                               ]
