@@ -31,11 +31,11 @@
 /* ===== LOGIN ===== */
 
 #firstboxlogin {
-   background-color: #006573;
+   background-color: #064260;
 }
 
 #logo_login {
-   background: #008B8D;
+   background: #bf0805;
 }
 
 #display-login {
@@ -43,26 +43,26 @@
 }
 
 #text-login {
-   background-color: #008B8D;
+   background-color: #bf0805;
    color: #FFF;
 }
 
 /* ====== GENERAL ====== */
 
 a, .btn-linkstyled {
-   color: #006573;
+   color: #bf0805;
 
    &:link {
-      color: #006573;
+      color: #bf0805;
    }
 }
 
 .ui-widget-content a {
-   color: #006573;
+   color: #bf0805;
 }
 
 .main_form tr.headerRow th {
-   color: #81BEAA;
+   color: #096390;
 }
 
 /* ====== HEADER ====== */
@@ -141,11 +141,11 @@ ul {
 /* ====== BUTTONS ====== */
 
 input.submit {
-   background-color: #bf0805;
+   background-color: #f9201d;
    color: #fff;
 
    &:hover {
-      background-color: #f9201d;
+      background-color: #bf0805;
    }
 }
 
