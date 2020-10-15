@@ -8206,8 +8206,8 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return boolean
     */
    protected function hasImpactTab() {
-      foreach ($this->getLinkedItems() as $linkedItem) {
-         $class = $linkedItem['itemtype'];
+      foreach ($this->getLinkedItems() as $itemtype => $items) {
+         $class = $itemtype;
          if (Impact::isEnabled($class) && Session::getCurrentInterface() === "central") {
             return true;
          }
