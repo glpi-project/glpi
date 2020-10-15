@@ -451,7 +451,7 @@ class RuleCriteria extends CommonDBChild {
                $res = [];
                foreach ($results as $data) {
                   if (count($data) > 1) {
-                     foreach($data as $d) {
+                     foreach ($data as $d) {
                         $regex_result[] = [$d];
                      }
                   } else {
