@@ -1,0 +1,15 @@
+version: "3.5"
+
+services:
+  db:
+    container_name: "db"
+    image: "ghcr.io/glpi-project/${DB_IMAGE:-githubactions-mariadb}"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    shm_size: '1gb'
+  dovecot:
+    container_name: "dovecot"
+    image: "ghcr.io/glpi-project/githubactions-dovecot"
+  openldap:
+    container_name: "openldap"
+    image: "ghcr.io/glpi-project/githubactions-openldap"
