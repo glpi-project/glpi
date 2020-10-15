@@ -63,6 +63,7 @@ class DomainRecordType extends CommonDropdown
                'key'         => 'target',
                'label'       => 'Target',
                'placeholder' => 'sip.example.com.',
+               'is_fqdn'     => true
             ],
          ],
       ], [
@@ -79,6 +80,7 @@ class DomainRecordType extends CommonDropdown
                'key'         => 'server',
                'label'       => 'Server',
                'placeholder' => 'mail.example.com.',
+               'is_fqdn'     => true
             ],
          ],
       ], [
@@ -100,11 +102,13 @@ class DomainRecordType extends CommonDropdown
                'key'         => 'primary_name_server',
                'label'       => 'Primary name server',
                'placeholder' => 'ns1.example.com.',
+               'is_fqdn'     => true
             ],
             [
                'key'         => 'primary_contact',
                'label'       => 'Primary contact',
                'placeholder' => 'admin.example.com.',
+               'is_fqdn'     => true
             ],
             [
                'key'         => 'serial',
@@ -156,6 +160,7 @@ class DomainRecordType extends CommonDropdown
                'key'         => 'target',
                'label'       => 'Target',
                'placeholder' => 'sip.example.com.',
+               'is_fqdn'     => true
             ],
          ],
       ], [
@@ -248,8 +253,8 @@ class DomainRecordType extends CommonDropdown
       global $DB;
 
       if (in_array('fields', $this->updates)) {
-         $old_fields = $this->decodeFields($this->oldvalues['fields']);
-         $new_fields = $this->decodeFields($this->fields['fields']);
+         $old_fields = self::decodeFields($this->oldvalues['fields']);
+         $new_fields = self::decodeFields($this->fields['fields']);
 
          // Checks only for keys changes as fields order, label, placeholder or quote_value properties changes
          // should have no impact on object representation.
@@ -283,7 +288,7 @@ class DomainRecordType extends CommonDropdown
          return false;
       }
 
-      $fields = $this->decodeFields($fields_str);
+      $fields = self::decodeFields($fields_str);
       if (!is_array($fields)) {
          Session::addMessageAfterRedirect(__('Invalid JSON used to define fields.'), true, ERROR);
          return false;
@@ -295,9 +300,10 @@ class DomainRecordType extends CommonDropdown
              || !array_key_exists('label', $field) || !is_string($field['label'])
              || (array_key_exists('placeholder', $field) && !is_string($field['placeholder']))
              || (array_key_exists('quote_value', $field) && !is_bool($field['quote_value']))
-             || count(array_diff(array_keys($field), ['key', 'label', 'placeholder', 'quote_value'])) > 0) {
+             || (array_key_exists('is_fqdn', $field) && !is_bool($field['is_fqdn']))
+             || count(array_diff(array_keys($field), ['key', 'label', 'placeholder', 'quote_value', 'is_fqdn'])) > 0) {
             Session::addMessageAfterRedirect(
-               __('Valid field descriptor properties are: key (string, mandatory), label (string, mandatory), placeholder (string, optionnal), quote_value (boolean, optional).'),
+               __('Valid field descriptor properties are: key (string, mandatory), label (string, mandatory), placeholder (string, optionnal), quote_value (boolean, optional), is_fqdn (boolean, optional).'),
                true,
                ERROR
             );
@@ -317,7 +323,7 @@ class DomainRecordType extends CommonDropdown
     *
     * @return array|null
     */
-   private function decodeFields(string $json_encoded_fields): ?array {
+   public static function decodeFields(string $json_encoded_fields): ?array {
       $fields = json_decode($json_encoded_fields, true);
       if (json_last_error() !== JSON_ERROR_NONE) {
          $fields_str = stripslashes(preg_replace('/(\\\r|\\\n)/', '', $json_encoded_fields));
@@ -370,6 +376,7 @@ class DomainRecordType extends CommonDropdown
       foreach ($fields as $field) {
          $placeholder = Html::entities_deep($field['placeholder'] ?? '');
          $quote_value = $field['quote_value'] ?? false;
+         $is_fqdn = $field['is_fqdn'] ?? false;
 
          echo '<tr class="tab_bg_1">';
          echo '<td>' . $field['label'] . '</td>';
@@ -378,6 +385,7 @@ class DomainRecordType extends CommonDropdown
             . 'placeholder="' . $placeholder . '" '
             . 'data-quote-value="' . ($quote_value ? 'true' : 'false') . '" '
             . (!$quote_value ? 'pattern="[^\s]+" ' : '') // prevent usage of spaces in unquoted values
+            . 'data-is-fqdn="' . ($is_fqdn ? 'true' : 'false') . '" '
             . ' />';
          echo '</td>';
          echo '</tr>';
@@ -445,6 +453,9 @@ class DomainRecordType extends CommonDropdown
                            var value = $(this).val();
                            data_obj[$(this).attr('name')] = value; // keep raw value
 
+                           if ($(this).data('is-fqdn') && !value.match('/^\.$/')) {
+                              value += '.'; // add ending dot
+                           }
                            if ($(this).data('quote-value') && !value.match('/^".*"$/')) {
                               value = '"' + value.replace('"', '\\\"') + '"';
                            }
