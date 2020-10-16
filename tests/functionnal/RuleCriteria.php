@@ -696,7 +696,7 @@ class RuleCriteria extends DbTestCase {
          )
       )->isTrue();
       $this->array($results)->isIdenticalTo(['name' => '/CN=([0-9a-z]+) VPN/']);
-      $this->array($regex_result)->isIdenticalTo([0 => ['val01'], 1 => ['val02']]);
+      $this->array($regex_result)->isIdenticalTo([0 => ['val01', 'val02']]);
    }
 
    public function testMatchConditionUnderNotUnder() {
