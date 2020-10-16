@@ -183,8 +183,12 @@ PHP
 
       $all_names_to_class = array_merge($core_names_to_class, $plugins_names_to_class);
 
+      // Mock plugin
+      $plugin = $this->newMockInstance('Plugin');
+      $this->calling($plugin)->isActivated = true;
+
       // Check with plugins
-      $command_loader = new \Glpi\Console\CommandLoader(true, vfsStream::url('glpi'));
+      $command_loader = new \Glpi\Console\CommandLoader(true, vfsStream::url('glpi'), $plugin);
       $this->array($command_loader->getNames())->isIdenticalTo(array_keys($all_names_to_class));
       foreach ($all_names_to_class as $name => $classname) {
          $this->boolean($command_loader->has($name))->isTrue();
@@ -192,7 +196,7 @@ PHP
       }
 
       // Check without plugins
-      $command_loader = new \Glpi\Console\CommandLoader(false, vfsStream::url('glpi'));
+      $command_loader = new \Glpi\Console\CommandLoader(false, vfsStream::url('glpi'), $plugin);
       $this->array($command_loader->getNames())->isIdenticalTo(array_keys($core_names_to_class));
       foreach ($core_names_to_class as $name => $classname) {
          $this->boolean($command_loader->has($name))->isTrue();

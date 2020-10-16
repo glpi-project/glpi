@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use DirectoryIterator;
+use Plugin;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionClass;
@@ -67,11 +68,24 @@ class CommandLoader implements CommandLoaderInterface {
    private $commands = [];
 
    /**
-    * @param boolean $include_plugins  If true, load commands from plugins
-    * @param string  $rootdir          Root directory path of application.
+    * Plugins info services
+    *
+    * @var Plugin|null
     */
-   public function __construct($include_plugins = true, $rootdir = GLPI_ROOT) {
+   private $plugin = null;
 
+   /**
+    * @param bool          $include_plugins
+    * @param string        $rootdir         Root directory path of application.
+    * @param Plugin|null   $plugin          Needed for units test as we lack DI.
+    */
+   public function __construct($include_plugins = true, $rootdir = GLPI_ROOT, ?Plugin $plugin = null) {
+
+      if ($plugin == null) {
+         $plugin = new Plugin();
+      }
+
+      $this->plugin = $plugin;
       $this->rootdir = $rootdir;
 
       $this->findCoreCommands();
@@ -153,6 +167,11 @@ class CommandLoader implements CommandLoaderInterface {
       $plugins_directories = new DirectoryIterator($basedir);
       /** @var SplFileInfo $plugin_directory */
       foreach ($plugins_directories as $plugin_directory) {
+         // Do not load commands of disabled plugins
+         if (!$this->plugin->isActivated($plugin_directory)) {
+            continue;
+         }
+
          if (in_array($plugin_directory->getFilename(), ['.', '..'])) {
             continue;
          }
