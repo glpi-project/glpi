@@ -30,15 +30,37 @@ jobs:
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v2"
+      - name: "Restore dependencies cache"
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ runner.temp }}/app_home/.composer/cache/
+            ${{ runner.temp }}/app_home/.npm/_cacache/
+          key: "app_home_deps-${{ matrix.php-version }}-${{ hashFiles('composer.lock', 'package-lock.json') }}"
+          restore-keys: |
+            app_home_deps-${{ matrix.php-version }}-
+            app_home_deps-
+      - name: "Restore lint cache"
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ runner.temp }}/app_home/phpcs.cache
+          key: "app_home_lint-${{ matrix.php-version }}"
+          restore-keys: |
+            app_home_lint-
       - name: "Initialize containers"
         run: |
+          echo "Init app container home"
+          mkdir -p ${{ runner.temp }}/app_home
           echo "Pull and start containers"
           export APPLICATION_ROOT=`pwd`
+          export APPLICATION_HOME=${{ runner.temp }}/app_home
           export PHP_IMAGE=githubactions-php:${{ matrix.php-version }}
           docker-compose --file .github/actions/docker-compose-app.yml --project-directory `pwd` up --no-start
           docker-compose --file .github/actions/docker-compose-app.yml --project-directory `pwd` start
           echo "Change files rights to give write access to app container user"
           setfacl --recursive --modify u:1000:rwx `pwd`
+          setfacl --recursive --modify u:1000:rwx ${{ runner.temp }}/app_home
       - name: Validate composer config
         run: |
           docker exec app composer validate --strict
@@ -61,7 +83,8 @@ jobs:
           docker exec app php -d memory_limit=1G -r 'define("GLOB_BRACE", 0); include "./vendor/maglnet/composer-require-checker/bin/composer-require-checker.php";' check --config-file=.composer-require-checker.config.json
       - name: "PHP CS"
         run: |
-          docker exec app vendor/bin/phpcs -d memory_limit=512M -p --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore="/.git/,^/var/glpi/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/" ./
+          docker exec app touch /home/glpi/phpcs.cache
+          docker exec app vendor/bin/phpcs --cache /home/glpi/phpcs.cache -d memory_limit=512M -p --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore="/.git/,^/var/glpi/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/" ./
       - name: "ESLint"
         run: |
           docker exec app node_modules/.bin/eslint . && echo "ESLint found no errors"
@@ -87,11 +110,25 @@ jobs:
       - name: "Checkout"
         if: env.skip != 'true'
         uses: "actions/checkout@v2"
+      - name: "Restore dependencies cache"
+        if: env.skip != 'true'
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ runner.temp }}/app_home/.composer/cache/
+            ${{ runner.temp }}/app_home/.npm/_cacache/
+          key: "app_home_deps-${{ matrix.php-version }}-${{ hashFiles('composer.lock', 'package-lock.json') }}"
+          restore-keys: |
+            app_home_deps-${{ matrix.php-version }}-
+            app_home_deps-
       - name: "Initialize containers"
         if: env.skip != 'true'
         run: |
+          echo "Init app container home"
+          mkdir -p ${{ runner.temp }}/app_home
           echo "Pull and start containers"
           export APPLICATION_ROOT=`pwd`
+          export APPLICATION_HOME=${{ runner.temp }}/app_home
           export PHP_IMAGE=githubactions-php:${{ matrix.php-version }}
           export DB_IMAGE=githubactions-${{ matrix.db-image }}
           docker-compose --file .github/actions/docker-compose-app.yml --file .github/actions/docker-compose-services.yml --project-directory `pwd` up --no-start
@@ -104,6 +141,7 @@ jobs:
           done
           echo "Change files rights to give write access to app container user"
           setfacl --recursive --modify u:1000:rwx `pwd`
+          setfacl --recursive --modify u:1000:rwx ${{ runner.temp }}/app_home
       - name: "Initialize databases"
         if: env.skip != 'true'
         run: |
