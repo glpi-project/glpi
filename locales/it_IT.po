@@ -8,10 +8,10 @@
 # Davide <spam@habilitas.it>, 2019
 # Emanuele Podett <emanuele.podetti@gmail.com>, 2019
 # Marco Arrigoni <arri89@hotmail.it>, 2020
-# Tiziano Sartori <tiziano.sartori@gmail.com>, 2020
 # DOMBRE Julien <moyo@indepnet.net>, 2020
-# Pierfrancesco Passerini <p.passerini@gmail.com>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
+# Pierfrancesco Passerini <p.passerini@gmail.com>, 2020
+# Tiziano Sartori <tiziano.sartori@gmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -20,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-06 11:53+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2020\n"
+"Last-Translator: Tiziano Sartori <tiziano.sartori@gmail.com>, 2020\n"
 "Language-Team: Italian (Italy) (https://www.transifex.com/glpi/teams/1637/it_IT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -8537,7 +8537,7 @@ msgstr "Eliminazione di un problema"
 #: inc/contract.class.php:745 inc/contract.class.php:1734
 #: inc/notificationtargetcontract.class.php:47
 msgid "Notice"
-msgstr "Avviso"
+msgstr "Preavviso"
 
 #: inc/contract.class.php:245 inc/contract.class.php:491
 #: inc/contract.class.php:795
@@ -15864,7 +15864,7 @@ msgstr "Abilita/disabilita modalità di modifica"
 
 #: inc/dashboard/grid.class.php:268
 msgid "Add filter"
-msgstr ""
+msgstr "Aggiungi filtro"
 
 #: inc/dashboard/grid.class.php:269 js/dashboard.js:863
 msgid "Add a new dashboard"
@@ -15909,7 +15909,7 @@ msgstr "Limita il numero di dati"
 
 #: inc/dashboard/grid.class.php:823
 msgid "Filters"
-msgstr ""
+msgstr "Filtri"
 
 #: inc/dashboard/grid.class.php:858
 msgid "Embed in another application"
@@ -22976,23 +22976,23 @@ msgstr "Accesso alle domande poste frequentemente (FAQ)"
 
 #: js/common.js:1185
 msgid "just now"
-msgstr ""
+msgstr "ora"
 
 #: js/common.js:1187
 msgid "a minute ago"
-msgstr ""
+msgstr "un minuto fa"
 
 #: js/common.js:1189
 msgid "an hour ago"
-msgstr ""
+msgstr "ultima ora"
 
 #: js/common.js:1191
 msgid "yesterday"
-msgstr ""
+msgstr "ieri"
 
 #: js/common.js:1193
 msgid "a year ago"
-msgstr ""
+msgstr "ultimo anno"
 
 #: js/dashboard.js:333
 msgid "Add a card"
@@ -23000,7 +23000,7 @@ msgstr "Aggiungi scheda"
 
 #: js/dashboard.js:366
 msgid "Add a filter"
-msgstr ""
+msgstr "Aggiungi un filtro"
 
 #: js/dashboard.js:415
 msgid "Saved"
