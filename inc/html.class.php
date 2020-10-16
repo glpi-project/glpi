@@ -693,6 +693,7 @@ class Html {
       displayAjaxMessageAfterRedirect = function() {
          // attach MESSAGE_AFTER_REDIRECT to body
          $('.message_after_redirect').remove();
+         $('[id^=\"message_after_redirect_\"]').remove();
          $.ajax({
             url:  '".$CFG_GLPI['root_doc']."/ajax/displayMessageAfterRedirect.php',
             success: function(html) {
