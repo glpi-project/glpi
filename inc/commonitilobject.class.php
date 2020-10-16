@@ -8241,7 +8241,13 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
    public function displayHiddenItemsIdInput(array $options): void {
-      foreach ($options['items_id'] ?? [] as $itemtype => $items) {
+      $input_items_id = $options['items_id'] ?? [];
+
+      if (empty($input_items_id)) {
+         return;
+      }
+
+      foreach ($input_items_id as $itemtype => $items) {
          foreach ($items as $items_id) {
             echo "<input type='hidden' name='items_id[$itemtype][$items_id]' value='$items_id'>";
          }
