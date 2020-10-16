@@ -1,0 +1,13 @@
+version: "3.5"
+
+services:
+  app:
+    container_name: "app"
+    image: "ghcr.io/glpi-project/${PHP_IMAGE:-githubactions-php}"
+    volumes: 
+      - type: "bind"
+        source: "${APPLICATION_ROOT:-..}"
+        target: "/var/glpi"
+      - type: "bind"
+        source: "${APPLICATION_HOME}"
+        target: "/home/glpi"
