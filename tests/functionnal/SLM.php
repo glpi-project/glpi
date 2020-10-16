@@ -283,17 +283,7 @@ class SLM extends DbTestCase {
       // prepare a calendar with limited time ranges [8:00 -> 20:00]
       $cal    = new \Calendar();
       $calseg = new \CalendarSegment();
-      $cal_id = $cal->add(['name' => "test calendar"]);
-      $this->checkInput($cal, $cal_id);
-      for ($day = 1; $day <= 5; $day++) {
-         $calseg_id = $calseg->add([
-            'calendars_id' => $cal_id,
-            'day'          => $day,
-            'begin'        => '08:00:00',
-            'end'          => '20:00:00'
-         ]);
-         $this->checkInput($calseg, $calseg_id);
-      }
+      $cal_id = getItemByTypeName('Calendar', 'Default', true);
 
       $slm    = new \SLM();
       $slm_id = $slm->add($slm_in = [
@@ -459,6 +449,12 @@ class SLM extends DbTestCase {
          'name'    => "to be updated",
          'content' => $this->method
       ]);
+      //SLA/OLA  TTR/TTO not already set
+      $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo(0);
+      $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo(0);
+      $this->integer((int)$ticket->getField('olas_id_tto'))->isEqualTo(0);
+      $this->integer((int)$ticket->getField('olas_id_ttr'))->isEqualTo(0);
+
       $ticket->update([
          'id'   => $tickets_id_2,
          'name' => $this->method
@@ -639,47 +635,47 @@ class SLM extends DbTestCase {
       );
       $this->integer($slm_id)->isGreaterThan(0);
 
-      $ola_tto = new \OLA();
-      $ola_ttr_id = $ola_tto->add(
+      $ola_ttr = new \OLA();
+      $ola_ttr_id = $ola_ttr->add(
          [
             'slms_id'            => $slm_id,
             'name'               => 'Test TTR OLA',
             'type'               => \SLM::TTR,
-            'number_time'        => 1,
+            'number_time'        => 4,
             'definition_time'    => 'month',
             'end_of_working_day' => false,
          ]
       );
       $this->integer($ola_ttr_id)->isGreaterThan(0);
 
-      $ola_ttr = new \OLA();
-      $ola_tto_id = $ola_ttr->add(
+      $ola_tto = new \OLA();
+      $ola_tto_id = $ola_tto->add(
          [
             'slms_id'            => $slm_id,
             'name'               => 'Test TTO OLA',
             'type'               => \SLM::TTO,
-            'number_time'        => 1,
+            'number_time'        => 3,
             'definition_time'    => 'month',
             'end_of_working_day' => false,
          ]
       );
       $this->integer($ola_tto_id)->isGreaterThan(0);
 
-      $sla_tto = new \SLA();
-      $sla_ttr_id = $sla_tto->add(
+      $sla_ttr = new \SLA();
+      $sla_ttr_id = $sla_ttr->add(
          [
             'slms_id'            => $slm_id,
             'name'               => 'Test TTR SLA',
             'type'               => \SLM::TTR,
-            'number_time'        => 1,
+            'number_time'        => 2,
             'definition_time'    => 'month',
             'end_of_working_day' => false,
          ]
       );
       $this->integer($sla_ttr_id)->isGreaterThan(0);
 
-      $sla_ttr = new \SLA();
-      $sla_tto_id = $sla_ttr->add(
+      $sla_tto = new \SLA();
+      $sla_tto_id = $sla_tto->add(
          [
             'slms_id'            => $slm_id,
             'name'               => 'Test TTO SLA',
@@ -692,7 +688,6 @@ class SLM extends DbTestCase {
       $this->integer($sla_tto_id)->isGreaterThan(0);
 
       // Create ticket with SLA/OLA TTO/TTR to test computation based on SLA OLA
-      $createtime = time();
       $ticket = new \Ticket();
       $ticket_id = $ticket->add(
          [
@@ -705,26 +700,33 @@ class SLM extends DbTestCase {
          ]
       );
       $this->integer($ticket_id)->isGreaterThan(0);
-
-      $after1month = date('Y-m-d H:i:s', strtotime($ticket->fields['date'].'+1 month'));
       $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
 
+      //SLA TTO
+      $after1month = date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (1*MONTH_TIMESTAMP));
+      //SLA TTR
+      $after2month = date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (2*MONTH_TIMESTAMP));
+      //OLA TTO
+      $after3month = date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (3*MONTH_TIMESTAMP));
+      //OLA TTR
+      $after4month = date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (4*MONTH_TIMESTAMP));
+
+      $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
       //check computed data from SLA / OLA
-      $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo($ola_ttr_id);
-      $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo($after1month);
-
-      $this->integer((int)$ticket->fields['olas_id_tto'])->isEqualTo($ola_tto_id);
-      $this->variable($ticket->fields['internal_time_to_own'])->isEqualTo($after1month);
-
-      $this->integer((int)$ticket->fields['slas_id_ttr'])->isEqualTo($sla_ttr_id);
-      $this->variable($ticket->fields['time_to_resolve'])->isEqualTo($after1month);
-
       $this->integer((int)$ticket->fields['slas_id_tto'])->isEqualTo($sla_tto_id);
       $this->variable($ticket->fields['time_to_own'])->isEqualTo($after1month);
 
+      $this->integer((int)$ticket->fields['slas_id_ttr'])->isEqualTo($sla_ttr_id);
+      $this->variable($ticket->fields['time_to_resolve'])->isEqualTo($after2month);
+
+      $this->integer((int)$ticket->fields['olas_id_tto'])->isEqualTo($ola_tto_id);
+      $this->variable($ticket->fields['internal_time_to_own'])->isEqualTo($after3month);
+
+      $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo($ola_ttr_id);
+      $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo($after4month);
+
       $this->integer(strtotime($ticket->fields['ola_ttr_begin_date']))
-         ->isGreaterThanOrEqualTo($createtime)
-         ->isLessThanOrEqualTo($createtime);
+         ->isEqualTo(strtotime($ticket->fields['date']));
 
       // Create ticket to test computation based on OLA / SLA on update
       $ticket = new \Ticket();
@@ -735,45 +737,46 @@ class SLM extends DbTestCase {
          ]
       );
       $this->integer($ticket_id)->isGreaterThan(0);
-
       $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
       $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo(0);
       $this->variable($ticket->fields['ola_ttr_begin_date'])->isEqualTo(null);
       $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo(null);
 
-      //Wait...
-      sleep(1);
-
       // Assign TTR/TTO OLA/SLA
-      $update_time_1 = time();
       $this->boolean($ticket->update(
          ['id' => $ticket_id,
           'olas_id_ttr' => $ola_ttr_id,
           'olas_id_tto' => $ola_tto_id,
           'slas_id_ttr' => $sla_ttr_id,
           'slas_id_tto' => $sla_tto_id,
+          'date_mod'    => date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + 1),
          ]))->isTrue();
-      $update_time_2 = time();
 
-      $after1month = date('Y-m-d H:i', strtotime($ticket->fields['date'].'+1 month'));
       $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+
+      //SLA TTO
+      $after1month = date('Y-m-d H:i:s', strtotime($ticket->fields['date_mod']) + (1*MONTH_TIMESTAMP));
+      //SLA TTR
+      $after2month = date('Y-m-d H:i:s', strtotime($ticket->fields['date_mod']) + (2*MONTH_TIMESTAMP));
+      //OLA TTO
+      $after3month = date('Y-m-d H:i:s', strtotime($ticket->fields['date_mod']) + (3*MONTH_TIMESTAMP));
+      //OLA TTR
+      $after4month = date('Y-m-d H:i:s', strtotime($ticket->fields['date_mod']) + (4*MONTH_TIMESTAMP));
 
       //check computed data from SLA / OLA
       $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo($ola_ttr_id);
-      $this->variable(date('Y-m-d H:i', strtotime($ticket->fields['internal_time_to_resolve'])))->isEqualTo($after1month);
+      $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['internal_time_to_resolve'])))->isEqualTo($after4month);
 
       $this->integer((int)$ticket->fields['olas_id_tto'])->isEqualTo($ola_tto_id);
-      $this->variable(date('Y-m-d H:i', strtotime($ticket->fields['internal_time_to_own'])))->isEqualTo($after1month);
+      $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['internal_time_to_own'])))->isEqualTo($after3month);
 
       $this->integer((int)$ticket->fields['slas_id_ttr'])->isEqualTo($sla_ttr_id);
-      $this->variable(date('Y-m-d H:i', strtotime($ticket->fields['time_to_resolve'])))->isEqualTo($after1month);
+      $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['time_to_resolve'])))->isEqualTo($after2month);
 
       $this->integer((int)$ticket->fields['slas_id_tto'])->isEqualTo($sla_tto_id);
-      $this->variable(date('Y-m-d H:i', strtotime($ticket->fields['time_to_own'])))->isEqualTo($after1month);
+      $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['time_to_own'])))->isEqualTo($after1month);
 
       $this->integer(strtotime($ticket->fields['ola_ttr_begin_date']))
-         ->isGreaterThanOrEqualTo($update_time_1)
-         ->isLessThanOrEqualTo($update_time_2);
-
+      ->isEqualTo(strtotime($ticket->fields['date_mod']));
    }
 }
