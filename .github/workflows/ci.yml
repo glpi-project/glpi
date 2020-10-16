@@ -28,6 +28,10 @@ jobs:
           - {php-version: "7.2"} # Lint on lower PHP version to detected too early usage of new syntaxes
           - {php-version: "7.4"} # Lint on higher PHP version to detected deprecated elements usage
     steps:
+      - name: "Cancel previous runs"
+        uses: "styfle/cancel-workflow-action@0.5.0"
+        with:
+          access_token: "${{ github.token }}"
       - name: "Checkout"
         uses: "actions/checkout@v2"
       - name: "Restore dependencies cache"
@@ -107,6 +111,11 @@ jobs:
       # No jobs will be skipped on nightly build and on push on main branches.
       skip: ${{ (github.event_name == 'pull_request' || github.repository != 'glpi-project/glpi') && matrix.always == false}}
     steps:
+      - name: "Cancel previous runs"
+        if: env.skip != 'true'
+        uses: "styfle/cancel-workflow-action@0.5.0"
+        with:
+          access_token: "${{ github.token }}"
       - name: "Checkout"
         if: env.skip != 'true'
         uses: "actions/checkout@v2"
