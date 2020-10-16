@@ -1,5 +1,5 @@
 # If you have problem with session.auto_start or session.use_trans_sid on install
-# you need to set thse configurations values to 0 in php.ini or uncomment this line
+# you need to set these configuration values to 0 in php.ini or uncomment these lines
 #php_value session.auto_start 0
 #php_value session.use_trans_sid 0
 
