@@ -142,12 +142,7 @@ jobs:
           export DB_IMAGE=githubactions-${{ matrix.db-image }}
           docker-compose --file .github/actions/docker-compose-app.yml --file .github/actions/docker-compose-services.yml --project-directory `pwd` up --no-start
           docker-compose --file .github/actions/docker-compose-app.yml --file .github/actions/docker-compose-services.yml --project-directory `pwd` start
-          for CONTAINER in {"db","dovecot","openldap"}; do
-            until [ "`/usr/bin/docker inspect --format='{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{else}}{{print \"healthy\"}}{{end}}' $CONTAINER`" == "healthy" ]; do
-              echo "Waiting for $CONTAINER to be ready..."
-              sleep 2
-            done
-          done
+          .github/actions/check_services_health.sh
           echo "Change files rights to give write access to app container user"
           setfacl --recursive --modify u:1000:rwx `pwd`
           setfacl --recursive --modify u:1000:rwx ${{ runner.temp }}/app_home
