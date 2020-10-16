@@ -19,11 +19,12 @@
 # Florian - <community@subsidoo.net>, 2020
 # M P <github@vonplettenberg.de>, 2020
 # Thofl, 2020
-# Viktor Schopf, 2020
 # Stephan <stephan.rennert@web.de>, 2020
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # Seidler Jean-Louis <jl.seidler@gmx.ch>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
+# Thomas Templin <thomas.templin@vhs-wilhelmshaven.de>, 2020
+# Viktor Schopf, 2020
 # 
 #, fuzzy
 msgid ""
@@ -32,7 +33,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-06 11:53+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2020\n"
+"Last-Translator: Viktor Schopf, 2020\n"
 "Language-Team: German (Germany) (https://www.transifex.com/glpi/teams/1637/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2514,8 +2515,8 @@ msgstr "Kategorie"
 #: tests/functionnal/Rule.php:282
 msgid "Type"
 msgid_plural "Types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Typ"
+msgstr[1] "Typen"
 
 #: front/stat.graph.php:173 front/stat.tracking.php:88
 #: inc/problem.class.php:1405 inc/project.class.php:545
@@ -3442,8 +3443,8 @@ msgstr[1] "Computertypen"
 #: inc/dropdown.class.php:871 inc/monitortype.class.php:42
 msgid "Monitor type"
 msgid_plural "Monitors types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Monitortyp"
+msgstr[1] "Monitortypen"
 
 #: inc/rule.class.php:383 inc/rulecollection.class.php:2047
 #: inc/dropdown.class.php:869 inc/printertype.class.php:42
@@ -5359,8 +5360,8 @@ msgstr[1] "Gerät Grafikkartenmodelle"
 #: inc/rssfeed.class.php:80 inc/central.class.php:68
 msgid "RSS feed"
 msgid_plural "RSS feed"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "RSS-Feed"
+msgstr[1] "RSS-Feeds"
 
 #: inc/rssfeed.class.php:82 inc/rssfeed.class.php:933
 msgid "Personal RSS feed"
@@ -7235,7 +7236,7 @@ msgstr "Administrative Nummer"
 #: inc/authldap.class.php:3281
 msgctxt "ldap"
 msgid "Phone"
-msgstr ""
+msgstr "Telefon"
 
 #: inc/authldap.class.php:817 inc/authldap.class.php:1104
 #: inc/notificationtemplatetranslation.class.php:124
@@ -8219,8 +8220,8 @@ msgstr[1] "Element Betriebssysteme"
 #: inc/operatingsystemkernel.class.php:42
 msgid "Kernel"
 msgid_plural "Kernels"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kernel"
+msgstr[1] "Kernel"
 
 #: inc/item_operatingsystem.class.php:345
 #: inc/item_operatingsystem.class.php:596
@@ -9112,7 +9113,7 @@ msgstr "LDAP Servers"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:220
 msgid "LDAP filter"
-msgstr ""
+msgstr "LDAP Filter"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:230
 #: inc/console/security/changekeycommand.class.php:84
@@ -9178,7 +9179,7 @@ msgstr ""
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:393
 msgid "LDAP server"
-msgstr ""
+msgstr "LDAP Server"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:394
 msgid "Imported"
@@ -9512,7 +9513,7 @@ msgstr ""
 
 #: inc/console/migration/racksplugintocorecommand.class.php:689
 msgid "No items found."
-msgstr ""
+msgstr "Keine Elemente gefunden."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:709
 msgid "Importing items specifications..."
@@ -9539,90 +9540,90 @@ msgstr ""
 
 #: inc/console/migration/racksplugintocorecommand.class.php:802
 msgid "Importing rack models..."
-msgstr ""
+msgstr "Rack-Modelle werden importiert..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:820
 #, php-format
 msgid "Importing rack model \"%s\"..."
-msgstr ""
+msgstr "Importiere Rack-Model \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:841
 #, php-format
 msgid "Unable to import rack model \"%s\"."
-msgstr ""
+msgstr "Rack-Modell \"%s\" kann nicht importiert werden."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:862
 #: inc/console/migration/racksplugintocorecommand.class.php:942
 msgid "No rack models found."
-msgstr ""
+msgstr "Keine Rack-Modelle gefunden."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:880
 msgid "Importing rack types..."
-msgstr ""
+msgstr "Rack-Typen werden importiert..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:898
 #, php-format
 msgid "Importing rack type \"%s\"..."
-msgstr ""
+msgstr "Importiere Rack-Typ \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:921
 #, php-format
 msgid "Unable to import rack type \"%s\"."
-msgstr ""
+msgstr "Rack-Typ \"%s\" kann nicht importiert werden."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:960
 msgid "Importing rack states..."
-msgstr ""
+msgstr "Rack-Status werden importiert..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:978
 #, php-format
 msgid "Importing rack state \"%s\"..."
-msgstr ""
+msgstr "Importiere Rack-Status \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1003
 #, php-format
 msgid "Unable to import rack state \"%s\"."
-msgstr ""
+msgstr "Rack-Status \"%s\" kann nicht importiert werden."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1025
 msgid "No rack states found."
-msgstr ""
+msgstr "Keine Rack-Status gefunden."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1043
 msgid "Importing rooms..."
-msgstr ""
+msgstr "Räume werden importiert..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1061
 #, php-format
 msgid "Importing room \"%s\"..."
-msgstr ""
+msgstr "Importiere Raum \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1086
 #, php-format
 msgid "Unable to import room \"%s\"."
-msgstr ""
+msgstr "Raum \"%s\" kann nicht importiert werden."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1107
 msgid "No rooms found."
-msgstr ""
+msgstr "Keine Räume gefunden."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1125
 msgid "Importing racks..."
-msgstr ""
+msgstr "Racks werden importiert..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1145
 #, php-format
 msgid "Importing rack \"%s\"..."
-msgstr ""
+msgstr "Importiere Rack \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1213
 #, php-format
 msgid "Unable to import rack \"%s\"."
-msgstr ""
+msgstr "Rack \"%s\" kann nicht importiert werden."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1235
 msgid "No racks found."
-msgstr ""
+msgstr "Keine Racks gefunden."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1253
 msgid "Importing rack items..."
@@ -9832,7 +9833,7 @@ msgstr ""
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:319
 msgid "Importing domains types..."
-msgstr ""
+msgstr "Domain-Typen werden importiert..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:348
 #, php-format
@@ -9842,7 +9843,7 @@ msgstr ""
 #: inc/console/migration/domainsplugintocorecommand.class.php:353
 #, php-format
 msgid "Importing domain type %s..."
-msgstr ""
+msgstr "Importiere Domain-Typ \"%s\"..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:386
 #, php-format
@@ -9856,11 +9857,11 @@ msgstr ""
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:406
 msgid "No domains types found."
-msgstr ""
+msgstr "Keine Domain-Typen gefunden."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:425
 msgid "Importing domains..."
-msgstr ""
+msgstr "Domains werden importiert..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:454
 #, php-format
@@ -9870,7 +9871,7 @@ msgstr ""
 #: inc/console/migration/domainsplugintocorecommand.class.php:459
 #, php-format
 msgid "Importing domain %s..."
-msgstr ""
+msgstr "Importiere Domain \"%s\"..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:472
 #, php-format
@@ -9889,7 +9890,7 @@ msgstr ""
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:557
 msgid "No domains found."
-msgstr ""
+msgstr "Keine Domains gefunden."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:574
 msgid "Importing domains items..."
@@ -10045,12 +10046,12 @@ msgstr ""
 #: inc/console/application.class.php:237
 #, php-format
 msgid "Time elapsed: %s."
-msgstr ""
+msgstr "Vergangene Zeit: %s."
 
 #: inc/console/application.class.php:243
 #, php-format
 msgid "Memory usage: %s."
-msgstr ""
+msgstr "Speichernutzung: %s."
 
 #: inc/console/application.class.php:323
 #, php-format
@@ -10085,13 +10086,13 @@ msgstr ""
 #: inc/console/database/abstractconfigurecommand.class.php:330
 #: inc/console/database/updatecommand.class.php:123
 msgid "Database host"
-msgstr ""
+msgstr "Datenbank-Host"
 
 #: inc/console/database/abstractconfigurecommand.class.php:116
 #: inc/console/database/abstractconfigurecommand.class.php:331
 #: inc/console/database/updatecommand.class.php:124
 msgid "Database name"
-msgstr ""
+msgstr "Datenbank-Name"
 
 #: inc/console/database/abstractconfigurecommand.class.php:123
 msgid ""
@@ -10107,7 +10108,7 @@ msgstr "Datenbank-Port"
 #: inc/console/database/abstractconfigurecommand.class.php:332
 #: inc/console/database/updatecommand.class.php:125
 msgid "Database user"
-msgstr ""
+msgstr "Datenbank-Benutzer"
 
 #: inc/console/database/abstractconfigurecommand.class.php:145
 msgid "Reconfigure database, override configuration file if it already exists"
@@ -10165,7 +10166,7 @@ msgstr ""
 
 #: inc/console/database/installcommand.class.php:91
 msgid "Default language of GLPI"
-msgstr ""
+msgstr "GLPI Standardsprache"
 
 #: inc/console/database/installcommand.class.php:99
 msgid "Force execution of installation, overriding existing database"
@@ -10232,11 +10233,11 @@ msgstr ""
 
 #: inc/console/database/updatecommand.class.php:126
 msgid "GLPI version"
-msgstr ""
+msgstr "GLPI Version"
 
 #: inc/console/database/updatecommand.class.php:127
 msgid "GLPI database version"
-msgstr ""
+msgstr "GLPI Datenbankversion"
 
 #: inc/console/database/updatecommand.class.php:135
 #, php-format
@@ -16797,8 +16798,8 @@ msgstr "Kein Netzwerkport gefunden"
 #: inc/networkport.class.php:1034
 msgid "Port number"
 msgid_plural "Port numbers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Portnummer"
+msgstr[1] "Portnummern"
 
 #: inc/networkport.class.php:945 inc/networkport.class.php:1052
 msgid "Network port type"
@@ -22955,19 +22956,19 @@ msgstr ""
 
 #: js/common.js:1187
 msgid "a minute ago"
-msgstr ""
+msgstr "Vor einer Minute"
 
 #: js/common.js:1189
 msgid "an hour ago"
-msgstr ""
+msgstr "Vor einer Stunde"
 
 #: js/common.js:1191
 msgid "yesterday"
-msgstr ""
+msgstr "Gestern"
 
 #: js/common.js:1193
 msgid "a year ago"
-msgstr ""
+msgstr "Vor einem Jahr"
 
 #: js/dashboard.js:333
 msgid "Add a card"

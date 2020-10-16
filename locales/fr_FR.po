@@ -16,8 +16,8 @@
 # Xavier CAILLAUD <thetsmr@gmail.com>, 2020
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # Tiago Graca, 2020
-# Johan Cwiklinski <jcwiklinski@teclib.com>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
+# Johan Cwiklinski <jcwiklinski@teclib.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -26,7 +26,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-06 11:53+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2020\n"
+"Last-Translator: Johan Cwiklinski <jcwiklinski@teclib.com>, 2020\n"
 "Language-Team: French (France) (https://www.transifex.com/glpi/teams/1637/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -9313,7 +9313,7 @@ msgstr "Migrer les tables MyISAM vers InnoDB"
 #: inc/console/migration/myisamtoinnodbcommand.class.php:71
 #, php-format
 msgid "Found %s table(s) using MyISAM engine."
-msgstr "%stables utilisant le moteur MyISAM ont été trouvées."
+msgstr "%s table(s) utilisant le moteur MyISAM trouvées."
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:77
 #: inc/console/migration/timestampscommand.class.php:89
@@ -9358,7 +9358,7 @@ msgstr ""
 #: inc/console/migration/timestampscommand.class.php:83
 #, php-format
 msgid "Found %s table(s) requiring migration."
-msgstr "%stables nécéssitant une migration ont été trouvées"
+msgstr "%s table(s) nécessitant une migration trouvée(s)."
 
 #: inc/console/migration/timestampscommand.class.php:188
 #, php-format

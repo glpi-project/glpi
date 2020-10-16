@@ -13,9 +13,9 @@
 # 李赋 <fu792659@163.com>, 2020
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # 南 孔, 2020
-# liAnGjiA <liangjia@qq.com>, 2020
 # Yinian Chin <yinian1992@live.com>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
+# liAnGjiA <liangjia@qq.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -24,7 +24,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-06 11:53+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2020\n"
+"Last-Translator: liAnGjiA <liangjia@qq.com>, 2020\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/glpi/teams/1637/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2480,7 +2480,7 @@ msgstr "类别"
 #: tests/functionnal/Rule.php:282
 msgid "Type"
 msgid_plural "Types"
-msgstr[0] ""
+msgstr[0] "类型"
 
 #: front/stat.graph.php:173 front/stat.tracking.php:88
 #: inc/problem.class.php:1405 inc/project.class.php:545
@@ -3235,11 +3235,11 @@ msgstr "关系"
 
 #: front/impactcsv.php:81 inc/appliance_item.class.php:184
 msgid "Itemtype"
-msgstr ""
+msgstr "元素类型"
 
 #: front/impactcsv.php:82 inc/event.class.php:275
 msgid "Id"
-msgstr ""
+msgstr "Id"
 
 #: front/impactcsv.php:91 inc/impact.class.php:222
 msgid "Impacted by"
@@ -3384,7 +3384,7 @@ msgstr[0] "计算机类型"
 #: inc/dropdown.class.php:871 inc/monitortype.class.php:42
 msgid "Monitor type"
 msgid_plural "Monitors types"
-msgstr[0] ""
+msgstr[0] "显示器类型"
 
 #: inc/rule.class.php:383 inc/rulecollection.class.php:2047
 #: inc/dropdown.class.php:869 inc/printertype.class.php:42
@@ -3669,7 +3669,7 @@ msgstr "值"
 
 #: inc/rule.class.php:1164
 msgid "Add a new criterion"
-msgstr ""
+msgstr "添加标准"
 
 #: inc/rule.class.php:1184 inc/rule.class.php:1200 inc/rule.class.php:1248
 #: inc/rule.class.php:2029 inc/rule.class.php:2519
@@ -4281,7 +4281,7 @@ msgstr "截止日期"
 #: inc/item_softwareversion.class.php:1045
 #: inc/item_softwareversion.class.php:1191 tests/functionnal/Rule.php:294
 msgid "Status"
-msgstr ""
+msgstr "状态: "
 
 #: inc/problem.class.php:1313 inc/ticket.class.php:4588
 #: inc/change.class.php:913
@@ -5167,7 +5167,7 @@ msgstr ""
 #: inc/planningexternalevent.class.php:313
 #: inc/features/planningevent.class.php:933
 msgid "Repeat"
-msgstr ""
+msgstr "中继器"
 
 #: inc/ola.class.php:51 inc/ticket.class.php:2864 inc/ticket.class.php:2872
 #: inc/ticket.class.php:2886 inc/ticket.class.php:2899
@@ -5252,7 +5252,7 @@ msgstr[0] "显卡型号"
 #: inc/rssfeed.class.php:80 inc/central.class.php:68
 msgid "RSS feed"
 msgid_plural "RSS feed"
-msgstr[0] ""
+msgstr[0] "订阅RSS"
 
 #: inc/rssfeed.class.php:82 inc/rssfeed.class.php:933
 msgid "Personal RSS feed"
@@ -5537,7 +5537,7 @@ msgstr[0] "解决方案的模版"
 #: inc/appliancetype.class.php:40
 msgid "Appliance type"
 msgid_plural "Appliance types"
-msgstr[0] ""
+msgstr[0] "设备类型"
 
 #: inc/blacklist.class.php:216 inc/networkname.class.php:216
 msgid "IP"
@@ -6373,7 +6373,7 @@ msgstr[0] "结案时间"
 #, php-format
 msgid "%1$s template"
 msgid_plural "%1$s templates"
-msgstr[0] ""
+msgstr[0] "%1$s 模板"
 
 #: inc/itiltemplate.class.php:265 inc/ticket.class.php:2456
 #: inc/ticket.class.php:4633 inc/change.class.php:1046
@@ -21276,7 +21276,7 @@ msgstr "创建 %1$s 作者 %2$s"
 #: inc/appliance.class.php:60
 msgid "Appliance"
 msgid_plural "Appliances"
-msgstr[0] "家电类"
+msgstr[0] "设备"
 
 #: inc/appliance.class.php:134
 msgid "Technician in charge of the appliance"
