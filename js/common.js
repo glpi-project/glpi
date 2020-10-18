@@ -803,7 +803,7 @@ function _eltRealSize(_elt) {
    return _s;
 }
 
-var initMap = function(parent_elt, map_id, height) {
+var initMap = function(parent_elt, map_id, height, initial_view = {position: [43.6112422, 3.8767337], zoom: 6}) {
    // default parameters
    map_id = (typeof map_id !== 'undefined') ? map_id : 'map';
    height = (typeof height !== 'undefined') ? height : '200px';
@@ -831,7 +831,7 @@ var initMap = function(parent_elt, map_id, height) {
 
    //add map, set a default arbitrary location
    parent_elt.append($('<div id="'+map_id+'" style="height: ' + height + '"></div>'));
-   var map = L.map(map_id, {fullscreenControl: true}).setView([43.6112422, 3.8767337], 6);
+   var map = L.map(map_id, {fullscreenControl: true}).setView(initial_view.position, initial_view.zoom);
 
    //setup tiles and © messages
    L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
