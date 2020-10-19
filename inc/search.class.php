@@ -3992,8 +3992,8 @@ JAVASCRIPT;
             $condition = "(`glpi_tickettasks`.`is_private` $in ";
 
             // Check for assigned or created tasks
-            $condition .= "OR `users_id` = " . Session::getLoginUserID() . " ";
-            $condition .= "OR `users_id_tech` = " . Session::getLoginUserID() . " ";
+            $condition .= "OR `glpi_tickettasks`.`users_id` = " . Session::getLoginUserID() . " ";
+            $condition .= "OR `glpi_tickettasks`.`users_id_tech` = " . Session::getLoginUserID() . " ";
 
             // Check for parent item visibility unless the user can see all the
             // possible parents

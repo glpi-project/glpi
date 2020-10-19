@@ -102,9 +102,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {php-version: "7.4", db-image: "mariadb:10.3", always: true}
-          - {php-version: "7.2", db-image: "mariadb:10.3", always: false}
-          - {php-version: "7.3", db-image: "mariadb:10.3", always: false}
+          - {php-version: "7.4", db-image: "mariadb:10.5", always: true}
+          - {php-version: "7.2", db-image: "mariadb:10.5", always: false}
+          - {php-version: "7.3", db-image: "mariadb:10.5", always: false}
           - {php-version: "7.4", db-image: "mariadb:10.1", always: false}
           - {php-version: "7.4", db-image: "mysql:5.6", always: false}
           - {php-version: "7.4", db-image: "mysql:8.0", always: false}
