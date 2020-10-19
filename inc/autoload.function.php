@@ -60,7 +60,8 @@ function isAPI() {
                  '://' . ($_SERVER['HTTP_HOST'] ?? "").
                  ($_SERVER['REQUEST_URI'] ?? "");
 
-   if (strpos($called_url, $CFG_GLPI['url_base_api'] ?? "") !== false) {
+   $base_api_url = $CFG_GLPI['url_base_api'] ?? ""; // $CFG_GLPI may be not defined if DB is not available
+   if (!empty($base_api_url) && strpos($called_url, $base_api_url) !== false) {
       return true;
    }
 
