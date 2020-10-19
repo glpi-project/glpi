@@ -163,6 +163,68 @@ PHP
                ]
             ],
          ],
+         'tests' => [
+            'fixtures' => [
+               'plugins' => [
+                  'random' => [
+                     'inc' => [
+                        // Not recognized due to bad filename pattern
+                        'testcmd.class.php' => <<<PHP
+<?php
+class PluginRandomTestCmd extends \\Symfony\\Component\\Console\\Command\\Command {
+   protected function configure() {
+      \$this->setName('plugin_random:test');
+   }
+}
+PHP
+                        ,
+
+                        // Plugin command case
+                        'randomcommand.class.php' => <<<PHP
+<?php
+class PluginRandomRandomCommand extends \\Symfony\\Component\\Console\\Command\\Command {
+   protected function configure() {
+      \$this->setName('plugin_random:random');
+   }
+}
+PHP
+                        ,
+
+                        // Plugin namespaced command case (inside "inc" dir)
+                        'checkcommand.class.php' => <<<PHP
+<?php
+namespace GlpiPlugin\\Random;
+class CheckCommand extends \\Symfony\\Component\\Console\\Command\\Command {
+   protected function configure() {
+      \$this->setName('plugin_random:check');
+   }
+}
+PHP
+                        ,
+
+                        'console' => [
+                           // Plugin namespaced command case (inside a sub dir)
+                          'foocommand.class.php' => <<<PHP
+<?php
+namespace GlpiPlugin\\Random\\Console;
+class FooCommand extends \\Symfony\\Component\\Console\\Command\\Command {
+   protected function configure() {
+      \$this->setName('plugin_random:foo');
+   }
+}
+PHP
+                        ],
+                     ],
+                  ],
+                  'misc' => [
+                     'inc' => [
+                        // Not a command case
+                        'something.class.php' => '<?php class PluginRandomSomething {}',
+                     ]
+                  ],
+               ],
+            ],
+         ]
       ];
       vfsStream::setup('glpi', null, $structure);
 
@@ -179,6 +241,9 @@ PHP
          'plugin_awesome:update'     => 'PluginAwesomeUpdateCommand',
          'plugin_awesome:namespaced' => 'GlpiPlugin\\Awesome\\NamespacedCommand',
          'plugin_awesome:another'    => 'GlpiPlugin\\Awesome\\Console\\AnotherCommand',
+         'plugin_random:random'      => 'PluginRandomRandomCommand',
+         'plugin_random:check'       => 'GlpiPlugin\\Random\\CheckCommand',
+         'plugin_random:foo'         => 'GlpiPlugin\\Random\\Console\\FooCommand',
       ];
 
       $all_names_to_class = array_merge($core_names_to_class, $plugins_names_to_class);

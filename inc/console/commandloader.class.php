@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use AppendIterator;
 use DirectoryIterator;
 use Plugin;
 use RecursiveDirectoryIterator;
@@ -189,9 +190,11 @@ class CommandLoader implements CommandLoaderInterface {
          $this->plugin = new Plugin();
       }
 
-      $basedir = $this->rootdir . DIRECTORY_SEPARATOR . 'plugins';
-
-      $plugins_directories = new DirectoryIterator($basedir);
+      $plugins_directories = new AppendIterator();
+      foreach (PLUGINS_DIRECTORIES as $directory) {
+         $directory = str_replace(GLPI_ROOT, $this->rootdir, $directory);
+         $plugins_directories->append(new DirectoryIterator($directory));
+      }
       /** @var SplFileInfo $plugin_directory */
       foreach ($plugins_directories as $plugin_directory) {
          // Do not load commands of disabled plugins
