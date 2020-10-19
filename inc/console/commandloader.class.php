@@ -55,6 +55,13 @@ use Symfony\Component\Console\Exception\CommandNotFoundException;
 class CommandLoader implements CommandLoaderInterface {
 
    /**
+    * Indicates if plugin commands should be included.
+    *
+    * @var bool
+    */
+   private $include_plugins;
+
+   /**
     * Root directory path to search on.
     * @var string
     */
@@ -63,9 +70,9 @@ class CommandLoader implements CommandLoaderInterface {
    /**
     * Found commands.
     *
-    * @var Command[]
+    * @var Command[]|null
     */
-   private $commands = [];
+   private $commands = null;
 
    /**
     * Plugins info services
@@ -80,46 +87,62 @@ class CommandLoader implements CommandLoaderInterface {
     * @param Plugin|null   $plugin          Needed for units test as we lack DI.
     */
    public function __construct($include_plugins = true, $rootdir = GLPI_ROOT, ?Plugin $plugin = null) {
-
-      if ($plugin == null) {
-         $plugin = new Plugin();
-      }
-
-      $this->plugin = $plugin;
-      $this->rootdir = $rootdir;
-
-      $this->findCoreCommands();
-      $this->findToolsCommands();
-
-      if ($include_plugins) {
-         $this->findPluginCommands();
-      }
+      $this->include_plugins = $include_plugins;
+      $this->rootdir         = $rootdir;
+      $this->plugin          = $plugin;
    }
 
    public function get($name) {
-      if (!array_key_exists($name, $this->commands)) {
+      $commands = $this->getCommands();
+
+      if (!array_key_exists($name, $commands)) {
          throw new CommandNotFoundException(sprintf('Command "%s" does not exist.', $name));
       }
 
-      return $this->commands[$name];
+      return $commands[$name];
    }
 
    public function has($name) {
-      return array_key_exists($name, $this->commands);
+      $commands = $this->getCommands();
+
+      return array_key_exists($name, $commands);
    }
 
    public function getNames() {
-      return array_keys($this->commands);
+      $commands = $this->getCommands();
+
+      return array_keys($commands);
    }
 
    /**
-    * Register plugin commands in command list.
+    * Indicates if plugin commands should be included.
+    *
+    * @param bool $include_plugins
     *
     * @return void
     */
-   public function registerPluginsCommands() {
+   public function setIncludePlugins(bool $include_plugins) {
+      $this->include_plugins = $include_plugins;
 
-      $this->findPluginCommands();
+      $this->commands = null; // Reset registered command list to force (un)registration of plugins commands
+   }
+
+   /**
+    * Get registered commands.
+    *
+    * @return Command[]
+    */
+   private function getCommands() {
+      if ($this->commands === null) {
+         $this->findCoreCommands();
+         $this->findToolsCommands();
+
+         if ($this->include_plugins) {
+            $this->findPluginCommands();
+         }
+      }
+
+      return $this->commands;
    }
 
    /**
@@ -161,6 +184,10 @@ class CommandLoader implements CommandLoaderInterface {
     * @return void
     */
    private function findPluginCommands() {
+
+      if ($this->plugin === null) {
+         $this->plugin = new Plugin();
+      }
 
       $basedir = $this->rootdir . DIRECTORY_SEPARATOR . 'plugins';
 

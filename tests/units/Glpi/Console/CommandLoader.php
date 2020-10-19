@@ -204,7 +204,7 @@ PHP
       }
 
       // Check async plugin registration
-      $command_loader->registerPluginsCommands();
+      $command_loader->setIncludePlugins(true);
       $this->array($command_loader->getNames())->isIdenticalTo(array_keys($all_names_to_class));
       foreach ($all_names_to_class as $name => $classname) {
          $this->boolean($command_loader->has($name))->isTrue();
