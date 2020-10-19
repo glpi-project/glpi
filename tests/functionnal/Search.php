@@ -518,10 +518,8 @@ class Search extends DbTestCase {
 
          //load all options; so rawSearchOptionsToAdd to be tested
          $options = \Search::getCleanedOptions($item->getType());
-         //but reload only items one because of mysql join limit
-         $options = $item->searchOptions();
 
-         $all_criteria = [];
+         $multi_criteria = [];
          foreach ($options as $key=>$data) {
             if (!is_int($key) || (array_key_exists('nosearch', $data) && $data['nosearch'])) {
                continue;
@@ -529,10 +527,29 @@ class Search extends DbTestCase {
             $actions = \Search::getActionsFor($item->getType(), $key);
             $searchtype = array_keys($actions)[0];
 
+            switch ($data['datatype'] ?? null) {
+               case 'bool':
+               case 'integer':
+               case 'number':
+                  $val = 0;
+                  break;
+               case 'datetime':
+                  $val = date('Y-m-d H:i:s');
+                  break;
+               default:
+                  $val = 'val';
+                  if ($searchtype === 'contains') {
+                     // prevent massive usage of like %x% that drastically reduce performances
+                     // on MariaDB 10.4+
+                     $val = '^val$';
+                  }
+                  break;
+            }
+
             $criterion = [
                'field'      => $key,
                'searchtype' => $searchtype,
-               'value'      => 0
+               'value'      => $val
             ];
 
             // do a search query based on current search option
@@ -546,13 +563,17 @@ class Search extends DbTestCase {
                ]
             );
 
-            $all_criteria[] = $criterion;
+            if (count($multi_criteria) < 50) {
+               // Limit criteria count to 50 to prevent performances issues
+               // and also prevent exceeding of MySQL join limit.
+               $multi_criteria[] = $criterion;
+            }
          }
 
          // do a search query with all criteria at the same time
          $search_params = ['is_deleted'   => 0,
                            'start'        => 0,
-                           'criteria'     => $all_criteria,
+                           'criteria'     => $multi_criteria,
                            'metacriteria' => []];
          $data = $this->doSearch($class, $search_params);
       }
@@ -563,7 +584,7 @@ class Search extends DbTestCase {
     *
     * @return void
     */
-   public function test_search_all_meta() {
+   public function testSearchAllMeta() {
       $itemtypeslist = [
          'Computer',
          'Problem',
@@ -590,23 +611,35 @@ class Search extends DbTestCase {
             $i = 0;
             foreach ($item->searchOptions() as $key=>$data) {
                if (is_int($key)) {
-                  if (isset($data['datatype']) && $data['datatype'] == 'bool') {
-                     $metacriteria[] = [
-                         'itemtype'   => $metaitemtype,
-                         'link'       => 'AND',
-                         'field'      => $key,
-                         'searchtype' => 'equals',
-                         'value'      => 0,
-                     ];
-                  } else {
-                     $metacriteria[] = [
-                         'itemtype'   => $metaitemtype,
-                         'link'       => 'AND',
-                         'field'      => $key,
-                         'searchtype' => 'contains',
-                         'value'      => 'f',
-                     ];
+                  $actions = \Search::getActionsFor($item->getType(), $key);
+                  $searchtype = array_keys($actions)[0];
+
+                  switch ($data['datatype'] ?? null) {
+                     case 'bool':
+                     case 'integer':
+                     case 'number':
+                        $val = 0;
+                        break;
+                     case 'datetime':
+                        $val = date('Y-m-d H:i:s');
+                        break;
+                     default:
+                        $val = 'val';
+                        if ($searchtype === 'contains') {
+                           // prevent massive usage of like %x% that drastically reduce performances
+                           // on MariaDB 10.4+
+                           $val = '^val$';
+                        }
+                        break;
                   }
+
+                  $metacriteria[] = [
+                      'itemtype'   => $metaitemtype,
+                      'link'       => 'AND',
+                      'field'      => $key,
+                      'searchtype' => $searchtype,
+                      'value'      => $val,
+                  ];
                }
                $i++;
                if ($i > 5) {
