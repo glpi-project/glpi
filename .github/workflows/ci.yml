@@ -16,6 +16,8 @@ on:
   # Runs test suite every night
   schedule:
     - cron:  '0 0 * * *'
+  # Enable manual run
+  workflow_dispatch:
 
 jobs:
   lint:
