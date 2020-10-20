@@ -164,26 +164,17 @@ class Config extends CommonDBTM {
          // Global search need "view"
          $input['allow_search_global'] = 0;
       }
-      if (isset($input["smtp_passwd"])) {
-         if (empty($input["smtp_passwd"])) {
-            unset($input["smtp_passwd"]);
-         } else {
-            $input["smtp_passwd"] = Toolbox::sodiumEncrypt(stripslashes($input["smtp_passwd"]));
-         }
-      }
 
+      if (isset($input["smtp_passwd"]) && empty($input["smtp_passwd"])) {
+         unset($input["smtp_passwd"]);
+      }
       if (isset($input["_blank_smtp_passwd"]) && $input["_blank_smtp_passwd"]) {
          $input['smtp_passwd'] = '';
       }
 
-      if (isset($input["proxy_passwd"])) {
-         if (empty($input["proxy_passwd"])) {
-            unset($input["proxy_passwd"]);
-         } else {
-            $input["proxy_passwd"] = Toolbox::sodiumEncrypt(stripslashes($input["proxy_passwd"]));
-         }
+      if (isset($input["proxy_passwd"]) && empty($input["proxy_passwd"])) {
+         unset($input["proxy_passwd"]);
       }
-
       if (isset($input["_blank_proxy_passwd"]) && $input["_blank_proxy_passwd"]) {
          $input['proxy_passwd'] = '';
       }
@@ -254,11 +245,6 @@ class Config extends CommonDBTM {
 
       if (isset($input[Impact::CONF_ENABLED])) {
          $input[Impact::CONF_ENABLED] = exportArrayToDB($input[Impact::CONF_ENABLED]);
-      }
-
-      // encrypt registration key
-      if (isset($input["glpinetwork_registration_key"]) && !empty($input["glpinetwork_registration_key"])) {
-         $input["glpinetwork_registration_key"] = Toolbox::sodiumEncrypt(stripslashes($input["glpinetwork_registration_key"]));
       }
 
       // Beware : with new management system, we must update each value
@@ -3033,8 +3019,18 @@ class Config extends CommonDBTM {
    **/
    static function setConfigurationValues($context, array $values = []) {
 
+      $glpikey = new GLPIKey();
+      $secured_configs = $glpikey->getConfigs();
+
       $config = new self();
       foreach ($values as $name => $value) {
+         // Encrypt config values according to list declared to GLPIKey service
+         if (!empty($value)
+             && array_key_exists($context, $secured_configs)
+             && in_array($name, $secured_configs[$context])) {
+            $value = Toolbox::sodiumEncrypt($value);
+         }
+
          if ($config->getFromDBByCrit([
             'context'   => $context,
             'name'      => $name
