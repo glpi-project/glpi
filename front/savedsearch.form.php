@@ -52,7 +52,7 @@ if (isset($_POST["add"])) {
    Html::back();
 } else if (isset($_POST["purge"])) {
    // delete a saved search
-   $savedsearch->check($_POST['id'], DELETE);
+   $savedsearch->check($_POST['id'], PURGE);
    $savedsearch->delete($_POST, 1);
    $savedsearch->redirectToList();
 } else if (isset($_POST["update"])) {
