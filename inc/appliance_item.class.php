@@ -200,8 +200,8 @@ class Appliance_Item extends CommonDBRelation {
             }
             echo "<td>" . $item->getTypeName(1) . "</td>";
             echo "<td>" . $item->getLink() . "</td>";
-            echo "<td>" . $item->fields['serial'] ?? "" . "</td>";
-            echo "<td>" . $item->fields['otherserial'] ?? "" . "</td>";
+            echo "<td>" . ($item->fields['serial'] ?? "") . "</td>";
+            echo "<td>" . ($item->fields['otherserial'] ?? "") . "</td>";
             echo "<td class='relations_list'>";
             echo Appliance_Item_Relation::showListForApplianceItem($row["id"], $canedit);
             echo "</td>";
