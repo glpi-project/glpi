@@ -945,6 +945,14 @@ JAVASCRIPT;
             <span>";
       }
 
+      $height = "calc(100% - 5px)";
+      $legend_options = "";
+      if ($p['legend']) {
+         $height = "calc(100% - 40px)";
+         $legend_options = "
+            Chartist.plugins.legend(),";
+      }
+
       $html = <<<HTML
       <style>
       #chart-{$p['rand']} .ct-label {
@@ -952,6 +960,11 @@ JAVASCRIPT;
       }
       #chart-{$p['rand']} .ct-grid {
          stroke: {$line_color};
+      }
+
+      /** fix chrome resizing height when animating svg (don't know why) **/
+      #chart-{$p['rand']} .ct-chart-bar {
+         min-height: $height;
       }
       {$palette_style}
       </style>
@@ -1000,14 +1013,6 @@ HTML;
       if ($p['distributed']) {
          $distributed_options = "
             distributeSeries: true,";
-      }
-
-      $height = "calc(100% - 5px)";
-      $legend_options = "";
-      if ($p['legend']) {
-         $height = "calc(100% - 40px)";
-         $legend_options = "
-            Chartist.plugins.legend(),";
       }
 
       // just to avoid issues with syntax coloring
@@ -1088,11 +1093,19 @@ HTML;
                   axis_anim = 'x';
                }
 
-               var animate_properties = {};
+               var animate_properties = {
+                  opacity: {
+                     dur: {$animation_duration},
+                     from: 0,
+                     to: 1,
+                     easing: Chartist.Svg.Easing.easeOutQuint
+                  }
+               };
                animate_properties[axis_anim+'2'] = {
                   dur: {$animation_duration},
                   from: data[axis_anim+'1'],
-                  to: data[axis_anim+'2']
+                  to: data[axis_anim+'2'],
+                  easing: Chartist.Svg.Easing.easeOutQuint
                };
                data.element.animate(animate_properties);
 
