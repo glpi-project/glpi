@@ -91,6 +91,44 @@ $break_tablet: 1400px;
          font-size: 11px !important;
       }
 
+      .big-number {
+         .formatted-number {
+            display: flex;
+
+            .number, .suffix {
+               font-size: 3em;
+               font-weight: normal;
+            }
+         }
+
+         .label {
+            max-width: calc(100% - 2em);
+         }
+      }
+
+
+      //only for mini dashboard and small screen width
+      @media screen and (max-width: 1280px) {
+         .main-icon {
+            font-size: 1.5em;
+            right: 3px;
+            top: 3px;
+         }
+         .big-number .label {
+            font-size: 10px !important;
+         }
+         .big-number {
+            .formatted-number {
+               .number, .suffix {
+                  font-size: 2.5em;
+               }
+            }
+            .label {
+               max-width: calc(100%);
+            }
+         }
+      }
+
       .grid-stack .grid-stack-item.lock-bottom {
          min-height: 0;
          height: 0;
