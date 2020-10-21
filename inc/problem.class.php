@@ -361,6 +361,8 @@ class Problem extends CommonITILObject {
             '_disablenotif' => true
          ]);
       }
+
+      $this->handleItemsIdInput();
    }
 
    /**
@@ -1203,6 +1205,8 @@ class Problem extends CommonITILObject {
       echo "</th>";
       echo "<td class='left' width='$colsize2%'>";
 
+      $this->displayHiddenItemsIdInput($options);
+
       if (isset($tickets_id)) {
          echo "<input type='hidden' name='_tickets_id' value='".$tickets_id."'>";
       }
@@ -1843,7 +1847,8 @@ class Problem extends CommonITILObject {
          'actiontime'                 => 0,
          '_add_validation'            => 0,
          'users_id_validate'          => [],
-         '_tasktemplates_id'          => []
+         '_tasktemplates_id'          => [],
+         'items_id'                   => 0,
       ];
    }
 
@@ -1892,5 +1897,9 @@ class Problem extends CommonITILObject {
 
    static function getIcon() {
       return "fas fa-exclamation-triangle";
+   }
+
+   public static function getItemLinkClass(): string {
+      return Item_Problem::class;
    }
 }

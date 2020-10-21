@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
  *
  *  Relation between Problems and Items
 **/
-class Item_Problem extends CommonDBRelation{
+class Item_Problem extends CommonItilObject_Item {
 
 
    // From CommonDBRelation

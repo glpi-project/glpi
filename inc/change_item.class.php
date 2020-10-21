@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
  *
  * Relation between Changes and Items
 **/
-class Change_Item extends CommonDBRelation{
+class Change_Item extends CommonItilObject_Item {
 
 
    // From CommonDBRelation
