@@ -705,26 +705,24 @@ class Ticket extends CommonITILObject {
 
                   if (count($linkeditems)) {
                      foreach ($linkeditems as $type => $tab) {
-                        foreach ($tab as $ID) {
-                           $nb += countElementsInTable(
-                              'glpi_items_tickets',
-                              [
-                                 'INNER JOIN' => [
-                                    'glpi_tickets' => [
-                                       'FKEY' => [
-                                          'glpi_items_tickets' => 'tickets_id',
-                                          'glpi_tickets'       => 'id'
-                                       ]
+                        $nb += countElementsInTable(
+                           'glpi_items_tickets',
+                           [
+                              'INNER JOIN' => [
+                                 'glpi_tickets' => [
+                                    'FKEY' => [
+                                       'glpi_items_tickets' => 'tickets_id',
+                                       'glpi_tickets'       => 'id'
                                     ]
-                                 ],
-                                 'WHERE' => [
-                                    'itemtype' => $type,
-                                    'items_id' => $ID,
-                                    'is_deleted' => 0
                                  ]
+                              ],
+                              'WHERE' => [
+                                 'itemtype' => $type,
+                                 'items_id' => $tab,
+                                 'is_deleted' => 0
                               ]
-                           );
-                        }
+                           ]
+                        );
                      }
                   }
                   break;
