@@ -8152,42 +8152,28 @@ abstract class CommonITILObject extends CommonDBTM {
 
    }
 
-   /**
-    * Get assets linked to this object
-    *
-    * @since 9.5.0
-    *
-    * @param boolean $addNames Insert asset names
-    *
-    * @return array
-    */
-   public function getLinkedItems(bool $addNames = true) :array {
+
+   public function getLinkedItems() :array {
       global $DB;
 
       $assets = $DB->request([
-         'SELECT' => ["id", "itemtype", "items_id"],
+         'SELECT' => ["itemtype", "items_id"],
          'FROM'   => static::getItemsTable(),
          'WHERE'  => [$this->getForeignKeyField() => $this->getID()]
       ]);
 
       $assets = iterator_to_array($assets);
 
-      if ($addNames) {
-         foreach ($assets as $key => $asset) {
-            if (!class_exists($asset['itemtype'])) {
-               //ignore if class does not exists (maybe a plugin)
-               continue;
-            }
-            /** @var CommonDBTM $item */
-            $item = new $asset['itemtype'];
-            $item->getFromDB($asset['items_id']);
-
-            // Add name
-            $assets[$key]['name'] = $item->fields['name'];
+      $tab = [];
+      foreach ($assets as $asset) {
+         if (!class_exists($asset['itemtype'])) {
+            //ignore if class does not exists (maybe a plugin)
+            continue;
          }
+         $tab[$asset['itemtype']][$asset['items_id']] = $asset['items_id'];
       }
 
-      return $assets;
+      return $tab;
    }
 
    /**
@@ -8196,8 +8182,8 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return boolean
     */
    protected function hasImpactTab() {
-      foreach ($this->getLinkedItems() as $linkedItem) {
-         $class = $linkedItem['itemtype'];
+      foreach ($this->getLinkedItems() as $itemtype => $items) {
+         $class = $itemtype;
          if (Impact::isEnabled($class) && Session::getCurrentInterface() === "central") {
             return true;
          }
@@ -8224,6 +8210,38 @@ abstract class CommonITILObject extends CommonDBTM {
       ];
    }
 
+   public function displayHiddenItemsIdInput(array $options): void {
+      $input_items_id = $options['items_id'] ?? [];
+
+      if (empty($input_items_id)) {
+         return;
+      }
+
+      foreach ($input_items_id as $itemtype => $items) {
+         foreach ($items as $items_id) {
+            echo "<input type='hidden' name='items_id[$itemtype][$items_id]' value='$items_id'>";
+         }
+      }
+   }
+
+   public function handleItemsIdInput(): void {
+      if (!empty($this->input['items_id'])) {
+         $item_link_class = static::getItemLinkClass();
+         $item_link = new $item_link_class();
+         foreach ($this->input['items_id'] as $itemtype => $items) {
+            foreach ($items as $items_id) {
+               $item_link->add([
+                  'items_id'                    => $items_id,
+                  'itemtype'                    => $itemtype,
+                  static::getForeignKeyField()  => $this->fields['id'],
+                  '_disablenotif'               => true
+               ]);
+            }
+         }
+      }
+   }
+
+   abstract public static function getItemLinkClass(): string;
    /**
     * Handle "_tasktemplates_id" special input
     */

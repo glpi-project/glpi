@@ -107,7 +107,7 @@ class Application extends BaseApplication {
       $use_plugins = $this->usePlugins();
       if ($use_plugins) {
          $this->loadActivePlugins();
-         $loader->registerPluginsCommands();
+         $loader->setIncludePlugins(true);
       }
    }
 

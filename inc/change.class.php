@@ -383,6 +383,8 @@ class Change extends CommonITILObject {
             '_disablenotif' => true
          ]);
       }
+
+      $this->handleItemsIdInput();
    }
 
 
@@ -798,6 +800,8 @@ class Change extends CommonITILObject {
       echo $tt->getEndHiddenFieldText('date');
       echo "</th>";
       echo "<td class='left' width='$colsize2%'>";
+
+      $this->displayHiddenItemsIdInput($options);
 
       if (isset($tickets_id)) {
          echo "<input type='hidden' name='_tickets_id' value='".$tickets_id."'>";
@@ -1517,7 +1521,8 @@ class Change extends CommonITILObject {
          'impactcontent'              => '',
          'rolloutplancontent'         => '',
          'backoutplancontent'         => '',
-         'checklistcontent'           => ''
+         'checklistcontent'           => '',
+         'items_id'                   => 0,
       ];
    }
 
@@ -1566,5 +1571,9 @@ class Change extends CommonITILObject {
 
    static function getIcon() {
       return "fas fa-clipboard-check";
+   }
+
+   public static function getItemLinkClass(): string {
+      return Change_Item::class;
    }
 }

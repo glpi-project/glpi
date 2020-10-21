@@ -33,8 +33,4 @@
 $itiltype = 'Ticket';
 $fieldtype = 'Predefined';
 
-if (isset($_POST['items_tickets_id']) && isset($_POST['add_items_id'])) {
-   $_POST['items_tickets_id'] = $_POST['items_tickets_id']."_".$_POST['add_items_id'];
-}
-
 include __DIR__ . '/itiltemplatefield.form.php';

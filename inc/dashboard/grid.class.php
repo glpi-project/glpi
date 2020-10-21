@@ -1519,7 +1519,8 @@ HTML;
       $default    = $_SESSION["glpi$config_key"] ?? "";
       if (strlen($default)) {
          $dasboard = new Dashboard($default);
-         if ($dasboard->load()) {
+
+         if ($dasboard->load() && $dasboard->canViewCurrent()) {
             return $default;
          }
       }

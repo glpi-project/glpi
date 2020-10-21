@@ -31,11 +31,11 @@
 /* ===== LOGIN ===== */
 
 #firstboxlogin {
-   background-color: #006573;
+   background-color: #B2341C;
 }
 
 #logo_login {
-   background: #008B8D;
+   background: #FF5131;
 }
 
 #display-login {
@@ -43,26 +43,26 @@
 }
 
 #text-login {
-   background-color: #008B8D;
+   background-color: #FF5131;
    color: #FFF;
 }
 
 /* ====== GENERAL ====== */
 
 a, .btn-linkstyled {
-   color: #006573;
+   color: #FF5131;
 
    &:link {
-      color: #006573;
+      color: #FF5131;
    }
 }
 
 .ui-widget-content a {
-   color: #006573;
+   color: #FF5131;
 }
 
 .main_form tr.headerRow th {
-   color: #81BEAA;
+   color: #ff7c64;
 }
 
 /* ====== HEADER ====== */

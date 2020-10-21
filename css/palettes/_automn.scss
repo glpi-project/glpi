@@ -31,11 +31,11 @@
 /* ===== LOGIN ===== */
 
 #firstboxlogin {
-   background-color: #19BEC0;
+   background-color: #8B4D34;
 }
 
 #logo_login {
-   background: #113F59;
+   background: #C06F3D;
 }
 
 #display-login {
@@ -43,26 +43,26 @@
 }
 
 #text-login {
-   background-color: #113F59;
+   background-color: #C06F3D;
    color: #FFF;
 }
 
 /* ====== GENERAL ====== */
 
 a, .btn-linkstyled {
-   color: #113E58;
+   color: #C06F3D;
 
    &:link {
-      color: #113E58;
+      color: #C06F3D;
    }
 }
 
 .ui-widget-content a {
-   color: #113E58;
+   color: #C06F3D;
 }
 
 .main_form tr.headerRow th {
-   color: #19BEC0;
+   color: #F29542;
 }
 
 /* ====== HEADER ====== */
@@ -134,8 +134,8 @@ ul {
 /* ====== BUTTONS ====== */
 
 input.submit, span.vsubmit, a.vsubmit, .ui-widget-content span.vsubmit, a.vsubmit, #BackToTop {
-   color: #F2B265;
-   background-color: #8B4D34;
+   color: #8B4D34;
+   background-color: #F2B265;
 }
 
 .vsubmit a {
@@ -144,7 +144,7 @@ input.submit, span.vsubmit, a.vsubmit, .ui-widget-content span.vsubmit, a.vsubmi
 }
 
 input.submit:hover, a.vsubmit:hover, #BackToTop:hover {
-   background-color: #8B4D34;
+   background-color: #F29542;
 }
 
 /* ====== Breadcrumb ====== */

@@ -127,12 +127,14 @@ class Impact extends CommonGLPI {
 
          // Search for a valid linked item of this ITILObject
          $found = false;
-         foreach ($linked_items as $linked_item) {
-            $class = $linked_item['itemtype'];
+         foreach ($linked_items as $itemtype => $linked_item_ids) {
+            $class = $itemtype;
             if (self::isEnabled($class)) {
                $item = new $class;
-               $found = $item->getFromDB($linked_item['items_id']);
-               break;
+               foreach ($linked_item_ids as $linked_item_id) {
+                  $found = $item->getFromDB($linked_item_id);
+                  break 2;
+               }
             }
          }
 

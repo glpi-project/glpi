@@ -36,7 +36,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use AppendIterator;
 use DirectoryIterator;
+use Plugin;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionClass;
@@ -52,6 +54,13 @@ use Symfony\Component\Console\CommandLoader\CommandLoaderInterface;
 class CommandLoader implements CommandLoaderInterface {
 
    /**
+    * Indicates if plugin commands should be included.
+    *
+    * @var bool
+    */
+   private $include_plugins;
+
+   /**
     * Root directory path to search on.
     * @var string
     */
@@ -60,50 +69,80 @@ class CommandLoader implements CommandLoaderInterface {
    /**
     * Found commands.
     *
-    * @var Command[]
+    * @var Command[]|null
     */
-   private $commands = [];
+   private $commands = null;
 
    /**
-    * @param boolean $include_plugins  If true, load commands from plugins
-    * @param string  $rootdir          Root directory path of application.
+    * Plugins info services
+    *
+    * @var Plugin|null
     */
-   public function __construct($include_plugins = true, $rootdir = GLPI_ROOT) {
+   private $plugin = null;
 
-      $this->rootdir = $rootdir;
-
-      $this->findCoreCommands();
-      $this->findToolsCommands();
-
-      if ($include_plugins) {
-         $this->findPluginCommands();
-      }
+   /**
+    * @param bool          $include_plugins
+    * @param string        $rootdir         Root directory path of application.
+    * @param Plugin|null   $plugin          Needed for units test as we lack DI.
+    */
+   public function __construct($include_plugins = true, $rootdir = GLPI_ROOT, ?Plugin $plugin = null) {
+      $this->include_plugins = $include_plugins;
+      $this->rootdir         = $rootdir;
+      $this->plugin          = $plugin;
    }
 
    public function get($name) {
-      if (!array_key_exists($name, $this->commands)) {
+      $commands = $this->getCommands();
+
+      if (!array_key_exists($name, $commands)) {
          throw new \Symfony\Component\Console\Exception\CommandNotFoundException(sprintf('Command "%s" does not exist.', $name));
+
       }
 
-      return $this->commands[$name];
+      return $commands[$name];
    }
 
    public function has($name) {
-      return array_key_exists($name, $this->commands);
+      $commands = $this->getCommands();
+
+      return array_key_exists($name, $commands);
    }
 
    public function getNames() {
-      return array_keys($this->commands);
+      $commands = $this->getCommands();
+
+      return array_keys($commands);
    }
 
    /**
-    * Register plugin commands in command list.
+    * Indicates if plugin commands should be included.
+    *
+    * @param bool $include_plugins
     *
     * @return void
     */
-   public function registerPluginsCommands() {
+   public function setIncludePlugins(bool $include_plugins) {
+      $this->include_plugins = $include_plugins;
 
-      $this->findPluginCommands();
+      $this->commands = null; // Reset registered command list to force (un)registration of plugins commands
+   }
+
+   /**
+    * Get registered commands.
+    *
+    * @return Command[]
+    */
+   private function getCommands() {
+      if ($this->commands === null) {
+         $this->findCoreCommands();
+         $this->findToolsCommands();
+
+         if ($this->include_plugins) {
+            $this->findPluginCommands();
+         }
+      }
+
+      return $this->commands;
    }
 
    /**
@@ -146,11 +185,22 @@ class CommandLoader implements CommandLoaderInterface {
     */
    private function findPluginCommands() {
 
-      $basedir = $this->rootdir . DIRECTORY_SEPARATOR . 'plugins';
+      if ($this->plugin === null) {
+         $this->plugin = new Plugin();
+      }
 
-      $plugins_directories = new DirectoryIterator($basedir);
+      $plugins_directories = new AppendIterator();
+      foreach (PLUGINS_DIRECTORIES as $directory) {
+         $directory = str_replace(GLPI_ROOT, $this->rootdir, $directory);
+         $plugins_directories->append(new DirectoryIterator($directory));
+      }
       /** @var SplFileInfo $plugin_directory */
       foreach ($plugins_directories as $plugin_directory) {
+         // Do not load commands of disabled plugins
+         if (!$this->plugin->isActivated($plugin_directory)) {
+            continue;
+         }
+
          if (in_array($plugin_directory->getFilename(), ['.', '..'])) {
             continue;
          }

@@ -46,6 +46,14 @@ if (!isset($fieldtype)) {
 $item_class = $itiltype . 'Template' . $fieldtype . 'Field';
 $item = new $item_class;
 
+if ($fieldtype == 'Predefined') {
+   $itil_type = $item_class::$itiltype;
+   $item_field = getForeignKeyFieldForItemType($itil_type::getItemLinkClass());
+   if (isset($_POST[$item_field]) && isset($_POST['add_items_id'])) {
+      $_POST[$item_field] = $_POST[$item_field]."_".$_POST['add_items_id'];
+   }
+}
+
 if (isset($_POST["add"]) || isset($_POST['massiveaction'])) {
    $item->check(-1, UPDATE, $_POST);
 
