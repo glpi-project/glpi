@@ -100,6 +100,16 @@ class Consumable extends CommonDBChild {
       return [];
    }
 
+   function post_addItem() {
+      $infocoms = Infocom::getItemsAssociatedTo(ConsumableItem::getType(), $this->fields["consumableitems_id"]);
+      if (count($infocoms)) {
+         $infocom = reset($infocoms);
+         $infocom->clone([
+            'itemtype'  => self::getType(),
+            'items_id'  => $this->getID()
+         ]);
+      }
+   }
 
    /**
     * send back to stock
