@@ -106,7 +106,6 @@ class Migration {
    **/
    function setVersion($ver) {
 
-      $this->flushLogDisplayMessage();
       $this->version = $ver;
       $this->addNewMessageArea("migration_message_$ver");
    }
@@ -158,6 +157,8 @@ class Migration {
    **/
    function displayMessage($msg) {
 
+      $this->flushLogDisplayMessage();
+
       $now = time();
       $tps = Html::timestampToString($now-$this->deb);
 
@@ -165,8 +166,6 @@ class Migration {
 
       $this->lastMessage = ['time' => time(),
                             'msg'  => $msg];
-
-      $this->flushLogDisplayMessage();
    }
 
 
@@ -204,6 +203,8 @@ class Migration {
     * @return void
    **/
    function displayTitle($title) {
+      $this->flushLogDisplayMessage();
+
       $this->outputMessage($title, 'title');
    }
 
