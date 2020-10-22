@@ -19,7 +19,7 @@
         "codemirror": "^5.51.0",
         "cytoscape": "^3.13.0",
         "cytoscape-canvas": "^3.0.1",
-        "cytoscape-context-menus": "^3.0.7",
+        "cytoscape-context-menus": "^4.0.0",
         "cytoscape-dagre": "^2.2.1",
         "cytoscape-grid-guide": "^2.3.0",
         "diff-match-patch": "^1.0.4",
