@@ -199,13 +199,15 @@ abstract class LevelAgreement extends CommonDBChild {
                                            'min'   => 0]);
       $possible_values = ['minute' => _n('Minute', 'Minutes', Session::getPluralNumber()),
                           'hour'   => _n('Hour', 'Hours', Session::getPluralNumber()),
-                          'day'    => _n('Day', 'Days', Session::getPluralNumber())];
+                          'day'    => _n('Day', 'Days', Session::getPluralNumber()),
+                          'month'  => _n('Month', 'Months', Session::getPluralNumber())];
       $rand = Dropdown::showFromArray('definition_time', $possible_values,
                                       ['value'     => $this->fields["definition_time"],
                                        'on_change' => 'appearhideendofworking()']);
       echo "\n<script type='text/javascript' >\n";
       echo "function appearhideendofworking() {\n";
-      echo "if ($('#dropdown_definition_time$rand option:selected').val() == 'day') {
+      echo "if ($('#dropdown_definition_time$rand option:selected').val() == 'day'
+                  || $('#dropdown_definition_time$rand option:selected').val() == 'month') {
                $('#title_endworkingday').show();
                $('#dropdown_endworkingday').show();
             } else {
@@ -814,6 +816,9 @@ abstract class LevelAgreement extends CommonDBChild {
          if ($this->fields['definition_time'] == "day") {
             return $this->fields['number_time'] * DAY_TIMESTAMP;
          }
+         if ($this->fields['definition_time'] == "month") {
+            return $this->fields['number_time'] * MONTH_TIMESTAMP;
+         }
       }
       return 0;
    }
@@ -868,7 +873,7 @@ abstract class LevelAgreement extends CommonDBChild {
          // Based on a calendar
          if ($this->fields['calendars_id'] > 0) {
             $cal          = new Calendar();
-            $work_in_days = ($this->fields['definition_time'] == 'day');
+            $work_in_days = ($this->fields['definition_time'] == 'day' || $this->fields['definition_time'] == 'month');
 
             if ($cal->getFromDB($this->fields['calendars_id']) && $cal->hasAWorkingDay()) {
                return $cal->computeEndDate($start_date, $delay,
@@ -906,7 +911,7 @@ abstract class LevelAgreement extends CommonDBChild {
 
          if ($level->getFromDB($levels_id)) { // level exists
             if ($level->fields[$fk] == $this->fields['id']) { // correct level
-               $work_in_days = ($this->fields['definition_time'] == 'day');
+               $work_in_days = ($this->fields['definition_time'] == 'day' || $this->fields['definition_time'] == 'month');
                $delay        = $this->getTime();
 
                // Based on a calendar
@@ -979,7 +984,8 @@ abstract class LevelAgreement extends CommonDBChild {
 
    function prepareInputForAdd($input) {
 
-      if ($input['definition_time'] != 'day') {
+      if ($input['definition_time'] != 'day'
+            && $input['definition_time'] != 'month') {
          $input['end_of_working_day'] = 0;
       }
       return $input;
@@ -988,7 +994,8 @@ abstract class LevelAgreement extends CommonDBChild {
 
    function prepareInputForUpdate($input) {
 
-      if (isset($input['definition_time']) && $input['definition_time'] != 'day') {
+      if (isset($input['definition_time']) && ($input['definition_time'] != 'day'
+            && $input['definition_time'] != 'month')) {
          $input['end_of_working_day'] = 0;
       }
       return $input;
