@@ -312,7 +312,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    function prepareInputForUpdate($input) {
 
       $forbid_fields = [];
-      if ($this->fields["users_id_validate"] == Session::getLoginUserID()) {
+      if ($this->fields["users_id_validate"] == Session::getLoginUserID() && isset($input["status"])) {
          if (($input["status"] == self::REFUSED)
              && (!isset($input["comment_validation"])
                  || ($input["comment_validation"] == ''))) {
