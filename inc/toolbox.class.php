@@ -30,12 +30,14 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Console\Application;
 use Glpi\Event;
 use Glpi\Mail\Protocol\ProtocolInterface;
 use Glpi\System\RequirementsManager;
 use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
 use Monolog\Logger;
+use Symfony\Component\Console\Output\OutputInterface;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -655,7 +657,10 @@ class Toolbox {
          $ok = error_log(date("Y-m-d H:i:s")."$user\n".$text, 3, GLPI_LOG_DIR."/".$name.".log");
       }
 
-      if (isset($_SESSION['glpi_use_mode'])
+      global $application;
+      if ($application instanceof Application) {
+         $application->getOutput()->writeln('<comment>' . $text . '</comment>', OutputInterface::VERBOSITY_VERY_VERBOSE);
+      } else if (isset($_SESSION['glpi_use_mode'])
           && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
           && isCommandLine()) {
          $stderr = fopen('php://stderr', 'w');

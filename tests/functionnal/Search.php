@@ -32,6 +32,7 @@
 
 namespace tests\units;
 
+use CommonDBTM;
 use DbTestCase;
 
 /* Test for inc/search.class.php */
@@ -518,22 +519,12 @@ class Search extends DbTestCase {
 
          //load all options; so rawSearchOptionsToAdd to be tested
          $options = \Search::getCleanedOptions($item->getType());
-         //but reload only items one because of mysql join limit
-         $options = $item->searchOptions();
 
-         $all_criteria = [];
-         foreach ($options as $key=>$data) {
-            if (!is_int($key) || (array_key_exists('nosearch', $data) && $data['nosearch'])) {
+         $multi_criteria = [];
+         foreach ($options as $key => $data) {
+            if (!is_array($data) || ($criterion_params = $this->getCriterionParams($item, $key, $data)) === null) {
                continue;
             }
-            $actions = \Search::getActionsFor($item->getType(), $key);
-            $searchtype = array_keys($actions)[0];
-
-            $criterion = [
-               'field'      => $key,
-               'searchtype' => $searchtype,
-               'value'      => 0
-            ];
 
             // do a search query based on current search option
             $data = $this->doSearch(
@@ -541,18 +532,24 @@ class Search extends DbTestCase {
                [
                   'is_deleted'   => 0,
                   'start'        => 0,
-                  'criteria'     => [$criterion],
+                  'criteria'     => [$criterion_params],
                   'metacriteria' => []
                ]
             );
 
-            $all_criteria[] = $criterion;
+            $multi_criteria[] = $criterion_params;
+
+            if (count($multi_criteria) > 50) {
+               // Limit criteria count to 50 to prevent performances issues
+               // and also prevent exceeding of MySQL join limit.
+               break;
+            }
          }
 
          // do a search query with all criteria at the same time
          $search_params = ['is_deleted'   => 0,
                            'start'        => 0,
-                           'criteria'     => $all_criteria,
+                           'criteria'     => $multi_criteria,
                            'metacriteria' => []];
          $data = $this->doSearch($class, $search_params);
       }
@@ -563,7 +560,7 @@ class Search extends DbTestCase {
     *
     * @return void
     */
-   public function test_search_all_meta() {
+   public function testSearchAllMeta() {
       $itemtypeslist = [
          'Computer',
          'Problem',
@@ -587,29 +584,19 @@ class Search extends DbTestCase {
          $metaList = \Search::getMetaItemtypeAvailable($itemtype);
          foreach ($metaList as $metaitemtype) {
             $item = getItemForItemtype($metaitemtype);
-            $i = 0;
-            foreach ($item->searchOptions() as $key=>$data) {
-               if (is_int($key)) {
-                  if (isset($data['datatype']) && $data['datatype'] == 'bool') {
-                     $metacriteria[] = [
-                         'itemtype'   => $metaitemtype,
-                         'link'       => 'AND',
-                         'field'      => $key,
-                         'searchtype' => 'equals',
-                         'value'      => 0,
-                     ];
-                  } else {
-                     $metacriteria[] = [
-                         'itemtype'   => $metaitemtype,
-                         'link'       => 'AND',
-                         'field'      => $key,
-                         'searchtype' => 'contains',
-                         'value'      => 'f',
-                     ];
-                  }
+            foreach ($item->searchOptions() as $key => $data) {
+               if (!is_array($data) || ($criterion_params = $this->getCriterionParams($item, $key, $data)) === null) {
+                  continue;
                }
-               $i++;
-               if ($i > 5) {
+
+               $criterion_params['itemtype'] = $metaitemtype;
+               $criterion_params['link'] = 'AND';
+
+               $metacriteria[] = $criterion_params;
+
+               if (count($metacriteria) > 50) {
+                  // Limit criteria count to 50 to prevent performances issues
+                  // and also prevent exceeding of MySQL join limit.
                   break;
                }
             }
@@ -622,6 +609,48 @@ class Search extends DbTestCase {
                ->array['last_errors']->isIdenticalTo([])
                ->array['data']->isNotEmpty();
       }
+   }
+
+   /**
+    * Get criterion params for corresponding SO.
+    *
+    * @param CommonDBTM $item
+    * @param string $so_key
+    * @param array $so_data
+    * @return null|array
+    */
+   private function getCriterionParams(CommonDBTM $item, string $so_key, array $so_data): ?array {
+
+      if (!is_int($so_key) || (array_key_exists('nosearch', $so_data) && $so_data['nosearch'])) {
+         return null;
+      }
+      $actions = \Search::getActionsFor($item->getType(), $so_key);
+      $searchtype = array_keys($actions)[0];
+
+      switch ($so_data['datatype'] ?? null) {
+         case 'bool':
+         case 'integer':
+         case 'number':
+            $val = 0;
+            break;
+         case 'datetime':
+            $val = date('Y-m-d H:i:s');
+            break;
+         default:
+            $val = 'val';
+            if ($searchtype === 'contains') {
+               // prevent massive usage of like %x% that drastically reduce performances
+               // on MariaDB 10.4+
+               $val = '^val$';
+            }
+            break;
+      }
+
+      return [
+         'field'      => $so_key,
+         'searchtype' => $searchtype,
+         'value'      => $val
+      ];
    }
 
    public function testIsNotifyComputerGroup() {
