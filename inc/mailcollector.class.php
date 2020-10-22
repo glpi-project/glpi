@@ -1545,6 +1545,18 @@ class MailCollector  extends CommonDBTM {
             $filename = $content_type_header->getParameter('name') ?? '';
          }
 
+         $filename_matches = [];
+         if (preg_match("/^(?<encoding>.*)''(?<value>.*)$/", $filename, $filename_matches)
+             && in_array(strtoupper($filename_matches['encoding']), array_map('strtoupper', mb_list_encodings()))) {
+            // Filename is in RFC5987 format: UTF-8''urlencodedfilename.ext
+            // First, urldecode it, then convert if into UTF-8 if needed.
+            $filename = urldecode($filename_matches['value']);
+            $encoding = strtoupper($filename_matches['encoding']);
+            if ($encoding !== 'UTF-8') {
+               $filename = mb_convert_encoding($filename, 'UTF-8', $encoding);
+            }
+         }
+
          // part come without correct filename in headers - generate trivial one
          // (inline images case for example)
          if ((empty($filename) || !Document::isValidDoc($filename))) {
