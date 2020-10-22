@@ -331,6 +331,7 @@ class MailCollector extends DbTestCase {
                'Inlined image with no Content-Disposition',
                'This is a mail without subject.', // No subject = name is set using ticket contents
                'Image tag splitted on multiple lines',
+               'Attachement having filename using RFC5987 (multiple lines)',
             ]
          ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -379,6 +380,7 @@ class MailCollector extends DbTestCase {
          '01-test.JPG',
          '15-image001.png',
          '18-blank.gif',
+         '19-ʂǷèɕɩɐɫ ȼɦâʁȿ.gif',
       ];
 
       $iterator = $DB->request(
