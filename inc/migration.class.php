@@ -163,9 +163,10 @@ class Migration {
 
       $this->outputMessage("{$msg} ({$tps})", null, $this->current_message_area_id);
 
-      $this->flushLogDisplayMessage();
       $this->lastMessage = ['time' => time(),
                             'msg'  => $msg];
+
+      $this->flushLogDisplayMessage();
    }
 
 
