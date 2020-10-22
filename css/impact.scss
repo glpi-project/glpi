@@ -2,7 +2,7 @@
 #network_container {
    height: 70vh;
 
-   div {
+   div:not(.cy-context-menus-cxt-menu) {
       z-index: 1 !important;
       position: absolute !important;
    }
