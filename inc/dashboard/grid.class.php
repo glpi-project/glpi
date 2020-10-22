@@ -145,6 +145,14 @@ HTML;
             $card_html = $this->getCardHtml($card_id, ['args' => $card_options]);
          }
 
+         // manage cache
+         $dashboard_key = $this->current;
+         $footprint = sha1(serialize($card_options).
+            ($_SESSION['glpiactiveentities_string'] ?? "").
+            ($_SESSION['glpilanguage']));
+         $cache_key    = "dashboard_card_{$dashboard_key}_{$footprint}";
+         $card_options['cache_key'] = $cache_key;
+
          $this->addGridItem(
             $card_html,
             $gridstack_id,
@@ -987,7 +995,7 @@ HTML;
          <i class='fas fa-exclamation-triangle'></i>".
          __('empty card !')."
       </div>";
-      $cards = $this->getAllDasboardCards($force);
+      $cards = $this->getAllDasboardCards();
       if (!isset($cards[$card_id])) {
          return $notfound_html;
       }
@@ -995,7 +1003,9 @@ HTML;
 
       // manage cache
       $options_footprint = sha1(serialize($card_options).
-                                $_SESSION['glpiactiveentities_string'] ?? "");
+         ($_SESSION['glpiactiveentities_string'] ?? "").
+         ($_SESSION['glpilanguage']));
+
       $use_cache = !$force
          && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE
          && (!isset($card['cache']) || $card['cache'] == true);
@@ -1167,18 +1177,10 @@ HTML;
    /**
     * Construct catalog of all possible cards addable in a dashboard.
     *
-    * @param bool $force if true, don't use cache
-    *
     * @return array
     */
-   public function getAllDasboardCards(bool $force = false): array {
-      global $GLPI_CACHE, $CFG_GLPI;
-
-      if (!$force
-          && $GLPI_CACHE->has("dashboards_cards")
-          && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE) {
-         return $GLPI_CACHE->get("dashboards_cards");
-      }
+   public function getAllDasboardCards(): array {
+      global $CFG_GLPI;
 
       // anonymous fct for adding relevant filters to cards
       $add_filters_fct = function($itemtable) {
@@ -1433,8 +1435,6 @@ HTML;
       if (is_array($more_cards)) {
          $cards = array_merge($cards, $more_cards);
       }
-
-      $GLPI_CACHE->set("dashboards_cards", $cards, new \DateInterval("PT1H"));
 
       return $cards;
    }
