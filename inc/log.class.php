@@ -761,7 +761,7 @@ class Log extends CommonDBTM {
                         $oldval = sprintf(__('%1$s %2$s'),
                               formatUserName($val['id'], $oldval_expl[0], $val['realname'],
                                     $val['firstname']),
-                              $oldval_expl[1]);
+                              isset($oldval_expl[1]) ?? "0");
                      }
                   }
 
@@ -773,7 +773,7 @@ class Log extends CommonDBTM {
                         $newval = sprintf(__('%1$s %2$s'),
                               formatUserName($val['id'], $newval_expl[0], $val['realname'],
                                     $val['firstname']),
-                              $newval_expl[1]);
+                              isset($newval_expl[1]) ?? "0");
                      }
                   }
                }
