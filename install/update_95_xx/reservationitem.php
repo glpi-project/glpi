@@ -38,46 +38,29 @@
 $migration->displayMessage("Adding unicity key to reservationitem");
 $table = ReservationItem::getTable();
 
+// Copy table
+$tmp_table = "tmp_$table";
+$migration->copyTable($table, $tmp_table, false);
+
 // Drop is_deleted
-$migration->dropKey($table, 'is_deleted');
-$migration->dropField($table, "is_deleted");
-
-// Find duplicates by itemtype/items_id couple
-$duplicates_by_itemtype = $DB->request([
-   'SELECT'  => ['itemtype', 'items_id'],
-   'COUNT'   => 'cpt',
-   'FROM'    => $table,
-   'WHERE'   => [],
-   'GROUPBY' => ['itemtype', 'items_id'],
-   'HAVING'  => ['cpt' => ['>' , 1]]
-]);
-
-foreach ($duplicates_by_itemtype as $duplicates) {
-   // Get ids of all duplicate for this itemtype/items_id couple expect the first
-   // LIMIT $duplicates['cpt'] is there because we need a LIMIT clause to use OFFSET
-   $to_delete = $DB->request([
-      'SELECT' =>  'id',
-      'FROM' => $table,
-      'WHERE' => [
-         'itemtype' => $duplicates['itemtype'],
-         'items_id' => $duplicates['items_id'],
-      ],
-      'LIMIT' => $duplicates['cpt'],
-      'START' => 1
-   ]);
-
-   // Reduce to an array of ids
-   $to_delete = array_map(function ($value) {
-      return $value['id'];
-   }, iterator_to_array($to_delete));
-
-   $DB->delete($table, ['id' => $to_delete]);
-}
+$migration->dropKey($tmp_table, 'is_deleted');
+$migration->dropField($tmp_table, "is_deleted");
 
 // Add unicity key
 $migration->addKey(
-   $table,
+   $tmp_table,
    ['itemtype', 'items_id'],
    'unicity',
    'UNIQUE'
 );
+
+// Insert without duplicates
+$quote_tmp_table = $DB->quoteName($tmp_table);
+$select = $DB->request([
+   'FROM' => $table
+])->getSql();
+$DB->query("INSERT IGNORE INTO $quote_tmp_table $select");
+
+// Replace table with the new version
+$migration->dropTable($table);
+$migration->renameTable($tmp_table, $table);

@@ -642,10 +642,11 @@ class Migration {
     *
     * @param string $oldtable The name of the table already inside the database
     * @param string $newtable The copy of the old table
+    * @param bool   $insert   Copy content ? True by default
     *
     * @return void
    **/
-   function copyTable($oldtable, $newtable) {
+   function copyTable($oldtable, $newtable, bool $insert = true) {
       global $DB;
 
       if (!$DB->tableExists($newtable)
@@ -658,11 +659,11 @@ class Migration {
          $query = "CREATE TABLE `$newtable` LIKE `$oldtable`";
          $DB->queryOrDie($query, $this->version." create $newtable");
 
-         //nedds DB::insert to support subqeries to get migrated
-         $query = "INSERT INTO `$newtable`
-                          (SELECT *
-                           FROM `$oldtable`)";
-         $DB->queryOrDie($query, $this->version." copy from $oldtable to $newtable");
+         if ($insert) {
+            //needs DB::insert to support subqueries to get migrated
+            $query = "INSERT INTO `$newtable` (SELECT * FROM `$oldtable`)";
+            $DB->queryOrDie($query, $this->version." copy from $oldtable to $newtable");
+         }
       }
    }
 
