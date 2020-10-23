@@ -773,7 +773,7 @@ class Log extends CommonDBTM {
                         $newval = sprintf(__('%1$s %2$s'),
                               formatUserName($val['id'], $newval_expl[0], $val['realname'],
                                     $val['firstname']),
-                              ($newval_expl[1])) ?? "0"));
+                              ($newval_expl[1] ?? "0"));
                      }
                   }
                }
