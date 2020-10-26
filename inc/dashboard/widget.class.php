@@ -1351,8 +1351,20 @@ JAVASCRIPT;
             })";
       }
 
+      $height = "calc(100% - 1px)";
+      $legend_options = "";
+      if ($p['legend']) {
+         $height = "calc(100% - 40px)";
+         $legend_options = "
+            Chartist.plugins.legend(),";
+      }
+
       $html = <<<HTML
       <style>
+         /** fix chrome resizing height when animating svg (don't know why) **/
+      #chart-{$p['rand']} .ct-chart-line {
+         min-height: $height;
+      }
       #chart-{$p['rand']} .ct-label {
          color: {$fg_color};
       }
@@ -1386,14 +1398,6 @@ HTML;
             showArea: true,";
       }
 
-      $height = "calc(100% - 1px)";
-      $legend_options = "";
-      if ($p['legend']) {
-         $height = "calc(100% - 40px)";
-         $legend_options = "
-            Chartist.plugins.legend(),";
-      }
-
       $js = <<<JAVASCRIPT
       $(function () {
          var chart = new Chartist.Line('#chart-{$p['rand']} .chart', {
@@ -1418,8 +1422,8 @@ HTML;
             ]
          });
 
-         // animation
          chart.on('draw', function(data) {
+            // animation
             if (data.type === 'line' || data.type === 'area') {
                data.element.animate({
                   d: {
