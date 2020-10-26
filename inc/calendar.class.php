@@ -305,6 +305,27 @@ class Calendar extends CommonDropdown {
 
       $timestart  = strtotime($start);
       $timeend    = strtotime($end);
+
+      $check_holiday = true;
+      if (($timeend - $timestart) > (MONTH_TIMESTAMP * 12 * 2) && !$work_in_days) {
+         // As a request is done for each day to check if it is an holiday or not,
+         // computing real active time between two distant dates may result in too many requests.
+         // Possible solutions are:
+         //  1. Do not try to check holidays dates after a certain distance (acceptable workaround).
+         //  2. Consider a certain distance as illegitimate, and return a '0' value (workaround that can result in illogic cases).
+         //  3. Rework `Calendar::isHoliday()` to find a solution that does not require a SQL request or a disk read
+         //     operation (inc case of fs cache) for each checked day, and that will produce valid results even if holidays
+         //     are updated in another class.
+         $check_holiday = false;
+         Toolbox::logWarning(
+            sprintf(
+               'Distance between "%s" and "%s" is too important, time computation will ignore holidays parameters.',
+               $start,
+               $end
+            )
+         );
+      }
+
       $datestart  = date('Y-m-d', $timestart);
       $dateend    = date('Y-m-d', $timeend);
       // Need to finish at the closing day : set hour to midnight (23:59:59 for PHP)
@@ -321,7 +342,7 @@ class Calendar extends CommonDropdown {
          for ($actualtime=$timestart; $actualtime<=$timerealend; $actualtime+=DAY_TIMESTAMP) {
             $actualdate = date('Y-m-d', $actualtime);
 
-            if (!$this->isHoliday($actualdate)) {
+            if ($check_holiday && !$this->isHoliday($actualdate)) {
                $beginhour    = '00:00:00';
                // Calendar segment work with '24:00:00' format for midnight
                $endhour      = '24:00:00';
