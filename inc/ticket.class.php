@@ -5429,20 +5429,12 @@ class Ticket extends CommonITILObject {
          $criteria = array_merge_recursive($criteria, $JOINS);
       }
       $iterator = $DB->request($criteria);
-      $numrows = count($iterator);
-      $number = 0;
+      $total_row_count = count($iterator);
+      $displayed_row_count = (int)$_SESSION['glpidisplay_count_on_home'] > 0
+         ? min((int)$_SESSION['glpidisplay_count_on_home'], $total_row_count)
+         : $total_row_count;
 
-      if ($_SESSION['glpidisplay_count_on_home'] > 0) {
-         $iterator = $DB->request(
-            $criteria + [
-               'START' => (int)$start,
-               'LIMIT' => (int)$_SESSION['glpidisplay_count_on_home']
-            ]
-         );
-         $number = count($iterator);
-      }
-
-      if ($numrows > 0) {
+      if ($displayed_row_count > 0) {
          echo "<table class='tab_cadrehov'>";
          echo "<tr class='noHover'><th colspan='4'>";
 
@@ -5467,7 +5459,7 @@ class Ticket extends CommonITILObject {
 
                   echo "<a href=\"".Ticket::getSearchURL()."?".
                          Toolbox::append_params($options, '&amp;')."\">".
-                         Html::makeTitle(__('Your tickets to close'), $number, $numrows)."</a>";
+                         Html::makeTitle(__('Your tickets to close'), $displayed_row_count, $total_row_count)."</a>";
                   break;
 
                case "waiting" :
@@ -5483,7 +5475,7 @@ class Ticket extends CommonITILObject {
 
                   echo "<a href=\"".Ticket::getSearchURL()."?".
                          Toolbox::append_params($options, '&amp;')."\">".
-                         Html::makeTitle(__('Tickets on pending status'), $number, $numrows)."</a>";
+                         Html::makeTitle(__('Tickets on pending status'), $displayed_row_count, $total_row_count)."</a>";
                   break;
 
                case "process" :
@@ -5499,7 +5491,7 @@ class Ticket extends CommonITILObject {
 
                   echo "<a href=\"".Ticket::getSearchURL()."?".
                          Toolbox::append_params($options, '&amp;')."\">".
-                         Html::makeTitle(__('Tickets to be processed'), $number, $numrows)."</a>";
+                         Html::makeTitle(__('Tickets to be processed'), $displayed_row_count, $total_row_count)."</a>";
                   break;
 
                case "observed":
@@ -5515,7 +5507,7 @@ class Ticket extends CommonITILObject {
 
                   echo "<a href=\"".Ticket::getSearchURL()."?".
                          Toolbox::append_params($options, '&amp;')."\">".
-                         Html::makeTitle(__('Your observed tickets'), $number, $numrows)."</a>";
+                         Html::makeTitle(__('Your observed tickets'), $displayed_row_count, $total_row_count)."</a>";
                   break;
 
                case "requestbyself" :
@@ -5532,7 +5524,7 @@ class Ticket extends CommonITILObject {
 
                   echo "<a href=\"".Ticket::getSearchURL()."?".
                          Toolbox::append_params($options, '&amp;')."\">".
-                         Html::makeTitle(__('Your tickets in progress'), $number, $numrows)."</a>";
+                         Html::makeTitle(__('Your tickets in progress'), $displayed_row_count, $total_row_count)."</a>";
             }
 
          } else {
@@ -5550,7 +5542,7 @@ class Ticket extends CommonITILObject {
 
                   echo "<a href=\"".Ticket::getSearchURL()."?".
                          Toolbox::append_params($options, '&amp;')."\">".
-                         Html::makeTitle(__('Tickets on pending status'), $number, $numrows)."</a>";
+                         Html::makeTitle(__('Tickets on pending status'), $displayed_row_count, $total_row_count)."</a>";
                   break;
 
                case "process" :
@@ -5566,7 +5558,7 @@ class Ticket extends CommonITILObject {
 
                   echo "<a href=\"".Ticket::getSearchURL()."?".
                          Toolbox::append_params($options, '&amp;')."\">".
-                         Html::makeTitle(__('Tickets to be processed'), $number, $numrows)."</a>";
+                         Html::makeTitle(__('Tickets to be processed'), $displayed_row_count, $total_row_count)."</a>";
                   break;
 
                case "tovalidate" :
@@ -5593,7 +5585,7 @@ class Ticket extends CommonITILObject {
 
                   echo "<a href=\"".Ticket::getSearchURL()."?".
                         Toolbox::append_params($options, '&amp;')."\">".
-                        Html::makeTitle(__('Your tickets to validate'), $number, $numrows)."</a>";
+                        Html::makeTitle(__('Your tickets to validate'), $displayed_row_count, $total_row_count)."</a>";
 
                   break;
 
@@ -5611,7 +5603,7 @@ class Ticket extends CommonITILObject {
 
                   echo "<a href=\"".Ticket::getSearchURL()."?".
                         Toolbox::append_params($options, '&amp;')."\">".
-                        Html::makeTitle(__('Your tickets having rejected approval status'), $number, $numrows)."</a>";
+                        Html::makeTitle(__('Your tickets having rejected approval status'), $displayed_row_count, $total_row_count)."</a>";
 
                   break;
 
@@ -5628,7 +5620,7 @@ class Ticket extends CommonITILObject {
 
                   echo "<a href=\"".Ticket::getSearchURL()."?".
                         Toolbox::append_params($options, '&amp;')."\">".
-                        Html::makeTitle(__('Your tickets having rejected solution'), $number, $numrows)."</a>";
+                        Html::makeTitle(__('Your tickets having rejected solution'), $displayed_row_count, $total_row_count)."</a>";
 
                   break;
 
@@ -5657,7 +5649,7 @@ class Ticket extends CommonITILObject {
 
                   echo "<a href=\"".Ticket::getSearchURL()."?".
                         Toolbox::append_params($options, '&amp;')."\">".
-                        Html::makeTitle(__('Your tickets to close'), $number, $numrows)."</a>";
+                        Html::makeTitle(__('Your tickets to close'), $displayed_row_count, $total_row_count)."</a>";
                   break;
 
                case "observed" :
@@ -5673,7 +5665,7 @@ class Ticket extends CommonITILObject {
 
                   echo "<a href=\"".Ticket::getSearchURL()."?".
                         Toolbox::append_params($options, '&amp;')."\">".
-                        Html::makeTitle(__('Your observed tickets'), $number, $numrows)."</a>";
+                        Html::makeTitle(__('Your observed tickets'), $displayed_row_count, $total_row_count)."</a>";
                   break;
 
                case "survey" :
@@ -5707,7 +5699,7 @@ class Ticket extends CommonITILObject {
 
                   echo "<a href=\"".Ticket::getSearchURL()."?".
                          Toolbox::append_params($options, '&amp;')."\">".
-                         Html::makeTitle(__('Satisfaction survey'), $number, $numrows)."</a>";
+                         Html::makeTitle(__('Satisfaction survey'), $displayed_row_count, $total_row_count)."</a>";
                   break;
 
                case "requestbyself" :
@@ -5724,19 +5716,19 @@ class Ticket extends CommonITILObject {
 
                   echo "<a href=\"".Ticket::getSearchURL()."?".
                         Toolbox::append_params($options, '&amp;')."\">".
-                        Html::makeTitle(__('Your tickets in progress'), $number, $numrows)."</a>";
+                        Html::makeTitle(__('Your tickets in progress'), $displayed_row_count, $total_row_count)."</a>";
             }
          }
 
          echo "</th></tr>";
-         if ($number) {
-            echo "<tr><th style='width: 75px;'>".__('ID')."</th>";
-            echo "<th style='width: 20%;'>"._n('Requester', 'Requesters', 1)."</th>";
-            echo "<th style='width: 20%;'>"._n('Associated element', 'Associated elements', Session::getPluralNumber())."</th>";
-            echo "<th>".__('Description')."</th></tr>";
-            while ($data = $iterator->next()) {
-               self::showVeryShort($data['id'], $forcetab);
-            }
+         echo "<tr><th style='width: 75px;'>".__('ID')."</th>";
+         echo "<th style='width: 20%;'>"._n('Requester', 'Requesters', 1)."</th>";
+         echo "<th style='width: 20%;'>"._n('Associated element', 'Associated elements', Session::getPluralNumber())."</th>";
+         echo "<th>".__('Description')."</th></tr>";
+         $i = 0;
+         while ($i < $displayed_row_count && ($data = $iterator->next())) {
+            self::showVeryShort($data['id'], $forcetab);
+            $i++;
          }
          echo "</table>";
 

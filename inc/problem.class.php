@@ -700,20 +700,12 @@ class Problem extends CommonITILObject {
       ];
       $iterator = $DB->request($criteria);
 
-      $numrows = count($iterator);
-      $number = 0;
+      $total_row_count = count($iterator);
+      $displayed_row_count = (int)$_SESSION['glpidisplay_count_on_home'] > 0
+         ? min((int)$_SESSION['glpidisplay_count_on_home'], $total_row_count)
+         : $total_row_count;
 
-      if ($_SESSION['glpidisplay_count_on_home'] > 0) {
-         $citerator = $DB->request(
-            $criteria + [
-               'START' => (int)$start,
-               'LIMIT' => (int)$_SESSION['glpidisplay_count_on_home']
-            ]
-         );
-         $number = count($citerator);
-      }
-
-      if ($numrows > 0) {
+      if ($displayed_row_count > 0) {
          echo "<table class='tab_cadrehov'>";
          echo "<tr class='noHover'><th colspan='3'>";
 
@@ -738,7 +730,7 @@ class Problem extends CommonITILObject {
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                          Toolbox::append_params($options, '&amp;')."\">".
-                         Html::makeTitle(__('Problems on pending status'), $number, $numrows)."</a>";
+                         Html::makeTitle(__('Problems on pending status'), $displayed_row_count, $total_row_count)."</a>";
                   break;
 
                case "process" :
@@ -754,7 +746,7 @@ class Problem extends CommonITILObject {
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                          Toolbox::append_params($options, '&amp;')."\">".
-                         Html::makeTitle(__('Problems to be processed'), $number, $numrows)."</a>";
+                         Html::makeTitle(__('Problems to be processed'), $displayed_row_count, $total_row_count)."</a>";
                   break;
 
                default :
@@ -770,7 +762,7 @@ class Problem extends CommonITILObject {
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                          Toolbox::append_params($options, '&amp;')."\">".
-                         Html::makeTitle(__('Your problems in progress'), $number, $numrows)."</a>";
+                         Html::makeTitle(__('Your problems in progress'), $displayed_row_count, $total_row_count)."</a>";
             }
 
          } else {
@@ -788,7 +780,7 @@ class Problem extends CommonITILObject {
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                          Toolbox::append_params($options, '&amp;')."\">".
-                         Html::makeTitle(__('Problems on pending status'), $number, $numrows)."</a>";
+                         Html::makeTitle(__('Problems on pending status'), $displayed_row_count, $total_row_count)."</a>";
                   break;
 
                case "process" :
@@ -804,7 +796,7 @@ class Problem extends CommonITILObject {
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                          Toolbox::append_params($options, '&amp;')."\">".
-                         Html::makeTitle(__('Problems to be processed'), $number, $numrows)."</a>";
+                         Html::makeTitle(__('Problems to be processed'), $displayed_row_count, $total_row_count)."</a>";
                   break;
 
                default :
@@ -820,18 +812,18 @@ class Problem extends CommonITILObject {
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                         Toolbox::append_params($options, '&amp;')."\">".
-                        Html::makeTitle(__('Your problems in progress'), $number, $numrows)."</a>";
+                        Html::makeTitle(__('Your problems in progress'), $displayed_row_count, $total_row_count)."</a>";
             }
          }
 
          echo "</th></tr>";
-         if ($number) {
-            echo "<tr><th></th>";
-            echo "<th>"._n('Requester', 'Requesters', 1)."</th>";
-            echo "<th>".__('Description')."</th></tr>";
-            while ($result = $iterator->next()) {
-               self::showVeryShort($result['id'], $forcetab);
-            }
+         echo "<tr><th></th>";
+         echo "<th>"._n('Requester', 'Requesters', 1)."</th>";
+         echo "<th>".__('Description')."</th></tr>";
+         $i = 0;
+         while ($i < $displayed_row_count && ($data = $iterator->next())) {
+            self::showVeryShort($data['id'], $forcetab);
+            $i++;
          }
          echo "</table>";
 

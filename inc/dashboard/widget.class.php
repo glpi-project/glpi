@@ -273,6 +273,7 @@ class Widget extends CommonGLPI {
          ? "href='{$p['url']}'"
          : "";
 
+      $label = $p['label'];
       $html = <<<HTML
       <style>
          #{$p['id']} {
@@ -290,7 +291,7 @@ class Widget extends CommonGLPI {
          class="card big-number $class"
          title="{$p['alt']}">
          <span class="content">$formatted_number</span>
-         <div class="label">{$p['label']}</div>
+         <div class="label" title="{$label}">{$label}</div>
          <i class="main-icon {$p['icon']}" style="color: {$fg_color}"></i>
       </a>
 HTML;
@@ -945,6 +946,14 @@ JAVASCRIPT;
             <span>";
       }
 
+      $height = "calc(100% - 5px)";
+      $legend_options = "";
+      if ($p['legend']) {
+         $height = "calc(100% - 40px)";
+         $legend_options = "
+            Chartist.plugins.legend(),";
+      }
+
       $html = <<<HTML
       <style>
       #chart-{$p['rand']} .ct-label {
@@ -952,6 +961,11 @@ JAVASCRIPT;
       }
       #chart-{$p['rand']} .ct-grid {
          stroke: {$line_color};
+      }
+
+      /** fix chrome resizing height when animating svg (don't know why) **/
+      #chart-{$p['rand']} .ct-chart-bar {
+         min-height: $height;
       }
       {$palette_style}
       </style>
@@ -1000,14 +1014,6 @@ HTML;
       if ($p['distributed']) {
          $distributed_options = "
             distributeSeries: true,";
-      }
-
-      $height = "calc(100% - 5px)";
-      $legend_options = "";
-      if ($p['legend']) {
-         $height = "calc(100% - 40px)";
-         $legend_options = "
-            Chartist.plugins.legend(),";
       }
 
       // just to avoid issues with syntax coloring
@@ -1088,11 +1094,19 @@ HTML;
                   axis_anim = 'x';
                }
 
-               var animate_properties = {};
+               var animate_properties = {
+                  opacity: {
+                     dur: {$animation_duration},
+                     from: 0,
+                     to: 1,
+                     easing: Chartist.Svg.Easing.easeOutQuint
+                  }
+               };
                animate_properties[axis_anim+'2'] = {
                   dur: {$animation_duration},
                   from: data[axis_anim+'1'],
-                  to: data[axis_anim+'2']
+                  to: data[axis_anim+'2'],
+                  easing: Chartist.Svg.Easing.easeOutQuint
                };
                data.element.animate(animate_properties);
 
@@ -1338,8 +1352,20 @@ JAVASCRIPT;
             })";
       }
 
+      $height = "calc(100% - 1px)";
+      $legend_options = "";
+      if ($p['legend']) {
+         $height = "calc(100% - 40px)";
+         $legend_options = "
+            Chartist.plugins.legend(),";
+      }
+
       $html = <<<HTML
       <style>
+         /** fix chrome resizing height when animating svg (don't know why) **/
+      #chart-{$p['rand']} .ct-chart-line {
+         min-height: $height;
+      }
       #chart-{$p['rand']} .ct-label {
          color: {$fg_color};
       }
@@ -1373,14 +1399,6 @@ HTML;
             showArea: true,";
       }
 
-      $height = "calc(100% - 1px)";
-      $legend_options = "";
-      if ($p['legend']) {
-         $height = "calc(100% - 40px)";
-         $legend_options = "
-            Chartist.plugins.legend(),";
-      }
-
       $js = <<<JAVASCRIPT
       $(function () {
          var chart = new Chartist.Line('#chart-{$p['rand']} .chart', {
@@ -1405,8 +1423,8 @@ HTML;
             ]
          });
 
-         // animation
          chart.on('draw', function(data) {
+            // animation
             if (data.type === 'line' || data.type === 'area') {
                data.element.animate({
                   d: {

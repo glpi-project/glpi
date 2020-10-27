@@ -66,7 +66,7 @@ $break_tablet: 1400px;
       padding-top: 0;
       width: calc(80% + 28px);
       margin: 0 auto;
-      margin-bottom: -35px;
+      margin-bottom: -20px;
       z-index: 1;
 
       & + .search_page {
@@ -85,10 +85,6 @@ $break_tablet: 1400px;
          font-size: 1.5em;
          right: 3px;
          bottom: 3px;
-      }
-
-      .big-number .label {
-         font-size: 11px !important;
       }
 
       .grid-stack .grid-stack-item.lock-bottom {
@@ -756,17 +752,29 @@ $break_tablet: 1400px;
 
 
    .big-number {
+      .main-icon {
+         right: 5px;
+         top: 5px;
+      }
+
       .formatted-number {
          display: flex;
 
          .number, .suffix {
             font-size: 3em;
             font-weight: normal;
+
+            @media screen and (max-width: $break_tablet) {
+               font-size: 2em;
+            }
          }
       }
 
       .label {
-         max-width: calc(100% - 2em);
+         max-width: calc(100%);
+         overflow: hidden;
+         text-overflow: ellipsis;
+         white-space: nowrap;
       }
    }
    .main-icon {

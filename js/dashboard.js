@@ -920,13 +920,14 @@ var Dashboard = {
          card_opt.apply_filters = filters;
 
          promises.push($.get(CFG_GLPI.root_doc+"/ajax/dashboard.php", {
-            'action':    'get_card',
-            'dashboard': Dashboard.current_name,
-            'card_id':   card_id,
-            'force':     (specific_one.length > 0 ? 1 : 0),
-            'embed':     (Dashboard.embed ? 1 : 0),
-            'args':      card_opt,
-            'cache_key': Dashboard.cache_key,
+            'action':      'get_card',
+            'dashboard':   Dashboard.current_name,
+            'card_id':     card_id,
+            'force':       (specific_one.length > 0 ? 1 : 0),
+            'embed':       (Dashboard.embed ? 1 : 0),
+            'args':        card_opt,
+            'd_cache_key': Dashboard.cache_key,
+            'c_cache_key': card_opt.cache_key || "",
          }).then(function(html) {
             card.children('.grid-stack-item-content')
                .html(html);

@@ -1869,21 +1869,14 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
    static function showCentralList($start, $status = 'todo', $showgrouptickets = true) {
       global $CFG_GLPI;
 
-      $req = self::getTaskList($status, $showgrouptickets);
-      $numrows = 0;
-      if ($req !== false) {
-         $numrows = $req->numrows();
-      }
+      $iterator = self::getTaskList($status, $showgrouptickets);
 
-      $number = 0;
-      if ($_SESSION['glpidisplay_count_on_home'] > 0 && $req !== false) {
-         $start = (int)$start;
-         $limit = (int)$_SESSION['glpidisplay_count_on_home'];
-         $req = self::getTaskList($status, $showgrouptickets, $start, $limit);
-         $number = $req->numrows();
-      }
+      $total_row_count = count($iterator);
+      $displayed_row_count = (int)$_SESSION['glpidisplay_count_on_home'] > 0
+         ? min((int)$_SESSION['glpidisplay_count_on_home'], $total_row_count)
+         : $total_row_count;
 
-      if ($numrows > 0) {
+      if ($displayed_row_count > 0) {
          echo "<table class='tab_cadrehov'>";
          echo "<tr class='noHover'><th colspan='4'>";
 
@@ -1930,26 +1923,26 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                }
                echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                       Toolbox::append_params($options, '&amp;')."\">".
-                      Html::makeTitle($title, $number, $numrows)."</a>";
+                      Html::makeTitle($title, $displayed_row_count, $total_row_count)."</a>";
                break;
          }
 
          echo "</th></tr>";
-         if ($number) {
-            echo "<tr>";
-            echo "<th style='width: 75px;'>".__('ID')." </th>";
-            $type = "";
-            if ($itemtype == "TicketTask") {
-               $type = Ticket::getTypeName();
-            } else if ($itemtype == "ProblemTask") {
-               $type = Problem::getTypeName();
-            }
-            echo "<th style='width: 20%;'>".__('Title')." (".strtolower($type).")</th>";
-            echo "<th>".__('Description')."</th>";
-            echo "</tr>";
-            foreach ($req as $row) {
-               self::showVeryShort($row['id'], $itemtype);
-            }
+         echo "<tr>";
+         echo "<th style='width: 75px;'>".__('ID')." </th>";
+         $type = "";
+         if ($itemtype == "TicketTask") {
+            $type = Ticket::getTypeName();
+         } else if ($itemtype == "ProblemTask") {
+            $type = Problem::getTypeName();
+         }
+         echo "<th style='width: 20%;'>".__('Title')." (".strtolower($type).")</th>";
+         echo "<th>".__('Description')."</th>";
+         echo "</tr>";
+         $i = 0;
+         while ($i < $displayed_row_count && ($data = $iterator->next())) {
+            self::showVeryShort($data['id'], $itemtype);
+            $i++;
          }
          echo "</table>";
       }
