@@ -273,6 +273,7 @@ class Widget extends CommonGLPI {
          ? "href='{$p['url']}'"
          : "";
 
+      $label = $p['label'];
       $html = <<<HTML
       <style>
          #{$p['id']} {
@@ -290,7 +291,7 @@ class Widget extends CommonGLPI {
          class="card big-number $class"
          title="{$p['alt']}">
          <span class="content">$formatted_number</span>
-         <div class="label">{$p['label']}</div>
+         <div class="label" title="{$label}">{$label}</div>
          <i class="main-icon {$p['icon']}" style="color: {$fg_color}"></i>
       </a>
 HTML;

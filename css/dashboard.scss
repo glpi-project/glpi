@@ -771,11 +771,10 @@ $break_tablet: 1400px;
       }
 
       .label {
-         max-width: calc(100% - 2em);
-
-         @media screen and (max-width: $break_tablet) {
-            max-width: calc(100%)
-         }
+         max-width: calc(100%);
+         overflow: hidden;
+         text-overflow: ellipsis;
+         white-space: nowrap;
       }
    }
    .main-icon {
