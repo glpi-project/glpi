@@ -59,7 +59,9 @@ $quote_tmp_table = $DB->quoteName($tmp_table);
 $select = $DB->request([
    'FROM' => $table
 ])->getSql();
-$DB->query("INSERT IGNORE INTO $quote_tmp_table $select");
+
+// "IGNORE" keyword used to avoid duplicates
+$DB->queryOrDie("INSERT IGNORE INTO $quote_tmp_table $select");
 
 // Replace table with the new version
 $migration->dropTable($table);
