@@ -85,6 +85,7 @@ class Config extends DbTestCase {
          'Config$2'      => 'Default values',
          'Config$3'      => 'Assets',
          'Config$4'      => 'Assistance',
+         'Config$12'     => 'Management',
          'GLPINetwork$1' => 'GLPI Network',
          'Log$1'         => 'Historical',
       ];
@@ -110,6 +111,7 @@ class Config extends DbTestCase {
          'Config$2'      => 'Default values',
          'Config$3'      => 'Assets',
          'Config$4'      => 'Assistance',
+         'Config$12'     => 'Management',
          'Config$9'      => 'Logs purge',
          'Config$5'      => 'System',
          'Config$10'     => 'Security',

@@ -31,42 +31,14 @@
 
 /* global fileType, getExtIcon, getSize, isImage, stopEvent, Uint8Array */
 
-function uploadFile(file, editor, input_name) {
-   var returnTag = false;
+var insertIntoEditor = []; // contains flags that indicate if uploaded file (image) should be added to editor contents
 
-   //Create formdata from file to send with ajax request
-   var formdata = new FormData();
-   formdata.append('filename[0]', file, file.name);
-   formdata.append('name', 'filename');
+function uploadFile(file, editor) {
+   insertIntoEditor[file.name] = isImage(file);
 
-   // upload file with ajax
-   $.ajax({
-      type: 'POST',
-      url: CFG_GLPI.root_doc+'/ajax/fileupload.php',
-      data: formdata,
-      processData: false,
-      contentType: false,
-      dataType: 'JSON',
-      async: false,
-      success: function(data) {
-         $.each(data, function(index, element) {
-            if (element[0].error === undefined) {
-               returnTag = '';
-               var tag = getFileTag(element);
-               //if is an image add tag
-               if (isImage(file)) {
-                  returnTag = tag.tag;
-               }
-               //display uploaded file
-               displayUploadedFile(element[0], tag, editor, input_name);
-            } else {
-               returnTag = false;
-               alert(element[0].error);
-            }
-         });
-      },
-
-      error: function (request) {
+   $(editor.getElement()).siblings('.fileupload').find('[type="file"]')
+      .fileupload('send', {files: [file]})
+      .error(function (request) {
          // If this is an error on the return
          if ("responseText" in request && request.responseText.length > 0) {
             alert(request.responseText);
@@ -74,37 +46,58 @@ function uploadFile(file, editor, input_name) {
             // Error before sending request #3866
             alert(request.statusText);
          }
-      }
-   });
-
-   return returnTag;
+      });
 }
 
-/**
- * Gets the file tag.
- *
- * @param      {(boolean|string)}  data receive from uploadFile
- * @return     {(boolean|string)}  The file tag.
- */
-var getFileTag = function(data) {
-   var returnString = '';
+var handleUploadedFile = function (files, files_data, input_name, container, editor_id) {
+   $.ajax(
+      {
+         type: 'POST',
+         url: CFG_GLPI.root_doc + '/ajax/getFileTag.php',
+         data: {data: files_data},
+         dataType: 'JSON',
+         success: function(tags) {
+            $.each(
+               files,
+               function(index, file) {
+                  if (files_data[index].error !== undefined) {
+                     container.parent().find('.uploadbar')
+                        .text(files_data[index].error)
+                        .css('width', '100%');
+                     return;
+                  }
 
-   $.ajax({
-      type: 'POST',
-      url: CFG_GLPI.root_doc+'/ajax/getFileTag.php',
-      data: {'data':data},
-      dataType: 'JSON',
-      async: false,
-      success: function(data) {
-         returnString = data[0];
-      },
-      error: function (request) {
-         console.warn(request.responseText);
-         returnString=false;
+                  var tag_data = tags[index];
+
+                  var editor = null;
+                  if (editor_id && Object.prototype.hasOwnProperty.call(insertIntoEditor, file.name) && insertIntoEditor[file.name]) {
+                     editor = tinyMCE.get(editor_id);
+                     insertImgFromFile(editor, file, tag_data.tag);
+                  }
+
+                  displayUploadedFile(files_data[index], tag_data, editor, input_name, container);
+
+                  container.parent().find('.uploadbar')
+                     .text(__('Upload successful'))
+                     .css('width', '100%')
+                     .delay(2000)
+                     .fadeOut('slow');
+               }
+            );
+         },
+         error: function (request) {
+            console.warn(request.responseText);
+         },
+         complete: function () {
+            $.each(
+               files,
+               function(index, file) {
+                  delete(insertIntoEditor[file.name]);
+               }
+            );
+         }
       }
-   });
-
-   return returnString;
+   );
 };
 
 /**
@@ -114,63 +107,49 @@ var getFileTag = function(data) {
  * @param      {String}  tag           The tag
  * @param      {Object}  editor        The TinyMCE editor instance
  * @param      {String}  input_name    Name of generated input hidden (default filename)
+ * @param      {Object}  container     The fileinfo container
  */
 var fileindex = 0;
-var displayUploadedFile = function(file, tag, editor, input_name) {
-   // default argument(s)
-   input_name = (typeof input_name === 'undefined' || input_name == null) ? 'filename' : input_name;
+var displayUploadedFile = function(file, tag, editor, input_name, filecontainer) {
+   var ext = file.name.split('.').pop();
 
-   // find the nearest fileupload_info where to append file list
-   var current_dom_point = $(editor.targetElm);
-   var iteration = 0;
-   var filecontainer;
-   do {
-      current_dom_point = current_dom_point.parent();
-      filecontainer = current_dom_point.find('.fileupload_info');
-      iteration++;
-   } while (filecontainer.length <= 0 && iteration < 30);
+   var p = $('<p></p>')
+      .attr('id',file.id)
+      .html(
+         getExtIcon(ext)
+         + '&nbsp;'
+         + '<b>'+file.display
+         + '</b>'
+         + '&nbsp;('
+         + getSize(file.size)+')&nbsp;'
+      ).appendTo(filecontainer);
 
-   if (filecontainer.length) {
-      var ext = file.name.split('.').pop();
+   // File
+   $('<input/>')
+      .attr('type', 'hidden')
+      .attr('name', '_'+input_name+'['+fileindex+']')
+      .attr('value', file.name).appendTo(p);
 
-      var p = $('<p></p>')
-         .attr('id',file.id)
-         .html(
-            getExtIcon(ext)
-            + '&nbsp;'
-            + '<b>'+file.display
-            + '</b>'
-            + '&nbsp;('
-            + getSize(file.size)+')&nbsp;'
-         ).appendTo(filecontainer);
+   // Prefix
+   $('<input/>')
+      .attr('type', 'hidden')
+      .attr('name', '_prefix_'+input_name+'['+fileindex+']')
+      .attr('value', file.prefix).appendTo(p);
 
-      // File
-      $('<input/>')
-         .attr('type', 'hidden')
-         .attr('name', '_'+input_name+'['+fileindex+']')
-         .attr('value', file.name).appendTo(p);
+   // Tag
+   $('<input/>')
+      .attr('type', 'hidden')
+      .attr('name', '_tag_'+input_name+'['+fileindex+']')
+      .attr('value', tag.name)
+      .appendTo(p);
 
-      // Prefix
-      $('<input/>')
-         .attr('type', 'hidden')
-         .attr('name', '_prefix_'+input_name+'['+fileindex+']')
-         .attr('value', file.prefix).appendTo(p);
+   // Delete button
+   var elementsIdToRemove = {0:file.id, 1:file.id+'2'};
+   $('<span class="fa fa-times-circle pointer"></span>').click(function() {
+      deleteImagePasted(elementsIdToRemove, tag.tag, editor);
+   }).appendTo(p);
 
-      // Tag
-      $('<input/>')
-         .attr('type', 'hidden')
-         .attr('name', '_tag_'+input_name+'['+fileindex+']')
-         .attr('value', tag.name)
-         .appendTo(p);
-
-      // Delete button
-      var elementsIdToRemove = {0:file.id, 1:file.id+'2'};
-      $('<span class="fa fa-times-circle pointer"></span>').click(function() {
-         deleteImagePasted(elementsIdToRemove, tag.tag, editor);
-      }).appendTo(p);
-
-      fileindex++;
-   }
+   fileindex++;
 };
 
 /**
@@ -326,13 +305,7 @@ var extractSrcFromImgTag = function(content) {
  */
 var insertImageInTinyMCE = function(editor, image) {
    //make ajax call for upload doc
-   var input_name = $(editor.targetElm).attr('name');
-   var tag = uploadFile(image, editor, input_name);
-   if (tag !== false) {
-      insertImgFromFile(editor, image, tag);
-   }
-
-   return tag;
+   uploadFile(image, editor);
 };
 
 /**
@@ -388,6 +361,9 @@ if (typeof tinyMCE != 'undefined') {
             };
             xhr.send();
          }
+
+         // event was stopped, we have to manually remove 'draghover' class
+         $('.draghoverable').removeClass('draghover');
       });
    });
 }
@@ -432,21 +408,5 @@ $(function() {
    $(document).bind('drop', function(event) {
       event.preventDefault();
       $('.draghoverable').removeClass('draghover');
-
-      // if file present, insert it in filelist
-      if (typeof event.originalEvent.dataTransfer.files !== 'undefined') {
-         $.each(event.originalEvent.dataTransfer.files, function(index, element) {
-            var input_name = null;
-            var input_file = $(event.target).find('input[type=file][name]');
-            if (input_file.length) {
-               input_name = input_file.attr('name').replace('[]', '');
-            }
-            uploadFile(
-               element,
-               {targetElm: $(event.target).find('.fileupload_info')},
-               input_name
-            );
-         });
-      }
    });
 });

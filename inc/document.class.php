@@ -448,11 +448,10 @@ class Document extends CommonDBTM {
     * Get max upload size from php config
    **/
    static function getMaxUploadSize() {
+      global $CFG_GLPI;
 
-      $max_size  = Toolbox::return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
-      $max_size /= 1024*1024;
       //TRANS: %s is a size
-      return sprintf(__('%s Mio max'), round($max_size, 1));
+      return sprintf(__('%s Mio max'), $CFG_GLPI['document_max_size']);
    }
 
 

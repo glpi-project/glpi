@@ -49,12 +49,13 @@ function update95toXX() {
    $update_scripts = [
       'comment_fields',
       'devicebattery',
+      'documents',
       'domains',
       'native_inventory',
+      'recurrentchange',
       'reservationitem',
       'softwares',
-      'recurrentchange',
-      'uuids'
+      'uuids',
    ];
 
    foreach ($update_scripts as $update_script) {

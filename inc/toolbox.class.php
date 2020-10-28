@@ -1761,6 +1761,19 @@ class Toolbox {
       return $val;
    }
 
+
+   /**
+    * Get max upload size from php config.
+    *
+    * @return int
+    */
+   static function getPhpUploadSizeLimit(): int {
+      $post_max   = Toolbox::return_bytes_from_ini_vars(ini_get("post_max_size"));
+      $upload_max = Toolbox::return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
+      $max_size   = $post_max > 0 ? min($post_max, $upload_max) : $upload_max;
+      return $max_size;
+   }
+
    /**
     * Parse imap open connect string
     *

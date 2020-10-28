@@ -293,7 +293,9 @@ $default_prefs = [
    'default_dashboard_mini_ticket'           => 'mini_tickets',
    'admin_email_noreply'                     => '',
    'admin_email_noreply_name'                => '',
-   Impact::CONF_ENABLED                      => exportArrayToDB(Impact::getDefaultItemtypes())
+   Impact::CONF_ENABLED                      => exportArrayToDB(Impact::getDefaultItemtypes()),
+   // Default size corresponds to the 'upload_max_filesize' directive in Mio (rounded down) or 1 Mio if 'upload_max_filesize' is too low.
+   'document_max_size'                       => max(1, floor(Toolbox::return_bytes_from_ini_vars(ini_get('upload_max_filesize')) / 1024 / 1024)),
 ];
 
 $tables['glpi_configs'] = [];
