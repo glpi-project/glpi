@@ -68,6 +68,7 @@ class Appliance extends CommonDBTM {
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
          ->addStandardTab('Infocom', $ong, $options)
+         ->addStandardTab('KnowbaseItem_Item', $ong, $options)
          ->addStandardTab('Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
@@ -419,6 +420,8 @@ class Appliance extends CommonDBTM {
          $actions[$prefix.'add']    = _x('button', 'Add an item');
          $actions[$prefix.'remove'] = _x('button', 'Remove an item');
       }
+
+      KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
 
       return $actions;
    }
