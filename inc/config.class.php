@@ -2255,6 +2255,7 @@ class Config extends CommonDBTM {
                2 => __('Default values'), // Prefs
                3 => __('Assets'),
                4 => __('Assistance'),
+               12 => __('Management'),
             ];
             if (Config::canUpdate()) {
                $tabs[9]  = __('Logs purge');
@@ -2341,6 +2342,10 @@ class Config extends CommonDBTM {
 
             case 11:
                Impact::showConfigForm();
+               break;
+
+            case 12:
+               $item->showFormManagement();
                break;
          }
       }
@@ -3402,6 +3407,67 @@ class Config extends CommonDBTM {
 
       echo '</table>';
       Html::closeForm();
+   }
+
+   /**
+    * Security form related to management entries.
+    *
+    * @since x.x.x
+    *
+    * @return void|boolean (display) Returns false if there is a rights error.
+    */
+   function showFormManagement () {
+      global $CFG_GLPI;
+
+      if (!self::canView()) {
+         return;
+      }
+
+      $rand = mt_rand();
+      $canedit = Session::haveRight(self::$rightname, UPDATE);
+
+      echo '<div class="center" id="tabsbody">';
+      if ($canedit) {
+         echo '<form name="form" action="' . Toolbox::getItemTypeFormURL(__CLASS__) . '" method="post" data-track-changes="true">';
+      }
+      echo '<table class="tab_cadre_fixe">';
+      echo '<tr><th colspan="4">' . __('Documents setup') . '</th></tr>';
+
+      echo '<tr class="tab_bg_2">';
+      echo '<td>';
+      echo '<label for="dropdown_document_max_size' . $rand . '">';
+      echo __('Document files maximum size (Mio)');
+      echo '</label>';
+      echo '</td>';
+      echo '<td>';
+      Dropdown::showNumber(
+         'document_max_size',
+         [
+            'value' => $CFG_GLPI['document_max_size'],
+            'min'   => 1,
+            'max'   => 250,
+            'rand'  => $rand,
+         ]
+      );
+      echo '</td>';
+      echo '<td colspan="2"></td>';
+      echo '</tr>';
+
+      if ($canedit) {
+         echo '<tr class="tab_bg_2">';
+         echo '<td colspan="4" class="center">';
+         echo '<input type="submit" name="update" class="submit" value="' . _sx('button', 'Save') . '">';
+         echo '</td>';
+         echo '</tr>';
+      }
+
+      echo '</table>';
+
+      if ($canedit) {
+         Html::closeForm();
+      }
+
+      echo '</div>';
    }
 
    public function rawSearchOptions() {

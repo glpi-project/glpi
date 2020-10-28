@@ -1,3 +1,4 @@
+<?php
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -28,9 +29,13 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
 
-// jQuery File Upload plugin
-require('../../vendor/blueimp/jquery-file-upload/js/jquery.fileupload');
-require('../../vendor/blueimp/jquery-file-upload/js/jquery.iframe-transport');
-require('../../vendor/blueimp/jquery-file-upload/js/jquery.fileupload-process');
-require('../../vendor/blueimp/jquery-file-upload/js/jquery.fileupload-validate');
+// Add a config entry for document max size.
+// Default size corresponds to the 'upload_max_filesize' directive in Mio (rounded down)
+// or 1 Mio if 'upload_max_filesize' is too low.
+$upload_max = Toolbox::return_bytes_from_ini_vars(ini_get('upload_max_filesize'));
+$migration->addConfig(['document_max_size' => max(1, floor($upload_max / 1024 / 1024))]);

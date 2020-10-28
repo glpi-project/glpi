@@ -183,4 +183,36 @@ class DocumentType  extends CommonDropdown {
          return $display;
       }
    }
+
+   /**
+    * Return pattern that can be used to validate that name of an uploaded file matches accepted extensions.
+    *
+    * @return string
+    */
+   public static function getUploadableFilePattern(): string {
+      global $DB;
+
+      $valid_type_iterator = $DB->request([
+         'FROM'   => 'glpi_documenttypes',
+         'WHERE'  => [
+            'is_uploadable'   => 1
+         ]
+      ]);
+
+      $valid_ext_patterns = [];
+      foreach ($valid_type_iterator as $valid_type) {
+         $valid_ext = $valid_type['ext'];
+         if (preg_match('/\/.+\//', $valid_ext)) {
+            // Filename matches pattern
+            // Remove surrounding '/' as it will be included in a larger pattern
+            // and protect by surrounding parenthesis to prevent conflict with other patterns
+            $valid_ext_patterns[] = '(' . substr($valid_ext, 1, -1) . ')';
+         } else {
+            // Filename ends with allowed ext
+            $valid_ext_patterns[] = '\.' . preg_quote($valid_type['ext'], '/') . '$';
+         }
+      }
+
+      return '/(' . implode('|', $valid_ext_patterns) . ')/i';
+   }
 }

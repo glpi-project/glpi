@@ -5525,8 +5525,12 @@ JAVASCRIPT;
     * @param  array $options theses following keys:
     *                          - editor_id the dom id of the tinymce editor
     * @return string The Html
+    *
+    * @deprecated x.x
     */
    static function fileForRichText($options = []) {
+      Toolbox::deprecated();
+
       $p['editor_id']     = '';
       $p['name']          = 'filename';
       $p['filecontainer'] = 'fileupload_info';
@@ -5585,6 +5589,7 @@ JAVASCRIPT;
     *    - showtitle           boolean  show the title above file list
     *                                   (with max upload size indication)
     *    - enable_richtext     boolean  switch to richtext fileupload
+    *    - editor_id           string   id attribute for the richtext editor
     *    - pasteZone           string   DOM ID of the paste zone
     *    - dropZone            string   DOM ID of the drop zone
     *    - rand                string   already computed rand value
@@ -5610,6 +5615,7 @@ JAVASCRIPT;
       $p['display']           = true;
       $p['multiple']          = false;
       $p['uploads']           = [];
+      $p['editor_id']         = null;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -5618,7 +5624,7 @@ JAVASCRIPT;
       }
 
       $display = "";
-      $display .= "<div class='fileupload draghoverable'>";
+      $display .= "<div class='fileupload draghoverable' id='{$p['dropZone']}'>";
 
       if ($p['showtitle']) {
          $display .= "<b>";
@@ -5634,87 +5640,73 @@ JAVASCRIPT;
          'uploads'       => $p['uploads'],
       ]);
 
-      if (!empty($p['editor_id'])
-          && $p['enable_richtext']) {
-         $options_rt = $options;
-         $options_rt['display'] = false;
-         $display .= self::fileForRichText($options_rt);
-      } else {
+      $max_file_size  = $CFG_GLPI['document_max_size'] * 1024 * 1024;
+      $max_chunk_size = round(Toolbox::getPhpUploadSizeLimit() * 0.9); // keep some place for extra data
 
-         // manage file upload without tinymce editor
-         $display .= "<div id='{$p['dropZone']}'>";
-         $display .= "<span class='b'>".__('Drag and drop your file here, or').'</span><br>';
-         $display .= "<input id='fileupload{$p['rand']}' type='file' name='".$p['name']."[]'
-                         data-url='".$CFG_GLPI["root_doc"]."/ajax/fileupload.php'
-                         data-form-data='{\"name\": \"".$p['name']."\",
-                                          \"showfilesize\": \"".$p['showfilesize']."\"}'"
-                         .($p['multiple']?" multiple='multiple'":"")
-                         .($p['onlyimages']?" accept='.gif,.png,.jpg,.jpeg'":"").">";
-         $display .= "<div id='progress{$p['rand']}' style='display:none'>".
-                 "<div class='uploadbar' style='width: 0%;'></div></div>";
-         $display .= "</div>";
+      // manage file upload without tinymce editor
+      $display .= "<span class='b'>".__('Drag and drop your file here, or').'</span><br>';
+      $display .= "<input id='fileupload{$p['rand']}' type='file' name='".$p['name']."[]'
+                      data-url='".$CFG_GLPI["root_doc"]."/ajax/fileupload.php'
+                      data-form-data='{\"name\": \"".$p['name']."\", \"showfilesize\": \"".$p['showfilesize']."\"}'"
+                      .($p['multiple']?" multiple='multiple'":"")
+                      .($p['onlyimages']?" accept='.gif,.png,.jpg,.jpeg'":"").">";
+      $display .= "<div id='progress{$p['rand']}' style='display:none'>".
+              "<div class='uploadbar' style='width: 0%;'></div></div>";
 
-         $display .= Html::scriptBlock("
-         $(function() {
-            var fileindex{$p['rand']} = 0;
-            $('#fileupload{$p['rand']}').fileupload({
-               dataType: 'json',
-               pasteZone: ".($p['pasteZone'] !== false
-                              ? "$('#{$p['pasteZone']}')"
-                              : "false").",
-               dropZone:  ".($p['dropZone'] !== false
-                              ? "$('#{$p['dropZone']}')"
-                              : "false").",
-               acceptFileTypes: ".($p['onlyimages']
-                                    ? "'/(\.|\/)(gif|jpe?g|png)$/i'"
-                                    : "undefined").",
-               progressall: function(event, data) {
-                  var progress = parseInt(data.loaded / data.total * 100, 10);
-                  $('#progress{$p['rand']}')
-                     .show()
-                  .filter('.uploadbar')
-                     .css({
-                        width: progress + '%'
-                     })
-                     .text(progress + '%')
-                     .show();
-               },
-               done: function (event, data) {
-                  var filedata = data;
-                  // Load image tag, and display image uploaded
-                  $.ajax({
-                     type: 'POST',
-                     url: '".$CFG_GLPI['root_doc']."/ajax/getFileTag.php',
-                     data: {
-                        data: data.result.{$p['name']}
-                     },
-                     dataType: 'JSON',
-                     success: function(tag) {
-                        $.each(filedata.result.{$p['name']}, function(index, file) {
-                           if (file.error === undefined) {
-                              //create a virtual editor to manage filelist, see displayUploadedFile()
-                              var editor = {
-                                 targetElm: $('#fileupload{$p['rand']}')
-                              };
-                              displayUploadedFile(file, tag[index], editor, '{$p['name']}');
-
-                              $('#progress{$p['rand']} .uploadbar')
-                                 .text('".addslashes(__('Upload successful'))."')
-                                 .css('width', '100%')
-                                 .delay(2000)
-                                 .fadeOut('slow');
-                           } else {
-                              $('#progress{$p['rand']} .uploadbar')
-                                 .text(file.error)
-                                 .css('width', '100%');
-                           }
-                        });
+      $display .= Html::scriptBlock("
+      $(function() {
+         var fileindex{$p['rand']} = 0;
+         $('#fileupload{$p['rand']}').fileupload({
+            dataType: 'json',
+            pasteZone: ".($p['pasteZone'] !== false
+                           ? "$('#{$p['pasteZone']}')"
+                           : "false").",
+            dropZone:  ".($p['dropZone'] !== false
+                           ? "$('#{$p['dropZone']}')"
+                           : "false").",
+            acceptFileTypes: ".($p['onlyimages']
+                                 ? "'/(\.|\/)(gif|jpe?g|png)$/i'"
+                                 : DocumentType::getUploadableFilePattern()).",
+            maxFileSize: {$max_file_size},
+            maxChunkSize: {$max_chunk_size},
+            progressall: function(event, data) {
+               var progress = parseInt(data.loaded / data.total * 100, 10);
+               $('#progress{$p['rand']}').show();
+               $('#progress{$p['rand']} .uploadbar')
+                  .text(progress + '%')
+                  .css('width', progress + '%')
+                  .show();
+            },
+            done: function (event, data) {
+               handleUploadedFile(
+                  data.files, // files as blob
+                  data.result.{$p['name']}, // response from '/ajax/fileupload.php'
+                  '{$p['name']}',
+                  $('#{$p['filecontainer']}'),
+                  '{$p['editor_id']}'
+               );
+            },
+            processfail: function (e, data) {
+               $.each(
+                  data.files,
+                  function(index, file) {
+                     if (file.error) {
+                        $('#progress{$p['rand']}').show();
+                        $('#progress{$p['rand']} .uploadbar')
+                           .text(file.error)
+                           .css('width', '100%');
+                        return;
                      }
-                  });
-               }
-            });
-         });");
-      }
+                  }
+               );
+            },
+            messages: {
+              acceptFileTypes: __('Filetype not allowed'),
+              maxFileSize: __('File is too big'),
+            }
+         });
+      });");
+
       $display .= "</div>"; // .fileupload
 
       if ($p['display']) {
