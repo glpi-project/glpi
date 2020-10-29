@@ -9,6 +9,7 @@ on:
       - '*/bugfixes'
       - 'feature/*'
       - 'fix/*'
+      - 'security/*'
     tags:
        - '*'
   # Runs test suite when a PR is opened or synchronyzed
