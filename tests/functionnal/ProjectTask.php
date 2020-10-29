@@ -164,7 +164,7 @@ class ProjectTask extends DbTestCase {
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([
          INFO => [
-            "Your ticket has been registered, its treatment is in progress. (Ticket: <a href='".\Ticket::getFormURLWithID($tid)."'>$tid</a>)"
+            "Your ticket has been registered. (Ticket: <a href='".\Ticket::getFormURLWithID($tid)."'>$tid</a>)"
          ]
       ]);
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
