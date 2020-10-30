@@ -2477,7 +2477,7 @@ class Plugin extends CommonDBTM {
          case 'enable' :
             foreach ($ids as $id) {
                $plugin->getFromDB($id);
-               if ($plugin->isInstalled($plugin->fields['directory'])) {
+               if ($plugin->isInstalled($plugin->fields['directory']) && !$plugin->isActivated($plugin->fields['directory'])) {
                   $plugin->activate($id);
                   if ($plugin->isActivated($plugin->fields['directory'])) {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
@@ -2492,7 +2492,7 @@ class Plugin extends CommonDBTM {
          case 'disable' :
             foreach ($ids as $id) {
                $plugin->getFromDB($id);
-               if ($plugin->isInstalled($plugin->fields['directory'])) {
+               if ($plugin->isActivated($plugin->fields['directory'])) {
                   $plugin->unactivate($id);
                   if (!$plugin->isActivated($plugin->fields['directory'])) {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
