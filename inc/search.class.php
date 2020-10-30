@@ -4601,6 +4601,7 @@ JAVASCRIPT;
             case "number" :
             case "decimal" :
             case "timestamp" :
+            case "progressbar" :
                $search  = ["/\&lt;/", "/\&gt;/"];
                $replace = ["<", ">"];
                $val     = preg_replace($search, $replace, $val);

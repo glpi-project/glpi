@@ -607,6 +607,15 @@ HTML;
             $error.= "<span class='error'>" . ob_get_contents() . "</span>";
          }
          ob_end_clean();
+
+         $function = 'plugin_' . $plugin_key . '_check_prerequisites';
+         if ($do_activate && function_exists($function)) {
+            ob_start();
+            if (!$function()) {
+               $error .= '<span class="error">' . ob_get_contents() . '</span>';
+            }
+            ob_end_clean();
+         }
       }
 
       $buttons = "";
