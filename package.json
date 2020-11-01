@@ -23,7 +23,7 @@
         "cytoscape-dagre": "^2.2.1",
         "cytoscape-grid-guide": "^2.3.0",
         "diff-match-patch": "^1.0.4",
-        "file-type": "^15.0.0",
+        "file-type": "^16.0.0",
         "fittext.js": "^1.2.0",
         "flatpickr": "^4.6.3",
         "fuzzy": "^0.1.3",
