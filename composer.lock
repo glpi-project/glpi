@@ -2093,16 +2093,16 @@
         },
         {
             "name": "sabre/dav",
-            "version": "4.1.1",
+            "version": "4.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabre-io/dav.git",
-                "reference": "5736f943c90d8d73d04cd8944d8c913811dc7360"
+                "reference": "e1f617a4112da461bfc31aa4e87e0e6ac0bd6ed0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabre-io/dav/zipball/5736f943c90d8d73d04cd8944d8c913811dc7360",
-                "reference": "5736f943c90d8d73d04cd8944d8c913811dc7360",
+                "url": "https://api.github.com/repos/sabre-io/dav/zipball/e1f617a4112da461bfc31aa4e87e0e6ac0bd6ed0",
+                "reference": "e1f617a4112da461bfc31aa4e87e0e6ac0bd6ed0",
                 "shasum": ""
             },
             "require": {
@@ -2116,7 +2116,7 @@
                 "ext-simplexml": "*",
                 "ext-spl": "*",
                 "lib-libxml": ">=2.7.0",
-                "php": "^7.1.0",
+                "php": "^7.1.0 || ^8.0",
                 "psr/log": "^1.0",
                 "sabre/event": "^5.0",
                 "sabre/http": "^5.0.5",
@@ -2170,28 +2170,29 @@
                 "framework",
                 "iCalendar"
             ],
-            "time": "2020-07-13T13:38:16+00:00"
+            "time": "2020-10-04T07:21:47+00:00"
         },
         {
             "name": "sabre/event",
-            "version": "5.1.0",
+            "version": "5.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabre-io/event.git",
-                "reference": "d00a17507af0e7544cfe17096372f5d733e3b276"
+                "reference": "c120bec57c17b6251a496efc82b732418b49d50a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabre-io/event/zipball/d00a17507af0e7544cfe17096372f5d733e3b276",
-                "reference": "d00a17507af0e7544cfe17096372f5d733e3b276",
+                "url": "https://api.github.com/repos/sabre-io/event/zipball/c120bec57c17b6251a496efc82b732418b49d50a",
+                "reference": "c120bec57c17b6251a496efc82b732418b49d50a",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1"
+                "php": "^7.1 || ^8.0"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "~2.16.1",
-                "phpunit/phpunit": "^7 || ^8"
+                "phpstan/phpstan": "^0.12",
+                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.0"
             },
             "type": "library",
             "autoload": {
@@ -2230,7 +2231,7 @@
                 "reactor",
                 "signal"
             ],
-            "time": "2020-01-31T18:52:29+00:00"
+            "time": "2020-10-03T11:02:22+00:00"
         },
         {
             "name": "sabre/http",
@@ -2441,16 +2442,16 @@
         },
         {
             "name": "sabre/xml",
-            "version": "2.2.1",
+            "version": "2.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabre-io/xml.git",
-                "reference": "41c6ba148966b10cafd31d1a4e5feb1e2138d95c"
+                "reference": "c3b959f821c19b36952ec4a595edd695c216bfc6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabre-io/xml/zipball/41c6ba148966b10cafd31d1a4e5feb1e2138d95c",
-                "reference": "41c6ba148966b10cafd31d1a4e5feb1e2138d95c",
+                "url": "https://api.github.com/repos/sabre-io/xml/zipball/c3b959f821c19b36952ec4a595edd695c216bfc6",
+                "reference": "c3b959f821c19b36952ec4a595edd695c216bfc6",
                 "shasum": ""
             },
             "require": {
@@ -2458,7 +2459,7 @@
                 "ext-xmlreader": "*",
                 "ext-xmlwriter": "*",
                 "lib-libxml": ">=2.6.20",
-                "php": "^7.1",
+                "php": "^7.1 || ^8.0",
                 "sabre/uri": ">=1.0,<3.0.0"
             },
             "require-dev": {
@@ -2501,7 +2502,7 @@
                 "dom",
                 "xml"
             ],
-            "time": "2020-05-11T09:44:55+00:00"
+            "time": "2020-10-03T10:08:14+00:00"
         },
         {
             "name": "scssphp/scssphp",
