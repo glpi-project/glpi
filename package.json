@@ -65,7 +65,7 @@
         "eslint": "^7.1.0",
         "file-loader": "^6.0.0",
         "glob": "^7.1.6",
-        "mini-css-extract-plugin": "^0.11.0",
+        "mini-css-extract-plugin": "^1.2.1",
         "script-loader": "^0.7.2",
         "terser": "^5.2.1",
         "webpack": "^4.41.2",
