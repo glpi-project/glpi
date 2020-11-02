@@ -46,7 +46,6 @@ var glpiConfig = {
       'glpi': path.resolve(__dirname, 'js/main.js'),
    },
    output: {
-      filename: '[name].js',
       path: path.resolve(__dirname, 'public/build'),
    },
 };
@@ -68,8 +67,8 @@ var libsConfig = {
       return entries;
    },
    output: {
-      filename: '[name].js',
       path: path.resolve(__dirname, libOutputPath),
+      publicPath: '', // keep URLs relative to output path
    },
    module: {
       rules: [
@@ -124,21 +123,20 @@ var libsConfig = {
          },
       ],
    },
-   node: {
-      // console is present in all browsers, no need to import "console-browserify"
-      // prevent circular dependency util -> console-browserify -> assert -> util
-      // (assert.js:164 Uncaught TypeError: util.inherits is not a function)
-      console: true,
-   },
    plugins: [
       new CleanWebpackPlugin(), // Clean lib dir content
-      new MiniCssExtractPlugin({ filename: '[name].css' }), // Extract styles into CSS files
+      new MiniCssExtractPlugin(), // Extract styles into CSS files
    ],
    resolve: {
       // Use only main file in requirement resolution as we do not yet handle modules correctly
       mainFields: [
          'main',
       ],
+      fallback: {
+         'assert': require.resolve('assert/'),
+         'buffer': require.resolve('buffer/'),
+         'stream': require.resolve('stream-browserify/'),
+      },
    },
 };
 
