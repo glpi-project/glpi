@@ -395,7 +395,8 @@ class Computer_Item extends CommonDBRelation{
                   ((isset($data['is_deleted']) && $data['is_deleted'])?"class='tab_bg_2_2'":"").
                  ">".$name."</td>";
             if (Plugin::haveImport()) {
-               echo "<td>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
+               $dynamic_field = static::getTable() . '_is_dynamic';
+               echo "<td>".Dropdown::getYesNo($data[$dynamic_field])."</td>";
             }
             echo "<td>".Dropdown::getDropdownName("glpi_entities",
                                                                $data['entities_id']);
@@ -842,5 +843,20 @@ class Computer_Item extends CommonDBRelation{
       $params = parent::getListForItemParams($item, $noent);
       $params['WHERE'][self::getTable() . '.is_deleted'] = 0;
       return $params;
+   }
+
+   /**
+    * Get SELECT param for getTypeItemsQueryParams
+    *
+    * @param CommonDBTM $item
+    *
+    * @return array
+    */
+   public static function getTypeItemsQueryParams_Select(CommonDBTM $item): array {
+      $table = static::getTable();
+      $select = parent::getTypeItemsQueryParams_Select($item);
+      $select[] = "$table.is_dynamic AS {$table}_is_dynamic";
+
+      return $select;
    }
 }
