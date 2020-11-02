@@ -1280,7 +1280,7 @@ class Ticket extends CommonITILObject {
              && ($input[$olaField] != $this->fields[$olaField]
                  || isset($input['_'.$olaField]))) {
 
-            $date = date('Y-m-d H:i:s');
+            $date = $_SESSION['glpi_currenttime'];
 
             // Get datas to initialize OLA and set it
             $ola_data = $this->getDatasToAddOLA($input[$olaField], $this->fields['entities_id'],
