@@ -452,6 +452,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @return void
    **/
    function post_addItem() {
+      global $CFG_GLPI;
 
       if ((isset($this->input['_no_history']) && $this->input['_no_history'])
           || !static::$logs_for_parent) {
@@ -459,9 +460,23 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
 
       $item = $this->getItem();
+      if ($item === false) {
+         return;
+      }
 
-      if (($item !== false)
-          && $item->dohistory) {
+      if (in_array(static::class, $CFG_GLPI["infocom_types"], true) && in_array(static::$itemtype, $CFG_GLPI["infocom_types"], true)) {
+         // inherit infocom
+         $infocoms = Infocom::getItemsAssociatedTo(static::$itemtype::getType(), $this->fields[static::$itemtype::getForeignKeyField()]);
+         if (count($infocoms)) {
+            $infocom = reset($infocoms);
+            $infocom->clone([
+               'itemtype'  => self::getType(),
+               'items_id'  => $this->getID()
+            ]);
+         }
+      }
+
+      if ($item->dohistory) {
          $changes = [
             '0',
             '',
