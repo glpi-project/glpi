@@ -46,8 +46,9 @@ function update95toXX() {
    $migration->setVersion('x.x.x');
 
    require __DIR__ . '/update_95_xx/softwares.php';
-   include __DIR__ . '/update_95_xx/domains.php';
+   require __DIR__ . '/update_95_xx/domains.php';
    require __DIR__ . '/update_95_xx/devicebattery.php';
+   require __DIR__ . '/update_95_xx/reservationitem.php';
 
    //add is_fqdn on some domain records types
    $fields = [

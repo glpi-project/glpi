@@ -580,7 +580,6 @@ class ReservationItem extends CommonDBChild {
             ],
             'WHERE'        => [
                'glpi_reservationitems.is_active'   => 1,
-               'glpi_reservationitems.is_deleted'  => 0,
                "$itemtable.is_deleted"             => 0,
             ] + getEntitiesRestrictCriteria($itemtable, '', $_SESSION['glpiactiveentities'], $item->maybeRecursive()),
             'ORDERBY'      => [
