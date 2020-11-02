@@ -1668,6 +1668,20 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    }
 
    /**
+    * Get SELECT param for getTypeItemsQueryParams
+    *
+    * @param CommonDBTM $item
+    *
+    * @return array
+    */
+   public static function getTypeItemsQueryParams_Select(CommonDBTM $item): array {
+      return [
+         $item->getTable() . '.*',
+         static::getTable() . '.id AS linkid',
+      ];
+   }
+
+   /**
     * Get items for an itemtype
     *
     * @since 9.3.1
@@ -1698,10 +1712,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
 
       $params = [
-         'SELECT' => [
-            $item->getTable() . '.*',
-            static::getTable() . '.id AS linkid'
-         ],
+         'SELECT' => static::getTypeItemsQueryParams_Select($item),
          'FROM'   => $item->getTable(),
          'WHERE'  => $where,
          'LEFT JOIN' => [
