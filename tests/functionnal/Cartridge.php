@@ -94,4 +94,37 @@ class Cartridge extends DbTestCase {
       $this->string($cartridge->fields['date_out'])->matches('#\d{4}-\d{2}-\d{2}$#');
       $this->integer($cartridge->getUsedNumber($ciid))->isIdenticalTo(0);
    }
+
+   function testInfocomInheritance() {
+      $cartridge = new \Cartridge();
+
+      $cartridge_item = new \CartridgeItem();
+      $cu_id = (int) $cartridge_item->add([
+         'name' => 'Test cartridge item'
+      ]);
+      $this->integer($cu_id)->isGreaterThan(0);
+
+      $infocom = new \Infocom();
+      $infocom_id = (int) $infocom->add([
+         'itemtype'  => \CartridgeItem::getType(),
+         'items_id'  => $cu_id,
+         'buy_date'  => '2020-10-21',
+         'value'     => '500'
+      ]);
+      $this->integer($infocom_id)->isGreaterThan(0);
+
+      $cartridge_id = $cartridge->add([
+         'cartridgeitems_id' => $cu_id
+      ]);
+      $this->integer($cartridge_id)->isGreaterThan(0);
+
+      $infocom2 = new \Infocom();
+      $infocom2_id = (int) $infocom2->getFromDBByCrit([
+         'itemtype'  => \Cartridge::getType(),
+         'items_id'  => $cartridge_id
+      ]);
+      $this->integer($infocom2_id)->isGreaterThan(0);
+      $this->string($infocom2->fields['buy_date'])->isEqualTo($infocom->fields['buy_date']);
+      $this->string($infocom2->fields['value'])->isEqualTo($infocom->fields['value']);
+   }
 }

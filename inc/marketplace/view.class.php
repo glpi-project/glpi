@@ -138,7 +138,7 @@ class View extends CommonGLPI {
       if (!GLPINetwork::isServicesAvailable()) {
          array_push(
             $messages,
-            sprintf(__("%1$s services website seems not available from your network or offline"), 'GLPI Network'),
+            sprintf(__('%1$s services website seems not available from your network or offline'), 'GLPI Network'),
             "<a href='".$CFG_GLPI['root_doc']."/front/config.form.php?forcetab=Config$5'>".
             __("Maybe you could setup a proxy").
             "</a> ".
