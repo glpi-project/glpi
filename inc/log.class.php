@@ -106,7 +106,7 @@ class Log extends CommonDBTM {
     *
     * @return boolean for success (at least 1 log entry added)
    **/
-   static function constructHistory(CommonDBTM $item, &$oldvalues, &$values) {
+   static function constructHistory(CommonDBTM $item, $oldvalues, $values) {
 
       if (!count($oldvalues)) {
          return false;
