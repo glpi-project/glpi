@@ -773,14 +773,22 @@ class Config extends DbTestCase {
 
       return [
          [
-            'context'    => 'core',
-            'name'       => 'unexisting_config',
-            'is_secured' => false,
+            'context'          => 'core',
+            'name'             => 'unexisting_config',
+            'is_secured'       => false,
+            'old_value_prefix' => 'unexisting_config ',
          ],
          [
-            'context'    => 'plugin:tester',
-            'name'       => 'passwd',
-            'is_secured' => true,
+            'context'          => 'plugin:tester',
+            'name'             => 'check',
+            'is_secured'       => false,
+            'old_value_prefix' => 'check (plugin:tester) ',
+         ],
+         [
+            'context'          => 'plugin:tester',
+            'name'             => 'passwd',
+            'is_secured'       => true,
+            'old_value_prefix' => 'passwd (plugin:tester) ',
          ]
       ];
    }
@@ -788,7 +796,7 @@ class Config extends DbTestCase {
    /**
     * @dataProvider logConfigChangeProvider
     */
-   public function testLogConfigChange(string $context, string $name, bool $is_secured) {
+   public function testLogConfigChange(string $context, string $name, bool $is_secured, string $old_value_prefix) {
       $history_crit = ['itemtype' => \Config::getType(), 'old_value' => ['LIKE', $name . ' %']];
 
       $expected_history = [];
@@ -810,7 +818,7 @@ class Config extends DbTestCase {
       \Config::setConfigurationValues($context, [$name => 'first value']);
       $expected_history = [
          $history_entry_fields + [
-            'old_value' => $name . ' ' . ($is_secured ? '********' : ''),
+            'old_value' => $old_value_prefix . ($is_secured ? '********' : ''),
             'new_value' => $is_secured ? '********' : 'first value',
          ],
       ];
@@ -822,7 +830,7 @@ class Config extends DbTestCase {
       // History on updated value
       \Config::setConfigurationValues($context, [$name => 'new value']);
       $expected_history[] = $history_entry_fields + [
-         'old_value' => $name . ' ' . ($is_secured ? '********' : 'first value'),
+         'old_value' => $old_value_prefix . ($is_secured ? '********' : 'first value'),
          'new_value' => $is_secured ? '********' : 'new value',
       ];
 
@@ -833,7 +841,7 @@ class Config extends DbTestCase {
       // History on config deletion
       \Config::deleteConfigurationValues($context, [$name]);
       $expected_history[] = $history_entry_fields + [
-         'old_value' => $name . ' ' . ($is_secured ? '********' : 'new value'),
+         'old_value' => $old_value_prefix . ($is_secured ? '********' : 'new value'),
          'new_value' => $is_secured ? '********' : '',
       ];
 
