@@ -33,6 +33,7 @@
 namespace tests\units;
 
 use \DbTestCase;
+use Profile_User;
 
 /* Test for inc/entity.class.php */
 
@@ -245,4 +246,38 @@ class Entity extends DbTestCase {
       $this->runChangeEntityParent(true);
    }
 
+   public function testDeleteEntity() {
+
+      $root_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+      $entity = new \Entity();
+      $entity_id = (int)$entity->add(
+         [
+            'name'         => 'Test entity',
+            'entities_id'  => $root_id,
+         ]
+      );
+      $this->integer($entity_id)->isGreaterThan(0);
+
+      $user_id = getItemByTypeName('User', 'normal', true);
+      $profile_id = getItemByTypeName('Profile', 'Admin', true);
+
+      $profile_user = new Profile_User();
+      $profile_user_id = (int)$profile_user->add(
+         [
+            'entities_id' => $entity_id,
+            'profiles_id' => $profile_id,
+            'users_id'    => $user_id,
+         ]
+      );
+      $this->integer($profile_user_id)->isGreaterThan(0);
+
+      // Profile_User exists
+      $this->boolean($profile_user->getFromDB($profile_user_id))->isTrue();
+
+      $this->boolean($entity->delete(['id' => $entity_id]))->isTrue();
+
+      // Profile_User has been deleted when entity has been deleted
+      $this->boolean($profile_user->getFromDB($profile_user_id))->isFalse();
+   }
 }
