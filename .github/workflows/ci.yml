@@ -76,9 +76,10 @@ jobs:
           docker exec app composer --version
           docker exec app sh -c 'echo "node $(node --version)"'
           docker exec app sh -c 'echo "npm $(npm --version)"'
-      - name: Validate composer config
+      - name: "Validate composer config and requirements"
         run: |
           docker exec app composer validate --strict
+          docker exec app composer check-platform-reqs
       - name: "Install dependencies"
         run: |
           docker exec app rm composer.lock
