@@ -469,6 +469,9 @@ class Entity extends CommonTreeDropdown {
       Rule::cleanForItemAction($this, '%entities_id');
       Rule::cleanForItemCriteria($this);
 
+      $pu = new Profile_User();
+      $pu->deleteByCriteria(['entities_id' => $this->fields['id']]);
+
       $this->deleteChildrenAndRelationsFromDb(
          [
             Entity_KnowbaseItem::class,
