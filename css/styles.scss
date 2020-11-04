@@ -7069,6 +7069,11 @@ div.progress {
 }
 /** /style for relations **/
 
+// Fix line breaks in pasted rich text
+.rich_text_container pre, .rich_text_container span {
+   white-space: pre-wrap;
+}
+
 .log-toolbar {
    padding-right: 8px !important;
 
