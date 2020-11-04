@@ -3020,14 +3020,11 @@ class Config extends CommonDBTM {
    static function setConfigurationValues($context, array $values = []) {
 
       $glpikey = new GLPIKey();
-      $secured_configs = $glpikey->getConfigs();
 
       $config = new self();
       foreach ($values as $name => $value) {
          // Encrypt config values according to list declared to GLPIKey service
-         if (!empty($value)
-             && array_key_exists($context, $secured_configs)
-             && in_array($name, $secured_configs[$context])) {
+         if (!empty($value) && $glpikey->isConfigSecured($context, $name)) {
             $value = Toolbox::sodiumEncrypt($value);
          }
 
@@ -3760,6 +3757,10 @@ class Config extends CommonDBTM {
       return [$this->getType(), 1];
    }
 
+   public function post_addItem() {
+      $this->logConfigChange($this->fields['context'], $this->fields['name'], (string)$this->fields['value'], '');
+   }
+
    public function post_updateItem($history = 1) {
       global $DB;
 
@@ -3783,13 +3784,37 @@ class Config extends CommonDBTM {
          );
       }
 
-      // Keep it at the end as it alter $this->oldvalues
-      if (count($this->oldvalues)) {
-         foreach ($this->oldvalues as &$value) {
-            $value = $this->fields['name'] . ' ' . $value;
-         }
-         Log::constructHistory($this, $this->oldvalues, $this->fields);
+      if (array_key_exists('value', $this->oldvalues)) {
+         $this->logConfigChange(
+            $this->fields['context'],
+            $this->fields['name'],
+            (string)$this->fields['value'],
+            (string)$this->oldvalues['value']
+         );
       }
+   }
+
+   public function post_purgeItem() {
+      $this->logConfigChange($this->fields['context'], $this->fields['name'], '', (string)$this->fields['value']);
+   }
+
+   /**
+    * Log config change in history.
+    *
+    * @param string $context
+    * @param string $name
+    * @param string $newvalue
+    * @param string $oldvalue
+    *
+    * @return void
+    */
+   private function logConfigChange(string $context, string $name, string $newvalue, string $oldvalue): void {
+      $glpi_key = new GLPIKey();
+      if ($glpi_key->isConfigSecured($context, $name)) {
+         $newvalue = $oldvalue = '********';
+      }
+      $oldvalue = $name . ($context !== 'core' ? ' (' . $context . ') ' : ' ') . $oldvalue;
+      Log::constructHistory($this, ['value' => $oldvalue], ['value' => $newvalue]);
    }
 
    /**

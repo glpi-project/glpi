@@ -34,6 +34,8 @@ namespace tests\units;
 
 use PHPMailer\PHPMailer\PHPMailer;
 use \DbTestCase;
+use Log;
+use Session;
 
 /* Test for inc/config.class.php */
 
@@ -762,5 +764,89 @@ class Config extends DbTestCase {
             ['NOT' => ['authtype' => \Auth::DB_GLPI], 'password_last_update' => null]
          )
       )->isEqualTo($external_users_count);
+   }
+
+   protected function logConfigChangeProvider() {
+      global $PLUGIN_HOOKS;
+
+      $PLUGIN_HOOKS['secured_configs']['tester'] = ['passwd'];
+
+      return [
+         [
+            'context'          => 'core',
+            'name'             => 'unexisting_config',
+            'is_secured'       => false,
+            'old_value_prefix' => 'unexisting_config ',
+         ],
+         [
+            'context'          => 'plugin:tester',
+            'name'             => 'check',
+            'is_secured'       => false,
+            'old_value_prefix' => 'check (plugin:tester) ',
+         ],
+         [
+            'context'          => 'plugin:tester',
+            'name'             => 'passwd',
+            'is_secured'       => true,
+            'old_value_prefix' => 'passwd (plugin:tester) ',
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider logConfigChangeProvider
+    */
+   public function testLogConfigChange(string $context, string $name, bool $is_secured, string $old_value_prefix) {
+      $history_crit = ['itemtype' => \Config::getType(), 'old_value' => ['LIKE', $name . ' %']];
+
+      $expected_history = [];
+      $history_entry_fields = [
+         'itemtype'         => \Config::getType(),
+         'items_id'         => 1,
+         'itemtype_link'    => '',
+         'linked_action'    => 0,
+         'user_name'        => Session::getLoginUserID(false),
+         'date_mod'         => $_SESSION['glpi_currenttime'],
+         'id_search_option' => 1,
+      ];
+
+      $clean_ids = function (&$value, $key) {
+         unset($value['id']);
+      };
+
+      // History on first value
+      \Config::setConfigurationValues($context, [$name => 'first value']);
+      $expected_history = [
+         $history_entry_fields + [
+            'old_value' => $old_value_prefix . ($is_secured ? '********' : ''),
+            'new_value' => $is_secured ? '********' : 'first value',
+         ],
+      ];
+
+      $found_history = array_values(getAllDataFromTable(Log::getTable(), $history_crit));
+      array_walk($found_history, $clean_ids);
+      $this->array($found_history)->isEqualTo($expected_history);
+
+      // History on updated value
+      \Config::setConfigurationValues($context, [$name => 'new value']);
+      $expected_history[] = $history_entry_fields + [
+         'old_value' => $old_value_prefix . ($is_secured ? '********' : 'first value'),
+         'new_value' => $is_secured ? '********' : 'new value',
+      ];
+
+      $found_history = array_values(getAllDataFromTable(Log::getTable(), $history_crit));
+      array_walk($found_history, $clean_ids);
+      $this->array($found_history)->isEqualTo($expected_history);
+
+      // History on config deletion
+      \Config::deleteConfigurationValues($context, [$name]);
+      $expected_history[] = $history_entry_fields + [
+         'old_value' => $old_value_prefix . ($is_secured ? '********' : 'new value'),
+         'new_value' => $is_secured ? '********' : '',
+      ];
+
+      $found_history = array_values(getAllDataFromTable(Log::getTable(), $history_crit));
+      array_walk($found_history, $clean_ids);
+      $this->array($found_history)->isEqualTo($expected_history);
    }
 }

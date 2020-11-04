@@ -211,6 +211,22 @@ class GLPIKey {
    }
 
    /**
+    * Check if configuration is secured.
+    *
+    * @param string $context
+    * @param string $name
+    *
+    * @return bool
+    */
+   public function isConfigSecured(string $context, string $name) :bool {
+
+      $secured_configs = $this->getConfigs();
+
+      return array_key_exists($context, $secured_configs)
+         && in_array($name, $secured_configs[$context]);
+   }
+
+   /**
     * Migrate fields in database
     *
     * @param string       $sodium_key Current key
