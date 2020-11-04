@@ -99,8 +99,7 @@ class DomainRecord extends CommonDBChild {
          'id'                 => '4',
          'table'              => $this->getTable(),
          'field'              => 'ttl',
-         'name'               => __('TTL'),
-         'datatype'           => 'number'
+         'name'               => __('TTL')
       ];
 
       $tab[] = [
