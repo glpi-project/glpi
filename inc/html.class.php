@@ -182,6 +182,9 @@ class Html {
          case 2 : // MM-DD-YYYY
             $mask = 'm-d-Y';
             break;
+        case  3 : // YYYY.MM.DD
+            $mask = 'Y.m.d';
+            break;	   
       }
 
       return $date->format($mask);
