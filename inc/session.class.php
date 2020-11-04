@@ -202,8 +202,8 @@ class Session {
 
       if (session_status() === PHP_SESSION_NONE) {
          session_name("glpi_".md5(realpath(GLPI_ROOT)));
-         ini_set( 'session.cookie_secure, 1);
-         ini_set( 'session.cookie_httponly', 1);
+         ini_set('session.cookie_secure', 1);
+         ini_set('session.cookie_httponly', 1);
          @session_start();
       }
       // Define current time for sync of action timing
