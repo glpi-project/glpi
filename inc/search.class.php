@@ -3225,7 +3225,7 @@ JAVASCRIPT;
       }
 
       if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
-         return " ORDER BY ITEM_{$itemtype}_{$ID} $order ";
+         return " ORDER BY `ITEM_{$itemtype}_{$ID}` $order ";
       }
 
       // Plugin can override core definition for its type
@@ -3308,7 +3308,7 @@ JAVASCRIPT;
          }
       }
 
-      return " ORDER BY ITEM_{$itemtype}_{$ID} $order ";
+      return " ORDER BY `ITEM_{$itemtype}_{$ID}` $order ";
    }
 
 
