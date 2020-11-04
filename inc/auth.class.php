@@ -615,7 +615,7 @@ class Auth extends CommonGLPI {
             }
 
             //Remove cookie to allow new login
-            setcookie($cookie_name, '', time() - 3600, $cookie_path);
+            setcookie($cookie_name, '', time() - 3600, $cookie_path, '', true, true);
             unset($_COOKIE[$cookie_name]);
             break;
       }
@@ -978,7 +978,7 @@ class Auth extends CommonGLPI {
             ]);
 
             //Send cookie to browser
-            setcookie($cookie_name, $data, time() + $CFG_GLPI['login_remember_time'], $cookie_path);
+            setcookie($cookie_name, $data, time() + $CFG_GLPI['login_remember_time'], $cookie_path, '', true, true);
             $_COOKIE[$cookie_name] = $data;
          }
       }
