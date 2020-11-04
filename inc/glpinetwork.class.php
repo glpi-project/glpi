@@ -77,7 +77,7 @@ class GLPINetwork {
          echo '<td colspan="2">';
          echo '<div class="warning">';
          echo '<i class="fa fa-exclamation-triangle fa-2x"></i>';
-         echo sprintf(__("%1$s services website seems not available from your network or offline"), 'GLPI Network');
+         echo sprintf(__('%1$s services website seems not available from your network or offline'), 'GLPI Network');
          if ($curl_error !== null) {
             echo '<br />';
             echo sprintf(__('Error was: %s'), $curl_error);
