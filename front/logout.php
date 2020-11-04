@@ -80,7 +80,7 @@ $cookie_name = session_name() . '_rememberme';
 $cookie_path = ini_get('session.cookie_path');
 
 if (isset($_COOKIE[$cookie_name])) {
-   setcookie($cookie_name, '', time() - 3600, $cookie_path);
+   setcookie($cookie_name, '', time() - 3600, $cookie_path, '', true, true);
    unset($_COOKIE[$cookie_name]);
 }
 
