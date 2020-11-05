@@ -3031,14 +3031,16 @@ class Toolbox {
             $formats = [
                0 => 'Y-m-d',
                1 => 'd-m-Y',
-               2 => 'm-d-Y'
+               2 => 'm-d-Y',
+               3 => 'Y.m.d'
             ];
             break;
          case 'php':
             $formats = [
                0 => __('YYYY-MM-DD'),
                1 => __('DD-MM-YYYY'),
-               2 => __('MM-DD-YYYY')
+               2 => __('MM-DD-YYYY'),
+               3 => __('YYYY.MM.DD')
             ];
             break;
          default:
