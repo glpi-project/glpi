@@ -221,7 +221,6 @@ html .ui-autocomplete {
    max-width: 270px;
 }
 .select2-selection.select2-selection--single:before {
-   content: '\02026';
    position: absolute;
    z-index: 1;
    left: -1em;
