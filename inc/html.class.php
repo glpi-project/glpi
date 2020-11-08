@@ -811,13 +811,15 @@ class Html {
             echo "took  ".array_sum($DEBUG_SQL['times'])."s</div>";
 
             echo "<table class='tab_cadre'><tr><th>N&#176; </th><th>Queries</th><th>Time</th>";
-            echo "<th>Errors</th></tr>";
+            echo "<th>Rows</th><th>Errors</th></tr>";
 
             foreach ($DEBUG_SQL['queries'] as $num => $query) {
                echo "<tr class='tab_bg_".(($num%2)+1)."'><td>$num</td><td>";
                echo self::cleanSQLDisplay($query);
                echo "</td><td>";
                echo $DEBUG_SQL['times'][$num];
+               echo "</td><td>";
+               echo $DEBUG_SQL['rows'][$num] ?? 0;
                echo "</td><td>";
                if (isset($DEBUG_SQL['errors'][$num])) {
                   echo $DEBUG_SQL['errors'][$num];
