@@ -68,6 +68,7 @@ class Appliance extends CommonDBTM {
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
          ->addStandardTab('Infocom', $ong, $options)
+         ->addStandardTab('KnowbaseItem_Item', $ong, $options)
          ->addStandardTab('Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
@@ -420,6 +421,8 @@ class Appliance extends CommonDBTM {
          $actions[$prefix.'remove'] = _x('button', 'Remove an item');
       }
 
+      KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
+
       return $actions;
    }
 
@@ -439,4 +442,49 @@ class Appliance extends CommonDBTM {
       }
    }
 
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+
+      switch ($ma->getAction()) {
+         case 'add_item' :
+            Appliance::dropdown([
+               'entity'  => $_POST['entity_restrict']
+            ]);
+            echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+            return true;
+            break;
+      }
+      return parent::showMassiveActionsSubForm($ma);
+   }
+
+   static function processMassiveActionsForOneItemtype(
+      MassiveAction $ma,
+      CommonDBTM $item,
+      array $ids
+   ) {
+      $appli_item = new Appliance_Item();
+
+      switch ($ma->getAction()) {
+         case 'add_item':
+            $input = $ma->getInput();
+            foreach ($ids as $id) {
+               $input = [
+                  'appliances_id'   => $input['appliances_id'],
+                  'items_id'        => $id,
+                  'itemtype'        => $item->getType()
+               ];
+               if ($appli_item->can(-1, UPDATE, $input)) {
+                  if ($appli_item->add($input)) {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+               }
+            }
+
+            return;
+      }
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+   }
 }

@@ -2883,6 +2883,10 @@ HTML;
             {$mode}
             onChange: function(selectedDates, dateStr, instance) {
                {$p['on_change']}
+            },
+            allowInput: true,
+            onClose(dates, currentdatestring, picker){
+               picker.setDate(picker.altInput.value, true, picker.config.altFormat)
             }
          });
       });
@@ -3058,6 +3062,10 @@ HTML;
             {$max_attr}
             onChange: function(selectedDates, dateStr, instance) {
                {$p['on_change']}
+            },
+            allowInput: true,
+            onClose(dates, currentdatestring, picker){
+               picker.setDate(picker.altInput.value, true, picker.config.altFormat)
             }
          });
       });
