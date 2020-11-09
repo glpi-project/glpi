@@ -1407,7 +1407,7 @@ class Search extends DbTestCase {
          ->contains("`glpi_users_users_id_recipient`.`id` = '{$user_normal_id}'")
 
          // Check that ORDER applies on corresponding table alias
-         ->contains("glpi_users_users_id_recipient.`name` ASC");
+         ->contains("`glpi_users_users_id_recipient`.`name` ASC");
    }
 
    function testSearchAllAssets() {
@@ -1461,6 +1461,25 @@ class Search extends DbTestCase {
             ->matches("/`$type`\.`name`  LIKE '%test%'/");
       }
    }
+
+   public function testSearchWithNamespacedItem() {
+      $search_params = [
+         'is_deleted'   => 0,
+         'start'        => 0,
+         'search'       => 'Search',
+      ];
+      $this->login();
+      $this->setEntity('_test_root_entity', true);
+
+      $data = $this->doSearch('SearchTest\\Computer', $search_params);
+
+      $this->array($data)->hasKey('sql');
+      $this->array($data['sql'])->hasKey('search');
+      $this->string($data['sql']['search'])
+         ->contains("`glpi_computers`.`name` AS `ITEM_SearchTest\Computer_1`")
+         ->contains("`glpi_computers`.`id` AS `ITEM_SearchTest\Computer_1_id`")
+         ->contains("ORDER BY `ITEM_SearchTest\Computer_1` ASC");
+   }
 }
 
 class DupSearchOpt extends \CommonDBTM {
@@ -1478,5 +1497,13 @@ class DupSearchOpt extends \CommonDBTM {
       ];
 
       return $tab;
+   }
+}
+
+namespace SearchTest;
+
+class Computer extends \Computer {
+   static function getTable($classname = null) {
+      return 'glpi_computers';
    }
 }
