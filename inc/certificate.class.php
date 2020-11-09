@@ -354,6 +354,7 @@ class Certificate extends CommonDBTM {
       $this->addDefaultFormTab($ong)
          ->addStandardTab(__CLASS__, $ong, $options)
          ->addStandardTab('Certificate_Item', $ong, $options)
+         ->addStandardTab('Domain_Item', $ong, $options)
          ->addStandardTab('Infocom', $ong, $options)
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)

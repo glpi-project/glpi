@@ -447,7 +447,7 @@ $CFG_GLPI["kb_types"]              = ['Budget', 'Change', 'Computer',
 $CFG_GLPI["certificate_types"]     = ['Computer',
                                       'NetworkEquipment', 'Peripheral',
                                       'Phone', 'Printer',
-                                      'SoftwareLicense', 'User', 'Domain'];
+                                      'SoftwareLicense', 'User', 'Domain', 'Appliance'];
 
 $CFG_GLPI["rackable_types"]        = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Enclosure', 'PDU', 'PassiveDCEquipment'];
 
