@@ -33,8 +33,8 @@
 namespace tests\units;
 
 use DbTestCase;
-use PHPMailer\PHPMailer\PHPMailer;
 use Log;
+use PHPMailer\PHPMailer\PHPMailer;
 use Session;
 
 /* Test for inc/config.class.php */
