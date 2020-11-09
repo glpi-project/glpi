@@ -879,6 +879,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
          return static::$items_id;
       }
 
-      throw new \RuntimeException('Cannot guess ');
+      throw new \RuntimeException('Cannot guess field for itemtype ' . $itemtype . ' on ' . static::class);
    }
 }
