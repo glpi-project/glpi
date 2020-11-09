@@ -648,8 +648,7 @@ class Certificate extends CommonDBTM {
             $input = $ma->getInput();
             foreach ($ids as $key) {
                if ($item->can($key, UPDATE)) {
-                  $values = ['plugin_certificates_certificates_id'
-                                        => $key,
+                  $values = ['certificates_id' => $key,
                              'items_id' => $input["item_item"],
                              'itemtype' => $input['typeitem']];
                   if ($certif_item->add($values)) {
