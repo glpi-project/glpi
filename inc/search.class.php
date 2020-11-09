@@ -3260,15 +3260,15 @@ JAVASCRIPT;
                   $name1 = 'realname';
                   $name2 = 'firstname';
                }
-               return " ORDER BY ".$table.$addtable.".$name1 $order,
-                                 ".$table.$addtable.".$name2 $order,
-                                 ".$table.$addtable.".`name` $order";
+               return " ORDER BY `".$table.$addtable."`.`$name1` $order,
+                                 `".$table.$addtable."`.`$name2` $order,
+                                 `".$table.$addtable."`.`name` $order";
             }
             return " ORDER BY `".$table.$addtable."`.`name` $order";
 
          case "glpi_networkequipments.ip" :
          case "glpi_ipaddresses.name" :
-            return " ORDER BY INET_ATON($table$addtable.$field) $order ";
+            return " ORDER BY INET_ATON(`$table$addtable`.`$field`) $order ";
       }
 
       //// Default cases
