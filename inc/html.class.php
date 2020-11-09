@@ -5748,7 +5748,7 @@ JAVASCRIPT;
       } else {
          $display .= Html::scriptBlock("
                         $(document).ready(function() {
-                           $('".$p['editor_id']."').autogrow();
+                           $('#".$p['editor_id']."').autogrow();
                         });
                      ");
       }
