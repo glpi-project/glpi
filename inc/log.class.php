@@ -719,7 +719,7 @@ class Log extends CommonDBTM {
             $tablename = '';
             // It's not an internal device
             foreach ($SEARCHOPTION as $key2 => $val2) {
-               if ($key2 == $data["id_search_option"]) {
+               if ($key2 === $data["id_search_option"]) {
                   $tmp['field'] =  $val2["name"];
                   $tablename    =  $val2["table"];
                   $fieldname    = $val2["field"];
