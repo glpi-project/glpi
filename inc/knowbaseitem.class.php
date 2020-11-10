@@ -1621,7 +1621,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
                      'items_id'  => $data["id"],
                      'itemtype'  => 'KnowbaseItem'
                   ]
-               ]);
+               ] + getEntitiesRestrictCriteria());
                while ($docs = $iterator->next()) {
                   $doc = new Document();
                   $doc->getFromDB($docs["documents_id"]);

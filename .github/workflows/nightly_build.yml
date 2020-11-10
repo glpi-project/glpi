@@ -37,7 +37,7 @@ jobs:
         run: |
           REF_NAME=$(echo ${{ matrix.branch }} | sed -E 's|/|-|')
           SHA=$(git rev-parse --short HEAD)
-          echo "::set-env name=release_name::$REF_NAME.$SHA"
+          echo "release_name=$REF_NAME.$SHA" >> $GITHUB_ENV
       - name: "Build"
         run: |
           echo "Y" | docker exec --interactive ${{ job.services.app.id }} tools/make_release.sh . ${{ env.release_name }}
