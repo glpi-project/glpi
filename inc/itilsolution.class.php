@@ -131,6 +131,8 @@ class ITILSolution extends CommonDBChild {
       $this->item = $item;
       $item->check($item->getID(), READ);
 
+      $entities_id = isset($options['entities_id']) ? $options['entities_id'] : $item->getEntityID();
+
       if ($item instanceof Ticket && $this->isNewItem()) {
          $ti = new Ticket_Ticket();
          $open_child = $ti->countOpenChildren($item->getID());
@@ -169,11 +171,9 @@ class ITILSolution extends CommonDBChild {
          echo "<tr class='tab_bg_2'>";
          echo "<td>"._n('Solution template', 'Solution templates', 1)."</td><td>";
 
-         $entity = isset($options['entities_id']) ? $options['entities_id'] : $this->getEntityID();
-
          SolutionTemplate::dropdown([
             'value'    => 0,
-            'entity'   => $entity,
+            'entity'   => $entities_id,
             'rand'     => $rand_template,
             // Load type and solution from bookmark
             'toupdate' => [
@@ -207,7 +207,7 @@ class ITILSolution extends CommonDBChild {
       if ($canedit) {
          SolutionType::dropdown(['value'  => $this->getField('solutiontypes_id'),
                                  'rand'   => $rand_type,
-                                 'entity' => $this->getEntityID()]);
+                                 'entity' => $entities_id]);
       } else {
          echo Dropdown::getDropdownName('glpi_solutiontypes',
                                         $this->getField('solutiontypes_id'));
