@@ -1759,9 +1759,9 @@ class Ticket extends DbTestCase {
 
       // check with very limited rights and redo "associate myself"
       $_SESSION['glpiactiveprofile']['ticket'] = \CREATE
-                                               + \Ticket::READMY;
-                                               + \Ticket::READALL;
-                                               + \Ticket::READGROUP;
+                                               + \Ticket::READMY
+                                               + \Ticket::READALL
+                                               + \Ticket::READGROUP
                                                + \Ticket::OWN; // OWN right must allow self-assign
       $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
       // restore rights
