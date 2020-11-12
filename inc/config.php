@@ -120,6 +120,10 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       Html::redirect($_SESSION["glpiroot"]);
    }
 
+   if (!isset($_SESSION["glpilanguage"])) {
+      $_SESSION["glpilanguage"] = Session::getPreferredLanguage();
+   }
+
    // Override cfg_features by session value
    foreach ($CFG_GLPI['user_pref_field'] as $field) {
       if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])) {

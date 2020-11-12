@@ -136,7 +136,7 @@ class Session {
                }
                // Init not set value for language
                if (empty($_SESSION["glpilanguage"])) {
-                  $_SESSION["glpilanguage"] = $CFG_GLPI['language'];
+                  $_SESSION["glpilanguage"] = self::getPreferredLanguage();
                }
                $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
 
@@ -592,16 +592,7 @@ class Session {
       global $CFG_GLPI, $TRANSLATE;
 
       if (!isset($_SESSION["glpilanguage"])) {
-         if (isset($CFG_GLPI["language"])) {
-            // Default config in GLPI >= 0.72
-            $_SESSION["glpilanguage"] = $CFG_GLPI["language"];
-
-         } else if (isset($CFG_GLPI["default_language"])) {
-            // Default config in GLPI < 0.72 : keep it for upgrade process
-            $_SESSION["glpilanguage"] = $CFG_GLPI["default_language"];
-         } else {
-            $_SESSION["glpilanguage"] = "en_GB";
-         }
+         $_SESSION["glpilanguage"] = self::getPreferredLanguage();
       }
 
       $trytoload = $_SESSION["glpilanguage"];
@@ -665,6 +656,43 @@ class Session {
       }
 
       return $trytoload;
+   }
+
+   /**
+    * Return preffered language (from HTTP headers, fallback to default GLPI lang).
+    *
+    * @return string
+    */
+   public static function getPreferredLanguage(): string {
+      global $CFG_GLPI;
+
+      // Extract accepted languages from headers
+      // Accept-Language: fr-FR, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5
+      $accepted_languages = [];
+      $values = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '');
+      foreach ($values as $value) {
+         $parts = explode(';q=', trim($value));
+         $language = str_replace('-', '_', $parts[0]);
+         $qfactor  = $parts[1] ?? 1; //q-factor defaults to 1
+         $accepted_languages[$language] = $qfactor;
+      }
+      arsort($accepted_languages); // sort by qfactor
+
+      foreach (array_keys($accepted_languages) as $language) {
+         if (array_key_exists($language, $CFG_GLPI['languages'])) {
+            return $language;
+         }
+      }
+
+      if (isset($CFG_GLPI['language'])) {
+         // Default config in GLPI >= 0.72
+         return $CFG_GLPI['language'];
+      } else if (isset($CFG_GLPI['default_language'])) {
+         // Default config in GLPI < 0.72 : keep it for upgrade process
+         return $CFG_GLPI['default_language'];
+      }
+
+      return 'en_GB';
    }
 
    /**
