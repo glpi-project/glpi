@@ -185,7 +185,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
             $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
          }
          echo "<td class='b'>
-               <a href='".$CFG_GLPI["root_doc"]."/front/vlan.form.php?id=".$data["id"]."'>".$name.
+               <a href='".VLAN::getFormURLWithID($data['id'])."'>".$name.
               "</a>";
          echo "</td>";
          echo "<td>".Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
@@ -281,7 +281,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
             $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
          }
          echo "<td class='b'>
-               <a href='".$CFG_GLPI["root_doc"]."/front/vlan.form.php?id=".$data["id"]."'>".$name.
+               <a href='".NetworkPort::getFormURLWithID($data['id'])."'>".$name.
               "</a>";
          echo "</td>";
          echo "<td>".Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
