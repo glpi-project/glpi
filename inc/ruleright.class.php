@@ -266,13 +266,13 @@ class RuleRight extends Rule {
          $criterias['LOGIN']['virtual']         = true;
          $criterias['LOGIN']['id']              = 'login';
 
-         $criterias['GROUPS']['table']          = 'glpi_groups';
-         $criterias['GROUPS']['field']          = 'completename';
-         $criterias['GROUPS']['name']           = Group::getTypeName(1);
-         $criterias['GROUPS']['linkfield']      = '';
-         $criterias['GROUPS']['type']           = 'dropdown';
-         $criterias['GROUPS']['virtual']        = true;
-         $criterias['GROUPS']['id']             = 'groups';
+         $criterias['_groups_id']['table']      = 'glpi_groups';
+         $criterias['_groups_id']['field']      = 'completename';
+         $criterias['_groups_id']['name']       = Group::getTypeName(1);
+         $criterias['_groups_id']['linkfield']  = '';
+         $criterias['_groups_id']['type']       = 'dropdown';
+         $criterias['_groups_id']['virtual']    = true;
+         $criterias['_groups_id']['id']         = 'groups';
 
          //Dynamically add all the ldap criterias to the current list of rule's criterias
          $this->addSpecificCriteriasToArray($criterias);

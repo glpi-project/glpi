@@ -79,7 +79,7 @@ class RuleMailCollectorCollection extends RuleCollection {
       //Add all user's groups
       if (in_array('groups', $fields)) {
          foreach (Group_User::getUserGroups($input['_users_id_requester']) as $group) {
-            $input['GROUPS'][] = $group['id'];
+            $input['_groups_id_requester'][] = $group['id'];
          }
       }
 

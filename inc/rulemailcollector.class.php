@@ -122,14 +122,14 @@ class RuleMailCollector extends Rule {
       $criterias['received']['table']                 = '';
       $criterias['received']['type']                  = 'text';
 
-      $criterias['GROUPS']['table']                   = 'glpi_groups';
-      $criterias['GROUPS']['field']                   = 'completename';
-      $criterias['GROUPS']['name']                    = sprintf(__('%1$s: %2$s'), User::getTypeName(1),
+      $criterias['_groups_id_requester']['table']     = 'glpi_groups';
+      $criterias['_groups_id_requester']['field']     = 'completename';
+      $criterias['_groups_id_requester']['name']      = sprintf(__('%1$s: %2$s'), User::getTypeName(1),
                                                                 Group::getTypeName(1));
-      $criterias['GROUPS']['linkfield']               = '';
-      $criterias['GROUPS']['type']                    = 'dropdown';
-      $criterias['GROUPS']['virtual']                 = true;
-      $criterias['GROUPS']['id']                      = 'groups';
+      $criterias['_groups_id_requester']['linkfield'] = '';
+      $criterias['_groups_id_requester']['type']      = 'dropdown';
+      $criterias['_groups_id_requester']['virtual']   = true;
+      $criterias['_groups_id_requester']['id']        = 'groups';
 
       $criterias['KNOWN_DOMAIN']['field']             = 'name';
       $criterias['KNOWN_DOMAIN']['name']              = __('Known mail domain');
