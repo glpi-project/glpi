@@ -306,4 +306,64 @@ class Session extends \DbTestCase {
       $this->boolean($is_logged)->isEqualTo(true);
       $this->boolean(\Session::mustChangePassword())->isEqualTo($expected_result);
    }
+
+   protected function preferredLanguageProvider() {
+      return [
+         [
+            'header'        => null,
+            'config'        => null,
+            'legacy_config' => null,
+            'expected'      => 'en_GB',
+         ],
+         [
+            'header'        => null,
+            'config'        => null,
+            'legacy_config' => 'it_IT',
+            'expected'      => 'it_IT',
+         ],
+         [
+            'header'        => null,
+            'config'        => 'de_DE',
+            'legacy_config' => null,
+            'expected'      => 'de_DE',
+         ],
+         [
+            'header'        => 'en-US',
+            'config'        => 'fr_FR',
+            'legacy_config' => null,
+            'expected'      => 'en_US',
+         ],
+         [
+            // latin as first choice (not available in GLPI), should fallback to italian
+            'header'        => 'la, it-IT;q=0.9, it;q=0.8',
+            'config'        => 'en_GB',
+            'legacy_config' => null,
+            'expected'      => 'it_IT',
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider preferredLanguageProvider
+    */
+   public function testGetPreferredLanguage(?string $header, ?string $config, ?string $legacy_config, string $expected) {
+      global $CFG_GLPI;
+
+      $header_backup = $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? null;
+      $cfg_backup = $CFG_GLPI;
+
+      if ($header !== null) {
+         $_SERVER['HTTP_ACCEPT_LANGUAGE'] = $header;
+      }
+      $CFG_GLPI['language'] = $config;
+      $CFG_GLPI['default_language'] = $legacy_config;
+      $result = \Session::getPreferredLanguage();
+
+      if ($header_backup !== null) {
+         $_SERVER['HTTP_ACCEPT_LANGUAGE'] = $header_backup;
+      }
+      $CFG_GLPI = $cfg_backup;
+
+      $this->string($result)->isEqualTo($expected);
+   }
 }
