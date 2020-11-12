@@ -93,7 +93,7 @@ function choose_language() {
    // fix missing param for js drodpown
    $CFG_GLPI['ajax_limit_count'] = 15;
 
-   Dropdown::showLanguages("language", ['value' => "en_GB"]);
+   Dropdown::showLanguages("language", ['value' => $_SESSION['glpilanguage']]);
    echo "</p>";
    echo "";
    echo "<p class='submit'><input type='hidden' name='install' value='lang_select'>";
@@ -601,6 +601,8 @@ function checkConfigFile() {
 if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
    $_SESSION = [];
 
+   $_SESSION["glpilanguage"] = Session::getPreferredLanguage();
+
    checkConfigFile();
 
    // Add a flag that will be used to validate that installation can be processed.
@@ -609,7 +611,7 @@ if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
    // to change GLPI base URL without even being authenticated.
    $_SESSION['can_process_install'] = true;
 
-   header_html("Select your language");
+   header_html(__("Select your language"));
    choose_language();
 
 } else {
