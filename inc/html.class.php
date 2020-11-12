@@ -4807,6 +4807,7 @@ JS;
 
          // simple select (multiple = no)
          if ((isset($params['display_emptychoice']) && $params['display_emptychoice'])
+             || isset($params['toadd'][$value])
              || $value > 0) {
             $values = ["$value" => $valuename];
          }
