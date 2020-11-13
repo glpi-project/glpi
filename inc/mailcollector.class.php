@@ -1664,26 +1664,24 @@ class MailCollector  extends CommonDBTM {
    function getBody(\Laminas\Mail\Storage\Message $message) {
       $content = null;
 
-      //if message is not multipart, just return its content
-      if (!$message->isMultipart()) {
-         $content = $this->getDecodedContent($message);
-      } else {
-         //if message is multipart, check for html contents then text contents
-         foreach (new RecursiveIteratorIterator($message) as $part) {
-            if (!$part->getHeaders()->has('content-type')
-               || !(($content_type = $part->getHeader('content-type')) instanceof ContentType)) {
-               continue;
-            }
-            if ($content_type->getType() == 'text/html') {
-               $this->body_is_html = true;
-               $content = $this->getDecodedContent($part);
-               //do not check for text part if we found html one.
-               break;
-            }
-            if ($content_type->getType() == 'text/plain' && $content === null) {
-               $this->body_is_html = false;
-               $content = $this->getDecodedContent($part);
-            }
+      $parts = !$message->isMultipart()
+         ? new ArrayIterator([$message])
+         : new RecursiveIteratorIterator($message);
+
+      foreach ($parts as $part) {
+         if (!$part->getHeaders()->has('content-type')
+            || !(($content_type = $part->getHeader('content-type')) instanceof ContentType)) {
+            continue;
+         }
+         if ($content_type->getType() == 'text/html') {
+            $this->body_is_html = true;
+            $content = $this->getDecodedContent($part);
+            //do not check for text part if we found html one.
+            break;
+         }
+         if ($content_type->getType() == 'text/plain' && $content === null) {
+            $this->body_is_html = false;
+            $content = $this->getDecodedContent($part);
          }
       }
 

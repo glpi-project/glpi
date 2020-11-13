@@ -29,6 +29,10 @@ This message have reply to header, requester should be get from this header.
 Content-Type: text/html; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-This message have reply to header, requester should be get from this header.
+<html>
+<body>
+<p>This message have reply to header, requester should be get from this header.</p>
+</body>
+</html>
 
 --000000000000f50df905a9fce128--
