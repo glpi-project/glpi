@@ -3903,6 +3903,12 @@ JS;
                         $('.mce-edit-area').addClass('required');
                      }
                   });
+                  editor.on('paste', function (e) {
+                     // Remove required on paste event
+                     // This is only needed when pasting with right click (context menu)
+                     // Pasting with Ctrl+V is already handled by keyup event above
+                     $('.mce-edit-area').removeClass('required');
+                  });
                }
                editor.on('SaveContent', function (contentEvent) {
                   contentEvent.content = contentEvent.content.replace(/\\r?\\n/g, '');
