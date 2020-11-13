@@ -982,6 +982,11 @@ class Ticket extends CommonITILObject {
          $entid = $this->fields['entities_id'];
       }
 
+      $cat_id = $input['itilcategories_id'] ?? 0;
+      if ($cat_id) {
+         $input['itilcategories_id_code'] = ITILCategory::getById($cat_id)->fields['code'];
+      }
+
       // Process Business Rules
       $this->fillInputForBusinessRules($input);
 
@@ -1609,6 +1614,11 @@ class Ticket extends CommonITILObject {
           && Session::haveRight("ticket", Ticket::OWN)
       ) {
          $input['_users_id_assign'] = Session::getLoginUserID();
+      }
+
+      $cat_id = $input['itilcategories_id'] ?? 0;
+      if ($cat_id) {
+         $input['itilcategories_id_code'] = ITILCategory::getById($cat_id)->fields['code'];
       }
 
       // Process Business Rules
