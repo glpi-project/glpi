@@ -531,7 +531,7 @@ class Budget extends CommonDropdown{
                      ] + getEntitiesRestrictCriteria($item->getTable()),
                      'ORDERBY'      => [
                         'entities_id',
-                        'glpi_cartridgeitems.name'
+                        'glpi_consumableitems.name'
                      ]
                   ];
                   break;
