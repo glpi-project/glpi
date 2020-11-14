@@ -1252,7 +1252,7 @@ class Plugin extends CommonDBTM {
     *
     * @return bool
    **/
-    static function registerClass($itemtype, $attrib = []) {
+   static function registerClass($itemtype, $attrib = []) {
       global $CFG_GLPI;
 
       $plug = isPluginItemType($itemtype);
@@ -1262,7 +1262,7 @@ class Plugin extends CommonDBTM {
 
       $all_types = preg_grep('/.+_types/', array_keys($attrib));
       $all_types[] = 'networkport_instantiations';
-   
+
       $mapping = [
          'doc_types'       => 'document_types',
          'helpdesk_types'  => 'ticket_types',
@@ -1286,7 +1286,9 @@ class Plugin extends CommonDBTM {
       $blacklist = ['device_types'];
       foreach ($all_types as $att) {
          if (!in_array($att, $blacklist) && isset($attrib[$att]) && $attrib[$att]) {
-            if(!isset($CFG_GLPI[$att]))$CFG_GLPI[$att] = array();
+            if (!isset($CFG_GLPI[$att])) {
+               $CFG_GLPI[$att] = [];
+            }
             $CFG_GLPI[$att][] = $itemtype;
             unset($attrib[$att]);
          }
