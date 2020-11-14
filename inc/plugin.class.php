@@ -1252,7 +1252,7 @@ class Plugin extends CommonDBTM {
     *
     * @return bool
    **/
-   static function registerClass($itemtype, $attrib = []) {
+    static function registerClass($itemtype, $attrib = []) {
       global $CFG_GLPI;
 
       $plug = isPluginItemType($itemtype);
@@ -1260,9 +1260,9 @@ class Plugin extends CommonDBTM {
          return false;
       }
 
-      $all_types = preg_grep('/.+_types/', array_keys($CFG_GLPI));
+      $all_types = preg_grep('/.+_types/', array_keys($attrib));
       $all_types[] = 'networkport_instantiations';
-
+   
       $mapping = [
          'doc_types'       => 'document_types',
          'helpdesk_types'  => 'ticket_types',
@@ -1271,14 +1271,14 @@ class Plugin extends CommonDBTM {
 
       foreach ($mapping as $orig => $fixed) {
          if (isset($attrib[$orig])) {
-            \Toolbox::deprecated(
+            Toolbox::deprecated(
                sprintf(
                   '%1$s type is deprecated, use %2$s instead.',
                   $orig,
                   $fixed
                )
             );
-            $attrib[$fixed] = $attrib[$orig];
+            $attrib[$orig] = $attrib[$fixed];
             unset($attrib[$orig]);
          }
       }
@@ -1286,6 +1286,7 @@ class Plugin extends CommonDBTM {
       $blacklist = ['device_types'];
       foreach ($all_types as $att) {
          if (!in_array($att, $blacklist) && isset($attrib[$att]) && $attrib[$att]) {
+            if(!isset($CFG_GLPI[$att]))$CFG_GLPI[$att] = array();
             $CFG_GLPI[$att][] = $itemtype;
             unset($attrib[$att]);
          }
