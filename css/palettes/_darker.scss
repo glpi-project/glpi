@@ -373,12 +373,15 @@ body input:disabled,
 .select2-container--default .select2-selection--multiple,
 body .select2-container .select2-selection--multiple,
 .select2-dropdown {
-   background-color: #242323;
-   color: #888;
+   background-color: #242323 !important;
+   color: #AAAAAA !important;
    border: 1px solid #333 !important;
 }
 .select2-container--default .select2-selection--single .select2-selection__rendered {
    color: #AAAAAA;
+}
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+   background-color: #888 !important;
 }
 input:required:valid {
    border: 1px solid #515151 !important;
@@ -789,9 +792,43 @@ div.progress {
 }
 
 /** Dashboards **/
-.dashboard .grid-guide {
-   background-image: linear-gradient(to right, #333 1px, transparent 1px),
-                     linear-gradient(to bottom, #333 1px, transparent 1px);
+.default_dashboard {
+   background-color: transparent;
+}
+
+.dashboard, .default_dashboard {
+   border-color: #AAAAAA;
+   box-shadow: none;
+
+   .toolbar i.fas {
+      color: #888;
+      &:hover {
+         color: #CCC;
+      }
+      &.active {
+         background-color: #242323;
+         border: 2px solid #888;
+      }
+   }
+   .filters_toolbar .filters-control {
+      .add-filter {
+         color: #888;
+
+         &:hover {
+            color: #CCC;
+         }
+      }
+      &:hover {
+         border-color: #CCC;
+      }
+   }
+   .grid-stack .grid-stack-item .loading-card .fa-spin {
+      color: #AAAAAA;
+   }
+   .grid-guide {
+      background-image: linear-gradient(to right, #333 1px, transparent 1px),
+      linear-gradient(to bottom, #333 1px, transparent 1px);
+   }
 }
 
 /** Racks and datacenter **/
@@ -856,3 +893,6 @@ div.progress {
    }
 }
 
+.ui-tabs-nav li.ui-tabs-tab:focus, .ui-tabs-nav li.ui-tabs-tab a:focus {
+   outline: none;
+}
