@@ -502,7 +502,7 @@ class Item_Devices extends CommonDBRelation {
 
       $devicetype = get_called_class();
       $plug = isPluginItemType($devicetype);
-      if ($plug!= false) {{
+      if ($plug != false) {
          return 'Plugin'.$plug['plugin'].str_replace ('Item_', '', $plug['class']);
       }
       return str_replace ('Item_', '', $devicetype);
