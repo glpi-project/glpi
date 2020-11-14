@@ -85,7 +85,9 @@ abstract class CommonDevice extends CommonDropdown {
       if (null === $devicetype) {
          $devicetype = get_called_class();
       }
-      if ($plug = isPluginItemType($devicetype)) {
+      $plug = isPluginItemType($devicetype);
+
+      if ($plug != false) {
          return 'Plugin'.$plug['plugin'].'Item_'.$plug['class'];
       }
       return "Item_$devicetype";
