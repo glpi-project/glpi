@@ -363,7 +363,31 @@ class Item_Devices extends CommonDBRelation {
       return [];
    }
 
-
+   /**
+    * Get the items configuration name that define  which Item_Device can be attached.
+    * the class, lowercase, without "_" with extra "_types" at the end; for example
+    * "itemdevicesoundcard_types").
+    *
+    * Alternatively, it could be overloaded from subclasses
+    *
+    * @since 0.85
+    * @param string $itemclass name of the item class
+    *
+    * @return array of the itemtype that can have this Item_Device
+   **/
+   static function classTypesName($itemclass)
+   {
+      $ret = '';
+      if (preg_match("/Plugin([A-Z][a-z0-9]+)?Item_([A-Z]\w+)/", $itemclass, $matches)) {
+         $ret = 'itemplugin'.str_replace('_', '', strtolower($matches[1].$matches[2])) . '_types';
+      }
+      else
+      {
+         $ret =  str_replace('_', '', strtolower($itemclass)) . '_types';
+      }
+      return $ret;
+   }
+   
    /**
     * Get the items on which this Item_Device can be attached. For instance, a computer can have
     * any kind of device. Conversely, a soundcard does not concern a NetworkEquipment
@@ -380,7 +404,7 @@ class Item_Devices extends CommonDBRelation {
    static function itemAffinity() {
       global $CFG_GLPI;
 
-      $conf_param = str_replace('_', '', strtolower(static::class)) . '_types';
+      $conf_param =  static::classTypesName(get_called_class());
       if (isset($CFG_GLPI[$conf_param])) {
          return $CFG_GLPI[$conf_param];
       }
@@ -458,7 +482,7 @@ class Item_Devices extends CommonDBRelation {
 
       $itemtypes = $CFG_GLPI['itemdevices_types'];
 
-      $conf_param = str_replace('_', '', strtolower(static::class)) . '_types';
+      $conf_param = static::classTypesName(get_called_class());
       if (isset($CFG_GLPI[$conf_param]) && !in_array('*', $CFG_GLPI[$conf_param])) {
          $itemtypes = array_intersect($itemtypes, $CFG_GLPI[$conf_param]);
       }
@@ -477,7 +501,8 @@ class Item_Devices extends CommonDBRelation {
    static function getDeviceType() {
 
       $devicetype = get_called_class();
-      if ($plug = isPluginItemType($devicetype)) {
+      $plug = isPluginItemType($devicetype);
+      if ($plug!= false) {{
          return 'Plugin'.$plug['plugin'].str_replace ('Item_', '', $plug['class']);
       }
       return str_replace ('Item_', '', $devicetype);
