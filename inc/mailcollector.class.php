@@ -780,9 +780,9 @@ class MailCollector  extends CommonDBTM {
 
                // Keep track of the mail author so we can check his
                // notifications preferences later (glpinotification_to_myself)
-               if ($tkt['users_id']) {
+               if (isset($tkt['users_id']) && $tkt['users_id']) {
                   $_SESSION['mailcollector_user'] = $tkt['users_id'];
-               } else {
+               } else if (isset($tkt['_users_id_requester_notif']['alternative_email'][0])) {
                   // Special case when we have no users_id (anonymous helpdesk)
                   // -> use the user email instead
                   $_SESSION['mailcollector_user'] = $tkt["_users_id_requester_notif"]['alternative_email'][0];
