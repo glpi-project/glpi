@@ -1309,11 +1309,13 @@ class Plugin extends CommonDBTM {
 
       // Handle plugins specific configurations
       foreach ($attrib as $key => $value) {
-         if (preg_match('/^plugin[a-z]+_types$/', $key) && $value) {
-            if (!array_key_exists($key, $CFG_GLPI)) {
-               $CFG_GLPI[$key] = [];
+         if (preg_match('/^plugin[a-z]+_types$/', $key)) {
+            if ($value) {
+               if (!array_key_exists($key, $CFG_GLPI)) {
+                  $CFG_GLPI[$key] = [];
+               }
+               $CFG_GLPI[$key][] = $itemtype;
             }
-            $CFG_GLPI[$key] = $itemtype;
             unset($attrib[$key]);
          }
       }
