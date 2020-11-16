@@ -1288,7 +1288,7 @@ class Plugin extends CommonDBTM {
          if (class_exists($itemtype::getItem_DeviceType())) {
             $CFG_GLPI['device_types'][] = $itemtype;
          }
-         unset($attrib[$att]);
+         unset($attrib['device_types']);
       }
 
       if (isset($attrib['addtabon'])) {
@@ -1298,11 +1298,36 @@ class Plugin extends CommonDBTM {
          foreach ($attrib['addtabon'] as $form) {
             CommonGLPI::registerStandardTab($form, $itemtype);
          }
+         unset($attrib['addtabon']);
       }
 
       //Manage entity forward from a source itemtype to this itemtype
       if (isset($attrib['forwardentityfrom'])) {
          CommonDBTM::addForwardEntity($attrib['forwardentityfrom'], $itemtype);
+         unset($attrib['forwardentityfrom']);
+      }
+
+      // Handle plugins specific configurations
+      foreach ($attrib as $key => $value) {
+         if (preg_match('/^plugin[az]+_types$/', $key) && $value) {
+            if (!array_key_exists($key, $CFG_GLPI)) {
+               $CFG_GLPI[$key] = [];
+            }
+            $CFG_GLPI[$key] = $itemtype;
+            unset($attrib[$key]);
+         }
+      }
+
+      // Warn for unmanaged keys
+      if (!empty($attrib)) {
+         trigger_error(
+            sprintf(
+               'Unknown attributes "%s" used in "%s" class registration',
+               $itemtype,
+               implode('", "', array_keys($attrib))
+            ),
+            E_USER_WARNING
+         );
       }
 
       return true;
