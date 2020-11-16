@@ -317,7 +317,7 @@ $CFG_GLPI['itemdevicefirmware_types']     = ['Computer', 'Peripheral', 'Phone', 
 
 $CFG_GLPI['itemdevicesimcard_types']      = ['Computer', 'Peripheral', 'Phone', 'NetworkEquipment', 'Printer'];
 
-$CFG_GLPI['itemdevicegeneric_types']      = ['*'];
+$CFG_GLPI['itemdevicegeneric_types']      = ['Computer', 'Peripheral', 'Phone', 'NetworkEquipment', 'Printer'];
 
 $CFG_GLPI['itemdevicepci_types']          = ['*'];
 
