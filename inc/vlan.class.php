@@ -168,4 +168,12 @@ class Vlan extends CommonDropdown {
       }
    }
 
+   function defineTabs($options = []) {
+
+      $ong = [];
+      $this->addDefaultFormTab($ong)
+         ->addStandardTab('NetworkPort_Vlan', $ong, $options);
+
+      return $ong;
+   }
 }

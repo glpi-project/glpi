@@ -811,13 +811,15 @@ class Html {
             echo "took  ".array_sum($DEBUG_SQL['times'])."s</div>";
 
             echo "<table class='tab_cadre'><tr><th>N&#176; </th><th>Queries</th><th>Time</th>";
-            echo "<th>Errors</th></tr>";
+            echo "<th>Rows</th><th>Errors</th></tr>";
 
             foreach ($DEBUG_SQL['queries'] as $num => $query) {
                echo "<tr class='tab_bg_".(($num%2)+1)."'><td>$num</td><td>";
                echo self::cleanSQLDisplay($query);
                echo "</td><td>";
                echo $DEBUG_SQL['times'][$num];
+               echo "</td><td>";
+               echo $DEBUG_SQL['rows'][$num] ?? 0;
                echo "</td><td>";
                if (isset($DEBUG_SQL['errors'][$num])) {
                   echo $DEBUG_SQL['errors'][$num];
@@ -3887,13 +3889,12 @@ JS;
             elements: '$name',
             relative_urls: false,
             remove_script_host: false,
-            content_css: '$darker_css',
             entity_encoding: 'raw',
             paste_data_images: $('.fileupload').length,
             menubar: false,
             statusbar: false,
             skin_url: '".$CFG_GLPI['root_doc']."/css/tiny_mce/skins/light',
-            content_css: '".$CFG_GLPI['root_doc']."/css/tiny_mce_custom.css',
+            content_css: '$darker_css,".$CFG_GLPI['root_doc']."/css/tiny_mce_custom.css',
             cache_suffix: '?v=".GLPI_VERSION."',
             setup: function(editor) {
                if ($('#$name').attr('required') == 'required') {
@@ -3915,6 +3916,12 @@ JS;
                      if ($('#$name').val() == '') {
                         $('.mce-edit-area').addClass('required');
                      }
+                  });
+                  editor.on('paste', function (e) {
+                     // Remove required on paste event
+                     // This is only needed when pasting with right click (context menu)
+                     // Pasting with Ctrl+V is already handled by keyup event above
+                     $('.mce-edit-area').removeClass('required');
                   });
                }
                editor.on('SaveContent', function (contentEvent) {
@@ -4789,6 +4796,7 @@ JS;
 
          // simple select (multiple = no)
          if ((isset($params['display_emptychoice']) && $params['display_emptychoice'])
+             || isset($params['toadd'][$value])
              || $value > 0) {
             $values = ["$value" => $valuename];
          }

@@ -1,0 +1,75 @@
+Return-Path: normal@glpi-project.org
+Received: from 192.168.1.3 (LHLO mail.glpi-project.org) (192.168.1.3)
+ by mail.glpi-project.org with LMTP; Thu, 7 Jun 2018 12:05:51 +0200
+ (CEST)
+Received: from mail.glpi-project.org (localhost [127.0.0.1])
+    by mail.glpi-project.org (Postfix) with ESMTP id 6E50A7E807FE
+    for <unittests@glpi-project.org>; Thu,  7 Jun 2018 12:05:51 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+    by mail.glpi-project.org (Postfix) with ESMTP id 5C15F7E80423
+    for <unittests@glpi-project.org>; Thu,  7 Jun 2018 12:05:51 +0200 (CEST)
+Received: from mail.glpi-project.org ([127.0.0.1])
+    by localhost (mail.glpi-project.org [127.0.0.1]) (amavisd-new, port 10026)
+    with ESMTP id zZ35QyFtsE9R for <unittests@glpi-project.org>;
+    Thu,  7 Jun 2018 12:05:51 +0200 (CEST)
+Received: from mail.glpi-project.org (localhost [127.0.0.1])
+    by mail.glpi-project.org (Postfix) with ESMTP id 214627E807E8
+    for <unittests@glpi-project.org>; Thu,  7 Jun 2018 12:05:51 +0200 (CEST)
+Date: Thu, 7 Jun 2018 12:05:51 +0200 (CEST)
+From: Normal User <normal@glpi-project.org>
+To: GLPI debug <unittests@glpi-project.org>
+Message-ID: <1695134010.1757889.1528365951040.JavaMail.zimbra@glpi-project.org>
+In-Reply-To: <1954034179.1757759.1528365914864.JavaMail.zimbra@glpi-project.org>
+Subject: Attachement having filename using RFC5987 (multiple lines)
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+    boundary="----=_Part_1757883_1359581901.1528365951028"
+
+------=_Part_1757883_1359581901.1528365951028
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+Attached image has special chars in its filename
+
+------=_Part_1757883_1359581901.1528365951028
+Content-Type: multipart/related; 
+    boundary="----=_Part_1757884_1267006027.1528365951028"
+
+------=_Part_1757884_1267006027.1528365951028
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<html>
+<body>
+Attached image has special chars in its filename
+<img src="cid:6f1f48de7c56cc3412e74008ad9f7c640091f5e3@zimbra">
+</body>
+</html>
+------=_Part_1757884_1267006027.1528365951028
+Content-Type: image/gif;
+ name="=?UTF-8?B?MTktyoLHt8OoyZXJqcmQyasgyLzJpsOiyoHIvy5naWY=?="
+Content-Disposition: attachment;
+ filename*0*=UTF-8''19-%CA%82%C7%B7%C3%A8%C9%95%C9%A9%C9%90%C9%AB%20%C8%BC;
+ filename*1*=%C9%A6%C3%A2%CA%81%C8%BF.gif
+Content-Transfer-Encoding: base64
+Content-ID: <6f1f48de7c56cc3412e74008ad9f7c640091f5e3@zimbra>
+
+R0lGODlhDwAPAIcAAP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEA
+AAAh+QQEAAAAACwAAAAADwAPAAAIGgABCBxIsKDBgwgTKlzIsKHDhxAjSpxI8WFAADs=
+------=_Part_1757884_1267006027.1528365951028--
+
+------=_Part_1757883_1359581901.1528365951028--
+

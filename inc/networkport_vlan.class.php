@@ -185,7 +185,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
             $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
          }
          echo "<td class='b'>
-               <a href='".$CFG_GLPI["root_doc"]."/front/vlan.form.php?id=".$data["id"]."'>".$name.
+               <a href='".Vlan::getFormURLWithID($data['id'])."'>".$name.
               "</a>";
          echo "</td>";
          echo "<td>".Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
@@ -207,6 +207,98 @@ class NetworkPort_Vlan extends CommonDBRelation {
    }
 
 
+   static function showForVlan(Vlan $vlan) {
+      global $DB, $CFG_GLPI;
+
+      $ID = $vlan->getID();
+      if (!$vlan->can($ID, READ)) {
+         return false;
+      }
+
+      $canedit = $vlan->canEdit($ID);
+      $rand    = mt_rand();
+
+      $iterator = $DB->request([
+         'SELECT'    => [
+            'glpi_networkports_vlans.id as assocID',
+            'glpi_networkports_vlans.tagged',
+            'glpi_networkports.*'
+         ],
+         'FROM'      => 'glpi_networkports_vlans',
+         'LEFT JOIN' => [
+            'glpi_networkports'   => [
+               'ON' => [
+                  'glpi_networkports_vlans'  => 'networkports_id',
+                  'glpi_networkports'        => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => ['vlans_id' => $ID]
+      ]);
+      $number = count($iterator);
+
+      $vlans  = [];
+      $used   = [];
+      while ($line = $iterator->next()) {
+         $used[$line["id"]]       = $line["id"];
+         $vlans[$line["assocID"]] = $line;
+      }
+
+      echo "<div class='spaced'>";
+      if ($canedit && $number) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $number),
+                                      'container'     => 'mass'.__CLASS__.$rand];
+         Html::showMassiveActions($massiveactionparams);
+      }
+      echo "<table class='tab_cadre_fixehov'>";
+
+      $header_begin  = "<tr>";
+      $header_top    = '';
+      $header_bottom = '';
+      $header_end    = '';
+      if ($canedit && $number) {
+         $header_top    .= "<th width='10'>";
+         $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_bottom .= "<th width='10'>";
+         $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+      }
+      $header_end .= "<th>".__('Name')."</th>";
+      $header_end .= "<th>".Entity::getTypeName(1)."</th>";
+      $header_end .= "</tr>";
+      echo $header_begin.$header_top.$header_end;
+
+      $used = [];
+      foreach ($vlans as $data) {
+         echo "<tr class='tab_bg_1'>";
+         if ($canedit) {
+            echo "<td>";
+            Html::showMassiveActionCheckBox(__CLASS__, $data["assocID"]);
+            echo "</td>";
+         }
+         $name = $data["name"];
+         if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+            $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
+         }
+         echo "<td class='b'>
+               <a href='".NetworkPort::getFormURLWithID($data['id'])."'>".$name.
+              "</a>";
+         echo "</td>";
+         echo "<td>".Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
+         echo "</tr>";
+      }
+      if ($number) {
+         echo $header_begin.$header_top.$header_end;
+      }
+      echo "</table>";
+      if ($canedit && $number) {
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
+         Html::closeForm();
+      }
+      echo "</div>";
+
+   }
    /**
     * @param $portID
    **/
@@ -239,6 +331,13 @@ class NetworkPort_Vlan extends CommonDBRelation {
                                              ["networkports_id" => $item->getID()]);
                }
                return self::createTabEntry(Vlan::getTypeName(), $nb);
+            case 'Vlan' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $nb = countElementsInTable($this->getTable(),
+                                             ["vlans_id" => $item->getID()]);
+               }
+               return self::createTabEntry(NetworkPort::getTypeName(), $nb);
+
          }
       }
       return '';
@@ -247,8 +346,12 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
-      if ($item->getType()=='NetworkPort') {
-         self::showForNetworkPort($item);
+      switch ($item->getType()) {
+
+         case 'NetworkPort':
+            return self::showForNetworkPort($item);
+         case 'Vlan':
+            return self::showForVlan($item);
       }
       return true;
    }

@@ -329,6 +329,8 @@ class MailCollector extends DbTestCase {
                'Inlined image with no Content-Disposition',
                'This is a mail without subject.', // No subject = name is set using ticket contents
                'Image tag splitted on multiple lines',
+               'Attachement having filename using RFC5987 (multiple lines)',
+               'Mono-part HTML message',
             ]
          ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -339,6 +341,15 @@ class MailCollector extends DbTestCase {
                'Ticket with observer',
             ]
          ],
+      ];
+
+      // Tickets on which content should be checked (key is ticket name)
+      $tickets_contents = [
+         // Plain text on mono-part email
+         'PHP fatal error' => 'On some cases, doing the following:&lt;br /&gt;# blahblah&lt;br /&gt;&lt;br /&gt;Will cause a PHP fatal error:&lt;br /&gt;# blahblah&lt;br /&gt;&lt;br /&gt;Best regards,',
+         // HTML on multi-part email
+         'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine' => '&lt;p&gt;This message have reply to header, requester should be get from this header.&lt;/p&gt;',
+         'Mono-part HTML message' => '&lt;p&gt;This HTML message does not use &lt;strong&gt;"multipart/alternative"&lt;/strong&gt; format.&lt;/p&gt;',
       ];
 
       foreach ($actors_specs as $actor_specs) {
@@ -363,8 +374,15 @@ class MailCollector extends DbTestCase {
 
          $names = [];
          while ($data = $iterator->next()) {
-            $names[] = $data['name'];
+            $name = $data['name'];
+
+            if (array_key_exists($name, $tickets_contents)) {
+               $this->string($data['content'])->isEqualTo($tickets_contents[$name]);
+            }
+
             $this->string($data['content'])->notContains('cid:'); // check that image were correctly imported
+
+            $names[] = $name;
          }
 
          $this->array($names)->isIdenticalTo($actor_specs['tickets_names']);
@@ -377,6 +395,7 @@ class MailCollector extends DbTestCase {
          '01-test.JPG',
          '15-image001.png',
          '18-blank.gif',
+         '19-ʂǷèɕɩɐɫ ȼɦâʁȿ.gif',
       ];
 
       $iterator = $DB->request(
