@@ -144,7 +144,7 @@ class MailCollector  extends CommonDBTM {
          if (empty($input["passwd"])) {
             unset($input["passwd"]);
          } else {
-            $input["passwd"] = Toolbox::sodiumEncrypt(stripslashes($input["passwd"]));
+            $input["passwd"] = Toolbox::sodiumEncrypt($input["passwd"]);
          }
       }
 
