@@ -424,8 +424,12 @@ trait PlanningEvent {
          }
       }
 
-      if ($whogroup > 0 && $itemtype == 'Reminder') {
-         $ngrouppriv = ["glpi_groups_reminders.groups_id" => $whogroup];
+      if ($whogroup > 0) {
+         if ($itemtype == 'Reminder') {
+            $ngrouppriv = ["glpi_groups_reminders.groups_id" => $whogroup];
+         } else {
+            $ngrouppriv = [$itemtype::getTableField('groups_id') => $whogroup];
+         }
          if (!empty($nreadpriv)) {
             $nreadpriv['OR'] = [$nreadpriv, $ngrouppriv];
          } else {
