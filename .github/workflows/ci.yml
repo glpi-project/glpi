@@ -68,15 +68,19 @@ jobs:
           echo "Change files rights to give write access to app container user"
           setfacl --recursive --modify u:1000:rwx `pwd`
           setfacl --recursive --modify u:1000:rwx ${{ runner.temp }}/app_home
+      - name: "Show versions"
+        if: env.skip != 'true'
+        run: |
+          docker exec app php --version
+          docker exec app composer --version
+          docker exec app sh -c 'echo "node $(node --version)"'
+          docker exec app sh -c 'echo "npm $(npm --version)"'
       - name: Validate composer config
         run: |
           docker exec app composer validate --strict
       - name: "Install dependencies"
         run: |
           docker exec app rm composer.lock
-          docker exec app composer --version
-          docker exec app echo "node version: $(node --version)"
-          docker exec app echo "npm version: $(npm --version)"
           docker exec app composer config --unset platform
           docker exec app bin/console dependencies install --composer-options="--prefer-dist --no-progress"
       - name: "PHP Parallel Lint"
@@ -151,6 +155,14 @@ jobs:
           echo "Change files rights to give write access to app container user"
           setfacl --recursive --modify u:1000:rwx `pwd`
           setfacl --recursive --modify u:1000:rwx ${{ runner.temp }}/app_home
+      - name: "Show versions"
+        if: env.skip != 'true'
+        run: |
+          docker exec app php --version
+          docker exec app composer --version
+          docker exec app sh -c 'echo "node $(node --version)"'
+          docker exec app sh -c 'echo "npm $(npm --version)"'
+          docker exec db mysql --version
       - name: "Initialize databases"
         if: env.skip != 'true'
         run: |
@@ -161,9 +173,6 @@ jobs:
         if: env.skip != 'true'
         run: |
           docker exec app rm composer.lock
-          docker exec app composer --version
-          docker exec app echo "node version: $(node --version)"
-          docker exec app echo "npm version: $(npm --version)"
           docker exec app composer config --unset platform
           docker exec app bin/console dependencies install --composer-options="--prefer-dist --no-progress"
       - name: "PHP Parallel Lint"
