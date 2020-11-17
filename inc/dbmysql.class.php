@@ -320,6 +320,22 @@ class DBmysql {
          $DEBUG_SQL["times"][$SQL_TOTAL_REQUEST] = $TIME;
          $DEBUG_SQL['rows'][$SQL_TOTAL_REQUEST] = $this->affectedRows();
       }
+
+      if (!empty($warnings = $this->getWarnings())) {
+         // Output warnings in SQL log
+         $message = sprintf(
+            "  *** MySQL query warnings:\n  SQL: %s\n  Warnings: \n%s\n",
+            $query,
+            implode("\n", $warnings)
+         );
+         $message .= Toolbox::backtrace(false, 'DBmysql->query()', ['Toolbox::backtrace()']);
+         Toolbox::logSqlWarning($message);
+
+         if (($error_handler = $GLPI->getErrorHandler()) instanceof ErrorHandler) {
+            $error_handler->handleSqlWarnings($warnings, $query);
+         }
+      }
+
       if ($this->execution_time === true) {
          $this->execution_time = $TIMER->getTime(0, true);
       }
@@ -1574,5 +1590,33 @@ class DBmysql {
          }
       }
       return trim($this->removeSqlComments($output));
+   }
+
+   /**
+    * Get MySQL warnings.
+    *
+    * @return string[]
+    */
+   private function getWarnings() {
+      $warnings = [];
+
+      if ($this->dbh->warning_count > 0 && $warnings_result = $this->dbh->query('SHOW WARNINGS')) {
+         // Exclude some warnings related to deprecated features.
+         // They are complicated to fix, so they are muted for now to not block the SQL warning logging feature.
+         $excludes = [
+            1287, // 'utf8mb3' is deprecated and will be removed in a future release. Please use utf8mb4 instead.
+            1681, // Integer display width is deprecated and will be removed in a future release.
+            3719, // 'utf8' is currently an alias for the character set UTF8MB3, but will be an alias for UTF8MB4 in a future release. Please consider using UTF8MB4 in order to be unambiguous.
+            3778, // 'utf8_unicode_ci' is a collation of the deprecated character set UTF8MB3. Please consider using UTF8MB4 with an appropriate collation instead.
+         ];
+         while ($warning = $warnings_result->fetch_assoc()) {
+            if ($warning['Level'] === 'Note' || in_array($warning['Code'], $excludes)) {
+               continue;
+            }
+            $warnings[] = sprintf('%s: %s', $warning['Code'], $warning['Message']);
+         }
+      }
+
+      return $warnings;
    }
 }
