@@ -159,7 +159,7 @@ class Stat extends CommonGLPI {
             $criteria = [
                'SELECT'    => [
                   'glpi_locations.id',
-                  'glpi_locations. ' . ($is_tree ? 'name' : 'completename') . 'AS location'
+                  'glpi_locations.' . ($is_tree ? 'name' : 'completename') . ' AS location'
                ],
                'DISTINCT'  => true,
                'FROM'      => 'glpi_locations',
