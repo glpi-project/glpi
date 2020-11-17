@@ -114,7 +114,7 @@ class NotificationAjax implements NotificationInterface {
          $iterator = $DB->request([
             'FROM'   => 'glpi_queuednotifications',
             'WHERE'  => [
-               'is_deleted'   => false,
+               'is_deleted'   => 0,
                'recipient'    => Session::getLoginUserID(),
                'mode'         => Notification_NotificationTemplate::MODE_AJAX
             ]

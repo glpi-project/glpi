@@ -167,7 +167,7 @@ class MailCollector extends DbTestCase {
       //Add an active collector
       $nid = (int)$this->testedInstance->add([
          'name'      => 'Maille name',
-         'is_active' => true
+         'is_active' => 1
       ]);
       $this->integer($nid)->isGreaterThan(0);
 
@@ -178,7 +178,7 @@ class MailCollector extends DbTestCase {
       $this->boolean(
          $this->testedInstance->update([
             'id'        => $this->testedInstance->fields['id'],
-            'is_active' => false
+            'is_active' => 0
          ])
       )->isTrue();
 
@@ -199,7 +199,7 @@ class MailCollector extends DbTestCase {
       $this->mailgate_id = (int)$collector->add([
          'name'                  => 'testuser',
          'login'                 => 'testuser',
-         'is_active'             => true,
+         'is_active'             => 1,
          'passwd'                => 'applesauce',
          'mail_server'           => '127.0.0.1',
          'server_type'           => '/imap',

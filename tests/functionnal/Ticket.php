@@ -173,7 +173,7 @@ class Ticket extends DbTestCase {
          'content'           => 'my task template A',
          'taskcategories_id' => $taskcat_id,
          'actiontime'        => 60,
-         'is_private'        => true,
+         'is_private'        => 1,
          'users_id_tech'     => 2,
          'groups_id_tech'    => 0,
          'state'             => \Planning::INFO,
@@ -184,7 +184,7 @@ class Ticket extends DbTestCase {
          'content'           => 'my task template B',
          'taskcategories_id' => $taskcat_id,
          'actiontime'        => 120,
-         'is_private'        => false,
+         'is_private'        => 0,
          'users_id_tech'     => 2,
          'groups_id_tech'    => 0,
          'state'             => \Planning::TODO,
@@ -217,8 +217,8 @@ class Ticket extends DbTestCase {
          'name'                        => 'my itil category',
          'ticketltemplates_id_incident'=> $itiltemplate_id,
          'tickettemplates_id_demand'   => $itiltemplate_id,
-         'is_incident'                 => true,
-         'is_request'                  => true,
+         'is_incident'                 => 1,
+         'is_request'                  => 1,
       ]);
       $this->boolean($itilcat->isNewItem())->isFalse();
 
@@ -2602,6 +2602,9 @@ class Ticket extends DbTestCase {
    }
 
    public function testCronPurgeTicket() {
+
+      $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
+
       global $DB;
       // set default calendar and autoclose delay in root entity
       $entity = new \Entity;
@@ -2738,7 +2741,6 @@ class Ticket extends DbTestCase {
          'itemtype'     => 'Ticket',
          'items_id'     => $ticket2,
          'documents_id' => $documents_id,
-         'users_id'     => false,
          'entities_id'  => '0',
          'is_recursive' => 0
       ]);
@@ -2746,7 +2748,6 @@ class Ticket extends DbTestCase {
          'itemtype'     => 'Ticket',
          'items_id'     => $ticket1,
          'documents_id' => $documents_id,
-         'users_id'     => false,
          'entities_id'  => '0',
          'is_recursive' => 0
       ]);
@@ -2754,7 +2755,6 @@ class Ticket extends DbTestCase {
          'itemtype'     => 'Ticket',
          'items_id'     => $ticket1,
          'documents_id' => $documents_id2,
-         'users_id'     => false,
          'entities_id'  => '0',
          'is_recursive' => 0
       ]);
@@ -2762,7 +2762,6 @@ class Ticket extends DbTestCase {
          'itemtype'     => 'Ticket',
          'items_id'     => $ticket2,
          'documents_id' => $documents_id3,
-         'users_id'     => false,
          'entities_id'  => '0',
          'is_recursive' => 0
       ]);
@@ -2770,7 +2769,6 @@ class Ticket extends DbTestCase {
          'itemtype'     => 'Ticket',
          'items_id'     => $ticket3,
          'documents_id' => $documents_id3,
-         'users_id'     => false,
          'entities_id'  => '0',
          'is_recursive' => 0
       ]);
@@ -3062,6 +3060,9 @@ class Ticket extends DbTestCase {
    }
 
    public function testScreenshotConvertedIntoDocument() {
+
+      $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
+
       // Test uploads for item creation
       $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/foo.png'));
       $filename = '5e5e92ffd9bd91.11111111image_paste22222222.png';
@@ -3108,6 +3109,9 @@ class Ticket extends DbTestCase {
    }
 
    public function testUploadDocuments() {
+
+      $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
+
       // Test uploads for item creation
       $filename = '5e5e92ffd9bd91.11111111' . 'foo.txt';
       $instance = new \Ticket();

@@ -733,6 +733,9 @@ class MailCollector  extends CommonDBTM {
 
                $rejinput = [
                   'mailcollectors_id' => $mailgateID,
+                  'from'              => '',
+                  'to'                => '',
+                  'messageid'         => '',
                ];
 
                //prevent loop when message is read but when it's impossible to move / delete

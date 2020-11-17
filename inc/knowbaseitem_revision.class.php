@@ -295,6 +295,7 @@ class KnowbaseItem_Revision extends CommonDBTM {
     */
    public function createNew(KnowbaseItem $item) {
       $this->getEmpty();
+      unset($this->fields['id']);
       $this->fields['knowbaseitems_id'] = $item->fields['id'];
       $this->fields['name'] = Toolbox::addslashes_deep($item->fields['name']);
       $this->fields['answer'] = Toolbox::clean_cross_side_scripting_deep(
@@ -315,6 +316,7 @@ class KnowbaseItem_Revision extends CommonDBTM {
     */
    public function createNewTranslated(KnowbaseItemTranslation $item) {
       $this->getEmpty();
+      unset($this->fields['id']);
       $this->fields['knowbaseitems_id'] = $item->fields['knowbaseitems_id'];
       $this->fields['name'] = $item->fields['name'];
       $this->fields['answer'] = $item->fields['answer'];
