@@ -231,8 +231,15 @@ class Item_Devices extends CommonDBRelation {
       ];
 
       foreach ($device_types as $device_type) {
-         if (isset($CFG_GLPI['item' . strtolower($device_type) . '_types'])) {
-            $itemtypes = $CFG_GLPI['item' . strtolower($device_type) . '_types'];
+         $cfg_key = 'item' . strtolower($device_type) . '_types';
+         if ($plug = isPluginItemType($device_type)) {
+            // For plugins, 'item' prefix should be placed between plugin name and class name.
+            // Nota: 'self::itemAffinity()' and 'self::getConcernedItems()' also expect this order in config key.
+            $cfg_key = strtolower('plugin' . $plug['plugin'] . 'item' . $plug['class']) . '_types';
+         }
+
+         if (isset($CFG_GLPI[$cfg_key])) {
+            $itemtypes = $CFG_GLPI[$cfg_key];
             if ($itemtypes == '*' || in_array($itemtype, $itemtypes)) {
                if (method_exists($device_type, 'rawSearchOptionsToAdd')) {
                   $options = array_merge(
