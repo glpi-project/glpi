@@ -33,6 +33,7 @@
 namespace tests\units;
 
 use \DbTestCase;
+use ReflectionClass;
 
 /* Test for inc/rule.class.php */
 
@@ -411,7 +412,7 @@ class Rule extends DbTestCase {
       $expected = "<td >Unavailable&nbsp;</td><td >contains</td><td >_loc</td>";
       $this->string($result)->isIdenticalTo($expected);
 
-      $input['criteria'] = 'users_locations';
+      $input['criteria'] = '_locations_id_of_requester';
       $result   = $rule->getMinimalCriteriaText($input);
       $expected = "<td >Requester location</td><td >contains</td><td >_loc</td>";
       $this->string($result)->isIdenticalTo($expected);
@@ -583,5 +584,49 @@ class Rule extends DbTestCase {
       $second_rule = new \RuleSoftwareCategory();
       $this->boolean($second_rule->getFromDB($add))->isTrue();
       $this->integer($second_rule->fields['ranking'])->isGreaterThan($first_rule->fields['ranking']);
+   }
+
+   public function testAllCriteria() {
+      $classes = $this->getClasses('getCriterias');
+
+      foreach ($classes as $class) {
+         $reflection_class = new ReflectionClass($class);
+         if ($reflection_class->isAbstract() || !is_subclass_of($class, \Rule::class, true)) {
+            continue;
+         }
+
+         $rule = new $class();
+         $criteria = $rule->getCriterias();
+
+         foreach ($criteria as $key => $criterion) {
+            if (!is_array($criterion) || !array_key_exists('type', $criterion) || $criterion['type'] !== 'dropdown') {
+               continue;
+            }
+
+            $rulecriteria = new \RuleCriteria();
+
+            $conditions = $rulecriteria->getConditions($class, $key);
+            foreach (array_keys($conditions) as $condition) {
+               $rulecriteria->fields = [
+                  'id'        => 1,
+                  'rules_id'  => 1,
+                  'criteria'  => $key,
+                  'condition' => $condition,
+                  'pattern'   => in_array($condition, [\Rule::REGEX_MATCH,  \Rule::REGEX_NOT_MATCH]) ? '/1/' : 1,
+               ];
+
+               $results      = [];
+               $regex_result = [];
+               $this->boolean(
+                  $rulecriteria->match(
+                     $rulecriteria,
+                     1,
+                     $results,
+                     $regex_result
+                  )
+               );
+            }
+         }
+      }
    }
 }

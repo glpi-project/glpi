@@ -137,7 +137,7 @@ class Item_Ticket extends CommonItilObject_Item {
             if ($item = getItemForItemtype($input["itemtype"])) {
                if ($item->getFromDB($input["items_id"])) {
                   if ($item->isField('locations_id')) {
-                     $ticket->fields['items_locations'] = $item->fields['locations_id'];
+                     $ticket->fields['_locations_id_of_item'] = $item->fields['locations_id'];
 
                      // Process Business Rules
                      $rules = new RuleTicketCollection($ticket->fields['entities_id']);
@@ -146,7 +146,7 @@ class Item_Ticket extends CommonItilObject_Item {
                                                 Toolbox::stripslashes_deep($ticket->fields),
                                                 ['recursive' => true]);
 
-                     unset($ticket->fields['items_locations']);
+                     unset($ticket->fields['_locations_id_of_item']);
                      $ticket->updateInDB(['locations_id']);
                   }
                }

@@ -232,7 +232,7 @@ class RuleRightCollection extends RuleCollection {
          'TYPE'       => $params["type"] ?? "",
          'LOGIN'      => $params["login"] ?? "",
          'MAIL_EMAIL' => $params["email"] ?? $params["mail_email"] ?? "",
-         'GROUPS'     => $groups
+         '_groups_id' => $groups
       ];
 
       //IMAP/POP login method
