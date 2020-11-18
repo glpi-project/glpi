@@ -606,14 +606,6 @@ class AuthLDAP extends DbTestCase {
       //Expected value to be encrypted using current key
       $this->string(\Toolbox::sodiumDecrypt($ldap->fields['rootdn_passwd']))->isIdenticalTo($password);
 
-      $password = 'tot\'o';
-      $input    = ['id' => $id, 'name' => 'ldap', 'rootdn_passwd' => \Toolbox::addslashes_deep($password)];
-      $this->boolean($ldap->update($input))->isTrue();
-      $this->boolean($ldap->getFromDB($id))->isTrue();
-
-      //Expected value to be encrypted using current key
-      $this->string(\Toolbox::sodiumDecrypt($ldap->fields['rootdn_passwd']))->isIdenticalTo($password);
-
       $input['_blank_passwd'] = 1;
       $result   = $ldap->prepareInputForUpdate($input);
       //rootdn_passwd is set but empty

@@ -41,10 +41,18 @@ if (!isset($_GET['id'])) {
 }
 //LDAP Server add/update/delete
 if (isset($_POST["update"])) {
+   if (array_key_exists('rootdn_passwd', $_POST)) {
+      // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
+      $_POST['rootdn_passwd'] = $_UPOST['rootdn_passwd'];
+   }
    $config_ldap->update($_POST);
    Html::back();
 
 } else if (isset($_POST["add"])) {
+   if (array_key_exists('rootdn_passwd', $_POST)) {
+      // Password must not be altered, it will be encrypt and never displayed, so sanitize is not necessary.
+      $_POST['rootdn_passwd'] = $_UPOST['rootdn_passwd'];
+   }
    //If no name has been given to this configuration, then go back to the page without adding
    if ($_POST["name"] != "") {
       if ($newID = $config_ldap->add($_POST)) {
