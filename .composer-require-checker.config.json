@@ -6,7 +6,7 @@
 
     "curl", "gd", "intl", "mbstring", "mysqli", "zlib",
 
-    "apcu", "exif", "ldap", "pcntl", "sodium", "xmlrpc"
+    "apcu", "exif", "ldap", "pcntl", "sodium"
   ],
   "symbol-whitelist": [
     "// PHP symbols",
@@ -31,6 +31,9 @@
     "// apache function",
     "getallheaders",
 
+    "// LDAP extension function removed in PHP 8.0",
+    "ldap_control_paged_result", "ldap_control_paged_result_response",
+
     "// OPCache extension (not installed on testing env)",
     "opcache_get_status", "opcache_invalidate", "opcache_reset",
 
@@ -39,6 +42,9 @@
 
     "// XHProf PECL extension",
     "XHProfRuns_Default", "xhprof_disable", "xhprof_enable", "XHPROF_PATH", "XHPROF_URL",
+
+    "// XMLRPC extension (not available on PHP 8)",
+    "xmlrpc_decode", "xmlrpc_decode_request", "xmlrpc_encode_request",
 
     "// phpCAS library",
     "CAS_VERSION_2_0", "phpCAS"

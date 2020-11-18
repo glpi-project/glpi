@@ -60,12 +60,12 @@ class Toolbox extends \GLPITestCase {
    protected function slugifyProvider() {
       return [
          [
-            'string'    => 'My - string èé  Ê À ß',
-            'expcected' => 'my-string-ee-e-a-sz'
+            'string'   => 'My - string èé  Ê À ß',
+            'expected' => 'my-string-ee-e-a-sz'
          ], [
             //https://github.com/glpi-project/glpi/issues/2946
-            'string'    => 'Έρευνα ικανοποίησης - Αιτήματα',
-            'expcected' => 'ereuna-ikanopoieses-aitemata'
+            'string'   => 'Έρευνα ικανοποίησης - Αιτήματα',
+            'expected' => 'ereuna-ikanopoieses-aitemata'
          ]
       ];
    }

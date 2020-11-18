@@ -52,13 +52,17 @@ if (isset($_REQUEST['action'])) {
 
          // Update fields with input values
          $input = $_REQUEST;
+         if (array_key_exists('passwd', $input)) {
+            // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
+            $input['passwd'] = $_UREQUEST['passwd'];
+         }
          $input['login'] = stripslashes($input['login']);
 
          if (isset($input["passwd"])) {
             if (empty($input["passwd"])) {
                unset($input["passwd"]);
             } else {
-               $input["passwd"] = Toolbox::sodiumEncrypt(stripslashes($input["passwd"]));
+               $input["passwd"] = Toolbox::sodiumEncrypt($input["passwd"]);
             }
          }
 

@@ -485,7 +485,7 @@ class RuleTicket extends DbTestCase {
 
    }
 
-   public function testGRoupRequesterAssignFromDefaultUser() {
+   public function testGroupRequesterAssignFromDefaultUser() {
       $this->login();
 
       // Create rule
@@ -760,5 +760,75 @@ class RuleTicket extends DbTestCase {
             'type'               => \CommonITILActor::REQUESTER
          ])
       )->isTrue();
+   }
+
+   public function testITILCategoryCode() {
+      $this->login();
+
+      // Create rule
+      $ruleticket = new \RuleTicket();
+      $rulecrit   = new \RuleCriteria();
+      $ruleaction = new \RuleAction();
+
+      $ruletid = $ruleticket->add($ruletinput = [
+         'name'         => 'test category code',
+         'match'        => 'AND',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleTicket',
+         'condition'    => \RuleTicket::ONADD,
+         'is_recursive' => 1,
+      ]);
+      $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+      // Create criteria to check if category code is R
+      $crit_id = $rulecrit->add($crit_input = [
+         'rules_id'  => $ruletid,
+         'criteria'  => 'itilcategories_id_code',
+         'condition' => \Rule::PATTERN_IS,
+         'pattern'   => 'R',
+      ]);
+      $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+      // Create action to put impact to very low
+      $action_id = $ruleaction->add($action_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'assign',
+         'field'       => 'impact',
+         'value'       => 1,
+      ]);
+      $this->checkInput($ruleaction, $action_id, $action_input);
+
+      // Create new group
+      $category = new \ITILCategory();
+      $category_id = $category->add($category_input = [
+         "name" => "group1",
+         "code" => "R"
+      ]);
+      $this->checkInput($category, $category_id, $category_input);
+
+      // Check ticket that trigger rule on creation
+      $ticket = new \Ticket();
+      $tickets_id = $ticket->add($ticket_input = [
+         'name'              => 'test category code',
+         'content'           => 'test category code',
+         'itilcategories_id' => $category_id
+      ]);
+      $this->checkInput($ticket, $tickets_id, $ticket_input);
+
+      // Check that the rule was executed
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+      $this->integer($ticket->fields['impact'])->isEqualTo(1);
+
+      // Create another ticket that doesn't match the rule
+      $tickets_id = $ticket->add($ticket_input = [
+         'name'              => 'test category code',
+         'content'           => 'test category code',
+         'itilcategories_id' => 0
+      ]);
+      $this->checkInput($ticket, $tickets_id, $ticket_input);
+
+      // Check that the rule was NOT executed
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+      $this->integer($ticket->fields['impact'])->isNotEqualTo(1);
    }
 }

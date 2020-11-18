@@ -1,0 +1,113 @@
+From e5f4da5a76b44cd94740a5d293ae5558d5cb5443 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?C=C3=A9dric=20Anne?= <cedric.anne@gmail.com>
+Date: Wed, 14 Oct 2020 10:33:59 +0200
+Subject: [PATCH 1/3] Fix optionnal "$currentfont" parameter declaration
+
+---
+ include/tcpdf_fonts.php | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/include/tcpdf_fonts.php b/include/tcpdf_fonts.php
+index 218fb6df..4f5bcf39 100644
+--- a/include/tcpdf_fonts.php
++++ b/include/tcpdf_fonts.php
+@@ -1995,7 +1995,7 @@ public static function getUniord($uch) {
+ 	 * @author Nicola Asuni
+ 	 * @public static
+ 	 */
+-	public static function UTF8StringToArray($str, $isunicode=true, &$currentfont) {
++	public static function UTF8StringToArray($str, $isunicode=true, &$currentfont=array()) {
+ 		if ($isunicode) {
+ 			// requires PCRE unicode support turned on
+ 			$chars = TCPDF_STATIC::pregSplit('//','u', $str, -1, PREG_SPLIT_NO_EMPTY);
+@@ -2021,7 +2021,7 @@ public static function UTF8StringToArray($str, $isunicode=true, &$currentfont) {
+ 	 * @since 3.2.000 (2008-06-23)
+ 	 * @public static
+ 	 */
+-	public static function UTF8ToLatin1($str, $isunicode=true, &$currentfont) {
++	public static function UTF8ToLatin1($str, $isunicode=true, &$currentfont=array()) {
+ 		$unicode = self::UTF8StringToArray($str, $isunicode, $currentfont); // array containing UTF-8 unicode values
+ 		return self::UTF8ArrToLatin1($unicode);
+ 	}
+@@ -2037,7 +2037,7 @@ public static function UTF8ToLatin1($str, $isunicode=true, &$currentfont) {
+ 	 * @since 1.53.0.TC005 (2005-01-05)
+ 	 * @public static
+ 	 */
+-	public static function UTF8ToUTF16BE($str, $setbom=false, $isunicode=true, &$currentfont) {
++	public static function UTF8ToUTF16BE($str, $setbom=false, $isunicode=true, &$currentfont=array()) {
+ 		if (!$isunicode) {
+ 			return $str; // string is not in unicode
+ 		}
+@@ -2057,7 +2057,7 @@ public static function UTF8ToUTF16BE($str, $setbom=false, $isunicode=true, &$cur
+ 	 * @since 2.1.000 (2008-01-08)
+ 	 * @public static
+ 	 */
+-	public static function utf8StrRev($str, $setbom=false, $forcertl=false, $isunicode=true, &$currentfont) {
++	public static function utf8StrRev($str, $setbom=false, $forcertl=false, $isunicode=true, &$currentfont=array()) {
+ 		return self::utf8StrArrRev(self::UTF8StringToArray($str, $isunicode, $currentfont), $str, $setbom, $forcertl, $isunicode, $currentfont);
+ 	}
+ 
+@@ -2074,7 +2074,7 @@ public static function utf8StrRev($str, $setbom=false, $forcertl=false, $isunico
+ 	 * @since 4.9.000 (2010-03-27)
+ 	 * @public static
+ 	 */
+-	public static function utf8StrArrRev($arr, $str='', $setbom=false, $forcertl=false, $isunicode=true, &$currentfont) {
++	public static function utf8StrArrRev($arr, $str='', $setbom=false, $forcertl=false, $isunicode=true, &$currentfont=array()) {
+ 		return self::arrUTF8ToUTF16BE(self::utf8Bidi($arr, $str, $forcertl, $isunicode, $currentfont), $setbom);
+ 	}
+ 
+@@ -2090,7 +2090,7 @@ public static function utf8StrArrRev($arr, $str='', $setbom=false, $forcertl=fal
+ 	 * @since 2.4.000 (2008-03-06)
+ 	 * @public static
+ 	 */
+-	public static function utf8Bidi($ta, $str='', $forcertl=false, $isunicode=true, &$currentfont) {
++	public static function utf8Bidi($ta, $str='', $forcertl=false, $isunicode=true, &$currentfont=array()) {
+ 		// paragraph embedding level
+ 		$pel = 0;
+ 		// max level
+
+From 292fc741f82f68283fd2d8171fc1ae92ff15b946 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?C=C3=A9dric=20Anne?= <cedric.anne@gmail.com>
+Date: Wed, 14 Oct 2020 10:35:08 +0200
+Subject: [PATCH 2/3] Fix optionnal "$k" parameter declaration
+
+---
+ include/tcpdf_static.php | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/tcpdf_static.php b/include/tcpdf_static.php
+index 06a1dddc..56af4a06 100644
+--- a/include/tcpdf_static.php
++++ b/include/tcpdf_static.php
+@@ -2507,7 +2507,7 @@ public static function getPageSizeFromFormat($format) {
+ 	 * @since 5.0.010 (2010-05-17)
+ 	 * @public static
+ 	 */
+-	public static function setPageBoxes($page, $type, $llx, $lly, $urx, $ury, $points=false, $k, $pagedim=array()) {
++	public static function setPageBoxes($page, $type, $llx, $lly, $urx, $ury, $points=false, $k=1, $pagedim=array()) {
+ 		if (!isset($pagedim[$page])) {
+ 			// initialize array
+ 			$pagedim[$page] = array();
+
+From 9616e9e44b111e79f6931763da265f05638aa839 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?C=C3=A9dric=20Anne?= <cedric.anne@gmail.com>
+Date: Wed, 14 Oct 2020 10:35:46 +0200
+Subject: [PATCH 3/3] Fix optionnal "$tagvspaces" parameter declaration
+
+---
+ include/tcpdf_static.php | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/tcpdf_static.php b/include/tcpdf_static.php
+index 56af4a06..56ea082e 100644
+--- a/include/tcpdf_static.php
++++ b/include/tcpdf_static.php
+@@ -1136,7 +1136,7 @@ public static function extractCSSproperties($cssdata) {
+ 	 * @see setHtmlVSpace()
+ 	 * @public static
+ 	 */
+-	public static function fixHTMLCode($html, $default_css='', $tagvs='', $tidy_options='', &$tagvspaces) {
++	public static function fixHTMLCode($html, $default_css='', $tagvs='', $tidy_options='', &$tagvspaces=array()) {
+ 		// configure parameters for HTML Tidy
+ 		if ($tidy_options === '') {
+ 			$tidy_options = array (

@@ -1815,43 +1815,43 @@ class Ticket extends DbTestCase {
    protected function computePriorityProvider() {
       return [
          [
-            'input'  => [
+            'input'    => [
                'urgency'   => 2,
                'impact'    => 2
             ],
-            '2',
-            '2',
-            '2'
+            'urgency'  => '2',
+            'impact'   => '2',
+            'priority' => '2'
          ], [
-            'input'  => [
+            'input'    => [
                'urgency'   => 5
             ],
-            '5',
-            '3',
-            '4'
+            'urgency'  => '5',
+            'impact'   => '3',
+            'priority' => '4'
          ], [
-            'input'  => [
+            'input'    => [
                'impact'   => 5
             ],
-            '3',
-            '5',
-            '4'
+            'urgency'  => '3',
+            'impact'   => '5',
+            'priority' => '4'
          ], [
-            'input'  => [
+            'input'    => [
                'urgency'   => 5,
                'impact'    => 5
             ],
-            '5',
-            '5',
-            '5'
+            'urgency'  => '5',
+            'impact'   => '5',
+            'priority' => '5'
          ], [
-            'input'  => [
+            'input'    => [
                'urgency'   => 5,
                'impact'    => 1
             ],
-            '5',
-            '1',
-            '2'
+            'urgency'  => '5',
+            'impact'   => '1',
+            'priority' => '2'
          ]
       ];
    }
@@ -2505,12 +2505,12 @@ class Ticket extends DbTestCase {
    /**
     * Check computed status on ticket creation..
     *
-    * @param array   $input            Input used to create the ticket
-    * @param boolean $expected_status  Expected status
+    * @param array   $input     Input used to create the ticket
+    * @param boolean $expected  Expected status
     *
     * @dataProvider statusComputationOnCreateProvider
     */
-   public function testStatusComputationOnCreate(array $input, $expected_status) {
+   public function testStatusComputationOnCreate(array $input, $expected) {
 
       // Create a ticket
       $this->login();
@@ -2527,7 +2527,7 @@ class Ticket extends DbTestCase {
       $this->boolean($ticket->getFromDB($ticketId))->isTrue();
 
       // Check status
-      $this->integer((int)$ticket->fields['status'])->isEqualTo($expected_status);
+      $this->integer((int)$ticket->fields['status'])->isEqualTo($expected);
    }
 
    public function testLocationAssignment() {

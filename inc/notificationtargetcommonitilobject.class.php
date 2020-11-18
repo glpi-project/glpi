@@ -665,7 +665,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    function addAdditionnalUserInfo(array $data) {
       global $DB;
 
-      if (!isset($data['users_id'])) {
+      if (!isset($data['users_id']) || count($this->private_profiles) === 0) {
          return ['show_private' => 0];
       }
 

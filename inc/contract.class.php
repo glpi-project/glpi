@@ -247,7 +247,7 @@ class Contract extends CommonDBTM {
       echo "<td>".__('Max number of items')."</td><td>";
       Dropdown::showNumber("max_links_allowed", ['value' => $this->fields["max_links_allowed"],
                                                       'min'   => 1,
-                                                      'max'   => 200,
+                                                      'max'   => 200000,
                                                       'step'  => 1,
                                                       'toadd' => [0 => __('Unlimited')]]);
       echo "</td></tr>";

@@ -1127,6 +1127,16 @@
        * @see generateUserBadge()
       **/
       var preloadBadgeCache = function(options) {
+         var cached_colors = JSON.parse(window.sessionStorage.getItem('badge_colors'));
+         if (cached_colors !== null && cached_colors['_dark_theme'] !== self.dark_theme) {
+            window.sessionStorage.removeItem('badge_colors');
+            self.team_badge_cache = {
+               User: {},
+               Group: {},
+               Supplier: {},
+               Contact: {}
+            };
+         }
          var users = [];
          $.each(self.columns, function(column_id, column) {
             if (column['items'] !== undefined) {
@@ -1234,7 +1244,8 @@
                   User: {},
                   Group: {},
                   Supplier: {},
-                  Contact: {}
+                  Contact: {},
+                  _dark_theme: self.dark_theme
                };
             }
             cached_colors[itemtype][teammember['id']] = bg_color;

@@ -244,6 +244,7 @@ class State extends CommonTreeDropdown {
 
    function cleanDBonPurge() {
       Rule::cleanForItemCriteria($this);
+      Rule::cleanForItemCriteria($this, '_states_id%');
    }
 
 

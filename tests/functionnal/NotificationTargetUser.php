@@ -49,9 +49,9 @@ class NotificationTargetUser extends DbTestCase {
       return [
          // case 1: password already expired but account will not be locked
          [
-            'expiration_time'                => $time_in_past,
-            'password_expiration_lock_delay' => -1,
-            'expected'                       => [
+            'expiration_time' => $time_in_past,
+            'lock_delay'      => -1,
+            'expected'        => [
                '##user.password.expiration.date##' => date('Y-m-d H:i', $time_in_past),
                '##user.account.lock.date##'        => null,
                '##user.password.has_expired##'     => '1',
@@ -60,9 +60,9 @@ class NotificationTargetUser extends DbTestCase {
          ],
          // case 2: password already expired and account will be locked
          [
-            'expiration_time'                => $time_in_past,
-            'password_expiration_lock_delay' => 15,
-            'expected'                       => [
+            'expiration_time' => $time_in_past,
+            'lock_delay'      => 15,
+            'expected'        => [
                '##user.password.expiration.date##' => date('Y-m-d H:i', $time_in_past),
                '##user.account.lock.date##'        => date('Y-m-d H:i', strtotime('+15 days', $time_in_past)),
                '##user.password.has_expired##'     => '1',
@@ -71,9 +71,9 @@ class NotificationTargetUser extends DbTestCase {
          ],
          // case 3: password not yet expired but account will not be locked
          [
-            'expiration_time'                => $time_in_future,
-            'password_expiration_lock_delay' => -1,
-            'expected'                       => [
+            'expiration_time' => $time_in_future,
+            'lock_delay'      => -1,
+            'expected'        => [
                '##user.password.expiration.date##' => date('Y-m-d H:i', $time_in_future),
                '##user.account.lock.date##'        => null,
                '##user.password.has_expired##'     => '0',
@@ -82,9 +82,9 @@ class NotificationTargetUser extends DbTestCase {
          ],
          // case 2: password not yet expired and account will be locked
          [
-            'expiration_time'                => $time_in_future,
-            'password_expiration_lock_delay' => 15,
-            'expected'                       => [
+            'expiration_time' => $time_in_future,
+            'lock_delay'      => 15,
+            'expected'        => [
                '##user.password.expiration.date##' => date('Y-m-d H:i', $time_in_future),
                '##user.account.lock.date##'        => date('Y-m-d H:i', strtotime('+15 days', $time_in_future)),
                '##user.password.has_expired##'     => '0',

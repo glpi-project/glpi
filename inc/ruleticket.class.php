@@ -276,8 +276,8 @@ class RuleTicket extends Rule {
 
                case 'fromuser' :
                   if (($action->fields['field'] == 'locations_id')
-                      &&  isset($output['users_locations'])) {
-                     $output['locations_id'] = $output['users_locations'];
+                      &&  isset($output['_locations_id_of_requester'])) {
+                     $output['locations_id'] = $output['_locations_id_of_requester'];
                   }
                   break;
 
@@ -289,12 +289,12 @@ class RuleTicket extends Rule {
                   break;
 
                case 'fromitem' :
-                  if ($action->fields['field'] == 'locations_id' && isset($output['items_locations'])) {
-                     $output['locations_id'] = $output['items_locations'];
+                  if ($action->fields['field'] == 'locations_id' && isset($output['_locations_id_of_item'])) {
+                     $output['locations_id'] = $output['_locations_id_of_item'];
                   }
                   if ($action->fields['field'] == '_groups_id_requester'
-                      && isset($output['items_groups'])) {
-                     $output['_groups_id_requester'] = $output['items_groups'];
+                      && isset($output['_groups_id_of_item'])) {
+                     $output['_groups_id_requester'] = $output['_groups_id_of_item'];
                   }
                   break;
 
@@ -453,29 +453,29 @@ class RuleTicket extends Rule {
       $criterias['_groups_id_of_requester']['linkfield']    = '_groups_id_of_requester';
       $criterias['_groups_id_of_requester']['type']         = 'dropdown';
 
-      $criterias['users_locations']['table']                = 'glpi_locations';
-      $criterias['users_locations']['field']                = 'completename';
-      $criterias['users_locations']['name']                 = __('Requester location');
-      $criterias['users_locations']['linkfield']            = 'users_locations';
-      $criterias['users_locations']['type']                 = 'dropdown';
+      $criterias['_locations_id_of_requester']['table']     = 'glpi_locations';
+      $criterias['_locations_id_of_requester']['field']     = 'completename';
+      $criterias['_locations_id_of_requester']['name']      = __('Requester location');
+      $criterias['_locations_id_of_requester']['linkfield'] = '_locations_id_of_requester';
+      $criterias['_locations_id_of_requester']['type']      = 'dropdown';
 
-      $criterias['items_locations']['table']                = 'glpi_locations';
-      $criterias['items_locations']['field']                = 'completename';
-      $criterias['items_locations']['name']                 = __('Item location');
-      $criterias['items_locations']['linkfield']            = 'items_locations';
-      $criterias['items_locations']['type']                 = 'dropdown';
+      $criterias['_locations_id_of_item']['table']          = 'glpi_locations';
+      $criterias['_locations_id_of_item']['field']          = 'completename';
+      $criterias['_locations_id_of_item']['name']           = __('Item location');
+      $criterias['_locations_id_of_item']['linkfield']      = '_locations_id_of_item';
+      $criterias['_locations_id_of_item']['type']           = 'dropdown';
 
-      $criterias['items_groups']['table']                   = 'glpi_groups';
-      $criterias['items_groups']['field']                   = 'completename';
-      $criterias['items_groups']['name']                    = __('Item group');
-      $criterias['items_groups']['linkfield']               = 'items_groups';
-      $criterias['items_groups']['type']                    = 'dropdown';
+      $criterias['_groups_id_of_item']['table']             = 'glpi_groups';
+      $criterias['_groups_id_of_item']['field']             = 'completename';
+      $criterias['_groups_id_of_item']['name']              = __('Item group');
+      $criterias['_groups_id_of_item']['linkfield']         = '_groups_id_of_item';
+      $criterias['_groups_id_of_item']['type']              = 'dropdown';
 
-      $criterias['items_states']['table']                   = 'glpi_states';
-      $criterias['items_states']['field']                   = 'completename';
-      $criterias['items_states']['name']                    = __('Item state');
-      $criterias['items_states']['linkfield']               = 'items_states';
-      $criterias['items_states']['type']                    = 'dropdown';
+      $criterias['_states_id_of_item']['table']             = 'glpi_states';
+      $criterias['_states_id_of_item']['field']             = 'completename';
+      $criterias['_states_id_of_item']['name']              = __('Item state');
+      $criterias['_states_id_of_item']['linkfield']         = '_states_id_of_item';
+      $criterias['_states_id_of_item']['type']              = 'dropdown';
 
       $criterias['locations_id']['table']                   = 'glpi_locations';
       $criterias['locations_id']['field']                   = 'completename';

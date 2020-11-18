@@ -502,9 +502,6 @@ class Search extends DbTestCase {
             'NetworkPortInstantiation', // Should be abstract (or have $notable = true)
             'NetworkPortMigration', // Tables only exists in specific cases
             'NotificationSettingConfig', // Stores its data in glpi_configs, does not acts as a CommonDBTM
-            'TicketFollowup', // Deprecated
-            '/^TicketTemplate.*/', // Deprecated
-            '/^Computer_Software.*/', // Deprecated
          ]
       );
       sort($classes);
@@ -1279,7 +1276,7 @@ class Search extends DbTestCase {
             'link' => ' ',
             'nott' => 0,
             'itemtype' => \User::class,
-            'id' => 99,
+            'ID' => 99,
             'searchtype' => 'equals',
             'val' => '5',
             'meta' => false,
@@ -1289,7 +1286,7 @@ class Search extends DbTestCase {
             'link' => ' AND ',
             'nott' => 0,
             'itemtype' => \CartridgeItem::class,
-            'id' => 24,
+            'ID' => 24,
             'searchtype' => 'equals',
             'val' => '2',
             'meta' => false,

@@ -982,6 +982,11 @@ class Ticket extends CommonITILObject {
          $entid = $this->fields['entities_id'];
       }
 
+      $cat_id = $input['itilcategories_id'] ?? 0;
+      if ($cat_id) {
+         $input['itilcategories_id_code'] = ITILCategory::getById($cat_id)->fields['code'];
+      }
+
       // Process Business Rules
       $this->fillInputForBusinessRules($input);
 
@@ -1084,12 +1089,12 @@ class Ticket extends CommonITILObject {
       // Only process rules on changes
       if (count($changes)) {
          if (in_array('_users_id_requester', $changes)) {
-            // If _users_id_requester changed : set users_locations
+            // If _users_id_requester changed : set _locations_id_of_requester
             $user = new User();
             if (isset($input["_itil_requester"]["users_id"])
                 && $user->getFromDB($input["_itil_requester"]["users_id"])) {
-               $input['users_locations'] = $user->fields['locations_id'];
-               $changes[]                = 'users_locations';
+               $input['_locations_id_of_requester'] = $user->fields['locations_id'];
+               $changes[]                           = '_locations_id_of_requester';
             }
             // If _users_id_requester changed : add _groups_id_of_requester to changes
             $changes[] = '_groups_id_of_requester';
@@ -1550,7 +1555,7 @@ class Ticket extends CommonITILObject {
       }
 
       // Set additional default dropdown
-      $dropdown_fields = ['users_locations', 'items_locations'];
+      $dropdown_fields = ['_locations_id_of_requester', '_locations_id_of_item'];
       foreach ($dropdown_fields as $field) {
          if (!isset($input[$field])) {
             $input[$field] = 0;
@@ -1570,15 +1575,15 @@ class Ticket extends CommonITILObject {
             foreach ($items as $items_id) {
                if ($item = getItemForItemtype($itemtype)) {
                   $item->getFromDB($items_id);
-                  $input['items_states']    = $item->fields['states_id'];
-                  $input['items_locations'] = $item->fields['locations_id'];
+                  $input['_states_id_of_item']    = $item->fields['states_id'];
+                  $input['_locations_id_of_item'] = $item->fields['locations_id'];
                   if ($infocom->getFromDBforDevice($itemtype, $items_id)) {
                      $input['items_businesscriticities']
                         = Dropdown::getDropdownName('glpi_businesscriticities',
                                                     $infocom->fields['businesscriticities_id']);
                   }
                   if (isset($item->fields['groups_id'])) {
-                     $input['items_groups'] = $item->fields['groups_id'];
+                     $input['_groups_id_of_item'] = $item->fields['groups_id'];
 
                   }
                   break(2);
@@ -1611,6 +1616,11 @@ class Ticket extends CommonITILObject {
          $input['_users_id_assign'] = Session::getLoginUserID();
       }
 
+      $cat_id = $input['itilcategories_id'] ?? 0;
+      if ($cat_id) {
+         $input['itilcategories_id_code'] = ITILCategory::getById($cat_id)->fields['code'];
+      }
+
       // Process Business Rules
       $this->fillInputForBusinessRules($input);
 
@@ -1622,12 +1632,12 @@ class Ticket extends CommonITILObject {
       if (isset($input["_users_id_requester"])) {
          if (!is_array($input["_users_id_requester"])
              && $user->getFromDB($input["_users_id_requester"])) {
-            $input['users_locations'] = $user->fields['locations_id'];
+            $input['_locations_id_of_requester'] = $user->fields['locations_id'];
             $input['users_default_groups'] = $user->fields['groups_id'];
             $tmprequester = $input["_users_id_requester"];
          } else if (is_array($input["_users_id_requester"]) && ($user_id = reset($input["_users_id_requester"])) !== false) {
             if ($user->getFromDB($user_id)) {
-               $input['users_locations'] = $user->fields['locations_id'];
+               $input['_locations_id_of_requester'] = $user->fields['locations_id'];
                $input['users_default_groups'] = $user->fields['groups_id'];
             }
          }

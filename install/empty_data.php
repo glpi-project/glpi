@@ -7768,7 +7768,7 @@ $tables['glpi_rulecriterias'] = [
    ], [
       'id'        => 12,
       'rules_id'  => 7,
-      'criteria'  => 'users_locations',
+      'criteria'  => '_locations_id_of_requester',
       'condition' => 8,
       'pattern'   => 1,
    ], [

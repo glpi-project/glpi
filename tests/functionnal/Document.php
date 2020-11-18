@@ -68,12 +68,12 @@ class Document extends DbTestCase {
    /**
     * @dataProvider canApplyOnProvider
     */
-   public function testCanApplyOn($item, $expected) {
+   public function testCanApplyOn($item, $can) {
       $this
          ->given($this->newTestedInstance)
             ->then
                ->boolean($this->testedInstance->canApplyOn($item))
-               ->isIdenticalTo($expected);
+               ->isIdenticalTo($can);
    }
 
    public function testGetItemtypesThatCanHave() {

@@ -193,7 +193,7 @@ class AuthLDAP extends CommonDBTM {
          if (empty($input["rootdn_passwd"])) {
             unset($input["rootdn_passwd"]);
          } else {
-            $input["rootdn_passwd"] = Toolbox::sodiumEncrypt(stripslashes($input["rootdn_passwd"]));
+            $input["rootdn_passwd"] = Toolbox::sodiumEncrypt($input["rootdn_passwd"]);
          }
       }
 
@@ -3503,7 +3503,7 @@ class AuthLDAP extends CommonDBTM {
       }
 
       if (isset($input["rootdn_passwd"]) && !empty($input["rootdn_passwd"])) {
-         $input["rootdn_passwd"] = Toolbox::sodiumEncrypt(stripslashes($input["rootdn_passwd"]));
+         $input["rootdn_passwd"] = Toolbox::sodiumEncrypt($input["rootdn_passwd"]);
       }
 
       return $input;

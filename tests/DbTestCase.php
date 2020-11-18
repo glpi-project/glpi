@@ -115,6 +115,15 @@ class DbTestCase extends \GLPITestCase {
     * @return array
     */
    protected function getClasses($function = false, array $excludes = []) {
+      // Add deprecated classes to excludes to prevent test failure
+      $excludes = array_merge(
+         $excludes,
+         [
+            'TicketFollowup', // Deprecated
+            '/^Computer_Software.*/', // Deprecated
+         ]
+      );
+
       $classes = [];
       foreach (new \DirectoryIterator('inc/') as $fileInfo) {
          if (!$fileInfo->isFile()) {

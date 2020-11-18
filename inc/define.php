@@ -41,7 +41,7 @@ if (substr(GLPI_VERSION, -4) === '-dev') {
    );
 } else {
    //for stable version
-   define("GLPI_SCHEMA_VERSION", '9.5.2');
+   define("GLPI_SCHEMA_VERSION", '9.5.3');
 }
 define('GLPI_MIN_PHP', '7.2.0'); // Must also be changed in top of index.php
 define('GLPI_YEAR', '2020');
@@ -447,7 +447,7 @@ $CFG_GLPI["kb_types"]              = ['Budget', 'Change', 'Computer',
 $CFG_GLPI["certificate_types"]     = ['Computer',
                                       'NetworkEquipment', 'Peripheral',
                                       'Phone', 'Printer',
-                                      'SoftwareLicense', 'User', 'Domain'];
+                                      'SoftwareLicense', 'User', 'Domain', 'Appliance'];
 
 $CFG_GLPI["rackable_types"]        = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Enclosure', 'PDU', 'PassiveDCEquipment'];
 

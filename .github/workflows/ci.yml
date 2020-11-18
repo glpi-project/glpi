@@ -30,6 +30,7 @@ jobs:
         include:
           - {php-version: "7.2"} # Lint on lower PHP version to detected too early usage of new syntaxes
           - {php-version: "7.4"} # Lint on higher PHP version to detected deprecated elements usage
+          - {php-version: "8.0-rc"}
     steps:
       - name: "Cancel previous runs"
         uses: "styfle/cancel-workflow-action@0.5.0"
@@ -68,17 +69,22 @@ jobs:
           echo "Change files rights to give write access to app container user"
           setfacl --recursive --modify u:1000:rwx `pwd`
           setfacl --recursive --modify u:1000:rwx ${{ runner.temp }}/app_home
+      - name: "Show versions"
+        if: env.skip != 'true'
+        run: |
+          docker exec app php --version
+          docker exec app composer --version
+          docker exec app sh -c 'echo "node $(node --version)"'
+          docker exec app sh -c 'echo "npm $(npm --version)"'
       - name: Validate composer config
         run: |
           docker exec app composer validate --strict
       - name: "Install dependencies"
         run: |
           docker exec app rm composer.lock
-          docker exec app composer --version
-          docker exec app echo "node version: $(node --version)"
-          docker exec app echo "npm version: $(npm --version)"
           docker exec app composer config --unset platform
-          docker exec app bin/console dependencies install --composer-options="--prefer-dist --no-progress"
+          if [[ "${{ matrix.php-version }}" =~ ^.+-rc$ ]]; then export COMPOSER_ADD_OPTS=--ignore-platform-reqs; fi
+          docker exec app bin/console dependencies install --composer-options="$COMPOSER_ADD_OPTS --prefer-dist --no-progress"
       - name: "PHP Parallel Lint"
         run: |
           docker exec app vendor/bin/parallel-lint  --exclude ./files/ --exclude ./plugins/ --exclude ./tools/vendor/ --exclude ./vendor/ .
@@ -106,6 +112,7 @@ jobs:
           - {php-version: "7.4", db-image: "mariadb:10.5", always: true}
           - {php-version: "7.2", db-image: "mariadb:10.5", always: false}
           - {php-version: "7.3", db-image: "mariadb:10.5", always: false}
+          - {php-version: "8.0-rc", db-image: "mariadb:10.5", always: true}
           - {php-version: "7.4", db-image: "mariadb:10.1", always: false}
           - {php-version: "7.4", db-image: "mysql:5.6", always: false}
           - {php-version: "7.4", db-image: "mysql:8.0", always: false}
@@ -151,6 +158,14 @@ jobs:
           echo "Change files rights to give write access to app container user"
           setfacl --recursive --modify u:1000:rwx `pwd`
           setfacl --recursive --modify u:1000:rwx ${{ runner.temp }}/app_home
+      - name: "Show versions"
+        if: env.skip != 'true'
+        run: |
+          docker exec app php --version
+          docker exec app composer --version
+          docker exec app sh -c 'echo "node $(node --version)"'
+          docker exec app sh -c 'echo "npm $(npm --version)"'
+          docker exec db mysql --version
       - name: "Initialize databases"
         if: env.skip != 'true'
         run: |
@@ -161,11 +176,9 @@ jobs:
         if: env.skip != 'true'
         run: |
           docker exec app rm composer.lock
-          docker exec app composer --version
-          docker exec app echo "node version: $(node --version)"
-          docker exec app echo "npm version: $(npm --version)"
           docker exec app composer config --unset platform
-          docker exec app bin/console dependencies install --composer-options="--prefer-dist --no-progress"
+          if [[ "${{ matrix.php-version }}" =~ ^.+-rc$ ]]; then export COMPOSER_ADD_OPTS=--ignore-platform-reqs; fi
+          docker exec app bin/console dependencies install --composer-options="$COMPOSER_ADD_OPTS --prefer-dist --no-progress"
       - name: "PHP Parallel Lint"
         if: env.skip != 'true'
         run: |

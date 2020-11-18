@@ -108,8 +108,6 @@ class Group extends CommonTreeDropdown {
       // Ticket rules use various _groups_id_*
       Rule::cleanForItemAction($this, '_groups_id%');
       Rule::cleanForItemCriteria($this, '_groups_id%');
-      // GROUPS for RuleMailcollector
-      Rule::cleanForItemCriteria($this, 'GROUPS');
    }
 
 
