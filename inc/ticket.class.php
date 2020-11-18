@@ -3655,7 +3655,7 @@ class Ticket extends CommonITILObject {
                    || (isset($options['_predefined_fields'][$predeffield])
                        && ($options[$predeffield] == $options['_predefined_fields'][$predeffield]))
                    || (isset($options[$key])
-                       && ($options[$key] != $tt->getID()))) {
+                       && ($options[$key]->getID() != $tt->getID()))) {
                   $options[$predeffield]            = $predefvalue;
                   $predefined_fields[$predeffield] = $predefvalue;
                }
