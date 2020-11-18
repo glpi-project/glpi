@@ -1356,7 +1356,7 @@ class Plugin extends CommonDBTM {
       } else { // Standard hook call
          if (isset($PLUGIN_HOOKS[$name]) && is_array($PLUGIN_HOOKS[$name])) {
             foreach ($PLUGIN_HOOKS[$name] as $plugin_key => $function) {
-               if (!Plugin::isPluginActive($plugin_key)) {
+               if (!Plugin::isPluginActive($plugin_key) && $name != "post_plugin_disable") {
                   continue;
                }
 
