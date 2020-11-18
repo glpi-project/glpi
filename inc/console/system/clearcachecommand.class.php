@@ -38,17 +38,16 @@ if (!defined('GLPI_ROOT')) {
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CleanCacheCommand extends Command {
+class ClearCacheCommand extends Command {
 
    protected function configure() {
       parent::configure();
 
-      $this->setName('glpi:system:clean_cache');
-      $this->setAliases(['system:clean_cache']);
-      $this->setDescription('Clean GLPI cache.');
+      $this->setName('glpi:system:clear_cache');
+      $this->setAliases(['system:clear_cache']);
+      $this->setDescription('Clear GLPI cache.');
    }
 
    protected function execute(InputInterface $input, OutputInterface $output) {
@@ -56,7 +55,7 @@ class CleanCacheCommand extends Command {
       global $GLPI_CACHE;
       $GLPI_CACHE->clear();
 
-      $output->writeln('<comment>cleaning cache done !!</comment>');
+      $output->writeln('<info>'. __('Cache reset successful') . '</info>');
 
       return 0; // Success
    }
