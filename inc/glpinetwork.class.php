@@ -178,8 +178,9 @@ class GLPINetwork {
       global $GLPI_CACHE;
 
       $registration_key = self::getRegistrationKey();
+      $lang = preg_replace('/^([a-z]+)_.+$/', '$1', $_SESSION["glpilanguage"]);
 
-      $cache_key = sprintf('registration_%s_informations', sha1($registration_key));
+      $cache_key = sprintf('registration_%s_%s_informations', sha1($registration_key), $lang);
       if (($informations = $GLPI_CACHE->get($cache_key)) !== null) {
          return $informations;
       }
@@ -202,6 +203,7 @@ class GLPINetwork {
          [
             CURLOPT_HTTPHEADER => [
                'Accept:application/json',
+               'Accept-Language: ' . $lang,
                'Content-Type:application/json',
                'User-Agent:' . self::getGlpiUserAgent(),
                'X-Registration-Key:' . $registration_key,
@@ -223,9 +225,13 @@ class GLPINetwork {
       }
 
       $informations['is_valid']           = $registration_data['is_valid'];
-      $informations['validation_message'] = $registration_data['is_valid']
-         ? __('The registration key is valid.')
-         : __('The registration key is invalid.');
+      if (array_key_exists('validation_message', $registration_data)) {
+         $informations['validation_message'] = $registration_data['validation_message'];
+      } else {
+         $informations['validation_message'] = $registration_data['is_valid']
+            ? __('The registration key is valid.')
+            : __('The registration key is invalid.');
+      }
       $informations['owner']              = $registration_data['owner'];
       $informations['subscription']       = $registration_data['subscription'];
 
