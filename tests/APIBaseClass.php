@@ -48,7 +48,6 @@ abstract class APIBaseClass extends \atoum {
    abstract public function initSessionCredentials();
 
    public function setUp() {
-      parent::setUp();
       // enable api config
       $config = new Config;
       $config->update(['id'                              => 1,
