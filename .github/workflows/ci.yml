@@ -79,7 +79,7 @@ jobs:
       - name: "Validate composer config and requirements"
         run: |
           docker exec app composer validate --strict
-          docker exec app composer check-platform-reqs
+          if ! [[ "${{ matrix.php-version }}" =~ ^.+-rc$ ]]; then docker exec app composer check-platform-reqs; fi
       - name: "Install dependencies"
         run: |
           docker exec app rm composer.lock
