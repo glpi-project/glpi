@@ -3111,12 +3111,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "2507613d1d5ea2eaa36cfcab97303e5af8a7d82d"
+                "reference": "a652d3af89f034d18b0097966e7bce5829ded260"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/2507613d1d5ea2eaa36cfcab97303e5af8a7d82d",
-                "reference": "2507613d1d5ea2eaa36cfcab97303e5af8a7d82d",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/a652d3af89f034d18b0097966e7bce5829ded260",
+                "reference": "a652d3af89f034d18b0097966e7bce5829ded260",
                 "shasum": ""
             },
             "require": {
@@ -3186,7 +3186,11 @@
                 "test",
                 "unit testing"
             ],
-            "time": "2020-10-09T08:54:57+00:00"
+            "support": {
+                "issues": "https://github.com/atoum/atoum/issues",
+                "source": "https://github.com/atoum/atoum/tree/4.x"
+            },
+            "time": "2020-11-18T23:23:35+00:00"
         },
         {
             "name": "consolidation/annotated-command",
@@ -4964,5 +4968,5 @@
     "platform-overrides": {
         "php": "7.2.0"
     },
-    "plugin-api-version": "1.1.0"
+    "plugin-api-version": "2.0.0"
 }
