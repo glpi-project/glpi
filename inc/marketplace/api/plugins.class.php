@@ -204,10 +204,18 @@ class Plugins {
                });
             }
 
-            $first_found_version = current($plugin['versions']);
-            if (is_array($first_found_version)) {
-               $plugin['installation_url'] = $first_found_version['download_url'];
-               $plugin['version'] = $first_found_version['num'];
+            $versions = $plugin['versions'];
+            usort(
+               $versions,
+               function ($a, $b) {
+                  return version_compare($a['num'], $b['num']);
+               }
+            );
+
+            $higher_version = end($versions);
+            if (is_array($higher_version)) {
+               $plugin['installation_url'] = $higher_version['download_url'];
+               $plugin['version'] = $higher_version['num'];
             }
          }
 
