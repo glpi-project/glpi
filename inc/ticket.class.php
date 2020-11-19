@@ -3563,9 +3563,6 @@ class Ticket extends CommonITILObject {
                                           $options['itilcategories_id'],
                                           $_SESSION["glpiactive_entity"]);
 
-      // Put ticket template on $options for actors
-      $options['_tickettemplate'] = $tt;
-
       if (!$ticket_template) {
          echo "<form method='post' name='helpdeskform' action='".
                $CFG_GLPI["root_doc"]."/front/tracking.injector.php' enctype='multipart/form-data'>";
@@ -3614,7 +3611,9 @@ class Ticket extends CommonITILObject {
          } else {
             $options['_right'] = "delegate";
          }
-         $self->showActorAddFormOnCreate(CommonITILActor::REQUESTER, $options);
+         $actors_options = $options;
+         $actors_options['_tickettemplate'] = $tt; // Actors requires ticket template object in $options
+         $self->showActorAddFormOnCreate(CommonITILActor::REQUESTER, $actors_options);
          echo "</div>";
          if ($CFG_GLPI['use_check_pref'] && $options['nodelegate']) {
             echo "</td><td class='center'>";
@@ -3782,8 +3781,10 @@ class Ticket extends CommonITILObject {
             echo "<td>".sprintf(__('%1$s%2$s'), _n('Associated element', 'Associated elements', Session::getPluralNumber()),
                                 $tt->getMandatoryMark('items_id'))."</td>";
             echo "<td>";
-            $options['_canupdate'] = Session::haveRight('ticket', CREATE);
-            Item_Ticket::itemAddForm($this, $options);
+            $item_options = $options;
+            $item_options['_canupdate'] = Session::haveRight('ticket', CREATE);
+            $item_options['_tickettemplate'] = $tt; // Items form requires ticket template object in $options
+            Item_Ticket::itemAddForm($this, $item_options);
             echo "</td></tr>";
          }
       }
@@ -3824,8 +3825,9 @@ class Ticket extends CommonITILObject {
             if (isset($options['_users_id_observer'])) {
                $observers = $options['_users_id_observer'];
                foreach ($observers as $index_observer => $observer) {
-                  $options = array_merge($options, ['_user_index' => $index_observer]);
-                  self::showFormHelpdeskObserver($options);
+                  $actors_options = array_merge($options, ['_user_index' => $index_observer]);
+                  $actors_options['_tickettemplate'] = $tt; // Actors requires ticket template object in $options
+                  self::showFormHelpdeskObserver($actors_options);
                }
             }
             echo "</div>";
