@@ -41,14 +41,12 @@ abstract class APIBaseClass extends \atoum {
                                      $expected_codes = 200);
 
    public function beforeTestMethod($method) {
-      parent::beforeTestMethod($method);
       $this->initSessionCredentials();
    }
 
    abstract public function initSessionCredentials();
 
    public function setUp() {
-      parent::setUp();
       // enable api config
       $config = new Config;
       $config->update(['id'                              => 1,
