@@ -43,7 +43,7 @@ if (isset($_SERVER['argv'])) {
 
 // Handle specific dependencies update command that cannot be made upon symfony console
 if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SERVER['argv'], 1, 2)) {
-   $composer_command = 'composer install --ansi --no-interaction --no-suggest';
+   $composer_command = 'composer install --ansi --no-interaction';
    $npm_command = 'npm install';
 
    if (array_key_exists('composer-options', $options) && is_string($options['composer-options'])) {
