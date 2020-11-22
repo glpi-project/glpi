@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8a3a9deb2c085ddc4679c0f1c8a49dd6",
+    "content-hash": "4301ebe5ea1367bd0a647918e186fcf7",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -3352,16 +3352,16 @@
     "packages-dev": [
         {
             "name": "atoum/atoum",
-            "version": "4.x-dev",
+            "version": "4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "a652d3af89f034d18b0097966e7bce5829ded260"
+                "reference": "56e9c55cab42086c2eb6bd30fcf1e242f9c51f52"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/a652d3af89f034d18b0097966e7bce5829ded260",
-                "reference": "a652d3af89f034d18b0097966e7bce5829ded260",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/56e9c55cab42086c2eb6bd30fcf1e242f9c51f52",
+                "reference": "56e9c55cab42086c2eb6bd30fcf1e242f9c51f52",
                 "shasum": ""
             },
             "require": {
@@ -3388,7 +3388,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.x-dev"
+                    "dev-master": "4.x-dev"
                 }
             },
             "autoload": {
@@ -3433,9 +3433,9 @@
             ],
             "support": {
                 "issues": "https://github.com/atoum/atoum/issues",
-                "source": "https://github.com/atoum/atoum/tree/4.x"
+                "source": "https://github.com/atoum/atoum/tree/4.0.0"
             },
-            "time": "2020-11-18T23:23:35+00:00"
+            "time": "2020-11-21T17:23:11+00:00"
         },
         {
             "name": "consolidation/annotated-command",
@@ -5315,9 +5315,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "atoum/atoum": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
