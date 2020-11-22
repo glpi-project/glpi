@@ -124,7 +124,7 @@ class MassiveAction extends DbTestCase {
       $ma_ko = 0;
 
       // Shunt constructor
-      $controller = new \atoum\mock\controller();
+      $controller = new \atoum\atoum\mock\controller();
       $controller->__construct = function($args){};
 
       // Create mock

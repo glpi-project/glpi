@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use atoum\atoum;
 use Glpi\Cache\SimpleCache;
 
 // Main GLPI test case. All tests should extends this class.

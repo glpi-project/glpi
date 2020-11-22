@@ -44,7 +44,7 @@ then
       --bootstrap-file tests/bootstrap.php \
       --directories tests/units \
       --no-code-coverage-for-classes DbTestCase DbFunction Autoload NotificationSettingInstance \
-      --no-code-coverage-for-namespaces mageekguy\\atoum
+      --no-code-coverage-for-namespaces atoum\\atoum
 else
    echo -e "\nYou need PHP with XDebug\n"
    exit 2

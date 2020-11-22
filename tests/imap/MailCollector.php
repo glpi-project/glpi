@@ -32,8 +32,6 @@
 
 namespace tests\units;
 
-use \atoum;
-
 use \DbTestCase;
 
 class MailCollector extends DbTestCase {
