@@ -30,7 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-abstract class APIBaseClass extends \atoum {
+use atoum\atoum;
+
+abstract class APIBaseClass extends atoum {
    protected $session_token;
    protected $http_client;
    protected $base_uri = "";

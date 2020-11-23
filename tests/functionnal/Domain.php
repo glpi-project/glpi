@@ -151,7 +151,7 @@ class Domain extends DbTestCase {
       //transer to another entity
       $transfer = new \Transfer();
 
-      $controller = new \atoum\mock\controller();
+      $controller = new \atoum\atoum\mock\controller();
       $controller->__construct = function() {
          // void
       };
