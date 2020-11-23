@@ -262,6 +262,10 @@ html .ui-autocomplete {
 
 /* SELECT2 */
 
+.ui-widget {
+  font-family: Verdana,Arial,sans-serif;
+}
+
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button
 {
   font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
