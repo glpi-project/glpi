@@ -598,10 +598,20 @@ HTML;
       $required_offers    = $mk_controller->getRequiredOffers();
       $can_be_updated     = $has_web_update && $can_be_overwritten;
       $can_be_cleaned     = $exists && !$plugin_inst->isLoadable($plugin_key);
+      $has_been_replaced  = $plugin_inst->fields['state'] === Plugin::REPLACED;
       $config_page        = $PLUGIN_HOOKS['config_page'][$plugin_key] ?? "";
 
       $error = "";
-      if ($exists) {
+      if ($has_been_replaced) {
+         $new_plugin_informations = $plugin_inst->getNewInfoAndDirBasedOnOldName($plugin_key);
+         $error .= '<span class="error">'
+            . sprintf(
+               'Plugin "%s" has been replaced by "%s".',
+               $plugin_inst->fields['name'],
+               $new_plugin_informations['directory']
+            )
+            . '</span>';
+      } else if ($exists) {
          ob_start();
          $do_activate = $plugin_inst->checkVersions($plugin_key);
          if (!$do_activate) {
@@ -626,6 +636,10 @@ HTML;
          Html::showToolTip($error, [
             'applyto' => "plugin-error-$rand",
          ]);
+      }
+
+      if ($has_been_replaced) {
+         return $buttons;
       }
 
       if ($can_be_cleaned) {

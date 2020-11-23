@@ -87,6 +87,11 @@ class Plugin extends CommonDBTM {
     */
    const NOTUPDATED     = 6;
 
+   /**
+    * @var int Plugin has been replaced by a new one.
+    */
+   const REPLACED       = 7;
+
    static $rightname = 'config';
 
    /**
@@ -436,6 +441,43 @@ class Plugin extends CommonDBTM {
       $is_already_known = $plugin->getFromDBByCrit(['directory' => $plugin_key]);
 
       $informations = $this->getInformationsFromDirectory($plugin_key);
+      $new_specs = $this->getNewInfoAndDirBasedOnOldName($plugin_key);
+
+      if (!empty($informations) && $new_specs !== null) {
+         if (!$is_already_known) {
+            // Plugin has never been installed, we ignore it.
+            return;
+         }
+
+         // Plugin has been replaced by a new one, and both are present on filesystem.
+         // It should not be used anymore.
+         if (in_array($plugin->fields['state'], [self::ACTIVATED, self::TOBECONFIGURED])) {
+            // Plugin is currently loaded, warn about its deactivation.
+            trigger_error(
+               sprintf(
+                  'Plugin "%s" has been replaced by "%s". It has been deactivated.',
+                  $plugin_key,
+                  $new_specs['directory']
+               ),
+               E_USER_WARNING
+            );
+
+            $this->unload($plugin_key);
+            // reset menu
+            if (isset($_SESSION['glpimenu'])) {
+               unset($_SESSION['glpimenu']);
+            }
+         }
+
+         $this->update(
+            [
+               'id'    => $plugin->fields['id'],
+               'state' => self::REPLACED,
+            ]
+         );
+
+         return;
+      }
 
       if (empty($informations)) {
          if (!$is_already_known) {
@@ -443,13 +485,11 @@ class Plugin extends CommonDBTM {
             return;
          }
 
-         // Try to get information from a plugin that lists current name as its old name
-         // If something found, and not already registerd in DB,, base plugin informations on it
-         // If nothing found, mark plugin as "To be cleaned"
-         $new_specs = $this->getNewInfoAndDirBasedOnOldName($plugin_key);
          if (null !== $new_specs
              && countElementsInTable(self::getTable(), ['directory' => $new_specs['directory']]) === 0) {
-            $plugin_key    = $new_specs['directory'];
+            // If current plugin key if found in the 'oldname' property of a plugin
+            // that has never been registered in DB, base plugin informations on it.
+            $plugin_key   = $new_specs['directory'];
             $informations = $new_specs['informations'];
          } else {
             trigger_error(
@@ -595,9 +635,12 @@ class Plugin extends CommonDBTM {
     *
     * @return null|array If a new directory is found, returns an array containing 'directory' and 'informations' keys.
     */
-   private function getNewInfoAndDirBasedOnOldName($oldname) {
+   public function getNewInfoAndDirBasedOnOldName($oldname) {
 
-      $plugins_directories = new DirectoryIterator(GLPI_ROOT . '/plugins');
+      $plugins_directories = new AppendIterator();
+      foreach (PLUGINS_DIRECTORIES as $directory) {
+         $plugins_directories->append(new DirectoryIterator($directory));
+      }
       /** @var SplFileInfo $plugin_directory */
       foreach ($plugins_directories as $plugin_directory) {
          if (in_array($plugin_directory->getFilename(), ['.svn', '.', '..'])
@@ -1996,6 +2039,9 @@ class Plugin extends CommonDBTM {
 
          case self::NOTACTIVATED :
             return _x('plugin', 'Installed / not activated');
+
+         case self::REPLACED :
+            return __('Replaced by another plugin');
       }
 
       return __('Error / to clean');
@@ -2365,6 +2411,15 @@ class Plugin extends CommonDBTM {
                   ['id' => $ID],
                   'fa-fw fas fa-broom fa-2x'
                );
+            } else if ($state === self::REPLACED) {
+               $new_plugin_informations = $plugin->getNewInfoAndDirBasedOnOldName($directory);
+               $output .= '<span class="error">'
+                  . sprintf(
+                     'Plugin "%s" has been replaced by "%s".',
+                     $plugin->fields['name'],
+                     $new_plugin_informations['directory']
+                  )
+                  . '</span>';
             }
 
             return "<div style='text-align:right'>$output</div>";
@@ -2419,7 +2474,8 @@ class Plugin extends CommonDBTM {
                self::NOTUPDATED     => __('To update'),
                self::TOBECONFIGURED => _x('plugin', 'Installed / not configured'),
                self::NOTACTIVATED   => _x('plugin', 'Installed / not activated'),
-               self::TOBECLEANED    => __('Error / to clean')
+               self::TOBECLEANED    => __('Error / to clean'),
+               self::REPLACED       => __('Replaced by another plugin'),
             ];
             $options['value'] = $values[$field];
             return Dropdown::showFromArray($name, $tab, $options);
