@@ -57,7 +57,7 @@
     },
     "require-dev": {
         "ext-xml": "*",
-        "atoum/atoum": "4.x-dev",
+        "atoum/atoum": "^4.0",
         "consolidation/robo": "^2.0",
         "glpi-project/coding-standard": "^0.7",
         "maglnet/composer-require-checker": "^2.0",
