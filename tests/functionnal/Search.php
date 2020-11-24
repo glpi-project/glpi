@@ -371,7 +371,7 @@ class Search extends DbTestCase {
          ->contains("(`glpi_users`.`id` = '2')")
          ->contains("OR (`glpi_users`.`id` = '3')")
          // match having
-         ->matches("/HAVING\s*\(`ITEM_Budget_2`\s+<>\s+5\)\s+AND\s+\(\(`ITEM_Printer_1`\s+NOT LIKE\s+'%HP%'\s+OR\s+`ITEM_Printer_1`\s+IS NULL\)\s*\)/");
+         ->matches("/HAVING\s*\(`ITEM_Budget_2`\s+<>\s+5\)\s+AND NOT\s+\(`ITEM_Printer_1`\s+LIKE\s+'%HP%'\s*\)/");
    }
 
    function testViewCriterion() {
