@@ -34,6 +34,7 @@ namespace Glpi\Dashboard;
 
 use DBConnection;
 use Dropdown;
+use Glpi\Application\View\TemplateRenderer;
 use Html;
 use Plugin;
 use Ramsey\Uuid\Uuid;
@@ -274,14 +275,14 @@ HTML;
       $add_dash_label   = __("Add a new dashboard");
       $save_label       = _x('button', "Save");
 
-      $gridstack_items = $this->getGridItemsHtml();
+      $gridstack_items = $this->getGridItemsHtml(!$mini);
 
       $dropdown_dashboards = "";
       if ($nb_dashboards) {
          $dropdown_dashboards = self::dropdownDashboard("", [
             'value'        => $this->current,
             'display'      => false,
-            'class'        => 'dashboard_select',
+            'class'        => 'dashboard_select form-select',
             'can_view_all' => $can_view_all,
             'noselect2'    => true,
          ]);
@@ -297,34 +298,34 @@ HTML;
 
       if (!self::$embed) {
          if (!$mini && $can_create) {
-            $l_tb_icons.= "<i class='fas fa-plus fs-toggle add-dashboard' title='$add_dash_label'></i>";
+            $l_tb_icons.= "<i class='btn btn-outline-secondary fas fa-plus fs-toggle add-dashboard' title='$add_dash_label'></i>";
          }
          if (!$mini && $can_clone) {
-            $r_tb_icons.= "<i class='fas fa-clone fs-toggle clone-dashboard' title='$clone_label'></i>";
+            $r_tb_icons.= "<i class='btn btn-outline-secondary fas fa-clone fs-toggle clone-dashboard' title='$clone_label'></i>";
          }
          if (!$mini && $can_edit) {
-            $r_tb_icons.= "<i class='fas fa-share-alt fs-toggle open-embed' title='$embed_label'></i>";
+            $r_tb_icons.= "<i class='btn btn-outline-secondary fas fa-share-alt fs-toggle open-embed' title='$embed_label'></i>";
             $rename = "<div class='edit-dashboard-properties'>
-               <input type='text' class='dashboard-name' value='{$dashboard_title}' size='1'>
-               <i class='fas fa-save save-dashboard-name' title='{$save_label}'></i>
+               <input type='text' class='dashboard-name form-control' value='{$dashboard_title}' size='1'>
+               <i class='btn btn-outline-secondary fas fa-save save-dashboard-name' title='{$save_label}'></i>
                <span class='display-message'></span>
             </div>";
          }
          if (!$mini && $can_purge) {
-            $r_tb_icons.= "<i class='fas fa-trash fs-toggle delete-dashboard' title='$delete_label'></i>";
+            $r_tb_icons.= "<i class='btn btn-outline-secondary fas fa-trash fs-toggle delete-dashboard' title='$delete_label'></i>";
          }
          if ($can_edit) {
-            $r_tb_icons.= "<i class='fas fa-edit fs-toggle edit-dashboard' title='$edit_label'></i>";
+            $r_tb_icons.= "<i class='btn btn-outline-secondary fas fa-edit fs-toggle edit-dashboard' title='$edit_label'></i>";
          }
 
          if (!$mini) {
-            $r_tb_icons.= "<i class='fas fa-expand toggle-fullscreen' title='$fs_label'></i>";
+            $r_tb_icons.= "<i class='btn btn-outline-secondary fas fa-expand toggle-fullscreen' title='$fs_label'></i>";
          }
 
          if (!$mini) {
             $left_toolbar = <<<HTML
                <span class="toolbar left-toolbar">
-                  <div class="change-dashboard">
+                  <div class="change-dashboard d-flex">
                      $dropdown_dashboards
                      $l_tb_icons
                   </div>
@@ -343,8 +344,8 @@ HTML;
       $toolbars = <<<HTML
          $left_toolbar
          <span class="toolbar">
-            <i class="fas fa-history auto-refresh" title="$history_label"></i>
-            <i class="fas fa-moon night-mode" title="$night_label"></i>
+            <i class="btn btn-outline-secondary fas fa-history auto-refresh" title="$history_label"></i>
+            <i class="btn btn-outline-secondary fas fa-moon night-mode" title="$night_label"></i>
             $r_tb_icons
          </span>
 HTML;
@@ -355,7 +356,7 @@ HTML;
          <div class='filters_toolbar'>
             <span class='filters'></span>
             <span class='filters-control'>
-               <i class="fas fa-plus-square plus-sign add-filter">
+               <i class="btn btn-sm btn-icon btn-ghost-secondary fas fa-plus-square plus-sign add-filter">
                   <span class='add-filter-lbl'>{$add_filter_lbl}</span>
                </i>
             </span>
@@ -382,6 +383,14 @@ HTML;
          </div>
       </div>
 HTML;
+
+      if ($mini) {
+         $html = "<div class='card mb-4 d-none d-md-block dashboard-card'>
+            <div class='card-body'>
+               $html
+            </div>
+         </div>";
+      }
 
       $ajax_cards = GLPI_AJAX_DASHBOARD;
       $context    = self::$context;
@@ -411,7 +420,7 @@ JAVASCRIPT;
 
 
    public function showDefault() {
-      echo "<div class='default_dashboard'>";
+      echo "<div class='card p-3'>";
       $this->show();
       echo "</div>";
    }
@@ -568,7 +577,7 @@ HTML;
       }
 
       $color    = $data_option['color'] ?? "#FFFFFF";
-      $fg_color = Toolbox::getFgColor($color, 100);
+      $fg_color = Toolbox::getFgColor($color, 100, true);
 
       // add card options in data attribute
       $data_option_attr = "";
@@ -608,9 +617,9 @@ HTML;
    public function displayAddDashboardForm() {
       $rand = mt_rand();
 
-      echo "<form class='card no-shadow display-add-dashboard-form'>";
+      echo "<form class='no-shadow display-add-dashboard-form'>";
 
-      echo "<div class='field'>";
+      echo "<div class='mb-3'>";
       echo "<label for='title_$rand'>".__("Title")."</label>";
       echo "<div>";
       echo Html::input('title', ['id' => "title_$rand"]);
@@ -618,7 +627,8 @@ HTML;
       echo "</div>"; // .field
 
       echo Html::submit(_x('button', "Add"), [
-         'class' => 'submit vsubmit submit-new-dashboard'
+         'icon'  => 'fas fa-plus',
+         'class' => 'btn btn-primary submit-new-dashboard'
       ]);
 
       echo "</form>"; // .card.display-widget-form
@@ -673,134 +683,31 @@ HTML;
          $list_cards[$group][$index] = $data['label'] ?? $data['itemtype']::getTypeName();
       });
 
-      echo "<form class='card no-shadow display-widget-form'>";
-
-      echo "<div class='field'>";
-      echo "<label for='color_color$rand'>".__("Background color")."</label>";
-      echo "<div>";
-      Html::showColorField('color', [
-         'rand'  => $rand,
-         'value' => $color,
-      ]);
-      echo "</div>";
-      echo "</div>"; // .field
-
-      echo "<div class='field'>";
-      echo "<label for='dropdown_card_id$rand'>".__("Data")."</label>";
-      echo "<div>";
-      Dropdown::showFromArray('card_id', $list_cards, [
-         'display_emptychoice' => true,
-         'rand'                => $rand,
-         'value'               => $card_id
-      ]);
-      echo "</div>";
-      echo "</div>"; // .field
-
-      // display widget list
-      $displayed = "";
-      if (!$edit) {
-         $displayed = "style='display: none'";
-      }
-      echo "<div class='field widgettype_field' $displayed>";
-      echo "<label>".__("Widget")."</label>";
-      echo "<div class='widget-list'>";
-      foreach (Widget::getAllTypes() as $key => $current) {
-         $selected = '';
-         if ($key === $widgettype) {
-            $selected = 'checked';
-         }
-         $w_diplayed = "";
-         if ($edit && isset($card['widgettype']) && in_array($key, $card['widgettype'])) {
-            $w_diplayed = "style='display: inline-block;'";
-         }
-         echo "<input type='radio'
-                      {$selected}
-                      class='widget-select'
-                      name='widgettype'
-                      id='widgettype_{$key}_{$rand}'
-                      value='{$key}'>
-               <label for='widgettype_{$key}_{$rand}' {$w_diplayed}>
-                  <div>{$current['label']}</div>
-                  <img src='{$current['image']}'>
-               </label>";
-      }
-      echo "</div>";
-      echo "</div>"; // .field
-
-      // display checkbox to use gradient palette or not
-      $gradient_displayed = "";
-      if (!$edit || !isset($widget_def['gradient']) || !$widget_def['gradient']) {
-         $gradient_displayed = "style='display: none'";
-      }
-      echo "<div class='field gradient_field' $gradient_displayed>";
-      echo "<label for='check_gradient_$rand'>".__("Use gradient palette")."</label>";
-      echo "<div>";
-      Html::showCheckbox([
-         'label'   => "&nbsp;",
-         'name'    => "use_gradient",
-         'id'      => "check_gradient_$rand",
-         'checked' => $use_gradient,
-      ]);
-      echo "</div>";
-      echo "</div>"; // .field
-
-      // display checkbox to use point label or not
-      $point_labels_displayed = "";
-      if (!$edit || !isset($widget_def['pointlbl']) || !$widget_def['pointlbl']) {
-         $point_labels_displayed = "style='display: none'";
-      }
-      echo "<div class='field pointlbl_field' $point_labels_displayed>";
-      echo "<label for='check_point_labels_$rand'>".__("Display value labels on points/bars")."</label>";
-      echo "<div>";
-      Html::showCheckbox([
-         'label'   => "&nbsp;",
-         'name'    => "point_labels",
-         'id'      => "check_point_labels_$rand",
-         'checked' => $point_labels,
-      ]);
-      echo "</div>";
-      echo "</div>"; // .field
-
-      // show limit dropdown
-      $limit_displayed = "";
-      if (!$edit || !isset($widget_def['limit']) || !$widget_def['limit']) {
-         $limit_displayed = "style='display: none'";
-      }
-      echo "<div class='field limit_field' $limit_displayed>";
-      echo "<label for='dropdown_limit$rand'>".__("Limit number of data")."</label>";
-      echo "<div>";
-      Dropdown::showNumber('limit', [
-         'value' => $limit,
-         'rand'  => $rand,
-      ]);
-      echo "</div>";
-      echo "</div>"; // .field
-
-      $class_submit = "add-widget";
-      $label_submit = "<i class='fas fa-plus'></i>&nbsp;"._x('button', "Add");
-      if ($edit) {
-         $class_submit = "edit-widget";
-         $label_submit = "<i class='fas fa-save'></i>&nbsp;"._x('button', "Update");
-      }
-
       // manage autoescaping
       if (isset($cardopt['markdown_content'])) {
          $cardopt['markdown_content'] = Html::cleanPostForTextArea($cardopt['markdown_content']);
       }
 
-      echo Html::submit($label_submit, [
-         'class' => 'submit vsubmit '.$class_submit
+      TemplateRenderer::getInstance()->display('components/dashboard/widget_form.html.twig', [
+         'gridstack_id' => $gridstack_id,
+         'old_id'       => $old_id,
+         'x'            => $x,
+         'y'            => $y,
+         'width'        => $width,
+         'height'       => $height,
+         'edit'         => $edit,
+         'card'         => $card,
+         'widget_def'   => $widget_def,
+         'color'        => $color,
+         'card_id'      => $card_id,
+         'use_gradient' => $use_gradient,
+         'point_labels' => $point_labels,
+         'limit'        => $limit,
+         'list_cards'   => $list_cards,
+         'widget_types' => Widget::getAllTypes(),
+         'widgettype'   => $widgettype,
+         'card_options' => $cardopt,
       ]);
-
-      echo Html::hidden('gridstack_id', ['value' => $gridstack_id]);
-      echo Html::hidden('old_id', ['value' => $old_id]);
-      echo Html::hidden('x', ['value' => $x]);
-      echo Html::hidden('y', ['value' => $y]);
-      echo Html::hidden('width', ['value' => $width]);
-      echo Html::hidden('height', ['value' => $height]);
-      echo Html::hidden('card_options', ['value' => json_encode($cardopt, JSON_HEX_APOS | JSON_HEX_QUOT)]);
-
-      echo "</form>"; // .card.display-widget-form
    }
 
 
@@ -865,8 +772,7 @@ HTML;
       echo __("Direct link");
       echo "<div class='copy_to_clipboard_wrapper'>";
       echo Html::input('direct_link', [
-         'value'    => $embed_url,
-         'style'    => 'width: calc(100% - 38px)'
+         'value' => $embed_url,
       ]);
       echo "</div><br>";
 
@@ -874,8 +780,7 @@ HTML;
       echo __("Iframe");
       echo "<div class='copy_to_clipboard_wrapper'>";
       echo Html::input('iframe_code', [
-         'value'    => $iframe,
-         'style'    => 'width: calc(100% - 38px)'
+         'value' => $iframe,
       ]);
       echo "</div>";
       echo "</fieldset><br>";
@@ -894,7 +799,7 @@ HTML;
       $rand   = mt_rand();
       $values = [];
 
-      echo "<form class='card no-shadow display-rights-form'>";
+      echo "<form class='no-shadow display-rights-form'>";
 
       echo "<label for='dropdown_rights_id$rand'>".
            __("Or share the dashboard to these target objects:").
@@ -914,8 +819,9 @@ HTML;
          }
       }
       echo ShareDashboardDropdown::show($rand, $values);
-      echo "<br><br>";
+      echo "<br>";
 
+      echo "<div class='d-flex align-items-center my-3'>";
       echo __('Personal') . "&nbsp;";
       echo Html::showToolTip(__("A personal dashboard is not visible by other administrators unless you share explicitely the dashboard"))."&nbsp";
       echo Dropdown::showYesNo(
@@ -926,9 +832,12 @@ HTML;
             'display' => false
          ]
       );
-      echo "<br><br>";
+      echo "</div>";
 
-      echo "<a href='#' class='vsubmit save_rights'>".__("Save")."</a>";
+      echo "<a href='#' class='btn btn-primary save_rights'>
+         <i class='fas fa-save'></i>
+         <span>".__("Save")."</span>
+      </a>";
 
       Html::closeForm(true);
    }

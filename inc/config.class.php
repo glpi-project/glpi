@@ -480,7 +480,7 @@ class Config extends CommonDBTM {
       if ($canedit) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='4' class='center'>";
-         echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+         echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
          echo "</td></tr>";
       }
 
@@ -660,7 +660,7 @@ class Config extends CommonDBTM {
       if ($canedit) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='6' class='center'>";
-         echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+         echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
          echo "</td></tr>";
       }
 
@@ -682,7 +682,7 @@ class Config extends CommonDBTM {
       }
 
       echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post' data-track-changes='true'>";
-      echo "<div class='center' id='tabsbody'>";
+      echo "<div class='card' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>" . __('Authentication') . "</th></tr>";
 
@@ -704,7 +704,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' name='update_auth' class='submit' value=\""._sx('button', 'Save').
+      echo "<input type='submit' name='update_auth' class='btn btn-primary' value=\""._sx('button', 'Save').
            "\">";
       echo "</td></tr>";
 
@@ -773,7 +773,7 @@ class Config extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+      echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
       echo "</td></tr>";
 
       echo "</table></div>";
@@ -842,7 +842,7 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+      echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
       echo "<br><br><br>";
       echo "</td></tr>";
 
@@ -1037,7 +1037,7 @@ class Config extends CommonDBTM {
       if ($canedit) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='7' class='center'>";
-         echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+         echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
          echo "</td></tr>";
       }
 
@@ -1240,39 +1240,58 @@ class Config extends CommonDBTM {
          $('label[for=theme-selector]').on('click', function(){ $('#theme-selector').select2('open'); });
       ");
       echo "</td>";
-      echo "<td><label for='layout-selector'>" . __('Layout')."</label></td><td>";
+      echo "<td>";
 
-      $layout_options = [
-         'lefttab' => __("Tabs on left"),
-         'classic' => __("Classic view"),
-         'vsplit'  => __("Vertical split")
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td><label for='dropdown_page_layout$rand'>" . __('Page layout') . "</label></td>";
+      echo "<td>";
+
+      $global_layout_options = [
+         'horizontal' => __('Horizontal (menu in header)'),
+         'vertical'   => __('Vertical (menu in sidebar)'),
       ];
-
       echo Html::select(
-         'layout',
-         $layout_options,
+         'page_layout',
+         $global_layout_options,
          [
-            'id'        => 'layout-selector',
-            'selected'  => $data['layout']
+            'id'        => 'global-layout-selector',
+            'selected'  => $data['page_layout']
          ]
       );
 
       echo Html::scriptBlock("
-         function formatLayout(layout) {
+         function formatGlobalLayout(layout) {
              if (!layout.id) {
                 return layout.text;
              }
-             return $('<span></span>').html('<img src=\'../pics/layout_' + layout.id.toLowerCase() + '.png\'/>'
+             return $('<span></span>').html('<img src=\'../pics/layout/global_layout_' + layout.id.toLowerCase() + '.png\'/>'
                       + '&nbsp;' + layout.text);
          }
-         $(\"#layout-selector\").select2({
+         $('#global-layout-selector').select2({
              dropdownAutoWidth: true,
-             templateResult: formatLayout,
-             templateSelection: formatLayout
+             templateResult: formatGlobalLayout,
+             templateSelection: formatGlobalLayout
          });
-         $('label[for=layout-selector]').on('click', function(){ $('#layout-selector').select2('open'); });
+         $('label[for=global-layout-selector]').on('click', function(){
+            $('#global-layout-selector').select2('open');
+         });
       ");
-      echo "</select>";
+      echo "</td>";
+
+      echo "<td><label for='dropdown_richtext_layout$rand'>" . __('Rich text field layout') . "</label></td>";
+      echo "<td>";
+      Dropdown::showFromArray(
+         'richtext_layout',
+         [
+            'inline'  => __('Inline (no toolbars)'),
+            'classic' => __('Classic (toolbar on top)'),
+         ], [
+            'value' => $data["richtext_layout"],
+         ]
+      );
       echo "</td>";
       echo "</tr>";
 
@@ -1474,7 +1493,7 @@ class Config extends CommonDBTM {
       if ((!$userpref && $canedit) || ($userpref && $canedituser)) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='4' class='center'>";
-         echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+         echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
          echo "</td></tr>";
       }
 
@@ -1720,10 +1739,10 @@ class Config extends CommonDBTM {
 
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             echo "<tr><td></td><td colspan='3'>";
-            echo '<form method="POST" action="' . static::getFormURL() . '" style="display:inline;">';
+            echo '<form method="POST" action="' . static::getFormURL() . '" class="d-inline">';
             echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
             echo Html::hidden('reset_opcache', ['value' => 1]);
-            echo '<button type="submit" class="vsubmit">';
+            echo '<button type="submit" class="btn btn-primary">';
             echo __('Reset');
             echo '</button>';
             echo '</form>';
@@ -1749,15 +1768,17 @@ class Config extends CommonDBTM {
             <td></td>
             <td class='icons_block'><i class='fa fa-check-circle ok' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
 
-      echo "<tr><td></td><td colspan='3'>";
-      echo '<form method="POST" action="' . static::getFormURL() . '" style="display:inline;">';
-      echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
-      echo Html::hidden('reset_core_cache', ['value' => 1]);
-      echo '<button type="submit" class="vsubmit">';
-      echo __('Reset');
-      echo '</button>';
-      echo '</form>';
-      echo "</td></tr>\n";
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+         echo "<tr><td></td><td colspan='3'>";
+         echo '<form method="POST" action="' . static::getFormURL() . '" class="d-inline">';
+         echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
+         echo Html::hidden('reset_core_cache', ['value' => 1]);
+         echo '<button type="submit" class="btn btn-primary">';
+         echo __('Reset');
+         echo '</button>';
+         echo '</form>';
+         echo "</td></tr>";
+      }
 
       echo "<tr><th colspan='4'>" . __('Translation cache') . "</th></tr>";
       $translation_cache = self::getTranslationCacheInstance(false);
@@ -1767,17 +1788,19 @@ class Config extends CommonDBTM {
       echo "<tr><td colspan='3'>" . $msg . "</td>
             <td class='icons_block'><i class='fa fa-check-circle ok' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
 
-      echo "<tr><td></td><td colspan='3'>";
-      echo '<form method="POST" action="' . static::getFormURL() . '" style="display:inline;">';
-      echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
-      echo Html::hidden('reset_translation_cache', ['value' => 1]);
-      echo '<button type="submit" class="vsubmit">';
-      echo __('Reset');
-      echo '</button>';
-      echo '</form>';
-      echo "</td></tr>\n";
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+         echo "<tr><td></td><td colspan='3'>";
+         echo '<form method="POST" action="' . static::getFormURL() . '" style="d-inline">';
+         echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
+         echo Html::hidden('reset_translation_cache', ['value' => 1]);
+         echo '<button type="submit" class="btn btn-primary">';
+         echo __('Reset');
+         echo '</button>';
+         echo '</form>';
+         echo "</td></tr>";
+      }
 
-      echo "</table></div>\n";
+      echo "</table></div>";
    }
 
    /**
@@ -1863,7 +1886,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+      echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
       echo "</td></tr>";
 
       echo "</table>";
@@ -1876,7 +1899,7 @@ class Config extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th>". __('Information about system installation and configuration')."</th></tr>";
       echo "<tr class='tab_bg_1'><td>";
-      echo "<a class='vsubmit' href='?check_version'>".__('Check if a new version is available')."</a>";
+      echo "<a class='btn btn-secondary' href='?check_version'>".__('Check if a new version is available')."</a>";
       echo "</td></tr>";
 
        $oldlang = $_SESSION['glpilanguage'];
@@ -2116,9 +2139,11 @@ class Config extends CommonDBTM {
                [ 'name'    => 'html2text/html2text',
                  'check'   => 'Html2Text\\Html2Text' ],
                [ 'name'    => 'symfony/dom-crawler',
-                  'check'   => 'Symfony\\Component\\DomCrawler\\Crawler' ],
+                 'check'   => 'Symfony\\Component\\DomCrawler\\Crawler' ],
                [ 'name'    => 'twig/twig',
-                  'check'   => 'Twig\Environment' ],
+                 'check'   => 'Twig\\Environment' ],
+               [ 'name'    => 'twig/string-extra',
+                 'check'   => 'Twig\\Extra\\String\\StringExtension' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [
@@ -2815,7 +2840,7 @@ class Config extends CommonDBTM {
     * @return void
     */
    public static function agreeDevMessage($bg = false) {
-      $msg = '<p class="'.($bg ? 'mig' : '') .'red"><strong>' . __('You are using a development version, be careful!') . '</strong><br/>';
+      $msg = '<p class="'.($bg ? 'alert-important' : '') .' alert alert-warning"><strong>' . __('You are using a development version, be careful!') . '</strong><br/>';
       $msg .= "<input type='checkbox' required='required' id='agree_dev' name='agree_dev'/><label for='agree_dev'>" . __('I know I am using a unstable version.') . "</label></p>";
       $msg .= "<script type=text/javascript>
             $(function() {
@@ -3060,7 +3085,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit' >";
+      echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary' >";
       echo"</td>";
       echo "</tr>";
 
@@ -3300,7 +3325,7 @@ class Config extends CommonDBTM {
 
       echo '<tr class="tab_bg_2">';
       echo '<td colspan="4" class="center">';
-      echo '<input type="submit" name="update" class="submit" value="' . _sx('button', 'Save') . '">';
+      echo '<input type="submit" name="update" class="btn btn-primary" value="' . _sx('button', 'Save') . '">';
       echo '</td>';
       echo '</tr>';
 
@@ -3355,7 +3380,7 @@ class Config extends CommonDBTM {
       if ($canedit) {
          echo '<tr class="tab_bg_2">';
          echo '<td colspan="4" class="center">';
-         echo '<input type="submit" name="update" class="submit" value="' . _sx('button', 'Save') . '">';
+         echo '<input type="submit" name="update" class="btn btn-primary" value="' . _sx('button', 'Save') . '">';
          echo '</td>';
          echo '</tr>';
       }

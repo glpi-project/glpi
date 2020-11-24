@@ -329,7 +329,7 @@ class ComputerAntivirus extends CommonDBChild {
          echo "</a></div>\n";
       }
 
-      echo "<div class='spaced center'>";
+      echo "<div class='spaced center table-responsive'>";
 
       $result = $DB->request(
          [

@@ -1,0 +1,49 @@
+{% set rand = random() %}
+<table class="tab_cadre_central">
+   {{ call_plugin_hook('display_central') }}
+</table>
+
+{{ include('central/messages.html.twig', {'messages': messages}) }}
+<div id="home-dashboard{{ rand }}" class="container-fluid">
+   {% set grid_items = [] %}
+   {% for card in cards %}
+      {% set card_html %}
+         <div class="card">
+            <div class="card-body p-0">
+              <div class="lazy-widget" data-itemtype="{{ card.itemtype }}" data-widget="{{ card.widget }}"
+                 data-params="{{ card.params|default({})|json_encode }}">
+              </div>
+            </div>
+         </div>
+      {% endset %}
+
+      {% set grid_items = grid_items|merge([
+         card_html
+      ]) %}
+   {% endfor %}
+
+   {{ include('components/masonry_grid.html.twig', {
+      'grid_items': grid_items,
+   }, with_context = false) }}
+
+   <script>
+   $(function () {
+      $('#home-dashboard{{ rand }} .lazy-widget').each(function() {
+         const this_obj = $(this);
+         const params = {
+            'itemtype': this_obj.data('itemtype'),
+            'widget': this_obj.data('widget'),
+            'params': this_obj.data('params')
+         };
+         this_obj.html('<i class="fas fa-3x fa-spinner fa-spin ms-auto"></i>')
+            .load('{{ path('/ajax/central.php') }}', params, function(response, status, xhr) {
+               if (status === 'error' || !response) {
+                  this_obj.closest('.grid-item').remove();
+               }
+
+               $('#home-dashboard{{ rand }} .masonry_grid').trigger('layout:refresh');
+            });
+      });
+   });
+   </script>
+</div>

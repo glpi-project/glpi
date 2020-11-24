@@ -302,7 +302,7 @@ class Item_Rack extends CommonDBRelation {
                   id="toggle_images">'.__('images').'</span>
             <span class="mini_toggle active"
                   id="toggle_text">'.__('texts').'</span>
-            <div class="sep"></div>
+            <div class="clearfix"></div>
          </span>
          <div class="racks_col">
          <h2>'.__('Front').'</h2>
@@ -369,7 +369,6 @@ class Item_Rack extends CommonDBRelation {
       PDU_Rack::showStatsForRack($rack);
       echo '</div>'; // .racks_col
       echo '</div>'; // .racks_row
-      echo '<div class="sep"></div>';
       echo "<div id='grid-dialog'></div>";
       echo "</div>"; // #viewgraph
 

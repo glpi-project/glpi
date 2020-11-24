@@ -148,17 +148,6 @@ var GlpiGantt = (function() {
             { name: "text", label: __("Project / Task"), width: 290, tree: true, align: "left" },
             { name: "start_date", label: __("Start date"), align: "left", width: 90 },
             { name: "duration", label: __("Duration"), align: "center", width: 47 },
-            { name: "parent", label: __("Parent"), align: "left", width: 160, sort: false,
-               template: function(item) {
-                  let parent;
-                  if (item.parent && item.parent != 0) {
-                     let p = gantt.getTask(item.parent);
-                     if (p)
-                        parent = p.text;
-                  }
-                  return parent;
-               }
-            },
             { name: "add", align: "center" }
          ];
 
@@ -252,14 +241,6 @@ var GlpiGantt = (function() {
 
          $("input[name='scale']").on('click', function(event) {
             gantt.ext.zoom.setLevel(event.target.value);
-         });
-
-         $("input[name='branch_level']").on('click', function(event) {
-            expandCollapse(event.target.value);
-         });
-
-         $("input[name='branch_state']").on('click', function() {
-            expandCollapse($("input[name='branch_level']:checked").val());
          });
 
          gantt.attachEvent("onBeforeRowDragMove", function(id) {
@@ -448,7 +429,6 @@ var GlpiGantt = (function() {
 
          // adjust elements visibility on Fullscreen expand/collapse
          gantt.attachEvent("onBeforeExpand", function() {
-            $('#c_ssmenu2, #c_logo').fadeOut('fast');
             $('.gantt-block__features').css({
                'position': 'absolute',
                'bottom': '18px',
@@ -458,7 +438,6 @@ var GlpiGantt = (function() {
          });
 
          gantt.attachEvent("onCollapse", function() {
-            $('#c_ssmenu2, #c_logo').fadeIn('fast');
             $('.gantt-block__features').css({
                'position': 'initial',
                'bottom': '10px'

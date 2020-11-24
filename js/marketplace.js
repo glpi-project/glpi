@@ -101,11 +101,6 @@ $(document).ready(function() {
       filterPluginList();
    });
 
-   // case insentive :contains selector -> ":icontains"
-   jQuery.expr.filters.icontains = function(elem, i, m) {
-      return (elem.innerText || elem.textContent || "").toLowerCase().indexOf(m[3].toLowerCase()) > -1;
-   };
-
    // filter plugin list when something typed in search input
    var chrono;
    $(document).on('input', '.marketplace .filter-list', function() {

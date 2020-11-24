@@ -2486,19 +2486,19 @@ class Plugin extends CommonDBTM {
 
       if (Session::getCurrentInterface() === 'central' && Config::canUpdate()) {
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'install']
-            = "<i class='ma-icon fas fa-code-branch'></i>".
+            = "<i class='fas fa-code-branch'></i>".
             __('Install');
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'uninstall']
-            = "<i class='ma-icon fas fa-code-branch'></i>".
+            = "<i class='fas fa-code-branch'></i>".
             __('Uninstall');
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'enable']
-            = "<i class='ma-icon fas fa-code-branch'></i>".
+            = "<i class='fas fa-code-branch'></i>".
             __('Enable');
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'disable']
-            = "<i class='ma-icon fas fa-code-branch'></i>".
+            = "<i class='fas fa-code-branch'></i>".
             __('Disable');
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'clean']
-            = "<i class='ma-icon fas fa-broom'></i>".
+            = "<i class='fas fa-broom'></i>".
             __('Clean');
       }
 
@@ -2510,7 +2510,7 @@ class Plugin extends CommonDBTM {
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       switch ($ma->getAction()) {
          case 'install' :
-            echo "<table class='center-h'><tr>";
+            echo "<table class='mx-auto'><tr>";
             echo "<td colspan='4'>";
             echo Html::submit(_x('button', 'Install'), [
                'name'      => 'install',
@@ -2518,7 +2518,7 @@ class Plugin extends CommonDBTM {
             echo "</td></tr></table>";
             return true;
          case 'uninstall' :
-            echo "<table class='center-h'><tr>";
+            echo "<table class='mx-auto'><tr>";
             echo "<td>".__('This will only affect plugins already installed')."</td><td colspan='3'>";
             echo Html::submit(_x('button', 'Uninstall'), [
                'name'      => 'uninstall',
@@ -2526,7 +2526,7 @@ class Plugin extends CommonDBTM {
             echo "</td></tr></table>";
             return true;
          case 'enable' :
-            echo "<table class='center-h'><tr>";
+            echo "<table class='mx-auto'><tr>";
             echo "<td>".__('This will only affect plugins already installed')."</td><td colspan='3'>";
             echo Html::submit(_x('button', 'Enable'), [
                'name'      => 'enable',
@@ -2534,7 +2534,7 @@ class Plugin extends CommonDBTM {
             echo "</td></tr></table>";
             return true;
          case 'disable' :
-            echo "<table class='center-h'><tr>";
+            echo "<table class='mx-auto'><tr>";
             echo "<td>".__('This will only affect plugins already enabled')."</td><td colspan='3'>";
             echo Html::submit(_x('button', 'Disable'), [
                'name'      => 'disable',
@@ -2542,7 +2542,7 @@ class Plugin extends CommonDBTM {
             echo "</td></tr></table>";
             return true;
          case 'clean':
-            echo "<table class='center-h'><tr>";
+            echo "<table class='mx-auto'><tr>";
             echo "<td>".__('This will only affect plugins ready to be cleaned')."</td><td colspan='3'>";
             echo Html::submit(_x('button', 'Clean'), [
                'name'      => 'clean',

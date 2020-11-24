@@ -111,4 +111,8 @@ class NotificationAjaxSetting extends NotificationSetting {
       $this->showFormButtons($options);
 
    }
+
+   static function getIcon() {
+      return "far fa-comment-alt";
+   }
 }

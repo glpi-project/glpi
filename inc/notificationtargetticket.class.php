@@ -536,40 +536,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    }
 
 
-   static function isAuthorMailingActivatedForHelpdesk() {
-      global $DB,$CFG_GLPI;
-
-      if ($CFG_GLPI['notifications_mailing']) {
-         $result = $DB->request([
-            'COUNT'        => 'cpt',
-            'FROM'         => 'glpi_notifications',
-            'INNER JOIN'   => [
-               'glpi_notificationtargets' => [
-                  'ON' => [
-                     'glpi_notificationtargets' => 'notifications_id',
-                     'glpi_notifications'       => 'id'
-                  ]
-               ],
-               'glpi_notifications_notificationtemplates' => [
-                  'ON' => [
-                     'glpi_notifications_notificationtemplates'   => 'notifications_id',
-                     'glpi_notifications'                         => 'id'
-                  ]
-               ]
-            ],
-            'WHERE'        => [
-               'glpi_notifications.itemtype'                   => 'Ticket',
-               'glpi_notifications_notificationtemplates.mode' => Notification_NotificationTemplate::MODE_MAIL,
-               'glpi_notificationtargets.type'                 => Notification::USER_TYPE,
-               'glpi_notificationtargets.items_id'             => Notification::AUTHOR
-            ]
-         ])->next();
-         return $result['cpt'] > 0;
-      }
-      return false;
-   }
-
-
    function getTags() {
 
       parent::getTags();
