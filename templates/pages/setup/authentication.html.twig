@@ -1,0 +1,43 @@
+<div class="container">
+   <div class='row justify-content-evenly'>
+      <div class="col-12 col-xxl-4">
+         <div class="card">
+            <div class="card-header">
+               <h3>{{ __('External authentications') }}</h3>
+            </div>
+            <div class="list-group list-group-flush">
+               {% if have_right('config', constant('UPDATE')) %}
+                  <a class='list-group-item list-group-item-action' href="{{ path("front/auth.settings.php") }}">
+                     <i class='fas fa-fw fa-cogs me-1'></i>
+                     <span>{{ __("Setup") }}</span>
+                  </a>
+               {% endif %}
+
+               {% if canUseLdap() %}
+                  <a class='list-group-item list-group-item-action' href="{{ path("front/authldap.php") }}">
+                     <i class='far fa-fw fa-address-book me-1'></i>
+                     <span>{{ "AuthLDAP"|itemtype_name }}</span>
+                  </a>
+               {% else %}
+                  <div class='list-group-item'>
+                     <div class='list-group-item alert alert-important alert-warning m-3'>
+                        <i class='fa fa-exclamation-triangle me-2'></i>
+                        {{ __("The LDAP extension of your PHP parser isn't installed") }}
+                     </div>
+                  </div>
+               {% endif %}
+
+               <a class='list-group-item list-group-item-action' href="{{ path("front/authmail.php") }}">
+                  <i class='far fa-fw fa-envelope me-1'></i>
+                  <span>{{ "AuthMail"|itemtype_name }}</span>
+               </a>
+
+               <a class='list-group-item list-group-item-action' href="{{ path("front/auth.others.php") }}">
+                  <i class='fas fa-fw fa-sign-in-alt me-1'></i>
+                  <span>{{ __('Others authentication methods') }}</span>
+               </a>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>

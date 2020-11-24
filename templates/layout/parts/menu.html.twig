@@ -1,0 +1,101 @@
+{% set is_vertical = user_pref('page_layout') == 'vertical' %}
+{% set is_horizontal = user_pref('page_layout') == 'horizontal' %}
+{% set is_menu_folded = user_pref('fold_menu') == "1" %}
+{% set rand = random() %}
+
+<ul class="navbar-nav" id='menu_{{ rand }}'>
+{% for firstlevel in menu %}
+   {% set firstlevel_active = menu[sector]['title'] == firstlevel['title'] %}
+   {% set firstlevel_shown = (menu[sector]['title'] == firstlevel['title'] and is_vertical and is_menu_folded == false) %}
+   {% if firstlevel['content'] is defined %}
+   <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}"
+       title="{{ firstlevel['title'] }}">
+      <a class="nav-link dropdown-toggle {{ firstlevel_active ? 'active' : '' }} {{ firstlevel_shown ? 'show' : '' }}"
+         data-bs-toggle="dropdown" role="button"
+         aria-expanded="{{ firstlevel_shown ? 'true' : 'false' }}">
+         <i class="fa-fw {{ firstlevel['icon'] ?? "" }}"></i>
+         &nbsp;
+         <span class="menu-label">{{ firstlevel['title'] }}</span>
+      </a>
+      <div class="dropdown-menu {{ firstlevel_active and is_vertical != false ? "" : "animate__animated" }} {{ is_vertical ? 'animate__fadeInLeft' : 'animate__zoomIn' }} {{ firstlevel_shown ? 'show' : '' }}">
+         <h6 class="dropdown-header">{{ firstlevel['title'] }}</h6>
+         <div class="dropdown-menu-columns">
+            <div class="dropdown-menu-column">
+            {% set has_dashboard = firstlevel['default_dashboard'] is defined %}
+            {% if has_dashboard %}
+               <a class="dropdown-item"
+                  href="{{ path(firstlevel['default_dashboard']) }}">
+                  <i class="fas fa-fw fa-border-all"></i>
+                  {{ __("Dashboard") }}
+               </a>
+            {% endif %}
+            {% for sublevel in firstlevel['content'] %}
+               {% if sublevel['page'] is defined %}
+               <a class="dropdown-item {{ menu_active == sublevel['title'] ? "active" : "" }}"
+                  href="{{ path(sublevel['page']) }}"
+                  accesskey="{{ sublevel['shortcut'] ?? "" }}">
+                  <i class="fa-fw {{ sublevel['icon'] ?? "" }}"></i>
+                  {{ shortcut(sublevel['title'], sublevel['shortcut'] ?? "") }}
+               </a>
+               {% endif %}
+
+               {% set count_per_column = 6 %}
+               {% if loop.index % count_per_column == (has_dashboard ? count_per_column - 1 : 0) and not loop.last %}
+                  </div>
+                  <div class="dropdown-menu-column">
+               {% endif %}
+            {% endfor %}
+            </div>
+         </div>
+      </div>
+   </li>
+   {% elseif firstlevel['default'] is defined and (firstlevel['display'] ?? true) != false %}
+      <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}" data-bs-toggle="tooltip"
+       title="{{ firstlevel['title'] }}">
+         <a class="nav-link" href="{{ path(firstlevel['default']) }}">
+            <i class="fa-fw {{ firstlevel['icon'] ?? "" }}"></i>
+            &nbsp;
+            <span class="menu-label">{{ firstlevel['title'] }}</span>
+         </a>
+      <li>
+   {% endif %}
+{% endfor %}
+</ul>
+
+{% if is_vertical %}
+<script type="text/javascript">
+$(function() {
+   // below, some modifications of dropdowns menu behavior
+   document.querySelectorAll('#menu_{{ rand }} > .dropdown').forEach(function(menuDropdown) {
+      // prevent menu closes
+      menuDropdown.addEventListener('hide.bs.dropdown', function (event) {
+         var orig_event = event.clickEvent;
+         if (typeof orig_event != "undefined"
+             && typeof orig_event.target != "undefined") {
+            // prevent body clicking to hide menu
+            if (!document.getElementById('menu_{{ rand }}').contains(orig_event.target)) {
+               event.preventDefault();
+            }
+
+            // prevent menu links to close menu (waiting the page redirection)
+            if (orig_event.target.className.indexOf('dropdown-item') !== false) {
+               for (var item of document.querySelectorAll('#menu_{{ rand }} .dropdown-item')) {
+                  item.classList.remove('active');
+               }
+               orig_event.target.classList.add('active');
+               event.preventDefault();
+            }
+         }
+      });
+
+      // opening a sub menu close others
+      menuDropdown.addEventListener('show.bs.dropdown', function (event) {
+         for (var item of document.querySelectorAll('#menu_{{ rand }} .nav-link')) {
+            item.classList.remove('active');
+         }
+      })
+   });
+
+});
+</script>
+{% endif %}

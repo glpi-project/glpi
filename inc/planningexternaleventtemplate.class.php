@@ -86,27 +86,33 @@ class PlanningExternalEventTemplate extends CommonDropdown {
       ];
    }
 
-
-   function displaySpecificTypeField($ID, $field = []) {
-
+   public function getSpecificTypeField(int $ID, array $field): string {
       switch ($field['type']) {
          case 'planningstate' :
-            Planning::dropdownState("state", $this->fields["state"]);
-            break;
+            return Planning::dropdownState("state", $this->fields["state"], false, [
+               'class'  => 'form-select',
+               'width'  => '100%',
+            ]);
 
          case 'plan' :
+            ob_start();
             Planning::showAddEventClassicForm([
                'duration'       => $this->fields['duration'],
                'itemtype'       => self::getType(),
                'items_id'       => $this->fields['id'],
                '_display_dates' => false,
             ]);
-            break;
+            return ob_get_clean();
 
          case 'rrule' :
-            echo self::showRepetitionForm($this->fields['rrule'] ?? '');
-            break;
+            return self::showRepetitionForm($this->fields['rrule'] ?? '');
       }
+      return '';
+   }
+
+   function displaySpecificTypeField($ID, $field = []) {
+      Toolbox::deprecated();
+      echo $this->getSpecificTypeField($ID, $field);
    }
 
 
@@ -171,5 +177,9 @@ class PlanningExternalEventTemplate extends CommonDropdown {
 
    function rawSearchOptions() {
       return $this->trait_rawSearchOptions();
+   }
+
+   static function getIcon() {
+      return "fas fa-layer-group";
    }
 }

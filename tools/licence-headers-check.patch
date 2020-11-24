@@ -1,0 +1,12 @@
+diff --git a/src/Tools/LicenceHeadersCheckCommand.php b/src/Tools/LicenceHeadersCheckCommand.php
+index 2e41b41..0723955 100644
+--- a/src/Tools/LicenceHeadersCheckCommand.php
++++ b/src/Tools/LicenceHeadersCheckCommand.php
+@@ -461,6 +461,7 @@ class LicenceHeadersCheckCommand extends Command {
+             '\.dependabot',
+             '\.git',
+             '\.github',
++            'css\/lib',
+             'config',
+             'files',
+             'lib',

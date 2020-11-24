@@ -107,4 +107,8 @@ class RuleSoftwareCategory extends Rule {
       return $actions;
    }
 
+   static function getIcon() {
+      return SoftwareCategory::getIcon();
+   }
+
 }

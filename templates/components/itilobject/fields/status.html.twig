@@ -1,0 +1,35 @@
+{% import "components/form/fields_macros.html.twig" as fields %}
+
+{% if canupdate %}
+   {% set status_field %}
+      {{ item.dropdownStatus({
+         'value': item.fields["status"],
+         'showtype': 'allowed',
+         'width': '100%',
+         'class': 'form-select',
+         'display': false
+      }|merge(field_options))|raw }}
+
+      {{ alertValidation(item, 'status') }}
+   {% endset %}
+{% else %}
+   {% set status_field %}
+      <i class="itilstatus closed fas fa-circle"></i>
+      {{ item.getStatus(item.fields['status']) }}
+
+      {% if item.canReopen() %}
+         <a href="{{ item.getLinkURL() }}&amp;_openfollowup=1"
+            class="btn btn-ghost-secondary">
+            <i class="far fa-folder-open"></i>
+            <span>{{ __('Reopen') }}</span>
+         </a>
+      {% endif %}
+   {% endset %}
+{% endif %}
+
+{{ fields.field(
+   'status',
+   status_field,
+   __("Status"),
+   field_options
+) }}

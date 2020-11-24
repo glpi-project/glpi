@@ -66,8 +66,6 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
       $user_index = $_POST['_user_index'];
    }
 
-   echo __('Email followup').'&nbsp;';
-
    $default_notif = true;
    if (isset($_POST['use_notification'][$user_index])) {
       $default_notif = $_POST['use_notification'][$user_index];
@@ -84,7 +82,19 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
       }
    }
 
-   Dropdown::showYesNo($_POST['field'].'[use_notification][]', $default_notif);
+   $switch_name = $_POST['field'].'[use_notification][]';
+   echo "<div class='my-1 d-flex align-items-center'>
+         <label  for='email_fup_check'>
+            <i class='far fa-envelope me-1'></i>
+            ".__('Email followup')."
+         </label>
+         <div class='ms-2'>
+            ".Dropdown::showYesNo($_POST['field'].'[use_notification][]', $default_notif, -1, [
+               'display' => false,
+               'class'   => 'form-select'
+            ])."
+         </div>
+      </div>";
 
    $email_string = '';
    // Only one email
@@ -110,13 +120,12 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
                                               ['value'   => '',
                                                     'display' => false]);
    } else {
-      $email_string = "<input type='text' size='25' name='".$_POST['field']."[alternative_email][]'
+      $email_string = "<input type='mail' class='form-control' name='".$_POST['field']."[alternative_email][]'
                         value='".htmlentities($default_email, ENT_QUOTES, 'utf-8')."'>";
    }
 
-   echo '<br>';
-   printf(__('%1$s: %2$s'), _n('Email', 'Emails', 1), $email_string);
-
+   echo "$email_string
+   </div>";
 }
 
 Ajax::commonDropdownUpdateItem($_POST);

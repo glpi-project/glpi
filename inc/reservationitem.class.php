@@ -655,7 +655,7 @@ class ReservationItem extends CommonDBChild {
       }
       if ($ok) {
          echo "<tr class='tab_bg_1'>";
-         echo "<th><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left.png'></th>";
+         echo "<th><i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i></th>";
          echo "<th colspan='".($showentity?"5":"4")."'>";
          if (isset($_POST['reserve'])) {
             echo Html::hidden('begin', ['value' => $_POST['reserve']["begin"]]);
