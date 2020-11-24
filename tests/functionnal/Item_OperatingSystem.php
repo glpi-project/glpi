@@ -87,7 +87,7 @@ class Item_OperatingSystem extends DbTestCase {
       $this->boolean($ios->getFromDB($ios->getID()))->isTrue();
 
       $this->string($ios->getTabNameForItem($computer))
-         ->isIdenticalTo("Operating systems <sup class='tab_nb'>1</sup>");
+         ->isIdenticalTo("Operating systems <span class='badge'>1</span>");
       $this->integer(
          (int)\Item_OperatingSystem::countForItem($computer)
       )->isIdenticalTo(1);
@@ -123,7 +123,7 @@ class Item_OperatingSystem extends DbTestCase {
       $this->boolean($ios->getFromDB($ios->getID()))->isTrue();
 
       $this->string($ios->getTabNameForItem($computer))
-         ->isIdenticalTo("Operating systems <sup class='tab_nb'>2</sup>");
+         ->isIdenticalTo("Operating systems <span class='badge'>2</span>");
       $this->integer(
          (int)\Item_OperatingSystem::countForItem($computer)
       )->isIdenticalTo(2);

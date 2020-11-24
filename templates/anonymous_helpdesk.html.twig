@@ -1,0 +1,42 @@
+{% extends "layout/page_card_notlogged.html.twig" %}
+
+{% block content_block %}
+	<form action="{{ path("front/tracking.injector.php") }}" method="post" autocomplete="off">
+		<input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+		<input type="hidden" name="_type" value="Helpdesk"/>
+		<input type="hidden" name="_auto_import" value="1"/>
+
+		<h2 class="mb-4">{{ __("Helpdesk reporting form") }}</h2>
+
+		<div class="mb-3">
+			<label class="form-label text-muted">{{ __("Select an urgency level") }}</label>
+			<select name="urgency" class="form-select">
+				<option value="5">{{ _x('urgency', 'Very high') }}</option>
+				<option value="4">{{ _x('urgency', 'High') }}</option>
+				<option value="3" selected="selected">{{ _x('urgency', 'Medium') }}</option>
+				<option value="2">{{ _x('urgency', 'Low') }}</option>
+				<option value="1">{{ _x('urgency', 'Very low') }}</option>
+			</select>
+		</div>
+
+		<span class="text-muted">{{ __("Describe your issue") }}</span>
+		<fieldset class="form-fieldset">
+			<div class="mb-3">
+				<label class="form-label">{{ __("Title") }}</label>
+				<input type='text' name="name" class="form-control">
+			</div>
+
+			<div class="mb-3">
+				<label class="form-label">{{ __("Content") }}</label>
+				<textarea name="content" class="form-control" rows="6"></textarea>
+			</div>
+		</fieldset>
+
+		<div class="form-footer">
+			<button class="btn btn-icon btn-primary w-100" name="update">
+				<i class='fas fa-envelope'></i>
+				<span>{{ __("Send") }}</span>
+			</button>
+		</div>
+	</form>
+{% endblock %}

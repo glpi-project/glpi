@@ -140,17 +140,10 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             echo "\n";
 
          } else {
-            Html::nullHeader("MAINTENANCE MODE", $CFG_GLPI["root_doc"]);
-            echo "<div class='center'>";
-
-            echo "<p class='red'>";
-            echo __('Service is down for maintenance. It will be back shortly.');
-            echo "</p>";
-            if (isset($CFG_GLPI["maintenance_text"]) && !empty($CFG_GLPI["maintenance_text"])) {
-               echo "<p>".$CFG_GLPI["maintenance_text"]."</p>";
-            }
-            echo "</div>";
-            Html::nullFooter();
+            Glpi\Application\View\TemplateRenderer::getInstance()->display('maintenance.html.twig', [
+               'title'            => "MAINTENANCE MODE",
+               'maintenance_text' => $CFG_GLPI["maintenance_text"] ?? "",
+            ]);
          }
          exit();
       }
