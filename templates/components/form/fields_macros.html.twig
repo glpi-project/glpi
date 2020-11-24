@@ -1,0 +1,206 @@
+{% macro largeTitle(label, icon = "", first = false) %}
+   {% set margins = "mt-3" %}
+   {% if first %}
+      {% set margins = "mt-n2" %}
+   {% endif %}
+
+   <div class="card border-0 shadow-none p-0 m-0 {{ margins }}">
+      <div class="card-header mb-3">
+         <h4 class="card-title {{ icon|length ? "ms-4" : "" }}">
+            {% if icon|length %}
+               <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
+                  <i class="fa-2x {{ icon }}"></i>
+               </div>
+            {% endif %}
+            {{ label }}
+         </h4>
+      </div>
+   </div>
+{% endmacro %}
+
+
+{% macro autoNameField(name, item, label, withtemplate, options = {}) %}
+   {% set tpl_value = option.value|length > 0 ? option.value : item.fields[name] %}
+   {% set tplmark = "" %}
+   {% if item.isTemplate() %} {# TODO exluded types #}
+      {% set tplmark = getAutofillMark(item, name, {'withtemplate': withtemplate}, tpl_value) %}
+   {% endif %}
+   {% set value = autoName(item.fields[name], name, (withtemplate == 2), item.getType(), item.fields['entities_id']) %}
+   {% set label = __('%1$s%2$s')|format(label, tplmark) %}
+
+   {{ _self.textField(name, value, label, options) }}
+{% endmacro %}
+
+
+{% macro textField(name, value, label, options = {}) %}
+   {% set options = {'type': 'text'}|merge(options) %}
+
+   {% set field %}
+      <input type="{{ options.type }}" class="form-control" id="%id%"
+             name="{{ name }}" value="{{ value }}"
+             {{ options.readonly ? 'readonly' : "" }}
+             {{ options.disabled ? 'disabled' : "" }}>
+   {% endset %}
+
+   {{ _self.field(name, field, label, options) }}
+{% endmacro %}
+
+{% macro checkboxField(name, value, label, options = {}) %}
+   {% set field %}
+      <input type="hidden"   name="{{ name }}" value="0">
+      <input type="checkbox" name="{{ name }}" value="1" class="form-check-input" id="%id%"
+             {{ value == 1 ? "checked" : "" }}
+             {{ options.readonly ? 'readonly' : "" }}
+             {{ options.disabled ? 'disabled' : "" }}>
+   {% endset %}
+
+   {{ _self.field(name, field, label, options) }}
+{% endmacro %}
+
+
+{% macro numberField(name, value, label, options = {}) %}
+   {% set options = options|merge({'type': "text"}) %}
+   {% set value = formatNumber(value, true) %}
+   {{ _self.textField(name, value, label, options) }}
+{% endmacro %}
+
+
+{% macro readOnlyField(name, value, label, options = {}) %}
+   {% set options = options|merge({'readonly': true}) %}
+   {% if value|length == 0 %}
+      {% set value = "&nbsp;" %}
+   {% endif %}
+
+   {% set value %}
+      <span class="form-control" readonly>{{ value|raw }}</span>
+   {% endset %}
+   {{ _self.field(name, value, label, options) }}
+{% endmacro %}
+
+
+{% macro textareaField(name, value, label, options = {}) %}
+   {% set field %}
+      <textarea class="form-control" id="%id%" name="{{ name }}" rows="3"
+                {{ options.disabled ? 'disabled' : "" }}>
+         {{ value }}
+      </textarea>
+   {% endset %}
+
+   {{ _self.field(name, field, label, options) }}
+{% endmacro %}
+
+
+{% macro dateField(name, value, label, options = {}) %}
+   {% set field %}
+      <div class="input-icon">
+         <input type="date" class="form-control" id="%id%"
+                name="{{ name }}" value="{{ value }}"
+                {{ options.disabled ? 'disabled' : "" }}>
+         <i class="input-icon-addon far fa-calendar"></i>
+      </div>
+   {% endset %}
+
+   {{ _self.field(name, field, label, options) }}
+{% endmacro %}
+
+
+{% macro dropdownNumberField(name, value, label, options = {}) %}
+   {% set options = {'rand': random()}|merge(options) %}
+
+   {% if options.disabled %}
+      {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
+   {% endif %}
+
+   {% set field %}
+      {{ Dropdown__showNumber(name, {
+         'value'  : value,
+         'display': false,
+         'rand'   : rand,
+         'width'  : '100%',
+         'class'  : 'form-select',
+      }|merge(options)) }}
+   {% endset %}
+
+   {{ _self.field(name, field, label, options|merge({'id': "dropdown_" ~ name ~ "_" ~ options.rand})) }}
+{% endmacro %}
+
+
+
+{% macro dropdownField(itemtype, name, value, label, options = {}) %}
+   {% set options = {'rand': random()}|merge(options) %}
+
+   {% if options.disabled %}
+      {% set options = options|merge({'specific_tags': {'disabled': 'disabled'}}) %}
+   {% endif %}
+
+   {% set field %}
+      {{ itemtype|dropdown({
+         'value'  : value,
+         'rand'   : rand,
+         'width'  : '100%',
+         'class'  : 'form-select',
+      }|merge(options)) }}
+   {% endset %}
+
+   {{ _self.field(name, field, label, options|merge({'id': "dropdown_" ~ name ~ "_" ~ options.rand})) }}
+{% endmacro %}
+
+{% macro htmlField(name, value, label, options = {}) %}
+   {% if value|length == 0 %}
+      {% set value = "&nbsp;" %}
+   {% endif %}
+
+   {% set value %}
+      <span class="form-control-plaintext">{{ value|raw }}</span>
+   {% endset %}
+   {{ _self.field(name, value, label, options) }}
+{% endmacro %}
+
+{% macro field(name, field, label, options = {}) %}
+   {% set options = {'rand': random(), 'is_horizontal': true}|merge(options) %}
+
+   {% set id    = options.id|length > 0 ? options.id : (name ~ "_" ~ options.rand) %}
+   {% set field = field|replace({'%id%': id}) %}
+   {% set add_field_html = options.add_field_html|length > 0 ? options.add_field_html : "" %}
+
+   {% if options.is_horizontal %}
+      {{ _self.horizontalField(label, field, id, add_field_html) }}
+   {% else %}
+      {{ _self.verticalField(label, field, id, add_field_html) }}
+   {% endif %}
+{% endmacro %}
+
+
+{% macro nullField(options = {}) %}
+   {% set options = {'is_horizontal': true}|merge(options) %}
+
+   {% if options.is_horizontal %}
+      {{ _self.horizontalField(label, field, id, add_field_html) }}
+   {% else %}
+      {{ _self.verticalField(label, field, id, add_field_html) }}
+   {% endif %}
+{% endmacro %}
+
+
+{% macro horizontalField(label, field, id, add_field_html) %}
+   <div class="row mb-3 col-12 col-sm-6">
+      <label class="col-xxl-5 col-form-label text-xxl-end" for="{{ id }}">
+         {{ label }}
+      </label>
+      <div class="col-xxl-7">
+         {{ field|raw }}
+         {{ add_field_html|raw }}
+      </div>
+   </div>
+{% endmacro %}
+
+
+{% macro verticalField(label, field, id, add_field_html = "") %}
+   <div class="mb-3 col-12 col-sm-6">
+      <label class="form-label" for="{{ id }}">
+         {{ label }}
+      </label>
+      {{ field|raw }}
+      {{ add_field_html|raw }}
+   </div>
+{% endmacro %}

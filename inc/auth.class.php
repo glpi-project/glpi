@@ -1701,25 +1701,26 @@ class Auth {
    /**
     * Display the authentication source dropdown for login form
     */
-   static function dropdownLogin() {
+   static function dropdownLogin(bool $display = true) {
+      $out = "";
       $elements = self::getLoginAuthMethods();
       $default = $elements['_default'];
       unset($elements['_default']);
       // show dropdown of login src only when multiple src
-      if (count($elements) > 1) {
-         echo '<p class="login_input" id="login_input_src">';
-         Dropdown::showFromArray('auth', $elements, [
-            'rand'      => '1',
-            'value'     => $default,
-            'width'     => '100%'
-         ]);
-         echo '</p>';
-      } else if (count($elements) == 1) {
-         // when one src, don't display it, pass it with hidden input
-         echo Html::hidden('auth', [
-            'value' => key($elements)
-         ]);
+      $out.= Dropdown::showFromArray('auth', $elements, [
+         'display'   => false,
+         'class'     => 'form-select',
+         'rand'      => '1',
+         'value'     => $default,
+         'width'     => '100%'
+      ]);
+
+      if ($display) {
+         echo $out;
+         return "";
       }
+
+      return $out;
    }
 
 

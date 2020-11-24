@@ -48,6 +48,7 @@ function update95xto1000() {
 
    $update_scripts = [
       'cameras',
+      'configs',
       'devicebattery',
       'documents',
       'domains',

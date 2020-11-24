@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\TemplateRenderer;
+
 //!  ConsumableItem Class
 /**
  * This class is used to manage the various types of consumables.
@@ -125,89 +127,11 @@ class ConsumableItem extends CommonDBTM {
     * @return true
     */
    function showForm($ID, $options = []) {
-
       $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Name')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "name");
-      echo "</td>";
-      echo "<td>"._n('Type', 'Types', 1)."</td>";
-      echo "<td>";
-      ConsumableItemType::dropdown(['value' => $this->fields["consumableitemtypes_id"]]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Reference')."</td>\n";
-      echo "<td>";
-      Html::autocompletionTextField($this, "ref");
-      echo "</td>";
-      echo "<td>".Manufacturer::getTypeName(1)."</td>";
-      echo "<td>";
-      Manufacturer::dropdown(['value' => $this->fields["manufacturers_id"]]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Technician in charge of the hardware')."</td>";
-      echo "<td>";
-      User::dropdown(['name'   => 'users_id_tech',
-                           'value'  => $this->fields["users_id_tech"],
-                           'right'  => 'own_ticket',
-                           'entity' => $this->fields["entities_id"]]);
-      echo "</td>";
-      echo "<td rowspan='5' class='middle'>".__('Comments')."</td>";
-      echo "<td class='middle' rowspan='5'>
-             <textarea cols='45' rows='9' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Group in charge of the hardware')."</td>";
-      echo "<td>";
-      Group::dropdown([
-         'name'      => 'groups_id_tech',
-         'value'     => $this->fields['groups_id_tech'],
-         'entity'    => $this->fields['entities_id'],
-         'condition' => ['is_assign' => 1]
+      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
+         'item'   => $this,
+         'params' => $options,
       ]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Stock location')."</td>";
-      echo "<td>";
-      Location::dropdown(['value'  => $this->fields["locations_id"],
-                               'entity' => $this->fields["entities_id"]]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Alert threshold')."</td>";
-      echo "<td>";
-      Dropdown::showNumber('alarm_threshold', ['value' => $this->fields["alarm_threshold"],
-                                                    'min'   => 0,
-                                                    'max'   => 100,
-                                                    'step'  => 1,
-                                                    'toadd' => ['-1' => __('Never')]]);
-
-      Alert::displayLastAlert('ConsumableItem', $ID);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      $tplmark = $this->getAutofillMark('otherserial', $options);
-      echo "<td>".sprintf(__('%1$s%2$s'), __('Inventory number'), $tplmark)."</td>";
-      echo "<td>";
-      $objectName = autoName(
-         $this->fields["otherserial"],
-         "otherserial",
-         (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
-         $this->getType(),
-         $this->fields["entities_id"]
-      );
-      Html::autocompletionTextField($this, 'otherserial', ['value' => $objectName]);
-      echo "</td>";
-      echo "</tr>";
-
-      $this->showFormButtons($options);
 
       return true;
    }

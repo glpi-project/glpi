@@ -231,8 +231,8 @@ class Appliance_Item_Relation extends CommonDBRelation {
       bool $canedit = true
    ) {
       if ($canedit) {
-         $form_url = Appliance_Item_Relation::getFormURL();
-         echo "<div id='add_relation_dialog' title='"._x('button', "Add an item")."' style='display:none;'>
+         $form_url  = Appliance_Item_Relation::getFormURL();
+         $modal_html = json_encode("
          <form action='{$form_url}' method='POST'>
             <p>".Dropdown::showSelectItemFromItemtypes([
                'items_id_name'   => 'items_id',
@@ -245,8 +245,7 @@ class Appliance_Item_Relation extends CommonDBRelation {
             ])."</p>
             <input type='hidden' name='appliances_items_id'>
             ".Html::submit(_x('button', "Add"), ['name' => 'add'])."
-         ".Html::closeForm(false)."
-         </div>";
+         ".Html::closeForm(false));
 
          $crsf_token = Session::getNewCSRFToken();
 
@@ -255,15 +254,14 @@ class Appliance_Item_Relation extends CommonDBRelation {
             $(document).on('click', '.add_relation', function() {
                var appliances_items_id = $(this).data('appliances-items-id');
 
-               $('#add_relation_dialog input[name=appliances_items_id]').val(appliances_items_id);
-
-               $('#add_relation_dialog').dialog({
-                  modal: true,
-                  overlay: {
-                     opacity: 0.7,
-                     background: "black"
+               glpi_html_dialog({
+                  title: _x('button', "Add an item"),
+                  body: {$modal_html},
+                  id: 'add_relation_dialog',
+                  show: function() {
+                     $('#add_relation_dialog input[name=appliances_items_id]').val(appliances_items_id);
                   },
-               });
+               })
             });
 
             $(document).on('click', '.delete_relation', function() {
