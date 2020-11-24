@@ -1,0 +1,51 @@
+<ol class="breadcrumb breadcrumb-alternate pe-3" aria-label="breadcrumbs">
+   <li class='breadcrumb-item'>
+      <a href='{{ path('/index.php') }}' title="{{ __('Home') }}">
+         <i class="fas fa-home"></i>
+         &nbsp;
+         {{ __('Home') }}
+      </a>
+   </li>
+
+   {% if menu[sector] is defined %}
+   <li class="breadcrumb-item">
+      <a href="{{ path((menu[sector]['default'] ?? "/front/central.php")) }}" title="{{ menu[sector]['title'] }}">
+         <i class="{{ menu[sector]['icon'] ?? "" }}"></i>
+         {{ menu[sector]['title'] }}
+      </a>
+   </li>
+   {% endif %}
+
+   {% set with_option = false %}
+   {% if menu[sector]['content'][item] is defined %}
+      {% if menu[sector]['content'][item]['page'] is defined %}
+      {% set with_option = option is not empty and menu[sector]['content'][item]['options'][option]['title'] is defined and menu[sector]['content'][item]['options'][option]['page'] is defined %}
+      <li class='breadcrumb-item'>
+         <a href="{{ path(menu[sector]['content'][item]['page']) }}"
+            class="{{ with_option ? "" : "here" }}"
+            title="{{ menu[sector]['content'][item]['title'] }}" >
+            <i class="{{ menu[sector]['content'][item]['icon'] ?? "" }}"></i>
+            &nbsp;
+            {{ menu[sector]['content'][item]['title'] }}
+         </a>
+      </li>
+      {% endif %}
+
+      {% if with_option %}
+      <li class="breadcrumb-item">
+         <a href="{{ path(menu[sector]['content'][item]['options'][option]['page']) }}"
+            class="here"
+            title="{{ menu[sector]['content'][item]['options'][option]['title'] }}" >
+            <i class="{{ menu[sector]['content'][item]['options'][option]['icon'] ?? "" }}"></i>
+            &nbsp;
+            {{ menu[sector]['content'][item]['options'][option]['title']|u.truncate(17, '...') }}
+         </a>
+      </li>
+      {% endif %}
+
+   {% endif %}
+</ol>
+
+{% if menu[sector]['content'][item] is defined %}
+    {{ include('layout/parts/context_links.html.twig') }}
+{% endif %}

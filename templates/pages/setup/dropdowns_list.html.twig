@@ -1,0 +1,102 @@
+{% set grid_items = [] %}
+
+{% for label, dropdown in optgroup %}
+   {% set card_id = "dropdowns_list_" ~ random() %}
+   {% set card_html %}
+      <div class="card">
+         <div class="accordion accordion-flush">
+            <div class="accordion-item">
+               <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button"
+                     data-bs-toggle="collapse" data-bs-target="#{{ card_id }}" aria-expanded="true" aria-controls="collapseOne">
+                     {{ label }}
+                  </button>
+               </h2>
+               <div id="{{ card_id }}" class="accordion-collapse collapse" style='transition: none'>
+                  <div class="list-group list-group-flush list-group-hoverable">
+                     {% for itemtype, dropdown_label in dropdown %}
+                        {% set is_entity_assign = itemtype|isEntityAssign() %}
+                        <a class="list-group-item list-group-item-action {{ is_entity_assign ? "" : "dropdown-no-entity" }}"
+                           href="{{ itemtype|getSearchUrl() }}">
+                           <div class="row">
+                              <div class="col-auto">
+                                 <i class="fa-fw {{ itemtype|getIcon() }}"></i>
+                              </div>
+                              <div class="col text-truncate">
+                                 {{ dropdown_label }}
+                              </div>
+                              <div class="col-1 text-muted">
+                                 {% if is_entity_assign %}
+                                    <i class="{{ "Entity"|getIcon() }} fa-sm"
+                                       data-bs-toggle="tooltip"
+                                       title="{{ __("Dropdown with entity management") }}"></i>
+                                 {% endif %}
+                              </div>
+                           </div>
+                        </a>
+                     {% endfor %}
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   {% endset %}
+
+   {% set grid_items = grid_items|merge([
+      card_html
+   ]) %}
+{% endfor %}
+
+
+<div class="container-fluid text-start mb-4 dropdowns-list">
+   <div class="input-icon mb-3">
+      <input class="form-control" placeholder="filter dropdowns" id="filter-dropdown">
+      <span class="input-icon-addon">
+         <i class="fas fa-search"></i>
+      </span>
+   </div>
+
+   {% include "components/masonry_grid.html.twig" with {
+      'grid_items': grid_items,
+      'grid_item_class': 'col-lg-6 col-xl-4 col-xxl-3',
+   } only %}
+</div>
+
+<script>
+$(function () {
+   var timerid;
+   $('#filter-dropdown').on('input',function() {
+      var input_value = $(this).val();
+
+      clearTimeout(timerid);
+
+      // reset state
+      $('.dropdowns-list .collapse').removeClass('show');
+      $('.dropdowns-list .masonry_grid').trigger("layout:refresh");
+      $('.dropdowns-list .list-group-item').show();
+      $('.dropdowns-list .accordion-collapse').removeClass('show')
+      $('.dropdowns-list .accordion-button').addClass('collapsed')
+
+      if (input_value.length > 0) {
+         timerid = setTimeout(function() {
+            console.log(input_value);
+
+            $('.dropdowns-list .list-group-item:not(:icontains('+input_value+'))').hide();
+            $('.dropdowns-list .list-group-item:icontains('+input_value+')')
+               .closest('.accordion-collapse').addClass('show')
+               .siblings('.accordion-header')
+                  .children('.accordion-button').removeClass('collapsed');
+
+            $('.dropdowns-list .masonry_grid').trigger("layout:refresh");
+
+         }, 500);
+      }
+   })
+
+   $('.dropdowns-list .collapse').on('shown.bs.collapse hidden.bs.collapse', function() {
+      console.log('shown.bs.collapse', $(this));
+
+      $('.dropdowns-list .masonry_grid').trigger("layout:refresh");
+   })
+});
+</script>

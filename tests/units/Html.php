@@ -658,8 +658,8 @@ class Html extends \GLPITestCase {
       // test modal
       $modal = \Html::FuzzySearch('getHtml');
       $this->string($modal)
-         ->contains("id='fuzzysearch'")
-         ->contains("class='results'");
+         ->contains('id="fuzzysearch"')
+         ->matches('/class="results[^"]*"/');
 
       // test retrieving entries
       $default = json_decode(\Html::FuzzySearch(), true);
@@ -706,8 +706,8 @@ class Html extends \GLPITestCase {
             \Html::displayMessageAfterRedirect();
          }
       )
-         ->contains('<div id="message_after_redirect_1" title="Error">Something went really wrong :(</div>')
-         ->contains('<div id="message_after_redirect_2" title="Warning">Oooops, I did it again!</div>');
+         ->matches('/class="[^"]*bg-danger[^"]*".*Error.*Something went really wrong :\(/s')
+         ->matches('/class="[^"]*bg-warning[^"]*".*Warning.*Oooops, I did it again!/s');
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
    }
@@ -830,7 +830,7 @@ class Html extends \GLPITestCase {
 
    public function testInput() {
       $name = 'in_put';
-      $expected = '<input type="text" name="in_put"  />';
+      $expected = '<input type="text" name="in_put" class="form-control" />';
       $this->string(\Html::input($name))->isIdenticalTo($expected);
 
       $options = [
@@ -846,7 +846,7 @@ class Html extends \GLPITestCase {
          'min'       => '10',
          'value'     => 'myval',
       ];
-      $expected = '<input type="number" name="in_put" min="10" value="myval" />';
+      $expected = '<input type="number" name="in_put" min="10" value="myval" class="form-control" />';
       $this->string(\Html::input($name, $options))->isIdenticalTo($expected);
 
    }

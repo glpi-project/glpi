@@ -199,7 +199,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
       Html::printAjaxPager($type_name, $start, $number);
 
       // Output events
-      echo "<div class='center'>";
+      echo "<div class='center table-responsive'>";
 
       if ($canedit) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);

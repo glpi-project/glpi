@@ -163,7 +163,10 @@ class Problem_Ticket extends CommonDBRelation{
             if (isset($input['problems_id']) && $problem->getFromDB($input['problems_id'])) {
                $problem->showMassiveSolutionForm($problem);
                echo "<br>";
-               echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+               echo Html::submit(_x('button', 'Post'), [
+                  'name'  => 'massiveaction',
+                  'class' => 'btn btn-primary',
+               ]);
                return true;
             }
             return false;

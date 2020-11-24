@@ -60,7 +60,7 @@ class Notification_NotificationTemplate extends DbTestCase {
 
       $this->login();
       $name = $n_nt->getTabNameForItem($notif);
-      $this->string($name)->isIdenticalTo('Templates <sup class=\'tab_nb\'>1</sup>');
+      $this->string($name)->isIdenticalTo('Templates <span class=\'badge\'>1</span>');
 
       $_SESSION['glpishow_count_on_tabs'] = 0;
       $name = $n_nt->getTabNameForItem($notif);
@@ -73,7 +73,7 @@ class Notification_NotificationTemplate extends DbTestCase {
 
       $_SESSION['glpishow_count_on_tabs'] = 1;
       $name = $n_nt->getTabNameForItem($notif);
-      $this->string($name)->isIdenticalTo('Templates <sup class=\'tab_nb\'>2</sup>');
+      $this->string($name)->isIdenticalTo('Templates <span class=\'badge\'>2</span>');
    }
 
    public function testShowForNotification() {
@@ -183,7 +183,7 @@ class Notification_NotificationTemplate extends DbTestCase {
       $select = $n_nt->getSpecificValueToSelect('mode', 'a_name', \Notification_NotificationTemplate::MODE_AJAX);
       //FIXME: why @selected?
       $this->string($select)->matches(
-         "/<select name='a_name' id='dropdown_a_name\d+' size='1'><option value='mailing'>Email<\/option><option value='ajax' selected>Browser<\/option><\/select>/"
+         "/<select name='a_name' id='dropdown_a_name\d+'[^>]*><option value='mailing'>Email<\/option><option value='ajax' selected>Browser<\/option><\/select>/"
       );
    }
 

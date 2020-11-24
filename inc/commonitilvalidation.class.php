@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\UserMention;
 use Glpi\Toolbox\RichText;
 
@@ -477,9 +478,11 @@ abstract class CommonITILValidation  extends CommonDBChild {
    **/
    static function getAllStatusArray($withmetaforsearch = false, $global = false) {
 
-      $tab = [self::WAITING  => __('Waiting for approval'),
-                   self::REFUSED  => _x('validation', 'Refused'),
-                   self::ACCEPTED => __('Granted')];
+      $tab = [
+         self::WAITING  => __('Waiting for approval'),
+         self::REFUSED  => _x('validation', 'Refused'),
+         self::ACCEPTED => __('Granted')
+      ];
       if ($global) {
          $tab[self::NONE] = __('Not subject to approval');
 
@@ -511,10 +514,15 @@ abstract class CommonITILValidation  extends CommonDBChild {
    static function dropdownStatus($name, $options = []) {
 
       $p = [
-         'value'    => self::WAITING,
-         'global'   => false,
-         'all'      => false,
-         'display'  => true,
+         'value'             => self::WAITING,
+         'global'            => false,
+         'all'               => false,
+         'display'           => true,
+         'disabled'          => false,
+         'templateResult'    => "templateValidation",
+         'templateSelection' => "templateValidation",
+         'width'             => '100%',
+         'required'          => false,
       ];
 
       if (is_array($options) && count($options)) {
@@ -899,7 +907,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
             echo "<td><div class='rich_text_container'>".$comment_submission."</div></td>";
             echo "<td>".Html::convDateTime($row["validation_date"])."</td>";
             echo "<td>".getUserName($row["users_id_validate"])."</td>";
-            $comment_validation = RichText::getSafeHtml($this->fields['comment_validation'], true);
+            $comment_validation = RichText::getSafeHtml($this->fields['comment_validation'] ?? '', true);
             $comment_validation = $this->refreshUserMentionsHtmlToDisplay($comment_validation);
             $comment_validation = Html::replaceImagesByGallery($comment_validation);
             echo "<td><div class='rich_text_container'>".$comment_validation."</div></td>";
@@ -945,227 +953,10 @@ abstract class CommonITILValidation  extends CommonDBChild {
          $this->check(-1, CREATE, $options);
       }
 
-      // No update validation is answer set
-      $validation_admin   = (($this->fields["users_id"] == Session::getLoginUserID())
-                             && static::canCreate()
-                             && ($this->fields['status'] == self::WAITING));
-
-      $validator          = ($this->fields["users_id_validate"] == Session::getLoginUserID());
-
-      $options['colspan'] = 1;
-
-      $this->showFormHeader($options);
-
-      if ($validation_admin) {
-         if ($this->getType() == 'ChangeValidation') {
-            $validation_right = 'validate';
-         } else if ($this->getType() == 'TicketValidation') {
-            $ticket = new Ticket();
-            $ticket->getFromDB($this->fields[static::$items_id]);
-
-            $validation_right = 'validate_incident';
-            if ($ticket->fields['type'] == Ticket::DEMAND_TYPE) {
-               $validation_right = 'validate_request';
-            }
-         }
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Approval requester')."</td>";
-         echo "<td>";
-         echo "<input type='hidden' name='".static::$items_id."' value='".
-                $this->fields[static::$items_id]."'>";
-         echo getUserName($this->fields["users_id"]);
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_1'><td>".__('Approver')."</td>";
-         echo "<td>";
-
-         if ($ID > 0) {
-            echo getUserName($this->fields["users_id_validate"]);
-            echo "<input type='hidden' name='users_id_validate' value='".
-                   $this->fields['users_id_validate']."'>";
-         } else {
-            $params             = ['id'                 => $this->fields["id"],
-                                        'entity'             => $this->getEntityID(),
-                                        'right'              => $validation_right];
-            if (!is_null($this->fields['users_id_validate'])) {
-               $params['users_id_validate'] = $this->fields['users_id_validate'];
-            }
-            self::dropdownValidator($params);
-         }
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Comments')."</td>";
-         echo "<td>";
-         $rand       = mt_rand();
-         $content_id = "content$rand";
-         $cols    = 60;
-         $rows    = 3;
-         Html::textarea(['name'              => 'comment_submission',
-                        'value'             => RichText::getSafeHtml($this->fields['comment_submission'], true, true),
-                        'rand'              => $rand,
-                        'editor_id'         => $content_id,
-                        'enable_fileupload' => false,
-                        'enable_richtext'   => true,
-                        'cols'              => $cols,
-                        'rows'              => $rows]);
-         Html::activateUserMentions($content_id);
-         echo "</td>";
-
-      } else {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Approval requester')."</td>";
-         echo "<td>".getUserName($this->fields["users_id"])."</td></tr>";
-
-         echo "<tr class='tab_bg_1'><td>".__('Approver')."</td>";
-         echo "<td>".getUserName($this->fields["users_id_validate"])."</td></tr>";
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Comments')."</td>";
-         echo "<td>";
-         $comment_submission = RichText::getSafeHtml($this->fields['comment_submission'], true);
-         $comment_submission = $this->refreshUserMentionsHtmlToDisplay($comment_submission);
-         $comment_submission = Html::replaceImagesByGallery($comment_submission);
-         echo '<div class="rich_text_container">';
-         echo $comment_submission;
-         echo '</div>';
-         echo "</td></tr>";
-      }
-
-      if ($ID > 0) {
-         echo "<tr class='tab_bg_2'><td colspan='2'>&nbsp;</td></tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Status of the approval request')."</td>";
-         $bgcolor = self::getStatusColor($this->fields['status']);
-         echo "<td><span style='background-color:".$bgcolor.";'>".
-               self::getStatus($this->fields["status"])."</span></td></tr>";
-
-         if ($validator) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Status of my validation')."</td>";
-            echo "<td>";
-            self::dropdownStatus("status", ['value' => $this->fields["status"]]);
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Approval comments')."<br>(".__('Optional when approved').")</td>";
-            echo "<td>";
-
-            $rand       = mt_rand();
-            $content_id = "content$rand";
-            $cols    = 100;
-            $rows    = 10;
-
-            Html::textarea(['name'             => 'comment_validation',
-                           'value'             => RichText::getSafeHtml($this->fields['comment_validation'], true, true),
-                           'rand'              => $rand,
-                           'editor_id'         => $content_id,
-                           'enable_fileupload' => true,
-                           'enable_richtext'   => true,
-                           'cols'              => $cols,
-                           'rows'              => $rows]);
-            Html::activateUserMentions($content_id);
-
-            echo "</td>";
-            echo"</tr>";
-
-            //show docs already upload
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Documents')."</td>";
-            echo "<td>";
-
-            global $CFG_GLPI;
-            $pics_url          = $CFG_GLPI['root_doc']."/pics/timeline";
-            $doc_item = new Document_Item();
-            $docs = $doc_item->find(["itemtype"          => $this->getType(),
-                                    "items_id"           => $this->getID(),
-                                    "timeline_position"  => ['>', CommonITILObject::NO_TIMELINE]]);
-            $itilForeignKey = $this->getItilObjectItemType()::getForeignKeyField();
-            foreach ($docs as $docs_values) {
-               $doc = new Document();
-               $doc->getFromDB($docs_values['documents_id']);
-               if ($doc->can($doc->getID(), UPDATE) || true) {
-                  if ($doc->fields['filename']) {
-                     $filename = $doc->fields['filename'];
-                     $ext      = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-                     echo "<img src='";
-                     if (empty($filename)) {
-                        $filename = $doc->fields['name'];
-                     }
-                     if (file_exists(GLPI_ROOT."/pics/icones/$ext-dist.png")) {
-                        echo $CFG_GLPI['root_doc']."/pics/icones/$ext-dist.png";
-                     } else {
-                        echo "$pics_url/file.png";
-                     }
-                     echo "'/>&nbsp;";
-
-                     $docsrc = $CFG_GLPI['root_doc']."/front/document.send.php?docid=".$doc->fields['id']
-                            ."&$itilForeignKey=".$this->getID();
-                     echo Html::link($filename, $docsrc, ['target' => '_blank']);
-                     $docpath = GLPI_DOC_DIR . '/' . $doc->fields['filepath'];
-                     if (Document::isImage($docpath)) {
-                        $imgsize = getimagesize($docpath);
-                        echo Html::imageGallery([
-                           [
-                              'src'             => $docsrc,
-                              'thumbnail_src'   => $docsrc . '&context=timeline',
-                              'w'               => $imgsize[0],
-                              'h'               => $imgsize[1]
-                           ]
-                        ], [
-                           'gallery_item_class' => 'timeline_img_preview'
-                        ]);
-                     }
-                  }
-                  if ($doc->fields['link']) {
-                     echo "<a href='{$doc->fields['link']}' target='_blank'><i class='fa fa-external-link'></i>{$doc->fields['name']}</a>";
-                  }
-                  if (!empty($doc->fields['mime'])) {
-                     echo "&nbsp;";
-                     echo Html::showToolTip(
-                        sprintf(__('File size: %s'), Toolbox::getSize(filesize(GLPI_VAR_DIR . "/" . $doc->fields['filepath']))) . '<br>'
-                        . sprintf(__('MIME type: %s'), $doc->fields['mime'])
-                     );
-                  }
-                  echo "<span class='buttons'>";
-                  echo "<a href='".Document::getFormURLWithID($doc->fields['id'])."' class='edit_document fa fa-eye pointer' title='".
-                         _sx("button", "Show")."'>";
-                  echo "<span class='sr-only'>" . _sx('button', 'Show') . "</span></a>";
-                  if ($doc->can($doc->fields['id'], UPDATE)) {
-                     echo "<a href='".$this->getItilObjectItemType()::getFormURL().
-                        "?delete_document&documents_id=".$doc->fields['id'].
-                        "&$itilForeignKey=".$this->fields[$itilForeignKey].
-                        "' class='delete_document fas fa-trash-alt pointer' title='".
-                        _sx("button", "Delete permanently")."'>";
-                     echo "<span class='sr-only'>" . _sx('button', 'Delete permanently')  . "</span></a>";
-                  }
-                  echo "<br>";
-                  echo "</span>";
-               }
-            }
-            echo "</td>";
-            echo"</tr>";
-
-         } else {
-            $status = [self::REFUSED,self::ACCEPTED];
-            if (in_array($this->fields["status"], $status)) {
-               echo "<tr class='tab_bg_1'>";
-               echo "<td>".__('Approval comments')."</td>";
-               echo "<td>";
-               echo '<div class="rich_text_container">';
-               $comment_validation = RichText::getSafeHtml($this->fields['comment_validation'], true);
-               $comment_validation = $this->refreshUserMentionsHtmlToDisplay($comment_validation);
-               $comment_validation = Html::replaceImagesByGallery($comment_validation);
-               echo $comment_validation;
-               echo '</div>';
-               echo "</td>";
-            }
-         }
-      }
-
-      $this->showFormButtons($options);
+      TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_validation.html.twig', [
+         'item'      => $options['parent'],
+         'subitem'   => $this
+      ]);
 
       return true;
    }
@@ -1473,14 +1264,16 @@ abstract class CommonITILValidation  extends CommonDBChild {
         'groups_id'         => 0,
         'users_id_validate' => [],
         'applyto'           => 'show_validator_field',
+        'display'           => true,
+        'disabled'          => false,
+        'width'             => '100%',
+        'required'          => false,
+        'rand'              => mt_rand(),
       ];
 
       foreach ($options as $key => $val) {
          $params[$key] = $val;
       }
-
-      $types = ['user'  => User::getTypeName(1),
-                     'group' => Group::getTypeName(1)];
 
       $type  = '';
       if (isset($params['users_id_validate']['groups_id'])) {
@@ -1489,21 +1282,37 @@ abstract class CommonITILValidation  extends CommonDBChild {
          $type = 'user';
       }
 
-      $rand = Dropdown::showFromArray("validatortype", $types,
-                                      ['value'               => $type,
-                                            'display_emptychoice' => true]);
+      $out = Dropdown::showFromArray("validatortype", [
+         'user'  => User::getTypeName(1),
+         'group' => Group::getTypeName(1)
+      ], [
+         'value'               => $type,
+         'display_emptychoice' => true,
+         'display'             => $params['display'],
+         'disabled'            => $params['disabled'],
+         'rand'                => $params['rand'],
+         'width'               => $params['width'],
+         'required'            => $params['required'],
+         ]);
 
       if ($type) {
          $params['validatortype'] = $type;
-         Ajax::updateItem($params['applyto'], $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php",
-                          $params);
+         $out.= Ajax::updateItem($params['applyto'], $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php",
+                                 $params, "", $params['display']);
       }
       $params['validatortype'] = '__VALUE__';
-      Ajax::updateItemOnSelectEvent("dropdown_validatortype$rand", $params['applyto'],
-                                    $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php", $params);
+      $out.= Ajax::updateItemOnSelectEvent("dropdown_validatortype{$params['rand']}", $params['applyto'],
+                                           $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php", $params, $params['display']);
 
       if (!isset($options['applyto'])) {
-         echo "<br><span id='".$params['applyto']."'>&nbsp;</span>\n";
+         $out.= "<br><span id='".$params['applyto']."'>&nbsp;</span>\n";
+      }
+
+      if ($params['display']) {
+         echo $out;
+         return $params['rand'];
+      } else {
+         return $out;
       }
    }
 
@@ -1706,7 +1515,22 @@ abstract class CommonITILValidation  extends CommonDBChild {
             if (!in_array($item->fields['status'], $status)
                && isset($item->fields['global_validation'])
                && $item->fields['global_validation'] == self::WAITING) {
-               Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
+               $title   = __s("This item is waiting for approval.");
+               $message = __s("Do you really want to resolve or close it?");;
+               $html = <<<HTML
+                  <div class="alert alert-warning" role="alert">
+                     <div class="d-flex">
+                        <div class="me-2">
+                           <i class="fas fa-2x fa-exclamation-triangle"></i>
+                        </div>
+                        <div>
+                           <h4 class="alert-title">$title</h4>
+                           <div class="text-muted">$message</div>
+                        </div>
+                     </div>
+                  </div>
+               HTML;
+               echo $html;
             }
             break;
       }
