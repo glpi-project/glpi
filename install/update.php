@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 
 if (!defined('GLPI_ROOT')) {
@@ -46,12 +47,7 @@ $GLPI = new GLPI();
 $GLPI->initLogger();
 $GLPI->initErrorHandler();
 
-$cache_manager = new CacheManager();
-$GLPI_CACHE = $cache_manager->getCoreCacheInstance();
-$GLPI_CACHE->clear(); // Force cache cleaning to prevent usage of outdated cache data
-
-$translation_cache = Config::getTranslationCacheInstance();
-$translation_cache->clear(); // Force cache cleaning to prevent usage of outdated cache data
+$GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
 
 Config::detectRootDoc();
 
@@ -104,37 +100,6 @@ function displayMigrationMessage ($id, $msg = "") {
 }
 
 
-/**
- * Add a dropdown if not exists (used by pre 0.78 update script)
- * Only use for simple dropdown (no entity and not tree)
- *
- * @param $table string table name
- * @param $name string name of the imported dropdown
- *
- * @return integer (ID of the existing/new dropdown)
-**/
-function update_importDropdown ($table, $name) {
-   global $DB;
-
-   $query = "SELECT `ID`
-             FROM `".$table."`
-             WHERE `name` = '".addslashes($name)."'";
-
-   if ($result = $DB->query($query)) {
-      if ($DB->numrows($result) > 0) {
-         return $DB->result($result, 0, "ID");
-      }
-   }
-   $query = "INSERT INTO `".$table."`
-             (`name`)
-             VALUES ('".addslashes($name)."')";
-   if ($result = $DB->query($query)) {
-      return $DB->insertId();
-   }
-   return 0;
-}
-
-
 //test la connection a la base de donn???.
 function test_connect() {
    global $DB;
@@ -146,59 +111,14 @@ function test_connect() {
 }
 
 
-//Change table2 from varchar to ID+varchar and update table1.chps with depends
-function changeVarcharToID($table1, $table2, $chps) {
-   global $DB;
-
-   if (!$DB->fieldExists($table2, "ID", false)) {
-      $query = " ALTER TABLE `$table2`
-                 ADD `ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST";
-      $DB->queryOrDie($query);
-   }
-
-   $query = "ALTER TABLE `$table1`
-             ADD `temp` INT";
-   $DB->queryOrDie($query);
-
-   $iterator = $DB->request([
-      'SELECT' => [
-         "$table1.ID AS row1",
-         "$table2.ID AS row2",
-      ],
-      'FROM'   => [$table1, $table2],
-      'WHERE'  => [
-         "$table2.name" => new \QueryExpression(DBmysql::quoteName("$table1.$chps"))
-      ]
-   ]);
-
-   while ($line = $iterator->next()) {
-      $DB->updateOrDie(
-         $table1,
-         ['temp' => $line['row2']],
-         ['ID' => $line['row1']]
-      );
-   }
-   $DB->freeResult($result);
-
-   $query = "ALTER TABLE `$table1`
-             DROP `$chps`";
-   $DB->queryOrDie($query);
-
-   $query = "ALTER TABLE `$table1`
-             CHANGE `temp` `$chps` INT";
-   $DB->queryOrDie($query);
-}
-
-
 
 //update database
 function doUpdateDb() {
-   global $GLPI_CACHE, $migration, $update;
+   global $migration, $update;
 
    $currents            = $update->getCurrents();
    $current_version     = $currents['version'];
    $current_db_version  = $currents['dbversion'];
-   $glpilanguage        = $currents['language'];
 
    $migration = new Migration(GLPI_SCHEMA_VERSION);
    $update->setMigration($migration);
@@ -210,40 +130,9 @@ function doUpdateDb() {
    }
 
    $update->doUpdates($current_version);
-   $GLPI_CACHE->clear();
-}
 
-
-function updateTreeDropdown() {
-   global $DB;
-
-   // Update Tree dropdown
-   if ($DB->tableExists("glpi_dropdown_locations")
-       && !$DB->fieldExists("glpi_dropdown_locations", "completename", false)) {
-      $query = "ALTER TABLE `glpi_dropdown_locations`
-                ADD `completename` TEXT NOT NULL ";
-      $DB->queryOrDie($query, "0.6 add completename in dropdown_locations");
-   }
-
-   if ($DB->tableExists("glpi_dropdown_kbcategories")
-       && !$DB->fieldExists("glpi_dropdown_kbcategories", "completename", false)) {
-      $query = "ALTER TABLE `glpi_dropdown_kbcategories`
-                ADD `completename` TEXT NOT NULL ";
-      $DB->queryOrDie($query, "0.6 add completename in dropdown_kbcategories");
-   }
-
-   if ($DB->tableExists("glpi_locations") && !$DB->fieldExists("glpi_locations", "completename", false)) {
-      $query = "ALTER TABLE `glpi_locations`
-                ADD `completename` TEXT NOT NULL ";
-      $DB->queryOrDie($query, "0.6 add completename in glpi_locations");
-   }
-
-   if ($DB->tableExists("glpi_knowbaseitemcategories")
-       && !$DB->fieldExists("glpi_knowbaseitemcategories", "completename", false)) {
-      $query = "ALTER TABLE `glpi_knowbaseitemcategories`
-                ADD `completename` TEXT NOT NULL ";
-      $DB->queryOrDie($query, "0.6 add completename in glpi_knowbaseitemcategories");
-   }
+   // Force cache cleaning to ensure it will not contain stale data
+   (new CacheManager())->resetAllCaches();
 }
 
 /**
@@ -266,9 +155,9 @@ function showSecurityKeyCheckForm() {
       $update->getExpectedSecurityKeyFilePath()
    );
    echo '</p>';
-   echo '<input type="submit" name="ignore" class="submit" value="' . __('Ignore warning') . '" />';
+   echo '<input type="submit" name="ignore" class="btn btn-primary" value="' . __('Ignore warning') . '" />';
    echo '&nbsp;&nbsp;';
-   echo '<input type="submit" name="retry" class="submit" value="' . __('Try again') . '" />';
+   echo '<input type="submit" name="retry" class="btn btn-primary" value="' . __('Try again') . '" />';
    echo '</form>';
 }
 
@@ -286,14 +175,13 @@ echo "<!DOCTYPE html>";
 echo "<html lang='fr'>";
 echo "<head>";
 echo "<meta charset='utf-8'>";
-echo "<meta http-equiv='Content-Script-Type' content='text/javascript'>";
-echo "<meta http-equiv='Content-Style-Type' content='text/css'>";
 echo "<title>Setup GLPI</title>";
 //JS
 echo Html::script("public/lib/base.js");
+echo Html::script("js/glpi_dialog.js");
 // CSS
 echo Html::css('public/lib/base.css');
-echo Html::css('css/style_install.css');
+echo Html::scss("css/install");
 echo "</head>";
 echo "<body>";
 echo "<div id='principal'>";
@@ -310,18 +198,23 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
       echo "<div class='center'>";
       echo "<h3><span class='migred'>".__('Impossible to accomplish an update by this way!')."</span>";
       echo "<p>";
-      echo "<a class='vsubmit' href='../index.php'>".__('Go back to GLPI')."</a></p>";
+      echo "<a class='btn btn-primary' href='../index.php'>
+            ".__('Go back to GLPI')."
+         </a></p>";
       echo "</div>";
 
    } else {
       echo "<div class='center'>";
-      echo "<h3><span class='migred'>".sprintf(__('Caution! You will update the GLPI database named: %s'), $DB->dbdefault) ."</h3>";
+      echo "<h3 class='my-4'><span class='migred p-2'>".sprintf(__('Caution! You will update the GLPI database named: %s'), $DB->dbdefault) ."</h3>";
 
       echo "<form action='update.php' method='post'>";
       if (strlen(GLPI_SCHEMA_VERSION) > 40) {
          echo Config::agreeDevMessage();
       }
-      echo "<input type='submit' class='submit' name='continuer' value=\"".__('Continue')."\">";
+      echo "<button type='submit' class='btn btn-primary' name='continuer' value='1'>
+         ".__('Continue')."
+         <i class='fas fa-chevron-right ms-1'></i>
+      </button>";
       Html::closeForm();
       echo "</div>";
    }
@@ -330,7 +223,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
    // Step 2
    if (test_connect()) {
       echo "<h3>".__('Database connection successful')."</h3>";
-      echo "<p class='center'>";
+      echo "<p class='text-center'>";
       $result = Config::displayCheckDbEngine(true);
       echo "</p>";
       if ($result > 0) {
@@ -341,42 +234,20 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
          // Display missing security key file form if key file is missing
          // unless it has already been displayed and user clicks on "ignore" button.
          showSecurityKeyCheckForm();
-      } else if (!isset($_POST["update_location"])) {
-         $current_version = "0.31";
-         $config_table    = "glpi_config";
-
-         if ($DB->tableExists("glpi_configs")) {
-            $config_table = "glpi_configs";
-         }
-
-         if ($DB->tableExists($config_table)) {
-            $current_version = Config::getCurrentDBVersion();
-         }
-         echo "<div class='center'>";
+      } else {
+         echo "<div class='text-center'>";
          doUpdateDb();
-
-         echo "<form action='".$CFG_GLPI["root_doc"]."/install/update.php' method='post'>";
-         echo "<input type='hidden' name='update_end' value='1'/>";
-
-         echo "<hr />";
-         echo "<h2>".__('One last thing before starting')."</h2>";
-         echo "<p>";
-         echo GLPINetwork::showInstallMessage();
-         echo "</p>";
-         echo "<a href='".GLPI_NETWORK_SERVICES."' target='_blank' class='vsubmit'>".
-            __('Donate')."</a><br /><br />";
-
-         if (!Telemetry::isEnabled()) {
-            $_SESSION['telemetry_from_install'] = true;
-            echo "<hr />";
-            echo Telemetry::showTelemetry();
-         }
-         echo Telemetry::showReference();
-
-         echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
-               __('Use GLPI')."'></p>";
-         Html::closeForm();
          echo "</div>";
+
+         $_SESSION['telemetry_from_install'] = true;
+
+         TemplateRenderer::getInstance()->display('install/update.html.twig', [
+            'glpinetwork'       => GLPINetwork::showInstallMessage(),
+            'glpinetwork_url'   => GLPI_NETWORK_SERVICES,
+            'telemetry_enabled' => Telemetry::isEnabled(),
+            'telemetry_info'    => Telemetry::showTelemetry(),
+            'reference_info'    => Telemetry::showReference(),
+         ]);
       }
 
    } else {

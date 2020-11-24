@@ -721,7 +721,7 @@ trait PlanningEvent {
                         ? "none" : "table";
 
       $out.= "<span id='toggle_ar' style='display: $display_tar'>";
-      $out.= "<a class='vsubmit'
+      $out.= "<a class='btn btn-primary'
                  title='".__("Personalization")."'
                  onclick='$(\"#advanced_repetition$rand\").toggle()'>
                  <i class='fas fa-cog'></i>
@@ -892,7 +892,6 @@ trait PlanningEvent {
             'name'          => __('Name'),
             'datatype'      => 'itemlink',
             'massiveaction' => false,
-            'autocomplete'  => true,
          ], [
             'id'            => '2',
             'table'         => self::getTable(),

@@ -97,7 +97,7 @@ class AuthLdapReplicate extends CommonDBTM {
       echo "</td>";
       echo "<td class='center'><input type='hidden' name='next' value='extauth_ldap'>";
       echo "<input type='hidden' name='authldaps_id' value='$master_id'>";
-      echo "<input type='submit' name='add_replicate' value='"._sx('button', 'Add') ."' class='submit'></td>";
+      echo "<input type='submit' name='add_replicate' value='"._sx('button', 'Add') ."' class='btn btn-primary'></td>";
       echo "</tr></table></div>";
       Html::closeForm();
    }

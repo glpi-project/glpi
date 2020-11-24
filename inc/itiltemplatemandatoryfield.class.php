@@ -207,7 +207,7 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField {
          Dropdown::showFromArray('num', $select_fields, ['used' => $used]);
          echo "</td><td class='center'>";
          echo "&nbsp;<input type='submit' name='add' value=\""._sx('button', 'Add').
-                        "\" class='submit'>";
+                        "\" class='btn btn-primary'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();

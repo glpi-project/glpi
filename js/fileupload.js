@@ -36,7 +36,14 @@ var insertIntoEditor = []; // contains flags that indicate if uploaded file (ima
 function uploadFile(file, editor) {
    insertIntoEditor[file.name] = isImage(file);
 
-   $(editor.getElement()).siblings('.fileupload').find('[type="file"]')
+   // Search for fileupload container.
+   // First try to find it in editor siblings, and fallback to any container found in current form.
+   var fileupload_container = $(editor.getElement()).siblings('.fileupload');
+   if (fileupload_container.length === 0) {
+      fileupload_container = $(editor.getElement()).closest('form').find('.fileupload');
+   }
+
+   fileupload_container.find('[type="file"]')
       .fileupload('send', {files: [file]})
       .error(function (request) {
          // If this is an error on the return

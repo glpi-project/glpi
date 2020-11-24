@@ -234,34 +234,6 @@ class Toolbox {
       return mb_convert_encoding($string, $to_charset, "UTF-8");
    }
 
-
-   /**
-    * Encrypt a string
-    *
-    * @param string $string  string to encrypt
-    * @param string $key     key used to encrypt
-    *
-    * @return string  encrypted string
-   **/
-   static function encrypt($string, $key = null) {
-      self::deprecated('Use sodiumEncrypt');
-
-      if ($key === null) {
-         $glpikey = new GLPIKey();
-         $key = $glpikey->getLegacyKey();
-      }
-
-      $result = '';
-      $strlen = strlen($string);
-      for ($i=0; $i < $strlen; $i++) {
-         $char    = substr($string, $i, 1);
-         $keychar = substr($key, ($i % strlen($key))-1, 1);
-         $char    = chr(ord($char)+ord($keychar));
-         $result .= $char;
-      }
-      return base64_encode($result);
-   }
-
    public static function sodiumEncrypt($content, $key = null) {
       if ($key === null) {
          $key = self::getGlpiSecKey();
@@ -316,26 +288,6 @@ class Toolbox {
    }
 
    /**
-    * Decrypt a string
-    *
-    * @param string $string  string to decrypt
-    * @param string $key     key used to decrypt
-    *
-    * @return string  decrypted string
-   **/
-   static function decrypt($string, $key = null) {
-      self::deprecated('Use sodiumDecrypt');
-
-      $glpikey = new GLPIKey();
-
-      if ($key === null) {
-         $key = $glpikey->getLegacyKey();
-      }
-
-      return $glpikey->decryptUsingLegacyKey($string, $key);
-   }
-
-   /**
     * Get GLPI security key used for decryptable passwords from file
     *
     * @throw \RuntimeException if key file is missing
@@ -380,53 +332,6 @@ class Toolbox {
    static function unclean_cross_side_scripting_deep($value) {
       Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::unsanitize()"');
       return Sanitizer::unsanitize($value);
-   }
-
-
-   /**
-    *  Invert fonction from clean_cross_side_scripting_deep to display HTML striping XSS code
-    *
-    * @since 0.83.3
-    *
-    * @param array|string $value  item to unclean from clean_cross_side_scripting_deep
-    *
-    * @return array|string  unclean item
-    *
-    * @see clean_cross_side_scripting_deep()
-    *
-    * @deprecated 10.0.0
-   **/
-   static function unclean_html_cross_side_scripting_deep($value) {
-      Toolbox::deprecated();
-
-      if ((array) $value === $value) {
-         $value = array_map([__CLASS__, 'unclean_html_cross_side_scripting_deep'], $value);
-      } else {
-         $value = self::unclean_cross_side_scripting_deep($value);
-      }
-
-      // revert unclean inside <pre>
-      if (is_string($value)) {
-         $matches = [];
-         $count = preg_match_all('/(<pre[^>]*>)(.*?)(<\/pre>)/is', $value, $matches);
-         for ($i = 0; $i < $count; ++$i) {
-            $complete       = $matches[0][$i];
-            $cleaned        = self::clean_cross_side_scripting_deep($matches[2][$i]);
-            $cleancomplete  = $matches[1][$i].$cleaned.$matches[3][$i];
-            $value          = str_replace($complete, $cleancomplete, $value);
-         }
-
-         $value = htmLawed($value, self::getHtmLawedSafeConfig());
-
-         // Special case : remove the 'denied:' for base64 img in case the base64 have characters
-         // combinaison introduce false positive
-         foreach (['png', 'gif', 'jpg', 'jpeg'] as $imgtype) {
-            $value = str_replace('src="denied:data:image/'.$imgtype.';base64,',
-                  'src="data:image/'.$imgtype.';base64,', $value);
-         }
-      }
-
-      return $value;
    }
 
    /**
@@ -969,7 +874,7 @@ class Toolbox {
    static function commonCheckForUseGLPI($isInstall = false) {
       global $DB;
 
-      echo "<tr><th>".__('Test done')."</th><th >".__('Results')."</th></tr>";
+      echo "<thead><tr><th>".__('Test done')."</th><th >".__('Results')."</th></tr></thead>";
 
       $core_requirements = (new RequirementsManager())->getCoreRequirementList($isInstall ? null : $DB);
       /* @var \Glpi\System\Requirement\RequirementInterface $requirement */
@@ -1884,7 +1789,7 @@ class Toolbox {
       $tab = Toolbox::parseMailServerConnectString($value);
 
       echo "<tr class='tab_bg_1'><td>" . __('Server') . "</td>";
-      echo "<td><input size='30' type='text' name='mail_server' value=\"" .$tab['address']. "\">";
+      echo "<td><input size='30' class='form-control' type='text' name='mail_server' value=\"" .$tab['address']. "\">";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . __('Connection options') . "</td><td>";
@@ -1976,14 +1881,17 @@ class Toolbox {
       if ($tab['type'] != 'pop') {
          echo "<tr class='tab_bg_1'><td>". __('Incoming mail folder (optional, often INBOX)')."</td>";
          echo "<td>";
-         echo "<input size='30' type='text' id='server_mailbox' name='server_mailbox' value=\"" . $tab['mailbox'] . "\" >";
+         echo "<div class='btn-group btn-group-sm'>";
+         echo "<input size='30' class='form-control' type='text' id='server_mailbox' name='server_mailbox' value=\"" . $tab['mailbox'] . "\" >";
+         echo "<div class='btn btn-outline-secondary'>";
          echo "<i class='fa fa-list pointer get-imap-folder'></i>";
-         echo "</td></tr>\n";
+         echo "</div>";
+         echo "</div></td></tr>\n";
       }
 
       //TRANS: for mail connection system
       echo "<tr class='tab_bg_1'><td>" . __('Port (optional)') . "</td>";
-      echo "<td><input size='10' type='text' name='server_port' value='".$tab['port']."'></td></tr>\n";
+      echo "<td><input size='10' class='form-control' type='text' name='server_port' value='".$tab['port']."'></td></tr>\n";
       if (empty($value)) {
          $value = "&nbsp;";
       }
@@ -2543,39 +2451,6 @@ class Toolbox {
    }
 
    /**
-    * Sanitize received values
-    *
-    * @param array $array
-    *
-    * @return array
-    *
-    * @deprecated 10.0.0
-    */
-   static public function sanitize($array) {
-      Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::unsanitize($value, true)"');
-      return Sanitizer::sanitize($array, true);
-   }
-
-   /**
-    * Remove accentued characters and return lower case string
-    *
-    * @param string $string String to handle
-    *
-    * @return string
-    */
-   public static function removeHtmlSpecialChars($string) {
-      $string = htmlentities($string, ENT_NOQUOTES, 'utf-8');
-      $string = preg_replace(
-         '#&([A-za-z])(?:acute|cedil|caron|circ|grave|orn|ring|slash|th|tilde|uml);#',
-         '\1',
-         $string
-      );
-      $string = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $string);
-      $string = preg_replace('#&[^;]+;#', '', $string);
-      return self::strtolower($string, 'UTF-8');
-   }
-
-   /**
     * Slugify
     *
     * @param string $string String to slugify
@@ -2731,33 +2606,6 @@ class Toolbox {
       }
 
       return $content_text;
-   }
-
-   /**
-    * Convert image to tag
-    *
-    * @since 9.2
-    *
-    * @param string $content_html   html content of input
-    * @param boolean $force_update  force update of content in item
-    *
-    * @return string  html content
-   **/
-   static function convertImageToTag($content_html, $force_update = false) {
-
-      if (!empty($content_html)) {
-         $matches = [];
-         preg_match_all("/alt\s*=\s*['|\"](.+?)['|\"]/", $content_html, $matches, PREG_PATTERN_ORDER);
-         if (isset($matches[1]) && count($matches[1])) {
-            // Get all image src
-            foreach ($matches[1] as $src) {
-               // Set tag if image matches
-               $content_html = preg_replace(["/<img.*alt=['|\"]".$src."['|\"][^>]*\>/", "/<object.*alt=['|\"]".$src."['|\"][^>]*\>/"], Document::getImageTag($src), $content_html);
-            }
-         }
-
-         return $content_html;
-      }
    }
 
    /**
@@ -2965,20 +2813,6 @@ class Toolbox {
    }
 
    /**
-    * Should cache be used
-    *
-    * @since 9.2
-    *
-    * @return boolean
-    *
-    * @deprecated 10.0.0
-    */
-   public static function useCache() {
-      Toolbox::deprecated();
-      return true;
-   }
-
-   /**
     * Convert a integer index into an excel like alpha index (A, B, ..., AA, AB, ...)
     * @since 9.3
     * @param  integer $index the numeric index
@@ -3118,12 +2952,13 @@ class Toolbox {
     * Get picture URL.
     *
     * @param string $path
+    * @param bool  bool get full path
     *
     * @return null|string
     *
     * @since 9.5.0
     */
-   static function getPictureUrl($path) {
+   static function getPictureUrl($path, $full = true) {
       global $CFG_GLPI;
 
       $path = Html::cleanInputText($path); // prevent xss
@@ -3132,7 +2967,7 @@ class Toolbox {
          return null;
       }
 
-      return $CFG_GLPI["root_doc"] . '/front/document.send.php?file=_pictures/' . $path;
+      return ($full ? $CFG_GLPI["root_doc"] : "") . '/front/document.send.php?file=_pictures/' . $path;
    }
 
    /**
@@ -3277,12 +3112,26 @@ HTML;
     *
     * @param string $color the background color in hexadecimal notation (ex #FFFFFF) to compute
     * @param int $offset how much we need to darken/lighten the color
+    * @param bool $inherit_if_transparent if color contains an opacity value, and if this value is too transparent return 'inherit'
     *
     * @return string hexadecimal fg color (ex #FFFFFF)
     */
-   static function getFgColor(string $color = "", int $offset = 40): string {
+   static function getFgColor(string $color = "", int $offset = 40, bool $inherit_if_transparent = false): string {
       $fg_color = "FFFFFF";
       if ($color !== "") {
+         $color = str_replace("#", "", $color);
+
+         // if transparency present, get only the color part
+         if (strlen($color) === 8 && preg_match('/^[a-fA-F0-9]+$/', $color)) {
+            $tmp = $color;
+            $alpha = hexdec(substr($tmp, 6, 2));
+            $color = substr($color, 0, 6);
+
+            if ($alpha <= 100) {
+               return "inherit";
+            }
+         }
+
          $color_inst = new Color($color);
 
          // adapt luminance part
@@ -3358,29 +3207,6 @@ HTML;
          "/^(?:http[s]?:\/\/(?:[^\s`!(){};'\",<>«»“”‘’+]+|[^\s`!()\[\]{};:'\".,<>?«»“”‘’+]))$/iu",
          $url
       ) === 1);
-   }
-
-   /**
-    * Search for html encoded <email> (&lt;email&gt;) in the given string and
-    * encode them a second time
-    *
-    * @param string $string
-    *
-    * @return string
-    *
-    * @deprecated 10.0.0
-    */
-   public static function doubleEncodeEmails($string) {
-      Toolbox::deprecated();
-
-      // Search for strings that is an email surrounded by `<` and `>` but that cannot be an HTML tag:
-      // - absence of quotes indicate that values is not part of an HTML attribute,
-      // - absence of ; ensure that ending `&gt;` has not been reached.
-      $regex = "/((&lt;|&#60;)[^\"';]+?@[^\"';]+?(&gt;|&#62;))/";
-      $string = preg_replace_callback($regex, function($matches) {
-         return htmlentities($matches[1]);
-      }, $string);
-      return $string;
    }
 
    /**

@@ -179,6 +179,7 @@ class NotificationTargetTicket extends DbTestCase {
          'itemtype' => 'Ticket',
          'is_private' => 0,
          'items_id' => $tickets_id,
+         'date' => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 1),
       ]);
       $this->integer($fup1_id)->isGreaterThan(0);
 
@@ -191,6 +192,7 @@ class NotificationTargetTicket extends DbTestCase {
          'itemtype' => 'Ticket',
          'is_private' => 0,
          'items_id' => $tickets_id,
+         'date' => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 2),
       ]);
       $this->integer($fup2_id)->isGreaterThan(0);
 
@@ -203,6 +205,7 @@ class NotificationTargetTicket extends DbTestCase {
          'itemtype' => 'Ticket',
          'is_private' => 1,
          'items_id' => $tickets_id,
+         'date' => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 3),
       ]);
       $this->integer($fup3_id)->isGreaterThan(0);
 
@@ -217,6 +220,7 @@ class NotificationTargetTicket extends DbTestCase {
          'actiontime'        => "172800",                                  //1hours
          'content'           => "Private Task",
          'users_id_tech'     => getItemByTypeName('User', 'tech', true),
+         'date'     => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 4),
       ]);
       $this->integer($task1_id)->isGreaterThan(0);
 
@@ -231,6 +235,7 @@ class NotificationTargetTicket extends DbTestCase {
          'actiontime'        => "172800",                                  //1hours
          'content'           => "Task",
          'users_id_tech'     => getItemByTypeName('User', 'tech', true),
+         'date'     => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 5),
       ]);
       $this->integer($task2_id)->isGreaterThan(0);
 
@@ -242,6 +247,7 @@ class NotificationTargetTicket extends DbTestCase {
          'users_id_editor' => getItemByTypeName('User', 'tech', true),
          'itemtype' => 'Ticket',
          'items_id' => $tickets_id,
+         'date_creation' => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 6),
       ]);
       $this->integer($solutions_id)->isGreaterThan(0);
 
@@ -259,6 +265,13 @@ class NotificationTargetTicket extends DbTestCase {
       //get all task / solution / followup (because is tech)
       $expected = [
          [
+            "##timelineitems.type##"        => "ITILSolution",
+            "##timelineitems.typename##"    => "Solutions",
+            "##timelineitems.date##"        => $solution->fields['date_creation'],
+            "##timelineitems.description##" => $solution->fields['content'],
+            "##timelineitems.position##"    => "right",
+            "##timelineitems.author##"      => "tech", //empty
+         ],[
             "##timelineitems.type##"        => "TicketTask",
             "##timelineitems.typename##"    => "Ticket tasks",
             "##timelineitems.date##"        => $task_tech->fields['date'],
@@ -272,13 +285,6 @@ class NotificationTargetTicket extends DbTestCase {
             "##timelineitems.description##" => $task_private->fields['content'],
             "##timelineitems.position##"    => "right",
             "##timelineitems.author##"      => "tech",
-         ],[
-            "##timelineitems.type##"        => "ITILSolution",
-            "##timelineitems.typename##"    => "Solutions",
-            "##timelineitems.date##"        => $solution->fields['date_creation'],
-            "##timelineitems.description##" => $solution->fields['content'],
-            "##timelineitems.position##"    => "right",
-            "##timelineitems.author##"      => "tech", //empty
          ],[
             "##timelineitems.type##" => "ITILFollowup",
             "##timelineitems.typename##"=> "Followups",
@@ -320,19 +326,19 @@ class NotificationTargetTicket extends DbTestCase {
       //get only public task / followup / Solution (because is post_only)
       $expected = [
          [
-            "##timelineitems.type##"        => "TicketTask",
-            "##timelineitems.typename##"    => "Ticket tasks",
-            "##timelineitems.date##"        => $task_tech->fields['date'],
-            "##timelineitems.description##" => $task_tech->fields['content'],
-            "##timelineitems.position##"    => "right",
-            "##timelineitems.author##"      => "tech",
-         ],[
             "##timelineitems.type##"        => "ITILSolution",
             "##timelineitems.typename##"    => "Solutions",
             "##timelineitems.date##"        => $solution->fields['date_creation'],
             "##timelineitems.description##" => $solution->fields['content'],
             "##timelineitems.position##"    => "right",
             "##timelineitems.author##"      => "tech", //empty
+         ],[
+            "##timelineitems.type##"        => "TicketTask",
+            "##timelineitems.typename##"    => "Ticket tasks",
+            "##timelineitems.date##"        => $task_tech->fields['date'],
+            "##timelineitems.description##" => $task_tech->fields['content'],
+            "##timelineitems.position##"    => "right",
+            "##timelineitems.author##"      => "tech",
          ],[
             "##timelineitems.type##"        => "ITILFollowup",
             "##timelineitems.typename##"    => "Followups",

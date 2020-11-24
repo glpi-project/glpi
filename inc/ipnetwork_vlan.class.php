@@ -134,7 +134,7 @@ class IPNetwork_Vlan extends CommonDBRelation {
          echo "<input type='hidden' name='ipnetworks_id' value='$ID'>";
          Vlan::dropdown(['used' => $used]);
          echo "&nbsp;<input type='submit' name='add' value='"._sx('button', 'Associate').
-                      "' class='submit'>";
+                      "' class='btn btn-primary'>";
          echo "</td></tr>\n";
 
          echo "</table>\n";

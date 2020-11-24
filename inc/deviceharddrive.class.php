@@ -76,7 +76,6 @@ class DeviceHardDrive extends CommonDevice {
          'field'              => 'capacity_default',
          'name'               => __('Capacity by default'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -85,7 +84,6 @@ class DeviceHardDrive extends CommonDevice {
          'field'              => 'rpm',
          'name'               => __('Rpm'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -94,7 +92,6 @@ class DeviceHardDrive extends CommonDevice {
          'field'              => 'cache',
          'name'               => __('Cache'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

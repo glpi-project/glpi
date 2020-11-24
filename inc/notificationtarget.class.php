@@ -54,15 +54,6 @@ class NotificationTarget extends CommonDBChild {
    public $notification_targets_labels = [];
    public $notificationoptions         = 0;
 
-   /**
-    * Tags which have data in HTML : do not try to clean them
-    *
-    * @var array
-    *
-    * @deprecated 10.0.0
-    */
-   public $html_tags                   = [];
-
    // Data from the objet which can be used by the template
    // See https://forge.indepnet.net/projects/5/wiki/NotificationTemplatesTags
    public $data                        = [];
@@ -395,7 +386,7 @@ class NotificationTarget extends CommonDBChild {
          echo "</td>";
          if ($canedit) {
             echo "<td width='20%'>";
-            echo "<input type='submit' class='submit' name='update' value=\""._x('button', 'Update')."\">";
+            echo "<input type='submit' class='btn btn-primary' name='update' value=\""._x('button', 'Update')."\">";
             echo "</td>";
 
          }

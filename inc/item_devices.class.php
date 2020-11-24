@@ -202,9 +202,6 @@ class Item_Devices extends CommonDBRelation {
          if (isset($attributs['nodisplay'])) {
             $newtab['nodisplay'] = $attributs['nodisplay'];
          }
-         if (isset($attributs['autocomplete'])) {
-            $newtab['autocomplete'] = $attributs['autocomplete'];
-         }
          $tab[] = $newtab;
       }
 
@@ -336,22 +333,19 @@ class Item_Devices extends CommonDBRelation {
             return ['long name'  => __('Serial number'),
                          'short name' => __('Serial number'),
                          'size'       => 20,
-                         'id'         => 10,
-                         'autocomplete' => true,];
+                         'id'         => 10,];
 
          case 'busID' :
             return ['long name'  => __('Position of the device on its bus'),
                          'short name' => __('bus ID'),
                          'size'       => 10,
-                         'id'         => 11,
-                         'autocomplete' => true,];
+                         'id'         => 11,];
 
          case 'otherserial':
             return ['long name'  => __('Inventory number'),
                          'short name' => __('Inventory number'),
                          'size'       => 20,
-                         'id'         => 12,
-                         'autocomplete' => true,];
+                         'id'         => 12,];
 
          case 'locations_id':
             return ['long name'  => Location::getTypeName(1),
@@ -578,7 +572,7 @@ class Item_Devices extends CommonDBRelation {
       $canedit = (($withtemplate != 2)
                   && $item->canEdit($ID)
                   && Session::haveRightsOr('device', [UPDATE, PURGE]));
-      echo "<div class='spaced'>";
+      echo "<div class='spaced table-responsive'>";
       $rand = mt_rand();
       if ($canedit) {
          echo "\n<form id='form_device_add$rand' name='form_device_add$rand'
@@ -668,7 +662,7 @@ class Item_Devices extends CommonDBRelation {
                                                                  .'/ajax/selectUnaffectedOrNewItem_Device.php']);
          }
          echo "</td><td>";
-         echo "<input type='submit' class='submit' name='add' value='"._sx('button', 'Add')."'>";
+         echo "<input type='submit' class='btn btn-primary' name='add' value='"._sx('button', 'Add')."'>";
          echo "</td></tr></table>";
          Html::closeForm();
       }
@@ -684,7 +678,7 @@ class Item_Devices extends CommonDBRelation {
                             'display_title_for_each_group' => false]);
 
       if ($canedit) {
-          echo "<input type='submit' class='submit' name='updateall' value='" .
+          echo "<input type='submit' class='btn btn-primary' name='updateall' value='" .
                _sx('button', 'Save')."'>";
 
          Html::closeForm();
@@ -1361,10 +1355,12 @@ class Item_Devices extends CommonDBRelation {
          }
          echo "</td><td>";
 
+         echo "<div class='btn-group btn-group-sm' role='group'>";
+
          // Do the field needs a user action to display ?
          if (isset($attributs['protected']) && $attributs['protected']) {
             $protected = true;
-            $out.= '<span class="disclosablefield">';
+            $out.= '<span class="disclosablefield btn-group btn-group-sm">';
          } else {
             $protected = false;
          }
@@ -1393,12 +1389,16 @@ class Item_Devices extends CommonDBRelation {
                   break;
                default:
                   if (!$protected) {
-                     $out.= Html::autocompletionTextField($this, $field, ['value'    => $value,
-                                                                          'rand'     => $rand,
-                                                                          'size'     => $attributs['size'],
-                                                                          'display'  => false]);
+                     $out.= Html::input(
+                        $field,
+                        [
+                           'value' => $this->fields['name'],
+                           'id'    => "textfield_$field$rand",
+                           'size'  => $attributs['size'],
+                        ]
+                     );
                   } else {
-                     $out.= '<input class="protected" type="password" autocomplete="new-password" name="' . $field . '" ';
+                     $out.= '<input class="protected form-control" type="password" autocomplete="new-password" name="' . $field . '" ';
                      $out.= 'id="' . $field . $rand . '" value="' . $value . '">';
                   }
             }
@@ -1411,19 +1411,19 @@ class Item_Devices extends CommonDBRelation {
                $out.= '&nbsp;'.Html::showToolTip($tooltip, $options_tooltip);
             }
             if ($protected) {
-               $out.= '<span><i class="far fa-eye pointer disclose" ';
+               $out.= '<div class="btn btn-outline-secondary"><i class="far fa-eye pointer disclose" ';
                $out.= 'onmousedown="showField(\'' . $field . $rand . '\')" ';
                $out.= 'onmouseup="hideField(\'' . $field . $rand . '\')" ';
-               $out.= 'onmouseout="hideField(\'' . $field . $rand . '\')"></i>';
-               $out.= '<i class="fa fa-paste pointer disclose" ';
+               $out.= 'onmouseout="hideField(\'' . $field . $rand . '\')"></i></div>';
+               $out.= '<div class="btn btn-outline-secondary"><i class="fa fa-paste pointer disclose" ';
                $out.= 'onclick="copyToClipboard(\'' . $field . $rand . '\')"></i>';
-               $out.= '</span>';
+               $out.= '</div>';
             }
             echo $out;
          } else {
             echo NOT_AVAILABLE;
          }
-         echo "</td>";
+         echo "</div></td>";
          $even ++;
          if (($even == $nb) && (($nb % 2) != 0) && $nb > 1) {
             echo "<td></td><td></td></tr>";

@@ -132,7 +132,7 @@ class Pdu_Plug extends CommonDBRelation {
             ]
          );
          echo "</td><td>";
-         echo "<input type='submit' class='submit' name='add' value='"._sx('button', 'Add')."'>";
+         echo "<input type='submit' class='btn btn-primary' name='add' value='"._sx('button', 'Add')."'>";
          echo "</td></tr></table>";
          Html::closeForm();
       }

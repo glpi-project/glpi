@@ -151,7 +151,6 @@ class TaskTemplate extends AbstractITILChildTemplate {
       return $tab;
    }
 
-
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -187,7 +186,9 @@ class TaskTemplate extends AbstractITILChildTemplate {
 
       switch ($field['type']) {
          case 'state' :
-            Planning::dropdownState("state", $this->fields["state"]);
+            Planning::dropdownState("state", $this->fields["state"], false, [
+               'width'     => '100%',
+            ]);
             break;
          case 'users_id_tech' :
             User::dropdown([
@@ -195,6 +196,7 @@ class TaskTemplate extends AbstractITILChildTemplate {
                'right'  => "own_ticket",
                'value'  => $this->fields["users_id_tech"],
                'entity' => $this->fields["entities_id"],
+               'width'  => '100%',
             ]);
             break;
          case 'groups_id_tech' :
@@ -203,6 +205,7 @@ class TaskTemplate extends AbstractITILChildTemplate {
                'condition' => ['is_task' => 1],
                'value'     => $this->fields["groups_id_tech"],
                'entity'    => $this->fields["entities_id"],
+               'width'     => '100%',
             ]);
             break;
          case 'actiontime' :
@@ -217,10 +220,15 @@ class TaskTemplate extends AbstractITILChildTemplate {
                   'value'           => $this->fields["actiontime"],
                   'addfirstminutes' => true,
                   'inhours'         => true,
-                  'toadd'           => $toadd
+                  'toadd'           => $toadd,
+                  'width'           => '100%',
                ]
             );
             break;
       }
+   }
+
+   static function getIcon() {
+      return "fas fa-layer-group";
    }
 }

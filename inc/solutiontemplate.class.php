@@ -98,4 +98,8 @@ class SolutionTemplate extends AbstractITILChildTemplate {
 
       return $tab;
    }
+
+   static function getIcon() {
+      return "fas fa-layer-group";
+   }
 }

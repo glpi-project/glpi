@@ -1,0 +1,62 @@
+/*!
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2021 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+/**
+Override the override of mixins by tabler over bootstrap
+which broke styles of btn-group > .btn-check
+*/
+
+@mixin button-check($color,
+   $color-hover: color-contrast($color),
+   $active-background: $color,
+   $active-border: $color,
+   $active-color: color-contrast($active-background)
+) {
+
+   .btn-check:checked + &,
+   .btn-check:active + & {
+      color: $active-color;
+      background-color: $active-background;
+      border-color: $active-border;
+   }
+}
+
+@each $color, $value in $theme-colors {
+   .btn-#{$color} {
+      @include button-check($value, $value);
+   }
+}
+
+@each $color, $value in $theme-colors {
+   .btn-outline-#{$color} {
+      @include button-check($value);
+   }
+}

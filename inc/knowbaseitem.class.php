@@ -193,6 +193,26 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       return "$dir/front/helpdesk.faq.php";
    }
 
+   /**
+    * Get the form page URL for the current classe
+    *
+    * @param boolean $full  path or relative one
+   **/
+   static function getFormURLWithParam($params = [], $full = true) {
+      $url = self::getFormURL($full) . '?';
+
+      if (isset($params['_sol_to_kb'])) {
+         $url .= '&_sol_to_kb=' . $params['_sol_to_kb'];
+      }
+      if (isset($params['_fup_to_kb'])) {
+         $url .= '&_fup_to_kb=' . $params['_fup_to_kb'];
+      }
+      if (isset($params['_task_to_kb'])) {
+         $url .= '&_task_to_kb=' . $params['_task_to_kb'];
+      }
+      return $url;
+   }
+
    function defineTabs($options = []) {
 
       $ong = [];
@@ -699,15 +719,30 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          if ($item = getItemForItemtype($options['item_itemtype'])) {
             if ($item->getFromDB($options['item_items_id'])) {
                $this->fields['name']   = $item->getField('name');
-               $solution = new ITILSolution();
-               $solution->getFromDBByCrit([
-                  'itemtype'     => $item->getType(),
-                  'items_id'     => $item->getID(),
-                  [
-                     'NOT' => ['status'       => CommonITILValidation::REFUSED]
-                  ]
-               ]);
-               $this->fields['answer'] = $solution->getField('content');
+               if (isset($options['_fup_to_kb'])) {
+                  $fup = new ITILFollowup();
+                  $fup->getFromDBByCrit([
+                     'id'           => $options['_fup_to_kb'],
+                     'itemtype'     => $item->getType(),
+                     'items_id'     => $item->getID()
+                  ]);
+                  $this->fields['answer'] = $fup->getField('content');
+               } else if (isset($options['_task_to_kb'])) {
+                  $tasktype = $item->getType().'Task';
+                  $task = new $tasktype;
+                  $task->getFromDB($options['_task_to_kb']);
+                  $this->fields['answer'] = $task->getField('content');
+               } else if (isset($options['_sol_to_kb'])) {
+                  $solution = new ITILSolution();
+                  $solution->getFromDBByCrit([
+                     'itemtype'     => $item->getType(),
+                     'items_id'     => $item->getID(),
+                     [
+                        'NOT' => ['status'       => CommonITILValidation::REFUSED]
+                     ]
+                  ]);
+                  $this->fields['answer'] = $solution->getField('content');
+               }
                if ($item->isField('itilcategories_id')) {
                   $ic = new ITILCategory();
                   if ($ic->getFromDB($item->getField('itilcategories_id'))) {
@@ -1077,14 +1112,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          }
       }
 
-      echo "<div>";
-      echo "<form method='get' action='".$this->getSearchURL()."'>";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_2'><td class='right' width='50%'>";
-      echo "<input type='text' size='50' name='contains' value=\"".
-             Html::cleanInputText(stripslashes($params["contains"]))."\"></td>";
-      echo "<td class='left'>";
-      echo "<input type='submit' value=\""._sx('button', 'Search')."\" class='submit'></td></tr>";
+      echo "<form method='get' action='".$this->getSearchURL()."' class='d-flex justify-content-center'>";
+      echo "<input class='form-control me-1' type='text' size='50' name='contains' value=\"".
+             Html::cleanInputText(stripslashes($params["contains"]))."\">";
+      echo "<input type='submit' value=\""._sx('button', 'Search')."\" class='btn btn-primary'>";
       echo "</table>";
       if (isset($options['item_itemtype'])
           && isset($options['item_items_id'])) {
@@ -1092,8 +1123,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          echo "<input type='hidden' name='item_items_id' value='".$options['item_items_id']."'>";
       }
       Html::closeForm();
-
-      echo "</div>";
    }
 
 
@@ -1133,7 +1162,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          echo "<tr class='tab_bg_2'><td class='right' width='50%'>"._n('Category', 'Categories', 1)."&nbsp;";
          KnowbaseItemCategory::dropdown(['value' => $params["knowbaseitemcategories_id"]]);
          echo "</td><td class='left'>";
-         echo "<input type='submit' value=\""._sx('button', 'Post')."\" class='submit'></td>";
+         echo "<input type='submit' value=\""._sx('button', 'Post')."\" class='btn btn-primary'></td>";
          echo "</tr></table>";
          if (isset($options['item_itemtype'])
              && isset($options['item_items_id'])) {
@@ -1179,7 +1208,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       }
       Dropdown::showFromArray('unpublished', $values, ['value' => $params['unpublished']]);
       echo "</td><td class='left'>";
-      echo "<input type='submit' value=\""._sx('button', 'Post')."\" class='submit'></td>";
+      echo "<input type='submit' value=\""._sx('button', 'Post')."\" class='btn btn-primary'></td>";
       echo "</tr></table>";
       Html::closeForm();
       echo "</div>";
@@ -1589,7 +1618,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
                $toadd = '';
                if (isset($options['item_itemtype'])
                      && isset($options['item_items_id'])) {
-                  $href  = " href='#' onClick=\"".Html::jsGetElementbyID('kbshow'.$data["id"]).".dialog('open'); return false;\"";
+                  $href  = " href='#' data-bs-toggle='modal' data-bs-target='#kbshow{$data["id"]}'";
                   $toadd = Ajax::createIframeModalWindow('kbshow'.$data["id"],
                                                          KnowbaseItem::getFormURLWithID($data["id"]),
                                                          ['display' => false]);
@@ -1714,11 +1743,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
    /**
     * Print out list recent or popular kb/faq
     *
-    * @param string $type  type : recent / popular / not published
+    * @param string $type    type : recent / popular / not published
+    * @param bool   $display if false, return html
     *
     * @return void
    **/
-   static function showRecentPopular($type) {
+   static function showRecentPopular(string $type = "", bool $display = true) {
       global $DB;
 
       $faq = !Session::haveRight(self::$rightname, READ);
@@ -1805,26 +1835,33 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
 
       $iterator = $DB->request($criteria);
 
+      $output = "";
       if (count($iterator)) {
-         echo "<table class='tab_cadrehov'>";
-         echo "<tr class='noHover'><th>".$title."</th></tr>";
+         $output.= "<table class='tab_cadrehov'>";
+         $output.= "<tr class='noHover'><th>".$title."</th></tr>";
          while ($data = $iterator->next()) {
             $name = $data['name'];
 
             if (isset($data['transname']) && !empty($data['transname'])) {
                $name = $data['transname'];
             }
-            echo "<tr class='tab_bg_2'><td class='left'><div class='kb'>";
+            $output.= "<tr class='tab_bg_2'><td class='left'><div class='kb'>";
             if ($data['is_faq']) {
-               echo "<i class='fa fa-fw fa-question-circle faq' title='".__("This item is part of the FAQ")."'></i>";
+               $output.= "<i class='fa fa-fw fa-question-circle faq' title='".__("This item is part of the FAQ")."'></i>";
             }
-            echo Html::link(Html::resume_text($name, 80), KnowbaseItem::getFormURLWithID($data["id"]), [
+            $output.= Html::link(Html::resume_text($name, 80), KnowbaseItem::getFormURLWithID($data["id"]), [
                'class' => $data['is_faq'] ? 'faq' : 'knowbase',
                'title' => $data['is_faq'] ? __s("This item is part of the FAQ") : ''
             ]);
-            echo "</div></td></tr>";
+            $output.= "</div></td></tr>";
          }
-         echo "</table>";
+         $output.= "</table>";
+      }
+
+      if ($display) {
+         echo $output;
+      } else {
+         return $output;
       }
    }
 

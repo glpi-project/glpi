@@ -1000,6 +1000,7 @@ class Auth extends CommonGLPI {
     * - value : Selected value (default 0)
     * - display : If true, the dropdown is displayed instead of returned (default true)
     * - display_emptychoice : If true, an empty option is added (default true)
+    * - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
     *
     * @return void|string (Based on 'display' option)
     */
@@ -1011,6 +1012,7 @@ class Auth extends CommonGLPI {
          'value'               => 0,
          'display'             => true,
          'display_emptychoice' => true,
+         'hide_if_no_elements' => false,
       ];
 
       if (is_array($options) && count($options)) {
@@ -1458,7 +1460,7 @@ class Auth extends CommonGLPI {
          return false;
       }
       echo "<form name=cas action='".$CFG_GLPI['root_doc']."/front/auth.others.php' method='post'>";
-      echo "<div class='center'>";
+      echo "<div class='card'>";
       echo "<table class='tab_cadre_fixe'>";
 
       // CAS config
@@ -1640,7 +1642,7 @@ class Auth extends CommonGLPI {
                  $CFG_GLPI['language_ssofield']."'></td></tr>";
 
       echo "<tr class='tab_bg_1'><td class='center' colspan='2'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".__s('Save')."\" >";
+      echo "<input type='submit' name='update' class='btn btn-primary' value=\"".__s('Save')."\" >";
       echo "</td></tr>\n";
 
       echo "</table></div>\n";
@@ -1695,25 +1697,25 @@ class Auth extends CommonGLPI {
    /**
     * Display the authentication source dropdown for login form
     */
-   static function dropdownLogin() {
+   static function dropdownLogin(bool $display = true) {
+      $out = "";
       $elements = self::getLoginAuthMethods();
       $default = $elements['_default'];
       unset($elements['_default']);
       // show dropdown of login src only when multiple src
-      if (count($elements) > 1) {
-         echo '<p class="login_input" id="login_input_src">';
-         Dropdown::showFromArray('auth', $elements, [
-            'rand'      => '1',
-            'value'     => $default,
-            'width'     => '100%'
-         ]);
-         echo '</p>';
-      } else if (count($elements) == 1) {
-         // when one src, don't display it, pass it with hidden input
-         echo Html::hidden('auth', [
-            'value' => key($elements)
-         ]);
+      $out.= Dropdown::showFromArray('auth', $elements, [
+         'display'   => false,
+         'rand'      => '1',
+         'value'     => $default,
+         'width'     => '100%'
+      ]);
+
+      if ($display) {
+         echo $out;
+         return "";
       }
+
+      return $out;
    }
 
 
