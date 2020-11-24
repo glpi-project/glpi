@@ -239,7 +239,7 @@ JAVASCRIPT
       $link->fields['items_id'] = $item->fields[$item->getIndexName()];
       if ($link->canCreateItem()) {
          $form_url = self::getFormURL() . '?itemtype=' . $item->getType() . '&items_id=' . $item->fields[$item->getIndexName()];
-         echo '<a class="vsubmit" href="' . $form_url . '">';
+         echo '<a class="btn btn-primary" href="' . $form_url . '">';
          echo '<i class="fas fa-plus"></i>&nbsp;';
          echo _x('button', 'Add');
          echo '</a>';

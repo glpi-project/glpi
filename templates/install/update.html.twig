@@ -1,0 +1,40 @@
+<hr>
+
+<h2>{{ __("One last thing before starting") }}</h2>
+
+<p>
+   {{ glpinetwork|raw }}
+
+   <br>
+   <div class="text-center">
+      <a href="{{ glpinetwork_url }}" target="_blank" class="btn btn-primary mt-2">
+         <i class="fas fa-donate me-1"></i>
+         {{ __("Donate") }}
+      </a>
+   </div>
+</p>
+
+{% if not telemetry_enabled %}
+   <hr>
+   <p>
+      {{ telemetry_info|raw }}
+   </p>
+{% endif %}
+
+<hr>
+<p>
+   {{ reference_info|raw }}
+</p>
+
+<hr>
+<form action="update.php" method="post">
+   <div class="text-center">
+      <button type="submit" class="btn btn-primary">
+         <i class="fas fa-thumbs-up me-1"></i>
+         {{ __("Use GLPI") }}
+      </button>
+   </div>
+
+   <input type="hidden" name="update_end" value="1">
+   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+</form>

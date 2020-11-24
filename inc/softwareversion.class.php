@@ -125,7 +125,7 @@ class SoftwareVersion extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . OperatingSystem::getTypeName(1) . "</td><td>";
@@ -164,7 +164,6 @@ class SoftwareVersion extends CommonDBChild {
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -300,7 +299,7 @@ class SoftwareVersion extends CommonDBChild {
 
       if ($canedit) {
          echo "<div class='center firstbloc'>";
-         echo "<a class='vsubmit' href='".SoftwareVersion::getFormURL()."?softwares_id=$softwares_id'>".
+         echo "<a class='btn btn-primary' href='".SoftwareVersion::getFormURL()."?softwares_id=$softwares_id'>".
                 _x('button', 'Add a version')."</a>";
          echo "</div>";
       }

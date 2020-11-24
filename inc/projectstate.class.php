@@ -86,4 +86,8 @@ class ProjectState extends CommonDropdown {
 
       return $tab;
    }
+
+   static function getIcon() {
+      return "fas fa-columns";
+   }
 }

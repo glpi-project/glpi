@@ -163,7 +163,10 @@ class Problem_Ticket extends CommonDBRelation{
             if (isset($input['problems_id']) && $problem->getFromDB($input['problems_id'])) {
                $problem->showMassiveSolutionForm($problem);
                echo "<br>";
-               echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+               echo Html::submit(_x('button', 'Post'), [
+                  'name'  => 'massiveaction',
+                  'class' => 'btn btn-primary',
+               ]);
                return true;
             }
             return false;
@@ -297,7 +300,7 @@ class Problem_Ticket extends CommonDBRelation{
             'condition'   => Ticket::getOpenCriteria()
          ]);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>";
 
          echo "</table>";
@@ -400,7 +403,7 @@ class Problem_Ticket extends CommonDBRelation{
             'condition' => Problem::getOpenCriteria()
          ]);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td><td>";
          if (Session::haveRight('problem', CREATE)) {
             echo "<a href='".Toolbox::getItemTypeFormURL('Problem')."?tickets_id=$ID'>";

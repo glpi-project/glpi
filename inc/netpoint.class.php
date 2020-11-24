@@ -128,10 +128,10 @@ class Netpoint extends CommonDropdown {
 
       $field_id = Html::cleanId("dropdown_".$myname.$rand);
       $param    = ['value'               => $value,
-                        'valuename'           => $name,
-                        'entity_restrict'     => $entity_restrict,
-                        'devtype'             => $devtype,
-                        'locations_id'        => $locations_id];
+                   'valuename'           => $name,
+                   'entity_restrict'     => $entity_restrict,
+                   'devtype'             => $devtype,
+                   'locations_id'        => $locations_id];
       echo Html::jsAjaxDropdown($myname, $field_id,
                                 $CFG_GLPI['root_doc']."/ajax/getDropdownNetpoint.php",
                                 $param);
@@ -144,7 +144,7 @@ class Netpoint extends CommonDropdown {
          $item = new self();
          if ($item->canCreate()) {
             echo "<span class='fa fa-plus pointer' title=\"".__s('Add')."\" ".
-                  "onClick=\"".Html::jsGetElementbyID('netpoint'.$rand).".dialog('open');\">" .
+                  "data-bs-toggle='modal' data-bs-target='#netpoint$rand'" .
                   "<span class='sr-only'>" . __s('Add') . "</span></span>";
             Ajax::createIframeModalWindow('netpoint'.$rand,
                                           $item->getFormURL());
@@ -273,10 +273,10 @@ class Netpoint extends CommonDropdown {
          echo "<tr class='tab_bg_2 center'>";
          echo "<td class='b'>"._n('Network outlet', 'Network outlets', 1)."</td>";
          echo "<td>".__('Name')."</td><td>";
-         Html::autocompletionTextField($item, "name", ['value' => '']);
+         echo Html::input('name', ['value' => '']);
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
-         echo "<td><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<td><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>\n";
          echo "</table>\n";
          Html::closeForm();
@@ -300,7 +300,7 @@ class Netpoint extends CommonDropdown {
          echo "<input type='hidden' name='locations_id' value='$ID'>";
          echo "<input type='hidden' name='_method' value='AddMulti'></td>";
          echo "<td><input type='submit' name='execute' value=\""._sx('button', 'Add')."\"
-                    class='submit'>";
+                    class='btn btn-primary'>";
          echo "</td></tr>\n";
          echo "</table>\n";
          Html::closeForm();

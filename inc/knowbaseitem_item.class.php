@@ -163,7 +163,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
             ]);
          }
          echo "</td><td>";
-         echo "<input type=\"submit\" name=\"add\" value=\""._sx('button', 'Add')."\" class=\"submit\">";
+         echo "<input type=\"submit\" name=\"add\" value=\""._sx('button', 'Add')."\" class=\"btn btn-primary\">";
          echo "</td></tr>";
          echo "</table>";
          if ($item_type == KnowbaseItem::getType()) {
@@ -199,7 +199,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
       Html::printAjaxPager($type_name, $start, $number);
 
       // Output events
-      echo "<div class='center'>";
+      echo "<div class='center table-responsive'>";
 
       if ($canedit) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
@@ -400,7 +400,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
          $action_prefix = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
 
          $actions[$action_prefix.'add']
-            = "<i class='ma-icon fas fa-book'></i>".
+            = "<i class='fas fa-book'></i>".
               _x('button', 'Link knowledgebase article');
       }
 

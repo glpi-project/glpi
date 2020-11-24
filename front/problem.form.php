@@ -40,6 +40,12 @@ if (empty($_GET["id"])) {
 
 Session::checkLoginUser();
 
+// as _actors virtual field stores json, bypass automatic escaping
+if (isset($_UPOST['_actors'])) {
+   $_POST['_actors'] = json_decode($_UPOST['_actors'], true);
+   $_REQUEST['_actors'] = $_POST['_actors'];
+}
+
 $problem = new Problem();
 if (isset($_POST["add"])) {
    $problem->check(-1, CREATE, $_POST);
@@ -138,9 +144,30 @@ if (isset($_POST["add"])) {
       }
    }
    Html::back();
+} else if (isset($_POST['addme_as_actor'])) {
+   $id = (int) $_POST['id'];
+   $problem->check($id, READ);
+   $input = array_merge(Toolbox::addslashes_deep($problem->fields), [
+      'id' => $id,
+      '_itil_'.$_POST['actortype'] => [
+         '_type' => "user",
+         'users_id' => Session::getLoginUserID(),
+         'use_notification' => 1,
+      ]
+   ]);
+   $problem->update($input);
+   Event::log($id, "problem", 4, "tracking",
+              //TRANS: %s is the user login
+              sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
+   Html::redirect(Problem::getFormURLWithID($id));
 } else {
-   Html::header(Problem::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "problem");
-   $problem->display($_REQUEST);
+   if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
+      Html::header(sprintf(__('%s Kanban'), Problem::getTypeName(1)), $_SERVER['PHP_SELF'], "helpdesk", "problem");
+      $problem::showKanban(0);
+   } else {
+      Html::header(Problem::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "problem");
+      $problem->display($_REQUEST);
+   }
 
    if (isset($_GET['id']) && ($_GET['id'] > 0) && isset($_GET['_sol_to_kb'])) {
       Ajax::createIframeModalWindow(
@@ -149,9 +176,9 @@ if (isset($_POST["add"])) {
          [
             'title'         => __('Save solution to the knowledge base'),
             'reloadonclose' => false,
+            'autoopen'      => true,
          ]
       );
-      echo Html::scriptBlock('$(function() {' . Html::jsGetElementbyID('savetokb') . '.dialog("open"); });');
    }
 
    Html::footer();

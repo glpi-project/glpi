@@ -72,7 +72,7 @@ Dropdown::showFromArray('year', $values, ['value'    => $y,
 echo "</td></tr>";
 
 echo "<tr><td class='tab_bg_1 center' colspan='4'>";
-echo "<input type='submit' value=\"".__s('Display report')."\" class='submit'></td></tr>";
+echo "<input type='submit' value=\"".__s('Display report')."\" class='btn btn-primary'></td></tr>";
 
 echo "</table>";
 Html::closeForm();

@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
+
 abstract class AbstractRightsDropdown
 {
    /**
@@ -79,6 +81,7 @@ abstract class AbstractRightsDropdown
       $params = [
          'values' => $values,
          'valuesnames' => self::getValueNames($values),
+         'multiple'    => true,
       ];
 
       return Html::jsAjaxDropdown($name, $field_id, $url, $params);
@@ -131,7 +134,7 @@ abstract class AbstractRightsDropdown
       }
 
       $ret = [
-         'results' => Toolbox::unclean_cross_side_scripting_deep($results),
+         'results' => Sanitizer::unsanitize($results),
          'count' =>  count($results)
       ];
 

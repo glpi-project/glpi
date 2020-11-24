@@ -73,7 +73,6 @@ class DeviceSoundCard extends CommonDevice {
          'field'              => 'type',
          'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

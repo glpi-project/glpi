@@ -86,7 +86,6 @@ class Transfer extends CommonDBTM {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -3681,14 +3680,14 @@ class Transfer extends CommonDBTM {
          echo "<div class='center'>";
          Entity::dropdown(['name' => 'to_entity']);
          echo "&nbsp;<input type='submit' name='transfer' value=\"".__s('Execute')."\"
-                      class='submit'></div>";
+                      class='btn btn-primary'></div>";
          echo "</td></tr>";
       }
 
       if ($edit_form) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Name')."</td><td>";
-         Html::autocompletionTextField($this, "name");
+         echo Html::input('name', ['value' => $this->fields['name']]);
          echo "</td>";
          echo "<td rowspan='3' class='middle right'>".__('Comments')."</td>";
          echo "<td class='center middle' rowspan='3'>
@@ -4006,5 +4005,10 @@ class Transfer extends CommonDBTM {
 
       return array_key_exists('transfers_id_auto', $config_values)
          && $config_values['transfers_id_auto'] == $this->fields['id'];
+   }
+
+
+   static function getIcon() {
+      return "fas fa-level-up-alt";
    }
 }

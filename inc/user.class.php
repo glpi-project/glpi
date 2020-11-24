@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Toolbox\Sanitizer;
 use Sabre\VObject;
@@ -2020,22 +2021,22 @@ class User extends CommonDBTM {
       $title   = self::getTypeName(Session::getPluralNumber());
 
       if (static::canCreate()) {
-         $buttons["user.form.php"] = __('Add user...');
-         $title                    = "";
+         $buttons["user.form.php"] = "<i class='fas fa-user-plus fa-lg me-2'></i>".__('Add user...');
+         $title = __("Actions");
 
          if (Auth::useAuthExt()
              && Session::haveRight("user", self::IMPORTEXTAUTHUSERS)) {
             // This requires write access because don't use entity config.
-            $buttons["user.form.php?new=1&amp;ext_auth=1"] = __('... From an external source');
+            $buttons["user.form.php?new=1&amp;ext_auth=1"] = "<i class='fas fa-user-cog fa-lg me-2'></i>".__('... From an external source');
          }
       }
       if (Session::haveRight("user", self::IMPORTEXTAUTHUSERS)
          && (static::canCreate() || static::canUpdate())) {
          if (AuthLDAP::useAuthLdap()) {
-            $buttons["ldap.php"] = __('LDAP directory link');
+            $buttons["ldap.php"] = "<i class='fas fa-cog fa-lg me-2'></i>".__('LDAP directory link');
          }
       }
-      Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", self::getTypeName(Session::getPluralNumber()), $title,
+      Html::displayTitle("", self::getTypeName(Session::getPluralNumber()), $title,
                          $buttons);
    }
 
@@ -2093,15 +2094,30 @@ class User extends CommonDBTM {
 
       $formtitle = $this->getTypeName(1);
 
+      $header_toolbar = [];
       if ($ID > 0) {
-         $formtitle .= "<a class='pointer far fa-address-card fa-lg' target='_blank' href='".
-                       User::getFormURLWithID($ID)."&amp;getvcard=1' title='".__s('Download user VCard').
-                       "'><span class='sr-only'>". __('Vcard')."</span></a>";
+         $vcard_lbl = __s('Download user VCard');
+         $vcard_url = User::getFormURLWithID($ID)."&amp;getvcard=1";
+         $vcard_btn = <<<HTML
+            <a href="{$vcard_url}" target="_blank"
+                     class="btn btn-sm btn-ghost-secondary"
+                     title="{$vcard_lbl}"
+                     data-bs-toggle="tooltip" data-bs-placement="bottom">
+               <i class="far fa-address-card fa-lg"></i>
+            </a>
+         HTML;
+         $header_toolbar[] = $vcard_btn;
+
          if (Session::canImpersonate($ID)) {
-            $formtitle .= '<button type="button" class="pointer btn-linkstyled btn-impersonate" name="impersonate" value="1">'
-               . '<i class="fas fa-user-secret fa-lg" title="' . __s('Impersonate') . '"></i> '
-               . '<span class="sr-only">' . __s('Impersonate') . '</span>'
-               . '</button>';
+            $impersonate_lbl = __s('Impersonate');
+            $impersonate_btn = <<<HTML
+               <button type="button" name="impersonate" value="1"
+                       class="btn btn-sm btn-ghost-secondary btn-impersonate"
+                       title="{$impersonate_lbl}"
+                       data-bs-toggle="tooltip" data-bs-placement="bottom">
+                  <i class="fas fa-user-secret fa-lg"></i>
+               </button>
+            HTML;
 
             // "impersonate" button type is set to "button" on form display to prevent it to be used
             // by default (as it is the first found in current form) when pressing "enter" key.
@@ -2115,12 +2131,13 @@ class User extends CommonDBTM {
                   );
                })(jQuery);
 JAVASCRIPT;
-            $formtitle .= Html::scriptBlock($impersonate_js);
+            $header_toolbar[] = $impersonate_btn . Html::scriptBlock($impersonate_js);
          }
       }
 
-      $options['formtitle']   = $formtitle;
-      $options['formoptions'] = ($options['formoptions'] ?? '') . " enctype='multipart/form-data'";
+      $options['formtitle']      = $formtitle;
+      $options['formoptions']    = ($options['formoptions'] ?? '') . " enctype='multipart/form-data'";
+      $options['header_toolbar'] = $header_toolbar;
       $this->showFormHeader($options);
       $rand = mt_rand();
 
@@ -2130,26 +2147,17 @@ JAVASCRIPT;
           !empty($this->fields["password"])
           || ($this->fields["authtype"] == Auth::DB_GLPI)) {
          //display login field for new records, or if this is not external auth
-         echo "<td><input name='name' id='name' value=\"" . $this->fields["name"] . "\"></td>";
+         echo "<td><input name='name' id='name' value=\"" . $this->fields["name"] . "\" class='form-control'></td>";
       } else {
          echo "<td class='b'>" . $this->fields["name"];
-         echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\"></td>";
+         echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\" class='form-control'></td>";
       }
 
       if (!empty($this->fields["name"])) {
-         echo "<td rowspan='7'>" . __('Picture') . "</td>";
+         echo "<td rowspan='7'>" . _n('Picture', 'Pictures', 1) . "</td>";
          echo "<td rowspan='7'>";
-         echo "<div class='user_picture_border_small' id='picture$rand'>";
-         echo "<img class='user_picture_small' alt=\"".__s('Picture')."\" src='".
-                User::getThumbnailURLForPicture($this->fields['picture'])."'>";
-         // echo "<img src='".self::getURLForPicture($this->fields["picture"])."' class='user_picture'/>";
-         echo "</div>";
-         $full_picture = "<div class='user_picture_border'>";
-         $full_picture .= "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
-                            User::getURLForPicture($this->fields['picture'])."'>";
-         $full_picture .= "</div>";
+         echo self::getPictureForUser($ID);
 
-         Html::showTooltip($full_picture, ['applyto' => "picture$rand"]);
          echo Html::file(['name' => 'picture', 'display' => false, 'onlyimages' => true]);
          echo "<input type='checkbox' name='_blank_picture'>&nbsp;".__('Clear');
          echo "</td>";
@@ -2167,7 +2175,13 @@ JAVASCRIPT;
          echo "<tr class='tab_bg_1'><td><label for='textfield_sync_field$syncrand'>" . __('Synchronization field') . "</label></td><td>";
          if (self::canUpdate()
              && (!$extauth || empty($ID))) {
-                Html::autocompletionTextField($this, "sync_field", ['rand' => $syncrand]);
+            echo Html::input(
+               'sync_field',
+               [
+                  'value' => $this->fields['sync_field'],
+                  'id'    => "textfield_sync_field$syncrand",
+               ]
+            );
          } else {
             if (empty($this->fields['sync_field'])) {
                echo Dropdown::EMPTY_VALUE;
@@ -2182,12 +2196,24 @@ JAVASCRIPT;
 
       $surnamerand = mt_rand();
       echo "<tr class='tab_bg_1'><td><label for='textfield_realname$surnamerand'>" . __('Surname') . "</label></td><td>";
-      Html::autocompletionTextField($this, "realname", ['rand' => $surnamerand]);
+      echo Html::input(
+         'realname',
+         [
+            'value' => $this->fields['realname'],
+            'id'    => "textfield_realname$surnamerand",
+         ]
+      );
       echo "</td></tr>";
 
       $firstnamerand = mt_rand();
       echo "<tr class='tab_bg_1'><td><label for='textfield_firstname$firstnamerand'>" . __('First name') . "</label></td><td>";
-      Html::autocompletionTextField($this, "firstname", ['rand' => $firstnamerand]);
+      echo Html::input(
+         'firstname',
+         [
+            'value' => $this->fields['firstname'],
+            'id'    => "textfield_firstname$firstnamerand",
+         ]
+      );
       echo "</td></tr>";
 
       //do some rights verification
@@ -2197,11 +2223,11 @@ JAVASCRIPT;
          echo "<tr class='tab_bg_1'>";
          echo "<td><label for='password'>" . __('Password')."</label></td>";
          echo "<td><input id='password' type='password' name='password' value='' size='20'
-                    autocomplete='new-password' onkeyup=\"return passwordCheck();\"></td>";
+                    autocomplete='new-password' onkeyup=\"return passwordCheck();\" class='form-control'></td>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td><label for='password2'>" . __('Password confirmation') . "</label></td>";
-         echo "<td><input type='password' id='password2' name='password2' value='' size='20' autocomplete='new-password'>";
+         echo "<td><input type='password' id='password2' name='password2' value='' size='20' autocomplete='new-password' class='form-control'>";
          echo "</td></tr>";
 
          if ($CFG_GLPI["use_password_security"]) {
@@ -2279,7 +2305,13 @@ JAVASCRIPT;
       $phonerand = mt_rand();
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='textfield_phone$phonerand'>" .  Phone::getTypeName(1) . "</label></td><td>";
-      Html::autocompletionTextField($this, "phone", ['rand' => $phonerand]);
+      echo Html::input(
+         'phone',
+         [
+            'value' => $this->fields['phone'],
+            'id'    => "textfield_phone$phonerand",
+         ]
+      );
       echo "</td>";
       //Authentications information : auth method used and server used
       //don't display is creation of a new user'
@@ -2313,7 +2345,13 @@ JAVASCRIPT;
       $mobilerand = mt_rand();
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='textfield_mobile$mobilerand'>" . __('Mobile phone') . "</label></td><td>";
-      Html::autocompletionTextField($this, "mobile", ['rand' => $mobilerand]);
+      echo Html::input(
+         'mobile',
+         [
+            'value' => $this->fields['mobile'],
+            'id'    => "textfield_mobile$mobilerand",
+         ]
+      );
       echo "</td>";
       $catrand = mt_rand();
       echo "<td><label for='dropdown_usercategories_id$catrand'>" . _n('Category', 'Categories', 1) . "</label></td><td>";
@@ -2323,7 +2361,13 @@ JAVASCRIPT;
       $phone2rand = mt_rand();
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='textfield_phone2$phone2rand'>" .  __('Phone 2') . "</label></td><td>";
-      Html::autocompletionTextField($this, "phone2", ['rand' => $phone2rand]);
+      echo Html::input(
+         'phone2',
+         [
+            'value' => $this->fields['phone2'],
+            'id'    => "textfield_phone2$phone2rand",
+         ]
+      );
       echo "</td>";
       echo "<td rowspan='4' class='middle'><label for='comment'>" . __('Comments') . "</label></td>";
       echo "<td class='center middle' rowspan='4'>";
@@ -2332,7 +2376,13 @@ JAVASCRIPT;
 
       $admnumrand = mt_rand();
       echo "<tr class='tab_bg_1'><td><label for='textfield_registration_number$admnumrand'>" . __('Administrative number') . "</label></td><td>";
-      Html::autocompletionTextField($this, "registration_number", ['rand' => $admnumrand]);
+      echo Html::input(
+         'registration_number',
+         [
+            'value' => $this->fields['registration_number'],
+            'id'    => "textfield_registration_number$admnumrand",
+         ]
+      );
       echo "</td></tr>";
 
       $titlerand = mt_rand();
@@ -2501,75 +2551,6 @@ JAVASCRIPT;
    }
 
 
-   /** Print the user personnal information for check.
-    *
-    * @param integer $userid ID of the user
-    *
-    * @return void|boolean false if user is not the current user, otherwise print form
-    *
-    * @since 0.84
-    */
-   static function showPersonalInformation($userid) {
-      global $CFG_GLPI;
-
-      $user = new self();
-      if (!$user->can($userid, READ)
-          && ($userid != Session::getLoginUserID())) {
-         return false;
-      }
-      echo "<table class='tab_glpi left' width='100%'>";
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='b' width='20%'>";
-      echo __('Name');
-      echo "</td><td width='30%'>";
-      echo getUserName($userid);
-      echo "</td>";
-      echo "<td class='b'  width='20%'>";
-      echo Phone::getTypeName(1);
-      echo "</td><td width='30%'>";
-      echo $user->getField('phone');
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='b'>";
-      echo __('Phone 2');
-      echo "</td><td>";
-      echo $user->getField('phone2');
-      echo "</td>";
-      echo "<td class='b'>";
-      echo __('Mobile phone');
-      echo "</td><td>";
-      echo $user->getField('mobile');
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='b'>";
-      echo _n('Email', 'Emails', 1);
-      echo "</td><td>";
-      echo $user->getDefaultEmail();
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='b'>";
-      echo Location::getTypeName(1);
-      echo "</td><td>";
-      echo Dropdown::getDropdownName('glpi_locations', $user->getField('locations_id'));
-      echo "</td>";
-      echo "<td colspan='2' class='center'>";
-      if ($userid == Session::getLoginUserID()) {
-         echo "<a href='".$CFG_GLPI['root_doc']."/front/preference.php' class='vsubmit'>".
-               __('Edit')."</a>";
-      } else {
-         echo "&nbsp;";
-      }
-      echo "</td>";
-      echo "</tr>";
-      echo "</table>";
-   }
-
-
    /**
     * Print the user preference form.
     *
@@ -2594,10 +2575,6 @@ JAVASCRIPT;
                        || (($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED)
                            && !empty($this->fields["password"])));
 
-         // No autocopletion :
-         $save_autocompletion                 = $CFG_GLPI["use_ajax_autocompletion"];
-         $CFG_GLPI["use_ajax_autocompletion"] = false;
-
          echo "<div class='center'>";
          echo "<form method='post' name='user_manager' enctype='multipart/form-data' action='".$target."' autocomplete='off'>";
          echo "<table class='tab_cadre_fixe'>";
@@ -2615,23 +2592,21 @@ JAVASCRIPT;
 
             echo $this->fields["realname"];
          } else {
-            Html::autocompletionTextField($this, "realname", ['rand' => $surnamerand]);
+            echo Html::input(
+               'realname',
+               [
+                  'value' => $this->fields['realname'],
+                  'id'    => "textfield_realname$surnamerand",
+               ]
+            );
          }
          echo "</td>";
 
          if (!empty($this->fields["name"])) {
-            echo "<td rowspan='7'>" . __('Picture') . "</td>";
+            echo "<td rowspan='7'>" . _n('Picture', 'Pictures', 1) . "</td>";
             echo "<td rowspan='7'>";
-            echo "<div class='user_picture_border_small' id='picture$rand'>";
-            echo "<img class='user_picture_small' alt=\"".__s('Picture')."\" src='".
-                   User::getThumbnailURLForPicture($this->fields['picture'])."'>";
-            echo "</div>";
-            $full_picture  = "<div class='user_picture_border'>";
-            $full_picture .= "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
-                              User::getURLForPicture($this->fields['picture'])."'>";
-            $full_picture .= "</div>";
+            echo self::getPictureForUser($ID);
 
-            Html::showTooltip($full_picture, ['applyto' => "picture$rand"]);
             echo Html::file(['name' => 'picture', 'display' => false, 'onlyimages' => true]);
 
             echo "&nbsp;";
@@ -2650,7 +2625,13 @@ JAVASCRIPT;
 
             echo $this->fields["firstname"];
          } else {
-            Html::autocompletionTextField($this, "firstname", ['rand' => $firstnamerand]);
+            echo Html::input(
+               'firstname',
+               [
+                  'value' => $this->fields['firstname'],
+                  'id'    => "textfield_firstname$firstnamerand",
+               ]
+            );
          }
          echo "</td></tr>";
 
@@ -2697,13 +2678,13 @@ JAVASCRIPT;
 
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='password'>" . __('Password') . "</label></td>";
-            echo "<td><input id='password' type='password' name='password' value='' size='30' autocomplete='new-password' onkeyup=\"return passwordCheck();\">";
+            echo "<td><input id='password' type='password' name='password' value='' size='30' autocomplete='new-password' onkeyup=\"return passwordCheck();\" class='form-control'>";
             echo "</td>";
             echo "</tr>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='password2'>" . __('Password confirmation') . "</label></td>";
-            echo "<td><input type='password' name='password2' id='password2' value='' size='30' autocomplete='new-password'>";
+            echo "<td><input type='password' name='password2' id='password2' value='' size='30' autocomplete='new-password' class='form-control'>";
             echo "</td></tr>";
 
             if ($CFG_GLPI["use_password_security"]) {
@@ -2757,7 +2738,13 @@ JAVASCRIPT;
              && isset($authtype['phone_field']) && !empty($authtype['phone_field'])) {
             echo $this->fields["phone"];
          } else {
-            Html::autocompletionTextField($this, "phone", ['rand' => $phonerand]);
+            echo Html::input(
+               'phone',
+               [
+                  'value' => $this->fields['phone'],
+                  'id'    => "textfield_phone$phonerand",
+               ]
+            );
          }
          echo "</td>";
          echo "<td class='top'>" . _n('Email', 'Emails', Session::getPluralNumber());
@@ -2774,7 +2761,13 @@ JAVASCRIPT;
              && isset($authtype['mobile_field']) && !empty($authtype['mobile_field'])) {
             echo $this->fields["mobile"];
          } else {
-            Html::autocompletionTextField($this, "mobile", ['rand' => $mobilerand]);
+            echo Html::input(
+               'mobile',
+               [
+                  'value' => $this->fields['mobile'],
+                  'id'    => "textfield_mobile$mobilerand",
+               ]
+            );
          }
          echo "</td>";
 
@@ -2802,7 +2795,13 @@ JAVASCRIPT;
              && isset($authtype['phone2_field']) && !empty($authtype['phone2_field'])) {
             echo $this->fields["phone2"];
          } else {
-            Html::autocompletionTextField($this, "phone2", ['rand' => $phone2rand]);
+            echo Html::input(
+               'phone2',
+               [
+                  'value' => $this->fields['phone2'],
+                  'id'    => "textfield_phone2$phone2rand",
+               ]
+            );
          }
          echo "</td>";
 
@@ -2825,7 +2824,13 @@ JAVASCRIPT;
              && isset($authtype['registration_number_field']) && !empty($authtype['registration_number_field'])) {
             echo $this->fields["registration_number"];
          } else {
-            Html::autocompletionTextField($this, "registration_number", ['rand' => $admnumrand]);
+            echo Html::input(
+               'registration_number',
+               [
+                  'value' => $this->fields['registration_number'],
+                  'id'    => "textfield_registration_number$admnumrand",
+               ]
+            );
          }
          echo "</td><td colspan='2'></td></tr>";
 
@@ -2903,13 +2908,12 @@ JAVASCRIPT;
          echo "</td></tr>";
 
          echo "<tr><td class='tab_bg_2 center' colspan='4'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary'>";
          echo "</td></tr>";
 
          echo "</table>";
          Html::closeForm();
          echo "</div>";
-         $CFG_GLPI["use_ajax_autocompletion"] = $save_autocompletion;
          return true;
       }
       return false;
@@ -3008,25 +3012,25 @@ JAVASCRIPT;
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions['Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
-                                                         = "<i class='ma-icon fas fa-users'></i>".
+                                                         = "<i class='fas fa-users'></i>".
                                                            __('Associate to a group');
          $actions['Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'remove']
                                                          = __('Dissociate from a group');
          $actions['Profile_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
-                                                         = "<i class='ma-icon fas fa-user-shield'></i>".
+                                                         = "<i class='fas fa-user-shield'></i>".
                                                            __('Associate to a profile');
          $actions['Profile_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'remove']
                                                          = __('Dissociate from a profile');
          $actions['Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'change_group_user']
-                                                         = "<i class='ma-icon fas fa-users-cog'></i>".
+                                                         = "<i class='fas fa-users-cog'></i>".
                                                            __("Move to group");
       }
 
       if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
          $prefix                                    = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
-         $actions[$prefix.'change_authtype']        = "<i class='ma-icon fas fa-user-cog'></i>".
+         $actions[$prefix.'change_authtype']        = "<i class='fas fa-user-cog'></i>".
                                                       _x('button', 'Change the authentication method');
-         $actions[$prefix.'force_user_ldap_update'] = "<i class='ma-icon fas fa-sync'></i>".
+         $actions[$prefix.'force_user_ldap_update'] = "<i class='fas fa-sync'></i>".
                                                       __('Force synchronization');
       }
       return $actions;
@@ -3134,7 +3138,6 @@ JAVASCRIPT;
          'field'              => 'realname',
          'name'               => __('Last name'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -3143,7 +3146,6 @@ JAVASCRIPT;
          'field'              => 'firstname',
          'name'               => __('First name'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -3163,7 +3165,7 @@ JAVASCRIPT;
          'id'                 => '150',
          'table'              => $this->getTable(),
          'field'              => 'picture',
-         'name'               => __('Picture'),
+         'name'               => _n('Picture', 'Pictures', 1),
          'datatype'           => 'specific',
          'nosearch'           => true,
          'massiveaction'      => false
@@ -3176,7 +3178,6 @@ JAVASCRIPT;
          'name'               => __('Synchronization field'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
@@ -3195,7 +3196,6 @@ JAVASCRIPT;
          'field'              => 'phone',
          'name'               => Phone::getTypeName(1),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -3204,7 +3204,6 @@ JAVASCRIPT;
          'field'              => 'phone2',
          'name'               => __('Phone 2'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -3213,7 +3212,6 @@ JAVASCRIPT;
          'field'              => 'mobile',
          'name'               => __('Mobile phone'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -3352,7 +3350,6 @@ JAVASCRIPT;
          'field'              => 'registration_number',
          'name'               => __('Administrative number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -3528,7 +3525,7 @@ JAVASCRIPT;
          case 'picture':
             if (isset($options['html']) && $options['html']) {
                return Html::image(self::getThumbnailURLForPicture($values['picture']),
-                                  ['class' => 'user_picture_small', 'alt' => __('Picture')]);
+                                  ['class' => 'user_picture_small', 'alt' => _n('Picture', 'Pictures', 1)]);
             }
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -3881,7 +3878,7 @@ JAVASCRIPT;
          $criteria['SELECT'] = ['COUNT' => 'glpi_users.id AS CPT'];
          $criteria['DISTINCT'] = true;
       } else {
-         $criteria['SELECT'] = 'glpi_users.*';
+         $criteria['SELECT'] = ['glpi_users.*', 'glpi_useremails.email AS default_email'];
          $criteria['DISTINCT'] = true;
       }
 
@@ -3937,9 +3934,10 @@ JAVASCRIPT;
             ];
          } else {
             $criteria['ORDERBY'] = [
-               'glpi_users.realname',
-               'glpi_users.firstname',
-               'glpi_users.name'
+               'glpi_users.realname ASC',
+               'glpi_users.firstname ASC',
+               'glpi_users.name ASC',
+               'glpi_useremails.is_default DESC'
             ];
          }
 
@@ -3983,11 +3981,13 @@ JAVASCRIPT;
     *    - ldap_import
     *    - on_change        : string / value to transmit to "onChange"
     *    - display          : boolean / display or get string (default true)
-    *    - width            : specific width needed (default 80%)
+    *    - width            : specific width needed
     *    - specific_tags    : array of HTML5 tags to add to the field
+    *    - class            : class to pass to html select
     *    - url              : url of the ajax php code which should return the json data to show in
     *                         the dropdown (default /ajax/getDropdownUsers.php)
     *    - inactive_deleted : retreive also inactive or deleted users
+    *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
     *
     * @return integer|string Random value if displayed, string otherwise
     */
@@ -4001,10 +4001,11 @@ JAVASCRIPT;
          'right'               => 'id',
          'all'                 => 0,
          'display_emptychoice' => true,
+         'emptylabel'          => Dropdown::EMPTY_VALUE,
          'placeholder'         => '',
          'on_change'           => '',
          'comments'            => 1,
-         'width'               => '80%',
+         'width'               => '',
          'entity'              => -1,
          'entity_sons'         => false,
          'used'                => [],
@@ -4014,10 +4015,12 @@ JAVASCRIPT;
          'display'             => true,
          '_user_index'         => 0,
          'specific_tags'       => [],
+         'class'               => "form-select",
          'url'                 => $CFG_GLPI['root_doc'] . "/ajax/getDropdownUsers.php",
          'inactive_deleted'    => 0,
          'with_no_right'       => 0,
          'toadd'               => [],
+         'hide_if_no_elements' => false,
       ];
 
       if (is_array($options) && count($options)) {
@@ -4032,7 +4035,8 @@ JAVASCRIPT;
       }
 
       // Check default value for dropdown : need to be a numeric
-      if ((strlen($p['value']) == 0) || (!is_numeric($p['value']) && $p['value'] != 'myself')) {
+      if ($p['value'] !== null
+          && ((strlen($p['value']) == 0) || !is_numeric($p['value']) && $p['value'] != 'myself')) {
          $p['value'] = 0;
       }
 
@@ -4058,7 +4062,7 @@ JAVASCRIPT;
          if ($p['all']) {
             $default = __('All');
          } else {
-            $default = Dropdown::EMPTY_VALUE;
+            $default = $p['emptylabel'];
          }
       }
 
@@ -4089,17 +4093,29 @@ JAVASCRIPT;
          'entity_restrict'     => ($entity_restrict = (is_array($p['entity']) ? json_encode(array_values($p['entity'])) : $p['entity'])),
          'specific_tags'       => $p['specific_tags'],
          'toadd'               => $p['toadd'],
+         'class'               => $p['class'],
          '_idor_token'         => Session::getNewIDORToken(__CLASS__, [
             'right'           => $p['right'],
             'entity_restrict' => $entity_restrict,
          ]),
       ];
 
-      $output   = Html::jsAjaxDropdown($p['name'], $field_id,
-                                       $p['url'],
-                                       $param);
+      if ($p['hide_if_no_elements']) {
+         $result = Dropdown::getDropdownUsers(
+            ['display_emptychoice' => false, 'page' => 1, 'page_limit' => 1] + $param,
+            false
+         );
+         if ($result['count'] === 0) {
+            return;
+         }
+      }
+
+      $output = Html::jsAjaxDropdown($p['name'], $field_id,
+                                      $p['url'],
+                                      $param);
 
       // Display comment
+      $icons = "";
       if ($p['comments']) {
          $comment_id = Html::cleanId("comment_".$p['name'].$p['rand']);
          $link_id = Html::cleanId("comment_link_".$p["name"].$p['rand']);
@@ -4117,11 +4133,6 @@ JAVASCRIPT;
                )
             );
          }
-         $output .= "&nbsp;".Html::showToolTip($user["comment"],
-                                      ['contentid' => $comment_id,
-                                            'display'   => false,
-                                            'link'      => $user["link"],
-                                            'linkid'    => $link_id]);
 
          $paramscomment = [
             'value'    => '__VALUE__',
@@ -4131,26 +4142,44 @@ JAVASCRIPT;
          if ($view_users) {
             $paramscomment['withlink'] = $link_id;
          }
-         $output .= Ajax::updateItemOnSelectEvent($field_id, $comment_id,
+         $icons .= '<div class="btn btn-outline-secondary">';
+         $icons .= Ajax::updateItemOnSelectEvent($field_id, $comment_id,
                                                   $CFG_GLPI["root_doc"]."/ajax/comments.php",
                                                   $paramscomment, false);
+
+         $icons .= Html::showToolTip($user["comment"], [
+            'contentid' => $comment_id,
+            'display'   => false,
+            'link'      => $user["link"],
+            'linkid'    => $link_id
+         ]);
+         $icons .= '</div>';
       }
-      $output .= Ajax::commonDropdownUpdateItem($p, false);
 
       if (Session::haveRight('user', self::IMPORTEXTAUTHUSERS)
           && $p['ldap_import']
           && Entity::isEntityDirectoryConfigured($_SESSION['glpiactive_entity'])) {
 
-         $output .= "<span title=\"".__s('Import a user')."\" class='fa fa-plus pointer'".
-                     " onClick=\"".Html::jsGetElementbyID('userimport'.$p['rand']).".dialog('open');\">
-                     <span class='sr-only'>" . __s('Import a user') . "</span></span>";
-         $output .= Ajax::createIframeModalWindow('userimport'.$p['rand'],
+         $icons .= '<div class="btn btn-outline-secondary">';
+         $icons .= Ajax::createIframeModalWindow('userimport'.$p['rand'],
                                                   $CFG_GLPI["root_doc"].
                                                       "/front/ldap.import.php?entity=".
                                                       $_SESSION['glpiactive_entity'],
                                                   ['title'   => __('Import a user'),
                                                         'display' => false]);
+         $icons .= "<span title=\"".__s('Import a user')."\"".
+         " data-bs-toggle='modal' data-bs-target='#userimport{$p['rand']}'>
+            <i class='fas fa-plus fa-fw '></i>
+            <span class='sr-only'>" . __s('Import a user') . "</span>
+         </span>";
+         $icons .= '</div>';
       }
+
+      if (strlen($icons) > 0) {
+         $output = "<div class='btn-group btn-group-sm ".($p['width'] == "100%" ? "w-100" : "")."' role='group'>{$output} {$icons}</div>";
+      }
+
+      $output .= Ajax::commonDropdownUpdateItem($p, false);
 
       if ($p['display']) {
          echo $output;
@@ -4184,13 +4213,13 @@ JAVASCRIPT;
       echo "<tr class='tab_bg_1'>";
       echo "<td class='tab_bg_2 center' colspan='2'>\n";
       echo "<input type='submit' name='add_ext_auth_ldap' value=\"".__s('Import from directories')."\"
-             class='submit'>\n";
+             class='btn btn-primary'>\n";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='tab_bg_2 center' colspan='2'>\n";
       echo "<input type='submit' name='add_ext_auth_simple' value=\"".__s('Import from other sources')."\"
-             class='submit'>\n";
+             class='btn btn-primary'>\n";
       echo "</td></tr>\n";
 
       echo "</table>";
@@ -4735,7 +4764,7 @@ JAVASCRIPT;
       echo '<label for="password">' . __('New password') . '</label>';
       echo '</td>';
       echo '<td>';
-      echo '<input type="password" id="password" name="password" autocomplete="new-password" onkeyup="return passwordCheck();" />';
+      echo '<input type="password" id="password" name="password" autocomplete="new-password" onkeyup="return passwordCheck();" class="form-control" />';
       echo '</td>';
       echo '</tr>';
 
@@ -4744,7 +4773,7 @@ JAVASCRIPT;
       echo '<label for="password2">' . __('New password confirmation') . '</label>';
       echo '</td>';
       echo '<td>';
-      echo '<input type="password" id="password2" name="password2" autocomplete="new-password" />';
+      echo '<input type="password" id="password2" name="password2" autocomplete="new-password" class="form-control" />';
       echo '</td>';
       echo '</tr>';
 
@@ -4759,7 +4788,7 @@ JAVASCRIPT;
 
       echo '<tr class="tab_bg_2 center">';
       echo '<td colspan="2">';
-      echo '<input type="submit" name="update" value="' . __s('Save') . '" class="submit" />';
+      echo '<input type="submit" name="update" value="' . __s('Save') . '" class="btn btn-primary" />';
       echo '</td>';
       echo '</tr>';
 
@@ -4784,62 +4813,22 @@ JAVASCRIPT;
     * @return void
     */
    static function showPasswordForgetChangeForm($token) {
-      global $CFG_GLPI, $DB;
+      global $DB;
 
       // Verif token.
-      $token_ok = false;
       $iterator = $DB->request([
          'FROM'   => self::getTable(),
          'WHERE'  => [
-            'password_forget_token'       => $token,
+            'password_forget_token' => $token,
             new \QueryExpression('NOW() < ADDDATE(' . $DB->quoteName('password_forget_token_date') . ', INTERVAL 1 DAY)')
          ]
       ]);
 
-      if (count($iterator) == 1) {
-         $token_ok = true;
-      }
-      echo "<div class='center'>";
-
-      if ($token_ok) {
-         echo "<form method='post' name='forgetpassword' action='".$CFG_GLPI['root_doc'].
-                "/front/lostpassword.php'>";
-         echo "<table class='tab_cadre'>";
-         echo "<tr><th colspan='2'>" . __('Forgotten password?')."</th></tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2'>". __('Please confirm your email address and enter your new password.').
-              "</td></tr>";
-
-         echo "<tr class='tab_bg_1'><td>" . _n('Email', 'Emails', 1)."</td>";
-         echo "<td><input type='text' name='email' value='' size='60'></td></tr>";
-
-         echo "<tr class='tab_bg_1'><td>" . __('Password')."</td>";
-         echo "<td><input id='password' type='password' name='password' value='' size='20'
-                    autocomplete='new-password' onkeyup=\"return passwordCheck();\">";
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_1'><td>" . __('Password confirmation')."</td>";
-         echo "<td><input type='password' name='password2' value='' size='20' autocomplete='new-password'>";
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_1'><td>".__('Password security policy')."</td>";
-         echo "<td>";
-         Config::displayPasswordSecurityChecks();
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_2 center'><td colspan='2'>";
-         echo "<input type='hidden' name='password_forget_token' value='$token'>";
-         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
-         echo "</td></tr>";
-
-         echo "</table>";
-         Html::closeForm();
-
-      } else {
-         echo __('Your password reset request has expired or is invalid. Please renew it.');
-      }
-      echo "</div>";
+      TemplateRenderer::getInstance()->display('password_form.html.twig', [
+         'title'    => __('Forgotten password?'),
+         'token'    => $token,
+         'token_ok' => (count($iterator) == 1),
+      ]);
    }
 
 
@@ -4849,26 +4838,9 @@ JAVASCRIPT;
     * @return void
     */
    static function showPasswordForgetRequestForm() {
-      global $CFG_GLPI;
-
-      echo "<div class='center'>";
-      echo "<form method='post' name='forgetpassword' action='".$CFG_GLPI['root_doc'].
-             "/front/lostpassword.php'>";
-      echo "<table class='tab_cadre'>";
-      echo "<tr><th colspan='2'>" . __('Forgotten password?')."</th></tr>";
-
-      echo "<tr class='tab_bg_1'><td colspan='2'>" .
-            __('Please enter your email address. An email will be sent to you and you will be able to choose a new password.').
-           "</td></tr>";
-
-      echo "<tr class='tab_bg_2 center'>";
-      echo "<td><input type='text' size='60' name='email' value=''></td>";
-      echo "<td><input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
-      echo "</td></tr>";
-
-      echo "</table>";
-      Html::closeForm();
-      echo "</div>";
+      TemplateRenderer::getInstance()->display('password_form.html.twig', [
+         'title' => __('Forgotten password?'),
+      ]);
    }
 
 
@@ -4941,28 +4913,23 @@ JAVASCRIPT;
     * @return void
     */
    public function showUpdateForgottenPassword(array $input) {
-      global $CFG_GLPI;
-
-      echo "<div class='center'>";
       try {
-         if (!$this->updateForgottenPassword($input)) {
-            Html::displayMessageAfterRedirect();
-         } else {
-            echo __('Reset password successful.');
+         if ($this->updateForgottenPassword($input)) {
+            Session::addMessageAfterRedirect(__('Reset password successful.'));
          }
       } catch (\Glpi\Exception\ForgetPasswordException $e) {
-         echo $e->getMessage();
+         Session::addMessageAfterRedirect($e->getMessage(), false, ERROR);
       } catch (\Glpi\Exception\PasswordTooWeakException $e) {
          // Force display on error
          foreach ($e->getMessages() as $message) {
-            Session::addMessageAfterRedirect($message);
+            Session::addMessageAfteRredirect($message, false, ERROR);
          }
-         Html::displayMessageAfterRedirect();
       }
 
-      echo "<br>";
-      echo "<a href=\"".$CFG_GLPI['root_doc']."/index.php\">".__s('Back')."</a>";
-      echo "</div>";
+      TemplateRenderer::getInstance()->display('password_form.html.twig', [
+         'title'         => __('Forgotten password?'),
+         'messages_only' => true,
+      ]);
    }
 
 
@@ -4974,15 +4941,18 @@ JAVASCRIPT;
     * @return void
     */
    public function showForgetPassword($email) {
-
-      echo "<div class='center'>";
       try {
          $this->forgetPassword($email);
       } catch (\Glpi\Exception\ForgetPasswordException $e) {
-         echo $e->getMessage();
+         Session::addMessageAfterRedirect($e->getMessage(), false, ERROR);
          return;
       }
-      echo __('An email has been sent to your email address. The email contains information for reset your password.');
+      Session::addMessageAfteRredirect(__('An email has been sent to your email address. The email contains information for reset your password.'));
+
+      TemplateRenderer::getInstance()->display('password_form.html.twig', [
+         'title'         => __('Forgotten password?'),
+         'messages_only' => true,
+      ]);
    }
 
    /**
@@ -5243,18 +5213,19 @@ JAVASCRIPT;
     * @since 0.85
     *
     * @param string $picture Picture field value
+    * @param bool  bool get full path
     *
     * @return string
     */
-   static function getURLForPicture($picture) {
+   static function getURLForPicture($picture, $full = true) {
       global $CFG_GLPI;
 
-      $url = Toolbox::getPictureUrl($picture);
+      $url = Toolbox::getPictureUrl($picture, $full);
       if (null !== $url) {
          return $url;
       }
 
-      return $CFG_GLPI["root_doc"]."/pics/picture.png";
+      return ($full ? $CFG_GLPI["root_doc"] : "")."/pics/picture.png";
    }
 
 
@@ -5267,7 +5238,7 @@ JAVASCRIPT;
     *
     * @return string
     */
-   static function getThumbnailURLForPicture($picture) {
+   static function getThumbnailURLForPicture(string $picture = null) {
       global $CFG_GLPI;
 
       // prevent xss
@@ -5279,10 +5250,9 @@ JAVASCRIPT;
             return $CFG_GLPI["root_doc"]."/front/document.send.php?file=_pictures/".$tmp[0].
                    "_min.".$tmp[1];
          }
-         return $CFG_GLPI["root_doc"]."/pics/picture_min.png";
       }
-      return $CFG_GLPI["root_doc"]."/pics/picture_min.png";
 
+      return "";
    }
 
 
@@ -5380,42 +5350,22 @@ JAVASCRIPT;
    }
 
    /**
-    * Get/Print the switch language form.
+    * Print the switch language form.
     *
-    * @param boolean $display Whether to display or return output
-    * @param array   $options Options
-    *    - string   value       Selected language value
-    *    - boolean  showbutton  Whether to display or not submit button
-    *
-    * @return void|string Nothing if displayed, string to display otherwise
+    * @return void
     */
-   function showSwitchLangForm($display = true, array $options = []) {
-
+   static function showSwitchLangForm() {
       $params = [
-         'value'        => $_SESSION["glpilanguage"],
-         'display'      => false,
-         'showbutton'   => true
+         'value'     => $_SESSION["glpilanguage"],
+         'display'   => false,
+         'on_change' => 'this.form.submit()'
       ];
 
-      foreach ($options as $key => $value) {
-         $params[$key] = $value;
-      }
-
-      $out = '';
-      $out .= "<form method='post' name='switchlang' action='".User::getFormURL()."' autocomplete='off'>";
-      $out .= "<p class='center'>";
+      $out = "<form method='post' name='switchlang' action='".User::getFormURL()."' autocomplete='off'>";
       $out .= Dropdown::showLanguages("language", $params);
-      if ($params['showbutton'] === true) {
-         $out .= "&nbsp;<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
-      }
-      $out .= "</p>";
       $out .= Html::closeForm(false);
 
-      if ($display === true) {
-         echo $out;
-      } else {
-         return $out;
-      }
+      return $out;
    }
 
    /**
@@ -5734,23 +5684,57 @@ JAVASCRIPT;
       }
    }
 
-   public static function getAnonymizedName(int $users_id, ?int $entities_id = null): ?string {
+   /**
+    * Get anonymized name for user instance.
+    *
+    * @param int $users_id
+    * @param int $entities_id
+    *
+    * @return string|null
+    */
+   public function getAnonymizedName(?int $entities_id = null): ?string {
       switch (Entity::getAnonymizeConfig($entities_id)) {
          default:
          case Entity::ANONYMIZE_DISABLED:
-            return "";
+            return null;
 
          case Entity::ANONYMIZE_USE_GENERIC:
-            return __("Helpdesk");
+            return __("Helpdesk user");
+
+         case Entity::ANONYMIZE_USE_NICKNAME:
+            return $this->fields['nickname'];
+      }
+
+      return null;
+   }
+
+   /**
+    * Get anonymized name for user having given ID.
+    *
+    * @param int $users_id
+    * @param int $entities_id
+    *
+    * @return string|null
+    */
+   public static function getAnonymizedNameForUser(int $users_id, ?int $entities_id = null): ?string {
+      switch (Entity::getAnonymizeConfig($entities_id)) {
+         default:
+         case Entity::ANONYMIZE_DISABLED:
+            return null;
+
+         case Entity::ANONYMIZE_USE_GENERIC:
+            return __("Helpdesk user");
 
          case Entity::ANONYMIZE_USE_NICKNAME:
             $user = new User();
             if (!$user->getFromDB($users_id)) {
-               return "";
+               return '';
             }
 
-            return $user->fields['nickname'];
+            return $user->fields['nickname'] ?? '';
       }
+
+      return null;
    }
 
    /**
@@ -5778,20 +5762,19 @@ JAVASCRIPT;
       $surnamerand = mt_rand();
       echo "<td><label for='textfield_realname$surnamerand'>" . __('Surname') . "</label></td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "realname", ['rand' => $surnamerand]);
+      echo Html::input(
+         'realname',
+         [
+            'value' => $this->fields['realname'],
+            'id'    => "textfield_realname$surnamerand",
+         ]
+      );
       echo "</td>";
 
       echo "<td rowspan='3'>" . __('Picture') . "</td>";
       echo "<td rowspan='3'>";
-      echo "<div class='user_picture_border_small' id='picture$rand'>";
-      echo "<img class='user_picture_small' alt=\"".__s('Picture')."\" src='".
-               User::getThumbnailURLForPicture($this->fields['picture'])."'>";
-      echo "</div>";
-      $full_picture = "<div class='user_picture_border'>";
-      $full_picture .= "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
-                           User::getURLForPicture($this->fields['picture'])."'>";
-      $full_picture .= "</div>";
-      Html::showTooltip($full_picture, ['applyto' => "picture$rand"]);
+      echo self::getPictureForUser($ID);
+
       echo Html::file(['name' => 'picture', 'display' => false, 'onlyimages' => true]);
       echo "<input type='checkbox' name='_blank_picture'>&nbsp;".__('Clear');
       echo "</td>";
@@ -5799,7 +5782,13 @@ JAVASCRIPT;
 
       $firstnamerand = mt_rand();
       echo "<tr class='tab_bg_1'><td><label for='textfield_firstname$firstnamerand'>" . __('First name') . "</label></td><td>";
-      Html::autocompletionTextField($this, "firstname", ['rand' => $firstnamerand]);
+      echo Html::input(
+         'firstname',
+         [
+            'value' => $this->fields['firstname'],
+            'id'    => "textfield_firstname$firstnamerand",
+         ]
+      );
       echo "</td></tr>";
 
       echo "<tr><td colspan='2'>";
@@ -5813,5 +5802,114 @@ JAVASCRIPT;
       $this->showFormButtons($options);
 
       return true;
+   }
+
+   public function getPictureForUser(int $ID): string {
+      $output = "<span class='avatar avatar-md rounded' style='";
+
+      $user_picture  = $this->getThumbnailPicturePath();
+      $user_color  = $this->getUserInitialsBgColor($ID);
+      if ($user_picture) {
+         $output .= "background-image: url($user_picture);";
+      }
+      $output .= "background-color: $user_color'>";
+      if (!$user_picture) {
+         $output .= $this->getUserInitials();
+      }
+      $output .= "</span>";
+      return $output;
+   }
+
+   /**
+    * Get user link.
+    *
+    * @param bool $enable_anonymization
+    *
+    * @return string
+    */
+   public function getUserLink(bool $enable_anonymization = false): string {
+      if ($enable_anonymization
+          && $this->fields['id'] != $_SESSION['glpiID']
+          && Session::getCurrentInterface() == 'helpdesk'
+          && ($anon = $this->getAnonymizedName()) !== null) {
+         // if anonymized name active, return only the anonymized name
+         return $anon;
+      }
+
+      return $this->getLink();
+   }
+
+   /**
+    * Get user picture path.
+    *
+    * @param bool $enable_anonymization
+    *
+    * @return string
+    */
+   public function getPicturePath(bool $enable_anonymization = false): string {
+
+      if ($enable_anonymization && Session::getCurrentInterface() == 'helpdesk' && Entity::getAnonymizeConfig() !== Entity::ANONYMIZE_DISABLED) {
+         return '/pics/picture.png';
+      }
+
+      $path = Toolbox::getPictureUrl($this->fields['picture'], false);
+      if (!empty($path)) {
+         return $path;
+      }
+
+      return '/pics/picture.png';
+   }
+
+   /**
+    * Get user thumbnail picture path.
+    *
+    * @param bool $enable_anonymization
+    *
+    * @return null|string
+    */
+   public function getThumbnailPicturePath(bool $enable_anonymization = false): ?string {
+
+      if ($enable_anonymization && Session::getCurrentInterface() == 'helpdesk' && Entity::getAnonymizeConfig() !== Entity::ANONYMIZE_DISABLED) {
+         return null;
+      }
+
+      $path = User::getThumbnailURLForPicture($this->fields['picture']);
+      if (!empty($path)) {
+         return $path;
+      }
+
+      return null;
+   }
+
+   /**
+    * Get user initials.
+    *
+    * @param bool $enable_anonymization
+    *
+    * @return string
+    */
+   public function getUserInitials(bool $enable_anonymization = false): string {
+
+      if ($enable_anonymization && Session::getCurrentInterface() == 'helpdesk' && ($anon = $this->getAnonymizedName()) !== null) {
+         // if anonymized name active, return two first letters of the anon name
+         return mb_strtoupper(mb_substr($anon, 0, 2));
+      }
+
+      $initials = mb_substr($this->fields['firstname'], 0, 1) . mb_substr($this->fields['realname'], 0, 1);
+      if (!$initials) {
+         $initials = mb_substr($this->fields['name'], 0, 2);
+      }
+      return mb_strtoupper($initials);
+   }
+
+   /**
+    * Return background color corresponding to user initials.
+    *
+    * @param bool $enable_anonymization
+    *
+    * @return string
+    */
+   public function getUserInitialsBgColor(bool $enable_anonymization = false): string {
+      return Toolbox::getColorForString($this->getUserInitials($enable_anonymization));
    }
 }

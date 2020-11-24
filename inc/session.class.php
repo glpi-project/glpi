@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Cache\CacheManager;
+use Glpi\Cache\I18nCache;
 use Glpi\Event;
 
 if (!defined('GLPI_ROOT')) {
@@ -629,7 +631,15 @@ class Session {
       if (isset($CFG_GLPI["languages"][$trytoload][5])) {
          $_SESSION['glpipluralnumber'] = $CFG_GLPI["languages"][$trytoload][5];
       }
-      $TRANSLATE = new Laminas\I18n\Translator\Translator;
+
+      // Redefine Translator caching logic to be able to drop laminas/laminas-cache dependency.
+      $i18n_cache = !defined('TU_USER') ? new I18nCache((new CacheManager())->getTranslationsCacheInstance()) : null;
+      $TRANSLATE = new class ($i18n_cache) extends Laminas\I18n\Translator\Translator {
+         public function __construct(?I18nCache $cache) {
+            $this->cache = $cache;
+         }
+      };
+
       $TRANSLATE->setLocale($trytoload);
 
       if (class_exists('Locale')) {
@@ -638,10 +648,6 @@ class Session {
          \Locale::setDefault($trytoload);
       } else {
          Toolbox::logWarning('Missing required intl PHP extension');
-      }
-
-      if (!defined('TU_USER')) {
-         $TRANSLATE->setCache(Config::getTranslationCacheInstance(false));
       }
 
       $TRANSLATE->addTranslationFile('gettext', GLPI_I18N_DIR.$newfile, 'glpi', $trytoload);
