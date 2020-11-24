@@ -284,6 +284,17 @@ class Widget {
             background-color: {$fg_hover_color};
             border: 1px solid {$fg_hover_border};
          }
+
+         .theme-dark #{$p['id']} {
+            background-color: {$fg_color};
+            color: {$p['color']};
+         }
+
+         .theme-dark #{$p['id']}:hover {
+            background-color: {$fg_hover_color};
+            color: {$fg_color};
+            border: 1px solid {$fg_hover_border};
+         }
       </style>
       <a {$href}
          id="{$p['id']}"
@@ -291,7 +302,7 @@ class Widget {
          title="{$p['alt']}">
          <span class="content">$formatted_number</span>
          <div class="label" title="{$label}">{$label}</div>
-         <i class="main-icon {$p['icon']}" style="color: {$fg_color}"></i>
+         <i class="main-icon {$p['icon']}"></i>
       </a>
 HTML;
 
@@ -422,12 +433,21 @@ HTML;
       $html = <<<HTML
       <style>
          {$palette_style}
+
+         #chart-{$p['rand']} {
+            background-color: {$p['color']};
+            color: {$fg_color};
+         }
+
+         .theme-dark #chart-{$p['rand']} {
+            background-color: {$fg_color};
+            color: {$p['color']};
+         }
       </style>
 
       <div class="card $class"
            id="chart-{$p['rand']}"
-           title="{$p['alt']}"
-           style="background-color: {$p['color']}; color: {$fg_color}">
+           title="{$p['alt']}">
          <div class='scrollable'>
             <div class='table'>
             {$numbers_html}
@@ -489,7 +509,10 @@ HTML;
       array_splice($p['data'], $nb_slices);
 
       $nodata   = isset($p['data']['nodata']) && $p['data']['nodata'];
-      $fg_color = Toolbox::getFgColor($p['color']);
+
+      $fg_color      = Toolbox::getFgColor($p['color']);
+      $dark_bg_color = Toolbox::getFgColor($p['color'], 80);
+      $dark_fg_color = Toolbox::getFgColor($p['color'], 40);
 
       $class = "pie";
       $class.= $p['half'] ? " half": "";
@@ -517,15 +540,30 @@ HTML;
 
       $html = <<<HTML
       <style>
+         #chart-{$p['rand']} {
+            background-color: {$p['color']};
+            color: {$fg_color}
+         }
+
+         .theme-dark #chart-{$p['rand']} {
+            background-color: {$dark_bg_color};
+            color: {$dark_fg_color};
+         }
+
          #chart-{$p['rand']} .ct-label {
             fill: {$fg_color};
             color: {$fg_color};
          }
+
+         .theme-dark #chart-{$p['rand']} .ct-label {
+            fill: {$dark_fg_color};
+            color: {$dark_fg_color};
+         }
+
          {$palette_style}
       </style>
       <div class="card g-chart {$class}"
-           id="chart-{$p['rand']}"
-           style="background-color: {$p['color']}; color: {$fg_color}">
+           id="chart-{$p['rand']}">
          <div class="chart ct-chart">{$no_data_html}</div>
          <span class="main-label">{$p['label']}</span>
          <i class="main-icon {$p['icon']}"></i>
@@ -918,8 +956,11 @@ JAVASCRIPT;
       $json_labels = json_encode($labels);
       $json_series = json_encode($series);
 
-      $fg_color   = Toolbox::getFgColor($p['color']);
-      $line_color = Toolbox::getFgColor($p['color'], 10);
+      $fg_color        = Toolbox::getFgColor($p['color']);
+      $line_color      = Toolbox::getFgColor($p['color'], 10);
+      $dark_bg_color   = Toolbox::getFgColor($p['color'], 80);
+      $dark_fg_color   = Toolbox::getFgColor($p['color'], 40);
+      $dark_line_color = Toolbox::getFgColor($p['color'], 90);
 
       $animation_duration = self::$animation_duration;
 
@@ -955,11 +996,30 @@ JAVASCRIPT;
 
       $html = <<<HTML
       <style>
+      #chart-{$p['rand']} {
+         background-color: {$p['color']};
+         color: {$fg_color}
+      }
+
+      .theme-dark #chart-{$p['rand']} {
+         background-color: {$dark_bg_color};
+         color: {$dark_fg_color};
+      }
+
       #chart-{$p['rand']} .ct-label {
          color: {$fg_color};
       }
+
+      .theme-dark #chart-{$p['rand']} .ct-label {
+         color: {$dark_fg_color};
+      }
+
       #chart-{$p['rand']} .ct-grid {
          stroke: {$line_color};
+      }
+
+      .theme-dark #chart-{$p['rand']} .ct-grid {
+         stroke: {$dark_line_color};
       }
 
       /** fix chrome resizing height when animating svg (don't know why) **/
@@ -970,8 +1030,7 @@ JAVASCRIPT;
       </style>
 
       <div class="card g-chart $class"
-            id="chart-{$p['rand']}"
-            style="background-color: {$p['color']}; color: {$fg_color}">
+            id="chart-{$p['rand']}">
          <div class="chart ct-chart">$no_data_html</div>
          <span class="main-label">{$p['label']}</span>
          <i class="main-icon {$p['icon']}"></i>
@@ -1329,8 +1388,12 @@ JAVASCRIPT;
       $json_labels = json_encode($labels);
       $json_series = json_encode($series);
 
-      $fg_color   = Toolbox::getFgColor($p['color']);
-      $line_color = Toolbox::getFgColor($p['color'], 10);
+      $fg_color        = Toolbox::getFgColor($p['color']);
+      $line_color      = Toolbox::getFgColor($p['color'], 10);
+      $dark_bg_color   = Toolbox::getFgColor($p['color'], 80);
+      $dark_fg_color   = Toolbox::getFgColor($p['color'], 40);
+      $dark_line_color = Toolbox::getFgColor($p['color'], 90);
+
       $class = "line";
       $class.= $p['area'] ? " area": "";
       $class.= $p['multiple'] ? " multiple": "";
@@ -1371,12 +1434,31 @@ JAVASCRIPT;
       #chart-{$p['rand']} .ct-chart-line {
          min-height: $height;
       }
+
+      #chart-{$p['rand']} {
+         background-color: {$p['color']};
+         color: {$fg_color}
+      }
+
+      .theme-dark #chart-{$p['rand']} {
+         background-color: {$dark_bg_color};
+         color: {$dark_fg_color};
+      }
+
       #chart-{$p['rand']} .ct-label {
          color: {$fg_color};
       }
 
+      .theme-dark #chart-{$p['rand']} .ct-label {
+         color: {$dark_fg_color};
+      }
+
       #chart-{$p['rand']} .ct-grid {
          stroke: {$line_color};
+      }
+
+      .theme-dark #chart-{$p['rand']} .ct-grid {
+         stroke: {$dark_line_color};
       }
 
       #chart-{$p['rand']} .ct-circle {
@@ -1390,8 +1472,7 @@ JAVASCRIPT;
       </style>
 
       <div class="card g-chart $class"
-           id="chart-{$p['rand']}"
-           style="background-color: {$p['color']}; color: {$fg_color}">
+           id="chart-{$p['rand']}">
          <div class="chart ct-chart"></div>
          <span class="main-label">{$p['label']}</span>
          <i class="main-icon {$p['icon']}"></i>
@@ -1854,7 +1935,7 @@ JAVASCRIPT;
          \$ct-series-names: ({$series_names});
          \$ct-series-colors: ({$series_colors});
 
-         @import 'css/chartist/generate';
+         @import 'css/includes/components/chartist/generate';
       }");
 
       return $palette_css;

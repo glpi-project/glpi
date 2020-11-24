@@ -138,8 +138,11 @@ var GLPIImpact = {
    // Store selectors
    selectors: {
       // Dialogs
-      ongoingDialog     : "#ongoing_dialog",
-      editCompoundDialog: "#edit_compound_dialog",
+      ongoingDialog           : "#ongoing_dialog",
+      ongoingDialogBody       : "#ongoing_dialog .modal-body",
+      editCompoundDialog      : "#edit_compound_dialog",
+      editCompoundDialogSave  : '#edit_compound_save',
+      editCompoundDialogCancel: '#edit_compound_cancel',
 
       // Inputs
       compoundName         : "input[name=compound_name]",
@@ -200,6 +203,7 @@ var GLPIImpact = {
       showPointerForBadge: false,
       previousCursor     : "default",
       ctrlDown           : false,
+      editCompound       : null,        // Compound being edited
    },
 
    /**
@@ -1380,100 +1384,89 @@ var GLPIImpact = {
    },
 
    /**
-    * Build the add node dialog
-    *
-    * @returns {Object}
+    * Show the add node dialog
     */
-   getOngoingDialog: function() {
-      return {
-         title: __("Ongoing tickets"),
-         modal: true,
-         position: {
-            my: 'center',
-            at: 'center',
-            of: GLPIImpact.impactContainer
-         },
-         buttons: []
-      };
+   showOngoingDialog: function(ITILObjects) {
+      $(GLPIImpact.selectors.ongoingDialogBody).html(
+         GLPIImpact.buildOngoingDialogContent(ITILObjects)
+      );
+      $(GLPIImpact.selectors.ongoingDialog).modal('show');
    },
 
    /**
-    * Build the add node dialog
-    *
-    * @param {string} itemID
-    * @param {string} itemType
-    * @param {Object} position x, y
-    *
-    * @returns {Object}
+    * Set up event handlers for the edit compound dialog
     */
-   getEditCompoundDialog: function(compound) {
-      var previousLabel = compound.data('label');
-      var previousColor = compound.data('color');
-      // Reset inputs:
-      $(GLPIImpact.selectors.compoundName).val(previousLabel);
-      $(GLPIImpact.selectors.compoundColor).val(previousColor);
+   prepareEditCompoundDialog: function() {
+      $(this.selectors.editCompoundDialogSave).on('click', function() {
+         var compound = GLPIImpact.eventData.editCompound.target;
 
-      // Save group details
-      var buttonSave = {
-         text: __("Save"),
-         click: function() {
-            // Save compound name
-            compound.data(
-               'label',
-               $(GLPIImpact.selectors.compoundName).val()
-            );
+         // Save compound name
+         compound.data(
+            'label',
+            $(GLPIImpact.selectors.compoundName).val()
+         );
 
-            // Save compound color
-            compound.data(
-               'color',
-               $(GLPIImpact.selectors.compoundColor).val()
-            );
+         // Save compound color
+         compound.data(
+            'color',
+            $(GLPIImpact.selectors.compoundColor).val()
+         );
 
-            // Close dialog
-            $(this).dialog("close");
-            GLPIImpact.cy.trigger("change");
+         // Close dialog
+         $(GLPIImpact.selectors.editCompoundDialog).modal('hide');
+         GLPIImpact.cy.trigger("change");
 
-            // Log for undo (only if not first edit, see "close" function below)
-            if (GLPIImpact.eventData.newCompound == null) {
-               GLPIImpact.addToUndo(GLPIImpact.ACTION_EDIT_COMPOUND, {
-                  id      : compound.data('id'),
-                  label   : compound.data('label'),
-                  color   : compound.data('color'),
-                  oldLabel: previousLabel,
-                  oldColor: previousColor,
-               });
-            }
-         }
-      };
+         // Log for undo
+         if (GLPIImpact.eventData.newCompound == null) {
+            var previousLabel = GLPIImpact.eventData.editCompound.previousLabel;
+            var previousColor = GLPIImpact.eventData.editCompound.previousColor;
 
-      return {
-         title: __("Edit group"),
-         modal: true,
-         position: {
-            my: 'center',
-            at: 'center',
-            of: GLPIImpact.impactContainer
-         },
-         buttons: [buttonSave],
-         close: function() {
+            GLPIImpact.addToUndo(GLPIImpact.ACTION_EDIT_COMPOUND, {
+               id      : compound.data('id'),
+               label   : compound.data('label'),
+               color   : compound.data('color'),
+               oldLabel: previousLabel,
+               oldColor: previousColor,
+            });
+         } else {
             var label = $(GLPIImpact.selectors.compoundName).val();
             var color = $(GLPIImpact.selectors.compoundColor).val();
 
-            if (GLPIImpact.eventData.newCompound != null) {
-               // This compound was just added, we will keep only one action for
-               // the creation + edit in the undo stack
-               GLPIImpact.eventData.newCompound.data.label = label;
-               GLPIImpact.eventData.newCompound.data.color = color;
+            GLPIImpact.eventData.newCompound.data.label = label;
+            GLPIImpact.eventData.newCompound.data.color = color;
 
-               GLPIImpact.addToUndo(
-                  GLPIImpact.ACTION_ADD_COMPOUND,
-                  _.cloneDeep(GLPIImpact.eventData.newCompound)
-               );
+            GLPIImpact.addToUndo(
+               GLPIImpact.ACTION_ADD_COMPOUND,
+               _.cloneDeep(GLPIImpact.eventData.newCompound)
+            );
 
-               GLPIImpact.eventData.newCompound = null;
-            }
-         },
+            GLPIImpact.eventData.newCompound = null;
+         }
+      });
+   },
+
+   /**
+    * Show the edit compound dialog
+    *
+    * @param {Object} compound label, color
+    */
+   showEditCompoundDialog: function(compound) {
+      var previousLabel = compound.data('label');
+      var previousColor = compound.data('color');
+
+      // Reset inputs
+      $(GLPIImpact.selectors.compoundName).val(previousLabel);
+      $(GLPIImpact.selectors.compoundColor).val(previousColor);
+
+      // Set global event data
+      this.eventData.editCompound = {
+         target: compound,
+         previousLabel: previousLabel,
+         previousColor: previousColor,
       };
+
+      // Show modal
+      $(GLPIImpact.selectors.editCompoundDialog).modal('show');
    },
 
    /**
@@ -1501,6 +1494,9 @@ var GLPIImpact = {
 
       // Set start node
       this.startNode = startNode;
+
+      // Init dialogs actions handlers
+      this.prepareEditCompoundDialog();
 
       this.initToolbar();
    },
@@ -2464,7 +2460,6 @@ var GLPIImpact = {
          });
          html += "</ul>";
       }
-
       return html;
    },
 
@@ -2495,9 +2490,7 @@ var GLPIImpact = {
          });
 
          // Show edit dialog
-         $(GLPIImpact.selectors.editCompoundDialog).dialog(
-            GLPIImpact.getEditCompoundDialog(newCompound)
-         );
+         GLPIImpact.showEditCompoundDialog(newCompound);
 
          // Back to default mode
          GLPIImpact.setEditionMode(GLPIImpact.EDITION_DEFAULT);
@@ -2815,9 +2808,7 @@ var GLPIImpact = {
    onDoubleClick: function(event) {
       if (event.target.isParent()) {
          // Open edit dialog on compound nodes
-         $(GLPIImpact.selectors.editCompoundDialog).dialog(
-            GLPIImpact.getEditCompoundDialog(event.target)
-         );
+         GLPIImpact.showEditCompoundDialog(event.target);
       } else if (event.target.isNode()) {
          // Go to on nodes
          window.open(event.target.data('link'));
@@ -3454,10 +3445,7 @@ var GLPIImpact = {
     * @param {JQuery.Event} event
     */
    menuOnShowOngoing: function(event) {
-      $(GLPIImpact.selectors.ongoingDialog).html(
-         GLPIImpact.buildOngoingDialogContent(event.target.data('ITILObjects'))
-      );
-      $(GLPIImpact.selectors.ongoingDialog).dialog(GLPIImpact.getOngoingDialog());
+      GLPIImpact.showOngoingDialog(event.target.data('ITILObjects'));
    },
 
    /**
@@ -3466,9 +3454,7 @@ var GLPIImpact = {
     * @param {JQuery.Event} event
     */
    menuOnEditCompound: function (event) {
-      $(GLPIImpact.selectors.editCompoundDialog).dialog(
-         GLPIImpact.getEditCompoundDialog(event.target)
-      );
+      GLPIImpact.showEditCompoundDialog(event.target);
    },
 
    /**

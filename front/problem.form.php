@@ -149,9 +149,9 @@ if (isset($_POST["add"])) {
          [
             'title'         => __('Save solution to the knowledge base'),
             'reloadonclose' => false,
+            'autoopen'      => true,
          ]
       );
-      echo Html::scriptBlock('$(function() {' . Html::jsGetElementbyID('savetokb') . '.dialog("open"); });');
    }
 
    Html::footer();

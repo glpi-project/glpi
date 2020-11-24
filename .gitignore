@@ -29,6 +29,7 @@ phpunit.xml
 /**/*.min.css
 /css_compiled/
 /css/compiled/
+/css/lib/
 /**/*.min.js
 /node_modules/
 .package.hash

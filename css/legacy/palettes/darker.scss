@@ -1,0 +1,879 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2021 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+/* ===== LOGIN ===== */
+
+#firstboxlogin {
+   background-color: #161514;
+}
+
+#logo_login {
+   background: #161514;
+}
+
+#display-login {
+   color: #FFF;
+}
+
+#text-login {
+   background-color: #161514;
+   color: #FFF;
+}
+
+/* ====== GENERAL ====== */
+
+body,
+.loadingindicator,
+.tab_cadre_fixe th,
+.tab_cadre_fixehov th,
+.tab_cadrehov th,
+.ui-widget-header {
+   background: #242323;
+   background-color: #1f1f1f !important;
+   color: #AAAAAA;
+   scrollbar-color: dark;
+}
+
+::-webkit-scrollbar {
+   background-color: rgb(32, 32, 32);
+   width: 5px;
+   height: 8px;
+}
+::-webkit-scrollbar-thumb {
+   background-color: rgb(83, 83, 83);
+}
+
+body a,
+body a:link,
+#c_ssmenu2 ul li a,
+body .fa,
+body .fa,
+body .far,
+body a .fa,
+body a .far,
+body a .fas,
+body #page a.fa:link,
+.ui-widget-content a,
+#c_preference a.fa {
+   color: #888;
+}
+
+body .fa.bookmark_record:link,
+body .fa.reset-search:link,
+body .fa.reset-search,
+body .fa.fold-search:link {
+   color: #888 !important;
+}
+
+#see_debug .fa-bug {
+   color: #0c0c0b !important;
+}
+
+#c_preference a.debugon {
+   color: #f00 !important;
+}
+
+#champRecherche .fa {
+   color: #2c2b2a !important;
+}
+
+body .tab_bg_2_2, body .tab_bg_1_2 {
+   color: #4e0404;
+
+   a {
+      color: #4e0404 !important;
+   }
+}
+
+.tab_bg_1 {
+   background-color: transparent;
+   color: #AAAAAA;
+}
+
+.tab_bg_2 {
+   background-color: transparent;
+}
+
+.tab_bg_4 {
+   background-color: #42403f;
+}
+
+.main_form,
+.tab_cadre,
+.tab_cadre_fixe,
+.tab_cadrehov,
+.tab_cadre_fixehov {
+   background: transparent;
+   box-shadow: 0px 1px 2px 1px #5b5858;
+}
+
+
+.tab_cadre_fixehov th,
+.tab_cadrehov th,
+.tab_cadrehov td,
+.tab_cadre td,
+.tab_cadre_fixehov td {
+   border-bottom: 1px solid #292929;
+}
+
+.tab_cadre th,
+.tab_cadre_fixe th,
+.tab_cadre_fixehov th,
+.tab_cadrehov th, h2.header,
+td.subheader {
+   background: #242323;
+   color: #AAA;
+}
+
+.ui-tabs,
+.tab_cadrehov tr.rowHover,
+.tab_cadrehov td.rowHover,
+.tab_cadrehov th.headHover,
+.tab_cadre_fixehov tr.rowHover,
+.tab_cadre_fixehov td.rowHover {
+   background-color: #292929;
+}
+
+.ui-tabs-vertical .ui-tabs-nav {
+   border: none;
+}
+
+.comments li:last-child:before {
+   background: transparent;
+}
+
+#footer,
+.slidepanel,
+.sp-picker-container,
+.ui-datepicker,
+.actor-head,
+ul#menu ul.ssmenu,
+.layout_classic.form .stNavMain li, .layout_vsplit.form .stNavMain li,
+.ui-tabs sup.tab_nb,
+.main_form tr.headerRow th {
+   background: #3a3938 !important;
+   color: #AAAAAA;
+   border: 1px solid transparent !important;
+   box-shadow: none;
+}
+.ui-tabs .ui-state-active sup.tab_nb {
+   background: #222121 !important;
+}
+
+.qtip-bootstrap {
+   background: #1d1c1c !important;
+   color: #AAAAAA;
+   border: 1px solid transparent !important;
+   box-shadow: none;
+}
+
+
+.main_form tr.headerRow th {
+   background: #3a3938 !important;
+   color: #AAAAAA !important;
+   border: 1px solid transparent !important;
+   box-shadow: none;
+}
+
+#page tr.headerRow th {
+   .btn-linkstyled, a.fas, a.fa, a.far, button i {
+      color: inherit;
+   }
+}
+
+.actor_title {
+   background: transparent;
+}
+
+.layout_lefttab .actor_title,
+.layout_lefttab .actor-head {
+   background: #1f1f1f !important;
+}
+
+.layout_vsplit.form #tabspanel + div.ui-tabs:not(.horizontal),
+.ui-widget-content,
+.ui-widget.ui-widget-content,
+.layout_lefttab .ui-tabs,
+.layout_classic .ui-tabs,
+.layout_vsplit .ui-tabs {
+   background: #242323 !important;
+   color: #AAAAAA;
+   box-shadow: none;
+   border: 1px solid #333;
+}
+
+#page {
+   .navigationheader {
+      background-color: #222121;
+      border: 1px solid #333;
+      border-bottom: 0;
+
+      .single-actions {
+         .dropdown-menu {
+            background-color: #000000;
+            color: #AAAAAA;
+
+            a:hover  {
+               background-color: #525252;
+            }
+         }
+
+         .btn {
+            background-color: #000000;
+            color: #AAAAAA;
+
+            &:hover {
+               background-color: #525252;
+            }
+         }
+      }
+   }
+
+   div.objectlockmessage {
+      border: 0;
+      color: #8c0000;
+   }
+}
+
+.main_form, .tab_cadre_fixe, .tab_cadrehov {
+   box-shadow: none;
+}
+
+.grey_border {
+   border: 0;
+}
+
+.switch label .lever {
+   background-color: #000;
+}
+
+.switch label .lever:after {
+   background: rgb(82, 82, 82);
+}
+
+.ui-widget-header {
+   border: none;
+}
+
+.ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default {
+   background: #222121;
+   border-color: transparent;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active {
+   background: #3a3938;
+   color: #AAAAAA;
+}
+
+.ui-tabs .ui-tabs-nav {
+   padding: 0;
+}
+
+.ui-tabs .ui-tabs-nav li {
+   margin: 0;
+}
+
+.ui-tabs-vertical .ui-tabs-nav li {
+   margin: 0;
+   border-right-width: 0 !important;
+   width: 100%;
+}
+
+.ui-state-default a,
+.ui-state-default a:link,
+.ui-state-default a:visited {
+   color: #AAAAAA;
+}
+
+.jstree-glpi .jstree-hovered {
+   background: #4b4948;
+}
+
+.search_page > form:first-child {
+   border-bottom: 1px solid #333;
+}
+
+#searchcriteria,
+#searchcriterias .tab_cadre_fixe {
+   background: transparent !important;
+   box-shadow: none;
+}
+
+#searchcriteria.sub_criteria {
+   border: 1px solid #515151;
+}
+
+.warning {
+   color: #e28b8b;
+   background-color: #2c0202;
+
+   .fa {
+      color: #e28b8b !important;
+   }
+}
+
+#c_ssmenu2 .breadcrumb_item {
+   background-color: #161514;
+}
+
+.breadcrumb_item:before {
+   border-left-color: #3a3938 !important;
+}
+.breadcrumb_item:after {
+   border-left-color: #161514 !important;
+}
+
+.ui-state-active a,
+.ui-state-active a:link,
+.ui-state-active a:visited {
+   color: #AAAAAA;
+}
+
+#planning_filter h3 {
+   background: #242323;
+}
+#planning_filter ul.filters > li:nth-child(even) {
+   background: #3a3938;
+}
+
+body textarea:not([disabled]),
+body select,
+body input:not(.submit):not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not([disabled]),
+body input[type=search],
+body input:disabled,
+.fileupload,
+.subheader .box, .label-checkbox .box, th .label-checkbox .box,
+.sp-replacer,
+.select2-selection.select2-selection--single,
+.select2-container--default .select2-selection--multiple,
+body .select2-container .select2-selection--multiple,
+.select2-dropdown {
+   background-color: #242323 !important;
+   color: #AAAAAA !important;
+   border: 1px solid #333 !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+   color: #AAAAAA;
+}
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+   background-color: #888 !important;
+}
+input:required:valid {
+   border: 1px solid #515151 !important;
+}
+
+.select2-container--default .select2-results__option[aria-selected=true] {
+   background-color: #4e4d4b;
+}
+
+.btn-linkstyled {
+   color: #161514;
+
+   &:link {
+      color: #161514;
+   }
+}
+
+/*.ui-widget-content a {
+   color: #161514;
+}*/
+
+.main_form tr.headerRow th {
+   color: #262626;
+}
+
+.timeline_history .filter_timeline {
+   opacity: 1;
+}
+
+.timeline_history .h_content.ITILFollowup,
+.timeline_history .h_content.KnowbaseItemComment {
+   background-color: #686868;
+   color: rgb(209, 209, 209);
+}
+
+.timeline_history .h_content.ITILValidation {
+   background-color: #686868;
+   color: black;
+
+   .tab_bg_1 {
+      color: black;
+   }
+   .control_item {
+      color: black;
+   }
+   &.status_3:after {
+      border-color: #A1D7A2;
+   }
+   &:after {
+      border-color: #FFFFFF;
+   }
+   &.status_4:after {
+      border-color: #D3A4A4;
+   }
+   .b_right {
+      button[type='submit'] {
+         border: unset;
+         padding: 0.5em 0.5em;
+         font-weight: bold;
+         font-size: unset;
+         .far {
+            color: unset;
+         }
+         &.approve {
+            background-color: #b0f462;
+            color: #002e00;
+         }
+         &.refuse {
+            background-color: #e46767;
+            color: #380b0b;
+         }
+      }
+   }
+}
+
+.timeline_history .b_right {
+   color: #FFF;
+}
+
+.timeline_history .h_content.ITILContent {
+   background-color: #506852;
+   color: #bdedba;
+}
+
+.timeline_choices li i.fa {
+   color: inherit !important;
+}
+
+.timeline_history .h_content.Solution .solimg {
+   color: rgba(66, 91, 100, 0.1) !important;
+}
+
+.racks_col h2 {
+   background: #161514;
+}
+
+.grid-rack {
+   background-color: #4e4d4b;
+   border-color: #161514;
+}
+
+.rack_side_block {
+   background-color: #4e4d4b;
+   border: none;
+
+   h3 {
+      color: #AAA;
+   }
+}
+
+.rack_side_block .sub_action {
+   color: #AAA;
+}
+
+.grid-stack-item .item_rack_icon {
+   color: #000;
+}
+
+.doaction_progress {
+   border: none;
+}
+
+.doaction_progress_text {
+   color: #000;
+}
+
+.itilstatus.planned {
+   color: #81a2f8;
+}
+
+/* ====== HEADER ====== */
+
+#header_top,
+#c_menu {
+   background-color: #161514;
+}
+#c_ssmenu2 {
+   border-top: 2px solid #333;
+   background-color: #161514;
+   padding-top: 1px;
+}
+
+#header #c_logo {
+   background: url(../pics/logos/logo-GLPI-100-grey.png) 0 0 repeat-x;
+}
+
+#c_preference a, #language_link > span {
+   color: #AAAAAA;
+}
+
+#c_recherche form #champRecherche input {
+   background-color: #3F403E;
+   color: rgb(117, 115, 115);
+}
+
+/*#c_menu {
+   background-color: #AAAAAA;
+}*/
+
+ul {
+   &#menu {
+      a {
+         &.itemP, &.itemP1 {
+            color: #AAAAAA;
+         }
+      }
+
+      > li.active {
+         background-color: #202020;
+      }
+   }
+
+   &.ssmenu li.active {
+      background-color: #161514;
+   }
+
+   &#menu {
+      > li.active > a {
+         color: #AAAAAA;
+      }
+
+      ul {
+         &.ssmenu li.active > a {
+            color: #AAAAAA;
+         }
+
+         li a, li a:link {
+            &:hover {
+               background: #262626;
+               color: #AAAAAA;
+            }
+
+            color: #AAAAAA;
+         }
+      }
+
+      > li:hover {
+         background-color: #3F403E;
+      }
+   }
+}
+
+#c_recherche form #champRecherche button {
+   background-color: #AAAAAA;
+}
+
+/* ====== BUTTONS ====== */
+
+input.submit, span.vsubmit, a.vsubmit, .ui-widget-content span.vsubmit, a.vsubmit, #BackToTop {
+   color: #AAAAAA;
+   background-color: #585957;
+}
+
+.vsubmit a {
+   color: rgb(117, 115, 115);
+   text-decoration: underline;
+}
+
+input.submit:hover, a.vsubmit:hover, #BackToTop:hover {
+   background-color: #333;
+}
+
+/* Primary color elements (white on blue BG) designed to be overridden from palettes */
+/* Colors are same as #c_menu */
+
+.primary-bg {
+   background: #585957;
+}
+
+.primary-bg-inverse {
+   background: white;
+}
+
+.primary-fg {
+   color: white;
+
+   &:hover {
+      color: white;
+   }
+}
+
+.primary-fg-inverse {
+   color: #AAAAAA;
+
+   &:hover {
+      color: #AAAAAA;
+   }
+}
+
+.secondary {
+   background: #191a19;
+}
+
+div.progress {
+   background-color: #262626;
+   .progress-fg {
+      background-color: #585957;
+   }
+}
+
+/** Kanban */
+#page .kanban {
+   .kanban-form {
+      background-color: #3a3938;
+      border: #272625 1px solid;
+      color: #ffffff !important;
+      input[type=text]:not([type=submit]):not([type=button]), textarea {
+         background-color: #3a3938 !important;
+         color: #aaa;
+      }
+   }
+   .kanban-toolbar {
+      background-color: #3a3938;
+      border: #272625 1px solid;
+      input[type=text][name=filter]:not([type=submit]):not([type=button]) {
+         background-color: #3a3938 !important;
+         color: #aaa;
+      }
+   }
+   .kanban-container {
+      .kanban-dropdown {
+         background-color: #2c2b2a;
+         border: 1px solid #242323;
+         li {
+            background-color: #3a3938;
+            &, a, i {
+               color: white;
+            }
+            &:hover {
+               background-color: #262626;
+            }
+            ul {
+               position: absolute;
+               left: 100%;
+               top: 0;
+               display: block;
+               width: max-content;
+               min-width: 100px;
+               background-color: #2c2b2a;
+               outline: 1px solid #242323; // Use outline instead of border on submenus to avoid them being aligned off by one pixel
+            }
+         }
+         li.dropdown-trigger {
+            &.active {
+               background-color: #262626;
+               color: white;
+            }
+         }
+      }
+      .kanban-columns {
+         .kanban-column {
+            background-color: #2c2b2a;
+            border: #272625 1px solid;
+
+            .kanban-column-header {
+               background-color: #2c2b2a;
+               border-top: 3px solid #2c2b2a;
+               box-shadow: 0px 1px 1px #242323;
+
+               .kanban_nb {
+                  background-color: #3a3938;
+               }
+            }
+
+            .kanban-body {
+               .kanban-item, .kanban-form {
+                  &:not(.deleted) {
+                     background-color: #3a3938;
+                  }
+                  border: #272625 1px solid;
+                  color: #ffffff !important;
+                  input[type=text] {
+                     background-color: #3a3938 !important;
+                  }
+                  .kanban-item-header, .kanban-item-header a {
+                     color: #ffffff !important;
+                  }
+               }
+            }
+         }
+      }
+   }
+}
+
+/** Impacts **/
+.impact-header,
+.impact-side,
+.impact-side-toggle,
+.impact-side ul {
+   background-color: #242323;
+   border: 0;
+}
+
+.network-parent {
+   border-color: #333;
+}
+
+/** Planning **/
+.fc-unthemed .fc-divider, .fc-unthemed .fc-popover .fc-header, .fc-unthemed .fc-list-heading td {
+   background-color: #242323;
+}
+
+.fc-unthemed .fc-list-item:hover td {
+   background-color: #333;
+}
+
+.fc-unthemed td.fc-today {
+   background-color: #444;
+}
+
+.fc-unthemed th, .fc-unthemed td, .fc-unthemed thead, .fc-unthemed tbody, .fc-unthemed .fc-divider, .fc-unthemed .fc-row, .fc-unthemed .fc-content, .fc-unthemed .fc-popover, .fc-unthemed .fc-list-view, .fc-unthemed .fc-list-heading td {
+   border-color: #333;
+}
+
+/** Dashboards **/
+.default_dashboard {
+   background-color: transparent;
+}
+
+.dashboard, .default_dashboard {
+   border-color: #AAAAAA;
+   box-shadow: none;
+
+   .toolbar i.fas {
+      color: #888;
+      &:hover {
+         color: #CCC;
+      }
+      &.active {
+         background-color: #242323;
+         border: 2px solid #888;
+      }
+   }
+   .filters_toolbar .filters-control {
+      .add-filter {
+         color: #888;
+
+         &:hover {
+            color: #CCC;
+         }
+      }
+      &:hover {
+         border-color: #CCC;
+      }
+   }
+   .grid-stack .grid-stack-item .loading-card .fa-spin {
+      color: #AAAAAA;
+   }
+   .grid-guide {
+      background-image: linear-gradient(to right, #333 1px, transparent 1px),
+      linear-gradient(to bottom, #333 1px, transparent 1px);
+   }
+}
+
+/** Racks and datacenter **/
+.grid-room .racks_add {
+   background-image: linear-gradient(to right, #333 1px, transparent 1px),
+                     linear-gradient(to bottom, #333 1px, transparent 1px);
+   border: 1px solid #333;
+}
+
+/** marketplace **/
+.marketplace {
+   background-color: inherit;
+
+   .left-panel .plugins-tags .tag {
+      background: #292929;
+      border-color: #000;
+   }
+
+   .right-panel {
+      .plugins {
+         .plugin {
+            background-color: transparent;
+            border-color: #000;
+
+            .main .buttons button {
+               background-color: #000;
+               border-color: #000;
+            }
+
+            .footer .misc-left .links a i {
+               color: rgb(102, 102, 102);
+            }
+
+            .footer {
+               background-color: #151515;
+               border-top-color: #000;
+            }
+         }
+      }
+
+      .pagination {
+         li {
+            background-color: #292929;
+            border-color: #000;
+            color: rgb(170, 170, 170);
+
+            &.current {
+               color: rgb(128, 128, 128);
+               background: #000;
+               border-color: #000;
+            }
+
+            &.nav-disabled {
+               color: #666;
+            }
+
+            &:not(.current):not(.nb_plugin):not(.nav-disabled):hover {
+               background-color: #474747;
+            }
+         }
+      }
+   }
+}
+
+.ui-tabs-nav li.ui-tabs-tab:focus, .ui-tabs-nav li.ui-tabs-tab a:focus {
+   outline: none;
+}
+
+.boxnote {
+   background: #585957;
+}
+
+.rich_text_container .user-mention {
+   background: rgba(0, 0, 0, 0.5);
+}
+.mce-content-body [data-user-mention="true"] {
+   background: rgba(80, 80, 80, 0.5);
+}

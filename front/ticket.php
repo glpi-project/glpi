@@ -42,11 +42,6 @@ if (Session::getCurrentInterface() == "helpdesk") {
 
 echo Html::manageRefreshPage();
 
-if ($default = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('mini_ticket', true)) {
-   $dashboard = new Glpi\Dashboard\Grid($default, 33, 2, 'mini_core');
-   $dashboard->show(true);
-}
-
 Search::show('Ticket');
 
 if (Session::getCurrentInterface() == "helpdesk") {

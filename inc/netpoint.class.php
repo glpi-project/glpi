@@ -144,7 +144,7 @@ class Netpoint extends CommonDropdown {
          $item = new self();
          if ($item->canCreate()) {
             echo "<span class='fa fa-plus pointer' title=\"".__s('Add')."\" ".
-                  "onClick=\"".Html::jsGetElementbyID('netpoint'.$rand).".dialog('open');\">" .
+                  "data-bs-toggle='modal' data-bs-target='#netpoint$rand'" .
                   "<span class='sr-only'>" . __s('Add') . "</span></span>";
             Ajax::createIframeModalWindow('netpoint'.$rand,
                                           $item->getFormURL());
