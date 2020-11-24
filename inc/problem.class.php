@@ -163,7 +163,7 @@ class Problem extends CommonITILObject {
                $nb_elements = count($timeline);
 
                $ong = [
-                  5 => __("Processing problem")." <sup class='tab_nb'>$nb_elements</sup>",
+                  5 => __("Processing problem")." <span class='badge'>$nb_elements</span>",
                   1 => __('Analysis')
                ];
 
@@ -1847,7 +1847,7 @@ class Problem extends CommonITILObject {
       $number = count($iterator);
 
       // Ticket for the item
-      echo "<div><table class='tab_cadre_fixe'>";
+      echo "<div class='table-responsive'><table class='tab_cadre_fixe'>";
 
       $colspan = 11;
       if (count($_SESSION["glpiactiveentities"]) > 1) {

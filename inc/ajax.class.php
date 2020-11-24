@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -29,6 +30,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+use Glpi\Application\View\TemplateRenderer;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -41,7 +43,7 @@ class Ajax {
 
    /**
     * Create modal window
-    * After display it using $name.dialog("open");
+    * After display it using data-bs-toggle and data-bs-target attributes
     *
     * @since 0.84
     *
@@ -59,14 +61,16 @@ class Ajax {
     */
    static function createModalWindow($name, $url, $options = []) {
 
-      $param = ['width'           => 800,
-                     'height'          => 400,
-                     'modal'           => true,
-                     'container'       => '',
-                     'title'           => '',
-                     'extraparams'     => [],
-                     'display'         => true,
-                     'js_modal_fields' => ''];
+      $param = [
+         'width'           => 800,
+         'height'          => 400,
+         'modal'           => true,
+         'container'       => '',
+         'title'           => '',
+         'extraparams'     => [],
+         'display'         => true,
+         'js_modal_fields' => ''
+      ];
 
       if (count($options)) {
          foreach ($options as $key => $val) {
@@ -76,23 +80,29 @@ class Ajax {
          }
       }
 
-      $out  = "<script type='text/javascript'>\n";
-      $out .= "var $name;";
-      $out .= "$(function() {";
-      $out .= "$name=";
+      $html = TemplateRenderer::getInstance()->render(
+         'components/modal.html.twig',
+         [
+            'title' => $param['title'],
+         ]
+      );
+
+      $out = "<script type='text/javascript'>\n";
+      $out .= "var {$name};\n";
+      $out .= "$(function() {\n";
       if (!empty($param['container'])) {
-         $out .= Html::jsGetElementbyID(Html::cleanId($param['container']));
+         $out .= "   var el = $('#".Html::cleanId($param['container'])."');\n";
+         $out .= "   el.addClass('modal');\n";
       } else {
-         $out .= "$('<div></div>')";
+         $out .= "   var el = $('<div class=\"modal\"></div>');";
+         $out .= "   $('body').append(el);\n";
       }
-      $out .= ".dialog({\n
-         width:".$param['width'].",\n
-         autoOpen: false,\n
-         height:".$param['height'].",\n
-         modal: ".($param['modal']?'true':'false').",\n
-         title: \"".addslashes($param['title'])."\",\n
-         open: function (){
-            var fields = ";
+      $out .= "   el.html(" . json_encode($html) . ");\n";
+      $out .= "   {$name} = new bootstrap.Modal(el.get(0), {show: false});\n";
+      $out .= "   el.on(\n";
+      $out .= "      'show.bs.modal',\n";
+      $out .= "      function(evt) {\n";
+      $out .= "         var fields = ";
       if (is_array($param['extraparams']) && count($param['extraparams'])) {
          $out .= json_encode($param['extraparams'], JSON_FORCE_OBJECT);
       } else {
@@ -102,10 +112,10 @@ class Ajax {
       if (!empty($param['js_modal_fields'])) {
          $out .= $param['js_modal_fields']."\n";
       }
-      $out .= "            $(this).load('$url', fields);
-         }
-      });\n";
-      $out .= "});";
+      $out .= "         el.find('.modal-body').load('$url', fields);\n";
+      $out .= "      }\n";
+      $out .= "   );\n";
+      $out .= "});\n";
       $out .= "</script>\n";
 
       if ($param['display']) {
@@ -214,69 +224,10 @@ class Ajax {
       }
    }
 
-   /**
-    * Create fixed modal window
-    * After display it using $name.dialog("open");
-    *
-    * @since 0.84
-    *
-    * @param string $name    name of the js object
-    * @param array  $options Possible options:
-    *          - width       (default 800)
-    *          - height      (default 400)
-    *          - modal       is a modal window? (default true)
-    *          - container   specify a html element to render (default empty to html.body)
-    *          - title       window title (default empty)
-    *          - display     display or get string? (default true)
-    *
-    * @return void|string (see $options['display'])
-    */
-   static function createFixedModalWindow($name, $options = []) {
-
-      $param = ['width'     => 800,
-                     'height'    => 400,
-                     'modal'     => true,
-                     'container' => '',
-                     'title'     => '',
-                     'display'   => true];
-
-      if (count($options)) {
-         foreach ($options as $key => $val) {
-            if (isset($param[$key])) {
-               $param[$key] = $val;
-            }
-         }
-      }
-
-      $out  =  "<script type='text/javascript'>\n";
-      $out .= "$(function() {";
-      $out .= "var $name=";
-      if (!empty($param['container'])) {
-         $out .= Html::jsGetElementbyID(Html::cleanId($param['container']));
-      } else {
-         $out .= "$('<div></div>')";
-      }
-      $out .= ".dialog({\n
-         width:".$param['width'].",\n
-         autoOpen: false,\n
-         height:".$param['height'].",\n
-         modal: ".($param['modal']?'true':'false').",\n
-         title: \"".addslashes($param['title'])."\"\n
-         });\n});";
-      $out .= "</script>";
-
-      if ($param['display']) {
-         echo $out;
-      } else {
-         return $out;
-      }
-
-   }
-
 
    /**
     * Create modal window in Iframe
-    * After display it using Html::jsGetElementbyID($domid).dialog("open");
+    * After display it using data-bs-toggle and data-bs-target attributes
     *
     * @since 0.85
     *
@@ -294,12 +245,15 @@ class Ajax {
     */
    static function createIframeModalWindow($domid, $url, $options = []) {
 
-      $param = ['width'         => 1050,
-                     'height'        => 500,
-                     'modal'         => true,
-                     'title'         => '',
-                     'display'       => true,
-                     'reloadonclose' => false];
+      $param = [
+         'width'         => 1050,
+         'height'        => 500,
+         'modal'         => true,
+         'title'         => '',
+         'display'       => true,
+         'autoopen'      => false,
+         'reloadonclose' => false
+      ];
 
       if (count($options)) {
          foreach ($options as $key => $val) {
@@ -310,27 +264,71 @@ class Ajax {
       }
       $url .= (strstr($url, '?') ?'&' :  '?').'_in_modal=1';
 
-      $out  = "<div id=\"$domid\">";
-      $out .= "<iframe id='Iframe$domid' class='iframe hidden'></iframe></div>";
+      $rand = mt_rand();
 
-      $out .= "<script type='text/javascript'>
-         $(function() {
-            $('#$domid').dialog({
-               modal: true,
-               autoOpen: false,
-               height: ".$param['height'].",
-               width: ".$param['width'].",
-               draggable: true,
-               resizeable: true,
-               open: function(ev, ui){
-               $('#Iframe$domid').attr('src','$url').removeClass('hidden');},";
-      if ($param['reloadonclose']) {
-         $out .= "close: function(ev, ui) { window.location.reload() },";
-      }
+      $html = <<<HTML
+         <div id="$domid" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                     <h3>{$param['title']}</h3>
+                  </div>
+                  <div class="modal-body">
+                     <iframe id='iframe$domid' class="iframe hidden"
+                        width="100%" height="400" frameborder="0">
+                     </iframe>
+                  </div>
+               </div>
+            </div>
+         </div>
+HTML;
 
-      $out.= "title: \"".addslashes($param['title'])."\"});
+      $reloadonclose = $param['reloadonclose'] ? "true" : "false";
+      $autoopen      = $param['autoopen'] ? "true" : "false";
+      $js = <<<JAVASCRIPT
+      $(function() {
+         myModalEl{$rand} = document.getElementById('{$domid}');
+         myModal{$rand}   = new bootstrap.Modal(myModalEl{$rand});
+
+         // move modal to body
+         $(myModalEl{$rand}).appendTo($("body"));
+
+         myModalEl{$rand}.addEventListener('show.bs.modal', function () {
+            $('#iframe{$domid}').attr('src','{$url}').removeClass('hidden');
          });
-            </script>";
+         myModalEl{$rand}.addEventListener('hide.bs.modal', function () {
+            if ({$reloadonclose}) {
+               window.location.reload()
+            }
+         });
+
+         if ({$autoopen}) {
+            myModal{$rand}.show();
+         }
+
+         document.getElementById('iframe$domid').onload = function() {
+            var h =  $('#iframe{$domid}').contents().height();
+            var w =  $('#iframe{$domid}').contents().width();
+
+            $('#iframe{$domid}')
+               .height(h);
+
+            if (w >= 700) {
+               $('#{$domid} .modal-dialog').addClass('modal-xl');
+            } else if (w >= 500) {
+               $('#{$domid} .modal-dialog').addClass('modal-lg');
+            } else if (w <= 300) {
+               $('#{$domid} .modal-dialog').addClass('modal-sm');
+            }
+
+            // reajust height to content
+            myModal{$rand}.handleUpdate()
+         };
+      });
+JAVASCRIPT;
+
+      $out = "<script type='text/javascript'>$js</script>".trim($html);
 
       if ($param['display']) {
          echo $out;
@@ -367,136 +365,124 @@ class Ajax {
    ) {
       global $CFG_GLPI;
 
-      // TODO need to clean params !!
-      $active_tabs = Session::getActiveTab($type);
-
-      $mainclass = '';
-      if (isset($options['main_class'])) {
-         $mainclass = " {$options['main_class']}";
+      if (count($tabs) === 0) {
+         return;
       }
 
-      $rand = mt_rand();
+      $active_tab = Session::getActiveTab($type);
+
+      // Compute tabs ids.
+      $active_id = null;
+      foreach ($tabs as $key => $val) {
+         $id = sprintf('tab-%s-%s', str_replace('$', '_', $key), mt_rand());
+
+         $tabs[$key]['id'] = $id;
+
+         if ($key == $active_tab || $active_id === null) {
+            $active_id = $id;
+         }
+      }
+      $active_id = str_replace('\\', '_', $active_id);
+
+      // Display tabs
       if (count($tabs) > 0) {
-         echo "<div id='tabs$rand' class='center$mainclass $orientation'>";
-         if (CommonGLPI::isLayoutWithMain()
-             && !CommonGLPI::isLayoutExcludedPage()) {
-            $orientation = 'horizontal';
+         if (count($tabs) == 1) {
+            $orientation = "horizontal";
          }
-         echo "<ul>";
-         $current = 0;
-         $selected_tab = 0;
-         foreach ($tabs as $key => $val) {
-            if ($key == $active_tabs) {
-               $selected_tab = $current;
-            }
-            echo "<li><a title=\"".
-                 str_replace(["<sup class='tab_nb'>", '</sup>'], '', $val['title'])."\" ";
-            echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."'>";
-            // extract sup information
-            // $title = '';
-            // $limit = 16;
-            // No title strip for horizontal menu
-            $title = $val['title'];
-            echo $title."</a></li>";
-            $current ++;
+
+         $flex_container = "flex-column flex-md-row";
+         $flex_tab       = "flex-row flex-md-column d-none d-md-block";
+         $border         = "border-start-0";
+         $navitemml      = "ms-0";
+         $navlinkp       = "pe-1";
+         $nav_width      = "style='min-width: 200px'";
+         if ($orientation == "horizontal") {
+            $flex_container = "flex-column";
+            $flex_tab       = "flex-row";
+            $border         = "";
+            $navitemml      = "";
+            $navlinkp       = "";
+            $nav_width      = "";
          }
+
+         echo "<div class='d-flex card-tabs $flex_container $orientation'>";
+         echo "<ul class='nav nav-tabs $flex_tab' id='$tabdiv_id' $nav_width role='tablist'>";
+         $html_tabs = "";
+         $html_sele = "";
+         $i = 0;
+         foreach ($tabs as $val) {
+            $target = str_replace('\\', '_', $val['id']);
+            $html_tabs.= "<li class='nav-item $navitemml'>
+               <a class='nav-link justify-content-between $navlinkp' data-bs-toggle='tab' title='".strip_tags($val['title'])."' ";
+            $html_tabs.= " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."' data-bs-target='#{$target}'>";
+            $html_tabs.= $val['title']."</a></li>";
+
+            $html_sele.= "<option value='$i' ".($active_id == $target ? "selected" : "").">
+               {$val['title']}
+            </option>";
+            $i++;
+         }
+         echo $html_tabs;
          echo "</ul>";
-         echo "</div>";
+         echo "<select class='form-select border-2 border-secondary rounded-0 rounded-top d-md-none mb-2' id='$tabdiv_id-select'>$html_sele</select>";
+
+         echo "<div class='tab-content p-2 flex-grow-1 card $border' style='min-height: 150px'>";
+         foreach ($tabs as $val) {
+            $id = str_replace('\\', '_', $val['id']);
+            echo "<div class='tab-pane fade' role='tabpanel' id='{$id}'></div>";
+         }
+         echo  "</div>"; // .tab-content
+         echo "</div>"; // .container-fluid
          $js = "
-         $(function(){
-         forceReload$rand = false;
-         $('#tabs$rand').tabs({
-            active: $selected_tab,
-            // Loading indicator
-            beforeLoad: function (event, ui) {
+         var loadTabContents = function (tablink) {
+            var url = tablink.attr('href');
+            var target = tablink.attr('data-bs-target');
+            var index = tablink.closest('.nav-item').index();
+            $(target).html('<i class=\"fas fa-3x fa-spinner fa-pulse position-absolute top-50 start-50\"></i>');
 
-               if ($(ui.panel).html()
-                   && !forceReload$rand) {
-                  event.preventDefault();
-               } else {
-                  forceReload$rand = false;
-                  var _loader = $('<div id=\'loadingtabs\'><div class=\'loadingindicator\'>" . addslashes(__('Loading...')) . "</div></div>');
-                  ui.panel.html(_loader);
+            $.get(url, function(data) {
+               $(target).html(data);
 
-                  ui.jqXHR.always(function() {
-                     $('#loadingtabs').remove();
-                  });
+               $(target).closest('main').trigger('glpi.tab.loaded');
 
-                  ui.jqXHR.fail(function(e) {
-                     console.log(e);
-                     if (e.statusText != 'abort') {
-                        ui.panel.html(
-                           '<div class=\'error\'><h3>" .
-                           addslashes(__('An error occured loading contents!'))  . "</h3><p>" .
-                           addslashes(__('Please check GLPI logs or contact your administrator.'))  .
-                           "<br/>" . addslashes(__('or')) . " <a href=\'#\' onclick=\'return reloadTab()\'>" . addslashes(__('try to reload'))  . "</a></p></div>'
-                        );
-                     }
-                  });
-               }
-               // We need to manually set the current tab if the main event was prevented.
-               // It happens when user switch between tabs and then select a tab that was already shown before.
-               // It is displayed without having to be reloaded.
-               if (event.isDefaultPrevented()) {
-                  var tabs = ui.tab.parent().children();
-                  if (tabs.length > 1) {
-                     var newIndex = tabs.index(ui.tab);
-                     $.get(
-                        '".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
-                        { itemtype: '".addslashes($type)."', id: '$ID', tab: newIndex }
-                     );
+               $.get(
+                  '{$CFG_GLPI['root_doc']}/ajax/updatecurrenttab.php',
+                  {
+                     itemtype: '".addslashes($type)."',
+                     id: '$ID',
+                     tab: index,
                   }
-               }
-            },
-            load: function(event) {
-               var _url = window.location.href;
-               //get the anchor
-               var _parts = _url.split('#');
-               if (_parts.length > 1) {
-                  var _anchor = _parts[1];
+               );
+            });
+         };
 
-                  //get the top offset of the target anchor
-                  if ($('#' + _anchor).length) {
-                     var target_offset = $('#' + _anchor).offset();
-                     var target_top = target_offset.top;
+         var reloadTab = function (add) {
+            var active_link = $('main #tabspanel .nav-item .nav-link.active');
 
-                     //goto that anchor by setting the body scroll top to anchor top
-                     $('html, body').animate({scrollTop:target_top}, 2000, 'easeOutQuad');
-                  }
-               }
-            },
-            ajaxOptions: {type: 'POST'}
-         });";
+            // Update href and load tab contents
+            var currenthref = active_link.attr('href');
+            active_link.attr('href', currenthref + '&' + add);
+            loadTabContents(active_link);
 
-         if ($orientation=='vertical') {
-            $js .=  "$('#tabs$rand').tabs().addClass( 'ui-tabs-vertical ui-helper-clearfix' );";
-         }
+            // Restore href
+            active_link.attr('href', currenthref);
+         };
 
-         if (CommonGLPI::isLayoutWithMain()
-             && !CommonGLPI::isLayoutExcludedPage()) {
-            $js .=  "$('#tabs$rand').scrollabletabs();";
-         } else {
-            $js .=  "$('#tabs$rand').removeClass( 'ui-corner-top' ).addClass( 'ui-corner-left' );";
-         }
-         $js .= '});';
+         $(function() {
+            $('a[data-bs-toggle=\"tab\"]').on('shown.bs.tab', function(e) {
+               e.preventDefault();
+               loadTabContents($(this));
+            });
 
-         $js .=  "// force reload global function
-            function reloadTab(add) {
-               forceReload$rand = true;
-               var current_index = $('#tabs$rand').tabs('option','active');
+            // load initial tab
+            $('a[data-bs-target=\"#{$active_id}\"]').tab('show');
 
-               // remove scroll event bind, select2 bind it on parent with scrollbars (the tab currently)
-               // as the select2 disapear with this tab reload, remove the event to prevent issues (infinite scroll to top)
-               $('#tabs$rand .ui-tabs-panel[aria-hidden=false]').unbind('scroll');
-
-               // Save tab
-               var currenthref = $('#tabs$rand ul>li a').eq(current_index).attr('href');
-               $('#tabs$rand ul>li a').eq(current_index).attr('href',currenthref+'&'+add);
-               $('#tabs$rand').tabs( 'load' , current_index);
-
-               // Restore tab
-               $('#tabs$rand ul>li a').eq(current_index).attr('href',currenthref);
-            };";
+            // select events in responsive mode
+            $('#$tabdiv_id-select').on('change', function (e) {
+               $('#$tabdiv_id li a').eq($(this).val()).tab('show');
+            });
+         });
+         ";
 
          echo Html::scriptBlock($js);
       }
