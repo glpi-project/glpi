@@ -415,7 +415,7 @@ class Inventory
       $links = [];
       foreach ($classes as $class) {
          $entry = "<i class=\"". $class::getIcon() . " pointer\" title=\"" . $class::getTypeName(Session::getPluralNumber()) .
-         "\"></i><span class=\"sr-only\">" . $class::getTypeName(Session::getPluralNumber()). "</span>";
+         "\"></i><span class=\"d-none d-xxl-block\">" . $class::getTypeName(Session::getPluralNumber()). "</span>";
          $links[$entry] = $class::getSearchURL(false);
       }
 

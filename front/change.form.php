@@ -40,6 +40,12 @@ if (empty($_GET["id"])) {
 
 Session::checkLoginUser();
 
+// as _actors virtual field stores json, bypass automatic escaping
+if (isset($_UPOST['_actors'])) {
+   $_POST['_actors'] = json_decode($_UPOST['_actors'], true);
+   $_REQUEST['_actors'] = $_POST['_actors'];
+}
+
 $change = new Change();
 if (isset($_POST["add"])) {
    $change->check(-1, CREATE, $_POST);
@@ -135,20 +141,45 @@ if (isset($_POST["add"])) {
       }
    }
    Html::back();
-} else {
-   Html::header(Change::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "change");
-   $change->display($_REQUEST);
+} else if (isset($_POST['addme_as_actor'])) {
+   $id = (int) $_POST['id'];
+   $change->check($id, READ);
+   $input = array_merge(Toolbox::addslashes_deep($change->fields), [
+      'id' => $id,
+      '_itil_'.$_POST['actortype'] => [
+         '_type' => "user",
+         'users_id' => Session::getLoginUserID(),
+         'use_notification' => 1,
+      ]
+   ]);
+   $change->update($input);
+   Event::log($id, "change", 4, "tracking",
+              //TRANS: %s is the user login
+              sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
+   Html::redirect(Change::getFormURLWithID($id));
 
-   if (isset($_GET['id']) && ($_GET['id'] > 0) && isset($_GET['_sol_to_kb'])) {
-      Ajax::createIframeModalWindow(
-         'savetokb',
-         KnowbaseItem::getFormURL() . '?_in_modal=1&item_itemtype=Change&item_items_id=' . $_GET['id'],
-         [
-            'title'         => __('Save solution to the knowledge base'),
-            'reloadonclose' => false,
-         ]
-      );
-      echo Html::scriptBlock('$(function() {' . Html::jsGetElementbyID('savetokb') . '.dialog("open"); });');
+} else {
+   if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
+      Html::header(sprintf(__('%s Kanban'), Change::getTypeName(1)), $_SERVER['PHP_SELF'], "helpdesk", "change");
+      $change::showKanban(0);
+   } else {
+      Html::header(Change::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "change");
+      $change->display($_REQUEST);
+   }
+
+   if (isset($_GET['id']) && ($_GET['id'] > 0)) {
+      $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Ticket&item_items_id=' . $_GET['id'];
+      if (strpos($url, '_to_kb=') !== false) {
+         Ajax::createIframeModalWindow(
+            'savetokb',
+            $url,
+            [
+               'title'         => __('Save and add to the knowledge base'),
+               'reloadonclose' => false,
+               'autoopen'      => true,
+            ]
+         );
+      }
    }
 
    Html::footer();

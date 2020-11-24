@@ -1889,7 +1889,7 @@ class Stat extends CommonGLPI {
          ]
       );
       $out .= "</td><td rowspan='2' class='center'>";
-      $out .= "<input type='submit' class='submit' value='".__s('Display report')."'></td></tr>";
+      $out .= "<input type='submit' class='btn btn-primary' value='".__s('Display report')."'></td></tr>";
 
       $out .= "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
       $out .= Html::showDateField(

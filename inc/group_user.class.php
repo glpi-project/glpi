@@ -207,7 +207,7 @@ class Group_User extends CommonDBRelation{
 
          echo "</td><td class='tab_bg_2 center'>";
          echo "<input type='submit' name='addgroup' value=\""._sx('button', 'Add')."\"
-                class='submit'>";
+                class='btn btn-primary'>";
 
          echo "</td></tr>";
          echo "</table>";
@@ -336,7 +336,7 @@ class Group_User extends CommonDBRelation{
 
          echo "</td><td class='tab_bg_2 center'>";
          echo "<input type='hidden' name'is_dynamic' value='0'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>";
          echo "</table></div>";
          Html::closeForm();

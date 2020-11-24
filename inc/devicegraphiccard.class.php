@@ -78,7 +78,6 @@ class DeviceGraphicCard extends CommonDevice {
          'field'              => 'chipset',
          'name'               => __('Chipset'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -87,7 +86,6 @@ class DeviceGraphicCard extends CommonDevice {
          'field'              => 'memory_default',
          'name'               => __('Memory by default'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

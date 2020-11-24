@@ -457,9 +457,9 @@ class PDU_Rack extends CommonDBRelation {
          }
          echo "</table>";
       }
-      echo "<a id='add_pdu' class='sub_action'>";
+      echo "<a id='add_pdu' class='btn btn-sm btn-ghost-secondary ms-auto'>";
       echo "<i class='fa fa-plus'></i>";
-      echo _sx('button', "Add");
+      echo "<span>"._sx('button', "Add")."</span>";
       echo "</a>";
       echo "</div>";
       echo "</div>";
@@ -469,21 +469,15 @@ class PDU_Rack extends CommonDBRelation {
       $(function() {
          $('#add_pdu').click(function(event) {
             event.preventDefault();
-            $.ajax({
+
+            glpi_ajax_dialog({
+               title: __("Add rack"),
                url : "{$ajax_url}",
-               data: {
+               params: {
                   racks_id: "{$rack->getID()}",
                   action: "show_pdu_form",
                   ajax: true,
                },
-               success: function(data) {
-                  $('#grid-dialog')
-                     .html(data)
-                     .dialog({
-                        modal: true,
-                        width: 'auto'
-                     });
-               }
             });
          });
       });
@@ -554,8 +548,8 @@ JAVASCRIPT;
          if ($float) {
             echo "<div class='side_pdus_graph grid-stack grid-stack-1'
                        id='side_pdus_$rand'
-                       data-gs-column='1'
-                       data-gs-max-row='".($rack->fields['number_units'] + 1)."'>";
+                       gs-column='1'
+                       gs-max-row='".($rack->fields['number_units'] + 1)."'>";
          }
 
          foreach ($found_pdus_side as $current) {
@@ -623,9 +617,9 @@ JAVASCRIPT;
 
                echo "<div class='grid-stack-item $picture_c'
                        id='item_$item_rand'
-                       data-gs-id='{$current['id']}'
-                       data-gs-height='$height' data-gs-width='1'
-                       data-gs-x='0' data-gs-y='$y'
+                       gs-id='{$current['id']}'
+                       gs-h='$height' gs-w='1'
+                       gs-x='0' gs-y='$y'
                        style='background-color: $bg_color; color: $fg_color;'>
                   <div class='grid-stack-item-content' style='$fg_color_s'>
                      <i class='item_rack_icon fa fa-plug fa-rotate-270'></i>
@@ -649,51 +643,14 @@ JAVASCRIPT;
 
          if ($float) {
             echo "<div class='grid-stack-item lock-bottom'
-                    data-gs-no-resize='true' data-gs-no-move='true'
-                    data-gs-height='1'       data-gs-width='1'
-                    data-gs-x='0'            data-gs-y='$num_u'>
+                    gs-no-resize='true' gs-no-move='true'
+                    gs-h='1'            gs-w='1'
+                    gs-x='0'            gs-y='$num_u'>
                </div>";
 
             echo "</div>"; // .side_pdus_graph
          }
          echo "</div>"; // .side_pdus
-
-         $ajax_url = $CFG_GLPI['root_doc']."/ajax/rack.php";
-
-         $js = <<<JAVASCRIPT
-         $(function() {
-            $('#side_pdus_$rand')
-               .on('change', function(event, items) {
-                  if (dirty) {
-                     return;
-                  }
-                  var grid = $(event.target).data('gridstack');
-                  $.each(items, function(index, item) {
-                     var new_pos = grid_rack_units - item.y - item.height + 1
-                     $.post("{$ajax_url}", {
-                        id: item.id,
-                        action: 'move_pdu',
-                        position: new_pos,
-                     }, function (answer) {
-                        var answer = jQuery.parseJSON(answer);
-
-                        // revert to old position
-                        if (!answer.status) {
-                           dirty = true;
-                           grid.move(item.el, x_before_drag, y_before_drag);
-                           dirty = false;
-                           displayAjaxMessageAfterRedirect();
-                        } else {
-                           dirty = false;
-                        }
-                     });
-                  });
-               })
-         });
-JAVASCRIPT;
-         if ($float) {
-            echo Html::scriptBlock($js);
-         }
       }
    }
 

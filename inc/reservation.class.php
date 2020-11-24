@@ -413,7 +413,7 @@ class Reservation extends CommonDBChild {
             $name = sprintf(__('%1$s - %2$s'), $type, $name);
          }
 
-         $all = "<a class='vsubmit view-all' href='reservation.php?reservationitems_id=0'>".
+         $all = "<a class='btn btn-primary ms-2 view-all' href='reservation.php?reservationitems_id=0'>".
                __('View all items').
                "&nbsp;<i class='fas fa-eye'></i>".
             "</a>";
@@ -423,13 +423,13 @@ class Reservation extends CommonDBChild {
          $name = __('All reservable devices');
          $all  = "";
       }
-      echo "<div class='reservation-panel'>";
-      echo "<div class='center reservation-header'>";
+      echo "<div class='card'>";
+      echo "<div class='text-center card-header'>";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/reservation.png' alt='' class='reservation-icon'>";
       echo "<h2 class='item-name'>".$name."</h2>";
       echo "$all";
       echo "</div>"; // .center
-      echo "<div id='reservations_planning_$rand' class='reservations-planning'></div>";
+      echo "<div id='reservations_planning_$rand' class='card-body reservations-planning'></div>";
       echo "</div>"; // .reservation_panel
 
       $js = <<<JAVASCRIPT
@@ -658,7 +658,7 @@ JAVASCRIPT;
          echo "<input type='hidden' name='id' value='$ID'>";
       }
 
-      echo "<table class='tab_cadre' width='700px'>";
+      echo "<table class='tab_cadre' width='100%'>";
       echo "<tr><th colspan='2'>".__('Reserve an item')."</th></tr>\n";
 
       // Add Hardware name
@@ -709,7 +709,7 @@ JAVASCRIPT;
       echo "<td>";
 
       $entities_id   = Session::getActiveEntity();
-      $is_recursive  = Session::getActiveEntityRecursive();
+      $is_recursive  = Session::getIsActiveEntityRecursive();
       if (isset($item)) {
          $entities_id  = $item->getEntityID();
          $is_recursive = $item->isRecursive();
@@ -785,13 +785,13 @@ JAVASCRIPT;
       }
 
       echo "<tr class='tab_bg_2'><td>".__('Comments')."</td>";
-      echo "<td><textarea name='comment' rows='8' cols='60'>".$resa->fields["comment"]."</textarea>";
+      echo "<td><textarea name='comment' rows='8' class='form-control'>".$resa->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       if (empty($ID)) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='2' class='top center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>";
 
       } else {
@@ -802,7 +802,7 @@ JAVASCRIPT;
                 || Session::haveRight(static::$rightname, PURGE)) {
                echo "<td class='top center'>";
                echo "<input type='submit' name='purge' value=\""._sx('button', 'Delete permanently')."\"
-                      class='submit'>";
+                      class='btn btn-primary'>";
                if ($resa->fields["group"] > 0) {
                   echo "<br><input type='checkbox' name='_delete_group'>&nbsp;".
                              __s('Delete all repetition');
@@ -813,7 +813,7 @@ JAVASCRIPT;
                 || Session::haveRight(static::$rightname, UPDATE)) {
                echo "<td class='top center'>";
                echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\"
-                     class='submit'>";
+                     class='btn btn-primary'>";
                echo "</td>";
             }
             echo "</tr>";

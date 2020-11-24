@@ -481,7 +481,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          echo "<tr><th colspan='3'>".__('New child heading')."</th></tr>";
 
          echo "<tr class='tab_bg_1'><td>".__('Name')."</td><td>";
-         Html::autocompletionTextField($this, "name", ['value' => '']);
+         echo Html::input('name', ['value' => '']);
 
          if ($entity_assign
              && ($this->getForeignKeyField() != 'entities_id')) {
@@ -492,7 +492,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             echo "<input type='hidden' name='is_recursive' value='1'>";
          }
          echo "<input type='hidden' name='".$this->getForeignKeyField()."' value='$ID'></td>";
-         echo "<td><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<td><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>\n";
          echo "</table>";
          Html::closeForm();
@@ -581,7 +581,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       if ($isadmin) {
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'move_under']
-                  = "<i class='ma-icon fas fa-sitemap'></i>".
+                  = "<i class='fas fa-sitemap'></i>".
                     _x('button', 'Move under');
       }
 
@@ -599,7 +599,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                                             'comments' => 0,
                                             'entity'   => $_SESSION['glpiactive_entity'],
                                             'entity_sons' => $_SESSION['glpiactive_entity_recursive']]);
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+            echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='".
                            _sx('button', 'Move')."'>\n";
             return true;
 
@@ -686,7 +686,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          'field'             => 'name',
          'name'              => __('Name'),
          'datatype'          => 'itemlink',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

@@ -122,7 +122,7 @@ class NetworkAlias extends FQDNLabel {
       }
       $this->displayRecursiveItems($recursiveItems, "Link");
       echo "</td><td>" . __('Name') . "</td><td>\n";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -275,7 +275,7 @@ class NetworkAlias extends FQDNLabel {
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
          echo "</script>";
-         echo "<a class='vsubmit' href='javascript:viewAddAlias$rand();'>";
+         echo "<a class='btn btn-primary' href='javascript:viewAddAlias$rand();'>";
          echo __('Add a network alias')."</a>\n";
          echo "</div>\n";
       }

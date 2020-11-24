@@ -566,11 +566,11 @@ class Rule extends CommonDBTM {
          if ($isadmin
              && ($collection->orderby == "ranking")) {
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'move_rule']
-               = "<i class='ma-icon fas fa-arrows-alt-v'></i>".
+               = "<i class='fas fa-arrows-alt-v'></i>".
                  __('Move');
          }
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'export']
-            = "<i class='ma-icon fas fa-file-download'></i>".
+            = "<i class='fas fa-file-download'></i>".
               _x('button', 'Export');
       }
       return $actions;
@@ -614,7 +614,7 @@ class Rule extends CommonDBTM {
                'width'           => '50%',
                'order'           => 'ranking'
             ]);
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+            echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='".
                            _sx('button', 'Move')."'>\n";
             return true;
       }
@@ -676,7 +676,6 @@ class Rule extends CommonDBTM {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -703,7 +702,6 @@ class Rule extends CommonDBTM {
          'field'              => 'description',
          'name'               => __('Description'),
          'datatype'           => 'text',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -865,11 +863,11 @@ class Rule extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       echo "<td>".__('Description')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "description");
+      echo Html::input('description', ['value' => $this->fields['description']]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -919,8 +917,8 @@ class Rule extends CommonDBTM {
                $url = $CFG_GLPI["root_doc"];
             }
             echo "<tr><td class='tab_bg_2 center' colspan='4'>";
-            echo "<a class='vsubmit' href='#' onClick=\"".
-                  Html::jsGetElementbyID('ruletest'.$rand).".dialog('open'); return false;\">".
+            echo "<a class='btn btn-primary' href='#'
+                     data-bs-toggle='modal' data-bs-target='#ruletest$rand'>".
                   _x('button', 'Test')."</a>";
             Ajax::createIframeModalWindow('ruletest'.$rand,
                                           $url."/front/rule.test.php?". "sub_type=".$this->getType().
@@ -1077,7 +1075,7 @@ class Rule extends CommonDBTM {
          echo "};";
          echo "</script>\n";
          echo "<div class='center firstbloc'>".
-               "<a class='vsubmit' href='javascript:viewAddAction".$rules_id."$rand();'>";
+               "<a class='btn btn-primary' href='javascript:viewAddAction".$rules_id."$rand();'>";
          echo __('Add a new action')."</a></div>\n";
       }
 
@@ -1179,7 +1177,7 @@ class Rule extends CommonDBTM {
          echo "};";
          echo "</script>\n";
          echo "<div class='center firstbloc'>".
-               "<a class='vsubmit' href='javascript:viewAddCriteria".$rules_id."$rand();'>";
+               "<a class='btn btn-primary' href='javascript:viewAddCriteria".$rules_id."$rand();'>";
          echo __('Add a new criterion')."</a></div>\n";
       }
 
@@ -2409,9 +2407,7 @@ class Rule extends CommonDBTM {
 
       if (!$display
           && ($rc = getItemForItemtype($this->rulecriteriaclass))) {
-         Html::autocompletionTextField($rc, "pattern", ['name'  => $name,
-                                                             'value' => $value,
-                                                             'size'  => 70]);
+         echo Html::input($name, ['value' => $value, 'size' => '70']);
       }
    }
 
@@ -2616,7 +2612,7 @@ class Rule extends CommonDBTM {
 
          echo "<tr><td class='tab_bg_2 center' colspan='3'>";
          echo "<input type='submit' name='test_rule' value=\""._sx('button', 'Test')."\"
-                class='submit'>";
+                class='btn btn-primary'>";
          echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
          echo "<input type='hidden' name='sub_type' value='" . $this->getType() . "'>";
          echo "</td></tr>\n";
@@ -2661,13 +2657,15 @@ class Rule extends CommonDBTM {
     * @param $options   array of possible options:
     *    - name : string / name of the select (default is depending itemtype)
     *    - sub_type : integer / sub_type of rule
+    *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
    **/
    static function dropdown($options = []) {
       $p = [
          'sub_type'     => '',
          'name'         => 'rules_id',
          'entity'       => '',
-         'condition'    => 0
+         'condition'    => 0,
+         'hide_if_no_elements' => false,
       ];
 
       if (is_array($options) && count($options)) {
@@ -2826,11 +2824,9 @@ class Rule extends CommonDBTM {
       echo "<tr><th colspan='7'>" . $this->getTitle() . "</th></tr>\n";
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name') . "</td><td>";
-      Html::autocompletionTextField($this, "name", ['value' => '',
-                                                         'size'  => 33]);
+      echo Html::input('name', ['value' => '', 'size' => '33']);
       echo "</td><td>".__('Description') . "</td><td>";
-      Html::autocompletionTextField($this, "description", ['value' => '',
-                                                                'size'  => 33]);
+      echo Html::input('description', ['value' => '', 'size' => '33']);
       echo "</td><td>".__('Logical operator') . "</td><td>";
       $this->dropdownRulesMatch();
       echo "</td><td class='tab_bg_2 center'>";
@@ -2838,7 +2834,7 @@ class Rule extends CommonDBTM {
       echo "<input type=hidden name='entities_id' value='-1'>";
       echo "<input type=hidden name='affectentity' value='$ID'>";
       echo "<input type=hidden name='_method' value='AddRule'>";
-      echo "<input type='submit' name='execute' value=\""._sx('button', 'Add')."\" class='submit'>";
+      echo "<input type='submit' name='execute' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
       echo "</td></tr>\n";
       echo "</table>";
       Html::closeForm();

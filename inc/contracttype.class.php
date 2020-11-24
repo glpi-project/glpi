@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class ContractType
-class ContractType extends CommonDropdown {
+class ContractType extends CommonType {
 
 
    static function getTypeName($nb = 0) {

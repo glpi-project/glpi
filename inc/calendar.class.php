@@ -192,31 +192,6 @@ class Calendar extends CommonDropdown {
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
-
-   /**
-    * Clone a calendar to another entity : name is updated
-    *
-    * @param array $options Array of new values to set
-    * @return boolean True on success or false on failure
-    * @deprecated 10.0.0 Use the {@link \Glpi\Features\Clonable} trait instead
-    */
-   function duplicate($options = []) {
-
-      Toolbox::deprecated('Use clone()');
-      $input = Toolbox::addslashes_deep($this->fields);
-      unset($input['id']);
-
-      if (is_array($options) && count($options)) {
-         foreach ($options as $key => $val) {
-            if (isset($this->fields[$key])) {
-               $input[$key] = $val;
-            }
-         }
-      }
-
-      return (bool) $this->clone($input);
-   }
-
    /**
     * @see Glpi\Features\Clonable::post_clone
     */
@@ -645,5 +620,9 @@ class Calendar extends CommonDropdown {
     */
    static function getDayNumberInWeek($date) {
       return (int)date('w', $date);
+   }
+
+   static function getIcon() {
+      return "far fa-calendar-alt";
    }
 }

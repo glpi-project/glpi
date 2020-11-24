@@ -549,7 +549,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Website'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -559,7 +558,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => Phone::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -569,7 +567,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => _n('Email', 'Emails', 1),
          'datatype'           => 'email',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -579,7 +576,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Fax'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -588,7 +584,6 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'postcode',
          'name'               => __('Postal code'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -598,7 +593,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('City'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -608,7 +602,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => _x('location', 'State'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -618,7 +611,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Country'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -628,7 +620,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Latitude'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -638,7 +629,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Longitude'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -648,7 +638,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Altitude'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -694,7 +683,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('LDAP directory information attribute representing the entity'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -704,7 +692,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Information in inventory tool (TAG) representing the entity'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -723,7 +710,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Search filter (if needed)'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -733,7 +719,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Mail domain'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -773,7 +758,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Administrator email'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -783,7 +767,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Administrator reply-to email (if needed)'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -792,7 +775,6 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'notification_subject_tag',
          'name'               => __('Prefix for notifications'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -801,7 +783,6 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'admin_email_name',
          'name'               => __('Administrator name'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -810,7 +791,6 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'admin_reply_name',
          'name'               => __('Response address (if needed)'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1154,7 +1134,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('URL'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1180,118 +1159,6 @@ class Entity extends CommonTreeDropdown {
       ];
 
       return $tab;
-   }
-
-
-   /**
-    * Display entities of the loaded profile
-    *
-    * @param string $target target for entity change action
-    * @param string $myname select name
-   **/
-   static function showSelector($target, $myname) {
-      global $CFG_GLPI;
-
-      $rand = mt_rand();
-
-      if (Session::getCurrentInterface() == 'helpdesk') {
-         $actionurl = $CFG_GLPI["root_doc"]."/front/helpdesk.public.php?active_entity=";
-      } else {
-         $actionurl = $CFG_GLPI["root_doc"]."/front/central.php?active_entity=";
-      }
-
-      echo "<div class='center'>";
-      echo "<span class='b'>".__('Select the desired entity')."<br>( <img src='".$CFG_GLPI["root_doc"].
-            "/pics/entity_all.png' alt=''> ".__s('to see the entity and its sub-entities').")</span>".
-            "<br>";
-      echo "<a style='font-size:14px;' href='".$target."?active_entity=all' title=\"".
-             __s('Show all')."\">".str_replace(" ", "&nbsp;", __('Show all'))."</a></div>";
-
-      echo "<div class='left' style='width:100%'>";
-      echo "<form id='entsearchform'>";
-      echo Html::input('entsearchtext', ['id' => 'entsearchtext']);
-      echo Html::submit(__('Search'), ['id' => 'entsearch']);
-      echo "</form>";
-
-      $css_tag = json_encode(Html::css('public/lib/jstree.css'));
-
-      echo "<script type='text/javascript'>";
-      echo "   $(function() {
-                  $('head').append($css_tag);
-                  $.getScript('{$CFG_GLPI["root_doc"]}/public/lib/jstree.js').done(function(data, textStatus, jqxhr) {
-                     $('#tree_projectcategory$rand')
-                     // call `.jstree` with the options object
-                     .jstree({
-                        // the `plugins` array allows you to configure the active plugins on this instance
-                        'plugins' : ['search', 'qload', 'conditionalselect'],
-                        'search': {
-                           'case_insensitive': true,
-                           'show_only_matches': true,
-                           'ajax': {
-                              'type': 'POST',
-                              'url': '".$CFG_GLPI["root_doc"]."/ajax/entitytreesearch.php'
-                           }
-                        },
-                        'qload': {
-                           'prevLimit': 50,
-                           'nextLimit': 30,
-                           'moreText': '".__s('Load more entities...')."'
-                        },
-                        'conditionalselect': function (node, event) {
-                           if (node === false) {
-                              return false;
-                           }
-                           var url = '$actionurl'+node.id;
-                           if (event.target.tagName == 'I'
-                               && event.target.className == '') {
-                              url += '&is_recursive=1';
-                           }
-                           document.location.href = url;
-                           return false;
-                        },
-                        'core': {
-                           'animation': 0,
-                           'data': {
-                              'url': function(node) {
-                                 return node.id === '#' ?
-                                    '".$CFG_GLPI["root_doc"]."/ajax/entitytreesons.php?node=-1' :
-                                    '".$CFG_GLPI["root_doc"]."/ajax/entitytreesons.php?node='+node.id;
-                              }
-                           }
-                        }
-                     });
-
-                     var searchTree = function() {
-                        ".Html::jsGetElementbyID("tree_projectcategory$rand").".jstree('close_all');;
-                        ".Html::jsGetElementbyID("tree_projectcategory$rand").
-                        ".jstree('search',".Html::jsGetDropdownValue('entsearchtext').");
-                     }
-
-                     $('#entsearchform').submit(function( event ) {
-                        // cancel submit of entity search form
-                        event.preventDefault();
-
-                        // search
-                        searchTree();
-                     });
-
-                     // autosearch on keypress (delayed and with min length)
-                     $('#entsearchtext').keyup(function () {
-                        var inputsearch = $(this);
-                        typewatch(function () {
-                           if (inputsearch.val().length >= 3) {
-                              searchTree();
-                           }
-                        }, 500);
-                     })
-                     .focus();
-                  });
-               });";
-
-      echo "</script>";
-
-      echo "<div id='tree_projectcategory$rand' class='entity_tree' ></div>";
-      echo "</div>";
    }
 
 
@@ -1417,7 +1284,7 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>". Phone::getTypeName(1)."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "phonenumber");
+      echo Html::input('phonenumber', ['value' => $entity->fields['phonenumber']]);
       echo "</td>";
       echo "<td rowspan='7'>".__('Address')."</td>";
       echo "<td rowspan='7'>";
@@ -1427,38 +1294,42 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Fax')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "fax");
+      echo Html::input('fax', ['value' => $entity->fields['fax']]);
       echo "</td></tr>";
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Website')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "website");
+      echo Html::input('website', ['value' => $entity->fields['website']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('Email', 'Emails', 1)."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "email");
+      echo Html::input('email', ['value' => $entity->fields['email']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Postal code')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "postcode", ['size' => 7]);
-      echo "&nbsp;&nbsp;". __('City'). "&nbsp;";
-      Html::autocompletionTextField($entity, "town", ['size' => 27]);
+      echo Html::input('postcode', ['value' => $entity->fields['postcode'], 'size' => 7]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('City')."</td>";
+      echo "<td>";
+      echo Html::input('town', ['value' => $entity->fields['town'], 'size' => 27]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('location', 'State')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "state");
+      echo Html::input('state', ['value' => $entity->fields['state']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Country')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "country");
+      echo Html::input('country', ['value' => $entity->fields['country']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -1475,19 +1346,19 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('location', 'Longitude')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "longitude");
+      echo Html::input('longitude', ['value' => $entity->fields['longitude']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('location', 'Latitude')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "latitude");
+      echo Html::input('latitude', ['value' => $entity->fields['latitude']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('location', 'Altitude')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "altitude");
+      echo Html::input('altitude', ['value' => $entity->fields['altitude']]);
       echo "</td></tr>";
 
       Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => []]);
@@ -1496,7 +1367,7 @@ class Entity extends CommonTreeDropdown {
       if ($canedit) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary'>";
          echo "</div>";
          Html::closeForm();
       }
@@ -1538,21 +1409,21 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Information in inventory tool (TAG) representing the entity')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "tag", ['size' => 100]);
+      echo Html::input('tag', ['value' => $entity->fields['tag'], 'size' => 100]);
       echo "</td></tr>";
 
       if (Toolbox::canUseLdap()) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('LDAP directory information attribute representing the entity')."</td>";
          echo "<td>";
-         Html::autocompletionTextField($entity, "ldap_dn", ['size' => 100]);
+         echo Html::input('ldap_dn', ['value' => $entity->fields['ldap_dn'], 'size' => 100]);
          echo "</td></tr>";
       }
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Mail domain surrogates entity')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "mail_domain", ['size' => 100]);
+      echo Html::input('mail_domain', ['value' => $entity->fields['mail_domain'], 'size' => 100]);
       echo "</td></tr>";
 
       if (Toolbox::canUseLdap()) {
@@ -1573,7 +1444,7 @@ class Entity extends CommonTreeDropdown {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('LDAP filter associated to the entity (if necessary)')."</td>";
          echo "<td>";
-         Html::autocompletionTextField($entity, 'entity_ldapfilter', ['size' => 100]);
+         echo Html::input('entity_ldapfilter', ['value' => $entity->fields['entity_ldapfilter'], 'size' => 100]);
          echo "</td></tr>";
       }
 
@@ -1584,7 +1455,7 @@ class Entity extends CommonTreeDropdown {
       if ($canedit) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary'>";
          echo "</div>";
          Html::closeForm();
       }
@@ -1780,7 +1651,7 @@ class Entity extends CommonTreeDropdown {
       if ($canedit) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary'>";
          echo "</div>";
          Html::closeForm();
       }
@@ -1821,14 +1692,14 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Administrator email')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "admin_email");
+      echo Html::input('admin_email', ['value' => $entity->fields['admin_email']]);
       if (strlen($entity->fields['admin_email']) == 0) {
          self::inheritedValue(self::getUsedConfig('admin_email', $ID, '', ''));
       }
       echo "</td>";
       echo "<td>" . __('Administrator name') . "</td><td>";
       // we inherit only if email inherit also
-      Html::autocompletionTextField($entity, "admin_email_name");
+      echo Html::input('admin_email_name', ['value' => $entity->fields['admin_email_name']]);
       // warning, we rely on email field to inherit name field
       if (strlen($entity->fields['admin_email']) == 0) {
          self::inheritedValue(self::getUsedConfig('admin_email_name', $ID, '', ''));
@@ -1838,13 +1709,13 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Administrator reply-to email (if needed)')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "admin_reply");
+      echo Html::input('admin_reply', ['value' => $entity->fields['admin_reply']]);
       if (strlen($entity->fields['admin_reply']) == 0) {
          self::inheritedValue(self::getUsedConfig('admin_reply', $ID, '', ''));
       }
       echo "</td>";
       echo "<td>" . __('Response address (if needed)') . "</td><td>";
-      Html::autocompletionTextField($entity, "admin_reply_name");
+      echo Html::input('admin_reply_name', ['value' => $entity->fields['admin_reply_name']]);
       // warning, we rely on email field to inherit name field
       if (strlen($entity->fields['admin_reply']) == 0) {
          self::inheritedValue(self::getUsedConfig('admin_reply_name', $ID, '', ''));
@@ -1854,7 +1725,7 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Prefix for notifications')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "notification_subject_tag");
+      echo Html::input('notification_subject_tag', ['value' => $entity->fields['notification_subject_tag']]);
       if (strlen($entity->fields['notification_subject_tag']) == 0) {
          self::inheritedValue(self::getUsedConfig('notification_subject_tag', $ID, '', ''));
       }
@@ -1897,7 +1768,7 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td class='middle right'>" . __('Email signature') . "</td>";
       echo "<td colspan='3'>";
-      echo "<textarea cols='60' rows='5' name='mailing_signature'>".
+      echo "<textarea cols='60' rows='5' name='mailing_signature' class='form-control'>".
              $entity->fields["mailing_signature"]."</textarea>";
       if (strlen($entity->fields['mailing_signature']) == 0) {
          self::inheritedValue(self::getUsedConfig('mailing_signature', $ID, '', ''));
@@ -2204,7 +2075,7 @@ class Entity extends CommonTreeDropdown {
       if ($canedit) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary'>";
          echo "</div>";
          Html::closeForm();
       }
@@ -2303,7 +2174,7 @@ class Entity extends CommonTreeDropdown {
       if ($canedit) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary'>";
          echo "</div>";
          Html::closeForm();
       }
@@ -2849,7 +2720,7 @@ class Entity extends CommonTreeDropdown {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
          echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\"
-                  class='submit'>";
+                  class='btn btn-primary'>";
          echo "</div>";
          Html::closeForm();
       }
@@ -3440,9 +3311,10 @@ class Entity extends CommonTreeDropdown {
          return "";
       }
 
-      $out = "<div class='inherited ".($inline ? "inline" : "")."'
-                   title='".__("Value inherited from a parent entity")."'>
-         <i class='fas fa-level-down-alt'></i>
+      $out = "<div class='badge bg-azure-lt m-1 py-3 ".($inline ? "inline" : "")."'
+                   title='".__("Value inherited from a parent entity")."'
+                   data-bs-toggle='tooltip'>
+         <i class='fas fa-level-down-alt me-1'></i>
          $value
       </div>";
 

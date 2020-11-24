@@ -39,13 +39,6 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-// depreciation behavior
-if (!isset($_POST["itemtype"]) && isset($_POST['table'])
-    && $DB->tableExists($_POST['table'])) {
-   Toolbox::deprecated();
-   $_POST["itemtype"] = getItemTypeForTable($_POST['table']);
-}
-
 if (isset($_POST["itemtype"])
     && isset($_POST["value"])) {
    // Security

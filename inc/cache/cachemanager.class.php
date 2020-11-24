@@ -36,6 +36,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use DirectoryIterator;
+use Psr\Cache\CacheItemPoolInterface;
+use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
@@ -43,6 +46,24 @@ use Symfony\Component\Cache\CacheItem;
 use Toolbox;
 
 class CacheManager {
+
+   /**
+    * GLPI core cache context.
+    * @var string
+    */
+   public const CONTEXT_CORE = 'core';
+
+   /**
+    * GLPI translations cache context.
+    * @var string
+    */
+   public const CONTEXT_TRANSLATIONS = 'translations';
+
+   /**
+    * GLPI installer cache context.
+    * @var string
+    */
+   public const CONTEXT_INSTALLER = 'installer';
 
    /**
     * Memcached scheme.
@@ -75,8 +96,16 @@ class CacheManager {
     */
    private $config_dir;
 
-   public function __construct(string $config_dir = GLPI_CONFIG_DIR) {
+   /**
+    * Cache directory.
+    *
+    * @var string
+    */
+   private $cache_dir;
+
+   public function __construct(string $config_dir = GLPI_CONFIG_DIR, string $cache_dir = GLPI_CACHE_DIR) {
       $this->config_dir = $config_dir;
+      $this->cache_dir = $cache_dir;
    }
 
    /**
@@ -90,8 +119,8 @@ class CacheManager {
     * @return bool
     */
    public function setConfiguration(string $context, $dsn, array $options = [], ?string $namespace = null): bool {
-      if (!$this->isContextValid($context)) {
-         throw new \InvalidArgumentException(sprintf('Invalid context: "%s".', $context));
+      if (!$this->isContextValid($context, true)) {
+         throw new \InvalidArgumentException(sprintf('Invalid or non configurable context: "%s".', $context));
       }
       if (!$this->isDsnValid($dsn)) {
          throw new \InvalidArgumentException(sprintf('Invalid DSN: %s.', json_encode($dsn, JSON_UNESCAPED_SLASHES)));
@@ -115,8 +144,8 @@ class CacheManager {
     * @return bool
     */
    public function unsetConfiguration(string $context): bool {
-      if (!$this->isContextValid($context)) {
-         throw new \InvalidArgumentException(sprintf('Invalid context: "%s".', $context));
+      if (!$this->isContextValid($context, true)) {
+         throw new \InvalidArgumentException(sprintf('Invalid or non configurable context: "%s".', $context));
       }
 
       $config = $this->getRawConfig();
@@ -158,18 +187,38 @@ class CacheManager {
    /**
     * Get cache instance for given context.
     *
-    * @return SimpleCache|null
+    * @param string $context
+    *
+    * @return CacheInterface
     */
-   public function getCacheInstance(string $context): SimpleCache {
+   public function getCacheInstance(string $context): CacheInterface {
+      return new SimpleCache($this->getCacheStorageAdapter($context));
+   }
+
+   /**
+    * Get cache storage adapter for given context.
+    *
+    * @return \Psr\Cache\CacheItemPoolInterface
+    */
+   public function getCacheStorageAdapter(string $context): CacheItemPoolInterface {
       if (!$this->isContextValid($context)) {
          throw new \InvalidArgumentException(sprintf('Invalid context: "%s".', $context));
+      }
+
+      if ($context === self::CONTEXT_TRANSLATIONS || $context === self::CONTEXT_INSTALLER) {
+         // 'translations' and 'installer' contexts are not supposed to be configured
+         // and should always use a filesystem adapter.
+         // Append GLPI version to namespace to ensure that these caches are not containing data
+         // from a previous version.
+         $namespace = $this->normalizeNamespace($context . '-' . GLPI_VERSION);
+         return new FilesystemAdapter($namespace, 0, $this->cache_dir);
       }
 
       $raw_config = $this->getRawConfig();
 
       if (!array_key_exists($context, $raw_config)) {
          // Default to filesystem, inside GLPI_CACHE_DIR/$context, with a generic namespace.
-         return new SimpleCache(new FilesystemAdapter($this->normalizeNamespace($context), 0, GLPI_CACHE_DIR));
+         return new FilesystemAdapter($this->normalizeNamespace($context), 0, $this->cache_dir);
       }
 
       $config = $raw_config[$context];
@@ -200,17 +249,91 @@ class CacheManager {
             break;
       }
 
-      return new SimpleCache($storage);
+      return $storage;
    }
 
    /**
     * Get core cache instance.
     *
-    * @return SimpleCache
+    * @return CacheInterface
     */
-   public function getCoreCacheInstance(): SimpleCache {
+   public function getCoreCacheInstance(): CacheInterface {
 
-      return $this->getCacheInstance('core');
+      return $this->getCacheInstance(self::CONTEXT_CORE);
+   }
+
+   /**
+    * Get translations cache instance.
+    *
+    * @return CacheInterface
+    */
+   public function getTranslationsCacheInstance(): CacheInterface {
+      return $this->getCacheInstance(self::CONTEXT_TRANSLATIONS);
+   }
+
+   /**
+    * Get installer cache instance.
+    *
+    * @return CacheInterface
+    */
+   public function getInstallerCacheInstance(): CacheInterface {
+      return $this->getCacheInstance(self::CONTEXT_INSTALLER);
+   }
+
+   /**
+    * Reset all caches.
+    *
+    * @return void
+    */
+   public function resetAllCaches(): void {
+
+      // Clear all cache contexts
+      $known_contexts = $this->getKnownContexts();
+      foreach ($known_contexts as $context) {
+         $this->getCacheInstance($context)->clear();
+      }
+
+      // Clear compiled templates
+      $tpl_cache_dir = $this->cache_dir . '/templates';
+      if (file_exists($tpl_cache_dir)) {
+         array_map('unlink', glob($tpl_cache_dir . '/**/*.php'));
+         array_map('rmdir', glob($tpl_cache_dir . '/*', GLOB_ONLYDIR));
+      }
+   }
+
+   /**
+    * Return list of all know cache contexts.
+    *
+    * @return string[]
+    */
+   public function getKnownContexts(): array {
+      // Core contexts
+      $contexts = [
+         'core',
+         'installer',
+         'translations',
+      ];
+
+      // Contexts defined in configuration.
+      // These may not be find in directories if they are configured to use a remote service.
+      $config = $this->getRawConfig();
+      array_push($contexts, ...array_keys($config));
+
+      // Context found from cache directories.
+      // These may not be find in configuration if they are using default configuration.
+      $directory_iterator = new DirectoryIterator($this->cache_dir);
+      foreach ($directory_iterator as $file) {
+         if ($file->isDot() || !$file->isDir() || !preg_match('/^plugin_/', $file->getFilename())) {
+            continue;
+         }
+
+         $context = preg_replace('/^plugin_([a-zA-Z]+)$/', 'plugin:$1', $file->getFilename());
+         if ($this->isContextValid($context)) {
+            $contexts[] = $context;
+         }
+      }
+
+      return array_unique($contexts);
    }
 
    /**
@@ -265,7 +388,7 @@ class CacheManager {
       if (file_exists($config_file)) {
          $configs = include($config_file);
          foreach ($configs as $context => $config) {
-            if (!$this->isContextValid($context)
+            if (!$this->isContextValid($context, true)
                 || !is_array($config)
                 || !array_key_exists('dsn', $config)
                 || !$this->isDsnValid($config['dsn'])
@@ -302,14 +425,23 @@ PHP;
    }
 
    /**
-    * Check if configuration context is valid.
+    * Check if context key is valid.
     *
     * @param string $context
+    * @param bool $only_configurable
     *
     * @return bool
     */
-   public function isContextValid(string $context): bool {
-      return $context === 'core' || preg_match('/^plugin:\w+$/', $context) === 1;
+   public function isContextValid(string $context, bool $only_configurable = false): bool {
+      $core_contexts = ['core'];
+
+      if (!$only_configurable) {
+         // 'installer' and 'translations' cache storages cannot not be configured (they always use the filesystem storage)
+         $core_contexts[] = 'installer';
+         $core_contexts[] = 'translations';
+      }
+
+      return in_array($context, $core_contexts, true) || preg_match('/^plugin:\w+$/', $context) === 1;
    }
 
    /**

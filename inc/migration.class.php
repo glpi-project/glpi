@@ -302,6 +302,17 @@ class Migration {
             }
             break;
 
+         case 'time':
+            $format = "TIME";
+            if (!$nodefault) {
+               if (is_null($default_value)) {
+                  $format.= " DEFAULT NULL";
+               } else {
+                  $format.= " NOT NULL DEFAULT '$default_value'";
+               }
+            }
+            break;
+
          case 'timestamp':
          case 'datetime':
             $format = "TIMESTAMP";
@@ -422,7 +433,7 @@ class Migration {
     * @param string $table    Table name
     * @param string $oldfield Old name of the field
     * @param string $newfield New name of the field
-    * @param string $type     Field type, @see Migration::fieldFormat()
+    * @param string $type     Field type, {@see Migration::fieldFormat()}
     * @param array  $options  Options:
     *                         - value     : new field's default value, if a specific default value needs to be used
     *                         - first     : add the new field at first column
