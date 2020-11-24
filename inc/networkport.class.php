@@ -656,6 +656,7 @@ class NetworkPort extends CommonDBChild {
          )
       );
 
+      echo "<div class='table-responsive'>";
       if ($showmassiveactions) {
          $massiveactionparams = [
             'num_displayed'  => min($_SESSION['glpilist_limit'], count($ports_iterator)),
@@ -669,7 +670,7 @@ class NetworkPort extends CommonDBChild {
       echo "<table class='tab_cadre_fixehov'>";
 
       echo "<thead><tr><td colspan='$colspan'>";
-      echo "<table class='legend'>";
+      echo "<table class='netport-legend'>";
       echo "<thead><tr><th colspan='4'>".__('Connections legend')."</th></tr></thead><tr>";
       echo "<td class='netport trunk'>".__('Equipment in trunk or tagged mode')."</td>";
       echo "<td class='netport hub'>".__('Hub ')."</td>";
@@ -720,6 +721,7 @@ class NetworkPort extends CommonDBChild {
       }
 
       echo "</table>";
+      echo "</div>";
 
       if ($showmassiveactions) {
          $massiveactionparams['ontop'] = false;

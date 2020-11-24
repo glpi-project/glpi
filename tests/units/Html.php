@@ -728,8 +728,8 @@ class Html extends \GLPITestCase {
       // test modal
       $modal = \Html::FuzzySearch('getHtml');
       $this->string($modal)
-         ->contains("id='fuzzysearch'")
-         ->contains("class='results'");
+         ->contains('id="fuzzysearch"')
+         ->matches('/class="results[^"]*"/');
 
       // test retrieving entries
       $default = json_decode(\Html::FuzzySearch(), true);
@@ -776,8 +776,8 @@ class Html extends \GLPITestCase {
             \Html::displayMessageAfterRedirect();
          }
       )
-         ->contains('<div id="message_after_redirect_1" title="Error">Something went really wrong :(</div>')
-         ->contains('<div id="message_after_redirect_2" title="Warning">Oooops, I did it again!</div>');
+         ->matches('/class="[^"]*bg-danger[^"]*".*Error.*Something went really wrong :\(/s')
+         ->matches('/class="[^"]*bg-warning[^"]*".*Warning.*Oooops, I did it again!/s');
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
    }

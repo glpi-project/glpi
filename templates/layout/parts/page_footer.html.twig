@@ -1,0 +1,68 @@
+{#
+ ---------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2015-2020 Teclib' and contributors.
+
+ http://glpi-project.org
+
+ based on GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2014 by the INDEPNET Development Team.
+
+ ---------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of GLPI.
+
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ ---------------------------------------------------------------------
+#}
+
+            </main> {# #page #}
+         </div> {# .container-fluid #}
+      </div> {# .content #}
+   </div> {# .page #}
+
+   {% if is_debug_active %}
+      <span class="btn btn-secondary" id="see_debug">
+         <i class="fas fa-bug" title=" {{ __('Display GLPI debug informations') }}">
+            <span class="sr-only">{{ __('Display GLPI debug informations') }}</span>
+         </i>
+      </span>
+      <script type="text/javascript">
+         $($('#see_debug').click(function(e) {
+            e.preventDefault();
+            $('body > .debug-panel').css('display', 'block');
+         }));
+      </script>
+   {% endif %}
+
+   {% if config('maintenance_mode') %}
+      <div id='maintenance-float'>
+         <a href="{{ path("front/config.form.php?forcetab=Config$5") }}">GLPI MAINTENANCE MODE</a>
+      </div>
+   {% endif %}
+
+   <span class="btn btn-secondary" id="backtotop" style="display: none">
+      <i class="fas fa-arrow-up" title="{{ __('Back to top of the page') }}">
+         <span class="sr-only">{{ __("Top of the page") }}</span>
+      </i>
+   </span>
+
+   {% for js_file in js_files %}
+      <script type="text/javascript" src="{{ js_path(js_file) }}"></script>
+   {% endfor %}
+
+</body>
+</html>

@@ -578,7 +578,7 @@ class Item_Devices extends CommonDBRelation {
       $canedit = (($withtemplate != 2)
                   && $item->canEdit($ID)
                   && Session::haveRightsOr('device', [UPDATE, PURGE]));
-      echo "<div class='spaced'>";
+      echo "<div class='spaced table-responsive'>";
       $rand = mt_rand();
       if ($canedit) {
          echo "\n<form id='form_device_add$rand' name='form_device_add$rand'
