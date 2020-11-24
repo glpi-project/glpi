@@ -1100,12 +1100,13 @@ class Dropdown {
             $optgroup = array_merge($optgroup, $plugdrop);
          }
 
-         foreach ($optgroup as $label=>$dp) {
-            foreach ($dp as $key => $val) {
-
+         foreach ($optgroup as $label => &$dp) {
+            foreach ($dp as $key => &$val) {
                if ($tmp = getItemForItemtype($key)) {
                   if (!$tmp->canView()) {
                      unset($optgroup[$label][$key]);
+                  } else if ($val === null) {
+                     $val = $key::getTypeName(Session::getPluralNumber());
                   }
                } else {
                   unset($optgroup[$label][$key]);
