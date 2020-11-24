@@ -194,34 +194,46 @@ class Plugins {
          $plugins_colct = array_combine($plugins_keys, $plugins);
 
          foreach ($plugins_colct as &$plugin) {
-            if (count($plugin['versions']) === 0) {
-               continue;
-            }
-
-            if (!GLPI_MARKETPLACE_PRERELEASES) {
-               $plugin['versions'] = array_filter($plugin['versions'], function($version) {
-                  return !isset($version['stability']) || $version['stability'] === "stable";
-               });
-            }
-
-            $versions = $plugin['versions'];
             usort(
-               $versions,
+               $plugin['versions'],
                function ($a, $b) {
                   return version_compare($a['num'], $b['num']);
                }
             );
-
-            $higher_version = end($versions);
-            if (is_array($higher_version)) {
-               $plugin['installation_url'] = $higher_version['download_url'];
-               $plugin['version'] = $higher_version['num'];
-            }
          }
 
-         self::$plugins = $plugins_colct;
-         $GLPI_CACHE->set('marketplace_all_plugins', self::$plugins, HOUR_TIMESTAMP);
+         $GLPI_CACHE->set('marketplace_all_plugins', $plugins_colct, HOUR_TIMESTAMP);
       }
+
+      // Filter versions.
+      // Done after caching process to be able to handle change of "GLPI_MARKETPLACE_PRERELEASES"
+      // without having to purge the cache manually.
+      foreach ($plugins_colct as &$plugin) {
+         if (!GLPI_MARKETPLACE_PRERELEASES) {
+            $plugin['versions'] = array_filter($plugin['versions'], function($version) {
+               return !isset($version['stability']) || $version['stability'] === "stable";
+            });
+         }
+
+         if (count($plugin['versions']) === 0) {
+            continue;
+         }
+
+         $higher_version = end($plugin['versions']);
+         if (is_array($higher_version)) {
+            $plugin['installation_url'] = $higher_version['download_url'];
+            $plugin['version'] = $higher_version['num'];
+         }
+      }
+      self::$plugins = $plugins_colct;
+
+      // Remove plugins with no versions for current config (i.e. only unstable versions that are not proposed).
+      $plugins_colct = array_filter(
+         $plugins_colct,
+         function($plugin) {
+            return count($plugin['versions']) > 0;
+         }
+      );
 
       if (strlen($tag_filter) > 0) {
          $tagged_plugins = array_column($this->getPluginsForTag($tag_filter), 'key');
