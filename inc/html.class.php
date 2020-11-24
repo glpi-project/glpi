@@ -4984,7 +4984,8 @@ JS;
             'fullscreen'   => true,
             'zoom'         => true,
          ],
-         'rand'   => mt_rand()
+         'rand'               => mt_rand(),
+         'gallery_item_class' => ''
       ];
 
       if (is_array($options) && count($options)) {
@@ -5038,11 +5039,14 @@ JS;
       $out .= "<div class='pswp__caption__center'></div>";
       $out .= "</div></div></div></div>";
 
-      $out .= "<div class='pswp-img{$p['rand']} timeline_img_preview' itemscope itemtype='http://schema.org/ImageGallery'>";
+      $out .= "<div class='pswp-img{$p['rand']} {$p['gallery_item_class']}' itemscope itemtype='http://schema.org/ImageGallery'>";
       foreach ($imgs as $img) {
+         if (!isset($img['thumbnail_src'])) {
+            $img['thumbnail_src'] = $img['src'];
+         }
          $out .= "<figure itemprop='associatedMedia' itemscope itemtype='http://schema.org/ImageObject'>";
          $out .= "<a href='{$img['src']}' itemprop='contentUrl' data-index='0'>";
-         $out .= "<img src='{$img['src']}&context=timeline' itemprop='thumbnail'>";
+         $out .= "<img src='{$img['thumbnail_src']}' itemprop='thumbnail'>";
          $out .= "</a>";
          $out .= "</figure>";
       }
