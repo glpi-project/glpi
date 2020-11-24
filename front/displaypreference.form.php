@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
-Html::popHeader(__('Setup'), $_SERVER['PHP_SELF']);
+Html::popHeader(__('Setup'), $_SERVER['PHP_SELF'], true);
 
 Session::checkRightsOr('search_config', [DisplayPreference::PERSONAL,
                                               DisplayPreference::GENERAL]);

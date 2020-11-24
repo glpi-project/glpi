@@ -35,15 +35,11 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class PrinterType
-class PrinterType extends CommonDropdown {
+class PrinterType extends CommonType {
 
 
    static function getTypeName($nb = 0) {
       return _n('Printer type', 'Printer types', $nb);
-   }
-
-   static function getFieldLabel() {
-      return _n('Type', 'Types', 1);
    }
 
 }

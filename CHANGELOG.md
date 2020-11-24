@@ -11,6 +11,8 @@ The present file will list all changes made to the project; according to the
 ### Changed
 - APCu and WinCache are not anymore use by GLPI, use `php bin/console cache:configure` command to configure cache system.
 - PDF export library has been changed from `TCPDF` to `mPDF`.
+- The search engine and search results page now support sorting by multiple fields.
+- The search result lists now refresh/update without triggering a full page reload.
 
 ### Deprecated
 - Usage of XML-RPC API is deprecated.
@@ -34,6 +36,7 @@ The present file will list all changes made to the project; according to the
 - Field `date_mod` of ObjectLock has been renamed to `date`.
 - Field `date_creation` of PrinterLog has been renamed to `date`.
 - Field `date` of ProjectTask has been renamed to `date_creation`.
+- `Search::addOrderBy()` signature changed.
 
 #### Deprecated
 - Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
@@ -61,6 +64,7 @@ The present file will list all changes made to the project; according to the
 
 #### Removed
 - `Update::declareOldItems()`
+- `Ajax::createFixedModalWindow()`
 
 - Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
 - `$LOADED_PLUGINS` global variable

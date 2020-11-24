@@ -1,0 +1,68 @@
+{% set rand = random() %}
+<table class='tab_cadre_central'>
+   {{ hook_display_central() }}
+</table>
+
+{% include 'central/messages.html.twig' with {'messages': messages} %}
+<div id="home-dashboard{{ rand }}" class="container-fluid">
+   {% set grid_items = [] %}
+   {% for card in cards %}
+      {% set card_html %}
+         <div class="card {{ card.class|default('') }}">
+            {% if card.title is defined %}
+               <div class="card-header">
+                  {% if card.icon is defined and card.icon is not null %}
+                     <i class="{{ card.icon }}"></i>
+                  {% endif %}
+                  {{ card.title }}
+               </div>
+            {% endif %}
+            <div class="card-body {{ card.body_class|default('') }}">
+               {% if card.type is not defined or card.type == 'raw' %}
+                  {{ card.content|raw }}
+               {% elseif card.type == 'table' %}
+                  {% include 'components/table.html.twig' with {
+                     'class': card.content.class|default(''),
+                     'header_rows': card.content.header_rows|default({}),
+                     'rows': card.content.rows|default({}),
+                  } %}
+               {% elseif card.type == 'lazy' %}
+                  <div class="lazy-widget" data-itemtype="{{ card.content.itemtype }}" data-widget="{{ card.content.widget }}"
+                     data-params="{{ card.content.params|default({})|json_encode }}"
+                     data-idor="{{ card.content._idor_token }}">
+                  </div>
+               {% endif %}
+            </div>
+         </div>
+      {% endset %}
+
+      {% set grid_items = grid_items|merge([
+         card_html
+      ]) %}
+   {% endfor %}
+
+   {% include "components/masonry_grid.html.twig" with {
+      'grid_items': grid_items,
+   } only %}
+
+   <script>
+   $(function () {
+      $('#home-dashboard{{ rand }} .lazy-widget').each(function() {
+         const this_obj = $(this);
+         const params = {
+            'itemtype': this_obj.data('itemtype'),
+            'widget': this_obj.data('widget'),
+            'params': this_obj.data('params')
+         };
+         this_obj.html('<i class="fas fa-3x fa-spinner fa-spin ms-auto"></i>')
+            .load('{{ path('/ajax/central.php') }}', params, function(response, status, xhr) {
+               if (status === 'error' || !response) {
+                  this_obj.closest('.grid-item').remove();
+               }
+
+               $('#home-dashboard{{ rand }} .masonry_grid').trigger("layout:refresh");
+            });
+      });
+   });
+   </script>
+</div>

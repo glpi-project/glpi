@@ -1,0 +1,111 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2021 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+.itil-object {
+   @include media-breakpoint-up(sm) {
+      height: calc(100vh - 178px);
+
+      .itil-left-side, .itil-right-side {
+         overflow-y: auto;
+         transition: all 400ms ease;
+      }
+
+      .itil-left-side {
+         height: 100%;
+         border-top: 0 !important;
+         left: 0;
+      }
+
+      .itil-right-side {
+         height: calc(100% + 4px);
+         position: relative;
+         border: 0px;
+         border-left: 1px solid $border-color;
+
+         .accordion-item {
+            background: none;
+
+            .accordion-button {
+               background-color: $accordion-button-bg;
+            }
+         }
+      }
+   }
+}
+
+#itil-object-container ~ #debugajax {
+   position: fixed;
+   bottom: 10px;
+   left: 45%
+}
+
+// force description field of new item form to use max possible height
+.new-itil-object {
+   .itil-timeline {
+      height: 100%;
+
+      .timeline-item {
+         height: 100%;
+
+         & > .row {
+            height: 100%;
+
+            .content-block {
+               height: calc(100% - 1rem);
+               display: flex;
+               flex-direction: column;
+
+               .timeline-content {
+                  flex: 1;
+
+                  .card-body {
+                     height: 100%;
+
+                     .row {
+                        height: 100%;
+
+                        .form-field:nth-of-type(2) {
+                           flex: 1;
+                           display: flex;
+                           flex-direction: column;
+
+                           .tox.tox-tinymce {
+                              flex: 1;
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+}

@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -73,96 +75,11 @@ class Cluster extends CommonDBTM {
 
 
    function showForm($ID, $options = []) {
-      $rand = mt_rand();
-
       $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='textfield_name$rand'>".__('Name')."</label></td>";
-      echo "<td>";
-      $objectName = autoName(
-         $this->fields["name"],
-         "name",
-         (isset($options['withtemplate']) && ( $options['withtemplate']== 2)),
-         $this->getType(),
-         $this->fields["entities_id"]
-      );
-      Html::autocompletionTextField(
-         $this,
-         'name',
-         [
-            'value'     => $objectName,
-            'rand'      => $rand
-         ]
-      );
-      echo "</td>";
-
-      echo "<td><label for='dropdown_states_id$rand'>".__('Status')."</label></td>";
-      echo "<td>";
-      State::dropdown([
-         'value'     => $this->fields["states_id"],
-         'entity'    => $this->fields["entities_id"],
-         'condition' => ['is_visible_cluster' => 1],
-         'rand'      => $rand
+      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
+         'item'   => $this,
+         'params' => $options,
       ]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='uuid$rand'>".__('UUID')."</label></td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, 'uuid', ['rand' => $rand]);
-      echo "</td><td><label for='version$rand'>"._n('Version', 'Versions', 1)."</label></td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, 'version', ['rand' => $rand]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_types_id$rand'>"._n('Type', 'Types', 1)."</label></td>";
-      echo "<td>";
-      ClusterType::dropdown([
-         'value'  => $this->fields["clustertypes_id"],
-         'entity' => $this->fields["entities_id"],
-         'rand'   => $rand
-      ]);
-      echo "</td>";
-      echo "<td><label for='dropdown_autoupdatesystems_id$rand'>".AutoUpdateSystem::getTypeName(1)."</label></td>";
-      echo "<td >";
-      AutoUpdateSystem::dropdown(['value' => $this->fields["autoupdatesystems_id"], 'rand' => $rand]);
-      echo "</td></tr>";
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_users_id_tech$rand'>".__('Technician in charge of the hardware')."</label></td>";
-      echo "<td>";
-      User::dropdown([
-         'name'   => 'users_id_tech',
-         'value'  => $this->fields["users_id_tech"],
-         'right'  => 'own_ticket',
-         'entity' => $this->fields["entities_id"],
-         'rand'   => $rand
-      ]);
-      echo "</td>";
-      echo "<td><label for='dropdown_groups_id_tech$rand'>".__('Group in charge of the hardware')."</label></td>";
-      echo "<td>";
-      Group::dropdown([
-         'name'      => 'groups_id_tech',
-         'value'     => $this->fields['groups_id_tech'],
-         'entity'    => $this->fields['entities_id'],
-         'condition' => ['is_assign' => 1],
-         'rand'      => $rand
-      ]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='comment'>".__('Comments')."</label></td>";
-      echo "<td colspan='3' class='middle'>";
-      echo "<textarea cols='45' rows='4' id='comment' name='comment' >".
-           $this->fields["comment"];
-      echo "</textarea></td></tr>";
-      echo "</td></tr>\n";
-
-      $this->showFormButtons($options);
       return true;
    }
 

@@ -1,0 +1,59 @@
+{% set documents = entry['documents'] ?? [] %}
+<ul class="list-group list-group-hoverable sub-documents">
+   {% set image_docs = documents|filter(d => d['_is_image']) %}
+   {% set other_docs = documents|filter(d => not d['_is_image']) %}
+
+   {% if image_docs|length > 0 %}
+      {% set imgs = [] %}
+      {% for document in image_docs %}
+         {% set docpath = path("front/document.send.php?docid=" ~ document['item']['id']) %}
+         {% set fk = item.getForeignKeyField() %}
+         {% set delete_link = form_url(item.getType()) ~ "?delete_document&documents_id=" ~ document['item']['id'] ~ "&" ~ fk ~ "=" ~ item.fields['id'] %}
+
+         {% set post_figure_content %}
+            <div class="col-auto">
+               <div class="list-group-item-actions d-flex flex-column">
+                  <a href="{{ form_path("Document", document['item']['id']) }}"
+                     class="btn btn-sm btn-ghost-secondary" title="{{ _x("button", "Edit") }}"
+                     data-bs-toggle="tooltip" data-bs-placement="top">
+                     <i class="fas fa-edit"></i>
+                  </a>
+
+                  {% set fk = item.getForeignKeyField() %}
+                  <a href="{{ delete_link }}"
+                     class="btn btn-sm btn-ghost-secondary" title="{{ _x("button", "Delete permanently") }}"
+                     data-bs-toggle="tooltip" data-bs-placement="top">
+                     <i class="fas fa-trash-alt"></i>
+                  </a>
+               </div>
+            </div>
+         {% endset %}
+
+         {% set imgs = imgs|merge([{
+            'title': '',
+            'thumbnail_src': docpath ~ '&context=timeline',
+            'thumbnail_w': 'auto',
+            'thumbnail_h': 'auto',
+            'src': docpath,
+            'w': document['_size'][0],
+            'h': document['_size'][1],
+            'img_class': 'shadow',
+            'gallery_item_class': 'list-group-item border-0 d-flex',
+            'post_figure_content': post_figure_content
+         }]) %}
+      {% endfor %}
+      {% include 'components/photoswipe.html.twig' with {
+         'imgs': imgs,
+         'gallery_type': 'horizontal',
+      } %}
+   {% endif %}
+
+   {% for document in other_docs %}
+      <li class="list-group-item border-0">
+         {% include "components/itilobject/timeline/form_document_item.html.twig" with {
+            'form_mode': 'view',
+            'entry_i': document['item'],
+         } %}
+      </li>
+   {% endfor %}
+</ul>

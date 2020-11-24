@@ -106,16 +106,18 @@ class WifiNetwork extends CommonDropdown {
                          'list'  => true]];
    }
 
-
-   function displaySpecificTypeField($ID, $field = []) {
-
+   public function getSpecificTypeField(int $ID, array $field): string {
       if ($field['type'] == 'wifi_mode') {
-         Dropdown::showFromArray($field['name'], self::getWifiNetworkModes(),
-                                 ['value' => $this->fields[$field['name']]]);
-
+         return Dropdown::showFromArray($field['name'], self::getWifiNetworkModes(),
+            [
+               'value'  => $this->fields[$field['name']],
+               'class'     => 'form-select',
+               'width'     => '100%',
+               'display'   => false,
+            ]);
       }
+      return '';
    }
-
 
    function rawSearchOptions() {
       $tab = parent::rawSearchOptions();
@@ -130,5 +132,9 @@ class WifiNetwork extends CommonDropdown {
       ];
 
       return $tab;
+   }
+
+   static function getIcon() {
+      return "fas fa-wifi";
    }
 }
