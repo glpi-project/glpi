@@ -41,10 +41,24 @@ if (!isset($_REQUEST['action'])) {
    die;
 }
 
+// actions without IDOR
+switch ($_REQUEST['action']) {
+   case "fold_search":
+      $user = new User();
+      $success = $user->update([
+         'id'          => Session::getLoginUserID(),
+         'fold_search' => (bool) $_SESSION['glpifold_search'] ? 0 : 1,
+      ]);
+
+      echo json_encode(['success' => $success]);
+      break;
+}
+
 if (!Session::validateIDOR($_REQUEST)) {
    die;
 }
 
+// actions with IDOR
 switch ($_REQUEST['action']) {
    case "display_criteria":
       Search::displayCriteria($_REQUEST);

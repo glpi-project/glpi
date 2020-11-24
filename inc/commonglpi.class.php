@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  *  Common GLPI object
 **/
@@ -412,6 +414,7 @@ class CommonGLPI {
             $menu['shortcut']        = static::getMenuShorcut();
             $menu['page']            = static::getSearchURL(false);
             $menu['links']['search'] = static::getSearchURL(false);
+            $menu['links']['lists']  = "";
             $menu['icon']            = static::getIcon();
 
             if (!in_array('add', $forbidden)
@@ -419,10 +422,10 @@ class CommonGLPI {
 
                if ($item->maybeTemplate()) {
                   $menu['links']['add'] = '/front/setup.templates.php?'.'itemtype='.$type.
-                                          '&amp;add=1';
+                                          '&add=1';
                   if (!in_array('template', $forbidden)) {
                      $menu['links']['template'] = '/front/setup.templates.php?'.'itemtype='.$type.
-                                                  '&amp;add=0';
+                                                  '&add=0';
                   }
                } else {
                   $menu['links']['add'] = static::getFormURL(false);
@@ -676,7 +679,7 @@ JAVASCRIPT;
 
       if ($nb) {
          //TRANS: %1$s is the name of the tab, $2$d is number of items in the tab between ()
-         $text = sprintf(__('%1$s %2$s'), $text, "<sup class='tab_nb'>$nb</sup>");
+         $text = sprintf(__('%1$s %2$s'), $text, "<span class='badge'>$nb</span>");
       }
       return $text;
    }
@@ -873,8 +876,7 @@ JAVASCRIPT;
 
          $extraparamhtml = "&amp;".Toolbox::append_params($cleaned_options, '&amp;');
       }
-      echo "<div class='glpi_tabs ".($this->isNewID($ID)?"new_form_tabs":"")."'>";
-      echo "<div id='tabspanel' class='center-h'></div>";
+      //echo "<div class='".($this->isNewID($ID)?"new_form_tabs":"")."'>";
       $onglets     = $this->defineAllTabs($options);
       $display_all = true;
       if (isset($onglets['no_all_tab'])) {
@@ -906,7 +908,7 @@ JAVASCRIPT;
          Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType(), $ID,
                           $this->taborientation, $options);
       }
-      echo "</div>";
+      //echo "</div>";
    }
 
 
@@ -996,16 +998,16 @@ JAVASCRIPT;
 
          if ($first >= 0) {
             echo "<a href='$cleantarget?id=$first$extraparamhtml'
-                     class='navicon left'>
-                     <i class='fas fa-angle-double-left pointer' title=\"".__s('First')."\"></i>
+                     class='btn btn-sm btn-icon btn-ghost-secondary'>
+                     <i class='fas fa-lg fa-angle-double-left' title=\"".__s('First')."\"></i>
                   </a>";
          }
 
          if ($prev >= 0) {
             echo "<a href='$cleantarget?id=$prev$extraparamhtml'
                      id='previouspage'
-                     class='navicon left'>
-                     <i class='fas fa-angle-left pointer' title=\"".__s('Previous')."\"></i>
+                     class='btn btn-sm btn-icon btn-ghost-secondary'>
+                     <i class='fas fa-lg fa-angle-left' title=\"".__s('Previous')."\"></i>
                   </a>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
@@ -1021,8 +1023,8 @@ JAVASCRIPT;
             $glpilisttitle = __s('List');
          }
          echo "<a href='$glpilisturl' title=\"$glpilisttitle\"
-                  class='navicon left'>
-                  <i class='far fa-list-alt pointer'></i>
+                  class='btn btn-sm btn-icon btn-ghost-secondary'>
+                  <i class='far fa-lg fa-list-alt'></i>
                </a>";
 
          $name = '';
@@ -1053,98 +1055,15 @@ JAVASCRIPT;
          }
          echo "</span>";
 
-         $ma = new MassiveAction([
-               'item' => [
-                  $this->getType() => [
-                     $this->fields['id'] => 1
-                  ]
-               ]
-            ],
-            $_GET,
-            'initial',
-            $this->fields['id']
-         );
-         $actions = $ma->getInput()['actions'];
-         $input   = $ma->getInput();
-
-         if ($this->isEntityAssign()) {
-            $input['entity_restrict'] = $this->getEntityID();
-         }
-
-         if (count($actions)) {
-            $rand          = mt_rand();
-
-            if (count($actions)) {
-               echo "<span class='single-actions'>";
-               echo "<button type='button' class='btn btn-secondary moreactions'>
-                        ".__("Actions")."
-                        <i class='fas fa-caret-down'></i>
-                     </button>";
-
-               echo "<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>";
-               foreach ($actions as $key => $action) {
-                  echo "<a class='dropdown-item' data-action='$key' href='#'>$action</a>";
-               }
-               echo "</div>";
-               echo "</span>";
-            }
-
-            Html::openMassiveActionsForm();
-            echo "<div id='dialog_container_$rand'></div>";
-            // Force 'checkbox-zero-on-empty', because some massive actions can use checkboxes
-            $CFG_GLPI['checkbox-zero-on-empty'] = true;
-            Html::closeForm();
-            //restore
-            unset($CFG_GLPI['checkbox-zero-on-empty']);
-
-            echo Html::scriptBlock( "$(function() {
-               var ma = ".json_encode($input).";
-
-               $(document).on('click', '.moreactions', function() {
-                  $('.moreactions + .dropdown-menu').toggle();
-               });
-
-               $(document).on('click', function(event) {
-                  var target = $(event.target);
-                  var parent = target.parent();
-
-                  if(!target.hasClass('moreactions')
-                     && !parent.hasClass('moreactions')) {
-                     $('.moreactions + .dropdown-menu').hide();
-                  }
-               });
-
-               $(document).on('click', '[data-action]', function() {
-                  $('.moreactions + .dropdown-menu').hide();
-
-                  var current_action = $(this).data('action');
-
-                  $('<div></div>').dialog({
-                     title: ma.actions[current_action],
-                     width: 500,
-                     height: 'auto',
-                     modal: true,
-                     appendTo: '#dialog_container_$rand'
-                  }).load(
-                     '".$CFG_GLPI['root_doc']. "/ajax/dropdownMassiveAction.php',
-                     Object.assign(
-                        {action: current_action},
-                        ma
-                     )
-                  );
-               });
-            });");
-         }
-
          if ($current !== false) {
-            echo "<span class='right navicon'>" . ($current + 1) . "/" . count($glpilistitems) . "</span>";
+            echo "<span class='m-1 ms-3'>" . ($current + 1) . "/" . count($glpilistitems) . "</span>";
          }
 
          if ($next >= 0) {
             echo "<a href='$cleantarget?id=$next$extraparamhtml'
                      id='nextpage'
-                     class='navicon right'>" .
-               "<i class='fas fa-angle-right pointer' title=\"".__s('Next')."\"></i>
+                     class='btn btn-sm btn-icon btn-ghost-secondary'>" .
+               "<i class='fas fa-lg fa-angle-right' title=\"".__s('Next')."\"></i>
                     </a>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
@@ -1158,8 +1077,8 @@ JAVASCRIPT;
 
          if ($last >= 0) {
             echo "<a href='$cleantarget?id=$last $extraparamhtml'
-                     class='navicon right'>" .
-               "<i class='fas fa-angle-double-right pointer' title=\"" . __s('Last') . "\"></i></a>";
+                     class='btn btn-sm btn-icon btn-ghost-secondary'>" .
+               "<i class='fas fa-lg fa-angle-double-right' title=\"" . __s('Last') . "\"></i></a>";
          }
 
          echo "</div>"; // .navigationheader
@@ -1242,6 +1161,14 @@ JAVASCRIPT;
          $options += $_REQUEST['tab_params'];
       }
 
+      echo "<div class='d-flex flex-column'>";
+      echo "<div class='row'>";
+      if ($this instanceof CommonDBTM) {
+         TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
+            'itemtype' => $this->getType(),
+         ]);
+      }
+      echo "<div class='col'>";
       $this->showNavigationHeader($options);
       if (!self::isLayoutExcludedPage() && self::isLayoutWithMain()) {
 
@@ -1252,6 +1179,8 @@ JAVASCRIPT;
       }
 
       $this->showTabsContent($options);
+      echo "</div>";
+      echo "</div>";
    }
 
 
@@ -1469,7 +1398,7 @@ JAVASCRIPT;
 
       $link ="<span class='fa fa-wrench pointer' title=\"";
       $link .= __s('Display options')."\" ";
-      $link .= " onClick=\"".Html::jsGetElementbyID("displayoptions".$rand).".dialog('open');\"";
+      $link .= " data-bs-toggle='modal' data-bs-target='#displayoptions$rand'";
       $link .= "><span class='sr-only'>" . __s('Display options') . "</span></span>";
       $link .= Ajax::createIframeModalWindow("displayoptions".$rand,
                                              $CFG_GLPI['root_doc'].

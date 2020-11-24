@@ -69,12 +69,15 @@ if (isset($_GET['mark_default'])
    } else if ($_GET["mark_default"] == 0) {
       $savedsearch->unmarkDefault($_GET["id"]);
    }
-   //to refresh slidepanel
-   $_GET['action'] = 'show';
 }
 
 if (!isset($_GET['action'])) {
    return;
+}
+
+if ($_GET['action'] == 'display_mine') {
+   header("Content-Type: text/html; charset=UTF-8");
+   $savedsearch->displayMine($_GET["itemtype"], (bool) ($_GET["inverse"] ?? false));
 }
 
 if ($_GET['action'] == 'reorder') {
@@ -117,9 +120,4 @@ if ($_GET['action'] == 'create') {
       ]
    );
    return;
-}
-
-if ($_GET['action'] == 'show') {
-   header("Content-Type: text/html; charset=UTF-8");
-   $savedsearch->displayMine();
 }

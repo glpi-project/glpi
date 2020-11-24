@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\ForgetPasswordException;
 use Sabre\VObject;
 
@@ -2860,7 +2861,7 @@ JAVASCRIPT;
          echo "</td></tr>";
 
          echo "<tr><td class='tab_bg_2 center' colspan='4'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary'>";
          echo "</td></tr>";
 
          echo "</table>";
@@ -3937,8 +3938,9 @@ JAVASCRIPT;
     *    - ldap_import
     *    - on_change        : string / value to transmit to "onChange"
     *    - display          : boolean / display or get string (default true)
-    *    - width            : specific width needed (default 80%)
+    *    - width            : specific width needed
     *    - specific_tags    : array of HTML5 tags to add to the field
+    *    - class            : class to pass to html select
     *    - url              : url of the ajax php code which should return the json data to show in
     *                         the dropdown (default /ajax/getDropdownUsers.php)
     *    - inactive_deleted : retreive also inactive or deleted users
@@ -3959,7 +3961,7 @@ JAVASCRIPT;
          'placeholder'         => '',
          'on_change'           => '',
          'comments'            => 1,
-         'width'               => '80%',
+         'width'               => '',
          'entity'              => -1,
          'entity_sons'         => false,
          'used'                => [],
@@ -3969,6 +3971,7 @@ JAVASCRIPT;
          'display'             => true,
          '_user_index'         => 0,
          'specific_tags'       => [],
+         'class'               => "form-select form-select-sm",
          'url'                 => $CFG_GLPI['root_doc'] . "/ajax/getDropdownUsers.php",
          'inactive_deleted'    => 0,
       ];
@@ -4038,17 +4041,19 @@ JAVASCRIPT;
          'inactive_deleted'    => $p['inactive_deleted'],
          'entity_restrict'     => ($entity_restrict = (is_array($p['entity']) ? json_encode(array_values($p['entity'])) : $p['entity'])),
          'specific_tags'       => $p['specific_tags'],
+         'class'                => $p['class'],
          '_idor_token'         => Session::getNewIDORToken(__CLASS__, [
             'right'           => $p['right'],
             'entity_restrict' => $entity_restrict,
          ]),
       ];
 
-      $output   = Html::jsAjaxDropdown($p['name'], $field_id,
-                                       $p['url'],
-                                       $param);
+      $output = Html::jsAjaxDropdown($p['name'], $field_id,
+                                      $p['url'],
+                                      $param);
 
       // Display comment
+      $icons = "";
       if ($p['comments']) {
          $comment_id = Html::cleanId("comment_".$p['name'].$p['rand']);
          $link_id = Html::cleanId("comment_link_".$p["name"].$p['rand']);
@@ -4066,11 +4071,6 @@ JAVASCRIPT;
                )
             );
          }
-         $output .= "&nbsp;".Html::showToolTip($user["comment"],
-                                      ['contentid' => $comment_id,
-                                            'display'   => false,
-                                            'link'      => $user["link"],
-                                            'linkid'    => $link_id]);
 
          $paramscomment = [
             'value'    => '__VALUE__',
@@ -4080,26 +4080,44 @@ JAVASCRIPT;
          if ($view_users) {
             $paramscomment['withlink'] = $link_id;
          }
-         $output .= Ajax::updateItemOnSelectEvent($field_id, $comment_id,
+         $icons .= '<div class="btn btn-outline-secondary">';
+         $icons .= Ajax::updateItemOnSelectEvent($field_id, $comment_id,
                                                   $CFG_GLPI["root_doc"]."/ajax/comments.php",
                                                   $paramscomment, false);
+
+         $icons .= Html::showToolTip($user["comment"], [
+            'contentid' => $comment_id,
+            'display'   => false,
+            'link'      => $user["link"],
+            'linkid'    => $link_id
+         ]);
+         $icons .= '</div>';
       }
-      $output .= Ajax::commonDropdownUpdateItem($p, false);
 
       if (Session::haveRight('user', self::IMPORTEXTAUTHUSERS)
           && $p['ldap_import']
           && Entity::isEntityDirectoryConfigured($_SESSION['glpiactive_entity'])) {
 
-         $output .= "<span title=\"".__s('Import a user')."\" class='fa fa-plus pointer'".
-                     " onClick=\"".Html::jsGetElementbyID('userimport'.$p['rand']).".dialog('open');\">
-                     <span class='sr-only'>" . __s('Import a user') . "</span></span>";
-         $output .= Ajax::createIframeModalWindow('userimport'.$p['rand'],
+         $icons .= '<div class="btn btn-outline-secondary">';
+         $icons .= Ajax::createIframeModalWindow('userimport'.$p['rand'],
                                                   $CFG_GLPI["root_doc"].
                                                       "/front/ldap.import.php?entity=".
                                                       $_SESSION['glpiactive_entity'],
                                                   ['title'   => __('Import a user'),
                                                         'display' => false]);
+         $icons .= "<span title=\"".__s('Import a user')."\"".
+         " data-bs-toggle='modal' data-bs-target='#userimport{$p['rand']}'>
+            <i class='fas fa-plus fa-fw '></i>
+            <span class='sr-only'>" . __s('Import a user') . "</span>
+         </span>";
+         $icons .= '</div>';
       }
+
+      if (strlen($icons) > 0) {
+         $output = "<div class='btn-group btn-group-sm ".($p['width'] == "100%" ? "w-100" : "")."' role='group'>{$output} {$icons}</div>";
+      }
+
+      $output .= Ajax::commonDropdownUpdateItem($p, false);
 
       if ($p['display']) {
          echo $output;
@@ -4733,62 +4751,22 @@ JAVASCRIPT;
     * @return void
     */
    static function showPasswordForgetChangeForm($token) {
-      global $CFG_GLPI, $DB;
+      global $DB;
 
       // Verif token.
-      $token_ok = false;
       $iterator = $DB->request([
          'FROM'   => self::getTable(),
          'WHERE'  => [
-            'password_forget_token'       => $token,
+            'password_forget_token' => $token,
             new \QueryExpression('NOW() < ADDDATE(' . $DB->quoteName('password_forget_token_date') . ', INTERVAL 1 DAY)')
          ]
       ]);
 
-      if (count($iterator) == 1) {
-         $token_ok = true;
-      }
-      echo "<div class='center'>";
-
-      if ($token_ok) {
-         echo "<form method='post' name='forgetpassword' action='".$CFG_GLPI['root_doc'].
-                "/front/lostpassword.php'>";
-         echo "<table class='tab_cadre'>";
-         echo "<tr><th colspan='2'>" . __('Forgotten password?')."</th></tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2'>". __('Please confirm your email address and enter your new password.').
-              "</td></tr>";
-
-         echo "<tr class='tab_bg_1'><td>" . _n('Email', 'Emails', 1)."</td>";
-         echo "<td><input type='text' name='email' value='' size='60'></td></tr>";
-
-         echo "<tr class='tab_bg_1'><td>" . __('Password')."</td>";
-         echo "<td><input id='password' type='password' name='password' value='' size='20'
-                    autocomplete='new-password' onkeyup=\"return passwordCheck();\">";
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_1'><td>" . __('Password confirmation')."</td>";
-         echo "<td><input type='password' name='password2' value='' size='20' autocomplete='new-password'>";
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_1'><td>".__('Password security policy')."</td>";
-         echo "<td>";
-         Config::displayPasswordSecurityChecks();
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_2 center'><td colspan='2'>";
-         echo "<input type='hidden' name='password_forget_token' value='$token'>";
-         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
-         echo "</td></tr>";
-
-         echo "</table>";
-         Html::closeForm();
-
-      } else {
-         echo __('Your password reset request has expired or is invalid. Please renew it.');
-      }
-      echo "</div>";
+      TemplateRenderer::getInstance()->display('password_form.html.twig', [
+         'title'    => __('Forgotten password?'),
+         'token'    => $token,
+         'token_ok' => (count($iterator) == 1),
+      ]);
    }
 
 
@@ -4798,26 +4776,9 @@ JAVASCRIPT;
     * @return void
     */
    static function showPasswordForgetRequestForm() {
-      global $CFG_GLPI;
-
-      echo "<div class='center'>";
-      echo "<form method='post' name='forgetpassword' action='".$CFG_GLPI['root_doc'].
-             "/front/lostpassword.php'>";
-      echo "<table class='tab_cadre'>";
-      echo "<tr><th colspan='2'>" . __('Forgotten password?')."</th></tr>";
-
-      echo "<tr class='tab_bg_1'><td colspan='2'>" .
-            __('Please enter your email address. An email will be sent to you and you will be able to choose a new password.').
-           "</td></tr>";
-
-      echo "<tr class='tab_bg_2 center'>";
-      echo "<td><input type='text' size='60' name='email' value=''></td>";
-      echo "<td><input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
-      echo "</td></tr>";
-
-      echo "</table>";
-      Html::closeForm();
-      echo "</div>";
+      TemplateRenderer::getInstance()->display('password_form.html.twig', [
+         'title' => __('Forgotten password?'),
+      ]);
    }
 
 
@@ -4890,28 +4851,23 @@ JAVASCRIPT;
     * @return void
     */
    public function showUpdateForgottenPassword(array $input) {
-      global $CFG_GLPI;
-
-      echo "<div class='center'>";
       try {
-         if (!$this->updateForgottenPassword($input)) {
-            Html::displayMessageAfterRedirect();
-         } else {
-            echo __('Reset password successful.');
+         if ($this->updateForgottenPassword($input)) {
+            Session::addMessageAfterRedirect(__('Reset password successful.'));
          }
       } catch (\Glpi\Exception\ForgetPasswordException $e) {
-         echo $e->getMessage();
+         Session::addMessageAfterRedirect($e->getMessage(), false, ERROR);
       } catch (\Glpi\Exception\PasswordTooWeakException $e) {
          // Force display on error
          foreach ($e->getMessages() as $message) {
-            Session::addMessageAfterRedirect($message);
+            Session::addMessageAfteRredirect($message, false, ERROR);
          }
-         Html::displayMessageAfterRedirect();
       }
 
-      echo "<br>";
-      echo "<a href=\"".$CFG_GLPI['root_doc']."/index.php\">".__s('Back')."</a>";
-      echo "</div>";
+      TemplateRenderer::getInstance()->display('password_form.html.twig', [
+         'title'         => __('Forgotten password?'),
+         'messages_only' => true,
+      ]);
    }
 
 
@@ -4923,15 +4879,18 @@ JAVASCRIPT;
     * @return void
     */
    public function showForgetPassword($email) {
-
-      echo "<div class='center'>";
       try {
          $this->forgetPassword($email);
       } catch (\Glpi\Exception\ForgetPasswordException $e) {
-         echo $e->getMessage();
+         Session::addMessageAfterRedirect($e->getMessage(), false, ERROR);
          return;
       }
-      echo __('An email has been sent to your email address. The email contains information for reset your password.');
+      Session::addMessageAfteRredirect(__('An email has been sent to your email address. The email contains information for reset your password.'));
+
+      TemplateRenderer::getInstance()->display('password_form.html.twig', [
+         'title'         => __('Forgotten password?'),
+         'messages_only' => true,
+      ]);
    }
 
    /**
@@ -5192,18 +5151,19 @@ JAVASCRIPT;
     * @since 0.85
     *
     * @param string $picture Picture field value
+    * @param bool  bool get full path
     *
     * @return string
     */
-   static function getURLForPicture($picture) {
+   static function getURLForPicture($picture, $full = true) {
       global $CFG_GLPI;
 
-      $url = Toolbox::getPictureUrl($picture);
+      $url = Toolbox::getPictureUrl($picture, $full);
       if (null !== $url) {
          return $url;
       }
 
-      return $CFG_GLPI["root_doc"]."/pics/picture.png";
+      return ($full ? $CFG_GLPI["root_doc"] : "")."/pics/picture.png";
    }
 
 
@@ -5329,42 +5289,25 @@ JAVASCRIPT;
    }
 
    /**
-    * Get/Print the switch language form.
+    * Print the switch language form.
     *
-    * @param boolean $display Whether to display or return output
-    * @param array   $options Options
-    *    - string   value       Selected language value
-    *    - boolean  showbutton  Whether to display or not submit button
-    *
-    * @return void|string Nothing if displayed, string to display otherwise
+    * @return void
     */
-   function showSwitchLangForm($display = true, array $options = []) {
+   function showSwitchLangForm() {
 
       $params = [
-         'value'        => $_SESSION["glpilanguage"],
-         'display'      => false,
-         'showbutton'   => true
+         'value'     => $_SESSION["glpilanguage"],
+         'display'   => false,
+         'on_change' => 'this.form.submit()'
       ];
 
-      foreach ($options as $key => $value) {
-         $params[$key] = $value;
-      }
-
       $out = '';
+      $out .= '<i class="fas fa-fw fa-language"></i>&nbsp;';
       $out .= "<form method='post' name='switchlang' action='".User::getFormURL()."' autocomplete='off'>";
-      $out .= "<p class='center'>";
       $out .= Dropdown::showLanguages("language", $params);
-      if ($params['showbutton'] === true) {
-         $out .= "&nbsp;<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
-      }
-      $out .= "</p>";
       $out .= Html::closeForm(false);
 
-      if ($display === true) {
-         echo $out;
-      } else {
-         return $out;
-      }
+      echo $out;
    }
 
    /**

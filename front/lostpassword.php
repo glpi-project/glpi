@@ -41,8 +41,6 @@ if (!$CFG_GLPI['notifications_mailing']
 $user = new User();
 
 // Manage lost password
-Html::simpleHeader(__('Forgotten password?'));
-
 // REQUEST needed : GET on first access / POST on submit form
 if (isset($_REQUEST['password_forget_token'])) {
 
@@ -61,5 +59,4 @@ if (isset($_REQUEST['password_forget_token'])) {
    }
 }
 
-Html::nullFooter();
 exit();

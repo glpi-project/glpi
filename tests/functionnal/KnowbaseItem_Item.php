@@ -192,7 +192,7 @@ class KnowbaseItem_Item extends DbTestCase {
 
        $_SESSION['glpishow_count_on_tabs'] = 1;
        $name = $kb_item->getTabNameForItem($kb1);
-       $this->string($name)->isIdenticalTo('Associated elements <sup class=\'tab_nb\'>3</sup>');
+       $this->string($name)->isIdenticalTo('Associated elements <span class=\'badge\'>3</span>');
 
        $_SESSION['glpishow_count_on_tabs'] = 0;
        $name = $kb_item->getTabNameForItem($kb1);
@@ -202,10 +202,10 @@ class KnowbaseItem_Item extends DbTestCase {
 
        $_SESSION['glpishow_count_on_tabs'] = 1;
        $name = $kb_item->getTabNameForItem($ticket3, true);
-       $this->string($name)->isIdenticalTo('Knowledge base <sup class=\'tab_nb\'>2</sup>');
+       $this->string($name)->isIdenticalTo('Knowledge base <span class=\'badge\'>2</span>');
 
        $name = $kb_item->getTabNameForItem($ticket3);
-       $this->string($name)->isIdenticalTo('Knowledge base <sup class=\'tab_nb\'>2</sup>');
+       $this->string($name)->isIdenticalTo('Knowledge base <span class=\'badge\'>2</span>');
 
        $_SESSION['glpishow_count_on_tabs'] = 0;
        $name = $kb_item->getTabNameForItem($ticket3);

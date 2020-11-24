@@ -1,0 +1,25 @@
+{% set withtemplate = params['withtemplate'] ?? "" %}
+
+{% if not (item.isNewItem()) %}
+<div class="row">
+   {% if item.isField('date_creation') %}
+   <div class="col-sm-6 col-12">
+      {{ __('Created on %s')|format(item.fields['date_creation']) }}
+   </div>
+   {% endif %}
+
+   {% if item.isField('date_mod') %}
+   <div class="col-sm-6 col-12">
+      {{ __('Last update on %s')|format(item.fields['date_mod']) }}
+   </div>
+   {% endif %}
+</div>
+{% endif %}
+
+{% if withtemplate is defined and withtemplate > 0 and item.fields['template_name']|length > 0 %}
+<div class="row">
+   <div class="col-12">
+      {{ __('Created from the template %s')|format(item.fields['template_name']) }}
+   </div>
+</div>
+{% endif %}

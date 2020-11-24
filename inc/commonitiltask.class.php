@@ -1633,7 +1633,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                                   'url'       => $CFG_GLPI["root_doc"]."/ajax/planningcheck.php"];
       User::dropdown($params);
 
-      echo " <a href='#' title=\"".__s('Availability')."\" onClick=\"".Html::jsGetElementbyID('planningcheck'.$rand).".dialog('open'); return false;\">";
+      echo " <a href='#' title=\"".__s('Availability')."\" data-bs-toggle='modal' data-bs-target='#planningcheck$rand'>";
       echo "<i class='far fa-calendar-alt'></i>";
       echo "<span class='sr-only'>".__('Availability')."</span>";
       echo "</a>";

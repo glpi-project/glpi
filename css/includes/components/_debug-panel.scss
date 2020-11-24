@@ -1,0 +1,114 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2021 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+.debug-panel {
+   background: $light;
+   bottom: 0;
+   display: none;
+   font-size: $font-size-sm;
+   padding: 0;
+   position: sticky;
+   z-index: 9999;
+
+   .card-body {
+      height: 300px;
+      overflow: auto;
+
+      .tab-content {
+         .tab-pane {
+            table {
+               width: 100%;
+
+               tr {
+                  &:nth-child(odd) {
+                     background-color: $gray-100;
+
+                     body.theme-dark & {
+                        background-color: $gray-900;
+                     }
+                  }
+                  &:nth-child(even) {
+                     background-color: $gray-300;
+
+                     body.theme-dark & {
+                        background-color: $gray-800;
+                     }
+                  }
+               }
+
+               th {
+                  background-color: $gray-500;
+
+                  body.theme-dark & {
+                     background-color: $gray-700;
+                  }
+               }
+
+               th, td {
+                  padding: 0.25em;
+               }
+
+               td {
+                  vertical-align: top;
+
+                  a {
+                     // expand link
+                     color: $link-hover-color;
+                     font-weight: bold;
+                  }
+               }
+
+               &.array-debug td {
+                  &:nth-child(1),
+                  &:nth-child(2) {
+                     white-space: nowrap;
+                  }
+                  &:nth-child(3) {
+                     width: 100%;
+                     word-break: break-all;
+                  }
+               }
+               &.sql-debug td {
+                  &:nth-child(1),
+                  &:nth-child(3) {
+                     white-space: nowrap;
+                  }
+                  &:nth-child(2),
+                  &:nth-child(4) {
+                     width: 100%;
+                     word-break: break-all;
+                  }
+               }
+            }
+         }
+      }
+   }
+}
