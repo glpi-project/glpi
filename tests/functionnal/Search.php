@@ -635,11 +635,6 @@ class Search extends DbTestCase {
             break;
          default:
             $val = 'val';
-            if ($searchtype === 'contains') {
-               // prevent massive usage of like %x% that drastically reduce performances
-               // on MariaDB 10.4+
-               $val = '^val$';
-            }
             break;
       }
 
