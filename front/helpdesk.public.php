@@ -33,9 +33,9 @@
 include ('../inc/includes.php');
 
 // Change profile system
-if (isset($_POST['newprofile'])) {
-   if (isset($_SESSION["glpiprofiles"][$_POST['newprofile']])) {
-      Session::changeProfile($_POST['newprofile']);
+if (isset($_REQUEST['newprofile'])) {
+   if (isset($_SESSION["glpiprofiles"][$_REQUEST['newprofile']])) {
+      Session::changeProfile($_REQUEST['newprofile']);
 
       if (Session::getCurrentInterface() == "central") {
          Html::redirect($CFG_GLPI['root_doc']."/front/central.php");

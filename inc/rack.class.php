@@ -725,7 +725,6 @@ class Rack extends CommonDBTM {
       echo $blueprint;
       echo "</div>"; //.grid-room
       echo "<div class='sep'></div>";
-      echo "<div id='grid-dialog'></div>";
       echo "</div>"; // #viewgraph
 
       $rack_add_tip = __s('Insert a rack here');
@@ -857,20 +856,12 @@ class Rack extends CommonDBTM {
                var _x = _this.data('x');
                var _y = _this.data('y');
 
-               $.ajax({
+               glpi_ajax_dialog({
                   url : "{$rack->getFormURL()}",
-                  data: {
+                  params: {
                      room: $room_id,
                      position: _x + ',' + _y,
                      ajax: true
-                  },
-                  success: function(data) {
-                     $('#grid-dialog')
-                        .html(data)
-                        .dialog({
-                           modal: true,
-                           width: 'auto'
-                        });
                   }
                });
             }

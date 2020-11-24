@@ -48,6 +48,7 @@ function update95to100() {
 
    $update_scripts = [
       'cameras',
+      'configs',
       'devicebattery',
       'documents',
       'domains',

@@ -1,0 +1,45 @@
+{% set messages = getMessagesAfterRedirect() %}
+{% if messages|length %}
+<div class='toast-container bottom-0 end-0 p-3 messages_after_redirect'>
+
+   {% for type, message in messages %}
+      {% set message = message|join('<br>') %}
+      {% set class = "" %}
+      {% set title = "" %}
+      {% if type == constant('ERROR') %}
+         {% set class = "bg-danger text-white border-0" %}
+         {% set title = __("Error") %}
+      {% elseif type == constant('WARNING') %}
+         {% set class = "bg-warning text-white border-0" %}
+         {% set title = __("Warning") %}
+      {% else %}
+         {% set class = "bg-info text-white border-0" %}
+         {% set title = _n("Informations", "Information", 1) %}
+      {% endif %}
+
+      <div class="toast {{ class }} animate__animated animate__tada animate__delay-2s animate__slow" role="alert" aria-live="assertive" aria-atomic="true">
+         <div class="toast-header">
+            <strong class="me-auto">{{ title }}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+         </div>
+         <div class="toast-body">
+            {{ message|raw }}
+         </div>
+      </div>
+   {% endfor %}
+
+</div>
+
+<script type="text/javascript">
+$(function() {
+   var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+   var toastList = toastElList.map(function (toastEl) {
+      var toast = new bootstrap.Toast(toastEl, {
+         delay: 10000,
+      })
+      toast.show()
+      return toast;
+   });
+});
+</script>
+{% endif %}

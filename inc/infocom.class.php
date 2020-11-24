@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * Infocom class
 **/
@@ -618,13 +620,18 @@ class Infocom extends CommonDBChild {
    **/
    static function dropdownAmortType($name, $value = 0, $display = true) {
 
-      $values = [2 => __('Linear'),
-                      1 => __('Decreasing')];
+      $values = [
+         2 => __('Linear'),
+         1 => __('Decreasing')
+      ];
 
-      return Dropdown::showFromArray($name, $values,
-                                     ['value'               => $value,
-                                           'display'             => $display,
-                                           'display_emptychoice' => true]);
+      return Dropdown::showFromArray($name, $values, [
+         'value'               => $value,
+         'display'             => $display,
+         'display_emptychoice' => true,
+         'width'               => '100%',
+         'class'               => 'form-select',
+      ]);
    }
 
 
@@ -720,8 +727,7 @@ class Infocom extends CommonDBChild {
       }
 
       if ($item->canView()) {
-         echo "<span onClick=\"".Html::jsGetElementbyID('infocom'.$itemtype.$device_id).".
-                dialog('open');\" style='cursor:pointer'>
+         echo "<span data-bs-toggle='modal' data-bs-target='#infocom$itemtype$device_id' style='cursor:pointer'>
                <img src=\"".$CFG_GLPI["root_doc"]."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\">
                </span>";
          Ajax::createIframeModalWindow('infocom'.$itemtype.$device_id,
@@ -1004,8 +1010,6 @@ class Infocom extends CommonDBChild {
     * @param $withtemplate integer  template or basic item (default 0)
    **/
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
-      global $CFG_GLPI;
-
       // Show Infocom or blank form
       if (!self::canView()) {
          return false;
@@ -1014,13 +1018,8 @@ class Infocom extends CommonDBChild {
       if (!$item) {
          echo "<div class='spaced'>".__('Requested item not found')."</div>";
       } else {
-         $date_tax = $CFG_GLPI["date_tax"];
          $dev_ID   = $item->getField('id');
          $ic       = new self();
-         $option   = "";
-         if ($withtemplate == 2) {
-            $option = " readonly ";
-         }
 
          if (!strpos($_SERVER['PHP_SELF'], "infocoms-show")
              && in_array($item->getType(), self::getExcludedTypes())) {
@@ -1028,283 +1027,22 @@ class Infocom extends CommonDBChild {
                   __('For this type of item, the financial and administrative information are only a model for the items which you should add.').
                  "</div>";
          }
-         if (!$ic->getFromDBforDevice($item->getType(), $dev_ID)) {
-            $input = ['itemtype'    => $item->getType(),
-                           'items_id'    => $dev_ID,
-                           'entities_id' => $item->getEntityID()];
 
-            if ($ic->can(-1, CREATE, $input)
-                && ($withtemplate != 2)) {
-               echo "<div class='spaced b'>";
-               echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'><th>";
-               echo sprintf(__('%1$s - %2$s'), $item->getTypeName(1), $item->getName())."</th></tr>";
-               echo "<tr class='tab_bg_1'><td class='center'>";
-
-               Html::showSimpleForm(Infocom::getFormURL(),
-                                    'add', __('Enable the financial and administrative information'),
-                                     ['itemtype' => $item->getType(),
-                                           'items_id' => $dev_ID]);
-               echo "</td></tr></table></div>";
-            }
-
-         } else { // getFromDBforDevice
-            $canedit = ($ic->canEdit($ic->fields['id']) && ($withtemplate != 2));
-            echo "<div class='spaced'>";
-            if ($canedit) {
-               echo "<form name='form_ic' method='post' action='".Infocom::getFormURL()."'>";
-            }
-            echo "<table class='tab_cadre".(!strpos($_SERVER['PHP_SELF'],
-                                                    "infocoms-show")?"_fixe":"")."'>";
-
-            // Can edit calendar ?
-            $editcalendar = ($withtemplate != 2);
-
-            echo "<tr><th colspan='4'>".__('Asset lifecycle')."</th></tr>";
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Order date')."</td><td>";
-            Html::showDateField("order_date", ['value'      => $ic->fields["order_date"],
-                                                    'maybeempty' => true,
-                                                    'canedit'    => $editcalendar]);
-            echo "</td>";
-            echo "<td>".__('Date of purchase')."</td><td>";
-            Html::showDateField("buy_date", ['value'      => $ic->fields["buy_date"],
-                                                  'maybeempty' => true,
-                                                  'canedit'    => $editcalendar]);
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Delivery date')."</td><td>";
-            Html::showDateField("delivery_date", ['value'      => $ic->fields["delivery_date"],
-                                                       'maybeempty' => true,
-                                                       'canedit'    => $editcalendar]);
-            echo "</td>";
-            echo "<td>".__('Startup date')."</td><td>";
-            Html::showDateField("use_date", ['value'      => $ic->fields["use_date"],
-                                                  'maybeempty' => true,
-                                                  'canedit'    => $editcalendar]);
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Date of last physical inventory')."</td><td>";
-            Html::showDateField("inventory_date",
-                                ['value'      => $ic->fields["inventory_date"],
-                                      'maybeempty' => true,
-                                      'canedit'    => $editcalendar]);
-            echo "</td>";
-            echo "<td>".__('Decommission date')."</td><td>";
-            Html::showDateField("decommission_date",
-                                ['value'      => $ic->fields["decommission_date"],
-                                      'maybeempty' => true,
-                                      'canedit'    => $editcalendar]);
-            echo "</td></tr>";
-
-            echo "<tr><th colspan='4'>".__('Financial and administrative information')."</th></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".Supplier::getTypeName(1)."</td>";
-            echo "<td>";
-            if ($withtemplate == 2) {
-               echo Dropdown::getDropdownName("glpi_suppliers", $ic->fields["suppliers_id"]);
-            } else {
-               Supplier::dropdown(['value'  => $ic->fields["suppliers_id"],
-                                        'entity' => $item->getEntityID(),
-                                        'width'  => '70%']);
-            }
-            echo "</td>";
-            if (Budget::canView()) {
-               echo "<td>".Budget::getTypeName(1)."</td><td >";
-               Budget::dropdown(['value'    => $ic->fields["budgets_id"],
-                                      'entity'   => $item->getEntityID(),
-                                      'comments' => 1]);
-            } else {
-               echo "<td colspan='2'>";
-            }
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Order number')."</td>";
-            echo "<td >";
-            Html::autocompletionTextField($ic, "order_number", ['option' => $option]);
-            echo "</td>";
-            $tplmark = '';
-            if ($item->isTemplate()
-                || in_array($item->getType(),
-                            self::getExcludedTypes())) {
-               $tplmark = $item->getAutofillMark('immo_number', ['withtemplate' => $withtemplate], $ic->getField('immo_number'));
-            }
-            echo "<td>".sprintf(__('%1$s%2$s'), __('Immobilization number'), $tplmark)."</td>";
-            echo "<td>";
-            $objectName = autoName($ic->fields["immo_number"], "immo_number", ($withtemplate == 2),
-                                   'Infocom', $item->getEntityID());
-            Html::autocompletionTextField($ic, "immo_number", ['value'  => $objectName,
-                                                                    'option' => $option]);
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Invoice number')."</td>";
-            echo "<td>";
-            Html::autocompletionTextField($ic, "bill", ['option' => $option]);
-            echo "</td>";
-            echo "<td>".__('Delivery form')."</td><td>";
-            Html::autocompletionTextField($ic, "delivery_number", ['option' => $option]);
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>"._x('price', 'Value')."</td>";
-            echo "<td><input type='text' name='value' $option value='".
-                   Html::formatNumber($ic->fields["value"], true)."' size='14'></td>";
-            echo "<td>".__('Warranty extension value')."</td>";
-            echo "<td><input type='text' $option name='warranty_value' value='".
-            Html::formatNumber($ic->fields["warranty_value"], true)."' size='14'></td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Account net value')."</td><td>";
-            echo Html::formatNumber(self::Amort($ic->fields["sink_type"], $ic->fields["value"],
-                                                $ic->fields["sink_time"], $ic->fields["sink_coeff"],
-                                                $ic->fields["buy_date"],
-                                                $ic->fields["use_date"], $date_tax, "n"));
-            echo "</td>";
-            echo "<td rowspan='4'>".__('Comments')."</td>";
-            echo "<td rowspan='4' class='middle'>";
-            echo "<textarea cols='45' rows='9' name='comment' >".$ic->fields["comment"];
-            echo "</textarea></td></tr>\n";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Amortization type')."</td><td >";
-            if ($withtemplate == 2) {
-               echo self::getAmortTypeName($ic->fields["sink_type"]);
-            } else {
-               self::dropdownAmortType("sink_type", $ic->fields["sink_type"]);
-            }
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Amortization duration')."</td><td>";
-            if ($withtemplate == 2) {
-               printf(_n('%d year', '%d years', $ic->fields["sink_time"]), $ic->fields["sink_time"]);
-            } else {
-               Dropdown::showNumber("sink_time", ['value' => $ic->fields["sink_time"],
-                                                       'max'   => 15,
-                                                       'unit'  => 'year']);
-            }
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Amortization coefficient')."</td>";
-            echo "<td>";
-            Html::autocompletionTextField($ic, "sink_coeff", ['size'   => 14,
-                                                                   'option' => $option]);
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            if (!in_array($item->getType(), self::getExcludedTypes() + [
-                                                  'Cartridge', 'Consumable',
-                                                  'SoftwareLicense'])) {
-               echo "<td>".__('TCO (value + tracking cost)')."</td><td>";
-               echo self::showTco($item->getField('ticket_tco'), $ic->fields["value"]);
-            } else {
-                echo "<td colspan='2'>";
-            }
-            echo "</td>";
-            if (!in_array($item->getType(), self::getExcludedTypes() + [
-                                                  'Cartridge', 'Consumable',
-                                                  'SoftwareLicense'])) {
-               echo "<td>".__('Monthly TCO')."</td><td>";
-               echo self::showTco($item->getField('ticket_tco'), $ic->fields["value"],
-                                  $ic->fields["buy_date"]);
-            } else {
-                echo "<td colspan='2'>";
-            }
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>"._n('Business criticity', 'Business criticities', 1)."</td><td>";
-            Dropdown::show('BusinessCriticity', ['value' => $ic->fields['businesscriticities_id']]);
-            echo "</td>";
-            echo "<td colspan='2'>";
-            echo "</td></tr>";
-
-            echo "<tr><th colspan='4'>".__('Warranty information')."</th></tr>";
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Start date of warranty')."</td><td>";
-            Html::showDateField("warranty_date", ['value'      => $ic->fields["warranty_date"],
-                                                       'maybeempty' => true,
-                                                       'canedit'    => $editcalendar]);
-            echo "</td>";
-
-            echo "<td>".__('Warranty duration')."</td><td>";
-            if ($withtemplate == 2) {
-               // -1 = life
-               if ($ic->fields["warranty_duration"] == -1) {
-                  echo __('Lifelong');
-               } else {
-                  printf(_n('%d month', '%d months', $ic->fields["warranty_duration"]),
-                         $ic->fields["warranty_duration"]);
-               }
-
-            } else {
-               Dropdown::showNumber("warranty_duration",
-                                    ['value' => $ic->fields["warranty_duration"],
-                                          'min'   => 0,
-                                          'max'   => 120,
-                                          'step'  => 1,
-                                          'toadd' => [-1 => __('Lifelong')],
-                                          'unit'  => 'month']);
-            }
-            $tmpdat = self::getWarrantyExpir($ic->fields["warranty_date"],
-                                             $ic->fields["warranty_duration"], 0, true);
-            if ($tmpdat) {
-               echo "<span class='small_space'>".sprintf(__('Valid to %s'), $tmpdat)."</span>";
-            }
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Warranty information')."</td>";
-            echo "<td >";
-            Html::autocompletionTextField($ic, "warranty_info", ['option' => $option]);
-            echo "</td>";
-
-            if ($CFG_GLPI['use_notifications']) {
-               echo "<td>".__('Alarms on financial and administrative information')."</td>";
-               echo "<td>";
-               self::dropdownAlert(['name'    => "alert",
-                                         'value'   => $ic->fields["alert"]]);
-               Alert::displayLastAlert('Infocom', $ic->fields['id']);
-            } else {
-               echo "</td><td colspan='2'>";
-            }
-            echo "</td></tr>";
-
-            //We use a static method to call the hook
-            //It's then easier for plugins to detect if the hook is available or not
-            //The just have to look for the addPluginInfos method
-            self::addPluginInfos($item);
-
-            if ($canedit
-                && Session::haveRightsOr(self::$rightname, [UPDATE, PURGE])) {
-               echo "<tr>";
-               if (Session::haveRight(self::$rightname, UPDATE)) {
-                  echo "<td class='tab_bg_2 center' colspan='2'>";
-                  echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\"
-                         class='submit'>";
-                  echo "</td>";
-               }
-               if (Session::haveRight(self::$rightname, PURGE)) {
-                  echo "<td class='tab_bg_2 center' colspan='2'>";
-                  echo "<input type='submit' name='purge' value=\""._sx('button',
-                                                                      'Delete permanently')."\"
-                        class='submit'>";
-                  echo "</td>";
-               }
-               echo "<td><input type='hidden' name='id' value='".$ic->fields['id']."'></td></tr>";
-               echo "</table>";
-               Html::closeForm();
-            } else {
-               echo "</table>";
-            }
-            echo "</div>";
-         }
+         $ic->getFromDBforDevice($item->getType(), $dev_ID);
+         $can_input = [
+            'itemtype'    => $item->getType(),
+            'items_id'    => $dev_ID,
+            'entities_id' => $item->getEntityID()
+         ];
+         TemplateRenderer::getInstance()->display('components/infocom.html.twig', [
+            'item'              => $item,
+            'infocom'           => $ic,
+            'withtemplate'      => $withtemplate,
+            'can_create'        => $ic->can(-1, CREATE, $can_input),
+            'can_edit'          => ($ic->canEdit($ic->fields['id']) && ($withtemplate != 2)),
+            'can_global_update' => Session::haveRight(self::$rightname, UPDATE),
+            'can_global_purge'  => Session::haveRight(self::$rightname, PURGE),
+         ]);
       }
    }
 

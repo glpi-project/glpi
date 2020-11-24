@@ -346,7 +346,7 @@ class Document_Item extends CommonDBRelation{
          echo "</div>";
       }
 
-      echo "<div class='spaced'>";
+      echo "<div class='spaced table-responsive'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = ['container' => 'mass'.__CLASS__.$rand];
@@ -743,7 +743,7 @@ class Document_Item extends CommonDBRelation{
          $used[$data['id']]           = $data['id'];
       }
 
-      echo "<div class='spaced'>";
+      echo "<div class='spaced table-responsive'>";
       if ($canedit
           && $number
           && ($withtemplate < 2)) {

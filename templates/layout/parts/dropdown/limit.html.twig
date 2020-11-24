@@ -1,0 +1,47 @@
+{% if additional_params is not defined %}
+   {% set additional_params = "" %}
+{% else %}
+   {% if additional_params|length > 0 and not (additional_params starts with '&') %}
+      {% set additional_params = "&" ~ additional_params %}
+   {% endif %}
+{% endif %}
+
+{% set href = "location.href='" ~ href ~ "glpilist_limit='+this.value" ~ additional_params %}
+{% if is_tab is defined and is_tab == true %}
+   {% set href = "javascript:reloadTab('glpilist_limit='+this.value+'" ~ additional_params ~ "');" %}
+{% endif %}
+
+{% set options = [] %}
+{% for i in range(5, 19, 5) %}
+   {% set options = options|merge([i]) %}
+{% endfor %}
+{% for i in range(20, 49, 10) %}
+   {% set options = options|merge([i]) %}
+{% endfor %}
+{% for i in range(50, 249, 50) %}
+   {% set options = options|merge([i]) %}
+{% endfor %}
+{% for i in range(250, 999, 250) %}
+   {% set options = options|merge([i]) %}
+{% endfor %}
+{% for i in range(1000, 4999, 1000) %}
+   {% set options = options|merge([i]) %}
+{% endfor %}
+{% for i in range(5000, 10000, 5000) %}
+   {% set options = options|merge([i]) %}
+{% endfor %}
+{% set options = options|merge([9999999]) %}
+{% set max = php_config('max_input_vars') %}
+{% if max > 10 %}
+   {% set options = options|merge([max - 10]) %}
+{% endif %}
+<select class="form-select form-select-sm mx-1 d-inline-block"
+        style="width: auto;"
+        aria-label="Default select example"
+        onChange="{{ href }}">
+   {% for value in options|sort %}
+      <option value="{{ value }}" {{ value == user_pref("list_limit") ? "selected" : "" }}>
+         {{ value }}
+      </option>
+   {% endfor %}
+</select>

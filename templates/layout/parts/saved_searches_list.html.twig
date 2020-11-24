@@ -1,0 +1,27 @@
+{% if saved_searches|length == 0 %}
+   <div class="alert alert-info" role="alert">
+      {{ __('You have not recorded any saved searches yet') }}
+   </div>
+{% endif %}
+
+{% for search in saved_searches %}
+   <div class="savedsearches-item list-group-item search-line d-flex align-items-center pe-1 {{ active == search['id'] ? "active" : "" }}"
+         data-id="{{ search['id'] }}">
+      <a href="{{ getItemTypeSearchURL('SavedSearch') }}?action=load&amp;id={{ search['id'] }}"
+         class="d-block saved-searches-link text-truncate">
+         {{ search['name'] }}
+      </a>
+      <div class="{{ search['is_default'] > 0 ? "" : "list-group-item-actions" }} ms-auto default-ctrl">
+         <i class="{{ search['is_default'] > 0 ? "fas" : "far" }} fa-star fa-xs mark-default me-1"
+            title="{{ search['is_default'] > 0 ? __("Default search") : __("mark as default") }}" role="button"></i>
+      </div>
+      <div class="d-flex flex-nowrap align-items-center">
+         {% if search['is_private'] == 1 %}
+         <i class="fas fa-lock fa-xs text-muted me-1" title="{{ __("private") }}"></i>
+         {% endif %}
+         <span class="badge">
+            {{ search['count']|raw }}
+         </span>
+      </div>
+   </div>
+{% endfor %}
