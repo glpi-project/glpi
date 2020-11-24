@@ -310,7 +310,7 @@ class ComputerVirtualMachine extends CommonDBChild {
          echo "</a></div>\n";
       }
 
-      echo "<div class='center'>";
+      echo "<div class='center table-responsive'>";
 
       $virtualmachines = getAllDataFromTable(
          self::getTable(), [

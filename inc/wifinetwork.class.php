@@ -111,8 +111,10 @@ class WifiNetwork extends CommonDropdown {
 
       if ($field['type'] == 'wifi_mode') {
          Dropdown::showFromArray($field['name'], self::getWifiNetworkModes(),
-                                 ['value' => $this->fields[$field['name']]]);
-
+            [
+               'value' => $this->fields[$field['name']],
+               'width' => '100%',
+            ]);
       }
    }
 
@@ -130,5 +132,9 @@ class WifiNetwork extends CommonDropdown {
       ];
 
       return $tab;
+   }
+
+   static function getIcon() {
+      return "fas fa-wifi";
    }
 }

@@ -30,6 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\AssetImage;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -39,6 +42,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class SoftwareLicense extends CommonTreeDropdown {
    use Glpi\Features\Clonable;
+   use AssetImage;
 
    /// TODO move to CommonDBChild ?
    // From CommonDBTM
@@ -95,6 +99,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          unset ($input['expire']);
       }
 
+      $input = $this->managePictures($input);
       return $input;
    }
 
@@ -111,6 +116,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          $input['is_valid'] = self::computeValidityIndicator($input['id'], $input['number']);
       }
 
+      $input = $this->managePictures($input);
       return $input;
    }
 
@@ -278,200 +284,10 @@ class SoftwareLicense extends CommonTreeDropdown {
       }
 
       $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-
-      // Restore saved value or override with page parameter
-      if (!isset($options['template_preview'])) {
-         if (isset($_REQUEST)) {
-            $saved = Html::cleanPostForTextArea($_REQUEST);
-         }
-      }
-      foreach ($this->fields as $name => $value) {
-         if (isset($saved[$name])
-             && empty($this->fields[$name])) {
-            $this->fields[$name] = $saved[$name];
-         }
-      }
-
-      echo "<input type='hidden' name='withtemplate' value='".$options['withtemplate']."'>";
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".Software::getTypeName(1)."</td>";
-      echo "<td>";
-      if ($ID > 0) {
-         $softwares_id = $this->fields["softwares_id"];
-         echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
-         echo "<a href='".Software::getFormURLWithID($softwares_id)."'>".
-                Dropdown::getDropdownName("glpi_softwares", $softwares_id)."</a>";
-      } else {
-         Dropdown::show(
-            'Software', [
-               'condition'   => ['is_template' => 0, 'is_deleted' => 0],
-               'entity'      => $_SESSION['glpiactive_entity'],
-               'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
-               'on_change'   => 'this.form.submit()',
-               'value'       => $softwares_id
-            ]
-         );
-      }
-
-      echo "</td>";
-      echo "<td colspan='2'>";
-      echo "</td></tr>\n";
-
-      $tplmark = $this->getAutofillMark('name', $options);
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".sprintf(__('%1$s%2$s'), __('Name'), $tplmark).
-           "</td>";
-      echo "<td>";
-      $objectName = autoName($this->fields["name"], "name",
-                             (isset($options['withtemplate']) && ( $options['withtemplate']== 2)),
-                             $this->getType(), $this->fields["entities_id"]);
-      Html::autocompletionTextField($this, 'name', ['value' => $objectName]);
-      echo "</td>";
-      echo "<td>".__('Status')."</td>";
-      echo "<td>";
-      State::dropdown([
-         'value'     => $this->fields["states_id"],
-         'entity'    => $this->fields["entities_id"],
-         'condition' => ['is_visible_softwarelicense' => 1]
+      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
+         'item'   => $this,
+         'params' => $options,
       ]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('As child of')."</td><td>";
-      self::dropdown([
-         'value'     => $this->fields['softwarelicenses_id'],
-         'name'      => 'softwarelicenses_id',
-         'entity'    => $this->fields['entities_id'],
-         'used'      => (($ID > 0) ? getSonsOf($this->getTable(), $ID) : []),
-         'condition' => ['softwares_id' => $this->fields['softwares_id']]
-      ]);
-      echo "</td><td colspan='2'></td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . Location::getTypeName(1) . "</td><td>";
-      Location::dropdown(['value'  => $this->fields["locations_id"],
-                               'entity' => $this->fields["entities_id"]]);
-      echo "</td>";
-      echo "<td>"._n('Type', 'Types', 1)."</td>";
-      echo "<td>";
-      SoftwareLicenseType::dropdown(['value' => $this->fields["softwarelicensetypes_id"]]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Technician in charge of the license')."</td>";
-      echo "<td>";
-      User::dropdown(['name'   => 'users_id_tech',
-                           'value'  => $this->fields["users_id_tech"],
-                           'right'  => 'own_ticket',
-                           'entity' => $this->fields["entities_id"]]);
-      echo "</td>";
-      echo "<td>".__('Publisher')."</td>";
-      echo "<td>";
-      Manufacturer::dropdown(['value' => $this->fields["manufacturers_id"]]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Group in charge of the license')."</td>";
-      echo "<td>";
-      Group::dropdown([
-         'name'      => 'groups_id_tech',
-         'value'     => $this->fields['groups_id_tech'],
-         'entity'    => $this->fields['entities_id'],
-         'condition' => ['is_assign' => 1]
-      ]);
-      echo "</td>";
-      echo "<td>".__('Serial number')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "serial");
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td >" . User::getTypeName(1) . "</td>";
-      echo "<td >";
-      User::dropdown(['value'  => $this->fields["users_id"],
-                           'entity' => $this->fields["entities_id"],
-                           'right'  => 'all']);
-      echo "</td>";
-
-      $tplmark = $this->getAutofillMark('otherserial', $options);
-      echo "<td>".sprintf(__('%1$s%2$s'), __('Inventory number'), $tplmark);
-      echo "</td>";
-      echo "<td>";
-      $objectName = autoName($this->fields["otherserial"], "otherserial",
-                             (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
-                             $this->getType(), $this->fields["entities_id"]);
-      Html::autocompletionTextField($this, 'otherserial', ['value' => $objectName]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . Group::getTypeName(1) . "</td><td>";
-      Group::dropdown([
-         'value'     => $this->fields["groups_id"],
-         'entity'    => $this->fields["entities_id"],
-         'condition' => ['is_itemgroup' => 1]
-      ]);
-      echo "</td>";
-      echo "<td rowspan='4' class='middle'>".__('Comments')."</td>";
-      echo "<td class='center middle' rowspan='4'>";
-      echo "<textarea cols='45' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Version in use')."</td>";
-      echo "<td>";
-      SoftwareVersion::dropdownForOneSoftware(['name'         => "softwareversions_id_use",
-                                                    'softwares_id' => $this->fields["softwares_id"],
-                                                    'value'        => $this->fields["softwareversions_id_use"]]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Purchase version')."</td>";
-      echo "<td>";
-      SoftwareVersion::dropdownForOneSoftware(['name'         => "softwareversions_id_buy",
-                                                    'softwares_id' => $this->fields["softwares_id"],
-                                                    'value'        => $this->fields["softwareversions_id_buy"]]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>"._x('quantity', 'Number')."</td>";
-      echo "<td>";
-      Dropdown::showNumber("number", ['value' => $this->fields["number"],
-                                           'min'   => 1,
-                                           'max'   => 10000,
-                                           'step'  => 1,
-                                           'toadd' => [-1 => __('Unlimited')]]);
-      if ($ID > 0) {
-         echo "&nbsp;";
-         if ($this->fields['is_valid']) {
-            echo "<span class='green'>"._x('adjective', 'Valid').'<span>';
-         } else if (!$this->fields['is_valid'] && $this->fields['allow_overquota']) {
-            echo "<span class='green'>"._x('adjective', 'Valid (Over Quota)').'<span>';
-         } else {
-            echo "<span class='red'>"._x('adjective', 'Invalid').'<span>';
-         }
-      }
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Allow Over-Quota')."</td>";
-      echo "<td>";
-      Dropdown::showYesNo('allow_overquota', $this->fields['allow_overquota']);
-      echo "</td><td colspan='2'></td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Expiration')."</td>";
-      echo "<td>";
-      Html::showDateField('expire', ['value' => $this->fields["expire"]]);
-      if ($ID
-          && is_null($this->fields["expire"])) {
-         echo "<br>".__('Never expire')."&nbsp;";
-         Html::showToolTip(__('On search engine, use "Expiration contains NULL" to search licenses with no expiration date'));
-      }
-      Alert::displayLastAlert('SoftwareLicense', $ID);
-      echo "</td><td colspan='2'></td></tr>\n";
-
-      $this->showFormButtons($options);
 
       return true;
    }

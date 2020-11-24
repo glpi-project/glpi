@@ -123,4 +123,8 @@ abstract class NotificationSetting extends CommonDBTM {
          }
       }
    }
+
+   static function getIcon() {
+      return "fas fa-bell";
+   }
 }

@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\TemplateRenderer;
 
 /**
  * Phone Class
@@ -151,171 +152,11 @@ class Phone extends CommonDBTM {
     * @return boolean item found
    **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
-
-      $target       = $this->getFormURL();
-      $withtemplate = $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-
-      $tplmark = $this->getAutofillMark('name', $options);
-      echo "<tr class='tab_bg_1'>";
-      //TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
-      echo "<td>".sprintf(__('%1$s%2$s'), __('Name'), $tplmark).
-           "</td>";
-      echo "<td>";
-      $objectName = autoName($this->fields["name"], "name",
-                             (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
-                             $this->getType(), $this->fields["entities_id"]);
-      Html::autocompletionTextField($this, 'name', ['value' => $objectName]);
-      echo "</td>";
-      echo "<td>".__('Status')."</td>";
-      echo "<td>";
-      State::dropdown([
-         'value'     => $this->fields["states_id"],
-         'entity'    => $this->fields["entities_id"],
-         'condition' => ['is_visible_phone' => 1]
+      $this->initForm($ID, $options);
+      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
+         'item'   => $this,
+         'params' => $options,
       ]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".Location::getTypeName(1)."</td>";
-      echo "<td>";
-      Location::dropdown(['value'  => $this->fields["locations_id"],
-                               'entity' => $this->fields["entities_id"]]);
-      echo "</td>";
-      echo "<td>"._n('Type', 'Types', 1)."</td>";
-      echo "<td>";
-      PhoneType::dropdown(['value' => $this->fields["phonetypes_id"]]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Technician in charge of the hardware')."</td>";
-      echo "<td>";
-      User::dropdown(['name'   => 'users_id_tech',
-                           'value'  => $this->fields["users_id_tech"],
-                           'right'  => 'own_ticket',
-                           'entity' => $this->fields["entities_id"]]);
-      echo "</td>";
-      echo "<td>".Manufacturer::getTypeName(1)."</td>";
-      echo "<td>";
-      Manufacturer::dropdown(['value' => $this->fields["manufacturers_id"]]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Group in charge of the hardware')."</td>";
-      echo "<td>";
-      Group::dropdown([
-         'name'      => 'groups_id_tech',
-         'value'     => $this->fields['groups_id_tech'],
-         'entity'    => $this->fields['entities_id'],
-         'condition' => ['is_assign' => 1]
-      ]);
-      echo "</td>";
-      echo "<td>"._n('Model', 'Models', 1)."</td>";
-      echo "<td>";
-      PhoneModel::dropdown(['value' => $this->fields["phonemodels_id"]]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Alternate username number')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "contact_num");
-      echo "</td>";
-      echo "<td>".__('Serial number')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "serial");
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Alternate username')."</td><td>";
-      Html::autocompletionTextField($this, "contact");
-      echo "</td>";
-
-      $tplmark = $this->getAutofillMark('otherserial', $options);
-      echo "<td>".sprintf(__('%1$s%2$s'), __('Inventory number'), $tplmark).
-           "</td>";
-      echo "<td>";
-      $objectName = autoName($this->fields["otherserial"], "otherserial",
-                             (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
-                             $this->getType(), $this->fields["entities_id"]);
-      Html::autocompletionTextField($this, 'otherserial', ['value' => $objectName]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".User::getTypeName(1)."</td>";
-      echo "<td>";
-      User::dropdown(['value'  => $this->fields["users_id"],
-                           'entity' => $this->fields["entities_id"],
-                           'right'  => 'all']);
-      echo "</td>";
-      echo "<td>".__('Management type')."</td>";
-      echo "<td>";
-      Dropdown::showGlobalSwitch($this->fields["id"],
-                                 ['withtemplate' => $withtemplate,
-                                       'value'        => $this->fields["is_global"],
-                                       'management_restrict'
-                                                      => $CFG_GLPI["phones_management_restrict"],
-                                       'target'       => $target]);
-      echo "</td></tr>\n";
-
-      $rowspan        = 5;
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".Group::getTypeName(1)."</td>";
-      echo "<td>";
-      Group::dropdown([
-         'value'     => $this->fields["groups_id"],
-         'entity'    => $this->fields["entities_id"],
-         'condition' => ['is_itemgroup' => 1]
-      ]);
-      echo "</td>";
-      echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
-      echo "<td rowspan='$rowspan'>
-            <textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"];
-      echo "</textarea></td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Brand')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "brand");
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".DevicePowerSupply::getTypeName(1)."</td>";
-      echo "<td>";
-      PhonePowerSupply::dropdown(['value' => $this->fields["phonepowersupplies_id"]]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>"._x('quantity', 'Number of lines')."</td><td>";
-      Html::autocompletionTextField($this, "number_line");
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('UUID')."</td>";
-      echo "<td >";
-      Html::autocompletionTextField($this, 'uuid');
-      echo "</td>";
-      echo "</tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Flags')."</td>";
-      echo "<td>";
-      // micro?
-      echo "\n<table><tr><td>".__('Headset')."</td>";
-      echo "<td>&nbsp;";
-      Dropdown::showYesNo("have_headset", $this->fields["have_headset"]);
-      echo "</td></tr>";
-      // hp?
-      echo "<tr><td>".__('Speaker')."</td>";
-      echo "<td>&nbsp;";
-      Dropdown::showYesNo("have_hp", $this->fields["have_hp"]);
-      echo "</td></tr></table>\n";
-      echo "</td>";
-
-      echo "</tr>\n";
-
-      $this->showInventoryInfo();
-      $this->showFormButtons($options);
 
       return true;
    }

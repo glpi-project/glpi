@@ -160,6 +160,7 @@ do
       # TODO Add ability to simulate locales extact and SCSS compilation without actually modifying locale files.
          docker-compose exec -T app .github/actions/lint_php-lint.sh \
       && docker-compose exec -T app .github/actions/lint_js-lint.sh \
+      && docker-compose exec -T app .github/actions/lint_twig-lint.sh \
       || LAST_EXIT_CODE=$?
       ;;
     "install")

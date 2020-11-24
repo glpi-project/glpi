@@ -89,4 +89,8 @@ class SoftwareCategory extends CommonTreeDropdown {
       return array_key_exists('softwarecategories_id_ondelete', $config_values)
          && $config_values['softwarecategories_id_ondelete'] == $this->fields['id'];
    }
+
+   static function getIcon() {
+      return Software::getIcon();
+   }
 }

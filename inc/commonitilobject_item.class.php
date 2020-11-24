@@ -110,14 +110,14 @@ abstract class CommonItilObject_Item extends CommonDBRelation
          echo "<input type='hidden' name='items_id' value='0'>";
 
       } else {
-         echo "<div id='tracking_all_devices$rand'>";
+         echo "<div id='tracking_all_devices$rand' class='input-group mb-1'>";
          if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,
                                                                      Ticket::HELPDESK_ALL_HARDWARE)) {
             // Display a message if view my hardware
             if ($users_id
                 &&($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,
                                                                            Ticket::HELPDESK_MY_HARDWARE))) {
-               echo __('Or complete search')."&nbsp;";
+               echo "<span class='input-group-text'>".__('Or complete search')."</span>";
             }
 
             $types = static::$itemtype_1::getAllTypesForHelpdesk();

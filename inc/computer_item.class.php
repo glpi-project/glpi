@@ -220,7 +220,7 @@ class Computer_Item extends CommonDBRelation{
       $specificities = self::getRelationMassiveActionsSpecificities();
 
       if (in_array($itemtype, $specificities['itemtypes'])) {
-         $actions[$action_prefix.'add']    = "<i class='ma-icon fas fa-plug'></i>".
+         $actions[$action_prefix.'add']    = "<i class='fas fa-plug'></i>".
                                              _x('button', 'Connect');
          $actions[$action_prefix.'remove'] = _x('button', 'Disconnect');
       }
@@ -339,7 +339,7 @@ class Computer_Item extends CommonDBRelation{
       }
 
       if ($number) {
-         echo "<div class='spaced'>";
+         echo "<div class='spaced table-responsive'>";
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $massiveactionparams
@@ -489,7 +489,7 @@ class Computer_Item extends CommonDBRelation{
          echo "</div>";
       }
 
-      echo "<div class='spaced'>";
+      echo "<div class='spaced table-responsive'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams

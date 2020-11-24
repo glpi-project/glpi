@@ -95,7 +95,9 @@ class CompileScssCommand extends Command {
          );
          /** @var \SplFileInfo $file */
          foreach ($css_dir_iterator as $file) {
-            if (!$file->isReadable() || !$file->isFile() || $file->getExtension() !== 'scss') {
+            if (!$file->isReadable() || !$file->isFile() || $file->getExtension() !== 'scss'
+                || preg_match('/^' . preg_quote(GLPI_ROOT . '/css/lib/', '/') . '/', $file->getPath()) === 1
+                || preg_match('/^_/', $file->getBasename()) === 1) {
                continue;
             }
 

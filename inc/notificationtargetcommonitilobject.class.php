@@ -1198,7 +1198,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             if ($user_tmp->getFromDB($uid)) {
                // Check if the user need to be anonymized
                if ($is_self_service
-                  && !empty($anon_name = User::getAnonymizedName(
+                  && !empty($anon_name = User::getAnonymizedNameForUser(
                      $uid,
                      $item->getField('entities_id')
                   ))
@@ -1321,7 +1321,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             // Check if the author need to be anonymized
             if (ITILFollowup::getById($followup['id'])->isFromSupportAgent()
                && $is_self_service
-               && !empty($anon_name = User::getAnonymizedName(
+               && !empty($anon_name = User::getAnonymizedNameForUser(
                   $followup['users_id'],
                   $item->getField('entities_id')
                ))
@@ -1526,10 +1526,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $data['timelineitems'] = [];
 
          $options = [
-            'with_documents' => false,
+            'with_documents'   => false,
+            'with_logs'        => false,
             'with_validations' => false,
-            'expose_private' => $show_private,
-            'bypass_rights' => true,
+            'expose_private'   => $show_private,
+            'bypass_rights'    => true,
          ];
 
          $timeline = $item->getTimelineItems($options);
@@ -1546,7 +1547,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $tmptimelineitem['##timelineitems.typename##']    = $tmptimelineitem['##timelineitems.type##']::getTypeName(0);
             $tmptimelineitem['##timelineitems.date##']        = $timeline_data['item']['date'];
             $tmptimelineitem['##timelineitems.description##'] = $timeline_data['item']['content'];
-            $tmptimelineitem['##timelineitems.position##']    = CommonITILObject::getUserPositionFromTimelineItemPosition($timeline_data['item']['timeline_position']);
+            $tmptimelineitem['##timelineitems.position##']    = $this->getUserPositionFromTimelineItemPosition($timeline_data['item']['timeline_position']);
 
             if ($timeline_data['type'] == ITILFollowup::getType()) {
                // Check if the author need to be anonymized
@@ -1801,5 +1802,28 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                    'lang'           => false,
                                    'allowed_values' => $label['allowed_values']]);
       }
+   }
+
+   private function getUserPositionFromTimelineItemPosition($position) {
+
+      switch ($position) {
+         case CommonITILObject::TIMELINE_LEFT:
+            $user_position = 'left';
+            break;
+         case CommonITILObject::TIMELINE_MIDLEFT:
+            $user_position = 'left middle';
+            break;
+         case CommonITILObject::TIMELINE_MIDRIGHT:
+            $user_position = 'right middle';
+            break;
+         case CommonITILObject::TIMELINE_RIGHT:
+            $user_position = 'right';
+            break;
+         default:
+            $user_position = 'left';
+            break;
+      }
+
+      return $user_position;
    }
 }

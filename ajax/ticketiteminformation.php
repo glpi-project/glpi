@@ -57,13 +57,22 @@ if (isset($_POST['itemtype'])
 
    $days   = 3;
    $ticket = new Ticket();
-   $data   = $ticket->getActiveOrSolvedLastDaysTicketsForItem($_POST['itemtype'],
-                                                              $_POST['items_id'], $days);
+   $data   = $ticket->getActiveOrSolvedLastDaysTicketsForItem(
+      $_POST['itemtype'],
+      $_POST['items_id'],
+      $days
+   );
 
    $nb = count($data);
-   printf(_n('%s ticket in progress or recently solved on this item.',
-             '%s tickets in progress or recently solved on this item.', $nb),
-          $nb);
+   $badge_helper = sprintf(
+      _n(
+         '%s ticket in progress or recently solved on this item.',
+         '%s tickets in progress or recently solved on this item.',
+         $nb
+      ),
+      $nb
+   );
+   echo "<span class='badge badge-secondary' title='$badge_helper'>$nb</span>";
 
    if ($nb) {
       $content = '';
