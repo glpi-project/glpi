@@ -1,0 +1,58 @@
+{#
+ ---------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2015-2020 Teclib' and contributors.
+
+ http://glpi-project.org
+
+ based on GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2014 by the INDEPNET Development Team.
+
+ ---------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of GLPI.
+
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ ---------------------------------------------------------------------
+#}
+
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+   <title>GLPI - {{ title }}</title>
+   
+   <meta charset="utf-8" />
+
+   {# prevent IE to turn into compatible mode... #}
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+   {# auto desktop / mobile viewport #}
+   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+   {% for css_file in css_files %}
+      <link rel="stylesheet" type="text/css" href="{{ css_path(css_file) }}" />
+   {% endfor %}
+
+   {{ custom_css() }}
+
+   <link rel="shortcut icon" type="images/x-icon" href="{{ asset_path('/pics/favicon.ico') }}" />
+
+   {% for js_file in js_files %}
+      <script type="text/javascript" src="{{ js_path(js_file) }}"></script>
+   {% endfor %}
+
+   {{ locales_js() }}
+</head>

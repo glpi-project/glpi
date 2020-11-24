@@ -2083,6 +2083,8 @@ class Config extends CommonDBTM {
                  'check'   => 'ParagonIE_Sodium_Compat' ],
                [ 'name'    => 'glen/filename-normalizer',
                  'check'   => 'glen\\FilenameNormalizer\\Normalizer' ],
+               [ 'name'    => 'twig/twig',
+                 'check'   => 'Twig\\Environment' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [

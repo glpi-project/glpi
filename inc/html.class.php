@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\SimpleCache;
 use ScssPhp\ScssPhp\Compiler;
 
@@ -1211,7 +1212,7 @@ class Html {
     * @return void
    **/
    static function includeHeader($title = '', $sector = 'none', $item = 'none', $option = '') {
-      global $CFG_GLPI, $DB, $PLUGIN_HOOKS;
+      global $CFG_GLPI, $PLUGIN_HOOKS;
 
       // complete title with id if exist
       if (isset($_GET['id']) && $_GET['id']) {
@@ -1226,35 +1227,30 @@ class Html {
       // Send extra expires header
       self::header_nocache();
 
-      // Start the page
-      echo "<!DOCTYPE html>\n";
-      echo "<html lang=\"{$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]}\">";
-      echo "<head><title>GLPI - ".$title."</title>";
-      echo "<meta charset=\"utf-8\">";
+      $theme = $_SESSION['glpipalette'] ?? 'auror';
 
-      //prevent IE to turn into compatible mode...
-      echo "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n";
+      $tpl_vars = [
+         'lang'      => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
+         'title'     => $title,
+         'theme'     => $theme,
+         'css_files' => [],
+         'js_files'  => [],
+      ];
 
-      // auto desktop / mobile viewport
-      echo "<meta name='viewport' content='width=device-width, initial-scale=1'>";
-
-      //detect theme
-      $theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
-
-      echo Html::css('public/lib/base.css');
+      $tpl_vars['css_files'][] = 'public/lib/base.css';
 
       if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
          Html::requireJs('notifications_ajax');
       }
 
-      echo Html::css('public/lib/leaflet.css');
+      $tpl_vars['css_files'][] = 'public/lib/leaflet.css';
       Html::requireJs('leaflet');
 
-      echo Html::css('public/lib/flatpickr.css');
+      $tpl_vars['css_files'][] = 'public/lib/flatpickr.css';
       if ($theme != "darker") {
-         echo Html::css('public/lib/flatpickr/themes/light.css');
+         $tpl_vars['css_files'][] = 'public/lib/flatpickr/themes/light.css';
       } else {
-         echo Html::css('public/lib/flatpickr/themes/dark.css');
+         $tpl_vars['css_files'][] = 'public/lib/flatpickr/themes/dark.css';
       }
       Html::requireJs('flatpickr');
 
@@ -1278,18 +1274,17 @@ class Html {
          }
 
          if (in_array('fullcalendar', $jslibs)) {
-            echo Html::css('public/lib/fullcalendar.css',
-                           ['media' => '']);
+            $tpl_vars['css_files'][] = 'public/lib/fullcalendar.css';
             Html::requireJs('fullcalendar');
          }
 
          if (in_array('reservations', $jslibs)) {
-            echo Html::scss('css/reservations');
+            $tpl_vars['css_files'][] = 'css/reservations.scss';
             Html::requireJs('reservations');
          }
 
          if (in_array('gantt', $jslibs)) {
-            echo Html::css('public/lib/jquery-gantt.css');
+            $tpl_vars['css_files'][] = 'public/lib/jquery-gantt.css';
             Html::requireJs('gantt');
          }
 
@@ -1298,17 +1293,17 @@ class Html {
          }
 
          if (in_array('rateit', $jslibs)) {
-            echo Html::css('public/lib/jquery.rateit.css');
+            $tpl_vars['css_files'][] = 'public/lib/jquery.rateit.css';
             Html::requireJs('rateit');
          }
 
          if (in_array('dashboard', $jslibs)) {
-            echo Html::scss('css/dashboard');
+            $tpl_vars['css_files'][] = 'css/dashboard.scss';
             Html::requireJs('dashboard');
          }
 
          if (in_array('marketplace', $jslibs)) {
-            echo Html::scss('css/marketplace');
+            $tpl_vars['css_files'][] = 'css/marketplace.scss';
             Html::requireJs('marketplace');
          }
 
@@ -1317,7 +1312,7 @@ class Html {
          }
 
          if (in_array('gridstack', $jslibs)) {
-            echo Html::css('public/lib/gridstack.css');
+            $tpl_vars['css_files'][] = 'public/lib/gridstack.css';
             Html::requireJs('gridstack');
          }
 
@@ -1334,29 +1329,29 @@ class Html {
          }
 
          if (in_array('jstree', $jslibs)) {
-            echo Html::css('public/lib/jstree.css');
+            $tpl_vars['css_files'][] = 'public/lib/jstree.css';
             Html::requireJs('jstree');
          }
 
          if (in_array('charts', $jslibs)) {
-            echo Html::css('public/lib/chartist.css');
-            echo Html::css('css/chartists-glpi.css');
+            $tpl_vars['css_files'][] = 'public/lib/chartist.css';
+            $tpl_vars['css_files'][] = 'css/chartists-glpi.css';
             Html::requireJs('charts');
          }
 
          if (in_array('codemirror', $jslibs)) {
-            echo Html::css('public/lib/codemirror.css');
+            $tpl_vars['css_files'][] = 'public/lib/codemirror.css';
             Html::requireJs('codemirror');
          }
 
          if (in_array('photoswipe', $jslibs)) {
-            echo Html::css('public/lib/photoswipe.css');
+            $tpl_vars['css_files'][] = 'public/lib/photoswipe.css';
             Html::requireJs('photoswipe');
          }
       }
 
       if (Session::getCurrentInterface() == "helpdesk") {
-         echo Html::css('public/lib/jquery.rateit.css');
+         $tpl_vars['css_files'][] = 'public/lib/jquery.rateit.css';
          Html::requireJs('rateit');
       }
 
@@ -1369,22 +1364,20 @@ class Html {
       // load log filters everywhere
       Html::requireJs('log_filters');
 
-      echo Html::css('css/jquery-glpi.css');
+      $tpl_vars['css_files'][] = 'css/jquery-glpi.css';
       if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {
-         echo Html::css('public/lib/scrollable-tabs.css');
+         $tpl_vars['css_files'][] = 'public/lib/scrollable-tabs.css';
       }
 
       //  CSS link
-      echo Html::scss('css/styles');
+      $tpl_vars['css_files'][] = 'css/styles.scss';
       if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
-         echo Html::scss('css/highcontrast');
+         $tpl_vars['css_files'][] = 'css/highcontrast.scss';
       }
-      echo Html::scss('css/palettes/' . $theme);
+      $tpl_vars['css_files'][] = 'css/palettes/' . $theme . '.scss';
 
-      echo Html::css('css/print.css', ['media' => 'print']);
-      echo "<link rel='shortcut icon' type='images/x-icon' href='".
-             $CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
+      $tpl_vars['css_files'][] = 'css/print.css';
 
       // Add specific css for plugins
       if (isset($PLUGIN_HOOKS['add_css']) && count($PLUGIN_HOOKS['add_css'])) {
@@ -1394,87 +1387,29 @@ class Html {
                continue;
             }
 
-            $plugin_root_dir = Plugin::getPhpDir($plugin, true);
             $plugin_web_dir  = Plugin::getWebDir($plugin, false);
-            $version         = Plugin::getInfo($plugin, 'version');
 
             if (!is_array($files)) {
                $files = [$files];
             }
 
             foreach ($files as $file) {
-               $filename = "$plugin_root_dir/$file";
-
-               if (!file_exists($filename)) {
-                  continue;
-               }
-
-               if ('scss' === substr(strrchr($filename, '.'), 1)) {
-                  echo Html::scss("$plugin_web_dir/$file", ['version' => $version]);
-               } else {
-                  echo Html::css("$plugin_web_dir/$file", ['version' => $version]);
-               }
+               $tpl_vars['css_files'][] = "$plugin_web_dir/$file";
             }
          }
       }
 
-      // Custom CSS for active entity
-      if ($DB instanceof DBmysql && $DB->connected) {
-         $entity = new Entity();
-         if (isset($_SESSION['glpiactive_entity'])) {
-            // Apply active entity styles
-            $entity->getFromDB($_SESSION['glpiactive_entity']);
-         } else {
-            // Apply root entity styles
-            $entity->getFromDB('0');
-         }
-         echo $entity->getCustomCssTag();
-      }
-
       // AJAX library
-      echo Html::script('public/lib/base.js');
-
-      // Locales
-      $locales_domains = ['glpi' => GLPI_VERSION]; // base domain
-      $plugins = Plugin::getPlugins();
-      foreach ($plugins as $plugin) {
-         $locales_domains[$plugin] = Plugin::getInfo($plugin, 'version');
-      }
-      if (isset($_SESSION['glpilanguage'])) {
-         echo Html::scriptBlock(<<<JAVASCRIPT
-            $(function() {
-               i18n.setLocale('{$_SESSION['glpilanguage']}');
-            });
-JAVASCRIPT
-         );
-         foreach ($locales_domains as $locale_domain => $locale_version) {
-            $locales_url = $CFG_GLPI['root_doc'] . '/front/locale.php'
-               . '?domain=' . $locale_domain
-               . '&version=' . $locale_version
-               . ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? '&debug' : '');
-            $locale_js = <<<JAVASCRIPT
-               $(function() {
-                  $.ajax({
-                     type: 'GET',
-                     url: '{$locales_url}',
-                     success: function(json) {
-                        i18n.loadJSON(json, '{$locale_domain}');
-                     }
-                  });
-               });
-JAVASCRIPT;
-            echo Html::scriptBlock($locale_js);
-         }
-      }
+      $tpl_vars['js_files'][] = 'public/lib/base.js';
 
       // layout
       if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {
-         echo Html::script('public/lib/scrollable-tabs.js');
+         $tpl_vars['js_files'][] = 'public/lib/scrollable-tabs.js';
       }
 
-      // End of Head
-      echo "</head>\n";
+      TemplateRenderer::getInstance()->display('layout/parts/head.html.twig', $tpl_vars);
+
       self::glpi_flush();
    }
 
@@ -7540,6 +7475,8 @@ JAVASCRIPT;
     * @return array
     */
    public static function getScssCompilePath($file) {
+      $file = preg_replace('/\.scss$/', '', $file);
+
       return implode(
          DIRECTORY_SEPARATOR,
          [
