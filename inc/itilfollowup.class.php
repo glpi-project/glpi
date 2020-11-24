@@ -30,11 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
-
-use Glpi\Toolbox\RichText;
 
 /**
  * @since 9.4.0
@@ -749,47 +749,6 @@ class ITILFollowup  extends CommonDBChild {
    }
 
 
-   /**
-    * form for soluce's approbation
-    *
-    * @param CommonITILObject $itilobject
-    */
-   function showApprobationForm($itilobject) {
-
-      if (($itilobject->fields["status"] == CommonITILObject::SOLVED)
-          && $itilobject->canApprove()
-          && $itilobject->isAllowedStatus($itilobject->fields['status'], CommonITILObject::CLOSED)) {
-         echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='4'>". __('Approval of the solution')."</th></tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2'>".__('Comments')."<br>(".__('Optional when approved').")</td>";
-         echo "<td class='center middle' colspan='2'>";
-         echo "<textarea name='content' cols='70' rows='6'></textarea>";
-         echo "<input type='hidden' name='itemtype' value='".$itilobject->getType()."'>";
-         echo "<input type='hidden' name='items_id' value='".$itilobject->getField('id')."'>";
-         echo "<input type='hidden' name='requesttypes_id' value='".
-                RequestType::getDefault('followup')."'>";
-         echo "</td></tr>\n";
-
-         echo "<tr class='tab_bg_2'>";
-         echo "<td class='tab_bg_2 center' colspan='2' width='200'>\n";
-         echo "<input type='submit' name='add_reopen' value=\"".__('Refuse the solution')."\"
-                class='submit'>";
-         echo "</td>\n";
-         echo "<td class='tab_bg_2 center' colspan='2'>\n";
-         echo "<input type='submit' name='add_close' value=\"".__('Approve the solution')."\"
-                class='submit'>";
-         echo "</td></tr>\n";
-         echo "</table>";
-         Html::closeForm();
-      }
-
-      return true;
-   }
-
-
    static function getFormURL($full = true) {
       return Toolbox::getItemTypeFormURL("ITILFollowup", $full);
    }
@@ -802,205 +761,14 @@ class ITILFollowup  extends CommonDBChild {
     *     - item Object : the ITILObject parent
    **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
-
       if ($this->isNewItem()) {
          $this->getEmpty();
       }
 
-      if (!isset($options['item']) && isset($options['parent'])) {
-         //when we came from aja/viewsubitem.php
-         $options['item'] = $options['parent'];
-      }
-      $options['formoptions'] = ($options['formoptions'] ?? '') . ' data-track-changes=true';
-
-      $item = $options['item'];
-      $this->item = $item;
-
-      if ($ID > 0) {
-         $this->check($ID, READ);
-      } else {
-         // Create item
-         $options['itemtype'] = $item->getType();
-         $options['items_id'] = $item->getField('id');
-         $this->check(-1, CREATE, $options);
-      }
-      $tech = (Session::haveRight(self::$rightname, self::ADDALLTICKET)
-               || $item->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-               || (isset($_SESSION["glpigroups"])
-                   && $item->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
-
-      $requester = ($item->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-                    || (isset($_SESSION["glpigroups"])
-                        && $item->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups'])));
-
-      $reopen_case = false;
-      if ($this->isNewID($ID)) {
-         if ($item->canReopen()) {
-            $reopen_case = true;
-            echo "<div class='center b'>".__('If you want to reopen the ticket, you must specify a reason')."</div>";
-         }
-
-         // the reqester triggers the reopening on close/solve/waiting status
-         if ($requester
-             && in_array($item->fields['status'], $item::getReopenableStatusArray())) {
-            $reopen_case = true;
-         }
-      }
-
-      $cols    = 100;
-      $rows    = 10;
-
-      if ($tech) {
-         $this->showFormHeader($options);
-
-         $rand       = mt_rand();
-         $content_id = "content$rand";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td rowspan='3'>";
-
-         Html::textarea(['name'              => 'content',
-                         'value'             => RichText::getSafeHtml($this->fields['content'], true, true),
-                         'rand'              => $rand,
-                         'editor_id'         => $content_id,
-                         'enable_fileupload' => true,
-                         'enable_richtext'   => true,
-                         'cols'              => $cols,
-                         'rows'              => $rows]);
-         Html::activateUserMentions($content_id);
-
-         if ($this->fields["date"]) {
-            echo "</td><td>"._n('Date', 'Dates', 1)."</td>";
-            echo "<td>".Html::convDateTime($this->fields["date"]);
-         } else {
-
-            echo "</td><td colspan='2'>&nbsp;";
-         }
-         echo Html::hidden('itemtype', ['value' => $item->getType()]);
-         echo Html::hidden('items_id', ['value' => $item->getID()]);
-         // Reopen case
-         if ($reopen_case) {
-            echo "<input type='hidden' name='add_reopen' value='1'>";
-         }
-
-         echo "</td></tr>\n";
-
-         echo "<tr class='tab_bg_1'></tr>";
-         echo "<tr class='tab_bg_1' style='vertical-align: top'>";
-         echo "<td colspan='4'>";
-         echo "<div class='fa-label'>
-            <i class='fas fa-reply fa-fw'
-               title='"._n('Followup template', 'Followup templates', Session::getPluralNumber())."'></i>";
-         $this->fields['itilfollowuptemplates_id'] = 0;
-         ITILFollowupTemplate::dropdown([
-            'value'     => $this->fields['itilfollowuptemplates_id'],
-            'entity'    => $this->getEntityID(),
-            'on_change' => "itilfollowuptemplate_update$rand(this.value)"
-         ]);
-         echo "</div>";
-
-         $items_id = $item->fields['id'];
-         $itemtype = $item::getType();
-
-         $ajax_url = $CFG_GLPI["root_doc"]."/ajax/itilfollowup.php";
-         $JS = <<<JAVASCRIPT
-            function itilfollowuptemplate_update{$rand}(value) {
-               $.ajax({
-                  url: '{$ajax_url}',
-                  type: 'POST',
-                  data: {
-                     itilfollowuptemplates_id: value,
-                     items_id: '{$items_id}',
-                     itemtype: '{$itemtype}',
-                  }
-               }).done(function(data) {
-                  var requesttypes_id = isNaN(parseInt(data.requesttypes_id))
-                     ? 0
-                     : parseInt(data.requesttypes_id);
-
-                  // set textarea content
-                  if (tasktinymce = tinymce.get("{$content_id}")) {
-                     tasktinymce.setContent(data.content);
-                  }
-                  // set category
-                  $("#dropdown_requesttypes_id{$rand}").trigger("setValue", requesttypes_id);
-                  // set is_private
-                  $("#is_privateswitch{$rand}")
-                     .prop("checked", data.is_private == "0"
-                        ? false
-                        : true);
-
-                  displayAjaxMessageAfterRedirect();
-               });
-            }
-JAVASCRIPT;
-         echo Html::scriptBlock($JS);
-
-         echo "<div class='fa-label'>
-            <i class='fas fa-inbox fa-fw'
-               title='".__('Source of followup')."'></i>";
-         RequestType::dropdown([
-            'value'     => $this->fields["requesttypes_id"],
-            'condition' => ['is_active' => 1, 'is_itilfollowup' => 1],
-            'rand'      => $rand,
-         ]);
-         echo "</div>";
-
-         echo "<div class='fa-label'>
-            <i class='fas fa-lock fa-fw' title='".__('Private')."'></i>";
-         echo "<span class='switch pager_controls'>
-            <label for='is_privateswitch$rand' title='".__('Private')."'>
-               <input type='hidden' name='is_private' value='0'>
-               <input type='checkbox' id='is_privateswitch$rand' name='is_private' value='1'".
-                     ($this->fields["is_private"]
-                        ? "checked='checked'"
-                        : "")."
-               >
-               <span class='lever'></span>
-            </label>
-         </span>";
-         echo "</div>";
-         echo "</td></tr>";
-         PendingReason_Item::showFormForTimelineItem($this, $rand);
-
-         $this->showFormButtons($options);
-
-      } else {
-         $options['colspan'] = 1;
-
-         $this->showFormHeader($options);
-
-         $rand = mt_rand();
-         $rand_text = mt_rand();
-         $content_id = "content$rand";
-         echo "<tr class='tab_bg_1'>";
-         echo "<td class='middle right'>".__('Description')."</td>";
-         echo "<td class='center middle'>";
-
-         Html::textarea(['name'              => 'content',
-                         'value'             => RichText::getSafeHtml($this->fields['content'], true, true),
-                         'rand'              => $rand_text,
-                         'editor_id'         => $content_id,
-                         'enable_fileupload' => true,
-                         'enable_richtext'   => true,
-                         'cols'              => $cols,
-                         'rows'              => $rows]);
-         Html::activateUserMentions($content_id);
-
-         echo Html::hidden('itemtype', ['value' => $item->getType()]);
-         echo Html::hidden('items_id', ['value' => $item->getID()]);
-         echo Html::hidden('requesttypes_id', ['value' => RequestType::getDefault('followup')]);
-         // Reopen case
-         if ($reopen_case) {
-            echo "<input type='hidden' name='add_reopen' value='1'>";
-         }
-
-         echo "</td></tr>\n";
-
-         $this->showFormButtons($options);
-      }
-      return true;
+      TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_followup.html.twig', [
+         'item'      => $options['parent'],
+         'subitem'   => $this
+      ]);
    }
 
 

@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\Parameters\TicketParameters;
 use Glpi\ContentTemplates\ParametersPreset;
 use Glpi\ContentTemplates\TemplateManager;
@@ -162,9 +163,12 @@ class Ticket extends CommonITILObject {
          $opt['criteria'][4]['value']      = Ticket::SOLVED;
          $opt['criteria'][4]['link']       = 'AND NOT';
 
-         $pic_validate = "<img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
-                           __s('Ticket waiting for your approval')."\" src='".
-                           $CFG_GLPI["root_doc"]."/pics/menu_showall.png' class='pointer'>";
+         $pic_validate = '
+            <span class="fa-stack" style="vertical-align: middle; font-size: 0.8em" title="'.__s('Ticket waiting for your approval').'">
+                <i class="fas fa-check fa-stack-1x" style="top: 1px; left: -7px; font-size: 1.2em"></i>
+                <i class="far fa-clock fa-stack-1x" style="top: 6px; left: -3px"></i>
+            </span>
+         ';
 
          $links[$pic_validate] = Ticket::getSearchURL(false) . '?'.Toolbox::append_params($opt, '&amp;');
       }
@@ -744,10 +748,6 @@ class Ticket extends CommonITILObject {
          case __CLASS__ :
             $ong    = [];
 
-            $timeline    = $item->getTimelineItems();
-            $nb_elements = count($timeline);
-            $ong[1]      = __("Processing ticket")." <sup class='tab_nb'>$nb_elements</sup>";
-
             // enquete si statut clos
             $satisfaction = new TicketSatisfaction();
             if ($satisfaction->getFromDB($item->getID())
@@ -772,15 +772,6 @@ class Ticket extends CommonITILObject {
       switch ($item->getType()) {
          case __CLASS__ :
             switch ($tabnum) {
-
-               case 1 :
-                  echo "<div class='timeline_box'>";
-                  $rand = mt_rand();
-                  $item->showTimelineForm($rand);
-                  $item->showTimeline($rand);
-                  echo "</div>";
-                  break;
-
                case 3 :
                   $satisfaction = new TicketSatisfaction();
                   if (($item->fields['status'] == self::CLOSED)
@@ -818,8 +809,8 @@ class Ticket extends CommonITILObject {
 
    function defineTabs($options = []) {
       $ong = [];
-
-      $this->defineDefaultObjectTabs($ong, $options);
+      $this->addDefaultFormTab($ong);
+      $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('TicketValidation', $ong, $options);
       $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Item_Ticket', $ong, $options);
@@ -2483,31 +2474,31 @@ class Ticket extends CommonITILObject {
       if (Session::getCurrentInterface() == 'central') {
          if (Ticket::canUpdate() && Ticket::canDelete()) {
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'merge_as_followup']
-               = "<i class='ma-icon fas fa-code-branch'></i>".
+               = "<i class='fas fa-code-branch'></i>".
                  __('Merge as Followup');
          }
 
          if (Item_Ticket::canCreate()) {
             $actions['Item_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add_item']
-               = "<i class='ma-icon fas fa-plus'></i>".
+               = "<i class='fas fa-plus'></i>".
                  _x('button', 'Add an item');
          }
 
          if (ITILFollowup::canCreate()) {
             $actions['ITILFollowup'.MassiveAction::CLASS_ACTION_SEPARATOR.'add_followup']
-               = "<i class='ma-icon far fa-comment'></i>".
+               = "<i class='far fa-comment'></i>".
                  __('Add a new followup');
          }
 
          if (TicketTask::canCreate()) {
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_task']
-               = "<i class='ma-icon far fa-check-square'></i>".
+               = "<i class='far fa-check-square'></i>".
                  __('Add a new task');
          }
 
          if (TicketValidation::canCreate()) {
             $actions['TicketValidation'.MassiveAction::CLASS_ACTION_SEPARATOR.'submit_validation']
-               = "<i class='ma-icon fas fa-check'></i>".
+               = "<i class='fas fa-check'></i>".
                  __('Approval request');
          }
 
@@ -2518,18 +2509,18 @@ class Ticket extends CommonITILObject {
 
          if (Session::haveRight(self::$rightname, UPDATE)) {
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_actor']
-               = "<i class='ma-icon fas fa-user'></i>".
+               = "<i class='fas fa-user'></i>".
                  __('Add an actor');
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'update_notif']
                = __('Set notifications for all actors');
             $actions['Ticket_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
-               = "<i class='ma-icon fas fa-link'></i>".
+               = "<i class='fas fa-link'></i>".
                  _x('button', 'Link tickets');
             $actions['ProjectTask_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
-               = "<i class='ma-icon fas fa-link'></i>".
+               = "<i class='fas fa-link'></i>".
                _x('button', 'Link project task');
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_contract']
-               = "<i class='ma-icon fas fa-file-signature'></i>".
+               = "<i class='fas fa-file-signature'></i>".
                  _x('button', 'Add contract');
 
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
@@ -2537,13 +2528,13 @@ class Ticket extends CommonITILObject {
 
          if (Problem::canUpdate()) {
             $actions[self::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'link_to_problem']
-               = "<i class='ma-icon fas fa-exclamation-triangle' ></i>" .
+               = "<i class='fas fa-exclamation-triangle' ></i>" .
                __("Link to a problem");
          }
 
          if (self::canUpdate()) {
             $actions[self::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'resolve_tickets']
-               = "<i class='ma-icon fa fa-check'></i>" .
+               = "<i class='fas fa-check'></i>" .
                __("Resolve selected tickets");
          }
       }
@@ -2566,7 +2557,7 @@ class Ticket extends CommonITILObject {
                'displaywith'  => ['id'],
                'rand'         => $rand
             ];
-            echo "<table class='center-h'><tr>";
+            echo "<table class='mx-auto'><tr>";
             echo "<td><label for='dropdown__mergeticket$rand'>".Ticket::getTypeName(1)."</label></td><td colspan='3'>";
             Ticket::dropdown($mergeparam);
             echo "</td></tr><tr><td><label for='with_followups'>".__('Merge followups')."</label></td><td>";
@@ -3788,6 +3779,7 @@ JAVASCRIPT;
          return false;
       }
 
+      $url_validate = "";
       if (!$ticket_template
           && Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
 
@@ -3803,47 +3795,45 @@ JAVASCRIPT;
          $opt['criteria'][1]['value']      = Session::getLoginUserID();
          $opt['criteria'][1]['link']       = 'AND';
 
-         $url_validate = Ticket::getSearchURL()."?".Toolbox::append_params($opt,
-                                                                                           '&amp;');
-
-         if (TicketValidation::getNumberToValidate(Session::getLoginUserID()) > 0) {
-            echo "<a href='$url_validate' title=\"".__s('Ticket waiting for your approval')."\"
-                   alt=\"".__s('Ticket waiting for your approval')."\">".
-                   __('Tickets awaiting approval')."</a><br><br>";
-         }
+         $url_validate = Ticket::getSearchURL()."?".Toolbox::append_params($opt);
       }
 
       $email  = UserEmail::getDefaultForUser($ID);
       $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $_SESSION['glpiactive_entity'], '', 1);
 
       // Set default values...
-      $default_values = ['_users_id_requester_notif'
-                                                    => ['use_notification'
-                                                              => (($email == "")?0:$default_use_notif)],
-                                                    'nodelegate'          => 1,
-                                                    '_users_id_requester' => 0,
-                                                    '_users_id_observer'  => [0],
-                                                    '_users_id_observer_notif'
-                                                    => ['use_notification' => $default_use_notif],
-                                                    'name'                => '',
-                                                    'content'             => '',
-                                                    'itilcategories_id'   => 0,
-                                                    'locations_id'        => 0,
-                                                    'urgency'             => 3,
-                                                    'items_id'            => 0,
-                                                    'entities_id'         => $_SESSION['glpiactive_entity'],
-                                                    'plan'                => [],
-                                                    'global_validation'   => CommonITILValidation::NONE,
-                                                    '_add_validation'     => 0,
-                                                    'type'                => Entity::getUsedConfig('tickettype',
-                                                                             $_SESSION['glpiactive_entity'],
-                                                                             '', Ticket::INCIDENT_TYPE),
-                              '_right'              => "id",
-                              '_content'            => [],
-                              '_tag_content'        => [],
-                              '_filename'           => [],
-                              '_tag_filename'       => [],
-                              '_tasktemplates_id'   => []];
+      $default_values = [
+         '_users_id_requester_notif' => [
+            'use_notification' => (($email == "")?0:$default_use_notif)
+         ],
+         'nodelegate'                => 1,
+         '_users_id_requester'       => 0,
+         '_users_id_observer'        => 0,
+         '_users_id_observer_notif'  => [
+            'use_notification' => $default_use_notif
+         ],
+         'name'                      => '',
+         'content'                   => '',
+         'itilcategories_id'         => 0,
+         'locations_id'              => 0,
+         'urgency'                   => 3,
+         'items_id'                  => [],
+         'entities_id'               => $_SESSION['glpiactive_entity'],
+         'plan'                      => [],
+         'global_validation'         => CommonITILValidation::NONE,
+         '_add_validation'           => 0,
+         'type'                      => Entity::getUsedConfig(
+            'tickettype',
+            $_SESSION['glpiactive_entity'],
+            '',
+            Ticket::INCIDENT_TYPE
+         ),
+         '_right'                    => "id",
+         '_content'                  => [],
+         '_tag_content'              => [],
+         '_filename'                 => [],
+         '_tag_filename'             => [],
+         '_tasktemplates_id'         => []];
 
       // Get default values from posted values on reload form
       if (!$ticket_template) {
@@ -3894,384 +3884,30 @@ JAVASCRIPT;
       }
 
       // Load ticket template if available :
-      $tt = $this->getITILTemplateToUse($ticket_template, $options['type'],
-                                          $options['itilcategories_id'],
-                                          $_SESSION["glpiactive_entity"]);
-
-      if (!$ticket_template) {
-         echo "<form method='post' name='helpdeskform' action='".
-               $CFG_GLPI["root_doc"]."/front/tracking.injector.php' enctype='multipart/form-data'>";
-      }
+      $tt = $this->getITILTemplateToUse(
+         $ticket_template,
+         $options['type'],
+         $options['itilcategories_id'],
+         $_SESSION["glpiactive_entity"]
+      );
 
       $delegating = User::getDelegateGroupsForUser($options['entities_id']);
 
-      if (count($delegating) || $CFG_GLPI['use_check_pref']) {
-         echo "<div class='center'><table class='tab_cadre_fixe'>";
-      }
-
-      if (count($delegating)) {
-         echo "<tr><th colspan='2'>".__('This ticket concerns me')." ";
-
-         $rand   = Dropdown::showYesNo("nodelegate", $options['nodelegate']);
-
-         $params = ['nodelegate' => '__VALUE__',
-                         'rand'       => $rand,
-                         'right'      => "delegate",
-                         '_users_id_requester'
-                                      => $options['_users_id_requester'],
-                         '_users_id_requester_notif'
-                                      => $options['_users_id_requester_notif'],
-                         'use_notification'
-                                      => $options['_users_id_requester_notif']['use_notification'],
-                         'entity_restrict'
-                                      => $_SESSION["glpiactive_entity"]];
-
-         Ajax::UpdateItemOnSelectEvent("dropdown_nodelegate".$rand, "show_result".$rand,
-                                       $CFG_GLPI["root_doc"]."/ajax/dropdownDelegationUsers.php",
-                                       $params);
-
-         $class = 'right';
-         if ($CFG_GLPI['use_check_pref'] && $options['nodelegate']) {
-            echo "</th><th>".__('Check your personnal information');
-            $class = 'center';
-         }
-
-         echo "</th></tr>";
-         echo "<tr class='tab_bg_1'><td colspan='2' class='".$class."'>";
-         echo "<div id='show_result$rand'>";
-
-         $self = new self();
-         if ($options["_users_id_requester"] == 0) {
-            $options['_users_id_requester'] = Session::getLoginUserID();
-         } else {
-            $options['_right'] = "delegate";
-         }
-         $actors_options = $options;
-         $actors_options['_tickettemplate'] = $tt; // Actors requires ticket template object in $options
-         $self->showActorAddFormOnCreate(CommonITILActor::REQUESTER, $actors_options);
-         echo "</div>";
-         if ($CFG_GLPI['use_check_pref'] && $options['nodelegate']) {
-            echo "</td><td class='center'>";
-            User::showPersonalInformation(Session::getLoginUserID());
-         }
-         echo "</td></tr>";
-
-         echo "</table></div>";
-         echo "<input type='hidden' name='_users_id_recipient' value='".Session::getLoginUserID()."'>";
-
-      } else {
-         // User as requester
+      if ($options["_users_id_requester"] == 0) {
          $options['_users_id_requester'] = Session::getLoginUserID();
-
-         if ($CFG_GLPI['use_check_pref']) {
-            echo "<tr><th>".__('Check your personnal information')."</th></tr>";
-            echo "<tr class='tab_bg_1'><td class='center'>";
-            User::showPersonalInformation(Session::getLoginUserID());
-            echo "</td></tr>";
-            echo "</table></div>";
-         }
-      }
-
-      echo "<input type='hidden' name='_from_helpdesk' value='1'>";
-      echo "<input type='hidden' name='requesttypes_id' value='".RequestType::getDefault('helpdesk').
-           "'>";
-
-      // Predefined fields from template : reset them
-      if (isset($options['_predefined_fields'])) {
-         $options['_predefined_fields']
-                        = Toolbox::decodeArrayFromInput($options['_predefined_fields']);
       } else {
-         $options['_predefined_fields'] = [];
+         $options['_right'] = "delegate";
       }
 
-      // Store predefined fields to be able not to take into account on change template
-      $predefined_fields = [];
-      $key = $this->getTemplateFormFieldName();
-
-      if (isset($tt->predefined) && count($tt->predefined)) {
-         foreach ($tt->predefined as $predeffield => $predefvalue) {
-            if (isset($options[$predeffield]) && isset($default_values[$predeffield])) {
-               // Is always default value : not set
-               // Set if already predefined field
-               // Set if ticket template change
-               if (((count($options['_predefined_fields']) == 0)
-                    && ($options[$predeffield] == $default_values[$predeffield]))
-                   || (isset($options['_predefined_fields'][$predeffield])
-                       && ($options[$predeffield] == $options['_predefined_fields'][$predeffield]))
-                   || (isset($options[$key])
-                       && ($options[$key] != $tt->getID()))) {
-                  $options[$predeffield]            = $predefvalue;
-                  $predefined_fields[$predeffield] = $predefvalue;
-               }
-            } else { // Not defined options set as hidden field
-               echo "<input type='hidden' name='$predeffield' value='$predefvalue'>";
-            }
-         }
-         // All predefined override : add option to say predifined exists
-         if (count($predefined_fields) == 0) {
-            $predefined_fields['_all_predefined_override'] = 1;
-         }
-      } else { // No template load : reset predefined values
-         if (count($options['_predefined_fields'])) {
-            foreach ($options['_predefined_fields'] as $predeffield => $predefvalue) {
-               if ($options[$predeffield] == $predefvalue) {
-                  $options[$predeffield] = $default_values[$predeffield];
-               }
-            }
-         }
-      }
-
-      if (isset($options['_tasktemplates_id'])) {
-         foreach ($options['_tasktemplates_id'] as $tasktemplates_id) {
-            echo "<input type='hidden' name='_tasktemplates_id[]' value='$tasktemplates_id'>";
-         }
-      }
-
-      if (($CFG_GLPI['urgency_mask'] == (1<<3))
-          || $tt->isHiddenField('urgency')) {
-         // Dont show dropdown if only 1 value enabled or field is hidden
-         echo "<input type='hidden' name='urgency' value='".$options['urgency']."'>";
-      }
-
-      // Display predefined fields if hidden
-      if ($tt->isHiddenField('items_id')) {
-         $this->displayHiddenItemsIdInput($options);
-      }
-      if ($tt->isHiddenField('locations_id')) {
-         echo "<input type='hidden' name='locations_id' value='".$options['locations_id']."'>";
-      }
-      echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
-      echo "<div class='center'><table class='tab_cadre_fixe'>";
-
-      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => &$options]);
-
-      echo "<tr><th>".__('Describe the incident or request')."</th><th>";
-      if (Session::isMultiEntitiesMode()) {
-         echo "(".Dropdown::getDropdownName("glpi_entities", $_SESSION["glpiactive_entity"]).")";
-      }
-      echo "</th></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".sprintf(__('%1$s%2$s'), _n('Type', 'Types', 1), $tt->getMandatoryMark('type'))."</td>";
-      echo "<td>";
-      self::dropdownType('type', ['value'     => $options['type'],
-                                  'on_change' => 'this.form.submit()']);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".sprintf(__('%1$s%2$s'), _n('Category', 'Categories', 1),
-                          $tt->getMandatoryMark('itilcategories_id'))."</td>";
-      echo "<td>";
-
-      $condition = ['is_helpdeskvisible' => 1];
-      switch ($options['type']) {
-         case self::DEMAND_TYPE :
-            $condition['is_request'] = 1;
-            break;
-         default: // self::INCIDENT_TYPE :
-            $condition['is_incident'] = 1;
-      }
-      $opt = ['value'     => $options['itilcategories_id'],
-              'condition' => $condition,
-              'entity'    => $_SESSION["glpiactive_entity"],
-              'on_change' => 'this.form.submit()'];
-
-      if ($options['itilcategories_id'] && $tt->isMandatoryField("itilcategories_id")) {
-         $opt['display_emptychoice'] = false;
-      }
-
-      ITILCategory::dropdown($opt);
-      echo "</td></tr>";
-
-      if ($CFG_GLPI['urgency_mask'] != (1<<3)) {
-         if (!$tt->isHiddenField('urgency')) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".sprintf(__('%1$s%2$s'), __('Urgency'), $tt->getMandatoryMark('urgency')).
-                 "</td>";
-            echo "<td>";
-            self::dropdownUrgency(['value' => $options["urgency"]]);
-            echo "</td></tr>";
-         }
-      }
-
-      if (empty($delegating)
-          && NotificationTargetTicket::isAuthorMailingActivatedForHelpdesk()) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Inform me about the actions taken')."</td>";
-         echo "<td>";
-         if ($options["_users_id_requester"] == 0) {
-            $options['_users_id_requester'] = Session::getLoginUserID();
-         }
-         $_POST['value']            = $options['_users_id_requester'];
-         $_POST['field']            = '_users_id_requester_notif';
-         $_POST['use_notification'] = $options['_users_id_requester_notif']['use_notification'];
-         include (GLPI_ROOT."/ajax/uemailUpdate.php");
-
-         echo "</td></tr>";
-      }
-      if (($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] != 0)
-          && (count($_SESSION["glpiactiveprofile"]["helpdesk_item_type"]))) {
-         if (!$tt->isHiddenField('items_id')) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".sprintf(__('%1$s%2$s'), _n('Associated element', 'Associated elements', Session::getPluralNumber()),
-                                $tt->getMandatoryMark('items_id'))."</td>";
-            echo "<td>";
-            $item_options = $options;
-            $item_options['_canupdate'] = Session::haveRight('ticket', CREATE);
-            $item_options['_tickettemplate'] = $tt; // Items form requires ticket template object in $options
-            Item_Ticket::itemAddForm($this, $item_options);
-            echo "</td></tr>";
-         }
-      }
-
-      if (!$tt->isHiddenField('locations_id')) {
-         echo "<tr class='tab_bg_1'><td>";
-         printf(__('%1$s%2$s'), Location::getTypeName(1), $tt->getMandatoryMark('locations_id'));
-         echo "</td><td>";
-         Location::dropdown(['value'  => $options["locations_id"]]);
-         echo "</td></tr>";
-      }
-
-      if (!$tt->isHiddenField('_users_id_observer')
-          || $tt->isPredefinedField('_users_id_observer')) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".sprintf(__('%1$s%2$s'), _n('Watcher', 'Watchers', Session::getPluralNumber()),
-                             $tt->getMandatoryMark('_users_id_observer'))."</td>";
-         echo "<td>";
-         $options['_right'] = "all";
-
-         if (!$tt->isHiddenField('_users_id_observer')) {
-            // Observer
-
-            if ($tt->isPredefinedField('_users_id_observer')
-               && !is_array($options['_users_id_observer'])) {
-
-               //convert predefined value to array
-               $options['_users_id_observer'] = [$options['_users_id_observer']];
-               $options['_users_id_observer_notif']['use_notification'] =
-                  [$options['_users_id_observer_notif']['use_notification']];
-
-               // add new line to permit adding more observers
-               $options['_users_id_observer'][1] = 0;
-               $options['_users_id_observer_notif']['use_notification'][1] = 1;
-            }
-
-            echo "<div class='actor_single first-actor'>";
-            if (isset($options['_users_id_observer'])) {
-               $observers = $options['_users_id_observer'];
-               foreach ($observers as $index_observer => $observer) {
-                  $actors_options = array_merge($options, ['_user_index' => $index_observer]);
-                  $actors_options['_tickettemplate'] = $tt; // Actors requires ticket template object in $options
-                  self::showFormHelpdeskObserver($actors_options);
-               }
-            }
-            echo "</div>";
-
-         } else { // predefined value
-            if (isset($options["_users_id_observer"]) && $options["_users_id_observer"]) {
-               echo self::getActorIcon('user', CommonITILActor::OBSERVER)."&nbsp;";
-               echo Dropdown::getDropdownName("glpi_users", $options["_users_id_observer"]);
-               echo "<input type='hidden' name='_users_id_observer' value=\"".
-                      $options["_users_id_observer"]."\">";
-            }
-         }
-         echo "</td></tr>";
-      }
-
-      if (!$tt->isHiddenField('name')
-          || $tt->isPredefinedField('name')) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".sprintf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'))."<td>";
-         if (!$tt->isHiddenField('name')) {
-            $opt = [
-                'value'     => $options['name'],
-                'maxlength' => 250,
-                'size'      => 80,
-            ];
-
-            if ($tt->isMandatoryField('name')) {
-                $opt['required'] = 'required';
-            }
-            echo Html::input('name', $opt);
-         } else {
-            echo $options['name'];
-            echo "<input type='hidden' name='name' value=\"".$options['name']."\">";
-         }
-         echo "</td></tr>";
-      }
-
-      if (!$tt->isHiddenField('content')
-          || $tt->isPredefinedField('content')) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".sprintf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
-
-         $rand       = mt_rand();
-         $rand_text  = mt_rand();
-
-         $cols       = 100;
-         $rows       = 10;
-         $content_id = "content$rand";
-         echo "<td class='center middle'>";
-
-         $content = $options['content'];
-         if (!$ticket_template) {
-            $content = Html::cleanPostForTextArea($options['content']);
-         }
-
-         echo "<div id='content$rand_text'>";
-         $uploads = [];
-         if (isset($options['_content'])) {
-            $uploads['_content'] = $options['_content'];
-            $uploads['_tag_content'] = $options['_tag_content'];
-         }
-         Html::textarea([
-            'name'            => 'content',
-            'filecontainer'   => 'content_info',
-            'editor_id'       => $content_id,
-            'required'        => $tt->isMandatoryField('content'),
-            'cols'            => $cols,
-            'rows'            => $rows,
-            'enable_richtext' => true,
-            'value'           => RichText::getSafeHtml($content, true, true),
-            'uploads'         => $uploads,
-         ]);
-         Html::activateUserMentions($content_id);
-         echo "</div>";
-
-         if (!$tt->isHiddenField('_documents_id')) {
-            if (isset($options['_filename'])) {
-               $uploads['_filename'] = $options['_filename'];
-               $uploads['_tag_filename'] = $options['_tag_filename'];
-            }
-            Html::file([
-               // 'editor_id' => $content_id,
-               'showtitle' => false,
-               'multiple'  => true,
-               'uploads'   => $uploads,
-            ]);
-         }
-
-         echo "</td></tr>";
-      }
-      Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$options]);
-
-      if (!$ticket_template) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2' class='center'>";
-
-         if ($tt->isField('id') && ($tt->fields['id'] > 0)) {
-            echo "<input type='hidden' name='$key' value='".$tt->fields['id']."'>";
-            echo "<input type='hidden' name='_predefined_fields'
-                   value=\"".Toolbox::prepareArrayForInput($predefined_fields)."\">";
-         }
-         echo "<input type='submit' name='add' value=\"".__s('Submit message')."\" class='submit'>";
-         echo "</td></tr>";
-      }
-
-      echo "</table></div>";
-      if (!$ticket_template) {
-         Html::closeForm();
-      }
+      TemplateRenderer::getInstance()->display('components/itilobject/selfservice.html.twig', [
+         'nb_tic_to_validate' => TicketValidation::getNumberToValidate(Session::getLoginUserID()) > 0,
+         'url_validate'       => $url_validate,
+         'selfservice'        => true,
+         'item'               => $this,
+         'params'             => $options,
+         'itiltemplate'       => $tt,
+         'delegating'         => $delegating,
+      ]);
    }
 
    /**
@@ -4291,6 +3927,7 @@ JAVASCRIPT;
          '_users_id_observer'       => 0,
          'entities_id'              => $_SESSION["glpiactive_entity"],
          '_right'                   => "all",
+         'show_first'               => true,
       ];
 
       // overide default value by function parameters
@@ -4311,7 +3948,10 @@ JAVASCRIPT;
       }
 
       // add a user selector
-      $rand_observer = $ticket->showActorAddFormOnCreate(CommonITILActor::OBSERVER, $params);
+      $rand = mt_rand();
+      if ($params['show_first']) {
+         $rand = $ticket->showActorAddFormOnCreate(CommonITILActor::OBSERVER, $params);
+      }
 
       if (isset($params['_tickettemplate'])) {
          // Replace template object by ID for ajax
@@ -4319,30 +3959,30 @@ JAVASCRIPT;
       }
 
       // add an additionnal observer on user selection
-      Ajax::updateItemOnSelectEvent("dropdown__users_id_observer[]$rand_observer",
-                                    "observer_$rand_observer",
+      Ajax::updateItemOnSelectEvent("dropdown__users_id_observer[]$rand",
+                                    "observer_$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/helpdesk_observer.php",
                                     $params);
 
       //remove 'new observer' anchor on user selection
       echo Html::scriptBlock("
-      $('#dropdown__users_id_observer__$rand_observer').on('change', function(event) {
-         $('#addObserver$rand_observer').remove();
+      $('#dropdown__users_id_observer__$rand').on('change', function(event) {
+         $('#addObserver$rand').remove();
       });");
 
       // add "new observer" anchor
-      echo "<a id='addObserver$rand_observer' class='add-observer' onclick='this.remove()'>";
-      echo Html::image($CFG_GLPI['root_doc']."/pics/meta_plus.png", ['alt' => __('Add')]);
-      echo "</a>";
+      echo "<a id='addObserver$rand' class='btn btn-sm btn-ghost-secondary mt-2 mb-3' onclick='this.remove()'>
+         <i class='fas fa-plus'></i>
+      </a>";
 
       // add an additionnal observer on anchor click
-      Ajax::updateItemOnEvent("addObserver$rand_observer",
-                              "observer_$rand_observer",
+      Ajax::updateItemOnEvent("addObserver$rand",
+                              "observer_$rand",
                               $CFG_GLPI["root_doc"]."/ajax/helpdesk_observer.php",
                               $params, ['click']);
 
       // div for an additionnal observer
-      echo "<div class='actor_single' id='observer_$rand_observer'></div>";
+      echo "<div class='actor_single' id='observer_$rand'></div>";
 
    }
 
@@ -4427,8 +4067,6 @@ JAVASCRIPT;
 
 
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
-
       // show full create form only to tech users
       if ($ID <= 0 && Session::getCurrentInterface() !== "central") {
          return;
@@ -4536,15 +4174,9 @@ JAVASCRIPT;
          $this->check(-1, CREATE, $options);
       }
 
+      $this->userentities = [];
       if (!$ID) {
-         $this->userentities = [];
-         if ($options["_users_id_requester"]) {
-            //Get all the user's entities
-            $requester_entities = Profile_User::getUserEntities($options["_users_id_requester"], true,
-                                                          true);
-            $user_entities = $_SESSION['glpiactiveentities'];
-            $this->userentities = array_intersect($requester_entities, $user_entities);
-         }
+         $this->userentities         = $this->getEntitiesForRequesters($options);
          $this->countentitiesforuser = count($this->userentities);
 
          if (($this->countentitiesforuser > 0)
@@ -4639,7 +4271,7 @@ JAVASCRIPT;
                         || (Session::getCurrentInterface() == "central"
                             && $this->canUpdateItem());
       $can_requester = $this->canRequesterUpdateItem();
-      $canpriority   = Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
+      $canpriority   = (bool) Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
       $canassign     = $this->canAssign();
       $canassigntome = $this->canAssignTome();
 
@@ -4647,11 +4279,6 @@ JAVASCRIPT;
          $canupdate = false;
          // No update for actors
          $options['_noupdate'] = true;
-      }
-
-      $showuserlink              = 0;
-      if (Session::haveRight('user', READ)) {
-         $showuserlink = 1;
       }
 
       if ($options['template_preview']) {
@@ -4663,743 +4290,30 @@ JAVASCRIPT;
          }
       }
 
-      // In percent
-      $colsize1 = '13';
-      $colsize2 = '29';
-      $colsize3 = '13';
-      $colsize4 = '45';
+      $sla = new SLA;
+      $ola = new OLA;
 
-      $this->showFormHeader($options);
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th width='$colsize1%'>";
-      echo $tt->getBeginHiddenFieldText('date');
-      if (!$ID) {
-         printf(__('%1$s%2$s'), __('Opening date'), $tt->getMandatoryMark('date'));
-      } else {
-         echo __('Opening date');
-      }
-      echo $tt->getEndHiddenFieldText('date');
-      echo "</th>";
-      echo "<td width='$colsize2%'>";
-      echo $tt->getBeginHiddenFieldValue('date');
-      $date = $this->fields["date"];
-
-      if ($canupdate) {
-         Html::showDateTimeField("date", ['value'      => $date,
-                                          'maybeempty' => false,
-                                          'required'   => ($tt->isMandatoryField('date') && !$ID)]);
-      } else {
-         echo Html::convDateTime($date);
-      }
-      echo $tt->getEndHiddenFieldValue('date', $this);
-      echo "</td>";
-
-      if ($ID) {
-         echo "<th width='$colsize1%'>".__('By')."</th>";
-         echo "<td width='$colsize2%'>";
-         if ($canupdate) {
-            User::dropdown(['name'   => 'users_id_recipient',
-                                 'value'  => $this->fields["users_id_recipient"],
-                                 'entity' => $this->fields["entities_id"],
-                                 'right'  => 'all']);
-         } else {
-            if (Session::getCurrentInterface() == 'helpdesk'
-               && !empty($anon_name = User::getAnonymizedName(
-                  $this->fields['users_id_recipient'],
-                  $this->getEntityID()
-               ))
-            ) {
-               echo $anon_name;
-            } else {
-               echo getUserName($this->fields["users_id_recipient"], $showuserlink);
-            }
-         }
-
-         echo "</td>";
-      } else {
-         echo "<th width='$colsize1%'></th>";
-         echo "<td width='$colsize1%'></td>";
-      }
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      if ($ID) {
-         echo "<th width='$colsize3%'>".__('Last update')."</th>";
-         echo "<td width='$colsize4%' colspan='3'>";
-         if ($this->fields['users_id_lastupdater'] > 0) {
-            //TRANS: %1$s is the update date, %2$s is the last updater name
-            if (Session::getCurrentInterface() == 'helpdesk'
-               && !empty($anon_name = User::getAnonymizedName(
-                  $this->fields["users_id_lastupdater"],
-                  $this->getEntityID()
-               ))
-            ) {
-               $edited_by_name = $anon_name;
-            } else {
-               $edited_by_name = getUserName($this->fields["users_id_lastupdater"], $showuserlink);
-            }
-            printf(
-               __('%1$s by %2$s'),
-               Html::convDateTime($this->fields["date_mod"]),
-               $edited_by_name
-            );
-         }
-         echo "</td>";
-      }
-      echo "</tr>";
-
-      // SLAs
-      echo "<tr class='tab_bg_1'>";
-      echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('time_to_own');
-      if (!$ID) {
-         printf(__('%1$s%2$s'), __('Time to own'), $tt->getMandatoryMark('time_to_own'));
-      } else {
-         echo __('Time to own');
-      }
-      echo $tt->getEndHiddenFieldText('time_to_own');
-      echo "</th>";
-      echo "<td width='$colsize2%' class='nopadding'>";
-      $sla = new SLA();
-      $sla->showForTicket($this, SLM::TTO, $tt, $canupdate);
-      echo "</td>";
-      echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('time_to_resolve');
-      if (!$ID) {
-         printf(__('%1$s%2$s'), __('Time to resolve'), $tt->getMandatoryMark('time_to_resolve'));
-      } else {
-         echo __('Time to resolve');
-      }
-      echo $tt->getEndHiddenFieldText('time_to_resolve');
-      echo "</th>";
-      echo "<td width='$colsize4%' class='nopadding'>";
-      $sla->showForTicket($this, SLM::TTR, $tt, $canupdate);
-      echo "</td>";
-      echo "</tr>";
-
-      // OLAs
-      echo "<tr class='tab_bg_1'>";
-      echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('internal_time_to_own');
-      if (!$ID) {
-         printf(__('%1$s%2$s'), __('Internal time to own'), $tt->getMandatoryMark('internal_time_to_own'));
-      } else {
-         echo __('Internal time to own');
-      }
-      echo $tt->getEndHiddenFieldText('internal_time_to_own');
-      echo "</th>";
-      echo "<td width='$colsize2%' class='nopadding'>";
-      $ola = new OLA();
-      $ola->showForTicket($this, SLM::TTO, $tt, $canupdate);
-      echo "</td>";
-      echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('internal_time_to_resolve');
-      if (!$ID) {
-         printf(__('%1$s%2$s'), __('Internal time to resolve'), $tt->getMandatoryMark('internal_time_to_resolve'));
-      } else {
-         echo __('Internal time to resolve');
-      }
-      echo $tt->getEndHiddenFieldText('internal_time_to_resolve');
-      echo "</th>";
-      echo "<td width='$colsize4%' class='nopadding'>";
-      $ola->showForTicket($this, SLM::TTR, $tt, $canupdate);
-      echo "</td>";
-      echo "</tr>";
-
-      if ($ID
-          && (in_array($this->fields["status"], $this->getSolvedStatusArray())
-              || in_array($this->fields["status"], $this->getClosedStatusArray()))) {
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<th width='$colsize1%'>".__('Resolution date')."</th>";
-         echo "<td width='$colsize2%'>";
-         Html::showDateTimeField("solvedate", ['value'      => $this->fields["solvedate"],
-                                                    'maybeempty' => false,
-                                                    'canedit'    => $canupdate]);
-         echo "</td>";
-         if (in_array($this->fields["status"], $this->getClosedStatusArray())) {
-            echo "<th width='$colsize3%'>".__('Close date')."</th>";
-            echo "<td width='$colsize4%'>";
-            Html::showDateTimeField("closedate", ['value'      => $this->fields["closedate"],
-                                                       'maybeempty' => false,
-                                                       'canedit'    => $canupdate]);
-            echo "</td>";
-         } else {
-            echo "<td colspan='2'>&nbsp;</td>";
-         }
-         echo "</tr>";
-      }
-
-      if ($ID) {
-         echo "</table>";
-         echo "<table  class='tab_cadre_fixe' id='mainformtable2'>";
-      }
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th width='$colsize1%'>".sprintf(__('%1$s%2$s'), _n('Type', 'Types', 1),
-                                             $tt->getMandatoryMark('type'))."</th>";
-      echo "<td width='$colsize2%'>";
-      // Permit to set type when creating ticket without update right
-      if ($canupdate) {
-         $opt = ['value' => $this->fields["type"]];
-         /// Auto submit to load template
-         if (!$ID) {
-            $opt['on_change'] = 'this.form.submit()';
-         }
-         $rand = self::dropdownType('type', $opt);
-         if ($ID) {
-            $params = ['type'            => '__VALUE__',
-                            'entity_restrict' => $this->fields['entities_id'],
-                            'value'           => $this->fields['itilcategories_id'],
-                            'currenttype'     => $this->fields['type']];
-
-            Ajax::updateItemOnSelectEvent("dropdown_type$rand", "show_category_by_type",
-                                          $CFG_GLPI["root_doc"]."/ajax/dropdownTicketCategories.php",
-                                          $params);
-         }
-      } else {
-         echo self::getTicketTypeName($this->fields["type"]);
-      }
-      echo "</td>";
-      echo "<th width='$colsize3%'>".sprintf(__('%1$s%2$s'), _n('Category', 'Categories', 1),
-                                             $tt->getMandatoryMark('itilcategories_id'))."</th>";
-      echo "<td width='$colsize4%'>";
-      // Permit to set category when creating ticket without update right
-      if ($canupdate || $can_requester) {
-         $conditions = [];
-
-         $opt = ['value'  => $this->fields["itilcategories_id"],
-                      'entity' => $this->fields["entities_id"]];
-         if (Session::getCurrentInterface() == "helpdesk") {
-            $conditions['is_helpdeskvisible'] = 1;
-         }
-         /// Auto submit to load template
-         if (!$ID) {
-            $opt['on_change'] = 'this.form.submit()';
-         }
-         /// if category mandatory, no empty choice
-         /// no empty choice is default value set on ticket creation, else yes
-         if (($ID || $options['itilcategories_id'])
-             && $tt->isMandatoryField("itilcategories_id")
-             && ($this->fields["itilcategories_id"] > 0)) {
-            $opt['display_emptychoice'] = false;
-         }
-
-         switch ($this->fields["type"]) {
-            case self::INCIDENT_TYPE :
-               $conditions['is_incident'] = 1;
-               break;
-
-            case self::DEMAND_TYPE :
-               $conditions['is_request'] = 1;
-               break;
-
-            default :
-               break;
-         }
-         echo "<span id='show_category_by_type'>";
-         $opt['condition'] = $conditions;
-         ITILCategory::dropdown($opt);
-         echo "</span>";
-      } else {
-         echo Dropdown::getDropdownName("glpi_itilcategories", $this->fields["itilcategories_id"]);
-      }
-      echo "</td>";
-      echo "</tr>";
-
-      if (!$ID) {
-         echo "</table>";
-         $this->showActorsPartForm($ID, $options);
-         echo "<table class='tab_cadre_fixe' id='mainformtable3'>";
-      }
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('status');
-      printf(__('%1$s%2$s'), __('Status'), $tt->getMandatoryMark('status'));
-      echo $tt->getEndHiddenFieldText('status')."</th>";
-      echo "<td width='$colsize2%'>";
-      echo $tt->getBeginHiddenFieldValue('status');
-      if ($canupdate) {
-         self::dropdownStatus(['value'     => $this->fields["status"],
-                                    'showtype'  => 'allowed']);
-         TicketValidation::alertValidation($this, 'status');
-      } else {
-         echo self::getStatus($this->fields["status"]);
-         if ($this->canReopen()) {
-            $link = $this->getLinkURL(). "&amp;_openfollowup=1&amp;forcetab=";
-            $link .= "Ticket$1";
-            echo "&nbsp;<a class='vsubmit' href='$link'>". __('Reopen')."</a>";
-         }
-      }
-
-      // If ticket have a pending reason, display the detail in a tooltip
-      PendingReason_Item::displayStatusTooltip($this);
-      echo $tt->getEndHiddenFieldValue('status', $this);
-
-      echo "</td>";
-      echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('requesttypes_id');
-      printf(__('%1$s%2$s'), RequestType::getTypeName(1), $tt->getMandatoryMark('requesttypes_id'));
-      echo $tt->getEndHiddenFieldText('requesttypes_id')."</th>";
-      echo "<td width='$colsize4%'>";
-      echo $tt->getBeginHiddenFieldValue('requesttypes_id');
-      if ($canupdate) {
-         RequestType::dropdown(['value' => $this->fields["requesttypes_id"], 'condition' => ['is_active' => 1, 'is_ticketheader' => 1]]);
-      } else {
-         echo Dropdown::getDropdownName('glpi_requesttypes', $this->fields["requesttypes_id"]);
-         echo Html::hidden('requesttypes_id', ['value' => $this->fields["requesttypes_id"]]);
-      }
-      echo $tt->getEndHiddenFieldValue('requesttypes_id', $this);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th>".$tt->getBeginHiddenFieldText('urgency');
-      printf(__('%1$s%2$s'), __('Urgency'), $tt->getMandatoryMark('urgency'));
-      echo $tt->getEndHiddenFieldText('urgency')."</th>";
-      echo "<td>";
-
-      if ($canupdate || $can_requester) {
-         echo $tt->getBeginHiddenFieldValue('urgency');
-         $idurgency = self::dropdownUrgency(['value' => $this->fields["urgency"]]);
-         echo $tt->getEndHiddenFieldValue('urgency', $this);
-
-      } else {
-         $idurgency = "value_urgency".mt_rand();
-         echo "<input id='$idurgency' type='hidden' name='urgency' value='".
-                $this->fields["urgency"]."'>";
-         echo $tt->getBeginHiddenFieldValue('urgency');
-         echo self::getUrgencyName($this->fields["urgency"]);
-         echo $tt->getEndHiddenFieldValue('urgency', $this);
-      }
-      echo "</td>";
-      // Display validation state
-      echo "<th>";
-      if (!$ID) {
-         echo $tt->getBeginHiddenFieldText('_add_validation');
-         printf(__('%1$s%2$s'), __('Approval request'), $tt->getMandatoryMark('_add_validation'));
-         echo $tt->getEndHiddenFieldText('_add_validation');
-      } else {
-         echo $tt->getBeginHiddenFieldText('global_validation');
-         echo CommonITILValidation::getTypeName(1);
-         echo $tt->getEndHiddenFieldText('global_validation');
-      }
-      echo "</th>";
-      echo "<td>";
-      if (!$ID) {
-         echo $tt->getBeginHiddenFieldValue('_add_validation');
-         $validation_right = '';
-         if (($options['type'] == self::INCIDENT_TYPE)
-             && Session::haveRight('ticketvalidation', TicketValidation::CREATEINCIDENT)) {
-            $validation_right = 'validate_incident';
-         }
-         if (($options['type'] == self::DEMAND_TYPE)
-             && Session::haveRight('ticketvalidation', TicketValidation::CREATEREQUEST)) {
-            $validation_right = 'validate_request';
-         }
-
-         if (!empty($validation_right)) {
-            echo "<input type='hidden' name='_add_validation' value='".
-                   $options['_add_validation']."'>";
-
-            $params = ['name'               => "users_id_validate",
-                            'entity'             => $this->fields['entities_id'],
-                            'right'              => $validation_right,
-                            'users_id_validate'  => $options['users_id_validate']];
-            TicketValidation::dropdownValidator($params);
-         }
-         echo $tt->getEndHiddenFieldValue('_add_validation', $this);
-         if ($tt->isPredefinedField('global_validation')) {
-            echo "<input type='hidden' name='global_validation' value='".
-                   $tt->predefined['global_validation']."'>";
-         }
-      } else {
-         echo $tt->getBeginHiddenFieldValue('global_validation');
-
-         if (Session::haveRightsOr('ticketvalidation', TicketValidation::getCreateRights())
-             && $canupdate) {
-            TicketValidation::dropdownStatus('global_validation',
-                                             ['global' => true,
-                                                   'value'  => $this->fields['global_validation']]);
-         } else {
-            echo TicketValidation::getStatus($this->fields['global_validation']);
-         }
-         echo $tt->getEndHiddenFieldValue('global_validation', $this);
-
-      }
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th>".$tt->getBeginHiddenFieldText('impact');
-      printf(__('%1$s%2$s'), __('Impact'), $tt->getMandatoryMark('impact'));
-      echo $tt->getEndHiddenFieldText('impact')."</th>";
-      echo "<td>";
-      echo $tt->getBeginHiddenFieldValue('impact');
-
-      if ($canupdate) {
-         $idimpact = self::dropdownImpact(['value' => $this->fields["impact"]]);
-      } else {
-         $idimpact = "value_impact".mt_rand();
-         echo "<input id='$idimpact' type='hidden' name='impact' value='".$this->fields["impact"]."'>";
-         echo self::getImpactName($this->fields["impact"]);
-      }
-      echo $tt->getEndHiddenFieldValue('impact', $this);
-      echo "</td>";
-
-      echo "<th>".$tt->getBeginHiddenFieldText('locations_id');
-      printf(__('%1$s%2$s'), Location::getTypeName(1), $tt->getMandatoryMark('locations_id'));
-      echo $tt->getEndHiddenFieldText('locations_id')."</th>";
-      echo "<td>";
-      echo $tt->getBeginHiddenFieldValue('locations_id');
-      if ($canupdate) {
-         Location::dropdown(['value'  => $this->fields['locations_id'],
-                                  'entity' => $this->fields['entities_id']]);
-      } else {
-         echo Dropdown::getDropdownName('glpi_locations', $this->fields["locations_id"]);
-      }
-      echo $tt->getEndHiddenFieldValue('locations_id', $this);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th>".$tt->getBeginHiddenFieldText('priority');
-      printf(__('%1$s%2$s'), __('Priority'), $tt->getMandatoryMark('priority'));
-      echo $tt->getEndHiddenFieldText('priority')."</th>";
-      echo "<td>";
-      $idajax = 'change_priority_' . mt_rand();
-
-      if ($canpriority
-          && !$tt->isHiddenField('priority')) {
-         $idpriority = self::dropdownPriority(['value' => $this->fields["priority"],
-            'withmajor' => true]);
-         $idpriority = 'dropdown_priority'.$idpriority;
-         echo "&nbsp;<span id='$idajax' style='display:none'></span>";
-
-      } else {
-         $idpriority = 0;
-         echo $tt->getBeginHiddenFieldValue('priority');
-         echo "<span id='$idajax'>". self::getPriorityName($this->fields["priority"]) ."</span>";
-         echo "<input id='$idajax' type='hidden' name='priority' value='".$this->fields["priority"]."'>";
-         echo $tt->getEndHiddenFieldValue('priority', $this);
-      }
-
-      if ($canupdate || $can_requester) {
-         $params = ['urgency'  => '__VALUE0__',
-                    'impact'   => '__VALUE1__',
-                    'priority' => $idpriority];
-         Ajax::updateItemOnSelectEvent(['dropdown_urgency'.$idurgency,
-                                             'dropdown_impact'.$idimpact],
-                                       $idajax,
-                                       $CFG_GLPI["root_doc"]."/ajax/priority.php", $params);
-      }
-      echo "</td>";
-
-      if (!$ID) {
-         echo "<th rowspan='2'>".$tt->getBeginHiddenFieldText('items_id');
-         printf(__('%1$s%2$s'), _n('Associated element', 'Associated elements', Session::getPluralNumber()), $tt->getMandatoryMark('items_id'));
-         echo $tt->getEndHiddenFieldText('items_id');
-         echo "</th>";
-         echo "<td rowspan='2'>";
-         echo $tt->getBeginHiddenFieldValue('items_id');
-         $options['_canupdate'] = Session::haveRight('ticket', CREATE);
-         if ($options['_canupdate']) {
-            Item_Ticket::itemAddForm($this, $options);
-         }
-         echo $tt->getEndHiddenFieldValue('items_id', $this);
-         echo "</td>";
-      } else {
-         echo "<th></th>";
-         echo "<td></td>";
-      }
-      echo "</tr>";
-
-      if ($this->isNewItem() && !$tt->isHiddenField('_contracts_id')) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<th>".$tt->getBeginHiddenFieldText('_contracts_id');
-         printf(__('%1$s%2$s'), Contract::getTypeName(1), $tt->getMandatoryMark('_contracts_id'));
-         echo $tt->getEndHiddenFieldText('_contracts_id')."</th>";
-         echo "<td>";
-         echo $tt->getBeginHiddenFieldValue('_contracts_id');
-
-         $contract_value = $tt->predefined['_contracts_id'] ?? Entity::getDefaultContract($options['entities_id'] ?? $this->fields['entities_id']);
-         Contract::dropdown([
-            'value'  => $contract_value,
-            'name'   => '_contracts_id',
-            'entity' => $this->fields['entities_id'],
-         ]);
-
-         echo $tt->getEndHiddenFieldValue('_contracts_id', $this);
-         echo "</td>";
-         echo "</tr>";
-      }
-
-      if (!$ID
-          && Session::haveRight('followup', ITILFollowup::ADDALLTICKET)) {
-
-         echo "<tr class='tab_bg_1'>";
-         // Need comment right to add a followup with the actiontime
-         echo "<th>".$tt->getBeginHiddenFieldText('actiontime');
-         printf(__('%1$s%2$s'), __('Total duration'), $tt->getMandatoryMark('actiontime'));
-         echo $tt->getEndHiddenFieldText('actiontime')."</th>";
-         echo "<td>";
-         echo $tt->getBeginHiddenFieldValue('actiontime');
-         Dropdown::showTimeStamp('actiontime', ['value' => $options['actiontime'],
-                                                'addfirstminutes' => true]);
-         echo $tt->getEndHiddenFieldValue('actiontime', $this);
-         echo "</td>";
-         echo "</tr>";
-      }
-
-      echo "</table>";
-      if ($ID) {
-         $this->showActorsPartForm($ID, $options);
-      }
-
-      echo "<table class='tab_cadre_fixe' id='mainformtable4'>";
-      echo "<tr class='tab_bg_1'>";
-      echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('name');
-      printf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'));
-      echo $tt->getEndHiddenFieldText('name')."</th>";
-      echo "<td colspan='3'>";
-      if ($canupdate || $can_requester) {
-         echo $tt->getBeginHiddenFieldValue('name');
-         echo "<input type='text' style='width:98%' maxlength=250 name='name' ".
-                ($tt->isMandatoryField('name') ? " required='required'" : '') .
-                " value=\"".Html::cleanInputText($this->fields["name"])."\">";
-         echo $tt->getEndHiddenFieldValue('name', $this);
-      } else {
-         if (empty($this->fields["name"])) {
-            echo __('Without title');
-         } else {
-            echo $this->fields["name"];
-         }
-      }
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('content');
-      printf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
-      if ($canupdate || $can_requester) {
-         Html::showTooltip(RichText::getSafeHtml($this->fields['content'], true));
-      }
-      echo $tt->getEndHiddenFieldText('content')."</th>";
-      echo "<td colspan='3'>";
-
-      echo $tt->getBeginHiddenFieldValue('content');
-      $rand       = mt_rand();
-      $rand_text  = mt_rand();
-      $rows       = 10;
-      $content_id = "content$rand";
-
-      $content = $this->fields['content'];
-      if (!isset($options['template_preview'])) {
-         $content = Html::cleanPostForTextArea($content);
-      }
-
-      echo "<div id='content$rand_text'>";
-      if ($canupdate || $can_requester) {
-         $uploads = [];
-         if (isset($this->input['_content'])) {
-            $uploads['_content'] = $this->input['_content'];
-            $uploads['_tag_content'] = $this->input['_tag_content'];
-         }
-         Html::textarea([
-            'name'            => 'content',
-            'filecontainer'   => 'content_info',
-            'editor_id'       => $content_id,
-            'required'        => $tt->isMandatoryField('content'),
-            'rows'            => $rows,
-            'enable_richtext' => true,
-            'value'           => RichText::getSafeHtml($content, true, true),
-            'uploads'         => $uploads,
-         ]);
-         Html::activateUserMentions($content_id);
-      } else {
-         echo '<div class="rich_text_container">';
-         echo RichText::getSafeHtml($content, true);
-         echo '</div>';
-      }
-      echo "</div>";
-      echo $tt->getEndHiddenFieldValue('content', $this);
-
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th style='width:$colsize1%'>". _n('Linked ticket', 'Linked tickets',
-                                               Session::getPluralNumber());
-      $rand_linked_ticket = mt_rand();
-      if ($canupdate) {
-         echo "<span class='fa fa-plus pointer' onClick=\"".Html::jsShow("linkedticket$rand_linked_ticket")."\"
-                title=\"".__s('Add')."\"><span class='sr-only'>" . __s('Add') . "</span></span>";
-      }
-      echo '</th>';
-      echo "<td colspan='3'>";
-      if ($canupdate) {
-         echo "<div style='display:none' id='linkedticket$rand_linked_ticket'>";
-         echo "<table class='tab_format' width='100%'><tr><td width='30%'>";
-         Ticket_Ticket::dropdownLinks('_link[link]',
-                                      (isset($options["_link"])?$options["_link"]['link']:''));
-         echo "<input type='hidden' name='_link[tickets_id_1]' value='$ID'>\n";
-         echo "</td><td width='70%'>";
-         $linkparam = ['name'        => '_link[tickets_id_2]',
-                       'used'        => [$this->getID()],
-                       'displaywith' => ['id']];
-
-         if (isset($options["_link"])) {
-            $linkparam['value'] = $options["_link"]['tickets_id_2'];
-         }
-         Ticket::dropdown($linkparam);
-         echo "</td></tr></table>";
-         echo "</div>";
-
-         if (isset($options["_link"])
-             && !empty($options["_link"]['tickets_id_2'])) {
-            echo "<script language='javascript'>";
-               echo "$(function() {";
-            echo Html::jsShow("linkedticket$rand_linked_ticket");
-            echo "});</script>";
-         }
-      }
-
-      Ticket_Ticket::displayLinkedTicketsTo($ID);
-      echo "</td>";
-      echo "</tr>";
-
-      if (!in_array($this->fields['status'], $this->getClosedStatusArray())) {
-         // View files added
-         echo "<tr class='tab_bg_1'>";
-         // Permit to add doc when creating a ticket
-         echo "<th style='width:$colsize1%'>";
-         echo $tt->getBeginHiddenFieldText('_documents_id');
-         $doctitle =  sprintf(__('File (%s)'), Document::getMaxUploadSize());
-         printf(__('%1$s%2$s'), $doctitle, $tt->getMandatoryMark('_documents_id'));
-         // Do not show if hidden.
-         if (!$tt->isHiddenField('_documents_id')) {
-            DocumentType::showAvailableTypesLink();
-         }
-         echo $tt->getEndHiddenFieldText('_documents_id');
-         echo "</th>";
-         echo "<td colspan='3'>";
-         // Do not set values
-         echo $tt->getEndHiddenFieldValue('_documents_id');
-         if ($tt->isPredefinedField('_documents_id')) {
-            if (isset($options['_documents_id'])
-               && is_array($options['_documents_id'])
-               && count($options['_documents_id'])) {
-
-               echo "<span class='b'>".__('Default documents:').'</span>';
-               echo "<br>";
-               $doc = new Document();
-               foreach ($options['_documents_id'] as $key => $val) {
-                  if ($doc->getFromDB($val)) {
-                     echo "<input type='hidden' name='_documents_id[$key]' value='$val'>";
-                     echo "- ".$doc->getNameID()."<br>";
-                  }
-               }
-            }
-         }
-         if (!$tt->isHiddenField('_documents_id')) {
-            $uploads = [];
-            if (isset($this->input['_filename'])) {
-               $uploads['_filename'] = $this->input['_filename'];
-               $uploads['_tag_filename'] = $this->input['_tag_filename'];
-            }
-            Html::file([
-               'filecontainer' => 'fileupload_info_ticket',
-               // 'editor_id'     => $content_id,
-               'showtitle'     => false,
-               'multiple'      => true,
-               'uploads'       => $uploads,
-            ]);
-         }
-         echo "</td>";
-         echo "</tr>";
-      }
-
-      Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$options]);
-
-      echo "</table>";
-
-      $display_save_btn = (!array_key_exists('locked', $options) || !$options['locked'])
-         && ($canupdate || $can_requester || $canpriority || $canassign || $canassigntome);
-
-      if ($display_save_btn
-          && !$options['template_preview']) {
-         if ($ID) {
-            echo "<div class='center'>";
-            if ($this->fields["is_deleted"] == 1) {
-               if (self::canDelete()) {
-                  echo "<input type='submit' class='submit' name='restore' value='".
-                         _sx('button', 'Restore')."'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-               }
-            } else {
-               if ($display_save_btn) {
-                  echo "<input type='submit' class='submit' name='update' value='".
-                         _sx('button', 'Save')."'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-               }
-            }
-            if ($this->fields["is_deleted"] == 1) {
-               if (self::canPurge()) {
-                  echo "<input type='submit' class='submit' name='purge' value='".
-                         _sx('button', 'Delete permanently')."' ".
-                         Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
-               }
-            } else {
-               if ($this->canDeleteItem()) {
-                  echo "<input type='submit' class='submit small_space' name='delete' value='".
-                         _sx('button', 'Put in trashbin')."'>";
-               }
-            }
-            echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
-            echo "</div>";
-         } else {
-            echo "<div class='tab_bg_2 center'>";
-            $add_params = ['name' => 'add'];
-            if ($options['_promoted_fup_id']) {
-               $add_params['confirm'] = __('Confirm the promotion?');
-            }
-            echo Html::submit(_x('button', 'Add'), $add_params);
-            if ($tt->isField('id') && ($tt->fields['id'] > 0)) {
-               echo "<input type='hidden' name='$tpl_key' value='".$tt->fields['id']."'>";
-               echo "<input type='hidden' name='_predefined_fields'
-                      value=\"".Toolbox::prepareArrayForInput($predefined_fields)."\">";
-            }
-            echo Html::hidden('_promoted_fup_id', ['value' => $options['_promoted_fup_id']]);
-            echo Html::hidden('_skip_promoted_fields', ['value' => $options['_skip_promoted_fields']]);
-            echo '</div>';
-         }
-      }
-
-      echo "</table>";
-      echo "<input type='hidden' name='id' value='$ID'>";
-
-      if (isset($options['_projecttasks_id'])) {
-         echo Html::hidden('_projecttasks_id', ['value' => $options['_projecttasks_id']]);
-      }
-
-      echo "</div>";
-
-      if (!$options['template_preview']) {
-         Html::closeForm();
-      }
+      TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
+         'item'               => $this,
+         'timeline_itemtypes' => $this->getTimelineItemtypes(),
+         'params'             => $options,
+         'timeline'           => $this->getTimelineItems(),
+         'itiltemplate_key'   => $tpl_key,
+         'itiltemplate'       => $tt,
+         'predefined_fields'  => Toolbox::prepareArrayForInput($predefined_fields),
+         'ticket_ticket'      => new Ticket_Ticket,
+         'sla'                => $sla,
+         'ola'                => $ola,
+         'canupdate'          => $canupdate,
+         'can_requester'      => $can_requester,
+         'canpriority'        => $canpriority,
+         'canassign'          => $canassign,
+         'canassigntome'      => $canassigntome,
+         'load_kb_sol'        => $options['load_kb_sol'] ?? 0,
+         'userentities'       => $this->userentities,
+      ]);
 
       return true;
-   }
-
-
-   /**
-    * @param $size (default 25)
-   **/
-   static function showDocumentAddButton($size = 25) {
-      echo "<script type='text/javascript'>var nbfiles=1; var maxfiles = 5;</script>";
-      echo "<span id='addfilebutton' class='fa fa-plus pointer' title=\"".__s('Add')."\"".
-             "\" onClick=\"if (nbfiles<maxfiles){
-                           var row = ".Html::jsGetElementbyID('uploadfiles').";
-                           row.append('<br><input type=\'file\' name=\'filename[]\' size=\'$size\'>');
-                           nbfiles++;
-                           if (nbfiles==maxfiles) {
-                              ".Html::jsHide('addfilebutton')."
-                           }
-                        }\"
-              <span class='sr-only'>" . __s('Add') . "</span></span>";
    }
 
 
@@ -5407,8 +4321,9 @@ JAVASCRIPT;
     * @param integer $start
     * @param string  $status             (default ''process)
     * @param boolean $showgrouptickets   (true by default)
+    * @param boolean $display            set to false to returne html
     */
-   static function showCentralList($start, $status = "process", $showgrouptickets = true) {
+   static function showCentralList($start, $status = "process", bool $showgrouptickets = true, bool $display = true) {
       global $DB;
 
       if (!Session::haveRightsOr(self::$rightname, [CREATE, self::READALL, self::READASSIGN])
@@ -5655,8 +4570,6 @@ JAVASCRIPT;
          : $total_row_count;
 
       if ($displayed_row_count > 0) {
-         echo "<table class='tab_cadrehov'>";
-         echo "<tr class='noHover'><th colspan='4'>";
 
          $options  = [
             'criteria' => [],
@@ -5677,7 +4590,7 @@ JAVASCRIPT;
                   $options['criteria'][1]['link']       = 'AND';
                   $forcetab                 = 'Ticket$2';
 
-                  echo "<a href=\"".Ticket::getSearchURL()."?".
+                  $main_header = "<a href=\"".Ticket::getSearchURL()."?".
                          Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Your tickets to close'), $displayed_row_count, $total_row_count)."</a>";
                   break;
@@ -5693,7 +4606,7 @@ JAVASCRIPT;
                   $options['criteria'][1]['value']      = 'mygroups';
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".Ticket::getSearchURL()."?".
+                  $main_header = "<a href=\"".Ticket::getSearchURL()."?".
                          Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Tickets on pending status'), $displayed_row_count, $total_row_count)."</a>";
                   break;
@@ -5726,7 +4639,7 @@ JAVASCRIPT;
                      ]
                   ];
 
-                  echo "<a href=\"".Ticket::getSearchURL()."?".
+                  $main_header = "<a href=\"".Ticket::getSearchURL()."?".
                          Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Tickets to be processed'), $displayed_row_count, $total_row_count)."</a>";
                   break;
@@ -5742,7 +4655,7 @@ JAVASCRIPT;
                   $options['criteria'][1]['value']      = 'mygroups';
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".Ticket::getSearchURL()."?".
+                  $main_header = "<a href=\"".Ticket::getSearchURL()."?".
                          Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Your observed tickets'), $displayed_row_count, $total_row_count)."</a>";
                   break;
@@ -5759,9 +4672,9 @@ JAVASCRIPT;
                   $options['criteria'][1]['value']      = 'mygroups';
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".Ticket::getSearchURL()."?".
-                         Toolbox::append_params($options, '&amp;')."\">".
-                         Html::makeTitle(__('Your tickets in progress'), $displayed_row_count, $total_row_count)."</a>";
+                  $main_header = "<a href=\"".Ticket::getSearchURL()."?".
+                     Toolbox::append_params($options, '&amp;')."\">".
+                     Html::makeTitle(__('Your tickets in progress'), $displayed_row_count, $total_row_count)."</a>";
             }
 
          } else {
@@ -5777,7 +4690,7 @@ JAVASCRIPT;
                   $options['criteria'][1]['value']      = Session::getLoginUserID();
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".Ticket::getSearchURL()."?".
+                  $main_header = "<a href=\"".Ticket::getSearchURL()."?".
                          Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Tickets on pending status'), $displayed_row_count, $total_row_count)."</a>";
                   break;
@@ -5793,7 +4706,7 @@ JAVASCRIPT;
                   $options['criteria'][1]['value']      = 'process';
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".Ticket::getSearchURL()."?".
+                  $main_header = "<a href=\"".Ticket::getSearchURL()."?".
                          Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Tickets to be processed'), $displayed_row_count, $total_row_count)."</a>";
                   break;
@@ -5820,7 +4733,7 @@ JAVASCRIPT;
                   $options['criteria'][3]['link']       = 'AND';
                   $forcetab                         = 'TicketValidation$1';
 
-                  echo "<a href=\"".Ticket::getSearchURL()."?".
+                  $main_header = "<a href=\"".Ticket::getSearchURL()."?".
                         Toolbox::append_params($options, '&amp;')."\">".
                         Html::makeTitle(__('Your tickets to validate'), $displayed_row_count, $total_row_count)."</a>";
 
@@ -5838,7 +4751,7 @@ JAVASCRIPT;
                   $options['criteria'][1]['value']      = Session::getLoginUserID();
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".Ticket::getSearchURL()."?".
+                  $main_header = "<a href=\"".Ticket::getSearchURL()."?".
                         Toolbox::append_params($options, '&amp;')."\">".
                         Html::makeTitle(__('Your tickets having rejected approval status'), $displayed_row_count, $total_row_count)."</a>";
 
@@ -5855,7 +4768,7 @@ JAVASCRIPT;
                   $options['criteria'][1]['value']      = Session::getLoginUserID();
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".Ticket::getSearchURL()."?".
+                  $main_header = "<a href=\"".Ticket::getSearchURL()."?".
                         Toolbox::append_params($options, '&amp;')."\">".
                         Html::makeTitle(__('Your tickets having rejected solution'), $displayed_row_count, $total_row_count)."</a>";
 
@@ -5884,7 +4797,7 @@ JAVASCRIPT;
 
                   $forcetab                 = 'Ticket$2';
 
-                  echo "<a href=\"".Ticket::getSearchURL()."?".
+                  $main_header = "<a href=\"".Ticket::getSearchURL()."?".
                         Toolbox::append_params($options, '&amp;')."\">".
                         Html::makeTitle(__('Your tickets to close'), $displayed_row_count, $total_row_count)."</a>";
                   break;
@@ -5900,7 +4813,7 @@ JAVASCRIPT;
                   $options['criteria'][1]['value']      = 'notold';
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".Ticket::getSearchURL()."?".
+                  $main_header = "<a href=\"".Ticket::getSearchURL()."?".
                         Toolbox::append_params($options, '&amp;')."\">".
                         Html::makeTitle(__('Your observed tickets'), $displayed_row_count, $total_row_count)."</a>";
                   break;
@@ -5934,7 +4847,7 @@ JAVASCRIPT;
                   }
                   $forcetab                 = 'Ticket$3';
 
-                  echo "<a href=\"".Ticket::getSearchURL()."?".
+                  $main_header = "<a href=\"".Ticket::getSearchURL()."?".
                          Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Satisfaction survey'), $displayed_row_count, $total_row_count)."</a>";
                   break;
@@ -5951,24 +4864,132 @@ JAVASCRIPT;
                   $options['criteria'][1]['value']      = 'notold';
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".Ticket::getSearchURL()."?".
-                        Toolbox::append_params($options, '&amp;')."\">".
-                        Html::makeTitle(__('Your tickets in progress'), $displayed_row_count, $total_row_count)."</a>";
+                  $main_header = "<a href=\"".Ticket::getSearchURL()."?".
+                     Toolbox::append_params($options, '&amp;')."\">".
+                     Html::makeTitle(__('Your tickets in progress'), $displayed_row_count, $total_row_count)."</a>";
             }
          }
 
-         echo "</th></tr>";
-         echo "<tr><th style='width: 75px;'>".__('ID')."</th>";
-         echo "<th style='width: 20%;'>"._n('Requester', 'Requesters', 1)."</th>";
-         echo "<th style='width: 20%;'>"._n('Associated element', 'Associated elements', Session::getPluralNumber())."</th>";
-         echo "<th>".__('Description')."</th></tr>";
+         $twig_params = [
+            'class'        => 'table table-borderless table-striped table-hover card-table',
+            'header_rows'  => [
+               [
+                  [
+                     'colspan'   => 4,
+                     'content'   => $main_header
+                  ]
+               ],
+               [
+                  [
+                     'content'   => __('ID'),
+                     'style'     => 'width: 75px'
+                  ],
+                  [
+                     'content'   => _n('Requester', 'Requesters', 1),
+                     'style'     => 'width: 20%'
+                  ],
+                  [
+                     'content'   => _n('Associated element', 'Associated elements', Session::getPluralNumber()),
+                     'style'     => 'width: 20%'
+                  ],
+                  __('Description')
+               ]
+            ],
+            'rows'         => []
+         ];
+
          $i = 0;
          while ($i < $displayed_row_count && ($data = $iterator->next())) {
-            self::showVeryShort($data['id'], $forcetab);
-            $i++;
-         }
-         echo "</table>";
+            $showprivate = false;
+            if (Session::haveRight('followup', ITILFollowup::SEEPRIVATE)) {
+               $showprivate = true;
+            }
 
+            $job  = new self();
+            $rand = mt_rand();
+            $row = [
+               'values' => []
+            ];
+            if ($job->getFromDBwithData($data['id'], 0)) {
+               $bgcolor = $_SESSION["glpipriority_".$job->fields["priority"]];
+               $name    = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
+               $row['values'][] = [
+                  'class'   => 'priority_block',
+                  'content' => "<span style='background: $bgcolor'></span>&nbsp;$name"
+               ];
+
+               $requesters = [];
+               if (isset($job->users[CommonITILActor::REQUESTER])
+                  && count($job->users[CommonITILActor::REQUESTER])) {
+                  foreach ($job->users[CommonITILActor::REQUESTER] as $d) {
+                     if ($d["users_id"] > 0) {
+                        $userdata = getUserName($d["users_id"], 2);
+                        $name     = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>'.
+                                    $userdata['name'];
+                        $requesters[] = $name;
+                     } else {
+                        $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>'.
+                                       $d['alternative_email'];
+                     }
+                  }
+               }
+
+               if (isset($job->groups[CommonITILActor::REQUESTER])
+                  && count($job->groups[CommonITILActor::REQUESTER])) {
+                  foreach ($job->groups[CommonITILActor::REQUESTER] as $d) {
+                     $requesters[] = '<i class="fas fa-sm fa-fw fa-users text-muted me-1"></i>'.
+                                     Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+                  }
+               }
+               $row['values'][] = implode('<br>', $requesters);
+
+               $associated_elements = [];
+               if (!empty($job->hardwaredatas)) {
+                  foreach ($job->hardwaredatas as $hardwaredatas) {
+                     if ($hardwaredatas->canView()) {
+                        $associated_elements[] = $hardwaredatas->getTypeName()." - "."<span class='b'>".$hardwaredatas->getLink()."</span>";
+                     } else if ($hardwaredatas) {
+                        $associated_elements[] = $hardwaredatas->getTypeName()." - "."<span class='b'>".$hardwaredatas->getNameID()."</span>";
+                     }
+                  }
+               } else {
+                  $associated_elements[] = __('General');
+               }
+               $row['values'][] = implode('<br>', $associated_elements);
+
+               $link = "<a id='ticket".$job->fields["id"].$rand."' href='".Ticket::getFormURLWithID($job->fields["id"]);
+               if ($forcetab != '') {
+                  $link .= "&amp;forcetab=".$forcetab;
+               }
+               $link   .= "'>";
+               $link   .= "<span class='b'>".$job->getNameID()."</span></a>";
+               $link    = sprintf(__('%1$s (%2$s)'), $link,
+                  sprintf(__('%1$s - %2$s'), $job->numberOfFollowups($showprivate),
+                     $job->numberOfTasks($showprivate)));
+               $link    = sprintf(__('%1$s %2$s'), $link,
+                  Html::showToolTip(RichText::getSafeHtml($job->fields['content'], true),
+                     ['applyto' => 'ticket'.$job->fields["id"].$rand,
+                        'display' => false]));
+               $row['values'][] = $link;
+
+            } else {
+               $row['class'] = 'tab_bg_2';
+               $row['values'] = [
+                  [
+                     'colspan'   => 6,
+                     'content'   => "<i>".__('No ticket in progress.')."</i>"
+                  ]
+               ];
+            }
+            $i++;
+            $twig_params['rows'][] = $row;
+         }
+         $output = TemplateRenderer::getInstance()->render('components/table.html.twig', $twig_params);
+         if ($display) {
+            echo $output;
+         } else {
+            return $output;
+         }
       }
    }
 
@@ -5976,8 +4997,9 @@ JAVASCRIPT;
     * Get tickets count
     *
     * @param boolean $foruser  Only for current login user as requester (false by default)
+    * @param boolean $display  il false return html
    **/
-   static function showCentralCount($foruser = false) {
+   static function showCentralCount(bool $foruser = false, bool $display = true) {
       global $DB, $CFG_GLPI;
 
       // show a tab with count of jobs in the central and give link
@@ -6077,19 +5099,22 @@ JAVASCRIPT;
       $options['criteria'][0]['value']      = 'process';
       $options['criteria'][0]['link']       = 'AND';
 
-      echo "<table class='tab_cadrehov' >";
-      echo "<tr class='noHover'><th colspan='2'>";
+      $twig_params = [
+         'title'  => [
+            'text' => self::getTypeName(Session::getPluralNumber()),
+            'link' => self::getSearchURL()."?".Toolbox::append_params($options),
+            'icon'   => self::getIcon(),
+         ],
+         'items'     => []
+      ];
 
       if (Session::getCurrentInterface() != "central") {
-         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1\" class='pointer'>".
-                __('Create a ticket')."&nbsp;<i class='fa fa-plus'></i><span class='sr-only'>". __s('Add')."</span></a>";
-      } else {
-         echo "<a href=\"".Ticket::getSearchURL()."?".
-                Toolbox::append_params($options, '&amp;')."\">".__('Ticket followup')."</a>";
+         $twig_params['title']['button'] = [
+            'link'   => $CFG_GLPI["root_doc"].'/front/helpdesk.public.php?create_ticket=1',
+            'text'   => __('Create a ticket'),
+            'icon'   => 'fa fa-plus',
+         ];
       }
-      echo "</th></tr>";
-      echo "<tr><th>"._n('Ticket', 'Tickets', Session::getPluralNumber())."</th>
-            <th class='numeric'>"._x('quantity', 'Number')."</th></tr>";
 
       if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
            $number_waitapproval = TicketValidation::getNumberToValidate(Session::getLoginUserID());
@@ -6108,28 +5133,39 @@ JAVASCRIPT;
            $opt['criteria'][1]['value']      = Session::getLoginUserID();
            $opt['criteria'][1]['link']       = 'AND';
 
-           echo "<tr class='tab_bg_2'>";
-           echo "<td><a href=\"".Ticket::getSearchURL()."?".
-               Toolbox::append_params($opt, '&amp;')."\">".__('Ticket waiting for your approval')."</a></td>";
-           echo "<td class='numeric'>".$number_waitapproval."</td></tr>";
+           $twig_params['items'][] = [
+              'link'    => self::getSearchURL()."?".Toolbox::append_params($opt),
+              'text'    => __('Ticket waiting for your approval'),
+              'icon'    => 'fas fa-check',
+              'count'   => $number_waitapproval
+           ];
       }
 
       foreach ($status as $key => $val) {
          $options['criteria'][0]['value'] = $key;
-         echo "<tr class='tab_bg_2'>";
-         echo "<td><a href=\"".Ticket::getSearchURL()."?".
-                    Toolbox::append_params($options, '&amp;')."\">".self::getStatus($key)."</a></td>";
-         echo "<td class='numeric'>$val</td></tr>";
+         $twig_params['items'][] = [
+            'link'   => self::getSearchURL()."?".Toolbox::append_params($options),
+            'text'   => self::getStatus($key),
+            'icon'   => self::getStatusClass($key),
+            'count'  => $val
+         ];
       }
 
       $options['criteria'][0]['value'] = 'all';
       $options['is_deleted']  = 1;
-      echo "<tr class='tab_bg_2'>";
-      echo "<td><a href=\"".Ticket::getSearchURL()."?".
-                 Toolbox::append_params($options, '&amp;')."\">".__('Deleted')."</a></td>";
-      echo "<td class='numeric'>".$number_deleted."</td></tr>";
+      $twig_params['items'][] = [
+         'link'   => self::getSearchURL()."?".Toolbox::append_params($options),
+         'text'   => __('Deleted'),
+         'icon'   => 'fas fa-trash bg-red-lt',
+         'count'  => $number_deleted
+      ];
 
-      echo "</table><br>";
+      $output = TemplateRenderer::getInstance()->render('central/lists/itemtype_count.html.twig', $twig_params);
+      if ($display) {
+         echo $output;
+      } else {
+         return $output;
+      }
    }
 
 
@@ -6362,7 +5398,7 @@ JAVASCRIPT;
          echo "</div>";
       }
 
-      echo "<div>";
+      echo "<div class='table-responsive'>";
 
       if ($number > 0) {
          echo "<table class='tab_cadre_fixehov'>";
@@ -6419,7 +5455,7 @@ JAVASCRIPT;
          $iterator = $DB->request($criteria);
          $number = count($iterator);
 
-         echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+         echo "<div class='spaced table-responsive'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='12'>";
          echo _n('Ticket on linked items', 'Tickets on linked items', $number);
          echo "</th></tr>";
@@ -7277,6 +6313,10 @@ JAVASCRIPT;
          $excluded[] = 'TicketValidation:submit_validation';
          $excluded[] = 'Ticket:*';
       }
+
+      $excluded[] = 'Ticket_Ticket:add';
+      $excluded[] = 'Ticket:resolve_tickets';
+
       return $excluded;
    }
 

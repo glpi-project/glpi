@@ -134,7 +134,7 @@ class SavedSearch_Alert extends CommonDBChild {
       echo "<td>";
       echo $search->getLink();
       if ($count !== null) {
-         echo "<span class='primary-bg primary-fg count nofloat'>$count</span></a>";
+         echo "<span class='primary-bg primary-fg count float-none'>$count</span></a>";
       }
       echo "</td>";
       echo "<td>".__('Name')."</td>";

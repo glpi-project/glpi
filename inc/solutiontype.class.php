@@ -42,4 +42,8 @@ class SolutionType extends CommonDropdown {
       return _n('Solution type', 'Solution types', $nb);
    }
 
+   static function getIcon() {
+      return "fas fa-check";
+   }
+
 }

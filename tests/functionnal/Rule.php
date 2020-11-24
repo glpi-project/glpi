@@ -159,22 +159,22 @@ class Rule extends DbTestCase {
       $rule    = new \Rule();
       $actions = $rule->getSpecificMassiveActions();
       $this->array($actions)->isIdenticalTo([
-         'Rule:export'     => '<i class=\'ma-icon fas fa-file-download\'></i>Export'
+         'Rule:export'     => '<i class=\'fas fa-file-download\'></i>Export'
       ]);
 
       $_SESSION['glpiactiveprofile']['rule_dictionnary_software'] = ALLSTANDARDRIGHT;
       $rule    = new \RuleDictionnarySoftware();
       $actions = $rule->getSpecificMassiveActions();
       $this->array($actions)->isIdenticalTo([
-         'Rule:move_rule' => '<i class=\'ma-icon fas fa-arrows-alt-v\'></i>Move',
-         'Rule:export'     => '<i class=\'ma-icon fas fa-file-download\'></i>Export'
+         'Rule:move_rule' => '<i class=\'fas fa-arrows-alt-v\'></i>Move',
+         'Rule:export'     => '<i class=\'fas fa-file-download\'></i>Export'
       ]);
 
       $_SESSION['glpiactiveprofile']['rule_dictionnary_software'] = READ;
       $rule    = new \RuleDictionnarySoftware();
       $actions = $rule->getSpecificMassiveActions();
       $this->array($actions)->isIdenticalTo([
-         'Rule:export'     => '<i class=\'ma-icon fas fa-file-download\'></i>Export'
+         'Rule:export'     => '<i class=\'fas fa-file-download\'></i>Export'
       ]);
    }
 

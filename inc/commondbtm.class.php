@@ -30,9 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 use Glpi\Features\CacheableListInterface;
 use Glpi\Toolbox\RichText;
+use Glpi\Toolbox\Sanitizer;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -1298,6 +1300,7 @@ class CommonDBTM extends CommonGLPI {
     *    - complete     : boolean / display completename instead of name
     *    - additional   : boolean / display additionals information
     *    - linkoption   : string  / additional options to add to <a>
+    *    - icon         : boolean  / display item icon next to label
     *
     * @return string HTML link
    **/
@@ -1309,6 +1312,9 @@ class CommonDBTM extends CommonGLPI {
 
       if (isset($options['linkoption'])) {
          $p['linkoption'] = $options['linkoption'];
+      }
+      if (isset($options['icon'])) {
+         $p['icon'] = $options['icon'];
       }
 
       if (!isset($this->fields['id'])) {
@@ -1326,6 +1332,7 @@ class CommonDBTM extends CommonGLPI {
       $title = '';
       if (!preg_match('/title=/', $p['linkoption'])) {
          $thename = $this->getName(['complete' => true]);
+         $thename = Sanitizer::getVerbatimValue($thename); // Prevent double encoding of special chars
          if ($thename != NOT_AVAILABLE) {
             $title = ' title="' . htmlentities($thename, ENT_QUOTES, 'utf-8') . '"';
          }
@@ -2544,14 +2551,6 @@ class CommonDBTM extends CommonGLPI {
     * @return void
    **/
    function showFormButtons($options = []) {
-
-      // for single object like config
-      if (isset($this->fields['id'])) {
-         $ID = $this->fields['id'];
-      } else {
-         $ID = 1;
-      }
-
       $params = [
          'colspan'      => 2,
          'withtemplate' => '',
@@ -2567,137 +2566,14 @@ class CommonDBTM extends CommonGLPI {
          }
       }
 
-      Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$params]);
+      echo "</table>";
 
-      if ($params['formfooter'] === null) {
-          $this->showDates($params);
-      }
+      TemplateRenderer::getInstance()->display('components/form/buttons.html.twig', [
+         'item'   => $this,
+         'params' => $params,
+      ]);
 
-      if (!$params['canedit']
-          || !$this->canEdit($ID)) {
-         echo "</table></div>";
-         // Form Header always open form
-         Html::closeForm();
-         return false;
-      }
-
-      echo "<tr class='tab_bg_2'>";
-
-      if ($params['withtemplate']
-          ||$this->isNewID($ID)) {
-
-         echo "<td class='center' colspan='".($params['colspan']*2)."'>";
-
-         if (($ID <= 0) || ($params['withtemplate'] == 2)) {
-            echo Html::submit(
-               "<i class='fas fa-plus'></i>&nbsp;"._x('button', 'Add'),
-               ['name' => 'add']
-            );
-         } else {
-            //TRANS : means update / actualize
-            echo Html::submit(
-               "<i class='fas fa-save'></i>&nbsp;"._x('button', 'Save'),
-               ['name' => 'update']
-            );
-         }
-
-      } else {
-         if ($params['candel']
-             && !$this->can($ID, DELETE)
-             && !$this->can($ID, PURGE)) {
-            $params['candel'] = false;
-         }
-
-         if ($params['canedit'] && $this->can($ID, UPDATE)) {
-            echo "<td class='center' colspan='".($params['colspan']*2)."'>\n";
-            echo Html::submit(
-               "<i class='fas fa-save'></i>&nbsp;"._x('button', 'Save'),
-               ['name' => 'update']
-            );
-         }
-
-         if ($params['candel']) {
-            if ($params['canedit'] && $this->can($ID, UPDATE)) {
-               echo "</td></tr><tr class='tab_bg_2'>\n";
-            }
-            if ($this->isDeleted()) {
-               if ($this->can($ID, DELETE)) {
-                  echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
-                  echo Html::submit(
-                     "<i class='fas fa-trash-restore'></i>&nbsp;"._x('button', 'Restore'),
-                     ['name' => 'restore']
-                  );
-               }
-
-               if ($this->can($ID, PURGE)) {
-                  echo "<span class='very_small_space'>";
-                  if (in_array($this->getType(), Item_Devices::getConcernedItems())) {
-                     Html::showToolTip(__('Check to keep the devices while deleting this item'));
-                     echo "&nbsp;";
-                     echo "<input type='checkbox' name='keep_devices' value='1'";
-                     if (!empty($_SESSION['glpikeep_devices_when_purging_item'])) {
-                        echo " checked";
-                     }
-                     echo ">&nbsp;";
-                  }
-                  echo Html::submit(
-                     "<i class='fas fa-trash-alt'></i>&nbsp;"._x('button', 'Delete permanently'),
-                     ['name' => 'purge']
-                  );
-                  echo "</span>";
-               }
-
-            } else {
-               echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
-               // If maybe dynamic : do not take into account  is_deleted  field
-               if (!$this->maybeDeleted()
-                   || $this->useDeletedToLockIfDynamic()) {
-                  if ($this->can($ID, PURGE)) {
-                     echo Html::submit(
-                        "<i class='fas fa-trash-alt'></i>&nbsp;"._x('button', 'Delete permanently'),
-                        [
-                           'name'    => 'purge',
-                           'confirm' => __('Confirm the final deletion?')
-                        ]
-                     );
-                  }
-               } else if (!$this->isDeleted()
-                          && $this->can($ID, DELETE)) {
-                  echo Html::submit(
-                     "<i class='fas fa-trash-alt'></i>&nbsp;"._x('button', 'Put in trashbin'),
-                     ['name' => 'delete']
-                  );
-               }
-            }
-
-         }
-         if ($this->isField('date_mod')) {
-            echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
-         }
-      }
-
-      if (!$this->isNewID($ID)) {
-         echo "<input type='hidden' name='id' value='$ID'>";
-      }
-      echo "</td>";
-      echo "</tr>\n";
-
-      if ($params['canedit']
-          && count($params['addbuttons'])) {
-         echo "<tr class='tab_bg_2'>";
-         echo "<td class='right' colspan='".($params['colspan']*2)."'>";
-         foreach ($params['addbuttons'] as $key => $val) {
-            echo "<button type='submit' class='vsubmit' name='$key' value='1'>
-                  $val
-               </button>&nbsp;";
-         }
-         echo "</td>";
-         echo "</tr>";
-      }
-
-      // Close for Form
-      echo "</table></div>";
-      Html::closeForm();
+      echo "</div>"; //.asset
    }
 
 
@@ -2759,21 +2635,20 @@ class CommonDBTM extends CommonGLPI {
     *     - canedit boolean edit mode of form ?
     *     - formtitle specific form title
     *     - noid Set to true if ID should not be append (eg. already done in formtitle)
+    *     - header_toolbar Array of header toolbar elements (HTML code)
     *
     * @return void
    **/
    function showFormHeader($options = []) {
-
-      $ID     = $this->fields['id'];
-
       $params = [
-         'target'       => $this->getFormURL(),
-         'colspan'      => 2,
-         'withtemplate' => '',
-         'formoptions'  => '',
-         'canedit'      => true,
-         'formtitle'    => null,
-         'noid'         => false
+         'target'         => $this->getFormURL(),
+         'colspan'        => 2,
+         'withtemplate'   => '',
+         'formoptions'    => '',
+         'canedit'        => true,
+         'formtitle'      => null,
+         'noid'           => false,
+         'header_toolbar' => [],
       ];
 
       if (is_array($options) && count($options)) {
@@ -2788,132 +2663,19 @@ class CommonDBTM extends CommonGLPI {
          $this->fields['entities_id']  = $_SESSION['glpiactive_entity'];
       }
 
-      $rand = mt_rand();
-      if ($this->canEdit($ID)) {
-         echo "<form name='form' method='post' action='".$params['target']."' ".
-                $params['formoptions']." enctype=\"multipart/form-data\">";
+      $header_toolbar = $params['header_toolbar'];
+      unset($params['header_toolbar']);
 
-         //Should add an hidden entities_id field ?
-         //If the table has an entities_id field
-         if ($this->isField("entities_id")) {
-            //The object type can be assigned to an entity
-            if ($this->isEntityAssign()) {
-               if (isset($params['entities_id'])) {
-                  $entity = $this->fields['entities_id'] = $params['entities_id'];
-               } else if (isset($this->fields['entities_id'])) {
-                  //It's an existing object to be displayed
-                  $entity = $this->fields['entities_id'];
-               } else if ($this->isNewID($ID)
-                          || ($params['withtemplate'] == 2)) {
-                  //It's a new object to be added
-                  $entity = $_SESSION['glpiactive_entity'];
-               }
+      echo "<div class='asset'>";
+      TemplateRenderer::getInstance()->display('components/form/header.html.twig', [
+         'item'           => $this,
+         'params'         => $params,
+         'header_toolbar' => $header_toolbar,
+      ]);
 
-               echo "<input type='hidden' name='entities_id' value='$entity'>";
-
-            } else if ($this->getType() != 'User') {
-               // For Rules except ruleticket and slalevel
-               echo "<input type='hidden' name='entities_id' value='0'>";
-
-            }
-         }
-      }
-
-      echo "<div class='spaced' id='tabsbody'>";
-      echo "<table class='tab_cadre_fixe' id='mainformtable'>";
-
-      if ($params['formtitle'] !== '' && $params['formtitle'] !== false) {
-         echo "<tr class='headerRow'><th colspan='".$params['colspan']."'>";
-
-         if (!empty($params['withtemplate']) && ($params['withtemplate'] == 2)
-            && !$this->isNewID($ID)) {
-
-            echo "<input type='hidden' name='template_name' value='".$this->fields["template_name"]."'>";
-
-            //TRANS: %s is the template name
-            printf(__('Created from the template %s'), $this->fields["template_name"]);
-
-         } else if (!empty($params['withtemplate']) && ($params['withtemplate'] == 1)) {
-            echo "<input type='hidden' name='is_template' value='1'>\n";
-            echo "<label for='textfield_template_name$rand'>" . __('Template name') . "</label>";
-            Html::autocompletionTextField(
-               $this,
-               'template_name',
-               [
-                  'size'      => 25,
-                  'required'  => true,
-                  'rand'      => $rand
-               ]
-            );
-         } else if ($this->isNewID($ID)) {
-            $nametype = $params['formtitle'] !== null ? $params['formtitle'] : $this->getTypeName(1);
-            printf(__('%1$s - %2$s'), __('New item'), $nametype);
-         } else {
-            $nametype = $params['formtitle'] !== null ? $params['formtitle'] : $this->getTypeName(1);
-            if (!$params['noid'] && ($_SESSION['glpiis_ids_visible'] || empty($nametype))) {
-               //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
-               $nametype = sprintf(__('%1$s - ID %2$d'), $nametype, $ID);
-            }
-            echo $nametype;
-         }
-         $entityname = '';
-         if (isset($this->fields["entities_id"])
-            && Session::isMultiEntitiesMode()
-            && $this->isEntityAssign()) {
-            $entityname = Dropdown::getDropdownName("glpi_entities", $this->fields["entities_id"]);
-         }
-
-         echo "</th><th colspan='".$params['colspan']."'>";
-         if (get_class($this) != 'Entity') {
-            if ($this->maybeRecursive()) {
-               if (Session::isMultiEntitiesMode()) {
-                  echo "<table class='tab_format'><tr class='headerRow responsive_hidden'><th>".$entityname."</th>";
-                  echo "<th class='right'><label for='dropdown_is_recursive$rand'>".__('Child entities')."</label></th><th>";
-                  if ($params['canedit']) {
-                     if ($this instanceof CommonDBChild) {
-                        echo Dropdown::getYesNo($this->isRecursive());
-                        if (isset($this->fields["is_recursive"])) {
-                           echo "<input type='hidden' name='is_recursive' value='".$this->fields["is_recursive"]."'>";
-                        }
-                        $comment = __("Can't change this attribute. It's inherited from its parent.");
-                        // CommonDBChild : entity data is get or copy from parent
-
-                     } else if (!$this->can($ID, 'recursive')) {
-                        echo Dropdown::getYesNo($this->fields["is_recursive"]);
-                        $comment = __('You are not allowed to change the visibility flag for child entities.');
-
-                     } else if (!$this->canUnrecurs()) {
-                        echo Dropdown::getYesNo($this->fields["is_recursive"]);
-                        $comment = __('Flag change forbidden. Linked items found.');
-
-                     } else {
-                        Dropdown::showYesNo("is_recursive", $this->fields["is_recursive"], -1, ['rand' => $rand]);
-                        $comment = __('Change visibility in child entities');
-                     }
-                     echo " ";
-                     Html::showToolTip($comment);
-                  } else {
-                     echo Dropdown::getYesNo($this->fields["is_recursive"]);
-                  }
-                  echo "</th></tr></table>";
-               } else {
-                  echo $entityname;
-                  echo "<input type='hidden' name='is_recursive' value='0'>";
-               }
-            } else {
-               echo $entityname;
-            }
-         }
-         echo "</th></tr>\n";
-      }
-
-      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => &$params]);
-
-      // If in modal : do not display link on message after redirect
-      if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
-         echo "<input type='hidden' name='_no_message_link' value='1'>";
-      }
-
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td class='center' colspan='".($params['colspan']*2)."'>";
    }
 
 
@@ -3623,6 +3385,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param array $options array of options
     *    - comments     : boolean / display comments
+    *    - icon         : boolean / display icon
     *    - complete     : boolean / display completename instead of name
     *    - additional   : boolean / display aditionals information
     *
@@ -3637,6 +3400,7 @@ class CommonDBTM extends CommonGLPI {
          'comments'   => false,
          'complete'   => false,
          'additional' => false,
+         'icon'       => false,
       ];
 
       if (is_array($options)) {
@@ -3668,6 +3432,13 @@ class CommonDBTM extends CommonGLPI {
             $comment = $this->getComments();
             if (!empty($comment)) {
                $name = sprintf(__('%1$s - %2$s'), $name, $comment);
+            }
+         }
+
+         if ($p['icon']) {
+            $icon = $this->getIcon();
+            if (!empty($icon)) {
+               $name = sprintf(__('%1$s %2$s'), "<i class='$icon'></i>", $name);
             }
          }
          return $name;
@@ -3707,6 +3478,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param array $options array of options
     *    - comments     : boolean / display comments
+    *    - icon         : boolean / display icon
     *    - complete     : boolean / display completename instead of name
     *    - additional   : boolean / display aditionals information
     *    - forceid      : boolean  override config and display item's ID (false by default)
@@ -3718,6 +3490,7 @@ class CommonDBTM extends CommonGLPI {
       $p = [
          'forceid'  => false,
          'comments' => false,
+         'icon'     => true,
       ];
 
       if (is_array($options)) {
@@ -3741,6 +3514,13 @@ class CommonDBTM extends CommonGLPI {
             $comment = $this->getComments();
             if (!empty($comment)) {
                $name = sprintf(__('%1$s - %2$s'), $name, $comment);
+            }
+         }
+
+         if ($p['icon']) {
+            $icon = $this->getIcon();
+            if (!empty($icon)) {
+               $name = sprintf(__('%1$s %2$s'), "<i class='$icon'></i>", $name);
             }
          }
          return $name;
@@ -4027,7 +3807,8 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if (in_array(static::getType(), Appliance::getTypes(true)) && static::canUpdate()) {
-         $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'] = _x('button', 'Associate to an appliance');
+         $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'] =
+            "<i class='fas fa-cubes'></i>"._x('button', 'Associate to an appliance');
       }
 
       return $actions;
@@ -5753,5 +5534,133 @@ class CommonDBTM extends CommonGLPI {
     */
    public function getNonLoggedFields(): array {
       return [];
+   }
+
+   /**
+    * Returns model class, or null if item has no model class.
+    *
+    * @return string|null
+    */
+   public function getModelClass(): ?string {
+      $model_class = get_called_class() . 'Model';
+      if (!is_a($model_class, CommonDBTM::class, true)) {
+         return null;
+      }
+
+      $model_fk = $model_class::getForeignKeyField();
+      return $this->isField($model_fk) ? $model_class : null;
+   }
+
+   /**
+    * Returns model class foreign key field name, or null if item has no model class.
+    *
+    * @return string|null
+    */
+   public function getModelForeignKeyField(): ?string {
+      $model_class = $this->getModelClass();
+      return $model_class !== null ? $model_class::getForeignKeyField() : null;
+   }
+
+   /**
+    * Returns type class, or null if item has no type class.
+    *
+    * @return string|null
+    */
+   public function getTypeClass(): ?string {
+      $type_class = get_called_class() . 'Type';
+      if (!is_a($type_class, CommonDBTM::class, true)) {
+         return null;
+      }
+
+      $type_fk = $type_class::getForeignKeyField();
+      return $this->isField($type_fk) ? $type_class : null;
+   }
+
+   /**
+    * Returns type class foreign key field name, or null if item has no type class.
+    *
+    * @return string|null
+    */
+   public function getTypeForeignKeyField(): ?string {
+      $type_class = $this->getTypeClass();
+      return $type_class !== null ? $type_class::getForeignKeyField() : null;
+   }
+
+   public function getItemtypeOrModelPicture(string $picture_field = 'picture_front', array $params = []): array {
+      $p = [
+         'thumbnail_w'  => 'auto',
+         'thumbnail_h'  => 'auto'
+      ];
+      $p = array_replace($p, $params);
+
+      $urls = [];
+      $itemtype = $this->getType();
+      $pictures = [];
+      $clearable = false;
+
+      if ($this->isField($picture_field)) {
+         if ($picture_field === 'pictures') {
+            $urls = importArrayFromDB($this->fields[$picture_field]);
+         } else {
+            $urls = [$this->fields[$picture_field]];
+         }
+         $clearable = $this->canUpdate();
+      } else {
+         $modeltype = $itemtype . "Model";
+         if (class_exists($modeltype)) {
+            /** @var CommonDBTM $model */
+            $model = new $modeltype;
+            if (!$model->isField($picture_field)) {
+               return [];
+            }
+
+            $fk = getForeignKeyFieldForItemType($modeltype);
+            if ($model->getFromDB(($this->fields[$fk]) ?? 0)) {
+               if ($picture_field === 'pictures') {
+                  $urls = importArrayFromDB($model->fields[$picture_field]);
+               } else {
+                  $urls = [$model->fields[$picture_field]];
+               }
+            }
+         }
+      }
+
+      foreach ($urls as $url) {
+         if (!empty($url)) {
+            $resolved_url = \Toolbox::getPictureUrl($url);
+            $src_file = GLPI_DOC_DIR . '/_pictures/' . '/' . $url;
+            if (file_exists($src_file)) {
+               $size = getimagesize($src_file);
+               $pictures[] = [
+                     'src'             => $resolved_url,
+                     'w'               => $size[0],
+                     'h'               => $size[1],
+                     'clearable'       => $clearable,
+                     '_is_model_img'   => isset($model)
+                  ] + $p;
+            } else {
+               $owner_type = isset($model) ? $model::getType() : $itemtype;
+               $owner_id = isset($model) ? $model->getID() : $this->getID();
+               \Toolbox::logWarning("The picture '{$src_file}' referenced by the {$owner_type} with ID {$owner_id} does not exist");
+            }
+         }
+      }
+
+      return $pictures;
+   }
+
+   public function getMassiveActionsForItem(): MassiveAction {
+      $params = [
+         'item' => [
+            $this->getType() => [
+               $this->fields['id'] => 1
+            ]
+         ]
+      ];
+      if ($this->isEntityAssign()) {
+         $params['entity_restrict'] = $this->getEntityID();
+      }
+
+      return new MassiveAction($params, [], 'initial', true);
    }
 }

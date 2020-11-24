@@ -247,7 +247,7 @@ class MailCollector  extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Password')."</td>";
-      echo "<td><input type='password' name='passwd' value='' size='20' autocomplete='new-password'>";
+      echo "<td><input type='password' name='passwd' value='' size='20' autocomplete='new-password' class='form-control'>";
       if ($ID > 0) {
          echo "<input type='checkbox' name='_blank_passwd'>&nbsp;".__('Clear');
       }
@@ -256,13 +256,13 @@ class MailCollector  extends CommonDBTM {
       if ($type != "pop") {
          echo "<tr class='tab_bg_1'><td>" . __('Accepted mail archive folder (optional)') . "</td>";
          echo "<td>";
-         echo "<input size='30' type='text' id='accepted_folder' name='accepted' value=\"".$this->fields['accepted']."\">";
+         echo "<input size='30' class='form-control' type='text' id='accepted_folder' name='accepted' value=\"".$this->fields['accepted']."\">";
          echo "<i class='fa fa-list pointer get-imap-folder'></i>";
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>" . __('Refused mail archive folder (optional)') . "</td>";
          echo "<td>";
-         echo "<input size='30' type='text' id='refused_folder' name='refused' value=\"".$this->fields['refused']."\">";
+         echo "<input size='30' class='form-control' type='text' id='refused_folder' name='refused' value=\"".$this->fields['refused']."\">";
          echo "<i class='fa fa-list pointer get-imap-folder'></i>";
          echo "</td></tr>\n";
       }
@@ -309,15 +309,7 @@ class MailCollector  extends CommonDBTM {
       $this->showFormButtons($options);
 
       if ($type != 'pop') {
-         echo "<div id='imap-folder'></div>";
          echo Html::scriptBlock("$(function() {
-            $('#imap-folder')
-               .dialog(options = {
-                  autoOpen: false,
-                  autoResize:true,
-                  width: 'auto',
-                  modal: true,
-               });
 
             $(document).on('click', '.get-imap-folder', function() {
                var input = $(this).prev('input');
@@ -329,10 +321,12 @@ class MailCollector  extends CommonDBTM {
                // Force empty value for server_mailbox
                data += '&server_mailbox=';
 
-               $('#imap-folder')
-                  .html('')
-                  .load('".$CFG_GLPI['root_doc']."/ajax/mailcollector.php', data)
-                  .dialog('open');
+               glpi_ajax_dialog({
+                  title: __('Select a folder'),
+                  url: '".$CFG_GLPI['root_doc']."/ajax/mailcollector.php',
+                  params: data,
+                  id: 'imap-folder'
+               });
             });
 
             $(document).on('click', '.select_folder li', function(event) {
@@ -350,7 +344,7 @@ class MailCollector  extends CommonDBTM {
                _label += folder;
 
                $('#'+input_id).val(_label);
-               $('#imap-folder').dialog('close');
+               $('#imap-folder + .modal-backdrop, #imap-folder').remove();
             })
          });");
       }
@@ -409,18 +403,18 @@ class MailCollector  extends CommonDBTM {
     * @return void
     */
    private function displayFolder($folder, $input_id) {
-      echo "<ul>";
       $fname = mb_convert_encoding($folder->getLocalName(), "UTF-8", "UTF7-IMAP");
       echo "<li class='pointer' data-input-id='$input_id'>
                <i class='fa fa-folder'></i>&nbsp;
                <span class='folder-name'>".$fname."</span>";
+      echo "<ul>";
 
       foreach ($folder as $sfolder) {
          $this->displayFolder($sfolder, $input_id);
       }
+      echo "</ul>";
 
       echo "</li>";
-      echo "</ul>";
    }
 
 

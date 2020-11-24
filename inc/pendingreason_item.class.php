@@ -227,7 +227,7 @@ class PendingReason_Item extends CommonDBRelation
          // Display pending reason field
          $display_pending_reason = $pending_checked ? "" : "starthidden";
          echo "<div id='pending_reason_dropdown$rand' class='$display_pending_reason fa-label'>";
-         echo "<i class='fas fa-tag fa-fw mr10px' title='". PendingReason::getTypeName(1) ."'></i>";
+         echo "<i class='fas fa-tag fa-fw ms-2' title='". PendingReason::getTypeName(1) ."'></i>";
          PendingReason::dropdown([
             'emptylabel'          => __("No pending reason"),
             'display_emptychoice' => true,
@@ -239,13 +239,13 @@ class PendingReason_Item extends CommonDBRelation
          // Display auto bump field
          $display_pending_reason_extra = $pending_item->fields["pendingreasons_id"] > 0 ? "" : "starthidden";
          echo "<div id='pending_reason_followup_frequency_dropdown$rand' class='$display_pending_reason_extra fa-label'>";
-         echo "<i class='fas fa-redo fa-fw mr10px' title='".__('Automatic follow-up')."'></i>";
+         echo "<i class='fas fa-redo fa-fw ms-2' title='".__('Automatic follow-up')."'></i>";
          echo PendingReason::displayFollowupFrequencyfield($pending_item->fields["followup_frequency"]);
          echo "</div>";
 
          // Display auto solve field
          echo "<div id='pending_reason_followups_before_resolution_dropdown$rand' class='$display_pending_reason_extra fa-label'>";
-         echo "<i class='fas fa-check fa-fw mr10px' title='".__('Automatic resolution')."'></i>";
+         echo "<i class='fas fa-check fa-fw ms-2' title='".__('Automatic resolution')."'></i>";
          echo PendingReason::displayFollowupsNumberBeforeResolutionField($pending_item->fields["followups_before_resolution"]);
          echo "</div>";
 

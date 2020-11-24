@@ -22,5 +22,5 @@ vendor/bin/phpcs \
   -p \
   --extensions=php \
   --standard=vendor/glpi-project/coding-standard/GlpiStandard/ \
-  --ignore="/.git/,^$ROOT_DIR/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/" \
+  --ignore="/.git/,^$ROOT_DIR/(config|files|lib|marketplace|node_modules|plugins|tests/config|tests/files|vendor)/" \
   .

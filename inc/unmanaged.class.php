@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -58,95 +60,10 @@ class Unmanaged extends CommonDBTM {
 
    function showForm($ID, $options = []) {
       $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Name') . "</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, 'name', ['size' => 35]);
-      echo "</td>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . _n('Type', 'Types', 1) . "</td>";
-      echo "<td>";
-      Dropdown::showItemTypes(
-         'item_type', [
-            'Computer',
-            'NetworkEquipment',
-            'Printer',
-            'Peripheral',
-            'Phone'
-         ], [
-            'value' => $this->fields["itemtype"]
-         ]
-      );
-      echo "</td>";
-      echo "<td>" . __('Alternate username') . "</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, 'contact', ['size' => 35]);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . Location::getTypeName(1) . "</td>";
-      echo "<td>";
-      Dropdown::show(
-         'Location', [
-            'name'   => 'locations_id',
-            'value'  => $this->fields['locations_id']
-         ]
-      );
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Approved device') . "</td>";
-      echo "<td>";
-      Dropdown::showYesNo("accepted", $this->fields["accepted"]);
-      echo "</td>";
-      echo "<td>" . __('Serial Number') . "</td>";
-      echo "</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, 'serial', ['size' => 35]);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Network hub') . "</td>";
-      echo "<td>";
-      echo Dropdown::getYesNo($this->fields["hub"]);
-      echo "</td>";
-      echo "<td>" . __('Inventory number') . "</td>";
-      echo "</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, 'otherserial', ['size' => 35]);
-      echo "</td>";
-      echo "</tr>";
-
-      if ((!empty($this->fields["ip"])) || (!empty($this->fields["mac"]))) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>" . __('IP') . "</td>";
-         echo "<td>";
-         Html::autocompletionTextField($this, 'ip', ['size' => 35]);
-         echo "</td>";
-
-         echo "<td colspan='2'></td>";
-         echo "</tr>";
-      }
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Sysdescr') . "</td>";
-      echo "<td>";
-      echo "<textarea name='sysdescr'  cols='45' rows='5'>".$this->fields["sysdescr"]."</textarea>";
-      echo "</td>";
-      echo "<td>" . __('Comments') . "</td>";
-      echo "</td>";
-      echo "<td>";
-      echo "<textarea  cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td>";
-      echo "</tr>";
-
-      $this->showFormButtons($options);
+      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
+         'item'   => $this,
+         'params' => $options,
+      ]);
       return true;
    }
 

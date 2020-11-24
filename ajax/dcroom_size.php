@@ -58,5 +58,5 @@ if ($room->getFromDB($id)) {
       ]
    );
 } else {
-   echo __('No room found or selected');
+   echo "<div class='col-form-label'>".__('No room found or selected')."</div>";
 }
