@@ -877,7 +877,7 @@ class Item_Ticket extends CommonItilObject_Item {
     *    - used         : array / Already used items ID: not to display in dropdown (default empty)
     *    - on_change    : string / value to transmit to "onChange"
     *    - display      : boolean / display or get string (default true)
-    *    - width        : specific width needed (default 80%)
+    *    - width        : specific width needed
     *
    **/
    static function dropdown($options = []) {
@@ -889,7 +889,7 @@ class Item_Ticket extends CommonItilObject_Item {
       $p['all']            = 0;
       $p['on_change']      = '';
       $p['comments']       = 1;
-      $p['width']          = '80%';
+      $p['width']          = '';
       $p['entity']         = -1;
       $p['entity_sons']    = false;
       $p['used']           = [];

@@ -43,13 +43,12 @@ Html::header(__('Setup'), $_SERVER['PHP_SELF'], "config", "plugin");
 
 \Glpi\Marketplace\View::showFeatureSwitchDialog();
 
-$catalog_btn = '<div class="center">'
-   . '<a href="http://plugins.glpi-project.org" class="vsubmit" target="_blank">'
-   . __('See the catalog of plugins')
+$catalog_btn = '<div class="center my-2">'
+   . '<a href="http://plugins.glpi-project.org" class="btn btn-primary" target="_blank">'
+   . "<i class='fas fa-eye'></i>"
+   . "<span>".__('See the catalog of plugins')."</span>"
    . '</a>'
    . '</div>';
-
-echo $catalog_btn;
 
 Search::show('Plugin');
 

@@ -1,0 +1,110 @@
+
+{% if item.isDynamic() != false %}
+<div class="card m-n2 border-0 shadow-none">
+   <div class="card-header">
+      <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
+         <i class="fas fa-cloud-download-alt"></i>
+      </div>
+      <h4 class="card-title  ps-4">
+         {{ __('Inventory information') }}
+      </h4>
+      {% set inventory_filename = getInventoryFileName(item) %}
+      {% if inventory_filename|length > 0 %}
+         <a href='{{ path("front/document.send.php?file=_inventory/" ~ inventory_filename) }}'
+            class='btn btn-sm btn-secondary ms-auto' target='_blank'
+            data-bs-toggle="tooltip" data-bs-placement="right"
+            title='{{ __('Download "%1$s" inventory file')|format(item.getName()) }}'>
+            <i class='fas fa-download'></i>
+         </a>
+      {% else %}
+         <span class="ms-auto" title="{{ __('Inventory file missing') }}">
+            <i class='fas fa-ban'></i>
+            <span class='sr-only'>{{ __('Inventory file missing') }}</span>
+         </span>
+      {% endif %}
+   </div>
+
+   {% set agent = getAgentForItem(item) %}
+   {% if agent == false %}
+      {{ __('No agent has been linked.') }}
+   {% else %}
+      <div class="card-body row">
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >{{ "Agent"|itemtype_name }}</label>
+            <span >
+               <i class="{{ agent.getIcon() }}"></i>
+               {{ agent.getLink()|raw }}
+            </span>
+         </div>
+
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >{{ __("Useragent") }}</label>
+            <span >{{ agent.fields['useragent'] }}</span>
+         </div>
+
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >{{ __("Inventory tag") }}</label>
+            <span >{{ agent.fields['tag'] }}</span>
+         </div>
+
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >{{ __("Last inventory") }}</label>
+            <span >{{ agent.fields['last_contact']|conv_datetime }}</span>
+         </div>
+
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >
+               {{ __("Agent status") }}
+               <i id='update-status' class='fas fa-sync' role="button" title=" {{ __('Ask agent about its current status') }}"></i>
+            </label>
+            {# TODO status #}
+            <span >{{ __('Unknown') }}</span>
+         </div>
+
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >
+               {{ __("Request inventory") }}
+               <i id='update-status' class='fas fa-sync' role="button" title=" {{ __('Request agent to proceed an new inventory') }}"></i>
+            </label>
+            {# TODO status #}
+            <span >{{ __('Unknown') }}</span>
+         </div>
+      </div>
+
+      <script type="text/javascript">
+      $(function () {
+         $('#update-status').on('click', function() {
+            var icon = $(this);
+            icon.addClass("fa-spin");
+            $.ajax({
+               type: 'GET',
+               url: '{{ path("/ajax/agent.php") }}',
+               timeout: 3000, //3 seconds timeout
+               dataType: 'json',
+               data: {'action': '{{ constant("Agent::ACTION_STATUS") }}', 'id': '{{ agent.fields["id"] }}'},
+               success: function(json) {
+                  icon.removeClass("fa-spin");
+                  $('#agent_status').html(json.answer);
+               }
+            });
+         });
+
+         $('#update-inventory').on('click', function() {
+            icon.addClass("fa-spin");
+            $.ajax({
+               type: 'GET',
+               url: '{{ path("/ajax/agent.php") }}',
+               timeout: 3000, //3 seconds timeout
+               dataType: 'json',
+               data: {'action': '{{ constant("Agent::ACTION_INVENTORY") }}', 'id': '{{ agent.fields["id"] }}'},
+               success: function(json) {
+                  icon.removeClass("fa-spin");
+                  $('#inventory_status').html(json.answer);
+               }
+            });
+         });
+      });
+      </script>
+   {% endif %}
+</div>
+{% endif %}

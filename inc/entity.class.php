@@ -1192,7 +1192,7 @@ class Entity extends CommonTreeDropdown {
       }
 
       echo "<div class='center'>";
-      echo "<span class='b'>".__('Select the desired entity')."<br>( <img src='".$CFG_GLPI["root_doc"].
+      echo "<span class='b'>( <img src='".$CFG_GLPI["root_doc"].
             "/pics/entity_all.png' alt=''> ".__s('to see the entity and its sub-entities').")</span>".
             "<br>";
       echo "<a style='font-size:14px;' href='".$target."?active_entity=all' title=\"".
@@ -1200,84 +1200,93 @@ class Entity extends CommonTreeDropdown {
 
       echo "<div class='left' style='width:100%'>";
       echo "<form id='entsearchform'>";
-      echo Html::input('entsearchtext', ['id' => 'entsearchtext']);
-      echo Html::submit(__('Search'), ['id' => 'entsearch']);
+      echo "<div class='input-group mb-3'>";
+      echo Html::input('entsearchtext', [
+         'id'    => 'entsearchtext',
+         'class' => 'form-control',
+      ]);
+      echo Html::submit("<span class='fas fa-search' aria-hidden='true'></span>", [
+         'id'    => 'entsearch',
+         'class' => 'btn btn-secondary',
+         'title' => __('Search'),
+      ]);
+      echo "</div>";
       echo "</form>";
 
       $css_tag = json_encode(Html::css('public/lib/jstree.css'));
 
       echo "<script type='text/javascript'>";
-      echo "   $(function() {
-                  $('head').append($css_tag);
-                  $.getScript('{$CFG_GLPI["root_doc"]}/public/lib/jstree.js').done(function(data, textStatus, jqxhr) {
-                     $('#tree_projectcategory$rand')
-                     // call `.jstree` with the options object
-                     .jstree({
-                        // the `plugins` array allows you to configure the active plugins on this instance
-                        'plugins' : ['search', 'qload', 'conditionalselect'],
-                        'search': {
-                           'case_insensitive': true,
-                           'show_only_matches': true,
-                           'ajax': {
-                              'type': 'POST',
-                              'url': '".$CFG_GLPI["root_doc"]."/ajax/entitytreesearch.php'
-                           }
-                        },
-                        'qload': {
-                           'prevLimit': 50,
-                           'nextLimit': 30,
-                           'moreText': '".__s('Load more entities...')."'
-                        },
-                        'conditionalselect': function (node, event) {
-                           if (node === false) {
-                              return false;
-                           }
-                           var url = '$actionurl'+node.id;
-                           if (event.target.tagName == 'I'
-                               && event.target.className == '') {
-                              url += '&is_recursive=1';
-                           }
-                           document.location.href = url;
-                           return false;
-                        },
-                        'core': {
-                           'animation': 0,
-                           'data': {
-                              'url': function(node) {
-                                 return node.id === '#' ?
-                                    '".$CFG_GLPI["root_doc"]."/ajax/entitytreesons.php?node=-1' :
-                                    '".$CFG_GLPI["root_doc"]."/ajax/entitytreesons.php?node='+node.id;
-                              }
-                           }
-                        }
-                     });
-
-                     var searchTree = function() {
-                        ".Html::jsGetElementbyID("tree_projectcategory$rand").".jstree('close_all');;
-                        ".Html::jsGetElementbyID("tree_projectcategory$rand").
-                        ".jstree('search',".Html::jsGetDropdownValue('entsearchtext').");
+      echo "$(function() {
+         $('head').append($css_tag);
+         $.getScript('{$CFG_GLPI["root_doc"]}/public/lib/jstree.js').done(function(data, textStatus, jqxhr) {
+            $('#tree_projectcategory$rand')
+            // call `.jstree` with the options object
+            .jstree({
+               // the `plugins` array allows you to configure the active plugins on this instance
+               'plugins' : ['search', 'qload', 'conditionalselect'],
+               'search': {
+                  'case_insensitive': true,
+                  'show_only_matches': true,
+                  'ajax': {
+                     'type': 'POST',
+                     'url': '".$CFG_GLPI["root_doc"]."/ajax/entitytreesearch.php'
+                  }
+               },
+               'qload': {
+                  'prevLimit': 50,
+                  'nextLimit': 30,
+                  'moreText': '".__s('Load more entities...')."'
+               },
+               'conditionalselect': function (node, event) {
+                  if (node === false) {
+                     return false;
+                  }
+                  var url = '$actionurl'+node.id;
+                  if (event.target.tagName == 'I'
+                        && event.target.className == '') {
+                     url += '&is_recursive=1';
+                  }
+                  document.location.href = url;
+                  return false;
+               },
+               'core': {
+                  'animation': 0,
+                  'data': {
+                     'url': function(node) {
+                        return node.id === '#' ?
+                           '".$CFG_GLPI["root_doc"]."/ajax/entitytreesons.php?node=-1' :
+                           '".$CFG_GLPI["root_doc"]."/ajax/entitytreesons.php?node='+node.id;
                      }
+                  }
+               }
+            });
 
-                     $('#entsearchform').submit(function( event ) {
-                        // cancel submit of entity search form
-                        event.preventDefault();
+            var searchTree = function() {
+               ".Html::jsGetElementbyID("tree_projectcategory$rand").".jstree('close_all');;
+               ".Html::jsGetElementbyID("tree_projectcategory$rand").
+               ".jstree('search',".Html::jsGetDropdownValue('entsearchtext').");
+            }
 
-                        // search
-                        searchTree();
-                     });
+            $('#entsearchform').submit(function( event ) {
+               // cancel submit of entity search form
+               event.preventDefault();
 
-                     // autosearch on keypress (delayed and with min length)
-                     $('#entsearchtext').keyup(function () {
-                        var inputsearch = $(this);
-                        typewatch(function () {
-                           if (inputsearch.val().length >= 3) {
-                              searchTree();
-                           }
-                        }, 500);
-                     })
-                     .focus();
-                  });
-               });";
+               // search
+               searchTree();
+            });
+
+            // autosearch on keypress (delayed and with min length)
+            $('#entsearchtext').keyup(function () {
+               var inputsearch = $(this);
+               typewatch(function () {
+                  if (inputsearch.val().length >= 3) {
+                     searchTree();
+                  }
+               }, 500);
+            })
+            .focus();
+         });
+      });";
 
       echo "</script>";
 
