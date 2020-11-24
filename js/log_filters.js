@@ -67,7 +67,7 @@ $(function() {
       reloadTab($('[name^="filters\\["]').serialize());
    };
 
-   $('.glpi_tabs').on('tabsload', function() {
+   $('main').on('glpi.tab.loaded', function() {
       bindShowFiltersBtn();
       bindFilterChange();
    });

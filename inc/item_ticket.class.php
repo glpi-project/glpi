@@ -172,21 +172,21 @@ class Item_Ticket extends CommonItilObject_Item {
    static function itemAddForm(Ticket $ticket, $options = []) {
       global $CFG_GLPI;
 
-      $params = ['id'                  => (isset($ticket->fields['id'])
-                                                && $ticket->fields['id'] != '')
-                                                   ? $ticket->fields['id']
-                                                   : 0,
-                      '_users_id_requester' => 0,
-                      'items_id'            => [],
-                      'itemtype'            => '',
-                      '_canupdate'          => false];
+      $params = [
+         'id'                  => (isset($ticket->fields['id']) && $ticket->fields['id'] != '')
+                                    ? $ticket->fields['id']
+                                    : 0,
+         '_users_id_requester' => 0,
+         'items_id'            => [],
+         'itemtype'            => '',
+         '_canupdate'          => false,
+         'display'             => true,
+      ];
 
       $opt = [];
 
       foreach ($options as $key => $val) {
-         if (!empty($val)) {
-            $params[$key] = $val;
-         }
+         $params[$key] = $val;
       }
 
       if (!$ticket->can($params['id'], READ)) {
@@ -238,31 +238,48 @@ class Item_Ticket extends CommonItilObject_Item {
 
       $rand  = mt_rand();
       $count = 0;
+      $out   = "";
 
-      echo "<div id='itemAddForm$rand'>";
+      $out.= "<div id='itemAddForm$rand'>";
 
       // Show associated item dropdowns
       if ($canedit) {
-         echo "<div style='float:left'>";
-         $p = ['used'       => $params['items_id'],
-                    'rand'       => $rand,
-                    'tickets_id' => $params['id']];
+         $p = [
+            'used'       => $params['items_id'],
+            'rand'       => $rand,
+            'tickets_id' => $params['id'],
+            'display'    => $params['display'],
+         ];
          // My items
          if ($params['_users_id_requester'] > 0) {
-            Item_Ticket::dropdownMyDevices($params['_users_id_requester'], $ticket->fields["entities_id"], $params['itemtype'], 0, $p);
+            $out.= Item_Ticket::dropdownMyDevices(
+               $params['_users_id_requester'],
+               $ticket->fields["entities_id"],
+               $params['itemtype'],
+               0,
+               $p,
+            );
          }
+
          // Global search
-         Item_Ticket::dropdownAllDevices("itemtype", $params['itemtype'], 0, 1, $params['_users_id_requester'], $ticket->fields["entities_id"], $p);
-         echo "<span id='item_ticket_selection_information$rand'></span>";
-         echo "</div>";
+         $out.= Item_Ticket::dropdownAllDevices(
+            "itemtype",
+            $params['itemtype'],
+            0,
+            1,
+            $params['_users_id_requester'],
+            $ticket->fields["entities_id"],
+            $p
+         );
 
          // Add button
-         echo "<a href='javascript:itemAction$rand(\"add\");' class='vsubmit' style='float:left'>"._sx('button', 'Add')."</a>";
+         $out.= "<a href='javascript:itemAction$rand(\"add\");' class='btn btn-sm btn-outline-secondary'>
+               <i class='fas fa-plus'></i>
+               <span>"._sx('button', 'Add')."</span>
+            </a>";
       }
 
       // Display list
-      echo "<div style='clear:both;'>";
-
       if (!empty($params['items_id'])) {
          // No delete if mandatory and only one item
          $delete = $ticket->canAddItem(__CLASS__);
@@ -277,7 +294,7 @@ class Item_Ticket extends CommonItilObject_Item {
          foreach ($params['items_id'] as $itemtype => $items) {
             foreach ($items as $items_id) {
                $count++;
-               echo self::showItemToAdd(
+               $out.= self::showItemToAdd(
                   $params['id'],
                   $itemtype,
                   $items_id,
@@ -292,40 +309,47 @@ class Item_Ticket extends CommonItilObject_Item {
       }
 
       if ($count == 0) {
-         echo "<input type='hidden' value='0' name='items_id'>";
+         $out.= "<input type='hidden' value='0' name='items_id'>";
       }
 
       if ($params['id'] > 0 && $usedcount != $count) {
          $count_notsaved = $count - $usedcount;
-         echo "<i>" . sprintf(_n('%1$s item not saved', '%1$s items not saved', $count_notsaved), $count_notsaved)  . "</i>";
+         $out.= "<i>" . sprintf(_n('%1$s item not saved', '%1$s items not saved', $count_notsaved), $count_notsaved)  . "</i>";
       }
       if ($params['id'] > 0 && $usedcount > 5) {
-         echo "<i><a href='".$ticket->getFormURLWithID($params['id'])."&amp;forcetab=Item_Ticket$1'>"
+         $out.= "<i><a href='".$ticket->getFormURLWithID($params['id'])."&amp;forcetab=Item_Ticket$1'>"
                   .__('Display all items')." (".$usedcount.")</a></i>";
       }
-      echo "</div>";
+      $out.= "</div>";
 
-      foreach (['id', '_users_id_requester', 'items_id', 'itemtype', '_canupdate'] as $key) {
+      foreach (['id', '_users_id_requester', 'items_id', 'itemtype', '_canupdate', 'display'] as $key) {
          $opt[$key] = $params[$key];
       }
 
-      $js  = " function itemAction$rand(action, itemtype, items_id) {";
+      $js  = "function itemAction$rand(action, itemtype, items_id) {";
       $js .= "    $.ajax({
                      url: '".$CFG_GLPI['root_doc']."/ajax/itemTicket.php',
                      dataType: 'html',
-                     data: {'action'     : action,
-                            'rand'       : $rand,
-                            'params'     : ".json_encode($opt).",
-                            'my_items'   : $('#dropdown_my_items$rand').val(),
-                            'itemtype'   : (itemtype === undefined) ? $('#dropdown_itemtype$rand').val() : itemtype,
-                            'items_id'   : (items_id === undefined) ? $('#dropdown_add_items_id$rand').val() : items_id},
+                     data: {
+                        'action'  : action,
+                        'rand'    : $rand,
+                        'params'  : ".json_encode($opt).",
+                        'my_items': $('#dropdown_my_items$rand').val(),
+                        'itemtype': (itemtype === undefined) ? $('#dropdown_itemtype$rand').val() : itemtype,
+                        'items_id': (items_id === undefined) ? $('#dropdown_add_items_id$rand').val() : items_id
+                     },
                      success: function(response) {";
-      $js .= "          $(\"#itemAddForm$rand\").replaceWith(response);";
+      $js .= "          $('#itemAddForm$rand').replaceWith(response);";
       $js .= "       }";
       $js .= "    });";
-      $js .= " }";
-      echo Html::scriptBlock($js);
-      echo "</div>";
+      $js .= "}";
+      $out.= Html::scriptBlock($js);
+
+      if ($params['display']) {
+         echo $out;
+      } else {
+         return $out;
+      }
    }
 
 
@@ -349,7 +373,7 @@ class Item_Ticket extends CommonItilObject_Item {
             $result .= $item->getTypeName(1)." : ".$item->getLink(['comments' => true]);
             $result .= Html::hidden("items_id[$itemtype][$items_id]", ['value' => $items_id]);
             if ($params['delete']) {
-               $result .= " <span class='fa fa-times-circle pointer' onclick=\"itemAction".$params['rand']."('delete', '$itemtype', '$items_id');\"></span>";
+               $result .= " <i class='fas fa-times-circle pointer' onclick=\"itemAction".$params['rand']."('delete', '$itemtype', '$items_id');\"></i>";
             }
             $result .= "</div>";
          } else {
@@ -551,16 +575,20 @@ class Item_Ticket extends CommonItilObject_Item {
     * @param array   $options          array of possible options:
     *    - used     : ID of the requester user
     *    - multiple : allow multiple choice
+    *    - display : echo html or return it
     *
     * @return void
    **/
    static function dropdownMyDevices($userID = 0, $entity_restrict = -1, $itemtype = 0, $items_id = 0, $options = []) {
       global $DB, $CFG_GLPI;
 
-      $params = ['tickets_id' => 0,
-                      'used'       => [],
-                      'multiple'   => false,
-                      'rand'       => mt_rand()];
+      $params = [
+         'tickets_id' => 0,
+         'used'       => [],
+         'multiple'   => false,
+         'rand'       => mt_rand(),
+         'display'    => true,
+      ];
 
       foreach ($options as $key => $val) {
          $params[$key] = $val;
@@ -844,17 +872,35 @@ class Item_Ticket extends CommonItilObject_Item {
                $my_devices[__('Connected devices')] = $devices;
             }
          }
-         echo "<div id='tracking_my_devices'>";
-         echo __('My devices')."&nbsp;";
-         Dropdown::showFromArray('my_items', $my_devices, ['rand' => $rand]);
-         echo "</div>";
+
+         $out = "";
+         $out.= "<div id='tracking_my_devices' class='input-group mb-1'>";
+         $out.= "<span class='input-group-text'>".__('My devices')."</span>";
+         $out.= Dropdown::showFromArray('my_items', $my_devices, [
+            'rand'    => $rand,
+            'display' => $params['display'],
+            'class'   => 'form-select',
+         ]);
+         $rand2 = mt_rand();
+         $out.= "<span id='item_ticket_selection_information$rand2' class='ms-1'></span>";
+         $out.= "</div>";
 
          // Auto update summary of active or just solved tickets
-         $params = ['my_items' => '__VALUE__'];
+         $p = ['my_items' => '__VALUE__'];
 
-         Ajax::updateItemOnSelectEvent("dropdown_my_items$rand", "item_ticket_selection_information$rand",
-                                       $CFG_GLPI["root_doc"]."/ajax/ticketiteminformation.php",
-                                       $params);
+         $out.= Ajax::updateItemOnSelectEvent(
+            "dropdown_my_items$rand",
+            "item_ticket_selection_information$rand2",
+            $CFG_GLPI["root_doc"]."/ajax/ticketiteminformation.php",
+            $p,
+            $params['display']
+         );
+
+         if ($params['display']) {
+            echo $out;
+         } else {
+            return $out;
+         }
       }
    }
 
@@ -877,7 +923,7 @@ class Item_Ticket extends CommonItilObject_Item {
     *    - used         : array / Already used items ID: not to display in dropdown (default empty)
     *    - on_change    : string / value to transmit to "onChange"
     *    - display      : boolean / display or get string (default true)
-    *    - width        : specific width needed (default 80%)
+    *    - width        : specific width needed
     *
    **/
    static function dropdown($options = []) {
@@ -889,7 +935,7 @@ class Item_Ticket extends CommonItilObject_Item {
       $p['all']            = 0;
       $p['on_change']      = '';
       $p['comments']       = 1;
-      $p['width']          = '80%';
+      $p['width']          = '';
       $p['entity']         = -1;
       $p['entity_sons']    = false;
       $p['used']           = [];

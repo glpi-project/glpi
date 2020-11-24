@@ -342,7 +342,8 @@ class Dropdown extends DbTestCase {
                            'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                            'selection_text' => '_cat_1 > _subcat_1',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count' => 2
@@ -371,7 +372,8 @@ class Dropdown extends DbTestCase {
                            'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                            'selection_text' => '_cat_1 > _subcat_1',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count' => 1
@@ -405,7 +407,8 @@ class Dropdown extends DbTestCase {
                            'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                            'selection_text' => '_cat_1 > _subcat_1',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count' => 2
@@ -434,7 +437,8 @@ class Dropdown extends DbTestCase {
                            'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                            'selection_text' => '_cat_1 > _subcat_1',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count' => 1
@@ -460,7 +464,8 @@ class Dropdown extends DbTestCase {
                            'text'   => '_test_pc22',
                            'title'  => '_test_pc22',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count'     => 2
@@ -486,7 +491,8 @@ class Dropdown extends DbTestCase {
                            'text'   => '_test_pc22',
                            'title'  => '_test_pc22',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count'     => 2
@@ -508,7 +514,8 @@ class Dropdown extends DbTestCase {
                            'text'   => '_test_pc22',
                            'title'  => '_test_pc22',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count'     => 1
@@ -542,7 +549,8 @@ class Dropdown extends DbTestCase {
                            'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                            'selection_text' => '_cat_1 > _subcat_1',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count' => 1
@@ -565,7 +573,8 @@ class Dropdown extends DbTestCase {
                            'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                            'selection_text' => '_cat_1 > _subcat_1',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count' => 1
@@ -597,7 +606,8 @@ class Dropdown extends DbTestCase {
                            'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                            'selection_text' => '_cat_1 > _subcat_1',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count' => 2
@@ -631,7 +641,8 @@ class Dropdown extends DbTestCase {
                            'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                            'selection_text' => '_cat_1 > _subcat_1',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count' => 1
@@ -676,7 +687,8 @@ class Dropdown extends DbTestCase {
                            'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                            'selection_text' => '_cat_1 > _subcat_1',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count' => 1
@@ -1263,8 +1275,9 @@ class Dropdown extends DbTestCase {
 
       $list_results = (array)$results[1];
       $this->array($list_results)
-         ->hasSize(2)
-         ->string['text']->isIdenticalTo('Root entity');
+         ->hasSize(3)
+         ->string['text']->isIdenticalTo('Root entity')
+         ->string['itemtype']->isIdenticalTo('Entity');
 
       $children = (array)$list_results['children'];
       $this->array($children)->hasSize(10);

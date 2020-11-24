@@ -308,15 +308,7 @@ class MailCollector  extends CommonDBTM {
       $this->showFormButtons($options);
 
       if ($type != 'pop') {
-         echo "<div id='imap-folder'></div>";
          echo Html::scriptBlock("$(function() {
-            $('#imap-folder')
-               .dialog(options = {
-                  autoOpen: false,
-                  autoResize:true,
-                  width: 'auto',
-                  modal: true,
-               });
 
             $(document).on('click', '.get-imap-folder', function() {
                var input = $(this).prev('input');
@@ -328,10 +320,12 @@ class MailCollector  extends CommonDBTM {
                // Force empty value for server_mailbox
                data += '&server_mailbox=';
 
-               $('#imap-folder')
-                  .html('')
-                  .load('".$CFG_GLPI['root_doc']."/ajax/mailcollector.php', data)
-                  .dialog('open');
+               glpi_ajax_dialog({
+                  title: __('Select a folder'),
+                  url: '".$CFG_GLPI['root_doc']."/ajax/mailcollector.php',
+                  params: data,
+                  id: 'imap-folder'
+               });
             });
 
             $(document).on('click', '.select_folder li', function(event) {
@@ -349,7 +343,7 @@ class MailCollector  extends CommonDBTM {
                _label += folder;
 
                $('#'+input_id).val(_label);
-               $('#imap-folder').dialog('close');
+               $('#imap-folder + .modal-backdrop, #imap-folder').remove();
             })
          });");
       }
@@ -408,18 +402,18 @@ class MailCollector  extends CommonDBTM {
     * @return void
     */
    private function displayFolder($folder, $input_id) {
-      echo "<ul>";
       $fname = mb_convert_encoding($folder->getLocalName(), "UTF-8", "UTF7-IMAP");
       echo "<li class='pointer' data-input-id='$input_id'>
                <i class='fa fa-folder'></i>&nbsp;
                <span class='folder-name'>".$fname."</span>";
+      echo "<ul>";
 
       foreach ($folder as $sfolder) {
          $this->displayFolder($sfolder, $input_id);
       }
+      echo "</ul>";
 
       echo "</li>";
-      echo "</ul>";
    }
 
 

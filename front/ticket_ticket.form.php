@@ -42,15 +42,15 @@ $ticket_ticket = new Ticket_Ticket();
 
 Session ::checkCentralAccess();
 
-if (isset($_POST['purge'])) {
-   $ticket_ticket->check($_POST['id'], PURGE);
+if (isset($_REQUEST['purge'])) {
+   $ticket_ticket->check($_REQUEST['id'], PURGE);
 
-   $ticket_ticket->delete($_POST, 1);
+   $ticket_ticket->delete($_REQUEST, 1);
 
-   Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
+   Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking",
               //TRANS: %s is the user login
               sprintf(__('%s purges link between tickets'), $_SESSION["glpiname"]));
-   Html::redirect(Ticket::getFormURLWithID($_POST['tickets_id']));
+   Html::redirect(Ticket::getFormURLWithID($_REQUEST['tickets_id']));
 
 }
 Html::displayErrorAndDie("lost");

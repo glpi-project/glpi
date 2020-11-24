@@ -804,11 +804,12 @@ class Reminder extends CommonDBVisible implements
    /**
     * Show list for central view
     *
-    * @param $personal boolean : display reminders created by me ? (true by default)
+    * @param $personal boolean  : display reminders created by me ?
+    * @param $personal $display : if false return html
     *
     * @return void
     **/
-   static function showListForCentral($personal = true) {
+   static function showListForCentral(bool $personal = true, bool $display = true) {
       global $DB, $CFG_GLPI;
 
       $users_id = Session::getLoginUserID();
@@ -902,25 +903,28 @@ class Reminder extends CommonDBVisible implements
       $iterator = $DB->request($criteria);
       $nb = count($iterator);
 
-      echo "<br><table class='tab_cadrehov'>";
-      echo "<tr class='noHover'><th><div class='relative'><span>$titre</span>";
+      $output = "";
+      $output.= "<table class='table table-striped card-table table-hover'>";
+      $output.= "<thead>";
+      $output.= "<tr class='noHover'><th><div class='relative'><span>$titre</span>";
+      $output.= "</thead>";
 
       if (($personal && self::canCreate())
         || (!$personal && Session::haveRight(self::$rightname, CREATE))) {
-         echo "<span class='floatright'>";
-         echo "<a href='".Reminder::getFormURL()."'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."'
+         $output.=  "<span class='floatright'>";
+         $output.=  "<a href='".Reminder::getFormURL()."'>";
+         $output.=  "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."'
                 title=\"". __s('Add')."\"></a></span>";
       }
 
-      echo "</div></th></tr>\n";
+      $output.= "</div></th></tr>";
 
       if ($nb) {
          $rand = mt_rand();
 
          while ($data = $iterator->next()) {
 
-            echo "<tr class='tab_bg_2'><td>";
+            $output.= "<tr><td>";
             $name = $data['name'];
 
             if (isset($data['transname']) && !empty($data['transname'])) {
@@ -936,26 +940,31 @@ class Reminder extends CommonDBVisible implements
             $tooltip = Html::showToolTip(RichText::getSafeHtml($text, true),
                                          ['applyto' => "content_reminder_".$data["id"].$rand,
                                           'display' => false]);
-            printf(__('%1$s %2$s'), $link, $tooltip);
+            $output.= sprintf(__('%1$s %2$s'), $link, $tooltip);
 
             if ($data["is_planned"]) {
                $tab      = explode(" ", $data["begin"]);
                $date_url = $tab[0];
-               echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url.
+               $output.=  "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url.
                      "&amp;type=day' class='pointer floatright' title=\"".sprintf(__s('From %1$s to %2$s'),
                                            Html::convDateTime($data["begin"]),
                                            Html::convDateTime($data["end"]))."\">";
-               echo "<i class='fa fa-bell'></i>";
-               echo "<pan class='sr-only'>" . __s('Planning') . "</span>";
-               echo "</a>";
+               $output.= "<i class='fa fa-bell'></i>";
+               $output.= "<pan class='sr-only'>" . __s('Planning') . "</span>";
+               $output.= "</a>";
             }
 
-            echo "</td></tr>\n";
+            $output.= "</td></tr>";
          }
 
       }
-      echo "</table>\n";
+      $output.= "</table>";
 
+      if ($display) {
+         echo $output;
+      } else {
+         return $output;
+      }
    }
 
    /**

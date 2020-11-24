@@ -892,4 +892,9 @@ class RuleTicket extends Rule {
       return $values;
    }
 
+
+   static function getIcon() {
+      return Ticket::getIcon();
+   }
+
 }

@@ -57,6 +57,10 @@ foreach ($date_fields as $date_field) {
    }
 }
 
+if (isset($_UPOST['_actors'])) {
+   $_POST['_actors'] = json_decode($_UPOST['_actors'], true);
+}
+
 if (isset($_POST["add"])) {
    $track->check(-1, CREATE, $_POST);
 
@@ -91,7 +95,6 @@ if (isset($_POST["add"])) {
    Event::log($_POST["id"], "ticket", 4, "tracking",
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
-
 
    if ($track->can($_POST["id"], READ)) {
       $toadd = '';
@@ -131,7 +134,7 @@ if (isset($_POST["add"])) {
                  //TRANS: %s is the user login
                  sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    }
-   $track->redirectToList();
+   Html::back();
 
 } else if (isset($_POST['sla_delete'])) {
    $track->check($_POST["id"], UPDATE);
@@ -153,37 +156,23 @@ if (isset($_POST["add"])) {
 
    Html::redirect(Ticket::getFormURLWithID($_POST["id"]));
 
-} else if (isset($_POST['addme_observer'])) {
-   $track->check($_POST['tickets_id'], READ);
+} else if (isset($_REQUEST['addme_as_actor'])) {
+   $id = (int) $_REQUEST['id'];
+   $track->check($id, READ);
    $input = array_merge(Toolbox::addslashes_deep($track->fields), [
-      'id' => $_POST['tickets_id'],
-      '_itil_observer' => [
+      'id' => $id,
+      '_itil_'.$_REQUEST['actortype'] => [
          '_type' => "user",
          'users_id' => Session::getLoginUserID(),
          'use_notification' => 1,
       ]
    ]);
    $track->update($input);
-   Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
+   Event::log($id, "ticket", 4, "tracking",
               //TRANS: %s is the user login
               sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
-   Html::redirect(Ticket::getFormURLWithID($_POST['tickets_id']));
+   Html::redirect(Ticket::getFormURLWithID($id));
 
-} else if (isset($_POST['addme_assign'])) {
-   $track->check($_POST['tickets_id'], READ);
-   $input = array_merge(Toolbox::addslashes_deep($track->fields), [
-      'id' => $_POST['tickets_id'],
-      '_itil_assign' => [
-         '_type' => "user",
-         'users_id' => Session::getLoginUserID(),
-         'use_notification' => 1,
-      ]
-   ]);
-   $track->update($input);
-   Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
-              //TRANS: %s is the user login
-              sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
-   Html::redirect(Ticket::getFormURLWithID($_POST['tickets_id']));
 } else if (isset($_REQUEST['delete_document'])) {
    $track->getFromDB((int)$_REQUEST['tickets_id']);
    $doc = new Document();
@@ -226,8 +215,8 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
                                      "?_in_modal=1&item_itemtype=Ticket&item_items_id=".
                                      $_GET["id"],
                                     ['title'         => __('Save solution to the knowledge base'),
-                                          'reloadonclose' => false]);
-      echo Html::scriptBlock('$(function() {' .Html::jsGetElementbyID('savetokb').".dialog('open'); });");
+                                     'reloadonclose' => false,
+                                     'autoopen'      => true]);
    }
 
 } else {

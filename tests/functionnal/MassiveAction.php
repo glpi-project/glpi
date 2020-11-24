@@ -60,7 +60,7 @@ class MassiveAction extends DbTestCase {
             'itemtype'     => 'Ticket',
             'items_id'     => '_ticket01',
             'allcount'     => 20,
-            'singlecount'  => 15
+            'singlecount'  => 10
          ], [
             'itemtype'     => 'Profile',
             'items_id'     => 'Super-Admin',
