@@ -1070,4 +1070,52 @@ class Toolbox extends DbTestCase {
    public function testHasTrait($class, $trait, $result) {
       $this->boolean(\Toolbox::hasTrait($class, $trait))->isIdenticalTo((bool)$result);
    }
+
+   public function appendParametersProvider() {
+      return [
+         [
+            [
+               'a'   => 'test1',
+               'b'   => 'test2'
+            ], '&', 'a=test1&b=test2'
+         ],
+         [
+            [
+               'a'   => [
+                  'test1', 'test2'
+               ],
+               'b'   => 'test3'
+            ], '&', 'a%5B0%5D=test1&a%5B1%5D=test2&b=test3' // '[' converted to %5B, ']' converted to %5D
+         ],
+         [
+            [
+               'a'   => [
+                  'test1', 'test2'
+               ],
+               'b'   => 'test3*'
+            ], '&', 'a%5B0%5D=test1&a%5B1%5D=test2&b=test3%2A' // '[' converted to %5B, ']' converted to %5D
+         ],
+         [
+            [
+               'a'   => 'test1',
+               'b'   => 'test2'
+            ], '_', 'a=test1_b=test2'
+         ],
+         [
+            [
+               'a'   => [
+                  'test1', 'test2'
+               ],
+               'b'   => 'test3'
+            ], '_', 'a%5B0%5D=test1_a%5B1%5D=test2_b=test3' // '[' converted to %5B, ']' converted to %5D
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider appendParametersProvider
+    */
+   public function testAppendParameters(array $params, string $separator, string $expected) {
+      $this->string(\Toolbox::append_params($params, $separator))->isEqualTo($expected);
+   }
 }

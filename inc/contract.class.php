@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -150,186 +152,11 @@ class Contract extends CommonDBTM {
     *@return boolean item found
    **/
    function showForm($ID, $options = []) {
-
       $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Name')."</td><td>";
-      Html::autocompletionTextField($this, "name");
-      echo "</td>";
-      echo "<td>".ContractType::getTypeName(1)."</td><td >";
-      ContractType::dropdown(['value' => $this->fields["contracttypes_id"]]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>"._x('phone', 'Number')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "num");
-      echo "</td>";
-
-      $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_states_id$randDropdown'>".__('Status')."</label></td>";
-      echo "<td>";
-      State::dropdown([
-         'value'     => $this->fields["states_id"],
-         'entity'    => $this->fields["entities_id"],
-         'condition' => ['is_visible_contract' => 1],
-         'rand'      => $randDropdown
+      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
+         'item'   => $this,
+         'params' => $options,
       ]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Start date')."</td>";
-      echo "<td>";
-      Html::showDateField("begin_date", ['value' => $this->fields["begin_date"]]);
-      echo "</td>";
-      echo "<td>".__('Initial contract period')."</td><td>";
-      Dropdown::showNumber("duration", ['value' => $this->fields["duration"],
-                                             'min'   => 1,
-                                             'max'   => 120,
-                                             'step'  => 1,
-                                             'toadd' => [0 => Dropdown::EMPTY_VALUE],
-                                             'unit'  => 'month']);
-      if (!empty($this->fields["begin_date"])) {
-         echo " -> " . Infocom::getWarrantyExpir(
-            $this->fields["begin_date"],
-            $this->fields["duration"],
-            0,
-            true,
-            $this->fields['renewal'] == self::RENEWAL_TACIT
-         );
-      }
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Notice')."</td><td>";
-      Dropdown::showNumber("notice", ['value' => $this->fields["notice"],
-                                           'min'   => 0,
-                                           'max'   => 120,
-                                           'step'  => 1,
-                                           'toadd' => [],
-                                           'unit'  => 'month']);
-      if (!empty($this->fields["begin_date"])
-          && ($this->fields["notice"] > 0)) {
-         echo " -> ".Infocom::getWarrantyExpir($this->fields["begin_date"],
-                                               $this->fields["duration"], $this->fields["notice"],
-                                               true);
-      }
-      echo "</td>";
-      echo "<td>".__('Account number')."</td><td>";
-      Html::autocompletionTextField($this, "accounting_number");
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Contract renewal period')."</td><td>";
-      Dropdown::showNumber("periodicity",
-                           ['value' => $this->fields["periodicity"],
-                                 'min'   => 12,
-                                 'max'   => 60,
-                                 'step'  => 12,
-                                 'toadd' => [0 => Dropdown::EMPTY_VALUE,
-                                                  1 => sprintf(_n('%d month', '%d months', 1), 1),
-                                                  2 => sprintf(_n('%d month', '%d months', 2), 2),
-                                                  3 => sprintf(_n('%d month', '%d months', 3), 3),
-                                                  6 => sprintf(_n('%d month', '%d months', 6), 6)],
-                                 'unit'  => 'month']);
-      echo "</td>";
-      echo "<td>".__('Invoice period')."</td>";
-      echo "<td>";
-      Dropdown::showNumber("billing",
-                           ['value' => $this->fields["billing"],
-                                 'min'   => 12,
-                                 'max'   => 60,
-                                 'step'  => 12,
-                                 'toadd' => [0 => Dropdown::EMPTY_VALUE,
-                                                  1 => sprintf(_n('%d month', '%d months', 1), 1),
-                                                  2 => sprintf(_n('%d month', '%d months', 2), 2),
-                                                  3 => sprintf(_n('%d month', '%d months', 3), 3),
-                                                  6 => sprintf(_n('%d month', '%d months', 6), 6)],
-                                 'unit'  => 'month']);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'><td>".__('Renewal')."</td><td>";
-      self::dropdownContractRenewal("renewal", $this->fields["renewal"]);
-      echo "</td>";
-      echo "<td>".__('Max number of items')."</td><td>";
-      Dropdown::showNumber("max_links_allowed", ['value' => $this->fields["max_links_allowed"],
-                                                      'min'   => 1,
-                                                      'max'   => 200000,
-                                                      'step'  => 1,
-                                                      'toadd' => [0 => __('Unlimited')]]);
-      echo "</td></tr>";
-
-      if (Entity::getUsedConfig("use_contracts_alert", $this->fields["entities_id"])) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Email alarms')."</td>";
-         echo "<td>";
-         self::dropdownAlert(['name'  => "alert",
-                                   'value' => $this->fields["alert"]]);
-         Alert::displayLastAlert(__CLASS__, $ID);
-         echo "</td>";
-         echo "<td colspan='2'>&nbsp;</td>";
-         echo "</tr>";
-      }
-      echo "<tr class='tab_bg_1'><td class='top'>".__('Comments')."</td>";
-      echo "<td class='center' colspan='3'>";
-      echo "<textarea cols='50' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'><td>".__('Support hours')."</td>";
-      echo "<td colspan='3'>&nbsp;</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('on week')."</td>";
-      echo "<td colspan='3'>";
-      echo "<table width='100%'><tr><td width='20%'>&nbsp;</td>";
-      echo "<td width='20%'>";
-      echo "<span class='small_space'>".__('Start')."</span>";
-      echo "</td><td width='20%'>";
-      Dropdown::showHours("week_begin_hour", ['value' => $this->fields["week_begin_hour"]]);
-      echo "</td><td width='20%'>";
-      echo "<span class='small_space'>".__('End')."</span></td><td width='20%'>";
-      Dropdown::showHours("week_end_hour", ['value' => $this->fields["week_end_hour"]]);
-      echo "</td></tr></table>";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('on Saturday')."</td>";
-      echo "<td colspan='3'>";
-      echo "<table width='100%'><tr><td width='20%'>";
-      Dropdown::showYesNo("use_saturday", $this->fields["use_saturday"]);
-      echo "</td><td width='20%'>";
-      echo "<span class='small_space'>".__('Start')."</span>";
-      echo "</td><td width='20%'>";
-      Dropdown::showHours("saturday_begin_hour",
-                          ['value' => $this->fields["saturday_begin_hour"]]);
-      echo "</td><td width='20%'>";
-      echo "<span class='small_space'>".__('End')."</span>";
-      echo "</td><td width='20%'>";
-      Dropdown::showHours("saturday_end_hour",
-                          ['value' => $this->fields["saturday_end_hour"]]);
-      echo "</td></tr></table>";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Sundays and holidays')."</td>";
-      echo "<td colspan='3'>";
-      echo "<table width='100%'><tr><td width='20%'>";
-      Dropdown::showYesNo("use_monday", $this->fields["use_monday"]);
-      echo "</td><td width='20%'>";
-      echo "<span class='small_space'>".__('Start')."</span>";
-      echo "</td><td width='20%'>";
-      Dropdown::showHours("monday_begin_hour", ['value' => $this->fields["monday_begin_hour"]]);
-      echo "</td><td width='20%'>";
-      echo "<span class='small_space'>".__('End')."</span>";
-      echo "</td><td width='20%'>";
-      Dropdown::showHours("monday_end_hour", ['value' => $this->fields["monday_end_hour"]]);
-      echo "</td></tr></table>";
-      echo "</td></tr>";
-
-      $this->showFormButtons($options);
-
       return true;
    }
 
@@ -1076,12 +903,14 @@ class Contract extends CommonDBTM {
       ])->next();
       $contractpre30 = $result['cpt'];
 
-      echo "<table class='tab_cadrehov'>";
-      echo "<tr class='noHover'><th colspan='2'>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset\">".
-             self::getTypeName(1)."</a></th></tr>";
+      $twig_params = [
+         'title'     => [
+            'link'   => $CFG_GLPI["root_doc"]."/front/contract.php?reset=reset",
+            'text'   =>  self::getTypeName(1)
+         ],
+         'items'     => []
+      ];
 
-      echo "<tr class='tab_bg_2'>";
       $options = [
          'reset' => 'reset',
          'sort'  => 12,
@@ -1101,46 +930,50 @@ class Contract extends CommonDBTM {
             ]
          ]
       ];
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".
-                 Toolbox::append_params($options, '&amp;')."\">".
-                 __('Contracts expired in the last 30 days')."</a> </td>";
-      echo "<td class='numeric'>".$contract0."</td></tr>";
 
-      echo "<tr class='tab_bg_2'>";
+      $twig_params['items'][] = [
+         'link'   => $CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options),
+         'text'   => __('Contracts expired in the last 30 days'),
+         'count'  => $contract0
+      ];
+
       $options['criteria'][0]['value'] = '>0';
       $options['criteria'][1]['value'] = '<7';
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".
-                 Toolbox::append_params($options, '&amp;')."\">".
-                 __('Contracts expiring in less than 7 days')."</a></td>";
-      echo "<td class='numeric'>".$contract7."</td></tr>";
+      $twig_params['items'][] = [
+         'link'   => $CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options),
+         'text'   => __('Contracts expiring in less than 7 days'),
+         'count'  => $contract7
+      ];
 
-      echo "<tr class='tab_bg_2'>";
       $options['criteria'][0]['value'] = '>6';
       $options['criteria'][1]['value'] = '<30';
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".
-                 Toolbox::append_params($options, '&amp;')."\">".
-                 __('Contracts expiring in less than 30 days')."</a></td>";
-      echo "<td class='numeric'>".$contract30."</td></tr>";
+      $twig_params['items'][] = [
+         'link'   => $CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options),
+         'text'   => __('Contracts expiring in less than 30 days'),
+         'count'  => $contract30
+      ];
 
-      echo "<tr class='tab_bg_2'>";
       $options['criteria'][0]['field'] = 13;
       $options['criteria'][0]['value'] = '>0';
       $options['criteria'][1]['field'] = 13;
       $options['criteria'][1]['value'] = '<7';
-
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".
-                 Toolbox::append_params($options, '&amp;')."\">".
-                 __('Contracts where notice begins in less than 7 days')."</a></td>";
-      echo "<td class='numeric'>".$contractpre7."</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
       $options['criteria'][0]['value'] = '>6';
       $options['criteria'][1]['value'] = '<30';
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".
-                 Toolbox::append_params($options, '&amp;')."\">".
-                 __('Contracts where notice begins in less than 30 days')."</a></td>";
-      echo "<td class='numeric'>".$contractpre30."</td></tr>";
-      echo "</table>";
+      $twig_params['items'][] = [
+         'link'   => $CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options),
+         'text'   => __('Contracts where notice begins in less than 7 days'),
+         'count'  => $contractpre7
+      ];
+
+      $options['criteria'][0]['value'] = '>6';
+      $options['criteria'][1]['value'] = '<30';
+      $twig_params['items'][] = [
+         'link'   => $CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options),
+         'text'   => __('Contracts where notice begins in less than 30 days'),
+         'count'  => $contractpre30
+      ];
+
+      TemplateRenderer::getInstance()->display('central/lists/itemtype_count.html.twig', $twig_params);
    }
 
 
@@ -1742,8 +1575,8 @@ class Contract extends CommonDBTM {
    function getUnallowedFieldsForUnicity() {
 
       return array_merge(parent::getUnallowedFieldsForUnicity(),
-                         ['begin_date', 'duration', 'entities_id', 'monday_begin_hour',
-                               'monday_end_hour', 'saturday_begin_hour', 'saturday_end_hour',
+                         ['begin_date', 'duration', 'entities_id', 'sunday_begin_hour',
+                               'sunday_end_hour', 'saturday_begin_hour', 'saturday_end_hour',
                                'week_begin_hour', 'week_end_hour']);
    }
 

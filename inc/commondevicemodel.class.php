@@ -37,6 +37,10 @@ if (!defined('GLPI_ROOT')) {
 /// Class DeviceBatteryModel
 abstract class CommonDeviceModel extends CommonDropdown {
 
+   static function getTypeName($nb = 0) {
+      return _n('Device model', 'Device models', $nb);
+   }
+
    static function getFormURL($full = true) {
       global $CFG_GLPI;
 
@@ -55,5 +59,11 @@ abstract class CommonDeviceModel extends CommonDropdown {
       $link = "$dir/front/devicemodel.php?itemtype=$itemtype";
 
       return $link;
+   }
+
+   static function getIcon() {
+      $model_class  = get_called_class();
+      $device_class = str_replace('Model', '', $model_class);
+      return $device_class::getIcon();
    }
 }

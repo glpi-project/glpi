@@ -58,18 +58,23 @@
         "symfony/console": "^4.4",
         "tecnickcom/tcpdf": "^6.2",
         "true/punycode": "^2.1",
+        "twig/string-extra": "^3.3",
+        "twig/twig": "^3.3",
         "wapmorgan/unified-archive": "^1.0"
     },
     "require-dev": {
         "ext-xml": "*",
         "atoum/atoum": "^4.0",
         "consolidation/robo": "^3.0",
+        "friendsoftwig/twigcs": "^5.0",
         "glpi-project/coding-standard": "^0.8",
         "glpi-project/tools": "^0.1.15",
         "maglnet/composer-require-checker": "^2.0",
         "mikey179/vfsstream": "^1.6",
         "natxet/cssmin": "^3.0",
-        "php-parallel-lint/php-parallel-lint": "^1.1"
+        "php-parallel-lint/php-parallel-lint": "^1.1",
+        "symfony/css-selector": "^5.3",
+        "symfony/dom-crawler": "^5.3"
     },
     "replace": {
         "laminas/laminas-cache-storage-adapter-apc": "*",
@@ -103,7 +108,10 @@
         "sort-packages": true
     },
     "autoload-dev": {
-        "psr-4": { "GlpiTests\\": "tests/src/" }
+        "psr-4": {
+            "Glpi\\Tools\\": "tools/",
+            "GlpiTests\\": "tests/src/"
+        }
     },
     "scripts": {
         "testdb": "atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database",

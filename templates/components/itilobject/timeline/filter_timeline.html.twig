@@ -1,0 +1,128 @@
+{% set filters_buttons = {
+   'description': {
+      'title': __("Description"),
+      'icon': item|getIcon(),
+      'itemtype': 'ITILContent',
+      'checked': true,
+   },
+   'followups': {
+      'title': _n("Followup", "Followups", getPluralNumber()),
+      'icon': 'far fa-comment',
+      'itemtype': 'ITILFollowup',
+      'checked': true,
+   },
+   'tasks': {
+      'title': _n("Task", "Tasks", getPluralNumber()),
+      'icon': 'far fa-check-square',
+      'itemtype': 'ITILTask',
+      'checked': true,
+   },
+   'documents': {
+      'title': _n("Document", "Documents", getPluralNumber()),
+      'icon': 'fas fa-paperclip',
+      'itemtype': 'Document_Item',
+      'checked': true,
+   },
+   'validations': {
+      'title': _n("Validation", "Validations", getPluralNumber()),
+      'icon': 'far fa-thumbs-up',
+      'itemtype': 'ITILValidation',
+      'checked': true,
+   },
+   'solutions': {
+      'title': _n("Solution", "Solutions", getPluralNumber()),
+      'icon': 'fas fa-check',
+      'itemtype': 'ITILSolution',
+      'checked': true,
+   },
+} %}
+
+{% if getCurrentInterface() == "central" %}
+   {% set filters_buttons = filters_buttons|merge({
+      'logs': {
+         'title': __('Historical'),
+         'icon': 'fas fa-history',
+         'itemtype': 'Log',
+         'checked': false,
+      },
+   }) %}
+{% endif %}
+
+<div class="filter-timeline d-none d-md-block float-end mt-n2 position-relative">
+   <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __("Timeline filter") }}">
+      <button type="button"
+            class="btn btn-sm btn-icon btn-ghost-secondary open-timeline-filter-popover"
+            data-bs-toggle="collapse"
+            data-bs-target="#filter-timeline-popover"
+            data-bs-trigger="click">
+         <i class="fas fa-filter"></i>
+      </button>
+   </span>
+
+   <div class="filter-timeline-popover collapse position-absolute bottom-100 end-0 text-nowrap"
+        id="filter-timeline-popover">
+      <div class="card pt-2">
+         <div class="list-group list-group-flush">
+            {% for filter_key, filter_button in filters_buttons %}
+               <li class="list-group-item list-group-item-action py-1">
+                  <div class="form-check form-switch trigger-filter {{ filter_button['itemtype'] }}" role="button">
+                     <input class="form-check-input" type="checkbox" id="timeline-filter-{{ filter_key }}"
+                           autocomplete="off"
+                           {{ filter_button['checked'] ? "checked" : "" }}
+                           data-itemtype='{{ filter_button['itemtype'] }}'>
+                     <label class="form-check-label" for="timeline-filter-{{ filter_key }}" role="button">
+                        <i class="{{ filter_button['icon'] }} ms-2"></i>
+                        {{ filter_button['title'] }}
+                     </label>
+                  </div>
+               </li>
+            {% endfor %}
+         </div>
+      </div>
+   </div>
+
+   {% if getCurrentInterface() == "central" %}
+      <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __("View TODO list") }}">
+         <button type="button"
+               class="btn btn-sm btn-icon btn-ghost-secondary view-timeline-todo-list">
+            <i class="fas fa-tasks"></i>
+         </button>
+      </span>
+   {% endif %}
+</div>
+
+<script type="text/javascript">
+$(function() {
+   $(document).on("click", ".filter-timeline-popover .trigger-filter", function() {
+      var timeline       = $('#itil-object-container .itil-timeline');
+      var timeline_items = timeline.find(".timeline-item");
+
+      timeline_items.addClass('d-none');
+      $('.filter-timeline-popover .trigger-filter input[type=checkbox]').each(function() {
+         if(!$(this).is(':checked')) {
+            return;
+         }
+         var itemtype = $(this).data('itemtype');
+         timeline_items.filter("."+itemtype).removeClass('d-none');
+      });
+   });
+
+   $(document).on("click", ".view-timeline-todo-list", function() {
+      $('body').toggleClass('timeline-todo-list');
+      $('.open-timeline-filter-popover').toggle();
+   });
+
+   $(document).mouseup(function(e) {
+      var container = $("#filter-timeline-popover");
+
+      // if the target of the click isn't the container nor a descendant of the container
+      if (!container.is(e.target) && container.has(e.target).length === 0) {
+         var mycollapse = bootstrap.Collapse.getInstance(container[0]);
+         console.log()
+         if (mycollapse !== null) {
+            mycollapse.hide();
+         }
+      }
+   });
+});
+</script>

@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
 use Glpi\Toolbox\RichText;
@@ -1322,6 +1323,14 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       $rand_group      = mt_rand();
       $rand_state      = mt_rand();
 
+      TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_task.html.twig', [
+         'item'      => $options['parent'],
+         'subitem'   => $this
+      ]);
+      return;
+
+      //TODO Legacy form rendering kept for reference only. Remove when twig template is complete.
+
       if (isset($options['parent']) && !empty($options['parent'])) {
          $item = $options['parent'];
       }
@@ -1514,7 +1523,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                                   'url'       => $CFG_GLPI["root_doc"]."/ajax/planningcheck.php"];
       User::dropdown($params);
 
-      echo " <a href='#' title=\"".__s('Availability')."\" onClick=\"".Html::jsGetElementbyID('planningcheck'.$rand).".dialog('open'); return false;\">";
+      echo " <a href='#' title=\"".__s('Availability')."\" data-bs-toggle='modal' data-bs-target='#planningcheck$rand'>";
       echo "<i class='far fa-calendar-alt'></i>";
       echo "<span class='sr-only'>".__('Availability')."</span>";
       echo "</a>";

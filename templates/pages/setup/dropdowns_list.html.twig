@@ -1,0 +1,36 @@
+<div class="container-fluid text-start mb-4 dropdowns-list">
+   <div class="row row-cards" data-masonry='{"percentPosition": true }' >
+      {% for label, dropdown in optgroup %}
+         <div class="col-lg-6 col-xl-3 col-xxl-2">
+            <div class="card">
+               <div class="card-header">
+                  <h3 class="card-title">{{ label }}</h3>
+               </div>
+               <div class="list-group list-group-flush list-group-hoverable">
+                  {% for itemtype, dropdown_label in dropdown %}
+                     {% set is_entity_assign = itemtype|isEntityAssign() %}
+                     <a class="list-group-item list-group-item-action {{ is_entity_assign ? "" : "dropdown-no-entity" }}"
+                        href="{{ itemtype|getSearchUrl() }}">
+                        <div class="row">
+                           <div class="col-auto">
+                              <i class="fa-fw {{ itemtype|getIcon() }}"></i>
+                           </div>
+                           <div class="col text-truncate">
+                              {{ dropdown_label }}
+                           </div>
+                           <div class="col-1 text-muted">
+                              {% if is_entity_assign %}
+                                 <i class="{{ "Entity"|getIcon() }} fa-sm"
+                                    data-bs-toggle="tooltip"
+                                    title="{{ __("Dropdown with entity management") }}"></i>
+                              {% endif %}
+                           </div>
+                        </div>
+                     </a>
+                  {% endfor %}
+               </div>
+            </div>
+         </div>
+      {% endfor %}
+   </div>
+</div>

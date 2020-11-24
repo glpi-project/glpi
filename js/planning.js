@@ -30,6 +30,7 @@
  */
 
 /* global FullCalendar, FullCalendarLocales, FullCalendarInteraction */
+/* global glpi_ajax_dialog, glpi_html_dialog */
 var GLPIPlanning  = {
    calendar:      null,
    dom_id:        "",
@@ -46,7 +47,10 @@ var GLPIPlanning  = {
          full_view: true,
          default_view: 'timeGridWeek',
          height: GLPIPlanning.getHeight,
-         plugins: ['dayGrid', 'interaction', 'list', 'timeGrid', 'resourceTimeline', 'rrule'],
+         plugins: [
+            'dayGrid', 'interaction', 'list', 'timeGrid',
+            'resourceTimeline', 'rrule', 'bootstrap'
+         ],
          license_key: "",
          resources: [],
          now: null,
@@ -79,6 +83,7 @@ var GLPIPlanning  = {
       this.calendar = new FullCalendar.Calendar(document.getElementById(GLPIPlanning.dom_id), {
          plugins:     options.plugins,
          height:      options.height,
+         themeSystem: 'bootstrap',
          timeZone:    'UTC',
          theme:       true,
          weekNumbers: options.full_view ? true : false,
@@ -340,32 +345,22 @@ var GLPIPlanning  = {
                   if (!("is_recurrent" in extprops) || !extprops.is_recurrent) {
                      ajaxDeleteEvent();
                   } else {
-                     $('<div title="'+__("Make a choice")+'"></div>')
-                        .html(__("Delete the whole serie of the recurrent event") + "<br>" +
-                              __("or just add an exception by deleting this instance?"))
-                        .dialog({
-                           resizable: false,
-                           height: "auto",
-                           width: "auto",
-                           modal: true,
-                           buttons: [
-                              {
-                                 text: $("<div/>").html(__("Serie")).text(), // html/text method to remove html entities
-                                 icon: "ui-icon-trash",
-                                 click: function() {
-                                    ajaxDeleteEvent(false);
-                                    $(this).dialog("close");
-                                 }
-                              }, {
-                                 text: $("<div/>").html(__("Instance")).text(), // html/text method to remove html entities
-                                 icon: "ui-icon-trash",
-                                 click: function() {
-                                    ajaxDeleteEvent(true);
-                                    $(this).dialog("close");
-                                 }
-                              }
-                           ]
-                        });
+                     glpi_html_dialog({
+                        title: __("Make a choice"),
+                        body: __("Delete the whole serie of the recurrent event") + "<br>" +
+                              __("or just add an exception by deleting this instance?"),
+                        buttons: [{
+                           label: __("Serie"),
+                           click:  function() {
+                              ajaxDeleteEvent(false);
+                           }
+                        }, {
+                           label: __("Instance"),
+                           click:  function() {
+                              ajaxDeleteEvent(true);
+                           }
+                        }]
+                     });
                   }
                });
             });
@@ -463,28 +458,23 @@ var GLPIPlanning  = {
             var is_recurrent = exprops.is_recurrent || false;
 
             if (is_recurrent) {
-               $('<div></div>')
-                  .dialog({
-                     modal:  true,
-                     title: __("Recurring event resized"),
-                     width:  'auto',
-                     height: 'auto',
-                     buttons: [
-                        {
-                           text: __("Serie"),
-                           click: function() {
-                              $(this).remove();
-                              GLPIPlanning.editEventTimes(info);
-                           }
-                        }, {
-                           text: __("Instance"),
-                           click: function() {
-                              $(this).remove();
-                              GLPIPlanning.editEventTimes(info, true);
-                           }
+               glpi_html_dialog({
+                  title: __("Recurring event resized"),
+                  body: __("The resized event is a recurring event. Do you want to change the serie or instance ?"),
+                  buttons: [
+                     {
+                        label: __("Serie"),
+                        click: function() {
+                           GLPIPlanning.editEventTimes(info);
                         }
-                     ]
-                  }).text(__("The resized event is a recurring event. Do you want to change the serie or instance ?"));
+                     }, {
+                        label: __("Instance"),
+                        click: function() {
+                           GLPIPlanning.editEventTimes(info, true);
+                        }
+                     }
+                  ]
+               });
             } else {
                GLPIPlanning.editEventTimes(info);
             }
@@ -511,28 +501,23 @@ var GLPIPlanning  = {
             var is_recurrent = exprops.is_recurrent || false;
 
             if (is_recurrent) {
-               $('<div></div>')
-                  .dialog({
-                     modal:  true,
-                     title: __("Recurring event dragged"),
-                     width:  'auto',
-                     height: 'auto',
-                     buttons: [
-                        {
-                           text: __("Serie"),
-                           click: function() {
-                              $(this).remove();
-                              GLPIPlanning.editEventTimes(info);
-                           }
-                        }, {
-                           text: __("Instance"),
-                           click: function() {
-                              $(this).remove();
-                              GLPIPlanning.editEventTimes(info, true);
-                           }
+               glpi_html_dialog({
+                  title: __("Recurring event dragged"),
+                  body: __("The dragged event is a recurring event. Do you want to move the serie or instance ?"),
+                  buttons: [
+                     {
+                        label: __("Serie"),
+                        click: function() {
+                           GLPIPlanning.editEventTimes(info);
                         }
-                     ]
-                  }).text(__("The dragged event is a recurring event. Do you want to move the serie or instance ?"));
+                     }, {
+                        label: __("Instance"),
+                        click: function() {
+                           GLPIPlanning.editEventTimes(info, true);
+                        }
+                     }
+                  ]
+               });
             } else {
                GLPIPlanning.editEventTimes(info);
             }
@@ -544,26 +529,14 @@ var GLPIPlanning  = {
                var start    = event.start;
                var ajaxurl  = event.extendedProps.ajaxurl+"&start="+start.toISOString();
                info.jsEvent.preventDefault(); // don't let the browser navigate
-               $('<div></div>')
-                  .dialog({
-                     modal:  true,
-                     width:  'auto',
-                     height: 'auto',
-                     close: function() {
-                        GLPIPlanning.refresh();
-                     }
-                  })
-                  .load(ajaxurl, function() {
-                     $(this).dialog({
-                        position: {
-                           my: 'center',
-                           at: 'center',
-                           viewport: $(window),
-                           of: $('#page'),
-                           collision: 'fit'
-                        }
-                     });
-                  });
+               glpi_ajax_dialog({
+                  url: ajaxurl,
+                  close: function() {
+                     GLPIPlanning.refresh();
+                  },
+                  dialogclass: 'modal-lg',
+                  title: __('Edit an event'),
+               });
             }
          },
 
@@ -589,43 +562,18 @@ var GLPIPlanning  = {
 
             var start = info.start;
             var end = info.end;
-            $('<div></div>').dialog({
-               modal:  true,
-               width:  'auto',
-               height: 'auto',
-               open: function () {
-                  $(this).load(
-                     CFG_GLPI.root_doc+"/ajax/planning.php",
-                     {
-                        action: 'add_event_fromselect',
-                        begin:  start.toISOString(),
-                        end:    end.toISOString(),
-                        res_itemtype: itemtype,
-                        res_items_id: items_id,
-                     },
-                     function() {
-                        $(this).dialog({
-                           position: {
-                              my: 'center',
-                              at: 'center',
-                              viewport: $(window),
-                              of: $('#page'),
-                              collision: 'fit'
-                           }
-                        });
-                     }
-                  );
+
+            glpi_ajax_dialog({
+               url: CFG_GLPI.root_doc+"/ajax/planning.php",
+               params: {
+                  action: 'add_event_fromselect',
+                  begin:  start.toISOString(),
+                  end:    end.toISOString(),
+                  res_itemtype: itemtype,
+                  res_items_id: items_id,
                },
-               close: function() {
-                  $(this).dialog("close");
-                  $(this).remove();
-               },
-               position: {
-                  my: 'center',
-                  at: 'center top',
-                  viewport: $(window),
-                  of: $('#page')
-               }
+               dialogclass: 'modal-lg',
+               title: __('Add an event'),
             });
 
             GLPIPlanning.calendar.unselect();
@@ -728,16 +676,9 @@ var GLPIPlanning  = {
       $('#planning_filter a.planning_add_filter' ).on( 'click', function( e ) {
          e.preventDefault(); // to prevent change of url on anchor
          var url = $(this).attr('href');
-         $('<div></div>').dialog({
-            modal: true,
-            open: function () {
-               $(this).load(url);
-            },
-            position: {
-               my: 'top',
-               at: 'center',
-               of: $('#planning_filter')
-            }
+         glpi_ajax_dialog({
+            url: url,
+            title: __('Add a calendar'),
          });
       });
 

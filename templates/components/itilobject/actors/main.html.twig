@@ -1,0 +1,227 @@
+{% import "components/form/fields_macros.html.twig" as fields %}
+
+{% set actor_options = field_options|merge({is_horizontal: false}) %}
+{% set can_admin = item.canAdminActors() %}
+{% if item.isNewItem() %}
+   {% set can_admin = true %}
+{% endif %}
+{# TODO can_admin is usefull for "assign to me" shortcut #}
+
+{# TODO check allow_email params #}
+
+{% if not itiltemplate.isHiddenField("_users_id_requester") or not itiltemplate.isHiddenField("_groups_id_requester") %}
+   {% set requester_field %}
+      {% include "components/itilobject/actors/field.html.twig" with {
+         'item': item,
+         'actortypeint': constant('CommonITILActor::REQUESTER'),
+         'actortype': 'requester',
+         'entities_id': params['entities_id'],
+         'itiltemplate': itiltemplate,
+         'params': params,
+         'canupdate': canupdate,
+      } only %}
+   {% endset %}
+   {{ fields.field(
+      'requester',
+      requester_field,
+      _n('Requester', 'Requesters', 1),
+      actor_options|merge({
+         required: itiltemplate.isMandatoryField("_users_id_requester") or itiltemplate.isMandatoryField("_groups_id_requester")
+      })
+   ) }}
+{% endif %}
+
+{% if not itiltemplate.isHiddenField("_users_id_observer") or not itiltemplate.isHiddenField("_groups_id_observer") %}
+   {% set observer_field %}
+      {% include "components/itilobject/actors/field.html.twig" with {
+         'item': item,
+         'actortypeint': constant('CommonITILActor::OBSERVER'),
+         'actortype': 'observer',
+         'entities_id': params['entities_id'],
+         'itiltemplate': itiltemplate,
+         'params': params,
+         'canupdate': canupdate,
+      } only %}
+   {% endset %}
+   {{ fields.field(
+      'observer',
+      observer_field,
+      __("Observer"),
+      actor_options|merge({
+         required: itiltemplate.isMandatoryField("_users_id_observer") or itiltemplate.isMandatoryField("_groups_id_observer")
+      })
+   ) }}
+{% endif %}
+
+{% if not itiltemplate.isHiddenField("_users_id_assign") or not itiltemplate.isHiddenField("_groups_id_assign") or not itiltemplate.isHiddenField("_supplier_id_assign") %}
+   {% set assign_field %}
+      {% include "components/itilobject/actors/field.html.twig" with {
+         'item': item,
+         'actortypeint': constant('CommonITILActor::ASSIGN'),
+         'actortype': 'assign',
+         'entities_id': params['entities_id'],
+         'itiltemplate': itiltemplate,
+         'params': params,
+         'canupdate': (canupdate or canassign),
+      } only %}
+   {% endset %}
+   {{ fields.field(
+      'assign',
+      assign_field,
+      __("Assigned to"),
+      actor_options|merge({
+         required: itiltemplate.isMandatoryField("_users_id_assign") or itiltemplate.isMandatoryField("_groups_id_assign") or itiltemplate.isMandatoryField("_supplier_id_assign")
+      })
+   ) }}
+{% endif %}
+
+<input type="hidden" name="_actors" id="_actors">
+
+{# modal for edit notification setting for a user #}
+<div class="modal fade" id="editActorNotifySettings" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+         <h5 class="modal-title">
+            <i class="fas fa-envelope"></i>
+            &nbsp;{{ __("Edit notification settings") }}
+         </h5>
+         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __("Close") }}"></button>
+      </div>
+      <div class="modal-body">
+         <div class="mb-3">
+            <label class="form-label" for="actorname">{{ __("Actor") }}</label>
+            <input type="text" class="form-control" id="actorname" name="actorname">
+            <input type="hidden" name="actortype" value="">
+            <input type="hidden" name="actorindex" value="">
+         </div>
+         <div class="mb-3">
+            <label for="alternative_email" class="form-label">{{ __("Email address") }}</label>
+            <div class="form-check form-switch">
+               <input class="form-check-input" type="checkbox" id="use_notification" name="use_notification">
+               <label class="form-check-label" for="use_notification">{{ __("Email followup") }}</label>
+            </div>
+            <input type="email" class="form-control" id="alternative_email" name="alternative_email">
+         </div>
+      </div>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times"></i>
+            <span>{{ __("Close") }}<span>
+         </button>
+         <button type="button" class="btn btn-primary" id="saveActorNotifySettings">
+            <i class="fas fa-save"></i>
+            <span>{{ __("Save") }}</span>
+         </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% set actortypes = {
+   'requester': constant('CommonITILActor::REQUESTER'),
+   'observer': constant('CommonITILActor::OBSERVER'),
+   'assign': constant('CommonITILActor::ASSIGN')
+} %}
+
+<script type="text/javascript">
+   var editActorNotifySettings_modal = new bootstrap.Modal(document.getElementById('editActorNotifySettings'), {});
+
+   var actors = {
+      {% for actortype, actortypeint in actortypes %}
+         {{ actortype }}: [
+            {% for actor in item.getActorsForType(actortypeint) %}
+            {
+               itemtype: "{{ actor['itemtype'] }}",
+               items_id: "{{ actor['items_id'] }}",
+               {% if actor['use_notification'] is defined %}
+                  use_notification: "{{ actor['use_notification'] }}",
+               {% endif %}
+               {% if actor['alternative_email'] is defined %}
+                  alternative_email: "{{ actor['alternative_email'] }}",
+               {% endif %}
+            },
+            {% endfor %}
+         ],
+      {% endfor %}
+   };
+
+   // edit email preference when .edit-notify-user button is activated
+   function openNotifyModal(event) {
+      event.stopPropagation();
+
+      var element = $(event.target).closest('.actor_entry');
+      var itemtype  = element.data('itemtype');
+      var items_id  = element.data('items-id');
+      var actortype = element.data('actortype');
+      var text      = element.data('text');
+
+      var actorIndex = actors[actortype].findIndex(element => (element.itemtype == itemtype && element.items_id == items_id));
+      var actor      = actors[actortype][actorIndex];
+
+      var modal = $('#editActorNotifySettings');
+      modal.find("input[name=actortype]").val(actortype);
+      modal.find("input[name=actorindex]").val(actorIndex);
+      modal.find("input[name=actorname]").removeAttr('readonly').val(text).attr('readonly', 'true');
+      modal.find("input[name=use_notification]").prop('checked', parseInt(actor.use_notification));
+      modal.find("input[name=alternative_email]").val(actor.alternative_email);
+
+      editActorNotifySettings_modal.show();
+   }
+
+   // save edited actor when clicking on save button
+   $(document).on('click', '#saveActorNotifySettings', function(event) {
+      saveNotificationSettings();
+   });
+
+   // prevent submit on enter key in modal (but save notification settings)
+   $(document).on('keyup keypress', '#editActorNotifySettings input', function(event) {
+      var keyCode = event.keyCode || event.which;
+      if (keyCode === 13) {
+         event.preventDefault();
+         saveNotificationSettings();
+         return false;
+      }
+   });
+
+   // save settings from modal (get modal data, and serialize them into input hidden)
+   function saveNotificationSettings() {
+      var modal = $('#editActorNotifySettings');
+      var actortype  = modal.find("input[name=actortype]").val();
+      var actorIndex = modal.find("input[name=actorindex]").val();
+      var use_notif  = (modal.find("input[name=use_notification]").is(":checked") ? 1 : 0);
+      var alt_email  = modal.find("input[name=alternative_email]").val();
+
+      var actor = actors[actortype][actorIndex];
+      actor.use_notification = use_notif;
+      actor.alternative_email = alt_email;
+
+      // update notif setting icon for actor
+      var fa_class = "far";
+      if (use_notif) {
+         fa_class = "fas";
+      }
+
+      var actor_entry = $('.actor_entry[data-itemtype='+actor.itemtype+'][data-items-id='+actor.items_id+'][data-actortype='+actortype+']');
+
+      // toggle notify icon
+      actor_entry.find('.notify-icon')
+         .removeClass('fas far')
+         .addClass(fa_class);
+
+      // toggle text for direct email
+      if (actor.itemtype == "User" && parseInt(actor.items_id) == 0) {
+         actor_entry.find('.actor_text').html(alt_email);
+      }
+
+
+      editActorNotifySettings_modal.hide();
+      saveActorsToDom();
+   }
+
+   // save actors object to dom
+   function saveActorsToDom() {
+      $('#_actors').val(JSON.stringify(actors));
+   }
+   saveActorsToDom();
+</script>

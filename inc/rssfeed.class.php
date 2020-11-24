@@ -30,11 +30,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\RichText;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
-
-use Glpi\Toolbox\RichText;
 
 // $feed = new SimplePie();
 // $feed->set_cache_location('../files/_rss');
@@ -784,39 +785,29 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
          return false;
       }
       $feed = self::getRSSFeed($this->fields['url'], $this->fields['refresh_rate']);
+      $rss_feed = [
+         'items'  => []
+      ];
       echo "<div class='firstbloc'>";
       if (!$feed || $feed->error()) {
-         echo __('Error retrieving RSS feed');
+         $rss_feed['error'] = $feed->error();
          $this->setError(true);
       } else {
          $this->setError(false);
-         echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr><th colspan='3'>".$feed->get_title()."</th>";
+         $rss_feed['title'] = $feed->get_title();
          foreach ($feed->get_items(0, $this->fields['max_items']) as $item) {
-            $link = $item->get_permalink();
-            echo "<tr class='tab_bg_1'><td>";
-            echo Html::convDateTime($item->get_date('Y-m-d H:i:s'));
-            echo "</td><td>";
-            if (!is_null($link)) {
-               echo "<a target='_blank' href='$link'>".$item->get_title().'</a>';
-            } else {
-               $item->get_title();
-            }
-            echo "</td><td>";
-            $rand = mt_rand();
-            echo "<span id='rssitem$rand' class='pointer'>";
-            echo Html::resume_text(RichText::getTextFromHtml($item->get_content(), false),
-                                   1000);
-            echo "</span>";
-            Html::showToolTip(RichText::getSafeHtml($item->get_content()),
-                               ['applyto' => "rssitem$rand",
-                                     'display' => true]);
-            echo "</td></tr>";
+            $rss_feed['items'][] = [
+               'title'     => $item->get_title(),
+               'link'      => $item->get_permalink(),
+               'timestamp' => Html::convDateTime($item->get_date('Y-m-d H:i:s')),
+               'content'   => $item->get_content()
+            ];
          }
-         echo "</table>";
-
       }
-      echo "</div>";
+
+      TemplateRenderer::getInstance()->display('components/rss_feed.html.twig', [
+         'rss_feed'  => $rss_feed
+      ]);
    }
 
 
@@ -973,7 +964,8 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
          }
       }
 
-      echo "<br><table class='tab_cadrehov'>";
+      echo "<table class='table table-striped table-hover'>";
+      echo "<thead>";
       echo "<tr class='noHover'><th colspan='2'><div class='relative'><span>$titre</span>";
 
       if (($personal && self::canCreate())
@@ -984,7 +976,8 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
                 __s('Add')."\"></a></span>";
       }
 
-      echo "</div></th></tr>\n";
+      echo "</div></th></tr>";
+      echo "</thead>";
 
       if ($nb) {
          usort($items, ['SimplePie', 'sort_items']);

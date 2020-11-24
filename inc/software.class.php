@@ -34,10 +34,14 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\AssetImage;
+
 /** Software Class
 **/
 class Software extends CommonDBTM {
    use Glpi\Features\Clonable;
+   use AssetImage;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -128,6 +132,7 @@ class Software extends CommonDBTM {
       if (isset($input['is_update']) && !$input['is_update']) {
          $input['softwares_id'] = 0;
       }
+      $input = $this->managePictures($input);
       return $input;
    }
 
@@ -163,6 +168,7 @@ class Software extends CommonDBTM {
             $input["softwarecategories_id"] = 0;
          }
       }
+      $input = $this->managePictures($input);
       return $input;
    }
 
@@ -220,83 +226,11 @@ class Software extends CommonDBTM {
     *@return boolean item found
    **/
    function showForm($ID, $options = []) {
-
       $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-
-      $canedit = $this->canEdit($ID);
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Name') . "</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "name");
-      echo "</td>";
-      echo "<td>" . __('Publisher')."</td><td>";
-      Manufacturer::dropdown(['value' => $this->fields["manufacturers_id"]]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . Location::getTypeName(1) . "</td><td>";
-      Location::dropdown(['value'  => $this->fields["locations_id"],
-                               'entity' => $this->fields["entities_id"]]);
-      echo "</td>";
-      echo "<td>" . __('Category') . "</td><td>";
-      SoftwareCategory::dropdown(['value' => $this->fields["softwarecategories_id"]]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Technician in charge of the software') . "</td><td>";
-      User::dropdown(['name'   => 'users_id_tech',
-                           'value'  => $this->fields["users_id_tech"],
-                           'right'  => 'own_ticket',
-                           'entity' => $this->fields["entities_id"]]);
-      echo "</td>";
-      echo "<td>" . __('Associable to a ticket') . "</td><td>";
-      Dropdown::showYesNo('is_helpdesk_visible', $this->fields['is_helpdesk_visible']);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Group in charge of the software')."</td>";
-      echo "<td>";
-      Group::dropdown([
-         'name'      => 'groups_id_tech',
-         'value'     => $this->fields['groups_id_tech'],
-         'entity'    => $this->fields['entities_id'],
-         'condition' => ['is_assign' => 1]
+      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
+         'item'   => $this,
+         'params' => $options,
       ]);
-      echo "</td>";
-      echo "<td rowspan='4' class='middle'>".__('Comments') . "</td>";
-      echo "<td class='center middle' rowspan='4'>";
-      echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td >" . User::getTypeName(1) . "</td>";
-      echo "<td >";
-      User::dropdown(['value'  => $this->fields["users_id"],
-                           'entity' => $this->fields["entities_id"],
-                           'right'  => 'all']);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . Group::getTypeName(1) . "</td><td>";
-      Group::dropdown([
-         'value'     => $this->fields["groups_id"],
-         'entity'    => $this->fields["entities_id"],
-         'condition' => ['is_itemgroup' => 1]
-      ]);
-      echo "</td></tr>\n";
-
-      // UPDATE
-      echo "<tr class='tab_bg_1'>";
-      //TRANS: a noun, (ex : this software is an upgrade of..)
-      echo "<td>" . __('Upgrade') . "</td><td>";
-      Dropdown::showYesNo("is_update", $this->fields['is_update']);
-      echo "&nbsp;" . __('from') . "&nbsp;";
-      Software::dropdown(['value' => $this->fields["softwares_id"]]);
-      echo "</td></tr>\n";
-
-      $this->showFormButtons($options);
 
       return true;
    }

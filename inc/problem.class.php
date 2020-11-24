@@ -30,11 +30,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\RichText;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
-
-use Glpi\Toolbox\RichText;
 
 /**
  * Problem class
@@ -161,11 +162,8 @@ class Problem extends CommonITILObject {
       if (static::canView()) {
          switch ($item->getType()) {
             case __CLASS__ :
-               $timeline    = $item->getTimelineItems();
-               $nb_elements = count($timeline);
 
                $ong = [
-                  5 => __("Processing problem")." <sup class='tab_nb'>$nb_elements</sup>",
                   1 => __('Analysis')
                ];
 
@@ -207,7 +205,8 @@ class Problem extends CommonITILObject {
 
    function defineTabs($options = []) {
       $ong = [];
-      $this->defineDefaultObjectTabs($ong, $options);
+      $this->addDefaultFormTab($ong);
+      $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Problem_Ticket', $ong, $options);
       $this->addStandardTab('Change_Problem', $ong, $options);
       $this->addStandardTab('ProblemCost', $ong, $options);
@@ -866,8 +865,6 @@ class Problem extends CommonITILObject {
          : $total_row_count;
 
       if ($displayed_row_count > 0) {
-         echo "<table class='tab_cadrehov'>";
-         echo "<tr class='noHover'><th colspan='3'>";
 
          $options  = [
             'criteria' => [],
@@ -888,7 +885,7 @@ class Problem extends CommonITILObject {
                   $options['criteria'][1]['value']      = 'mygroups';
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                          Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Problems on pending status'), $displayed_row_count, $total_row_count)."</a>";
                   break;
@@ -904,7 +901,7 @@ class Problem extends CommonITILObject {
                   $options['criteria'][1]['value']      = 'mygroups';
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                          Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Problems to be processed'), $displayed_row_count, $total_row_count)."</a>";
                   break;
@@ -920,7 +917,7 @@ class Problem extends CommonITILObject {
                   $options['criteria'][1]['value']      = 'mygroups';
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                          Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Your problems in progress'), $displayed_row_count, $total_row_count)."</a>";
             }
@@ -938,7 +935,7 @@ class Problem extends CommonITILObject {
                   $options['criteria'][1]['value']      = Session::getLoginUserID();
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                          Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Problems on pending status'), $displayed_row_count, $total_row_count)."</a>";
                   break;
@@ -954,7 +951,7 @@ class Problem extends CommonITILObject {
                   $options['criteria'][1]['value']      = 'process';
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                          Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Problems to be processed'), $displayed_row_count, $total_row_count)."</a>";
                   break;
@@ -970,23 +967,103 @@ class Problem extends CommonITILObject {
                   $options['criteria'][1]['value']      = 'notold';
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                         Toolbox::append_params($options, '&amp;')."\">".
                         Html::makeTitle(__('Your problems in progress'), $displayed_row_count, $total_row_count)."</a>";
             }
          }
 
-         echo "</th></tr>";
-         echo "<tr><th></th>";
-         echo "<th>"._n('Requester', 'Requesters', 1)."</th>";
-         echo "<th>".__('Description')."</th></tr>";
+         $twig_params = [
+            'class'        => 'table table-borderless table-striped table-hover',
+            'header_rows'  => [
+               [
+                  [
+                     'colspan'   => 3,
+                     'content'   => $main_header
+                  ]
+               ],
+               [
+                  [
+                     'content'   => __('ID'),
+                     'style'     => 'width: 75px'
+                  ],
+                  [
+                     'content'   => _n('Requester', 'Requesters', 1),
+                     'style'     => 'width: 20%'
+                  ],
+                  __('Description')
+               ]
+            ],
+            'rows'         => []
+         ];
+
          $i = 0;
          while ($i < $displayed_row_count && ($data = $iterator->next())) {
-            self::showVeryShort($data['id'], $forcetab);
-            $i++;
-         }
-         echo "</table>";
+            $problem   = new self();
+            $rand      = mt_rand();
+            $row = [
+               'values' => []
+            ];
 
+            if ($problem->getFromDBwithData($data['id'], 0)) {
+               $bgcolor = $_SESSION["glpipriority_".$problem->fields["priority"]];
+               $name    = sprintf(__('%1$s: %2$s'), __('ID'), $problem->fields["id"]);
+               $row['values'][] = [
+                  'class'   => 'priority_block',
+                  'content' => "<span style='background: $bgcolor'></span>&nbsp;$name"
+               ];
+
+               $requesters = [];
+               if (isset($problem->users[CommonITILActor::REQUESTER])
+                  && count($problem->users[CommonITILActor::REQUESTER])) {
+                  foreach ($problem->users[CommonITILActor::REQUESTER] as $d) {
+                     if ($d["users_id"] > 0) {
+                        $userdata = getUserName($d["users_id"], 2);
+                        $name     = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>'.
+                                    $userdata['name'];
+                        $requesters[] = $name;
+                     } else {
+                        $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>'.
+                                       $d['alternative_email'];
+                     }
+                  }
+               }
+
+               if (isset($problem->groups[CommonITILActor::REQUESTER])
+                  && count($problem->groups[CommonITILActor::REQUESTER])) {
+                  foreach ($problem->groups[CommonITILActor::REQUESTER] as $d) {
+                     $requesters[] = '<i class="fas fa-sm fa-fw fa-users text-muted me-1"></i>'.
+                                     Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+                  }
+               }
+               $row['values'][] = implode('<br>', $requesters);
+
+               $link = "<a id='problem".$problem->fields["id"].$rand."' href='".
+                  Problem::getFormURLWithID($problem->fields["id"]);
+               if ($forcetab != '') {
+                  $link .= "&amp;forcetab=".$forcetab;
+               }
+               $link .= "'>";
+               $link .= "<span class='b'>".$problem->fields["name"]."</span></a>";
+               $link = sprintf(__('%1$s %2$s'), $link,
+                  Html::showToolTip(RichText::getSafeHtml($problem->fields['content'], true),
+                     ['applyto' => 'problem'.$problem->fields["id"].$rand,
+                        'display' => false]));
+
+               $row['values'][] = $link;
+            } else {
+               $row['class'] = 'tab_bg_2';
+               $row['values'] = [
+                  [
+                     'colspan'   => 6,
+                     'content'   => "<i>".__('No problem in progress.')."</i>"
+                  ]
+               ];
+            }
+            $i++;
+            $twig_params['rows'][] = $row;
+         }
+         TemplateRenderer::getInstance()->display('components/table.html.twig', $twig_params);
       }
    }
 
@@ -1079,32 +1156,35 @@ class Problem extends CommonITILObject {
       $options['criteria'][0]['link']       = 'AND';
       $options['reset']                     ='reset';
 
-      echo "<table class='tab_cadrehov' >";
-      echo "<tr class='noHover'><th colspan='2'>";
-
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
-               Toolbox::append_params($options, '&amp;')."\">".__('Problem followup')."</a>";
-
-      echo "</th></tr>";
-      echo "<tr><th>".Problem::getTypeName(Session::getPluralNumber())."</th>
-            <th class='numeric'>"._x('quantity', 'Number')."</th></tr>";
+      $twig_params = [
+         'title'     => [
+            'link'   => $CFG_GLPI["root_doc"]."/front/problem.php?".Toolbox::append_params($options),
+            'text'   => __('Problem followup')
+         ],
+         'subtitle'  => [
+            'text'   => self::getTypeName(Session::getPluralNumber())
+         ],
+         'items'     => []
+      ];
 
       foreach ($status as $key => $val) {
          $options['criteria'][0]['value'] = $key;
-         echo "<tr class='tab_bg_2'>";
-         echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
-                    Toolbox::append_params($options, '&amp;')."\">".self::getStatus($key)."</a></td>";
-         echo "<td class='numeric'>$val</td></tr>";
+         $twig_params['items'][] = [
+            'link'   => $CFG_GLPI["root_doc"]."/front/problem.php?".Toolbox::append_params($options),
+            'text'   => self::getStatus($key),
+            'count'  => $val
+         ];
       }
 
       $options['criteria'][0]['value'] = 'all';
       $options['is_deleted']  = 1;
-      echo "<tr class='tab_bg_2'>";
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
-                 Toolbox::append_params($options, '&amp;')."\">".__('Deleted')."</a></td>";
-      echo "<td class='numeric'>".$number_deleted."</td></tr>";
+      $twig_params['items'][] = [
+         'link'   => $CFG_GLPI["root_doc"]."/front/problem.php?".Toolbox::append_params($options),
+         'text'   => __('Deleted'),
+         'count'  => $number_deleted
+      ];
 
-      echo "</table><br>";
+      TemplateRenderer::getInstance()->display('central/lists/itemtype_count.html.twig', $twig_params);
    }
 
 
@@ -1353,336 +1433,20 @@ class Problem extends CommonITILObject {
          }
       }
 
-      $this->showFormHeader($options);
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th class='left' width='$colsize1%'>";
-      echo $tt->getBeginHiddenFieldText('date');
-      if (!$ID) {
-         printf(__('%1$s%2$s'), __('Opening date'), $tt->getMandatoryMark('date'));
-      } else {
-         echo __('Opening date');
-      }
-      echo $tt->getEndHiddenFieldText('date');
-      echo "</th>";
-      echo "<td class='left' width='$colsize2%'>";
-
-      $this->displayHiddenItemsIdInput($options);
-
-      if (isset($tickets_id)) {
-         echo "<input type='hidden' name='_tickets_id' value='".$tickets_id."'>";
-      }
-
-      if (isset($options['_add_fromitem'])
-          && isset($options['_from_items_id'])
-          && isset($options['_from_itemtype'])) {
-         echo Html::hidden('_from_items_id', ['value' => $options['_from_items_id']]);
-         echo Html::hidden('_from_itemtype', ['value' => $options['_from_itemtype']]);
-      }
-
-      echo $tt->getBeginHiddenFieldValue('date');
-      $date = $this->fields["date"];
-      if (!$ID) {
-         $date = date("Y-m-d H:i:s");
-      }
-      Html::showDateTimeField(
-         "date", [
-            'value'      => $date,
-            'maybeempty' => false,
-            'required'   => ($tt->isMandatoryField('date') && !$ID)
-         ]
-      );
-      echo $tt->getEndHiddenFieldValue('date', $this);
-      echo "</td>";
-
-      echo "<th>".$tt->getBeginHiddenFieldText('time_to_resolve');
-      if (!$ID) {
-         printf(__('%1$s%2$s'), __('Time to resolve'), $tt->getMandatoryMark('time_to_resolve'));
-      } else {
-         echo __('Time to resolve');
-      }
-      echo $tt->getEndHiddenFieldText('time_to_resolve');
-      echo "</th>";
-      echo "<td width='$colsize2%' class='left'>";
-      echo $tt->getBeginHiddenFieldValue('time_to_resolve');
-      if ($this->fields["time_to_resolve"] == 'NULL') {
-         $this->fields["time_to_resolve"] = '';
-      }
-      Html::showDateTimeField(
-         "time_to_resolve", [
-            'value'    => $this->fields["time_to_resolve"],
-            'required'   => ($tt->isMandatoryField('time_to_resolve') && !$ID)
-         ]
-      );
-      echo $tt->getEndHiddenFieldValue('time_to_resolve', $this);
-
-      echo "</td></tr>";
-
-      if ($ID) {
-         echo "<tr class='tab_bg_1'><th>".__('By')."</th><td>";
-         User::dropdown(['name'   => 'users_id_recipient',
-                              'value'  => $this->fields["users_id_recipient"],
-                              'entity' => $this->fields["entities_id"],
-                              'right'  => 'all']);
-         echo "</td>";
-         echo "<th>".__('Last update')."</th>";
-         echo "<td>".Html::convDateTime($this->fields["date_mod"])."\n";
-         if ($this->fields['users_id_lastupdater'] > 0) {
-            printf(__('%1$s: %2$s'), __('By'),
-                   getUserName($this->fields["users_id_lastupdater"], $showuserlink));
-         }
-         echo "</td></tr>";
-      }
-
-      if ($ID
-          && (in_array($this->fields["status"], $this->getSolvedStatusArray())
-              || in_array($this->fields["status"], $this->getClosedStatusArray()))) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<th>".__('Date of solving')."</th>";
-         echo "<td>";
-         Html::showDateTimeField("solvedate", ['value'      => $this->fields["solvedate"],
-                                                    'maybeempty' => false]);
-         echo "</td>";
-         if (in_array($this->fields["status"], $this->getClosedStatusArray())) {
-            echo "<th>".__('Closing date')."</th>";
-            echo "<td>";
-            Html::showDateTimeField("closedate", ['value'      => $this->fields["closedate"],
-                                                       'maybeempty' => false]);
-            echo "</td>";
-         } else {
-            echo "<td colspan='2'>&nbsp;</td>";
-         }
-         echo "</tr>";
-      }
-      echo "</table>";
-
-      echo "<table class='tab_cadre_fixe' id='mainformtable2'>";
-      echo "<tr class='tab_bg_1'>";
-
-      echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('status');
-      printf(__('%1$s%2$s'), __('Status'), $tt->getMandatoryMark('status'));
-      echo $tt->getEndHiddenFieldText('status')."</th>";
-      echo "<td width='$colsize2%'>";
-      echo $tt->getBeginHiddenFieldValue('status');
-      if ($canupdate) {
-         self::dropdownStatus([
-            'value'     => $this->fields["status"],
-            'showtype'  => 'allowed',
-            'required'  => ($tt->isMandatoryField('status') && !$ID)
-         ]);
-         ChangeValidation::alertValidation($this, 'status');
-      } else {
-         echo self::getStatus($this->fields["status"]);
-         if ($this->canReopen()) {
-            $link = $this->getLinkURL(). "&amp;_openfollowup=1&amp;forcetab=";
-            $link .= "Change$1";
-            echo "&nbsp;<a class='vsubmit' href='$link'>". __('Reopen')."</a>";
-         }
-      }
-      PendingReason_Item::displayStatusTooltip($this);
-      echo $tt->getEndHiddenFieldValue('status', $this);
-
-      echo "</td>";
-      // Only change during creation OR when allowed to change priority OR when user is the creator
-
-      echo "<th>".$tt->getBeginHiddenFieldText('urgency');
-      printf(__('%1$s%2$s'), __('Urgency'), $tt->getMandatoryMark('urgency'));
-      echo $tt->getEndHiddenFieldText('urgency')."</th>";
-      echo "<td>";
-
-      if ($canupdate) {
-         echo $tt->getBeginHiddenFieldValue('urgency');
-         $idurgency = self::dropdownUrgency(['value' => $this->fields["urgency"]]);
-         echo $tt->getEndHiddenFieldValue('urgency', $this);
-
-      } else {
-         $idurgency = "value_urgency".mt_rand();
-         echo "<input id='$idurgency' type='hidden' name='urgency' value='".
-                $this->fields["urgency"]."'>";
-         echo $tt->getBeginHiddenFieldValue('urgency');
-         echo self::getUrgencyName($this->fields["urgency"]);
-         echo $tt->getEndHiddenFieldValue('urgency', $this);
-      }
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th>".sprintf(__('%1$s%2$s'), __('Category'),
-                                             $tt->getMandatoryMark('itilcategories_id'))."</th>";
-      echo "<td >";
-
-      // Permit to set category when creating ticket without update right
-      if ($canupdate) {
-         $conditions = ['is_problem' => 1];
-
-         $opt = ['value'  => $this->fields["itilcategories_id"],
-                      'entity' => $this->fields["entities_id"]];
-         /// Auto submit to load template
-         if (!$ID) {
-            $opt['on_change'] = 'this.form.submit()';
-         }
-         /// if category mandatory, no empty choice
-         /// no empty choice is default value set on ticket creation, else yes
-         if (($ID || $options['itilcategories_id'])
-             && $tt->isMandatoryField("itilcategories_id")
-             && ($this->fields["itilcategories_id"] > 0)) {
-            $opt['display_emptychoice'] = false;
-         }
-
-         echo "<span id='show_category_by_type'>";
-         $opt['condition'] = $conditions;
-         ITILCategory::dropdown($opt);
-         echo "</span>";
-      } else {
-         echo Dropdown::getDropdownName("glpi_itilcategories", $this->fields["itilcategories_id"]);
-      }
-      echo "</td>";
-      echo "<th>".$tt->getBeginHiddenFieldText('impact');
-      printf(__('%1$s%2$s'), __('Impact'), $tt->getMandatoryMark('impact'));
-      echo $tt->getEndHiddenFieldText('impact')."</th>";
-      echo "</th>";
-      echo "<td>";
-      echo $tt->getBeginHiddenFieldValue('impact');
-      if ($canupdate) {
-         $idimpact = self::dropdownImpact(['value' => $this->fields["impact"], 'required' => ($tt->isMandatoryField('date') && !$ID)]);
-      } else {
-         $idimpact = "value_impact".mt_rand();
-         echo "<input id='$idimpact' type='hidden' name='impact' value='".$this->fields["impact"]."'>";
-         echo self::getImpactName($this->fields["impact"]);
-      }
-      echo $tt->getEndHiddenFieldValue('impact', $this);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th>".$tt->getBeginHiddenFieldText('actiontime');
-      printf(__('%1$s%2$s'), __('Total duration'), $tt->getMandatoryMark('actiontime'));
-      echo $tt->getEndHiddenFieldText('actiontime')."</th>";
-      echo "<td>";
-      echo $tt->getBeginHiddenFieldValue('actiontime');
-      Dropdown::showTimeStamp(
-         'actiontime', [
-            'value'           => $options['actiontime'],
-            'addfirstminutes' => true
-         ]
-      );
-      echo $tt->getEndHiddenFieldValue('actiontime', $this);
-      echo "</td>";
-      echo "<th>".$tt->getBeginHiddenFieldText('priority');
-      printf(__('%1$s%2$s'), __('Priority'), $tt->getMandatoryMark('priority'));
-      echo $tt->getEndHiddenFieldText('priority')."</th>";
-      echo "<td>";
-      $idajax = 'change_priority_' . mt_rand();
-
-      if (!$tt->isHiddenField('priority')) {
-         $idpriority = self::dropdownPriority([
-            'value'     => $this->fields["priority"],
-            'withmajor' => true
-         ]);
-         $idpriority = 'dropdown_priority'.$idpriority;
-         echo "&nbsp;<span id='$idajax' style='display:none'></span>";
-      } else {
-         $idpriority = 0;
-         echo $tt->getBeginHiddenFieldValue('priority');
-         echo "<span id='$idajax'>".self::getPriorityName($this->fields["priority"])."</span>";
-         echo "<input id='$idajax' type='hidden' name='priority' value='".$this->fields["priority"]."'>";
-         echo $tt->getEndHiddenFieldValue('priority', $this);
-      }
-
-      $idajax     = 'change_priority_' . mt_rand();
-      echo "&nbsp;<span id='$idajax' style='display:none'></span>";
-      $params = [
-         'urgency'  => '__VALUE0__',
-         'impact'   => '__VALUE1__',
-         'priority' => 'dropdown_priority'.$idpriority
-      ];
-      Ajax::updateItemOnSelectEvent([
-         'dropdown_urgency'.$idurgency,
-         'dropdown_impact'.$idimpact],
-         $idajax,
-         $CFG_GLPI["root_doc"]."/ajax/priority.php",
-         $params
-      );
-      echo "</td>";
-      echo "</tr>";
-      echo "</table>";
-
-      $this->showActorsPartForm($ID, $options);
-
-      echo "<table class='tab_cadre_fixe' id='mainformtable3'>";
-      echo "<tr class='tab_bg_1'>";
-      echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('name');
-      printf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'));
-      echo $tt->getEndHiddenFieldText('name')."</th>";
-      echo "<td colspan='3'>";
-      echo $tt->getBeginHiddenFieldValue('name');
-      echo "<input type='text' style='width:98%' maxlength=250 name='name' ".
-               ($tt->isMandatoryField('name') ? " required='required'" : '') .
-               " value=\"".Html::cleanInputText($this->fields["name"])."\">";
-      echo $tt->getEndHiddenFieldValue('name', $this);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('content');
-      printf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
-      echo $tt->getEndHiddenFieldText('content')."</th>";
-      echo "<td colspan='3'>";
-
-      echo $tt->getBeginHiddenFieldValue('content');
-      $rand       = mt_rand();
-      $rand_text  = mt_rand();
-      $rows       = 10;
-      $content_id = "content$rand";
-
-      $content = $this->fields['content'];
-      if (!isset($options['template_preview'])) {
-         $content = Html::cleanPostForTextArea($content);
-      }
-
-      echo "<div id='content$rand_text'>";
-      if ($canupdate) {
-         $uploads = [];
-         if (isset($this->input['_content'])) {
-            $uploads['_content'] = $this->input['_content'];
-            $uploads['_tag_content'] = $this->input['_tag_content'];
-         }
-         Html::textarea([
-            'name'            => 'content',
-            'filecontainer'   => 'content_info',
-            'editor_id'       => $content_id,
-            'required'        => $tt->isMandatoryField('content'),
-            'rows'            => $rows,
-            'enable_richtext' => true,
-            'value'           => RichText::getSafeHtml($content, true, true),
-            'uploads'         => $uploads,
-         ]);
-         Html::activateUserMentions($content_id);
-      } else {
-         echo '<div class="rich_text_container">';
-         echo RichText::getSafeHtml($content, true);
-         echo '</div>';
-      }
-      echo "</div>";
-
-      echo $tt->getEndHiddenFieldValue('content', $this);
-
-      $options['colspan'] = 2;
-      if (!$options['template_preview']) {
-         if ($tt->isField('id') && ($tt->fields['id'] > 0)) {
-            echo "<input type='hidden' name='$tpl_key' value='".$tt->fields['id']."'>";
-            echo "<input type='hidden' name='_predefined_fields'
-                     value=\"".Toolbox::prepareArrayForInput($predefined_fields)."\">";
-         }
-
-         $this->showFormButtons($options);
-      } else {
-         echo "</table>";
-         echo "</div>";
-      }
+      TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
+         'item'               => $this,
+         'timeline_itemtypes' => $this->getTimelineItemtypes(),
+         'params'             => $options,
+         'timeline'           => $this->getTimelineItems(),
+         'itiltemplate_key'   => $tpl_key,
+         'itiltemplate'       => $tt,
+         'predefined_fields'  => $predefined_fields,
+         'canupdate'          => $canupdate,
+         'canpriority'        => $canupdate,
+         'canassign'          => $canupdate,
+      ]);
 
       return true;
-
    }
 
 
@@ -1850,7 +1614,7 @@ class Problem extends CommonITILObject {
       $number = count($iterator);
 
       // Ticket for the item
-      echo "<div><table class='tab_cadre_fixe'>";
+      echo "<div class='table-responsive'><table class='tab_cadre_fixe'>";
 
       $colspan = 11;
       if (count($_SESSION["glpiactiveentities"]) > 1) {

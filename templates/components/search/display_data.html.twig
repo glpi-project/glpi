@@ -1,0 +1,56 @@
+{% set is_ajax = data['searchform_id'] is defined %}
+{% if not is_ajax %}
+<div class="ajax-container search-display-data">
+{% endif %}
+
+<form id="massform{{ itemtype }}" method="get" action="{{ path("front/massiveaction.php") }}"
+      data-search-itemtype="{{ data['itemtype'] }}" data-start="{{ start }}" data-count="{{ count }}" data-limit="{{ limit }}">
+   <div class="card card-sm mt-0 search-card">
+      <div class="card-header d-flex justify-content-between search-header">
+         {% if data['display_type'] == constant('Search::GLOBAL_SEARCH') %}
+            <h2>{{ itemtype|itemtype_name }}</h2>
+
+            {% if count > (start + constant('Search::GLOBAL_DISPLAY_COUNT')) %}
+               <a href="{{ href }}">
+                  <i class="far fa-eye"></i>&nbsp;
+                  {{ __('View all') }}
+               </a>
+            {% endif %}
+         {% else %}
+            {{ include('components/search/controls.html.twig') }}
+
+            {% if count > 0 and data['search']['as_map'] == 0 %}
+               {% set no_onchange = true %}
+               {% set select_class = 'search-limit-dropdown' %}
+               {% set limitdropdown = include('components/dropdown/limit.html.twig') %}
+               <div class="d-inline-flex align-items-center d-none d-md-block search-limit">
+                  {{ __("Show %s entries")|format(limitdropdown)|raw }}
+               </div>
+            {% endif %}
+         {% endif %}
+      </div>
+
+      {% if data['search']['as_map'] == 0 %}
+         {{ include('components/search/table.html.twig') }}
+      {% endif %}
+      {% if count > 0 %}
+         {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and data['search']['as_map'] == 0 %}
+            <div class="card-footer search-footer">
+               {{ include('components/search/pager.html.twig') }}
+            </div>
+         {% endif %}
+      {% elseif data['search']['as_map'] == 1 %}
+         <div class="alert alert-info mb-0 rounded-0 border-top-0 border-bottom-0 border-right-0" role="alert">
+            {{ __('No item found') }}
+         </div>
+      {% endif %}
+   </div>
+</form>
+{% if not is_ajax %}
+</div>
+<script>
+    $(document).on('ready', () => {
+        new GLPI.Search.ResultsView("massform{{ itemtype }}", GLPI.Search.Table);
+    });
+</script>
+{% endif %}

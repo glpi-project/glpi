@@ -348,36 +348,9 @@ class Telemetry extends CommonGLPI {
          $('#view_telemetry').on('click', function(e) {
             e.preventDefault();
 
-            $.ajax({
-               url:  $(this).attr('href'),
-               success: function(data) {
-                  var _elt = $('<div></div>');
-                  _elt.append(data);
-                  $('body').append(_elt);
-
-                  _elt.dialog({
-                     title: '" . addslashes(__('Telemetry data')) . "',
-                     buttons: {
-                        ".addslashes(__('OK')).": function() {
-                           $(this).dialog('close');
-                        }
-                     },
-                     dialogClass: 'glpi_modal',
-                     maxHeight: $(window).height(),
-                     open: function(event, ui) {
-                        $(this).dialog('option', 'maxHeight', $(window).height());
-                        $(this).parent().prev('.ui-widget-overlay').addClass('glpi_modal');
-                     },
-                     close: function(){
-                        $(this).remove();
-                     },
-                     draggable: true,
-                     modal: true,
-                     resizable: true,
-                     width: '50%'
-                  });
-               }
-
+            glpi_ajax_dialog({
+               title: __('Telemetry data'),
+               url: $('#view_telemetry').attr('href')
             });
          });");
       return $out;

@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\UserMention;
 use Glpi\Toolbox\RichText;
 
@@ -477,9 +478,11 @@ abstract class CommonITILValidation  extends CommonDBChild {
    **/
    static function getAllStatusArray($withmetaforsearch = false, $global = false) {
 
-      $tab = [self::WAITING  => __('Waiting for approval'),
-                   self::REFUSED  => _x('validation', 'Refused'),
-                   self::ACCEPTED => __('Granted')];
+      $tab = [
+         self::WAITING  => __('Waiting for approval'),
+         self::REFUSED  => _x('validation', 'Refused'),
+         self::ACCEPTED => __('Granted')
+      ];
       if ($global) {
          $tab[self::NONE] = __('Not subject to approval');
 
@@ -511,10 +514,15 @@ abstract class CommonITILValidation  extends CommonDBChild {
    static function dropdownStatus($name, $options = []) {
 
       $p = [
-         'value'    => self::WAITING,
-         'global'   => false,
-         'all'      => false,
-         'display'  => true,
+         'value'             => self::WAITING,
+         'global'            => false,
+         'all'               => false,
+         'display'           => true,
+         'templateResult'    => "templateValidation",
+         'templateSelection' => "templateValidation",
+         'class'             => 'form-select',
+         'width'             => '100%',
+         'required'          => false,
       ];
 
       if (is_array($options) && count($options)) {
@@ -899,7 +907,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
             echo "<td><div class='rich_text_container'>".$comment_submission."</div></td>";
             echo "<td>".Html::convDateTime($row["validation_date"])."</td>";
             echo "<td>".getUserName($row["users_id_validate"])."</td>";
-            $comment_validation = RichText::getSafeHtml($this->fields['comment_validation'], true);
+            $comment_validation = RichText::getSafeHtml($this->fields['comment_validation'] ?? '', true);
             $comment_validation = $this->refreshUserMentionsHtmlToDisplay($comment_validation);
             $comment_validation = Html::replaceImagesByGallery($comment_validation);
             echo "<td><div class='rich_text_container'>".$comment_validation."</div></td>";
@@ -944,6 +952,14 @@ abstract class CommonITILValidation  extends CommonDBChild {
          $options[static::$items_id] = $options['parent']->fields["id"];
          $this->check(-1, CREATE, $options);
       }
+
+      TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_validation.html.twig', [
+         'item'      => $options['parent'],
+         'subitem'   => $this
+      ]);
+      return;
+
+      //TODO Legacy form rendering kept for reference only. Remove when twig template is complete.
 
       // No update validation is answer set
       $validation_admin   = (($this->fields["users_id"] == Session::getLoginUserID())
@@ -1473,14 +1489,16 @@ abstract class CommonITILValidation  extends CommonDBChild {
         'groups_id'         => 0,
         'users_id_validate' => [],
         'applyto'           => 'show_validator_field',
+        'display'           => true,
+        'class'             => 'form-select',
+        'width'             => '100%',
+        'required'          => false,
+        'rand'              => mt_rand(),
       ];
 
       foreach ($options as $key => $val) {
          $params[$key] = $val;
       }
-
-      $types = ['user'  => User::getTypeName(1),
-                     'group' => Group::getTypeName(1)];
 
       $type  = '';
       if (isset($params['users_id_validate']['groups_id'])) {
@@ -1489,21 +1507,37 @@ abstract class CommonITILValidation  extends CommonDBChild {
          $type = 'user';
       }
 
-      $rand = Dropdown::showFromArray("validatortype", $types,
-                                      ['value'               => $type,
-                                            'display_emptychoice' => true]);
+      $out = Dropdown::showFromArray("validatortype", [
+         'user'  => User::getTypeName(1),
+         'group' => Group::getTypeName(1)
+      ], [
+         'value'               => $type,
+         'display_emptychoice' => true,
+         'display'             => $params['display'],
+         'rand'                => $params['rand'],
+         'class'               => $params['class'],
+         'width'               => $params['width'],
+         'required'            => $params['required'],
+         ]);
 
       if ($type) {
          $params['validatortype'] = $type;
-         Ajax::updateItem($params['applyto'], $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php",
-                          $params);
+         $out.= Ajax::updateItem($params['applyto'], $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php",
+                                 $params, "", $params['display']);
       }
       $params['validatortype'] = '__VALUE__';
-      Ajax::updateItemOnSelectEvent("dropdown_validatortype$rand", $params['applyto'],
-                                    $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php", $params);
+      $out.= Ajax::updateItemOnSelectEvent("dropdown_validatortype{$params['rand']}", $params['applyto'],
+                                           $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php", $params, $params['display']);
 
       if (!isset($options['applyto'])) {
-         echo "<br><span id='".$params['applyto']."'>&nbsp;</span>\n";
+         $out.= "<br><span id='".$params['applyto']."'>&nbsp;</span>\n";
+      }
+
+      if ($params['display']) {
+         echo $out;
+         return $params['rand'];
+      } else {
+         return $out;
       }
    }
 
@@ -1706,7 +1740,22 @@ abstract class CommonITILValidation  extends CommonDBChild {
             if (!in_array($item->fields['status'], $status)
                && isset($item->fields['global_validation'])
                && $item->fields['global_validation'] == self::WAITING) {
-               Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
+               $title   = __s("This item is waiting for approval.");
+               $message = __s("Do you really want to resolve or close it?");;
+               $html = <<<HTML
+                  <div class="alert alert-warning" role="alert">
+                     <div class="d-flex">
+                        <div class="me-2">
+                           <i class="fas fa-2x fa-exclamation-triangle"></i>
+                        </div>
+                        <div>
+                           <h4 class="alert-title">$title</h4>
+                           <div class="text-muted">$message</div>
+                        </div>
+                     </div>
+                  </div>
+               HTML;
+               echo $html;
             }
             break;
       }

@@ -1,0 +1,53 @@
+{% import "components/form/fields_macros.html.twig" as fields %}
+
+{% if item.isField('global_validation') %}
+   {% if item.isNewItem() %}
+      {% set validation_right = "" %}
+      {% if params['type'] == constant('Ticket::INCIDENT_TYPE') and have_right('ticketvalidation', constant('TicketValidation::CREATEINCIDENT')) %}
+         {% set validation_right = "validate_incident" %}
+      {% endif %}
+      {% if params['type'] == constant('Ticket::DEMAND_TYPE') and have_right('ticketvalidation', constant('TicketValidation::CREATEREQUEST')) %}
+         {% set validation_right = "validate_request" %}
+      {% endif %}
+
+      {% set required = {} %}
+      {% if field_options.fields_template.isMandatoryField('_add_validation') %}
+         {% set required = {
+            'required': true,
+         } %}
+      {% endif %}
+
+      {{ fields.field(
+         '_add_validation',
+         TicketValidation__dropdownValidator({
+            'name': "users_id_validate",
+            'entity': item.fields['entities_id'],
+            'right': validation_right,
+            'users_id_validate': params['users_id_validate'],
+            'display': false,
+         }|merge(required)),
+         __('Approval request'),
+         field_options
+      ) }}
+
+      <input type="hidden" name="_add_validation" value="{{ params['_add_validation'] }}">
+   {% else %}
+      {% set required = {} %}
+      {% if field_options.fields_template.isMandatoryField('global_validation') %}
+         {% set required = {
+            'required': true,
+         } %}
+      {% endif %}
+
+      {{ fields.field(
+         'global_validation',
+         TicketValidation__dropdownStatus('global_validation', {
+            'global': true,
+            'value': item.fields['global_validation'],
+            'display': false,
+         }|merge(required)),
+         "CommonITILValidation"|itemtype_name,
+         field_options
+      ) }}
+   {% endif %}
+{% endif %}

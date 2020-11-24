@@ -1,0 +1,74 @@
+
+<div class="container-fluid">
+   <div class="search_page">
+      <div class="search-container">
+         <div class="card card-sm search-card">
+            {% if count == 0 %}
+               <div class="alert alert-info mb-0 rounded-0 border-top-0 border-bottom-0 border-right-0" role="alert">
+                  {{ __('No item found') }}
+               </div>
+            {% else %}
+               <div class="card-header search-header">
+                  {% if count > 0 %}
+                     {% set limitdropdown = include('components/dropdown/limit.html.twig', {
+                        'href': target ~ '?',
+                        'additional_params': "sort=" ~ sort ~ "&order=" ~ order
+                     }) %}
+                     <div class="ms-auto d-inline-flex align-items-center d-none d-md-block search-limit">
+                        {{ __("Show %s entries")|format(limitdropdown)|raw }}
+                     </div>
+               {% endif %}
+               </div>
+               <div class="table-responsive-md">
+                  <table class="search-results table table-hover table-card">
+                     <thead>
+                        {% set headings = {
+                           "type": __('Source'),
+                           "items_id": __('ID'),
+                           "date": _n('Date', 'Dates', 1),
+                           "service": __('Service'),
+                           "level": __('Level'),
+                           "message": __('Message')
+                        } %}
+
+                        {% for field, label in headings %}
+                           <th>
+                              <a href="{{ target }}?sort={{ field }}&amp;order={{ order == "ASC" ? "DESC" : "ASC" }}">
+                                 {% if sort == field %}
+                                    {% set sort_icon = (order == 'ASC' ? 'fa-sort-up' : 'fa-sort-down') %}
+                                    <i class="fas fa-lg {{ sort_icon }}"></i>
+                                 {% endif %}
+                                 {{ label }}
+                              </a>
+                           </th>
+                        {% endfor %}
+                     </thead>
+                     <tbody>
+                        {% for event in events %}
+                           <tr>
+                              <td>
+                                 {% set itemtype = getSingular(event['type']) %}
+                                 <i class="fa-fw text-muted {{ itemtype|getIcon }}"></i>
+                                 <span>{{ itemtypes[itemtype] ?? itemtype|itemtype_name }}</span>
+                              </td>
+                              <td>{{ Event_displayItemLogID(event['type'], event['items_id']) }}</td>
+                              <td>{{ event['date']|conv_datetime }}</td>
+                              <td>{{ services[event['service']] ?? event['service'] }}</td>
+                              <td>{{ event['level'] }}</td>
+                              <td>{{ event['message'] }}</td>
+                           </tr>
+                        {% endfor %}
+                     </tbody>
+                  </table>
+               </div>
+
+               <div class="search-footer card-footer">
+                  {% include 'components/search/pager.html.twig' with {
+                     'count': count
+                  } %}
+               </div>
+            {% endif %}
+         </div>
+      </div>
+   </div>
+</div>

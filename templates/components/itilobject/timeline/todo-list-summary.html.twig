@@ -1,0 +1,18 @@
+{% set timeline_stats = item|getTimelineStats() %}
+{% set total_duration = timeline_stats['total_duration'] ?? 0 %}
+{% set todo_percent = timeline_stats['percent_done'] ?? 0 %}
+
+<div class="timeline-item timeline_stats pb-3">
+   <div class="mb-2 ms-1 text-muted">
+      {{ __('Total duration: %s')|format(timestampToString(total_duration)) }}
+   </div>
+   <div class="d-flex">
+      <span class="task-progress-label mx-2">
+         {{ todo_percent }}%
+      </span>
+      <div class="progress mt-1" style="max-width: 260px">
+         <div class="progress-bar progress-bar-striped timeline-progress" role="progressbar" style="width: {{ todo_percent }}%;"
+              aria-valuenow="{{ todo_percent }}" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+   </div>
+</div>

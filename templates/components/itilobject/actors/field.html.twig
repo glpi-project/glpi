@@ -1,0 +1,238 @@
+{% set rand = random() %}
+
+{% set actors = item.getActorsForType(actortypeint, params) %}
+{# TODO getDefaultActorRightSearch on create #}
+{# TODO LDAP import shortcut #}
+{# TODO userentity_oncreate form submit #}
+
+{% set required = false %}
+{% if itiltemplate.isMandatoryField("TODO") %}
+   {% set required = true %}
+{% endif %}
+
+{% set is_actor_hidden = false %}
+{% if itiltemplate.isMandatoryField("_users_id_" ~ actortype) and itiltemplate.isMandatoryField("_groups_id_" ~ actortype) and (actortype != "assign" or itiltemplate.isMandatoryField("_suppliers_id_" ~ actortype)) %}
+   {% set is_actor_hidden = true %}
+{% endif %}
+
+{% if not is_actor_hidden %}
+   <select class="form-select" multiple="true" id="actor_{{ rand }}">
+   {% for actor in actors %}
+      <option selected="true" value="{{ actor['itemtype'] ~ "_" ~ actor['items_id'] }}"
+            data-itemtype="{{ actor['itemtype'] }}" data-items-id="{{ actor['items_id'] }}"
+            data-use-notification="{{ actor['use_notification'] }}"
+            data-alternative-email="{{ actor['alternative_email'] }}"
+            data-text="{{ actor['text'] }}" data-title="{{ actor['title'] }}"
+            {{ required ? 'required' : "" }}>
+         {{ actor['title'] }}
+      </option>
+   {% endfor %}
+   </select>
+
+   {% if not params['template_preview'] %}
+      {% include "components/itilobject/actors/assign_to_me.html.twig" %}
+   {% endif %}
+
+   <script type="text/javascript">
+   $(function() {
+      var actorytype = '{{ actortype }}';
+
+      // function to display an option in the list or the selected input
+      var genericTemplate_{{ rand }} = function(option = {}, is_selection = false) {
+         var element   = $(option.element);
+         var itemtype  = element.data('itemtype') ?? option.itemtype;
+         var items_id  = element.data('items-id') ?? option.items_id;
+         var text      = element.data('text') ?? option.text;
+         var title     = element.data('title') ?? option.title;
+         var use_notif = element.data('use-notification') ?? option.use_notification ?? 1;
+         var alt_email = element.data('alternative-email') ?? option.alternative_email ?? "";
+
+         var icon = "";
+         var size = is_selection ? "fa-lg" : ""
+         var fk   = "";
+         switch (itemtype) {
+            case "User":
+               if (items_id == 0) {
+                  text = alt_email;
+                  icon = `<i class="fas ${size} fa-fw fa-envelope mx-1" title="{{ __("Direct email") }}"></i>`;
+               } else {
+                  icon = `<i class="fas ${size} fa-fw fa-user mx-1" title="{{ "User"|itemtype_name }}"></i>`;
+               }
+               fk   = "users_id_assign";
+               break;
+            case "Group":
+               icon = `<i class="fas ${size} fa-fw fa-users mx-1" title="{{ "Group"|itemtype_name }}"></i>`;
+               fk   = "groups_id_assign";
+               break;
+            case "Supplier":
+               icon = `<i class="fas ${size} fa-fw fa-pallet mx-1" title="{{ "Supplier"|itemtype_name }}"></i>`;
+               fk   = "suppliers_id_assign";
+               break;
+         }
+
+         var actions = "";
+         {% if canupdate %}
+         if (['User', 'Supplier', 'Email'].includes(itemtype)
+            && is_selection
+            && {{ Entity_getUsedConfig('is_notif_enable_default', entities_id, '', 1) }}) {
+            var fa_class = "far";
+            if (use_notif) {
+               fa_class = "fas";
+            }
+            actions = `<button class="btn btn-sm btn-ghost-secondary edit-notify-user"
+                              data-bs-toggle="tooltip" data-bs-placement="top"
+                              title="{{ __("Email followup") }}"
+                              type="button">
+               <i class="${fa_class} fa-bell notify-icon"></i>
+            </button>`;
+         }
+         {% endif %}
+
+         // manage specific display for tree data (like groups)
+         var indent = "";
+         if (!is_selection && "level" in option && option.level > 1) {
+            for (let index = 1; index < option.level; index++) {
+               indent = "&nbsp;&nbsp;&nbsp;"+indent;
+            }
+            indent = indent+"&raquo;";
+         }
+
+         // prepare html for option element
+         var text = (is_selection && itemtype == "Group") ? title : text;
+         var option_text    = `<span class="actor_text">${text}</span>`;
+         var option_element = $(`<span class="actor_entry" data-itemtype="${itemtype}" data-items-id="${items_id}" data-actortype="${actorytype}" data-text="${text}">${indent}${icon}${option_text}${actions}</span>`);
+
+         // manage ticket information (number of assigned ticket for an actor)
+         if (is_selection && itemtype != "Email" && "{{ actortype }}" == "assign") {
+            var already_assign_element = $(
+               `<span class="assign_infos ms-1" title="{{ __("Number of tickets already assigned") }}"
+                     data-bs-toggle="tooltip" data-bs-placement="top"
+                     data-id="${items_id}" data-fk="${fk}">
+                  <i class="fas fa-spinner fa-spin"></i>
+               </span>`
+            );
+            option_element.append(already_assign_element);
+
+            $.get("{{ path('/ajax/ticketassigninformation.php') }}", {
+               [fk]: items_id,
+               only_number: true,
+            }).done(function(number) {
+               var badge = "";
+               if (number.length > 0) {
+                  badge = `<span class="badge bg-secondary">
+                     ${number}
+                  </span>`;
+               }
+               already_assign_element.html(badge);
+            });
+         }
+
+         return option_element;
+      };
+
+      $("#actor_{{ rand }}").select2({
+         tags: true,
+         width: 'calc(100% - 30px)',
+         tokenSeparators: [',', ' '],
+         disabled: false, // TODO can edit
+         containerCssClass: 'actor-field',
+         templateSelection: function(option) { return genericTemplate_{{ rand }}(option, true); },
+         templateResult:    function(option) { return genericTemplate_{{ rand }}(option, false); },
+         disabled: {{ canupdate ? "false" : "true" }},
+         createTag: function (params) {
+            var term = $.trim(params.term);
+
+            if (term === '') {
+               return null;
+            }
+
+            // Don't offset to create a tag if it's not an email
+            if (!new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).test(term)) {
+               // Return null to disable tag creation
+               return null;
+            }
+
+            return {
+               id: term,
+               text: term,
+               itemtype: "User",
+               items_id: 0,
+               use_notification: 1,
+               alternative_email: term,
+            }
+         },
+         ajax: {
+            url: '{{ path("/ajax/actors.php") }}',
+            datatype: 'json',
+            type: 'POST',
+            data: function (params) {
+               return {
+                  action: 'getActors',
+                  actortype: actorytype,
+                  entity_restrict: {{ entities_id }},
+                  searchText: params.term,
+                  _idor_token: '{{ getNewIDORToken() }}',
+                  itiltemplate_class: '{{ itiltemplate.getType() }}',
+                  itiltemplates_id: {{ itiltemplate.fields['id'] ?? 0 }},
+               };
+            },
+         }
+      });
+
+      // manage actors change
+      var updateActors{{ rand }} = function() {
+         var data = $("#actor_{{ rand }}").select2('data');
+
+         var new_actors = [];
+         data.forEach(function(selection) {
+            var element = $(selection.element);
+
+            var itemtype  = selection.itemtype ?? element.data('itemtype');
+            var items_id  = selection.items_id ?? element.data('items-id');
+            var use_notif = selection.use_notification  ?? element.data('use-notification')  ?? false;
+            var alt_email = selection.alternative_email ?? element.data('alternative-email') ?? "";
+
+            if (itemtype == "Email") {
+               itemtype  = "User";
+               use_notif = true;
+               alt_email = selection.id;
+            }
+
+            new_actors.push({
+               itemtype: itemtype,
+               items_id: items_id,
+               use_notification: use_notif,
+               alternative_email: alt_email,
+            });
+         });
+
+         actors[actorytype] = new_actors;
+
+         saveActorsToDom();
+      };
+      $("#actor_{{ rand }}").on('select2:select', function () {
+         updateActors{{ rand }}();
+      });
+      $("#actor_{{ rand }}").on('select2:unselect', function () {
+         updateActors{{ rand }}();
+      });
+
+      // intercept event for edit notification button
+      document.addEventListener('click', event => {
+         if (event.target.closest("#actor_{{ rand }} + .select2 .edit-notify-user")) {
+            return openNotifyModal(event);
+         }
+         // if a click on assign info is detected prevent opening of select2
+         if (event.target.closest("#actor_{{ rand }} + .select2 .assign_infos")) {
+            event.stopPropagation();
+         }
+      }, {capture: true})
+      document.addEventListener('keydown', event => {
+         if (event.target.closest("#actor_{{ rand }} + .select2 .edit-notify-user")
+            && event.key == "Enter") {
+            return openNotifyModal(event);
+         }
+      }, {capture: true})
+   });
+   </script>
+{% endif %}

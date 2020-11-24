@@ -1,0 +1,121 @@
+{% import "components/form/fields_macros.html.twig" as fields %}
+{% set rand = rand|default(random()) %}
+{% set field_name = field_name|default('psgallery' ~ rand) %}
+
+<div id="psgallery{{ rand }}" class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+   <div class="pswp__bg"></div>
+   <div class="pswp__scroll-wrap">
+      <div class="pswp__container">
+         <div class="pswp__item"></div>
+         <div class="pswp__item"></div>
+         <div class="pswp__item"></div>
+      </div>
+      <div class="pswp__ui pswp__ui--hidden">
+         <div class="pswp__top-bar">
+            <div class="pswp__counter"></div>
+            {% if controls.close %}
+               <button class="pswp__button pswp__button--close" title="{{ __('Close (Esc)') }}"></button>
+            {% endif %}
+            {% if controls.share %}
+               <button class="pswp__button pswp__button--share" title="{{ __('Share') }}"></button>
+            {% endif %}
+            {% if controls.fullscreen %}
+               <button class="pswp__button pswp__button--fs" title="{{ __('Toggle fullscreen') }}"></button>
+            {% endif %}
+            {% if controls.zoom %}
+               <button class="pswp__button pswp__button--zoom" title="{{ __('Zoom in/out') }}"></button>
+            {% endif %}
+
+            <div class="pswp__preloader">
+               <div class="pswp__preloader__icn">
+                  <div class="pswp__preloader__cut">
+                     <div class="pswp__preloader__donut"></div>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+            <div class="pswp__share-tooltip"></div>
+         </div>
+
+         <button type="button" class="pswp__button pswp__button--arrow--left" title="{{ __('Previous (arrow left)') }}">
+         </button>
+
+         <button type="button" class="pswp__button pswp__button--arrow--right" title="{{ __('Next (arrow right)') }}">
+         </button>
+
+         <div class="pswp__caption">
+            <div class="pswp__caption__center"></div>
+         </div>
+      </div>
+   </div>
+</div>
+
+{% set imgs = imgs|default({}) %}
+{% set gallery_item_class = gallery_item_class|default('') %}
+{% set gallery_type = gallery_type|default('') %}
+
+{% if gallery_type == 'horizontal' %}
+   <div class="col-12">
+      <div class="d-flex flex-row overflow-auto pswp-horizontal-gallery pswp-img{{ rand }} {{ gallery_item_class }}" itemscope itemtype="https://schema.org/ImageGallery">
+         {% for img in imgs %}
+            <figure itemprop="associatedMedia" itemscope itemtype="https://schema.org/ImageObject" class="d-flex flex-column me-2">
+               <a href="{{ img['src']|escape }}" itemprop="contentUrl" data-index="0">
+                  <img src="{{ img['thumbnail_src']|default(img['src'])|escape }}" itemprop="thumbnail" alt="{{ img['title']|default('') }}">
+               </a>
+               <figcaption itemprop="caption description">{{ img['title']|default('') }}</figcaption>
+            </figure>
+         {% endfor %}
+      </div>
+   </div>
+{% else %}
+   <div class="pswp-img{{ rand }} {{ gallery_item_class }}" itemscope itemtype="https://schema.org/ImageGallery">
+      {% for img in imgs %}
+         {% set clearable = not img['_is_model_img'] %}
+         <figure itemprop="associatedMedia" itemscope itemtype="https://schema.org/ImageObject"
+                 style="width: {{ img['thumbnail_w']|default('auto') }}; height: {{ img['thumbnail_h']|default('auto') }}">
+            {{ fields.imageField((clearable ? 'pictures' : field_name) ~ '_' ~ loop.index0, img['thumbnail_src']|default(img['src']), '', {
+               'no_label': true,
+               'full_width': true,
+               'clearable': clearable,
+               'alt': img['title']|default(''),
+               'itemprop': 'thumbnail',
+               'link_attribs': {
+                  'itemprop': 'contentUrl',
+                  'data-index': '0'
+               }
+            }) }}
+            <figcaption itemprop="caption description">{{ img['title']|default('') }}</figcaption>
+         </figure>
+      {% endfor %}
+   </div>
+{% endif %}
+
+<script>
+   (($) => {
+      const pswp = document.getElementById("psgallery{{ rand }}");
+      $(".pswp-img{{ rand }}").on('click', 'figure img', function(event) {
+         event.preventDefault();
+         const options = {
+            index: $(this).index(),
+            bgOpacity: 0.7,
+            showHideOpacity: true,
+            shareButtons: [
+               {
+                  id: 'download',
+                  label: __('Download'),
+                  url: '{{ raw_image_url }}',
+                  download: true
+               }
+            ]
+         };
+         const lightbox = new PhotoSwipe(pswp, PhotoSwipeUI_Default, {{ imgs|json_encode|raw }}, options);
+         $(pswp).closest('.card-tabs').css('z-index', 50); // Be sure that tabs are displayed above form in vsplit layout
+         lightbox.init();
+         lightbox.listen('destroy', function() {
+            $(this.container).closest('.card-tabs').css('z-index', '');
+         });
+      })
+   })(jQuery);
+</script>

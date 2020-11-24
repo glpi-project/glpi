@@ -1,0 +1,60 @@
+{#
+ ---------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2015-2020 Teclib' and contributors.
+
+ http://glpi-project.org
+
+ based on GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2014 by the INDEPNET Development Team.
+
+ ---------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of GLPI.
+
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ ---------------------------------------------------------------------
+#}
+
+            </main> {# #page #}
+         </div> {# .page-body #}
+      </div> {# .page-wrapper #}
+   </div> {# .page #}
+
+   <div class="floating-buttons d-inline-flex">
+      <span class="btn btn-secondary d-none me-1" id="backtotop">
+         <i class="fas fa-arrow-up" title="{{ __('Back to top of the page') }}">
+            <span class="visually-hidden">{{ __("Top of the page") }}</span>
+         </i>
+      </span>
+   </div>
+
+   {% if config('maintenance_mode') %}
+      <div id='maintenance-float'>
+         <a href="{{ path("front/config.form.php?forcetab=Config$5") }}">GLPI MAINTENANCE MODE</a>
+      </div>
+   {% endif %}
+
+   {% for js_file in js_files %}
+      <script type="text/javascript" src="{{ js_path(js_file) }}"></script>
+   {% endfor %}
+
+   {% for js_file in js_modules %}
+      <script type="module" src="{{ js_path(js_file) }}"></script>
+   {% endfor %}
+
+</body>
+</html>

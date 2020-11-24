@@ -124,9 +124,6 @@ class KnowbaseItem_Revision extends CommonDBTM {
 
       Html::printAjaxPager(self::getTypeName(1), $start, $number);
       // Output events
-      echo "<div class='center'>";
-      echo "<input type='button' name='compare' value='"._sx('button', 'Compare selected revisions').
-             "' class='submit compare'>";
       echo "<table class='tab_cadre_fixehov'>";
       $header = '<tr>';
       $header .= "<th title='" . _sn('Revision', 'Revisions', 1) . "'>#</th>";
@@ -182,107 +179,127 @@ class KnowbaseItem_Revision extends CommonDBTM {
          }
 
          echo "<td><a href='#' data-rev='" . $revision['revision']  . "'
-                    data-revid='" . $revision['id']  . "' class='show'>" . __('show') . "</a>
-                 - <a href='$form&to_rev={$revision['id']}' class='restore'>".
+                    data-revid='" . $revision['id']  . "' class='show_rev'>" . __('show') . "</a>
+                 - <a href='$form&to_rev={$revision['id']}' class='restore_rev'>".
                     __('restore')  . "</a></td>";
          echo "</tr>";
       }
 
+      // TODO: move script to deferred js loading
       echo Html::script("public/lib/jquery-prettytextdiff.js");
-      echo "<script type='text/javascript'>
-            $(function() {
-               $('.restore').on('click', function(e) {
-                  lastClickedElement = e.target;
-                  return window.confirm('" . __s('Do you want to restore the selected revision?')  . "');
-               });
+      echo Html::scriptBlock("
+         $(function() {
+            $(document).on('click', '.restore_rev', function(e) {
+               lastClickedElement = e.target;
+               return window.confirm(__('Do you want to restore the selected revision?'));
+            });
 
-               $('.show').on('click', function(e) {
-                  e.preventDefault();
-                  var _this = $(this);
+            $(document).on('click', '.show_rev', function(e) {
+               e.preventDefault();
+               var _this = $(this);
 
-                  $.ajax({
-                     url: '{$CFG_GLPI['root_doc']}/ajax/getKbRevision.php',
-                     method: 'post',
-                     cache: false,
-                     data: {
-                        'revid': _this.data('revid')
-                     },
-                     success: function(data) {
-                        var title = '" . __('Show revision %rev') . "'.replace(/%rev/, _this.data('rev'));
-                        var html = '<div title=\"' + title + '\" id=\"compare_view\"><table class=\"tab_cadre_fixehov\">';
-                        html += '<h2>".__('Subject')."</h2>';
-                        html += '<div>' + data.name + '</div>';
-                        html += '<h2>".__('Content')."</h2>';
-                        html += '<div>' + data.answer + '</div>';
-                        html += '</div>';
-                        $(html).appendTo('body').dialog({
-                           height: 'auto',
-                           width: 'auto',
-                           modal: true
-                        });
-                     },
-                     error: function() { ".
-                        Html::jsAlertCallback(__('Contact your GLPI admin!'), __('Unable to load revision!'))."
-                     }
-                  });
-               });
-
-               $('.compare').on('click', function(e) {
-                  e.preventDefault();
-                  var _oldid = $('[name=oldid]:checked').val();
-                  var _diffid = $('[name=diff]:checked').val();
-
-                  $.ajax({
-                     url: '{$CFG_GLPI['root_doc']}/ajax/compareKbRevisions.php',
-                     method: 'post',
-                     cache: false,
-                     data: {
-                        'oldid' :  _oldid,
-                        'diffid': _diffid,
-                        'kbid'  : '{$revision['knowbaseitems_id']}'
-                     },
-                     success: function(data) {
-                        if (_diffid == 0) {
-                           _diffid = '" . __('current') . "';
-                        }
-                        var title = '" . __s('Compare revisions old and diff') . "'.replace(/old/, _oldid).replace(/diff/, _diffid);
-                        var html_compare = '<div title=\"' + title + '\" id=\"compare_view\"><table class=\"tab_cadre_fixehov\">';
-                        html_compare += '<tr><th></th><th>" . __s('Original') . "</th><th>" . __s('Changed') ."</th><th>" . __('Differences')  . "</th></tr>';
-                        html_compare += '<tr><th>" . __s('Subject') . "</th><td class=\"original\">' + data['old']['name'] + '</td><td class=\"changed\">' + data['diff']['name'] + '</td><td class=\"diff\"></td></tr>';
-                        html_compare += '<tr><th>" . __s('Content')  . "</th><td class=\"original\">' + data['old']['answer'] + '</td><td class=\"changed\">' + data['diff']['answer'] + '</td><td class=\"diff\"></td></tr>';
-                        html_compare += '</table></div>';
-                        $(html_compare).appendTo('body').dialog({
-                           height: 'auto',
-                           width: 'auto',
-                           modal: true
-                        });
-                        $('#compare_view tr').prettyTextDiff();
-                     },
-                     error: function() { ".
-                        Html::jsAlertCallback(__('Contact your GLPI admin!'), __('Unable to load requested comparison!'))."
-                     }
-                  });
-               });
-
-               $('[name=diff]:gt(0)').css('visibility', 'hidden');
-               $('[name=oldid]').on('click', function(e) {
-                  var _index = $(this).index('[name=oldid]');
-
-                  var _checked_index = $('[name=diff]:checked').index('[name=diff]');
-                  if (_checked_index >= _index) {
-                     $('[name=diff]:eq(' + (_index - 1) +')').prop('checked', true);
+               $.ajax({
+                  url: '{$CFG_GLPI['root_doc']}/ajax/getKbRevision.php',
+                  method: 'post',
+                  cache: false,
+                  data: {
+                     revid: _this.data('revid')
                   }
-
-                  $('[name=diff]:gt(' + _index + '), [name=diff]:eq(' + _index + ')').css('visibility', 'hidden');
-                  $('[name=diff]:lt(' + _index + ')').css('visibility', 'visible');
+               })
+               .done(function(data) {
+                  glpi_html_dialog({
+                     title: __('Show revision %rev').replace(/%rev/, _this.data('rev')),
+                     body: `<div>
+                        <h2>\${__('Subject')}</h2>
+                        <div>\${data.name}</div>
+                        <h2>\${__('Content')}</h2>
+                        <div>\${data.answer}</div>
+                     </div>`,
+                  });
+               })
+               .fail(function() {
+                  glpi_alert({
+                     title: __('Contact your GLPI admin!'),
+                     message: __('Unable to load revision!'),
+                  });
                });
             });
-         </script>";
+
+            $(document).on('click', '.compare', function(e) {
+               e.preventDefault();
+               var _oldid = $('[name=oldid]:checked').val();
+               var _diffid = $('[name=diff]:checked').val();
+
+               $.ajax({
+                  url: '{$CFG_GLPI['root_doc']}/ajax/compareKbRevisions.php',
+                  method: 'post',
+                  cache: false,
+                  data: {
+                     oldid :  _oldid,
+                     diffid: _diffid,
+                     kbid  : '{$revision['knowbaseitems_id']}'
+                  }
+               }).done(function(data) {
+                  if (_diffid == 0) {
+                     _diffid = __('current');
+                  }
+
+                  glpi_html_dialog({
+                     title: __('Compare revisions old and diff')
+                        .replace(/old/, _oldid)
+                        .replace(/diff/, _diffid),
+                     body: `<div id='compare_view'>
+                        <table class='table'>
+                           <tr>
+                              <th></th>
+                              <th>\${__('Original')}</th>
+                              <th>\${__('Changed')}</th>
+                              <th>\${__('Differences')}</th>
+                           </tr>
+                           <tr>
+                              <th>\${__('Subject')}</th>
+                              <td class='original'>\${data['old']['name']}</td>
+                              <td class='changed'>\${data['diff']['name']}</td>
+                              <td class='diff'></td>
+                           </tr>
+                           <tr>
+                              <th>\${__('Content')}</th>
+                              <td class='original'>\${data['old']['answer']}</td>
+                              <td class='changed'>\${data['diff']['answer']}</td>
+                              <td class='diff'></td>
+                           </tr>
+                        </table>
+                     </div>`,
+                  });
+
+                  $('#compare_view tr').prettyTextDiff();
+               })
+               .fail(function() {
+                  glpi_alert({
+                     title: __('Contact your GLPI admin!'),
+                     message: __('Unable to load diff!'),
+                  });
+               });
+            });
+
+            $('[name=diff]:gt(0)').css('visibility', 'hidden');
+            $('[name=oldid]').on('click', function(e) {
+               var _index = $(this).index('[name=oldid]');
+
+               var _checked_index = $('[name=diff]:checked').index('[name=diff]');
+               if (_checked_index >= _index) {
+                  $('[name=diff]:eq(' + (_index - 1) +')').prop('checked', true);
+               }
+
+               $('[name=diff]:gt(' + _index + '), [name=diff]:eq(' + _index + ')').css('visibility', 'hidden');
+               $('[name=diff]:lt(' + _index + ')').css('visibility', 'visible');
+            });
+         });
+      ");
 
       echo $header;
       echo "</table>";
-      echo "<input type='button' name='compare' value='"._sx('button', 'Compare selected revisions')."' class='submit compare'>";
-      echo "</div>";
+      echo "<button class='btn btn-sm btn-secondary compare'>"._sx('button', 'Compare selected revisions')."</button>";
       Html::printAjaxPager(self::getTypeName(1), $start, $number);
    }
 

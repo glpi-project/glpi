@@ -30,15 +30,16 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\AssetImage;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use Glpi\Toolbox\RichText;
-
 /// CommonDropdown class - generic dropdown
 abstract class CommonDropdown extends CommonDBTM {
-
+   use AssetImage;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -58,6 +59,12 @@ abstract class CommonDropdown extends CommonDBTM {
 
    static $rightname = 'dropdown';
 
+
+   public function __call($name, $arguments) {
+      if ($name === 'displaySpecificTypeField') {
+         Toolbox::deprecated();
+      }
+   }
 
    /**
     * @since 0.85
@@ -140,13 +147,45 @@ abstract class CommonDropdown extends CommonDBTM {
    function getAdditionalFields() {
       global $DB;
 
-      if ($DB->fieldExists($this->getTable(), 'product_number')) {
-         return [['name' => 'product_number',
-                            'type' => 'text',
-                            'label' => __('Product Number')]];
-      } else {
-         return [];
+      $fields = [];
+      if ($DB->fieldExists(static::getTable(), 'product_number')) {
+         $fields[] = [
+            'name' => 'product_number',
+            'type' => 'text',
+            'label' => __('Product Number')
+         ];
       }
+      if ($DB->fieldExists(static::getTable(), 'picture')) {
+         $fields[] = [
+            'name' => 'picture',
+            'type' => 'picture',
+            'label' => _n('Picture', 'Pictures', 1)
+         ];
+      }
+      if ($DB->fieldExists($this->getTable(), 'picture_front')) {
+         $fields[] = [
+            'name'   => 'picture_front',
+            'type'   => 'picture',
+            'label'  => __('Front picture')
+         ];
+      }
+
+      if ($DB->fieldExists($this->getTable(), 'picture_rear')) {
+         $fields[] = [
+            'name'   => 'picture_rear',
+            'type'   => 'picture',
+            'label'  => __('Rear picture')
+         ];
+      }
+
+      if ($DB->fieldExists($this->getTable(), 'pictures')) {
+         $fields[] = [
+            'name'   => 'pictures',
+            'type'   => 'picture_gallery',
+            'label'  => _n('Picture', 'Pictures', Session::getPluralNumber())
+         ];
+      }
+      return $fields;
    }
 
 
@@ -220,6 +259,9 @@ abstract class CommonDropdown extends CommonDBTM {
       if (isset($input['_is_update'])) {
          unset($input['_is_update']);
       }
+
+      $input = $this->managePictures($input);
+
       return $input;
    }
 
@@ -245,6 +287,15 @@ abstract class CommonDropdown extends CommonDBTM {
       $this->addFilesFromRichText();
 
       parent::post_updateItem($history);
+   }
+
+   function cleanDBonPurge() {
+      Toolbox::deletePicture($this->fields['picture_front']);
+      Toolbox::deletePicture($this->fields['picture_rear']);
+      $pictures = importArrayFromDB($this->fields['pictures']);
+      foreach ($pictures as $picture) {
+         Toolbox::deletePicture($picture);
+      }
    }
 
    /**
@@ -274,7 +325,6 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
 
       if (!$this->isNewID($ID)) {
          $this->check($ID, READ);
@@ -282,265 +332,26 @@ abstract class CommonDropdown extends CommonDBTM {
          // Create item
          $this->check(-1, CREATE);
       }
-      $this->showFormHeader($options);
 
       $fields = $this->getAdditionalFields();
-      $nb     = count($fields);
 
-      echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
-      echo "<td>";
-      if ($this instanceof CommonDevice) {
-         // Awfull hack for CommonDevice where name is designation
-         Html::autocompletionTextField($this, "designation");
-      } else {
-         Html::autocompletionTextField($this, "name");
-      }
-      echo "</td>";
-
-      echo "<td rowspan='".($nb+1)."'>". __('Comments')."</td>";
-      echo "<td rowspan='".($nb+1)."'>
-            <textarea cols='45' rows='".($nb+2)."' name='comment' >".$this->fields["comment"];
-      echo "</textarea></td>";
-
-      echo "</tr>\n";
-
-      foreach ($fields as $field) {
-         if (($field['name'] == 'entities_id')
-             && ($ID == 0)
-             && !$this->isNewID($ID)) {
-            // No display for root entity
-            echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
-            break;
-         }
-
-         if (!isset($field['type'])) {
-            $field['type'] = '';
-         }
-
-         if ($field['name'] == 'header') {
-            echo "<tr class='tab_bg_1'><th colspan='2'>".$field['label']."</th></tr>";
-            continue;
-         }
-
-         echo "<tr class='tab_bg_1'><td>".$field['label'];
-         if (isset($field['comment']) && !empty($field['comment'])) {
-            echo "&nbsp;";
-            Html::showToolTip($field['comment']);
-         }
-         echo "</td><td>";
-
-         switch ($field['type']) {
-            case 'UserDropdown' :
-               $params = ['name'   => $field['name'],
-                          'value'  => $this->fields[$field['name']],
-                          'right'  => 'interface',
-                          'entity' => $this->fields["entities_id"]];
-               if (isset($field['right'])) {
-                  $params['right'] = $field['right'];
-               }
-               User::dropdown($params);
-
-               break;
-
-            case 'dropdownValue' :
-               $params = ['value'  => $this->fields[$field['name']],
-                          'name'   => $field['name'],
-                          'entity' => $this->getEntityID()];
-               if (isset($field['condition'])) {
-                  $params['condition'] = $field['condition'];
-               }
-               Dropdown::show(getItemTypeForTable(getTableNameForForeignKeyField($field['name'])),
-                              $params);
-               break;
-
-            case 'text' :
-               Html::autocompletionTextField($this, $field['name']);
-               break;
-
-            case 'textarea' :
-               $cols = 40;
-               $rows = 3;
-
-               if (isset($field['rows'])) {
-                  $rows = $field['rows'];
-               }
-               if (isset($field['cols'])) {
-                  $cols = $field['cols'];
-               }
-               echo "<textarea name='".$field['name']."' cols='$cols' rows='$rows'>".
-                     $this->fields[$field['name']]."</textarea >";
-               break;
-
-            case 'integer' :
-               $params = ['value' => $this->fields[$field['name']]];
-               if (isset($field['min'])) {
-                  $params['min'] = $field['min'];
-               }
-               if (isset($field['step'])) {
-                  $params['step'] = $field['step'];
-               }
-               if (isset($field['max'])) {
-                  $params['max'] = $field['max'];
-               }
-               if (!isset($field['html']) || $field['html'] == false) {
-                  Dropdown::showNumber($field['name'], $params);
-               } else {
-                  echo Html::input(
-                     $field['name'], [
-                        'type'   => 'number'
-                     ] + $params
-                  );
-               }
-               break;
-
-            case 'timestamp' :
-               $param = ['value' => $this->fields[$field['name']]];
-               if (isset($field['min'])) {
-                  $param['min'] = $field['min'];
-               }
-               if (isset($field['max'])) {
-                  $param['max'] = $field['max'];
-               }
-               if (isset($field['step'])) {
-                  $param['step'] = $field['step'];
-               }
-               Dropdown::showTimeStamp($field['name'], $param);
-               break;
-
-            case 'parent' :
-               if ($field['name'] == 'entities_id') {
-                  $restrict = -1;
-               } else {
-                  $restrict = $this->getEntityID();
-               }
-               Dropdown::show(getItemTypeForTable($this->getTable()),
-                              ['value'  => $this->fields[$field['name']],
-                               'name'   => $field['name'],
-                               'entity' => $restrict,
-                               'used'   => ($ID>0 ? getSonsOf($this->getTable(), $ID)
-                                                       : [])]);
-               break;
-
-            case 'icon' :
-               Dropdown::dropdownIcons($field['name'], $this->fields[$field['name']],
-                                       GLPI_ROOT."/pics/icones");
-               if (!empty($this->fields[$field['name']])) {
-                  echo "&nbsp;<img style='vertical-align:middle;' alt='' src='".
-                       $CFG_GLPI["typedoc_icon_dir"]."/".$this->fields[$field['name']]."'>";
-               }
-               break;
-
-            case 'bool' :
-               Dropdown::showYesNo($field['name'], $this->fields[$field['name']]);
-               break;
-
-            case 'color' :
-               Html::showColorField($field['name'], ['value' => $this->fields[$field['name']]]);
-               break;
-
-            case 'date' :
-               Html::showDateField($field['name'], ['value' => $this->fields[$field['name']]]);
-               break;
-
-            case 'datetime' :
-               Html::showDateTimeField($field['name'],
-                                       ['value' => $this->fields[$field['name']]]);
-               break;
-
-            case 'picture' :
-               if (!empty($this->fields[$field['name']])) {
-                  echo Html::image(Toolbox::getPictureUrl($this->fields[$field['name']]), [
-                     'style' => 'max-width: 300px; max-height: 150px;',
-                     'class' => 'picture_square'
-                  ]);
-                  echo "&nbsp;";
-                  echo Html::getCheckbox([
-                     'title' => __('Clear'),
-                     'name'  => "_blank_".$field['name']
-                  ]);
-                  echo "&nbsp;".__('Clear');
-
-               } else {
-                  echo Html::file([
-                     'name'       => $field['name'],
-                     'onlyimages' => true,
-                  ]);
-               }
-               break;
-
-            case 'password':
-               echo "<input type='password' name='password' value='' size='20' autocomplete='new-password'>";
-               break;
-
-            case 'tinymce':
-               Html::textarea([
-                  'name'            => $field['name'],
-                  'value'           => RichText::getSafeHtml($this->fields[$field['name']], true, true),
-                  'enable_richtext' => true,
-                  'enable_images'   => !($field['disable_images'] ?? false),
-               ]);
-               break;
-
-            case 'duration' :
-               $toadd = [];
-               for ($i=9; $i<=100; $i++) {
-                  $toadd[] = $i*HOUR_TIMESTAMP;
-               }
-               Dropdown::showTimeStamp($field['name'], [
-                  'min'             => 0,
-                  'max'             => 8*HOUR_TIMESTAMP,
-                  'value'           => $this->fields[$field['name']],
-                  'addfirstminutes' => true,
-                  'inhours'         => true,
-                  'toadd'           => $toadd
-               ]);
-               break;
-
-            case 'itemtypename':
-               $options = [
-                  'value'  => $this->fields[$field['name']]
-               ];
-
-               if (isset($field['itemtype_list'])) {
-                  $options['types'] = $CFG_GLPI[$field['itemtype_list']];
-               }
-
-               if (isset($options['types'])) {
-                  Dropdown::showItemTypes(
-                     $field['name'],
-                     $options['types'],
-                     $options
-                  );
-               }
-               return false;
-
-            default:
-               $this->displaySpecificTypeField($ID, $field);
-               break;
-         }
-         if (isset($field['unit'])) {
-            echo "&nbsp;".$field['unit'];
-         }
-
-         echo "</td></tr>\n";
-      }
-
-      if (isset($this->fields['is_protected']) && $this->fields['is_protected']) {
-         $options['candel'] = false;
-      }
-
-      if (isset($_REQUEST['_in_modal'])) {
-         echo "<input type='hidden' name='_in_modal' value='1'>";
-      }
-      $this->showFormButtons($options);
-
-      return true;
+      echo TemplateRenderer::getInstance()->render('dropdown_form.html.twig', [
+         'item'   => $this,
+         'params' => $options,
+         'additional_fields' => $fields
+      ]);
    }
 
 
-   function displaySpecificTypeField($ID, $field = []) {
+   function getSpecificTypeField(int $ID, array $field): string {
+      if (method_exists($this, 'displaySpecificTypeField')) {
+         Toolbox::deprecated();
+         ob_start();
+         $this->displaySpecificTypeField($ID, $field);
+         return ob_get_clean();
+      }
+      return '';
    }
-
 
    function pre_deleteItem() {
 
@@ -637,6 +448,32 @@ abstract class CommonDropdown extends CommonDBTM {
             'name'           => __('Creation date'),
             'datatype'       => 'datetime',
             'massiveaction'  => false
+         ];
+      }
+
+      if ($DB->fieldExists($this->getTable(), 'picture_front')) {
+         $options[] = [
+            'id'            => '137',
+            'table'         => $this->getTable(),
+            'field'         => 'picture_front',
+            'name'          => __('Front picture'),
+            'datatype'      => 'specific',
+            'nosearch'      => true,
+            'massiveaction' => true,
+            'nosort'        => true,
+         ];
+      }
+
+      if ($DB->fieldExists($this->getTable(), 'picture_rear')) {
+         $options[] = [
+            'id'            => '138',
+            'table'         => $this->getTable(),
+            'field'         => 'picture_rear',
+            'name'          => __('Rear picture'),
+            'datatype'      => 'specific',
+            'nosearch'      => true,
+            'massiveaction' => true,
+            'nosort'        => true,
          ];
       }
 

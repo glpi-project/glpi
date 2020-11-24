@@ -29,7 +29,9 @@
  * ---------------------------------------------------------------------
  */
 
+/* global bootstrap */
 /* global L */
+/* global glpi_html_dialog */
 
 var timeoutglobalvar;
 
@@ -573,14 +575,44 @@ if ($(window).width() <= 700) {
 }
 
 var langSwitch = function(elt) {
-   var _url = elt.attr('href').replace(/front\/preference.+/, 'ajax/switchlang.php');
    $.ajax({
-      url: _url,
+      url: CFG_GLPI.root_doc + '/ajax/switchlang.php',
       type: 'GET',
       success: function(html) {
-         $('#language_link')
-            .html(html);
-         $('#debugajax').remove();
+         var new_elt = $('<div></div>');
+         new_elt.attr('class', elt.attr('class')); // Copy class from replaced element
+         new_elt.html(html);
+         new_elt.find('.debug-pannel').remove();
+         new_elt.find('#debugajax').remove();
+         new_elt.find('[name^="see_ajaxdebug"]').remove();
+         elt.replaceWith(new_elt);
+      }
+   });
+};
+
+
+var switchFoldMenu = function() {
+   $.ajax({
+      url: CFG_GLPI.root_doc + '/ajax/switchfoldmenu.php',
+      type: 'GET',
+      datatype: "json",
+      success: function(data) {
+         if (data.success === true) {
+            $('body').toggleClass('navbar-collapsed');
+
+            var collapsed = $('body').hasClass('navbar-collapsed');
+
+            $('#navbar-menu li.dropdown').toggleClass('dropend');
+            $('#navbar-menu .dropdown-menu.animate__animated').toggleClass('animate__animated');
+
+            if (collapsed) {
+               $('#navbar-menu .dropdown-menu, #navbar-menu .nav-link').removeClass('show');
+            } else {
+               if ($("#navbar-menu .nav-link.show").length == 0)  {
+                  $('#navbar-menu .nav-link.active + .dropdown-menu').addClass('show');
+               }
+            }
+         }
       }
    });
 };
@@ -617,12 +649,19 @@ $(function() {
    });
 
    // prevent jquery ui dialog to keep focus
-   $.ui.dialog.prototype._focusTabbable = function() {};
+   //$.ui.dialog.prototype._focusTabbable = function() {};
 
    //quick lang switch
-   $('#language_link > a').on('click', function(event) {
+   $('[data-language-selector]').on('click', function(event) {
       event.preventDefault();
+      event.stopPropagation();
       langSwitch($(this));
+   });
+
+   $('.reduce-menu').on('click', function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      switchFoldMenu();
    });
 
    // ctrl+enter in form textareas (without tinymce)
@@ -633,8 +672,13 @@ $(function() {
       }
    });
 
+   // toggle debug panel
+   $(document).on('click', '.see_debug', function() {
+      $('body > .debug-panel').toggle();
+   });
+
    // permits to have html in dialogs title
-   $.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+   /*$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
       _title: function(title) {
          if (!this.options.title ) {
             title.html("&#160;");
@@ -642,7 +686,7 @@ $(function() {
             title.html(this.options.title);
          }
       }
-   }));
+   }));*/
 });
 
 /**
@@ -771,11 +815,9 @@ if ($('#backtotop').length) {
       backToTop = function () {
          var scrollTop = $(window).scrollTop();
          if (scrollTop > scrollTrigger) {
-            $('#backtotop').show('slow');
-            $('#see_debug').addClass('wbttop');
+            $('#backtotop').addClass('d-md-block');
          } else {
-            $('#backtotop').hide();
-            $('#see_debug').removeClass('wbttop');
+            $('#backtotop').removeClass('d-md-block');
          }
       };
    backToTop();
@@ -848,49 +890,46 @@ var showMapForLocation = function(elt) {
       return;
    }
 
-   var _dialog = $('<div id="location_map_dialog"/>');
-   _dialog.appendTo('body').dialog({
-      close: function() {
-         $(this).dialog('destroy').remove();
-      }
-   });
+   glpi_html_dialog({
+      title: __("Display on map"),
+      body: "<div id='location_map_dialog'/>",
+      dialogclass: "modal-lg",
+      show: function() {
+         //add map, set a default arbitrary location
+         var map_elt = initMap($('#location_map_dialog'), 'location_map');
+         map_elt.spin(true);
 
-   //add map, set a default arbitrary location
-   var map_elt = initMap($('#location_map_dialog'), 'location_map');
-
-   map_elt.spin(true);
-   $.ajax({
-      dataType: 'json',
-      method: 'POST',
-      url: CFG_GLPI.root_doc + '/ajax/getMapPoint.php',
-      data: {
-         itemtype: 'Location',
-         items_id: $('#' + _id).val()
-      }
-   }).done(function(data) {
-      if (data.success === false) {
-         _dialog.dialog('close');
-         $('<div>' + data.message + '</div>').dialog({
-            close: function() {
-               $(this).dialog('destroy').remove();
+         $.ajax({
+            dataType: 'json',
+            method: 'POST',
+            url: CFG_GLPI.root_doc + '/ajax/getMapPoint.php',
+            data: {
+               itemtype: 'Location',
+               items_id: $('#' + _id).val()
             }
+         }).done(function(data) {
+            if (data.success === false) {
+               glpi_html_dialog({
+                  body: data.message
+               });
+            } else {
+               var _markers = [];
+               var _marker = L.marker([data.lat, data.lng]);
+               _markers.push(_marker);
+
+               var _group = L.featureGroup(_markers).addTo(map_elt);
+               map_elt.fitBounds(
+                  _group.getBounds(), {
+                     padding: [50, 50],
+                     maxZoom: 10
+                  }
+               );
+            }
+         }).always(function() {
+            //hide spinner
+            map_elt.spin(false);
          });
-      } else {
-         var _markers = [];
-         var _marker = L.marker([data.lat, data.lng]);
-         _markers.push(_marker);
-
-         var _group = L.featureGroup(_markers).addTo(map_elt);
-         map_elt.fitBounds(
-            _group.getBounds(), {
-               padding: [50, 50],
-               maxZoom: 10
-            }
-         );
       }
-   }).always(function() {
-      //hide spinner
-      map_elt.spin(false);
    });
 };
 
@@ -992,6 +1031,86 @@ var templateSelection = function (selection) {
    var _elt = $('<span></span>');
    _elt.html(escapeMarkupText(text));
    return _elt;
+};
+
+var templateItilStatus = function(option) {
+   var status = option.id || 0;
+
+   var classes = "";
+   switch (parseInt(status)) {
+      case 1 :
+         classes = 'new fas fa-circle';
+         break;
+      case 2 :
+         classes = 'assigned far fa-circle';
+         break;
+      case 3 :
+         classes = 'planned fas fa-calendar';
+         break;
+      case 4 :
+         classes = 'waiting fas fa-circle';
+         break;
+      case 5 :
+         classes = 'solved far fa-circle';
+         break;
+      case 6 :
+         classes = 'closed fas fa-circle';
+         break;
+      case 7:
+         classes = 'accepted fas fa-check-circle';
+         break;
+      case 8 :
+         classes = 'observe fas fa-eye';
+         break;
+      case 9 :
+         classes = 'eval far fa-circle';
+         break;
+      case 10 :
+         classes = 'approval fas fa-question-circle';
+         break;
+      case 11 :
+         classes = 'test fas fa-question-circle';
+         break;
+      case 12 :
+         classes = 'qualif far fa-circle';
+         break;
+      case 13 :
+         classes = 'refused far fa-times-circle';
+         break;
+      case 14 :
+         classes = 'canceled fas fa-ban';
+         break;
+   }
+
+   return $(`<span><i class="itilstatus ${classes}"></i>${option.text}</span>`);
+};
+
+var templateValidation = function(option) {
+   var status = option.id || 0;
+
+   var classes = "";
+   switch (parseInt(status)) {
+      case 2 : // WAITING
+         classes = 'waiting fas fa-clock';
+         break;
+      case 3 : // ACCEPTED
+         classes = 'accepted fas fa-check';
+         break;
+      case 4 : // REFUSED
+         classes = 'refused fas fa-times';
+         break;
+   }
+
+   return $(`<span><i class="validationstatus ${classes}"></i>${option.text}</span>`);
+};
+
+var templateItilPriority = function(option) {
+   var priority = option.id || 0;
+   var priority_color = CFG_GLPI['priority_'+priority] || "";
+
+   var color_badge = `<i class='fas fa-circle' style='color: ${priority_color}'></i>`;
+
+   return $(`<span>${color_badge}&nbsp;${option.text}</span>`);
 };
 
 /**
@@ -1215,43 +1334,117 @@ function getFlatPickerLocale(language, region) {
    }
 }
 
-function _showMessage(message, css_class, title) {
-   var rand = Math.round(Math.random() * 1000000);
+/**
+ *
+ * @param {string|Array<string>} dropdown_ids
+ * @param {string} target
+ * @param {string} url
+ * @param {{}} params
+ * @param {Array<string>} events
+ * @param {number} min_size
+ * @param {number} buffer_time
+ * @param {Array<string>} force_load_for
+ */
+function updateItemOnEvent(dropdown_ids, target, url, params = {}, events = ['change'],
+   min_size = -1, buffer_time = -1, force_load_for = []) { // eslint-disable-line
 
-   var html = "<div id='message_after_redirect_" +  rand + "' title='" + title + "'>";
-   html += message;
-   html += "</div>";
-   $('body').append(html);
+   if (!Array.isArray(dropdown_ids)) {
+      dropdown_ids = [dropdown_ids];
+   }
+   const zones = dropdown_ids;
+   $(zones).each((i, zone) => {
+      $(events).each((i2, event) => {
+         //TODO Manage buffer time
 
-   var _of = window;
-   var _at = 'right-20 bottom-20';
+         const cleaned_zone_id = zone.replace('[', '_').replace(']', '_');
+         const zone_obj = $(`#${cleaned_zone_id}`);
 
-   $("#message_after_redirect_" + rand).dialog({
-      dialogClass: 'message_after_redirect ' + css_class,
-      minHeight: 40,
-      minWidth: 200,
-      position: {
-         my: 'right bottom',
-         at: _at,
-         of: _of,
-         collision: 'none'
-      },
-      show: {
-         effect: 'slide',
-         direction: 'down',
-         'duration': 800
-      }
+         zone_obj.on(event, () => {
+            const conditional = (min_size >= 0 || force_load_for.length > 0);
+            const min_size_condition = (min_size >= 0 && zone_obj.val().length() >= min_size);
+            const force_load_condition = (force_load_for.length > 0 && force_load_for.includes(zone_obj.val()));
+
+            const doLoad = () => {
+               $.each(params, (k, v) => {
+                  if (typeof v === "string") {
+                     const reqs = v.match(/^__VALUE(\d+)__$/);
+                     if (reqs !== null) {
+                        params[k] = $('#'+dropdown_ids[reqs[0]]).val();
+                     }
+                     if (v === '__VALUE__') {
+                        params[k] = $('#'+dropdown_ids[0]).val();
+                     }
+                  }
+               });
+               $(target).load(url, params);
+            };
+            if (conditional && (min_size_condition || force_load_condition)) {
+               doLoad();
+            } else if (!conditional) {
+               doLoad();
+            }
+         });
+      });
    });
 }
 
-function showInfoMessage(message) {
-   _showMessage(message, 'info_msg', _n('Information', 'Information', 1));
+function updateItemOnSelectEvent(dropdown_ids, target, url, params = {}) {
+   updateItemOnEvent(dropdown_ids, target, url, params, ['change'], -1, -1, []);
 }
 
-function showWarningMessage(message) {
-   _showMessage(message, 'warn_msg', __('Warning'));
+/**
+ * Initialize tooltips on given container.
+ *
+ * @param {Node} [container=document]
+ *
+ * @returns {void}
+ */
+function initTooltips(container) {
+   if (container === undefined) {
+      container = document;
+   }
+
+   const tooltipNodes = container.querySelectorAll('[data-bs-toggle="tooltip"]:not([data-bs-original-title])');
+   tooltipNodes.forEach(
+      function(tooltipNode) {
+         const options = {
+            delay: {show: 50, hide: 50},
+            html: tooltipNode.hasAttribute("data-bs-html") ? tooltipNode.getAttribute("data-bs-html") === "true" : false,
+            placement: tooltipNode.hasAttribute("data-bs-placement") ? tooltipNode.getAttribute('data-bs-placement') : 'auto',
+            trigger : tooltipNode.hasAttribute("data-bs-trigger") ? tooltipNode.getAttribute("data-bs-trigger") : "hover",
+         };
+         return new bootstrap.Tooltip(tooltipNode, options);
+      }
+   );
+
+   const popoverNodes = container.querySelectorAll('[data-bs-toggle="popover"]:not([data-bs-original-title])');
+   popoverNodes.forEach(
+      function(popoverNode) {
+         const options = {
+            delay: {show: 50, hide: 50},
+            html: popoverNode.hasAttribute("data-bs-html") ? popoverNode.getAttribute("data-bs-html") === "true" : false,
+            placement: popoverNode.hasAttribute("data-bs-placement") ? popoverNode.getAttribute('data-bs-placement') : 'auto',
+            trigger : popoverNode.hasAttribute("data-bs-trigger") ? popoverNode.getAttribute("data-bs-trigger") : "hover",
+            sanitize : popoverNode.hasAttribute("data-bs-sanitize") ? popoverNode.getAttribute("data-bs-sanitize") === "true" : true,
+         };
+         return new bootstrap.Popover(popoverNode, options);
+      }
+   );
 }
 
-function showErrorMessage(message) {
-   _showMessage(message, 'err_msg', __('Error'));
-}
+// init tooltips
+$(
+   function() {
+      // Init uninitialized tooltips everytime an ajax query is completed.
+      $(document).ajaxComplete(
+         function() {
+            initTooltips();
+         }
+      );
+
+      // init tooltips after a little time on dom load
+      setTimeout(function() {
+         initTooltips();
+      }, 50);
+   }
+);

@@ -473,4 +473,8 @@ class DCRoom extends CommonDBTM {
       }
       return $positions;
    }
+
+   static function getIcon() {
+      return "fas fa-building";
+   }
 }

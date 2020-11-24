@@ -1,0 +1,80 @@
+{% if limit is not defined %}
+   {% set limit = user_pref('list_limit') %}
+{% endif %}
+
+{% set forward = start + limit %}
+{% set end = count - limit %}
+{% set current_start = start + 1 %}
+{% set current_end = current_start + limit - 1 %}
+{% if current_end > count %}
+   {% set current_end = count %}
+{% endif %}
+
+{% set back = start - limit %}
+{% if current_start - list_limit <= 0 %}
+   {% set back = 0 %}
+{% endif %}
+
+{% set nb_pages = (count / limit)|round(0, "ceil") %}
+{% set current_page = (current_start / limit)|round(0) + 1 %}
+
+{# limit the number of adjacents links displayed #}
+{% set adjacents = 2 %}
+{% set skip_adjacents = false %}
+
+<div class="flex-grow-1 d-flex flex-wrap flex-md-nowrap  align-items-center justify-content-center justify-content-md-between mb-2 search-pager">
+   <span class='d-block d-md-none page-infos'>
+      {% set limitdropdown = include('components/dropdown/limit.html.twig') %}
+      {{ limitdropdown|raw }}
+   </span>
+   <p class="m-0 text-muted d-none d-md-block page-infos">
+      {{ __("Showing %s to %s of %s entries")|format(current_start, current_end, count) }}
+   </p>
+   <p class="m-0 text-muted d-block d-md-none text-nowrap ms-2 page-infos">
+      {{ __("%s-%s/%s")|format(current_start, current_end, count) }}
+   </p>
+   <ul class="pagination m-0 mt-2 mt-md-0">
+      {% set disabled = (start == 0 ? "disabled" : "") %}
+      {% set aria_disabled = (start == 0 ? 'aria-disabled="true"' : "") %}
+      <li class="page-item {{ disabled }}">
+         <a class="page-link page-link-start" href="#" title="{{ __("Start") }}" data-start="0" {{ aria_disabled|raw }}>
+            <i class="fas fa-angle-double-left"></i>
+         </a>
+      </li>
+      <li class="page-item {{ disabled }}">
+         <a class="page-link page-link-prev" href="#" title="{{ __("Previous") }}" data-start="{{ back }}" {{ aria_disabled|raw }}>
+            <i class="fas fa-angle-left"></i>
+         </a>
+      </li>
+      {% for page in range(1, nb_pages) %}
+         {% if current_page - adjacents <= page and current_page + adjacents >= page %}
+            {% set page_start = (page - 1) * limit %}
+            {% set active = (page == current_page ? "active selected" : "") %}
+            <li class="page-item {{ active }}">
+               <a class="page-link page-link-num" href="#" data-start="{{ page_start }}">{{ page }}</a>
+            </li>
+            {% if current_page + adjacents == page %}
+               {% set skip_adjacents = false %}
+            {% endif %}
+         {% elseif skip_adjacents == false %}
+            {% set skip_adjacents = true %}
+            <li class="page-item disabled">
+               <a class="page-link" href="#" aria-disabled="true">...</a>
+            </li>
+         {% endif %}
+      {% endfor %}
+
+      {% set disabled = (forward >= count ? "disabled" : "") %}
+      {% set aria_disabled = (forward > count ? 'aria-disabled="true"' : "") %}
+      <li class="page-item {{ disabled }}">
+         <a class="page-link page-link-next" href="#" title="{{ __("Next") }}" data-start="{{ forward }}" {{ aria_disabled|raw }}>
+            <i class="fas fa-angle-right"></i>
+         </a>
+      </li>
+      <li class="page-item {{ disabled }}">
+         <a class="page-link page-link-last" href="#" title="{{ __("End") }}" data-start="{{ end }}" {{ aria_disabled|raw }}>
+            <i class="fas fa-angle-double-right"></i>
+         </a>
+      </li>
+   </ul>
+</div>

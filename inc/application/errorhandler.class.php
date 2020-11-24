@@ -39,6 +39,7 @@ if (!defined('GLPI_ROOT')) {
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\Output\OutputInterface;
+use Twig\Error\Error;
 
 /**
  * @since 9.5.0
@@ -206,6 +207,35 @@ class ErrorHandler {
       $this->outputDebugMessage($error_type, $error_description, $log_level);
 
       return $return;
+   }
+
+   /**
+    * Twig error handler.
+    *
+    * This handler is manually called by application when an error occured during Twig template rendering.
+    *
+    * @param \Twig\Error\Error $error
+    *
+    * @return void
+    */
+   public function handleTwigError(Error $error): void {
+      $context = $error->getSourceContext();
+
+      $error_type = sprintf(
+         'Twig Error (%s)',
+         get_class($error)
+      );
+      $error_description = sprintf(
+         '"%s" in %s at line %s',
+         $error->getRawMessage(),
+         $context !== null ? sprintf('template "%s"', $context->getPath(), $context->getName()) : 'unknown template',
+         $error->getTemplateLine()
+      );
+      $error_trace = $this->getTraceAsString($error->getTrace());
+      $log_level = self::ERROR_LEVEL_MAP[E_ERROR];
+
+      $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
+      $this->outputDebugMessage($error_type, $error_description, $log_level, isCommandLine());
    }
 
    /**
@@ -401,7 +431,7 @@ class ErrorHandler {
          }
          $this->output_handler->writeln($message, $verbosity);
       } else if (!isCommandLine()) {
-         echo '<div style="position:float-left; background-color:red; z-index:10000">'
+         echo '<div class="alert alert-important alert-danger" style="z-index:10000">'
             . '<span class="b">' . $error_type . ': </span>' . $message . '</div>';
       } else {
          echo $error_type . ': ' . $message . "\n";

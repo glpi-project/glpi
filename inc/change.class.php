@@ -30,11 +30,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\RichText;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
-
-use Glpi\Toolbox\RichText;
 
 /**
  * Change Class
@@ -199,11 +200,7 @@ class Change extends CommonITILObject {
       if (static::canView()) {
          switch ($item->getType()) {
             case __CLASS__ :
-               $timeline    = $item->getTimelineItems();
-               $nb_elements = count($timeline);
-
                $ong = [
-                  5 => __("Processing change")." <sup class='tab_nb'>$nb_elements</sup>",
                   1 => __('Analysis'),
                   3 => __('Plans')
                ];
@@ -251,7 +248,8 @@ class Change extends CommonITILObject {
 
    function defineTabs($options = []) {
       $ong = [];
-      $this->defineDefaultObjectTabs($ong, $options);
+      $this->addDefaultFormTab($ong);
+      $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('ChangeValidation', $ong, $options);
       $this->addStandardTab('ChangeCost', $ong, $options);
       $this->addStandardTab('Itil_Project', $ong, $options);
@@ -834,407 +832,20 @@ class Change extends CommonITILObject {
          }
       }
 
-      $this->showFormHeader($options);
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th class='left' width='$colsize1%'>";
-      echo $tt->getBeginHiddenFieldText('date');
-      if (!$ID) {
-         printf(__('%1$s%2$s'), __('Opening date'), $tt->getMandatoryMark('date'));
-      } else {
-         echo __('Opening date');
-      }
-      echo $tt->getEndHiddenFieldText('date');
-      echo "</th>";
-      echo "<td class='left' width='$colsize2%'>";
-
-      $this->displayHiddenItemsIdInput($options);
-
-      if (isset($tickets_id)) {
-         echo "<input type='hidden' name='_tickets_id' value='".$tickets_id."'>";
-      }
-      if (isset($problems_id)) {
-         echo "<input type='hidden' name='_problems_id' value='".$problems_id."'>";
-      }
-
-      if (isset($options['_add_fromitem'])
-          && isset($options['_from_items_id'])
-          && isset($options['_from_itemtype'])) {
-         echo Html::hidden('_from_items_id', ['value' => $options['_from_items_id']]);
-         echo Html::hidden('_from_itemtype', ['value' => $options['_from_itemtype']]);
-      }
-
-      echo $tt->getBeginHiddenFieldValue('date');
-      $date = $this->fields["date"];
-      if (!$ID) {
-         $date = date("Y-m-d H:i:s");
-      }
-      Html::showDateTimeField(
-         "date", [
-            'value'      => $date,
-            'maybeempty' => false,
-            'required'   => ($tt->isMandatoryField('date') && !$ID)
-         ]
-      );
-      echo $tt->getEndHiddenFieldValue('date', $this);
-      echo "</td>";
-
-      echo "<th>".$tt->getBeginHiddenFieldText('time_to_resolve');
-      if (!$ID) {
-         printf(__('%1$s%2$s'), __('Time to resolve'), $tt->getMandatoryMark('time_to_resolve'));
-      } else {
-         echo __('Time to resolve');
-      }
-      echo $tt->getEndHiddenFieldText('time_to_resolve');
-      echo "</th>";
-      echo "<td width='$colsize2%' class='left'>";
-      echo $tt->getBeginHiddenFieldValue('time_to_resolve');
-      if ($this->fields["time_to_resolve"] == 'NULL') {
-         $this->fields["time_to_resolve"] = '';
-      }
-      Html::showDateTimeField(
-         "time_to_resolve", [
-            'value'    => $this->fields["time_to_resolve"],
-            'required'   => ($tt->isMandatoryField('time_to_resolve') && !$ID)
-         ]
-      );
-      echo $tt->getEndHiddenFieldValue('time_to_resolve', $this);
-
-      echo "</td></tr>";
-
-      if ($ID) {
-         echo "<tr class='tab_bg_1'><th>".__('By')."</th><td>";
-         User::dropdown(['name'   => 'users_id_recipient',
-                              'value'  => $this->fields["users_id_recipient"],
-                              'entity' => $this->fields["entities_id"],
-                              'right'  => 'all']);
-         echo "</td>";
-         echo "<th>".__('Last update')."</th>";
-         echo "<td>".Html::convDateTime($this->fields["date_mod"])."\n";
-         if ($this->fields['users_id_lastupdater'] > 0) {
-            printf(__('%1$s: %2$s'), __('By'),
-                   getUserName($this->fields["users_id_lastupdater"], $showuserlink));
-         }
-         echo "</td></tr>";
-      }
-
-      if ($ID
-          && (in_array($this->fields["status"], $this->getSolvedStatusArray())
-              || in_array($this->fields["status"], $this->getClosedStatusArray()))) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<th>".__('Date of solving')."</th>";
-         echo "<td>";
-         Html::showDateTimeField("solvedate", ['value'      => $this->fields["solvedate"],
-                                                    'maybeempty' => false]);
-         echo "</td>";
-         if (in_array($this->fields["status"], $this->getClosedStatusArray())) {
-            echo "<th>".__('Closing date')."</th>";
-            echo "<td>";
-            Html::showDateTimeField("closedate", ['value'      => $this->fields["closedate"],
-                                                       'maybeempty' => false]);
-            echo "</td>";
-         } else {
-            echo "<td colspan='2'>&nbsp;</td>";
-         }
-         echo "</tr>";
-      }
-      echo "</table>";
-
-      echo "<table class='tab_cadre_fixe' id='mainformtable2'>";
-      echo "<tr class='tab_bg_1'>";
-
-      echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('status');
-      printf(__('%1$s%2$s'), __('Status'), $tt->getMandatoryMark('status'));
-      echo $tt->getEndHiddenFieldText('status')."</th>";
-      echo "<td width='$colsize2%'>";
-      echo $tt->getBeginHiddenFieldValue('status');
-      if ($canupdate) {
-         self::dropdownStatus([
-            'value'     => $this->fields["status"],
-            'showtype'  => 'allowed',
-            'required'  => ($tt->isMandatoryField('status') && !$ID)
-         ]);
-         ChangeValidation::alertValidation($this, 'status');
-      } else {
-         echo self::getStatus($this->fields["status"]);
-         if ($this->canReopen()) {
-            $link = $this->getLinkURL(). "&amp;_openfollowup=1&amp;forcetab=";
-            $link .= "Change$1";
-            echo "&nbsp;<a class='vsubmit' href='$link'>". __('Reopen')."</a>";
-         }
-      }
-      PendingReason_Item::displayStatusTooltip($this);
-      echo $tt->getEndHiddenFieldValue('status', $this);
-
-      echo "</td>";
-      // Only change during creation OR when allowed to change priority OR when user is the creator
-
-      echo "<th>".$tt->getBeginHiddenFieldText('urgency');
-      printf(__('%1$s%2$s'), __('Urgency'), $tt->getMandatoryMark('urgency'));
-      echo $tt->getEndHiddenFieldText('urgency')."</th>";
-      echo "<td>";
-
-      if ($canupdate) {
-         echo $tt->getBeginHiddenFieldValue('urgency');
-         $idurgency = self::dropdownUrgency(['value' => $this->fields["urgency"]]);
-         echo $tt->getEndHiddenFieldValue('urgency', $this);
-
-      } else {
-         $idurgency = "value_urgency".mt_rand();
-         echo "<input id='$idurgency' type='hidden' name='urgency' value='".
-                $this->fields["urgency"]."'>";
-         echo $tt->getBeginHiddenFieldValue('urgency');
-         echo self::getUrgencyName($this->fields["urgency"]);
-         echo $tt->getEndHiddenFieldValue('urgency', $this);
-      }
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th>".sprintf(__('%1$s%2$s'), __('Category'),
-                                             $tt->getMandatoryMark('itilcategories_id'))."</th>";
-      echo "<td >";
-
-      // Permit to set category when creating ticket without update right
-      if ($canupdate) {
-         $conditions = ['is_change' => 1];
-
-         $opt = ['value'  => $this->fields["itilcategories_id"],
-                      'entity' => $this->fields["entities_id"]];
-         /// Auto submit to load template
-         if (!$ID) {
-            $opt['on_change'] = 'this.form.submit()';
-         }
-         /// if category mandatory, no empty choice
-         /// no empty choice is default value set on ticket creation, else yes
-         if (($ID || $options['itilcategories_id'])
-             && $tt->isMandatoryField("itilcategories_id")
-             && ($this->fields["itilcategories_id"] > 0)) {
-            $opt['display_emptychoice'] = false;
-         }
-
-         echo "<span id='show_category_by_type'>";
-         $opt['condition'] = $conditions;
-         ITILCategory::dropdown($opt);
-         echo "</span>";
-      } else {
-         echo Dropdown::getDropdownName("glpi_itilcategories", $this->fields["itilcategories_id"]);
-      }
-      echo "</td>";
-      echo "<th>".$tt->getBeginHiddenFieldText('impact');
-      printf(__('%1$s%2$s'), __('Impact'), $tt->getMandatoryMark('impact'));
-      echo $tt->getEndHiddenFieldText('impact')."</th>";
-      echo "</th>";
-      echo "<td>";
-      echo $tt->getBeginHiddenFieldValue('impact');
-      if ($canupdate) {
-         $idimpact = self::dropdownImpact(['value' => $this->fields["impact"], 'required' => ($tt->isMandatoryField('date') && !$ID)]);
-      } else {
-         $idimpact = "value_impact".mt_rand();
-         echo "<input id='$idimpact' type='hidden' name='impact' value='".$this->fields["impact"]."'>";
-         echo self::getImpactName($this->fields["impact"]);
-      }
-      echo $tt->getEndHiddenFieldValue('impact', $this);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th>".$tt->getBeginHiddenFieldText('actiontime');
-      printf(__('%1$s%2$s'), __('Total duration'), $tt->getMandatoryMark('actiontime'));
-      echo $tt->getEndHiddenFieldText('actiontime')."</th>";
-      echo "<td>";
-      echo $tt->getBeginHiddenFieldValue('actiontime');
-      Dropdown::showTimeStamp(
-         'actiontime', [
-            'value'           => $options['actiontime'],
-            'addfirstminutes' => true
-         ]
-      );
-      echo $tt->getEndHiddenFieldValue('actiontime', $this);
-      echo "</td>";
-      echo "<th>".$tt->getBeginHiddenFieldText('priority');
-      printf(__('%1$s%2$s'), __('Priority'), $tt->getMandatoryMark('priority'));
-      echo $tt->getEndHiddenFieldText('priority')."</th>";
-      echo "<td>";
-      $idajax = 'change_priority_' . mt_rand();
-
-      if (!$tt->isHiddenField('priority')) {
-         $idpriority = self::dropdownPriority([
-            'value'     => $this->fields["priority"],
-            'withmajor' => true
-         ]);
-         $idpriority = 'dropdown_priority'.$idpriority;
-         echo "&nbsp;<span id='$idajax' style='display:none'></span>";
-      } else {
-         $idpriority = 0;
-         echo $tt->getBeginHiddenFieldValue('priority');
-         echo "<span id='$idajax'>".self::getPriorityName($this->fields["priority"])."</span>";
-         echo "<input id='$idajax' type='hidden' name='priority' value='".$this->fields["priority"]."'>";
-         echo $tt->getEndHiddenFieldValue('priority', $this);
-      }
-
-      $idajax     = 'change_priority_' . mt_rand();
-      echo "&nbsp;<span id='$idajax' style='display:none'></span>";
-      $params = [
-         'urgency'  => '__VALUE0__',
-         'impact'   => '__VALUE1__',
-         'priority' => 'dropdown_priority'.$idpriority
-      ];
-      Ajax::updateItemOnSelectEvent([
-         'dropdown_urgency'.$idurgency,
-         'dropdown_impact'.$idimpact],
-         $idajax,
-         $CFG_GLPI["root_doc"]."/ajax/priority.php",
-         $params
-      );
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th>";
-      if (!$ID) {
-         echo $tt->getBeginHiddenFieldText('_add_validation');
-         printf(__('%1$s%2$s'), __('Approval request'), $tt->getMandatoryMark('_add_validation'));
-         echo $tt->getEndHiddenFieldText('_add_validation');
-      } else {
-         echo $tt->getBeginHiddenFieldText('global_validation');
-         echo _n('Approval', 'Approvals', 1);
-         echo $tt->getEndHiddenFieldText('global_validation');
-      }
-      echo "</th>";
-      echo "<td>";
-      if (!$ID) {
-         echo $tt->getBeginHiddenFieldValue('_add_validation');
-
-         echo "<input type='hidden' name='_add_validation' value='".
-                  $options['_add_validation']."'>";
-
-         $params = [
-            'name'               => "users_id_validate",
-            'entity'             => $this->fields['entities_id'],
-            'users_id_validate'  => $options['users_id_validate']
-         ];
-         ChangeValidation::dropdownValidator($params);
-
-         echo $tt->getEndHiddenFieldValue('_add_validation', $this);
-         if ($tt->isPredefinedField('global_validation')) {
-            echo "<input type='hidden' name='global_validation' value='".
-                   $tt->predefined['global_validation']."'>";
-         }
-      } else {
-         echo $tt->getBeginHiddenFieldValue('global_validation');
-
-         if (Session::haveRightsOr('changevalidation', ChangeValidation::getCreateRights())
-             && $canupdate) {
-            ChangeValidation::dropdownStatus('global_validation',
-                                             ['global' => true,
-                                                   'value'  => $this->fields['global_validation']]);
-         } else {
-            echo ChangeValidation::getStatus($this->fields['global_validation']);
-         }
-         echo $tt->getEndHiddenFieldValue('global_validation', $this);
-
-      }
-      echo "</td>";
-      echo "<th></th>";
-      echo "<td></td>";
-      echo "</tr>";
-
-      if (!$options['template_preview']) {
-         echo "</table>";
-         $this->showActorsPartForm($ID, $options);
-         echo "<table class='tab_cadre_fixe' id='mainformtable3'>";
-      }
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('name');
-      printf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'));
-      echo $tt->getEndHiddenFieldText('name')."</th>";
-      echo "<td colspan='3'>";
-      echo $tt->getBeginHiddenFieldValue('name');
-      echo "<input type='text' style='width:98%' maxlength=250 name='name' ".
-               ($tt->isMandatoryField('name') ? " required='required'" : '') .
-               " value=\"".Html::cleanInputText($this->fields["name"])."\">";
-      echo $tt->getEndHiddenFieldValue('name', $this);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('content');
-      printf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
-      echo $tt->getEndHiddenFieldText('content', $this);
-      echo "</th><td colspan='3'>";
-
-      echo $tt->getBeginHiddenFieldValue('content');
-      $rand       = mt_rand();
-      $rand_text  = mt_rand();
-      $rows       = 10;
-      $content_id = "content$rand";
-
-      $content = $this->fields['content'];
-      if (!isset($options['template_preview'])) {
-         $content = Html::cleanPostForTextArea($content);
-      }
-
-      echo "<div id='content$rand_text'>";
-      if ($canupdate) {
-         $uploads = [];
-         if (isset($this->input['_content'])) {
-            $uploads['_content'] = $this->input['_content'];
-            $uploads['_tag_content'] = $this->input['_tag_content'];
-         }
-         Html::textarea([
-            'name'            => 'content',
-            'filecontainer'   => 'content_info',
-            'editor_id'       => $content_id,
-            'required'        => $tt->isMandatoryField('content'),
-            'rows'            => $rows,
-            'enable_richtext' => true,
-            'value'           => RichText::getSafeHtml($content, true, true),
-            'uploads'         => $uploads,
-         ]);
-         Html::activateUserMentions($content_id);
-      } else {
-         echo '<div class="rich_text_container">';
-         echo RichText::getSafeHtml($content, true);
-         echo '</div>';
-      }
-      echo "</div>";
-
-      echo $tt->getEndHiddenFieldValue('content', $this);
-      echo "</td></tr>";
-
-      $options['colspan'] = 2;
-
-      if (!$options['template_preview']) {
-         if ($tt->isField('id') && ($tt->fields['id'] > 0)) {
-            echo "<input type='hidden' name='$tpl_key' value='".$tt->fields['id']."'>";
-            echo "<input type='hidden' name='_predefined_fields'
-                     value=\"".Toolbox::prepareArrayForInput($predefined_fields)."\">";
-         }
-         if (!$ID) {
-            $fields = [
-               'controlistcontent',
-               'impactcontent',
-               'rolloutplancontent',
-               'backoutplancontent',
-               'checklistcontent'
-            ];
-            foreach ($fields as $field) {
-               if (isset($tt->predefined[$field])) {
-                  echo Html::hidden($field, ['value' => $tt->predefined[$field]]);
-               }
-            }
-         }
-
-         $this->showFormButtons($options);
-      } else {
-         echo "</table>";
-         echo "</div>";
-      }
+      TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
+         'item'               => $this,
+         'timeline_itemtypes' => $this->getTimelineItemtypes(),
+         'params'             => $options,
+         'timeline'           => $this->getTimelineItems(),
+         'itiltemplate_key'   => $tpl_key,
+         'itiltemplate'       => $tt,
+         'predefined_fields'  => $predefined_fields,
+         'canupdate'          => $canupdate,
+         'canpriority'        => $canupdate,
+         'canassign'          => $canupdate,
+      ]);
 
       return true;
-
    }
 
 
@@ -1669,5 +1280,505 @@ class Change extends CommonITILObject {
 
    public static function getTaskClass() {
       return ChangeTask::class;
+   }
+
+   /**
+    * @param $start
+    * @param $status             (default 'process')
+    * @param $showgroupchanges  (true by default)
+    * @since 10.0.0
+    *
+    */
+   static function showCentralList($start, $status = "process", $showgroupchanges = true) {
+      global $DB, $CFG_GLPI;
+
+      if (!static::canView()) {
+         return false;
+      }
+
+      $WHERE = [
+         'is_deleted' => 0
+      ];
+      $search_users_id = [
+         'glpi_changes_users.users_id'   => Session::getLoginUserID(),
+         'glpi_changes_users.type'       => CommonITILActor::REQUESTER
+      ];
+      $search_assign = [
+         'glpi_changes_users.users_id'   => Session::getLoginUserID(),
+         'glpi_changes_users.type'       => CommonITILActor::ASSIGN
+      ];
+
+      if ($showgroupchanges) {
+         $search_users_id  = [0];
+         $search_assign = [0];
+
+         if (count($_SESSION['glpigroups'])) {
+            $search_users_id = [
+               'glpi_changes_groups.groups_id' => $_SESSION['glpigroups'],
+               'glpi_changes_groups.type'      => CommonITILActor::REQUESTER
+            ];
+            $search_assign = [
+               'glpi_changes_groups.groups_id' => $_SESSION['glpigroups'],
+               'glpi_changes_groups.type'      => CommonITILActor::ASSIGN
+            ];
+         }
+      }
+
+      switch ($status) {
+         case "waiting":
+            $WHERE = array_merge(
+               $WHERE,
+               $search_assign,
+               ['status' => self::WAITING]
+            );
+            break;
+
+         case "process":
+            $WHERE = array_merge(
+               $WHERE,
+               $search_assign,
+               ['status' => [self::ACCEPTED, self::TEST, self::QUALIFICATION]]
+            );
+            break;
+
+         default :
+            $WHERE = array_merge(
+               $WHERE,
+               $search_users_id,
+               [
+                  'status' => array_diff(self::getAllStatusArray(), self::getClosedStatusArray())
+               ]
+            );
+            $WHERE['NOT'] = $search_assign;
+      }
+
+      $criteria = [
+         'SELECT'          => ['glpi_changes.id'],
+         'DISTINCT'        => true,
+         'FROM'            => 'glpi_changes',
+         'LEFT JOIN'       => [
+            'glpi_changes_users'   => [
+               'ON' => [
+                  'glpi_changes_users'   => 'changes_id',
+                  'glpi_changes'         => 'id'
+               ]
+            ],
+            'glpi_changes_groups'  => [
+               'ON' => [
+                  'glpi_changes_groups'  => 'changes_id',
+                  'glpi_changes'         => 'id'
+               ]
+            ]
+         ],
+         'WHERE'           => $WHERE + getEntitiesRestrictCriteria('glpi_changes'),
+         'ORDERBY'         => 'date_mod DESC'
+      ];
+      $iterator = $DB->request($criteria);
+
+      $total_row_count = count($iterator);
+      $displayed_row_count = (int)$_SESSION['glpidisplay_count_on_home'] > 0
+         ? min((int)$_SESSION['glpidisplay_count_on_home'], $total_row_count)
+         : $total_row_count;
+
+      if ($displayed_row_count > 0) {
+
+         $options  = [
+            'criteria' => [],
+            'reset'    => 'reset',
+         ];
+         $forcetab         = '';
+         if ($showgroupchanges) {
+            switch ($status) {
+
+               case "waiting" :
+                  $options['criteria'][0]['field']      = 12; // status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = self::WAITING;
+                  $options['criteria'][0]['link']       = 'AND';
+
+                  $options['criteria'][1]['field']      = 8; // groups_id_assign
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'mygroups';
+                  $options['criteria'][1]['link']       = 'AND';
+
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/change.php?".
+                     Toolbox::append_params($options, '&amp;')."\">".
+                     Html::makeTitle(__('Changes on pending status'), $displayed_row_count, $total_row_count)."</a>";
+                  break;
+
+               case "process" :
+                  $options['criteria'][0]['field']      = 12; // status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = self::EVALUATION;
+                  $options['criteria'][0]['link']       = 'AND';
+
+                  $options['criteria'][1]['field']      = 8; // groups_id_assign
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'mygroups';
+                  $options['criteria'][1]['link']       = 'AND';
+
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/change.php?".
+                     Toolbox::append_params($options, '&amp;')."\">".
+                     Html::makeTitle(__('Changes to be processed'), $displayed_row_count, $total_row_count)."</a>";
+                  break;
+
+               default :
+                  $options['criteria'][0]['field']      = 12; // status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = 'notold';
+                  $options['criteria'][0]['link']       = 'AND';
+
+                  $options['criteria'][1]['field']      = 71; // groups_id
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'mygroups';
+                  $options['criteria'][1]['link']       = 'AND';
+
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/change.php?".
+                     Toolbox::append_params($options, '&amp;')."\">".
+                     Html::makeTitle(__('Your changes in progress'), $displayed_row_count, $total_row_count)."</a>";
+            }
+
+         } else {
+            switch ($status) {
+               case "waiting" :
+                  $options['criteria'][0]['field']      = 12; // status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = self::WAITING;
+                  $options['criteria'][0]['link']       = 'AND';
+
+                  $options['criteria'][1]['field']      = 5; // users_id_assign
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = Session::getLoginUserID();
+                  $options['criteria'][1]['link']       = 'AND';
+
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/change.php?".
+                     Toolbox::append_params($options, '&amp;')."\">".
+                     Html::makeTitle(__('Changes on pending status'), $displayed_row_count, $total_row_count)."</a>";
+                  break;
+
+               case "process" :
+                  $options['criteria'][0]['field']      = 5; // users_id_assign
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = Session::getLoginUserID();
+                  $options['criteria'][0]['link']       = 'AND';
+
+                  $options['criteria'][1]['field']      = 12; // status
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'process';
+                  $options['criteria'][1]['link']       = 'AND';
+
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/change.php?".
+                     Toolbox::append_params($options, '&amp;')."\">".
+                     Html::makeTitle(__('Changes to be processed'), $displayed_row_count, $total_row_count)."</a>";
+                  break;
+
+               default :
+                  $options['criteria'][0]['field']      = 4; // users_id
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = Session::getLoginUserID();
+                  $options['criteria'][0]['link']       = 'AND';
+
+                  $options['criteria'][1]['field']      = 12; // status
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'notold';
+                  $options['criteria'][1]['link']       = 'AND';
+
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/change.php?".
+                     Toolbox::append_params($options, '&amp;')."\">".
+                     Html::makeTitle(__('Your changes in progress'), $displayed_row_count, $total_row_count)."</a>";
+            }
+         }
+
+         $twig_params = [
+            'class'        => 'table table-borderless table-striped table-hover',
+            'header_rows'  => [
+               [
+                  [
+                     'colspan'   => 3,
+                     'content'   => $main_header
+                  ]
+               ],
+               [
+                  [
+                     'content'   => __('ID'),
+                     'style'     => 'width: 75px'
+                  ],
+                  [
+                     'content'   => _n('Requester', 'Requesters', 1),
+                     'style'     => 'width: 20%'
+                  ],
+                  __('Description')
+               ]
+            ],
+            'rows'         => []
+         ];
+         $i = 0;
+         while ($i < $displayed_row_count && ($data = $iterator->next())) {
+            $change   = new self();
+            $rand      = mt_rand();
+            $row = [
+               'values' => []
+            ];
+
+            if ($change->getFromDBwithData($data['id'], 0)) {
+               $bgcolor = $_SESSION["glpipriority_".$change->fields["priority"]];
+               $name    = sprintf(__('%1$s: %2$s'), __('ID'), $change->fields["id"]);
+               $row['values'][] = [
+                  'class'   => 'priority_block',
+                  'content' => "<span style='background: $bgcolor'></span>&nbsp;$name"
+               ];
+
+               $requesters = [];
+               if (isset($change->users[CommonITILActor::REQUESTER])
+                  && count($change->users[CommonITILActor::REQUESTER])) {
+                  foreach ($change->users[CommonITILActor::REQUESTER] as $d) {
+                     if ($d["users_id"] > 0) {
+                        $userdata = getUserName($d["users_id"], 2);
+                        $name     = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>'.
+                                    $userdata['name'];
+                        $requesters[] = $name;
+                     } else {
+                        $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>'.
+                                       $d['alternative_email'];
+                     }
+                  }
+               }
+
+               if (isset($change->groups[CommonITILActor::REQUESTER])
+                  && count($change->groups[CommonITILActor::REQUESTER])) {
+                  foreach ($change->groups[CommonITILActor::REQUESTER] as $d) {
+                     $requesters[] = '<i class="fas fa-sm fa-fw fa-users text-muted me-1"></i>'.
+                                     Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+                  }
+               }
+               $row['values'][] = implode('<br>', $requesters);
+
+               $link = "<a id='change".$change->fields["id"].$rand."' href='".
+                  Change::getFormURLWithID($change->fields["id"]);
+               if ($forcetab != '') {
+                  $link .= "&amp;forcetab=".$forcetab;
+               }
+               $link .= "'>";
+               $link .= "<span class='b'>".$change->fields["name"]."</span></a>";
+               $link = sprintf(__('%1$s %2$s'), $link,
+                  Html::showToolTip(RichText::getSafeHtml($change->fields['content'], true),
+                     ['applyto' => 'change'.$change->fields["id"].$rand,
+                        'display' => false]));
+
+               $row['values'][] = $link;
+            } else {
+               $row['class'] = 'tab_bg_2';
+               $row['values'] = [
+                  [
+                     'colspan'   => 6,
+                     'content'   => "<i>".__('No ticket in progress.')."</i>"
+                  ]
+               ];
+            }
+            $i++;
+            $twig_params['rows'][] = $row;
+         }
+         TemplateRenderer::getInstance()->display('components/table.html.twig', $twig_params);
+      }
+   }
+
+
+   /**
+    * Get changes count
+    *
+    * @since 10.0.0
+    *
+    * @param $foruser boolean : only for current login user as requester (false by default)
+    **/
+   static function showCentralCount($foruser = false) {
+      global $DB, $CFG_GLPI;
+
+      // show a tab with count of jobs in the central and give link
+      if (!static::canView()) {
+         return false;
+      }
+      if (!Session::haveRight(self::$rightname, self::READALL)) {
+         $foruser = true;
+      }
+
+      $table = self::getTable();
+      $criteria = [
+         'SELECT' => [
+            'status',
+            'COUNT'  => '* AS COUNT',
+         ],
+         'FROM'   => $table,
+         'WHERE'  => getEntitiesRestrictCriteria($table),
+         'GROUP'  => 'status'
+      ];
+
+      if ($foruser) {
+         $criteria['LEFT JOIN'] = [
+            'glpi_changes_users' => [
+               'ON' => [
+                  'glpi_changes_users'   => 'changes_id',
+                  $table                  => 'id', [
+                     'AND' => [
+                        'glpi_changes_users.type' => CommonITILActor::REQUESTER
+                     ]
+                  ]
+               ]
+            ]
+         ];
+         $WHERE = ['glpi_changes_users.users_id' => Session::getLoginUserID()];
+
+         if (isset($_SESSION["glpigroups"])
+            && count($_SESSION["glpigroups"])) {
+            $criteria['LEFT JOIN']['glpi_changes_groups'] = [
+               'ON' => [
+                  'glpi_changes_groups'  => 'changes_id',
+                  $table                  => 'id', [
+                     'AND' => [
+                        'glpi_changes_groups.type' => CommonITILActor::REQUESTER
+                     ]
+                  ]
+               ]
+            ];
+            $WHERE['glpi_changes_groups.groups_id'] = $_SESSION['glpigroups'];
+         }
+         $criteria['WHERE'][] = ['OR' => $WHERE];
+      }
+
+      $deleted_criteria = $criteria;
+      $criteria['WHERE']['glpi_changes.is_deleted'] = 0;
+      $deleted_criteria['WHERE']['glpi_changes.is_deleted'] = 1;
+      $iterator = $DB->request($criteria);
+      $deleted_iterator = $DB->request($deleted_criteria);
+
+      $status = [];
+      foreach (self::getAllStatusArray() as $key => $val) {
+         $status[$key] = 0;
+      }
+
+      while ($data = $iterator->next()) {
+         $status[$data["status"]] = $data["COUNT"];
+      }
+
+      $number_deleted = 0;
+      while ($data = $deleted_iterator->next()) {
+         $number_deleted += $data["COUNT"];
+      }
+
+      $options = [];
+      $options['criteria'][0]['field']      = 12;
+      $options['criteria'][0]['searchtype'] = 'equals';
+      $options['criteria'][0]['value']      = 'new';
+      $options['criteria'][0]['link']       = 'AND';
+      $options['reset']                     ='reset';
+
+      $twig_params = [
+         'title'     => [
+            'link'   => $CFG_GLPI["root_doc"]."/front/change.php?".Toolbox::append_params($options),
+            'text'   => __('Change followup')
+         ],
+         'subtitle'  => [
+            'text'   => self::getTypeName(Session::getPluralNumber())
+         ],
+         'items'     => []
+      ];
+
+      foreach ($status as $key => $val) {
+         $options['criteria'][0]['value'] = $key;
+         $twig_params['items'][] = [
+            'link'   => $CFG_GLPI["root_doc"]."/front/change.php?".Toolbox::append_params($options),
+            'text'   => self::getStatus($key),
+            'count'  => $val
+         ];
+      }
+
+      $options['criteria'][0]['value'] = 'all';
+      $options['is_deleted']  = 1;
+      $twig_params['items'][] = [
+         'link'   => $CFG_GLPI["root_doc"]."/front/change.php?".Toolbox::append_params($options),
+         'text'   => __('Deleted'),
+         'count'  => $number_deleted
+      ];
+
+      TemplateRenderer::getInstance()->display('central/lists/itemtype_count.html.twig', $twig_params);
+   }
+
+   /**
+    * @since 10.0.0
+    *
+    * @param $ID
+    * @param $forcetab  string   name of the tab to force at the display (default '')
+    **/
+   static function showVeryShort($ID, $forcetab = '') {
+      // Prints a job in short form
+      // Should be called in a <table>-segment
+      // Print links or not in case of user view
+      // Make new job object and fill it from database, if success, print it
+      $viewusers = User::canView();
+
+      $change   = new self();
+      $rand      = mt_rand();
+      if ($change->getFromDBwithData($ID, 0)) {
+
+         $bgcolor = $_SESSION["glpipriority_".$change->fields["priority"]];
+         $name    = sprintf(__('%1$s: %2$s'), __('ID'), $change->fields["id"]);
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>
+            <div class='priority_block' style='border-color: $bgcolor'>
+               <span style='background: $bgcolor'></span>&nbsp;$name
+            </div>
+         </td>";
+         echo "<td class='center'>";
+
+         if (isset($change->users[CommonITILActor::REQUESTER])
+            && count($change->users[CommonITILActor::REQUESTER])) {
+            foreach ($change->users[CommonITILActor::REQUESTER] as $d) {
+               if ($d["users_id"] > 0) {
+                  $userdata = getUserName($d["users_id"], 2);
+                  $name     = "<span class='b'>".$userdata['name']."</span>";
+                  if ($viewusers) {
+                     $name = sprintf(__('%1$s %2$s'), $name,
+                        Html::showToolTip($userdata["comment"],
+                           ['link'    => $userdata["link"],
+                              'display' => false]));
+                  }
+                  echo $name;
+               } else {
+                  echo $d['alternative_email']."&nbsp;";
+               }
+               echo "<br>";
+            }
+         }
+
+         if (isset($change->groups[CommonITILActor::REQUESTER])
+            && count($change->groups[CommonITILActor::REQUESTER])) {
+            foreach ($change->groups[CommonITILActor::REQUESTER] as $d) {
+               echo Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+               echo "<br>";
+            }
+         }
+
+         echo "</td>";
+
+         echo "<td>";
+         $link = "<a id='change".$change->fields["id"].$rand."' href='".
+            Change::getFormURLWithID($change->fields["id"]);
+         if ($forcetab != '') {
+            $link .= "&amp;forcetab=".$forcetab;
+         }
+         $link .= "'>";
+         $link .= "<span class='b'>".$change->fields["name"]."</span></a>";
+         $link = printf(__('%1$s %2$s'), $link,
+            Html::showToolTip($change->fields['content'],
+               ['applyto' => 'change'.$change->fields["id"].$rand,
+                  'display' => false]));
+
+         echo "</td>";
+
+         // Finish Line
+         echo "</tr>";
+      } else {
+         echo "<tr class='tab_bg_2'>";
+         echo "<td colspan='6' ><i>".__('No change found.')."</i></td></tr>";
+      }
    }
 }

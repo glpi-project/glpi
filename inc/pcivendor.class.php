@@ -175,4 +175,8 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface {
 
       return false;
    }
+
+   static function getIcon() {
+      return "fas fa-memory";
+   }
 }

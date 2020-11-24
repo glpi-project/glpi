@@ -30,11 +30,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\RichText;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
-
-use Glpi\Toolbox\RichText;
 
 /**
  * ITILSolution Class
@@ -123,6 +124,22 @@ class ITILSolution extends CommonDBChild {
          $this->getEmpty();
       }
 
+      if (isset($options['kb_id_toload']) && $options['kb_id_toload'] > 0) {
+         $kb = new KnowbaseItem();
+         if ($kb->getFromDB($options['kb_id_toload'])) {
+            $this->fields['content'] = $kb->getField('answer');
+         }
+      }
+
+      TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_solution.html.twig', [
+         'item'    => $options['parent'] ?? null,
+         'subitem' => $this,
+         'params'  => $options,
+      ]);
+      return;
+
+      //TODO Legacy form rendering kept for reference only. Remove when twig template is complete.
+
       if (!isset($options['item']) && isset($options['parent'])) {
          //when we came from aja/viewsubitem.php
          $options['item'] = $options['parent'];
@@ -144,13 +161,6 @@ class ITILSolution extends CommonDBChild {
       }
 
       $canedit = $item->maySolve();
-
-      if (isset($options['kb_id_toload']) && $options['kb_id_toload'] > 0) {
-         $kb = new KnowbaseItem();
-         if ($kb->getFromDB($options['kb_id_toload'])) {
-            $this->fields['content'] = $kb->getField('answer');
-         }
-      }
 
       // Alert if validation waiting
       $validationtype = $item->getType().'Validation';
@@ -465,5 +475,9 @@ JAVASCRIPT;
          CommonITILValidation::REFUSED  => _x('solution', 'Refused'),
          CommonITILValidation::ACCEPTED => __('Accepted'),
       ];
+   }
+
+   static function getIcon() {
+      return "fas fa-check";
    }
 }

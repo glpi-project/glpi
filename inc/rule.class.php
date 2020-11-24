@@ -917,8 +917,8 @@ class Rule extends CommonDBTM {
                $url = $CFG_GLPI["root_doc"];
             }
             echo "<tr><td class='tab_bg_2 center' colspan='4'>";
-            echo "<a class='vsubmit' href='#' onClick=\"".
-                  Html::jsGetElementbyID('ruletest'.$rand).".dialog('open'); return false;\">".
+            echo "<a class='vsubmit' href='#'
+                     data-bs-toggle='modal' data-bs-target='#ruletest$rand'>".
                   _x('button', 'Test')."</a>";
             Ajax::createIframeModalWindow('ruletest'.$rand,
                                           $url."/front/rule.test.php?". "sub_type=".$this->getType().

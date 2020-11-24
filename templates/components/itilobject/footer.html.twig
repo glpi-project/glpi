@@ -1,0 +1,139 @@
+<div class="mx-n2 mb-n2 itil-footer itil-footer p-0 border-top" id="itil-footer">
+   <div class="buttons-bar d-flex py-2">
+      {% if not item.isNewItem() %}
+         <div class="col-md-8 ps-3 timeline-buttons">
+            {% if item.isNotSolved() %}
+               <div class="btn-group me-2 main-actions" style="{{ load_kb_sol > 0 ? "display:none;" : "" }}">
+                  {% set default_action_data = timeline_itemtypes|first %}
+                  <button class="btn btn-primary answer-action" data-bs-toggle="collapse" data-bs-target="#new-{{ default_action_data.class }}-block">
+                     <i class='{{ default_action_data.icon }}'></i>
+                     <span>{{ default_action_data.label }}</span>
+                  </button>
+                  <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                     <span class="visually-hidden">{{ __("View other actions") }}</span>
+                  </button>
+                  <ul class="dropdown-menu">
+                     {% for action, timeline_itemtype in timeline_itemtypes %}
+                        {% if loop.index0 > 0 %}
+                           <li><a class="dropdown-item action-{{ action }} answer-action" href="#"
+                              data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
+                              <i class='{{ timeline_itemtype.icon }}'></i>
+                              <span>{{ timeline_itemtype.label }}</span>
+                           </a></li>
+                        {% endif %}
+                     {% endfor %}
+                  </ul>
+               </div>
+            {% endif %}
+
+            {% include "components/itilobject/timeline/filter_timeline.html.twig" %}
+         </div>
+      {% endif %}
+
+      <div class="form-buttons col-md d-flex justify-content-end ms-auto ms-md-0 my-n2 py-2 pe-3 card-footer border-top-0 position-relative">
+         <span class="d-none d-md-block position-absolute top-0 start-0"
+               data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __("Toggle panels width") }}">
+            <button class="switch-panel-width btn btn-sm btn-square btn-icon btn-ghost-secondary border-top-0 border-start-0">
+               <i class="fas fa-caret-left"></i>
+            </button>
+         </span>
+
+         {% if item.isNewItem() %}
+            <button class="btn btn-primary" type="submit" name="add"
+                  title="{{ _x('button', 'Add') }}">
+               <i class="fas fa-plus"></i>
+               <span class="d-none d-md-block">{{ _x('button', 'Add') }}</span>
+            </button>
+         {% else %}
+
+            <div class="btn-group" role="group">
+               {% if item.canDelete() %}
+                  {% if item.isDeleted() %}
+                     <button class="btn btn-outline-secondary" type="submit" name="restore"
+                           title="{{ _x('button', 'Restore') }}">
+                        <i class='fas fa-trash-restore-alt'></i>
+                        <span class="d-none d-md-block">{{ _x('button', 'Restore') }}</span>
+                     </button>
+
+                     <button class="btn btn-outline-danger" type="submit" name="purge"
+                           title="{{ _x('button', 'Delete permanently') }}"
+                           onclick='return confirm("{{ __('Confirm the final deletion?') }}");'>
+                        <i class='fas fa-trash-alt'></i>
+                        <span class="d-none d-md-block">{{ _x('button', 'Delete permanently') }}</span>
+                     </button>
+                  {% else %}
+                     <button class="btn btn-outline-danger" type="submit" name="delete"
+                           title="{{ _x('button', 'Put in trashbin') }}"
+                           data-bs-toggle="tooltip" data-bs-placement="top">
+                        <i class='fas fa-trash-alt'></i>
+                     </button>
+                  {% endif %}
+               {% endif %}
+
+               {% if canupdate %}
+                  {% include"components/form/single-action.html.twig" with {
+                     'onlyicon': true
+                  } %}
+               {% endif %}
+
+               {% set is_locked = params['locked'] is defined and params['locked'] %}
+               {% set display_save_btn = not is_locked and (canupdate or can_requester or canpriority or canassign or canassigntome) %}
+               {% if display_save_btn %}
+                  <button class="btn btn-primary" type="submit" name="update"
+                        title="{{ _x('button', 'Save') }}">
+                     <i class="fas fa-save"></i>
+                     <span class="d-none d-md-block">{{ _x('button', 'Save') }}</span>
+                  </button>
+               {% endif %}
+            </div>
+
+         {% endif %}
+      </div>
+   </div>
+</div>
+
+{% set openfollowup = (_get['_openfollowup'] ?? false) and item.isSolved(true) %}
+
+<script type="text/javascript">
+$(function() {
+   $(document).on("click", "#itil-footer .answer-action", function() {
+      scrollToTimelineBottom();
+
+      // hide answer button after clicking on it
+      $(this).closest(".main-actions").hide();
+   });
+
+   // when close button of new answer block is clicked, show again the new answer button
+   $(document).on("click", "#new-itilobject-form .close-itil-answer", function() {
+      $("#itil-footer .main-actions").show();
+   });
+
+   // form submit buttons
+   $(document).on("click", "#itil-footer .form-buttons [type=submit]", function() {
+      var button_name = $(this).attr('name');
+      $('#itil-form').append(`<input type='hidden' name='${button_name}' value='1'>`).submit();
+   });
+
+   var scrollToTimelineBottom = function() {
+      // scroll body to ensure we are at bottom (useful for responsive display)
+      $('html, body').animate({
+         scrollTop: $(document).height()
+      }, 0, function(){
+          // scroll timeline with animation
+         var timeline = $("#itil-object-container .itil-left-side");
+         timeline.animate(
+            { scrollTop: timeline.prop('scrollHeight') }, 'slow',
+         );
+      });
+   };
+
+   {% if openfollowup %}
+      // trigger for reopen, show followup form in timeline
+      var myCollapse = document.getElementById('new-ITILFollowup-block')
+      var bsCollapse = new bootstrap.Collapse(myCollapse);
+      bsCollapse.show();
+
+      scrollToTimelineBottom();
+   {% endif %}
+});
+</script>

@@ -1,0 +1,174 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2021 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+$is-dark: false !default;
+
+$info: #80abe4;
+$danger: #d49696;
+
+$enable-negative-margins: true;
+$link-hover-decoration: none;
+
+@if $is-dark {
+   @import "css/includes/dark";
+} @else {
+   @import "~@tabler/core/src/scss/tabler";
+}
+
+$mainmenu_bg: $dark !default;
+$mainmenu_fg: $light !default;
+
+$search_bg: transparentize($mainmenu_bg, 0.95) !default;
+$search_fg: lighten($mainmenu_bg, 5%) !default;
+$search_border: lighten($color: $search_fg, $amount: 35) !default;
+
+$table_border: #eeeeee !default;
+$table_header_bg: #f8f8f8 !default;
+
+$header-fg: $blue !default;
+$header-bg: theme-color-lighter($header-fg, true) !default;
+$header-border-color: tint-color($header-fg, 75%) !default;
+$header-danger-bg: $danger !default;
+$header-badge-bg: tint-color($header-fg, 80%)!default;
+$header-badge-fg: darken($header-fg, 20%) !default;
+
+$logo: "../pics/logos/logo-GLPI-100-white.png" !default;
+$logo_reduced: "../pics/logos/logo-G-100-white.png" !default;
+$scrollbar-color-thumb: rgba($color: $secondary, $alpha: .8) !default;
+$scrollbar-color-track: transparent !default;
+
+$tabs-bg: $card-cap-bg !default;
+$tabs-fg: $text-muted !default;
+$tabs-border: $card-border-color !default;
+$tabs-active-bg: #FFFFFF !default;
+$tabs-active-fg: $dark !default;
+$tabs-active-border: $tabs-border !default;
+$badge-bg: $dark !default;
+$badge-fg: $light !default;
+
+$itil-secondary-bg: #f5f5f5 !default; // secondary color for right side and footer (primary color is card background)
+$timeline-itilc-bg: #e2f2e3 !default;
+$timeline-itilc-fg: #155210 !default;
+$timeline-itilc-border: #87aa8a !default;
+$timeline-fup-bg: #ececec !default;
+$timeline-fup-fg: #535353 !default;
+$timeline-fup-border: #cccccc !default;
+$timeline-task-bg: #ffe8b9 !default;
+$timeline-task-fg: #38301F !default;
+$timeline-task-border: #e5c88c !default;
+$timeline-sol-bg: #9FD6ED !default;
+$timeline-sol-fg: #425B64 !default;
+$timeline-sol-border: #90c2d8 !default;
+$timeline-log-bg: #cacaca21 !default;
+
+$input-border: $dark-mode-text !default;
+
+$dropdowns-list-contrast: rgba(167, 171, 175, 0.1) !default;
+
+// helpers
+$topbar-height: 79px;
+$contextbar-height: 56px;
+$content-margin: 20px;
+
+body.iframed {
+   background-color: transparent;
+}
+
+.page {
+   .glpi-logo {
+      background: url($logo) no-repeat;
+      height: 55px;
+      width: 100px;
+   }
+
+   .page-body {
+      margin-bottom: 0;
+   }
+
+   .footer {
+      font-size: 0.75rem;
+      padding: 0.5em;
+   }
+}
+
+.breadcrumb-alternate {
+   a {
+      &:hover {
+         text-decoration: $link-hover-decoration;
+      }
+   }
+}
+
+.dropdown-item {
+   & > .fas:first-child, & > .far:first-child, & > .fab:first-child {
+      margin-right: 0.75em;
+   }
+}
+
+.btn {
+   .btn-group .select2-container ~ & {
+      max-width: 25px;
+   }
+
+   a {
+      color: inherit;
+   }
+
+   i.fas, i.far, i.fab {
+      margin-inline-start: 0;
+
+      & + * {
+         margin-left: 0.25rem;
+      }
+   }
+
+   &.btn-icon {
+
+      i.fas, i.far, i.fab {
+         margin-right: 0;
+         line-height: 1.5em;
+      }
+
+      &.btn-sm {
+         i.fas, i.far, i.fab {
+            line-height: 1.2em;
+         }
+      }
+   }
+}
+
+.toast-container {
+   z-index: 999999;
+   position: fixed;
+}
+
+.img-overlay-wrapper {
+   width: fit-content;
+}

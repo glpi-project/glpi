@@ -1,0 +1,138 @@
+{% extends 'components/itilobject/timeline/form_timeline_item.html.twig' %}
+{% import "components/form/fields_macros.html.twig" as fields %}
+
+{% block timeline_card %}
+   {% if form_mode == 'view' %}
+      <div class="read-only-content">
+         {{ getSafeHtml(entry_i['content'], true) }}
+
+         {% if entry_i['can_answer'] %}
+            <hr class="my-2">
+            <form id='validationanswers_id_{{ entry_i['id'] }}'
+                  action='{{ form_path(entry['type']) }}' method='post'>
+
+               <input type="hidden" name="id" value="{{ entry_i['id'] }}"/>
+               <input type="hidden" name="users_id_validate" value="{{ entry_i['users_id_validate'] }}"/>
+               <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+
+               <div class="mb-3 comment-part">
+                  {{ fields.textareaField(
+                     'comment_validation',
+                     '',
+                     _n('Comment', 'Comments', 1),
+                     {
+                        'full_width': true,
+                        'enable_richtext': true,
+                        'enable_fileupload': true,
+                        'enable_mentions': true,
+                        'rand': rand,
+                     }
+                  ) }}
+               </div>
+
+               <div class="validation-footer">
+                  <button type="submit" class="btn btn-outline-green" name="approval_action" value="approve">
+                     <i class="fas fa-thumbs-up"></i>
+                     <span class="validation-label">{{ __('Approve') }}</span>
+                  </button>
+                  <button type="submit" class="btn btn-outline-red" name="approval_action" value="refuse">
+                     <i class="fas fa-thumbs-down"></i>
+                     <span class="validation-label">{{ __('Refuse') }}</span>
+                  </button>
+               </div>
+            </form>
+         {% endif %}
+      </div>
+   {% else %}
+      <div class="itilvalidation">
+         <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
+               action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true">
+            <input type="hidden" name="itemtype" value="{{ item.getType() }}">
+            <input type="hidden" name="{{ item|get_foreignkey_field }}" value="{{ item.fields['id'] }}">
+
+            <div class="row">
+               <div class="col-12 col-md-9">
+                  {{ fields.readOnlyField(
+                     'approval_requester',
+                     User__getUserName(),
+                     _n('Requester', 'Requester', 1),
+                     {
+                        'full_width': true,
+                        'rand': rand,
+                     }
+                  ) }}
+
+                  {{ fields.dropdownArrayField('validatortype', subitem.fields['validatortype'], {
+                     'User': 'User',
+                     'Group': 'Group'
+                  }, __('Approver'), {
+                     'display_emptychoice': true,
+                     'full_width': true,
+                     'rand': rand,
+                     'add_field_html': '<span id="show_validator_field">&nbsp;</span>',
+                  }) }}
+                  {% if subitem.fields['validatortype'] is not null %}
+                     <script type="application/javascript">
+                        $('#show_validator_field').load(CFG_GLPI.root_doc + '/ajax/dropdownValidator.php', {
+                           id: {{ subitem.fields['id'] }},
+                           entity: {{ item.fields['entities_id'] }},
+                           right: "{{ item.getType() is same as 'Ticket' and item.fields['type'] == 2 ? 'validate_request' : 'validate_incident' }}",
+                           validatortype: "{{ subitem.fields['users_id_validate']['groups_id'] is defined ? 'Group' : (subitem.fields['users_id_validate'] is not empty ? 'User' : '') }}"
+                        });
+                     </script>
+                  {% else %}
+                     <script type="application/javascript">
+                        updateItemOnSelectEvent("dropdown_validatortype{{ rand }}", '#show_validator_field',
+                           CFG_GLPI.root_doc + '/ajax/dropdownValidator.php', {
+                              id: 0,
+                              entity: {{ item.fields['entities_id'] }},
+                              right: "{{ item.getType() is same as 'Ticket' and item.fields['type'] == 2 ? 'validate_request' : 'validate_incident' }}",
+                              validatortype: '__VALUE__',
+                              groups_id: 0
+                           });
+                     </script>
+                  {% endif %}
+
+                  {{ fields.textareaField(
+                     'comment_submission',
+                     getSafeHtml(subitem.fields['comment_submission'], true, true),
+                     _n('Comment', 'Comments', getPluralNumber()),
+                     {
+                        'full_width': true,
+                        'enable_richtext': true,
+                        'enable_fileupload': false,
+                        'enable_mentions': true,
+                        'rand': rand,
+                     }
+                  ) }}
+               </div>
+            </div>
+
+            <div class="d-flex card-footer mx-n3 mb-n3">
+               {% if subitem.fields['id'] <= 0 %}
+                  <button class="btn btn-primary me-2" type="submit" name="add">
+                     <i class='fas fa-plus'></i>
+                     <span>{{ _x('button', 'Add') }}</span>
+                  </button>
+               {% else %}
+                  <input type="hidden" name="id" value="{{ subitem.fields['id'] }}"/>
+                  <button class="btn btn-primary me-2" type="submit" name="update">
+                     <i class='fas fa-save'></i>
+                     <span>{{ _x('button', 'Save') }}</span>
+                  </button>
+
+                  {% if subitem.can(id, constant('PURGE')) %}
+                     <button class="btn btn-outline-danger me-2" type="submit" name="purge"
+                             onclick='return confirm("{{ __('Confirm the final deletion?') }}");'>
+                        <i class='fas fa-trash-alt'></i>
+                        <span>{{ _x('button', 'Delete permanently') }}</span>
+                     </button>
+                  {% endif %}
+               {% endif %}
+            </div>
+
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+         </form>
+      </div>
+   {% endif %}
+{% endblock %}

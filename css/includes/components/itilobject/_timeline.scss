@@ -1,0 +1,492 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2021 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+.timeline-item {
+   .timeline-header {
+      margin-top: -0.5rem;
+      margin-bottom: 1rem;
+
+      .creator {
+         .badge {
+            height: inherit;
+            background-color: rgba(97, 97, 97, 0.15);
+            color: rgba(43, 43, 43, 0.8);
+         }
+      }
+
+      .timeline-item-buttons {
+         .is-private {
+            color: rgba(43, 43, 43, 0.7);
+         }
+      }
+   }
+
+   .state {
+      float: left;
+      width: 20px;
+      height: 20px;
+      margin-right: 3px;
+      background-repeat: no-repeat;
+      vertical-align: middle;
+
+      &.state_0 {
+         background-image: url(../pics/timeline/information.png);
+      }
+
+      &.state_1 {
+         cursor: pointer;
+         background-image: url(../pics/timeline/todo.png);
+      }
+
+      &.state_2 {
+         cursor: pointer;
+         background-image: url(../pics/timeline/done.png);
+      }
+   }
+
+   .timeline-more-actions {
+      visibility: hidden;
+   }
+
+   &:hover {
+      .timeline-more-actions {
+         visibility: visible;
+      }
+   }
+
+   .timeline-content {
+      position: relative;
+      border-top-left-radius: 0;
+      max-width: 100%;
+      word-break: break-word;
+
+      @include media-breakpoint-up(sm) {
+         &::before {
+            content: " ";
+            position: absolute;
+            width: 0;
+            height: 0;
+            left: -14px;
+            right: auto;
+            top: -1px;
+            bottom: auto;
+            border: 7px solid;
+            border-color: transparent;
+         }
+         &::after {
+            content: " ";
+            position: absolute;
+            width: 0;
+            height: 0;
+            left: -12px;
+            right: auto;
+            top: 0px;
+            bottom: auto;
+            border: 6px solid;
+            border-color: transparent;
+         }
+
+         &.t-right {
+            border-top-right-radius: 0;
+
+            &::before {
+               left: auto;
+               right: -14px;
+            }
+            &::after {
+               left: auto;
+               right: -12px;
+            }
+         }
+      }
+   }
+
+   &.ITILContent,
+   &.ITILValidation {
+      .timeline-content {
+         background-color: $timeline-itilc-bg;
+         color: $timeline-itilc-fg;
+         border-color: $timeline-itilc-border;
+         background-image: url(../pics/timeline/followup.png);
+         background-repeat: no-repeat;
+
+         &::before {
+            border-color: $timeline-itilc-border $timeline-itilc-border transparent transparent;
+         }
+         &::after {
+            border-color: $timeline-itilc-bg $timeline-itilc-bg transparent transparent;
+         }
+         &.t-right::before {
+            border-color: $timeline-itilc-border transparent transparent $timeline-itilc-border;
+         }
+         &.t-right::after {
+            border-color: $timeline-itilc-bg transparent transparent $timeline-itilc-bg;
+         }
+      }
+   }
+
+   &.ITILFollowup,
+   &.KnowbaseItemComment {
+      .timeline-content {
+         background-color: $timeline-fup-bg;
+         color: $timeline-fup-fg;
+         border-color: $timeline-fup-border;
+         background-image: url(../pics/timeline/followup.png);
+         background-repeat: no-repeat;
+
+         &::before {
+            border-color: $timeline-fup-border $timeline-fup-border transparent transparent;
+         }
+         &::after {
+            border-color: $timeline-fup-bg $timeline-fup-bg transparent transparent;
+         }
+         &.t-right::before {
+            border-color: $timeline-fup-border transparent transparent $timeline-fup-border;
+         }
+         &.t-right::after {
+            border-color: $timeline-fup-bg transparent transparent $timeline-fup-bg;
+         }
+      }
+   }
+
+   &.ITILTask {
+      .timeline-content {
+         background-color: $timeline-task-bg;
+         color: $timeline-task-fg;
+         border-color: $timeline-task-border;
+         background-image: url(../pics/timeline/task.png);
+         background-repeat: no-repeat;
+
+         &::before {
+            border-color: $timeline-task-border $timeline-task-border transparent transparent;
+         }
+         &::after {
+            border-color: $timeline-task-bg $timeline-task-bg transparent transparent;
+         }
+         &.t-right::before {
+            border-color: $timeline-task-border transparent transparent $timeline-task-border;
+         }
+         &.t-right::after {
+            border-color: $timeline-task-bg transparent transparent $timeline-task-bg;
+         }
+      }
+   }
+
+   &.ITILSolution {
+      .timeline-content {
+         background-color: $timeline-sol-bg;
+         color: $timeline-sol-fg;
+         border-color: $timeline-sol-border;
+         border-left: 1em transparent solid;
+
+         &.waiting {
+            border-left-color: rgb(221, 157, 39);
+         }
+
+         &.accepted {
+            border-left-color: rgb(52, 143, 52);
+         }
+
+         &.refused {
+            border-left: 1em rgb(226, 80, 80) solid;
+         }
+
+         .solimg {
+            position: absolute;
+            color: rgba(66, 91, 100, 0.1);
+            pointer-events: none;
+         }
+
+         &::before {
+            border-color: $timeline-sol-border $timeline-sol-border transparent transparent;
+         }
+         &::after {
+            border-color: $timeline-sol-bg $timeline-sol-bg transparent transparent;
+         }
+         &.t-right::before {
+            border-color: $timeline-sol-border transparent transparent $timeline-sol-border;
+         }
+         &.t-right::after {
+            border-color: $timeline-sol-bg transparent transparent $timeline-sol-bg;
+         }
+      }
+   }
+
+   &.Document_Item  {
+      .timeline-content {
+         border: 0;
+         box-shadow: none;
+      }
+   }
+
+   &.Log {
+      width: 100%;
+
+      .user-part {
+         display: none !important;
+      }
+
+      .content-part {
+         flex-direction: row-reverse !important;
+         justify-content: flex-end;
+         margin-left: 75px;
+         margin-right: 83px;
+         //background-color: $timeline-log-bg;
+
+         .timeline-content {
+            border: 0;
+            box-shadow: none;
+            margin-top: 0 !important;
+            flex-grow: 0 !important;
+            background: transparent;
+
+            .card-body {
+               padding: 0;
+               display: flex;
+               flex-direction: row-reverse;
+
+               .timeline-header {
+                  margin-left: 1rem;
+                  margin-top: 0;
+               }
+            }
+         }
+
+         .user_link {
+            display: none !important;
+         }
+
+         .itil-date-creation {
+            margin-left: 1rem !important;
+         }
+      }
+   }
+
+   .timeline-badges {
+      margin-bottom: -0.5rem;
+   }
+}
+
+.filter-timeline-popover {
+   .form-check {
+      .form-check-input:checked {
+         background-color: $timeline-fup-bg;
+         border-color: $timeline-fup-border;
+      }
+
+      &.ITILContent,
+      &.ITILValidation {
+         .form-check-input:checked {
+            background-color: $timeline-itilc-bg;
+            border-color: $timeline-itilc-border;
+         }
+      }
+      &.ITILTask {
+         .form-check-input:checked {
+            background-color: $timeline-task-bg;
+            border-color: $timeline-task-border;
+         }
+      }
+      &.ITILSolution {
+         .form-check-input:checked {
+            background-color: $timeline-sol-bg;
+            border-color: $timeline-sol-border;
+         }
+      }
+   }
+}
+
+.timeline-todo-list {
+   .itil-left-side {
+      padding-right: .4rem !important;
+      transition: none;
+
+      .timeline-item {
+         &.ITILContent,
+         &.ITILSolution,
+         &.ITILFollowup,
+         &.ITILTask.info,
+         &.Document_Item,
+         &.Log,
+         &.KnowbaseItemComment {
+            display: none;
+         }
+
+         &.tasks-title {
+            order: 1;
+            display: block !important;
+         }
+
+         &.timeline_stats {
+            order: 2;
+         }
+
+         &.ITILTask {
+            order: 3;
+         }
+
+         &.validations-title {
+            order: 4;
+            display: block !important;
+         }
+
+         &.ITILValidation:not(.expanded) {
+            order: 5;
+            padding-left: 23px;
+
+            & ~ .ITILValidation {
+               margin-top: 0;
+            }
+
+            &.validation-answer,
+            &.validation-accepted,
+            &.validation-refused {
+               display: none;
+            }
+
+            hr,
+            .comment-part,
+            .validation-label {
+               display: none;
+            }
+
+            .validation-footer {
+               position: absolute;
+               left: -45px;
+               display: none;
+               flex-direction: column;
+               top: 3px;
+               width: 30px;
+
+               .btn {
+                  padding: 0.2rem 0.5rem;
+                  font-size: 0.75rem;
+                  border-radius: 2px;
+                  margin-bottom: 0.3rem;
+
+                  &:not(:hover) {
+                     border-color: transparent;
+                  }
+               }
+            }
+         }
+
+         &:hover {
+            &.ITILValidation {
+               .validation-footer {
+                  display: flex;
+               }
+            }
+         }
+
+         margin-left: 0 !important;
+         margin-right: 0 !important;
+         margin-bottom: 0 !important;
+         width: 99.9%;
+         transition: all 200ms ease;
+
+         .todo-list-state {
+            display: inline-block !important;
+            margin-top: 1.5rem;
+            margin-left: 0.5rem;
+         }
+
+         .creator,
+         .user-part {
+            display: none !important;
+         }
+
+         .content-part {
+            flex-direction: row-reverse !important;
+            flex-wrap: wrap;
+
+            .timeline-item-buttons {
+               flex-direction: column;
+               margin-top: 1rem;
+
+               .is-private {
+                  display: none;
+               }
+            }
+
+            .timeline-content {
+               border-radius: 0;
+
+               .card-body {
+                  padding: 0.5rem;
+                  display: flex;
+                  flex-direction: row-reverse;
+                  justify-content: space-between;
+
+                  .read-only-content {
+                     .state {
+                        display: none;
+                     }
+
+                     .text-content {
+                        max-height: 1.2rem;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                     }
+
+                     &.done {
+                        text-decoration: line-through;
+                     }
+                  }
+               }
+
+               &:before,
+               &:after {
+                  display: none;
+               }
+            }
+
+            .sub-documents {
+               width: 100%;
+
+               .list-group-item {
+                  width: max-content;
+               }
+            }
+         }
+      }
+   }
+
+   .timeline_stats,
+   .todo-list-tooltip {
+      display: block;
+   }
+}
+
+.timeline_stats,
+.todo-list-tooltip {
+   display: none;
+}

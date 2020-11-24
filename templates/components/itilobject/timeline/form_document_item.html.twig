@@ -1,0 +1,51 @@
+{% extends 'components/itilobject/timeline/form_timeline_item.html.twig' %}
+
+{# TODO image gallery #}
+
+{% block timeline_card %}
+   {% if form_mode == 'view' %}
+      <div class="row align-items-center m-n2">
+         {% set name     = entry_i['name'] ?? entry_i['filename'] %}
+         {% set filename = entry_i['filename'] ?? entry_i['name'] %}
+
+         {% if entry_i['filename'] %}
+            <div class="col text-truncate">
+               <a href="{{ path("front/document.send.php?docid=" ~ entry_i['id']) }}" target='_blank'>
+                  <img src="{{ getIconForFilename(filename) }}" alt="{{ __("File extension") }}">
+                  {{ name }}
+               </a>
+            </div>
+         {% endif %}
+
+         {% if entry_i['link'] %}
+            <div class="col-auto">
+               <a href='{{ entry_i['link'] }}' target='_blank'>
+                  <i class='fas fa-external-link'></i>
+                  {{ entry_i['name'] }}
+               </a>
+            </div>
+         {% endif %}
+
+         <div class="col-auto text-muted ms-2">
+            {{ getSizeForFilePath(entry_i['filepath']) }}
+         </div>
+
+         <div class="col-auto">
+            <div class="list-group-item-actions">
+               <a href="{{ form_path("Document", entry_i['id']) }}"
+                  class="btn btn-sm btn-ghost-secondary" title="{{ _x("button", "Edit") }}"
+                  data-bs-toggle="tooltip" data-bs-placement="top">
+                  <i class="fas fa-edit"></i>
+               </a>
+
+               {% set fk = item.getForeignKeyField() %}
+               <a href="{{ form_url(item.getType()) }}?delete_document&amp;documents_id={{ entry_i['id'] }}&amp;{{ fk }}={{ item.fields['id'] }}"
+                  class="btn btn-sm btn-ghost-secondary" title="{{ _x("button", "Delete permanently") }}"
+                  data-bs-toggle="tooltip" data-bs-placement="top">
+                  <i class="fas fa-trash-alt"></i>
+               </a>
+            </div>
+            </div>
+      </div>
+   {% endif %}
+{% endblock %}

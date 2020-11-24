@@ -1,0 +1,35 @@
+
+<div class="dropdown dropstart">
+   <button class="dropdown-item dropdown-toggle" type="button" data-bs-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+      <i class="fas fa-user-check"></i>
+      {{ active_profile_name }}
+   </button>
+   <div class="dropdown-menu">
+      <span class="dropdown-header">{{ __("Profiles") }}</span>
+      {% for profile_id, profile in profiles %}
+      <a class="dropdown-item {{ profile_id == active_profile_id ? "active" : "" }}"
+         href="{{ index() }}?newprofile={{ profile_id }}">
+         <i class="fas fa-user-check"></i>{{ profile['name'] }}
+      </a>
+      {% endfor %}
+   </div>
+</div>
+
+<a href="#" class="dropdown-item show_entity_modal">
+   <i class="fa-fw fas fa-layer-group"></i>
+   &nbsp;
+   {{ active_entity_name|u.truncate(35, '...') }}
+</a>
+
+<script type="text/javascript">
+$(function() {
+   $('.show_entity_modal').click(function() {
+      glpi_ajax_dialog({
+         url: '{{ path("/ajax/entitytree.php") }}',
+         title: __("Select the desired entity"),
+         id: "entity_modal",
+      });
+   });
+});
+</script>

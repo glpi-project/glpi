@@ -1,0 +1,174 @@
+<div class="itil-timeline d-flex flex-column align-items-start">
+   {% include("components/itilobject/timeline/main_description.html.twig") %}
+
+   {% set status_closed = (item.fields['status'] in item.getClosedStatusArray()) %}
+   {% for entry in timeline %}
+      {% set entry_i = entry['item'] %}
+      {% set users_id = entry_i['users_id'] %}
+      {% set is_private = entry_i['is_private'] ?? false %}
+      {% set date_creation = entry_i['date_creation'] ?? entry_i['date'] %}
+      {% set date_mod = entry_i['date_mod'] %}
+      {% set entry_rand = random() %}
+
+      {# Fix solution type #}
+      {% if entry['type'] is same as 'Solution' %}
+         {% set entry = entry|merge({'type': 'ITILSolution'}) %}
+      {% endif %}
+
+      {% set can_edit_i  = entry_i['can_edit'] %}
+      {% set can_promote = entry['type'] == "ITILFollowup" and can_edit_i and not status_closed %}
+      {% set is_promoted = can_promote and entry_i['sourceof_items_id'] > 0 %}
+
+      {% set timeline_position = entry_i['timeline_position'] %}
+      {% set item_position = 't-left' %}
+      {% if timeline_position == constant('CommonITILObject::TIMELINE_LEFT') %}
+         {% set item_position = 't-left' %}
+      {% elseif timeline_position == constant('CommonITILObject::TIMELINE_MIDLEFT') %}
+         {% set item_position = 't-left t-middle' %}
+      {% elseif timeline_position == constant('CommonITILObject::TIMELINE_MIDRIGHT') %}
+         {% set item_position = 't-right t-middle' %}
+      {% elseif timeline_position == constant('CommonITILObject::TIMELINE_RIGHT') %}
+         {% set item_position = 't-right' %}
+      {% endif %}
+
+      {% set itiltype = entry['itiltype'] is defined ? "ITIL" ~ entry['itiltype'] : entry['type'] %}
+
+      {% set state_class = "" %}
+      {% if entry_i['state'] is constant('Planning::INFO') %}
+         {% set state_class = "info" %}
+      {% endif %}
+      {% if entry_i['state'] is constant('Planning::TODO') %}
+         {% set state_class = "todo" %}
+      {% endif %}
+      {% if entry_i['state'] is constant('Planning::DONE') %}
+         {% set state_class = "done" %}
+      {% endif %}
+
+      {% set solution_class = "" %}
+      {% if itiltype == "ITILSolution"  %}
+         {% if entry_i['status'] is constant('CommonITILValidation::WAITING') %}
+            {% set solution_class = "waiting" %}
+         {% endif %}
+         {% if entry_i['status'] is constant('CommonITILValidation::ACCEPTED') %}
+            {% set solution_class = "accepted" %}
+         {% endif %}
+         {% if entry_i['status'] is constant('CommonITILValidation::REFUSED') %}
+            {% set solution_class = "refused" %}
+         {% endif %}
+      {% endif %}
+
+      <div class="timeline-item mb-3 {{ itiltype }} {{ state_class }} {{ entry['class'] }} {{ "right" in item_position ? "ms-auto" : "" }}"
+            data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}">
+         <div class="row">
+            <div class="col-auto todo-list-state d-none">
+               {% if entry_i['state'] is constant('Planning::TODO') %}
+                  <span class="state state_1" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('To do') }}"></span>
+               {% elseif entry_i['state'] is constant('Planning::DONE') %}
+                  <span class="state state_2" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('Done') }}"></span>
+               {% endif %}
+            </div>
+
+            <div class="col-auto d-flex flex-column user-part {{ "right" in item_position ? "ms-auto ms-0 order-sm-last" : "" }}">
+               {% set avatar_rand = random() %}
+               <span id="timeline-avatar{{ avatar_rand }}">
+                  {% include "components/itilobject/user_picture.html.twig" with {'users_id': users_id} only %}
+               </span>
+               {% set user = User__getUserName(users_id, 2) %}
+               {{ Html__showToolTip(user['comment'], {
+                  'applyto': "timeline-avatar" ~ avatar_rand
+               }) }}
+            </div>
+            <div class="col-12 col-sm d-flex flex-column content-part">
+               <span class="row mt-2 timeline-content {{ solution_class }} flex-grow-1 {{ item_position }} card">
+                  <div class="card-body">
+                     {% include("components/itilobject/timeline/timeline_item_header.html.twig") %}
+
+                     {% if itiltype is same as 'ITILValidation' %}
+                        {% include 'components/itilobject/timeline/form_validation.html.twig' with {'form_mode': 'view'} %}
+                     {% elseif itiltype is same as 'ITILTask' %}
+                        {% include 'components/itilobject/timeline/form_task.html.twig' with {'form_mode': 'view'} %}
+                     {% elseif itiltype is same as 'ITILFollowup' %}
+                        {% include 'components/itilobject/timeline/form_followup.html.twig' with {'form_mode': 'view'} %}
+                     {% elseif itiltype is same as 'ITILSolution' %}
+                        {% include 'components/itilobject/timeline/form_solution.html.twig' with {'form_mode': 'view'} %}
+                     {% elseif itiltype is same as 'Document_Item' %}
+                        {% include 'components/itilobject/timeline/form_document_item.html.twig' with {'form_mode': 'view'} %}
+                     {% else %}
+                        <div class="read-only-content">
+                           {{ getSafeHtml(entry_i['content'], true) }}
+                        </div>
+                     {% endif %}
+                     <div class="edit-content collapse">
+                        <div class="ajax-content"></div>
+                     </div>
+                  </div>
+               </span>
+
+               {% if entry['documents'] is defined %}
+                  {% include "components/itilobject/timeline/sub_documents.html.twig" with {'entry': entry} %}
+               {% endif %}
+            </div>
+         </div>
+      </div>
+   {% endfor %}
+
+   <div class="timeline-item tasks-title d-none">
+      <h3>{{ _n("Task", "Tasks", getPluralNumber()) }}</h3>
+   </div>
+
+   {% include("components/itilobject/timeline/todo-list-summary.html.twig") %}
+
+   <div class="timeline-item validations-title d-none mt-4">
+      <h3>{{ _n("Validation", "Validations", getPluralNumber()) }}</h3>
+   </div>
+
+   {% include("components/itilobject/timeline/approbation_form.html.twig") %}
+   {% include("components/itilobject/answer.html.twig") %}
+
+</div>
+
+<script type="text/javascript">
+$(function() {
+   $(document).on("click", ".edit-timeline-item", function() {
+      var timeline_item = $(this).closest(".timeline-item");
+      var content_block = timeline_item.find(".timeline-content");
+      var itemtype      = timeline_item.data('itemtype');
+      var items_id      = timeline_item.data('items-id');
+
+      content_block.find(".read-only-content").hide();
+      content_block.find(".edit-content").show()
+         .find(".ajax-content")
+         .html("<i class='fas fa-3x fa-spinner fa-spin ms-auto'></i>")
+         .load("{{ path('/ajax/timeline.php') }}", {
+            'action'    : 'viewsubitem',
+            'type'      : itemtype,
+            'parenttype': '{{ item.getType() }}',
+            '{{ item.getType()|get_foreignkey_field }}': {{ item.fields['id'] }},
+            'id'        : items_id
+         });
+
+      timeline_item.find('.timeline-item-buttons').addClass('d-none');
+      timeline_item.find('.close-edit-content').removeClass('d-none');
+
+      $("#itil-footer").find(".main-actions").hide();
+
+      // scroll to edited element
+      $("#itil-object-container .itil-left-side").animate(
+         { scrollTop:  timeline_item.offset().top }, 'slow',
+      );
+   });
+
+   $(document).on("click", ".close-edit-content", function() {
+      var timeline_item = $(this).closest(".timeline-item");
+      timeline_item.find('.timeline-item-buttons').removeClass('d-none');
+      timeline_item.find('.close-edit-content').addClass('d-none');
+
+      $(this)
+         .siblings('.ajax-content').html('')
+         .closest('.edit-content').hide()
+         .siblings('.read-only-content').show();
+
+      $("#itil-footer .main-actions").show();
+   });
+});
+</script>

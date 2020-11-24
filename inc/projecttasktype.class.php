@@ -46,4 +46,8 @@ class ProjectTaskType extends CommonDropdown {
       return _n('Project tasks type', 'Project tasks types', $nb);
    }
 
+   static function getIcon() {
+      return "fas fa-columns";
+   }
+
 }

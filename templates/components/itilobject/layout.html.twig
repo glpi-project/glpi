@@ -1,0 +1,66 @@
+{% set rand = random() %}
+
+<div class="mt-n1" id="itil-object-container">
+
+   {% if item.isNewItem and not params['template_preview'] %}
+      {% include("components/itilobject/mainform_open.html.twig") %}
+   {% endif %}
+
+   <div class="row d-flex flex-column align-items-stretch itil-object ">
+      <div class="itil-left-side col-12 col-md-8 order-last order-md-first pt-2 pe-2 pe-md-4 d-flex flex-column-reverse border-top border-4">
+         {% if item.isNewItem() %}
+            {% include("components/itilobject/timeline/new_form.html.twig") %}
+         {% else %}
+            {% include("components/itilobject/timeline/timeline.html.twig") %}
+         {% endif %}
+      </div>
+      <div class="itil-right-side col-12 col-md-4 mt-0 mt-md-n1 card-footer p-0 rounded-0">
+         {% if not item.isNewItem() %}
+            {% include("components/itilobject/mainform_open.html.twig") %}
+         {% endif %}
+         {% include("components/itilobject/fields_panel.html.twig") %}
+         {% if not item.isNewItem() %}
+            {% include("components/itilobject/mainform_close.html.twig") %}
+         {% endif %}
+      </div>
+   </div>
+
+   {% if not params['template_preview'] %}
+      {% include("components/itilobject/footer.html.twig") %}
+   {% endif %}
+
+   {% if not item.isNewItem() and not params['template_preview'] %}
+      {% include("components/itilobject/mainform_close.html.twig") %}
+   {% endif %}
+
+</div>
+
+<form name='massaction_{{ rand }}' id='massaction_{{ rand }}' method='post'
+      action='{{ path("/front/massiveaction.php") }}'>
+   <div id='massive_container_{{ rand }}'></div>
+   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+</form>
+
+<script type="text/javascript">
+$(function() {
+   $(document).on("click", ".switch-panel-width", function() {
+      if ($('.itil-left-side').hasClass('col-md-8')) {
+         $('.itil-left-side').removeClass('col-md-8').addClass('col-md-4');
+         $('.itil-footer .timeline-buttons').removeClass('col-md-8').addClass('col-md-4');
+         $('.itil-footer .form-buttons').removeClass('col-md').addClass('col-md-8');
+         $('.itil-right-side').removeClass('col-md-4').addClass('col-md-8');
+         $('.switch-panel-width i.fas').removeClass('fa-caret-left').addClass('fa-caret-right');
+         $('.itil-right-side .accordion-body:not(.accordion-actors).row .col-12').removeClass('col-12').addClass('col-6');
+         $('#actors .col-12').removeClass('col-12').addClass('col-4');
+      } else {
+         $('.itil-left-side').removeClass('col-md-4').addClass('col-md-8');
+         $('.itil-right-side').removeClass('col-md-8').addClass('col-md-4');
+         $('.itil-footer .timeline-buttons').removeClass('col-md-4').addClass('col-md-8');
+         $('.itil-footer .form-buttons').removeClass('col-md-8').addClass('col-md');
+         $('.switch-panel-width i.fas').removeClass('fa-caret-right').addClass('fa-caret-left');
+         $('.itil-right-side .accordion-body:not(.accordion-actors).row .col-6').removeClass('col-6').addClass('col-12');
+         $('#actors .col-4').removeClass('col-4').addClass('col-12');
+      }
+   });
+});
+</script>

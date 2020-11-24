@@ -154,4 +154,8 @@ class Holiday extends CommonDropdown {
       $calendar_holiday = new Calendar_Holiday();
       $calendar_holiday->invalidateHolidayCache($this->fields['id']);
    }
+
+   static function getIcon() {
+      return "far fa-calendar-times";
+   }
 }
