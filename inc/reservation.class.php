@@ -423,13 +423,13 @@ class Reservation extends CommonDBChild {
          $name = __('All reservable devices');
          $all  = "";
       }
-      echo "<div class='reservation-panel'>";
-      echo "<div class='center reservation-header'>";
+      echo "<div class='card'>";
+      echo "<div class='text-center card-header'>";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/reservation.png' alt='' class='reservation-icon'>";
       echo "<h2 class='item-name'>".$name."</h2>";
       echo "$all";
       echo "</div>"; // .center
-      echo "<div id='reservations_planning_$rand' class='reservations-planning'></div>";
+      echo "<div id='reservations_planning_$rand' class='card-body reservations-planning'></div>";
       echo "</div>"; // .reservation_panel
 
       $js = <<<JAVASCRIPT

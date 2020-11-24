@@ -1,0 +1,138 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2021 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+$is-dark: false !default;
+
+$info: #80abe4;
+$danger: #d49696;
+
+$enable-negative-margins: true;
+$link-hover-decoration: none;
+
+@if $is-dark {
+   @import "css/includes/dark";
+} @else {
+   @import "~@tabler/core/src/scss/tabler";
+}
+
+$mainmenu_bg: $dark !default;
+$mainmenu_fg: $light !default;
+
+$search_bg: transparentize($mainmenu_bg, 0.95) !default;
+$search_fg: lighten($mainmenu_bg, 5%) !default;
+$search_border: lighten($color: $search_fg, $amount: 35) !default;
+
+$table_border: #c4c4c4 !default;
+
+$header-fg: $blue !default;
+$header-bg: theme-color-lighter($header-fg, true) !default;
+$header-border-color: tint-color($header-fg, 75%) !default;
+$header-danger-bg: $danger !default;
+$header-badge-bg: tint-color($header-fg, 80%)!default;
+$header-badge-fg: darken($header-fg, 20%) !default;
+
+$logo: "../pics/logos/logo-GLPI-100-white.png" !default;
+$logo_reduced: "../pics/logos/logo-G-100-white.png" !default;
+$scrollbar-color-thumb: rgba($color: $secondary, $alpha: .8) !default;
+$scrollbar-color-track: rgba(0, 0, 0, .03)  !default;
+
+$tabs-bg: $card-cap-bg !default;
+$tabs-fg: $text-muted !default;
+$tabs-border: $card-border-color !default;
+$tabs-active-bg: #FFFFFF !default;
+$tabs-active-fg: $dark !default;
+$tabs-active-border: $tabs-border !default;
+$badge-bg: $dark !default;
+$badge-fg: $light !default;
+
+$input-border: $dark-mode-text !default;
+
+body.iframed {
+   background-color: transparent;
+}
+
+.page {
+   .glpi-logo {
+      background: url($logo) no-repeat;
+      height: 55px;
+      width: 100px;
+   }
+
+   .footer {
+      font-size: 0.75rem;
+      padding: 0.5em;
+   }
+}
+
+.breadcrumb-alternate {
+   a {
+      &:hover {
+         text-decoration: $link-hover-decoration;
+      }
+   }
+}
+
+.dropdown-item {
+   & > .fas:first-child, & > .far:first-child, & > .fab:first-child {
+      margin-right: 0.75em;
+   }
+}
+
+.btn {
+   .btn-group .select2-container ~ & {
+      max-width: 25px;
+   }
+
+   a {
+      color: inherit;
+   }
+
+   i.fas, i.far, i.fab {
+      margin-inline-start: 0;
+
+      & + * {
+         margin-left: 0.25rem;
+      }
+   }
+
+   &.btn-icon {
+
+      i.fas, i.far, i.fab {
+         margin-right: 0;
+      }
+   }
+}
+
+
+
+.toast-container {
+   z-index: 999999;
+   position: fixed;
+}

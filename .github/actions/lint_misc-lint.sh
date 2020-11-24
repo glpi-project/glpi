@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
 echo "Check for missing headers"
+patch -f -p1 -d vendor/glpi-project/tools/ < tools/licence-headers-check.patch
 vendor/bin/licence-headers-check
 
 echo "Check for SCSS compilation errors"

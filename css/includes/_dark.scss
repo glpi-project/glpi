@@ -1,0 +1,58 @@
+$input-focus-bg: #444444 !default;
+$input-focus-border-color: #868686 !default;
+
+@import "~@tabler/core/src/scss/tabler";
+
+@mixin dark-mode {
+   $selector: &;
+
+   @media not print {
+      @if ($selector) {
+         body & {
+            @content;
+         }
+      } @else {
+         body {
+            @content;
+         }
+      }
+   }
+}
+
+// re-import styles impacted by dark-mode mixin
+@import "~@tabler/core/src/scss/dark";
+@import "~@tabler/core/src/scss/layout/navbar";
+
+$input-border: $dark-mode-text !default;
+
+@include dark-mode {
+   // missing border (TODO open a pr upstream ?)
+   .form-check-input:not(:checked),
+   .form-select,
+   .form-file-text,
+   .form-control,
+   .form-selectgroup-label,
+   .form-selectgroup-check,
+   .form-imagecheck-figure:before {
+     border-color: $input-border;
+   }
+
+   .card-body {
+      border-color: red;
+   }
+}
+
+//additionnal fixes
+$primary-fg: $body-color !default;
+.btn-primary,
+.btn-outline-primary,
+.btn-ghost-primary {
+   --tblr-btn-color-text: #{$primary-fg};
+}
+
+$secondary-fg: $body-color !default;
+.btn-secondary,
+.btn-outline-secondary,
+.btn-ghost-secondary {
+   --tblr-btn-color-text: #{$secondary-fg};
+}

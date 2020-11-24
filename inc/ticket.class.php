@@ -743,7 +743,7 @@ class Ticket extends CommonITILObject {
 
             $timeline    = $item->getTimelineItems();
             $nb_elements = count($timeline);
-            $ong[1]      = __("Processing ticket")." <sup class='tab_nb'>$nb_elements</sup>";
+            $ong[1]      = __("Processing ticket")." <span class='badge'>$nb_elements</span>";
 
             // enquete si statut clos
             $satisfaction = new TicketSatisfaction();
@@ -5313,24 +5313,24 @@ JAVASCRIPT;
             echo "<div class='center'>";
             if ($this->fields["is_deleted"] == 1) {
                if (self::canDelete()) {
-                  echo "<input type='submit' class='submit' name='restore' value='".
+                  echo "<input type='submit' class='btn' name='restore' value='".
                          _sx('button', 'Restore')."'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                }
             } else {
                if ($display_save_btn) {
-                  echo "<input type='submit' class='submit' name='update' value='".
+                  echo "<input type='submit' class='btn btn-primary' name='update' value='".
                          _sx('button', 'Save')."'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                }
             }
             if ($this->fields["is_deleted"] == 1) {
                if (self::canPurge()) {
-                  echo "<input type='submit' class='submit' name='purge' value='".
+                  echo "<input type='submit' class='btn' name='purge' value='".
                          _sx('button', 'Delete permanently')."' ".
                          Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
                }
             } else {
                if ($this->canDeleteItem()) {
-                  echo "<input type='submit' class='submit small_space' name='delete' value='".
+                  echo "<input type='submit' class='btn' name='delete' value='".
                          _sx('button', 'Put in trashbin')."'>";
                }
             }
@@ -5338,7 +5338,7 @@ JAVASCRIPT;
             echo "</div>";
          } else {
             echo "<div class='tab_bg_2 center'>";
-            $add_params = ['name' => 'add'];
+            $add_params = ['name' => 'add', 'class' => 'btn btn-primary'];
             if ($options['_promoted_fup_id']) {
                $add_params['confirm'] = __('Confirm the promotion?');
             }
@@ -6348,7 +6348,7 @@ JAVASCRIPT;
          echo "</div>";
       }
 
-      echo "<div>";
+      echo "<div class='table-responsive'>";
 
       if ($number > 0) {
          echo "<table class='tab_cadre_fixehov'>";
@@ -6405,7 +6405,7 @@ JAVASCRIPT;
          $iterator = $DB->request($criteria);
          $number = count($iterator);
 
-         echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+         echo "<div class='spaced table-responsive'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='12'>";
          echo _n('Ticket on linked items', 'Tickets on linked items', $number);
          echo "</th></tr>";

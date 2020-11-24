@@ -49,6 +49,7 @@ The present file will list all changes made to the project; according to the
 
 #### Removed
 - `Update::declareOldItems()`
+- `Ajax::createFixedModalWindow()`
 
 - Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
 - `$LOADED_PLUGINS` global variable

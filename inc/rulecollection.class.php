@@ -575,8 +575,7 @@ class RuleCollection extends CommonDBTM {
             "title='".__s("Remove all equipment import rules and recreate from defaults")."'" .
             ">" . __('Reset rules') . "</a>&nbsp;";
       }
-      echo "<a class='vsubmit' href='#' onClick=\"".
-                  Html::jsGetElementbyID('allruletest'.$rand).".dialog('open'); return false;\">".
+      echo "<a class='vsubmit' href='#' data-bs-toggle='modal' data-bs-target='#allruletest$rand'>".
                   __('Test rules engine')."</a>";
       Ajax::createIframeModalWindow('allruletest'.$rand,
                                     $url."/front/rulesengine.test.php?".

@@ -1,0 +1,193 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2021 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+.ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default {
+   border: 1px solid #FFF;
+   background-color: #e6e6e6;
+   color: #555555;
+}
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active {
+   border: 1px solid #FFF;
+   background-color: #ffffff;
+   color: #212121;
+}
+.ui-state-active a,
+.ui-state-active a:link,
+.ui-state-active a:visited {
+   color: #212121;
+}
+
+.ui-dialog { z-index: 1000 !important ;}
+.ui-widget-overlay.glpi_modal { z-index: 2000 !important ;}
+.glpi_modal { z-index: 5000 !important ;}
+
+.ui-widget-content span.vsubmit, a.vsubmit {color: #8f5a0a;}
+/* css for timepicker */
+.ui-datepicker {width:20em; z-index:10000 !important;}
+.ui-timepicker-div .ui-widget-header {margin-bottom: 8px; }
+.ui-timepicker-div dl { text-align: left; }
+.ui-timepicker-div dl dt { height: 25px; margin-bottom: -25px; }
+.ui-timepicker-div dl dd { margin: 0 10px 10px 65px; }
+.ui-timepicker-div td { font-size: 90%; }
+.ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
+
+.ui-timepicker-rtl{ direction: rtl; }
+.ui-timepicker-rtl dl { text-align: right; }
+.ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
+
+.hasDatepicker {margin-right:3px;}
+
+/* css styles for tabs */
+
+.ui-tabs {
+   margin: auto;
+}
+
+.ui-tabs-vertical {
+   border: 0;
+   vertical-align:top;
+}
+.ui-tabs-vertical .ui-tabs-nav {
+   padding: .2em .1em .2em .2em;
+   float: left;
+   width: 180px;
+   border: 1px solid #cccccc;
+}
+.ui-tabs-vertical .ui-tabs-nav li {
+   clear: left;
+   width: 99%;
+   border-bottom-width: 1px !important;
+   border-right-width: 0 !important;
+   margin: 0 -1px .1em -1px;
+}
+.ui-tabs-vertical .ui-tabs-nav li a {
+   display: block;
+   width: 152px;
+   text-align: left;
+   text-overflow: ellipsis;     /** IE6+, Firefox 7+, Opera 11+, Chrome, Safari **/
+   -o-text-overflow: ellipsis;
+   overflow: hidden;
+}
+
+.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
+   padding-bottom: 0;
+   margin-bottom: 1px;
+   border-right-width: 1px;
+}
+.ui-tabs-vertical .ui-tabs-panel {
+   padding: 1em;
+   margin-left: 180px;
+   float: center;
+}
+
+/* css styles for progress bar */
+
+.ui-progressbar .ui-progressbar-value { background-image: url('../pics/jquery/pbar-ani.gif'); }
+.doaction_progress_text {
+   float:left;
+   color:black;
+   text-align:center;
+   width:100%;
+   padding-top:3px;
+   font-weight:bold;
+}
+
+.ui-autocomplete {
+   max-height: 200px;
+   font-size: 11px;
+   overflow-y: auto;
+   /* prevent horizontal scrollbar */
+   overflow-x: hidden;
+}
+
+.ui-autocomplete a {
+   color : black;
+}
+
+html .ui-autocomplete {
+   max-height: 100px;
+}
+
+.ui-widget-content .error {
+   -moz-border-radius: 10px;
+   -webkit-border-radius: 10px;
+   -o-border-radius: 10px;
+   border-radius: 10px;
+   max-width: 350px;
+   margin : auto;
+   border-width: 1px;
+   border-style: solid;
+   padding: .2em;
+}
+
+.ui-widget-content .error {
+   border-color: red;
+}
+
+.ui-widget .ui-widget-header {
+  font-family: Verdana,Arial,sans-serif;
+  font-size: 1.1em;
+}
+.ui-widget .ui-widget .ui-widget-header {
+  font-size: 1em;
+}
+
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button
+{
+  font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
+  font-size: 11px;
+}
+
+input.submit {
+   font-size : 12px;
+}
+
+.uploadbar {
+   height: 18px;
+   text-align: center;
+   font-weight:bold;
+   background-image: url('../pics/jquery/pbar-ani.gif');
+}
+
+/* GANTT diagram */
+
+.fn-gantt {
+   text-align: left;
+   font-size: 11px;
+}
+
+.fn-gantt .ganttMilestone {
+    background-color: #000000;
+}

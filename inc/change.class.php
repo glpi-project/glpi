@@ -203,7 +203,7 @@ class Change extends CommonITILObject {
                $nb_elements = count($timeline);
 
                $ong = [
-                  5 => __("Processing change")." <sup class='tab_nb'>$nb_elements</sup>",
+                  5 => __("Processing change")." <span class='badge'>$nb_elements</span>",
                   1 => __('Analysis'),
                   3 => __('Plans')
                ];

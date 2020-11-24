@@ -70,6 +70,7 @@ class Dropdown {
     *    - permit_select_parent : boolean / for tree dropdown permit to see parent items
     *                                       not available by default (default false)
     *    - specific_tags        : array of HTML5 tags to add the the field
+    *    - class                : class to pass to html select
     *    - url                  : url of the ajax php code which should return the json data to show in
     *                                       the dropdown
     *
@@ -109,6 +110,7 @@ class Dropdown {
       $params['permit_select_parent'] = false;
       $params['addicon']              = true;
       $params['specific_tags']        = [];
+      $params['class']                = "form-select form-select-sm";
       $params['url']                  = $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php";
 
       if (is_array($options) && count($options)) {
@@ -177,18 +179,20 @@ class Dropdown {
             'on_change'            => $params['on_change'],
             'permit_select_parent' => $params['permit_select_parent'],
             'specific_tags'        => $params['specific_tags'],
+            'class'                => $params['class'],
             '_idor_token'          => Session::getNewIDORToken($itemtype, [
                'entity_restrict' => $entity_restrict,
             ]),
             'order'                => $params['order'] ?? null,
       ];
 
-      $output = "<span class='no-wrap'>";
       $output.= Html::jsAjaxDropdown($params['name'], $field_id,
                                      $params['url'],
                                      $p);
       // Display comment
+      $icons = "";
       if ($params['comments']) {
+         //$icons .= "<span class='dropdown-icons'>";
          $comment_id      = Html::cleanId("comment_".$params['name'].$params['rand']);
          $link_id         = Html::cleanId("comment_link_".$params['name'].$params['rand']);
          $kblink_id       = Html::cleanId("kb_link_".$params['name'].$params['rand']);
@@ -214,61 +218,77 @@ class Dropdown {
                )
             );
          }
-         $output .= "&nbsp;".Html::showToolTip($comment, $options_tooltip);
-
-         if (($item instanceof CommonDropdown)
-             && $item->canCreate()
-             && !isset($_REQUEST['_in_modal'])
-             && $params['addicon']) {
-
-               $output .= "<span class='fa fa-plus-circle pointer' title=\"".__s('Add')."\"
-                            onClick=\"".Html::jsGetElementbyID('add_'.$field_id).".dialog('open');\"
-                           ><span class='sr-only'>" . __s('Add') . "</span></span>";
-               $output .= Ajax::createIframeModalWindow('add_'.$field_id,
-                                                        $item->getFormURL(),
-                                                        ['display' => false]);
-         }
-
-         // Display specific Links
-         if ($itemtype == "Supplier") {
-            if ($item->getFromDB($params['value'])) {
-               $output .= $item->getLinks();
-            }
-         }
-
-         if ($itemtype == 'Location') {
-            $output .= "<span class='fa fa-globe-americas pointer' title='".__s('Display on map')."' onclick='showMapForLocation(this)' data-fid='$field_id'></span>";
-         }
-
-         $paramscomment = [
-            'value'       => '__VALUE__',
-            'itemtype'    => $itemtype,
-            '_idor_token' => Session::getNewIDORToken($itemtype)
-         ];
-         if ($item->isField('knowbaseitemcategories_id')
-             && Session::haveRight('knowbase', READ)) {
-
-            if (method_exists($item, 'getLinks')) {
-               $output .= "<span id='$kblink_id'>";
-               $output .= '&nbsp;'.$item->getLinks();
-               $output .= "</span>";
-               $paramscomment['withlink'] = $kblink_id;
-               $output .= Ajax::updateItemOnSelectEvent($field_id, $kblink_id,
-                                                        $CFG_GLPI["root_doc"]."/ajax/kblink.php",
-                                                        $paramscomment, false);
-            }
-         }
 
          if ($item->canView()) {
             $paramscomment['withlink'] = $link_id;
          }
 
-         $output .= Ajax::updateItemOnSelectEvent($field_id, $comment_id,
+         // Comment icon
+         $icons .= '<div class="btn btn-outline-secondary">';
+         $icons .= Ajax::updateItemOnSelectEvent($field_id, $comment_id,
                                                   $CFG_GLPI["root_doc"]."/ajax/comments.php",
                                                   $paramscomment, false);
+         $icons .= Html::showToolTip($comment, $options_tooltip);
+         $icons .= '</div>';
+
+         // Add icon
+         if (($item instanceof CommonDropdown)
+             && $item->canCreate()
+             && !isset($_REQUEST['_in_modal'])
+             && $params['addicon']) {
+               $icons .= '<div class="btn btn-outline-secondary">';
+               $icons .= Ajax::createIframeModalWindow('add_'.$field_id, $item->getFormURL(), ['display' => false]);
+               $icons .= "<span title=\"".__s('Add')."\"
+                                 data-bs-toggle='modal' data-bs-target='#add_$field_id'
+                           >
+                  <i class='fas fa-fw fa-plus-circle'></i>
+                  <span class='sr-only'>" . __s('Add') . "</span>
+               </span>";
+               $icons .= '</div>';
+         }
+
+         // Supplier Links
+         if ($itemtype == "Supplier") {
+            if ($item->getFromDB($params['value'])) {
+               $icons .= '<div>';
+               $icons .= $item->getLinks();
+               $icons .= '</div>';
+            }
+         }
+
+         // Location icon
+         if ($itemtype == 'Location') {
+            $icons .= '<div class="btn btn-outline-secondary">';
+            $icons .= "<span title='".__s('Display on map')."' onclick='showMapForLocation(this)' data-fid='$field_id'>
+               <i class='fas fa-fw fa-globe-americas'></i>
+            </span>";
+            $icons .= '</div>';
+         }
+
+         // KB links
+         if ($item->isField('knowbaseitemcategories_id') && Session::haveRight('knowbase', READ)
+             && method_exists($item, 'getLinks')) {
+            $paramskblinks = [
+               'value'       => '__VALUE__',
+               'itemtype'    => $itemtype,
+               '_idor_token' => Session::getNewIDORToken($itemtype),
+               'withlink'    => $kblink_id,
+            ];
+            $icons .= '<div>';
+            $icons .= Ajax::updateItemOnSelectEvent($field_id, $kblink_id,
+                                                     $CFG_GLPI["root_doc"]."/ajax/kblink.php",
+                                                     $paramskblinks, false);
+            $icons .= "<span id='$kblink_id'>";
+            $icons .= '&nbsp;'.$item->getLinks();
+            $icons .= "</span>";
+            $icons .= '</div>';
+         }
       }
+      if (strlen($icons) > 0) {
+         $output = "<div class='btn-group btn-group-sm ".($params['width'] == "100%" ? "w-100" : "")."' role='group'>{$output} {$icons}</div>";
+      }
+
       $output .= Ajax::commonDropdownUpdateItem($params, false);
-      $output .= "</span>";
       if ($params['display']) {
          echo $output;
          return $params['rand'];
@@ -562,7 +582,7 @@ class Dropdown {
       $params['used']                = [];
       $params['emptylabel']          = self::EMPTY_VALUE;
       $params['display']             = true;
-      $params['width']               = '80%';
+      $params['width']               = '';
       $params['display_emptychoice'] = true;
       $params['rand']         = mt_rand();
 
@@ -1452,9 +1472,10 @@ class Dropdown {
     *     - toadd     array    of values to add at the beginning
     *     - unit      string   unit to used
     *     - display   boolean  if false get string
-    *     - width              specific width needed (default 80%)
+    *     - width              specific width needed
     *     - on_change string / value to transmit to "onChange"
     *     - used      array / Already used items ID: not to display in dropdown (default empty)
+    *     - class : class to pass to html select
    **/
    static function showNumber($myname, $options = []) {
       global $CFG_GLPI;
@@ -1472,6 +1493,7 @@ class Dropdown {
          'on_change'       => '',
          'used'            => [],
          'specific_tags'   => [],
+         'class'           => "form-select form-select-sm",
       ];
 
       if (is_array($options) && count($options)) {
@@ -1504,7 +1526,8 @@ class Dropdown {
                      'max'                 => $p['max'],
                      'step'                => $p['step'],
                      'toadd'               => $p['toadd'],
-                     'specific_tags'       => $p['specific_tags']];
+                     'specific_tags'       => $p['specific_tags'],
+                     'class'               => $p['class']];
 
       $out   = Html::jsAjaxDropdown($myname, $field_id,
                                     $CFG_GLPI['root_doc']."/ajax/getDropdownNumber.php",
@@ -1609,7 +1632,7 @@ class Dropdown {
       $params['inhours']             = false;
       $params['display']             = true;
       $params['display_emptychoice'] = true;
-      $params['width']               = '80%';
+      $params['width']               = '';
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1779,7 +1802,7 @@ class Dropdown {
 
       $param['value']               = '';
       $param['values']              = [''];
-      $param['class']               = '';
+      $param['class']               = 'form-select form-select-sm';
       $param['tooltip']             = '';
       $param['option_tooltips']     = [];
       $param['used']                = [];
@@ -1967,11 +1990,11 @@ class Dropdown {
          $select   = __('All');
          $deselect = __('None');
          $output  .= "<div class='invisible' id='selectallbuttons_$field_id'>";
-         $output  .= "<div class='select2-actionable-menu'>";
-         $output  .= "<a class='vsubmit' ".
+         $output  .= "<div class='d-flex justify-content-around p-1'>";
+         $output  .= "<a class='btn btn-sm' ".
                       "onclick=\"selectAll('$field_id');$('#$field_id').select2('close');\">$select".
                      "</a> ";
-         $output  .= "<a class='vsubmit floatright' onclick=\"deselectAll('$field_id');\">$deselect".
+         $output  .= "<a class='btn btn-sm' onclick=\"deselectAll('$field_id');\">$deselect".
                      "</a>";
          $output  .= "</div></div>";
 
@@ -2005,13 +2028,17 @@ class Dropdown {
     * - target target for actions
     * - withtemplate template or basic computer
     * - value value of global state
+    * - class : class to pass to html select
     * - management_restrict global management restrict mode
+    * - width specific width needed (default not set)
    **/
    static function showGlobalSwitch($ID, $attrs = []) {
       $params['management_restrict'] = 0;
       $params['value']               = 0;
       $params['name']                = 'is_global';
       $params['target']              = '';
+      $params['class']               = "form-select form-select-sm";
+      $params['width']               = "";
 
       foreach ($attrs as $key => $value) {
          if ($value != '') {
@@ -2041,7 +2068,11 @@ class Dropdown {
             $rand = mt_rand();
             $values = [MANAGEMENT_UNITARY => __('Unit management'),
                             MANAGEMENT_GLOBAL  => __('Global management')];
-            Dropdown::showFromArray($params['name'], $values, ['value' => $params['value']]);
+            Dropdown::showFromArray($params['name'], $values, [
+               'value' => $params['value'],
+               'class' => $params['class'],
+               'width' => $params['width'],
+            ]);
          } else {
             // Templates edition
             if (!empty($params['withtemplate'])) {

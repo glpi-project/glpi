@@ -1,0 +1,31 @@
+{% set flags = {
+   'have_serial'      : __("Serial"),
+   'have_parallel'    : __("Parallel"),
+   'have_usb'         : __("USB"),
+   'have_ethernet'    : __("Ethernet"),
+   'have_wifi'        : __("Wifi"),
+   'have_micro'       : __("Microphone"),
+   'have_speaker'     : __("Speakers"),
+   'have_subd'        : __("Sub-D"),
+   'have_bnc'         : __("BNC"),
+   'have_dvi'         : __("DVI"),
+   'have_pivot'       : __("Pivot"),
+   'have_hdmi'        : __("HDMI"),
+   'have_displayport' : __("DisplayPort"),
+   'have_headset'     : __("Headset"),
+   'have_hp'          : __("Speaker"),
+} %}
+{% for field, label in flags %}
+   {% if item.isField(field) %}
+      <div class="m-2">
+         <label class="form-check">
+            {% set checked = (item.fields[field] == 1 ? "checked" : "") %}
+            <input type="hidden" name="{{ field }}" value="0">
+            <input class="form-check-input" type="checkbox" name="{{ field }}" {{ checked }} value="1">
+            <span class="form-check-label">
+               {{ label }}
+            </span>
+         </label>
+      </div>
+   {% endif %}
+{% endfor %}
