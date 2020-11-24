@@ -451,10 +451,15 @@ class MassiveAction extends DbTestCase {
       bool $has_right,
       bool $should_work
    ) {
+
+      $this->login(); // must be logged as ITILSolution uses Session::getLoginUserID()
+
       // Set up session rights
       $old_session = $_SESSION['glpiactiveprofile'][Ticket::$rightname] ?? 0;
       if ($has_right) {
          $_SESSION['glpiactiveprofile'][Ticket::$rightname] = UPDATE;
+      } else {
+         $_SESSION['glpiactiveprofile'][Ticket::$rightname] = 0;
       }
 
       // Default expectation: can't run
