@@ -37,15 +37,11 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Class to manage certificate types
  */
-class CertificateType extends CommonDropdown {
+class CertificateType extends CommonType {
 
    var $can_be_translated = true;
 
    static function getTypeName($nb = 0) {
       return _n('Certificate type', 'Certificate types', $nb);
-   }
-
-   static function getFieldLabel() {
-      return _n('Type', 'Types', 1);
    }
 }

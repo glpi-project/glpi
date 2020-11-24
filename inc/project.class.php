@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Toolbox\RichText;
 
 /**
@@ -242,8 +243,12 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       $links = [];
       if (static::canView()
           || Session::haveRight('projecttask', ProjectTask::READMY)) {
-         $pic_validate = "<img title=\"".__s('My tasks')."\" alt=\"".__('My tasks')."\" src='".
-                           $CFG_GLPI["root_doc"]."/pics/menu_showall.png' class='pointer'>";
+         $pic_validate = '
+            <span class="fa-stack" style="vertical-align: middle; font-size: 0.8em" title="'.__('My tasks').'">
+               <i class="fas fa-check fa-stack-1x" style="top: 1px; left: -7px; font-size: 1.2em"></i>
+               <i class="far fa-clock fa-stack-1x" style="top: 6px; left: -3px"></i>
+            </span>
+         ';
 
          $links[$pic_validate] = ProjectTask::getSearchURL(false);
 
@@ -1495,7 +1500,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          $auto_percent_done_params['checked'] = 'checked';
       }
       Html::showCheckbox($auto_percent_done_params);
-      echo "<span class='very_small_space'>";
+      echo "<span class='ms-3'>";
       Html::showToolTip(__('When automatic computation is active, percentage is computed based on the average of all child project and task percent done.'));
       echo "</span></td>";
       echo "</tr>";
@@ -1834,80 +1839,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
      * @param $ID ID of the project
    */
    static function showGantt($ID) {
-      echo "<input type=\"hidden\" id=\"hf_gantt_item_state\" value=\"\" />";
-      echo "<div id=\"gantt-container\" class=\"gantt-block\" style=\"width:100%; height:63vh;\"></div>";
-      echo "<div class=\"gantt-block__features\">
-               <ul class=\"gantt-block__controls\">
-                  <li class=\"gantt-menu-item gantt-menu-item-right\">
-                     <a href=\"#\" onclick=\"gantt.ext.fullscreen.toggle();\"><i class=\"fas fa-expand\"></i>".__("Fullscreen")."</a>
-                  </li>
-                  <li class=\"gantt-menu-item gantt-menu-item-right\">
-                     <fieldset style=\"line-height:normal\">
-                        <legend style=\"margin:0 auto;\">".__("Time scale")."</legend>
-                        <input type=\"radio\" id=\"scale1\" class=\"gantt_radio hidden\" name=\"scale\" value=\"day\" />
-                        <label for=\"scale1\">".__("Days")."</label>
-                        <input type=\"radio\" id=\"scale2\" class=\"gantt_radio hidden\" name=\"scale\" value=\"week\" />
-                        <label for=\"scale2\">".__("Weeks")."</label>
-                        <input type=\"radio\" id=\"scale3\" class=\"gantt_radio hidden\" name=\"scale\" value=\"month\" checked />
-                        <label for=\"scale3\">".__("Months")."</label>
-                        <input type=\"radio\" id=\"scale4\" class=\"gantt_radio hidden\" name=\"scale\" value=\"quarter\" />
-                        <label for=\"scale4\">".__("Quarters")."</label>
-                        <input type=\"radio\" id=\"scale5\" class=\"gantt_radio hidden\" name=\"scale\" value=\"year\" />
-                        <label for=\"scale5\">".__("Years")."</label>
-                     </fieldset>
-                  </li>
-                  <li class=\"gantt-menu-item gantt-menu-item-right\">
-                     <fieldset style=\"line-height:normal; text-align:center;\">
-                        <legend style=\"margin:0 auto;\">
-                           <input type=\"radio\" id=\"collapse\" class=\"gantt_radio hidden\" name=\"branch_state\" value=\"0\" checked />
-                           <label for=\"collapse\">".__("Collapse")."</label>
-                           |
-                           <input type=\"radio\" id=\"expand\" class=\"gantt_radio hidden\" name=\"branch_state\" value=\"1\" />
-                           <label for=\"expand\">".__("Expand")."</label>
-                        </legend>
-                        <input type=\"radio\" id=\"level1\" class=\"gantt_radio hidden\" name=\"branch_level\" value=\"1\" checked />
-                        <label for=\"level1\">".__("Level1")."</label>
-                        <input type=\"radio\" id=\"level2\" class=\"gantt_radio hidden\" name=\"branch_level\" value=\"2\" />
-                        <label for=\"level2\">".__("Level2")."</label>
-                        <input type=\"radio\" id=\"level3\" class=\"gantt_radio hidden\" name=\"branch_level\" value=\"3\" />
-                        <label for=\"level3\">".__("Level3")."</label>
-                     </fieldset>
-                  </li>
-                  <li class=\"gantt-menu-item gantt-menu-item-right\">
-                     <fieldset style=\"line-height:normal; text-align:center;\">
-                        <legend style=\"margin:0 auto;\">
-                           <input type=\"radio\" id=\"rb-find\" class=\"gantt_radio hidden rb-optype\" name=\"rb-optype\" checked />
-                           <label for=\"rb-find\">".__("Find")."</label>
-                           |
-                           <input type=\"radio\" id=\"rb-filter\" class=\"gantt_radio hidden rb-optype\" name=\"rb-optype\" />
-                           <label for=\"rb-filter\">".__("Filter")."</label>
-                        </legend>
-                        <input id=\"search\" data-text-filter type=\"field\" placeholder=\"".__("by name")."\" oninput=\"gantt.\$doFilter(this.value);\" />
-                     </fieldset>
-                  </li>
-               </ul>
-            </div>";
-
-      echo "<script type='text/javascript'>
-               $(function() {
-
-                  $(document).ajaxSend(function(event, request, settings) {
-                     if (settings.url.indexOf('gantt.php') != -1) {
-                        $('#gantt-loader, #gantt-loader-overlay').fadeIn('fast');
-                     }
-                  });
-
-                  $(document).ajaxStop(function (event, request, settings) {
-                     $('#gantt-loader, #gantt-loader-overlay').fadeOut('fast');
-                  });
-
-                  GlpiGantt.init(".$ID.");
-
-                  $('.gantt-block').append('<div id=\"gantt-loader\" class=\"spin-center\"></div>');
-                  $('#page').append('<div id=\"gantt-loader-overlay\" style=\"display: none;\"></div>');
-
-               });
-            </script>";
+      TemplateRenderer::getInstance()->display('pages/tools/project/gantt.html.twig', [
+         'id' => $ID,
+      ]);
    }
 
    static function getAllForKanban($active = true, $current_id = -1) {
@@ -1982,8 +1916,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          $allstates = $projectstate->find($restrict, ['is_finished ASC', 'id']);
          foreach ($allstates as $state) {
             $columns['projectstates_id'][$state['id']] = [
-               'name'         => $state['name'],
-               'header_color' => $state['color']
+               'name'            => $state['name'],
+               'header_color'    => $state['color'],
+               'header_fg_color' => Toolbox::getFgColor($state['color'], 50),
             ];
          }
          return $columns['projectstates_id'];
@@ -1993,7 +1928,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
    }
 
    static function getDataToDisplayOnKanban($ID, $criteria = []) {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
       $items      = [];
 
@@ -2016,7 +1951,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                ]
             ]
          ] + $project_visibility['LEFT JOIN'],
-         'WHERE'     => $project_visibility['WHERE']
+         'WHERE'     => $project_visibility['WHERE'],
       ];
       if ($ID > 0) {
          $request['WHERE']['glpi_projects.projects_id'] = $ID;
@@ -2223,7 +2158,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          $card = [
             'id'              => "{$itemtype}-{$item['id']}",
             'title'           => '<span class="pointer">'.$item['name'].'</span>',
-            'title_tooltip'   => Html::resume_text(RichText::getTextFromHtml($item['content'], false, true, true), 100),
+            'title_tooltip'   => Html::resume_text(RichText::getTextFromHtml($item['content'] ?? "", false, true, true), 100),
             'is_deleted'      => $item['is_deleted'] ?? false,
          ];
 
@@ -2402,43 +2337,28 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
             ]
          ]
       ];
-      $supported_itemtypes = json_encode($supported_itemtypes, JSON_FORCE_OBJECT);
-      $column_field = json_encode($column_field, JSON_FORCE_OBJECT);
 
-      echo "<div id='kanban' class='kanban'></div>";
-      $darkmode = ($_SESSION['glpipalette'] === 'darker') ? 'true' : 'false';
-      $canadd_item = json_encode($ID > 0 ? $project->canEdit($ID) && $project->can($ID, UPDATE) : self::canCreate() || ProjectTask::canCreate());
-      $canmodify_view = json_encode(($ID == 0 || $project->canModifyGlobalState()));
-      $rights = json_encode([
+      $canmodify_view = ($ID == 0 || $project->canModifyGlobalState());
+      $rights = [
          'create_item'                    => self::canCreate() || ProjectTask::canCreate(),
          'delete_item'                    => self::canDelete() || ProjectTask::canDelete(),
          'create_column'                  => (bool)ProjectState::canCreate(),
          'modify_view'                    => $ID == 0 || $project->canModifyGlobalState(),
          'order_card'                     => (bool)$project->canOrderKanbanCard($ID),
          'create_card_limited_columns'    => $canmodify_view ? [] : [0]
-      ]);
+      ];
 
-      $js = <<<JAVASCRIPT
-         $(function(){
-            // Create Kanban
-            var kanban = new GLPIKanban({
-               element: "#kanban",
-               rights: $rights,
-               supported_itemtypes: $supported_itemtypes,
-               dark_theme: {$darkmode},
-               max_team_images: 3,
-               column_field: $column_field,
-               background_refresh_interval: {$_SESSION['glpirefresh_views']},
-               item: {
-                  itemtype: 'Project',
-                  items_id: $ID
-               }
-            });
-            // Create kanban elements and add data
-            kanban.init();
-         });
-JAVASCRIPT;
-      echo Html::scriptBlock($js);
+      TemplateRenderer::getInstance()->display('components/kanban/kanban.html.twig', [
+         'kanban_id'                   => 'kanban',
+         'rights'                      => $rights,
+         'supported_itemtypes'         => $supported_itemtypes,
+         'max_team_images'             => 3,
+         'column_field'                => $column_field,
+         'item'                        => [
+            'itemtype'  => 'Project',
+            'items_id'  => $ID
+         ]
+      ]);
    }
 
    public function canOrderKanbanCard($ID) {

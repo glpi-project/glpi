@@ -123,7 +123,7 @@ class Knowbase extends CommonGLPI {
       $ki->searchForm($_GET);
 
       if (!isset($_GET['contains']) || empty($_GET['contains'])) {
-         echo "<div><table class='center-h' width='950px'><tr class='noHover'><td class='center top'>";
+         echo "<div><table class='mx-auto' width='950px'><tr class='noHover'><td class='center top'>";
          KnowbaseItem::showRecentPopular("recent");
          echo "</td><td class='center top'>";
          KnowbaseItem::showRecentPopular("lastupdate");

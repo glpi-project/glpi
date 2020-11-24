@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
  * Class BudgetType
  * @since 9.1
 **/
-class BudgetType extends CommonDropdown {
+class BudgetType extends CommonType {
 
 
    static function getTypeName($nb = 0) {

@@ -848,7 +848,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<td><input type='text' name='language_field' value='".
                  $this->fields["language_field"]."'></td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . __('Picture') . "</td>";
+      echo "<tr class='tab_bg_2'><td>" . _n('Picture', 'Pictures', 1) . "</td>";
       echo "<td><input type='text' name='picture_field' value='".
                  $this->fields["picture_field"]."'></td>";
       echo "<td>" . Location::getTypeName(1) . "</td>";
@@ -3254,7 +3254,7 @@ class AuthLDAP extends CommonDBTM {
           && (!isset($_SESSION['ldap_import']['no_expert_mode'])
               || $_SESSION['ldap_import']['no_expert_mode'] != 1)) {
 
-         echo "</span>&nbsp;<span class='floatright'><a href='".$_SERVER['PHP_SELF']."?action=".
+         echo "</span>&nbsp;<span class='float-end'><a href='".$_SERVER['PHP_SELF']."?action=".
               $_SESSION['ldap_import']['action']."&amp;mode=".$_SESSION['ldap_import']['mode'];
 
          if ($_SESSION['ldap_import']['interface'] == self::SIMPLE_INTERFACE) {
@@ -3365,7 +3365,7 @@ class AuthLDAP extends CommonDBTM {
                                  'mobile_field'    => __('Mobile phone'),
                                  'title_field'     => _x('person', 'Title'),
                                  'category_field'  => _n('Category', 'Categories', 1),
-                                 'picture_field'   => __('Picture')];
+                                 'picture_field'   => _n('Picture', 'Pictures', 1)];
                $available_fields = [];
                foreach ($fields as $field => $label) {
                   if (isset($authldap->fields[$field]) && ($authldap->fields[$field] != '')) {

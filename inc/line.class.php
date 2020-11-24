@@ -34,6 +34,8 @@
  * @since 9.2
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -86,90 +88,11 @@ class Line extends CommonDBTM {
     * @return void
     **/
    function showForm($ID, $options = []) {
-
-      $rowspan = 3;
-      if ($ID > 0) {
-         $rowspan++;
-      }
-
       $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Name')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "name");
-      echo "</td>";
-
-      echo "<td>".__('Status')."</td>";
-      echo "<td>";
-      State::dropdown(['value'     => $this->fields["states_id"],
-            'entity'    => $this->fields["entities_id"],
-            'condition' => ['is_visible_line' => 1]]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".Location::getTypeName(1)."</td>";
-      echo "<td>";
-      Location::dropdown(['value'  => $this->fields["locations_id"],
-            'entity' => $this->fields["entities_id"]]);
-      echo "</td>";
-
-      echo "<td>".LineType::getTypeName(1)."</td>";
-      echo "<td>";
-      LineType::dropdown(['value'  => $this->fields["linetypes_id"],
-            'entity' => $this->fields["entities_id"]]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Caller number')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "caller_num");
-      echo "</td>";
-
-      echo "<td>".__('Caller name')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "caller_name");
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_users_id$randDropdown'>".User::getTypeName(1)."</label></td>";
-      echo "<td>";
-      User::dropdown(['value'  => $this->fields["users_id"],
-            'entity' => $this->fields["entities_id"],
-            'right'  => 'all',
-            'rand'   => $randDropdown]);
-      echo "</td>";
-
-      $rowspan = 3;
-
-      echo "<td rowspan='$rowspan'>" . __('Comments')."</td>";
-      echo "<td rowspan='$rowspan'>
-      <textarea cols='45' rows='10' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_users_id$randDropdown'>".Group::getTypeName(1)."</label></td>";
-      echo "<td>";
-      Group::dropdown(['value'  => $this->fields["groups_id"],
-            'entity' => $this->fields["entities_id"],
-            'right'  => 'all',
-            'rand'   => $randDropdown]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_users_id$randDropdown'>".LineOperator::getTypeName(1)."</label></td>";
-      echo "<td>";
-      LineOperator::dropdown(['value'  => $this->fields["lineoperators_id"],
-            'entity' => $this->fields["entities_id"],
-            'right'  => 'all',
-            'rand'   => $randDropdown]);
-      echo "</td></tr>";
-
-      $this->showFormButtons($options);
+      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
+         'item'   => $this,
+         'params' => $options,
+      ]);
       return true;
    }
 

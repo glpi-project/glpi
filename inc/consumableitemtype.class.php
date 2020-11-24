@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class ConsumableItemType
-class ConsumableItemType extends CommonDropdown {
+class ConsumableItemType extends CommonType {
 
 
    static function getTypeName($nb = 0) {

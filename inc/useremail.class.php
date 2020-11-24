@@ -56,9 +56,9 @@ class UserEmail  extends CommonDBChild {
    /**
     * Get default email for user. If no default email get first one
     *
-    * @param $users_id user ID
+    * @param int $users_id user ID
     *
-    * @return default email, empty if no email set
+    * @return string default email, empty if no email set
    **/
    static function getDefaultForUser($users_id) {
       global $DB;
@@ -148,7 +148,7 @@ class UserEmail  extends CommonDBChild {
 
       return "<input title=\'".__s('Default email')."\' type=\'radio\' name=\'_default_email\'" .
              " value=\'-'+$child_count_js_var+'\'>&nbsp;" .
-             "<input type=\'text\' size=\'30\' ". "name=\'" . $field_name .
+             "<input type=\'text\' size=\'30\' class='form-control' ". "name=\'" . $field_name .
              "[-'+$child_count_js_var+']\'>";
    }
 
@@ -169,6 +169,7 @@ class UserEmail  extends CommonDBChild {
       }
 
       $field_name = $field_name."[$id]";
+      echo "<div class='d-flex align-items-center'>";
       echo "<input title='".__s('Default email')."' type='radio' name='_default_email'
              value='".$this->getID()."'";
       if (!$canedit) {
@@ -182,8 +183,9 @@ class UserEmail  extends CommonDBChild {
          echo "<input type='hidden' name='$field_name' value='$value'>";
          printf(__('%1$s %2$s'), $value, "<span class='b'>(". __('D').")</span>");
       } else {
-         echo "<input type='text' size=30 name='$field_name' value='$value' >";
+         echo "<input type='text' size=30 class='form-control' name='$field_name' value='$value' >";
       }
+      echo "</div>";
    }
 
 
