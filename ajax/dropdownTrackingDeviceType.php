@@ -65,9 +65,10 @@ if ($isValidItemtype) {
 
    // Message for post-only
    if (!isset($_POST["admin"]) || ($_POST["admin"] == 0)) {
-      echo "<br>".__('Enter the first letters (user, item name, serial or asset number)');
+      echo "<span class='text-muted'>".
+         __('Enter the first letters (user, item name, serial or asset number)')
+         ."</span>";
    }
-   echo "<br>";
    $field_id = Html::cleanId("dropdown_".$_POST['myname'].$rand);
    $p = [
       'itemtype'            => $itemtype,
@@ -76,6 +77,8 @@ if ($isValidItemtype) {
       'multiple'            => $_POST["multiple"],
       'myname'              => $_POST["myname"],
       'rand'                => $_POST["rand"],
+      'class'               => 'form-select',
+      'width'               => 'calc(100% - 25px)',
       '_idor_token'         => Session::getNewIDORToken($itemtype, [
          'entity_restrict' => $_POST['entity_restrict'],
       ]),
@@ -92,14 +95,22 @@ if ($isValidItemtype) {
       $p["context"] = $context;
    }
 
-   echo Html::jsAjaxDropdown($_POST['myname'], $field_id,
-                             $CFG_GLPI['root_doc']."/ajax/getDropdownFindNum.php",
-                             $p);
+   echo Html::jsAjaxDropdown(
+      $_POST['myname'],
+      $field_id,
+      $CFG_GLPI['root_doc']."/ajax/getDropdownFindNum.php",
+      $p
+   );
 
    // Auto update summary of active or just solved tickets
-   $params = ['items_id' => '__VALUE__',
-                   'itemtype' => $_POST['itemtype']];
-   Ajax::updateItemOnSelectEvent($field_id, "item_ticket_selection_information$rand",
-                                 $CFG_GLPI["root_doc"]."/ajax/ticketiteminformation.php",
-                                 $params);
+   echo "<span id='item_ticket_selection_information$rand' class='ms-1'></span>";
+   Ajax::updateItemOnSelectEvent(
+      $field_id,
+      "item_ticket_selection_information$rand",
+      $CFG_GLPI["root_doc"]."/ajax/ticketiteminformation.php",
+      [
+         'items_id' => '__VALUE__',
+         'itemtype' => $_POST['itemtype']
+      ]
+   );
 }

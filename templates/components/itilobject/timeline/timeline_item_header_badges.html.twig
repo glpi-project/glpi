@@ -1,0 +1,39 @@
+<span class="badge text-wrap d-none d-md-block">
+   {% set date_span %}
+      <span title="{{ convDateTime(date_creation) }}"
+            data-bs-toggle="tooltip" data-bs-placement="bottom">
+         <i class="far fa-clock me-1"></i>{{ time2str(date_creation) }}
+      </span>
+   {% endset %}
+
+   {% if creator|length > 0 %}
+      {% set creator_span %}
+         <span >
+            <i class="far fa-user me-1"></i>{{ creator|raw }}
+         </span>
+      {% endset %}
+
+      {{ __('Created: %1$s by %2$s')|format(date_span, creator_span)|raw }}
+   {% else %}
+      {{ __('Created: %1$s')|format(date_span)|raw }}
+   {% endif %}
+</span>
+
+{% if editor|length > 0 and date_creation != date_mod %}
+   <span class="badge text-wrap ms-1 d-none d-md-block">
+      {% set date_span %}
+         <span title="{{ convDateTime(date_mod) }}"
+               data-bs-toggle="tooltip" data-bs-placement="bottom">
+            <i class="far fa-clock me-1"></i>{{ time2str(date_mod) }}
+         </span>
+      {% endset %}
+
+      {% set editor_span %}
+         <span>
+            <i class="far fa-user me-1"></i>{{ editor|raw }}
+         </span>
+      {% endset %}
+
+      {{ __('Last update: %1$s by %2$s')|format(date_span, editor_span)|raw }}
+   </span>
+{% endif %}

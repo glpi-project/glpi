@@ -126,25 +126,20 @@ class FieldUnicity extends CommonDropdown {
    }
 
 
-   /**
-    * Display specific fields for FieldUnicity
-    *
-    * @param $ID
-    * @param $field array
-   **/
-   function displaySpecificTypeField($ID, $field = []) {
-
+   public function getSpecificTypeField(int $ID, array $field): string {
       switch ($field['type']) {
          case 'unicity_itemtype' :
+            ob_start();
             $this->showItemtype($ID, $this->fields['itemtype']);
-            break;
+            return ob_get_clean();
 
          case 'unicity_fields' :
+            ob_start();
             self::selectCriterias($this);
-            break;
+            return ob_get_clean();
       }
+      return '';
    }
-
 
    /**
     * Display a dropdown which contains all the available itemtypes

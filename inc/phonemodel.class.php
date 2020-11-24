@@ -49,4 +49,8 @@ class PhoneModel extends CommonDropdown {
       return _n('Model', 'Models', 1);
    }
 
+   static function getIcon() {
+      return Phone::getIcon();
+   }
+
 }

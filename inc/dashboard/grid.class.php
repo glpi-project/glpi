@@ -277,14 +277,14 @@ HTML;
       $add_dash_label   = __("Add a new dashboard");
       $save_label       = _x('button', "Save");
 
-      $gridstack_items = $this->getGridItemsHtml();
+      $gridstack_items = $this->getGridItemsHtml(!$mini);
 
       $dropdown_dashboards = "";
       if ($nb_dashboards) {
          $dropdown_dashboards = self::dropdownDashboard("", [
             'value'        => $this->current,
             'display'      => false,
-            'class'        => 'dashboard_select',
+            'class'        => 'dashboard_select form-select',
             'can_view_all' => $can_view_all,
             'noselect2'    => true,
          ]);
@@ -300,28 +300,28 @@ HTML;
 
       if (!self::$embed) {
          if (!$mini && $can_create) {
-            $l_tb_icons.= "<i class='fas fa-plus fs-toggle add-dashboard' title='$add_dash_label'></i>";
+            $l_tb_icons.= "<i class='btn btn-outline-secondary fas fa-plus fs-toggle add-dashboard' title='$add_dash_label'></i>";
          }
          if (!$mini && $can_clone) {
-            $r_tb_icons.= "<i class='fas fa-clone fs-toggle clone-dashboard' title='$clone_label'></i>";
+            $r_tb_icons.= "<i class='btn btn-outline-secondary fas fa-clone fs-toggle clone-dashboard' title='$clone_label'></i>";
          }
          if (!$mini && $can_edit) {
-            $r_tb_icons.= "<i class='fas fa-share-alt fs-toggle open-embed' title='$embed_label'></i>";
+            $r_tb_icons.= "<i class='btn btn-outline-secondary fas fa-share-alt fs-toggle open-embed' title='$embed_label'></i>";
             $rename = "<div class='edit-dashboard-properties'>
-               <input type='text' class='dashboard-name' value='{$dashboard_title}' size='1'>
-               <i class='fas fa-save save-dashboard-name' title='{$save_label}'></i>
+               <input type='text' class='dashboard-name form-control' value='{$dashboard_title}' size='1'>
+               <i class='btn btn-outline-secondary fas fa-save save-dashboard-name' title='{$save_label}'></i>
                <span class='display-message'></span>
             </div>";
          }
          if (!$mini && $can_purge) {
-            $r_tb_icons.= "<i class='fas fa-trash fs-toggle delete-dashboard' title='$delete_label'></i>";
+            $r_tb_icons.= "<i class='btn btn-outline-secondary fas fa-trash fs-toggle delete-dashboard' title='$delete_label'></i>";
          }
          if ($can_edit) {
-            $r_tb_icons.= "<i class='fas fa-edit fs-toggle edit-dashboard' title='$edit_label'></i>";
+            $r_tb_icons.= "<i class='btn btn-outline-secondary fas fa-edit fs-toggle edit-dashboard' title='$edit_label'></i>";
          }
 
          if (!$mini) {
-            $r_tb_icons.= "<i class='fas fa-expand toggle-fullscreen' title='$fs_label'></i>";
+            $r_tb_icons.= "<i class='btn btn-outline-secondary fas fa-expand toggle-fullscreen' title='$fs_label'></i>";
          }
 
          if (!$mini) {
@@ -346,8 +346,8 @@ HTML;
       $toolbars = <<<HTML
          $left_toolbar
          <span class="toolbar">
-            <i class="fas fa-history auto-refresh" title="$history_label"></i>
-            <i class="fas fa-moon night-mode" title="$night_label"></i>
+            <i class="btn btn-outline-secondary fas fa-history auto-refresh" title="$history_label"></i>
+            <i class="btn btn-outline-secondary fas fa-moon night-mode" title="$night_label"></i>
             $r_tb_icons
          </span>
 HTML;
@@ -358,7 +358,7 @@ HTML;
          <div class='filters_toolbar'>
             <span class='filters'></span>
             <span class='filters-control'>
-               <i class="fas fa-plus-square plus-sign add-filter">
+               <i class="btn btn-sm btn-icon btn-ghost-secondary fas fa-plus-square plus-sign add-filter">
                   <span class='add-filter-lbl'>{$add_filter_lbl}</span>
                </i>
             </span>
@@ -385,6 +385,14 @@ HTML;
          </div>
       </div>
 HTML;
+
+      if ($mini) {
+         $html = "<div class='card mb-4 d-none d-md-block dashboard-card'>
+            <div class='card-body'>
+               $html
+            </div>
+         </div>";
+      }
 
       $ajax_cards = GLPI_AJAX_DASHBOARD;
       $context    = self::$context;
@@ -414,7 +422,7 @@ JAVASCRIPT;
 
 
    public function showDefault() {
-      echo "<div class='default_dashboard'>";
+      echo "<div class='default_dashboard card'>";
       $this->show();
       echo "</div>";
    }

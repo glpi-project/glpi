@@ -1,0 +1,994 @@
+
+{% import "components/form/fields_macros.html.twig" as fields %}
+
+{% set bg = "" %}
+{% if item.isDeleted() %}
+   {% set bg = "asset-deleted" %}
+{% endif %}
+
+<div class="asset {{ bg }}">
+   {% include("components/form/header.html.twig") %}
+
+   {% set rand = random() %}
+   {% set params  = params ?? [] %}
+   {% set target       = params['target'] ?? item.getFormURL() %}
+   {% set withtemplate = params['withtemplate'] ?? "" %}
+   {% set item_type = item.getType() %}
+
+   {# TODO form-select normal size for select2 #}
+
+   <div class="card-body d-flex">
+      <div class="col-9 flex-column">
+         <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
+            <div class="row flex-row align-items-start flex-grow-1">
+               <div class="row flex-row">
+                  {% if item.isField('name') %}
+                     {{ fields.autoNameField(
+                        "name",
+                        item,
+                        (item_type == 'Contact' ? __('Surname') : __('Name')),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('firstname') %}
+                     {{ fields.autoNameField(
+                        "firstname",
+                        item,
+                        __('First name'),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('is_active') %}
+                     {% if withtemplate is not empty or withtemplate == 1 %}
+                        {{ fields.hiddenField('is_active', item.fields['is_active'], __('Is active'), {
+                           'add_field_html': __('No')
+                        }) }}
+                     {% else %}
+                     {% endif %}
+                  {% endif %}
+
+                  {% if item.isField('states_id') %}
+                     {{ fields.dropdownField(
+                        "State",
+                        "states_id",
+                        item.fields['states_id'],
+                        __("Status"),
+                        {
+                           'entity': item.fields['entities_id'],
+                           'condition': {'is_visible_computer': 1},
+                        }
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField(item|get_foreignkey_field) %}
+                     {% set fk = item|get_foreignkey_field %}
+                     {{ fields.dropdownField(
+                        item_type,
+                        fk,
+                        item.fields[fk],
+                        __('As child of'),
+                        {
+                           'entity': item.fields['entities_id'],
+                        }
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('num') %}
+                     {{ fields.autoNameField(
+                        "num",
+                        item,
+                        _x('phone', 'Number'),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('power_supplies') %}
+                     {{ fields.numberField('power_supplies', max(item.fields['power_supplies'], 1), 'DevicePowerSupply'|itemtype_name(getPluralNumber()), {
+                        'rand': rand,
+                        'min': 1,
+                        'max': 6,
+                        'step': 1
+                     }) }}
+                  {% endif %}
+
+                  {% if item_type != 'SoftwareLicense' and item.isField('is_helpdesk_visible') %}
+                     {# TODO Drop unused 'is_helpdesk_visible' field in SoftwareLicense schema? #}
+                     {{ fields.checkboxField(
+                        "is_helpdesk_visible",
+                        item.fields['is_helpdesk_visible'],
+                        __('Associable to a ticket'),
+                     ) }}
+                  {% endif %}
+
+                  {% set dc_breadcrumbs = getDcBreadcrumb(item) %}
+                  {% if dc_breadcrumbs|length > 0 %}
+                      {% set dc_breadcrumbs %}
+                        <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
+                        {% for dc_item in dc_breadcrumbs|reverse %}
+                           <li class="breadcrumb-item">{{ dc_item|raw }}</li>
+                        {% endfor %}
+                        </ol>
+                     {% endset %}
+
+                     {{ fields.htmlField(
+                        "",
+                        dc_breadcrumbs,
+                        __('Data center position'),
+                     ) }}
+
+                     {{ fields.nullField() }} {# set an empty space in front of dc breadcrumb #}
+                  {% endif %}
+
+                  {% if item.isField('locations_id') %}
+                     {{ fields.dropdownField(
+                        "Location",
+                        "locations_id",
+                        item.fields['locations_id'],
+                        "Location"|itemtype_name,
+                        {
+                           'entity': item.fields['entities_id'],
+                        }
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('softwarecategories_id') %}
+                     {{ fields.dropdownField(
+                        "SoftwareCategory",
+                        "softwarecategories_id",
+                        item.fields['softwarecategories_id'],
+                        "SoftwareCategory"|itemtype_name,
+                     ) }}
+                  {% endif %}
+
+                  {% if item_type == 'Unmanaged' and item.isField('item_type') %}
+                     {{ fields.dropdownArrayField('item_type', item.fields['itemtype'], _n('Type', 'Types', 1), [
+                        'Computer', 'NetworkEquipment', 'Printer', 'Peripheral', 'Phone'
+                     ]) }}
+                  {% endif %}
+
+                  {% if item.isField('date_domaincreation') %}
+                     {{ fields.datetimeField('date_domaincreation', item.fields['date_domaincreation'], __('Creation date')) }}
+                  {% endif %}
+
+                  {% set type_itemtype = item_type ~ "Type" %}
+                  {% set type_fk = type_itemtype|get_foreignkey_field %}
+                  {% if item.isField(type_fk) %}
+                     {{ fields.dropdownField(
+                        type_itemtype,
+                        type_fk,
+                        item.fields[type_fk],
+                        _n('Type', 'Types', 1),
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('usertitles_id') %}
+                     {{ fields.dropdownField(
+                        "UserTitle",
+                        "usertitles_id",
+                        item.fields['usertitles_id'],
+                        "UserTitle"|itemtype_name,
+                        {
+                           'entity': item.fields['entities_id'],
+                        }
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('phone') %}
+                     {{ fields.autoNameField(
+                        "phone",
+                        item,
+                        'Phone'|itemtype_name,
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('phone2') %}
+                     {{ fields.autoNameField(
+                        "phone2",
+                        item,
+                        __('Phone 2'),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('phonenumber') %}
+                     {{ fields.autoNameField(
+                        "phonenumber",
+                        item,
+                        'Phone'|itemtype_name,
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('mobile') %}
+                     {{ fields.autoNameField(
+                        "mobile",
+                        item,
+                        __('Mobile phone'),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('fax') %}
+                     {{ fields.autoNameField(
+                        "fax",
+                        item,
+                        __('Fax'),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('website') %}
+                     {{ fields.autoNameField(
+                        "website",
+                        item,
+                        __('Website'),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('email') %}
+                     {{ fields.autoNameField(
+                        "email",
+                        item,
+                        _n('Email', 'Emails', 1),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('address') %}
+                     {{ fields.textareaField('address', item.fields['address'], __('Address')) }}
+                  {% endif %}
+
+                  {% if item.isField('postalcode') %}
+                     {{ fields.autoNameField(
+                        "postalcode",
+                        item,
+                        __('Postal code'),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('town') %}
+                     {{ fields.autoNameField(
+                        "town",
+                        item,
+                        __('City'),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('country') %}
+                     {{ fields.autoNameField(
+                        "country",
+                        item,
+                        __('Country'),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('date_expiration') %}
+                     {{ fields.datetimeField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
+                        'helper': __('Empty for infinite')
+                     }) }}
+                  {% endif %}
+
+                  {% if item.isField('ref') %}
+                     {{ fields.textField(
+                        "ref",
+                        item.fields['ref'],
+                        __('Reference'),
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('users_id_tech') %}
+                     {{ fields.dropdownField(
+                        "User",
+                        "users_id_tech",
+                        item.fields['users_id_tech'],
+                        __('Technician in charge of the hardware'),
+                        {
+                           'entity': item.fields['entities_id'],
+                           'right': 'own_ticket',
+                        }
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('manufacturers_id') %}
+                     {{ fields.dropdownField(
+                        "Manufacturer",
+                        "manufacturers_id",
+                        item.fields['manufacturers_id'],
+                        (item_type starts with 'Software' ? __('Publisher') : "Manufacturer"|itemtype_name)
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('groups_id_tech') %}
+                     {{ fields.dropdownField(
+                        "Group",
+                        "groups_id_tech",
+                        item.fields['groups_id_tech'],
+                        __('Group in charge of the hardware'),
+                        {
+                           'entity': item.fields['entities_id'],
+                           'condition': {'is_assign': 1},
+                        }
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('applianceenvironments_id') %}
+                     {{ fields.dropdownField(
+                        'ApplianceEnvironment',
+                        'applianceenvironments_id',
+                        item.fields['applianceenvironments_id'],
+                        'ApplianceEnvironment'|itemtype_name
+                     ) }}
+                  {% endif %}
+
+                  {# TODO check dropdown value not selected #}
+                  {% set model_itemtype = item_type ~ "Model" %}
+                  {% set model_fk = model_itemtype|get_foreignkey_field %}
+                  {% if item.isField(model_fk) %}
+                     {{ fields.dropdownField(
+                        model_itemtype,
+                        model_fk,
+                        item.fields[model_fk],
+                        _n('Model', 'Models', 1),
+                     ) }}
+                  {% endif %}
+
+                  {% if item_type != 'SoftwareLicense' and item.isField('contact_num') %}
+                     {# TODO Drop unused 'contact_num' field in Software License schema? #}
+                     {{ fields.textField(
+                        "contact_num",
+                        item.fields['contact_num'],
+                        __("Alternate username number"),
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('accepted') %}
+                     {{ fields.dropdownYesNo('accepted', item.fields['accepted'], __('Approved device')) }}
+                  {% endif %}
+
+                  {% if item.isField('serial') %}
+                     {{ fields.textField(
+                        "serial",
+                        item.fields['serial'],
+                        __("Serial number"),
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('hub') %}
+                     {{ fields.dropdownYesNo('hub', item.fields['hub'], __('Network hub')) }}
+                  {% endif %}
+
+                  {% if item_type != 'SoftwareLicense' and item.isField('contact') %}
+                     {# TODO Drop unused 'contact' field in Software License schema? #}
+                     {{ fields.textField(
+                        "contact",
+                        item.fields['contact'],
+                        __("Alternate username"),
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('otherserial') %}
+                     {{ fields.autoNameField(
+                        "otherserial",
+                        item,
+                        __('Inventory number'),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item_type == 'Unmanaged' %}
+                     {% if item.fields['ip'] is not empty or item.fields['mac'] is not empty %}
+                        {{ fields.autoNameField("ip", item, __('IP'), withtemplate) }}
+                     {% endif %}
+                  {% endif %}
+
+                  {% if item.isField('sysdescr') %}
+                     {{ fields.textareaField('sysdescr', item.fields['sysdescr'], __('Sysdescr')) }}
+                  {% endif %}
+
+                  {% if item.isField('dcrooms_id') %}
+                     {{ fields.dropdownField('DCRoom', 'dcrooms_id', item.fields['dcrooms_id'], 'DCRoom'|itemtype_name, {
+                        'rand': rand,
+                     }) }}
+                     {% set current_position = item.fields['position'] %}
+                     {{ updateItemOnSelectEvent('dropdown_dcrooms_id' ~ rand, 'room_positions', config('root_doc') ~ "/ajax/dcroom_size.php", {
+                        'id': '__VALUE__',
+                        'current': current_position,
+                        'rand': rand
+                     })|raw }}
+                     {{ updateItemOnSelectEvent('dropdown_dcrooms_id' ~ rand, 'dropdown_locations_id' ~ rand, config('root_doc') ~ "/ajax/dropdownLocation.php", {
+                        'items_id': '__VALUE__',
+                        'itemtype': 'DCRoom'
+                     })|raw }}
+
+                     {% set initial_field %}
+                        {% if item.fields['dcrooms_id'] > 0 %}
+                           {% set dcroom = 'DCRoom'|getFromDB(item.fields['dcrooms_id']) %}
+                           {% if dcroom is not null %}
+                              {% set used = dcroom.getFilled(current_position) %}
+                              {% set positions = dcroom.getAllPositions() %}
+                              {{ fields.dropdownArrayField('position', current_position, positions, null, {
+                                 'rand': rand,
+                                 'used': used,
+                                 'no_label': true
+                              }) }}
+                           {% else %}
+                              <div class="col-form-label">{{ __('No room found or selected') }}</div>
+                           {% endif %}
+                        {% else %}
+                           <div class="col-form-label">{{ __('No room found or selected') }}</div>
+                        {% endif %}
+                     {% endset %}
+                     {{ fields.ajaxField('room_positions', initial_field, __('Position in room'), {
+                        'rand': rand
+                     }) }}
+                  {% endif %}
+
+                  {% if item.isField('room_position') %}
+                     {{ fields.dropdownArrayField('room_orientation', item.fields['room_position'], __('Door orientation in room'), {
+                        (constant('Rack::ROOM_O_NORTH')): __('North'),
+                        (constant('Rack::ROOM_O_EAST')): __('East'),
+                        (constant('Rack::ROOM_O_SOUTH')): __('South'),
+                        (constant('Rack::ROOM_O_WEST')): __('West'),
+                     }, {
+                        'rand': rand
+                     }) }}
+                  {% endif %}
+
+                  {% if item.isField('number_units') %}
+                     {{ fields.numberField('number_units', item.fields['number_units'], __('Number of units'), {
+                        'rand': rand,
+                        'min': 1,
+                        'max': 100,
+                        'step': 1,
+                     }) }}
+                  {% endif %}
+
+                  {% if item.isField('width') %}
+                     {{ fields.numberField('width', item.fields['width'], __('Width'), {
+                        'rand': rand,
+                        'min': 0,
+                        'step': 1,
+                     }) }}
+                  {% endif %}
+
+                  {% if item.isField('height') %}
+                     {{ fields.numberField('height', item.fields['height'], __('Height'), {
+                        'rand': rand,
+                        'min': 0,
+                        'step': 1,
+                     }) }}
+                  {% endif %}
+
+                  {% if item.isField('depth') %}
+                     {{ fields.numberField('depth', item.fields['depth'], __('Depth'), {
+                        'rand': rand,
+                        'min': 0,
+                        'step': 1,
+                     }) }}
+                  {% endif %}
+
+                  {% if item.isField('max_power') %}
+                     {{ fields.numberField('max_power', item.fields['max_power'], __('Max. power (in watts)'), {
+                        'rand': rand,
+                        'min': 0,
+                        'step': 1,
+                     }) }}
+                  {% endif %}
+
+                  {% if item.isField('mesured_power') %}
+                     {{ fields.numberField('mesured_power', item.fields['mesured_power'], __('Measured power (in watts)'), {
+                        'rand': rand,
+                        'min': 0,
+                        'step': 1,
+                     }) }}
+                  {% endif %}
+
+                  {% if item.isField('max_weight') %}
+                     {{ fields.numberField('max_weight', item.fields['max_weight'], __('Max. weight'), {
+                        'rand': rand,
+                        'min': 0,
+                        'step': 1,
+                     }) }}
+                  {% endif %}
+
+                  {% if item.isField('bgcolor') %}
+                     {{ fields.colorField('bgcolor', item.fields['bgcolor'], __('Background color')) }}
+                  {% endif %}
+
+                  {% if item.isField('caller_num') %}
+                     {{ fields.autoNameField(
+                        "caller_num",
+                        item,
+                        __('Caller number'),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('caller_name') %}
+                     {{ fields.autoNameField(
+                        "caller_name",
+                        item,
+                        __('Caller name'),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('users_id') %}
+                     {{ fields.dropdownField(
+                        "User",
+                        "users_id",
+                        item.fields['users_id'],
+                        "User"|itemtype_name,
+                        {
+                           'entity': item.fields['entities_id'],
+                           'right': 'all',
+                        }
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('is_global') %}
+                     {% set dd_globalswitch %}
+                        {{ Dropdown__showGlobalSwitch(item.fields['id'], {
+                           'withtemplate': withtemplate,
+                           'value': item.fields['is_global'],
+                           'management_restrict': config('monitors_management_restrict'),
+                           'target': target,
+                           'width': '100%',
+                           'class': 'form-select',
+                        }) }}
+                     {% endset %}
+                     {{ fields.htmlField(
+                        "is_global",
+                        dd_globalswitch,
+                        __('Management type'),
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('size') %}
+                     {{ fields.numberField(
+                        "size",
+                        item.fields['size'],
+                        __("Size"),
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('networks_id') %}
+                     {{ fields.dropdownField(
+                        "Network",
+                        "networks_id",
+                        item.fields['networks_id'],
+                        _n('Network', 'Networks', 1)
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('groups_id') %}
+                     {{ fields.dropdownField(
+                        "Group",
+                        "groups_id",
+                        item.fields['groups_id'],
+                        "Group"|itemtype_name,
+                        {
+                           'entity': item.fields['entities_id'],
+                           'condition': {'is_itemgroup': 1},
+                        }
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('uuid') %}
+                     {{ fields.textField(
+                        "uuid",
+                        item.fields['uuid'],
+                        __("UUID"),
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('version') %}
+                     {{ fields.autoNameField(
+                        "version",
+                        item,
+                        _n('Version', 'Versions', 1),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('softwareversions_id_use') %}
+                     {% set field %}
+                        {{ SoftwareVersion__dropdownForOneSoftware({
+                        'name': 'softwareversions_id_use',
+                        'softwares_id': item.fields['softwares_id'],
+                        'value': item.fields['softwareversions_id_use'],
+                        'class': 'form-select',
+                        'width': '100%',
+                        }) }}
+                     {% endset %}
+                     {{ fields.field('softwareversions_id_use', field, __('Version in use')) }}
+                  {% endif %}
+
+                  {% if item.isField('softwareversions_id_buy') %}
+                     {% set field %}
+                        {{ SoftwareVersion__dropdownForOneSoftware({
+                           'name': 'softwareversions_id_buy',
+                           'softwares_id': item.fields['softwares_id'],
+                           'value': item.fields['softwareversions_id_buy'],
+                           'class': 'form-select',
+                           'width': '100%',
+                        }) }}
+                     {% endset %}
+                     {{ fields.field('softwareversions_id_buy', field, __('Purchase version')) }}
+                  {% endif %}
+
+                  {% if item.isField('number') %}
+                     {% set validity_msg = null %}
+                     {% if item_type == 'SoftwareLicense' %}
+                        {% set validity_msg %}
+                           {% if item.fields['is_valid'] %}
+                              <span class="green">{{ _x('adjective', 'Valid') }}</span>
+                           {% elseif not item.fields['is_valid'] and item.fields['allow_overquota'] %}
+                              <span class="green">{{ _x('adjective', 'Valid (Over Quota)') }}</span>
+                           {% else %}
+                              <span class="red">{{ _x('adjective', 'Invalid') }}</span>
+                           {% endif %}
+                        {% endset %}
+                     {% endif %}
+                     {{ fields.numberField('number', item.fields['number'], _x('quantity', 'Number'), {
+                        'min': 1,
+                        'max': 10000,
+                        'step': 1,
+                        'toadd': {'-1': __('Unlimited')},
+                        'add_field_html': validity_msg
+                     }) }}
+                  {% endif %}
+
+                  {% if item.isField('allow_overquota') %}
+                     {{ fields.dropdownYesNo('allow_overquota', item.fields['allow_overquota'], __('Allow Over-Quota')) }}
+                  {% endif %}
+
+                  {% if item.isField('expire') %}
+                     {{ fields.datetimeField('expire', item.fields['expire'], __('Expiration'), {
+                        'helper': __('On search engine, use "Expiration contains NULL" to search licenses with no expiration date')
+                     }) }}
+                  {% endif %}
+
+                  {% if item.isField('is_autosign') %}
+                     {{ fields.dropdownYesNo('is_autosign', item.fields['is_autosign'], __('Self-signed')) }}
+                  {% endif %}
+
+                  {% if item.isField('comment') %}
+                     {{ fields.textareaField(
+                        "comment",
+                        item.fields['comment'],
+                        _n('Comment', 'Comments', getPluralNumber()),
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('lineoperators_id') %}
+                     {{ fields.dropdownField(
+                        "LineOperator",
+                        "lineoperators_id",
+                        item.fields['lineoperators_id'],
+                        "LineOperator"|itemtype_name,
+                        {
+                           'entity': item.fields['entities_id'],
+                        }
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('dns_name') %}
+                     {{ fields.autoNameField(
+                        "dns_name",
+                        item,
+                        __('DNS name'),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('dns_suffix') %}
+                     {{ fields.autoNameField(
+                        "dns_suffix",
+                        item,
+                        __('DNS suffix'),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('command') %}
+                     {{ fields.textareaField('command', item.fields['command'], __('Command used')) }}
+                  {% endif %}
+
+                  {% if item.isField('certificate_request') %}
+                     {{ fields.textareaField('certificate_request', item.fields['certificate_request'], __('Certificate request (CSR)')) }}
+                  {% endif %}
+
+                  {% if item.isField('certificate_item') %}
+                     {{ fields.textareaField('certificate_item', item.fields['certificate_item'], item|itemtype_name) }}
+                  {% endif %}
+
+                  {% if item.isField('ram') %}
+                     {{ fields.numberField(
+                        "ram",
+                        item.fields['ram'],
+                        __('%1$s (%2$s)')|format(_n('Memory', 'Memories', 1), __('Mio')),
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('memory_size') %}
+                     {{ fields.numberField(
+                        "memory_size",
+                        item.fields['memory_size'],
+                        _n('Memory', 'Memories', 1),
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('init_pages_counter') %}
+                     {{ fields.numberField(
+                        "init_pages_counter",
+                        item.fields['init_pages_counter'],
+                        __("Initial page counter"),
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('last_pages_counter') %}
+                     {{ fields.numberField(
+                        "last_pages_counter",
+                        item.fields['last_pages_counter'],
+                        __("Current counter of pages"),
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('is_update') %}
+                     {% set dd_software %}
+                        {{ "Software"|dropdown({
+                           'value': item.fields['softwares_id'],
+                           'rand': rand,
+                           'class': 'form-select',
+                        }) }}
+                     {% endset %}
+
+                     {{ fields.checkboxField(
+                        "is_update",
+                        item.fields['is_update'],
+                        __('Upgrade'),
+                        {add_field_html: dd_software}
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('alarm_threshold') %}
+                     {% set dd_alarm_treshold %}
+                        {{ Dropdown__showNumber('alarm_threshold', {
+                           'value': item.fields['alarm_threshold'],
+                           'display': false,
+                           'rand': rand,
+                           'width': '100%',
+                           'class': 'form-select',
+                           'min': 0,
+                           'max': 100,
+                           'step': 1,
+                           'toadd': {'-1': __('Never')}
+                        }) }}
+                     {% endset %}
+                     {% set last_alert_html %}
+                        <span class="text-muted">
+                           {{ displayLastAlert(item_type, item.fields['id']) }}
+                        </span>
+                     {% endset %}
+                     {{ fields.htmlField(
+                        "alarm_threshold",
+                        dd_alarm_treshold,
+                        __('Alert threshold'),
+                        {add_field_html: last_alert_html}
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('brand') %}
+                     {{ fields.textField(
+                        "brand",
+                        item.fields['brand'],
+                        __("Brand"),
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('number_line') %}
+                     {{ fields.numberField(
+                        "number_line",
+                        item.fields['number_line'],
+                        _x('quantity', 'Number of lines'),
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('phonepowersupplies_id') %}
+                     {{ fields.dropdownField(
+                        "PhonePowerSupply",
+                        "phonepowersupplies_id",
+                        item.fields['phonepowersupplies_id'],
+                        "PhonePowerSupply"|itemtype_name,
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('begin_date') %}
+                     {{ fields.dateField('begin_date', item.fields['begin_date'], __('Start date')) }}
+                  {% endif %}
+
+                  {% if item_type == 'Contract' and item.isField('duration') %}
+                     {% if item.fields['begin_date'] is not empty and item.fields['duration'] is not empty %}
+                        {% set warranty_expiration %}
+                           <i class="fas fa-arrow-right"></i>
+                           {{ Infocom__getWarrantyExpir(
+                              item.fields['begin_date'],
+                              item.fields['duration'],
+                              0,
+                              true,
+                              item.fields['renewal'] == constant('Contract::RENEWAL_TACIT')
+                           ) }}
+                        {% endset %}
+                     {% endif %}
+                     {{ fields.dropdownNumberField('duration', item.fields['duration'], __('Initial contract period'), {
+                        'rand': rand,
+                        'min': 1,
+                        'max': 120,
+                        'step': 1,
+                        'toadd': [constant('Dropdown::EMPTY_VALUE')],
+                        'unit': 'month',
+                        'add_field_html': warranty_expiration|default('')
+                     }) }}
+                  {% endif %}
+
+                  {% if item.isField('notice') %}
+                     {% if item.fields['begin_date'] is not empty and item.fields['notice'] > 0 and item.fields['duration'] is not empty %}
+                        {% set notice_info %}
+                           <i class="fas fa-arrow-right"></i>
+                           {{ Infocom__getWarrantyExpir(
+                              item.fields['begin_date'],
+                              item.fields['duration'],
+                              item.fields['notice'],
+                              true
+                           ) }}
+                        {% endset %}
+                     {% endif %}
+                     {{ fields.dropdownNumberField('notice', item.fields['notice'], __('Notice'), {
+                        'rand': rand,
+                        'min': 0,
+                        'max': 120,
+                        'step': 1,
+                        'unit': 'month',
+                        'add_field_html': notice_info|default('')
+                     }) }}
+                  {% endif %}
+
+                  {% if item.isField('accounting_number') %}
+                     {{ fields.autoNameField(
+                        "accounting_number",
+                        item,
+                        __('Account number'),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('periodicity') %}
+                     {{ fields.dropdownNumberField('periodicity', item.fields['periodicity'], __('Contract renewal period'), {
+                        'rand': rand,
+                        'min': 12,
+                        'max': 60,
+                        'step': 12,
+                        'toadd': {
+                           0: constant('Dropdown::EMPTY_VALUE'),
+                           1: _n('%d month', '%d months', 1)|format(1),
+                           2: _n('%d month', '%d months', 2)|format(2),
+                           3: _n('%d month', '%d months', 3)|format(3),
+                           6: _n('%d month', '%d months', 6)|format(6),
+                        },
+                        'unit': 'month',
+                     }) }}
+                  {% endif %}
+
+                  {% if item.isField('billing') %}
+                     {{ fields.dropdownNumberField('billing', item.fields['billing'], __('Invoice period'), {
+                        'rand': rand,
+                        'min': 12,
+                        'max': 60,
+                        'step': 12,
+                        'toadd': {
+                           0: constant('Dropdown::EMPTY_VALUE'),
+                           1: _n('%d month', '%d months', 1)|format(1),
+                           2: _n('%d month', '%d months', 2)|format(2),
+                           3: _n('%d month', '%d months', 3)|format(3),
+                           6: _n('%d month', '%d months', 6)|format(6),
+                        },
+                        'unit': 'month',
+                     }) }}
+                  {% endif %}
+
+                  {% if item.isField('renewal') %}
+                     {{ fields.dropdownArrayField('renewal', item.fields['renewal'], {
+                        (constant('Contract::RENEWAL_NEVER')): __('Never'),
+                        (constant('Contract::RENEWAL_TACIT')): __('Tacit'),
+                        (constant('Contract::RENEWAL_EXPRESS')): __('Express'),
+                     }, __('Renewal')) }}
+                  {% endif %}
+
+                  {% if item.isField('max_links_allowed') %}
+                     {{ fields.numberField('max_links_allowed', item.fields['max_links_allowed'], __('Max number of items'), {
+                        'min': 1,
+                        'max': 200000,
+                        'step': 1,
+                        'toadd': {0: __('Unlimited')}
+                     }) }}
+                  {% endif %}
+
+                  {% if item.isField('alert') and Entity_getUsedConfig('use_contracts_alert') %}
+                     {% set alert_html %}
+                        {{ displayLastAlert('Contract', item.fields['id']) }}
+                     {% endset %}
+                     {{ fields.dropdownArrayField('alert', item.fields['alert'], item.getAlertName(), __('Email alarms'), {
+                        'add_field_html': "<span class='text-muted'>" ~ alert_html ~ "</span>"
+                     }) }}
+                  {% endif %}
+
+                  {% if item.isField('autoupdatesystems_id') %}
+                     {{ fields.dropdownField(
+                        "AutoUpdateSystem",
+                        "autoupdatesystems_id",
+                        item.fields['autoupdatesystems_id'],
+                        "AutoUpdateSystem"|itemtype_name,
+                     ) }}
+                  {% endif %}
+
+                  {% set flags_html %}
+                     {% include("components/form/flags.html.twig") %}
+                  {% endset %}
+
+                  {% if (flags_html|trim)|length %}
+                     {% set flags_html = "<div class='d-flex flex-wrap'>" ~ flags_html ~ "</div>" %}
+                     {{ fields.htmlField(
+                        "",
+                        flags_html,
+                        _n('Port', 'Ports', getPluralNumber()),
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('pictures') %}
+                     {{ fields.fileField('pictures', null, _n('Picture', 'Pictures', getPluralNumber()), {
+                        'onlyimages': true,
+                        'multiple': true,
+                     }) }}
+                  {% endif %}
+
+                  {% if item.isField('is_active') %}
+                     {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active')) }}
+                  {% endif %}
+
+                  {% if item.fields['id'] > 0 and item.isField('is_dynamic') %}
+                     <div class="mb-3 col-12 col-sm-6">
+                        {{ AutoInventoryInformation() }}
+                     </div>
+                  {% endif %}
+               </div> {# .row #}
+            </div> {# .row #}
+         </div> {# .flex-row #}
+      </div>
+      <div class="col-3 flex-column">
+         <div class="flex-row asset-pictures">
+            {% include("components/form/pictures.html.twig") with {'gallery_type': ''} %}
+         </div>
+      </div>
+   </div> {# .card-body #}
+
+   {% if item_type == 'Contract' %}
+      {% include('components/form/support_hours.html.twig') %}
+   {% endif %}
+   {% include("components/form/buttons.html.twig") %}
+   {% include("components/form/inventory_info.html.twig") %}
+
+
+   {% if params['formfooter'] == null %}
+      <div class="card-footer mx-n2 mb-n2 mt-4">
+         {% include("components/form/dates.html.twig") %}
+      </div>
+   {% endif %}
+</div>

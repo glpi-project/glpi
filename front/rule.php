@@ -30,47 +30,24 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 include ('../inc/includes.php');
 
 Session::checkCentralAccess();
 
 Html::header(Rule::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "rule", -1);
 
-RuleCollection::titleBackup();
-
-echo "<table class='tab_cadre'>";
-echo "<tr><th>" . __('Rule type') . "</th></tr>";
-
-foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
-   $rulecollection = new $rulecollectionclass();
-   if ($rulecollection->canList()) {
-      if ($plug = isPluginItemType($rulecollectionclass)) {
-         $title = sprintf(__('%1$s - %2$s'), Plugin::getInfo($plug['plugin'], 'name'),
-                                             $rulecollection->getTitle());
-      } else {
-         $title = $rulecollection->getTitle();
-      }
-      echo "<tr class='tab_bg_1'><td class='center b'>";
-      $ruleClassName = $rulecollection->getRuleClassName();
-      echo "<a href='".$ruleClassName::getSearchURL()."'>";
-      echo $title."</a></td></tr>";
-   }
-}
-
-if (Session::haveRight("transfer", READ)
-    && Session::isMultiEntitiesMode()) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/front/transfer.php'>".__('Transfer')."</a>";
-   echo "</td></tr>";
-}
-
-if (Session::haveRight("config", READ)) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/front/blacklist.php'>".
-        _n('Blacklist', 'Blacklists', Session::getPluralNumber())."</a>";
-   echo "</td></tr>";
-}
-
-echo "</table>";
+echo TemplateRenderer::getInstance()->render(
+   'pages/admin/rules_list.html.twig',
+   [
+      'rules_group' => [
+         [
+            'type'    => __('Rule type'),
+            'entries' => RuleCollection::getRules(),
+         ],
+      ]
+   ]
+);
 
 Html::footer();

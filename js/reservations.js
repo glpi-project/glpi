@@ -30,6 +30,7 @@
  */
 
 /* global FullCalendar, FullCalendarLocales */
+/* global glpi_ajax_dialog */
 
 var Reservations = function() {
    this.is_all      = true;
@@ -76,6 +77,7 @@ var Reservations = function() {
             }
 
             if (my.is_tab) {
+               // TODO .glpi_tabs not exists anymore
                _newheight = $('.glpi_tabs ').height() - 150;
             }
 
@@ -152,9 +154,10 @@ var Reservations = function() {
          },
 
          eventRender: function(info) {
-            var event = info.event;
+            var event    = info.event;
             var extProps = event.extendedProps;
-            var element = $(info.el);
+            var element  = $(info.el);
+            var view     = info.view;
 
             // add icon if exists
             if ("icon" in extProps && !my.is_tab) {
@@ -167,7 +170,22 @@ var Reservations = function() {
                   .append("&nbsp;<i class='"+extProps.icon+"' title='"+icon_alt+"'></i>");
             }
 
+            // detect ideal position
+            var qtip_position = {
+               target: 'mouse',
+               adjust: {
+                  mouse: false
+               },
+               viewport: $(window)
+            };
+            if (view.type.indexOf('list') >= 0) {
+               // on central, we want the tooltip on the anchor
+               // because the event is 100% width and so tooltip will be too much on the right.
+               qtip_position.target= element.find('a');
+            }
+
             element.qtip({
+               position: qtip_position,
                content: extProps.comment,
                style: {
                   classes: 'qtip-shadow qtip-bootstrap'
@@ -207,33 +225,14 @@ var Reservations = function() {
          // ADD EVENTS
          selectable: true,
          select: function(info) {
-            $('<div></div>').dialog({
-               modal:  true,
-               width:  'auto',
-               height: 'auto',
-               open: function () {
-                  $(this).load(
-                     CFG_GLPI.root_doc+"/ajax/reservations.php",
-                     {
-                        action: 'add_reservation_fromselect',
-                        id:     my.id,
-                        start:  info.start.toISOString(),
-                        end:    info.end.toISOString(),
-                     },
-                     function() {
-                        $(this).dialog('option', 'position', ['center', 'center'] );
-                     }
-                  );
-               },
-               close: function() {
-                  $(this).dialog("close");
-                  $(this).remove();
-               },
-               position: {
-                  my: 'center',
-                  at: 'top',
-                  viewport: $(window),
-                  of: $('#page')
+            glpi_ajax_dialog({
+               title: __("Add reservation"),
+               url: CFG_GLPI.root_doc+"/ajax/reservations.php",
+               params: {
+                  action: 'add_reservation_fromselect',
+                  id:     my.id,
+                  start:  info.start.toISOString(),
+                  end:    info.end.toISOString(),
                }
             });
 
@@ -246,18 +245,11 @@ var Reservations = function() {
 
             if (ajaxurl) {
                info.jsEvent.preventDefault(); // don't let the browser navigate
-               $('<div></div>')
-                  .dialog({
-                     modal:  true,
-                     width:  'auto',
-                     height: 'auto',
-                     close: function() {
-                        my.calendar.refetchEvents();
-                        my.calendar.rerenderEvents();
-                        window.displayAjaxMessageAfterRedirect();
-                     }
-                  })
-                  .load(ajaxurl+"&ajax=true");
+
+               glpi_ajax_dialog({
+                  title: __("Edit reservation"),
+                  url: ajaxurl+"&ajax=true",
+               });
             }
          }
       });
