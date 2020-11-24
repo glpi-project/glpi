@@ -60,6 +60,11 @@ if (isset($_POST['add'])) {
       $track->getEmpty();
    }
    $_POST['check_delegatee'] = true;
+   if (isset($_UPOST['_actors'])) {
+      $_POST['_actors'] = json_decode($_UPOST['_actors'], true);
+      // with self-service, we only have observers
+      unset($_POST['_actors']['requester'], $_POST['_actors']['assign']);
+   }
    if ($track->add($_POST)) {
       if ($_SESSION['glpibackcreated']) {
          Html::redirect($track->getLinkURL());

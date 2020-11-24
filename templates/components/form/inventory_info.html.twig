@@ -1,0 +1,116 @@
+
+{% if item.isDynamic() != false %}
+<div class="card m-n2 border-0 shadow-none">
+   <div class="card-header">
+      <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
+         <i class="fas fa-cloud-download-alt"></i>
+      </div>
+      <h4 class="card-title ps-4">
+         {{ __('Inventory information') }}
+      </h4>
+      {% set inventory_filename = item is usingtrait('Glpi\\Features\\Inventoriable') ? item.getInventoryFileName() : null %}
+      {% if inventory_filename is not null %}
+         <a href="{{ path('front/document.send.php?file=_inventory/' ~ inventory_filename) }}"
+            class="btn btn-sm btn-secondary ms-auto" target="_blank"
+            data-bs-toggle="tooltip" data-bs-placement="right"
+            title="{{ __('Download "%1$s" inventory file')|format(get_item_name(item)) }}">
+            <i class="fas fa-download"></i>
+         </a>
+      {% else %}
+         <span class="ms-auto" title="{{ __('Inventory file missing') }}">
+            <i class="fas fa-ban"></i>
+            <span class="visually-hidden">{{ __('Inventory file missing') }}</span>
+         </span>
+      {% endif %}
+   </div>
+
+   {% set agent = item is usingtrait('Glpi\\Features\\Inventoriable') ? item.getInventoryAgent() : null %}
+   {% if agent is null %}
+      {{ __('No agent has been linked.') }}
+   {% else %}
+      <div class="card-body row">
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >{{ agent.getTypeName() }}</label>
+            <span>
+               <i class="{{ agent.getIcon() }}"></i>
+               {{ get_item_link(agent) }}
+            </span>
+         </div>
+
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >{{ __('Useragent') }}</label>
+            <span>{{ agent.fields['useragent']|verbatim_value }}</span>
+         </div>
+
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >{{ __('Inventory tag') }}</label>
+            <span>{{ agent.fields['tag']|verbatim_value }}</span>
+         </div>
+
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >{{ __('Last inventory') }}</label>
+            <span>{{ agent.fields['last_contact']|formatted_datetime }}</span>
+         </div>
+
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >
+               {{ __('Agent status') }}
+               <i id="update-status" class="fas fa-sync" role="button" title="{{ __('Ask agent about its current status') }}"></i>
+            </label>
+            {# TODO status #}
+            <span>{{ __('Unknown') }}</span>
+         </div>
+
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >
+               {{ __('Request inventory') }}
+               <i id="update-status" class="fas fa-sync" role="button" title="{{ __('Request agent to proceed an new inventory') }}"></i>
+            </label>
+            {# TODO status #}
+            <span>{{ __('Unknown') }}</span>
+         </div>
+      </div>
+
+      <script>
+      $(function () {
+         $('#update-status').on('click', function() {
+            var icon = $(this);
+            icon.addClass('fa-spin');
+            $.ajax({
+               type: 'GET',
+               url: '{{ path('/ajax/agent.php') }}',
+               timeout: 3000, //3 seconds timeout
+               dataType: 'json',
+               data: {
+                  action: '{{ constant('Agent::ACTION_STATUS') }}',
+                  id: '{{ agent.fields['id'] }}'
+               },
+               success: function(json) {
+                  icon.removeClass('fa-spin');
+                  $('#agent_status').html(json.answer);
+               }
+            });
+         });
+
+         $('#update-inventory').on('click', function() {
+            icon.addClass("fa-spin");
+            $.ajax({
+               type: 'GET',
+               url: '{{ path('/ajax/agent.php') }}',
+               timeout: 3000, //3 seconds timeout
+               dataType: 'json',
+               data: {
+                  action: '{{ constant('Agent::ACTION_INVENTORY') }}',
+                  id: '{{ agent.fields['id'] }}'
+               },
+               success: function(json) {
+                  icon.removeClass('fa-spin');
+                  $('#inventory_status').html(json.answer);
+               }
+            });
+         });
+      });
+      </script>
+   {% endif %}
+</div>
+{% endif %}

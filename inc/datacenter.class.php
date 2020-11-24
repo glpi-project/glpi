@@ -30,6 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\AssetImage;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -38,6 +41,7 @@ if (!defined('GLPI_ROOT')) {
  * Datacenter Class
 **/
 class Datacenter extends CommonDBTM {
+   use AssetImage;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -46,6 +50,16 @@ class Datacenter extends CommonDBTM {
    static function getTypeName($nb = 0) {
       //TRANS: Test of comment for translation (mark : //TRANS)
       return _n('Data center', 'Data centers', $nb);
+   }
+
+   function prepareInputForAdd($input) {
+      $input = parent::prepareInputForAdd($input);
+      return $this->managePictures($input);
+   }
+
+   function prepareInputForUpdate($input) {
+      $input = parent::prepareInputForUpdate($input);
+      return $this->managePictures($input);
    }
 
    function defineTabs($options = []) {
@@ -57,28 +71,11 @@ class Datacenter extends CommonDBTM {
    }
 
    function showForm($ID, $options = []) {
-      $rand = mt_rand();
-
       $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='textfield_name$rand'>".__('Name')."</label></td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "name", ['rand' => $rand]);
-      echo "</td>";
-
-      echo "<td><label for='dropdown_locations_id$rand'>".Location::getTypeName(1)."</label></td>";
-      echo "<td>";
-      Location::dropdown([
-         'value'  => $this->fields["locations_id"],
-         'entity' => $this->fields["entities_id"],
-         'rand'   => $rand
+      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
+         'item'   => $this,
+         'params' => $options,
       ]);
-      echo "</td>";
-      echo "</tr>";
-
-      $this->showFormButtons($options);
       return true;
    }
 
@@ -168,7 +165,7 @@ class Datacenter extends CommonDBTM {
    static function getAdditionalMenuLinks() {
       $links = [];
       if (static::canView()) {
-         $rooms = "<i class=\"fa fa-building pointer\" title=\"" . DCRoom::getTypeName(Session::getPluralNumber()) .
+         $rooms = "<i class=\"fas fa-building pointer\" title=\"" . DCRoom::getTypeName(Session::getPluralNumber()) .
             "\"></i><span class=\"sr-only\">" . DCRoom::getTypeName(Session::getPluralNumber()). "</span>";
          $links[$rooms] = DCRoom::getSearchURL(false);
 

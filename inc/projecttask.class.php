@@ -699,7 +699,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          $auto_percent_done_params['checked'] = 'checked';
       }
       Html::showCheckbox($auto_percent_done_params);
-      echo "<span class='very_small_space'>";
+      echo "<span class='ms-3'>";
       Html::showToolTip(__('When automatic computation is active, percentage is computed based on the average of all child task percent done.'));
       echo "</span></td>";
 

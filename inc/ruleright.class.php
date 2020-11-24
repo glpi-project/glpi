@@ -77,7 +77,7 @@ class RuleRight extends Rule {
       echo "<tr class='tab_bg_1'>";
       echo "<td class='center'>"._n('Profile', 'Profiles', 1) . "</td><td>";
       Profile::dropdown();
-      echo "</td><td><span class='small_space'>".__('Recursive') . "</span></td><td colspan='3'>";
+      echo "</td><td>".__('Recursive') . "</td><td colspan='3'>";
       Dropdown::showYesNo("is_recursive", 0);
       echo "</td></tr>\n";
 
@@ -418,6 +418,10 @@ class RuleRight extends Rule {
          $criteria[$data["value"]]['linkfield'] = '';
          $criteria[$data["value"]]['table']     = '';
       }
+   }
+
+   static function getIcon() {
+      return Profile::getIcon();
    }
 
 }
