@@ -456,6 +456,24 @@ abstract class CommonDropdown extends CommonDBTM {
                ]);
                break;
 
+            case 'itemtypename':
+               $options = [
+                  'value'  => $this->fields[$field['name']]
+               ];
+
+               if (isset($field['itemtype_list'])) {
+                  $options['types'] = $CFG_GLPI[$field['itemtype_list']];
+               }
+
+               if (isset($options['types'])) {
+                  Dropdown::showItemTypes(
+                     $field['name'],
+                     $options['types'],
+                     $options
+                  );
+               }
+               return false;
+
             default:
                $this->displaySpecificTypeField($ID, $field);
                break;
