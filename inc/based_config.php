@@ -75,6 +75,8 @@ include_once (GLPI_ROOT . "/inc/autoload.function.php");
       'GLPI_USE_CSRF_CHECK'  => '1',
       'GLPI_CSRF_EXPIRES'    => '7200',
       'GLPI_CSRF_MAX_TOKENS' => '100',
+      'GLPI_USE_IDOR_CHECK'  => '1',
+      'GLPI_IDOR_EXPIRES'    => '7200',
 
       // Constants related to GLPI Project / GLPI Network external services
       'GLPI_TELEMETRY_URI'                => 'https://telemetry.glpi-project.org', // Telemetry project URL

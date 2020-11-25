@@ -974,12 +974,7 @@ class Search {
 
             if (isset($criterion['link'])
                   && in_array($criterion['link'], array_keys(self::getLogicalOperators()))) {
-               if (strstr($criterion['link'], "NOT")) {
-                  $tmplink = " ".str_replace(" NOT", "", $criterion['link']);
-                  $NOT     = 1;
-               } else {
-                  $tmplink = " ".$criterion['link'];
-               }
+               $tmplink = " ".$criterion['link'];
             } else {
                $tmplink = " AND ";
             }
@@ -987,6 +982,8 @@ class Search {
             // Manage Link if not first item
             if (!empty($sql)) {
                $LINK = $tmplink;
+            } else if (strstr($tmplink, "NOT")) {
+               $NOT = 1;
             }
 
             if (isset($criterion['criteria']) && count($criterion['criteria'])) {
@@ -2353,6 +2350,12 @@ class Search {
          }
       }
       echo "</div>"; //.search_actions
+
+      // idor checks
+      $idor_display_criteria       = Session::getNewIDORToken($itemtype);
+      $idor_display_meta_criteria  = Session::getNewIDORToken($itemtype);
+      $idor_display_criteria_group = Session::getNewIDORToken($itemtype);
+
       $JS = <<<JAVASCRIPT
          $('#addsearchcriteria$rand_criteria').on('click', function(event) {
             event.preventDefault();
@@ -2360,7 +2363,8 @@ class Search {
                'action': 'display_criteria',
                'itemtype': '$itemtype',
                'num': $nbsearchcountvar,
-               'p': $json_p
+               'p': $json_p,
+               '_idor_token': '$idor_display_criteria'
             })
             .done(function(data) {
                $(data).insertBefore('#more-criteria$rand_criteria');
@@ -2375,7 +2379,8 @@ class Search {
                'itemtype': '$itemtype',
                'meta': true,
                'num': $nbsearchcountvar,
-               'p': $json_p
+               'p': $json_p,
+               '_idor_token': '$idor_display_meta_criteria'
             })
             .done(function(data) {
                $(data).insertBefore('#more-criteria$rand_criteria');
@@ -2390,7 +2395,8 @@ class Search {
                'itemtype': '$itemtype',
                'meta': true,
                'num': $nbsearchcountvar,
-               'p': $json_p
+               'p': $json_p,
+               '_idor_token': '$idor_display_criteria_group'
             })
             .done(function(data) {
                $(data).insertBefore('#more-criteria$rand_criteria');
@@ -2587,12 +2593,13 @@ JAVASCRIPT;
                      : "";
 
       $params = [
-         'itemtype'   => $used_itemtype,
-         'field'      => $value,
-         'searchtype' => $searchtype,
-         'value'      => $p_value,
-         'num'        => $num,
-         'p'          => $p,
+         'itemtype'    => $used_itemtype,
+         '_idor_token' => Session::getNewIDORToken($used_itemtype),
+         'field'       => $value,
+         'searchtype'  => $searchtype,
+         'value'       => $p_value,
+         'num'         => $num,
+         'p'           => $p,
       ];
       Search::displaySearchoption($params);
       echo "</span>";
@@ -2898,16 +2905,17 @@ JAVASCRIPT;
 
       echo "<span id='$dropdownname'>";
       $params = [
-         'value'      => rawurlencode(stripslashes($request['value'])),
-         'searchopt'  => $searchopt,
-         'searchtype' => $request["searchtype"],
-         'num'        => $num,
-         'itemtype'   => $request["itemtype"],
-         'from_meta'  => isset($request['from_meta'])
+         'value'       => rawurlencode(stripslashes($request['value'])),
+         'searchopt'   => $searchopt,
+         'searchtype'  => $request["searchtype"],
+         'num'         => $num,
+         'itemtype'    => $request["itemtype"],
+         '_idor_token' => Session::getNewIDORToken($request["itemtype"]),
+         'from_meta'   => isset($request['from_meta'])
                            ? $request['from_meta']
                            : false,
-         'field'      => $request["field"],
-         'p'          => $p,
+         'field'       => $request["field"],
+         'p'           => $p,
       ];
       self::displaySearchoptionValue($params);
       echo "</span>";
@@ -5378,7 +5386,7 @@ JAVASCRIPT;
                                     AS `glpi_items_softwareversions_$to_type`
                               ON (`glpi_items_softwareversions_$to_type`.`softwareversions_id`
                                        = `glpi_softwareversions_$to_type`.`id`
-                                  AND `glpi_items_softwareversions_$to_type`.`itemtype` = '$from_type'
+                                  AND `glpi_items_softwareversions_$to_type`.`itemtype` = '$to_type'
                                   AND `glpi_items_softwareversions_$to_type`.`is_deleted` = 0)
                            $LINK `$to_table`
                               ON (`glpi_items_softwareversions_$to_type`.`items_id`

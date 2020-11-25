@@ -1225,11 +1225,10 @@ class Stat extends CommonGLPI {
          case "inter_answersatisfaction" :
             $WHERE["$table.status"] = $closed_status;
             $WHERE[] = [
-               'NOT' => [
-                  "$table.closedate"                        => null,
-                  "glpi_ticketsatisfactions.date_answered"  => null
-               ]
+               ['NOT' => ["$table.closedate" => null]],
+               ['NOT' => ["glpi_ticketsatisfactions.date_answered"  => null]],
             ];
+
             $WHERE[] = getDateCriteria("$table.closedate", $begin, $end);
 
             $date_unix = new QueryExpression(

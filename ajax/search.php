@@ -41,6 +41,10 @@ if (!isset($_REQUEST['action'])) {
    die;
 }
 
+if (!Session::validateIDOR($_REQUEST)) {
+   die;
+}
+
 switch ($_REQUEST['action']) {
    case "display_criteria":
       Search::displayCriteria($_REQUEST);

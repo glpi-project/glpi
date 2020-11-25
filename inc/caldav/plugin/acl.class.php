@@ -37,10 +37,13 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\CalDAV\Backend\Principal;
+use Glpi\CalDAV\Traits\CalDAVPrincipalsTrait;
 use Glpi\CalDAV\Traits\CalDAVUriUtilTrait;
 use Sabre\CalDAV\Calendar;
 use Sabre\CalDAV\CalendarObject;
+use Sabre\DAVACL\IACL;
 use Sabre\DAVACL\Plugin;
+use Session;
 
 /**
  * ACL plugin for CalDAV server.
@@ -49,6 +52,7 @@ use Sabre\DAVACL\Plugin;
  */
 class Acl extends Plugin {
 
+   use CalDAVPrincipalsTrait;
    use CalDAVUriUtilTrait;
 
    public $principalCollectionSet = [
@@ -65,8 +69,11 @@ class Acl extends Plugin {
 
       $acl = parent::getAcl($node);
 
-      // Authenticated user have read access to all nodes, as node list only contains elements
-      // that user can read.
+      if (!($node instanceof IACL) || ($owner_path = $node->getOwner()) === null
+          || !$this->canViewPrincipalObjects($owner_path)) {
+         return $acl;
+      }
+
       $acl[] = [
          'principal' => '{DAV:}authenticated',
          'privilege' => '{DAV:}read',

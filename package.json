@@ -70,6 +70,7 @@
         "mini-css-extract-plugin": "^1.2.1",
         "script-loader": "^0.7.2",
         "stream-browserify": "^3.0.0",
+        "strip-sourcemap-loader": "^0.0.1",
         "terser": "^5.2.1",
         "webpack": "^5.3.2",
         "webpack-cli": "^4.1.0"

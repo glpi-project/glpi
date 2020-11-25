@@ -159,6 +159,7 @@ class Datacenter extends CommonDBTM {
             'name'               => __('Data center position'),
             'datatype'           => 'specific',
             'nosearch'           => true,
+            'nosort'             => true,
             'massiveaction'      => false
          ],
       ];

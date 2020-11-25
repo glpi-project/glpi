@@ -76,6 +76,7 @@ var libsConfig = {
             // Load scripts with no compilation for packages that are directly providing "dist" files.
             // This prevents useless compilation pass and can also
             // prevents incompatibility issues with the webpack require feature.
+            // It also removes existing sourcemaps that cannot be used correctly.
             test: /\.js$/,
             include: [
                path.resolve(__dirname, 'node_modules/@fullcalendar'),
@@ -89,7 +90,7 @@ var libsConfig = {
                path.resolve(__dirname, 'node_modules/rrule'),
                path.resolve(__dirname, 'vendor/blueimp/jquery-file-upload'),
             ],
-            use: ['script-loader'],
+            use: ['script-loader', 'strip-sourcemap-loader'],
          },
          {
             // Build styles

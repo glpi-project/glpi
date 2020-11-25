@@ -3998,20 +3998,23 @@ JAVASCRIPT;
       }
 
       $field_id = Html::cleanId("dropdown_" . $p['name'] . $p['rand']);
-      $param    = ['value'               => $p['value'],
-                   'values'              => $p['values'],
-                   'valuename'           => $default,
-                   'valuesnames'         => $valuesnames,
-                   'width'               => $p['width'],
-                   'all'                 => $p['all'],
-                   'display_emptychoice' => $p['display_emptychoice'],
-                   'placeholder'         => $p['placeholder'],
-                   'right'               => $p['right'],
-                   'on_change'           => $p['on_change'],
-                   'used'                => $p['used'],
-                   'inactive_deleted'    => $p['inactive_deleted'],
-                   'entity_restrict'     => (is_array($p['entity']) ? json_encode(array_values($p['entity'])) : $p['entity']),
-                   'specific_tags'       => $p['specific_tags']];
+      $param    = [
+         'value'               => $p['value'],
+         'values'              => $p['values'],
+         'valuename'           => $default,
+         'valuesnames'         => $valuesnames,
+         'width'               => $p['width'],
+         'all'                 => $p['all'],
+         'display_emptychoice' => $p['display_emptychoice'],
+         'placeholder'         => $p['placeholder'],
+         'right'               => $p['right'],
+         'on_change'           => $p['on_change'],
+         'used'                => $p['used'],
+         'inactive_deleted'    => $p['inactive_deleted'],
+         'entity_restrict'     => (is_array($p['entity']) ? json_encode(array_values($p['entity'])) : $p['entity']),
+         'specific_tags'       => $p['specific_tags'],
+         '_idor_token'         => Session::getNewIDORToken(__CLASS__, ['right' => $p['right']]),
+      ];
 
       $output   = Html::jsAjaxDropdown($p['name'], $field_id,
                                        $p['url'],
@@ -4041,8 +4044,10 @@ JAVASCRIPT;
                                             'link'      => $user["link"],
                                             'linkid'    => $link_id]);
 
-         $paramscomment = ['value' => '__VALUE__',
-                                'table' => "glpi_users"];
+         $paramscomment = [
+            'value'    => '__VALUE__',
+            'itemtype' => User::getType()
+         ];
 
          if ($view_users) {
             $paramscomment['withlink'] = $link_id;

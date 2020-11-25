@@ -7303,10 +7303,13 @@ abstract class CommonITILObject extends CommonDBTM {
                   $imgsize = getimagesize($docpath);
                   echo Html::imageGallery([
                      [
-                        'src' => $docsrc,
-                        'w'   => $imgsize[0],
-                        'h'   => $imgsize[1]
+                        'src'             => $docsrc,
+                        'thumbnail_src'   => $docsrc . '&context=timeline',
+                        'w'               => $imgsize[0],
+                        'h'               => $imgsize[1]
                      ]
+                  ], [
+                     'gallery_item_class' => 'timeline_img_preview'
                   ]);
                }
             }
