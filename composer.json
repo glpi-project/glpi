@@ -56,6 +56,7 @@
         "symfony/console": "^4.4",
         "tecnickcom/tcpdf": "^6.2",
         "true/punycode": "^2.1",
+        "twig/string-extra": "^3.1",
         "twig/twig": "^3.0",
         "wapmorgan/unified-archive": "^1.0"
     },

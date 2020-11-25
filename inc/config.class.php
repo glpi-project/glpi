@@ -2085,6 +2085,8 @@ class Config extends CommonDBTM {
                  'check'   => 'glen\\FilenameNormalizer\\Normalizer' ],
                [ 'name'    => 'twig/twig',
                  'check'   => 'Twig\\Environment' ],
+               [ 'name'    => 'twig/string-extra',
+                 'check'   => 'Twig\\Extra\\String\\StringExtension' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [
