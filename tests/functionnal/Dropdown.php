@@ -1248,7 +1248,8 @@ class Dropdown extends DbTestCase {
          'display_emptychoice'   => true,
          'entity_restrict'       => 0,
          'page'                  => 1,
-         'page_limit'            => 10
+         'page_limit'            => 10,
+         '_idor_token'           => \Session::getNewIDORToken($location::getType())
       ];
       $values = \Dropdown::getDropdownValue($post);
       $values = (array)json_decode($values);
@@ -1278,7 +1279,8 @@ class Dropdown extends DbTestCase {
          'display_emptychoice'   => true,
          'entity_restrict'       => 0,
          'page'                  => 1,
-         'page_limit'            => 10
+         'page_limit'            => 10,
+         '_idor_token'           => \Session::getNewIDORToken($location::getType())
       ];
       $values = \Dropdown::getDropdownValue($post);
       $values = (array)json_decode($values);
