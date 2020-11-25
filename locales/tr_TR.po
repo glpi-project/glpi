@@ -2491,8 +2491,8 @@ msgstr "Kategori"
 #: tests/functionnal/Rule.php:283
 msgid "Type"
 msgid_plural "Types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tür"
+msgstr[1] "Türler"
 
 #: front/stat.graph.php:173 front/stat.tracking.php:88
 #: inc/problem.class.php:1401 inc/project.class.php:545
@@ -3418,8 +3418,8 @@ msgstr[1] "Bilgisayar türleri"
 #: inc/dropdown.class.php:871 inc/monitortype.class.php:42
 msgid "Monitor type"
 msgid_plural "Monitors types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ekran türü"
+msgstr[1] "Ekran türleri"
 
 #: inc/rule.class.php:383 inc/rulecollection.class.php:2047
 #: inc/dropdown.class.php:869 inc/printertype.class.php:42
@@ -4330,7 +4330,7 @@ msgstr "Kapanış tarihi"
 #: inc/item_softwareversion.class.php:1045
 #: inc/item_softwareversion.class.php:1191 tests/functionnal/Rule.php:295
 msgid "Status"
-msgstr ""
+msgstr "Durum"
 
 #: inc/problem.class.php:1309 inc/ticket.class.php:4584
 #: inc/change.class.php:914
@@ -4806,7 +4806,7 @@ msgstr "Gizli Kopyadaki kullanıcıları gözlemci olarak ekle"
 
 #: inc/mailcollector.class.php:298
 msgid "Collect only unread mail"
-msgstr ""
+msgstr "Yalnız okunmamış e-postalar toplansın"
 
 #: inc/mailcollector.class.php:383 inc/mailcollector.class.php:696
 msgid "An error occured trying to connect to collector."
@@ -4841,7 +4841,7 @@ msgstr "İleti geçersiz: %1$s"
 #: inc/mailcollector.class.php:770
 #, php-format
 msgid "Error during message parsing: %1$s"
-msgstr ""
+msgstr "İleti işlenirken sorun çıktı: %1$s"
 
 #: inc/mailcollector.class.php:905
 #, php-format
@@ -4849,6 +4849,8 @@ msgid ""
 "Number of messages: available=%1$d, already imported=%2$d, retrieved=%3$d, "
 "refused=%4$d, errors=%5$d, blacklisted=%6$d"
 msgstr ""
+"İleti sayısı: kullanılabilir: %1$d, içe aktarılan: %2$d, alınan: %3$d, "
+"reddedilen: %4$d, hatalı: %5$d, kara listede: %6$d"
 
 #: inc/mailcollector.class.php:920
 msgid "Could not connect to mailgate server"
@@ -5021,6 +5023,8 @@ msgid ""
 "Unable to create security key file! You have to run \"php bin/console "
 "glpi:security:change_key\" command to manually create this file."
 msgstr ""
+"Güvenlik anahtarı dosyası oluşturulamadı! Bu dosyayı el ile oluşturmak için "
+"\"php bin/console glpi:security:change_key\" komutunu yürütmelisiniz."
 
 #: inc/ruleasset.class.php:70 inc/ruleasset.class.php:72
 #: inc/rssfeed.class.php:980 inc/rssfeed.class.php:981
@@ -5325,8 +5329,8 @@ msgstr[1] "Aygıt görüntü kartı modelleri"
 #: inc/rssfeed.class.php:80 inc/central.class.php:68
 msgid "RSS feed"
 msgid_plural "RSS feed"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "RSS akışı"
+msgstr[1] "RSS akışı"
 
 #: inc/rssfeed.class.php:82 inc/rssfeed.class.php:933
 msgid "Personal RSS feed"
@@ -5621,8 +5625,8 @@ msgstr[1] "Çözüm kalıpları"
 #: inc/appliancetype.class.php:40
 msgid "Appliance type"
 msgid_plural "Appliance types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Aygıt türü"
+msgstr[1] "Aygıt türleri"
 
 #: inc/blacklist.class.php:216 inc/networkname.class.php:216
 msgid "IP"
@@ -7196,7 +7200,7 @@ msgstr "Yönetim numarası"
 #: inc/authldap.class.php:3281
 msgctxt "ldap"
 msgid "Phone"
-msgstr ""
+msgstr "Telefon"
 
 #: inc/authldap.class.php:817 inc/authldap.class.php:1104
 #: inc/notificationtemplatetranslation.class.php:124
@@ -7658,7 +7662,7 @@ msgstr "Destek kaydı takvimi"
 #: inc/levelagreement.class.php:702
 msgctxt "hour"
 msgid "Time"
-msgstr ""
+msgstr "Zaman"
 
 #. TRANS: %d is a number of minutes
 #: inc/levelagreement.class.php:760 inc/dropdown.class.php:1643
@@ -8182,8 +8186,8 @@ msgstr[1] "Öge işletim sistemleri"
 #: inc/operatingsystemkernel.class.php:42
 msgid "Kernel"
 msgid_plural "Kernels"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Çekirdek"
+msgstr[1] "Çekirdekler"
 
 #: inc/item_operatingsystem.class.php:345
 #: inc/item_operatingsystem.class.php:596
@@ -8400,8 +8404,8 @@ msgstr "Kaynak kapı numarası"
 #: inc/config.class.php:1718
 msgid "Memory"
 msgid_plural "Memories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Bellek"
+msgstr[1] "Bellekler"
 
 #: inc/operatingsystemarchitecture.class.php:44
 msgid "Operating system architecture"
@@ -9013,23 +9017,23 @@ msgstr "E-posta sunucusu bağlantısını sına"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:76
 msgid "Synchronize users against LDAP server informations"
-msgstr ""
+msgstr "Kullanıcılar LDAP sunucu bilgileri ile eşitlensin"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:82
 msgid "Only create new users"
-msgstr ""
+msgstr "Yalnız yeni kullanıcılar eklensin"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:89
 msgid "Only update existing users"
-msgstr ""
+msgstr "Yalnız var olan kullanıcılar güncellensin"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:96
 msgid "Synchronize only users attached to this LDAP server"
-msgstr ""
+msgstr "Yalnız bu LDAP sunucusundaki kullanıcılar eşitlensin"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:103
 msgid "Filter to apply on LDAP search"
-msgstr ""
+msgstr "LDAP aramasına uygulanacak süzgeç"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:111
 #, php-format
@@ -9037,6 +9041,8 @@ msgid ""
 "Begin date to apply in \"modifyTimestamp\" filter (see %s for supported "
 "formats)"
 msgstr ""
+"\"modifyTimestamp\" süzgecinde kullanılacak başlangıç tarihi (desteklenen "
+"biçimler için %s bölümüne bakabilirsiniz)"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:121
 #, php-format
@@ -9044,31 +9050,35 @@ msgid ""
 "End date to apply in \"modifyTimestamp\" filter (see %s for supported "
 "formats)"
 msgstr ""
+"\"modifyTimestamp\" süzgecinde kullanılacak bitiş tarihi (desteklenen "
+"biçimler için %s bölümüne bakabilirsiniz)"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:128
 #, php-format
 msgid "Force strategy used for deleted users (current configured action: \"%s\")"
 msgstr ""
+"Silinmiş kullanıcılar için kullanılan yöntem dayatılsın (geçerli işlem: "
+"\"%s\")"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:129
 msgid "unknown"
-msgstr ""
+msgstr "bilinmiyor"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:131
 msgid "Possible values are:"
-msgstr ""
+msgstr "Olabilecek değerler:"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:189
 msgid "No active LDAP server found."
-msgstr ""
+msgstr "Herhangi bir LDAP sunucusu bulunamadı."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:219
 msgid "LDAP servers"
-msgstr ""
+msgstr "LDAP sunucular"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:220
 msgid "LDAP filter"
-msgstr ""
+msgstr "LDAP süzgeci"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:230
 #: inc/console/security/changekeycommand.class.php:84
@@ -9077,118 +9087,119 @@ msgstr ""
 #: inc/console/database/abstractconfigurecommand.class.php:348
 #: inc/console/database/updatecommand.class.php:170
 msgid "Do you want to continue ?"
-msgstr ""
+msgstr "Devam etmek ister misiniz?"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:234
 msgid "Synchronization aborted."
-msgstr ""
+msgstr "Eşitleme iptal edildi."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:244
 msgid "Unable to load LDAP server informations."
-msgstr ""
+msgstr "LDAP sunucu bilgileri yüklenemedi."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:249
 #, php-format
 msgid ""
 "LDAP server \"%s\" is inactive, no synchronization will be done against it."
-msgstr ""
+msgstr "\"%s\" LDAP sunucusu etkin olmadığından eşitleme yapılmayacak."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:257
 #, php-format
 msgid "Processing LDAP server \"%s\"..."
-msgstr ""
+msgstr "\"%s\" LDAP sunucusu işleniyor..."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:285
 #, php-format
 msgid "LDAP server \"%s\" size limit exceeded."
-msgstr ""
+msgstr "\"%s\" LDAP sunucusunun boyut sınırı aşıldı."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:291
 #, php-format
 msgid "Error while contacting the LDAP server \"%s\"."
-msgstr ""
+msgstr "\"%s\" LDAP sunucusu ile bağlantı kurulurken sorun çıktı."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:306
 #, php-format
 msgid "Import new users from server \"%s\"..."
-msgstr ""
+msgstr "\"%s\" sunucundaki yeni kullanıcıları içe aktar..."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:309
 #, php-format
 msgid "Update existing users with server \"%s\"..."
-msgstr ""
+msgstr "\"%s\" sunucusunda var olan kullanıcıları güncelle..."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:312
 #, php-format
 msgid "Synchronize users with server \"%s\"..."
-msgstr ""
+msgstr "Kullanıcıyı \"%s\" sunucusu ile eşitle..."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:323
 msgid "No users found."
-msgstr ""
+msgstr "Herhangi bir kullanıcı bulunamadı."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:379
 #, php-format
 msgid "Unable to synchronize user \"%s\"."
-msgstr ""
+msgstr "\"%s\" kullanıcısı eşitlenemedi."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:393
 msgid "LDAP server"
-msgstr ""
+msgstr "LDAP sunucusu"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:394
 msgid "Imported"
-msgstr ""
+msgstr "İçe aktarılmış"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:395
 msgid "Synchronized"
-msgstr ""
+msgstr "Eşitlenmiş"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:396
 msgid "Deleted from LDAP"
-msgstr ""
+msgstr "LDAP üzerinden silinmiş"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:429
 msgid ""
 "Option --only-create-new is not compatible with option --only-update-"
 "existing."
 msgstr ""
+"--only-create-new seçeneği --only-update-existing seçeneği ile kullanılamaz."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:438
 #, php-format
 msgid "--ldap-server-id value \"%s\" is not a valid LDAP server id."
-msgstr ""
+msgstr "--ldap-server-id \"%s\" değeri geçerli bir LDAP sunucu kodu değil."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:451
 #, php-format
 msgid "Unable to parse --%1$s value \"%2$s\"."
-msgstr ""
+msgstr "--%1$s \"%2$s\" değeri işlenemedi."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:462
 msgid ""
 "Option --begin-date value has to be lower than option --end-date value."
-msgstr ""
+msgstr "--begin-date değeri --end-date value değerinden küçük olmalıdır."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:472
 #, php-format
 msgid "--deleted-user-strategy value \"%s\" is not valid."
-msgstr ""
+msgstr "--deleted-user-strategy \"%s\" değeri geçersiz."
 
 #: inc/console/maintenance/disablemaintenancemodecommand.class.php:56
 msgid "Disable maintenance mode"
-msgstr ""
+msgstr "Bakım kipini devre dışı bırak"
 
 #: inc/console/maintenance/disablemaintenancemodecommand.class.php:64
 msgid "Maintenance mode disabled."
-msgstr ""
+msgstr "Bakım kipi devre dışı."
 
 #: inc/console/maintenance/enablemaintenancemodecommand.class.php:57
 msgid "Enable maintenance mode"
-msgstr ""
+msgstr "Bakım kipini etkinleştir"
 
 #: inc/console/maintenance/enablemaintenancemodecommand.class.php:63
 msgid "Text to display during maintenance"
-msgstr ""
+msgstr "Bakım kipi etkin olduğunda görüntülenecek metin"
 
 #: inc/console/maintenance/enablemaintenancemodecommand.class.php:81
 #: inc/config.class.php:259
@@ -9198,77 +9209,80 @@ msgstr "Bakım kipi etkin. Kullanılan arka kapı: %s"
 
 #: inc/console/system/checkstatuscommand.class.php:52
 msgid "Check system status"
-msgstr ""
+msgstr "Sistem durumunu denetle"
 
 #: inc/console/system/checkrequirementscommand.class.php:54
 msgid "Check system requirements"
-msgstr ""
+msgstr "Sistem gereksinimlerini denetle"
 
 #: inc/console/system/checkrequirementscommand.class.php:67
 msgid "Requirement"
-msgstr ""
+msgstr "Gereksinim"
 
 #: inc/console/system/checkrequirementscommand.class.php:69
 msgid "Messages"
-msgstr ""
+msgstr "İletiler"
 
 #: inc/console/system/checkrequirementscommand.class.php:83
 msgid "WARNING"
-msgstr ""
+msgstr "UYARI"
 
 #: inc/console/system/checkrequirementscommand.class.php:84
 msgid "ERROR"
-msgstr ""
+msgstr "HATA"
 
 #: inc/console/security/changekeycommand.class.php:57
 msgid "Change password storage key and update values in database."
 msgstr ""
+"Parola depolama anahtarını değiştir ve veritabanındaki değerleri güncelle."
 
 #: inc/console/security/changekeycommand.class.php:72
 #, php-format
 msgid ""
 "Found %1$s field(s) and %2$s configuration entries requiring migration."
-msgstr ""
+msgstr "Aktarılması gereken %1$s alan ve %2$s yapılandırma kaydı bulundu."
 
 #: inc/console/security/changekeycommand.class.php:88
 msgid "Aborted."
-msgstr ""
+msgstr "İptal edildi."
 
 #: inc/console/security/changekeycommand.class.php:98
 msgid "Unable to change security key!"
-msgstr ""
+msgstr "Güvenlik anahtarı değiştirilemedi!"
 
 #: inc/console/security/changekeycommand.class.php:106
 msgid "New security key generated; database updated."
-msgstr ""
+msgstr "Yeni güvenlik anahtarı üretildi ve veritabanı güncellendi."
 
 #: inc/console/abstractcommand.class.php:93
 msgid "Unable to connect to database."
-msgstr ""
+msgstr "Veritabanı ile bağlantı kurulamadı."
 
 #: inc/console/abstractcommand.class.php:188
 msgid "Some optional system requirements are missing."
-msgstr ""
+msgstr "Bazı isteğe bağlı sistem gereksinimleri eksik."
 
 #: inc/console/abstractcommand.class.php:190
 #: inc/console/application.class.php:466
 msgid "Run \"php bin/console glpi:system:check_requirements\" for more details."
 msgstr ""
+"Ayrıntılı bilgi almak için \"php bin/console "
+"glpi:system:check_requirements\" komutunu yürütün."
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:60
 msgid "Migrate MyISAM tables to InnoDB"
-msgstr ""
+msgstr "MyISAM tablolarını InnoDB tablolarına dönüştür"
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:71
 #, php-format
 msgid "Found %s table(s) using MyISAM engine."
-msgstr ""
+msgstr "MyISAM işleyiciyi kullanan %s tablo bulundu."
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:77
 #: inc/console/migration/timestampscommand.class.php:89
 #: inc/console/database/updatecommand.class.php:145
 msgid "No migration needed."
-msgstr ""
+msgstr "Dönüştürme gerekmiyor."
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:92
 #: inc/console/migration/timestampscommand.class.php:104
@@ -9276,17 +9290,17 @@ msgstr ""
 #: inc/console/migration/appliancesplugintocorecommand.class.php:180
 #: inc/console/migration/domainsplugintocorecommand.class.php:141
 msgid "Migration aborted."
-msgstr ""
+msgstr "Dönüştürme iptal edildi."
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:102
 #, php-format
 msgid "Migrating table \"%s\"..."
-msgstr ""
+msgstr "\"%s\" tablosu dönüştürülüyor..."
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:109
 #, php-format
 msgid "Migration of table \"%s\"  failed with message \"(%s) %s\"."
-msgstr ""
+msgstr "\"%s\" tablosu şu ileti ile dönüştürülemedi \"(%s) %s\"."
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:122
 #: inc/console/migration/timestampscommand.class.php:212
@@ -9296,48 +9310,52 @@ msgstr ""
 #: inc/console/migration/domainsplugintocorecommand.class.php:156
 #: inc/console/database/updatecommand.class.php:186
 msgid "Migration done."
-msgstr ""
+msgstr "Dönüştürme tamamlandı."
 
 #: inc/console/migration/timestampscommand.class.php:51
 msgid "Convert \"datetime\" fields to \"timestamp\" to use timezones."
 msgstr ""
+"Saat dilimlerinin kullanması için \"tarihsaat\" alanlarını \"zamandamgası\" "
+"biçimine dönüştür."
 
 #: inc/console/migration/timestampscommand.class.php:83
 #, php-format
 msgid "Found %s table(s) requiring migration."
-msgstr ""
+msgstr "Dönüştürülmesi gereken %s tablo bulundu."
 
 #: inc/console/migration/timestampscommand.class.php:188
 #, php-format
 msgid "Running %s"
-msgstr ""
+msgstr "%s çalışıyor"
 
 #: inc/console/migration/timestampscommand.class.php:196
 #, php-format
 msgid "Update of `%s` failed with message \"(%s) %s\"."
-msgstr ""
+msgstr "`%s` şu ileti ile güncellenemedi \"(%s) %s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:162
 msgid "Migrate Racks plugin data into GLPI core tables"
-msgstr ""
+msgstr "Kabinler uygulama eki verilerini GLPI çekirdek tablolarına aktar"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:168
 msgid "Ignore \"PluginRacksOther\" models and elements"
-msgstr ""
+msgstr "\"PluginRacksOther\" model ve bileşenleri yok sayılsın"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:175
 #: inc/console/migration/appliancesplugintocorecommand.class.php:151
 msgid "Do not exit on import errors"
-msgstr ""
+msgstr "İçe aktarma sorunlarında işlem sona erdirilmesin"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:182
 msgid "Remove existing core data"
-msgstr ""
+msgstr "Var olan çekirdek verilerini sil"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:190
 #, php-format
 msgid "Run Racks plugin update (you need version %s files to do this)"
 msgstr ""
+"Kabinler uygulama eki güncellemesi yapılsın (bu işlem için %s sürümü "
+"dosyaları gereklidir)"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:200
 #: inc/console/migration/domainsplugintocorecommand.class.php:108
@@ -9346,54 +9364,60 @@ msgid ""
 "Enable migration without plugin files (we cannot validate that plugin data "
 "are compatible with supported %s version)"
 msgstr ""
+"Uygulama eki dosyaları olmadan aktarım yapılsın (bu uygulama eki verilerinin"
+" desteklenen %s sürümü ile uyumlu olup olmadığı belirlenemez)"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:216
 msgid ""
 "You are about to launch migration of Racks plugin data into GLPI core "
 "tables."
 msgstr ""
+"Kabinler uygulama eki verilerini GLPI çekirdek tablolarına aktarma işlemini "
+"başlatmak üzeresiniz."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:217
 #: inc/console/migration/appliancesplugintocorecommand.class.php:162
 #: inc/console/migration/domainsplugintocorecommand.class.php:125
 msgid "It is better to make a backup of your existing data before continuing."
-msgstr ""
+msgstr "Devam etmeden önce var olan verilerinizin yedeğini almanız önerilir."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:227
 #: inc/console/migration/appliancesplugintocorecommand.class.php:174
 #: inc/console/migration/domainsplugintocorecommand.class.php:135
 msgid "Do you want to launch migration ?"
-msgstr ""
+msgstr "Aktarıma başlansın mı?"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:270
 #: inc/console/migration/domainsplugintocorecommand.class.php:174
 msgid "Checking plugin version..."
-msgstr ""
+msgstr "Uygulama eki sürümü denetleniyor..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:278
 msgid ""
 "Racks plugin is not part of GLPI plugin list. It has never been installed or"
 " has been cleaned."
 msgstr ""
+"Kabinler uygulama eki GLPI uygulama eki listesinde bulunmuyor. Hiç "
+"kurulmamış ya da silinmiş."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:281
 #: inc/console/migration/racksplugintocorecommand.class.php:296
 #, php-format
 msgid ""
 "You have to install Racks plugin files in version %s to be able to continue."
-msgstr ""
+msgstr "Devam etmek için kabinler uygulama eki %s sürümünü kurmalısınız."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:317
 #: inc/console/migration/domainsplugintocorecommand.class.php:221
 #, php-format
 msgid "Migrating plugin to %s version..."
-msgstr ""
+msgstr "Uygulama eki %s sürümüne aktarılıyor..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:333
 #: inc/console/migration/domainsplugintocorecommand.class.php:237
 #, php-format
 msgid "Plugin migration to %s version failed."
-msgstr ""
+msgstr "Uygulama eki %s sürümüne aktarılamadı."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:344
 #, php-format
@@ -9401,39 +9425,42 @@ msgid ""
 "Racks plugin data has to be updated to %s version. It can be done using the "
 "--update-plugin option."
 msgstr ""
+"Kabinler uygulama eki verilerinin %s sürümüne güncellenmesi gerekiyor. Bu "
+"işlem --update-plugin seçeneği kullanılarak yapılabilir."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:384
 #, php-format
 msgid "Racks plugin table \"%s\" is missing."
-msgstr ""
+msgstr "\"%s\" kabinler uygulama eki tablosu eksik."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:392
 #: inc/console/migration/appliancesplugintocorecommand.class.php:227
 #: inc/console/migration/domainsplugintocorecommand.class.php:291
 msgid "Migration cannot be done."
-msgstr ""
+msgstr "Aktarım yapılamadı."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:448
 msgid ""
 "Other models and items cannot be migrated when --no-interaction option is "
 "used."
 msgstr ""
+"--no-interaction seçeneği kullanıldığında diğer model ve ögeler aktarılamaz."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:477
 msgid "Creating datacenter..."
-msgstr ""
+msgstr "Veri merkezi ekleniyor..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:493
 msgid "Unable to create datacenter."
-msgstr ""
+msgstr "Veri merkezi eklenemedi."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:514
 msgid "Importing other models..."
-msgstr ""
+msgstr "Diğer modeller içe aktarılıyor..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:527
 msgid "Other items do not exist in GLPI core."
-msgstr ""
+msgstr "GLPI çekirdeğinde diğer ögeler bulunamadı."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:529
 #, php-format
@@ -9441,209 +9468,214 @@ msgid ""
 "We found %d models for other items. For each, we will ask you where you want"
 " to import it."
 msgstr ""
+"Diğer ögeler için %d model bulundu. Her biri için nereye içe aktarılmasını "
+"istediğiniz sorulacak."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:548
 #, php-format
 msgid "Where do you want to import \"%s\" ?"
-msgstr ""
+msgstr "\"%s\" nereye içe aktarılsın?"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:556
 msgid "Ignore (default)"
-msgstr ""
+msgstr "Yok say (varsayılan)"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:611
 #, php-format
 msgid "Unable to import other model \"%s\"."
-msgstr ""
+msgstr "\"%s\" diğer modeli içe aktarılamadı."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:628
 #, php-format
 msgid "Importing items from model \"%s\"..."
-msgstr ""
+msgstr "\"%s\" modelindeki ögeler içe aktarılıyor..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:666
 #, php-format
 msgid "Unable to import other item \"%s\"."
-msgstr ""
+msgstr "\"%s\" diğer ögesi içe aktarılamadı."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:689
 msgid "No items found."
-msgstr ""
+msgstr "Herhangi bir öge bulunamadı."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:709
 msgid "Importing items specifications..."
-msgstr ""
+msgstr "Ögelerin özellikleri içe aktarılıyor..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:728
 #, php-format
 msgid "Importing specifications for model %s (%s)..."
-msgstr ""
+msgstr "%s (%s) modelinin özellikleri içe aktarılıyor..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:742
 #, php-format
 msgid "Model %s (%s) not found."
-msgstr ""
+msgstr "%s (%s) modeli bulunamadı."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:767
 #, php-format
 msgid "Unable to update model %s (%s)."
-msgstr ""
+msgstr "%s (%s) modeli güncellenemedi."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:784
 msgid "No items specifications found."
-msgstr ""
+msgstr "Herhangi bir öge özelliği bulunamadı."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:802
 msgid "Importing rack models..."
-msgstr ""
+msgstr "Kabin modelleri içe aktarılıyor..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:820
 #, php-format
 msgid "Importing rack model \"%s\"..."
-msgstr ""
+msgstr "\"%s\" kabin modeli içe aktarılıyor..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:841
 #, php-format
 msgid "Unable to import rack model \"%s\"."
-msgstr ""
+msgstr "\"%s\" kabin modeli içe aktarılamadı."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:862
 #: inc/console/migration/racksplugintocorecommand.class.php:942
 msgid "No rack models found."
-msgstr ""
+msgstr "Herhangi bir kabin modeli bulunamadı."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:880
 msgid "Importing rack types..."
-msgstr ""
+msgstr "Kabin türleri içe aktarılıyor..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:898
 #, php-format
 msgid "Importing rack type \"%s\"..."
-msgstr ""
+msgstr "\"%s\" kabin türü içe aktarılıyor..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:921
 #, php-format
 msgid "Unable to import rack type \"%s\"."
-msgstr ""
+msgstr "\"%s\" kabin türü içe aktarılamadı."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:960
 msgid "Importing rack states..."
-msgstr ""
+msgstr "Kabin durumları içe aktarılıyor..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:978
 #, php-format
 msgid "Importing rack state \"%s\"..."
-msgstr ""
+msgstr "\"%s\" kabin durumu içe aktarılıyor..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1003
 #, php-format
 msgid "Unable to import rack state \"%s\"."
-msgstr ""
+msgstr "\"%s\" kabin durumu içe aktarılamadı."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1025
 msgid "No rack states found."
-msgstr ""
+msgstr "Herhangi bir kabin durumu bulunamadı."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1043
 msgid "Importing rooms..."
-msgstr ""
+msgstr "Odalar içe aktarılıyor..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1061
 #, php-format
 msgid "Importing room \"%s\"..."
-msgstr ""
+msgstr "\"%s\" odası içe aktarılıyor..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1086
 #, php-format
 msgid "Unable to import room \"%s\"."
-msgstr ""
+msgstr "\"%s\" odası içe aktarılamadı."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1107
 msgid "No rooms found."
-msgstr ""
+msgstr "Herhangi bir oda bulunamadı."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1125
 msgid "Importing racks..."
-msgstr ""
+msgstr "Kabinler içe aktarılıyor..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1145
 #, php-format
 msgid "Importing rack \"%s\"..."
-msgstr ""
+msgstr "\"%s\" kabini içe aktarılıyor..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1213
 #, php-format
 msgid "Unable to import rack \"%s\"."
-msgstr ""
+msgstr "\"%s\" kabini içe aktarılamadı."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1235
 msgid "No racks found."
-msgstr ""
+msgstr "Herhangi bir kabin bulunamadı."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1253
 msgid "Importing rack items..."
-msgstr ""
+msgstr "Kabin ögeleri içe aktarılıyor..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1275
 #, php-format
 msgid "Importing rack item %s (%s)..."
-msgstr ""
+msgstr "%s (%s) kabin ögesi içe aktarılıyor..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1287
 #, php-format
 msgid "Item %s (%s) not found."
-msgstr ""
+msgstr "%s (%s) ögesi bulunamadı."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1304
 #, php-format
 msgid "Skipping item %s (%s) which is already linked to a rack."
-msgstr ""
+msgstr "%s (%s) ögesi zaten bir kabin ile bağlantılı olduğundan atlanıyor."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1345
 #, php-format
 msgid "Unable to import rack item %s (%s)."
-msgstr ""
+msgstr "%s (%s) kabin ögesi içe aktarılamadı."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1362
 msgid "No rack items found."
-msgstr ""
+msgstr "Herhangi bir kabin ögesi bulunamadı."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1443
 msgid "Unable to create default room."
-msgstr ""
+msgstr "Varsayılan oda eklenemedi."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:145
 msgid "Migrate Appliances plugin data into GLPI core tables"
-msgstr ""
+msgstr "Aygıtlar uygulama eki verilerini GLPI çekirdek tablolarına aktar"
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:160
 msgid ""
 "You are about to launch migration of Appliances plugin data into GLPI core "
 "tables."
 msgstr ""
+"Aygıtlar uygulama eki verilerini GLPI çekirdek tablolarına aktarma işlemini "
+"başlatmak üzeresiniz."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:161
 msgid "Any previous appliance created in core will be lost."
 msgstr ""
+"Çekirdek veritabanında daha önce oluşturulmuş aygıtlar varsa silinecek."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:209
 #, php-format
 msgid "Appliances plugin table \"%s\" is missing."
-msgstr ""
+msgstr "\"%s\" aygıtlar uygulama eki tablosu eksik."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:217
 #, php-format
 msgid "Appliances plugin field \"%s\" is missing."
-msgstr ""
+msgstr "\"%s\" aygıtlar uygulama eki tablosu eksik."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:296
 msgid "Updating profiles..."
-msgstr ""
+msgstr "Profiller güncelleniyor..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:311
 #, php-format
 msgid "Unable to update \"%s\" in profiles."
-msgstr ""
+msgstr "Profillerdeki \"%s\" güncellenemedi."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:311
 #: inc/profile.class.php:723 inc/profile.class.php:1175
@@ -9653,118 +9685,126 @@ msgstr "Destek kaydı ile ilişkilendirilebilecek ögeler"
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:328
 msgid "Updating GLPI itemtypes..."
-msgstr ""
+msgstr "GLPI öge türleri güncelleniyor..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:353
 #, php-format
 msgid "Migration of table \"%s\" failed with message \"(%s) %s\"."
-msgstr ""
+msgstr "\"%s\" tablosu şu ileti ile aktarılamadı \"(%s) %s\"."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:375
 msgid "Creating Appliance Items..."
-msgstr ""
+msgstr "Aygıt ögeleri ekleniyor..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:392
 #, php-format
 msgid "Importing Appliance item \"%d\"..."
-msgstr ""
+msgstr "\"%d\" aygıt ögesi içe aktarılıyor..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:413
 #, php-format
 msgid "Unable to create Appliance item %d."
-msgstr ""
+msgstr "%d aygıt ögesi eklenemedi."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:434
 msgid "Creating Appliance Environment..."
-msgstr ""
+msgstr "Aygıt ortamı oluşturuluyor..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:451
 #, php-format
 msgid "Importing environment \"%s\"..."
-msgstr ""
+msgstr "\"%s\" ortamı içe aktarılıyor..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:471
 #: inc/console/migration/appliancesplugintocorecommand.class.php:606
 #, php-format
 msgid "Unable to create Appliance environment %s (%d)."
-msgstr ""
+msgstr "%s (%d) aygıt ortamı eklenemedi.("
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:492
 msgid "Creating Appliances..."
-msgstr ""
+msgstr "Aygıtlar ekleniyor..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:508
 #, php-format
 msgid "Importing appliance \"%s\"..."
-msgstr ""
+msgstr "\"%s\" aygıtı içe aktarılıyor..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:545
 #, php-format
 msgid "Unable to create Appliance %s (%d)."
-msgstr ""
+msgstr "%s (%d) aygıtı eklenemedi."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:566
 msgid "Creating Appliance types..."
-msgstr ""
+msgstr "Aygıt türleri ekleniyor..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:583
 #, php-format
 msgid "Importing type \"%s\"..."
-msgstr ""
+msgstr "\"%s\" türü içe aktarılıyor..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:627
 msgid "Creating Appliance relations..."
-msgstr ""
+msgstr "Aygıt ilişkileri ekleniyor..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:659
 #, php-format
 msgid "Importing relation \"%s\"..."
-msgstr ""
+msgstr "\"%s\" ilişkisi içe aktarılıyor..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:670
 #, php-format
 msgid "Unable to found relation type %s from Appliance Item Relation %d."
-msgstr ""
+msgstr "%d aygıt ögesi ilişkisinden %s ilişki türü bulunamadı."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:697
 #, php-format
 msgid "Unable to create Appliance Item Relation %d."
-msgstr ""
+msgstr "%d aygıt ögesi ilişkisi eklenemedi."
 
 #: inc/console/migration/buildmissingtimestampscommand.class.php:52
 msgid "Set missing `date_creation` and `date_mod` values using log entries."
 msgstr ""
+"Günlük kayıtlarını kullanarak eksik `date_creation` ve `date_mod` "
+"değerlerini ayarla."
 
 #: inc/console/migration/buildmissingtimestampscommand.class.php:92
 #, php-format
 msgid "Filling `%s`.`%s`..."
-msgstr ""
+msgstr "`%s`.`%s` dolduruluyor..."
 
 #: inc/console/migration/buildmissingtimestampscommand.class.php:112
 #, php-format
 msgid "Update of `%s`.`%s` failed with message \"(%s) %s\"."
-msgstr ""
+msgstr "`%s`.`%s` şu ileti ile güncellenemedi \"(%s) %s\"."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:91
 msgid "Migrate Domains plugin data into GLPI core tables"
-msgstr ""
+msgstr "Etki alanları uygulama eki verilerini GLPI çekirdek tablolarına aktar"
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:98
 #, php-format
 msgid "Run Domains plugin update (you need version %s files to do this)"
 msgstr ""
+"Etki alanları uygulama eki güncellemesi yapılsın (bu işlem için %s sürümü "
+"dosyaları gereklidir)"
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:124
 msgid ""
 "You are about to launch migration of Domains plugin data into GLPI core "
 "tables."
 msgstr ""
+"Etki alanları uygulama eki verilerini GLPI çekirdek tablolarına aktarma "
+"işlemini başlatmak üzeresiniz."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:182
 msgid ""
 "Domains plugin is not part of GLPI plugin list. It has never been installed "
 "or has been cleaned."
 msgstr ""
+"Etki alanları uygulama eki GLPI uygulama eki listesinde bulunmuyor. Hiç "
+"kurulmamış ya da silinmiş."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:185
 #: inc/console/migration/domainsplugintocorecommand.class.php:200
@@ -9772,7 +9812,7 @@ msgstr ""
 msgid ""
 "You have to install Domains plugin files in version %s to be able to "
 "continue."
-msgstr ""
+msgstr "Devam etmek için etki alanları uygulama eki %s sürümünü kurmalısınız."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:248
 #, php-format
@@ -9780,306 +9820,323 @@ msgid ""
 "Domains plugin data has to be updated to %s version. It can be done using "
 "the --update-plugin option."
 msgstr ""
+"Etki alanları uygulama eki verilerinin %s sürümüne güncellenmesi gerekiyor. "
+"Bu işlem --update-plugin seçeneği kullanılarak yapılabilir."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:283
 #, php-format
 msgid "Domains plugin table \"%s\" is missing."
-msgstr ""
+msgstr "\"%s\" etki alanları uygulama eki tablosu eksik."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:319
 msgid "Importing domains types..."
-msgstr ""
+msgstr "Etki alanı türleri içe aktarılıyor..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:348
 #, php-format
 msgid "Updating existing domain type %s..."
-msgstr ""
+msgstr "%s var olan etki alanı türü güncelleniyor..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:353
 #, php-format
 msgid "Importing domain type %s..."
-msgstr ""
+msgstr "%s etki alanı türü içe aktarılıyor..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:386
 #, php-format
 msgid "Unable to add domain type %s."
-msgstr ""
+msgstr "%s etki alanı türü eklenemedi."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:387
 #, php-format
 msgid "Unable to update domain type %s."
-msgstr ""
+msgstr "%s etki alanı türü güncellenemedi."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:406
 msgid "No domains types found."
-msgstr ""
+msgstr "Herhangi bir etki alanı türü bulunamadı."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:425
 msgid "Importing domains..."
-msgstr ""
+msgstr "Etki alanları içe aktarılıyor..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:454
 #, php-format
 msgid "Updating existing domain %s..."
-msgstr ""
+msgstr "%s var olan etki alanı güncelleniyor..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:459
 #, php-format
 msgid "Importing domain %s..."
-msgstr ""
+msgstr "%s etki alanı içe aktarılıyor..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:472
 #, php-format
 msgid "Unable to find mapping for type %s."
-msgstr ""
+msgstr "%s türü için eşleşme bulunamadı."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:513
 #, php-format
 msgid "Unable to add domain %s."
-msgstr ""
+msgstr "%s etki alanı eklenemedi."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:514
 #, php-format
 msgid "Unable to update domain %s."
-msgstr ""
+msgstr "%s etki alanı güncellenemedi."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:557
 msgid "No domains found."
-msgstr ""
+msgstr "Herhangi bir etki alanı bulunamadı."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:574
 msgid "Importing domains items..."
-msgstr ""
+msgstr "Etki alanı ögeleri içe aktarılıyor..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:601
 #, php-format
 msgid "Unable to find corresponding domain for item %s (%s)."
-msgstr ""
+msgstr "%s (%s) ögesi için eşleşen bir etki alanı bulunamadı."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:614
 #, php-format
 msgid "Skip existing domain item %s..."
-msgstr ""
+msgstr "%s var olan etki alanı ögesi atlanıyor..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:619
 #, php-format
 msgid "Importing domain item %s..."
-msgstr ""
+msgstr "%s etki alanı ögesi içe aktarılıyor..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:654
 #, php-format
 msgid "Unable to add domain item %s."
-msgstr ""
+msgstr "%s etki alanı ögesi eklenemedi."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:655
 #, php-format
 msgid "Unable to update domain item %s."
-msgstr ""
+msgstr "%s etki alanı ögesi güncellenemedi."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:667
 msgid "No domains items found."
-msgstr ""
+msgstr "Herhangi bir etki alanı ögesi bulunamadı."
 
 #: inc/console/task/unlockcommand.class.php:56
 msgid "Unlock automatic tasks"
-msgstr ""
+msgstr "Otomatik görevlerin kilidini aç"
 
 #: inc/console/task/unlockcommand.class.php:62
 msgid "Unlock all tasks"
-msgstr ""
+msgstr "Tüm görevlerin kilidini aç"
 
 #: inc/console/task/unlockcommand.class.php:69
 msgid ""
 "Execution time (in cycles) from which the task is considered as stuck (delay"
 " = task frequency * cycle)"
 msgstr ""
+"Görevin takılmış olarak değerlendirileceği (döngü cinsinden) yürütme süresi "
+"(gecikme = görev sıklığı * döngü)"
 
 #: inc/console/task/unlockcommand.class.php:77
 msgid ""
 "Execution time (in seconds) from which the task is considered as stuck "
 "(default: 1800)"
 msgstr ""
+"Görevin takılmış olarak değerlendirileceği (saniye cinsinden) yürütme süresi"
+" (varsayılan değer: 1800)"
 
 #: inc/console/task/unlockcommand.class.php:85
 msgid "Itemtype::name of task to unlock (e.g: \"MailCollector::mailgate\")"
-msgstr ""
+msgstr "ögetürü::kilidi açılacak görevin adı (Örnek: \"MailCollector::mailgate\")"
 
 #: inc/console/task/unlockcommand.class.php:131
 #, php-format
 msgid "Task \"%s\" is still running but not in the whitelist."
-msgstr ""
+msgstr "\"%s\" görevi hala çalışıyor ancak beyaz listede değil."
 
 #: inc/console/task/unlockcommand.class.php:143
 #, php-format
 msgid "Task \"%s\" unlocked."
-msgstr ""
+msgstr "\"%s\" görevinin kilidi açıldı."
 
 #: inc/console/task/unlockcommand.class.php:149
 #, php-format
 msgid "An error occurs while trying to unlock \"%s\" task."
-msgstr ""
+msgstr "\"%s\" görevinin kilidi açılırken bir sorun çıktı."
 
 #: inc/console/task/unlockcommand.class.php:157
 #, php-format
 msgid "Number of tasks unlocked: %d."
-msgstr ""
+msgstr "Kilidi açılan görev sayısı: %d."
 
 #: inc/console/task/unlockcommand.class.php:181
 msgid "Option --cycle is not compatible with option --delay."
-msgstr ""
+msgstr "--cycle seçeneği --delay seçeneği ile birlikte kullanılamaz."
 
 #: inc/console/task/unlockcommand.class.php:187
 msgid "Option --cycle has to be an integer."
-msgstr ""
+msgstr "--cycle seçeneğinin değeri bir tamsayı olmalıdır."
 
 #: inc/console/task/unlockcommand.class.php:193
 msgid "Option --delay has to be an integer."
-msgstr ""
+msgstr "--delay seçeneğinin değeri bir tamsayı olmalıdır."
 
 #: inc/console/task/unlockcommand.class.php:203
 msgid "Option --all is not compatible with option --task."
-msgstr ""
+msgstr "--all seçeneği --task seçeneği ile birlikte kullanılamaz."
 
 #: inc/console/task/unlockcommand.class.php:209
 msgid ""
 "You have to specify which tasks to unlock using --all or --task options."
 msgstr ""
+"--all ya da --task seçenekleri kullanılacak kilidi açılacak görevleri "
+"belirtmelisiniz."
 
 #: inc/console/application.class.php:123
 msgid "The command to execute"
-msgstr ""
+msgstr "Yürütülecek komut"
 
 #: inc/console/application.class.php:130
 msgid "Display this help message"
-msgstr ""
+msgstr "Şu yardım iletisi görüntülensin"
 
 #: inc/console/application.class.php:136
 msgid "Do not output any message"
-msgstr ""
+msgstr "Herhangi bir ileti görüntülenmesin"
 
 #: inc/console/application.class.php:142
 msgid ""
 "Increase the verbosity of messages: 1 for normal output, 2 for more verbose "
 "output and 3 for debug"
 msgstr ""
+"İleti ayrıntısını arttırabilirsiniz: normal iletiler için 1, ayrıntılı "
+"iletiler için 2, hata ayıklama için 3"
 
 #: inc/console/application.class.php:148
 msgid "Display this application version"
-msgstr ""
+msgstr "Bu uygulamanın sürümünü görüntüle"
 
 #: inc/console/application.class.php:154
 msgid "Force ANSI output"
-msgstr ""
+msgstr "Çıktı ANSI olmaya zorlansın"
 
 #: inc/console/application.class.php:160
 msgid "Disable ANSI output"
-msgstr ""
+msgstr "ANSI çıktı devre dışı bırakılsın"
 
 #: inc/console/application.class.php:166
 msgid "Do not ask any interactive question"
-msgstr ""
+msgstr "Etkileşimli sorular sorulmasın"
 
 #: inc/console/application.class.php:172
 msgid "Configuration directory to use"
-msgstr ""
+msgstr "Kullanılacak yapılandırma klasörü"
 
 #: inc/console/application.class.php:178
 msgid "Disable GLPI plugins (unless commands forces plugins loading)"
 msgstr ""
+"GLPI uygulama ekleri devre dışı bırakılsın (komutlar uygulama eklerinin "
+"yüklenmesini zorlamadıkça)"
 
 #: inc/console/application.class.php:184
 msgid ""
 "Output language (default value is existing GLPI \"language\" configuration "
 "or \"en_GB\")"
 msgstr ""
+"Çıktı dili (varsayılan olarak GLPI yapılandırmasında var olan \"language\" "
+"ya da \"en_GB\" değeridir)"
 
 #: inc/console/application.class.php:205
 #, php-format
 msgid "Invalid \"--lang\" option value \"%s\"."
-msgstr ""
+msgstr "\"--lang\" seçeneği değeri \"%s\" geçersiz."
 
 #: inc/console/application.class.php:237
 #, php-format
 msgid "Time elapsed: %s."
-msgstr ""
+msgstr "Geçen zaman: %s."
 
 #: inc/console/application.class.php:243
 #, php-format
 msgid "Memory usage: %s."
-msgstr ""
+msgstr "Bellek kullanımı: %s."
 
 #: inc/console/application.class.php:323
 #, php-format
 msgid "Cannot write in \"%s\" directory."
-msgstr ""
+msgstr "\"%s\" klasörüne yazılamadı."
 
 #: inc/console/application.class.php:464
 msgid "Some mandatory system requirements are missing."
-msgstr ""
+msgstr "Bazı zorunlu sistem gereksinimleri eksik."
 
 #: inc/console/database/checkcommand.class.php:59
 msgid ""
 "Check for schema differences between current database and installation file."
 msgstr ""
+"Geçerli veritabanı ile kurulum dosyası arasındaki şema farklarını "
+"denetleyin."
 
 #: inc/console/database/checkcommand.class.php:68
 #, php-format
 msgid "Unable to read installation file \"%s\"."
-msgstr ""
+msgstr "\"%s\" kurulum dosyası okunamadı."
 
 #: inc/console/database/checkcommand.class.php:85
 #, php-format
 msgid "Processing table \"%s\"..."
-msgstr ""
+msgstr "\"%s\" tablosu işleniyor..."
 
 #: inc/console/database/checkcommand.class.php:93
 #, php-format
 msgid "Table schema differs for table \"%s\"."
-msgstr ""
+msgstr "\"%s\" tablosu için tablo şeması farklı."
 
 #: inc/console/database/abstractconfigurecommand.class.php:108
 #: inc/console/database/abstractconfigurecommand.class.php:333
 #: inc/console/database/updatecommand.class.php:123
 msgid "Database host"
-msgstr ""
+msgstr "Veritabanı sunucusu"
 
 #: inc/console/database/abstractconfigurecommand.class.php:116
 #: inc/console/database/abstractconfigurecommand.class.php:334
 #: inc/console/database/updatecommand.class.php:124
 msgid "Database name"
-msgstr ""
+msgstr "Veritabanı adı"
 
 #: inc/console/database/abstractconfigurecommand.class.php:123
 msgid ""
 "Database password (will be prompted for value if option passed without "
 "value)"
-msgstr ""
+msgstr "Veritabanı parolası (seçenek parola olmadan yazıldıysa sorulur)"
 
 #: inc/console/database/abstractconfigurecommand.class.php:131
 msgid "Database port"
-msgstr ""
+msgstr "Veritabanı kapı numarası"
 
 #: inc/console/database/abstractconfigurecommand.class.php:138
 #: inc/console/database/abstractconfigurecommand.class.php:335
 #: inc/console/database/updatecommand.class.php:125
 msgid "Database user"
-msgstr ""
+msgstr "Veritabanı kullanıcısı"
 
 #: inc/console/database/abstractconfigurecommand.class.php:145
 msgid "Reconfigure database, override configuration file if it already exists"
 msgstr ""
+"Veritabanını yeniden yapılandır ve varsa yapılandırma dosyasının üzerine yaz"
 
 #: inc/console/database/abstractconfigurecommand.class.php:152
 msgid "Database name:"
-msgstr ""
+msgstr "Veritabanı adı:"
 
 #: inc/console/database/abstractconfigurecommand.class.php:153
 msgid "Database user:"
-msgstr ""
+msgstr "Veritabanı kullanıcısı:"
 
 #: inc/console/database/abstractconfigurecommand.class.php:154
 msgid "Database password:"
-msgstr ""
+msgstr "Veritabanı parolası:"
 
 #: inc/console/database/abstractconfigurecommand.class.php:195
 #: inc/console/database/installcommand.class.php:148
@@ -10087,59 +10144,67 @@ msgid ""
 "Database configuration already exists. Use --reconfigure option to override "
 "existing configuration."
 msgstr ""
+"Veritabanı yapılandırması zaten var. Var olan yapılandırmanın üzerine "
+"yazılması için --reconfigure seçeneğini kullanın."
 
 #: inc/console/database/abstractconfigurecommand.class.php:211
 msgid "Configuration aborted."
-msgstr ""
+msgstr "Yapılandırma iptal edildi."
 
 #: inc/console/database/abstractconfigurecommand.class.php:228
 #: inc/console/database/installcommand.class.php:223
 #, php-format
 msgid "Database connection failed with message \"(%s) %s\"."
-msgstr ""
+msgstr "Veritabanı bağlantısı şu ileti ile kurulamadı \"(%s) %s\"."
 
 #: inc/console/database/abstractconfigurecommand.class.php:248
 msgid "Saving configuration file..."
-msgstr ""
+msgstr "Yapılandırma dosyası kaydediliyor..."
 
 #: inc/console/database/abstractconfigurecommand.class.php:253
 #, php-format
 msgid "Cannot write configuration file \"%s\"."
-msgstr ""
+msgstr "\"%s\" yapılandırma dosyasına yazılamadı."
 
 #: inc/console/database/abstractconfigurecommand.class.php:296
 msgid "Database name defined by --db-name option cannot be empty."
 msgstr ""
+"--db-name seçeneği ile belirtilmesi gereken veritabanı adı boş olamaz."
 
 #: inc/console/database/abstractconfigurecommand.class.php:302
 msgid "Database user defined by --db-user option cannot be empty."
 msgstr ""
+"--db-user seçeneği ile belirtilmesi gereken veritabanı kullanıcı adı boş "
+"olamaz."
 
 #: inc/console/database/abstractconfigurecommand.class.php:309
 msgid "--db-password option value cannot be null."
 msgstr ""
+"--db-password seçeneği ile belirtilmesi gereken parola değeri boş olamaz."
 
 #: inc/console/database/installcommand.class.php:91
 msgid "Default language of GLPI"
-msgstr ""
+msgstr "Varsayılan GLPI dili"
 
 #: inc/console/database/installcommand.class.php:99
 msgid "Force execution of installation, overriding existing database"
-msgstr ""
+msgstr "Var olan veritabanının üzerine yazılarak kurulmaya zorlansın"
 
 #: inc/console/database/installcommand.class.php:121
 msgid ""
 "Command input contains configuration options that may override existing "
 "configuration."
 msgstr ""
+"Komut girişinde var olan yapılandırmanın üzerine yazılmasına neden olacak "
+"yapılandırma seçenekleri var."
 
 #: inc/console/database/installcommand.class.php:123
 msgid "Do you want to reconfigure database ?"
-msgstr ""
+msgstr "Veritabanını yeniden yapılandırmak istiyor musunuz?"
 
 #: inc/console/database/installcommand.class.php:197
 msgid "Installation aborted."
-msgstr ""
+msgstr "Kurulum iptal edildi."
 
 #: inc/console/database/installcommand.class.php:207 install/install.php:379
 msgid "Security key cannot be generated!"
@@ -10147,52 +10212,54 @@ msgstr "Güvenlik anahtarı üretilemedi!"
 
 #: inc/console/database/installcommand.class.php:233
 msgid "Creating the database..."
-msgstr ""
+msgstr "Veritabanı oluşturuluyor..."
 
 #: inc/console/database/installcommand.class.php:239
 #, php-format
 msgid "Database creation failed with message \"(%s) %s\"."
-msgstr ""
+msgstr "Veritabanı şu ileti ile oluşturulamadı \"(%s) %s\"."
 
 #: inc/console/database/installcommand.class.php:260
 msgid ""
 "Database already contains \"glpi_*\" tables. Use --force option to override "
 "existing database."
 msgstr ""
+"Veritabanında zaten \"glpi_\" tabloları var. Var olan veritabanının üzerine "
+"yazılması için --force seçeneğini kullanın."
 
 #: inc/console/database/installcommand.class.php:284
 msgid "Loading default schema..."
-msgstr ""
+msgstr "Varsayılan şema yükleniyor..."
 
 #: inc/console/database/installcommand.class.php:296
 msgid "Installation done."
-msgstr ""
+msgstr "Kurulum tamamlandı."
 
 #: inc/console/database/updatecommand.class.php:72
 msgid "Update database schema to new version"
-msgstr ""
+msgstr "Veritabanı şemasını yeni sürüme güncelle"
 
 #: inc/console/database/updatecommand.class.php:78
 msgid "Allow update to an unstable version"
-msgstr ""
+msgstr "Kararsız bir sürüme güncellenebilsin"
 
 #: inc/console/database/updatecommand.class.php:85
 msgid ""
 "Force execution of update from v-1 version of GLPI even if schema did not "
 "changed"
-msgstr ""
+msgstr "Şema değişmemiş olsa bile GLPI v-1 sürümünden güncellemeye zorlansın"
 
 #: inc/console/database/updatecommand.class.php:122
 msgid "Current"
-msgstr ""
+msgstr "Geçerli"
 
 #: inc/console/database/updatecommand.class.php:126
 msgid "GLPI version"
-msgstr ""
+msgstr "GLPI sürümü"
 
 #: inc/console/database/updatecommand.class.php:127
 msgid "GLPI database version"
-msgstr ""
+msgstr "GLPI veritabanı sürümü"
 
 #: inc/console/database/updatecommand.class.php:135
 #, php-format
@@ -10200,6 +10267,8 @@ msgid ""
 "%s is not a stable release. Please upgrade manually or add --allow-unstable "
 "option."
 msgstr ""
+"%s sürümü kararlı değil. Lütfen el ile güncelleyin ya da --allow-unstable "
+"seçeneğini ekleyin."
 
 #: inc/console/database/updatecommand.class.php:152 install/update.php:529
 #, php-format
@@ -10208,85 +10277,91 @@ msgid ""
 "should retrieve it from your previous installation or encrypted data will be"
 " unreadable."
 msgstr ""
+"Önemli verileri şifrelemek ve şifresini çözmek için kullanılan \"%s\" "
+"anahtar dosyası eksik. Bu dosyayı önceki kurulumdan alabilirsiniz. Yoksa "
+"şifrelenmiş veriler okunamaz."
 
 #: inc/console/database/updatecommand.class.php:174
 msgid "Update aborted."
-msgstr ""
+msgstr "Güncelleme iptal edildi."
 
 #: inc/console/database/updatecommand.class.php:193
 msgid "Last migration replayed."
-msgstr ""
+msgstr "Son aktarım yeniden yapılıyor."
 
 #: inc/console/config/setcommand.class.php:62
 msgid "Set configuration value"
-msgstr ""
+msgstr "Yapılandırma değerini ayarla"
 
 #: inc/console/config/setcommand.class.php:72
 msgid "Configuration value:"
-msgstr ""
+msgstr "Yapılandırma değeri:"
 
 #: inc/console/config/setcommand.class.php:88
 #, php-format
 msgid "Invalid context \"%s\"."
-msgstr ""
+msgstr "\"%s\" bağlamı geçersiz."
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:53
 msgid "Replay dictionnary rules on existing items"
-msgstr ""
+msgstr "Sözlük kuralları var olan ögelere yeniden uygulansın"
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:60
 #, php-format
 msgid "Dictionnary to use. Possible values are: %s"
-msgstr ""
+msgstr "Kullanılacak sözlük. Olabilecek değerler: %s"
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:69
 msgid ""
 "If option is set, only items having given manufacturer ID will be processed."
 msgstr ""
+"Bu seçenek etkinleştirildiğinde, yalnız belirtilen üretici koduna sahip "
+"ögeler işlenir."
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:70
 msgid "Currently only available for Software dictionnary."
-msgstr ""
+msgstr "Şu anda yalnız Yazılım sözlüğü ile kullanılabilir."
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:81
 msgid "Which dictionnary do you want to replay ?"
-msgstr ""
+msgstr "Hangi sözlüğün yeniden uygulanmasını istiyorsunuz?"
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:101
 msgid "Invalid \"dictionnary\" value."
-msgstr ""
+msgstr "\"dictionnary\" değeri geçersiz"
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:53
 msgid "Process software category rules"
-msgstr ""
+msgstr "Yazılım kategorisi kurallarını işle"
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:59
 msgid ""
 "Process rule for all softwares, even those having already a defined category"
 msgstr ""
+"Kural bir kategoriye atanmış olsalar bile tüm yazılımlar için uygulanır"
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:81
 msgid "No software to process."
-msgstr ""
+msgstr "İşlenecek bir yazılım yok."
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:93
 #, php-format
 msgid "Processing software having id \"%s\"."
-msgstr ""
+msgstr "\"%s\" koduna sahip yazılımlar işleniyor."
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:102
 #, php-format
 msgid "Unable to load software having id \"%s\"."
-msgstr ""
+msgstr "\"%s\" koduna sahip yazılımlar yüklenemedi."
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:128
 #, php-format
 msgid "Number of softwares processed: %d."
-msgstr ""
+msgstr "İşlenen yazılım sayısı: %d."
 
 #: inc/console/plugin/abstractplugincommand.class.php:65
 msgid "Run command on all plugins"
-msgstr ""
+msgstr "Komut tüm uygulama ekleri üzerinde yürütülsün"
 
 #: inc/console/plugin/abstractplugincommand.class.php:71
 #: inc/marketplace/notificationtargetcontroller.class.php:120
@@ -10295,102 +10370,108 @@ msgstr "Uygulama eki klasörü"
 
 #: inc/console/plugin/abstractplugincommand.class.php:82
 msgid "Option --all is not compatible with usage of directory argument."
-msgstr ""
+msgstr "--all seçeneği klasör değişkeni ile birlikte kullanılamaz."
 
 #: inc/console/plugin/abstractplugincommand.class.php:93
 msgid "All plugins"
-msgstr ""
+msgstr "Tüm uygulama ekleri"
 
 #: inc/console/plugin/deactivatecommand.class.php:62
 #: inc/console/plugin/installcommand.class.php:116
 #: inc/console/plugin/activatecommand.class.php:62
 #, php-format
 msgid "Processing plugin \"%s\"..."
-msgstr ""
+msgstr "\"%s\" uygulama eki işleniyor..."
 
 #: inc/console/plugin/deactivatecommand.class.php:74
 #: inc/console/plugin/installcommand.class.php:128
 #: inc/console/plugin/activatecommand.class.php:74
 #, php-format
 msgid "Unable to load plugin \"%s\" informations."
-msgstr ""
+msgstr "\"%s\" uygulama eki bilgileri yüklenemedi."
 
 #: inc/console/plugin/deactivatecommand.class.php:82
 #, php-format
 msgid "Plugin \"%s\" deactivation failed."
-msgstr ""
+msgstr "\"%s\" uygulama eki devre dışı bırakılamadı."
 
 #: inc/console/plugin/deactivatecommand.class.php:90
 #, php-format
 msgid "Plugin \"%1$s\" has been deactivated."
-msgstr ""
+msgstr "\"%1$s\" uygulama eki devre dışı bırakıldı."
 
 #: inc/console/plugin/deactivatecommand.class.php:113
 #: inc/console/plugin/installcommand.class.php:274
 #: inc/console/plugin/activatecommand.class.php:113
 #, php-format
 msgid "Invalid plugin directory \"%s\"."
-msgstr ""
+msgstr "\"%s\" uygulama eki klasörü geçersiz."
 
 #: inc/console/plugin/deactivatecommand.class.php:123
 #: inc/console/plugin/activatecommand.class.php:123
 #, php-format
 msgid "Plugin \"%s\" is not yet installed."
-msgstr ""
+msgstr "\"%s\" uygulama eki henüz kurulmamış."
 
 #: inc/console/plugin/deactivatecommand.class.php:131
 #, php-format
 msgid "Plugin \"%s\" is already inactive."
-msgstr ""
+msgstr "\"%s\" uygualma eki zaten devre dışı."
 
 #: inc/console/plugin/deactivatecommand.class.php:142
 msgid "Which plugin(s) do you want to deactivate (comma separated values) ?"
 msgstr ""
+"Hangi uygulama eklerinin devre dışı bırakılmasını istiyorsunuz (virgül ile "
+"ayırarak yazın)?"
 
 #: inc/console/plugin/installcommand.class.php:63
 msgid "Additionnal parameters to pass to the plugin install hook function"
-msgstr ""
+msgstr "Uygulama eki kurulumu işlevine bildirilecek ek parametreler"
 
 #: inc/console/plugin/installcommand.class.php:65
 msgid "\"-p foo\" will set \"foo\" param value to true"
-msgstr ""
+msgstr "\"-p foo\" seçeneği \"foo\" parametresinin değerini doğru olarak ayarlar"
 
 #: inc/console/plugin/installcommand.class.php:67
 msgid "\"-p foo=bar\" will set \"foo\" param value to \"bar\""
-msgstr ""
+msgstr "\"-p foo=bar\" seçeneği \"foo\" parametresinin değerini \"bar\" olarak ayarlar"
 
 #: inc/console/plugin/installcommand.class.php:76
 msgid ""
 "Name of user used during installation script (among other things to set "
 "plugin admin rights)"
 msgstr ""
+"Kurulum betiği işlenirken kullanılacak kullanıcı adı (diğer şeylerin yanında"
+" uygulama eki yönetici izinlerini ayarlamak için)"
 
 #: inc/console/plugin/installcommand.class.php:83
 msgid "Force execution of installation, even if plugin is already installed"
-msgstr ""
+msgstr "Uygulama eki kurulu olsa bile kurulmaya zorlansın"
 
 #: inc/console/plugin/installcommand.class.php:138
 #, php-format
 msgid "Plugin \"%s\" installation failed."
-msgstr ""
+msgstr "\"%s\" uygulama eki kurulamadı."
 
 #: inc/console/plugin/installcommand.class.php:146
 #, php-format
 msgid "Plugin \"%1$s\" has been installed and must be configured."
-msgstr ""
+msgstr "\"%1$s\" uygulama eki kuruldu ve yapılandırması gerekiyor."
 
 #: inc/console/plugin/installcommand.class.php:147
 #, php-format
 msgid "Plugin \"%1$s\" has been installed and can be activated."
-msgstr ""
+msgstr "\"%1$s\" uygulama eki kuruldu ve etkinleştirilebilir."
 
 #: inc/console/plugin/installcommand.class.php:160
 msgid "Which plugin(s) do you want to install (comma separated values) ?"
 msgstr ""
+"Hangi uygulama eklerinin kurulmasını istiyorsunuz (virgül ile ayırarak "
+"yazın)?"
 
 #: inc/console/plugin/installcommand.class.php:233
 msgid "User name defined by --username option is invalid."
-msgstr ""
+msgstr "--username seçeneği ile belirtilen kullanıcı adı geçersiz."
 
 #: inc/console/plugin/installcommand.class.php:286
 #, php-format
@@ -10398,40 +10479,44 @@ msgid ""
 "Plugin \"%s\" is already installed. Use --force option to force "
 "reinstallation."
 msgstr ""
+"\"%s\" uygulama eki zaten kurulmuş. Yeniden kurulmaya zorlamak için --force "
+"seçeneğini kullanın."
 
 #: inc/console/plugin/installcommand.class.php:302
 #, php-format
 msgid "Plugin \"%s\" function \"%s\" is missing."
-msgstr ""
+msgstr "\"%s\" uygulama eki \"%s\" işlevi eksik."
 
 #: inc/console/plugin/installcommand.class.php:325
 #, php-format
 msgid "Plugin \"%s\" requirements not met."
-msgstr ""
+msgstr "\"%s\" uygulama ekinin gereksinimleri karşılanmıyor."
 
 #: inc/console/plugin/activatecommand.class.php:82
 #, php-format
 msgid "Plugin \"%s\" activation failed."
-msgstr ""
+msgstr "\"%s\" uygulama eki etkinleştirilemedi."
 
 #: inc/console/plugin/activatecommand.class.php:90
 #, php-format
 msgid "Plugin \"%1$s\" has been activated."
-msgstr ""
+msgstr "\"%1$s\" uygulama eki devre dışı bırakıldı."
 
 #: inc/console/plugin/activatecommand.class.php:131
 #, php-format
 msgid "Plugin \"%s\" is already active."
-msgstr ""
+msgstr "\"%s\" uygulama eki zaten etkin."
 
 #: inc/console/plugin/activatecommand.class.php:139
 #, php-format
 msgid "Plugin \"%s\" have to be installed and configured prior to activation."
-msgstr ""
+msgstr "\"%s\" uygulama eki etkinleştirilmeden önce kurulup yapılandırılmalıdır."
 
 #: inc/console/plugin/activatecommand.class.php:150
 msgid "Which plugin(s) do you want to activate (comma separated values) ?"
 msgstr ""
+"Hangi uygulama eklerinin etkinleştirilmesini istiyorsunuz (virgül ile "
+"ayırarak yazın)?"
 
 #: inc/mapgeolocation.class.php:113
 msgid "Set location here"
@@ -10949,8 +11034,8 @@ msgstr[1] "Üçüncü taraf türleri"
 #: inc/dropdown.class.php:901 inc/phonepowersupply.class.php:44
 msgid "Phone power supply type"
 msgid_plural "Phones power supply types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Telefon güç kaynağı türü"
+msgstr[1] "Telefonların güç kaynağı türleri"
 
 #: inc/dropdown.class.php:905 inc/certificatetype.class.php:45
 msgid "Certificate type"
@@ -11336,7 +11421,7 @@ msgstr "%s e-posta adresi geçersiz"
 
 #: inc/ticket.class.php:1838
 msgid "Auto-created task"
-msgstr ""
+msgstr "Otomatik oluşturulmuş görev"
 
 #: inc/ticket.class.php:1909
 #, php-format
@@ -11345,7 +11430,7 @@ msgstr "%s, %s destek kaydından bir izleme yükseltti"
 
 #: inc/ticket.class.php:1930
 msgid "Your ticket has been registered."
-msgstr ""
+msgstr "Destek kaydınız alındı."
 
 #: inc/ticket.class.php:2112
 #, php-format
@@ -11976,7 +12061,7 @@ msgstr "Veritabanı saat dilimi verileri sınanıyor"
 
 #: inc/system/requirement/dbtimezones.class.php:66
 msgid "Timezones seems loaded in database"
-msgstr ""
+msgstr "Saat dilimleri veritabanına yüklenmiş gibi görünüyor"
 
 #: inc/system/requirement/phpversion.class.php:55
 msgid "Testing PHP Parser"
@@ -11999,12 +12084,12 @@ msgstr "Günlük dosyalarının yazma izinleri denetleniyor"
 
 #: inc/system/requirement/logswriteaccess.class.php:67
 msgid "The log file has been created successfully."
-msgstr ""
+msgstr "Günlük dosyası oluşturuldu."
 
 #: inc/system/requirement/logswriteaccess.class.php:70
 #, php-format
 msgid "The log file could not be created in %s."
-msgstr ""
+msgstr "Günlük dosyası %s içinde oluşturulamadı."
 
 #: inc/system/requirement/extension.class.php:56 inc/config.class.php:2412
 #: inc/config.class.php:2425 inc/config.class.php:2436
@@ -12028,7 +12113,7 @@ msgstr "%s eklentisi bulunamadı"
 #: inc/system/requirement/mysqlimysqlnd.class.php:61
 #, php-format
 msgid "%s extension is installed but is not using mysqlnd driver"
-msgstr ""
+msgstr "%s eklentisi kuruldu ancak mysqlnd sürücüsünü kullanmıyor"
 
 #: inc/system/requirement/dbengine.class.php:52
 msgid "Testing DB engine version"
@@ -12051,7 +12136,7 @@ msgstr "Ayrılmış bellek sınaması"
 #: inc/system/requirement/memorylimit.class.php:70
 #, php-format
 msgid "Allocated memory > %s - Perfect!"
-msgstr ""
+msgstr "Ayrılmış bellek > %s - Mükemmel!"
 
 #: inc/system/requirement/memorylimit.class.php:71
 msgid "Unlimited memory - Perfect!"
@@ -12064,7 +12149,7 @@ msgstr "Ayrılmış bellek"
 #: inc/system/requirement/memorylimit.class.php:75
 #, php-format
 msgid "A minimum of %s is commonly required for GLPI."
-msgstr ""
+msgstr "GLPI için genel olarak en az %s gereklidir."
 
 #: inc/system/requirement/memorylimit.class.php:76
 msgid "Try increasing the memory_limit parameter in the php.ini file."
@@ -12083,6 +12168,8 @@ msgid ""
 "Checking that web access to files directory is protected cannot be done on "
 "CLI context."
 msgstr ""
+"Files klasörünün web üzerinden erişime karşı korunması CLI komut satırından "
+"yapılamaz."
 
 #: inc/system/requirement/protectedwebaccess.class.php:109
 #: inc/config.class.php:2782 inc/config.class.php:2786
@@ -12109,6 +12196,8 @@ msgid ""
 "Make sure access to %s (%s) is forbidden; otherwise review .htaccess file "
 "and web server configuration."
 msgstr ""
+"%s (%s) erişiminin engellendiğinden emin olun. Emin değlseniz .htaccess "
+"dosyasını ve web sunucu yapılandırmasını gözden geçirin."
 
 #: inc/system/requirement/protectedwebaccess.class.php:120
 #: inc/config.class.php:2803
@@ -12126,18 +12215,21 @@ msgstr "PHP işleyiciniz oturum desteği ile kurulmamış!"
 #: inc/system/requirement/sessionsconfiguration.class.php:63
 msgid "\"session.auto_start\" and \"session.use_trans_sid\" must be set to off."
 msgstr ""
+"\"session.auto_start\" ve \"session.use_trans_sid\" off olarak "
+"ayarlanmalıdır."
 
 #: inc/system/requirement/sessionsconfiguration.class.php:65
 msgid "\"session.auto_start\" must be set to off."
-msgstr ""
+msgstr "\"session.auto_start\" off olarak ayarlanmalıdır."
 
 #: inc/system/requirement/sessionsconfiguration.class.php:67
 msgid "\"session.use_trans_sid\" must be set to off."
-msgstr ""
+msgstr "\"session.use_trans_sid\" off olarak ayarlanmalıdır."
 
 #: inc/system/requirement/sessionsconfiguration.class.php:71
 msgid "See .htaccess file in the GLPI root for more informations."
 msgstr ""
+"Ayrıntılı bilgi almak için GLPI kök klasöründeki .htaccess dosyasına bakın."
 
 #: inc/system/requirement/sessionsconfiguration.class.php:77
 msgid "Sessions support is available - Perfect!"
@@ -12180,7 +12272,7 @@ msgstr "Kilit dosyalarının yazma izinleri denetleniyor"
 
 #: inc/system/requirement/directorywriteaccess.class.php:82
 msgid "Checking write permissions for marketplace plugins directory"
-msgstr ""
+msgstr "Mağaza uygulama ekleri klasörünün yazma izinleri denetleniyor"
 
 #: inc/system/requirement/directorywriteaccess.class.php:85
 #: inc/config.class.php:2632
@@ -12215,32 +12307,32 @@ msgstr "Yüklenen dosyaların yazma izinleri denetleniyor"
 #: inc/system/requirement/directorywriteaccess.class.php:103
 #, php-format
 msgid "Checking write permissions for directory %s"
-msgstr ""
+msgstr "%s klasörünün yazma izinleri denetleniyor"
 
 #: inc/system/requirement/directorywriteaccess.class.php:116
 #, php-format
 msgid "Write access to %s has been validated."
-msgstr ""
+msgstr "%s için yazma izni verilmiş."
 
 #: inc/system/requirement/directorywriteaccess.class.php:120
 #, php-format
 msgid "The file was created in %s but can't be deleted."
-msgstr ""
+msgstr "Dosya %s içinde oluşturuldu ancak silinemedi."
 
 #: inc/system/requirement/directorywriteaccess.class.php:123
 #, php-format
 msgid "The file could not be created in %s."
-msgstr ""
+msgstr "Dosya %s içinde oluşturulamadı."
 
 #: inc/system/requirement/directorywriteaccess.class.php:126
 #, php-format
 msgid "The directory was created in %s but could not be removed."
-msgstr ""
+msgstr "Klasör %s içinde oluşturuldu ancak silinemedi."
 
 #: inc/system/requirement/directorywriteaccess.class.php:129
 #, php-format
 msgid "The directory could not be created in %s."
-msgstr ""
+msgstr "Klasör %s içinde oluşturulamadı."
 
 #: inc/ipnetmask.class.php:74
 msgid "Subnet mask"
@@ -13199,7 +13291,7 @@ msgstr "Seri"
 
 #: inc/appliance_item.class.php:265
 msgid "Add to an appliance"
-msgstr ""
+msgstr "Bir aygıta ekle"
 
 #: inc/appliance_item.class.php:375 inc/item_enclosure.class.php:301
 #: inc/devicecamera_item_format.class.php:108
@@ -13217,7 +13309,7 @@ msgstr "Ögenin belirtilmesi zorunludur"
 
 #: inc/appliance_item.class.php:383
 msgid "An appliance is required"
-msgstr ""
+msgstr "Aygtın belirtilmesi zorunludur"
 
 #: inc/notificationtargetobjectlock.class.php:52
 msgid "Unlock Item Request"
@@ -14700,7 +14792,7 @@ msgstr "SSS içinde yayınla"
 
 #: inc/knowbaseitem.class.php:1908
 msgid "Comment KB entries"
-msgstr "BB kayıtlarına not ekleyin"
+msgstr "BB kayıtlarına not ekle"
 
 #: inc/knowbaseitem.class.php:1910
 msgid "Read the FAQ"
@@ -15247,7 +15339,7 @@ msgstr "Otomatik"
 
 #: inc/savedsearch.class.php:214
 msgid "Is private"
-msgstr ""
+msgstr "Kişisel"
 
 #: inc/savedsearch.class.php:231
 msgid "Last duration (ms)"
@@ -15388,8 +15480,8 @@ msgstr "Kilidinin açılması gereken öge türünü seçin"
 #: inc/applianceenvironment.class.php:40
 msgid "Appliance environment"
 msgid_plural "Appliance environments"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Aygıt ortamı"
+msgstr[1] "Aygıt ortamları"
 
 #: inc/ruledictionnarynetworkequipmentmodelcollection.class.php:41
 msgid "Dictionnary of networking equipment models"
@@ -15498,7 +15590,7 @@ msgstr "Otomatik hizmet düzeyi sözleşmesi işlemleri"
 
 #: inc/commonitiltask.class.php:243
 msgid "You can't remove description of a task."
-msgstr ""
+msgstr "Bir görevin açıklaması silinemez."
 
 #: inc/commonitiltask.class.php:279 inc/commonitiltask.class.php:427
 #: inc/features/planningevent.class.php:151
@@ -15517,7 +15609,7 @@ msgstr "Seçilmiş zaman aralığının bitişi çalışma saatlerinin dışınd
 
 #: inc/commonitiltask.class.php:406
 msgid "You can't add a task without description."
-msgstr ""
+msgstr "Açıklaması olmayan bir görev eklenemez."
 
 #: inc/commonitiltask.class.php:634
 msgid "Public followup"
@@ -15611,39 +15703,39 @@ msgstr "Yapılacak bir görev yok."
 
 #: inc/dashboard/provider.class.php:241 inc/dashboard/grid.class.php:1270
 msgid "Late tickets"
-msgstr ""
+msgstr "Son destek kayıtları"
 
 #: inc/dashboard/provider.class.php:282
 msgid "Tickets waiting your validation"
-msgstr ""
+msgstr "Onaylamanızı bekleyen destek kayıtları"
 
 #: inc/dashboard/provider.class.php:315
 msgid "Incoming tickets"
-msgstr ""
+msgstr "Gelen destek kayıtları"
 
 #: inc/dashboard/provider.class.php:321 inc/dashboard/grid.class.php:1274
 msgid "Pending tickets"
-msgstr ""
+msgstr "Bekleyen destek kayıtları"
 
 #: inc/dashboard/provider.class.php:328 inc/dashboard/grid.class.php:1275
 msgid "Assigned tickets"
-msgstr ""
+msgstr "Atanmış destek kayıtları"
 
 #: inc/dashboard/provider.class.php:335 inc/dashboard/grid.class.php:1276
 msgid "Planned tickets"
-msgstr ""
+msgstr "Planlanmış destek kayıtları"
 
 #: inc/dashboard/provider.class.php:342 inc/dashboard/grid.class.php:1277
 msgid "Solved tickets"
-msgstr ""
+msgstr "Çözümlenmiş destek kayıtları"
 
 #: inc/dashboard/provider.class.php:349 inc/dashboard/grid.class.php:1278
 msgid "Closed tickets"
-msgstr ""
+msgstr "Kapatılmış destek kayıtları"
 
 #: inc/dashboard/provider.class.php:506
 msgid "without"
-msgstr ""
+msgstr "şu olmayan"
 
 #: inc/dashboard/provider.class.php:1141 inc/commonitilobject.class.php:3574
 msgid "Waiting time"
@@ -15651,7 +15743,7 @@ msgstr "Bekleme zamanı"
 
 #: inc/dashboard/provider.class.php:1147
 msgid "Time to close"
-msgstr ""
+msgstr "Kapatılma zamanı"
 
 #: inc/dashboard/provider.class.php:1199
 msgid "New"
@@ -15663,84 +15755,84 @@ msgstr "Atanmış"
 
 #: inc/dashboard/provider.class.php:1214
 msgid "To validate"
-msgstr ""
+msgstr "Onaylanacak"
 
 #: inc/dashboard/widget.class.php:67
 msgid "Pie"
-msgstr ""
+msgstr "Daire"
 
 #: inc/dashboard/widget.class.php:76
 msgid "Donut"
-msgstr ""
+msgstr "Halka"
 
 #: inc/dashboard/widget.class.php:85
 msgid "Half pie"
-msgstr ""
+msgstr "Yarım daire"
 
 #: inc/dashboard/widget.class.php:94
 msgid "Half donut"
-msgstr ""
+msgstr "Yarım halka"
 
 #: inc/dashboard/widget.class.php:103
 msgid "Bars"
-msgstr ""
+msgstr "Çubuk"
 
 #: inc/dashboard/widget.class.php:122
 msgid "Multiple lines"
-msgstr ""
+msgstr "Çok çizgili"
 
 #: inc/dashboard/widget.class.php:132
 msgid "Area"
-msgstr ""
+msgstr "Bölge"
 
 #: inc/dashboard/widget.class.php:141
 msgid "Multiple areas"
-msgstr ""
+msgstr "Çok bölgeli"
 
 #: inc/dashboard/widget.class.php:151
 msgid "Multiple bars"
-msgstr ""
+msgstr "Çok çubuklu"
 
 #: inc/dashboard/widget.class.php:161
 msgid "Stacked bars"
-msgstr ""
+msgstr "Yığma çubuklu"
 
 #: inc/dashboard/widget.class.php:171
 msgid "Horizontal bars"
-msgstr ""
+msgstr "Yatay çubuklu"
 
 #: inc/dashboard/widget.class.php:181
 msgid "Big number"
-msgstr ""
+msgstr "Büyük sayı"
 
 #: inc/dashboard/widget.class.php:186
 msgid "Multiple numbers"
-msgstr ""
+msgstr "Çok sayılı"
 
 #: inc/dashboard/widget.class.php:195
 msgid "Editable markdown"
-msgstr ""
+msgstr "Düzenlenebilir markdown"
 
 #: inc/dashboard/widget.class.php:202
 msgid "Search result"
-msgstr ""
+msgstr "Arama sonucu"
 
 #: inc/dashboard/widget.class.php:210
 msgid "Summary numbers"
-msgstr ""
+msgstr "Özet sayılar"
 
 #: inc/dashboard/widget.class.php:219
 msgid "List of articles"
-msgstr ""
+msgstr "Makale listesi"
 
 #: inc/dashboard/widget.class.php:397 inc/dashboard/widget.class.php:503
 #: inc/dashboard/widget.class.php:945 inc/dashboard/widget.class.php:1704
 msgid "No data found"
-msgstr ""
+msgstr "Herhangi bir veri bulunamadı"
 
 #: inc/dashboard/widget.class.php:1516
 msgid "Type markdown text here"
-msgstr ""
+msgstr "Markdown metnini buraya yazın"
 
 #: inc/dashboard/grid.class.php:269 js/dashboard.js:161
 msgid "Share or embed this dashboard"
@@ -15752,11 +15844,11 @@ msgstr "Bu panoyu sil"
 
 #: inc/dashboard/grid.class.php:271
 msgid "Toggle auto-refresh"
-msgstr ""
+msgstr "Otomatik yenilemeyi aç/kapat"
 
 #: inc/dashboard/grid.class.php:272
 msgid "Toggle night mode"
-msgstr ""
+msgstr "Gece kipini aç/kapat"
 
 #: inc/dashboard/grid.class.php:273 inc/html.class.php:5018
 msgid "Toggle fullscreen"
@@ -15764,15 +15856,15 @@ msgstr "Tam ekranı aç/kapat"
 
 #: inc/dashboard/grid.class.php:274
 msgid "Clone this dashboard"
-msgstr ""
+msgstr "Bu panoyu kopyala"
 
 #: inc/dashboard/grid.class.php:275
 msgid "Toggle edit mode"
-msgstr ""
+msgstr "Düzenleme kipini aç/kapat"
 
 #: inc/dashboard/grid.class.php:276
 msgid "Add filter"
-msgstr ""
+msgstr "Süzgeç ekle"
 
 #: inc/dashboard/grid.class.php:277 js/dashboard.js:863
 msgid "Add a new dashboard"
@@ -15792,7 +15884,7 @@ msgstr "Bu kartı sil"
 
 #: inc/dashboard/grid.class.php:675
 msgid "others"
-msgstr ""
+msgstr "diğerleri"
 
 #: inc/dashboard/grid.class.php:682 inc/pdu_rack.class.php:280
 #: inc/item_rack.class.php:686 inc/rack.class.php:316
@@ -15801,35 +15893,35 @@ msgstr "Arka plan rengi"
 
 #: inc/dashboard/grid.class.php:708
 msgid "Widget"
-msgstr ""
+msgstr "Pano gereci"
 
 #: inc/dashboard/grid.class.php:739
 msgid "Use gradient palette"
-msgstr ""
+msgstr "Değişen palet kullanılsın"
 
 #: inc/dashboard/grid.class.php:756
 msgid "Display value labels on points/bars"
-msgstr ""
+msgstr "Nokta ya da çubuklarda değerler görüntülensin"
 
 #: inc/dashboard/grid.class.php:773
 msgid "Limit number of data"
-msgstr ""
+msgstr "Veri sayısını sınırla"
 
 #: inc/dashboard/grid.class.php:831
 msgid "Filters"
-msgstr ""
+msgstr "Süzgeçler"
 
 #: inc/dashboard/grid.class.php:866
 msgid "Embed in another application"
-msgstr ""
+msgstr "Başka bir uygulamaya göm"
 
 #: inc/dashboard/grid.class.php:868
 msgid "Direct link"
-msgstr ""
+msgstr "Doğrudan bağlantı"
 
 #: inc/dashboard/grid.class.php:877
 msgid "Iframe"
-msgstr ""
+msgstr "Iframe"
 
 #: inc/dashboard/grid.class.php:951 inc/entity.class.php:155
 msgid "Entity"
@@ -15852,102 +15944,102 @@ msgstr[1] "Grup"
 
 #: inc/dashboard/grid.class.php:957
 msgid "Or share the dashboard to these target objects:"
-msgstr ""
+msgstr "Ya da panoyu şu hedef nesneler ile paylaş:"
 
 #: inc/dashboard/grid.class.php:996
 msgid "empty card !"
-msgstr ""
+msgstr "kart boş!"
 
 #: inc/dashboard/grid.class.php:1221 inc/dashboard/grid.class.php:1285
 #, php-format
 msgid "Number of %s"
-msgstr ""
+msgstr "%s sayısı"
 
 #: inc/dashboard/grid.class.php:1250
 #, php-format
 msgid "%s by %s"
-msgstr ""
+msgstr "%s göre %s "
 
 #: inc/dashboard/grid.class.php:1273
 msgid "New tickets"
-msgstr ""
+msgstr "Yeni destek kayıtları"
 
 #: inc/dashboard/grid.class.php:1301
 #, php-format
 msgid "List of %s"
-msgstr ""
+msgstr "%s listesi"
 
 #: inc/dashboard/grid.class.php:1318
 msgid "Number of tickets by month"
-msgstr ""
+msgstr "Aya göre destek kaydı sayısı"
 
 #: inc/dashboard/grid.class.php:1330
 msgid "Evolution of ticket in the past year"
-msgstr ""
+msgstr "Destek kaydının geçen yıldaki gelişimi"
 
 #: inc/dashboard/grid.class.php:1342
 msgid "Tickets status by month"
-msgstr ""
+msgstr "Aya göre destek kayıtlarının durumu"
 
 #: inc/dashboard/grid.class.php:1354
 msgid "Tickets times (in hours)"
-msgstr ""
+msgstr "Destek kaydı süreleri (saat olarak)"
 
 #: inc/dashboard/grid.class.php:1366
 msgid "Tickets summary"
-msgstr ""
+msgstr "Destek kayıtlarının özeti"
 
 #: inc/dashboard/grid.class.php:1375
 msgid "Top ticket's categories"
-msgstr ""
+msgstr "Önde gelen destek kaydı kategorileri"
 
 #: inc/dashboard/grid.class.php:1376
 msgid "Top ticket's entities"
-msgstr ""
+msgstr "Önde gelen destek kaydı varlıkları"
 
 #: inc/dashboard/grid.class.php:1377
 msgid "Top ticket's request types"
-msgstr ""
+msgstr "Önde gelen destek kaydı istek türleri"
 
 #: inc/dashboard/grid.class.php:1378
 msgid "Top ticket's locations"
-msgstr ""
+msgstr "Önde gelen destek kayıtlarının konumu"
 
 #: inc/dashboard/grid.class.php:1394
 msgid "Top ticket's requesters"
-msgstr ""
+msgstr "Önde gelen destek kaydı isteğinde bulunanlar"
 
 #: inc/dashboard/grid.class.php:1395
 msgid "Top ticket's requester groups"
-msgstr ""
+msgstr "Önde gelen destek kaydı isteğinde bulunan gruplar"
 
 #: inc/dashboard/grid.class.php:1396
 msgid "Top ticket's observers"
-msgstr ""
+msgstr "Önde gelen destek kaydı gözlemcileri"
 
 #: inc/dashboard/grid.class.php:1397
 msgid "Top ticket's observer groups"
-msgstr ""
+msgstr "Önde gelen destek kaydı gözlemci grupları"
 
 #: inc/dashboard/grid.class.php:1398
 msgid "Top ticket's assignees"
-msgstr ""
+msgstr "Önde gelen destek kayıtlarının atandığı kişiler"
 
 #: inc/dashboard/grid.class.php:1399
 msgid "Top ticket's assignee groups"
-msgstr ""
+msgstr "Önde gelen destek kayıtlarının atandığı kişi grupları"
 
 #: inc/dashboard/grid.class.php:1419
 msgid "List of reminders"
-msgstr ""
+msgstr "Anımsatıcı listesi"
 
 #: inc/dashboard/grid.class.php:1427
 msgid "Editable markdown card"
-msgstr ""
+msgstr "Düzenlenebilir markdown kartı"
 
 #: inc/dashboard/grid.class.php:1430
 msgid "Toggle edit mode to edit content"
-msgstr ""
+msgstr "İçeriği düzenlemek için düzenleme kipini aç/kapat"
 
 #: inc/dashboard/grid.class.php:1449 inc/commondbtm.class.php:5073
 msgid "Purge"
@@ -15981,7 +16073,7 @@ msgstr[1] "Lisanslar"
 #: inc/item_softwareversion.class.php:98
 msgctxt "software"
 msgid "Request source"
-msgstr ""
+msgstr "İstek kaynağı"
 
 #: inc/item_softwarelicense.class.php:198
 msgid "A version is required!"
@@ -16756,8 +16848,8 @@ msgstr "Herhangi bir ağ kapı numarası bulunamadı"
 #: inc/networkport.class.php:1016
 msgid "Port number"
 msgid_plural "Port numbers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kapı numarası"
+msgstr[1] "Kapı numaraları"
 
 #: inc/networkport.class.php:930 inc/networkport.class.php:1034
 msgid "Network port type"
@@ -16914,7 +17006,7 @@ msgstr "Keşfet"
 #: inc/marketplace/view.class.php:142 inc/glpinetwork.class.php:80
 #, php-format
 msgid "%1$s services website seems not available from your network or offline"
-msgstr ""
+msgstr "%1$s hizmetleri web sitesine ağınızdan erişilemiyor ya da çevrimdışı"
 
 #: inc/marketplace/view.class.php:144
 msgid "Maybe you could setup a proxy"
@@ -16927,7 +17019,7 @@ msgstr "ya da daha sonra yeniden deneyin"
 #: inc/marketplace/view.class.php:156
 #, php-format
 msgid "Your %1$s registration is not valid."
-msgstr ""
+msgstr "%1$s kaydınız geçersiz."
 
 #: inc/marketplace/view.class.php:157
 msgid "A registration, at least a free one, is required to use marketplace!"
@@ -16937,7 +17029,7 @@ msgstr ""
 #: inc/marketplace/view.class.php:158
 #, php-format
 msgid "Register on %1$s"
-msgstr ""
+msgstr "%1$s üzerine kayıt olun"
 
 #: inc/marketplace/view.class.php:160
 msgid "fill your registration key in setup."
@@ -17056,7 +17148,7 @@ msgstr "Kaldır"
 #: inc/marketplace/view.class.php:796
 #, php-format
 msgid "You must have a %s subscription to get this plugin"
-msgstr ""
+msgstr "Bu uygulama ekini alabilmek için bir %s aboneliğiniz olmalı"
 
 #: inc/marketplace/view.class.php:801
 #, php-format
@@ -17331,7 +17423,7 @@ msgstr ""
 #: inc/glpinetwork.class.php:69
 #, php-format
 msgid "Register on %1$s!"
-msgstr ""
+msgstr "%1$s üzerine kayıt olun!"
 
 #: inc/glpinetwork.class.php:70
 msgid "And retrieve your key to paste it below"
@@ -17340,7 +17432,7 @@ msgstr "Aldığınız anahtarı kopyalayıp aşağıya yapıştırın"
 #: inc/glpinetwork.class.php:83
 #, php-format
 msgid "Error was: %s"
-msgstr ""
+msgstr "Hata: %s"
 
 #: inc/glpinetwork.class.php:91
 msgid "Registration key"
@@ -17411,20 +17503,20 @@ msgstr[1] "Aygıt pil modelleri"
 msgctxt "appliance"
 msgid "Relation"
 msgid_plural "Relations"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "İlişki"
+msgstr[1] "İlişkiler"
 
 #: inc/devicecamera_item_format.class.php:116
 #: inc/appliance_item_relation.class.php:116
 msgid "An appliance item is required"
-msgstr ""
+msgstr "Aygıt ögesinin belirtilmesi zorunludur"
 
 #: inc/devicecamera_item_format.class.php:212
 #: inc/devicecamera_item_format.class.php:213
 #: inc/appliance_item_relation.class.php:212
 #: inc/appliance_item_relation.class.php:213
 msgid "New relation"
-msgstr ""
+msgstr "Yeni ilişki"
 
 #: inc/ruledictionnaryprinter.class.php:52
 #: inc/ruledictionnaryprintercollection.class.php:51
@@ -19624,7 +19716,7 @@ msgstr "Ögelerin kilidini aç"
 #: inc/commondbtm.class.php:3891
 msgctxt "button"
 msgid "Associate to an appliance"
-msgstr ""
+msgstr "Bir aygıt ile ilişkilendir"
 
 #: inc/commondbtm.class.php:4109
 msgid "At least one field has an incorrect value"
@@ -21831,11 +21923,11 @@ msgstr[1] "Özel aygıtlar"
 
 #: inc/appliance.class.php:137
 msgid "Technician in charge of the appliance"
-msgstr ""
+msgstr "Aygıttan sorunlu teknisyen"
 
 #: inc/appliance.class.php:153
 msgid "Group in charge of the appliance"
-msgstr ""
+msgstr "Aygıttan sorumlu grup"
 
 #: inc/appliance.class.php:304
 msgid "Environment"
@@ -21844,12 +21936,12 @@ msgstr "Ortam"
 #: inc/appliance.class.php:441
 msgctxt "button"
 msgid "Add to an appliance"
-msgstr ""
+msgstr "Bir aygıta ekle"
 
 #: inc/appliance.class.php:442
 msgctxt "button"
 msgid "Remove from an appliance"
-msgstr ""
+msgstr "Bir aygıttan kaldır"
 
 #: inc/requesttype.class.php:42
 msgid "Request source"
@@ -22598,11 +22690,11 @@ msgstr "Yeni hiyerarşi bu şekildedir. Tamamsa onaylayın."
 
 #: install/update.php:525
 msgid "Missing security key file"
-msgstr ""
+msgstr "Güvenlik anahtarı dosyası eksik"
 
 #: install/update.php:533
 msgid "Ignore warning"
-msgstr ""
+msgstr "Uyarıyı yok say"
 
 #: install/update.php:575
 msgid "Impossible to accomplish an update by this way!"
@@ -22674,11 +22766,11 @@ msgstr "Otomatik yönlendiriliyor, iptal için tıklayın"
 
 #: install/update_94_95/dashboards.php:6
 msgid "Central"
-msgstr ""
+msgstr "Merkez"
 
 #: install/update_94_95/dashboards.php:312
 msgid "Mini tickets dashboard"
-msgstr ""
+msgstr "Mini destek kaydı panosu"
 
 #: install/install.php:113
 msgid "Unofficial translations are also available"
@@ -22819,7 +22911,7 @@ msgstr ""
 
 #: install/install.php:614
 msgid "Select your language"
-msgstr ""
+msgstr "Dilinizi seçin"
 
 #: install/install.php:639
 msgid "Beginning of the installation"
@@ -22884,23 +22976,23 @@ msgstr "Sık sorulan sorulara erişim"
 
 #: js/common.js:1185
 msgid "just now"
-msgstr ""
+msgstr "şimdi"
 
 #: js/common.js:1187
 msgid "a minute ago"
-msgstr ""
+msgstr "bir dakika önce"
 
 #: js/common.js:1189
 msgid "an hour ago"
-msgstr ""
+msgstr "bir saat önce"
 
 #: js/common.js:1191
 msgid "yesterday"
-msgstr ""
+msgstr "dün"
 
 #: js/common.js:1193
 msgid "a year ago"
-msgstr ""
+msgstr "bir yıl önce"
 
 #: js/dashboard.js:333
 msgid "Add a card"
@@ -22908,7 +23000,7 @@ msgstr "Bir kart ekle"
 
 #: js/dashboard.js:366
 msgid "Add a filter"
-msgstr ""
+msgstr "Süzgeç ekle"
 
 #: js/dashboard.js:415
 msgid "Saved"
@@ -23022,11 +23114,11 @@ msgstr "Her satırda bir öge"
 
 #: js/kanban.js:1519
 msgid "Add a column from existing status"
-msgstr "Var olan durumdan bir sütun ekleyin"
+msgstr "Var olan durumdan bir sütun ekle"
 
 #: js/kanban.js:1523
 msgid "Or add a new status"
-msgstr "Ya da yeni bir durum ekleyin"
+msgstr "Ya da yeni bir durum ekle"
 
 #: js/kanban.js:1524 js/kanban.js:1541 js/kanban.js:1560
 msgid "Create status"

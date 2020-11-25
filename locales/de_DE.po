@@ -9185,11 +9185,11 @@ msgstr "LDAP Server"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:394
 msgid "Imported"
-msgstr ""
+msgstr "Importiert"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:395
 msgid "Synchronized"
-msgstr ""
+msgstr "Synchronisiert"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:396
 msgid "Deleted from LDAP"
@@ -15850,7 +15850,7 @@ msgstr "Bearbeitungsmodus umschalten"
 
 #: inc/dashboard/grid.class.php:276
 msgid "Add filter"
-msgstr ""
+msgstr "Filter hinzufügen"
 
 #: inc/dashboard/grid.class.php:277 js/dashboard.js:863
 msgid "Add a new dashboard"
@@ -17475,8 +17475,8 @@ msgstr[1] "Batterietypen des Gerätes"
 msgctxt "appliance"
 msgid "Relation"
 msgid_plural "Relations"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Beziehung"
+msgstr[1] "Beziehungen"
 
 #: inc/devicecamera_item_format.class.php:116
 #: inc/appliance_item_relation.class.php:116
@@ -17488,7 +17488,7 @@ msgstr ""
 #: inc/appliance_item_relation.class.php:212
 #: inc/appliance_item_relation.class.php:213
 msgid "New relation"
-msgstr ""
+msgstr "Neue Beziehung"
 
 #: inc/ruledictionnaryprinter.class.php:52
 #: inc/ruledictionnaryprintercollection.class.php:51
@@ -22932,7 +22932,7 @@ msgstr ""
 
 #: install/install.php:614
 msgid "Select your language"
-msgstr ""
+msgstr "Wählen Sie Ihre Sprache"
 
 #: install/install.php:639
 msgid "Beginning of the installation"

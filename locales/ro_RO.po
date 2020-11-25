@@ -9,8 +9,8 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # Doru  DEACONU <dumitrudeaconu@yahoo.com>, 2020
 # Drastic Solutions <yixay88559@win-777.net>, 2020
-# Laurentiu Dobrota <rauldobrota@gmail.com>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
+# Laurentiu Dobrota <rauldobrota@gmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -19,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-11-19 15:03+0100\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2020\n"
+"Last-Translator: Laurentiu Dobrota <rauldobrota@gmail.com>, 2020\n"
 "Language-Team: Romanian (Romania) (https://www.transifex.com/glpi/teams/1637/ro_RO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1480,7 +1480,7 @@ msgstr "%s şterge un actor"
 
 #: front/dashboard_helpdesk.php:49
 msgid "Helpdesk Dashboard"
-msgstr ""
+msgstr "Tablou de bord Helpdesk"
 
 #: front/group_problem.form.php:58 front/change_group.form.php:58
 #: front/problem_user.form.php:71 front/ticket_user.form.php:66
@@ -1549,27 +1549,27 @@ msgstr "Parolă incorectă"
 
 #: front/updatepassword.php:69
 msgid "The new password must be different from current password"
-msgstr ""
+msgstr "Noua parolă trebuie să fie diferită de parola curentă"
 
 #: front/updatepassword.php:71
 msgid "The two passwords do not match"
-msgstr ""
+msgstr "Cele două parole nu se potrivesc"
 
 #: front/updatepassword.php:78
 msgid "An error occured during password update"
-msgstr ""
+msgstr "A apărut o eroare la actualizarea parolei"
 
 #: front/updatepassword.php:89 inc/user.class.php:4605
 msgid "Password update"
-msgstr ""
+msgstr "Actualizare parolă"
 
 #: front/updatepassword.php:92
 msgid "Your password has been successfully updated."
-msgstr ""
+msgstr "Parola ta a fost actualizată cu succes."
 
 #: front/updatepassword.php:94
 msgid "Log in"
-msgstr ""
+msgstr "Autentificare"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:55
@@ -1805,11 +1805,11 @@ msgstr "Acasă"
 #: front/helpdesk.public.php:104 inc/central.class.php:295
 #, php-format
 msgid "Your password will expire on %s."
-msgstr ""
+msgstr "Parola ta va expira pe %s."
 
 #: front/helpdesk.public.php:115 inc/central.class.php:301
 msgid "Update my password"
-msgstr ""
+msgstr "Actualizare parolă"
 
 #: front/reservationitem.form.php:49
 #, php-format
@@ -2510,9 +2510,9 @@ msgstr "Categorie"
 #: tests/functionnal/Rule.php:283
 msgid "Type"
 msgid_plural "Types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Tip"
+msgstr[1] "Tipuri"
+msgstr[2] "Tipuri"
 
 #: front/stat.graph.php:173 front/stat.tracking.php:88
 #: inc/problem.class.php:1401 inc/project.class.php:545
@@ -3319,7 +3319,7 @@ msgstr "Nu ati selectat nici un element sau operatia nu este bine definita"
 
 #: front/dashboard_assets.php:49
 msgid "Assets Dashboard"
-msgstr ""
+msgstr "Panou de bord Asset-uri"
 
 #: front/contract_item.form.php:48 inc/contract.class.php:62
 #: inc/transfer.class.php:3604 inc/profile.class.php:948
@@ -3327,9 +3327,9 @@ msgstr ""
 #: inc/notificationtargetcontract.class.php:186 inc/entity.class.php:1920
 msgid "Contract"
 msgid_plural "Contract"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Contract"
+msgstr[1] "Contracte"
+msgstr[2] "Contracte"
 
 #. TRANS: %s is the user login
 #: front/consumable.form.php:51
@@ -3374,9 +3374,9 @@ msgstr "%s elimina un nivel sla"
 #: inc/event.class.php:154 inc/profile.class.php:1489
 msgid "Rule"
 msgid_plural "Rules"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Regulă"
+msgstr[1] "Reguli"
+msgstr[2] "Reguli"
 
 #: inc/rule.class.php:257
 msgid "Dictionary"
@@ -3423,9 +3423,9 @@ msgstr[2] "Modele imprimante"
 #: inc/dropdown.class.php:932
 msgid "Peripheral model"
 msgid_plural "Peripheral models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Model periferic"
+msgstr[1] "Modele periferice"
+msgstr[2] "Modele periferice"
 
 #: inc/rule.class.php:335 inc/dropdown.class.php:923
 #: inc/networkequipmentmodel.class.php:41
@@ -3455,9 +3455,9 @@ msgstr[2] "Tipuri calculatoare"
 #: inc/dropdown.class.php:871 inc/monitortype.class.php:42
 msgid "Monitor type"
 msgid_plural "Monitors types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Tip monitor"
+msgstr[1] "Tipuri monitoare"
+msgstr[2] "Tipuri monitoare"
 
 #: inc/rule.class.php:383 inc/rulecollection.class.php:2047
 #: inc/dropdown.class.php:869 inc/printertype.class.php:42
@@ -3486,9 +3486,9 @@ msgstr[2] ""
 #: inc/phonetype.class.php:42 inc/dropdown.class.php:875
 msgid "Phone type"
 msgid_plural "Phone types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Tip telefon"
+msgstr[1] "Tipuri telefoane"
+msgstr[2] "Tipuri telefoane"
 
 #: inc/rule.class.php:479 inc/rulecollection.class.php:1997
 #: inc/cartridge.class.php:1128 inc/transfer.class.php:3541
@@ -3533,7 +3533,7 @@ msgstr "Mută"
 
 #: inc/rule.class.php:688
 msgid "Ranking"
-msgstr ""
+msgstr "Rang"
 
 #: inc/rule.class.php:697 inc/rule.class.php:851 inc/rule.class.php:2771
 #: inc/rule.class.php:2840 inc/problem.class.php:822
@@ -3735,9 +3735,9 @@ msgstr "Adaugă o acţiune nouă"
 #: inc/notificationtargetproject.class.php:632
 msgid "Field"
 msgid_plural "Fields"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Câmp"
+msgstr[1] "Câmpuri"
+msgstr[2] "Câmpuri"
 
 #: inc/rule.class.php:1096 inc/rulecollection.class.php:1236
 msgid "Action type"
@@ -3756,7 +3756,7 @@ msgstr "Valoare"
 
 #: inc/rule.class.php:1164
 msgid "Add a new criterion"
-msgstr ""
+msgstr "Adăugare criteriu nou"
 
 #: inc/rule.class.php:1184 inc/rule.class.php:1200 inc/rule.class.php:1248
 #: inc/rule.class.php:2029 inc/rule.class.php:2519
@@ -4024,28 +4024,28 @@ msgstr[2] "Modele virtualizare"
 #: inc/devicesensortype.class.php:43 inc/dropdown.class.php:890
 msgid "Sensor type"
 msgid_plural "Sensor types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Tip senzor"
+msgstr[1] "Tipuri senzori"
+msgstr[2] "Tipuri senzori"
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
 #: inc/datacenter.class.php:48 inc/datacenter.class.php:149
 msgid "Data center"
 msgid_plural "Data centers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Data center"
+msgstr[1] "Data center-e"
+msgstr[2] "Data center-e"
 
 #: inc/datacenter.class.php:159 inc/features/dcbreadcrumb.class.php:119
 msgid "Data center position"
-msgstr ""
+msgstr "Poziţie data center"
 
 #: inc/domaintype.class.php:42
 msgid "Domain type"
 msgid_plural "Domain types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Tip domeniu"
+msgstr[1] "Tipuri domenii"
+msgstr[2] "Tipuri domenii"
 
 #: inc/ruleimportcomputercollection.class.php:60
 #: inc/ruleimportcomputer.class.php:52
@@ -4061,7 +4061,7 @@ msgstr[2] "Probleme"
 
 #: inc/problem.class.php:166
 msgid "Processing problem"
-msgstr ""
+msgstr "Problemă de procesare"
 
 #: inc/problem.class.php:167 inc/problem.class.php:454
 #: inc/change.class.php:176
@@ -4099,9 +4099,9 @@ msgstr "Număr elemente"
 #: inc/change.class.php:445 inc/item_devices.class.php:170
 msgid "Associated item type"
 msgid_plural "Associated item types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Tip element asociat"
+msgstr[1] "Tipuri elemente asociate"
+msgstr[2] "Tipuri elemente asociate"
 
 #: inc/problem.class.php:461 inc/problem.class.php:1520
 #: inc/notificationtargetproblem.class.php:195 inc/change.class.php:1192
@@ -4385,7 +4385,7 @@ msgstr "Dată de închidere"
 #: inc/item_softwareversion.class.php:1045
 #: inc/item_softwareversion.class.php:1191 tests/functionnal/Rule.php:295
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #: inc/problem.class.php:1309 inc/ticket.class.php:4584
 #: inc/change.class.php:914
@@ -4589,11 +4589,11 @@ msgstr "Numele template-ului"
 
 #: inc/purgelogs.class.php:42 inc/config.class.php:2256
 msgid "Logs purge"
-msgstr ""
+msgstr "Golire log-uri"
 
 #: inc/purgelogs.class.php:70
 msgid "Purge history"
-msgstr ""
+msgstr "Golire istoric"
 
 #: inc/calendar.class.php:72 inc/planningexternaleventtemplate.class.php:75
 #: inc/levelagreement.class.php:463 inc/dropdown.class.php:998
@@ -4782,11 +4782,11 @@ msgstr "Editor"
 #: inc/rulesoftwarecategory.class.php:86
 #: inc/ruledictionnarysoftware.class.php:93
 msgid "Category from inventory tool"
-msgstr ""
+msgstr "Categorie din instrumentul inventar"
 
 #: inc/rulesoftwarecategory.class.php:101
 msgid "Import category from inventory tool"
-msgstr ""
+msgstr "Import categorie din instrumentul inventar"
 
 #: inc/mailcollector.class.php:106 inc/mailcollector.class.php:1920
 #: inc/notificationtargetmailcollector.class.php:85
@@ -4902,7 +4902,7 @@ msgstr "Email %s negăsit. Import imposibil."
 #: inc/mailcollector.class.php:727
 #, php-format
 msgid "Message is invalid: %1$s"
-msgstr ""
+msgstr "Mesajul este invalid: %1$s"
 
 #: inc/mailcollector.class.php:770
 #, php-format
@@ -5082,7 +5082,7 @@ msgstr ""
 #: inc/update.class.php:493
 #, php-format
 msgid "Unsupported version (%1$s)"
-msgstr ""
+msgstr "Vesiune nesuportată (%1$s)"
 
 #: inc/update.class.php:532
 msgid ""
@@ -5226,7 +5226,7 @@ msgstr[2] "Domenii"
 #: inc/domain_item.class.php:509 inc/commonitiltask.class.php:783
 #: inc/appliance.class.php:276
 msgid "Technician in charge"
-msgstr ""
+msgstr "Tehnician responsabil"
 
 #: inc/domain.class.php:139 inc/notificationtargetproblem.class.php:198
 #: inc/supplier.class.php:478 inc/domain_item.class.php:62
@@ -5258,11 +5258,11 @@ msgstr "Altele"
 #: inc/domain_item.class.php:508 inc/commonitiltask.class.php:804
 #: inc/appliance.class.php:286
 msgid "Group in charge"
-msgstr ""
+msgstr "Grup responsabil"
 
 #: inc/domain.class.php:200
 msgid "Entity-ID"
-msgstr ""
+msgstr "ID-Entitate"
 
 #: inc/domain.class.php:332 inc/certificate.class.php:523
 msgid "Empty for infinite"
@@ -5308,7 +5308,7 @@ msgstr ""
 #: inc/planningexternalevent.class.php:313
 #: inc/features/planningevent.class.php:937
 msgid "Repeat"
-msgstr ""
+msgstr "Repetare"
 
 #: inc/ola.class.php:51 inc/ticket.class.php:2864 inc/ticket.class.php:2872
 #: inc/ticket.class.php:2886 inc/ticket.class.php:2899
@@ -5397,9 +5397,9 @@ msgstr[2] ""
 #: inc/rssfeed.class.php:80 inc/central.class.php:68
 msgid "RSS feed"
 msgid_plural "RSS feed"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Flux RSS"
+msgstr[1] "Fluxuri RSS"
+msgstr[2] "Fluxuri RSS"
 
 #: inc/rssfeed.class.php:82 inc/rssfeed.class.php:933
 msgid "Personal RSS feed"
@@ -5430,9 +5430,9 @@ msgstr "Rată refresh"
 #: inc/reminder.class.php:517
 msgid "Target"
 msgid_plural "Targets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Ţintă"
+msgstr[1] "Ţinte"
+msgstr[2] "Ţinte"
 
 #: inc/rssfeed.class.php:598 inc/ticket.class.php:4801
 #: inc/features/planningevent.class.php:132
@@ -5504,14 +5504,14 @@ msgstr ""
 
 #: inc/savedsearch_alert.class.php:209
 msgid "create it now"
-msgstr ""
+msgstr "creează acum"
 
 #: inc/savedsearch_alert.class.php:213
 msgid "Notification used:"
 msgid_plural "Notifications used:"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Notificare utilizată:"
+msgstr[1] "Notificări utilizate:"
+msgstr[2] "Notificări utilizate:"
 
 #: inc/savedsearch_alert.class.php:235
 msgid "Add an alert"
@@ -6133,9 +6133,9 @@ msgstr[2] "Tichete"
 #: inc/deviceharddrive.class.php:43
 msgid "Hard drive"
 msgid_plural "Hard drives"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Hard disc"
+msgstr[1] "Hard discuri"
+msgstr[2] "Hard discuri"
 
 #: inc/deviceharddrive.class.php:51 inc/deviceharddrive.class.php:77
 msgid "Capacity by default"
@@ -6181,9 +6181,9 @@ msgstr "Capacitate hard disk"
 #: inc/devicenetworkcard.class.php:45
 msgid "Network card"
 msgid_plural "Network cards"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Placă reţea"
+msgstr[1] "Plăci reţea"
+msgstr[2] "Plăci reţea"
 
 #: inc/devicenetworkcard.class.php:66 inc/devicenetworkcard.class.php:90
 msgid "MAC address by default"
@@ -6285,17 +6285,17 @@ msgstr "Numar Produs"
 #: inc/commondcmodeldropdown.class.php:68
 #: inc/commondcmodeldropdown.class.php:165 inc/item_rack.class.php:525
 msgid "Weight"
-msgstr ""
+msgstr "Greutate"
 
 #: inc/commondcmodeldropdown.class.php:78
 #: inc/commondcmodeldropdown.class.php:175
 msgid "Required units"
-msgstr ""
+msgstr "Unităţi solicitate"
 
 #: inc/commondcmodeldropdown.class.php:86
 #: inc/commondcmodeldropdown.class.php:185 inc/rack.class.php:302
 msgid "Depth"
-msgstr ""
+msgstr "Adâncime"
 
 #: inc/commondcmodeldropdown.class.php:94
 #: inc/commondcmodeldropdown.class.php:194
@@ -6305,16 +6305,16 @@ msgstr ""
 #: inc/commondcmodeldropdown.class.php:102
 #: inc/commondcmodeldropdown.class.php:204
 msgid "Power consumption"
-msgstr ""
+msgstr "Consum energie electrică"
 
 #: inc/commondcmodeldropdown.class.php:103
 #: inc/commondcmodeldropdown.class.php:113
 msgid "watts"
-msgstr ""
+msgstr "waţi"
 
 #: inc/commondcmodeldropdown.class.php:112 inc/rack.class.php:307
 msgid "Max. power (in watts)"
-msgstr ""
+msgstr "Putere max. (în waţi)"
 
 #: inc/commondcmodeldropdown.class.php:122
 #: inc/commondcmodeldropdown.class.php:214
@@ -6337,19 +6337,19 @@ msgstr ""
 
 #: inc/commondcmodeldropdown.class.php:325
 msgid "1"
-msgstr ""
+msgstr "1"
 
 #: inc/commondcmodeldropdown.class.php:326
 msgid "1/2"
-msgstr ""
+msgstr "1/2"
 
 #: inc/commondcmodeldropdown.class.php:327
 msgid "1/3"
-msgstr ""
+msgstr "1/3"
 
 #: inc/commondcmodeldropdown.class.php:328
 msgid "1/4"
-msgstr ""
+msgstr "1/4"
 
 #: inc/notificationevent.class.php:198
 #, php-format
@@ -6583,9 +6583,9 @@ msgstr[2] "Perioade închideri"
 #, php-format
 msgid "%1$s template"
 msgid_plural "%1$s templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%1$s şablon"
+msgstr[1] "%1$s şabloane"
+msgstr[2] "%1$s şabloane"
 
 #: inc/itiltemplate.class.php:265 inc/ticket.class.php:2456
 #: inc/ticket.class.php:4629 inc/change.class.php:1047
@@ -23228,7 +23228,7 @@ msgstr ""
 
 #: js/impact.js:1309
 msgid "Go to"
-msgstr ""
+msgstr "Mergi la"
 
 #: js/impact.js:1310
 msgid "Open this element in a new tab"
@@ -23236,7 +23236,7 @@ msgstr ""
 
 #: js/impact.js:1316
 msgid "Show ongoing tickets"
-msgstr ""
+msgstr "Afişare tichete în curs"
 
 #: js/impact.js:1317
 msgid "Show ongoing tickets for this item"
@@ -23244,7 +23244,7 @@ msgstr ""
 
 #: js/impact.js:1323
 msgid "Group properties..."
-msgstr ""
+msgstr "Proprietăţi grup"
 
 #: js/impact.js:1324
 msgid "Set name and/or color for this group"
@@ -23252,7 +23252,7 @@ msgstr ""
 
 #: js/impact.js:1331
 msgid "Remove from group"
-msgstr ""
+msgstr "Înlăturare din grup"
 
 #: js/impact.js:1332
 msgid "Remove this asset from the group"
@@ -23264,15 +23264,15 @@ msgstr ""
 
 #: js/impact.js:1377
 msgid "Unexpected error."
-msgstr ""
+msgstr "Eroare neaşteptată."
 
 #: js/impact.js:1389
 msgid "Ongoing tickets"
-msgstr ""
+msgstr "Tichete în curs"
 
 #: js/impact.js:1450
 msgid "Edit group"
-msgstr ""
+msgstr "Editare grup"
 
 #: js/impact.js:2291
 msgid "Draw a line between two assets to add an impact relation"
@@ -23288,11 +23288,11 @@ msgstr ""
 
 #: js/impact.js:2438
 msgid "Requests"
-msgstr ""
+msgstr "Solicitări"
 
 #: js/impact.js:2439
 msgid "Incidents"
-msgstr ""
+msgstr "Incidente"
 
 #: js/impact.js:2440
 msgid "Changes"
@@ -23304,7 +23304,7 @@ msgstr ""
 
 #: js/kanban.js:299
 msgid "Bulk add"
-msgstr ""
+msgstr "Adăugare Bulk"
 
 #: js/kanban.js:334
 msgid "Search or filter results"
@@ -23312,11 +23312,11 @@ msgstr ""
 
 #: js/kanban.js:336
 msgid "Add column"
-msgstr ""
+msgstr "Adaugă coloană"
 
 #: js/kanban.js:868
 msgid "More"
-msgstr ""
+msgstr "Mai mult"
 
 #: js/kanban.js:1339
 #, javascript-format
@@ -23325,19 +23325,19 @@ msgstr ""
 
 #: js/kanban.js:1461
 msgid "One item per line"
-msgstr ""
+msgstr "Un element pe linie"
 
 #: js/kanban.js:1519
 msgid "Add a column from existing status"
-msgstr ""
+msgstr "Adaugă o coloană din statusul existent"
 
 #: js/kanban.js:1523
 msgid "Or add a new status"
-msgstr ""
+msgstr "Sau adaugă un status nou"
 
 #: js/kanban.js:1524 js/kanban.js:1541 js/kanban.js:1560
 msgid "Create status"
-msgstr ""
+msgstr "Creare status"
 
 #: js/kanban.js:1685
 msgid "Toggle collapse"
@@ -23349,7 +23349,7 @@ msgstr "Clonare"
 
 #: js/planning.js:312
 msgid "Make a choice"
-msgstr ""
+msgstr "Alege"
 
 #: js/planning.js:313
 msgid "Delete the whole serie of the recurrent event"
@@ -23361,11 +23361,11 @@ msgstr ""
 
 #: js/planning.js:322 js/planning.js:443 js/planning.js:491
 msgid "Serie"
-msgstr ""
+msgstr "Serie"
 
 #: js/planning.js:329 js/planning.js:449 js/planning.js:497
 msgid "Instance"
-msgstr ""
+msgstr "Instanţă"
 
 #: js/planning.js:438
 msgid "Recurring event resized"
