@@ -890,6 +890,8 @@ class Dropdown extends DbTestCase {
          }
       }
 
+      $params['_idor_token'] = \Session::getNewIDORToken($params['itemtype'] ?? '');
+
       $result = \Dropdown::getDropdownConnect($params, false);
 
       //reset session params before executing test
@@ -1161,6 +1163,7 @@ class Dropdown extends DbTestCase {
     * @dataProvider getDropdownUsersProvider
     */
    public function testGetDropdownUsers($params, $expected) {
+      $params['_idor_token'] = \Session::getNewIDORToken('User');
       $result = \Dropdown::getDropdownUsers($params, false);
       $this->array($result)->isIdenticalTo($expected);
    }
@@ -1187,7 +1190,8 @@ class Dropdown extends DbTestCase {
          'display_emptychoice'   => true,
          'entity_restrict'       => 0,
          'page'                  => 1,
-         'page_limit'            => 10
+         'page_limit'            => 10,
+         '_idor_token'           = \Session::getNewIDORToken($location::getType());
       ];
       $values = \Dropdown::getDropdownValue($post);
       $values = (array)json_decode($values);
