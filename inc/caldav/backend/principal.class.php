@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\CalDAV\Node\Property;
+use Glpi\CalDAV\Traits\CalDAVPrincipalsTrait;
 use Glpi\CalDAV\Traits\CalDAVUriUtilTrait;
 use Sabre\DAV\PropPatch;
 use Sabre\DAVACL\PrincipalBackend\AbstractBackend;
@@ -50,6 +51,7 @@ use Sabre\DAVACL\PrincipalBackend\AbstractBackend;
  */
 class Principal extends AbstractBackend {
 
+   use CalDAVPrincipalsTrait;
    use CalDAVUriUtilTrait;
 
    const PRINCIPALS_ROOT = 'principals';
@@ -58,56 +60,17 @@ class Principal extends AbstractBackend {
 
    public function getPrincipalsByPrefix($prefixPath) {
 
-      global $DB;
-
       $principals = [];
 
       switch ($prefixPath) {
          case self::PREFIX_GROUPS:
-            if (!\Session::haveRight(\Planning::$rightname, \Planning::READALL)
-                && empty($_SESSION['glpigroups'])) {
-               // User cannot read planning of everyone and has no groups.
-               break;
-            }
-
-            $groups_criteria = getEntitiesRestrictCriteria(
-               \Group::getTable(),
-               'entities_id',
-               $_SESSION['glpiactiveentities'],
-               true
-            );
-
-            // Limit to groups visible in planning (see Planning::showAddGroupForm())
-            $groups_criteria['is_task'] = 1;
-
-            // Limit to users groups if user cannot read planning of everyone
-            if (!\Session::haveRight(\Planning::$rightname, \Planning::READALL)) {
-               $groups_criteria['id'] = $_SESSION['glpigroups'];
-            }
-
-            $groups_iterator = $DB->request(
-               [
-                  'FROM'  => \Group::getTable(),
-                  'WHERE' => $groups_criteria,
-               ]
-            );
+            $groups_iterator = $this->getVisibleGroupsIterator();
             foreach ($groups_iterator as $group_fields) {
                $principals[] = $this->getPrincipalFromGroupFields($group_fields);
             }
             break;
          case self::PREFIX_USERS:
-            if (!\Session::haveRightsOr(\Planning::$rightname, [\Planning::READALL, \Planning::READGROUP])) {
-               // Can see only personnal planning
-               $rights = 'id';
-            } else if (\Session::haveRight(\Planning::$rightname, \Planning::READGROUP)
-                && !\Session::haveRight(\Planning::$rightname, \Planning::READALL)) {
-               // Can see only planning from users sharing same groups
-               $rights = 'groups';
-            } else {
-               // Can see planning from users having rights on planning elements
-               $rights = ['change', 'problem', 'reminder', 'task', 'projecttask'];
-            }
-            $users_iterator = \User::getSqlSearchResult(false, $rights);
+            $users_iterator = $this->getVisibleUsersIterator();
             foreach ($users_iterator as $user_fields) {
                $principals[] = $this->getPrincipalFromUserFields($user_fields);
             }
