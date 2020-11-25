@@ -366,4 +366,71 @@ class Session extends \DbTestCase {
 
       $this->string($result)->isEqualTo($expected);
    }
+
+
+   protected function idorProvider() {
+      return [
+         ['itemtype' => 'Computer'],
+         ['itemtype' => 'Ticket'],
+         ['itemtype' => 'Glpi\\Dashboard\\Item'],
+         ['itemtype' => 'User', 'add_params' => ['right' => 'all']],
+      ];
+   }
+
+   /**
+    * @dataProvider idorProvider
+    */
+   function testIDORToken(string $itemtype = "", array $add_params = []) {
+      // generate token
+      $token = \Session::getNewIDORToken($itemtype, $add_params);
+      $this->string($token)->hasLength(64);
+
+      // token exists in session and is valid
+      $this->array($_SESSION['glpiidortokens'][$token])
+         ->string['itemtype']->isEqualTo($itemtype)
+         ->string['expires'];
+
+      if (count($add_params) > 0) {
+         $this->array($_SESSION['glpiidortokens'][$token])->size->isEqualTo(2 + count($add_params));
+      }
+
+      // validate token with dedicated method
+      $result = \Session::validateIDOR([
+         '_idor_token' => $token,
+         'itemtype'    => $itemtype,
+      ] + $add_params);
+      $this->boolean($result)->isTrue();
+   }
+
+
+   function testDORInvalid() {
+      //  random token
+      $result = \Session::validateIDOR([
+         '_idor_token' => bin2hex(random_bytes(32)),
+         'itemtype'    => 'Computer',
+      ]);
+      $this->boolean($result)->isFalse();
+
+      // bad itemtype
+      $token_bad_itt = \Session::getNewIDORToken('Ticket');
+      $result = \Session::validateIDOR([
+         '_idor_token' => $token_bad_itt,
+         'itemtype'    => 'Computer',
+      ]);
+      $this->boolean($result)->isFalse();
+
+      // missing add params
+      $token_miss_param = \Session::getNewIDORToken('User', ['right' => 'all']);
+      $result = \Session::validateIDOR([
+         '_idor_token' => $token_miss_param,
+         'itemtype'    => 'User',
+      ]);
+      $this->boolean($result)->isFalse();
+      $result = \Session::validateIDOR([
+         '_idor_token' => $token_miss_param,
+         'itemtype'    => 'User',
+         'right'       => 'all'
+      ]);
+      $this->boolean($result)->isTrue();
+   }
 }

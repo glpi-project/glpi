@@ -39,15 +39,22 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_POST["table"])
+// depreciation behavior
+if (!isset($_POST["itemtype"]) && isset($_POST['table'])
+    && $DB->tableExists($_POST['table'])) {
+   Toolbox::deprecated();
+   $_POST["itemtype"] = getItemTypeForTable($_POST['table']);
+}
+
+if (isset($_POST["itemtype"])
     && isset($_POST["value"])) {
    // Security
-   if (!$DB->tableExists($_POST['table'])) {
+   if (!is_subclass_of($_POST["itemtype"], "CommonDBTM")) {
       exit();
    }
 
-   switch ($_POST["table"]) {
-      case "glpi_users" :
+   switch ($_POST["itemtype"]) {
+      case User::getType() :
          if ($_POST['value'] == 0) {
             $tmpname = [
                'link'    => $CFG_GLPI['root_doc']."/front/user.php",
@@ -79,15 +86,22 @@ if (isset($_POST["table"])
 
       default :
          if ($_POST["value"] > 0) {
-            $tmpname = Dropdown::getDropdownName($_POST["table"], $_POST["value"], 1);
+            if (!Session::validateIDOR([
+               'itemtype'    => $_POST['itemtype'],
+               '_idor_token' => $_POST['_idor_token'] ?? ""
+            ])) {
+               exit();
+            }
+
+            $table = getTableForItemType($_POST['itemtype']);
+            $tmpname = Dropdown::getDropdownName($table, $_POST["value"], 1);
             if (is_array($tmpname) && isset($tmpname["comment"])) {
                 echo $tmpname["comment"];
             }
             if (isset($_POST['withlink'])) {
-               $itemtype = getItemTypeForTable($_POST["table"]);
                echo "<script type='text/javascript' >\n";
                echo Html::jsGetElementbyID($_POST['withlink']).".
-                    attr('href', '".$itemtype::getFormURLWithID($_POST["value"])."');";
+                    attr('href', '".$_POST['itemtype']::getFormURLWithID($_POST["value"])."');";
                echo "</script>\n";
             }
          }

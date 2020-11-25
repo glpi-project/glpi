@@ -1213,7 +1213,7 @@ class Session {
 
 
    /**
-    * Clean expires CSRF tokens
+    * Clean expired CSRF tokens
     *
     * @since 0.83.3
     *
@@ -1284,6 +1284,93 @@ class Session {
       if (GLPI_USE_CSRF_CHECK
           && (!Session::validateCSRF($data))) {
          Html::displayErrorAndDie(__("The action you have requested is not allowed."), true);
+      }
+   }
+
+
+   /**
+    * Get new IDOR token
+    * This token validates the itemtype used by an ajax request is the one asked by a dropdown.
+    * So, we avoid IDOR request where an attacker asks for an another itemtype
+    * than the originaly indtended
+    *
+    * @since 9.5.3
+    *
+    * @param string $itemtype
+    * @param array  $add_params more criteria to check validy of idor tokens
+    *
+    * @return string
+   **/
+   static public function getNewIDORToken(string $itemtype = "", array $add_params = []): string {
+      $token = "";
+      do {
+         $token = bin2hex(random_bytes(32));
+      } while ($token == '');
+
+      if (!isset($_SESSION['glpiidortokens'])) {
+         $_SESSION['glpiidortokens'] = [];
+      }
+
+      $_SESSION['glpiidortokens'][$token] = [
+         'itemtype' => $itemtype,
+         'expires'  => time() + GLPI_IDOR_EXPIRES
+      ] + $add_params;
+
+      return $token;
+   }
+
+
+   /**
+    * Validate that the page has a IDOR token in the POST data
+    * and that the token is legit/not expired.
+    * Tokens are kept in session until their time is expired (by default 2h)
+    * to permits multiple ajax calls for a dropdown
+    *
+    * @since 9.5.3
+    *
+    * @param array $data $_POST data
+    *
+    * @return boolean
+   **/
+   static public function validateIDOR(array $data = []): bool {
+      self::cleanIDORTokens();
+
+      if (!isset($data['_idor_token'])) {
+         return false;
+      }
+
+      $token = $data['_idor_token'];
+
+      if (isset($_SESSION['glpiidortokens'][$token])
+          && $_SESSION['glpiidortokens'][$token]['expires'] >= time()) {
+         $params =  $_SESSION['glpiidortokens'][$token];
+         unset($params['expires']);
+
+         // check all stored keys/values are present and identical in provided data
+         $keys_exists = array_intersect_assoc($params, $data);
+         if ($params == $keys_exists) {
+            return true;
+         }
+      }
+
+      return false;
+   }
+
+   /**
+    * Clean expired IDOR tokens
+    *
+    * @since 9.5.3
+    *
+    * @return void
+   **/
+   static public function cleanIDORTokens() {
+      $now = time();
+      if (isset($_SESSION['glpiidortokens']) && is_array($_SESSION['glpiidortokens'])) {
+         foreach ($_SESSION['glpiidortokens'] as $footprint => $token) {
+            if ($token['expires'] < $now) {
+               unset($_SESSION['glpiidortokens'][$footprint]);
+            }
+         }
       }
    }
 

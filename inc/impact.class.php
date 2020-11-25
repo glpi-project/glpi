@@ -1612,68 +1612,6 @@ class Impact extends CommonGLPI {
       }
    }
 
-   /**
-    * Print the form for the global impact page
-    */
-   public static function printImpactForm() {
-      global $CFG_GLPI;
-      $rand = mt_rand();
-
-      echo "<form name=\"item\" action=\"{$_SERVER['PHP_SELF']}\" method=\"GET\">";
-
-      echo '<table class="tab_cadre_fixe" style="width:30%">';
-
-      // First row: header
-      echo "<tr>";
-      echo "<th colspan=\"2\">" . self::getTypeName() . "</th>";
-      echo "</tr>";
-
-      // Second row: itemtype field
-      echo "<tr>";
-      echo "<td width=\"40%\"> <label>" . __('Item type') . "</label> </td>";
-      echo "<td>";
-      Dropdown::showItemTypes(
-         'type',
-         self::getEnabledItemtypes(),
-         [
-            'value'        => null,
-            'width'        => '100%',
-            'emptylabel'   => Dropdown::EMPTY_VALUE,
-            'rand'         => $rand
-         ]
-      );
-      echo "</td>";
-      echo "</tr>";
-
-      // Third row: items_id field
-      echo "<tr>";
-      echo "<td> <label>" . _n('Item', 'Items', 1) . "</label> </td>";
-      echo "<td>";
-      Ajax::updateItemOnSelectEvent("dropdown_type$rand", "form_results",
-         $CFG_GLPI["root_doc"] . "/ajax/dropdownTrackingDeviceType.php",
-         [
-            'itemtype'        => '__VALUE__',
-            'entity_restrict' => 0,
-            'multiple'        => 1,
-            'admin'           => 1,
-            'rand'            => $rand,
-            'myname'          => "id",
-         ]
-      );
-      echo "<span id='form_results'>\n";
-      echo "</span>\n";
-      echo "</td>";
-      echo "</tr>";
-
-      // Fourth row: submit
-      echo "<tr><td colspan=\"2\" style=\"text-align:center\">";
-      echo Html::submit(__("Show impact analysis"));
-      echo "</td></tr>";
-
-      echo "</table>";
-      echo "<br><br>";
-      Html::closeForm();
-   }
 
    /**
     * Clean impact records for a given item that has been purged form the db
@@ -1681,7 +1619,7 @@ class Impact extends CommonGLPI {
     * @param CommonDBTM $item The item being purged
     */
    public static function clean(\CommonDBTM $item) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       // Skip if not a valid impact type
       if (!self::isEnabled($item::getType())) {

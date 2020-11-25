@@ -676,11 +676,14 @@ class Computer_Item extends CommonDBRelation{
       $rand     = mt_rand();
 
       $field_id = Html::cleanId("dropdown_".$myname.$rand);
-      $param    = ['entity_restrict' => $entity_restrict,
-                        'fromtype'        => $fromtype,
-                        'itemtype'        => $itemtype,
-                        'onlyglobal'      => $onlyglobal,
-                        'used'            => $used];
+      $param    = [
+         'entity_restrict' => $entity_restrict,
+         'fromtype'        => $fromtype,
+         'itemtype'        => $itemtype,
+         'onlyglobal'      => $onlyglobal,
+         'used'            => $used,
+         '_idor_token'     => Session::getNewIDORToken($itemtype),
+      ];
 
       echo Html::jsAjaxDropdown($myname, $field_id,
                                 $CFG_GLPI['root_doc']."/ajax/getDropdownConnect.php",

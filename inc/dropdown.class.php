@@ -176,6 +176,7 @@ class Dropdown {
             'on_change'            => $params['on_change'],
             'permit_select_parent' => $params['permit_select_parent'],
             'specific_tags'        => $params['specific_tags'],
+            '_idor_token'          => Session::getNewIDORToken($itemtype),
       ];
 
       $output = "<span class='no-wrap'>";
@@ -235,8 +236,11 @@ class Dropdown {
             $output .= "<span class='fa fa-globe-americas pointer' title='".__s('Display on map')."' onclick='showMapForLocation(this)' data-fid='$field_id'></span>";
          }
 
-         $paramscomment = ['value' => '__VALUE__',
-                                'table' => $table];
+         $paramscomment = [
+            'value'       => '__VALUE__',
+            'itemtype'    => $itemtype,
+            '_idor_token' => Session::getNewIDORToken($itemtype)
+         ];
          if ($item->isField('knowbaseitemcategories_id')
              && Session::haveRight('knowbase', READ)) {
 
@@ -267,6 +271,7 @@ class Dropdown {
       }
       return $output;
    }
+
 
    /**
     * Add new condition
@@ -1466,7 +1471,7 @@ class Dropdown {
          'name'                => $params['items_id_name'],
          'entity_restrict'     => $params['entity_restrict'],
          'showItemSpecificity' => $params['showItemSpecificity'],
-         'rand'                => $params['rand'],
+         'rand'                => $params['rand']
       ];
 
       // manage condition
@@ -2302,10 +2307,16 @@ class Dropdown {
          $post['entity_restrict'] = $_SESSION['glpiactiveentities'];
       }
 
+      // check if asked itemtype is the one originaly requested by the form
+      if (!Session::validateIDOR($post)) {
+         return;
+      }
+
       // Security
       if (!($item = getItemForItemtype($post['itemtype']))) {
          return;
       }
+
       $table = $item->getTable();
       $datas = [];
 
@@ -3051,6 +3062,11 @@ class Dropdown {
    public static function getDropdownConnect($post, $json = true) {
       global $DB, $CFG_GLPI;
 
+      // check if asked itemtype is the one originaly requested by the form
+      if (!Session::validateIDOR($post)) {
+         return;
+      }
+
       if (!isset($post['fromtype']) || !($fromitem = getItemForItemtype($post['fromtype']))) {
          return;
       }
@@ -3252,6 +3268,11 @@ class Dropdown {
       }
 
       $itemtypeisplugin = isPluginItemType($post['itemtype']);
+
+      // check if asked itemtype is the one originaly requested by the form
+      if (!Session::validateIDOR($post)) {
+         return;
+      }
 
       if (!$item = getItemForItemtype($post['itemtype'])) {
          return;
@@ -3636,6 +3657,11 @@ class Dropdown {
     */
    public static function getDropdownUsers($post, $json = true) {
       global $CFG_GLPI;
+
+      // check if asked itemtype is the one originaly requested by the form
+      if (!Session::validateIDOR($post + ['itemtype' => 'User', 'right' => ($post['right'] ?? "")])) {
+         return;
+      }
 
       if (!isset($post['right'])) {
          $post['right'] = "all";

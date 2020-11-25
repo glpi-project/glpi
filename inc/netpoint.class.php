@@ -150,8 +150,11 @@ class Netpoint extends CommonDropdown {
                                           $item->getFormURL());
 
          }
-         $paramscomment = ['value' => '__VALUE__',
-                                'table' => "glpi_netpoints"];
+         $paramscomment = [
+            'value'       => '__VALUE__',
+            'itemtype'    => Netpoint::getType(),
+            '_idor_token' => Session::getNewIDORToken("Netpoint")
+         ];
          echo Ajax::updateItemOnSelectEvent($field_id, $comment_id,
                                             $CFG_GLPI["root_doc"]."/ajax/comments.php",
                                             $paramscomment, false);
