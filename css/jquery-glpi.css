@@ -262,11 +262,11 @@ html .ui-autocomplete {
 
 /* SELECT2 */
 
-.ui-widget {
+.ui-widget .ui-widget-header {
   font-family: Verdana,Arial,sans-serif;
   font-size: 1.1em;
 }
-.ui-widget .ui-widget {
+.ui-widget .ui-widget .ui-widget-header {
   font-size: 1em;
 }
 
