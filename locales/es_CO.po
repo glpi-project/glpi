@@ -10340,16 +10340,16 @@ msgstr "Última migración reproducida."
 
 #: inc/console/config/setcommand.class.php:62
 msgid "Set configuration value"
-msgstr ""
+msgstr "Establecer valor de configuración"
 
 #: inc/console/config/setcommand.class.php:72
 msgid "Configuration value:"
-msgstr ""
+msgstr "Valor de configuración:"
 
 #: inc/console/config/setcommand.class.php:88
 #, php-format
 msgid "Invalid context \"%s\"."
-msgstr ""
+msgstr "Contexto no válido \"%s\"."
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:53
 msgid "Replay dictionnary rules on existing items"
@@ -11474,7 +11474,7 @@ msgstr "Dirección de correo electrónico invalida %s"
 
 #: inc/ticket.class.php:1838
 msgid "Auto-created task"
-msgstr ""
+msgstr "Tarea creada automáticamente"
 
 #: inc/ticket.class.php:1909
 #, php-format
@@ -11483,7 +11483,7 @@ msgstr "%s promueve un seguimiento desde el ticket %s"
 
 #: inc/ticket.class.php:1930
 msgid "Your ticket has been registered."
-msgstr ""
+msgstr "Su caso ha sido registrado."
 
 #: inc/ticket.class.php:2112
 #, php-format
@@ -17071,6 +17071,8 @@ msgstr "Descubrir"
 #, php-format
 msgid "%1$s services website seems not available from your network or offline"
 msgstr ""
+"%1$s el sitio web de servicios parece no estar disponible en su red o sin "
+"conexión"
 
 #: inc/marketplace/view.class.php:144
 msgid "Maybe you could setup a proxy"
@@ -23011,7 +23013,7 @@ msgstr ""
 
 #: install/install.php:614
 msgid "Select your language"
-msgstr ""
+msgstr "Elija su idioma"
 
 #: install/install.php:639
 msgid "Beginning of the installation"
