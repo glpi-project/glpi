@@ -36,9 +36,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use CommonDBTM;
 use Glpi\CalDAV\Backend\Principal;
 use Glpi\CalDAV\Traits\CalDAVPrincipalsTrait;
 use Glpi\CalDAV\Traits\CalDAVUriUtilTrait;
+use PlanningExternalEvent;
 use Sabre\CalDAV\Calendar;
 use Sabre\CalDAV\CalendarObject;
 use Sabre\DAVACL\IACL;
@@ -80,7 +82,7 @@ class Acl extends Plugin {
          'protected' => true,
       ];
 
-      if ($node instanceof Calendar && \Session::haveRight(\PlanningExternalEvent::$rightname, UPDATE)) {
+      if ($node instanceof Calendar && Session::haveRight(PlanningExternalEvent::$rightname, UPDATE)) {
          // If user can update external events, then he is able to write on calendar to create new events.
          $acl[] = [
             'principal' => '{DAV:}authenticated',
@@ -89,7 +91,7 @@ class Acl extends Plugin {
          ];
       } else if ($node instanceof CalendarObject) {
          $item = $this->getCalendarItemForPath($node->getName());
-         if ($item instanceof \CommonDBTM && $item->can($item->fields['id'], UPDATE)) {
+         if ($item instanceof CommonDBTM && $item->can($item->fields['id'], UPDATE)) {
             $acl[] = [
                'principal' => '{DAV:}authenticated',
                'privilege' => '{DAV:}write',
