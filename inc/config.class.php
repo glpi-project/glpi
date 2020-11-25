@@ -2083,6 +2083,8 @@ class Config extends CommonDBTM {
                  'check'   => 'ParagonIE_Sodium_Compat' ],
                [ 'name'    => 'twig/twig',
                  'check'   => 'Twig\\Environment' ],
+               [ 'name'    => 'twig/string-extra',
+                 'check'   => 'Twig\\Extra\\String\\StringExtension' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [

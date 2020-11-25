@@ -43,6 +43,18 @@ xgettext *.js js/*.js -o locales/glpi.pot -L JavaScript --add-comments=TRANS --f
     --keyword=i18n._n:1,2 --keyword=i18n.__ --keyword=i18n._p:1c,2 \
     --keyword=i18n.ngettext:1,2 --keyword=i18n.gettext --keyword=i18n.pgettext:1c,2
 
+# Append locales from Twig templates
+for file in $(find ./templates -type f -name "*.twig")
+do
+    # 1. Convert file content to replace "{{ function(.*) }}" by "<?php function(.*); ?>"
+    # 2. Extract strings from converted content (send via std input)
+    # 3. Replace "#: standard input:X" by file location in po file comments
+    contents=`cat $file | sed -r "s|\{\{\s*([a-z0-9_]+\(.*\))\s*\}\}|<?php \1; ?>|gi"`
+    echo $contents | xgettext - -o locales/glpi.pot -L PHP --add-comments=TRANS --from-code=UTF-8 --force-po --join-existing \
+        --keyword=__:1
+    sed -i "s|#: standard input:|#: `echo $file | sed "s|./||"`:|g" locales/test.pot
+done
+
 #Update main language
 LANG=C msginit --no-translator -i locales/glpi.pot -l en_GB -o locales/en_GB.po
 

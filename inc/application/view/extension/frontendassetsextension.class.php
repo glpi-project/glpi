@@ -38,19 +38,21 @@ use Html;
 use Plugin;
 use Session;
 use Twig\Extension\AbstractExtension;
+use Twig\Extension\ExtensionInterface;
+use Twig\TwigFunction;
 
 /**
  * @since x.x.x
  */
-class FrontEndAssetsExtension extends AbstractExtension {
+class FrontEndAssetsExtension extends AbstractExtension implements ExtensionInterface {
 
    public function getFunctions() {
       return [
-         new \Twig\TwigFunction('asset_path', [$this, 'assetPath']),
-         new \Twig\TwigFunction('css_path', [$this, 'cssPath']),
-         new \Twig\TwigFunction('js_path', [$this, 'jsPath']),
-         new \Twig\TwigFunction('custom_css', [$this, 'customCss'], ['is_safe' => ['html']]),
-         new \Twig\TwigFunction('locales_js', [$this, 'localesJs'], ['is_safe' => ['html']]),
+         new TwigFunction('asset_path', [$this, 'assetPath']),
+         new TwigFunction('css_path', [$this, 'cssPath']),
+         new TwigFunction('js_path', [$this, 'jsPath']),
+         new TwigFunction('custom_css', [$this, 'customCss'], ['is_safe' => ['html']]),
+         new TwigFunction('locales_js', [$this, 'localesJs'], ['is_safe' => ['html']]),
       ];
    }
 
@@ -64,7 +66,7 @@ class FrontEndAssetsExtension extends AbstractExtension {
     * @TODO Add a unit test.
     */
    public function assetPath(string $path): string {
-      return $this->getPrefixedPath($path);
+      return Html::getPrefixedUrl($path);
    }
 
    /**
@@ -95,7 +97,7 @@ class FrontEndAssetsExtension extends AbstractExtension {
          }
       }
 
-      $path = $this->getPrefixedPath($path);
+      $path = Html::getPrefixedUrl($path);
       $path = $this->getVersionnedPath($path);
 
       return $path;
@@ -119,28 +121,10 @@ class FrontEndAssetsExtension extends AbstractExtension {
          $path = $minified_path;
       }
 
-      $path = $this->getPrefixedPath($path);
+      $path = Html::getPrefixedUrl($path);
       $path = $this->getVersionnedPath($path);
 
       return $path;
-   }
-
-   /**
-    * Get path prefixed with GLPI root path.
-    *
-    * @param string $path
-    *
-    * @return string
-    */
-   private function getPrefixedPath(string $path): string {
-      global $CFG_GLPI;
-
-      $prefix = $CFG_GLPI['root_doc'];
-      if (substr($path, 0, 1) != '/') {
-         $prefix .= '/';
-      }
-
-      return $prefix . $path;
    }
 
    /**
@@ -211,7 +195,7 @@ class FrontEndAssetsExtension extends AbstractExtension {
 JAVASCRIPT;
 
       foreach ($locales_domains as $locale_domain => $locale_version) {
-         $locales_path = $this->getPrefixedPath(
+         $locales_path = Html::getPrefixedUrl(
             '/front/locale.php'
             . '?domain=' . $locale_domain
             . '&version=' . $locale_version

@@ -1,0 +1,87 @@
+{#
+ ---------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2015-2020 Teclib' and contributors.
+
+ http://glpi-project.org
+
+ based on GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2014 by the INDEPNET Development Team.
+
+ ---------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of GLPI.
+
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ ---------------------------------------------------------------------
+#}
+
+<body class="{{ body_class }}">
+   {{ include('layout/parts/impersonate_banner.html.twig') }}
+
+   <div id="header">
+      <header role="banner" id="header_top">
+         <div id="c_logo">
+            <a href="{{ path('/front/central.php') }}" accesskey="1" title="{{ __('Home') }}">
+               <span class="sr-only">{{ __('Home') }}</span>
+            </a>
+         </div>
+
+         <div id="c_preference">
+            <ul>
+               <li id="deconnexion">
+                  <a href="{{ logout_path }}" title="{{ __('Logout') }}" class="fa fa-sign-out-alt">
+                     <span class="sr-only">{{ __('Logout') }}</span>
+                  </a>
+               </li>
+               <li id="preferences_link">
+                  <a href="{{ path('/front/preference.php') }}" title="{{ __('My settings') }}" class="fa fa-cog">
+                     <span class="sr-only">{{ __('My settings') }}</span>
+                     {% if is_user_connected %}
+                        <span id='myname'>{{ current_user_name|u.truncate(20, '...') }}</span>
+                     {% endif %}
+                  </a>
+               </li>
+
+            {% if has_right('Config', constant('UPDATE')) %}
+               <li id="debug_mode">
+                  <a href="{{ path('/ajax/switchdebug.php') }}"
+                     class="fa fa-bug {% if is_debug_active %}on{% else %}off{% endif %}"
+                     title="{{ __('%1$s - %2$s', [__('Change mode'), is_debug_active ? __('Debug mode enabled') : __('Debug mode disabled')]) }}">
+                     <span class="sr-only">{{ __('Change mode') }}</span>
+                  </a>
+               </li>
+            {% endif %}
+
+            {# @TODO Saved searches pannel #}
+
+            <li id="help_link">
+               <a href="{{ help_url }}" target="_blank" title="{{ __('Help') }}" class="fa fa-question">
+                  <span class="sr-only">{{ __('Help') }}</span>
+               </a>
+            </li>
+            
+            <li id="language_link">
+               <a href="{{ path('/front/preference.php?forcetab=User$1') }}" title="{{ language_name }}">
+                  {{ language_name }}
+               </a>
+            </li>
+
+            {# @TODO Global search #}
+
+            </ul>
+         </div>
+      </header>

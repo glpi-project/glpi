@@ -36,8 +36,13 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\Extension\CsrfExtension;
 use Glpi\Application\View\Extension\FrontEndAssetsExtension;
+use Glpi\Application\View\Extension\I18nExtension;
+use Glpi\Application\View\Extension\RoutingExtension;
+use Glpi\Application\View\Extension\SessionExtension;
 use Twig\Environment;
+use Twig\Extra\String\StringExtension;
 use Twig\Loader\FilesystemLoader;
 
 /**
@@ -53,19 +58,28 @@ class TemplateRenderer {
     */
    private $environment;
 
-   public function __construct(string $rootdir = GLPI_ROOT) {
+   public function __construct(string $rootdir = GLPI_ROOT, string $cachedir = GLPI_CACHE_DIR) {
       $paths = [
          $rootdir . '/templates',
       ];
 
       $options = [
+         'cache'       => $cachedir . '/templates',
+         'auto_reload' => true, // Force refresh
       ];
 
       $this->environment = new Environment(
          new FilesystemLoader($paths, $rootdir),
          $options
       );
+      // Vendor extensions
+      $this->environment->addExtension(new StringExtension());
+      // GLPI extensions
+      $this->environment->addExtension(new CsrfExtension());
       $this->environment->addExtension(new FrontEndAssetsExtension());
+      $this->environment->addExtension(new I18nExtension());
+      $this->environment->addExtension(new RoutingExtension());
+      $this->environment->addExtension(new SessionExtension());
    }
 
    /**
@@ -101,7 +115,7 @@ class TemplateRenderer {
     * @param string $template
     * @param array  $variables
     *
-    * @return string
+    * @return void
     */
    public function display(string $template, array $variables = []): void {
       $this->environment->load($template)->display($variables);

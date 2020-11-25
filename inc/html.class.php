@@ -1618,6 +1618,14 @@ class Html {
 
       self::includeHeader($title, $sector, $item, $option);
 
+      $tpl_vars = [
+         'is_impersonate_active' => Session::isImpersonateActive(),
+         'language_name'         => Dropdown::getLanguageName($_SESSION['glpilanguage']),
+         'logout_path'           => self::getPrefixedUrl(
+            '/front/logout.php' . ($_SESSION['glpiextauth'] ?? false ? '?noAUTO=1' : '')
+         )
+      ];
+
       $body_class = "layout_".$_SESSION['glpilayout'];
       if ((strpos($_SERVER['REQUEST_URI'], ".form.php") !== false)
           && isset($_GET['id']) && ($_GET['id'] > 0)) {
@@ -1627,23 +1635,14 @@ class Html {
             $body_class = "";
          }
       }
+      $tpl_vars['body_class'] = $body_class;
 
-      // Body
-      echo "<body class='$body_class'>";
+      $help_url_key = Session::getCurrentInterface() === 'central' ? 'central_doc_url' : 'helpdesk_doc_url';
+      $help_url = !empty($CFG_GLPI[$help_url_key]) ? $CFG_GLPI[$help_url_key] : 'http://glpi-project.org/help-central';
 
-      Html::displayImpersonateBanner();
+      $tpl_vars['help_url'] = $help_url;
 
-      echo "<div id='header'>";
-      echo "<header role='banner' id='header_top'>";
-      echo "<div id='c_logo'>";
-      echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/central.php'
-               accesskey='1'
-               title='" . __s('Home') . "'><span class='sr-only'>" . __s('Home') . "</span></a>";
-      echo "</div>";
-
-      // Preferences and logout link
-      self::displayTopMenu(true);
-      echo "</header>"; // header_top
+      TemplateRenderer::getInstance()->display('layout/parts/page_header.html.twig', $tpl_vars);
 
       //Main menu
       self::displayMainMenu(
