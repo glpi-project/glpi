@@ -974,12 +974,7 @@ class Search {
 
             if (isset($criterion['link'])
                   && in_array($criterion['link'], array_keys(self::getLogicalOperators()))) {
-               if (strstr($criterion['link'], "NOT")) {
-                  $tmplink = " ".str_replace(" NOT", "", $criterion['link']);
-                  $NOT     = 1;
-               } else {
-                  $tmplink = " ".$criterion['link'];
-               }
+               $tmplink = " ".$criterion['link'];
             } else {
                $tmplink = " AND ";
             }
@@ -987,6 +982,8 @@ class Search {
             // Manage Link if not first item
             if (!empty($sql)) {
                $LINK = $tmplink;
+            } else if (strstr($tmplink, "NOT")) {
+               $NOT = 1;
             }
 
             if (isset($criterion['criteria']) && count($criterion['criteria'])) {
@@ -5378,7 +5375,7 @@ JAVASCRIPT;
                                     AS `glpi_items_softwareversions_$to_type`
                               ON (`glpi_items_softwareversions_$to_type`.`softwareversions_id`
                                        = `glpi_softwareversions_$to_type`.`id`
-                                  AND `glpi_items_softwareversions_$to_type`.`itemtype` = '$from_type'
+                                  AND `glpi_items_softwareversions_$to_type`.`itemtype` = '$to_type'
                                   AND `glpi_items_softwareversions_$to_type`.`is_deleted` = 0)
                            $LINK `$to_table`
                               ON (`glpi_items_softwareversions_$to_type`.`items_id`

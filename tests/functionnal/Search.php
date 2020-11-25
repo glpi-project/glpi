@@ -103,6 +103,14 @@ class Search extends DbTestCase {
          ->hasKey('data')
             ->array['last_errors']->isIdenticalTo([])
             ->array['data']->isNotEmpty();
+
+      $this->string($data['sql']['search'])
+         ->matches('/'
+            . 'LEFT JOIN\s*`glpi_items_softwareversions`\s*AS\s*`glpi_items_softwareversions_[^`]+_Software`\s*ON\s*\('
+            . '`glpi_items_softwareversions_[^`]+_Software`\.`items_id`\s*=\s*`glpi_computers`.`id`'
+            . '\s*AND\s*`glpi_items_softwareversions_[^`]+_Software`\.`itemtype`\s*=\s*\'Computer\''
+            . '\s*AND\s*`glpi_items_softwareversions_[^`]+_Software`\.`is_deleted`\s*=\s*0'
+            . '\)/im');
    }
 
    public function testMetaComputerUser() {
@@ -371,7 +379,7 @@ class Search extends DbTestCase {
          ->contains("(`glpi_users`.`id` = '2')")
          ->contains("OR (`glpi_users`.`id` = '3')")
          // match having
-         ->matches("/HAVING\s*\(`ITEM_Budget_2`\s+<>\s+5\)\s+AND\s+\(\(`ITEM_Printer_1`\s+NOT LIKE\s+'%HP%'\s+OR\s+`ITEM_Printer_1`\s+IS NULL\)\s*\)/");
+         ->matches("/HAVING\s*\(`ITEM_Budget_2`\s+<>\s+5\)\s+AND NOT\s+\(`ITEM_Printer_1`\s+LIKE\s+'%HP%'\s*\)/");
    }
 
    function testViewCriterion() {
