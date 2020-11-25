@@ -727,7 +727,7 @@ class Dropdown extends DbTestCase {
          }
       }
 
-      $params['_idor_token'] => \Session::getNewIDORToken($params['itemtype'] ?? '');
+      $params['_idor_token'] = \Session::getNewIDORToken($params['itemtype'] ?? '');
 
       $result = \Dropdown::getDropdownValue($params, false);
 
