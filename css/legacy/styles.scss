@@ -1,7 +1,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2020 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -27,8 +27,7 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
- */
-
+*/
 /* ################--------------- GLPI CSS style   ---------------#################### */
 
 /* ################--------------- Media queries break   ---------------#################### */
@@ -6610,7 +6609,7 @@ div.objectlockmessage > .form-group-checkbox {
    padding-left: 5px;
 }
 
-@import 'impact';
+@import '../components/impact';
 
 /** Kanban */
 #page .kanban {
@@ -7207,4 +7206,15 @@ div.progress {
 .dashboard.printer_barchart .g-chart .chart {
    flex:none;
    height: 500px;
+}
+
+/** Chartists styles fix **/
+.chart {
+   position: relative;
+   text-align: center;
+   margin-top: 1em;
+}
+.chartist-tooltip {
+   /* fix z-index isssue along with legend */
+   z-index: 11!important;
 }

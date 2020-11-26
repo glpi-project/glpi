@@ -1199,7 +1199,7 @@ class Config extends CommonDBTM {
                 return theme.text;
              }
 
-             return $('<span></span>').html('<img src=\'../css/palettes/previews/' + theme.text.toLowerCase() + '.png\'/>'
+             return $('<span></span>').html('<img src=\'../css/legacy/palettes/previews/' + theme.text.toLowerCase() + '.png\'/>'
                       + '&nbsp;' + theme.text);
          }
          $(\"#theme-selector\").select2({
@@ -2997,7 +2997,7 @@ class Config extends CommonDBTM {
     * @return array
     */
    public function getPalettes() {
-      $themes_files = scandir(GLPI_ROOT."/css/palettes/");
+      $themes_files = scandir(GLPI_ROOT."/css/legacy/palettes/");
       $themes = [];
       foreach ($themes_files as $file) {
          if (strpos($file, ".scss") !== false) {

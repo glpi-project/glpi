@@ -87,7 +87,7 @@ class FrontEndAssetsExtension extends AbstractExtension implements ExtensionInte
          if (!$is_debug && file_exists($compiled_file)) {
             $path = str_replace(GLPI_ROOT, '', $compiled_file);
          } else {
-            $path = '/front/css.php?file=' . $path . ($is_debug ? '&debug' : '');
+            $path = '/front/css.php?file=' . $path . ($is_debug ? '&debug=1' : '');
          }
       } else {
          $minified_path = str_replace('.css', '.min.css', $path);
