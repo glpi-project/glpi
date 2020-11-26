@@ -31,9 +31,6 @@
 
 /* ################--------------- GLPI CSS style   ---------------#################### */
 
-
-
-
 /* ################--------------- Default style  ---------------#################### */
 body {
    font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
@@ -74,11 +71,9 @@ small {
    font-size: 10px;
 }
 
-
 .b {
    font-weight: bold;
 }
-
 
 .center {
    text-align:center;
@@ -106,7 +101,6 @@ small {
    position: relative;
 }
 
-
 .red {
    color:red;
 }
@@ -116,7 +110,6 @@ small {
 .green {
    color:green;
 }
-
 
 .deleted {
    background-color:#cf9b9b;
@@ -141,8 +134,6 @@ a:hover {
 hr {
    border: 1px solid #cccccc;
 }
-
-
 
 .pointer {
    cursor:pointer;
@@ -177,7 +168,6 @@ hr {
    padding: 0;
 }
 
-
 /* ################--------------- Page ---------------#################### */
 
 #page {
@@ -199,8 +189,6 @@ hr {
 .qtip, .invisible {
    display: none;
 }
-
-
 
 /* ################--------------- form ---------------#################### */
 
@@ -275,8 +263,6 @@ img[src*='calendar.png'] {
    display: none;
 }
 
-
-
 /* ################--------------- Table  ---------------#################### */
 
 table {
@@ -314,7 +300,6 @@ td { }
    width:95%;
    background : url("../pics/fond-central.png") repeat-x top right ;
 }
-
 
 .tab_cadre_navigation {
    margin: 0 auto;
@@ -390,7 +375,6 @@ td { }
    background-color: #f2f2f2;
 }
 
-
 .tab_find {
    background-color: #ccccc7;
 }
@@ -411,15 +395,11 @@ td { }
    border:1px dotted #000000;
 }
 
-
-
 /* ################--------------- Pager  ---------------#################### */
-
 
 .navigationheader {
    display: none;
 }
-
 
 /* ################--------------- Autocompletion  ---------------#################### */
 
@@ -443,10 +423,7 @@ li.auto_comp {
    height:16px;
 }
 
-
-
 /* ################--------------- Tracking  / Reminder ---------------#################### */
-
 
 .showplan {
    font-weight: bold;
@@ -465,8 +442,6 @@ li.auto_comp {
     float: left;
 }
 
-
-
 /* ################--------------- Calendrier  / reservation ---------------#################### */
 
 #ui-datepicker-div,
@@ -478,28 +453,6 @@ li.auto_comp {
 }
 
 /* ################--------------- Knowledge FAQ  ---------------#################### */
-
-#contenukb {
-   height: 100%;
-   width: 600px;
-   margin: 0 auto;
-}
-
-#contenukb legend {
-   font-weight: bold;
-}
-
-#contenukb fieldset {
-   background-color: #eeeeee;
-   border: 1px solid #FFC65D;
-   -moz-border-radius: 8px;
-   padding-bottom:10px;
-   width: 600px;
-}
-
-#contenukb textarea {
-   width:550px;
-}
 
 #kbanswer ul {
    padding-left: 15px;
@@ -549,7 +502,6 @@ li.auto_comp {
    border: dotted 2px #ccc;
 }
 
-
 a.knowbase {
    font-size: 13px;
    margin-left:8px;
@@ -581,8 +533,6 @@ a.icon_nav_move:hover img {
    -moz-border-radius: 5px;
 }
 
-
-
 /* ################--------------- planning  ---------------#################### */
 
 .planning {
@@ -597,24 +547,7 @@ a.icon_nav_move:hover img {
    background-color: white;
 }
 
-
-
 /* ################--------------- Onglet  ---------------#################### */
-
-div#menu_navigate {
-   margin: 0 auto;
-   z-index:1;
-   font-size: 10px;
-   width:950px;
-}
-
-div#menu_navigate li {
-   margin-left:2px;
-   display:block;
-   float:left;
-   padding:2px;
-}
-
 
 #barre_onglets {
    width:950px;
@@ -695,8 +628,6 @@ ul#onglet span.fake {
    cursor:pointer;
 }
 
-
-
 /* Over onglet div */
 #onglet_plugins {
    display: none;
@@ -743,8 +674,6 @@ ul#onglet span.fake {
    color: #000;
    background: #fccc6f;
 }
-
-
 
 /* ################--------------- box (redirect and other)  ---------------#################### */
 
@@ -822,8 +751,6 @@ ul#onglet span.fake {
    overflow:hidden;
 }
 
-
-
 /* ################--------------- Login Null Header  ---------------#################### */
 
 #contenulogin {
@@ -848,7 +775,6 @@ ul#onglet span.fake {
    background:url("../pics/null-header.png")  no-repeat;
 }
 
-
 #text-nullHeader {
    float:left;
    height: 300px;
@@ -857,7 +783,6 @@ ul#onglet span.fake {
    margin-left: auto;
    margin-top:100px;
 }
-
 
 #boxlogin {
    position:relative;
@@ -871,7 +796,6 @@ ul#onglet span.fake {
 #boxlogin p {
    text-align:center;
 }
-
 
 .row {
    clear: both;
@@ -889,8 +813,6 @@ ul#onglet span.fake {
    margin-right:10px;
    text-align: right;
 }
-
-
 
 #boxlogin fieldset {
    background-color: transparent;
@@ -910,7 +832,6 @@ ul#onglet span.fake {
    border: 1px solid #3A5693;
 }
 
-
 #logo-login {
    font-size: 11px;
    float:right;
@@ -928,17 +849,9 @@ ul#onglet span.fake {
    text-decoration: underline;
 }
 
-
 #box-faq {
    float:right;
    margin-right:10px;
-}
-
-.sous_logo {
-   font-family: arial;
-   font-size: 9px;
-   color: #eeeeee;
-   text-decoration: none;
 }
 
 .error {
@@ -946,7 +859,6 @@ ul#onglet span.fake {
    margin-top:20px;
    text-align:center;
 }
-
 
 #footer-login {
    text-align:right;
@@ -963,344 +875,9 @@ ul#onglet span.fake {
    margin:auto;
 }
 
-
-
-/* ################--------------- Header / menu  ---------------#################### */
-
-div#header {
-   display : none;
-   background: url("../pics/fd_nav1.png") 0 0 repeat-x;
-   margin-bottom:10px;
-}
-
-div#c_preference {
-   height: 20px;
-   text-align: right;
-   margin-right: 5px;
-   position: relative;
-   top: 4px;
-   font-size: 0.9em;
-   z-index:900;
-}
-
-div#c_preference ul {
-   list-style: none;
-}
-
-div#c_preference ul li {
-   float: right;
-   margin: 0 10px;
-}
-
-div#c_preference ul li#deconnexion {
-   margin-left: 25px;
-}
-
-div#c_preference a {
-   color: #000;
-   text-decoration: none;
-   font-size: 0.9em;
-}
-
-div#c_preference a:hover {
-   text-decoration: underline;
-}
-
-div#c_recherche {
-   height: 21px;
-   text-align: right;
-   margin-right: 25px;
-   position: relative;
-   top: 5px;
-   font-size: 0.9em;
-}
-
-div#c_recherche form {
-   height: 15px;
-   position: relative;
-   bottom: 3px;
-}
-
-div#c_recherche form div#champRecherche input {
-   border: 1px solid #000;
-   height: 14px;
-   font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
-   font-size: 11px;
-}
-
-div#c_recherche form div#boutonRecherche {
-   float: right;
-   border: 1px solid #000;
-   height: 14px;
-   width: 14px;
-   overflow: hidden;
-}
-
-div#c_recherche form div#boutonRecherche input {
-   font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
-   font-size: 0.7em;
-   width: 15px;
-   height: 15px;
-   border: none;
-   position: relative;
-   right: 2px;
-}
-
-div#c_menu {
-   height: 41px;
-   position: absolute;
-   top: 0px;
-   z-index: 10;
-   left: 45px;
-}
-
-div#c_menu ul#menu {
-   position: relative;
-   left: 10px;
-   top: 23px;
-   height: 20px;
-   list-style: none;
-   float: left;
-}
-
-ul#menu a.itemP, ul#menu a.itemP1 {
-   display: block;
-   height: 100%;
-   width: 100%;
-   text-align: center;
-   text-decoration: none;
-   border-right: 1px solid #9BA563;
-   color: #000;
-}
-
-ul#menu ul.ssmenu {
-   position: relative;
-   top: 5px;
-   width: 108px;
-   border: 1px solid #CC9900;
-   border-bottom: 0px;
-   -moz-border-radius: 4px;
-   background: url("../pics/fd_ssmenu.png") 0 0 repeat;
-   display: none;
-}
-
-ul#menu ul li {
-   list-style: none;
-   text-align: center;
-   border-bottom: 1px solid #CC9900;
-   line-height: 20px;
-   font-size: 0.9em;
-}
-
-ul#menu ul li a {
-   color: #000;
-   text-decoration: none;
-   display: block;
-   width: 100%;
-   height: 100%;
-}
-
-ul#menu li#menu1 {
-   float: left;
-   width: 110px;
-}
-
-ul#menu li#menu1 ul.ssmenu {
-   position: relative;
-   width: 110px;
-}
-
-ul#menu li#menu2 {
-   float: left;
-   width: 110px;
-}
-
-ul#menu li#menu2 ul.ssmenu {
-   position: relative;
-   width: 110px;
-}
-
-ul#menu li#menu3 {
-   float: left;
-   width: 110px;
-}
-
-ul#menu li#menu3 ul.ssmenu {
-   position: relative;
-   width: 110px;
-}
-
-ul#menu li#menu4 {
-   float: left;
-   width: 110px;
-}
-
-ul#menu li#menu4 ul.ssmenu {
-   position: relative;
-   width: 110px;
-}
-
-ul#menu li#menu5 {
-   float: left;
-   width: 110px;
-}
-
-ul#menu li#menu5 ul.ssmenu {
-   position: relative;
-   width: 110px;
-}
-
-ul#menu li#menu6 {
-   float: left;
-   width: 110px;
-}
-
-ul#menu li#menu6 ul.ssmenu {
-   position: relative;
-   width: 110px;
-}
-
-ul#menu li#menu7 {
-   float: left;
-   width: 110px;
-}
-
-ul#menu li#menu7 ul.ssmenu {
-   position: relative;
-   width: 110px;
-}
-
-div#header div#c_logo {
-   position: absolute;
-   z-index: 1000;
-   width: 64px;
-   height: 41px;
-   float: left;
-   background: url("../pics/fd_logo.png") 0 0 repeat-x;
-}
-
-div#header div#c_logo a {
-   display: block;
-   width: 100%;
-   height: 100%;
-   text-decoration: none;
-}
-
-
-div#c_ssmenu1 {
-   height: 24px;
-   clear: both;
-   font-size: 0.8em;
-}
-
-div#c_ssmenu1 ul {
-   position: relative;
-   top: 4px;
-   left: 0px;
-   list-style: none;
-}
-
-div#c_ssmenu1 ul li {
-   float: left;
-   padding: 0 10px;
-}
-
-div#c_ssmenu1 ul li a {
-   text-decoration: none;
-   color: #666;
-}
-
-div#c_ssmenu1 ul li a:hover {
-   text-decoration: underline;
-}
-
-
-div#c_ssmenu2 {
-   position: relative;
-   z-index: 5;
-   background: url("../pics/fd_nav3.png") 0 0 repeat-x;
-   height: 28px;
-   clear: both;
-   font-size: 0.9em;
-}
-
-div#c_ssmenu2 ul {
-   position: relative;
-   top: 5px;
-   left: 0px;
-   list-style: none;
-}
-
-div#c_ssmenu2 ul li {
-   position:relative;
-   float: left;
-   padding: 0 10px;
-}
-
-div#c_ssmenu2 ul li a {
-   text-decoration: none;
-   color: #000;
-}
-
-div#c_ssmenu2 a.here {
-   font-size:14px;
-}
-
-
-div#show_entities {
-   display: none;
-   position: absolute;
-   top:20px;
-   left:1px;
-   border: 1px solid  #CC9900;
-   background: url("../pics/fd_hoverlink.png") 0 0 repeat;
-   -moz-border-radius: 5px;
-   padding: 5px;
-   font-size: 11px;
-   text-align: left;
-   z-index:1000;
-}
-
-div#show_entities_long {
-   display: none;
-   position: absolute;
-   top:20px;
-   left:1px;
-   border: 1px solid  #CC9900;
-   background: url("../pics/fd_hoverlink.png") 0 0 repeat;
-   -moz-border-radius: 5px;
-   padding: 5px;
-   font-size: 11px;
-   text-align: left;
-   z-index:1000;
-   overflow:scroll;
-   height:300px;
-   width:300px;
-}
-
-div#show_all_menu {
-   display: none;
-   position: absolute;
-   top:20px;
-   left:5px;
-   border: 1px solid  #CC9900;
-   background: url("../pics/fd_hoverlink.png") 0 0 repeat;
-   -moz-border-radius: 5px;
-   padding: 5px;
-   font-size: 11px;
-   text-align: left;
-   z-index:1000;
-}
-
-#menu_navigate {
-   display:none;
-}
-
 #tabspanel {
    display:none;
 }
-
-
 
 /* ################--------------- Footer  ---------------#################### */
 
@@ -1318,8 +895,6 @@ div#show_all_menu {
    font-size: 9px;
    color :#757575;
 }
-
-
 
 /* ################--------------- DB Slave---------------#################### */
 
@@ -1345,9 +920,6 @@ div#show_all_menu {
    background-color: #fff;
    color:blue;
 }
-
-
-
 
 /* ################--------------- Debug  ---------------#################### */
 #debug-float {
@@ -1389,7 +961,6 @@ div#show_all_menu {
    text-align:center;
 }
 
-
 #debug h1, #debugajax h1 {
    font-size:14px;
    text-align:center;
@@ -1403,7 +974,6 @@ div#show_all_menu {
    border-left: 4px solid #FFC65D;
    border-bottom: 2px solid #FFC65D;
 }
-
 
 #debug table, #debugajax table {
    margin:0;

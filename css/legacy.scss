@@ -29,7 +29,10 @@
  * ---------------------------------------------------------------------
 */
 
+@import 'legacy/layout';
 @import 'legacy/styles';
+@import 'components/impact';
+@import 'legacy/login';
 
 @media print {
    .legacy {

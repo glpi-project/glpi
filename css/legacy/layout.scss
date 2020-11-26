@@ -1,0 +1,432 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2020 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+*/
+
+#header {
+   font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
+   font-size: 12px;
+   height: 96px;
+
+   #header_top {
+      width: 100%;
+      height: 20px;
+      padding: 10px 0;
+   }
+   
+   #c_logo {
+      position: absolute;
+      z-index: 1000;
+      width: 100px;
+      height: 55px;
+      float: left;
+      background: url("../pics/fd_logo.png") 0 0 repeat-x;
+   
+      a {
+         display: block;
+         width: 100%;
+         height: 100%;
+         text-decoration: none;
+      }
+   }
+   
+   #c_preference {
+      height: 20px;
+      text-align: right;
+      margin-right: 5px;
+      top: 4px;
+      font-size: 0.9em;
+      display: inline-block;
+      float: right;
+   
+      a.fa {
+         font-size: 1.6em;
+         color: white;
+   
+         &:hover {
+            text-decoration: none;
+            color: #ccc;
+         }
+      }
+   
+      ul {
+         list-style: none;
+   
+         li {
+            float: right;
+            margin: 0 10px;
+         }
+      }
+   
+      a {
+         &.debugon {
+            color: #ff0000 !important;
+   
+            &:hover {
+               color: #ff0000 !important;
+            }
+         }
+   
+         text-decoration: none;
+         font-size: 0.9em;
+   
+         &:hover {
+            text-decoration: underline;
+         }
+      }
+   
+      .select2-choice {
+         color: #3a5693;
+      }
+   
+      p {
+         margin: 0;
+      }
+   }
+   
+   #c_recherche {
+      position: relative;
+   
+      form #champRecherche {
+         button {
+            border: none;
+            height: 22px;
+            vertical-align: bottom;
+            border-radius: 0 3px 3px 0;
+            cursor: pointer;
+            margin: 0;
+   
+            &:hover {
+               background-color: #ccc;
+            }
+         }
+   
+         input {
+            border: none;
+            height: 22px;
+            width: 150px;
+            padding: 0 3px;
+            font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
+            font-size: 12px;
+            border-radius: 3px 0px 0px 3px;
+            position: relative;
+         }
+      }
+   }
+   
+   #myname {
+      font-size: 11px;
+      font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
+      margin: 0 0 .5em .5em;
+      display: inline-block;
+      vertical-align: bottom;
+      font-weight: bold;
+   }
+   
+   #language_link > {
+      a, span {
+         display: inline-block;
+         padding: .5em 0;
+         font-weight: bold;
+      }
+   }
+   
+   #c_menu {
+      height: 30px;
+      text-align: center;
+      padding-left: 95px;
+   
+      ul#menu {
+         height: 30px;
+         list-style: none;
+         font-size: 13px;
+         box-sizing: border-box;
+         margin: 0 auto;
+         display: inline-block;
+      }
+   }
+   
+   ul#menu {
+      a {
+         &.itemP, &.itemP1 {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            font-size: 13px;
+            white-space: nowrap;
+            padding: 7px 1em;
+         }
+      }
+   
+      ul {
+         &.ssmenu {
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            box-shadow: 0px 2px 2px 1px #BCB6B3;
+         }
+   
+         li {
+            list-style: none;
+            text-align: left;
+            line-height: 20px;
+            font-size: 0.9em;
+   
+            &:last-child {
+               border-bottom: 0px;
+            }
+   
+            a {
+               text-decoration: none;
+               display: block;
+               padding: 5px 5px 5px 5px;
+            }
+         }
+      }
+   }
+   
+   #menu_all_button {
+      float: right;
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+      display: inline-block;
+      margin-top: 2px;
+      font-size: 1.6em;
+   }
+   
+   ul#menu {
+      > li {
+         display: inline-block;
+         min-width: 135px;
+         height: 30px;
+      }
+   
+      ul.ssmenu {
+         position: absolute;
+         min-width: 135px;
+         z-index: 500;
+      }
+   
+      .empty-icon::before {
+         content: "";
+      }
+   }
+   
+   ul#menu ul {
+      -webkit-column-count: 2;
+      -webkit-column-gap: 10px;
+      -moz-column-count: 2;
+      -moz-column-gap: 10px;
+      column-count: 2;
+      column-gap: 10px;
+   
+      li {
+         break-inside: avoid;
+      }
+   }
+
+   
+   #c_ssmenu1 {
+      background: #D0D99D;
+      height: 24px;
+      clear: both;
+      font-size: 0.8em;
+   
+      ul {
+         position: relative;
+         top: 4px;
+         left: 0px;
+         list-style: none;
+   
+         li {
+            float: left;
+            padding: 0 10px;
+   
+            a {
+               text-decoration: none;
+               color: #666;
+   
+               &:hover {
+                  text-decoration: underline;
+               }
+            }
+         }
+      }
+   }
+   
+   #c_ssmenu2 {
+      min-height: 34px;
+      padding: 3px 0;
+      box-sizing: border-box;
+      background-color: #FFF;
+   
+      ul {
+         left: 0px;
+         list-style: none;
+   
+         li {
+            float: left;
+            padding: 5px 10px 0 10px;
+   
+            a {
+               text-decoration: none;
+               color: #000;
+            }
+         }
+      }
+   
+      a.here {
+         font-size: 14px;
+      }
+   }
+   
+   .breadcrumb_item {
+      height: 23px;
+      position: relative;
+   }
+   
+   .profile-selector {
+      float: right !important;
+      height: 28px;
+      line-height: 24px;
+      z-index: 40;
+      position: relative;
+   }
+   
+   .breadcrumb_item {
+      &:before {
+         left: 100%;
+         top: 50%;
+         border: solid transparent;
+         content: " ";
+         height: 0;
+         width: 0;
+         position: absolute;
+         border-left-color: #FFF;
+         border-width: 17px;
+         margin-top: -17px;
+         z-index: 20;
+      }
+   
+      &:after {
+         left: 100%;
+         top: 50%;
+         border: solid transparent;
+         content: " ";
+         height: 0;
+         width: 0;
+         position: absolute;
+         border-left-color: #FFF;
+         border-width: 14px;
+         margin-top: -14px;
+         z-index: 20;
+         margin-left: -1px;
+      }
+   
+      &:not(:nth-of-type(1)) {
+         padding-left: 25px !important;
+      }
+   
+      &:nth-of-type(1), &:nth-of-type(2) {
+         background-color: #F2F2F2;
+   
+         &:after {
+            border-left-color: #F2F2F2;
+         }
+      }
+   
+      &:nth-of-type(3) {
+         background-color: #FEC95C;
+   
+         &:after {
+            border-left-color: #FEC95C;
+         }
+      }
+   }
+   
+   .icons_block {
+      margin-left: 10px;
+      height: 28px;
+      float: inherit !important;
+      box-sizing: border-box;
+      display: inline-block;
+      position: relative;
+      z-index: 40;
+   
+      span {
+         padding: 0 8px;
+         min-width: 20px;
+         display: inline-block;
+         line-height: 23px;
+      }
+   
+      a > img, i.fa, i.far, i.fas {
+         font-size: 1.7em;
+         vertical-align: top;
+      }
+   }
+   
+   .entity_select:hover {
+      opacity: .6;
+   }
+
+} /* end of #header */
+
+
+#footer {
+   font-size: 9px;
+   color: #000;
+   background-color: #E2E1DE;
+   padding: 6px;
+   height: 18px;
+   padding: 5px;
+
+   > table {
+     width: 100%;
+   }
+   a.copyright {
+     font-size: 9px;
+     color: #000;
+   }
+}
+
+/** Impersonate feature */
+div.banner-impersonate {
+   background: #ff3d2a;
+   color: #fff;
+   font-weight: bold;
+   padding: 10px;
+   text-align: right;
+}
+div.banner-impersonate button {
+   color: inherit;
+   margin-left: 5px;
+   text-decoration: underline;
+}
+
