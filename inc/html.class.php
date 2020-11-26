@@ -1625,17 +1625,6 @@ class Html {
          )
       ];
 
-      $body_class = "layout_".$_SESSION['glpilayout'];
-      if ((strpos($_SERVER['REQUEST_URI'], ".form.php") !== false)
-          && isset($_GET['id']) && ($_GET['id'] > 0)) {
-         if (!CommonGLPI::isLayoutExcludedPage()) {
-            $body_class.= " form";
-         } else {
-            $body_class = "";
-         }
-      }
-      $tpl_vars['body_class'] = $body_class;
-
       $help_url_key = Session::getCurrentInterface() === 'central' ? 'central_doc_url' : 'helpdesk_doc_url';
       $help_url = !empty($CFG_GLPI[$help_url_key]) ? $CFG_GLPI[$help_url_key] : 'http://glpi-project.org/help-central';
 
@@ -1662,7 +1651,17 @@ class Html {
            "<span class='sr-only'>Top of the page</span>".
            "</a></span>";
 
-      echo "<main role='main' id='page'>";
+      // TODO move to main_class
+      $main_class = "layout_".$_SESSION['glpilayout'];
+      if ((strpos($_SERVER['REQUEST_URI'], ".form.php") !== false)
+          && isset($_GET['id']) && ($_GET['id'] > 0)) {
+         if (!CommonGLPI::isLayoutExcludedPage()) {
+            $main_class.= " form";
+         } else {
+            $main_class = "";
+         }
+      }
+      echo "<main role='main' id='page' class='$main_class'>";
 
       if ($DB->isSlave()
           && !$DB->first_connection) {
@@ -1695,6 +1694,15 @@ class Html {
          return;
       }
       $FOOTER_LOADED = true;
+
+      self::displayDebugInfos();
+
+      if ($CFG_GLPI['maintenance_mode']) { // mode maintenance
+         echo "<div id='maintenance-float'>";
+         echo "<a href='#see_maintenance'>GLPI MAINTENANCE MODE</a>";
+         echo "</div>";
+      }
+
       echo "</main>"; // end of "main role='main'"
 
       echo "<footer role='contentinfo' id='footer'>";
@@ -1729,12 +1737,6 @@ class Html {
       echo "<td class='right'>" . self::getCopyrightMessage() . "</td>";
       echo "</tr></table></footer>";
 
-      if ($CFG_GLPI['maintenance_mode']) { // mode maintenance
-         echo "<div id='maintenance-float'>";
-         echo "<a href='#see_maintenance'>GLPI MAINTENANCE MODE</a>";
-         echo "</div>";
-      }
-      self::displayDebugInfos();
       self::loadJavascript();
 
       echo "</body></html>";
@@ -1919,13 +1921,14 @@ class Html {
       }
       $FOOTER_LOADED = true;
 
+      self::displayDebugInfos();
+
       echo "</main>"; // end of "main role='main'"
 
       echo "<footer role='contentinfo' id='footer'>";
       echo "<table role='presentation' width='100%'><tr><td class='right'>" . self::getCopyrightMessage(false);
       echo "</td></tr></table></footer>";
 
-      self::displayDebugInfos();
       echo "</body></html>";
       self::loadJavascript();
       closeDBConnections();
