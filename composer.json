@@ -71,7 +71,6 @@
         "paragonie/random_compat": "*",
         "symfony/polyfill-ctype": "*",
         "symfony/polyfill-intl-idn": "*",
-        "symfony/polyfill-mbstring": "*",
         "symfony/polyfill-php72": "*"
     },
     "suggest": {
