@@ -28,14 +28,6 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-/** Main **/
-.chart {
-   position: relative;
-   text-align: center;
-   margin-top: 1em;
-}
-
-/* More colors! */
 .ct-series.ct-series-p {
    stroke: #C2F040;
 }
@@ -210,10 +202,4 @@
 .ct-legend .ct-series-14:before {
    background-color: #a748ca;
    border-color: #a748ca;
-}
-
-/** Tooltips **/
-.chartist-tooltip {
-   /* fix z-index isssue along with legend */
-   z-index: 11!important;
 }

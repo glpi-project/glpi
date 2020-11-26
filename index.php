@@ -81,10 +81,10 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    // Appel CSS
    echo Html::scss('css/styles');
    if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
-      echo Html::scss('css/highcontrast');
+      echo Html::scss('css/legacy/highcontrast');
    }
    $theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
-   echo Html::scss('css/palettes/' . $theme);
+   echo Html::scss('css/legacy/palettes/' . $theme);
    // external libs CSS
    echo Html::css('public/lib/base.css');
 
