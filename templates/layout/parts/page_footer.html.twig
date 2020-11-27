@@ -36,12 +36,10 @@
             {% if is_debug_active %}
                <td class="right">
                   <span class="copyright">
-                     {{
-                        __('%1$s - %2$s')|format(
+                     {{ __('%1$s - %2$s')|format(
                            _n('%s second', '%s seconds', execution_time)|format(execution_time),
                            memory_usage|format_binary()
-                        )
-                     }}
+                        ) }}
                   </span>
                </td>
             {% endif %}
