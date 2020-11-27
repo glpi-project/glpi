@@ -1627,7 +1627,11 @@ class Html {
          'language_name'         => Dropdown::getLanguageName($_SESSION['glpilanguage']),
          'logout_path'           => self::getPrefixedUrl(
             '/front/logout.php' . ($_SESSION['glpiextauth'] ?? false ? '?noAUTO=1' : '')
-         )
+         ),
+         'menu'                  => self::generateMenuSession($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE),
+         'sector'                => $sector,
+         'item'                  => $item,
+         'option'                => $option,
       ];
 
       $help_url_key = Session::getCurrentInterface() === 'central' ? 'central_doc_url' : 'helpdesk_doc_url';
@@ -1638,15 +1642,15 @@ class Html {
       TemplateRenderer::getInstance()->display('layout/parts/page_header.html.twig', $tpl_vars);
 
       //Main menu
-      self::displayMainMenu(
+      /*self::displayMainMenu(
          true, [
             'sector' => $sector,
             'item'   => $item,
             'option' => $option
          ]
-      );
+      );*/
 
-      echo "</div>\n"; // fin header
+      echo "\n"; // fin header
 
       // Back to top button
       echo "<span class='fa-stack fa-lg' id='backtotop' style='display: none'>".
@@ -1666,7 +1670,7 @@ class Html {
             $main_class = "";
          }
       }
-      echo "<main role='main' id='page' class='$main_class'>";
+      echo "";
 
       if ($DB->isSlave()
           && !$DB->first_connection) {
@@ -6963,14 +6967,6 @@ JAVASCRIPT;
       }
       echo ">";
 
-      if ($full === false) {
-         // Display Home menu
-         echo "<li id='menu1'>";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"".
-               __s('Home')."\" class='itemP'>".__('Home')."</a>";
-         echo "</li>";
-      }
-
       // Get object-variables and build the navigation-elements
       $i = 1;
       foreach ($menu as $part => $data) {
@@ -7008,8 +7004,8 @@ JAVASCRIPT;
                      $title = $val['title'];
 
                      if (isset($val['shortcut']) && !empty($val['shortcut'])) {
-                        if (!isset($already_used_shortcut[$val['shortcut']])) {
-                           $shortcut_attr = " accesskey='".$val['shortcut']."'";
+                        if (!isset($already_used_accesskeyshortcut[$val['shortcut']])) {
+                           $shortcut_attr = " ='".$val['shortcut']."'";
                            $already_used_shortcut[$val['shortcut']] = $val['shortcut'];
                         }
                         $title = Toolbox::shortcut($val['title'], $val['shortcut']);
