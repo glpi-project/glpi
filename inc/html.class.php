@@ -1708,11 +1708,7 @@ class Html {
          echo "</div>";
       }
 
-      echo "</main>"; // end of "main role='main'"
-
-      echo "<footer role='contentinfo' id='footer'>";
-      echo "<table role='presentation'><tr>";
-
+      /* TODO Print execution time and used memory
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          echo "<td class='left'><span class='copyright'>";
          $timedebug = sprintf(_n('%s second', '%s seconds', $TIMER_DEBUG->getTime()),
@@ -1724,27 +1720,50 @@ class Html {
          echo $timedebug;
          echo "</span></td>";
       }
+      */
 
-      $currentVersion = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
-      $foundedNewVersion = array_key_exists('founded_new_version', $CFG_GLPI)
-         ? $CFG_GLPI['founded_new_version']
-         : '';
-      if (!empty($foundedNewVersion) && version_compare($currentVersion, $foundedNewVersion, '<')) {
-         echo "<td class='copyright'>";
-         $latest_version = "<a href='http://www.glpi-project.org' target='_blank' title=\""
-             . __s('You will find it on the GLPI-PROJECT.org site.')."\"> "
-             . $foundedNewVersion
-             . "</a>";
-         printf(__('A new version is available: %s.'), $latest_version);
+      echo self::getCoreVariablesForJavascript(true);
 
-         echo "</td>";
+      $current_version = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
+      $founded_new_version = $CFG_GLPI['founded_new_version'] ?? null;
+
+      $tpl_vars = [
+         'founded_new_version' => !empty($founded_new_version) && version_compare($current_version, $founded_new_version, '<')
+            ? $founded_new_version
+            : null,
+         'js_files'            => [],
+      ];
+
+      // On demand scripts
+      foreach ($_SESSION['glpi_js_toload'] ?? [] as $scripts) {
+         if (!is_array($scripts)) {
+            $scripts = [$scripts];
+         }
+         foreach ($scripts as $script) {
+            $tpl_vars['js_files'][] = $script;
+         }
       }
-      echo "<td class='right'>" . self::getCopyrightMessage() . "</td>";
-      echo "</tr></table></footer>";
+      $_SESSION['glpi_js_toload'] = [];
 
-      self::loadJavascript();
+      // Locales for js libraries
+      if (isset($_SESSION['glpilanguage'])) {
+         // select2
+         $filename = sprintf(
+            'public/lib/select2/js/i18n/%s.js',
+            $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2]
+         );
+         if (file_exists(GLPI_ROOT.'/'.$filename)) {
+            $tpl_vars['js_files'][] = $filename;
+         }
+      }
 
-      echo "</body></html>";
+      $tpl_vars['js_files'][] = 'js/common.js';
+      $tpl_vars['js_files'][] = 'js/misc.js';
+
+      // TODO Add Ajax notifications script block
+      // TODO Add plugins scripts
+
+      TemplateRenderer::getInstance()->display('layout/parts/page_footer.html.twig', $tpl_vars);
 
       if (!$keepDB) {
          closeDBConnections();
