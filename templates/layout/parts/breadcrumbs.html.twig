@@ -43,9 +43,13 @@
          </li>
          {% endif %}
 
+         <li class="icons_block">
          {{ include('layout/parts/context_links.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
+         </li>
 
+         <li class="profile-selector">
          {{ include('layout/parts/profile_selector.html.twig', {}, with_context = false) }}
+         </li>
 
       {% endif %}
    </ul>
