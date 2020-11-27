@@ -58,6 +58,7 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
       return [
          'is_user_connected'        => Session::getLoginUserID() !== false,
          'is_debug_active'          => $_SESSION['glpi_use_mode'] ?? null === Session::DEBUG_MODE,
+         'current_user_id'          => Session::getLoginUserID() || null,
          'current_user_name'        => $user_name,
          'use_simplified_interface' => Session::getCurrentInterface() === 'helpdesk',
       ];

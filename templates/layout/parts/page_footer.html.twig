@@ -1,0 +1,58 @@
+{#
+ ---------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2015-2020 Teclib' and contributors.
+
+ http://glpi-project.org
+
+ based on GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2014 by the INDEPNET Development Team.
+
+ ---------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of GLPI.
+
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ ---------------------------------------------------------------------
+#}
+   </main>
+
+   <footer role="contentinfo" id="footer">
+      <table role="presentation">
+         <tr>
+            {% if founded_new_version is not null %}
+               <td class="copyright">
+                  <a href="http://www.glpi-project.org" target="_blank"
+                     title="{{ __('You will find it on the GLPI-PROJECT.org site.') }}"">
+                     {{ __('A new version is available: %s.', [founded_new_version]) }}
+                  </a>
+               </td>
+            {% endif %}
+            <td class="right">
+               <a href="http://glpi-project.org/" title="Powered by Teclib and contributors" class="copyright">
+                  GLPI {{ constant('GLPI_VERSION') }}
+                  Copyright (C) 2015-{{ constant('GLPI_YEAR') }} Teclib' and contributors
+               </a>
+            </td>
+         </tr>
+      </table>
+   </footer>
+
+   {% for js_file in js_files %}
+      <script type="text/javascript" src="{{ js_path(js_file) }}"></script>
+   {% endfor %}
+</body>
+</html>
