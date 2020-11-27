@@ -115,6 +115,9 @@ jobs:
         run: |
           tools/locale/extract_template.sh 2>&1 | tee extract.log
           if [[ -n $(grep "warning" extract.log) ]]; then exit 1; fi
+      - name: "Twig lint"
+        run: |
+          docker exec app vendor/bin/twigcs templates/
       - name: "Cleanup containers"
         if: always()
         run: |

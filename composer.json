@@ -64,6 +64,7 @@
         "ext-xml": "*",
         "atoum/atoum": "^4.0",
         "consolidation/robo": "^2.0",
+        "friendsoftwig/twigcs": "^4.0",
         "glpi-project/coding-standard": "^0.8",
         "glpi-project/tools": "^0.1.15",
         "maglnet/composer-require-checker": "^2.0",
