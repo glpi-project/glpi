@@ -39,10 +39,10 @@ window.alert = function(message, caption) {
    if(typeof message == 'string') {
       message = message.replace("\n", '<br>');
    }
-   caption = caption || _sn('Information', 'Information', 1);
+   caption = caption || _n('Information', 'Information', 1);
 
    var buttons = [];
-   buttons[__s('OK')] = function() {
+   buttons[__('OK')] = function() {
       $(this).dialog('close');
    };
 
@@ -50,7 +50,7 @@ window.alert = function(message, caption) {
       title: caption,
       buttons: buttons,
       dialogClass: 'glpi_modal',
-      open: function(event, ui) {
+      open: function() {
          $(this).parent().prev('.ui-widget-overlay').addClass('glpi_modal');
          $(this).next('div').find('button').focus();
       },
@@ -77,7 +77,7 @@ var lastClickedElement;
 
 // store last clicked element on dom
 $(document).click(function(event) {
-    lastClickedElement = $(event.target);
+   lastClickedElement = $(event.target);
 });
 
 // asynchronous confirm dialog with jquery ui
@@ -106,11 +106,11 @@ var newConfirm = function(message, caption) {
       title: caption,
       dialogClass: 'fixed glpi_modal',
       buttons: buttons,
-      open: function(event, ui) {
+      open: function() {
          $(this).parent().prev('.ui-widget-overlay').addClass('glpi_modal');
       },
       close: function () {
-          $(this).remove();
+         $(this).remove();
       },
       draggable: true,
       modal: true,
@@ -134,14 +134,14 @@ window.confirm = function (message, caption) {
 };
 
 
-displayAjaxMessageAfterRedirect = function() {
+window.displayAjaxMessageAfterRedirect = function() {
    // attach MESSAGE_AFTER_REDIRECT to body
    $('.message_after_redirect').remove();
-   $('[id^=\"message_after_redirect_\"]').remove();
+   $('[id^="message_after_redirect_"]').remove();
    $.ajax({
       url: CFG_GLPI.root_doc+ '/ajax/displayMessageAfterRedirect.php',
       success: function(html) {
          $('body').append(html);
       }
    });
-}
+};
