@@ -41,7 +41,9 @@ use Glpi\Application\View\Extension\FrontEndAssetsExtension;
 use Glpi\Application\View\Extension\I18nExtension;
 use Glpi\Application\View\Extension\RoutingExtension;
 use Glpi\Application\View\Extension\SessionExtension;
+use Session;
 use Twig\Environment;
+use Twig\Extension\DebugExtension;
 use Twig\Extra\String\StringExtension;
 use Twig\Loader\FilesystemLoader;
 
@@ -65,6 +67,7 @@ class TemplateRenderer {
 
       $options = [
          'cache'       => $cachedir . '/templates',
+         'debug'       => $_SESSION['glpi_use_mode'] ?? null === Session::DEBUG_MODE,
          'auto_reload' => true, // Force refresh
       ];
 
@@ -73,6 +76,7 @@ class TemplateRenderer {
          $options
       );
       // Vendor extensions
+      $this->environment->addExtension(new DebugExtension());
       $this->environment->addExtension(new StringExtension());
       // GLPI extensions
       $this->environment->addExtension(new CsrfExtension());
