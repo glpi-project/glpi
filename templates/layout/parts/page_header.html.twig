@@ -32,66 +32,80 @@
 <body>
    {{ include('layout/parts/impersonate_banner.html.twig') }}
 
-   <div id="header">
-      <header role="banner" id="header_top">
-         <div id="c_logo">
-            <a href="{{ path('/front/central.php') }}" accesskey="1" title="{{ __('Home') }}">
-               <span class="sr-only">{{ __('Home') }}</span>
+   <div class="page">
+
+      <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
+         <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <a href="." >
+            <a href="{{ path('/front/central.php') }}" accesskey="1" title="{{ __('Home') }}"
+               class="navbar-brand navbar-brand-autodark">
+               {{ __('Home') }}
             </a>
+            </a>
+            <div class="collapse navbar-collapse" id="navbar-menu">
+               {{ include('layout/parts/menu.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
+            </div>
          </div>
+      </aside>
 
-         <div id="c_preference">
-            <ul>
-               <li id="deconnexion">
-                  <a href="{{ logout_path }}" title="{{ __('Logout') }}" class="fa fa-sign-out-alt">
-                     <span class="sr-only">{{ __('Logout') }}</span>
+      <header class="navbar navbar-expand-md navbar-light d-none d-lg-flex d-print-none">
+         <div class="container-xl">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu">
+               <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbar-menu">
+               <div>
+                  <form action="." method="get">
+                     <div class="input-icon">
+                        <span class="input-icon-addon">
+                           <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><circle cx="10" cy="10" r="7"></circle><line x1="21" y1="21" x2="15" y2="15"></line></svg>
+                        </span>
+                        <input type="text" class="form-control" placeholder="Search…">
+                        {# @TODO Global search #}
+                     </div>
+                  </form>
+                  </div>
+            </div>
+
+            <div class="navbar-nav flex-row order-md-last">
+               <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                  <a href="{{ help_url }}" title="{{ __('Help') }}">
+                     <i class="fas fa-question"></i>
+                     {{ __('Help') }}
                   </a>
-               </li>
-               <li id="preferences_link">
-                  <a href="{{ path('/front/preference.php') }}" title="{{ __('My settings') }}" class="fa fa-cog">
-                     <span class="sr-only">{{ __('My settings') }}</span>
-                     {% if is_user_connected %}
-                        <span id='myname'>{{ current_user_name|u.truncate(20, '...') }}</span>
-                     {% endif %}
+                  {% if has_right('Config', constant('UPDATE')) %}
+                  <a href="{{ path('/ajax/switchdebug.php') }}" title="{{ __('Change mode') }}">
+                     <i class="fa-bug debug{% if is_debug_active %}on{% else %}off{% endif %}"></i>
+                     {{ __('%1$s - %2$s')|format(__('Change mode'), is_debug_active ? __('Debug mode enabled') : __('Debug mode disabled')) }}
                   </a>
-               </li>
-
-            {% if has_right('Config', constant('UPDATE')) %}
-               <li id="debug_mode">
-                  <a href="{{ path('/ajax/switchdebug.php') }}"
-                     class="fa fa-bug debug{% if is_debug_active %}on{% else %}off{% endif %}"
-                     title="{{ __('%1$s - %2$s')|format(__('Change mode'), is_debug_active ? __('Debug mode enabled') : __('Debug mode disabled')) }}">
-                     <span class="sr-only">{{ __('Change mode') }}</span>
+                  {% endif %}
+                  {# @TODO Saved searches pannel #}
+                  <a href="{{ path('/front/preference.php?forcetab=User$1') }}" title="{{ language_name }}">
+                     {{ language_name }}
                   </a>
-               </li>
-            {% endif %}
+                  <div class="dropdown-divider"></div>
+                  <a href="{{ path('/front/preference.php') }}" title="{{ __('My settings') }}">
+                     <i class="fas fa-cog"></i>
+                     {{ __('My settings') }}
+                  </a>
+                  <a href="{{ logout_path }}" title="{{ __('Logout') }}">
+                     <i class="fas fa-sign-out-alt"></i>
+                     {{ __('Logout') }}
+                  </a>
+               </div>
+            </div>
 
-            {# @TODO Saved searches pannel #}
 
-            <li id="help_link">
-               <a href="{{ help_url }}" target="_blank" title="{{ __('Help') }}" class="fa fa-question">
-                  <span class="sr-only">{{ __('Help') }}</span>
-               </a>
-            </li>
-
-            <li id="language_link">
-               <a href="{{ path('/front/preference.php?forcetab=User$1') }}" title="{{ language_name }}">
-                  {{ language_name }}
-               </a>
-            </li>
-
-            {# @TODO Global search #}
-
-            </ul>
          </div>
       </header>
 
-      <nav id="c_menu">
-         {{ include('layout/parts/menu.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
-         {{ include('layout/parts/breadcrumbs.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
-      </nav>
-   </div>
-
-
-   <main role='main' id='page'>
+      <div class="content">
+         <nav id="c_menu"
+            {{ include('layout/parts/breadcrumbs.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
+         </nav>
+         <main role='main' id='page'>
 
