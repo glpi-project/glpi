@@ -32,21 +32,19 @@
 
 namespace Glpi\Application\View\Extension;
 
+use Toolbox;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
-use Twig\TwigFunction;
+use Twig\TwigFilter;
 
 /**
  * @since x.x.x
  */
-class I18nExtension extends AbstractExtension implements ExtensionInterface {
+class NumberFormatExtension extends AbstractExtension implements ExtensionInterface {
 
-   public function getFunctions() {
+   public function getFilters() {
       return [
-         new TwigFunction('__', '__'),
-         new TwigFunction('_n', '_n'),
-         new TwigFunction('_x', '_x'),
-         new TwigFunction('_nx', '_nx'),
+         new TwigFilter('format_binary', [Toolbox::class, 'getSize']),
       ];
    }
 }

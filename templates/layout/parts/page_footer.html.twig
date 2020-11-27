@@ -33,11 +33,24 @@
    <footer role="contentinfo" id="footer">
       <table role="presentation">
          <tr>
+            {% if is_debug_active %}
+               <td class="right">
+                  <span class="copyright">
+                     {{
+                        __('%1$s - %2$s')|format(
+                           _n('%s second', '%s seconds', execution_time)|format(execution_time),
+                           memory_usage|format_binary()
+                        )
+                     }}
+                  </span>
+               </td>
+            {% endif %}
+
             {% if founded_new_version is not null %}
                <td class="copyright">
                   <a href="http://www.glpi-project.org" target="_blank"
                      title="{{ __('You will find it on the GLPI-PROJECT.org site.') }}"">
-                     {{ __('A new version is available: %s.', [founded_new_version]) }}
+                     {{ __('A new version is available: %s.')|format(founded_new_version) }}
                   </a>
                </td>
             {% endif %}
