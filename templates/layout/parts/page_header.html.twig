@@ -60,7 +60,7 @@
                <li id="debug_mode">
                   <a href="{{ path('/ajax/switchdebug.php') }}"
                      class="fa fa-bug debug{% if is_debug_active %}on{% else %}off{% endif %}"
-                     title="{{ __('%1$s - %2$s', [__('Change mode'), is_debug_active ? __('Debug mode enabled') : __('Debug mode disabled')]) }}">
+                     title="{{ __('%1$s - %2$s')|format(__('Change mode'), is_debug_active ? __('Debug mode enabled') : __('Debug mode disabled')) }}">
                      <span class="sr-only">{{ __('Change mode') }}</span>
                   </a>
                </li>

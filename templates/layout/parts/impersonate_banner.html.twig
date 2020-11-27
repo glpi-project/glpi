@@ -32,7 +32,7 @@
 {% if is_impersonate_active %}
 <div class="banner-impersonate">
    <form name="form" method="post" action="{{ form_path('User') }}">
-      {{ __('You are impersonating %s.', [current_user_name]) }}
+      {{ __('You are impersonating %s.')|format(current_user_name) }}
       <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
       <button type="submit" name="impersonate" class="btn-linkstyled" value="0">
          {{ __('Stop impersonating') }}

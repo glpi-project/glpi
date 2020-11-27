@@ -1708,26 +1708,14 @@ class Html {
          echo "</div>";
       }
 
-      /* TODO Print execution time and used memory
-      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
-         echo "<td class='left'><span class='copyright'>";
-         $timedebug = sprintf(_n('%s second', '%s seconds', $TIMER_DEBUG->getTime()),
-                              $TIMER_DEBUG->getTime());
-
-         if (function_exists("memory_get_usage")) {
-            $timedebug = sprintf(__('%1$s - %2$s'), $timedebug, Toolbox::getSize(memory_get_usage()));
-         }
-         echo $timedebug;
-         echo "</span></td>";
-      }
-      */
-
       echo self::getCoreVariablesForJavascript(true);
 
       $current_version = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
       $founded_new_version = $CFG_GLPI['founded_new_version'] ?? null;
 
       $tpl_vars = [
+         'execution_time'      => $TIMER_DEBUG->getTime(),
+         'memory_usage'        => memory_get_usage(),
          'founded_new_version' => !empty($founded_new_version) && version_compare($current_version, $founded_new_version, '<')
             ? $founded_new_version
             : null,
