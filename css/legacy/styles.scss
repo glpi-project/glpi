@@ -54,6 +54,15 @@ $break_tablets: 1300px;
    font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
    font-size: 12px;
 
+   /* Fix box-sizing for all legacy elements. */
+   * {
+      box-sizing: content-box;
+
+      & .select2 * {
+         box-sizing: border-box;
+      }
+   }
+
    ul, li, dt, dl, dd, form, img, input {
      margin: 0;
      padding: 0;
