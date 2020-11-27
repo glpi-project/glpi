@@ -1,51 +1,50 @@
 {% set links = menu[sector]['content'][item]['options'][option]['links']
                ?? menu[sector]['content'][item]['links'] %}
-<li class="icons_block">
-   {% if links['add'] is defined %}
-   <span>
-   <a href="{{ path(links['add']) }}" class="pointer" title="{{ __('Add') }}">
-      <i class="fas fa-plus"></i>
-      <span class="sr-only">{{ __('Add') }}</span>
-   </a>
-   </span>
+
+{% if links['add'] is defined %}
+<span>
+<a href="{{ path(links['add']) }}" class="pointer" title="{{ __('Add') }}">
+   <i class="fas fa-plus"></i>
+   <span class="sr-only">{{ __('Add') }}</span>
+</a>
+</span>
+{% endif %}
+
+{% if links['search'] is defined %}
+<span>
+<a href="{{ path(links['search']) }}" class="pointer" title="{{ __('Search') }}">
+   <i class="fas fa-search"></i>
+   <span class="sr-only">{{ __('Search') }}</span>
+</a>
+</span>
+{% endif %}
+
+{% for type, link in links %}
+   {% if type == 'add' or type == 'search' %}
+   {% elseif type == 'template' %}
+      <a href="{{ path(link) }}" title="{{ __("Manage templates...") }}">
+         <i class="pointer fa fa-layer-group"></i>
+      </a>
+   {% elseif type == 'showall' %}
+      <a href="{{ path(link) }}" title="{{ __("Show all") }}">
+         <img src="{{ path("/pics/menu_showall.png") }}">
+      </a>
+   {% elseif type == 'summary' %}
+      <a href="{{ path(link) }}" title="{{ __("Summary") }}">
+         <i class="pointer fa fa-stream"></i>
+      </a>
+   {% elseif type == 'summary_kanban' %}
+      <a href="{{ path(link) }}" title="{{ __("Global Kanban") }}">
+         <i class="pointer fa fa-columns"></i>
+      </a>
+   {% elseif type == 'config' %}
+      <a href="{{ path(link) }}" title="{{ __("Setup") }}">
+         <img src="{{ path("/pics/menu_config.png") }}">
+      </a>
+   {% else %}
+      <a href="{{ path(link) }}" class="pointer">
+         {{ key }}
+      </a>
    {% endif %}
 
-   {% if links['search'] is defined %}
-   <span>
-   <a href="{{ path(links['search']) }}" class="pointer" title="{{ __('Search') }}">
-      <i class="fas fa-search"></i>
-      <span class="sr-only">{{ __('Search') }}</span>
-   </a>
-   </span>
-   {% endif %}
-
-   {% for type, link in links %}
-      {% if type == 'add' or type == 'search' %}
-      {% elseif type == 'template' %}
-         <a href="{{ path(link) }}" title="{{ __("Manage templates...") }}">
-            <i class="pointer fa fa-layer-group"></i>
-         </a>
-      {% elseif type == 'showall' %}
-         <a href="{{ path(link) }}" title="{{ __("Show all") }}">
-            <img src="{{ path("/pics/menu_showall.png") }}">
-         </a>
-      {% elseif type == 'summary' %}
-         <a href="{{ path(link) }}" title="{{ __("Summary") }}">
-            <i class="pointer fa fa-stream"></i>
-         </a>
-      {% elseif type == 'summary_kanban' %}
-         <a href="{{ path(link) }}" title="{{ __("Global Kanban") }}">
-            <i class="pointer fa fa-columns"></i>
-         </a>
-      {% elseif type == 'config' %}
-         <a href="{{ path(link) }}" title="{{ __("Setup") }}">
-            <img src="{{ path("/pics/menu_config.png") }}">
-         </a>
-      {% else %}
-         <a href="{{ path(link) }}" class="pointer">
-            {{ key }}
-         </a>
-      {% endif %}
-
-   {% endfor %}
-</li>
+{% endfor %}
