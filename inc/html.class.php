@@ -1237,7 +1237,6 @@ class Html {
          'js_files'  => [],
       ];
 
-      $tpl_vars['css_files'][] = 'public/lib/tabler.css';
       Html::requireJs('tabler');
 
       $tpl_vars['css_files'][] = 'public/lib/base.css';
@@ -7427,6 +7426,28 @@ JAVASCRIPT;
       }
 
       $scss->addImportPath(GLPI_ROOT);
+
+      // Enable imports of ".scss" files from "node_modules", when path starts with "~".
+      $scss->addImportPath(
+         function($path) {
+            $file_chunks = [];
+            if (!preg_match('/^~(?<directory>.*)\/(?<file>[^\/]+)(?:(\.scss)?)/', $path, $file_chunks)) {
+               return null;
+            }
+
+            $possible_filenames = [
+               sprintf('%s/node_modules/%s/%s.scss', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file']),
+               sprintf('%s/node_modules/%s/_%s.scss', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file']),
+            ];
+            foreach ($possible_filenames as $filename) {
+               if (file_exists($filename)) {
+                  return $filename;
+               }
+            }
+
+            return null;
+         }
+      );
 
       if ($GLPI_CACHE->has($ckey) && !isset($args['reload']) && !isset($args['nocache'])) {
          $css = $GLPI_CACHE->get($ckey);
