@@ -28,7 +28,7 @@
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  ---------------------------------------------------------------------
 #}
-   </main>
+   </main> {# #page #}
    </div> {# .content #}
    </div> {# .page #}
 
@@ -49,7 +49,7 @@
             {% if founded_new_version is not null %}
                <td class="copyright">
                   <a href="http://www.glpi-project.org" target="_blank"
-                     title="{{ __('You will find it on the GLPI-PROJECT.org site.') }}"">
+                     title="{{ __('You will find it on the GLPI-PROJECT.org site.') }}">
                      {{ __('A new version is available: %s.')|format(founded_new_version) }}
                   </a>
                </td>
