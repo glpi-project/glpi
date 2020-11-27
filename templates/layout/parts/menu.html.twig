@@ -31,7 +31,7 @@
 <div id="show_all_menu" class="invisible">
 {% for firstlevel in menu %}
    <dl>
-      <dt class="primary-bg primary-fg">";
+      <dt class="primary-bg primary-fg">
          <a class="primary-fg" title="{{ firstlevel['title'] }}" class="itemP"
             href="{{ firstlevel['default'] is empty ? "#" : path(firstlevel['default']) }}">
             {{ firstlevel['title'] }}
@@ -51,7 +51,7 @@
 {% endfor %}
 </div>
 
-<a href="#" onClick="$('show_all_menu').dialog('open'); return false;" id="menu_all_button">
+<a href="#" onClick="$('#show_all_menu').dialog('open'); return false;" id="menu_all_button">
    <i class='fas fa-bars'></i>
 </a>
 
