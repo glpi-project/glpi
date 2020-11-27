@@ -13,6 +13,7 @@
         "@fullcalendar/rrule": "^4.4.0",
         "@fullcalendar/timegrid": "^4.4.0",
         "@tabler/core": "^1.0.0-alpha.14",
+        "bootstrap": "^4.5.3",
         "chartist": "^0.11.4",
         "chartist-plugin-legend": "^0.6.2",
         "chartist-plugin-pointlabels": "^0.0.6",
