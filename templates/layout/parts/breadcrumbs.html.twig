@@ -1,0 +1,52 @@
+<div id='c_ssmenu2' >
+   <ul>
+      {% if menu[sector] is defined %}
+      <li class='breadcrumb_item'>
+         <a href='{{ path('/index.php') }}' title="{{ __('Home') }}">{{ __('Home') }}</a>
+      </li>
+      {% endif %}
+
+      {% if menu[sector] is defined %}
+      <li class="breadcrumb_item">
+         <a href="{{ path((menu[sector]['default'] ?? "/front/central.php")) }}" title="{{ menu[sector]['title'] }}">
+            {{ menu[sector]['title'] }}
+         </a>
+      </li>
+      {% endif %}
+
+      {% set with_option = false %}
+      {% if menu[sector]['content'][item] is defined %}
+         {% if menu[sector]['content'][item]['page'] is defined %}
+         {% set with_option = (option is not empty)
+            and (menu[sector]['content'][item]['options'][option]['title'] is defined)
+            and (menu[sector]['content'][item]['options'][option]['page'] is defined)  %}
+         <li class='breadcrumb_item'>
+            <a href="{{ path(menu[sector]['content'][item]['page']) }}"
+               class="{{ with_option ? "" : "here" }}"
+               title="{{ menu[sector]['content'][item]['title'] }}" >
+               <i class="{{ menu[sector]['content'][item]['icon'] ?? "" }}"></i>
+               &nbsp;
+               {{ menu[sector]['content'][item]['title'] }}
+            </a>
+         </li>
+         {% endif %}
+
+         {% if with_option %}
+         <li class="breadcrumb_item">
+            <a href="{{ path(menu[sector]['content'][item]['options'][option]['page']) }}"
+               class="here"
+               title="{{ menu[sector]['content'][item]['options'][option]['title'] }}" >
+               <i class="{{ menu[sector]['content'][item]['options'][option]['icon'] ?? "" }}"></i>
+               &nbsp;
+               {{ menu[sector]['content'][item]['options'][option]['title']|u.truncate(17, '...') }}
+            </a>
+         </li>
+         {% endif %}
+
+         {{ include('layout/parts/context_links.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
+
+         {{ include('layout/parts/profile_selector.html.twig', {}, with_context = false) }}
+
+      {% endif %}
+   </ul>
+</div>
