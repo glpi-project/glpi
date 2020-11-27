@@ -1,69 +1,28 @@
-
-<ul id="menu" class="fullmenu">
-{% for firstlevel in menu %}
-   {% if firstlevel['content'] is defined %}
-   <li id="menu{{ loop.index }}" data-id="{{ loop.index }}"
-         class="{{ menu[sector]['title'] == firstlevel['title'] ? 'active' : '' }}">
-      <a class="itemP"
-         href="{{ firstlevel['default'] is empty ? '#' : path(firstlevel['default']) }}">
-         {{ firstlevel['title'] }}
-      </a>
-      <ul class="ssmenu">
-      {% for sublevel in firstlevel['content'] %}
-         {% if sublevel['page'] is defined %}
-         <li class="TODO ACTIVE">
-            <a href="{{ path(sublevel['page']) }}"
+<div class="collapse navbar-collapse" id="navbar-menu">
+   <ul class="navbar-nav pt-lg-3">
+   {% for firstlevel in menu %}
+      {% if firstlevel['content'] is defined %}
+      <li class="nav-item dropdown {{ menu[sector]['title'] == firstlevel['title'] ? 'active' : '' }}">
+         <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"
+            <!--href="{{ firstlevel['default'] is empty ? '#' : path(firstlevel['default']) }}"-->
+            >
+            {{ firstlevel['title'] }}
+         </a>
+         <div class="dropdown-menu">
+         {% for sublevel in firstlevel['content'] %}
+            {% if sublevel['page'] is defined %}
+            {# @TODO active class #}
+            <a class="dropdown-item" href="{{ path(sublevel['page']) }}"
                accesskey="{{ sublevel['shortcut'] ?? "" }}">
                <i class="fa-fw {{ sublevel['icon'] ?? "" }}"></i>
                {# @TODO shortcut function for adding a <u> on title #}
                {{ sublevel['title'] }}
             </a>
-         </li>
-         {% endif %}
-      {% endfor %}
-      </ul>
-   </li>
-   {% endif %}
-{% endfor %}
-</ul>
-
-{# modal for mini menu #}
-<div id="show_all_menu" class="invisible">
-{% for firstlevel in menu %}
-   <dl>
-      <dt class="primary-bg primary-fg">
-         <a class="primary-fg" title="{{ firstlevel['title'] }}" class="itemP"
-            href="{{ firstlevel['default'] is empty ? "#" : path(firstlevel['default']) }}">
-            {{ firstlevel['title'] }}
-         </a>
-      </dt>
-      {% for sublevel in firstlevel['content'] %}
-         {% if sublevel['page'] is defined %}
-         <dd>
-            <a href="{{ path(sublevel['page']) }}">
-               <i class="fa-fw {{ sublevel['icon'] ?? "" }}"></i>&nbsp;
-               {{ sublevel['title'] }}
-            </a>
-         </dd>
-         {% endif %}
-      {% endfor %}
-   </dl>
-{% endfor %}
+            {% endif %}
+         {% endfor %}
+         </div>
+      </li>
+      {% endif %}
+   {% endfor %}
+   </ul>
 </div>
-
-<a href="#" onClick="$('#show_all_menu').dialog('open'); return false;" id="menu_all_button">
-   <i class='fas fa-bars'></i>
-</a>
-
-<script type="text/javascript">
-$(document).ready(
-   function() {
-      $('#show_all_menu').dialog({
-         height: 'auto',
-         width: 'auto',
-         modal: true,
-         autoOpen: false
-      });
-   }
-);
-</script>

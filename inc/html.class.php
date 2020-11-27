@@ -1237,6 +1237,9 @@ class Html {
          'js_files'  => [],
       ];
 
+      $tpl_vars['css_files'][] = 'public/lib/tabler.css';
+      Html::requireJs('tabler');
+
       $tpl_vars['css_files'][] = 'public/lib/base.css';
 
       if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
@@ -6400,6 +6403,9 @@ JAVASCRIPT;
          return;
       }
       switch ($name) {
+         case 'tabler':
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/tabler.js';
+            break;
          case 'clipboard':
             $_SESSION['glpi_js_toload'][$name][] = 'js/clipboard.js';
             break;
