@@ -6,6 +6,8 @@
       <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}">
          <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"
             <!--href="{{ firstlevel['default'] is empty ? '#' : path(firstlevel['default']) }}"-->
+            <i class="fa-fw {{ firstlevel['icon'] ?? "" }}"></i>
+            &nbsp;
             {{ firstlevel['title'] }}
          </a>
          <div class="dropdown-menu {{ firstlevel_active ? 'show' : '' }}">

@@ -1427,7 +1427,8 @@ class Html {
                'CartridgeItem', 'ConsumableItem', 'Phone',
                'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment', 'Unmanaged'
             ], $CFG_GLPI['devices_in_menu']),
-            'default' => '/front/dashboard_assets.php'
+            'default' => '/front/dashboard_assets.php',
+            'icon'    => 'fas fa-boxes'
          ],
          'helpdesk' => [
             'title' => __('Assistance'),
@@ -1435,7 +1436,8 @@ class Html {
                'Ticket', 'Problem', 'Change',
                'Planning', 'Stat', 'TicketRecurrent', 'RecurrentChange'
             ],
-            'default' => '/front/dashboard_helpdesk.php'
+            'default' => '/front/dashboard_helpdesk.php',
+            'icon'    => 'fas fa-headset'
          ],
          'management' => [
             'title' => __('Management'),
@@ -1443,7 +1445,8 @@ class Html {
                'SoftwareLicense','Budget', 'Supplier', 'Contact', 'Contract',
                'Document', 'Line', 'Certificate', 'Datacenter', 'Cluster', 'Domain',
                'Appliance'
-            ]
+            ],
+            'icon'  => 'fas fa-wallet'
          ],
          'tools' => [
             'title' => __('Tools'),
@@ -1451,18 +1454,21 @@ class Html {
                'Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
                'ReservationItem', 'Report', 'MigrationCleaner',
                'SavedSearch', 'Impact'
-            ]
+            ],
+            'icon' => 'fas fa-briefcase'
          ],
          'plugins' => [
             'title' => _n('Plugin', 'Plugins', Session::getPluralNumber()),
-            'types' => []
+            'types' => [],
+            'icon'  => 'fa-puzzle-piece'
          ],
          'admin' => [
             'title' => __('Administration'),
             'types' => [
                'User', 'Group', 'Entity', 'Rule',
                'Profile', 'QueuedNotification', 'Glpi\\Event', 'Glpi\Inventory\Inventory'
-            ]
+            ],
+            'icon'  => 'fas fa-user-shield'
          ],
          'config' => [
             'title' => __('Setup'),
@@ -1470,13 +1476,15 @@ class Html {
                'CommonDropdown', 'CommonDevice', 'Notification',
                'SLM', 'Config', 'FieldUnicity', 'CronTask', 'Auth',
                'MailCollector', 'Link', 'Plugin'
-            ]
+            ],
+            'icon'  => 'fas fa-cogs'
          ],
 
          // special items
          'preference' => [
-            'title' => __('My settings'),
-            'default' => '/front/preference.php'
+            'title'   => __('My settings'),
+            'default' => '/front/preference.php',
+            'icon'    => 'fas fa-user-cog'
          ],
       ];
 
