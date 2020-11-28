@@ -2,18 +2,20 @@
    <ul class="navbar-nav pt-lg-3">
    {% for firstlevel in menu %}
       {% if firstlevel['content'] is defined %}
-      <li class="nav-item dropdown {{ menu[sector]['title'] == firstlevel['title'] ? 'active' : '' }}">
+      {% set firstlevel_active = (menu[sector]['title'] == firstlevel['title']) %}
+      <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}">
          <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"
             <!--href="{{ firstlevel['default'] is empty ? '#' : path(firstlevel['default']) }}"-->
             {{ firstlevel['title'] }}
          </a>
-         <div class="dropdown-menu">
+         <div class="dropdown-menu {{ firstlevel_active ? 'show' : '' }}">
          {% for sublevel in firstlevel['content'] %}
             {% if sublevel['page'] is defined %}
-            {# @TODO active class #}
-            <a class="dropdown-item" href="{{ path(sublevel['page']) }}"
+            <a class="dropdown-item {{ menu_active == sublevel['title'] ? "active" : "" }}"
+               href="{{ path(sublevel['page']) }}"
                accesskey="{{ sublevel['shortcut'] ?? "" }}">
                <i class="fa-fw {{ sublevel['icon'] ?? "" }}"></i>
+               &nbsp;
                {# @TODO shortcut function for adding a <u> on title #}
                {{ sublevel['title'] }}
             </a>

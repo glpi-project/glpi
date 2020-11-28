@@ -1619,16 +1619,22 @@ class Html {
 
       self::includeHeader($title, $sector, $item, $option);
 
+      $tmp_active_item = explode("/", $item);
+      $active_item     = array_pop($tmp_active_item);
+      $menu            = self::generateMenuSession($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE);
+      $menu_active     = $menu[$sector]['content'][$active_item]['title'];
+
       $tpl_vars = [
          'is_impersonate_active' => Session::isImpersonateActive(),
          'language_name'         => Dropdown::getLanguageName($_SESSION['glpilanguage']),
          'logout_path'           => self::getPrefixedUrl(
             '/front/logout.php' . ($_SESSION['glpiextauth'] ?? false ? '?noAUTO=1' : '')
          ),
-         'menu'                  => self::generateMenuSession($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE),
+         'menu'                  => $menu,
          'sector'                => $sector,
          'item'                  => $item,
          'option'                => $option,
+         'menu_active'           => $menu_active,
       ];
 
       $help_url_key = Session::getCurrentInterface() === 'central' ? 'central_doc_url' : 'helpdesk_doc_url';
