@@ -52,10 +52,57 @@
       </aside>
 
       <header class="navbar navbar-expand-md navbar-light d-none d-lg-flex d-print-none">
-         <div class="container-xl">
+         <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu">
                <span class="navbar-toggler-icon"></span>
             </button>
+
+            <div class="navbar-nav flex-row order-md-last">
+               <div class="nav-item dropdown">
+                  <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-toggle="dropdown">
+                     <i class="fas fa-2x fa-user"></i>
+                     <div class="d-none d-xl-block pl-2">
+                        <div>TODO user fullname</div>
+                        <div class="mt-1 small text-muted">TODO user title</div>
+                     </div>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                     <a href="{{ help_url }}" class="dropdown-item" title="{{ __('Help') }}">
+                        <i class="fas fa-fw fa-question"></i>
+                        &nbsp;
+                        {{ __('Help') }}
+                     </a>
+                     {% if has_right('Config', constant('UPDATE')) %}
+                        <a href="{{ path('/ajax/switchdebug.php') }}"
+                           class="dropdown-item {{ is_debug_active ? "bg-red-lt" : "" }}"
+                           title="{{ __('Change mode') }}">
+                           <i class="fas fa-fw fa-bug debug"></i>
+                           &nbsp;
+                           {{ is_debug_active ? __('Debug mode enabled') : __('Debug mode disabled') }}
+                        </a>
+                     {% endif %}
+
+                     {# @TODO Saved searches pannel #}
+
+                     <a href="{{ path('/front/preference.php?forcetab=User$1') }}" class="dropdown-item" title="{{ language_name }}">
+                        <i class="fas fa-fw fa-language"></i>
+                        &nbsp;
+                        {{ language_name }}
+                     </a>
+                     <div class="dropdown-divider"></div>
+                     <a href="{{ path('/front/preference.php') }}" class="dropdown-item" title="{{ __('My settings') }}">
+                        <i class="fas fa-fw fa-user-cog"></i>
+                        &nbsp;
+                        {{ __('My settings') }}
+                     </a>
+                     <a href="{{ logout_path }}" class="dropdown-item" title="{{ __('Logout') }}">
+                        <i class="fas fa-fw fa-sign-out-alt"></i>
+                        &nbsp;
+                        {{ __('Logout') }}
+                     </a>
+                  </div>
+               </div>
+            </div>
 
             <div class="collapse navbar-collapse" id="navbar-menu">
                <div>
@@ -68,44 +115,16 @@
                         {# @TODO Global search #}
                      </div>
                   </form>
-                  </div>
-            </div>
-
-            <div class="navbar-nav flex-row order-md-last">
-               <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                  <a href="{{ help_url }}" title="{{ __('Help') }}">
-                     <i class="fas fa-question"></i>
-                     {{ __('Help') }}
-                  </a>
-                  {% if has_right('Config', constant('UPDATE')) %}
-                  <a href="{{ path('/ajax/switchdebug.php') }}" title="{{ __('Change mode') }}">
-                     <i class="fa-bug debug{% if is_debug_active %}on{% else %}off{% endif %}"></i>
-                     {{ __('%1$s - %2$s')|format(__('Change mode'), is_debug_active ? __('Debug mode enabled') : __('Debug mode disabled')) }}
-                  </a>
-                  {% endif %}
-                  {# @TODO Saved searches pannel #}
-                  <a href="{{ path('/front/preference.php?forcetab=User$1') }}" title="{{ language_name }}">
-                     {{ language_name }}
-                  </a>
-                  <div class="dropdown-divider"></div>
-                  <a href="{{ path('/front/preference.php') }}" title="{{ __('My settings') }}">
-                     <i class="fas fa-cog"></i>
-                     {{ __('My settings') }}
-                  </a>
-                  <a href="{{ logout_path }}" title="{{ __('Logout') }}">
-                     <i class="fas fa-sign-out-alt"></i>
-                     {{ __('Logout') }}
-                  </a>
                </div>
             </div>
-
 
          </div>
       </header>
 
       <div class="content">
-         <nav id="c_menu"
-            {{ include('layout/parts/breadcrumbs.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
-         </nav>
-         <main role='main' id='page'>
+         <div class="container-fluid">
+            <nav id="c_menu"
+               {{ include('layout/parts/breadcrumbs.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
+            </nav>
+            <main role='main' id='page'>
 
