@@ -38,12 +38,6 @@ $break_lphones: 900px;
 $break_menu: 1055px;
 $break_tablets: 1300px;
 
-#page {
-   padding: 8px 8px 20px 8px;
-   min-height: 80%;
-   margin: 15px auto;
-}
-
 .qtip {
    max-width: 380px !important;
 }
@@ -56,8 +50,6 @@ $break_tablets: 1300px;
 
    /* Fix box-sizing for all legacy elements. */
    * {
-      box-sizing: content-box;
-
       & .select2 * {
          box-sizing: border-box;
       }
@@ -919,10 +911,6 @@ $break_tablets: 1300px;
    /* ################--------------- Table  ---------------#################### */
    .card {
 
-      &:not(.no-shadow) {
-         box-shadow: 0px 1px 2px 1px #999;
-      }
-
       .field {
          display: table-row;
          padding: 5px;
@@ -1432,11 +1420,7 @@ $break_tablets: 1300px;
    }
 
    .navigationheader {
-      margin: 0 auto;
       padding: 7px 10px;
-      border: 1px solid #e1e1e1;
-      background-color: #FFF;
-      box-sizing: border-box;
       display: flex;
 
       & > * {

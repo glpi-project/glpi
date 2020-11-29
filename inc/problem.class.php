@@ -163,7 +163,7 @@ class Problem extends CommonITILObject {
                $nb_elements = count($timeline);
 
                $ong = [
-                  5 => __("Processing problem")." <sup class='tab_nb'>$nb_elements</sup>",
+                  5 => __("Processing problem")." <span class='badge'>$nb_elements</span>",
                   1 => __('Analysis')
                ];
 
