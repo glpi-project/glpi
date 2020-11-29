@@ -130,7 +130,7 @@
       </header>
 
       {% if menu[sector] is defined %}
-      <nav class="navbar navbar-expand-lg">
+      <nav class="navbar navbar-expand-lg navbar-light">
          <div class="container-fluid">
             {{ include('layout/parts/breadcrumbs.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
 
