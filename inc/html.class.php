@@ -5245,7 +5245,7 @@ JAVASCRIPT;
 
       // Set default class to submit
       if (!isset($options['class'])) {
-         $options['class'] = 'vsubmit';
+         $options['class'] = 'btn';
       }
       if (isset($options['confirm'])) {
          if (!empty($options['confirm'])) {

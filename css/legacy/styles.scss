@@ -55,7 +55,7 @@ $break_tablets: 1300px;
       }
    }
 
-   ul, li, dt, dl, dd, form, img, input {
+   ul, li, dt, dl, dd, form, img, input:not(.btn) {
      margin: 0;
      padding: 0;
    }
@@ -473,7 +473,7 @@ $break_tablets: 1300px;
      }
    }
 
-   input {
+   input:not(.btn) {
      height: 17px;
      vertical-align: middle;
 

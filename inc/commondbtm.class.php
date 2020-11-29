@@ -2537,22 +2537,27 @@ class CommonDBTM extends CommonGLPI {
       }
 
       echo "<tr class='tab_bg_2'>";
+      echo "<td class='center' colspan='".($params['colspan']*2)."'>";
 
       if ($params['withtemplate']
           ||$this->isNewID($ID)) {
 
-         echo "<td class='center' colspan='".($params['colspan']*2)."'>";
-
          if (($ID <= 0) || ($params['withtemplate'] == 2)) {
             echo Html::submit(
                "<i class='fas fa-plus'></i>&nbsp;"._x('button', 'Add'),
-               ['name' => 'add']
+               [
+                  'name'  => 'add',
+                  'class' => 'btn btn-primary'
+               ]
             );
          } else {
             //TRANS : means update / actualize
             echo Html::submit(
                "<i class='fas fa-save'></i>&nbsp;"._x('button', 'Save'),
-               ['name' => 'update']
+               [
+                  'name'  => 'update',
+                  'class' => 'btn btn-primary'
+               ]
             );
          }
 
@@ -2564,23 +2569,24 @@ class CommonDBTM extends CommonGLPI {
          }
 
          if ($params['canedit'] && $this->can($ID, UPDATE)) {
-            echo "<td class='center' colspan='".($params['colspan']*2)."'>\n";
             echo Html::submit(
                "<i class='fas fa-save'></i>&nbsp;"._x('button', 'Save'),
-               ['name' => 'update']
+               [
+                  'name'  => 'update',
+                  'class' => 'btn btn-primary'
+               ]
             );
          }
 
          if ($params['candel']) {
-            if ($params['canedit'] && $this->can($ID, UPDATE)) {
-               echo "</td></tr><tr class='tab_bg_2'>\n";
-            }
             if ($this->isDeleted()) {
                if ($this->can($ID, DELETE)) {
-                  echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
                   echo Html::submit(
                      "<i class='fas fa-trash-restore'></i>&nbsp;"._x('button', 'Restore'),
-                     ['name' => 'restore']
+                     [
+                        'name' => 'restore',
+                        'class' => 'btn btn-secondary'
+                     ]
                   );
                }
 
@@ -2597,13 +2603,15 @@ class CommonDBTM extends CommonGLPI {
                   }
                   echo Html::submit(
                      "<i class='fas fa-trash-alt'></i>&nbsp;"._x('button', 'Delete permanently'),
-                     ['name' => 'purge']
+                     [
+                        'name'  => 'purge',
+                        'class' => 'btn btn-secondary'
+                     ]
                   );
                   echo "</span>";
                }
 
             } else {
-               echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
                // If maybe dynamic : do not take into account  is_deleted  field
                if (!$this->maybeDeleted()
                    || $this->useDeletedToLockIfDynamic()) {
@@ -2612,7 +2620,8 @@ class CommonDBTM extends CommonGLPI {
                         "<i class='fas fa-trash-alt'></i>&nbsp;"._x('button', 'Delete permanently'),
                         [
                            'name'    => 'purge',
-                           'confirm' => __('Confirm the final deletion?')
+                           'confirm' => __('Confirm the final deletion?'),
+                           'class'   => 'btn btn-secondary'
                         ]
                      );
                   }
@@ -2620,7 +2629,10 @@ class CommonDBTM extends CommonGLPI {
                           && $this->can($ID, DELETE)) {
                   echo Html::submit(
                      "<i class='fas fa-trash-alt'></i>&nbsp;"._x('button', 'Put in trashbin'),
-                     ['name' => 'delete']
+                     [
+                        'name'  => 'delete',
+                        'class' => 'btn btn-secondary'
+                     ]
                   );
                }
             }
@@ -2634,8 +2646,6 @@ class CommonDBTM extends CommonGLPI {
       if (!$this->isNewID($ID)) {
          echo "<input type='hidden' name='id' value='$ID'>";
       }
-      echo "</td>";
-      echo "</tr>\n";
 
       if ($params['canedit']
           && count($params['addbuttons'])) {
