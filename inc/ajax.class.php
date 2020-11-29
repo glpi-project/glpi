@@ -380,7 +380,7 @@ class Ajax {
          echo "<div class='container-fluid'>";
          echo "<div class='row'>";
          echo "<div class='col-lg-1 px-0'>";
-         echo "<ul class='nav nav-tabs flex-row flex-lg-column border-right' id='$tabdiv_id' role='tablist'>";
+         echo "<ul class='nav nav-tabs flex-row flex-lg-column border-right border-bottom-0' id='$tabdiv_id' role='tablist'>";
          foreach ($tabs as $key => $val) {
             $id = str_replace('$', '_', $key);
             $selected_tab = "";
