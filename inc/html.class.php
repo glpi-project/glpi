@@ -1637,6 +1637,9 @@ class Html {
       $menu            = self::generateMenuSession($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE);
       $menu_active     = $menu[$sector]['content'][$active_item]['title'] ?? "";
 
+      $user = new User;
+      $user->getFromDB($_SESSION['glpiID']);
+
       $tpl_vars = [
          'is_impersonate_active' => Session::isImpersonateActive(),
          'language_name'         => Dropdown::getLanguageName($_SESSION['glpilanguage']),
@@ -1648,6 +1651,11 @@ class Html {
          'item'                  => $item,
          'option'                => $option,
          'menu_active'           => $menu_active,
+         'user'                  => [
+            'fullname' => formatUserName($_SESSION['glpiID'], $user->fields['name'], $user->fields['realname'], $user->fields['firstname']),
+            'title'    => Dropdown::getDropdownName("glpi_usertitles", $user->fields["usertitles_id"]),
+            'picture'  => User::getURLForPicture($user->fields['picture'], false),
+         ]
       ];
 
       $help_url_key = Session::getCurrentInterface() === 'central' ? 'central_doc_url' : 'helpdesk_doc_url';
