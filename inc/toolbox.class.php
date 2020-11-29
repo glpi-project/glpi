@@ -3068,7 +3068,7 @@ class Toolbox {
     *
     * @since 9.5.0
     */
-   static function getPictureUrl($path, $full) {
+   static function getPictureUrl($path, $full = true) {
       global $CFG_GLPI;
 
       $path = Html::cleanInputText($path); // prevent xss
