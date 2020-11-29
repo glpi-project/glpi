@@ -135,7 +135,7 @@
             {{ include('layout/parts/breadcrumbs.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
 
             {% if menu[sector]['content'][item] is defined %}
-            <nav class="nav flex-row order-md-last">
+            <nav class="nav">
                {{ include('layout/parts/context_links.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
             </nav>
             {% endif %}
