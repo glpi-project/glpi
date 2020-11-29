@@ -377,121 +377,62 @@ class Ajax {
 
       $rand = mt_rand();
       if (count($tabs) > 0) {
-         echo "<div id='tabs$rand' class='center$mainclass $orientation'>";
-         if (CommonGLPI::isLayoutWithMain()
-             && !CommonGLPI::isLayoutExcludedPage()) {
-            $orientation = 'horizontal';
-         }
-         echo "<ul>";
-         $current = 0;
-         $selected_tab = 0;
+         echo "<div class='container-fluid'>";
+         echo "<div class='row'>";
+         echo "<div class='col-lg-1 px-0'>";
+         echo "<ul class='nav nav-tabs flex-row flex-lg-column border-right' id='$tabdiv_id' role='tablist'>";
          foreach ($tabs as $key => $val) {
+            $id = str_replace('$', '_', $key);
+            $selected_tab = "";
             if ($key == $active_tabs) {
-               $selected_tab = $current;
+               $selected_tab = "active";
             }
-            echo "<li><a title=\"".
-                 str_replace(["<sup class='tab_nb'>", '</sup>'], '', $val['title'])."\" ";
-            echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."'>";
-            // extract sup information
-            // $title = '';
-            // $limit = 16;
-            // No title strip for horizontal menu
+            echo "<li class='nav-item $selected_tab'>
+               <a class='nav-link justify-content-between' data-toggle='tab' title='".
+                 str_replace(["<span class='badge'>", '</span>'], '', $val['title'])."' ";
+            echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."' data-target='#$id'>";
             $title = $val['title'];
             echo $title."</a></li>";
-            $current ++;
          }
          echo "</ul>";
-         echo "</div>";
+         echo "</div>"; //.col-lg-1
+
+         echo "<div class='col'>";
+         echo "<div class='tab-content'>";
+         $active_id = "";
+         foreach ($tabs as $key => $val) {
+            $id = str_replace('$', '_', $key);
+            $selected_tab = "";
+            if ($key == $active_tabs) {
+               $selected_tab = "active";
+               $active_id = $id;
+            }
+            echo "<div class='tab-pane fade $selected_tab' role='tabpanel' id='$id'></div>";
+         }
+         echo  "</div>"; // .tab-content
+         echo  "</div>"; // .col
+
+         echo "</div>"; // .row
+         echo "</div>"; // .container-fluid
          $js = "
-         $(function(){
-         forceReload$rand = false;
-         $('#tabs$rand').tabs({
-            active: $selected_tab,
-            // Loading indicator
-            beforeLoad: function (event, ui) {
-               if ($(ui.panel).html()
-                   && !forceReload$rand) {
-                  event.preventDefault();
-               } else {
-                  forceReload$rand = false;
-                  var _loader = $('<div id=\'loadingtabs\'><div class=\'loadingindicator\'>" . addslashes(__('Loading...')) . "</div></div>');
-                  ui.panel.html(_loader);
+         $(function() {
+            $('a[data-toggle=\"tab\"]').on('shown.bs.tab', function(e) {
+               var that = $(this),
+               loadurl = that.attr('href'),
+               targ = that.attr('data-target');
 
-                  ui.jqXHR.always(function() {
-                     $('#loadingtabs').remove();
-                  });
+               $.get(loadurl, function(data) {
+                  $(targ).html(data);
+               });
 
-                  ui.jqXHR.fail(function(e) {
-                     console.log(e);
-                     if (e.statusText != 'abort') {
-                        ui.panel.html(
-                           '<div class=\'error\'><h3>" .
-                           addslashes(__('An error occured loading contents!'))  . "</h3><p>" .
-                           addslashes(__('Please check GLPI logs or contact your administrator.'))  .
-                           "<br/>" . addslashes(__('or')) . " <a href=\'#\' onclick=\'return reloadTab()\'>" . addslashes(__('try to reload'))  . "</a></p></div>'
-                        );
-                     }
-                  });
-               }
+               that.tab('show');
+               return false;
+            });
 
-               var tabs = ui.tab.parent().children();
-               if (tabs.length > 1) {
-                  var newIndex = tabs.index(ui.tab);
-                  $.get(
-                     '".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
-                     { itemtype: '".addslashes($type)."', id: '$ID', tab: newIndex }
-                  );
-               }
-            },
-            load: function(event) {
-               var _url = window.location.href;
-               //get the anchor
-               var _parts = _url.split('#');
-               if (_parts.length > 1) {
-                  var _anchor = _parts[1];
-
-                  //get the top offset of the target anchor
-                  if ($('#' + _anchor).length) {
-                     var target_offset = $('#' + _anchor).offset();
-                     var target_top = target_offset.top;
-
-                     //goto that anchor by setting the body scroll top to anchor top
-                     $('html, body').animate({scrollTop:target_top}, 2000, 'easeOutQuad');
-                  }
-               }
-            },
-            ajaxOptions: {type: 'POST'}
+            // load initial tab
+            $('a[data-target=\"#{$active_id}\"]').tab('show');
          });";
 
-         if ($orientation=='vertical') {
-            $js .=  "$('#tabs$rand').tabs().addClass( 'ui-tabs-vertical ui-helper-clearfix' );";
-         }
-
-         if (CommonGLPI::isLayoutWithMain()
-             && !CommonGLPI::isLayoutExcludedPage()) {
-            $js .=  "$('#tabs$rand').scrollabletabs();";
-         } else {
-            $js .=  "$('#tabs$rand').removeClass( 'ui-corner-top' ).addClass( 'ui-corner-left' );";
-         }
-         $js .= '});';
-
-         $js .=  "// force reload global function
-            function reloadTab(add) {
-               forceReload$rand = true;
-               var current_index = $('#tabs$rand').tabs('option','active');
-
-               // remove scroll event bind, select2 bind it on parent with scrollbars (the tab currently)
-               // as the select2 disapear with this tab reload, remove the event to prevent issues (infinite scroll to top)
-               $('#tabs$rand .ui-tabs-panel[aria-hidden=false]').unbind('scroll');
-
-               // Save tab
-               var currenthref = $('#tabs$rand ul>li a').eq(current_index).attr('href');
-               $('#tabs$rand ul>li a').eq(current_index).attr('href',currenthref+'&'+add);
-               $('#tabs$rand').tabs( 'load' , current_index);
-
-               // Restore tab
-               $('#tabs$rand ul>li a').eq(current_index).attr('href',currenthref);
-            };";
 
          echo Html::scriptBlock($js);
       }

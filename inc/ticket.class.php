@@ -742,7 +742,7 @@ class Ticket extends CommonITILObject {
 
             $timeline    = $item->getTimelineItems();
             $nb_elements = count($timeline);
-            $ong[1]      = __("Processing ticket")." <sup class='tab_nb'>$nb_elements</sup>";
+            $ong[1]      = __("Processing ticket")." <span class='badge'>$nb_elements</span>";
 
             // enquete si statut clos
             $satisfaction = new TicketSatisfaction();
