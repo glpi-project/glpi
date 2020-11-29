@@ -1,31 +1,31 @@
-<div class="collapse navbar-collapse" id="navbar-menu">
-   <ul class="navbar-nav pt-lg-3">
-   {% for firstlevel in menu %}
-      {% if firstlevel['content'] is defined %}
-      {% set firstlevel_active = (menu[sector]['title'] == firstlevel['title']) %}
-      <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}">
-         <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"
-            <!--href="{{ firstlevel['default'] is empty ? '#' : path(firstlevel['default']) }}"-->
-            <i class="fa-fw {{ firstlevel['icon'] ?? "" }}"></i>
+
+<ul class="navbar-nav pt-lg-3">
+{% for firstlevel in menu %}
+   {% if firstlevel['content'] is defined %}
+   {% set firstlevel_active = (menu[sector]['title'] == firstlevel['title']) %}
+   <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}">
+      <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
+         aria-expanded="{{ firstlevel_active ? 'true' : 'false' }}"
+         <!--href="{{ firstlevel['default'] is empty ? '#' : path(firstlevel['default']) }}"-->
+         <i class="fa-fw {{ firstlevel['icon'] ?? "" }}"></i>
+         &nbsp;
+         {{ firstlevel['title'] }}
+      </a>
+      <div class="dropdown-menu {{ firstlevel_active ? 'show' : '' }}">
+      {% for sublevel in firstlevel['content'] %}
+         {% if sublevel['page'] is defined %}
+         <a class="dropdown-item {{ menu_active == sublevel['title'] ? "active" : "" }}"
+            href="{{ path(sublevel['page']) }}"
+            accesskey="{{ sublevel['shortcut'] ?? "" }}">
+            <i class="fa-fw {{ sublevel['icon'] ?? "" }}"></i>
             &nbsp;
-            {{ firstlevel['title'] }}
+            {# @TODO shortcut function for adding a <u> on title #}
+            {{ sublevel['title'] }}
          </a>
-         <div class="dropdown-menu {{ firstlevel_active ? 'show' : '' }}">
-         {% for sublevel in firstlevel['content'] %}
-            {% if sublevel['page'] is defined %}
-            <a class="dropdown-item {{ menu_active == sublevel['title'] ? "active" : "" }}"
-               href="{{ path(sublevel['page']) }}"
-               accesskey="{{ sublevel['shortcut'] ?? "" }}">
-               <i class="fa-fw {{ sublevel['icon'] ?? "" }}"></i>
-               &nbsp;
-               {# @TODO shortcut function for adding a <u> on title #}
-               {{ sublevel['title'] }}
-            </a>
-            {% endif %}
-         {% endfor %}
-         </div>
-      </li>
-      {% endif %}
-   {% endfor %}
-   </ul>
-</div>
+         {% endif %}
+      {% endfor %}
+      </div>
+   </li>
+   {% endif %}
+{% endfor %}
+</ul>

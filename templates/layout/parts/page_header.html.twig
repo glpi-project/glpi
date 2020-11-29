@@ -44,18 +44,39 @@
                class="navbar-brand navbar-brand-autodark">
                <img src="{{ path('pics/logos/logo-GLPI-100-white.png') }}">
             </a>
-            </a>
 
-            {{ include('layout/parts/menu.html.twig', {menu: menu, sector: sector, item: item, option: option, menu_active: menu_active}, with_context = false) }}
-            {{ include('layout/parts/profile_selector.html.twig', {}, with_context = false) }}
+            <div class="collapse navbar-collapse" id="navbar-menu">
+               {{ include('layout/parts/menu.html.twig', {menu: menu, sector: sector, item: item, option: option, menu_active: menu_active}, with_context = false) }}
+               {{ include('layout/parts/profile_selector.html.twig', {}, with_context = false) }}
+            </div>
          </div>
       </aside>
 
-      <header class="navbar navbar-expand-md navbar-light d-none d-lg-flex d-print-none">
+      <header class="navbar navbar-expand-md navbar-light d-none d-lg-flex d-print-none sticky-top">
          <div class="container-fluid">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu">
-               <span class="navbar-toggler-icon"></span>
-            </button>
+            {% if menu[sector] is defined %}
+            {{ include('layout/parts/breadcrumbs.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
+            {% endif %}
+
+            <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center justify-content-between border-left">
+               {% if menu[sector]['content'][item] is defined %}
+               <nav class="nav">
+                  {{ include('layout/parts/context_links.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
+               </nav>
+               {% endif %}
+
+               <div class="ml-md-auto pl-md-4 py-2 py-md-0 mr-md-4 order-first order-md-last flex-grow-1 flex-md-grow-0">
+                  <form action="." method="get">
+                     <div class="input-icon">
+                        <span class="input-icon-addon">
+                           <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><circle cx="10" cy="10" r="7"></circle><line x1="21" y1="21" x2="15" y2="15"></line></svg>
+                        </span>
+                        <input type="text" class="form-control" placeholder="Search…">
+                        {# @TODO Global search #}
+                     </div>
+                  </form>
+               </div>
+            </div>
 
             <div class="navbar-nav flex-row order-md-last">
                <div class="nav-item dropdown">
@@ -110,36 +131,8 @@
                </div>
             </div>
 
-            <div class="collapse navbar-collapse" id="navbar-menu">
-               <div>
-                  <form action="." method="get">
-                     <div class="input-icon">
-                        <span class="input-icon-addon">
-                           <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><circle cx="10" cy="10" r="7"></circle><line x1="21" y1="21" x2="15" y2="15"></line></svg>
-                        </span>
-                        <input type="text" class="form-control" placeholder="Search…">
-                        {# @TODO Global search #}
-                     </div>
-                  </form>
-               </div>
-            </div>
-
          </div>
       </header>
-
-      {% if menu[sector] is defined %}
-      <nav class="navbar navbar-expand-lg navbar-light">
-         <div class="container-fluid">
-            {{ include('layout/parts/breadcrumbs.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
-
-            {% if menu[sector]['content'][item] is defined %}
-            <nav class="nav">
-               {{ include('layout/parts/context_links.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
-            </nav>
-            {% endif %}
-         </div>
-      </nav>
-      {% endif %}
 
       <div class="content">
          <div class="container-fluid">
