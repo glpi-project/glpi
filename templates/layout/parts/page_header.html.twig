@@ -46,6 +46,7 @@
             </a>
             </a>
             <div class="collapse navbar-collapse" id="navbar-menu">
+               {{ include('layout/parts/profile_selector.html.twig', {}, with_context = false) }}
                {{ include('layout/parts/menu.html.twig', {menu: menu, sector: sector, item: item, option: option, menu_active: menu_active}, with_context = false) }}
             </div>
          </div>
@@ -59,7 +60,7 @@
 
             <div class="navbar-nav flex-row order-md-last">
                <div class="nav-item dropdown">
-                  <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-toggle="dropdown">
+                  <a href="#" class="nav-link d-flex lh-1 text-reset p-0 dropdown-toggle" data-toggle="dropdown">
                      <i class="fas fa-2x fa-user"></i>
                      <div class="d-none d-xl-block pl-2">
                         <div>TODO user fullname</div>
@@ -121,10 +122,21 @@
          </div>
       </header>
 
+      {% if menu[sector] is defined %}
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+         <div class="container-fluid">
+            {{ include('layout/parts/breadcrumbs.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
+
+            {% if menu[sector]['content'][item] is defined %}
+            <nav class="nav flex-row order-md-last">
+               {{ include('layout/parts/context_links.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
+            </nav>
+            {% endif %}
+         </div>
+      </nav>
+      {% endif %}
+
       <div class="content">
          <div class="container-fluid">
-            <nav id="c_menu"
-               {{ include('layout/parts/breadcrumbs.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
-            </nav>
             <main role='main' id='page'>
 
