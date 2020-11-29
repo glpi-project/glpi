@@ -1635,7 +1635,7 @@ class Html {
       $tmp_active_item = explode("/", $item);
       $active_item     = array_pop($tmp_active_item);
       $menu            = self::generateMenuSession($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE);
-      $menu_active     = $menu[$sector]['content'][$active_item]['title'];
+      $menu_active     = $menu[$sector]['content'][$active_item]['title'] ?? "";
 
       $tpl_vars = [
          'is_impersonate_active' => Session::isImpersonateActive(),
