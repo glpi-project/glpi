@@ -62,10 +62,16 @@
             <div class="navbar-nav flex-row order-md-last">
                <div class="nav-item dropdown">
                   <a href="#" class="nav-link d-flex lh-1 text-reset p-0 dropdown-toggle" data-toggle="dropdown">
-                     <i class="fas fa-2x fa-user"></i>
+                     {% if user['picture'] is not empty %}
+                        <span class="avatar" style="background-image: url({{ path(user['picture']) }})"></span>
+                     {% else %}
+                        <i class="fas fa-2x fa-user"></i>
+                     {% endif %}
                      <div class="d-none d-xl-block pl-2">
-                        <div>TODO user fullname</div>
-                        <div class="mt-1 small text-muted">TODO user title</div>
+                        <div>{{ user['fullname']}}</div>
+                        {% if user['title'] is not empty %}
+                           <div class="mt-1 small text-muted">{{ user['title']}}</div>
+                        {% endif %}
                      </div>
                   </a>
                   <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">

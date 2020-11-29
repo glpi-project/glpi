@@ -5175,18 +5175,19 @@ JAVASCRIPT;
     * @since 0.85
     *
     * @param string $picture Picture field value
+    * @param bool  bool get full path
     *
     * @return string
     */
-   static function getURLForPicture($picture) {
+   static function getURLForPicture($picture, $full = true) {
       global $CFG_GLPI;
 
-      $url = Toolbox::getPictureUrl($picture);
+      $url = Toolbox::getPictureUrl($picture, $full);
       if (null !== $url) {
          return $url;
       }
 
-      return $CFG_GLPI["root_doc"]."/pics/picture.png";
+      return ($full ? $CFG_GLPI["root_doc"] : "")."/pics/picture.png";
    }
 
 
