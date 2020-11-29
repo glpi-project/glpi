@@ -1075,18 +1075,19 @@ JAVASCRIPT;
             $rand          = mt_rand();
 
             if (count($actions)) {
-               echo "<span class='single-actions'>";
-               echo "<button type='button' class='btn btn-secondary moreactions'>
+               echo "<div class='dropdown'>";
+               echo "<button class='btn btn-sm btn-secondary dropdown-toggle' type='button'
+                             id='single-action' data-toggle='dropdown' aria-haspopup='true'
+                             aria-expanded='false'>
                         ".__("Actions")."
-                        <i class='fas fa-caret-down'></i>
                      </button>";
 
-               echo "<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>";
+               echo "<div class='dropdown-menu dropdown-menu-arrow mt-2' aria-labelledby='single-action'>";
                foreach ($actions as $key => $action) {
                   echo "<a class='dropdown-item' data-action='$key' href='#'>$action</a>";
                }
-               echo "</div>";
-               echo "</span>";
+               echo "</div>"; // .dropdown-menu
+               echo "</div>"; // .dropdown
             }
 
             Html::openMassiveActionsForm();
