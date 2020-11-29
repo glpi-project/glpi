@@ -29,6 +29,7 @@
  ---------------------------------------------------------------------
 #}
 
+{# @TODO dark mode toggler #}
 <body>
    {{ include('layout/parts/impersonate_banner.html.twig') }}
 
@@ -123,7 +124,7 @@
       </header>
 
       {% if menu[sector] is defined %}
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <nav class="navbar navbar-expand-lg">
          <div class="container-fluid">
             {{ include('layout/parts/breadcrumbs.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
 
