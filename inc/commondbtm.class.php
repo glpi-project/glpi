@@ -2585,7 +2585,7 @@ class CommonDBTM extends CommonGLPI {
                      "<i class='fas fa-trash-restore'></i>&nbsp;"._x('button', 'Restore'),
                      [
                         'name' => 'restore',
-                        'class' => 'btn btn-secondary'
+                        'class' => 'btn'
                      ]
                   );
                }
@@ -2605,7 +2605,7 @@ class CommonDBTM extends CommonGLPI {
                      "<i class='fas fa-trash-alt'></i>&nbsp;"._x('button', 'Delete permanently'),
                      [
                         'name'  => 'purge',
-                        'class' => 'btn btn-secondary'
+                        'class' => 'btn'
                      ]
                   );
                   echo "</span>";
@@ -2621,7 +2621,7 @@ class CommonDBTM extends CommonGLPI {
                         [
                            'name'    => 'purge',
                            'confirm' => __('Confirm the final deletion?'),
-                           'class'   => 'btn btn-secondary'
+                           'class'   => 'btn'
                         ]
                      );
                   }
@@ -2631,7 +2631,7 @@ class CommonDBTM extends CommonGLPI {
                      "<i class='fas fa-trash-alt'></i>&nbsp;"._x('button', 'Put in trashbin'),
                      [
                         'name'  => 'delete',
-                        'class' => 'btn btn-secondary'
+                        'class' => 'btn'
                      ]
                   );
                }
