@@ -68,13 +68,12 @@
                {% endif %}
 
                <div class="ml-md-auto pl-md-4 py-2 py-md-0 mr-md-4 order-first order-md-last d-none d-sm-none d-md-block flex-grow-1 flex-md-grow-0">
-                  <form action="." method="get">
-                     <div class="input-icon">
-                        <span class="input-icon-addon">
-                           <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><circle cx="10" cy="10" r="7"></circle><line x1="21" y1="21" x2="15" y2="15"></line></svg>
-                        </span>
-                        <input type="text" class="form-control" placeholder="Search…">
-                        {# @TODO Global search #}
+                  <form action="{{ path('front/search.php') }}" roel="search" method="get">
+                     <div class='input-group'>
+                        <input type="text" class="form-control" name="globalsearch" placeholder="{{ __("Search…") }}">
+                        <button type="submit" class="btn btn-outline-primary" title="{{ __("Search…") }}">
+                           <span class='fas fa-search' aria-hidden='true'></span>
+                        </button>
                      </div>
                   </form>
                </div>
