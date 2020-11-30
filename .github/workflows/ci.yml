@@ -23,7 +23,7 @@ on:
 jobs:
   lint:
     name: "Lint on PHP ${{ matrix.php-version }}"
-    runs-on: "ubuntu-latest"
+    runs-on: "${{ github.repository == 'glpi-network/glpi' && 'self-hosted' || 'ubuntu-latest' }}"
     strategy:
       fail-fast: false
       matrix:
@@ -105,7 +105,7 @@ jobs:
 
   tests:
     name: "Test on PHP ${{ matrix.php-version }} using ${{ matrix.db-image }}"
-    runs-on: "ubuntu-latest"
+    runs-on: "${{ github.repository == 'glpi-network/glpi' && 'self-hosted' || 'ubuntu-latest' }}"
     strategy:
       fail-fast: false
       matrix:
