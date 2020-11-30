@@ -117,12 +117,15 @@
                         {{ language_name }}
                      </a>
 
-                     <label class="form-check form-switch m-1">
-                        <input class="form-check-input mr-1" type="checkbox"
+                     {% set dark_mode = false %}
+                     {# @TODO init and save darkmode from/in DB #}
+                     <label class="dropdown-item">
+                        <input class="mr-1" type="checkbox" style="display: none"
                                onclick="document.querySelector('body').classList.toggle('theme-dark')">
-                        <span class="form-check-label">Dark mode</span>
+                        <span class="form-check-label">
+                           <i class="fas fa-fw {{ dark_mode ? "fa-sun" : "fa-moon" }} "></i>
+                           {{ dark_mode ? __("Light mode") : __("Dark mode")}}
                      </label>
-                     {# @TODO Save darkmode in DB #}
 
                      <div class="dropdown-divider"></div>
 
