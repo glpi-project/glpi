@@ -1,7 +1,7 @@
 
 {% set links = menu[sector]['content'][item]['options'][option]['links'] ?? menu[sector]['content'][item]['links'] %}
 
-<ul class="nav navbar-nav border-left">
+<ul class="nav navbar-nav border-left flex-row">
 
 {% if links['add'] is defined %}
 <li class="nav-item">
