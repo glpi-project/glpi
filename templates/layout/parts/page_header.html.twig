@@ -109,13 +109,21 @@
                         </a>
                      {% endif %}
 
-                     {# @TODO Saved searches pannel #}
+                     {# @TODO Saved searches panel #}
 
                      <a href="{{ path('/front/preference.php?forcetab=User$1') }}" class="dropdown-item" title="{{ language_name }}">
                         <i class="fas fa-fw fa-language"></i>
                         &nbsp;
                         {{ language_name }}
                      </a>
+
+                     <label class="form-check form-switch m-1">
+                        <input class="form-check-input mr-1" type="checkbox"
+                               onclick="document.querySelector('body').classList.toggle('theme-dark')">
+                        <span class="form-check-label">Dark mode</span>
+                     </label>
+                     {# @TODO Save darkmode in DB #}
+
                      <div class="dropdown-divider"></div>
                      <a href="{{ path('/front/preference.php') }}" class="dropdown-item" title="{{ __('My settings') }}">
                         <i class="fas fa-fw fa-user-cog"></i>
