@@ -230,7 +230,7 @@ jobs:
       - name: "Unit tests"
         if: env.skip != 'true'
         run: |
-          docker exec app vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units
+          docker exec app vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 10 -d tests/units
       - name: "Functionnal tests"
         if: env.skip != 'true'
         run: |
