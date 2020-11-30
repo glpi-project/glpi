@@ -102,6 +102,13 @@ jobs:
       - name: "ESLint"
         run: |
           docker exec app node_modules/.bin/eslint . && echo "ESLint found no errors"
+      - name: "Cleanup containers"
+        if: always()
+        run: |
+          docker stop $(docker ps -q)
+          docker container prune --force
+          docker volume prune --force
+          docker network prune --force
 
   tests:
     name: "Test on PHP ${{ matrix.php-version }} using ${{ matrix.db-image }}"
@@ -238,3 +245,10 @@ jobs:
         if: env.skip != 'true'
         run: |
           docker exec app bin/console build:compile_scss
+      - name: "Cleanup containers"
+        if: env.skip != 'true' && always()
+        run: |
+          docker stop $(docker ps -q)
+          docker container prune --force
+          docker volume prune --force
+          docker network prune --force
