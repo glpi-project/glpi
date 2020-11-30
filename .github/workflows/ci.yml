@@ -23,19 +23,22 @@ on:
 jobs:
   lint:
     name: "Lint on PHP ${{ matrix.php-version }}"
-    runs-on: "ubuntu-latest"
+    runs-on: "${{ github.repository == 'glpi-network/glpi' && 'self-hosted' || 'ubuntu-latest' }}"
     strategy:
       fail-fast: false
       matrix:
         include:
           - {php-version: "7.2"} # Lint on lower PHP version to detected too early usage of new syntaxes
-          - {php-version: "7.4"} # Lint on higher PHP version to detected deprecated elements usage
-          - {php-version: "8.0-rc"}
+          - {php-version: "8.0"} # Lint on higher PHP version to detected deprecated elements usage
     steps:
       - name: "Cancel previous runs"
         uses: "styfle/cancel-workflow-action@0.5.0"
         with:
           access_token: "${{ github.token }}"
+      - name: "Clean workspace"
+        if: env.skip != 'true'
+        run: |
+          rm -rf "${{ github.workspace }}/*"
       - name: "Checkout"
         uses: "actions/checkout@v2"
       - name: "Restore dependencies cache"
@@ -53,8 +56,9 @@ jobs:
         with:
           path: |
             ${{ runner.temp }}/app_home/phpcs.cache
-          key: "app_home_lint-${{ matrix.php-version }}"
+          key: "app_home_lint-${{ matrix.php-version }}-${{ github.base_ref || github.ref }}"
           restore-keys: |
+            app_home_lint-${{ matrix.php-version }}
             app_home_lint-
       - name: "Initialize containers"
         run: |
@@ -64,6 +68,7 @@ jobs:
           export APPLICATION_ROOT=`pwd`
           export APPLICATION_HOME=${{ runner.temp }}/app_home
           export PHP_IMAGE=githubactions-php:${{ matrix.php-version }}
+          docker-compose --file .github/actions/docker-compose-app.yml --project-directory `pwd` pull --quiet
           docker-compose --file .github/actions/docker-compose-app.yml --project-directory `pwd` up --no-start
           docker-compose --file .github/actions/docker-compose-app.yml --project-directory `pwd` start
           echo "Change files rights to give write access to app container user"
@@ -79,12 +84,12 @@ jobs:
       - name: "Validate composer config and requirements"
         run: |
           docker exec app composer validate --strict
-          if ! [[ "${{ matrix.php-version }}" =~ ^.+-rc$ ]]; then docker exec app composer check-platform-reqs; fi
+          if ! [[ "${{ matrix.php-version }}" == "8.0" ]]; then docker exec app composer check-platform-reqs; fi
       - name: "Install dependencies"
         run: |
           docker exec app rm composer.lock
           docker exec app composer config --unset platform
-          if [[ "${{ matrix.php-version }}" =~ ^.+-rc$ ]]; then export COMPOSER_ADD_OPTS=--ignore-platform-reqs; fi
+          if [[ "${{ matrix.php-version }}" == "8.0" ]]; then export COMPOSER_ADD_OPTS=--ignore-platform-reqs; fi
           docker exec app bin/console dependencies install --composer-options="$COMPOSER_ADD_OPTS --prefer-dist --no-progress"
       - name: "PHP Parallel Lint"
         run: |
@@ -102,18 +107,25 @@ jobs:
       - name: "ESLint"
         run: |
           docker exec app node_modules/.bin/eslint . && echo "ESLint found no errors"
+      - name: "Cleanup containers"
+        if: always()
+        run: |
+          docker stop $(docker ps -q)
+          docker container prune --force
+          docker volume prune --force
+          docker network prune --force
 
   tests:
     name: "Test on PHP ${{ matrix.php-version }} using ${{ matrix.db-image }}"
-    runs-on: "ubuntu-latest"
+    runs-on: "${{ github.repository == 'glpi-network/glpi' && 'self-hosted' || 'ubuntu-latest' }}"
     strategy:
       fail-fast: false
       matrix:
         include:
-          - {php-version: "7.4", db-image: "mariadb:10.5", always: true}
+          - {php-version: "8.0", db-image: "mariadb:10.5", always: true}
           - {php-version: "7.2", db-image: "mariadb:10.5", always: false}
           - {php-version: "7.3", db-image: "mariadb:10.5", always: false}
-          - {php-version: "8.0-rc", db-image: "mariadb:10.5", always: true}
+          - {php-version: "7.4", db-image: "mariadb:10.5", always: false}
           - {php-version: "7.4", db-image: "mariadb:10.1", always: false}
           - {php-version: "7.4", db-image: "mysql:5.6", always: false}
           - {php-version: "7.4", db-image: "mysql:8.0", always: false}
@@ -129,6 +141,10 @@ jobs:
         uses: "styfle/cancel-workflow-action@0.5.0"
         with:
           access_token: "${{ github.token }}"
+      - name: "Clean workspace"
+        if: env.skip != 'true'
+        run: |
+          rm -rf "${{ github.workspace }}/*"
       - name: "Checkout"
         if: env.skip != 'true'
         uses: "actions/checkout@v2"
@@ -153,6 +169,7 @@ jobs:
           export APPLICATION_HOME=${{ runner.temp }}/app_home
           export PHP_IMAGE=githubactions-php:${{ matrix.php-version }}
           export DB_IMAGE=githubactions-${{ matrix.db-image }}
+          docker-compose --file .github/actions/docker-compose-app.yml --file .github/actions/docker-compose-services.yml --project-directory `pwd` pull --quiet
           docker-compose --file .github/actions/docker-compose-app.yml --file .github/actions/docker-compose-services.yml --project-directory `pwd` up --no-start
           docker-compose --file .github/actions/docker-compose-app.yml --file .github/actions/docker-compose-services.yml --project-directory `pwd` start
           .github/actions/check_services_health.sh
@@ -178,7 +195,7 @@ jobs:
         run: |
           docker exec app rm composer.lock
           docker exec app composer config --unset platform
-          if [[ "${{ matrix.php-version }}" =~ ^.+-rc$ ]]; then export COMPOSER_ADD_OPTS=--ignore-platform-reqs; fi
+          if [[ "${{ matrix.php-version }}" == "8.0" ]]; then export COMPOSER_ADD_OPTS=--ignore-platform-reqs; fi
           docker exec app bin/console dependencies install --composer-options="$COMPOSER_ADD_OPTS --prefer-dist --no-progress"
       - name: "PHP Parallel Lint"
         if: env.skip != 'true'
@@ -212,7 +229,7 @@ jobs:
       - name: "Unit tests"
         if: env.skip != 'true'
         run: |
-          docker exec app vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units
+          docker exec app vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 10 -d tests/units
       - name: "Functionnal tests"
         if: env.skip != 'true'
         run: |
@@ -238,3 +255,10 @@ jobs:
         if: env.skip != 'true'
         run: |
           docker exec app bin/console build:compile_scss
+      - name: "Cleanup containers"
+        if: env.skip != 'true' && always()
+        run: |
+          docker stop $(docker ps -q)
+          docker container prune --force
+          docker volume prune --force
+          docker network prune --force
