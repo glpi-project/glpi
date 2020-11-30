@@ -21,88 +21,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint:
-    name: "Lint on PHP ${{ matrix.php-version }}"
-    runs-on: "ubuntu-latest"
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - {php-version: "7.2"} # Lint on lower PHP version to detected too early usage of new syntaxes
-          - {php-version: "7.4"} # Lint on higher PHP version to detected deprecated elements usage
-          - {php-version: "8.0-rc"}
-    steps:
-      - name: "Cancel previous runs"
-        uses: "styfle/cancel-workflow-action@0.5.0"
-        with:
-          access_token: "${{ github.token }}"
-      - name: "Checkout"
-        uses: "actions/checkout@v2"
-      - name: "Restore dependencies cache"
-        uses: actions/cache@v2
-        with:
-          path: |
-            ${{ runner.temp }}/app_home/.composer/cache/
-            ${{ runner.temp }}/app_home/.npm/_cacache/
-          key: "app_home_deps-${{ matrix.php-version }}-${{ hashFiles('composer.lock', 'package-lock.json') }}"
-          restore-keys: |
-            app_home_deps-${{ matrix.php-version }}-
-            app_home_deps-
-      - name: "Restore lint cache"
-        uses: actions/cache@v2
-        with:
-          path: |
-            ${{ runner.temp }}/app_home/phpcs.cache
-          key: "app_home_lint-${{ matrix.php-version }}"
-          restore-keys: |
-            app_home_lint-
-      - name: "Initialize containers"
-        run: |
-          echo "Init app container home"
-          mkdir -p ${{ runner.temp }}/app_home
-          echo "Pull and start containers"
-          export APPLICATION_ROOT=`pwd`
-          export APPLICATION_HOME=${{ runner.temp }}/app_home
-          export PHP_IMAGE=githubactions-php:${{ matrix.php-version }}
-          docker-compose --file .github/actions/docker-compose-app.yml --project-directory `pwd` up --no-start
-          docker-compose --file .github/actions/docker-compose-app.yml --project-directory `pwd` start
-          echo "Change files rights to give write access to app container user"
-          setfacl --recursive --modify u:1000:rwx `pwd`
-          setfacl --recursive --modify u:1000:rwx ${{ runner.temp }}/app_home
-      - name: "Show versions"
-        if: env.skip != 'true'
-        run: |
-          docker exec app php --version
-          docker exec app composer --version
-          docker exec app sh -c 'echo "node $(node --version)"'
-          docker exec app sh -c 'echo "npm $(npm --version)"'
-      - name: "Validate composer config and requirements"
-        run: |
-          docker exec app composer validate --strict
-          if ! [[ "${{ matrix.php-version }}" =~ ^.+-rc$ ]]; then docker exec app composer check-platform-reqs; fi
-      - name: "Install dependencies"
-        run: |
-          docker exec app rm composer.lock
-          docker exec app composer config --unset platform
-          if [[ "${{ matrix.php-version }}" =~ ^.+-rc$ ]]; then export COMPOSER_ADD_OPTS=--ignore-platform-reqs; fi
-          docker exec app bin/console dependencies install --composer-options="$COMPOSER_ADD_OPTS --prefer-dist --no-progress"
-      - name: "PHP Parallel Lint"
-        run: |
-          docker exec app vendor/bin/parallel-lint  --exclude ./files/ --exclude ./plugins/ --exclude ./tools/vendor/ --exclude ./vendor/ .
-      - name: "Check for missing dependencies / bad symbols"
-        # Alpine linux does not implement GLOB_BRACE.
-        # We have to define it to 0 to prevent "Warning: Use of undefined constant GLOB_BRACE - assumed 'GLOB_BRACE'" error.
-        # This is not a problem as long as we do not use braces in "scan-files" section of the config file.
-        run: |
-          docker exec app php -d memory_limit=1G -r 'define("GLOB_BRACE", 0); include "./vendor/maglnet/composer-require-checker/bin/composer-require-checker.php";' check --config-file=.composer-require-checker.config.json
-      - name: "PHP CS"
-        run: |
-          docker exec app touch /home/glpi/phpcs.cache
-          docker exec app vendor/bin/phpcs --cache /home/glpi/phpcs.cache -d memory_limit=512M -p --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore="/.git/,^/var/glpi/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/" ./
-      - name: "ESLint"
-        run: |
-          docker exec app node_modules/.bin/eslint . && echo "ESLint found no errors"
-
   tests:
     name: "Test on PHP ${{ matrix.php-version }} using ${{ matrix.db-image }}"
     runs-on: "ubuntu-latest"
@@ -119,6 +37,10 @@ jobs:
           - {php-version: "7.4", db-image: "mysql:8.0", always: false}
           - {php-version: "7.4", db-image: "percona:5.6", always: false}
           - {php-version: "7.4", db-image: "percona:8.0", always: false}
+    env:
+      # Skip jobs that should not be always run on pull requests or on push on tier repository (to limit workers usage).
+      # No jobs will be skipped on nightly build and on push on main branches.
+      skip: ${{ (github.event_name == 'pull_request' || github.repository != 'glpi-project/glpi') && matrix.always == false}}
     steps:
       - name: "Cancel previous runs"
         if: env.skip != 'true'
@@ -234,3 +156,84 @@ jobs:
         if: env.skip != 'true'
         run: |
           docker exec app bin/console build:compile_scss
+  lint:
+    name: "Lint on PHP ${{ matrix.php-version }}"
+    runs-on: "ubuntu-latest"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {php-version: "7.2"} # Lint on lower PHP version to detected too early usage of new syntaxes
+          - {php-version: "7.4"} # Lint on higher PHP version to detected deprecated elements usage
+          - {php-version: "8.0-rc"}
+    steps:
+      - name: "Cancel previous runs"
+        uses: "styfle/cancel-workflow-action@0.5.0"
+        with:
+          access_token: "${{ github.token }}"
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+      - name: "Restore dependencies cache"
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ runner.temp }}/app_home/.composer/cache/
+            ${{ runner.temp }}/app_home/.npm/_cacache/
+          key: "app_home_deps-${{ matrix.php-version }}-${{ hashFiles('composer.lock', 'package-lock.json') }}"
+          restore-keys: |
+            app_home_deps-${{ matrix.php-version }}-
+            app_home_deps-
+      - name: "Restore lint cache"
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ runner.temp }}/app_home/phpcs.cache
+          key: "app_home_lint-${{ matrix.php-version }}"
+          restore-keys: |
+            app_home_lint-
+      - name: "Initialize containers"
+        run: |
+          echo "Init app container home"
+          mkdir -p ${{ runner.temp }}/app_home
+          echo "Pull and start containers"
+          export APPLICATION_ROOT=`pwd`
+          export APPLICATION_HOME=${{ runner.temp }}/app_home
+          export PHP_IMAGE=githubactions-php:${{ matrix.php-version }}
+          docker-compose --file .github/actions/docker-compose-app.yml --project-directory `pwd` up --no-start
+          docker-compose --file .github/actions/docker-compose-app.yml --project-directory `pwd` start
+          echo "Change files rights to give write access to app container user"
+          setfacl --recursive --modify u:1000:rwx `pwd`
+          setfacl --recursive --modify u:1000:rwx ${{ runner.temp }}/app_home
+      - name: "Show versions"
+        if: env.skip != 'true'
+        run: |
+          docker exec app php --version
+          docker exec app composer --version
+          docker exec app sh -c 'echo "node $(node --version)"'
+          docker exec app sh -c 'echo "npm $(npm --version)"'
+      - name: "Validate composer config and requirements"
+        run: |
+          docker exec app composer validate --strict
+          if ! [[ "${{ matrix.php-version }}" =~ ^.+-rc$ ]]; then docker exec app composer check-platform-reqs; fi
+      - name: "Install dependencies"
+        run: |
+          docker exec app rm composer.lock
+          docker exec app composer config --unset platform
+          if [[ "${{ matrix.php-version }}" =~ ^.+-rc$ ]]; then export COMPOSER_ADD_OPTS=--ignore-platform-reqs; fi
+          docker exec app bin/console dependencies install --composer-options="$COMPOSER_ADD_OPTS --prefer-dist --no-progress"
+      - name: "PHP Parallel Lint"
+        run: |
+          docker exec app vendor/bin/parallel-lint  --exclude ./files/ --exclude ./plugins/ --exclude ./tools/vendor/ --exclude ./vendor/ .
+      - name: "Check for missing dependencies / bad symbols"
+        # Alpine linux does not implement GLOB_BRACE.
+        # We have to define it to 0 to prevent "Warning: Use of undefined constant GLOB_BRACE - assumed 'GLOB_BRACE'" error.
+        # This is not a problem as long as we do not use braces in "scan-files" section of the config file.
+        run: |
+          docker exec app php -d memory_limit=1G -r 'define("GLOB_BRACE", 0); include "./vendor/maglnet/composer-require-checker/bin/composer-require-checker.php";' check --config-file=.composer-require-checker.config.json
+      - name: "PHP CS"
+        run: |
+          docker exec app touch /home/glpi/phpcs.cache
+          docker exec app vendor/bin/phpcs --cache /home/glpi/phpcs.cache -d memory_limit=512M -p --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore="/.git/,^/var/glpi/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/" ./
+      - name: "ESLint"
+        run: |
+          docker exec app node_modules/.bin/eslint . && echo "ESLint found no errors"
