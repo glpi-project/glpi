@@ -17,7 +17,7 @@
    </div>
 </div>
 
-<a href="#" class="dropdown-item" id="show_entity_modal">
+<a href="#" class="dropdown-item show_entity_modal">
    <i class="fa-fw fas fa-layer-group"></i>
    &nbsp;
    {{ glpiactive_entity_name|u.truncate(35, '...') }}
@@ -42,7 +42,7 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-   $('#show_entity_modal').click(function() {
+   $('.show_entity_modal').click(function() {
 
       var modal = '<div class="modal fade" id="entity_modal" role="dialog">';
       modal += '<div class="modal-dialog">';
