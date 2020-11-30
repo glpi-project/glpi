@@ -57,8 +57,9 @@ jobs:
         with:
           path: |
             ${{ runner.temp }}/app_home/phpcs.cache
-          key: "app_home_lint-${{ matrix.php-version }}"
+          key: "app_home_lint-${{ matrix.php-version }}-${{ github.base_ref || github.ref }}"
           restore-keys: |
+            app_home_lint-${{ matrix.php-version }}
             app_home_lint-
       - name: "Initialize containers"
         run: |
