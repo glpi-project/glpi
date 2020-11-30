@@ -379,7 +379,7 @@ class Ajax {
       if (count($tabs) > 0) {
          echo "<div class='container-fluid'>";
          echo "<div class='row'>";
-         echo "<div class='col-lg-1 px-0'>";
+         echo "<div class='col-lg-1 px-0' style='min-width: 170px'>";
          echo "<ul class='nav nav-tabs flex-row flex-lg-column border-right border-bottom-0' id='$tabdiv_id' role='tablist'>";
          foreach ($tabs as $key => $val) {
             $id = str_replace('$', '_', $key);
