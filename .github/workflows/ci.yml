@@ -64,6 +64,7 @@ jobs:
           export APPLICATION_ROOT=`pwd`
           export APPLICATION_HOME=${{ runner.temp }}/app_home
           export PHP_IMAGE=githubactions-php:${{ matrix.php-version }}
+          docker-compose --file .github/actions/docker-compose-app.yml --project-directory `pwd` pull --quiet
           docker-compose --file .github/actions/docker-compose-app.yml --project-directory `pwd` up --no-start
           docker-compose --file .github/actions/docker-compose-app.yml --project-directory `pwd` start
           echo "Change files rights to give write access to app container user"
@@ -160,6 +161,7 @@ jobs:
           export APPLICATION_HOME=${{ runner.temp }}/app_home
           export PHP_IMAGE=githubactions-php:${{ matrix.php-version }}
           export DB_IMAGE=githubactions-${{ matrix.db-image }}
+          docker-compose --file .github/actions/docker-compose-app.yml --file .github/actions/docker-compose-services.yml --project-directory `pwd` pull --quiet
           docker-compose --file .github/actions/docker-compose-app.yml --file .github/actions/docker-compose-services.yml --project-directory `pwd` up --no-start
           docker-compose --file .github/actions/docker-compose-app.yml --file .github/actions/docker-compose-services.yml --project-directory `pwd` start
           .github/actions/check_services_health.sh
