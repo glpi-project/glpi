@@ -1797,7 +1797,7 @@ class Html {
          if (!isset($_GET['full_page_tab'])
              && strstr($_SERVER['REQUEST_URI'], '/ajax/common.tabs.php')) {
             echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-            echo "<a href='".$_SERVER['REQUEST_URI']."&full_page_tab=1' class='vsubmit'>Display only tab for debug</a>";
+            echo "<a href='".$_SERVER['REQUEST_URI']."&full_page_tab=1' class='btn btn-sm'>Display only tab for debug</a>";
          }
          echo "</div>";
          echo "<div id='see_ajaxdebug$rand' name='see_ajaxdebug$rand' style=\"display:none;\">";
