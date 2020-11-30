@@ -169,7 +169,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       // Common case of this is when the ticket was created from a forwarded email
       // Without double encoding, these emails are interpreted as html and not
       // rendered in the final mail
-      $regex = "/(&lt;[A-Za-z0-9.!#$%&'*+\-\/=?^_`{|}~]*?@[A-Za-z0-9.!#$%&'*+\-\/=?^_`{|}~]*?&gt;)/";
+      $regex = "/(&lt;[^;]+?@[^;]+?&gt;)/";
       $data['##ticket.description##'] = preg_replace_callback($regex, function($matches) {
          return htmlentities($matches[1]);
       }, $data['##ticket.description##']);
