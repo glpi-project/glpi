@@ -29,8 +29,7 @@ jobs:
       matrix:
         include:
           - {php-version: "7.2"} # Lint on lower PHP version to detected too early usage of new syntaxes
-          - {php-version: "7.4"} # Lint on higher PHP version to detected deprecated elements usage
-          - {php-version: "8.0-rc"}
+          - {php-version: "8.0"} # Lint on higher PHP version to detected deprecated elements usage
     steps:
       - name: "Cancel previous runs"
         uses: "styfle/cancel-workflow-action@0.5.0"
@@ -85,12 +84,12 @@ jobs:
       - name: "Validate composer config and requirements"
         run: |
           docker exec app composer validate --strict
-          if ! [[ "${{ matrix.php-version }}" =~ ^.+-rc$ ]]; then docker exec app composer check-platform-reqs; fi
+          if ! [[ "${{ matrix.php-version }}" == "8.0" ]]; then docker exec app composer check-platform-reqs; fi
       - name: "Install dependencies"
         run: |
           docker exec app rm composer.lock
           docker exec app composer config --unset platform
-          if [[ "${{ matrix.php-version }}" =~ ^.+-rc$ ]]; then export COMPOSER_ADD_OPTS=--ignore-platform-reqs; fi
+          if [[ "${{ matrix.php-version }}" == "8.0" ]]; then export COMPOSER_ADD_OPTS=--ignore-platform-reqs; fi
           docker exec app bin/console dependencies install --composer-options="$COMPOSER_ADD_OPTS --prefer-dist --no-progress"
       - name: "PHP Parallel Lint"
         run: |
@@ -123,10 +122,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {php-version: "7.4", db-image: "mariadb:10.5", always: true}
+          - {php-version: "8.0", db-image: "mariadb:10.5", always: true}
           - {php-version: "7.2", db-image: "mariadb:10.5", always: false}
           - {php-version: "7.3", db-image: "mariadb:10.5", always: false}
-          - {php-version: "8.0-rc", db-image: "mariadb:10.5", always: true}
+          - {php-version: "7.4", db-image: "mariadb:10.5", always: false}
           - {php-version: "7.4", db-image: "mariadb:10.1", always: false}
           - {php-version: "7.4", db-image: "mysql:5.6", always: false}
           - {php-version: "7.4", db-image: "mysql:8.0", always: false}
@@ -196,7 +195,7 @@ jobs:
         run: |
           docker exec app rm composer.lock
           docker exec app composer config --unset platform
-          if [[ "${{ matrix.php-version }}" =~ ^.+-rc$ ]]; then export COMPOSER_ADD_OPTS=--ignore-platform-reqs; fi
+          if [[ "${{ matrix.php-version }}" == "8.0" ]]; then export COMPOSER_ADD_OPTS=--ignore-platform-reqs; fi
           docker exec app bin/console dependencies install --composer-options="$COMPOSER_ADD_OPTS --prefer-dist --no-progress"
       - name: "PHP Parallel Lint"
         if: env.skip != 'true'
