@@ -36,6 +36,10 @@ jobs:
         uses: "styfle/cancel-workflow-action@0.5.0"
         with:
           access_token: "${{ github.token }}"
+      - name: "Clean workspace"
+        if: env.skip != 'true'
+        run: |
+          rm -rf "${{ github.workspace }}/*"
       - name: "Checkout"
         uses: "actions/checkout@v2"
       - name: "Restore dependencies cache"
@@ -137,6 +141,10 @@ jobs:
         uses: "styfle/cancel-workflow-action@0.5.0"
         with:
           access_token: "${{ github.token }}"
+      - name: "Clean workspace"
+        if: env.skip != 'true'
+        run: |
+          rm -rf "${{ github.workspace }}/*"
       - name: "Checkout"
         if: env.skip != 'true'
         uses: "actions/checkout@v2"
