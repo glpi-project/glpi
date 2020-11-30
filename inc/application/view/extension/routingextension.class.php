@@ -34,6 +34,7 @@ namespace Glpi\Application\View\Extension;
 
 use CommonGLPI;
 use Html;
+use Session;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
@@ -45,12 +46,29 @@ class RoutingExtension extends AbstractExtension implements ExtensionInterface {
 
    public function getFunctions() {
       return [
+         new TwigFunction('index', [$this, 'index']),
          new TwigFunction('path', [$this, 'path']),
          new TwigFunction('form_path', [$this, 'formPath']),
          new TwigFunction('url', [$this, 'url']),
          new TwigFunction('form_url', [$this, 'formUrl']),
       ];
    }
+
+
+   /**
+    * Return index path.
+    *
+    * @return string
+    *
+    * @TODO Add a unit test.
+    */
+   public function index(): string {
+      $index = (Session::getCurrentInterface() == 'helpdesk')
+         ? "helpdesk.public.php"
+         : "central.php";
+      return Html::getPrefixedUrl("front/$index");
+   }
+
 
    /**
     * Return domain-relative path of a resource.
