@@ -1641,19 +1641,21 @@ class Html {
       $user->getFromDB($_SESSION['glpiID']);
 
       $tpl_vars = [
-         'is_impersonate_active' => Session::isImpersonateActive(),
-         'language_name'         => Dropdown::getLanguageName($_SESSION['glpilanguage']),
-         'logout_path'           => self::getPrefixedUrl(
+         'is_impersonate_active'  => Session::isImpersonateActive(),
+         'language_name'          => Dropdown::getLanguageName($_SESSION['glpilanguage']),
+         'logout_path'            => self::getPrefixedUrl(
             '/front/logout.php' . ($_SESSION['glpiextauth'] ?? false ? '?noAUTO=1' : '')
          ),
-         'menu'                  => $menu,
-         'sector'                => $sector,
-         'item'                  => $item,
-         'option'                => $option,
-         'menu_active'           => $menu_active,
-         'user'                  => [
+         'menu'                   => $menu,
+         'sector'                 => $sector,
+         'profiles'               => $_SESSION["glpiprofiles"],
+         'active_profile'         => $_SESSION["glpiactiveprofile"]["id"],
+         'glpiactive_entity_name' => $_SESSION["glpiactive_entity_name"],
+         'item'                   => $item,
+         'option'                 => $option,
+         'menu_active'            => $menu_active,
+         'user'                   => [
             'fullname' => formatUserName($_SESSION['glpiID'], $user->fields['name'], $user->fields['realname'], $user->fields['firstname']),
-            'title'    => Dropdown::getDropdownName("glpi_usertitles", $user->fields["usertitles_id"]),
             'picture'  => User::getURLForPicture($user->fields['picture'], false),
          ]
       ];

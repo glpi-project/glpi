@@ -40,15 +40,13 @@
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu">
             <span class="navbar-toggler-icon"></span>
             </button>
-            <a href="{{ path('/front/central.php') }}" accesskey="1" title="{{ __('Home') }}"
+
+            <a href="{{ index() }}" accesskey="1" title="{{ __('Home') }}"
                class="navbar-brand navbar-brand-autodark">
                <img src="{{ path('pics/logos/logo-GLPI-100-white.png') }}">
             </a>
 
-            <div class="collapse navbar-collapse" id="navbar-menu">
-               {{ include('layout/parts/menu.html.twig', {menu: menu, sector: sector, item: item, option: option, menu_active: menu_active}, with_context = false) }}
-               {{ include('layout/parts/profile_selector.html.twig', {}, with_context = false) }}
-            </div>
+            {{ include('layout/parts/menu.html.twig', {menu: menu, sector: sector, item: item, option: option, menu_active: menu_active}, with_context = false) }}
          </div>
       </aside>
 
@@ -58,7 +56,7 @@
             {{ include('layout/parts/breadcrumbs.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
             {% endif %}
 
-            <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center justify-content-between border-left">
+            <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center justify-content-between">
                {% if menu[sector]['content'][item] is defined %}
                <nav class="nav">
                   {{ include('layout/parts/context_links.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
@@ -88,12 +86,14 @@
                      {% endif %}
                      <div class="d-none d-xl-block pl-2">
                         <div>{{ user['fullname']}}</div>
-                        {% if user['title'] is not empty %}
-                           <div class="mt-1 small text-muted">{{ user['title']}}</div>
-                        {% endif %}
+                        <div class="mt-1 small text-muted">{{ glpiactive_entity_name|u.truncate(35, '...') }}</div>
                      </div>
                   </a>
                   <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                     {{ include('layout/parts/profile_selector.html.twig', {profiles: profiles, active_profile: active_profile, glpiactive_entity_name: glpiactive_entity_name}, with_context = false) }}
+
+                     <div class="dropdown-divider"></div>
+
                      <a href="{{ help_url }}" class="dropdown-item" title="{{ __('Help') }}">
                         <i class="fas fa-fw fa-question"></i>
                         &nbsp;
@@ -125,6 +125,7 @@
                      {# @TODO Save darkmode in DB #}
 
                      <div class="dropdown-divider"></div>
+
                      <a href="{{ path('/front/preference.php') }}" class="dropdown-item" title="{{ __('My settings') }}">
                         <i class="fas fa-fw fa-user-cog"></i>
                         &nbsp;
