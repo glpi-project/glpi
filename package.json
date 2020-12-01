@@ -60,7 +60,7 @@
     },
     "devDependencies": {
         "assert": "^2.0.0",
-        "buffer": "^5.7.0",
+        "buffer": "^6.0.3",
         "clean-webpack-plugin": "^3.0.0",
         "copy-webpack-plugin": "^6.0.1",
         "css-loader": "^5.0.0",
