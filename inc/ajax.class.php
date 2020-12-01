@@ -433,7 +433,6 @@ class Ajax {
             $('a[data-target=\"#{$active_id}\"]').tab('show');
          });";
 
-
          echo Html::scriptBlock($js);
       }
    }
