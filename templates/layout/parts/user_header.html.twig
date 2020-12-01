@@ -7,12 +7,12 @@
             <i class="fas fa-2x fa-user"></i>
          {% endif %}
          <div class="d-none d-xl-block pl-2">
-            <div>{{ user['fullname']}}</div>
+            <div>{{ user['fullname'] }}</div>
             <div class="mt-1 small text-muted">{{ glpiactive_entity_name|u.truncate(35, '...') }}</div>
          </div>
       </a>
       <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-         {{ include('layout/parts/profile_selector.html.twig', {profiles: profiles, active_profile: active_profile, glpiactive_entity_name: glpiactive_entity_name}, with_context = false) }}
+         {{ include('layout/parts/profile_selector.html.twig') }}
 
          <div class="dropdown-divider"></div>
 
@@ -46,7 +46,7 @@
                      onclick="document.querySelector('body').classList.toggle('theme-dark')">
             <span class="form-check-label">
                <i class="fas fa-fw {{ dark_mode ? "fa-sun" : "fa-moon" }} "></i>
-               {{ dark_mode ? __("Light mode") : __("Dark mode")}}
+               {{ dark_mode ? __("Light mode") : __("Dark mode") }}
          </label>
 
          <div class="dropdown-divider"></div>

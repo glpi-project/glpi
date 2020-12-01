@@ -3,7 +3,7 @@
    <ul class="navbar-nav pt-lg-3">
    {% for firstlevel in menu %}
       {% if firstlevel['content'] is defined %}
-      {% set firstlevel_active = (menu[sector]['title'] == firstlevel['title']) %}
+      {% set firstlevel_active = menu[sector]['title'] == firstlevel['title'] %}
       <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}">
          <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
             aria-expanded="{{ firstlevel_active ? 'true' : 'false' }}"
