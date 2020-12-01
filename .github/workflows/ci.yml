@@ -121,8 +121,8 @@ jobs:
           - {php-version: "7.4", db-image: "percona:8.0", always: false}
     env:
       # Skip jobs that should not be always run on pull requests or on push on tier repository (to limit workers usage).
-      # No jobs will be skipped on nightly build and on push on main branches.
-      skip: ${{ (github.event_name == 'pull_request' || github.repository != 'glpi-project/glpi') && matrix.always == false}}
+      # No jobs will be skipped on nightly build, manual dispatch or push on main branches (master and */bugfixes) or tags.
+      skip: ${{ matrix.always == false && (github.event_name == 'pull_request' || github.repository != 'glpi-project/glpi' || !(github.event_name == 'workflow_dispatch' || github.ref == 'refs/head/master' || endsWith(github.ref, '/bugfixes') || startsWith(github.ref, 'refs/tags'))) }}
     steps:
       - name: "Cancel previous runs"
         if: env.skip != 'true'
