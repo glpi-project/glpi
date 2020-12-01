@@ -7012,9 +7012,6 @@ JAVASCRIPT;
 
       echo "</ul>"; // #menu
 
-      // Display MENU ALL
-      self::displayMenuAll($menu);
-
       // End navigation bar
       // End headline
 
