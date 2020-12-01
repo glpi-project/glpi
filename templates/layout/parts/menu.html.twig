@@ -13,6 +13,14 @@
             {{ firstlevel['title'] }}
          </a>
          <div class="dropdown-menu {{ firstlevel_active ? 'show' : '' }}">
+         {% if firstlevel['default_dashboard'] is defined %}
+            <a class="dropdown-item"
+               href="{{ path(firstlevel['default_dashboard']) }}">
+               <i class="fas fa-fw fa-border-all"></i>
+               &nbsp;
+               {{ __("Dashboard") }}
+            </a>
+         {% endif %}
          {% for sublevel in firstlevel['content'] %}
             {% if sublevel['page'] is defined %}
             <a class="dropdown-item {{ menu_active == sublevel['title'] ? "active" : "" }}"
@@ -20,8 +28,7 @@
                accesskey="{{ sublevel['shortcut'] ?? "" }}">
                <i class="fa-fw {{ sublevel['icon'] ?? "" }}"></i>
                &nbsp;
-               {# @TODO shortcut function for adding a <u> on title #}
-               {{ sublevel['title'] }}
+               {{ shortcut(sublevel['title'], sublevel['shortcut'] ?? "") }}
             </a>
             {% endif %}
          {% endfor %}

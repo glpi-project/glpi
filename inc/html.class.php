@@ -1427,7 +1427,7 @@ class Html {
                'CartridgeItem', 'ConsumableItem', 'Phone',
                'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment', 'Unmanaged'
             ], $CFG_GLPI['devices_in_menu']),
-            'default' => '/front/dashboard_assets.php',
+            'default_dashboard' => '/front/dashboard_assets.php',
             'icon'    => 'fas fa-boxes'
          ],
          'helpdesk' => [
@@ -1436,7 +1436,7 @@ class Html {
                'Ticket', 'Problem', 'Change',
                'Planning', 'Stat', 'TicketRecurrent', 'RecurrentChange'
             ],
-            'default' => '/front/dashboard_helpdesk.php',
+            'default_dashboard' => '/front/dashboard_helpdesk.php',
             'icon'    => 'fas fa-headset'
          ],
          'management' => [
@@ -2081,97 +2081,6 @@ class Html {
       // Print foot
       self::loadJavascript();
       echo "</body></html>";
-   }
-
-
-
-   /**
-    * Display responsive menu
-    * @since 0.90.1
-    * @param $menu array of menu items
-    *    - key   : plugin system name
-    *    - value : array of options
-    *       * id      : html id attribute
-    *       * default : defaul url
-    *       * title   : displayed label
-    *       * content : menu sub items, array with theses options :
-    *          - page     : url
-    *          - title    : displayed label
-    *          - shortcut : keyboard shortcut letter
-    */
-   static function displayMenuAll($menu = []) {
-      global $CFG_GLPI,$PLUGIN_HOOKS;
-
-      // Display MENU ALL
-      echo "<div id='show_all_menu' class='invisible'>";
-      $items_per_columns = 15;
-      $i                 = -1;
-
-      foreach ($menu as $part => $data) {
-         if (isset($data['content']) && count($data['content'])) {
-            echo "<dl>";
-            $link = "#";
-
-            if (isset($data['default']) && !empty($data['default'])) {
-               $link = $CFG_GLPI["root_doc"].$data['default'];
-            }
-
-            echo "<dt class='primary-bg primary-fg'>";
-            echo "<a class='primary-fg' href='$link' title=\"".$data['title']."\" class='itemP'>".$data['title']."</a>";
-            echo "</dt>";
-            $i++;
-
-            // list menu item
-            foreach ($data['content'] as $key => $val) {
-
-               if (isset($val['page'])
-                  && isset($val['title'])) {
-                  echo "<dd>";
-
-                  if (isset($PLUGIN_HOOKS["helpdesk_menu_entry"][$key])
-                        && is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$key])) {
-                     echo "<a href='".Plugin::getWebDir($key).$val['page']."'";
-                  } else {
-                     echo "<a href='".$CFG_GLPI["root_doc"].$val['page']."'";
-                  }
-                  if (isset($data['shortcut']) && !empty($data['shortcut'])) {
-                     echo " accesskey='".$val['shortcut']."'";
-                  }
-                  echo ">";
-
-                  echo "<i class='fa-fw ".($val['icon'] ?? "")."'></i>&nbsp;";
-                  echo $val['title'];
-                  echo "</a>";
-                  echo "</dd>";
-                  $i++;
-               }
-            }
-            echo "</dl>";
-         }
-      }
-
-      echo "</div>";
-
-      // init menu in jquery dialog
-      echo Html::scriptBlock("
-         $(document).ready(
-            function() {
-               $('#show_all_menu').dialog({
-                  height: 'auto',
-                  width: 'auto',
-                  modal: true,
-                  autoOpen: false
-               });
-            }
-         );
-      ");
-
-      /// Button to toggle responsive menu
-      echo "<a href='#' onClick=\"".self::jsGetElementbyID('show_all_menu').".dialog('open'); return false;\"
-            id='menu_all_button'><i class='fa fa-bars'></i>";
-      echo "</a>";
-
-      echo "</div>";
    }
 
 
