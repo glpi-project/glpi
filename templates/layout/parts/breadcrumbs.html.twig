@@ -21,9 +21,7 @@
    {% set with_option = false %}
    {% if menu[sector]['content'][item] is defined %}
       {% if menu[sector]['content'][item]['page'] is defined %}
-      {% set with_option = (option is not empty)
-         and (menu[sector]['content'][item]['options'][option]['title'] is defined)
-         and (menu[sector]['content'][item]['options'][option]['page'] is defined)  %}
+      {% set with_option = option is not empty and menu[sector]['content'][item]['options'][option]['title'] is defined and menu[sector]['content'][item]['options'][option]['page'] is defined %}
       <li class='breadcrumb-item'>
          <a href="{{ path(menu[sector]['content'][item]['page']) }}"
             class="{{ with_option ? "" : "here" }}"

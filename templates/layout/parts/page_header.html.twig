@@ -46,10 +46,10 @@
                <img src="{{ path('pics/logos/logo-GLPI-100-white.png') }}">
             </a>
 
-            {{ include('layout/parts/menu.html.twig', {menu: menu, sector: sector, item: item, option: option, menu_active: menu_active}, with_context = false) }}
+            {{ include('layout/parts/menu.html.twig') }}
 
             <div class="d-lg-none">
-               {{ include('layout/parts/user_header.html.twig', {user: user, profiles: profiles, active_profile: active_profile, glpiactive_entity_name: glpiactive_entity_name, is_debug_active: is_debug_active, language_name: language_name, logout_path: logout_path}, with_context = false) }}
+               {{ include('layout/parts/user_header.html.twig') }}
             </div>
          </div>
       </aside>
@@ -57,13 +57,13 @@
       <header class="navbar navbar-expand-md navbar-light d-flex d-print-none sticky-top">
          <div class="container-fluid">
             {% if menu[sector] is defined %}
-            {{ include('layout/parts/breadcrumbs.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
+            {{ include('layout/parts/breadcrumbs.html.twig') }}
             {% endif %}
 
             <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center justify-content-between">
                {% if menu[sector]['content'][item] is defined %}
                <nav class="nav">
-                  {{ include('layout/parts/context_links.html.twig', {menu: menu, sector: sector, item: item, option: option}, with_context = false) }}
+                  {{ include('layout/parts/context_links.html.twig') }}
                </nav>
                {% endif %}
 
@@ -80,7 +80,7 @@
             </div>
 
             <div class="d-none d-sm-none d-lg-block">
-               {{ include('layout/parts/user_header.html.twig', {user: user, profiles: profiles, active_profile: active_profile, glpiactive_entity_name: glpiactive_entity_name, is_debug_active: is_debug_active, language_name: language_name, logout_path: logout_path}, with_context = false) }}
+               {{ include('layout/parts/user_header.html.twig') }}
             </div>
          </div>
       </header>
