@@ -4008,16 +4008,16 @@
         },
         {
             "name": "wapmorgan/unified-archive",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wapmorgan/UnifiedArchive.git",
-                "reference": "74677318c376051fc695a3ab787e4471c00dce0f"
+                "reference": "7d3623fba223f690da42d3d6b18335eaa926f743"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wapmorgan/UnifiedArchive/zipball/74677318c376051fc695a3ab787e4471c00dce0f",
-                "reference": "74677318c376051fc695a3ab787e4471c00dce0f",
+                "url": "https://api.github.com/repos/wapmorgan/UnifiedArchive/zipball/7d3623fba223f690da42d3d6b18335eaa926f743",
+                "reference": "7d3623fba223f690da42d3d6b18335eaa926f743",
                 "shasum": ""
             },
             "require": {
@@ -4097,7 +4097,7 @@
                 "tar",
                 "zip"
             ],
-            "time": "2020-06-13T19:42:51+00:00"
+            "time": "2020-11-28T13:04:06+00:00"
         }
     ],
     "packages-dev": [
