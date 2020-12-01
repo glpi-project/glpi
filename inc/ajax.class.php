@@ -367,47 +367,43 @@ class Ajax {
    ) {
       global $CFG_GLPI;
 
-      // TODO need to clean params !!
-      $active_tabs = Session::getActiveTab($type);
-
-      $mainclass = '';
-      if (isset($options['main_class'])) {
-         $mainclass = " {$options['main_class']}";
+      if (count($tabs) === 0) {
+         return;
       }
 
-      $rand = mt_rand();
+      $active_tab = Session::getActiveTab($type);
+
+      // Compute tabs ids.
+      $active_id = null;
+      foreach ($tabs as $key => $val) {
+         $id = sprintf('tab-%s-%s', str_replace('$', '_', $key), mt_rand());
+
+         $tabs[$key]['id'] = $id;
+
+         if ($key == $active_tab || $active_id === null) {
+            $active_id = $id;
+         }
+      }
+
+      // Display tabs
       if (count($tabs) > 0) {
          echo "<div class='container-fluid'>";
          echo "<div class='row'>";
          echo "<div class='col-lg-1 px-0' style='min-width: 170px'>";
          echo "<ul class='nav nav-tabs flex-row flex-lg-column border-right border-bottom-0' id='$tabdiv_id' role='tablist'>";
-         foreach ($tabs as $key => $val) {
-            $id = str_replace('$', '_', $key);
-            $selected_tab = "";
-            if ($key == $active_tabs) {
-               $selected_tab = "active";
-            }
-            echo "<li class='nav-item $selected_tab'>
-               <a class='nav-link justify-content-between' data-toggle='tab' title='".
-                 str_replace(["<span class='badge'>", '</span>'], '', $val['title'])."' ";
-            echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."' data-target='#$id'>";
-            $title = $val['title'];
-            echo $title."</a></li>";
+         foreach ($tabs as $val) {
+            echo "<li class='nav-item'>
+               <a class='nav-link justify-content-between' data-toggle='tab' title='".strip_tags($val['title'])."' ";
+            echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."' data-target='#{$val['id']}'>";
+            echo $val['title']."</a></li>";
          }
          echo "</ul>";
          echo "</div>"; //.col-lg-1
 
          echo "<div class='col'>";
          echo "<div class='tab-content'>";
-         $active_id = "";
-         foreach ($tabs as $key => $val) {
-            $id = str_replace('$', '_', $key);
-            $selected_tab = "";
-            if ($key == $active_tabs) {
-               $selected_tab = "active";
-               $active_id = $id;
-            }
-            echo "<div class='tab-pane fade $selected_tab' role='tabpanel' id='$id'></div>";
+         foreach ($tabs as $val) {
+            echo "<div class='tab-pane fade' role='tabpanel' id='{$val['id']}'></div>";
          }
          echo  "</div>"; // .tab-content
          echo  "</div>"; // .col
@@ -415,23 +411,49 @@ class Ajax {
          echo "</div>"; // .row
          echo "</div>"; // .container-fluid
          $js = "
+         var loadTabContents = function (tablink) {
+            var url = tablink.attr('href');
+            var target = tablink.attr('data-target');
+            var index = tablink.closest('.nav-item').index();
+
+            $.get(url, function(data) {
+               $(target).html(data);
+
+               $(target).closest('main').trigger('glpi.tab.loaded');
+
+               $.get(
+                  '{$CFG_GLPI['root_doc']}/ajax/updatecurrenttab.php',
+                  {
+                     itemtype: '".addslashes($type)."',
+                     id: '$ID',
+                     tab: index,
+                  }
+               );
+            });
+         };
+
+         var reloadTab = function (add) {
+            var active_link = $('main .nav-tabs .nav-item .nav-link.active');
+
+            // Update href and load tab contents
+            var currenthref = active_link.attr('href');
+            active_link.attr('href', currenthref + '&' + add);
+            loadTabContents(active_link);
+
+            // Restore href
+            active_link.attr('href', currenthref);
+         };
+
          $(function() {
             $('a[data-toggle=\"tab\"]').on('shown.bs.tab', function(e) {
-               var that = $(this),
-               loadurl = that.attr('href'),
-               targ = that.attr('data-target');
-
-               $.get(loadurl, function(data) {
-                  $(targ).html(data);
-               });
-
-               that.tab('show');
-               return false;
+               e.preventDefault();
+               loadTabContents($(this));
             });
 
             // load initial tab
             $('a[data-target=\"#{$active_id}\"]').tab('show');
-         });";
+         });
+         ";
 
          echo Html::scriptBlock($js);
       }
