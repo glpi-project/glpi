@@ -24,7 +24,7 @@
         "ext-simplexml": "*",
         "ext-zlib": "*",
         "blueimp/jquery-file-upload": "^10.2",
-        "elvanto/litemoji": "^1.4 || ^2.0",
+        "elvanto/litemoji": "^3.0.1",
         "guzzlehttp/guzzle": "^6.5",
         "guzzlehttp/psr7": "^1.6",
         "htmlawed/htmlawed": "^1.2",
