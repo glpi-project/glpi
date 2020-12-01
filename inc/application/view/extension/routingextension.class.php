@@ -35,6 +35,7 @@ namespace Glpi\Application\View\Extension;
 use CommonGLPI;
 use Html;
 use Session;
+use Toolbox;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
@@ -51,6 +52,7 @@ class RoutingExtension extends AbstractExtension implements ExtensionInterface {
          new TwigFunction('form_path', [$this, 'formPath']),
          new TwigFunction('url', [$this, 'url']),
          new TwigFunction('form_url', [$this, 'formUrl']),
+         new TwigFunction('shortcut', [$this, 'shortcut'], ['is_safe' => ['html']]),
       ];
    }
 
@@ -139,5 +141,23 @@ class RoutingExtension extends AbstractExtension implements ExtensionInterface {
       $resource = $id !== null ? $itemtype::getFormURLWithID($id, false) : $itemtype::getFormURL(false);
 
       return $this->url($resource);
+   }
+
+
+   /**
+    * Create a string with the letter associated to a given shortcut is underlined
+    *
+    * @param string $string the string to underline the shortcut
+    * @param string $shortcut the letter to underline
+    *
+    * @return string
+    *
+    * @TODO Add a unit test.
+    */
+   public function shortcut(string $string = "", string $shortcut = ""):string {
+      if ($shortcut == "") {
+         return $string;
+      }
+      return Toolbox::shortcut($string, $shortcut);
    }
 }
