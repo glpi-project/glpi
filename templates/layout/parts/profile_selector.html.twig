@@ -4,12 +4,12 @@
          id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       <i class="fas fa-user-check"></i>
       &nbsp;
-      {{ profiles[active_profile]['name'] }}
+      {{ active_profile_name }}
    </button>
    <div class="dropdown-menu" style="max-width: 20rem;">
       <span class="dropdown-header">{{ __("Profiles") }}</span>
       {% for profile_id, profile in profiles %}
-      <a class="dropdown-item {{ profile_id == active_profile ? "active" : "" }}"
+      <a class="dropdown-item {{ profile_id == active_profile_id ? "active" : "" }}"
          href="{{ index() }}?newprofile={{ profile_id }}">
          <i class="fas fa-user-check"></i>&nbsp;{{ profile['name'] }}
       </a>
@@ -20,7 +20,7 @@
 <a href="#" class="dropdown-item show_entity_modal">
    <i class="fa-fw fas fa-layer-group"></i>
    &nbsp;
-   {{ glpiactive_entity_name|u.truncate(35, '...') }}
+   {{ active_entity_name|u.truncate(35, '...') }}
 </a>
 
 

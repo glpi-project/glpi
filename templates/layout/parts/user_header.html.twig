@@ -1,15 +1,15 @@
 <div class="navbar-nav flex-row order-md-last">
    <div class="nav-item dropdown">
       <a href="#" class="nav-link d-flex lh-1 text-reset p-0 dropdown-toggle" data-toggle="dropdown">
+         <div class="d-none d-xl-block pr-2">
+            <div>{{ active_profile_name|u.truncate(35, '...') }}</div>
+            <div class="mt-1 small text-muted">{{ active_entity_name|u.truncate(35, '...') }}</div>
+         </div>
          {% if user['picture'] is not empty %}
             <span class="avatar" style="background-image: url({{ path(user['picture']) }})"></span>
          {% else %}
             <i class="fas fa-2x fa-user"></i>
          {% endif %}
-         <div class="d-none d-xl-block pl-2">
-            <div>{{ user['fullname'] }}</div>
-            <div class="mt-1 small text-muted">{{ glpiactive_entity_name|u.truncate(35, '...') }}</div>
-         </div>
       </a>
       <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
          {{ include('layout/parts/profile_selector.html.twig') }}
