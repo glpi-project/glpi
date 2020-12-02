@@ -39,8 +39,6 @@ use GuzzleHttp;
 
 /**
  * @engine isolate
- *
- * @php < 8.0.0-dev
  */
 class APIXmlrpc extends APIBaseClass {
 
