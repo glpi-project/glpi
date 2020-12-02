@@ -5313,16 +5313,11 @@ JAVASCRIPT;
    }
 
    /**
-    * Get/Print the switch language form.
+    * Print the switch language form.
     *
-    * @param boolean $display Whether to display or return output
-    * @param array   $options Options
-    *    - string   value       Selected language value
-    *    - boolean  showbutton  Whether to display or not submit button
-    *
-    * @return void|string Nothing if displayed, string to display otherwise
+    * @return void
     */
-   function showSwitchLangForm($display = true, array $options = []) {
+   function showSwitchLangForm() {
 
       $params = [
          'value'        => $_SESSION["glpilanguage"],
@@ -5330,25 +5325,14 @@ JAVASCRIPT;
          'showbutton'   => true
       ];
 
-      foreach ($options as $key => $value) {
-         $params[$key] = $value;
-      }
-
       $out = '';
+      $out .= '<i class="fas fa-fw fa-language"></i>&nbsp;';
       $out .= "<form method='post' name='switchlang' action='".User::getFormURL()."' autocomplete='off'>";
-      $out .= "<p class='center'>";
       $out .= Dropdown::showLanguages("language", $params);
-      if ($params['showbutton'] === true) {
-         $out .= "&nbsp;<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
-      }
-      $out .= "</p>";
+      $out .= "<input type='submit' name='update_language' value=\"".__s('OK')."\" class='btn btn-sm btn-primary'>";
       $out .= Html::closeForm(false);
 
-      if ($display === true) {
-         echo $out;
-      } else {
-         return $out;
-      }
+      echo $out;
    }
 
    /**
