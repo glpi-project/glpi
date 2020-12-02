@@ -398,7 +398,6 @@ $break_tablet: 1400px;
       text-align: left;
       height: $filter_height;
       margin: 0 5px 5px 2px;
-      box-sizing: border-box;
       padding-top: 0.5em;
 
       @media screen and (max-width: $break_phones) {
@@ -413,7 +412,6 @@ $break_tablet: 1400px;
             border: 2px solid #f0f0f0;
             border-radius: 4px;
             padding: 0.5em 1em 0.4em 1em;
-            box-sizing: border-box;
             text-align: center;
             margin-top: 0.5em;
 
@@ -549,7 +547,6 @@ $break_tablet: 1400px;
       .filters-control {
          border: 2px dashed transparent;
          border-radius: 4px;
-         box-sizing: border-box;
          display: inline-block;
          vertical-align: top;
          margin-top: 1em;
@@ -596,7 +593,6 @@ $break_tablet: 1400px;
          position: relative;
          cursor: pointer;
          border: 2px dashed #777;
-         box-sizing: border-box;
 
          &:hover {
             opacity: 1;
@@ -683,7 +679,6 @@ $break_tablet: 1400px;
             height: calc(100% - 5px);
             margin: $item_margin;
             border-radius: 3px;
-            box-sizing: border-box;
             border: 1px solid transparent;
 
             .fas {
@@ -763,7 +758,6 @@ $break_tablet: 1400px;
    .card {
       @include soft-shadow;
       text-align: left;
-      box-sizing: border-box;
       padding: 5px;
       height: calc(100% - 5px);
       width: calc(100% - 5px);
@@ -773,7 +767,6 @@ $break_tablet: 1400px;
       border: 2px solid transparent;
       border-radius: 3px;
       position: relative;
-      box-sizing: border-box;
       background-color: #DDD;
 
       img {
@@ -1180,7 +1173,6 @@ $break_tablet: 1400px;
          resize: none;
          padding: 5px;
          margin: $mdmargin_v 0;
-         box-sizing: border-box;
          background-color: rgba(255, 255, 255, .9);
          border: 1px solid currentColor;
          border-radius: 1px;
