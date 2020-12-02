@@ -2305,6 +2305,15 @@ class Search {
 
       echo "</ul>";
       echo "<div class='search_actions'>";
+
+      // Keep track of the current savedsearches on reload
+      if (isset($_GET['savedsearches_id'])) {
+         echo Html::input("savedsearches_id", [
+            'type' => "hidden",
+            'value' => $_GET['savedsearches_id'],
+         ]);
+      }
+
       $linked = self::getMetaItemtypeAvailable($itemtype);
       echo "<span id='addsearchcriteria$rand_criteria' class='secondary'>
                <i class='fas fa-plus-square'></i>
@@ -2331,7 +2340,11 @@ class Search {
                Ajax::createIframeModalWindow('loadbookmark',
                                        SavedSearch::getSearchURL() . "?action=load&type=" . SavedSearch::SEARCH,
                                        ['title'         => __('Load a saved search')]);
-               SavedSearch::showSaveButton(SavedSearch::SEARCH, $itemtype);
+               SavedSearch::showSaveButton(
+                  SavedSearch::SEARCH,
+                  $itemtype,
+                  isset($_GET['savedsearches_id'])
+               );
             }
 
             if ($p['showreset']) {

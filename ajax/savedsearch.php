@@ -83,6 +83,7 @@ if ($_GET['action'] == 'reorder') {
    echo json_encode(['res' => true]);
 }
 
+// Create or update a saved search
 if ($_GET['action'] == 'create') {
    header("Content-Type: text/html; charset=UTF-8");
 
@@ -92,8 +93,23 @@ if ($_GET['action'] == 'create') {
       $_GET['type']  =(int)$_GET['type'];
    }
 
+   $id = 0;
+   $saved_search = new SavedSearch();
+
+   // If an id was supplied in the query and that the matching saved searche
+   // is private OR the current used is allowed to edit public searches, then
+   // pass the id to showForm
+   if ($saved_search->getFromDB($_GET['id'] ?? 0)) {
+      $is_private = $saved_search->fields['is_private'];
+      $can_update_public = Session::haveRight(SavedSearch::$rightname, UPDATE);
+
+      if ($is_private || $can_update_public) {
+         $id = $saved_search->getID();
+      }
+   }
+
    $savedsearch->showForm(
-      0, [
+      $id, [
          'type'      => $_GET['type'],
          'url'       => rawurldecode($_GET["url"]),
          'itemtype'  => $_GET["itemtype"],
