@@ -33,7 +33,8 @@
 
          {# @TODO Saved searches panel #}
 
-         <a href="{{ path('/front/preference.php?forcetab=User$1') }}" class="dropdown-item" title="{{ language_name }}">
+         <a href="{{ path('/front/preference.php?forcetab=User$1') }}" class="dropdown-item" title="{{ language_name }}"
+            data-language-selector>
             <i class="fas fa-fw fa-language"></i>
             &nbsp;
             {{ language_name }}

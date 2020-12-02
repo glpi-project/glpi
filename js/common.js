@@ -573,14 +573,16 @@ if ($(window).width() <= 700) {
 }
 
 var langSwitch = function(elt) {
-   var _url = elt.attr('href').replace(/front\/preference.+/, 'ajax/switchlang.php');
    $.ajax({
-      url: _url,
+      url: CFG_GLPI.root_doc + '/ajax/switchlang.php',
       type: 'GET',
       success: function(html) {
-         $('#language_link')
-            .html(html);
-         $('#debugajax').remove();
+         var new_elt = $('<div></div>');
+         new_elt.attr('class', elt.attr('class')); // Copy class from replaced element
+         new_elt.html(html);
+         new_elt.find('#debugajax').remove();
+         new_elt.find('[name^="see_ajaxdebug"]').remove();
+         elt.replaceWith(new_elt);
       }
    });
 };
@@ -620,8 +622,9 @@ $(function() {
    $.ui.dialog.prototype._focusTabbable = function() {};
 
    //quick lang switch
-   $('#language_link > a').on('click', function(event) {
+   $('[data-language-selector]').on('click', function(event) {
       event.preventDefault();
+      event.stopPropagation();
       langSwitch($(this));
    });
 
