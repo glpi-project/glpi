@@ -5320,16 +5320,15 @@ JAVASCRIPT;
    function showSwitchLangForm() {
 
       $params = [
-         'value'        => $_SESSION["glpilanguage"],
-         'display'      => false,
-         'showbutton'   => true
+         'value'     => $_SESSION["glpilanguage"],
+         'display'   => false,
+         'on_change' => 'this.form.submit()'
       ];
 
       $out = '';
       $out .= '<i class="fas fa-fw fa-language"></i>&nbsp;';
       $out .= "<form method='post' name='switchlang' action='".User::getFormURL()."' autocomplete='off'>";
       $out .= Dropdown::showLanguages("language", $params);
-      $out .= "<input type='submit' name='update_language' value=\"".__s('OK')."\" class='btn btn-sm btn-primary'>";
       $out .= Html::closeForm(false);
 
       echo $out;
