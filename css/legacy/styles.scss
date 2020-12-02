@@ -48,20 +48,15 @@ $break_tablets: 1300px;
    font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
    font-size: 12px;
 
-   /* Fix box-sizing for all legacy elements. */
-   * {
-      & .select2 * {
-         box-sizing: border-box;
+   #searchcriteria ul, ul.select_folder, ul.filters {
+      &, & ul {
+         list-style-type: none;
       }
-   }
 
-   ul, li, dt, dl, dd, form, img, input:not(.btn) {
-     margin: 0;
-     padding: 0;
-   }
-
-   ul {
-     list-style-type: none;
+      &, & li {
+         margin: 0;
+         padding: 0;
+      }
    }
 
    span.invisible {

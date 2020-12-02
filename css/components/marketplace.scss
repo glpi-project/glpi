@@ -165,7 +165,6 @@ $break_s_screen: 1400px;
             flex-direction: column;
             align-items: stretch;
             justify-content: space-between;
-            box-sizing: border-box;
 
             @media screen and (max-width: $break_s_screen) {
                width: calc(33% - #{$margin_width});

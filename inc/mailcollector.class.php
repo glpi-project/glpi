@@ -413,18 +413,18 @@ class MailCollector  extends CommonDBTM {
     * @return void
     */
    private function displayFolder($folder, $input_id) {
-      echo "<ul>";
       $fname = mb_convert_encoding($folder->getLocalName(), "UTF-8", "UTF7-IMAP");
       echo "<li class='pointer' data-input-id='$input_id'>
                <i class='fa fa-folder'></i>&nbsp;
                <span class='folder-name'>".$fname."</span>";
+      echo "<ul>";
 
       foreach ($folder as $sfolder) {
          $this->displayFolder($sfolder, $input_id);
       }
+      echo "</ul>";
 
       echo "</li>";
-      echo "</ul>";
    }
 
 
