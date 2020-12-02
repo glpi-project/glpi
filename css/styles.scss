@@ -31,7 +31,10 @@
 
 @import "~@tabler/core/src/scss/tabler";
 
-#global-sidebar {
-   overflow-x: hidden;
-   scrollbar-width: thin;
+.page > aside {
+   scrollbar-width: thin; /* FF only */
+
+   #navbar-menu {
+      overflow-x: hidden;
+   }
 }
