@@ -1059,7 +1059,6 @@ class MailCollector  extends CommonDBTM {
       } catch (Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
          $subject = null;
       }
-      $tkt['_message']  = $message;
 
       if (!Toolbox::seems_utf8($body)) {
          $tkt['content'] = Toolbox::encodeInUtf8($body);
@@ -1216,6 +1215,8 @@ class MailCollector  extends CommonDBTM {
       $tkt['content'] = LitEmoji::encodeShortcode($tkt['content']);
 
       $tkt = Toolbox::addslashes_deep($tkt);
+      //class must not ba passed through addslashes_deep
+      $tkt['_message'] = $message;
       return $tkt;
    }
 
