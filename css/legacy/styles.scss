@@ -2630,46 +2630,45 @@ $break_tablets: 1300px;
    }
 
    .debug {
-      .ui-tabs {
-         border: 10px solid #dadada !important;
-      }
-
-      h1 {
-         font-size: 18px;
-         text-align: center;
-         padding: 5px;
-      }
+      display: none;
+      margin: 1rem 0;
    }
 
-   #debugajax h1 {
+   .debug .tab-pane {
+      height: 300px;
+      overflow: auto;
+   }
+
+   .debug h1 {
       font-size: 18px;
       text-align: center;
       padding: 5px;
    }
 
-   .debug h2, #debugajax h2 {
+   .debug h2 {
       font-size: 14px;
       padding-left: 10px;
       border-left: 4px solid #FFC65D;
       border-bottom: 2px solid #FFC65D;
    }
 
-   .debug table, #debugajax table {
+   .debug table {
       margin: 0;
    }
 
-   .debug .ui-tabs {
+   .debug {
       .close {
-         right: 14px;
+         right: 5px;
          position: absolute;
-         width: 20px;
-         top: 1px;
+         top: 5px;
+         cursor: pointer;
       }
 
       .tab_cadre {
-         width: 100%;
+         width: calc(100% - 25px); /* Keep space for scrollbar */
 
-         td:nth-child(2) {
+         td:nth-child(2),
+         td:nth-child(3) {
             word-break: break-all;
          }
 
@@ -2702,40 +2701,6 @@ $break_tablets: 1300px;
       &.on a:hover {
          color: #ff0000;
       }
-   }
-
-   .debug .ui-tabs {
-      display: none;
-      position: fixed !important;
-      left: 0 !important;
-      bottom: 0 !important;
-      top: inherit !important;
-      height: 300px !important;
-      z-index: 100 !important;
-      width: 98%;
-   }
-
-   .debug_ajax .ui-tabs {
-      position: relative !important;
-      height: inherit !important;
-      display: block;
-   }
-
-   #page .debug_ajax div.ui-tabs {
-      width: 98%;
-   }
-
-   .debug_ajax .see_debug {
-      display: none;
-   }
-
-   .debug .ui-tabs-panel {
-      height: 273px;
-      overflow: auto;
-   }
-
-   .debug_ajax .ui-tabs .ui-tabs-panel {
-      height: auto;
    }
 
    .debug .tab_cadre {
