@@ -772,14 +772,15 @@ class Html {
     *
     * @return void
    **/
-   static function displayDebugInfos($with_session = true, $ajax = false) {
+   static function displayDebugInfos($with_session = true, $ajax = false, $rand = null) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $DEBUG_AUTOLOAD;
       $GLPI_CACHE = Config::getCache('cache_db');
 
       // Only for debug mode so not need to be translated
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
-         $rand = mt_rand();
-         echo "<div class='debug ".($ajax?"debug_ajax":"")."'>";
+         if ($rand === null) {
+            $rand = mt_rand();
+         }
          if (!$ajax) {
             echo "<span class='fa-stack fa-lg' id='see_debug'>
                      <i class='fa fa-circle fa-stack-2x primary-fg-inverse'></i>
@@ -789,26 +790,31 @@ class Html {
             </span>";
          }
 
-         echo "<div id='debugtabs$rand'><ul>";
+         echo "<div id='debugpanel$rand' class='container-fluid card debug ".($ajax?"debug_ajax":"")."'>";
+
+         echo "<ul class='nav nav-tabs' data-bs-toggle='tabs'>";
          if ($CFG_GLPI["debug_sql"]) {
-            echo "<li><a href='#debugsql$rand'>SQL REQUEST</a></li>";
+            echo "<li class='nav-item'><a class='nav-link active' data-toggle='tab' href='#debugsql$rand'>SQL REQUEST</a></li>";
          }
          if ($CFG_GLPI["debug_vars"]) {
-            echo "<li><a href='#debugautoload$rand'>AUTOLOAD</a></li>";
-            echo "<li><a href='#debugpost$rand'>POST VARIABLE</a></li>";
-            echo "<li><a href='#debugget$rand'>GET VARIABLE</a></li>";
+            echo "<li class='nav-item'><a class='nav-link " . (!$CFG_GLPI["debug_sql"] ? 'active' : '') . "' data-toggle='tab' href='#debugautoload$rand'>AUTOLOAD</a></li>";
+            echo "<li class='nav-item'><a class='nav-link' data-toggle='tab' href='#debugpost$rand'>POST VARIABLE</a></li>";
+            echo "<li class='nav-item'><a class='nav-link' data-toggle='tab' href='#debugget$rand'>GET VARIABLE</a></li>";
             if ($with_session) {
-               echo "<li><a href='#debugsession$rand'>SESSION VARIABLE</a></li>";
+               echo "<li class='nav-item'><a class='nav-link' data-toggle='tab' href='#debugsession$rand'>SESSION VARIABLE</a></li>";
             }
-            echo "<li><a href='#debugserver$rand'>SERVER VARIABLE</a></li>";
+            echo "<li class='nav-item'><a class='nav-link' data-toggle='tab' href='#debugserver$rand'>SERVER VARIABLE</a></li>";
             if ($GLPI_CACHE instanceof SimpleCache) {
-               echo "<li><a href='#debugcache$rand'>CACHE VARIABLE</a></li>";
+               echo "<li class='nav-item'><a class='nav-link' data-toggle='tab' href='#debugcache$rand'>CACHE VARIABLE</a></li>";
             }
          }
+         echo "<li class='close' id='close_debug$rand'><i class='fa fa-2x fa-times'></i><span class='sr-only'>".__('Close')."</span></li>";
          echo "</ul>";
 
+         echo "<div class='card-body'>";
+         echo "<div class='tab-content'>";
          if ($CFG_GLPI["debug_sql"]) {
-            echo "<div id='debugsql$rand'>";
+            echo "<div id='debugsql$rand' class='tab-pane active'>";
             echo "<div class='b'>".$SQL_TOTAL_REQUEST." Queries ";
             echo "took  ".array_sum($DEBUG_SQL['times'])."s</div>";
 
@@ -834,54 +840,45 @@ class Html {
             echo "</div>";
          }
          if ($CFG_GLPI["debug_vars"]) {
-            echo "<div id='debugautoload$rand'>".implode(', ', $DEBUG_AUTOLOAD)."</div>";
-            echo "<div id='debugpost$rand'>";
+            echo "<div id='debugautoload$rand' class='tab-pane" . (!$CFG_GLPI["debug_sql"] ? 'active' : '') . "'>".implode(', ', $DEBUG_AUTOLOAD)."</div>";
+            echo "<div id='debugpost$rand' class='tab-pane'>";
             self::printCleanArray($_POST, 0, true);
             echo "</div>";
-            echo "<div id='debugget$rand'>";
+            echo "<div id='debugget$rand' class='tab-pane'>";
             self::printCleanArray($_GET, 0, true);
             echo "</div>";
             if ($with_session) {
-               echo "<div id='debugsession$rand'>";
+               echo "<div id='debugsession$rand' class='tab-pane'>";
                self::printCleanArray($_SESSION, 0, true);
                echo "</div>";
             }
-            echo "<div id='debugserver$rand'>";
+            echo "<div id='debugserver$rand' class='tab-pane'>";
             self::printCleanArray($_SERVER, 0, true);
             echo "</div>";
 
             if ($GLPI_CACHE instanceof SimpleCache) {
-               echo "<div id='debugcache$rand'>";
+               echo "<div id='debugcache$rand' class='tab-pane'>";
                $cache_keys = $GLPI_CACHE->getAllKnownCacheKeys();
                $cache_contents = $GLPI_CACHE->getMultiple($cache_keys);
                self::printCleanArray($cache_contents, 0, true);
                echo "</div>";
             }
          }
+         echo "</div>";
 
-         echo Html::scriptBlock("
-            $('#debugtabs$rand').tabs({
-               collapsible: true
-            }).addClass( 'ui-tabs-vertical ui-helper-clearfix' );
+         $js = "
+            $('#close_debug$rand').click(function() {
+                $('#debugpanel$rand').css('display', 'none');
+            });";
 
-            $('<li class=\"close\"><button id= \"close_debug$rand\">close debug</button></li>')
-               .appendTo('#debugtabs$rand ul');
-
-            $('#close_debug$rand').button({
-               icons: {
-                  primary: 'ui-icon-close'
-               },
-               text: false
-            }).click(function() {
-                $('#debugtabs$rand').css('display', 'none');
-            });
-
-            $('#see_debug').click(function(e) {
-               e.preventDefault();
-               console.log('see_debug #debugtabs$rand');
-               $('#debugtabs$rand').css('display', 'block');
-            });
-         ");
+         if (!$ajax) {
+            $js .= "
+               $('#see_debug').click(function(e) {
+                  e.preventDefault();
+                  $('#debugpanel$rand').css('display', 'block');
+               });";
+         }
+         echo Html::scriptBlock($js);
 
          echo "</div></div>";
       }
@@ -1793,7 +1790,7 @@ class Html {
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          $rand = mt_rand();
          echo "<div class='center' id='debugajax'>";
-         echo "<a class='debug-float' href=\"javascript:showHideDiv('see_ajaxdebug$rand','','','');\">
+         echo "<a class='debug-float' href=\"javascript:showHideDiv('debugpanel$rand','','','');\">
                 AJAX DEBUG</a>";
          if (!isset($_GET['full_page_tab'])
              && strstr($_SERVER['REQUEST_URI'], '/ajax/common.tabs.php')) {
@@ -1801,9 +1798,8 @@ class Html {
             echo "<a href='".$_SERVER['REQUEST_URI']."&full_page_tab=1' class='btn btn-sm'>Display only tab for debug</a>";
          }
          echo "</div>";
-         echo "<div id='see_ajaxdebug$rand' name='see_ajaxdebug$rand' style=\"display:none;\">";
-         self::displayDebugInfos(false, true);
-         echo "</div></div>";
+         self::displayDebugInfos(false, true, $rand);
+         echo "</div>";
       }
    }
 
