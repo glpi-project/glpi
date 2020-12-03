@@ -86,7 +86,10 @@ $(document).ready(function() {
       modal += '<h4 class="modal-title">{{ __("Select default items to show") }}</h4>';
       modal += '<button type="button" class="btn-close" data-dismiss="modal" aria-label="{{ __("Close modal") }}"></button>';
       modal += '</div>';
-      modal += '<div class="modal-body"></div>';
+      modal += '<div class="modal-body">';
+      modal += '<div class="ratio ratio-4x3">';
+      modal += '<iframe src="{{ path("front/displaypreference.form.php?itemtype=" ~itemtype) }}"></iframe>'
+      modal += '</div>';
       modal += '</div>';
       modal += '</div>';
       modal += '</div>';
@@ -96,16 +99,7 @@ $(document).ready(function() {
 
       // create new one
       $('body').append(modal);
-
-      // AJAX request
-      $.ajax({
-         url: '{{ path("front/displaypreference.form.php?itemtype=" ~itemtype) }}',
-         type: 'post',
-         success: function(response){
-            $('#displayprefence_modal{{ rand }} .modal-body').html(response);
-            $('#displayprefence_modal{{ rand }}').modal('show');
-         }
-      });
+      $('#displayprefence_modal{{ rand }}').modal('show');
    });
 
    $('#displayprefence_modal{{ rand }}').on('hide.bs.modal', function() {
