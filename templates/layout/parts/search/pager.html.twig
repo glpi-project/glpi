@@ -1,0 +1,69 @@
+{% set forward = start + limit %}
+{% set end = count - limit %}
+{% set current_start = start + 1 %}
+{% set current_end = current_start + limit - 1 %}
+{% if current_end > count %}
+   {% set current_end = count %}
+{% endif %}
+
+{% set back = start - limit %}
+{% if current_start - list_limit <= 0 %}
+   {% set back = 0 %}
+{% endif %}
+
+{% set nb_pages = (count / limit)|round(0, "ceil") %}
+{% set current_page = (current_start / limit)|round(0) + 1 %}
+
+{# limit the number of adjacents links displayed #}
+{% set adjacents = 2 %}
+{% set skip_adjacents = false %}
+
+<div class="flex-grow-1 d-flex align-items-center justify-content-between">
+   <p class="m-0 text-muted">
+      {{ __("Showing %s to %s of %s entries")|format(current_start, current_end, count) }}
+   </p>
+   <ul class="pagination m-0 ml-auto">
+      {% set disabled = (start == 0 ? "disabled" : "") %}
+      {% set aria_disabled = (start == 0 ? 'aria-disabled="true"' : "") %}
+      <li class="page-item {{ disabled }}">
+         <a class="page-link" href="{{ href }}&amp;start=0" title="{{ __("Start") }}" {{ aria_disabled }}>
+            <i class="fas fa-angle-double-left"></i>
+         </a>
+      </li>
+      <li class="page-item {{ disabled }}">
+         <a class="page-link" href="{{ href }}&amp;start={{ back }}" title="{{ __("Previous") }}" {{ aria_disabled }}>
+            <i class="fas fa-angle-left"></i>
+         </a>
+      </li>
+      {% for page in range(1, nb_pages) %}
+         {% if current_page - adjacents <= page and current_page + adjacents >= page %}
+            {% set page_start = (page - 1) * limit %}
+            {% set active = (page == current_page ? "active" : "") %}
+            <li class="page-item {{ active }}">
+               <a class="page-link" href="{{ href }}&amp;start={{ page_start }}">{{ page }}</a>
+            </li>
+            {% if current_page + adjacents == page %}
+               {% set skip_adjacents = false %}
+            {% endif %}
+         {% elseif skip_adjacents == false %}
+            {% set skip_adjacents = true %}
+            <li class="page-item disabled">
+               <a class="page-link" href="#" aria-disabled="true">...</a>
+            </li>
+         {% endif %}
+      {% endfor %}
+
+      {% set disabled = (forward >= count ? "disabled" : "") %}
+      {% set aria_disabled = (forward > count ? 'aria-disabled="true"' : "") %}
+      <li class="page-item {{ disabled }}">
+         <a class="page-link" href="{{ href }}&amp;start={{ forward }}" title="{{ __("Next") }}" {{ aria_disabled }}>
+            <i class="fas fa-angle-right"></i>
+         </a>
+      </li>
+      <li class="page-item {{ disabled }}">
+         <a class="page-link" href="{{ href }}&amp;start={{ end }}" title="{{ __("End") }}" {{ aria_disabled }}>
+            <i class="fas fa-angle-double-right"></i>
+         </a>
+      </li>
+   </ul>
+</div>

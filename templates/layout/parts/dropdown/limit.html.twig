@@ -1,0 +1,32 @@
+{% set options = [] %}
+{% for i in range(5, 19, 5) %}
+   {% set options = options|merge([i]) %}
+{% endfor %}
+{% for i in range(20, 49, 10) %}
+   {% set options = options|merge([i]) %}
+{% endfor %}
+{% for i in range(50, 249, 50) %}
+   {% set options = options|merge([i]) %}
+{% endfor %}
+{% for i in range(250, 999, 250) %}
+   {% set options = options|merge([i]) %}
+{% endfor %}
+{% for i in range(1000, 4999, 1000) %}
+   {% set options = options|merge([i]) %}
+{% endfor %}
+{% for i in range(5000, 10000, 5000) %}
+   {% set options = options|merge([i]) %}
+{% endfor %}
+{% set options = options|merge([9999999]) %}
+{% set max = getMaxInputVar() %}
+{% if max > 10 %}
+   {% set options = options|merge([max - 10]) %}
+{% endif %}
+<select class="form-select mx-1" aria-label="Default select example"
+        onChange="location.href='{{ href }}glpilist_limit='+this.value">
+   {% for value in options|sort %}
+      <option value="{{ value }}" {{ value == user_pref("glpilist_limit") ? "selected" : ""}}>
+         {{ value }}
+      </option>
+   {% endfor %}
+</select>

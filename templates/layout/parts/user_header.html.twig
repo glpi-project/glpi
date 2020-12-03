@@ -1,4 +1,6 @@
-<div class="navbar-nav flex-row order-md-last">
+{% set debug = is_debug_active ? "bg-red-lt" : "" %}
+
+<div class="navbar-nav flex-row order-md-last p-1 {{ debug }}">
    <div class="nav-item dropdown">
       <a href="#" class="nav-link d-flex lh-1 text-reset p-0 dropdown-toggle" data-toggle="dropdown">
          <div class="d-none d-xl-block pr-2">
