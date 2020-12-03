@@ -17,7 +17,6 @@
             <a class="dropdown-item"
                href="{{ path(firstlevel['default_dashboard']) }}">
                <i class="fas fa-fw fa-border-all"></i>
-               &nbsp;
                {{ __("Dashboard") }}
             </a>
          {% endif %}
@@ -27,7 +26,6 @@
                href="{{ path(sublevel['page']) }}"
                accesskey="{{ sublevel['shortcut'] ?? "" }}">
                <i class="fa-fw {{ sublevel['icon'] ?? "" }}"></i>
-               &nbsp;
                {{ shortcut(sublevel['title'], sublevel['shortcut'] ?? "") }}
             </a>
             {% endif %}

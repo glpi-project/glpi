@@ -24,7 +24,6 @@
                class="dropdown-item {{ is_debug_active ? "bg-red-lt" : "" }}"
                title="{{ __('Change mode') }}">
                <i class="fas fa-fw fa-bug debug"></i>
-               &nbsp;
                {{ is_debug_active ? __('Debug mode enabled') : __('Debug mode disabled') }}
             </a>
          {% endif %}
@@ -34,7 +33,6 @@
          <a href="{{ path('/front/preference.php?forcetab=User$1') }}" class="dropdown-item" title="{{ language_name }}"
             data-language-selector>
             <i class="fas fa-fw fa-language"></i>
-            &nbsp;
             {{ language_name }}
          </a>
 
@@ -45,7 +43,7 @@
                      onclick="document.querySelector('body').classList.toggle('theme-dark')">
             <span class="form-check-label">
                <i class="fas fa-fw {{ dark_mode ? "fa-sun" : "fa-moon" }} "></i>
-               &nbsp;{{ dark_mode ? __("Light mode") : __("Dark mode") }}
+               {{ dark_mode ? __("Light mode") : __("Dark mode") }}
             <span>
          </label>
 
@@ -53,14 +51,12 @@
 
          <a href="{{ help_url }}" class="dropdown-item" title="{{ __('Help') }}">
             <i class="fas fa-fw fa-question"></i>
-            &nbsp;
             {{ __('Help') }}
          </a>
 
          <a href="#" class="dropdown-item" title="{{ __('About') }}"
             id="show_about_modal_{{ rand_header }}">
             <i class="fas fa-fw fa-info"></i>
-            &nbsp;
             {{ __('About') }}
             {% if founded_new_version is not null %}
                <span class="badge bg-info text-dark ml-2">
@@ -73,12 +69,10 @@
 
          <a href="{{ path('/front/preference.php') }}" class="dropdown-item" title="{{ __('My settings') }}">
             <i class="fas fa-fw fa-user-cog"></i>
-            &nbsp;
             {{ __('My settings') }}
          </a>
          <a href="{{ logout_path }}" class="dropdown-item" title="{{ __('Logout') }}">
             <i class="fas fa-fw fa-sign-out-alt"></i>
-            &nbsp;
             {{ __('Logout') }}
          </a>
       </div>

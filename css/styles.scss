@@ -39,6 +39,12 @@
    }
 }
 
+.dropdown-item {
+   & > .fas:first-child, & > .fab:first-child {
+      margin-right: 0.75em;
+   }
+}
+
 .form-check-input[name="is_deleted"]:checked {
    background-color: #E8AEAE;
 }
