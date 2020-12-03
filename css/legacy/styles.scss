@@ -43,7 +43,7 @@ $break_tablets: 1300px;
 }
 
 /* Apply legacy styles to main content (#page) and elements that are inserted directly in body (modals, tooltips, ...) */
-#page, .ui-dialog, .qtip {
+#page, .ui-dialog, .qtip, .modal .modal-body {
    /* ################--------------- Default style  ---------------#################### */
    font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
    font-size: 12px;
