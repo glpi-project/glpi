@@ -722,7 +722,7 @@ class MailCollector  extends CommonDBTM {
 
                try {
                   $this->fetch_emails++;
-                  $messages[$this->storage->key()] = $this->storage->current();
+                  $messages[$this->storage->getUniqueId($this->storage->key())] = $this->storage->current();
                } catch (\Exception $e) {
                   Toolbox::logInFile('mailgate', sprintf(__('Message is invalid: %1$s').'<br/>', $e->getMessage()));
                   ++$error;
@@ -958,6 +958,7 @@ class MailCollector  extends CommonDBTM {
       $tkt['_blacklisted'] = false;
       // For RuleTickets
       $tkt['_mailgate']    = $options['mailgates_id'];
+      $tkt['_uid']         = $uid;
 
       // Use mail date if it's defined
       if ($this->fields['use_mail_date'] && isset($headers['date'])) {
@@ -1059,6 +1060,7 @@ class MailCollector  extends CommonDBTM {
       } catch (Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
          $subject = null;
       }
+      $tkt['_message']  = $message;
 
       if (!Toolbox::seems_utf8($body)) {
          $tkt['content'] = Toolbox::encodeInUtf8($body);
@@ -1215,8 +1217,6 @@ class MailCollector  extends CommonDBTM {
       $tkt['content'] = LitEmoji::encodeShortcode($tkt['content']);
 
       $tkt = Toolbox::addslashes_deep($tkt);
-      //class must not ba passed through addslashes_deep
-      $tkt['_message'] = $message;
       return $tkt;
    }
 
@@ -1708,7 +1708,7 @@ class MailCollector  extends CommonDBTM {
       if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
          $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP", "UTF-8");
          try {
-            $this->storage->moveMessage($uid, $name);
+            $this->storage->moveMessage($this->storage->getNumberByUniqueId($uid), $name);
             return true;
          } catch (\Exception $e) {
             // raise an error and fallback to delete
@@ -1722,7 +1722,7 @@ class MailCollector  extends CommonDBTM {
             );
          }
       }
-      $this->storage->removeMessage($uid);
+      $this->storage->removeMessage($this->storage->getNumberByUniqueId($uid));
       return true;
    }
 
