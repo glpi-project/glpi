@@ -46,7 +46,8 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
 
    public function getFunctions() {
       return [
-         new TwigFunction('has_right', [$this, 'hasRight']),
+         new TwigFunction('has_global_right', [$this, 'hasGlobalRight']),
+         new TwigFunction('has_item_right', [$this, 'hasItemRight']),
          new TwigFunction('user_pref', [$this, 'userPref']),
       ];
    }
@@ -66,26 +67,41 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
    }
 
    /**
-    * Check rights on item.
+    * Check global right.
     *
     * @param string   $itemtype
     * @param int      $right
-    * @param int|null $id
     *
     * @return bool
     *
     * @TODO Add a unit test.
     */
-   public function hasRight(string $itemtype, int $right, ?int $id = null): bool {
+   public function hasGlobalRight(string $itemtype, int $right): bool {
       if (!is_a($itemtype, CommonGLPI::class, true)) {
-         throw new \Exception(sprintf('Unable to check rights of item "%s".', $itemtype));
+         throw new \Exception(sprintf('Unable to check rights of itemtype "%s".', $itemtype));
       }
 
       $item = new $itemtype();
-      if ($id === null) {
-         return $item->canGlobal($right);
+      return $item->canGlobal($right);
+   }
+
+   /**
+    * Check rights on item.
+    *
+    * @param string $itemtype
+    * @param int    $right
+    * @param int    $id
+    *
+    * @return bool
+    *
+    * @TODO Add a unit test.
+    */
+   public function hasItemRight(string $itemtype, int $right, int $id = null): bool {
+      if (!is_a($itemtype, CommonGLPI::class, true)) {
+         throw new \Exception(sprintf('Unable to check rights of itemtype "%s".', $itemtype));
       }
 
+      $item = new $itemtype();
       return $item->can($id, $right);
    }
 
@@ -98,9 +114,9 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
     *
     * @TODO Add a unit test.
     */
-   public function userPref(string $name): string {
+   public function userPref(string $name): ?string {
       global $CFG_GLPI;
 
-      return $_SESSION[$name] ?? $CFG_GLPI['list_limit'] ?? null;
+      return $_SESSION[$name] ?? $CFG_GLPI[$name] ?? null;
    }
 }

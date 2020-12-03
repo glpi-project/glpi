@@ -19,7 +19,7 @@
 
          <div class="dropdown-divider"></div>
 
-         {% if has_right('Config', constant('UPDATE')) %}
+         {% if has_global_right('Config', constant('UPDATE')) %}
             <a href="{{ path('/ajax/switchdebug.php') }}"
                class="dropdown-item {{ is_debug_active ? "bg-red-lt" : "" }}"
                title="{{ __('Change mode') }}">
