@@ -911,7 +911,7 @@ class Toolbox {
       $value = ((array) $value === $value)
                   ? array_map([__CLASS__, 'addslashes_deep'], $value)
                   : (is_null($value)
-                       ? null : (is_resource($value)
+                       ? null : (is_resource($value) || is_object($value)
                        ? $value : $DB->escape(
                           str_replace(
                              ['&#039;', '&#39;', '&#x27;', '&apos;', '&quot;'],
@@ -937,7 +937,7 @@ class Toolbox {
       $value = ((array) $value === $value)
                   ? array_map([__CLASS__, 'stripslashes_deep'], $value)
                   : (is_null($value)
-                        ? null : (is_resource($value)
+                        ? null : (is_resource($value) || is_object($value)
                                     ? $value :stripslashes($value)));
 
       return $value;
