@@ -38,3 +38,7 @@
       overflow-x: hidden;
    }
 }
+
+.form-check-input[name="is_deleted"]:checked {
+   background-color: #E8AEAE;
+}

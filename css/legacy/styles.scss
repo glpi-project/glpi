@@ -5034,18 +5034,6 @@ $break_tablets: 1300px;
       }
    }
 
-   input[name=as_map] {
-      visibility: hidden;
-
-      + label span.fa {
-         margin: .5em;
-      }
-
-      &:checked + label {
-         color: blue;
-      }
-   }
-
    .leaflet-control-geocoder-form {
       margin: 0.2em !important;
 
