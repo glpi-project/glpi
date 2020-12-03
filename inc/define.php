@@ -43,7 +43,7 @@ if (substr(GLPI_VERSION, -4) === '-dev') {
    //for stable version
    define("GLPI_SCHEMA_VERSION", '9.5.3');
 }
-define('GLPI_MIN_PHP', '7.2.0'); // Must also be changed in top of index.php
+define('GLPI_MIN_PHP', '7.2.5'); // Must also be changed in top of index.php
 define('GLPI_YEAR', '2020');
 
 //Define a global recipient address for email notifications
