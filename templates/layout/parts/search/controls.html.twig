@@ -99,8 +99,8 @@ $(document).ready(function() {
       $('#displayprefence_modal{{ rand }}').modal('show');
    });
 
-   $('#displayprefence_modal{{ rand }}').on('hide.bs.modal', function() {
-      {# @TODO modal close interception broken #}
+   $("body").on('hide.bs.modal', '#displayprefence_modal{{ rand }}', function() {
+      location.reload();
    })
 });
 </script>
