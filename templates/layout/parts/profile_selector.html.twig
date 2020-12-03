@@ -2,7 +2,6 @@
 <div class="dropdown dropleft">
    <button class="dropdown-item dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       <i class="fas fa-user-check"></i>
-      &nbsp;
       {{ active_profile_name }}
    </button>
    <div class="dropdown-menu" style="max-width: 20rem;">
@@ -10,7 +9,7 @@
       {% for profile_id, profile in profiles %}
       <a class="dropdown-item {{ profile_id == active_profile_id ? "active" : "" }}"
          href="{{ index() }}?newprofile={{ profile_id }}">
-         <i class="fas fa-user-check"></i>&nbsp;{{ profile['name'] }}
+         <i class="fas fa-user-check"></i>{{ profile['name'] }}
       </a>
       {% endfor %}
    </div>
