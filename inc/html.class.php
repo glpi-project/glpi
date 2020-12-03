@@ -2064,6 +2064,7 @@ class Html {
 
       self::includeHeader($title, $sector, $item, $option); // Body
       echo "<body class='".($iframed? "iframed": "")."'>";
+      echo "<div id='page'>"; // Force legacy styles for now
       self::displayMessageAfterRedirect();
    }
 
@@ -2078,6 +2079,8 @@ class Html {
          return;
       }
       $FOOTER_LOADED = true;
+
+      echo "</div>"; // /id='page'
 
       // Print foot
       self::loadJavascript();
