@@ -47,6 +47,7 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
    public function getFunctions() {
       return [
          new TwigFunction('has_right', [$this, 'hasRight']),
+         new TwigFunction('user_pref', [$this, 'userPref']),
       ];
    }
 
@@ -86,5 +87,20 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
       }
 
       return $item->can($id, $right);
+   }
+
+   /**
+    * Get user preference.
+    *
+    * @param string $name
+    *
+    * @return null|string
+    *
+    * @TODO Add a unit test.
+    */
+   public function userPref(string $name): string {
+      global $CFG_GLPI;
+
+      return $_SESSION[$name] ?? $CFG_GLPI['list_limit'] ?? null;
    }
 }
