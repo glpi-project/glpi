@@ -46,21 +46,6 @@
                   </span>
                </td>
             {% endif %}
-
-            {% if founded_new_version is not null %}
-               <td class="copyright">
-                  <a href="http://www.glpi-project.org" target="_blank"
-                     title="{{ __('You will find it on the GLPI-PROJECT.org site.') }}">
-                     {{ __('A new version is available: %s.')|format(founded_new_version) }}
-                  </a>
-               </td>
-            {% endif %}
-            <td class="right">
-               <a href="http://glpi-project.org/" title="Powered by Teclib and contributors" class="copyright">
-                  GLPI {{ constant('GLPI_VERSION') }}
-                  Copyright (C) 2015-{{ constant('GLPI_YEAR') }} Teclib' and contributors
-               </a>
-            </td>
          </tr>
       </table>
    </footer>

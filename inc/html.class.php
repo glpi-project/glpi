@@ -1637,6 +1637,9 @@ class Html {
       $user = new User;
       $user->getFromDB($_SESSION['glpiID']);
 
+      $current_version     = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
+      $founded_new_version = $CFG_GLPI['founded_new_version'] ?? null;
+
       $tpl_vars = [
          'is_impersonate_active'  => Session::isImpersonateActive(),
          'language_name'          => Dropdown::getLanguageName($_SESSION['glpilanguage']),
@@ -1655,7 +1658,10 @@ class Html {
          'user'                   => [
             'fullname' => formatUserName($_SESSION['glpiID'], $user->fields['name'], $user->fields['realname'], $user->fields['firstname']),
             'picture'  => User::getURLForPicture($user->fields['picture'], false),
-         ]
+         ],
+         'founded_new_version'    => !empty($founded_new_version) && version_compare($current_version, $founded_new_version, '<')
+            ? $founded_new_version
+            : null,
       ];
 
       $help_url_key = Session::getCurrentInterface() === 'central' ? 'central_doc_url' : 'helpdesk_doc_url';
@@ -1738,15 +1744,9 @@ class Html {
 
       echo self::getCoreVariablesForJavascript(true);
 
-      $current_version = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
-      $founded_new_version = $CFG_GLPI['founded_new_version'] ?? null;
-
       $tpl_vars = [
          'execution_time'      => $TIMER_DEBUG->getTime(),
          'memory_usage'        => memory_get_usage(),
-         'founded_new_version' => !empty($founded_new_version) && version_compare($current_version, $founded_new_version, '<')
-            ? $founded_new_version
-            : null,
          'js_files'            => [],
       ];
 
