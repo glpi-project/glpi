@@ -1,77 +1,74 @@
-<div class="form-selectgroup mr-3">
-   <label class="form-selectgroup-item">
-      <input type="checkbox" class="form-selectgroup-input"
-             name="as_map" value="1" autocomplete="off"
-             onclick="toogle('as_map','','',''); document.forms['searchform{{ itemtype }}'].submit();"
-             {{ data['search']['as_map'] == 1  ? 'checked' : ''}}>
-      <span class="form-selectgroup-label" title="{{ __('Show as map') }}">
+<div class="d-inline-flex align-items-center">
+   <label class="form-check form-switch mr-3">
+      <input type="checkbox" class="form-check-input pointer"
+               name="as_map" value="1" autocomplete="off"
+               onclick="toogle('as_map','','',''); document.forms['searchform{{ itemtype }}'].submit();"
+               {{ data['search']['as_map'] == 1  ? 'checked' : ''}}>
+      <span class="form-check-label" title="{{ __('Show as map') }}">
          <i class="fas fa-globe-americas"></i>
       </span >
-   </label >
+   </label>
 
    {# @TODO add red style for trash control #}
-   <label class="form-selectgroup-item">
-      <input type="checkbox" class="form-selectgroup-input"
-             name="is_deleted" value="1" autocomplete="off"
-             onclick="toogle('is_deleted','','',''); document.forms['searchform{{ itemtype }}'].submit();"
-             {{ data['search']['is_deleted'] == 1  ? 'checked' : ''}}>
-      <span class="form-selectgroup-label" title="{{ __('Show the trashbin') }}">
+   <label class="form-check form-switch mr-3">
+      <input type="checkbox" class="form-check-input pointer"
+               name="is_deleted" value="1" autocomplete="off"
+               onclick="toogle('is_deleted','','',''); document.forms['searchform{{ itemtype }}'].submit();"
+               {{ data['search']['is_deleted'] == 1  ? 'checked' : ''}}>
+      <span class="form-check-label" title="{{ __('Show the trashbin') }}">
          <i class="fas fa-trash-alt"></i>
       </span >
-   </label >
+   </label>
 
-   {% if can_config %}
-   <label class="form-selectgroup-item">
+   <div class="mr-3" role="group">
+
+      {% if can_config %}
       {# @TODO personal preferences form target seems broken #}
-      <button class="form-selectgroup-label show_displaypreference_modal">
+      <button class="btn btn-ghost-secondary p-1 show_displaypreference_modal">
          <i class="fas fa-wrench"></i>
       </button>
-   </label>
-   {% endif %}
+      {% endif %}
 
-   {# @TODO export #}
-   <label class="form-selectgroup-item">
-      <div class="dropdown">
-         <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-               data-toggle="dropdown" aria-expanded="false" title="{{ _x('button', 'Export') }} ">
-            <i class="fas fa-file-download"></i>
-         </button>
-         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <li><a class="dropdown-item" href="#">
-               <i class="fas fa-lg fa-file-pdf"></i>&nbsp;
-               {{ __("Current page in landscape PDF") }}
-            </a></li>
-            <li><a class="dropdown-item" href="#">
-               <i class="fas fa-lg fa-file-pdf"></i>&nbsp;
-               {{ __("Current page in portrait PDF") }}
-            </a></li>
-            <li><a class="dropdown-item" href="#">
-               <i class="fas fa-lg fa-file-excel"></i>&nbsp;
-               {{ __("Current page in SLK") }}
-            </a></li>
-            <li><a class="dropdown-item" href="#">
-               <i class="fas fa-lg fa-file-csv"></i>&nbsp;
-               {{ __("Current page in CSV") }}
-            </a></li>
-            <li><a class="dropdown-item" href="#">
-               <i class="fas fa-lg fa-file-pdf"></i>&nbsp;
-               {{ __("All pages in landscape PDF") }}
-            </a></li>
-            <li><a class="dropdown-item" href="#">
-               <i class="fas fa-lg fa-file-pdf"></i>&nbsp;
-               {{ __("All pages in portrait PDF") }}
-            </a></li>
-            <li><a class="dropdown-item" href="#">
-               <i class="fas fa-lg fa-file-excel"></i>&nbsp;
-               {{ __("All pages in SLK") }}
-            </a></li>
-            <li><a class="dropdown-item" href="#">
-               <i class="fas fa-lg fa-file-csv"></i>&nbsp;
-               {{ __("All pages in CSV") }}
-            </a></li>
-         </ul>
-      </div>
-   </label>
+      {# @TODO export #}
+      <button class="dropdown-toggle btn btn-ghost-secondary p-1" type="button" id="dropdownMenuButton"
+            data-toggle="dropdown" aria-expanded="false" title="{{ _x('button', 'Export') }} ">
+         <i class="fas fa-file-download"></i>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+         <li><a class="dropdown-item" href="#">
+            <i class="fas fa-lg fa-file-pdf"></i>&nbsp;
+            {{ __("Current page in landscape PDF") }}
+         </a></li>
+         <li><a class="dropdown-item" href="#">
+            <i class="fas fa-lg fa-file-pdf"></i>&nbsp;
+            {{ __("Current page in portrait PDF") }}
+         </a></li>
+         <li><a class="dropdown-item" href="#">
+            <i class="fas fa-lg fa-file-excel"></i>&nbsp;
+            {{ __("Current page in SLK") }}
+         </a></li>
+         <li><a class="dropdown-item" href="#">
+            <i class="fas fa-lg fa-file-csv"></i>&nbsp;
+            {{ __("Current page in CSV") }}
+         </a></li>
+         <li><a class="dropdown-item" href="#">
+            <i class="fas fa-lg fa-file-pdf"></i>&nbsp;
+            {{ __("All pages in landscape PDF") }}
+         </a></li>
+         <li><a class="dropdown-item" href="#">
+            <i class="fas fa-lg fa-file-pdf"></i>&nbsp;
+            {{ __("All pages in portrait PDF") }}
+         </a></li>
+         <li><a class="dropdown-item" href="#">
+            <i class="fas fa-lg fa-file-excel"></i>&nbsp;
+            {{ __("All pages in SLK") }}
+         </a></li>
+         <li><a class="dropdown-item" href="#">
+            <i class="fas fa-lg fa-file-csv"></i>&nbsp;
+            {{ __("All pages in CSV") }}
+         </a></li>
+      </ul>
+   </div>
 </div>
 
 <script type="text/javascript">

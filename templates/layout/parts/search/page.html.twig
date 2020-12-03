@@ -9,16 +9,17 @@
             </div>
          {% endif %}
       </div>
-      <div class="card-body">
-
-         {% if count > 0 and data['search']['as_map'] == 0 %}
+      {% if data['search']['as_map'] == 0 %}
+         <div class="card-body">
+         {% if count > 0 %}
             {{ include('layout/parts/search/table.html.twig') }}
-         {% elseif data['search']['as_map'] == 0 %}
+         {% else %}
             <div class="alert alert-info" role="alert">
                __('No item found')
             </div>
          {% endif %}
-      </div>
+         </div>
+      {% endif %}
       {% if count > 0 and data['search']['as_map'] == 0 %}
       <div class="card-footer">
          {{ include('layout/parts/search/pager.html.twig') }}
