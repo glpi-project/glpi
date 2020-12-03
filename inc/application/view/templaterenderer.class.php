@@ -42,7 +42,9 @@ use Glpi\Application\View\Extension\I18nExtension;
 use Glpi\Application\View\Extension\ItemtypeExtension;
 use Glpi\Application\View\Extension\NumberFormatExtension;
 use Glpi\Application\View\Extension\RoutingExtension;
+use Glpi\Application\View\Extension\SearchExtension;
 use Glpi\Application\View\Extension\SessionExtension;
+use Glpi\Application\View\Extension\ToolboxExtension;
 use Session;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
@@ -88,6 +90,8 @@ class TemplateRenderer {
       $this->environment->addExtension(new NumberFormatExtension());
       $this->environment->addExtension(new RoutingExtension());
       $this->environment->addExtension(new SessionExtension());
+      $this->environment->addExtension(new SearchExtension());
+      $this->environment->addExtension(new ToolboxExtension());
    }
 
    /**

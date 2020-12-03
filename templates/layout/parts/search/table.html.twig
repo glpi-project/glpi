@@ -1,0 +1,80 @@
+<div class="table-responsive">
+   <table class="table table-striped table-hover" id="search_{{ rand }}">
+      <thead>
+         <tr>
+            <th>
+               <div>
+                  <input class="form-check-input" type="checkbox" id="checkall_{{ rand }}"
+                        value="" aria-label="{{ __('Check all as') }}"
+                        onclick="checkAsCheckboxes('checkall_{{ rand }}', 'search_{{ rand }}');">
+               </div>
+            </th>
+
+            {% for col in data['data']['cols'] %}
+               {# construct header link (for sorting) #}
+               {% set linkto = "" %}
+               {% set so_no_sort = col['searchopt']['nosort'] ?? false %}
+               {% set meta = col['meta'] ?? false %}
+               {% if not meta and not no_sort and not so_no_sort %}
+                  {% set linkto = href ~ col['id'] ~ "&order=" ~ ( order == "ASC" ? "DESC" : "ASC") ~ "&start=" ~ start ~ "&" ~ posthref %}
+               {% endif %}
+
+               {% set col_name = col['name'] %}
+               {# prefix by group name (corresponding to optgroup in dropdown) if exists #}
+               {% if col['groupname'] is defined %}
+                  {% set groupname = (col['groupname']['name'] ?? col['groupname']) %}
+                  {% set col_name = __('%1$s - %2$s')|format(groupname, col['name']) %}
+               {% endif %}
+
+               {# Not main itemtype, prefix col_name by secondary itemtype #}
+               {% if not itemtype == col['itemtype'] %}
+                  {% set col_name = __('%1$s - %2$s')|format(col['itemtype']|itemtype_name, col_name) %}
+               {% endif %}
+
+               <th>
+                  {% set sort_icon = (sort == col['id'] ? "<i class=\"fas fa-sort-" ~ (order == "ASC" ? "down" : "up") ~ "\"></i>" : "" ) %}
+
+                  {% if linkto is empty %}
+                     {{ col_name }}&nbsp;{{ sort_icon }}
+                  {% else %}
+                     <a href="{{ linkto }}">{{ col_name }}&nbsp;{{ sort_icon|raw }}</a>
+                  {% endif %}
+               </th>
+            {% endfor %}
+
+            {# display itemtype in AllAssets #}
+            {% if union_search_type[itemtype] is defined %}
+               <th>
+                  {{ __('Item type') }}
+               </th>
+            {% endif %}
+         </tr>
+      </thead>
+      <tbody>
+         {% for rowkey, row in data['data']['rows'] %}
+         <tr>
+            <td>
+               <div>
+                  {# @TODO disable checkbox in some case (User, entity, etc) #}
+                  <input class="form-check-input" type="checkbox"
+                        value="" aria-label="">
+               </div>
+            </td>
+
+            {% for col in data['data']['cols'] %}
+               {% set colkey = col['itemtype'] ~ "_" ~ col['id'] %}
+               {# showItem function returns "<td ...>...</td>" #}
+               {{ showItem(0, row[colkey]['displayname'], 0, 0, displayConfigItem(itemtype, col['id'], row))|raw }}
+            {% endfor %}
+
+            {# display itemtype in AllAssets #}
+            {% if union_search_type[itemtype] is defined %}
+               <td>
+                  {{ row["TYPE"]|itemtype_name }}
+               </td>
+            {% endif %}
+         </tr>
+         {% endfor %}
+      </tbody>
+   </table>
+</div>

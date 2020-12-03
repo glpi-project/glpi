@@ -238,18 +238,6 @@ $break_tablets: 1300px;
      }
    }
 
-   a.fa, a.far, a.fas, .export-stat {
-     color: #222;
-
-     &:link {
-        color: #222;
-     }
-   }
-
-   a .fa, a .far, a .fas, .btn-linkstyled .fa, .btn-linkstyled .far, .btn-linkstyled .fas {
-     color: #222;
-   }
-
    a {
      &:hover {
         color: black;
@@ -438,12 +426,7 @@ $break_tablets: 1300px;
 
    select {
      font-size: 11px;
-     color: black;
-     background-color: white;
      line-height: 19px;
-
-     /* do not set height because using multiple select*/
-     border: 1px solid #bbb;
    }
 
    textarea, input:not(.submit):not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput) {
@@ -921,13 +904,6 @@ $break_tablets: 1300px;
       }
    }
 
-   table {
-      font-size: 11px;
-
-      /* Probem WIth EXTJS calendar -> to sons*/
-      /*margin: 0 auto;*/
-      border: 0;
-   }
 
    .tab_glpi {
       margin: 0 auto;

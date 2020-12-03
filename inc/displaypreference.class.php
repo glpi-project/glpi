@@ -299,7 +299,7 @@ class DisplayPreference extends CommonDBTM {
          echo "<input type='hidden' name='users_id' value='$IDuser'>";
          echo __('No personal criteria. Create personal parameters?')."<span class='small_space'>";
          echo "<input type='submit' name='activate' value=\"".__('Create')."\"
-                class='submit'>";
+                class='btn btn-primary'>";
          echo "</span>";
          Html::closeForm();
          echo "</th></tr></table>\n";
@@ -311,10 +311,8 @@ class DisplayPreference extends CommonDBTM {
          echo "<form method='post' action='$target'>";
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
          echo "<input type='hidden' name='users_id' value='$IDuser'>";
-         echo __('Select default items to show')."<span class='small_space'>";
          echo "<input type='submit' name='disable' value=\"".__('Delete')."\"
-                class='submit'>";
-         echo "</span>";
+                class='btn'>";
          Html::closeForm();
 
          echo "</th></tr>";
@@ -338,7 +336,7 @@ class DisplayPreference extends CommonDBTM {
          if ($values) {
             Dropdown::showFromArray('num', $values);
             echo "<span class='small_space'>";
-            echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+            echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
             echo "</span>";
          }
          Html::closeForm();
@@ -379,7 +377,7 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                      echo "<button type='submit' name='up'".
                          " title=\"".__s('Bring up')."\"".
-                         " class='unstyled pointer'><i class='fa fa-arrow-up'></i></button>";
+                         " class='btn btn-icon'><i class='fa fa-arrow-up'></i></button>";
                      Html::closeForm();
                      echo "</td>\n";
 
@@ -395,7 +393,7 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                      echo "<button type='submit' name='down'".
                          " title=\"".__s('Bring down')."\"".
-                         " class='unstyled pointer'><i class='fa fa-arrow-down'></i></button>";
+                         " class='btn btn-icon'><i class='fa fa-arrow-down'></i></button>";
                      Html::closeForm();
                      echo "</td>\n";
 
@@ -411,7 +409,7 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                      echo "<button type='submit' name='purge'".
                            " title=\""._sx('button', 'Delete permanently')."\"".
-                           " class='unstyled pointer'><i class='fa fa-times-circle'></i></button>";
+                           " class='btn btn-icon'><i class='fa fa-times-circle'></i></button>";
                      Html::closeForm();
                      echo "</td>\n";
                   } else {
@@ -464,8 +462,7 @@ class DisplayPreference extends CommonDBTM {
       ]);
       $numrows = count($iterator);
 
-      echo "<table class='tab_cadre_fixehov'><tr><th colspan='4'>";
-      echo __('Select default items to show')."</th></tr>\n";
+      echo "<table class='tab_cadre_fixehov'>";
 
       if ($global_write) {
          $already_added = self::getForTypeUser($itemtype, $IDuser);
@@ -489,7 +486,7 @@ class DisplayPreference extends CommonDBTM {
          if ($values) {
             Dropdown::showFromArray('num', $values);
             echo "<span class='small_space'>";
-            echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+            echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
             echo "</span>";
          }
          Html::closeForm();
@@ -539,7 +536,7 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                      echo "<button type='submit' name='up'".
                          " title=\"".__s('Bring up')."\"".
-                         " class='unstyled pointer'><i class='fa fa-arrow-up'></i></button>";
+                         " class='btn btn-icon'><i class='fa fa-arrow-up'></i></button>";
                      Html::closeForm();
                      echo "</td>";
 
@@ -555,7 +552,7 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                      echo "<button type='submit' name='down'".
                          " title=\"".__s('Bring down')."\"".
-                         " class='unstyled pointer'><i class='fa fa-arrow-down'></i></button>";
+                         " class='btn btn-icon'><i class='fa fa-arrow-down'></i></button>";
                      Html::closeForm();
                      echo "</td>";
 
@@ -571,7 +568,7 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                      echo "<button type='submit' name='purge'".
                            " title=\""._sx('button', 'Delete permanently')."\"".
-                           " class='unstyled pointer'><i class='fa fa-times-circle'></i></button>";
+                           " class='btn btn-icon'><i class='fa fa-times-circle'></i></button>";
                      Html::closeForm();
                      echo "</td>\n";
                   } else {
