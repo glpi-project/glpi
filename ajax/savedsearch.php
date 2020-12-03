@@ -97,7 +97,7 @@ if ($_GET['action'] == 'create') {
    $saved_search = new SavedSearch();
 
    // If an id was supplied in the query and that the matching saved searche
-   // is private OR the current used is allowed to edit public searches, then
+   // is private OR the current user is allowed to edit public searches, then
    // pass the id to showForm
    if ($saved_search->getFromDB($_GET['id'] ?? 0)) {
       $is_private = $saved_search->fields['is_private'];
