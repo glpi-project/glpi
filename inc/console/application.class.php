@@ -106,9 +106,9 @@ class Application extends BaseApplication {
       $loader = new CommandLoader(false);
       $this->setCommandLoader($loader);
 
-      $use_plugins = $this->usePlugins();
-      if ($use_plugins) {
-         $this->loadActivePlugins();
+      if ($this->usePlugins()) {
+         $plugin = new Plugin();
+         $plugin->init(true);
          $loader->setIncludePlugins(true);
       }
    }
@@ -411,26 +411,14 @@ class Application extends BaseApplication {
    }
 
    /**
-    * Load active plugins.
-    *
-    * @return void
-    */
-   private function loadActivePlugins() {
-
-      if (!($this->db instanceof DB) || !$this->db->connected) {
-         return;
-      }
-
-      $plugin = new Plugin();
-      $plugin->init(true);
-   }
-
-   /**
     * Whether or not plugins have to be used.
     *
     * @return boolean
     */
    private function usePlugins() {
+      if (!($this->db instanceof DB) || !$this->db->connected) {
+         return false;
+      }
 
       $input = new ArgvInput();
 
