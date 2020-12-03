@@ -19,11 +19,6 @@
 
          <div class="dropdown-divider"></div>
 
-         <a href="{{ help_url }}" class="dropdown-item" title="{{ __('Help') }}">
-            <i class="fas fa-fw fa-question"></i>
-            &nbsp;
-            {{ __('Help') }}
-         </a>
          {% if has_right('Config', constant('UPDATE')) %}
             <a href="{{ path('/ajax/switchdebug.php') }}"
                class="dropdown-item {{ is_debug_active ? "bg-red-lt" : "" }}"
@@ -50,8 +45,29 @@
                      onclick="document.querySelector('body').classList.toggle('theme-dark')">
             <span class="form-check-label">
                <i class="fas fa-fw {{ dark_mode ? "fa-sun" : "fa-moon" }} "></i>
-               {{ dark_mode ? __("Light mode") : __("Dark mode") }}
+               &nbsp;{{ dark_mode ? __("Light mode") : __("Dark mode") }}
+            <span>
          </label>
+
+         <div class="dropdown-divider"></div>
+
+         <a href="{{ help_url }}" class="dropdown-item" title="{{ __('Help') }}">
+            <i class="fas fa-fw fa-question"></i>
+            &nbsp;
+            {{ __('Help') }}
+         </a>
+
+         <a href="#" class="dropdown-item" title="{{ __('About') }}"
+            id="show_about_modal_{{ rand_header }}">
+            <i class="fas fa-fw fa-info"></i>
+            &nbsp;
+            {{ __('About') }}
+            {% if founded_new_version is not null %}
+               <span class="badge bg-info text-dark ml-2">
+                  1
+               </span>
+            {% endif %}
+         </a>
 
          <div class="dropdown-divider"></div>
 
@@ -65,27 +81,11 @@
             &nbsp;
             {{ __('Logout') }}
          </a>
-
-         <div class="dropdown-divider"></div>
-
-         <a href="#" class="dropdown-item justify-content-between"
-            id="show_about_modal_{{ rand_header }}" title="{{ __('About') }}">
-            <span>
-               <i class="fas fa-fw fa-info"></i>
-               &nbsp;
-               {{ __('About') }}
-            </span>
-            {% if founded_new_version is not null %}
-               <span class="badge bg-info text-dark">
-                  1
-               </span>
-            {% endif %}
-         </a>
       </div>
    </div>
 </div>
 
-<div class="modal fade" id="about_modal" role="dialog">
+<div class="modal fade" id="about_modal_{{ rand_header }}" role="dialog">
    <div class="modal-dialog">
       <div class="modal-content">
          <div class="modal-header">
@@ -98,7 +98,7 @@
                Copyright (C) 2015-{{ constant('GLPI_YEAR') }} Teclib' and contributors
             </a></p>
             {% if founded_new_version is not null %}
-               <p class="d-flex justify-content-between">
+               <p>
                   <a href="http://www.glpi-project.org" target="_blank"
                      title="{{ __('You will find it on the GLPI-PROJECT.org site.') }}">
                      {{ __('A new version is available: %s.')|format(founded_new_version) }}
@@ -117,7 +117,7 @@
 $(document).ready(function() {
    $("#show_about_modal_{{ rand_header }}").click(function(e) {
       e.preventDefault();
-      $("#about_modal").remove().modal("show");
+      $("#about_modal_{{ rand_header }}").remove().modal("show");
    });
 });
 </script>
