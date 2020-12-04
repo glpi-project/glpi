@@ -55,3 +55,15 @@
 .form-check-input[name="is_deleted"]:checked {
    background-color: #E8AEAE;
 }
+
+.btn {
+   i.fas, i.far, i.fab {
+      padding-top: 0.25rem;
+   }
+
+   &.btn-icon {
+      i.fas, i.far, i.fab {
+         margin-right: 0;
+      }
+   }
+}
