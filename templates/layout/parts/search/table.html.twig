@@ -59,14 +59,10 @@
             {% if showmassiveactions %}
             <td>
                <div>
-                  {# <pre>
-                     {{ dump(row['id'], itemtype, canViewAllEntities(), userhaveAccessToOneOfEntities(row['id'], false)) }}
-                  </pre> #}
                   {# disable massiveaction checkbox for some specific cases #}
-                  {% if itemtype == 'Entity' and (not haveAccessToEntity(row['id'])) %}
-                  {% elseif itemtype == 'User' and (not canViewAllEntities()) and (not userhaveAccessToOneOfEntities(row['id'], false)) %}
-                     user case
-                  {% elseif itemInstanceOf(item, 'CommonDBTM') and maybeRecursive(item) and (not haveAccessToEntity(row["entities_id"]))  %}
+                  {% if itemtype == 'Entity' and not haveAccessToEntity(row['id']) %}
+                  {% elseif itemtype == 'User' and not canViewAllEntities() and not userhaveAccessToOneOfEntities(row['id'], false) %}
+                  {% elseif itemInstanceOf(item, 'CommonDBTM') and maybeRecursive(item) and not haveAccessToEntity(row["entities_id"])  %}
                   {% else %}
                      <input class="form-check-input" type="checkbox" data-glpicore-ma-tags="common"
                         value="1" aria-label=""
