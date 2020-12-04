@@ -32,10 +32,12 @@
 
 namespace Glpi\Application\View\Extension;
 
+use CommonDBTM;
 use CommonGLPI;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
 use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 /**
  * @since x.x.x
@@ -45,6 +47,13 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
    public function getFilters() {
       return [
          new TwigFilter('itemtype_name', [$this, 'itemtypeName']),
+      ];
+   }
+
+   public function getFunctions() {
+      return [
+         new TwigFunction('itemInstanceOf', [$this, 'itemInstanceOf']),
+         new TwigFunction('maybeRecursive', [$this, 'maybeRecursive']),
       ];
    }
 
@@ -63,5 +72,36 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
       if ($itemtype instanceof CommonGLPI || is_a($itemtype, CommonGLPI::class, true)) {
          return $itemtype::getTypeName($count);
       }
+   }
+
+
+   /**
+    * chech an givent item is an instance of given class
+    *
+    * @param mixed $item
+    * @param string $class
+    *
+    * @return bool
+    *
+    * @TODO Add a unit test.
+    */
+   public function itemInstanceOf($item, string $class = ""): ?bool
+   {
+      return ($item instanceof $class);
+   }
+
+
+   /**
+    * Check given item can be entity recursive
+    *
+    * @param CommonDBTM $item
+    *
+    * @return bool
+    *
+    * @TODO Add a unit test.
+    */
+   public function maybeRecursive(CommonDBTM $item): ?bool
+   {
+      return $item->maybeRecursive();
    }
 }
