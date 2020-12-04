@@ -1515,20 +1515,6 @@ class Search {
       $prehref = $search['target'].(strpos($search['target'], "?") !== false ? "&" : "?");
       $href    = $prehref.$parameters;
 
-      // Global search header
-      if ($data['display_type'] == self::GLOBAL_SEARCH) {
-         if ($data['item']) {
-            echo "<div class='center'><h2>".$data['item']->getTypeName();
-            // More items
-            if ($data['data']['totalcount'] > ($data['search']['start'] + self::GLOBAL_DISPLAY_COUNT)) {
-               echo " <a href='".$data['search']['target']."?$parameters'>".__('All')."</a>";
-            }
-            echo "</h2></div>";
-         } else {
-            return false;
-         }
-      }
-
       if ($data['display_type'] == self::HTML_OUTPUT) {
          Session::initNavigateListItems($data['itemtype']);
       }
@@ -1548,6 +1534,7 @@ class Search {
          'prehref'             => $prehref,
          'posthref'            => $globallinkto,
          'showmassiveactions'  => ($search['showmassiveactions'] ?? true)
+                                  && $data['display_type'] != self::GLOBAL_SEARCH
                                   && ($itemtype == 'AllAssets'
                                     || count(MassiveAction::getAllMassiveActions($item, $is_deleted))
                                   ),
