@@ -19,7 +19,7 @@
                {% set so_no_sort = col['searchopt']['nosort'] ?? false %}
                {% set meta = col['meta'] ?? false %}
                {% if not meta and not no_sort and not so_no_sort %}
-                  {% set linkto = href ~ col['id'] ~ "&order=" ~ ( order == "ASC" ? "DESC" : "ASC") ~ "&start=" ~ start ~ "&" ~ posthref %}
+                  {% set linkto = prehref ~ "sort=" ~ col['id'] ~ "&order=" ~ ( order == "ASC" ? "DESC" : "ASC") ~ "&start=" ~ start ~ "&" ~ posthref %}
                {% endif %}
 
                {% set col_name = col['name'] %}
