@@ -37,7 +37,7 @@
         "mexitek/phpcolors": "^0.4.0",
         "michelf/php-markdown": "^1.6",
         "monolog/monolog": "^2.0",
-        "paragonie/sodium_compat": "^1.13",
+        "paragonie/sodium_compat": "^1.14",
         "phpmailer/phpmailer": "^6.0",
         "psr/log": "^1.1",
         "psr/simple-cache": "^1.0",
@@ -95,13 +95,11 @@
         "lint": "vendor/bin/parallel-lint  --exclude files --exclude marketplace --exclude plugins --exclude vendor --exclude tools/vendor .",
         "post-install-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
-            "patch -f -p1 -d vendor/tecnickcom/tcpdf/ < tools/tcpdf-php8-compat.patch || echo 'Error applying patch, deprecation warnings related to TCPDF lib may pollute logs'",
-            "patch -f -p1 -d vendor/paragonie/sodium_compat/ < tools/sodium_compat-php8-compat.patch || echo 'Error applying patch, test suite may fail'"
+            "patch -f -p1 -d vendor/tecnickcom/tcpdf/ < tools/tcpdf-php8-compat.patch || echo 'Error applying patch, deprecation warnings related to TCPDF lib may pollute logs'"
         ],
         "post-update-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
-            "patch -f -p1 -d vendor/tecnickcom/tcpdf/ < tools/tcpdf-php8-compat.patch || echo 'Error applying patch, deprecation warnings related to TCPDF lib may pollute logs'",
-            "patch -f -p1 -d vendor/paragonie/sodium_compat/ < tools/sodium_compat-php8-compat.patch || echo 'Error applying patch, test suite may fail'"
+            "patch -f -p1 -d vendor/tecnickcom/tcpdf/ < tools/tcpdf-php8-compat.patch || echo 'Error applying patch, deprecation warnings related to TCPDF lib may pollute logs'"
         ]
     },
     "repositories": {
