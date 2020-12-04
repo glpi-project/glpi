@@ -272,22 +272,26 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
       return $tab;
    }
 
-
-   function prepareInputForAdd($input) {
-
-      if (!isset($input['url']) || !isset($input['type'])) {
-         return false;
-      }
-
+   /**
+    * Prepare Search url before saving it do db on creation or update
+    *
+    * @param array $input
+    *
+    * @return array $input
+    */
+   public function prepareSearchUrlForDB(array $input): array {
       $taburl = parse_url(rawurldecode($input['url']));
-
       $index  = strpos($taburl["path"], "plugins");
+
       if (!$index) {
          $index = strpos($taburl["path"], "front");
       }
-      $input['path'] = Toolbox::substr($taburl["path"],
-                                       $index,
-                                       Toolbox::strlen($taburl["path"]) - $index);
+
+      $input['path'] = Toolbox::substr(
+         $taburl["path"],
+         $index,
+         Toolbox::strlen($taburl["path"]) - $index
+      );
 
       $query_tab = [];
 
@@ -296,13 +300,29 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
       }
 
       $input['query'] = Toolbox::append_params(
-         $this->prepareQueryToStore($input['type'],
-         $query_tab)
+         $this->prepareQueryToStore($input['type'], $query_tab)
       );
 
       return $input;
    }
 
+   public function prepareInputForAdd($input) {
+
+      if (!isset($input['url']) || !isset($input['type'])) {
+         return false;
+      }
+
+      $input = $this->prepareSearchUrlForDB($input);
+      return $input;
+   }
+
+   public function prepareInputForUpdate($input) {
+
+      if (isset($input['url']) && $input['type']) {
+         $input = $this->prepareSearchUrlForDB($input);
+      }
+      return $input;
+   }
 
    function pre_updateInDB() {
 
@@ -350,7 +370,10 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
    **/
    function showForm($ID, $options = []) {
 
-      $ID = $this->getID();
+      // Try to load id from fields if not specified
+      if ($ID == 0) {
+         $ID = $this->getID();
+      }
 
       $this->initForm($ID, $options);
       $options['formtitle'] = false;
@@ -369,16 +392,13 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
       }
 
       echo "<tr><th colspan='4'>";
-      if (!isset($options['ajax'])) {
-         if ($ID > 0) {
-            //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
-            printf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
-         } else {
-            echo __('New item');
-         }
+      if ($ID > 0) {
+         // TRANS: %1$s is the Itemtype name and $2$d the ID of the item
+         printf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
       } else {
          echo __('New saved search');
       }
+
       echo "</th></tr>";
 
       echo "<tr><td class='tab_bg_1'>".__('Name')."</td>";
@@ -452,6 +472,17 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
          });";
          echo Html::scriptBlock($js);
       }
+
+      // If this form is used to edit a saved search from the search screen
+      $is_ajax = $options['ajax'] ?? false;
+      if ($is_ajax && $ID > 0) {
+         // Allow an extra option to save as a new search instead of editing the current one
+         $options['addbuttons'] = ["add" => "Save as a new search"];
+
+         // Do not allow delete from this modal
+         $options['candel'] = false;
+      }
+
       $this->showFormButtons($options);
    }
 
@@ -1062,28 +1093,46 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
       return false;
    }
 
-
    /**
     * Display buttons
     *
     * @param integer $type     SavedSearch type to use
     * @param integer $itemtype Device type of item where is the bookmark (default 0)
+    * @param bool    $active   Should the icon be displayed as active ?
     *
     * @return void
    **/
-   static function showSaveButton($type, $itemtype = 0) {
+   static function showSaveButton($type, $itemtype = 0, bool $active = false) {
       global $CFG_GLPI;
 
+      $icon_class = "fa fa-star bookmark_record save";
+      if ($active) {
+         $icon_class .= " active";
+      }
+
       echo "<a href='#' onClick=\"savesearch.dialog('open'); return false;\"
-             class='fa fa-star bookmark_record save' title='".__s('Save current search')."'>";
+             class='$icon_class' title='".__s('Save current search')."'>";
       echo "<span class='sr-only'>".__s('Save current search')."</span>";
       echo "</a>";
 
-      Ajax::createModalWindow('savesearch',
-                              $CFG_GLPI['root_doc'] .
-                                 "/ajax/savedsearch.php?action=create&itemtype=$itemtype&type=$type&url=".
-                                 rawurlencode($_SERVER["REQUEST_URI"]),
-                              ['title'       => __('Save current search')]);
+      $params = [
+         'action'   => "create",
+         'itemtype' => $itemtype,
+         'type'     => $type,
+         'url'      => rawurlencode($_SERVER["REQUEST_URI"])
+      ];
+
+      // If we are on a saved search, add the search id in the query so we can
+      // update it if needed
+      if (isset($_GET['savedsearches_id'])) {
+         $params['id'] = $_GET['savedsearches_id'];
+      }
+
+      $url = $CFG_GLPI['root_doc'] . "/ajax/savedsearch.php?" . http_build_query($params);
+
+      Ajax::createModalWindow('savesearch', $url, [
+         'title' => __('Save current search')
+      ]);
    }
 
 
