@@ -1566,57 +1566,6 @@ class Search {
          $current_type = (isset($row['TYPE']) ? $row['TYPE'] : $data['itemtype']);
          Session::addToNavigateListItems($current_type, $row["id"]);
       }
-
-      return;
-
-      // If the begin of the view is before the number of items
-      if ($data['data']['count'] > 0) {
-         if ($data['search']['as_map'] == 0) {
-            // Display Loop
-            foreach ($data['data']['rows'] as $rowkey => $row) {
-               // New line
-               /* echo self::showNewLine($data['display_type'], ($row_num%2),
-                                    $data['search']['is_deleted']); */
-
-               $current_type       = (isset($row['TYPE']) ? $row['TYPE'] : $data['itemtype']);
-               $massiveaction_type = $current_type;
-
-               if (($data['itemtype'] != 'AllAssets')
-                  && isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
-                  $massiveaction_type = $data['itemtype'];
-               }
-
-               /* // Add item in item list
-               Session::addToNavigateListItems($current_type, $row["id"]); */
-
-               if (($data['display_type'] == self::HTML_OUTPUT)
-                     && $showmassiveactions) { // HTML display - massive modif
-                  $tmpcheck = "";
-
-                  if (($data['itemtype'] == 'Entity')
-                        && !in_array($row["id"], $_SESSION["glpiactiveentities"])) {
-                     $tmpcheck = "&nbsp;";
-
-                  } else if ($data['itemtype'] == 'User'
-                           && !Session::canViewAllEntities()
-                           && !Session::haveAccessToOneOfEntities(Profile_User::getUserEntities($row["id"], false))) {
-                     $tmpcheck = "&nbsp;";
-
-                  } else if (($data['item'] instanceof CommonDBTM)
-                              && $data['item']->maybeRecursive()
-                              && !in_array($row["entities_id"], $_SESSION["glpiactiveentities"])) {
-                     $tmpcheck = "&nbsp;";
-
-                  } else {
-                     $tmpcheck = Html::getMassiveActionCheckBox($massiveaction_type,
-                                                               $row[$massiveaction_field]);
-                  }
-                  /* echo self::showItem($data['display_type'], $tmpcheck, $item_num, $row_num,
-                                       "width='10'"); */
-               }
-            }
-         }
-      }
    }
 
 

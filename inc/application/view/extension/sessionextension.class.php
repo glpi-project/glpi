@@ -33,6 +33,7 @@
 namespace Glpi\Application\View\Extension;
 
 use CommonGLPI;
+use Profile_User;
 use Session;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
@@ -50,6 +51,11 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
          new TwigFunction('has_item_right', [$this, 'hasItemRight']),
          new TwigFunction('user_pref', [$this, 'userPref']),
          new TwigFunction('user_pref', [$this, 'userPref']),
+         new TwigFunction('haveAccessToEntity', [$this, 'haveAccessToEntity']),
+         new TwigFunction('haveRecursiveAccessToEntity', [$this, 'haveRecursiveAccessToEntity']),
+         new TwigFunction('canViewAllEntities', [$this, 'canViewAllEntities']),
+         new TwigFunction('haveAccessToOneOfEntities', [$this, 'haveAccessToOneOfEntities']),
+         new TwigFunction('userhaveAccessToOneOfEntities', [$this, 'userhaveAccessToOneOfEntities']),
       ];
    }
 
@@ -119,5 +125,73 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
       global $CFG_GLPI;
 
       return $_SESSION[$name] ?? $CFG_GLPI[$name] ?? null;
+   }
+
+   /**
+    * Check if we have access in session to a given entity
+    *
+    * @param int $entities_id
+    *
+    * @return bool
+    *
+    * @TODO Add a unit test.
+    */
+   public function haveAccessToEntity(int $entities_id):bool {
+      return Session::haveAccessToEntity($entities_id);
+   }
+
+
+   /**
+    * Check if we have access in session to a given entity recursively
+    *
+    * @param int $entities_id
+    *
+    * @return bool
+    *
+    * @TODO Add a unit test.
+    */
+   public function haveRecursiveAccessToEntity(int $entities_id):bool {
+      return Session::haveRecursiveAccessToEntity($entities_id);
+   }
+
+
+   /**
+    * Does user have right to see all entities?
+    *
+    * @return bool
+    *
+    * @TODO Add a unit test.
+    */
+   public function canViewAllEntities():bool {
+      return Session::canViewAllEntities();
+   }
+
+   /**
+    * Check if current user have access to a given list of entities
+    *
+    * @param array $entities
+    * @param int $is_recursive
+    *
+    * @return bool
+    *
+    * @TODO Add a unit test.
+    */
+   public function haveAccessToOneOfEntities(array $entities = [], int $is_recursive = 0):bool {
+      return Session::haveAccessToOneOfEntities($entities, $is_recursive);
+   }
+
+
+   /**
+    * Check if a given user have access to current entity list
+    *
+    * @param array $entities
+    * @param int $is_recursive
+    *
+    * @return bool
+    *
+    * @TODO Add a unit test.
+    */
+    public function userhaveAccessToOneOfEntities(int $users_id = 0, int $is_recursive = 0):bool {
+      return Session::haveAccessToOneOfEntities(Profile_User::getUserEntities($users_id), $is_recursive);
    }
 }
