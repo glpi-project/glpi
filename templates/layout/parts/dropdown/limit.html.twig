@@ -18,7 +18,7 @@
    {% set options = options|merge([i]) %}
 {% endfor %}
 {% set options = options|merge([9999999]) %}
-{% set max = getMaxInputVar() %}
+{% set max = php_config('max_input_vars') %}
 {% if max > 10 %}
    {% set options = options|merge([max - 10]) %}
 {% endif %}
