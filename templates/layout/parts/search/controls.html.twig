@@ -1,39 +1,39 @@
-<div class="d-inline-flex">
+<div class="d-inline-flex align-items-center">
    {% if showmassiveactions %}
    {{ showMassiveActions(massiveactionparams)|raw }}
    {% endif %}
 
-   <label class="form-check form-switch mr-3">
-      <input type="checkbox" class="form-check-input pointer"
-               name="as_map" value="1" autocomplete="off"
-               onclick="toogle('as_map','','',''); document.forms['searchform{{ itemtype }}'].submit();"
-               {{ data['search']['as_map'] == 1  ? 'checked' : ''}}>
+   <label class="form-check form-switch btn btn-sm btn-ghost-info mr-1 px-1 mb-0">
+      <input type="checkbox" class="form-check-input ml-0 mr-1 mt-0" role="button"
+             name="as_map" value="1" autocomplete="off"
+             onclick="toogle('as_map','','',''); document.forms['massform{{ itemtype }}'].submit();"
+             {{ data['search']['as_map'] == 1  ? 'checked' : ''}}>
       <span class="form-check-label" title="{{ __('Show as map') }}">
          <i class="fas fa-lg fa-globe-americas"></i>
       </span >
    </label>
 
-   <label class="form-check form-switch mr-3">
-      <input type="checkbox" class="form-check-input pointer"
-               name="is_deleted" value="1" autocomplete="off"
-               onclick="toogle('is_deleted','','',''); document.forms['searchform{{ itemtype }}'].submit();"
-               {{ data['search']['is_deleted'] == 1  ? 'checked' : ''}}>
+   <label class="form-check form-switch btn btn-sm btn-ghost-danger mr-1 px-1 mb-0">
+      <input type="checkbox" class="form-check-input ml-0 mr-1 mt-0" role="button"
+             name="is_deleted" value="1" autocomplete="off"
+             onclick="toogle('is_deleted','','',''); document.forms['massform{{ itemtype }}'].submit();"
+             {{ data['search']['is_deleted'] == 1  ? 'checked' : ''}}>
       <span class="form-check-label" title="{{ __('Show the trashbin') }}">
          <i class="fas fa-lg fa-trash-alt"></i>
-      </span >
+      </span>
    </label>
 
    <div class="mr-3" role="group">
 
       {% if can_config %}
       {# @TODO personal preferences form target seems broken #}
-      <button class="btn btn-ghost-secondary">
+      <button class="btn btn-sm btn-icon btn-ghost-secondary">
          <i class="fas fa-lg fa-wrench show_displaypreference_modal"></i>
       </button>
       {% endif %}
 
       {# @TODO export #}
-      <button class="dropdown-toggle btn btn-ghost-secondary" type="button" id="dropdownMenuButton"
+      <button class="dropdown-toggle btn btn-sm btn-icon btn-ghost-secondary" type="button" id="dropdownMenuButton"
             data-toggle="dropdown" aria-expanded="false" title="{{ _x('button', 'Export') }} ">
          <i class="fas fa-lg fa-file-download"></i>
       </button>
