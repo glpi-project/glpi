@@ -29,6 +29,7 @@
  * ---------------------------------------------------------------------
  */
 
+const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -125,6 +126,12 @@ var libsConfig = {
       ],
    },
    plugins: [
+      new webpack.ProvidePlugin(
+         {
+            process: 'process/browser', // required in util.js (indirect dependency of file-type.js)
+            Buffer: ['buffer', 'Buffer'], // required in file-type.js
+         }
+      ),
       new CleanWebpackPlugin(), // Clean lib dir content
       new MiniCssExtractPlugin(), // Extract styles into CSS files
    ],
@@ -133,10 +140,8 @@ var libsConfig = {
       mainFields: [
          'main',
       ],
-      fallback: {
-         'assert': require.resolve('assert/'),
-         'buffer': require.resolve('buffer/'),
-         'stream': require.resolve('stream-browserify/'),
+      alias: {
+         'stream': 'stream-browserify',
       },
    },
 };
