@@ -1,9 +1,9 @@
-<div class="d-inline-flex align-items-center">
+<div class="d-inline-flex">
    {% if showmassiveactions %}
    {{ showMassiveActions(massiveactionparams)|raw }}
    {% endif %}
 
-   <label class="form-check form-switch mr-3 mb-0">
+   <label class="form-check form-switch mr-3">
       <input type="checkbox" class="form-check-input pointer"
                name="as_map" value="1" autocomplete="off"
                onclick="toogle('as_map','','',''); document.forms['searchform{{ itemtype }}'].submit();"
@@ -13,7 +13,7 @@
       </span >
    </label>
 
-   <label class="form-check form-switch mr-3 mb-0">
+   <label class="form-check form-switch mr-3">
       <input type="checkbox" class="form-check-input pointer"
                name="is_deleted" value="1" autocomplete="off"
                onclick="toogle('is_deleted','','',''); document.forms['searchform{{ itemtype }}'].submit();"
