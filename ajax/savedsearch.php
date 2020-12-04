@@ -99,7 +99,7 @@ if ($_GET['action'] == 'create') {
    // If an id was supplied in the query and that the matching saved search
    // is private OR the current user is allowed to edit public searches, then
    // pass the id to showForm
-   if ($saved_search->getFromDB($_GET['id'] ?? 0)) {
+   if (($requested_id = $_GET['id'] ?? 0) > 0 && $saved_search->getFromDB($requested_id)) {
       $is_private = $saved_search->fields['is_private'];
       $can_update_public = Session::haveRight(SavedSearch::$rightname, UPDATE);
 
