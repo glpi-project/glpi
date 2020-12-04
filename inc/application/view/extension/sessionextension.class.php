@@ -49,6 +49,7 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
          new TwigFunction('has_global_right', [$this, 'hasGlobalRight']),
          new TwigFunction('has_item_right', [$this, 'hasItemRight']),
          new TwigFunction('user_pref', [$this, 'userPref']),
+         new TwigFunction('user_pref', [$this, 'userPref']),
       ];
    }
 

@@ -3,6 +3,7 @@
           id="search_{{ rand }}">
       <thead>
          <tr>
+            {% if showmassiveactions %}
             <th>
                <div>
                   <input class="form-check-input" type="checkbox" id="checkall_{{ rand }}"
@@ -10,6 +11,7 @@
                         onclick="checkAsCheckboxes('checkall_{{ rand }}', 'search_{{ rand }}');">
                </div>
             </th>
+            {% endif %}
 
             {% for col in data['data']['cols'] %}
                {# construct header link (for sorting) #}
@@ -54,13 +56,16 @@
       <tbody>
          {% for rowkey, row in data['data']['rows'] %}
          <tr>
+            {% if showmassiveactions %}
             <td>
                <div>
                   {# @TODO disable checkbox in some case (User, entity, etc) #}
-                  <input class="form-check-input" type="checkbox"
-                        value="" aria-label="">
+                  <input class="form-check-input" type="checkbox" data-glpicore-ma-tags="common"
+                        value="1" aria-label=""
+                        name="item[{{ row['TYPE'] ?? itemtype }}][{{ row['id'] }}]">
                </div>
             </td>
+            {% endif %}
 
             {% for col in data['data']['cols'] %}
                {% set colkey = col['itemtype'] ~ "_" ~ col['id'] %}

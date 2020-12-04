@@ -2478,7 +2478,6 @@ class Html {
     *    - num_displayed   : integer number of displayed items. Permit to check suhosin limit.
     *                        (default -1 not to check)
     *    - ontop           : boolean true if displayed on top (default true)
-    *    - fixed           : boolean true if used with fixed table display (default true)
     *    - forcecreate     : boolean force creation of modal window (default = false).
     *            Modal is automatically created when displayed the ontop item.
     *            If only a bottom one is displayed use it
@@ -2505,7 +2504,6 @@ class Html {
 
       $p['ontop']             = true;
       $p['num_displayed']     = -1;
-      $p['fixed']             = true;
       $p['forcecreate']       = false;
       $p['check_itemtype']    = '';
       $p['check_items_id']    = '';
@@ -2559,12 +2557,6 @@ class Html {
          $p['extraparams']['hidden']['_is_modal'] = 1;
       }
 
-      if ($p['fixed']) {
-         $width= '950px';
-      } else {
-         $width= '95%';
-      }
-
       $identifier = md5($url.serialize($p['extraparams']).$p['rand']);
       $max        = Toolbox::get_max_input_vars();
       $out = '';
@@ -2574,13 +2566,11 @@ class Html {
           && ($max < ($p['num_displayed']+10))) {
          if (!$p['ontop']
              || (isset($p['forcecreate']) && $p['forcecreate'])) {
-            $out .= "<table class='tab_cadre' width='$width'><tr class='tab_bg_1'>".
-                    "<td><span class='b'>";
+            $out .= "<span class='b'>";
             $out .= __('Selection too large, massive action disabled.')."</span>";
             if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-               $out .= "<br>".__('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.');
+               $out .= __('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.');
             }
-            $out .= "</td></tr></table>";
          }
       } else {
          // Create Modal window on top
@@ -2589,38 +2579,39 @@ class Html {
                 $out .= "<div id='massiveactioncontent$identifier'></div>";
 
             if (!empty($p['tag_to_send'])) {
-               $js_modal_fields  = "            var items = $('";
+               $js_modal_fields  = "var items = $('";
                if (!empty($p['container'])) {
-                  $js_modal_fields .= '[id='.$p['container'].'] ';
+                  $js_modal_fields .= '#'.$p['container'].' ';
                }
-               $js_modal_fields .= "[data-glpicore-ma-tags~=".$p['tag_to_send']."]')";
-               $js_modal_fields .= ".each(function( index ) {\n";
-               $js_modal_fields .= "              fields[$(this).attr('name')] = $(this).attr('value');\n";
-               $js_modal_fields .= "              if (($(this).attr('type') == 'checkbox') && (!$(this).is(':checked'))) {\n";
-               $js_modal_fields .= "                 fields[$(this).attr('name')] = 0;\n";
-               $js_modal_fields .= "              }\n";
-               $js_modal_fields .= "            });";
+               $js_modal_fields .= "[data-glpicore-ma-tags~=".$p['tag_to_send']."]').each(function( index ) {
+                  console.log($(this));
+                  fields[$(this).attr('name')] = $(this).attr('value');
+                  if (($(this).attr('type') == 'checkbox') && (!$(this).is(':checked'))) {
+                     fields[$(this).attr('name')] = 0;
+                  }
+               });console.log(fields);";
             } else {
                $js_modal_fields = "";
             }
 
-            $out .= Ajax::createModalWindow('massiveaction_window'.$identifier,
-                                            $url,
-                                            ['title'           => $p['title'],
-                                                  'container'       => 'massiveactioncontent'.$identifier,
-                                                  'extraparams'     => $p['extraparams'],
-                                                  'width'           => $p['width'],
-                                                  'height'          => $p['height'],
-                                                  'js_modal_fields' => $js_modal_fields,
-                                                  'display'         => false]);
+            $out .= Ajax::createModalWindow(
+               'massiveaction_window'.$identifier,
+               $url,
+               [
+                  'title'           => $p['title'],
+                  'container'       => 'massiveactioncontent'.$identifier,
+                  'extraparams'     => $p['extraparams'],
+                  'width'           => $p['width'],
+                  'height'          => $p['height'],
+                  'js_modal_fields' => $js_modal_fields,
+                  'display'         => false
+                  ]
+            );
          }
-         $out .= "<table class='tab_glpi' width='$width'><tr>";
          if ($p['display_arrow']) {
-            $out .= "<td width='30px'><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".
-                   ($p['ontop']?'-top':'').".png' alt=''></td>";
+            $out .= "<img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".($p['ontop']?'-top':'').".png' alt=''>";
          }
-         $out .= "<td width='100%' class='left'>";
-         $out .= "<a class='vsubmit' ";
+         $out .= "<a class='btn btn-sm btn-primary mr-2' ";
          if (is_array($p['confirm'] || strlen($p['confirm']))) {
             $out .= self::addConfirmationOnAction($p['confirm'], "massiveaction_window$identifier.dialog(\"open\");");
          } else {
@@ -2628,9 +2619,7 @@ class Html {
          }
          $out .= " href='#modal_massaction_content$identifier' title=\"".htmlentities($p['title'], ENT_QUOTES, 'UTF-8')."\">";
          $out .= $p['title']."</a>";
-         $out .= "</td>";
 
-         $out .= "</tr></table>";
          if (!$p['ontop']
              || (isset($p['forcecreate']) && $p['forcecreate'])) {
             // Clean selection
