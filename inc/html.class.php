@@ -2614,9 +2614,9 @@ class Html {
             );
          }
          if ($p['display_arrow']) {
-            $out .= "<img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".($p['ontop']?'-top':'').".png' alt=''>";
+            $out .= "<i class='fas fa-2x fa-rotate-180 fa-level-up-alt'></i>";
          }
-         $out .= "<a class='btn btn-sm btn-primary mr-2' ";
+         $out .= "<a class='btn btn-sm btn-primary ml-1 mr-3' ";
          if (is_array($p['confirm'] || strlen($p['confirm']))) {
             $out .= self::addConfirmationOnAction($p['confirm'], "massiveaction_window$identifier.dialog(\"open\");");
          } else {
