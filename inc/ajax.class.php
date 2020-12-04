@@ -59,14 +59,16 @@ class Ajax {
     */
    static function createModalWindow($name, $url, $options = []) {
 
-      $param = ['width'           => 800,
-                     'height'          => 400,
-                     'modal'           => true,
-                     'container'       => '',
-                     'title'           => '',
-                     'extraparams'     => [],
-                     'display'         => true,
-                     'js_modal_fields' => ''];
+      $param = [
+         'width'           => 800,
+         'height'          => 400,
+         'modal'           => true,
+         'container'       => '',
+         'title'           => '',
+         'extraparams'     => [],
+         'display'         => true,
+         'js_modal_fields' => ''
+      ];
 
       if (count($options)) {
          foreach ($options as $key => $val) {
@@ -81,7 +83,7 @@ class Ajax {
       $out .= "$(function() {";
       $out .= "$name=";
       if (!empty($param['container'])) {
-         $out .= Html::jsGetElementbyID(Html::cleanId($param['container']));
+         $out .= "$('#".Html::cleanId($param['container'])."')";
       } else {
          $out .= "$('<div></div>')";
       }

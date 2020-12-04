@@ -1,11 +1,15 @@
-<div class="d-inline-flex align-items-center">
+<div class="d-inline-flex">
+   {% if showmassiveactions %}
+   {{ showMassiveActions(massiveactionparams)|raw }}
+   {% endif %}
+
    <label class="form-check form-switch mr-3">
       <input type="checkbox" class="form-check-input pointer"
                name="as_map" value="1" autocomplete="off"
                onclick="toogle('as_map','','',''); document.forms['searchform{{ itemtype }}'].submit();"
                {{ data['search']['as_map'] == 1  ? 'checked' : ''}}>
       <span class="form-check-label" title="{{ __('Show as map') }}">
-         <i class="fas fa-globe-americas"></i>
+         <i class="fas fa-lg fa-globe-americas"></i>
       </span >
    </label>
 
@@ -15,7 +19,7 @@
                onclick="toogle('is_deleted','','',''); document.forms['searchform{{ itemtype }}'].submit();"
                {{ data['search']['is_deleted'] == 1  ? 'checked' : ''}}>
       <span class="form-check-label" title="{{ __('Show the trashbin') }}">
-         <i class="fas fa-trash-alt"></i>
+         <i class="fas fa-lg fa-trash-alt"></i>
       </span >
    </label>
 
@@ -23,15 +27,15 @@
 
       {% if can_config %}
       {# @TODO personal preferences form target seems broken #}
-      <button class="btn btn-ghost-secondary p-1 show_displaypreference_modal">
-         <i class="fas fa-wrench"></i>
+      <button class="btn btn-ghost-secondary">
+         <i class="fas fa-lg fa-wrench show_displaypreference_modal"></i>
       </button>
       {% endif %}
 
       {# @TODO export #}
-      <button class="dropdown-toggle btn btn-ghost-secondary p-1" type="button" id="dropdownMenuButton"
+      <button class="dropdown-toggle btn btn-ghost-secondary" type="button" id="dropdownMenuButton"
             data-toggle="dropdown" aria-expanded="false" title="{{ _x('button', 'Export') }} ">
-         <i class="fas fa-file-download"></i>
+         <i class="fas fa-lg fa-file-download"></i>
       </button>
       <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
          <li><a class="dropdown-item" href="#">

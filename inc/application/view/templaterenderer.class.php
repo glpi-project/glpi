@@ -41,6 +41,7 @@ use Glpi\Application\View\Extension\ConfigExtension;
 use Glpi\Application\View\Extension\FrontEndAssetsExtension;
 use Glpi\Application\View\Extension\I18nExtension;
 use Glpi\Application\View\Extension\ItemtypeExtension;
+use Glpi\Application\View\Extension\HtmlExtension;
 use Glpi\Application\View\Extension\NumberFormatExtension;
 use Glpi\Application\View\Extension\RoutingExtension;
 use Glpi\Application\View\Extension\SearchExtension;
@@ -89,6 +90,7 @@ class TemplateRenderer {
       $this->environment->addExtension(new FrontEndAssetsExtension());
       $this->environment->addExtension(new I18nExtension());
       $this->environment->addExtension(new ItemtypeExtension());
+      $this->environment->addExtension(new HtmlExtension());
       $this->environment->addExtension(new NumberFormatExtension());
       $this->environment->addExtension(new RoutingExtension());
       $this->environment->addExtension(new SearchExtension());
