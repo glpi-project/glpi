@@ -1,6 +1,6 @@
 <form id="massform{{ itemtype }}" method="get" action="{{ path("front/massiveaction.php") }}">
    <div class="card card-sm">
-      <div class="card-header">
+      <div class="card-header justify-content-between">
          {% if data['display_type'] == constant('Search::GLOBAL_SEARCH') %}
             <h2>{{ itemtype|itemtype_name }}</h2>
 
