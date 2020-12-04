@@ -31,11 +31,18 @@
 
 @import "~@tabler/core/src/scss/tabler";
 
-.page > aside {
-   scrollbar-width: thin; /* FF only */
+.page {
+   > aside {
+      scrollbar-width: thin; /* FF only */
 
-   #navbar-menu {
-      overflow-x: hidden;
+      #navbar-menu {
+         overflow-x: hidden;
+      }
+   }
+
+   .footer {
+      font-size: 0.75rem;
+      padding: 0.5rem;
    }
 }
 

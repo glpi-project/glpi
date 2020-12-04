@@ -28,27 +28,16 @@
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  ---------------------------------------------------------------------
 #}
-   </main> {# #page #}
-   </div> {# .container-fluid #}
-   </div> {# .content #}
-   </div> {# .page #}
+            </main> {# #page #}
+         </div> {# .container-fluid #}
 
-   <footer role="contentinfo" id="footer">
-      <table role="presentation">
-         <tr>
-            {% if is_debug_active %}
-               <td class="right">
-                  <span class="copyright">
-                     {{ __('%1$s - %2$s')|format(
-                           _n('%s second', '%s seconds', execution_time)|format(execution_time),
-                           memory_usage|format_binary()
-                        ) }}
-                  </span>
-               </td>
-            {% endif %}
-         </tr>
-      </table>
-   </footer>
+         {% if is_debug_active %}
+         <footer class="footer d-print-none">
+            {{ __('%1$s - %2$s')|format(_n('%s second', '%s seconds', execution_time)|format(execution_time),memory_usage|format_binary()) }}
+         </footer>
+         {% endif %}
+      </div> {# .content #}
+   </div> {# .page #}
 
    {% for js_file in js_files %}
       <script type="text/javascript" src="{{ js_path(js_file) }}"></script>
