@@ -23,7 +23,6 @@
       </div>
 
       {% if data['search']['as_map'] == 0 %}
-         <div class="card-body">
          {% if count > 0 %}
             {{ include('layout/parts/search/table.html.twig') }}
          {% else %}
@@ -31,7 +30,6 @@
                {{ __('No item found') }}
             </div>
          {% endif %}
-         </div>
       {% endif %}
       {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and count > 0 and data['search']['as_map'] == 0 %}
       <div class="card-footer">

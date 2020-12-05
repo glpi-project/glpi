@@ -1,0 +1,30 @@
+<form name='searchform{{ itemtype }}' method='get' action='{{ target }}'>
+<div class="card card-sm mb-2">
+   <div class="card-body">
+
+      <div class="d-flex-inline search_actions" role="group">
+         {{ include('layout/parts/search/criteria_actions.html.twig') }}
+
+         <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search "></i>
+            {{ _x('button', 'Search') }}
+         </button>
+
+         <a class='btn btn-ghost-secondary btn-icon btn-sm bookmark_record save'href='#' title="{{ __('Save current search') }}">
+            <i class="fas fa-lg fa-star"></i>
+         </a>
+
+         <a class='btn btn-ghost-secondary btn-icon btn-sm reset-search' title="{{ __('Blank') }}"
+            href="{{ target ~ ('?' in target ? '&' : '?') }}reset=reset">
+            <i class="fas fa-lg fa-undo "></i>
+         </a>
+
+         <a class="btn btn-ghost-secondary btn-icon btn-sm fold-search" href='#' title="{{ __("Fold search") }}">
+            <i class="fas fa-lg fa-angle-double-up"></i>
+         </a>
+      </div>
+   </div>
+</div>
+</form>
+
+{# @TODO saved searches modal #}

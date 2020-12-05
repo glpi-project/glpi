@@ -1370,12 +1370,11 @@ class Html {
       }
 
       //  CSS link
-      $tpl_vars['css_files'][] = 'css/styles.scss';
       $tpl_vars['css_files'][] = 'css/legacy.scss';
       if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
          $tpl_vars['css_files'][] = 'css/legacy/highcontrast.scss';
       }
-      $tpl_vars['css_files'][] = 'css/legacy/palettes/' . $theme . '.scss';
+      $tpl_vars['css_files'][] = 'css/palettes/' . $theme . '.scss';
 
       // Add specific css for plugins
       if (isset($PLUGIN_HOOKS['add_css']) && count($PLUGIN_HOOKS['add_css'])) {
@@ -2616,7 +2615,7 @@ class Html {
          if ($p['display_arrow']) {
             $out .= "<img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".($p['ontop']?'-top':'').".png' alt=''>";
          }
-         $out .= "<a class='btn btn-sm btn-primary mr-2' ";
+         $out .= "<a class='btn btn-sm btn-outline-primary btn-sm mr-2' ";
          if (is_array($p['confirm'] || strlen($p['confirm']))) {
             $out .= self::addConfirmationOnAction($p['confirm'], "massiveaction_window$identifier.dialog(\"open\");");
          } else {
