@@ -394,9 +394,10 @@ class Ajax {
          echo "<div class='col-lg-1 px-0' style='min-width: 170px'>";
          echo "<ul class='nav nav-tabs flex-row flex-lg-column border-right border-bottom-0' id='$tabdiv_id' role='tablist'>";
          foreach ($tabs as $val) {
+            $target = str_replace('\\', '_', $val['id']);
             echo "<li class='nav-item'>
                <a class='nav-link justify-content-between' data-toggle='tab' title='".strip_tags($val['title'])."' ";
-            echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."' data-target='#{$val['id']}'>";
+            echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."' data-target='#{$target}'>";
             echo $val['title']."</a></li>";
          }
          echo "</ul>";
@@ -405,7 +406,8 @@ class Ajax {
          echo "<div class='col'>";
          echo "<div class='tab-content'>";
          foreach ($tabs as $val) {
-            echo "<div class='tab-pane fade' role='tabpanel' id='{$val['id']}'></div>";
+            $id = str_replace('\\', '_', $val['id']);
+            echo "<div class='tab-pane fade' role='tabpanel' id='{$id}'></div>";
          }
          echo  "</div>"; // .tab-content
          echo  "</div>"; // .col
