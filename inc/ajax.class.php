@@ -389,10 +389,16 @@ class Ajax {
 
       // Display tabs
       if (count($tabs) > 0) {
-         echo "<div class='container-fluid'>";
-         echo "<div class='row'>";
-         echo "<div class='col-lg-1 px-0' style='min-width: 170px'>";
-         echo "<ul class='nav nav-tabs flex-row flex-lg-column border-right border-bottom-0' id='$tabdiv_id' role='tablist'>";
+         $flex_container = "flex-row";
+         $flex_tab       = "flex-row flex-lg-column";
+         $border         = "border-right border-bottom-0";
+         if ($orientation == "horizontal") {
+            $flex_container = "flex-column";
+            $flex_tab       = "flex-row";
+            $border         = "";
+         }
+         echo "<div class='container-fluid d-flex $flex_container'>";
+         echo "<ul class='nav nav-tabs $flex_tab $border' id='$tabdiv_id' role='tablist'>";
          foreach ($tabs as $val) {
             $target = str_replace('\\', '_', $val['id']);
             echo "<li class='nav-item'>
@@ -401,18 +407,13 @@ class Ajax {
             echo $val['title']."</a></li>";
          }
          echo "</ul>";
-         echo "</div>"; //.col-lg-1
 
-         echo "<div class='col'>";
-         echo "<div class='tab-content'>";
+         echo "<div class='tab-content container-fluid'>";
          foreach ($tabs as $val) {
             $id = str_replace('\\', '_', $val['id']);
             echo "<div class='tab-pane fade' role='tabpanel' id='{$id}'></div>";
          }
          echo  "</div>"; // .tab-content
-         echo  "</div>"; // .col
-
-         echo "</div>"; // .row
          echo "</div>"; // .container-fluid
          $js = "
          var loadTabContents = function (tablink) {
