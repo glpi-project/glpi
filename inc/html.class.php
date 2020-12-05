@@ -2608,9 +2608,9 @@ class Html {
             );
          }
          if ($p['display_arrow']) {
-            $out .= "<img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".($p['ontop']?'-top':'').".png' alt=''>";
+            $out .= "<img class='mt-2' src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".($p['ontop']?'-top':'').".png' alt=''>";
          }
-         $out .= "<a class='btn btn-sm btn-outline-primary btn-sm mr-2' ";
+         $out .= "<a class='btn btn-sm btn-outline-secondary mr-2' ";
          if (is_array($p['confirm'] || strlen($p['confirm']))) {
             $out .= self::addConfirmationOnAction($p['confirm'], "massiveaction_window$identifier.dialog(\"open\");");
          } else {
