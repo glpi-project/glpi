@@ -71,8 +71,7 @@ $danger: #d49696;
    }
 }
 
-.nav-tabs {
-   .nav-link {
-      border-bottom-width: 2px;
-   }
+.card-tabs.vertical .nav-tabs .nav-link {
+   border-bottom: $card-border-width solid $card-border-color;
+   border-right: 0;
 }

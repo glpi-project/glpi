@@ -389,26 +389,31 @@ class Ajax {
 
       // Display tabs
       if (count($tabs) > 0) {
-         $flex_container = "flex-row";
-         $flex_tab       = "flex-row flex-lg-column";
-         $border         = "border-right border-bottom-0";
+         $flex_container = "flex-column flex-md-row";
+         $flex_tab       = "flex-row flex-md-column";
+         $border         = "border-left-0";
+         $navitemml      = "ml-0";
+         $nav_width      = "style='min-width: 200px'";
          if ($orientation == "horizontal") {
             $flex_container = "flex-column";
             $flex_tab       = "flex-row";
             $border         = "";
+            $navitemml      = "";
+            $nav_width      = "";
          }
-         echo "<div class='container-fluid d-flex $flex_container'>";
-         echo "<ul class='nav nav-tabs $flex_tab $border' id='$tabdiv_id' role='tablist'>";
+
+         echo "<div class='d-flex card-tabs $flex_container $orientation'>";
+         echo "<ul class='nav nav-tabs $flex_tab' id='$tabdiv_id' $nav_width role='tablist'>";
          foreach ($tabs as $val) {
             $target = str_replace('\\', '_', $val['id']);
-            echo "<li class='nav-item'>
+            echo "<li class='nav-item $navitemml'>
                <a class='nav-link justify-content-between' data-toggle='tab' title='".strip_tags($val['title'])."' ";
             echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."' data-target='#{$target}'>";
             echo $val['title']."</a></li>";
          }
          echo "</ul>";
 
-         echo "<div class='tab-content container-fluid'>";
+         echo "<div class='tab-content flex-grow-1 card p-2 $border'>";
          foreach ($tabs as $val) {
             $id = str_replace('\\', '_', $val['id']);
             echo "<div class='tab-pane fade' role='tabpanel' id='{$id}'></div>";
