@@ -1,11 +1,11 @@
 
 {% set links = menu[sector]['content'][item]['options'][option]['links'] ?? menu[sector]['content'][item]['links'] %}
 
-<ul class="nav navbar-nav border-left flex-row">
+<ul class="nav navbar-nav border-left pl-2 flex-row">
 
 {% if links['add'] is defined %}
 <li class="nav-item">
-   <a href="{{ path(links['add']) }}" class="nav-link" title="{{ __('Add') }}">
+   <a href="{{ path(links['add']) }}" class="btn btn-sm btn-icon btn-ghost-secondary" title="{{ __('Add') }}">
       <i class="fas fa-plus"></i>
       <span class="sr-only">{{ __('Add') }}</span>
    </a>
@@ -14,7 +14,7 @@
 
 {% if links['search'] is defined %}
 <li class="nav-item">
-   <a href="{{ path(links['search']) }}" class="nav-link" title="{{ __('Search') }}">
+   <a href="{{ path(links['search']) }}" class="btn btn-sm btn-icon btn-ghost-secondary" title="{{ __('Search') }}">
       <i class="fas fa-search"></i>
       <span class="sr-only">{{ __('Search') }}</span>
    </a>
@@ -25,37 +25,37 @@
    {% if type == 'add' or type == 'search' %}
    {% elseif type == 'template' %}
       <li class="nav-item">
-         <a href="{{ path(link) }}" class="nav-link" title="{{ __("Manage templates...") }}">
-            <i class="fa fa-layer-group"></i>
+         <a href="{{ path(link) }}" class="btn btn-sm btn-icon btn-ghost-secondary" title="{{ __("Manage templates...") }}">
+            <i class="fas fa-layer-group"></i>
          </a>
       </li>
    {% elseif type == 'showall' %}
       <li class="nav-item">
-         <a href="{{ path(link) }}" class="nav-link" title="{{ __("Show all") }}">
+         <a href="{{ path(link) }}" class="btn btn-sm btn-icon btn-ghost-secondary" title="{{ __("Show all") }}">
             <img src="{{ path("/pics/menu_showall.png") }}">
          </a>
       </li>
    {% elseif type == 'summary' %}
       <li class="nav-item">
-         <a href="{{ path(link) }}" class="nav-link" title="{{ __("Summary") }}">
-            <i class="fa fa-stream"></i>
+         <a href="{{ path(link) }}" class="btn btn-sm btn-icon btn-ghost-secondary" title="{{ __("Summary") }}">
+            <i class="fas fa-stream"></i>
          </a>
       </li>
    {% elseif type == 'summary_kanban' %}
       <li class="nav-item">
-         <a href="{{ path(link) }}" class="nav-link" title="{{ __("Global Kanban") }}">
-            <i class="fa fa-columns"></i>
+         <a href="{{ path(link) }}" class="btn btn-sm btn-icon btn-ghost-secondary" title="{{ __("Global Kanban") }}">
+            <i class="fas fa-columns"></i>
          </a>
       </li>
    {% elseif type == 'config' %}
       <li class="nav-item">
-         <a href="{{ path(link) }}" class="nav-link" title="{{ __("Setup") }}">
+         <a href="{{ path(link) }}" class="btn btn-sm btn-icon btn-ghost-secondary" title="{{ __("Setup") }}">
             <img src="{{ path("/pics/menu_config.png") }}">
          </a>
       </li>
    {% else %}
       <li class="nav-item">
-         <a href="{{ path(link) }}" class="nav-link">
+         <a href="{{ path(link) }}" class="btn btn-sm btn-icon btn-ghost-secondary">
             {{ key }}
          </a>
       </li>
