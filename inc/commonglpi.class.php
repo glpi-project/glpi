@@ -995,16 +995,16 @@ JAVASCRIPT;
 
          if ($first >= 0) {
             echo "<a href='$cleantarget?id=$first$extraparamhtml'
-                     class='navicon left'>
-                     <i class='fas fa-angle-double-left pointer' title=\"".__s('First')."\"></i>
+                     class='btn btn-sm btn-icon btn-ghost-secondary'>
+                     <i class='fas fa-lg fa-angle-double-left' title=\"".__s('First')."\"></i>
                   </a>";
          }
 
          if ($prev >= 0) {
             echo "<a href='$cleantarget?id=$prev$extraparamhtml'
                      id='previouspage'
-                     class='navicon left'>
-                     <i class='fas fa-angle-left pointer' title=\"".__s('Previous')."\"></i>
+                     class='btn btn-sm btn-icon btn-ghost-secondary'>
+                     <i class='fas fa-lg fa-angle-left' title=\"".__s('Previous')."\"></i>
                   </a>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
@@ -1020,8 +1020,8 @@ JAVASCRIPT;
             $glpilisttitle = __s('List');
          }
          echo "<a href='$glpilisturl' title=\"$glpilisttitle\"
-                  class='navicon left'>
-                  <i class='far fa-list-alt pointer'></i>
+                  class='btn btn-sm btn-icon btn-ghost-secondary'>
+                  <i class='far fa-lg fa-list-alt'></i>
                </a>";
 
          $name = '';
@@ -1137,14 +1137,14 @@ JAVASCRIPT;
          }
 
          if ($current !== false) {
-            echo "<span class='right navicon'>" . ($current + 1) . "/" . count($glpilistitems) . "</span>";
+            echo "<span class='m-1 ml-3'>" . ($current + 1) . "/" . count($glpilistitems) . "</span>";
          }
 
          if ($next >= 0) {
             echo "<a href='$cleantarget?id=$next$extraparamhtml'
                      id='nextpage'
-                     class='navicon right'>" .
-               "<i class='fas fa-angle-right pointer' title=\"".__s('Next')."\"></i>
+                     class='btn btn-sm btn-icon btn-ghost-secondary'>" .
+               "<i class='fas fa-lg fa-angle-right' title=\"".__s('Next')."\"></i>
                     </a>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
@@ -1158,8 +1158,8 @@ JAVASCRIPT;
 
          if ($last >= 0) {
             echo "<a href='$cleantarget?id=$last $extraparamhtml'
-                     class='navicon right'>" .
-               "<i class='fas fa-angle-double-right pointer' title=\"" . __s('Last') . "\"></i></a>";
+                     class='btn btn-sm btn-icon btn-ghost-secondary'>" .
+               "<i class='fas fa-lg fa-angle-double-right' title=\"" . __s('Last') . "\"></i></a>";
          }
 
          echo "</div>"; // .navigationheader
