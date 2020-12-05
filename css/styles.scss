@@ -50,7 +50,7 @@ $danger: #d49696;
 }
 
 .dropdown-item {
-   & > .fas:first-child, & > .fab:first-child {
+   & > .fas:first-child, & > .far:first-child, & > .fab:first-child {
       margin-right: 0.75em;
    }
 }
