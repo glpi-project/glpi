@@ -1,0 +1,16 @@
+{% set rand_criteria = random %}
+
+<button class="btn btn-outline-secondary" id="addsearchcriteria{{ rand_criteria }}">
+   <i class='fas fa-plus-square'></i>
+   {{ __("rule") }}
+</button>
+
+<button class="btn btn-outline-secondary" id="addmetasearchcriteria{{ rand_criteria }}">
+   <i class='far fa-plus-square'></i>
+   {{ __("global rule") }}
+</button>
+
+<button class="btn btn-outline-secondary" id="addcriteriagroup{{ rand_criteria }}">
+   <i class='fas fa-plus-circle'></i>
+   {{ __("group") }}
+</button>

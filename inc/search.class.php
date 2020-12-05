@@ -1958,6 +1958,13 @@ class Search {
          $p[$key] = $val;
       }
 
+      TemplateRenderer::getInstance()->display('layout/parts/search/form.html.twig', [
+         'itemtype' => $itemtype,
+         'target'   => $p['target'],
+      ]);
+
+      return;
+
       $main_block_class = '';
       if ($p['mainform']) {
          echo "<form name='searchform$itemtype' method='get' action='".$p['target']."'>";
