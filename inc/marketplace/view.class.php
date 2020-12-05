@@ -162,8 +162,8 @@ class View extends CommonGLPI {
       }
 
       if (count($messages)) {
-         echo "<div class='warning'>";
-         echo "<i class='fa fa-exclamation-triangle fa-5x'></i>";
+         echo "<div class='alert alert-warning d-flex'>";
+         echo "<i class='fas fa-3x fa-exclamation-triangle '></i>";
          echo "<ul><li>" . implode('</li><li>', $messages) . "</li></ul>";
          echo "<div class='sep'></div>";
          echo "</div>";
@@ -325,7 +325,7 @@ class View extends CommonGLPI {
       if (!$only_lis) {
          // check writable state
          if (!Controller::hasWriteAccess()) {
-            echo "<div class='warning'>
+            echo "<div class='alert alert-warning'>
                <i class='fa fa-exclamation-triangle fa-5x'></i>".
                sprintf(__("We can't write on the markeplace directory (%s)."), GLPI_MARKETPLACE_DIR)."<br>".
                __("If you want to ease the plugins download, please check permissions and ownership of this directory.")."<br>".
