@@ -1081,7 +1081,7 @@ JAVASCRIPT;
                         ".__("Actions")."
                      </button>";
 
-               echo "<div class='dropdown-menu dropdown-menu-arrow mt-2' aria-labelledby='single-action'>";
+               echo "<div class='dropdown-menu dropdown-menu-right dropdown-menu-arrow mt-2' aria-labelledby='single-action'>";
                foreach ($actions as $key => $action) {
                   echo "<a class='dropdown-item' data-action='$key' href='#'>$action</a>";
                }
