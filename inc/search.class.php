@@ -2153,17 +2153,17 @@ class Search {
 
       echo "<div class='card-footer d-flex search_actions'>";
       $linked = self::getMetaItemtypeAvailable($itemtype);
-      echo "<button id='addsearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary'>
+      echo "<button id='addsearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary mr-1'>
                <i class='fas fa-plus-square'></i>
                ".__s('rule')."
             </button>";
       if (count($linked)) {
-         echo "<button id='addmetasearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary'>
+         echo "<button id='addmetasearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary mr-1'>
                   <i class='far fa-plus-square'></i>
                   ".__s('global rule')."
                </button>";
       }
-      echo "<button id='addcriteriagroup$rand_criteria' class='btn btn-sm btn-outline-secondary'>
+      echo "<button id='addcriteriagroup$rand_criteria' class='btn btn-sm btn-outline-secondary mr-1'>
                <i class='fas fa-plus-circle'></i>
                ".__s('group')."
             </button>";
@@ -2171,7 +2171,7 @@ class Search {
 
       if ($p['mainform']) {
          // Display submit button
-         echo "<input type='submit' name='".$p['actionname']."' value=\"".$p['actionvalue']."\" class='btn btn-sm btn-primary' >";
+         echo "<input type='submit' name='".$p['actionname']."' value=\"".$p['actionvalue']."\" class='btn btn-sm btn-primary mr-1' >";
          if ($p['showbookmark'] || $p['showreset']) {
             if ($p['showbookmark']) {
                //TODO: change that!
@@ -2371,8 +2371,10 @@ JAVASCRIPT;
                'id'    => 'as_map'
             ]);
          }
-         echo "<i class='far fa-minus-square remove-search-criteria' alt='-' title=\"".
-                  __s('Delete a rule')."\" data-rowid='$rowid'></i>&nbsp;";
+         echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' data-rowid='$rowid'>
+            <i class='far fa-minus-square' alt='-' title=\"".
+                  __s('Delete a rule')."\"></i>
+         </button>";
 
       }
 
@@ -2430,7 +2432,7 @@ JAVASCRIPT;
       ]);
       $field_id = Html::cleanId("dropdown_criteria{$prefix}[$num][field]$rand");
       $spanid   = Html::cleanId('SearchSpan'.$request["itemtype"].$prefix.$num);
-      echo "<span id='$spanid'>";
+      echo "<span id='$spanid' class='d-flex'>";
 
       $used_itemtype = $request["itemtype"];
       // Force Computer itemtype for AllAssets to permit to show specific items
@@ -2599,8 +2601,9 @@ JAVASCRIPT;
       }
 
       echo "<div class='list-item normalcriteria$addclass' id='$rowid'>";
-      echo "<i class='far fa-minus-square remove-search-criteria' alt='-' title=\"".
-               __s('Delete a rule')."\" data-rowid='$rowid'></i>&nbsp;";
+      echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' data-rowid='$rowid'>
+         <i class='far fa-minus-square' alt='-' title=\"".__s('Delete a rule')."\"></i>
+      </button>";
       Dropdown::showFromArray("criteria{$prefix}[$num][link]", Search::getLogicalOperators(), [
          'value' => isset($criteria["link"]) ? $criteria["link"] : '',
          'width' => '80px'
