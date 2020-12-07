@@ -9,6 +9,9 @@ The present file will list all changes made to the project; according to the
 
 ### Changed
 
+### Deprecated
+- Usage of XML-RPC API is deprecated.
+
 ### API changes
 
 #### Added

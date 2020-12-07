@@ -84,7 +84,6 @@ class RequirementsManager {
       $requirements[] = new Extension('ldap', true); // to sync/connect from LDAP
       $requirements[] = new Extension('apcu', true); // to enhance perfs
       $requirements[] = new Extension('Zend OPcache', true); // to enhance perfs
-      $requirements[] = new Extension('xmlrpc', true); // for XMLRPC API
       $requirements[] = new ExtensionClass('CAS', 'phpCAS', true); // for CAS lib
       $requirements[] = new Extension('exif', true); // for security reasons (images checks)
       $requirements[] = new Extension('zip', true); // to handle zip packages on marketplace

@@ -2484,10 +2484,6 @@ class Config extends CommonDBTM {
                'required'  => false,
                'function'  => 'apcu_fetch'
             ],
-            //for XMLRPC API
-            'xmlrpc'     => [
-               'required'  => false
-            ],
             //for CAS lib
             'CAS'     => [
                'required' => false,
