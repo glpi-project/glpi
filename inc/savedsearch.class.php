@@ -1107,14 +1107,9 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
    static function showSaveButton($type, $itemtype = 0, bool $active = false) {
       global $CFG_GLPI;
 
-      $icon_class = "fa fa-star bookmark_record save";
-      if ($active) {
-         $icon_class .= " active";
-      }
-
       echo "<a href='#' onClick=\"savesearch.dialog('open'); return false;\"
-             class='$icon_class' title='".__s('Save current search')."'>";
-      echo "<span class='sr-only'>".__s('Save current search')."</span>";
+             class='btn btn-ghost-secondary btn-icon btn-sm bookmark_record save' title='".__s('Save current search')."'>";
+      echo "<i class='fas fa-lg fa-star " . ($active ? 'active' : '') . "'></i>";
       echo "</a>";
 
       $params = [
