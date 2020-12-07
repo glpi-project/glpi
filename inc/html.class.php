@@ -60,7 +60,7 @@ class Html {
       // Change <email@domain> to email@domain so it is not removed by htmLawed
       $regex = "/(<[^>]+?@[^;]+?>)/";
       $value = preg_replace_callback($regex, function($matches) {
-         return substr($matches[1], 1, (count($matches[1]) - 2));
+         return substr($matches[1], 1, (strlen($matches[1]) - 2));
       }, $value);
 
       // Clean MS office tags
