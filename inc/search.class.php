@@ -94,7 +94,19 @@ class Search {
     * @return void
    **/
    static function showList($itemtype, $params) {
-      self::displayData(self::getDatas($itemtype, $params));
+      $data = self::getDatas($itemtype, $params);
+
+      switch (abs($data['display_type'])) {
+         case self::CSV_OUTPUT:
+         case self::PDF_OUTPUT_LANDSCAPE:
+         case self::PDF_OUTPUT_PORTRAIT:
+         case self::SYLK_OUTPUT:
+            self::outputData($data);
+            break;
+         default:
+            self::displayData($data);
+            break;
+      }
    }
 
    /**
@@ -1552,6 +1564,143 @@ class Search {
          $current_type = (isset($row['TYPE']) ? $row['TYPE'] : $data['itemtype']);
          Session::addToNavigateListItems($current_type, $row["id"]);
       }
+   }
+
+   /**
+    * Output data (for export in CSV, PDF, ...).
+    *
+    * @param array $data Array of search datas prepared to get datas
+    *
+    * @return void
+   **/
+   static function outputData(array $data) {
+      global $CFG_GLPI;
+
+      if (!isset($data['data'])
+          || !isset($data['data']['totalcount'])
+          || $data['data']['count'] <= 0
+          || $data['search']['as_map'] != 0) {
+         return false;
+      }
+
+      // Define begin and end var for loop
+      // Search case
+      $begin_display = $data['data']['begin'];
+      $end_display   = $data['data']['end'];
+
+      // Compute number of columns to display
+      // Add toview elements
+      $nbcols          = count($data['data']['cols']);
+
+      // Display List Header
+      echo self::showHeader($data['display_type'], $end_display-$begin_display+1, $nbcols);
+
+      // New Line for Header Items Line
+      $headers_line        = '';
+      $headers_line_top    = '';
+
+      $headers_line_top .= self::showBeginHeader($data['display_type']);
+      $headers_line_top .= self::showNewLine($data['display_type']);
+
+      $header_num = 1;
+
+      // Display column Headers for toview items
+      $metanames = [];
+      foreach ($data['data']['cols'] as $val) {
+
+         $name = $val["name"];
+
+         // prefix by group name (corresponding to optgroup in dropdown) if exists
+         if (isset($val['groupname'])) {
+            $groupname = $val['groupname'];
+            if (is_array($groupname)) {
+               //since 9.2, getSearchOptions has been changed
+               $groupname = $groupname['name'];
+            }
+            $name  = "$groupname - $name";
+         }
+
+         // Not main itemtype add itemtype to display
+         if ($data['itemtype'] != $val['itemtype']) {
+            if (!isset($metanames[$val['itemtype']])) {
+               if ($metaitem = getItemForItemtype($val['itemtype'])) {
+                  $metanames[$val['itemtype']] = $metaitem->getTypeName();
+               }
+            }
+            $name = sprintf(__('%1$s - %2$s'), $metanames[$val['itemtype']],
+                           $val["name"]);
+         }
+
+         $headers_line .= self::showHeaderItem($data['display_type'],
+                                                $name,
+                                                $header_num, '',
+                                                (!$val['meta']
+                                                && ($data['search']['sort'] == $val['id'])),
+                                                $data['search']['order']);
+      }
+
+      // Add specific column Header
+      if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
+         $headers_line .= self::showHeaderItem($data['display_type'], __('Item type'),
+                                                $header_num);
+      }
+      // End Line for column headers
+      $headers_line        .= self::showEndLine($data['display_type']);
+
+      $headers_line_top    .= $headers_line;
+      $headers_line_top    .= self::showEndHeader($data['display_type']);
+
+      echo $headers_line_top;
+
+      // Num of the row (1=header_line)
+      $row_num = 1;
+
+      $typenames = [];
+      // Display Loop
+      foreach ($data['data']['rows'] as $row) {
+         // Column num
+         $item_num = 1;
+         $row_num++;
+         // New line
+         echo self::showNewLine($data['display_type'], ($row_num%2),
+                              $data['search']['is_deleted']);
+
+         // Print other toview items
+         foreach ($data['data']['cols'] as $col) {
+            $colkey = "{$col['itemtype']}_{$col['id']}";
+            if (!$col['meta']) {
+               echo self::showItem($data['display_type'], $row[$colkey]['displayname'],
+                                    $item_num, $row_num,
+                                    self::displayConfigItem($data['itemtype'], $col['id'],
+                                                            $row, $colkey));
+            } else { // META case
+               echo self::showItem($data['display_type'], $row[$colkey]['displayname'],
+                                 $item_num, $row_num);
+            }
+         }
+
+         if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
+            if (!isset($typenames[$row["TYPE"]])) {
+               if ($itemtmp = getItemForItemtype($row["TYPE"])) {
+                  $typenames[$row["TYPE"]] = $itemtmp->getTypeName();
+               }
+            }
+            echo self::showItem($data['display_type'], $typenames[$row["TYPE"]],
+                              $item_num, $row_num);
+         }
+         // End Line
+         echo self::showEndLine($data['display_type']);
+      }
+
+      // Create title
+      $title = '';
+      if (($data['display_type'] == self::PDF_OUTPUT_LANDSCAPE)
+            || ($data['display_type'] == self::PDF_OUTPUT_PORTRAIT)) {
+         $title = self::computeTitle($data);
+      }
+
+      // Display footer (close table)
+      echo self::showFooter($data['display_type'], $title, $data['data']['count']);
    }
 
 
