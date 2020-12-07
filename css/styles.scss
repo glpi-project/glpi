@@ -34,6 +34,10 @@ $danger: #d49696;
 
 @import "~@tabler/core/src/scss/tabler";
 
+body.iframed {
+   background-color: transparent;
+}
+
 .page {
    > aside {
       scrollbar-width: thin; /* FF only */

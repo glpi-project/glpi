@@ -2785,7 +2785,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       echo "<div class='spaced' id='tabsbody'>";
-      echo "<table class='tab_cadre_fixe' id='mainformtable'>";
+      echo "<table class='tab_cadre_fixe m-2' id='mainformtable'>";
 
       if ($params['formtitle'] !== '' && $params['formtitle'] !== false) {
          echo "<tr class='headerRow'><th colspan='".$params['colspan']."'>";

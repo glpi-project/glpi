@@ -4564,7 +4564,7 @@ class Ticket extends CommonITILObject {
 
       if ($ID) {
          echo "</table>";
-         echo "<table  class='tab_cadre_fixe' id='mainformtable2'>";
+         echo "<table  class='tab_cadre_fixe m-2' id='mainformtable2'>";
       }
 
       echo "<tr class='tab_bg_1'>";
@@ -4642,7 +4642,7 @@ class Ticket extends CommonITILObject {
       if (!$ID) {
          echo "</table>";
          $this->showActorsPartForm($ID, $options);
-         echo "<table class='tab_cadre_fixe' id='mainformtable3'>";
+         echo "<table class='tab_cadre_fixe m-2' id='mainformtable3'>";
       }
 
       echo "<tr class='tab_bg_1'>";
@@ -4863,7 +4863,7 @@ class Ticket extends CommonITILObject {
          $this->showActorsPartForm($ID, $options);
       }
 
-      echo "<table class='tab_cadre_fixe' id='mainformtable4'>";
+      echo "<table class='tab_cadre_fixe m-2' id='mainformtable4'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('name');
       printf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'));
