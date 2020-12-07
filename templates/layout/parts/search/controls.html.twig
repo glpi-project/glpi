@@ -31,41 +31,41 @@
       </button>
       {% endif %}
 
-      {# @TODO export #}
-      <button class="dropdown-toggle btn btn-sm btn-icon btn-ghost-secondary" type="button" id="dropdownMenuButton"
+      <button class="dropdown-toggle btn btn-sm btn-icon btn-ghost-secondary" type="button" id="dropdown-export"
             data-toggle="dropdown" aria-expanded="false" title="{{ _x('button', 'Export') }} ">
          <i class="fas fa-lg fa-file-download"></i>
       </button>
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-         <li><a class="dropdown-item" href="#">
+      {% set exporthref = path('/front/report.dynamic.php') ~ '?item_type=' ~ itemtype ~ '&start=' ~ start ~ '&' ~ posthref %}
+      <ul class="dropdown-menu" aria-labelledby="dropdown-export">
+         <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::PDF_OUTPUT_LANDSCAPE') }}">
             <i class="fas fa-lg fa-file-pdf"></i>
             {{ __("Current page in landscape PDF") }}
          </a></li>
-         <li><a class="dropdown-item" href="#">
+         <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::PDF_OUTPUT_PORTRAIT') }}">
             <i class="fas fa-lg fa-file-pdf"></i>
             {{ __("Current page in portrait PDF") }}
          </a></li>
-         <li><a class="dropdown-item" href="#">
+         <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::SYLK_OUTPUT') }}">
             <i class="fas fa-lg fa-file-excel"></i>
             {{ __("Current page in SLK") }}
          </a></li>
-         <li><a class="dropdown-item" href="#">
+         <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::CSV_OUTPUT') }}">
             <i class="fas fa-lg fa-file-csv"></i>
             {{ __("Current page in CSV") }}
          </a></li>
-         <li><a class="dropdown-item" href="#">
+         <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::PDF_OUTPUT_LANDSCAPE') }}">
             <i class="fas fa-lg fa-file-pdf"></i>
             {{ __("All pages in landscape PDF") }}
          </a></li>
-         <li><a class="dropdown-item" href="#">
+         <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::PDF_OUTPUT_PORTRAIT') }}">
             <i class="fas fa-lg fa-file-pdf"></i>
             {{ __("All pages in portrait PDF") }}
          </a></li>
-         <li><a class="dropdown-item" href="#">
+         <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::SYLK_OUTPUT') }}">
             <i class="fas fa-lg fa-file-excel"></i>
             {{ __("All pages in SLK") }}
          </a></li>
-         <li><a class="dropdown-item" href="#">
+         <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::CSV_OUTPUT') }}">
             <i class="fas fa-lg fa-file-csv"></i>
             {{ __("All pages in CSV") }}
          </a></li>
