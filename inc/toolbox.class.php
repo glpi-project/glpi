@@ -527,6 +527,13 @@ class Toolbox {
    }
 
    /**
+    * PHP notice log
+    */
+   static function logNotice() {
+      self::log(null, Logger::NOTICE, func_get_args());
+   }
+
+   /**
     * PHP info log
     */
    static function logInfo() {
