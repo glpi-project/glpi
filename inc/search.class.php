@@ -1949,8 +1949,10 @@ class Search {
       }
 
       TemplateRenderer::getInstance()->display('layout/parts/search/form.html.twig', [
-         'itemtype' => $itemtype,
-         'target'   => $p['target'],
+         'itemtype'   => $itemtype,
+         'target'     => $p['target'],
+         'is_deleted' => $p['is_deleted'],
+         'as_map'     => $p['as_map'],
       ]);
 
       return;

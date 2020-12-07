@@ -1,6 +1,8 @@
 <form name='searchform{{ itemtype }}' method='get' action='{{ target }}'>
 <div class="card card-sm mb-2">
-   <div class="card-body">
+   <div class="card-body d-flex justify-content-between">
+      <input type="hidden" name="as_map" id="as_map" value="{{ as_map }}">
+      <input type="hidden" name="is_deleted" id="is_deleted" value="{{ is_deleted}}">
 
       <div class="d-flex-inline search_actions" role="group">
          {{ include('layout/parts/search/criteria_actions.html.twig') }}
