@@ -2114,7 +2114,7 @@ class Search {
          var $nbsearchcountvar = ".count($p['criteria']).";
       ");
 
-      echo "<div class='list list-row list-hoverable' id='$searchcriteriatableid'>";
+      echo "<div class='list list-row list-hoverable criteria-list' id='$searchcriteriatableid'>";
 
       // Display normal search parameters
       $i = 0;
@@ -2250,16 +2250,16 @@ JAVASCRIPT;
          $JS .= <<<JAVASCRIPT
          $('.fold-search').on('click', function(event) {
             event.preventDefault();
-            $(this)
+            $(this).children('i.fas')
                .toggleClass('fa-angle-double-up')
                .toggleClass('fa-angle-double-down');
-            $('#searchcriteria ul li:not(:first-child)').toggle();
+            $('#searchcriteria .criteria-list .list-item:not(:first-child)').toggle();
          });
 
          $(document).on("click", ".remove-search-criteria", function() {
             var rowID = $(this).data('rowid');
             $('#' + rowID).remove();
-            $('#searchcriteria ul li:first-child').addClass('headerRow').show();
+            $('#searchcriteria .criteria-list .list-item:first-child').addClass('headerRow').show();
          });
 JAVASCRIPT;
       }
