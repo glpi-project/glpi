@@ -2186,7 +2186,7 @@ class Search {
             }
 
             if ($p['showreset']) {
-               echo "<a class='btn btn-ghost-secondary btn-icon btn-sm' href='"
+               echo "<a class='btn btn-ghost-secondary btn-icon btn-sm mr-1' href='"
                   .$p['target']
                   .(strpos($p['target'], '?') ? '&amp;' : '?')
                   ."reset=reset' title=\"".__s('Blank')."\"
