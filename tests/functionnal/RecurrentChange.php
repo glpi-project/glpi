@@ -32,10 +32,10 @@
 
 namespace tests\units;
 
-/* Test for inc/ticketrecurrent.class.php */
-class TicketRecurrent extends CommonITILRecurrent
+/* Test for inc/recurrentchange.class.php */
+class RecurrentChange extends CommonITILRecurrent
 {
    protected function getChildClass() {
-      return \TicketRecurrent::class;
+      return \RecurrentChange::class;
    }
 }

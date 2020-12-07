@@ -116,13 +116,15 @@ abstract class CommonITILRecurrent extends CommonDropdown
    }
 
    public function prepareInputForAdd($input) {
-      $input['next_creation_date'] = $this->computeNextCreationDate(
-         $input['begin_date'],
-         $input['end_date'],
-         $input['periodicity'],
-         $input['create_before'],
-         $input['calendars_id']
-      );
+      if (isset($input['periodicity'])) {
+         $input['next_creation_date'] = $this->computeNextCreationDate(
+            $input['begin_date'],
+            $input['end_date'],
+            $input['periodicity'],
+            $input['create_before'],
+            $input['calendars_id']
+         );
+      }
 
       return $input;
    }
@@ -353,10 +355,10 @@ abstract class CommonITILRecurrent extends CommonDropdown
     * @return string  Next creation date in 'Y-m-d H:i:s' format.
     */
    public function computeNextCreationDate(
-      string $begin_date,
-      string $end_date,
+      ?string $begin_date,
+      ?string $end_date,
       $periodicity,
-      int $create_before,
+      ?int $create_before,
       ?int $calendars_id
    ): string {
       $now = time();
