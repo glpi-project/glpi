@@ -414,19 +414,19 @@ $break_tablets: 1300px;
      line-height: 19px;
    }
 
-   textarea, input:not(.submit):not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput) {
+   textarea, input:not(.submit):not(.form-control):not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput) {
      border: 1px solid #D3D3D3;
      font-size: 11px;
      border-radius: 3px;
      padding: 0 5px;
    }
 
-   textarea:not([disabled]), input:not(.submit):not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput):not([disabled]) {
+   textarea:not([disabled]), input:not(.submit):not(.form-control):not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput):not([disabled]) {
      background-color: #FCFCFC;
      color: black;
    }
 
-   textarea:focus, input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput):focus {
+   textarea:focus, input:not([type=submit]):not(.form-control):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput):focus {
      border-color: #5897fb;
    }
 
@@ -436,7 +436,7 @@ $break_tablets: 1300px;
      }
    }
 
-   input:not(.btn) {
+   input:not(.btn):not(.form-control) {
      height: 17px;
      vertical-align: middle;
 
