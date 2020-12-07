@@ -32,6 +32,8 @@
 $info: #80abe4;
 $danger: #d49696;
 
+$enable-negative-margins: true;
+
 @import "~@tabler/core/src/scss/tabler";
 
 body.iframed {

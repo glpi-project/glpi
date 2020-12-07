@@ -1299,7 +1299,7 @@ class Problem extends CommonITILObject {
       }
       echo "</table>";
 
-      echo "<table class='tab_cadre_fixe m-2' id='mainformtable2'>";
+      echo "<table class='tab_cadre_fixe' id='mainformtable2'>";
       echo "<tr class='tab_bg_1'>";
 
       echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('status');
@@ -1451,7 +1451,7 @@ class Problem extends CommonITILObject {
 
       $this->showActorsPartForm($ID, $options);
 
-      echo "<table class='tab_cadre_fixe m-2' id='mainformtable3'>";
+      echo "<table class='tab_cadre_fixe' id='mainformtable3'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('name');
       printf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'));
