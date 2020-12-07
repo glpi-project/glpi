@@ -279,7 +279,7 @@ class DisplayPreference extends CommonDBTM {
 
       $IDuser = Session::getLoginUserID();
 
-      echo "<div id='tabsbody'>";
+      echo "<div id='tabsbody' class='m-n2'>";
       // Defined items
       $iterator = $DB->request([
          'FROM'   => $this->getTable(),
@@ -293,8 +293,7 @@ class DisplayPreference extends CommonDBTM {
 
       if ($numrows == 0) {
          Session::checkRight(self::$rightname, self::PERSONAL);
-         echo "<table><tr><th colspan='4'>";
-         echo "<form method='post' action='$target'>";
+         echo "<form method='post' action='$target' class='m-2'>";
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
          echo "<input type='hidden' name='users_id' value='$IDuser'>";
          echo __('No personal criteria. Create personal parameters?')."<span class='small_space'>";
@@ -302,7 +301,6 @@ class DisplayPreference extends CommonDBTM {
                 class='btn btn-primary'>";
          echo "</span>";
          Html::closeForm();
-         echo "</th></tr></table>\n";
 
       } else {
          $already_added = self::getForTypeUser($itemtype, $IDuser);
@@ -448,7 +446,7 @@ class DisplayPreference extends CommonDBTM {
 
       $global_write = Session::haveRight(self::$rightname, self::GENERAL);
 
-      echo "<div id='tabsbody' >";
+      echo "<div id='tabsbody' class='m-n2'>";
       // Defined items
       $iterator = $DB->request([
          'FROM'   => $this->getTable(),

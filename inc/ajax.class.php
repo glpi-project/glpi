@@ -413,7 +413,7 @@ class Ajax {
          }
          echo "</ul>";
 
-         echo "<div class='tab-content flex-grow-1 card $border'>";
+         echo "<div class='tab-content p-2 flex-grow-1 card $border'>";
          foreach ($tabs as $val) {
             $id = str_replace('\\', '_', $val['id']);
             echo "<div class='tab-pane fade' role='tabpanel' id='{$id}'></div>";
