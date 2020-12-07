@@ -48,17 +48,6 @@ $break_tablets: 1300px;
    font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
    font-size: 12px;
 
-   #searchcriteria ul, ul.select_folder, ul.filters {
-      &, & ul {
-         list-style-type: none;
-      }
-
-      &, & li {
-         margin: 0;
-         padding: 0;
-      }
-   }
-
    span.invisible {
      visibility: hidden;
    }
@@ -1270,78 +1259,6 @@ $break_tablets: 1300px;
       }
    }
 
-   #searchcriteria {
-      margin-top: 10px;
-      background-color: #FFF;
-      width: 80%;
-      margin: 0 auto;
-      box-shadow: 0px 1px 2px 1px #D2D2D2;
-      border-radius: 5px;
-      padding: 10px;
-
-      &.sub_criteria {
-         display: inline-block;
-         border-radius: 2px;
-         width: 100%;
-         margin-left: 7px;
-         box-shadow: none;
-         border: 1px solid #DDD;
-         background-color: rgba(0, 0, 0, 0.015);
-      }
-
-      .normalcriteria, .metacriteria {
-         margin: 10px;
-         display: flex;
-         flex-wrap: nowrap;
-         justify-content: flex-start;
-         align-items: center;
-         align-content: flex-start;
-      }
-
-      .normalcriteria * {
-         white-space: nowrap;
-      }
-
-      .metacriteria {
-         * {
-            white-space: nowrap;
-         }
-
-         flex-wrap: wrap;
-
-         blockquote {
-            flex-basis: 100%;
-            margin: 0 10px;
-         }
-      }
-
-      .switch {
-         opacity: .7;
-
-         &:hover {
-            opacity: 1;
-         }
-      }
-   }
-
-   @media screen and (max-width: $break_phones) {
-      #searchcriteria {
-         width: 95%;
-
-         .normalcriteria, .metacriteria {
-            display: block;
-         }
-
-         .normalcriteria *, .metacriteria * {
-            white-space: normal;
-         }
-      }
-   }
-
-   .search_actions > * {
-      margin: 0 3px;
-   }
-
    .priority_block {
       white-space: nowrap;
       border: 1px solid transparent;
@@ -1354,18 +1271,6 @@ $break_tablets: 1300px;
          height: 20px;
          display: inline-block;
          vertical-align: middle;
-      }
-   }
-
-   .reset-search {
-      color: #ccc !important;
-
-      &:link {
-         color: #ccc !important;
-      }
-
-      &:hover {
-         color: #999;
       }
    }
 
