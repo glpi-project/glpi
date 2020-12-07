@@ -2909,7 +2909,7 @@ JAVASCRIPT;
 
       // Default case : text field
       if (!$display) {
-           echo "<input type='text' class='form-control' size='13' name='$inputname' value=\"".
+           echo "<input type='text' class='form-control form-control-sm' size='13' name='$inputname' value=\"".
                   Html::cleanInputText($request['value'])."\">";
       }
    }
