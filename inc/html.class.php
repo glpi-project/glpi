@@ -3670,7 +3670,7 @@ JS;
       if ($can_autocomplete && $CFG_GLPI["use_ajax_autocompletion"]) {
          $output .=  "<input ".$params['option']." id='text$name' type='{$params['type']}' name='".
                        $params['name']."' value=\"".self::cleanInputText($params['value'])."\"
-                       class='autocompletion-text-field'";
+                       class='autocompletion-text-field form-control'";
 
          if ($params['required'] == true) {
             $output .= " required='required'";
@@ -3702,7 +3702,7 @@ JS;
          $output .= Html::scriptBlock($js);
 
       } else {
-         $output .=  "<input ".$params['option']." type='text' id='text$name' name='".$params['name']."'
+         $output .=  "<input ".$params['option']." type='text' id='text$name' class='form-control' name='".$params['name']."'
                 value=\"".self::cleanInputText($params['value'])."\">\n";
       }
 
