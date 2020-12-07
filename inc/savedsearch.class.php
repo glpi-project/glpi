@@ -1107,7 +1107,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
    static function showSaveButton($type, $itemtype = 0, bool $active = false) {
       global $CFG_GLPI;
 
-      echo "<a href='#' onClick=\"savesearch.dialog('open'); return false;\"
+      echo "<a href='#' onClick=\"modal_savesearch.show(); return false;\"
              class='btn btn-ghost-secondary btn-icon btn-sm mr-1 bookmark_record save' title='".__s('Save current search')."'>";
       echo "<i class='fas fa-lg fa-star " . ($active ? 'active' : '') . "'></i>";
       echo "</a>";
@@ -1127,7 +1127,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
 
       $url = $CFG_GLPI['root_doc'] . "/ajax/savedsearch.php?" . http_build_query($params);
 
-      Ajax::createModalWindow('savesearch', $url, [
+      Ajax::createModalWindow('modal_savesearch', $url, [
          'title' => __('Save current search')
       ]);
    }

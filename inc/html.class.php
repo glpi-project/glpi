@@ -2588,18 +2588,17 @@ class Html {
                   $js_modal_fields .= '#'.$p['container'].' ';
                }
                $js_modal_fields .= "[data-glpicore-ma-tags~=".$p['tag_to_send']."]').each(function( index ) {
-                  console.log($(this));
                   fields[$(this).attr('name')] = $(this).attr('value');
                   if (($(this).attr('type') == 'checkbox') && (!$(this).is(':checked'))) {
                      fields[$(this).attr('name')] = 0;
                   }
-               });console.log(fields);";
+               });";
             } else {
                $js_modal_fields = "";
             }
 
             $out .= Ajax::createModalWindow(
-               'massiveaction_window'.$identifier,
+               'modal_massiveaction_window'.$identifier,
                $url,
                [
                   'title'           => $p['title'],
@@ -2617,9 +2616,9 @@ class Html {
          }
          $out .= "<a class='btn btn-sm btn-outline-secondary mr-2' ";
          if (is_array($p['confirm'] || strlen($p['confirm']))) {
-            $out .= self::addConfirmationOnAction($p['confirm'], "massiveaction_window$identifier.dialog(\"open\");");
+            $out .= self::addConfirmationOnAction($p['confirm'], "modal_massiveaction_window$identifier.show();");
          } else {
-            $out .= "onclick='massiveaction_window$identifier.dialog(\"open\");'";
+            $out .= "onclick='modal_massiveaction_window$identifier.show();'";
          }
          $out .= " href='#modal_massaction_content$identifier' title=\"".htmlentities($p['title'], ENT_QUOTES, 'UTF-8')."\">";
          $out .= $p['title']."</a>";
@@ -3480,10 +3479,10 @@ JS;
 
       if (Session::isMultiEntitiesMode()) {
          echo "<li class='profile-selector'>";
-         Ajax::createModalWindow('entity_window', $CFG_GLPI['root_doc']."/ajax/entitytree.php",
+         Ajax::createModalWindow('modal_entity_window', $CFG_GLPI['root_doc']."/ajax/entitytree.php",
                                  ['title'       => __('Select the desired entity'),
                                        'extraparams' => ['target' => $target]]);
-         echo "<a onclick='entity_window.dialog(\"open\");' href='#modal_entity_content' title=\"".
+         echo "<a onclick='modal_entity_window.show();' href='#modal_entity_content' title=\"".
                 addslashes($_SESSION["glpiactive_entity_name"]).
                 "\" class='entity_select' id='global_entity_select'>".
                 $_SESSION["glpiactive_entity_shortname"]."</a>";

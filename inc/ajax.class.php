@@ -29,6 +29,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+use Glpi\Application\View\TemplateRenderer;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -78,23 +79,29 @@ class Ajax {
          }
       }
 
-      $out  = "<script type='text/javascript'>\n";
-      $out .= "var $name;";
-      $out .= "$(function() {";
-      $out .= "$name=";
+      $html = TemplateRenderer::getInstance()->render(
+         'components/modal.html.twig',
+         [
+            'title' => $param['title'],
+         ]
+      );
+
+      $out = "<script type='text/javascript'>\n";
+      $out .= "var {$name};\n";
+      $out .= "$(function() {\n";
       if (!empty($param['container'])) {
-         $out .= "$('#".Html::cleanId($param['container'])."')";
+         $out .= "   var el = $('#".Html::cleanId($param['container'])."');\n";
+         $out .= "   el.addClass('modal');\n";
       } else {
-         $out .= "$('<div></div>')";
+         $out .= "   var el = $('<div class=\"modal\"></div>');";
+         $out .= "   $('body').append(el);\n";
       }
-      $out .= ".dialog({\n
-         width:".$param['width'].",\n
-         autoOpen: false,\n
-         height:".$param['height'].",\n
-         modal: ".($param['modal']?'true':'false').",\n
-         title: \"".addslashes($param['title'])."\",\n
-         open: function (){
-            var fields = ";
+      $out .= "   el.html(" . json_encode($html) . ");\n";
+      $out .= "   {$name} = new bootstrap.Modal(el.get(0), {show: false});\n";
+      $out .= "   el.on(\n";
+      $out .= "      'show.bs.modal',\n";
+      $out .= "      function(evt) {\n";
+      $out .= "         var fields = ";
       if (is_array($param['extraparams']) && count($param['extraparams'])) {
          $out .= json_encode($param['extraparams'], JSON_FORCE_OBJECT);
       } else {
@@ -104,10 +111,10 @@ class Ajax {
       if (!empty($param['js_modal_fields'])) {
          $out .= $param['js_modal_fields']."\n";
       }
-      $out .= "            $(this).load('$url', fields);
-         }
-      });\n";
-      $out .= "});";
+      $out .= "         el.find('.modal-body').load('$url', fields);\n";
+      $out .= "      }\n";
+      $out .= "   );\n";
+      $out .= "});\n";
       $out .= "</script>\n";
 
       if ($param['display']) {
