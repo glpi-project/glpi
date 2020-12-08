@@ -477,7 +477,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
       $is_ajax = $options['ajax'] ?? false;
       if ($is_ajax && $ID > 0) {
          // Allow an extra option to save as a new search instead of editing the current one
-         $options['addbuttons'] = ["add" => "Save as a new search"];
+         $options['addbuttons'] = ["add" => __("Save as a new search")];
 
          // Do not allow delete from this modal
          $options['candel'] = false;
