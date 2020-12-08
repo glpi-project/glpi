@@ -56,9 +56,8 @@ $form-switch-padding-start:       $form-switch-width + .5rem !default;
 @import "~@tabler/core/src/scss/tabler";
 
 @import "~select2/src/scss/core";
-@import "~@ttskch/select2-bootstrap4-theme/src/layout";
 
-@import "components/forms";
+@import "components/select2";
 
 body.iframed {
    background-color: transparent;
