@@ -22,7 +22,7 @@
 {% if max > 10 %}
    {% set options = options|merge([max - 10]) %}
 {% endif %}
-<select class="form-select mx-1" aria-label="Default select example"
+<select class="form-select form-select-sm mx-1" aria-label="Default select example"
         onChange="location.href='{{ href }}glpilist_limit='+this.value">
    {% for value in options|sort %}
       <option value="{{ value }}" {{ value == user_pref("glpilist_limit") ? "selected" : ""}}>
