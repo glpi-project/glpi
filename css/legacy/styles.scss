@@ -3904,20 +3904,11 @@ $break_tablets: 1300px;
 
       .select2-container {
          min-width: 125px;
-
-         .select2-selection--multiple {
-            box-sizing: border-box;
-            min-height: 28px;
-         }
       }
 
       > th > input {
          box-sizing: border-box;
          min-height: 28px;
-      }
-
-      .select2-container--default .select2-selection--multiple .select2-selection__choice {
-         padding: 1px;
       }
    }
 
@@ -5103,19 +5094,6 @@ $break_tablets: 1300px;
          border: 1px solid #d6d6d6;
          padding: 10px;
 
-         .select2-selection {
-            height: 30px;
-
-            .select2-selection__rendered {
-               font-size: 13px;
-               line-height: 29px;
-            }
-
-            .select2-selection__arrow {
-               height: 25px;
-            }
-         }
-
          input[type=text][name=filter]:not([type=submit]):not([type=button]) {
             flex: 1 0 auto;
             border-radius: unset;
@@ -5161,12 +5139,6 @@ $break_tablets: 1300px;
             }
             &[type=button] {
                width: 100%;
-            }
-         }
-         .select2 {
-            width: 90%;
-            .selection .select2-selection {
-               max-width: unset;
             }
          }
          .kanban-item-subtitle {

@@ -1955,11 +1955,11 @@ class Dropdown {
          $select   = __('All');
          $deselect = __('None');
          $output  .= "<div class='invisible' id='selectallbuttons_$field_id'>";
-         $output  .= "<div class='select2-actionable-menu'>";
-         $output  .= "<a class='vsubmit' ".
+         $output  .= "<div class='d-flex justify-content-around p-1'>";
+         $output  .= "<a class='btn btn-sm' ".
                       "onclick=\"selectAll('$field_id');$('#$field_id').select2('close');\">$select".
                      "</a> ";
-         $output  .= "<a class='vsubmit floatright' onclick=\"deselectAll('$field_id');\">$deselect".
+         $output  .= "<a class='btn btn-sm' onclick=\"deselectAll('$field_id');\">$deselect".
                      "</a>";
          $output  .= "</div></div>";
 

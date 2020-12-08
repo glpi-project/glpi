@@ -1,6 +1,4 @@
 
-//@import "~@ttskch/select2-bootstrap4-theme/src/layout";
-
 .select2-container {
    display: inline-block;
 
@@ -31,8 +29,8 @@
       }
 
       &.select2-selection--single {
-         height: $input-height;
          @include font-size($input-font-size);
+         height: $input-height;
 
          .select2-selection__arrow {
             height: $input-height;
@@ -42,8 +40,8 @@
          }
 
          .form-select-sm + & {
-            height: $input-height-sm;
             @include font-size($input-font-size-sm);
+            height: $input-height-sm;
 
             .select2-selection__arrow {
                height: $input-height-sm;
@@ -56,8 +54,8 @@
             }
          }
          .form-select-lg + & {
-            height: $input-height-lg;
             @include font-size($input-font-size-lg);
+            height: $input-height-lg;
 
             .select2-selection__arrow {
                height: $input-height-lg;
@@ -70,11 +68,54 @@
             }
          }
       }
+
+      &.select2-selection--multiple {
+         @include font-size($input-font-size * .875);
+         min-height: $input-height;
+
+         .form-select-sm + & {
+            @include font-size($input-font-size-sm * .875);
+            min-height: $input-height-sm;
+         }
+         .form-select-lg + & {
+            @include font-size($input-font-size-lg * .875);
+            min-height: $input-height-lg;
+         }
+
+         .select2-selection__rendered {
+            .select2-selection__choice {
+               background-color: $light;
+               border: $input-border-width solid $input-border-color;
+               @include border-radius($input-border-radius-sm);
+               padding: 1px 3px;
+               margin: 3px 3px 0 0;
+
+               .select2-selection__choice__remove {
+                  color: $dark;
+                  font-weight: bold;
+                  margin: 0 0 0 3px;
+
+                  &:hover {
+                     color: $black;
+                  }
+               }
+            }
+         }
+      }
    }
 
    .select2-dropdown {
       border-color: $input-border-color;
       border-radius: 0;
+      @include font-size($input-font-size);
+
+      &.select-dropdown-sm {
+         @include font-size($input-font-size-sm);
+      }
+
+      &.select-dropdown-lg {
+         @include font-size($input-font-size-lg);
+      }
 
       &.select2-dropdown--below {
          border-top: none;

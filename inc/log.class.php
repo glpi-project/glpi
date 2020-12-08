@@ -323,13 +323,13 @@ class Log extends CommonDBTM {
       echo $header;
       if (isset($_GET['filters'])) {
          echo "<tr class='log_history_filter_row'>";
-         echo "<th>";
+         echo "<td>";
          echo "<input type='hidden' name='filters[active]' value='1' />";
          echo "<input type='hidden' name='items_id' value='$items_id' />";
-         echo "</th>";
+         echo "</td>";
          $dateValue = isset($_GET['filters']['date']) ? Html::cleanInputText($_GET['filters']['date']) : null;
-         echo "<th><input type='date' name='filters[date]' value='$dateValue' /></th>";
-         echo "<th>";
+         echo "<td><input type='date' name='filters[date]' value='$dateValue' /></td>";
+         echo "<td>";
          Dropdown::showFromArray(
             "filters[users_names]",
             Log::getDistinctUserNamesValuesInItemLog($item),
@@ -340,8 +340,8 @@ class Log extends CommonDBTM {
                'width'               => "100%",
             ]
          );
-         echo "</th>";
-         echo "<th>";
+         echo "</td>";
+         echo "<td>";
          Dropdown::showFromArray(
             "filters[affected_fields]",
             Log::getDistinctAffectedFieldValuesInItemLog($item),
@@ -352,8 +352,8 @@ class Log extends CommonDBTM {
                'width'               => "100%",
             ]
          );
-         echo "</th>";
-         echo "<th colspan='2'>";
+         echo "</td>";
+         echo "<td colspan='2'>";
          Dropdown::showFromArray(
             "filters[linked_actions]",
             Log::getDistinctLinkedActionValuesInItemLog($item),
@@ -364,7 +364,7 @@ class Log extends CommonDBTM {
                'width'               => "100%",
             ]
          );
-         echo "</th>";
+         echo "</td>";
          echo "</tr>";
       }
       echo "</thead>";
