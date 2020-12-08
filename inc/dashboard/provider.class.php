@@ -1022,7 +1022,7 @@ class Provider extends CommonGLPI {
             $soption  = 5;
             break;
          case "group_assign":
-            $type     = CommonITILActor::OBSERVER;
+            $type     = CommonITILActor::ASSIGN;
             $soption  = 8;
             break;
       }
