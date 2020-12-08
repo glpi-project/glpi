@@ -1,0 +1,119 @@
+
+//@import "~@ttskch/select2-bootstrap4-theme/src/layout";
+
+.select2-container {
+   display: inline-block;
+
+   *:focus {
+      outline: 0;
+   }
+
+   .select2-selection {
+      background-color: $input-bg;
+      border: $input-border-width solid $input-border-color;
+      @include border-radius($input-border-radius);
+      @include box-shadow($input-box-shadow);
+      @include transition($input-transition);
+
+      .select2-container--focus& {
+         border-color: $input-focus-border-color;
+         box-shadow: $input-focus-box-shadow;
+      }
+      .select2-container--disabled& {
+         background-color: $input-disabled-bg;
+         border-color: $input-border-color;
+         box-shadow: none;
+         cursor: not-allowed;
+      }
+
+      .select2-selection__rendered {
+         direction: rtl; // ellipsis on left
+      }
+
+      &.select2-selection--single {
+         height: $input-height;
+         @include font-size($input-font-size);
+
+         .select2-selection__arrow {
+            height: $input-height;
+         }
+         .select2-selection__rendered {
+            line-height: $input-height;
+         }
+
+         .form-select-sm + & {
+            height: $input-height-sm;
+            @include font-size($input-font-size-sm);
+
+            .select2-selection__arrow {
+               height: $input-height-sm;
+               b {
+                  margin-top: -4px;
+               }
+            }
+            .select2-selection__rendered {
+               line-height: $input-height-sm;
+            }
+         }
+         .form-select-lg + & {
+            height: $input-height-lg;
+            @include font-size($input-font-size-lg);
+
+            .select2-selection__arrow {
+               height: $input-height-lg;
+               b {
+                  margin-top: -1px;
+               }
+            }
+            .select2-selection__rendered {
+               line-height: $input-height-lg;
+            }
+         }
+      }
+   }
+
+   .select2-dropdown {
+      border-color: $input-border-color;
+      border-radius: 0;
+
+      &.select2-dropdown--below {
+         border-top: none;
+         @include border-bottom-radius($input-border-radius);
+      }
+      &.select2-dropdown--above {
+         border-top: 1px solid $input-border-color;
+         @include border-top-radius($input-border-radius);
+      }
+
+      .select2-search {
+         .select2-search__field {
+            border: $input-border-width solid $input-border-color;
+            @include border-radius($input-border-radius);
+         }
+      }
+
+      .select2-results {
+         .select2-results__options {
+            .select2-results__option {
+               &[aria-selected=true]:not(.select2-results__option--highlighted) {
+                  background-color: darken($light, 5%);
+               }
+               &.select2-results__option--highlighted {
+                  background-color: $primary;
+                  color: $light;
+               }
+               &[role=group] {
+                  padding: 0;
+
+                  .select2-results__options--nested .select2-results__option {
+                     padding-left: 1em;
+                  }
+               }
+               .select2-rendered__match {
+                  text-decoration: underline;
+               }
+            }
+         }
+      }
+   }
+}
