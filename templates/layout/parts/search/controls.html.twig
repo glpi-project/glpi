@@ -32,7 +32,7 @@
       {% endif %}
 
       <button class="dropdown-toggle btn btn-sm btn-icon btn-ghost-secondary" type="button" id="dropdown-export"
-            data-toggle="dropdown" aria-expanded="false" title="{{ _x('button', 'Export') }} ">
+            data-bs-toggle="dropdown" aria-expanded="false" title="{{ _x('button', 'Export') }} ">
          <i class="fas fa-lg fa-file-download"></i>
       </button>
       {% set exporthref = path('/front/report.dynamic.php') ~ '?item_type=' ~ itemtype ~ '&start=' ~ start ~ '&' ~ posthref %}
@@ -83,7 +83,7 @@ $(document).ready(function() {
       modal += '<div class="modal-content">';
       modal += '<div class="modal-header">';
       modal += '<h4 class="modal-title">{{ __("Select default items to show") }}</h4>';
-      modal += '<button type="button" class="btn-close" data-dismiss="modal" aria-label="{{ __("Close modal") }}"></button>';
+      modal += '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __("Close modal") }}"></button>';
       modal += '</div>';
       modal += '<div class="modal-body">';
       modal += '<div class="ratio ratio-4x3">';

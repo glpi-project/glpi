@@ -1076,7 +1076,7 @@ JAVASCRIPT;
             if (count($actions)) {
                echo "<div class='dropdown'>";
                echo "<button class='btn btn-sm btn-secondary dropdown-toggle' type='button'
-                             id='single-action' data-toggle='dropdown' aria-haspopup='true'
+                             id='single-action' data-bs-toggle='dropdown' aria-haspopup='true'
                              aria-expanded='false'>
                         ".__("Actions")."
                      </button>";
