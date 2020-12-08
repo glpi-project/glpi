@@ -36,6 +36,11 @@ $enable-negative-margins: true;
 
 @import "~@tabler/core/src/scss/tabler";
 
+@import "~select2/src/scss/core";
+@import "~@ttskch/select2-bootstrap4-theme/src/layout";
+
+@import "components/forms";
+
 body.iframed {
    background-color: transparent;
 }

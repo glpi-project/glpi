@@ -155,111 +155,6 @@ html .ui-autocomplete {
    border-color: red;
 }
 
-/** Select2 v4 */
-.select2-container .select2-selection--single {
-   height: 22px;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-   line-height: 22px;
-   font-weight: normal;
-   font-size: 11px;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-   height: 18px;
-}
-
-.select2-container--default .select2-selection--single {
-   border: 1px solid #D3D3D3;
-   overflow: hidden;
-}
-
-.select2-results__option {
-   padding: 3px 6px;
-}
-
-.select2-rendered__match {
-   text-decoration: underline;
-}
-
-.select2-container--default .select2-selection--multiple .select2-selection__choice {
-   padding: 4px 8px;
-}
-
-.select2-container--default .select2-search--inline .select2-search__field {
-   border: 0!important;
-}
-
-.select2-selection__choice > * {
-   vertical-align: middle;
-}
-
-.select2-container {
-   max-width: 500px;
-   word-break: break-all;
-   font-size: 11px;
-   margin-right: .5em;
-}
-
-.select2-search--dropdown .select2-search__field {
-   padding: 0 4px;
-}
-
-/** left-ellipsis stuff... */
-.select2-selection.select2-selection--single {
-   min-width: 72px;
-   position: relative;
-   text-overflow: clip;
-   background-color: #FFF;
-   white-space: nowrap;
-   overflow: hidden;
-   text-overflow: ellipsis;
-   padding-left: 1em;
-   max-width: 270px;
-}
-.select2-selection.select2-selection--single:before {
-   content: '\02026';
-   position: absolute;
-   z-index: 1;
-   left: -1em;
-   background-color: inherit;
-   padding-left: 1em;
-   margin-left: .5em;
-   background-color: inherit;
-   line-height: 26px;
-   margin-top: -2px;
-   padding-right: .1em;
-}
-
-.select2-selection.select2-selection--single .select2-selection__rendered {
-   min-width: 100%;
-   position: relative;
-   display: inline-block;
-   float: right;
-   overflow: visible;
-   text-indent: .5em;
-   background-color: inherit;
-   margin-right: 0;
-   padding-right: 26px;
-   box-sizing: border-box;
-}
-.select2-selection.select2-selection--single .select2-selection__rendered:before {
-   content: '';
-   position: absolute;
-   display: inline-block;
-   width: 1em;
-   background-color: inherit;
-   z-index: 2;
-   left: -.5em;
-   height: 26px;
-   margin-top: -2px;
-}
-/** End left-ellipsis stuff */
-/** End Select2 v4 */
-
-/* SELECT2 */
-
 .ui-widget .ui-widget-header {
   font-family: Verdana,Arial,sans-serif;
   font-size: 1.1em;
@@ -272,47 +167,6 @@ html .ui-autocomplete {
 {
   font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
   font-size: 11px;
-}
-.select2-results li {
-   font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
-   font-size: 11px;
-}
-.select2-search input {
-   font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
-   font-size: 11px;
-}
-
-.select2-container .select2-choice {
-    height: 22px;
-    padding: 0 0 0 8px;
-    font-weight: normal;
-    margin-top: 0px;
-    vertical-align: top;
-}
-.select2-container .select2-choice span {
-    margin-top: -2px;
-    /* to have cut on left : not working reverse display for simple items*/
-    /*direction: rtl;*/
-}
-
-.select2-container .select2-choice div b {
-    margin-top: -2px;
-}
-#show_validator_field .select2-container{
-  width: 60%;
-}
-.select2-results ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
-.select2-results ul.select2-result-sub ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
-.select2-results ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
-.select2-results ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
-.select2-results ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
-.select2-results ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
-.select2-results ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
-
-/* Menu actions*/
-.select2-actionable-menu {
-   width: 80%;
-   margin:auto;
 }
 
 input.submit {
@@ -335,13 +189,4 @@ input.submit {
 
 .fn-gantt .ganttMilestone {
     background-color: #000000;
-}
-
-/** select2 disabled **/
-.select2-container.select2-container-disabled .select2-choice,
-.select2-container.select2-container-disabled .select2-choice .select2-arrow {
-   background-color: #f4f4f4 !important;
-}
-.select2-container.select2-container-disabled .select2-choice {
-   border: 1px solid #ddd !important;
 }
