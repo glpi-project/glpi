@@ -2514,9 +2514,11 @@ JAVASCRIPT;
 
       $rowid  = 'metasearchrow'.$request['itemtype'].$rand;
 
-      echo "<li class='metacriteria' id='$rowid'>";
-      echo "<i class='far fa-minus-square remove-search-criteria' alt='-' title=\"".
-               __s('Delete a global rule')."\" data-rowid='$rowid'></i>&nbsp;";
+      echo "<div class='list-item metacriteria' id='$rowid'>";
+      echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' data-rowid='$rowid'>
+         <i class='far fa-minus-square' alt='-' title=\"".
+         __s('Delete a global rule')."\"></i>
+      </button>";
 
       // Display link item (not for the first item)
       Dropdown::showFromArray(
@@ -2572,7 +2574,7 @@ JAVASCRIPT;
       }
       echo "</span>";
       echo "</blockquote>";
-      echo "</li>";
+      echo "</div>";
    }
 
    /**
