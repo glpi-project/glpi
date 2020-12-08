@@ -794,18 +794,18 @@ class Html {
 
          echo "<ul class='nav nav-tabs' data-bs-toggle='tabs'>";
          if ($CFG_GLPI["debug_sql"]) {
-            echo "<li class='nav-item'><a class='nav-link active' data-toggle='tab' href='#debugsql$rand'>SQL REQUEST</a></li>";
+            echo "<li class='nav-item'><a class='nav-link active' data-bs-toggle='tab' href='#debugsql$rand'>SQL REQUEST</a></li>";
          }
          if ($CFG_GLPI["debug_vars"]) {
-            echo "<li class='nav-item'><a class='nav-link " . (!$CFG_GLPI["debug_sql"] ? 'active' : '') . "' data-toggle='tab' href='#debugautoload$rand'>AUTOLOAD</a></li>";
-            echo "<li class='nav-item'><a class='nav-link' data-toggle='tab' href='#debugpost$rand'>POST VARIABLE</a></li>";
-            echo "<li class='nav-item'><a class='nav-link' data-toggle='tab' href='#debugget$rand'>GET VARIABLE</a></li>";
+            echo "<li class='nav-item'><a class='nav-link " . (!$CFG_GLPI["debug_sql"] ? 'active' : '') . "' data-bs-toggle='tab' href='#debugautoload$rand'>AUTOLOAD</a></li>";
+            echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debugpost$rand'>POST VARIABLE</a></li>";
+            echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debugget$rand'>GET VARIABLE</a></li>";
             if ($with_session) {
-               echo "<li class='nav-item'><a class='nav-link' data-toggle='tab' href='#debugsession$rand'>SESSION VARIABLE</a></li>";
+               echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debugsession$rand'>SESSION VARIABLE</a></li>";
             }
-            echo "<li class='nav-item'><a class='nav-link' data-toggle='tab' href='#debugserver$rand'>SERVER VARIABLE</a></li>";
+            echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debugserver$rand'>SERVER VARIABLE</a></li>";
             if ($GLPI_CACHE instanceof SimpleCache) {
-               echo "<li class='nav-item'><a class='nav-link' data-toggle='tab' href='#debugcache$rand'>CACHE VARIABLE</a></li>";
+               echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debugcache$rand'>CACHE VARIABLE</a></li>";
             }
          }
          echo "<li class='close' id='close_debug$rand'><i class='fa fa-2x fa-times'></i><span class='sr-only'>".__('Close')."</span></li>";

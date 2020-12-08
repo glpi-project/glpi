@@ -414,8 +414,8 @@ class Ajax {
          foreach ($tabs as $val) {
             $target = str_replace('\\', '_', $val['id']);
             echo "<li class='nav-item $navitemml'>
-               <a class='nav-link justify-content-between' data-toggle='tab' title='".strip_tags($val['title'])."' ";
-            echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."' data-target='#{$target}'>";
+               <a class='nav-link justify-content-between' data-bs-toggle='tab' title='".strip_tags($val['title'])."' ";
+            echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."' data-bs-target='#{$target}'>";
             echo $val['title']."</a></li>";
          }
          echo "</ul>";
@@ -430,7 +430,7 @@ class Ajax {
          $js = "
          var loadTabContents = function (tablink) {
             var url = tablink.attr('href');
-            var target = tablink.attr('data-target');
+            var target = tablink.attr('data-bs-target');
             var index = tablink.closest('.nav-item').index();
 
             $.get(url, function(data) {
@@ -462,13 +462,13 @@ class Ajax {
          };
 
          $(function() {
-            $('a[data-toggle=\"tab\"]').on('shown.bs.tab', function(e) {
+            $('a[data-bs-toggle=\"tab\"]').on('shown.bs.tab', function(e) {
                e.preventDefault();
                loadTabContents($(this));
             });
 
             // load initial tab
-            $('a[data-target=\"#{$active_id}\"]').tab('show');
+            $('a[data-bs-target=\"#{$active_id}\"]').tab('show');
          });
          ";
 

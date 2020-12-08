@@ -3,7 +3,7 @@
 
 <div class="navbar-nav flex-row order-md-last">
    <div class="nav-item dropdown">
-      <a href="#" class="nav-link d-flex lh-1 text-reset p-1 dropdown-toggle {{ debug }}" data-toggle="dropdown">
+      <a href="#" class="nav-link d-flex lh-1 text-reset p-1 dropdown-toggle {{ debug }}" data-bs-toggle="dropdown">
          <div class="d-none d-xl-block pr-2">
             <div>{{ active_profile_name|u.truncate(35, '...') }}</div>
             <div class="mt-1 small text-muted">{{ active_entity_name|u.truncate(35, '...') }}</div>
@@ -84,7 +84,7 @@
       <div class="modal-content">
          <div class="modal-header">
             <h4 class="modal-title">{{ __("About") }}</h4>
-            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __("Close") }}"></button>
          </div>
          <div class="modal-body">
             <p><a href="http://glpi-project.org/" title="Powered by Teclib and contributors" class="copyright">

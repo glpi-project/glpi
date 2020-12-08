@@ -14,7 +14,7 @@
         "@fullcalendar/timegrid": "^4.4.0",
         "@tabler/core": "^1.0.0-alpha.16",
         "@ttskch/select2-bootstrap4-theme": "^1.3.4",
-        "bootstrap": "^5.0.0-alpha3",
+        "bootstrap": "^5.0.0-beta1",
         "chartist": "^0.11.4",
         "chartist-plugin-legend": "^0.6.2",
         "chartist-plugin-pointlabels": "^0.0.6",
