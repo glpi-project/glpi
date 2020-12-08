@@ -400,18 +400,18 @@ $break_tablets: 1300px;
    }
 
    /* ################--------------- form ---------------#################### */
-   option {
-     border: 1px solid #ccc;
-     background-color: #ffffff;
-   }
-
    .submit {
      text-align: center;
    }
 
-   select {
-     font-size: 11px;
-     line-height: 19px;
+   select:not(.form-select) {
+      font-size: 11px;
+      line-height: 19px;
+
+      option {
+         border: 1px solid #ccc;
+         background-color: #ffffff;
+      }
    }
 
    textarea, input:not(.submit):not(.form-control):not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput) {
