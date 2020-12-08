@@ -70,10 +70,11 @@ class GLPIMailer extends PHPMailer {
 
          if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPSSL) {
             $this->SMTPSecure = "ssl";
-         }
-
-         if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPTLS) {
+         } else if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPTLS) {
             $this->SMTPSecure = "tls";
+         } else {
+            // Don't automatically enable encryption if the GLPI config doesn't specify it
+            $this->SMTPAutoTLS = false;
          }
 
          if (!$CFG_GLPI['smtp_check_certificate']) {

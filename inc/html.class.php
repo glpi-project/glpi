@@ -57,6 +57,12 @@ class Html {
    static function clean($value, $striptags = true, $keep_bad = 2) {
       $value = Html::entity_decode_deep($value);
 
+      // Change <email@domain> to email@domain so it is not removed by htmLawed
+      $regex = "/(<[^>]+?@[^;]+?>)/";
+      $value = preg_replace_callback($regex, function($matches) {
+         return substr($matches[1], 1, (strlen($matches[1]) - 2));
+      }, $value);
+
       // Clean MS office tags
       $value = str_replace(["<![if !supportLists]>", "<![endif]>"], '', $value);
 

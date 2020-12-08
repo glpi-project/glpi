@@ -5779,7 +5779,7 @@ JAVASCRIPT;
 
                      if ($itemtype == 'User') {
                         // Requester
-                        if ($ID == 60) {
+                        if ($ID == 'User_60') {
                            $options['criteria'][0]['field']      = 4;
                            $options['criteria'][0]['searchtype']= 'equals';
                            $options['criteria'][0]['value']      = $data['id'];
@@ -5787,14 +5787,14 @@ JAVASCRIPT;
                         }
 
                         // Writer
-                        if ($ID == 61) {
+                        if ($ID == 'User_61') {
                            $options['criteria'][0]['field']      = 22;
                            $options['criteria'][0]['searchtype']= 'equals';
                            $options['criteria'][0]['value']      = $data['id'];
                            $options['criteria'][0]['link']       = 'AND';
                         }
                         // Assign
-                        if ($ID == 64) {
+                        if ($ID == 'User_64') {
                            $options['criteria'][0]['field']      = 5;
                            $options['criteria'][0]['searchtype']= 'equals';
                            $options['criteria'][0]['value']      = $data['id'];
