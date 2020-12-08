@@ -7399,21 +7399,34 @@ JAVASCRIPT;
       $hash = md5($contents);
 
       $matches = [];
-      preg_match_all('/@import\s+[\'"]([^\'"]*)[\'"];/', $contents, $matches);
+      preg_match_all('/@import\s+[\'"]~?([^\'"]*)[\'"];/', $contents, $matches);
 
       if (empty($matches)) {
          return $hash;
       }
 
-      $basedir = dirname($filepath);
+      $basedirs = [
+         GLPI_ROOT, // search with path relative to GLPI root
+         dirname($filepath), // search with path relative to current file
+         GLPI_ROOT . '/node_modules', // search in node_modules
+      ];
       foreach ($matches[1] as $import_url) {
-         $has_extension = preg_match('/\.s?css$/', $import_url);
-         $imported_filepath = $basedir . '/' . $import_url;
-         if (!$has_extension && is_file($imported_filepath . '.scss')) {
-            $imported_filepath = $imported_filepath . '.scss';
+         $has_extension   = preg_match('/\.s?css$/', $import_url);
+         $import_dirname  = dirname($import_url);
+         $import_filename = basename($import_url);
+
+         $potential_paths = [];
+         foreach ($basedirs as $basedir) {
+            $potential_paths[] = $basedir . '/' . $import_dirname . '/' . $import_filename . ($has_extension ? '' : '.scss');
+            $potential_paths[] = $basedir . '/' . $import_dirname . '/_' . $import_filename . ($has_extension ? '' : '.scss');
          }
 
-         $hash .= self::getScssFileHash($imported_filepath);
+         foreach ($potential_paths as $path) {
+            if (is_file($path)) {
+               $hash .= self::getScssFileHash($path);
+               break;
+            }
+         }
       }
 
       return $hash;
