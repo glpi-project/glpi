@@ -2338,6 +2338,7 @@ JAVASCRIPT;
       }
 
       echo "<div class='list-item normalcriteria$addclass' id='$rowid'>";
+      echo "<div class='row'>";
 
       if (!isset($request['from_meta'])
           || !$request['from_meta']) {
@@ -2361,17 +2362,19 @@ JAVASCRIPT;
                'id'    => 'as_map'
             ]);
          }
+         echo "<div class='col-auto'>";
          echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' data-rowid='$rowid'>
             <i class='far fa-minus-square' alt='-' title=\"".
                   __s('Delete a rule')."\"></i>
          </button>";
-
+         echo "</div>";
       }
 
       // Display link item
       $value = '';
       if (!isset($request['from_meta'])
           || !$request['from_meta']) {
+         echo "<div class='col-auto'>";
          if (isset($criteria["link"])) {
             $value = $criteria["link"];
          }
@@ -2380,6 +2383,7 @@ JAVASCRIPT;
             'value' => $value,
             'width' => '80px'
          ]);
+         echo "</div>";
       }
 
       $values   = [];
@@ -2416,13 +2420,16 @@ JAVASCRIPT;
          $value = $criteria['field'];
       }
 
+      echo "<div class='col-auto'>";
       $rand = Dropdown::showFromArray("criteria{$prefix}[$num][field]", $values, [
          'value' => $value,
          'width' => '170px'
       ]);
+      echo "</div>";
       $field_id = Html::cleanId("dropdown_criteria{$prefix}[$num][field]$rand");
       $spanid   = Html::cleanId('SearchSpan'.$request["itemtype"].$prefix.$num);
-      echo "<span id='$spanid' class='d-flex'>";
+
+      echo "<div class='col-auto row' id='$spanid'>";
 
       $used_itemtype = $request["itemtype"];
       // Force Computer itemtype for AllAssets to permit to show specific items
@@ -2447,7 +2454,7 @@ JAVASCRIPT;
          'p'           => $p,
       ];
       Search::displaySearchoption($params);
-      echo "</span>";
+      echo "</div>";
 
       Ajax::updateItemOnSelectEvent(
          $field_id,
@@ -2458,7 +2465,7 @@ JAVASCRIPT;
             'field'      => '__VALUE__',
          ] + $params
       );
-
+      echo "</div>"; //.row
       echo "</div>";
    }
 
@@ -2505,12 +2512,17 @@ JAVASCRIPT;
       $rowid  = 'metasearchrow'.$request['itemtype'].$rand;
 
       echo "<div class='list-item metacriteria' id='$rowid'>";
+      echo "<div class='row'>";
+
+      echo "<div class='col-auto'>";
       echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' data-rowid='$rowid'>
          <i class='far fa-minus-square' alt='-' title=\"".
          __s('Delete a global rule')."\"></i>
       </button>";
+      echo "</div>";
 
       // Display link item (not for the first item)
+      echo "<div class='col-auto'>";
       Dropdown::showFromArray(
          "criteria{$prefix}[$num][link]",
          Search::getLogicalOperators(),
@@ -2521,8 +2533,10 @@ JAVASCRIPT;
             'width' => '80px'
          ]
       );
+      echo "</div>";
 
       // Display select of the linked item type available
+      echo "<div class='col-auto'>";
       $rand = Dropdown::showItemTypes("criteria{$prefix}[$num][itemtype]", $linked, [
          'value' => isset($metacriteria['itemtype'])
                     && !empty($metacriteria['itemtype'])
@@ -2530,6 +2544,8 @@ JAVASCRIPT;
                      : "",
          'width' => '170px'
       ]);
+      echo "</div>";
+      echo "</div>";
       echo Html::hidden("criteria{$prefix}[$num][meta]", [
          'value' => true
       ]);
@@ -2564,7 +2580,6 @@ JAVASCRIPT;
       }
       echo "</span>";
       echo "</blockquote>";
-      echo "</div>";
    }
 
    /**
@@ -2593,13 +2608,19 @@ JAVASCRIPT;
       }
 
       echo "<div class='list-item normalcriteria$addclass' id='$rowid'>";
+      echo "<div class='row'>";
+      echo "<div class='col-auto'>";
       echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' data-rowid='$rowid'>
          <i class='far fa-minus-square' alt='-' title=\"".__s('Delete a rule')."\"></i>
       </button>";
+      echo "</div>";
+      echo "<div class='col-auto'>";
       Dropdown::showFromArray("criteria{$prefix}[$num][link]", Search::getLogicalOperators(), [
          'value' => isset($criteria["link"]) ? $criteria["link"] : '',
          'width' => '80px'
       ]);
+      echo "</div>";
+      echo "</div>";
 
       $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];
       array_push($parents_num, $num);
@@ -2747,14 +2768,16 @@ JAVASCRIPT;
             unset($actions['searchopt']);
          }
          $searchtype_name = "{$fieldname}{$prefix}[$num][searchtype]";
+         echo "<div class='col-auto'>";
          $rands = Dropdown::showFromArray($searchtype_name, $actions, [
             'value' => $request["searchtype"],
             'width' => '105px'
          ]);
+         echo "</div>";
          $fieldsearch_id = Html::cleanId("dropdown_$searchtype_name$rands");
       }
 
-      echo "<span id='$dropdownname'>";
+      echo "<div class='col-auto' id='$dropdownname'>";
       $params = [
          'value'       => rawurlencode(stripslashes($request['value'])),
          'searchopt'   => $searchopt,
@@ -2769,7 +2792,7 @@ JAVASCRIPT;
          'p'           => $p,
       ];
       self::displaySearchoptionValue($params);
-      echo "</span>";
+      echo "</div>";
 
       Ajax::updateItemOnSelectEvent(
          $fieldsearch_id,
