@@ -37,6 +37,7 @@ if (version_compare(PHP_VERSION, '7.3.0') < 0) {
 }
 
 
+use Glpi\Application\View\TemplateRenderer;
 
 //Load GLPI constants
 define('GLPI_ROOT', __DIR__);
@@ -63,13 +64,40 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
    Auth::checkAlternateAuthSystems(true, isset($_GET["redirect"])?$_GET["redirect"]:"");
 
-   // Send UTF8 Headers
+   Plugin::doHook('display_login');
+
+   $theme = $_SESSION['glpipalette'] ?? 'auror';
+
+   TemplateRenderer::getInstance()->display('login.html.twig', [
+      'lang'                => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
+      'title'               => __('GLPI - Authentication'),
+      'theme'               => $theme,
+      'css_files'           => [
+         "css/palettes/$theme.scss"
+      ],
+      'noAuto'              => $_GET["noAUTO"] ?? 0,
+      'redirect'            => Html::entities_deep($_GET['redirect'] ?? ""),
+      'namfield'            => ($_SESSION['namfield'] = uniqid('fielda')),
+      'pwdfield'            => ($_SESSION['pwdfield'] = uniqid('fieldb')),
+      'rmbfield'            => ($_SESSION['rmbfield'] = uniqid('fieldc')),
+      'languages_dropdown'  => Dropdown::showLanguages('language', [
+         'display'             => false,
+         'display_emptychoice' => true,
+         'emptylabel'          => __('Default (from user profile)'),
+         'width'               => '100%'
+      ]),
+      'auth_dropdown_login' => Auth::dropdownLogin(false),
+      'copyright_message'   => Html::getCopyrightMessage(false),
+   ]);
+
+
+   /*// Send UTF8 Headers
    header("Content-Type: text/html; charset=UTF-8");
 
    // Start the page
    echo "<!DOCTYPE html>\n";
    echo "<html lang=\"{$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]}\" class='loginpage'>";
-   echo '<head><title>'.__('GLPI - Authentication').'</title>'."\n";
+   echo '<head><title>'.__('GLPI - Authentication').'</title>';
    echo '<meta charset="utf-8"/>'."\n";
    echo "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n";
    echo '<link rel="shortcut icon" type="images/x-icon" href="'.$CFG_GLPI["root_doc"].
@@ -84,7 +112,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       echo Html::scss('css/legacy/highcontrast');
    }
    $theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
-   echo Html::scss('css/legacy/palettes/' . $theme);
+   echo Html::scss('css/palettes/' . $theme);
    // external libs CSS
    echo Html::css('public/lib/base.css');
 
@@ -97,8 +125,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo Html::getCoreVariablesForJavascript();
 
    echo Html::script("public/lib/base.js");
-   echo Html::script("public/lib/fuzzy.js");
-   echo Html::script('js/common.js');
+   echo Html::script('public/lib/tabler.js');
 
    echo "</head>";
 
@@ -111,10 +138,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    echo "<div id='boxlogin'>";
    echo "<form action='".$CFG_GLPI["root_doc"]."/front/login.php' method='post'>";
-
-   $_SESSION['namfield'] = $namfield = uniqid('fielda');
-   $_SESSION['pwdfield'] = $pwdfield = uniqid('fieldb');
-   $_SESSION['rmbfield'] = $rmbfield = uniqid('fieldc');
 
    // Other CAS
    if (isset($_GET["noAUTO"])) {
@@ -223,7 +246,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    echo "</div>"; // end contenu login
 
-   echo "<div id='footer-login' class='home'>" . Html::getCopyrightMessage(false) . "</div>";
+   echo "<div id='footer-login' class='home'>" . Html::getCopyrightMessage(false) . "</div>";*/
 
 }
 // call cron
