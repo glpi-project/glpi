@@ -46,12 +46,11 @@ echo "<html lang=\"{$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]}\">";
     <title>GLPI</title>
 
 <?php
-echo Html::scss('css/styles');
+$theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
+echo Html::scss('css/palettes/' . $theme);
 if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
    echo Html::scss('css/legacy/highcontrast');
 }
-$theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
-echo Html::scss('css/legacy/palettes/' . $theme);
 echo Html::script($CFG_GLPI["root_doc"].'/script.js');
 ?>
 

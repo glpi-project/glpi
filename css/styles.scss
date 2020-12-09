@@ -57,7 +57,7 @@ $form-switch-padding-start:       $form-switch-width + .5rem !default;
 
 @import "~select2/src/scss/core";
 
-@import "components/select2";
+@import "includes/select2";
 
 body.iframed {
    background-color: transparent;

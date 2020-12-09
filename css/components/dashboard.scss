@@ -1122,11 +1122,11 @@ $break_tablet: 1400px;
       }
 
       &.pie, &.line.multiple, &.bar.tab10 {
-         @import 'chartist/palette_d3_tab_10';
+         @import 'css/includes/chartist/palette_d3_tab_10';
       }
 
       &.bar.tab20 {
-         @import 'chartist/palette_d3_cat_20';
+         @import 'css/includes/chartist/palette_d3_cat_20';
       }
 
       .ct-legend {

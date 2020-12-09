@@ -29,20 +29,20 @@
  * ---------------------------------------------------------------------
  */
 
-//from http://colorbrewer2.org/
+//from https://github.com/d3/d3-scale-chromatic/blob/v1.5.0/README.md
 
-$ct-series-names: (a, b, c, d, e, f, g, h, i);
+$ct-series-names: (a, b, c, d, e, f, g, h, i, j);
 $ct-series-colors: (
-   #67000d,
-   #a50f15,
-   #cb181d,
-   #ef3b2c,
-   #fb6a4a,
-   #fc9272,
-   #fcbba1,
-   #fee0d2,
-   #fff5f0,
+   #1f77b4,
+   #ff7f0e,
+   #2ca02c,
+   #d62728,
+   #9467bd,
+   #8c564b,
+   #e377c2,
+   #7f7f7f,
+   #bcbd22,
+   #17becf
 );
 
-@import '_generate';
-
+@import 'generate';
