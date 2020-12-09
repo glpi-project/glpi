@@ -560,7 +560,7 @@ class Dropdown {
       $params['used']                = [];
       $params['emptylabel']          = self::EMPTY_VALUE;
       $params['display']             = true;
-      $params['width']               = '80%';
+      $params['width']               = '';
       $params['display_emptychoice'] = true;
       $params['rand']         = mt_rand();
 
@@ -1444,7 +1444,7 @@ class Dropdown {
     *     - toadd     array    of values to add at the beginning
     *     - unit      string   unit to used
     *     - display   boolean  if false get string
-    *     - width              specific width needed (default 80%)
+    *     - width              specific width needed
     *     - on_change string / value to transmit to "onChange"
     *     - used      array / Already used items ID: not to display in dropdown (default empty)
    **/
@@ -1597,7 +1597,7 @@ class Dropdown {
       $params['inhours']             = false;
       $params['display']             = true;
       $params['display_emptychoice'] = true;
-      $params['width']               = '80%';
+      $params['width']               = '';
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {

@@ -3923,7 +3923,7 @@ JAVASCRIPT;
     *    - ldap_import
     *    - on_change        : string / value to transmit to "onChange"
     *    - display          : boolean / display or get string (default true)
-    *    - width            : specific width needed (default 80%)
+    *    - width            : specific width needed
     *    - specific_tags    : array of HTML5 tags to add to the field
     *    - url              : url of the ajax php code which should return the json data to show in
     *                         the dropdown (default /ajax/getDropdownUsers.php)
