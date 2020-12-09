@@ -188,22 +188,6 @@ input.submit:hover, a.vsubmit:hover, #BackToTop:hover {
    }
 }
 
-#show_all_menu {
-   dt a {
-      color: white;
-
-      &:hover {
-         background: #20D6C7;
-         color: white;
-      }
-   }
-
-   a:hover {
-      background-color: #19BEC0;
-      color: #113F59;
-   }
-}
-
 div.progress .progress-fg {
    background-color: #19BEC0;
 }

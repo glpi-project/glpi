@@ -213,25 +213,6 @@ a.vsubmit {
    }
 }
 
-#show_all_menu {
-   dt a {
-      color: white;
-
-      &:hover {
-         background: #B2341C;
-      }
-   }
-
-   a {
-      color: #FF7C64;
-
-      &:hover {
-         background-color: #FF5131;
-         color: white;
-      }
-   }
-}
-
 div.progress .progress-fg {
    background-color: #FF5131;
 }
