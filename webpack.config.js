@@ -213,6 +213,23 @@ for (let packageName in libs) {
    libsConfig.plugins.push(new CopyWebpackPlugin({patterns:copyPatterns}));
 }
 
+// Replace jstree images
+libsConfig.plugins.push(
+   new CopyWebpackPlugin(
+      {
+         patterns: [
+            {
+               context: path.resolve(__dirname, 'lib/jstree/themes/glpi'),
+               force:   true,
+               from:    '*.*',
+               to:      path.resolve(__dirname, libOutputPath + '/jstree/dist/themes/default'),
+               toType:  'dir',
+            }
+         ]
+      }
+   )
+);
+
 module.exports = function() {
    var configs = [glpiConfig, libsConfig];
 

@@ -1205,8 +1205,11 @@ class Entity extends CommonTreeDropdown {
       echo Html::submit(__('Search'), ['id' => 'entsearch']);
       echo "</form>";
 
+      $css_tag = json_encode(Html::css('public/lib/jstree.css'));
+
       echo "<script type='text/javascript'>";
       echo "   $(function() {
+                  $('head').append($css_tag);
                   $.getScript('{$CFG_GLPI["root_doc"]}/public/lib/jstree.js').done(function(data, textStatus, jqxhr) {
                      $('#tree_projectcategory$rand')
                      // call `.jstree` with the options object
@@ -1239,9 +1242,6 @@ class Entity extends CommonTreeDropdown {
                            return false;
                         },
                         'core': {
-                           'themes': {
-                              'name': 'glpi'
-                           },
                            'animation': 0,
                            'data': {
                               'url': function(node) {

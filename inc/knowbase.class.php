@@ -178,9 +178,6 @@ class Knowbase extends CommonGLPI {
                   'show_only_matches': true
                },
                'core': {
-                  'themes': {
-                     'name': 'glpi'
-                  },
                   'animation': 0,
                   'data': $category_list
                }

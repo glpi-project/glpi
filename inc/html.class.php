@@ -1242,8 +1242,6 @@ class Html {
       $theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
 
       echo Html::css('public/lib/base.css');
-      //JSTree JS part is loaded on demand... But from an ajax call to display entities. Need to have CSS loaded.
-      echo Html::css('css/jstree-glpi.css');
 
       if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
          Html::requireJs('notifications_ajax');
@@ -1336,6 +1334,7 @@ class Html {
          }
 
          if (in_array('jstree', $jslibs)) {
+            echo Html::css('public/lib/jstree.css');
             Html::requireJs('jstree');
          }
 
