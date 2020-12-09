@@ -720,7 +720,7 @@ var Dashboard = {
    fitNumbers: function(parent_item) {
       parent_item = parent_item || $('body');
 
-      var text_offset = 0.96;
+      var text_offset = 1.16;
 
       // responsive mode
       if (this.dash_width <= 700
