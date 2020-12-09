@@ -1056,7 +1056,7 @@ HTML;
              && chart.data.series.length > 0
              && chart.data.series[0].hasOwnProperty('data')) {
             nb_elements = nb_elements * chart.data.series.length;
-            bar_margin = 2 + (chart.options.seriesBarDistance / 2);
+            bar_margin += 1;
          }
 
          chart.on('draw', function(data) {
@@ -1084,7 +1084,13 @@ HTML;
                if (is_horizontal) {
                   stroke_width = chart_height / nb_elements;
                }
-               stroke_width -= bar_margin;
+
+               if (!chart.options.stackBars
+                  && chart.data.series.length > 0 && is_vertical) {
+                  stroke_width -= bar_margin * nb_elements;
+               } else {
+                  stroke_width -= bar_margin;
+               }
                data.element.attr({
                   'style': 'stroke-width: '+stroke_width+'px'
                });
