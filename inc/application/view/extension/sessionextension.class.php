@@ -191,7 +191,7 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
     *
     * @TODO Add a unit test.
     */
-    public function userhaveAccessToOneOfEntities(int $users_id = 0, int $is_recursive = 0):bool {
+   public function userhaveAccessToOneOfEntities(int $users_id = 0, int $is_recursive = 0):bool {
       return Session::haveAccessToOneOfEntities(Profile_User::getUserEntities($users_id, $is_recursive));
    }
 }

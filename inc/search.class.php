@@ -1498,7 +1498,6 @@ class Search {
          return false;
       }
 
-
       $search     = $data['search'];
       $itemtype   = $data['itemtype'];
       $item       = $data['item'];

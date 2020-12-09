@@ -67,8 +67,7 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
     *
     * @TODO Add a unit test.
     */
-   public function itemtypeName($itemtype, $count = 0): ?string
-   {
+   public function itemtypeName($itemtype, $count = 0): ?string {
       if ($itemtype instanceof CommonGLPI || is_a($itemtype, CommonGLPI::class, true)) {
          return $itemtype::getTypeName($count);
       }
@@ -85,8 +84,7 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
     *
     * @TODO Add a unit test.
     */
-   public function itemInstanceOf($item, string $class = ""): ?bool
-   {
+   public function itemInstanceOf($item, string $class = ""): ?bool {
       return ($item instanceof $class);
    }
 
@@ -100,8 +98,7 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
     *
     * @TODO Add a unit test.
     */
-   public function maybeRecursive(CommonDBTM $item): ?bool
-   {
+   public function maybeRecursive(CommonDBTM $item): ?bool {
       return $item->maybeRecursive();
    }
 }

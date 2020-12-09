@@ -36,12 +36,12 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use Glpi\Application\View\Extension\CsrfExtension;
 use Glpi\Application\View\Extension\ConfigExtension;
+use Glpi\Application\View\Extension\CsrfExtension;
 use Glpi\Application\View\Extension\FrontEndAssetsExtension;
+use Glpi\Application\View\Extension\HtmlExtension;
 use Glpi\Application\View\Extension\I18nExtension;
 use Glpi\Application\View\Extension\ItemtypeExtension;
-use Glpi\Application\View\Extension\HtmlExtension;
 use Glpi\Application\View\Extension\NumberFormatExtension;
 use Glpi\Application\View\Extension\PluginExtension;
 use Glpi\Application\View\Extension\RoutingExtension;
