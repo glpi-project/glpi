@@ -83,16 +83,3 @@ do
     rm -rf $WORKING_DIR/$node
 done
 find $WORKING_DIR/pics/ -depth -type f -iname "*.eps" -exec rm -rf {} \;
-
-# Remove useless files and directories in vendor subdirs
-vendor_dirs=( "doc*" "example*" "test*" )
-for directory in "${vendor_dirs[@]}"
-do
-    find $WORKING_DIR/vendor -depth -type d -iname $directory -exec rm -rf {} \;
-done
-vendor_filenames=( "build.xml" "changelog.md" "composer.json" "phpunit.xml.dist" "readme.md" )
-for filename in "${vendor_filenames[@]}"
-do
-    find $WORKING_DIR/vendor -depth -type f -iname $filename -exec rm -rf {} \;
-done
-
