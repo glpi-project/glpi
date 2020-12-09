@@ -19,8 +19,15 @@
 {% set skip_adjacents = false %}
 
 <div class="flex-grow-1 d-flex align-items-center justify-content-between">
-   <p class="m-0 text-muted">
+   <span class='d-block d-md-none'>
+      {% set limitdropdown = include('layout/parts/dropdown/limit.html.twig') %}
+      {{ limitdropdown|raw }}
+   </span>
+   <p class="m-0 text-muted d-none d-md-block">
       {{ __("Showing %s to %s of %s entries")|format(current_start, current_end, count) }}
+   </p>
+   <p class="m-0 text-muted d-block d-md-none text-nowrap ml-2">
+      {{ __("%s-%s/%s")|format(current_start, current_end, count) }}
    </p>
    <ul class="pagination m-0 ml-auto">
       {% set disabled = (start == 0 ? "disabled" : "") %}
