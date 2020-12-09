@@ -43,6 +43,7 @@ use Glpi\Application\View\Extension\I18nExtension;
 use Glpi\Application\View\Extension\ItemtypeExtension;
 use Glpi\Application\View\Extension\HtmlExtension;
 use Glpi\Application\View\Extension\NumberFormatExtension;
+use Glpi\Application\View\Extension\PluginExtension;
 use Glpi\Application\View\Extension\RoutingExtension;
 use Glpi\Application\View\Extension\SearchExtension;
 use Glpi\Application\View\Extension\SessionExtension;
@@ -92,6 +93,7 @@ class TemplateRenderer {
       $this->environment->addExtension(new ItemtypeExtension());
       $this->environment->addExtension(new HtmlExtension());
       $this->environment->addExtension(new NumberFormatExtension());
+      $this->environment->addExtension(new PluginExtension());
       $this->environment->addExtension(new RoutingExtension());
       $this->environment->addExtension(new SearchExtension());
       $this->environment->addExtension(new SessionExtension());
