@@ -90,10 +90,10 @@ $break_tablet: 1400px;
 
    &.mini {
       padding-top: 0;
-      width: calc(80% + 28px);
       margin: 0 auto;
-      margin-bottom: -20px;
+      margin-bottom: -10px;
       z-index: 1;
+      box-sizing: content-box;
 
       & + .search_page {
          z-index: 2;
@@ -105,6 +105,7 @@ $break_tablet: 1400px;
 
       .grid-guide {
          top: 0;
+         bottom: 0 !important;
       }
 
       .main-icon {
@@ -770,6 +771,10 @@ $break_tablet: 1400px;
    }
 
    .big-number {
+      .content {
+         margin: 0
+      }
+
       .main-icon {
          right: 5px;
          top: 5px;

@@ -275,7 +275,7 @@ HTML;
       $add_dash_label   = __("Add a new dashboard");
       $save_label       = _x('button', "Save");
 
-      $gridstack_items = $this->getGridItemsHtml();
+      $gridstack_items = $this->getGridItemsHtml(!$mini);
 
       $dropdown_dashboards = "";
       if ($nb_dashboards) {
@@ -383,6 +383,14 @@ HTML;
          </div>
       </div>
 HTML;
+
+      if ($mini) {
+         $html = "<div class='card mb-4'>
+            <div class='card-body'>
+               $html
+            </div>
+         </div>";
+      }
 
       $ajax_cards = GLPI_AJAX_DASHBOARD;
       $context    = self::$context;
