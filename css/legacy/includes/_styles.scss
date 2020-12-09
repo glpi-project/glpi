@@ -30,14 +30,6 @@
 */
 /* ################--------------- GLPI CSS style   ---------------#################### */
 
-/* ################--------------- Media queries break   ---------------#################### */
-
-$break_sphones: 490px;
-$break_phones: 700px;
-$break_lphones: 900px;
-$break_menu: 1055px;
-$break_tablets: 1300px;
-
 .qtip {
    max-width: 380px !important;
 }
@@ -45,13 +37,6 @@ $break_tablets: 1300px;
 /* Apply legacy styles to main content (#page) and elements that are inserted directly in body (modals, tooltips, ...) */
 #page, .ui-dialog, .qtip, .modal .modal-body {
    /* ################--------------- Default style  ---------------#################### */
-   font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
-   font-size: 12px;
-
-   span.invisible {
-     visibility: hidden;
-   }
-
    .starthidden {
      display: none;
    }
@@ -68,17 +53,6 @@ $break_tablets: 1300px;
 
    img {
      border: 0;
-   }
-
-   small {
-     font-family: verdana;
-     font-size: 10px;
-   }
-
-   sup {
-     vertical-align: baseline;
-     position: relative;
-     top: -0.4em;
    }
 
    .big {
@@ -189,52 +163,14 @@ $break_tablets: 1300px;
      cursor: pointer;
      font: inherit;
      padding: 0;
-     text-decoration: underline;
-     outline: inherit;
-   }
-
-   a, .btn-linkstyled {
-     font-weight: bold;
      text-decoration: none;
-
-     &:not(.fa-lg):not(.fa-2x):not(.fa-3x):not(.fa-4x):not(.fa-5x) {
-        font-size: 11px;
-     }
-
-     &:link {
-        font-weight: bold;
-        text-decoration: none;
-
-        &:not(.fa-lg):not(.fa-2x):not(.fa-3x):not(.fa-4x):not(.fa-5x) {
-           font-size: 11px;
-        }
-     }
-
-     &.fa, &.far, &.fas {
-        font-weight: 900;
-
-        &:not(.fa-lg):not(.fa-2x):not(.fa-3x):not(.fa-4x):not(.fa-5x) {
-           font-size: inherit;
-        }
-
-        &:link {
-           font-weight: 900;
-
-           &:not(.fa-lg):not(.fa-2x):not(.fa-3x):not(.fa-4x):not(.fa-5x) {
-              font-size: inherit;
-           }
-        }
-     }
+     outline: inherit;
    }
 
    a {
      &.target-deleted {
         text-decoration: line-through;
      }
-   }
-
-   hr {
-     border: 1px solid #cccccc;
    }
 
    .pointer {
@@ -272,46 +208,6 @@ $break_tablets: 1300px;
 
    .tab_cadre_fixe .select2-container .select2-selection.select2-selection--single {
       max-width: 270px;
-   }
-
-   /* ################--------------- Rich Text ---------------#################### */
-
-   .rich_text_container {
-     ul {
-        list-style-type: disc;
-        margin: 1em 0;
-        padding: 0 0 0 40px;
-
-        ul {
-           margin-bottom: 0;
-           margin-top: 0;
-        }
-     }
-
-     ol {
-        ul, ol {
-           margin-bottom: 0;
-           margin-top: 0;
-        }
-
-        list-style-type: decimal;
-     }
-
-     ul ul, ol ul {
-        list-style-type: circle;
-     }
-
-     ul {
-        ul ul, ol ul {
-           list-style-type: square;
-        }
-     }
-
-     ol {
-        ul ul, ol ul {
-           list-style-type: square;
-        }
-     }
    }
 
    /* ################--------------- Fuzzy ---------------#################### */
@@ -379,13 +275,6 @@ $break_tablets: 1300px;
         padding: 3px 6px;
         box-sizing: border-box;
      }
-
-     @media screen and (max-width: $break_phones) {
-        width: 85%;
-        top: 20%;
-        left: 0;
-        margin: 0 5%;
-     }
    }
 
    /* ################--------------- Tabs ---------------#################### */
@@ -394,13 +283,6 @@ $break_tablets: 1300px;
      text-align: center;
      padding: 10px;
      font-weight: bold;
-   }
-
-   form {
-    font-size: 12px;
-    margin: 0;
-    margin-bottom: 5px;
-    padding: 0;
    }
 
    /* ################--------------- form ---------------#################### */
@@ -630,10 +512,6 @@ $break_tablets: 1300px;
    }
 
    .entity_tree.jstree {
-     &.jstree-classic ins {
-        background-image: url("../pics/d.png");
-     }
-
      .jstree-node:not(.jstree-leaf) {
         position: relative;
 
@@ -659,20 +537,12 @@ $break_tablets: 1300px;
      margin-left: -10px;
      margin-top: -5px;
 
-     @media screen and (max-width: $break_phones) {
-        flex-wrap: wrap;
-     }
-
      .kb_tree {
         flex-basis: 250px;
         flex-shrink: 0;
         padding-right: 10px;
         text-align: left;
         background-color: #F8F8F8;
-
-        a {
-           font-weight: normal;
-        }
      }
 
      .kb_tree_search {
@@ -727,38 +597,6 @@ $break_tablets: 1300px;
    }
 
    /* ################--------------- Layout  ---------------#################### */
-   &.layout_vsplit.form div.navigationheader {
-      margin: 0 auto 10px;
-      width: 90%;
-   }
-
-   &.layout_vsplit.form .main_form {
-      width: 950px;
-      margin: 0 auto;
-   }
-
-   &.layout_vsplit.form div.ui-tabs {
-      width: 950px;
-   }
-
-   &.layout_classic.form div.ui-tabs-panel, &.layout_vsplit.form div.ui-tabs-panel {
-      padding: 1px;
-   }
-
-   &.layout_classic.form div.ui-tabs-panel {
-      padding-top: 5px;
-   }
-
-   &.layout_vsplit #backtotop {
-      display: none;
-   }
-
-   &.layout_lefttab .ui-tabs, &.layout_classic .ui-tabs, &.layout_vsplit .ui-tabs {
-      border: 1px solid #e1e1e1;
-      border-top-width: 0;
-      box-sizing: border-box;
-   }
-
    .ui-tabs-paging-disabled {
       display: none;
    }
@@ -791,12 +629,6 @@ $break_tablets: 1300px;
       margin-right: -5px;
    }
 
-   &.layout_lefttab .ui-tabs sup.tab_nb {
-      position: absolute;
-      right: 8px;
-      top: 5px;
-   }
-
    .ui-tabs {
       .alltab sup.tab_nb {
          position: relative;
@@ -810,25 +642,14 @@ $break_tablets: 1300px;
       }
    }
 
-   &.layout_vsplit.form .ui-tabs {
-      height: 100%;
-      width: 100%;
-      padding: 0;
-   }
-
-   .debug .ui-tabs-nav, &.layout_lefttab .ui-tabs-nav {
+   .debug .ui-tabs-nav {
       margin: 5px !important;
       box-sizing: border-box;
    }
 
-   .debug .ui-tabs-nav, &.layout_lefttab .ui-tabs-nav, &.layout_classic .ui-tabs-nav, &.layout_vsplit .ui-tabs-nav {
+   .debug .ui-tabs-nav {
       border: 0;
       background: none;
-   }
-
-   &.layout_classic.form .stNavMain li, &.layout_vsplit.form .stNavMain li {
-      border: 1px solid #d3d3d3 !important;
-      border-bottom: none !important;
    }
 
    .main_form {
@@ -855,17 +676,6 @@ $break_tablets: 1300px;
       & > .fa, & > .far, & > .fas, & > button {
          margin-left: 8px;
          vertical-align: middle;
-      }
-   }
-
-   &.layout_lefttab .new_form_tabs {
-      .ui-tabs-nav {
-         width: 100%;
-      }
-
-      .ui-tabs-panel {
-         margin: 0;
-         clear: both;
       }
    }
 
@@ -962,7 +772,6 @@ $break_tablets: 1300px;
       margin: 10px auto;
       border: 0;
       text-align: left;
-      font-size: 11px;
       width: 95%;
       background-color: #ffffff;
       box-shadow: 0px 1px 2px 1px #D2D2D2;
@@ -1325,10 +1134,6 @@ $break_tablets: 1300px;
          white-space: nowrap;
          text-overflow: ellipsis;
          overflow: hidden;
-
-         @media screen and (max-width: $break_tablets) {
-            max-width: 30%;
-         }
       }
 
       .single-actions {
@@ -1377,13 +1182,6 @@ $break_tablets: 1300px;
             }
          }
       }
-   }
-
-   &.layout_vsplit .navigationheader {
-      width: calc(100% - 30px);
-      margin-bottom: 10px;
-      box-shadow: 0px 1px 2px 0px #D2D2D2;
-      border: 0;
    }
 
    .tab_cadre_pager .pager_controls img {
@@ -2215,12 +2013,6 @@ $break_tablets: 1300px;
       }
    }
 
-   #tabcontent {
-      width: 950px;
-      text-align: center;
-      margin: 0 auto;
-   }
-
    /* ################--------------- Notepad  ---------------#################### */
 
    .boxnote {
@@ -2288,9 +2080,7 @@ $break_tablets: 1300px;
    /* ################--------------- box (redirect and other)  ---------------#################### */
 
    .ui-widget-content.message_after_redirect {
-      font-family: "Myriad Pro","Myriad Web","Tahoma","Helvetica","Arial",sans-serif;
       color: #393939;
-      font-size: 11px;
       background: #DFDFDF;
    }
 
@@ -2338,22 +2128,16 @@ $break_tablets: 1300px;
       text-align: center;
 
       a {
-         font-weight: normal;
          color: red;
-         font-size: inherit;
 
          &:link {
-            font-weight: normal;
             color: red;
-            font-size: inherit;
          }
       }
    }
 
    .ui-widget-content .error a {
-      font-weight: normal;
       color: red;
-      font-size: inherit;
    }
 
    .error a:hover {
@@ -2379,45 +2163,6 @@ $break_tablets: 1300px;
       a > img, i.fa, i.far, i.fas {
          font-size: 1.7em;
          vertical-align: top;
-      }
-   }
-
-   #show_all_menu {
-      font-size: 11px;
-      text-align: left;
-      min-width: 150px;
-      column-count: 3;
-      -moz-column-count: 3;
-
-      dl {
-         padding-bottom: .5em;
-         break-inside: avoid-column;
-
-         /* standard */
-         page-break-inside: avoid;
-
-         /* Firefox */
-         -webkit-column-break-inside: avoid;
-
-         /* other webkit compliant */
-      }
-
-      a {
-         display: block;
-         padding: .2em .5em;
-      }
-
-      dt a {
-         color: white;
-
-         &:hover {
-            background: #8BAADA;
-         }
-      }
-
-      a:hover {
-         background-color: #3A5693;
-         color: #C7DBF5;
       }
    }
 
@@ -3118,18 +2863,6 @@ $break_tablets: 1300px;
 
          &:hover {
             opacity: 1;
-         }
-      }
-   }
-
-   @media screen and (max-width: $break_sphones) {
-      .timeline_history {
-         .h_content {
-            width: 100%;
-         }
-         .middle .h_content {
-            max-width: inherit;
-            width: 100%;
          }
       }
    }
@@ -4721,17 +4454,6 @@ $break_tablets: 1300px;
       padding: 5px 0;
    }
 
-   @media screen and (max-width: $break_lphones) {
-      .racks_col:not(:last-child) {
-         margin-right: 0;
-         margin-bottom: 15px;
-      }
-
-      #viewgraph {
-         min-width: 100%;
-      }
-   }
-
    .racks_add {
       position: absolute;
       display: block;
@@ -4979,38 +4701,6 @@ $break_tablets: 1300px;
       width: 350px;
       height: 200px;
       font-size: 11px;
-   }
-
-   /** Responsive for documentation */
-
-   @media screen and (max-width: $break_lphones) {
-      .documentation {
-         margin-left: 0 !important;
-      }
-   }
-
-   @media screen and (min-width: $break_lphones) {
-      .documentation #summary {
-         position: fixed;
-         top: 40px;
-         left: 15px;
-         margin-top: 0;
-
-         + ul {
-            width: 200px;
-            position: fixed;
-            top: 70px;
-            left: 10px;
-            bottom: 0;
-            overflow: auto;
-         }
-      }
-   }
-
-   @media screen and (max-width: 1100px) {
-      .documentation {
-         margin-left: 200px;
-      }
    }
 
    /** Fixes for Font Awesome 5 icons not showing at all or
@@ -5744,3 +5434,19 @@ $break_tablets: 1300px;
       right: .2em;
    }
 }
+
+
+/** Impersonate feature */
+div.banner-impersonate {
+   background: #ff3d2a;
+   color: #fff;
+   font-weight: bold;
+   padding: 10px;
+   text-align: right;
+}
+div.banner-impersonate button {
+   color: inherit;
+   margin-left: 5px;
+   text-decoration: underline;
+}
+

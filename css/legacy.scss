@@ -29,13 +29,5 @@
  * ---------------------------------------------------------------------
 */
 
-@import 'legacy/includes/layout';
 @import 'legacy/includes/styles';
-@import 'legacy/includes/login';
 @import 'includes/impact';
-
-@media print {
-   .legacy {
-      @import 'legacy/includes/print';
-   }
-}

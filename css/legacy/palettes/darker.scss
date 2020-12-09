@@ -654,26 +654,6 @@ input.submit:hover, a.vsubmit:hover, #BackToTop:hover {
    background: #191a19;
 }
 
-
-#show_all_menu {
-   dt a {
-      color: white;
-
-      &:hover {
-         background: #3F403E;
-      }
-   }
-
-   a {
-      color: #AAAAAA;
-
-      &:hover {
-         background-color: #585957;
-         color: white;
-      }
-   }
-}
-
 div.progress {
    background-color: #262626;
    .progress-fg {
