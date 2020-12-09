@@ -36,7 +36,6 @@ if (version_compare(PHP_VERSION, '7.2.5') < 0) {
    die('PHP >= 7.2.5 required');
 }
 
-
 use Glpi\Application\View\TemplateRenderer;
 
 //Load GLPI constants

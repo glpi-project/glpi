@@ -70,7 +70,7 @@ class SearchExtension extends AbstractExtension implements ExtensionInterface {
     *
     * @TODO Add a unit test.
     */
-    public function displayConfigItem(string $itemtype, int $id, array $data = []): string {
+   public function displayConfigItem(string $itemtype, int $id, array $data = []): string {
       return Search::displayConfigItem($itemtype, $id, $data);
    }
 
