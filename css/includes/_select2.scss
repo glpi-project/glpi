@@ -26,11 +26,13 @@
 
       .select2-selection__rendered {
          direction: rtl; // ellipsis on left
+         text-align: left;
       }
 
       &.select2-selection--single {
          @include font-size($input-font-size);
          height: $input-height;
+         position: relative; // fix arrow position
 
          .select2-selection__arrow {
             height: $input-height;

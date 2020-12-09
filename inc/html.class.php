@@ -4501,7 +4501,7 @@ JS;
       $js = "$(function() {
          $('#$id').select2({
             $placeholder
-            width: 'auto',
+            width: '$width',
             dropdownAutoWidth: true,
             quietMillis: 100,
             minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
@@ -4695,7 +4695,7 @@ JS;
       $js.= "};
 
          $('#$field_id').select2({
-            width: 'auto',
+            width: '$width',
             placeholder: '$placeholder',
             allowClear: $allowclear,
             minimumInputLength: 0,
