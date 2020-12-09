@@ -3945,7 +3945,7 @@ JAVASCRIPT;
          'placeholder'         => '',
          'on_change'           => '',
          'comments'            => 1,
-         'width'               => '80%',
+         'width'               => '',
          'entity'              => -1,
          'entity_sons'         => false,
          'used'                => [],
