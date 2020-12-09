@@ -1706,21 +1706,13 @@ class Auth extends CommonGLPI {
       $default = $elements['_default'];
       unset($elements['_default']);
       // show dropdown of login src only when multiple src
-      if (count($elements) > 1) {
-         $out.= '<p class="login_input" id="login_input_src">';
-         $out.= Dropdown::showFromArray('auth', $elements, [
-            'display'   => false,
-            'rand'      => '1',
-            'value'     => $default,
-            'width'     => '100%'
-         ]);
-         $out.= '</p>';
-      } else if (count($elements) == 1) {
-         // when one src, don't display it, pass it with hidden input
-         $out.= Html::hidden('auth', [
-            'value' => key($elements)
-         ]);
-      }
+      $out.= Dropdown::showFromArray('auth', $elements, [
+         'display'   => false,
+         'class'     => 'form-select',
+         'rand'      => '1',
+         'value'     => $default,
+         'width'     => '100%'
+      ]);
 
       if ($display) {
          echo $out;
