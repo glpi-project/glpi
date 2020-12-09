@@ -29,13 +29,13 @@
  * ---------------------------------------------------------------------
 */
 
-@import 'legacy/layout';
-@import 'legacy/styles';
-@import 'components/impact';
-@import 'legacy/login';
+@import 'legacy/includes/layout';
+@import 'legacy/includes/styles';
+@import 'legacy/includes/login';
+@import 'includes/impact';
 
 @media print {
    .legacy {
-      @import 'legacy/print';
+      @import 'legacy/includes/print';
    }
 }
