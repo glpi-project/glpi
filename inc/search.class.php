@@ -2144,17 +2144,17 @@ class Search {
       $linked = self::getMetaItemtypeAvailable($itemtype);
       echo "<button id='addsearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary mr-1'>
                <i class='fas fa-plus-square'></i>
-               ".__s('rule')."
+               <span class='d-none d-sm-block'>".__s('rule')."</span>
             </button>";
       if (count($linked)) {
          echo "<button id='addmetasearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary mr-1'>
                   <i class='far fa-plus-square'></i>
-                  ".__s('global rule')."
+                  <span class='d-none d-sm-block'>".__s('global rule')."</span>
                </button>";
       }
       echo "<button id='addcriteriagroup$rand_criteria' class='btn btn-sm btn-outline-secondary mr-1'>
                <i class='fas fa-plus-circle'></i>
-               ".__s('group')."
+               <span class='d-none d-sm-block'>".__s('group')."</span>
             </button>";
       $json_p = json_encode($p);
 

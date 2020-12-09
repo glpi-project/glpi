@@ -14,7 +14,7 @@
 
          {% if count > 0 and data['search']['as_map'] == 0 %}
             {% set limitdropdown = include('layout/parts/dropdown/limit.html.twig') %}
-            <div class="ml-auto d-inline-flex align-items-center">
+            <div class="ml-auto d-inline-flex align-items-center d-none d-md-block">
                {{ __("Show %s entries")|format(limitdropdown)|raw }}
             </div>
          {% endif %}
