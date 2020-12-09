@@ -1,4 +1,4 @@
 #!/bin/bash -e
 
-echo "Check for CS vialotions in templates"
+echo "Check for CS violaotions in templates"
 vendor/bin/twigcs templates/
