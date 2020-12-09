@@ -34,25 +34,6 @@ $danger: #d49696;
 
 $enable-negative-margins: true;
 
-/* Fix compatibility between tabler.io@alpha16 and bootstrap@alpha1 */
-@mixin border-left-radius($radius: $border-radius) {
-  @if $enable-rounded {
-    border-top-left-radius: valid-radius($radius);
-    border-bottom-left-radius: valid-radius($radius);
-  }
-}
-@mixin border-right-radius($radius: $border-radius) {
-  @if $enable-rounded {
-    border-top-right-radius: valid-radius($radius);
-    border-bottom-right-radius: valid-radius($radius);
-  }
-}
-$form-check-input-width: 1rem !default;
-$form-check-padding-start: $form-check-input-width + .5rem !default;
-$form-switch-width:               2rem !default;
-$form-switch-padding-start:       $form-switch-width + .5rem !default;
-/* /Fix compatibility between tabler.io@alpha16 and bootstrap@alpha1 */
-
 @import "~@tabler/core/src/scss/tabler";
 
 @import "~select2/src/scss/core";
