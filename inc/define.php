@@ -409,7 +409,7 @@ $CFG_GLPI['user_pref_field'] = ['backcreated', 'csv_delimiter', 'date_format',
                                      'priority_6', 'refresh_views', 'set_default_tech',
                                      'set_default_requester', 'show_count_on_tabs',
                                      'show_jobs_at_login', 'task_private', 'task_state',
-                                     'use_flat_dropdowntree', 'layout', 'palette',
+                                     'use_flat_dropdowntree', 'layout', 'palette', 'dark_mode',
                                      'highcontrast_css', 'default_dashboard_central', 'default_dashboard_assets',
                                      'default_dashboard_helpdesk', 'default_dashboard_mini_ticket'];
 
