@@ -6,8 +6,7 @@
       {% set firstlevel_active = menu[sector]['title'] == firstlevel['title'] %}
       <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}">
          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
-            aria-expanded="{{ firstlevel_active ? 'true' : 'false' }}"
-            <!--href="{{ firstlevel['default'] is empty ? '#' : path(firstlevel['default']) }}"-->
+            aria-expanded="{{ firstlevel_active ? 'true' : 'false' }}">
             <i class="fa-fw {{ firstlevel['icon'] ?? "" }}"></i>
             &nbsp;
             {{ firstlevel['title'] }}

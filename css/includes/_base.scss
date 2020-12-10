@@ -14,10 +14,6 @@ body.iframed {
 .page {
    > aside {
       scrollbar-width: thin; /* FF only */
-
-      #navbar-menu {
-         overflow-x: hidden;
-      }
    }
 
    .footer {
