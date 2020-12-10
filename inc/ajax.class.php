@@ -399,8 +399,8 @@ class Ajax {
       if (count($tabs) > 0) {
          $flex_container = "flex-column flex-md-row";
          $flex_tab       = "flex-row flex-md-column";
-         $border         = "border-left-0";
-         $navitemml      = "ml-0";
+         $border         = "border-start-0";
+         $navitemml      = "ms-0";
          $nav_width      = "style='min-width: 200px'";
          if ($orientation == "horizontal") {
             $flex_container = "flex-column";

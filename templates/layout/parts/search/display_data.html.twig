@@ -1,5 +1,5 @@
 <form id="massform{{ itemtype }}" method="get" action="{{ path("front/massiveaction.php") }}">
-   <div class="d-flex justify-content-between ml-2 pl-1 mb-1 mt-4">
+   <div class="d-flex justify-content-between ms-2 ps-1 mb-1 mt-4">
       {% if data['display_type'] == constant('Search::GLOBAL_SEARCH') %}
          <h2>{{ itemtype|itemtype_name }}</h2>
 
@@ -14,7 +14,7 @@
 
          {% if count > 0 and data['search']['as_map'] == 0 %}
             {% set limitdropdown = include('layout/parts/dropdown/limit.html.twig') %}
-            <div class="ml-auto d-inline-flex align-items-center d-none d-md-block">
+            <div class="ms-auto d-inline-flex align-items-center d-none d-md-block">
                {{ __("Show %s entries")|format(limitdropdown)|raw }}
             </div>
          {% endif %}

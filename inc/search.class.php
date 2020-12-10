@@ -2112,7 +2112,7 @@ class Search {
          echo "<form name='searchform$itemtype' method='get' action='".$p['target']."'>";
       } else {
          $main_block_class = "sub_criteria";
-         $card_class = 'border-top-0 border-bottom-0 my-n2 ml-2 px-0';
+         $card_class = 'border-top-0 border-bottom-0 my-n2 ms-2 px-0';
       }
       echo "<div class='card card-sm $card_class'>";
       echo "<div id='searchcriteria' class='$main_block_class'>";
@@ -2152,17 +2152,17 @@ class Search {
 
       echo "<div class='card-footer d-flex search_actions'>";
       $linked = self::getMetaItemtypeAvailable($itemtype);
-      echo "<button id='addsearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary mr-1'>
+      echo "<button id='addsearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary me-1'>
                <i class='fas fa-plus-square'></i>
                <span class='d-none d-sm-block'>".__s('rule')."</span>
             </button>";
       if (count($linked)) {
-         echo "<button id='addmetasearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary mr-1'>
+         echo "<button id='addmetasearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary me-1'>
                   <i class='far fa-plus-square'></i>
                   <span class='d-none d-sm-block'>".__s('global rule')."</span>
                </button>";
       }
-      echo "<button id='addcriteriagroup$rand_criteria' class='btn btn-sm btn-outline-secondary mr-1'>
+      echo "<button id='addcriteriagroup$rand_criteria' class='btn btn-sm btn-outline-secondary me-1'>
                <i class='fas fa-plus-circle'></i>
                <span class='d-none d-sm-block'>".__s('group')."</span>
             </button>";
@@ -2170,7 +2170,7 @@ class Search {
 
       if ($p['mainform']) {
          // Display submit button
-         echo "<input type='submit' name='".$p['actionname']."' value=\"".$p['actionvalue']."\" class='btn btn-sm btn-primary mr-1' >";
+         echo "<input type='submit' name='".$p['actionname']."' value=\"".$p['actionvalue']."\" class='btn btn-sm btn-primary me-1' >";
          if ($p['showbookmark'] || $p['showreset']) {
             if ($p['showbookmark']) {
                //TODO: change that!
@@ -2185,7 +2185,7 @@ class Search {
             }
 
             if ($p['showreset']) {
-               echo "<a class='btn btn-ghost-secondary btn-icon btn-sm mr-1' href='"
+               echo "<a class='btn btn-ghost-secondary btn-icon btn-sm me-1' href='"
                   .$p['target']
                   .(strpos($p['target'], '?') ? '&amp;' : '?')
                   ."reset=reset' title=\"".__s('Blank')."\"

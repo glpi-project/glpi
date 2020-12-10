@@ -1108,7 +1108,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
       global $CFG_GLPI;
 
       echo "<a href='#' onClick=\"modal_savesearch.show(); return false;\"
-             class='btn btn-ghost-secondary btn-icon btn-sm mr-1 bookmark_record save' title='".__s('Save current search')."'>";
+             class='btn btn-ghost-secondary btn-icon btn-sm me-1 bookmark_record save' title='".__s('Save current search')."'>";
       echo "<i class='fas fa-lg fa-star " . ($active ? 'active' : '') . "'></i>";
       echo "</a>";
 

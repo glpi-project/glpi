@@ -26,10 +26,10 @@
    <p class="m-0 text-muted d-none d-md-block">
       {{ __("Showing %s to %s of %s entries")|format(current_start, current_end, count) }}
    </p>
-   <p class="m-0 text-muted d-block d-md-none text-nowrap ml-2">
+   <p class="m-0 text-muted d-block d-md-none text-nowrap ms-2">
       {{ __("%s-%s/%s")|format(current_start, current_end, count) }}
    </p>
-   <ul class="pagination m-0 ml-auto">
+   <ul class="pagination m-0 ms-auto">
       {% set disabled = (start == 0 ? "disabled" : "") %}
       {% set aria_disabled = (start == 0 ? 'aria-disabled="true"' : "") %}
       <li class="page-item {{ disabled }}">
