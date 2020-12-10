@@ -6638,13 +6638,38 @@ JAVASCRIPT;
    static function fuzzySearch($action = '') {
       switch ($action) {
          case 'getHtml':
-            return "<div id='fuzzysearch'>
-                    <input type='text' placeholder='".__("Start typing to find a menu")."'>
-                    <ul class='results'></ul>
-                    <i class='fa fa-2x fa-times'></i>
-                    </div>
-                    <div class='ui-widget-overlay ui-front fuzzymodal' style='z-index: 100;'>
-                    </div>";
+            $modal_header = __("Go to menu");
+            $placeholder  = __("Start typing to find a menu");
+            $alert        = sprintf(
+               __("Tip: You can call this modal with %s keys combination"),
+               "<kbd><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>G</kbd></kbd>"
+            );
+
+            $html = <<<HTML
+               <div class="modal" tabindex="-1" id="fuzzysearch">
+                  <div class="modal-dialog">
+                     <div class="modal-content">
+                        <div class="modal-header">
+                           <h5 class="modal-title">
+                              <i class="fas fa-arrow-right me-2"></i>
+                              {$modal_header}
+                           </h5>
+                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                           <div class="alert alert-info d-flex" role="alert">
+                              <i class="fas fa-exclamation-circle fa-2x me-2"></i>
+                              <p>{$alert}</p>
+                           </div>
+                           <input type="text" class="form-control" placeholder="{$placeholder}">
+                           <ul class="results list-group mt-2"></ul>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+HTML;
+            return $html;"";
             break;
 
          default;
