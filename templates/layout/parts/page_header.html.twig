@@ -62,7 +62,7 @@
       </aside>
       {% endif %}
 
-      <header class="navbar navbar-light d-print-none sticky-lg-top {{ user_pref('page_layout') == 'vertical' ? 'navbar-expand-md' : 'navbar-expand-xl' }}">
+      <header class="navbar d-print-none sticky-lg-top {{ user_pref('page_layout') == 'vertical' ? 'navbar-light navbar-expand-md' : 'navbar-dark navbar-expand-xl' }}">
          <div class="container-fluid">
             {% if user_pref('page_layout') == 'vertical' %}
                {{ include('layout/parts/breadcrumbs.html.twig') }}
@@ -77,7 +77,7 @@
 
                <a href="{{ index() }}" accesskey="1" title="{{ __('Home') }}"
                   class="navbar-brand navbar-brand-autodark">
-                  <img src="{{ path('pics/logos/logo-GLPI-100-black.png') }}">
+                  <img src="{{ path('pics/logos/logo-GLPI-100-white.png') }}">
                </a>
 
                <div class="collapse navbar-collapse" id="navbar-menu">
