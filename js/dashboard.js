@@ -197,7 +197,7 @@ var Dashboard = {
       // night mode toggle
       $("#dashboard-"+options.rand+" .toolbar .night-mode").click(function() {
          $(this).toggleClass('active');
-         Dashboard.element.toggleClass('nightmode');
+         Dashboard.element.toggleClass('theme-dark');
       });
 
       // refresh mode toggle

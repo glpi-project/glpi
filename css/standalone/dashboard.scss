@@ -31,7 +31,7 @@
 
 $item_margin: 3px;
 $toolbar_height: 40px;
-$filter_height: 55px;
+$filter_height: 62px;
 $break_phones: 700px;
 $break_tablet: 1400px;
 
@@ -129,48 +129,11 @@ $break_tablet: 1400px;
          top: 30px;
          left: 100px;
       }
-
-      &.nightmode {
-         .glpi_logo {
-            background: url(../pics/logos/logo-GLPI-100-white.png) no-repeat;
-         }
-      }
    }
 
    &.fullscreen, &.embed {
       background: white;
       padding: 100px;
-
-      &.nightmode {
-         background: black;
-         color: rgb(153, 153, 153);
-
-         .toolbar  {
-            i.fas {
-               color: #EEEEEE;
-
-               &.active {
-                  background: #777;
-                  border: 2px inset #777;
-               }
-            }
-
-            select.dashboard_select {
-               color: rgb(187, 187, 187);
-               background-color: black;
-               border: 2px solid rgba(255, 255, 255, .3);
-
-               &:hover {
-                  border: 2px solid rgba(255, 255, 255, .5);
-               }
-            }
-         }
-
-         .grid-stack .grid-stack-item .grid-stack-item-content .card {
-            background-color: #777;
-            color: rgba(255, 255, 255, 0.7);
-         }
-      }
 
       .toolbar {
          top: 50px;
@@ -276,7 +239,7 @@ $break_tablet: 1400px;
          }
 
          .filters-control {
-            border-color: #f0f0f0;
+            border-color: var(--light-mix);
 
             .add-filter {
                display: inline-block;
@@ -331,24 +294,18 @@ $break_tablet: 1400px;
       }
 
       i.fas {
-         font-size: 1.5em;
+         font-size: 1.35em;
          cursor: pointer;
          padding: 5px;
          margin-left: 5px;
-         color: rgba(0, 0, 0, .5);
          border: 2px solid transparent;
 
          @media screen and (max-width: $break_phones) {
             display: none;
          }
 
-         &:hover {
-            color: rgb(0, 0, 0);
-         }
-
          &.active {
-            background: #EEEEEE;
-            border: 2px inset #EEEEEE;
+            border: 2px inset currentColor;
          }
 
          &.fa-moon {
@@ -407,21 +364,28 @@ $break_tablet: 1400px;
          fieldset.filter {
             border: 2px solid #f0f0f0;
             border-radius: 4px;
-            padding: 0.5em 1em 0.4em 1em;
+            padding: 0.1rem 1.4rem 0.4rem 1rem;
             text-align: center;
-            margin-top: 0.5em;
+            margin-top: 0.3rem;
 
             legend {
                display: none;
                color: #74838f;
                font-weight: bold;
+               font-size: 0.8rem;
+               float: none;
+               margin-bottom: 0;
+               padding: 0 2px;
+               width: auto;
             }
 
             input {
                border: none !important;
                cursor: pointer;
-               font-size: 1.1em !important;
-               font-weight: bold;
+               background-color: transparent;
+               padding: 0;
+               display: inline-block;
+               width: 110%;
             }
 
             .flatpickr {
@@ -534,6 +498,7 @@ $break_tablet: 1400px;
 
                   a[data-clear] {
                      display: inline-block;
+                     color: #509ee3;
                   }
                }
             }
@@ -1321,6 +1286,32 @@ $break_tablet: 1400px;
             font-family: 'Font Awesome\ 5 Free';
             position: absolute;
             font-weight: 900;
+         }
+      }
+   }
+}
+
+.dashboard.theme-dark, .theme-dark .dashboard {
+   &.embed {
+      .glpi_logo {
+         background: url(../pics/logos/logo-GLPI-100-white.png) no-repeat;
+      }
+   }
+
+   background: var(--dark);
+   color: var(--contrast-dark);
+
+   .grid-guide {
+      border: 1px solid var(--light-mix);
+      background-image:
+         linear-gradient(to right, var(--light-mix) 1px, transparent 1px),
+         linear-gradient(to bottom, var(--light-mix) 1px, transparent 1px);
+   }
+
+   .filters_toolbar {
+      .filters {
+         fieldset.filter:not(.filled) {
+            border: 2px solid var(--light-mix);
          }
       }
    }
