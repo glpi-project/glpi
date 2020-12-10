@@ -712,8 +712,8 @@ class Html extends \GLPITestCase {
       // test modal
       $modal = \Html::FuzzySearch('getHtml');
       $this->string($modal)
-         ->contains("id='fuzzysearch'")
-         ->contains("class='results'");
+         ->contains('id="fuzzysearch"')
+         ->matches('/class="results[^"]*"/');
 
       // test retrieving entries
       $default = json_decode(\Html::FuzzySearch(), true);
