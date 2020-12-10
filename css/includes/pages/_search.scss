@@ -1,0 +1,9 @@
+
+// TODO Encapsulate into a class
+
+.form-check-input[name="as_map"]:checked {
+   background-color: $info;
+}
+.form-check-input[name="is_deleted"]:checked {
+   background-color: $danger;
+}
