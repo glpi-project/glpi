@@ -383,6 +383,10 @@ i.fa-impact-manipulation {
    ul {
       list-style : none;
       border-left: 1px solid #f1f1f1;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      width: 37px
    }
 
    li {
@@ -392,7 +396,7 @@ i.fa-impact-manipulation {
       cursor        : pointer;
 
       i {
-         padding  : 10px 8px;
+         padding  : 10px 4px;
          font-size: 1.5em;
       }
 
