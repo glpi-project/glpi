@@ -1278,7 +1278,7 @@ class Html {
          }
 
          if (in_array('reservations', $jslibs)) {
-            $tpl_vars['css_files'][] = 'css/components/reservations.scss';
+            $tpl_vars['css_files'][] = 'css/standalone/reservations.scss';
             Html::requireJs('reservations');
          }
 
@@ -1297,12 +1297,12 @@ class Html {
          }
 
          if (in_array('dashboard', $jslibs)) {
-            $tpl_vars['css_files'][] = 'css/components/dashboard.scss';
+            $tpl_vars['css_files'][] = 'css/standalone/dashboard.scss';
             Html::requireJs('dashboard');
          }
 
          if (in_array('marketplace', $jslibs)) {
-            $tpl_vars['css_files'][] = 'css/components/marketplace.scss';
+            $tpl_vars['css_files'][] = 'css/standalone/marketplace.scss';
             Html::requireJs('marketplace');
          }
 
@@ -1334,7 +1334,7 @@ class Html {
 
          if (in_array('charts', $jslibs)) {
             $tpl_vars['css_files'][] = 'public/lib/chartist.css';
-            $tpl_vars['css_files'][] = 'css/components/chartist.scss';
+            $tpl_vars['css_files'][] = 'css/standalone/chartist.scss';
             Html::requireJs('charts');
          }
 
@@ -3747,7 +3747,7 @@ JS;
 
       $darker_css = '';
       if ($_SESSION['glpipalette'] === 'darker') {
-         $darker_css = $CFG_GLPI['root_doc']."/css/components/tiny_mce/dark_content.css";
+         $darker_css = $CFG_GLPI['root_doc']."/css/standalone/tiny_mce/dark_content.css";
       }
 
       // init tinymce
@@ -3767,8 +3767,8 @@ JS;
             paste_data_images: $('.fileupload').length,
             menubar: false,
             statusbar: false,
-            skin_url: '".$CFG_GLPI['root_doc']."/css/components/tiny_mce/skins/light',
-            content_css: '$darker_css,".$CFG_GLPI['root_doc']."/css/components/tiny_mce/tiny_mce_custom.css',
+            skin_url: '".$CFG_GLPI['root_doc']."/css/standalone/tiny_mce/skins/light',
+            content_css: '$darker_css,".$CFG_GLPI['root_doc']."/css/standalone/tiny_mce/tiny_mce_custom.css',
             cache_suffix: '?v=".GLPI_VERSION."',
             min_height: '150px',
             setup: function(editor) {

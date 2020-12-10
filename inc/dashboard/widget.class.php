@@ -1855,7 +1855,7 @@ JAVASCRIPT;
          \$ct-series-names: ({$series_names});
          \$ct-series-colors: ({$series_colors});
 
-         @import 'css/includes/chartist/generate';
+         @import 'css/includes/components/chartist/generate';
       }");
 
       return $palette_css;

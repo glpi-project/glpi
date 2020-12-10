@@ -1,0 +1,58 @@
+
+$info: #80abe4;
+$danger: #d49696;
+
+$enable-negative-margins: true;
+$link-hover-decoration: "none";
+
+@import "~@tabler/core/src/scss/tabler";
+
+body.iframed {
+   background-color: transparent;
+}
+
+.page {
+   > aside {
+      scrollbar-width: thin; /* FF only */
+
+      #navbar-menu {
+         overflow-x: hidden;
+      }
+   }
+
+   .footer {
+      font-size: 0.75rem;
+      padding: 0.5em;
+   }
+}
+
+.breadcrumb-alternate {
+   a {
+      &:hover {
+         text-decoration: $link-hover-decoration;
+      }
+   }
+}
+
+.dropdown-item {
+   & > .fas:first-child, & > .far:first-child, & > .fab:first-child {
+      margin-right: 0.75em;
+   }
+}
+
+.btn {
+   i.fas, i.far, i.fab {
+      padding-top: 0.25rem;
+   }
+
+   &.btn-icon {
+      i.fas, i.far, i.fab {
+         margin-right: 0;
+      }
+   }
+}
+
+.card-tabs.vertical .nav-tabs .nav-link {
+   border-bottom: $card-border-width solid $card-border-color;
+   border-right: 0;
+}
