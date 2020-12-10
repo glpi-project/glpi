@@ -419,10 +419,10 @@ class CommonGLPI {
 
                if ($item->maybeTemplate()) {
                   $menu['links']['add'] = '/front/setup.templates.php?'.'itemtype='.$type.
-                                          '&amp;add=1';
+                                          '&add=1';
                   if (!in_array('template', $forbidden)) {
                      $menu['links']['template'] = '/front/setup.templates.php?'.'itemtype='.$type.
-                                                  '&amp;add=0';
+                                                  '&add=0';
                   }
                } else {
                   $menu['links']['add'] = static::getFormURL(false);
