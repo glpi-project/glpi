@@ -1,0 +1,9 @@
+:root {
+   --light: #{$light};
+   --dark: #{$dark};
+
+   --contrast-light: #{$color-contrast-light};
+   --contrast-dark: #{$color-contrast-dark};
+
+   --light-mix: #{$light-mix};
+}
