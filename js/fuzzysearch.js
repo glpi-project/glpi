@@ -56,9 +56,9 @@ $(function() {
    var fuzzy_started = false;
    var trigger_fuzzy = function() {
       // remove old fuzzy modal
-      removeFuzzy()
+      removeFuzzy();
 
-         // retrieve html of fuzzy input
+      // retrieve html of fuzzy input
       $.get(CFG_GLPI.root_doc+'/ajax/fuzzysearch.php', {
          'action': 'getHtml'
       }, function(html) {
@@ -119,13 +119,13 @@ $(function() {
 
          // when a key is pressed in fuzzy input, launch match
          $(document).on('keyup', "#fuzzysearch input", function(key) {
-               if (key.key != "Escape"
+            if (key.key != "Escape"
                    && key.key != "ArrowUp"
                    && key.key != "ArrowDown"
                    && key.key != "Enter") {
-                  startFuzzy();
-               }
-            });
+               startFuzzy();
+            }
+         });
       });
    };
 
