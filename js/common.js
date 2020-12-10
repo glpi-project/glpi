@@ -580,6 +580,7 @@ var langSwitch = function(elt) {
          var new_elt = $('<div></div>');
          new_elt.attr('class', elt.attr('class')); // Copy class from replaced element
          new_elt.html(html);
+         new_elt.find('.debug').remove();
          new_elt.find('#debugajax').remove();
          new_elt.find('[name^="see_ajaxdebug"]').remove();
          elt.replaceWith(new_elt);
