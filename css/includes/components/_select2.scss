@@ -15,6 +15,10 @@
       @include box-shadow($input-box-shadow);
       @include transition($input-transition);
 
+      body.theme-dark & {
+         background-color: $dark-mode-darken;
+      }
+
       .select2-container--focus& {
          border-color: $input-focus-border-color;
          box-shadow: $input-focus-box-shadow;
@@ -41,6 +45,10 @@
          }
          .select2-selection__rendered {
             line-height: $input-height;
+
+            body.theme-dark & {
+               color: $dark-mode-text;
+            }
          }
 
          .form-select-sm + & {
@@ -94,6 +102,10 @@
                padding: 1px 3px;
                margin: 3px 3px 0 0;
 
+               body.theme-dark & {
+                  background-color: $dark;
+               }
+
                .select2-selection__choice__remove {
                   color: $dark;
                   font-weight: bold;
@@ -101,6 +113,10 @@
 
                   &:hover {
                      color: $black;
+                  }
+
+                  body.theme-dark &, body.theme-dark &:hover {
+                     color: $light;
                   }
                }
             }
@@ -112,6 +128,10 @@
       border-color: $input-border-color;
       border-radius: 0;
       @include font-size($input-font-size);
+
+      body.theme-dark & {
+         background-color: $dark;
+      }
 
       &.select-dropdown-sm {
          @include font-size($input-font-size-sm);
@@ -134,6 +154,11 @@
          .select2-search__field {
             border: $input-border-width solid $input-border-color;
             @include border-radius($input-border-radius);
+
+            body.theme-dark & {
+               background-color: $dark-mode-darken;
+               color: $dark-mode-text;
+            }
          }
       }
 
@@ -142,10 +167,19 @@
             .select2-results__option {
                &[aria-selected=true]:not(.select2-results__option--highlighted) {
                   background-color: darken($light, 5%);
+
+                  body.theme-dark & {
+                     background-color: lighten($dark, 5%);
+                  }
                }
                &.select2-results__option--highlighted {
                   background-color: $primary;
                   color: $light;
+
+                  body.theme-dark & {
+                     background-color: $dark-mode-darken;
+                     color: $dark-mode-text;
+                  }
                }
                &[role=group] {
                   padding: 0;

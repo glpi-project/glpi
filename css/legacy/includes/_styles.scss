@@ -234,15 +234,19 @@
    }
 
    textarea, input:not(.submit):not(.form-control):not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput) {
-     border: 1px solid #D3D3D3;
-     font-size: 11px;
-     border-radius: 3px;
+     border: var(--input-border-width) solid var(--input-border-color);
+     border-radius: var(--input-border-radius);
      padding: 0 5px;
    }
 
    textarea:not([disabled]), input:not(.submit):not(.form-control):not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput):not([disabled]) {
      background-color: #FCFCFC;
      color: black;
+
+     body.theme-dark & {
+        background-color: var(--dark-mode-darken);
+        color: var(--dark-mode-text);
+     }
    }
 
    textarea:focus, input:not([type=submit]):not(.form-control):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput):focus {
@@ -630,6 +634,19 @@
       }
    }
 
+   .tab_cadre,
+   .tab_cadre_navigation,
+   .tab_cadre_fixehov,
+   .tab_cadrehov,
+   .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, h2.header {
+      background-color: var(--contrast-light);
+      color: var(--dark);
+
+      body.theme-dark & {
+         background-color: var(--contrast-dark);
+         color: var(--light);
+      }
+   }
 
    .tab_glpi {
       margin: 0 auto;
@@ -640,7 +657,6 @@
       z-index: 1;
       text-align: left;
       font-size: 11px;
-      background-color: #ffffff;
       border-spacing: 0;
       box-shadow: 0px 1px 2px 1px #999;
    }
@@ -666,7 +682,6 @@
       padding: 4px;
       margin: 1px;
       border: 1px solid #aaaaaa;
-      background-color: #ffffff;
       border-radius: 5px;
       font-size: 12px;
       font-weight: bold;
@@ -674,7 +689,6 @@
 
    .tab_cadre_fixe {
       margin: 0px auto 5px auto;
-      background: #FFF;
       z-index: 1;
       text-align: left;
       font-size: 11px;
@@ -684,7 +698,7 @@
 
    .tab_cadre_fixehov {
       margin: 0px auto 5px auto;
-      background: #FFF;
+
       z-index: 1;
       text-align: left;
       font-size: 11px;
@@ -706,7 +720,6 @@
       border: 0;
       text-align: left;
       width: 95%;
-      background-color: #ffffff;
       box-shadow: 0px 1px 2px 1px #D2D2D2;
       border-spacing: 0;
    }
@@ -719,9 +732,7 @@
       border-radius: 0;
       margin: 0;
       font-size: 1.1em;
-      color: #000;
       padding: 10px 5px;
-      background-color: #F1F1F1;
    }
 
    .tab_spaced {
@@ -752,27 +763,21 @@
       td {
          border-bottom: 1px solid #EEE;
       }
-
-      th.headHover {
-         background-color: #F3F3F3;
-      }
    }
 
    /* Table Hover Effects */
-
-   .tab_cadre_fixehov th.headHover, .tab_cadrehov td.columnHover, .tab_cadre_fixehov td.columnHover {
+   .tab_cadrehov th.headHover,
+   .tab_cadre_fixehov th.headHover,
+   .tab_cadrehov td.columnHover,
+   .tab_cadre_fixehov td.columnHover,
+   .tab_cadrehov tr.rowHover,
+   .tab_cadrehov td.rowHover,
+   .tab_cadre_fixehov tr.rowHover,
+   .tab_cadre_fixehov td.rowHover {
       background-color: #F3F3F3;
-   }
 
-   .tab_cadrehov {
-      tr.rowHover, td.rowHover {
-         background-color: #F7F7F3;
-      }
-   }
-
-   .tab_cadre_fixehov {
-      tr.rowHover, td.rowHover {
-         background-color: #F7F7F3;
+      body.theme-dark & {
+         background-color: #292929;
       }
    }
 
@@ -796,17 +801,10 @@
       margin: 0px;
    }
 
-   .tab_bg_1 {
-      background-color: #FFF;
-   }
-
    .tab_bg_1_2 {
       background-color: #cf9b9b;
    }
 
-   .tab_bg_2 {
-      background-color: #FFF;
-   }
 
    .tab_bg_2_2 {
       background-color: #cf9b9b;

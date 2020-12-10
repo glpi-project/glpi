@@ -6,4 +6,13 @@
    --contrast-dark: #{$color-contrast-dark};
 
    --light-mix: #{$light-mix};
+
+   // Dark mode
+   --dark-mode-darken: #{$dark-mode-darken};
+   --dark-mode-text: #{$dark-mode-text};
+
+   // Form elements
+   --input-border-color: #{$input-border-color};
+   --input-border-radius: #{$border-radius};
+   --input-border-width: #{$input-border-width};
 }
