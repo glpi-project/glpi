@@ -1242,7 +1242,7 @@ JAVASCRIPT;
          $options += $_REQUEST['tab_params'];
       }
 
-      echo "<div class='container-fluid flex-column'>";
+      echo "<div class='d-flex flex-column'>";
       $this->showNavigationHeader($options);
       if (!self::isLayoutExcludedPage() && self::isLayoutWithMain()) {
 
