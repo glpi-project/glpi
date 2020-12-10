@@ -1,3 +1,4 @@
+{% if menu[sector] is defined %}
 <ol class="breadcrumb breadcrumb-alternate pe-3" aria-label="breadcrumbs">
    {% if menu[sector] is defined %}
    <li class='breadcrumb-item'>
@@ -47,3 +48,8 @@
 
    {% endif %}
 </ol>
+{% endif %}
+
+{% if menu[sector]['content'][item] is defined %}
+    {{ include('layout/parts/context_links.html.twig') }}
+{% endif %}
