@@ -50,7 +50,6 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
          new TwigFunction('has_global_right', [$this, 'hasGlobalRight']),
          new TwigFunction('has_item_right', [$this, 'hasItemRight']),
          new TwigFunction('user_pref', [$this, 'userPref']),
-         new TwigFunction('user_pref', [$this, 'userPref']),
          new TwigFunction('haveAccessToEntity', [$this, 'haveAccessToEntity']),
          new TwigFunction('haveRecursiveAccessToEntity', [$this, 'haveRecursiveAccessToEntity']),
          new TwigFunction('canViewAllEntities', [$this, 'canViewAllEntities']),
@@ -124,7 +123,7 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
    public function userPref(string $name): ?string {
       global $CFG_GLPI;
 
-      return $_SESSION[$name] ?? $CFG_GLPI[$name] ?? null;
+      return $_SESSION['glpi' . $name] ?? $CFG_GLPI[$name] ?? null;
    }
 
    /**

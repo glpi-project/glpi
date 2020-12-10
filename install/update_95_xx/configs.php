@@ -1,7 +1,8 @@
+<?php
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2020 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -29,9 +30,10 @@
  * ---------------------------------------------------------------------
  */
 
-@import "includes/base";
+/**
+ * @var Migration $migration
+ */
 
-@import "includes/components/select2";
-@import "includes/components/user-menu";
-
-@import "includes/pages/search";
+$migration->displayMessage('Add dark mode configuration / user preference');
+Config::setConfigurationValues('core', ['dark_mode' => 0]);
+$migration->addField('glpi_users', 'dark_mode', 'tinyint(1) DEFAULT NULL', ['after' => 'palette']);

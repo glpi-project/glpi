@@ -1199,7 +1199,7 @@ class Config extends CommonDBTM {
                 return theme.text;
              }
 
-             return $('<span></span>').html('<img src=\'../css/legacy/palettes/previews/' + theme.text.toLowerCase() + '.png\'/>'
+             return $('<span></span>').html('<img src=\'../css/palettes/previews/' + theme.text.toLowerCase() + '.png\'/>'
                       + '&nbsp;' + theme.text);
          }
          $(\"#theme-selector\").select2({
@@ -1251,6 +1251,13 @@ class Config extends CommonDBTM {
       echo "<td>";
       Dropdown::showYesNo('highcontrast_css', $data['highcontrast_css'], -1, ['rand' => $rand]);
       echo "</td>";
+      echo "<td><label for='dropdown_dark_mode$rand'>" . __('Dark mode') . "</label></td>";
+      echo "<td>";
+      Dropdown::showYesNo('dark_mode', $data['dark_mode'], -1, ['rand' => $rand]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_2'>";
       echo "<td><label for='dropdown_timezone$rand'>" . __('Timezone') . "</label></td>";
       echo "<td>";
       $tz_warning = '';
@@ -1270,6 +1277,7 @@ class Config extends CommonDBTM {
          echo $tz_warning;
       }
       echo "</td>";
+      echo "<td></td><td></td>";
       echo "</tr>";
 
       if ($oncentral) {

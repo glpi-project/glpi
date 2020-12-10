@@ -1,7 +1,8 @@
+<?php
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2020 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -29,9 +30,19 @@
  * ---------------------------------------------------------------------
  */
 
-@import "includes/base";
+include ('../inc/includes.php');
 
-@import "includes/components/select2";
-@import "includes/components/user-menu";
+header('Content-Type: application/json; charset=UTF-8');
+Html::header_nocache();
 
-@import "includes/pages/search";
+Session::checkLoginUser();
+
+$user = new User();
+$success = $user->update(
+   [
+      'id'        => Session::getLoginUserID(),
+      'dark_mode' => (bool)$_SESSION['glpidark_mode'] ? 0 : 1,
+   ]
+);
+
+echo json_encode(['success' => $success]);

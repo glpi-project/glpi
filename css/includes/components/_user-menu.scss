@@ -1,0 +1,9 @@
+
+.user-menu {
+   body.theme-dark & [data-darkmode-switch="dark"] {
+      display: none;
+   }
+   body:not(.theme-dark) & [data-darkmode-switch="light"] {
+      display: none;
+   }
+}
