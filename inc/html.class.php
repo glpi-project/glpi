@@ -7283,7 +7283,6 @@ JAVASCRIPT;
       $ckey .= isset($args['v']) ? $args['v'] : GLPI_SCHEMA_VERSION;
 
       $scss = new Compiler();
-      $scss->setFormatter('ScssPhp\ScssPhp\Formatter\Crunched');
       if (isset($args['debug'])) {
          $ckey .= '_sourcemap';
          $scss->setSourceMap(Compiler::SOURCE_MAP_INLINE);
