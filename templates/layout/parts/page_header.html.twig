@@ -34,10 +34,11 @@
 
    <div class="page">
 
+      {% if user_pref('page_layout') == 'vertical' %}
       <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark sticky-top">
          <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
-            <span class="navbar-toggler-icon"></span>
+               <span class="navbar-toggler-icon"></span>
             </button>
 
             <a href="{{ index() }}" accesskey="1" title="{{ __('Home') }}"
@@ -50,17 +51,33 @@
                {{ __("Go to...") }}
             </button>
 
-            {{ include('layout/parts/menu.html.twig') }}
+            <div class="collapse navbar-collapse" id="navbar-menu">
+               {{ include('layout/parts/menu.html.twig') }}
+            </div>
 
             <div class="d-lg-none">
                {{ include('layout/parts/user_header.html.twig') }}
             </div>
          </div>
       </aside>
+      {% endif %}
 
-      <header class="navbar navbar-expand-md navbar-light d-flex d-print-none sticky-lg-top">
+      {% if user_pref('page_layout') == 'horizontal' %}<div class="sticky-top">{% endif %}
+
+      <header class="navbar navbar-expand-md navbar-light d-print-none sticky-lg-top">
          <div class="container-fluid">
-            {% if menu[sector] is defined %}
+            {% if user_pref('page_layout') == 'horizontal' %}
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+               <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <a href="{{ index() }}" accesskey="1" title="{{ __('Home') }}"
+               class="navbar-brand navbar-brand-autodark">
+               <img src="{{ path('pics/logos/logo-GLPI-100-black.png') }}">
+            </a>
+            {% endif %}
+
+            {% if user_pref('page_layout') == 'vertical' and menu[sector] is defined %}
             {{ include('layout/parts/breadcrumbs.html.twig') }}
             {% endif %}
 
@@ -83,11 +100,34 @@
                </div>
             </div>
 
-            <div class="d-none d-sm-none d-lg-block">
+            <div class="{{ user_pref('page_layout') == 'vertical' ? 'd-none d-sm-none d-lg-block' : '' }}">
                {{ include('layout/parts/user_header.html.twig') }}
             </div>
          </div>
       </header>
+
+      {% if user_pref('page_layout') == 'horizontal' %}
+      <div class="navbar-expand-md">
+         <div class="collapse navbar-collapse" id="navbar-menu">
+            <div class="navbar navbar-light">
+               <div class="container-fluid">
+                  {{ include('layout/parts/menu.html.twig') }}
+                  <button class="btn btn-outline-secondary trigger-fuzzy" title="{{ __("Ctrl+Alt+G") }}">
+                     <i class="fas fa-arrow-right me-2"></i>
+                     {{ __("Go to...") }}
+                  </button>
+               </div>
+               <div class="container-fluid">
+               {% if menu[sector] is defined %}
+                  {{ include('layout/parts/breadcrumbs.html.twig') }}
+               {% endif %}
+               </div>
+            </div>
+         </div>
+      </div>
+      {% endif %}
+
+      {% if user_pref('page_layout') == 'horizontal' %}</div>{% endif %} {# .sticky-top #}
 
       <div class="content">
          <div class="container-fluid">

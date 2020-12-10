@@ -34,6 +34,10 @@
  * @var Migration $migration
  */
 
+$migration->displayMessage('Add page layout configuration / user preference');
+Config::setConfigurationValues('core', ['page_layout' => 'vertical']);
+$migration->addField('glpi_users', 'page_layout', 'char(20) COLLATE utf8_unicode_ci DEFAULT NULL', ['after' => 'palette']);
+
 $migration->displayMessage('Add dark mode configuration / user preference');
 Config::setConfigurationValues('core', ['dark_mode' => 0]);
-$migration->addField('glpi_users', 'dark_mode', 'tinyint(1) DEFAULT NULL', ['after' => 'palette']);
+$migration->addField('glpi_users', 'dark_mode', 'tinyint DEFAULT NULL', ['after' => 'page_layout']);

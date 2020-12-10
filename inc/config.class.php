@@ -1247,9 +1247,14 @@ class Config extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_2'><td><label for='dropdown_highcontrast_css$rand'>".__('Enable high contrast')."</label></td>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td><label for='dropdown_page_layout$rand'>" . __('Page layout') . "</label></td>";
       echo "<td>";
-      Dropdown::showYesNo('highcontrast_css', $data['highcontrast_css'], -1, ['rand' => $rand]);
+      $values = [
+         'horizontal' => __('Horizontal (menu in header)'),
+         'vertical'   => __('Vertical (menu in sidebar)'),
+      ];
+      Dropdown::showFromArray('page_layout', $values, ['value' => $data['page_layout'], 'rand' => $rand]);
       echo "</td>";
       echo "<td><label for='dropdown_dark_mode$rand'>" . __('Dark mode') . "</label></td>";
       echo "<td>";
@@ -1257,7 +1262,10 @@ class Config extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_2'>";
+      echo "<tr class='tab_bg_2'><td><label for='dropdown_highcontrast_css$rand'>".__('Enable high contrast')."</label></td>";
+      echo "<td>";
+      Dropdown::showYesNo('highcontrast_css', $data['highcontrast_css'], -1, ['rand' => $rand]);
+      echo "</td>";
       echo "<td><label for='dropdown_timezone$rand'>" . __('Timezone') . "</label></td>";
       echo "<td>";
       $tz_warning = '';
@@ -1277,7 +1285,6 @@ class Config extends CommonDBTM {
          echo $tz_warning;
       }
       echo "</td>";
-      echo "<td></td><td></td>";
       echo "</tr>";
 
       if ($oncentral) {

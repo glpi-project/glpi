@@ -1,37 +1,35 @@
 
-<div class="collapse navbar-collapse" id="navbar-menu">
-   <ul class="navbar-nav pt-lg-3">
-   {% for firstlevel in menu %}
-      {% if firstlevel['content'] is defined %}
-      {% set firstlevel_active = menu[sector]['title'] == firstlevel['title'] %}
-      <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}">
-         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
-            aria-expanded="{{ firstlevel_active ? 'true' : 'false' }}">
-            <i class="fa-fw {{ firstlevel['icon'] ?? "" }}"></i>
-            &nbsp;
-            {{ firstlevel['title'] }}
+<ul class="navbar-nav">
+{% for firstlevel in menu %}
+   {% if firstlevel['content'] is defined %}
+   {% set firstlevel_active = menu[sector]['title'] == firstlevel['title'] and user_pref('page_layout') == 'vertical' %}
+   <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}">
+      <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
+         aria-expanded="{{ firstlevel_active ? 'true' : 'false' }}">
+         <i class="fa-fw {{ firstlevel['icon'] ?? "" }}"></i>
+         &nbsp;
+         {{ firstlevel['title'] }}
+      </a>
+      <div class="dropdown-menu {{ firstlevel_active ? 'show' : '' }}">
+      {% if firstlevel['default_dashboard'] is defined %}
+         <a class="dropdown-item"
+            href="{{ path(firstlevel['default_dashboard']) }}">
+            <i class="fas fa-fw fa-border-all"></i>
+            {{ __("Dashboard") }}
          </a>
-         <div class="dropdown-menu {{ firstlevel_active ? 'show' : '' }}">
-         {% if firstlevel['default_dashboard'] is defined %}
-            <a class="dropdown-item"
-               href="{{ path(firstlevel['default_dashboard']) }}">
-               <i class="fas fa-fw fa-border-all"></i>
-               {{ __("Dashboard") }}
-            </a>
-         {% endif %}
-         {% for sublevel in firstlevel['content'] %}
-            {% if sublevel['page'] is defined %}
-            <a class="dropdown-item {{ menu_active == sublevel['title'] ? "active" : "" }}"
-               href="{{ path(sublevel['page']) }}"
-               accesskey="{{ sublevel['shortcut'] ?? "" }}">
-               <i class="fa-fw {{ sublevel['icon'] ?? "" }}"></i>
-               {{ shortcut(sublevel['title'], sublevel['shortcut'] ?? "") }}
-            </a>
-            {% endif %}
-         {% endfor %}
-         </div>
-      </li>
       {% endif %}
-   {% endfor %}
-   </ul>
-</div>
+      {% for sublevel in firstlevel['content'] %}
+         {% if sublevel['page'] is defined %}
+         <a class="dropdown-item {{ menu_active == sublevel['title'] ? "active" : "" }}"
+            href="{{ path(sublevel['page']) }}"
+            accesskey="{{ sublevel['shortcut'] ?? "" }}">
+            <i class="fa-fw {{ sublevel['icon'] ?? "" }}"></i>
+            {{ shortcut(sublevel['title'], sublevel['shortcut'] ?? "") }}
+         </a>
+         {% endif %}
+      {% endfor %}
+      </div>
+   </li>
+   {% endif %}
+{% endfor %}
+</ul>
