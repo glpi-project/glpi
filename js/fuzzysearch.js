@@ -213,7 +213,7 @@ $(function() {
       var selected = results.find('.active');
 
       if (selected.length) {
-         results.scrollTop(results.scrollTop() + selected.position().top - results.height()/2 + selected.height()/2);
+         results.scrollTop(results.scrollTop() + selected.position().top - results.height()/2 + selected.height()/2 - 25);
       }
    };
 });
