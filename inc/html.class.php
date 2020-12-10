@@ -6669,7 +6669,7 @@ JAVASCRIPT;
                </div>
 
 HTML;
-            return $html;"";
+            return $html;
             break;
 
          default;
