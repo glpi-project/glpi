@@ -47,7 +47,7 @@
             </a>
 
             <button class="btn btn-outline-secondary trigger-fuzzy" title="{{ __("Ctrl+Alt+G") }}">
-               <i class="fas fa-arrow-right me-2"></i>
+               <i class="fas fa-arrow-right"></i>
                {{ __("Go to...") }}
             </button>
 
@@ -62,72 +62,49 @@
       </aside>
       {% endif %}
 
-      {% if user_pref('page_layout') == 'horizontal' %}<div class="sticky-top">{% endif %}
-
-      <header class="navbar navbar-expand-md navbar-light d-print-none sticky-lg-top">
+      <header class="navbar navbar-light d-print-none sticky-lg-top {{ user_pref('page_layout') == 'vertical' ? 'navbar-expand-md' : 'navbar-expand-xl' }}">
          <div class="container-fluid">
-            {% if user_pref('page_layout') == 'horizontal' %}
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
-               <span class="navbar-toggler-icon"></span>
-            </button>
+            {% if user_pref('page_layout') == 'vertical' %}
+               {{ include('layout/parts/breadcrumbs.html.twig') }}
 
-            <a href="{{ index() }}" accesskey="1" title="{{ __('Home') }}"
-               class="navbar-brand navbar-brand-autodark">
-               <img src="{{ path('pics/logos/logo-GLPI-100-black.png') }}">
-            </a>
-            {% endif %}
-
-            {% if user_pref('page_layout') == 'vertical' and menu[sector] is defined %}
-            {{ include('layout/parts/breadcrumbs.html.twig') }}
-            {% endif %}
-
-            <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center justify-content-between">
-               {% if menu[sector]['content'][item] is defined %}
-               <nav class="nav">
-                  {{ include('layout/parts/context_links.html.twig') }}
-               </nav>
-               {% endif %}
-
-               <div class="ms-md-auto pl-md-4 py-2 py-md-0 me-md-4 order-first order-md-last d-none d-sm-none d-md-block flex-grow-1 flex-md-grow-0">
-                  <form action="{{ path('front/search.php') }}" roel="search" method="get">
-                     <div class='input-group'>
-                        <input type="text" class="form-control" name="globalsearch" placeholder="{{ __("Search…") }}">
-                        <button type="submit" class="btn btn-outline-secondary" title="{{ __("Search…") }}">
-                           <span class='fas fa-search' aria-hidden='true'></span>
-                        </button>
-                     </div>
-                  </form>
+               <div class="ms-md-auto d-none d-md-block flex-grow-1 flex-md-grow-0">
+                  {{ include('layout/parts/global_search_form.html.twig') }}
                </div>
-            </div>
+            {% elseif user_pref('page_layout') == 'horizontal' %}
+               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+                  <span class="navbar-toggler-icon"></span>
+               </button>
 
-            <div class="{{ user_pref('page_layout') == 'vertical' ? 'd-none d-sm-none d-lg-block' : '' }}">
+               <a href="{{ index() }}" accesskey="1" title="{{ __('Home') }}"
+                  class="navbar-brand navbar-brand-autodark">
+                  <img src="{{ path('pics/logos/logo-GLPI-100-black.png') }}">
+               </a>
+
+               <div class="collapse navbar-collapse" id="navbar-menu">
+                  {{ include('layout/parts/menu.html.twig') }}
+                  <button class="btn btn-outline-secondary mx-3 trigger-fuzzy" title="{{ __("Ctrl+Alt+G") }}">
+                     <i class="fas fa-arrow-right"></i>
+                     {{ __("Go to...") }}
+                  </button>
+               </div>
+            {% endif %}
+
+            <div class="ms-md-4 {{ user_pref('page_layout') == 'vertical' ? 'd-none d-sm-none d-lg-block' : '' }}">
                {{ include('layout/parts/user_header.html.twig') }}
             </div>
          </div>
       </header>
 
       {% if user_pref('page_layout') == 'horizontal' %}
-      <div class="navbar-expand-md">
-         <div class="collapse navbar-collapse" id="navbar-menu">
-            <div class="navbar navbar-light">
-               <div class="container-fluid">
-                  {{ include('layout/parts/menu.html.twig') }}
-                  <button class="btn btn-outline-secondary trigger-fuzzy" title="{{ __("Ctrl+Alt+G") }}">
-                     <i class="fas fa-arrow-right me-2"></i>
-                     {{ __("Go to...") }}
-                  </button>
-               </div>
-               <div class="container-fluid">
-               {% if menu[sector] is defined %}
-                  {{ include('layout/parts/breadcrumbs.html.twig') }}
-               {% endif %}
-               </div>
+      <div class="navbar navbar-expand-md navbar-light">
+         <div class="container-fluid justify-content-start">
+            {{ include('layout/parts/breadcrumbs.html.twig') }}
+            <div class="ms-md-auto d-none d-md-block flex-grow-1 flex-md-grow-0">
+               {{ include('layout/parts/global_search_form.html.twig') }}
             </div>
          </div>
       </div>
       {% endif %}
-
-      {% if user_pref('page_layout') == 'horizontal' %}</div>{% endif %} {# .sticky-top #}
 
       <div class="content">
          <div class="container-fluid">
