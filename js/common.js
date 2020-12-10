@@ -593,9 +593,9 @@ var switchDarkMode = function() {
       url: CFG_GLPI.root_doc + '/ajax/switchdarkmode.php',
       type: 'GET',
       success: function(data) {
-        if (data.success === true) {
-           document.querySelector('body').classList.toggle('theme-dark');
-        }
+         if (data.success === true) {
+            document.querySelector('body').classList.toggle('theme-dark');
+         }
       }
    });
 };
