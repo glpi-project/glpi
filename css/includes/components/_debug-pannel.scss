@@ -1,53 +1,84 @@
 
 .debug-pannel {
+   background: $light;
    bottom: 0;
    display: none;
+   font-size: $font-size-sm;
+   padding: 0;
    position: sticky;
+   z-index: 9999;
 
-   .tab-pane {
+   .card-body {
       height: 300px;
       overflow: auto;
-   }
 
-   .debug h1 {
-      font-size: 18px;
-      text-align: center;
-      padding: 5px;
-   }
+      .tab-content {
+         .tab-pane {
+            table {
+               width: 100%;
 
-   .debug h2 {
-      font-size: 14px;
-      padding-left: 10px;
-      border-left: 4px solid #FFC65D;
-      border-bottom: 2px solid #FFC65D;
-   }
+               tr {
+                  &:nth-child(odd) {
+                     background-color: $gray-100;
 
-   .debug table {
-      margin: 0;
-   }
+                     body.theme-dark & {
+                        background-color: $gray-900;
+                     }
+                  }
+                  &:nth-child(even) {
+                     background-color: $gray-300;
 
-   .debug {
-      .close {
-         right: 5px;
-         position: absolute;
-         top: 5px;
-         cursor: pointer;
-      }
+                     body.theme-dark & {
+                        background-color: $gray-800;
+                     }
+                  }
+               }
 
-      .tab_cadre {
-         width: calc(100% - 25px); /* Keep space for scrollbar */
+               th {
+                  background-color: $gray-500;
 
-         td:nth-child(2),
-         td:nth-child(3) {
-            word-break: break-all;
+                  body.theme-dark & {
+                     background-color: $gray-700;
+                  }
+               }
+
+               th, td {
+                  padding: 0.25em;
+               }
+
+               td {
+                  vertical-align: top;
+
+                  a {
+                     // expand link
+                     color: $link-hover-color;
+                     font-weight: bold;
+                  }
+               }
+
+               &.array-debug td {
+                  &:nth-child(1),
+                  &:nth-child(2) {
+                     white-space: nowrap;
+                  }
+                  &:nth-child(3) {
+                     width: 100%;
+                     word-break: break-all;
+                  }
+               }
+               &.sql-debug td {
+                  &:nth-child(1),
+                  &:nth-child(3) {
+                     white-space: nowrap;
+                  }
+                  &:nth-child(2),
+                  &:nth-child(4) {
+                     width: 100%;
+                     word-break: break-all;
+                  }
+               }
+            }
          }
-
-         .tab_cadre {
-            width:auto;
-         }
       }
-   }
-   .debug .tab_cadre {
-      box-shadow: none;
    }
 }

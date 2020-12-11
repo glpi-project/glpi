@@ -579,16 +579,6 @@
       }
    }
 
-   .debug .ui-tabs-nav {
-      margin: 5px !important;
-      box-sizing: border-box;
-   }
-
-   .debug .ui-tabs-nav {
-      border: 0;
-      background: none;
-   }
-
    .main_form {
       background-color: #FFF;
       box-shadow: 0px 1px 2px 1px #D2D2D2;
@@ -2131,55 +2121,6 @@
       text-align: center;
    }
 
-   .debug {
-      display: none;
-      margin: 1rem 0;
-   }
-
-   .debug .tab-pane {
-      height: 300px;
-      overflow: auto;
-   }
-
-   .debug h1 {
-      font-size: 18px;
-      text-align: center;
-      padding: 5px;
-   }
-
-   .debug h2 {
-      font-size: 14px;
-      padding-left: 10px;
-      border-left: 4px solid #FFC65D;
-      border-bottom: 2px solid #FFC65D;
-   }
-
-   .debug table {
-      margin: 0;
-   }
-
-   .debug {
-      .close {
-         right: 5px;
-         position: absolute;
-         top: 5px;
-         cursor: pointer;
-      }
-
-      .tab_cadre {
-         width: calc(100% - 25px); /* Keep space for scrollbar */
-
-         td:nth-child(2),
-         td:nth-child(3) {
-            word-break: break-all;
-         }
-
-         .tab_cadre {
-            width:auto;
-         }
-      }
-   }
-
    #see_debug, #backtotop {
       position: fixed;
       bottom: 35px;
@@ -2203,10 +2144,6 @@
       &.on a:hover {
          color: #ff0000;
       }
-   }
-
-   .debug .tab_cadre {
-      box-shadow: none;
    }
 
    /* Timeline */

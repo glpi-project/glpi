@@ -689,16 +689,7 @@ class Html {
          if ($rand === null) {
             $rand = mt_rand();
          }
-         if (!$ajax) {
-            echo "<span class='fa-stack fa-lg' id='see_debug'>
-                     <i class='fa fa-circle fa-stack-2x primary-fg-inverse'></i>
-                     <a href='#' class='fa fa-bug fa-stack-1x primary-fg' title='" . __s('Display GLPI debug informations')  . "'>
-                        <span class='sr-only'>See GLPI DEBUG</span>
-                     </a>
-            </span>";
-         }
-
-         echo "<div id='debugpanel$rand' class='container-fluid card debug ".($ajax?"debug_ajax":"")."'>";
+         echo "<div id='debugpanel$rand' class='container-fluid card debug-pannel ".($ajax?"debug_ajax":"")."'>";
 
          echo "<ul class='nav nav-tabs' data-bs-toggle='tabs'>";
          if ($CFG_GLPI["debug_sql"]) {
@@ -716,21 +707,21 @@ class Html {
                echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debugcache$rand'>CACHE VARIABLE</a></li>";
             }
          }
-         echo "<li class='close' id='close_debug$rand'><i class='fa fa-2x fa-times'></i><span class='sr-only'>".__('Close')."</span></li>";
+         echo "<li class='nav-item ms-auto'><a class='nav-link' href='#' id='close_debug$rand'><i class='fa fa-2x fa-times'></i><span class='sr-only'>".__('Close')."</span></a></li>";
          echo "</ul>";
 
          echo "<div class='card-body'>";
          echo "<div class='tab-content'>";
          if ($CFG_GLPI["debug_sql"]) {
             echo "<div id='debugsql$rand' class='tab-pane active'>";
-            echo "<div class='b'>".$SQL_TOTAL_REQUEST." Queries ";
-            echo "took  ".array_sum($DEBUG_SQL['times'])."s</div>";
+            echo "<h1>".$SQL_TOTAL_REQUEST." Queries ";
+            echo "took  ".array_sum($DEBUG_SQL['times'])."s</h1>";
 
-            echo "<table class='tab_cadre'><tr><th>N&#176; </th><th>Queries</th><th>Time</th>";
+            echo "<table class='sql-debug'><tr><th>N&#176; </th><th>Queries</th><th>Time</th>";
             echo "<th>Rows</th><th>Errors</th></tr>";
 
             foreach ($DEBUG_SQL['queries'] as $num => $query) {
-               echo "<tr class='tab_bg_".(($num%2)+1)."'><td>$num</td><td>";
+               echo "<tr><td>$num</td><td>";
                echo self::cleanSQLDisplay($query);
                echo "</td><td>";
                echo $DEBUG_SQL['times'][$num];
@@ -774,19 +765,11 @@ class Html {
          }
          echo "</div>";
 
-         $js = "
+         echo Html::scriptBlock("
             $('#close_debug$rand').click(function() {
                 $('#debugpanel$rand').css('display', 'none');
-            });";
-
-         if (!$ajax) {
-            $js .= "
-               $('#see_debug').click(function(e) {
-                  e.preventDefault();
-                  $('#debugpanel$rand').css('display', 'block');
-               });";
-         }
-         echo Html::scriptBlock($js);
+            });"
+         );
 
          echo "</div></div>";
       }
@@ -1635,8 +1618,6 @@ class Html {
       }
       $FOOTER_LOADED = true;
 
-      self::displayDebugInfos();
-
       if ($CFG_GLPI['maintenance_mode']) { // mode maintenance
          echo "<div id='maintenance-float'>";
          echo "<a href='#see_maintenance'>GLPI MAINTENANCE MODE</a>";
@@ -1681,6 +1662,10 @@ class Html {
       // TODO Add plugins scripts
 
       TemplateRenderer::getInstance()->display('layout/parts/page_footer.html.twig', $tpl_vars);
+
+      self::displayDebugInfos();
+
+      echo "</body></html>";
 
       if (!$keepDB) {
          closeDBConnections();
@@ -3904,24 +3889,24 @@ JS;
    static function printCleanArray($tab, $pad = 0, $jsexpand = false) {
 
       if (count($tab)) {
-         echo "<table class='tab_cadre'>";
+         echo "<table class='array-debug'>";
          // For debug / no gettext
          echo "<tr><th>KEY</th><th>=></th><th>VALUE</th></tr>";
 
          foreach ($tab as $key => $val) {
             $key = Toolbox::clean_cross_side_scripting_deep($key);
-            echo "<tr class='tab_bg_1'><td class='top right'>";
+            echo "<tr><td>";
             echo $key;
             $is_array = is_array($val);
             $rand     = mt_rand();
-            echo "</td><td class='top'>";
+            echo "</td><td>";
             if ($jsexpand && $is_array) {
-               echo "<a class='pointer' href=\"javascript:showHideDiv('content$key$rand','','','')\">";
+               echo "<a href=\"javascript:showHideDiv('content$key$rand','','','')\">";
                echo "=></a>";
             } else {
                echo "=>";
             }
-            echo "</td><td class='top tab_bg_1'>";
+            echo "</td><td>";
 
             if ($is_array) {
                echo "<div id='content$key$rand' ".($jsexpand?"style=\"display:none;\"":'').">";
