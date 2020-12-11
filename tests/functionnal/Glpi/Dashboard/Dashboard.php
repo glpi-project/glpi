@@ -250,4 +250,64 @@ class Dashboard extends DbTestCase {
       $this->array($this->getPrivateProperty('items'))->hasSize(2);
       $this->array($this->getPrivateProperty('rights'))->hasSize(1);
    }
+
+   public function testConvertRights() {
+      $raw = [
+         [
+            'itemtype'                 => 'Entity',
+            'items_id'                 => 0,
+         ], [
+            'itemtype'                 => 'Profile',
+            'items_id'                 => 3,
+         ], [
+            'itemtype'                 => 'Profile',
+            'items_id'                 => 4,
+         ], [
+            'itemtype'                 => 'User',
+            'items_id'                 => 2,
+         ]
+      ];
+
+      $this->array(\Glpi\Dashboard\Dashboard::convertRights($raw))->isEqualTo([
+         'entities_id' => [0],
+         'profiles_id' => [3, 4],
+         'users_id'    => [2],
+         'groups_id'   => [],
+      ]);
+   }
+
+
+   public function testCheckRights() {
+      $rights = [
+         'entities_id' => [0],
+         'profiles_id' => [3 => 3, 4 => 4],
+         'users_id'    => [2],
+         'groups_id'   => [3],
+      ];
+
+      $_SESSION['glpiactiveentities'] = [];
+      $_SESSION['glpiprofiles'] = [];
+      $_SESSION['glpigroups'] = [];
+      $_SESSION['glpiID'] = 1;
+
+      $this->boolean(\Glpi\Dashboard\Dashboard::checkRights($rights))->isFalse();
+
+      $_SESSION['glpiactiveentities'] = [0];
+      $this->boolean(\Glpi\Dashboard\Dashboard::checkRights($rights))->isTrue();
+
+      $_SESSION['glpiactiveentities'] = [];
+      $_SESSION['glpiprofiles'] = [3 => 3];
+      $this->boolean(\Glpi\Dashboard\Dashboard::checkRights($rights))->isTrue();
+
+      $_SESSION['glpiprofiles'] = [];
+      $_SESSION['glpiID'] = 2;
+      $this->boolean(\Glpi\Dashboard\Dashboard::checkRights($rights))->isTrue();
+
+      $_SESSION['glpiID'] = 1;
+      $_SESSION['glpigroups'] = [3];
+      $this->boolean(\Glpi\Dashboard\Dashboard::checkRights($rights))->isTrue();
+
+      $_SESSION['glpigroups'] = [];
+      $this->boolean(\Glpi\Dashboard\Dashboard::checkRights($rights))->isFalse();
+   }
 }
