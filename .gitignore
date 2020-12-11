@@ -30,6 +30,7 @@ phpunit.xml
 /css_compiled/
 /css/compiled/
 !/css/components/tiny_mce/**/*.min.css
+/css/lib/
 /**/*.min.js
 /node_modules/
 .package.hash

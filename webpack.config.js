@@ -38,6 +38,7 @@ const glob = require('glob');
 const path = require('path');
 
 const libOutputPath = 'public/lib';
+const scssOutputPath = 'css/lib';
 
 /*
  * GLPI core files build configuration.
@@ -132,7 +133,14 @@ var libsConfig = {
             Buffer: ['buffer', 'Buffer'], // required in file-type.js
          }
       ),
-      new CleanWebpackPlugin(), // Clean lib dir content
+      new CleanWebpackPlugin(
+         {
+            cleanOnceBeforeBuildPatterns: [
+               path.join(process.cwd(), libOutputPath + '/**/*'),
+               path.join(process.cwd(), scssOutputPath + '/**/*')
+            ]
+         }
+      ), // Clean lib dir content
       new MiniCssExtractPlugin(), // Extract styles into CSS files
    ],
    resolve: {
@@ -146,7 +154,8 @@ var libsConfig = {
    },
 };
 
-var libs = {
+var libsToCopy = {
+   // JS files
    '@fullcalendar': [
       {
          context: 'core',
@@ -180,16 +189,35 @@ var libs = {
          from: 'langs/*.js',
       }
    ],
+   // SCSS files
+   '@tabler/core': [
+      {
+         from: 'src/scss/**/*.scss',
+         to: scssOutputPath,
+      }
+   ],
+   'bootstrap': [
+      {
+         from: 'scss/**/*.scss',
+         to: scssOutputPath,
+      }
+   ],
+   'select2': [
+      {
+         from: 'src/scss/**/*.scss',
+         to: scssOutputPath,
+      }
+   ],
 };
 
-for (let packageName in libs) {
-   let libPackage = libs[packageName];
-   let to = libOutputPath + '/' + packageName.replace(/^@/, ''); // remove leading @ in case of prefixed package
+for (let packageName in libsToCopy) {
+   let libPackage = libsToCopy[packageName];
 
    let copyPatterns = [];
 
    for (let e = 0; e < libPackage.length; e++) {
       let packageEntry = libPackage[e];
+      let to = (packageEntry.to || libOutputPath) + '/' + packageName.replace(/^@/, ''); // remove leading @ in case of prefixed package
 
       let context = 'node_modules/' + packageName;
       if (Object.prototype.hasOwnProperty.call(packageEntry, 'context')) {
