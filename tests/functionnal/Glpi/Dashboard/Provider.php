@@ -257,4 +257,31 @@ class Provider extends DbTestCase {
          $this->string($data['url'])->contains(\Ticket::getSearchURL());
       }
    }
+
+   public function monthYearProvider() {
+      return [
+         [
+            'monthyear' => '2019-01',
+            'expected'  => [
+               '2019-01-01 00:00:00',
+               '2019-02-01 00:00:00'
+            ]
+         ], [
+            'monthyear' => '2019-12',
+            'expected'  => [
+               '2019-12-01 00:00:00',
+               '2020-01-01 00:00:00'
+            ]
+         ]
+      ];
+   }
+
+
+   /**
+    * @dataProvider monthYearProvider
+    */
+   public function testFormatMonthyearDates(string $monthyear, array $expected) {
+      $this->array(\Glpi\Dashboard\Provider::formatMonthyearDates($monthyear))
+         ->isEqualTo($expected);
+   }
 }
