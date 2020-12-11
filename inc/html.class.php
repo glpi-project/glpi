@@ -32,6 +32,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\SimpleCache;
+use Glpi\Console\Application;
 use ScssPhp\ScssPhp\Compiler;
 
 if (!defined('GLPI_ROOT')) {
@@ -7257,18 +7258,11 @@ HTML;
       $file_hash = self::getScssFileHash($path);
 
       //check if files has changed
-      if ($GLPI_CACHE->has($fckey)) {
-         $cached_file_hash = $GLPI_CACHE->get($fckey);
-
-         if ($file_hash != $cached_file_hash) {
+      if (!isset($args['nocache']) && $GLPI_CACHE->has($fckey)) {
+         if ($file_hash != $GLPI_CACHE->get($fckey)) {
             //file has changed
-            Toolbox::logDebug("$file has changed, reloading");
             $args['reload'] = true;
-            $GLPI_CACHE->set($fckey, $file_hash);
          }
-      } else {
-         Toolbox::logDebug("$file is new, loading");
-         $GLPI_CACHE->set($fckey, $file_hash);
       }
 
       $scss->addImportPath(GLPI_ROOT);
@@ -7295,12 +7289,37 @@ HTML;
          }
       );
 
-      if ($GLPI_CACHE->has($ckey) && !isset($args['reload']) && !isset($args['nocache'])) {
+      if (!isset($args['reload']) && !isset($args['nocache']) && $GLPI_CACHE->has($ckey)) {
          $css = $GLPI_CACHE->get($ckey);
       } else {
-         $css = $scss->compile($import);
-         if (!isset($args['nocache'])) {
-            $GLPI_CACHE->set($ckey, $css);
+         try {
+            Toolbox::logDebug("Compile $file");
+            $css = $scss->compile($import);
+            if (!isset($args['nocache'])) {
+               $GLPI_CACHE->set($ckey, $css);
+               $GLPI_CACHE->set($fckey, $file_hash);
+            }
+         } catch (Throwable $e) {
+            if (isset($args['debug'])) {
+               $msg = 'An error occured during SCSS compilation: ' . $e->getMessage();
+               $msg = str_replace(["\n", "\"", "'"], ['\00000a', '\0022', '\0027'], $msg);
+               $css = <<<CSS
+                  html::before {
+                     background: #F33;
+                     content: '$msg';
+                     display: block;
+                     padding: 20px;
+                     position: sticky;
+                     top: 0;
+                     white-space: pre-wrap;
+                     z-index: 9999;
+                  }
+CSS;
+            }
+            global $application;
+            if ($application instanceof Application) {
+               throw $e;
+            }
          }
       }
 
@@ -7351,17 +7370,11 @@ HTML;
             $potential_paths[] = dirname($filepath) . '/' . $import_dirname . '/_' . $import_filename;
          }
 
-         $found = false;
          foreach ($potential_paths as $path) {
             if (is_file($path)) {
-               $found = true;
                $hash .= self::getScssFileHash($path);
                break;
             }
-         }
-
-         if (!$found) {
-            trigger_error(sprintf('Unable to find %s file.', $import_url), E_USER_WARNING);
          }
       }
 
