@@ -56,6 +56,7 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
          new TwigFunction('canViewAllEntities', [$this, 'canViewAllEntities']),
          new TwigFunction('haveAccessToOneOfEntities', [$this, 'haveAccessToOneOfEntities']),
          new TwigFunction('userhaveAccessToOneOfEntities', [$this, 'userhaveAccessToOneOfEntities']),
+         new TwigFunction('getMessagesAfterRedirect', [$this, 'getMessagesAfterRedirect']),
       ];
    }
 
@@ -207,5 +208,20 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
     */
    public function userhaveAccessToOneOfEntities(int $users_id = 0, int $is_recursive = 0):bool {
       return Session::haveAccessToOneOfEntities(Profile_User::getUserEntities($users_id, $is_recursive));
+   }
+
+
+   /**
+    * return MESSAGE_AFTER_REDIRECT session var and clear it
+    *
+    * @return array of strings
+    *
+    * @TODO Add a unit test.
+    */
+   public function getMessagesAfterRedirect():array {
+      $messages = $_SESSION['MESSAGE_AFTER_REDIRECT'];
+      $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+
+      return $messages;
    }
 }

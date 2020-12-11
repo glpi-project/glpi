@@ -598,98 +598,7 @@ class Html {
     * Display a div containing messages set in session in the previous page
    **/
    static function displayMessageAfterRedirect() {
-
-      // Affichage du message apres redirection
-      if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])
-          && count($_SESSION["MESSAGE_AFTER_REDIRECT"]) > 0) {
-
-         foreach ($_SESSION['MESSAGE_AFTER_REDIRECT'] as $msgtype => $messages) {
-            //get messages
-            if (count($messages) > 0) {
-               $html_messages = implode('<br/>', $messages);
-            } else {
-               continue;
-            }
-
-            //set title and css class
-            switch ($msgtype) {
-               case ERROR:
-                  $title = __s('Error');
-                  $class = 'err_msg';
-                  break;
-               case WARNING:
-                  $title = __s('Warning');
-                  $class = 'warn_msg';
-                  break;
-               case INFO:
-                  $title = _sn('Information', 'Information', 1);
-                  $class = 'info_msg';
-                  break;
-            }
-
-            echo "<div id=\"message_after_redirect_$msgtype\" title=\"$title\">";
-            echo $html_messages;
-            echo "</div>";
-
-            $scriptblock = "
-               $(function() {
-                  var _of = window;
-                  var _at = 'right-20 bottom-20';
-                  //calculate relative dialog position
-                  $('.message_after_redirect').each(function() {
-                     var _this = $(this);
-                     if (_this.attr('aria-describedby') != 'message_after_redirect_$msgtype') {
-                        _of = _this;
-                        _at = 'right top-' + (10 + _this.outerHeight());
-                     }
-                  });
-
-                  $('#message_after_redirect_$msgtype').dialog({
-                     dialogClass: 'message_after_redirect $class',
-                     minHeight: 40,
-                     minWidth: 200,
-                     position: {
-                        my: 'right bottom',
-                        at: _at,
-                        of: _of,
-                        collision: 'none'
-                     },
-                     autoOpen: false,
-                     show: {
-                       effect: 'slide',
-                       direction: 'down',
-                       'duration': 800
-                     }
-                  })
-                  .dialog('open');";
-
-            //do not autoclose errors
-            if ($msgtype != ERROR) {
-               $scriptblock .= "
-
-                  // close dialog on outside click
-                  $(document.body).on('click', function(e){
-                     if ($('#message_after_redirect_$msgtype').dialog('isOpen')
-                         && !$(e.target).is('.ui-dialog, a')
-                         && !$(e.target).closest('.ui-dialog').length) {
-                        $('#message_after_redirect_$msgtype').remove();
-                        // redo focus on initial element
-                        e.target.focus();
-                     }
-                  });";
-            }
-
-            $scriptblock .= "
-
-               });
-            ";
-
-            echo Html::scriptBlock($scriptblock);
-         }
-      }
-
-      // Clean message
-      $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
+      TemplateRenderer::getInstance()->display('components/messages_after_redirect.html.twig');
    }
 
 
@@ -698,9 +607,7 @@ class Html {
 
       echo Html::scriptBlock("
       displayAjaxMessageAfterRedirect = function() {
-         // attach MESSAGE_AFTER_REDIRECT to body
-         $('.message_after_redirect').remove();
-         $('[id^=\"message_after_redirect_\"]').remove();
+         $('.messages_after_redirect').remove();
          $.ajax({
             url:  '".$CFG_GLPI['root_doc']."/ajax/displayMessageAfterRedirect.php',
             success: function(html) {
@@ -1710,7 +1617,6 @@ class Html {
 
       // call static function callcron() every 5min
       CronTask::callCron();
-      self::displayMessageAfterRedirect();
    }
 
 
@@ -2063,8 +1969,8 @@ class Html {
 
       self::includeHeader($title, $sector, $item, $option); // Body
       echo "<body class='".($iframed? "iframed": "")."'>";
-      echo "<div id='page'>"; // Force legacy styles for now
       self::displayMessageAfterRedirect();
+      echo "<div id='page'>"; // Force legacy styles for now
    }
 
 
