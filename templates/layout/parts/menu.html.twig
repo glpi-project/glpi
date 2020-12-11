@@ -14,7 +14,8 @@
       <div class="dropdown-menu {{ firstlevel_active and user_pref('page_layout') == 'vertical' ? 'show' : '' }}">
          <div class="dropdown-menu-columns">
             <div class="dropdown-menu-column">
-            {% if firstlevel['default_dashboard'] is defined %}
+            {% set has_dashboard = firstlevel['default_dashboard'] is defined %}
+            {% if has_dashboard %}
                <a class="dropdown-item"
                   href="{{ path(firstlevel['default_dashboard']) }}">
                   <i class="fas fa-fw fa-border-all"></i>
@@ -31,7 +32,8 @@
                </a>
                {% endif %}
 
-               {% if loop.index % 6 == 0 and not loop.last %}
+               {% set count_per_column = 6 %}
+               {% if loop.index % count_per_column == (has_dashboard ? count_per_column - 1 : 0) and not loop.last %}
                   </div>
                   <div class="dropdown-menu-column">
                {% endif %}
