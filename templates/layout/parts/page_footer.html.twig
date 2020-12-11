@@ -28,6 +28,20 @@
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  ---------------------------------------------------------------------
 #}
+            {% if is_debug_active %}
+               <span class="fa-stack fa-lg" id="see_debug">
+                  <i class="fa fa-circle fa-stack-2x primary-fg-inverse"></i>
+                  <a href="#" class="fa fa-bug fa-stack-1x primary-fg" title=" {{ __('Display GLPI debug informations') }}">
+                     <span class="sr-only">{{ __('Display GLPI debug informations') }}</span>
+                  </a>
+               </span>
+               <script type="text/javascript">
+                  $($('#see_debug').click(function(e) {
+                     e.preventDefault();
+                     $('body > .debug-pannel').css('display', 'block');
+                  }));
+               </script>
+            {% endif %}
             </main> {# #page #}
          </div> {# .container-fluid #}
 
@@ -42,5 +56,3 @@
    {% for js_file in js_files %}
       <script type="text/javascript" src="{{ js_path(js_file) }}"></script>
    {% endfor %}
-</body>
-</html>
