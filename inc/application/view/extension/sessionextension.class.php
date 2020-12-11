@@ -50,6 +50,7 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
          new TwigFunction('has_global_right', [$this, 'hasGlobalRight']),
          new TwigFunction('has_item_right', [$this, 'hasItemRight']),
          new TwigFunction('user_pref', [$this, 'userPref']),
+         new TwigFunction('session', [$this, 'session']),
          new TwigFunction('haveAccessToEntity', [$this, 'haveAccessToEntity']),
          new TwigFunction('haveRecursiveAccessToEntity', [$this, 'haveRecursiveAccessToEntity']),
          new TwigFunction('canViewAllEntities', [$this, 'canViewAllEntities']),
@@ -124,6 +125,20 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
       global $CFG_GLPI;
 
       return $_SESSION['glpi' . $name] ?? $CFG_GLPI[$name] ?? null;
+   }
+
+   /**
+    * Get session value.
+    *
+    * @param string $name
+    *
+    * @return mixed
+    *
+    * @TODO Add a unit test.
+    */
+   public function session(string $name) {
+
+      return $_SESSION[$name] ?? null;
    }
 
    /**
