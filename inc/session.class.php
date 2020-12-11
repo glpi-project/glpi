@@ -1312,9 +1312,9 @@ class Session {
       }
 
       $_SESSION['glpiidortokens'][$token] = [
-         'itemtype' => $itemtype,
          'expires'  => time() + GLPI_IDOR_EXPIRES
-      ] + $add_params;
+      ] + ($itemtype !== "" ? ['itemtype' => $itemtype] : [])
+        + $add_params;
 
       return $token;
    }
