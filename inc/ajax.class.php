@@ -397,6 +397,10 @@ class Ajax {
 
       // Display tabs
       if (count($tabs) > 0) {
+         if (count($tabs) == 1) {
+            $orientation = "horizontal";
+         }
+
          $flex_container = "flex-column flex-md-row";
          $flex_tab       = "flex-row flex-md-column";
          $border         = "border-start-0";
