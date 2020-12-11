@@ -12,23 +12,32 @@
          {{ firstlevel['title'] }}
       </a>
       <div class="dropdown-menu {{ firstlevel_active and user_pref('page_layout') == 'vertical' ? 'show' : '' }}">
-      {% if firstlevel['default_dashboard'] is defined %}
-         <a class="dropdown-item"
-            href="{{ path(firstlevel['default_dashboard']) }}">
-            <i class="fas fa-fw fa-border-all"></i>
-            {{ __("Dashboard") }}
-         </a>
-      {% endif %}
-      {% for sublevel in firstlevel['content'] %}
-         {% if sublevel['page'] is defined %}
-         <a class="dropdown-item {{ menu_active == sublevel['title'] ? "active" : "" }}"
-            href="{{ path(sublevel['page']) }}"
-            accesskey="{{ sublevel['shortcut'] ?? "" }}">
-            <i class="fa-fw {{ sublevel['icon'] ?? "" }}"></i>
-            {{ shortcut(sublevel['title'], sublevel['shortcut'] ?? "") }}
-         </a>
-         {% endif %}
-      {% endfor %}
+         <div class="dropdown-menu-columns">
+            <div class="dropdown-menu-column">
+            {% if firstlevel['default_dashboard'] is defined %}
+               <a class="dropdown-item"
+                  href="{{ path(firstlevel['default_dashboard']) }}">
+                  <i class="fas fa-fw fa-border-all"></i>
+                  {{ __("Dashboard") }}
+               </a>
+            {% endif %}
+            {% for sublevel in firstlevel['content'] %}
+               {% if sublevel['page'] is defined %}
+               <a class="dropdown-item {{ menu_active == sublevel['title'] ? "active" : "" }}"
+                  href="{{ path(sublevel['page']) }}"
+                  accesskey="{{ sublevel['shortcut'] ?? "" }}">
+                  <i class="fa-fw {{ sublevel['icon'] ?? "" }}"></i>
+                  {{ shortcut(sublevel['title'], sublevel['shortcut'] ?? "") }}
+               </a>
+               {% endif %}
+
+               {% if loop.index % 6 == 0 and not loop.last %}
+                  </div>
+                  <div class="dropdown-menu-column">
+               {% endif %}
+            {% endfor %}
+            </div>
+         </div>
       </div>
    </li>
    {% endif %}
