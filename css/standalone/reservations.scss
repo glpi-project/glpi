@@ -30,34 +30,7 @@
  */
 
 // @TODO Encapsulate all styles inside a common class
-
-.reservation-panel {
-   .reservation-header {
-      bottom: 15px;
-
-      .reservation-icon {
-         vertical-align: middle;
-      }
-
-      .item-name {
-         display: inline-block;
-      }
-
-      .view-all {
-         margin-left: 15px;
-      }
-   }
-}
-
 .reservations-planning {
-   width: 90%;
-   margin: 15px auto 0;
-
-   &.tabbed {
-      width: 950px;
-
-   }
-
    a .fc-time, .fc-title {
       color: initial;
    }
