@@ -7376,13 +7376,13 @@ HTML;
       $scss->addImportPath(
          function($path) {
             $file_chunks = [];
-            if (!preg_match('/^~(?<directory>.*)\/(?<file>[^\/]+)(?:(\.scss)?)/', $path, $file_chunks)) {
+            if (!preg_match('/^~@?(?<directory>.*)\/(?<file>[^\/]+)(?:(\.scss)?)/', $path, $file_chunks)) {
                return null;
             }
 
             $possible_filenames = [
-               sprintf('%s/node_modules/%s/%s.scss', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file']),
-               sprintf('%s/node_modules/%s/_%s.scss', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file']),
+               sprintf('%s/css/lib/%s/%s.scss', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file']),
+               sprintf('%s/css/lib/%s/_%s.scss', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file']),
             ];
             foreach ($possible_filenames as $filename) {
                if (file_exists($filename)) {
@@ -7425,33 +7425,42 @@ HTML;
       $hash = md5($contents);
 
       $matches = [];
-      preg_match_all('/@import\s+[\'"]~?([^\'"]*)[\'"];/', $contents, $matches);
-
-      if (empty($matches)) {
+      if (!preg_match_all('/@import\s+[\'"](?<url>~?@?[^\'"]*)[\'"];/', $contents, $matches)) {
          return $hash;
       }
 
-      $basedirs = [
-         GLPI_ROOT, // search with path relative to GLPI root
-         dirname($filepath), // search with path relative to current file
-         GLPI_ROOT . '/node_modules', // search in node_modules
-      ];
-      foreach ($matches[1] as $import_url) {
-         $has_extension   = preg_match('/\.s?css$/', $import_url);
-         $import_dirname  = dirname($import_url);
-         $import_filename = basename($import_url);
-
+      foreach ($matches['url'] as $import_url) {
          $potential_paths = [];
-         foreach ($basedirs as $basedir) {
-            $potential_paths[] = $basedir . '/' . $import_dirname . '/' . $import_filename . ($has_extension ? '' : '.scss');
-            $potential_paths[] = $basedir . '/' . $import_dirname . '/_' . $import_filename . ($has_extension ? '' : '.scss');
+
+         $has_extension   = preg_match('/\.s?css$/', $import_url);
+         $is_from_lib     = preg_match('/^~/', $import_url);
+         $import_dirname  = dirname(preg_replace('/^~?@?/', '', $import_url)); // Remove leading ~ and @ from lib path
+         $import_filename = basename($import_url) . ($has_extension ? '' : '.scss');
+
+         if ($is_from_lib) {
+            // Search file in libs
+            $potential_paths[] = GLPI_ROOT . '/css/lib/' . $import_dirname . '/' . $import_filename;
+            $potential_paths[] = GLPI_ROOT . '/css/lib/' . $import_dirname . '/_' . $import_filename;
+         } else {
+            // Search using path relative to GLPI root
+            $potential_paths[] = GLPI_ROOT . '/' . $import_dirname . '/' . $import_filename;
+            $potential_paths[] = GLPI_ROOT . '/' . $import_dirname . '/_' . $import_filename;
+            // Search using path relative to current file
+            $potential_paths[] = dirname($filepath) . '/' . $import_dirname . '/' . $import_filename;
+            $potential_paths[] = dirname($filepath) . '/' . $import_dirname . '/_' . $import_filename;
          }
 
+         $found = false;
          foreach ($potential_paths as $path) {
             if (is_file($path)) {
+               $found = true;
                $hash .= self::getScssFileHash($path);
                break;
             }
+         }
+
+         if (!$found) {
+            trigger_error(sprintf('Unable to find %s file.', $import_url), E_USER_WARNING);
          }
       }
 
