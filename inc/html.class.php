@@ -7299,7 +7299,7 @@ HTML;
                $GLPI_CACHE->set($ckey, $css);
                $GLPI_CACHE->set($fckey, $file_hash);
             }
-         } catch (Throwable $e) {
+         } catch (\Throwable $e) {
             if (isset($args['debug'])) {
                $msg = 'An error occured during SCSS compilation: ' . $e->getMessage();
                $msg = str_replace(["\n", "\"", "'"], ['\00000a', '\0022', '\0027'], $msg);
