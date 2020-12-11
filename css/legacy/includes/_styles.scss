@@ -2008,51 +2008,6 @@
       color: #425B64;
    }
 
-   /* ################--------------- box (redirect and other)  ---------------#################### */
-
-   .ui-widget-content.message_after_redirect {
-      color: #393939;
-      background: #DFDFDF;
-   }
-
-   .message_after_redirect h3 {
-      font-size: 11px;
-      font-weight: bold;
-      zoom: 1;
-   }
-
-   /* ##### ERROR messages ##### */
-
-   .ui-widget-content.message_after_redirect.err_msg {
-      background-color: #ff9999;
-   }
-
-   .message_after_redirect.err_msg div.ui-widget-header {
-      color: white;
-      background: rgba(255, 0, 0, 0.8);
-      border-color: rgba(255, 0, 0, 0.8);
-   }
-
-   /* ##### WARNING messages ##### */
-
-   .ui-widget-content.message_after_redirect.warn_msg {
-      background-color: #ffdb99;
-   }
-
-   .message_after_redirect {
-      &.warn_msg div.ui-widget-header {
-         color: white;
-         background: rgba(255, 165, 0, 0.8);
-         border-color: rgba(255, 165, 0, 0.8);
-      }
-
-      &.info_msg div.ui-widget-header {
-         color: white;
-         background: #A9A9A9;
-         border-color: #A9A9A9;
-      }
-   }
-
    .error {
       color: red;
       margin-top: 20px;
