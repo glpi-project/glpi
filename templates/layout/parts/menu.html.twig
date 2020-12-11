@@ -1,3 +1,4 @@
+{% set is_vertical = user_pref('page_layout') == 'vertical' %}
 
 <ul class="navbar-nav">
 {% for firstlevel in menu %}
@@ -11,7 +12,7 @@
          &nbsp;
          {{ firstlevel['title'] }}
       </a>
-      <div class="dropdown-menu {{ firstlevel_active and user_pref('page_layout') == 'vertical' ? 'show' : '' }}">
+      <div class="dropdown-menu {{ firstlevel_active and is_vertical != false ? "" : "animate__animated" }} animate__fadeIn{{ is_vertical ? 'Left' : 'Down' }} {{ firstlevel_active and is_vertical ? 'show' : '' }}">
          <div class="dropdown-menu-columns">
             <div class="dropdown-menu-column">
             {% set has_dashboard = firstlevel['default_dashboard'] is defined %}
