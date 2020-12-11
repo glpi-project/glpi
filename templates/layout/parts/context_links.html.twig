@@ -7,7 +7,7 @@
 {% if links['add'] is defined %}
 <li class="nav-item">
    <a href="{{ path(links['add']) }}" class="btn btn-sm btn-icon btn-outline-secondary me-2" title="{{ __('Add') }}">
-      <i class="fas fa-plus me-2"></i>
+      <i class="fas fa-plus"></i>
       <span class="d-none d-md-block">{{ __('Add') }}</span>
    </a>
 </li>
@@ -16,7 +16,7 @@
 {% if links['search'] is defined %}
 <li class="nav-item">
    <a href="{{ path(links['search']) }}" class="btn btn-sm btn-icon btn-outline-secondary me-2" title="{{ __('Search') }}">
-      <i class="fas fa-search me-2"></i>
+      <i class="fas fa-search"></i>
       <span class="d-none d-md-block">{{ __('Search') }}</span>
    </a>
 </li>
@@ -27,35 +27,35 @@
    {% elseif type == 'template' %}
       <li class="nav-item">
          <a href="{{ path(link) }}" class="btn btn-sm btn-icon btn-outline-secondary me-2" title="{{ __("Manage templates...") }}">
-            <i class="fas fa-layer-group me-2"></i>
+            <i class="fas fa-layer-group"></i>
             <span class="d-none d-md-block">{{ __("Manage templates...") }}</span>
          </a>
       </li>
    {% elseif type == 'showall' %}
       <li class="nav-item">
          <a href="{{ path(link) }}" class="btn btn-sm btn-icon btn-outline-secondary me-2" title="{{ __("Show all") }}">
-            <img class="me-2" src="{{ path("/pics/menu_showall.png") }}">
+            <img src="{{ path("/pics/menu_showall.png") }}">
             <span class="d-none d-md-block">{{ __("Show all") }}</span>
          </a>
       </li>
    {% elseif type == 'summary' %}
       <li class="nav-item">
          <a href="{{ path(link) }}" class="btn btn-sm btn-icon btn-outline-secondary me-2" title="{{ __("Summary") }}">
-            <i class="fas fa-stream me-2"></i>
+            <i class="fas fa-stream"></i>
             <span class="d-none d-md-block">{{ __("Summary") }}</span>
          </a>
       </li>
    {% elseif type == 'summary_kanban' %}
       <li class="nav-item">
          <a href="{{ path(link) }}" class="btn btn-sm btn-icon btn-outline-secondary me-2" title="{{ __("Global Kanban") }}">
-            <i class="fas fa-columns me-2"></i>
+            <i class="fas fa-columns"></i>
             <span class="d-none d-md-block">{{ __("Global Kanban") }}</span>
          </a>
       </li>
    {% elseif type == 'config' %}
       <li class="nav-item">
          <a href="{{ path(link) }}" class="btn btn-sm btn-icon btn-outline-secondary me-2" title="{{ __("Setup") }}">
-            <img class="me-2" src="{{ path("/pics/menu_config.png") }}">
+            <img src="{{ path("/pics/menu_config.png") }}">
             <span class="d-none d-md-block">{{ __("Setup") }}</span>
          </a>
       </li>
