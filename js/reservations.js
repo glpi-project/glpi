@@ -153,9 +153,10 @@ var Reservations = function() {
          },
 
          eventRender: function(info) {
-            var event = info.event;
+            var event    = info.event;
             var extProps = event.extendedProps;
-            var element = $(info.el);
+            var element  = $(info.el);
+            var view     = info.view;
 
             // add icon if exists
             if ("icon" in extProps && !my.is_tab) {
@@ -168,7 +169,22 @@ var Reservations = function() {
                   .append("&nbsp;<i class='"+extProps.icon+"' title='"+icon_alt+"'></i>");
             }
 
+            // detect ideal position
+            var qtip_position = {
+               target: 'mouse',
+               adjust: {
+                  mouse: false
+               },
+               viewport: $(window)
+            };
+            if (view.type.indexOf('list') >= 0) {
+               // on central, we want the tooltip on the anchor
+               // because the event is 100% width and so tooltip will be too much on the right.
+               qtip_position.target= element.find('a');
+            }
+
             element.qtip({
+               position: qtip_position,
                content: extProps.comment,
                style: {
                   classes: 'qtip-shadow qtip-bootstrap'
