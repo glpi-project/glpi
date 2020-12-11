@@ -1,0 +1,53 @@
+
+.debug-pannel {
+   bottom: 0;
+   display: none;
+   position: sticky;
+
+   .tab-pane {
+      height: 300px;
+      overflow: auto;
+   }
+
+   .debug h1 {
+      font-size: 18px;
+      text-align: center;
+      padding: 5px;
+   }
+
+   .debug h2 {
+      font-size: 14px;
+      padding-left: 10px;
+      border-left: 4px solid #FFC65D;
+      border-bottom: 2px solid #FFC65D;
+   }
+
+   .debug table {
+      margin: 0;
+   }
+
+   .debug {
+      .close {
+         right: 5px;
+         position: absolute;
+         top: 5px;
+         cursor: pointer;
+      }
+
+      .tab_cadre {
+         width: calc(100% - 25px); /* Keep space for scrollbar */
+
+         td:nth-child(2),
+         td:nth-child(3) {
+            word-break: break-all;
+         }
+
+         .tab_cadre {
+            width:auto;
+         }
+      }
+   }
+   .debug .tab_cadre {
+      box-shadow: none;
+   }
+}

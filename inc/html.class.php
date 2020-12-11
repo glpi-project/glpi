@@ -6260,7 +6260,7 @@ JAVASCRIPT;
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/fullcalendar.js';
             if (isset($_SESSION['glpilanguage'])) {
                foreach ([2, 3] as $loc) {
-                  $filename = "public/lib/fullcalendar/locales/".
+                  $filename = "public/lib/fullcalendar/core/locales/".
                      strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][$loc]).".js";
                   if (file_exists(GLPI_ROOT . '/' . $filename)) {
                      $_SESSION['glpi_js_toload'][$name][] = $filename;
