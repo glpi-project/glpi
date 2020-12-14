@@ -1,8 +1,9 @@
 <div class="d-inline-flex align-items-center">
-   {% if showmassiveactions %}
+   {% if showmassiveactions and count > 0 %}
    {{ showMassiveActions(massiveactionparams)|raw }}
    {% endif %}
 
+   {% if count > 0 %}
    <label class="form-check form-switch btn btn-sm btn-ghost-info me-1 px-1 mb-0">
       <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
              name="as_map" value="1" autocomplete="off"
@@ -12,6 +13,7 @@
          <i class="fas fa-lg fa-globe-americas"></i>
       </span >
    </label>
+   {% endif %}
 
    <label class="form-check form-switch btn btn-sm btn-ghost-danger me-1 px-1 mb-0">
       <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
@@ -25,12 +27,13 @@
 
    <div class="d-inline-flex" role="group">
 
-      {% if can_config %}
+      {% if can_config and count > 0 %}
       <button class="btn btn-sm btn-icon btn-ghost-secondary">
          <i class="fas fa-lg fa-wrench show_displaypreference_modal"></i>
       </button>
       {% endif %}
 
+      {% if count > 0 %}
       <button class="dropdown-toggle btn btn-sm btn-icon btn-ghost-secondary" type="button" id="dropdown-export"
             data-bs-toggle="dropdown" aria-expanded="false" title="{{ _x('button', 'Export') }} ">
          <i class="fas fa-lg fa-file-download"></i>
@@ -70,6 +73,7 @@
             {{ __("All pages in CSV") }}
          </a></li>
       </ul>
+      {% endif %}
    </div>
 </div>
 
