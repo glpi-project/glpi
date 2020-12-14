@@ -20,20 +20,21 @@
          {% endif %}
       {% endif %}
    </div>
-   <div class="card card-sm">
-      {% if data['search']['as_map'] == 0 %}
-         {% if count > 0 %}
+
+   {% if count > 0 %}
+      <div class="card card-sm">
+         {% if data['search']['as_map'] == 0 %}
             {{ include('layout/parts/search/table.html.twig') }}
-         {% else %}
-            <div class="alert alert-info" role="alert">
-               {{ __('No item found') }}
+         {% endif %}
+         {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and data['search']['as_map'] == 0 %}
+            <div class="card-footer">
+               {{ include('layout/parts/search/pager.html.twig') }}
             </div>
          {% endif %}
-      {% endif %}
-      {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and count > 0 and data['search']['as_map'] == 0 %}
-      <div class="card-footer">
-         {{ include('layout/parts/search/pager.html.twig') }}
       </div>
-      {% endif %}
-   </div>
+   {% else %}
+      <div class="alert alert-info" role="alert">
+         {{ __('No item found') }}
+      </div>
+   {% endif %}
 </form>
