@@ -53,4 +53,47 @@ class ImpactItem extends \DbTestCase {
       $impactItem = \ImpactItem::findForItem($computer);
       $this->integer((int) $impactItem->fields['id'])->isEqualTo($id);
    }
+
+   public function prepareInputForUpdateProvider() {
+      return [
+         [
+            'input'  => ['max_depth' => "glpi"],
+            'result' => \Impact::DEFAULT_DEPTH,
+         ],
+         [
+            'input'  => ['max_depth' => 0],
+            'result' => \Impact::DEFAULT_DEPTH,
+         ],
+         [
+            'input'  => ['max_depth' => -58],
+            'result' => \Impact::DEFAULT_DEPTH,
+         ],
+         [
+            'input'  => ['max_depth' => 9],
+            'result' => 9,
+         ],
+         [
+            'input'  => ['max_depth' => 2],
+            'result' => 2,
+         ],
+         [
+            'input'  => ['max_depth' => 40],
+            'result' => \Impact::NO_DEPTH_LIMIT,
+         ],
+         [
+            'input'  => ['max_depth' => \Impact::NO_DEPTH_LIMIT],
+            'result' => \Impact::NO_DEPTH_LIMIT,
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider prepareInputForUpdateProvider
+    */
+   public function testPrepareInputForUpdate($input, $result) {
+      $impact_item = new \ImpactItem();
+      $input = $impact_item->prepareInputForUpdate($input);
+      $this->array($input)->hasKey('max_depth');
+      $this->integer($input['max_depth'])->isEqualTo($result);
+   }
 }
