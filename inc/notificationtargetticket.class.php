@@ -170,9 +170,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       // Without double encoding, these emails are interpreted as html and not
       // rendered in the final mail
       $regex = "/(&lt;[^;]+?@[^;]+?&gt;)/";
-      $data['##ticket.description##'] = preg_replace_callback($regex, function($matches) {
-         return htmlentities($matches[1]);
-      }, $data['##ticket.description##']);
+      $data['##ticket.description##'] = Toolbox::doubleEncodeEmails($data['##ticket.description##']);
 
       $data['##ticket.content##'] = $data['##ticket.description##'];
       // Specific data
