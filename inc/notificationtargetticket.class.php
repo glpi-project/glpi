@@ -169,7 +169,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       // Common case of this is when the ticket was created from a forwarded email
       // Without double encoding, these emails are interpreted as html and not
       // rendered in the final mail
-      $regex = "/(&lt;[^;]+?@[^;]+?&gt;)/";
       $data['##ticket.description##'] = Toolbox::doubleEncodeEmails($data['##ticket.description##']);
 
       $data['##ticket.content##'] = $data['##ticket.description##'];
