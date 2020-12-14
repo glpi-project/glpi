@@ -36,7 +36,7 @@
  */
 
 $migration->displayMessage("Adding unicity key to reservationitem");
-$table = ReservationItem::getTable();
+$table = 'glpi_reservationitems';
 
 // Copy table
 $tmp_table = "tmp_$table";
