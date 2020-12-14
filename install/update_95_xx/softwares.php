@@ -32,8 +32,8 @@
 
 // CleanSoftwareCron cron task
 CronTask::register(
-   CleanSoftwareCron::class,
-   CleanSoftwareCron::TASK_NAME,
+   'CleanSoftwareCron',
+   'cleansoftware',
    MONTH_TIMESTAMP,
    [
       'state'         => 0,
