@@ -600,6 +600,32 @@ var switchDarkMode = function() {
    });
 };
 
+var switchFoldMenu = function() {
+   $.ajax({
+      url: CFG_GLPI.root_doc + '/ajax/switchfoldmenu.php',
+      type: 'GET',
+      datatype: "json",
+      success: function(data) {
+         if (data.success === true) {
+            $('body').toggleClass('navbar-collapsed');
+
+            var collapsed = $('body').hasClass('navbar-collapsed');
+
+            $('#navbar-menu li.dropdown').toggleClass('dropend');
+            $('#navbar-menu .dropdown-menu.animate__animated').toggleClass('animate__animated');
+
+            if (collapsed) {
+               $('#navbar-menu .dropdown-menu, #navbar-menu .nav-link').removeClass('show');
+            } else {
+               if ($("#navbar-menu .nav-link.show").length == 0)  {
+                  $('#navbar-menu .nav-link.active + .dropdown-menu').addClass('show');
+               }
+            }
+         }
+      }
+   });
+};
+
 $(function() {
    if ($('html').hasClass('loginpage')) {
       return;
@@ -642,10 +668,16 @@ $(function() {
    });
 
    // dark/light mode switch
-   $('[data-darkmode-switch], [data-lightmode-switch]').on('click', function() {
+   $('[data-darkmode-switch], [data-lightmode-switch]').on('click', function(event) {
       event.preventDefault();
       event.stopPropagation();
       switchDarkMode();
+   });
+
+   $('.reduce-menu').on('click', function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      switchFoldMenu();
    });
 
    // ctrl+enter in form textareas (without tinymce)

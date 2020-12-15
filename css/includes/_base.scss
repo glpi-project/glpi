@@ -7,11 +7,23 @@ $link-hover-decoration: none;
 
 @import "~@tabler/core/src/scss/tabler";
 
+$sidebar_bg: $dark !default;
+$sidebar_fg: $light !default;
+$logo: "../pics/logos/logo-GLPI-100-white.png" !default;
+$logo_reduced: "../pics/logos/logo-G-100-white.png" !default;
+
 body.iframed {
    background-color: transparent;
 }
 
+
 .page {
+   .glpi-logo {
+      background: url($logo) no-repeat;
+      height: 55px;
+      width: 100px;
+   }
+
    > aside {
       scrollbar-width: thin; /* FF only */
    }

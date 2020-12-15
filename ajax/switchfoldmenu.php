@@ -30,18 +30,19 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var Migration $migration
- */
+include ('../inc/includes.php');
 
-$migration->displayMessage('Add page layout configuration / user preference');
-Config::setConfigurationValues('core', ['page_layout' => 'vertical']);
-$migration->addField('glpi_users', 'page_layout', 'char(20) COLLATE utf8_unicode_ci DEFAULT NULL', ['after' => 'palette']);
+header('Content-Type: application/json; charset=UTF-8');
+Html::header_nocache();
 
-$migration->displayMessage('Add dark mode configuration / user preference');
-Config::setConfigurationValues('core', ['dark_mode' => 0]);
-$migration->addField('glpi_users', 'dark_mode', 'tinyint DEFAULT NULL', ['after' => 'page_layout']);
+Session::checkLoginUser();
 
-$migration->displayMessage('Add global menu folding config / user preference');
-Config::setConfigurationValues('core', ['fold_menu' => 0]);
-$migration->addField('glpi_users', 'fold_menu', 'tinyint DEFAULT NULL', ['after' => 'dark_mode']);
+$user = new User();
+$success = $user->update(
+   [
+      'id'        => Session::getLoginUserID(),
+      'fold_menu' => (bool)$_SESSION['glpifold_menu'] ? 0 : 1,
+   ]
+);
+
+echo json_encode(['success' => $success]);
