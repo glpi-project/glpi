@@ -75,7 +75,6 @@ class Item_Cluster extends DbTestCase {
     */
    public function testAdd() {
       $this->createComputers();
-      unset($_SESSION['glpicronuserrunning']);
 
       $cluster = new \Cluster();
 

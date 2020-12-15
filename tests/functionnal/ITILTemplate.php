@@ -125,10 +125,7 @@ class ITILTemplate extends DbTestCase {
 
       $err_msg = 'Mandatory fields are not filled. Please correct: Title' .
          ($itiltype === \Ticket::getType() ? ', Location' : '') . ', Description';
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => [$err_msg]]
-      );
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      $this->hasSessionMessage(ERROR, [$err_msg]);
 
       $content['name']           = 'Title is required';
       $content['content']        = 'Description from template';
@@ -137,13 +134,12 @@ class ITILTemplate extends DbTestCase {
       $tid = (int)$object->add($content);
       $this->integer($tid)->isIdenticalTo(0);
 
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([
-         ERROR => [
+      $this->hasSessionMessage(
+         ERROR, [
             'You cannot use predefined description verbatim',
             'Mandatory fields are not filled. Please correct: Description'
          ]
-      ]);
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      );
 
       $content['content'] = 'A content for our ' . $itiltype;
       $tid = (int)$object->add($content);

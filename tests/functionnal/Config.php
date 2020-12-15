@@ -166,7 +166,6 @@ class Config extends DbTestCase {
 
    public function testValidatePassword() {
       global $CFG_GLPI;
-      unset($_SESSION['glpicronuserrunning']);
       $this->boolean((bool)$CFG_GLPI['use_password_security'])->isFalse();
 
       $this->boolean(\Config::validatePassword('mypass'))->isTrue();
@@ -180,77 +179,54 @@ class Config extends DbTestCase {
       $this->boolean(\Config::validatePassword(''))->isFalse();
 
       $expected = [
-         ERROR => [
-            'Password too short!',
-            'Password must include at least a digit!',
-            'Password must include at least a lowercase letter!',
-            'Password must include at least a uppercase letter!',
-            'Password must include at least a symbol!'
-         ]
+         'Password too short!',
+         'Password must include at least a digit!',
+         'Password must include at least a lowercase letter!',
+         'Password must include at least a uppercase letter!',
+         'Password must include at least a symbol!'
       ];
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])
-         ->isIdenticalTo($expected);
-
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      $this->hasSessionMessage(ERROR, $expected);
       $expected = [
-         ERROR => [
-            'Password must include at least a digit!',
-            'Password must include at least a uppercase letter!',
-            'Password must include at least a symbol!'
-         ]
+         'Password must include at least a digit!',
+         'Password must include at least a uppercase letter!',
+         'Password must include at least a symbol!'
       ];
       $this->boolean(\Config::validatePassword('mypassword'))->isFalse();
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])
-         ->isIdenticalTo($expected);
+      $this->hasSessionMessage(ERROR, $expected);
 
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
       $CFG_GLPI['password_min_length'] = strlen('mypass');
       $this->boolean(\Config::validatePassword('mypass'))->isFalse();
       $CFG_GLPI['password_min_length'] = 8; //reset
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])
-         ->isIdenticalTo($expected);
 
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      $this->hasSessionMessage(ERROR, $expected);
+
       $expected = [
-         ERROR => [
-            'Password must include at least a uppercase letter!',
-            'Password must include at least a symbol!'
-         ]
+         'Password must include at least a uppercase letter!',
+         'Password must include at least a symbol!'
       ];
       $this->boolean(\Config::validatePassword('my1password'))->isFalse();
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])
-         ->isIdenticalTo($expected);
+      $this->hasSessionMessage(ERROR, $expected);
 
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
       $CFG_GLPI['password_need_number'] = 0;
       $this->boolean(\Config::validatePassword('mypassword'))->isFalse();
       $CFG_GLPI['password_need_number'] = 1; //reset
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])
-         ->isIdenticalTo($expected);
+      $this->hasSessionMessage(ERROR, $expected);
 
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
       $expected = [
-         ERROR => [
-            'Password must include at least a symbol!'
-         ]
+         'Password must include at least a symbol!'
       ];
       $this->boolean(\Config::validatePassword('my1paSsword'))->isFalse();
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])
-         ->isIdenticalTo($expected);
+      $this->hasSessionMessage(ERROR, $expected);
 
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
       $CFG_GLPI['password_need_caps'] = 0;
       $this->boolean(\Config::validatePassword('my1password'))->isFalse();
       $CFG_GLPI['password_need_caps'] = 1; //reset
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])
-         ->isIdenticalTo($expected);
+      $this->hasSessionMessage(ERROR, $expected);
 
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
       $this->boolean(\Config::validatePassword('my1paSsw@rd'))->isTrue();
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])
          ->isEmpty();
 
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
       $CFG_GLPI['password_need_symbol'] = 0;
       $this->boolean(\Config::validatePassword('my1paSsword'))->isTrue();
       $CFG_GLPI['password_need_symbol'] = 1; //reset

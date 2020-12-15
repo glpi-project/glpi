@@ -2161,6 +2161,7 @@ class Ticket extends DbTestCase {
 
    public function testCronCloseTicket() {
       global $DB;
+      $this->login();
       // set default calendar and autoclose delay in root entity
       $entity = new \Entity;
       $this->boolean($entity->update([
@@ -2212,7 +2213,7 @@ class Ticket extends DbTestCase {
     * @see self::testTakeIntoAccountDelayComputationOnUpdate()
     */
    protected function takeIntoAccountDelayComputationProvider() {
-
+      $this->login();
       $group = new \Group();
       $group_id = $group->add(['name' => 'Test group']);
       $this->integer((int)$group_id)->isGreaterThan(0);
@@ -2606,6 +2607,7 @@ class Ticket extends DbTestCase {
       $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
 
       global $DB;
+      $this->login();
       // set default calendar and autoclose delay in root entity
       $entity = new \Entity;
       $this->boolean($entity->update([

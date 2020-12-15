@@ -211,12 +211,7 @@ class CommonITILValidation extends DbTestCase {
          'status'       => \CommonITILValidation::REFUSED
       ]);
 
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([
-         ERROR => [
-            'If approval is denied, specify a reason.'
-         ]
-      ]);
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      $this->hasSessionMessage(ERROR, ['If approval is denied, specify a reason.']);
       $this->boolean($res)->isFalse();
 
       $this->boolean(

@@ -294,6 +294,7 @@ class ITILSolution extends DbTestCase {
             'content'   => '2nd solution, should be refused!'
          ])
       )->isFalse();
+      $this->hasSessionMessage(ERROR, ['The item is already solved, did anyone pushed a solution before you ?']);
    }
 
    public function testScreenshotConvertedIntoDocument() {

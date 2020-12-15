@@ -42,6 +42,15 @@ class DbUtils extends DbTestCase {
       'testGetSonsOfCached'
    ];
 
+   public function beforeTestMethod($method) {
+      parent::beforeTestMethod($method);
+      if (in_array($method, $this->cached_methods)) {
+         $_SESSION['glpicronuserrunning'] = "cron_phpunit";
+      } else {
+         $this->login();
+      }
+   }
+
    public function setUp() {
       global $CFG_GLPI;
 

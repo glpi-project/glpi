@@ -42,6 +42,11 @@ class Entity extends DbTestCase {
       'testChangeEntityParentCached'
    ];
 
+   public function beforeTestMethod($method) {
+      parent::beforeTestMethod($method);
+      $this->login();
+   }
+
    public function testSonsAncestors() {
       $ent0 = getItemByTypeName('Entity', '_test_root_entity');
       $this->string($ent0->getField('completename'))
@@ -91,12 +96,14 @@ class Entity extends DbTestCase {
             'name' => ''
          ])
       )->isFalse();
+      $this->hasSessionMessage(ERROR, ["You can't add an entity without name"]);
 
       $this->boolean(
          $entity->prepareInputForAdd([
             'anykey' => 'anyvalue'
          ])
       )->isFalse();
+      $this->hasSessionMessage(ERROR, ["You can't add an entity without name"]);
 
       $this->array(
          $entity->prepareInputForAdd([
