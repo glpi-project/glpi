@@ -1211,7 +1211,7 @@ class Config extends CommonDBTM {
          $('label[for=theme-selector]').on('click', function(){ $('#theme-selector').select2('open'); });
       ");
       echo "</td>";
-      echo "<td><label for='layout-selector'>" . __('Layout')."</label></td><td>";
+      echo "<td><label for='layout-selector'>" . __('Content layout')."</label></td><td>";
 
       $layout_options = [
          'lefttab' => __("Tabs on left"),
@@ -1233,28 +1233,53 @@ class Config extends CommonDBTM {
              if (!layout.id) {
                 return layout.text;
              }
-             return $('<span></span>').html('<img src=\'../pics/layout_' + layout.id.toLowerCase() + '.png\'/>'
+             return $('<span></span>').html('<img src=\'../pics/layout/layout_' + layout.id.toLowerCase() + '.png\'/>'
                       + '&nbsp;' + layout.text);
          }
-         $(\"#layout-selector\").select2({
+         $('#layout-selector').select2({
              dropdownAutoWidth: true,
              templateResult: formatLayout,
              templateSelection: formatLayout
          });
          $('label[for=layout-selector]').on('click', function(){ $('#layout-selector').select2('open'); });
       ");
-      echo "</select>";
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='dropdown_page_layout$rand'>" . __('Page layout') . "</label></td>";
       echo "<td>";
-      $values = [
+
+      $global_layout_options = [
          'horizontal' => __('Horizontal (menu in header)'),
          'vertical'   => __('Vertical (menu in sidebar)'),
       ];
-      Dropdown::showFromArray('page_layout', $values, ['value' => $data['page_layout'], 'rand' => $rand]);
+      echo Html::select(
+         'page_layout',
+         $global_layout_options,
+         [
+            'id'        => 'global-layout-selector',
+            'selected'  => $data['page_layout']
+         ]
+      );
+
+      echo Html::scriptBlock("
+         function formatGlobalLayout(layout) {
+             if (!layout.id) {
+                return layout.text;
+             }
+             return $('<span></span>').html('<img src=\'../pics/layout/global_layout_' + layout.id.toLowerCase() + '.png\'/>'
+                      + '&nbsp;' + layout.text);
+         }
+         $('#global-layout-selector').select2({
+             dropdownAutoWidth: true,
+             templateResult: formatGlobalLayout,
+             templateSelection: formatGlobalLayout
+         });
+         $('label[for=global-layout-selector]').on('click', function(){
+            $('#global-layout-selector').select2('open');
+         });
+      ");
       echo "</td>";
       echo "<td><label for='dropdown_dark_mode$rand'>" . __('Dark mode') . "</label></td>";
       echo "<td>";
