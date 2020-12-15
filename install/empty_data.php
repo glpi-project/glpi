@@ -233,6 +233,7 @@ $default_prefs = [
    'palette'                                 => 'auror',
    'page_layout'                             => 'vertical',
    'dark_mode'                               => '0',
+   'fold_menu'                               => '0',
    'lock_use_lock_item'                      => '0',
    'lock_autolock_mode'                      => '1',
    'lock_directunlock_notification'          => '0',

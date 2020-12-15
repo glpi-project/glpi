@@ -7180,6 +7180,7 @@ CREATE TABLE `glpi_users` (
   `palette` char(20) DEFAULT NULL,
   `page_layout` char(20) DEFAULT NULL,
   `dark_mode` tinyint DEFAULT NULL,
+  `fold_menu` tinyint DEFAULT NULL,
   `set_default_requester` tinyint DEFAULT NULL,
   `lock_autolock_mode` tinyint DEFAULT NULL,
   `lock_directunlock_notification` tinyint DEFAULT NULL,
