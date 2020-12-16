@@ -42,10 +42,6 @@ class Entity extends DbTestCase {
       'testChangeEntityParentCached'
    ];
 
-   public function beforeTestMethod($method) {
-      parent::beforeTestMethod($method);
-   }
-
    public function testSonsAncestors() {
       $ent0 = getItemByTypeName('Entity', '_test_root_entity');
       $this->string($ent0->getField('completename'))
