@@ -83,6 +83,54 @@ if (!$DB->fieldExists('glpi_domainrecordtypes', 'fields')) {
          )
       );
    }
+} else {
+   // "fields" descriptor already exists, but may correspond to an outdated version
+
+   //add is_fqdn on some domain records types
+   $fields = [
+      'CNAME'  => ['target'],
+      'MX'     => ['server'],
+      'SOA'    => ['primary_name_server', 'primary_contact'],
+      'SRV'    => ['target']
+   ];
+
+   $fields_it = $DB->request([
+      'FROM'   => 'glpi_domainrecordtypes',
+      'WHERE'  => ['name' => array_keys($fields)]
+   ]);
+   while ($field = $fields_it->next()) {
+      if (empty($field['fields'])) {
+         if ($field['name'] === 'CNAME') {
+            //cname field definition has been added
+            $field['fields'] = json_encode([[
+               'key'         => 'target',
+               'label'       => 'Target',
+               'placeholder' => 'sip.example.com.',
+               'is_fqdn'     => true
+            ]]);
+         } else {
+            continue;
+         }
+      }
+      $type_fields = DomainRecordType::decodeFields($field['fields']);
+      $updated = false;
+      foreach ($type_fields as &$conf) {
+         if (in_array($conf['key'], $fields[$field['name']])) {
+            $conf['is_fqdn'] = true;
+            $updated = true;
+         }
+      }
+
+      if ($updated) {
+         $migration->addPostQuery(
+            $DB->buildUpdate(
+               'glpi_domainrecordtypes',
+               ['fields' => json_encode($type_fields)],
+               ['name' => $field['name']]
+            )
+         );
+      }
+   }
 }
 
 // Create new CAA default
@@ -111,46 +159,3 @@ $migration->addField(
    ]
 );
 
-//add is_fqdn on some domain records types
-$fields = [
-   'CNAME'  => ['target'],
-   'MX'     => ['server'],
-   'SOA'    => ['primary_name_server', 'primary_contact'],
-   'SRV'    => ['target']
-];
-
-$fields_it = $DB->request([
-   'FROM'   => 'glpi_domainrecordtypes',
-   'WHERE'  => ['name' => array_keys($fields)]
-]);
-while ($field = $fields_it->next()) {
-   if (empty($field['fields'])) {
-      if ($field['name'] === 'CNAME') {
-         //cname field definition has been added
-         $field['fields'] = json_encode([[
-            'key'         => 'target',
-            'label'       => 'Target',
-            'placeholder' => 'sip.example.com.',
-            'is_fqdn'     => true
-         ]]);
-      } else {
-         continue;
-      }
-   }
-   $type_fields = DomainRecordType::decodeFields($field['fields']);
-   $updated = false;
-   foreach ($type_fields as &$conf) {
-      if (in_array($conf['key'], $fields[$field['name']])) {
-         $conf['is_fqdn'] = true;
-         $updated = true;
-      }
-   }
-
-   if ($updated) {
-      $DB->update(
-         'glpi_domainrecordtypes',
-         ['fields' => json_encode($type_fields)],
-         ['name' => $field['name']]
-      );
-   }
-}
