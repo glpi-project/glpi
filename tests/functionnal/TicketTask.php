@@ -117,6 +117,12 @@ class TicketTask extends DbTestCase {
                                              ]))->isTrue();
 
       //create one task with schedule and without recall
+      $date_begin->add(new \DateInterval('P1M'));
+      $date_begin_string = $date_begin->format('Y-m-d H:i:s');
+
+      $date_end->add(new \DateInterval('P1M'));
+      $date_end_string = $date_end->format('Y-m-d H:i:s');
+
       $task = new \TicketTask();
       $task_id = $task->add([
          'state'              => \Planning::TODO,
@@ -137,18 +143,6 @@ class TicketTask extends DbTestCase {
                               ]
       ]);
       $this->integer($task_id)->isGreaterThan(0);
-
-      $this->hasSessionMessages(
-         WARNING, [
-            sprintf(
-               'The user <a href="/glpi/front/user.form.php?id=%s">_test_user</a> is busy at the selected timeframe.<br/>- Ticket task: from %s to %s:<br/><a href=\'/glpi/front/ticket.form.php?id=%s&amp;forcetab=TicketTask$1\'>ticket title</a><br/>',
-               $uid,
-               $date_begin->format('Y-m-d H:i'),
-               $date_end->format('Y-m-d H:i'),
-               $ticketId
-            )
-         ]
-      );
 
       //load schedule //which return false (not exist yet without recall)
       $recall = new \PlanningRecall();
@@ -180,18 +174,6 @@ class TicketTask extends DbTestCase {
                               ]
       ])
       )->isTrue();
-
-      $this->hasSessionMessages(
-         WARNING, [
-            sprintf(
-               'The user <a href="/glpi/front/user.form.php?id=%s">_test_user</a> is busy at the selected timeframe.<br/>- Ticket task: from %s to %s:<br/><a href=\'/glpi/front/ticket.form.php?id=%s&amp;forcetab=TicketTask$1\'>ticket title</a><br/>',
-               $uid,
-               $date_begin->format('Y-m-d H:i'),
-               $date_end->format('Y-m-d H:i'),
-               $ticketId
-            )
-         ]
-      );
 
       //load planning recall
       $recall = new \PlanningRecall();
