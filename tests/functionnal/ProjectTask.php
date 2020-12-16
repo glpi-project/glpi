@@ -68,7 +68,7 @@ class ProjectTask extends DbTestCase {
             'projecttasktemplates_id'  => 0
          ])
       )->isGreaterThan(0);
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+      $this->hasNoSessionMessages([ERROR, WARNING]);
       $task_id = $ptask->fields['id'];
 
       $team = new \ProjectTaskTeam();

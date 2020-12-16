@@ -312,7 +312,7 @@ class TicketTask extends DbTestCase {
             'tasktemplates_id'   => 0
          ])
       )->isGreaterThan(0);
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+      $this->hasNoSessionMessages([ERROR, WARNING]);
 
       $this->integer(
          (int)$ttask->add([
@@ -351,7 +351,7 @@ class TicketTask extends DbTestCase {
             'tasktemplates_id'   => 0
          ])
       )->isGreaterThan(0);
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+      $this->hasNoSessionMessages([ERROR, WARNING]);
 
       $this->boolean($ttask->getFromDB($ttask->fields['id']))->isTrue();
 

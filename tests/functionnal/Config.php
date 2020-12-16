@@ -224,14 +224,12 @@ class Config extends DbTestCase {
       $this->hasSessionMessages(ERROR, $expected);
 
       $this->boolean(\Config::validatePassword('my1paSsw@rd'))->isTrue();
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])
-         ->isEmpty();
+      $this->hasNoSessionMessage(ERROR);
 
       $CFG_GLPI['password_need_symbol'] = 0;
       $this->boolean(\Config::validatePassword('my1paSsword'))->isTrue();
       $CFG_GLPI['password_need_symbol'] = 1; //reset
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])
-         ->isEmpty();
+      $this->hasNoSessionMessage(ERROR);
    }
 
    public function testGetLibraries() {

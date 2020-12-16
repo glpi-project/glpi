@@ -100,10 +100,7 @@ class Item_Cluster extends DbTestCase {
          ])
       )->isIdenticalTo(0);
 
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['A cluster is required']]
-      );
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      $this->hasSessionMessages(ERROR, ['A cluster is required']);
 
       //try to add without required field
       $icl->getEmpty();
@@ -114,10 +111,7 @@ class Item_Cluster extends DbTestCase {
          ])
       )->isIdenticalTo(0);
 
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['An item type is required']]
-      );
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      $this->hasSessionMessages(ERROR, ['An item type is required']);
 
       //try to add without required field
       $icl->getEmpty();
@@ -128,10 +122,7 @@ class Item_Cluster extends DbTestCase {
          ])
       )->isIdenticalTo(0);
 
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['An item is required']]
-      );
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      $this->hasSessionMessages(ERROR, ['An item type is required']);
 
       //try to add without error
       $icl->getEmpty();

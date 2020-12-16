@@ -662,7 +662,6 @@ class User extends \DbTestCase {
    public function testPre_updateInDB() {
       $this->login();
       $user = $this->newTestedInstance();
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
 
       $uid = (int)$user->add([
          'name' => 'preupdate_user'
@@ -674,14 +673,14 @@ class User extends \DbTestCase {
          'id'     => $uid,
          'name'   => 'preupdate_user_edited'
       ]))->isTrue();
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([]);
+      $this->hasNoSessionMessages([ERROR, WARNING]);
 
       //can update with same name when id is identical
       $this->boolean($user->update([
          'id'     => $uid,
          'name'   => 'preupdate_user_edited'
       ]))->isTrue();
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([]);
+      $this->hasNoSessionMessages([ERROR, WARNING]);
 
       $this->integer(
          (int)$user->add(['name' => 'do_exist'])
