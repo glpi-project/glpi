@@ -2607,7 +2607,6 @@ class Ticket extends DbTestCase {
       $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
 
       global $DB;
-      $this->login();
       // set default calendar and autoclose delay in root entity
       $entity = new \Entity;
       $this->boolean($entity->update([
