@@ -723,10 +723,14 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
    /**
     * Show user searches list
     *
-    * @return void
+    * @param bool  $display directly display or return
+    *
+    * @return mixed
     */
-   function displayMine() {
+   function displayMine(bool $display = true) {
       global $DB, $CFG_GLPI;
+
+      $out = "";
 
       $table = $this->getTable();
       $utable = 'glpi_savedsearches_users';
@@ -820,37 +824,34 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
                      $personalorderfield => exportArrayToDB($store)]);
       $searches['private'] = $ordered;
 
-      $rand    = mt_rand();
+      $out.= "<li class='nav-item'>
+         <a href='#private-savedsearches' class='nav-link px-1' data-bs-toggle='collapse' aria-expanded='true'>" .
+            sprintf(
+               _n('Private %1$s', 'Private %1$s', count($searches['private'])),
+               $this->getTypeName(count($searches['private']))
+            ).
+            "<span class='nav-link-toggle'></span>
+         </a>
+         <ul class='nav nav-pills collapse show saved-searches-panel-list ' id='private-savedsearches'>";
+      $out.= $this->displaySavedSearchType($searches['private'], $display);
+      $out.= "</ul>";
+      $out.= "</li>";
 
-      echo "<div class='center' id='tabsbody' >";
-
-      $colspan = 2;
-      echo "<table class='tab_cadre_fixehov'>";
-      echo "<thead><tr><th colspan='$colspan' class='search_header'>" .
-                  "<input type='text' id='filter_savedsearch' placeholder='".__('Filter list')."' style='width: 95%; padding: 5px'></i>" .
-           "</th></tr></thead>";
-      echo "<thead><tr><th colspan='$colspan' class='private_header'>" .
-                  sprintf(
-                     _n('Private %1$s', 'Private %1$s', count($searches['private'])),
-                     $this->getTypeName(count($searches['private']))
-                  ) .
-                  "<i class='toggle fa fa-chevron-circle-up' title='".__('Hide/Show elements')."'></i>" .
-           "</th></tr></thead><tbody>";
-      echo $this->displaySavedSearchType($searches['private']);
-      echo "</tbody>";
       if ($this->canView()) {
-         echo "<thead><tr><th colspan='$colspan'>" .
-                     sprintf(
-                        _n('Public %1$s', 'Public %1$s', count($searches['public'])),
-                        $this->getTypeName(count($searches['public']))
-                     ) .
-                     "<i class='toggle fa fa-chevron-circle-up' title='".__('Hide/Show elements')."'></i>" .
-              "</th></tr></thead><tbody>";
-         echo $this->displaySavedSearchType($searches['public']);
-         echo "</tbody>";
+         $out.= "<li class='nav-item'>
+            <a href='#public-savedsearches' class='nav-link px-1' data-bs-toggle='collapse' aria-expanded='true'>".
+            sprintf(
+               _n('Public %1$s', 'Public %1$s', count($searches['public'])),
+               $this->getTypeName(count($searches['public']))  
+            ) .
+            "<span class='nav-link-toggle'></span>
+         </a>
+         <ul class='nav nav-pills collapse show saved-searches-panel-list' id='public-savedsearches'>";
+         $out.= $this->displaySavedSearchType($searches['public'], $display);
+         $out.= "</ul>";
+         $out.= "</li>";
       }
-      echo "</table></div>";
-      Html::closeForm();
+
 
       if (count($searches['private']) || count($searches['public'])) {
          $js = "$(function() {
@@ -895,62 +896,34 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
                      _this.removeClass('fa-spin').removeClass('fa-spinner');
                   }
                });
-            });\n
-
-            $('.slidepanel .toggle').on('click', function() {
-               var _this = $(this);
-               var _elt = _this.parents('thead').next('tbody');
-               _elt.toggle();
-               if (_elt.is(':visible')) {
-                  _this.removeClass('fa-chevron-circle-down')
-                     .addClass('fa-chevron-circle-up');
-               } else {
-                  _this.removeClass('fa-chevron-circle-up')
-                     .addClass('fa-chevron-circle-down');
-               }
-            });
-            $('#filter_savedsearch').on('keyup', function() {
-               var _this = $(this);
-               var searchtext = _this.val() + '';
-               var searchparts = searchtext.toLowerCase().split(/\s+/);
-               var _rows = _this.parents('table').find('tbody tr');
-               _rows.each(function() {
-                  var _row = $(this);
-                  var rowtext = _row.text().toLowerCase();
-
-                  var show = true;
-
-                  for (var i=0; i < searchparts.length; i++) {
-                     if (rowtext.indexOf(searchparts[i]) == -1) {
-                        show = false;
-                        break;
-                     }
-                  }
-
-                  if (show) {
-                     _row.show();
-                  } else {
-                     _row.hide();
-                  }
-               });
             });
 
          });";
 
-         echo Html::scriptBlock($js);
+         $out.= Html::scriptBlock($js);
       }
+
+      if ($display) {
+         echo $out;
+         return;
+      }
+
+      return $out;
    }
 
 
    /**
     * Display saved searches from a type
     *
-    * @param string $searches Search type
+    * @param array $searches Search type
+    * @param bool  $display directly display or return
     *
     * @return void
    **/
-   private function displaySavedSearchType($searches) {
+   private function displaySavedSearchType($searches, bool $display = true) {
       global $CFG_GLPI;
+
+      $out = "";
 
       if ($totalcount = count($searches)) {
          $current_type      = -1;
@@ -996,38 +969,31 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
                $is_private = ($this->fields['is_private'] == 1);
             }
 
-            echo "<tr class='tab_bg_1";
-            if ($is_private) {
-               echo " private' data-position='$number' data-id='{$this->getID()}";
-            }
-            echo "'>";
-            echo "<td class='small no-wrap'>";
-            if (is_null($this->fields['IS_DEFAULT'])) {
-               echo "<a class='default fa fa-star bookmark_record' href=\"" .
+            $out.= "<li class='nav-item d-flex justify-content-between align-items-center'>";
+            /* if (is_null($this->fields['IS_DEFAULT'])) {
+               $out.= "<a class='default fa fa-star bookmark_record' href=\"" .
                        $this->getSearchURL() . "?action=edit&amp; mark_default=1&amp;id=".
                        $this->fields["id"]."\" title=\"".__s('Not default search')."\">".
                        "<span class='sr-only'>" . __('Not default search')  . "</span></a>";
             } else {
-               echo "<a class='default fa fa-star bookmark_default' href=\"".
+               $out.= "<a class='default fa fa-star bookmark_default' href=\"".
                        $this->getSearchURL() . "?action=edit&amp;mark_default=0&amp;id=".
                        $this->fields["id"]."\" title=\"".__s('Default search')."\">".
                        "<span class='sr-only'>" . __('Default search') . "</span></a>";
-            }
-            echo "</td>";
-            echo "<td>";
+            } */
+
             $text = sprintf(__('%1$s on %2$s'), $this->fields['name'], $current_type_name);
 
             $title = ($is_private ? __s('Click to load or drag and drop to reorder')
                                   : __s('Click to load'));
-            echo "<a class='savedsearchlink' href=\"".$this->getSearchURL()."?action=load&amp;id=".
+            $out.= "<a class='nav-link' href=\"".$this->getSearchURL()."?action=load&amp;id=".
                      $this->fields["id"]."\" title='".$title."'>".
                      $text;
+            $out.= "</a>";
             if ($_SESSION['glpishow_count_on_tabs']) {
-               echo "<span class='primary-bg primary-fg count'>$count</span>";
+               $out.= "<span class='badge bg-primary rounded-pill'>$count</span>";
             }
-            echo "</a>";
-            echo "</td>";
-            echo "</tr>";
+            $out.= "</li>";
          }
 
          if ($is_private) {
@@ -1066,13 +1032,20 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
                });
             });";
 
-            echo Html::scriptBlock($js);
+            $out.= Html::scriptBlock($js);
          }
       } else {
-         echo "<tr class='tab_bg_1'><td colspan='3'>";
-         echo sprintf(__('You have not recorded any %1$s yet'), mb_strtolower($this->getTypeName(1)));
-         echo "</td></tr>";
+         $out.= "<li class='nav-item'>";
+         $out.= sprintf(__('You have not recorded any %1$s yet'), mb_strtolower($this->getTypeName(1)));
+         $out.= "</li>";
       }
+
+      if ($display) {
+         echo $out;
+         return;
+      }
+
+      return $out;
    }
 
 

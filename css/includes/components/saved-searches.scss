@@ -1,0 +1,77 @@
+#saved-searches-panel {
+   border-top-width: 0;
+   border-left-width: 0;
+   border-radius: unset;
+   background-color: $saved_search_bg;
+   color: $saved_search_fg;
+   overflow: hidden;
+
+   position: fixed;
+   top: 0;
+   bottom: 0;
+   left: $sidebar-width;
+   z-index: 1030;
+
+   &.pinned {
+      position: sticky;
+      z-index: 1010;
+      top: $navbar-height;
+      margin-top: -#{$content-padding-y};
+      height: calc(100vh - #{$navbar-height});
+
+      #pin-saved-searches-panel {
+         border: 2px inset rgba($color: $secondary, $alpha: .5);
+         background-color: rgba($color: $secondary, $alpha: .1);
+         border-radius: .15rem;
+      }
+
+      #close-saved-searches-panel {
+         display: none;
+      }
+   }
+
+   .saved-searches-panel-content {
+      overflow: hidden;
+
+      .saved-searches-panel-lists {
+         overflow-x: hidden;
+         overflow-y: auto;
+
+         .saved-searches-panel-list {
+            background-color: darken($saved_search_bg, 3%);
+            margin-left: .25rem;
+            margin-right: .25rem;
+            padding-left: 0;
+            padding-right: .25rem;
+            border: 0;
+
+            .nav-link {
+               overflow: hidden;
+               white-space: nowrap;
+               text-overflow: ellipsis;
+               display: block;
+            }
+         }
+      }
+   }
+}
+
+body.navbar-collapsed {
+   #saved-searches-panel {
+      left: 70px;
+   }
+}
+
+@include media-breakpoint-down(sm) {
+   #saved-searches-panel {
+      width: 100%;
+      position: fixed !important;
+      top: 79px !important;
+      line-height: 20px;
+      bottom: 0;
+      left: 0 !important;
+      margin-top: 0 !important;
+      padding-bottom: 20px;
+      z-index: 1030;
+   }
+}
