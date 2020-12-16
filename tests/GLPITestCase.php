@@ -52,7 +52,6 @@ class GLPITestCase extends atoum {
    }
 
    public function beforeTestMethod($method) {
-      unset($_SESSION['glpicronuserrunning']);
       if (in_array($method, $this->cached_methods)) {
          $this->nscache = 'glpitestcache' . GLPI_VERSION;
          global $GLPI_CACHE;

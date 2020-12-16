@@ -39,29 +39,37 @@ use DbTestCase;
 class Certificate_Item extends DbTestCase {
 
    public function testRelations() {
+      $this->login();
+
+      $root_entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
       $this->newTestedInstance();
       $cert = new \Certificate();
 
       $input = [
-         'name'   => 'Test certificate',
+         'name'        => 'Test certificate',
+         'entities_id' => $root_entity_id,
       ];
       $cid1 = (int)$cert->add($input);
       $this->integer($cid1)->isGreaterThan(0);
 
       $input = [
-         'name'   => 'Test certificate 2',
+         'name'        => 'Test certificate 2',
+         'entities_id' => $root_entity_id,
       ];
       $cid2 = (int)$cert->add($input);
       $this->integer($cid2)->isGreaterThan(0);
 
       $input = [
-         'name'   => 'Test certificate 3',
+         'name'        => 'Test certificate 3',
+         'entities_id' => $root_entity_id,
       ];
       $cid3 = (int)$cert->add($input);
       $this->integer($cid3)->isGreaterThan(0);
 
       $input = [
-         'name'   => 'Test certificate 4',
+         'name'        => 'Test certificate 4',
+         'entities_id' => $root_entity_id,
       ];
       $cid4 = (int)$cert->add($input);
       $this->integer($cid4)->isGreaterThan(0);
