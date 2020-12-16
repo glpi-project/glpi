@@ -53,6 +53,8 @@ class User extends \DbTestCase {
     *
     */
    public function testLostPassword() {
+      //would not be logical to login here
+      $_SESSION['glpicronuserrunning'] = "cron_phpunit";
       $user = getItemByTypeName('User', TU_USER);
 
       // Test request for a password with invalid email
@@ -196,15 +198,13 @@ class User extends \DbTestCase {
 
       $input = ['name' => 'invalid+login'];
       $this->boolean($user->prepareInputForAdd($input))->isFalse();
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([ERROR => ['The login is not valid. Unable to add the user.']]);
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      $this->hasSessionMessages(ERROR, ['The login is not valid. Unable to add the user.']);
 
       //add same user twice
       $input = ['name' => 'new_user'];
       $this->integer($user->add($input))->isGreaterThan(0);
       $this->boolean($user->add($input))->isFalse(0);
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([ERROR => ['Unable to add. The user already exists.']]);
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      $this->hasSessionMessages(ERROR, ['Unable to add. The user already exists.']);
 
       $input = [
          'name'      => 'user_pass',
@@ -212,8 +212,7 @@ class User extends \DbTestCase {
          'password2' => 'nomatch'
       ];
       $this->boolean($user->prepareInputForAdd($input))->isFalse();
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([ERROR => ['Error: the two passwords do not match']]);
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      $this->hasSessionMessages(ERROR, ['Error: the two passwords do not match']);
 
       $input = [
          'name'      => 'user_pass',
@@ -292,7 +291,7 @@ class User extends \DbTestCase {
     * @dataProvider prepareInputForTimezoneUpdateProvider
     */
    public function testPrepareInputForUpdateTimezone(array $input, $expected) {
-
+      $this->login();
       $user = $this->newTestedInstance();
       $username = 'prepare_for_update_' . mt_rand();
       $user_id = $user->add(
@@ -349,7 +348,7 @@ class User extends \DbTestCase {
     * @dataProvider prepareInputForUpdatePasswordProvider
     */
    public function testPrepareInputForUpdatePassword(array $input, $expected, array $messages = null) {
-
+      $this->login();
       $user = $this->newTestedInstance();
       $username = 'prepare_for_update_' . mt_rand();
       $user_id = $user->add(
@@ -663,7 +662,6 @@ class User extends \DbTestCase {
    public function testPre_updateInDB() {
       $this->login();
       $user = $this->newTestedInstance();
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
 
       $uid = (int)$user->add([
          'name' => 'preupdate_user'
@@ -675,14 +673,14 @@ class User extends \DbTestCase {
          'id'     => $uid,
          'name'   => 'preupdate_user_edited'
       ]))->isTrue();
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([]);
+      $this->hasNoSessionMessages([ERROR, WARNING]);
 
       //can update with same name when id is identical
       $this->boolean($user->update([
          'id'     => $uid,
          'name'   => 'preupdate_user_edited'
       ]))->isTrue();
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([]);
+      $this->hasNoSessionMessages([ERROR, WARNING]);
 
       $this->integer(
          (int)$user->add(['name' => 'do_exist'])
@@ -691,8 +689,7 @@ class User extends \DbTestCase {
          'id'     => $uid,
          'name'   => 'do_exist'
       ]))->isTrue();
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([ERROR => ['Unable to update login. A user already exists.']]);
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      $this->hasSessionMessages(ERROR, ['Unable to update login. A user already exists.']);
 
       $this->boolean($user->getFromDB($uid))->isTrue();
       $this->string($user->fields['name'])->isIdenticalTo('preupdate_user_edited');
@@ -701,8 +698,7 @@ class User extends \DbTestCase {
          'id'     => $uid,
          'name'   => 'in+valid'
       ]))->isTrue();
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([ERROR => ['The login is not valid. Unable to update login.']]);
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      $this->hasSessionMessages(ERROR, ['The login is not valid. Unable to update login.']);
    }
 
    public function testGetIdByName() {

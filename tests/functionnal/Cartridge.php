@@ -82,6 +82,7 @@ class Cartridge extends DbTestCase {
       $this->variable($cartridge->fields['date_out'])->isNull();
       //already installed
       $this->boolean($cartridge->install($pid, $ciid))->isFalse();
+      $this->hasSessionMessages(ERROR, ['No free cartridge']);
 
       $this->integer($cartridge->getUsedNumber($ciid))->isIdenticalTo(1);
       $this->integer($cartridge->getTotalNumberForPrinter($pid))->isIdenticalTo(1);

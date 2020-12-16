@@ -116,6 +116,7 @@ class TicketRecurrent extends DbTestCase {
             'create_before'  => HOUR_TIMESTAMP * 2,
             'calendars_id'   => 0,
             'expected_value' => 'NULL',
+            'messages'       => ['Invalid frequency. It must be greater than the preliminary creation.']
          ],
          // End date in past
          [
@@ -431,6 +432,7 @@ class TicketRecurrent extends DbTestCase {
     * @param integer        $create_before
     * @param integer        $calendars_id
     * @param string         $expected_value
+    * @param array          $messages
     *
     * @dataProvider computeNextCreationDateProvider
     */
@@ -440,7 +442,9 @@ class TicketRecurrent extends DbTestCase {
       $periodicity,
       $create_before,
       $calendars_id,
-      $expected_value) {
+      $expected_value,
+      $messages = null
+   ) {
 
       $ticketRecurrent = new \TicketRecurrent();
       $value = $ticketRecurrent->computeNextCreationDate(
@@ -452,6 +456,11 @@ class TicketRecurrent extends DbTestCase {
       );
 
       $this->string($value)->isIdenticalTo($expected_value);
+      if ($messages === null) {
+         $this->hasNoSessionMessage(ERROR);
+      } else {
+         $this->hasSessionMessages(ERROR, $messages);
+      }
    }
 
    /**

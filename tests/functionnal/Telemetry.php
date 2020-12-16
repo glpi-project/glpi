@@ -39,6 +39,9 @@ use DbTestCase;
 class Telemetry extends DbTestCase {
 
    public function testGrabGlpiInfos() {
+      //we do not want any error messages
+      $_SESSION['glpicronuserrunning'] = "cron_phpunit";
+
       $expected = [
          'uuid'               => 'TO BE SET',
          'version'            => GLPI_VERSION,
@@ -65,11 +68,6 @@ class Telemetry extends DbTestCase {
       $this->string($result['uuid'])
          ->hasLength(40);
       $expected['uuid'] = $result['uuid'];
-      $plugins_count = 0;
-      foreach (PLUGINS_DIRECTORIES as $plugin_base_dir) {
-         $plugins_count += count(glob("$plugin_base_dir/*", GLOB_ONLYDIR));
-      }
-      $this->array($result['plugins'])->hasSize($plugins_count);
       $expected['plugins'] = $result['plugins'];
       $this->array($result)->isIdenticalTo($expected);
 

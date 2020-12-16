@@ -637,13 +637,14 @@ class AuthLDAP extends DbTestCase {
     * @return void
     */
    public function testLdapAuthSpecifyAuth() {
-
+      $_SESSION['glpicronuserrunning'] = "cron_phpunit";
       // Add a local account with same name than a LDAP user ('brazil8')
       $input = [
          'name'         => 'brazil8',
          'password'     => 'passwordlocal',
          'password2'    => 'passwordlocal',
-         '_profiles_id' => 1 // add manual right (is_dynamic = 0)
+         '_profiles_id' => 1, // add manual right (is_dynamic = 0)
+         'entities_id'  => 0
       ];
       $user = new \User();
       $user_id = $user->add($input);

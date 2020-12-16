@@ -176,6 +176,7 @@ class AuthLDAP extends DbTestCase {
       $input['sync_field'] = 'another_field';
       $result = $ldap->prepareInputForUpdate($input);
       $this->boolean($result)->isFalse();
+      $this->hasSessionMessages(ERROR, ['Synchronization field cannot be changed once in use.']);
    }
 
    public function testgetGroupSearchTypeName() {

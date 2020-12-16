@@ -51,10 +51,7 @@ class ProjectTask extends DbTestCase {
          ])
       )->isIdenticalTo(0);
 
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['A linked project is mandatory']]
-      );
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      $this->hasSessionMessages(ERROR, ['A linked project is mandatory']);
 
       $project = new \Project();
       $pid = (int)$project->add([
@@ -71,7 +68,7 @@ class ProjectTask extends DbTestCase {
             'projecttasktemplates_id'  => 0
          ])
       )->isGreaterThan(0);
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+      $this->hasNoSessionMessages([ERROR, WARNING]);
       $task_id = $ptask->fields['id'];
 
       $team = new \ProjectTaskTeam();
@@ -80,7 +77,7 @@ class ProjectTask extends DbTestCase {
          'itemtype'        => \User::getType(),
          'items_id'        => $users_id
       ]);
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+      $this->hasNoSessionMessages([ERROR, WARNING]);
       $this->integer($tid)->isGreaterThan(0);
 
       $this->integer(
@@ -92,7 +89,7 @@ class ProjectTask extends DbTestCase {
             'projecttasktemplates_id'  => 0
          ])
       )->isGreaterThan(0);
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+      $this->hasNoSessionMessages([ERROR, WARNING]);
 
       $team = new \ProjectTaskTeam();
       $tid = (int)$team->add([
@@ -102,13 +99,12 @@ class ProjectTask extends DbTestCase {
       ]);
 
       $usr_str = '<a href="' . $user->getFormURLWithID($users_id) . '">' . $user->getName() . '</a>';
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([
-         WARNING => [
+      $this->hasSessionMessages(
+         WARNING, [
             "The user $usr_str is busy at the selected timeframe.<br/>- Project task: from 2019-08-13 00:00 to 2019-08-14 00:00:<br/><a href='".
             $ptask->getFormURLWithID($task_id)."'>first test, whole period</a><br/>"
          ]
-      ]);
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      );
       $this->integer($tid)->isGreaterThan(0);
 
       //check when updating. first create a new task out of existing bouds
@@ -121,7 +117,7 @@ class ProjectTask extends DbTestCase {
             'projecttasktemplates_id'  => 0
          ])
       )->isGreaterThan(0);
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+      $this->hasNoSessionMessages([ERROR, WARNING]);
 
       $team = new \ProjectTaskTeam();
       $tid = (int)$team->add([
@@ -129,7 +125,7 @@ class ProjectTask extends DbTestCase {
          'itemtype'        => \User::getType(),
          'items_id'        => $users_id
       ]);
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+      $this->hasNoSessionMessages([ERROR, WARNING]);
       $this->integer($tid)->isGreaterThan(0);
 
       $this->boolean(
@@ -162,12 +158,11 @@ class ProjectTask extends DbTestCase {
       $this->boolean($ticket->isNewItem())->isFalse();
       $tid = (int)$ticket->fields['id'];
 
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([
-         INFO => [
+      $this->hasSessionMessages(
+         INFO, [
             "Your ticket has been registered. (Ticket: <a href='".\Ticket::getFormURLWithID($tid)."'>$tid</a>)"
          ]
-      ]);
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      );
 
       $ttask = new \TicketTask();
       $ttask_id = (int)$ttask->add([
@@ -182,13 +177,13 @@ class ProjectTask extends DbTestCase {
          'tasktemplates_id'   => 0
       ]);
       $usr_str = '<a href="' . $user->getFormURLWithID($users_id) . '">' . $user->getName() . '</a>';
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([
-         WARNING => [
+
+      $this->hasSessionMessages(
+         WARNING, [
             "The user $usr_str is busy at the selected timeframe.<br/>- Project task: from 2019-08-11  to 2019-08-12 :<br/><a href='".
             $ptask->getFormURLWithID($task_id)."'>first test, whole period</a><br/>"
          ]
-      ]);
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      );
       $this->integer($ttask_id)->isGreaterThan(0);
    }
 }

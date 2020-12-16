@@ -153,6 +153,7 @@ class Ticket_Ticket extends DbTestCase {
    }
 
    public function testNumberOpen() {
+      $this->login();
       $this->createTickets();
       $tone = $this->tone;
       $ttwo = $this->ttwo;

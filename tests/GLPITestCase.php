@@ -40,6 +40,7 @@ class GLPITestCase extends atoum {
    private $str;
    protected $cached_methods = [];
    protected $nscache;
+   protected $has_failed = false;
 
    public function setUp() {
       // By default, no session, not connected
@@ -51,6 +52,7 @@ class GLPITestCase extends atoum {
    }
 
    public function beforeTestMethod($method) {
+      unset($_SESSION['glpicronuserrunning']);
       if (in_array($method, $this->cached_methods)) {
          $this->nscache = 'glpitestcache' . GLPI_VERSION;
          global $GLPI_CACHE;
@@ -93,6 +95,48 @@ class GLPITestCase extends atoum {
                )
             );
       }
+
+      if (isset($_SESSION['MESSAGE_AFTER_REDIRECT']) && !$this->has_failed) {
+         unset($_SESSION['MESSAGE_AFTER_REDIRECT'][INFO]);
+         $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
+            [],
+            sprintf(
+               "Some messages has not been handled in %s::%s:\n%s",
+               static::class,
+               $method,
+               print_r($_SESSION['MESSAGE_AFTER_REDIRECT'], true)
+            )
+         );
+      }
+   }
+
+   protected function hasSessionMessages(int $level, array $messages): void {
+      $this->has_failed = true;
+      $this->boolean(isset($_SESSION['MESSAGE_AFTER_REDIRECT'][$level]))->isTrue('No messages for selected level!');
+      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'][$level])->isIdenticalTo(
+         $messages,
+         'Expecting ' . print_r($messages, true) . 'got: ' . print_r($_SESSION['MESSAGE_AFTER_REDIRECT'][$level], true)
+      );
+      unset($_SESSION['MESSAGE_AFTER_REDIRECT'][$level]); //reset
+      $this->has_failed = false;
+   }
+
+   protected function hasNoSessionMessages(array $levels) {
+      foreach ($levels as $level) {
+         $this->hasNoSessionMessage($level);
+      }
+   }
+
+   protected function hasNoSessionMessage(int $level) {
+      $this->has_failed = true;
+      $this->boolean(isset($_SESSION['MESSAGE_AFTER_REDIRECT'][$level]))->isFalse(
+         sprintf(
+            'Messages for level %s are present in session: %s',
+            $level,
+            print_r($_SESSION['MESSAGE_AFTER_REDIRECT'][$level] ?? [], true)
+         )
+      );
+      $this->has_failed = false;
    }
 
    /**
