@@ -19,6 +19,7 @@ The present file will list all changes made to the project; according to the
 #### Changes
 
 #### Deprecated
+- Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
 
 #### Removed
 - `Update::declareOldItems()`

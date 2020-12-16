@@ -214,8 +214,11 @@ class DBmysql {
          // force mysqlnd to return int and float types correctly (not as strings)
          $this->dbh->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
 
-         if (GLPI_FORCE_EMPTY_SQL_MODE) {
+         if (defined('GLPI_FORCE_EMPTY_SQL_MODE') && GLPI_FORCE_EMPTY_SQL_MODE) {
+            Toolbox::deprecated('Usage of GLPI_FORCE_EMPTY_SQL_MODE has been deprecated');
             $this->dbh->query("SET SESSION sql_mode = ''");
+         } else if (GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE) {
+            $this->dbh->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
          }
 
          $this->connected = true;
