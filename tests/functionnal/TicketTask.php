@@ -61,7 +61,7 @@ class TicketTask extends DbTestCase {
       $this->boolean($ticket->isNewItem())->isFalse();
       $tid = (int)$ticket->fields['id'];
 
-      $this->hasSessionMessage(
+      $this->hasSessionMessages(
          INFO, [
             "Your ticket has been registered. (Ticket: <a href='".\Ticket::getFormURLWithID($tid)."'>$tid</a>)"
          ]
@@ -138,7 +138,7 @@ class TicketTask extends DbTestCase {
       ]);
       $this->integer($task_id)->isGreaterThan(0);
 
-      $this->hasSessionMessage(
+      $this->hasSessionMessages(
          WARNING, [
             sprintf(
                'The user <a href="/glpi/front/user.form.php?id=%s">_test_user</a> is busy at the selected timeframe.<br/>- Ticket task: from %s to %s:<br/><a href=\'/glpi/front/ticket.form.php?id=%s&amp;forcetab=TicketTask$1\'>ticket title</a><br/>',
@@ -181,7 +181,7 @@ class TicketTask extends DbTestCase {
       ])
       )->isTrue();
 
-      $this->hasSessionMessage(
+      $this->hasSessionMessages(
          WARNING, [
             sprintf(
                'The user <a href="/glpi/front/user.form.php?id=%s">_test_user</a> is busy at the selected timeframe.<br/>- Ticket task: from %s to %s:<br/><a href=\'/glpi/front/ticket.form.php?id=%s&amp;forcetab=TicketTask$1\'>ticket title</a><br/>',
@@ -329,7 +329,7 @@ class TicketTask extends DbTestCase {
       )->isGreaterThan(0);
 
       $usr_str = '<a href="' . $user->getFormURLWithID($users_id) . '">' . $user->getName() . '</a>';
-      $this->hasSessionMessage(
+      $this->hasSessionMessages(
          WARNING, [
             "The user $usr_str is busy at the selected timeframe.<br/>- Ticket task: from 2019-08-13  to 2019-08-14 :<br/><a href='".
             $ticket->getFormURLWithID($tid)."&amp;forcetab=TicketTask$1'>ticket title</a><br/>"
@@ -368,7 +368,7 @@ class TicketTask extends DbTestCase {
       )->isTrue();
 
       $usr_str = '<a href="' . $user->getFormURLWithID($users_id) . '">' . $user->getName() . '</a>';
-      $this->hasSessionMessage(
+      $this->hasSessionMessages(
          WARNING, [
             "The user $usr_str is busy at the selected timeframe.<br/>- Ticket task: from 2019-08-10 00:00 to 2019-08-20 00:00:<br/><a href='".
             $ticket->getFormURLWithID($tid)."&amp;forcetab=TicketTask$1'>ticket title</a><br/>- Ticket task: from 2019-08-13 00:00 to 2019-08-14 00:00:<br/><a href='".$ticket

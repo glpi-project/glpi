@@ -110,7 +110,7 @@ class GLPITestCase extends atoum {
       }
    }
 
-   protected function hasSessionMessage(int $level, array $messages): void {
+   protected function hasSessionMessages(int $level, array $messages): void {
       $this->has_failed = true;
       $this->boolean(isset($_SESSION['MESSAGE_AFTER_REDIRECT'][$level]))->isTrue('No messages for selected level!');
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'][$level])->isIdenticalTo(

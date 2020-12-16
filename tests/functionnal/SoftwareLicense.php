@@ -56,7 +56,7 @@ class SoftwareLicense extends DbTestCase {
          'entities_id'  => 0
       ];
       $this->boolean($license->prepareInputForAdd($input))->isFalse();
-      $this->hasSessionMessage(ERROR, ['Please select a software for this license']);
+      $this->hasSessionMessages(ERROR, ['Please select a software for this license']);
 
       //With a softwares_id, import ok
       $input = [ 'name' => 'inserted_sofwarelicense', 'softwares_id' => 1];
@@ -104,7 +104,7 @@ class SoftwareLicense extends DbTestCase {
       $input = [ 'name' => 'not_inserted_software_license_child'];
 
       $this->boolean($license->add($input))->isFalse();
-      $this->hasSessionMessage(ERROR, ['Please select a software for this license']);
+      $this->hasSessionMessages(ERROR, ['Please select a software for this license']);
 
       $software     = $this->createSoft();
 

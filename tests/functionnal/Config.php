@@ -185,43 +185,43 @@ class Config extends DbTestCase {
          'Password must include at least a uppercase letter!',
          'Password must include at least a symbol!'
       ];
-      $this->hasSessionMessage(ERROR, $expected);
+      $this->hasSessionMessages(ERROR, $expected);
       $expected = [
          'Password must include at least a digit!',
          'Password must include at least a uppercase letter!',
          'Password must include at least a symbol!'
       ];
       $this->boolean(\Config::validatePassword('mypassword'))->isFalse();
-      $this->hasSessionMessage(ERROR, $expected);
+      $this->hasSessionMessages(ERROR, $expected);
 
       $CFG_GLPI['password_min_length'] = strlen('mypass');
       $this->boolean(\Config::validatePassword('mypass'))->isFalse();
       $CFG_GLPI['password_min_length'] = 8; //reset
 
-      $this->hasSessionMessage(ERROR, $expected);
+      $this->hasSessionMessages(ERROR, $expected);
 
       $expected = [
          'Password must include at least a uppercase letter!',
          'Password must include at least a symbol!'
       ];
       $this->boolean(\Config::validatePassword('my1password'))->isFalse();
-      $this->hasSessionMessage(ERROR, $expected);
+      $this->hasSessionMessages(ERROR, $expected);
 
       $CFG_GLPI['password_need_number'] = 0;
       $this->boolean(\Config::validatePassword('mypassword'))->isFalse();
       $CFG_GLPI['password_need_number'] = 1; //reset
-      $this->hasSessionMessage(ERROR, $expected);
+      $this->hasSessionMessages(ERROR, $expected);
 
       $expected = [
          'Password must include at least a symbol!'
       ];
       $this->boolean(\Config::validatePassword('my1paSsword'))->isFalse();
-      $this->hasSessionMessage(ERROR, $expected);
+      $this->hasSessionMessages(ERROR, $expected);
 
       $CFG_GLPI['password_need_caps'] = 0;
       $this->boolean(\Config::validatePassword('my1password'))->isFalse();
       $CFG_GLPI['password_need_caps'] = 1; //reset
-      $this->hasSessionMessage(ERROR, $expected);
+      $this->hasSessionMessages(ERROR, $expected);
 
       $this->boolean(\Config::validatePassword('my1paSsw@rd'))->isTrue();
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])

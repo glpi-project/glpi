@@ -459,7 +459,7 @@ class TicketRecurrent extends DbTestCase {
       if ($messages === null) {
          $this->hasNoSessionMessage(ERROR);
       } else {
-         $this->hasSessionMessage(ERROR, $messages);
+         $this->hasSessionMessages(ERROR, $messages);
       }
    }
 

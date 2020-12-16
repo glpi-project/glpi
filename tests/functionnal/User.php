@@ -198,13 +198,13 @@ class User extends \DbTestCase {
 
       $input = ['name' => 'invalid+login'];
       $this->boolean($user->prepareInputForAdd($input))->isFalse();
-      $this->hasSessionMessage(ERROR, ['The login is not valid. Unable to add the user.']);
+      $this->hasSessionMessages(ERROR, ['The login is not valid. Unable to add the user.']);
 
       //add same user twice
       $input = ['name' => 'new_user'];
       $this->integer($user->add($input))->isGreaterThan(0);
       $this->boolean($user->add($input))->isFalse(0);
-      $this->hasSessionMessage(ERROR, ['Unable to add. The user already exists.']);
+      $this->hasSessionMessages(ERROR, ['Unable to add. The user already exists.']);
 
       $input = [
          'name'      => 'user_pass',
@@ -212,7 +212,7 @@ class User extends \DbTestCase {
          'password2' => 'nomatch'
       ];
       $this->boolean($user->prepareInputForAdd($input))->isFalse();
-      $this->hasSessionMessage(ERROR, ['Error: the two passwords do not match']);
+      $this->hasSessionMessages(ERROR, ['Error: the two passwords do not match']);
 
       $input = [
          'name'      => 'user_pass',
@@ -690,7 +690,7 @@ class User extends \DbTestCase {
          'id'     => $uid,
          'name'   => 'do_exist'
       ]))->isTrue();
-      $this->hasSessionMessage(ERROR, ['Unable to update login. A user already exists.']);
+      $this->hasSessionMessages(ERROR, ['Unable to update login. A user already exists.']);
 
       $this->boolean($user->getFromDB($uid))->isTrue();
       $this->string($user->fields['name'])->isIdenticalTo('preupdate_user_edited');
@@ -699,7 +699,7 @@ class User extends \DbTestCase {
          'id'     => $uid,
          'name'   => 'in+valid'
       ]))->isTrue();
-      $this->hasSessionMessage(ERROR, ['The login is not valid. Unable to update login.']);
+      $this->hasSessionMessages(ERROR, ['The login is not valid. Unable to update login.']);
    }
 
    public function testGetIdByName() {

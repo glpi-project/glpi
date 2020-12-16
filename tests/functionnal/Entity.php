@@ -96,14 +96,14 @@ class Entity extends DbTestCase {
             'name' => ''
          ])
       )->isFalse();
-      $this->hasSessionMessage(ERROR, ["You can't add an entity without name"]);
+      $this->hasSessionMessages(ERROR, ["You can't add an entity without name"]);
 
       $this->boolean(
          $entity->prepareInputForAdd([
             'anykey' => 'anyvalue'
          ])
       )->isFalse();
-      $this->hasSessionMessage(ERROR, ["You can't add an entity without name"]);
+      $this->hasSessionMessages(ERROR, ["You can't add an entity without name"]);
 
       $this->array(
          $entity->prepareInputForAdd([

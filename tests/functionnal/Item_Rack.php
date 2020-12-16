@@ -205,7 +205,7 @@ class Item_Rack extends DbTestCase {
          ])
       )->isIdenticalTo(0);
 
-      $this->hasSessionMessage(ERROR, ['Item is out of rack bounds']);
+      $this->hasSessionMessages(ERROR, ['Item is out of rack bounds']);
 
       //add item at the first position
       $ira->getEmpty();
@@ -230,7 +230,7 @@ class Item_Rack extends DbTestCase {
          ])
       )->isIdenticalTo(0);
 
-      $this->hasSessionMessage(ERROR, ['Item is out of rack bounds']);
+      $this->hasSessionMessages(ERROR, ['Item is out of rack bounds']);
 
       //take a 3U item and try to add it at the end - 1
       $ira->getEmpty();
@@ -243,7 +243,7 @@ class Item_Rack extends DbTestCase {
          ])
       )->isIdenticalTo(0);
 
-      $this->hasSessionMessage(ERROR, ['Item is out of rack bounds']);
+      $this->hasSessionMessages(ERROR, ['Item is out of rack bounds']);
 
       //take a 3U item and try to add it at the end - 2
       $ira->getEmpty();
@@ -271,7 +271,7 @@ class Item_Rack extends DbTestCase {
          ])
       )->isIdenticalTo(0);
 
-      $this->hasSessionMessage(ERROR, ['You must define an horizontal position for this item']);
+      $this->hasSessionMessages(ERROR, ['You must define an horizontal position for this item']);
 
       //try to add a half size on the first row
       $ira->getEmpty();
@@ -285,7 +285,7 @@ class Item_Rack extends DbTestCase {
          ])
       )->isIdenticalTo(0);
 
-      $this->hasSessionMessage(ERROR, ['Not enough space available to place item']);
+      $this->hasSessionMessages(ERROR, ['Not enough space available to place item']);
 
       //add it on second row
       $ira->getEmpty();
@@ -311,7 +311,7 @@ class Item_Rack extends DbTestCase {
          ])
       )->isIdenticalTo(0);
 
-      $this->hasSessionMessage(ERROR, ['Not enough space available to place item']);
+      $this->hasSessionMessages(ERROR, ['Not enough space available to place item']);
 
       //add second half rack item it on second row, on the other position
       $ira->getEmpty();
@@ -337,7 +337,7 @@ class Item_Rack extends DbTestCase {
          ])
       )->isIdenticalTo(0);
 
-      $this->hasSessionMessage(ERROR, ['Not enough space available to place item']);
+      $this->hasSessionMessages(ERROR, ['Not enough space available to place item']);
 
       //test depth < 1
       $DEPNUX1 = getItemByTypeName('Computer', 'DEP-NUX-1', true);
@@ -354,7 +354,7 @@ class Item_Rack extends DbTestCase {
          ])
       )->isIdenticalTo(0);
 
-      $this->hasSessionMessage(ERROR, ['You must define an orientation for this item']);
+      $this->hasSessionMessages(ERROR, ['You must define an orientation for this item']);
 
       //try to add on the first row
       $ira->getEmpty();
@@ -368,7 +368,7 @@ class Item_Rack extends DbTestCase {
          ])
       )->isIdenticalTo(0);
 
-      $this->hasSessionMessage(ERROR, ['Not enough space available to place item']);
+      $this->hasSessionMessages(ERROR, ['Not enough space available to place item']);
 
       //try to add on the second row
       $ira->getEmpty();
@@ -382,7 +382,7 @@ class Item_Rack extends DbTestCase {
          ])
       )->isIdenticalTo(0);
 
-      $this->hasSessionMessage(ERROR, ['Not enough space available to place item']);
+      $this->hasSessionMessages(ERROR, ['Not enough space available to place item']);
 
       //add on the third row
       $ira->getEmpty();
@@ -409,7 +409,7 @@ class Item_Rack extends DbTestCase {
          ])
       )->isIdenticalTo(0);
 
-      $this->hasSessionMessage(ERROR, ['Not enough space available to place item']);
+      $this->hasSessionMessages(ERROR, ['Not enough space available to place item']);
 
       $ira->getEmpty();
       $this->integer(
@@ -442,7 +442,7 @@ class Item_Rack extends DbTestCase {
          ])
       )->isIdenticalTo(0);
 
-      $this->hasSessionMessage(ERROR, ['Not enough space available to place item']);
+      $this->hasSessionMessages(ERROR, ['Not enough space available to place item']);
 
       $ira->getEmpty();
       $this->integer(
@@ -468,7 +468,7 @@ class Item_Rack extends DbTestCase {
          ])
       )->isIdenticalTo(0);
 
-      $this->hasSessionMessage(ERROR, ['Not enough space available to place item']);
+      $this->hasSessionMessages(ERROR, ['Not enough space available to place item']);
 
       $ira->getEmpty();
       $this->integer(
