@@ -251,6 +251,7 @@ class Entity extends DbTestCase {
    }
 
    public function testInheritGeolocation() {
+      $this->login();
       $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
       $ent1 = new \Entity();
       $ent1_id = $ent1->add([
