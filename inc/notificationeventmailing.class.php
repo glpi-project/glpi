@@ -179,6 +179,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
             $documents_to_attach = $documents_ids; // Attach all documents
          } else {
             $mmail->Body = '';
+            $current->fields['body_html'] = Toolbox::doubleEncodeEmails($current->fields['body_html']);
             $current->fields['body_html'] = Html::entity_decode_deep($current->fields['body_html']);
 
             $inline_docs = [];

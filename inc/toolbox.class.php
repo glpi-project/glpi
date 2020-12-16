@@ -3473,4 +3473,20 @@ HTML;
          $url
       ) === 1);
    }
+
+   /**
+    * Search for html encoded <email> (&lt;email&gt;) in the given string and
+    * encode them a second time
+    *
+    * @param string $string
+    *
+    * @return string
+    */
+   public static function doubleEncodeEmails($string) {
+      $regex = "/(&lt;[^;]+?@[^;]+?&gt;)/";
+      $string = preg_replace_callback($regex, function($matches) {
+         return htmlentities($matches[1]);
+      }, $string);
+      return $string;
+   }
 }
