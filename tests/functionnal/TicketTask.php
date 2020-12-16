@@ -61,12 +61,11 @@ class TicketTask extends DbTestCase {
       $this->boolean($ticket->isNewItem())->isFalse();
       $tid = (int)$ticket->fields['id'];
 
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([
-         INFO => [
+      $this->hasSessionMessages(
+         INFO, [
             "Your ticket has been registered. (Ticket: <a href='".\Ticket::getFormURLWithID($tid)."'>$tid</a>)"
          ]
-      ]);
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      );
 
       return ($as_object ? $ticket : $tid);
    }
@@ -118,6 +117,12 @@ class TicketTask extends DbTestCase {
                                              ]))->isTrue();
 
       //create one task with schedule and without recall
+      $date_begin->add(new \DateInterval('P1M'));
+      $date_begin_string = $date_begin->format('Y-m-d H:i:s');
+
+      $date_end->add(new \DateInterval('P1M'));
+      $date_end_string = $date_end->format('Y-m-d H:i:s');
+
       $task = new \TicketTask();
       $task_id = $task->add([
          'state'              => \Planning::TODO,
@@ -181,7 +186,6 @@ class TicketTask extends DbTestCase {
                                                 'users_id'    => $uid,
                                                 'when'        => $when,
                                              ]))->isTrue();
-
    }
 
    public function testGetTaskList() {
@@ -290,7 +294,7 @@ class TicketTask extends DbTestCase {
             'tasktemplates_id'   => 0
          ])
       )->isGreaterThan(0);
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+      $this->hasNoSessionMessages([ERROR, WARNING]);
 
       $this->integer(
          (int)$ttask->add([
@@ -307,13 +311,12 @@ class TicketTask extends DbTestCase {
       )->isGreaterThan(0);
 
       $usr_str = '<a href="' . $user->getFormURLWithID($users_id) . '">' . $user->getName() . '</a>';
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([
-         WARNING => [
+      $this->hasSessionMessages(
+         WARNING, [
             "The user $usr_str is busy at the selected timeframe.<br/>- Ticket task: from 2019-08-13  to 2019-08-14 :<br/><a href='".
             $ticket->getFormURLWithID($tid)."&amp;forcetab=TicketTask$1'>ticket title</a><br/>"
          ]
-      ]);
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      );
       $this->integer($tid)->isGreaterThan(0);
 
       //add another task to be updated
@@ -330,7 +333,7 @@ class TicketTask extends DbTestCase {
             'tasktemplates_id'   => 0
          ])
       )->isGreaterThan(0);
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+      $this->hasNoSessionMessages([ERROR, WARNING]);
 
       $this->boolean($ttask->getFromDB($ttask->fields['id']))->isTrue();
 
@@ -347,13 +350,12 @@ class TicketTask extends DbTestCase {
       )->isTrue();
 
       $usr_str = '<a href="' . $user->getFormURLWithID($users_id) . '">' . $user->getName() . '</a>';
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo([
-         WARNING => [
+      $this->hasSessionMessages(
+         WARNING, [
             "The user $usr_str is busy at the selected timeframe.<br/>- Ticket task: from 2019-08-10 00:00 to 2019-08-20 00:00:<br/><a href='".
             $ticket->getFormURLWithID($tid)."&amp;forcetab=TicketTask$1'>ticket title</a><br/>- Ticket task: from 2019-08-13 00:00 to 2019-08-14 00:00:<br/><a href='".$ticket
             ->getFormURLWithID($tid)."&amp;forcetab=TicketTask$1'>ticket title</a><br/>"
          ]
-      ]);
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+      );
    }
 }

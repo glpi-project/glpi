@@ -283,6 +283,7 @@ class Session extends \DbTestCase {
    public function testMustChangePassword(string $last_update, int $expiration_delay, bool $expected_result) {
       global $CFG_GLPI;
 
+      $this->login();
       $user = new \User();
       $username = 'test_must_change_pass_' . mt_rand();
       $user_id = (int)$user->add([

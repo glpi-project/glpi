@@ -84,6 +84,7 @@ class Entity extends DbTestCase {
    }
 
    public function testPrepareInputForAdd() {
+      $this->login();
       $entity = new \Entity();
 
       $this->boolean(
@@ -91,12 +92,14 @@ class Entity extends DbTestCase {
             'name' => ''
          ])
       )->isFalse();
+      $this->hasSessionMessages(ERROR, ["You can't add an entity without name"]);
 
       $this->boolean(
          $entity->prepareInputForAdd([
             'anykey' => 'anyvalue'
          ])
       )->isFalse();
+      $this->hasSessionMessages(ERROR, ["You can't add an entity without name"]);
 
       $this->array(
          $entity->prepareInputForAdd([
@@ -118,6 +121,7 @@ class Entity extends DbTestCase {
     * @return void
     */
    public function runChangeEntityParent($cache = false, $hit = false) {
+      $this->login();
       $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
       $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
       $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
@@ -247,7 +251,7 @@ class Entity extends DbTestCase {
    }
 
    public function testDeleteEntity() {
-
+      $this->login();
       $root_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
       $entity = new \Entity();

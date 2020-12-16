@@ -105,6 +105,7 @@ class MailCollector extends DbTestCase {
    }
 
    public function testPrepareInput() {
+      $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
       $this->newTestedInstance();
 
       $oinput = [
@@ -158,6 +159,7 @@ class MailCollector extends DbTestCase {
    }
 
    public function testCounts() {
+      $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
       $this->newTestedInstance();
 
       $this->integer($this->testedInstance->countActiveCollectors())->isIdenticalTo(0);
@@ -221,6 +223,7 @@ class MailCollector extends DbTestCase {
 
    public function testCollect() {
       global $DB;
+      $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
 
       //assign email to user
       $nuid = getItemByTypeName('User', 'normal', true);
