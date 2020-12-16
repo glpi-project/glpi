@@ -366,10 +366,13 @@ class ITILSolution extends CommonDBChild {
          }
       }
 
-      $this->item->update([
-         'id'     => $this->item->getID(),
-         'status' => $status
-      ]);
+      if (!isset($this->input['_linked_ticket'])) {
+         $this->item->update([
+            'id'     => $this->item->getID(),
+            'status' => $status
+         ]);
+      }
+
       parent::post_addItem();
    }
 
