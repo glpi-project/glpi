@@ -211,7 +211,7 @@ class ErrorHandler {
    /**
     * SQL error handler.
     *
-    * This handler is manually by application when a SQL error occured.
+    * This handler is manually called by application when a SQL error occured.
     *
     * @param integer $error_code
     * @param string  $error_message
@@ -222,9 +222,27 @@ class ErrorHandler {
    public function handleSqlError($error_code, $error_message, $query) {
       $this->outputDebugMessage(
          sprintf('SQL Error "%s"', $error_code),
-         sprintf('%s in query "%s"', $error_message, $query),
+         sprintf('%s in query "%s"', $error_message, preg_replace('/\\n/', ' ', $query)),
          self::ERROR_LEVEL_MAP[E_USER_ERROR],
          isCommandLine()
+      );
+   }
+
+   /**
+    * SQL warnings handler.
+    *
+    * This handler is manually called by application when warnings are triggered by a SQL query.
+    *
+    * @param string[] $warnings
+    * @param string   $query
+    *
+    * @return void
+    */
+   public function handleSqlWarnings($warnings, $query) {
+      $this->outputDebugMessage(
+         'SQL Warnings',
+         "\n" . implode("\n", $warnings) . "\n" . sprintf('in query "%s"', $query),
+         self::ERROR_LEVEL_MAP[E_USER_WARNING]
       );
    }
 
@@ -348,8 +366,10 @@ class ErrorHandler {
     */
    private function outputDebugMessage(string $error_type, string $message, string $log_level, bool $force = false) {
 
-      if ((!$force
-          && (!isset($_SESSION['glpi_use_mode']) || $_SESSION['glpi_use_mode'] != \Session::DEBUG_MODE)) || isAPI()) {
+      $is_debug_mode = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == \Session::DEBUG_MODE;
+      $is_console_context = $this->output_handler instanceof OutputInterface;
+
+      if ((!$force && !$is_debug_mode && !$is_console_context) || isAPI()) {
          return;
       }
 

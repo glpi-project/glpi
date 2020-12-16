@@ -514,7 +514,10 @@ class Toolbox {
          error_log($e);
       }
 
-      if (isCommandLine() && $level >= Logger::WARNING) {
+      global $SQLLOGGER;
+      if (isCommandLine() && $level >= Logger::WARNING && $logger !== $SQLLOGGER) {
+         // Do not output related messages to $SQLLOGGER as they are redundant with
+         // output made by "ErrorHandler::handleSql*()" methods.
          echo $msg;
       }
    }
@@ -555,12 +558,21 @@ class Toolbox {
    }
 
    /**
-    * SQL error log
+    * SQL debug log
     */
    static function logSqlDebug() {
       global $SQLLOGGER;
       $args = func_get_args();
       self::log($SQLLOGGER, Logger::DEBUG, $args);
+   }
+
+   /**
+    * SQL warning log
+    */
+   static function logSqlWarning() {
+      global $SQLLOGGER;
+      $args = func_get_args();
+      self::log($SQLLOGGER, Logger::WARNING, $args);
    }
 
    /**
