@@ -1078,6 +1078,9 @@ class DBmysql {
          $value = $value->getValue();
       } else if ($value === null || $value === 'NULL' || $value === 'null') {
          $value = 'NULL';
+      } else if (is_bool($value)) {
+         // transform boolean as int (prevent `false` to be transformed to empty string)
+         $value = "'" . (int)$value . "'";
       } else {
          //phone numbers may start with '+' and will be considered as numeric
          $value = "'$value'";

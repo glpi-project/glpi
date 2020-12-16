@@ -195,13 +195,13 @@ class Group_User extends \DbTestCase {
       $group_user = new \Group_User;
       $group_users_id = $group_user->add([
          'groups_id'  => $groups_id,
-         'users_id'   => getItemByTypeName('User', 'admin', true),
+         'users_id'   => getItemByTypeName('User', 'tech', true),
          'is_dynamic' => 0
       ]
       );
       $this->integer((int)$group_users_id)->isGreaterThan(0);
       $this->boolean($group_user->getFromDB($group_users_id))->isTrue();
-      $this->boolean(\Group_User::isUserInGroup(getItemByTypeName('User', 'admin', true), $groups_id))->isTrue();
+      $this->boolean(\Group_User::isUserInGroup(getItemByTypeName('User', 'tech', true), $groups_id))->isTrue();
       $this->boolean(\Group_User::isUserInGroup(getItemByTypeName('User', 'glpi', true), $groups_id))->isFalse();
    }
 

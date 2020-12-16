@@ -297,6 +297,9 @@ class ITILSolution extends DbTestCase {
    }
 
    public function testScreenshotConvertedIntoDocument() {
+
+      $this->login(); // must be logged as ITILSolution uses Session::getLoginUserID()
+
       // Test uploads for item creation
       $ticket = new \Ticket();
       $ticket->add([
@@ -357,6 +360,9 @@ class ITILSolution extends DbTestCase {
    }
 
    public function testAddMultipleSolution() {
+
+      $this->login(); // must be logged as ITILSolution uses Session::getLoginUserID()
+
       $em_ticket = new Ticket();
       $em_solution = new \ITILSolution();
 

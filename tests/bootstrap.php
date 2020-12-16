@@ -195,7 +195,7 @@ function loadDataset() {
             'password2'     => TU_PASS,
             'entities_id'   => '_test_root_entity',
             'profiles_id'   => 4, // TODO manage test profiles
-            '_entities_id'  => '_test_root_entity',
+            '_entities_id'  => 0,
             '_profiles_id'  => 4,
             '_is_recursive' => 1,
          ]

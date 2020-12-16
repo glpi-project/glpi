@@ -102,7 +102,7 @@ class Item_SoftwareLicense extends DbTestCase {
       $this->boolean(
          $lic->update([
             'id'                       => $lic->fields['id'],
-            'softwareversions_id_use'  => 'NULL'
+            'softwareversions_id_use'  => 0
          ])
       )->isTrue();
    }

@@ -40,7 +40,9 @@ class Log extends DbTestCase {
 
    private function createComputer() {
       $computer = new \Computer();
-      $this->integer((int)$computer->add(['entities_id' => uniqid()], [], false))->isGreaterThan(0);
+      $this->integer(
+         (int)$computer->add(['entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)], [], false)
+      )->isGreaterThan(0);
       return $computer;
    }
 

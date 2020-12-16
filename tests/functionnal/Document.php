@@ -401,6 +401,7 @@ class Document extends DbTestCase {
             'documents_id' => $basicDocument->getID(),
             'items_id'     => $kbItem->getID(),
             'itemtype'     => \KnowbaseItem::class,
+            'users_id'     => getItemByTypeName('User', 'normal', true),
          ])
       )->isGreaterThan(0);
 
@@ -409,6 +410,7 @@ class Document extends DbTestCase {
             'documents_id' => $inlinedDocument->getID(),
             'items_id'     => $kbItem->getID(),
             'itemtype'     => \KnowbaseItem::class,
+            'users_id'     => getItemByTypeName('User', 'normal', true),
          ])
       )->isGreaterThan(0);
 
@@ -682,6 +684,9 @@ class Document extends DbTestCase {
    }
 
    public function testCronCleanorphans () {
+
+      $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
+
       $doc = new \Document();
 
       $did1 = (int)$doc->add([
