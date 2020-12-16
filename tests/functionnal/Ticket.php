@@ -173,7 +173,7 @@ class Ticket extends DbTestCase {
          'content'           => 'my task template A',
          'taskcategories_id' => $taskcat_id,
          'actiontime'        => 60,
-         'is_private'        => 1,
+         'is_private'        => true,
          'users_id_tech'     => 2,
          'groups_id_tech'    => 0,
          'state'             => \Planning::INFO,
@@ -184,7 +184,7 @@ class Ticket extends DbTestCase {
          'content'           => 'my task template B',
          'taskcategories_id' => $taskcat_id,
          'actiontime'        => 120,
-         'is_private'        => 0,
+         'is_private'        => false,
          'users_id_tech'     => 2,
          'groups_id_tech'    => 0,
          'state'             => \Planning::TODO,
@@ -217,8 +217,8 @@ class Ticket extends DbTestCase {
          'name'                        => 'my itil category',
          'ticketltemplates_id_incident'=> $itiltemplate_id,
          'tickettemplates_id_demand'   => $itiltemplate_id,
-         'is_incident'                 => 1,
-         'is_request'                  => 1,
+         'is_incident'                 => true,
+         'is_request'                  => true,
       ]);
       $this->boolean($itilcat->isNewItem())->isFalse();
 

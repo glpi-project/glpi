@@ -89,7 +89,7 @@ class Telemetry extends DbTestCase {
       $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
       $this->boolean($ldap->update([
          'id'        => $ldap->getID(),
-         'is_active' => 1
+         'is_active' => true
       ]))->isTrue();
 
       $expected['usage']['ldap_enabled'] = true;
@@ -128,7 +128,7 @@ class Telemetry extends DbTestCase {
 
       $this->boolean($collector->update([
          'id'        => $collector->getID(),
-         'is_active' => 0
+         'is_active' => false
       ]))->isTrue();
 
       $expected['usage']['mailcollector_enabled'] = false;

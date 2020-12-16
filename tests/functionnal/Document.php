@@ -425,7 +425,7 @@ class Document extends DbTestCase {
          $kbItem->update(
             [
                'id'     => $kbItem->getID(),
-               'is_faq' => 1,
+               'is_faq' => true,
             ]
          )
       )->isTrue();
@@ -461,7 +461,7 @@ class Document extends DbTestCase {
          $kbItem->update(
             [
                'id'     => $kbItem->getID(),
-               'is_faq' => 0,
+               'is_faq' => false,
             ]
          )
       )->isTrue();
