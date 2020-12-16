@@ -46,8 +46,6 @@ class DbUtils extends DbTestCase {
       parent::beforeTestMethod($method);
       if (in_array($method, $this->cached_methods)) {
          $_SESSION['glpicronuserrunning'] = "cron_phpunit";
-      } else {
-         $this->login();
       }
    }
 
@@ -758,6 +756,7 @@ class DbUtils extends DbTestCase {
 
    public function testGetAncestorsOf() {
       global $DB;
+      $this->login();
       //ensure db cache is unset
       $DB->update('glpi_entities', ['ancestors_cache' => null], [true]);
       $this->runGetAncestorsOf();
@@ -916,6 +915,7 @@ class DbUtils extends DbTestCase {
 
    public function testGetSonsOf() {
       global $DB;
+      $this->login();
       //ensure db cache is unset
       $DB->update('glpi_entities', ['sons_cache' => null], [true]);
       $this->runGetSonsOf();
