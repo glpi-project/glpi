@@ -1,3 +1,7 @@
+.navbar .navbar-toggler {
+   color: $sidebar-fg;
+}
+
 .sidebar {
    background-color: $sidebar-bg;
    color: $sidebar-fg;
@@ -24,6 +28,9 @@
       }
    }
 
+   .btn-ghost-secondary {
+      color: rgba($color: $sidebar-fg, $alpha: .8);
+   }
    .btn-outline-secondary {
       color: rgba($color: $sidebar-fg, $alpha: .8);
       border-color: rgba($color: $sidebar-fg, $alpha: .8);
@@ -42,6 +49,8 @@
       padding-right: 3px;
       vertical-align: middle;
       font-weight: 900;
+      font-size: 1.33333em;
+      line-height: 0.75em;
    }
 }
 

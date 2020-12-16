@@ -47,22 +47,27 @@
                <span class="glpi-logo"></span>
             </a>
 
-            <button class="btn btn-sm btn-icon btn-outline-secondary trigger-fuzzy mb-md-2" title="{{ __("Ctrl+Alt+G") }}">
-               <i class="fas fa-arrow-right"></i>
-               <span class="menu-label">{{ __("Go to...") }}</span>
-            </button>
-
             <div class="d-lg-none">
                {{ include('layout/parts/user_header.html.twig') }}
             </div>
 
             <div class="collapse navbar-collapse" id="navbar-menu">
                {{ include('layout/parts/menu.html.twig') }}
-            </div>
 
-            <button class="btn btn-sm btn-icon btn-ghost-secondary mb-2 reduce-menu d-none d-md-block">
-               <span class="menu-label">{{ __("Collapse menu") }}</span>
-            </button>
+               <p class="text-start">
+                  <button class="btn btn-sm btn-ghost-secondary mb-2" id="show-saved-searches">
+                     <i class="fas fa-fw fa-lg fa-star"></i>
+                     <span class="menu-label">{{ _n('Saved search', 'Saved searches', 2) }}</span>
+                  </button>
+                  <button class="btn btn-sm btn-ghost-secondary trigger-fuzzy mb-md-2" title="{{ __("Ctrl+Alt+G") }}">
+                     <i class="fas fa-fw fa-lg fa-arrow-right"></i>
+                     <span class="menu-label">{{ __("Go to...") }}</span>
+                  </button>
+                  <button class="btn btn-sm btn-ghost-secondary mb-2 reduce-menu d-none d-md-block">
+                     <span class="menu-label">{{ __("Collapse menu") }}</span>
+                  </button>
+               </p>
+            </div>
          </div>
       </aside>
       {% endif %}
@@ -87,7 +92,11 @@
 
                <div class="collapse navbar-collapse" id="navbar-menu">
                   {{ include('layout/parts/menu.html.twig') }}
-                  <button class="btn btn-outline-secondary mx-3 trigger-fuzzy" title="{{ __("Ctrl+Alt+G") }}">
+                  <button class="btn btn-ghost-secondary mx-1 show-saved-searches">
+                     <i class="fas fa-star"></i>
+                     <span class="menu-label">{{ _n('Saved search', 'Saved searches', 2) }}</span>
+                  </button>
+                  <button class="btn btn-ghost-secondary mx-1 trigger-fuzzy" title="{{ __("Ctrl+Alt+G") }}">
                      <i class="fas fa-arrow-right"></i>
                      {{ __("Go to...") }}
                   </button>
@@ -112,5 +121,8 @@
       {% endif %}
 
       <div class="content">
-         <div class="container-fluid">
-            <main role="main" id="page" class="legacy">
+         <div class="row">
+            {{ include('layout/parts/saved_searches.html.twig') }}
+            <div class="col">
+               <div class="container-fluid">
+                  <main role="main" id="page" class="legacy">

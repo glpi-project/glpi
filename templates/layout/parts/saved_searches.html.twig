@@ -1,0 +1,92 @@
+{% set pinned = user_pref('savedsearches_pinned') == "1" %}
+
+<div class="card col-2 d-flex flex-column {{ pinned ? "pinned" : "d-none" }}" id="saved-searches-panel">
+   <div class="card-header px-1">
+      <i class="fas fa-star"></i>&nbsp;
+      {{ _n('Saved search', 'Saved searches', 2) }}
+
+      <p class="ms-auto d-flex">
+         <a href="{{ path("front/savedsearch.php") }}" class="btn btn-sm btn-icon btn-ghost-secondary">
+            <i class="fas fa-cog"></i>
+         </a>
+         <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1 d-none d-md-block" id="pin-saved-searches-panel">
+            <i class="fas fa-thumbtack"></i>
+         </button>
+         <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1" id="close-saved-searches-panel">
+            <i class="fas fa-times"></i>
+         </button>
+      </p>
+   </div>
+   <div class="card-body saved-searches-panel-content px-1 d-flex flex-column">
+      <div class="input-group input-group-flat">
+         <input type="text" class="form-control mb-3" id="filter_savedsearch"
+                placeholder="{{ __('Filter list') }}">
+         <span class="input-group-text">
+            <a href="#" class="link-secondary" id="clear-text" title="Clear search" data-bs-toggle="tooltip">
+               <i class="fa fa-times"></i>
+            </a>
+         </span>
+      </div>
+
+      <ul class="nav nav-vertical saved-searches-panel-lists d-flex flex-column">
+         {{ saved_searches|raw }}
+      </ul>
+   </div>
+</div>
+
+<script type="text/javascript">
+$(function() {
+   $(document).on('click', '#show-saved-searches', function() {
+      $("#saved-searches-panel").toggleClass('d-none');
+   });
+
+   $(document).on('click', '#close-saved-searches-panel', function() {
+      $("#saved-searches-panel").addClass('d-none');
+   });
+
+   $(document).on('click', '#pin-saved-searches-panel', function(e) {
+      e.preventDefault();
+
+      $.ajax({
+         url: CFG_GLPI.root_doc + '/ajax/pin_savedsearches.php',
+         type: 'GET',
+         success: function(data) {
+            if (data.success === true) {
+               $("#saved-searches-panel").toggleClass('pinned');
+            }
+         }
+      });
+   });
+
+   $(document).on('keyup', '#filter_savedsearch', function(key) {
+      var _this = $(this);
+      var searchtext = _this.val() + '';
+      console.log(searchtext);
+      var searchparts = searchtext.toLowerCase().split(/\s+/);
+      var _rows = $('.saved-searches-panel-lists').find('.nav-item');
+      _rows.each(function() {
+         var _row = $(this);
+         var rowtext = _row.text().toLowerCase();
+
+         var show = true;
+
+         for (var i=0; i < searchparts.length; i++) {
+            if (rowtext.indexOf(searchparts[i]) == -1) {
+               show = false;
+               break;
+            }
+         }
+
+         if (show) {
+            _row.show();
+         } else {
+            _row.hide();
+         }
+      });
+   });
+   $(document).on('click', '#clear-text', function(e) {
+      e.preventDefault();
+      $('#filter_savedsearch').val("").trigger('keyup');
+   });
+});
+</script>
