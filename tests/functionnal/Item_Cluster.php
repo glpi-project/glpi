@@ -122,7 +122,7 @@ class Item_Cluster extends DbTestCase {
          ])
       )->isIdenticalTo(0);
 
-      $this->hasSessionMessages(ERROR, ['An item type is required']);
+      $this->hasSessionMessages(ERROR, ['An item is required']);
 
       //try to add without error
       $icl->getEmpty();
