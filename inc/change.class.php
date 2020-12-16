@@ -140,6 +140,33 @@ class Change extends CommonITILObject {
    }
 
 
+   function prepareInputForAdd($input) {
+      $input =  parent::prepareInputForAdd($input);
+      if ($input === false) {
+         return false;
+      }
+
+      // Manage auto assign
+      $auto_assign_mode = Entity::getUsedConfig('auto_assign_mode', $input['entities_id']);
+
+      switch ($auto_assign_mode) {
+         case Entity::CONFIG_NEVER :
+            break;
+
+         case Entity::AUTO_ASSIGN_HARDWARE_CATEGORY :
+         case Entity::AUTO_ASSIGN_CATEGORY_HARDWARE :
+            // Auto assign tech/group from Category
+            // Changes are not associated to a hardware then both settings behave the same way
+            $input = $this->setTechAndGroupFromItilCategory($input);
+            break;
+      }
+
+      $input = $this->assign($input);
+
+      return $input;
+   }
+
+
    function pre_deleteItem() {
       global $CFG_GLPI;
 

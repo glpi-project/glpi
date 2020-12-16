@@ -284,16 +284,27 @@ class Problem extends CommonITILObject {
 
 
    function prepareInputForAdd($input) {
-
       $input =  parent::prepareInputForAdd($input);
-
-      if (((isset($input["_users_id_assign"]) && ($input["_users_id_assign"] > 0))
-           || (isset($input["_groups_id_assign"]) && ($input["_groups_id_assign"] > 0))
-           || (isset($input["_suppliers_id_assign"]) && ($input["_suppliers_id_assign"] > 0)))
-          && (in_array($input['status'], $this->getNewStatusArray()))) {
-
-         $input["status"] = self::ASSIGNED;
+      if ($input === false) {
+         return false;
       }
+
+      // Manage auto assign
+      $auto_assign_mode = Entity::getUsedConfig('auto_assign_mode', $input['entities_id']);
+
+      switch ($auto_assign_mode) {
+         case Entity::CONFIG_NEVER :
+            break;
+
+         case Entity::AUTO_ASSIGN_HARDWARE_CATEGORY :
+         case Entity::AUTO_ASSIGN_CATEGORY_HARDWARE :
+            // Auto assign tech/group from Category
+            // Problems are not associated to a hardware then both settings behave the same way
+            $input = $this->setTechAndGroupFromItilCategory($input);
+            break;
+      }
+
+      $input = $this->assign($input);
 
       return $input;
    }
