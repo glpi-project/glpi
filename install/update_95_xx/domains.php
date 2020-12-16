@@ -99,7 +99,7 @@ if (!$DB->fieldExists('glpi_domainrecordtypes', 'fields')) {
       'WHERE'  => ['name' => array_keys($fields)]
    ]);
    while ($field = $fields_it->next()) {
-      if (empty($field['fields'])) {
+      if (empty($field['fields']) || $field['fields'] === '[]') {
          if ($field['name'] === 'CNAME') {
             //cname field definition has been added
             $field['fields'] = json_encode([[
