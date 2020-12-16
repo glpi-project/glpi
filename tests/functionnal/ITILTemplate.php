@@ -69,12 +69,14 @@ class ITILTemplate extends DbTestCase {
          ])
       )->isGreaterThan(0);
 
-      $this->integer(
-         (int)$mandat->add([
-            $mandat::$items_id   => $tpl_id,
-            'num'                => $mandat->getFieldNum($tpl, 'Location')
-         ])
-      )->isGreaterThan(0);
+      if ($itiltype === \Ticket::getType()) {
+         $this->integer(
+            (int)$mandat->add([
+               $mandat::$items_id   => $tpl_id,
+               'num'                => $mandat->getFieldNum($tpl, 'Location')
+            ])
+         )->isGreaterThan(0);
+      }
 
       $this->integer(
          (int)$mandat->add([

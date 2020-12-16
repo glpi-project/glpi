@@ -732,6 +732,10 @@ class MailCollector  extends CommonDBTM {
 
                $rejinput = [
                   'mailcollectors_id' => $mailgateID,
+                  'from'              => '',
+                  'to'                => '',
+                  'messageid'         => '',
+                  'date'              => $_SESSION["glpi_currenttime"],
                ];
 
                //prevent loop when message is read but when it's impossible to move / delete
@@ -763,7 +767,6 @@ class MailCollector  extends CommonDBTM {
                      $rejinput['subject']           = $DB->escape($this->cleanSubject($headers['subject']));
                      $rejinput['messageid']         = $headers['message_id'];
                   }
-                  $rejinput['date']              = $_SESSION["glpi_currenttime"];
                } catch (\Throwable $e) {
                   $error++;
                   Toolbox::logInFile('mailgate', sprintf(__('Error during message parsing: %1$s').'<br/>', $e->getMessage()));

@@ -952,6 +952,8 @@ class CommonDBTM extends DbTestCase {
 
       $entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
+      $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
+
       $computer = new \Computer();
       $relation_item = new $relation_itemtype();
 

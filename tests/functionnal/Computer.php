@@ -173,7 +173,7 @@ class Computer extends DbTestCase {
             'itemtype'              => \Computer::getType(),
             'deviceprocessors_id'   => $cpuid,
             'locations_id'          => $computer->getField('locations_id'),
-            'states_id'             => $computer->getField('status_id'),
+            'states_id'             => $computer->getField('states_id'),
          ]
       );
 
@@ -387,8 +387,9 @@ class Computer extends DbTestCase {
       $ios = new \Item_OperatingSystem();
       $this->integer(
          $ios->add([
-            'itemtype'  => 'Computer',
-            'items_id'  => $id
+            'operatingsystems_id' => $osid,
+            'itemtype'            => 'Computer',
+            'items_id'            => $id,
          ])
       )->isGreaterThan(0);
 

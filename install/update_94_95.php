@@ -1478,7 +1478,7 @@ HTML
    if (!$DB->tableExists('glpi_impactcontexts')) {
       $query = "CREATE TABLE `glpi_impactcontexts` (
             `id` INT(11) NOT NULL AUTO_INCREMENT,
-            `positions` TEXT NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+            `positions` TEXT NOT NULL COLLATE 'utf8_unicode_ci',
             `zoom` FLOAT NOT NULL DEFAULT '0',
             `pan_x` FLOAT NOT NULL DEFAULT '0',
             `pan_y` FLOAT NOT NULL DEFAULT '0',

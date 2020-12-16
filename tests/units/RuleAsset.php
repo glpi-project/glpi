@@ -53,7 +53,9 @@ class RuleAsset extends DbTestCase {
 
    public function testTriggerAdd() {
       $this->login();
-      $this->setEntity('Root entity', true);
+      $this->setEntity('_test_root_entity', true);
+
+      $root_ent_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
       // prepare rule
       $this->_createRuleComment(\RuleAsset::ONUPDATE);
@@ -63,7 +65,7 @@ class RuleAsset extends DbTestCase {
       $computers_id = $computer->add($computer_input = [
          'name'        => "computer",
          '_auto'       => 1,
-         'entities_id' => 0,
+         'entities_id' => $root_ent_id,
          'is_dynamic'  => 1
       ]);
       $this->integer((int)$computers_id)->isGreaterThan(0);
@@ -72,7 +74,7 @@ class RuleAsset extends DbTestCase {
 
       $computers_id = $computer->add($computer_input = [
          'name'        => "computer2",
-         'entities_id' => 0,
+         'entities_id' => $root_ent_id,
          'is_dynamic'  => 0,
          '_auto'       => 0
       ]);
@@ -84,7 +86,7 @@ class RuleAsset extends DbTestCase {
       $monitors_id = $monitor->add($monitor_input = [
          'name'        => "monitor",
          'contact'     => 'tech',
-         'entities_id' => 1,
+         'entities_id' => $root_ent_id,
          'is_dynamic'  => 1,
          '_auto'       => 1
       ]);
@@ -97,7 +99,7 @@ class RuleAsset extends DbTestCase {
       $computers_id = $computer->add($computer_input = [
          'name'        => "computer3",
          'contact'     => 'tech@AD',
-         'entities_id' => 1,
+         'entities_id' => $root_ent_id,
          'is_dynamic'  => 1,
          '_auto'       => 1
       ]);
@@ -111,7 +113,7 @@ class RuleAsset extends DbTestCase {
       $computers_id = $computer->add($computer_input = [
          'name'        => "computer3",
          'contact'     => 'tech@AD',
-         'entities_id' => 1,
+         'entities_id' => $root_ent_id,
          'is_dynamic'  => 1,
          '_auto'       => 1
       ]);
@@ -124,7 +126,7 @@ class RuleAsset extends DbTestCase {
       $computers_id = $computer->add($computer_input = [
          'name'        => "computer4",
          'contact'     => 'tech,glpi',
-         'entities_id' => 1,
+         'entities_id' => $root_ent_id,
          'is_dynamic'  => 1,
          '_auto'       => 1
       ]);
@@ -137,7 +139,7 @@ class RuleAsset extends DbTestCase {
       $computers_id = $computer->add($computer_input = [
          'name'        => "computer5",
          'contact'     => 'tech2',
-         'entities_id' => 1,
+         'entities_id' => $root_ent_id,
          'is_dynamic'  => 1,
          '_auto'       => 1
       ]);
@@ -154,7 +156,9 @@ class RuleAsset extends DbTestCase {
       global $CFG_GLPI;
 
       $this->login();
-      $this->setEntity('Root entity', true);
+      $this->setEntity('_test_root_entity', true);
+
+      $root_ent_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
       // prepare rule
       $this->_createRuleComment(\RuleAsset::ONUPDATE);
@@ -165,7 +169,7 @@ class RuleAsset extends DbTestCase {
          $item_input = [
             'name'        => "$itemtype 1",
             '_auto'       => 1,
-            'entities_id' => 0,
+            'entities_id' => $root_ent_id,
             'is_dynamic'  => 1,
             'comment'     => 'mycomment'
          ];

@@ -46,6 +46,8 @@ class Transfer extends DbTestCase {
       //Destination entity
       $dentity = (int)getItemByTypeName('Entity', '_test_child_2', true);
 
+      $location_id = getItemByTypeName('Location', '_location01', true);
+
       $itemtypeslist = $this->getClasses(
          'searchOptions',
          [
@@ -94,6 +96,15 @@ class Transfer extends DbTestCase {
          ]
       );
 
+      $fields_values = [
+         'name'            => 'Object to transfer',
+         'entities_id'     => $fentity,
+         'content'         => 'A content',
+         'definition_time' => 'hour',
+         'number_time'     => 4,
+         'begin_date'      => '2020-01-01',
+      ];
+
       $count = 0;
       foreach ($itemtypeslist as $itemtype) {
          $item_class = new \ReflectionClass($itemtype);
@@ -107,16 +118,15 @@ class Transfer extends DbTestCase {
          }
 
          // Add
-         $input = [
-            'name'            => 'Object to transfer',
-            'entities_id'     => $fentity,
-            'content'         => 'A content',
-            'definition_time' => '',
-            'begin_date'      => ''
-         ];
+         $input = [];
+         foreach ($fields_values as $field => $value) {
+            if ($obj->isField($field)) {
+               $input[$field] = $value;
+            }
+         }
 
          if ($obj->maybeLocated()) {
-            $input['locations_id'] = '';
+            $input['locations_id'] = $location_id;
          }
 
          $id = $obj->add($input);

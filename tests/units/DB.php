@@ -97,7 +97,9 @@ class DB extends \GLPITestCase {
          ['null', 'NULL'],
          ['NULL', 'NULL'],
          [new \QueryExpression('`field`'), '`field`'],
-         ['`field', "'`field'"]
+         ['`field', "'`field'"],
+         [false, "'0'"],
+         [true, "'1'"],
       ];
    }
 

@@ -38,6 +38,9 @@ use DbTestCase;
 class Project extends DbTestCase {
 
    public function testAutocalculatePercentDone() {
+
+      $this->login(); // must be logged as ProjectTask uses Session::getLoginUserID()
+
       $project = new \Project();
       $project_id_1 = $project->add([
          'name' => 'Project 1',

@@ -177,6 +177,9 @@ class KnowbaseItem extends DbTestCase {
    }
 
    public function testScreenshotConvertedIntoDocument() {
+
+      $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
+
       // Test uploads for item creation
       $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/foo.png'));
       $filename = '5e5e92ffd9bd91.11111111image_paste22222222.png';
@@ -231,6 +234,9 @@ class KnowbaseItem extends DbTestCase {
    }
 
    public function testUploadDocuments() {
+
+      $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
+
       // Test uploads for item creation
       $filename = '5e5e92ffd9bd91.11111111' . 'foo.txt';
       $instance = new \KnowbaseItem();

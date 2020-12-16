@@ -260,6 +260,9 @@ class MassiveAction extends DbTestCase {
       CommonDBTM $item,
       bool $has_right
    ) {
+
+      $this->login(); // must be logged as MassiveAction uses Session::getLoginUserID()
+
       // Init vars
       $new_note_content = "Test add note";
       $old_session = $_SESSION['glpiactiveprofile'][$item::$rightname] ?? 0;
