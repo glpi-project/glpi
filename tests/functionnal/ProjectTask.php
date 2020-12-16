@@ -77,7 +77,7 @@ class ProjectTask extends DbTestCase {
          'itemtype'        => \User::getType(),
          'items_id'        => $users_id
       ]);
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+      $this->hasNoSessionMessages([ERROR, WARNING]);
       $this->integer($tid)->isGreaterThan(0);
 
       $this->integer(
@@ -89,7 +89,7 @@ class ProjectTask extends DbTestCase {
             'projecttasktemplates_id'  => 0
          ])
       )->isGreaterThan(0);
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+      $this->hasNoSessionMessages([ERROR, WARNING]);
 
       $team = new \ProjectTaskTeam();
       $tid = (int)$team->add([
@@ -117,7 +117,7 @@ class ProjectTask extends DbTestCase {
             'projecttasktemplates_id'  => 0
          ])
       )->isGreaterThan(0);
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+      $this->hasNoSessionMessages([ERROR, WARNING]);
 
       $team = new \ProjectTaskTeam();
       $tid = (int)$team->add([
@@ -125,7 +125,7 @@ class ProjectTask extends DbTestCase {
          'itemtype'        => \User::getType(),
          'items_id'        => $users_id
       ]);
-      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+      $this->hasNoSessionMessages([ERROR, WARNING]);
       $this->integer($tid)->isGreaterThan(0);
 
       $this->boolean(
