@@ -1,10 +1,27 @@
 .navbar .navbar-toggler {
-   color: $sidebar-fg;
+   color: $mainmenu-fg;
+}
+
+.sidebar, .topbar {
+   background-color: $mainmenu-bg;
+   color: $mainmenu-fg;
+
+   .btn-ghost-secondary {
+      color: rgba($color: $mainmenu-fg, $alpha: .8);
+   }
+   .btn-outline-secondary {
+      color: rgba($color: $mainmenu-fg, $alpha: .8);
+      border-color: rgba($color: $mainmenu-fg, $alpha: .8);
+
+      &:hover {
+         background-color: rgba($color: $mainmenu-fg, $alpha: .8);
+         color: rgba($color: $mainmenu-bg, $alpha: .8);
+         border-color: transparend;
+      }
+   }
 }
 
 .sidebar {
-   background-color: $sidebar-bg;
-   color: $sidebar-fg;
    transition: width var(--animate-duration);
 
    & ~ .content, ~ .navbar {
@@ -19,26 +36,12 @@
       }
 
       .nav-link {
-         color: rgba($color: $sidebar-fg, $alpha: .8);
+         color: rgba($color: $mainmenu-fg, $alpha: .8);
 
          &.show, &.active {
             color: rgba($color: $primary, $alpha: .9);
             font-weight: bold;
          }
-      }
-   }
-
-   .btn-ghost-secondary {
-      color: rgba($color: $sidebar-fg, $alpha: .8);
-   }
-   .btn-outline-secondary {
-      color: rgba($color: $sidebar-fg, $alpha: .8);
-      border-color: rgba($color: $sidebar-fg, $alpha: .8);
-
-      &:hover {
-         background-color: rgba($color: $sidebar-fg, $alpha: .8);
-         color: rgba($color: $sidebar-bg, $alpha: .8);
-         border-color: transparend;
       }
    }
 
@@ -115,7 +118,7 @@
             }
 
             .nav-item.active {
-               background-color: lighten($sidebar-bg, 5%);
+               background-color: lighten($mainmenu-bg, 5%);
             }
 
             .nav-link {
@@ -123,11 +126,11 @@
                border-radius: unset;
 
                & + .dropdown-menu {
-                  background-color: $sidebar-fg;
-                  color: $sidebar-bg;
+                  background-color: $mainmenu-fg;
+                  color: $mainmenu-bg;
                   top: 0;
                   left: 100%;
-                  border: 1px solid $sidebar-bg;
+                  border: 1px solid $mainmenu-bg;
 
                   .dropdown-item {
                      border-left: 3px solid transparent;
@@ -142,7 +145,7 @@
                      position: absolute;
 
                      .dropdown-item.active {
-                        background-color: lighten($sidebar-bg, 5%);
+                        background-color: lighten($mainmenu-bg, 5%);
                         border-left-color: $primary
                      }
                   }
