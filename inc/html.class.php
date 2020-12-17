@@ -681,7 +681,7 @@ class Html {
     * @return void
    **/
    static function displayDebugInfos($with_session = true, $ajax = false, $rand = null) {
-      global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $DEBUG_AUTOLOAD;
+      global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $DEBUG_AUTOLOAD, $TIMER_DEBUG;
       $GLPI_CACHE = Config::getCache('cache_db');
 
       // Only for debug mode so not need to be translated
@@ -692,11 +692,12 @@ class Html {
          echo "<div id='debugpanel$rand' class='container-fluid card debug-pannel ".($ajax?"debug_ajax":"")."'>";
 
          echo "<ul class='nav nav-tabs' data-bs-toggle='tabs'>";
+         echo "<li class='nav-item'><a class='nav-link active' data-bs-toggle='tab' href='#debugsummary$rand'>SUMMARY</a></li>";
          if ($CFG_GLPI["debug_sql"]) {
-            echo "<li class='nav-item'><a class='nav-link active' data-bs-toggle='tab' href='#debugsql$rand'>SQL REQUEST</a></li>";
+            echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debugsql$rand'>SQL REQUEST</a></li>";
          }
          if ($CFG_GLPI["debug_vars"]) {
-            echo "<li class='nav-item'><a class='nav-link " . (!$CFG_GLPI["debug_sql"] ? 'active' : '') . "' data-bs-toggle='tab' href='#debugautoload$rand'>AUTOLOAD</a></li>";
+            echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debugautoload$rand'>AUTOLOAD</a></li>";
             echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debugpost$rand'>POST VARIABLE</a></li>";
             echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debugget$rand'>GET VARIABLE</a></li>";
             if ($with_session) {
@@ -712,8 +713,25 @@ class Html {
 
          echo "<div class='card-body'>";
          echo "<div class='tab-content'>";
+
+         echo "<div id='debugsummary$rand' class='tab-pane active'>";
+         echo "<dl class='row'>";
+         echo "<dt class='col-sm-3'>Execution time</dt>";
+         echo "<dd class='col-sm-9'>" . sprintf(_n('%s second', '%s seconds', $TIMER_DEBUG->getTime()), $TIMER_DEBUG->getTime()) . "</dd>";
+         echo "<dt class='col-sm-3'>Memory usage</dt>";
+         echo "<dd class='col-sm-9'>" . Toolbox::getSize(memory_get_usage()) . "</dd>";
          if ($CFG_GLPI["debug_sql"]) {
-            echo "<div id='debugsql$rand' class='tab-pane active'>";
+            $queries_duration = array_sum($DEBUG_SQL['times']);
+            echo "<dt class='col-sm-3'>SQL queries count</dt>";
+            echo "<dd class='col-sm-9'>{$SQL_TOTAL_REQUEST}</dd>";
+            echo "<dt class='col-sm-3'>SQL queries duration</dt>";
+            echo "<dd class='col-sm-9'>" . sprintf(_n('%s second', '%s seconds', $queries_duration), $queries_duration) . "</dd>";
+         }
+         echo "</dl>";
+         echo "</div>";
+
+         if ($CFG_GLPI["debug_sql"]) {
+            echo "<div id='debugsql$rand' class='tab-pane'>";
             echo "<h1>".$SQL_TOTAL_REQUEST." Queries ";
             echo "took  ".array_sum($DEBUG_SQL['times'])."s</h1>";
 
