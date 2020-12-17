@@ -61,7 +61,7 @@
    display: none;
 }
 
-@include media-breakpoint-up(md) {
+@include media-breakpoint-up(lg) {
    .sidebar {
       width: $sidebar-width;
    }
