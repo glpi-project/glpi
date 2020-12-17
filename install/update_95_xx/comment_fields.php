@@ -29,43 +29,26 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-
 /**
- * Update from 9.5.x to x.x.x
- *
- * @return bool for success (will die for most error)
-**/
-function update95toXX() {
-   global $DB, $migration;
+ * @var DB $DB
+ * @var Migration $migration
+ */
 
-   $updateresult     = true;
-   $ADDTODISPLAYPREF = [];
-
-   //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(__('Update to %s'), 'x.x.x'));
-   $migration->setVersion('x.x.x');
-
-   require __DIR__ . '/update_95_xx/comment_fields.php';
-   require __DIR__ . '/update_95_xx/devicebattery.php';
-   require __DIR__ . '/update_95_xx/domains.php';
-   require __DIR__ . '/update_95_xx/reservationitem.php';
-   require __DIR__ . '/update_95_xx/softwares.php';
-
-   // ************ Keep it at the end **************
-   foreach ($ADDTODISPLAYPREF as $type => $tab) {
-      $rank = 1;
-      foreach ($tab as $newval) {
-         $DB->updateOrInsert("glpi_displaypreferences", [
-            'rank'      => $rank++
-         ], [
-            'users_id'  => "0",
-            'itemtype'  => $type,
-            'num'       => $newval,
-         ]);
-      }
-   }
-
-   $migration->executeMigration();
-
-   return $updateresult;
+// Remove the `NOT NULL` flag of comment fields and fix collation
+$tables = [
+   'glpi_apiclients',
+   'glpi_applianceenvironments',
+   'glpi_appliances',
+   'glpi_appliancetypes',
+   'glpi_devicesimcards',
+   'glpi_knowbaseitems_comments',
+   'glpi_lines',
+   'glpi_rulerightparameters',
+   'glpi_ssovariables',
+   'glpi_virtualmachinestates',
+   'glpi_virtualmachinesystems',
+   'glpi_virtualmachinetypes',
+];
+foreach ($tables as $table) {
+   $migration->changeField($table, 'comment', 'comment', 'text');
 }
