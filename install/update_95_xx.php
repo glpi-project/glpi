@@ -66,6 +66,7 @@ function update95toXX() {
          'after'  => 'is_dynamic',
          'null'   => true
       ]);
+      $migration->addKey($class::getTable(), 'uuid');
    }
 
    // ************ Keep it at the end **************
