@@ -31,7 +31,6 @@
  */
 
 use atoum\atoum;
-use Glpi\Cache\SimpleCache;
 
 // Main GLPI test case. All tests should extends this class.
 
@@ -39,7 +38,6 @@ class GLPITestCase extends atoum {
    private $int;
    private $str;
    protected $cached_methods = [];
-   protected $nscache;
    protected $has_failed = false;
 
    public function beforeTestMethod($method) {
@@ -47,30 +45,14 @@ class GLPITestCase extends atoum {
       $this->resetSession();
 
       if (in_array($method, $this->cached_methods)) {
-         $this->nscache = 'glpitestcache' . GLPI_VERSION;
-         global $GLPI_CACHE;
          //run with cache
          define('CACHED_TESTS', true);
-         //LaminasCache does not works with PHP5 acpu...
-         $adapter = (version_compare(PHP_VERSION, '7.0.0') >= 0) ? 'apcu' : 'apc';
-         $storage = \Laminas\Cache\StorageFactory::factory([
-            'adapter'   => $adapter,
-            'options'   => [
-               'namespace' => $this->nscache
-            ]
-         ]);
-         $GLPI_CACHE = new SimpleCache($storage, GLPI_CACHE_DIR, false);
       }
    }
 
    public function afterTestMethod($method) {
-      if (in_array($method, $this->cached_methods)) {
-         global $GLPI_CACHE;
-         if ($GLPI_CACHE != null) {
-            $GLPI_CACHE->clear();
-         }
-         $GLPI_CACHE = false;
-      }
+      global $GLPI_CACHE;
+      $GLPI_CACHE->clear();
 
       global $PHPLOGGER;
       $handlers = $PHPLOGGER->getHandlers();

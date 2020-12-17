@@ -121,13 +121,15 @@ class Entity extends DbTestCase {
     * @return void
     */
    public function runChangeEntityParent($cache = false, $hit = false) {
+      global $GLPI_CACHE;
+
       $this->login();
       $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
       $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
       $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
 
-      $sckey_ent1 = $this->nscache . ':' .sha1('sons_cache_glpi_entities_' . $ent1);
-      $sckey_ent2 = $this->nscache . ':' .sha1('sons_cache_glpi_entities_' . $ent2);
+      $sckey_ent1 = 'sons_cache_glpi_entities_' . $ent1;
+      $sckey_ent2 = 'sons_cache_glpi_entities_' . $ent2;
 
       $entity = new \Entity();
       $new_id = (int)$entity->add([
@@ -135,18 +137,18 @@ class Entity extends DbTestCase {
          'entities_id'  => $ent1
       ]);
       $this->integer($new_id)->isGreaterThan(0);
-      $ackey_new_id = $this->nscache . ':' .sha1('ancestors_cache_glpi_entities_' . $new_id);
+      $ackey_new_id = 'ancestors_cache_glpi_entities_' . $new_id;
 
       $expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1];
       if ($cache === true) {
-         $this->array(apcu_fetch($ackey_new_id))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ackey_new_id))->isIdenticalTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', $new_id);
       $this->array($ancestors)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ackey_new_id))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ackey_new_id))->isIdenticalTo($expected);
       }
 
       $expected = [$ent1 => $ent1, $new_id => $new_id];
@@ -155,7 +157,7 @@ class Entity extends DbTestCase {
       $this->array($sons)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($sckey_ent1))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($sckey_ent1))->isIdenticalTo($expected);
       }
 
       //change parent entity
@@ -168,14 +170,14 @@ class Entity extends DbTestCase {
 
       $expected = [0 => 0, $ent0 => $ent0, $ent2 => $ent2];
       if ($cache === true) {
-         $this->array(apcu_fetch($ackey_new_id))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ackey_new_id))->isIdenticalTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', $new_id);
       $this->array($ancestors)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ackey_new_id))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ackey_new_id))->isIdenticalTo($expected);
       }
 
       $expected = [$ent1 => $ent1];
@@ -183,7 +185,7 @@ class Entity extends DbTestCase {
       $this->array($sons)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($sckey_ent1))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($sckey_ent1))->isIdenticalTo($expected);
       }
 
       $expected = [$ent2 => $ent2, $new_id => $new_id];
@@ -191,7 +193,7 @@ class Entity extends DbTestCase {
       $this->array($sons)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($sckey_ent2))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($sckey_ent2))->isIdenticalTo($expected);
       }
 
       //clean new entity
