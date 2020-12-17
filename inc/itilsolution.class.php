@@ -349,24 +349,24 @@ class ITILSolution extends CommonDBChild {
          Ticket_Ticket::manageLinkedTicketsOnSolved($this->item->getID(), $this);
       }
 
-      $status = $item::SOLVED;
-
-      //handle autoclose, for tickets only
-      if ($item->getType() == Ticket::getType()) {
-         $autoclosedelay =  Entity::getUsedConfig(
-            'autoclose_delay',
-            $this->item->getEntityID(),
-            '',
-            Entity::CONFIG_NEVER
-         );
-
-         // 0 = immediatly
-         if ($autoclosedelay == 0) {
-            $status = $item::CLOSED;
-         }
-      }
-
       if (!isset($this->input['_linked_ticket'])) {
+         $status = $item::SOLVED;
+
+         //handle autoclose, for tickets only
+         if ($item->getType() == Ticket::getType()) {
+            $autoclosedelay =  Entity::getUsedConfig(
+               'autoclose_delay',
+               $this->item->getEntityID(),
+               '',
+               Entity::CONFIG_NEVER
+            );
+
+            // 0 = immediatly
+            if ($autoclosedelay == 0) {
+               $status = $item::CLOSED;
+            }
+         }
+
          $this->item->update([
             'id'     => $this->item->getID(),
             'status' => $status
