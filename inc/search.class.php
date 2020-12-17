@@ -74,13 +74,26 @@ class Search {
    static function show($itemtype) {
 
       $params = self::manageParams($itemtype, $_GET);
-      echo "<div class='search_page'>";
+      echo "<div class='search_page row'>";
+      $savedsearch = new SavedSearch;
+      TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
+         'saved_searches' => $savedsearch->getMine($itemtype),
+         'itemtype'       => $itemtype,
+      ]);
+      echo "<div class='col'>";
+
+      if ($itemtype == "Ticket"
+          && $default = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('mini_ticket', true)) {
+         $dashboard = new Glpi\Dashboard\Grid($default, 33, 1, 'mini_core');
+         $dashboard->show(true);
+      }
       self::showGenericSearch($itemtype, $params);
       if ($params['as_map'] == 1) {
          self::showMap($itemtype, $params);
       } else {
          self::showList($itemtype, $params);
       }
+      echo "</div>";
       echo "</div>";
    }
 
@@ -1529,6 +1542,8 @@ class Search {
       if ($data['display_type'] == self::HTML_OUTPUT) {
          Session::initNavigateListItems($data['itemtype']);
       }
+
+      
 
       TemplateRenderer::getInstance()->display('layout/parts/search/display_data.html.twig', [
          'data'                => $data,

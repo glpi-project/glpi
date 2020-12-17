@@ -44,10 +44,15 @@ class ToolboxExtension extends AbstractExtension implements ExtensionInterface {
    public function getFunctions() {
       return [
          new TwigFunction('getMaxInputVar', [$this, 'getMaxInputVar']),
+         new TwigFunction('getItemTypeSearchURL', [$this, 'getItemTypeSearchURL']),
       ];
    }
 
    public function getMaxInputVar(): string {
       return Toolbox::get_max_input_vars();
+   }
+
+   public function getItemTypeSearchURL(string $itemtype = ""): string {
+      return Toolbox::getItemTypeSearchURL($itemtype, true);
    }
 }

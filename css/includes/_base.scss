@@ -9,12 +9,12 @@ $link-hover-decoration: none;
 
 $sidebar_bg: $dark !default;
 $sidebar_fg: $light !default;
-$saved_search_bg: $gray-300 !default;
-$saved_search_fg: $dark !default;
 $logo: "../pics/logos/logo-GLPI-100-white.png" !default;
 $logo_reduced: "../pics/logos/logo-G-100-white.png" !default;
 $scrollbar-color-thumb: rgba($color: $secondary, $alpha: .8) !default;
 $scrollbar-color-track: rgba(0, 0, 0, .03)  !default;
+$badge-bg: $dark !default;
+$badge-fg: $light !default;
 
 body.iframed {
    background-color: transparent;

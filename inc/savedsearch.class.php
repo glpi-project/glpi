@@ -720,332 +720,83 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
    }
 
 
-   /**
-    * Show user searches list
-    *
-    * @param bool  $display directly display or return
-    *
-    * @return mixed
-    */
-   function displayMine(bool $display = true) {
-      global $DB, $CFG_GLPI;
+   function getMine(string $itemtype = null):array {
+      global $DB;
 
-      $out = "";
+      $searches = [];
 
       $table = $this->getTable();
       $utable = 'glpi_savedsearches_users';
       $criteria = [
          'SELECT'    => [
             "$table.*",
-            "$utable.id AS IS_DEFAULT"
+            "$utable.id AS is_default"
          ],
          'FROM'      => $table,
          'LEFT JOIN' => [
-            $utable => [
-               'ON' => [
-                  $utable  => 'savedsearches_id',
-                  $table   => 'id', [
-                     'AND' => [
-                        "$table.itemtype"    => new \QueryExpression("$utable.itemtype"),
-                        "$utable.users_id"   => Session::getLoginUserID()
-                     ]
+            $utable => ['ON' => [
+               $utable  => 'savedsearches_id',
+               $table   => 'id', [
+                  'AND' => [
+                     "$table.itemtype"  => new \QueryExpression("$utable.itemtype"),
+                     "$utable.users_id" => Session::getLoginUserID()
                   ]
                ]
+            ]]
+         ],
+         'WHERE'     => [
+            'OR' => [
+               [
+                  "$table.is_private" => 0,
+               ] + getEntitiesRestrictCriteria($table, '', '', true),
+               "$table.users_id"   => Session::getLoginUserID()
             ]
          ],
-         'WHERE'     => [],
          'ORDERBY'   => [
             'itemtype',
             'name'
          ]
       ];
 
-      $public_criteria = $criteria;
-      if ($this->canView()) {
-         $public_criteria['WHERE'] = [
-            "$table.is_private"  => 0,
-         ] + getEntitiesRestrictCriteria($table, '', '', true);
-      }
-      $public_iterator = $DB->request($public_criteria);
-
-      $private_criteria = $criteria;
-      $private_criteria['WHERE'] = [
-         "$table.is_private"  => 1,
-         "$table.users_id"    => Session::getLoginUserID()
-      ];
-      $private_iterator = $DB->request($private_criteria);
-
-      // get saved searches
-      $searches = ['private'   => [],
-                   'public'    => []];
-
-      while ($data = $private_iterator->next()) {
-         $searches['private'][$data['id']] = $data;
+      if ($itemtype != null) {
+         $criteria['WHERE']+= [
+            "$table.itemtype" => $itemtype
+         ];
       }
 
-      while ($data = $public_iterator->next()) {
-         $searches['public'][$data['id']] = $data;
-      }
+      $iterator = $DB->request($criteria);
+      while ($data = $iterator->next()) {
 
-      $ordered = [];
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            $this->fields = $data;
+            $search_data = $this->execute();
 
-      // get personal order
-      $user               = new User();
-      $personalorderfield = $this->getPersonalOrderField();
-
-      $personalorder = [];
-      if ($user->getFromDB(Session::getLoginUserID())) {
-         $personalorder = importArrayFromDB($user->fields[$personalorderfield]);
-      }
-      if (!is_array($personalorder)) {
-         $personalorder = [];
-      }
-
-      // Add on personal order
-      if (count($personalorder)) {
-         foreach ($personalorder as $val) {
-            if (isset($searches['private'][$val])) {
-               $ordered[$val] = $searches['private'][$val];
-               unset($searches['private'][$val]);
+            $count = null;
+            try {
+               $search_data = $this->execute();
+            } catch (\RuntimeException $e) {
+               Toolbox::logError($e);
+               $search_data = false;
             }
-         }
-      }
-
-      // Add unsaved in order
-      if (count($searches['private'])) {
-         foreach ($searches['private'] as $key => $val) {
-            $ordered[$key] = $val;
-         }
-      }
-
-      // New: save order
-      $store = array_keys($ordered);
-      $user->update(['id'                => Session::getLoginUserID(),
-                     $personalorderfield => exportArrayToDB($store)]);
-      $searches['private'] = $ordered;
-
-      $out.= "<li class='nav-item'>
-         <a href='#private-savedsearches' class='nav-link px-1' data-bs-toggle='collapse' aria-expanded='true'>" .
-            sprintf(
-               _n('Private %1$s', 'Private %1$s', count($searches['private'])),
-               $this->getTypeName(count($searches['private']))
-            ).
-            "<span class='nav-link-toggle'></span>
-         </a>
-         <ul class='nav nav-pills collapse show saved-searches-panel-list ' id='private-savedsearches'>";
-      $out.= $this->displaySavedSearchType($searches['private'], $display);
-      $out.= "</ul>";
-      $out.= "</li>";
-
-      if ($this->canView()) {
-         $out.= "<li class='nav-item'>
-            <a href='#public-savedsearches' class='nav-link px-1' data-bs-toggle='collapse' aria-expanded='true'>".
-            sprintf(
-               _n('Public %1$s', 'Public %1$s', count($searches['public'])),
-               $this->getTypeName(count($searches['public']))  
-            ) .
-            "<span class='nav-link-toggle'></span>
-         </a>
-         <ul class='nav nav-pills collapse show saved-searches-panel-list' id='public-savedsearches'>";
-         $out.= $this->displaySavedSearchType($searches['public'], $display);
-         $out.= "</ul>";
-         $out.= "</li>";
-      }
-
-
-      if (count($searches['private']) || count($searches['public'])) {
-         $js = "$(function() {
-            $('.countSearches').on('click', function(e) {
-               e.preventDefault();
-               var _this = $(this);
-               var _dest = _this.closest('tr').find('span.count');
-               $.ajax({
-                  url: _this.attr('href'),
-                  beforeSend: function() {
-                     var _img = '<span id=\'loading\'><img src=\'{$CFG_GLPI["root_doc"]}/pics/spinner.gif\' alt=\'" . addslashes(__('Loading...')) . "\'/></span>';
-                     _dest.append(_img);
-                  },
-                  success: function(res) {
-                     _dest.html(' (' + res.count + ')');
-                  },
-                  complete: function() {
-                     $('#loading').remove();
-                  }
-               });
-            });\n
-
-            $('.slidepanel .default').on('click', function(e) {
-               e.preventDefault();
-               var _this = $(this);
-               var _currentclass = (_this.hasClass('bookmark_record') ? 'bookmark_record' : 'bookmark_default');
-               $.ajax({
-                  url: _this.attr('href').replace(/\/front\//, '/ajax/'),
-                  beforeSend: function() {
-                     _this
-                        .removeClass(_currentclass)
-                        .addClass('fa-spinner fa-spin')
-                  },
-                  success: function(res) {
-                     $('#showSavedSearches .contents').html(res);
-                  },
-                  error: function() {
-                     alert('" . addslashes(__('Default bookmark has not been changed!'))  . "');
-                     _this.addClass(_currentclass);
-                  },
-                  complete: function() {
-                     _this.removeClass('fa-spin').removeClass('fa-spinner');
-                  }
-               });
-            });
-
-         });";
-
-         $out.= Html::scriptBlock($js);
-      }
-
-      if ($display) {
-         echo $out;
-         return;
-      }
-
-      return $out;
-   }
-
-
-   /**
-    * Display saved searches from a type
-    *
-    * @param array $searches Search type
-    * @param bool  $display directly display or return
-    *
-    * @return void
-   **/
-   private function displaySavedSearchType($searches, bool $display = true) {
-      global $CFG_GLPI;
-
-      $out = "";
-
-      if ($totalcount = count($searches)) {
-         $current_type      = -1;
-         $number            = 0;
-         $current_type_name = NOT_AVAILABLE;
-         $is_private        = null;
-
-         foreach ($searches as $key => $this->fields) {
-            $number ++;
-            if ($current_type != $this->fields['itemtype']) {
-               $current_type      = $this->fields['itemtype'];
-               $current_type_name = NOT_AVAILABLE;
-
-               if ($current_type == "AllAssets") {
-                  $current_type_name = __('Global');
-               } else if ($item = getItemForItemtype($current_type)) {
-                  $current_type_name = $item->getTypeName(Session::getPluralNumber());
-               }
-            }
-
-            if ($_SESSION['glpishow_count_on_tabs']) {
-               $count = null;
-               try {
-                  $data = $this->execute();
-               } catch (\RuntimeException $e) {
-                  Toolbox::logError($e);
-                  $data = false;
-               }
-               if (isset($data['data']['totalcount'])) {
-                  $count = $data['data']['totalcount'];
-               } else {
-                  $info_message = ($this->fields['do_count'] == self::COUNT_NO)
-                                   ? __s('Count for this saved search has been disabled.')
-                                   : __s('Counting this saved search would take too long, it has been skipped.');
-                  if ($count === null) {
-                     //no count, just inform the user
-                     $count = "<span class='fa fa-info-circle' title='$info_message'></span>";
-                  }
-               }
-            }
-
-            if ($is_private === null) {
-               $is_private = ($this->fields['is_private'] == 1);
-            }
-
-            $out.= "<li class='nav-item d-flex justify-content-between align-items-center'>";
-            /* if (is_null($this->fields['IS_DEFAULT'])) {
-               $out.= "<a class='default fa fa-star bookmark_record' href=\"" .
-                       $this->getSearchURL() . "?action=edit&amp; mark_default=1&amp;id=".
-                       $this->fields["id"]."\" title=\"".__s('Not default search')."\">".
-                       "<span class='sr-only'>" . __('Not default search')  . "</span></a>";
+            if (isset($search_data['data']['totalcount'])) {
+               $count = $search_data['data']['totalcount'];
             } else {
-               $out.= "<a class='default fa fa-star bookmark_default' href=\"".
-                       $this->getSearchURL() . "?action=edit&amp;mark_default=0&amp;id=".
-                       $this->fields["id"]."\" title=\"".__s('Default search')."\">".
-                       "<span class='sr-only'>" . __('Default search') . "</span></a>";
-            } */
-
-            $text = sprintf(__('%1$s on %2$s'), $this->fields['name'], $current_type_name);
-
-            $title = ($is_private ? __s('Click to load or drag and drop to reorder')
-                                  : __s('Click to load'));
-            $out.= "<a class='nav-link' href=\"".$this->getSearchURL()."?action=load&amp;id=".
-                     $this->fields["id"]."\" title='".$title."'>".
-                     $text;
-            $out.= "</a>";
-            if ($_SESSION['glpishow_count_on_tabs']) {
-               $out.= "<span class='badge bg-primary rounded-pill'>$count</span>";
+               $info_message = ($this->fields['do_count'] == self::COUNT_NO)
+                                ? __s('Count for this saved search has been disabled.')
+                                : __s('Counting this saved search would take too long, it has been skipped.');
+               if ($count === null) {
+                  //no count, just inform the user
+                  $count = "<span class='fa fa-info-circle' title='$info_message'></span>";
+               }
             }
-            $out.= "</li>";
+
+            $data['count'] = $count;
          }
 
-         if ($is_private) {
-            //private saved searches can be ordered
-            $js = "$(function() {
-               $('.slidepanel .contents table').sortable({
-                  items: 'tr.private',
-                  placeholder: 'ui-state-highlight',
-                  create: function(event, ui) {
-                     $('tr.private td:first-child').each(function() {
-                        $(this).prepend('<span class=\'drag\'><img src=\'{$CFG_GLPI['root_doc']}/pics/drag.png\' alt=\'\'/></span>');
-                     });
-                  },
-                  stop: function (event, ui) {
-                     var _ids = $('tr.private').map(function(idx, ele) {
-                        return $(ele).data('id');
-                     }).get();
-
-                     $.ajax({
-                        url: '{$CFG_GLPI["root_doc"]}/ajax/savedsearch.php?action=reorder',
-                        data: {
-                           ids: _ids
-                        },
-                        beforeSend: function() {
-                           var _img = '<span id=\'loading\'><img src=\'{$CFG_GLPI["root_doc"]}/pics/spinner.gif\' alt=\'" . addslashes(__('Loading...')) . "\'/></span>';
-                           $('.private_header').prepend(_img);
-                        },
-                        error: function() {
-                           alert('" . addslashes(__('Saved searches order cannot be saved!')) . "');
-                        },
-                        complete: function() {
-                           $('#loading').remove();
-                        }
-                     });
-                  }
-               });
-            });";
-
-            $out.= Html::scriptBlock($js);
-         }
-      } else {
-         $out.= "<li class='nav-item'>";
-         $out.= sprintf(__('You have not recorded any %1$s yet'), mb_strtolower($this->getTypeName(1)));
-         $out.= "</li>";
+         $searches[$data['id']] = $data;
       }
 
-      if ($display) {
-         echo $out;
-         return;
-      }
-
-      return $out;
+      return $searches;
    }
 
 
