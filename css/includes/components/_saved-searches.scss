@@ -17,7 +17,7 @@
       z-index: 1010;
       top: calc(#{$navbar-height} - 1px);
       margin-top: calc(-#{$content-padding-y} - 1px);
-      height: calc(100vh - #{$navbar-height});
+      height: calc(100vh - #{$navbar-height} + 1px);
       margin-left: -#{$container-padding-x};
       margin-right: $container-padding-x;
 
@@ -69,8 +69,21 @@ body.navbar-collapsed {
 }
 
 body.horizontal-layout {
+   $topbar-height: 79px;
+   $contextbar-height: 56px;
+
    .saved-searches-panel {
       left: 0;
+
+      &.pinned {
+         top: calc(#{$topbar-height} + #{$contextbar-height} - 1px);
+         height: calc(100vh - #{$topbar-height} - #{$contextbar-height} + 1px);
+      }
+   }
+
+   .secondary-bar {
+      top: $topbar-height;
+      z-index: 1010;
    }
 }
 
@@ -94,6 +107,12 @@ body.horizontal-layout {
 
       .close-saved-searches-panel {
          display: flex !important;
+      }
+   }
+
+   body.horizontal-layout {
+      .secondary-bar {
+         top: initial;
       }
    }
 }
