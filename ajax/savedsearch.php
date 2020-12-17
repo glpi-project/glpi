@@ -69,8 +69,6 @@ if (isset($_GET['mark_default'])
    } else if ($_GET["mark_default"] == 0) {
       $savedsearch->unmarkDefault($_GET["id"]);
    }
-   //to refresh slidepanel
-   $_GET['action'] = 'show';
 }
 
 if (!isset($_GET['action'])) {
@@ -117,9 +115,4 @@ if ($_GET['action'] == 'create') {
       ]
    );
    return;
-}
-
-if ($_GET['action'] == 'show') {
-   header("Content-Type: text/html; charset=UTF-8");
-   $savedsearch->displayMine();
 }

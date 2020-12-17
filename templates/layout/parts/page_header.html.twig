@@ -29,13 +29,15 @@
  ---------------------------------------------------------------------
 #}
 
-<body class="{{ user_pref('dark_mode') ? 'theme-dark' : '' }} {{ user_pref('fold_menu') ? 'navbar-collapsed' : '' }}">
+{% set is_vertical = user_pref('page_layout') == 'vertical' %}
+
+<body class="{{ user_pref('dark_mode') ? 'theme-dark' : '' }} {{ user_pref('fold_menu') and is_vertical ? 'navbar-collapsed' : '' }} {{ is_vertical ? "vertical-layout" : "horizontal-layout" }}">
    {{ include('layout/parts/impersonate_banner.html.twig') }}
    {{ include('components/messages_after_redirect.html.twig') }}
 
    <div class="page">
 
-      {% if user_pref('page_layout') == 'vertical' %}
+      {% if is_vertical %}
       <aside class="navbar navbar-vertical navbar-expand-lg sticky-top sidebar">
          <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
@@ -47,6 +49,11 @@
                <span class="glpi-logo"></span>
             </a>
 
+            <button class="btn btn-icon btn-sm btn-outline-secondary trigger-fuzzy mb-md-2" title="{{ __("Ctrl+Alt+G") }}">
+               <i class="fas fa-fw fa-lg fa-arrow-right"></i>
+               <span class="menu-label">{{ __("Go to...") }}</span>
+            </button>
+
             <div class="d-lg-none">
                {{ include('layout/parts/user_header.html.twig') }}
             </div>
@@ -55,14 +62,6 @@
                {{ include('layout/parts/menu.html.twig') }}
 
                <p class="text-start">
-                  <button class="btn btn-sm btn-ghost-secondary mb-2" id="show-saved-searches">
-                     <i class="fas fa-fw fa-lg fa-star"></i>
-                     <span class="menu-label">{{ _n('Saved search', 'Saved searches', 2) }}</span>
-                  </button>
-                  <button class="btn btn-sm btn-ghost-secondary trigger-fuzzy mb-md-2" title="{{ __("Ctrl+Alt+G") }}">
-                     <i class="fas fa-fw fa-lg fa-arrow-right"></i>
-                     <span class="menu-label">{{ __("Go to...") }}</span>
-                  </button>
                   <button class="btn btn-sm btn-ghost-secondary mb-2 reduce-menu d-none d-md-block">
                      <span class="menu-label">{{ __("Collapse menu") }}</span>
                   </button>
@@ -92,11 +91,7 @@
 
                <div class="collapse navbar-collapse" id="navbar-menu">
                   {{ include('layout/parts/menu.html.twig') }}
-                  <button class="btn btn-ghost-secondary mx-1 show-saved-searches">
-                     <i class="fas fa-star"></i>
-                     <span class="menu-label">{{ _n('Saved search', 'Saved searches', 2) }}</span>
-                  </button>
-                  <button class="btn btn-ghost-secondary mx-1 trigger-fuzzy" title="{{ __("Ctrl+Alt+G") }}">
+                  <button class="btn btn-outline-secondary mx-1 trigger-fuzzy" title="{{ __("Ctrl+Alt+G") }}">
                      <i class="fas fa-arrow-right"></i>
                      {{ __("Go to...") }}
                   </button>
@@ -121,8 +116,5 @@
       {% endif %}
 
       <div class="content">
-         <div class="row">
-            {{ include('layout/parts/saved_searches.html.twig') }}
-            <div class="col">
-               <div class="container-fluid">
-                  <main role="main" id="page" class="legacy">
+         <div class="container-fluid">
+            <main role="main" id="page" class="legacy">

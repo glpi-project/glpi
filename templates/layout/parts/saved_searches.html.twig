@@ -1,69 +1,136 @@
 {% set pinned = user_pref('savedsearches_pinned') == "1" %}
+{% set itemtype_cls = itemtype|lower %}
 
-<div class="card col-2 d-flex flex-column {{ pinned ? "pinned" : "d-none" }}" id="saved-searches-panel">
-   <div class="card-header px-1">
-      <i class="fas fa-star"></i>&nbsp;
-      {{ _n('Saved search', 'Saved searches', 2) }}
+<div class="card col-2 d-flex flex-column {{ pinned ? "pinned" : "d-none" }} saved-searches-panel {{ itemtype_cls}}">
+   <div class="card-header pe-2">
+      <h3>
+         <i class="fas fa-star"></i>&nbsp;
+         {{ _n('Saved search', 'Saved searches', 2) }}
+      </h3>
 
-      <p class="ms-auto d-flex">
+      <span class="ms-auto d-flex">
          <a href="{{ path("front/savedsearch.php") }}" class="btn btn-sm btn-icon btn-ghost-secondary">
             <i class="fas fa-cog"></i>
          </a>
-         <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1 d-none d-md-block" id="pin-saved-searches-panel">
+         <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1 d-none d-md-block pin-saved-searches-panel">
             <i class="fas fa-thumbtack"></i>
          </button>
-         <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1" id="close-saved-searches-panel">
+         <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1 close-saved-searches-panel">
             <i class="fas fa-times"></i>
          </button>
-      </p>
+      </span>
    </div>
-   <div class="card-body saved-searches-panel-content px-1 d-flex flex-column">
-      <div class="input-group input-group-flat">
-         <input type="text" class="form-control mb-3" id="filter_savedsearch"
+   <div class="saved-searches-panel-content">
+      <div class="list list-row list-hoverable saved-searches-panel-lists">
+         {% if saved_searches|length == 0 %}
+            <div class="alert alert-info" role="alert">
+               {{ __('You have not recorded any saved searches yet') }}
+            </div>
+         {% endif %}
+
+         {% for search in saved_searches %}
+            <div class="list-item search-line" data-id="{{ search['id'] }}">
+
+               <a href="{{ getItemTypeSearchURL('SavedSearch') }}?action=load&amp;id={{ search['id'] }}"
+                  class="text-body d-block saved-searches-link text-truncate">
+                  {{ search['name'] }}
+               </a>
+               <div class="{{ search['is_default'] > 0 ? "" : "list-item-actions" }} ms-auto default-ctrl">
+                  <i class="{{ search['is_default'] > 0 ? "fas" : "far" }} fa-star fa-xs mark-default"
+                     title="{{ search['is_default'] > 0 ? __("Default search") : __("mark as default") }}"></i>
+               </div>
+               <div>
+                  {% if search['is_private'] == 1 %}
+                  <i class="fas fa-lock fa-xs text-muted" title="{{ __("private") }}"></i>
+                  {% endif %}
+                  <span class="badge">
+                     {{ search['count']|raw }}
+                  </span>
+               </div>
+            </div>
+         {% endfor %}
+      </div>
+   </div>
+   <div class="card-footer">
+      <div class="input-group input-group-flat filter_savedsearch">
+         <input type="text" class="form-control form-control-sm"
                 placeholder="{{ __('Filter list') }}">
          <span class="input-group-text">
-            <a href="#" class="link-secondary" id="clear-text" title="Clear search" data-bs-toggle="tooltip">
-               <i class="fa fa-times"></i>
+            <a href="#" class="link-secondary clear-text" role="button" title="Clear search">
+               <i class="fa fa-times fa-xs"></i>
             </a>
          </span>
       </div>
-
-      <ul class="nav nav-vertical saved-searches-panel-lists d-flex flex-column">
-         {{ saved_searches|raw }}
-      </ul>
    </div>
 </div>
 
 <script type="text/javascript">
 $(function() {
-   $(document).on('click', '#show-saved-searches', function() {
-      $("#saved-searches-panel").toggleClass('d-none');
+   $(document).on('click', '.show-saved-searches', function() {
+      itemtype = $(this).data('itemtype');
+      $(".saved-searches-panel."+itemtype).toggleClass('d-none');
    });
 
-   $(document).on('click', '#close-saved-searches-panel', function() {
-      $("#saved-searches-panel").addClass('d-none');
+   $(document).on('click', '.close-saved-searches-panel', function() {
+      $(this).closest(".saved-searches-panel").addClass('d-none');
    });
 
-   $(document).on('click', '#pin-saved-searches-panel', function(e) {
+   // set default to a list
+   $(document).on('click', '.mark-default', function() {
+      var line = $(this).closest('.search-line');
+      var list = line.closest('.saved-searches-panel-lists');
+      var id   = line.data('id');
+      var set  = $(this).hasClass('fas') ? 0 : 1;
+
+      list.find(".search-line .mark-default")
+          .removeClass('fas')
+          .addClass('far')
+          .parent()
+            .addClass('list-item-actions');
+
+      if (set) {
+         $(this)
+            .removeClass('far')
+            .addClass('fas')
+            .parent()
+               .removeClass('list-item-actions');
+      }
+
+      $.ajax({
+         url: CFG_GLPI.root_doc + '/ajax/savedsearch.php',
+         type: 'GET',
+         data: {
+            mark_default: set,
+            id: id,
+         }
+      });
+   });
+
+   // pin panel on the left
+   $(document).on('click', '.pin-saved-searches-panel', function(e) {
       e.preventDefault();
+      var pin_button = $(this);
 
       $.ajax({
          url: CFG_GLPI.root_doc + '/ajax/pin_savedsearches.php',
          type: 'GET',
          success: function(data) {
             if (data.success === true) {
-               $("#saved-searches-panel").toggleClass('pinned');
+               pin_button.closest(".saved-searches-panel").toggleClass('pinned');
             }
          }
       });
    });
 
-   $(document).on('keyup', '#filter_savedsearch', function(key) {
+   // filter list
+   $(document).on('keyup', '.filter_savedsearch input', function(key) {
       var _this = $(this);
       var searchtext = _this.val() + '';
-      console.log(searchtext);
       var searchparts = searchtext.toLowerCase().split(/\s+/);
-      var _rows = $('.saved-searches-panel-lists').find('.nav-item');
+      var _rows = _this
+         .closest('.card-footer')
+         .siblings('.saved-searches-panel-content')
+         .find('.list-item');
       _rows.each(function() {
          var _row = $(this);
          var rowtext = _row.text().toLowerCase();
@@ -84,9 +151,10 @@ $(function() {
          }
       });
    });
-   $(document).on('click', '#clear-text', function(e) {
-      e.preventDefault();
-      $('#filter_savedsearch').val("").trigger('keyup');
+
+   // clear list
+   $(document).on('click', '.filter_savedsearch .clear-text', function() {
+      $(this).closest('.filter_savedsearch').find('input').val("").trigger('keyup');
    });
 });
 </script>

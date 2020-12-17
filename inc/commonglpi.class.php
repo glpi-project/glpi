@@ -412,6 +412,7 @@ class CommonGLPI {
             $menu['shortcut']        = static::getMenuShorcut();
             $menu['page']            = static::getSearchURL(false);
             $menu['links']['search'] = static::getSearchURL(false);
+            $menu['links']['lists']  = "";
             $menu['icon']            = static::getIcon();
 
             if (!in_array('add', $forbidden)

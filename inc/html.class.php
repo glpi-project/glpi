@@ -1525,8 +1525,6 @@ class Html {
       $current_version     = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
       $founded_new_version = $CFG_GLPI['founded_new_version'] ?? null;
 
-      $savedsearch = new SavedSearch();
-
       $tpl_vars = [
          'is_impersonate_active'  => Session::isImpersonateActive(),
          'language_name'          => Dropdown::getLanguageName($_SESSION['glpilanguage']),
@@ -1542,7 +1540,6 @@ class Html {
          'item'                   => $item,
          'option'                 => $option,
          'menu_active'            => $menu_active,
-         'saved_searches'         => $savedsearch->displayMine(false),
          'user'                   => [
             'fullname' => formatUserName($_SESSION['glpiID'], $user->fields['name'], $user->fields['realname'], $user->fields['firstname']),
             'picture'  => User::getURLForPicture($user->fields['picture'], false),

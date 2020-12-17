@@ -66,6 +66,7 @@
    body.navbar-collapsed {
       .navbar-brand {
          height: 65px;
+         min-width: 51px;
 
          .glpi-logo {
             background: url($logo_reduced) no-repeat;
