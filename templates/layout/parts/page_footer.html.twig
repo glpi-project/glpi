@@ -44,12 +44,6 @@
             {% endif %}
             </main> {# #page #}
          </div> {# .container-fluid #}
-
-         {% if is_debug_active %}
-         <footer class="footer d-print-none row">
-            {{ __('%1$s - %2$s')|format(_n('%s second', '%s seconds', execution_time)|format(execution_time),memory_usage|format_binary()) }}
-         </footer>
-         {% endif %}
       </div> {# .content #}
    </div> {# .page #}
 
