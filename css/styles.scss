@@ -6456,7 +6456,7 @@ input[name=as_map] {
       color: lightblue;
    }
 
-   &.closed, &.solved, &.observe {
+   &.closed, &.solved, &.observe, &.refused, &.canceled {
       color: black;
    }
 

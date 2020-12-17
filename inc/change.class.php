@@ -60,7 +60,9 @@ class Change extends CommonITILObject {
    const READMY                        = 1;
    const READALL                       = 1024;
 
-
+   // Specific status for changes
+   const REFUSED                       = 13;
+   const CANCELED                      = 14;
 
    static function getTypeName($nb = 0) {
       return _n('Change', 'Changes', $nb);
@@ -569,6 +571,8 @@ class Change extends CommonITILObject {
                    self::SOLVED        => __('Applied'),
                    self::OBSERVED      => __('Review'),
                    self::CLOSED        => _x('status', 'Closed'),
+                   self::CANCELED      => __('Cancelled'),
+                   self::REFUSED       => _x('status', 'Refused'),
       ];
 
       if ($withmetaforsearch) {
@@ -592,7 +596,11 @@ class Change extends CommonITILObject {
    static function getClosedStatusArray() {
 
       // To be overridden by class
-      $tab = [self::CLOSED];
+      $tab = [
+         self::CLOSED,
+         self::CANCELED,
+         self::REFUSED,
+      ];
       return $tab;
    }
 
@@ -1602,5 +1610,35 @@ class Change extends CommonITILObject {
 
    public static function getItemLinkClass(): string {
       return Change_Item::class;
+   }
+
+   public static function getStatusClass($status) {
+      $class = null;
+      $solid = true;
+
+      switch ($status) {
+         case self::REFUSED :
+         case self::CANCELED :
+            $class = 'circle';
+            break;
+         default:
+            return parent::getStatusClass($status);
+      }
+
+      return $class == null
+         ? ''
+         : 'itilstatus ' . ($solid ? 'fas fa-' : 'far fa-') . $class.
+         " ".static::getStatusKey($status);
+   }
+
+   public static function getStatusKey($status) {
+      switch ($status) {
+         case self::REFUSED :
+            return 'refused';
+         case self::CANCELED :
+            return 'canceled';
+         default:
+            return parent::getStatusKey($status);
+      }
    }
 }

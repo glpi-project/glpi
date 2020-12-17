@@ -449,7 +449,7 @@ class ITILSolution extends CommonDBChild {
    static function getStatuses() {
       return [
          CommonITILValidation::WAITING  => __('Waiting for approval'),
-         CommonITILValidation::REFUSED  => __('Refused'),
+         CommonITILValidation::REFUSED  => _x('solution', 'Refused'),
          CommonITILValidation::ACCEPTED => __('Accepted'),
       ];
    }
