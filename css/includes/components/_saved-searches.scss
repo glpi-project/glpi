@@ -14,7 +14,7 @@
 
    &.pinned {
       position: sticky;
-      z-index: 1020;
+      z-index: 1010;
       top: calc(#{$navbar-height} - 1px);
       margin-top: calc(-#{$content-padding-y} - 1px);
       height: calc(100vh - #{$navbar-height});
