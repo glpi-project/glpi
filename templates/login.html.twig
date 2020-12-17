@@ -57,7 +57,7 @@
                         </div>
                      {% endif %}
 
-                     {% if config('notifications_mailing') %}
+                     {% if config('login_remember_time') %}
                         <div class="mb-2">
                            <label class="form-check">
                               <input type="checkbox" class="form-check-input" name="{{ rmbfield }}" {{ config('login_remember_default') ? "checked" : "" }}>
