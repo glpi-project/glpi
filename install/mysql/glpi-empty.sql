@@ -3978,6 +3978,7 @@ CREATE TABLE `glpi_monitors` (
   `states_id` int(11) NOT NULL DEFAULT '0',
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `uuid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -3998,6 +3999,7 @@ CREATE TABLE `glpi_monitors` (
   KEY `is_dynamic` (`is_dynamic`),
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
+  KEY `uuid` (`uuid`),
   KEY `date_creation` (`date_creation`),
   KEY `is_recursive` (`is_recursive`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -4112,6 +4114,7 @@ CREATE TABLE `glpi_networkequipments` (
   `states_id` int(11) NOT NULL DEFAULT '0',
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `uuid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
@@ -4132,6 +4135,7 @@ CREATE TABLE `glpi_networkequipments` (
   KEY `is_dynamic` (`is_dynamic`),
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
+  KEY `uuid` (`uuid`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -4742,6 +4746,7 @@ CREATE TABLE `glpi_peripherals` (
   `states_id` int(11) NOT NULL DEFAULT '0',
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `uuid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -4763,6 +4768,7 @@ CREATE TABLE `glpi_peripherals` (
   KEY `is_dynamic` (`is_dynamic`),
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
+  KEY `uuid` (`uuid`),
   KEY `date_creation` (`date_creation`),
   KEY `is_recursive` (`is_recursive`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -4988,6 +4994,7 @@ CREATE TABLE `glpi_printers` (
   `states_id` int(11) NOT NULL DEFAULT '0',
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `uuid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
@@ -5010,6 +5017,7 @@ CREATE TABLE `glpi_printers` (
   KEY `is_dynamic` (`is_dynamic`),
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
+  KEY `uuid` (`uuid`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
