@@ -45,7 +45,6 @@ class DbUtils extends DbTestCase {
    public function setUp() {
       global $CFG_GLPI;
 
-      parent::setUp();
       // Clean the cache
       unset($CFG_GLPI['glpiitemtypetables']);
       unset($CFG_GLPI['glpitablesitemtype']);
