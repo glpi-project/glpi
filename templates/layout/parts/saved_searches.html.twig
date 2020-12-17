@@ -1,7 +1,7 @@
 {% set pinned = user_pref('savedsearches_pinned') == "1" %}
 {% set itemtype_cls = itemtype|lower %}
 
-<div class="card col-2 d-flex flex-column {{ pinned ? "pinned" : "d-none" }} saved-searches-panel {{ itemtype_cls}}">
+<div class="card col-2 d-flex flex-column responsive-toggle {{ pinned ? "pinned" : "d-none" }} saved-searches-panel {{ itemtype_cls}}">
    <div class="card-header pe-2">
       <h3>
          <i class="fas fa-star"></i>&nbsp;
@@ -68,11 +68,16 @@
 $(function() {
    $(document).on('click', '.show-saved-searches', function() {
       itemtype = $(this).data('itemtype');
-      $(".saved-searches-panel."+itemtype).toggleClass('d-none');
+      $(".saved-searches-panel."+itemtype)
+         .toggleClass('d-none')
+         .toggleClass('responsive-toggle');
    });
 
+   // close panel
    $(document).on('click', '.close-saved-searches-panel', function() {
-      $(this).closest(".saved-searches-panel").addClass('d-none');
+      $(this).closest(".saved-searches-panel")
+         .addClass('d-none')
+         .toggleClass('responsive-toggle');
    });
 
    // set default to a list

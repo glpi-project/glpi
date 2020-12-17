@@ -84,6 +84,16 @@ body.horizontal-layout {
       left: 0 !important;
       margin-top: 0 !important;
       padding-bottom: 20px;
+      margin-left: 0 !important;
       z-index: 1030;
+      display: flex !important;
+
+      &.responsive-toggle {
+         display: none !important;
+      }
+
+      .close-saved-searches-panel {
+         display: flex !important;
+      }
    }
 }
