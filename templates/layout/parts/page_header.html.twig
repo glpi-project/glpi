@@ -89,6 +89,10 @@
                   <span class="glpi-logo"></span>
                </a>
 
+               <div class="d-lg-none">
+                  {{ include('layout/parts/user_header.html.twig') }}
+               </div>
+
                <div class="collapse navbar-collapse" id="navbar-menu">
                   {{ include('layout/parts/menu.html.twig') }}
                   <button class="btn btn-outline-secondary mx-1 trigger-fuzzy" title="{{ __("Ctrl+Alt+G") }}">
@@ -98,7 +102,7 @@
                </div>
             {% endif %}
 
-            <div class="ms-md-4 {{ user_pref('page_layout') == 'vertical' ? 'd-none d-sm-none d-lg-block' : '' }}">
+            <div class="ms-md-4 d-none d-sm-none d-lg-block">
                {{ include('layout/parts/user_header.html.twig') }}
             </div>
          </div>
