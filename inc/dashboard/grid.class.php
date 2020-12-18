@@ -306,8 +306,8 @@ HTML;
          if (!$mini && $can_edit) {
             $r_tb_icons.= "<i class='btn btn-outline-secondary fas fa-share-alt fs-toggle open-embed' title='$embed_label'></i>";
             $rename = "<div class='edit-dashboard-properties'>
-               <input type='text' class='dashboard-name' value='{$dashboard_title}' size='1'>
-               <i class='fas fa-save save-dashboard-name' title='{$save_label}'></i>
+               <input type='text' class='dashboard-name form-control' value='{$dashboard_title}' size='1'>
+               <i class='btn btn-outline-secondary fas fa-save save-dashboard-name' title='{$save_label}'></i>
                <span class='display-message'></span>
             </div>";
          }
