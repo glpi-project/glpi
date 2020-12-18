@@ -402,7 +402,7 @@ class Ajax {
          }
 
          $flex_container = "flex-column flex-md-row";
-         $flex_tab       = "flex-row flex-md-column";
+         $flex_tab       = "flex-row flex-md-column d-none d-md-block";
          $border         = "border-start-0";
          $navitemml      = "ms-0";
          $nav_width      = "style='min-width: 200px'";
@@ -415,7 +415,7 @@ class Ajax {
          }
 
          echo "<div class='d-flex card-tabs $flex_container $orientation'>";
-         echo "<ul class='nav nav-tabs $flex_tab d-none d-md-block' id='$tabdiv_id' $nav_width role='tablist'>";
+         echo "<ul class='nav nav-tabs $flex_tab' id='$tabdiv_id' $nav_width role='tablist'>";
          $html_tabs = "";
          $html_sele = "";
          $i = 0;
