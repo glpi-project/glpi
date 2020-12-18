@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * Saved searches class
  *
@@ -723,7 +725,15 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
    }
 
 
-   function getMine(string $itemtype = null, bool $inverse = false):array {
+   /**
+    * return an array of saved searches for a given itemtype
+    *
+    * @param string $itemtype if given filter saved search by only this one
+    * @param bool $inverse if true, the `itemtype` params filter by "not" criteria
+    *
+    * @return array
+    */
+    function getMine(string $itemtype = null, bool $inverse = false):array {
       global $DB;
 
       $searches = [];
@@ -806,6 +816,21 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
       }
 
       return $searches;
+   }
+
+   /**
+    * return Html list of saved searches for a given itemtype
+    *
+    * @param string $itemtype
+    * @param bool $inverse
+    *
+    * @return void
+    */
+   function displayMine(string $itemtype = null, bool $inverse = false) {
+      TemplateRenderer::getInstance()->display('layout/parts/saved_searches_list.html.twig', [
+         'active'         => $_SESSION['glpi_loaded_savedsearch'] ?? "",
+         'saved_searches' => $this->getMine($itemtype, $inverse),
+      ]);
    }
 
 

@@ -1,7 +1,9 @@
 {% set pinned = user_pref('savedsearches_pinned') == "1" %}
 {% set itemtype_cls = itemtype|lower %}
+{% set rand = random() %}
 
-<div class="card col-2 d-flex flex-column responsive-toggle {{ pinned ? "pinned" : "d-none" }} saved-searches-panel {{ itemtype_cls}}">
+<div class="card col-2 d-flex flex-column responsive-toggle {{ pinned ? "pinned" : "d-none" }} saved-searches-panel {{ itemtype_cls}}"
+     id="saved-searches-panel-{{ rand }}">
    <div class="card-title ms-2 mt-2 mb-0 d-flex flex-nowrap align-items-center text-muted">
       <i class="fas fa-star"></i>&nbsp;
       {{ _n('Saved search', 'Saved searches', 2) }}
@@ -21,23 +23,25 @@
 
    <ul class="nav nav-tabs mt-1" data-bs-toggle="tabs">
       <li class="nav-item">
-         <a class="nav-link active" href="#itemtype-filtered" data-bs-toggle="tab">
+         <a class="nav-link active" data-bs-target="#itemtype-filtered" data-bs-toggle="tab"
+            href="{{ path("ajax/savedsearch.php?action=display_mine&itemtype=" ~ itemtype) }}">
             {{ itemtype|itemtype_name }}
          </a>
       </li>
       <li class="nav-item">
-         <a class="nav-link" href="#all-savedsearches" data-bs-toggle="tab">
+         <a class="nav-link" data-bs-target="#all-savedsearches" data-bs-toggle="tab"
+            href="{{ path("ajax/savedsearch.php?action=display_mine&inverse=true&itemtype=" ~ itemtype) }}">
             {{ __("Others") }}
          </a>
       </li>
    </ul>
    <div class="saved-searches-panel-content tab-content">
       <div class="list list-row list-hoverable saved-searches-panel-lists tab-pane show active" id="itemtype-filtered">
-         {% include 'layout/parts/saved_searches_list.html.twig' with {'saved_searches': saved_searches['filtered'], 'active': active} only %}
+         <i class="fas fa-spinner fa-spin m-3"></i>
       </div>
 
       <div class="list list-row list-hoverable saved-searches-panel-lists tab-pane" id="all-savedsearches">
-         {% include 'layout/parts/saved_searches_list.html.twig' with {'saved_searches': saved_searches['others'], 'active': active} only %}
+         <i class="fas fa-spinner fa-spin m-3"></i>
       </div>
    </div>
    <div class="card-footer">
@@ -55,6 +59,23 @@
 
 <script type="text/javascript">
 $(function() {
+   // init tabs
+   $('#saved-searches-panel-{{ rand }} a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
+      e.preventDefault();
+
+      var tablink = $(this);
+      var url     = tablink.attr('href');
+      var target  = tablink.attr('data-bs-target');
+      var index   = tablink.closest('.nav-item').index();
+
+      $.get(url, function(data) {
+         $(target).html(data);
+      });
+   });
+   // load initial tab
+   $('#saved-searches-panel-{{ rand }} a[data-bs-target]:first').trigger('shown.bs.tab');
+
+   // toggle panel
    $(document).on('click', '.show-saved-searches', function() {
       itemtype = $(this).data('itemtype');
       $(".saved-searches-panel."+itemtype)
