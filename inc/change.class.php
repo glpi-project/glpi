@@ -571,7 +571,7 @@ class Change extends CommonITILObject {
                    self::SOLVED        => __('Applied'),
                    self::OBSERVED      => __('Review'),
                    self::CLOSED        => _x('status', 'Closed'),
-                   self::CANCELED      => __('Cancelled'),
+                   self::CANCELED      => _x('status', 'Cancelled'),
                    self::REFUSED       => _x('status', 'Refused'),
       ];
 
