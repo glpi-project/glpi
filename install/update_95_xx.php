@@ -40,17 +40,17 @@ function update95toXX() {
 
    $updateresult     = true;
    $ADDTODISPLAYPREF = [];
+   $update_dir = __DIR__ . '/update_95_xx/';
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), 'x.x.x'));
    $migration->setVersion('x.x.x');
 
-   require __DIR__ . '/update_95_xx/comment_fields.php';
-   require __DIR__ . '/update_95_xx/devicebattery.php';
-   require __DIR__ . '/update_95_xx/domains.php';
-   require __DIR__ . '/update_95_xx/reservationitem.php';
-   require __DIR__ . '/update_95_xx/softwares.php';
-   require __DIR__ . '/update_95_xx/recurrentchange.php';
+   require $update_dir . 'comment_fields.php';
+   require $update_dir . 'devicebattery.php';
+   require $update_dir . 'domains.php';
+   require $update_dir . 'reservationitem.php';
+   require $update_dir . 'softwares.php';
 
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
