@@ -42,17 +42,9 @@ class DbUtils extends DbTestCase {
       'testGetSonsOfCached'
    ];
 
-   public function beforeTestMethod($method) {
-      parent::beforeTestMethod($method);
-      if (in_array($method, $this->cached_methods)) {
-         $_SESSION['glpicronuserrunning'] = "cron_phpunit";
-      }
-   }
-
    public function setUp() {
       global $CFG_GLPI;
 
-      parent::setUp();
       // Clean the cache
       unset($CFG_GLPI['glpiitemtypetables']);
       unset($CFG_GLPI['glpitablesitemtype']);
@@ -775,6 +767,11 @@ class DbUtils extends DbTestCase {
     * @extensions apcu
     */
    public function testGetAncestorsOfCached() {
+      $this->login();
+
+      global $GLPI_CACHE;
+      $GLPI_CACHE->clear(); // login produce cache, must be cleared
+
       //run with cache
       //first run: no cache hit expected
       $this->runGetAncestorsOf(true);
@@ -935,6 +932,11 @@ class DbUtils extends DbTestCase {
     * @extensions apcu
     */
    public function testGetSonsOfCached() {
+      $this->login();
+
+      global $GLPI_CACHE;
+      $GLPI_CACHE->clear(); // login produce cache, must be cleared
+
       //run with cache
       //first run: no cache hit expected
       $this->runGetSonsOf(true);

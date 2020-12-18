@@ -49,6 +49,16 @@ abstract class APIBaseClass extends atoum {
    abstract public function initSessionCredentials();
 
    public function setUp() {
+      // To bypass various right checks
+      // This is mandatory to create/update/delete some items during tests.
+      $_SESSION['glpishowallentities'] = 1;
+      $_SESSION['glpiactive_entity']   = 0;
+      $_SESSION['glpiactiveentities']  = [0];
+      $_SESSION['glpiactiveentities_string'] = "'0'";
+
+      // Force "cron" mode to prevent user related behaviors
+      $_SESSION['glpicronuserrunning'] = "cron_phpunit";
+
       // enable api config
       $config = new Config;
       $config->update(['id'                              => 1,
@@ -56,7 +66,6 @@ abstract class APIBaseClass extends atoum {
                             'enable_api_login_credentials'    => true,
                             'enable_api_login_external_token' => true]);
    }
-
 
    /**
     * @tags   api

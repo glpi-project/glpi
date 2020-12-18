@@ -180,8 +180,8 @@ class CommonDBTM extends DbTestCase {
       $this->array($comp->fields)->isEmpty();
 
       $this->boolean($comp->getEmpty())->isTrue();
-      $this->array($comp->fields)
-         ->integer['entities_id']->isIdenticalTo($_SESSION["glpiactive_entity"]);
+      // Empty value if $_SESSION['glpiactive_entity'] is not set
+      $this->array($comp->fields)->string['entities_id']->isIdenticalTo('');
 
       $_SESSION["glpiactive_entity"] = 12;
       $this->boolean($comp->getEmpty())->isTrue();
@@ -1072,13 +1072,12 @@ class CommonDBTM extends DbTestCase {
       array $active_entities,
       array $expected
    ) {
-      $old_active_entities = $_SESSION['glpiactiveentities'];
       $_SESSION['glpiactiveentities'] = $active_entities;
 
       $res = \CommonDBTM::checkTemplateEntity($data, $parent_id, $parent_itemtype);
       $this->array($res)->isEqualTo($expected);
 
       // Reset session
-      $_SESSION['glpiactiveentities'] = $old_active_entities;
+      unset($_SESSION['glpiactiveentities']);
    }
 }
