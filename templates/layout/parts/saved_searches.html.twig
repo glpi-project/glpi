@@ -33,11 +33,11 @@
    </ul>
    <div class="saved-searches-panel-content tab-content">
       <div class="list list-row list-hoverable saved-searches-panel-lists tab-pane show active" id="itemtype-filtered">
-         {% include 'layout/parts/saved_searches_list.html.twig' with {'saved_searches': saved_searches['filtered']} only %}
+         {% include 'layout/parts/saved_searches_list.html.twig' with {'saved_searches': saved_searches['filtered'], 'active': active} only %}
       </div>
 
       <div class="list list-row list-hoverable saved-searches-panel-lists tab-pane" id="all-savedsearches">
-         {% include 'layout/parts/saved_searches_list.html.twig' with {'saved_searches': saved_searches['others']} only %}
+         {% include 'layout/parts/saved_searches_list.html.twig' with {'saved_searches': saved_searches['others'], 'active': active} only %}
       </div>
    </div>
    <div class="card-footer">
