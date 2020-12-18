@@ -415,15 +415,25 @@ class Ajax {
          }
 
          echo "<div class='d-flex card-tabs $flex_container $orientation'>";
-         echo "<ul class='nav nav-tabs $flex_tab' id='$tabdiv_id' $nav_width role='tablist'>";
+         echo "<ul class='nav nav-tabs $flex_tab d-none d-md-block' id='$tabdiv_id' $nav_width role='tablist'>";
+         $html_tabs = "";
+         $html_sele = "";
+         $i = 0;
          foreach ($tabs as $val) {
             $target = str_replace('\\', '_', $val['id']);
-            echo "<li class='nav-item $navitemml'>
+            $html_tabs.= "<li class='nav-item $navitemml'>
                <a class='nav-link justify-content-between' data-bs-toggle='tab' title='".strip_tags($val['title'])."' ";
-            echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."' data-bs-target='#{$target}'>";
-            echo $val['title']."</a></li>";
+            $html_tabs.= " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."' data-bs-target='#{$target}'>";
+            $html_tabs.= $val['title']."</a></li>";
+
+            $html_sele.= "<option value='$i' ".($active_id == $target ? "selected" : "").">
+               {$val['title']}
+            </option>";
+            $i++;
          }
+         echo $html_tabs;
          echo "</ul>";
+         echo "<select class='form-select border-bottom-0 rounded-0 rounded-top d-md-none' id='$tabdiv_id-select'>$html_sele</select>";
 
          echo "<div class='tab-content p-2 flex-grow-1 card $border'>";
          foreach ($tabs as $val) {
@@ -474,6 +484,11 @@ class Ajax {
 
             // load initial tab
             $('a[data-bs-target=\"#{$active_id}\"]').tab('show');
+
+            // select events in responsive mode
+            $('#$tabdiv_id-select').on('change', function (e) {
+               $('#$tabdiv_id li a').eq($(this).val()).tab('show');
+            });
          });
          ";
 
