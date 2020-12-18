@@ -47,12 +47,16 @@ if (!empty($_POST["update_auth"])) {
    Html::back();
 }
 if (!empty($_POST["update"])) {
-   foreach (['glpinetwork_registration_key', 'proxy_passwd', 'smtp_passwd'] as $field) {
-      if (array_key_exists($field, $_POST)) {
+   $context = array_key_exists('config_context', $_POST) ? $_POST['config_context'] : 'core';
+
+   $glpikey = new GLPIKey();
+   foreach (array_keys($_POST) as $field) {
+      if ($glpikey->isConfigSecured($context, $field)) {
          // Field must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
          $_POST[$field] = $_UPOST[$field];
       }
    }
+
    $config->update($_POST);
    Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }

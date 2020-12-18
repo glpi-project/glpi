@@ -197,7 +197,7 @@ class Knowbase extends DbTestCase {
       // Check that tree contains root only (FAQ is not public) for anonymous user
       // Force session reset
       $session_bck = $_SESSION;
-      $this->callSetUp();
+      $this->resetSession();
       $tree_with_no_public_faq = \Knowbase::getJstreeCategoryList();
 
       // Check that tree contains root + category branch containing FAQ item (FAQ is public) for anonymous user

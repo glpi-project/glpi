@@ -40,11 +40,21 @@ if (!defined('GLPI_ROOT')) {
  * since version 9.5.0
 **/
 class ChangeTemplate extends ITILTemplate {
+   use Glpi\Features\Clonable;
+
    public $second_level_menu         = "change";
    public $third_level_menu          = "ChangeTemplate";
 
    static function getTypeName($nb = 0) {
       return _n('Change template', 'change templates', $nb);
+   }
+
+   public function getCloneRelations() :array {
+      return [
+         ChangeTemplateHiddenField::class,
+         ChangeTemplateMandatoryField::class,
+         ChangeTemplatePredefinedField::class,
+      ];
    }
 
    public static function getExtraAllowedFields($withtypeandcategory = 0, $withitemtype = 0) {

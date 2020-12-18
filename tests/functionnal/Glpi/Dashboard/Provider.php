@@ -49,6 +49,7 @@ class Provider extends DbTestCase {
     * @dataProvider itemProvider
     */
    public function testBigNumber(\CommonDBTM $item) {
+      $this->login();
 
       $itemtype = $item->getType();
       $data = [
@@ -124,6 +125,8 @@ class Provider extends DbTestCase {
     * @dataProvider itemFKProvider
     */
    public function testNbItemByFk(\CommonDBTM $item, \CommonDBTM $fk_item) {
+      $this->login();
+
       $result = \Glpi\Dashboard\Provider::nbItemByFk($item, $fk_item);
       $this->array($result)
          ->hasKeys([
@@ -205,6 +208,8 @@ class Provider extends DbTestCase {
 
 
    public function testGetTicketsStatus() {
+      $this->login();
+
       $result = \Glpi\Dashboard\Provider::getTicketsStatus();
       $this->array($result)
          ->hasKeys([
@@ -233,6 +238,8 @@ class Provider extends DbTestCase {
 
 
    public function testTopTicketsCategories() {
+      $this->login();
+
       $result = \Glpi\Dashboard\Provider::multipleNumberTicketByITILCategory();
       $this->array($result)
          ->hasKeys([

@@ -581,6 +581,7 @@ function loadDataset() {
    ];
 
    // To bypass various right checks
+   $session_bak = $_SESSION;
    $_SESSION['glpishowallentities'] = 1;
    $_SESSION['glpicronuserrunning'] = "cron_phpunit";
    $_SESSION['glpi_use_mode']       = Session::NORMAL_MODE;
@@ -591,7 +592,6 @@ function loadDataset() {
 
    $DB->beginTransaction();
 
-   // need to set theses in DB, because tests for API use http call and this bootstrap file is not called
    Config::setConfigurationValues('core', ['url_base'     => GLPI_URI,
                                            'url_base_api' => GLPI_URI . '/apirest.php']);
    $CFG_GLPI['url_base']      = GLPI_URI;
@@ -654,6 +654,8 @@ function loadDataset() {
       Config::setConfigurationValues('phpunit', ['dataset' => $data['_version']]);
    }
    $DB->commit();
+
+   $_SESSION = $session_bak; // Unset force session variables
 }
 
 /**

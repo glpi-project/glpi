@@ -42,17 +42,9 @@ class DbUtils extends DbTestCase {
       'testGetSonsOfCached'
    ];
 
-   public function beforeTestMethod($method) {
-      parent::beforeTestMethod($method);
-      if (in_array($method, $this->cached_methods)) {
-         $_SESSION['glpicronuserrunning'] = "cron_phpunit";
-      }
-   }
-
    public function setUp() {
       global $CFG_GLPI;
 
-      parent::setUp();
       // Clean the cache
       unset($CFG_GLPI['glpiitemtypetables']);
       unset($CFG_GLPI['glpitablesitemtype']);
@@ -629,6 +621,8 @@ class DbUtils extends DbTestCase {
     * @return void
     */
    private function runGetAncestorsOf($cache = false, $hit = false) {
+      global $GLPI_CACHE;
+
       $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
       $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
       $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
@@ -638,53 +632,53 @@ class DbUtils extends DbTestCase {
       //- if $cache === 1; we expect cache to be empty before call, and populated after
       //- if $hit   === 1; we expect cache to be populated
 
-      $ckey_ent0 = $this->nscache . ':' .sha1('ancestors_cache_glpi_entities_' . $ent0);
-      $ckey_ent1 = $this->nscache . ':' .sha1('ancestors_cache_glpi_entities_' . $ent1);
-      $ckey_ent2 = $this->nscache . ':' .sha1('ancestors_cache_glpi_entities_' . $ent2);
+      $ckey_ent0 = 'ancestors_cache_glpi_entities_' . $ent0;
+      $ckey_ent1 = 'ancestors_cache_glpi_entities_' . $ent1;
+      $ckey_ent2 = 'ancestors_cache_glpi_entities_' . $ent2;
 
       //test on ent0
       $expected = [0 => 0];
       if ($cache === true && $hit === false) {
-         $this->boolean(apcu_exists($ckey_ent0))->isFalse();
+         $this->boolean($GLPI_CACHE->has($ckey_ent0))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch($ckey_ent0))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_ent0))->isIdenticalTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', $ent0);
       $this->array($ancestors)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_ent0))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_ent0))->isIdenticalTo($expected);
       }
 
       //test on ent1
       $expected = [0 => 0, 1 => $ent0];
       if ($cache === true && $hit === false) {
-         $this->boolean(apcu_exists($ckey_ent1))->isFalse();
+         $this->boolean($GLPI_CACHE->has($ckey_ent1))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_ent1))->isIdenticalTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', $ent1);
       $this->array($ancestors)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_ent1))->isIdenticalTo($expected);
       }
 
       //test on ent2
       $expected = [0 => 0, 1 => $ent0];
       if ($cache === true && $hit === false) {
-         $this->boolean(apcu_exists($ckey_ent2))->isFalse();
+         $this->boolean($GLPI_CACHE->has($ckey_ent2))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch($ckey_ent2))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_ent2))->isIdenticalTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', $ent2);
       $this->array($ancestors)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_ent2))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_ent2))->isIdenticalTo($expected);
       }
 
       //test with new sub entity
@@ -699,18 +693,18 @@ class DbUtils extends DbTestCase {
          ]);
          $this->integer($new_id)->isGreaterThan(0);
       }
-      $ckey_new_id = $this->nscache . ':' .sha1('ancestors_cache_glpi_entities_' . $new_id);
+      $ckey_new_id = 'ancestors_cache_glpi_entities_' . $new_id;
 
       $expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1];
       if ($cache === true) {
-         $this->array(apcu_fetch($ckey_new_id))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_new_id))->isIdenticalTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', $new_id);
       $this->array($ancestors)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_new_id))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_new_id))->isIdenticalTo($expected);
       }
 
       //test with another new sub entity
@@ -723,34 +717,34 @@ class DbUtils extends DbTestCase {
          ]);
          $this->integer($new_id2)->isGreaterThan(0);
       }
-      $ckey_new_id2 = $this->nscache . ':' .sha1('ancestors_cache_glpi_entities_' . $new_id2);
+      $ckey_new_id2 = 'ancestors_cache_glpi_entities_' . $new_id2;
 
       $expected = [0 => 0, $ent0 => $ent0, $ent2 => $ent2];
       if ($cache === true) {
-         $this->array(apcu_fetch($ckey_new_id2))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_new_id2))->isIdenticalTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', $new_id2);
       $this->array($ancestors)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_new_id2))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_new_id2))->isIdenticalTo($expected);
       }
 
       //test on multiple entities
       $expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2];
-      $ckey_new_all = $this->nscache . ':' .sha1('ancestors_cache_glpi_entities_' . md5($new_id . '|' . $new_id2));
+      $ckey_new_all = 'ancestors_cache_glpi_entities_' . md5($new_id . '|' . $new_id2);
       if ($cache === true && $hit === false) {
-         $this->boolean(apcu_exists($ckey_new_all))->isFalse();
+         $this->boolean($GLPI_CACHE->has($ckey_new_all))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch($ckey_new_all))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_new_all))->isIdenticalTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', [$new_id, $new_id2]);
       $this->array($ancestors)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_new_all))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_new_all))->isIdenticalTo($expected);
       }
    }
 
@@ -775,6 +769,11 @@ class DbUtils extends DbTestCase {
     * @extensions apcu
     */
    public function testGetAncestorsOfCached() {
+      $this->login();
+
+      global $GLPI_CACHE;
+      $GLPI_CACHE->clear(); // login produce cache, must be cleared
+
       //run with cache
       //first run: no cache hit expected
       $this->runGetAncestorsOf(true);
@@ -792,6 +791,8 @@ class DbUtils extends DbTestCase {
     * @return void
     */
    private function runGetSonsOf($cache = false, $hit = false) {
+      global $GLPI_CACHE;
+
       $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
       $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
       $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
@@ -802,53 +803,53 @@ class DbUtils extends DbTestCase {
       //- if $cache === 1; we expect cache to be empty before call, and populated after
       //- if $hit   === 1; we expect cache to be populated
 
-      $ckey_ent0 = $this->nscache . ':' .sha1('sons_cache_glpi_entities_' . $ent0);
-      $ckey_ent1 = $this->nscache . ':' .sha1('sons_cache_glpi_entities_' . $ent1);
-      $ckey_ent2 = $this->nscache . ':' .sha1('sons_cache_glpi_entities_' . $ent2);
+      $ckey_ent0 = 'sons_cache_glpi_entities_' . $ent0;
+      $ckey_ent1 = 'sons_cache_glpi_entities_' . $ent1;
+      $ckey_ent2 = 'sons_cache_glpi_entities_' . $ent2;
 
       //test on ent0
       $expected = [$ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2];
       if ($cache === true && $hit === false) {
-         $this->boolean(apcu_exists($ckey_ent0))->isFalse();
+         $this->boolean($GLPI_CACHE->has($ckey_ent0))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch($ckey_ent0))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_ent0))->isIdenticalTo($expected);
       }
 
       $sons = $this->testedInstance->getSonsOf('glpi_entities', $ent0);
       $this->array($sons)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_ent0))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_ent0))->isIdenticalTo($expected);
       }
 
       //test on ent1
       $expected = [$ent1 => $ent1];
       if ($cache === true && $hit === false) {
-         $this->boolean(apcu_exists($ckey_ent1))->isFalse();
+         $this->boolean($GLPI_CACHE->has($ckey_ent1))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_ent1))->isIdenticalTo($expected);
       }
 
       $sons = $this->testedInstance->getSonsOf('glpi_entities', $ent1);
       $this->array($sons)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_ent1))->isIdenticalTo($expected);
       }
 
       //test on ent2
       $expected = [$ent2 => $ent2];
       if ($cache === true && $hit === false) {
-         $this->boolean(apcu_exists($ckey_ent2))->isFalse();
+         $this->boolean($GLPI_CACHE->has($ckey_ent2))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch($ckey_ent2))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_ent2))->isIdenticalTo($expected);
       }
 
       $sons = $this->testedInstance->getSonsOf('glpi_entities', $ent2);
       $this->array($sons)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_ent2))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_ent2))->isIdenticalTo($expected);
       }
 
       //test with new sub entity
@@ -866,14 +867,14 @@ class DbUtils extends DbTestCase {
 
       $expected = [$ent1 => $ent1, $new_id => $new_id];
       if ($cache === true) {
-         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_ent1))->isIdenticalTo($expected);
       }
 
       $sons = $this->testedInstance->getSonsOf('glpi_entities', $ent1);
       $this->array($sons)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_ent1))->isIdenticalTo($expected);
       }
 
       //test with another new sub entity
@@ -889,27 +890,27 @@ class DbUtils extends DbTestCase {
 
       $expected = [$ent1 => $ent1, $new_id => $new_id, $new_id2 => $new_id2];
       if ($cache === true) {
-         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_ent1))->isIdenticalTo($expected);
       }
 
       $sons = $this->testedInstance->getSonsOf('glpi_entities', $ent1);
       $this->array($sons)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_ent1))->isIdenticalTo($expected);
       }
 
       //drop sub entity
       $expected = [$ent1 => $ent1, $new_id2 => $new_id2];
       $this->boolean($entity->delete(['id' => $new_id], true))->isTrue();
       if ($cache === true) {
-         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_ent1))->isIdenticalTo($expected);
       }
 
       $expected = [$ent1 => $ent1];
       $this->boolean($entity->delete(['id' => $new_id2], true))->isTrue();
       if ($cache === true) {
-         $this->array(apcu_fetch($ckey_ent1))->isIdenticalTo($expected);
+         $this->array($GLPI_CACHE->get($ckey_ent1))->isIdenticalTo($expected);
       }
    }
 
@@ -935,6 +936,11 @@ class DbUtils extends DbTestCase {
     * @extensions apcu
     */
    public function testGetSonsOfCached() {
+      $this->login();
+
+      global $GLPI_CACHE;
+      $GLPI_CACHE->clear(); // login produce cache, must be cleared
+
       //run with cache
       //first run: no cache hit expected
       $this->runGetSonsOf(true);

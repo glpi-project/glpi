@@ -716,6 +716,8 @@ class Dropdown extends DbTestCase {
     * @dataProvider getDropdownValueProvider
     */
    public function testGetDropdownValue($params, $expected, $session_params = []) {
+      $this->login();
+
       $bkp_params = [];
       //set session params if any
       if (count($session_params)) {
@@ -1163,6 +1165,8 @@ class Dropdown extends DbTestCase {
     * @dataProvider getDropdownUsersProvider
     */
    public function testGetDropdownUsers($params, $expected) {
+      $this->login();
+
       $params['_idor_token'] = \Session::getNewIDORToken('User');
       $result = \Dropdown::getDropdownUsers($params, false);
       $this->array($result)->isIdenticalTo($expected);

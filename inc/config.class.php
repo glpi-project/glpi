@@ -2825,15 +2825,6 @@ class Config extends CommonDBTM {
          Toolbox::logDebug("CACHE CONFIG  $optname", $opt);
       }
 
-      //use memory adapter when called from tests
-      if (defined('TU_USER') && !defined('CACHED_TESTS')) {
-         $opt['adapter'] = 'memory';
-      }
-      //force FS adapter for translations for tests
-      if (defined('TU_USER') && $optname == 'cache_trans') {
-         $opt['adapter'] = 'filesystem';
-      }
-
       if (!isset($opt['options']['namespace'])) {
          $namespace = "glpi_${optname}_" . GLPI_VERSION;
          if ($DB) {
@@ -2978,10 +2969,6 @@ class Config extends CommonDBTM {
              && Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
             Toolbox::logDebug($e->getMessage());
          }
-      }
-
-      if (defined('TU_USER')) {
-         $skip_integrity_checks = true;
       }
 
       if ($psr16) {
