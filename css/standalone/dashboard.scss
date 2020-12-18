@@ -79,7 +79,7 @@ $break_tablet: 1400px;
 }
 
 .dashboard {
-   font-family: Arial, Helvetica, sans-serif/*{ffDefault}*/; // for embed
+   //font-family: Arial, Helvetica, sans-serif/*{ffDefault}*/; // for embed
    position: relative;
    padding-top: $toolbar_height;
 
@@ -360,19 +360,21 @@ $break_tablet: 1400px;
       .filters {
          display: inline-flex;
          flex-wrap: wrap;
+         line-height: 14px;
 
          fieldset.filter {
             border: 2px solid #f0f0f0;
             border-radius: 4px;
-            padding: 0.1rem 1.4rem 0.4rem 1rem;
+            padding: 6px 12px 5px 12px;
             text-align: center;
-            margin-top: 0.3rem;
+            margin: 6px 2px 0;
+            font-size: 0.8rem;
 
             legend {
                display: none;
                color: #74838f;
                font-weight: bold;
-               font-size: 0.8rem;
+               font-size: 12px;
                float: none;
                margin-bottom: 0;
                padding: 0 2px;
@@ -385,7 +387,9 @@ $break_tablet: 1400px;
                background-color: transparent;
                padding: 0;
                display: inline-block;
-               width: 110%;
+               width: auto;
+               font-weight: bold;
+               font-size: 12px;
             }
 
             .flatpickr {
@@ -403,8 +407,6 @@ $break_tablet: 1400px;
             }
 
             .select2 {
-               position: relative;
-               margin-left: -12px;
 
                & ~ a, & ~ span { // remove icons next select2
                   display: none;
@@ -421,7 +423,7 @@ $break_tablet: 1400px;
                .select2-selection__rendered {
                   color: #74838f;
                   font-weight: bold;
-                  font-size: 1.1em;
+                  font-size: 12px;
                   line-height: 18px;
                }
 
@@ -441,6 +443,8 @@ $break_tablet: 1400px;
                      content: "\f057";
                      opacity: 0.7;
                      font-size: 11px;
+                     left: 7px;
+                     color: #509ee3;
                   }
 
                   &:hover:after {
@@ -464,7 +468,7 @@ $break_tablet: 1400px;
                   font-family: "Font Awesome 5 Free";
                   color: #74838f;
                   opacity: .7;
-                  font-size: 1.3em;
+                  font-size: 14px;
                   pointer-events: none;
                   position: absolute;
                   right: 0;
@@ -510,10 +514,10 @@ $break_tablet: 1400px;
          border-radius: 4px;
          display: inline-block;
          vertical-align: top;
-         margin-top: 1em;
+         margin-top: 12px;
 
          .add-filter {
-            padding: 1em 1em 0.8em;
+            padding: 8px 10px 9px 12px;
             display: none;
             color: rgba(0, 0, 0, 0.5);
             cursor: pointer;
@@ -528,6 +532,7 @@ $break_tablet: 1400px;
                color: #74838f;
                font-family: Arial, Helvetica, sans-serif;
                font-weight: bold;
+               font-size: 12px;
             }
          }
 
