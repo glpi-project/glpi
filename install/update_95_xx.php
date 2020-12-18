@@ -46,11 +46,17 @@ function update95toXX() {
    $migration->displayTitle(sprintf(__('Update to %s'), 'x.x.x'));
    $migration->setVersion('x.x.x');
 
-   require $update_dir . 'comment_fields.php';
-   require $update_dir . 'devicebattery.php';
-   require $update_dir . 'domains.php';
-   require $update_dir . 'reservationitem.php';
-   require $update_dir . 'softwares.php';
+   $updates_scripts = [
+      'comment_fields',
+      'devicebattery',
+      'domains',
+      'reservationitem',
+      'softwares',
+   ];
+
+   foreach ($updates_scripts as $updates_script) {
+       require $update_dir . $updates_script . '.php';
+   }
 
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
