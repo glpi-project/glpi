@@ -90,6 +90,7 @@ class GLPITestCase extends atoum {
       Session::start();
 
       $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+      $_SESSION['glpiactive_entity'] = 0;
 
       global $CFG_GLPI;
       foreach ($CFG_GLPI['user_pref_field'] as $field) {
