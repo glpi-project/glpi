@@ -473,7 +473,6 @@ $break_tablet: 1400px;
 
             .delete-filter {
                display: none;
-               color: rgba(0, 0, 0, 0.5);
                cursor: pointer;
             }
 
@@ -514,12 +513,7 @@ $break_tablet: 1400px;
          .add-filter {
             padding: 8px 10px 9px 12px;
             display: none;
-            color: rgba(0, 0, 0, 0.5);
             cursor: pointer;
-
-            &:hover {
-               color: rgb(0, 0, 0);
-            }
 
             .no-filter, .add-filter-lbl {
                padding-left: 0.2em;
@@ -529,10 +523,6 @@ $break_tablet: 1400px;
                font-weight: bold;
                font-size: 12px;
             }
-         }
-
-         &:hover {
-            border-color: rgba(0, 0, 0, 0.5);
          }
       }
    }

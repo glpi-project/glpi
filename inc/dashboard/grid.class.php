@@ -356,7 +356,7 @@ HTML;
          <div class='filters_toolbar'>
             <span class='filters'></span>
             <span class='filters-control'>
-               <i class="fas fa-plus-square plus-sign add-filter">
+               <i class="btn btn-sm btn-icon btn-ghost-secondary fas fa-plus-square plus-sign add-filter">
                   <span class='add-filter-lbl'>{$add_filter_lbl}</span>
                </i>
             </span>
