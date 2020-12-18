@@ -600,6 +600,9 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
          $url  = $CFG_GLPI['root_doc']."/".rawurldecode($this->fields["path"]);
          $url .= "?".Toolbox::append_params($params);
 
+         // keep last loaded to set an active state on saved search panel
+         $_SESSION['glpi_loaded_savedsearch'] = $ID;
+
          Html::redirect($url);
       }
    }
