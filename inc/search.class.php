@@ -75,18 +75,8 @@ class Search {
 
       $params = self::manageParams($itemtype, $_GET);
       echo "<div class='search_page row'>";
-      $savedsearch = new SavedSearch;
-      $active = "";
-      if (isset($_SESSION['glpi_loaded_savedsearch'])) {
-         $active = $_SESSION['glpi_loaded_savedsearch'];
-      }
       TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
-         'saved_searches' => [
-            'filtered' => $savedsearch->getMine($itemtype),
-            'others'   => $savedsearch->getMine($itemtype, true),
-         ],
          'itemtype'       => $itemtype,
-         'active'         => $active,
       ]);
       echo "<div class='col'>";
 

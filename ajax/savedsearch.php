@@ -75,6 +75,11 @@ if (!isset($_GET['action'])) {
    return;
 }
 
+if ($_GET['action'] == 'display_mine') {
+   header("Content-Type: text/html; charset=UTF-8");
+   $savedsearch->displayMine($_GET["itemtype"], (bool) ($_GET["inverse"] ?? false));
+}
+
 if ($_GET['action'] == 'reorder') {
    $savedsearch->saveOrder($_GET['ids']);
    header("Content-Type: application/json; charset=UTF-8");
