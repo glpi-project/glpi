@@ -33,6 +33,10 @@
          border-left: 4px solid rgba($color: #000000, $alpha: .5);
          border-radius: unset;
          background-color: rgba($color: #000000, $alpha: .1);
+
+         .dropdown-header {
+            display: none;
+         }
       }
 
       .nav-link {
@@ -57,10 +61,6 @@
    }
 }
 
-.menu-tooltip {
-   display: none;
-}
-
 @include media-breakpoint-up(lg) {
    .sidebar {
       width: $sidebar-width;
@@ -81,11 +81,8 @@
          }
       }
 
-      .menu-tooltip {
-         display: block;
-      }
-
       .sidebar {
+         z-index: 1030;
          $siderbar-collasped-width: 70px;
          width: $siderbar-collasped-width;
          transition: width var(--animate-duration);
@@ -107,6 +104,10 @@
             .dropdown-menu {
                box-shadow: $card-shadow-hover;
 
+               .dropdown-header {
+                  display: block;
+               }
+
                .dropdown-menu-columns {
                   display: flex;
                   flex-direction: row;
@@ -117,38 +118,46 @@
                }
             }
 
-            .nav-item.active {
-               background-color: lighten($mainmenu-bg, 5%);
-            }
+            .nav-item  {
+               .nav-link {
+                  border-left: 3px solid transparent;
+                  border-radius: unset;
+                  z-index: 1030;
 
-            .nav-link {
-               border-left: 3px solid transparent;
-               border-radius: unset;
+                  & + .dropdown-menu {
+                     background-color: $mainmenu-fg;
+                     color: $mainmenu-bg;
+                     top: 0;
+                     left: calc(100% + 1px);
+                     border: 1px solid $mainmenu-bg;
+                     position: absolute;
+                     z-index: 1020;
 
-               & + .dropdown-menu {
-                  background-color: $mainmenu-fg;
-                  color: $mainmenu-bg;
-                  top: 0;
-                  left: 100%;
-                  border: 1px solid $mainmenu-bg;
+                     .dropdown-item {
+                        border-left: 3px solid transparent;
 
-                  .dropdown-item {
-                     border-left: 3px solid transparent;
+                        &.active {
+                           background-color: lighten($mainmenu-bg, 5%);
+                           border-left-color: $primary
+                        }
+                     }
                   }
                }
 
-               &.show {
-                  z-index: 1001;
-                  border-left-color: $primary;
+               &:hover {
+                  .nav-link {
+                     border-left-color: $primary;
+                     color: $primary;
+                     background-color: lighten($mainmenu-bg, 5%);
 
-                  & + .dropdown-menu {
-                     position: absolute;
-
-                     .dropdown-item.active {
-                        background-color: lighten($mainmenu-bg, 5%);
-                        border-left-color: $primary
+                     & + .dropdown-menu {
+                        display: block;
                      }
                   }
+               }
+
+               &.active {
+                  background-color: lighten($mainmenu-bg, 5%);
                }
             }
          }
