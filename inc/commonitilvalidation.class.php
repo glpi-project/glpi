@@ -446,7 +446,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    static function getAllStatusArray($withmetaforsearch = false, $global = false) {
 
       $tab = [self::WAITING  => __('Waiting for approval'),
-                   self::REFUSED  => __('Refused'),
+                   self::REFUSED  => _x('validation', 'Refused'),
                    self::ACCEPTED => __('Granted')];
       if ($global) {
          $tab[self::NONE] = __('Not subject to approval');

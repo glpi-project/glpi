@@ -7266,7 +7266,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $user->getFromDB($item_i['users_id_approval']);
             $userdata = getUserName($item_i['users_id_editor'], 2);
             $message = __('%1$s on %2$s by %3$s');
-            $action = $item_i['status'] == CommonITILValidation::ACCEPTED ? __('Accepted') : __('Refused');
+            $action = $item_i['status'] == CommonITILValidation::ACCEPTED ? __('Accepted') : _x('validation', 'Refused');
             echo sprintf(
                $message,
                $action,
