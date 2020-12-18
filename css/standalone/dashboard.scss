@@ -197,7 +197,7 @@ $break_tablet: 1400px;
          }
 
          .edit-dashboard-properties {
-            display: inline-block;
+            display: inline-flex;
          }
       }
 
@@ -317,12 +317,7 @@ $break_tablet: 1400px;
          display: none;
 
          input.dashboard-name:not(.submit):not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field) {
-            padding: 5px;
-            border: 2px solid rgba(0, 0, 0, .1);
-            border-radius: 3px;
             min-width: 200px;
-            font-weight: bold;
-            color: rgb(70, 70, 70);
             resize: horizontal;
          }
 
@@ -1304,7 +1299,7 @@ $break_tablet: 1400px;
    }
 
    background: var(--dark);
-   color: var(--contrast-dark);
+   color: var(--contrast-light);
 
    .grid-guide {
       border: 1px solid var(--light-mix);
