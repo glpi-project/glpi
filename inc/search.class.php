@@ -81,7 +81,10 @@ class Search {
          $active = $_SESSION['glpi_loaded_savedsearch'];
       }
       TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
-         'saved_searches' => $savedsearch->getMine($itemtype),
+         'saved_searches' => [
+            'filtered' => $savedsearch->getMine($itemtype),
+            'others'   => $savedsearch->getMine($itemtype, true),
+         ],
          'itemtype'       => $itemtype,
          'active'         => $active,
       ]);
