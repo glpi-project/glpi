@@ -180,8 +180,7 @@ class CommonDBTM extends DbTestCase {
       $this->array($comp->fields)->isEmpty();
 
       $this->boolean($comp->getEmpty())->isTrue();
-      // Empty value if $_SESSION['glpiactive_entity'] is not set
-      $this->array($comp->fields)->string['entities_id']->isIdenticalTo('');
+      $this->array($comp->fields)->integer['entities_id']->isEqualTo(0);
 
       $_SESSION["glpiactive_entity"] = 12;
       $this->boolean($comp->getEmpty())->isTrue();
