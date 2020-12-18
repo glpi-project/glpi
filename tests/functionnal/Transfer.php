@@ -156,12 +156,6 @@ class Transfer extends DbTestCase {
 
          ++$count;
       }
-      $this->dump(
-         sprintf(
-            '%1$s itemtypes tested',
-            $count
-         )
-      );
    }
 
    public function testDomainTransfer() {
