@@ -29,52 +29,19 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-
 /**
- * Update from 9.5.x to x.x.x
- *
- * @return bool for success (will die for most error)
-**/
-function update95toXX() {
-   global $DB, $migration;
+ * @var DB $DB
+ * @var Migration $migration
+ */
 
-   $updateresult     = true;
-   $ADDTODISPLAYPREF = [];
-   $update_dir = __DIR__ . '/update_95_xx/';
+/** Add UUIDs */
 
-   //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(__('Update to %s'), 'x.x.x'));
-   $migration->setVersion('x.x.x');
+$to_add_uuid = ['Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer'];
 
-   $update_scripts = [
-      'comment_fields',
-      'devicebattery',
-      'domains',
-      'reservationitem',
-      'softwares',
-      'recurrentchange',
-      'uuids'
-   ];
-
-   foreach ($update_scripts as $update_script) {
-       require $update_dir . $update_script . '.php';
-   }
-
-   // ************ Keep it at the end **************
-   foreach ($ADDTODISPLAYPREF as $type => $tab) {
-      $rank = 1;
-      foreach ($tab as $newval) {
-         $DB->updateOrInsert("glpi_displaypreferences", [
-            'rank'      => $rank++
-         ], [
-            'users_id'  => "0",
-            'itemtype'  => $type,
-            'num'       => $newval,
-         ]);
-      }
-   }
-
-   $migration->executeMigration();
-
-   return $updateresult;
+foreach ($to_add_uuid as $class) {
+   $migration->addField($class::getTable(), 'uuid', 'string', [
+      'after'  => 'is_dynamic',
+      'null'   => true
+   ]);
+   $migration->addKey($class::getTable(), 'uuid');
 }
