@@ -1502,7 +1502,7 @@ JAVASCRIPT;
             'title' => __('Assistance'),
             'types' => [
                'Ticket', 'Problem', 'Change',
-               'Planning', 'Stat', 'TicketRecurrent'
+               'Planning', 'Stat', 'TicketRecurrent', 'RecurrentChange'
             ],
             'default' => '/front/dashboard_helpdesk.php'
          ],

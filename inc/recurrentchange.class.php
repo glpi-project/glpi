@@ -30,58 +30,32 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
-/**
- * Ticket Recurrent class
- *
- * @since 0.83
-**/
-class TicketRecurrent extends CommonITILRecurrent {
-
+class RecurrentChange extends CommonITILRecurrent
+{
    /**
     * @var string CommonDropdown
     */
-   public $second_level_menu = "ticketrecurrent";
+   public $second_level_menu = "recurrentchange";
 
    /**
     * @var string Right managements
     */
-   public static $rightname = 'ticketrecurrent';
+   public static $rightname = 'recurrentchange';
 
    public static function getTypeName($nb = 0) {
-      return __('Recurrent tickets');
+      return __('Recurrent changes');
    }
 
    public static function getConcreteClass() {
-      return Ticket::class;
+      return Change::class;
    }
 
    public static function getTemplateClass() {
-      return TicketTemplate::class;
+      return ChangeTemplate::class;
    }
 
    public static function getPredefinedFieldsClass() {
-      return TicketTemplatePredefinedField::class;
+      return ChangeTemplatePredefinedField::class;
    }
 
-   public function handlePredefinedFields(
-      array $predefined,
-      array $input
-   ): array {
-      $input = parent::handlePredefinedFields($predefined, $input);
-
-      // Compute internal_time_to_resolve if predefined based on create date
-      if (isset($predefined['internal_time_to_resolve'])) {
-         $input['internal_time_to_resolve'] = Html::computeGenericDateTimeSearch(
-            $predefined['internal_time_to_resolve'],
-            false,
-            $this->getCreateTime()
-         );
-      }
-
-      return $input;
-   }
 }

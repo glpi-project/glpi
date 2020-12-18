@@ -6561,6 +6561,31 @@ CREATE TABLE `glpi_ticketrecurrents` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_recurrentchanges
+
+DROP TABLE IF EXISTS `glpi_recurrentchanges`;
+CREATE TABLE `glpi_recurrentchanges` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `is_active` tinyint(1) NOT NULL DEFAULT '0',
+  `changetemplates_id` int(11) NOT NULL DEFAULT '0',
+  `begin_date` timestamp NULL DEFAULT NULL,
+  `periodicity` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `create_before` int(11) NOT NULL DEFAULT '0',
+  `next_creation_date` timestamp NULL DEFAULT NULL,
+  `calendars_id` int(11) NOT NULL DEFAULT '0',
+  `end_date` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `is_active` (`is_active`),
+  KEY `changetemplates_id` (`changetemplates_id`),
+  KEY `next_creation_date` (`next_creation_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 ### Dump table glpi_tickets
 
 DROP TABLE IF EXISTS `glpi_tickets`;

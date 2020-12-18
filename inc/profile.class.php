@@ -1221,12 +1221,23 @@ class Profile extends CommonDBTM {
       $matrix_options['title'] = Problem::getTypeName(Session::getPluralNumber());
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
-      $rights = [['itemtype'   => 'Change',
-                            'label'      => _n('Change', 'Changes', Session::getPluralNumber()),
-                            'field'      => 'change'],
-                      ['itemtype'  => 'ChangeValidation',
-                            'label'     => _n('Validation', 'Validations', Session::getPluralNumber()),
-                            'field'     => 'changevalidation']];
+      $rights = [
+         [
+            'itemtype'   => 'Change',
+            'label'      => _n('Change', 'Changes', Session::getPluralNumber()),
+            'field'      => 'change'
+         ],
+         [
+            'itemtype'  => 'ChangeValidation',
+            'label'     => _n('Validation', 'Validations', Session::getPluralNumber()),
+            'field'     => 'changevalidation'
+         ],
+         [
+            'itemtype'  => RecurrentChange::class,
+            'label'     => RecurrentChange::getTypeName(2),
+            'field'     => RecurrentChange::$rightname
+         ]
+      ];
       $matrix_options['title'] = _n('Change', 'Changes', Session::getPluralNumber());
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 

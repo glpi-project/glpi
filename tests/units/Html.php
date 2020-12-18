@@ -340,7 +340,8 @@ class Html extends \GLPITestCase {
          'Change',
          'Planning',
          'Stat',
-         'TicketRecurrent'
+         'TicketRecurrent',
+         'RecurrentChange',
       ];
       $this->string($menu['helpdesk']['title'])->isIdenticalTo('Assistance');
       $this->array($menu['helpdesk']['types'])->isIdenticalTo($expected);
