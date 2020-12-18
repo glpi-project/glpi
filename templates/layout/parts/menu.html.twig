@@ -6,8 +6,7 @@
    {% if firstlevel['content'] is defined %}
    {% set firstlevel_active = menu[sector]['title'] == firstlevel['title'] %}
    <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}"
-       title="{{ firstlevel['title'] }}"
-       data-bs-toggle="tooltip" data-bs-placement="right" data-bs-animation="false" data-bs-custom-class="menu-tooltip">
+       title="{{ firstlevel['title'] }}">
       <a class="nav-link dropdown-toggle {{ firstlevel_active ? 'active' : '' }} {{ firstlevel_active and is_menu_folded == false  ? 'show' : '' }}"
          data-bs-toggle="dropdown" role="button"
          aria-expanded="{{ firstlevel_active ? 'true' : 'false' }}">
@@ -16,6 +15,7 @@
          <span class="menu-label">{{ firstlevel['title'] }}</span>
       </a>
       <div class="dropdown-menu {{ firstlevel_active and is_vertical != false ? "" : "animate__animated" }} animate__fadeIn{{ is_vertical ? 'Left' : 'Down' }} {{ firstlevel_active and is_vertical and is_menu_folded == false  ? 'show' : '' }}">
+         <h6 class="dropdown-header">{{ firstlevel['title'] }}</h6>
          <div class="dropdown-menu-columns">
             <div class="dropdown-menu-column">
             {% set has_dashboard = firstlevel['default_dashboard'] is defined %}
