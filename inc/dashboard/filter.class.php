@@ -218,7 +218,7 @@ JAVASCRIPT;
       <fieldset id='filter-{$rand}' class='filter $class' data-filter-id='{$id}'>
          $field
          <legend>$label</legend>
-         <i class='fas fa-trash delete-filter'></i>
+         <i class='btn btn-sm btn-icon btn-ghost-secondary fas fa-trash delete-filter'></i>
       </fieldset>
 HTML;
 
