@@ -6,6 +6,7 @@ The present file will list all changes made to the project; according to the
 ## [x.x.x] unreleased
 
 ### Added
+- Added UUID to all other itemtypes that are related to Operating Systems (Phones, Printers, etc)
 
 ### Changed
 

@@ -74,7 +74,8 @@ class Monitor extends DbTestCase {
          'ticket_tco' => '0.0000',
          'is_dynamic' => 0,
          'date_creation' => $date,
-         'is_recursive' => 0
+         'is_recursive' => 0,
+         'uuid' => null,
       ];
    }
 
@@ -97,7 +98,7 @@ class Monitor extends DbTestCase {
       $monitor = getItemByTypeName('Monitor', '_test_monitor01');
 
       $expected = Monitor::getMonitorFields($added, $date);
-      $this->array($monitor->fields)->isIdenticalTo($expected);
+      $this->array($monitor->fields)->isEqualTo($expected);
       return $monitor;
    }
 
@@ -119,6 +120,6 @@ class Monitor extends DbTestCase {
 
       $expected = Monitor::getMonitorFields($added, $date);
 
-      $this->array($clonedMonitor->fields)->isIdenticalTo($expected);
+      $this->array($clonedMonitor->fields)->isEqualTo($expected);
    }
 }

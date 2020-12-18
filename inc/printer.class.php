@@ -416,6 +416,12 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('UUID')."</td>\n";
+      echo "<td>";
+      Html::autocompletionTextField($this, 'uuid');
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('Port', 'Ports', Session::getPluralNumber())."</td>";
       echo "<td>\n<table>";
       // serial interface
