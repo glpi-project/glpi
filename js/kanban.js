@@ -77,7 +77,7 @@ class GLPIKanbanRights {
       /**
        * Limits the columns that the user can add cards to.
        * By default, it is empty which allows cards to be added to all columns.
-       * If you don't want the user to add cards to any column, {@link allow_add_item} should be false.
+       * If you don't want the user to add cards to any column, {@link rights.create_item} should be false.
        * @since 9.5.0
        * @since x.x.x Moved to new rights class
        * @type {Array}
@@ -825,7 +825,7 @@ class GLPIKanbanRights {
             delayRefresh();
          });
 
-         if (!self.allow_order_card) {
+         if (!self.rights.canOrderCard()) {
             $(self.element).on(
                'mouseenter',
                '.kanban-column',
@@ -986,7 +986,7 @@ class GLPIKanbanRights {
                const current_position = sortable_elements.index(ui.placeholder);
                card.data('current-pos', current_position);
 
-               if (!self.allow_order_card) {
+               if (!self.rights.canOrderCard()) {
                   if (current_column === source_column) {
                      if (current_position !== source_position) {
                         ui.placeholder.addClass('invalid-position');
@@ -1082,7 +1082,7 @@ class GLPIKanbanRights {
          const target_params = $(target).attr('id').split('-');
          const column_id = target_params[target_params.length - 1];
 
-         if (el_params.length === 2 && source !== null && !(!self.allow_order_card && source.length === 0)) {
+         if (el_params.length === 2 && source !== null && !(!self.rights.canOrderCard() && source.length === 0)) {
             $.ajax({
                type: "POST",
                url: (self.ajax_root + "kanban.php"),
@@ -1100,7 +1100,7 @@ class GLPIKanbanRights {
                },
                success: function() {
                   let pos = card.data('current-pos');
-                  if (!self.allow_order_card) {
+                  if (!self.rights.canOrderCard()) {
                      card.appendTo($(target).find('.kanban-body').first());
                      pos = card.index();
                   }
