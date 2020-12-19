@@ -48,7 +48,7 @@ class GLPIKanbanRights {
 
       /**
        * If true, then a button will be added to each card to allow deleting them and the underlying item directly from the kanban.
-       * When a card is deleted, a request is made via AJAX to create the item in the DB.
+       * When a card is deleted, a request is made via AJAX to delete the item in the DB.
        * Permissions are re-checked server-side during this request.
        * @since x.x.x
        * @type {boolean}
@@ -347,7 +347,8 @@ class GLPIKanbanRights {
                delete_item: self.allow_delete_item,
                create_column: self.allow_create_column,
                modify_view: self.allow_modify_view,
-               create_card_limited_columns: self.limit_addcard_columns
+               create_card_limited_columns: self.limit_addcard_columns,
+               order_card: self.allow_order_card
             });
          }
          if (self.filters._text === undefined) {
@@ -1172,7 +1173,7 @@ class GLPIKanbanRights {
                action: "delete_item",
                itemtype: itemtype,
                items_id: items_id,
-               force: force
+               force: force ? 1 : 0
             },
             contentType: 'application/json',
             error: function() {

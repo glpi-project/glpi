@@ -2268,7 +2268,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          $card = [
             'id'              => "{$itemtype}-{$item['id']}",
             'title'           => '<span class="pointer">'.$item['name'].'</span>',
-            'title_tooltip'   => Html::clean(Html::resume_text($item['content'], 100)),
+            'title_tooltip'   => Html::entities_deep(Html::resume_text(Html::clean($item['content']), 100)),
             'is_deleted'      => $item['is_deleted'] ?? false,
          ];
 
