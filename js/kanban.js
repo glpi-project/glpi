@@ -386,7 +386,6 @@ class GLPIKanbanRights {
          column_overflow_dropdown += '<li class="dropdown-trigger">' + add_itemtype_bulk_link + add_itemtype_bulk_dropdown + '</li>';
          if (self.rights.canModifyView()) {
             column_overflow_dropdown += "<li class='kanban-remove' data-forbid-protected='true'>"  + '<i class="fas fa-trash-alt"></i>' + __('Delete') + "</li>";
-            //}
          }
          column_overflow_dropdown += '</ul>';
          kanban_container.append(column_overflow_dropdown);
@@ -396,7 +395,7 @@ class GLPIKanbanRights {
          if (self.rights.canDeleteItem()) {
             card_overflow_dropdown += `
                 <li class='kanban-item-goto'>
-                    <i class="fas fa-share"></i>${__('Go to')}
+                    <a href="#"><i class="fas fa-share"></i>${__('Go to')}</a>
                 </li>
                 <li class='kanban-item-remove'>
                     <i class="fas fa-trash-alt"></i>${__('Delete')}
@@ -656,6 +655,10 @@ class GLPIKanbanRights {
             card_overflow_dropdown.find('li').removeClass('active');
             card_overflow_dropdown.data('trigger-button', button);
             const card = $(button.closest('.kanban-item'));
+
+            const form_link = card.data('form_link');
+            $(card_overflow_dropdown.find('.kanban-item-goto a')).attr('href', form_link);
+
             let delete_action = $(card_overflow_dropdown.find('.kanban-item-remove'));
             if (card.hasClass('deleted')) {
                delete_action.html('<i class="fas fa-trash-alt"></i>'+__('Purge'));
@@ -696,14 +699,6 @@ class GLPIKanbanRights {
             const column = $(e.target.closest('.kanban-dropdown')).data('trigger-button').closest('.kanban-column');
             // Hide that column
             hideColumn(getColumnIDFromElement(column));
-         });
-         $(self.element + ' .kanban-container').on('click', '.kanban-item-goto', function(e) {
-            // Get root dropdown, then the button that triggered it, and finally the card that the button is in
-            const card = $(e.target.closest('.kanban-dropdown')).data('trigger-button').closest('.kanban-item');
-            const form_link = card.data('form_link');
-            if (form_link !== undefined) {
-               window.location.href = form_link;
-            }
          });
          $(self.element + ' .kanban-container').on('click', '.kanban-item-remove', function(e) {
             // Get root dropdown, then the button that triggered it, and finally the card that the button is in
