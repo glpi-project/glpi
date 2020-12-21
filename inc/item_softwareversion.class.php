@@ -1558,8 +1558,15 @@ class Item_SoftwareVersion extends CommonDBRelation {
 
 
    protected static function getListForItemParams(CommonDBTM $item, $noent = false) {
-      $params = parent::getListForItemParams($item, $noent);
-      $params['WHERE'][self::getTable(__CLASS__) . '.is_deleted'] = 0;
+      $table = self::getTable(__CLASS__);
+      $params['WHERE'] = [
+         $table.'.items_id'   => $item->getID(),
+         $table.'.itemtype'   => $item::getType(),
+         $table.'.is_deleted' => 0
+      ];
+      if ($noent === false) {
+         $params = array_merge($params, getEntitiesRestrictCriteria($table, '', '', 'auto'));
+      }
       return $params;
    }
 
@@ -1568,12 +1575,8 @@ class Item_SoftwareVersion extends CommonDBRelation {
 
       $iterator = $DB->request([
          'COUNT' => 'cpt',
-         'FROM'   => self::getTable(__CLASS__),
-         'WHERE'  => [
-            'items_id'  => $item->getID(),
-            'itemtype'  => $item::getType()
-         ]
-      ]);
+         'FROM'   => self::getTable(__CLASS__)
+      ] + self::getListForItemParams($item));
       return $iterator->next()['cpt'];
    }
 }
