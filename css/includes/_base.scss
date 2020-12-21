@@ -49,8 +49,11 @@ body.iframed {
 
 .btn {
    i.fas, i.far, i.fab {
-      padding-top: 0.25rem;
       margin-inline-start: 0;
+
+      & + * {
+         margin-left: 0.25rem;
+      }
    }
 
    &.btn-icon {
