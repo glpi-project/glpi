@@ -2124,7 +2124,7 @@ class Search {
          var $nbsearchcountvar = ".count($p['criteria']).";
       ");
 
-      echo "<div class='list list-row list-hoverable criteria-list' id='$searchcriteriatableid'>";
+      echo "<div class='list-group list-group-row list-group-hoverable criteria-list' id='$searchcriteriatableid'>";
 
       // Display normal search parameters
       $i = 0;
@@ -2138,7 +2138,7 @@ class Search {
 
       $rand_criteria = mt_rand();
       echo "<div id='more-criteria$rand_criteria'
-            class='normalcriteria list-item'
+            class='normalcriteria list-group-item'
             style='display: none;'>...</div>";
 
       echo "</div>"; // .list
@@ -2263,13 +2263,13 @@ JAVASCRIPT;
             $(this).children('i.fas')
                .toggleClass('fa-angle-double-up')
                .toggleClass('fa-angle-double-down');
-            $('#searchcriteria .criteria-list .list-item:not(:first-child)').toggle();
+            $('#searchcriteria .criteria-list .list-group-item:not(:first-child)').toggle();
          });
 
          $(document).on("click", ".remove-search-criteria", function() {
             var rowID = $(this).data('rowid');
             $('#' + rowID).remove();
-            $('#searchcriteria .criteria-list .list-item:first-child').addClass('headerRow').show();
+            $('#searchcriteria .criteria-list .list-group-item:first-child').addClass('headerRow').show();
          });
 JAVASCRIPT;
       }
@@ -2347,7 +2347,7 @@ JAVASCRIPT;
          return self::displayCriteriaGroup($request);
       }
 
-      echo "<div class='list-item normalcriteria$addclass' id='$rowid'>";
+      echo "<div class='list-group-item normalcriteria$addclass' id='$rowid'>";
       echo "<div class='row'>";
 
       if (!isset($request['from_meta'])
@@ -2519,7 +2519,7 @@ JAVASCRIPT;
 
       $rowid  = 'metasearchrow'.$request['itemtype'].$rand;
 
-      echo "<div class='list-item metacriteria' id='$rowid'>";
+      echo "<div class='list-group-item metacriteria' id='$rowid'>";
       echo "<div class='row'>";
 
       echo "<div class='col-auto'>";
@@ -2611,7 +2611,7 @@ JAVASCRIPT;
          ];
       }
 
-      echo "<div class='list-item normalcriteria$addclass' id='$rowid'>";
+      echo "<div class='list-group-item normalcriteria$addclass' id='$rowid'>";
       echo "<div class='row'>";
       echo "<div class='col-auto'>";
       echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' data-rowid='$rowid'>
