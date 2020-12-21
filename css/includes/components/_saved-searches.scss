@@ -42,15 +42,6 @@
          padding: 0;
          height: 100%;
 
-         .list-item.search-line {
-            border-right: 4px solid transparent;
-
-            &.active {
-               background-color: rgba(0, 0, 0, .025);
-               border-right-color: rgba(0, 0, 0, .5);
-            }
-         }
-
          .saved-searches-link {
             &:hover {
                text-decoration: underline;
