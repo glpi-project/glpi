@@ -741,7 +741,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                ],
             ],
          ],
-         'computation'        => '(SUM('.$DB->quoteName('TABLE.cost').'))'
+         'computation'        => '(SUM('.$DB->quoteName('TABLE.cost').'))',
+         'nometa'             => true, // cannot GROUP_CONCAT a SUM
       ];
 
       $itil_count_types = [

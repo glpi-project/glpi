@@ -962,6 +962,7 @@ class Search {
              && isset($criterion['itemtype'])) {
             $itemtype = $criterion['itemtype'];
             $meta = true;
+            $searchopt = &self::getOptions($itemtype);
          }
 
          // common search
@@ -1148,11 +1149,9 @@ class Search {
             $m_itemtype
          );
 
-         if (!in_array($m_itemtype::getTable(), $already_link_tables)) {
-            $FROM .= self::addMetaLeftJoin($data['itemtype'], $m_itemtype,
-                                           $already_link_tables,
-                                           $sopt["joinparams"]);
-         }
+         $FROM .= self::addMetaLeftJoin($data['itemtype'], $m_itemtype,
+                                        $already_link_tables,
+                                        $sopt["joinparams"]);
 
          $FROM .= self::addLeftJoin($m_itemtype,
                                     $m_itemtype::getTable(),
@@ -2146,58 +2145,69 @@ class Search {
    static function getMetaItemtypeAvailable($itemtype) {
       global $CFG_GLPI;
 
-      // Display meta search items
+      if (!(($item = getItemForItemtype($itemtype)) instanceof CommonDBTM)) {
+         return [];
+      }
+
+      $key_to_itemtypes = [
+         'directconnect_types'  => ['Computer'],
+         'infocom_types'        => ['Budget', 'Infocom'],
+         'linkgroup_types'      => ['Group'],
+         // 'linkgroup_tech_types' => 'Group', // Cannot handle ambiguity with 'Group' from 'linkgroup_types'
+         'linkuser_types'       => ['User'],
+         // 'linkuser_tech_types'  => 'User', // Cannot handle ambiguity with 'User' from 'linkuser_types'
+         'project_asset_types'  => ['Project'],
+         'rackable_types'       => ['Enclosure', 'Rack'],
+         'ticket_types'         => ['Change', 'Problem', 'Ticket'],
+      ];
+
       $linked = [];
-      // Define meta search items to linked
+      foreach ($CFG_GLPI as $key => $values) {
+         if ($key === 'link_types') {
+            // Links are associated to all items of a type, it does not make any sense to use them in meta search
+            continue;
+         }
+         if ($key === 'ticket_types' && $item instanceof CommonITILObject) {
+            // Linked are filtered by CommonITILObject::getAllTypesForHelpdesk()
+            $linked = array_merge($linked, array_keys($item::getAllTypesForHelpdesk()));
+            continue;
+         }
 
-      $meta_itemtype = static::getMetaReferenceItemtype($itemtype);
-      switch ($meta_itemtype) {
-         case 'Computer' :
-            $linked = ['Monitor', 'Peripheral', 'Phone', 'Printer',
-                            'Software', 'User', 'Group', 'Budget'];
-            break;
-
-         case 'Ticket' :
-            if (Session::haveRight("ticket", Ticket::READALL)) {
-               $linked = array_keys(Ticket::getAllTypesForHelpdesk());
+         $matches = [];
+         if (preg_match('/^(.+)_types$/', $key, $matches)) {
+            $config_itemtypes = array_key_exists($key, $key_to_itemtypes)
+               ? $key_to_itemtypes[$key]
+               : [ucwords($matches[1])];
+            foreach ($config_itemtypes as $config_itemtype) {
+               if (!is_a($config_itemtype, CommonDBTM::class, true)) {
+                  continue;
+               }
+               if ($itemtype === $config_itemtype::getType()) {
+                  // List is related to source itemtype, all types of list are so linked
+                  $linked = array_merge($linked, $values);
+               } else if (in_array($itemtype, $values)) {
+                  // Source itemtype is inside list, type corresponding to list is so linked
+                  $linked[] = $config_itemtype::getType();
+               }
             }
-            break;
-
-         case 'Problem' :
-            if (Session::haveRight("problem", Problem::READALL)) {
-               $linked = array_keys(Problem::getAllTypesForHelpdesk());
-            }
-            break;
-
-         case 'Change' :
-            if (Session::haveRight("change", Change::READALL)) {
-               $linked = array_keys(Change::getAllTypesForHelpdesk());
-            }
-            break;
-
-         case 'Printer' :
-         case 'Monitor' :
-         case "Peripheral" :
-         case "Software" :
-         case "Phone" :
-            $linked = ['Computer', 'User', 'Group', 'Budget'];
-            break;
+         }
       }
 
-      if (in_array($meta_itemtype, $CFG_GLPI['appliance_types'])) {
-         $linked[] = 'Appliance';
-      }
-
-      return $linked;
+      return array_unique($linked);
    }
+
 
 
    /**
     * @since 0.85
     *
     * @param $itemtype
+    *
+    * @deprecated 9.5.4
    **/
    static function getMetaReferenceItemtype ($itemtype) {
+
+      Toolbox::deprecated();
 
       $types = [
          'Computer',
@@ -3459,11 +3469,13 @@ JAVASCRIPT;
          $addtable2 .= "_".$complexjoin;
       }
 
+      $addmeta = "";
       if ($meta) {
          // $NAME = "META";
          if ($meta_type::getTable() != $table) {
-            $addtable  .= "_".$meta_type;
-            $addtable2 .= "_".$meta_type;
+            $addmeta = "_".$meta_type;
+            $addtable  .= $addmeta;
+            $addtable2 .= $addmeta;
          }
       }
 
@@ -3523,7 +3535,7 @@ JAVASCRIPT;
                      $ticket_user_table
                         = $searchopt[$ID]['joinparams']['beforejoin']['table'].
                           "_".self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']
-                                                                   ['joinparams']);
+                                                                   ['joinparams']).$addmeta;
                      $addaltemail
                         = "GROUP_CONCAT(DISTINCT CONCAT(`$ticket_user_table`.`users_id`, ' ',
                                                         `$ticket_user_table`.`alternative_email`)
@@ -3602,15 +3614,15 @@ JAVASCRIPT;
             return " `glpi_users`.`authtype` AS `".$NAME."`,
                      `glpi_users`.`auths_id` AS `".$NAME."_auths_id`,
                      `glpi_authldaps".$addtable."_".
-                           self::computeComplexJoinID($user_searchopt[30]['joinparams'])."`.`$field`
+                           self::computeComplexJoinID($user_searchopt[30]['joinparams']).$addmeta."`.`$field`
                               AS `".$NAME."_".$ID."_ldapname`,
                      `glpi_authmails".$addtable."_".
-                           self::computeComplexJoinID($user_searchopt[31]['joinparams'])."`.`$field`
+                           self::computeComplexJoinID($user_searchopt[31]['joinparams']).$addmeta."`.`$field`
                               AS `".$NAME."_mailname`,
                      $ADDITONALFIELDS";
 
          case "glpi_softwareversions.name" :
-            if ($meta) {
+            if ($meta && ($meta_type == 'Software')) {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
                                                      `$table$addtable2`.`$field`, '".self::SHORTSEP."',
                                                      `$table$addtable2`.`id`) SEPARATOR '".self::LONGSEP."')
@@ -3620,7 +3632,7 @@ JAVASCRIPT;
             break;
 
          case "glpi_softwareversions.comment" :
-            if ($meta) {
+            if ($meta && ($meta_type == 'Software')) {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
                                                      `$table$addtable2`.`$field`,'".self::SHORTSEP."',
                                                      `$table$addtable2`.`id`) SEPARATOR '".self::LONGSEP."')
@@ -4124,9 +4136,11 @@ JAVASCRIPT;
          }
       }
 
+      $addmeta = "";
       if ($meta
           && ($itemtype::getTable() != $inittable)) {
-         $table .= "_".$itemtype;
+         $addmeta = "_".$itemtype;
+         $table .= $addmeta;
       }
 
       // Hack to allow search by ID on every sub-table
@@ -4256,7 +4270,7 @@ JAVASCRIPT;
                $tmplink = 'AND';
             }
 
-            if (($itemtype == 'Ticket') || ($itemtype == 'Problem')) {
+            if (is_a($itemtype, CommonITILObject::class, true)) {
                if (isset($searchopt[$ID]["joinparams"]["beforejoin"]["table"])
                    && isset($searchopt[$ID]["joinparams"]["beforejoin"]["joinparams"])
                    && (($searchopt[$ID]["joinparams"]["beforejoin"]["table"]
@@ -4267,7 +4281,7 @@ JAVASCRIPT;
                              == 'glpi_changes_users'))) {
 
                   $bj        = $searchopt[$ID]["joinparams"]["beforejoin"];
-                  $linktable = $bj['table'].'_'.self::computeComplexJoinID($bj['joinparams']);
+                  $linktable = $bj['table'].'_'.self::computeComplexJoinID($bj['joinparams']).$addmeta;
                   //$toadd     = "`$linktable`.`alternative_email` $SEARCH $tmplink ";
                   $toadd     = self::makeTextCriteria("`$linktable`.`alternative_email`", $val,
                                                       $nott, $tmplink);
@@ -4325,10 +4339,10 @@ JAVASCRIPT;
                $tmplink = 'AND';
             }
             return $link." (`glpi_authmails".$addtable."_".
-                              self::computeComplexJoinID($user_searchopt[31]['joinparams'])."`.`name`
+                              self::computeComplexJoinID($user_searchopt[31]['joinparams']).$addmeta."`.`name`
                            $SEARCH
                            $tmplink `glpi_authldaps".$addtable."_".
-                              self::computeComplexJoinID($user_searchopt[30]['joinparams'])."`.`name`
+                              self::computeComplexJoinID($user_searchopt[30]['joinparams']).$addmeta."`.`name`
                            $SEARCH ) ";
 
          case "glpi_ipaddresses.name" :
@@ -5021,7 +5035,10 @@ JAVASCRIPT;
                   if (!empty($complexjoin)) {
                      $intertable .= "_".$complexjoin;
                   }
-                  $rt = $intertable.$addmetanum;
+                  if ($meta && $meta_type::getTable() != $cleanrt) {
+                     $intertable .= "_".$meta_type;
+                  }
+                  $rt = $intertable;
                }
             }
          }
@@ -5174,6 +5191,7 @@ JAVASCRIPT;
    **/
    static function addMetaLeftJoin($from_type, $to_type, array &$already_link_tables2,
                                    $joinparams = []) {
+      global $CFG_GLPI;
       $LINK = " LEFT JOIN ";
 
       $from_table = $from_type::getTable();
@@ -5181,237 +5199,229 @@ JAVASCRIPT;
       $to_table   = $to_type::getTable();
       $to_fk      = getForeignKeyFieldForTable($to_table);
 
+      $to_obj        = getItemForItemtype($to_type);
+      $to_entity_restrict = $to_obj->isField('entities_id')? getEntitiesRestrictRequest('AND', $to_table) : '';
+
       $complexjoin = self::computeComplexJoinID($joinparams);
-      if ($complexjoin != '') {
-         $complexjoin .= '_';
+      $alias_suffix = ($complexjoin != '' ? '_' . $complexjoin : '') . '_' . $to_type;
+
+      $JOIN = "";
+
+      // Specific JOIN
+      if ($from_type === 'Software' && in_array($to_type, $CFG_GLPI['software_types'])) {
+         // From Software to software_types
+         $softwareversions_table = "glpi_softwareversions{$alias_suffix}";
+         if (!in_array($softwareversions_table, $already_link_tables2)) {
+            array_push($already_link_tables2, $softwareversions_table);
+            $JOIN .= "$LINK `glpi_softwareversions` AS `$softwareversions_table`
+                         ON (`$softwareversions_table`.`softwares_id` = `$from_table`.`id`) ";
+         }
+         $items_softwareversions_table = "glpi_items_softwareversions_{$alias_suffix}";
+         if (!in_array($items_softwareversions_table, $already_link_tables2)) {
+            array_push($already_link_tables2, $items_softwareversions_table);
+            $JOIN .= "$LINK `glpi_items_softwareversions` AS `$items_softwareversions_table`
+                         ON (`$items_softwareversions_table`.`softwareversions_id` = `$softwareversions_table`.`id`
+                             AND `$items_softwareversions_table`.`itemtype` = '$to_type'
+                             AND `$items_softwareversions_table`.`is_deleted` = 0) ";
+         }
+         if (!in_array($to_table, $already_link_tables2)) {
+            array_push($already_link_tables2, $to_table);
+            $JOIN .= "$LINK `$to_table`
+                         ON (`$items_softwareversions_table`.`items_id` = `$to_table`.`id`
+                             AND `$items_softwareversions_table`.`itemtype` = '$to_type'
+                             $to_entity_restrict) ";
+         }
+         return $JOIN;
       }
 
-      // Generic metacriteria
-      switch ($to_type) {
-         case 'User' :
-         case 'Group' :
+      if ($to_type === 'Software' && in_array($from_type, $CFG_GLPI['software_types'])) {
+         // From software_types to Software
+         $items_softwareversions_table = "glpi_items_softwareversions{$alias_suffix}";
+         if (!in_array($items_softwareversions_table, $already_link_tables2)) {
+            array_push($already_link_tables2, $items_softwareversions_table);
+            $JOIN .= "$LINK `glpi_items_softwareversions` AS `$items_softwareversions_table`
+                         ON (`$items_softwareversions_table`.`items_id` = `$from_table`.`id`
+                             AND `$items_softwareversions_table`.`itemtype` = '$from_type'
+                             AND `$items_softwareversions_table`.`is_deleted` = 0) ";
+         }
+         $softwareversions_table = "glpi_softwareversions{$alias_suffix}";
+         if (!in_array($softwareversions_table, $already_link_tables2)) {
+            array_push($already_link_tables2, $softwareversions_table);
+            $JOIN .= "$LINK `glpi_softwareversions` AS `$softwareversions_table`
+                         ON (`$items_softwareversions_table`.`softwareversions_id` = `$softwareversions_table`.`id`) ";
+         }
+         if (!in_array($to_table, $already_link_tables2)) {
             array_push($already_link_tables2, $to_table);
-            return "$LINK `$to_table`
-                        ON (`$from_table`.`$to_fk` = `$to_table`.`id`) ";
-         case 'Budget' :
-            array_push($already_link_tables2, $to_table);
-            return "$LINK `glpi_infocoms`
-                        ON (`$from_table`.`id` = `glpi_infocoms`.`items_id`
-                            AND `glpi_infocoms`.`itemtype` = '$from_type')
-                    $LINK `$to_table`
-                        ON (`glpi_infocoms`.`$to_fk` = `$to_table`.`id`) ";
-         case 'Appliance' :
-            array_push($already_link_tables2, $to_table);
-            return "$LINK `glpi_appliances_items`
-                        ON (`$from_table`.`id` = `glpi_appliances_items`.`items_id`
-                            AND `glpi_appliances_items`.`itemtype` = '$from_type')
-                    $LINK `$to_table`
-                        ON (`glpi_appliances_items`.`$to_fk` = `$to_table`.`id`) ";
+            $JOIN .= "$LINK `$to_table`
+                         ON (`$softwareversions_table`.`softwares_id` = `$to_table`.`id`) ";
+         }
+         $softwarelicenses_table = "glpi_softwarelicenses{$alias_suffix}";
+         if (!in_array($softwarelicenses_table, $already_link_tables2)) {
+            array_push($already_link_tables2, $softwarelicenses_table);
+            $JOIN .= "$LINK `glpi_softwarelicenses` AS `$softwarelicenses_table`
+                        ON ($to_table.`id` = `$softwarelicenses_table`.`softwares_id`"
+                          . getEntitiesRestrictRequest(' AND', $softwarelicenses_table, '', '', true).") ";
+         }
+         return $JOIN;
       }
 
-      // specific metacriteria
-      switch (static::getMetaReferenceItemtype($from_type)) {
-         case 'Ticket' :
-         case 'Problem' :
-         case 'Change' :
-            switch ($from_type) {
-               case 'Ticket':
-                  $link_table = "glpi_items_tickets";
-                  break;
-               case 'Problem':
-                  $link_table = "glpi_items_problems";
-                  break;
-               case 'Change':
-                  $link_table = "glpi_changes_items";
-                  break;
-            }
+      if ($from_type === 'Budget' && in_array($to_type, $CFG_GLPI['infocom_types'])) {
+         // From Budget to infocom_types
+         $infocom_alias = "glpi_infocoms{$alias_suffix}";
+         if (!in_array($infocom_alias, $already_link_tables2)) {
+            array_push($already_link_tables2, $infocom_alias);
+            $JOIN .= "$LINK `glpi_infocoms` AS `$infocom_alias`
+                         ON (`$from_table`.`id` = `$infocom_alias`.`budgets_id`) ";
+         }
+         if (!in_array($to_table, $already_link_tables2)) {
             array_push($already_link_tables2, $to_table);
-            return " $LINK `$link_table` AS {$link_table}_to_$to_type
-                        ON (`$from_table`.`id` = `{$link_table}_to_$to_type`.`$from_fk`)
-                     $LINK `$to_table`
-                        ON (`$to_table`.`id` = `{$link_table}_to_$to_type`.`items_id`
-                     AND `{$link_table}_to_$to_type`.`itemtype` = '$to_type')";
-
-         case 'Computer' :
-            switch ($to_type) {
-               case 'Printer' :
-                  array_push($already_link_tables2, $to_table);
-                  array_push($already_link_tables2, "glpi_computers_items_$to_type");
-                  return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
-                              ON (`glpi_computers_items_$to_type`.`computers_id`
-                                       = `glpi_computers`.`id`
-                                  AND `glpi_computers_items_$to_type`.`itemtype` = '$to_type'
-                                  AND `glpi_computers_items_$to_type`.`is_deleted` = 0)
-                           $LINK `glpi_printers`
-                              ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_printers`.`id`) ";
-
-               case 'Monitor' :
-                  array_push($already_link_tables2, $to_table);
-                  array_push($already_link_tables2, "glpi_computers_items_$to_type");
-                  return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
-                              ON (`glpi_computers_items_$to_type`.`computers_id`
-                                       = `glpi_computers`.`id`
-                                  AND `glpi_computers_items_$to_type`.`itemtype` = '$to_type'
-                                  AND `glpi_computers_items_$to_type`.`is_deleted` = 0)
-                           $LINK `glpi_monitors`
-                              ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_monitors`.`id`) ";
-
-               case 'Peripheral' :
-                  array_push($already_link_tables2, $to_table);
-                  array_push($already_link_tables2, "glpi_computers_items_$to_type");
-                  return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
-                              ON (`glpi_computers_items_$to_type`.`computers_id`
-                                       = `glpi_computers`.`id`
-                                  AND `glpi_computers_items_$to_type`.`itemtype` = '$to_type'
-                                  AND `glpi_computers_items_$to_type`.`is_deleted` = 0)
-                           $LINK `glpi_peripherals`
-                              ON (`glpi_computers_items_$to_type`.`items_id`
-                                       = `glpi_peripherals`.`id`) ";
-
-               case 'Phone' :
-                  array_push($already_link_tables2, $to_table);
-                  array_push($already_link_tables2, "glpi_computers_items_$to_type");
-                  return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
-                              ON (`glpi_computers_items_$to_type`.`computers_id`
-                                       = `glpi_computers`.`id`
-                                  AND `glpi_computers_items_$to_type`.`itemtype` = '$to_type'
-                                  AND `glpi_computers_items_$to_type`.`is_deleted` = 0)
-                           $LINK `glpi_phones`
-                              ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_phones`.`id`) ";
-
-               case 'Software' :
-                  array_push($already_link_tables2, $to_table);
-                  array_push($already_link_tables2, "glpi_softwareversions_$complexjoin$to_type");
-                  array_push($already_link_tables2, "glpi_softwarelicenses_$complexjoin$to_type");
-                  array_push($already_link_tables2, "glpi_items_softwareversions_$complexjoin$to_type");
-                  return " $LINK `glpi_items_softwareversions`
-                                    AS `glpi_items_softwareversions_$complexjoin$to_type`
-                              ON (`glpi_items_softwareversions_$complexjoin$to_type`.`items_id`
-                                       = `$from_table`.`id`
-                                  AND `glpi_items_softwareversions_$complexjoin$to_type`.`itemtype` = '$from_type'
-                                  AND `glpi_items_softwareversions_$complexjoin$to_type`.`is_deleted` = 0)
-                           $LINK `glpi_softwareversions` AS `glpi_softwareversions_$complexjoin$to_type`
-                              ON (`glpi_items_softwareversions_$complexjoin$to_type`.`softwareversions_id`
-                                       = `glpi_softwareversions_$complexjoin$to_type`.`id`)
-                           $LINK `glpi_softwares`
-                              ON (`glpi_softwareversions_$complexjoin$to_type`.`softwares_id`
-                                       = `glpi_softwares`.`id`)
-                           LEFT JOIN `glpi_softwarelicenses` AS `glpi_softwarelicenses_$complexjoin$to_type`
-                              ON (`glpi_softwares`.`id`
-                                       = `glpi_softwarelicenses_$complexjoin$to_type`.`softwares_id`".
-                     getEntitiesRestrictRequest(' AND',
-                        "glpi_softwarelicenses_$complexjoin$to_type",
-                        '', '', true).") ";
-            }
-            break;
-
-         case 'Monitor' :
-            switch ($to_type) {
-               case 'Computer' :
-                  array_push($already_link_tables2, $to_table);
-                  array_push($already_link_tables2, "glpi_computers_items_$to_type");
-                  return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
-                              ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_monitors`.`id`
-                                  AND `glpi_computers_items_$to_type`.`itemtype` = '$from_type'
-                                  AND `glpi_computers_items_$to_type`.`is_deleted` = 0)
-                           $LINK `glpi_computers`
-                              ON (`glpi_computers_items_$to_type`.`computers_id`
-                                       = `glpi_computers`.`id`) ";
-               case 'Software' :
-                  array_push($already_link_tables2, getTableForItemType($to_type));
-                  array_push($already_link_tables2, "glpi_softwareversions_$to_type");
-                  array_push($already_link_tables2, "glpi_softwarelicenses_$to_type");
-                  return " $LINK `glpi_items_softwareversions`
-                                    AS `glpi_items_softwareversions_$complexjoin$to_type`
-                              ON (`glpi_items_softwareversions_$complexjoin$to_type`.`items_id`
-                                       = `$from_table`.`id`
-                                  AND `glpi_items_softwareversions_$complexjoin$to_type`.`itemtype` = '$from_type'
-                                  AND `glpi_items_softwareversions_$complexjoin$to_type`.`is_deleted` = 0)
-                           $LINK `glpi_softwareversions` AS `glpi_softwareversions_$complexjoin$to_type`
-                              ON (`glpi_items_softwareversions_$complexjoin$to_type`.`softwareversions_id`
-                                       = `glpi_softwareversions_$complexjoin$to_type`.`id`)
-                           $LINK `glpi_softwares`
-                              ON (`glpi_softwareversions_$complexjoin$to_type`.`softwares_id`
-                                       = `glpi_softwares`.`id`)
-                           LEFT JOIN `glpi_softwarelicenses` AS `glpi_softwarelicenses_$complexjoin$to_type`
-                              ON (`glpi_softwares`.`id`
-                                       = `glpi_softwarelicenses_$complexjoin$to_type`.`softwares_id`".
-                     getEntitiesRestrictRequest(' AND',
-                        "glpi_softwarelicenses_$complexjoin$to_type",
-                        '', '', true).") ";
-            }
-            break;
-
-         case 'Printer' :
-            switch ($to_type) {
-               case 'Computer' :
-                  array_push($already_link_tables2, $to_table);
-                  array_push($already_link_tables2, "glpi_computers_items_$to_type");
-                  return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
-                              ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_printers`.`id`
-                                  AND `glpi_computers_items_$to_type`.`itemtype` = '$from_type'
-                                  AND `glpi_computers_items_$to_type`.`is_deleted` = 0)
-                           $LINK `glpi_computers`
-                              ON (`glpi_computers_items_$to_type`.`computers_id`
-                                       = `glpi_computers`.`id` ".
-                                  getEntitiesRestrictRequest("AND", 'glpi_computers').") ";
-            }
-            break;
-
-         case 'Peripheral' :
-            switch ($to_type) {
-               case 'Computer' :
-                  array_push($already_link_tables2, $to_table);
-                  array_push($already_link_tables2, "glpi_computers_items_$to_type");
-                  return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
-                              ON (`glpi_computers_items_$to_type`.`items_id`
-                                       = `glpi_peripherals`.`id`
-                                  AND `glpi_computers_items_$to_type`.`itemtype` = '$from_type'
-                                  AND `glpi_computers_items_$to_type`.`is_deleted` = 0)
-                           $LINK `glpi_computers`
-                              ON (`glpi_computers_items_$to_type`.`computers_id`
-                                       = `glpi_computers`.`id`) ";
-            }
-            break;
-
-         case 'Phone' :
-            switch ($to_type) {
-               case 'Computer' :
-                  array_push($already_link_tables2, $to_table);
-                  array_push($already_link_tables2, "glpi_computers_items_$to_type");
-                  return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
-                              ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_phones`.`id`
-                                  AND `glpi_computers_items_$to_type`.`itemtype` = '$from_type'
-                                  AND `glpi_computers_items_$to_type`.`is_deleted` = 0)
-                           $LINK `glpi_computers`
-                              ON (`glpi_computers_items_$to_type`.`computers_id`
-                                       = `glpi_computers`.`id`) ";
-            }
-            break;
-
-         case 'Software' :
-            switch ($to_type) {
-               case 'Computer' :
-                  array_push($already_link_tables2, $to_table);
-                  array_push($already_link_tables2, "glpi_softwareversions_$to_type");
-                  array_push($already_link_tables2, "glpi_softwareversions_$to_type");
-                  return " $LINK `glpi_softwareversions` AS `glpi_softwareversions_$to_type`
-                              ON (`glpi_softwareversions_$to_type`.`softwares_id`
-                                       = `glpi_softwares`.`id`)
-                           $LINK `glpi_items_softwareversions`
-                                    AS `glpi_items_softwareversions_$to_type`
-                              ON (`glpi_items_softwareversions_$to_type`.`softwareversions_id`
-                                       = `glpi_softwareversions_$to_type`.`id`
-                                  AND `glpi_items_softwareversions_$to_type`.`itemtype` = '$to_type'
-                                  AND `glpi_items_softwareversions_$to_type`.`is_deleted` = 0)
-                           $LINK `$to_table`
-                              ON (`glpi_items_softwareversions_$to_type`.`items_id`
-                                       = `$to_table`.`id`
-                                  AND `glpi_items_softwareversions_$to_type`.`itemtype` = '$to_type' ".
-                                  getEntitiesRestrictRequest("AND", $to_table).") ";
-            }
-            break;
+            $JOIN .= "$LINK `$to_table`
+                         ON (`$to_table`.`id` = `$infocom_alias`.`items_id`
+                             AND `$infocom_alias`.`itemtype` = '$to_type'
+                             $to_entity_restrict) ";
+         }
+         return $JOIN;
       }
+
+      if ($to_type === 'Budget' && in_array($from_type, $CFG_GLPI['infocom_types'])) {
+         // From infocom_types to Budget
+         $infocom_alias = "glpi_infocoms{$alias_suffix}";
+         if (!in_array($infocom_alias, $already_link_tables2)) {
+            array_push($already_link_tables2, $infocom_alias);
+            $JOIN .= "$LINK `glpi_infocoms` AS `$infocom_alias`
+                         ON (`$from_table`.`id` = `$infocom_alias`.`items_id`
+                             AND `$infocom_alias`.`itemtype` = '$from_type') ";
+         }
+         if (!in_array($to_table, $already_link_tables2)) {
+            array_push($already_link_tables2, $to_table);
+            $JOIN .= "$LINK `$to_table`
+                         ON (`$infocom_alias`.`$to_fk` = `$to_table`.`id`
+                             $to_entity_restrict) ";
+         }
+         return $JOIN;
+      }
+
+      if ($from_type === 'Reservation' && in_array($to_type, $CFG_GLPI['reservation_types'])) {
+         // From Reservation to reservation_types
+         $reservationitems_alias = "glpi_reservationitems{$alias_suffix}";
+         if (!in_array($reservationitems_alias, $already_link_tables2)) {
+            array_push($already_link_tables2, $reservationitems_alias);
+            $JOIN .= "$LINK `glpi_reservationitems` AS `$reservationitems_alias`
+                         ON (`$from_table`.`reservationitems_id` = `$reservationitems_alias`.`id`) ";
+         }
+         if (!in_array($to_table, $already_link_tables2)) {
+            array_push($already_link_tables2, $to_table);
+            $JOIN .= "$LINK `$to_table`
+                         ON (`$to_table`.`id` = `$reservationitems_alias`.`items_id`
+                             AND `$reservationitems_alias`.`itemtype` = '$to_type'
+                             $to_entity_restrict) ";
+         }
+         return $JOIN;
+      }
+
+      if ($to_type === 'Reservation' && in_array($from_type, $CFG_GLPI['reservation_types'])) {
+         // From reservation_types to Reservation
+         $reservationitems_alias = "glpi_reservationitems{$alias_suffix}";
+         if (!in_array($infocom_alias, $already_link_tables2)) {
+            array_push($already_link_tables2, $infocom_alias);
+            $JOIN .= "$LINK `glpi_reservationitems` AS `$reservationitems_alias`
+                         ON (`$from_table`.`id` = `$reservationitems_alias`.`items_id`
+                             AND `$reservationitems_alias`.`itemtype` = '$from_type') ";
+         }
+         if (!in_array($to_table, $already_link_tables2)) {
+            array_push($already_link_tables2, $to_table);
+            $JOIN .= "$LINK `$to_table`
+                         ON (`$reservationitems_alias`.`id` = `$to_table`.`reservationitems_id`
+                             $to_entity_restrict) ";
+         }
+         return $JOIN;
+      }
+
+      // Generic JOIN
+      $from_obj      = getItemForItemtype($from_type);
+      $to_obj        = getItemForItemtype($to_type);
+      $from_item_obj = getItemForItemtype($from_type . '_Item');
+      if (!$from_item_obj) {
+         $from_item_obj = getItemForItemtype('Item_' . $from_type);
+      }
+      $to_item_obj   = getItemForItemtype($to_type . '_Item');
+      if (!$to_item_obj) {
+         $to_item_obj = getItemForItemtype('Item_' . $to_type);
+      }
+      if ($from_obj && $from_obj->isField($to_fk)) {
+         // $from_table has a foreign key corresponding to $to_table
+         if (!in_array($to_table, $already_link_tables2)) {
+            array_push($already_link_tables2, $to_table);
+            $JOIN .= "$LINK `$to_table`
+                         ON (`$from_table`.`$to_fk` = `$to_table`.`id`
+                             $to_entity_restrict) ";
+         }
+      } else if ($to_obj && $to_obj->isField($from_fk)) {
+         // $to_table has a foreign key corresponding to $from_table
+         if (!in_array($to_table, $already_link_tables2)) {
+            array_push($already_link_tables2, $to_table);
+            $JOIN .= "$LINK `$to_table`
+                         ON (`$from_table`.`id` = `$to_table`.`$from_fk`
+                             $to_entity_restrict) ";
+         }
+      } else if ($from_obj && $from_obj->isField('itemtype') && $from_obj->isField('items_id')) {
+         // $from_table has items_id/itemtype fields
+         if (!in_array($to_table, $already_link_tables2)) {
+            array_push($already_link_tables2, $to_table);
+            $JOIN .= "$LINK `$to_table`
+                         ON (`$from_table`.`items_id` = `$to_table`.`id`
+                             AND `$from_table`.`itemtype` = '$to_type'
+                             $to_entity_restrict) ";
+         }
+      } else if ($to_obj && $to_obj->isField('itemtype') && $to_obj->isField('items_id')) {
+         // $to_table has items_id/itemtype fields
+         if (!in_array($to_table, $already_link_tables2)) {
+            array_push($already_link_tables2, $to_table);
+            $JOIN .= "$LINK `$to_table`
+                         ON (`$from_table`.`id` = `$to_table`.`items_id`
+                             AND `$to_table`.`itemtype` = '$from_type'
+                             $to_entity_restrict) ";
+         }
+      } else if ($from_item_obj && $from_item_obj->isField($from_fk)) {
+         // glpi_$from_items table exists and has a foreign key corresponding to $to_table
+         $items_table = $from_item_obj::getTable();
+         $items_table_alias = $items_table . $alias_suffix;
+         if (!in_array($items_table_alias, $already_link_tables2)) {
+            array_push($already_link_tables2, $items_table_alias);
+            $deleted = $from_item_obj->isField('is_deleted') ? "AND `$items_table_alias`.`is_deleted` = 0" : "";
+            $JOIN .= "$LINK `$items_table` AS `$items_table_alias`
+                         ON (`$items_table_alias`.`$from_fk` = `$from_table`.`id`
+                             AND `$items_table_alias`.`itemtype` = '$to_type'
+                             $deleted)";
+         }
+         if (!in_array($to_table, $already_link_tables2)) {
+            array_push($already_link_tables2, $to_table);
+            $JOIN .= "$LINK `$to_table`
+                         ON (`$items_table_alias`.`items_id` = `$to_table`.`id`
+                             $to_entity_restrict) ";
+         }
+      } else if ($to_item_obj && $to_item_obj->isField($to_fk)) {
+         // glpi_$to_items table exists and has a foreign key corresponding to $from_table
+         $items_table = $to_item_obj::getTable();
+         $items_table_alias = $items_table . $alias_suffix;
+         if (!in_array($items_table_alias, $already_link_tables2)) {
+            array_push($already_link_tables2, $items_table_alias);
+            $deleted = $to_item_obj->isField('is_deleted') ? "AND `$items_table_alias`.`is_deleted` = 0" : "";
+            $JOIN .= "$LINK `$items_table` AS `$items_table_alias`
+                         ON (`$items_table_alias`.`items_id` = `$from_table`.`id`
+                             AND `$items_table_alias`.`itemtype` = '$from_type'
+                             $deleted)";
+         }
+         if (!in_array($to_table, $already_link_tables2)) {
+            array_push($already_link_tables2, $to_table);
+            $JOIN .= "$LINK `$to_table`
+                         ON (`$items_table_alias`.`$to_fk` = `$from_table`.`id`
+                             $to_entity_restrict) ";
+         }
+      }
+
+      return $JOIN;
+
    }
 
 
