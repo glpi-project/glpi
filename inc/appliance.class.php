@@ -306,6 +306,14 @@ class Appliance extends CommonDBTM {
       ];
 
       $tab[] = [
+         'id'            => '11',
+         'table'         => ApplianceType::getTable(),
+         'field'         => 'name',
+         'name'          => __('Type'),
+         'datatype'      => 'dropdown'
+      ];
+
+      $tab[] = [
          'id'            => '12',
          'table'         => self::getTable(),
          'field'         => 'serial',

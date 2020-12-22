@@ -446,7 +446,9 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
       }
       if ($ID <= 0) { // add
          echo Html::hidden('users_id', ['value' => $this->fields['users_id']]);
-         echo Html::hidden('is_private', ['value' => $this->fields['is_private']]);
+         if (!self::canCreate()) {
+            echo Html::hidden('is_private', ['value' => 1]);
+         }
       } else {
          echo Html::hidden('id', ['value' => $ID]);
       }

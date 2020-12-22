@@ -2147,12 +2147,14 @@ class Search {
     * @return array Array of available itemtype
    **/
    static function getMetaItemtypeAvailable($itemtype) {
+      global $CFG_GLPI;
 
       // Display meta search items
       $linked = [];
       // Define meta search items to linked
 
-      switch (static::getMetaReferenceItemtype($itemtype)) {
+      $meta_itemtype = static::getMetaReferenceItemtype($itemtype);
+      switch ($meta_itemtype) {
          case 'Computer' :
             $linked = ['Monitor', 'Peripheral', 'Phone', 'Printer',
                             'Software', 'User', 'Group', 'Budget'];
@@ -2184,6 +2186,11 @@ class Search {
             $linked = ['Computer', 'User', 'Group', 'Budget'];
             break;
       }
+
+      if (in_array($meta_itemtype, $CFG_GLPI['appliance_types'])) {
+         $linked[] = 'Appliance';
+      }
+
       return $linked;
    }
 
@@ -5208,6 +5215,13 @@ JAVASCRIPT;
                             AND `glpi_infocoms`.`itemtype` = '$from_type')
                     $LINK `$to_table`
                         ON (`glpi_infocoms`.`$to_fk` = `$to_table`.`id`) ";
+         case 'Appliance' :
+            array_push($already_link_tables2, $to_table);
+            return "$LINK `glpi_appliances_items`
+                        ON (`$from_table`.`id` = `glpi_appliances_items`.`items_id`
+                            AND `glpi_appliances_items`.`itemtype` = '$from_type')
+                    $LINK `$to_table`
+                        ON (`glpi_appliances_items`.`$to_fk` = `$to_table`.`id`) ";
       }
 
       // specific metacriteria
