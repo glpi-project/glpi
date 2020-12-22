@@ -2184,12 +2184,34 @@ class Search {
             break;
       }
 
-      if (in_array($meta_itemtype, $CFG_GLPI['appliance_types'])) {
-         $linked[] = 'Appliance';
+      global $CFG_GLPI;
+      $excludeds = [
+         'report',
+         'infocom',
+         'link',
+         'networkport',
+         'reservation'
+      ];
+      foreach ($CFG_GLPI as $key => $values) {
+         $matches = [];
+         if (preg_match('/^(.+)_types$/', $key, $matches)) {
+            $itemtype = $matches[1];
+            if (in_array($itemtype, $excludeds)) {
+               continue;
+            }
+            $class = ucwords($itemtype);
+            if (class_exists($class)
+                && in_array($meta_itemtype, $values)
+                && !in_array($class::getType(), $linked)
+             ) {
+               $linked[] = $class::getType();
+            }
+         }
       }
 
       return $linked;
    }
+
 
 
    /**
@@ -5174,6 +5196,7 @@ JAVASCRIPT;
    **/
    static function addMetaLeftJoin($from_type, $to_type, array &$already_link_tables2,
                                    $joinparams = []) {
+      global $CFG_GLPI;
       $LINK = " LEFT JOIN ";
 
       $from_table = $from_type::getTable();
@@ -5200,13 +5223,25 @@ JAVASCRIPT;
                             AND `glpi_infocoms`.`itemtype` = '$from_type')
                     $LINK `$to_table`
                         ON (`glpi_infocoms`.`$to_fk` = `$to_table`.`id`) ";
-         case 'Appliance' :
-            array_push($already_link_tables2, $to_table);
-            return "$LINK `glpi_appliances_items`
-                        ON (`$from_table`.`id` = `glpi_appliances_items`.`items_id`
-                            AND `glpi_appliances_items`.`itemtype` = '$from_type')
-                    $LINK `$to_table`
-                        ON (`glpi_appliances_items`.`$to_fk` = `$to_table`.`id`) ";
+         default:
+            $cfg_type = strtolower($to_type) . '_types';
+            if (isset($CFG_GLPI[$cfg_type])) {
+               $items_class = $to_type . '_Item';
+               if (!class_exists($items_class)) {
+                  $items_class = 'Item_' . $to_type;
+               }
+
+               if (class_exists($items_class)) {
+                  array_push($already_link_tables2, $items_table);
+                  array_push($already_link_tables2, $to_table);
+                  $items_table = $items_class::getTable();
+                  return "$LINK `$items_table`
+                              ON (`$from_table`.`id` = `$items_table`.`items_id`
+                                 AND `$items_table`.`itemtype` = '$from_type')
+                        $LINK `$to_table`
+                              ON (`$items_table`.`$to_fk` = `$to_table`.`id`) ";
+               }
+            }
       }
 
       // specific metacriteria
