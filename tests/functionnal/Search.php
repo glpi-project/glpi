@@ -322,10 +322,10 @@ class Search extends DbTestCase {
          ->matches('/LEFT JOIN\s*`glpi_items_softwareversions`\s*AS `glpi_items_softwareversions_Software`/im')
          ->matches('/LEFT JOIN\s*`glpi_softwareversions`\s*AS `glpi_softwareversions_Software`/im')
          ->matches('/LEFT JOIN\s*`glpi_softwares`\s*ON\s*\(`glpi_softwareversions_Software`\.`softwares_id`\s*=\s*`glpi_softwares`\.`id`\)/im')
-         ->matches('/LEFT JOIN\s*`glpi_infocoms`\s*ON\s*\(`glpi_computers`\.`id`\s*=\s*`glpi_infocoms`\.`items_id`\s*AND\s*`glpi_infocoms`.`itemtype`\s*=\s*\'Computer\'\)/im')
-         ->matches('/LEFT JOIN\s*`glpi_budgets`\s*ON\s*\(`glpi_infocoms`\.`budgets_id`\s*=\s*`glpi_budgets`\.`id`\)/im')
+         ->matches('/LEFT JOIN\s*`glpi_infocoms`\s*AS\s*`glpi_infocoms_Budget`\s*ON\s*\(`glpi_computers`\.`id`\s*=\s*`glpi_infocoms_Budget`\.`items_id`\s*AND\s*`glpi_infocoms_Budget`.`itemtype`\s*=\s*\'Computer\'\)/im')
+         ->matches('/LEFT JOIN\s*`glpi_budgets`\s*ON\s*\(`glpi_infocoms_Budget`\.`budgets_id`\s*=\s*`glpi_budgets`\.`id`/im')
          ->matches('/LEFT JOIN\s*`glpi_computers_items`\s*AS `glpi_computers_items_Printer`\s*ON\s*\(`glpi_computers_items_Printer`\.`computers_id`\s*=\s*`glpi_computers`\.`id`\s*AND\s*`glpi_computers_items_Printer`.`itemtype`\s*=\s*\'Printer\'\s*AND\s*`glpi_computers_items_Printer`.`is_deleted`\s*=\s*0\)/im')
-         ->matches('/LEFT JOIN\s*`glpi_printers`\s*ON\s*\(`glpi_computers_items_Printer`\.`items_id`\s*=\s*`glpi_printers`\.`id`\)/im')
+         ->matches('/LEFT JOIN\s*`glpi_printers`\s*ON\s*\(`glpi_computers_items_Printer`\.`items_id`\s*=\s*`glpi_printers`\.`id`/im')
          // match where parts
          ->contains("`glpi_computers`.`is_deleted` = 0")
          ->contains("AND `glpi_computers`.`is_template` = 0")
@@ -433,23 +433,8 @@ class Search extends DbTestCase {
     * @return void
     */
    public function testSearchOptions() {
-      $classes = $this->getClasses(
-         'searchOptions',
-         [
-            '/^Common.*/', // Should be abstract
-            'NetworkPortInstantiation', // Should be abstract (or have $notable = true)
-            'NetworkPortMigration', // Tables only exists in specific cases
-            'NotificationSettingConfig', // Stores its data in glpi_configs, does not acts as a CommonDBTM
-         ]
-      );
-      sort($classes);
+      $classes = $this->getSearchableClasses();
       foreach ($classes as $class) {
-         $item_class = new \ReflectionClass($class);
-         if ($item_class->isAbstract() || $class::getTable() === '') {
-            // abstract class or class with "static protected $notable = true;" (which is a kind of abstract)
-            continue;
-         }
-
          $item = new $class();
 
          //load all options; so rawSearchOptionsToAdd to be tested
@@ -496,20 +481,14 @@ class Search extends DbTestCase {
     * @return void
     */
    public function testSearchAllMeta() {
-      $itemtypeslist = [
-         'Computer',
-         'Problem',
-         'Ticket',
-         'Printer',
-         'Monitor',
-         'Peripheral',
-         'Software',
-         'Phone'
-      ];
 
-      foreach ($itemtypeslist as $itemtype) {
-         // extract metacriteria
-         $metacriteria = [];
+      $classes = $this->getSearchableClasses();
+
+      // extract metacriteria
+      $itemtype_criteria = [];
+      foreach ($classes as $class) {
+         $itemtype = $class::getType();
+         $itemtype_criteria[$itemtype] = [];
          $metaList = \Search::getMetaItemtypeAvailable($itemtype);
          foreach ($metaList as $metaitemtype) {
             $item = getItemForItemtype($metaitemtype);
@@ -524,29 +503,44 @@ class Search extends DbTestCase {
                $criterion_params['itemtype'] = $metaitemtype;
                $criterion_params['link'] = 'AND';
 
-               $metacriteria[] = $criterion_params;
-
-               // Search with each meta criteria independently.
-               $search_params = ['is_deleted'   => 0,
-                                 'start'        => 0,
-                                 'criteria'     => [0 => ['field'      => 'view',
-                                                          'searchtype' => 'contains',
-                                                          'value'      => '']],
-                                 'metacriteria' => [$criterion_params]];
-               $this->doSearch($itemtype, $search_params);
+               $itemtype_criteria[$itemtype][] = $criterion_params;
             }
          }
+      }
 
-         // Search on all with multiple meta criteria
-         // Limit criteria count to 50 to prevent performances issues
-         // and also prevent exceeding of MySQL join limit.
-         foreach (array_chunk($metacriteria, 50) as $metacriteria_chunk) {
+      foreach ($itemtype_criteria as $itemtype => $criteria) {
+         if (empty($criteria)) {
+            continue;
+         }
+
+         $first_criteria_by_metatype = [];
+
+         // Search with each meta criteria independently.
+         foreach ($criteria as $criterion_params) {
+            if (!array_key_exists($criterion_params['itemtype'], $first_criteria_by_metatype)) {
+               $first_criteria_by_metatype[$criterion_params['itemtype']] = $criterion_params;
+            }
+
             $search_params = ['is_deleted'   => 0,
                               'start'        => 0,
                               'criteria'     => [0 => ['field'      => 'view',
                                                        'searchtype' => 'contains',
                                                        'value'      => '']],
-                              'metacriteria' => $metacriteria_chunk];
+                              'metacriteria' => [$criterion_params]];
+            $this->doSearch($itemtype, $search_params);
+         }
+
+         // Search with criteria related to multiple meta items.
+         // Limit criteria count to 5 to prevent performances issues (mainly on MariaDB).
+         // Test would take hours if done using too many criteria on each request.
+         // Thus, using 5 different meta items on a request seems already more than a normal usage.
+         foreach (array_chunk($first_criteria_by_metatype, 3) as $criteria_chunk) {
+            $search_params = ['is_deleted'   => 0,
+                              'start'        => 0,
+                              'criteria'     => [0 => ['field'      => 'view',
+                                                       'searchtype' => 'contains',
+                                                       'value'      => '']],
+                              'metacriteria' => $criteria_chunk];
             $this->doSearch($itemtype, $search_params);
          }
       }
@@ -1410,6 +1404,36 @@ class Search extends DbTestCase {
       $this->array($result)->hasKey('sql');
       $this->array($result['sql'])->hasKey('search');
       $this->string($result['sql']['search']);
+   }
+
+   /**
+    * Returns list of searchable classes.
+    *
+    * @return array
+    */
+   private function getSearchableClasses(): array {
+      $classes = $this->getClasses(
+         'searchOptions',
+         [
+            '/^Common.*/', // Should be abstract
+            'NetworkPortInstantiation', // Should be abstract (or have $notable = true)
+            'NetworkPortMigration', // Tables only exists in specific cases
+            'NotificationSettingConfig', // Stores its data in glpi_configs, does not acts as a CommonDBTM
+         ]
+      );
+      $searchable_classes = [];
+      foreach ($classes as $class) {
+         $item_class = new \ReflectionClass($class);
+         if ($item_class->isAbstract() || $class::getTable() === '' || !is_a($class, CommonDBTM::class, true)) {
+            // abstract class or class with "static protected $notable = true;" (which is a kind of abstract)
+            continue;
+         }
+
+         $searchable_classes[] = $class;
+      }
+      sort($searchable_classes);
+
+      return $searchable_classes;
    }
 }
 
