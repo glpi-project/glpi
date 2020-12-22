@@ -1668,7 +1668,8 @@ class Toolbox {
       $opts = [
          CURLOPT_URL             => $url,
          CURLOPT_USERAGENT       => "GLPI/".trim($CFG_GLPI["version"]),
-         CURLOPT_RETURNTRANSFER  => 1
+         CURLOPT_RETURNTRANSFER  => 1,
+         CURLOPT_CONNECTTIMEOUT  => 5,
       ] + $eopts;
 
       if (!empty($CFG_GLPI["proxy_name"])) {
