@@ -6781,7 +6781,9 @@ abstract class CommonITILObject extends CommonDBTM {
          $restrict_task = [
             'OR' => [
                'is_private'   => 0,
-               'users_id'     => Session::getLoginUserID()
+               'users_id'     => Session::getCurrentInterface() == "central"
+                                    ? Session::getLoginUserID()
+                                    : 0
             ]
          ];
       }
