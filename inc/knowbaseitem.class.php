@@ -1149,7 +1149,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
     * @param $params array  (contains, knowbaseitemcategories_id, faq)
     * @param $type   string search type : browse / search (default search)
     *
-    * @return String : SQL request
+    * @return array : SQL request
    **/
    static function getListRequest(array $params, $type = 'search') {
       global $DB;
