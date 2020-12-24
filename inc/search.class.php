@@ -4726,43 +4726,44 @@ JAVASCRIPT;
     * @return string Left join string
    **/
    static function addDefaultJoin($itemtype, $ref_table, array &$already_link_tables) {
+      $out = '';
 
       switch ($itemtype) {
          // No link
          case 'User' :
-            return self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+            $out = self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                      "glpi_profiles_users", "profiles_users_id", 0, 0,
                                      ['jointype' => 'child']);
+            break;
 
          case 'Reminder' :
-            return Reminder::addVisibilityJoins();
+            $out = Reminder::addVisibilityJoins();
+            break;
 
          case 'RSSFeed' :
-            return RSSFeed::addVisibilityJoins();
+            $out = RSSFeed::addVisibilityJoins();
+            break;
 
          case 'ProjectTask' :
             // Same structure in addDefaultWhere
-            $out  = '';
             $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                       "glpi_projects", "projects_id");
             $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                       "glpi_projecttaskteams", "projecttaskteams_id", 0, 0,
                                       ['jointype' => 'child']);
-            return $out;
+            break;
 
          case 'Project' :
             // Same structure in addDefaultWhere
-            $out = '';
             if (!Session::haveRight("project", Project::READALL)) {
                $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                           "glpi_projectteams", "projectteams_id", 0, 0,
                                           ['jointype' => 'child']);
             }
-            return $out;
+            break;
 
          case 'Ticket' :
             // Same structure in addDefaultWhere
-            $out = '';
             if (!Session::haveRight("ticket", Ticket::READALL)) {
                $searchopt = &self::getOptions($itemtype);
 
@@ -4818,7 +4819,7 @@ JAVASCRIPT;
                                             $searchopt[58]['joinparams']['beforejoin']['joinparams']);
                }
             }
-            return $out;
+            break;
 
          case 'Change' :
          case 'Problem' :
@@ -4871,7 +4872,7 @@ JAVASCRIPT;
                   }
                }
             }
-            return $out;
+            break;
 
          default :
             // Plugin can override core definition for its type
@@ -4884,13 +4885,12 @@ JAVASCRIPT;
                   }
                };
                $out = Plugin::doOneHook($plug['plugin'], $hook_closure);
-               if (!empty($out)) {
-                  return $out;
-               }
             }
-
-            return "";
+            break;
       }
+
+      list($itemtype, $out) = Plugin::doHookFunction('add_default_join', [$itemtype, $out]);
+      return $out;
    }
 
 
