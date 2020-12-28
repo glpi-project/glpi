@@ -920,6 +920,9 @@ class Auth extends CommonGLPI {
                // Then ensure addslashes
                $input = Toolbox::addslashes_deep($input);
                unset ($this->user->fields);
+               if ($authtype == self::EXTERNAL && !isset($input["authtype"])) {
+                  $input["authtype"] = $authtype;
+               }
                $this->user->add($input);
             } else {
                // Auto add not enable so auth failed
