@@ -489,8 +489,8 @@ $tables['glpi_crontasks'] = [
       'logs_lifetime' => 30,
    ], [
       'id'            => 20,
-      'itemtype'      => 'TicketRecurrent',
-      'name'          => 'ticketrecurrent',
+      'itemtype'      => 'CommonITILRecurrentCron',
+      'name'          => 'RecurrentItems',
       'frequency'     => 3600,
       'param'         => null,
       'state'         => 1,
