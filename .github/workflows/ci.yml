@@ -108,6 +108,9 @@ jobs:
       - name: "ESLint"
         run: |
           docker exec app node_modules/.bin/eslint . && echo "ESLint found no errors"
+      - name: "Check for missing headers"
+        run: |
+          docker exec app bin/console glpi:tools:licence_header_check
       - name: "Cleanup containers"
         if: always()
         run: |
