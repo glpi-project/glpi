@@ -2,12 +2,12 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2020 Teclib' and contributors.
+ * Copyright (C) 2015-2021 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
  * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2019 by the INDEPNET Development Team.
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
  *
  * ---------------------------------------------------------------------
  *

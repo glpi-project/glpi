@@ -2,7 +2,7 @@
 # /**
 #  * ---------------------------------------------------------------------
 #  * GLPI - Gestionnaire Libre de Parc Informatique
-#  * Copyright (C) 2015-2020 Teclib' and contributors.
+#  * Copyright (C) 2015-2021 Teclib' and contributors.
 #  *
 #  * http://glpi-project.org
 #  *
@@ -28,7 +28,7 @@
 #  * You should have received a copy of the GNU General Public License
 #  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 #  * ---------------------------------------------------------------------
-#  */
+# */
 
 SCRIPT_DIR=$(dirname $0)
 WORKING_DIR=$(readlink -f "$SCRIPT_DIR/..")

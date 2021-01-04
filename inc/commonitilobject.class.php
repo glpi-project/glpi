@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2020 Teclib' and contributors.
+ * Copyright (C) 2015-2021 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -6767,7 +6767,9 @@ abstract class CommonITILObject extends CommonDBTM {
          $restrict_task = [
             'OR' => [
                'is_private'   => 0,
-               'users_id'     => Session::getLoginUserID()
+               'users_id'     => Session::getCurrentInterface() == "central"
+                                    ? Session::getLoginUserID()
+                                    : 0
             ]
          ];
       }

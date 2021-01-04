@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2020 Teclib' and contributors.
+ * Copyright (C) 2015-2021 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -93,8 +93,9 @@ class TicketTask extends CommonITILTask {
       }
 
       // see task created or affected to me
-      if (($this->fields["users_id"] === Session::getLoginUserID())
-          || ($this->fields["users_id_tech"] === Session::getLoginUserID())) {
+      if (Session::getCurrentInterface() == "central"
+          && ($this->fields["users_id"] === Session::getLoginUserID())
+              || ($this->fields["users_id_tech"] === Session::getLoginUserID())) {
          return true;
       }
 

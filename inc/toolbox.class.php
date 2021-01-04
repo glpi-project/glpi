@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2020 Teclib' and contributors.
+ * Copyright (C) 2015-2021 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -1470,7 +1470,8 @@ class Toolbox {
       $opts = [
          CURLOPT_URL             => $url,
          CURLOPT_USERAGENT       => "GLPI/".trim($CFG_GLPI["version"]),
-         CURLOPT_RETURNTRANSFER  => 1
+         CURLOPT_RETURNTRANSFER  => 1,
+         CURLOPT_CONNECTTIMEOUT  => 5,
       ] + $eopts;
 
       if (!empty($CFG_GLPI["proxy_name"])) {
