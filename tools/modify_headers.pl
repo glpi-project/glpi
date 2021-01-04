@@ -46,17 +46,17 @@ foreach (readdir(DIRHANDLE)){
 	if ($_ ne '..' && $_ ne '.'){
 		if (-d "$dir/$_"){
 			# Excluded directories
-			if ($_ !~ m/.git/i && $_ !~ m/lib/i && $_ !~ m/plugins/i && $_ !~ m/vendor/i){
+			if ($_ !~ m/^(.git|config|css_compiled|files|lib|marketplace|node_modules|plugins|vendor)$/i){
 				do_dir("$dir/$_");
 			}
 		} else {
 	 		if(!(-l "$dir/$_")){
-				# Included filetypes - php, css, js, scss => default comment style
-				if ((index($_,".php",0)!=-1)||(index($_,".css",0)!=-1)||(index($_,".scss",0)!=-1)||(index($_,".js",0)!=-1)){
+				# Included filetypes - css, js, php, scss => default comment style
+				if ($_ =~ /\.(css|js|php|scss)$/i){
 					do_file("$dir/$_", "");
 	 			}
-				# Included filetypes - sql, sh, pl => Add a specific comment style (#)
-				if ((index($_,".sql",0)!=-1)||(index($_,".sh",0)!=-1)||(index($_,".pl",0)!=-1)){
+				# Included filetypes - pl, sh, sql => Add a specific comment style (#)
+				if ($_ =~ /\.(pl|sh|sql)$/i){
 					do_file("$dir/$_", "# ");
 	 			}
 			}
