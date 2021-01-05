@@ -370,7 +370,7 @@ class GLPIKanbanRights {
          // Dropdown for single additions
          let add_itemtype_dropdown = "<ul id='kanban-add-dropdown' class='kanban-dropdown' style='display: none'>";
          Object.keys(self.supported_itemtypes).forEach(function(itemtype) {
-            add_itemtype_dropdown += "<li id='kanban-add-" + itemtype + "'>" + self.supported_itemtypes[itemtype]['name'] + '</li>';
+            add_itemtype_dropdown += "<li id='kanban-add-" + itemtype + "'><span>" + self.supported_itemtypes[itemtype]['name'] + '</span></li>';
          });
          add_itemtype_dropdown += '</ul>';
          kanban_container.append(add_itemtype_dropdown);
@@ -379,13 +379,13 @@ class GLPIKanbanRights {
          let column_overflow_dropdown = "<ul id='kanban-overflow-dropdown' class='kanban-dropdown' style='display: none'>";
          let add_itemtype_bulk_dropdown = "<ul id='kanban-bulk-add-dropdown' class='' style='display: none'>";
          Object.keys(self.supported_itemtypes).forEach(function(itemtype) {
-            add_itemtype_bulk_dropdown += "<li id='kanban-bulk-add-" + itemtype + "'>" + self.supported_itemtypes[itemtype]['name'] + '</li>';
+            add_itemtype_bulk_dropdown += "<li id='kanban-bulk-add-" + itemtype + "'><span>" + self.supported_itemtypes[itemtype]['name'] + '</span></li>';
          });
          add_itemtype_bulk_dropdown += '</ul>';
          const add_itemtype_bulk_link = '<a href="#">' + '<i class="fas fa-list"></i>' + __('Bulk add') + '</a>';
          column_overflow_dropdown += '<li class="dropdown-trigger">' + add_itemtype_bulk_link + add_itemtype_bulk_dropdown + '</li>';
          if (self.rights.canModifyView()) {
-            column_overflow_dropdown += "<li class='kanban-remove' data-forbid-protected='true'>"  + '<i class="fas fa-trash-alt"></i>' + __('Delete') + "</li>";
+            column_overflow_dropdown += "<li class='kanban-remove' data-forbid-protected='true'><span>"  + '<i class="fas fa-trash-alt"></i>' + __('Delete') + "</span></li>";
          }
          column_overflow_dropdown += '</ul>';
          kanban_container.append(column_overflow_dropdown);
@@ -395,25 +395,27 @@ class GLPIKanbanRights {
          if (self.rights.canDeleteItem()) {
             card_overflow_dropdown += `
                 <li class='kanban-item-goto'>
-                    <a href="#"><i class="fas fa-share"></i>${__('Go to')}</a>
+                   <a href="#"><i class="fas fa-share"></i>${__('Go to')}</a>
                 </li>
                 <li class='kanban-item-remove'>
-                    <i class="fas fa-trash-alt"></i>${__('Delete')}
+                   <span>
+                      <i class="fas fa-trash-alt"></i>${__('Delete')}
+                   </span>
                 </li>`;
          }
          card_overflow_dropdown += '</ul>';
          kanban_container.append(card_overflow_dropdown);
 
-         $('#kanban-overflow-dropdown li.dropdown-trigger').on("click", function(e) {
-            $(this).toggleClass('active');
-            $(this).find('ul').toggle();
+         $('#kanban-overflow-dropdown li.dropdown-trigger > a').on("click", function(e) {
+            $(this).parent().toggleClass('active');
+            $(this).parent().find('ul').toggle();
             e.stopPropagation();
             e.preventDefault();
          });
 
-         $('#kanban-item-overflow-dropdown li.dropdown-trigger').on("click", function(e) {
-            $(this).toggleClass('active');
-            $(this).find('ul').toggle();
+         $('#kanban-item-overflow-dropdown li.dropdown-trigger > a').on("click", function(e) {
+            $(this).parent().toggleClass('active');
+            $(this).parent().find('ul').toggle();
             e.stopPropagation();
             e.preventDefault();
          });
@@ -661,9 +663,9 @@ class GLPIKanbanRights {
 
             let delete_action = $(card_overflow_dropdown.find('.kanban-item-remove'));
             if (card.hasClass('deleted')) {
-               delete_action.html('<i class="fas fa-trash-alt"></i>'+__('Purge'));
+               delete_action.html('<span><i class="fas fa-trash-alt"></i>'+__('Purge')+'</span>');
             } else {
-               delete_action.html('<i class="fas fa-trash-alt"></i>'+__('Delete'));
+               delete_action.html('<span><i class="fas fa-trash-alt"></i>'+__('Delete')+'</span>');
             }
          });
 
