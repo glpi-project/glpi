@@ -672,7 +672,7 @@ class Item_Ticket extends CommonItilObject_Item {
                         'WHERE'  => [
                            'groups_id' => $groups
                         ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict, $item->maybeRecursive()),
-                        'ORDER'  => 'name'
+                        'ORDER'  => $item->getNameField()
                      ];
 
                      if ($item->maybeDeleted()) {
