@@ -274,7 +274,7 @@ class LicenceHeaderCommand extends Command {
          '\.git',
          '\.github',
          'config',
-         'file',
+         'files',
          'lib',
          'marketplace',
          'node_modules',
