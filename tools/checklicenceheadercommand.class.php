@@ -39,7 +39,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class LicenceHeaderCommand extends Command {
+class CheckLicenceHeaderCommand extends Command {
 
    /**
     * Result code returned when some headers are missing or are outdated.
@@ -198,7 +198,7 @@ class LicenceHeaderCommand extends Command {
          }
       }
 
-      if ($missing_found === 0 || $outdated_found === 0) {
+      if ($missing_found === 0 && $outdated_found === 0) {
          $output->writeln('<info>Files headers are valid.</info>', OutputInterface::VERBOSITY_QUIET);
          return 0; // Success
       }
