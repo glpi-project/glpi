@@ -73,11 +73,12 @@
 
          .glpi-logo {
             background: url($logo_reduced) no-repeat;
-            height: 55px;
-            width: 51px;
+            background-size: contain;
+            width: 40px;
+            height: 40px;
             position: absolute;
-            top: 5px;
-            left: 9px;
+            top: 10px;
+            left: 16px;
          }
       }
 
