@@ -733,7 +733,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
     *
     * @return array
     */
-    function getMine(string $itemtype = null, bool $inverse = false):array {
+   function getMine(string $itemtype = null, bool $inverse = false):array {
       global $DB;
 
       $searches = [];
