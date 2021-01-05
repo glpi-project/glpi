@@ -100,6 +100,8 @@ class CompileScssCommand extends Command {
          }
       }
 
+      $lincence_header = $this->getLicenceHeaderString();
+
       foreach ($files as $file) {
          $output->writeln(
             '<comment>' . sprintf('Processing "%s".', $file) . '</comment>',
@@ -113,6 +115,8 @@ class CompileScssCommand extends Command {
                'nocache' => true,
             ]
          );
+
+         $css = $lincence_header . $css;
 
          if (strlen($css) === @file_put_contents($compiled_path, $css)) {
             $message = sprintf('"%s" compiled successfully in "%s".', $file, $compiled_path);
@@ -131,5 +135,29 @@ class CompileScssCommand extends Command {
       }
 
       return 0; // Success
+   }
+
+   /**
+    * Get lincence header string.
+    *
+    * @return string
+    */
+   private function getLicenceHeaderString(): string {
+      // Extract header lines
+      $lines = file(GLPI_ROOT . '/tools/HEADER');
+
+      // Add * prefix on all lines
+      $lines = array_map(
+         function ($line) {
+            $line_prefix = ' * ';
+            return (preg_match('/^\s+$/', $line) ? rtrim($line_prefix) : $line_prefix) . $line;
+         },
+         $lines
+      );
+
+      // Surround by opening and closing lines
+      $lines = array_merge(["/**\n"], $lines, [" */\n\n"]);
+
+      return implode($lines);
    }
 }

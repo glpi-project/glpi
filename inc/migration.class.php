@@ -1,8 +1,4 @@
 <?php
-
-use Glpi\Console\Application;
-use Symfony\Component\Console\Output\OutputInterface;
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,6 +29,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Console\Application;
+use Symfony\Component\Console\Output\OutputInterface;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
