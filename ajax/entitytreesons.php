@@ -78,7 +78,7 @@ if (isset($_GET['node'])) {
          $nodes[] = $path;
       }
    } else { // standard node
-      $node_id = $_GET['node'];
+      $node_id = preg_replace('/r$/', '', $_GET['node']);
       $iterator = $DB->request([
          'SELECT' => [
             'ent.id',
