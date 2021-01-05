@@ -28,7 +28,7 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 /**
  * Represent an IPv4 or an IPv6 address. Both textual (ie. human readable)
