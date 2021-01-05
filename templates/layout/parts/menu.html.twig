@@ -14,7 +14,7 @@
          &nbsp;
          <span class="menu-label">{{ firstlevel['title'] }}</span>
       </a>
-      <div class="dropdown-menu {{ firstlevel_active and is_vertical != false ? "" : "animate__animated" }} animate__fadeIn{{ is_vertical ? 'Left' : 'Down' }} {{ firstlevel_active and is_vertical and is_menu_folded == false  ? 'show' : '' }}">
+      <div class="dropdown-menu {{ firstlevel_active and is_vertical != false ? "" : "animate__animated" }} {{ is_vertical ? 'animate__fadeInLeft' : 'animate__zoomIn' }} {{ firstlevel_active and is_vertical and is_menu_folded == false  ? 'show' : '' }}">
          <h6 class="dropdown-header">{{ firstlevel['title'] }}</h6>
          <div class="dropdown-menu-columns">
             <div class="dropdown-menu-column">
