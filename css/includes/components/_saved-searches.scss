@@ -40,6 +40,7 @@
    bottom: 0;
    left: $sidebar-width;
    z-index: 1030;
+   transition: left var(--animate-duration);
 
    padding: 0;
 
