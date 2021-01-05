@@ -53,7 +53,6 @@
 }
 
 .sidebar {
-   transition: width var(--animate-duration);
 
    & ~ .content, ~ .navbar {
       transition: margin-inline-start var(--animate-duration);
@@ -94,7 +93,7 @@
 
 @include media-breakpoint-up(lg) {
    .sidebar {
-      width: $sidebar-width;
+      transition: width var(--animate-duration) !important;
    }
 
    body.navbar-collapsed {
@@ -117,7 +116,6 @@
          z-index: 1030;
          $siderbar-collasped-width: 70px;
          width: $siderbar-collasped-width;
-         transition: width var(--animate-duration);
          overflow-x: visible;
 
          & ~ .content, ~ .navbar {
