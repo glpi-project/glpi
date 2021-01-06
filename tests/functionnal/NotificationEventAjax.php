@@ -82,7 +82,6 @@ class NotificationEventAjax extends DbTestCase {
       $this->login();
 
       $ticket = new \Ticket();
-      $ticket->notificationqueueonaction = false;
       $uid = getItemByTypeName('User', TU_USER, true);
       $this->integer(
          (int)$ticket->add([
