@@ -269,10 +269,21 @@ class Provider extends CommonGLPI {
             $query_criteria['WHERE']+= [
                "$table.status" => Ticket::getNotSolvedStatusArray(),
                'OR' => [
-                  'time_to_resolve'          => ['<', new QueryExpression('NOW()')],
-                  'time_to_own'              => ['<', new QueryExpression('NOW()')],
-                  'internal_time_to_own'     => ['<', new QueryExpression('NOW()')],
-                  'internal_time_to_resolve' => ['<', new QueryExpression('NOW()')],
+                  'IF(`glpi_tickets`.`time_to_resolve` IS NOT NULL
+                  AND `glpi_tickets`.`status` <> 4 AND (`glpi_tickets`.`solvedate` > `glpi_tickets`.`time_to_resolve`
+                  OR (`glpi_tickets`.`solvedate` IS NULL AND `glpi_tickets`.`time_to_resolve` < NOW())), 1, 0) = 1',
+
+                  'IF(`glpi_tickets`.`internal_time_to_resolve` IS NOT NULL AND `glpi_tickets`.`status` <> 4
+                  AND (`glpi_tickets`.`solvedate` > `glpi_tickets`.`internal_time_to_resolve`
+                  OR (`glpi_tickets`.`solvedate` IS NULL AND `glpi_tickets`.`internal_time_to_resolve` < NOW())), 1, 0) = 1',
+
+                  'IF(`glpi_tickets`.`time_to_own` IS NOT NULL AND `glpi_tickets`.`status` <> 4
+                  AND (`glpi_tickets`.`takeintoaccount_delay_stat` > TIME_TO_SEC(TIMEDIFF(`glpi_tickets`.`time_to_own`, `glpi_tickets`.`date`))
+                  OR (`glpi_tickets`.`takeintoaccount_delay_stat` = 0 AND `glpi_tickets`.`time_to_own` < NOW())), 1, 0) = 1',
+
+                  'IF(`glpi_tickets`.`internal_time_to_own` IS NOT NULL AND `glpi_tickets`.`status` <> 4
+                  AND (`glpi_tickets`.`takeintoaccount_delay_stat` > TIME_TO_SEC(TIMEDIFF(`glpi_tickets`.`internal_time_to_own`, `glpi_tickets`.`date`))
+                  OR (`glpi_tickets`.`takeintoaccount_delay_stat` = 0 AND `glpi_tickets`.`internal_time_to_own` < NOW())), 1, 0) = 1',
                ]
             ];
             break;
