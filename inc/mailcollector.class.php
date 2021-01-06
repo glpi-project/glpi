@@ -2067,7 +2067,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       $charset = $content_type->getParameter('charset');
-      if (strtoupper($charset) != 'UTF-8') {
+      if ($charset !== null && strtoupper($charset) != 'UTF-8') {
          if (in_array(strtoupper($charset), array_map('strtoupper', mb_list_encodings()))) {
             $contents = mb_convert_encoding($contents, 'UTF-8', $charset);
          } else {
