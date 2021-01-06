@@ -24,6 +24,7 @@ The present file will list all changes made to the project; according to the
 
 #### Deprecated
 - Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
+- Usage of `CommonDBTM::notificationqueueonaction` property
 - `RuleImportComputer` and `RuleImportComputerCollection`
 
 #### Removed
@@ -685,7 +686,7 @@ new whole window
 - `RuleDictionnarySoftwareCollection::versionExists()` signature has changed
 - `NotificationTemplate::getDataToSend()` signature has changed
 - `QueuedMail` has been renamed to `QueuedNotification`
-- `CommonDBTM::mailqueueonaction()` has been renamed to `CommonDBTM::notificationqueueonaction()`
+- `CommonDBTM::mailqueueonaction` has been renamed to `CommonDBTM::notificationqueueonaction`
 - `NotificationTarget::getSender()` no longer takes any parameters (was not used)
 - `TableExists()` has been moved to `DBMysql::tableExists()`
 - `FieldExists()` has been moved to `DBMysql::fieldExists()`
