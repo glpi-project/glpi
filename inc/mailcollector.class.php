@@ -2062,7 +2062,7 @@ class MailCollector  extends CommonDBTM {
 
       if (!$part->getHeaders()->has('content-type')
          || !(($content_type = $part->getHeader('content-type')) instanceof ContentType)
-          | preg_match('/^text\//', $content_type->getType()) !== 1) {
+         || preg_match('/^text\//', $content_type->getType()) !== 1) {
          return $contents; // No charset conversion content type header is not set or content is not text/*
       }
 
