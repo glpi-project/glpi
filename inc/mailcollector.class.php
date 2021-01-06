@@ -2068,12 +2068,12 @@ class MailCollector  extends CommonDBTM {
 
       $charset = $content_type->getParameter('charset');
       if (strtoupper($charset) != 'UTF-8') {
-         if (in_array($charset, array_map('strtoupper', mb_list_encodings()))) {
+         if (in_array(strtoupper($charset), array_map('strtoupper', mb_list_encodings()))) {
             $contents = mb_convert_encoding($contents, 'UTF-8', $charset);
          } else {
             // Convert Windows charsets names
-            if (preg_match('/^WINDOWS-\d{4}$/', $charset)) {
-               $charset = preg_replace('/^WINDOWS-(\d{4})$/', 'CP$1', $charset);
+            if (preg_match('/^WINDOWS-\d{4}$/i', $charset)) {
+               $charset = preg_replace('/^WINDOWS-(\d{4})$/i', 'CP$1', $charset);
             }
 
             if ($converted = iconv($charset, 'UTF-8//TRANSLIT', $contents)) {
