@@ -4158,6 +4158,11 @@ class Ticket extends CommonITILObject {
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
+      // show full create form only to tech users
+      if ($ID <= 0 && Session::getCurrentInterface() !== "central") {
+         return;
+      }
+
       if (isset($options['_add_fromitem']) && isset($options['itemtype'])) {
          $item = new $options['itemtype'];
          $item->getFromDB($options['items_id'][$options['itemtype']][0]);
