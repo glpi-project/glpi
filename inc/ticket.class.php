@@ -2620,14 +2620,7 @@ class Ticket extends CommonITILObject {
          'name'               => __('Time to own exceedeed'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
-         'computation'        => 'IF('.$DB->quoteName('TABLE.time_to_own').' IS NOT NULL
-                                            AND '.$DB->quoteName('TABLE.status').' <> '.self::WAITING.'
-                                            AND ('.$DB->quoteName('TABLE.takeintoaccount_delay_stat').'
-                                                        > TIME_TO_SEC(TIMEDIFF('.$DB->quoteName('TABLE.time_to_own').',
-                                                                               '.$DB->quoteName('TABLE.date').'))
-                                                 OR ('.$DB->quoteName('TABLE.takeintoaccount_delay_stat').' = 0
-                                                      AND '.$DB->quoteName('TABLE.time_to_own').' < NOW())),
-                                            1, 0)'
+         'computation'        => self::generateSLAOLAComputation('time_to_own')
       ];
 
       $tab[] = [
@@ -2658,12 +2651,7 @@ class Ticket extends CommonITILObject {
          'name'               => __('Internal time to resolve exceedeed'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
-         'computation'        => 'IF('.$DB->quoteName('TABLE.internal_time_to_resolve').' IS NOT NULL
-                                            AND '.$DB->quoteName('TABLE.status').' <> 4
-                                            AND ('.$DB->quoteName('TABLE.solvedate').' > '.$DB->quoteName('TABLE.internal_time_to_resolve').'
-                                                 OR ('.$DB->quoteName('TABLE.solvedate').' IS NULL
-                                                      AND '.$DB->quoteName('TABLE.internal_time_to_resolve').' < NOW())),
-                                            1, 0)'
+         'computation'        => self::generateSLAOLAComputation('internal_time_to_resolve')
       ];
 
       $tab[] = [
@@ -2694,14 +2682,7 @@ class Ticket extends CommonITILObject {
          'name'               => __('Internal time to own exceedeed'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
-         'computation'        => 'IF('.$DB->quoteName('TABLE.internal_time_to_own').' IS NOT NULL
-                                            AND '.$DB->quoteName('TABLE.status').' <> '.self::WAITING.'
-                                            AND ('.$DB->quoteName('TABLE.takeintoaccount_delay_stat').'
-                                                        > TIME_TO_SEC(TIMEDIFF('.$DB->quoteName('TABLE.internal_time_to_own').',
-                                                                               '.$DB->quoteName('TABLE.date').'))
-                                                 OR ('.$DB->quoteName('TABLE.takeintoaccount_delay_stat').' = 0
-                                                      AND '.$DB->quoteName('TABLE.internal_time_to_own').' < NOW())),
-                                            1, 0)'
+         'computation'        => self::generateSLAOLAComputation('internal_time_to_own')
       ];
 
       $max_date = '99999999';

@@ -40,6 +40,7 @@ use CommonITILActor;
 use CommonITILValidation;
 use CommonTreeDropdown;
 use CommonDBTM;
+use CommonITILObject;
 use Group;
 use Group_Ticket;
 use Problem;
@@ -269,21 +270,10 @@ class Provider extends CommonGLPI {
             $query_criteria['WHERE']+= [
                "$table.status" => Ticket::getNotSolvedStatusArray(),
                'OR' => [
-                  'IF(`glpi_tickets`.`time_to_resolve` IS NOT NULL
-                  AND `glpi_tickets`.`status` <> 4 AND (`glpi_tickets`.`solvedate` > `glpi_tickets`.`time_to_resolve`
-                  OR (`glpi_tickets`.`solvedate` IS NULL AND `glpi_tickets`.`time_to_resolve` < NOW())), 1, 0) = 1',
-
-                  'IF(`glpi_tickets`.`internal_time_to_resolve` IS NOT NULL AND `glpi_tickets`.`status` <> 4
-                  AND (`glpi_tickets`.`solvedate` > `glpi_tickets`.`internal_time_to_resolve`
-                  OR (`glpi_tickets`.`solvedate` IS NULL AND `glpi_tickets`.`internal_time_to_resolve` < NOW())), 1, 0) = 1',
-
-                  'IF(`glpi_tickets`.`time_to_own` IS NOT NULL AND `glpi_tickets`.`status` <> 4
-                  AND (`glpi_tickets`.`takeintoaccount_delay_stat` > TIME_TO_SEC(TIMEDIFF(`glpi_tickets`.`time_to_own`, `glpi_tickets`.`date`))
-                  OR (`glpi_tickets`.`takeintoaccount_delay_stat` = 0 AND `glpi_tickets`.`time_to_own` < NOW())), 1, 0) = 1',
-
-                  'IF(`glpi_tickets`.`internal_time_to_own` IS NOT NULL AND `glpi_tickets`.`status` <> 4
-                  AND (`glpi_tickets`.`takeintoaccount_delay_stat` > TIME_TO_SEC(TIMEDIFF(`glpi_tickets`.`internal_time_to_own`, `glpi_tickets`.`date`))
-                  OR (`glpi_tickets`.`takeintoaccount_delay_stat` = 0 AND `glpi_tickets`.`internal_time_to_own` < NOW())), 1, 0) = 1',
+                  CommonITILObject::generateSLAOLAComputation('time_to_resolve', 'glpi_tickets'),
+                  CommonITILObject::generateSLAOLAComputation('internal_time_to_resolve', 'glpi_tickets'),
+                  CommonITILObject::generateSLAOLAComputation('time_to_own', 'glpi_tickets'),
+                  CommonITILObject::generateSLAOLAComputation('internal_time_to_own', 'glpi_tickets'),
                ]
             ];
             break;
