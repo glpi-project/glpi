@@ -5081,12 +5081,13 @@ class Ticket extends CommonITILObject {
             );
             break;
 
-         case "process" : // planned or assigned tickets
+         case "process" : // planned or assigned or incoming tickets
             $WHERE = array_merge(
                $WHERE,
                $search_assign,
-               ['glpi_tickets.status' => self::getProcessStatusArray()]
+               ['glpi_tickets.status' => [self::ASSIGNED, self::PLANNED, self::INCOMING]]
             );
+
             break;
 
          case "toapprove" : //tickets waiting for approval
@@ -5261,6 +5262,7 @@ class Ticket extends CommonITILObject {
       if (count($JOINS)) {
          $criteria = array_merge_recursive($criteria, $JOINS);
       }
+
       $iterator = $DB->request($criteria);
       $total_row_count = count($iterator);
       $displayed_row_count = (int)$_SESSION['glpidisplay_count_on_home'] > 0
@@ -5312,15 +5314,22 @@ class Ticket extends CommonITILObject {
                   break;
 
                case "process" :
-                  $options['criteria'][0]['field']      = 12; // status
-                  $options['criteria'][0]['searchtype'] = 'equals';
-                  $options['criteria'][0]['value']      = 'process';
-                  $options['criteria'][0]['link']       = 'AND';
 
-                  $options['criteria'][1]['field']      = 8; // groups_id_assign
-                  $options['criteria'][1]['searchtype'] = 'equals';
-                  $options['criteria'][1]['value']      = 'mygroups';
-                  $options['criteria'][1]['link']       = 'AND';
+                  $options['criteria'][2]['field']      = 8; // groups_id_assign
+                  $options['criteria'][2]['searchtype'] = 'equals';
+                  $options['criteria'][2]['value']      = 'mygroups';
+                  $options['criteria'][2]['link']       = 'AND';
+
+                  $options['criteria'][4]['link']                       = 'AND';
+                  $options['criteria'][4]['criteria'][0]['link']        = 'AND';
+                  $options['criteria'][4]['criteria'][0]['field']       = 12;
+                  $options['criteria'][4]['criteria'][0]['searchtype']  = 'equals';
+                  $options['criteria'][4]['criteria'][0]['value']       = 1;
+
+                  $options['criteria'][4]['criteria'][1]['link']        = 'OR';
+                  $options['criteria'][4]['criteria'][1]['field']       = 12;
+                  $options['criteria'][4]['criteria'][1]['searchtype']  = 'equals';
+                  $options['criteria'][4]['criteria'][1]['value']       = 'process';
 
                   echo "<a href=\"".Ticket::getSearchURL()."?".
                          Toolbox::append_params($options, '&amp;')."\">".
