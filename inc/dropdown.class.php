@@ -173,11 +173,13 @@ class Dropdown {
             'condition'            => $params['condition'],
             'used'                 => $params['used'],
             'toadd'                => $params['toadd'],
-            'entity_restrict'      => (is_array($params['entity']) ? json_encode(array_values($params['entity'])) : $params['entity']),
+            'entity_restrict'      => ($entity_restrict = (is_array($params['entity']) ? json_encode(array_values($params['entity'])) : $params['entity'])),
             'on_change'            => $params['on_change'],
             'permit_select_parent' => $params['permit_select_parent'],
             'specific_tags'        => $params['specific_tags'],
-            '_idor_token'          => Session::getNewIDORToken($itemtype),
+            '_idor_token'          => Session::getNewIDORToken($itemtype, [
+               'entity_restrict' => $entity_restrict,
+            ]),
       ];
 
       $output = "<span class='no-wrap'>";
@@ -2182,6 +2184,11 @@ class Dropdown {
    public static function getDropdownValue($post, $json = true) {
       global $DB, $CFG_GLPI;
 
+      // check if asked itemtype is the one originaly requested by the form
+      if (!Session::validateIDOR($post)) {
+         return;
+      }
+
       if (isset($post["entity_restrict"])
          && !is_array($post["entity_restrict"])
          && (substr($post["entity_restrict"], 0, 1) === '[')
@@ -2197,11 +2204,6 @@ class Dropdown {
       }
       if (isset($post['entity_restrict']) && 'default' === $post['entity_restrict']) {
          $post['entity_restrict'] = $_SESSION['glpiactiveentities'];
-      }
-
-      // check if asked itemtype is the one originaly requested by the form
-      if (!Session::validateIDOR($post)) {
-         return;
       }
 
       // Security

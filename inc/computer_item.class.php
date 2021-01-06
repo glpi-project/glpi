@@ -682,7 +682,9 @@ class Computer_Item extends CommonDBRelation{
          'itemtype'        => $itemtype,
          'onlyglobal'      => $onlyglobal,
          'used'            => $used,
-         '_idor_token'     => Session::getNewIDORToken($itemtype),
+         '_idor_token'     => Session::getNewIDORToken($itemtype, [
+            'entity_restrict' => $entity_restrict,
+         ]),
       ];
 
       echo Html::jsAjaxDropdown($myname, $field_id,

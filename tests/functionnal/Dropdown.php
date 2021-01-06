@@ -765,7 +765,7 @@ class Dropdown extends DbTestCase {
          }
       }
 
-      $params['_idor_token'] = \Session::getNewIDORToken($params['itemtype'] ?? '');
+      $params['_idor_token'] = $this->generateIdor($params);
 
       $result = \Dropdown::getDropdownValue($params, false);
 
@@ -928,7 +928,7 @@ class Dropdown extends DbTestCase {
          }
       }
 
-      $params['_idor_token'] = \Session::getNewIDORToken($params['itemtype'] ?? '');
+      $params['_idor_token'] = $this->generateIdor($params);
 
       $result = \Dropdown::getDropdownConnect($params, false);
 
@@ -1330,5 +1330,13 @@ class Dropdown extends DbTestCase {
          ->array['results']
             ->hasSize(2);
 
+   }
+
+   private function generateIdor(array $params = []) {
+      $idor_add_params = [];
+      if (isset($params['entity_restrict'])) {
+         $idor_add_params['entity_restrict'] = $params['entity_restrict'];
+      }
+      return \Session::getNewIDORToken(($params['itemtype'] ?? ''), $idor_add_params);
    }
 }

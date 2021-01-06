@@ -4026,9 +4026,12 @@ JAVASCRIPT;
          'on_change'           => $p['on_change'],
          'used'                => $p['used'],
          'inactive_deleted'    => $p['inactive_deleted'],
-         'entity_restrict'     => (is_array($p['entity']) ? json_encode(array_values($p['entity'])) : $p['entity']),
+         'entity_restrict'     => ($entity_restrict = (is_array($p['entity']) ? json_encode(array_values($p['entity'])) : $p['entity'])),
          'specific_tags'       => $p['specific_tags'],
-         '_idor_token'         => Session::getNewIDORToken(__CLASS__, ['right' => $p['right']]),
+         '_idor_token'         => Session::getNewIDORToken(__CLASS__, [
+            'right'           => $p['right'],
+            'entity_restrict' => $entity_restrict,
+         ]),
       ];
 
       $output   = Html::jsAjaxDropdown($p['name'], $field_id,

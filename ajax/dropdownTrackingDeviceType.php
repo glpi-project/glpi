@@ -76,7 +76,9 @@ if ($isValidItemtype) {
       'multiple'            => $_POST["multiple"],
       'myname'              => $_POST["myname"],
       'rand'                => $_POST["rand"],
-      '_idor_token'         => Session::getNewIDORToken($itemtype),
+      '_idor_token'         => Session::getNewIDORToken($itemtype, [
+         'entity_restrict' => $_POST['entity_restrict'],
+      ]),
    ];
 
    if (isset($_POST["used"]) && !empty($_POST["used"])) {
