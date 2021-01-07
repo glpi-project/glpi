@@ -2124,7 +2124,7 @@ class Search {
          echo "<form name='searchform$itemtype' method='get' action='".$p['target']."'>";
       } else {
          $main_block_class = "sub_criteria";
-         $card_class = 'border-top-0 border-bottom-0 my-n2 ms-2 px-0';
+         $card_class = 'mt-2 ms-1';
       }
       echo "<div class='card card-sm $card_class'>";
       echo "<div id='searchcriteria$rand_criteria' class='$main_block_class'>";
@@ -2135,7 +2135,7 @@ class Search {
          var $nbsearchcountvar = ".count($p['criteria']).";
       ");
 
-      echo "<div class='list-group list-group-row list-group-hoverable criteria-list' id='$searchcriteriatableid'>";
+      echo "<div class='list-group list-group-flush list-group-hoverable criteria-list' id='$searchcriteriatableid'>";
 
       // Display normal search parameters
       $i = 0;
@@ -2161,7 +2161,7 @@ class Search {
          ]);
       }
 
-      echo "<div class='card-footer d-flex search_actions'>";
+      echo "<div class='card-footer d-flex search_actions border-top-0'>";
       $linked = self::getMetaItemtypeAvailable($itemtype);
       echo "<button id='addsearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary me-1'>
                <i class='fas fa-plus-square'></i>
