@@ -51,14 +51,14 @@ $recurrent_change_table = 'glpi_recurrentchanges';
 if (!$DB->tableExists($recurrent_change_table)) {
    $DB->queryOrDie("CREATE TABLE `$recurrent_change_table` (
          `id` int(11) NOT NULL AUTO_INCREMENT,
-         `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-         `comment` text COLLATE utf8_unicode_ci,
+         `name` varchar(255) DEFAULT NULL,
+         `comment` text,
          `entities_id` int(11) NOT NULL DEFAULT '0',
          `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
          `is_active` tinyint(1) NOT NULL DEFAULT '0',
          `changetemplates_id` int(11) NOT NULL DEFAULT '0',
          `begin_date` timestamp NULL DEFAULT NULL,
-         `periodicity` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+         `periodicity` varchar(255) DEFAULT NULL,
          `create_before` int(11) NOT NULL DEFAULT '0',
          `next_creation_date` timestamp NULL DEFAULT NULL,
          `calendars_id` int(11) NOT NULL DEFAULT '0',
