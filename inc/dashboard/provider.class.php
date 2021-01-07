@@ -40,6 +40,7 @@ use CommonITILActor;
 use CommonITILValidation;
 use CommonTreeDropdown;
 use CommonDBTM;
+use CommonITILObject;
 use Group;
 use Group_Ticket;
 use Problem;
@@ -269,10 +270,10 @@ class Provider extends CommonGLPI {
             $query_criteria['WHERE']+= [
                "$table.status" => Ticket::getNotSolvedStatusArray(),
                'OR' => [
-                  'time_to_resolve'          => ['<', new QueryExpression('NOW()')],
-                  'time_to_own'              => ['<', new QueryExpression('NOW()')],
-                  'internal_time_to_own'     => ['<', new QueryExpression('NOW()')],
-                  'internal_time_to_resolve' => ['<', new QueryExpression('NOW()')],
+                  CommonITILObject::generateSLAOLAComputation('time_to_resolve', 'glpi_tickets'),
+                  CommonITILObject::generateSLAOLAComputation('internal_time_to_resolve', 'glpi_tickets'),
+                  CommonITILObject::generateSLAOLAComputation('time_to_own', 'glpi_tickets'),
+                  CommonITILObject::generateSLAOLAComputation('internal_time_to_own', 'glpi_tickets'),
                ]
             ];
             break;
