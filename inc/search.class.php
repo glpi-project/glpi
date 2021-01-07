@@ -76,7 +76,7 @@ class Search {
       $params = self::manageParams($itemtype, $_GET);
       echo "<div class='search_page row'>";
       TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
-         'itemtype'       => $itemtype,
+         'itemtype' => $itemtype,
       ]);
       echo "<div class='col'>";
 

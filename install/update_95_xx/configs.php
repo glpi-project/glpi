@@ -36,7 +36,7 @@
 
 $migration->displayMessage('Add page layout configuration / user preference');
 Config::setConfigurationValues('core', ['page_layout' => 'vertical']);
-$migration->addField('glpi_users', 'page_layout', 'char(20) COLLATE utf8_unicode_ci DEFAULT NULL', ['after' => 'palette']);
+$migration->addField('glpi_users', 'page_layout', 'char(20) DEFAULT NULL', ['after' => 'palette']);
 
 $migration->displayMessage('Add dark mode configuration / user preference');
 Config::setConfigurationValues('core', ['dark_mode' => 0]);
@@ -48,4 +48,4 @@ $migration->addField('glpi_users', 'fold_menu', 'tinyint DEFAULT NULL', ['after'
 
 $migration->displayMessage('Add saved searches pin config / user preference');
 Config::setConfigurationValues('core', ['savedsearches_pinned' => 0]);
-$migration->addField('glpi_users', 'savedsearches_pinned', 'tinyint DEFAULT NULL', ['after' => 'fold_menu']);
+$migration->addField('glpi_users', 'savedsearches_pinned', 'text', ['after' => 'fold_menu', 'nodefault' => true]);
