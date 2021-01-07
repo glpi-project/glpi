@@ -67,6 +67,13 @@ class Application extends BaseApplication {
    const ERROR_MISSING_REQUIREMENTS = 128; // start application codes at 128 be sure to be different from commands codes
 
    /**
+    * Error code returned when DB is not up-to-date.
+    *
+    * @var integer
+    */
+   const ERROR_DB_OUTDATED = 129;
+
+   /**
     * Pointer to $CFG_GLPI.
     * @var array
     */
@@ -221,6 +228,16 @@ class Application extends BaseApplication {
    protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output) {
 
       $begin_time = microtime(true);
+
+      if ($command instanceof GlpiCommandInterface && $command->requiresUpToDateDb()
+          && (!array_key_exists('dbversion', $this->config) || (trim($this->config['dbversion']) != GLPI_SCHEMA_VERSION))) {
+         $output->writeln(
+            '<error>'
+            . __('The version of the database is not compatible with the version of the installed files. An update is necessary.')
+            . '</error>'
+         );
+         return self::ERROR_DB_OUTDATED;
+      }
 
       if ($command instanceof GlpiCommandInterface && $command->mustCheckMandatoryRequirements()
           && !$this->checkCoreMandatoryRequirements()) {

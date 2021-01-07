@@ -44,6 +44,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class EnableMaintenanceModeCommand extends AbstractCommand {
 
+   protected $requires_db_up_to_date = false;
+
    protected function configure() {
       parent::configure();
 

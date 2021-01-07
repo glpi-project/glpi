@@ -2061,18 +2061,18 @@ class MailCollector  extends CommonDBTM {
 
       if (!$part->getHeaders()->has('content-type')
          || !(($content_type = $part->getHeader('content-type')) instanceof ContentType)
-          | preg_match('/^text\//', $content_type->getType()) !== 1) {
+         || preg_match('/^text\//', $content_type->getType()) !== 1) {
          return $contents; // No charset conversion content type header is not set or content is not text/*
       }
 
       $charset = $content_type->getParameter('charset');
-      if (strtoupper($charset) != 'UTF-8') {
-         if (in_array($charset, array_map('strtoupper', mb_list_encodings()))) {
+      if ($charset !== null && strtoupper($charset) != 'UTF-8') {
+         if (in_array(strtoupper($charset), array_map('strtoupper', mb_list_encodings()))) {
             $contents = mb_convert_encoding($contents, 'UTF-8', $charset);
          } else {
             // Convert Windows charsets names
-            if (preg_match('/^WINDOWS-\d{4}$/', $charset)) {
-               $charset = preg_replace('/^WINDOWS-(\d{4})$/', 'CP$1', $charset);
+            if (preg_match('/^WINDOWS-\d{4}$/i', $charset)) {
+               $charset = preg_replace('/^WINDOWS-(\d{4})$/i', 'CP$1', $charset);
             }
 
             if ($converted = iconv($charset, 'UTF-8//TRANSLIT', $contents)) {

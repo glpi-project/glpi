@@ -63,11 +63,18 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface {
    protected $output;
 
    /**
-    * Flag to indicate if command requires a BD connection.
+    * Flag to indicate if command requires a DB connection.
     *
     * @var boolean
     */
    protected $requires_db = true;
+
+   /**
+    * Flag to indicate if command requires an up-to-date DB.
+    *
+    * @var boolean
+    */
+   protected $requires_db_up_to_date = true;
 
    protected function initialize(InputInterface $input, OutputInterface $output) {
 
@@ -197,5 +204,10 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface {
    public function mustCheckMandatoryRequirements(): bool {
 
       return true;
+   }
+
+   public function requiresUpToDateDb(): bool {
+
+      return $this->requires_db && $this->requires_db_up_to_date;
    }
 }

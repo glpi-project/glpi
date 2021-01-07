@@ -42,6 +42,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ClearCacheCommand extends Command {
 
+   protected $requires_db_up_to_date = false;
+
    protected function configure() {
       parent::configure();
 

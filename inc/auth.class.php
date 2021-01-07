@@ -855,8 +855,9 @@ class Auth extends CommonGLPI {
                         if (!empty($login_auth)) {
                            $search_params['auths_id'] = $this->user->fields["auths_id"];
                         }
-                        $this->user->getFromDBByCrit($search_params);
-                        $user_deleted_ldap = true;
+                        if ($this->user->getFromDBByCrit($search_params)) {
+                           $user_deleted_ldap = true;
+                        };
                      }
                   }
                }

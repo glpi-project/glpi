@@ -63,6 +63,8 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
     */
    const ERROR_MISSING_SECURITY_KEY_FILE = 2;
 
+   protected $requires_db_up_to_date = false;
+
    protected function configure() {
       parent::configure();
 
