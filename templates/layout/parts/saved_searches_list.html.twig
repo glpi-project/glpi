@@ -5,7 +5,7 @@
 {% endif %}
 
 {% for search in saved_searches %}
-   <div class="list-group-item search-line d-flex align-items-center pe-1 {{ active == search['id'] ? "active" : "" }}"
+   <div class="savedsearches-item list-group-item search-line d-flex align-items-center pe-1 {{ active == search['id'] ? "active" : "" }}"
          data-id="{{ search['id'] }}">
       <a href="{{ getItemTypeSearchURL('SavedSearch') }}?action=load&amp;id={{ search['id'] }}"
          class="d-block saved-searches-link text-truncate">
