@@ -32,6 +32,7 @@
 
 namespace Glpi\Application\View\Extension;
 
+use Config;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
@@ -45,6 +46,7 @@ class ConfigExtension extends AbstractExtension implements ExtensionInterface {
       return [
          new TwigFunction('config', [$this, 'config']),
          new TwigFunction('php_config', [$this, 'phpConfig']),
+         new TwigFunction('displayPasswordSecurityChecks', [$this, 'displayPasswordSecurityChecks']),
       ];
    }
 
@@ -74,5 +76,17 @@ class ConfigExtension extends AbstractExtension implements ExtensionInterface {
     */
    public function phpConfig(string $name) {
       return ini_get($name);
+   }
+
+
+   /**
+    * Display security checks on password
+    *
+    * @param $field string id of the field containing password to check (default 'password')
+    *
+    * @return void
+    */
+   public function displayPasswordSecurityChecks($field = 'password') {
+      return Config::displayPasswordSecurityChecks($field);
    }
 }

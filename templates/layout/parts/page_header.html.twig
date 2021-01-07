@@ -33,7 +33,7 @@
 
 <body class="{{ user_pref('dark_mode') ? 'theme-dark' : '' }} {{ user_pref('fold_menu') and is_vertical ? 'navbar-collapsed' : '' }} {{ is_vertical ? "vertical-layout" : "horizontal-layout" }}">
    {{ include('layout/parts/impersonate_banner.html.twig') }}
-   {{ include('components/messages_after_redirect.html.twig') }}
+   {{ include('components/messages_after_redirect_toasts.html.twig') }}
 
    <div class="page">
 

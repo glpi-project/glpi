@@ -82,20 +82,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       }
    }
 
+   $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
+
    TemplateRenderer::getInstance()->display('login.html.twig', [
+      'card_big_width'      => true,
       'lang'                => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
       'title'               => __('Authentication'),
-      'theme'               => $theme,
-      'css_files'           => [
-         "public/lib/base.css",
-         "css/palettes/$theme.scss"
-         // TODO : load hight contrast css
-      ],
-      'js_files'           => [
-         "public/lib/base.js",
-         "public/lib/tabler.js",
-         "js/common.js",
-      ],
       'noAuto'              => $_GET["noAUTO"] ?? 0,
       'redirect'            => Html::entities_deep($_GET['redirect'] ?? ""),
       'text_login'          => nl2br(Toolbox::unclean_html_cross_side_scripting_deep($CFG_GLPI['text_login'])),

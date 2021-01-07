@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\ForgetPasswordException;
 use Sabre\VObject;
 
@@ -4716,62 +4717,22 @@ JAVASCRIPT;
     * @return void
     */
    static function showPasswordForgetChangeForm($token) {
-      global $CFG_GLPI, $DB;
+      global $DB;
 
       // Verif token.
-      $token_ok = false;
       $iterator = $DB->request([
          'FROM'   => self::getTable(),
          'WHERE'  => [
-            'password_forget_token'       => $token,
+            'password_forget_token' => $token,
             new \QueryExpression('NOW() < ADDDATE(' . $DB->quoteName('password_forget_token_date') . ', INTERVAL 1 DAY)')
          ]
       ]);
 
-      if (count($iterator) == 1) {
-         $token_ok = true;
-      }
-      echo "<div class='center'>";
-
-      if ($token_ok) {
-         echo "<form method='post' name='forgetpassword' action='".$CFG_GLPI['root_doc'].
-                "/front/lostpassword.php'>";
-         echo "<table class='tab_cadre'>";
-         echo "<tr><th colspan='2'>" . __('Forgotten password?')."</th></tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2'>". __('Please confirm your email address and enter your new password.').
-              "</td></tr>";
-
-         echo "<tr class='tab_bg_1'><td>" . _n('Email', 'Emails', 1)."</td>";
-         echo "<td><input type='text' name='email' value='' size='60'></td></tr>";
-
-         echo "<tr class='tab_bg_1'><td>" . __('Password')."</td>";
-         echo "<td><input id='password' type='password' name='password' value='' size='20'
-                    autocomplete='new-password' onkeyup=\"return passwordCheck();\">";
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_1'><td>" . __('Password confirmation')."</td>";
-         echo "<td><input type='password' name='password2' value='' size='20' autocomplete='new-password'>";
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_1'><td>".__('Password security policy')."</td>";
-         echo "<td>";
-         Config::displayPasswordSecurityChecks();
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_2 center'><td colspan='2'>";
-         echo "<input type='hidden' name='password_forget_token' value='$token'>";
-         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
-         echo "</td></tr>";
-
-         echo "</table>";
-         Html::closeForm();
-
-      } else {
-         echo __('Your password reset request has expired or is invalid. Please renew it.');
-      }
-      echo "</div>";
+      TemplateRenderer::getInstance()->display('password_form.html.twig', [
+         'title'    => __('Forgotten password?'),
+         'token'    => $token,
+         'token_ok' => (count($iterator) == 1),
+      ]);
    }
 
 
@@ -4781,26 +4742,9 @@ JAVASCRIPT;
     * @return void
     */
    static function showPasswordForgetRequestForm() {
-      global $CFG_GLPI;
-
-      echo "<div class='center'>";
-      echo "<form method='post' name='forgetpassword' action='".$CFG_GLPI['root_doc'].
-             "/front/lostpassword.php'>";
-      echo "<table class='tab_cadre'>";
-      echo "<tr><th colspan='2'>" . __('Forgotten password?')."</th></tr>";
-
-      echo "<tr class='tab_bg_1'><td colspan='2'>" .
-            __('Please enter your email address. An email will be sent to you and you will be able to choose a new password.').
-           "</td></tr>";
-
-      echo "<tr class='tab_bg_2 center'>";
-      echo "<td><input type='text' size='60' name='email' value=''></td>";
-      echo "<td><input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
-      echo "</td></tr>";
-
-      echo "</table>";
-      Html::closeForm();
-      echo "</div>";
+      TemplateRenderer::getInstance()->display('password_form.html.twig', [
+         'title' => __('Forgotten password?'),
+      ]);
    }
 
 
@@ -4873,28 +4817,23 @@ JAVASCRIPT;
     * @return void
     */
    public function showUpdateForgottenPassword(array $input) {
-      global $CFG_GLPI;
-
-      echo "<div class='center'>";
       try {
-         if (!$this->updateForgottenPassword($input)) {
-            Html::displayMessageAfterRedirect();
-         } else {
-            echo __('Reset password successful.');
+         if ($this->updateForgottenPassword($input)) {
+            Session::addMessageAfterRedirect(__('Reset password successful.'));
          }
       } catch (\Glpi\Exception\ForgetPasswordException $e) {
-         echo $e->getMessage();
+         Session::addMessageAfterRedirect($e->getMessage(), false, ERROR);
       } catch (\Glpi\Exception\PasswordTooWeakException $e) {
          // Force display on error
          foreach ($e->getMessages() as $message) {
-            Session::addMessageAfterRedirect($message);
+            Session::addMessageAfteRredirect($message, false, ERROR);
          }
-         Html::displayMessageAfterRedirect();
       }
 
-      echo "<br>";
-      echo "<a href=\"".$CFG_GLPI['root_doc']."/index.php\">".__s('Back')."</a>";
-      echo "</div>";
+      TemplateRenderer::getInstance()->display('password_form.html.twig', [
+         'title'         => __('Forgotten password?'),
+         'messages_only' => true,
+      ]);
    }
 
 
@@ -4906,15 +4845,18 @@ JAVASCRIPT;
     * @return void
     */
    public function showForgetPassword($email) {
-
-      echo "<div class='center'>";
       try {
          $this->forgetPassword($email);
       } catch (\Glpi\Exception\ForgetPasswordException $e) {
-         echo $e->getMessage();
+         Session::addMessageAfterRedirect($e->getMessage(), false, ERROR);
          return;
       }
-      echo __('An email has been sent to your email address. The email contains information for reset your password.');
+      Session::addMessageAfteRredirect(__('An email has been sent to your email address. The email contains information for reset your password.'));
+
+      TemplateRenderer::getInstance()->display('password_form.html.twig', [
+         'title'         => __('Forgotten password?'),
+         'messages_only' => true,
+      ]);
    }
 
    /**
