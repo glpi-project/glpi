@@ -599,7 +599,7 @@ class Html {
     * Display a div containing messages set in session in the previous page
    **/
    static function displayMessageAfterRedirect() {
-      TemplateRenderer::getInstance()->display('components/messages_after_redirect.html.twig');
+      TemplateRenderer::getInstance()->display('components/messages_after_redirect_toasts.html.twig');
    }
 
 
