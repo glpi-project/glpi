@@ -244,7 +244,12 @@ class Application extends BaseApplication {
          return self::ERROR_MISSING_REQUIREMENTS;
       }
 
-      $result = parent::doRunCommand($command, $input, $output);
+      try {
+         $result = parent::doRunCommand($command, $input, $output);
+      } catch (\Glpi\Console\Exception\EarlyExitException $e) {
+         $result = $e->getCode();
+         $output->writeln($e->getMessage(), OutputInterface::VERBOSITY_QUIET);
+      }
 
       if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE) {
          $output->writeln(

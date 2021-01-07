@@ -37,6 +37,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use DB;
+use DBConnection;
+use DBmysql;
+use Glpi\System\Requirement\DbConfiguration;
 use GLPIKey;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -73,6 +76,13 @@ class InstallCommand extends AbstractConfigureCommand {
     * @var integer
     */
    const ERROR_CANNOT_CREATE_ENCRYPTION_KEY_FILE = 8;
+
+   /**
+    * Error code returned if DB configuration is not compatible with large indexes.
+    *
+    * @var integer
+    */
+   const ERROR_INCOMPATIBLE_DB_CONFIG = 9;
 
    protected function configure() {
 
@@ -149,7 +159,7 @@ class InstallCommand extends AbstractConfigureCommand {
       }
 
       if (!$this->isDbAlreadyConfigured() || $input->getOption('reconfigure')) {
-         $result = $this->configureDatabase($input, $output);
+         $result = $this->configureDatabase($input, $output, true);
 
          if (self::ABORTED_BY_USER === $result) {
             return 0; // Considered as success
@@ -226,6 +236,23 @@ class InstallCommand extends AbstractConfigureCommand {
          return self::ERROR_DB_CONNECTION_FAILED;
       }
 
+      // Check for compatibility with utf8mb4 usage.
+      $db = new class($mysqli) extends DBmysql {
+         public function __construct($dbh) {
+            $this->dbh = $dbh;
+         }
+      };
+      $config_requirement = new DbConfiguration($db);
+      if (!$config_requirement->isValidated()) {
+         $msg = '<error>' . __('Database configuration is not compatible with "utf8mb4" usage.') . '</error>';
+         foreach ($config_requirement->getValidationMessages() as $validation_message) {
+            $msg .= "\n" . '<error> - ' . $validation_message . '</error>';
+         }
+         throw new \Glpi\Console\Exception\EarlyExitException($msg, self::ERROR_INCOMPATIBLE_DB_CONFIG);
+      }
+
+      DBConnection::setConnectionCharset($mysqli, true);
+
       // Create database or select existing one
       $output->writeln(
          '<comment>' . __('Creating the database...') . '</comment>',
@@ -260,15 +287,16 @@ class InstallCommand extends AbstractConfigureCommand {
          return self::ERROR_DB_ALREADY_CONTAINS_TABLES;
       }
 
-      if ($DB instanceof DB) {
+      if ($DB instanceof DBmysql) {
          // If global $DB is set at this point, it means that configuration file has been loaded
          // prior to reconfiguration.
          // As configuration is part of a class, it cannot be reloaded and class properties
          // have to be updated manually in order to make `Toolbox::createSchema()` work correctly.
-         $DB->dbhost     = $db_hostport;
-         $DB->dbuser     = $db_user;
-         $DB->dbpassword = rawurlencode($db_pass);
-         $DB->dbdefault  = $db_name;
+         $DB->dbhost      = $db_hostport;
+         $DB->dbuser      = $db_user;
+         $DB->dbpassword  = rawurlencode($db_pass);
+         $DB->dbdefault   = $db_name;
+         $DB->use_utf8mb4 = true;
          $DB->clearSchemaCache();
          $DB->connect();
 

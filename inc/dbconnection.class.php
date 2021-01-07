@@ -61,16 +61,75 @@ class DBConnection extends CommonDBTM {
     * @return boolean
     *
    **/
-   static function createMainConfig($host, $user, $password, $DBname) {
+   static function createMainConfig($host, $user, $password, $DBname, $use_utf8mb4 = false) {
 
       $DB_str = "<?php\nclass DB extends DBmysql {\n" .
-                "   public \$dbhost     = '$host';\n" .
-                "   public \$dbuser     = '$user';\n" .
-                "   public \$dbpassword = '". rawurlencode($password) . "';\n" .
-                "   public \$dbdefault  = '$DBname';\n" .
+                "   public \$dbhost      = '$host';\n" .
+                "   public \$dbuser      = '$user';\n" .
+                "   public \$dbpassword  = '". rawurlencode($password) . "';\n" .
+                "   public \$dbdefault   = '$DBname';\n" .
+                "   public \$use_utf8mb4 = " . ($use_utf8mb4 ? 'true' : 'false') . ";\n" .
                 "}\n";
 
       return Toolbox::writeConfig('config_db.php', $DB_str);
+   }
+
+
+   /**
+    * Change a variable value in config(s) file.
+    *
+    * @param string $name
+    * @param string $value
+    * @param bool   $update_slave
+    * @param string $config_dir
+    *
+    * @return boolean
+    *
+    * @since x.x.x
+    */
+   static function updateConfigProperty($name, $value, $update_slave = true, string $config_dir = GLPI_CONFIG_DIR): bool {
+      $main_config_file = 'config_db.php';
+      $slave_config_file = 'config_db_slave.php';
+
+      if (!file_exists($config_dir . '/' . $main_config_file)) {
+         return false;
+      }
+
+      if ($name === 'password') {
+         $value = rawurlencode($value);
+      }
+
+      $pattern = '/(?<line>' . preg_quote('$' . $name, '/') . '\s*=\s*(?<value>[^;]+)\s*;)' . '/';
+
+      $files = [$main_config_file];
+      if ($update_slave && file_exists($config_dir . '/' . $slave_config_file)) {
+         $files[] = $slave_config_file;
+      }
+
+      foreach ($files as $file) {
+         if (($config_str = file_get_contents($config_dir . '/' . $file)) === false) {
+            return false;
+         }
+
+         $matches = [];
+         if (preg_match($pattern, $config_str, $matches)) {
+            // Property declaration is located in config file, we have to update it.
+            $updated_line = str_replace($matches['value'], var_export($value, true), $matches['line']);
+            $config_str = str_replace($matches['line'], $updated_line, $config_str);
+         } else {
+            // Property declaration is not located in config file, we have to add it.
+            $ending_bracket_pos = mb_strrpos($config_str, '}');
+            $config_str = mb_substr($config_str, 0, $ending_bracket_pos)
+               . sprintf('   public $%s = %s;', $name, var_export($value, true)) . "\n"
+               . mb_substr($config_str, $ending_bracket_pos);
+         }
+
+         if (!Toolbox::writeConfig($file, $config_str, $config_dir)) {
+            return false;
+         }
+      }
+
+      return true;
    }
 
 
@@ -85,6 +144,14 @@ class DBConnection extends CommonDBTM {
     * @return boolean for success
    **/
    static function createSlaveConnectionFile($host, $user, $password, $DBname) {
+
+      // Get use_utf8mb4 flag from master config
+      $master = new class() extends DB {
+         public function __construct() {
+            // Deactivate connection
+         }
+      };
+      $use_utf8mb4 = $master->use_utf8mb4;
 
       $DB_str = "<?php \n class DBSlave extends DBmysql { \n public \$slave = true; \n public \$dbhost = ";
       $host   = trim($host);
@@ -106,8 +173,11 @@ class DBConnection extends CommonDBTM {
       } else {
          $DB_str .= "'$host';\n";
       }
-      $DB_str .= " public \$dbuser = '" . $user . "'; \n public \$dbpassword= '" .
-                  rawurlencode($password) . "'; \n public \$dbdefault = '" . $DBname . "'; \n }\n";
+      $DB_str .= " public \$dbuser = '" . $user . "'; \n"
+         . " public \$dbpassword = '" . rawurlencode($password) . "'; \n"
+         . " public \$dbdefault = '" . $DBname . "'; \n"
+         . " public \$use_utf8mb4 = " . ($use_utf8mb4 ? 'true' : 'false') . "; \n"
+         . "}\n";
 
       return Toolbox::writeConfig('config_db_slave.php', $DB_str);
    }
@@ -506,4 +576,69 @@ class DBConnection extends CommonDBTM {
       $cron->update($input);
    }
 
+
+   /**
+    * Set charset to use for DB connection handler.
+    *
+    * @param mysqli $dbh
+    * @param bool   $use_utf8mb4
+    *
+    * @return void
+    *
+    * @since x.x.x
+    */
+   public static function setConnectionCharset(mysqli $dbh, bool $use_utf8mb4): void {
+      $charset = $use_utf8mb4 ? 'utf8mb4' : 'utf8';
+
+      $dbh->set_charset($charset);
+
+      // The mysqli::set_charset function will make COLLATE to be defined to the default one for used charset.
+      // As we are not using the default COLLATE, we have to define it using `SET NAMES` query.
+      switch ($charset) {
+         case 'utf8':
+            // Legacy charset, should be deprecated in next major version.
+            $dbh->query("SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';");
+            break;
+         case 'utf8mb4':
+            $dbh->query("SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';");
+            break;
+         default:
+            throw new \Exception(sprintf('Charset "%s" is not supported.', $charset));
+            break;
+      }
+   }
+
+   /**
+    * Return default charset to use.
+    *
+    * @return string
+    *
+    * @since x.x.x
+    */
+   public static function getDefaultCharset(): string {
+      global $DB;
+
+      if ($DB instanceof DBmysql && !$DB->use_utf8mb4) {
+         return 'utf8';
+      }
+
+      return 'utf8mb4';
+   }
+
+   /**
+    * Return default collation to use.
+    *
+    * @return string
+    *
+    * @since x.x.x
+    */
+   public static function getDefaultCollation(): string {
+      global $DB;
+
+      if ($DB instanceof DBmysql && !$DB->use_utf8mb4) {
+         return 'utf8_unicode_ci';
+      }
+
+      return 'utf8mb4_unicode_ci';
+   }
 }

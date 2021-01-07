@@ -52,7 +52,9 @@ $translation_cache->clear(); // Force cache cleaning to prevent usage of outdate
 
 Config::detectRootDoc();
 
-$DB = new DB();
+if (!($DB instanceof DBmysql)) { // $DB can have already been init in install.php script
+   $DB = new DB();
+}
 $DB->disableTableCaching(); //prevents issues on fieldExists upgrading from old versions
 
 Config::loadLegacyConfiguration();

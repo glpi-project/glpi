@@ -951,7 +951,7 @@ class MailCollector  extends CommonDBTM {
     * @return array ticket fields
     */
    function buildTicket($uid, \Laminas\Mail\Storage\Message $message, $options = []) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       $play_rules = (isset($options['play_rules']) && $options['play_rules']);
       $headers = $this->getHeaders($message);
@@ -1216,7 +1216,9 @@ class MailCollector  extends CommonDBTM {
          }
       }
 
-      $tkt['content'] = LitEmoji::encodeShortcode($tkt['content']);
+      if (!$DB->use_utf8mb4) {
+         $tkt['content'] = LitEmoji::encodeShortcode($tkt['content']);
+      }
 
       $tkt = Toolbox::addslashes_deep($tkt);
       return $tkt;

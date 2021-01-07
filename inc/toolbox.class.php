@@ -2353,14 +2353,15 @@ class Toolbox {
     *
     * @since 0.84
     *
-    * @param string $name     config file name
-    * @param string $content  config file content
+    * @param string $name        config file name
+    * @param string $content     config file content
+    * @param string $config_dir  configuration directory to write on
     *
     * @return boolean
    **/
-   static function writeConfig($name, $content) {
+   static function writeConfig($name, $content, string $config_dir = GLPI_CONFIG_DIR) {
 
-      $name = GLPI_CONFIG_DIR . '/'.$name;
+      $name = $config_dir . '/'.$name;
       $fp   = fopen($name, 'wt');
       if ($fp) {
          $fw = fwrite($fp, $content);

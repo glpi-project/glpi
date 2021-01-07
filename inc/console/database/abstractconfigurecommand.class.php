@@ -176,10 +176,13 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
     *
     * @param InputInterface $input
     * @param OutputInterface $output
+    * @param bool $use_utf8mb4
+    *
     * @throws InvalidArgumentException
+    *
     * @return string
     */
-   protected function configureDatabase(InputInterface $input, OutputInterface $output) {
+   protected function configureDatabase(InputInterface $input, OutputInterface $output, bool $use_utf8mb4) {
 
       $db_pass     = $input->getOption('db-password');
       $db_host     = $input->getOption('db-host');
@@ -234,6 +237,8 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          return self::ERROR_DB_CONNECTION_FAILED;
       }
 
+      DBConnection::setConnectionCharset($mysqli, $use_utf8mb4);
+
       ob_start();
       $db_version_data = $mysqli->query('SELECT version()')->fetch_array();
       $checkdb = Config::displayCheckDbEngine(false, $db_version_data[0]);
@@ -249,7 +254,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          '<comment>' . __('Saving configuration file...') . '</comment>',
          OutputInterface::VERBOSITY_VERBOSE
       );
-      if (!DBConnection::createMainConfig($db_hostport, $db_user, $db_pass, $db_name)) {
+      if (!DBConnection::createMainConfig($db_hostport, $db_user, $db_pass, $db_name, $use_utf8mb4)) {
          $message = sprintf(
             __('Cannot write configuration file "%s".'),
             GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'config_db.php'

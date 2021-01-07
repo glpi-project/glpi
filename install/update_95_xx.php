@@ -76,5 +76,9 @@ function update95toXX() {
 
    $migration->executeMigration();
 
+   $migration->displayWarning(
+      '"utf8mb4" support requires additional migration which can be performed via the "php bin/console glpi:migration:utf8mb4" command.'
+   );
+
    return $updateresult;
 }

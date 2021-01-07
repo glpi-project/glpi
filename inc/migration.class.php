@@ -236,6 +236,7 @@ class Migration {
    private function fieldFormat($type, $default_value, $nodefault = false) {
 
       $format = '';
+      $collate = DBConnection::getDefaultCollation();
       switch ($type) {
          case 'bool' :
          case 'boolean' :
@@ -265,7 +266,7 @@ class Migration {
 
          case 'str' :
          case 'string' :
-            $format = "VARCHAR(255) COLLATE utf8_unicode_ci";
+            $format = "VARCHAR(255) COLLATE $collate";
             if (!$nodefault) {
                if (is_null($default_value)) {
                   $format .= " DEFAULT NULL";
@@ -313,7 +314,7 @@ class Migration {
             break;
 
          case 'text' :
-            $format = "TEXT COLLATE utf8_unicode_ci";
+            $format = "TEXT COLLATE $collate";
             if (!$nodefault) {
                if (is_null($default_value)) {
                   $format.= " DEFAULT NULL";
@@ -324,7 +325,7 @@ class Migration {
             break;
 
          case 'longtext' :
-            $format = "LONGTEXT COLLATE utf8_unicode_ci";
+            $format = "LONGTEXT COLLATE $collate";
             if (!$nodefault) {
                if (is_null($default_value)) {
                   $format .= " DEFAULT NULL";
@@ -1168,17 +1169,17 @@ class Migration {
          case 'warning':
             $msg       = str_pad("** {$msg}", 100);
             $format    = 'comment';
-            $verbosity = OutputInterface::VERBOSITY_VERBOSE;
+            $verbosity = OutputInterface::VERBOSITY_NORMAL;
             break;
          case 'strong':
             $msg       = str_pad($msg, 100);
             $format    = 'comment';
-            $verbosity = OutputInterface::VERBOSITY_VERBOSE;
+            $verbosity = OutputInterface::VERBOSITY_NORMAL;
             break;
          default:
             $msg       = str_pad($msg, 100);
             $format    = 'comment';
-            $verbosity = OutputInterface::VERBOSITY_VERY_VERBOSE;
+            $verbosity = OutputInterface::VERBOSITY_VERBOSE;
             break;
       }
 

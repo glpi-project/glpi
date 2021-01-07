@@ -370,4 +370,60 @@ OTHER EXPRESSION;"
          ->then
             ->string($this->testedInstance->removeSqlRemarks($sql))->isIdenticalTo($expected);
    }
+
+   public function testCollationWarnings() {
+      $db = new \mock\DB();
+
+      $create_query_template = <<<SQL
+         CREATE TABLE `%s` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `itemtype` varchar(100) NOT NULL,
+            `items_id` int(11) NOT NULL DEFAULT '0',
+            PRIMARY KEY (`id`)
+         ) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = %s COLLATE = %s
+SQL;
+      $drop_query_template = 'DROP TABLE `%s`';
+
+      $db->use_utf8mb4 = false;
+
+      $this->when(
+         function () use ($db, $create_query_template, $drop_query_template) {
+            $table = sprintf('glpitests_%s', uniqid());
+            $db->query(sprintf($create_query_template, $table, 'utf8', 'utf8_unicode_ci'));
+            $db->query(sprintf($drop_query_template, $table));
+         }
+      )->error()->notExists();
+
+      $this->when(
+         function () use ($db, $create_query_template, $drop_query_template) {
+            $table = sprintf('glpitests_%s', uniqid());
+            $db->query(sprintf($create_query_template, $table, 'utf8mb4', 'utf8mb4_unicode_ci'));
+            $db->query(sprintf($drop_query_template, $table));
+         }
+      )->error()
+         ->withType(E_USER_WARNING)
+         ->withMessage('Usage of "utf8mb4" charset/collation detected, should be "utf8"')
+            ->exists();
+
+      $db->use_utf8mb4 = true;
+
+      $this->when(
+         function () use ($db, $create_query_template, $drop_query_template) {
+            $table = sprintf('glpitests_%s', uniqid());
+            $db->query(sprintf($create_query_template, $table, 'utf8', 'utf8_unicode_ci'));
+            $db->query(sprintf($drop_query_template, $table));
+         }
+      )->error()
+         ->withType(E_USER_WARNING)
+         ->withMessage('Usage of "utf8" charset/collation detected, should be "utf8mb4"')
+            ->exists();
+
+      $this->when(
+         function () use ($db, $create_query_template, $drop_query_template) {
+            $table = sprintf('glpitests_%s', uniqid());
+            $db->query(sprintf($create_query_template, $table, 'utf8mb4', 'utf8mb4_unicode_ci'));
+            $db->query(sprintf($drop_query_template, $table));
+         }
+      )->error()->notExists();
+   }
 }

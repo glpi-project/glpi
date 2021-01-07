@@ -42,7 +42,7 @@ CREATE TABLE `glpi_alerts` (
   UNIQUE KEY `unicity` (`itemtype`,`items_id`,`type`),
   KEY `type` (`type`),
   KEY `date` (`date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_authldapreplicates
@@ -56,7 +56,7 @@ CREATE TABLE `glpi_authldapreplicates` (
   `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `authldaps_id` (`authldaps_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_authldaps
@@ -115,7 +115,7 @@ CREATE TABLE `glpi_authldaps` (
   KEY `is_active` (`is_active`),
   KEY `date_creation` (`date_creation`),
   KEY `sync_field` (`sync_field`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_authmails
@@ -132,7 +132,7 @@ CREATE TABLE `glpi_authmails` (
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `is_active` (`is_active`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_apiclients
 
@@ -154,7 +154,7 @@ CREATE TABLE `glpi_apiclients` (
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `is_active` (`is_active`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_autoupdatesystems
@@ -166,7 +166,7 @@ CREATE TABLE `glpi_autoupdatesystems` (
   `comment` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_blacklistedmailcontents
@@ -182,7 +182,7 @@ CREATE TABLE `glpi_blacklistedmailcontents` (
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_blacklists
@@ -201,7 +201,7 @@ CREATE TABLE `glpi_blacklists` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_savedsearches
@@ -232,7 +232,7 @@ CREATE TABLE `glpi_savedsearches` (
   KEY `last_execution_time` (`last_execution_time`),
   KEY `last_execution_date` (`last_execution_date`),
   KEY `do_count` (`do_count`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_savedsearches_users
@@ -246,7 +246,7 @@ CREATE TABLE `glpi_savedsearches_users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`users_id`,`itemtype`),
   KEY `savedsearches_id` (`savedsearches_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_savedsearches_alerts
@@ -267,7 +267,7 @@ CREATE TABLE `glpi_savedsearches_alerts` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   UNIQUE KEY `unicity` (`savedsearches_id`,`operator`, `value`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_budgets
@@ -301,7 +301,7 @@ CREATE TABLE `glpi_budgets` (
   KEY `date_creation` (`date_creation`),
   KEY `locations_id` (`locations_id`),
   KEY `budgettypes_id` (`budgettypes_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_budgettypes
@@ -317,7 +317,7 @@ CREATE TABLE `glpi_budgettypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_businesscriticities
 
@@ -340,7 +340,7 @@ CREATE TABLE `glpi_businesscriticities` (
   UNIQUE KEY `unicity` (`businesscriticities_id`,`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_calendars
@@ -361,7 +361,7 @@ CREATE TABLE `glpi_calendars` (
   KEY `is_recursive` (`is_recursive`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_calendars_holidays
@@ -374,7 +374,7 @@ CREATE TABLE `glpi_calendars_holidays` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`calendars_id`,`holidays_id`),
   KEY `holidays_id` (`holidays_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_calendarsegments
@@ -391,7 +391,7 @@ CREATE TABLE `glpi_calendarsegments` (
   PRIMARY KEY (`id`),
   KEY `calendars_id` (`calendars_id`),
   KEY `day` (`day`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_cartridgeitems
@@ -425,7 +425,7 @@ CREATE TABLE `glpi_cartridgeitems` (
   KEY `groups_id_tech` (`groups_id_tech`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_cartridgeitems_printermodels
@@ -438,7 +438,7 @@ CREATE TABLE `glpi_cartridgeitems_printermodels` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`printermodels_id`,`cartridgeitems_id`),
   KEY `cartridgeitems_id` (`cartridgeitems_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_cartridgeitemtypes
@@ -454,7 +454,7 @@ CREATE TABLE `glpi_cartridgeitemtypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_cartridges
@@ -477,7 +477,7 @@ CREATE TABLE `glpi_cartridges` (
   KEY `entities_id` (`entities_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_certificates
@@ -528,7 +528,7 @@ CREATE TABLE `glpi_certificates` (
   KEY `states_id` (`states_id`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_certificates_items
@@ -547,7 +547,7 @@ CREATE TABLE `glpi_certificates_items` (
   KEY `item` (`itemtype`,`items_id`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_certificatetypes
@@ -567,7 +567,7 @@ CREATE TABLE `glpi_certificatetypes` (
   KEY `name` (`name`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_changecosts
@@ -595,7 +595,7 @@ CREATE TABLE `glpi_changecosts` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `budgets_id` (`budgets_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_changes
@@ -652,7 +652,7 @@ CREATE TABLE `glpi_changes` (
   KEY `global_validation` (`global_validation`),
   KEY `users_id_lastupdater` (`users_id_lastupdater`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_changes_groups
@@ -666,7 +666,7 @@ CREATE TABLE `glpi_changes_groups` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changes_id`,`type`,`groups_id`),
   KEY `group` (`groups_id`,`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_changes_items
@@ -680,7 +680,7 @@ CREATE TABLE `glpi_changes_items` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changes_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_changes_problems
@@ -693,7 +693,7 @@ CREATE TABLE `glpi_changes_problems` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changes_id`,`problems_id`),
   KEY `problems_id` (`problems_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_changes_suppliers
@@ -709,7 +709,7 @@ CREATE TABLE `glpi_changes_suppliers` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changes_id`,`type`,`suppliers_id`),
   KEY `group` (`suppliers_id`,`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_changes_tickets
@@ -722,7 +722,7 @@ CREATE TABLE `glpi_changes_tickets` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changes_id`,`tickets_id`),
   KEY `tickets_id` (`tickets_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_changes_users
@@ -738,7 +738,7 @@ CREATE TABLE `glpi_changes_users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changes_id`,`type`,`users_id`,`alternative_email`),
   KEY `user` (`users_id`,`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_changetasks
@@ -780,7 +780,7 @@ CREATE TABLE `glpi_changetasks` (
   KEY `taskcategories_id` (`taskcategories_id`),
   KEY `tasktemplates_id` (`tasktemplates_id`),
   KEY `is_private` (`is_private`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_changevalidations
@@ -808,7 +808,7 @@ CREATE TABLE `glpi_changevalidations` (
   KEY `submission_date` (`submission_date`),
   KEY `validation_date` (`validation_date`),
   KEY `status` (`status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_computerantiviruses
@@ -840,7 +840,7 @@ CREATE TABLE `glpi_computerantiviruses` (
   KEY `date_expiration` (`date_expiration`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_items_disks
@@ -880,7 +880,7 @@ CREATE TABLE `glpi_items_disks` (
   KEY `is_dynamic` (`is_dynamic`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_computermodels
@@ -906,7 +906,7 @@ CREATE TABLE `glpi_computermodels` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_computers
@@ -964,7 +964,7 @@ CREATE TABLE `glpi_computers` (
   KEY `uuid` (`uuid`),
   KEY `date_creation` (`date_creation`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_computers_items
@@ -982,7 +982,7 @@ CREATE TABLE `glpi_computers_items` (
   KEY `item` (`itemtype`,`items_id`),
   KEY `is_deleted` (`is_deleted`),
   KEY `is_dynamic` (`is_dynamic`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Previously glpi_computers_softwarelicenses < 9.5.0
@@ -1003,7 +1003,7 @@ CREATE TABLE `glpi_items_softwarelicenses` (
   KEY `softwarelicenses_id` (`softwarelicenses_id`),
   KEY `is_deleted` (`is_deleted`),
   KEY `is_dynamic` (`is_dynamic`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Previously glpi_computers_softwareversions < 9.5.0
 ### Dump table glpi_items_softwareversions
@@ -1031,7 +1031,7 @@ CREATE TABLE `glpi_items_softwareversions` (
   KEY `is_deleted` (`is_deleted_item`),
   KEY `is_dynamic` (`is_dynamic`),
   KEY `date_install` (`date_install`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_computertypes
@@ -1047,7 +1047,7 @@ CREATE TABLE `glpi_computertypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_computervirtualmachines
@@ -1082,7 +1082,7 @@ CREATE TABLE `glpi_computervirtualmachines` (
   KEY `uuid` (`uuid`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_items_operatingsystems
@@ -1120,7 +1120,7 @@ CREATE TABLE `glpi_items_operatingsystems` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   UNIQUE KEY `unicity` (`items_id`,`itemtype`, `operatingsystems_id`, `operatingsystemarchitectures_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_operatingsystemkernels
@@ -1134,7 +1134,7 @@ CREATE TABLE `glpi_operatingsystemkernels` (
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_operatingsystemkernelversions
@@ -1150,7 +1150,7 @@ CREATE TABLE `glpi_operatingsystemkernelversions` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `operatingsystemkernels_id` (`operatingsystemkernels_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_operatingsystemeditions
 
@@ -1163,7 +1163,7 @@ CREATE TABLE `glpi_operatingsystemeditions` (
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_configs
 
@@ -1175,7 +1175,7 @@ CREATE TABLE `glpi_configs` (
   `value` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`context`,`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_impacts
 
@@ -1195,7 +1195,7 @@ CREATE TABLE `glpi_impactrelations` (
   ),
   KEY `source_asset` (`itemtype_source`, `items_id_source`),
   KEY `impacted_asset` (`itemtype_impacted`, `items_id_impacted`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_impacts_compounds
@@ -1206,7 +1206,7 @@ CREATE TABLE `glpi_impactcompounds` (
   `name` VARCHAR(255) NULL DEFAULT '',
   `color` VARCHAR(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_impactitems
@@ -1227,7 +1227,7 @@ CREATE TABLE `glpi_impactitems` (
   KEY `source` (`itemtype`, `items_id`),
   KEY `parent_id` (`parent_id`),
   KEY `impactcontexts_id` (`impactcontexts_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_impactcontexts
 
@@ -1245,7 +1245,7 @@ CREATE TABLE `glpi_impactcontexts` (
   `show_impact` TINYINT(1) NOT NULL DEFAULT '1',
   `max_depth` INT(11) NOT NULL DEFAULT '5',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_consumableitems
 
@@ -1280,7 +1280,7 @@ CREATE TABLE `glpi_consumableitems` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `otherserial` (`otherserial`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_consumableitemtypes
@@ -1296,7 +1296,7 @@ CREATE TABLE `glpi_consumableitemtypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_consumables
@@ -1320,7 +1320,7 @@ CREATE TABLE `glpi_consumables` (
   KEY `item` (`itemtype`,`items_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_contacts
@@ -1356,7 +1356,7 @@ CREATE TABLE `glpi_contacts` (
   KEY `usertitles_id` (`usertitles_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_contacts_suppliers
@@ -1369,7 +1369,7 @@ CREATE TABLE `glpi_contacts_suppliers` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`suppliers_id`,`contacts_id`),
   KEY `contacts_id` (`contacts_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_contacttypes
@@ -1385,7 +1385,7 @@ CREATE TABLE `glpi_contacttypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_contractcosts
@@ -1410,7 +1410,7 @@ CREATE TABLE `glpi_contractcosts` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `budgets_id` (`budgets_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_contracts
@@ -1459,7 +1459,7 @@ CREATE TABLE `glpi_contracts` (
   KEY `states_id` (`states_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_contracts_items
@@ -1474,7 +1474,7 @@ CREATE TABLE `glpi_contracts_items` (
   UNIQUE KEY `unicity` (`contracts_id`,`itemtype`,`items_id`),
   KEY `FK_device` (`items_id`,`itemtype`),
   KEY `item` (`itemtype`,`items_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_contracts_suppliers
@@ -1487,7 +1487,7 @@ CREATE TABLE `glpi_contracts_suppliers` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`suppliers_id`,`contracts_id`),
   KEY `contracts_id` (`contracts_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_contracttypes
@@ -1503,7 +1503,7 @@ CREATE TABLE `glpi_contracttypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_crontasklogs
@@ -1522,7 +1522,7 @@ CREATE TABLE `glpi_crontasklogs` (
   KEY `date` (`date`),
   KEY `crontasks_id` (`crontasks_id`),
   KEY `crontasklogs_id_state` (`crontasklogs_id`,`state`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_crontasks
@@ -1550,7 +1550,7 @@ CREATE TABLE `glpi_crontasks` (
   KEY `mode` (`mode`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Task run by internal / external cron.';
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT='Task run by internal / external cron.';
 
 ### Dump table glpi_dashboards_dashboards
 
@@ -1562,7 +1562,7 @@ CREATE TABLE `glpi_dashboards_dashboards` (
   `context` varchar(100) NOT NULL DEFAULT 'core',
   PRIMARY KEY (`id`),
   UNIQUE KEY `key` (`key`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_dashboards_items
 
@@ -1579,7 +1579,7 @@ CREATE TABLE `glpi_dashboards_items` (
   `card_options` text,
   PRIMARY KEY (`id`),
   KEY `dashboards_dashboards_id` (`dashboards_dashboards_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_dashboards_rights
 
@@ -1592,7 +1592,7 @@ CREATE TABLE `glpi_dashboards_rights` (
   PRIMARY KEY (`id`),
   KEY `dashboards_dashboards_id` (`dashboards_dashboards_id`),
   UNIQUE KEY `unicity` (`dashboards_dashboards_id`, `itemtype`,`items_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_devicecasemodels
 
@@ -1605,7 +1605,7 @@ CREATE TABLE `glpi_devicecasemodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_devicecases
 
@@ -1630,7 +1630,7 @@ CREATE TABLE `glpi_devicecases` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicecasemodels_id` (`devicecasemodels_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicecasetypes
@@ -1646,7 +1646,7 @@ CREATE TABLE `glpi_devicecasetypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicecontrolmodels
@@ -1660,7 +1660,7 @@ CREATE TABLE `glpi_devicecontrolmodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_devicecontrols
 
@@ -1686,7 +1686,7 @@ CREATE TABLE `glpi_devicecontrols` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicecontrolmodels_id` (`devicecontrolmodels_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicedrivemodels
@@ -1700,7 +1700,7 @@ CREATE TABLE `glpi_devicedrivemodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_devicedrives
 
@@ -1727,7 +1727,7 @@ CREATE TABLE `glpi_devicedrives` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicedrivemodels_id` (`devicedrivemodels_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicegenericmodels
@@ -1741,7 +1741,7 @@ CREATE TABLE `glpi_devicegenericmodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicegenerics
@@ -1771,7 +1771,7 @@ CREATE TABLE `glpi_devicegenerics` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicegenericmodels_id` (`devicegenericmodels_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicegenerictypes
@@ -1783,7 +1783,7 @@ CREATE TABLE `glpi_devicegenerictypes` (
   `comment` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicegraphiccardmodels
@@ -1797,7 +1797,7 @@ CREATE TABLE `glpi_devicegraphiccardmodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_devicegraphiccards
 
@@ -1825,7 +1825,7 @@ CREATE TABLE `glpi_devicegraphiccards` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicegraphiccardmodels_id` (`devicegraphiccardmodels_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_deviceharddrivemodels
@@ -1839,7 +1839,7 @@ CREATE TABLE `glpi_deviceharddrivemodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_deviceharddrives
 
@@ -1867,7 +1867,7 @@ CREATE TABLE `glpi_deviceharddrives` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `deviceharddrivemodels_id` (`deviceharddrivemodels_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicememorymodels
@@ -1881,7 +1881,7 @@ CREATE TABLE `glpi_devicememorymodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicememories
@@ -1909,7 +1909,7 @@ CREATE TABLE `glpi_devicememories` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicememorymodels_id` (`devicememorymodels_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicememorytypes
@@ -1925,7 +1925,7 @@ CREATE TABLE `glpi_devicememorytypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicemotherboardmodels
@@ -1939,7 +1939,7 @@ CREATE TABLE `glpi_devicemotherboardmodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_devicemotherboards
 
@@ -1963,7 +1963,7 @@ CREATE TABLE `glpi_devicemotherboards` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicemotherboardmodels_id` (`devicemotherboardmodels_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicenetworkcardmodels
@@ -1977,7 +1977,7 @@ CREATE TABLE `glpi_devicenetworkcardmodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_devicenetworkcards
 
@@ -2002,7 +2002,7 @@ CREATE TABLE `glpi_devicenetworkcards` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicenetworkcardmodels_id` (`devicenetworkcardmodels_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicepcimodels
@@ -2016,7 +2016,7 @@ CREATE TABLE `glpi_devicepcimodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_devicepcis
 
@@ -2041,7 +2041,7 @@ CREATE TABLE `glpi_devicepcis` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicepcimodels_id` (`devicepcimodels_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicepowersupplymodels
@@ -2055,7 +2055,7 @@ CREATE TABLE `glpi_devicepowersupplymodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicepowersupplies
@@ -2081,7 +2081,7 @@ CREATE TABLE `glpi_devicepowersupplies` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicepowersupplymodels_id` (`devicepowersupplymodels_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_deviceprocessormodels
@@ -2095,7 +2095,7 @@ CREATE TABLE `glpi_deviceprocessormodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_deviceprocessors
 
@@ -2122,7 +2122,7 @@ CREATE TABLE `glpi_deviceprocessors` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `deviceprocessormodels_id` (`deviceprocessormodels_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicesensors
@@ -2151,7 +2151,7 @@ CREATE TABLE `glpi_devicesensors` (
   KEY `states_id` (`states_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicesensormodels
@@ -2165,7 +2165,7 @@ CREATE TABLE `glpi_devicesensormodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicesensortypes
@@ -2177,7 +2177,7 @@ CREATE TABLE `glpi_devicesensortypes` (
   `comment` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicesimcards
@@ -2203,7 +2203,7 @@ CREATE TABLE IF NOT EXISTS `glpi_devicesimcards` (
    KEY `date_mod` (`date_mod`),
    KEY `date_creation` (`date_creation`),
    KEY `manufacturers_id` (`manufacturers_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_items_devicesimcards
@@ -2244,7 +2244,7 @@ CREATE TABLE IF NOT EXISTS `glpi_items_devicesimcards` (
   KEY `lines_id` (`lines_id`),
   KEY `users_id` (`users_id`),
   KEY `groups_id` (`groups_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicesimcardtypes
@@ -2260,7 +2260,7 @@ CREATE TABLE IF NOT EXISTS `glpi_devicesimcardtypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicesoundcardmodels
@@ -2274,7 +2274,7 @@ CREATE TABLE `glpi_devicesoundcardmodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_devicesoundcards
@@ -2299,7 +2299,7 @@ CREATE TABLE `glpi_devicesoundcards` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicesoundcardmodels_id` (`devicesoundcardmodels_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_displaypreferences
@@ -2316,7 +2316,7 @@ CREATE TABLE `glpi_displaypreferences` (
   KEY `rank` (`rank`),
   KEY `num` (`num`),
   KEY `itemtype` (`itemtype`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_documentcategories
@@ -2338,7 +2338,7 @@ CREATE TABLE `glpi_documentcategories` (
   UNIQUE KEY `unicity` (`documentcategories_id`,`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_documents
@@ -2374,7 +2374,7 @@ CREATE TABLE `glpi_documents` (
   KEY `sha1sum` (`sha1sum`),
   KEY `tag` (`tag`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_documents_items
@@ -2396,7 +2396,7 @@ CREATE TABLE `glpi_documents_items` (
   KEY `item` (`itemtype`,`items_id`,`entities_id`,`is_recursive`),
   KEY `users_id` (`users_id`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_documenttypes
@@ -2418,7 +2418,7 @@ CREATE TABLE `glpi_documenttypes` (
   KEY `is_uploadable` (`is_uploadable`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_domains
@@ -2452,7 +2452,7 @@ CREATE TABLE `glpi_domains` (
   KEY `is_active` (`is_active`),
   KEY `date_expiration` (`date_expiration`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_dropdowntranslations
@@ -2470,7 +2470,7 @@ CREATE TABLE `glpi_dropdowntranslations` (
   KEY `typeid` (`itemtype`,`items_id`),
   KEY `language` (`language`),
   KEY `field` (`field`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_entities
@@ -2564,7 +2564,7 @@ CREATE TABLE `glpi_entities` (
   KEY `tickettemplates_id` (`tickettemplates_id`),
   KEY `changetemplates_id` (`changetemplates_id`),
   KEY `problemtemplates_id` (`problemtemplates_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_entities_knowbaseitems
@@ -2579,7 +2579,7 @@ CREATE TABLE `glpi_entities_knowbaseitems` (
   KEY `knowbaseitems_id` (`knowbaseitems_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_entities_reminders
@@ -2594,7 +2594,7 @@ CREATE TABLE `glpi_entities_reminders` (
   KEY `reminders_id` (`reminders_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_entities_rssfeeds
@@ -2609,7 +2609,7 @@ CREATE TABLE `glpi_entities_rssfeeds` (
   KEY `rssfeeds_id` (`rssfeeds_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_events
@@ -2627,7 +2627,7 @@ CREATE TABLE `glpi_events` (
   KEY `date` (`date`),
   KEY `level` (`level`),
   KEY `item` (`type`,`items_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_fieldblacklists
@@ -2648,7 +2648,7 @@ CREATE TABLE `glpi_fieldblacklists` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_fieldunicities
@@ -2670,7 +2670,7 @@ CREATE TABLE `glpi_fieldunicities` (
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Stores field unicity criterias';
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT='Stores field unicity criterias';
 
 
 ### Dump table glpi_filesystems
@@ -2686,7 +2686,7 @@ CREATE TABLE `glpi_filesystems` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_fqdns
@@ -2708,7 +2708,7 @@ CREATE TABLE `glpi_fqdns` (
   KEY `is_recursive` (`is_recursive`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_groups
@@ -2754,7 +2754,7 @@ CREATE TABLE `glpi_groups` (
   KEY `is_usergroup` (`is_usergroup`),
   KEY `is_manager` (`is_manager`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_groups_knowbaseitems
@@ -2771,7 +2771,7 @@ CREATE TABLE `glpi_groups_knowbaseitems` (
   KEY `groups_id` (`groups_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_groups_problems
@@ -2785,7 +2785,7 @@ CREATE TABLE `glpi_groups_problems` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`problems_id`,`type`,`groups_id`),
   KEY `group` (`groups_id`,`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_groups_reminders
@@ -2802,7 +2802,7 @@ CREATE TABLE `glpi_groups_reminders` (
   KEY `groups_id` (`groups_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_groups_rssfeeds
@@ -2819,7 +2819,7 @@ CREATE TABLE `glpi_groups_rssfeeds` (
   KEY `groups_id` (`groups_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_groups_tickets
@@ -2833,7 +2833,7 @@ CREATE TABLE `glpi_groups_tickets` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickets_id`,`type`,`groups_id`),
   KEY `group` (`groups_id`,`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_groups_users
@@ -2851,7 +2851,7 @@ CREATE TABLE `glpi_groups_users` (
   KEY `groups_id` (`groups_id`),
   KEY `is_manager` (`is_manager`),
   KEY `is_userdelegate` (`is_userdelegate`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_holidays
@@ -2875,7 +2875,7 @@ CREATE TABLE `glpi_holidays` (
   KEY `is_perpetual` (`is_perpetual`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_infocoms
@@ -2923,7 +2923,7 @@ CREATE TABLE `glpi_infocoms` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `businesscriticities_id` (`businesscriticities_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_interfacetypes
@@ -2939,7 +2939,7 @@ CREATE TABLE `glpi_interfacetypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_ipaddresses
@@ -2968,7 +2968,7 @@ CREATE TABLE `glpi_ipaddresses` (
   KEY `is_dynamic` (`is_dynamic`),
   KEY `item` (`itemtype`,`items_id`,`is_deleted`),
   KEY `mainitem` (`mainitemtype`,`mainitems_id`,`is_deleted`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_ipaddresses_ipnetworks
@@ -2982,7 +2982,7 @@ CREATE TABLE `glpi_ipaddresses_ipnetworks` (
   UNIQUE KEY `unicity` (`ipaddresses_id`,`ipnetworks_id`),
   KEY `ipnetworks_id` (`ipnetworks_id`),
   KEY `ipaddresses_id` (`ipaddresses_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_ipnetworks
@@ -3026,7 +3026,7 @@ CREATE TABLE `glpi_ipnetworks` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_ipnetworks_vlans
@@ -3038,7 +3038,7 @@ CREATE TABLE `glpi_ipnetworks_vlans` (
   `vlans_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `link` (`ipnetworks_id`,`vlans_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_items_devicecases
@@ -3069,7 +3069,7 @@ CREATE TABLE `glpi_items_devicecases` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_items_devicecontrols
@@ -3102,7 +3102,7 @@ CREATE TABLE `glpi_items_devicecontrols` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_items_devicedrives
@@ -3135,7 +3135,7 @@ CREATE TABLE `glpi_items_devicedrives` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_items_devicegenerics
@@ -3164,7 +3164,7 @@ CREATE TABLE `glpi_items_devicegenerics` (
   KEY `serial` (`serial`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `otherserial` (`otherserial`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_items_devicegraphiccards
@@ -3199,7 +3199,7 @@ CREATE TABLE `glpi_items_devicegraphiccards` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_items_deviceharddrives
@@ -3234,7 +3234,7 @@ CREATE TABLE `glpi_items_deviceharddrives` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_items_devicememories
@@ -3269,7 +3269,7 @@ CREATE TABLE `glpi_items_devicememories` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_items_devicemotherboards
@@ -3300,7 +3300,7 @@ CREATE TABLE `glpi_items_devicemotherboards` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_items_devicenetworkcards
@@ -3335,7 +3335,7 @@ CREATE TABLE `glpi_items_devicenetworkcards` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_items_devicepcis
@@ -3368,7 +3368,7 @@ CREATE TABLE `glpi_items_devicepcis` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_items_devicepowersupplies
@@ -3399,7 +3399,7 @@ CREATE TABLE `glpi_items_devicepowersupplies` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_items_deviceprocessors
@@ -3438,7 +3438,7 @@ CREATE TABLE `glpi_items_deviceprocessors` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_items_devicesensors
@@ -3467,7 +3467,7 @@ CREATE TABLE `glpi_items_devicesensors` (
   KEY `serial` (`serial`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `otherserial` (`otherserial`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_items_devicesoundcards
@@ -3500,7 +3500,7 @@ CREATE TABLE `glpi_items_devicesoundcards` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_items_problems
@@ -3514,7 +3514,7 @@ CREATE TABLE `glpi_items_problems` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`problems_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_items_projects
@@ -3528,7 +3528,7 @@ CREATE TABLE `glpi_items_projects` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`projects_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_items_tickets
@@ -3542,7 +3542,7 @@ CREATE TABLE `glpi_items_tickets` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`,`tickets_id`),
   KEY `tickets_id` (`tickets_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_itilcategories
@@ -3593,7 +3593,7 @@ CREATE TABLE `glpi_itilcategories` (
   KEY `is_change` (`is_change`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_itils_projects
@@ -3607,7 +3607,7 @@ CREATE TABLE `glpi_itils_projects` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`,`projects_id`),
   KEY `projects_id` (`projects_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_knowbaseitemcategories
@@ -3633,7 +3633,7 @@ CREATE TABLE `glpi_knowbaseitemcategories` (
   KEY `is_recursive` (`is_recursive`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_knowbaseitems
@@ -3661,7 +3661,7 @@ CREATE TABLE `glpi_knowbaseitems` (
   FULLTEXT KEY `fulltext` (`name`,`answer`),
   FULLTEXT KEY `name` (`name`),
   FULLTEXT KEY `answer` (`answer`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_knowbaseitems_profiles
@@ -3678,7 +3678,7 @@ CREATE TABLE `glpi_knowbaseitems_profiles` (
   KEY `profiles_id` (`profiles_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_knowbaseitems_users
@@ -3691,7 +3691,7 @@ CREATE TABLE `glpi_knowbaseitems_users` (
   PRIMARY KEY (`id`),
   KEY `knowbaseitems_id` (`knowbaseitems_id`),
   KEY `users_id` (`users_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_knowbaseitemtranslations
@@ -3712,7 +3712,7 @@ CREATE TABLE `glpi_knowbaseitemtranslations` (
   FULLTEXT KEY `fulltext` (`name`,`answer`),
   FULLTEXT KEY `name` (`name`),
   FULLTEXT KEY `answer` (`answer`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_lines
@@ -3740,7 +3740,7 @@ CREATE TABLE `glpi_lines` (
   KEY `is_recursive` (`is_recursive`),
   KEY `users_id` (`users_id`),
   KEY `lineoperators_id` (`lineoperators_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_lineoperators
@@ -3763,7 +3763,7 @@ CREATE TABLE IF NOT EXISTS `glpi_lineoperators` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   UNIQUE KEY `unicity` (`mcc`,`mnc`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `glpi_linetypes`;
@@ -3777,7 +3777,7 @@ CREATE TABLE IF NOT EXISTS `glpi_linetypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_links
 
@@ -3796,7 +3796,7 @@ CREATE TABLE `glpi_links` (
   KEY `entities_id` (`entities_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_links_itemtypes
@@ -3809,7 +3809,7 @@ CREATE TABLE `glpi_links_itemtypes` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`links_id`),
   KEY `links_id` (`links_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_locations
@@ -3845,7 +3845,7 @@ CREATE TABLE `glpi_locations` (
   KEY `is_recursive` (`is_recursive`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_logs
@@ -3867,7 +3867,7 @@ CREATE TABLE `glpi_logs` (
   KEY `itemtype_link` (`itemtype_link`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `id_search_option` (`id_search_option`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_mailcollectors
@@ -3895,7 +3895,7 @@ CREATE TABLE `glpi_mailcollectors` (
   KEY `is_active` (`is_active`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_manufacturers
@@ -3911,7 +3911,7 @@ CREATE TABLE `glpi_manufacturers` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_monitormodels
@@ -3937,7 +3937,7 @@ CREATE TABLE `glpi_monitormodels` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_monitors
@@ -4001,7 +4001,7 @@ CREATE TABLE `glpi_monitors` (
   KEY `uuid` (`uuid`),
   KEY `date_creation` (`date_creation`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_monitortypes
@@ -4017,7 +4017,7 @@ CREATE TABLE `glpi_monitortypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_netpoints
@@ -4037,7 +4037,7 @@ CREATE TABLE `glpi_netpoints` (
   KEY `location_name` (`locations_id`,`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_networkaliases
@@ -4054,7 +4054,7 @@ CREATE TABLE `glpi_networkaliases` (
   KEY `entities_id` (`entities_id`),
   KEY `name` (`name`),
   KEY `networknames_id` (`networknames_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_networkequipmentmodels
@@ -4080,7 +4080,7 @@ CREATE TABLE `glpi_networkequipmentmodels` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_networkequipments
@@ -4136,7 +4136,7 @@ CREATE TABLE `glpi_networkequipments` (
   KEY `otherserial` (`otherserial`),
   KEY `uuid` (`uuid`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_networkequipmenttypes
@@ -4152,7 +4152,7 @@ CREATE TABLE `glpi_networkequipmenttypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_networkinterfaces
@@ -4164,7 +4164,7 @@ CREATE TABLE `glpi_networkinterfaces` (
   `comment` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_networknames
@@ -4192,7 +4192,7 @@ CREATE TABLE `glpi_networknames` (
   KEY `item` (`itemtype`,`items_id`,`is_deleted`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_networkportaggregates
@@ -4208,7 +4208,7 @@ CREATE TABLE `glpi_networkportaggregates` (
   UNIQUE KEY `networkports_id` (`networkports_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_networkportaliases
@@ -4225,7 +4225,7 @@ CREATE TABLE `glpi_networkportaliases` (
   KEY `networkports_id_alias` (`networkports_id_alias`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_networkportdialups
@@ -4240,7 +4240,7 @@ CREATE TABLE `glpi_networkportdialups` (
   UNIQUE KEY `networkports_id` (`networkports_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_networkportethernets
@@ -4263,7 +4263,7 @@ CREATE TABLE `glpi_networkportethernets` (
   KEY `speed` (`speed`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_networkportfiberchannels
 
@@ -4285,7 +4285,7 @@ CREATE TABLE `glpi_networkportfiberchannels` (
   KEY `speed` (`speed`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_networkportlocals
 
@@ -4299,7 +4299,7 @@ CREATE TABLE `glpi_networkportlocals` (
   UNIQUE KEY `networkports_id` (`networkports_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_networkports
@@ -4330,7 +4330,7 @@ CREATE TABLE `glpi_networkports` (
   KEY `is_dynamic` (`is_dynamic`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_networkports_networkports
@@ -4343,7 +4343,7 @@ CREATE TABLE `glpi_networkports_networkports` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`networkports_id_1`,`networkports_id_2`),
   KEY `networkports_id_2` (`networkports_id_2`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_networkports_vlans
@@ -4357,7 +4357,7 @@ CREATE TABLE `glpi_networkports_vlans` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`networkports_id`,`vlans_id`),
   KEY `vlans_id` (`vlans_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_networkportwifis
@@ -4381,7 +4381,7 @@ CREATE TABLE `glpi_networkportwifis` (
   KEY `mode` (`mode`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_networks
@@ -4397,7 +4397,7 @@ CREATE TABLE `glpi_networks` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_notepads
@@ -4418,7 +4418,7 @@ CREATE TABLE `glpi_notepads` (
   KEY `date` (`date`),
   KEY `users_id_lastupdater` (`users_id_lastupdater`),
   KEY `users_id` (`users_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_notifications
@@ -4444,7 +4444,7 @@ CREATE TABLE `glpi_notifications` (
   KEY `date_mod` (`date_mod`),
   KEY `is_recursive` (`is_recursive`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 
@@ -4461,7 +4461,7 @@ CREATE TABLE `glpi_notifications_notificationtemplates` (
   KEY `notifications_id` (`notifications_id`),
   KEY `notificationtemplates_id` (`notificationtemplates_id`),
   KEY `mode` (`mode`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 
@@ -4476,7 +4476,7 @@ CREATE TABLE `glpi_notificationtargets` (
   PRIMARY KEY (`id`),
   KEY `items` (`type`,`items_id`),
   KEY `notifications_id` (`notifications_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_notificationtemplates
@@ -4495,7 +4495,7 @@ CREATE TABLE `glpi_notificationtemplates` (
   KEY `date_mod` (`date_mod`),
   KEY `name` (`name`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_notificationtemplatetranslations
@@ -4510,7 +4510,7 @@ CREATE TABLE `glpi_notificationtemplatetranslations` (
   `content_html` text,
   PRIMARY KEY (`id`),
   KEY `notificationtemplates_id` (`notificationtemplates_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_notimportedemails
@@ -4529,7 +4529,7 @@ CREATE TABLE `glpi_notimportedemails` (
   PRIMARY KEY (`id`),
   KEY `users_id` (`users_id`),
   KEY `mailcollectors_id` (`mailcollectors_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_objectlocks
@@ -4543,7 +4543,7 @@ CREATE TABLE `glpi_objectlocks` (
   `date_mod` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp of the lock',
   PRIMARY KEY (`id`),
   UNIQUE KEY `item` (`itemtype`,`items_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_operatingsystemarchitectures
@@ -4559,7 +4559,7 @@ CREATE TABLE `glpi_operatingsystemarchitectures` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_operatingsystems
@@ -4575,7 +4575,7 @@ CREATE TABLE `glpi_operatingsystems` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_operatingsystemservicepacks
@@ -4591,7 +4591,7 @@ CREATE TABLE `glpi_operatingsystemservicepacks` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_operatingsystemversions
@@ -4607,7 +4607,7 @@ CREATE TABLE `glpi_operatingsystemversions` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_passivedcequipments
@@ -4645,7 +4645,7 @@ CREATE TABLE `glpi_passivedcequipments` (
   KEY `is_deleted` (`is_deleted`),
   KEY `states_id` (`states_id`),
   KEY `manufacturers_id` (`manufacturers_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_passivedcequipmentmodels
@@ -4671,7 +4671,7 @@ CREATE TABLE `glpi_passivedcequipmentmodels` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_peripheralmodels
 
@@ -4689,7 +4689,7 @@ CREATE TABLE `glpi_passivedcequipmenttypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `glpi_peripheralmodels`;
@@ -4713,7 +4713,7 @@ CREATE TABLE `glpi_peripheralmodels` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_peripherals
@@ -4770,7 +4770,7 @@ CREATE TABLE `glpi_peripherals` (
   KEY `uuid` (`uuid`),
   KEY `date_creation` (`date_creation`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_peripheraltypes
@@ -4786,7 +4786,7 @@ CREATE TABLE `glpi_peripheraltypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_phonemodels
@@ -4804,7 +4804,7 @@ CREATE TABLE `glpi_phonemodels` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_phonepowersupplies
@@ -4820,7 +4820,7 @@ CREATE TABLE `glpi_phonepowersupplies` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_phones
@@ -4882,7 +4882,7 @@ CREATE TABLE `glpi_phones` (
   KEY `uuid` (`uuid`),
   KEY `date_creation` (`date_creation`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_phonetypes
@@ -4898,7 +4898,7 @@ CREATE TABLE `glpi_phonetypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_planningrecalls
@@ -4916,7 +4916,7 @@ CREATE TABLE `glpi_planningrecalls` (
   KEY `users_id` (`users_id`),
   KEY `before_time` (`before_time`),
   KEY `when` (`when`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_plugins
@@ -4934,7 +4934,7 @@ CREATE TABLE `glpi_plugins` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`directory`),
   KEY `state` (`state`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_printermodels
@@ -4952,7 +4952,7 @@ CREATE TABLE `glpi_printermodels` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_printers
@@ -5018,7 +5018,7 @@ CREATE TABLE `glpi_printers` (
   KEY `otherserial` (`otherserial`),
   KEY `uuid` (`uuid`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_printertypes
@@ -5034,7 +5034,7 @@ CREATE TABLE `glpi_printertypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_problemcosts
@@ -5060,7 +5060,7 @@ CREATE TABLE `glpi_problemcosts` (
   KEY `end_date` (`end_date`),
   KEY `entities_id` (`entities_id`),
   KEY `budgets_id` (`budgets_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_problems
@@ -5112,7 +5112,7 @@ CREATE TABLE `glpi_problems` (
   KEY `time_to_resolve` (`time_to_resolve`),
   KEY `users_id_lastupdater` (`users_id_lastupdater`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_problems_suppliers
@@ -5128,7 +5128,7 @@ CREATE TABLE `glpi_problems_suppliers` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`problems_id`,`type`,`suppliers_id`),
   KEY `group` (`suppliers_id`,`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_problems_tickets
@@ -5141,7 +5141,7 @@ CREATE TABLE `glpi_problems_tickets` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`problems_id`,`tickets_id`),
   KEY `tickets_id` (`tickets_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_problems_users
@@ -5157,7 +5157,7 @@ CREATE TABLE `glpi_problems_users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`problems_id`,`type`,`users_id`,`alternative_email`),
   KEY `user` (`users_id`,`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_problemtasks
@@ -5199,7 +5199,7 @@ CREATE TABLE `glpi_problemtasks` (
   KEY `taskcategories_id` (`taskcategories_id`),
   KEY `tasktemplates_id` (`tasktemplates_id`),
   KEY `is_private` (`is_private`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_profilerights
@@ -5212,7 +5212,7 @@ CREATE TABLE `glpi_profilerights` (
   `rights` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`profiles_id`,`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_profiles
 
@@ -5243,7 +5243,7 @@ CREATE TABLE `glpi_profiles` (
   KEY `tickettemplates_id` (`tickettemplates_id`),
   KEY `changetemplates_id` (`changetemplates_id`),
   KEY `problemtemplates_id` (`problemtemplates_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_profiles_reminders
@@ -5260,7 +5260,7 @@ CREATE TABLE `glpi_profiles_reminders` (
   KEY `profiles_id` (`profiles_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_profiles_rssfeeds
@@ -5277,7 +5277,7 @@ CREATE TABLE `glpi_profiles_rssfeeds` (
   KEY `profiles_id` (`profiles_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_profiles_users
@@ -5296,7 +5296,7 @@ CREATE TABLE `glpi_profiles_users` (
   KEY `users_id` (`users_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `is_dynamic` (`is_dynamic`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_projectcosts
@@ -5321,7 +5321,7 @@ CREATE TABLE `glpi_projectcosts` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `budgets_id` (`budgets_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_projects
@@ -5377,7 +5377,7 @@ CREATE TABLE `glpi_projects` (
   KEY `date_creation` (`date_creation`),
   KEY `projecttemplates_id` (`projecttemplates_id`),
   KEY `is_template` (`is_template`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_projectstates
@@ -5396,7 +5396,7 @@ CREATE TABLE `glpi_projectstates` (
   KEY `is_finished` (`is_finished`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_projecttasks
@@ -5449,7 +5449,7 @@ CREATE TABLE `glpi_projecttasks` (
   KEY `projecttasktemplates_id` (`projecttasktemplates_id`),
   KEY `is_template` (`is_template`),
   KEY `is_milestone` (`is_milestone`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_projecttasktemplates
 
@@ -5494,7 +5494,7 @@ CREATE TABLE `glpi_projecttasktemplates` (
   KEY `projectstates_id` (`projectstates_id`),
   KEY `projecttasktypes_id` (`projecttasktypes_id`),
   KEY `is_milestone` (`is_milestone`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_projecttasks_tickets
@@ -5507,7 +5507,7 @@ CREATE TABLE `glpi_projecttasks_tickets` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickets_id`,`projecttasks_id`),
   KEY `projects_id` (`projecttasks_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_projecttaskteams
@@ -5521,7 +5521,7 @@ CREATE TABLE `glpi_projecttaskteams` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`projecttasks_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_projecttasktypes
@@ -5537,7 +5537,7 @@ CREATE TABLE `glpi_projecttasktypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_projectteams
@@ -5551,7 +5551,7 @@ CREATE TABLE `glpi_projectteams` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`projects_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_projecttypes
@@ -5567,7 +5567,7 @@ CREATE TABLE `glpi_projecttypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_queuednotifications
@@ -5606,7 +5606,7 @@ CREATE TABLE `glpi_queuednotifications` (
   KEY `send_time` (`send_time`),
   KEY `sent_time` (`sent_time`),
   KEY `mode` (`mode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_registeredids
@@ -5622,7 +5622,7 @@ CREATE TABLE `glpi_registeredids` (
   KEY `name` (`name`),
   KEY `item` (`items_id`,`itemtype`),
   KEY `device_type` (`device_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_reminders
@@ -5653,7 +5653,7 @@ CREATE TABLE `glpi_reminders` (
   KEY `state` (`state`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_remindertranslations
 
@@ -5670,7 +5670,7 @@ CREATE TABLE `glpi_remindertranslations` (
   PRIMARY KEY (`id`),
   KEY `item` (`reminders_id`,`language`),
   KEY `users_id` (`users_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_reminders_users
 
@@ -5682,7 +5682,7 @@ CREATE TABLE `glpi_reminders_users` (
   PRIMARY KEY (`id`),
   KEY `reminders_id` (`reminders_id`),
   KEY `users_id` (`users_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_requesttypes
@@ -5712,7 +5712,7 @@ CREATE TABLE `glpi_requesttypes` (
   KEY `is_active` (`is_active`),
   KEY `is_ticketheader` (`is_ticketheader`),
   KEY `is_itilfollowup` (`is_itilfollowup`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_reservationitems
@@ -5732,7 +5732,7 @@ CREATE TABLE `glpi_reservationitems` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_reservations
@@ -5752,7 +5752,7 @@ CREATE TABLE `glpi_reservations` (
   KEY `reservationitems_id` (`reservationitems_id`),
   KEY `users_id` (`users_id`),
   KEY `resagroup` (`reservationitems_id`,`group`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_rssfeeds
@@ -5777,7 +5777,7 @@ CREATE TABLE `glpi_rssfeeds` (
   KEY `have_error` (`have_error`),
   KEY `is_active` (`is_active`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_rssfeeds_users
@@ -5790,7 +5790,7 @@ CREATE TABLE `glpi_rssfeeds_users` (
   PRIMARY KEY (`id`),
   KEY `rssfeeds_id` (`rssfeeds_id`),
   KEY `users_id` (`users_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_ruleactions
@@ -5805,7 +5805,7 @@ CREATE TABLE `glpi_ruleactions` (
   PRIMARY KEY (`id`),
   KEY `rules_id` (`rules_id`),
   KEY `field_value` (`field`(50),`value`(50))
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_rulecriterias
@@ -5820,7 +5820,7 @@ CREATE TABLE `glpi_rulecriterias` (
   PRIMARY KEY (`id`),
   KEY `rules_id` (`rules_id`),
   KEY `condition` (`condition`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_rulerightparameters
@@ -5836,7 +5836,7 @@ CREATE TABLE `glpi_rulerightparameters` (
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_rules
@@ -5865,7 +5865,7 @@ CREATE TABLE `glpi_rules` (
   KEY `is_recursive` (`is_recursive`),
   KEY `condition` (`condition`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_slalevelactions
@@ -5879,7 +5879,7 @@ CREATE TABLE `glpi_slalevelactions` (
   `value` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `slalevels_id` (`slalevels_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_slalevelcriterias
@@ -5894,7 +5894,7 @@ CREATE TABLE `glpi_slalevelcriterias` (
   PRIMARY KEY (`id`),
   KEY `slalevels_id` (`slalevels_id`),
   KEY `condition` (`condition`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_slalevels
@@ -5914,7 +5914,7 @@ CREATE TABLE `glpi_slalevels` (
   KEY `name` (`name`),
   KEY `is_active` (`is_active`),
   KEY `slas_id` (`slas_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_slalevels_tickets
@@ -5929,7 +5929,7 @@ CREATE TABLE `glpi_slalevels_tickets` (
   KEY `tickets_id` (`tickets_id`),
   KEY `slalevels_id` (`slalevels_id`),
   UNIQUE KEY `unicity` (`tickets_id`,`slalevels_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_olalevelactions
 
@@ -5942,7 +5942,7 @@ CREATE TABLE `glpi_olalevelactions` (
   `value` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `olalevels_id` (`olalevels_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_olalevelcriterias
@@ -5957,7 +5957,7 @@ CREATE TABLE `glpi_olalevelcriterias` (
   PRIMARY KEY (`id`),
   KEY `olalevels_id` (`olalevels_id`),
   KEY `condition` (`condition`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_olalevels
@@ -5977,7 +5977,7 @@ CREATE TABLE `glpi_olalevels` (
   KEY `name` (`name`),
   KEY `is_active` (`is_active`),
   KEY `olas_id` (`olas_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_olalevels_tickets
@@ -5992,7 +5992,7 @@ CREATE TABLE `glpi_olalevels_tickets` (
   KEY `tickets_id` (`tickets_id`),
   KEY `olalevels_id` (`olalevels_id`),
   UNIQUE KEY `unicity` (`tickets_id`,`olalevels_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_slms
 
@@ -6013,7 +6013,7 @@ CREATE TABLE `glpi_slms` (
   KEY `calendars_id` (`calendars_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_slas
 
@@ -6038,7 +6038,7 @@ CREATE TABLE `glpi_slas` (
   KEY `date_creation` (`date_creation`),
   KEY `calendars_id` (`calendars_id`),
   KEY `slms_id` (`slms_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_olas
 
@@ -6063,7 +6063,7 @@ CREATE TABLE `glpi_olas` (
   KEY `date_creation` (`date_creation`),
   KEY `calendars_id` (`calendars_id`),
   KEY `slms_id` (`slms_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_softwarecategories
 
@@ -6079,7 +6079,7 @@ CREATE TABLE `glpi_softwarecategories` (
   `sons_cache` longtext,
   PRIMARY KEY (`id`),
   KEY `softwarecategories_id` (`softwarecategories_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_softwarelicenses
@@ -6142,7 +6142,7 @@ CREATE TABLE `glpi_softwarelicenses` (
   KEY `manufacturers_id` (`manufacturers_id`),
   KEY `states_id` (`states_id`),
   KEY `allow_overquota` (`allow_overquota`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_softwarelicensetypes
@@ -6166,7 +6166,7 @@ CREATE TABLE `glpi_softwarelicensetypes` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `softwarelicensetypes_id` (`softwarelicensetypes_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_softwares
@@ -6212,7 +6212,7 @@ CREATE TABLE `glpi_softwares` (
   KEY `is_helpdesk_visible` (`is_helpdesk_visible`),
   KEY `groups_id_tech` (`groups_id_tech`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_softwareversions
@@ -6238,7 +6238,7 @@ CREATE TABLE `glpi_softwareversions` (
   KEY `operatingsystems_id` (`operatingsystems_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_solutiontemplates
@@ -6261,7 +6261,7 @@ CREATE TABLE `glpi_solutiontemplates` (
   KEY `entities_id` (`entities_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_solutiontypes
@@ -6281,7 +6281,7 @@ CREATE TABLE `glpi_solutiontypes` (
   KEY `is_recursive` (`is_recursive`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_itilsolutions
@@ -6313,7 +6313,7 @@ CREATE TABLE `glpi_itilsolutions` (
   KEY `users_id_approval` (`users_id_approval`),
   KEY `status` (`status`),
   KEY `itilfollowups_id` (`itilfollowups_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_ssovariables
@@ -6328,7 +6328,7 @@ CREATE TABLE `glpi_ssovariables` (
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_states
@@ -6386,7 +6386,7 @@ CREATE TABLE `glpi_states` (
   KEY `is_visible_appliance` (`is_visible_appliance`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_suppliers
@@ -6420,7 +6420,7 @@ CREATE TABLE `glpi_suppliers` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `is_active` (`is_active`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_suppliers_tickets
@@ -6436,7 +6436,7 @@ CREATE TABLE `glpi_suppliers_tickets` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickets_id`,`type`,`suppliers_id`),
   KEY `group` (`suppliers_id`,`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_suppliertypes
@@ -6452,7 +6452,7 @@ CREATE TABLE `glpi_suppliertypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_taskcategories
@@ -6484,7 +6484,7 @@ CREATE TABLE `glpi_taskcategories` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_tasktemplates
@@ -6515,7 +6515,7 @@ CREATE TABLE `glpi_tasktemplates` (
   KEY `is_private` (`is_private`),
   KEY `users_id_tech` (`users_id_tech`),
   KEY `groups_id_tech` (`groups_id_tech`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_ticketcosts
@@ -6541,7 +6541,7 @@ CREATE TABLE `glpi_ticketcosts` (
   KEY `end_date` (`end_date`),
   KEY `entities_id` (`entities_id`),
   KEY `budgets_id` (`budgets_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_ticketrecurrents
@@ -6567,7 +6567,7 @@ CREATE TABLE `glpi_ticketrecurrents` (
   KEY `is_active` (`is_active`),
   KEY `tickettemplates_id` (`tickettemplates_id`),
   KEY `next_creation_date` (`next_creation_date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_recurrentchanges
@@ -6593,7 +6593,7 @@ CREATE TABLE `glpi_recurrentchanges` (
   KEY `is_active` (`is_active`),
   KEY `changetemplates_id` (`changetemplates_id`),
   KEY `next_creation_date` (`next_creation_date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_tickets
 
@@ -6671,7 +6671,7 @@ CREATE TABLE `glpi_tickets` (
   KEY `date_creation` (`date_creation`),
   KEY `ola_waiting_duration` (`ola_waiting_duration`),
   KEY `olalevels_id_ttr` (`olalevels_id_ttr`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_tickets_tickets
@@ -6684,7 +6684,7 @@ CREATE TABLE `glpi_tickets_tickets` (
   `link` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickets_id_1`,`tickets_id_2`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_tickets_users
@@ -6700,7 +6700,7 @@ CREATE TABLE `glpi_tickets_users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickets_id`,`type`,`users_id`,`alternative_email`),
   KEY `user` (`users_id`,`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_ticketsatisfactions
@@ -6716,7 +6716,7 @@ CREATE TABLE `glpi_ticketsatisfactions` (
   `comment` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `tickets_id` (`tickets_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_tickettasks
@@ -6760,7 +6760,7 @@ CREATE TABLE `glpi_tickettasks` (
   KEY `end` (`end`),
   KEY `tasktemplates_id` (`tasktemplates_id`),
   KEY `sourceitems_id` (`sourceitems_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_tickettemplatehiddenfields
@@ -6773,7 +6773,7 @@ CREATE TABLE `glpi_tickettemplatehiddenfields` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickettemplates_id`,`num`),
   KEY `tickettemplates_id` (`tickettemplates_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_changeemplatehiddenfields
 
@@ -6785,7 +6785,7 @@ CREATE TABLE `glpi_changetemplatehiddenfields` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changetemplates_id`,`num`),
   KEY `changetemplates_id` (`changetemplates_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_problemtemplatehiddenfields
 
@@ -6797,7 +6797,7 @@ CREATE TABLE `glpi_problemtemplatehiddenfields` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`problemtemplates_id`,`num`),
   KEY `problemtemplates_id` (`problemtemplates_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_tickettemplatemandatoryfields
 
@@ -6809,7 +6809,7 @@ CREATE TABLE `glpi_tickettemplatemandatoryfields` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickettemplates_id`,`num`),
   KEY `tickettemplates_id` (`tickettemplates_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_changetemplatemandatoryfields
@@ -6822,7 +6822,7 @@ CREATE TABLE `glpi_changetemplatemandatoryfields` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changetemplates_id`,`num`),
   KEY `changetemplates_id` (`changetemplates_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_problemtemplatemandatoryfields
 
@@ -6834,7 +6834,7 @@ CREATE TABLE `glpi_problemtemplatemandatoryfields` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`problemtemplates_id`,`num`),
   KEY `problemtemplates_id` (`problemtemplates_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_tickettemplatepredefinedfields
 
@@ -6846,7 +6846,7 @@ CREATE TABLE `glpi_tickettemplatepredefinedfields` (
   `value` text,
   PRIMARY KEY (`id`),
   KEY `tickettemplates_id` (`tickettemplates_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_changetemplatepredefinedfields
 
@@ -6858,7 +6858,7 @@ CREATE TABLE `glpi_changetemplatepredefinedfields` (
   `value` text,
   PRIMARY KEY (`id`),
   KEY `changetemplates_id` (`changetemplates_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_problemtemplatepredefinedfields
 
@@ -6870,7 +6870,7 @@ CREATE TABLE `glpi_problemtemplatepredefinedfields` (
   `value` text,
   PRIMARY KEY (`id`),
   KEY `problemtemplates_id` (`problemtemplates_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 
@@ -6887,7 +6887,7 @@ CREATE TABLE `glpi_tickettemplates` (
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_changetemplates
@@ -6903,7 +6903,7 @@ CREATE TABLE `glpi_changetemplates` (
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_problemtemplates
 
@@ -6918,7 +6918,7 @@ CREATE TABLE `glpi_problemtemplates` (
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_ticketvalidations
 
@@ -6943,7 +6943,7 @@ CREATE TABLE `glpi_ticketvalidations` (
   KEY `submission_date` (`submission_date`),
   KEY `validation_date` (`validation_date`),
   KEY `status` (`status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_transfers
@@ -6985,7 +6985,7 @@ CREATE TABLE `glpi_transfers` (
   `keep_disk` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_usercategories
@@ -7001,7 +7001,7 @@ CREATE TABLE `glpi_usercategories` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_useremails
@@ -7018,7 +7018,7 @@ CREATE TABLE `glpi_useremails` (
   KEY `email` (`email`),
   KEY `is_default` (`is_default`),
   KEY `is_dynamic` (`is_dynamic`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_users
@@ -7134,7 +7134,7 @@ CREATE TABLE `glpi_users` (
   KEY `sync_field` (`sync_field`),
   KEY `groups_id` (`groups_id`),
   KEY `users_id_supervisor` (`users_id_supervisor`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_usertitles
@@ -7150,7 +7150,7 @@ CREATE TABLE `glpi_usertitles` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_virtualmachinestates
@@ -7165,7 +7165,7 @@ CREATE TABLE `glpi_virtualmachinestates` (
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_virtualmachinesystems
@@ -7180,7 +7180,7 @@ CREATE TABLE `glpi_virtualmachinesystems` (
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_virtualmachinetypes
@@ -7195,7 +7195,7 @@ CREATE TABLE `glpi_virtualmachinetypes` (
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_vlans
@@ -7216,7 +7216,7 @@ CREATE TABLE `glpi_vlans` (
   KEY `tag` (`tag`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_wifinetworks
@@ -7238,7 +7238,7 @@ CREATE TABLE `glpi_wifinetworks` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_knowbaseitems_items
 
@@ -7255,7 +7255,7 @@ CREATE TABLE `glpi_knowbaseitems_items` (
   KEY `itemtype` (`itemtype`),
   KEY `item_id` (`items_id`),
   KEY `item` (`itemtype`,`items_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_knowbaseitems_revisions
 
@@ -7272,7 +7272,7 @@ CREATE TABLE `glpi_knowbaseitems_revisions` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`knowbaseitems_id`, `revision`, `language`),
   KEY `revision` (`revision`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_knowbaseitems_comments
 
@@ -7287,7 +7287,7 @@ CREATE TABLE `glpi_knowbaseitems_comments` (
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_devicebatterymodels
 
@@ -7300,7 +7300,7 @@ CREATE TABLE `glpi_devicebatterymodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_devicebatteries
 
@@ -7327,7 +7327,7 @@ CREATE TABLE `glpi_devicebatteries` (
   KEY `date_creation` (`date_creation`),
   KEY `devicebatterymodels_id` (`devicebatterymodels_id`),
   KEY `devicebatterytypes_id` (`devicebatterytypes_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_items_devicebatteries
 
@@ -7357,7 +7357,7 @@ CREATE TABLE `glpi_items_devicebatteries` (
   KEY `serial` (`serial`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `otherserial` (`otherserial`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_devicebatterytypes`;
 CREATE TABLE `glpi_devicebatterytypes` (
@@ -7370,7 +7370,7 @@ CREATE TABLE `glpi_devicebatterytypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_devicefirmwaremodels
 
@@ -7383,7 +7383,7 @@ CREATE TABLE `glpi_devicefirmwaremodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_devicefirmwares
 
@@ -7410,7 +7410,7 @@ CREATE TABLE `glpi_devicefirmwares` (
   KEY `date_creation` (`date_creation`),
   KEY `devicefirmwaremodels_id` (`devicefirmwaremodels_id`),
   KEY `devicefirmwaretypes_id` (`devicefirmwaretypes_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_items_devicefirmwares
 
@@ -7438,7 +7438,7 @@ CREATE TABLE `glpi_items_devicefirmwares` (
   KEY `serial` (`serial`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `otherserial` (`otherserial`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_devicefirmwaretypes`;
 CREATE TABLE `glpi_devicefirmwaretypes` (
@@ -7451,7 +7451,7 @@ CREATE TABLE `glpi_devicefirmwaretypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 -- Datacenters
@@ -7471,7 +7471,7 @@ CREATE TABLE `glpi_datacenters` (
   KEY `is_recursive` (`is_recursive`),
   KEY `locations_id` (`locations_id`),
   KEY `is_deleted` (`is_deleted`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_dcrooms`;
 CREATE TABLE `glpi_dcrooms` (
@@ -7493,7 +7493,7 @@ CREATE TABLE `glpi_dcrooms` (
   KEY `locations_id` (`locations_id`),
   KEY `datacenters_id` (`datacenters_id`),
   KEY `is_deleted` (`is_deleted`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_rackmodels`;
 CREATE TABLE `glpi_rackmodels` (
@@ -7506,7 +7506,7 @@ CREATE TABLE `glpi_rackmodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_racktypes`;
 CREATE TABLE `glpi_racktypes` (
@@ -7523,7 +7523,7 @@ CREATE TABLE `glpi_racktypes` (
   KEY `name` (`name`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_racks`;
 CREATE TABLE `glpi_racks` (
@@ -7570,7 +7570,7 @@ CREATE TABLE `glpi_racks` (
   KEY `is_template` (`is_template`),
   KEY `is_deleted` (`is_deleted`),
   KEY `dcrooms_id` (`dcrooms_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_items_racks`;
 CREATE TABLE `glpi_items_racks` (
@@ -7586,7 +7586,7 @@ CREATE TABLE `glpi_items_racks` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `item` (`itemtype`,`items_id`, `is_reserved`),
   KEY `relation` (`racks_id`,`itemtype`,`items_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_enclosuremodels`;
 CREATE TABLE `glpi_enclosuremodels` (
@@ -7609,7 +7609,7 @@ CREATE TABLE `glpi_enclosuremodels` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_enclosures`;
 CREATE TABLE `glpi_enclosures` (
@@ -7644,7 +7644,7 @@ CREATE TABLE `glpi_enclosures` (
   KEY `is_deleted` (`is_deleted`),
   KEY `states_id` (`states_id`),
   KEY `manufacturers_id` (`manufacturers_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_items_enclosures`;
 CREATE TABLE `glpi_items_enclosures` (
@@ -7656,7 +7656,7 @@ CREATE TABLE `glpi_items_enclosures` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `item` (`itemtype`,`items_id`),
   KEY `relation` (`enclosures_id`,`itemtype`,`items_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_pdumodels`;
 CREATE TABLE `glpi_pdumodels` (
@@ -7679,7 +7679,7 @@ CREATE TABLE `glpi_pdumodels` (
   KEY `name` (`name`),
   KEY `is_rackable` (`is_rackable`),
   KEY `product_number` (`product_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_pdutypes`;
 CREATE TABLE `glpi_pdutypes` (
@@ -7696,7 +7696,7 @@ CREATE TABLE `glpi_pdutypes` (
   KEY `name` (`name`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `glpi_pdus`;
@@ -7732,7 +7732,7 @@ CREATE TABLE `glpi_pdus` (
   KEY `states_id` (`states_id`),
   KEY `manufacturers_id` (`manufacturers_id`),
   KEY `pdutypes_id` (`pdutypes_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_plugs`;
 CREATE TABLE `glpi_plugs` (
@@ -7745,7 +7745,7 @@ CREATE TABLE `glpi_plugs` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_pdus_plugs`;
 CREATE TABLE `glpi_pdus_plugs` (
@@ -7758,7 +7758,7 @@ CREATE TABLE `glpi_pdus_plugs` (
   PRIMARY KEY (`id`),
   KEY `plugs_id` (`plugs_id`),
   KEY `pdus_id` (`pdus_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_pdus_racks`;
 CREATE TABLE `glpi_pdus_racks` (
@@ -7773,7 +7773,7 @@ CREATE TABLE `glpi_pdus_racks` (
   PRIMARY KEY (`id`),
   KEY `racks_id` (`racks_id`),
   KEY `pdus_id` (`pdus_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 -- /Datacenters
 
 DROP TABLE IF EXISTS `glpi_itilfollowuptemplates`;
@@ -7796,7 +7796,7 @@ CREATE TABLE `glpi_itilfollowuptemplates` (
    KEY `date_mod` (`date_mod`),
    KEY `date_creation` (`date_creation`),
    KEY `is_private` (`is_private`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_itilfollowups`;
 CREATE TABLE `glpi_itilfollowups` (
@@ -7827,7 +7827,7 @@ CREATE TABLE `glpi_itilfollowups` (
   KEY `requesttypes_id` (`requesttypes_id`),
   KEY `sourceitems_id` (`sourceitems_id`),
   KEY `sourceof_items_id` (`sourceof_items_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_clustertypes`;
 CREATE TABLE `glpi_clustertypes` (
@@ -7844,7 +7844,7 @@ CREATE TABLE `glpi_clustertypes` (
   KEY `is_recursive` (`is_recursive`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_clusters`;
 CREATE TABLE `glpi_clusters` (
@@ -7872,7 +7872,7 @@ CREATE TABLE `glpi_clusters` (
   KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_items_clusters`;
 CREATE TABLE `glpi_items_clusters` (
@@ -7883,7 +7883,7 @@ CREATE TABLE `glpi_items_clusters` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`clusters_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_planningexternalevents
 
@@ -7922,7 +7922,7 @@ CREATE TABLE `glpi_planningexternalevents` (
   KEY `planningeventcategories_id` (`planningeventcategories_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_planningexternaleventtemplates
 
@@ -7947,7 +7947,7 @@ CREATE TABLE `glpi_planningexternaleventtemplates` (
    KEY `planningeventcategories_id` (`planningeventcategories_id`),
    KEY `date_mod` (`date_mod`),
    KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_planningeventcategories
 
@@ -7963,7 +7963,7 @@ CREATE TABLE `glpi_planningeventcategories` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_items_kanbans
 
@@ -7978,7 +7978,7 @@ CREATE TABLE `glpi_items_kanbans` (
    `date_creation` timestamp NULL DEFAULT NULL,
    PRIMARY KEY (`id`),
    UNIQUE KEY `unicity` (`itemtype`,`items_id`,`users_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 ### Dump table glpi_vobjects
 
@@ -7995,7 +7995,7 @@ CREATE TABLE `glpi_vobjects` (
    KEY `item` (`itemtype`,`items_id`),
    KEY `date_mod` (`date_mod`),
    KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_domaintypes`;
 CREATE TABLE `glpi_domaintypes` (
@@ -8006,7 +8006,7 @@ CREATE TABLE `glpi_domaintypes` (
   `comment` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_domainrelations`;
 CREATE TABLE `glpi_domainrelations` (
@@ -8017,7 +8017,7 @@ CREATE TABLE `glpi_domainrelations` (
   `comment` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_domains_items`;
 CREATE TABLE `glpi_domains_items` (
@@ -8032,7 +8032,7 @@ CREATE TABLE `glpi_domains_items` (
   KEY `domainrelations_id` (`domainrelations_id`),
   KEY `FK_device` (`items_id`, `itemtype`),
   KEY `item` (`itemtype`, `items_id`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_domainrecordtypes`;
 CREATE TABLE `glpi_domainrecordtypes` (
@@ -8044,7 +8044,7 @@ CREATE TABLE `glpi_domainrecordtypes` (
   `comment` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_domainrecords`;
 CREATE TABLE `glpi_domainrecords` (
@@ -8073,7 +8073,7 @@ CREATE TABLE `glpi_domainrecords` (
   KEY `date_mod` (`date_mod`),
   KEY `is_deleted` (`is_deleted`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_appliances`;
 CREATE TABLE `glpi_appliances` (
@@ -8114,7 +8114,7 @@ CREATE TABLE `glpi_appliances` (
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
   KEY `is_helpdesk_visible` (`is_helpdesk_visible`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 CREATE TABLE IF NOT EXISTS `glpi_appliances_items` (
@@ -8126,7 +8126,7 @@ CREATE TABLE IF NOT EXISTS `glpi_appliances_items` (
    UNIQUE `unicity` (`appliances_id`,`items_id`,`itemtype`),
    KEY `appliances_id` (`appliances_id`),
    KEY `item` (`itemtype`,`items_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 CREATE TABLE IF NOT EXISTS `glpi_appliancetypes` (
@@ -8140,7 +8140,7 @@ CREATE TABLE IF NOT EXISTS `glpi_appliancetypes` (
    KEY `name` (`name`),
    KEY `entities_id` (`entities_id`),
    UNIQUE (`externalidentifier`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 CREATE TABLE IF NOT EXISTS `glpi_applianceenvironments` (
@@ -8149,7 +8149,7 @@ CREATE TABLE IF NOT EXISTS `glpi_applianceenvironments` (
    `comment` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `glpi_appliances_items_relations` (
    `id` int(11) NOT NULL auto_increment,
@@ -8161,4 +8161,4 @@ CREATE TABLE IF NOT EXISTS `glpi_appliances_items_relations` (
    KEY `itemtype` (`itemtype`),
    KEY `items_id` (`items_id`),
    KEY `item` (`itemtype`,`items_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
