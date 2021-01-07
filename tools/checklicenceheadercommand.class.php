@@ -270,39 +270,53 @@ class CheckLicenceHeaderCommand extends Command {
     * @return array
     */
    private function getFilesToParse(): array {
-      $dir_iterator = new RecursiveIteratorIterator(
-         new RecursiveDirectoryIterator(GLPI_ROOT),
+      $dir_iterator = new RecursiveDirectoryIterator(GLPI_ROOT);
+
+      $filter_iterator = new class($dir_iterator) extends RecursiveFilterIterator {
+         public function accept() {
+            $excluded_elements = [
+               '\.dependabot',
+               '\.git',
+               '\.github',
+               'config',
+               'files',
+               'lib',
+               'marketplace',
+               'node_modules',
+               'plugins',
+               'public\/lib',
+               'tests\/config_db\.php',
+               'tests\/files',
+               'vendor',
+            ];
+            $exclude_pattern = '/^'
+               . preg_quote(GLPI_ROOT . DIRECTORY_SEPARATOR, '/')
+               . '(' . implode('|', $excluded_elements) . ')'
+               . '$/';
+            if (preg_match($exclude_pattern, $this->getRealPath())) {
+               return false;
+            }
+            if ($this->isFile() && !preg_match('/^(css|js|php|pl|scss|sql|ya?ml)$/', $this->getExtension())) {
+               return false;
+            }
+            return true;
+         }
+
+         public function getChildren() {
+            return new self($this->getInnerIterator()->getChildren());
+         }
+      };
+
+      $recursive_iterator = new RecursiveIteratorIterator(
+         $filter_iterator,
          RecursiveIteratorIterator::SELF_FIRST
       );
-
-      $excluded_elements = [
-         '\.dependabot',
-         '\.git',
-         '\.github',
-         'config',
-         'files',
-         'lib',
-         'marketplace',
-         'node_modules',
-         'plugins',
-         'public\/lib',
-         'tests\/config_db\.php',
-         'tests\/files',
-         'vendor',
-      ];
-
-      $exclude_pattern = '/^'
-         . preg_quote(GLPI_ROOT . DIRECTORY_SEPARATOR, '/')
-         . '(' . implode('|', $excluded_elements) . ')'
-         . '/';
 
       $files = [];
 
       /** @var SplFileInfo $file */
-      foreach ($dir_iterator as $file) {
-         if (!$file->isFile()
-             || preg_match($exclude_pattern, $file->getRealPath())
-             || !preg_match('/^(css|js|php|pl|scss|sql|ya?ml)$/', $file->getExtension())) {
+      foreach ($recursive_iterator as $file) {
+         if (!$file->isFile()) {
             continue;
          }
 
