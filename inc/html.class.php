@@ -852,7 +852,7 @@ class Html {
     * @return void
    **/
    static function displayErrorAndDie ($message, $minimal = false) {
-      global $CFG_GLPI, $HEADER_LOADED;
+      global $HEADER_LOADED;
 
       if (!$HEADER_LOADED) {
          if ($minimal || !Session::getCurrentInterface()) {
@@ -865,10 +865,11 @@ class Html {
             self::helpHeader(__('Access denied'), '');
          }
       }
-      echo "<div class='center'><br><br>";
-      echo Html::image($CFG_GLPI["root_doc"] . "/pics/warning.png", ['alt' => __('Warning')]);
-      echo "<br><br><span class='b'>$message</span></div>";
-      self::nullFooter();
+
+      TemplateRenderer::getInstance()->display('display_and_die.html.twig', [
+         'title'   => __('Access denied'),
+         'message' => $message,
+      ]);
       exit ();
    }
 
