@@ -50,7 +50,7 @@ class DBmysql {
    //! Default Database
    public $dbdefault          = "";
    //! Database Handler
-   private $dbh;
+   protected $dbh;
    //! Database Error
    public $error              = 0;
 
@@ -105,6 +105,14 @@ class DBmysql {
     * @var string|null
     */
    public $dbsslcacipher      = null;
+
+   /**
+    * Determine if utf8mb4 should be used for DB connection and tables altering operations.
+    * Defaults to false to keep backward compatibility with old DB.
+    *
+    * @var bool
+    */
+   public $use_utf8mb4 = false;
 
 
    /** Is it a first connection ?
@@ -198,21 +206,7 @@ class DBmysql {
          $this->connected = false;
          $this->error     = 2;
       } else {
-         if (isset($this->dbenc)) {
-            Toolbox::deprecated('Usage of alternative DB connection encoding (`DB::$dbenc` property) is deprecated.');
-         }
-         $dbenc = isset($this->dbenc) ? $this->dbenc : "utf8";
-         $this->dbh->set_charset($dbenc);
-         if ($dbenc === "utf8") {
-            // The mysqli::set_charset function will make COLLATE to be defined to the default one for used charset.
-            //
-            // For 'utf8' charset, default one is 'utf8_general_ci',
-            // so we have to redefine it to 'utf8_unicode_ci'.
-            //
-            // If encoding used by connection is not the default one (i.e utf8), then we assume
-            // that we cannot be sure of used COLLATE and that using the default one is the best option.
-            $this->dbh->query("SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';");
-         }
+         $this->setConnectionCharset();
 
          // force mysqlnd to return int and float types correctly (not as strings)
          $this->dbh->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
@@ -300,6 +294,29 @@ class DBmysql {
       if ($is_debug && $CFG_GLPI["debug_sql"] || $this->execution_time === true) {
          $TIMER                                    = new Timer();
          $TIMER->start();
+      }
+
+      if (preg_match('/(ALTER|CREATE)\s+TABLE\s+/', $query)) {
+         $matches = [];
+         if ($this->use_utf8mb4 && preg_match('/(?<invalid>(utf8(_[^\';\s]+)?))[\';\s]/', $query, $matches)) {
+            trigger_error(
+               sprintf(
+                  'Usage of "%s" charset/collation detected, should be "%s"',
+                  $matches['invalid'],
+                  str_replace('utf8', 'utf8mb4', $matches['invalid'])
+               ),
+               E_USER_WARNING
+            );
+         } else if (!$this->use_utf8mb4 && preg_match('/(?<invalid>(utf8mb4(_[^\';\s]+)?))[\';\s]/', $query, $matches)) {
+            trigger_error(
+               sprintf(
+                  'Usage of "%s" charset/collation detected, should be "%s"',
+                  $matches['invalid'],
+                  str_replace('utf8mb4', 'utf8', $matches['invalid'])
+               ),
+               E_USER_WARNING
+            );
+         }
       }
 
       $res = $this->dbh->query($query);
@@ -561,6 +578,64 @@ class DBmysql {
     */
    public function getMyIsamTables(): DBmysqlIterator {
       $iterator = $this->listTables('glpi_%', ['engine' => 'MyIsam']);
+      return $iterator;
+   }
+
+   /**
+    * Returns tables not using "utf8mb4_unicode_ci" collation.
+    *
+    * @return DBmysqlIterator
+    */
+   public function getNonUtf8mb4Tables(): DBmysqlIterator {
+
+      // Find tables that does not use utf8mb4 collation
+      $tables_query = [
+         'SELECT'     => ['information_schema.tables.table_name as TABLE_NAME'],
+         'DISTINCT'   => true,
+         'FROM'       => 'information_schema.tables',
+         'WHERE'     => [
+            'information_schema.tables.table_schema' => $this->dbdefault,
+            'information_schema.tables.table_name'   => ['LIKE', 'glpi_%'],
+            'information_schema.tables.table_type'    => 'BASE TABLE',
+            ['NOT' => ['information_schema.tables.table_collation' => 'utf8mb4_unicode_ci']],
+         ],
+      ];
+
+      // Find columns that does not use utf8mb4 collation
+      $columns_query = [
+         'SELECT'     => ['information_schema.columns.table_name as TABLE_NAME'],
+         'DISTINCT'   => true,
+         'FROM'       => 'information_schema.columns',
+         'INNER JOIN' => [
+            'information_schema.tables' => [
+               'FKEY' => [
+                  'information_schema.tables'  => 'table_name',
+                  'information_schema.columns' => 'table_name',
+                  [
+                     'AND' => [
+                        'information_schema.tables.table_schema' => new QueryExpression(
+                           $this->quoteName('information_schema.columns.table_schema')
+                        ),
+                     ]
+                  ],
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'information_schema.tables.table_schema' => $this->dbdefault,
+            'information_schema.tables.table_name'   => ['LIKE', 'glpi_%'],
+            'information_schema.tables.table_type'    => 'BASE TABLE',
+            ['NOT' => ['information_schema.columns.collation_name' => null]],
+            ['NOT' => ['information_schema.columns.collation_name' => 'utf8mb4_unicode_ci']]
+         ],
+      ];
+
+      $iterator = $this->request([
+         'SELECT'   => ['TABLE_NAME'],
+         'DISTINCT' => true,
+         'FROM'     => new QueryUnion([$tables_query, $columns_query], true),
+      ]);
+
       return $iterator;
    }
 
@@ -1266,10 +1341,14 @@ class DBmysql {
 
       $structure = str_replace(
          [
+            " COLLATE utf8mb4_unicode_ci",
+            " CHARACTER SET utf8mb4",
             " COLLATE utf8_unicode_ci",
             " CHARACTER SET utf8",
             ', ',
          ], [
+            '',
+            '',
             '',
             '',
             ',',
@@ -1295,7 +1374,7 @@ class DBmysql {
       //Mariadb 10.2 allow default values on longblob, text and longtext
       $defaults = [];
       preg_match_all(
-         '/^.+ (longblob|text|longtext) .+$/m',
+         '/^.+ ((medium|long)?(blob|text)) .+$/m',
          $structure,
          $defaults
       );
@@ -1625,5 +1704,14 @@ class DBmysql {
       }
 
       return $warnings;
+   }
+
+   /**
+    * Set charset to use for DB connection.
+    *
+    * @return void
+    */
+   public function setConnectionCharset(): void {
+      DBConnection::setConnectionCharset($this->dbh, $this->use_utf8mb4);
    }
 }

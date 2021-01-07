@@ -70,6 +70,9 @@ class DBmysql extends \GLPITestCase {
          $updated = $update['schema'];
          $updated_idx = $update['index'];
 
+         // TEXT fields were replaced by MEDIUM text during utf8mb4 migration
+         $updated = str_replace('mediumtext', 'text', $updated);
+
          //compare table schema
          $this->string($updated)->isIdenticalTo($fresh);
          //check index

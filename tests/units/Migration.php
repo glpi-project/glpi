@@ -293,9 +293,10 @@ class Migration extends \GLPITestCase {
          }
       )->isIdenticalTo("Change of the database layout - change_tableTask completed.");
 
+      $collate = $DB->use_utf8mb4 ? 'utf8mb4_unicode_ci' : 'utf8_unicode_ci';
       $this->array($this->queries)->isIdenticalTo([
          "ALTER TABLE `change_table` DROP `name`  ,\n" .
-         "CHANGE `NAME` `name` VARCHAR(255) COLLATE utf8_unicode_ci DEFAULT NULL   AFTER `id` ",
+         "CHANGE `NAME` `name` VARCHAR(255) COLLATE $collate DEFAULT NULL   AFTER `id` ",
       ]);
    }
 
@@ -330,13 +331,27 @@ class Migration extends \GLPITestCase {
             'field'     => 'my_field',
             'format'    => 'string',
             'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8_unicode_ci DEFAULT NULL   "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8_unicode_ci DEFAULT NULL   ",
+            'utf8mb4'   => false,
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'string',
+            'options'   => [],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL   ",
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'string',
             'options'   => ['value' => 'a string'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'a string'   "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'a string'   ",
+            'utf8mb4'   => false,
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'string',
+            'options'   => ['value' => 'a string'],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'a string'   ",
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
@@ -378,25 +393,53 @@ class Migration extends \GLPITestCase {
             'field'     => 'my_field',
             'format'    => 'text',
             'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8_unicode_ci DEFAULT NULL   "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8_unicode_ci DEFAULT NULL   ",
+            'utf8mb4'   => false,
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'text',
+            'options'   => [],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8mb4_unicode_ci DEFAULT NULL   ",
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'text',
             'options'   => ['value' => 'A text'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A text'   "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A text'   ",
+            'utf8mb4'   => false,
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'text',
+            'options'   => ['value' => 'A text'],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'A text'   ",
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'longtext',
             'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8_unicode_ci DEFAULT NULL   "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8_unicode_ci DEFAULT NULL   ",
+            'utf8mb4'   => false,
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'longtext',
+            'options'   => [],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8mb4_unicode_ci DEFAULT NULL   ",
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'longtext',
             'options'   => ['value' => 'A long text'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A long text'   "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A long text'   ",
+            'utf8mb4'   => false,
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'longtext',
+            'options'   => ['value' => 'A long text'],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'A long text'   ",
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
@@ -444,9 +487,10 @@ class Migration extends \GLPITestCase {
    /**
     * @dataProvider fieldsFormatsProvider
     */
-   public function testAddField($table, $field, $format, $options, $sql) {
+   public function testAddField($table, $field, $format, $options, $sql, bool $utf8mb4 = true) {
       global $DB;
       $DB = $this->db;
+      $DB->use_utf8mb4 = $utf8mb4;
       $this->calling($this->db)->fieldExists = false;
       $this->queries = [];
 

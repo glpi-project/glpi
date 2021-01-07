@@ -13,6 +13,9 @@ The present file will list all changes made to the project; according to the
 ### Deprecated
 - Usage of XML-RPC API is deprecated.
 
+### Removed
+- Usage of alternative DB connection encoding (`DB::$dbenc` property).
+
 ### API changes
 
 #### Added

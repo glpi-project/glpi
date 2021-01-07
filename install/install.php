@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\System\Requirement\DbConfiguration;
+
 define('GLPI_ROOT', realpath('..'));
 
 include_once (GLPI_ROOT . "/inc/based_config.php");
@@ -274,6 +276,27 @@ function step3($host, $user, $password, $update) {
          return;
       }
 
+      // Check DB config
+      $db = new class($link) extends DBmysql {
+         public function __construct($dbh) {
+            $this->dbh = $dbh;
+         }
+      };
+      $config_requirement = new DbConfiguration($db);
+      if (!$config_requirement->isValidated()) {
+         global $CFG_GLPI;
+         echo '<p class="center">';
+         $message = __s('Database configuration is not compatible with "utf8mb4" usage.');
+         echo '<img src="' . $CFG_GLPI['root_doc'] . '/pics/ko_min.png"'
+            . ' alt="' . $message . '"'
+            . ' title="' . $message . '" />'
+            . $message
+            . '<br />';
+         echo implode('<br />', $config_requirement->getValidationMessages());
+         echo '</p>';
+         return;
+      }
+
       if ($update == "no") {
          echo "<p>".__('Please select a database:')."</p>";
          echo "<form action='install.php' method='post'>";
@@ -401,7 +424,7 @@ function step4 ($databasename, $newdatabasename) {
          prev_form($host, $user, $password);
 
       } else {
-         if (DBConnection::createMainConfig($host, $user, $password, $databasename)) {
+         if (DBConnection::createMainConfig($host, $user, $password, $databasename, true)) {
             Toolbox::createSchema($_SESSION["glpilanguage"]);
             echo "<p>".__('OK - database was initialized')."</p>";
 
@@ -418,7 +441,7 @@ function step4 ($databasename, $newdatabasename) {
       if ($link->select_db($newdatabasename)) {
          echo "<p>".__('Database created')."</p>";
 
-         if (DBConnection::createMainConfig($host, $user, $password, $newdatabasename)) {
+         if (DBConnection::createMainConfig($host, $user, $password, $newdatabasename, true)) {
             Toolbox::createSchema($_SESSION["glpilanguage"]);
             echo "<p>".__('OK - database was initialized')."</p>";
             next_form();
@@ -433,7 +456,7 @@ function step4 ($databasename, $newdatabasename) {
             echo "<p>".__('Database created')."</p>";
 
             if ($link->select_db($newdatabasename)
-                && DBConnection::createMainConfig($host, $user, $password, $newdatabasename)) {
+                && DBConnection::createMainConfig($host, $user, $password, $newdatabasename, true)) {
 
                Toolbox::createSchema($_SESSION["glpilanguage"]);
                echo "<p>".__('OK - database was initialized')."</p>";
@@ -552,10 +575,21 @@ function update1($DBname) {
    $user     = $_SESSION['db_access']['user'];
    $password = $_SESSION['db_access']['password'];
 
-   if (DBConnection::createMainConfig($host, $user, $password, $DBname) && !empty($DBname)) {
+   if ($success = DBConnection::createMainConfig($host, $user, $password, $DBname) && !empty($DBname)) {
+      include_once (GLPI_CONFIG_DIR . "/config_db.php");
+      global $DB;
+      $DB = new DB();
+      if ($DB->listTables('glpi_%', ['table_collation' => 'utf8mb4_unicode_ci'])->count() > 0) {
+         // Use utf8mb4 charset for update process if at least one table already uses this charset.
+         if ($success = DBConnection::updateConfigProperty('use_utf8mb4', true)) {
+            $DB->use_utf8mb4 = true;
+            $DB->setConnectionCharset();
+         }
+      }
+   }
+   if ($success) {
       $from_install = true;
       include_once(GLPI_ROOT ."/install/update.php");
-
    } else { // can't create config_db file
       echo __("Can't create the database connection file, please verify file permissions.");
       echo "<h3>".__('Do you want to continue?')."</h3>";
