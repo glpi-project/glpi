@@ -144,31 +144,34 @@ $(function() {
    // filter list
    $(document).on('keyup', '.filter_savedsearch input', function(key) {
       var _this = $(this);
-      var searchtext = _this.val() + '';
-      var searchparts = searchtext.toLowerCase().split(/\s+/);
-      var _rows = _this
-         .closest('.card-footer')
-         .siblings('.saved-searches-panel-content')
-         .find('.list-item');
-      _rows.each(function() {
-         var _row = $(this);
-         var rowtext = _row.text().toLowerCase();
+      typewatch(function () {
+         var searchtext = _this.val() + '';
+         var searchparts = searchtext.toLowerCase().split(/\s+/);
+         var _rows = _this
+            .closest('.card-footer')
+            .siblings('.saved-searches-panel-content')
+            .find('.savedsearches-item');
+         _rows.each(function() {
+            var _row = $(this);
+            var rowtext = _row.text().toLowerCase();
+            console.log(_row);
 
-         var show = true;
+            var show = true;
 
-         for (var i=0; i < searchparts.length; i++) {
-            if (rowtext.indexOf(searchparts[i]) == -1) {
-               show = false;
-               break;
+            for (var i = 0; i < searchparts.length; i++) {
+               if (rowtext.indexOf(searchparts[i]) == -1) {
+                  show = false;
+                  break;
+               }
             }
-         }
 
-         if (show) {
-            _row.show();
-         } else {
-            _row.hide();
-         }
-      });
+            if (show) {
+               _row.toggleClass('d-none', false);
+            } else {
+               _row.toggleClass('d-none', true);
+            }
+         });
+      }, 250);
    });
 
    // clear list
