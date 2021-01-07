@@ -2107,6 +2107,7 @@ class Search {
          $p[$key] = $val;
       }
 
+      $rand_criteria = mt_rand();
       $main_block_class = '';
       $card_class = 'mb-2';
       if ($p['mainform']) {
@@ -2116,7 +2117,7 @@ class Search {
          $card_class = 'border-top-0 border-bottom-0 my-n2 ms-2 px-0';
       }
       echo "<div class='card card-sm $card_class'>";
-      echo "<div id='searchcriteria' class='$main_block_class'>";
+      echo "<div id='searchcriteria$rand_criteria' class='$main_block_class'>";
       $nbsearchcountvar      = 'nbcriteria'.strtolower($itemtype).mt_rand();
       $searchcriteriatableid = 'criteriatable'.strtolower($itemtype).mt_rand();
       // init criteria count
@@ -2136,7 +2137,6 @@ class Search {
          ]);
       }
 
-      $rand_criteria = mt_rand();
       echo "<div id='more-criteria$rand_criteria'
             class='normalcriteria list-group-item'
             style='display: none;'>...</div>";
