@@ -198,6 +198,9 @@ class DBmysql {
          $this->connected = false;
          $this->error     = 2;
       } else {
+         if (isset($this->dbenc)) {
+            Toolbox::deprecated('Usage of alternative DB connection encoding (`DB::$dbenc` property) is deprecated.');
+         }
          $dbenc = isset($this->dbenc) ? $this->dbenc : "utf8";
          $this->dbh->set_charset($dbenc);
          if ($dbenc === "utf8") {
