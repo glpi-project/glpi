@@ -118,14 +118,19 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
     *
     * @param string $name
     *
-    * @return null|string
+    * @return null|mixed
     *
     * @TODO Add a unit test.
     */
-   public function userPref(string $name): ?string {
+   public function userPref(string $name, bool $decode = false) {
       global $CFG_GLPI;
 
-      return $_SESSION['glpi' . $name] ?? $CFG_GLPI[$name] ?? null;
+      $data = $_SESSION['glpi' . $name] ?? $CFG_GLPI[$name] ?? null;
+      if ($decode) {
+         $data = importArrayFromDB($data);
+      }
+
+      return $data;
    }
 
    /**

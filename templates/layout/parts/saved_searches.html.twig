@@ -1,4 +1,5 @@
-{% set pinned = user_pref('savedsearches_pinned') == "1" %}
+{% set global_pinned = user_pref('savedsearches_pinned', true) %}
+{% set pinned = (global_pinned[itemtype] ?? "0") == "1" %}
 {% set itemtype_cls = itemtype|lower %}
 {% set rand = random() %}
 
@@ -9,13 +10,13 @@
       {{ _n('Saved search', 'Saved searches', 2) }}
 
       <li class="ms-auto btn-list me-1">
-         <a href="{{ path("front/savedsearch.php") }}" class="btn btn-sm btn-icon btn-ghost-secondary">
+         <a href="{{ path("front/savedsearch.php") }}" class="btn btn-sm btn-icon btn-ghost-secondary" data-bs-toggle="tooltip" title="{{ __("Manage all saved searches") }}">
             <i class="fas fa-cog"></i>
          </a>
-         <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1 d-none d-md-block pin-saved-searches-panel">
+         <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1 d-none d-md-block pin-saved-searches-panel" data-bs-toggle="tooltip" title="{{ __("Pin this panel for the current page" ) }}">
             <i class="fas fa-thumbtack"></i>
          </button>
-         <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1 close-saved-searches-panel">
+         <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1 close-saved-searches-panel" data-bs-toggle="tooltip" title="{{ __("Close the panel") }}">
             <i class="fas fa-times"></i>
          </button>
       </li>
@@ -129,6 +130,9 @@ $(function() {
       $.ajax({
          url: CFG_GLPI.root_doc + '/ajax/pin_savedsearches.php',
          type: 'GET',
+         data: {
+            itemtype: '{{ itemtype }}'
+         },
          success: function(data) {
             if (data.success === true) {
                pin_button.closest(".saved-searches-panel").toggleClass('pinned');
