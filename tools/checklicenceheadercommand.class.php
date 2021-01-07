@@ -100,7 +100,6 @@ class CheckLicenceHeaderCommand extends Command {
          switch (pathinfo($filename, PATHINFO_EXTENSION)) {
             case 'pl':
             case 'sh':
-            case 'sql':
             case 'yaml':
             case 'yml':
                $header_line_prefix     = '# ';
@@ -108,6 +107,13 @@ class CheckLicenceHeaderCommand extends Command {
                $header_append_line     = "#\n";
                $header_start_pattern   = '/^#( \/\*\*)?$/'; // older headers were starting by "# /**"
                $header_content_pattern = '/^#/';
+               break;
+            case 'sql':
+               $header_line_prefix     = '-- ';
+               $header_prepend_line    = "--\n";
+               $header_append_line     = "--\n";
+               $header_start_pattern   = '/^(--|#( \/\*\*)?)$/'; // older headers were starting by "# /**"
+               $header_content_pattern = '/^(--|#)/'; // older headers were prefixed by "#"
                break;
             default:
                $header_line_prefix     = ' * ';
