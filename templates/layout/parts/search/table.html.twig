@@ -64,8 +64,9 @@
                   {% elseif itemtype == 'User' and not canViewAllEntities() and not userhaveAccessToOneOfEntities(row['id'], false) %}
                   {% elseif itemInstanceOf(item, 'CommonDBTM') and maybeRecursive(item) and not haveAccessToEntity(row["entities_id"])  %}
                   {% else %}
+                     {% set checked = isMassiveActionchecked(itemtype, row['id']) ? "checked" : "" %}
                      <input class="form-check-input" type="checkbox" data-glpicore-ma-tags="common"
-                        value="1" aria-label=""
+                        value="1" aria-label="" {{ checked }}
                         name="item[{{ row['TYPE'] ?? itemtype }}][{{ row['id'] }}]">
                   {% endif %}
                </div>
