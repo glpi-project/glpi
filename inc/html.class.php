@@ -694,7 +694,7 @@ class Html {
          if ($rand === null) {
             $rand = mt_rand();
          }
-         echo "<div id='debugpanel$rand' class='container-fluid card debug-pannel ".($ajax?"debug_ajax":"")."'>";
+         echo "<div id='debugpanel$rand' class='container-fluid card debug-panel ".($ajax?"debug_ajax":"")."'>";
 
          echo "<ul class='nav nav-tabs' data-bs-toggle='tabs'>";
          echo "<li class='nav-item'><a class='nav-link active' data-bs-toggle='tab' href='#debugsummary$rand'>SUMMARY</a></li>";
@@ -1543,34 +1543,12 @@ class Html {
       $menu            = self::generateMenuSession($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE);
       $menu_active     = $menu[$sector]['content'][$active_item]['title'] ?? "";
 
-      $user = new User;
-      $user->getFromDB($_SESSION['glpiID']);
-
-      $current_version     = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
-      $founded_new_version = $CFG_GLPI['founded_new_version'] ?? null;
-
       $tpl_vars = [
-         'is_impersonate_active'  => Session::isImpersonateActive(),
-         'language_name'          => Dropdown::getLanguageName($_SESSION['glpilanguage']),
-         'logout_path'            => self::getPrefixedUrl(
-            '/front/logout.php' . ($_SESSION['glpiextauth'] ?? false ? '?noAUTO=1' : '')
-         ),
          'menu'                   => $menu,
          'sector'                 => $sector,
-         'profiles'               => $_SESSION["glpiprofiles"],
-         'active_profile_id'      => $_SESSION["glpiactiveprofile"]["id"],
-         'active_profile_name'    => $_SESSION["glpiactiveprofile"]["name"],
-         'active_entity_name'     => $_SESSION["glpiactive_entity_name"],
          'item'                   => $item,
          'option'                 => $option,
          'menu_active'            => $menu_active,
-         'user'                   => [
-            'fullname' => formatUserName($_SESSION['glpiID'], $user->fields['name'], $user->fields['realname'], $user->fields['firstname']),
-            'picture'  => User::getURLForPicture($user->fields['picture'], false),
-         ],
-         'founded_new_version'    => !empty($founded_new_version) && version_compare($current_version, $founded_new_version, '<')
-            ? $founded_new_version
-            : null,
       ];
 
       $help_url_key = Session::getCurrentInterface() === 'central' ? 'central_doc_url' : 'helpdesk_doc_url';
@@ -1579,25 +1557,6 @@ class Html {
       $tpl_vars['help_url'] = $help_url;
 
       TemplateRenderer::getInstance()->display('layout/parts/page_header.html.twig', $tpl_vars);
-
-      //Main menu
-      /*self::displayMainMenu(
-         true, [
-            'sector' => $sector,
-            'item'   => $item,
-            'option' => $option
-         ]
-      );*/
-
-      echo "\n"; // fin header
-
-      // Back to top button
-      echo "<span class='fa-stack fa-lg' id='backtotop' style='display: none'>".
-           "<i class='fa fa-circle fa-stack-2x primary-fg-inverse'></i>".
-           "<a href='#' class='fa fa-arrow-up fa-stack-1x primary-fg' title='".
-              __s('Back to top of the page')."'>".
-           "<span class='sr-only'>Top of the page</span>".
-           "</a></span>";
 
       // TODO move to main_class
       $main_class = "layout_".$_SESSION['glpilayout'];
@@ -1689,8 +1648,6 @@ class Html {
 
       self::displayDebugInfos();
 
-      echo "</body></html>";
-
       if (!$keepDB) {
          closeDBConnections();
       }
@@ -1726,7 +1683,7 @@ class Html {
     * @param array  $links  links to display
    **/
    static function simpleHeader($title, $links = []) {
-      global $CFG_GLPI, $HEADER_LOADED;
+      global $HEADER_LOADED;
 
       // Print a nice HTML-head for help page
       if ($HEADER_LOADED) {
@@ -1736,68 +1693,24 @@ class Html {
 
       self::includeHeader($title);
 
-      // Body
-      echo "<body>";
-
-      // Main Headline
-      echo "<div id='header'>";
-      echo "<header role='banner' id='header_top'>";
-
-      echo "<div id='c_logo'>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/' accesskey='1' title=\"".__s('Home')."\">".
-           "<span class='invisible'>Logo</span></a></div>";
-
-      // Preferences + logout link
-      echo "<div id='c_preference'>";
-
-      echo "<ul>";
-      echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"].
-                  "/front/preference.php?forcetab=User\$1' title=\"".
-                  addslashes(Dropdown::getLanguageName($_SESSION['glpilanguage']))."\">".
-                  Dropdown::getLanguageName($_SESSION['glpilanguage'])."</a></li>";
-
-      if (Session::getLoginUserID()) {
-         $logout_url = $CFG_GLPI['root_doc']
-            . '/front/logout.php'
-            . (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth'] ? '?noAUTO=1' : '' );
-         echo '<li id="deconnexion">';
-         echo '<a href="' . $logout_url . '" title="' . __s('Logout') . '" class="fa fa-sign-out-alt">';
-         echo '<span class="sr-only">' . __s('Logout') . '</span>';
-         echo '</a>';
-         echo '</li>';
+      // force layout to horizontal if not connected
+      if (!Session::getLoginUserID()) {
+         $_SESSION['glpipage_layout'] = "horizontal";
       }
-      echo "</ul>";
 
-      echo "<div class='sep'></div>";
-      echo "</div>";
-
-      echo "</header>"; // end #header_top
-
-      //-- Le menu principal --
-      echo "<div id='c_menu'>";
-      echo "<ul id='menu'>";
-
-      // Build the navigation-elements
-      if (count($links)) {
-         $i = 1;
-
-         foreach ($links as $name => $link) {
-            echo "<li id='menu$i'>";
-            echo "<a href='$link' title=\"".$name."\" class='itemP'>{$name}</a>";
-            echo "</li>";
-            $i++;
-         }
+      // construct menu from passed links
+      $menu = [];
+      foreach ($links as $label => $url) {
+         $menu[] = [
+            'title' => $label,
+            'page'  => $url
+         ];
       }
-      echo "</ul></div>";
-      // End navigation bar
-      // End headline
 
-      //  Le fil d ariane
-      echo "<div id='c_ssmenu2'></div>";
-      echo "</div>"; // fin header
-      echo "<div id='page'>";
+      TemplateRenderer::getInstance()->display('layout/parts/page_header.html.twig', [
+         'menu' => $menu
+      ]);
 
-      // call static function callcron() every 5min
       CronTask::callCron();
    }
 
@@ -1809,7 +1722,7 @@ class Html {
     * @param string $url    not used anymore
    **/
    static function helpHeader($title, $url = '') {
-      global $CFG_GLPI, $HEADER_LOADED;
+      global $HEADER_LOADED;
 
       // Print a nice HTML-head for help page
       if ($HEADER_LOADED) {
@@ -1819,42 +1732,48 @@ class Html {
 
       self::includeHeader($title, 'self-service');
 
-      // Body
-      $body_class = "layout_".$_SESSION['glpilayout'];
-      if ((strpos($_SERVER['REQUEST_URI'], "form.php") !== false)
-          && isset($_GET['id']) && ($_GET['id'] > 0)) {
-         if (!CommonGLPI::isLayoutExcludedPage()) {
-            $body_class.= " form";
-         } else {
-            $body_class = "";
-         }
+      $menu = [];
+      if (Session::haveRight("ticket", CREATE)) {
+         $menu['create_ticket'] = [
+            'page'  => '/front/helpdesk.public.php?create_ticket=1',
+            'title' => __s('Create a ticket'),
+            'icon'  => 'fas fa-plus',
+         ];
       }
-      echo "<body class='$body_class'>";
 
-      Html::displayImpersonateBanner();
+      if (Session::haveRight("ticket", CREATE)
+          || Session::haveRight("ticket", Ticket::READMY)
+          || Session::haveRight("followup", ITILFollowup::SEEPUBLIC)
+      ) {
+         $menu['tickets'] = [
+            'page'  => '/front/ticket.php',
+            'title' => _n('Ticket', 'Tickets', Session::getPluralNumber()),
+            'icon'  => Ticket::getIcon(),
+         ];
+      }
 
-      // Main Headline
-      echo "<div id='header'>";
-      echo "<header role='banner' id='header_top'>";
+      if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
+         $menu['reservation'] = [
+            'page'  => '/front/reservationitem.php',
+            'title' => _n('Reservation', 'Reservations', Session::getPluralNumber()),
+            'icon'  => ReservationItem::getIcon(),
+         ];
+      }
 
-      echo "<div id='c_logo'>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' accesskey='1' title=\"".
-             __s('Home')."\"><span class='invisible'>Logo</span></a>";
-      echo "</div>";
+      if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
+         $menu['faq'] = [
+            'page'  => '/front/helpdesk.faq.php',
+            'title' => __s('FAQ'),
+            'icon'  => KnowbaseItem::getIcon(),
+         ];
+      }
 
-      //Preferences and logout link
-      self::displayTopMenu(false);
-      echo "</header>"; // header_top
-
-      //Main menu
-      self::displayMainMenu(false);
-
-      echo "</div>"; // fin header
-      echo "<main role='main' id='page'>";
+      TemplateRenderer::getInstance()->display('layout/parts/page_header.html.twig', [
+         'menu' => $menu
+      ]);
 
       // call static function callcron() every 5min
       CronTask::callCron();
-      self::displayMessageAfterRedirect();
    }
 
 
@@ -1862,25 +1781,9 @@ class Html {
     * Print footer for help page
    **/
    static function helpFooter() {
-      global $FOOTER_LOADED;
-
-      // Print foot for help page
-      if ($FOOTER_LOADED) {
-         return;
-      }
-      $FOOTER_LOADED = true;
-
-      self::displayDebugInfos();
-
-      echo "</main>"; // end of "main role='main'"
-
-      echo "<footer role='contentinfo' id='footer'>";
-      echo "<table role='presentation' width='100%'><tr><td class='right'>" . self::getCopyrightMessage(false);
-      echo "</td></tr></table></footer>";
-
-      echo "</body></html>";
-      self::loadJavascript();
-      closeDBConnections();
+      if (!isCommandLine()) {
+         self::footer();
+      };
    }
 
 
@@ -1927,22 +1830,9 @@ class Html {
     * Print footer for null page
    **/
    static function nullFooter() {
-      global $FOOTER_LOADED;
-
-      // Print foot for null page
-      if ($FOOTER_LOADED) {
-         return;
-      }
-      $FOOTER_LOADED = true;
-
       if (!isCommandLine()) {
-         echo "</div></main>";
-
-         echo "<div id='footer-login'>" . self::getCopyrightMessage(false) . "</div>";
-         self::loadJavascript();
-         echo "</body></html>";
-      }
-      closeDBConnections();
+         self::footer();
+      };
    }
 
 
@@ -1990,11 +1880,9 @@ class Html {
       }
       $FOOTER_LOADED = true;
 
-      echo "</div>"; // /id='page'
-
-      // Print foot
-      self::loadJavascript();
-      echo "</body></html>";
+      if (!isCommandLine()) {
+         self::footer();
+      };
    }
 
 

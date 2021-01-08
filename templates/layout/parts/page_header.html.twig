@@ -49,10 +49,12 @@
                <span class="glpi-logo"></span>
             </a>
 
+            {% if not use_simplified_interface != false %}
             <button class="btn btn-icon btn-sm btn-outline-secondary trigger-fuzzy mb-md-2" title="{{ __("Ctrl+Alt+G") }}">
                <i class="fas fa-fw fa-lg fa-arrow-right"></i>
                <span class="menu-label">{{ __("Go to...") }}</span>
             </button>
+            {% endif %}
 
             <div class="d-lg-none">
                {{ include('layout/parts/user_header.html.twig') }}
@@ -95,10 +97,12 @@
 
                <div class="collapse navbar-collapse" id="navbar-menu">
                   {{ include('layout/parts/menu.html.twig') }}
+                  {% if use_simplified_interface != false %}
                   <button class="btn btn-outline-secondary mx-1 trigger-fuzzy" title="{{ __("Ctrl+Alt+G") }}">
                      <i class="fas fa-arrow-right"></i>
                      {{ __("Go to...") }}
                   </button>
+                  {% endif %}
                </div>
             {% endif %}
 

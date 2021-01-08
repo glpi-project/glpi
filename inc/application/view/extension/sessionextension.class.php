@@ -33,8 +33,11 @@
 namespace Glpi\Application\View\Extension;
 
 use CommonGLPI;
+use Dropdown;
+use Html;
 use Profile_User;
 use Session;
+use User;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
 use Twig\Extension\GlobalsInterface;
@@ -61,16 +64,41 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
    }
 
    public function getGlobals(): array {
-      $user_name = Session::getLoginUserID()
-         ? formatUserName(0, $_SESSION['glpiname'], $_SESSION['glpirealname'], $_SESSION['glpifirstname'])
-         : '';
+      $user_name = "";
+      $user_pict = "";
+      $user = new User;
+      if ($user->getFromDB(($_SESSION['glpiID'] ?? 0))) {
+         $user_name = formatUserName(
+            $_SESSION['glpiID'],
+            $user->fields['name'],
+            $user->fields['realname'],
+            $user->fields['firstname']
+         );
+         $user_pict = User::getURLForPicture($user->fields['picture'], false);
+      }
+
+      $current_version     = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
+      $founded_new_version = $CFG_GLPI['founded_new_version'] ?? null;
 
       return [
+         'language_name'            => Dropdown::getLanguageName($_SESSION['glpilanguage']),
+         'logout_path'              => Html::getPrefixedUrl(
+            '/front/logout.php'.($_SESSION['glpiextauth'] ?? false ? '?noAUTO=1' : '')
+         ),
+         'is_impersonate_active'    => Session::isImpersonateActive(),
          'is_user_connected'        => Session::getLoginUserID() !== false,
          'is_debug_active'          => $_SESSION['glpi_use_mode'] ?? null === Session::DEBUG_MODE,
+         'profiles'                 => $_SESSION["glpiprofiles"] ?? [],
+         'active_profile_id'        => $_SESSION["glpiactiveprofile"]["id"] ?? 0,
+         'active_profile_name'      => $_SESSION["glpiactiveprofile"]["name"] ?? "",
+         'active_entity_name'       => $_SESSION["glpiactive_entity_name"] ?? "",
          'current_user_id'          => Session::getLoginUserID() || null,
          'current_user_name'        => $user_name,
+         'current_user_picture'     => $user_pict,
          'use_simplified_interface' => Session::getCurrentInterface() === 'helpdesk',
+         'founded_new_version'      => !empty($founded_new_version) && version_compare($current_version, $founded_new_version, '<')
+            ? $founded_new_version
+            : null,
       ];
    }
 

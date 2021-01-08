@@ -1,4 +1,5 @@
 
+{% if is_user_connected %}
 <form action="{{ path('front/search.php') }}" roel="search" method="get">
    <div class='input-group'>
       <input type="text" class="form-control" name="globalsearch" placeholder="{{ __("Search…") }}">
@@ -7,3 +8,4 @@
       </button>
    </div>
 </form>
+{% endif %}

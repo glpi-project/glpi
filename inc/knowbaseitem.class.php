@@ -1032,14 +1032,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          }
       }
 
-      echo "<div>";
-      echo "<form method='get' action='".$this->getSearchURL()."'>";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_2'><td class='right' width='50%'>";
-      echo "<input type='text' size='50' name='contains' value=\"".
-             Html::cleanInputText(stripslashes($params["contains"]))."\"></td>";
-      echo "<td class='left'>";
-      echo "<input type='submit' value=\""._sx('button', 'Search')."\" class='submit'></td></tr>";
+      echo "<form method='get' action='".$this->getSearchURL()."' class='d-flex justify-content-center'>";
+      echo "<input class='form-control me-1' type='text' size='50' name='contains' value=\"".
+             Html::cleanInputText(stripslashes($params["contains"]))."\">";
+      echo "<input type='submit' value=\""._sx('button', 'Search')."\" class='btn btn-primary'>";
       echo "</table>";
       if (isset($options['item_itemtype'])
           && isset($options['item_items_id'])) {
@@ -1047,8 +1043,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          echo "<input type='hidden' name='item_items_id' value='".$options['item_items_id']."'>";
       }
       Html::closeForm();
-
-      echo "</div>";
    }
 
 

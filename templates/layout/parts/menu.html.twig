@@ -3,8 +3,8 @@
 
 <ul class="navbar-nav">
 {% for firstlevel in menu %}
-   {% if firstlevel['content'] is defined %}
    {% set firstlevel_active = menu[sector]['title'] == firstlevel['title'] %}
+   {% if firstlevel['content'] is defined %}
    <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}"
        title="{{ firstlevel['title'] }}">
       <a class="nav-link dropdown-toggle {{ firstlevel_active ? 'active' : '' }} {{ firstlevel_active and is_menu_folded == false  ? 'show' : '' }}"
@@ -46,6 +46,15 @@
          </div>
       </div>
    </li>
+   {% elseif firstlevel['page'] is defined %}
+      <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}"
+       title="{{ firstlevel['title'] }}">
+         <a class="nav-link" href="{{ path(firstlevel['page']) }}">
+            <i class="fa-fw {{ firstlevel['icon'] ?? "" }}"></i>
+            &nbsp;
+            <span class="menu-label">{{ firstlevel['title'] }}</span>
+         </a>
+      <li>
    {% endif %}
 {% endfor %}
 </ul>
