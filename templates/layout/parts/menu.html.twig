@@ -46,10 +46,10 @@
          </div>
       </div>
    </li>
-   {% elseif firstlevel['page'] is defined %}
+   {% elseif firstlevel['default'] is defined %}
       <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}"
        title="{{ firstlevel['title'] }}">
-         <a class="nav-link" href="{{ path(firstlevel['page']) }}">
+         <a class="nav-link" href="{{ path(firstlevel['default']) }}">
             <i class="fa-fw {{ firstlevel['icon'] ?? "" }}"></i>
             &nbsp;
             <span class="menu-label">{{ firstlevel['title'] }}</span>
