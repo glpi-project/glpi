@@ -44,10 +44,15 @@ class HtmlExtension extends AbstractExtension implements ExtensionInterface {
    public function getFunctions() {
       return [
          new TwigFunction('showMassiveActions', [$this, 'showMassiveActions']),
+         new TwigFunction('isMassiveActionchecked', [$this, 'isMassiveActionchecked']),
       ];
    }
 
    public function showMassiveActions(array $params = []): string {
       return Html::showMassiveActions($params + ['display' => false]);
+   }
+
+   public function isMassiveActionchecked(string $itemtype = "", int $id = 0): bool {
+      return isset($_SESSION['glpimassiveactionselected'][$itemtype][$id]);
    }
 }

@@ -1575,6 +1575,9 @@ class Search {
          $current_type = (isset($row['TYPE']) ? $row['TYPE'] : $data['itemtype']);
          Session::addToNavigateListItems($current_type, $row["id"]);
       }
+
+      // Clean previous selection
+      $_SESSION['glpimassiveactionselected'] = [];
    }
 
    /**
