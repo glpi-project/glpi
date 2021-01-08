@@ -48,9 +48,9 @@ if (isset($_GET["embed"]) && isset($_GET["dashboard"])) {
 }
 
 // Change profile system
-if (isset($_GET['newprofile'])) {
-   if (isset($_SESSION["glpiprofiles"][$_GET['newprofile']])) {
-      Session::changeProfile($_GET['newprofile']);
+if (isset($_REQUEST['newprofile'])) {
+   if (isset($_SESSION["glpiprofiles"][$_REQUEST['newprofile']])) {
+      Session::changeProfile($_REQUEST['newprofile']);
       if (Session::getCurrentInterface() == "helpdesk") {
          if ($_SESSION['glpiactiveprofile']['create_ticket_on_login']) {
             Html::redirect($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php?create_ticket=1");
