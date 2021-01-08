@@ -1,0 +1,17 @@
+#see_debug, #backtotop {
+   position: fixed;
+   bottom: 35px;
+   right: 10px;
+   cursor: pointer;
+   z-index: 99;
+}
+
+#see_debug:hover, #backtotop:hover {
+   opacity: .8;
+}
+
+#see_debug {
+   &.wbttop {
+      right: 60px;
+   }
+}

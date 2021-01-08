@@ -2122,31 +2122,6 @@
       text-align: center;
    }
 
-   #see_debug, #backtotop {
-      position: fixed;
-      bottom: 35px;
-      right: 10px;
-      cursor: pointer;
-      color: white;
-      z-index: 99;
-
-      /* Behind debug panel */
-   }
-
-   #see_debug:hover, #backtotop:hover {
-      opacity: .8;
-   }
-
-   #see_debug {
-      &.wbttop {
-         right: 40px;
-      }
-
-      &.on a:hover {
-         color: #ff0000;
-      }
-   }
-
    /* Timeline */
 
    .timeline_box {
