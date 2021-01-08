@@ -1193,6 +1193,11 @@ class CommonGLPI {
    function display($options = []) {
       global $CFG_GLPI;
 
+      // Init active tab to main if not defined
+      if (!isset($_SESSION['glpi_tabs'][self::getType()])) {
+         Session::setActiveTab(self::getType(), self::getType().'$main');
+      }
+
       if (isset($options['id'])
           && !$this->isNewID($options['id'])) {
          if (!$this->getFromDB($options['id'])) {
