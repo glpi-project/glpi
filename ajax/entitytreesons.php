@@ -95,7 +95,7 @@ if (isset($_GET['node'])) {
                ]
             ]
          ],
-         'WHERE'     => ['ent.entities_id' => $node_id],
+         'WHERE'     => ['ent.entities_id' => (int) $node_id],
          'GROUPBY'   => ['ent.id', 'ent.name', 'ent.sons_cache'],
          'ORDERBY'   => 'name'
       ]);
