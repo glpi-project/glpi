@@ -15,3 +15,16 @@
       right: 60px;
    }
 }
+
+#maintenance-float {
+   top: 0px;
+   left: 250px;
+   position: absolute;
+   z-index: 9999;
+
+   a {
+      font-weight: bold;
+      background-color: #fff;
+      color: red;
+   }
+}

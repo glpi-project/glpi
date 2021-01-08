@@ -2082,41 +2082,6 @@
 
    /* ################--------------- Debug  ---------------#################### */
 
-   #debug-float {
-      top: 0px;
-      left: 80px;
-      position: absolute;
-      z-index: 100;
-   }
-
-   #maintenance-float {
-      top: 0px;
-      left: 280px;
-      position: absolute;
-      z-index: 100;
-   }
-
-   #debug-float a, #maintenance-float a {
-      border-top: 1px solid #cecece;
-      border-bottom: 2px solid #4a4a4a;
-      border-left: 1px solid #cecece;
-      border-right: 1px solid #cecece;
-      text-decoration: none;
-      text-align: center;
-      margin: 0;
-      padding: 1px .5em;
-      font-family: helvetica,arial,sans-serif;
-      font-size: 10px;
-      font-weight: bold;
-      background-color: #fff;
-      color: red;
-   }
-
-   #debug-float a:hover, #maintenance-float a:hover {
-      background-color: #fc3;
-      border-bottom: 2px solid #36f;
-   }
-
    #debugajax {
       margin: auto;
       text-align: center;

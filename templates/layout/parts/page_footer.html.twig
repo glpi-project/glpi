@@ -48,6 +48,12 @@
       </script>
    {% endif %}
 
+   {% if config('maintenance_mode') %}
+      <div id='maintenance-float'>
+         <a href="{{ path("front/config.form.php?forcetab=Config$5") }}">GLPI MAINTENANCE MODE</a>
+      </div>
+   {% endif %}
+
    <span class="btn btn-secondary" id="backtotop" style="display: none">
       <i class="fas fa-arrow-up" title="{{ __('Back to top of the page') }}">
          <span class="sr-only">{{ __("Top of the page") }}</span>

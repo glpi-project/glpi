@@ -1598,12 +1598,6 @@ class Html {
       }
       $FOOTER_LOADED = true;
 
-      if ($CFG_GLPI['maintenance_mode']) { // mode maintenance
-         echo "<div id='maintenance-float'>";
-         echo "<a href='#see_maintenance'>GLPI MAINTENANCE MODE</a>";
-         echo "</div>";
-      }
-
       echo self::getCoreVariablesForJavascript(true);
 
       $tpl_vars = [
