@@ -10,7 +10,14 @@
 {{ include('layout/parts/head.html.twig') }}
 <body>
    <div class="flex-fill d-flex flex-column justify-content-center py-4 mt-4">
-      {% set style = (card_big_width is defined ? 'style="max-width: 60rem"' : '') %}
+      {% set style = "" %}
+      {% if card_md_width is defined %}
+         {% set style = 'style="max-width: 40rem"' %}
+      {% endif %}
+      {% if card_bg_width is defined %}
+         {% set style = 'style="max-width: 60rem"' %}
+      {% endif %}
+
       <div class="container-tight py-6" {{ style|raw }}>
          <div class="text-center">
             <div class="col-md">
