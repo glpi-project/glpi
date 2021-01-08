@@ -2446,7 +2446,7 @@ class Html {
          if ($p['display_arrow']) {
             $out .= "<img class='mt-2' src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".($p['ontop']?'-top':'').".png' alt=''>";
          }
-         $out .= "<a class='btn btn-sm btn-outline-secondary me-2' ";
+         $out .= "<a class='btn btn-sm btn-secondary me-2' ";
          if (is_array($p['confirm'] || strlen($p['confirm']))) {
             $out .= self::addConfirmationOnAction($p['confirm'], "modal_massiveaction_window$identifier.show();");
          } else {
