@@ -1390,7 +1390,8 @@ class Html {
          'preference' => [
             'title'   => __('My settings'),
             'default' => '/front/preference.php',
-            'icon'    => 'fas fa-user-cog'
+            'icon'    => 'fas fa-user-cog',
+            'display' => false,
          ],
       ];
 
@@ -1726,7 +1727,7 @@ class Html {
       $menu = [
          'home' => [
             'default' => '/front/helpdesk.public.php',
-            'title'   => __s('Home'),
+            'title'   => __('Home'),
             'icon'    => 'fas fa-home',
          ],
       ];
@@ -1734,7 +1735,7 @@ class Html {
       if (Session::haveRight("ticket", CREATE)) {
          $menu['create_ticket'] = [
             'default' => '/front/helpdesk.public.php?create_ticket=1',
-            'title'   => __s('Create a ticket'),
+            'title'   => __('Create a ticket'),
             'icon'    => 'fas fa-plus',
          ];
       }
@@ -1761,13 +1762,18 @@ class Html {
       if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
          $menu['faq'] = [
             'default' => '/front/helpdesk.faq.php',
-            'title'   => __s('FAQ'),
+            'title'   => __('FAQ'),
             'icon'    => KnowbaseItem::getIcon(),
          ];
       }
 
       if (isset($PLUGIN_HOOKS["helpdesk_menu_entry"])
           && count($PLUGIN_HOOKS["helpdesk_menu_entry"])) {
+
+         $menu['plugins'] = [
+            'title' => __("Plugins"),
+            'icon'  => Plugin::getIcon(),
+         ];
 
          foreach ($PLUGIN_HOOKS["helpdesk_menu_entry"] as $plugin => $active) {
             if (!Plugin::isPluginActive($plugin)) {
