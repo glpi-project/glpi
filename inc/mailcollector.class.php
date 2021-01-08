@@ -1535,18 +1535,14 @@ class MailCollector  extends CommonDBTM {
             $subpart = 1;
          }
 
-         $filename = '';
+         // Try to get filename from Content-Type header
+         $filename = $content_type_header->getParameter('name') ?? '';
 
          // Try to get filename from Content-Disposition header
          if (empty($filename)
              && $part->getHeaders()->has('content-disposition')
              && ($content_disp_header = $part->getHeader('content-disposition')) instanceof ContentDisposition) {
             $filename = $content_disp_header->getParameter('filename') ?? '';
-         }
-
-         // Try to get filename from Content-Type header
-         if (empty($filename)) {
-            $filename = $content_type_header->getParameter('name') ?? '';
          }
 
          $filename_matches = [];
@@ -1614,7 +1610,17 @@ class MailCollector  extends CommonDBTM {
          }
 
          $contents = $this->getDecodedContent($part);
-         if (file_put_contents($path.$filename, $contents)) {
+
+         // try to save file to disk, to be sure file name is valid (= accepted by OS)
+         $ret = file_put_contents($path.$filename, $contents);
+         if ($ret === false) {
+            // if not, then create a valid file name
+            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+            $filename = "doc_{$subpart}.{$ext}";
+            // retry to save the file
+            $ret = file_put_contents($path.$filename, $contents);
+         }
+         if ($ret) {
             $this->files[$filename] = $filename;
             // If embeded image, we add a tag
             if (preg_match('@image/.+@', $content_type)) {
