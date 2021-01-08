@@ -85,7 +85,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
 
    TemplateRenderer::getInstance()->display('login.html.twig', [
-      'card_big_width'      => true,
+      'card_bg_width'       => true,
       'lang'                => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
       'title'               => __('Authentication'),
       'noAuto'              => $_GET["noAUTO"] ?? 0,
