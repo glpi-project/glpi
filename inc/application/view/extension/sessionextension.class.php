@@ -253,7 +253,7 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
     * @TODO Add a unit test.
     */
    public function getMessagesAfterRedirect():array {
-      $messages = $_SESSION['MESSAGE_AFTER_REDIRECT'];
+      $messages = $_SESSION['MESSAGE_AFTER_REDIRECT'] ?? [];
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
 
       return $messages;
