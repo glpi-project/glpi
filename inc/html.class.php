@@ -870,6 +870,8 @@ class Html {
          'title'   => __('Access denied'),
          'message' => $message,
       ]);
+
+      self::nullFooter();
       exit ();
    }
 
