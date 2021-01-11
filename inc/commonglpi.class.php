@@ -1195,7 +1195,12 @@ class CommonGLPI {
 
       // Init active tab to main if not defined
       if (!isset($_SESSION['glpi_tabs'][self::getType()])) {
-         Session::setActiveTab(self::getType(), self::getType().'$main');
+         // TODO: use array_key_first when php 7.3 is supported
+         $tabs = array_keys($this->defineTabs());
+         $first_tab = array_shift($tabs);
+         if ($first_tab) {
+            Session::setActiveTab(self::getType(), $first_tab);
+         }
       }
 
       if (isset($options['id'])
