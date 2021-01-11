@@ -71,6 +71,7 @@ class TimestampsCommand extends AbstractCommand {
          ],
          'WHERE'       => [
             'information_schema.columns.table_schema' => $this->db->dbdefault,
+            'information_schema.columns.table_name'   => ['LIKE', 'glpi_%'],
             'information_schema.columns.data_type'    => 'datetime'
          ],
          'ORDER'       => [

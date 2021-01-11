@@ -1634,8 +1634,9 @@ class DBmysql {
            'COUNT'       => 'cpt',
            'FROM'        => 'information_schema.columns',
            'WHERE'       => [
-              'information_schema.columns.table_schema'  => $DB->dbdefault,
-              'information_schema.columns.data_type'     => ['datetime']
+              'information_schema.columns.table_schema' => $DB->dbdefault,
+              'information_schema.columns.table_name'   => ['LIKE', 'glpi_%'],
+              'information_schema.columns.data_type'    => ['datetime']
            ]
        ])->next();
        return (int)$result['cpt'];
