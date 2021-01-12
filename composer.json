@@ -85,15 +85,15 @@
         "sort-packages": true
     },
     "scripts": {
-        "testdb": "php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database",
-        "testfunc": "php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/functionnal/",
-        "testunits": "php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units",
-        "testweb": "php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/web",
-        "testldap": "php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/LDAP",
-        "testimap": "php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/imap",
-        "csp": "vendor/bin/phpcs --parallel=500 --cache -p --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=\"/.git/,^$(pwd)/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/\" ./",
-        "cs": "vendor/bin/phpcs -d memory_limit=512M --cache -p --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=\"/.git/,^$(pwd)/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/\" ./",
-        "lint": "vendor/bin/parallel-lint  --exclude files --exclude marketplace --exclude plugins --exclude vendor --exclude tools/vendor .",
+        "testdb": "atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database",
+        "testfunc": "atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/functionnal/",
+        "testunits": "atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units",
+        "testweb": "atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/web",
+        "testldap": "atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/LDAP",
+        "testimap": "atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/imap",
+        "csp": "phpcs --parallel=500 --cache -p --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=\"/.git/,^$(pwd)/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/\" ./",
+        "cs": "phpcs -d memory_limit=512M --cache -p --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=\"/.git/,^$(pwd)/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/\" ./",
+        "lint": "parallel-lint  --exclude files --exclude marketplace --exclude plugins --exclude vendor --exclude tools/vendor .",
         "post-install-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
             "patch -f -p1 -d vendor/tecnickcom/tcpdf/ < tools/tcpdf-php8-compat.patch || echo 'Error applying patch, deprecation warnings related to TCPDF lib may pollute logs'"
