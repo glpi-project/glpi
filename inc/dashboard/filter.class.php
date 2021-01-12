@@ -150,7 +150,7 @@ JAVASCRIPT;
    }
 
    static function group_tech(string $value = "0"): string {
-      return self::dropdown($value, 'group_tech', Group::class);
+      return self::dropdown($value, 'group_tech', Group::class, ['toadd' => [-1 => __("My groups")]]);
    }
 
    static function user_tech(string $value = "0"): string {
@@ -194,7 +194,6 @@ JAVASCRIPT;
 
       return $js.self::field($fieldname, $field, $label, $value > 0);
    }
-
 
    /**
     * Get generic HTML for a filter
