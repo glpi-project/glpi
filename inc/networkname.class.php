@@ -861,6 +861,10 @@ class NetworkName extends FQDNLabel {
    static function countForItem(CommonDBTM $item) {
       global $DB;
 
+      if ($item->isNewItem()) {
+         return 0;
+      }
+
       switch ($item->getType()) {
          case 'FQDN' :
             return countElementsInTable('glpi_networknames',

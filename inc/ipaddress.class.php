@@ -295,6 +295,10 @@ class IPAddress extends CommonDBChild {
    static function countForItem(CommonDBTM $item) {
       global $DB;
 
+      if ($item->isNewItem()) {
+         return 0;
+      }
+
       switch ($item->getType()) {
          case 'IPNetwork' :
             $result = $DB->request([

@@ -1183,6 +1183,10 @@ class NetworkPort extends CommonDBChild {
    **/
    static function countForItem(CommonDBTM $item) {
 
+      if ($item->isNewItem()) {
+         return 0;
+      }
+
       return countElementsInTable('glpi_networkports',
                                   ['itemtype'   => $item->getType(),
                                    'items_id'   => $item->getField('id'),

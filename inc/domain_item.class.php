@@ -99,6 +99,11 @@ class Domain_Item extends CommonDBRelation {
    }
 
    static function countForItem(CommonDBTM $item) {
+
+      if ($item->isNewItem()) {
+         return 0;
+      }
+
       $criteria = [];
       if ($item instanceof DomainRelation) {
          $criteria = ['domainrelations_id' => $item->fields['id']];

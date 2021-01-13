@@ -156,6 +156,10 @@ class Notepad extends CommonDBChild {
    **/
    static function countForItem(CommonDBTM $item) {
 
+      if ($item->isNewItem()) {
+         return 0;
+      }
+
       return countElementsInTable('glpi_notepads',
                                   ['itemtype' => $item->getType(),
                                    'items_id' => $item->getID()]);

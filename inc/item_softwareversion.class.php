@@ -1566,6 +1566,10 @@ class Item_SoftwareVersion extends CommonDBRelation {
    static function countForItem(CommonDBTM $item) {
       global $DB;
 
+      if ($item->isNewItem()) {
+         return 0;
+      }
+
       $iterator = $DB->request([
          'COUNT' => 'cpt',
          'FROM'   => self::getTable(__CLASS__),
