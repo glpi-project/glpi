@@ -1782,6 +1782,10 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    static function countForItem(CommonDBTM $item) {
       global $DB;
 
+      if ($item->isNewItem()) {
+         return 0;
+      }
+
       $params = static::getListForItemParams($item);
       unset($params['SELECT']);
       $params['COUNT'] = 'cpt';
