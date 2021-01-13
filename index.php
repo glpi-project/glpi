@@ -108,7 +108,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          'width'               => '100%'
       ]),
       'right_panel'         => strlen($CFG_GLPI['text_login']) > 0
-                               || count($PLUGIN_HOOKS['display_login']) > 0
+                               || strlen(($PLUGIN_HOOKS['display_login'] ?? "")) > 0
                                || $CFG_GLPI["use_public_faq"],
       'auth_dropdown_login' => Auth::dropdownLogin(false),
       'copyright_message'   => Html::getCopyrightMessage(false),
