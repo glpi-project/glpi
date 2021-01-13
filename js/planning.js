@@ -523,7 +523,15 @@ var GLPIPlanning  = {
                      }
                   })
                   .load(ajaxurl, function() {
-                     $(this).dialog('option', 'position', ['center', 'center'] );
+                     $(this).dialog({
+                        position: {
+                           my: 'center',
+                           at: 'center',
+                           viewport: $(window),
+                           of: $('#page'),
+                           collision: 'fit'
+                        }
+                     });
                   });
             }
          },
@@ -565,7 +573,15 @@ var GLPIPlanning  = {
                         res_items_id: items_id,
                      },
                      function() {
-                        $(this).dialog('option', 'position', ['center', 'center'] );
+                        $(this).dialog({
+                           position: {
+                              my: 'center',
+                              at: 'center',
+                              viewport: $(window),
+                              of: $('#page'),
+                              collision: 'fit'
+                           }
+                        });
                      }
                   );
                },
@@ -575,7 +591,7 @@ var GLPIPlanning  = {
                },
                position: {
                   my: 'center',
-                  at: 'top',
+                  at: 'center top',
                   viewport: $(window),
                   of: $('#page')
                }
