@@ -5666,7 +5666,9 @@ JAVASCRIPT;
          $display .= "<input id='fileupload{$p['rand']}' type='file' name='".$p['name']."[]'
                          data-url='".$CFG_GLPI["root_doc"]."/ajax/fileupload.php'
                          data-form-data='{\"name\": \"".$p['name']."\",
-                                          \"showfilesize\": \"".$p['showfilesize']."\"}'".($p['multiple']?" multiple='multiple'":"").">";
+                                          \"showfilesize\": \"".$p['showfilesize']."\"}'"
+                         .($p['multiple']?" multiple='multiple'":"")
+                         .($p['onlyimages']?" accept='.gif,.png,.jpg,.jpeg'":"").">";
          $display .= "<div id='progress{$p['rand']}' style='display:none'>".
                  "<div class='uploadbar' style='width: 0%;'></div></div>";
          $display .= "</div>";
