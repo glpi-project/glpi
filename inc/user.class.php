@@ -4075,7 +4075,7 @@ JAVASCRIPT;
           && Entity::isEntityDirectoryConfigured($_SESSION['glpiactive_entity'])) {
 
          $output .= "<span title=\"".__s('Import a user')."\" class='fa fa-plus pointer'".
-                     " onClick=\"".Html::jsGetElementbyID('userimport'.$p['rand']).".dialog('open');\">
+                     " data-bs-toggle='modal' data-bs-target='#userimport{$p['rand']}'>
                      <span class='sr-only'>" . __s('Import a user') . "</span></span>";
          $output .= Ajax::createIframeModalWindow('userimport'.$p['rand'],
                                                   $CFG_GLPI["root_doc"].

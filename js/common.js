@@ -658,7 +658,7 @@ $(function() {
    });
 
    // prevent jquery ui dialog to keep focus
-   $.ui.dialog.prototype._focusTabbable = function() {};
+   //$.ui.dialog.prototype._focusTabbable = function() {};
 
    //quick lang switch
    $('[data-language-selector]').on('click', function(event) {
@@ -689,7 +689,7 @@ $(function() {
    });
 
    // permits to have html in dialogs title
-   $.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+   /*$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
       _title: function(title) {
          if (!this.options.title ) {
             title.html("&#160;");
@@ -697,7 +697,7 @@ $(function() {
             title.html(this.options.title);
          }
       }
-   }));
+   }));*/
 });
 
 /**

@@ -1905,18 +1905,18 @@ class Html {
    /**
     * Print footer for a modal window
    **/
-   static function popFooter() {
-      global $FOOTER_LOADED;
+  static function popFooter() {
+   global $FOOTER_LOADED;
 
-      if ($FOOTER_LOADED) {
-         return;
-      }
-      $FOOTER_LOADED = true;
-
-      if (!isCommandLine()) {
-         self::footer();
-      };
+   if ($FOOTER_LOADED) {
+      return;
    }
+   $FOOTER_LOADED = true;
+
+   // Print foot
+   self::loadJavascript();
+   echo "</body></html>";
+}
 
 
    /**
@@ -3387,7 +3387,7 @@ JS;
             $out .= " href='".$param['link']."'";
 
             if (!empty($param['popup'])) {
-               $out .= " onClick=\"".Html::jsGetElementbyID('tooltippopup'.$rand).".dialog('open'); return false;\" ";
+               $out .= " data-bs-toggle='modal' data-bs-target='#tooltippopup$rand' ";
             }
             $out .= '>';
          }
