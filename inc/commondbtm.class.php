@@ -2652,7 +2652,7 @@ class CommonDBTM extends CommonGLPI {
          echo "<tr class='tab_bg_2'>";
          echo "<td class='right' colspan='".($params['colspan']*2)."'>";
          foreach ($params['addbuttons'] as $key => $val) {
-            echo "<button type='submit' class='vsubmit' name='$key' value='1'>
+            echo "<button type='submit' class='btn' name='$key' value='1'>
                   $val
                </button>&nbsp;";
          }
