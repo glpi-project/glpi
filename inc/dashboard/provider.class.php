@@ -45,6 +45,7 @@ use Group;
 use Group_Ticket;
 use Problem;
 use Session;
+use Search;
 use Stat;
 use Ticket;
 use Ticket_User;
@@ -112,8 +113,17 @@ class Provider extends CommonGLPI {
       $result   = $iterator->next();
       $nb_items = $result['cpt'];
 
-      $url = $item::getSearchURL();
-      $url .= (strpos($url, '?') !== false ? '&' : '?') . 'reset';
+      $search_criteria = [
+         [
+            'link'       => 'AND',
+            self::getSearchFiltersCriteria($i_table, $params['apply_filters'])
+         ]
+      ];
+
+      $url = $item::getSearchURL()."?".Toolbox::append_params([
+         $search_criteria,
+         'reset'    => 'reset'
+      ]);
 
       return [
          'number' => $nb_items,
@@ -1244,6 +1254,16 @@ class Provider extends CommonGLPI {
       return [$start_day, $end_day];
    }
 
+   private static function getSearchOptionID(string $table, string $name, string $tableToSearch): int {
+      $data = Search::getOptions(getItemTypeForTable($table), true);
+      $sort = [];
+      foreach ($data as $ref => $opt) {
+         if (isset($opt['field'])) {
+            $sort[$ref] = $opt['linkfield']."-".$opt['table'];
+         }
+      }
+      return array_search($name."-".$tableToSearch, $sort);
+   }
 
    private static function getSearchFiltersCriteria(string $table = "", array $apply_filters = []) {
       $DB = DBConnection::getReadConnection();
@@ -1252,15 +1272,15 @@ class Provider extends CommonGLPI {
       if ($DB->fieldExists($table, 'date')
          && isset($apply_filters['dates'])
          && count($apply_filters['dates']) == 2) {
-         $s_criteria['criteria'][] = self::getDatesSearchCriteria(15, $apply_filters['dates'], 'begin');
-         $s_criteria['criteria'][] = self::getDatesSearchCriteria(15, $apply_filters['dates'], 'end');
+         $s_criteria['criteria'][] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date", $table), $apply_filters['dates'], 'begin');
+         $s_criteria['criteria'][] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date", $table), $apply_filters['dates'], 'end');
       }
 
       if ($DB->fieldExists($table, 'date_mod')
          && isset($apply_filters['dates_mod'])
          && count($apply_filters['dates_mod']) == 2) {
-         $s_criteria['criteria'][] = self::getDatesSearchCriteria(19, $apply_filters['dates_mod'], 'begin');
-         $s_criteria['criteria'][] = self::getDatesSearchCriteria(19, $apply_filters['dates_mod'], 'end');
+         $s_criteria['criteria'][] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date", $table), $apply_filters['dates_mod'], 'begin');
+         $s_criteria['criteria'][] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date", $table), $apply_filters['dates_mod'], 'end');
       }
 
       if ($DB->fieldExists($table, 'itilcategories_id')
@@ -1268,7 +1288,7 @@ class Provider extends CommonGLPI {
          && (int) $apply_filters['itilcategory'] > 0) {
          $s_criteria['criteria'][] = [
             'link'       => 'AND',
-            'field'      => 7, // itilcategory
+            'field'      => self::getSearchOptionID($table, 'itilcategories_id', 'glpi_itilcategories'), // itilcategory
             'searchtype' => 'equals',
             'value'      => (int) $apply_filters['itilcategory']
          ];
@@ -1279,7 +1299,7 @@ class Provider extends CommonGLPI {
          && (int) $apply_filters['requesttype'] > 0) {
          $s_criteria['criteria'][] = [
             'link'       => 'AND',
-            'field'      => 9, // request type
+            'field'      => self::getSearchOptionID($table, 'requesttypes_id', 'glpi_requesttypes'), // request type
             'searchtype' => 'equals',
             'value'      => (int) $apply_filters['requesttype']
          ];
@@ -1290,7 +1310,7 @@ class Provider extends CommonGLPI {
          && (int) $apply_filters['location'] > 0) {
          $s_criteria['criteria'][] = [
             'link'       => 'AND',
-            'field'      => 83, // location
+            'field'      => self::getSearchOptionID($table, 'locations_id', 'glpi_locations'), // location
             'searchtype' => 'equals',
             'value'      => (int) $apply_filters['location']
          ];
@@ -1301,7 +1321,7 @@ class Provider extends CommonGLPI {
          && (int) $apply_filters['manufacturer'] > 0) {
          $s_criteria['criteria'][] = [
             'link'       => 'AND',
-            'field'      => 23, // manufacturer
+            'field'      => self::getSearchOptionID($table, 'manufacturers_id', 'glpi_manufacturers'), // manufacturer
             'searchtype' => 'equals',
             'value'      => (int) $apply_filters['manufacturer']
          ];
@@ -1320,11 +1340,10 @@ class Provider extends CommonGLPI {
             if ($DB->fieldExists($table, 'groups_id_tech')) {
                $s_criteria['criteria'][] = [
                   'link'       => 'AND',
-                  'field'      => 49, // group tech
+                  'field'      => self::getSearchOptionID($table, 'groups_id_tech', 'glpi_groups'), // group tech
                   'searchtype' => 'equals',
                   'value'      => $groups_id
                ];
-
             } else if (in_array($table, [
                Ticket::getTable(),
                Change::getTable(),
@@ -1345,7 +1364,7 @@ class Provider extends CommonGLPI {
          if ($DB->fieldExists($table, 'users_id_tech')) {
             $s_criteria['criteria'][] = [
                'link'       => 'AND',
-               'field'      => 24, // tech
+               'field'      => self::getSearchOptionID($table, 'users_id_tech', 'glpi_users'),// tech
                'searchtype' => 'equals',
                'value'      =>  (int) $apply_filters['user_tech']
             ];
@@ -1356,7 +1375,7 @@ class Provider extends CommonGLPI {
          ])) {
             $s_criteria['criteria'][] = [
                'link'       => 'AND',
-               'field'      => 5, // tech
+               'field'      => 5,// tech
                'searchtype' => 'equals',
                'value'      =>  (int) $apply_filters['user_tech']
             ];
