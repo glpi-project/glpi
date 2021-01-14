@@ -263,7 +263,8 @@ class Provider extends CommonGLPI {
                         'field'      => 187,
                         'searchtype' => 'equals',
                         'value'      => 1,
-                     ]
+                     ],
+                     self::getSearchFiltersCriteria($table, $params['apply_filters'])
                   ]
                ]
             ]);
@@ -291,7 +292,8 @@ class Provider extends CommonGLPI {
                   'field'      => 59,
                   'searchtype' => 'equals',
                   'value'      => Session::getLoginUserID(),
-               ]
+               ],
+               self::getSearchFiltersCriteria($table, $params['apply_filters'])
             ];
             $query_criteria = array_merge_recursive($query_criteria, [
                'LEFT JOIN' => [
@@ -359,7 +361,8 @@ class Provider extends CommonGLPI {
                   'field'      => 12,
                   'searchtype' => 'equals',
                   'value'      => $status,
-               ]
+               ],
+               self::getSearchFiltersCriteria($table, $params['apply_filters'])
             ];
             $query_criteria = array_merge_recursive($query_criteria, [
                'WHERE' => [
@@ -491,7 +494,8 @@ class Provider extends CommonGLPI {
                'field'      => $params['searchoption_id'],
                'searchtype' => 'equals',
                'value'      => 0
-            ]
+            ],
+            self::getSearchFiltersCriteria($c_table, $params['apply_filters'])
             ],
             'reset' => 'reset',
       ];
@@ -628,6 +632,7 @@ class Provider extends CommonGLPI {
                'searchtype' => 'lessthan',
                'value'      => null
             ],
+            self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
          ],
          'reset' => 'reset'
       ];
@@ -684,6 +689,8 @@ class Provider extends CommonGLPI {
          unset($params['apply_filters']['dates']);
       }
 
+      $t_table   = Ticket::getTable();
+
       $series = [
 
          'inter_total' => [
@@ -700,7 +707,8 @@ class Provider extends CommonGLPI {
                      'field'      => 15, // creation date
                      'searchtype' => 'lessthan',
                      'value'      => null
-                  ]
+                  ],
+                  self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
                ],
                'reset' => 'reset'
             ]
@@ -719,7 +727,8 @@ class Provider extends CommonGLPI {
                      'field'      => 17, // solve date
                      'searchtype' => 'lessthan',
                      'value'      => null
-                  ]
+                  ],
+                  self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
                ],
                'reset' => 'reset'
             ]
@@ -743,7 +752,8 @@ class Provider extends CommonGLPI {
                      'field'      => 82, // time_to_resolve exceed solve date
                      'searchtype' => 'equals',
                      'value'      => 1
-                  ]
+                  ],
+                  self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
                ],
                'reset' => 'reset'
             ]
@@ -762,14 +772,14 @@ class Provider extends CommonGLPI {
                      'field'      => 16, // close date
                      'searchtype' => 'lessthan',
                      'value'      => null
-                  ]
+                  ],
+                  self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
                ],
                'reset' => 'reset'
             ]
          ],
       ];
 
-      $t_table   = Ticket::getTable();
       $filters = array_merge_recursive(
          Ticket::getCriteriaFromProfile(),
          self::getFiltersCriteria($t_table, $params['apply_filters'])
@@ -907,6 +917,7 @@ class Provider extends CommonGLPI {
                'searchtype' => 'lessthan',
                'value'      => null
             ],
+            self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
          ],
          'reset' => 'reset'
       ];
@@ -1071,6 +1082,7 @@ class Provider extends CommonGLPI {
                'searchtype' => 'equals',
                'value'      => null
             ],
+            self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
          ],
          'reset' => 'reset'
       ];
@@ -1241,6 +1253,128 @@ class Provider extends CommonGLPI {
    }
 
 
+   private static function getSearchFiltersCriteria(string $table = "", array $apply_filters = []) {
+      $DB = DBConnection::getReadConnection();
+      $s_criteria = [];
+
+      if ($DB->fieldExists($table, 'date')
+          && isset($apply_filters['dates'])
+          && count($apply_filters['dates']) == 2) {
+         $s_criteria = array_merge($s_criteria, self::getDatesSearchCriteria(15, $apply_filters['dates']));
+      }
+      if ($DB->fieldExists($table, 'date_mod')
+          && isset($apply_filters['dates_mod'])
+          && count($apply_filters['dates_mod']) == 2) {
+            $s_criteria = array_merge($s_criteria, self::getDatesSearchCriteria(19, $apply_filters['dates_mod']));
+      }
+
+      if ($DB->fieldExists($table, 'itilcategories_id')
+          && isset($apply_filters['itilcategory'])
+          && (int) $apply_filters['itilcategory'] > 0) {
+         $s_criteria = array_merge($s_criteria, [
+            'link'       => 'AND',
+            'field'      => 7, // itilcategory
+            'searchtype' => 'equals',
+            'value'      => (int) $apply_filters['itilcategory']
+         ]);
+      }
+
+      if ($DB->fieldExists($table, 'requesttypes_id')
+          && isset($apply_filters['requesttype'])
+          && (int) $apply_filters['requesttype'] > 0) {
+         $s_criteria = array_merge($s_criteria, [
+            'link'       => 'AND',
+            'field'      => 14, // request type
+            'searchtype' => 'equals',
+            'value'      => (int) $apply_filters['requesttype']
+         ]);
+      }
+
+      if ($DB->fieldExists($table, 'locations_id')
+          && isset($apply_filters['location'])
+          && (int) $apply_filters['location'] > 0) {
+
+         $s_criteria = array_merge($s_criteria, [
+            'link'       => 'AND',
+            'field'      => 83, // location
+            'searchtype' => 'equals',
+            'value'      => (int) $apply_filters['location']
+         ]);
+      }
+
+      if ($DB->fieldExists($table, 'manufacturers_id')
+          && isset($apply_filters['manufacturer'])
+          && (int) $apply_filters['manufacturer'] > 0) {
+         $s_criteria = array_merge($s_criteria, [
+            'link'       => 'AND',
+            'field'      => 23, // manufacturer
+            'searchtype' => 'equals',
+            'value'      => (int) $apply_filters['manufacturer']
+         ]);
+      }
+
+      if (isset($apply_filters['group_tech'])) {
+
+         $groups_id = null;
+         if ((int) $apply_filters['group_tech'] > 0) {
+            $groups_id =  (int) $apply_filters['group_tech'];
+         } else if ((int) $apply_filters['group_tech'] == -1) {
+            $groups_id =  'mygroups';
+         }
+
+         if ($groups_id != null) {
+            if ($DB->fieldExists($table, 'groups_id_tech')) {
+
+               $s_criteria = array_merge($s_criteria, [
+                  'link'       => 'AND',
+                  'field'      => 49, // group tech
+                  'searchtype' => 'equals',
+                  'value'      => $groups_id
+               ]);
+
+            } else if (in_array($table, [
+               Ticket::getTable(),
+               Change::getTable(),
+               Problem::getTable(),
+            ])) {
+               $s_criteria = array_merge($s_criteria, [
+                  'link'       => 'AND',
+                  'field'      => 8, // group tech
+                  'searchtype' => 'equals',
+                  'value'      => $groups_id
+               ]);
+            }
+         }
+      }
+
+      if (isset($apply_filters['user_tech'])
+          && (int) $apply_filters['user_tech'] > 0) {
+
+         if ($DB->fieldExists($table, 'users_id_tech')) {
+            $s_criteria = array_merge($s_criteria, [
+               'link'       => 'AND',
+               'field'      => 24, // tech
+               'searchtype' => 'equals',
+               'value'      =>  (int) $apply_filters['user_tech']
+            ]);
+         } else if (in_array($table, [
+            Ticket::getTable(),
+            Change::getTable(),
+            Problem::getTable(),
+         ])) {
+            $s_criteria = array_merge($s_criteria, [
+               'link'       => 'AND',
+               'field'      => 5, // tech
+               'searchtype' => 'equals',
+               'value'      =>  (int) $apply_filters['user_tech']
+            ]);
+         }
+      }
+
+      return $s_criteria;
+
+   }
+
    private static function getFiltersCriteria(string $table = "", array $apply_filters = []) {
       $DB = DBConnection::getReadConnection();
 
@@ -1382,6 +1516,26 @@ class Provider extends CommonGLPI {
       return [
          [$field => ['>=', date('Y-m-d', $begin)]],
          [$field => ['<=', date('Y-m-d', $end)]],
+      ];
+   }
+
+   private static function getDatesSearchCriteria(int $searchoption_id, array $dates = []): array {
+      $begin = strtotime($dates[0]);
+      $end   = strtotime($dates[1]);
+
+      return [
+         [
+            'link'       => 'AND',
+            'field'      => $searchoption_id, // creation date
+            'searchtype' => 'morethan',
+            'value'      => date('Y-m-d', $begin)
+         ],
+         [
+            'link'       => 'AND',
+            'field'      => $searchoption_id, // creation date
+            'searchtype' => 'lessthan',
+            'value'      => date('Y-m-d', $end)
+         ],
       ];
    }
 
