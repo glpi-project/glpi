@@ -1284,7 +1284,7 @@ class Provider extends CommonGLPI {
           && (int) $apply_filters['requesttype'] > 0) {
          $s_criteria = array_merge($s_criteria, [
             'link'       => 'AND',
-            'field'      => 14, // request type
+            'field'      => 9, // request type
             'searchtype' => 'equals',
             'value'      => (int) $apply_filters['requesttype']
          ]);
