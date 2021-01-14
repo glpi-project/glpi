@@ -676,7 +676,10 @@ class MassiveAction {
     * @return void
    **/
    function showDefaultSubForm() {
-      echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+      echo Html::submit("<i class='fas fa-save'></i><span>"._x('button', 'Post')."</span>", [
+         'name'  => 'massiveaction',
+         'class' => 'btn btn-sm btn-primary',
+      ]);
    }
 
 
@@ -932,11 +935,14 @@ class MassiveAction {
             echo Html::hidden('field', ['value' => $fieldname]);
             echo "<br>\n";
 
-            $submitname = _sx('button', 'Post');
+            $submitname = "<i class='fas fa-save'></i><span>"._sx('button', 'Post')."</span>";
             if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
                $submitname= stripslashes($ma->POST['submitname']);
             }
-            echo Html::submit($submitname, ['name' => 'massiveaction']);
+            echo Html::submit($submitname, [
+               'name'  => 'massiveaction',
+               'class' => 'btn btn-sm btn-primary',
+            ]);
 
             return true;
 
@@ -958,11 +964,14 @@ class MassiveAction {
 
             echo "<br>\n";
 
-            $submitname = _sx('button', 'Post');
+            $submitname = "<i class='fas fa-save'></i><span>"._sx('button', 'Post')."</span>";
             if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
                $submitname= stripslashes($ma->POST['submitname']);
             }
-            echo Html::submit($submitname, ['name' => 'massiveaction']);
+            echo Html::submit($submitname, [
+               'name'  => 'massiveaction',
+               'class' => 'btn btn-sm btn-primary',
+            ]);
 
             return true;
 
@@ -971,7 +980,10 @@ class MassiveAction {
                     "Are you sure you want to add these items to transfer list?",
                     count($ma->items, COUNT_RECURSIVE) - count($ma->items));
             echo "<br><br>";
-            echo Html::submit(_x('button', 'Add'), ['name' => 'massiveaction']);
+            echo Html::submit("<i class='fas fa-plus'></i><span>"._x('button', 'Add')."</span>", [
+               'name'  => 'massiveaction',
+               'class' => 'btn btn-sm btn-primary',
+            ]);
 
             return true;
 
@@ -982,8 +994,9 @@ class MassiveAction {
                'name' => 'amendment'
             ]);
             echo ("<br><br>");
-            echo Html::submit(__('Update'), [
-               'name' => 'massiveaction'
+            echo Html::submit("<i class='fas fa-save'></i><span>".__('Update')."</span>", [
+               'name'  => 'massiveaction',
+               'class' => 'btn btn-sm btn-primary',
             ]);
 
             return true;
@@ -995,8 +1008,9 @@ class MassiveAction {
                'name' => 'add_note'
             ]);
             echo ("<br><br>");
-            echo Html::submit(_sx('button', 'Add'), [
-               'name' => 'massiveaction'
+            echo Html::submit("<i class='fas fa-plus'></i><span>"._sx('button', 'Add')."</span>", [
+               'name'  => 'massiveaction',
+               'class' => 'btn btn-sm btn-primary',
             ]);
 
             return true;
