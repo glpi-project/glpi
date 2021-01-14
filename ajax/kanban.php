@@ -47,6 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
    parse_str($input, $_REQUEST);
 }
 
+$_REQUEST = Toolbox::clean_cross_side_scripting_deep($_REQUEST);
+
 if (!isset($_REQUEST['action'])) {
    Toolbox::logError("Missing action parameter");
    http_response_code(400);
