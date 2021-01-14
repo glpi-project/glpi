@@ -1527,6 +1527,13 @@ class MailCollector  extends CommonDBTM {
              && $part->getHeaders()->has('content-disposition')
              && ($content_disp_header = $part->getHeader('content-disposition')) instanceof ContentDisposition) {
             $filename = $content_disp_header->getParameter('filename') ?? '';
+            // Check bug in ContentDisposition
+            if (strpos($filename, '=?UTF-8?') !== false) {
+               // Format =?UTF-8?Q?<code sequence>?=
+               // Join multiple sequences (=?UTF-8?Q?=AA?==?UTF-8?Q?=BB?= to =?UTF-8?Q?=AA=BB?=)
+               $filename = str_replace('?==?UTF-8?Q?=', '=', $filename);
+               $filename = \Laminas\Mail\Header\HeaderWrap::mimeDecodeValue($filename);
+            }
          }
 
          // Try to get filename from Content-Type header
