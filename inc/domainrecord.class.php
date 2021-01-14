@@ -549,7 +549,7 @@ JAVASCRIPT;
          );
 
          echo "<span class='fa fa-plus-circle pointer' title=\"".__s('Add')."\"
-                        onClick=\"".Html::jsGetElementbyID('add_dropdowndomainrecords_id').".dialog('open');\"
+                     data-bs-toggle='modal' data-bs-target='#add_dropdowndomainrecords_id'
                      ><span class='sr-only'>" . __s('Add') . "</span></span>";
          echo Ajax::createIframeModalWindow(
             'add_dropdowndomainrecords_id',

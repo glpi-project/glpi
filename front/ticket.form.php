@@ -226,8 +226,8 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
                                      "?_in_modal=1&item_itemtype=Ticket&item_items_id=".
                                      $_GET["id"],
                                     ['title'         => __('Save solution to the knowledge base'),
-                                          'reloadonclose' => false]);
-      echo Html::scriptBlock('$(function() {' .Html::jsGetElementbyID('savetokb').".dialog('open'); });");
+                                     'reloadonclose' => false,
+                                     'autoopen'      => true]);
    }
 
 } else {

@@ -304,12 +304,15 @@ class Ajax {
     */
    static function createIframeModalWindow($domid, $url, $options = []) {
 
-      $param = ['width'         => 1050,
-                     'height'        => 500,
-                     'modal'         => true,
-                     'title'         => '',
-                     'display'       => true,
-                     'reloadonclose' => false];
+      $param = [
+         'width'         => 1050,
+         'height'        => 500,
+         'modal'         => true,
+         'title'         => '',
+         'display'       => true,
+         'autoopen'      => false,
+         'reloadonclose' => false
+      ];
 
       if (count($options)) {
          foreach ($options as $key => $val) {
@@ -320,7 +323,7 @@ class Ajax {
       }
       $url .= (strstr($url, '?') ?'&' :  '?').'_in_modal=1';
 
-      $out  = "<div id=\"$domid\">";
+      /*$out  = "<div id=\"$domid\">";
       $out .= "<iframe id='Iframe$domid' class='iframe hidden'></iframe></div>";
 
       $out .= "<script type='text/javascript'>
@@ -340,7 +343,68 @@ class Ajax {
 
       $out.= "title: \"".addslashes($param['title'])."\"});
          });
-            </script>";
+            </script>";*/
+
+      $rand = mt_rand();
+
+      $html = <<<HTML
+         <div id="$domid" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                     <h3>{$param['title']}</h3>
+                  </div>
+                  <div class="modal-body">
+                     <iframe id='iframe$domid' class="iframe hidden"
+                        width="100%" height="400" frameborder="0">
+                     </iframe>
+                  </div>
+               </div>
+            </div>
+         </div>
+HTML;
+
+      $reloadonclose = $param['reloadonclose'] ? "true" : "false";
+      $autoopen      = $param['autoopen'] ? "true" : "false";
+      $js = <<<JAVASCRIPT
+         myModalEl{$rand} = document.getElementById('{$domid}');
+         myModal{$rand}   = new bootstrap.Modal(myModalEl{$rand});
+
+         myModalEl{$rand}.addEventListener('show.bs.modal', function () {
+            $('#iframe{$domid}').attr('src','{$url}').removeClass('hidden');
+         });
+         myModalEl{$rand}.addEventListener('hide.bs.modal', function () {
+            if ({$reloadonclose}) {
+               window.location.reload()
+            }
+         });
+
+         if ({$autoopen}) {
+            myModal{$rand}.show();
+         }
+
+         document.getElementById('iframe$domid').onload = function() {
+            var h =  $('#iframe{$domid}').contents().height();
+            var w =  $('#iframe{$domid}').contents().width();
+
+            $('#iframe{$domid}')
+               .height(h);
+
+            if (w >= 700) {
+               $('#{$domid} .modal-dialog').addClass('modal-xl');
+            } else if (w >= 500) {
+               $('#{$domid} .modal-dialog').addClass('modal-lg');
+            } else if (w <= 300) {
+               $('#{$domid} .modal-dialog').addClass('modal-sm');
+            }
+
+            // reajust height to content
+            myModal{$rand}.handleUpdate()
+         };
+JAVASCRIPT;
+
+      $out = "<script type='text/javascript'>$js</script>$html";
 
       if ($param['display']) {
          echo $out;

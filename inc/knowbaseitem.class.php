@@ -1538,7 +1538,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
                $toadd = '';
                if (isset($options['item_itemtype'])
                      && isset($options['item_items_id'])) {
-                  $href  = " href='#' onClick=\"".Html::jsGetElementbyID('kbshow'.$data["id"]).".dialog('open'); return false;\"";
+                  $href  = " href='#' data-bs-toggle='modal' data-bs-target='#kbshow{$data["id"]}'";
                   $toadd = Ajax::createIframeModalWindow('kbshow'.$data["id"],
                                                          KnowbaseItem::getFormURLWithID($data["id"]),
                                                          ['display' => false]);

@@ -1482,7 +1482,7 @@ JAVASCRIPT;
 
       $link ="<span class='fa fa-wrench pointer' title=\"";
       $link .= __s('Display options')."\" ";
-      $link .= " onClick=\"".Html::jsGetElementbyID("displayoptions".$rand).".dialog('open');\"";
+      $link .= " data-bs-toggle='modal' data-bs-target='#displayoptions$rand'";
       $link .= "><span class='sr-only'>" . __s('Display options') . "</span></span>";
       $link .= Ajax::createIframeModalWindow("displayoptions".$rand,
                                              $CFG_GLPI['root_doc'].
