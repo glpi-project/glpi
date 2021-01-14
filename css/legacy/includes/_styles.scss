@@ -389,6 +389,11 @@
      &[type="file"] {
         height: 22px;
         border: 1px solid #CCC;
+
+        &.form-control {
+           width: auto;
+           margin: 0 auto;
+        }
      }
 
      &.submit {
