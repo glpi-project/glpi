@@ -115,7 +115,6 @@ class Provider extends CommonGLPI {
 
       $search_criteria = [
          [
-            'link'       => 'AND',
             self::getSearchFiltersCriteria($i_table, $params['apply_filters'])
          ]
       ];
@@ -920,6 +919,7 @@ class Provider extends CommonGLPI {
                'searchtype' => 'lessthan',
                'value'      => null
             ],
+            self::getSearchFiltersCriteria($t_table, $params['apply_filters'])
          ],
          'reset' => 'reset'
       ];
@@ -1276,11 +1276,23 @@ class Provider extends CommonGLPI {
          $s_criteria['criteria'][] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date", $table), $apply_filters['dates'], 'end');
       }
 
+      //exclude itilobject already processed with 'date'
+      if (!in_array($table, [
+         Ticket::getTable(),
+         Change::getTable(),
+         Problem::getTable(),
+      ]) && $DB->fieldExists($table, 'date_creation')
+      && isset($apply_filters['dates'])
+      && count($apply_filters['dates']) == 2) {
+         $s_criteria['criteria'][] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_creation", $table), $apply_filters['dates'], 'begin');
+         $s_criteria['criteria'][] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_creation", $table), $apply_filters['dates'], 'end');
+      }
+
       if ($DB->fieldExists($table, 'date_mod')
          && isset($apply_filters['dates_mod'])
          && count($apply_filters['dates_mod']) == 2) {
-         $s_criteria['criteria'][] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date", $table), $apply_filters['dates_mod'], 'begin');
-         $s_criteria['criteria'][] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date", $table), $apply_filters['dates_mod'], 'end');
+         $s_criteria['criteria'][] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_mod", $table), $apply_filters['dates_mod'], 'begin');
+         $s_criteria['criteria'][] = self::getDatesSearchCriteria(self::getSearchOptionID($table, "date_mod", $table), $apply_filters['dates_mod'], 'end');
       }
 
       if ($DB->fieldExists($table, 'itilcategories_id')
@@ -1391,11 +1403,23 @@ class Provider extends CommonGLPI {
       $where = [];
       $join  = [];
 
-      if ($DB->fieldExists($table, 'date')
+      if (($DB->fieldExists($table, 'date'))
           && isset($apply_filters['dates'])
           && count($apply_filters['dates']) == 2) {
          $where += self::getDatesCriteria("$table.date", $apply_filters['dates']);
       }
+
+      //exclude itilobject already processed with 'date'
+      if ((!in_array($table, [
+         Ticket::getTable(),
+         Change::getTable(),
+         Problem::getTable(),
+      ]) && $DB->fieldExists($table, 'date_creation'))
+          && isset($apply_filters['dates'])
+          && count($apply_filters['dates']) == 2) {
+         $where += self::getDatesCriteria("$table.date_creation", $apply_filters['dates']);
+      }
+
       if ($DB->fieldExists($table, 'date_mod')
           && isset($apply_filters['dates_mod'])
           && count($apply_filters['dates_mod']) == 2) {
@@ -1537,7 +1561,7 @@ class Provider extends CommonGLPI {
             'link'       => 'AND',
             'field'      => $searchoption_id, // creation date
             'searchtype' => 'morethan',
-            'value'      => date('Y-m-d', $begin)
+            'value'      => date('Y-m-d 00:00:00', $begin)
          ];
       } else {
          $end   = strtotime($dates[1]);
@@ -1545,7 +1569,7 @@ class Provider extends CommonGLPI {
             'link'       => 'AND',
             'field'      => $searchoption_id, // creation date
             'searchtype' => 'lessthan',
-            'value'      => date('Y-m-d', $end)
+            'value'      => date('Y-m-d 00:00:00', $end)
          ];
       }
    }
