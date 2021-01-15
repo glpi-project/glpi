@@ -3605,43 +3605,45 @@ class CommonDBTM extends CommonGLPI {
    public final function searchOptions() {
       static $options;
 
-      if (!isset($options)) {
-         $options = [];
+      if (isset($options)) {
+         return $options;
+      }
 
-         foreach ($this->rawSearchOptions() as $opt) {
-            $missingFields = [];
-            if (!isset($opt['id'])) {
-               $missingFields[] = 'id';
-            }
-            if (!isset($opt['name'])) {
-               $missingFields[] = 'name';
-            }
-            if (count($missingFields) > 0) {
-               throw new \Exception(
-                  vsprintf(
-                     'Invalid search option in "%1$s": missing "%2$s" field(s). %3$s',
-                     [
-                        get_called_class(),
-                        implode('", "', $missingFields),
-                        print_r($opt, true)
-                     ]
-                  )
-               );
-            }
+      $options = [];
 
-            $optid = $opt['id'];
-            unset($opt['id']);
+      foreach ($this->rawSearchOptions() as $opt) {
+         $missingFields = [];
+         if (!isset($opt['id'])) {
+            $missingFields[] = 'id';
+         }
+         if (!isset($opt['name'])) {
+            $missingFields[] = 'name';
+         }
+         if (count($missingFields) > 0) {
+            throw new \Exception(
+               vsprintf(
+                  'Invalid search option in "%1$s": missing "%2$s" field(s). %3$s',
+                  [
+                     get_called_class(),
+                     implode('", "', $missingFields),
+                     print_r($opt, true)
+                  ]
+               )
+            );
+         }
 
-            if (isset($options[$optid])) {
-               $message = "Duplicate key $optid ({$options[$optid]['name']}/{$opt['name']}) in ".
-                   get_class($this) . " searchOptions!";
+         $optid = $opt['id'];
+         unset($opt['id']);
 
-               Toolbox::logError($message);
-            }
+         if (isset($options[$optid])) {
+            $message = "Duplicate key $optid ({$options[$optid]['name']}/{$opt['name']}) in ".
+                  get_class($this) . " searchOptions!";
 
-            foreach ($opt as $k => $v) {
-               $options[$optid][$k] = $v;
-            }
+            Toolbox::logError($message);
+         }
+
+         foreach ($opt as $k => $v) {
+            $options[$optid][$k] = $v;
          }
       }
 
