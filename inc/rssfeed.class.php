@@ -79,7 +79,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
       if (Session::haveRight('rssfeed_public', READ)) {
          return _n('RSS feed', 'RSS feed', $nb);
       }
-      return _n('Personal RSS feed', 'Personal RSS feed', $nb);
+      //return _n('Personal RSS feed', 'Personal RSS feed', $nb);
    }
 
 

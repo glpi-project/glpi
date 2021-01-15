@@ -70,7 +70,7 @@ class Reminder extends CommonDBVisible implements
       if (Session::haveRight('reminder_public', READ)) {
          return _n('Reminder', 'Reminders', $nb);
       }
-      return _n('Personal reminder', 'Personal reminders', $nb);
+      //return _n('Personal reminder', 'Personal reminders', $nb);
    }
 
 
