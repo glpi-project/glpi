@@ -70,12 +70,9 @@ $opts = &Search::getOptions($_GET['type']);
 $sort = [];
 $group = 'N/A';
 
-
-
 foreach ($opts as $ref => $opt) {
-   var_dump($opt);
    if (isset($opt['field'])) {
-      $sort[$ref] = $group . " / " . $opt['table']. " / " .  $opt['field']. " / " . $opt['name']. " / " . $opt['linkfield'];
+      $sort[$ref] = $group . " / " . $opt['name'];
    } else {
       if (is_array($opt)) {
          $group = $opt['name'];

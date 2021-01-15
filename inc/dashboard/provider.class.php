@@ -502,7 +502,8 @@ class Provider extends CommonGLPI {
                'field'      => $params['searchoption_id'],
                'searchtype' => 'equals',
                'value'      => 0
-            ]
+            ],
+            self::getSearchFiltersCriteria($fk_table, $params['apply_filters'])
          ],
          'reset' => 'reset',
       ];
