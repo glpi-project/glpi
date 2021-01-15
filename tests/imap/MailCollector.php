@@ -599,6 +599,8 @@ class MailCollector extends DbTestCase {
          '18-blank.gif',
          '19-ʂǷèɕɩɐɫ ȼɦâʁȿ.gif',
          '20-specïal chars.gif',
+         '22-办公用品预约Apply for office supplies online.xlsx',
+         '23-New Text - Document.txt',
       ];
 
       $iterator = $DB->request(
