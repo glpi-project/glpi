@@ -2,7 +2,7 @@ MIME-Version: 1.0
 Received: from FRY09565 (localhost [127.0.0.1])
         by FRY09565 with ESMTP
         ; Fri, 15 Jan 2021 11:10:48 +0100
-From: "normal@glpi-project" <normal@glpi-project>
+From: "Normal User" <normal@glpi-project.org>
 To: "unittests@glpi-project.org" <unittests@glpi-project.org>
 Subject: Test attachment with invalid chars for OS
 Thread-Topic: Test attachment with invalid chars for OS
@@ -23,7 +23,7 @@ Content-Type: text/plain; charset="us-ascii"
 Test body
 --_002_50BFB6E5304045359A103164C726A37BFRY09565_
 Content-Type: application/octet-stream; name="23-New Text ? Document.txt"
-Content-Description: New Text ? Document.txt
+Content-Description: 23-New Text ? Document.txt
 Content-Disposition: attachment; filename="23-New Text ? Document.txt"; size=265;
         creation-date="Fri, 15 Jan 2021 12:52:27 GMT";
         modification-date="Fri, 15 Jan 2021 12:52:27 GMT"

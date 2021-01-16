@@ -533,6 +533,8 @@ class MailCollector extends DbTestCase {
                'Attachement having filename using RFC5987 (multiple lines)',
                'Attachement having filename using RFC5987 (single line)',
                'Mono-part HTML message',
+               'Test attachment with multibyte filename',
+               'Test attachment with invalid chars for OS',
             ]
          ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)

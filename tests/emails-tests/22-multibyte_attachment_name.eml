@@ -12,8 +12,8 @@ Received: from localhost (127.0.0.1) by mail.glpi-project.org (192.168.1.5)
  2021 15:35:16 +0100
 From: "Normal User" <normal@glpi-project.org>
 To: unittests@glpi-project.org
-Subject: Test subject
-Thread-Topic: Test subject
+Subject: Test attachment with multibyte filename
+Thread-Topic: Test attachment with multibyte filename
 Thread-Index: AQHW5ct8hXph1rETQ0y+Otmu2ZohZg==
 X-MS-Exchange-MessageSentRepresentingType: 1
 Date: Fri, 8 Jan 2021 15:35:17 +0100
@@ -41,13 +41,13 @@ VGVzdCBib2R5
 --_002_aa097017ea094dc28d718cb3cd64f397mailglpiprojectorg_
 Content-Type: application/octet-stream;
         name="=?gb2312?B?MjItsOy5q9PDxrfUpNS8QXBwbHkgZm9yIG9mZmljZSBzdXBwbGllcyBvbmxpbmU=?=
- =?gb2312?Q?xlsx?="
+ =?gb2312?Q?.xlsx?="
 Content-Description:
         =?gb2312?B?MjItsOy5q9PDxrfUpNS8QXBwbHkgZm9yIG9mZmljZSBzdXBwbGllcyBvbmxpbmU=?=
- =?gb2312?Q?xlsx?=
+ =?gb2312?Q?.xlsx?=
 Content-Disposition: attachment;
         filename="=?gb2312?B?MjItsOy5q9PDxrfUpNS8QXBwbHkgZm9yIG9mZmljZSBzdXBwbGllcyBvbmxpbmU=?=
- =?gb2312?Q?xlsx?="; size=8094; creation-date="Fri, 08 Jan 2021 14:35:17 GMT";
+ =?gb2312?Q?.xlsx?="; size=8094; creation-date="Fri, 08 Jan 2021 14:35:17 GMT";
         modification-date="Fri, 08 Jan 2021 14:36:14 GMT"
 Content-ID: <0A1D59B3522EF84295BE3A82AD1E1896glpi-project.org>
 Content-Transfer-Encoding: base64
