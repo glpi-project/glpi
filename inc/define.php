@@ -261,7 +261,7 @@ $CFG_GLPI["link_types"]                   = ['Budget', 'CartridgeItem', 'Compute
                                                   'ConsumableItem', 'Contact', 'Contract', 'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
                                                   'Printer', 'Software', 'Supplier', 'User', 'Certificate', 'Cluster',
-                                                  'DCRoom'];
+                                                  'DCRoom', 'Domain', 'Appliance'];
 
 $CFG_GLPI["dictionnary_types"]            = ['ComputerModel', 'ComputerType', 'Manufacturer',
                                                   'MonitorModel', 'MonitorType',
@@ -343,7 +343,7 @@ $CFG_GLPI["notificationtemplates_types"]  = ['CartridgeItem', 'Change', 'Consuma
 $CFG_GLPI["contract_types"]               = array_merge(['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Project', 'Line',
                                                   'Software', 'SoftwareLicense', 'Certificate',
-                                                  'DCRoom', 'Rack', 'Enclosure', 'Cluster', 'PDU', 'Appliance'],
+                                                  'DCRoom', 'Rack', 'Enclosure', 'Cluster', 'PDU', 'Appliance', 'Domain'],
                                                   $CFG_GLPI['itemdevices']);
 
 
