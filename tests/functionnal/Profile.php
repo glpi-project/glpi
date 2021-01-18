@@ -140,7 +140,7 @@ class Profile extends DbTestCase {
 
    /**
     * Check we keep only necessary rights (at least for ticket)
-    * when passing a profile from standdart to self-service interface
+    * when passing a profile from standard to self-service interface
     */
    public function testSwitchingInterface() {
       $ticket = new \Ticket;

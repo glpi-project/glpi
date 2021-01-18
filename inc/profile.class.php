@@ -328,7 +328,7 @@ class Profile extends CommonDBTM {
          $input["change_status"] = exportArrayToDB($cycle);
       }
 
-      // keep only unnecessary rights when switching from standart to self-service interface
+      // keep only unnecessary rights when switching from standard to self-service interface
       if (!isset($input["_ticket"]) && isset($input['interface']) && $input['interface'] == "helpdesk") {
 
          $ticket = new Ticket;
