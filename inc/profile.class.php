@@ -328,6 +328,19 @@ class Profile extends CommonDBTM {
          $input["change_status"] = exportArrayToDB($cycle);
       }
 
+      // keep only unnecessary rights when switching from standart to self-service interface
+      if (!isset($input["_ticket"]) && isset($input['interface']) && $input['interface'] == "helpdesk") {
+
+         $ticket = new Ticket;
+         $ss_rights = $ticket->getRights("helpdesk");
+         $ss_rights = array_keys($ss_rights);
+
+         $input["_ticket"] = [];
+         foreach ($ss_rights as $right) {
+            $input["_ticket"][$right] = ($this->fields['ticket'] & $right) ? 1 : 0;
+         }
+      }
+
       $this->profileRight = [];
       foreach (array_keys(ProfileRight::getAllPossibleRights()) as $right) {
          if (isset($input['_'.$right])) {
