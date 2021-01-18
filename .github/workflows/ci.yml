@@ -110,7 +110,7 @@ jobs:
           docker exec app node_modules/.bin/eslint . && echo "ESLint found no errors"
       - name: "Check for missing headers"
         run: |
-          docker exec app bin/console glpi:tools:licence_header_check
+          docker exec app vendor/bin/licence-headers-check
       - name: "gettext"
         run: |
           ! tools/locale/extract_template.sh 2>&1 | grep 'warning'
