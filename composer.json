@@ -63,8 +63,7 @@
         "maglnet/composer-require-checker": "^2.0",
         "mikey179/vfsstream": "^1.6",
         "natxet/cssmin": "^3.0",
-        "php-parallel-lint/php-parallel-lint": "^1.1",
-        "sensiolabs/security-checker": "^6.0"
+        "php-parallel-lint/php-parallel-lint": "^1.1"
     },
     "replace": {
         "paragonie/random_compat": "*",
