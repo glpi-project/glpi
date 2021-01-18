@@ -637,7 +637,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
          } else {
             // No entity link : set default values
-            $input['entities_id']  = 0;
+            $input['entities_id']  = Session::getActiveEntity();
             $input['is_recursive'] = 0;
          }
       }
