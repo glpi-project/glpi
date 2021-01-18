@@ -539,10 +539,10 @@ var GLPIPlanning  = {
          },
          eventClick: function(info) {
             var event    = info.event;
-            var start    = event.start;
-            var ajaxurl  = event.extendedProps.ajaxurl+"&start="+start.toISOString();
             var editable = event.extendedProps._editable; // do not know why editable property is not available
-            if (ajaxurl && editable && !disable_edit) {
+            if (event.extendedProps.ajaxurl && editable && !disable_edit) {
+               var start    = event.start;
+               var ajaxurl  = event.extendedProps.ajaxurl+"&start="+start.toISOString();
                info.jsEvent.preventDefault(); // don't let the browser navigate
                $('<div></div>')
                   .dialog({

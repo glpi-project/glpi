@@ -111,6 +111,9 @@ jobs:
       - name: "Check for missing headers"
         run: |
           docker exec app bin/console glpi:tools:licence_header_check
+      - name: "gettext"
+        run: |
+          ! tools/locale/extract_template.sh 2>&1 | grep 'warning'
       - name: "Cleanup containers"
         if: always()
         run: |
