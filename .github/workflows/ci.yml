@@ -199,6 +199,8 @@ jobs:
           docker exec db mysql --user=root --execute="CREATE DATABASE \`glpi\`;"
           docker exec db mysql --user=root --execute="CREATE DATABASE \`glpitest080\`;"
           cat tests/glpi-0.80-empty.sql | docker exec --interactive db mysql --user=root glpitest080
+          docker exec db mysql --user=root --execute="CREATE DATABASE \`glpitest-9.5.3\`;"
+          cat tests/glpi-9.5.3-empty.sql | docker exec --interactive db mysql --user=root glpitest-9.5.3
       - name: "Install dependencies"
         if: env.skip != 'true'
         run: |
@@ -217,10 +219,14 @@ jobs:
           if [[ -n $(grep "Warning" install.log) ]]; then echo "glpi:database:install command FAILED" && exit 1; fi
           docker exec app bin/console glpi:database:update --config-dir=./tests --ansi --no-interaction | tee migration.log
           if [[ -z $(grep "No migration needed." migration.log) ]]; then echo "glpi:database:update command FAILED" && exit 1; fi
-      - name: "Update DB tests"
+      - name: "Update DB tests (from 0.80, not using utf8mb4)"
         if: env.skip != 'true'
         run: |
           docker exec app .github/actions/test_update_from_older_version.sh
+      - name: "Update DB tests (from 9.5.3, using utf8mb4)"
+        if: env.skip != 'true'
+        run: |
+          docker exec app .github/actions/test_update_from_9.5.sh
       - name: "Database tests"
         if: env.skip != 'true'
         run: |
