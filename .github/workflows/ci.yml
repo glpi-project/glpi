@@ -113,7 +113,8 @@ jobs:
           docker exec app vendor/bin/licence-headers-check
       - name: "gettext"
         run: |
-          ! tools/locale/extract_template.sh 2>&1 | grep 'warning'
+          tools/locale/extract_template.sh 2>&1 | tee extract.log
+          if [[ -n $(grep "warning" extract.log) ]]; then exit 1; fi
       - name: "Cleanup containers"
         if: always()
         run: |
@@ -212,24 +213,18 @@ jobs:
       - name: "Install DB tests"
         if: env.skip != 'true'
         run: |
-          docker exec app bin/console glpi:database:install --config-dir=./tests --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root
-          docker exec app bin/console glpi:database:update --config-dir=./tests --no-interaction | grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
+          docker exec app bin/console glpi:database:install --config-dir=./tests --ansi --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root | tee install.log
+          if [[ -n $(grep "Warning" install.log) ]]; then echo "glpi:database:install command FAILED" && exit 1; fi
+          docker exec app bin/console glpi:database:update --config-dir=./tests --ansi --no-interaction | tee migration.log
+          if [[ -z $(grep "No migration needed." migration.log) ]]; then echo "glpi:database:update command FAILED" && exit 1; fi
       - name: "Update DB tests"
         if: env.skip != 'true'
         run: |
-          docker exec app bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpitest080 --db-host=db --db-user=root
-          docker exec app bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction
-          docker exec app bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction | grep -q "Aucune migration requise." || (echo "glpi:database:update command FAILED" && exit 1)
-          docker exec app bin/console glpi:migration:myisam_to_innodb --config-dir=./tests --no-interaction
-          docker exec app bin/console glpi:migration:myisam_to_innodb --config-dir=./tests --no-interaction | grep -q "Aucune migration requise." || (echo "glpi:migration:myisam_to_innodb command FAILED" && exit 1)
-          docker exec app bin/console glpi:migration:timestamps --config-dir=./tests --no-interaction
-          docker exec app bin/console glpi:migration:timestamps --config-dir=./tests --no-interaction | grep -q "Aucune migration requise." || (echo "glpi:migration:timestamps command FAILED" && exit 1)
-          docker exec app bin/console glpi:migration:utf8mb4 --config-dir=./tests --no-interaction
-          docker exec app bin/console glpi:migration:utf8mb4 --config-dir=./tests --no-interaction | grep -q "Aucune migration requise." || (echo "glpi:migration:utf8mb4 command FAILED" && exit 1)
+          docker exec app .github/actions/test_update_from_older_version.sh
       - name: "Database tests"
         if: env.skip != 'true'
         run: |
-          docker exec app bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root --use-utf8mb4
+          docker exec app bin/console glpi:database:configure --config-dir=./tests --ansi --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root --use-utf8mb4
           docker exec app vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --fail-if-skipped-methods --max-children-number 1 -d tests/database
       - name: "Unit tests"
         if: env.skip != 'true'
@@ -259,7 +254,7 @@ jobs:
       - name: "CSS compilation tests"
         if: env.skip != 'true'
         run: |
-          docker exec app bin/console build:compile_scss
+          docker exec app bin/console build:compile_scss --ansi
       - name: "Cleanup containers"
         if: env.skip != 'true' && always()
         run: |
