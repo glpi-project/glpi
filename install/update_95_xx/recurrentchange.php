@@ -37,6 +37,9 @@
 
 $migration->displayMessage("Adding recurrent changes");
 
+$default_charset = DBConnection::getDefaultCharset();
+$default_collation = DBConnection::getDefaultCollation();
+
 $DB->updateOrDie('glpi_crontasks', [
       'itemtype' => 'CommonITILRecurrentCron',
       'name'     => 'RecurrentItems'
@@ -69,7 +72,7 @@ if (!$DB->tableExists($recurrent_change_table)) {
          KEY `is_active` (`is_active`),
          KEY `changetemplates_id` (`changetemplates_id`),
          KEY `next_creation_date` (`next_creation_date`)
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
+      ) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};"
    );
 }
 
