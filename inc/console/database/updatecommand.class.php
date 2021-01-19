@@ -179,11 +179,11 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
          }
       }
 
-      $update->doUpdates($current_version);
-
       if (version_compare($current_db_version, GLPI_SCHEMA_VERSION, 'ne')) {
+         $update->doUpdates($current_version);
+
          // Migration is considered as done as Update class has the responsibility
-         // to run updates if schema has changed (even for "pre-versions".
+         // to run updates if schema has changed (even for "pre-versions").
          $output->writeln('<info>' . __('Migration done.') . '</info>');
       } else if ($force) {
          // Replay last update script even if there is no schema change.
