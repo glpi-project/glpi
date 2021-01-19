@@ -1006,7 +1006,7 @@ class Stat extends CommonGLPI {
             $criteria = [
                'SELECT'    => [
                   $date_unix,
-                  'COUNT'  => "$table.id AS total_visites"
+                  'COUNT DISTINCT' => "$table.id AS total_visites"
                ],
                'FROM'      => $table,
                'WHERE'     => $WHERE,
@@ -1027,7 +1027,7 @@ class Stat extends CommonGLPI {
             $criteria = [
                'SELECT'    => [
                   $date_unix,
-                  'COUNT'  => "$table.id AS total_visites"
+                  'COUNT DISTINCT'  => "$table.id AS total_visites"
                ],
                'FROM'      => $table,
                'WHERE'     => $WHERE,
@@ -1054,7 +1054,7 @@ class Stat extends CommonGLPI {
             $criteria = [
                'SELECT'    => [
                   $date_unix,
-                  'COUNT'  => "$table.id AS total_visites"
+                  'COUNT DISTINCT'  => "$table.id AS total_visites"
                ],
                'FROM'      => $table,
                'WHERE'     => $WHERE,
@@ -1075,7 +1075,7 @@ class Stat extends CommonGLPI {
             $criteria = [
                'SELECT'    => [
                   $date_unix,
-                  'COUNT'  => "$table.id AS total_visites"
+                  'COUNT DISTINCT'  => "$table.id AS total_visites"
                ],
                'FROM'      => $table,
                'WHERE'     => $WHERE,
@@ -1097,7 +1097,7 @@ class Stat extends CommonGLPI {
             $criteria = [
                'SELECT'    => [
                   $date_unix,
-                  'COUNT'  => "$table.id AS total_visites"
+                  'COUNT DISTINCT'  => "$table.id AS total_visites"
                ],
                'FROM'      => $table,
                'WHERE'     => $WHERE,
@@ -1213,7 +1213,7 @@ class Stat extends CommonGLPI {
             $criteria = [
                'SELECT'    => [
                   $date_unix,
-                  'COUNT'  => "$table.id AS total_visites"
+                  'COUNT DISTINCT'  => "$table.id AS total_visites"
                ],
                'FROM'      => $table,
                'WHERE'     => $WHERE,
@@ -1245,7 +1245,7 @@ class Stat extends CommonGLPI {
             $criteria = [
                'SELECT'    => [
                   $date_unix,
-                  'COUNT'  => "$table.id AS total_visites"
+                  'COUNT DISTINCT'  => "$table.id AS total_visites"
                ],
                'FROM'      => $table,
                'WHERE'     => $WHERE,
