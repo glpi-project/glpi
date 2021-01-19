@@ -44,6 +44,7 @@ use CommonITILObject;
 use Group;
 use Group_Ticket;
 use Problem;
+use QuerySubQuery;
 use Session;
 use Search;
 use Stat;
@@ -856,49 +857,54 @@ class Provider extends CommonGLPI {
       $statuses = Ticket::getAllStatusArray();
       $t_table  = Ticket::getTable();
 
-      $criteria = array_merge_recursive(
+      $sub_query = array_merge_recursive(
          [
             'DISTINCT' => true,
-            'SELECT'   => [
-               new QueryExpression(
-                  "FROM_UNIXTIME(UNIX_TIMESTAMP(".$DB->quoteName("$t_table.date")."),'%Y-%m') AS period"
-               ),
-               new QueryExpression(
-                  "SUM(IF($t_table.status = ".Ticket::INCOMING.", 1, 0))
-                     as ".$DB->quoteValue(_x('status', 'New'))
-               ),
-               new QueryExpression(
-                  "SUM(IF($t_table.status = ".Ticket::ASSIGNED.", 1, 0))
-                     as ".$DB->quoteValue(_x('status', 'Processing (assigned)'))
-               ),
-               new QueryExpression(
-                  "SUM(IF($t_table.status = ".Ticket::PLANNED.", 1, 0))
-                     as ".$DB->quoteValue(_x('status', 'Processing (planned)'))
-               ),
-               new QueryExpression(
-                  "SUM(IF($t_table.status = ".Ticket::WAITING.", 1, 0))
-                     as ".$DB->quoteValue(__('Pending'))
-               ),
-               new QueryExpression(
-                  "SUM(IF($t_table.status = ".Ticket::SOLVED.", 1, 0))
-                     as ".$DB->quoteValue(_x('status', 'Solved'))
-               ),
-               new QueryExpression(
-                  "SUM(IF($t_table.status = ".Ticket::CLOSED.", 1, 0))
-                     as ".$DB->quoteValue(_x('status', 'Closed'))
-               ),
-            ],
+            'SELECT'   => ["$t_table.*"],
             'FROM'     => $t_table,
             'WHERE'    => [
                "$t_table.is_deleted" => 0,
             ] + getEntitiesRestrictCriteria($t_table),
-            'ORDER'   => 'period ASC',
-            'GROUP'    => ['period']
          ],
          // limit count for profiles with limited rights
          Ticket::getCriteriaFromProfile(),
          self::getFiltersCriteria($t_table, $params['apply_filters'])
       );
+
+      $criteria = [
+         'SELECT'   => [
+            new QueryExpression(
+               "FROM_UNIXTIME(UNIX_TIMESTAMP(".$DB->quoteName("{$t_table}_distinct.date")."),'%Y-%m') AS period"
+            ),
+            new QueryExpression(
+               "SUM(IF({$t_table}_distinct.status = ".Ticket::INCOMING.", 1, 0))
+                  as ".$DB->quoteValue(_x('status', 'New'))
+            ),
+            new QueryExpression(
+               "SUM(IF({$t_table}_distinct.status = ".Ticket::ASSIGNED.", 1, 0))
+                  as ".$DB->quoteValue(_x('status', 'Processing (assigned)'))
+            ),
+            new QueryExpression(
+               "SUM(IF({$t_table}_distinct.status = ".Ticket::PLANNED.", 1, 0))
+                  as ".$DB->quoteValue(_x('status', 'Processing (planned)'))
+            ),
+            new QueryExpression(
+               "SUM(IF({$t_table}_distinct.status = ".Ticket::WAITING.", 1, 0))
+                  as ".$DB->quoteValue(__('Pending'))
+            ),
+            new QueryExpression(
+               "SUM(IF({$t_table}_distinct.status = ".Ticket::SOLVED.", 1, 0))
+                  as ".$DB->quoteValue(_x('status', 'Solved'))
+            ),
+            new QueryExpression(
+               "SUM(IF({$t_table}_distinct.status = ".Ticket::CLOSED.", 1, 0))
+                  as ".$DB->quoteValue(_x('status', 'Closed'))
+            ),
+         ],
+         'FROM' => new QuerySubQuery($sub_query, "{$t_table}_distinct"),
+         'ORDER'   => 'period ASC',
+         'GROUP'    => ['period']
+      ];
 
       $iterator = $DB->request($criteria);
 
