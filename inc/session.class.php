@@ -1527,7 +1527,7 @@ class Session {
     * @return int
     */
    public static function getActiveEntity() {
-      return $_SESSION['glpiactive_entity'];
+      return $_SESSION['glpiactive_entity'] ?? 0;
    }
 
    public static function getActiveEntityRecursive() {

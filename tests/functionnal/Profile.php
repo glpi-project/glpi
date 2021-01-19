@@ -137,4 +137,55 @@ class Profile extends DbTestCase {
          $this->array($profile_found)->string['name']->isNotEqualTo('Admin');
       }
    }
+
+   /**
+    * Check we keep only necessary rights (at least for ticket)
+    * when passing a profile from standard to self-service interface
+    */
+   public function testSwitchingInterface() {
+      $ticket = new \Ticket;
+
+      //create a temporay standard profile
+      $profile = new \Profile();
+      $profiles_id = $profile->add([
+         'name'      => "test switch profile",
+         'interface' => "standard",
+      ]);
+
+      // retrieve all tickets rights
+      $all_rights = $ticket->getRights();
+      $all_rights = array_keys($all_rights);
+      $all_rights = array_fill_keys($all_rights, 1);
+
+      // add all ticket rights to this profile
+      $profile->update([
+         'id'      => $profiles_id,
+         '_ticket' => $all_rights
+      ]);
+
+      // switch to self-service interface
+      $profile->update([
+         'id'        => $profiles_id,
+         'interface' => 'helpdesk'
+      ]);
+
+      // retrieve self-service tickets rights
+      $ss_rights = $ticket->getRights("helpdesk");
+      $ss_rights = array_keys($ss_rights);
+      $ss_rights = array_fill_keys($ss_rights, 1);
+      $exc_rights = array_diff_key($all_rights, $ss_rights);
+
+      //reload profile
+      $profile->getFromDB($profiles_id);
+
+      // check removed rights is clearly removed
+      foreach ($exc_rights as $right => $value) {
+         $this->integer(($profile->fields['ticket'] & $right))->isEqualTo(0);
+      }
+      // check self-service rights is still here
+      foreach ($ss_rights as $right => $value) {
+         $this->integer(($profile->fields['ticket'] & $right))->isEqualTo($right);
+      }
+
+   }
 }

@@ -209,10 +209,6 @@ jobs:
         if: env.skip != 'true'
         run: |
           docker exec app vendor/bin/parallel-lint  --exclude ./files/ --exclude ./marketplace/ --exclude ./plugins/ --exclude ./tools/vendor/ --exclude ./vendor/ .
-      - name: "PHP Security checker"
-        if: env.skip != 'true'
-        run: |
-          docker exec app vendor/bin/security-checker security:check
       - name: "Install DB tests"
         if: env.skip != 'true'
         run: |
