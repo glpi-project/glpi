@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\Console\AbstractCommand;
+use QueryExpression;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -54,25 +55,32 @@ class TimestampsCommand extends AbstractCommand {
    protected function execute(InputInterface $input, OutputInterface $output) {
       //convert db
 
-      // we are going to update datetime, date and time (?) types to timestamp type
+      // we are going to update datetime types to timestamp type
       $tbl_iterator = $this->db->request([
          'SELECT'       => ['information_schema.columns.table_name as TABLE_NAME'],
          'DISTINCT'     => true,
          'FROM'         => 'information_schema.columns',
          'INNER JOIN'   => [
             'information_schema.tables' => [
-               'ON' => [
-                  'information_schema.tables.table_name',
-                  'information_schema.columns.table_name', [
-                     'AND' => ['information_schema.tables.table_type' => 'BASE TABLE']
-                  ]
+               'FKEY' => [
+                  'information_schema.tables'  => 'table_name',
+                  'information_schema.columns' => 'table_name',
+                  [
+                     'AND' => [
+                        'information_schema.tables.table_schema' => new QueryExpression(
+                           $this->db->quoteName('information_schema.columns.table_schema')
+                        ),
+                     ]
+                  ],
                ]
             ]
          ],
          'WHERE'       => [
             'information_schema.columns.table_schema' => $this->db->dbdefault,
             'information_schema.columns.table_name'   => ['LIKE', 'glpi_%'],
-            'information_schema.columns.data_type'    => 'datetime'
+            'information_schema.columns.data_type'    => 'datetime',
+            'information_schema.tables.table_type'    => 'BASE TABLE',
+
          ],
          'ORDER'       => [
             'information_schema.columns.table_name'
