@@ -1559,6 +1559,9 @@ class Item_SoftwareVersion extends CommonDBRelation {
 
    protected static function getListForItemParams(CommonDBTM $item, $noent = false) {
       $table = self::getTable(__CLASS__);
+
+      $params = parent::getListForItemParams($item);
+      unset($params['SELECT'], $params['ORDER']);
       $params['WHERE'] = [
          $table.'.items_id'   => $item->getID(),
          $table.'.itemtype'   => $item::getType(),
@@ -1573,10 +1576,10 @@ class Item_SoftwareVersion extends CommonDBRelation {
    static function countForItem(CommonDBTM $item) {
       global $DB;
 
-      $iterator = $DB->request([
-         'COUNT' => 'cpt',
-         'FROM'   => self::getTable(__CLASS__)
-      ] + self::getListForItemParams($item));
+      $params = self::getListForItemParams($item);
+      unset($params['SELECT'], $params['ORDER']);
+      $params['COUNT'] = 'cpt';
+      $iterator = $DB->request($params);
       return $iterator->next()['cpt'];
    }
 }
