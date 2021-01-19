@@ -1539,7 +1539,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $noent = true;
       }
 
-      $inverse = $item->getType() == static::$itemtype_1;
+      $inverse = $item->getType() == static::$itemtype_1 || static::$itemtype_1 === 'itemtype';
 
       $link_type  = static::$itemtype_1;
       $link_id    = static::$items_id_1;
