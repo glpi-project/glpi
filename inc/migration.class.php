@@ -240,7 +240,7 @@ class Migration {
       switch ($type) {
          case 'bool' :
          case 'boolean' :
-            $format = "TINYINT(1) NOT NULL";
+            $format = "TINYINT NOT NULL";
             if (!$nodefault) {
                if (is_null($default_value)) {
                   $format .= " DEFAULT '0'";
@@ -278,7 +278,7 @@ class Migration {
 
          case 'int' :
          case 'integer' :
-            $format = "INT(11) NOT NULL";
+            $format = "INT NOT NULL";
             if (!$nodefault) {
                if (is_null($default_value)) {
                   $format .= " DEFAULT '0'";
@@ -337,7 +337,7 @@ class Migration {
 
          // for plugins
          case 'autoincrement' :
-            $format = "INT(11) NOT NULL AUTO_INCREMENT";
+            $format = "INT NOT NULL AUTO_INCREMENT";
             break;
 
          default :
