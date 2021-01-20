@@ -1,6 +1,6 @@
 #!/bin/bash
 
-bin/console glpi:database:configure --config-dir=./tests --no-interaction --ansi --reconfigure --db-name=glpitest-9.5.3 --db-host=db --db-user=root --use-utf8mb4
+bin/console glpi:database:configure --config-dir=./tests --no-interaction --ansi --reconfigure --db-name=glpitest-9.5.3 --db-host=db --db-user=root --use-utf8mb4 --log-deprecation-warnings
 
 # Execute update
 ## First run should do the migration (with no warnings).

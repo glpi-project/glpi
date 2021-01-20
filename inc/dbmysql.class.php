@@ -114,6 +114,14 @@ class DBmysql {
     */
    public $use_utf8mb4 = false;
 
+   /**
+    * Determine if warnings related to MySQL deprecations should be logged too.
+    * Defaults to false as this option should only on development/test environment.
+    *
+    * @var bool
+    */
+   public $log_deprecation_warnings = false;
+
 
    /** Is it a first connection ?
     * Indicates if the first connection attempt is successful or not
@@ -1690,14 +1698,21 @@ class DBmysql {
       $warnings = [];
 
       if ($this->dbh->warning_count > 0 && $warnings_result = $this->dbh->query('SHOW WARNINGS')) {
-         // Exclude some warnings related to deprecated features.
-         // They are complicated to fix, so they are muted for now to not block the SQL warning logging feature.
-         $excludes = [
-            1287, // 'utf8mb3' is deprecated and will be removed in a future release. Please use utf8mb4 instead.
-            1681, // Integer display width is deprecated and will be removed in a future release.
-            3719, // 'utf8' is currently an alias for the character set UTF8MB3, but will be an alias for UTF8MB4 in a future release. Please consider using UTF8MB4 in order to be unambiguous.
-            3778, // 'utf8_unicode_ci' is a collation of the deprecated character set UTF8MB3. Please consider using UTF8MB4 with an appropriate collation instead.
-         ];
+         // Warnings to exclude
+         $excludes = [];
+
+         if (!$this->use_utf8mb4 || !$this->log_deprecation_warnings) {
+            // Exclude warnings related to usage of "utf8mb3" charset, as database has not been migrated yet.
+            $excludes[] = 1287; // 'utf8mb3' is deprecated and will be removed in a future release. Please use utf8mb4 instead.
+            $excludes[] = 3719; // 'utf8' is currently an alias for the character set UTF8MB3, but will be an alias for UTF8MB4 in a future release. Please consider using UTF8MB4 in order to be unambiguous.
+            $excludes[] = 3778; // 'utf8_unicode_ci' is a collation of the deprecated character set UTF8MB3. Please consider using UTF8MB4 with an appropriate collation instead.
+         }
+         if (!$this->log_deprecation_warnings) {
+            // Mute deprecations related to elements that are heavilly used in old migrations and in plugins
+            // as it may require a lot of work to fix them.
+            $excludes[] = 1681; // Integer display width is deprecated and will be removed in a future release.
+         }
+
          while ($warning = $warnings_result->fetch_assoc()) {
             if ($warning['Level'] === 'Note' || in_array($warning['Code'], $excludes)) {
                continue;
