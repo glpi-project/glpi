@@ -99,7 +99,7 @@ class NetworkPortType extends CommonDropdown {
 
    public static function getDefaults(): array {
       $jsonfile = new FilesToJSON();
-      $iftypes = json_decode(file_get_contents($jsonfile->getPathFor('iftype')), true);
+      $iftypes = json_decode(file_get_contents($jsonfile->getJsonFilePath('iftype')), true);
 
       $default_instanciations = [
          'Ethernet'     => [6, 7, 62, 117, 169],
