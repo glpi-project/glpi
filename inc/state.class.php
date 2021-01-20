@@ -119,16 +119,21 @@ class State extends CommonTreeDropdown {
 
             } else {
                $table = getTableForItemType($itemtype);
+               $WHERE = [];
+               if ($DB->fieldExists($table, 'is_deleted')) {
+                  $WHERE["$table.is_deleted"] = 0;
+               }
+               if ($DB->fieldExists($table, 'is_template')) {
+                   $WHERE["$table.is_template"] = 0;
+               }
+               $WHERE += getEntitiesRestrictCriteria($table);
                $iterator = $DB->request([
                   'SELECT' => [
                      'states_id',
                      'COUNT'  => '* AS cpt'
                   ],
                   'FROM'   => $table,
-                  'WHERE'  => [
-                     'is_deleted'   => 0,
-                     'is_template'  => 0
-                  ] + getEntitiesRestrictCriteria($table),
+                  'WHERE'  => $WHERE,
                   'GROUP'  => 'states_id'
                ]);
 
