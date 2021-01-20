@@ -151,7 +151,7 @@ class Monitor extends InventoryAsset
          ],
          'WHERE'     => [
             'itemtype'                          => 'Monitor',
-            'computers_id'                      => $this->item->getType(),
+            'computers_id'                      => $this->item->getID(),
             'entities_id'                       => $entities_id,
             'glpi_computers_items.is_dynamic'   => 1,
             'glpi_monitors.is_global'           => 0
