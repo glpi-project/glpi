@@ -4557,7 +4557,8 @@ JAVASCRIPT;
                   $date_computation = $tocompute;
                }
                if (in_array($searchtype, ["contains", "notcontains"])) {
-                  $date_computation = "CONVERT($date_computation USING utf8)";
+                  $default_charset = DBConnection::getDefaultCharset();
+                  $date_computation = "CONVERT($date_computation USING {$default_charset})";
                }
                $search_unit = ' MONTH ';
                if (isset($searchopt[$ID]['searchunit'])) {

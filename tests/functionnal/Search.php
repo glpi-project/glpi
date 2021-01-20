@@ -410,6 +410,8 @@ class Search extends DbTestCase {
             ->array['sql']
                ->hasKey('search');
 
+      $default_charset = DBConnection::getDefaultCharset();
+
       $this->string($data['sql']['search'])
          ->contains("`glpi_computers`.`is_deleted` = 0")
          ->contains("AND `glpi_computers`.`is_template` = 0")
@@ -424,7 +426,7 @@ class Search extends DbTestCase {
          ->matches("/OR\s*\(`glpi_computertypes`\.`name`\s*LIKE '%test%'\s*\)/")
          ->matches("/OR\s*\(`glpi_computermodels`\.`name`\s*LIKE '%test%'\s*\)/")
          ->matches("/OR\s*\(`glpi_locations`\.`completename`\s*LIKE '%test%'\s*\)/")
-         ->matches("/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING utf8\)\s*LIKE '%test%'\s*\)\)/");
+         ->matches("/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING {$default_charset}\)\s*LIKE '%test%'\s*\)\)/");
    }
 
    public function testSearchOnRelationTable() {
