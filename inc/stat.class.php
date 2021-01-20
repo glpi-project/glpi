@@ -748,9 +748,11 @@ class Stat extends CommonGLPI {
       $solved_status  = array_merge($closed_status, $item->getSolvedStatusArray());
 
       $criteria = [];
-      $WHERE           = [
-         "$table.is_deleted" => 0
-      ] + getEntitiesRestrictCriteria($table);
+      $WHERE = [];
+      if ($DB->fieldExists($table, 'is_deleted')) {
+         $WHERE["$table.is_deleted"] = 0;
+      }
+      $WHERE += getEntitiesRestrictCriteria($table);
       $LEFTJOIN          = [];
       $INNERJOIN         = [];
       $LEFTJOINUSER      = [
