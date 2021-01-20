@@ -1288,7 +1288,7 @@ class Migration {
                'FROM'   => 'information_schema.columns',
                'WHERE'  => [
                   'table_schema' => $DB->dbdefault,
-                  'table_name'   => ['LIKE', 'glpi_%'],
+                  'table_name'   => ['LIKE', 'glpi\_%'],
                   'OR' => [
                      ['column_name'  => $old_fkey],
                      ['column_name'  => ['LIKE', $old_fkey . '_%']],
@@ -1354,7 +1354,7 @@ class Migration {
             'FROM'   => 'information_schema.columns',
             'WHERE'  => [
                'table_schema' => $DB->dbdefault,
-               'table_name'   => ['LIKE', 'glpi_%'],
+               'table_name'   => ['LIKE', 'glpi\_%'],
                'OR' => [
                   ['column_name'  => 'itemtype'],
                   ['column_name'  => ['LIKE', 'itemtype_%']],
