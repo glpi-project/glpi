@@ -637,7 +637,7 @@ class DBmysql {
     *
     * @return DBmysqlIterator
     */
-   function listTables($table = 'glpi_%', array $where = []) {
+   function listTables($table = 'glpi\_%', array $where = []) {
       $iterator = $this->request([
          'SELECT' => 'table_name as TABLE_NAME',
          'FROM'   => 'information_schema.tables',
@@ -656,7 +656,7 @@ class DBmysql {
     * @return DBmysqlIterator
     */
    public function getMyIsamTables(): DBmysqlIterator {
-      $iterator = $this->listTables('glpi_%', ['engine' => 'MyIsam']);
+      $iterator = $this->listTables('glpi\_%', ['engine' => 'MyIsam']);
       return $iterator;
    }
 
@@ -980,7 +980,7 @@ class DBmysql {
       // with all known tables
       $retrieve_all = !$this->cache_disabled && empty($this->table_cache);
 
-      $result = $this->listTables($retrieve_all ? 'glpi_%' : $tablename);
+      $result = $this->listTables($retrieve_all ? 'glpi\_%' : $tablename);
       $found_tables = [];
       while ($data = $result->next()) {
          $found_tables[] = $data['TABLE_NAME'];
@@ -1635,7 +1635,7 @@ class DBmysql {
            'FROM'        => 'information_schema.columns',
            'WHERE'       => [
               'information_schema.columns.table_schema' => $DB->dbdefault,
-              'information_schema.columns.table_name'   => ['LIKE', 'glpi_%'],
+              'information_schema.columns.table_name'   => ['LIKE', 'glpi\_%'],
               'information_schema.columns.data_type'    => ['datetime']
            ]
        ])->next();
