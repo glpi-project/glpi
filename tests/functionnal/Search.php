@@ -32,6 +32,7 @@
 
 namespace tests\units;
 
+use DBConnection;
 use CommonDBTM;
 use DbTestCase;
 
