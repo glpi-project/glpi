@@ -749,7 +749,7 @@ class Stat extends CommonGLPI {
 
       $criteria = [];
       $WHERE = [];
-      if ($DB->fieldExists($table, 'is_deleted')) {
+      if ($item->maybeDeleted()) {
          $WHERE["$table.is_deleted"] = 0;
       }
       $WHERE += getEntitiesRestrictCriteria($table);
@@ -1938,4 +1938,3 @@ class Stat extends CommonGLPI {
       return "fas fa-chart-bar";
    }
 }
-
