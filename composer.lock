@@ -207,16 +207,16 @@
         },
         {
             "name": "glpi-project/inventory_format",
-            "version": "1.0.0",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/inventory_format.git",
-                "reference": "5dac802b85fd6c7f32c2685c2e6a70499e075cda"
+                "reference": "40b1272feb34bf10fd82739e9c3d07b98606b0db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/5dac802b85fd6c7f32c2685c2e6a70499e075cda",
-                "reference": "5dac802b85fd6c7f32c2685c2e6a70499e075cda",
+                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/40b1272feb34bf10fd82739e9c3d07b98606b0db",
+                "reference": "40b1272feb34bf10fd82739e9c3d07b98606b0db",
                 "shasum": ""
             },
             "require": {
@@ -229,7 +229,8 @@
             },
             "bin": [
                 "bin/convert",
-                "bin/build_hw_jsons"
+                "bin/build_hw_jsons",
+                "bin/refresh_hw_sources"
             ],
             "type": "library",
             "extra": {
@@ -245,7 +246,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "GPL-2.0-or-later"
+                "MIT"
             ],
             "authors": [
                 {
@@ -263,7 +264,7 @@
                 "issues": "https://github.com/glpi-project/inventory_format/issues",
                 "source": "https://github.com/glpi-project/inventory_format"
             },
-            "time": "2021-01-18T14:15:58+00:00"
+            "time": "2021-01-20T14:50:09+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
