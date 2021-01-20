@@ -95,7 +95,7 @@ class USBVendor extends CommonDropdown implements CacheableListInterface {
       }
 
       $jsonfile = new FilesToJSON();
-      $file_usbids = json_decode(file_get_contents($jsonfile->getJsonFilePath('usb')), true);
+      $file_usbids = json_decode(file_get_contents($jsonfile->getJsonFilePath('usbid')), true);
       $db_usbids = $vendors->getDbList();
       $usbids = $db_usbids + $file_usbids;
       $GLPI_CACHE->set($vendors->cache_key, $usbids);
