@@ -377,9 +377,9 @@ OTHER EXPRESSION;"
 
       $create_query_template = <<<SQL
          CREATE TABLE `%s` (
-            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `id` int NOT NULL AUTO_INCREMENT,
             `itemtype` varchar(100) NOT NULL,
-            `items_id` int(11) NOT NULL DEFAULT '0',
+            `items_id` int NOT NULL DEFAULT '0',
             PRIMARY KEY (`id`)
          ) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = %s COLLATE = %s
 SQL;

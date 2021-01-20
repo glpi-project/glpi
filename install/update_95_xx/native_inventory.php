@@ -42,7 +42,7 @@ $default_collation = DBConnection::getDefaultCollation();
 
 if (!$DB->tableExists('glpi_agenttypes')) {
    $query = "CREATE TABLE `glpi_agenttypes` (
-         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `id` int NOT NULL AUTO_INCREMENT,
          `name` varchar(255) DEFAULT NULL,
          PRIMARY KEY (`id`),
          KEY `name` (`name`)
@@ -60,17 +60,17 @@ if (!$DB->tableExists('glpi_agenttypes')) {
 }
 if (!$DB->tableExists('glpi_agents')) {
    $query = "CREATE TABLE `glpi_agents` (
-         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `id` int NOT NULL AUTO_INCREMENT,
          `deviceid` VARCHAR(255) NOT NULL,
-         `entities_id` int(11) NOT NULL DEFAULT '0',
-         `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+         `entities_id` int NOT NULL DEFAULT '0',
+         `is_recursive` tinyint NOT NULL DEFAULT '0',
          `name` varchar(255) DEFAULT NULL,
-         `agenttypes_id` int(11) NOT NULL,
+         `agenttypes_id` int NOT NULL,
          `last_contact` timestamp NULL DEFAULT NULL,
          `version` varchar(255) DEFAULT NULL,
-         `locked` tinyint(1) NOT NULL DEFAULT '0',
+         `locked` tinyint NOT NULL DEFAULT '0',
          `itemtype` varchar(100) NOT NULL,
-         `items_id` int(11) NOT NULL,
+         `items_id` int NOT NULL,
          `useragent` varchar(255) DEFAULT NULL,
          `tag` varchar(255) DEFAULT NULL,
          `port` varchar(6) DEFAULT NULL,
@@ -86,12 +86,12 @@ if (!$DB->tableExists('glpi_agents')) {
 
 if (!$DB->tableExists('glpi_rulematchedlogs')) {
    $query = "CREATE TABLE `glpi_rulematchedlogs` (
-         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `id` int NOT NULL AUTO_INCREMENT,
          `date` timestamp NULL DEFAULT NULL,
-         `items_id` int(11) NOT NULL DEFAULT '0',
+         `items_id` int NOT NULL DEFAULT '0',
          `itemtype` varchar(100) DEFAULT NULL,
-         `rules_id` int(11) NULL DEFAULT NULL,
-         `agents_id` int(11) NOT NULL DEFAULT '0',
+         `rules_id` int NULL DEFAULT NULL,
+         `agents_id` int NOT NULL DEFAULT '0',
          `method` varchar(255) DEFAULT NULL,
          PRIMARY KEY (`id`),
          KEY `item` (`itemtype`,`items_id`)
@@ -108,9 +108,9 @@ if (countElementsInTable(Rule::getTable(), ['sub_type' => 'RuleImportAsset']) ==
 //locked fields
 if (!$DB->tableExists('glpi_lockedfields')) {
    $query = "CREATE TABLE `glpi_lockedfields` (
-         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `id` int NOT NULL AUTO_INCREMENT,
          `itemtype` varchar(100) DEFAULT NULL,
-         `items_id` int(11) NOT NULL DEFAULT '0',
+         `items_id` int NOT NULL DEFAULT '0',
          `field` varchar(50) NOT NULL,
          `value` varchar(255) DEFAULT NULL,
          `date_creation` timestamp NULL DEFAULT NULL,
@@ -176,20 +176,20 @@ if (!$DB->fieldExists('glpi_printers', 'sysdescr')) {
 
 //new fields in networports table
 $netport_fields = [
-   'ifmtu' => "int(8) NOT NULL DEFAULT '0'",
-   'ifspeed'            => "bigint(50) NOT NULL DEFAULT '0'",
+   'ifmtu' => "int NOT NULL DEFAULT '0'",
+   'ifspeed'            => "bigint NOT NULL DEFAULT '0'",
    'ifinternalstatus'   => "varchar(255) DEFAULT NULL",
-   'ifconnectionstatus' => "int(8) NOT NULL DEFAULT '0'",
+   'ifconnectionstatus' => "int NOT NULL DEFAULT '0'",
    'iflastchange'       => "varchar(255) DEFAULT NULL",
-   'ifinbytes'         => "bigint(50) NOT NULL DEFAULT '0'",
-   'ifinerrors'         => "bigint(50) NOT NULL DEFAULT '0'",
-   'ifoutbytes'        => "bigint(50) NOT NULL DEFAULT '0'",
-   'ifouterrors'        => "bigint(50) NOT NULL DEFAULT '0'",
+   'ifinbytes'         => "bigint NOT NULL DEFAULT '0'",
+   'ifinerrors'         => "bigint NOT NULL DEFAULT '0'",
+   'ifoutbytes'        => "bigint NOT NULL DEFAULT '0'",
+   'ifouterrors'        => "bigint NOT NULL DEFAULT '0'",
    'ifstatus'           => "varchar(255) DEFAULT NULL",
    'ifdescr'            => "varchar(255) DEFAULT NULL",
    'ifalias'            => "varchar(255) DEFAULT NULL",
    'portduplex'         => "varchar(255) DEFAULT NULL",
-   'trunk'              => "tinyint(1) NOT NULL DEFAULT '0'",
+   'trunk'              => "tinyint NOT NULL DEFAULT '0'",
    'lastup'             => "timestamp NULL DEFAULT NULL"
 ];
 foreach ($netport_fields as $netport_field => $definition) {
@@ -200,9 +200,9 @@ foreach ($netport_fields as $netport_field => $definition) {
 
 if (!$DB->tableExists('glpi_unmanageds')) {
    $query = "CREATE TABLE `glpi_unmanageds` (
-         `id` int(11) NOT NULL AUTO_INCREMENT,
-         `entities_id` int(11) NOT NULL DEFAULT '0',
-         `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+         `id` int NOT NULL AUTO_INCREMENT,
+         `entities_id` int NOT NULL DEFAULT '0',
+         `is_recursive` tinyint NOT NULL DEFAULT '0',
          `name` varchar(255) DEFAULT NULL,
          `serial` varchar(255) DEFAULT NULL,
          `otherserial` varchar(255) DEFAULT NULL,
@@ -210,22 +210,22 @@ if (!$DB->tableExists('glpi_unmanageds')) {
          `contact_num` varchar(255) DEFAULT NULL,
          `date_mod` timestamp NULL DEFAULT NULL,
          `comment` text,
-         `locations_id` int(11) NOT NULL DEFAULT '0',
-         `networks_id` int(11) NOT NULL DEFAULT '0',
-         `manufacturers_id` int(11) NOT NULL DEFAULT '0',
-         `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-         `users_id` int(11) NOT NULL DEFAULT '0',
-         `groups_id` int(11) NOT NULL DEFAULT '0',
-         `states_id` int(11) NOT NULL DEFAULT '0',
-         `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+         `locations_id` int NOT NULL DEFAULT '0',
+         `networks_id` int NOT NULL DEFAULT '0',
+         `manufacturers_id` int NOT NULL DEFAULT '0',
+         `is_deleted` tinyint NOT NULL DEFAULT '0',
+         `users_id` int NOT NULL DEFAULT '0',
+         `groups_id` int NOT NULL DEFAULT '0',
+         `states_id` int NOT NULL DEFAULT '0',
+         `is_dynamic` tinyint NOT NULL DEFAULT '0',
          `date_creation` timestamp NULL DEFAULT NULL,
-         `autoupdatesystems_id` int(11) NOT NULL DEFAULT '0',
+         `autoupdatesystems_id` int NOT NULL DEFAULT '0',
          `sysdescr` text,
-         `domains_id` int(11) NOT NULL DEFAULT '0',
-         `agents_id` int(11) NOT NULL DEFAULT '0',
+         `domains_id` int NOT NULL DEFAULT '0',
+         `agents_id` int NOT NULL DEFAULT '0',
          `itemtype` varchar(100) NULL DEFAULT NULL,
-         `accepted` tinyint(1) NOT NULL DEFAULT '0',
-         `hub` tinyint(1) NOT NULL DEFAULT '0',
+         `accepted` tinyint NOT NULL DEFAULT '0',
+         `hub` tinyint NOT NULL DEFAULT '0',
          `ip` varchar(255) DEFAULT NULL,
          PRIMARY KEY (`id`),
          KEY `name` (`name`),
@@ -252,13 +252,13 @@ $ADDTODISPLAYPREF['Unmanaged'] = [2, 4, 3, 5, 7, 10, 18, 14, 15, 9];
 
 if (!$DB->tableExists('glpi_networkporttypes')) {
    $query = "CREATE TABLE `glpi_networkporttypes` (
-         `id` int(11) NOT NULL AUTO_INCREMENT,
-         `entities_id` int(11) NOT NULL DEFAULT '0',
-         `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-         `value_decimal` int(11) NOT NULL,
+         `id` int NOT NULL AUTO_INCREMENT,
+         `entities_id` int NOT NULL DEFAULT '0',
+         `is_recursive` tinyint NOT NULL DEFAULT '0',
+         `value_decimal` int NOT NULL,
          `name` varchar(255) DEFAULT NULL,
          `comment` text,
-         `is_importable` tinyint(1) NOT NULL DEFAULT '0',
+         `is_importable` tinyint NOT NULL DEFAULT '0',
          `instantiation_type` varchar(255) DEFAULT NULL,
          `date_creation` timestamp NULL DEFAULT NULL,
          `date_mod` timestamp NULL DEFAULT NULL,
@@ -316,8 +316,8 @@ $ADDTODISPLAYPREF['NetworkPort'] = [3, 30, 31, 32, 33, 34, 35, 36, 38, 39, 40];
 
 if (!$DB->tableExists('glpi_printers_cartridgeinfos')) {
    $query = "CREATE TABLE `glpi_printers_cartridgeinfos` (
-         `id` int(11) NOT NULL AUTO_INCREMENT,
-         `printers_id` int(11) NOT NULL,
+         `id` int NOT NULL AUTO_INCREMENT,
+         `printers_id` int NOT NULL,
          `property` varchar(255)  NOT NULL,
          `value` varchar(255)  NOT NULL,
          `date_mod` timestamp NULL DEFAULT NULL,
@@ -332,20 +332,20 @@ if (!$DB->tableExists('glpi_printers_cartridgeinfos')) {
 
 if (!$DB->tableExists('glpi_printerlogs')) {
    $query = "CREATE TABLE `glpi_printerlogs` (
-         `id` int(11) NOT NULL AUTO_INCREMENT,
-         `printers_id` int(11) NOT NULL,
-         `total_pages` int(11) NOT NULL DEFAULT '0',
-         `bw_pages` int(11) NOT NULL DEFAULT '0',
-         `color_pages` int(11) NOT NULL DEFAULT '0',
-         `rv_pages` int(11) NOT NULL DEFAULT '0',
-         `prints` int(11) NOT NULL DEFAULT '0',
-         `bw_prints` int(11) NOT NULL DEFAULT '0',
-         `color_prints` int(11) NOT NULL DEFAULT '0',
-         `copies` int(11) NOT NULL DEFAULT '0',
-         `bw_copies` int(11) NOT NULL DEFAULT '0',
-         `color_copies` int(11) NOT NULL DEFAULT '0',
-         `scanned` int(11) NOT NULL DEFAULT '0',
-         `faxed` int(11) NOT NULL DEFAULT '0',
+         `id` int NOT NULL AUTO_INCREMENT,
+         `printers_id` int NOT NULL,
+         `total_pages` int NOT NULL DEFAULT '0',
+         `bw_pages` int NOT NULL DEFAULT '0',
+         `color_pages` int NOT NULL DEFAULT '0',
+         `rv_pages` int NOT NULL DEFAULT '0',
+         `prints` int NOT NULL DEFAULT '0',
+         `bw_prints` int NOT NULL DEFAULT '0',
+         `color_prints` int NOT NULL DEFAULT '0',
+         `copies` int NOT NULL DEFAULT '0',
+         `bw_copies` int NOT NULL DEFAULT '0',
+         `color_copies` int NOT NULL DEFAULT '0',
+         `scanned` int NOT NULL DEFAULT '0',
+         `faxed` int NOT NULL DEFAULT '0',
          `date_creation` timestamp NULL DEFAULT NULL,
          PRIMARY KEY (`id`),
          KEY `printers_id` (`printers_id`)
@@ -355,11 +355,11 @@ if (!$DB->tableExists('glpi_printerlogs')) {
 
 if (!$DB->tableExists('glpi_networkportconnectionlogs')) {
    $query = "CREATE TABLE `glpi_networkportconnectionlogs` (
-         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `id` int NOT NULL AUTO_INCREMENT,
          `date_creation` timestamp NULL DEFAULT NULL,
-         `connected` tinyint(1) NOT NULL DEFAULT '0',
-         `networkports_id_source` int(11) NOT NULL DEFAULT '0',
-         `networkports_id_destination` int(11) NOT NULL DEFAULT '0',
+         `connected` tinyint NOT NULL DEFAULT '0',
+         `networkports_id_source` int NOT NULL DEFAULT '0',
+         `networkports_id_destination` int NOT NULL DEFAULT '0',
          PRIMARY KEY (`id`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
@@ -368,13 +368,13 @@ if (!$DB->tableExists('glpi_networkportconnectionlogs')) {
 
 if (!$DB->tableExists('glpi_networkportmetrics')) {
    $query = "CREATE TABLE `glpi_networkportmetrics` (
-         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `id` int NOT NULL AUTO_INCREMENT,
          `date_creation` timestamp NULL DEFAULT NULL,
-         `ifinbytes` bigint(50) NOT NULL DEFAULT '0',
-         `ifinerrors` bigint(50) NOT NULL DEFAULT '0',
-         `ifoutbytes` bigint(50) NOT NULL DEFAULT '0',
-         `ifouterrors` bigint(50) NOT NULL DEFAULT '0',
-         `networkports_id` int(11) NOT NULL DEFAULT '0',
+         `ifinbytes` bigint NOT NULL DEFAULT '0',
+         `ifinerrors` bigint NOT NULL DEFAULT '0',
+         `ifoutbytes` bigint NOT NULL DEFAULT '0',
+         `ifouterrors` bigint NOT NULL DEFAULT '0',
+         `networkports_id` int NOT NULL DEFAULT '0',
          PRIMARY KEY (`id`),
          KEY `date_creation` (`date_creation`),
          KEY `networkports_id` (`networkports_id`)
@@ -384,17 +384,17 @@ if (!$DB->tableExists('glpi_networkportmetrics')) {
 
 if (!$DB->tableExists('glpi_refusedequipments')) {
    $query = "CREATE TABLE `glpi_refusedequipments` (
-         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `id` int NOT NULL AUTO_INCREMENT,
          `name` varchar(255) DEFAULT NULL,
          `itemtype` varchar(100) DEFAULT NULL,
-         `entities_id` int(11) NOT NULL DEFAULT '0',
+         `entities_id` int NOT NULL DEFAULT '0',
          `ip` varchar(255) DEFAULT NULL,
          `mac` varchar(255) DEFAULT NULL,
-         `rules_id` int(11) NOT NULL DEFAULT '0',
+         `rules_id` int NOT NULL DEFAULT '0',
          `method` varchar(255) DEFAULT NULL,
          `serial` varchar(255) DEFAULT NULL,
          `uuid` varchar(255) DEFAULT NULL,
-         `agents_id` int(11) NOT NULL DEFAULT '0',
+         `agents_id` int NOT NULL DEFAULT '0',
          `date_creation` timestamp NULL DEFAULT NULL,
          `date_mod` timestamp NULL DEFAULT NULL,
          PRIMARY KEY (`id`)
@@ -426,9 +426,9 @@ CronTask::Register(
 
 if (!$DB->tableExists('glpi_usbvendors')) {
    $query = "CREATE TABLE `glpi_usbvendors` (
-         `id` int(11) NOT NULL AUTO_INCREMENT,
-         `entities_id` int(11) NOT NULL DEFAULT '0',
-         `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+         `id` int NOT NULL AUTO_INCREMENT,
+         `entities_id` int NOT NULL DEFAULT '0',
+         `is_recursive` tinyint NOT NULL DEFAULT '0',
          `vendorid` varchar(4) NOT NULL,
          `deviceid` varchar(4) DEFAULT NULL,
          `name` varchar(255) DEFAULT NULL,
@@ -450,9 +450,9 @@ $ADDTODISPLAYPREF['USBVendor'] = [10, 11];
 
 if (!$DB->tableExists('glpi_pcivendors')) {
    $query = "CREATE TABLE `glpi_pcivendors` (
-         `id` int(11) NOT NULL AUTO_INCREMENT,
-         `entities_id` int(11) NOT NULL DEFAULT '0',
-         `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+         `id` int NOT NULL AUTO_INCREMENT,
+         `entities_id` int NOT NULL DEFAULT '0',
+         `is_recursive` tinyint NOT NULL DEFAULT '0',
          `vendorid` varchar(4) NOT NULL,
          `deviceid` varchar(4) DEFAULT NULL,
          `name` varchar(255) DEFAULT NULL,

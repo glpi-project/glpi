@@ -1398,8 +1398,9 @@ class DBmysql {
 
       $structure = preg_replace("/(DEFAULT) ([-|+]?\d+)(\.\d+)?/", "$1 '$2$3'", $structure);
       //$structure = preg_replace("/(DEFAULT) (')?([-|+]?\d+)(\.\d+)(')?/", "$1 '$3'", $structure);
-      $structure = preg_replace('/(BIGINT)\(\d+\)/i', '$1', $structure);
-      $structure = preg_replace('/(TINYINT) /i', '$1(4) ', $structure);
+
+      // Remove integer display width
+      $structure = preg_replace('/(INT)\(\d+\)/i', '$1', $structure);
 
       return [
          'schema' => strtolower($structure),
