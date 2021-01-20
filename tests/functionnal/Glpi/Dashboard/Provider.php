@@ -66,7 +66,7 @@ class Provider extends DbTestCase {
                'icon',
             ]);
          $this->integer($result['number'])->isGreaterThan(0);
-         $this->string($result['url'])->isEqualTo($item::getSearchURL()."?reset");
+         $this->string($result['url'])->contains($item::getSearchURL());
          $this->string($result['label'])->isNotEmpty();
          $this->string($result['icon'])->isEqualTo($item::getIcon());
       }
