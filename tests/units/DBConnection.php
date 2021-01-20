@@ -71,6 +71,179 @@ class DBConnection extends \GLPITestCase {
       $this->array($queries)->isIdenticalTo([$expected_query]);
    }
 
+   protected function mainConfigPropertiesProvider() {
+      return [
+         [
+            'host'                     => 'localhost',
+            'user'                     => 'glpi',
+            'password'                 => 'secret',
+            'name'                     => 'glpi_db',
+            'use_utf8mb4'              => false,
+            'log_deprecation_warnings' => false,
+            'expected'                 => <<<'PHP'
+<?php
+class DB extends DBmysql {
+   public $dbhost = 'localhost';
+   public $dbuser = 'glpi';
+   public $dbpassword = 'secret';
+   public $dbdefault = 'glpi_db';
+}
+
+PHP
+         ],
+         [
+            'host'                     => '127.0.0.1',
+            'user'                     => 'root',
+            'password'                 => '',
+            'name'                     => 'db',
+            'use_utf8mb4'              => true,
+            'log_deprecation_warnings' => false,
+            'expected'                 => <<<'PHP'
+<?php
+class DB extends DBmysql {
+   public $dbhost = '127.0.0.1';
+   public $dbuser = 'root';
+   public $dbpassword = '';
+   public $dbdefault = 'db';
+   public $use_utf8mb4 = true;
+}
+
+PHP
+         ],
+         [
+            'host'                     => '127.0.0.1',
+            'user'                     => 'root',
+            'password'                 => 'iT4%dU9*rI9#jT8>',
+            'name'                     => 'db',
+            'use_utf8mb4'              => false,
+            'log_deprecation_warnings' => true,
+            'expected'                 => <<<'PHP'
+<?php
+class DB extends DBmysql {
+   public $dbhost = '127.0.0.1';
+   public $dbuser = 'root';
+   public $dbpassword = 'iT4%25dU9%2ArI9%23jT8%3E';
+   public $dbdefault = 'db';
+   public $log_deprecation_warnings = true;
+}
+
+PHP
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider mainConfigPropertiesProvider
+    */
+   public function testCreateMainConfig(
+      string $host,
+      string $user,
+      string $password,
+      string $name,
+      bool $use_utf8mb4,
+      bool $log_deprecation_warnings,
+      string $expected
+   ): void {
+      vfsStream::setup('config-dir', null, []);
+
+      $result = \DBConnection::createMainConfig($host, $user, $password, $name, $use_utf8mb4, $log_deprecation_warnings, vfsStream::url('config-dir'));
+      $this->boolean($result)->isTrue();
+
+      $path = vfsStream::url('config-dir/config_db.php');
+      $this->boolean(file_exists($path))->isTrue();
+      $this->string(file_get_contents($path))->isEqualTo($expected);
+   }
+
+   protected function slaveConfigPropertiesProvider() {
+      return [
+         [
+            'host'                     => 'slave.db.domain.org',
+            'user'                     => 'glpi',
+            'password'                 => 'secret',
+            'name'                     => 'glpi_db',
+            'use_utf8mb4'              => false,
+            'log_deprecation_warnings' => false,
+            'expected'                 => <<<'PHP'
+<?php
+class DB extends DBmysql {
+   public $slave = true;
+   public $dbhost = 'slave.db.domain.org';
+   public $dbuser = 'glpi';
+   public $dbpassword = 'secret';
+   public $dbdefault = 'glpi_db';
+}
+
+PHP
+         ],
+         [
+            'host'                     => 'slave1.db.domain.org slave2.db.domain.org slave3.db.domain.org ',
+            'user'                     => 'root',
+            'password'                 => '',
+            'name'                     => 'db',
+            'use_utf8mb4'              => true,
+            'log_deprecation_warnings' => false,
+            'expected'                 => <<<'PHP'
+<?php
+class DB extends DBmysql {
+   public $slave = true;
+   public $dbhost = array (
+  0 => 'slave1.db.domain.org',
+  1 => 'slave2.db.domain.org',
+  2 => 'slave3.db.domain.org',
+);
+   public $dbuser = 'root';
+   public $dbpassword = '';
+   public $dbdefault = 'db';
+   public $use_utf8mb4 = true;
+}
+
+PHP
+         ],
+         [
+            'host'                     => '127.0.0.1',
+            'user'                     => 'root',
+            'password'                 => 'iT4%dU9*rI9#jT8>',
+            'name'                     => 'db',
+            'use_utf8mb4'              => false,
+            'log_deprecation_warnings' => true,
+            'expected'                 => <<<'PHP'
+<?php
+class DB extends DBmysql {
+   public $slave = true;
+   public $dbhost = '127.0.0.1';
+   public $dbuser = 'root';
+   public $dbpassword = 'iT4%25dU9%2ArI9%23jT8%3E';
+   public $dbdefault = 'db';
+   public $log_deprecation_warnings = true;
+}
+
+PHP
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider slaveConfigPropertiesProvider
+    */
+   public function testCreateSlaveConnectionFile(
+      string $host,
+      string $user,
+      string $password,
+      string $name,
+      bool $use_utf8mb4,
+      bool $log_deprecation_warnings,
+      string $expected
+   ): void {
+      vfsStream::setup('config-dir', null, []);
+
+      $result = \DBConnection::createSlaveConnectionFile($host, $user, $password, $name, $use_utf8mb4, $log_deprecation_warnings, vfsStream::url('config-dir'));
+      $this->boolean($result)->isTrue();
+
+      $path = vfsStream::url('config-dir/config_db_slave.php');
+      $this->boolean(file_exists($path))->isTrue();
+      $this->string(file_get_contents($path))->isEqualTo($expected, file_get_contents($path));
+   }
+
    protected function configFilesProvider() {
       return [
          [
@@ -265,7 +438,8 @@ PHP
     */
    public function testUpdateConfigProperty(
       array $init_config_files,
-      string $name, $new_value,
+      string $name,
+      $new_value,
       bool $update_slave,
       array $expected_config_files,
       bool $expected_result = true

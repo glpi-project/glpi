@@ -56,24 +56,43 @@ class DBConnection extends CommonDBTM {
     * @param string  $host                      The DB host
     * @param string  $user                      The DB user
     * @param string  $password                  The DB password
-    * @param string  $DBname                    The name of the DB
+    * @param string  $dbname                    The name of the DB
     * @param boolean $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
     * @param boolean $log_deprecation_warnings  Flag that indicates if DB deprecation warnings should be logged
+    * @param string  $config_dir
     *
     * @return boolean
     */
-   static function createMainConfig($host, $user, $password, $DBname, $use_utf8mb4 = false, $log_deprecation_warnings = false) {
+   static function createMainConfig(
+      string $host,
+      string $user,
+      string $password,
+      string $dbname,
+      bool $use_utf8mb4 = false,
+      bool $log_deprecation_warnings = false,
+      string $config_dir = GLPI_CONFIG_DIR
+   ): bool {
 
-      $DB_str = "<?php\nclass DB extends DBmysql {\n" .
-                "   public \$dbhost      = '$host';\n" .
-                "   public \$dbuser      = '$user';\n" .
-                "   public \$dbpassword  = '". rawurlencode($password) . "';\n" .
-                "   public \$dbdefault   = '$DBname';\n" .
-                "   public \$use_utf8mb4 = " . ($use_utf8mb4 ? 'true' : 'false') . ";\n" .
-                "   public \$log_deprecation_warnings = " . ($log_deprecation_warnings ? 'true' : 'false') . ";\n" .
-                "}\n";
+      $properties = [
+         'dbhost'     => $host,
+         'dbuser'     => $user,
+         'dbpassword' => rawurlencode($password),
+         'dbdefault'  => $dbname,
+      ];
+      if ($use_utf8mb4) {
+         $properties['use_utf8mb4'] = true;
+      }
+      if ($log_deprecation_warnings) {
+         $properties['log_deprecation_warnings'] = true;
+      }
 
-      return Toolbox::writeConfig('config_db.php', $DB_str);
+      $config_str = '<?php' . "\n" . 'class DB extends DBmysql {' . "\n";
+      foreach ($properties as $name => $value) {
+         $config_str .= sprintf('   public $%s = %s;', $name, var_export($value, true)) . "\n";
+      }
+      $config_str .= '}' . "\n";
+
+      return Toolbox::writeConfig('config_db.php', $config_str, $config_dir);
    }
 
 
@@ -138,52 +157,53 @@ class DBConnection extends CommonDBTM {
    /**
     * Create slave DB configuration file
     *
-    * @param string $host      The slave DB host(s)
-    * @param string $user      The slave DB user
-    * @param string $password  The slave DB password
-    * @param string $DBname    The name of the slave DB
+    * @param string  $host                      The DB host
+    * @param string  $user                      The DB user
+    * @param string  $password                  The DB password
+    * @param string  $dbname                    The name of the DB
+    * @param boolean $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
+    * @param boolean $log_deprecation_warnings  Flag that indicates if DB deprecation warnings should be logged
+    * @param string  $config_dir
     *
     * @return boolean for success
    **/
-   static function createSlaveConnectionFile($host, $user, $password, $DBname) {
+   static function createSlaveConnectionFile(
+      string $host,
+      string $user,
+      string $password,
+      string $dbname,
+      bool $use_utf8mb4 = false,
+      bool $log_deprecation_warnings = false,
+      string $config_dir = GLPI_CONFIG_DIR
+   ): bool {
 
-      // Get use_utf8mb4 flag from master config
-      $master = new class() extends DB {
-         public function __construct() {
-            // Deactivate connection
-         }
-      };
-      $use_utf8mb4 = $master->use_utf8mb4;
-      $log_deprecation_warnings = $master->log_deprecation_warnings;
-
-      $DB_str = "<?php \n class DBSlave extends DBmysql { \n public \$slave = true; \n public \$dbhost = ";
-      $host   = trim($host);
+      // Explode host into array (multiple values separated by a space char)
+      $host = trim($host);
       if (strpos($host, ' ')) {
-         $hosts = explode(' ', $host);
-         $first = true;
-         foreach ($hosts as $host) {
-            if (!empty($host)) {
-               $DB_str .= ($first ? "array('" : ",'").$host."'";
-               $first   = false;
-            }
-         }
-         if ($first) {
-            // no host configured
-            return false;
-         }
-         $DB_str .= ");\n";
-
-      } else {
-         $DB_str .= "'$host';\n";
+         $host = explode(' ', $host);
       }
-      $DB_str .= " public \$dbuser = '" . $user . "'; \n"
-         . " public \$dbpassword = '" . rawurlencode($password) . "'; \n"
-         . " public \$dbdefault = '" . $DBname . "'; \n"
-         . " public \$use_utf8mb4 = " . ($use_utf8mb4 ? 'true' : 'false') . "; \n"
-         . " public \$log_deprecation_warnings = " . ($log_deprecation_warnings ? 'true' : 'false') . "; \n"
-         . "}\n";
 
-      return Toolbox::writeConfig('config_db_slave.php', $DB_str);
+      $properties = [
+         'slave'      => true,
+         'dbhost'     => $host,
+         'dbuser'     => $user,
+         'dbpassword' => rawurlencode($password),
+         'dbdefault'  => $dbname,
+      ];
+      if ($use_utf8mb4) {
+         $properties['use_utf8mb4'] = true;
+      }
+      if ($log_deprecation_warnings) {
+         $properties['log_deprecation_warnings'] = true;
+      }
+
+      $config_str = '<?php' . "\n" . 'class DB extends DBmysql {' . "\n";
+      foreach ($properties as $name => $value) {
+         $config_str .= sprintf('   public $%s = %s;', $name, var_export($value, true)) . "\n";
+      }
+      $config_str .= '}' . "\n";
+
+      return Toolbox::writeConfig('config_db_slave.php', $config_str, $config_dir);
    }
 
 
@@ -217,7 +237,8 @@ class DBConnection extends CommonDBTM {
     * Create a default slave DB configuration file
    **/
    static function createDBSlaveConfig() {
-      self::createSlaveConnectionFile("localhost", "glpi", "glpi", "glpi");
+      global $DB;
+      self::createSlaveConnectionFile("localhost", "glpi", "glpi", "glpi", $DB->use_utf8mb4, $DB->log_deprecation_warnings);
    }
 
 
@@ -230,7 +251,8 @@ class DBConnection extends CommonDBTM {
     * @param $DBname
    **/
    static function saveDBSlaveConf($host, $user, $password, $DBname) {
-      self::createSlaveConnectionFile($host, $user, $password, $DBname);
+      global $DB;
+      self::createSlaveConnectionFile($host, $user, $password, $DBname, $DB->use_utf8mb4, $DB->log_deprecation_warnings);
    }
 
 

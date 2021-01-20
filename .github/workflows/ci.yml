@@ -131,6 +131,7 @@ jobs:
       matrix:
         include:
           - {php-version: "8.0", db-image: "mariadb:10.5", always: true}
+          - {php-version: "8.0", db-image: "mysql:8.0", always: true}
           - {php-version: "7.2", db-image: "mariadb:10.5", always: false}
           - {php-version: "7.3", db-image: "mariadb:10.5", always: false}
           - {php-version: "7.4", db-image: "mariadb:10.5", always: false}
