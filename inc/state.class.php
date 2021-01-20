@@ -120,10 +120,10 @@ class State extends CommonTreeDropdown {
             } else {
                $table = getTableForItemType($itemtype);
                $WHERE = [];
-               if ($DB->fieldExists($table, 'is_deleted')) {
+               if ($item->maybeDeleted()) {
                   $WHERE["$table.is_deleted"] = 0;
                }
-               if ($DB->fieldExists($table, 'is_template')) {
+               if ($item->maybeTemplate()) {
                    $WHERE["$table.is_template"] = 0;
                }
                $WHERE += getEntitiesRestrictCriteria($table);
