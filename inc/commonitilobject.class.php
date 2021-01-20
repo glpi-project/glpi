@@ -6711,7 +6711,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
          $criteria = [
             'SELECT'   => 'actiontime',
-            'DISTINCT' => true,
             'FROM'     => $task_table,
             'WHERE'    => [$foreignKey => $this->fields['id']]
          ];
