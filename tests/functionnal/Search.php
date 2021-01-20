@@ -32,8 +32,8 @@
 
 namespace tests\units;
 
-use DBConnection;
 use CommonDBTM;
+use DBConnection;
 use DbTestCase;
 
 /* Test for inc/search.class.php */
