@@ -452,7 +452,7 @@ class Toolbox {
    public static function getHtmLawedSafeConfig(): array {
       $config = [
          'elements'         => '* -applet -canvas -embed -object -script',
-         'deny_attribute'   => 'on*',
+         'deny_attribute'   => 'on*, srcdoc',
          'comment'          => 1, // 1: remove HTML comments (and do not display their contents)
          'cdata'            => 1, // 1: remove CDATA sections (and do not display their contents)
          'direct_list_nest' => 1, // 1: Allow usage of ul/ol tags nested in other ul/ol tags
