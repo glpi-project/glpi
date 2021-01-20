@@ -145,6 +145,13 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          InputOption::VALUE_NONE,
          __('Reconfigure database, override configuration file if it already exists')
       );
+
+      $this->addOption(
+         'log-deprecation-warnings',
+         null,
+         InputOption::VALUE_NONE,
+         __('Indicated if deprecation warnings sent by database server should be logged')
+      );
    }
 
    protected function interact(InputInterface $input, OutputInterface $output) {
@@ -192,6 +199,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
       $db_hostport = $db_host . (!empty($db_port) ? ':' . $db_port : '');
 
       $reconfigure    = $input->getOption('reconfigure');
+      $log_deprecation_warnings = $input->getOption('log-deprecation-warnings');
 
       if (file_exists(GLPI_CONFIG_DIR . '/config_db.php') && !$reconfigure) {
          // Prevent overriding of existing DB
@@ -254,7 +262,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          '<comment>' . __('Saving configuration file...') . '</comment>',
          OutputInterface::VERBOSITY_VERBOSE
       );
-      if (!DBConnection::createMainConfig($db_hostport, $db_user, $db_pass, $db_name, $use_utf8mb4)) {
+      if (!DBConnection::createMainConfig($db_hostport, $db_user, $db_pass, $db_name, $use_utf8mb4, $log_deprecation_warnings)) {
          $message = sprintf(
             __('Cannot write configuration file "%s".'),
             GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'config_db.php'

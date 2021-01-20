@@ -54,7 +54,7 @@ class ConfigureCommand extends AbstractConfigureCommand {
          'use-utf8mb4',
          null,
          InputOption::VALUE_NONE,
-         __('Use utf8mb4 character set.')
+         __('Use utf8mb4 character set')
       );
    }
 

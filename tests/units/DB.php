@@ -407,6 +407,7 @@ SQL;
             ->exists();
 
       $db->use_utf8mb4 = true;
+      $db->log_deprecation_warnings = false;
 
       $this->when(
          function () use ($db, $create_query_template, $drop_query_template) {

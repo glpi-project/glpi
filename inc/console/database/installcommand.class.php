@@ -297,6 +297,7 @@ class InstallCommand extends AbstractConfigureCommand {
          $DB->dbpassword  = rawurlencode($db_pass);
          $DB->dbdefault   = $db_name;
          $DB->use_utf8mb4 = true;
+         $DB->log_deprecation_warnings = $input->getOption('log-deprecation-warnings');
          $DB->clearSchemaCache();
          $DB->connect();
 

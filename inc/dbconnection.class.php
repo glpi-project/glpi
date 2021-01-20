@@ -53,15 +53,16 @@ class DBConnection extends CommonDBTM {
     *
     * @since 9.1
     *
-    * @param string $host      The DB host
-    * @param string $user      The DB user
-    * @param string $password  The DB password
-    * @param string $DBname    The name of the DB
+    * @param string  $host                      The DB host
+    * @param string  $user                      The DB user
+    * @param string  $password                  The DB password
+    * @param string  $DBname                    The name of the DB
+    * @param boolean $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
+    * @param boolean $log_deprecation_warnings  Flag that indicates if DB deprecation warnings should be logged
     *
     * @return boolean
-    *
-   **/
-   static function createMainConfig($host, $user, $password, $DBname, $use_utf8mb4 = false) {
+    */
+   static function createMainConfig($host, $user, $password, $DBname, $use_utf8mb4 = false, $log_deprecation_warnings = false) {
 
       $DB_str = "<?php\nclass DB extends DBmysql {\n" .
                 "   public \$dbhost      = '$host';\n" .
@@ -69,6 +70,7 @@ class DBConnection extends CommonDBTM {
                 "   public \$dbpassword  = '". rawurlencode($password) . "';\n" .
                 "   public \$dbdefault   = '$DBname';\n" .
                 "   public \$use_utf8mb4 = " . ($use_utf8mb4 ? 'true' : 'false') . ";\n" .
+                "   public \$log_deprecation_warnings = " . ($log_deprecation_warnings ? 'true' : 'false') . ";\n" .
                 "}\n";
 
       return Toolbox::writeConfig('config_db.php', $DB_str);
@@ -152,6 +154,7 @@ class DBConnection extends CommonDBTM {
          }
       };
       $use_utf8mb4 = $master->use_utf8mb4;
+      $log_deprecation_warnings = $master->log_deprecation_warnings;
 
       $DB_str = "<?php \n class DBSlave extends DBmysql { \n public \$slave = true; \n public \$dbhost = ";
       $host   = trim($host);
@@ -177,6 +180,7 @@ class DBConnection extends CommonDBTM {
          . " public \$dbpassword = '" . rawurlencode($password) . "'; \n"
          . " public \$dbdefault = '" . $DBname . "'; \n"
          . " public \$use_utf8mb4 = " . ($use_utf8mb4 ? 'true' : 'false') . "; \n"
+         . " public \$log_deprecation_warnings = " . ($log_deprecation_warnings ? 'true' : 'false') . "; \n"
          . "}\n";
 
       return Toolbox::writeConfig('config_db_slave.php', $DB_str);
