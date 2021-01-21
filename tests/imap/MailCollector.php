@@ -535,6 +535,7 @@ class MailCollector extends DbTestCase {
                'Mono-part HTML message',
                'Test attachment with multibyte filename',
                'Test attachment with invalid chars for OS',
+               'Test filename base64 multibyte'
             ]
          ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -603,6 +604,7 @@ class MailCollector extends DbTestCase {
          '20-specïal chars.gif',
          '22-办公用品预约Apply for office supplies online.xlsx',
          '23-New Text - Document.txt',
+         'DUC_SING WAH PAN (MA Chan Ho Ki).pdf'
       ];
 
       $iterator = $DB->request(

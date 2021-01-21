@@ -1,27 +1,27 @@
-Return-Path: skita@teclib.com
+Return-Path: normal@glpi-project.org
 Received: from vm000044.ad.teclib.infra (LHLO vm000044.prod.teclib.infra)
  (172.21.3.148) by vm000044.prod.teclib.infra with LMTP; Thu, 21 Jan 2021
  15:26:54 +0100 (CET)
 Received: from mail.teclib.com (localhost [127.0.0.1])
 	by vm000044.prod.teclib.infra (Postfix) with ESMTP id B1EA87E80858
-	for <skita@teclib.com>; Thu, 21 Jan 2021 15:26:54 +0100 (CET)
+	for <normal@glpi-project.org>; Thu, 21 Jan 2021 15:26:54 +0100 (CET)
 Received: from mail.teclib.com (localhost [127.0.0.1])
 	by vm000044.prod.teclib.infra (Postfix) with ESMTP id A5AE17E80842
-	for <skita@teclib.com>; Thu, 21 Jan 2021 15:26:54 +0100 (CET)
+	for <normal@glpi-project.org>; Thu, 21 Jan 2021 15:26:54 +0100 (CET)
 Received: from vm000044.prod.teclib.infra (localhost [127.0.0.1])
 	by vm000044.prod.teclib.infra (Postfix) with ESMTP id 94F5D7E80858
-	for <skita@teclib.com>; Thu, 21 Jan 2021 15:26:54 +0100 (CET)
+	for <normal@glpi-project.org>; Thu, 21 Jan 2021 15:26:54 +0100 (CET)
 Date: Thu, 21 Jan 2021 15:26:54 +0100 (CET)
-From: Stanislas Kita <skita@teclib.com>
-To: Stanislas Kita <skita@teclib.com>
+From: "Normal User" <normal@glpi-project.org>
+To: unittests@glpi-project.org
 Message-ID: <2122674625.1101804.1611239214539.JavaMail.zimbra@teclib.com>
 In-Reply-To: <401831029.1101790.1611239208899.JavaMail.zimbra@teclib.com>
-Subject: test filename base64 multibyte
+Subject: Test filename base64 multibyte
 MIME-Version: 1.0
 Content-Type: multipart/mixed; 
 	boundary="----=_Part_1101800_1137170823.1611239214535"
 X-Mailer: Zimbra 8.0.9_GA_6191 (ZimbraWebClient - FF84 (Linux)/8.0.9_GA_6191)
-Thread-Topic: test filename base64 multibyte
+Thread-Topic: Test filename base64 multibyte
 Thread-Index: 05AJorsW1pjSDmGFpPm4czpr3p4weA==
 
 ------=_Part_1101800_1137170823.1611239214535
