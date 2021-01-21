@@ -1764,7 +1764,7 @@ class Entity extends CommonTreeDropdown {
       if ($ID > 0) {
          echo "<tr><td colspan='4' class='warning'>".
             "<div>".__('All options below inherit from parent entities if not set (even if not explicitly indicated).')."</div>".
-            "<div>".__('The inherited values will be displayed in green')."</div>".
+            "<div>".__('The inherited values will be displayed below the corresponding empty field')."</div>".
          "</td></tr>";
       }
 
@@ -1773,14 +1773,14 @@ class Entity extends CommonTreeDropdown {
       echo "<td>";
       Html::autocompletionTextField($entity, "admin_email");
       if (strlen($entity->fields['admin_email']) == 0) {
-         echo "<div class='green'>".self::getUsedConfig('admin_email', $ID, '', '')."</div>";
+         self::getInheritedValue(self::getUsedConfig('admin_email', $ID, '', ''));
       }
       echo "</td>";
       echo "<td>" . __('Administrator name') . "</td><td>";
       // we inherit only if email inherit also
       Html::autocompletionTextField($entity, "admin_email");
       if (strlen($entity->fields['admin_email_name']) == 0) {
-         echo "<div class='green'>".self::getUsedConfig('admin_email_name', $ID, '', '')."</div>";
+         self::getInheritedValue(self::getUsedConfig('admin_email_name', $ID, '', ''));
       }
       echo "</td></tr>";
 
@@ -1789,13 +1789,13 @@ class Entity extends CommonTreeDropdown {
       echo "<td>";
       Html::autocompletionTextField($entity, "admin_reply");
       if (strlen($entity->fields['admin_reply']) == 0) {
-         echo "<div class='green'>".self::getUsedConfig('admin_reply', $ID, '', '')."</div>";
+         self::getInheritedValue(self::getUsedConfig('admin_reply', $ID, '', ''));
       }
       echo "</td>";
       echo "<td>" . __('Response address (if needed)') . "</td><td>";
       Html::autocompletionTextField($entity, "admin_reply_name");
       if (strlen($entity->fields['admin_reply']) == 0) {
-         echo "<div class='green'>".self::getUsedConfig('admin_reply_name', $ID, '', '')."</div>";
+         self::getInheritedValue(self::getUsedConfig('admin_reply_name', $ID, '', ''));
       }
       echo "</td></tr>";
 
@@ -1804,7 +1804,7 @@ class Entity extends CommonTreeDropdown {
       echo "<td>";
       Html::autocompletionTextField($entity, "notification_subject_tag");
       if (strlen($entity->fields['notification_subject_tag']) == 0) {
-         echo "<div class='green'>".self::getUsedConfig('notification_subject_tag', $ID, '', '')."</div>";
+         self::getInheritedValue(self::getUsedConfig('notification_subject_tag', $ID, '', ''));
       }
       echo "</td>";
       echo "<td>".__('Delay to send email notifications')."</td>";
@@ -1821,9 +1821,7 @@ class Entity extends CommonTreeDropdown {
 
       if ($entity->fields['delay_send_emails'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('delay_send_emails', $entity->getField('entities_id'));
-         echo "<div class='green'>";
-         echo $entity->getValueToDisplay('delay_send_emails', $tid, ['html' => true]);
-         echo "</div>";
+         self::getInheritedValue($entity->getValueToDisplay('delay_send_emails', $tid, ['html' => true]));
       }
       echo "</td></tr>";
 
@@ -1837,9 +1835,7 @@ class Entity extends CommonTreeDropdown {
 
       if ($entity->fields['is_notif_enable_default'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('is_notif_enable_default', $entity->getField('entities_id'));
-         echo "<div class='green'>";
-         echo self::getSpecificValueToDisplay('is_notif_enable_default', $tid);
-         echo "</div>";
+         self::getInheritedValue(self::getSpecificValueToDisplay('is_notif_enable_default', $tid));
       }
       echo "</td>";
       echo "<td colspan='2'>&nbsp;</td>";
@@ -1852,7 +1848,7 @@ class Entity extends CommonTreeDropdown {
       echo "<textarea cols='60' rows='5' name='mailing_signature'>".
              $entity->fields["mailing_signature"]."</textarea>";
       if (strlen($entity->fields['mailing_signature']) == 0) {
-         echo "<div class='green'>".self::getUsedConfig('mailing_signature', $ID, '', '')."</div>";
+         self::getInheritedValue(self::getUsedConfig('mailing_signature', $ID, '', ''));
       }
       echo "</td></tr>";
       echo "</table>";
@@ -1872,9 +1868,7 @@ class Entity extends CommonTreeDropdown {
 
       if ($entity->fields['cartridges_alert_repeat'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('cartridges_alert_repeat', $entity->getField('entities_id'));
-         echo "<div class='green'>";
-         echo self::getSpecificValueToDisplay('cartridges_alert_repeat', $tid);
-         echo "</div>";
+         self::getInheritedValue(self::getSpecificValueToDisplay('cartridges_alert_repeat', $tid));
       }
 
       echo "</td></tr>";
@@ -1894,9 +1888,7 @@ class Entity extends CommonTreeDropdown {
       if ($entity->fields['default_cartridges_alarm_threshold'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('default_cartridges_alarm_threshold',
                                     $entity->getField('entities_id'));
-         echo "<div class='green'>";
-         echo self::getSpecificValueToDisplay('default_cartridges_alarm_threshold', $tid);
-         echo "</div>";
+         self::getInheritedValue(self::getSpecificValueToDisplay('default_cartridges_alarm_threshold', $tid));
       }
       echo "</td></tr>";
 
@@ -1912,9 +1904,7 @@ class Entity extends CommonTreeDropdown {
                             'inherit_parent' => (($ID > 0) ? 1 : 0)]);
       if ($entity->fields['consumables_alert_repeat'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('consumables_alert_repeat', $entity->getField('entities_id'));
-         echo "<div class='green'>";
-         echo self::getSpecificValueToDisplay('consumables_alert_repeat', $tid);
-         echo "</div>";
+         self::getInheritedValue(self::getSpecificValueToDisplay('consumables_alert_repeat', $tid));
       }
       echo "</td></tr>";
 
@@ -1934,9 +1924,7 @@ class Entity extends CommonTreeDropdown {
       if ($entity->fields['default_consumables_alarm_threshold'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('default_consumables_alarm_threshold',
                                     $entity->getField('entities_id'));
-         echo "<div class='green'>";
-         echo self::getSpecificValueToDisplay('default_consumables_alarm_threshold', $tid);
-         echo "</div>";
+         self::getInheritedValue(self::getSpecificValueToDisplay('default_consumables_alarm_threshold', $tid));
 
       }
       echo "</td></tr>";
@@ -1952,9 +1940,7 @@ class Entity extends CommonTreeDropdown {
                                  'inherit_parent' => (($ID > 0) ? 1 : 0)]);
       if ($entity->fields['use_contracts_alert'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('use_contracts_alert', $entity->getField('entities_id'));
-         echo "<div class='green'>";
-         echo self::getSpecificValueToDisplay('use_contracts_alert', $tid);
-         echo "</div>";
+         self::getInheritedValue(self::getSpecificValueToDisplay('use_contracts_alert', $tid));
       }
       echo "</td></tr>";
 
@@ -1964,9 +1950,7 @@ class Entity extends CommonTreeDropdown {
                                     'inherit_parent' => (($ID > 0) ? 1 : 0)]);
       if ($entity->fields['default_contract_alert'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('default_contract_alert', $entity->getField('entities_id'));
-         echo "<font class='green'><br>";
-         echo self::getSpecificValueToDisplay('default_contract_alert', $tid);
-         echo "</font>";
+         self::getInheritedValue(self::getSpecificValueToDisplay('default_contract_alert', $tid));
       }
 
       echo "</td></tr>";
@@ -1980,9 +1964,7 @@ class Entity extends CommonTreeDropdown {
       if ($entity->fields['send_contracts_alert_before_delay'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('send_contracts_alert_before_delay',
                                     $entity->getField('entities_id'));
-         echo "<div class='green'>";
-         echo self::getSpecificValueToDisplay('send_contracts_alert_before_delay', $tid);
-         echo "</div>";
+         self::getInheritedValue(self::getSpecificValueToDisplay('send_contracts_alert_before_delay', $tid));
       }
       echo "</td></tr>";
 
@@ -1997,9 +1979,7 @@ class Entity extends CommonTreeDropdown {
                                  'inherit_parent' => (($ID > 0) ? 1 : 0)]);
       if ($entity->fields['use_infocoms_alert'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('use_infocoms_alert', $entity->getField('entities_id'));
-         echo "<div class='green'>";
-         echo self::getSpecificValueToDisplay('use_infocoms_alert', $tid);
-         echo "</div>";
+         self::getInheritedValue(self::getSpecificValueToDisplay('use_infocoms_alert', $tid));
       }
 
       echo "</td></tr>";
@@ -2009,9 +1989,7 @@ class Entity extends CommonTreeDropdown {
                                    'inherit_parent' => (($ID > 0) ? 1 : 0)]);
       if ($entity->fields['default_infocom_alert'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('default_infocom_alert', $entity->getField('entities_id'));
-         echo "<div class='green'>";
-         echo self::getSpecificValueToDisplay('default_infocom_alert', $tid);
-         echo "</div>";
+         self::getInheritedValue(self::getSpecificValueToDisplay('default_infocom_alert', $tid));
       }
 
       echo "</td></tr>";
@@ -2026,9 +2004,7 @@ class Entity extends CommonTreeDropdown {
       if ($entity->fields['send_infocoms_alert_before_delay'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('send_infocoms_alert_before_delay',
                                     $entity->getField('entities_id'));
-         echo "<div class='green'>";
-         echo self::getSpecificValueToDisplay('send_infocoms_alert_before_delay', $tid);
-         echo "</div>";
+         self::getInheritedValue(self::getSpecificValueToDisplay('send_infocoms_alert_before_delay', $tid));
       }
       echo "</td></tr>";
 
@@ -2043,9 +2019,7 @@ class Entity extends CommonTreeDropdown {
                                  'inherit_parent' => (($ID > 0) ? 1 : 0)]);
       if ($entity->fields['use_licenses_alert'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('use_licenses_alert', $entity->getField('entities_id'));
-         echo "<div class='green'>";
-         echo self::getSpecificValueToDisplay('use_licenses_alert', $tid);
-         echo "</div>";
+         self::getInheritedValue(self::getSpecificValueToDisplay('use_licenses_alert', $tid));
       }
       echo "</td></tr>";
       echo "<tr class='tab_bg_1'><td>" . __('Send license alarms before')."</td><td>";
@@ -2058,9 +2032,7 @@ class Entity extends CommonTreeDropdown {
       if ($entity->fields['send_licenses_alert_before_delay'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('send_licenses_alert_before_delay',
                                     $entity->getField('entities_id'));
-         echo "<div class='green'>";
-         echo self::getSpecificValueToDisplay('send_licenses_alert_before_delay', $tid);
-         echo "</div>";
+         self::getInheritedValue(self::getSpecificValueToDisplay('send_licenses_alert_before_delay', $tid));
       }
 
       echo "</td></tr>";
@@ -2076,9 +2048,7 @@ class Entity extends CommonTreeDropdown {
                             'inherit_parent' => (($ID > 0) ? 1 : 0)]);
       if ($entity->fields['use_certificates_alert'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('use_certificates_alert', $entity->getField('entities_id'));
-         echo "<div class='green'>";
-         echo self::getSpecificValueToDisplay('use_certificates_alert', $tid);
-         echo "</div>";
+         self::getInheritedValue(self::getSpecificValueToDisplay('use_certificates_alert', $tid));;
       }
       echo "</td></tr>";
       echo "<tr class='tab_bg_1'><td>" . __('Send certificates alarms before')."</td><td>";
@@ -2091,9 +2061,7 @@ class Entity extends CommonTreeDropdown {
       if ($entity->fields['send_certificates_alert_before_delay'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('send_certificates_alert_before_delay',
                                     $entity->getField('entities_id'));
-         echo "<div class='green'>";
-         echo self::getSpecificValueToDisplay('send_certificates_alert_before_delay', $tid);
-         echo "</div>";
+         self::getInheritedValue(self::getSpecificValueToDisplay('send_certificates_alert_before_delay', $tid));
       }
 
       echo "</td></tr>";
@@ -2110,9 +2078,7 @@ class Entity extends CommonTreeDropdown {
                                         'unit'           => 'hour']);
       if ($entity->fields['use_reservations_alert'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('use_reservations_alert', $entity->getField('entities_id'));
-         echo "<div class='green'>";
-         echo self::getSpecificValueToDisplay('use_reservations_alert', $tid);
-         echo "</div>";
+         self::getInheritedValue(self::getSpecificValueToDisplay('use_reservations_alert', $tid));
       }
       echo "</td></tr>";
 
@@ -2127,9 +2093,7 @@ class Entity extends CommonTreeDropdown {
                                         'unit'           => 'day']);
       if ($entity->fields['notclosed_delay'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('notclosed_delay', $entity->getField('entities_id'));
-         echo "<div class='green'>";
-         echo self::getSpecificValueToDisplay('notclosed_delay', $tid);
-         echo "</div>";
+         self::getInheritedValue(self::getSpecificValueToDisplay('notclosed_delay', $tid));
       }
       echo "</td></tr>";
 
@@ -2144,9 +2108,7 @@ class Entity extends CommonTreeDropdown {
                                  'inherit_parent' => (($ID > 0) ? 1 : 0)]);
       if ($entity->fields['use_domains_alert'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('use_domains_alert', $entity->getField('entities_id'));
-         echo "<div class='green'>";
-         echo self::getSpecificValueToDisplay('use_domains_alert', $tid);
-         echo "</div>";
+         self::getInheritedValue(self::getSpecificValueToDisplay('use_domains_alert', $tid));
       }
       echo "</td></tr>";
       echo "<tr class='tab_bg_1'>";
@@ -3383,6 +3345,20 @@ class Entity extends CommonTreeDropdown {
          default:
             throw new \RuntimeException("Unknown {$field['type']}");
       }
+   }
+
+   static function getInheritedValue($value = "", bool $display = true): string {
+      $out = "<div class='inherited' title='".__("Value inherited from a parent entity")."'>
+         <i class='fas fa-level-down-alt'></i>
+         $value
+      </div>";
+
+      if ($display) {
+         echo $out;
+         return "";
+      }
+
+      return $out;
    }
 
    static function getIcon() {
