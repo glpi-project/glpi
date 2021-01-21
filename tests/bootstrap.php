@@ -110,6 +110,9 @@ function loadDataset() {
          ], [
             'name'        => '_test_child_2',
             'entities_id' => '_test_root_entity',
+         ], [
+            'name'        => '_test_child_3',
+            'entities_id' => '_test_child_2',
          ]
       ], 'Computer' => [
          [
@@ -664,7 +667,7 @@ function loadDataset() {
  * @param string  $type
  * @param string  $name
  * @param boolean $onlyid
- * @return CommonGLPI|false the item, or its id
+ * @return CommonDBTM|false the item, or its id
  */
 function getItemByTypeName($type, $name, $onlyid = false) {
 

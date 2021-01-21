@@ -286,4 +286,61 @@ class Entity extends DbTestCase {
       // Profile_User has been deleted when entity has been deleted
       $this->boolean($profile_user->getFromDB($profile_user_id))->isFalse();
    }
+
+   protected function inheritanceProvider() {
+      return [
+         ['admin_email', "username+admin@domain.tld"],
+         ['admin_email_name', "Username admin replay"],
+         ['admin_reply', "username+admin+reply@domain.tld"],
+         ['admin_reply_name', "Username admin replay"],
+      ];
+   }
+
+   /**
+    * @dataProvider inheritanceProvider
+    */
+   public function testGetUsedConfig(string $field, $value) {
+      $this->login();
+
+      $root    = getItemByTypeName('Entity', 'Root entity', true);
+      $child_1 = getItemByTypeName('Entity', '_test_child_1', true);
+      $child_2 = getItemByTypeName('Entity', '_test_child_2', true);
+      $child_3 = getItemByTypeName('Entity', '_test_child_3', true);
+
+      $entity = new \Entity;
+      $this->boolean($entity->update([
+         'id'   => $root,
+         $field => $value."_root",
+      ]));
+
+      $this->string(\Entity::getUsedConfig($field, $child_1))->isEqualTo($value."_root");
+      $this->string(\Entity::getUsedConfig($field, $child_2))->isEqualTo($value."_root");
+      $this->string(\Entity::getUsedConfig($field, $child_3))->isEqualTo($value."_root");
+
+      $this->boolean($entity->update([
+         'id'   => $child_1,
+         $field => $value."_child_1",
+      ]));
+
+      $this->string(\Entity::getUsedConfig($field, $child_1))->isEqualTo($value."_child_1");
+      $this->string(\Entity::getUsedConfig($field, $child_2))->isEqualTo($value."_root");
+
+      $this->boolean($entity->update([
+         'id'   => $child_2,
+         $field => $value."_child_2",
+      ]));
+
+      $this->string(\Entity::getUsedConfig($field, $child_1))->isEqualTo($value."_child_1");
+      $this->string(\Entity::getUsedConfig($field, $child_2))->isEqualTo($value."_child_2");
+      $this->string(\Entity::getUsedConfig($field, $child_3))->isEqualTo($value."_child_2");
+
+      $this->boolean($entity->update([
+         'id'   => $child_3,
+         $field => $value."_child_3",
+      ]));
+
+      $this->string(\Entity::getUsedConfig($field, $child_1))->isEqualTo($value."_child_1");
+      $this->string(\Entity::getUsedConfig($field, $child_2))->isEqualTo($value."_child_2");
+      $this->string(\Entity::getUsedConfig($field, $child_3))->isEqualTo($value."_child_3");
+   }
 }
