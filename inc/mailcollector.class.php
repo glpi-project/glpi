@@ -1541,10 +1541,7 @@ class MailCollector  extends CommonDBTM {
             }
          }
 
-         // Try to get filename from Content-Type header
-         if (empty($filename)) {
-            $filename = $content_type_header->getParameter('name') ?? '';
-         }
+         var_dump($filename);
 
          $filename_matches = [];
          if (preg_match("/^(?<encoding>.*)''(?<value>.*)$/", $filename, $filename_matches)
@@ -1556,6 +1553,13 @@ class MailCollector  extends CommonDBTM {
             if ($encoding !== 'UTF-8') {
                $filename = mb_convert_encoding($filename, 'UTF-8', $encoding);
             }
+         }
+
+         var_dump($filename);
+         //die;
+         // Try to get filename from Content-Type header
+         if (empty($filename)) {
+            $filename = $content_type_header->getParameter('name') ?? '';
          }
 
          // part come without correct filename in headers - generate trivial one
