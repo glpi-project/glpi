@@ -5104,7 +5104,7 @@ class Ticket extends CommonITILObject {
             $WHERE = array_merge(
                $WHERE,
                $search_assign,
-               ['glpi_tickets.status' => [self::ASSIGNED, self::PLANNED, self::INCOMING]]
+               ['glpi_tickets.status' => array_merge(self::getProcessStatusArray(), [self::INCOMING])]
             );
 
             break;
@@ -5334,21 +5334,31 @@ class Ticket extends CommonITILObject {
 
                case "process" :
 
-                  $options['criteria'][2]['field']      = 8; // groups_id_assign
-                  $options['criteria'][2]['searchtype'] = 'equals';
-                  $options['criteria'][2]['value']      = 'mygroups';
-                  $options['criteria'][2]['link']       = 'AND';
-
-                  $options['criteria'][4]['link']                       = 'AND';
-                  $options['criteria'][4]['criteria'][0]['link']        = 'AND';
-                  $options['criteria'][4]['criteria'][0]['field']       = 12;
-                  $options['criteria'][4]['criteria'][0]['searchtype']  = 'equals';
-                  $options['criteria'][4]['criteria'][0]['value']       = 1;
-
-                  $options['criteria'][4]['criteria'][1]['link']        = 'OR';
-                  $options['criteria'][4]['criteria'][1]['field']       = 12;
-                  $options['criteria'][4]['criteria'][1]['searchtype']  = 'equals';
-                  $options['criteria'][4]['criteria'][1]['value']       = 'process';
+                  $options['criteria'] = [
+                     [
+                        'field'        => 8,
+                        'searchtype'   => 'equals',
+                        'value'        => 'mygroups',
+                        'link'         => 'AND',
+                     ],
+                     [
+                        'link' => 'AND',
+                        'criteria' => [
+                           [
+                              'link'        => 'AND',
+                              'field'       => 12,
+                              'searchtype'  => 'equals',
+                              'value'       => Ticket::INCOMING,
+                           ],
+                           [
+                              'link'        => 'OR',
+                              'field'       => 12,
+                              'searchtype'  => 'equals',
+                              'value'       => 'process',
+                           ]
+                        ]
+                     ]
+                  ];
 
                   echo "<a href=\"".Ticket::getSearchURL()."?".
                          Toolbox::append_params($options, '&amp;')."\">".
