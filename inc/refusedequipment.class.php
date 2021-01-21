@@ -234,4 +234,8 @@ class RefusedEquipment extends CommonDBTM {
    public function isDynamic() {
       return true;
    }
+
+   static function canPurge() {
+      return static::canUpdate();
+   }
 }
