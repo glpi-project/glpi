@@ -183,6 +183,10 @@ sup {
    font-style: italic;
    display: table;
 
+   &.inline {
+      display: inline-block;
+   }
+
    i.fas {
       margin-right: 2px;
       font-size: 0.7em;
