@@ -45,18 +45,18 @@ use Toolbox;
  */
 class Inventory
 {
-    const FULL_MODE = 0;
-    const INCR_MODE = 1;
+   const FULL_MODE = 0;
+   const INCR_MODE = 1;
 
-    /** @var integer */
+   /** @var integer */
    protected $mode;
-    /** @var \stdClass */
+   /** @var \stdClass */
    protected $raw_data = null;
    /** @var array */
    protected $data = [];
-    /** @var array */
+   /** @var array */
    private $metadata;
-    /** @var array */
+   /** @var array */
    private $errors = [];
    /** @var CommonDBTM */
    protected $item;
@@ -75,19 +75,19 @@ class Inventory
    /** @var InventoryAsset */
    private $mainasset;
 
-    /**
-     * @param mixed   $data   Inventory data, optionnal
-     * @param integer $mode   One of self::*_MODE
-     * @param integer $format One of Request::*_MODE
-     */
+   /**
+    * @param mixed   $data   Inventory data, optionnal
+    * @param integer $mode   One of self::*_MODE
+    * @param integer $format One of Request::*_MODE
+    */
    public function __construct($data = null, $mode = self::FULL_MODE, $format = Request::JSON_MODE) {
-       $this->mode = $mode;
-       $this->conf = new Conf();
-       $this->inventory_id = Toolbox::getRandomString(30);
+      $this->mode = $mode;
+      $this->conf = new Conf();
+      $this->inventory_id = Toolbox::getRandomString(30);
 
       if (null !== $data) {
-          $this->setData($data, $format);
-          $this->doInventory();
+         $this->setData($data, $format);
+         $this->doInventory();
       }
    }
 
@@ -96,14 +96,14 @@ class Inventory
       return $this;
    }
 
-    /**
-     * Set data, and convert them if we're using legacy format
-     *
-     * @param mixed   $data   Inventory data, optionnal
-     * @param integer $format One of self::*_FORMAT
-     *
-     * @return boolean
-     */
+   /**
+    * Set data, and convert them if we're using legacy format
+    *
+    * @param mixed   $data   Inventory data, optionnal
+    * @param integer $format One of self::*_FORMAT
+    *
+    * @return boolean
+    */
    public function setData($data, $format = Request::JSON_MODE) :bool {
 
       // Write inventory file
@@ -134,45 +134,45 @@ class Inventory
       return true;
    }
 
-    /**
-     * Prepare inventory data
-     *
-     * @return array
-     */
+   /**
+    * Prepare inventory data
+    *
+    * @return array
+    */
    public function extractMetadata() :array {
-       //check
+      //check
       if ($this->inError()) {
-          throw new \RuntimeException(print_r($this->getErrors(), true));
+         throw new \RuntimeException(print_r($this->getErrors(), true));
       }
 
-       $this->metadata = [
+      $this->metadata = [
            'deviceid'  => $this->raw_data->deviceid,
            'version'   => $this->raw_data->content->versionclient,
            'itemtype'   => $this->raw_data->itemtype ?? 'Computer'
        ];
 
-         // Get tag if defined
-       if (property_exists($this->raw_data->content, 'accountinfo')) {
-          $ainfos = $this->raw_data->content->accountinfo;
-          if (property_exists($ainfos, 'keyname')
-             && $ainfos->keyname == 'TAG'
-             && property_exists($ainfos, 'keyvalue')
-             && $ainfos->keyvalue != ''
-          ) {
-             $this->metadata['tag'] = $ainfos->keyvalue;
-          }
-       }
+      // Get tag if defined
+      if (property_exists($this->raw_data->content, 'accountinfo')) {
+         $ainfos = $this->raw_data->content->accountinfo;
+         if (property_exists($ainfos, 'keyname')
+            && $ainfos->keyname == 'TAG'
+            && property_exists($ainfos, 'keyvalue')
+            && $ainfos->keyvalue != ''
+         ) {
+            $this->metadata['tag'] = $ainfos->keyvalue;
+         }
+      }
 
-       return $this->metadata;
+      return $this->metadata;
    }
 
-    /**
-     * Do inventory
-     *
-     * @param boolean $test_rules Only to test rules, do not store anything
-     *
-     * @return array
-     */
+   /**
+    * Do inventory
+    *
+    * @param boolean $test_rules Only to test rules, do not store anything
+    *
+    * @return array
+    */
    public function doInventory($test_rules = false) {
       global $DB;
 
@@ -185,7 +185,7 @@ class Inventory
          //bench
          $main_start = microtime(true);
          if (!$DB->inTransaction()) {
-             $DB->beginTransaction();
+            $DB->beginTransaction();
          }
 
          $converter = new Converter;
@@ -285,8 +285,8 @@ class Inventory
 
          $this->mainasset = $main;
          if (isset($this->data['hardware'])) {
-             //hardware is handled in inventoried item, but may be used outside
-             $this->data['hardware'] = $main->getHardware();
+            //hardware is handled in inventoried item, but may be used outside
+            $this->data['hardware'] = $main->getHardware();
          }
 
          if ($test_rules === false) {
@@ -320,12 +320,19 @@ class Inventory
    private function handleInventoryFile() {
       $ext = (Request::XML_MODE === $this->inventory_format ? 'xml' : 'json');
       $tmpfile = sprintf('%s/%s.%s', GLPI_INVENTORY_DIR, $this->inventory_id, $ext);
-      $success = $this->item !== null && !$this->item->isNewItem();
 
-      if ($success) {
-          $item = $this->mainasset->getItem();
-          $itemtype = $item->getType();
-         if (!isset($item->fields['id'])) {
+      $items = [];
+      if ($this->item !== null && !$this->item->isNewItem()) {
+         $items[] = $this->item;
+      }
+
+      foreach ($this->mainasset->getRefused() as $refused) {
+         $items[] = $refused;
+      }
+
+      foreach ($items as $item) {
+         $itemtype = $item->getType();
+         if (!isset($item->fields['id']) || empty($item->fields['id'])) {
             throw new \RuntimeException('Item ID is missing :(');
          }
          $id = $item->fields['id'];
@@ -335,7 +342,7 @@ class Inventory
             mkdir($dir);
          }
          $filename = sprintf('%s/%s.%s', $dir, $id, $ext);
-         rename($tmpfile, $filename);
+         copy($tmpfile, $filename);
       }
 
       if (file_exists($tmpfile)) {
@@ -344,22 +351,22 @@ class Inventory
       }
    }
 
-    /**
-     * Get error
-     *
-     * @return array
-     */
+   /**
+    * Get error
+    *
+    * @return array
+    */
    public function getErrors() :array {
-       return $this->errors;
+      return $this->errors;
    }
 
-    /**
-     * Check if erorrs has been throwed
-     *
-     * @return boolean
-     */
+   /**
+    * Check if erorrs has been throwed
+    *
+    * @return boolean
+    */
    public function inError() :bool {
-       return (bool)count($this->errors);
+      return (bool)count($this->errors);
    }
 
    static function getMenuContent() {
@@ -371,7 +378,7 @@ class Inventory
       $links = [];
       foreach ($classes as $class) {
          $entry = "<i class=\"". $class::getIcon() . " pointer\" title=\"" . $class::getTypeName(Session::getPluralNumber()) .
-            "\"></i><span class=\"sr-only\">" . $class::getTypeName(Session::getPluralNumber()). "</span>";
+         "\"></i><span class=\"sr-only\">" . $class::getTypeName(Session::getPluralNumber()). "</span>";
          $links[$entry] = $class::getSearchURL(false);
       }
 

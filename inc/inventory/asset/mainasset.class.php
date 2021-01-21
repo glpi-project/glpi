@@ -66,6 +66,8 @@ abstract class MainAsset extends InventoryAsset
    protected $assets = [];
    /** @var Conf */
    protected $conf;
+   /** @var array */
+   protected $refused = [];
 
    public function __construct(CommonDBTM $item, $data) {
       $namespaced = explode('\\', static::class);
@@ -414,7 +416,9 @@ abstract class MainAsset extends InventoryAsset
          $this->current_key = $key;
          $input = $this->prepareAllRulesInput($data);
 
-         if (!property_exists($data, 'is_ap') || $data->is_ap != true) {
+         $is_ap = property_exists($data, 'is_ap') && $data->is_ap == true;
+
+         if (!$is_ap) {
             $entity_input = $this->prepareEntitiesRulesInput($data, $input);
 
             $ruleEntity = new RuleImportEntityCollection();
@@ -445,8 +449,13 @@ abstract class MainAsset extends InventoryAsset
             //no rule matched, this is a new one
             $this->rulepassed(0, $this->item->getType(), null);
          } else if (!isset($datarules['found_inventories'])) {
-             $input['rules_id'] = $datarules['rules_id'];
-             $this->addRefused($input);
+            if ($is_ap) {
+               //Only main item is stored as refused, not all APs
+               unset($this->data[$key]);
+            } else {
+               $input['rules_id'] = $datarules['rules_id'];
+               $this->addRefused($input);
+            }
          }
       }
    }
@@ -471,7 +480,7 @@ abstract class MainAsset extends InventoryAsset
 
       $refused = new \RefusedEquipment();
       $refused->add($refused_input);
-      $this->setItem($refused);
+      $this->refused[] = $refused;
    }
 
    public function checkConf(Conf $conf): bool {
@@ -669,5 +678,14 @@ abstract class MainAsset extends InventoryAsset
     */
    public function getItem(): CommonDBTM {
       return $this->item;
+   }
+
+   /**
+    * Get refused entries
+    *
+    * @return RefusedEquipment[]
+    */
+   public function getRefused(): array {
+      return $this->refused;
    }
 }
