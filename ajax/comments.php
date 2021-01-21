@@ -93,7 +93,12 @@ if (isset($_POST["itemtype"])
                exit();
             }
 
-            $table = getTableForItemType($_POST['itemtype']);
+            $itemtype = $_POST['itemtype'];
+            if (is_subclass_of($itemtype, 'Rule')) {
+               $table = Rule::getTable();
+            } else {
+               $table = getTableForItemType($_POST['itemtype']);
+            }
             $tmpname = Dropdown::getDropdownName($table, $_POST["value"], 1);
             if (is_array($tmpname) && isset($tmpname["comment"])) {
                 echo $tmpname["comment"];
