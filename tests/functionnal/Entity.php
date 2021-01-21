@@ -303,9 +303,9 @@ class Entity extends DbTestCase {
       $this->login();
 
       $root    = getItemByTypeName('Entity', 'Root entity', true);
+      $parent  = getItemByTypeName('Entity', '_test_root_entity', true);
       $child_1 = getItemByTypeName('Entity', '_test_child_1', true);
       $child_2 = getItemByTypeName('Entity', '_test_child_2', true);
-      $child_3 = getItemByTypeName('Entity', '_test_child_3', true);
 
       $entity = new \Entity;
       $this->boolean($entity->update([
@@ -313,34 +313,36 @@ class Entity extends DbTestCase {
          $field => $value."_root",
       ]));
 
+      $this->string(\Entity::getUsedConfig($field, $parent))->isEqualTo($value."_root");
       $this->string(\Entity::getUsedConfig($field, $child_1))->isEqualTo($value."_root");
       $this->string(\Entity::getUsedConfig($field, $child_2))->isEqualTo($value."_root");
-      $this->string(\Entity::getUsedConfig($field, $child_3))->isEqualTo($value."_root");
+
+      $this->boolean($entity->update([
+         'id'   => $parent,
+         $field => $value."_parent",
+      ]));
+
+      $this->string(\Entity::getUsedConfig($field, $parent))->isEqualTo($value."_parent");
+      $this->string(\Entity::getUsedConfig($field, $child_1))->isEqualTo($value."_parent");
+      $this->string(\Entity::getUsedConfig($field, $child_2))->isEqualTo($value."_parent");
 
       $this->boolean($entity->update([
          'id'   => $child_1,
          $field => $value."_child_1",
       ]));
 
+      $this->string(\Entity::getUsedConfig($field, $parent))->isEqualTo($value."_parent");
       $this->string(\Entity::getUsedConfig($field, $child_1))->isEqualTo($value."_child_1");
-      $this->string(\Entity::getUsedConfig($field, $child_2))->isEqualTo($value."_root");
+      $this->string(\Entity::getUsedConfig($field, $child_2))->isEqualTo($value."_parent");
 
       $this->boolean($entity->update([
          'id'   => $child_2,
          $field => $value."_child_2",
       ]));
 
+      $this->string(\Entity::getUsedConfig($field, $parent))->isEqualTo($value."_parent");
       $this->string(\Entity::getUsedConfig($field, $child_1))->isEqualTo($value."_child_1");
       $this->string(\Entity::getUsedConfig($field, $child_2))->isEqualTo($value."_child_2");
-      $this->string(\Entity::getUsedConfig($field, $child_3))->isEqualTo($value."_child_2");
 
-      $this->boolean($entity->update([
-         'id'   => $child_3,
-         $field => $value."_child_3",
-      ]));
-
-      $this->string(\Entity::getUsedConfig($field, $child_1))->isEqualTo($value."_child_1");
-      $this->string(\Entity::getUsedConfig($field, $child_2))->isEqualTo($value."_child_2");
-      $this->string(\Entity::getUsedConfig($field, $child_3))->isEqualTo($value."_child_3");
    }
 }

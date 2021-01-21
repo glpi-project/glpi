@@ -42,17 +42,17 @@ class NotificationTarget extends DbTestCase {
       $this->login();
 
       $root    = getItemByTypeName('Entity', 'Root entity', true);
+      $parent  = getItemByTypeName('Entity', '_test_root_entity', true);
       $child_1 = getItemByTypeName('Entity', '_test_child_1', true);
       $child_2 = getItemByTypeName('Entity', '_test_child_2', true);
-      $child_3 = getItemByTypeName('Entity', '_test_child_3', true);
 
+      $ntarget_parent  = new \NotificationTarget($parent);
       $ntarget_child_1 = new \NotificationTarget($child_1);
       $ntarget_child_2 = new \NotificationTarget($child_2);
-      $ntarget_child_3 = new \NotificationTarget($child_3);
 
+      $this->string($ntarget_parent->getSubjectPrefix())->isEqualTo("[GLPI] ");
       $this->string($ntarget_child_1->getSubjectPrefix())->isEqualTo("[GLPI] ");
       $this->string($ntarget_child_2->getSubjectPrefix())->isEqualTo("[GLPI] ");
-      $this->string($ntarget_child_3->getSubjectPrefix())->isEqualTo("[GLPI] ");
 
       $entity  = new \Entity;
       $this->boolean($entity->update([
@@ -60,35 +60,35 @@ class NotificationTarget extends DbTestCase {
          'notification_subject_tag' => "prefix_root",
       ]))->isTrue();
 
+      $this->string($ntarget_parent->getSubjectPrefix())->isEqualTo("[prefix_root] ");
       $this->string($ntarget_child_1->getSubjectPrefix())->isEqualTo("[prefix_root] ");
       $this->string($ntarget_child_2->getSubjectPrefix())->isEqualTo("[prefix_root] ");
-      $this->string($ntarget_child_3->getSubjectPrefix())->isEqualTo("[prefix_root] ");
+
+      $this->boolean($entity->update([
+         'id'                       => $parent,
+         'notification_subject_tag' => "prefix_parent",
+      ]))->isTrue();
+
+      $this->string($ntarget_parent->getSubjectPrefix())->isEqualTo("[prefix_parent] ");
+      $this->string($ntarget_child_1->getSubjectPrefix())->isEqualTo("[prefix_parent] ");
+      $this->string($ntarget_child_2->getSubjectPrefix())->isEqualTo("[prefix_parent] ");
 
       $this->boolean($entity->update([
          'id'                       => $child_1,
          'notification_subject_tag' => "prefix_child_1",
       ]))->isTrue();
 
+      $this->string($ntarget_parent->getSubjectPrefix())->isEqualTo("[prefix_parent] ");
       $this->string($ntarget_child_1->getSubjectPrefix())->isEqualTo("[prefix_child_1] ");
-      $this->string($ntarget_child_2->getSubjectPrefix())->isEqualTo("[prefix_root] ");
-      $this->string($ntarget_child_3->getSubjectPrefix())->isEqualTo("[prefix_root] ");
+      $this->string($ntarget_child_2->getSubjectPrefix())->isEqualTo("[prefix_parent] ");
 
       $this->boolean($entity->update([
          'id'                       => $child_2,
          'notification_subject_tag' => "prefix_child_2",
       ]))->isTrue();
 
+      $this->string($ntarget_parent->getSubjectPrefix())->isEqualTo("[prefix_parent] ");
       $this->string($ntarget_child_1->getSubjectPrefix())->isEqualTo("[prefix_child_1] ");
       $this->string($ntarget_child_2->getSubjectPrefix())->isEqualTo("[prefix_child_2] ");
-      $this->string($ntarget_child_3->getSubjectPrefix())->isEqualTo("[prefix_child_2] ");
-
-      $this->boolean($entity->update([
-         'id'                       => $child_3,
-         'notification_subject_tag' => "prefix_child_3",
-      ]))->isTrue();
-
-      $this->string($ntarget_child_1->getSubjectPrefix())->isEqualTo("[prefix_child_1] ");
-      $this->string($ntarget_child_2->getSubjectPrefix())->isEqualTo("[prefix_child_2] ");
-      $this->string($ntarget_child_3->getSubjectPrefix())->isEqualTo("[prefix_child_3] ");
    }
 }
