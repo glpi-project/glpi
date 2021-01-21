@@ -827,7 +827,7 @@ class RuleCollection extends CommonDBTM {
             'FROM'   => 'glpi_rules',
             'WHERE'  => [
                'sub_type'  => $this->getRuleClassName(),
-               ['ranking'  => ['=>', $rank]],
+               ['ranking'  => ['>=', $rank]],
                ['ranking'  => ['<', $old_rank]]
             ]
          ]);
