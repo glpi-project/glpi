@@ -35,6 +35,7 @@ namespace Glpi\Inventory\Asset;
 use Auth;
 use CommonDBTM;
 use Glpi\Inventory\Conf;
+use RefusedEquipment;
 use RuleImportAssetCollection;
 use RuleImportEntityCollection;
 use RuleMatchedLog;
@@ -570,11 +571,12 @@ abstract class MainAsset extends InventoryAsset
          }
       }
 
-      $this->handleAssets();
-
       $input = (array)$val;
-
       $this->item->update(Toolbox::addslashes_deep($input), $this->withHistory());
+
+      if (!($this->item instanceof RefusedEquipment)) {
+         $this->handleAssets();
+      }
 
       $rulesmatched = new RuleMatchedLog();
       $inputrulelog = [
