@@ -68,6 +68,8 @@ abstract class MainAsset extends InventoryAsset
    protected $conf;
    /** @var array */
    protected $refused = [];
+   /** @var array */
+   protected $inventoried = [];
 
    public function __construct(CommonDBTM $item, $data) {
       $namespaced = explode('\\', static::class);
@@ -598,6 +600,8 @@ abstract class MainAsset extends InventoryAsset
       ];
       $rulesmatched->add($inputrulelog, [], false);
       $rulesmatched->cleanOlddata($items_id, $itemtype);
+
+      $this->inventoried[] = clone $this->item;
    }
 
    /**
@@ -678,6 +682,15 @@ abstract class MainAsset extends InventoryAsset
     */
    public function getItem(): CommonDBTM {
       return $this->item;
+   }
+
+   /**
+    * Get inventoried assets
+    *
+    * @return CommonDBTM[]
+    */
+   public function getInventoried(): array {
+       return $this->inventoried;
    }
 
    /**
