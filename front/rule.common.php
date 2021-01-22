@@ -52,7 +52,15 @@ if (isset($_POST["action"])) {
 } else if (isset($_POST["reinit"]) || isset($_GET['reinit'])) {
    //reinitialize current rules
    $ruleclass = $rulecollection->getRuleClass();
-   $ruleclass::initRules($reset = true, $with_plugins = true);
+   if ($ruleclass::initRules($reset = true, $with_plugins = true)) {
+      Session::addMessageAfterRedirect(
+         sprintf(
+            //TRANS: first parameter is the rule type name
+            __('%1$s has been reset.'),
+            $rulecollection->getTitle()
+         )
+      );
+   }
    Html::back();
 } else if (isset($_POST["replay_rule"]) || isset($_GET["replay_rule"])) {
    // POST and GET needed to manage reload
