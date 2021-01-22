@@ -172,6 +172,28 @@ sup {
    background-color: #cf9b9b;
 }
 
+.inherited {
+   color: rgb(34, 77, 194);
+   padding: 5px;
+   margin: 3px 0;
+   border: 1px solid transparent;
+   border-radius: 2px;
+   background-color: rgba(34, 77, 194, .1);
+   white-space: nowrap;
+   font-style: italic;
+   display: table;
+
+   &.inline {
+      display: inline-block;
+   }
+
+   i.fas {
+      margin-right: 2px;
+      font-size: 0.7em;
+   }
+}
+
+
 .separ {
    clear: both;
    visibility: hidden;
