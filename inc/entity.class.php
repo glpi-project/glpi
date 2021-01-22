@@ -1793,7 +1793,7 @@ class Entity extends CommonTreeDropdown {
       echo "</td>";
       echo "<td>" . __('Administrator name') . "</td><td>";
       // we inherit only if email inherit also
-      Html::autocompletionTextField($entity, "admin_email");
+      Html::autocompletionTextField($entity, "admin_email_name");
       if (strlen($entity->fields['admin_email']) == 0) {
          self::inheritedValue(self::getUsedConfig('admin_email_name', $ID, '', ''));
       }
