@@ -326,10 +326,7 @@ class Inventory
       $ext = (Request::XML_MODE === $this->inventory_format ? 'xml' : 'json');
       $tmpfile = sprintf('%s/%s.%s', GLPI_INVENTORY_DIR, $this->inventory_id, $ext);
 
-      $items = [];
-      if ($this->item !== null && !$this->item->isNewItem()) {
-         $items[] = $this->item;
-      }
+      $items = $this->mainasset->getInventoried();
 
       foreach ($this->mainasset->getRefused() as $refused) {
          $items[] = $refused;
