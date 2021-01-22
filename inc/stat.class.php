@@ -762,9 +762,11 @@ class Stat extends CommonGLPI {
       $solved_status  = array_merge($closed_status, $item->getSolvedStatusArray());
 
       $criteria = [];
-      $WHERE           = [
-         "$table.is_deleted" => 0
-      ] + getEntitiesRestrictCriteria($table);
+      $WHERE = [];
+      if ($item->maybeDeleted()) {
+         $WHERE["$table.is_deleted"] = 0;
+      }
+      $WHERE += getEntitiesRestrictCriteria($table);
       $LEFTJOIN          = [];
       $INNERJOIN         = [];
       $LEFTJOINUSER      = [
@@ -1020,7 +1022,7 @@ class Stat extends CommonGLPI {
             $criteria = [
                'SELECT'    => [
                   $date_unix,
-                  'COUNT'  => "$table.id AS total_visites"
+                  'COUNT DISTINCT' => "$table.id AS total_visites"
                ],
                'FROM'      => $table,
                'WHERE'     => $WHERE,
@@ -1041,7 +1043,7 @@ class Stat extends CommonGLPI {
             $criteria = [
                'SELECT'    => [
                   $date_unix,
-                  'COUNT'  => "$table.id AS total_visites"
+                  'COUNT DISTINCT'  => "$table.id AS total_visites"
                ],
                'FROM'      => $table,
                'WHERE'     => $WHERE,
@@ -1068,7 +1070,7 @@ class Stat extends CommonGLPI {
             $criteria = [
                'SELECT'    => [
                   $date_unix,
-                  'COUNT'  => "$table.id AS total_visites"
+                  'COUNT DISTINCT'  => "$table.id AS total_visites"
                ],
                'FROM'      => $table,
                'WHERE'     => $WHERE,
@@ -1089,7 +1091,7 @@ class Stat extends CommonGLPI {
             $criteria = [
                'SELECT'    => [
                   $date_unix,
-                  'COUNT'  => "$table.id AS total_visites"
+                  'COUNT DISTINCT'  => "$table.id AS total_visites"
                ],
                'FROM'      => $table,
                'WHERE'     => $WHERE,
@@ -1111,7 +1113,7 @@ class Stat extends CommonGLPI {
             $criteria = [
                'SELECT'    => [
                   $date_unix,
-                  'COUNT'  => "$table.id AS total_visites"
+                  'COUNT DISTINCT'  => "$table.id AS total_visites"
                ],
                'FROM'      => $table,
                'WHERE'     => $WHERE,
@@ -1227,7 +1229,7 @@ class Stat extends CommonGLPI {
             $criteria = [
                'SELECT'    => [
                   $date_unix,
-                  'COUNT'  => "$table.id AS total_visites"
+                  'COUNT DISTINCT'  => "$table.id AS total_visites"
                ],
                'FROM'      => $table,
                'WHERE'     => $WHERE,
@@ -1259,7 +1261,7 @@ class Stat extends CommonGLPI {
             $criteria = [
                'SELECT'    => [
                   $date_unix,
-                  'COUNT'  => "$table.id AS total_visites"
+                  'COUNT DISTINCT'  => "$table.id AS total_visites"
                ],
                'FROM'      => $table,
                'WHERE'     => $WHERE,
@@ -1928,4 +1930,3 @@ class Stat extends CommonGLPI {
       return "fas fa-chart-bar";
    }
 }
-

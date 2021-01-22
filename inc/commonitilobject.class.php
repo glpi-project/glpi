@@ -6696,15 +6696,14 @@ abstract class CommonITILObject extends CommonDBTM {
          $total_actiontime = 0;
 
          $criteria = [
-            'SELECT'   => 'actiontime',
-            'DISTINCT' => true,
+            'SELECT'   => ['SUM' => 'actiontime AS actiontime'],
             'FROM'     => $task_table,
             'WHERE'    => [$foreignKey => $this->fields['id']]
          ];
 
-         $iterator = $DB->request($criteria);
-         foreach ($iterator as $req) {
-            $total_actiontime += $req['actiontime'];
+         $req = $DB->request($criteria);
+         if ($row = $req->next()) {
+            $total_actiontime = $row['actiontime'];
          }
          if ($total_actiontime > 0) {
             echo "<h3>";

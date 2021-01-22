@@ -275,7 +275,7 @@ class InstallCommand extends AbstractConfigureCommand {
           FROM information_schema.tables
           WHERE table_schema = '{$db_name}'
              AND table_type = 'BASE TABLE'
-             AND table_name LIKE 'glpi_%'"
+             AND table_name LIKE 'glpi\_%'"
       );
       if (!$tables_result) {
          throw new \Symfony\Component\Console\Exception\RuntimeException('Unable to check GLPI tables existence.');

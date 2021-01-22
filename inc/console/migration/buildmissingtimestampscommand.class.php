@@ -63,7 +63,7 @@ class BuildMissingTimestampsCommand extends AbstractCommand {
             'FROM'   => 'information_schema.columns',
             'WHERE'  => [
                'table_schema' => $this->db->dbdefault,
-               'table_name'   => ['LIKE', 'glpi_%'],
+               'table_name'   => ['LIKE', 'glpi\_%'],
                'column_name'  => ['date_creation', 'date_mod'],
             ],
             'ORDER'  => ['table_name', 'column_name'],
