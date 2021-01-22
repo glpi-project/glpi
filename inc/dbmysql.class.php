@@ -595,7 +595,7 @@ class DBmysql {
          'FROM'       => 'information_schema.tables',
          'WHERE'     => [
             'information_schema.tables.table_schema' => $this->dbdefault,
-            'information_schema.tables.table_name'   => ['LIKE', 'glpi_%'],
+            'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
             'information_schema.tables.table_type'    => 'BASE TABLE',
             ['NOT' => ['information_schema.tables.table_collation' => 'utf8mb4_unicode_ci']],
          ],
@@ -623,7 +623,7 @@ class DBmysql {
          ],
          'WHERE'     => [
             'information_schema.tables.table_schema' => $this->dbdefault,
-            'information_schema.tables.table_name'   => ['LIKE', 'glpi_%'],
+            'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
             'information_schema.tables.table_type'    => 'BASE TABLE',
             ['NOT' => ['information_schema.columns.collation_name' => null]],
             ['NOT' => ['information_schema.columns.collation_name' => 'utf8mb4_unicode_ci']]

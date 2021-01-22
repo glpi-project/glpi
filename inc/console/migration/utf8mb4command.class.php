@@ -123,7 +123,7 @@ class Utf8mb4Command extends AbstractCommand {
    private function upgradeRowFormat(): void {
 
       $table_iterator = $this->db->listTables(
-         'glpi_%',
+         'glpi\_%',
          [
             'row_format'   => ['Compact', 'Redundant'],
          ]
