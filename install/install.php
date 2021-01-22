@@ -579,7 +579,7 @@ function update1($DBname) {
       include_once (GLPI_CONFIG_DIR . "/config_db.php");
       global $DB;
       $DB = new DB();
-      if ($DB->listTables('glpi_%', ['table_collation' => 'utf8mb4_unicode_ci'])->count() > 0) {
+      if ($DB->listTables('glpi\_%', ['table_collation' => 'utf8mb4_unicode_ci'])->count() > 0) {
          // Use utf8mb4 charset for update process if at least one table already uses this charset.
          if ($success = DBConnection::updateConfigProperty('use_utf8mb4', true)) {
             $DB->use_utf8mb4 = true;
