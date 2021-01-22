@@ -310,7 +310,16 @@ class Inventory
          $this->handleInventoryFile();
          // * For benchs
          $id = $this->item->fields['id'] ?? 0;
-         $this->addBench($this->item->getType() . ' #' . $id, 'full', $main_start);
+         $items = $this->mainasset->getInventoried() + $this->mainasset->getRefused();
+         $extra = null;
+         if (count($items)) {
+            $extra = 'Inventoried assets: ';
+            foreach ($items as $item) {
+               $extra .= $item->getType() . ' #' . $item->getId() . ', ';
+            }
+            $extra = rtrim($extra, ', ') . "\n";
+         }
+         $this->addBench($this->item->getType(), 'full', $main_start, $extra);
          $this->printBenchResults();
       }
 
@@ -591,16 +600,18 @@ class Inventory
     * @param string  $asset Asset
     * @param string  $type Either prepare or handle
     * @param integer $start Start time
+    * @param string  $extra Extra value to be used as label
     *
     * @return void
     */
-   protected function addBench($asset, $type, $start) {
+   protected function addBench($asset, $type, $start, $extra = null) {
       $exec_time = round(microtime(true) - $start, 5);
       $this->benchs[$asset][$type] = [
          'exectime'  => $exec_time,
          'mem'       => memory_get_usage(),
          'mem_real'  => memory_get_usage(true),
-         'mem_peak'  => memory_get_peak_usage()
+         'mem_peak'  => memory_get_peak_usage(),
+         'extra'     => $extra
 
       ];
    }
@@ -638,10 +649,13 @@ class Inventory
                      _n('%s second', '%s seconds', $value),
                      $value
                   );
-               } else {
+               } else if ($key != 'extra') {
                   $output .= Toolbox::getSize($value);
                }
                $output .= "\n";
+            }
+            if (isset($data['extra'])) {
+               $output .= $data['extra'];
             }
          }
       }
