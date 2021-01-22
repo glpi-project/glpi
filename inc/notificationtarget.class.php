@@ -1078,7 +1078,7 @@ class NotificationTarget extends CommonDBChild {
     * @return the reply to address
    **/
    public function getReplyTo($options = []) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       //If the entity administrator's address is defined, return it
       $admin_reply      = trim(Entity::getUsedConfig('admin_reply', $this->getEntity(), '', ''));
