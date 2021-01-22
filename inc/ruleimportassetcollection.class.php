@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Inventory\Conf;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -122,7 +124,11 @@ class RuleImportAssetCollection extends RuleCollection {
          $refused->getFromDB($refused_id);
 
          $inventory_request = new \Glpi\Inventory\Request();
-         $contents = file_get_contents(GLPI_INVENTORY_DIR . '/' . $refused->getInventoryFileName());
+
+         $conf = new Conf();
+         $fs = $conf->getFs();
+         $contents = $refused->getInventoryFileContents();
+
          $inventory_request
            ->testRules()
            ->handleRequest($contents);

@@ -739,28 +739,40 @@ class Toolbox {
     *
     * @return void
    **/
-   static function sendFile($file, $filename, $mime = null, $expires_headers = false) {
+   static function sendFile($file, $filename, $mime = null, $expires_headers = false, $fs = null) {
 
-      // Test securite : document in DOC_DIR
-      $tmpfile = str_replace(GLPI_DOC_DIR, "", $file);
-
-      if (strstr($tmpfile, "../") || strstr($tmpfile, "..\\")) {
-         Event::log($file, "sendFile", 1, "security",
-                    $_SESSION["glpiname"]." try to get a non standard file.");
+      if (strstr($file, "../") || strstr($file, "..\\")) {
+         Event::log(
+            $file,
+            "sendFile",
+            1,
+            "security",
+            $_SESSION["glpiname"]." try to get a non standard file."
+         );
          echo "Security attack!!!";
          die(1);
       }
 
-      if (!file_exists($file)) {
+      if (($fs !== null && !$fs->fileExists($file)) || !file_exists($file)) {
          echo "Error file $file does not exist";
          die(1);
       }
 
       // if $mime is defined, ignore mime type by extension
       if ($mime === null && preg_match('/\.(...)$/', $file)) {
-         $finfo = finfo_open(FILEINFO_MIME_TYPE);
-         $mime = finfo_file($finfo, $file);
-         finfo_close($finfo);
+         if ($fs !== null) {
+            $mime = $fs->mimeType($file);
+         } else {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = finfo_file($finfo, $file);
+            finfo_close($finfo);
+         }
+      }
+
+      switch ($mime) {
+         case 'text/xml':
+            $mime = 'application/xml';
+            break;
       }
 
       // don't download picture files, see them inline
@@ -774,8 +786,7 @@ class Toolbox {
          $attachment = ' attachment;';
       }
 
-      $etag = md5_file($file);
-      $lastModified = filemtime($file);
+      $lastModified = $fs === null ? filemtime($file) : $fs->lastModified();
 
       // Make sure there is nothing in the output buffer (In case stuff was added by core or misbehaving plugin).
       // If there is any extra data, the sent file will be corrupted.
@@ -784,7 +795,10 @@ class Toolbox {
       }
       // Now send the file with header() magic
       header("Last-Modified: ".gmdate("D, d M Y H:i:s", $lastModified)." GMT");
-      header("Etag: $etag");
+      if ($fs === null) {
+         $etag = md5_file($file);
+         header("Etag: $etag");
+      }
       header_remove('Pragma');
       header('Cache-Control: private');
       if ($expires_headers) {
@@ -810,7 +824,11 @@ class Toolbox {
          exit;
       }
 
-      readfile($file) or die ("Error opening file $file");
+      if ($fs !== null) {
+         echo $fs->getFileContent($file);
+      } else {
+         readfile($file) or die ("Error opening file $file");
+      }
    }
 
 

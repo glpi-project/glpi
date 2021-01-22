@@ -34,6 +34,7 @@ namespace Glpi\Inventory;
 
 use CommonDevice;
 use CommonGLPI;
+use Config;
 use DeviceBattery;
 use DeviceControl;
 use DeviceDrive;
@@ -43,6 +44,7 @@ use DeviceMemory;
 use DeviceProcessor;
 use DeviceSoundCard;
 use Html;
+use League\Flysystem\Filesystem;
 use NetworkPortType;
 use Session;
 use Toolbox;
@@ -660,4 +662,28 @@ class Conf extends CommonGLPI
       return [ READ => __('Read')];
    }
 
+   public function getFs(): Filesystem {
+      return Config::getFs(GLPI_INVENTORY_DIR);
+   }
+
+   /**
+    * Build inventroy file name
+    *
+    * @param string $itemtype Item type
+    * @param int    $items_id Item ID
+    * @param string $ext      File extension
+    *
+    * @return string
+    */
+   public function buildInventoryFileName($itemtype, $items_id, $ext): string {
+      $files_per_dir = 1000;
+      $subdir = floor($items_id / $files_per_dir);
+      return sprintf(
+         '%s/%s/%s.%s',
+         Toolbox::slugify($itemtype),
+         $subdir,
+         $items_id,
+         $ext
+      );
+   }
 }

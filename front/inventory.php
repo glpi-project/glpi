@@ -43,7 +43,7 @@ $handle = true;
 if (isset($_GET['refused'])) {
    $refused = new RefusedEquipment();
    $refused->getFromDB($_GET['refused']);
-   $contents = file_get_contents(GLPI_INVENTORY_DIR . '/' . $refused->getInventoryFileName());
+   $contents = $refused->getInventoryFileContents();
 } else if ($_SERVER['REQUEST_METHOD'] != 'POST') {
    $inventory_request->addError('Method not allowed');
    $handle = false;

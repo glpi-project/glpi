@@ -418,9 +418,7 @@ abstract class MainAsset extends InventoryAsset
          $this->current_key = $key;
          $input = $this->prepareAllRulesInput($data);
 
-         $is_ap = property_exists($data, 'is_ap') && $data->is_ap == true;
-
-         if (!$is_ap) {
+         if (!$this->isAccessPoint($data)) {
             $entity_input = $this->prepareEntitiesRulesInput($data, $input);
 
             $ruleEntity = new RuleImportEntityCollection();
@@ -451,7 +449,7 @@ abstract class MainAsset extends InventoryAsset
             //no rule matched, this is a new one
             $this->rulepassed(0, $this->item->getType(), null);
          } else if (!isset($datarules['found_inventories'])) {
-            if ($is_ap) {
+            if ($this->isAccessPoint($data)) {
                //Only main item is stored as refused, not all APs
                unset($this->data[$key]);
             } else {
@@ -601,7 +599,10 @@ abstract class MainAsset extends InventoryAsset
       $rulesmatched->add($inputrulelog, [], false);
       $rulesmatched->cleanOlddata($items_id, $itemtype);
 
-      $this->inventoried[] = clone $this->item;
+      //keep trace of inventoried assets, but not APs.
+      if (!$this->isAccessPoint($val)) {
+         $this->inventoried[] = clone $this->item;
+      }
    }
 
    /**
@@ -700,5 +701,9 @@ abstract class MainAsset extends InventoryAsset
     */
    public function getRefused(): array {
       return $this->refused;
+   }
+
+   protected function isAccessPoint($object): bool {
+      return property_exists($object, 'is_ap') && $object->is_ap == true;
    }
 }

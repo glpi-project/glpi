@@ -74,6 +74,8 @@ class Inventory
    private $inventory_format;
    /** @var InventoryAsset */
    private $mainasset;
+   /** @var Filesystem */
+   private $fs;
 
    /**
     * @param mixed   $data   Inventory data, optionnal
@@ -84,6 +86,8 @@ class Inventory
       $this->mode = $mode;
       $this->conf = new Conf();
       $this->inventory_id = Toolbox::getRandomString(30);
+
+      $this->fs = $this->conf->getFs();
 
       if (null !== $data) {
          $this->setData($data, $format);
@@ -105,21 +109,14 @@ class Inventory
     * @return boolean
     */
    public function setData($data, $format = Request::JSON_MODE) :bool {
-
-      // Write inventory file
-      $dir = GLPI_INVENTORY_DIR . '/';
-      if (!is_dir($dir)) {
-         mkdir($dir);
-      }
-
       $converter = new Converter;
       if (Request::XML_MODE === $format) {
          $this->inventory_format = Request::XML_MODE;
-         file_put_contents($dir . '/'. $this->inventory_id . '.xml', $data->asXML());
+         $this->fs->write($this->inventory_id . '.xml', $data->asXML());
          //convert legacy format
          $data = $converter->convert($data->asXML());
       } else {
-         file_put_contents($dir . '/'. $this->inventory_id . '.json', json_encode(json_decode($data), JSON_PRETTY_PRINT));
+         $this->fs->write($this->inventory_id . '.json', json_encode(json_decode($data), JSON_PRETTY_PRINT));
       }
 
       try {
@@ -333,7 +330,7 @@ class Inventory
     */
    private function handleInventoryFile() {
       $ext = (Request::XML_MODE === $this->inventory_format ? 'xml' : 'json');
-      $tmpfile = sprintf('%s/%s.%s', GLPI_INVENTORY_DIR, $this->inventory_id, $ext);
+      $tmpfile = sprintf('%s.%s', $this->inventory_id, $ext);
 
       $items = $this->mainasset->getInventoried();
 
@@ -347,19 +344,11 @@ class Inventory
             throw new \RuntimeException('Item ID is missing :(');
          }
          $id = $item->fields['id'];
-
-         $dir = GLPI_INVENTORY_DIR . '/' . Toolbox::slugify($itemtype);
-         if (!is_dir($dir)) {
-            mkdir($dir);
-         }
-         $filename = sprintf('%s/%s.%s', $dir, $id, $ext);
-         copy($tmpfile, $filename);
+         $filename = $this->conf->buildInventoryFileName($itemtype, $id, $ext);
+         $this->fs->copy($tmpfile, $filename);
       }
 
-      if (file_exists($tmpfile)) {
-         //Toolbox::logWarning('Nothing to do, inventory temp file will be removed');
-         unlink($tmpfile);
-      }
+      $this->fs->delete($tmpfile);
    }
 
    /**
