@@ -1081,7 +1081,7 @@ class NotificationTarget extends CommonDBChild {
       global $DB, $CFG_GLPI;
 
       //If the entity administrator's address is defined, return it
-      $admin_reply      = trim(Entity::getUsedConfig('admin_replyl', $this->getEntity(), '', ''));
+      $admin_reply      = trim(Entity::getUsedConfig('admin_reply', $this->getEntity(), '', ''));
       $admin_reply_name = trim(Entity::getUsedConfig('admin_reply_name', $this->getEntity(), '', ''));
 
       if (NotificationMailing::isUserAddressValid($admin_reply)) {

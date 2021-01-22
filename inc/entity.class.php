@@ -1621,8 +1621,8 @@ class Entity extends CommonTreeDropdown {
       Dropdown::showFromArray('autofill_buy_date', $options,
                               ['value' => $entity->getField('autofill_buy_date')]);
       if ($entity->fields['autofill_buy_date'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('autofill_buy_date', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('autofill_buy_date', $tid));
+         $inherited_value = self::getUsedConfig('autofill_buy_date', $entity->getField('entities_id'));
+         self::inheritedValue(self::getSpecificValueToDisplay('autofill_buy_date', $inherited_value));
       }
       echo "</td>";
 
@@ -1633,8 +1633,8 @@ class Entity extends CommonTreeDropdown {
       Dropdown::showFromArray('autofill_order_date', $options,
                               ['value' => $entity->getField('autofill_order_date')]);
       if ($entity->fields['autofill_order_date'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('autofill_order_date', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('autofill_order_date', $tid));
+         $inherited_value = self::getUsedConfig('autofill_order_date', $entity->getField('entities_id'));
+         self::inheritedValue(self::getSpecificValueToDisplay('autofill_order_date', $inherited_value));
       }
       echo "</td></tr>";
 
@@ -1646,8 +1646,8 @@ class Entity extends CommonTreeDropdown {
       Dropdown::showFromArray('autofill_delivery_date', $options,
                               ['value' => $entity->getField('autofill_delivery_date')]);
       if ($entity->fields['autofill_delivery_date'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('autofill_delivery_date', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('autofill_delivery_date', $tid));
+         $inherited_value = self::getUsedConfig('autofill_delivery_date', $entity->getField('entities_id'));
+         self::inheritedValue(self::getSpecificValueToDisplay('autofill_delivery_date', $inherited_value));
       }
       echo "</td>";
 
@@ -1658,8 +1658,8 @@ class Entity extends CommonTreeDropdown {
       Dropdown::showFromArray('autofill_use_date', $options,
                               ['value' => $entity->getField('autofill_use_date')]);
       if ($entity->fields['autofill_use_date'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('autofill_use_date', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('autofill_use_date', $tid));
+         $inherited_value = self::getUsedConfig('autofill_use_date', $entity->getField('entities_id'));
+         self::inheritedValue(self::getSpecificValueToDisplay('autofill_use_date', $inherited_value));
       }
       echo "</td></tr>";
 
@@ -1678,8 +1678,8 @@ class Entity extends CommonTreeDropdown {
       Dropdown::showFromArray('autofill_warranty_date', $options,
                               ['value' => $entity->getField('autofill_warranty_date')]);
       if ($entity->fields['autofill_warranty_date'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('autofill_warranty_date', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('autofill_warranty_date', $tid));
+         $inherited_value = self::getUsedConfig('autofill_warranty_date', $entity->getField('entities_id'));
+         self::inheritedValue(self::getSpecificValueToDisplay('autofill_warranty_date', $inherited_value));
       }
       echo "</td>";
 
@@ -1705,8 +1705,8 @@ class Entity extends CommonTreeDropdown {
                               ['value' => $entity->getField('autofill_decommission_date')]);
 
       if ($entity->fields['autofill_decommission_date'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('autofill_decommission_date', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('autofill_decommission_date', $tid));
+         $inherited_value = self::getUsedConfig('autofill_decommission_date', $entity->getField('entities_id'));
+         self::inheritedValue(self::getSpecificValueToDisplay('autofill_decommission_date', $inherited_value));
       }
       echo "</td></tr>";
 
@@ -1733,8 +1733,8 @@ class Entity extends CommonTreeDropdown {
                            'comments' => false]);
 
       if ($entity->fields['entities_id_software'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('entities_id_software', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('entities_id_software', $tid));
+         $inherited_value = self::getUsedConfig('entities_id_software', $entity->getField('entities_id'));
+         self::inheritedValue(self::getSpecificValueToDisplay('entities_id_software', $inherited_value));
       }
       echo "</td><td colspan='2'></td></tr>";
 
@@ -2736,10 +2736,10 @@ class Entity extends CommonTreeDropdown {
             $inqconf = self::getUsedConfig('inquest_config', $entity->fields['entities_id'],
                                            'inquest_delay');
 
-            sprintf(_n('%d day', '%d days', $inqconf), $inqconf);
+            $inherit.= sprintf(_n('%d day', '%d days', $inqconf), $inqconf);
             $inherit.= "<br>";
             //TRANS: %d is the percentage. %% to display %
-            sprintf(__('%d%%'), $inquestrate);
+            $inherit.= sprintf(__('%d%%'), $inquestrate);
 
             if ($inquestconfig == 2) {
                $inherit.= "<br>";

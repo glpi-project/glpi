@@ -290,9 +290,9 @@ class Entity extends DbTestCase {
    protected function inheritanceProvider() {
       return [
          ['admin_email', "username+admin@domain.tld"],
-         ['admin_email_name', "Username admin replay"],
+         ['admin_email_name', "Username admin"],
          ['admin_reply', "username+admin+reply@domain.tld"],
-         ['admin_reply_name', "Username admin replay"],
+         ['admin_reply_name', "Username admin reply"],
       ];
    }
 
