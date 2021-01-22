@@ -666,7 +666,7 @@ function loadDataset() {
  * @param string  $type
  * @param string  $name
  * @param boolean $onlyid
- * @return CommonGLPI|false the item, or its id
+ * @return CommonDBTM|false the item, or its id
  */
 function getItemByTypeName($type, $name, $onlyid = false) {
 
