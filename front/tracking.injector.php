@@ -59,6 +59,7 @@ if (isset($_POST['add'])) {
    } else {
       $track->getEmpty();
    }
+   $_POST['check_delegatee'] = true;
    if ($track->add($_POST)) {
       if ($_SESSION['glpibackcreated']) {
          Html::redirect($track->getLinkURL());
