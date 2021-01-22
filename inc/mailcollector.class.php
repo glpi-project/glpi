@@ -714,8 +714,9 @@ class MailCollector  extends CommonDBTM {
             $delete           = [];
             $messages         = [];
 
+            $msg_index = $this->storage->countMessages(); // Start from last message (the older one)
             do {
-               $this->storage->next();
+               $this->storage->seek($msg_index);
                if (!$this->storage->valid()) {
                   break;
                }
@@ -727,7 +728,8 @@ class MailCollector  extends CommonDBTM {
                   Toolbox::logInFile('mailgate', sprintf(__('Message is invalid: %1$s').'<br/>', $e->getMessage()));
                   ++$error;
                }
-            } while ($this->fetch_emails < $this->maxfetch_emails);
+               $msg_index--;
+            } while ($this->fetch_emails < $this->maxfetch_emails && $msg_index > 0);
 
             foreach ($messages as $uid => $message) {
 
