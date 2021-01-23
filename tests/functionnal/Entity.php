@@ -345,4 +345,133 @@ class Entity extends DbTestCase {
       $this->string(\Entity::getUsedConfig($field, $child_2))->isEqualTo($value."_child_2");
 
    }
+
+
+   protected function customCssProvider() {
+
+      $root_id  = getItemByTypeName('Entity', 'Root entity', true);
+      $child_id = getItemByTypeName('Entity', '_test_child_1', true);
+
+      return [
+         [
+            // Do not output custom CSS if not enabled
+            'entity_id'               => $root_id,
+            'root_enable_custom_css'  => 0,
+            'root_custom_css_code'    => 'body { color:blue; }',
+            'child_enable_custom_css' => 0,
+            'child_custom_css_code'   => '',
+            'expected'                => '',
+         ],
+         [
+            // Output custom CSS if enabled
+            'entity_id'               => $root_id,
+            'root_enable_custom_css'  => 1,
+            'root_custom_css_code'    => 'body { color:blue; }',
+            'child_enable_custom_css' => 0,
+            'child_custom_css_code'   => '',
+            'expected'                => '<style>body { color:blue; }</style>',
+         ],
+         [
+            // Do not output custom CSS if empty
+            'entity_id'               => $root_id,
+            'root_enable_custom_css'  => 1,
+            'root_custom_css_code'    => '',
+            'child_enable_custom_css' => 0,
+            'child_custom_css_code'   => '',
+            'expected'                => '',
+         ],
+         [
+            // Do not output custom CSS from parent if disabled in parent
+            'entity_id'               => $child_id,
+            'root_enable_custom_css'  => 0,
+            'root_custom_css_code'    => 'body { color:blue; }',
+            'child_enable_custom_css' => \Entity::CONFIG_PARENT,
+            'child_custom_css_code'   => '',
+            'expected'                => '',
+         ],
+         [
+            // Do not output custom CSS from parent if empty
+            'entity_id'               => $child_id,
+            'root_enable_custom_css'  => 1,
+            'root_custom_css_code'    => '',
+            'child_enable_custom_css' => \Entity::CONFIG_PARENT,
+            'child_custom_css_code'   => '',
+            'expected'                => '',
+         ],
+         [
+            // Output custom CSS from parent
+            'entity_id'               => $child_id,
+            'root_enable_custom_css'  => 1,
+            'root_custom_css_code'    => 'body { color:blue; }',
+            'child_enable_custom_css' => \Entity::CONFIG_PARENT,
+            'child_custom_css_code'   => '',
+            'expected'                => '<style>body { color:blue; }</style>',
+         ],
+         [
+            // Do not output custom CSS from entity itself if disabled
+            'entity_id'               => $child_id,
+            'root_enable_custom_css'  => 0,
+            'root_custom_css_code'    => '',
+            'child_enable_custom_css' => 0,
+            'child_custom_css_code'   => 'body { color:blue; }',
+            'expected'                => '',
+         ],
+         [
+            // Do not output custom CSS from entity itself if empty
+            'entity_id'               => $child_id,
+            'root_enable_custom_css'  => 1,
+            'root_custom_css_code'    => '',
+            'child_enable_custom_css' => 1,
+            'child_custom_css_code'   => '',
+            'expected'                => '',
+         ],
+         [
+            // Output custom CSS from entity itself
+            'entity_id'               => $child_id,
+            'root_enable_custom_css'  => 0,
+            'root_custom_css_code'    => '',
+            'child_enable_custom_css' => 1,
+            'child_custom_css_code'   => 'body { color:blue; }',
+            'expected'                => '<style>body { color:blue; }</style>',
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider customCssProvider
+    */
+   public function testGetCustomCssTag(
+      int $entity_id,
+      int $root_enable_custom_css,
+      string $root_custom_css_code,
+      int $child_enable_custom_css,
+      string $child_custom_css_code,
+      string $expected
+   ): void {
+      $this->login();
+
+      $entity = new \Entity();
+
+      // Define configuration values
+      $update = $entity->update(
+         [
+            'id'                => getItemByTypeName('Entity', 'Root entity', true),
+            'enable_custom_css' => $root_enable_custom_css,
+            'custom_css_code'   => $root_custom_css_code
+         ]
+      );
+      $this->boolean($update)->isTrue();
+      $update = $entity->update(
+         [
+            'id'                => getItemByTypeName('Entity', '_test_child_1', true),
+            'enable_custom_css' => $child_enable_custom_css,
+            'custom_css_code'   => $child_custom_css_code
+         ]
+      );
+      $this->boolean($update)->isTrue();
+
+      // Validate method result
+      $this->boolean($entity->getFromDB($entity_id))->isTrue();
+      $this->string($entity->getCustomCssTag())->isEqualTo($expected);
+   }
 }
