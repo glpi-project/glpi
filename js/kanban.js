@@ -881,7 +881,7 @@ class GLPIKanbanRights {
                   width: 800
                });
             }
-            $('#kanban-dialog').load((self.ajax_root + "kanban.php/?action=show_card_edit_form&itemtype="+itemtype+"&card=" + items_id)).dialog("open");
+            $('#kanban-dialog').load((self.ajax_root + "kanban.php?action=show_card_edit_form&itemtype="+itemtype+"&card=" + items_id)).dialog("open");
          });
       };
 
