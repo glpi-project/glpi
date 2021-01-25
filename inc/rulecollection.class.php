@@ -265,8 +265,8 @@ class RuleCollection extends CommonDBTM {
 
          if (count($iterator)) {
             $this->RuleList->list = [];
-            $current_tab = str_replace($this->getType().'$', '', Session::getActiveTab($this->getType()));
-            $tabs = $this->getTabNameForItem($this);
+            $active_tab = Session::getActiveTab($this->getType());
+            $can_sort = !(Toolbox::startsWith($this->getType() . '$', $active_tab));
 
             while ($rule = $iterator->next()) {
                //For each rule, get a Rule object with all the criterias and actions
@@ -275,9 +275,7 @@ class RuleCollection extends CommonDBTM {
                if ($tempRule->getRuleWithCriteriasAndActions($rule["id"], $retrieve_criteria,
                                                              $retrieve_action)) {
 
-                  if (!isset($tabs[$current_tab])) {
-                     $tempRule->can_sort = false;
-                  }
+                  $tempRule->can_sort = $can_sort;
 
                   //Add the object to the list of rules
                   $this->RuleList->list[] = $tempRule;
