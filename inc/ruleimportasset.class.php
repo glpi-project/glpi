@@ -966,7 +966,7 @@ class RuleImportAsset extends Rule {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='2'>".__('Use values found found from an already refused equipment')."</th>";
+      echo "<th colspan='2'>".__('Use values found from an already refused equipment')."</th>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
