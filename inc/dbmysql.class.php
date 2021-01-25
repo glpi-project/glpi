@@ -1439,20 +1439,20 @@ class DBmysql {
             ',',
          ],
          trim($structure)
-	  );
-	  
-	  // SHOW CREATE TABLE does not display nullable field (only on VARCHAR and TEXT typed fields)
-	  // we have to handle 'NULL' manually on these type of fields
+      );
+      
+      // SHOW CREATE TABLE does not display nullable field (only on VARCHAR and TEXT typed fields)
+      // we have to handle 'NULL' manually on these type of fields
       $structure = preg_replace(
-		"/ (VARCHAR\(\d+\))\s+NULL/i",
-		" $1",
-		$structure
-	  );
-	  $structure = preg_replace(
-		"/ (TEXT)\s+NULL/i",
-		" $1",
-		$structure
-	  );
+        "/ (VARCHAR\(\d+\))\s+NULL/i",
+        " $1",
+        $structure
+      );
+      $structure = preg_replace(
+        "/ (TEXT)\s+NULL/i",
+        " $1",
+        $structure
+      );
 
       //do not check engine nor collation
       $structure = preg_replace(
