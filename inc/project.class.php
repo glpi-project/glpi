@@ -2266,8 +2266,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          }
          $itemtype = $item['_itemtype'];
          $card = [
-            'id'        => "{$itemtype}-{$item['id']}",
-            'title'     => Html::link($item['name'], $itemtype::getFormURLWithID($item['id']))
+            'id'              => "{$itemtype}-{$item['id']}",
+            'title'           => '<span class="pointer">'.$item['name'].'</span>',
+            'title_tooltip'   => Html::entities_deep(Html::resume_text(Html::clean($item['content']), 100)),
+            'is_deleted'      => $item['is_deleted'] ?? false,
          ];
 
          $content = "<div class='kanban-plugin-content'>";
@@ -2325,6 +2327,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          $card['content'] = $content;
          $card['_team'] = $item['_team'];
          $card['_readonly'] = $item['_readonly'];
+         $card['_form_link'] = $itemtype::getFormUrlWithID($item['id']);
          $columns[$item['projectstates_id']]['items'][] = $card;
       }
 
@@ -2365,7 +2368,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       $supported_itemtypes = [];
       if (Project::canCreate()) {
          $supported_itemtypes['Project'] = [
-            'name' => Project::getTypeName(1),
+            'name'   => Project::getTypeName(1),
+            'icon'   => Project::getIcon(),
             'fields' => [
                'projects_id'  => [
                   'type'   => 'hidden',
@@ -2396,7 +2400,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
 
       if (ProjectTask::canCreate()) {
          $supported_itemtypes['ProjectTask'] = [
-            'name' => ProjectTask::getTypeName(1),
+            'name'   => ProjectTask::getTypeName(1),
+            'icon'   => ProjectTask::getIcon(),
             'fields' => [
                'projects_id'  => [
                   'type'   => 'hidden',
@@ -2447,22 +2452,22 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
 
       echo "<div id='kanban' class='kanban'></div>";
       $darkmode = ($_SESSION['glpipalette'] === 'darker') ? 'true' : 'false';
-      $canadd_item = json_encode(self::canCreate() || ProjectTask::canCreate());
       $canmodify_view = json_encode(($ID == 0 || $project->canModifyGlobalState()));
-      $cancreate_column = json_encode((bool)ProjectState::canCreate());
-      $limit_addcard_columns = $canmodify_view !== 'false' ? '[]' : json_encode([0]);
-      $can_order_item = json_encode((bool)$project->canOrderKanbanCard($ID));
+      $rights = json_encode([
+         'create_item'                    => self::canCreate() || ProjectTask::canCreate(),
+         'delete_item'                    => self::canDelete() || ProjectTask::canDelete(),
+         'create_column'                  => (bool)ProjectState::canCreate(),
+         'modify_view'                    => $ID == 0 || $project->canModifyGlobalState(),
+         'order_card'                     => (bool)$project->canOrderKanbanCard($ID),
+         'create_card_limited_columns'    => $canmodify_view ? [] : [0]
+      ]);
 
       $js = <<<JAVASCRIPT
          $(function(){
             // Create Kanban
             var kanban = new GLPIKanban({
                element: "#kanban",
-               allow_add_item: $canadd_item,
-               allow_modify_view: $canmodify_view,
-               allow_create_column: $cancreate_column,
-               limit_addcard_columns: $limit_addcard_columns,
-               allow_order_card: $can_order_item,
+               rights: $rights,
                supported_itemtypes: $supported_itemtypes,
                dark_theme: {$darkmode},
                max_team_images: 3,

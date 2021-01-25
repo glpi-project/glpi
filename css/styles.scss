@@ -6721,13 +6721,21 @@ div.objectlockmessage > .form-group-checkbox {
          li {
             background-color: white;
             color: #333333; // Default text color
-            padding: 10px;
             margin-top: 2px;
-            cursor: pointer;
             position: relative;
-            &:hover {
-               background-color: #3a5693;
-               color: white;
+            a, span {
+               color: inherit;
+               cursor: pointer;
+               display: block;
+               font-weight: bold;
+               padding: 10px;
+               &:hover {
+                  background-color: #3a5693;
+                  color: white;
+               }
+               i {
+                  color: inherit;
+               }
             }
             ul {
                position: absolute;
@@ -6748,18 +6756,15 @@ div.objectlockmessage > .form-group-checkbox {
             margin-top: 0;
          }
          li.dropdown-trigger {
-            &:before {
-               content: "\f054";
-               font-family: "Font Awesome\ 5 Free";
-               font-weight: 900;
-               float: right;
-            }
             &.active {
                background-color: #3a5693;
                color: white;
             }
-            a {
-               color: inherit;
+            a:after {
+               content: "\f054";
+               font-family: "Font Awesome\ 5 Free";
+               font-weight: 900;
+               padding-left: 10px;
             }
          }
       }
@@ -6913,13 +6918,15 @@ div.objectlockmessage > .form-group-checkbox {
                .kanban-item, .kanban-add-form {
                   text-align: left;
                   padding-left: 0;
-                  background-color: white;
                   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
                   min-height: 50px;
                   margin-top: 5px;
                   border-radius: 5px;
                   border: #d3d3d3 1px solid;
                   min-width: 250px;
+                  &:not(.deleted) {
+                     background-color: white;
+                  }
                   &.filtered-out {
                      display: none;
                   }
@@ -6933,6 +6940,12 @@ div.objectlockmessage > .form-group-checkbox {
                         }
                         float: right;
                         cursor: pointer;
+                     }
+                     .kanban-item-title .fas {
+                        float: none;
+                        &:last-of-type {
+                           margin-right: 5px;
+                        }
                      }
                      padding: 5px 10px 0;
                      color: black;

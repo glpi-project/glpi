@@ -706,7 +706,9 @@ div.progress {
          border: 1px solid #242323;
          li {
             background-color: #3a3938;
-            color: white;
+            &, a, i {
+               color: white;
+            }
             &:hover {
                background-color: #262626;
             }
@@ -745,7 +747,9 @@ div.progress {
 
             .kanban-body {
                .kanban-item, .kanban-form {
-                  background-color: #3a3938;
+                  &:not(.deleted) {
+                     background-color: #3a3938;
+                  }
                   border: #272625 1px solid;
                   color: #ffffff !important;
                   input[type=text] {
