@@ -2769,9 +2769,8 @@ class Dropdown {
                $orwhere[$table . '.' . $item->getIndexName()] = ['LIKE', "%{$post['searchText']}%"];
             }
 
-            if ($item instanceof CommonDCModelDropdown
-                && is_numeric($post['searchText']) && (int)$post['searchText'] == $post['searchText']) {
-               $orwhere[$table . '.product_number'] = ['LIKE', "%{$post['searchText']}%"];
+            if ($item instanceof CommonDCModelDropdown) {
+               $orwhere[$table . '.product_number'] = ['LIKE', $search];
             }
 
             if (Session::haveTranslations($post['itemtype'], $field)) {
