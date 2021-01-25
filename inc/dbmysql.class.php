@@ -1440,7 +1440,7 @@ class DBmysql {
          ],
          trim($structure)
       );
-      
+
       // SHOW CREATE TABLE does not display nullable field (only on VARCHAR and TEXT typed fields)
       // we have to handle 'NULL' manually on these type of fields
       $structure = preg_replace(
