@@ -97,7 +97,7 @@ function loadDataset() {
    // Unit test data definition
    $data = [
       // bump this version to force reload of the full dataset, when content change
-      '_version' => '4.4',
+      '_version' => '4.5',
 
       // Type => array of entries
       'Entity' => [
@@ -143,6 +143,14 @@ function loadDataset() {
             'name'        => '_test_pc22',
             'entities_id' => '_test_child_2',
          ]
+      ], 'ComputerModel' => [
+         [
+            'name'           => '_test_computermodel_1',
+            'product_number' => 'CMP_ADEAF5E1',
+         ], [
+            'name'           => '_test_computermodel_2',
+            'product_number' => 'CMP_567AEC68',
+         ],
       ], 'Software' => [
          [
             'name'         => '_test_soft',
