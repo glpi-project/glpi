@@ -60,7 +60,8 @@ class Phone extends CommonDBTM {
          Contract_Item::class,
          Document_Item::class,
          Computer_Item::class,
-         KnowbaseItem_Item::class
+         KnowbaseItem_Item::class,
+         Item_RemoteManagement::class
       ];
    }
 
@@ -91,6 +92,7 @@ class Phone extends CommonDBTM {
       $this->addStandardTab('Item_Disk', $ong, $options);
       $this->addStandardTab('Computer_Item', $ong, $options);
       $this->addStandardTab('NetworkPort', $ong, $options);
+      $this->addStandardTab('Item_RemoteManagement', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
       $this->addStandardTab('Contract_Item', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
@@ -308,13 +310,6 @@ class Phone extends CommonDBTM {
       echo "</td>";
 
       echo "</tr>\n";
-
-      if (!empty($ID)
-         && $this->fields["is_dynamic"]) {
-         echo "<tr class='tab_bg_1'><td colspan='4'>";
-         Plugin::doHook("autoinventory_information", $this);
-         echo "</td></tr>";
-      }
 
       $this->showInventoryInfo();
       $this->showFormButtons($options);

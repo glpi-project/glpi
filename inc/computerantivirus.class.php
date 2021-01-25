@@ -253,18 +253,7 @@ class ComputerAntivirus extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".Computer::getTypeName(1)."</td>";
       echo "<td>".$comp->getLink()."</td>";
-      if (Plugin::haveImport()) {
-         echo "<td>".__('Automatic inventory')."</td>";
-         echo "<td>";
-         if ($ID && $this->fields['is_dynamic']) {
-            Plugin::doHook("autoinventory_information", $this);
-         } else {
-            echo __('No');
-         }
-         echo "</td>";
-      } else {
-         echo "<td colspan='2'></td>";
-      }
+      $this->autoinventoryInformation();
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -353,19 +342,14 @@ class ComputerAntivirus extends CommonDBChild {
       );
 
       echo "<table class='tab_cadre_fixehov'>";
-      $colspan = 7;
-      if (Plugin::haveImport()) {
-         $colspan++;
-      }
+      $colspan = 8;
       echo "<tr class='noHover'><th colspan='$colspan'>".self::getTypeName($result->numrows()).
            "</th></tr>";
 
       if ($result->numrows() != 0) {
 
          $header = "<tr><th>".__('Name')."</th>";
-         if (Plugin::haveImport()) {
-            $header .= "<th>".__('Automatic inventory')."</th>";
-         }
+         $header .= "<th>".__('Automatic inventory')."</th>";
          $header .= "<th>".Manufacturer::getTypeName(1)."</th>";
          $header .= "<th>".__('Antivirus version')."</th>";
          $header .= "<th>".__('Signature database version')."</th>";
@@ -386,9 +370,7 @@ class ComputerAntivirus extends CommonDBChild {
             $antivirus->getFromDB($data['id']);
             echo "<tr class='tab_bg_2'>";
             echo "<td>".$antivirus->getLink()."</td>";
-            if (Plugin::haveImport()) {
-               echo "<td>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
-            }
+            echo "<td>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
             echo "<td>";
             if ($data['manufacturers_id']) {
                echo Dropdown::getDropdownName('glpi_manufacturers',

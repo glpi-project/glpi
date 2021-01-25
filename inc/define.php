@@ -475,6 +475,8 @@ $CFG_GLPI['appliance_types']     = ['Computer', 'Monitor', 'NetworkEquipment', '
 
 $CFG_GLPI['appliance_relation_types'] = ['Location', 'Network', 'Domain'];
 
+$CFG_GLPI['remote_management_types'] = ['Computer', 'Phone'];
+
 $dashboard_libs = [
    'dashboard', 'gridstack',
    'charts', 'clipboard', 'sortable'

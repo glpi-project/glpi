@@ -290,14 +290,7 @@ class Peripheral extends CommonDBTM {
       echo "</td>\n";
       echo "</tr>\n";
 
-      // Display auto inventory informations
-      if (!empty($ID)
-         && $this->fields["is_dynamic"]) {
-         echo "<tr class='tab_bg_1'><td colspan='4'>";
-         Plugin::doHook("autoinventory_information", $this);
-         echo "</td></tr>";
-      }
-
+      $this->showInventoryInfo();
       $this->showFormButtons($options);
 
       return true;

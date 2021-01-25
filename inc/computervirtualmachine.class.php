@@ -132,18 +132,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".Computer::getTypeName(1)."</td>";
       echo "<td>".$comp->getLink()."</td>";
-      if (Plugin::haveImport()) {
-         echo "<td>".__('Automatic inventory')."</td>";
-         echo "<td>";
-         if ($ID && $this->fields['is_dynamic']) {
-            Plugin::doHook("autoinventory_information", $this);
-         } else {
-            echo __('No');
-         }
-         echo "</td>";
-      } else {
-         echo "<td colspan='2'></td>";
-      }
+      $this->autoinventoryInformation();
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -347,9 +336,7 @@ class ComputerVirtualMachine extends CommonDBChild {
 
          $header = "<tr><th>".__('Name')."</th>";
          $header .= "<th>"._n('Comment', 'Comments', 1)."</th>";
-         if (Plugin::haveImport()) {
-            $header .= "<th>".__('Automatic inventory')."</th>";
-         }
+         $header .= "<th>".__('Automatic inventory')."</th>";
          $header .= "<th>".VirtualMachineType::getTypeName(1)."</th>";
          $header .= "<th>".VirtualMachineSystem::getTypeName(1)."</th>";
          $header .= "<th>".__('State')."</th>";
@@ -366,9 +353,7 @@ class ComputerVirtualMachine extends CommonDBChild {
             echo "<tr class='tab_bg_2'>";
             echo "<td>".$vm->getLink()."</td>";
             echo "<td>".$virtualmachine['comment']."</td>";
-            if (Plugin::haveImport()) {
-               echo "<td>".Dropdown::getYesNo($vm->isDynamic())."</td>";
-            }
+            echo "<td>".Dropdown::getYesNo($vm->isDynamic())."</td>";
             echo "<td>";
             echo Dropdown::getDropdownName('glpi_virtualmachinetypes',
                                            $virtualmachine['virtualmachinetypes_id']);

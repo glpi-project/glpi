@@ -881,4 +881,21 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       throw new \RuntimeException('Cannot guess field for itemtype ' . $itemtype . ' on ' . static::class);
    }
+
+   protected function autoinventoryInformation() {
+      echo "<td>".__('Automatic inventory')."</td>";
+      echo "<td>";
+      if ($this->fields['id'] && $this->fields['is_dynamic']) {
+         ob_start();
+         Plugin::doHook("autoinventory_information", $this);
+         $info = ob_get_clean();
+         if (empty($info)) {
+            $info = __('Yes');
+         }
+         echo $info;
+      } else {
+         echo __('No');
+      }
+      echo "</td>";
+   }
 }

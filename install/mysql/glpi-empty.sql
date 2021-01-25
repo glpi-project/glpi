@@ -8429,4 +8429,17 @@ CREATE TABLE `glpi_pcivendors` (
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_items_remotemanagements`;
+CREATE TABLE `glpi_items_remotemanagements` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `itemtype` varchar(100) DEFAULT NULL,
+  `items_id` int NOT NULL DEFAULT '0',
+  `remoteid` varchar(255) DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `is_dynamic` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `is_dynamic` (`is_dynamic`),
+  KEY `item` (`itemtype`,`items_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 SET FOREIGN_KEY_CHECKS=1;

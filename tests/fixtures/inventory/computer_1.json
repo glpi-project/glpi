@@ -34,6 +34,12 @@
             "smodel": "XPS 13 9350",
             "ssn": "640HP72"
         },
+        "remote_mgmt": [
+            {
+                "type": "teamviewer",
+                "id": "123456789"
+            }
+        ],
         "controllers": [
             {
                 "caption": "Xeon E3-1200 v5\/E3-1500 v5\/6th Gen Core Processor Host Bridge\/DRAM Registers",

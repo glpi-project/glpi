@@ -193,6 +193,20 @@ class Inventory extends DbTestCase {
       ];
       $this->array($record)->isIdenticalTo($expected);
 
+      //remote management
+      $mgmt = new \Item_RemoteManagement();
+      $iterator = $mgmt->getFromItem($computer);
+      $this->integer(count($iterator))->isIdenticalTo(1);
+      $remote = $iterator->next();
+      unset($remote['id']);
+      $this->array($remote)->isIdenticalTo([
+         'itemtype' => $computer->getType(),
+         'items_id' => $computer->fields['id'],
+         'remoteid' => '123456789',
+         'type' => 'teamviewer',
+         'is_dynamic' => 1
+      ]);
+
       //volumes
       $idisks = new \Item_Disk();
       $iterator = $idisks->getFromItem($computer);
