@@ -1447,12 +1447,12 @@ class DBmysql {
 		"/ (VARCHAR\(\d+\))\s+NULL/i",
 		" $1",
 		$structure
-	 );
-	 $structure = preg_replace(
+	  );
+	  $structure = preg_replace(
 		"/ (TEXT)\s+NULL/i",
 		" $1",
 		$structure
-	 );
+	  );
 
       //do not check engine nor collation
       $structure = preg_replace(
