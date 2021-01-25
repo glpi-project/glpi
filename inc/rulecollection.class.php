@@ -223,18 +223,14 @@ class RuleCollection extends CommonDBTM {
 
       $iterator   = $DB->request($criteria);
 
-      $current_tab = str_replace($this->getType().'$', '', Session::getActiveTab($this->getType()));
-      $tabs = $this->getTabNameForItem($this);
+      $active_tab = Session::getActiveTab($this->getType());
+      $can_sort = !(Toolbox::startsWith($this->getType() . '$', $active_tab));
 
       while ($data = $iterator->next()) {
          //For each rule, get a Rule object with all the criterias and actions
          $tempRule               = $this->getRuleClass();
          $tempRule->fields       = $data;
-
-         if (isset($tabs[$current_tab])) {
-            //in a subtab disable sorting
-            $tempRule->can_sort = false;
-         }
+         $tempRule->can_sort = $can_sort;
 
          $this->RuleList->list[] = $tempRule;
       }
