@@ -69,7 +69,8 @@ class Computer extends CommonDBTM {
          NetworkPort::class,
          Computer_Item::class,
          Notepad::class,
-         KnowbaseItem_Item::class
+         KnowbaseItem_Item::class,
+         Item_RemoteManagement::class
       ];
    }
 
@@ -99,6 +100,7 @@ class Computer extends CommonDBTM {
          ->addStandardTab('Item_SoftwareVersion', $ong, $options)
          ->addStandardTab('Computer_Item', $ong, $options)
          ->addStandardTab('NetworkPort', $ong, $options)
+         ->addStandardTab('Item_RemoteManagement', $ong, $options)
          ->addStandardTab('Infocom', $ong, $options)
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
@@ -474,14 +476,6 @@ class Computer extends CommonDBTM {
       echo "<td >";
       AutoUpdateSystem::dropdown(['value' => $this->fields["autoupdatesystems_id"], 'rand' => $randDropdown]);
       echo "</td></tr>";
-      // Display auto inventory informations
-      if (!empty($ID)
-          && Plugin::haveImport()
-          && $this->fields["is_dynamic"]) {
-         echo "<tr class='tab_bg_1'><td colspan='4'>";
-         Plugin::doHook("autoinventory_information", $this);
-         echo "</td></tr>";
-      }
 
       $this->showInventoryInfo();
 

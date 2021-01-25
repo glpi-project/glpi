@@ -449,13 +449,6 @@ class Printer  extends CommonDBTM {
       echo "</td></tr></table>\n";
       echo "</td>";
       echo "</tr>";
-      // Display auto inventory informations
-      if (!empty($ID)
-         && $this->fields["is_dynamic"]) {
-         echo "<tr class='tab_bg_1'><td colspan='4'>";
-         Plugin::doHook("autoinventory_information", $this);
-         echo "</td></tr>";
-      }
 
       $this->showInventoryInfo();
       $this->showFormButtons($options);

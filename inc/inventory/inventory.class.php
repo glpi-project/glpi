@@ -469,7 +469,6 @@ class Inventory
             case 'logical_volumes': //not used
             case 'ports': //not used
             case 'processes': //not used
-            case 'remote_mgmt': //not used - implemented in FI only
             case 'slots': //not used
             case 'versionclient': //not used
             case 'versionprovider': //not provided see doInventory
@@ -549,6 +548,9 @@ class Inventory
                break;
             case 'cartridges':
                $assettype = '\Glpi\Inventory\Asset\Cartridge';
+               break;
+            case 'remote_mgmt':
+               $assettype = '\Glpi\Inventory\Asset\RemoteManagement';
                break;
             default:
                if (method_exists($this, 'processExtraInventoryData')) {

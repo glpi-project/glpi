@@ -365,9 +365,7 @@ class Computer_Item extends CommonDBRelation{
 
          $header_end .= "<th>"._n('Type', 'Types', 1)."</th>";
          $header_end .= "<th>".__('Name')."</th>";
-         if (Plugin::haveImport()) {
-            $header_end .= "<th>".__('Automatic inventory')."</th>";
-         }
+         $header_end .= "<th>".__('Automatic inventory')."</th>";
          $header_end .= "<th>".Entity::getTypeName(1)."</th>";
          $header_end .= "<th>".__('Serial number')."</th>";
          $header_end .= "<th>".__('Inventory number')."</th>";
@@ -394,10 +392,8 @@ class Computer_Item extends CommonDBRelation{
             echo "<td ".
                   ((isset($data['is_deleted']) && $data['is_deleted'])?"class='tab_bg_2_2'":"").
                  ">".$name."</td>";
-            if (Plugin::haveImport()) {
-               $dynamic_field = static::getTable() . '_is_dynamic';
-               echo "<td>".Dropdown::getYesNo($data[$dynamic_field])."</td>";
-            }
+            $dynamic_field = static::getTable() . '_is_dynamic';
+            echo "<td>".Dropdown::getYesNo($data[$dynamic_field])."</td>";
             echo "<td>".Dropdown::getDropdownName("glpi_entities",
                                                                $data['entities_id']);
             echo "</td>";
@@ -520,9 +516,7 @@ class Computer_Item extends CommonDBRelation{
          }
 
          $header_end .= "<th>".__('Name')."</th>";
-         if (Plugin::haveImport()) {
-            $header_end .= "<th>".__('Automatic inventory')."</th>";
-         }
+         $header_end .= "<th>".__('Automatic inventory')."</th>";
          $header_end .= "<th>".Entity::getTypeName(1)."</th>";
          $header_end .= "<th>".__('Serial number')."</th>";
          $header_end .= "<th>".__('Inventory number')."</th>";
@@ -542,9 +536,7 @@ class Computer_Item extends CommonDBRelation{
             echo "<td ".
                   ($comp->getField('is_deleted')?"class='tab_bg_2_2'":"").
                  ">".$comp->getLink()."</td>";
-            if (Plugin::haveImport()) {
-               echo "<td>".Dropdown::getYesNo($dynamic[$key])."</td>";
-            }
+            echo "<td>".Dropdown::getYesNo($dynamic[$key])."</td>";
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                $comp->getField('entities_id'));
             echo "</td>";

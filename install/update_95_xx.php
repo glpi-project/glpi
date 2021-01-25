@@ -56,6 +56,7 @@ function update95toXX() {
       'schema_fixes',
       'softwares',
       'uuids',
+      'inventory_management'
    ];
 
    foreach ($update_scripts as $update_script) {

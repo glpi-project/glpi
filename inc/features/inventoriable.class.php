@@ -35,6 +35,7 @@ namespace Glpi\Features;
 use Agent;
 use Computer_Item;
 use Html;
+use Plugin;
 use RefusedEquipment;
 use Toolbox;
 
@@ -209,5 +210,13 @@ trait Inventoriable {
          });
 JAVASCRIPT;
       echo Html::scriptBlock($js);
+
+      // Display auto inventory informations
+      if (!empty($this->fields['id'])
+          && $this->fields["is_dynamic"]) {
+         echo "<tr class='tab_bg_1'><td colspan='4'>";
+         Plugin::doHook("autoinventory_information", $this);
+         echo "</td></tr>";
+      }
    }
 }
