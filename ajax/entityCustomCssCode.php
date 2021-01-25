@@ -62,7 +62,7 @@ if (isset($_POST['enable_custom_css']) && isset($_POST['entities_id'])) {
       echo 'disabled';
    }
    echo '>';
-   echo Html::entities_deep($custom_css_code);
+   echo Html::entity_decode_deep($custom_css_code);
    echo '</textarea>';
 
    $editor_options = [
