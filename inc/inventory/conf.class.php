@@ -77,7 +77,8 @@ class Conf extends CommonGLPI
       'location'                       => 0,
       'group'                          => 0,
       'vm_type'                        => 0,
-      'vm_components'                  => 0
+      'vm_components'                  => 0,
+      'vm_as_computer'                 => 0
    ];
 
 
@@ -422,11 +423,23 @@ class Conf extends CommonGLPI
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      echo "<label for='vm_components'>";
+      echo "<label for='vm_as_computer'>";
+      echo __('Create computer for virtual machines');
+      echo "</label>";
+      echo "</td>";
+      echo "<td>";
+      Html::showCheckbox([
+         'name'      => 'vm_as_computer',
+         'id'        => 'vm_as_computer',
+         'checked'   => $config['vm_as_computer']
+      ]);
+      echo "</td>";
+      echo "<td>";
+      echo "<label for='import_vm'>";
       echo __('Create components for virtual machines');
       echo "</label>";
       echo "</td>";
-      echo "<td colspan='3'>";
+      echo "<td>";
       Html::showCheckbox([
          'name'      => 'vm_components',
          'id'        => 'vm_components',
