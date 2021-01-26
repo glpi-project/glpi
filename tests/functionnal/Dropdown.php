@@ -708,7 +708,43 @@ class Dropdown extends DbTestCase {
             'session_params' => [
                'glpiis_ids_visible' => true
             ]
-         ]
+         ], [
+            'params' => [
+               'display_emptychoice' => 0,
+               'itemtype'            => 'ComputerModel',
+            ],
+            'expected'  => [
+               'results'   => [
+                  [
+                     'id'     => getItemByTypeName('ComputerModel', '_test_computermodel_1', true),
+                     'text'   => '_test_computermodel_1 - CMP_ADEAF5E1',
+                     'title'  => '_test_computermodel_1 - CMP_ADEAF5E1',
+                  ],
+                  [
+                     'id'     => getItemByTypeName('ComputerModel', '_test_computermodel_2', true),
+                     'text'   => '_test_computermodel_2 - CMP_567AEC68',
+                     'title'  => '_test_computermodel_2 - CMP_567AEC68',
+                  ]
+               ],
+               'count'     => 2
+            ]
+         ], [
+            'params' => [
+               'display_emptychoice' => 0,
+               'itemtype'            => 'ComputerModel',
+               'searchText'          => 'CMP_56',
+            ],
+            'expected'  => [
+               'results'   => [
+                  [
+                     'id'     => getItemByTypeName('ComputerModel', '_test_computermodel_2', true),
+                     'text'   => '_test_computermodel_2 - CMP_567AEC68',
+                     'title'  => '_test_computermodel_2 - CMP_567AEC68',
+                  ]
+               ],
+               'count'     => 1
+            ]
+         ],
       ];
    }
 

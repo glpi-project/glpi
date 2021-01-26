@@ -2671,6 +2671,10 @@ class Dropdown {
                $orwhere[$table . '.' . $item->getIndexName()] = ['LIKE', "%{$post['searchText']}%"];
             }
 
+            if ($item instanceof CommonDCModelDropdown) {
+               $orwhere[$table . '.product_number'] = ['LIKE', $search];
+            }
+
             if (Session::haveTranslations($post['itemtype'], $field)) {
                $orwhere['namet.value'] = ['LIKE', $search];
             }
@@ -2879,6 +2883,8 @@ class Dropdown {
                   } else {
                      $outputval = $tmpitem->getTypeName();
                   }
+               } else if ($item instanceof CommonDCModelDropdown) {
+                  $outputval =sprintf(__('%1$s - %2$s'), $data[$field], $data['product_number']);
                } else {
                   $outputval = $data[$field];
                }
