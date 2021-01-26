@@ -617,8 +617,8 @@ class Conf extends CommonGLPI
          );
       }
       $to_process = [];
-      foreach (array_keys($defaults) as $prop) {
-         $to_process[$prop] = $values[$prop] ?? 0;
+      foreach ($defaults as $prop => $default_value) {
+         $to_process[$prop] = $values[$prop] ?? $default_value;
       }
       \Config::setConfigurationValues('inventory', $to_process);
       $this->currents = $to_process;

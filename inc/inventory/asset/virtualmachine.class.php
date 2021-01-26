@@ -255,6 +255,8 @@ class VirtualMachine extends InventoryAsset
     * @return void
     */
    protected function createVmComputer() {
+      global $DB;
+
       $computervm = new Computer();
       foreach ($this->data as $vm) {
          if (property_exists($vm, '_onlylink') && $vm->_onlylink) {
