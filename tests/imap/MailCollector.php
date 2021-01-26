@@ -33,6 +33,13 @@
 namespace tests\units;
 
 use \DbTestCase;
+use ITILFollowup;
+use Laminas\Mail\Storage\Message;
+use NotificationTarget;
+use NotificationTargetSoftwareLicense;
+use NotificationTargetTicket;
+use SoftwareLicense;
+use Ticket;
 
 class MailCollector extends DbTestCase {
    private $collector;
@@ -189,6 +196,198 @@ class MailCollector extends DbTestCase {
       $this->integer($this->testedInstance->countCollectors())->isIdenticalTo(1);
    }
 
+   protected function messageIdHeaderProvider() {
+      $root_ent_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+      $ticket_notif = new NotificationTargetTicket($root_ent_id, 'test_event', getItemByTypeName('Ticket', '_ticket01'));
+      $soft_notif = new NotificationTargetSoftwareLicense($root_ent_id, 'test_event', getItemByTypeName('SoftwareLicense', '_test_softlic_1'));
+      $base_notif = new NotificationTarget();
+
+      return [
+         [
+            'headers'  => [],
+            'expected' => false,
+         ],
+         [
+            'headers'  => [
+               'message-id' => 'donotknow',
+            ],
+            'expected' => false,
+         ],
+         [
+            'headers'  => [
+               'message-id' => $ticket_notif->getMessageID(), // ticket format
+            ],
+            'expected' => true,
+         ],
+         [
+            'headers'  => [
+               'message-id' => $soft_notif->getMessageID(), // new format with object relation
+            ],
+            'expected' => true,
+         ],
+         [
+            'headers'  => [
+               'message-id' => $base_notif->getMessageID(), // new format without object relation
+            ],
+            'expected' => true,
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider messageIdHeaderProvider
+    */
+   public function testIsMessageSentByGlpi(array $headers, bool $expected) {
+      $this->newTestedInstance();
+
+      $message = new Message(
+         [
+            'headers' => $headers,
+            'content' => 'Message contents...',
+         ]
+      );
+
+      $this->boolean($this->testedInstance->isMessageSentByGlpi($message))->isEqualTo($expected);
+   }
+
+   protected function itemReferenceHeaderProvider() {
+      $root_ent_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+      $ticket_id = getItemByTypeName('Ticket', '_ticket01', true);
+      $ticket_notif = new NotificationTargetTicket($root_ent_id, 'test_event', getItemByTypeName('Ticket', '_ticket01'));
+
+      $soft_id   = getItemByTypeName('SoftwareLicense', '_test_softlic_1', true);
+      $soft_notif = new NotificationTargetSoftwareLicense($root_ent_id, 'test_event', getItemByTypeName('SoftwareLicense', '_test_softlic_1'));
+
+      $time1 = time() - 548;
+      $time2 = $time1 - 1567;
+      $rand1 = rand();
+      $rand2 = rand();
+      $uname1 = 'localhost';
+      $uname2 = 'mail.glpi-project.org';
+
+      return [
+         // invalid header
+         [
+            'headers'           => [
+               'in-reply-to' => 'notavalidvalue',
+               'references'  => 'donotknow',
+            ],
+            'expected_itemtype' => null,
+            'expected_items_id' => null,
+            'accepted'          => true,
+         ],
+         // ticket header format - found item
+         [
+            'headers'           => [
+               'in-reply-to' => $ticket_notif->getMessageID(),
+            ],
+            'expected_itemtype' => Ticket::class,
+            'expected_items_id' => $ticket_id,
+            'accepted'          => true,
+         ],
+         [
+            'headers'           => [
+               'references'  => $ticket_notif->getMessageID(),
+            ],
+            'expected_itemtype' => Ticket::class,
+            'expected_items_id' => $ticket_id,
+            'accepted'          => true,
+         ],
+         // ticket header format - invalid items_id
+         [
+            'headers'           => [
+               'in-reply-to' => "GLPI-9999999.{$time2}.{$rand2}@{$uname1}",
+            ],
+            'expected_itemtype' => null,
+            'expected_items_id' => null,
+            'accepted'          => true,
+         ],
+         // other items header format - found item
+         [
+            'headers'           => [
+               'in-reply-to' => $soft_notif->getMessageID(),
+            ],
+            'expected_itemtype' => SoftwareLicense::class,
+            'expected_items_id' => $soft_id,
+            'accepted'          => true,
+         ],
+         [
+            'headers'           => [
+               'references'  => $soft_notif->getMessageID(),
+            ],
+            'expected_itemtype' => SoftwareLicense::class,
+            'expected_items_id' => $soft_id,
+            'accepted'          => true,
+         ],
+         [
+            'headers'           => [
+               'in-reply-to' => 'notavalidvalue',
+               'references'  => $soft_notif->getMessageID(),
+            ],
+            'expected_itemtype' => SoftwareLicense::class,
+            'expected_items_id' => $soft_id,
+            'accepted'          => true,
+         ],
+         [
+            'headers'           => [
+               'in-reply-to' => $soft_notif->getMessageID(),
+               'references'  => 'donotknow',
+            ],
+            'expected_itemtype' => SoftwareLicense::class,
+            'expected_items_id' => $soft_id,
+            'accepted'          => true,
+         ],
+         // other items header format - invalid itemtype
+         [
+            'headers'           => [
+               'references'  => "GLPI-UnknownType-{$soft_id}.{$time2}.{$rand2}@{$uname1}",
+            ],
+            'expected_itemtype' => null,
+            'expected_items_id' => null,
+            'accepted'          => true,
+         ],
+         // other items header format - invalid items_id
+         [
+            'headers'           => [
+               'references'  => "GLPI-SoftwareLicense-9999999.{$time1}.{$rand1}@{$uname2}",
+            ],
+            'expected_itemtype' => null,
+            'expected_items_id' => null,
+            'accepted'          => true,
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider itemReferenceHeaderProvider
+    */
+   public function testGetItemFromHeader(
+      array $headers,
+      ?string $expected_itemtype,
+      ?int $expected_items_id,
+      bool $accepted
+   ) {
+      $this->newTestedInstance();
+
+      $message = new Message(
+         [
+            'headers' => $headers,
+            'content' => 'Message contents...',
+         ]
+      );
+
+      $item = $this->testedInstance->getItemFromHeaders($message);
+
+      if ($expected_itemtype === null) {
+         $this->variable($item)->isNull();
+      } else {
+         $this->object($item)->isInstanceOf($expected_itemtype);
+         $this->integer($item->getId())->isEqualTo($expected_items_id);
+      }
+   }
+
    private function doConnect() {
       if (null === $this->collector) {
          $this->newTestedInstance();
@@ -252,7 +451,7 @@ class MailCollector extends DbTestCase {
       $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
       $expected_refused_count          = 2;
       $expected_error_count            = 2;
-      $expected_blacklist_count        = 0;
+      $expected_blacklist_count        = 1;
       $expected_expected_already_seen  = 0;
 
       $this->variable($msg)->isIdenticalTo(
@@ -311,7 +510,6 @@ class MailCollector extends DbTestCase {
             'actor_type'    => \CommonITILActor::REQUESTER,
             'tickets_names' => [
                'PHP fatal error',
-               'Re: [GLPI #0001155] New ticket database issue',
                'Ticket with observer',
                'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine',
                'A message without to header',
@@ -431,5 +629,28 @@ class MailCollector extends DbTestCase {
       $this->array($filenames)->isIdenticalTo($expected_docs);
 
       $this->integer(count($iterator))->isIdenticalTo(count($expected_docs));
+
+      // Check creation of expected followups
+      $expected_followups = [
+         [
+            'items_id' => 100,
+            'users_id' => $tuid,
+            'content'  => 'This is a reply that references Ticket 100 in In-Reply-To header.&lt;br /&gt;It should be added as followup.',
+         ],
+         [
+            'items_id' => 100,
+            'users_id' => $tuid,
+            'content'  => 'This is a reply that references Ticket 100 in References header.&lt;br /&gt;It should be added as followup.',
+         ],
+         [
+            'items_id' => 101,
+            'users_id' => $tuid,
+            'content'  => 'This is a reply that references Ticket 101 in its subject.&lt;br /&gt;It should be added as followup.',
+         ]
+      ];
+
+      foreach ($expected_followups as $expected_followup) {
+         $this->integer(countElementsInTable(ITILFollowup::getTable(), $expected_followup))->isEqualTo(1);
+      }
    }
 }
