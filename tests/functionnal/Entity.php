@@ -402,10 +402,10 @@ class Entity extends DbTestCase {
             // Output custom CSS from parent
             'entity_id'               => $child_id,
             'root_enable_custom_css'  => 1,
-            'root_custom_css_code'    => 'body { color:blue; }',
+            'root_custom_css_code'    => '.link::before { content: "test"; }',
             'child_enable_custom_css' => \Entity::CONFIG_PARENT,
             'child_custom_css_code'   => '',
-            'expected'                => '<style>body { color:blue; }</style>',
+            'expected'                => '<style>.link::before { content: "test"; }</style>',
          ],
          [
             // Do not output custom CSS from entity itself if disabled
@@ -431,8 +431,17 @@ class Entity extends DbTestCase {
             'root_enable_custom_css'  => 0,
             'root_custom_css_code'    => '',
             'child_enable_custom_css' => 1,
-            'child_custom_css_code'   => 'body { color:blue; }',
-            'expected'                => '<style>body { color:blue; }</style>',
+            'child_custom_css_code'   => 'body > a { color:blue; }',
+            'expected'                => '<style>body > a { color:blue; }</style>',
+         ],
+         [
+            // Output cleaned custom CSS
+            'entity_id'               => $child_id,
+            'root_enable_custom_css'  => 0,
+            'root_custom_css_code'    => '',
+            'child_enable_custom_css' => 1,
+            'child_custom_css_code'   => '</style><script>alert(1);</script>',
+            'expected'                => '<style>alert(1);</style>',
          ],
       ];
    }
