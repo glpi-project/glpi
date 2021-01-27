@@ -205,7 +205,7 @@ class Conf extends CommonGLPI
                break;
          }
 
-         $inventory_request->setCompression($mime);
+         $inventory_request->handleContentType($mime);
          $inventory_request->handleRequest($contents);
          if ($inventory_request->inError()) {
             Session::addMessageAfterRedirect(

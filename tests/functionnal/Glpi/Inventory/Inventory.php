@@ -3702,7 +3702,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->boolean($refused->getFromDB($result['id']))->isTrue();
 
       $inventory_request = new \Glpi\Inventory\Request();
-      $inventory_request->setCompression(false);
+      $inventory_request->handleContentType(false);
       $contents = file_get_contents(GLPI_INVENTORY_DIR . '/' . $refused->getInventoryFileName());
       $inventory_request->handleRequest($contents);
 
