@@ -346,7 +346,7 @@ class MailCollector extends DbTestCase {
          // old items header format - found item
          [
             'headers'           => [
-               'in-reply-to' => "GLPI-SoftwareLicence-{$soft_id}.{$time1}.{$rand2}@{$uname2}",
+               'in-reply-to' => "GLPI-SoftwareLicense-{$soft_id}.{$time1}.{$rand2}@{$uname2}",
             ],
             'expected_itemtype' => SoftwareLicense::class,
             'expected_items_id' => $soft_id,
@@ -742,18 +742,28 @@ class MailCollector extends DbTestCase {
          [
             'items_id' => 100,
             'users_id' => $tuid,
-            'content'  => 'This is a reply that references Ticket 100 in In-Reply-To header.&lt;br /&gt;It should be added as followup.',
+            'content'  => 'This is a reply that references Ticket 100 in In-Reply-To header (old format).&lt;br /&gt;It should be added as followup.',
          ],
          [
             'items_id' => 100,
             'users_id' => $tuid,
-            'content'  => 'This is a reply that references Ticket 100 in References header.&lt;br /&gt;It should be added as followup.',
+            'content'  => 'This is a reply that references Ticket 100 in References header (old format).&lt;br /&gt;It should be added as followup.',
          ],
          [
             'items_id' => 101,
             'users_id' => $tuid,
             'content'  => 'This is a reply that references Ticket 101 in its subject.&lt;br /&gt;It should be added as followup.',
-         ]
+         ],
+         [
+            'items_id' => 100,
+            'users_id' => $tuid,
+            'content'  => 'This is a reply that references Ticket 100 in In-Reply-To header (new format).&lt;br /&gt;It should be added as followup.',
+         ],
+         [
+            'items_id' => 100,
+            'users_id' => $tuid,
+            'content'  => 'This is a reply that references Ticket 100 in References header (new format).&lt;br /&gt;It should be added as followup.',
+         ],
       ];
 
       foreach ($expected_followups as $expected_followup) {
