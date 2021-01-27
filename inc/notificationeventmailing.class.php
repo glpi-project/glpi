@@ -127,8 +127,21 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
          }
 
          // Add custom header for mail grouping in reader
-         $mmail->AddCustomHeader("In-Reply-To: <GLPI-".$current->fields["itemtype"]."-".
-                                 $current->fields["items_id"].">");
+         $mmail->AddCustomHeader(
+            str_replace(
+               [
+                  '%uuid',
+                  '%itemtype',
+                  '%items_id'
+               ],
+               [
+                  Config::getUuid('notification'),
+                  $current->fields['itemtype'],
+                  $current->fields['items_id']
+               ],
+               "In-Reply-To: <GLPI-%uuid-%itemtype-%items_id>"
+            )
+         );
 
          $mmail->SetFrom($current->fields['sender'], $current->fields['sendername']);
 
