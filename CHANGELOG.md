@@ -21,6 +21,7 @@ The present file will list all changes made to the project; according to the
 #### Added
 
 #### Changes
+- Format of `Message-Id` header sent in Tickets notifications changed to match format used by other items.
 
 #### Deprecated
 - Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant

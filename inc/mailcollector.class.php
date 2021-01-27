@@ -1972,8 +1972,8 @@ class MailCollector  extends CommonDBTM {
          $matches = [];
          if ($message->getHeaders()->has($header_name)
              && preg_match($pattern, $message->getHeader($header_name)->getFieldValue(), $matches)) {
-            $itemtype = $matches['itemtype'];
-            $items_id = $matches['items_id'];
+            $itemtype = $matches['itemtype'] ?? '';
+            $items_id = $matches['items_id'] ?? '';
 
             // Handle old format MessageId where itemtype was not in header
             if (empty($itemtype) && !empty($items_id)) {
@@ -2019,7 +2019,7 @@ class MailCollector  extends CommonDBTM {
          return false;
       }
 
-      $uuid = $matches['uuid'];
+      $uuid = $matches['uuid'] ?? '';
       if (empty($uuid)) {
          // message-id corresponds to old format, without uuid.
          // We assume that in most environments this message have been sent by this instance of GLPI,
