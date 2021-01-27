@@ -943,7 +943,12 @@ class MassiveAction {
             echo "<td>";
             echo __('How many copies do you want to create ?');
             echo "</td><tr>";
-            echo "<td>".Html::input("nb_copy", ['id' => "nb_copy$rand", 'value' => 0]);
+            echo "<td>".Html::input("nb_copy", [
+               'id'     => "nb_copy$rand",
+               'value'  => 1,
+               'type'   => 'number',
+               'min'    => 1
+            ]);
             echo "</td>";
             echo "</tr></table>";
 
