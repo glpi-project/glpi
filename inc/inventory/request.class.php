@@ -74,21 +74,8 @@ class Request
    /** @var Inventory */
    private $inventory;
 
-   /**
-    * @param null|mixed $data Request contents
-    * @param integer    $mode One of self::*_MODE
-    *
-    * @return void
-    */
-   public function __construct($data = null, $mode = null) {
-      if ($mode !== null) {
-         $this->setMode($mode);
-      }
-      $this->compression = self::COMPRESS_NONE;
-
-      if (null !== $data) {
-          return $this->handleRequest($data);
-      }
+   public function __construct() {
+      $this->handleContentType($_SERVER['CONTENT_TYPE'] ?? false);
    }
 
    /**
@@ -403,13 +390,13 @@ class Request
    }
 
     /**
-     * Detect compression algorithm from Content-Type header
+     * Handle Content-Type header
      *
      * @param string $type Content type
      *
      * @return void
      */
-   public function setCompression($type) {
+   public function handleContentType($type) {
       switch (strtolower($type)) {
          case 'application/x-compress-zlib':
             $this->compression = self::COMPRESS_ZLIB;
@@ -419,8 +406,12 @@ class Request
             break;
          case 'application/xml':
             $this->compression = self::COMPRESS_NONE;
+            $this->setMode(self::XML_MODE);
             break;
          case 'application/json':
+            $this->setMode(self::JSON_MODE);
+            $this->compression = self::COMPRESS_NONE;
+            break;
          case 'text/plain': //probably JSON
          default:
             $this->compression = self::COMPRESS_NONE;

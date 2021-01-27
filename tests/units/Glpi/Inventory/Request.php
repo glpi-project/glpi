@@ -57,32 +57,25 @@ class Request extends \GLPITestCase {
          ->hasMessage('Mode has not been set');
 
       //XML mode
-      $request = new \Glpi\Inventory\Request(null, \Glpi\Inventory\Request::XML_MODE);
+      $request = new \Glpi\Inventory\Request();
+      $request->handleContentType('application/xml');
       $this->integer($request->getMode())->isIdenticalTo(\Glpi\Inventory\Request::XML_MODE);
       $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY/>\n");
       $this->string($request->getContentType())->isIdenticalTo('application/xml');
 
       //JSON mode
-      $request = new \Glpi\Inventory\Request(null, \Glpi\Inventory\Request::JSON_MODE);
+      $request = new \Glpi\Inventory\Request();
+      $request->handleContentType('application/json');
       $this->integer($request->getMode())->isIdenticalTo(\Glpi\Inventory\Request::JSON_MODE);
       $response = [];
       $this->string($request->getResponse())->isIdenticalTo(json_encode($response));
       $this->string($request->getContentType())->isIdenticalTo('application/json');
-
-      //Not existing mode
-      $this->exception(
-         function () {
-            $request = new \Glpi\Inventory\Request(null, 42);
-         }
-      )
-         ->isInstanceOf('\RuntimeException')
-         ->hasMessage('Unknown mode 42');
    }
 
    public function testProlog() {
       $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>PROLOG</QUERY></REQUEST>";
       $request = new \Glpi\Inventory\Request;
-      $request->setCompression('application/xml');
+      $request->HandleContentType('application/xml');
       $request->handleRequest($data);
       $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE></REPLY>\n");
    }
@@ -105,7 +98,7 @@ class Request extends \GLPITestCase {
       $request = new \mock\Glpi\Inventory\Request();
       $this->calling($request)->inventory = null;
       $this->calling($request)->prolog = null;
-      $request->setCompression('Application/xml');
+      $request->HandleContentType('Application/xml');
       $request->handleRequest($data);
       $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY/>\n");
    }
@@ -114,7 +107,7 @@ class Request extends \GLPITestCase {
    public function testWrongQuery() {
       $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>UNKNWON</QUERY></REQUEST>";
       $request = new \Glpi\Inventory\Request;
-      $request->setCompression('application/xml');
+      $request->HandleContentType('application/xml');
       $request->handleRequest($data);
       $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR>Query 'UNKNWON' is not supported.</ERROR></REPLY>\n");
    }

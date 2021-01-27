@@ -35,9 +35,7 @@ use Glpi\Inventory\Request;
 include ('../inc/includes.php');
 
 $inventory_request = new Request();
-$inventory_request->setCompression(
-   $_SERVER['CONTENT_TYPE'] ?? false
-);
+
 
 $handle = true;
 if (isset($_GET['refused'])) {
