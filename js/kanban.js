@@ -221,6 +221,13 @@
       var _backgroundRefresh = null;
 
       /**
+       * Reference for the background refresh timer
+       * @type {null}
+       * @private
+       */
+      var _backgroundRefreshTimer = null;
+
+      /**
        * The user's state object.
        * This contains an up to date list of columns that should be shown, the order they are in, and if they are folded.
        * @since 9.5.0
@@ -1568,7 +1575,8 @@
        * @since 9.5.0
        */
       var delayRefresh = function() {
-         window.setTimeout(_backgroundRefresh, 10000);
+         window.clearTimeout(_backgroundRefreshTimer);
+         _backgroundRefreshTimer = window.setTimeout(_backgroundRefresh, 10000);
       };
 
       /**
@@ -2069,11 +2077,11 @@
             }
             // Refresh and then schedule the next refresh (minutes)
             self.refresh(null, null, function() {
-               window.setTimeout(_backgroundRefresh, self.background_refresh_interval * 60 * 1000);
+               _backgroundRefreshTimer = window.setTimeout(_backgroundRefresh, self.background_refresh_interval * 60 * 1000);
             }, false);
          };
          // Schedule initial background refresh (minutes)
-         window.setTimeout(_backgroundRefresh, self.background_refresh_interval * 60 * 1000);
+         _backgroundRefreshTimer = window.setTimeout(_backgroundRefresh, self.background_refresh_interval * 60 * 1000);
       };
 
       /**
