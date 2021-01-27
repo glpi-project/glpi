@@ -119,7 +119,7 @@ class VirtualMachine extends InventoryAsset
          }
 
          //handle extra components
-         if ($this->conf->vm_components) {
+         if ($this->conf->vm_as_computer && $this->conf->vm_components) {
             //create processor component
             if (!property_exists($vm_val, 'cpus') && property_exists($vm_val, 'vcpu')) {
                $cpus = [];
@@ -244,7 +244,19 @@ class VirtualMachine extends InventoryAsset
          }
       }
 
-      // Create VM based on information of section VIRTUALMACHINE
+      if ($this->conf->vm_as_computer) {
+         $this->createVmComputer();
+      }
+   }
+
+   /**
+    * Create computer asset from VM informaiton
+    *
+    * @return void
+    */
+   protected function createVmComputer() {
+      global $DB;
+
       $computervm = new Computer();
       foreach ($this->data as $vm) {
          if (property_exists($vm, '_onlylink') && $vm->_onlylink) {

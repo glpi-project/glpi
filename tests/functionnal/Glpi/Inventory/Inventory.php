@@ -3361,4 +3361,59 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->integer($nbprinters)->isIdenticalTo(countElementsInTable(\Printer::getTable()));
       $this->integer($nbnetequps)->isIdenticalTo(countElementsInTable(\NetworkEquipment::getTable()));
    }
+
+   public function testImportVirtualMachines() {
+      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_2.json');
+
+      $count_vms = count(json_decode($json)->content->virtualmachines);
+      $this->integer($count_vms)->isIdenticalTo(6);
+
+      $nb_vms = countElementsInTable(\ComputerVirtualMachine::getTable());
+      $nb_computers = countElementsInTable(\Computer::getTable());
+      $inventory = new \Glpi\Inventory\Inventory($json);
+
+      if ($inventory->inError()) {
+         $this->dump($inventory->getErrors());
+      }
+      $this->boolean($inventory->inError())->isFalse();
+      $this->array($inventory->getErrors())->isEmpty();
+
+      //check inventory metadata
+      $metadata = $inventory->getMetadata();
+      $this->array($metadata)->hasSize(4)
+         ->string['deviceid']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
+         ->string['itemtype']->isIdenticalTo('Computer');
+
+      //check we add only one computer
+      ++$nb_computers;
+      $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers);
+      //check created vms
+      $nb_vms += $count_vms;
+      $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
+
+      //change config to import vms as computers
+      $this->login();
+      $conf = new \Glpi\Inventory\Conf();
+      $this->boolean($conf->saveConf(['vm_as_computer' => 1]))->isTrue();
+
+      $inventory = new \Glpi\Inventory\Inventory($json);
+
+      if ($inventory->inError()) {
+         $this->dump($inventory->getErrors());
+      }
+      $this->boolean($inventory->inError())->isFalse();
+      $this->array($inventory->getErrors())->isEmpty();
+
+      //check inventory metadata
+      $metadata = $inventory->getMetadata();
+      $this->array($metadata)->hasSize(4)
+         ->string['deviceid']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
+         ->string['itemtype']->isIdenticalTo('Computer');
+
+      //check we add main computer and one computer per vm
+      //one does not have an uuid, so no computer is created.
+      $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
+      //check created vms
+      $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
+   }
 }
