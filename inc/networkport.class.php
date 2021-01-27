@@ -48,8 +48,6 @@ if (!defined('GLPI_ROOT')) {
 **/
 class NetworkPort extends CommonDBChild {
 
-   use Glpi\Features\Clonable;
-
    // From CommonDBChild
    static public $itemtype             = 'itemtype';
    static public $items_id             = 'items_id';
@@ -61,9 +59,6 @@ class NetworkPort extends CommonDBChild {
 
    static $rightname                   = 'networking';
 
-   public function getCloneRelations() :array {
-      return [];
-   }
 
    function getForbiddenStandardMassiveAction() {
 
