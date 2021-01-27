@@ -55,7 +55,7 @@ class Inventory
    /** @var array */
    protected $data = [];
    /** @var array */
-   private $metadata;
+   private $metadata = [];
    /** @var array */
    private $errors = [];
    /** @var CommonDBTM */
