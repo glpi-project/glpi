@@ -3596,14 +3596,49 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
    }
 
    public function testImportRefusedFromAssetRules() {
-      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1.json');
-      $data = json_decode($json);
-      unset($data->content->bios);
-      unset($data->content->hardware->name);
-      $json = json_encode($data);
 
+      $rule = new \Rule();
+
+      //prepares needed rules id
+      $this->boolean(
+         $rule->getFromDBByCrit(['name' => 'Computer constraint (name)'])
+      )->isTrue();
+      $rules_id_torefuse = $rule->fields['id'];
+
+      $this->boolean(
+         $rule->getFromDBByCrit(['name' => 'Computer import denied'])
+      )->isTrue();
+      $rules_id_refuse = $rule->fields['id'];
+
+      $this->boolean(
+         $rule->getFromDBByCrit(['name' => 'Computer import (by name)'])
+      )->isTrue();
+      $rules_id_toaccept = $rule->fields['id'];
+
+      //move rule to refuse computer inventory
+      $rulecollection = new \RuleImportAssetCollection();
+      $this->boolean(
+         $rulecollection->moveRule(
+            $rules_id_refuse,
+            $rules_id_torefuse,
+            \RuleCollection::MOVE_BEFORE
+         )
+      )->isTrue();
+
+      //do inventory
+      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1.json');
       $inventory = new \Glpi\Inventory\Inventory($json);
 
+      //move rule back to accept computer inventory
+      $this->boolean(
+         $rulecollection->moveRule(
+            $rules_id_refuse,
+            $rules_id_toaccept,
+            \RuleCollection::MOVE_AFTER
+         )
+      )->isTrue();
+
+      //test inventory, will be refused
       if ($inventory->inError()) {
          foreach ($inventory->getErrors() as $error) {
             var_dump($error);
@@ -3645,14 +3680,14 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $result = $iterator->next();
       $expected = [
          'id' => $result['id'],
-         'name' => '',
+         'name' => 'glpixps',
          'itemtype' => 'Computer',
          'entities_id' => 0,
          'ip' => '["192.168.1.142","fe80::b283:4fa3:d3f2:96b1","192.168.1.118","fe80::92a4:26c6:99dd:2d60"]',
          'mac' => '["00:e0:4c:68:01:db","44:85:00:2b:90:bc"]',
          'rules_id' => $result['rules_id'],
          'method' => null,
-         'serial' => '',
+         'serial' => '640HP72',
          'uuid' => '4c4c4544-0034-3010-8048-b6c04f503732',
          'agents_id' => 0,
          'date_creation' => $result['date_creation'],
@@ -3661,6 +3696,46 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       ];
 
       $this->array($result)->isEqualTo($expected);
+
+      //test inventory from refused equipment, will be accepted since rules has been reset ;)
+      $refused = new \RefusedEquipment();
+      $this->boolean($refused->getFromDB($result['id']))->isTrue();
+
+      $inventory_request = new \Glpi\Inventory\Request();
+      $inventory_request->setCompression(false);
+      $contents = file_get_contents(GLPI_INVENTORY_DIR . '/' . $refused->getInventoryFileName());
+      $inventory_request->handleRequest($contents);
+
+      $redirect_url = $refused->handleInventoryRequest($inventory_request);
+      $this->hasSessionMessages(
+         INFO, [
+            'Alternate username updated. The connected items have been updated using this alternate username.',
+            'Inventory is successufl, refused entry log has been removed'
+         ]
+      );
+
+      //test inventory, will be accepted
+      /*if ($inventory->inError()) {
+         foreach ($inventory->getErrors() as $error) {
+            var_dump($error);
+         }
+      }
+      $this->boolean($inventory->inError())->isFalse();
+      $this->array($inventory->getErrors())->isEmpty();*/
+
+      //refused equipment has been removed
+      $iterator = $DB->request([
+         'FROM'   => \RefusedEquipment::getTable(),
+      ]);
+      $this->integer(count($iterator))->isIdenticalTo(0);
+
+      //but a linked computer
+      $gagent = new \Agent();
+      $this->boolean($gagent->getFromDB($agent['id']))->isTrue();
+
+      $computer = new \Computer();
+      $this->boolean($computer->getFromDB($gagent->fields['items_id']))->isTrue();
+      $this->string($computer->fields['name'])->isIdenticalTo('glpixps');
    }
 
    public function testImportRefusedFromEntitiesRules() {
