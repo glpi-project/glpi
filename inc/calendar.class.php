@@ -38,9 +38,7 @@ if (!defined('GLPI_ROOT')) {
  * Calendar Class
 **/
 class Calendar extends CommonDropdown {
-   use Glpi\Features\Clonable {
-      post_clone as protected post_cloneTrait;
-   }
+   use Glpi\Features\Clonable;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -219,9 +217,11 @@ class Calendar extends CommonDropdown {
       return (bool) $this->clone($input);
    }
 
+   /**
+    * @see Glpi\Features\Clonable::post_clone
+    */
    public function post_clone($source, $history) {
       $this->updateDurationCache($this->getID());
-      $this->post_cloneTrait($source, $history);
    }
 
 

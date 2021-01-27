@@ -80,10 +80,8 @@ class CommonDBConnexityItemNotFound extends \Exception {
  * @since 0.84
 **/
 abstract class CommonDBConnexity extends CommonDBTM {
-   use Glpi\Features\Clonable {
-      post_clone as protected post_cloneTrait;
-      prepareInputForClone as protected prepareInputForCloneTrait;
-   }
+
+   use Glpi\Features\Clonable;
 
    const DONT_CHECK_ITEM_RIGHTS  = 1; // Don't check the parent => always can*Child
    const HAVE_VIEW_RIGHT_ON_ITEM = 2; // canXXXChild = true if parent::canView == true
@@ -93,8 +91,10 @@ abstract class CommonDBConnexity extends CommonDBTM {
    /// Disable auto forwarding information about entities ?
    static public $disableAutoEntityForwarding   = false;
 
+
    public function getCloneRelations() :array {
-      return [];
+      return [
+      ];
    }
 
    /**
@@ -178,7 +178,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
       while ($row = $iterator->next()) {
          $input = Toolbox::addslashes_deep($row);
          $item = new static();
-         $item->getFromDB($input['id']);
+         $item->getFromDB($input[static::getIndexName()]);
          $res[] = $item;
       }
       return $res;

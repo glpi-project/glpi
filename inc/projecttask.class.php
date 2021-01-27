@@ -2040,6 +2040,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
    public function prepareInputForClone($input) {
       $input['uuid'] = \Ramsey\Uuid\Uuid::uuid4();
-      return $this->prepareInputForCloneTrait($input);
+      return $input;
    }
 }

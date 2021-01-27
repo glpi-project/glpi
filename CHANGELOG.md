@@ -26,7 +26,12 @@ The present file will list all changes made to the project; according to the
 #### Deprecated
 - Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
 - Usage of `CommonDBTM::notificationqueueonaction` property
-- `RuleImportComputer` and `RuleImportComputerCollection`
+- `Calendar::duplicate()`
+- `CommonDBTM::clone()`
+- `CommonDBTM::prepareInputForClone()`
+- `CommonDBTM::post_clone()`
+- `RuleImportComputer` class
+- `RuleImportComputerCollection` class
 
 #### Removed
 - `Update::declareOldItems()`
