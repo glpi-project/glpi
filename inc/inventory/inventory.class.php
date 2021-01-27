@@ -327,6 +327,22 @@ class Inventory
    }
 
    /**
+    * Get inventoried items
+    *
+    * @return array
+    */
+   public function getItems(): array {
+      $items = $this->mainasset->getInventoried();
+
+
+      foreach ($this->mainasset->getrefused() as $refused) {
+         $items[] = $refused;
+      }
+
+      return $items;
+   }
+
+   /**
     * Handle inventory file
     *
     * @return void
@@ -335,11 +351,7 @@ class Inventory
       $ext = (Request::XML_MODE === $this->inventory_format ? 'xml' : 'json');
       $tmpfile = sprintf('%s/%s.%s', GLPI_INVENTORY_DIR, $this->inventory_id, $ext);
 
-      $items = $this->mainasset->getInventoried();
-
-      foreach ($this->mainasset->getRefused() as $refused) {
-         $items[] = $refused;
-      }
+      $items = $this->getItems();
 
       foreach ($items as $item) {
          $itemtype = $item->getType();

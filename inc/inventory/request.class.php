@@ -35,6 +35,7 @@ namespace Glpi\Inventory;
 use DOMDocument;
 use DOMElement;
 use Toolbox;
+use Unmanaged;
 
 /**
  * Handle inventory request
@@ -442,13 +443,34 @@ class Request
     * @return array
     */
    public function getInventoryStatus(): array {
-      $item = $this->inventory->getItem();
-      return [
-         'deviceid' => $this->deviceid,
-         'itemtype' => $item->getTypeName(),
-         'items_id' => $item->getID(),
-         'metadata' => $this->inventory->getMetadata()
+      $items = $this->inventory->getItems();
+      $status = [
+         'metadata' => $this->inventory->getMetadata(),
+         'items'    => $items
       ];
+
+      if (count($items) == 1) {
+         $item = $items[0];
+         $status += [
+            'itemtype' => $item->getType(),
+            'items_id' => $item->fields['id']
+         ];
+      } else if (count($items)) {
+         $itemtype = null;
+         foreach ($items as $item) {
+            if ($itemtype === null && $item->getType() != Unmanaged::class) {
+               $itemtype = $item->getType();
+            } else if ($itemtype !== $item->getType()) {
+               $itemtype = false;
+               break;
+            }
+         }
+         if ($itemtype) {
+            $status['itemtype'] = $itemtype;
+         }
+      }
+
+      return $status;
    }
 
    public function getInventory(): Inventory {
