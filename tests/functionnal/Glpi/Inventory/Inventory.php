@@ -3373,9 +3373,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $inventory = new \Glpi\Inventory\Inventory($json);
 
       if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
+         $this->dump($inventory->getErrors());
       }
       $this->boolean($inventory->inError())->isFalse();
       $this->array($inventory->getErrors())->isEmpty();
@@ -3386,7 +3384,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          ->string['deviceid']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
          ->string['itemtype']->isIdenticalTo('Computer');
 
-      global $DB;
       //check we add only one computer
       ++$nb_computers;
       $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers);
@@ -3402,9 +3399,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $inventory = new \Glpi\Inventory\Inventory($json);
 
       if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
+         $this->dump($inventory->getErrors());
       }
       $this->boolean($inventory->inError())->isFalse();
       $this->array($inventory->getErrors())->isEmpty();
@@ -3415,7 +3410,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          ->string['deviceid']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
          ->string['itemtype']->isIdenticalTo('Computer');
 
-      global $DB;
       //check we add main computer and one computer per vm
       //one does not have an uuid, so no computer is created.
       $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
