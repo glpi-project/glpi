@@ -967,15 +967,13 @@ class MailCollector  extends CommonDBTM {
          $tkt['date'] = $headers['date'];
       }
 
-      // Detect if it is a mail reply
-      $glpi_message_match = "/GLPI-([0-9]+)\.[0-9]+\.[0-9]+@\w*/";
-
-      // Check if email not send by GLPI : if yes -> blacklist
-      if (!isset($headers['message_id'])
-          || preg_match($glpi_message_match, $headers['message_id'], $match)) {
+      if ($this->isMessageSentByGlpi($message)) {
+         // Message was sent by GLPI.
+         // Message is blacklisted to avoid infinite loop (where GLPI creates a ticket from its own notification).
          $tkt['_blacklisted'] = true;
          return $tkt;
       }
+
       // manage blacklist
       $blacklisted_emails   = Blacklist::getEmails();
       // Add name of the mailcollector as blacklisted
@@ -1070,23 +1068,10 @@ class MailCollector  extends CommonDBTM {
          $tkt['content'] = $body;
       }
 
-      // prepare match to find ticket id in headers
-      // header is added in all notifications using pattern: GLPI-{itemtype}-{items_id}
-      $ref_match = "/GLPI-Ticket-([0-9]+)/";
-
-      // See In-Reply-To field
-      if (isset($headers['in_reply_to'])) {
-         if (preg_match($ref_match, $headers['in_reply_to'], $match)) {
-            $tkt['tickets_id'] = intval($match[1]);
-         }
-      }
-
-      // See in References
-      if (!isset($tkt['tickets_id'])
-          && isset($headers['references'])) {
-         if (preg_match($ref_match, $headers['references'], $match)) {
-            $tkt['tickets_id'] = intval($match[1]);
-         }
+      // Search for referenced item in headers
+      $found_item = $this->getItemFromHeaders($message);
+      if ($found_item instanceof Ticket) {
+         $tkt['tickets_id'] = $found_item->fields['id'];
       }
 
       // See in title
@@ -1961,6 +1946,93 @@ class MailCollector  extends CommonDBTM {
       return self::countCollectors(true);
    }
 
+   /**
+    * Try to retrieve an existing item from references in message headers.
+    * References corresponds to original MessageId sent by GLPI.
+    *
+    * @param Message $message
+    *
+    * @since 9.5.4
+    *
+    * @return CommonDBTM|null
+    */
+   public function getItemFromHeaders(Message $message): ?CommonDBTM {
+      $pattern = $this->getMessageIdExtractPattern();
+
+      foreach (['in_reply_to', 'references'] as $header_name) {
+         $matches = [];
+         if ($message->getHeaders()->has($header_name)
+             && preg_match($pattern, $message->getHeader($header_name)->getFieldValue(), $matches)) {
+            $itemtype = $matches['itemtype'];
+            $items_id = $matches['items_id'];
+
+            // Handle old format MessageId where itemtype was not in header
+            if (empty($itemtype) && !empty($items_id)) {
+               $itemtype = Ticket::getType();
+            }
+
+            if (empty($itemtype) || !class_exists($itemtype) || !is_a($itemtype, CommonDBTM::class, true)) {
+               // itemtype not found or invalid
+               continue;
+            }
+            $item = new $itemtype();
+            if (!empty($items_id) && $item->getFromDB($items_id)) {
+               return $item;
+            }
+         }
+      }
+
+      return null;
+   }
+
+   /**
+    * Check if message was sent by current instance of GLPI.
+    * This can be verified by checking the MessageId header.
+    *
+    * @param Message $message
+    *
+    * @since 9.5.4
+    *
+    * @return bool
+    */
+   public function isMessageSentByGlpi(Message $message): bool {
+      $pattern = $this->getMessageIdExtractPattern();
+
+      if (!$message->getHeaders()->has('message-id')) {
+         // Messages sent by GLPI now have always a message-id header.
+         return false;
+      }
+
+      $message_id = $message->getHeader('message_id')->getFieldValue();
+      $matches = [];
+      if (!preg_match($pattern, $message_id, $matches)) {
+         // message-id header does not match GLPI format.
+         return false;
+      }
+
+      return true;
+   }
+
+   /**
+    * Get pattern that can be used to extract informations from a GLPI MessageId (itemtype and items_id).
+    *
+    * @see NotificationTarget::getMessageID()
+    *
+    * @return string
+    */
+   private function getMessageIdExtractPattern(): string {
+      // old format:           GLPI-{$items_id}.{$time}.{$rand}@{$uname}
+      // without related item: GLPI.{$time}.{$rand}@{$uname}
+      // with related item:    GLPI-{$itemtype}-{$items_id}.{$time}.{$rand}@{$uname}
+
+      return '/GLPI'
+         . '(-(?<itemtype>[a-z]+))?' // itemtype is not present if notification is not related to any object and was not present in old format
+         . '(-(?<items_id>[0-9]+))?' // items_id is not present if notification is not related to any object
+         . '\.[0-9]+' // time()
+         . '\.[0-9]+' // rand()
+         . '@\w*' // uname
+         . '/i'; // insensitive
+   }
 
    /**
     * @param $name

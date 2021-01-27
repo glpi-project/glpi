@@ -99,7 +99,7 @@ function loadDataset() {
    // Unit test data definition
    $data = [
       // bump this version to force reload of the full dataset, when content change
-      '_version' => '4.4',
+      '_version' => '4.6',
 
       // Type => array of entries
       'Entity' => [
@@ -145,6 +145,14 @@ function loadDataset() {
             'name'        => '_test_pc22',
             'entities_id' => '_test_child_2',
          ]
+      ], 'ComputerModel' => [
+         [
+            'name'           => '_test_computermodel_1',
+            'product_number' => 'CMP_ADEAF5E1',
+         ], [
+            'name'           => '_test_computermodel_2',
+            'product_number' => 'CMP_567AEC68',
+         ],
       ], 'Software' => [
          [
             'name'         => '_test_soft',
@@ -319,7 +327,21 @@ function loadDataset() {
             'content'        => 'Content for ticket _ticket03',
             'users_id_recipient' => TU_USER,
             'entities_id'    => '_test_child_1'
-         ]
+         ],
+         [
+            'id'             => 100, // Force ID that will be used in imap test suite fixtures
+            'name'           => '_ticket100',
+            'content'        => 'Content for ticket _ticket100',
+            'users_id_recipient' => TU_USER,
+            'entities_id'    => '_test_root_entity'
+         ],
+         [
+            'id'             => 101, // Force ID that will be used in imap test suite fixtures
+            'name'           => '_ticket101',
+            'content'        => 'Content for ticket _ticket101',
+            'users_id_recipient' => TU_USER,
+            'entities_id'    => '_test_root_entity'
+         ],
       ], 'TicketTask' => [
          [
             'tickets_id'         => '_ticket01',
