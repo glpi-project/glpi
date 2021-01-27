@@ -2302,7 +2302,13 @@ class Entity extends CommonTreeDropdown {
          return '';
       }
 
-      return '<style>' . Html::entity_decode_deep($custom_css_code) . '</style>';
+      // Remove all html tags
+      $custom_css_code = Html::clean($custom_css_code);
+
+      // Fix child combinator
+      $custom_css_code = str_replace('&gt;', '>', $custom_css_code);
+
+      return '<style>' . $custom_css_code . '</style>';
    }
 
    /**
