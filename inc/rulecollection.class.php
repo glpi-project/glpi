@@ -37,6 +37,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class RuleCollection extends CommonDBTM {
+   public const MOVE_BEFORE = 'before';
+   public const MOVE_AFTER = 'after';
+
    /// Rule type
    public $sub_type;
    /// process collection stop on first matched rule
@@ -57,7 +60,6 @@ class RuleCollection extends CommonDBTM {
    public $entity                                = 0;
 
    static $rightname                             = 'config';
-
 
 
    /// Tab orientation : horizontal or vertical
@@ -752,13 +754,13 @@ class RuleCollection extends CommonDBTM {
    /**
     * Move a rule in an ordered collection
     *
-    * @param $ID        of the rule to move
-    * @param $ref_ID    of the rule position  (0 means all, so before all or after all)
-    * @param $type      of move : after or before ( default 'after')
+    * @param integer $ID        ID of the rule to move
+    * @param integer $ref_ID    ID of the rule position  (0 means all, so before all or after all)
+    * @param string  $type      Movement type, one of self::MOVE_AFTER or self::MOVE_BEFORE
     *
-    * @return true if all ok
+    * @return boolean
    **/
-   function moveRule($ID, $ref_ID, $type = 'after') {
+   function moveRule($ID, $ref_ID, $type = self::MOVE_AFTER) {
       global $DB;
 
       $ruleDescription = new Rule();
@@ -772,7 +774,7 @@ class RuleCollection extends CommonDBTM {
          $ruleDescription->getFromDB($ref_ID);
          $rank = $ruleDescription->fields["ranking"];
 
-      } else if ($type == "after") {
+      } else if ($type == self::MOVE_AFTER) {
          // Move after all
          $result = $DB->request([
             'SELECT' => ['MAX' => 'ranking AS maxi'],
@@ -791,7 +793,7 @@ class RuleCollection extends CommonDBTM {
 
       // Move others rules in the collection
       if ($old_rank < $rank) {
-         if ($type == "before") {
+         if ($type == self::MOVE_BEFORE) {
             $rank--;
          }
 
@@ -811,7 +813,7 @@ class RuleCollection extends CommonDBTM {
          }
 
       } else if ($old_rank > $rank) {
-         if ($type == "after") {
+         if ($type == self::MOVE_AFTER) {
             $rank++;
          }
 
@@ -835,10 +837,11 @@ class RuleCollection extends CommonDBTM {
       }
 
       // Move the rule
-      if ($result
-          && ($old_rank != $rank)) {
-         $result = $rule->update(['id'      => $ID,
-                                       'ranking' => $rank]);
+      if ($result && ($old_rank != $rank)) {
+         $result = $rule->update([
+            'id'      => $ID,
+            'ranking' => $rank
+         ]);
       }
       return ($result ? true : false);
    }

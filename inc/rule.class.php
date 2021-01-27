@@ -586,8 +586,8 @@ class Rule extends CommonDBTM {
          case 'move_rule' :
             $input = $ma->getInput();
             $values = [
-               'after'  => __('After'),
-               'before' => __('Before')
+               RuleCollection::MOVE_AFTER  => __('After'),
+               RuleCollection::MOVE_BEFORE => __('Before')
             ];
             Dropdown::showFromArray('move_type', $values, ['width' => '20%']);
 
