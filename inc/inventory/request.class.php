@@ -417,13 +417,11 @@ class Request
             $this->compression = self::COMPRESS_GZIP;
             break;
          case 'application/xml':
-            $this->setMode(self::XML_MODE);
             $this->compression = self::COMPRESS_NONE;
             break;
          case 'application/json':
          case 'text/plain': //probably JSON
          default:
-            $this->setMode(self::JSON_MODE);
             $this->compression = self::COMPRESS_NONE;
             break;
       }
