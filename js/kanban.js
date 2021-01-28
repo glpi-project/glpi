@@ -1461,7 +1461,7 @@
 
          var uniqueID = Math.floor(Math.random() * 999999);
          var formID = "form_add_" + itemtype + "_" + uniqueID;
-         var add_form = "<form id='" + formID + "' class='kanban-add-form kanban-form no-track'>";
+         var add_form = "<form id='" + formID + "' class='kanban-bulk-add-form kanban-form no-track'>";
          var form_header = "<div class='kanban-item-header'>";
          form_header += "<span class='kanban-item-title'>"+self.supported_itemtypes[itemtype]['name']+"</span>";
          form_header += "<i class='fas fa-times' title='Close' onclick='$(this).parent().parent().remove()'></i>";
