@@ -371,7 +371,7 @@
          self.temp_forms = {};
          var columns = $(self.element + " .kanban-column");
          $.each(columns, function(i, column) {
-            var forms = $(column).find('.kanban-add-form');
+            var forms = $(column).find('.kanban-add-form').find('.kanban-bulk-add-form');
             if (forms.length > 0) {
                self.temp_forms[column.id] = [];
                $.each(forms, function(i2, form) {
