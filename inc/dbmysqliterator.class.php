@@ -179,6 +179,7 @@ class DBmysqlIterator implements Iterator, Countable {
                      break;
 
                   case 'START' :
+                  case 'OFFSET' :
                      $start = $val;
                      unset($crit[$key]);
                      break;
