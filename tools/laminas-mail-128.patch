@@ -1,0 +1,79 @@
+From a58790b1e49588806a24f92a1f2538c18392d61e Mon Sep 17 00:00:00 2001
+From: Edgard Lorraine Messias <edgardmessias@gmail.com>
+Date: Thu, 14 Jan 2021 15:58:43 -0300
+Subject: [PATCH] Fixed multibyte string encoding
+
+Related to https://github.com/glpi-project/glpi/issues/8495
+
+Signed-off-by: Edgard <edgardmessias@gmail.com>
+---
+ composer.json                          |  1 +
+ src/Header/ContentDisposition.php      | 36 ++++++++++++++++----------
+ test/Header/ContentDispositionTest.php | 26 ++++++++++++++++---
+ 3 files changed, 46 insertions(+), 17 deletions(-)
+
+diff --git a/composer.json b/composer.json
+index d43eba1e..f9c844e3 100644
+--- a/composer.json
++++ b/composer.json
+@@ -32,6 +32,7 @@
+         "laminas/laminas-stdlib": "^2.7 || ^3.0",
+         "laminas/laminas-validator": "^2.10.2",
+         "laminas/laminas-zendframework-bridge": "^1.0",
++        "symfony/polyfill-mbstring": "^1.12.0",
+         "true/punycode": "^2.1"
+     },
+     "require-dev": {
+diff --git a/src/Header/ContentDisposition.php b/src/Header/ContentDisposition.php
+index 635e97cc..61fa7c9b 100644
+--- a/src/Header/ContentDisposition.php
++++ b/src/Header/ContentDisposition.php
+@@ -137,26 +137,34 @@ public function getFieldValue($format = HeaderInterface::FORMAT_RAW)
+                 }
+             } else {
+                 // Use 'continuation' per RFC 2231
+-                $maxValueLength = strlen($value);
+-                do {
+-                    $maxValueLength = ceil(0.6 * $maxValueLength);
+-                } while ($maxValueLength > self::MAX_PARAMETER_LENGTH);
+-
+                 if ($valueIsEncoded) {
+-                    $encodedLength = strlen($value);
+                     $value = HeaderWrap::mimeDecodeValue($value);
+-                    $decodedLength = strlen($value);
+-                    $maxValueLength -= ($encodedLength - $decodedLength);
+                 }
+ 
+-                $valueParts = str_split($value, $maxValueLength);
+                 $i = 0;
+-                foreach ($valueParts as $valuePart) {
+-                    $attributePart = $attribute . '*' . $i++;
+-                    if ($valueIsEncoded) {
+-                        $valuePart = $this->getEncodedValue($valuePart);
++                $fullLength = mb_strlen($value, 'UTF-8');
++                while ($fullLength > 0) {
++                    $attributePart = $attribute . '*' . $i++ . '="';
++                    $attLen = mb_strlen($attributePart, 'UTF-8');
++
++                    $subPos = 1;
++                    $valuePart = '';
++                    while ($subPos <= $fullLength) {
++                        $sub = mb_substr($value, 0, $subPos, 'UTF-8');
++                        if ($valueIsEncoded) {
++                            $sub = $this->getEncodedValue($sub);
++                        }
++                        if ($attLen + mb_strlen($sub, 'UTF-8') >= self::MAX_PARAMETER_LENGTH) {
++                            $subPos--;
++                            break;
++                        }
++                        $subPos++;
++                        $valuePart = $sub;
+                     }
+-                    $result .= sprintf(';%s%s="%s"', Headers::FOLDING, $attributePart, $valuePart);
++
++                    $value = mb_substr($value, $subPos, null, 'UTF-8');
++                    $fullLength = mb_strlen($value, 'UTF-8');
++                    $result .= ';' . Headers::FOLDING . $attributePart . $valuePart . '"';
+                 }
+             }
+         }

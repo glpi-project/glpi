@@ -1493,10 +1493,7 @@ class MailCollector  extends CommonDBTM {
    private function getRecursiveAttached(\Laminas\Mail\Storage\Part $part, $path, $maxsize, $subject, $subpart = "") {
       if ($part->isMultipart()) {
          $index = 0;
-         // while instead of foreach to supress header error in laminas-mail
-         $iterator = new RecursiveIteratorIterator($part);
-         while (@$iterator->valid()) {
-            $mypart = $iterator->current();
+         foreach (new RecursiveIteratorIterator($part) as $mypart) {
             $this->getRecursiveAttached(
                $mypart,
                $path,
@@ -1504,7 +1501,6 @@ class MailCollector  extends CommonDBTM {
                $subject,
                ($subpart ? $subpart.".".($index+1) : ($index+1))
             );
-            $iterator->next();
          }
       } else {
          if (!$part->getHeaders()->has('content-type')
@@ -1532,16 +1528,15 @@ class MailCollector  extends CommonDBTM {
              && $part->getHeaders()->has('content-disposition')
              && ($content_disp_header = $part->getHeader('content-disposition')) instanceof ContentDisposition) {
             $filename = $content_disp_header->getParameter('filename') ?? '';
-            // Check bug in ContentDisposition
-            if (strpos($filename, '=?UTF-8?') !== false) {
-               // Format =?UTF-8?Q?<code sequence>?=
-               // Join multiple sequences (=?UTF-8?Q?=AA?==?UTF-8?Q?=BB?= to =?UTF-8?Q?=AA=BB?=)
-               $filename = str_replace('?==?UTF-8?Q?=', '=', $filename);
-               $filename = \Laminas\Mail\Header\HeaderWrap::mimeDecodeValue($filename);
-            }
+
+            var_dump(sprintf('filename from content-disposition: >%s<', $filename));
          }
 
-         var_dump($filename);
+         // Try to get filename from Content-Type header
+         if (empty($filename)) {
+            $filename = $content_type_header->getParameter('name') ?? '';
+            var_dump(sprintf('filename from content-type: >%s<', $filename));
+         }
 
          $filename_matches = [];
          if (preg_match("/^(?<encoding>.*)''(?<value>.*)$/", $filename, $filename_matches)
@@ -1553,13 +1548,6 @@ class MailCollector  extends CommonDBTM {
             if ($encoding !== 'UTF-8') {
                $filename = mb_convert_encoding($filename, 'UTF-8', $encoding);
             }
-         }
-
-         var_dump($filename);
-         //die;
-         // Try to get filename from Content-Type header
-         if (empty($filename)) {
-            $filename = $content_type_header->getParameter('name') ?? '';
          }
 
          // part come without correct filename in headers - generate trivial one

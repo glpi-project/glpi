@@ -227,6 +227,13 @@ jobs:
           docker exec app bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root
           docker exec app vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --fail-if-skipped-methods --max-children-number 1 -d tests/database
           docker exec app bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root
+      - name: "IMAP tests"
+        if: env.skip != 'true'
+        run: |
+          for f in `ls tests/emails-tests/*.eml`; do cat $f | docker exec --user glpi --interactive dovecot getmail_maildir /home/glpi/Maildir/ ; done
+          docker exec app sed -e 's/127.0.0.1/dovecot/g' -i tests/imap/MailCollector.php
+          docker exec app sed -e 's/127.0.0.1/dovecot/g' -i tests/imap/Toolbox.php
+          docker exec app vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --fail-if-skipped-methods --max-children-number 1 -d tests/imap
       - name: "Unit tests"
         if: env.skip != 'true'
         run: |
@@ -240,13 +247,6 @@ jobs:
         run: |
           for f in `ls tests/LDAP/ldif/*.ldif`; do cat $f | docker exec --interactive openldap ldapadd -x -H ldap://127.0.0.1:3890/ -D "cn=Manager,dc=glpi,dc=org" -w insecure ; done
           docker exec app vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --fail-if-skipped-methods --max-children-number 1 -d tests/LDAP
-      - name: "IMAP tests"
-        if: env.skip != 'true'
-        run: |
-          for f in `ls tests/emails-tests/*.eml`; do cat $f | docker exec --user glpi --interactive dovecot getmail_maildir /home/glpi/Maildir/ ; done
-          docker exec app sed -e 's/127.0.0.1/dovecot/g' -i tests/imap/MailCollector.php
-          docker exec app sed -e 's/127.0.0.1/dovecot/g' -i tests/imap/Toolbox.php
-          docker exec app vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --fail-if-skipped-methods --max-children-number 1 -d tests/imap
       - name: "WEB tests"
         if: env.skip != 'true'
         run: |
