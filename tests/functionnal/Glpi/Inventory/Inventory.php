@@ -37,11 +37,63 @@ use wapmorgan\UnifiedArchive\UnifiedArchive;
 
 class Inventory extends DbTestCase {
 
+   private $nblogs;
+
+   public function beforeTestMethod($method) {
+      global $DB;
+
+      parent::beforeTestMethod($method);
+
+      $this->nblogs = countElementsInTable(\Log::getTable());
+   }
+
+   public function afterTestMethod($method) {
+      global $DB;
+
+      parent::afterTestMethod($method);
+      if (\Toolbox::startsWith($method, 'testImport')) {
+         //$this->dump('Checking for unexpected logs');
+         $nblogsnow = countElementsInTable(\Log::getTable());
+         $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+               'NOT' => [
+                  'linked_action' => [
+                     \Log::HISTORY_ADD_DEVICE,
+                     \Log::HISTORY_ADD_RELATION,
+                     \Log::HISTORY_ADD_SUBITEM,
+                     \Log::HISTORY_CREATE_ITEM
+                  ]
+               ]
+            ]
+         ]);
+         $this->integer(count($logs))->isIdenticalTo(0, print_r(iterator_to_array($logs), true));
+      }
+
+      if (\Toolbox::startsWith($method, 'testUpdate')) {
+         $nblogsnow = countElementsInTable(\Log::getTable());
+         $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+         ]);
+         $this->integer(count($logs))->isIdenticalTo(0/*, print_r(iterator_to_array($logs), true)*/);
+      }
+   }
+
    public function testImportComputer() {
+      global $DB, $CFG_GLPI;
+
       $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1.json');
+
+      $CFG_GLPI["is_contact_autoupdate"] = 0;
 
       $nbprinters = countElementsInTable(\Printer::getTable());
       $inventory = new \Glpi\Inventory\Inventory($json);
+
+      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
       if ($inventory->inError()) {
          foreach ($inventory->getErrors() as $error) {
@@ -60,7 +112,6 @@ class Inventory extends DbTestCase {
          ->string['tag']->isIdenticalTo('000005');
       $this->array($metadata['provider'])->hasSize(10);
 
-      global $DB;
       //check created agent
       $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->next();
       $agents = $DB->request(['FROM' => \Agent::getTable()]);
@@ -255,7 +306,7 @@ class Inventory extends DbTestCase {
          'id' => $monitor_link['id'],
          'entities_id' => 0,
          'name' => 'DJCP6',
-         'contact' => 'trasher/root',
+         'contact' => null,
          'contact_num' => null,
          'users_id_tech' => 0,
          'groups_id_tech' => 0,
@@ -296,7 +347,6 @@ class Inventory extends DbTestCase {
       $this->boolean($monitor->getFromDB($monitor_link['id']))->isTrue();
       $this->boolean((bool)$monitor->fields['is_dynamic'])->isTrue();
       $this->string($monitor->fields['name'])->isIdenticalTo('DJCP6');
-      $this->string($monitor->fields['contact'])->isIdenticalTo('trasher/root');
 
       //check network ports
       $iterator = $DB->request([
@@ -999,7 +1049,7 @@ class Inventory extends DbTestCase {
          'entities_id' => 0,
          'is_recursive' => 0,
          'name' => 'Officejet_Pro_8600_34AF9E_',
-         'contact' => 'trasher/root',
+         'contact' => null, //($contact ? 'trasher/root' : null),
          'contact_num' => null,
          'users_id_tech' => 0,
          'groups_id_tech' => 0,
@@ -1040,9 +1090,444 @@ class Inventory extends DbTestCase {
       $this->boolean($printer->getFromDB($printer_link['id']))->isTrue();
       $this->boolean((bool)$printer->fields['is_dynamic'])->isTrue();
       $this->string($printer->fields['name'])->isIdenticalTo('Officejet_Pro_8600_34AF9E_');
-      $this->string($printer->fields['contact'])->isIdenticalTo('trasher/root');
+   }
 
-      $this->integer(countElementsInTable(\Printer::getTable()))->isIdenticalTo($nbprinters + 1);
+   public function testUpdateComputer() {
+      global $DB, $CFG_GLPI;
+
+      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_3.json');
+
+      $inventory = new \Glpi\Inventory\Inventory($json);
+
+      if ($inventory->inError()) {
+         foreach ($inventory->getErrors() as $error) {
+            var_dump($error);
+         }
+      }
+      $this->boolean($inventory->inError())->isFalse();
+      $this->array($inventory->getErrors())->isEmpty();
+
+      //check inventory metadata
+      $metadata = $inventory->getMetadata();
+      $this->array($metadata)->hasSize(5)
+         ->string['deviceid']->isIdenticalTo('LF014-2017-02-20-12-19-56')
+         ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.3.19')
+         ->string['itemtype']->isIdenticalTo('Computer')
+         ->string['tag']->isIdenticalTo('000005');
+      $this->array($metadata['provider'])->hasSize(9);
+
+      //check created agent
+      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->next();
+      $agents = $DB->request(['FROM' => \Agent::getTable()]);
+      $this->integer(count($agents))->isIdenticalTo(1);
+      $agent = $agents->next();
+      $this->array($agent)
+         ->string['deviceid']->isIdenticalTo('LF014-2017-02-20-12-19-56')
+         ->string['name']->isIdenticalTo('LF014-2017-02-20-12-19-56')
+         ->string['version']->isIdenticalTo('2.3.19')
+         ->string['itemtype']->isIdenticalTo('Computer')
+         ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
+
+      //get computer models, manufacturer, ...
+      $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->next();
+      $this->array($autoupdatesystems);
+      $autoupdatesystems_id = $autoupdatesystems['id'];
+
+      $cmodels = $DB->request(['FROM' => \ComputerModel::getTable(), 'WHERE' => ['name' => 'PORTEGE Z30-A']])->next();
+      $this->array($cmodels);
+      $computermodels_id = $cmodels['id'];
+
+      $ctypes = $DB->request(['FROM' => \ComputerType::getTable(), 'WHERE' => ['name' => 'Notebook']])->next();
+      $this->array($ctypes);
+      $computertypes_id = $ctypes['id'];
+
+      $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Toshiba']])->next();
+      $this->array($cmanuf);
+      $manufacturers_id = $cmanuf['id'];
+
+      //check created computer
+      $computers_id = $agent['items_id'];
+      $this->integer($computers_id)->isGreaterThan(0);
+      $computer = new \Computer();
+      $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+      $expected = [
+         'id' => $computers_id,
+         'entities_id' => 0,
+         'name' => 'LF014',
+         'serial' => '8C554721F',
+         'otherserial' => '0000000000',
+         'contact' => 'johan',
+         'contact_num' => null,
+         'users_id_tech' => 0,
+         'groups_id_tech' => 0,
+         'comment' => null,
+         'date_mod' => $computer->fields['date_mod'],
+         'autoupdatesystems_id' => $autoupdatesystems_id,
+         'locations_id' => 0,
+         'networks_id' => 0,
+         'computermodels_id' => $computermodels_id,
+         'computertypes_id' => $computertypes_id,
+         'is_template' => 0,
+         'template_name' => null,
+         'manufacturers_id' => $manufacturers_id,
+         'is_deleted' => 0,
+         'is_dynamic' => 1,
+         'users_id' => 0,
+         'groups_id' => 0,
+         'states_id' => 0,
+         'ticket_tco' => '0.0000',
+         'uuid' => '0055ADC9-1D3A-E411-8043-B05D95113232',
+         'date_creation' => $computer->fields['date_creation'],
+         'is_recursive' => 0,
+      ];
+      $this->array($computer->fields)->isIdenticalTo($expected);
+
+      //operating system
+      $ios = new \Item_OperatingSystem();
+      $iterator = $ios->getFromItem($computer);
+      $record = $iterator->next();
+
+      $expected = [
+         'assocID' => $record['assocID'],
+         'name' => 'Fedora release 25 (Twenty Five)',
+         'version' => null,
+         'architecture' => 'x86_64',
+         'servicepack' => null,
+      ];
+      $this->array($record)->isIdenticalTo($expected);
+
+      //volumes
+      $idisks = new \Item_Disk();
+      $iterator = $idisks->getFromItem($computer);
+      $this->integer(count($iterator))->isIdenticalTo(3);
+
+      $expecteds_fs = [
+         [
+            'fsname' => 'ext4',
+            'name' => '/',
+            'device' => '/dev/mapper/fedora-root',
+            'mountpoint' => '/',
+            'filesystems_id' => 4,
+            'totalsize' => 50268,
+            'freesize' => 13336,
+            'encryption_status' => 0,
+            'encryption_tool' => null,
+            'encryption_algorithm' => null,
+            'encryption_type' => null,
+         ], [
+            'fsname' => 'ext4',
+            'name' => '/boot',
+            'device' => '/dev/sda1',
+            'mountpoint' => '/boot',
+            'filesystems_id' => 4,
+            'totalsize' => 476,
+            'freesize' => 279,
+            'is_deleted' => 0,
+            'is_dynamic' => 1,
+            'encryption_status' => 0,
+            'encryption_tool' => null,
+            'encryption_algorithm' => null,
+            'encryption_type' => null,
+         ], [
+            'fsname' => 'ext4',
+            'name' => '/home',
+            'device' => '/dev/mapper/fedora-home',
+            'mountpoint' => '/home',
+            'filesystems_id' => 4,
+            'totalsize' => 181527,
+            'freesize' => 72579,
+            'is_deleted' => 0,
+            'is_dynamic' => 1,
+            'encryption_status' => 0,
+            'encryption_tool' => null,
+            'encryption_algorithm' => null,
+            'encryption_type' => null,
+         ]
+      ];
+
+      $i = 0;
+      while ($volume = $iterator->next()) {
+         unset($volume['id']);
+         unset($volume['date_mod']);
+         unset($volume['date_creation']);
+         $expected = $expecteds_fs[$i];
+         $expected = $expected + [
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'entities_id'  => 0,
+            'is_deleted'   => 0,
+            'is_dynamic'   => 1
+         ];
+         $this->array($volume)->isEqualTo($expected);
+         ++$i;
+      }
+
+      //connections
+      $iterator = \Computer_Item::getTypeItems($computers_id, 'Monitor');
+      $this->integer(count($iterator))->isIdenticalTo(1);
+
+      //check network ports
+      $iterator = $DB->request([
+         'FROM'   => \NetworkPort::getTable(),
+         'WHERE'  => [
+            'items_id'           => $computers_id,
+            'itemtype'           => 'Computer',
+         ],
+      ]);
+      $this->integer(count($iterator))->isIdenticalTo(4);
+
+      //check for components
+      $components = [];
+      $allcount = 0;
+      foreach (\Item_Devices::getItemAffinities('Computer') as $link_type) {
+         $link        = getItemForItemtype($link_type);
+         $iterator = $DB->request($link->getTableGroupCriteria($computer));
+         $allcount += count($iterator);
+         $components[$link_type] = [];
+
+         while ($row = $iterator->next()) {
+            $lid = $row['id'];
+            unset($row['id']);
+            $components[$link_type][$lid] = $row;
+         }
+      }
+
+      $expecteds_components = [
+         'Item_DeviceMotherboard' => 0,
+         'Item_DeviceFirmware' => 1,
+         'Item_DeviceProcessor' => 1,
+         'Item_DeviceMemory' => 1,
+         'Item_DeviceHardDrive' => 1,
+         'Item_DeviceNetworkCard' => 0,
+         'Item_DeviceDrive' => 0,
+         'Item_DeviceBattery' => 1,
+         'Item_DeviceGraphicCard' => 0,
+         'Item_DeviceSoundCard' => 2,
+         'Item_DeviceControl' => 14,
+         'Item_DevicePci' => 0,
+         'Item_DeviceCase' => 0,
+         'Item_DevicePowerSupply' => 0,
+         'Item_DeviceGeneric' => 0,
+         'Item_DeviceSimcard' => 0,
+         'Item_DeviceSensor' => 0
+      ];
+
+      foreach ($expecteds_components as $type => $count) {
+         $this->integer(count($components[$type]))->isIdenticalTo($count, "$type " . count($components[$type]));
+      }
+
+      //softwares
+      $isoft = new \Item_SoftwareVersion();
+      $iterator = $isoft->getFromItem($computer);
+      $this->integer(count($iterator))->isIdenticalTo(3005);
+
+      //check for expected logs
+      $nblogsnow = countElementsInTable(\Log::getTable());
+      $logs = $DB->request([
+         'FROM' => \Log::getTable(),
+         'LIMIT' => $nblogsnow,
+         'OFFSET' => $this->nblogs,
+      ]);
+      $this->integer(count($logs))->isIdenticalTo(113);
+
+      $expected_types_count = [
+         \Log::HISTORY_CREATE_ITEM => 84,
+         \Log::HISTORY_ADD_DEVICE => array_sum($expecteds_components),
+         \Log::HISTORY_ADD_SUBITEM => count($expecteds_fs),
+         0 => 1, // Change Monitor contact (is_contact_autoupdate)
+         \Log::HISTORY_ADD_RELATION => 4 //OS and Monitor x2 each
+      ];
+
+      $types_count = [];
+      while ($row = $logs->next()) {
+         $this->string($row['user_name'])->isIdenticalTo('inventory', print_r($row, true));
+         if (!isset($types_count[$row['linked_action']])) {
+            $types_count[$row['linked_action']] = 0;
+         }
+         ++$types_count[$row['linked_action']];
+      }
+
+      $this->array($types_count)->isIdenticalTo($expected_types_count);
+
+      //update computer
+      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_3_updated.json');
+
+      $inventory = new \Glpi\Inventory\Inventory($json);
+
+      if ($inventory->inError()) {
+         foreach ($inventory->getErrors() as $error) {
+            var_dump($error);
+         }
+      }
+      $this->boolean($inventory->inError())->isFalse();
+      $this->array($inventory->getErrors())->isEmpty();
+
+      //check inventory metadata
+      $metadata = $inventory->getMetadata();
+      $this->array($metadata)->hasSize(5)
+         ->string['deviceid']->isIdenticalTo('LF014-2017-02-20-12-19-56')
+         ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.3.20')
+         ->string['itemtype']->isIdenticalTo('Computer')
+         ->string['tag']->isIdenticalTo('000005');
+      $this->array($metadata['provider'])->hasSize(9);
+
+      //check created agent
+      $agents = $DB->request(['FROM' => \Agent::getTable()]);
+      $this->integer(count($agents))->isIdenticalTo(1);
+      $agent = $agents->next();
+      $this->array($agent)
+         ->string['deviceid']->isIdenticalTo('LF014-2017-02-20-12-19-56')
+         ->string['name']->isIdenticalTo('LF014-2017-02-20-12-19-56')
+         ->string['version']->isIdenticalTo('2.3.20')
+         ->string['itemtype']->isIdenticalTo('Computer')
+         ->integer['items_id']->isIdenticalTo($computers_id)
+         ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
+
+      $computer = new \Computer();
+      $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+      $expected = [
+         'id' => $computers_id,
+         'entities_id' => 0,
+         'name' => 'LF014',
+         'serial' => '8C554721F',
+         'otherserial' => '0000000000',
+         'contact' => 'johan',
+         'contact_num' => null,
+         'users_id_tech' => 0,
+         'groups_id_tech' => 0,
+         'comment' => null,
+         'date_mod' => $computer->fields['date_mod'],
+         'autoupdatesystems_id' => $autoupdatesystems_id,
+         'locations_id' => 0,
+         'networks_id' => 0,
+         'computermodels_id' => $computermodels_id,
+         'computertypes_id' => $computertypes_id,
+         'is_template' => 0,
+         'template_name' => null,
+         'manufacturers_id' => $manufacturers_id,
+         'is_deleted' => 0,
+         'is_dynamic' => 1,
+         'users_id' => 0,
+         'groups_id' => 0,
+         'states_id' => 0,
+         'ticket_tco' => '0.0000',
+         'uuid' => '0055ADC9-1D3A-E411-8043-B05D95113232',
+         'date_creation' => $computer->fields['date_creation'],
+         'is_recursive' => 0,
+      ];
+      $this->array($computer->fields)->isIdenticalTo($expected);
+
+      //operating system
+      $ios = new \Item_OperatingSystem();
+      $iterator = $ios->getFromItem($computer);
+      $record = $iterator->next();
+
+      $expected = [
+         'assocID' => $record['assocID'],
+         'name' => 'Fedora release 25 (Twenty Five)',
+         'version' => null,
+         'architecture' => 'x86_64',
+         'servicepack' => null,
+      ];
+      $this->array($record)->isIdenticalTo($expected);
+
+      //volumes
+      $idisks = new \Item_Disk();
+      $iterator = $idisks->getFromItem($computer);
+      $this->integer(count($iterator))->isIdenticalTo(3);
+
+      //update fs values
+      $expecteds_fs[0]['totalsize'] = 150268;
+      $expecteds_fs[0]['freesize'] = 7914;
+      $expecteds_fs[1]['freesize'] = 277;
+      $expecteds_fs[2]['freesize'] = 68968;
+
+      $i = 0;
+      while ($volume = $iterator->next()) {
+         unset($volume['id']);
+         unset($volume['date_mod']);
+         unset($volume['date_creation']);
+         $expected = $expecteds_fs[$i];
+         $expected = $expected + [
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'entities_id'  => 0,
+            'is_deleted'   => 0,
+            'is_dynamic'   => 1
+         ];
+         $this->array($volume)->isEqualTo($expected);
+         ++$i;
+      }
+
+      //connections
+      $iterator = \Computer_Item::getTypeItems($computers_id, 'Monitor');
+      $this->integer(count($iterator))->isIdenticalTo(0);
+
+      //check network ports
+      $iterator = $DB->request([
+         'FROM'   => \NetworkPort::getTable(),
+         'WHERE'  => [
+            'items_id'           => $computers_id,
+            'itemtype'           => 'Computer',
+         ],
+      ]);
+      $this->integer(count($iterator))->isIdenticalTo(7);
+
+      //check for components
+      $components = [];
+      $allcount = 0;
+      foreach (\Item_Devices::getItemAffinities('Computer') as $link_type) {
+         $link        = getItemForItemtype($link_type);
+         $iterator = $DB->request($link->getTableGroupCriteria($computer));
+         $allcount += count($iterator);
+         $components[$link_type] = [];
+
+         while ($row = $iterator->next()) {
+            $lid = $row['id'];
+            unset($row['id']);
+            $components[$link_type][$lid] = $row;
+         }
+      }
+
+      foreach ($expecteds_components as $type => $count) {
+         $this->integer(count($components[$type]))->isIdenticalTo($count, "$type " . count($components[$type]));
+      }
+
+      //softwares
+      $isoft = new \Item_SoftwareVersion();
+      $iterator = $isoft->getFromItem($computer);
+      $this->integer(count($iterator))->isIdenticalTo(3155);
+
+      //check for expected logs after update
+      $logs = $DB->request([
+         'FROM' => \Log::getTable(),
+         'LIMIT' => countElementsInTable(\Log::getTable()),
+         'OFFSET' => $nblogsnow,
+      ]);
+      $this->integer(count($logs))->isIdenticalTo(43);
+
+      $expected_types_count = [
+         0 => 6, //Agent version, disks usage
+         \Log::HISTORY_CREATE_ITEM => 15, //virtual machines, os, manufacturer, net ports, net names, ...
+         \Log::HISTORY_DELETE_SUBITEM => 4,//net<orkport and networkname
+         \Log::HISTORY_ADD_SUBITEM => 10,//network port/name, ip adrress, VMs
+         \Log::HISTORY_UPDATE_SUBITEM => 4,//disks usage
+         \Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
+         \Log::HISTORY_UPDATE_RELATION => 2,//kernel version
+      ];
+
+      $types_count = [];
+      while ($row = $logs->next()) {
+         $this->string($row['user_name'])->isIdenticalTo('inventory', print_r($row, true));
+         if (!isset($types_count[$row['linked_action']])) {
+            $types_count[$row['linked_action']] = 0;
+         }
+         ++$types_count[$row['linked_action']];
+      }
+
+      $this->array($types_count)->isIdenticalTo($expected_types_count);
    }
 
    public function testImportNetworkEquipment() {
@@ -3300,7 +3785,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $conf->importFile($files);
       $this->hasSessionMessages(
          INFO, [
-            'Alternate username updated. The connected items have been updated using this alternate username.',
             'File has been successfully imported!'
          ]
       );
@@ -3316,7 +3800,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
    /**
     * @extensions zip
     */
-   public function testImportArchive() {
+   public function testArchive() {
       $nbcomputers = countElementsInTable(\Computer::getTable());
       $nbprinters = countElementsInTable(\Printer::getTable());
       $nbnetequps = countElementsInTable(\NetworkEquipment::getTable());
@@ -3347,7 +3831,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $conf->importFile($files);
       $this->hasSessionMessages(
          INFO, [
-            'Alternate username updated. The connected items have been updated using this alternate username.',
             'File has been successfully imported!'
          ]
       );

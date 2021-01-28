@@ -732,7 +732,7 @@ class Session {
    static function isInventory(): bool {
 
       return (isset($_SESSION["glpiinventoryuserrunning"])
-              && strpos($_SERVER['PHP_SELF'], '/inventory.php'));
+              && (strpos($_SERVER['PHP_SELF'], '/inventory.php') || defined('TU_USER')));
    }
 
    /**
