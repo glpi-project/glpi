@@ -136,7 +136,7 @@ var Dashboard = {
       $(document).on('submit', '.display-add-dashboard-form', function(event) {
          event.preventDefault();
 
-         $(".ui-dialog-content").dialog("close");
+         glpi_close_all_dialogs();
          var button    = $(this);
          var form_data = {};
          $.each(button.closest('.display-add-dashboard-form').serializeArray(), function() {
@@ -158,19 +158,14 @@ var Dashboard = {
 
       // embed mode toggle
       $("#dashboard-"+options.rand+" .toolbar .open-embed").click(function() {
-         $('<div title="'+__("Share or embed this dashboard")+'"></div>')
-            .load(CFG_GLPI.root_doc+"/ajax/dashboard.php", {
+         glpi_ajax_dialog({
+            title: __("Share or embed this dashboard"),
+            url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+            params: {
                action:  'display_embed_form',
                dashboard: Dashboard.current_name
-            }, function() {
-               $(this).dialog({
-                  width: 300,
-                  modal: true,
-                  open: function() {
-                     $(this).find('input').first().focus();
-                  }
-               });
-            });
+            },
+         })
       });
 
       // edit mode toggle
@@ -234,7 +229,7 @@ var Dashboard = {
 
       // publish rights
       $(document).on('click', '.display-rights-form .save_rights', function() {
-         $(".ui-dialog-content").dialog("close");
+         glpi_close_all_dialogs();
 
          var button    = $(this);
          var form_data = {};
@@ -303,9 +298,10 @@ var Dashboard = {
          var item      = edit_ctrl.parent().parent('.grid-stack-item');
          var card_opt  = item.data('card-options');
 
-         $(".ui-dialog-content").dialog("close");
-         $('<div title="'+__("Edit this card")+'"></div>')
-            .load(CFG_GLPI.root_doc+"/ajax/dashboard.php", {
+         glpi_ajax_dialog({
+            title: __("Edit this card"),
+            url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+            params: {
                action:       'display_edit_widget',
                gridstack_id: item.data('gs-id'),
                card_id:      card_opt.card_id,
@@ -314,36 +310,23 @@ var Dashboard = {
                width:        item.data('gs-width'),
                height:       item.data('gs-height'),
                card_options: card_opt,
-            }, function() {
-               $(this).dialog({
-                  width: 'auto',
-                  modal: true,
-                  open: function() {
-                     $(this).find('input[type=submit]').first().focus();
-                  }
-               });
-            });
+            },
+         });
       });
 
       // add new widget form
       $(document).on("click", "#dashboard-"+options.rand+" .cell-add", function() {
          var add_ctrl = $(this);
 
-         $(".ui-dialog-content").dialog("close");
-         $('<div title="'+__("Add a card")+'"></div>')
-            .load(CFG_GLPI.root_doc+"/ajax/dashboard.php", {
+         glpi_ajax_dialog({
+            title: __("Add a card"),
+            url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+            params: {
                action: 'display_add_widget',
                x: add_ctrl.data('x'),
                y: add_ctrl.data('y')
-            }, function() {
-               $(this).dialog({
-                  width: 'auto',
-                  modal: true,
-                  open: function() {
-                     $(this).find('input[type=submit]').first().focus();
-                  }
-               });
-            });
+            },
+         });
       });
 
       // save new or existing widget (submit form)
@@ -358,24 +341,19 @@ var Dashboard = {
 
       // add new filter
       $(document).on("click", "#dashboard-"+options.rand+" .filters_toolbar .add-filter", function() {
-         $(".ui-dialog-content").dialog("close");
+         glpi_close_all_dialogs();
 
          var filters = Dashboard.getFiltersFromStorage();
          var filter_names    = Object.keys(filters);
 
-         $('<div title="'+__("Add a filter")+'"></div>')
-            .load(CFG_GLPI.root_doc+"/ajax/dashboard.php", {
+         glpi_ajax_dialog({
+            title: __("Add a filter"),
+            url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+            params: {
                action: 'display_add_filter',
                used: filter_names
-            }, function() {
-               $(this).dialog({
-                  width: 'auto',
-                  modal: true,
-                  open: function() {
-                     $(this).find('input[type=submit]').first().focus();
-                  }
-               });
-            });
+            },
+         });
       });
 
       // save new filter (submit form)
@@ -490,7 +468,7 @@ var Dashboard = {
    setWidgetFromForm: function(form, edit_item) {
       edit_item = edit_item || false;
 
-      $(".ui-dialog-content").dialog("close");
+      glpi_close_all_dialogs();
       var form_data  = {};
 
       $.each(form.serializeArray(), function() {
@@ -600,7 +578,7 @@ var Dashboard = {
    },
 
    setFilterFromForm: function(form) {
-      $(".ui-dialog-content").dialog("close");
+      glpi_close_all_dialogs();
       var form_data  = {};
 
       $.each(form.serializeArray(), function() {
@@ -859,19 +837,13 @@ var Dashboard = {
     * Display form to add a new dashboard
     */
    addForm: function() {
-      $(".ui-dialog-content").dialog("close");
-      $('<div title="'+__("Add a new dashboard")+'"></div>')
-         .load(CFG_GLPI.root_doc+"/ajax/dashboard.php", {
+      glpi_ajax_dialog({
+         title: __("Add a new dashboard"),
+         url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+         params: {
             action: 'add_new',
-         }, function() {
-            $(this).dialog({
-               width: 'auto',
-               modal: true,
-               open: function() {
-                  $(this).find('input').first().focus();
-               }
-            });
-         });
+         }
+      })
    },
 
    addNew: function(form_data) {

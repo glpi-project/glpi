@@ -24,33 +24,10 @@
 <script type="text/javascript">
 $(function() {
    $('.show_entity_modal').click(function() {
-
-      var modal = '<div class="modal fade" id="entity_modal" role="dialog">';
-      modal += '<div class="modal-dialog">';
-      modal += '<div class="modal-content">';
-      modal += '<div class="modal-header">';
-      modal += '<h4 class="modal-title">{{ __("Select the desired entity") }}</h4>';
-      modal += '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __("Close") }}"></button>';
-      modal += '</div>';
-      modal += '<div class="modal-body"></div>';
-      modal += '</div>';
-      modal += '</div>';
-      modal += '</div>';
-
-      // remove old modal
-      $('#entity_modal').remove();
-
-      // create new one
-      $('body').append(modal);
-
-      // AJAX request
-      $.ajax({
+      glpi_ajax_dialog({
          url: '{{ path("/ajax/entitytree.php") }}',
-         type: 'post',
-         success: function(response){
-            $('#entity_modal .modal-body').html(response);
-            $('#entity_modal').modal('show');
-         }
+         title: __("Select the desired entity"),
+         id: "entity_modal",
       });
    });
 });

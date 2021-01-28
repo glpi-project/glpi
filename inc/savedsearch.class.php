@@ -467,7 +467,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
                   data: _this.serialize(),
                   success: function(res) {
                      if (res.success == true) {
-                        savesearch.dialog('close');
+                        glpi_close_all_dialogs();
                      }
                      displayAjaxMessageAfterRedirect();
                   }

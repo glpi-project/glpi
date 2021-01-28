@@ -1187,7 +1187,7 @@ class Planning extends CommonGLPI {
          }
          $item = getItemForItemtype($params['itemtype']);
          $item->showForm(intval($params['id']), $options);
-         $callback = "$('.ui-dialog-content').dialog('close');
+         $callback = "glpi_close_all_dialogs();
                       GLPIPlanning.refresh();
                       displayAjaxMessageAfterRedirect();";
          Html::ajaxForm("#edit_event_form$rand", $callback);
@@ -1361,7 +1361,7 @@ class Planning extends CommonGLPI {
             'res_items_id'       => $params['res_items_id'],
             'formoptions'        => "id='ajax_reminder$rand'"
          ]);
-         $callback = "$('.ui-dialog-content').dialog('close');
+         $callback = "glpi_close_all_dialogs();
                       GLPIPlanning.refresh();
                       displayAjaxMessageAfterRedirect();";
          Html::ajaxForm("#ajax_reminder$rand", $callback);
