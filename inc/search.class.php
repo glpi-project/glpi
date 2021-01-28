@@ -2561,7 +2561,8 @@ JAVASCRIPT;
          } else if (count($val) == 1) {
             $group = $val['name'];
          } else {
-            if (!isset($val['nosearch']) || ($val['nosearch'] == false)) {
+            if ((!isset($val['nosearch']) || ($val['nosearch'] == false))
+                && (!array_key_exists('nometa', $val) || $val['nometa'] !== true)) {
                $values[$group][$key] = $val["name"];
             }
          }
@@ -5285,6 +5286,7 @@ JAVASCRIPT;
                   array_push($already_link_tables2, $to_table);
                   array_push($already_link_tables2, "glpi_softwareversions_$to_type");
                   array_push($already_link_tables2, "glpi_softwarelicenses_$to_type");
+                  array_push($already_link_tables2, "glpi_items_softwareversions_$to_type");
                   return " $LINK `glpi_items_softwareversions`
                                     AS `glpi_items_softwareversions_$complexjoin$to_type`
                               ON (`glpi_items_softwareversions_$complexjoin$to_type`.`items_id`

@@ -226,7 +226,8 @@ class DeviceMemory extends CommonDevice {
          'computation'        =>
             '(SUM(' . $DB->quoteName('TABLE.size') . ') / COUNT(' .
             $DB->quoteName('TABLE.id') . '))
-            * COUNT(DISTINCT ' . $DB->quoteName('TABLE.id') . ')'
+            * COUNT(DISTINCT ' . $DB->quoteName('TABLE.id') . ')',
+         'nometa'             => true, // cannot GROUP_CONCAT a SUM
       ];
 
       return $tab;

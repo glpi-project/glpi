@@ -76,6 +76,8 @@ class Search extends DbTestCase {
       // do not store this search from session
       \Search::resetSaveSearch();
 
+      $this->checkSearchResult($data);
+
       return $data;
    }
 
@@ -97,12 +99,6 @@ class Search extends DbTestCase {
                                                  'value'      => 'firefox']]];
 
       $data = $this->doSearch('Computer', $search_params);
-
-      // check for sql error (data key missing or empty)
-      $this->array($data)
-         ->hasKey('data')
-            ->array['last_errors']->isIdenticalTo([])
-            ->array['data']->isNotEmpty();
 
       $this->string($data['sql']['search'])
          ->matches('/'
@@ -145,13 +141,7 @@ class Search extends DbTestCase {
                                                  'searchtype' => 'equals',
                                                  'value'      => 1]]];
 
-      $data = $this->doSearch('Computer', $search_params);
-
-      // check for sql error (data key missing or empty)
-      $this->array($data)
-         ->hasKey('data')
-            ->array['last_errors']->isIdenticalTo([])
-            ->array['data']->isNotEmpty();
+      $this->doSearch('Computer', $search_params);
    }
 
    public function testSubMetaTicketComputer() {
@@ -192,13 +182,7 @@ class Search extends DbTestCase {
          ],
       ];
 
-      $data = $this->doSearch('Ticket', $search_params);
-
-      // check for sql error (data key missing or empty)
-      $this->array($data)
-         ->hasKey('data')
-            ->array['last_errors']->isIdenticalTo([])
-            ->array['data']->isNotEmpty();
+      $this->doSearch('Ticket', $search_params);
    }
 
    public function testFlagMetaComputerUser() {
@@ -253,19 +237,6 @@ class Search extends DbTestCase {
       ];
 
       $data = $this->doSearch('Computer', $search_params);
-
-      // check for sql error (data key missing or empty)
-      $this->array($data)
-         ->hasKey('data')
-            ->array['last_errors']->isIdenticalTo([])
-            ->array['data']->isNotEmpty();
-
-      // Check meta criteria add correct jointures
-
-      $this->array($data)
-         ->hasKey('sql')
-            ->array['sql']
-               ->hasKey('search');
 
       $this->string($data['sql']['search'])
          ->contains("LEFT JOIN  `glpi_users`")
@@ -346,17 +317,6 @@ class Search extends DbTestCase {
 
       $data = $this->doSearch('Computer', $search_params);
 
-      // check for sql error (data key missing or empty)
-      $this->array($data)
-         ->hasKey('data')
-            ->array['last_errors']->isIdenticalTo([])
-            ->array['data']->isNotEmpty();
-
-      $this->array($data)
-         ->hasKey('sql')
-            ->array['sql']
-               ->hasKey('search');
-
       $this->string($data['sql']['search'])
          // join parts
          ->matches('/LEFT JOIN\s*`glpi_items_softwareversions`\s*AS `glpi_items_softwareversions_Software`/im')
@@ -398,18 +358,6 @@ class Search extends DbTestCase {
          ]
       ]);
 
-      // check for sql error (data key missing or empty)
-      $this->array($data)
-         ->hasKey('data')
-            ->array['last_errors']->isIdenticalTo([])
-            ->array['data']->isNotEmpty();
-
-      // Check sql generation
-      $this->array($data)
-         ->hasKey('sql')
-            ->array['sql']
-               ->hasKey('search');
-
       $this->string($data['sql']['search'])
          ->contains("`glpi_computers`.`is_deleted` = 0")
          ->contains("AND `glpi_computers`.`is_template` = 0")
@@ -443,18 +391,6 @@ class Search extends DbTestCase {
          ]
       ]);
 
-      // check for sql error (data key missing or empty)
-      $this->array($data)
-      ->hasKey('data')
-         ->array['last_errors']->isIdenticalTo([])
-         ->array['data']->isNotEmpty();
-
-      // Check sql generation
-      $this->array($data)
-         ->hasKey('sql')
-            ->array['sql']
-               ->hasKey('search');
-
       $this->string($data['sql']['search'])
          ->contains("`glpi_changes`.`id` AS `ITEM_Change_Ticket_3`")
          ->contains("`glpi_changes_tickets`.`changes_id` = `glpi_changes`.`id`")
@@ -486,14 +422,8 @@ class Search extends DbTestCase {
                                                  'value'      => 0]]];
       $data = $this->doSearch('User', $search_params);
 
-      // check for sql error (data key missing or empty)
-      $this->array($data)
-         ->hasKey('data')
-            ->array['last_errors']->isIdenticalTo([])
-            ->array['data']
-               ->isNotEmpty()
-               //expecting one result
-               ->integer['totalcount']->isIdenticalTo(1);
+      //expecting one result
+      $this->integer($data['data']['totalcount'])->isIdenticalTo(1);
    }
 
    /**
@@ -527,12 +457,12 @@ class Search extends DbTestCase {
 
          $multi_criteria = [];
          foreach ($options as $key => $data) {
-            if (!is_array($data) || ($criterion_params = $this->getCriterionParams($item, $key, $data)) === null) {
+            if (!is_int($key) || ($criterion_params = $this->getCriterionParams($item, $key, $data)) === null) {
                continue;
             }
 
             // do a search query based on current search option
-            $data = $this->doSearch(
+            $this->doSearch(
                $class,
                [
                   'is_deleted'   => 0,
@@ -556,7 +486,7 @@ class Search extends DbTestCase {
                            'start'        => 0,
                            'criteria'     => $multi_criteria,
                            'metacriteria' => []];
-         $data = $this->doSearch($class, $search_params);
+         $this->doSearch($class, $search_params);
       }
    }
 
@@ -578,19 +508,16 @@ class Search extends DbTestCase {
       ];
 
       foreach ($itemtypeslist as $itemtype) {
-         // do a search query
-         $search_params = ['is_deleted'   => 0,
-                           'start'        => 0,
-                           'criteria'     => [0 => ['field'      => 'view',
-                                                    'searchtype' => 'contains',
-                                                    'value'      => '']],
-                           'metacriteria' => []];
+         // extract metacriteria
          $metacriteria = [];
          $metaList = \Search::getMetaItemtypeAvailable($itemtype);
          foreach ($metaList as $metaitemtype) {
             $item = getItemForItemtype($metaitemtype);
             foreach ($item->searchOptions() as $key => $data) {
-               if (!is_array($data) || ($criterion_params = $this->getCriterionParams($item, $key, $data)) === null) {
+               if (is_array($data) && array_key_exists('nometa', $data) && $data['nometa'] === true) {
+                  continue;
+               }
+               if (!is_int($key) || ($criterion_params = $this->getCriterionParams($item, $key, $data)) === null) {
                   continue;
                }
 
@@ -599,20 +526,33 @@ class Search extends DbTestCase {
 
                $metacriteria[] = $criterion_params;
 
-               if (count($metacriteria) > 50) {
-                  // Limit criteria count to 50 to prevent performances issues
-                  // and also prevent exceeding of MySQL join limit.
-                  break;
-               }
+               // Search with each meta criteria independently.
+               $search_params = ['is_deleted'   => 0,
+                                 'start'        => 0,
+                                 'criteria'     => [0 => ['field'      => 'view',
+                                                          'searchtype' => 'contains',
+                                                          'value'      => '']],
+                                 'metacriteria' => [$criterion_params]];
+               $this->doSearch($itemtype, $search_params);
             }
          }
-         $search_params['metacriteria'] = $metacriteria;
-         $data = $this->doSearch($itemtype, $search_params);
-         // check for sql error (data key missing or empty)
-         $this->array($data)
-            ->hasKey('data')
-               ->array['last_errors']->isIdenticalTo([])
-               ->array['data']->isNotEmpty();
+
+         // FIXME Some JOINS are missing when joining multiple time same table but with different foreign keys
+         // see #8599
+         continue;
+
+         // Search on all with multiple meta criteria
+         // Limit criteria count to 50 to prevent performances issues
+         // and also prevent exceeding of MySQL join limit.
+         foreach (array_chunk($metacriteria, 50) as $metacriteria_chunk) {
+            $search_params = ['is_deleted'   => 0,
+                              'start'        => 0,
+                              'criteria'     => [0 => ['field'      => 'view',
+                                                       'searchtype' => 'contains',
+                                                       'value'      => '']],
+                              'metacriteria' => $metacriteria_chunk];
+            $this->doSearch($itemtype, $search_params);
+         }
       }
    }
 
@@ -620,13 +560,13 @@ class Search extends DbTestCase {
     * Get criterion params for corresponding SO.
     *
     * @param CommonDBTM $item
-    * @param string $so_key
+    * @param int $so_key
     * @param array $so_data
     * @return null|array
     */
-   private function getCriterionParams(CommonDBTM $item, string $so_key, array $so_data): ?array {
+   private function getCriterionParams(CommonDBTM $item, int $so_key, array $so_data): ?array {
 
-      if (!is_int($so_key) || (array_key_exists('nosearch', $so_data) && $so_data['nosearch'])) {
+      if ((array_key_exists('nosearch', $so_data) && $so_data['nosearch'])) {
          return null;
       }
       $actions = \Search::getActionsFor($item->getType(), $so_key);
@@ -637,6 +577,10 @@ class Search extends DbTestCase {
          case 'integer':
          case 'number':
             $val = 0;
+            break;
+         case 'date':
+         case 'date_delay':
+            $val = date('Y-m-d');
             break;
          case 'datetime':
             $val = date('Y-m-d H:i:s');
@@ -671,13 +615,8 @@ class Search extends DbTestCase {
 
       $data = $this->doSearch('Computer', $search_params);
 
-      // check for sql error (data key missing or empty)
-      $this->array($data)
-         ->hasKey('data')
-            ->array['last_errors']->isIdenticalTo([])
-            ->array['data']->isNotEmpty()
-            //expecting no result
-            ->integer['totalcount']->isIdenticalTo(0);
+      //expecting no result
+      $this->integer($data['data']['totalcount'])->isIdenticalTo(0);
 
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
 
@@ -713,13 +652,7 @@ class Search extends DbTestCase {
       );
       $this->boolean($updated)->isTrue();
 
-      // check for sql error (data key missing or empty)
-      $this->array($data)
-         ->hasKey('data')
-            ->array['last_errors']->isIdenticalTo([])
-            ->array['data']->isNotEmpty()
-            //expecting one result
-            ->integer['totalcount']->isIdenticalTo(1);
+      $this->integer($data['data']['totalcount'])->isIdenticalTo(1);
    }
 
    public function testDateBeforeOrNot() {
@@ -745,21 +678,13 @@ class Search extends DbTestCase {
 
       $data = $this->doSearch('Ticket', $search_params);
 
-      $this->array($data)
-         ->hasKey('data')
-            ->array['last_errors']->isIdenticalTo([])
-            ->array['data']->isNotEmpty()
-            ->integer['totalcount']->isGreaterThan(0);
+      $this->integer($data['data']['totalcount'])->isGreaterThan(1);
 
       //negate previous search
       $search_params['criteria'][1]['link'] = 'AND NOT';
       $data = $this->doSearch('Ticket', $search_params);
 
-      $this->array($data)
-         ->hasKey('data')
-            ->array['last_errors']->isIdenticalTo([])
-            ->array['data']->isNotEmpty()
-            ->integer['totalcount']->isIdenticalTo(0);
+      $this->integer($data['data']['totalcount'])->isIdenticalTo(0);
    }
 
    /**
@@ -1093,7 +1018,7 @@ class Search extends DbTestCase {
       \Search::constructSQL($data);
       \Search::constructData($data);
 
-      $this->array($data)->array['data']->integer['totalcount']->isEqualTo(1);
+      $this->integer($data['data']['totalcount'])->isEqualTo(1);
       $this->array($data)
          ->array['data']
          ->array['rows']
@@ -1145,7 +1070,7 @@ class Search extends DbTestCase {
       \Search::constructSQL($data);
       \Search::constructData($data);
 
-      $this->array($data)->array['data']->integer['totalcount']->isEqualTo(1);
+      $this->integer($data['data']['totalcount'])->isEqualTo(1);
       $this->array($data)
          ->array['data']
          ->array['rows']
@@ -1200,11 +1125,7 @@ class Search extends DbTestCase {
 
       $data = $this->doSearch('State', $search_params);
 
-      $this->array($data)
-         ->hasKey('data')
-            ->array['last_errors']->isIdenticalTo([])
-            ->array['data']->isNotEmpty()
-            ->integer['totalcount']->isIdenticalTo(1);
+      $this->integer($data['data']['totalcount'])->isIdenticalTo(1);
 
       $conf->setConfigurationValues('core', ['translate_dropdowns' => 0]);
       $CFG_GLPI['translate_dropdowns'] = 0;
@@ -1338,11 +1259,7 @@ class Search extends DbTestCase {
                                                  'value'      => 'pc']]];
       $data = $this->doSearch('Computer', $search_params);
 
-      $this->array($data)
-         ->hasKey('data')
-            ->array['last_errors']->isIdenticalTo([])
-            ->array['data']->isNotEmpty()
-            ->integer['totalcount']->isIdenticalTo(8);
+      $this->integer($data['data']['totalcount'])->isIdenticalTo(8);
 
       $displaypref = new \DisplayPreference();
       $input = [
@@ -1354,11 +1271,7 @@ class Search extends DbTestCase {
 
       $data = $this->doSearch('Computer', $search_params);
 
-      $this->array($data)
-         ->hasKey('data')
-            ->array['last_errors']->isIdenticalTo([])
-            ->array['data']->isNotEmpty()
-            ->integer['totalcount']->isIdenticalTo(8);
+      $this->integer($data['data']['totalcount'])->isIdenticalTo(8);
    }
 
    public function testSearchWithMultipleFkeysOnSameTable() {
@@ -1391,8 +1304,6 @@ class Search extends DbTestCase {
       ];
       $data = $this->doSearch('Ticket', $search_params);
 
-      $this->array($data)->hasKey('sql');
-      $this->array($data['sql'])->hasKey('search');
       $this->string($data['sql']['search'])
          // Check that we have two different joins
          ->contains("LEFT JOIN `glpi_users`  AS `glpi_users_users_id_lastupdater`")
@@ -1425,18 +1336,6 @@ class Search extends DbTestCase {
             ],
          ]
       ]);
-
-      // check for sql error (data key missing or empty)
-      $this->array($data)
-         ->hasKey('data')
-            ->array['last_errors']->isIdenticalTo([])
-            ->array['data']->isNotEmpty();
-
-      // Check sql generation
-      $this->array($data)
-         ->hasKey('sql')
-            ->array['sql']
-               ->hasKey('search');
 
       $this->string($data['sql']['search'])
          ->matches("/OR\s*\(`glpi_entities`\.`completename`\s*LIKE '%test%'\s*\)/")
@@ -1473,12 +1372,35 @@ class Search extends DbTestCase {
 
       $data = $this->doSearch('SearchTest\\Computer', $search_params);
 
-      $this->array($data)->hasKey('sql');
-      $this->array($data['sql'])->hasKey('search');
       $this->string($data['sql']['search'])
          ->contains("`glpi_computers`.`name` AS `ITEM_SearchTest\Computer_1`")
          ->contains("`glpi_computers`.`id` AS `ITEM_SearchTest\Computer_1_id`")
          ->contains("ORDER BY `ITEM_SearchTest\Computer_1` ASC");
+   }
+
+   /**
+    * Check that search result is valid.
+    *
+    * @param array $result
+    */
+   private function checkSearchResult($result) {
+      $this->array($result)->hasKey('data');
+      $this->array($result['data'])->hasKeys(['count', 'begin', 'end', 'totalcount', 'cols', 'rows', 'items']);
+      $this->integer($result['data']['count']);
+      $this->integer($result['data']['begin']);
+      $this->integer($result['data']['end']);
+      $this->integer($result['data']['totalcount']);
+      $this->array($result['data']['cols']);
+      $this->array($result['data']['rows']);
+      $this->array($result['data']['items']);
+
+      // No errors
+      $this->array($result)->hasKey('last_errors');
+      $this->array($result['last_errors'])->isIdenticalTo([]);
+
+      $this->array($result)->hasKey('sql');
+      $this->array($result['sql'])->hasKey('search');
+      $this->string($result['sql']['search']);
    }
 }
 
