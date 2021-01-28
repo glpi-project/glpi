@@ -12,18 +12,6 @@ Signed-off-by: Edgard <edgardmessias@gmail.com>
  test/Header/ContentDispositionTest.php | 26 ++++++++++++++++---
  3 files changed, 46 insertions(+), 17 deletions(-)
 
-diff --git a/composer.json b/composer.json
-index d43eba1e..f9c844e3 100644
---- a/composer.json
-+++ b/composer.json
-@@ -32,6 +32,7 @@
-         "laminas/laminas-stdlib": "^2.7 || ^3.0",
-         "laminas/laminas-validator": "^2.10.2",
-         "laminas/laminas-zendframework-bridge": "^1.0",
-+        "symfony/polyfill-mbstring": "^1.12.0",
-         "true/punycode": "^2.1"
-     },
-     "require-dev": {
 diff --git a/src/Header/ContentDisposition.php b/src/Header/ContentDisposition.php
 index 635e97cc..61fa7c9b 100644
 --- a/src/Header/ContentDisposition.php
@@ -75,5 +63,34 @@ index 635e97cc..61fa7c9b 100644
 +                    $fullLength = mb_strlen($value, 'UTF-8');
 +                    $result .= ';' . Headers::FOLDING . $attributePart . $valuePart . '"';
                  }
+             }
+         }
+
+From 2f81aedcb83de61e00fffd6aee4c8938272a1b24 Mon Sep 17 00:00:00 2001
+From: Edgard Lorraine Messias <edgardmessias@gmail.com>
+Date: Thu, 28 Jan 2021 10:20:40 -0300
+Subject: [PATCH 2/3] Fixed malformed header from continued value
+
+Signed-off-by: Edgard <edgardmessias@gmail.com>
+---
+ src/Header/ContentDisposition.php | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/src/Header/ContentDisposition.php b/src/Header/ContentDisposition.php
+index 61fa7c9b..4ec72137 100644
+--- a/src/Header/ContentDisposition.php
++++ b/src/Header/ContentDisposition.php
+@@ -87,6 +87,13 @@ public static function fromString($headerLine)
+                     }
+                     $value .= $values[$i];
+                 }
++
++                // Fix malformed header
++                if (strncmp($value, '=?', 2) === 0) {
++                    $value = preg_replace('/\?\=\=\?[\w-]+\?\w\?/', '', $value);
++                    $value = HeaderWrap::mimeDecodeValue($value);
++                }
++
+                 $header->setParameter($name, $value);
              }
          }
