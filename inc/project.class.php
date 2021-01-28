@@ -2385,7 +2385,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                ],
                'entities_id' => [
                   'type'   => 'hidden',
-                  'value'  => $_SESSION['glpiactive_entity']
+                  'value'  => $project->getField("entities_id"),
                ],
                'is_recursive' => [
                   'type'   => 'hidden',
@@ -2420,7 +2420,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                ],
                'entities_id' => [
                   'type'   => 'hidden',
-                  'value'  => $_SESSION['glpiactive_entity']
+                  'value'  => $project->getField("entities_id"),
                ],
                'is_recursive' => [
                   'type'   => 'hidden',
