@@ -79,7 +79,7 @@ if (!$DB->tableExists('glpi_agents')) {
          KEY `items_id` (`items_id`),
          KEY `itemtype` (`itemtype`),
          UNIQUE KEY `deviceid` (`deviceid`),
-         FOREIGN KEY (agenttypes_id) REFERENCES glpi_agenttypes (id) ON DELETE CASCADE ON UPDATE CASCADE
+         CONSTRAINT `glpi_agents_fk_agenttypes_id` FOREIGN KEY (`agenttypes_id`) REFERENCES `glpi_agenttypes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
    ) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
    $DB->queryOrDie($query, "x.x add table glpi_agents");
 }

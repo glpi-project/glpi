@@ -220,6 +220,8 @@ jobs:
         run: |
           docker exec app bin/console glpi:database:install --config-dir=./tests --ansi --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root --log-deprecation-warnings | tee install.log
           if [[ -n $(grep "Warning" install.log) ]]; then echo "glpi:database:install command FAILED" && exit 1; fi
+          docker exec app bin/console glpi:database:check --config-dir=./tests --ansi --no-interaction | tee diff.log
+          if [[ -z $(grep "Database schema is OK." diff.log) ]]; then echo "glpi:database:check command FAILED" && exit 1; fi
           docker exec app bin/console glpi:database:update --config-dir=./tests --ansi --no-interaction | tee migration.log
           if [[ -z $(grep "No migration needed." migration.log) ]]; then echo "glpi:database:update command FAILED" && exit 1; fi
       - name: "Update DB tests (from 0.80, not using utf8mb4)"

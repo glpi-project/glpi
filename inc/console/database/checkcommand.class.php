@@ -77,6 +77,8 @@ class CheckCommand extends AbstractCommand {
       $empty_tables_names   = $matches[1];
       $empty_tables_schemas = $matches[0];
 
+      $has_differences = false;
+
       foreach ($empty_tables_schemas as $index => $table_schema) {
          $table_name = $empty_tables_names[$index];
 
@@ -89,6 +91,7 @@ class CheckCommand extends AbstractCommand {
          $existing_table_struct = $this->db->getTableSchema($table_name);
 
          if ($existing_table_struct['schema'] != $base_table_struct['schema']) {
+            $has_differences = true;
             $message = sprintf(__('Table schema differs for table "%s".'), $table_name);
             $output->writeln(
                '<info>' . $message . '</info>',
@@ -98,6 +101,11 @@ class CheckCommand extends AbstractCommand {
                $differ->diff($base_table_struct['schema'], $existing_table_struct['schema'])
             );
          }
+      }
+
+      if (!$has_differences) {
+         $output->writeln('<info>' . __('Database schema is OK.') . '</info>');
+         return 0;
       }
 
       return 0; // Success
