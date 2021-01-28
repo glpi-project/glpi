@@ -5964,7 +5964,7 @@ JAVASCRIPT;
          glpi_confirm({
             title: caption,
             message: message,
-            confirm_event: function() {
+            confirm_callback: function() {
                confirmed = true;
 
                //trigger click on the same element (to return true value)
@@ -6013,7 +6013,7 @@ JAVASCRIPT;
       return "glpi_alert({
          title: '".Toolbox::addslashes_deep( $title )."',
          message: '".Toolbox::addslashes_deep($msg)."',
-         callback: function() {
+         ok_callback: function() {
             ".($okCallback!==null?'('.$okCallback.')()':'')."
          },
       });";

@@ -202,13 +202,13 @@ var glpi_ajax_dialog = function({
  * @param {string} alert.title - string to display in the header of the dialog
  * @param {string} alert.message - html string to display in the body of the dialog
  * @param {string} alert.id - id attribute of the modal
- * @param {function} alert.ok_event - callback function called when "ok" button called
+ * @param {function} alert.ok_callback - callback function called when "ok" button called
  */
 var glpi_alert = function({
    title    = _n('Information', 'Information', 1),
    message  = "",
    id       = "modal_" + Math.random().toString(36).substring(7),
-   ok_event = () => {},
+   ok_callback = () => {},
 } = {}) {
    glpi_html_dialog({
       title: title,
@@ -217,7 +217,7 @@ var glpi_alert = function({
       buttons: [{
          label: __("OK"),
          click: function(event) {
-            ok_event(event);
+            ok_callback(event);
          }
       }]
    });
@@ -233,7 +233,7 @@ var glpi_alert = function({
  * @param {string} alert.title - string to display in the header of the dialog
  * @param {string} alert.message - html string to display in the body of the dialog
  * @param {string} alert.id - id attribute of the modal
- * @param {function} alert.confirm_event - callback function called when "confirm" button called
+ * @param {function} alert.confirm_callback - callback function called when "confirm" button called
  * @param {string} alert.confirm_label - change "confirm" button label
  * @param {function} alert.cancel_label - callback function called when "cancel" button called
  * @param {string} alert.cancel_label - change "cancel" button label
@@ -242,9 +242,9 @@ var glpi_confirm = function({
    title         = _n('Information', 'Information', 1),
    message       = "",
    id            = "modal_" + Math.random().toString(36).substring(7),
-   confirm_event = () => {},
+   confirm_callback = () => {},
    confirm_label = _x('button', 'Confirm'),
-   cancel_event  = () => {},
+   cancel_callback  = () => {},
    cancel_label  = _x('button', 'Cancel'),
 } = {}) {
 
@@ -255,12 +255,12 @@ var glpi_confirm = function({
       buttons: [{
          label: confirm_label,
          click: function(event) {
-            confirm_event(event);
+            confirm_callback(event);
          }
       }, {
          label: cancel_label,
          click: function(event) {
-            cancel_event(event);
+            cancel_callback(event);
          }
       }]
    });
