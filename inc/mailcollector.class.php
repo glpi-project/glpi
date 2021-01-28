@@ -1528,14 +1528,11 @@ class MailCollector  extends CommonDBTM {
              && $part->getHeaders()->has('content-disposition')
              && ($content_disp_header = $part->getHeader('content-disposition')) instanceof ContentDisposition) {
             $filename = $content_disp_header->getParameter('filename') ?? '';
-
-            var_dump(sprintf('filename from content-disposition: >%s<', $filename));
          }
 
          // Try to get filename from Content-Type header
          if (empty($filename)) {
             $filename = $content_type_header->getParameter('name') ?? '';
-            var_dump(sprintf('filename from content-type: >%s<', $filename));
          }
 
          $filename_matches = [];
