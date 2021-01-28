@@ -48,6 +48,7 @@ function update95toXX() {
 
    $update_scripts = [
       'comment_fields',
+      'date_fields_defaults',
       'devicebattery',
       'documents',
       'domains',
