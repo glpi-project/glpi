@@ -636,6 +636,9 @@ class DBmysqlIterator extends DbTestCase {
 
       $it = $this->it->execute('foo', ['START' => 5, 'LIMIT' => 10]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LIMIT 10 OFFSET 5');
+
+      $it = $this->it->execute('foo', ['OFFSET' => 5, 'LIMIT' => 10]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LIMIT 10 OFFSET 5');
    }
 
 
