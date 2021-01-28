@@ -383,6 +383,56 @@ class Appliance extends CommonDBTM {
       return $tab;
    }
 
+
+   public static function rawSearchOptionsToAdd(string $itemtype) {
+      $tab = [];
+
+      $tab[] = [
+         'id' => 'appliance',
+         'name' => self::getTypeName(Session::getPluralNumber())
+      ];
+
+      $tab[] = [
+         'id'                 => '1210',
+         'table'              => self::getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'forcegroupby'       => true,
+         'datatype'           => 'itemlink',
+         'itemlink_type'      => 'Appliance',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin' => [
+               'table'      => Appliance_Item::getTable(),
+               'joinparams' => ['jointype' => 'itemtype_item']
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '1211',
+         'table'              => ApplianceType::getTable(),
+         'field'              => 'name',
+         'name'               => ApplianceType::getTypeName(1),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin' => [
+               'table'      => Appliance::getTable(),
+               'joinparams' => [
+                  'beforejoin' => [
+                     'table'      => Appliance_Item::getTable(),
+                     'joinparams' => ['jointype' => 'itemtype_item']
+                  ]
+               ]
+            ]
+         ]
+      ];
+
+      return $tab;
+   }
+
+
    function cleanDBonPurge() {
 
       $this->deleteChildrenAndRelationsFromDb(
