@@ -181,6 +181,10 @@ class Inventory
          throw new \RuntimeException(print_r($this->getErrors(), true));
       }
 
+      if (!isset($_SESSION['glpiinventoryuserrunning'])) {
+          $_SESSION['glpiinventoryuserrunning'] = 'inventory';
+      }
+
       try {
          //bench
          $main_start = microtime(true);
@@ -302,6 +306,7 @@ class Inventory
          $DB->rollback();
          throw $e;
       } finally {
+         unset($_SESSION['glpiinventoryuserrunning']);
          $this->handleInventoryFile();
          // * For benchs
          $id = $this->item->fields['id'] ?? 0;
