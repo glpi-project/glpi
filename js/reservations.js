@@ -224,33 +224,14 @@ var Reservations = function() {
          // ADD EVENTS
          selectable: true,
          select: function(info) {
-            $('<div></div>').dialog({
-               modal:  true,
-               width:  'auto',
-               height: 'auto',
-               open: function () {
-                  $(this).load(
-                     CFG_GLPI.root_doc+"/ajax/reservations.php",
-                     {
-                        action: 'add_reservation_fromselect',
-                        id:     my.id,
-                        start:  info.start.toISOString(),
-                        end:    info.end.toISOString(),
-                     },
-                     function() {
-                        $(this).dialog('option', 'position', ['center', 'center'] );
-                     }
-                  );
-               },
-               close: function() {
-                  $(this).dialog("close");
-                  $(this).remove();
-               },
-               position: {
-                  my: 'center',
-                  at: 'top',
-                  viewport: $(window),
-                  of: $('#page')
+            glpi_ajax_dialog({
+               title: __("Add reservation"),
+               url: CFG_GLPI.root_doc+"/ajax/reservations.php",
+               params: {
+                  action: 'add_reservation_fromselect',
+                  id:     my.id,
+                  start:  info.start.toISOString(),
+                  end:    info.end.toISOString(),
                }
             });
 
@@ -263,18 +244,11 @@ var Reservations = function() {
 
             if (ajaxurl) {
                info.jsEvent.preventDefault(); // don't let the browser navigate
-               $('<div></div>')
-                  .dialog({
-                     modal:  true,
-                     width:  'auto',
-                     height: 'auto',
-                     close: function() {
-                        my.calendar.refetchEvents();
-                        my.calendar.rerenderEvents();
-                        window.displayAjaxMessageAfterRedirect();
-                     }
-                  })
-                  .load(ajaxurl+"&ajax=true");
+
+               glpi_ajax_dialog({
+                  title: __("Edit reservation"),
+                  url: ajaxurl+"&ajax=true",
+               });
             }
          }
       });

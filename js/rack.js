@@ -64,21 +64,14 @@ var initRack = function() {
             ? 0  // front
             : 1; // rear
 
-         $.ajax({
+         glpi_ajax_dialog({
             url : grid_link_url,
-            data: {
+            method : 'get',
+            params: {
                racks_id: grid_rack_id,
                orientation: side,
                position: index,
                ajax: true
-            },
-            success: function(data) {
-               $('#grid-dialog')
-                  .html(data)
-                  .dialog({
-                     modal: true,
-                     width: 'auto'
-                  });
             }
          });
       });

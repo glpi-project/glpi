@@ -43,7 +43,7 @@ class Ajax {
 
    /**
     * Create modal window
-    * After display it using $name.dialog("open");
+    * After display it using data-bs-toggle and data-bs-target attributes
     *
     * @since 0.84
     *
@@ -224,69 +224,10 @@ class Ajax {
       }
    }
 
-   /**
-    * Create fixed modal window
-    * After display it using $name.dialog("open");
-    *
-    * @since 0.84
-    *
-    * @param string $name    name of the js object
-    * @param array  $options Possible options:
-    *          - width       (default 800)
-    *          - height      (default 400)
-    *          - modal       is a modal window? (default true)
-    *          - container   specify a html element to render (default empty to html.body)
-    *          - title       window title (default empty)
-    *          - display     display or get string? (default true)
-    *
-    * @return void|string (see $options['display'])
-    */
-   static function createFixedModalWindow($name, $options = []) {
-
-      $param = ['width'     => 800,
-                     'height'    => 400,
-                     'modal'     => true,
-                     'container' => '',
-                     'title'     => '',
-                     'display'   => true];
-
-      if (count($options)) {
-         foreach ($options as $key => $val) {
-            if (isset($param[$key])) {
-               $param[$key] = $val;
-            }
-         }
-      }
-
-      $out  =  "<script type='text/javascript'>\n";
-      $out .= "$(function() {";
-      $out .= "var $name=";
-      if (!empty($param['container'])) {
-         $out .= Html::jsGetElementbyID(Html::cleanId($param['container']));
-      } else {
-         $out .= "$('<div></div>')";
-      }
-      $out .= ".dialog({\n
-         width:".$param['width'].",\n
-         autoOpen: false,\n
-         height:".$param['height'].",\n
-         modal: ".($param['modal']?'true':'false').",\n
-         title: \"".addslashes($param['title'])."\"\n
-         });\n});";
-      $out .= "</script>";
-
-      if ($param['display']) {
-         echo $out;
-      } else {
-         return $out;
-      }
-
-   }
-
 
    /**
     * Create modal window in Iframe
-    * After display it using Html::jsGetElementbyID($domid).dialog("open");
+    * After display it using data-bs-toggle and data-bs-target attributes
     *
     * @since 0.85
     *
@@ -322,28 +263,6 @@ class Ajax {
          }
       }
       $url .= (strstr($url, '?') ?'&' :  '?').'_in_modal=1';
-
-      /*$out  = "<div id=\"$domid\">";
-      $out .= "<iframe id='Iframe$domid' class='iframe hidden'></iframe></div>";
-
-      $out .= "<script type='text/javascript'>
-         $(function() {
-            $('#$domid').dialog({
-               modal: true,
-               autoOpen: false,
-               height: ".$param['height'].",
-               width: ".$param['width'].",
-               draggable: true,
-               resizeable: true,
-               open: function(ev, ui){
-               $('#Iframe$domid').attr('src','$url').removeClass('hidden');},";
-      if ($param['reloadonclose']) {
-         $out .= "close: function(ev, ui) { window.location.reload() },";
-      }
-
-      $out.= "title: \"".addslashes($param['title'])."\"});
-         });
-            </script>";*/
 
       $rand = mt_rand();
 

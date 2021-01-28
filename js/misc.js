@@ -40,98 +40,11 @@ window.alert = function(message, caption) {
    }
    caption = caption || _n('Information', 'Information', 1);
 
-   var buttons = [];
-   buttons[__('OK')] = function() {
-      $(this).dialog('close');
-   };
-
-   $('<div></div>').html(message).dialog({
+   glpi_alert({
       title: caption,
-      buttons: buttons,
-      dialogClass: 'glpi_modal',
-      open: function() {
-         $(this).parent().prev('.ui-widget-overlay').addClass('glpi_modal');
-         $(this).next('div').find('button').focus();
-      },
-      close: function(){
-         $(this).remove();
-      },
-      draggable: true,
-      modal: true,
-      resizable: false,
-      width: 'auto'
+      message: message,
    });
 };
-
-
-
-/**
- * Redefine 'window.confirm' javascript function by a jquery-ui dialog equivalent (but prettier).
- * This dialog is normally asynchronous and can't return a boolean like naive window.confirm.
- * We manage this behavior with a global variable 'confirmed' who watchs the acceptation of dialog.
- * In this case, we trigger a new click on element to return the value (and without display dialog).
- */
-var confirmed = false;
-var lastClickedElement;
-
-// store last clicked element on dom
-$(document).click(function(event) {
-   lastClickedElement = $(event.target);
-});
-
-// asynchronous confirm dialog with jquery ui
-var newConfirm = function(message, caption) {
-   message = message.replace("\n", '<br>');
-   caption = caption || '';
-
-   var buttons = [];
-   buttons[_x('button', 'Confirm')] = function () {
-      $(this).dialog('close');
-      confirmed = true;
-
-      //trigger click on the same element (to return true value)
-      lastClickedElement.click();
-
-      // re-init confirmed (to permit usage of 'confirm' function again in the page)
-      // maybe timeout is not essential ...
-      setTimeout(function(){  confirmed = false; }, 100);
-   };
-   buttons[_x('button', 'Cancel')] = function () {
-      $(this).dialog('close');
-      confirmed = false;
-   };
-
-   $('<div></div>').html(message).dialog({
-      title: caption,
-      dialogClass: 'fixed glpi_modal',
-      buttons: buttons,
-      open: function() {
-         $(this).parent().prev('.ui-widget-overlay').addClass('glpi_modal');
-      },
-      close: function () {
-         $(this).remove();
-      },
-      draggable: true,
-      modal: true,
-      resizable: false,
-      width: 'auto'
-   });
-};
-
-window.nativeConfirm = window.confirm;
-
-// redefine native 'confirm' function
-window.confirm = function (message, caption) {
-   // if watched var isn't true, we can display dialog
-   if(!confirmed) {
-      // call asynchronous dialog
-      newConfirm(message, caption);
-   }
-
-   // return early
-   return confirmed;
-};
-
 
 window.displayAjaxMessageAfterRedirect = function() {
    // attach MESSAGE_AFTER_REDIRECT to body

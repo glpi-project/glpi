@@ -903,49 +903,46 @@ var showMapForLocation = function(elt) {
       return;
    }
 
-   var _dialog = $('<div id="location_map_dialog"/>');
-   _dialog.appendTo('body').dialog({
-      close: function() {
-         $(this).dialog('destroy').remove();
-      }
-   });
+   glpi_html_dialog({
+      title: __("Display on map"),
+      body: "<div id='location_map_dialog'/>",
+      dialogclass: "modal-lg",
+      show: function() {
+         //add map, set a default arbitrary location
+         var map_elt = initMap($('#location_map_dialog'), 'location_map');
+         map_elt.spin(true);
 
-   //add map, set a default arbitrary location
-   var map_elt = initMap($('#location_map_dialog'), 'location_map');
-
-   map_elt.spin(true);
-   $.ajax({
-      dataType: 'json',
-      method: 'POST',
-      url: CFG_GLPI.root_doc + '/ajax/getMapPoint.php',
-      data: {
-         itemtype: 'Location',
-         items_id: $('#' + _id).val()
-      }
-   }).done(function(data) {
-      if (data.success === false) {
-         _dialog.dialog('close');
-         $('<div>' + data.message + '</div>').dialog({
-            close: function() {
-               $(this).dialog('destroy').remove();
+         $.ajax({
+            dataType: 'json',
+            method: 'POST',
+            url: CFG_GLPI.root_doc + '/ajax/getMapPoint.php',
+            data: {
+               itemtype: 'Location',
+               items_id: $('#' + _id).val()
             }
+         }).done(function(data) {
+            if (data.success === false) {
+               glpi_html_dialog({
+                  body: data.message
+               })
+            } else {
+               var _markers = [];
+               var _marker = L.marker([data.lat, data.lng]);
+               _markers.push(_marker);
+
+               var _group = L.featureGroup(_markers).addTo(map_elt);
+               map_elt.fitBounds(
+                  _group.getBounds(), {
+                     padding: [50, 50],
+                     maxZoom: 10
+                  }
+               );
+            }
+         }).always(function() {
+            //hide spinner
+            map_elt.spin(false);
          });
-      } else {
-         var _markers = [];
-         var _marker = L.marker([data.lat, data.lng]);
-         _markers.push(_marker);
-
-         var _group = L.featureGroup(_markers).addTo(map_elt);
-         map_elt.fitBounds(
-            _group.getBounds(), {
-               padding: [50, 50],
-               maxZoom: 10
-            }
-         );
       }
-   }).always(function() {
-      //hide spinner
-      map_elt.spin(false);
    });
 };
 

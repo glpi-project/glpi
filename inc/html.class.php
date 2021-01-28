@@ -1272,6 +1272,9 @@ class Html {
       // load fuzzy search everywhere
       Html::requireJs('fuzzy');
 
+      // load glpi dailog everywhere
+      Html::requireJs('glpi_dialog');
+
       // load log filters everywhere
       Html::requireJs('log_filters');
 
@@ -5893,25 +5896,10 @@ JAVASCRIPT;
             message = message.replace('\\n', '<br>');
          }
          caption = caption || '"._sn('Information', 'Information', 1)."';
-         $('<div></div>').html(message).dialog({
+
+         glpi_alert({
             title: caption,
-            buttons: {
-               ".__s('OK').": function() {
-                  $(this).dialog('close');
-               }
-            },
-            dialogClass: 'glpi_modal',
-            open: function(event, ui) {
-               $(this).parent().prev('.ui-widget-overlay').addClass('glpi_modal');
-               $(this).next('div').find('button').focus();
-            },
-            close: function(){
-               $(this).remove();
-            },
-            draggable: true,
-            modal: true,
-            resizable: false,
-            width: 'auto'
+            message: message,
          });
       };");
    }
@@ -5934,26 +5922,16 @@ JAVASCRIPT;
     *                                    (default null)
    **/
    static function jsConfirmCallback($msg, $title, $yesCallback = null, $noCallback = null) {
-
-      return "
-         // the Dialog and its properties.
-         $('<div></div>').dialog({
-            open: function(event, ui) { $('.ui-dialog-titlebar-close').hide(); },
-            close: function(event, ui) { $(this).remove(); },
-            resizable: false,
-            modal: true,
-            title: '".Toolbox::addslashes_deep($title)."',
-            buttons: {
-               '" . __s('Yes') . "': function () {
-                     $(this).dialog('close');
-                     ".($yesCallback!==null?'('.$yesCallback.')()':'')."
-                  },
-               '" . __s('No') . "': function () {
-                     $(this).dialog('close');
-                     ".($noCallback!==null?'('.$noCallback.')()':'')."
-                  }
-            }
-         }).text('".Toolbox::addslashes_deep($msg)."');
+      return "glpi_confirm({
+         title: '".Toolbox::addslashes_deep($title)."',
+         message: '".Toolbox::addslashes_deep($msg)."',
+         confirm_event: function() {
+            ".($yesCallback!==null?'('.$yesCallback.')()':'')."
+         },
+         cancel_event: function() {
+            ".($noCallback!==null?'('.$noCallback.')()':'')."
+         },
+      });
       ";
    }
 
@@ -5983,36 +5961,21 @@ JAVASCRIPT;
          message = message.replace('\\n', '<br>');
          caption = caption || '';
 
-         $('<div></div>').html(message).dialog({
+         glpi_confirm({
             title: caption,
-            dialogClass: 'fixed glpi_modal',
-            buttons: {
-               '".addslashes(_x('button', 'Confirm'))."': function () {
-                  $(this).dialog('close');
-                  confirmed = true;
+            message: message,
+            confirm_event: function() {
+               confirmed = true;
 
-                  //trigger click on the same element (to return true value)
-                  lastClickedElement.click();
+               //trigger click on the same element (to return true value)
+               lastClickedElement.click();
 
-                  // re-init confirmed (to permit usage of 'confirm' function again in the page)
-                  // maybe timeout is not essential ...
-                  setTimeout(function(){  confirmed = false; }, 100);
-               },
-               '".addslashes(_x('button', 'Cancel'))."': function () {
-                  $(this).dialog('close');
+               // re-init confirmed (to permit usage of 'confirm' function again in the page)
+               // maybe timeout is not essential ...
+               setTimeout(function() {
                   confirmed = false;
-               }
-            },
-            open: function(event, ui) {
-               $(this).parent().prev('.ui-widget-overlay').addClass('glpi_modal');
-            },
-            close: function () {
-                $(this).remove();
-            },
-            draggable: true,
-            modal: true,
-            resizable: false,
-            width: 'auto'
+               }, 100);
+            }
          });
       };
 
@@ -6047,22 +6010,13 @@ JAVASCRIPT;
     *                               (default null)
    **/
    static function jsAlertCallback($msg, $title, $okCallback = null) {
-      return "
-         // Dialog and its properties.
-         $('<div></div>').dialog({
-            open: function(event, ui) { $('.ui-dialog-titlebar-close').hide(); },
-            close: function(event, ui) { $(this).remove(); },
-            resizable: false,
-            modal: true,
-            title: '".Toolbox::addslashes_deep( $title )."',
-            buttons: {
-               '".__s('OK')."': function () {
-                     $(this).dialog('close');
-                     ".($okCallback!==null?'('.$okCallback.')()':'')."
-                  }
-            }
-         }).text('".Toolbox::addslashes_deep($msg)."');
-         ";
+      return "glpi_alert({
+         title: '".Toolbox::addslashes_deep( $title )."',
+         message: '".Toolbox::addslashes_deep($msg)."',
+         callback: function() {
+            ".($okCallback!==null?'('.$okCallback.')()':'')."
+         },
+      });";
    }
 
 
@@ -6161,6 +6115,9 @@ JAVASCRIPT;
       switch ($name) {
          case 'tabler':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/tabler.js';
+            break;
+         case 'glpi_dialog':
+            $_SESSION['glpi_js_toload'][$name][] = 'js/glpi_dialog.js';
             break;
          case 'clipboard':
             $_SESSION['glpi_js_toload'][$name][] = 'js/clipboard.js';

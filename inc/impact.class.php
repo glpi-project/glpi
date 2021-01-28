@@ -364,38 +364,35 @@ class Impact extends CommonGLPI {
       echo '</div>';
 
       // Settings dialog
+      $setting_dialog = "";
       if ($can_update && $impact_context) {
          $rand = mt_rand();
 
-         echo '<div id="list_depth_dialog" class="impact-dialog" title=' . __("Settings") . '>';
-         echo '<form action="'.$CFG_GLPI['root_doc'].'/front/impactitem.form.php" method="POST">';
-         echo '<table class="tab_cadre_fixe">';
-         echo '<tr>';
-         echo '<td><label for="impact_max_depth_' . $rand . '">' . __("Max depth") . '</label></td>';
-         echo '<td>' . Html::input("max_depth", [
+         $setting_dialog.= '<form id="list_depth_form" action="'.$CFG_GLPI['root_doc'].'/front/impactitem.form.php" method="POST">';
+         $setting_dialog.= '<table class="tab_cadre_fixe">';
+         $setting_dialog.= '<tr>';
+         $setting_dialog.= '<td><label for="impact_max_depth_' . $rand . '">' . __("Max depth") . '</label></td>';
+         $setting_dialog.= '<td>' . Html::input("max_depth", [
             'id'    => "impact_max_depth_$rand",
             'value' => $max_depth >= self::MAX_DEPTH ? '' : $max_depth,
          ]) . '</td>';
-         echo '</tr>';
-         echo '<tr>';
-         echo '<td><label for="check_no_limit_' . $rand . '">' . __("No limit") . '</label></td>';
-         echo '<td>' . Html::getCheckbox([
+         $setting_dialog.= '</tr>';
+         $setting_dialog.= '<tr>';
+         $setting_dialog.= '<td><label for="check_no_limit_' . $rand . '">' . __("No limit") . '</label></td>';
+         $setting_dialog.= '<td>' . Html::getCheckbox([
             'name'    => 'no_limit',
             'id'      => "check_no_limit_$rand",
             'checked' => $max_depth >= self::MAX_DEPTH,
          ]) . '</td>';
-         echo '</tr>';
-         echo '</table>';
-         echo Html::input('id', [
+         $setting_dialog.= '</tr>';
+         $setting_dialog.= '</table>';
+         $setting_dialog.= Html::input('id', [
             'type'  => "hidden",
             'value' => $impact_context->fields['id'],
          ]);
-         echo Html::input('update', [
-            'type'  => "hidden",
-            'value' => "1",
-         ]);
-         Html::closeForm();
-         echo '</div>';
+         $setting_dialog.=  Html::submit(__('Save'), ['name' => 'update']);
+         $setting_dialog.= Html::closeForm(false);
+         $setting_dialog = json_encode($setting_dialog);
       }
 
       echo '</div>';
@@ -468,21 +465,16 @@ class Impact extends CommonGLPI {
          // Handle settings actions
          echo Html::scriptBlock('
             $("#impact-list-settings").click(function() {
-               $("#list_depth_dialog").dialog({
-                  modal: true,
-                  buttons: {
-                     ' . __("Save") . ': function() {
-                        if ($("input[name=\'no_limit\']:checked").length > 0) {
-                           $("input[name=\'max_depth\']").val(' . self::NO_DEPTH_LIMIT . ');
-                        }
-
-                        $(this).find("form").submit();
-                     },
-                     ' . __("Cancel") . ': function() {
-                        $(this).dialog( "close" );
-                     }
-                  },
+               glpi_html_dialog({
+                  title: __("Settings"),
+                  body: '.$setting_dialog.',
                });
+            });
+
+            $(document).on("submit","#list_depth_form", function() {
+               if ($("input[name=\'no_limit\']:checked").length > 0) {
+                  $("input[name=\'max_depth\']").val(' . self::NO_DEPTH_LIMIT . ');
+               }
             });
          ');
       }
