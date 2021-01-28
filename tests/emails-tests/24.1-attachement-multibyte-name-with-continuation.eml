@@ -1,0 +1,30 @@
+Return-Path: normal@glpi-project.org
+Received: from mail.glpi-project.org (localhost [127.0.0.1])
+    by mail.glpi-project.org (Postfix) with ESMTP id B74527E805E8
+    for <unittests@glpi-project.org>; Wed,  3 Apr 2019 11:48:35 +0200 (CEST)
+Date: Thu, 21 Jan 2021 15:26:54 +0100 (CET)
+From: "Normal User" <normal@glpi-project.org>
+To: unittests@glpi-project.org
+Message-ID: <aa097017-ea09-4dc2-8d71-8cb3cd64f397@mail.glpi-project.org>
+Subject: 24.1 Test attachment with long multibyte filename
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+    boundary="----=_Part_1101800_1137170823.1611253212835"
+
+------=_Part_1101800_1137170823.1611253212835
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+test 
+
+------=_Part_1101800_1137170823.1611253212835
+Content-Type: text/plain;
+ filename*0="=?gb2312?B?MjQuMS2zpM7EvP7D+6Osvau1vNbCxNrI3bSm1sOx6s231tA=?=";
+ filename*1="=?gb2312?B?tcTBrND40NAudHh0?="
+Content-Disposition: attachment;
+ filename*0="=?gb2312?B?MjQuMS2zpM7EvP7D+6Osvau1vNbCxNrI3bSm1sOx6s231tA=?=";
+ filename*1="=?gb2312?B?tcTBrND40NAudHh0?="
+Content-Transfer-Encoding: base64
+
+MjQuMS1hdHRhY2hlbWVudC1tdWx0aWJ5dGUtbmFtZS13aXRoLWNvbnRpbnVhdGlvbi5lbWw=
+------=_Part_1101800_1137170823.1611253212835--

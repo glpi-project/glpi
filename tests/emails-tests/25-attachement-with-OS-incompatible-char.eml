@@ -1,0 +1,28 @@
+Return-Path: normal@glpi-project.org
+Received: from mail.glpi-project.org (localhost [127.0.0.1])
+    by mail.glpi-project.org (Postfix) with ESMTP id B74527E805E8
+    for <unittests@glpi-project.org>; Wed,  3 Apr 2019 11:48:35 +0200 (CEST)
+Date: Thu, 22 Jan 2021 15:26:54 +0100 (CET)
+From: "Normal User" <normal@glpi-project.org>
+To: unittests@glpi-project.org
+Message-ID: <50BFB6E5-3040-4535-9A10-3164C726A37B@FRY09565>
+Subject: 25 - Test attachment with invalid chars for OS
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+        boundary="_002_50BFB6E5304045359A103164C726A37BFRY09565_"
+
+--_002_50BFB6E5304045359A103164C726A37BFRY09565_
+Content-Type: text/plain; charset="us-ascii"
+
+Test body
+--_002_50BFB6E5304045359A103164C726A37BFRY09565_
+Content-Type: application/octet-stream; name="25-New Text ? Document.txt"
+Content-Description: 25-New Text ? Document.txt
+Content-Disposition: attachment; filename="25-New Text ? Document.txt"; size=265;
+        creation-date="Fri, 15 Jan 2021 12:52:27 GMT";
+        modification-date="Fri, 15 Jan 2021 12:52:27 GMT"
+Content-Transfer-Encoding: base64
+
+dGVzdA==
+
+--_002_50BFB6E5304045359A103164C726A37BFRY09565_--

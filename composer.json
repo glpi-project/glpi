@@ -25,6 +25,7 @@
         "ext-zlib": "*",
         "blueimp/jquery-file-upload": "^10.2",
         "elvanto/litemoji": "^1.4 || ^2.0",
+        "glen/filename-normalizer": "^2.0",
         "guzzlehttp/guzzle": "^6.5",
         "guzzlehttp/psr7": "^1.6",
         "htmlawed/htmlawed": "^1.2",
@@ -94,11 +95,13 @@
         "lint": "vendor/bin/parallel-lint  --exclude files --exclude marketplace --exclude plugins --exclude vendor --exclude tools/vendor .",
         "post-install-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
-            "patch -f -p1 -d vendor/tecnickcom/tcpdf/ < tools/tcpdf-php8-compat.patch || echo 'Error applying patch, deprecation warnings related to TCPDF lib may pollute logs'"
+            "patch -f -p1 -d vendor/tecnickcom/tcpdf/ < tools/tcpdf-php8-compat.patch || echo 'Error applying patch, deprecation warnings related to TCPDF lib may pollute logs'",
+            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/laminas-mail-128.patch || echo 'Error applying patch, retrieving some mail attachement could fail'"
         ],
         "post-update-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
-            "patch -f -p1 -d vendor/tecnickcom/tcpdf/ < tools/tcpdf-php8-compat.patch || echo 'Error applying patch, deprecation warnings related to TCPDF lib may pollute logs'"
+            "patch -f -p1 -d vendor/tecnickcom/tcpdf/ < tools/tcpdf-php8-compat.patch || echo 'Error applying patch, deprecation warnings related to TCPDF lib may pollute logs'",
+            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/laminas-mail-128.patch || echo 'Error applying patch, retrieving some mail attachement could fail'"
         ]
     },
     "repositories": {
