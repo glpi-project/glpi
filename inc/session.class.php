@@ -719,11 +719,21 @@ class Session {
    **/
    static function isCron() {
 
-      return (isset($_SESSION["glpicronuserrunning"])
+      return (self::isInventory() || isset($_SESSION["glpicronuserrunning"])
               && (isCommandLine()
                   || strpos($_SERVER['PHP_SELF'], '/cron.php')));
    }
 
+   /**
+    * Detect inventory mode
+    *
+    * @return boolean
+   **/
+   static function isInventory(): bool {
+
+      return (isset($_SESSION["glpiinventoryuserrunning"])
+              && strpos($_SERVER['PHP_SELF'], '/inventory.php'));
+   }
 
    /**
     * Get the Login User ID or return cron user ID for cron jobs
@@ -734,10 +744,13 @@ class Session {
     *                          int for user id, string for cron jobs
    **/
    static function getLoginUserID($force_human = true) {
+      if (self::isInventory()) { // Check inventory
+         return $_SESSION["glpiinventoryuserrunning"];
+      }
 
       if (!$force_human
           && self::isCron()) { // Check cron jobs
-         return $_SESSION["glpicronuserrunning"];
+         return $_SESSION["glpicronuserrunning"] ?? $_SESSION['glpiinventoryuserrunning'];
       }
 
       if (isset($_SESSION["glpiID"])) {
