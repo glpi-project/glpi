@@ -640,6 +640,9 @@ class MailCollector extends DbTestCase {
                'Attachement having filename using RFC5987 (multiple lines)',
                'Attachement having filename using RFC5987 (single line)',
                'Mono-part HTML message',
+               '24.1 Test attachment with long multibyte filename',
+               '24.2 Test attachment with short multibyte filename',
+               '25 - Test attachment with invalid chars for OS'
             ]
          ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -700,12 +703,16 @@ class MailCollector extends DbTestCase {
       // Check creation of expected documents
       $expected_docs = [
          '00-logoteclib.png',
-         '01-Screenshot-2018-4-12 Observatoire - France très haut débit.png',
+         // Space is missing between "France" and "très" due to a bug in laminas-mail
+         '01-Screenshot-2018-4-12 Observatoire - Francetrès haut débit.png',
          '01-test.JPG',
          '15-image001.png',
          '18-blank.gif',
          '19-ʂǷèɕɩɐɫ ȼɦâʁȿ.gif',
          '20-specïal chars.gif',
+         '24.1-长文件名，将导致内容处置标头中的连续行.txt',
+         '24.2-中国字符.txt',
+         '25-New Text - Document.txt',
       ];
 
       $iterator = $DB->request(
