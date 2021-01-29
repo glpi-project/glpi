@@ -35,6 +35,8 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * Log Class
 **/
@@ -262,140 +264,42 @@ class Log extends CommonDBTM {
       $itemtype = $item->getType();
       $items_id = $item->getField('id');
 
-      $SEARCHOPTION = Search::getOptions($itemtype);
-      if (isset($_GET["start"])) {
-         $start = intval($_GET["start"]);
-      } else {
-         $start = 0;
-      }
-
-      $sql_filters = self::convertFiltersValuesToSqlCriteria(isset($_GET['filters']) ? $_GET['filters'] : []);
+      $start       = intval(($_GET["start"] ?? 0));
+      $filters     = $_GET['filters'] ?? [];
+      $is_filtered = count($filters) > 0;
+      $sql_filters = self::convertFiltersValuesToSqlCriteria($filters);
 
       // Total Number of events
       $total_number    = countElementsInTable("glpi_logs", ['items_id' => $items_id, 'itemtype' => $itemtype ]);
       $filtered_number = countElementsInTable("glpi_logs", ['items_id' => $items_id, 'itemtype' => $itemtype ] + $sql_filters);
 
-      // No Events in database
-      if ($total_number < 1) {
-         echo "<div class='center'>";
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th>".__('No historical')."</th></tr>";
-         echo "</table>";
-         echo "</div><br>";
-         return;
-      }
-
-      // CSV export link
-      $href = $CFG_GLPI['root_doc'] . "/front/log/export.php?" . http_build_query([
-         'filter'   => $_GET['filters'] ?? [],
-         'itemtype' => $item::getType(),
-         'id'       => $item->getId()
-      ]);
-
-      // Display the pager
-      $additional_params = isset($_GET['filters']) ? http_build_query(['filters' => $_GET['filters']]) : '';
-      Html::printAjaxPager(self::getTypeName(1), $start, $filtered_number, '', true, $additional_params);
-
-      // Output events
-      echo "<div class='center'>";
-      echo "<table class='tab_cadre_fixehov'>";
-
-      $header = "<tr>";
-      $header .= "<th>".__('ID')."</th>";
-      $header .= "<th>"._n('Date', 'Dates', 1)."</th>";
-      $header .= "<th>".User::getTypeName(1)."</th>";
-      $header .= "<th>"._n('Field', 'Fields', 1)."</th>";
-      //TRANS: a noun, modification, change
-      $header .= "<th>"._x('name', 'Update')."</th>";
-      $header .= "<th class='log-toolbar'>";
-      if (isset($_GET['filters'])) {
-         $header .= "<i title='".__('Show filters')."' class='fas fa-filter log-toolbar-item show_log_filters active'></i>";
-      } else {
-         $header .= "<i title='".__('Show filters')."' class='fas fa-filter log-toolbar-item show_log_filters'></i>";
-      }
-      $header .= "<a href='$href'>";
-      $header .= "<i title='".__('Export to CSV')."' class='fas fa-file-download log-toolbar-item'></i>";
-      $header .= "</a>";
-      $header .= "</th>";
-      $header .= "</tr>";
-
-      echo "<thead>";
-      echo $header;
-      if (isset($_GET['filters'])) {
-         echo "<tr class='log_history_filter_row'>";
-         echo "<td>";
-         echo "<input type='hidden' name='filters[active]' value='1' />";
-         echo "<input type='hidden' name='items_id' value='$items_id' />";
-         echo "</td>";
-         $dateValue = isset($_GET['filters']['date']) ? Html::cleanInputText($_GET['filters']['date']) : null;
-         echo "<td><input type='date' name='filters[date]' value='$dateValue' /></td>";
-         echo "<td>";
-         Dropdown::showFromArray(
-            "filters[users_names]",
-            Log::getDistinctUserNamesValuesInItemLog($item),
-            [
-               'multiple'            => true,
-               'display_emptychoice' => true,
-               'values'              => isset($_GET['filters']['users_names']) ? $_GET['filters']['users_names'] : [],
-               'width'               => "100%",
-            ]
-         );
-         echo "</td>";
-         echo "<td>";
-         Dropdown::showFromArray(
-            "filters[affected_fields]",
-            Log::getDistinctAffectedFieldValuesInItemLog($item),
-            [
-               'multiple'            => true,
-               'display_emptychoice' => true,
-               'values'              => isset($_GET['filters']['affected_fields']) ? $_GET['filters']['affected_fields'] : [],
-               'width'               => "100%",
-            ]
-         );
-         echo "</td>";
-         echo "<td colspan='2'>";
-         Dropdown::showFromArray(
-            "filters[linked_actions]",
-            Log::getDistinctLinkedActionValuesInItemLog($item),
-            [
-               'multiple'            => true,
-               'display_emptychoice' => true,
-               'values'              => isset($_GET['filters']['linked_actions']) ? $_GET['filters']['linked_actions'] : [],
-               'width'               => "100%",
-            ]
-         );
-         echo "</td>";
-         echo "</tr>";
-      }
-      echo "</thead>";
-
-      echo "<tfoot>$header</tfoot>";
-
-      echo "<tbody>";
-      if ($filtered_number > 0) {
-         foreach (self::getHistoryData($item, $start, $_SESSION['glpilist_limit'], $sql_filters) as $data) {
-            if ($data['display_history']) {
-               // show line
-               echo "<tr class='tab_bg_2'>";
-               echo "<td>".$data['id']."</td>";
-               echo "<td class='tab_date'>".$data['date_mod']."</td>";
-               echo "<td>".$data['user_name']."</td>";
-               echo "<td>".$data['field']."</td>";
-               echo "<td width='60%' colspan='2'>".$data['change']."</td>";
-               echo "</tr>";
-            }
-         }
-      } else {
-         echo "<tr>";
-         echo "<th colspan='6'>" . __('No historical matching your filters') . "</th>";
-         echo "</tr>";
-      }
-      echo "</tbody>";
-
-      echo "</table>";
-      echo "</div>";
-
-      Html::printAjaxPager(self::getTypeName(1), $start, $filtered_number, '', true, $additional_params);
+      TemplateRenderer::getInstance()->display('components/logs.html.twig', [
+         'total_number'      => $total_number,
+         'filtered_number'   => $filtered_number,
+         'logs'              => $filtered_number > 0
+            ? self::getHistoryData($item, $start, $_SESSION['glpilist_limit'], $sql_filters)
+            : [],
+         'start'             => $start,
+         'href'              => $item::getFormURLWithID($items_id),
+         'additional_params' => $is_filtered ? http_build_query(['filters' => $filters]) : "",
+         'is_tab'            => true,
+         'items_id'          => $items_id,
+         'filters'           => $filters,
+         'user_names'        => $is_filtered
+            ? Log::getDistinctUserNamesValuesInItemLog($item)
+            : [],
+         'affected_fields'   => $is_filtered
+            ? Log::getDistinctAffectedFieldValuesInItemLog($item)
+            : [],
+         'linked_actions'    => $is_filtered
+            ? Log::getDistinctLinkedActionValuesInItemLog($item)
+            : [],
+         'csv_url'           => $CFG_GLPI['root_doc']."/front/log/export.php?".http_build_query([
+            'filter'   => $filters,
+            'itemtype' => $item::getType(),
+            'id'       => $item->getId()
+         ]),
+      ]);;
    }
 
    /**
@@ -1213,6 +1117,8 @@ class Log extends CommonDBTM {
     * @since 9.3
     **/
    static function convertFiltersValuesToSqlCriteria(array $filters) {
+      global $DB;
+
       $sql_filters = [];
 
       if (isset($filters['affected_fields']) && !empty($filters['affected_fields'])) {

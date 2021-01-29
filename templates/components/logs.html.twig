@@ -1,0 +1,99 @@
+{% if total_number < 1 %}
+   <div class="alert alert-info">
+   __('No historical')
+   </div>
+{% else %}
+
+   {% include 'layout/parts/search/pager.html.twig' with {count: filtered_number} %}
+   <table class="table table-hover">
+      <thead>
+         <tr>
+            <th>{{ __('ID') }}</th>
+            <th>{{ _n('Date', 'Dates', 1) }}</th>
+            <th>{{ "User"|itemtype_name }}</th>
+            <th>{{ _n('Field', 'Fields', 1) }}</th>
+            <th>{{ _x('name', 'Update') }}</th>
+            <th>
+               <span class="float-end log-toolbar mb-0">
+                  <button class="btn btn-sm  show_log_filters {{ filters|length > 0 ? "btn-secondary active" : "btn-outline-secondary"}}">
+                     <i class="fas fa-filter"></i>
+                     <span class="d-none d-xl-block">{{ __("Filter") }}</span>
+                  </button>
+                  <a href="{{ csv_url }}" class="btn btn-sm btn-icon btn-outline-secondary">
+                     <i class="fas fa-file-download"></i>
+                     <span class="d-none d-xl-block">{{ __("Export") }}</span>
+                  </button>
+               </span>
+            </th>
+         </tr>
+
+         {% if filters|length > 0  %}
+         <tr class="log_history_filter_row">
+            <td>
+               <input type='hidden' name='filters[active]' value='1' />
+               <input type='hidden' name='items_id' value='{{ items_id }}' />
+            </td>
+            <td>
+               <input type='date' class="form-control" name='filters[date]' value='{{ filters['date'] }}' />
+            </td>
+            <td>
+               <select name="filters[users_names][]" class="form-select logs-filter-select-mulitple" multiple>
+                  {% for value, username in user_names %}
+                     <option value="{{ value }}" {{ filters['users_names'] is defined and value in filters['users_names'] ? 'selected' : '' }}>
+                        {{ username }}
+                     </option>
+                  {% endfor %}
+               </select>
+            </td>
+            <td>
+               <select name="filters[affected_fields][]" class="form-select logs-filter-select-mulitple" multiple>
+                  {% for value, field in affected_fields %}
+                     <option value="{{ value }}" {{ filters['affected_fields'] is defined and value in filters['affected_fields'] ? 'selected' : '' }}>
+                        {{ field }}
+                     </option>
+                  {% endfor %}
+               </select>
+            </td>
+            <td colspan="2">
+               <select name="filters[linked_actions][]" class="form-select logs-filter-select-mulitple" multiple>
+                  {% for value, action in linked_actions %}
+                     <option value="{{ value }}" {{ filters['linked_actions'] is defined and value in filters['linked_actions'] ? 'selected' : '' }}>
+                        {{ action }}
+                     </option>
+                  {% endfor %}
+               </select>
+            </td>
+         </tr>
+         {% endif %}
+
+      </thead>
+      <tbody>
+      {% if filtered_number < 1 %}
+         <tr><td colspan='6'>{{ __('No historical matching your filters') }}</td></tr>
+      {% else %}
+         {% for entry in logs %}
+            <tr>
+               <td>{{ entry['id'] }}</td>
+               <td>{{ entry['date_mod'] }}</td>
+               <td>{{ entry['user_name'] }}</td>
+               <td>{{ entry['field'] }}</td>
+               <td width='60%' colspan='2'>{{ entry['change']|raw }}</td>
+            </tr>
+         {% endfor %}
+      {% endif %}
+      </tbody>
+   </table>
+
+   {% set limitdropdown = include('layout/parts/dropdown/limit.html.twig') %}
+   <div class="ms-auto d-inline-flex align-items-center d-none d-md-block mb-2">
+      {{ __("Show %s entries")|format(limitdropdown)|raw }}
+   </div>
+{% endif %}
+
+
+
+<script type="text/javascript">
+$(function() {
+   $('.logs-filter-select-mulitple').select2();
+});
+</script>

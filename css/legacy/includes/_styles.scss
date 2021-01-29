@@ -4332,22 +4332,6 @@
       white-space: pre-wrap;
    }
 
-   .log-toolbar {
-      padding-right: 8px !important;
-
-      .log-toolbar-item {
-         float: right;
-         margin-left: 10px;
-         cursor: pointer;
-         opacity: 0.8;
-         font-size: 1.4em;
-
-         &:hover, &.active {
-            opacity: 1;
-         }
-      }
-   }
-
    /** Chartists styles fix **/
    .chart {
       position: relative;

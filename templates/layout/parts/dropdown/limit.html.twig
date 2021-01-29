@@ -1,3 +1,16 @@
+{% if additional_params is not defined %}
+   {% set additional_params = "" %}
+{% else %}
+   {% if additional_params|length > 0 and not (additional_params starts with '&') %}
+      {% set additional_params = "&" ~ additional_params %}
+   {% endif %}
+{% endif %}
+
+{% set href = "location.href='" ~ href ~"glpilist_limit='+this.value" ~ additional_params  %}
+{% if is_tab is defined and is_tab == true %}
+   {% set href = "javascript:reloadTab('glpilist_limit='+this.value+'" ~ additional_params ~ "');" %}
+{% endif %}
+
 {% set options = [] %}
 {% for i in range(5, 19, 5) %}
    {% set options = options|merge([i]) %}
@@ -22,12 +35,12 @@
 {% if max > 10 %}
    {% set options = options|merge([max - 10]) %}
 {% endif %}
-<select class="form-select form-select-sm mx-1  d-inline-block"
+<select class="form-select form-select-sm mx-1 d-inline-block"
         style="width: auto;"
         aria-label="Default select example"
-        onChange="location.href='{{ href }}glpilist_limit='+this.value">
+        onChange="{{ href }}">
    {% for value in options|sort %}
-      <option value="{{ value }}" {{ value == user_pref("glpilist_limit") ? "selected" : ""}}>
+      <option value="{{ value }}" {{ value == user_pref("list_limit") ? "selected" : ""}}>
          {{ value }}
       </option>
    {% endfor %}
