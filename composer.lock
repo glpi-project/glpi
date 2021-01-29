@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b2c0a02a0c10dc0f0660c8ad2c2f87ce",
+    "content-hash": "c21827fcff046ce6f562359bce731a65",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -206,6 +206,59 @@
             "time": "2020-11-27T05:08:33+00:00"
         },
         {
+            "name": "glen/filename-normalizer",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/glensc/php-filename-normalizer.git",
+                "reference": "2404f55b2cb3e91809d4eaae1d10cbc3c4aa3803"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/glensc/php-filename-normalizer/zipball/2404f55b2cb3e91809d4eaae1d10cbc3c4aa3803",
+                "reference": "2404f55b2cb3e91809d4eaae1d10cbc3c4aa3803",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3.3 || ^7.0 || ^8.0",
+                "symfony/polyfill-intl-normalizer": "^1.7"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.36"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "glen\\FilenameNormalizer\\": "src/",
+                    "glen\\FilenameNormalizer\\Test\\": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Elan Ruusamäe",
+                    "homepage": "https://github.com/glensc"
+                },
+                {
+                    "name": "Yosuke Kumakura",
+                    "homepage": "https://github.com/kumatch"
+                }
+            ],
+            "description": "A string normalizer for filesystem name.",
+            "homepage": "https://github.com/glensc/php-filename-normalizer",
+            "keywords": [
+                "filename",
+                "filesystem"
+            ],
+            "support": {
+                "source": "https://github.com/glensc/php-filename-normalizer/tree/master"
+            },
+            "time": "2019-09-02T11:29:32+00:00"
+        },
+        {
             "name": "glpi-project/inventory_format",
             "version": "1.0.2",
             "source": {
@@ -265,59 +318,6 @@
                 "source": "https://github.com/glpi-project/inventory_format"
             },
             "time": "2021-01-20T14:50:09+00:00"
-        },
-        {
-            "name": "glen/filename-normalizer",
-            "version": "2.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/glensc/php-filename-normalizer.git",
-                "reference": "2404f55b2cb3e91809d4eaae1d10cbc3c4aa3803"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/glensc/php-filename-normalizer/zipball/2404f55b2cb3e91809d4eaae1d10cbc3c4aa3803",
-                "reference": "2404f55b2cb3e91809d4eaae1d10cbc3c4aa3803",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^5.3.3 || ^7.0 || ^8.0",
-                "symfony/polyfill-intl-normalizer": "^1.7"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.8.36"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "glen\\FilenameNormalizer\\": "src/",
-                    "glen\\FilenameNormalizer\\Test\\": "tests/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Elan Ruusamäe",
-                    "homepage": "https://github.com/glensc"
-                },
-                {
-                    "name": "Yosuke Kumakura",
-                    "homepage": "https://github.com/kumatch"
-                }
-            ],
-            "description": "A string normalizer for filesystem name.",
-            "homepage": "https://github.com/glensc/php-filename-normalizer",
-            "keywords": [
-                "filename",
-                "filesystem"
-            ],
-            "support": {
-                "source": "https://github.com/glensc/php-filename-normalizer/tree/master"
-            },
-            "time": "2019-09-02T11:29:32+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -6781,12 +6781,12 @@
             "version": "1.9.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webmozart/assert.git",
+                "url": "https://github.com/webmozarts/assert.git",
                 "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
                 "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389",
                 "shasum": ""
             },
@@ -6824,8 +6824,8 @@
                 "validate"
             ],
             "support": {
-                "issues": "https://github.com/webmozart/assert/issues",
-                "source": "https://github.com/webmozart/assert/tree/master"
+                "issues": "https://github.com/webmozarts/assert/issues",
+                "source": "https://github.com/webmozarts/assert/tree/1.9.1"
             },
             "time": "2020-07-08T17:02:28+00:00"
         },
