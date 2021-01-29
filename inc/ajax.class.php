@@ -430,6 +430,7 @@ JAVASCRIPT;
             var url = tablink.attr('href');
             var target = tablink.attr('data-bs-target');
             var index = tablink.closest('.nav-item').index();
+            $(target).html('<i class=\"fas fa-3x fa-spinner fa-pulse\"></i>');
 
             $.get(url, function(data) {
                $(target).html(data);
@@ -448,7 +449,7 @@ JAVASCRIPT;
          };
 
          var reloadTab = function (add) {
-            var active_link = $('main .nav-tabs .nav-item .nav-link.active');
+            var active_link = $('main #tabspanel .nav-item .nav-link.active');
 
             // Update href and load tab contents
             var currenthref = active_link.attr('href');
