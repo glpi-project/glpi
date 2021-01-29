@@ -244,7 +244,8 @@ class DeviceHardDrive extends CommonDevice {
          'computation'        =>
             '(SUM(' . $DB->quoteName('TABLE.capacity') . ') / COUNT(' .
             $DB->quoteName('TABLE.id') . '))
-            * COUNT(DISTINCT ' . $DB->quoteName('TABLE.id') . ')'
+            * COUNT(DISTINCT ' . $DB->quoteName('TABLE.id') . ')',
+         'nometa'             => true, // cannot GROUP_CONCAT a SUM
       ];
 
       return $tab;
