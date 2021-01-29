@@ -563,7 +563,6 @@ class Software extends CommonDBTM {
          'forcegroupby'       => true,
          'usehaving'          => true,
          'datatype'           => 'count',
-         'nometa'             => true,
          'massiveaction'      => false,
          'joinparams'         => [
             'jointype'   => 'child',
@@ -619,7 +618,7 @@ class Software extends CommonDBTM {
                   'jointype'           => 'child'
                ]
             ]
-         ]
+         ],
       ];
 
       $tab[] = [
@@ -649,7 +648,7 @@ class Software extends CommonDBTM {
                   'jointype'           => 'child'
                ]
             ]
-         ]
+         ],
       ];
 
       // add objectlock search options
