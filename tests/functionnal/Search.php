@@ -537,10 +537,6 @@ class Search extends DbTestCase {
             }
          }
 
-         // FIXME Some JOINS are missing when joining multiple time same table but with different foreign keys
-         // see #8599
-         continue;
-
          // Search on all with multiple meta criteria
          // Limit criteria count to 50 to prevent performances issues
          // and also prevent exceeding of MySQL join limit.

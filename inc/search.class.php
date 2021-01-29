@@ -1154,14 +1154,11 @@ class Search {
                                            $sopt["joinparams"]);
          }
 
-         if (!in_array($sopt["table"]."_".$criterion['itemtype'], $already_link_tables)) {
-
-            $FROM .= self::addLeftJoin($m_itemtype,
-                                       $m_itemtype::getTable(),
-                                       $already_link_tables, $sopt["table"],
-                                       $sopt["linkfield"], 1, $m_itemtype,
-                                       $sopt["joinparams"], $sopt["field"]);
-         }
+         $FROM .= self::addLeftJoin($m_itemtype,
+                                    $m_itemtype::getTable(),
+                                    $already_link_tables, $sopt["table"],
+                                    $sopt["linkfield"], 1, $m_itemtype,
+                                    $sopt["joinparams"], $sopt["field"]);
       }
    }
 
@@ -5284,9 +5281,9 @@ JAVASCRIPT;
 
                case 'Software' :
                   array_push($already_link_tables2, $to_table);
-                  array_push($already_link_tables2, "glpi_softwareversions_$to_type");
-                  array_push($already_link_tables2, "glpi_softwarelicenses_$to_type");
-                  array_push($already_link_tables2, "glpi_items_softwareversions_$to_type");
+                  array_push($already_link_tables2, "glpi_softwareversions_$complexjoin$to_type");
+                  array_push($already_link_tables2, "glpi_softwarelicenses_$complexjoin$to_type");
+                  array_push($already_link_tables2, "glpi_items_softwareversions_$complexjoin$to_type");
                   return " $LINK `glpi_items_softwareversions`
                                     AS `glpi_items_softwareversions_$complexjoin$to_type`
                               ON (`glpi_items_softwareversions_$complexjoin$to_type`.`items_id`

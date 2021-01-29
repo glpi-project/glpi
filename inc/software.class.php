@@ -619,7 +619,6 @@ class Software extends CommonDBTM {
                ]
             ]
          ],
-         'nometa'             => true, // FIXME Missing JOIN
       ];
 
       $tab[] = [
@@ -650,7 +649,6 @@ class Software extends CommonDBTM {
                ]
             ]
          ],
-         'nometa'             => true, // FIXME Missing JOIN
       ];
 
       // add objectlock search options
