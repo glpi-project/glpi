@@ -3897,16 +3897,16 @@
         },
         {
             "name": "scssphp/scssphp",
-            "version": "v1.4.0",
+            "version": "v1.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/scssphp/scssphp.git",
-                "reference": "f7c9088320e218ca42e4ef0074259a1ba24ec93a"
+                "reference": "ba86c963b94ec7ebd6e19d90cdab90d89667dbf7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/scssphp/scssphp/zipball/f7c9088320e218ca42e4ef0074259a1ba24ec93a",
-                "reference": "f7c9088320e218ca42e4ef0074259a1ba24ec93a",
+                "url": "https://api.github.com/repos/scssphp/scssphp/zipball/ba86c963b94ec7ebd6e19d90cdab90d89667dbf7",
+                "reference": "ba86c963b94ec7ebd6e19d90cdab90d89667dbf7",
                 "shasum": ""
             },
             "require": {
@@ -3916,7 +3916,7 @@
             },
             "require-dev": {
                 "phpunit/phpunit": "^5.7 || ^6.5 || ^7.5 || ^8.3 || ^9.4",
-                "sass/sass-spec": "2020.10.29",
+                "sass/sass-spec": "2020.12.29",
                 "squizlabs/php_codesniffer": "~3.5",
                 "symfony/phpunit-bridge": "^5.1",
                 "twbs/bootstrap": "~4.3",
@@ -3958,9 +3958,9 @@
             ],
             "support": {
                 "issues": "https://github.com/scssphp/scssphp/issues",
-                "source": "https://github.com/scssphp/scssphp/tree/v1.4.0"
+                "source": "https://github.com/scssphp/scssphp/tree/v1.4.1"
             },
-            "time": "2020-11-07T20:53:41+00:00"
+            "time": "2021-01-04T13:23:23+00:00"
         },
         {
             "name": "sebastian/diff",
