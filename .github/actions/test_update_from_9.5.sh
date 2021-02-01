@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 bin/console glpi:database:configure --config-dir=./tests --no-interaction --ansi --reconfigure --db-name=glpitest-9.5.3 --db-host=db --db-user=root --use-utf8mb4 --log-deprecation-warnings
 
