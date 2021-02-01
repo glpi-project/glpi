@@ -3889,6 +3889,7 @@ JS;
             skin_url: '".$CFG_GLPI['root_doc']."/css/tiny_mce/skins/light',
             content_css: '$darker_css,".$CFG_GLPI['root_doc']."/css/tiny_mce_custom.css',
             cache_suffix: '?v=".GLPI_VERSION."',
+            min_height: '148px',
             setup: function(editor) {
                if ($('#$name').attr('required') == 'required') {
                   $('#$name').closest('form').find('input[type=submit]').click(function() {
