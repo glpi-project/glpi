@@ -52,3 +52,25 @@ $tables = [
 foreach ($tables as $table) {
    $migration->changeField($table, 'comment', 'comment', 'text');
 }
+
+// Add `DEFAULT CURRENT_TIMESTAMP` to some date fields
+$tables = [
+   'glpi_alerts',
+   'glpi_crontasklogs',
+   'glpi_notimportedemails',
+];
+foreach ($tables as $table) {
+   $migration->changeField($table, 'date', 'date', 'timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP');
+}
+
+// Fix charset for glpi_notimportedemails table
+$migration->addPreQuery(
+   sprintf(
+      'ALTER TABLE %s CONVERT TO CHARACTER SET %s COLLATE %s',
+      $DB->quoteName('glpi_notimportedemails'),
+      DBConnection::getDefaultCharset(),
+      DBConnection::getDefaultCollation()
+   )
+);
+// Put back `subject` type to text (charset convertion changed it from text to mediumtext)
+$migration->changeField('glpi_notimportedemails', 'subject', 'subject', 'text', ['nodefault' => true]);

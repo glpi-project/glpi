@@ -58,7 +58,7 @@ class DbConfiguration extends AbstractRequirement {
    protected function check() {
       $version = preg_replace('/^((\d+\.?)+).*$/', '$1', $this->db->getVersion());
 
-      // On MySQL 5.6, "ROW_FORMAT = Dynamic" fallbacks to "ROW_FORMAT = Compact"
+      // On MySQL 5.6, "ROW_FORMAT = DYNAMIC" fallbacks to "ROW_FORMAT = COMPACT"
       // if "innodb_file_format" is not set to "Barracuda".
       // This variable has been removed in MySQL 8.0 and in MariaDB 10.3.
       $check_file_format = version_compare($version, '5.7', '<');

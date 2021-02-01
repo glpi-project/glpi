@@ -120,7 +120,7 @@ class Utf8mb4Command extends AbstractCommand {
       }
 
       // Check that all tables are using the "Dynamic" row format
-      if ($this->db->listTables('glpi\_%', ['row_format' => ['Compact', 'Redundant']])->count() > 0) {
+      if ($this->db->listTables('glpi\_%', ['row_format' => ['COMPACT', 'REDUNDANT']])->count() > 0) {
          $msg = sprintf(
             __('%d tables are still using Compact or Redundant row format. Run "php bin/console glpi:migration:dynamic_row_format" to fix this.'),
             $myisam_count

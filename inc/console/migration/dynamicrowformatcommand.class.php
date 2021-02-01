@@ -89,7 +89,7 @@ class DynamicRowFormatCommand extends AbstractCommand {
       // Check that DB configuration is compatible
       $version = preg_replace('/^((\d+\.?)+).*$/', '$1', $this->db->getVersion());
       if (version_compare($version, '5.7', '<')) {
-         // On MySQL 5.6, "ROW_FORMAT = Dynamic" fallbacks to "ROW_FORMAT = Compact"
+         // On MySQL 5.6, "ROW_FORMAT = DYNAMIC" fallbacks to "ROW_FORMAT = COMPACT"
          // if "innodb_file_format" is not set to "Barracuda".
          // This variable has been removed in MySQL 8.0 and in MariaDB 10.3.
          $query = 'SELECT @@GLOBAL.' . $this->db->quoteName('innodb_file_format as innodb_file_format');
@@ -128,7 +128,7 @@ class DynamicRowFormatCommand extends AbstractCommand {
       $table_iterator = $this->db->listTables(
          'glpi\_%',
          [
-            'row_format'   => ['Compact', 'Redundant'],
+            'row_format'   => ['COMPACT', 'REDUNDANT'],
          ]
       );
 
@@ -139,7 +139,7 @@ class DynamicRowFormatCommand extends AbstractCommand {
 
       $this->output->writeln(
          sprintf(
-            '<info>' . __('Found %s table(s) requiring a migration to "ROW_FORMAT=Dynamic".') . '</info>',
+            '<info>' . __('Found %s table(s) requiring a migration to "ROW_FORMAT=DYNAMIC".') . '</info>',
             $table_iterator->count()
          )
       );
