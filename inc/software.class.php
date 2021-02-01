@@ -584,6 +584,25 @@ class Software extends CommonDBTM {
       }
       $tab[] = $newtab;
 
+      $tab[] = [
+         'id'                 => '73',
+         'table'              => 'glpi_items_softwareversions',
+         'field'              => 'date_install',
+         'name'               => __('Installation date'),
+         'datatype'           => 'date',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'   => 'child',
+            'beforejoin' => [
+               'table'      => 'glpi_softwareversions',
+               'joinparams' => ['jointype' => 'child'],
+            ],
+            'condition'  => "AND NEWTABLE.`is_deleted_item` = 0
+                             AND NEWTABLE.`is_deleted` = 0
+                             AND NEWTABLE.`is_template_item` = 0",
+         ]
+      ];
+
       $tab = array_merge($tab, SoftwareLicense::rawSearchOptionsToAdd());
 
       $name = _n('Version', 'Versions', Session::getPluralNumber());
