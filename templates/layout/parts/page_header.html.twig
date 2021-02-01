@@ -73,7 +73,7 @@
       </aside>
       {% endif %}
 
-      <header class="navbar d-print-none sticky-lg-top {{ user_pref('page_layout') == 'vertical' ? 'navbar-light navbar-expand-md' : 'navbar-dark navbar-expand-xl topbar' }}">
+      <header class="navbar d-print-none sticky-lg-top shadow-sm {{ user_pref('page_layout') == 'vertical' ? 'navbar-light navbar-expand-md' : 'navbar-dark navbar-expand-xl topbar' }}">
          <div class="container-fluid">
             {% if user_pref('page_layout') == 'vertical' %}
                {{ include('layout/parts/breadcrumbs.html.twig') }}
@@ -113,7 +113,7 @@
       </header>
 
       {% if user_pref('page_layout') == 'horizontal' %}
-      <div class="navbar navbar-expand-md navbar-light secondary-bar sticky-md-top">
+      <div class="navbar navbar-expand-md navbar-light secondary-bar sticky-md-top shadow-sm">
          <div class="container-fluid justify-content-start">
             {{ include('layout/parts/breadcrumbs.html.twig') }}
             <div class="ms-md-auto d-none d-md-block flex-grow-1 flex-md-grow-0">

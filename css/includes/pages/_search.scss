@@ -37,3 +37,19 @@
 .form-check-input[name="is_deleted"]:checked {
    background-color: $danger;
 }
+
+.search_page {
+   .search-form {
+      background-color: $search_bg;
+      color: $search_fg;
+
+      // try having same width on link dropdowns
+      .select2-container {
+         min-width:58px;
+      }
+
+      .sub_criteria {
+         background-color: rgba(0, 0, 0, 0.03);
+      }
+   }
+}
