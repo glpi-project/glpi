@@ -42,7 +42,7 @@
    z-index: 1030;
    transition: left var(--animate-duration);
 
-   min-width: 320px;
+   min-width: 400px;
 
    padding: 0;
 
@@ -54,6 +54,7 @@
       height: calc(100vh - #{$navbar-height} + 1px);
       margin-left: -#{$container-padding-x};
       margin-right: $container-padding-x;
+      min-width: 320px;
 
       .pin-saved-searches-panel {
          border: 2px inset rgba($color: $secondary, $alpha: .5);
