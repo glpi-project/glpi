@@ -132,7 +132,8 @@ class DynamicRowFormatCommand extends AbstractCommand {
          ]
       );
 
-      if ($table_iterator->count() === 0) {
+      if (0 === $table_iterator->count()) {
+         $this->output->writeln('<info>' . __('No migration needed.') . '</info>');
          return;
       }
 
@@ -183,5 +184,7 @@ class DynamicRowFormatCommand extends AbstractCommand {
             self::ERROR_MIGRATION_FAILED_FOR_SOME_TABLES
          );
       }
+
+      $this->output->writeln('<info>' . __('Migration done.') . '</info>');
    }
 }
