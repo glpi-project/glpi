@@ -230,7 +230,7 @@ class Unmanaged extends CommonDBTM {
       $tab[] = [
          'id'        => '13',
          'table'     => $this->getTable(),
-         'field'     => 'item_type',
+         'field'     => 'itemtype',
          'name'      => _n('Type', 'Types', 1),
          'datatype'  => 'dropdown',
       ];
