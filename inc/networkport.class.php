@@ -1515,10 +1515,11 @@ class NetworkPort extends CommonDBChild {
       ];
 
       $tab[] = [
-         'id'    => '41',
-         'table' => $this->getTable(),
-         'field' => 'lastup',
-         'name'  => __('Last connection'),
+         'id'       => '41',
+         'table'    => $this->getTable(),
+         'field'    => 'lastup',
+         'name'     => __('Last connection'),
+         'datatype' => 'datetime',
       ];
 
       $tab[] = [
