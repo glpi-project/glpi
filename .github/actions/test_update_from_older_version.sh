@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 bin/console glpi:database:configure --config-dir=./tests --ansi --no-interaction --reconfigure --db-name=glpitest080 --db-host=db --db-user=root
 

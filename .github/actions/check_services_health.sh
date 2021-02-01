@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 for CONTAINER in {"db","dovecot","openldap"}; do
   HEALTHY=false
