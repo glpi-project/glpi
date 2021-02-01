@@ -2695,6 +2695,7 @@ class Ticket extends CommonITILObject {
          'usehaving'          => true,
          'maybefuture'        => true,
          'massiveaction'      => false,
+         'nometa'             => true,
          // Get least value from TTO/TTR fields:
          // - use TTO fields only if ticket not already taken into account,
          // - use TTR fields only if ticket not already solved,
