@@ -67,11 +67,18 @@ class Utf8mb4Command extends AbstractCommand {
    const ERROR_INNODB_REQUIRED = 3;
 
    /**
+    * Error code returned if some tables are still using Redundant/Compact row format.
+    *
+    * @var integer
+    */
+   const ERROR_DYNAMIC_ROW_FORMAT_REQUIRED = 4;
+
+   /**
     * Error code returned if DB configuration is not compatible with large indexes.
     *
     * @var integer
     */
-   const ERROR_INCOMPATIBLE_DB_CONFIG = 3;
+   const ERROR_INCOMPATIBLE_DB_CONFIG = 5;
 
    protected function configure() {
       parent::configure();
@@ -82,7 +89,6 @@ class Utf8mb4Command extends AbstractCommand {
 
    protected function execute(InputInterface $input, OutputInterface $output) {
       $this->checkForPrerequisites();
-      $this->upgradeRowFormat();
       $this->migrateToUtf8mb4();
 
       return 0; // Success
@@ -112,73 +118,14 @@ class Utf8mb4Command extends AbstractCommand {
          );
          throw new \Glpi\Console\Exception\EarlyExitException('<error>' . $msg . '</error>', self::ERROR_INNODB_REQUIRED);
       }
-   }
 
-   /**
-    * Upgrade row format from 'Compact'/'Redundant' to 'Dynamic'.
-    * This is mandatory to support large indexes.
-    *
-    * @return void
-    */
-   private function upgradeRowFormat(): void {
-
-      $table_iterator = $this->db->listTables(
-         'glpi\_%',
-         [
-            'row_format'   => ['Compact', 'Redundant'],
-         ]
-      );
-
-      if ($table_iterator->count() === 0) {
-         return;
-      }
-
-      $this->output->writeln(
-         sprintf(
-            '<info>' . __('Found %s table(s) requiring a migration to "ROW_FORMAT=Dynamic".') . '</info>',
-            $table_iterator->count()
-         )
-      );
-
-      $this->askForConfirmation();
-
-      $tables = [];
-      foreach ($table_iterator as $table_data) {
-         $tables[] = $table_data['TABLE_NAME'];
-      }
-      sort($tables);
-
-      $progress_bar = new ProgressBar($this->output);
-      $errors = 0;
-
-      foreach ($progress_bar->iterate($tables) as $table) {
-         $this->writelnOutputWithProgressBar(
-            sprintf(__('Migrating table "%s"...'), $table),
-            $progress_bar,
-            OutputInterface::VERBOSITY_VERY_VERBOSE
+      // Check that all tables are using the "Dynamic" row format
+      if ($this->db->listTables('glpi\_%', ['row_format' => ['Compact', 'Redundant']])->count() > 0) {
+         $msg = sprintf(
+            __('%d tables are still using Compact or Redundant row format. Run "php bin/console glpi:migration:dynamic_row_format" to fix this.'),
+            $myisam_count
          );
-
-         $result = $this->db->query(
-            sprintf('ALTER TABLE `%s` ROW_FORMAT = DYNAMIC', $table)
-         );
-
-         if (!$result) {
-            $this->writelnOutputWithProgressBar(
-               sprintf(__('<error>Error migrating table "%s".</error>'), $table),
-               $progress_bar,
-               OutputInterface::VERBOSITY_QUIET
-            );
-            $errors++;
-         }
-      }
-
-      $this->output->write(PHP_EOL);
-
-      if ($errors) {
-         throw new \Glpi\Console\Exception\EarlyExitException(
-            '<error>' . __('Errors occured during migration.') . '</error>',
-            self::ERROR_MIGRATION_FAILED_FOR_SOME_TABLES
-         );
+         throw new \Glpi\Console\Exception\EarlyExitException('<error>' . $msg . '</error>', self::ERROR_DYNAMIC_ROW_FORMAT_REQUIRED);
       }
    }
 

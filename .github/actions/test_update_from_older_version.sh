@@ -26,6 +26,10 @@ if [[ -n $(grep "Warning\|No migration needed." ~/migration.log) ]]; then echo "
 bin/console glpi:migration:timestamps --config-dir=./tests --ansi --no-interaction | tee ~/migration.log
 if [[ -z $(grep "No migration needed." ~/migration.log) ]]; then echo "bin/console glpi:migration:timestamps command FAILED" && exit 1; fi
 
+# Execute dynamic_row_format migration
+## Result will depend on DB server/version, we just expect that command will not fail.
+bin/console glpi:migration:dynamic_row_format --config-dir=./tests --ansi --no-interaction
+
 # Execute utf8mb4 migration
 ## First run should do the migration (with no warnings).
 bin/console glpi:migration:utf8mb4 --config-dir=./tests --ansi --no-interaction | tee ~/migration.log
