@@ -3404,16 +3404,16 @@
         },
         {
             "name": "rlanvin/php-rrule",
-            "version": "v2.2.1",
+            "version": "v2.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rlanvin/php-rrule.git",
-                "reference": "dba3b916a529938fd9bb518592e8b97eae1b632e"
+                "reference": "4e979ff9b1122e7b5f4b4faf87a000396af12d16"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rlanvin/php-rrule/zipball/dba3b916a529938fd9bb518592e8b97eae1b632e",
-                "reference": "dba3b916a529938fd9bb518592e8b97eae1b632e",
+                "url": "https://api.github.com/repos/rlanvin/php-rrule/zipball/4e979ff9b1122e7b5f4b4faf87a000396af12d16",
+                "reference": "4e979ff9b1122e7b5f4b4faf87a000396af12d16",
                 "shasum": ""
             },
             "require": {
@@ -3447,9 +3447,9 @@
             ],
             "support": {
                 "issues": "https://github.com/rlanvin/php-rrule/issues",
-                "source": "https://github.com/rlanvin/php-rrule/tree/v2.2.1"
+                "source": "https://github.com/rlanvin/php-rrule/tree/v2.2.2"
             },
-            "time": "2020-12-09T22:13:35+00:00"
+            "time": "2021-01-09T13:20:09+00:00"
         },
         {
             "name": "sabre/dav",
