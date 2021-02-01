@@ -2122,14 +2122,14 @@ class Search {
 
       $rand_criteria = mt_rand();
       $main_block_class = '';
-      $card_class = 'mb-2';
+      $card_class = 'search-form card card-sm mb-2';
       if ($p['mainform']) {
          echo "<form name='searchform$itemtype' method='get' action='".$p['target']."'>";
       } else {
          $main_block_class = "sub_criteria";
-         $card_class = 'mt-2 ms-1';
+         $card_class = 'border d-inline-block mt-2 ms-1';
       }
-      echo "<div class='card card-sm $card_class'>";
+      echo "<div class='$card_class'>";
       echo "<div id='searchcriteria$rand_criteria' class='$main_block_class'>";
       $nbsearchcountvar      = 'nbcriteria'.strtolower($itemtype).mt_rand();
       $searchcriteriatableid = 'criteriatable'.strtolower($itemtype).mt_rand();
@@ -2138,7 +2138,7 @@ class Search {
          var $nbsearchcountvar = ".count($p['criteria']).";
       ");
 
-      echo "<div class='list-group list-group-flush list-group-hoverable criteria-list' id='$searchcriteriatableid'>";
+      echo "<div class='list-group list-group-flush list-group-hoverable criteria-list pt-2' id='$searchcriteriatableid'>";
 
       // Display normal search parameters
       $i = 0;
@@ -2151,7 +2151,7 @@ class Search {
       }
 
       echo "<div id='more-criteria$rand_criteria'
-            class='normalcriteria list-group-item'
+            class='normalcriteria list-group-item p-2 border-0'
             style='display: none;'>...</div>";
 
       echo "</div>"; // .list
@@ -2164,7 +2164,7 @@ class Search {
          ]);
       }
 
-      echo "<div class='card-footer d-flex search_actions border-top-0'>";
+      echo "<div class='card-body d-flex search_actions border-top-0'>";
       $linked = self::getMetaItemtypeAvailable($itemtype);
       echo "<button id='addsearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary me-1'>
                <i class='fas fa-plus-square'></i>
@@ -2275,13 +2275,13 @@ JAVASCRIPT;
             $(this).children('i.fas')
                .toggleClass('fa-angle-double-up')
                .toggleClass('fa-angle-double-down');
-            $('#searchcriteria .criteria-list .list-group-item:not(:first-child)').toggle();
+            $('#searchcriteria{$rand_criteria} .criteria-list .list-group-item:not(:first-child)').toggle();
          });
 
          $(document).on("click", ".remove-search-criteria", function() {
             var rowID = $(this).data('rowid');
             $('#' + rowID).remove();
-            $('#searchcriteria .criteria-list .list-group-item:first-child').addClass('headerRow').show();
+            $('#searchcriteria{$rand_criteria} .criteria-list .list-group-item:first-child').addClass('headerRow').show();
          });
 JAVASCRIPT;
       }
@@ -2359,8 +2359,13 @@ JAVASCRIPT;
          return self::displayCriteriaGroup($request);
       }
 
-      echo "<div class='list-group-item normalcriteria$addclass' id='$rowid'>";
-      echo "<div class='row'>";
+      $add_padding = "p-2";
+      if (isset($request["from_meta"])) {
+         $add_padding = "p-0";
+      }
+
+      echo "<div class='list-group-item $add_padding border-0 normalcriteria$addclass' id='$rowid'>";
+      echo "<div class='row g-1'>";
 
       if (!isset($request['from_meta'])
           || !$request['from_meta']) {
@@ -2449,7 +2454,8 @@ JAVASCRIPT;
       $field_id = Html::cleanId("dropdown_criteria{$prefix}[$num][field]$rand");
       $spanid   = Html::cleanId('SearchSpan'.$request["itemtype"].$prefix.$num);
 
-      echo "<div class='col-auto row' id='$spanid'>";
+      echo "<div class='col-auto'>";
+      echo "<div class='row g-1' id='$spanid'>";
 
       $used_itemtype = $request["itemtype"];
       // Force Computer itemtype for AllAssets to permit to show specific items
@@ -2486,6 +2492,7 @@ JAVASCRIPT;
          ] + $params
       );
       echo "</div>"; //.row
+      echo "</div>"; //#$spanid
       echo "</div>";
    }
 
@@ -2531,8 +2538,8 @@ JAVASCRIPT;
 
       $rowid  = 'metasearchrow'.$request['itemtype'].$rand;
 
-      echo "<div class='list-group-item metacriteria' id='$rowid'>";
-      echo "<div class='row'>";
+      echo "<div class='list-group-item border-0 metacriteria p-2' id='$rowid'>";
+      echo "<div class='row g-1'>";
 
       echo "<div class='col-auto'>";
       echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' data-rowid='$rowid'>
@@ -2563,7 +2570,6 @@ JAVASCRIPT;
                      : "",
       ]);
       echo "</div>";
-      echo "</div>";
       echo Html::hidden("criteria{$prefix}[$num][meta]", [
          'value' => true
       ]);
@@ -2589,12 +2595,14 @@ JAVASCRIPT;
          $params
       );
 
-      echo "<div class='col-auto row' id='$spanid'>";
+      echo "<div class='col-auto' id='$spanid'>";
+      echo "<div class=row'>";
       if (isset($metacriteria['itemtype'])
           && !empty($metacriteria['itemtype'])) {
          $params['itemtype'] = $metacriteria['itemtype'];
          self::displayCriteria($params);
       }
+      echo "</div>";
       echo "</div>";
    }
 
@@ -2623,8 +2631,8 @@ JAVASCRIPT;
          ];
       }
 
-      echo "<div class='list-group-item normalcriteria$addclass' id='$rowid'>";
-      echo "<div class='row'>";
+      echo "<div class='list-group-item p-2 border-0 normalcriteria$addclass' id='$rowid'>";
+      echo "<div class='row g-1'>";
       echo "<div class='col-auto'>";
       echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' data-rowid='$rowid'>
          <i class='far fa-minus-square' alt='-' title=\"".__s('Delete a rule')."\"></i>
