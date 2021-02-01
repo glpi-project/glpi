@@ -2,6 +2,11 @@
 
 bin/console glpi:database:configure --config-dir=./tests --no-interaction --ansi --reconfigure --db-name=glpitest-9.5.3 --db-host=db --db-user=root --use-utf8mb4 --log-deprecation-warnings
 
+# Force ROW_FORMAT_Dynamic to prevent tests MySQL 5.6 and MariaDB 10.1 databases
+# failure on indexes creation for varchar(255) fields.
+## Result will depend on DB server/version, we just expect that command will not fail.
+bin/console glpi:migration:dynamic_row_format --config-dir=./tests --ansi --no-interaction
+
 # Execute update
 ## First run should do the migration (with no warnings).
 ## TODO Remove the --force option when schema version will be updated in define.php
