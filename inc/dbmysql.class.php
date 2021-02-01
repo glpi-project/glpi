@@ -675,6 +675,21 @@ class DBmysql {
    }
 
    /**
+    * Get field of a table
+    *
+    * @param string  $table
+    * @param string  $field
+    * @param boolean $usecache
+    *
+    * @return array|null Field characteristics
+    */
+   function getField(string $table, string $field, $usecache = true): ?array {
+
+      $fields = $this->listFields($table, $usecache);
+      return $fields[$field] ?? null;
+   }
+
+   /**
     * Get number of affected rows in previous MySQL operation
     *
     * @return int number of affected rows on success, and -1 if the last query failed.

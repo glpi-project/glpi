@@ -2415,21 +2415,6 @@ class Profile extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '62',
-         'table'              => 'glpi_profilerights',
-         'field'              => 'rights',
-         'name'               => __('Maintenance'),
-         'datatype'           => 'right',
-         'rightclass'         => 'Backup',
-         'rightname'          => 'backup',
-         'noread'             => true,
-         'joinparams'         => [
-            'jointype'           => 'child',
-            'condition'          => ['NEWTABLE.name' => 'backup']
-         ]
-      ];
-
-      $tab[] = [
          'id'                 => 'ticket',
          'name'               => __('Assistance')
       ];

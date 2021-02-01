@@ -564,6 +564,7 @@ class Search extends DbTestCase {
     * @return null|array
     */
    private function getCriterionParams(CommonDBTM $item, int $so_key, array $so_data): ?array {
+      global $DB;
 
       if ((array_key_exists('nosearch', $so_data) && $so_data['nosearch'])) {
          return null;
@@ -584,7 +585,18 @@ class Search extends DbTestCase {
          case 'datetime':
             $val = date('Y-m-d H:i:s');
             break;
+         case 'right':
+            $val = READ;
+            break;
          default:
+            if (array_key_exists('table', $so_data) && array_key_exists('field', $so_data)) {
+               $field = $DB->tableExists($so_data['table']) ? $DB->getField($so_data['table'], $so_data['field']) : null;
+               if (preg_match('/int(\(\d+\))?$/', $field['Type'] ?? '')) {
+                  $val = 1;
+                  break;
+               }
+            }
+
             $val = 'val';
             break;
       }
