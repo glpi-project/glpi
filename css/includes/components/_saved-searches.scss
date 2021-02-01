@@ -42,6 +42,8 @@
    z-index: 1030;
    transition: left var(--animate-duration);
 
+   min-width: 320px;
+
    padding: 0;
 
    &.pinned {
@@ -146,5 +148,12 @@ body.horizontal-layout {
       .secondary-bar {
          top: initial;
       }
+   }
+}
+
+@include media-breakpoint-down(lg) {
+   .saved-searches-panel {
+      left: 0 !important;
+      min-width: 200px;
    }
 }
