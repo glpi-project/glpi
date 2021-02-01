@@ -1335,8 +1335,12 @@ class DBmysql {
     * @param string|null $structure Raw table structure
     *
     * @return array
+    *
+    * @deprecated x.x.x
     */
    public function getTableSchema($table, $structure = null) {
+      Toolbox::deprecated();
+
       if ($structure === null) {
          $structure = $this->query("SHOW CREATE TABLE `$table`")->fetch_row();
          $structure = $structure[1];

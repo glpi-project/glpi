@@ -5856,7 +5856,7 @@ CREATE TABLE `glpi_objectlocks` (
   `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Type of locked object',
   `items_id` int(11) NOT NULL COMMENT 'RELATION to various tables, according to itemtype (ID)',
   `users_id` int(11) NOT NULL COMMENT 'id of the locker',
-  `date_mod` timestamp NOT NULL COMMENT 'Timestamp of the lock',
+  `date_mod` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp of the lock',
   PRIMARY KEY (`id`),
   UNIQUE KEY `item` (`itemtype`,`items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

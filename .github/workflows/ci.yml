@@ -215,15 +215,6 @@ jobs:
         if: env.skip != 'true'
         run: |
           docker exec app vendor/bin/parallel-lint  --exclude ./files/ --exclude ./marketplace/ --exclude ./plugins/ --exclude ./tools/vendor/ --exclude ./vendor/ .
-      - name: "Install DB tests"
-        if: env.skip != 'true'
-        run: |
-          docker exec app bin/console glpi:database:install --config-dir=./tests --ansi --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root --log-deprecation-warnings | tee install.log
-          if [[ -n $(grep "Warning" install.log) ]]; then echo "glpi:database:install command FAILED" && exit 1; fi
-          docker exec app bin/console glpi:database:check --config-dir=./tests --ansi --no-interaction | tee diff.log
-          if [[ -z $(grep "Database schema is OK." diff.log) ]]; then echo "glpi:database:check command FAILED" && exit 1; fi
-          docker exec app bin/console glpi:database:update --config-dir=./tests --ansi --no-interaction | tee migration.log
-          if [[ -z $(grep "No migration needed." migration.log) ]]; then echo "glpi:database:update command FAILED" && exit 1; fi
       - name: "Update DB tests (from 0.80, not using utf8mb4)"
         if: env.skip != 'true'
         run: |
@@ -232,11 +223,14 @@ jobs:
         if: env.skip != 'true'
         run: |
           docker exec app .github/actions/test_update_from_9.5.sh
-      - name: "Database tests"
+      - name: "Install DB tests"
         if: env.skip != 'true'
         run: |
-          docker exec app bin/console glpi:database:configure --config-dir=./tests --ansi --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root --use-utf8mb4 --log-deprecation-warnings
-          docker exec app vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --fail-if-skipped-methods --max-children-number 1 -d tests/database
+          docker exec app bin/console glpi:database:install --config-dir=./tests --ansi --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root --log-deprecation-warnings | tee install.log
+          if [[ -n $(grep "Warning" install.log) ]]; then echo "glpi:database:install command FAILED" && exit 1; fi
+          docker exec app bin/console glpi:database:check --config-dir=./tests --ansi --no-interaction --strict
+          docker exec app bin/console glpi:database:update --config-dir=./tests --ansi --no-interaction | tee migration.log
+          if [[ -z $(grep "No migration needed." migration.log) ]]; then echo "glpi:database:update command FAILED" && exit 1; fi
       - name: "Unit tests"
         if: env.skip != 'true'
         run: |

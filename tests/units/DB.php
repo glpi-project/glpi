@@ -160,6 +160,7 @@ class DB extends \GLPITestCase {
             ], [
                'id'  => 1
             ],
+            [],
             'UPDATE `table` SET `field` = \'value\', `other` = \'doe\' WHERE `id` = \'1\''
          ], [
             'table', [
@@ -167,6 +168,7 @@ class DB extends \GLPITestCase {
             ], [
                'id'  => [1, 2]
             ],
+            [],
             'UPDATE `table` SET `field` = \'value\' WHERE `id` IN (\'1\', \'2\')'
          ], [
             'table', [
@@ -174,6 +176,7 @@ class DB extends \GLPITestCase {
             ], [
                'NOT'  => ['id' => [1, 2]]
             ],
+            [],
             'UPDATE `table` SET `field` = \'value\' WHERE  NOT (`id` IN (\'1\', \'2\'))'
          ], [
             'table', [
@@ -181,6 +184,7 @@ class DB extends \GLPITestCase {
             ], [
                'NOT' => ['id' => [new \QueryParam(), new \QueryParam()]]
             ],
+            [],
             'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?, ?))'
          ], [
             'table', [
@@ -188,6 +192,7 @@ class DB extends \GLPITestCase {
             ], [
                'NOT' => ['id' => [new \QueryParam('idone'), new \QueryParam('idtwo')]]
             ],
+            [],
             'UPDATE `table` SET `field` = :field WHERE  NOT (`id` IN (:idone, :idtwo))'
          ], [
             'table', [
@@ -195,7 +200,42 @@ class DB extends \GLPITestCase {
             ], [
                'id'  => [1, 2]
             ],
+            [],
             'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')'
+         ], [
+            'table', [
+               'field'  => new \QueryExpression(\DB::quoteName('field') . ' + 1')
+            ], [
+               'id'  => [1, 2]
+            ],
+            [],
+            'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')'
+         ], [
+            'table', [
+               'field'  => 'value'
+            ], [
+               'id'  => [1, 2]
+            ],
+            [
+               'LEFT JOIN' => [
+                  'another_table' => [
+                     'ON' => [
+                        'table'         => 'foreign_id',
+                        'another_table' => 'id'
+                     ]
+                  ],
+                  'table_3' => [
+                     'ON' => [
+                        'another_table' => 'some_id',
+                        'table_3'       => 'id'
+                     ]
+                  ]
+               ]
+            ],
+            'UPDATE `table`'
+            . ' LEFT JOIN `another_table` ON (`table`.`foreign_id` = `another_table`.`id`)'
+            . ' LEFT JOIN `table_3` ON (`another_table`.`some_id` = `table_3`.`id`)'
+            . ' SET `field` = \'value\' WHERE `id` IN (\'1\', \'2\')'
          ]
       ];
    }
@@ -203,11 +243,11 @@ class DB extends \GLPITestCase {
    /**
     * @dataProvider dataUpdate
     */
-   public function testBuildUpdate($table, $values, $where, $expected) {
+   public function testBuildUpdate($table, $values, $where, array $joins, $expected) {
        $this
          ->if($this->newTestedInstance)
          ->then
-            ->string($this->testedInstance->buildUpdate($table, $values, $where))->isIdenticalTo($expected);
+            ->string($this->testedInstance->buildUpdate($table, $values, $where, $joins))->isIdenticalTo($expected);
    }
 
    public function testBuildUpdateWException() {
@@ -227,39 +267,68 @@ class DB extends \GLPITestCase {
             'table', [
                'id'  => 1
             ],
+            [],
             'DELETE `table` FROM `table` WHERE `id` = \'1\''
          ], [
             'table', [
                'id'  => [1, 2]
             ],
+            [],
             'DELETE `table` FROM `table` WHERE `id` IN (\'1\', \'2\')'
          ], [
             'table', [
                'NOT'  => ['id' => [1, 2]]
             ],
+            [],
             'DELETE `table` FROM `table` WHERE  NOT (`id` IN (\'1\', \'2\'))'
          ], [
             'table', [
                'NOT'  => ['id' => [new \QueryParam(), new \QueryParam()]]
             ],
+            [],
             'DELETE `table` FROM `table` WHERE  NOT (`id` IN (?, ?))'
          ], [
             'table', [
                'NOT'  => ['id' => [new \QueryParam('idone'), new \QueryParam('idtwo')]]
             ],
+            [],
             'DELETE `table` FROM `table` WHERE  NOT (`id` IN (:idone, :idtwo))'
-         ]
+         ], [
+            'table', [
+               'id'  => 1
+            ],
+            [
+               'LEFT JOIN' => [
+                  'another_table' => [
+                     'ON' => [
+                        'table'         => 'foreign_id',
+                        'another_table' => 'id'
+                     ]
+                  ],
+                  'table_3' => [
+                     'ON' => [
+                        'another_table' => 'some_id',
+                        'table_3'       => 'id'
+                     ]
+                  ]
+               ]
+            ],
+            'DELETE `table` FROM `table`'
+            . ' LEFT JOIN `another_table` ON (`table`.`foreign_id` = `another_table`.`id`)'
+            . ' LEFT JOIN `table_3` ON (`another_table`.`some_id` = `table_3`.`id`)'
+            . ' WHERE `id` = \'1\''
+         ],
       ];
    }
 
    /**
     * @dataProvider dataDelete
     */
-   public function testBuildDelete($table, $where, $expected) {
+   public function testBuildDelete($table, $where, array $joins, $expected) {
        $this
          ->if($this->newTestedInstance)
          ->then
-            ->string($this->testedInstance->buildDelete($table, $where))->isIdenticalTo($expected);
+            ->string($this->testedInstance->buildDelete($table, $where, $joins))->isIdenticalTo($expected);
    }
 
    public function testBuildDeleteWException() {
@@ -381,7 +450,7 @@ OTHER EXPRESSION;"
             `itemtype` varchar(100) NOT NULL,
             `items_id` int NOT NULL DEFAULT '0',
             PRIMARY KEY (`id`)
-         ) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = %s COLLATE = %s
+         ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = %s COLLATE = %s
 SQL;
       $drop_query_template = 'DROP TABLE `%s`';
 

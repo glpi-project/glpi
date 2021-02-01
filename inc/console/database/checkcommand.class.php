@@ -37,8 +37,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\Console\AbstractCommand;
-use SebastianBergmann\Diff\Differ;
+use Glpi\System\Diagnostic\DatabaseChecker;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CheckCommand extends AbstractCommand {
@@ -50,17 +51,66 @@ class CheckCommand extends AbstractCommand {
     */
    const ERROR_UNABLE_TO_READ_EMPTYSQL = 1;
 
+   /**
+    * Error code returned differences were found.
+    *
+    * @var integer
+    */
+   const ERROR_FOUND_DIFFERENCES = 2;
+
    protected function configure() {
       parent::configure();
 
       $this->setName('glpi:database:check');
       $this->setAliases(['db:check']);
       $this->setDescription(__('Check for schema differences between current database and installation file.'));
+
+      $this->addOption(
+         'strict',
+         null,
+         InputOption::VALUE_NONE,
+         __('Strict comparison of definitions')
+      );
+
+      $this->addOption(
+         'ignore-innodb-migration',
+         null,
+         InputOption::VALUE_NONE,
+         __('Do not check tokens related to migration from "MyISAM" to "InnoDB".')
+      );
+
+      $this->addOption(
+         'ignore-timestamps-migration',
+         null,
+         InputOption::VALUE_NONE,
+         __('Do not check tokens related to migration from "datetime" to "timestamp".')
+      );
+
+      $this->addOption(
+         'ignore-utf8mb4-migration',
+         null,
+         InputOption::VALUE_NONE,
+         __('Do not check tokens related to migration from "utf8" to "utf8mb4".')
+      );
+
+      $this->addOption(
+         'ignore-dynamic-row-format-migration',
+         null,
+         InputOption::VALUE_NONE,
+         __('Do not check tokens related to "DYNAMIC" row format migration.')
+      );
    }
 
    protected function execute(InputInterface $input, OutputInterface $output) {
 
-      $differ = new Differ();
+      $checker = new DatabaseChecker(
+         $this->db,
+         $input->getOption('strict'),
+         $input->getOption('ignore-innodb-migration'),
+         $input->getOption('ignore-timestamps-migration'),
+         $input->getOption('ignore-utf8mb4-migration'),
+         $input->getOption('ignore-dynamic-row-format-migration')
+      );
 
       if (false === ($empty_file = realpath(GLPI_ROOT . '/install/mysql/glpi-empty.sql'))
           || false === ($empty_sql = file_get_contents($empty_file))) {
@@ -87,26 +137,24 @@ class CheckCommand extends AbstractCommand {
             OutputInterface::VERBOSITY_VERY_VERBOSE
          );
 
-         $base_table_struct     = $this->db->getTableSchema($table_name, $table_schema);
-         $existing_table_struct = $this->db->getTableSchema($table_name);
+         if ($checker->hasDifferences($table_name, $table_schema)) {
+            $diff = $checker->getDiff($table_name, $table_schema);
 
-         if ($existing_table_struct['schema'] != $base_table_struct['schema']) {
             $has_differences = true;
             $message = sprintf(__('Table schema differs for table "%s".'), $table_name);
             $output->writeln(
                '<info>' . $message . '</info>',
                OutputInterface::VERBOSITY_QUIET
             );
-            $output->write(
-               $differ->diff($base_table_struct['schema'], $existing_table_struct['schema'])
-            );
+            $output->write($diff);
          }
       }
 
-      if (!$has_differences) {
-         $output->writeln('<info>' . __('Database schema is OK.') . '</info>');
-         return 0;
+      if ($has_differences) {
+         return self::ERROR_FOUND_DIFFERENCES;
       }
+
+      $output->writeln('<info>' . __('Database schema is OK.') . '</info>');
 
       return 0; // Success
    }

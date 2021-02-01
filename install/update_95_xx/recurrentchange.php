@@ -72,7 +72,7 @@ if (!$DB->tableExists($recurrent_change_table)) {
          KEY `is_active` (`is_active`),
          KEY `changetemplates_id` (`changetemplates_id`),
          KEY `next_creation_date` (`next_creation_date`)
-      ) ENGINE = InnoDB ROW_FORMAT = Dynamic DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};"
+      ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};"
    );
 }
 
