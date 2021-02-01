@@ -583,7 +583,8 @@ class Search extends DbTestCase {
             $val = date('Y-m-d');
             break;
          case 'datetime':
-            $val = date('Y-m-d H:i:s');
+            // Search class expects seconds to be ":00".
+            $val = date('Y-m-d H:i:00');
             break;
          case 'right':
             $val = READ;
