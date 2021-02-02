@@ -5,7 +5,7 @@
 
 <div class="card col-2 d-flex flex-column responsive-toggle {{ pinned ? "pinned" : "d-none" }} saved-searches-panel {{ itemtype_cls}}"
      id="saved-searches-panel-{{ rand }}">
-   <div class="card-title ms-2 mt-2 mb-0 d-flex flex-nowrap align-items-center text-muted">
+   <div class="card-header d-flex flex-nowrap pe-0 align-items-center text-muted">
       <i class="fas fa-star"></i>&nbsp;
       {{ _n('Saved search', 'Saved searches', 2) }}
 
@@ -22,29 +22,32 @@
       </li>
    </div>
 
-   <ul class="nav nav-tabs mt-1" data-bs-toggle="tabs">
-      <li class="nav-item">
-         <a class="nav-link active" data-bs-target="#itemtype-filtered" data-bs-toggle="tab"
-            href="{{ path("ajax/savedsearch.php?action=display_mine&itemtype=" ~ itemtype) }}">
-            {{ itemtype|itemtype_name }}
-         </a>
-      </li>
-      <li class="nav-item">
-         <a class="nav-link" data-bs-target="#all-savedsearches" data-bs-toggle="tab"
-            href="{{ path("ajax/savedsearch.php?action=display_mine&inverse=true&itemtype=" ~ itemtype) }}">
-            {{ __("Others") }}
-         </a>
-      </li>
-   </ul>
-   <div class="saved-searches-panel-content tab-content">
-      <div class="list-group list-group-flush list-group-hoverable saved-searches-panel-lists tab-pane show active" id="itemtype-filtered">
-         <i class="fas fa-spinner fa-spin m-3"></i>
-      </div>
+   <div class="card-tabs">
+      <ul class="nav nav-tabs border-0" data-bs-toggle="tabs">
+         <li class="nav-item">
+            <a class="nav-link active" data-bs-target="#itemtype-filtered" data-bs-toggle="tab"
+               href="{{ path("ajax/savedsearch.php?action=display_mine&itemtype=" ~ itemtype) }}">
+               {{ itemtype|itemtype_name }}
+            </a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link" data-bs-target="#all-savedsearches" data-bs-toggle="tab"
+               href="{{ path("ajax/savedsearch.php?action=display_mine&inverse=true&itemtype=" ~ itemtype) }}">
+               {{ __("Others") }}
+            </a>
+         </li>
+      </ul>
+      <div class="saved-searches-panel-content tab-content">
+         <div class="list-group list-group-flush list-group-hoverable saved-searches-panel-lists tab-pane show active" id="itemtype-filtered">
+            <i class="fas fa-spinner fa-spin m-3"></i>
+         </div>
 
-      <div class="list-group list-group-flush list-group-hoverable saved-searches-panel-lists tab-pane" id="all-savedsearches">
-         <i class="fas fa-spinner fa-spin m-3"></i>
+         <div class="list-group list-group-flush list-group-hoverable saved-searches-panel-lists tab-pane" id="all-savedsearches">
+            <i class="fas fa-spinner fa-spin m-3"></i>
+         </div>
       </div>
    </div>
+
    <div class="card-footer">
       <div class="input-group input-group-flat filter_savedsearch">
          <input type="text" class="form-control form-control-sm"

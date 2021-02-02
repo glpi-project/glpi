@@ -48,9 +48,9 @@
 
    &.pinned {
       position: sticky;
-      z-index: 1010;
+      z-index: 1040;
       top: calc(#{$navbar-height} - 1px);
-      margin-top: calc(-#{$content-padding-y} - 1px);
+      margin-top: calc(-#{$content-padding-y});
       height: calc(100vh - #{$navbar-height} + 1px);
       margin-left: -#{$container-padding-x};
       margin-right: $container-padding-x;
