@@ -447,6 +447,7 @@ class Request
             'items_id' => $item->fields['id']
          ];
       } else if (count($items)) {
+         // Defines 'itemtype' only if all items has same type
          $itemtype = null;
          foreach ($items as $item) {
             if ($itemtype === null && $item->getType() != Unmanaged::class) {
