@@ -223,13 +223,13 @@ class NetworkPort extends CommonDBChild {
    }
 
    function post_clone($source, $history) {
-      parent::post_clone($source, $history);
       $instantiation = $source->getInstantiation();
       if ($instantiation !== false) {
          $instantiation->fields[$instantiation->getIndexName()] = $this->getID();
          return $instantiation->clone([], $history);
       }
    }
+
 
    /**
     * \brief split input fields when validating a port

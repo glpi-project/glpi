@@ -38,6 +38,7 @@ use Glpi\Exception\ForgetPasswordException;
 use Sabre\VObject;
 
 class User extends CommonDBTM {
+   use Glpi\Features\Clonable;
 
    // From CommonDBTM
    public $dohistory         = true;
@@ -63,6 +64,16 @@ class User extends CommonDBTM {
 
    private $entities = null;
 
+   public function getCloneRelations() :array {
+      return [
+         Profile_User::class,
+         Group_User::class
+      ];
+   }
+
+   public function post_clone($source, $history) {
+      //FIXME? clone config
+   }
 
    static function getTypeName($nb = 0) {
       return _n('User', 'Users', $nb);

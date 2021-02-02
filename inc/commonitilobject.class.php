@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
  * CommonITILObject Class
 **/
 abstract class CommonITILObject extends CommonDBTM {
+   use \Glpi\Features\Clonable;
 
    /// Users by type
    protected $users       = [];
@@ -2024,9 +2025,9 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
    /**
-   * @see CommonDBTM::post_clone
-   */
-   function post_clone($source, $history) {
+    * @see Glpi\Features\Clonable::post_clone
+    */
+   public function post_clone($source, $history) {
       global $DB;
       $update = [];
       if (isset($source->fields['users_id_lastupdater'])) {
@@ -2040,9 +2041,11 @@ abstract class CommonITILObject extends CommonDBTM {
          $update,
          ['id' => $this->getID()]
       );
-
    }
 
+   public function getCloneRelations(): array {
+      return [];
+   }
 
    /**
     * @since 0.84

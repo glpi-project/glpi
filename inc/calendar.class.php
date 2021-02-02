@@ -121,7 +121,7 @@ class Calendar extends CommonDropdown {
 
       switch ($ma->getAction()) {
          case 'duplicate' : // For calendar duplicate in another entity
-            if (method_exists($item, 'duplicate')) {
+            if (Toolbox::hasTrait($item, \Glpi\Features\Clonable::class)) {
                $input = $ma->getInput();
                $options = [];
                if ($item->isEntityAssign()) {
@@ -132,7 +132,7 @@ class Calendar extends CommonDropdown {
                      if (!$item->isEntityAssign()
                          || ($input['entities_id'] != $item->getEntityID())) {
                         if ($item->can(-1, CREATE, $options)) {
-                           if ($item->duplicate($options)) {
+                           if ($item->clone($options)) {
                               $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                            } else {
                               $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -196,11 +196,13 @@ class Calendar extends CommonDropdown {
    /**
     * Clone a calendar to another entity : name is updated
     *
-    * @param $options array of new values to set
-    * @return boolean True on success
+    * @param array $options Array of new values to set
+    * @return boolean True on success or false on failure
+    * @deprecated x.x.x Use the {@link \Glpi\Features\Clonable} trait instead
     */
    function duplicate($options = []) {
 
+      Toolbox::deprecated('Use clone()');
       $input = Toolbox::addslashes_deep($this->fields);
       unset($input['id']);
 
@@ -212,12 +214,14 @@ class Calendar extends CommonDropdown {
          }
       }
 
-      if ($newID = $this->clone($input)) {
-         $this->updateDurationCache($newID);
-         return true;
-      }
+      return (bool) $this->clone($input);
+   }
 
-      return false;
+   /**
+    * @see Glpi\Features\Clonable::post_clone
+    */
+   public function post_clone($source, $history) {
+      $this->updateDurationCache($this->getID());
    }
 
 

@@ -3309,4 +3309,24 @@ HTML;
       }, $string);
       return $string;
    }
+
+   /**
+    * Checks if the given class or object has the specified trait.
+    * This function checks the class itself and all parent classes for the trait.
+    * @since x.x.x
+    * @param string|object $class The class or object
+    * @param string $trait The trait
+    * @return bool True if the class or its parents have the specified trait
+    */
+   public static function hasTrait($class, string $trait): bool {
+      // Get traits of all parent classes
+      do {
+         $traits = class_uses($class, true);
+         if (in_array($trait, $traits, true)) {
+            return true;
+         }
+      } while ($class = get_parent_class($class));
+
+      return false;
+   }
 }

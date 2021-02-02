@@ -3227,6 +3227,6 @@ class Rule extends CommonDBTM {
 
       $input = Toolbox::addslashes_deep($input);
 
-      return parent::prepareInputForClone($input);
+      return $input;
    }
 }

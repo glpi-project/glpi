@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Clonable;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -543,7 +545,9 @@ class MassiveAction {
             //TRANS: select action 'update' (before doing it)
             $actions[$self_pref.'update'] = _x('button', 'Update');
 
-            $actions[$self_pref.'clone'] = _x('button', 'Clone');
+            if (Toolbox::hasTrait($itemtype, Clonable::class)) {
+               $actions[$self_pref . 'clone'] = _x('button', 'Clone');
+            }
          }
 
          Infocom::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
