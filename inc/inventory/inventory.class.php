@@ -334,8 +334,7 @@ class Inventory
    public function getItems(): array {
       $items = $this->mainasset->getInventoried();
 
-
-      foreach ($this->mainasset->getrefused() as $refused) {
+      foreach ($this->mainasset->getRefused() as $refused) {
          $items[] = $refused;
       }
 

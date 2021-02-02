@@ -3709,19 +3709,9 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $redirect_url = $refused->handleInventoryRequest($inventory_request);
       $this->hasSessionMessages(
          INFO, [
-            'Alternate username updated. The connected items have been updated using this alternate username.',
-            'Inventory is successufl, refused entry log has been removed'
+            'Inventory is successful, refused entry log has been removed.'
          ]
       );
-
-      //test inventory, will be accepted
-      /*if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();*/
 
       //refused equipment has been removed
       $iterator = $DB->request([

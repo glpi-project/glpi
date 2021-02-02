@@ -249,18 +249,15 @@ class RefusedEquipment extends CommonDBTM {
    public function handleInventoryRequest(Request $request) {
       $status = $request->getInventoryStatus();
 
-      if (!isset($status['itemtype'])) {
-         //no itemtype found, redirect to refused logs - should not happen
-         return $this->getSearchURL();
-      } else if ($status['itemtype'] === RefusedEquipment::class) {
+      if ($status['itemtype'] === RefusedEquipment::class) {
          Session::addMessageAfterRedirect(
-            __('Inventory is still refused')
+            __('Inventory is still refused.')
          );
          return $this->getSearchURL();
       } else {
          $this->delete(['id' => $this->fields['id']], true);
          Session::addMessageAfterRedirect(
-            __('Inventory is successufl, refused entry log has been removed')
+            __('Inventory is successful, refused entry log has been removed.')
          );
 
          $item = new $status['itemtype'];
