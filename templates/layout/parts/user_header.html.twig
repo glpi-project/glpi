@@ -16,6 +16,8 @@
          {% endif %}
       </a>
       <div class="dropdown-menu dropdown-menu-end mt-1 dropdown-menu-arrow animate__animated animate__fadeInRight">
+         <h6 class="dropdown-header">{{ current_user_name }}</h6>
+
          {{ include('layout/parts/profile_selector.html.twig') }}
 
          <div class="dropdown-divider"></div>
