@@ -430,7 +430,7 @@ JAVASCRIPT;
             var url = tablink.attr('href');
             var target = tablink.attr('data-bs-target');
             var index = tablink.closest('.nav-item').index();
-            $(target).html('<i class=\"fas fa-3x fa-spinner fa-pulse\"></i>');
+            $(target).html('<i class=\"fas fa-3x fa-spinner fa-pulse position-absolute top-50 start-50\"></i>');
 
             $.get(url, function(data) {
                $(target).html(data);
