@@ -46,6 +46,10 @@ $migration->displayMessage('Add global menu folding config / user preference');
 Config::setConfigurationValues('core', ['fold_menu' => 0]);
 $migration->addField('glpi_users', 'fold_menu', 'tinyint DEFAULT NULL', ['after' => 'dark_mode']);
 
+$migration->displayMessage('Add global menu folding config / user preference');
+Config::setConfigurationValues('core', ['fold_search' => 0]);
+$migration->addField('glpi_users', 'fold_search', 'tinyint DEFAULT NULL', ['after' => 'fold_menu']);
+
 $migration->displayMessage('Add saved searches pin config / user preference');
 Config::setConfigurationValues('core', ['savedsearches_pinned' => 0]);
 $migration->addField('glpi_users', 'savedsearches_pinned', 'text', ['after' => 'fold_menu', 'nodefault' => true]);

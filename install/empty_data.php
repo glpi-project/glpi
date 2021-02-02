@@ -234,6 +234,7 @@ $default_prefs = [
    'page_layout'                             => 'vertical',
    'dark_mode'                               => '0',
    'fold_menu'                               => '0',
+   'fold_search'                             => '0',
    'savedsearches_pinned'                    => '0',
    'lock_use_lock_item'                      => '0',
    'lock_autolock_mode'                      => '1',

@@ -2150,9 +2150,9 @@ class Search {
          ]);
       }
 
-      echo "<div id='more-criteria$rand_criteria'
-            class='normalcriteria list-group-item p-2 border-0'
-            style='display: none;'>...</div>";
+      echo "<a id='more-criteria$rand_criteria' role='button'
+            class='normalcriteria fold-search list-group-item p-2 border-0'
+            style='display: none;'>...</a>";
 
       echo "</div>"; // .list
 
@@ -2268,14 +2268,33 @@ class Search {
          });
 JAVASCRIPT;
 
+      $toggled = $_SESSION['glpifold_search'] ? 'true' : 'false';
+
       if ($p['mainform']) {
          $JS .= <<<JAVASCRIPT
-         $('.fold-search').on('click', function(event) {
-            event.preventDefault();
-            $(this).children('i.fas')
+         var toggle_fold_search = function() {
+            $('.fold-search').children('i.fas')
                .toggleClass('fa-angle-double-up')
                .toggleClass('fa-angle-double-down');
             $('#searchcriteria{$rand_criteria} .criteria-list .list-group-item:not(:first-child)').toggle();
+         };
+
+         if ({$toggled}) {
+            toggle_fold_search();
+         }
+
+         $('.fold-search').on('click', function(event) {
+            event.preventDefault();
+            $.ajax({
+               url: CFG_GLPI.root_doc + '/ajax/search.php',
+               type: 'GET',
+               data: {
+                  action: 'fold_search'
+               },
+               success: function() {
+                  toggle_fold_search();
+               }
+            });
          });
 
          $(document).on("click", ".remove-search-criteria", function() {
