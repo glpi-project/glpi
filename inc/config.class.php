@@ -3039,7 +3039,7 @@ class Config extends CommonDBTM {
       $themes = [];
       foreach ($themes_files as $file) {
          if (strpos($file, ".scss") !== false) {
-            $name     = substr($file, 0, -5);
+            $name     = substr($file, 1, -5);
             $themes[$name] = ucfirst($name);
          }
       }
