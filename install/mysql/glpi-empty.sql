@@ -7131,6 +7131,7 @@ CREATE TABLE `glpi_users` (
   `page_layout` char(20) DEFAULT NULL,
   `dark_mode` tinyint DEFAULT NULL,
   `fold_menu` tinyint DEFAULT NULL,
+  `fold_search` tinyint DEFAULT NULL,
   `savedsearches_pinned` text,
   `set_default_requester` tinyint DEFAULT NULL,
   `lock_autolock_mode` tinyint DEFAULT NULL,
