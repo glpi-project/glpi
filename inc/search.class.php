@@ -5232,9 +5232,9 @@ JAVASCRIPT;
                }
 
                if (class_exists($items_class)) {
+                  $items_table = $items_class::getTable();
                   array_push($already_link_tables2, $items_table);
                   array_push($already_link_tables2, $to_table);
-                  $items_table = $items_class::getTable();
                   return "$LINK `$items_table`
                               ON (`$from_table`.`id` = `$items_table`.`items_id`
                                  AND `$items_table`.`itemtype` = '$from_type')
