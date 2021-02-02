@@ -2127,7 +2127,7 @@ class Search {
          echo "<form name='searchform$itemtype' method='get' action='".$p['target']."'>";
       } else {
          $main_block_class = "sub_criteria";
-         $card_class = 'border d-inline-block mt-2 ms-1';
+         $card_class = 'border d-inline-block ms-1';
       }
       echo "<div class='$card_class'>";
       echo "<div id='searchcriteria$rand_criteria' class='$main_block_class'>";
@@ -2164,7 +2164,7 @@ class Search {
          ]);
       }
 
-      echo "<div class='card-body d-flex search_actions border-top-0'>";
+      echo "<div class='card-footer d-flex search_actions'>";
       $linked = self::getMetaItemtypeAvailable($itemtype);
       echo "<button id='addsearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary me-1'>
                <i class='fas fa-plus-square'></i>
@@ -2643,7 +2643,6 @@ JAVASCRIPT;
          'value' => isset($criteria["link"]) ? $criteria["link"] : '',
       ]);
       echo "</div>";
-      echo "</div>";
 
       $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];
       array_push($parents_num, $num);
@@ -2654,8 +2653,12 @@ JAVASCRIPT;
          'criteria'    => $criteria['criteria'],
       ];
 
+      echo "<div class='col-auto'>";
       echo self::showGenericSearch($request['itemtype'], $params);
       echo "</div>";
+
+      echo "</div>";//.row
+      echo "</div>";//.list-group-item
    }
 
    /**

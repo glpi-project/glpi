@@ -42,6 +42,7 @@
    .search-form {
       background-color: $search_bg;
       color: $search_fg;
+      border-color: lighten($color: $search_fg, $amount: 35);
 
       // try having same width on link dropdowns
       .select2-container {
@@ -49,7 +50,7 @@
       }
 
       .sub_criteria {
-         background-color: rgba(0, 0, 0, 0.03);
+         background-color: darken($search_bg, 1%);
       }
    }
 }
