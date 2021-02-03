@@ -715,7 +715,7 @@ class Provider extends CommonGLPI {
                      'field'      => 15, // creation date
                      'searchtype' => 'lessthan',
                      'value'      => null
-                  ]
+                  ],self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
                ],
                'reset' => 'reset'
             ]
@@ -734,7 +734,7 @@ class Provider extends CommonGLPI {
                      'field'      => 17, // solve date
                      'searchtype' => 'lessthan',
                      'value'      => null
-                  ]
+                  ],self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
                ],
                'reset' => 'reset'
             ]
@@ -758,7 +758,7 @@ class Provider extends CommonGLPI {
                      'field'      => 82, // time_to_resolve exceed solve date
                      'searchtype' => 'equals',
                      'value'      => 1
-                  ]
+                  ],self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
                ],
                'reset' => 'reset'
             ]
@@ -777,7 +777,7 @@ class Provider extends CommonGLPI {
                      'field'      => 16, // close date
                      'searchtype' => 'lessthan',
                      'value'      => null
-                  ]
+                  ],self::getSearchFiltersCriteria($t_table, $params['apply_filters']),
                ],
                'reset' => 'reset'
             ]
