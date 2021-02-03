@@ -1228,7 +1228,10 @@ class Log extends CommonDBTM {
       }
 
       if (isset($filters['date']) && !empty($filters['date'])) {
-         $sql_filters['date_mod'] = ['LIKE', "%{$filters['date']}%"];
+         $sql_filters[] = [
+            ['date_mod' => ['>=', "{$filters['date']} 00:00:00"]],
+            ['date_mod' => ['<=', "{$filters['date']} 23:59:59"]],
+         ];
       }
 
       if (isset($filters['linked_actions']) && !empty($filters['linked_actions'])) {
