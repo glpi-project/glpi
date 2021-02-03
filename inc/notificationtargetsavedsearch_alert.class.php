@@ -59,13 +59,10 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget {
                   $search->getName(),
                   $search->getID()
                );
-            } else {
-               $events[$row['event']] = __('Private search alert');
             }
          }
-      } else {
-         $events['alert'] = __('Private search alert');
       }
+      $events['alert'] = __('Private search alert');
 
       return $events;
    }
