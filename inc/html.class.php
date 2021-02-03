@@ -5666,7 +5666,7 @@ JAVASCRIPT;
                            ? "$('#{$p['dropZone']}')"
                            : "false").",
             acceptFileTypes: ".($p['onlyimages']
-                                 ? "'/(\.|\/)(gif|jpe?g|png)$/i'"
+                                    ? "/(\.|\/)(gif|jpe?g|png)$/i"
                                  : DocumentType::getUploadableFilePattern()).",
             maxFileSize: {$max_file_size},
             maxChunkSize: {$max_chunk_size},
