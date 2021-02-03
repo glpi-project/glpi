@@ -37,11 +37,11 @@ use Dropdown;
 use Html;
 use Profile_User;
 use Session;
-use User;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
 use Twig\Extension\GlobalsInterface;
 use Twig\TwigFunction;
+use User;
 
 /**
  * @since x.x.x

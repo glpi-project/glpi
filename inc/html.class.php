@@ -1908,18 +1908,18 @@ class Html {
    /**
     * Print footer for a modal window
    **/
-  static function popFooter() {
-   global $FOOTER_LOADED;
+   static function popFooter() {
+      global $FOOTER_LOADED;
 
-   if ($FOOTER_LOADED) {
-      return;
+      if ($FOOTER_LOADED) {
+          return;
+      }
+      $FOOTER_LOADED = true;
+
+      // Print foot
+      self::loadJavascript();
+      echo "</body></html>";
    }
-   $FOOTER_LOADED = true;
-
-   // Print foot
-   self::loadJavascript();
-   echo "</body></html>";
-}
 
 
    /**

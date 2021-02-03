@@ -412,20 +412,20 @@ class Config extends DbTestCase {
       $expected = [
          //'aerialgreen'     => 'Aerialgreen',
          'auror'           => 'Auror',
-         /*'automn'          => 'Automn',
-         'classic'         => 'Classic',
-         'clockworkorange' => 'Clockworkorange',
-         'dark'            => 'Dark',
-         'darker'          => 'Darker',
+         //'automn'          => 'Automn',
+         //'classic'         => 'Classic',
+         //'clockworkorange' => 'Clockworkorange',
+         //'dark'            => 'Dark',
+         //'darker'          => 'Darker',
          'flood'           => 'Flood',
-         'greenflat'       => 'Greenflat',
-         'hipster'         => 'Hipster',
-         'icecream'        => 'Icecream',
+         //'greenflat'       => 'Greenflat',
+         //'hipster'         => 'Hipster',
+         //'icecream'        => 'Icecream',
          'lightblue'       => 'Lightblue',
-         'premiumred'      => 'Premiumred',
-         'purplehaze'      => 'Purplehaze',
-         'teclib'          => 'Teclib',
-         'vintage'         => 'Vintage'*/
+         //'premiumred'      => 'Premiumred',
+         //'purplehaze'      => 'Purplehaze',
+         //'teclib'          => 'Teclib',
+         //'vintage'         => 'Vintage',
       ];
       $this
          ->if($this->newTestedInstance)
