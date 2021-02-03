@@ -5686,7 +5686,7 @@ JAVASCRIPT;
                               ? "$('#{$p['dropZone']}')"
                               : "false").",
                acceptFileTypes: ".($p['onlyimages']
-                                    ? "'/(\.|\/)(gif|jpe?g|png)$/i'"
+                                    ? "/(\.|\/)(gif|jpe?g|png)$/i"
                                     : "undefined").",
                progressall: function(event, data) {
                   var progress = parseInt(data.loaded / data.total * 100, 10);
