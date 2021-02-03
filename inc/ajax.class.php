@@ -416,7 +416,7 @@ JAVASCRIPT;
          }
          echo $html_tabs;
          echo "</ul>";
-         echo "<select class='form-select border-bottom-0 rounded-0 rounded-top d-md-none' id='$tabdiv_id-select'>$html_sele</select>";
+         echo "<select class='form-select border-2 border-secondary rounded-0 rounded-top d-md-none' id='$tabdiv_id-select'>$html_sele</select>";
 
          echo "<div class='tab-content p-2 flex-grow-1 card $border'>";
          foreach ($tabs as $val) {
