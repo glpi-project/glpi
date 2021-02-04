@@ -43,13 +43,11 @@ use Twig\TwigFunction;
 class ToolboxExtension extends AbstractExtension implements ExtensionInterface {
    public function getFunctions() {
       return [
-         new TwigFunction('getMaxInputVar', [$this, 'getMaxInputVar']),
+         new TwigFunction('getMaxInputVar', [Toolbox::class, 'get_max_input_vars']),
          new TwigFunction('getItemTypeSearchURL', [$this, 'getItemTypeSearchURL']),
+         new TwigFunction('getPictureUrl', [Toolbox::class, 'getPictureUrl']),
+         new TwigFunction('autoName', 'autoName', ['is_safe' => ['html']]),
       ];
-   }
-
-   public function getMaxInputVar(): string {
-      return Toolbox::get_max_input_vars();
    }
 
    public function getItemTypeSearchURL(string $itemtype = ""): string {

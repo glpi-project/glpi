@@ -54,6 +54,7 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
          new TwigFunction('has_item_right', [$this, 'hasItemRight']),
          new TwigFunction('user_pref', [$this, 'userPref']),
          new TwigFunction('session', [$this, 'session']),
+         new TwigFunction('isMultiEntitiesMode', [$this, 'isMultiEntitiesMode']),
          new TwigFunction('haveAccessToEntity', [$this, 'haveAccessToEntity']),
          new TwigFunction('haveRecursiveAccessToEntity', [$this, 'haveRecursiveAccessToEntity']),
          new TwigFunction('canViewAllEntities', [$this, 'canViewAllEntities']),
@@ -187,6 +188,15 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
     */
    public function haveAccessToEntity(int $entities_id):bool {
       return Session::haveAccessToEntity($entities_id);
+   }
+
+   /**
+    * Check if we multiple entities exists
+    *
+    * @return bool
+    */
+   public function isMultiEntitiesMode():bool {
+      return Session::isMultiEntitiesMode();
    }
 
 

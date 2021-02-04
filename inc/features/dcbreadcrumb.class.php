@@ -53,7 +53,7 @@ trait DCBreadcrumb {
     *
     * @return array
     */
-   protected function getDcBreadcrumb() {
+   public function getDcBreadcrumb() {
       global $CFG_GLPI;
 
       $item = $this;

@@ -1,0 +1,101 @@
+{% set withtemplate = params['withtemplate'] ?? "" %}
+{% set candel       = params['candel'] ?? true %}
+{% set canedit      = params['canedit'] ?? true %}
+{% set id           = item.fields['id'] ?? -1 %}
+
+      <div class="row">
+      {{ postItemForm(item, params) }}
+      </div>
+
+   </div> {# #mainformtable #}
+
+   {% if canedit and item.canEdit(item.fields['id']) %}
+      <div class="card-body mx-n2">
+      {% if withtemplate|length > 0 or item.isNewID(id) %}
+         {% if id <= 0 or withtemplate == 2 %}
+            <button class="btn btn-primary me-2" type="submit" name="add">
+               <i class='fas fa-plus'></i>
+               <span>{{ _x('button', 'Add') }}</span>
+            </button>
+         {% else %}
+            <button class="btn btn-primary me-2" type="submit" name="update">
+               <i class='fas fa-save'></i>
+               <span>{{ _x('button', 'Save') }}</span>
+            </button>
+         {% endif %}
+      {% else %}
+         {% if candel and not item.can(id, constant('DELETE')) and not item.can(id, constant('PURGE')) %}
+            {% set candel = false %}
+         {% endif %}
+
+         {% if canedit and item.can(id, constant('UPDATE')) %}
+            <button class="btn btn-primary me-2" type="submit" name="update">
+               <i class='fas fa-save'></i>
+               <span>{{ _x('button', 'Save') }}</span>
+            </button>
+         {% endif %}
+
+         {% if candel %}
+            {% if item.isDeleted() %}
+               {% if item.can(id, constant('DELETE')) %}
+                  <button class="btn btn-outline-secondary me-2" type="submit" name="restore">
+                     <i class='fas fa-trash-restore'></i>
+                     <span>{{ _x('button', 'Restore') }}</span>
+                  </button>
+               {% endif %}
+
+               {% if item.can(id, constant('PURGE')) %}
+                  <button class="btn btn-outline-danger me-2" type="submit" name="purge"
+                           onclick='return confirm("{{ __('Confirm the final deletion?') }}");'>
+                     <i class='fas fa-trash-alt'></i>
+                     <span>{{ _x('button', 'Delete permanently') }}</span>
+                  </button>
+                  <div class="d-inline-block">
+                     <label class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="keep_devices" value="1">
+                        <span class="form-check-label">
+                           {{ __('Check to keep the devices while deleting this item') }}
+                        </span>
+                     </label>
+                  </div>
+               {% endif %}
+            {% else %}
+               {% if (not item.maybeDeleted() or item.useDeletedToLockIfDynamic()) %}
+                  {% if item.can(id, constant('PURGE')) %}
+                     <button class="btn btn-outline-danger me-2" type="submit" name="purge"
+                             onclick='return confirm("{{ __('Confirm the final deletion?') }}");'>
+                        <i class='fas fa-trash-alt'></i>
+                        <span>{{ _x('button', 'Delete permanently') }}</span>
+                     </button>
+                  {% endif %}
+               {% elseif not item.isDeleted() and item.can(id, constant('DELETE')) %}
+                  <button class="btn btn-outline-secondary me-2" type="submit" name="delete">
+                     <i class='fas fa-trash-alt'></i>
+                     <span>{{ _x('button', 'Put in trashbin') }}</span>
+                  </button>
+               {% endif %}
+            {% endif %}
+         {% endif %}
+
+         {% if item.isField('date_mod') %}
+            <input type="hidden" name="_read_date_mod" value="{{ item.fields['date_mod'] }}">
+         {% endif %}
+      {% endif %}
+
+      {% if not item.isNewID(id) %}
+         <input type="hidden" name="id" value="{{ id }}">
+      {% endif %}
+
+      {% if canedit and params['addbuttons']|length > 0 %}
+      {% for key, val in params['addbuttons'] %}
+         <button class="btn btn-outline-secondary me-2" type="submit" name="{{ key }}" value="1">
+            {{ val|raw }}
+         </button>
+      {% endfor %}
+      {% endif %}
+
+      </div>
+
+      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+   {% endif %}
+</form>

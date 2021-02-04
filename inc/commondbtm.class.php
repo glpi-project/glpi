@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 use Glpi\Features\CacheableListInterface;
 
@@ -2521,148 +2522,14 @@ class CommonDBTM extends CommonGLPI {
             $params[$key] = $val;
          }
       }
-
-      Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$params]);
-
-      if ($params['formfooter'] === null) {
-          $this->showDates($params);
-      }
-
-      if (!$params['canedit']
-          || !$this->canEdit($ID)) {
-         echo "</table></div>";
-         // Form Header always open form
-         Html::closeForm();
-         return false;
-      }
-
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='".($params['colspan']*2)."'>";
-
-      if ($params['withtemplate']
-          ||$this->isNewID($ID)) {
-
-         if (($ID <= 0) || ($params['withtemplate'] == 2)) {
-            echo Html::submit(
-               "<i class='fas fa-plus'></i>&nbsp;"._x('button', 'Add'),
-               [
-                  'name'  => 'add',
-                  'class' => 'btn btn-primary'
-               ]
-            );
-         } else {
-            //TRANS : means update / actualize
-            echo Html::submit(
-               "<i class='fas fa-save'></i>&nbsp;"._x('button', 'Save'),
-               [
-                  'name'  => 'update',
-                  'class' => 'btn btn-primary'
-               ]
-            );
-         }
-
-      } else {
-         if ($params['candel']
-             && !$this->can($ID, DELETE)
-             && !$this->can($ID, PURGE)) {
-            $params['candel'] = false;
-         }
-
-         if ($params['canedit'] && $this->can($ID, UPDATE)) {
-            echo Html::submit(
-               "<i class='fas fa-save'></i>&nbsp;"._x('button', 'Save'),
-               [
-                  'name'  => 'update',
-                  'class' => 'btn btn-primary'
-               ]
-            );
-         }
-
-         if ($params['candel']) {
-            if ($this->isDeleted()) {
-               if ($this->can($ID, DELETE)) {
-                  echo Html::submit(
-                     "<i class='fas fa-trash-restore'></i>&nbsp;"._x('button', 'Restore'),
-                     [
-                        'name' => 'restore',
-                        'class' => 'btn'
-                     ]
-                  );
-               }
-
-               if ($this->can($ID, PURGE)) {
-                  echo "<span class='very_small_space'>";
-                  if (in_array($this->getType(), Item_Devices::getConcernedItems())) {
-                     Html::showToolTip(__('Check to keep the devices while deleting this item'));
-                     echo "&nbsp;";
-                     echo "<input type='checkbox' name='keep_devices' value='1'";
-                     if (!empty($_SESSION['glpikeep_devices_when_purging_item'])) {
-                        echo " checked";
-                     }
-                     echo ">&nbsp;";
-                  }
-                  echo Html::submit(
-                     "<i class='fas fa-trash-alt'></i>&nbsp;"._x('button', 'Delete permanently'),
-                     [
-                        'name'  => 'purge',
-                        'class' => 'btn'
-                     ]
-                  );
-                  echo "</span>";
-               }
-
-            } else {
-               // If maybe dynamic : do not take into account  is_deleted  field
-               if (!$this->maybeDeleted()
-                   || $this->useDeletedToLockIfDynamic()) {
-                  if ($this->can($ID, PURGE)) {
-                     echo Html::submit(
-                        "<i class='fas fa-trash-alt'></i>&nbsp;"._x('button', 'Delete permanently'),
-                        [
-                           'name'    => 'purge',
-                           'confirm' => __('Confirm the final deletion?'),
-                           'class'   => 'btn'
-                        ]
-                     );
-                  }
-               } else if (!$this->isDeleted()
-                          && $this->can($ID, DELETE)) {
-                  echo Html::submit(
-                     "<i class='fas fa-trash-alt'></i>&nbsp;"._x('button', 'Put in trashbin'),
-                     [
-                        'name'  => 'delete',
-                        'class' => 'btn'
-                     ]
-                  );
-               }
-            }
-
-         }
-         if ($this->isField('date_mod')) {
-            echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
-         }
-      }
-
-      if (!$this->isNewID($ID)) {
-         echo "<input type='hidden' name='id' value='$ID'>";
-      }
-
-      if ($params['canedit']
-          && count($params['addbuttons'])) {
-         echo "<tr class='tab_bg_2'>";
-         echo "<td class='right' colspan='".($params['colspan']*2)."'>";
-         foreach ($params['addbuttons'] as $key => $val) {
-            echo "<button type='submit' class='btn' name='$key' value='1'>
-                  $val
-               </button>&nbsp;";
-         }
-         echo "</td>";
-         echo "</tr>";
-      }
-
-      // Close for Form
+      TemplateRenderer::getInstance()->display('components/form/buttons.html.twig', [
+         'item'   => $this,
+         'params' => $params,
+      ]);
+      echo "</td></tr>";
       echo "</table></div>";
-      Html::closeForm();
    }
 
 

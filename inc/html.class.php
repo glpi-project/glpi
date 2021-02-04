@@ -3377,7 +3377,7 @@ JS;
 
       if (empty($param['applyto'])) {
          if (!empty($param['link'])) {
-            $out .= "<a id='".(!empty($param['linkid'])?$param['linkid']:"tooltiplink$rand")."'";
+            $out .= "<a id='".(!empty($param['linkid'])?$param['linkid']:"tooltiplink$rand")."' class='dropdown_tooltip'";
 
             if (!empty($param['linktarget'])) {
                $out .= " target='".$param['linktarget']."' ";

@@ -211,7 +211,7 @@ class Dropdown {
                )
             );
          }
-         $output .= "&nbsp;".Html::showToolTip($comment, $options_tooltip);
+         $output .= Html::showToolTip($comment, $options_tooltip);
 
          if (($item instanceof CommonDropdown)
              && $item->canCreate()

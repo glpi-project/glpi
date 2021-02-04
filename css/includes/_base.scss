@@ -43,6 +43,10 @@ $mainmenu_fg: $light !default;
 $search_bg: transparentize($mainmenu_bg, 0.95) !default;
 $search_fg: lighten($mainmenu_bg, 5%) !default;
 
+$header-color: $blue !default;
+$header-bg: theme-color-lighter($header-color, true) !default;
+$header-danger-bg: $danger !default;
+
 $logo: "../pics/logos/logo-GLPI-100-white.png" !default;
 $logo_reduced: "../pics/logos/logo-G-100-white.png" !default;
 $scrollbar-color-thumb: rgba($color: $secondary, $alpha: .8) !default;
