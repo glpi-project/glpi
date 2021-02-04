@@ -35,17 +35,28 @@ namespace Glpi\Application\View\Extension;
 use Html;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
+use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 /**
  * @since x.x.x
  */
 class HtmlExtension extends AbstractExtension implements ExtensionInterface {
+   public function getFilters() {
+      return [
+         new TwigFilter('conv_datetime', [$this, 'convDateTime'], ['is_safe' => ['html']]),
+      ];
+   }
+
    public function getFunctions() {
       return [
          new TwigFunction('showMassiveActions', [$this, 'showMassiveActions']),
          new TwigFunction('isMassiveActionchecked', [$this, 'isMassiveActionchecked']),
       ];
+   }
+
+   public function convDateTime(string $datetime, string $format = null): string {
+      return Html::convDateTime($datetime, $format);
    }
 
    public function showMassiveActions(array $params = []): string {

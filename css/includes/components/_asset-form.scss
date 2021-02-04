@@ -1,0 +1,30 @@
+.asset {
+
+   .card-header {
+      background-color: $header-bg;
+      color: $header-color;
+      border-color: tint-color($header-color, 75%);
+
+      &:not(.main-header) {
+         border-top: 1px solid tint-color($header-color, 75%);
+      }
+
+      .badge.entity-name {
+         background-color: tint-color($header-color, 80%);
+         color: darken($header-color, 20%);
+      }
+   }
+
+   &.asset-deleted {
+      .card-header {
+         background-color: tint-color($header-danger-bg, 30%);
+         color: shade-color($header-danger-bg, 50%);
+         border-color: shade-color($header-danger-bg, 50%);
+
+         .badge.entity-name {
+            background-color: tint-color($header-danger-bg, 80%);
+            color: shade-color($header-danger-bg, 50%);
+         }
+      }
+   }
+}

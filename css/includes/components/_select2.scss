@@ -33,6 +33,7 @@
 
 .select2-container {
    display: inline-block;
+   max-width: calc(100% - 40px);
 
    *:focus {
       outline: 0;
@@ -224,5 +225,9 @@
             }
          }
       }
+   }
+
+   & ~ .fa, & ~ .fas, & ~ .far, & ~ .fab, & ~ .dropdown_tooltip {
+      margin-left: 4px;
    }
 }

@@ -38,10 +38,12 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\Application\View\Extension\ConfigExtension;
 use Glpi\Application\View\Extension\CsrfExtension;
+use Glpi\Application\View\Extension\DropdownExtension;
 use Glpi\Application\View\Extension\FrontEndAssetsExtension;
 use Glpi\Application\View\Extension\HtmlExtension;
 use Glpi\Application\View\Extension\I18nExtension;
 use Glpi\Application\View\Extension\ItemtypeExtension;
+use Glpi\Application\View\Extension\ModelExtension;
 use Glpi\Application\View\Extension\NumberFormatExtension;
 use Glpi\Application\View\Extension\PluginExtension;
 use Glpi\Application\View\Extension\RoutingExtension;
@@ -88,10 +90,12 @@ class TemplateRenderer {
       // GLPI extensions
       $this->environment->addExtension(new ConfigExtension());
       $this->environment->addExtension(new CsrfExtension());
+      $this->environment->addExtension(new DropdownExtension());
       $this->environment->addExtension(new FrontEndAssetsExtension());
       $this->environment->addExtension(new I18nExtension());
       $this->environment->addExtension(new ItemtypeExtension());
       $this->environment->addExtension(new HtmlExtension());
+      $this->environment->addExtension(new ModelExtension());
       $this->environment->addExtension(new NumberFormatExtension());
       $this->environment->addExtension(new PluginExtension());
       $this->environment->addExtension(new RoutingExtension());

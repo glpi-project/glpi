@@ -32,8 +32,11 @@
 
 namespace Glpi\Application\View\Extension;
 
+use Agent;
 use CommonDBTM;
 use CommonGLPI;
+use Computer;
+use Computer_Item;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
 use Twig\TwigFilter;
@@ -47,6 +50,8 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
    public function getFilters() {
       return [
          new TwigFilter('itemtype_name', [$this, 'itemtypeName']),
+         new TwigFilter('get_foreignkey_field', [$this, 'getForeignKeyField']),
+         new TwigFilter('dropdown', [$this, 'dropdown'], ['is_safe' => ['html']]),
       ];
    }
 
@@ -54,6 +59,10 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
       return [
          new TwigFunction('itemInstanceOf', [$this, 'itemInstanceOf']),
          new TwigFunction('maybeRecursive', [$this, 'maybeRecursive']),
+         new TwigFunction('getAgentForItem', [$this, 'getAgentForItem']),
+         new TwigFunction('getInventoryFileName', [$this, 'getInventoryFileName']),
+         new TwigFunction('getDcBreadcrumb', [$this, 'getDcBreadcrumb'], ['is_safe' => ['html']]),
+         new TwigFunction('getAutofillMark', [$this, 'getAutofillMark'], ['is_safe' => ['html']]),
       ];
    }
 
@@ -71,6 +80,23 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
       if ($itemtype instanceof CommonGLPI || is_a($itemtype, CommonGLPI::class, true)) {
          return $itemtype::getTypeName($count);
       }
+   }
+
+
+   public function getForeignKeyField($itemtype): ?string {
+      if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
+         return $itemtype::getForeignKeyField();
+      }
+
+      return "";
+   }
+
+   public function dropdown($itemtype, array $options = []): bool {
+      if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
+         $itemtype::dropdown($options);
+      }
+
+      return false;
    }
 
 
@@ -100,5 +126,78 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
     */
    public function maybeRecursive(CommonDBTM $item): ?bool {
       return $item->maybeRecursive();
+   }
+
+   /**
+    * Retrieve agent for a given item
+    *
+    * @param CommonDBTM $item
+    *
+    * @return bool|Agent
+    *
+    * @TODO Add a unit test.
+    */
+   public function getAgentForItem(CommonDBTM $item) {
+      $agent = new Agent();
+      $has_agent = $agent->getFromDBByCrit([
+         'itemtype' => $item->getType(),
+         'items_id' => $item->fields['id']
+      ]);
+
+      if (!$has_agent && $item instanceof Computer) {
+         $citem = new Computer_Item;
+         $has_relation = $citem->getFromDBByCrit([
+            'itemtype' => $item->getType(),
+            'items_id' => $item->fields['id']
+         ]);
+         if ($has_relation) {
+            $has_agent = $agent->getFromDBByCrit([
+               'itemtype' => Computer::getType(),
+               'items_id' => $citem->fields['computers_id']
+            ]);
+         }
+      }
+
+      return $has_agent
+         ? $agent
+         : false;
+   }
+
+   /**
+    * Retrieve agent for a given item
+    *
+    * @param CommonDBTM $item
+    *
+    * @return bool|Agent
+    *
+    * @TODO Add a unit test.
+    */
+   public function getInventoryFileName(CommonDBTM $item):?string {
+      if (method_exists($item, "getInventoryFileName")) {
+         return $item->getInventoryFileName();
+      }
+
+      return "";
+   }
+
+
+   /**
+    * Retrieve Datacenter breadcrumbs for a given item
+    *
+    * @param CommonDBTM $item
+    *
+    * @return string
+    */
+   public function getDcBreadcrumb(CommonDBTM $item):?array {
+      if (method_exists($item, "getDcBreadcrumb")) {
+         return $item->getDcBreadcrumb();
+      }
+
+      return [];
+   }
+
+
+   public function getAutofillMark(CommonDBTM $item, string $field, array $options, string $value = null):string {
+      return $item->getAutofillMark($field, $options, $value);
    }
 }

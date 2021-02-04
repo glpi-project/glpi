@@ -32,8 +32,7 @@
 
 namespace Glpi\Application\View\Extension;
 
-use CommonDBTM;
-use Plugin;
+use Dropdown;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
@@ -41,35 +40,11 @@ use Twig\TwigFunction;
 /**
  * @since x.x.x
  */
-class PluginExtension extends AbstractExtension implements ExtensionInterface {
+class DropdownExtension extends AbstractExtension implements ExtensionInterface {
+
    public function getFunctions() {
       return [
-         new TwigFunction('displayLogin', [$this, 'displayLogin'], ['is_safe' => ['html']]),
-         new TwigFunction('AutoInventoryInformation', [$this, 'AutoInventoryInformation'], ['is_safe' => ['html']]),
-         new TwigFunction('preItemForm', [$this, 'preItemForm'], ['is_safe' => ['html']]),
-         new TwigFunction('postItemForm', [$this, 'postItemForm'], ['is_safe' => ['html']]),
+         new TwigFunction('getDropdownName', [Dropdown::class, 'getDropdownName']),
       ];
-   }
-
-   /**
-    * call display_login plugin hook to display aditionnal html on login page
-    *
-    * @return void
-    */
-   public function displayLogin() {
-      Plugin::doHook('display_login');
-   }
-
-
-   public function AutoInventoryInformation() {
-      Plugin::doHook('autoinventory_information');
-   }
-
-   public function preItemForm(CommonDBTM $item, array $params = []) {
-      Plugin::doHook('pre_item_form', ['item' => $item, 'options' => $params]);
-   }
-
-   public function postItemForm(CommonDBTM $item, array $params = []) {
-      Plugin::doHook('post_item_form', ['item' => $item, 'options' => $params]);
    }
 }
