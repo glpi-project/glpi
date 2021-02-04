@@ -303,7 +303,6 @@ class Computer extends CommonDBTM {
     * @return boolean
    **/
    function showForm($ID, $options = []) {
-
       $this->initForm($ID, $options);
       TemplateRenderer::getInstance()->display('asset_form.html.twig', [
          'item'   => $this,

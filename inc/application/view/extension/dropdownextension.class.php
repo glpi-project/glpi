@@ -45,6 +45,7 @@ class DropdownExtension extends AbstractExtension implements ExtensionInterface 
    public function getFunctions() {
       return [
          new TwigFunction('getDropdownName', [Dropdown::class, 'getDropdownName']),
+         new TwigFunction('Dropdown__showGlobalSwitch', [Dropdown::class, 'showGlobalSwitch']),
       ];
    }
 }
