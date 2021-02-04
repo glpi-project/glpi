@@ -64,6 +64,7 @@ if (isset($_GET['docid'])) { // docid for document
 } else if (isset($_GET["file"])) { // for other file
    $splitter = explode("/", $_GET["file"], 2);
    $mime = null;
+   $fs = null;
    if (count($splitter) == 2) {
       $expires_headers = false;
       $send = false;
@@ -82,23 +83,14 @@ if (isset($_GET['docid'])) { // docid for document
 
       if ($splitter[0] == "_inventory") {
          $iconf = new Conf();
-         if ($iconf->isInventoryFile(GLPI_INVENTORY_DIR . '/' . $splitter[1])) {
-            // Can use expires header as picture file path changes when picture changes.
-            $expires_headers = true;
-            $send = GLPI_INVENTORY_DIR . '/' . $splitter[1];
-
-            $finfo = new finfo(FILEINFO_MIME_TYPE);
-            $mime = ($finfo->file($send));
-            switch ($mime) {
-               case 'text/xml':
-                  $mime = 'application/xml';
-                  break;
-            }
+         if ($iconf->isInventoryFile($splitter[1])) {
+            $send = $splitter[1];
+            $fs = $iconf->getFs();
          }
       }
 
-      if ($send && file_exists($send)) {
-         Toolbox::sendFile($send, $splitter[1], $mime, $expires_headers);
+      if ($send) {
+         Toolbox::sendFile($send, $splitter[1], $mime, $expires_headers, $fs);
       } else {
          Html::displayErrorAndDie(__('Unauthorized access to this file'), true);
       }

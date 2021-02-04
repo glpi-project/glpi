@@ -34,12 +34,14 @@ namespace Glpi\Features;
 
 use Agent;
 use Computer_Item;
+use Glpi\Inventory\Conf;
 use Html;
 use Plugin;
 use RefusedEquipment;
 use Toolbox;
 
 trait Inventoriable {
+   protected $fs;
 
    public function pre_purgeInventory() {
       $file_name = $this->getInventoryFileName();
@@ -48,7 +50,12 @@ trait Inventoriable {
          return true;
       }
 
-      return unlink(GLPI_INVENTORY_DIR . '/' . $file_name);
+      if ($this->fs === null) {
+         $conf = new Conf();
+         $this->fs = $conf->getFs();
+      }
+
+      return $this->fs->delete($file_name);
    }
 
 
@@ -57,18 +64,31 @@ trait Inventoriable {
          return;
       }
 
-      $download_file = Toolbox::slugify(static::getType()) . '/' . $this->fields['id'];
-      $inventory_file = GLPI_INVENTORY_DIR . '/' . $download_file;
-      if (file_exists($inventory_file . '.json')) {
-         $download_file .= '.json';
-      } else if (file_exists($inventory_file . '.xml')) {
-         $download_file .= '.xml';
-      } else {
-         Toolbox::logWarning('Inventory file missing: ' . $inventory_file);
-         $download_file = null;
+      $conf = new Conf();
+      if ($this->fs === null) {
+         $this->fs = $conf->getFs();
+      }
+
+      //most files will be XML for now
+      $download_file = $conf->buildInventoryFileName(static::getType(), $this->fields['id'], 'xml');
+      if (!$this->fs->fileExists($download_file)) {
+         $download_file = $conf->buildInventoryFileName(static::getType(), $this->fields['id'], 'json');
+         if (!$this->fs->fileExists($download_file)) {
+            Toolbox::logWarning('Inventory file missing: ' . $download_file);
+            $download_file = null;
+         }
       }
 
       return $download_file;
+   }
+
+   public function getInventoryFileContents(): string {
+      if ($this->fs == null) {
+         $conf = new Conf();
+         $this->fs = $conf->getFs();
+      }
+
+      return $this->fs->read($this->getInventoryFileName());
    }
 
    /**

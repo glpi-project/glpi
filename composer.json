@@ -37,6 +37,7 @@
         "laminas/laminas-mime": "^2.7",
         "laminas/laminas-serializer": "^2.8",
         "league/csv": "^9.5",
+        "league/flysystem": "^2.0",
         "mexitek/phpcolors": "^1.0.1",
         "michelf/php-markdown": "^1.6",
         "monolog/monolog": "^2.0",

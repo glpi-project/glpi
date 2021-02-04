@@ -37,6 +37,10 @@ use Glpi\System\RequirementsManager;
 use Laminas\Cache\Storage\AvailableSpaceCapableInterface;
 use Laminas\Cache\Storage\FlushableInterface;
 use Laminas\Cache\Storage\TotalSpaceCapableInterface;
+use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemAdapter;
+use League\Flysystem\Local\LocalFilesystemAdapter;
+use League\Flysystem\UnixVisibility\PortableVisibilityConverter;
 use PHPMailer\PHPMailer\PHPMailer;
 
 if (!defined('GLPI_ROOT')) {
@@ -2083,6 +2087,8 @@ class Config extends CommonDBTM {
                  'check'   => 'ParagonIE_Sodium_Compat' ],
                [ 'name'    => 'glen/filename-normalizer',
                  'check'   => 'glen\\FilenameNormalizer\\Normalizer' ],
+               [ 'name'    => 'league/flysystem',
+                 'check'   => 'League\Flysystem\Filesystem' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [
@@ -3611,5 +3617,36 @@ class Config extends CommonDBTM {
       $uuid = Toolbox::getRandomString(40);
       self::setConfigurationValues('core', [$type . '_uuid' => $uuid]);
       return $uuid;
+   }
+
+   /**
+    * Get a file system adapter from configuration
+    *
+    * @param string $directory Directory
+    *
+    * @return Filesystem
+    */
+   public static function getFs($directory): Filesystem {
+      global $CFG_GLPI;
+
+      $conf_key = 'fs_adapater_' . md5($directory);
+      if (!isset($CFG_GLPI[$conf_key])) {
+         $CFG_GLPI[$conf_key] = new LocalFilesystemAdapter(
+            $directory,
+            // Customize how visibility is converted to unix permissions
+            PortableVisibilityConverter::fromArray([
+               'file' => [
+                     'public' => 0644,
+                     'private' => 0644
+               ],
+               'dir' => [
+                     'public' => 0755,
+                     'private' => 0755
+               ]
+            ])
+         );
+      }
+
+      return new Filesystem($CFG_GLPI[$conf_key]);
    }
 }
