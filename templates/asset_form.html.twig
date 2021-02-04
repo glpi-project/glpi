@@ -8,6 +8,7 @@
 
    {% set rand = random() %}
    {% set params  = params ?? [] %}
+   {% set target       = params['target'] ?? item.getFormURL() %}
    {% set withtemplate = params['withtemplate'] ?? "" %}
 
    {# TODO form-select normal size for select2 #}
@@ -20,7 +21,9 @@
                   {% set tplmark = getAutofillMark(item, 'name', params) %}
                   {% set value   = autoName(item.fields['name'], 'name', (withtemplate == 2), item.getType(), item.fields['entities_id']) %}
                   <div class="mb-3 col-12 col-sm-6">
-                     <label class="form-label" for="name_{{ rand }}">{{ __('%1$s %2$s')|format(__('Name'), tplmark)|raw }}</label>
+                     <label class="form-label" for="name_{{ rand }}">
+                        {{ __('%1$s %2$s')|format(__('Name'), tplmark)|raw }}
+                     </label>
                      <input type="text" class="form-control" id="name_{{ rand }}"
                            name="name" value="{{ value }}">
                   </div>
@@ -28,7 +31,9 @@
 
                {% if item.isField('states_id') %}
                   <div class="mb-3 col-12 col-sm-6">
-                     <label class="form-label" for="dropdown_states_id{{ rand }}">{{ __("Status") }}</label>
+                     <label class="form-label" for="dropdown_states_id{{ rand }}">
+                        {{ __("Status") }}
+                     </label>
                      {{ "State"|dropdown({
                         'value'    : item.fields['states_id'],
                         'entity'   : item.fields['entities_id'],
@@ -42,7 +47,9 @@
                {% set dc_breadcrumbs = getDcBreadcrumb(item) %}
                {% if dc_breadcrumbs|length > 0 %}
                   <div class="mb-3 col-12 col-sm-6">
-                     <label class="form-label">{{ __('Data center position') }}</label>
+                     <label class="form-label">
+                        {{ __('Data center position') }}
+                     </label>
                      <span>
                         {{ dc_breadcrumbs|join('&nbsp;&gt;&nbsp;')|raw}}
                      </span>
@@ -51,7 +58,9 @@
 
                {% if item.isField('locations_id') %}
                   <div class="mb-3 col-12 col-sm-6">
-                     <label class="form-label" for="dropdown_locations_id{{ rand }}">{{ "Location"|itemtype_name }}</label>
+                     <label class="form-label" for="dropdown_locations_id{{ rand }}">
+                        {{ "Location"|itemtype_name }}
+                     </label>
                      {{ "Location"|dropdown({
                         'value' : item.fields['locations_id'],
                         'entity': item.fields['entities_id'],
@@ -65,7 +74,9 @@
                {% set type_fk = type_itemtype|get_foreignkey_field %}
                {% if item.isField(type_fk) %}
                   <div class="mb-3 col-12 col-sm-6">
-                     <label class="form-label" for="{{ "dropdown_" ~ type_fk ~ rand }}">{{ _n('Type', 'Types', 1) }}</label>
+                     <label class="form-label" for="{{ "dropdown_" ~ type_fk ~ rand }}">
+                        {{ _n('Type', 'Types', 1) }}
+                     </label>
                      {{ type_itemtype|dropdown({
                         'value': item.fields[type_fk],
                         'rand' : rand,
@@ -76,7 +87,9 @@
 
                {% if item.isField('users_id_tech') %}
                   <div class="mb-3 col-12 col-sm-6">
-                     <label class="form-label" for="dropdown_users_id_tech{{ rand }}">{{ __('Technician in charge of the hardware') }}</label>
+                     <label class="form-label" for="dropdown_users_id_tech{{ rand }}">
+                        {{ __('Technician in charge of the hardware') }}
+                     </label>
                      {{ "User"|dropdown({
                         'name'  : 'users_id_tech',
                         'value' : item.fields['users_id_tech'],
@@ -90,7 +103,9 @@
 
                {% if item.isField('manufacturers_id') %}
                   <div class="mb-3 col-12 col-sm-6">
-                     <label class="form-label" for="dropdown_manufacturers_id{{ rand }}">{{ "Manufacturer"|itemtype_name }}</label>
+                     <label class="form-label" for="dropdown_manufacturers_id{{ rand }}">
+                        {{ "Manufacturer"|itemtype_name }}
+                     </label>
                      {{ "Manufacturer"|dropdown({
                         'value': item.fields['manufacturers_id'],
                         'rand' : rand,
@@ -101,7 +116,9 @@
 
                {% if item.isField('groups_id_tech') %}
                   <div class="mb-3 col-12 col-sm-6">
-                     <label class="form-label" for="dropdown_groups_id_tech{{ rand }}">{{ __('Group in charge of the hardware') }}</label>
+                     <label class="form-label" for="dropdown_groups_id_tech{{ rand }}">
+                        {{ __('Group in charge of the hardware') }}
+                     </label>
                      {{ "Group"|dropdown({
                         'name'     : 'groups_id_tech',
                         'value'    : item.fields['groups_id_tech'],
@@ -117,7 +134,9 @@
                {% set model_fk = model_itemtype|get_foreignkey_field %}
                {% if item.isField(model_fk) %}
                   <div class="mb-3 col-12 col-sm-6">
-                     <label class="form-label" for="{{ "dropdown_" ~ model_fk ~ rand }}">{{ _n('Model', 'Models', 1) }}</label>
+                     <label class="form-label" for="{{ "dropdown_" ~ model_fk ~ rand }}">
+                        {{ _n('Model', 'Models', 1) }}
+                     </label>
                      {{ model_itemtype|dropdown({
                         'value': item.fields[model_fk],
                         'rand' : rand,
@@ -128,7 +147,9 @@
 
                {% if item.isField('contact_num') %}
                   <div class="mb-3 col-12 col-sm-6">
-                     <label class="form-label" for="contact_num_{{ rand }}">{{ __("Alternate username number") }}</label>
+                     <label class="form-label" for="contact_num_{{ rand }}">
+                        {{ __("Alternate username number") }}
+                     </label>
                      <input type="text" class="form-control" id="contact_num_{{ rand }}"
                             name="contact_num" value="{{ item.fields['contact_num'] }}">
                   </div>
@@ -136,7 +157,9 @@
 
                {% if item.isField('serial') %}
                   <div class="mb-3 col-12 col-sm-6">
-                     <label class="form-label" for="serial_{{ rand }}">{{ __("Serial number") }}</label>
+                     <label class="form-label" for="serial_{{ rand }}">
+                        {{ __("Serial number") }}
+                     </label>
                      <input type="text" class="form-control" id="serial_{{ rand }}"
                             name="serial" value="{{ item.fields['serial'] }}">
                   </div>
@@ -144,7 +167,9 @@
 
                {% if item.isField('contact') %}
                   <div class="mb-3 col-12 col-sm-6">
-                     <label class="form-label" for="contact_{{ rand }}">{{ __("Alternate username") }}</label>
+                     <label class="form-label" for="contact_{{ rand }}">
+                        {{ __("Alternate username") }}
+                     </label>
                      <input type="text" class="form-control" id="contact_{{ rand }}"
                             name="contact" value="{{ item.fields['contact'] }}">
                   </div>
@@ -164,7 +189,9 @@
 
                {% if item.isField('users_id') %}
                   <div class="mb-3 col-12 col-sm-6">
-                     <label class="form-label" for="dropdown_users_id{{ rand }}">{{ "User"|itemtype_name }}</label>
+                     <label class="form-label" for="dropdown_users_id{{ rand }}">
+                        {{ "User"|itemtype_name }}
+                     </label>
                      {{ "User"|dropdown({
                         'value' : item.fields['users_id'],
                         'right' : 'all',
@@ -175,9 +202,35 @@
                   </div>
                {% endif %}
 
+               {% if item.isField('is_global') %}
+                  <div class="mb-3 col-12 col-sm-6">
+                     <label class="form-label" for="dropdown_is_global{{ rand }}">
+                        {{ __('Management type') }}
+                     </label>
+                     {{Dropdown__showGlobalSwitch(item.fields['id'], {
+                        'withtemplate'       : withtemplate,
+                        'value'              : item.fields['is_global'],
+                        'management_restrict': config('monitors_management_restrict'),
+                        'target'             : target
+                     })}}
+                  </div>
+               {% endif %}
+
+               {% if item.isField('contact') %}
+                  <div class="mb-3 col-12 col-sm-6">
+                     <label class="form-label" for="size_{{ rand }}">
+                        {{ __("Size") }}
+                     </label>
+                     <input type="number" class="form-control" id="size_{{ rand }}"
+                            name="size" value="{{ item.fields['size'] }}">
+                  </div>
+               {% endif %}
+
                {% if item.isField('networks_id') %}
                   <div class="mb-3 col-12 col-sm-6">
-                     <label class="form-label" for="dropdown_networks_id{{ rand }}">{{ _n('Network', 'Networks', 1) }}</label>
+                     <label class="form-label" for="dropdown_networks_id{{ rand }}">
+                        {{ _n('Network', 'Networks', 1) }}
+                     </label>
                      {{ "Network"|dropdown({
                         'value': item.fields['networks_id'],
                         'rand' : rand,
@@ -188,7 +241,9 @@
 
                {% if item.isField('groups_id') %}
                   <div class="mb-3 col-12 col-sm-6">
-                     <label class="form-label" for="dropdown_groups_id{{ rand }}">{{ "Group"|itemtype_name }}</label>
+                     <label class="form-label" for="dropdown_groups_id{{ rand }}">
+                        {{ "Group"|itemtype_name }}
+                     </label>
                      {{ "Group"|dropdown({
                         'value'    : item.fields['groups_id'],
                         'entity'   : item.fields['entities_id'],
@@ -201,7 +256,9 @@
 
                {% if item.isField('comment') %}
                   <div class="mb-3 col-12 col-sm-6">
-                     <label class="form-label" for="comment_{{ rand }}">{{ __("Comments") }}</label>
+                     <label class="form-label" for="comment_{{ rand }}">
+                        {{ __("Comments") }}
+                     </label>
                      <textarea class="form-control" id="comment_{{ rand }}" name="comment" rows="3">
                         {{ item.fields['comment'] }}
                      </textarea>
@@ -210,7 +267,9 @@
 
                {% if item.isField('uuid') %}
                   <div class="mb-3 col-12 col-sm-6">
-                     <label class="form-label" for="uuid_{{ rand }}">{{ __("UUID") }}</label>
+                     <label class="form-label" for="uuid_{{ rand }}">
+                        {{ __("UUID") }}
+                     </label>
                      <input type="text" class="form-control" id="uuid_{{ rand }}"
                             name="uuid" value="{{ item.fields['uuid'] }}">
                   </div>
@@ -218,12 +277,20 @@
 
                {% if item.isField('autoupdatesystems_id') %}
                   <div class="mb-3 col-12 col-sm-6">
-                     <label class="form-label" for="dropdown_autoupdatesystems_id{{ rand }}">{{ "AutoUpdateSystem"|itemtype_name }}</label>
+                     <label class="form-label" for="dropdown_autoupdatesystems_id{{ rand }}">
+                        {{ "AutoUpdateSystem"|itemtype_name }}
+                     </label>
                      {{ "AutoUpdateSystem"|dropdown({
                         'value': item.fields['autoupdatesystems_id'],
                         'rand' : rand,
                         'width': '100%',
                      }) }}
+                  </div>
+               {% endif %}
+
+               {% if itemInstanceOf(item, "Monitor") %}
+                  <div class="mb-3 col-12 col-sm-6">
+                     {% include("components/form/flags.html.twig") %}
                   </div>
                {% endif %}
 
