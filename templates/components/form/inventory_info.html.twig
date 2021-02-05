@@ -1,8 +1,11 @@
 
 {% if item.isDynamic() != false %}
-   <div class="card-header mx-n2 mt-4">
-      <h4 class="card-title">
+<div class="card m-n2 border-0 shadow-none">
+   <div class="card-header">
+      <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
          <i class="fas fa-cloud-download-alt"></i>
+      </div>
+      <h4 class="card-title  ps-4">
          {{ __('Inventory information') }}
       </h4>
       {% set inventory_filename = getInventoryFileName(item) %}
@@ -103,4 +106,5 @@
       });
       </script>
    {% endif %}
+</div>
 {% endif %}
