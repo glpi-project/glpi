@@ -11,7 +11,8 @@ if [[ -n $(grep "Warning" install.log) ]];
 fi
 
 # Check DB
-bin/console glpi:database:check --config-dir=./tests --ansi --no-interaction --strict
+bin/console glpi:database:check_schema --config-dir=./tests --ansi --no-interaction --strict
+bin/console glpi:database:check_keys --config-dir=./tests --ansi --no-interaction --detect-useless-keys
 
 # Execute update
 ## Should do nothing.
