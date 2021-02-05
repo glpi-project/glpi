@@ -37,12 +37,12 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\Console\AbstractCommand;
-use Glpi\System\Diagnostic\DatabaseChecker;
+use Glpi\System\Diagnostic\DatabaseSchemaChecker;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CheckCommand extends AbstractCommand {
+class CheckSchemaCommand extends AbstractCommand {
 
    /**
     * Error code returned when failed to read empty SQL file.
@@ -52,7 +52,7 @@ class CheckCommand extends AbstractCommand {
    const ERROR_UNABLE_TO_READ_EMPTYSQL = 1;
 
    /**
-    * Error code returned differences were found.
+    * Error code returned when differences are found.
     *
     * @var integer
     */
@@ -61,8 +61,14 @@ class CheckCommand extends AbstractCommand {
    protected function configure() {
       parent::configure();
 
-      $this->setName('glpi:database:check');
-      $this->setAliases(['db:check']);
+      $this->setName('glpi:database:check_schema');
+      $this->setAliases(
+         [
+            'db:check_schema',
+            'glpi:database:check', // old name
+            'db:check', // old alias
+         ]
+      );
       $this->setDescription(__('Check for schema differences between current database and installation file.'));
 
       $this->addOption(
@@ -103,7 +109,7 @@ class CheckCommand extends AbstractCommand {
 
    protected function execute(InputInterface $input, OutputInterface $output) {
 
-      $checker = new DatabaseChecker(
+      $checker = new DatabaseSchemaChecker(
          $this->db,
          $input->getOption('strict'),
          $input->getOption('ignore-innodb-migration'),

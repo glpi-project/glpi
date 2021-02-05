@@ -32,7 +32,7 @@
 
 namespace tests\units\Glpi\System\Diagnostic;
 
-class DatabaseChecker extends \GLPITestCase {
+class DatabaseSchemaChecker extends \GLPITestCase {
 
    protected function sqlProvider() {
       return [

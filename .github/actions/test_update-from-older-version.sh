@@ -16,7 +16,7 @@ if [[ -z $(grep "No migration needed." ~/migration.log) ]];
   then echo "bin/console glpi:database:update command FAILED" && exit 1;
 fi
 ## Check DB
-bin/console glpi:database:check \
+bin/console glpi:database:check_schema \
   --config-dir=./tests --ansi --no-interaction \
   --ignore-innodb-migration --ignore-timestamps-migration --ignore-dynamic-row-format-migration --ignore-utf8mb4-migration
 
@@ -32,7 +32,7 @@ if [[ -z $(grep "No migration needed." ~/migration.log) ]];
   then echo "bin/console glpi:migration:myisam_to_innodb command FAILED" && exit 1;
 fi
 ## Check DB
-bin/console glpi:database:check \
+bin/console glpi:database:check_schema \
   --config-dir=./tests --ansi --no-interaction \
   --ignore-timestamps-migration --ignore-dynamic-row-format-migration --ignore-utf8mb4-migration
 
@@ -48,7 +48,7 @@ if [[ -z $(grep "No migration needed." ~/migration.log) ]];
   then echo "bin/console glpi:migration:timestamps command FAILED" && exit 1;
 fi
 ## Check DB
-bin/console glpi:database:check \
+bin/console glpi:database:check_schema \
   --config-dir=./tests --ansi --no-interaction \
   --ignore-dynamic-row-format-migration --ignore-utf8mb4-migration
 
@@ -56,7 +56,7 @@ bin/console glpi:database:check \
 ## Result will depend on DB server/version, we just expect that command will not fail.
 bin/console glpi:migration:dynamic_row_format --config-dir=./tests --ansi --no-interaction
 ## Check DB
-bin/console glpi:database:check --config-dir=./tests --ansi --no-interaction --ignore-utf8mb4-migration
+bin/console glpi:database:check_schema --config-dir=./tests --ansi --no-interaction --ignore-utf8mb4-migration
 
 # Execute utf8mb4 migration
 ## First run should do the migration (with no warnings).
@@ -70,4 +70,4 @@ if [[ -z $(grep "No migration needed." ~/migration.log) ]];
   then echo "bin/console glpi:migration:utf8mb4 command FAILED" && exit 1;
 fi
 ## Check DB
-bin/console glpi:database:check --config-dir=./tests --ansi --no-interaction
+bin/console glpi:database:check_schema --config-dir=./tests --ansi --no-interaction

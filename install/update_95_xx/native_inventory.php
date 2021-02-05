@@ -76,12 +76,22 @@ if (!$DB->tableExists('glpi_agents')) {
          `port` varchar(6) DEFAULT NULL,
          PRIMARY KEY (`id`),
          KEY `name` (`name`),
-         KEY `items_id` (`items_id`),
-         KEY `itemtype` (`itemtype`),
+         KEY `entities_id` (`entities_id`),
+         KEY `is_recursive` (`is_recursive`),
+         KEY `item` (`itemtype`,`items_id`),
          UNIQUE KEY `deviceid` (`deviceid`),
-         CONSTRAINT `glpi_agents_fk_agenttypes_id` FOREIGN KEY (`agenttypes_id`) REFERENCES `glpi_agenttypes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+         KEY `agenttypes_id` (`agenttypes_id`),
+         CONSTRAINT `agenttypes_id` FOREIGN KEY (`agenttypes_id`) REFERENCES `glpi_agenttypes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
    $DB->queryOrDie($query, "x.x add table glpi_agents");
+} else {
+   $migration->dropKey('glpi_agents', 'items_id');
+   $migration->dropKey('glpi_agents', 'itemtype');
+   $migration->migrationOneTable('glpi_agents');
+   $migration->addKey('glpi_agents', 'agenttypes_id');
+   $migration->addKey('glpi_agents', 'entities_id');
+   $migration->addKey('glpi_agents', 'is_recursive');
+   $migration->addKey('glpi_agents', ['itemtype', 'items_id'], 'item');
 }
 
 if (!$DB->tableExists('glpi_rulematchedlogs')) {
@@ -94,9 +104,14 @@ if (!$DB->tableExists('glpi_rulematchedlogs')) {
          `agents_id` int NOT NULL DEFAULT '0',
          `method` varchar(255) DEFAULT NULL,
          PRIMARY KEY (`id`),
-         KEY `item` (`itemtype`,`items_id`)
+         KEY `item` (`itemtype`,`items_id`),
+         KEY `agents_id` (`agents_id`),
+         KEY `rules_id` (`rules_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
    $DB->queryOrDie($query, "x.x add table glpi_rulematchedlogs");
+} else {
+   $migration->addKey('glpi_rulematchedlogs', 'agents_id');
+   $migration->addKey('glpi_rulematchedlogs', 'rules_id');
 }
 
 
@@ -115,20 +130,18 @@ if (!$DB->tableExists('glpi_lockedfields')) {
          `value` varchar(255) DEFAULT NULL,
          `date_creation` timestamp NULL DEFAULT NULL,
          PRIMARY KEY (`id`),
-         KEY `item` (`itemtype`,`items_id`),
-         UNIQUE KEY `unicity` (`itemtype`, `items_id`, `field`)
+         UNIQUE KEY `unicity` (`itemtype`, `items_id`, `field`),
+         KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
    $DB->queryOrDie($query, "x.x add table glpi_lockedfields");
+} else {
+   $migration->dropKey('glpi_lockedfields', 'item');
+   $migration->migrationOneTable('glpi_lockedfields');
+   $migration->addField('glpi_lockedfields', 'value', 'string');
+   $migration->addKey('glpi_lockedfields', 'date_creation');
 }
 $ADDTODISPLAYPREF['Lockedfield'] = [3, 13, 5];
 
-if (!$DB->fieldExists('glpi_lockedfields', 'value')) {
-   $migration->addField(
-      'glpi_lockedfields',
-      'value',
-      'string'
-   );
-}
 
 //transfer configuration per entity
 if (!$DB->fieldExists('glpi_entities', 'transfers_id')) {
@@ -230,6 +243,7 @@ if (!$DB->tableExists('glpi_unmanageds')) {
          PRIMARY KEY (`id`),
          KEY `name` (`name`),
          KEY `entities_id` (`entities_id`),
+         KEY `is_recursive` (`is_recursive`),
          KEY `manufacturers_id` (`manufacturers_id`),
          KEY `groups_id` (`groups_id`),
          KEY `users_id` (`users_id`),
@@ -247,6 +261,8 @@ if (!$DB->tableExists('glpi_unmanageds')) {
          KEY `agents_id` (`agents_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
    $DB->queryOrDie($query, "x.x add table glpi_unmanageds");
+} else {
+   $migration->addKey('glpi_unmanageds', 'is_recursive');
 }
 $ADDTODISPLAYPREF['Unmanaged'] = [2, 4, 3, 5, 7, 10, 18, 14, 15, 9];
 
@@ -266,11 +282,14 @@ if (!$DB->tableExists('glpi_networkporttypes')) {
          KEY `value_decimal` (`value_decimal`),
          KEY `name` (`name`),
          KEY `entities_id` (`entities_id`),
+         KEY `is_recursive` (`is_recursive`),
          KEY `is_importable` (`is_importable`),
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
    $DB->queryOrDie($query, "x.x add table glpi_networkporttypes");
+} else {
+   $migration->addKey('glpi_networkporttypes', 'is_recursive');
 }
 
 $ADDTODISPLAYPREF['NetworkPortType'] = [10, 11, 12];
@@ -348,9 +367,12 @@ if (!$DB->tableExists('glpi_printerlogs')) {
          `faxed` int NOT NULL DEFAULT '0',
          `date_creation` timestamp NULL DEFAULT NULL,
          PRIMARY KEY (`id`),
-         KEY `printers_id` (`printers_id`)
+         KEY `printers_id` (`printers_id`),
+         KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
    $DB->queryOrDie($query, "x.x add table glpi_printerlogs");
+} else {
+   $migration->addKey('glpi_printerlogs', 'date_creation');
 }
 
 if (!$DB->tableExists('glpi_networkportconnectionlogs')) {
@@ -361,9 +383,14 @@ if (!$DB->tableExists('glpi_networkportconnectionlogs')) {
          `networkports_id_source` int NOT NULL DEFAULT '0',
          `networkports_id_destination` int NOT NULL DEFAULT '0',
          PRIMARY KEY (`id`),
-         KEY `date_creation` (`date_creation`)
+         KEY `date_creation` (`date_creation`),
+         KEY `networkports_id_destination` (`networkports_id_destination`),
+         KEY `networkports_id_source` (`networkports_id_source`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
    $DB->queryOrDie($query, "x.x add table glpi_networkportconnectionlogs");
+} else {
+   $migration->addKey('glpi_networkportconnectionlogs', 'networkports_id_destination');
+   $migration->addKey('glpi_networkportconnectionlogs', 'networkports_id_source');
 }
 
 if (!$DB->tableExists('glpi_networkportmetrics')) {
@@ -397,9 +424,20 @@ if (!$DB->tableExists('glpi_refusedequipments')) {
          `agents_id` int NOT NULL DEFAULT '0',
          `date_creation` timestamp NULL DEFAULT NULL,
          `date_mod` timestamp NULL DEFAULT NULL,
-         PRIMARY KEY (`id`)
+         PRIMARY KEY (`id`),
+         KEY `entities_id` (`entities_id`),
+         KEY `agents_id` (`agents_id`),
+         KEY `rules_id` (`rules_id`),
+         KEY `date_creation` (`date_creation`),
+         KEY `date_mod` (`date_mod`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
    $DB->queryOrDie($query, "x.x add table glpi_refusedequipments");
+} else {
+   $migration->addKey('glpi_refusedequipments', 'entities_id');
+   $migration->addKey('glpi_refusedequipments', 'agents_id');
+   $migration->addKey('glpi_refusedequipments', 'rules_id');
+   $migration->addKey('glpi_refusedequipments', 'date_creation');
+   $migration->addKey('glpi_refusedequipments', 'date_mod');
 }
 
 $migration->addConfig(['purge_refusedequipment' => 0]);
@@ -436,15 +474,19 @@ if (!$DB->tableExists('glpi_usbvendors')) {
          `date_creation` timestamp NULL DEFAULT NULL,
          `date_mod` timestamp NULL DEFAULT NULL,
          PRIMARY KEY (`id`),
-         KEY `vendorid` (`vendorid`),
          KEY `deviceid` (`deviceid`),
          UNIQUE KEY `unicity` (`vendorid`, `deviceid`),
          KEY `name` (`name`),
          KEY `entities_id` (`entities_id`),
+         KEY `is_recursive` (`is_recursive`),
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
    $DB->queryOrDie($query, "x.x add table glpi_usbvendors");
+} else {
+   $migration->dropKey('glpi_usbvendors', 'vendorid');
+   $migration->migrationOneTable('glpi_usbvendors');
+   $migration->addKey('glpi_usbvendors', 'is_recursive');
 }
 $ADDTODISPLAYPREF['USBVendor'] = [10, 11];
 
@@ -460,15 +502,19 @@ if (!$DB->tableExists('glpi_pcivendors')) {
          `date_creation` timestamp NULL DEFAULT NULL,
          `date_mod` timestamp NULL DEFAULT NULL,
          PRIMARY KEY (`id`),
-         KEY `vendorid` (`vendorid`),
          KEY `deviceid` (`deviceid`),
          UNIQUE KEY `unicity` (`vendorid`, `deviceid`),
          KEY `name` (`name`),
          KEY `entities_id` (`entities_id`),
+         KEY `is_recursive` (`is_recursive`),
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
    $DB->queryOrDie($query, "x.x add table glpi_pcivendors");
+} else {
+   $migration->dropKey('glpi_pcivendors', 'vendorid');
+   $migration->migrationOneTable('glpi_pcivendors');
+   $migration->addKey('glpi_pcivendors', 'is_recursive');
 }
 $ADDTODISPLAYPREF['PCIVendor'] = [10, 11];
 
