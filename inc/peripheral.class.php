@@ -41,6 +41,7 @@ if (!defined('GLPI_ROOT')) {
 class Peripheral extends CommonDBTM {
    use Glpi\Features\DCBreadcrumb;
    use Glpi\Features\Clonable;
+   use Glpi\Features\Inventoriable;
 
    // From CommonDBTM
    public $dohistory                   = true;
