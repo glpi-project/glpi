@@ -1,0 +1,55 @@
+{% set input   = getMassiveActions(item) %}
+{% set actions = input['actions'] ?? {} %}
+
+{% if actions|length %}
+<div class="d-none d-sm-block">
+   <div class="dropdown">
+      <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+            id="single-action" data-bs-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+         {{ __("Actions") }}
+      </button>
+
+      <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow mt-2" aria-labelledby="single-action">
+         {% for key, action in actions %}
+            <a class="dropdown-item" data-action="{{ key }}" href="#">{{ action|raw }}</a>
+         {% endfor %}
+      </div>
+   </div>
+</div>
+<script type="text/javascript">
+$(function () {
+   var ma = {{ input|json_encode|raw }};
+
+   $(document).on('click', '.moreactions', function () {
+      $('.moreactions + .dropdown-menu').toggle();
+   });
+
+   $(document).on('click', function (event) {
+      var target = $(event.target);
+      var parent = target.parent();
+
+      if (!target.hasClass('moreactions')
+         && !parent.hasClass('moreactions')) {
+         $('.moreactions + .dropdown-menu').hide();
+      }
+   });
+
+   $(document).on('click', '[data-action]', function () {
+      $('.moreactions + .dropdown-menu').hide();
+
+      var current_action = $(this).data('action');
+
+      glpi_ajax_dialog({
+         url: '{{ path("/ajax/dropdownMassiveAction.php") }}',
+         title: ma.actions[current_action],
+         params: Object.assign(
+            { action: current_action },
+            ma
+         ),
+         appendTo: '#massive_container_{{ rand }}',
+      });
+   });
+});
+</script>
+{% endif %}

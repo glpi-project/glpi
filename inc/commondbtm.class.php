@@ -1273,6 +1273,7 @@ class CommonDBTM extends CommonGLPI {
     *    - complete     : boolean / display completename instead of name
     *    - additional   : boolean / display additionals information
     *    - linkoption   : string  / additional options to add to <a>
+    *    - icon         : boolean  / display item icon next to label
     *
     * @return string HTML link
    **/
@@ -1284,6 +1285,9 @@ class CommonDBTM extends CommonGLPI {
 
       if (isset($options['linkoption'])) {
          $p['linkoption'] = $options['linkoption'];
+      }
+      if (isset($options['icon'])) {
+         $p['icon'] = $options['icon'];
       }
 
       if (!isset($this->fields['id'])) {
@@ -3328,6 +3332,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param array $options array of options
     *    - comments     : boolean / display comments
+    *    - icon         : boolean / display icon
     *    - complete     : boolean / display completename instead of name
     *    - additional   : boolean / display aditionals information
     *
@@ -3342,6 +3347,7 @@ class CommonDBTM extends CommonGLPI {
          'comments'   => false,
          'complete'   => false,
          'additional' => false,
+         'icon'       => false,
       ];
 
       if (is_array($options)) {
@@ -3373,6 +3379,13 @@ class CommonDBTM extends CommonGLPI {
             $comment = $this->getComments();
             if (!empty($comment)) {
                $name = sprintf(__('%1$s - %2$s'), $name, $comment);
+            }
+         }
+
+         if ($p['icon']) {
+            $icon = $this->getIcon();
+            if (!empty($icon)) {
+               $name = sprintf(__('%1$s %2$s'), "<i class='$icon'></i>", $name);
             }
          }
          return $name;
@@ -3412,6 +3425,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param array $options array of options
     *    - comments     : boolean / display comments
+    *    - icon         : boolean / display icon
     *    - complete     : boolean / display completename instead of name
     *    - additional   : boolean / display aditionals information
     *    - forceid      : boolean  override config and display item's ID (false by default)
@@ -3423,6 +3437,7 @@ class CommonDBTM extends CommonGLPI {
       $p = [
          'forceid'  => false,
          'comments' => false,
+         'icon'     => true,
       ];
 
       if (is_array($options)) {
@@ -3446,6 +3461,13 @@ class CommonDBTM extends CommonGLPI {
             $comment = $this->getComments();
             if (!empty($comment)) {
                $name = sprintf(__('%1$s - %2$s'), $name, $comment);
+            }
+         }
+
+         if ($p['icon']) {
+            $icon = $this->getIcon();
+            if (!empty($icon)) {
+               $name = sprintf(__('%1$s %2$s'), "<i class='$icon'></i>", $name);
             }
          }
          return $name;

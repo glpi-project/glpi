@@ -17,15 +17,23 @@
 {% endif %}
 
 {% if item.canEdit(item.fields['id']) %}
+<form name='massaction_{{ rand }}' id='massaction_{{ rand }}' method='post'
+               action='{{ path("/front/massiveaction.php") }}'>
+   <div id='massive_container_{{ rand }}'></div>
+   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+</form>
+
 <form name="form" method="post" action="{{ target }}" {{ formoptions }} enctype="multipart/form-data">
    <input type='hidden' name='entities_id' value='{{ entity }}'>
 {% endif %}
    <div id="mainformtable">
-      <div class="card-header main-header d-flex mx-n2 mt-n2">
-         <h3 class="card-title d-flex align-items-center">
+      <div class="card-header main-header d-flex flex-wrap mx-n2 mt-n2">
+         <h3 class="card-title d-flex align-items-center ps-4">
             {% set icon = item.getIcon() %}
             {% if icon|length > 0 %}
-               <i class="{{ icon }} me-2"></i>
+               <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
+                  <i class="{{ icon }} fa-2x"></i>
+               </div>
             {% endif %}
 
             <span>
@@ -48,8 +56,7 @@
             </span>
          </h3>
          {% if isMultiEntitiesMode()  and not itemInstanceOf(item, "Entity")  %}
-         <span class="ms-auto d-inline-flex">
-            <span class="badge entity-name mx-1 px-2 py-3">
+            <span class="badge entity-name mx-1 px-2 py-3 ms-auto">
                <i class="fas fa-layer-group me-2"></i>
                {{ entity_name }}
             </span>
@@ -95,7 +102,8 @@
                   </label>
                </span>
             {% endif %}
-         </span>
+
+            {% include("components/form/single-action.html.twig") %}
          {% endif %}
       </div>
 

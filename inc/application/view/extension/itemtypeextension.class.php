@@ -37,6 +37,7 @@ use CommonDBTM;
 use CommonGLPI;
 use Computer;
 use Computer_Item;
+use MassiveAction;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
 use Twig\TwigFilter;
@@ -63,6 +64,7 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
          new TwigFunction('getInventoryFileName', [$this, 'getInventoryFileName']),
          new TwigFunction('getDcBreadcrumb', [$this, 'getDcBreadcrumb'], ['is_safe' => ['html']]),
          new TwigFunction('getAutofillMark', [$this, 'getAutofillMark'], ['is_safe' => ['html']]),
+         new TwigFunction('getMassiveActions', [$this, 'getMassiveActions']),
       ];
    }
 
@@ -199,5 +201,26 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
 
    public function getAutofillMark(CommonDBTM $item, string $field, array $options, string $value = null):string {
       return $item->getAutofillMark($field, $options, $value);
+   }
+
+   public function getMassiveActions(CommonDBTM $item):array {
+      $ma = new MassiveAction([
+            'item' => [
+               $item->getType() => [
+                  $item->fields['id'] => 1
+               ]
+            ]
+         ],
+         $_GET,
+         'initial',
+         $item->fields['id']
+      );
+
+      $input = $ma->getInput();
+      if ($item->isEntityAssign()) {
+         $input['entity_restrict'] = $item->getEntityID();
+      }
+
+      return $ma->getInput();
    }
 }

@@ -13,6 +13,10 @@
          background-color: tint-color($header-color, 80%);
          color: darken($header-color, 20%);
       }
+
+      .ribbon {
+         left: 0.5rem;
+      }
    }
 
    &.asset-deleted {
