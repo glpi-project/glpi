@@ -3859,7 +3859,8 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if (in_array(static::getType(), Appliance::getTypes(true)) && static::canUpdate()) {
-         $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'] = _x('button', 'Associate to an appliance');
+         $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'] =
+            "<i class='ma-icon fas fa-cubes'></i>"._x('button', 'Associate to an appliance');
       }
 
       return $actions;
