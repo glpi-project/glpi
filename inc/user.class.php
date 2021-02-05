@@ -4031,12 +4031,14 @@ JAVASCRIPT;
          '_idor_token'         => Session::getNewIDORToken(__CLASS__, ['right' => $p['right']]),
       ];
 
-      $output   = Html::jsAjaxDropdown($p['name'], $field_id,
-                                       $p['url'],
-                                       $param);
+      $output = "<span class='no-wrap ".($p['width'] == "100%" ? "w100" : "")."'>";
+      $output.= Html::jsAjaxDropdown($p['name'], $field_id,
+                                      $p['url'],
+                                      $param);
 
       // Display comment
       if ($p['comments']) {
+         $output.= "<span class='dropdown-icons'>";
          $comment_id = Html::cleanId("comment_".$p['name'].$p['rand']);
          $link_id = Html::cleanId("comment_link_".$p["name"].$p['rand']);
          if (!$view_users) {
@@ -4070,8 +4072,10 @@ JAVASCRIPT;
          $output .= Ajax::updateItemOnSelectEvent($field_id, $comment_id,
                                                   $CFG_GLPI["root_doc"]."/ajax/comments.php",
                                                   $paramscomment, false);
+         $output .= "</span>";
       }
       $output .= Ajax::commonDropdownUpdateItem($p, false);
+      $output .= "</span>";
 
       if (Session::haveRight('user', self::IMPORTEXTAUTHUSERS)
           && $p['ldap_import']
