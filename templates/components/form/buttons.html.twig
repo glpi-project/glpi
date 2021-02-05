@@ -10,7 +10,7 @@
    </div> {# #mainformtable #}
 
    {% if canedit and item.canEdit(item.fields['id']) %}
-      <div class="card-body mx-n2">
+      <div class="card-body mx-n2 border-top">
       {% if withtemplate|length > 0 or item.isNewID(id) %}
          {% if id <= 0 or withtemplate == 2 %}
             <button class="btn btn-primary me-2" type="submit" name="add">
