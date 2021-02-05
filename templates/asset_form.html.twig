@@ -54,6 +54,7 @@
                         {{ dc_breadcrumbs|join('&nbsp;&gt;&nbsp;')|raw}}
                      </span>
                   </div>
+                  <div class="col-12 col-sm-6"></div> {# set an empty space in front of dc breadcrumb #}
                {% endif %}
 
                {% if item.isField('locations_id') %}
@@ -262,6 +263,16 @@
                      <textarea class="form-control" id="comment_{{ rand }}" name="comment" rows="3">
                         {{ item.fields['comment'] }}
                      </textarea>
+                  </div>
+               {% endif %}
+
+               {% if item.isField('ram') %}
+                  <div class="mb-3 col-12 col-sm-6">
+                     <label class="form-label" for="ram_{{ rand }}">
+                        {{ __('%1$s (%2$s)')|format(_n('Memory', 'Memories', 1), __('Mio')) }}
+                     </label>
+                     <input type="number" class="form-control" id="ram_{{ rand }}"
+                            name="ram" value="{{ item.fields['ram'] }}">
                   </div>
                {% endif %}
 
