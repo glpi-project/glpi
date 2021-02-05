@@ -286,6 +286,36 @@
                   </div>
                {% endif %}
 
+               {% if item.isField('memory_size') %}
+                  <div class="mb-3 col-12 col-sm-6">
+                     <label class="form-label" for="memory_size_{{ rand }}">
+                        {{ _n('Memory', 'Memories', 1) }}
+                     </label>
+                     <input type="number" class="form-control" id="memory_size_{{ rand }}"
+                            name="memory_size" value="{{ item.fields['memory_size'] }}">
+                  </div>
+               {% endif %}
+
+               {% if item.isField('init_pages_counter') %}
+                  <div class="mb-3 col-12 col-sm-6">
+                     <label class="form-label" for="init_pages_counter_{{ rand }}">
+                        {{ __("Initial page counter") }}
+                     </label>
+                     <input type="number" class="form-control" id="init_pages_counter_{{ rand }}"
+                            name="init_pages_counter" value="{{ item.fields['init_pages_counter'] }}">
+                  </div>
+               {% endif %}
+
+               {% if item.isField('last_pages_counter') %}
+                  <div class="mb-3 col-12 col-sm-6">
+                     <label class="form-label" for="last_pages_counter_{{ rand }}">
+                        {{ __("Current counter of pages") }}
+                     </label>
+                     <input type="number" class="form-control" id="last_pages_counter_{{ rand }}"
+                            name="last_pages_counter" value="{{ item.fields['last_pages_counter'] }}">
+                  </div>
+               {% endif %}
+
                {% if item.isField('autoupdatesystems_id') %}
                   <div class="mb-3 col-12 col-sm-6">
                      <label class="form-label" for="dropdown_autoupdatesystems_id{{ rand }}">
@@ -299,7 +329,8 @@
                   </div>
                {% endif %}
 
-               {% if itemInstanceOf(item, "Monitor") %}
+               {# TODO check if we have a better way to know if an item has flags #}
+               {% if itemInstanceOf(item, "Monitor") or itemInstanceOf(item, "Printer") %}
                   <div class="mb-3 col-12 col-sm-6">
                      {% include("components/form/flags.html.twig") %}
                   </div>

@@ -1,8 +1,13 @@
-<h4 class="card-title">
-      {{ __('Flags') }}
-   </h4>
-<div class="card-body d-flex flex-wrap">
+<label class="form-label">
+   {{ _n('Port', 'Ports', getPluralNumber()) }}
+</label>
+<div class="card-body mt-n3 mx-n2 d-flex flex-wrap">
    {% set flags = {
+      'have_serial':      __("Serial"),
+      'have_parallel':    __("Parallel"),
+      'have_usb':         __("USB"),
+      'have_ethernet':    __("Ethernet"),
+      'have_wifi':        __("Wifi"),
       'have_micro':       __("Microphone"),
       'have_speaker':     __("Speakers"),
       'have_subd':        __("Sub-D"),
@@ -14,7 +19,7 @@
    } %}
    {% for field, label in flags %}
       {% if item.isField(field) %}
-         <div class="m-3">
+         <div class="m-2">
             <label class="form-check">
                {% set checked = (item.fields[field] == 1 ? "checked" : "") %}
                <input type="hidden" name="{{ field }}" value="0">
