@@ -2514,14 +2514,14 @@ class CommonDBTM extends CommonGLPI {
             $params[$key] = $val;
          }
       }
-      echo "<tr class='tab_bg_2'>";
-      echo "<td class='center' colspan='".($params['colspan']*2)."'>";
+
+      echo "</table>";
+
       TemplateRenderer::getInstance()->display('components/form/buttons.html.twig', [
          'item'   => $this,
          'params' => $params,
       ]);
-      echo "</td></tr>";
-      echo "</table>";
+
       echo "</div>"; //.asset
    }
 
@@ -2611,14 +2611,14 @@ class CommonDBTM extends CommonGLPI {
       }
 
       echo "<div class='asset'>";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_2'>";
-      echo "<td class='center' colspan='".($params['colspan']*2)."'>";
       TemplateRenderer::getInstance()->display('components/form/header.html.twig', [
          'item'   => $this,
          'params' => $params,
       ]);
-      echo "</td></tr>";
+
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td class='center' colspan='".($params['colspan']*2)."'>";
    }
 
 
