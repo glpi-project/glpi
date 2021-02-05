@@ -269,6 +269,16 @@
                   </div>
                {% endif %}
 
+               {% if item.isField('uuid') %}
+                  <div class="mb-3 col-12 col-sm-6">
+                     <label class="form-label" for="uuid_{{ rand }}">
+                        {{ __("UUID") }}
+                     </label>
+                     <input type="text" class="form-control" id="uuid_{{ rand }}"
+                            name="uuid" value="{{ item.fields['uuid'] }}">
+                  </div>
+               {% endif %}
+
                {% if item.isField('comment') %}
                   <div class="mb-3 col-12 col-sm-6">
                      <label class="form-label" for="comment_{{ rand }}">
@@ -287,16 +297,6 @@
                      </label>
                      <input type="number" class="form-control" id="ram_{{ rand }}"
                             name="ram" value="{{ item.fields['ram'] }}">
-                  </div>
-               {% endif %}
-
-               {% if item.isField('uuid') %}
-                  <div class="mb-3 col-12 col-sm-6">
-                     <label class="form-label" for="uuid_{{ rand }}">
-                        {{ __("UUID") }}
-                     </label>
-                     <input type="text" class="form-control" id="uuid_{{ rand }}"
-                            name="uuid" value="{{ item.fields['uuid'] }}">
                   </div>
                {% endif %}
 
