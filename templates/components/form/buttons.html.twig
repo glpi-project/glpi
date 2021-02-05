@@ -3,12 +3,12 @@
 {% set canedit      = params['canedit'] ?? true %}
 {% set id           = item.fields['id'] ?? -1 %}
 
-   <div class="row">
-   {{ postItemForm(item, params) }}
-   </div>
+         <div class="row">
+         {{ postItemForm(item, params) }}
+         </div>
 
-      {% if canedit and item.canEdit(item.fields['id']) %}
-         <div class="card-body mx-n2 border-top">
+{% if canedit and item.canEdit(item.fields['id']) %}
+      <div class="card-body mx-n2 border-top">
          {% if withtemplate|length > 0 or item.isNewID(id) %}
             {% if id <= 0 or withtemplate == 2 %}
                <button class="btn btn-primary me-2" type="submit" name="add">
@@ -85,16 +85,18 @@
          {% endif %}
 
          {% if canedit and params['addbuttons']|length > 0 %}
-         {% for key, val in params['addbuttons'] %}
-            <button class="btn btn-outline-secondary me-2" type="submit" name="{{ key }}" value="1">
-               {{ val|raw }}
-            </button>
-         {% endfor %}
+            {% for key, val in params['addbuttons'] %}
+               <button class="btn btn-outline-secondary me-2" type="submit" name="{{ key }}" value="1">
+                  {{ val|raw }}
+               </button>
+            {% endfor %}
          {% endif %}
 
-         </div>
+      </div>
 
-         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
-      {% endif %}
-   </form>
-</div> {# #mainformtable #}
+      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+   </div> {# #mainformtable #}
+</form> {# [name=asset_form] #}
+{% else %}
+   </div> {# #mainformtable #}
+{% endif %}
