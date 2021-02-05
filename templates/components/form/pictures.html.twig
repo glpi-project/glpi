@@ -15,14 +15,14 @@
          <div class="d-flex flex-wrap">
             {% if picture_front|length > 1 %}
             <div class="m-2">
-               <h4>{{ __("Front picture") }}</h4>
+               <h4 class="text-muted">{{ __("Front picture") }}</h4>
                <img src="{{ getPictureUrl(picture_front) }}" class="" alt="{{ __("Front picture") }}">
             </div>
             {% endif %}
 
             {% if picture_rear|length > 1 %}
             <div class="m-2">
-               <h4>{{ __("Rear picture") }}</h4>
+               <h4 class="text-muted">{{ __("Rear picture") }}</h4>
                <img src="{{ getPictureUrl(picture_rear) }}" class="" alt="{{ __("Rear picture") }}">
             </div>
             {% endif %}

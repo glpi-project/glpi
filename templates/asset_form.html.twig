@@ -51,9 +51,11 @@
                      <label class="form-label">
                         {{ __('Data center position') }}
                      </label>
-                     <span>
-                        {{ dc_breadcrumbs|join('&nbsp;&gt;&nbsp;')|raw}}
-                     </span>
+                     <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
+                     {% for dc_item in dc_breadcrumbs|reverse %}
+                        <li class="breadcrumb-item">{{ dc_item|raw }}</li>
+                     {% endfor %}
+                     </ol>
                   </div>
                   <div class="col-12 col-sm-6"></div> {# set an empty space in front of dc breadcrumb #}
                {% endif %}
