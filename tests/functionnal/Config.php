@@ -356,7 +356,7 @@ class Config extends DbTestCase {
          ->size->isGreaterThan(170);
 
       $conf = \Config::getConfigurationValues('core', ['version', 'dbversion']);
-      $this->array($conf)->isIdenticalTo([
+      $this->array($conf)->isEqualTo([
          'dbversion' => GLPI_SCHEMA_VERSION,
          'version'   => GLPI_VERSION
       ]);
@@ -364,7 +364,7 @@ class Config extends DbTestCase {
 
    public function testSetConfigurationValues() {
       $conf = \Config::getConfigurationValues('core', ['version', 'notification_to_myself']);
-      $this->array($conf)->isIdenticalTo([
+      $this->array($conf)->isEqualTo([
          'notification_to_myself'   => '1',
          'version'                  => GLPI_VERSION
       ]);
@@ -372,7 +372,7 @@ class Config extends DbTestCase {
       //update configuration value
       \Config::setConfigurationValues('core', ['notification_to_myself' => 0]);
       $conf = \Config::getConfigurationValues('core', ['version', 'notification_to_myself']);
-      $this->array($conf)->isIdenticalTo([
+      $this->array($conf)->isEqualTo([
          'notification_to_myself'   => '0',
          'version'                  => GLPI_VERSION
       ]);
@@ -380,14 +380,14 @@ class Config extends DbTestCase {
 
       //check new configuration key does not exists
       $conf = \Config::getConfigurationValues('core', ['version', 'new_configuration_key']);
-      $this->array($conf)->isIdenticalTo([
+      $this->array($conf)->isEqualTo([
          'version' => GLPI_VERSION
       ]);
 
       //add new configuration key
       \Config::setConfigurationValues('core', ['new_configuration_key' => 'test']);
       $conf = \Config::getConfigurationValues('core', ['version', 'new_configuration_key']);
-      $this->array($conf)->isIdenticalTo([
+      $this->array($conf)->isEqualTo([
          'new_configuration_key' => 'test',
          'version'               => GLPI_VERSION
       ]);
@@ -395,7 +395,7 @@ class Config extends DbTestCase {
       //drop new configuration key
       \Config::deleteConfigurationValues('core', ['new_configuration_key']);
       $conf = \Config::getConfigurationValues('core', ['version', 'new_configuration_key']);
-      $this->array($conf)->isIdenticalTo([
+      $this->array($conf)->isEqualTo([
          'version' => GLPI_VERSION
       ]);
    }
