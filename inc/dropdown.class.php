@@ -183,12 +183,13 @@ class Dropdown {
             'order'                => $params['order'] ?? null,
       ];
 
-      $output = "<span class='no-wrap'>";
+      $output = "<span class='no-wrap ".($params['width'] == "100%" ? "w100" : "")."'>";
       $output.= Html::jsAjaxDropdown($params['name'], $field_id,
                                      $params['url'],
                                      $p);
       // Display comment
       if ($params['comments']) {
+         $output.= "<span class='dropdown-icons'>";
          $comment_id      = Html::cleanId("comment_".$params['name'].$params['rand']);
          $link_id         = Html::cleanId("comment_link_".$params['name'].$params['rand']);
          $kblink_id       = Html::cleanId("kb_link_".$params['name'].$params['rand']);
@@ -266,6 +267,7 @@ class Dropdown {
          $output .= Ajax::updateItemOnSelectEvent($field_id, $comment_id,
                                                   $CFG_GLPI["root_doc"]."/ajax/comments.php",
                                                   $paramscomment, false);
+         $output .= "</span>";
       }
       $output .= Ajax::commonDropdownUpdateItem($params, false);
       $output .= "</span>";

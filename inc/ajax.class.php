@@ -290,6 +290,9 @@ HTML;
          myModalEl{$rand} = document.getElementById('{$domid}');
          myModal{$rand}   = new bootstrap.Modal(myModalEl{$rand});
 
+         // move modal to body
+         $(myModalEl{$rand}).appendTo($("body"));
+
          myModalEl{$rand}.addEventListener('show.bs.modal', function () {
             $('#iframe{$domid}').attr('src','{$url}').removeClass('hidden');
          });
@@ -323,7 +326,7 @@ HTML;
          };
 JAVASCRIPT;
 
-      $out = "<script type='text/javascript'>$js</script>$html";
+      $out = "<script type='text/javascript'>$js</script>".trim($html);
 
       if ($param['display']) {
          echo $out;
