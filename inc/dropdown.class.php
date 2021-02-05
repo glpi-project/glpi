@@ -70,6 +70,7 @@ class Dropdown {
     *    - permit_select_parent : boolean / for tree dropdown permit to see parent items
     *                                       not available by default (default false)
     *    - specific_tags        : array of HTML5 tags to add the the field
+    *    - class                : class to pass to html select
     *    - url                  : url of the ajax php code which should return the json data to show in
     *                                       the dropdown
     *
@@ -109,6 +110,7 @@ class Dropdown {
       $params['permit_select_parent'] = false;
       $params['addicon']              = true;
       $params['specific_tags']        = [];
+      $params['class']                = "form-select form-select-sm";
       $params['url']                  = $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php";
 
       if (is_array($options) && count($options)) {
@@ -176,6 +178,7 @@ class Dropdown {
             'on_change'            => $params['on_change'],
             'permit_select_parent' => $params['permit_select_parent'],
             'specific_tags'        => $params['specific_tags'],
+            'class'                => $params['class'],
             '_idor_token'          => Session::getNewIDORToken($itemtype),
             'order'                => $params['order'] ?? null,
       ];
@@ -1993,13 +1996,17 @@ class Dropdown {
     * - target target for actions
     * - withtemplate template or basic computer
     * - value value of global state
+    * - class : class to pass to html select
     * - management_restrict global management restrict mode
+    * - width specific width needed (default not set)
    **/
    static function showGlobalSwitch($ID, $attrs = []) {
       $params['management_restrict'] = 0;
       $params['value']               = 0;
       $params['name']                = 'is_global';
       $params['target']              = '';
+      $params['class']               = "form-select form-select-sm";
+      $params['width']               = "";
 
       foreach ($attrs as $key => $value) {
          if ($value != '') {
@@ -2029,7 +2036,11 @@ class Dropdown {
             $rand = mt_rand();
             $values = [MANAGEMENT_UNITARY => __('Unit management'),
                             MANAGEMENT_GLOBAL  => __('Global management')];
-            Dropdown::showFromArray($params['name'], $values, ['value' => $params['value']]);
+            Dropdown::showFromArray($params['name'], $values, [
+               'value' => $params['value'],
+               'class' => $params['class'],
+               'width' => $params['width'],
+            ]);
          } else {
             // Templates edition
             if (!empty($params['withtemplate'])) {

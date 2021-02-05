@@ -3926,6 +3926,7 @@ JAVASCRIPT;
     *    - display          : boolean / display or get string (default true)
     *    - width            : specific width needed
     *    - specific_tags    : array of HTML5 tags to add to the field
+    *    - class            : class to pass to html select
     *    - url              : url of the ajax php code which should return the json data to show in
     *                         the dropdown (default /ajax/getDropdownUsers.php)
     *    - inactive_deleted : retreive also inactive or deleted users
@@ -3956,6 +3957,7 @@ JAVASCRIPT;
          'display'             => true,
          '_user_index'         => 0,
          'specific_tags'       => [],
+         'class'               => "form-select form-select-sm",
          'url'                 => $CFG_GLPI['root_doc'] . "/ajax/getDropdownUsers.php",
          'inactive_deleted'    => 0,
       ];
@@ -4025,6 +4027,7 @@ JAVASCRIPT;
          'inactive_deleted'    => $p['inactive_deleted'],
          'entity_restrict'     => (is_array($p['entity']) ? json_encode(array_values($p['entity'])) : $p['entity']),
          'specific_tags'       => $p['specific_tags'],
+         'class'                => $p['class'],
          '_idor_token'         => Session::getNewIDORToken(__CLASS__, ['right' => $p['right']]),
       ];
 
