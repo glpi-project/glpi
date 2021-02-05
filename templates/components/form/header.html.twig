@@ -23,7 +23,7 @@
    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
 </form>
 
-<form name="form" method="post" action="{{ target }}" {{ formoptions }} enctype="multipart/form-data">
+<form name="asset_form" method="post" action="{{ target }}" {{ formoptions }} enctype="multipart/form-data">
    <input type='hidden' name='entities_id' value='{{ entity }}'>
 {% endif %}
    <div id="mainformtable">
@@ -107,9 +107,9 @@
          {% endif %}
       </div>
 
-   {{ preItemForm(item, params) }}
+      {{ preItemForm(item, params) }}
 
-   {# todo modal message #}
-   {% if app.request.request('in_modal') == true %}
-   <input type="hidden" name="_no_message_link" value="1">
-   {% endif %}
+      {# todo modal message #}
+      {% if app.request.request('in_modal') == true %}
+      <input type="hidden" name="_no_message_link" value="1">
+      {% endif %}
