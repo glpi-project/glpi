@@ -40,6 +40,7 @@
                         'condition': {'is_visible_computer': 1},
                         'rand'     : rand,
                         'width'    : '100%',
+                        'class'    : 'form-select',
                      }) }}
                   </div>
                {% endif %}
@@ -67,6 +68,7 @@
                         'entity': item.fields['entities_id'],
                         'rand'  : rand,
                         'width' : '100%',
+                        'class' : 'form-select',
                      }) }}
                   </div>
                {% endif %}
@@ -82,6 +84,7 @@
                         'value': item.fields[type_fk],
                         'rand' : rand,
                         'width': '100%',
+                        'class': 'form-select',
                      }) }}
                   </div>
                {% endif %}
@@ -98,6 +101,7 @@
                         'entity': item.fields['entities_id'],
                         'rand'  : rand,
                         'width' : '100%',
+                        'class': 'form-select',
                      }) }}
                   </div>
                {% endif %}
@@ -111,6 +115,7 @@
                         'value': item.fields['manufacturers_id'],
                         'rand' : rand,
                         'width': '100%',
+                        'class': 'form-select',
                      }) }}
                   </div>
                {% endif %}
@@ -127,6 +132,7 @@
                         'condition': {'is_assign': 1},
                         'rand'     : rand,
                         'width'    : '100%',
+                        'class'    : 'form-select',
                      }) }}
                   </div>
                {% endif %}
@@ -142,6 +148,7 @@
                         'value': item.fields[model_fk],
                         'rand' : rand,
                         'width': '100%',
+                        'class': 'form-select',
                      }) }}
                   </div>
                {% endif %}
@@ -199,6 +206,7 @@
                         'entity': item.fields['entities_id'],
                         'rand'  : rand,
                         'width' : '100%',
+                        'class' : 'form-select',
                      }) }}
                   </div>
                {% endif %}
@@ -212,7 +220,9 @@
                         'withtemplate'       : withtemplate,
                         'value'              : item.fields['is_global'],
                         'management_restrict': config('monitors_management_restrict'),
-                        'target'             : target
+                        'target'             : target,
+                        'width'              : '100%',
+                        'class'              : 'form-select',
                      })}}
                   </div>
                {% endif %}
@@ -236,6 +246,7 @@
                         'value': item.fields['networks_id'],
                         'rand' : rand,
                         'width': '100%',
+                        'class': 'form-select',
                      }) }}
                   </div>
                {% endif %}
@@ -251,6 +262,7 @@
                         'condition': {'is_itemgroup': 1},
                         'rand'     : rand,
                         'width'    : '100%',
+                        'class'    : 'form-select',
                      }) }}
                   </div>
                {% endif %}
@@ -325,6 +337,7 @@
                         'value': item.fields['autoupdatesystems_id'],
                         'rand' : rand,
                         'width': '100%',
+                        'class': 'form-select',
                      }) }}
                   </div>
                {% endif %}
