@@ -283,7 +283,6 @@ class AppliancesPluginToCoreCommand extends AbstractCommand {
       }
       $this->cleanCoreTables();
 
-
       return $this->createApplianceTypes()
          && $this->createApplianceEnvironments()
          && $this->createApplianceRelations()
