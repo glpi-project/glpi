@@ -124,6 +124,135 @@ class GLPIKanbanRights {
    }
 }
 
+class KanbanBoard {
+
+   constructor() {
+      /**
+       * The original column state when the Kanban was built or refreshed.
+       * It should not be considered up to date beyond the initial build/refresh.
+       * @since 9.5.0
+       * @since x.x.x Moved to new KanbanBoard class
+       * @type {{}}
+       */
+      this.columns = {};
+   }
+
+   /**
+    * Create a new column and send it to the server.
+    * This will create a new item in the DB based on the item type used for columns.
+    * It does not automatically add it to the Kanban.
+    * @since 9.5.0
+    * @since x.x.x Moved to new KanbanBoard class
+    *  - Added promise return
+    *  - Deprecated callback parameter
+    * @param {string} name The name of the new column.
+    * @param {Object} params Extra fields needed to create the column.
+    * @param {function} callback Function to call after the column is created (or fails to be created).
+    * @return {Promise}
+    */
+   createColumn(name, params, callback = undefined) {
+      if (name === undefined || name.length === 0) {
+         if (callback) {
+            callback();
+         }
+         return new Promise(()=>{});
+      }
+      const ajax_promise = $.ajax({
+         method: 'POST',
+         url: (self.ajax_root + "kanban.php"),
+         contentType: 'application/json',
+         dataType: 'json',
+         data: {
+            action: "create_column",
+            itemtype: self.item.itemtype,
+            items_id: self.item.items_id,
+            column_field: self.column_field.id,
+            column_name: name,
+            params: params
+         }
+      });
+
+      if (callback) {
+         ajax_promise.always(callback);
+      }
+      return ajax_promise;
+   }
+}
+
+class KanbanColumn {
+
+   constructor(params) {
+      /**
+       * The id for the column
+       * @since x.x.x
+       * @type {string}
+       */
+      this.id = params['id'];
+      /**
+       * The displayed name for the column
+       * @since x.x.x
+       * @type {string}
+       */
+      this.name = params['name'];
+      /**
+       * The color displayed in the header of the column
+       * @since x.x.x
+       * @type {string}
+       */
+      this.header_color = params['header_color'] || 'transparent';
+      /**
+       * A flag indicating if this column is protected.
+       *
+       * A protected column cannot be removed from the board. For example, the No Status column for Projects is protected.
+       * @since x.x.x
+       * @type {boolean}
+       */
+      this.protected = Boolean(params['_protected'] || false);
+   }
+
+   getID() {
+      return this.id;
+   }
+
+   getName() {
+      return this.name;
+   }
+
+   setName(value) {
+      this.name = value;
+      return this;
+   }
+
+   getHeaderColor() {
+      return this.header_color;
+   }
+
+   setHeaderColor(value) {
+      this.header_color = value;
+      return this;
+   }
+
+   getProtected() {
+      return this.protected;
+   }
+
+   setProtected(value) {
+      this.protected = value;
+      return this;
+   }
+}
+
+class KanbanCard {
+
+   constructor() {
+
+   }
+
+   getTitle() {
+
+   }
+}
+
 (function(){
    window.GLPIKanban = function() {
       /**
@@ -296,7 +425,7 @@ class GLPIKanbanRights {
        * @type {null}
        * @private
        */
-      var _backgroundRefreshTimer = null;
+      let _backgroundRefreshTimer = null;
 
       /**
        * The user's state object.
@@ -323,6 +452,8 @@ class GLPIKanbanRights {
        * @type {boolean}
        */
       this.is_sorting_active = false;
+
+      this.board = new KanbanBoard();
 
       /**
        * Parse arguments and assign them to the object's properties
@@ -403,6 +534,11 @@ class GLPIKanbanRights {
             card_overflow_dropdown += `
                 <li class='kanban-item-goto'>
                    <a href="#"><i class="fas fa-share"></i>${__('Go to')}</a>
+                </li>
+                <li class='kanban-item-manage-team'>
+                   <span>
+                      <i class="fas fa-users"></i>${__('Manage team')}
+                   </span>
                 </li>
                 <li class='kanban-item-remove'>
                    <span>
@@ -764,7 +900,7 @@ class GLPIKanbanRights {
             const name = $(self.create_column_form + " input[name='name']").val();
             $(self.create_column_form + " input[name='name']").val("");
             const color = $(self.create_column_form + " input[name='color']").val();
-            createColumn(name, {color: color}, function() {
+            self.board.createColumn(name, {color: color}).then(() => {
                // Refresh add column list
                refreshAddColumnForm();
                $(self.add_column_form).css({
@@ -777,7 +913,7 @@ class GLPIKanbanRights {
          });
          $('#kanban-add-dropdown li').on('click', function(e) {
             e.preventDefault();
-            const selection = $(e.target);
+            const selection = $(e.target).closest('li');
             // The add dropdown is a single-level dropdown, so the parent is the ul element
             const dropdown = selection.parent();
             // Get the button that triggered the dropdown and then get the column that it is a part of
@@ -2113,42 +2249,6 @@ class GLPIKanbanRights {
       };
 
       /**
-       * Create a new column and send it to the server.
-       * This will create a new item in the DB based on the item type used for columns.
-       * It does not automatically add it to the Kanban.
-       * @since 9.5.0
-       * @param {string} name The name of the new column.
-       * @param {Object} params Extra fields needed to create the column.
-       * @param {function} callback Function to call after the column is created (or fails to be created).
-       */
-      const createColumn = function(name, params, callback) {
-         if (name === undefined || name.length === 0) {
-            if (callback) {
-               callback();
-            }
-            return;
-         }
-         $.ajax({
-            method: 'POST',
-            url: (self.ajax_root + "kanban.php"),
-            contentType: 'application/json',
-            dataType: 'json',
-            data: {
-               action: "create_column",
-               itemtype: self.item.itemtype,
-               items_id: self.item.items_id,
-               column_field: self.column_field.id,
-               column_name: name,
-               params: params
-            }
-         }).always(function() {
-            if (callback) {
-               callback();
-            }
-         });
-      };
-
-      /**
        * Update the user state object, but do not send it to the server.
        * This should only be done if there is no state stored on the server, so one needs built.
        * Do NOT use this for changes to the state such as moving cards/columns!
@@ -2292,7 +2392,7 @@ class GLPIKanbanRights {
 
       /**
        * Initialize the background refresh mechanism.
-       * @sicne 9.5.0
+       * @since 9.5.0
        */
       const backgroundRefresh = function() {
          if (self.background_refresh_interval <= 0) {
