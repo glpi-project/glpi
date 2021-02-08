@@ -408,7 +408,7 @@ JAVASCRIPT;
          foreach ($tabs as $val) {
             $target = str_replace('\\', '_', $val['id']);
             $html_tabs.= "<li class='nav-item $navitemml'>
-               <a class='nav-link justify-content-between' data-bs-toggle='tab' title='".strip_tags($val['title'])."' ";
+               <a class='nav-link justify-content-between pe-1' data-bs-toggle='tab' title='".strip_tags($val['title'])."' ";
             $html_tabs.= " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."' data-bs-target='#{$target}'>";
             $html_tabs.= $val['title']."</a></li>";
 
