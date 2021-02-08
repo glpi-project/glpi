@@ -32,7 +32,7 @@
 
 namespace Glpi\Application\View\Extension;
 
-use Dropdown;
+use Alert;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
@@ -40,13 +40,11 @@ use Twig\TwigFunction;
 /**
  * @since x.x.x
  */
-class DropdownExtension extends AbstractExtension implements ExtensionInterface {
+class AlertExtension extends AbstractExtension implements ExtensionInterface {
 
    public function getFunctions() {
       return [
-         new TwigFunction('getDropdownName', [Dropdown::class, 'getDropdownName']),
-         new TwigFunction('Dropdown__showGlobalSwitch', [Dropdown::class, 'showGlobalSwitch']),
-         new TwigFunction('Dropdown__showNumber', [Dropdown::class, 'showNumber'], ['is_safe' => ['html']]),
+         new TwigFunction('displayLastAlert', [Alert::class, 'displayLastAlert']),
       ];
    }
 }

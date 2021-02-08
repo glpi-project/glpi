@@ -1452,6 +1452,7 @@ class Dropdown {
     *     - width              specific width needed
     *     - on_change string / value to transmit to "onChange"
     *     - used      array / Already used items ID: not to display in dropdown (default empty)
+    *     - class : class to pass to html select
    **/
    static function showNumber($myname, $options = []) {
       global $CFG_GLPI;
@@ -1469,6 +1470,7 @@ class Dropdown {
          'on_change'       => '',
          'used'            => [],
          'specific_tags'   => [],
+         'class'           => "form-select form-select-sm",
       ];
 
       if (is_array($options) && count($options)) {
@@ -1501,7 +1503,8 @@ class Dropdown {
                      'max'                 => $p['max'],
                      'step'                => $p['step'],
                      'toadd'               => $p['toadd'],
-                     'specific_tags'       => $p['specific_tags']];
+                     'specific_tags'       => $p['specific_tags'],
+                     'class'               => $p['class']];
 
       $out   = Html::jsAjaxDropdown($myname, $field_id,
                                     $CFG_GLPI['root_doc']."/ajax/getDropdownNumber.php",
