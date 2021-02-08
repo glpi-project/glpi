@@ -446,11 +446,15 @@ final class StatusChecker {
 
          foreach ($plugins as $plugin) {
             // Old-style plugin status hook which only modified the global OK status.
-            $param = ['ok' => true];
+            $param = [
+               'ok' => true,
+               '_public_only' => $public_only
+            ];
             $plugin_status = Plugin::doOneHook($plugin, 'status', $param);
             if ($plugin_status === null) {
                continue;
             }
+            unset($plugin_status['_public_only']);
             if (isset($plugin_status['ok']) && count(array_keys($plugin_status)) === 1) {
                $status[$plugin] = [
                   'status'    => $plugin_status['ok'] ? self::STATUS_OK : self::STATUS_PROBLEM,
