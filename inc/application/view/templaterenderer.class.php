@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\Extension\AlertExtension;
 use Glpi\Application\View\Extension\ConfigExtension;
 use Glpi\Application\View\Extension\CsrfExtension;
 use Glpi\Application\View\Extension\DropdownExtension;
@@ -88,6 +89,7 @@ class TemplateRenderer {
       $this->environment->addExtension(new DebugExtension());
       $this->environment->addExtension(new StringExtension());
       // GLPI extensions
+      $this->environment->addExtension(new AlertExtension());
       $this->environment->addExtension(new ConfigExtension());
       $this->environment->addExtension(new CsrfExtension());
       $this->environment->addExtension(new DropdownExtension());

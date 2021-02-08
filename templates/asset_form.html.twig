@@ -45,6 +45,19 @@
                   </div>
                {% endif %}
 
+               {% if item.isField('is_helpdesk_visible') %}
+                  <div class="mb-3 col-12 col-sm-6">
+                     <label class="form-label" for="is_helpdesk_visible_{{ rand }}">
+                        {{ __('Associable to a ticket') }}
+                     </label>
+
+                     <input type="hidden" name="is_helpdesk_visible" value="0">
+                     <input type="checkbox" name="is_helpdesk_visible" class="form-check-input"
+                            {{ item.fields['is_helpdesk_visible'] == 1 ? "checked" : "" }}
+                            value="1">
+                  </div>
+               {% endif %}
+
                {% set dc_breadcrumbs = getDcBreadcrumb(item) %}
                {% if dc_breadcrumbs|length > 0 %}
                   <div class="mb-3 col-12 col-sm-6">
@@ -75,6 +88,20 @@
                   </div>
                {% endif %}
 
+               {% if item.isField('softwarecategories_id') %}
+                  <div class="mb-3 col-12 col-sm-6">
+                     <label class="form-label" for="dropdown_softwarecategories_id{{ rand }}">
+                        {{ "SoftwareCategory"|itemtype_name }}
+                     </label>
+                     {{ "SoftwareCategory"|dropdown({
+                        'value' : item.fields['softwarecategories_id'],
+                        'rand'  : rand,
+                        'width' : '100%',
+                        'class' : 'form-select',
+                     }) }}
+                  </div>
+               {% endif %}
+
                {% set type_itemtype = item.getType ~ "Type" %}
                {% set type_fk = type_itemtype|get_foreignkey_field %}
                {% if item.isField(type_fk) %}
@@ -88,6 +115,16 @@
                         'width': '100%',
                         'class': 'form-select',
                      }) }}
+                  </div>
+               {% endif %}
+
+               {% if item.isField('ref') %}
+                  <div class="mb-3 col-12 col-sm-6">
+                     <label class="form-label" for="ref_{{ rand }}">
+                        {{ __('Reference') }}
+                     </label>
+                     <input type="text" class="form-control" id="ref_{{ rand }}"
+                            name="ref" value="{{ item.fields['ref'] }}">
                   </div>
                {% endif %}
 
@@ -330,6 +367,92 @@
                   </div>
                {% endif %}
 
+               {% if item.isField('is_update') %}
+                  <div class="mb-3 col-12 col-sm-6">
+                     <label class="form-label" for="is_update_{{ rand }}">
+                        {{ __('Upgrade') }}
+                     </label>
+                     <label class="form-check form-check-inline d-inline-flex">
+                        <input type="hidden" name="is_update" value="0">
+                        <input type="checkbox" name="is_update" class="form-check-input"
+                              {{ item.fields['is_update'] == 1 ? "checked" : "" }}
+                              value="1">
+                        <span class="form-check-label">&nbsp;{{ __('from') }}&nbsp;</span>
+                        {{ "Software"|dropdown({
+                           'value': item.fields['softwares_id'],
+                           'rand' : rand,
+                           'class': 'form-select',
+                        }) }}
+                     </label>
+                  </div>
+               {% endif %}
+
+               {% if item.isField('alarm_threshold') %}
+                  <div class="mb-3 col-12 col-sm-6">
+                     <label class="form-label" for="dropdown_alarm_threshold{{ rand }}">
+                        {{ __('Alert threshold') }}
+                     </label>
+                     {{ Dropdown__showNumber('alarm_threshold', {
+                        'value'  : item.fields['alarm_threshold'],
+                        'display': false,
+                        'rand'   : rand,
+                        'width'  : '100%',
+                        'class'  : 'form-select',
+                        'min'    : 0,
+                        'max'    : 100,
+                        'step'   : 1,
+                        'toadd'  : {'-1': __('Never')}
+                     }) }}
+                     <span class='text-muted'>
+                        {{ displayLastAlert(item.getType(), item.fields['id']) }}
+                     </span>
+                  </div>
+               {% endif %}
+
+               {% if item.isField('brand') %}
+                  <div class="mb-3 col-12 col-sm-6">
+                     <label class="form-label" for="brand_{{ rand }}">
+                        {{ __("Brand") }}
+                     </label>
+                     <input type="text" class="form-control" id="brand_{{ rand }}"
+                            name="brand" value="{{ item.fields['brand'] }}">
+                  </div>
+               {% endif %}
+
+               {% if item.isField('number_line') %}
+                  <div class="mb-3 col-12 col-sm-6">
+                     <label class="form-label" for="number_line_{{ rand }}">
+                        {{ _x('quantity', 'Number of lines') }}
+                     </label>
+                     <input type="number" class="form-control" id="number_line_{{ rand }}"
+                            name="number_line" value="{{ item.fields['number_line'] }}">
+                  </div>
+               {% endif %}
+
+               {% if item.isField('number_line') %}
+                  <div class="mb-3 col-12 col-sm-6">
+                     <label class="form-label" for="number_line_{{ rand }}">
+                        {{ _x('quantity', 'Number of lines') }}
+                     </label>
+                     <input type="number" class="form-control" id="number_line_{{ rand }}"
+                            name="number_line" value="{{ item.fields['number_line'] }}">
+                  </div>
+               {% endif %}
+
+               {% if item.isField('phonepowersupplies_id') %}
+                  <div class="mb-3 col-12 col-sm-6">
+                     <label class="form-label" for="dropdown_phonepowersupplies_id{{ rand }}">
+                        {{ "DevicePowerSupply"|itemtype_name }}
+                     </label>
+                     {{ "PhonePowerSupply"|dropdown({
+                        'value' : item.fields['phonepowersupplies_id'],
+                        'rand'  : rand,
+                        'width' : '100%',
+                        'class' : 'form-select',
+                     }) }}
+                  </div>
+               {% endif %}
+
                {% if item.isField('autoupdatesystems_id') %}
                   <div class="mb-3 col-12 col-sm-6">
                      <label class="form-label" for="dropdown_autoupdatesystems_id{{ rand }}">
@@ -345,7 +468,7 @@
                {% endif %}
 
                {# TODO check if we have a better way to know if an item has flags #}
-               {% if itemInstanceOf(item, "Monitor") or itemInstanceOf(item, "Printer") %}
+               {% if itemInstanceOf(item, "Monitor") or itemInstanceOf(item, "Printer") or itemInstanceOf(item, "Phone") %}
                   <div class="mb-3 col-12 col-sm-6">
                      {% include("components/form/flags.html.twig") %}
                   </div>
