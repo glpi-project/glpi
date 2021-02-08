@@ -42,31 +42,33 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CheckStatusCommand extends AbstractCommand {
+class ListServiceCommand extends AbstractCommand {
 
    protected function configure() {
       parent::configure();
 
-      $this->setName('glpi:system:status');
-      $this->setAliases(['system:status']);
-      $this->setDescription(__('Check system status'));
+      $this->setName('glpi:system:service:list');
+      $this->setAliases(['system:service:list']);
+      $this->setDescription(__('List system services'));
       $this->addOption('format', 'f', InputOption::VALUE_OPTIONAL,
          'Output format [plain or json]', 'plain');
-      $this->addOption('private', 'p', InputOption::VALUE_NONE,
-         'Status information publicity. Private status information may contain potentially sensitive information such as version information.');
-      $this->addOption('service', 's', InputOption::VALUE_OPTIONAL,
-         'The service to check or all', 'all');
    }
 
    protected function execute(InputInterface $input, OutputInterface $output) {
 
       $format = strtolower($input->getOption('format'));
-      $status = StatusChecker::getServiceStatus($input->getOption('service'), !$input->getOption('private'), $format === 'json');
+
+      $services = [
+         'db', 'cas', 'ldap', 'imap', 'mail_collectors', 'crontasks', 'filesystem', 'glpi', 'plugins'
+      ];
+
 
       if ($format === 'json') {
-         $output->writeln(json_encode($status, JSON_PRETTY_PRINT));
+         $output->writeln(json_encode($services, JSON_PRETTY_PRINT));
       } else {
-         $output->writeln($status);
+         foreach ($services as $service) {
+            $output->writeln($service);
+         }
       }
 
       return 0; // Success

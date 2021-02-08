@@ -66,6 +66,53 @@ final class StatusChecker {
     */
    public const STATUS_NO_DATA = 'NO_DATA';
 
+   public static function getServices(): array {
+      return [
+         'db'              => [self::class, 'getDBStatus'],
+         'cas'             => [self::class, 'getCASStatus'],
+         'ldap'            => [self::class, 'getLDAPStatus'],
+         'imap'            => [self::class, 'getIMAPStatus'],
+         'mail_collectors' => [self::class, 'getMailCollectorStatus'],
+         'crontasks'       => [self::class, 'getCronTaskStatus'],
+         'filesystem'      => [self::class, 'getFilesystemStatus'],
+         'plugins'         => [self::class, 'getPluginsStatus']
+      ];
+   }
+
+   public static function getServiceStatus(?string $service, $public_only = true, $as_array = true) {
+      $services = self::getServices();
+      if ($service === 'all' || $service === null) {
+         $status = [
+            'glpi'   => [
+               'status' => self::STATUS_OK
+            ]
+         ];
+         foreach ($services as $name => $service_check_method) {
+            $service_status = self::getServiceStatus($name, $public_only, $as_array);
+            if ($as_array) {
+               $status[$name] = $service_status;
+            }
+         }
+         if ($as_array) {
+            return $status;
+         }
+      }
+
+
+      if (!array_key_exists($service, $services)) {
+         return $as_array ? [] : '';
+      }
+      $service_check_method = $services[$service];
+      if (method_exists($service_check_method[0], $service_check_method[1])) {
+         $service_status = $service_check_method($public_only);
+         if ($as_array) {
+            return $service_status;
+         }
+         return strtoupper($service).'_'.$service_status['status'];
+      }
+      return $as_array ? [] : '';
+   }
+
    /**
     * @param bool $public_only True if only public status information should be given.
     * @return array
