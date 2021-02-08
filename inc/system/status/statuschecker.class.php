@@ -55,6 +55,11 @@ final class StatusChecker {
    public const STATUS_OK = 'OK';
 
    /**
+    * The plugin or service is working but may have some issues
+    */
+   public const STATUS_WARNING = 'WARNING';
+
+   /**
     * The plugin or service is reachable but not working as expected.
     */
    public const STATUS_PROBLEM = 'PROBLEM';
@@ -496,8 +501,13 @@ final class StatusChecker {
          ];
          // Compute GLPI status from top-level services
          $statuses = array_column($status, 'status');
-         $all_ok = !in_array(self::STATUS_PROBLEM, $statuses, true);
-         $status['glpi']['status'] = $all_ok ? self::STATUS_OK : self::STATUS_PROBLEM;
+         $global_status = self::STATUS_OK;
+         if (in_array(self::STATUS_PROBLEM, $statuses, true)) {
+            $global_status = self::STATUS_PROBLEM;
+         } else if (in_array(self::STATUS_WARNING, $statuses, true)) {
+            $global_status = self::STATUS_WARNING;
+         }
+         $status['glpi']['status'] = $global_status ? self::STATUS_OK : self::STATUS_PROBLEM;
       }
 
       // Only show overall core status for public
