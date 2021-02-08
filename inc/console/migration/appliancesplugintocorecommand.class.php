@@ -276,6 +276,12 @@ class AppliancesPluginToCoreCommand extends AbstractCommand {
     * @return bool
     */
    private  function migratePlugin(): bool {
+      global $CFG_GLPI;
+
+      //prevent infocom creation from general setup
+      if (isset($CFG_GLPI["auto_create_infocoms"]) && $CFG_GLPI["auto_create_infocoms"]) {
+         $CFG_GLPI['auto_create_infocoms'] = false;
+      }
       $this->cleanCoreTables();
 
       return $this->createApplianceTypes()
