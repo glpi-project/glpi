@@ -1,7 +1,7 @@
 {% set input   = getMassiveActions(item) %}
 {% set actions = input['actions'] ?? {} %}
 
-{% if actions|length %}
+{% if not(item.isNewItem()) and actions|length %}
 <div class="d-none d-sm-block">
    <div class="dropdown">
       <button class="btn btn-outline-secondary dropdown-toggle mx-1" type="button"

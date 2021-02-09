@@ -528,7 +528,9 @@ var GLPIPlanning  = {
                   url: ajaxurl,
                   close: function() {
                      GLPIPlanning.refresh();
-                  }
+                  },
+                  dialogclass: 'modal-lg',
+                  title: __('Edit an event'),
                });
             }
          },
@@ -564,7 +566,9 @@ var GLPIPlanning  = {
                   end:    end.toISOString(),
                   res_itemtype: itemtype,
                   res_items_id: items_id,
-               }
+               },
+               dialogclass: 'modal-lg',
+               title: __('Add an event'),
             });
 
             GLPIPlanning.calendar.unselect();
@@ -668,7 +672,8 @@ var GLPIPlanning  = {
          e.preventDefault(); // to prevent change of url on anchor
          var url = $(this).attr('href');
          glpi_ajax_dialog({
-            url: url
+            url: url,
+            title: __('Add a calendar'),
          });
       });
 
