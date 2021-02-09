@@ -63,6 +63,69 @@ SQL
             'expected_diff'  => '',
          ],
 
+         // Check should detect missing keys and columns.
+         [
+            'proper_sql'     => <<<SQL
+CREATE TABLE `table` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `content` text,
+  `field` text,
+  `computers_id` tinyint NOT NULL,
+  `is_valid` tinyint NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`computers_id`,`is_valid`),
+  UNIQUE KEY `name` (`name`),
+  FULLTEXT KEY `content` (`content`),
+  FULLTEXT KEY `field` (`field`),
+  KEY `computers_id` (`computers_id`),
+  KEY `is_valid` (`is_valid`)
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC
+SQL
+            ,
+            'effective_sql'  => <<<SQL
+CREATE TABLE `table` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `content` text,
+  `is_valid` tinyint NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  FULLTEXT KEY `content` (`content`),
+  KEY `is_valid` (`is_valid`),
+) ENGINE=InnoDB
+SQL
+            ,
+            'version_string' => '5.7.34-standard',
+            'args'           => [
+               'strict' => false,
+            ],
+            'expected_has'   => true,
+            'expected_diff'  => <<<DIFF
+--- Original
++++ New
+@@ @@
+ CREATE TABLE `table` (
+-  `computers_id` tinyint NOT NULL,
+   `content` text,
+-  `field` text,
+   `id` int NOT NULL AUTO_INCREMENT,
+   `is_valid` tinyint NOT NULL,
+   `name` varchar(255) NOT NULL,
+   FULLTEXT KEY `content` (`content`),
+-  FULLTEXT KEY `field` (`field`),
+-  KEY `computers_id` (`computers_id`),
+   KEY `is_valid` (`is_valid`),
+   PRIMARY KEY (`id`),
+-  UNIQUE KEY `name` (`name`),
+-  UNIQUE KEY `unicity` (`computers_id`,`is_valid`)
++  UNIQUE KEY `name` (`name`)
+ ) ENGINE=InnoDB
+
+DIFF
+            ,
+         ],
+
          // Non strict check does not take care of columns/indexes order and ROW_FORMAT.
          [
             'proper_sql'     => <<<SQL
