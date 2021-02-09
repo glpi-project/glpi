@@ -36,7 +36,6 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\Application\View\TemplateRenderer;
 
-
 /**
  * Phone Class
 **/
