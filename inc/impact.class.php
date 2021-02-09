@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -1489,7 +1491,7 @@ class Impact extends CommonGLPI {
     */
    public static function printShowOngoingDialog() {
       // This dialog will be built dynamically by the front end
-      echo '<div id="ongoing_dialog"></div>';
+      TemplateRenderer::getInstance()->display('impact/ongoing_modal.html.twig');
    }
 
    /**
@@ -1498,33 +1500,7 @@ class Impact extends CommonGLPI {
     * @since 9.5
     */
    public static function printEditCompoundDialog() {
-      echo '<div id="edit_compound_dialog"  class="impact-dialog">';
-      echo "<table class='tab_cadre_fixe'>";
-
-      // First row: name field
-      echo "<tr>";
-      echo "<td>";
-      echo "<label>&nbsp;" . __("Name") . "</label>";
-      echo "</td>";
-      echo "<td>";
-      echo Html::input("compound_name", []);
-      echo "</td>";
-      echo "</tr>";
-
-      // Second row: color field
-      echo "<tr>";
-      echo "<td>";
-      echo "<label>&nbsp;" . __("Color") . "</label>";
-      echo "</td>";
-      echo "<td>";
-      Html::showColorField("compound_color", [
-         'value' => '#d2d2d2'
-      ]);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "</table>";
-      echo "</div>";
+      TemplateRenderer::getInstance()->display('impact/edit_compound_modal.html.twig');
    }
 
    /**
