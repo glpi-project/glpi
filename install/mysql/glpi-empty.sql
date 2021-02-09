@@ -8165,7 +8165,7 @@ CREATE TABLE `glpi_appliancetypes` (
   `comment` text,
   `externalidentifier` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY (`externalidentifier`),
+  UNIQUE KEY `externalidentifier` (`externalidentifier`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
