@@ -2190,7 +2190,7 @@ CREATE TABLE `glpi_devicesensortypes` (
 ### Dump table glpi_devicesimcards
 
 DROP TABLE IF EXISTS `glpi_devicesimcards`;
-CREATE TABLE IF NOT EXISTS `glpi_devicesimcards` (
+CREATE TABLE `glpi_devicesimcards` (
   `id` int NOT NULL AUTO_INCREMENT,
   `designation` varchar(255) DEFAULT NULL,
   `comment` text,
@@ -2216,7 +2216,7 @@ CREATE TABLE IF NOT EXISTS `glpi_devicesimcards` (
 ### Dump table glpi_items_devicesimcards
 
 DROP TABLE IF EXISTS `glpi_items_devicesimcards`;
-CREATE TABLE IF NOT EXISTS `glpi_items_devicesimcards` (
+CREATE TABLE `glpi_items_devicesimcards` (
   `id` int NOT NULL AUTO_INCREMENT,
   `items_id` int NOT NULL DEFAULT '0' COMMENT 'RELATION to various table, according to itemtype (id)',
   `itemtype` varchar(100) NOT NULL,
@@ -2257,7 +2257,7 @@ CREATE TABLE IF NOT EXISTS `glpi_items_devicesimcards` (
 ### Dump table glpi_devicesimcardtypes
 
 DROP TABLE IF EXISTS `glpi_devicesimcardtypes`;
-CREATE TABLE IF NOT EXISTS `glpi_devicesimcardtypes` (
+CREATE TABLE `glpi_devicesimcardtypes` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
   `comment` text,
@@ -3755,7 +3755,7 @@ CREATE TABLE `glpi_lines` (
 ### Dump table glpi_lineoperators
 
 DROP TABLE IF EXISTS `glpi_lineoperators`;
-CREATE TABLE IF NOT EXISTS `glpi_lineoperators` (
+CREATE TABLE `glpi_lineoperators` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
   `comment` text,
@@ -3776,7 +3776,7 @@ CREATE TABLE IF NOT EXISTS `glpi_lineoperators` (
 
 
 DROP TABLE IF EXISTS `glpi_linetypes`;
-CREATE TABLE IF NOT EXISTS `glpi_linetypes` (
+CREATE TABLE `glpi_linetypes` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
@@ -8144,8 +8144,8 @@ CREATE TABLE `glpi_appliances` (
   KEY `is_helpdesk_visible` (`is_helpdesk_visible`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-
-CREATE TABLE IF NOT EXISTS `glpi_appliances_items` (
+DROP TABLE IF EXISTS `glpi_appliances_items`;
+CREATE TABLE `glpi_appliances_items` (
   `id` int NOT NULL AUTO_INCREMENT,
   `appliances_id` int NOT NULL DEFAULT '0',
   `items_id` int NOT NULL DEFAULT '0',
@@ -8156,8 +8156,8 @@ CREATE TABLE IF NOT EXISTS `glpi_appliances_items` (
   KEY `item` (`itemtype`,`items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-
-CREATE TABLE IF NOT EXISTS `glpi_appliancetypes` (
+DROP TABLE IF EXISTS `glpi_appliancetypes`;
+CREATE TABLE `glpi_appliancetypes` (
   `id` int NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -8170,8 +8170,8 @@ CREATE TABLE IF NOT EXISTS `glpi_appliancetypes` (
   UNIQUE (`externalidentifier`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-
-CREATE TABLE IF NOT EXISTS `glpi_applianceenvironments` (
+DROP TABLE IF EXISTS `glpi_applianceenvironments`;
+CREATE TABLE `glpi_applianceenvironments` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
@@ -8179,7 +8179,8 @@ CREATE TABLE IF NOT EXISTS `glpi_applianceenvironments` (
   KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-CREATE TABLE IF NOT EXISTS `glpi_appliances_items_relations` (
+DROP TABLE IF EXISTS `glpi_appliances_items_relations`;
+CREATE TABLE `glpi_appliances_items_relations` (
   `id` int NOT NULL AUTO_INCREMENT,
   `appliances_items_id` int NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
