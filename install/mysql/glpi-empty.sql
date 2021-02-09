@@ -8151,7 +8151,7 @@ CREATE TABLE `glpi_appliances_items` (
   `items_id` int NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
-  UNIQUE `unicity` (`appliances_id`,`items_id`,`itemtype`),
+  UNIQUE KEY `unicity` (`appliances_id`,`items_id`,`itemtype`),
   KEY `appliances_id` (`appliances_id`),
   KEY `item` (`itemtype`,`items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -8163,11 +8163,11 @@ CREATE TABLE `glpi_appliancetypes` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) NOT NULL DEFAULT '',
   `comment` text,
-  `externalidentifier` varchar(255),
+  `externalidentifier` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY (`externalidentifier`),
   KEY `name` (`name`),
-  KEY `entities_id` (`entities_id`),
-  UNIQUE (`externalidentifier`)
+  KEY `entities_id` (`entities_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_applianceenvironments`;
