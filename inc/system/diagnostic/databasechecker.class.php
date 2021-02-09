@@ -204,7 +204,7 @@ class DatabaseChecker {
       $indexes_matches = [];
       $properties_matches = [];
       if (!preg_match_all('/^\s*(?<column>`\w+` .+?),?$/im', $structure_sql, $columns_matches)
-          || !preg_match_all('/^\s*(?<index>(CONSTRAINT|(UNIQUE |PRIMARY )?KEY) .+?),?$/im', $structure_sql, $indexes_matches)
+          || !preg_match_all('/^\s*(?<index>(CONSTRAINT|(UNIQUE |PRIMARY |FULLTEXT )?KEY) .+?),?$/im', $structure_sql, $indexes_matches)
           || !preg_match_all('/\s+((?<property>[^=]+[^\s])\s*=\s*(?<value>(\w+|\'(\\.|[^"])+\')))/i', $properties_sql, $properties_matches)) {
          return $create_table_sql;// Unable to normalize
       }
