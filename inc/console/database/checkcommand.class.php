@@ -123,7 +123,7 @@ class CheckCommand extends AbstractCommand {
       }
 
       $matches = [];
-      preg_match_all('/CREATE TABLE `(.+)`[^;]+/', $empty_sql, $matches);
+      preg_match_all('/CREATE TABLE[^`]*`(.+)`[^;]+/', $empty_sql, $matches);
       $empty_tables_names   = $matches[1];
       $empty_tables_schemas = $matches[0];
 
