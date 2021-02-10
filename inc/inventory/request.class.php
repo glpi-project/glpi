@@ -483,4 +483,17 @@ class Request
       $this->test_rules = true;
       return $this;
    }
+
+   public function acceptedEncodings(): array {
+      $encodings = [
+         'gzip',
+         'deflate'
+      ];
+
+      if (!function_exists('brotli_uncompress')) {
+         $encodings[] = 'br';
+      }
+
+      return $encodings;
+   }
 }

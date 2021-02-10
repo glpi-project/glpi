@@ -63,6 +63,7 @@ if (isset($_GET['refused'])) {
 } else {
    header('Content-Type: ' . $inventory_request->getContentType());
    header('Cache-Control: no-cache,no-store');
+   header('Accept-Encoding: ' . implode(',', $inventory_request->acceptedEncodings()));
    header('Pragma: no-cache');
    header('Connection: close');
 
