@@ -957,7 +957,7 @@ class NetworkPort extends CommonDBChild {
          'id'                 => '88',
          'table'              => 'glpi_vlans',
          'field'              => 'name',
-         'name'               => __('VLAN'),
+         'name'               => Vlan::getTypeName(1),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'massiveaction'      => false,

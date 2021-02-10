@@ -402,7 +402,7 @@ class MailCollector extends DbTestCase {
          'login'                 => 'testuser',
          'is_active'             => true,
          'passwd'                => 'applesauce',
-         'mail_server'           => '127.0.0.1',
+         'mail_server'           => 'dovecot',
          'server_type'           => '/imap',
          'server_port'           => 143,
          'server_ssl'            => '',
@@ -415,7 +415,7 @@ class MailCollector extends DbTestCase {
       $this->integer($this->mailgate_id)->isGreaterThan(0);
 
       $this->boolean($collector->getFromDB($this->mailgate_id))->isTrue();
-      $this->string($collector->fields['host'])->isIdenticalTo('{127.0.0.1:143/imap/novalidate-cert}');
+      $this->string($collector->fields['host'])->isIdenticalTo('{dovecot:143/imap/novalidate-cert}');
       $collector->connect();
       $this->variable($collector->fields['errors'])->isEqualTo(0);
    }

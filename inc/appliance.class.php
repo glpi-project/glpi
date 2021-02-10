@@ -310,7 +310,7 @@ class Appliance extends CommonDBTM {
          'id'            => '11',
          'table'         => ApplianceType::getTable(),
          'field'         => 'name',
-         'name'          => __('Type'),
+         'name'          => _n('Type', 'Types', 1),
          'datatype'      => 'dropdown'
       ];
 

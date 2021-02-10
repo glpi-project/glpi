@@ -11,3 +11,7 @@ services:
       - type: "bind"
         source: "${APPLICATION_HOME}"
         target: "/home/glpi"
+networks:
+    default:
+        driver: "bridge"
+        name: "glpi_bridge"
