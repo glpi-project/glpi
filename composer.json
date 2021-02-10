@@ -25,7 +25,6 @@
         "ext-zlib": "*",
         "blueimp/jquery-file-upload": "^10.2",
         "elvanto/litemoji": "^1.4 || ^2.0",
-        "glen/filename-normalizer": "^2.0",
         "guzzlehttp/guzzle": "^6.5",
         "guzzlehttp/psr7": "^1.6",
         "htmlawed/htmlawed": "^1.2",
