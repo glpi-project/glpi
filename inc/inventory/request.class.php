@@ -58,6 +58,7 @@ class Request
     const COMPRESS_NONE = 0;
     const COMPRESS_ZLIB = 1;
     const COMPRESS_GZIP = 2;
+    const COMPRESS_BR   = 3;
 
    /** @var integer */
    private $mode; //will be usefull when agent will send json
@@ -130,11 +131,17 @@ class Request
       if ($this->compression !== self::COMPRESS_NONE) {
          switch ($this->compression) {
             case self::COMPRESS_ZLIB:
-                $data = gzuncompress($data);
-                break;
+               $data = gzuncompress($data);
+               break;
             case self::COMPRESS_GZIP:
-                $data = gzdecode($data);
-                break;
+               $data = gzdecode($data);
+               break;
+            case self::COMPRESS_BR:
+               if (!function_exists('brotli_uncompress')) {
+                  throw new \UnexpectedValueException("You must install Brotli PHP extension.");
+               }
+               $data = brotli_uncompress($data);
+               break;
             default:
                 throw new \UnexpectedValueException("Unknown compression mode" . $this->compression);
          }
@@ -403,6 +410,9 @@ class Request
             break;
          case 'application/x-compress-gzip':
             $this->compression = self::COMPRESS_GZIP;
+            break;
+         case 'application/x-br':
+            $this->compression = self::COMPRESS_BR;
             break;
          case 'application/xml':
             $this->compression = self::COMPRESS_NONE;
