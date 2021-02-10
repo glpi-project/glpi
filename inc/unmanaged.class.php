@@ -67,7 +67,7 @@ class Unmanaged extends CommonDBTM {
       echo "</td>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Type') . "</td>";
+      echo "<td>" . _n('Type', 'Types', 1) . "</td>";
       echo "<td>";
       Dropdown::showItemTypes(
          'item_type', [
@@ -165,7 +165,7 @@ class Unmanaged extends CommonDBTM {
          'table'     => 'glpi_locations',
          'field'     => 'name',
          'linkfield' => 'locations_id',
-         'name'      => __('Location'),
+         'name'      => Location::getTypeName(1),
          'datatype'  => 'dropdown',
       ];
 
@@ -189,7 +189,7 @@ class Unmanaged extends CommonDBTM {
          'id'           => '6',
          'table'        => $this->getTable(),
          'field'        => 'contact',
-         'name'         => __('Contact'),
+         'name'         => Contact::getTypeName(1),
          'autocomplete' => true,
       ];
 

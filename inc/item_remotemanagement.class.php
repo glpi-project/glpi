@@ -147,7 +147,7 @@ class Item_RemoteManagement extends CommonDBChild {
          $header .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          $header .= "</th>";
          $header .= "<th>".__('Remote ID')."</th>";
-         $header .= "<th>".__('Type')."</th>";
+         $header .= "<th>"._n('Type', 'Types', 1)."</th>";
          $header .= "<th>".__('Automatic inventory')."</th>";
          $header .= "</tr>";
          echo $header;
@@ -239,7 +239,7 @@ class Item_RemoteManagement extends CommonDBChild {
          'id'                 => '2',
          'table'              => $this->getTable(),
          'field'              => 'type',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'string',
          'massiveaction'      => false,
          'autocomplete'       => true,
@@ -274,7 +274,7 @@ class Item_RemoteManagement extends CommonDBChild {
          'id'                 => '181',
          'table'              => self::getTable(),
          'field'              => 'type',
-         'name'               => __('Type'),
+         'name'               => _n('Type', 'Types', 1),
          'forcegroupby'       => true,
          'width'              => 1000,
          'datatype'           => 'dropdown',
@@ -335,7 +335,7 @@ class Item_RemoteManagement extends CommonDBChild {
       echo "<td>".__('Remote ID')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "remoteid");
-      echo "</td><td>".__('Type')."</td>";
+      echo "</td><td>"._n('Type', 'Types', 1)."</td>";
       $types = [
          self::TEAMVIEWER => 'TeamViewer',
          self::LITEMANAGER => 'LiteManager',

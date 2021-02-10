@@ -1279,7 +1279,7 @@ class NetworkPort extends CommonDBChild {
          'id'                 => '87',
          'table'              => 'glpi_networkports',
          'field'              => 'instantiation_type',
-         'name'               => __('Network port type'),
+         'name'               => NetworkPortType::getTypeName(1),
          'datatype'           => 'itemtypename',
          'itemtype_list'      => 'networkport_instantiations',
          'massiveaction'      => false,
@@ -1309,7 +1309,7 @@ class NetworkPort extends CommonDBChild {
          'id'                 => '88',
          'table'              => 'glpi_vlans',
          'field'              => 'name',
-         'name'               => __('VLAN'),
+         'name'               => Vlan::getTypeName(1),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'massiveaction'      => false,
@@ -1383,7 +1383,7 @@ class NetworkPort extends CommonDBChild {
          'id'                 => '5',
          'table'              => $this->getTable(),
          'field'              => 'instantiation_type',
-         'name'               => __('Network port type'),
+         'name'               => NetworkPortType::getTypeName(1),
          'datatype'           => 'itemtypename',
          'itemtype_list'      => 'networkport_instantiations',
          'massiveaction'      => false
@@ -1511,7 +1511,7 @@ class NetworkPort extends CommonDBChild {
          'id'    => '40',
          'table' => $this->getTable(),
          'field' => 'ifconnectionstatus',
-         'name'  => __('Connection'),
+         'name'  => _n('Connection', 'Connections', 1),
       ];
 
       $tab[] = [

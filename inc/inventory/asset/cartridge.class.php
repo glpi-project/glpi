@@ -50,7 +50,7 @@ class Cartridge extends InventoryAsset
       $types = [
          'toner'           => __('Toner'),
          'drum'            => __('Drum'),
-         'cartridge'       => __('Cartridge'),
+         'cartridge'       => _n('Cartridge', 'Cartridges', 1),
          'wastetoner'      => __('Waste bin'),
          'maintenancekit'  => __('Maintenance kit'),
          'fuserkit'        => __('Fuser kit'),

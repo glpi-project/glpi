@@ -124,7 +124,7 @@ class NetworkPortInstantiation extends CommonDBChild {
    static function getGlobalInstantiationNetworkPortDisplayOptions() {
       return ['mac'           => ['name'    => __('MAC'),
                                             'default' => true],
-                   'vlans'         => ['name'    => __('VLAN'),
+                   'vlans'         => ['name'    => Vlan::getTypeName(1),
                                             'default' => false],
                    'virtual_ports' => ['name'    => __('Virtual ports'),
                                             'default' => false],

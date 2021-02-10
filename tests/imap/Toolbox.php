@@ -97,7 +97,7 @@ class Toolbox extends \GLPITestCase {
       }
 
       $params = [
-         'host'     => '127.0.0.1',
+         'host'     => 'dovecot',
          'user'     => 'testuser',
          'password' => 'applesauce',
       ];
@@ -257,7 +257,7 @@ CLASS
       $storage   = null;
       $getStorage = function () use ($type, &$storage) {
          $params = [
-            'host'     => '127.0.0.1',
+            'host'     => 'dovecot',
             'user'     => 'testuser',
             'password' => 'applesauce',
          ];

@@ -1,5 +1,6 @@
 #!/bin/bash -e
 
+echo "Check services health"
 for CONTAINER in {"db","dovecot","openldap"}; do
   HEALTHY=false
   TOTAL_COUNT=0

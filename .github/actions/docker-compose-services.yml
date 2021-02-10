@@ -6,6 +6,7 @@ services:
     image: "ghcr.io/glpi-project/${DB_IMAGE:-githubactions-mariadb}"
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: "glpi"
     shm_size: '1gb'
   dovecot:
     container_name: "dovecot"
@@ -13,3 +14,7 @@ services:
   openldap:
     container_name: "openldap"
     image: "ghcr.io/glpi-project/githubactions-openldap"
+networks:
+    default:
+        driver: "bridge"
+        name: "glpi_bridge"
