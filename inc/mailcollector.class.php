@@ -34,7 +34,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use glen\FilenameNormalizer\Normalizer;
 use LitEmoji\LitEmoji;
 use Laminas\Mail\Address;
 use Laminas\Mail\Header\AbstractAddressList;
@@ -1570,7 +1569,7 @@ class MailCollector  extends CommonDBTM {
             return false;
          }
 
-         $filename = Normalizer::normalize($filename);
+         $filename = Toolbox::filename($filename);
 
          //try to avoid conflict between inline image and attachment
          $i = 2;
