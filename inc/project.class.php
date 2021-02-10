@@ -2448,7 +2448,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
 
       echo "<div id='kanban' class='kanban'></div>";
       $darkmode = ($_SESSION['glpipalette'] === 'darker') ? 'true' : 'false';
-      $canadd_item = json_encode(self::canCreate() || ProjectTask::canCreate());
+      $canadd_item = json_encode($project->canEdit($ID) && $project->can($ID, UPDATE));
       $canmodify_view = json_encode(($ID == 0 || $project->canModifyGlobalState()));
       $cancreate_column = json_encode((bool)ProjectState::canCreate());
       $limit_addcard_columns = $canmodify_view !== 'false' ? '[]' : json_encode([0]);
