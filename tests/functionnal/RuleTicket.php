@@ -544,7 +544,7 @@ class RuleTicket extends DbTestCase {
       $ticketTask = new \TicketTask();
       $this->boolean($ticketTask->getFromDBByCrit(['items_id'            => $tickets_id,
                                                    'itemtype'              => 'Ticket',
-                                                   'content'               => Toolbox::addslashes_deep("content of solution template  white ' quote")]))->isTrue();
+                                                   'content'               => Toolbox::addslashes_deep("content of task template  white ' quote")]))->isTrue();
 
       $this->integer((int)$ticketTask->getID())->isGreaterThan(0);
 
