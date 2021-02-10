@@ -36,7 +36,6 @@ jobs:
         with:
           access_token: "${{ github.token }}"
       - name: "Clean workspace"
-        if: env.skip != 'true'
         run: |
           rm -rf "${{ github.workspace }}/*"
       - name: "Checkout"
@@ -61,63 +60,31 @@ jobs:
             app_home_lint-${{ matrix.php-version }}
             app_home_lint-
       - name: "Initialize containers"
+        env:
+          APPLICATION_HOME: "${{ runner.temp }}/app_home"
+          APPLICATION_ROOT: "${{ github.workspace }}"
+          PHP_IMAGE: "githubactions-php:${{ matrix.php-version }}"
         run: |
-          echo "Init app container home"
-          mkdir -p ${{ runner.temp }}/app_home
-          echo "Pull and start containers"
-          export APPLICATION_ROOT=`pwd`
-          export APPLICATION_HOME=${{ runner.temp }}/app_home
-          export PHP_IMAGE=githubactions-php:${{ matrix.php-version }}
-          docker-compose --file .github/actions/docker-compose-app.yml --project-directory `pwd` pull --quiet
-          docker-compose --file .github/actions/docker-compose-app.yml --project-directory `pwd` up --no-start
-          docker-compose --file .github/actions/docker-compose-app.yml --project-directory `pwd` start
-          echo "Change files rights to give write access to app container user"
-          setfacl --recursive --modify u:1000:rwx `pwd`
-          setfacl --recursive --modify u:1000:rwx ${{ runner.temp }}/app_home
+          .github/actions/init-containers_start-app.sh
       - name: "Show versions"
-        if: env.skip != 'true'
         run: |
-          docker exec app php --version
-          docker exec app php -r 'echo(sprintf("PHP extensions: %s\n", implode(", ", get_loaded_extensions())));'
-          docker exec app composer --version
-          docker exec app sh -c 'echo "node $(node --version)"'
-          docker exec app sh -c 'echo "npm $(npm --version)"'
-      - name: "Validate composer config and requirements"
-        run: |
-          docker exec app composer validate --strict
-          if ! [[ "${{ matrix.php-version }}" == "8.0" ]]; then docker exec app composer check-platform-reqs; fi
+          .github/actions/init_show-versions.sh
       - name: "Install dependencies"
         run: |
-          docker exec app rm composer.lock
-          docker exec app composer config --unset platform
-          if [[ "${{ matrix.php-version }}" == "8.0" ]]; then export COMPOSER_ADD_OPTS=--ignore-platform-reqs; fi
-          docker exec app bin/console dependencies install --composer-options="$COMPOSER_ADD_OPTS --prefer-dist --no-progress"
-      - name: "PHP Parallel Lint"
+          docker exec app .github/actions/init_install-dependencies.sh
+      - name: "PHP lint"
         run: |
-          docker exec app vendor/bin/parallel-lint  --exclude ./files/ --exclude ./plugins/ --exclude ./tools/vendor/ --exclude ./vendor/ .
-      - name: "Check for missing dependencies / bad symbols"
-        # Alpine linux does not implement GLOB_BRACE.
-        # We have to define it to 0 to prevent "Warning: Use of undefined constant GLOB_BRACE - assumed 'GLOB_BRACE'" error.
-        # This is not a problem as long as we do not use braces in "scan-files" section of the config file.
+          docker exec app .github/actions/lint_php-lint.sh
+      - name: "JS lint"
         run: |
-          docker exec app php -d memory_limit=1G -r 'define("GLOB_BRACE", 0); include "./vendor/maglnet/composer-require-checker/bin/composer-require-checker.php";' check --config-file=.composer-require-checker.config.json
-      - name: "PHP CS"
+          docker exec app .github/actions/lint_js-lint.sh
+      - name: "Misc lint"
         run: |
-          docker exec app touch /home/glpi/phpcs.cache
-          docker exec app vendor/bin/phpcs --cache /home/glpi/phpcs.cache -d memory_limit=512M -p --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore="/.git/,^/var/glpi/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/" ./
-      - name: "ESLint"
-        run: |
-          docker exec app node_modules/.bin/eslint . && echo "ESLint found no errors"
-      - name: "gettext"
-        run: |
-          ! tools/locale/extract_template.sh 2>&1 | grep 'warning'
+          docker exec app .github/actions/lint_misc-lint.sh
       - name: "Cleanup containers"
         if: always()
         run: |
-          docker stop $(docker ps -q)
-          docker container prune --force
-          docker volume prune --force
-          docker network prune --force
+          .github/actions/teardown-containers_cleanup.sh
 
   tests:
     name: "Test on PHP ${{ matrix.php-version }} using ${{ matrix.db-image }}"
@@ -126,13 +93,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # test higher PHP version with higher MariaDB and MySQL versions
           - {php-version: "8.0", db-image: "mariadb:10.5", always: true}
+          - {php-version: "8.0", db-image: "mysql:8.0", always: true}
+          # test other PHP versions
           - {php-version: "7.2", db-image: "mariadb:10.5", always: false}
           - {php-version: "7.3", db-image: "mariadb:10.5", always: false}
           - {php-version: "7.4", db-image: "mariadb:10.5", always: false}
+          # test other DB servers/versions
           - {php-version: "8.0", db-image: "mariadb:10.1", always: false}
           - {php-version: "8.0", db-image: "mysql:5.6", always: false}
-          - {php-version: "8.0", db-image: "mysql:8.0", always: false}
           - {php-version: "8.0", db-image: "percona:5.6", always: false}
           - {php-version: "8.0", db-image: "percona:8.0", always: false}
     env:
@@ -165,101 +135,57 @@ jobs:
             app_home_deps-
       - name: "Initialize containers"
         if: env.skip != 'true'
+        env:
+          APPLICATION_HOME: "${{ runner.temp }}/app_home"
+          APPLICATION_ROOT: "${{ github.workspace }}"
+          DB_IMAGE: "githubactions-${{ matrix.db-image }}"
+          PHP_IMAGE: "githubactions-php:${{ matrix.php-version }}"
         run: |
-          echo "Init app container home"
-          mkdir -p ${{ runner.temp }}/app_home
-          echo "Pull and start containers"
-          export APPLICATION_ROOT=`pwd`
-          export APPLICATION_HOME=${{ runner.temp }}/app_home
-          export PHP_IMAGE=githubactions-php:${{ matrix.php-version }}
-          export DB_IMAGE=githubactions-${{ matrix.db-image }}
-          docker-compose --file .github/actions/docker-compose-app.yml --file .github/actions/docker-compose-services.yml --project-directory `pwd` pull --quiet
-          docker-compose --file .github/actions/docker-compose-app.yml --file .github/actions/docker-compose-services.yml --project-directory `pwd` up --no-start
-          docker-compose --file .github/actions/docker-compose-app.yml --file .github/actions/docker-compose-services.yml --project-directory `pwd` start
-          .github/actions/check_services_health.sh
-          echo "Change files rights to give write access to app container user"
-          setfacl --recursive --modify u:1000:rwx `pwd`
-          setfacl --recursive --modify u:1000:rwx ${{ runner.temp }}/app_home
+          .github/actions/init-containers_start-services.sh
+          .github/actions/init-containers_start-app.sh
+          .github/actions/init-containers_check-services-health.sh
       - name: "Show versions"
         if: env.skip != 'true'
         run: |
-          docker exec app php --version
-          docker exec app php -r 'echo(sprintf("PHP extensions: %s\n", implode(", ", get_loaded_extensions())));'
-          docker exec app composer --version
-          docker exec app sh -c 'echo "node $(node --version)"'
-          docker exec app sh -c 'echo "npm $(npm --version)"'
-          docker exec db mysql --version
-      - name: "Initialize databases"
+          .github/actions/init_show-versions.sh
+      - name: "Initialize fixtures"
         if: env.skip != 'true'
         run: |
-          docker exec db mysql --user=root --execute="CREATE DATABASE \`glpi\`;"
-          docker exec db mysql --user=root --execute="CREATE DATABASE \`glpitest0723\`;"
-          cat tests/glpi-0.72.3-empty.sql | docker exec --interactive db mysql --user=root glpitest0723
+          .github/actions/init_initialize-old-dbs.sh
+          .github/actions/init_initialize-services-fixtures.sh
       - name: "Install dependencies"
         if: env.skip != 'true'
         run: |
-          docker exec app rm composer.lock
-          docker exec app composer config --unset platform
-          if [[ "${{ matrix.php-version }}" == "8.0" ]]; then export COMPOSER_ADD_OPTS=--ignore-platform-reqs; fi
-          docker exec app bin/console dependencies install --composer-options="$COMPOSER_ADD_OPTS --prefer-dist --no-progress"
-      - name: "PHP Parallel Lint"
-        if: env.skip != 'true'
-        run: |
-          docker exec app vendor/bin/parallel-lint  --exclude ./files/ --exclude ./marketplace/ --exclude ./plugins/ --exclude ./tools/vendor/ --exclude ./vendor/ .
+          docker exec app .github/actions/init_install-dependencies.sh
       - name: "Install DB tests"
         if: env.skip != 'true'
         run: |
-          docker exec app bin/console glpi:database:install --config-dir=./tests --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root
-          docker exec app bin/console glpi:database:update --config-dir=./tests --no-interaction | grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
+          docker exec app .github/actions/test_install.sh
       - name: "Update DB tests"
         if: env.skip != 'true'
         run: |
-          docker exec app bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpitest0723 --db-host=db --db-user=root
-          docker exec app bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction
-          docker exec app bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction | grep -q "Aucune migration requise." || (echo "glpi:database:update command FAILED" && exit 1)
-          docker exec app bin/console glpi:migration:myisam_to_innodb --config-dir=./tests --no-interaction
-          docker exec app bin/console glpi:migration:myisam_to_innodb --config-dir=./tests --no-interaction | grep -q "Aucune migration requise." || (echo "glpi:migration:myisam_to_innodb command FAILED" && exit 1)
-          docker exec app bin/console glpi:migration:timestamps --config-dir=./tests --no-interaction
-          docker exec app bin/console glpi:migration:timestamps --config-dir=./tests --no-interaction | grep -q "Aucune migration requise." || (echo "glpi:migration:timestamps command FAILED" && exit 1)
-      - name: "Database tests"
-        if: env.skip != 'true'
-        run: |
-          docker exec app bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root
-          docker exec app vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --fail-if-skipped-methods --max-children-number 1 -d tests/database
-          docker exec app bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpi --db-host=db --db-user=root
+          docker exec app .github/actions/test_update-from-older-version.sh
       - name: "Unit tests"
         if: env.skip != 'true'
         run: |
-          docker exec app vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --fail-if-skipped-methods --max-children-number 10 -d tests/units
+          docker exec app .github/actions/test_tests-units.sh
       - name: "Functionnal tests"
         if: env.skip != 'true'
         run: |
-          docker exec app vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --fail-if-skipped-methods --max-children-number 1 -d tests/functionnal
+          docker exec app .github/actions/test_tests-functionnal.sh
       - name: "LDAP tests"
         if: env.skip != 'true'
         run: |
-          for f in `ls tests/LDAP/ldif/*.ldif`; do cat $f | docker exec --interactive openldap ldapadd -x -H ldap://127.0.0.1:3890/ -D "cn=Manager,dc=glpi,dc=org" -w insecure ; done
-          docker exec app vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --fail-if-skipped-methods --max-children-number 1 -d tests/LDAP
+          docker exec app .github/actions/test_tests-ldap.sh
       - name: "IMAP tests"
         if: env.skip != 'true'
         run: |
-          for f in `ls tests/emails-tests/*.eml`; do cat $f | docker exec --user glpi --interactive dovecot getmail_maildir /home/glpi/Maildir/ ; done
-          docker exec app sed -e 's/127.0.0.1/dovecot/g' -i tests/imap/MailCollector.php
-          docker exec app sed -e 's/127.0.0.1/dovecot/g' -i tests/imap/Toolbox.php
-          docker exec app vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --fail-if-skipped-methods --max-children-number 1 -d tests/imap
+          docker exec app .github/actions/test_tests-imap.sh
       - name: "WEB tests"
         if: env.skip != 'true'
         run: |
-          docker exec app php -S localhost:8088 tests/router.php &>/dev/null &
-          docker exec app vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --fail-if-skipped-methods --max-children-number 1 -d tests/web
-      - name: "CSS compilation tests"
-        if: env.skip != 'true'
-        run: |
-          docker exec app bin/console build:compile_scss
+          docker exec app .github/actions/test_tests-web.sh
       - name: "Cleanup containers"
         if: env.skip != 'true' && always()
         run: |
-          docker stop $(docker ps -q)
-          docker container prune --force
-          docker volume prune --force
-          docker network prune --force
+          .github/actions/teardown-containers_cleanup.sh
