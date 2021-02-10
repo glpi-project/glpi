@@ -238,6 +238,25 @@ class RuleTicket extends Rule {
                      }
                   }
 
+                  // special case of task template
+                  if ($action->fields["field"] == 'task_template') {
+                     //load template
+                     $template = new TaskTemplate();
+                     if ($template->getFromDB($action->fields["value"]) && $output['id'] != null) {
+                        $task = new TicketTask();
+                        $task->add([
+                                      "taskcategories_id" => $template->getField("taskcategories_id"),
+                                      "users_id_tech"     => $template->getField("users_id_tech"),
+                                      "groups_id_tech"    => $template->getField("groups_id_tech"),
+                                      "tasktemplates_id"  => $template->getField("id"),
+                                      "state"             => $template->getField("state"),
+                                      "is_private"        => $template->getField("is_private"),
+                                      "actiontime"        => $template->getField("actiontime"),
+                                      "content"           => Toolbox::addslashes_deep($template->getField('content')),
+                                      "tickets_id"        => $output['id']]);
+                     }
+                  }
+
                   break;
 
                case "append" :
@@ -767,6 +786,11 @@ class RuleTicket extends Rule {
       $actions['solution_template']['type']                  = 'dropdown';
       $actions['solution_template']['table']                 = 'glpi_solutiontemplates';
       $actions['solution_template']['force_actions']         = ['assign'];
+
+      $actions['task_template']['name']                  = _n('Task template', 'Task templates', 1);
+      $actions['task_template']['type']                  = 'dropdown';
+      $actions['task_template']['table']                 = 'glpi_tasktemplates';
+      $actions['task_template']['force_actions']         = ['assign'];
 
       return $actions;
    }

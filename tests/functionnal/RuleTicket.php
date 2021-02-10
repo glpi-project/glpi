@@ -484,6 +484,77 @@ class RuleTicket extends DbTestCase {
 
    }
 
+   public function testTicketTasknAssignFromRule() {
+      $this->login();
+
+      // Create solution template
+      $taskTemplate = new \TaskTemplate();
+      $taskTemplate_id = $taskTemplate->add($solutionInput = [
+         'content' => Toolbox::addslashes_deep("content of task template  white ' quote")
+      ]);
+      $this->integer((int)$taskTemplate_id)->isGreaterThan(0);
+
+      // Create rule
+      $ruleticket = new \RuleTicket();
+      $rulecrit   = new \RuleCriteria();
+      $ruleaction = new \RuleAction();
+
+      $ruletid = $ruleticket->add($ruletinput = [
+         'name'         => "test to assign TicketTask",
+         'match'        => 'OR',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleTicket',
+         'condition'    => \RuleTicket::ONUPDATE,
+         'is_recursive' => 1,
+      ]);
+      $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+      $crit_id = $rulecrit->add($crit_input = [
+         'rules_id'  => $ruletid,
+         'criteria'  => 'content',
+         'condition' => \Rule::REGEX_MATCH,
+         'pattern'   => '/(.*?)/',
+      ]);
+      $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+      $act_id = $ruleaction->add($act_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'assign',
+         'field'       => 'task_template',
+         'value'       => $taskTemplate_id,
+      ]);
+      $this->checkInput($ruleaction, $act_id, $act_input);
+
+      $ticket = new \Ticket();
+      $tickets_id = $ticket->add($ticket_input = [
+         'name'    => 'some ticket',
+         'content' => 'some text some text'
+      ]);
+
+      $this->checkInput($ticket, $tickets_id, $ticket_input);
+      $this->integer((int)$tickets_id)->isGreaterThan(0);
+
+      // update ticket content and trigger rule on content updating
+      $ticket->update([
+                         'id'   => $tickets_id,
+                         'content' => 'test ticket, will trigger on rule (content)'
+                      ]);
+
+      //load TicketTask
+      $ticketTask = new \TicketTask();
+      $this->boolean($ticketTask->getFromDBByCrit(['items_id'            => $tickets_id,
+                                                   'itemtype'              => 'Ticket',
+                                                   'content'               => Toolbox::addslashes_deep("content of solution template  white ' quote")]))->isTrue();
+
+      $this->integer((int)$ticketTask->getID())->isGreaterThan(0);
+
+      //reload and check number of tasks
+      $ticket->getFromDB($tickets_id);
+
+      $this->integer((int)$ticket->numberOfTasks())->isEqualTo(1);
+
+   }
+
    public function testGroupRequesterAssignFromDefaultUser() {
       $this->login();
 
