@@ -6,7 +6,7 @@ index 2e41b41..0723955 100644
              '\.dependabot',
              '\.git',
              '\.github',
-+            'css/lib',
++            'css\/lib',
              'config',
              'files',
              'lib',
