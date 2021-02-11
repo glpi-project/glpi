@@ -484,12 +484,12 @@ class RuleTicket extends DbTestCase {
 
    }
 
-   public function testTicketTasknAssignFromRule() {
+   public function testTicketTaskAssignFromRule() {
       $this->login();
 
-      // Create solution template
+      // Create task template
       $taskTemplate = new \TaskTemplate();
-      $taskTemplate_id = $taskTemplate->add($solutionInput = [
+      $taskTemplate_id = $taskTemplate->add($taskInput = [
          'content' => Toolbox::addslashes_deep("content of task template  white ' quote")
       ]);
       $this->integer((int)$taskTemplate_id)->isGreaterThan(0);
