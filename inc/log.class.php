@@ -364,7 +364,7 @@ class Log extends CommonDBTM {
                echo "<td class='tab_date'>".$data['date_mod']."</td>";
                echo "<td>".$data['user_name']."</td>";
                echo "<td>".$data['field']."</td>";
-               echo "<td width='60%'>".$data['change']."</td>";
+               echo "<td width='60%'>".Html::entities_deep($data['change'])."</td>";
                echo "</tr>";
             }
          }

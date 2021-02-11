@@ -267,6 +267,15 @@ class Document extends CommonDBTM {
          $input['documentcategories_id'] = $CFG_GLPI["documentcategories_id_forticket"];
       }
 
+      if (isset($input['link']) && !empty($input['link']) && !Toolbox::isValidWebUrl($input['link'])) {
+         Session::addMessageAfterRedirect(
+            __('Invalid link'),
+            false,
+            ERROR
+         );
+         return false;
+      }
+
       /* Unicity check
       if (isset($input['sha1sum'])) {
          // Check if already upload in the current entity
@@ -335,6 +344,15 @@ class Document extends CommonDBTM {
 
       unset($input['current_filepath']);
       unset($input['current_filename']);
+
+      if (isset($input['link']) && !empty($input['link'])  && !Toolbox::isValidWebUrl($input['link'])) {
+         Session::addMessageAfterRedirect(
+            __('Invalid link'),
+            false,
+            ERROR
+         );
+         return false;
+      }
 
       return $input;
    }

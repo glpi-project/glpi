@@ -6382,7 +6382,7 @@ JAVASCRIPT;
 
             case "weblink" :
                $orig_link = trim($data[$ID][0]['name']);
-               if (!empty($orig_link)) {
+               if (!empty($orig_link) && Toolbox::isValidWebUrl($orig_link)) {
                   // strip begin of link
                   $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/', '', $orig_link);
                   $link = preg_replace('/\/$/', '', $link);
