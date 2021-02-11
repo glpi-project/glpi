@@ -60,7 +60,6 @@ class ListServiceCommand extends AbstractCommand {
 
       $services = array_keys(StatusChecker::getServices());
 
-
       if ($format === 'json') {
          $output->writeln(json_encode($services, JSON_PRETTY_PRINT));
       } else {

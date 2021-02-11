@@ -103,7 +103,6 @@ final class StatusChecker {
          }
       }
 
-
       if (!array_key_exists($service, $services)) {
          return $as_array ? [] : '';
       }
