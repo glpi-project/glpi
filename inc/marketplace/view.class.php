@@ -938,7 +938,7 @@ HTML;
       if (Controller::getPluginPageConfig() == Controller::MP_REPLACE_ASK
           && !isset($_SESSION['skip_marketplace_invitation'])
           && GLPI_INSTALL_MODE !== 'CLOUD') {
-         echo "<div class='card'>";
+         echo "<div class='card mb-4'>";
          echo "<div class='card-header card-title'>".__("Switch to marketplace")."</div>";
          echo "<div class='card-body'>";
          echo "<form id='marketplace_dialog' method='POST'>";

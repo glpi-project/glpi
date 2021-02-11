@@ -50,8 +50,6 @@ $catalog_btn = '<div class="center my-2">'
    . '</a>'
    . '</div>';
 
-echo $catalog_btn;
-
 Search::show('Plugin');
 
 echo $catalog_btn;
