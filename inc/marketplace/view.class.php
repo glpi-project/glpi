@@ -342,7 +342,7 @@ class View extends CommonGLPI {
          $sort_controls = "";
          if ($tab === "discover") {
             $sort_controls = "
-            <select class='sort-control'>
+            <select class='sort-control form-select form-select-sm'>
                <option value='sort-alpha-asc'
                        ".($sort == "sort-alpha-asc" ? "selected" : "")."
                        data-icon='fas fa-lg fa-sort-alpha-down'>
@@ -386,7 +386,7 @@ class View extends CommonGLPI {
             {$tags_list}
             <div class='right-panel'>
                <div class='top-panel'>
-                  <input type='search' class='filter-list' placeholder='{$search_label}'>
+                  <input type='search' class='filter-list form-control' placeholder='{$search_label}'>
                   <div class='controls'>
                      $sort_controls
                      <i class='fas fa-sync-alt refresh-plugin-list'
@@ -796,7 +796,7 @@ HTML;
                <i class='fas fa-star'></i>GLPI Network
             </a>
             <a href='".GLPI_NETWORK_SERVICES."' target='_blank'
-               class='badge $offerkey'
+               class='badge bg-azure $offerkey'
                title='".sprintf(__s("You need at least the %s subscription level to get this plugin"), $offerlabel)."'>
                $offerlabel
             </a>
@@ -938,6 +938,9 @@ HTML;
       if (Controller::getPluginPageConfig() == Controller::MP_REPLACE_ASK
           && !isset($_SESSION['skip_marketplace_invitation'])
           && GLPI_INSTALL_MODE !== 'CLOUD') {
+         echo "<div class='card'>";
+         echo "<div class='card-header card-title'>".__("Switch to marketplace")."</div>";
+         echo "<div class='card-body'>";
          echo "<form id='marketplace_dialog' method='POST'>";
          echo Html::image($CFG_GLPI['root_doc']."/pics/screenshots/marketplace.png", [
             'style' => 'width: 600px',
@@ -946,31 +949,25 @@ HTML;
          echo __("GLPI provides a new marketplace to download and install plugins.");
          echo "<br><br>";
          echo "<b>".__("Do you want to replace the plugins setup page by the new marketplace ?")."</b>";
-         echo "<hr><br>";
+         echo "</div>";
+         echo "<div class='card-footer'>";
          echo Html::submit("<i class='fa fa-check'></i>&nbsp;".__('Yes'), [
-            'name' => 'marketplace_replace_plugins_yes'
+            'name' => 'marketplace_replace_plugins_yes',
+            'class' => 'btn btn-primary'
          ]);
          echo "&nbsp;";
          echo Html::submit("<i class='fa fa-times'></i>&nbsp;".__('No'), [
             'name' => 'marketplace_replace_plugins_never',
-            'class' => 'secondary'
             ]);
          echo "&nbsp;";
          echo Html::submit("<i class='fa fa-clock'></i>&nbsp;".__('Later'), [
             'name'  => 'marketplace_replace_plugins_later',
-            'class' => 'secondary'
          ]);
+         echo "</div>";
          echo Html::hidden('marketplace_replace');
 
          Html::closeForm();
-
-         echo Html::scriptBlock("$(document).ready(function() {
-            $('#marketplace_dialog').dialog({
-               'modal': true,
-               'width': 'auto',
-               'title': \"".__s("Switch to marketplace")."\"
-            });
-         });");
+         echo "</div>";
       }
    }
 

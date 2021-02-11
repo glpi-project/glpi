@@ -392,12 +392,14 @@ JAVASCRIPT;
          $flex_tab       = "flex-row flex-md-column d-none d-md-block";
          $border         = "border-start-0";
          $navitemml      = "ms-0";
+         $navlinkp       = "pe-1";
          $nav_width      = "style='min-width: 200px'";
          if ($orientation == "horizontal") {
             $flex_container = "flex-column";
             $flex_tab       = "flex-row";
             $border         = "";
             $navitemml      = "";
+            $navlinkp       = "";
             $nav_width      = "";
          }
 
@@ -409,7 +411,7 @@ JAVASCRIPT;
          foreach ($tabs as $val) {
             $target = str_replace('\\', '_', $val['id']);
             $html_tabs.= "<li class='nav-item $navitemml'>
-               <a class='nav-link justify-content-between pe-1' data-bs-toggle='tab' title='".strip_tags($val['title'])."' ";
+               <a class='nav-link justify-content-between $navlinkp' data-bs-toggle='tab' title='".strip_tags($val['title'])."' ";
             $html_tabs.= " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."' data-bs-target='#{$target}'>";
             $html_tabs.= $val['title']."</a></li>";
 
@@ -422,7 +424,7 @@ JAVASCRIPT;
          echo "</ul>";
          echo "<select class='form-select border-2 border-secondary rounded-0 rounded-top d-md-none mb-2' id='$tabdiv_id-select'>$html_sele</select>";
 
-         echo "<div class='tab-content p-2 flex-grow-1 card $border'>";
+         echo "<div class='tab-content p-2 flex-grow-1 card $border' style='min-height: 150px'>";
          foreach ($tabs as $val) {
             $id = str_replace('\\', '_', $val['id']);
             echo "<div class='tab-pane fade' role='tabpanel' id='{$id}'></div>";
