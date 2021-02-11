@@ -3541,4 +3541,22 @@ HTML;
 
       return $filename;
    }
+
+   /**
+    * Clean _target argument
+    *
+    * @param string $target Target argument
+    *
+    * @return string
+    */
+   public static function cleanTarget(string $target): string {
+      global $CFG_GLPI;
+
+      $file = preg_replace('/^' . preg_quote($CFG_GLPI['root_doc'], '/') . '/', '', $target);
+      if (file_exists(GLPI_ROOT . $file)) {
+         return $target;
+      }
+
+      return '';
+   }
 }

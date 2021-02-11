@@ -1962,7 +1962,7 @@ class RuleCollection extends CommonDBTM {
          }
          $item->title();
          $item->showEngineSummary();
-         $item->showListRules($_GET['_target'], $options);
+         $item->showListRules(Toolbox::cleanTarget($_GET['_target']), $options);
          return true;
       }
       return false;
