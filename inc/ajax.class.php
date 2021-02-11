@@ -287,6 +287,7 @@ HTML;
       $reloadonclose = $param['reloadonclose'] ? "true" : "false";
       $autoopen      = $param['autoopen'] ? "true" : "false";
       $js = <<<JAVASCRIPT
+      $(function() {
          myModalEl{$rand} = document.getElementById('{$domid}');
          myModal{$rand}   = new bootstrap.Modal(myModalEl{$rand});
 
@@ -324,6 +325,7 @@ HTML;
             // reajust height to content
             myModal{$rand}.handleUpdate()
          };
+      });
 JAVASCRIPT;
 
       $out = "<script type='text/javascript'>$js</script>".trim($html);
