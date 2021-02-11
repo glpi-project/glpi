@@ -64,7 +64,7 @@ class LogCsvExport implements ExportToCsvInterface
          $name = "{$this->item->getTypeName(1)}_{$this->item->getId()}";
       }
 
-      return  Toolbox::slugify("{$name}_$date") . ".csv";
+      return Toolbox::filename("{$name}_$date") . ".csv";
    }
 
    public function getFileHeader(): array {
