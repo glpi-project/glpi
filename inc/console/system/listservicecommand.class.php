@@ -58,9 +58,7 @@ class ListServiceCommand extends AbstractCommand {
 
       $format = strtolower($input->getOption('format'));
 
-      $services = [
-         'db', 'cas', 'ldap', 'imap', 'mail_collectors', 'crontasks', 'filesystem', 'glpi', 'plugins'
-      ];
+      $services = array_keys(StatusChecker::getServices());
 
 
       if ($format === 'json') {
