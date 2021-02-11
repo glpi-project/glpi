@@ -5413,6 +5413,13 @@ class CommonDBTM extends CommonGLPI {
          $input              = $this->input;
          $input['_itemtype'] = $this->getType();
 
+         $user = new User();
+         if (isset($input["users_id"]) && $input["users_id"] != 0
+             && $user->getFromDB($input["users_id"])) {
+            $input['_locations_id_of_user'] = $user->fields['locations_id'];
+            $input['_groups_id_of_user']    = $user->fields['groups_id'];
+         }
+
          //If _auto is not defined : it's a manual process : set it's value to 0
          if (!isset($this->input['_auto'])) {
             $input['_auto'] = 0;
