@@ -1,0 +1,73 @@
+name: "GLPI test code coverage"
+
+on:
+  # Runs coverage suite every night
+  schedule:
+    - cron:  '0 0 * * *'
+  # Enable manual run
+  workflow_dispatch:
+
+jobs:
+  coverage:
+    if: github.repository == 'glpi-project/glpi'
+    name: "Code coverage"
+    runs-on: "ubuntu-latest"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {php-version: "8.0", db-image: "mariadb:10.5"}
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+        with:
+          ref: ${{ matrix.branch }}
+      - name: "Restore dependencies cache"
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ runner.temp }}/app_home/.composer/cache/
+            ${{ runner.temp }}/app_home/.npm/_cacache/
+          key: "app_home_deps-${{ matrix.php-version }}-${{ hashFiles('composer.lock', 'package-lock.json') }}"
+          restore-keys: |
+            app_home_deps-${{ matrix.php-version }}-
+            app_home_deps-
+      - name: "Initialize containers"
+        env:
+          APPLICATION_HOME: "${{ runner.temp }}/app_home"
+          APPLICATION_ROOT: "${{ github.workspace }}"
+          DB_IMAGE: "githubactions-${{ matrix.db-image }}"
+          PHP_IMAGE: "githubactions-php-coverage:${{ matrix.php-version }}"
+        run: |
+          .github/actions/init-containers_start-services.sh
+          .github/actions/init-containers_start-app.sh
+          .github/actions/init-containers_check-services-health.sh
+      - name: "Show versions"
+        run: |
+          .github/actions/init_show-versions.sh
+      - name: "Install dependencies"
+        run: |
+          docker exec app .github/actions/init_install-dependencies.sh
+      - name: "Initialize fixtures"
+        if: env.skip != 'true'
+        run: |
+          .github/actions/init_initialize-services-fixtures.sh
+      - name: "Install database"
+        run: |
+          docker exec app .github/actions/test_install.sh
+      - name: "Unit tests"
+        run: |
+          docker exec app sh -c "COVERAGE_DIR=coverage-unit .github/actions/test_tests-units.sh"
+      - name: "Functionnal tests"
+        run: |
+          docker exec app sh -c "COVERAGE_DIR=coverage-functionnal .github/actions/test_tests-functionnal.sh"
+      - name: "LDAP tests"
+        run: |
+          docker exec app sh -c "COVERAGE_DIR=coverage-ldap .github/actions/test_tests-ldap.sh"
+      - name: "IMAP tests"
+        run: |
+          docker exec app sh -c "COVERAGE_DIR=coverage-imap .github/actions/test_tests-imap.sh"
+      - name: "Codecov"
+        uses: "codecov/codecov-action@v1"
+        with:
+          files: ./tests/coverage-unit/clover.xml,./tests/coverage-functionnal/clover.xml,./tests/coverage-ldap/clover.xml,./tests/coverage-imap/clover.xml

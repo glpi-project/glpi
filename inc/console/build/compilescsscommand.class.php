@@ -30,10 +30,15 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Console\Build;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Html;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -59,7 +64,7 @@ class CompileScssCommand extends Command {
          'file',
          'f',
          InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
-         'File to compile (compile main style by default)'
+         'File to compile (compile all SCSS files by default)'
       );
    }
 
@@ -88,7 +93,7 @@ class CompileScssCommand extends Command {
             new RecursiveDirectoryIterator($root_path . '/css'),
             RecursiveIteratorIterator::SELF_FIRST
          );
-         /** @var SplFileInfo $file */
+         /** @var \SplFileInfo $file */
          foreach ($css_dir_iterator as $file) {
             if (!$file->isReadable() || !$file->isFile() || $file->getExtension() !== 'scss') {
                continue;

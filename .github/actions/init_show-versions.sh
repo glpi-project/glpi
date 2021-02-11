@@ -5,4 +5,4 @@ docker exec app php -r 'echo(sprintf("PHP extensions: %s\n", implode(", ", get_l
 docker exec app composer --version
 docker exec app sh -c 'echo "node $(node --version)"'
 docker exec app sh -c 'echo "npm $(npm --version)"'
-[ ! "$(docker ps -a | grep db)" ] || docker exec db mysql --version
+[ ! "$(docker ps -q -f name=db)" ] || docker exec db mysql --version
