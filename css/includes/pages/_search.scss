@@ -53,4 +53,10 @@
          background-color: darken($search_bg, 1%);
       }
    }
+
+   .search-results {
+      &.deleted-results {
+         color: rgb(56, 13, 13);
+      }
+   }
 }
