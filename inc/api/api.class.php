@@ -2474,6 +2474,10 @@ abstract class API extends CommonGLPI {
             if ($key == "default_requesttypes_id") {
                $key = "requesttypes_id";
             }
+            // mainitems_id mainitemtype
+            if ($key == "mainitems_id" && isset($fields['mainitemtype'])) {
+               $key = getForeignKeyFieldForItemType($fields['mainitemtype']);
+            }
 
             if (!empty($value)
                 || $key == 'entities_id' && $value >= 0) {
