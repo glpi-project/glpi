@@ -6075,7 +6075,7 @@ class Ticket extends CommonITILObject {
          echo "</div>";
       }
 
-      echo "<div>";
+      echo "<div class='table-responsive'>";
 
       if ($number > 0) {
          echo "<table class='tab_cadre_fixehov'>";
@@ -6132,7 +6132,7 @@ class Ticket extends CommonITILObject {
          $iterator = $DB->request($criteria);
          $number = count($iterator);
 
-         echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+         echo "<div class='spaced table-responsive'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='12'>";
          echo _n('Ticket on linked items', 'Tickets on linked items', $number);
          echo "</th></tr>";

@@ -266,7 +266,7 @@ class Item_Disk extends CommonDBChild {
          echo "</a></div>\n";
       }
 
-      echo "<div class='center'>";
+      echo "<div class='center table-responsive'>";
 
       $iterator = self::getFromItem($item);
       echo "<table class='tab_cadre_fixehov'>";

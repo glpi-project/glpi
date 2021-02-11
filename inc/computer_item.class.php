@@ -338,7 +338,7 @@ class Computer_Item extends CommonDBRelation{
       }
 
       if ($number) {
-         echo "<div class='spaced'>";
+         echo "<div class='spaced table-responsive'>";
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $massiveactionparams
@@ -488,7 +488,7 @@ class Computer_Item extends CommonDBRelation{
          echo "</div>";
       }
 
-      echo "<div class='spaced'>";
+      echo "<div class='spaced table-responsive'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams

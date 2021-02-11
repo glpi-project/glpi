@@ -654,7 +654,6 @@
       text-align: left;
       font-size: 11px;
       border-spacing: 0;
-      box-shadow: 0px 1px 2px 1px #999;
    }
 
    .tab_cadre_central {
@@ -677,7 +676,6 @@
       margin: 0 auto;
       padding: 4px;
       margin: 1px;
-      border: 1px solid #aaaaaa;
       border-radius: 5px;
       font-size: 12px;
       font-weight: bold;
@@ -694,13 +692,11 @@
 
    .tab_cadre_fixehov {
       margin: 0px auto 5px auto;
-
       z-index: 1;
       text-align: left;
       font-size: 11px;
       width: 100%;
       border-spacing: 0;
-      box-shadow: 0px 1px 2px 1px #999;
    }
 
    .ui-tabs .tab_cadre_fixehov {
@@ -716,7 +712,6 @@
       border: 0;
       text-align: left;
       width: 95%;
-      box-shadow: 0px 1px 2px 1px #D2D2D2;
       border-spacing: 0;
    }
 
@@ -984,7 +979,6 @@
       margin: 0 auto;
       text-align: center;
       font-size: 10px;
-      width: 950px;
       border-collapse: collapse;
       margin-top: 15px;
 
@@ -3989,7 +3983,7 @@
       }
    }
 
-   .legend {
+   .netport-legend {
       width: 100%;
       td.netport {
          text-align: center;
