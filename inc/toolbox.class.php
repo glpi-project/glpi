@@ -2572,14 +2572,14 @@ class Toolbox {
     * Slugify
     *
     * @param string $string String to slugify
+    * @param string $prefix Prefix to use (anchors cannot begin with a number)
     *
     * @return string
     */
-   public static function slugify($string) {
-      $string = transliterator_transliterate("Any-Latin; NFD; [:Nonspacing Mark:] Remove; NFC; [:Punctuation:] Remove; Lower();", $string);
+   public static function slugify($string, $prefix = 'slug_') {
+      $string = transliterator_transliterate("Any-Latin; Latin-ASCII; [^a-zA-Z0-9\.\ -_] Remove;", $string);
       $string = str_replace(' ', '-', self::strtolower($string, 'UTF-8'));
-      $string = self::removeHtmlSpecialChars($string);
-      $string = preg_replace('~[^0-9a-z]+~i', '-', $string);
+      $string = preg_replace('~[^0-9a-z_\.]+~i', '-', $string);
       $string = trim($string, '-');
       if ($string == '') {
          //prevent empty slugs; see https://github.com/glpi-project/glpi/issues/2946
@@ -2587,7 +2587,7 @@ class Toolbox {
          $string = 'nok_' . Toolbox::getRandomString(10);
       } else if (ctype_digit(substr($string, 0, 1))) {
          //starts with a number; not ok to be used as an html id attribute
-         $string = 'slug_' . $string;
+         $string = $prefix . $string;
       }
       return $string;
    }
@@ -3328,5 +3328,37 @@ HTML;
       } while ($class = get_parent_class($class));
 
       return false;
+   }
+
+   /*
+    * Normalizes file name
+    *
+    * @param string filename
+    *
+    * @return string
+    */
+   public static function filename($filename): string {
+      //remove extension
+      $ext = pathinfo($filename, PATHINFO_EXTENSION);
+      $filename = self::slugify(
+         preg_replace(
+            '/\.' . $ext . '$/',
+            '',
+            $filename
+         ),
+         '' //no prefix on filenames
+      );
+
+      $namesize = strlen($filename) + strlen($ext) + 1;
+      if ($namesize > 255) {
+         //limit to 255 characters
+         $filename = substr($filename, 0, $namesize - 255);
+      }
+
+      if (!empty($ext)) {
+         $filename .= '.' . $ext;
+      }
+
+      return $filename;
    }
 }

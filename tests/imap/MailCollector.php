@@ -704,15 +704,15 @@ class MailCollector extends DbTestCase {
       $expected_docs = [
          '00-logoteclib.png',
          // Space is missing between "France" and "très" due to a bug in laminas-mail
-         '01-Screenshot-2018-4-12 Observatoire - Francetrès haut débit.png',
+         '01-screenshot-2018-4-12-observatoire-francetres-haut-debit.png',
          '01-test.JPG',
          '15-image001.png',
          '18-blank.gif',
-         '19-ʂǷèɕɩɐɫ ȼɦâʁȿ.gif',
-         '20-specïal chars.gif',
-         '24.1-长文件名，将导致内容处置标头中的连续行.txt',
-         '24.2-中国字符.txt',
-         '25-New Text - Document.txt',
+         '19-secl-chas.gif',
+         '20-special-chars.gif',
+         '24.1-zhang-wen-jian-ming-jiang-dao-zhi-nei-rong-chu-zhi-biao-tou-zhong-de-lian-xu-xing.txt',
+         '24.2-zhong-guo-zi-fu.txt',
+         '25-new-text-document.txt',
       ];
 
       $iterator = $DB->request(

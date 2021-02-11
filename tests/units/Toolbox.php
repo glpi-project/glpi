@@ -65,11 +65,14 @@ class Toolbox extends \GLPITestCase {
       return [
          [
             'string'   => 'My - string èé  Ê À ß',
-            'expected' => 'my-string-ee-e-a-sz'
+            'expected' => 'my-string-ee-e-a-ss'
          ], [
             //https://github.com/glpi-project/glpi/issues/2946
             'string'   => 'Έρευνα ικανοποίησης - Αιτήματα',
             'expected' => 'ereuna-ikanopoieses-aitemata'
+         ], [
+            'string'   => 'a-valid-one',
+            'expected' => 'a-valid-one',
          ]
       ];
    }
@@ -79,6 +82,57 @@ class Toolbox extends \GLPITestCase {
     */
    public function testSlugify($string, $expected) {
       $this->string(\Toolbox::slugify($string))->isIdenticalTo($expected);
+   }
+
+   protected function filenameProvider() {
+      return [
+         [
+            'name'  => '00-logoteclib.png',
+            'expected'  => '00-logoteclib.png',
+         ], [
+            // Space is missing between "France" and "très" due to a bug in laminas-mail
+            'name'  => '01-Screenshot-2018-4-12 Observatoire - Francetrès haut débit.png',
+            'expected'  => '01-screenshot-2018-4-12-observatoire-francetres-haut-debit.png',
+         ], [
+            'name'  => '01-test.JPG',
+            'expected'  => '01-test.JPG',
+         ], [
+            'name'  => '15-image001.png',
+            'expected'  => '15-image001.png',
+         ], [
+            'name'  => '18-blank.gif',
+            'expected'  => '18-blank.gif',
+         ], [
+            'name'  => '19-ʂǷèɕɩɐɫ ȼɦâʁȿ.gif',
+            'expected'  => '19-secl-chas.gif',
+         ], [
+            'name'  => '20-specïal chars.gif',
+            'expected'  => '20-special-chars.gif',
+         ], [
+            'name'  => '24.1-长文件名，将导致内容处置标头中的连续行.txt',
+            'expected'  => '24.1-zhang-wen-jian-ming-jiang-dao-zhi-nei-rong-chu-zhi-biao-tou-zhong-de-lian-xu-xing.txt',
+         ], [
+            'name'  => '24.2-中国字符.txt',
+            'expected'  => '24.2-zhong-guo-zi-fu.txt',
+         ], [
+            'name'  => '25-New Text - Document.txt',
+            'expected'  => '25-new-text-document.txt',
+         ], [
+            'name'     => 'Έρευνα ικανοποίησης - Αιτήματα',
+            'expected' => 'ereuna-ikanopoieses-aitemata'
+         ], [
+            'name'     => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc gravida, nisi vel scelerisque feugiat, tellus purus volutpat justo, vel aliquam nibh nibh sit amet risus. Aenean eget urna et felis molestie elementum nec sit amet magna. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum nec malesuada elit, non luctus mi. Aliquam quis velit justo. Donec id pulvinar nunc. Phasellus.txt',
+            'expected' => 'lorem-ipsum-dolor-sit-amet-consectetur-adipiscing-elit.-nunc-gravida-nisi-vel-scelerisque-feugiat-tellus-purus-volutpat-justo-vel-aliquam-.txt'
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider filenameProvider
+    */
+   public function testFilename($name, $expected) {
+      $this->string(\Toolbox::filename($name))->isIdenticalTo($expected);
+      $this->integer(strlen($expected))->isLessThanOrEqualTo(255);
    }
 
    public function dataGetSize() {

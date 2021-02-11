@@ -2081,8 +2081,6 @@ class Config extends CommonDBTM {
                  'check'   => 'wapmorgan\\UnifiedArchive\\UnifiedArchive' ],
                [ 'name'    => 'paragonie/sodium_compat',
                  'check'   => 'ParagonIE_Sodium_Compat' ],
-               [ 'name'    => 'glen/filename-normalizer',
-                 'check'   => 'glen\\FilenameNormalizer\\Normalizer' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [
