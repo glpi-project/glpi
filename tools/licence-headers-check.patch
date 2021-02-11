@@ -1,0 +1,13 @@
+diff --git a/src/Tools/LicenceHeadersCheckCommand.php b/src/Tools/LicenceHeadersCheckCommand.php
+index 2e41b41..744f0ab 100644
+--- a/src/Tools/LicenceHeadersCheckCommand.php
++++ b/src/Tools/LicenceHeadersCheckCommand.php
+@@ -446,6 +446,8 @@ class LicenceHeadersCheckCommand extends Command {
+             '\.github', // Github specific files
+             '\.tx', // Transifex config
+ 
++            'css/lib', // CSS from external libs
++
+             'dist', // Plugin archives
+ 
+             'lib', // Manually included libs
