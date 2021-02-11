@@ -380,6 +380,7 @@ JAVASCRIPT;
             $active_id = $id;
          }
       }
+      $active_id = str_replace('\\', '_', $active_id);
 
       // Display tabs
       if (count($tabs) > 0) {
