@@ -30,6 +30,7 @@
  */
 
 /* global GoInFullscreen, GoOutFullscreen, EasyMDE, getUuidV4, _, sortable */
+/* global glpi_ajax_dialog, glpi_close_all_dialogs */
 
 var Dashboard = {
    grid: null,
@@ -165,7 +166,7 @@ var Dashboard = {
                action:  'display_embed_form',
                dashboard: Dashboard.current_name
             },
-         })
+         });
       });
 
       // edit mode toggle
@@ -843,7 +844,7 @@ var Dashboard = {
          params: {
             action: 'add_new',
          }
-      })
+      });
    },
 
    addNew: function(form_data) {

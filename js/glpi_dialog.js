@@ -36,7 +36,7 @@ var glpi_html_dialog = function({
    buttons     = [],
 } = {}) {
    if (buttons.length > 0) {
-      buttons_html = "";
+      var buttons_html = "";
       buttons.forEach(button => {
          var bid    = ("id" in button)    ? button.id    : "button_"+Math.random().toString(36).substring(7);
          var label  = ("label" in button) ? button.label : __("OK");
@@ -181,14 +181,12 @@ var glpi_ajax_dialog = function({
             buttons: buttons,
             show: show,
             close: close,
-         })
+         });
       }
-   })
-   .done(function(data) {
+   }).done(function(data) {
       done(data);
-   })
-   .fail(function (jqXHR, textStatus) {
-      fail(jqXHR, textStatus)
+   }).fail(function (jqXHR, textStatus) {
+      fail(jqXHR, textStatus);
    });
 
    return id;

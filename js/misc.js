@@ -29,6 +29,8 @@
  * ---------------------------------------------------------------------
  */
 
+/* global glpi_alert */
+
 /*
  * Redefine 'window.alert' javascript function by a jquery-ui dialog equivalent (but prettier).
  */

@@ -30,6 +30,7 @@
  */
 
 /* global L */
+/* global glpi_html_dialog */
 
 var timeoutglobalvar;
 
@@ -924,7 +925,7 @@ var showMapForLocation = function(elt) {
             if (data.success === false) {
                glpi_html_dialog({
                   body: data.message
-               })
+               });
             } else {
                var _markers = [];
                var _marker = L.marker([data.lat, data.lng]);

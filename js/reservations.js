@@ -30,6 +30,7 @@
  */
 
 /* global FullCalendar, FullCalendarLocales */
+/* global glpi_ajax_dialog */
 
 var Reservations = function() {
    this.is_all      = true;

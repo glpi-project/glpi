@@ -30,6 +30,8 @@
  */
 
 /* global grid_link_url, grid_rack_add_tip, grid_rack_id, grid_rack_units */
+/* global glpi_ajax_dialog */
+
 var x_before_drag = 0;
 var y_before_drag = 0;
 var dirty = false;
