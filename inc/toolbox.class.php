@@ -430,14 +430,15 @@ class Toolbox {
          }
 
          $config = [
-            'safe'             => 1,
-            'elements'         => '*+audio+video',
+            'elements'         => '* -applet -canvas -embed -object -script',
+            'deny_attribute'   => 'on*',
             'comment'          => 1, // 1: remove HTML comments (and do not display their contents)
             'cdata'            => 1, // 1: remove CDATA sections (and do not display their contents)
             'direct_list_nest' => 1, // 1: Allow usage of ul/ol tags nested in other ul/ol tags
+            'schemes'          => '*: aim, app, feed, file, ftp, gopher, http, https, irc, mailto, news, nntp, sftp, ssh, tel, telnet'
          ];
-         if (GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
-            $config['elements'] .= '+iframe';
+         if (!GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
+            $config['elements'] .= '-iframe';
          }
 
          $value = htmLawed($value, $config);

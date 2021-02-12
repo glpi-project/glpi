@@ -89,18 +89,19 @@ class Html {
       $value = preg_replace("/(<)([^>]*<)/", "&lt;$2", $value);
 
       $config = [
-         'safe'             => 1,
+         'deny_attribute'   => 'on*',
          'keep_bad'         => $keep_bad, // 1: neutralize tag and content, 2 : remove tag and neutralize content
          'comment'          => 1, // 1: remove HTML comments (and do not display their contents)
          'cdata'            => 1, // 1: remove CDATA sections (and do not display their contents)
          'direct_list_nest' => 1, // 1: Allow usage of ul/ol tags nested in other ul/ol tags
+         'schemes'          => '*: aim, app, feed, file, ftp, gopher, http, https, irc, mailto, news, nntp, sftp, ssh, tel, telnet'
       ];
       if ($striptags) {
          $config['elements'] = 'none';
       } else {
-         $config['elements'] = '*+audio+video';
-         if (GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
-            $config['elements'] .= '+iframe';
+         $config['elements'] = '* -applet -embed -canvas -object -script';
+         if (!GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
+            $config['elements'] .= '-iframe';
          }
       }
 
