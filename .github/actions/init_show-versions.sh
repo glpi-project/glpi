@@ -1,8 +1,11 @@
 #!/bin/bash -e
 
-docker exec app php --version
-docker exec app php -r 'echo(sprintf("PHP extensions: %s\n", implode(", ", get_loaded_extensions())));'
-docker exec app composer --version
-docker exec app sh -c 'echo "node $(node --version)"'
-docker exec app sh -c 'echo "npm $(npm --version)"'
-[ ! "$(docker ps -q -f name=db)" ] || docker exec db mysql --version
+docker-compose exec -T app php --version
+docker-compose exec -T app php -r 'echo(sprintf("PHP extensions: %s\n", implode(", ", get_loaded_extensions())));'
+docker-compose exec -T app composer --version
+docker-compose exec -T app sh -c 'echo "node $(node --version)"'
+docker-compose exec -T app sh -c 'echo "npm $(npm --version)"'
+
+if [[ -n $(docker-compose ps --all --services | grep "db") ]]; then
+  docker-compose exec -T db mysql --version;
+fi

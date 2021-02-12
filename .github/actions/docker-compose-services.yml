@@ -14,7 +14,3 @@ services:
   openldap:
     container_name: "openldap"
     image: "ghcr.io/glpi-project/githubactions-openldap"
-networks:
-    default:
-        driver: "bridge"
-        name: "glpi_bridge"
