@@ -158,7 +158,19 @@ class Html extends \GLPITestCase {
 
    public function providerClean() {
       return [
-            ['<p>Hello<script type="text/javascript">alert("Damn!");</script></p>', 'Hello', '<p>Hello</p>'],
+         // script is not allowed
+         ['<p>Hello<script type="text/javascript">alert("Damn!");</script></p>', 'Hello', '<p>Hello</p>'],
+         // nested list should be preserved
+         ['<ul><li>one<ul><li>nested</li></ul></li><li>two</li></ul>', 'onenestedtwo', '<ul><li>one<ul><li>nested</li></ul></li><li>two</li></ul>'],
+         // on* attributes are not allowed
+         ['<img src="test.png" onerror="javascript:alert(document.cookie);" alt="test image" />', '', '<img src="test.png" alt="test image" />'],
+         ['<img src="test.png" onload="javascript:alert(document.cookie);" alt="test image" />', '', '<img src="test.png" alt="test image" />'],
+         // iframes should not be preserved by default
+         ['Here is an iframe: <iframe src="http://glpi-project.org/"></iframe>', 'Here is an iframe:', 'Here is an iframe:'],
+         // HTML comments should be removed
+         ['<p>Legit<!-- This is an HTML comment --> text</p>', 'Legit text', '<p>Legit text</p>'],
+         // CDATA should be removed
+         ['<p><![CDATA[Some CDATA]]>Legit text</p>', 'Legit text', '<p>Legit text</p>'],
       ];
    }
 

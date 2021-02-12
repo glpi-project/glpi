@@ -107,6 +107,12 @@ The present file will list all changes made to the project; according to the
 - `Reservation::displayReservationDay()`
 - `Reservation::displayReservationsForAnItem()`
 
+## [9.5.4] unreleased
+
+### Changed
+
+- `iframe` elements are not anymore allowed in rich text unless `GLPI_ALLOW_IFRAME_IN_RICH_TEXT` constant is defined to `true`
+
 ## [9.5.3] 2020-11-25
 
 ### Deprecated
