@@ -43,6 +43,7 @@ use Glpi\Application\View\Extension\DropdownExtension;
 use Glpi\Application\View\Extension\FrontEndAssetsExtension;
 use Glpi\Application\View\Extension\HtmlExtension;
 use Glpi\Application\View\Extension\I18nExtension;
+use Glpi\Application\View\Extension\InfocomExtension;
 use Glpi\Application\View\Extension\ItemtypeExtension;
 use Glpi\Application\View\Extension\ModelExtension;
 use Glpi\Application\View\Extension\NumberFormatExtension;
@@ -95,6 +96,7 @@ class TemplateRenderer {
       $this->environment->addExtension(new DropdownExtension());
       $this->environment->addExtension(new FrontEndAssetsExtension());
       $this->environment->addExtension(new I18nExtension());
+      $this->environment->addExtension(new InfocomExtension());
       $this->environment->addExtension(new ItemtypeExtension());
       $this->environment->addExtension(new HtmlExtension());
       $this->environment->addExtension(new ModelExtension());

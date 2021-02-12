@@ -53,6 +53,11 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
          new TwigFilter('itemtype_name', [$this, 'itemtypeName']),
          new TwigFilter('get_foreignkey_field', [$this, 'getForeignKeyField']),
          new TwigFilter('dropdown', [$this, 'dropdown'], ['is_safe' => ['html']]),
+         new TwigFilter('canCreate', [$this, 'canCreate']),
+         new TwigFilter('canView', [$this, 'canView']),
+         new TwigFilter('canUpdate', [$this, 'canUpdate']),
+         new TwigFilter('canDelete', [$this, 'canDelete']),
+         new TwigFilter('canPurge', [$this, 'canPurge']),
       ];
    }
 
@@ -96,6 +101,46 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
    public function dropdown($itemtype, array $options = []): bool {
       if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
          $itemtype::dropdown($options);
+      }
+
+      return false;
+   }
+
+   public function canCreate($itemtype): bool {
+      if ($itemtype instanceof CommonGLPI || is_a($itemtype, CommonGLPI::class, true)) {
+         return $itemtype::canCreate();
+      }
+
+      return false;
+   }
+
+   public function canView($itemtype): bool {
+      if ($itemtype instanceof CommonGLPI || is_a($itemtype, CommonGLPI::class, true)) {
+         return $itemtype::canView();
+      }
+
+      return false;
+   }
+
+   public function canUpdate($itemtype): bool {
+      if ($itemtype instanceof CommonGLPI || is_a($itemtype, CommonGLPI::class, true)) {
+         return $itemtype::canUpdate();
+      }
+
+      return false;
+   }
+
+   public function canDelete($itemtype): bool {
+      if ($itemtype instanceof CommonGLPI || is_a($itemtype, CommonGLPI::class, true)) {
+         return $itemtype::canDelete();
+      }
+
+      return false;
+   }
+
+   public function canPurge($itemtype): bool {
+      if ($itemtype instanceof CommonGLPI || is_a($itemtype, CommonGLPI::class, true)) {
+         return $itemtype::canPurge();
       }
 
       return false;

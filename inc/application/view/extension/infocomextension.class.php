@@ -32,49 +32,24 @@
 
 namespace Glpi\Application\View\Extension;
 
-use CommonDBTM;
-use Plugin;
+use Infocom;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
+use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 /**
  * @since x.x.x
  */
-class PluginExtension extends AbstractExtension implements ExtensionInterface {
+class InfocomExtension extends AbstractExtension implements ExtensionInterface {
+
+
    public function getFunctions() {
       return [
-         new TwigFunction('displayLogin', [$this, 'displayLogin'], ['is_safe' => ['html']]),
-         new TwigFunction('AutoInventoryInformation', [$this, 'AutoInventoryInformation'], ['is_safe' => ['html']]),
-         new TwigFunction('preItemForm', [$this, 'preItemForm'], ['is_safe' => ['html']]),
-         new TwigFunction('postItemForm', [$this, 'postItemForm'], ['is_safe' => ['html']]),
-         new TwigFunction('hook_infocom', [$this, 'hook_infocom'], ['is_safe' => ['html']]),
+         new TwigFunction('Infocom__dropdownAmortType', [Infocom::class, 'dropdownAmortType'], ['is_safe' => ['html']]),
+         new TwigFunction('Infocom__dropdownAlert', [Infocom::class, 'dropdownAlert'], ['is_safe' => ['html']]),
+         new TwigFunction('Infocom__showTco', [Infocom::class, 'showTco'], ['is_safe' => ['html']]),
       ];
    }
 
-   /**
-    * call display_login plugin hook to display aditionnal html on login page
-    *
-    * @return void
-    */
-   public function displayLogin() {
-      Plugin::doHook('display_login');
-   }
-
-
-   public function AutoInventoryInformation() {
-      Plugin::doHook('autoinventory_information');
-   }
-
-   public function preItemForm(CommonDBTM $item, array $params = []) {
-      Plugin::doHook('pre_item_form', ['item' => $item, 'options' => $params]);
-   }
-
-   public function postItemForm(CommonDBTM $item, array $params = []) {
-      Plugin::doHook('post_item_form', ['item' => $item, 'options' => $params]);
-   }
-
-   public function hook_infocom(CommonDBTM $item) {
-      Plugin::doHookFunction("infocom", $item);
-   }
 }

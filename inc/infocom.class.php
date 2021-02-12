@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * Infocom class
 **/
@@ -618,13 +620,18 @@ class Infocom extends CommonDBChild {
    **/
    static function dropdownAmortType($name, $value = 0, $display = true) {
 
-      $values = [2 => __('Linear'),
-                      1 => __('Decreasing')];
+      $values = [
+         2 => __('Linear'),
+         1 => __('Decreasing')
+      ];
 
-      return Dropdown::showFromArray($name, $values,
-                                     ['value'               => $value,
-                                           'display'             => $display,
-                                           'display_emptychoice' => true]);
+      return Dropdown::showFromArray($name, $values, [
+         'value'               => $value,
+         'display'             => $display,
+         'display_emptychoice' => true,
+         'width'               => '100%',
+         'class'               => 'form-select',
+      ]);
    }
 
 
@@ -1027,6 +1034,24 @@ class Infocom extends CommonDBChild {
                   __('For this type of item, the financial and administrative information are only a model for the items which you should add.').
                  "</div>";
          }
+
+         $ic->getFromDBforDevice($item->getType(), $dev_ID);
+         $can_input = [
+            'itemtype'    => $item->getType(),
+            'items_id'    => $dev_ID,
+            'entities_id' => $item->getEntityID()
+         ];
+         TemplateRenderer::getInstance()->display('components/infocom.html.twig', [
+            'item'              => $item,
+            'infocom'           => $ic,
+            'withtemplate'      => $withtemplate,
+            'can_create'        => $ic->can(-1, CREATE, $can_input),
+            'can_edit'          => ($ic->canEdit($ic->fields['id']) && ($withtemplate != 2)),
+            'can_global_update' => Session::haveRight(self::$rightname, UPDATE),
+            'can_global_purge'  => Session::haveRight(self::$rightname, PURGE),
+         ]);
+         return;
+
          if (!$ic->getFromDBforDevice($item->getType(), $dev_ID)) {
             $input = ['itemtype'    => $item->getType(),
                            'items_id'    => $dev_ID,

@@ -1,0 +1,164 @@
+{% macro largeTitle(label, icon = "", first = false) %}
+   {% set margins = "mt-3" %}
+   {% if first %}
+      {% set margins = "mt-n2" %}
+   {% endif %}
+
+   <div class="card border-0 shadow-none p-0 m-0 {{ margins }}">
+      <div class="card-header mb-3">
+         <h4 class="card-title {{ icon|length ? "ms-4" : "" }}">
+            {% if icon|length %}
+               <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
+                  <i class="fa-2x {{ icon}}"></i>
+               </div>
+            {% endif %}
+            {{ label }}
+         </h4>
+      </div>
+   </div>
+{% endmacro %}
+
+
+{% macro autoNameField(name, item, label, withtemplate, options = {}) %}
+   {% set tplmark = "" %}
+   {% if item.isTemplate() %} {# TODO exluded types #}
+      {% set tplmark = getAutofillMark(item, name, {'withtemplate': withtemplate}) %}
+   {% endif %}
+   {% set value = autoName(item.fields[name], name, (withtemplate == 2), item.getType(), item.fields['entities_id']) %}
+   {% set label = __('%1$s%2$s')|format(label, tplmark) %}
+
+   {{ _self.textField(name, item, label, options|merge({ 'value': value }) ) }}
+{% endmacro %}
+
+
+{% macro textField(name, item, label, options = {}) %}
+   {% set options = { 'type': 'text' }|merge(options) %}
+   {% set value   = options.value|length > 0 ? options.value : item.fields[name] %}
+
+   {% set field %}
+      <input type="{{ options.type }}" class="form-control" id="%id%"
+             name="{{ name }}" value="{{ value }}"
+             {{ options.readonly ? 'readonly' : "" }}
+             {{ options.disabled ? 'disabled' : "" }}>
+   {% endset %}
+
+   {{ _self.field(name, field, label, options) }}
+{% endmacro %}
+
+
+{% macro numberField(name, item, label, options = {}) %}
+   {% set options = options|merge({ type: "text" }) %}
+   {{ _self.textField(name, item, label, options) }}
+{% endmacro %}
+
+
+{% macro readOnlyField(name, item, label, options = {}) %}
+   {% set options = options|merge({ readonly: true }) %}
+   {{ _self.textField(name, item, label, options) }}
+{% endmacro %}
+
+
+{% macro textareaField(name, item, label, options = {}) %}
+   {% set value   = options.value|length > 0 ? options.value : item.fields[name] %}
+
+   {% set field %}
+      <textarea class="form-control" id="%id%" name="{{ name }}" rows="3"
+                {{ options.disabled ? 'disabled' : "" }}>
+         {{ value }}
+      </textarea>
+   {% endset %}
+
+   {{ _self.field(name, field, label, options) }}
+{% endmacro %}
+
+
+{% macro dateField(name, item, label, options = {}) %}
+   {% set field %}
+      <div class="input-icon">
+         <input type="date" class="form-control" id="%id%"
+                name="{{name}}" value="{{ item.fields['name'] }}"
+                {{ options.disabled ? 'disabled' : "" }}>
+         <i class="input-icon-addon far fa-calendar"></i>
+      </div>
+   {% endset %}
+
+   {{ _self.field(name, field, label, options) }}
+{% endmacro %}
+
+
+{% macro dropdownNumberField(name, item, label, options = {}) %}
+   {% set options = { 'rand': random() }|merge(options) %}
+
+   {% if options.disabled %}
+      {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
+   {% endif %}
+
+   {% set field %}
+      {{ Dropdown__showNumber(name, {
+         'value'  : item.fields[name],
+         'display': false,
+         'rand'   : rand,
+         'width'  : '100%',
+         'class'  : 'form-select',
+      }|merge(options)) }}
+   {% endset %}
+
+   {{ _self.field(name, field, label, options|merge({ 'id': "dropdown_" ~ name ~ "_" ~ options.rand})) }}
+{% endmacro %}
+
+
+
+{% macro dropdownField(itemtype, name, item, label, options = {}) %}
+   {% set options = { 'rand': random() }|merge(options) %}
+
+   {% if options.disabled %}
+      {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
+   {% endif %}
+
+   {% set field %}
+      {{ itemtype|dropdown({
+         'value'  : item.fields['name'],
+         'rand'   : rand,
+         'width'  : '100%',
+         'class'  : 'form-select',
+      }|merge(options)) }}
+   {% endset %}
+
+   {{ _self.field(name, field, label, options|merge({ 'id': "dropdown_" ~ name ~ "_" ~ options.rand})) }}
+{% endmacro %}
+
+
+{% macro field(name, field, label, options = {}) %}
+   {% set options = { 'rand': random(), 'is_horizontal': true }|merge(options) %}
+
+   {% set id    = options.id|length > 0 ? options.id : (name ~ "_" ~ options.rand) %}
+   {% set field = field | replace({'%id%': id})  %}
+
+   {% if options.is_horizontal %}
+      {{ _self.horizontalField(label, field, id) }}
+   {% else %}
+      {{ _self.verticalField(label, field, id) }}
+   {% endif %}
+{% endmacro %}
+
+
+{% macro horizontalField(label, field, id) %}
+   <div class="row mb-3 col-12 col-sm-6">
+      <label class="col-sm-5 col-form-label text-sm-end" for="{{ id }}">
+         {{ label }}
+      </label>
+      <div class="col-sm-7">
+         {{ field | raw }}
+      </div>
+   </div>
+{% endmacro %}
+
+
+{% macro verticalField(label, field, id) %}
+   <div class="mb-3 col-12 col-sm-6">
+      <label class="form-label" for="{{ id }}">
+         {{ label }}
+      </label>
+      {{ field | raw }}
+   </div>
+{% endmacro %}
