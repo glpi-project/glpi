@@ -113,6 +113,12 @@ The present file will list all changes made to the project; according to the
 
 - `iframe` elements are not anymore allowed in rich text unless `GLPI_ALLOW_IFRAME_IN_RICH_TEXT` constant is defined to `true`
 
+### API changes
+
+#### Deprecated
+
+- `Search::getMetaReferenceItemtype()`
+
 ## [9.5.3] 2020-11-25
 
 ### Deprecated

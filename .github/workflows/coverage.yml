@@ -71,3 +71,4 @@ jobs:
         uses: "codecov/codecov-action@v1"
         with:
           files: ./tests/coverage-unit/clover.xml,./tests/coverage-functionnal/clover.xml,./tests/coverage-ldap/clover.xml,./tests/coverage-imap/clover.xml
+          override_branch: ${{ matrix.branch }}

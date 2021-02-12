@@ -505,7 +505,8 @@ class Contract extends CommonDBTM {
          'computation'        =>
             '(SUM(' . $DB->quoteName('TABLE.cost') . ') / COUNT(' .
             $DB->quoteName('TABLE.id') . ')) * COUNT(DISTINCT ' .
-            $DB->quoteName('TABLE.id') . ')'
+            $DB->quoteName('TABLE.id') . ')',
+         'nometa'             => true, // cannot GROUP_CONCAT a SUM
       ];
 
       $tab[] = [
@@ -909,7 +910,8 @@ class Contract extends CommonDBTM {
          'computation'        =>
             '(SUM(' . $DB->quoteName('TABLE.cost') . ') / COUNT(' .
             $DB->quoteName('TABLE.id') . ')) * COUNT(DISTINCT ' .
-            $DB->quoteName('TABLE.id') . ')'
+            $DB->quoteName('TABLE.id') . ')',
+         'nometa'             => true, // cannot GROUP_CONCAT a SUM
       ];
 
       $tab[] = [
