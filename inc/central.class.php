@@ -31,6 +31,8 @@
  */
 
 use Glpi\Event;
+use Glpi\System\Requirement\ProtectedWebAccess;
+use Glpi\System\Variables;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -314,6 +316,12 @@ class Central extends CommonGLPI {
             $warnings[] = sprintf(__('For security reasons, please change the password for the default users: %s'),
                                implode(" ", $accounts));
          }
+
+         $protected_web_access = new ProtectedWebAccess(Variables::getDataDirectories());
+         if (!$protected_web_access->isValidated()) {
+            $warnings[] = implode(' ', $protected_web_access->getValidationMessages());
+         }
+
          if (file_exists(GLPI_ROOT . "/install/install.php")) {
             $warnings[] = sprintf(__('For security reasons, please remove file: %s'),
                                "install/install.php");
