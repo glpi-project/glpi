@@ -314,6 +314,24 @@ class Central extends CommonGLPI {
             $warnings[] = sprintf(__('For security reasons, please change the password for the default users: %s'),
                                implode(" ", $accounts));
          }
+
+         //create a context to set timeout
+         $context = stream_context_create([
+            'http' => [
+               'timeout' => 2.0
+            ]
+         ]);
+         $protocol = 'http';
+         if (isset($_SERVER['HTTPS'])) {
+            $protocol = 'https';
+         }
+         $uri = $protocol . '://' . $_SERVER['SERVER_NAME'] . $CFG_GLPI['root_doc'];
+         if ($fic = fopen($uri.'/files/_log/php-errors.log', 'r', false, $context)) {
+            fclose($fic);
+            $warnings[] = sprintf( __('Web access to the files directory should not be allowed')."\n".
+               __('Check the .htaccess file and the web server configuration.')."\n");
+         }
+
          if (file_exists(GLPI_ROOT . "/install/install.php")) {
             $warnings[] = sprintf(__('For security reasons, please remove file: %s'),
                                "install/install.php");
