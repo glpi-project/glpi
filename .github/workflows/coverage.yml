@@ -17,7 +17,20 @@ jobs:
       matrix:
         include:
           - {branch: "master", php-version: "8.0", db-image: "mariadb:10.5"}
+    env:
+      COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
+      APPLICATION_ROOT: "${{ github.workspace }}"
+      APP_CONTAINER_HOME: "${{ github.workspace }}/../app_home"
+      DB_IMAGE: "githubactions-${{ matrix.db-image }}"
+      PHP_IMAGE: "githubactions-php-coverage:${{ matrix.php-version }}"
+      UPDATE_FILES_ACL: true
+      IGNORE_LOCK_FILES: true
     steps:
+      - name: "Clean workspace"
+        if: env.skip != 'true'
+        run: |
+          rm -rf "${{ env.APPLICATION_ROOT }}/*"
+          rm -rf "${{ env.APP_CONTAINER_HOME }}/*"
       - name: "Checkout"
         uses: "actions/checkout@v2"
         with:
@@ -26,49 +39,46 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ${{ runner.temp }}/app_home/.composer/cache/
-            ${{ runner.temp }}/app_home/.npm/_cacache/
+            ${{ env.APP_CONTAINER_HOME }}/.composer/cache/
+            ${{ env.APP_CONTAINER_HOME }}/.npm/_cacache/
           key: "app_home_deps-${{ matrix.php-version }}-${{ hashFiles('composer.lock', 'package-lock.json') }}"
           restore-keys: |
             app_home_deps-${{ matrix.php-version }}-
             app_home_deps-
       - name: "Initialize containers"
-        env:
-          APPLICATION_HOME: "${{ runner.temp }}/app_home"
-          APPLICATION_ROOT: "${{ github.workspace }}"
-          DB_IMAGE: "githubactions-${{ matrix.db-image }}"
-          PHP_IMAGE: "githubactions-php-coverage:${{ matrix.php-version }}"
         run: |
-          .github/actions/init-containers_start-services.sh
-          .github/actions/init-containers_start-app.sh
-          .github/actions/init-containers_check-services-health.sh
+          .github/actions/init_containers-start.sh
       - name: "Show versions"
         run: |
           .github/actions/init_show-versions.sh
       - name: "Install dependencies"
         run: |
-          docker exec app .github/actions/init_install-dependencies.sh
+          docker-compose exec -T app .github/actions/init_install-dependencies.sh
       - name: "Initialize fixtures"
         if: env.skip != 'true'
         run: |
           .github/actions/init_initialize-services-fixtures.sh
       - name: "Install database"
         run: |
-          docker exec app .github/actions/test_install.sh
+          docker-compose exec -T app .github/actions/test_install.sh
       - name: "Unit tests"
         run: |
-          docker exec app sh -c "COVERAGE_DIR=coverage-unit .github/actions/test_tests-units.sh"
+          docker-compose exec app sh -c "COVERAGE_DIR=coverage-unit .github/actions/test_tests-units.sh"
       - name: "Functionnal tests"
         run: |
-          docker exec app sh -c "COVERAGE_DIR=coverage-functionnal .github/actions/test_tests-functionnal.sh"
+          docker-compose exec app sh -c "COVERAGE_DIR=coverage-functionnal .github/actions/test_tests-functionnal.sh"
       - name: "LDAP tests"
         run: |
-          docker exec app sh -c "COVERAGE_DIR=coverage-ldap .github/actions/test_tests-ldap.sh"
+          docker-compose exec app sh -c "COVERAGE_DIR=coverage-ldap .github/actions/test_tests-ldap.sh"
       - name: "IMAP tests"
         run: |
-          docker exec app sh -c "COVERAGE_DIR=coverage-imap .github/actions/test_tests-imap.sh"
+          docker-compose exec app sh -c "COVERAGE_DIR=coverage-imap .github/actions/test_tests-imap.sh"
       - name: "Codecov"
         uses: "codecov/codecov-action@v1"
         with:
           files: ./tests/coverage-unit/clover.xml,./tests/coverage-functionnal/clover.xml,./tests/coverage-ldap/clover.xml,./tests/coverage-imap/clover.xml
           override_branch: ${{ matrix.branch }}
+      - name: "Cleanup containers"
+        if: always()
+        run: |
+          .github/actions/teardown_containers-cleanup.sh

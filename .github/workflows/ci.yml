@@ -30,6 +30,13 @@ jobs:
         include:
           - {php-version: "7.2"} # Lint on lower PHP version to detected too early usage of new syntaxes
           - {php-version: "8.0"} # Lint on higher PHP version to detected deprecated elements usage
+    env:
+      COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
+      APP_CONTAINER_HOME: "${{ github.workspace }}/../app_home"
+      APPLICATION_ROOT: "${{ github.workspace }}"
+      PHP_IMAGE: "githubactions-php:${{ matrix.php-version }}"
+      UPDATE_FILES_ACL: true
+      IGNORE_LOCK_FILES: true
     steps:
       - name: "Cancel previous runs"
         uses: "styfle/cancel-workflow-action@0.5.0"
@@ -37,15 +44,16 @@ jobs:
           access_token: "${{ github.token }}"
       - name: "Clean workspace"
         run: |
-          rm -rf "${{ github.workspace }}/*"
+          rm -rf "${{ env.APPLICATION_ROOT }}/*"
+          rm -rf "${{ env.APP_CONTAINER_HOME }}/*"
       - name: "Checkout"
         uses: "actions/checkout@v2"
       - name: "Restore dependencies cache"
         uses: actions/cache@v2
         with:
           path: |
-            ${{ runner.temp }}/app_home/.composer/cache/
-            ${{ runner.temp }}/app_home/.npm/_cacache/
+            ${{ env.APP_CONTAINER_HOME }}/.composer/cache/
+            ${{ env.APP_CONTAINER_HOME }}/.npm/_cacache/
           key: "app_home_deps-${{ matrix.php-version }}-${{ hashFiles('composer.lock', 'package-lock.json') }}"
           restore-keys: |
             app_home_deps-${{ matrix.php-version }}-
@@ -54,37 +62,33 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ${{ runner.temp }}/app_home/phpcs.cache
+            ${{ env.APP_CONTAINER_HOME }}/phpcs.cache
           key: "app_home_lint-${{ matrix.php-version }}-${{ github.base_ref || github.ref }}"
           restore-keys: |
             app_home_lint-${{ matrix.php-version }}
             app_home_lint-
       - name: "Initialize containers"
-        env:
-          APPLICATION_HOME: "${{ runner.temp }}/app_home"
-          APPLICATION_ROOT: "${{ github.workspace }}"
-          PHP_IMAGE: "githubactions-php:${{ matrix.php-version }}"
         run: |
-          .github/actions/init-containers_start-app.sh
+          .github/actions/init_containers-start.sh
       - name: "Show versions"
         run: |
           .github/actions/init_show-versions.sh
       - name: "Install dependencies"
         run: |
-          docker exec app .github/actions/init_install-dependencies.sh
+          docker-compose exec -T app .github/actions/init_install-dependencies.sh
       - name: "PHP lint"
         run: |
-          docker exec app .github/actions/lint_php-lint.sh
+          docker-compose exec -T app .github/actions/lint_php-lint.sh
       - name: "JS lint"
         run: |
-          docker exec app .github/actions/lint_js-lint.sh
+          docker-compose exec -T app .github/actions/lint_js-lint.sh
       - name: "Misc lint"
         run: |
-          docker exec app .github/actions/lint_misc-lint.sh
+          docker-compose exec -T app .github/actions/lint_misc-lint.sh
       - name: "Cleanup containers"
         if: always()
         run: |
-          .github/actions/teardown-containers_cleanup.sh
+          .github/actions/teardown_containers-cleanup.sh
 
   tests:
     name: "Test on PHP ${{ matrix.php-version }} using ${{ matrix.db-image }}"
@@ -109,6 +113,13 @@ jobs:
       # Skip jobs that should not be always run on pull requests or on push on tier repository (to limit workers usage).
       # No jobs will be skipped on nightly build, manual dispatch or push on main branches (master and */bugfixes) or tags.
       skip: ${{ matrix.always == false && (github.event_name == 'pull_request' || github.repository != 'glpi-project/glpi' || !(github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/master' || endsWith(github.ref, '/bugfixes') || startsWith(github.ref, 'refs/tags'))) }}
+      COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
+      APPLICATION_ROOT: "${{ github.workspace }}"
+      APP_CONTAINER_HOME: "${{ github.workspace }}/../app_home"
+      DB_IMAGE: "githubactions-${{ matrix.db-image }}"
+      PHP_IMAGE: "githubactions-php:${{ matrix.php-version }}"
+      IGNORE_LOCK_FILES: true
+      UPDATE_FILES_ACL: true
     steps:
       - name: "Cancel previous runs"
         if: env.skip != 'true'
@@ -118,7 +129,8 @@ jobs:
       - name: "Clean workspace"
         if: env.skip != 'true'
         run: |
-          rm -rf "${{ github.workspace }}/*"
+          rm -rf "${{ env.APPLICATION_ROOT }}/*"
+          rm -rf "${{ env.APP_CONTAINER_HOME }}/*"
       - name: "Checkout"
         if: env.skip != 'true'
         uses: "actions/checkout@v2"
@@ -127,23 +139,16 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ${{ runner.temp }}/app_home/.composer/cache/
-            ${{ runner.temp }}/app_home/.npm/_cacache/
+            ${{ env.APP_CONTAINER_HOME }}/.composer/cache/
+            ${{ env.APP_CONTAINER_HOME }}/.npm/_cacache/
           key: "app_home_deps-${{ matrix.php-version }}-${{ hashFiles('composer.lock', 'package-lock.json') }}"
           restore-keys: |
             app_home_deps-${{ matrix.php-version }}-
             app_home_deps-
       - name: "Initialize containers"
         if: env.skip != 'true'
-        env:
-          APPLICATION_HOME: "${{ runner.temp }}/app_home"
-          APPLICATION_ROOT: "${{ github.workspace }}"
-          DB_IMAGE: "githubactions-${{ matrix.db-image }}"
-          PHP_IMAGE: "githubactions-php:${{ matrix.php-version }}"
         run: |
-          .github/actions/init-containers_start-services.sh
-          .github/actions/init-containers_start-app.sh
-          .github/actions/init-containers_check-services-health.sh
+          .github/actions/init_containers-start.sh
       - name: "Show versions"
         if: env.skip != 'true'
         run: |
@@ -156,36 +161,36 @@ jobs:
       - name: "Install dependencies"
         if: env.skip != 'true'
         run: |
-          docker exec app .github/actions/init_install-dependencies.sh
+          docker-compose exec -T app .github/actions/init_install-dependencies.sh
       - name: "Install DB tests"
         if: env.skip != 'true'
         run: |
-          docker exec app .github/actions/test_install.sh
+          docker-compose exec -T app .github/actions/test_install.sh
       - name: "Update DB tests"
         if: env.skip != 'true'
         run: |
-          docker exec app .github/actions/test_update-from-older-version.sh
+          docker-compose exec -T app .github/actions/test_update-from-older-version.sh
       - name: "Unit tests"
         if: env.skip != 'true'
         run: |
-          docker exec app .github/actions/test_tests-units.sh
+          docker-compose exec -T app .github/actions/test_tests-units.sh
       - name: "Functionnal tests"
         if: env.skip != 'true'
         run: |
-          docker exec app .github/actions/test_tests-functionnal.sh
+          docker-compose exec -T app .github/actions/test_tests-functionnal.sh
       - name: "LDAP tests"
         if: env.skip != 'true'
         run: |
-          docker exec app .github/actions/test_tests-ldap.sh
+          docker-compose exec -T app .github/actions/test_tests-ldap.sh
       - name: "IMAP tests"
         if: env.skip != 'true'
         run: |
-          docker exec app .github/actions/test_tests-imap.sh
+          docker-compose exec -T app .github/actions/test_tests-imap.sh
       - name: "WEB tests"
         if: env.skip != 'true'
         run: |
-          docker exec app .github/actions/test_tests-web.sh
+          docker-compose exec -T app .github/actions/test_tests-web.sh
       - name: "Cleanup containers"
         if: env.skip != 'true' && always()
         run: |
-          .github/actions/teardown-containers_cleanup.sh
+          .github/actions/teardown_containers-cleanup.sh
