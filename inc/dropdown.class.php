@@ -1893,7 +1893,7 @@ class Dropdown {
                      if ($optgroup_tooltips && isset($optgroup_tooltips[$key2])) {
                         $output .= ' title="'.$optgroup_tooltips[$key2].'"';
                      }
-                     $output .= ">" .  $val2 . "</option>";
+                     $output .= ">" .  Html::entities_deep($val2) . "</option>";
                      if ($max_option_size < strlen($val2)) {
                         $max_option_size = strlen($val2);
                      }
@@ -1913,7 +1913,7 @@ class Dropdown {
                   if (isset($param['option_tooltips'][$key])) {
                      $output .= ' title="'.$param['option_tooltips'][$key].'"';
                   }
-                  $output .= ">" .$val . "</option>";
+                  $output .= ">" .Html::entities_deep($val) . "</option>";
                   if ($max_option_size < strlen($val)) {
                      $max_option_size = strlen($val);
                   }

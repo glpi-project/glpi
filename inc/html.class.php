@@ -5254,7 +5254,7 @@ JAVASCRIPT;
                $key == $selected
                || is_array($selected) && in_array($key, $selected))
             ) ? ' selected="selected"' : '',
-            $value
+            Html::entities_deep($value)
          );
       }
       $select .= '</select>';
