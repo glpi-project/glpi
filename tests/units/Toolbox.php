@@ -499,10 +499,34 @@ class Toolbox extends \GLPITestCase {
 
    protected function cleanHtmlProvider() {
       $dataset = $this->cleanProvider();
+
+      // nested list should be preserved
       $dataset[] = [
-         ['<div>Here a list example: <pre>&lt;ul&gt;&lt;li&gt;one&lt;/li&gt;&lt;li&gt;two&lt;/li&gt;&lt;/ul&gt;</pre></div>'],
-         ['&lt;div&gt;Here a list example: &lt;pre&gt;&lt;ul&gt;&lt;li&gt;one&lt;/li&gt;&lt;li&gt;two&lt;/li&gt;&lt;/ul&gt;&lt;/pre&gt;']
+         '<div>Here a list example: <ul><li>one, with nested<ul><li>nested list</li></ul></li><li>two</li></ul></div>',
+         '&lt;div&gt;Here a list example: &lt;ul&gt;&lt;li&gt;one, with nested&lt;ul&gt;&lt;li&gt;nested list&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;two&lt;/li&gt;&lt;/ul&gt;'
       ];
+      // on* attributes are not allowed
+      $dataset[] = [
+         '<img src="test.png" alt="test image" />',
+         '&lt;img src="test.png" alt="test image" onerror="javascript:alert(document.cookie);" /&gt;'
+      ];
+      $dataset[] = [
+         '<img src="test.png" alt="test image" />',
+         '&lt;img src="test.png" alt="test image" onload="javascript:alert(document.cookie);" /&gt;'
+      ];
+      // iframes should not be preserved by default
+      $dataset[] = [
+         'Here is an iframe: ', 'Here is an iframe: &lt;iframe src="http://glpi-project.org/"&gt;&lt;/iframe&gt;'
+      ];
+      // HTML comments should be removed
+      $dataset[] = [
+         '<p>Legit text</p>', '&lt;p&gt;Legit&lt;!-- This is an HTML comment --&gt; text&lt;/p&gt;'
+      ];
+      // CDATA should be removed
+      $dataset[] = [
+         '<p>Legit text</p>', '&lt;p&gt;Legit&lt;![CDATA[Some CDATA]]&gt; text&lt;/p&gt;'
+      ];
+
       return $dataset;
    }
 

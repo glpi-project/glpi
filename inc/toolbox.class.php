@@ -429,11 +429,18 @@ class Toolbox {
             $value          = str_replace($complete, $cleancomplete, $value);
          }
 
-         $config                      = ['safe'=>1];
-         $config["elements"]          = "*+iframe+audio+video";
-         $config["direct_list_nest"]  = 1;
+         $config = [
+            'safe'             => 1,
+            'elements'         => '*+audio+video',
+            'comment'          => 1, // 1: remove HTML comments (and do not display their contents)
+            'cdata'            => 1, // 1: remove CDATA sections (and do not display their contents)
+            'direct_list_nest' => 1, // 1: Allow usage of ul/ol tags nested in other ul/ol tags
+         ];
+         if (GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
+            $config['elements'] .= '+iframe';
+         }
 
-         $value                       = htmLawed($value, $config);
+         $value = htmLawed($value, $config);
 
          // Special case : remove the 'denied:' for base64 img in case the base64 have characters
          // combinaison introduce false positive
