@@ -429,11 +429,7 @@ class Toolbox {
             $value          = str_replace($complete, $cleancomplete, $value);
          }
 
-         $config                      = ['safe'=>1];
-         $config["elements"]          = "*+iframe+audio+video";
-         $config["direct_list_nest"]  = 1;
-
-         $value                       = htmLawed($value, $config);
+         $value = htmLawed($value, self::getHtmLawedSafeConfig());
 
          // Special case : remove the 'denied:' for base64 img in case the base64 have characters
          // combinaison introduce false positive
@@ -444,6 +440,29 @@ class Toolbox {
       }
 
       return $value;
+   }
+
+   /**
+    * Returns a safe configuration for htmLawed.
+    *
+    * @return array
+    *
+    * @since 9.5.4
+    */
+   public static function getHtmLawedSafeConfig(): array {
+      $config = [
+         'elements'         => '* -applet -canvas -embed -object -script',
+         'deny_attribute'   => 'on*',
+         'comment'          => 1, // 1: remove HTML comments (and do not display their contents)
+         'cdata'            => 1, // 1: remove CDATA sections (and do not display their contents)
+         'direct_list_nest' => 1, // 1: Allow usage of ul/ol tags nested in other ul/ol tags
+         'schemes'          => '*: aim, app, feed, file, ftp, gopher, http, https, irc, mailto, news, nntp, sftp, ssh, tel, telnet'
+      ];
+      if (!GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
+         $config['elements'] .= '-iframe';
+      }
+
+      return $config;
    }
 
    /**

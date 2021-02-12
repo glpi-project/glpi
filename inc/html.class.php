@@ -88,18 +88,13 @@ class Html {
       // Neutralize not well formatted html tags
       $value = preg_replace("/(<)([^>]*<)/", "&lt;$2", $value);
 
-      $value = htmLawed(
-         $value,
-         [
-            'elements'         => ($striptags) ? 'none' : '',
-            'deny_attribute'   => 'on*',
-            'keep_bad'         => $keep_bad, // 1: neutralize tag and content, 2 : remove tag and neutralize content
-            'comment'          => 1, // 1: remove
-            'cdata'            => 1, // 1: remove
-            'direct_list_nest' => 1, // 1: Allow usage of ul/ol tags nested in other ul/ol tags
-            'schemes'          => '*: aim, app, feed, file, ftp, gopher, http, https, irc, mailto, news, nntp, sftp, ssh, tel, telnet'
-         ]
-      );
+      $config = Toolbox::getHtmLawedSafeConfig();
+      $config['keep_bad'] = $keep_bad; // 1: neutralize tag and content, 2 : remove tag and neutralize content
+      if ($striptags) {
+         $config['elements'] = 'none';
+      }
+
+      $value = htmLawed($value, $config);
 
       // Special case : remove the 'denied:' for base64 img in case the base64 have characters
       // combinaison introduce false positive
