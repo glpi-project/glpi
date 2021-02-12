@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-class Line extends CommonDropdown {
+class Line extends CommonDBTM {
    // From CommonDBTM
    public $dohistory                   = true;
 
@@ -180,11 +180,37 @@ class Line extends CommonDropdown {
       $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
       $tab[] = [
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false,
+            'datatype'           => 'number'
+      ];
+
+      $tab[] = [
             'id'                 => '4',
             'table'              => 'glpi_linetypes',
             'field'              => 'name',
             'name'               => LineType::getTypeName(1),
             'datatype'           => 'dropdown',
+      ];
+
+      $tab[] = [
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
+      ];
+
+      $tab[] = [
+            'id'                 => '19',
+            'table'              => $this->getTable(),
+            'field'              => 'date_mod',
+            'name'               => __('Last update'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
       ];
 
       $tab[] = [
@@ -212,6 +238,24 @@ class Line extends CommonDropdown {
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_itemgroup' => 1],
             'datatype'           => 'dropdown'
+      ];
+
+      $tab[] = [
+            'id'                 => '80',
+            'table'              => 'glpi_entities',
+            'field'              => 'completename',
+            'name'               => Entity::getTypeName(1),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown'
+      ];
+
+      $tab[] = [
+            'id'                 => '121',
+            'table'              => $this->getTable(),
+            'field'              => 'date_creation',
+            'name'               => __('Creation date'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
       ];
 
       $tab[] = [

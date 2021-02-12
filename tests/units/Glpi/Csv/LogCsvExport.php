@@ -38,7 +38,7 @@ use Glpi\Csv\LogCsvExport as Core_LogCsvExport;
 class LogCsvExport extends \CsvTestCase {
 
    protected function getTestData(): array {
-      $date = date('Ymd', time());
+      $date = date('Y_m_d', time());
 
       $computer = new Computer();
       $id = $computer->add([
@@ -81,7 +81,7 @@ class LogCsvExport extends \CsvTestCase {
       $this->boolean($computer->getFromDb($id))->isTrue();
 
       // Data that will be constant for all tests
-      $filename = "testexporttocsv-5$date.csv";
+      $filename = "testexporttocsv-5_$date.csv";
       $cols     = 5;
 
       return [
