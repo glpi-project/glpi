@@ -476,7 +476,7 @@ final class StatusChecker {
       $output .= "GLPI_SESSION_DIR_{$status['filesystem']['session_dir']['status']}\n";
       if (count($status['ldap']['servers'])) {
          $output .= 'Check LDAP servers:';
-         foreach ($status['db']['slaves']['servers'] as $name => $ldap_info) {
+         foreach ($status['ldap']['servers'] as $name => $ldap_info) {
             $output .= " {$name}_{$ldap_info['status']}\n";
          }
       } else {
