@@ -488,6 +488,11 @@ class Update extends CommonGLPI {
             update953to954();
             break;
 
+         case "9.5.3":
+            include_once "{$updir}update_953_954.php";
+            update953to954();
+            break;
+
          case GLPI_VERSION:
          case GLPI_SCHEMA_VERSION:
             break;

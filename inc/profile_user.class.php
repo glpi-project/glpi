@@ -99,6 +99,13 @@ class Profile_User extends CommonDBRelation {
                                           false, ERROR);
          return false;
       }
+
+      if (isset($input['profiles_id']) && !empty($input['profiles_id'])) {
+         if ($input['profiles_id'] == Profile::getDefault()) {
+            $input['is_default_profile'] = true;
+         }
+      }
+
       return parent::prepareInputForAdd($input);
    }
 

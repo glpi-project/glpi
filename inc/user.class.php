@@ -1050,6 +1050,25 @@ class User extends CommonDBTM {
             unset($this->input["_ldap_rules"]);
 
             $return = true;
+         } else if (count($dynamic_profiles) == 1) {
+            $dynamic_profile = reset($dynamic_profiles);
+            $default_profile = Profile::getDefault();
+            // If no rule applied and only one dynamic profile found, check if
+            // it is the default profile
+            if ($dynamic_profile['is_default_profile'] == true) {
+               // Remove from to be deleted list
+               $dynamic_profiles = [];
+
+               // Update profile if need to match the current default profile
+               if ($dynamic_profile['profiles_id'] !== $default_profile) {
+                  $pu = new Profile_User();
+                  $dynamic_profile['profiles_id'] = $default_profile;
+                  $pu->add($dynamic_profile);
+                  $pu->delete([
+                     'id' => $dynamic_profile['id']
+                  ]);
+               }
+            }
          }
 
          // Delete old dynamic profiles
