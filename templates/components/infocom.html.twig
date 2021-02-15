@@ -32,42 +32,42 @@
 
       {{ fields.dateField(
          "order_date",
-         infocom,
+         infocom.fields['order_date'],
          __("Order date"),
          { 'disabled': disabled }
       ) }}
 
       {{ fields.dateField(
          "buy_date",
-         infocom,
+         infocom.fields['buy_date'],
          __("Date of purchase"),
          { 'disabled': disabled }
       ) }}
 
       {{ fields.dateField(
          "delivery_date",
-         infocom,
+         infocom.fields['delivery_date'],
          __("Delivery date"),
          { 'disabled': disabled }
       ) }}
 
       {{ fields.dateField(
          "use_date",
-         infocom,
+         infocom.fields['use_date'],
          __("Startup date"),
          { 'disabled': disabled }
       ) }}
 
       {{ fields.dateField(
          "inventory_date",
-         infocom,
+         infocom.fields['inventory_date'],
          __("Date of last physical inventory"),
          { 'disabled': disabled }
       ) }}
 
       {{ fields.dateField(
          "decommission_date",
-         infocom,
+         infocom.fields['decommission_date'],
          __("Decommission date"),
          { 'disabled': disabled }
       ) }}
@@ -81,7 +81,7 @@
       {{ fields.dropdownField(
          "Supplier",
          "suppliers_id",
-         infocom,
+         infocom.fields['suppliers_id'],
          "Supplier"|itemtype_name,
          {
             'entity'  : item.fields['entities_id'],
@@ -93,7 +93,7 @@
          {{ fields.dropdownField(
             "Budget",
             "budgets_id",
-            infocom,
+            infocom.fields['budgets_id'],
             "Budget"|itemtype_name,
             {
                'entity'  : item.fields['entities_id'],
@@ -105,14 +105,14 @@
 
       {{ fields.textField(
          "order_number",
-         infocom,
+         infocom.fields['order_number'],
          __("Order number"),
          { 'disabled': disabled }
       ) }}
 
       {{ fields.autoNameField(
          "immo_number",
-         infocom,
+         infocom.fields['immo_number'],
          __('Immobilization number'),
          withtemplate,
          { 'disabled': disabled }
@@ -120,28 +120,28 @@
 
       {{ fields.textField(
          "bill",
-         infocom,
+         infocom.fields['bill'],
          __("Invoice number"),
          { 'disabled': disabled }
       ) }}
 
       {{ fields.textField(
          "delivery_number",
-         infocom,
+         infocom.fields['delivery_numbe'],
          __("Delivery form"),
          { 'disabled': disabled }
       ) }}
 
       {{ fields.numberField(
          "value",
-         infocom,
+         infocom.fields['value'],
          _x('price', 'Value'),
          { 'disabled': disabled }
       ) }}
 
       {{ fields.numberField(
          "warranty_value",
-         infocom,
+         infocom.fields['warranty_value'],
          __('Warranty extension value'),
          { 'disabled': disabled }
       ) }}
@@ -150,7 +150,7 @@
 
       {{ fields.textareaField(
          "comment",
-         infocom,
+         infocom.fields['comment'],
          __('Comments'),
          { 'disabled': disabled }
       ) }}
@@ -168,7 +168,7 @@
 
       {{ fields.dropdownNumberField(
          "sink_time",
-         infocom,
+         infocom.fields['sink_time'],
          __('Amortization duration'),
          {
             max     : 15,
@@ -179,7 +179,7 @@
 
       {{ fields.numberField(
          "sink_coeff",
-         infocom,
+         infocom.fields['sink_coeff'],
          __("Amortization coefficient"),
          { 'disabled': disabled }
       ) }}
@@ -188,7 +188,7 @@
       {% set ticket_tco_value = Infocom__showTco(item.fields["ticket_tco"], infocom.fields['value']) %}
       {{ fields.readOnlyField(
          'ticket_tco',
-         infocom,
+         infocom.fields['ticket_tco'],
          __('TCO (value + tracking cost)'),
          { value: ticket_tco_value, 'disabled': disabled }
       )}}
@@ -196,7 +196,7 @@
       {% set ticket_tco2_value = Infocom__showTco(item.fields["ticket_tco"], infocom.fields['value'], infocom.fields['buy_date']) %}
       {{ fields.readOnlyField(
          'ticket_tco',
-         infocom,
+         infocom.fields['ticket_tco'],
          __('Monthly TCO'),
          { value: ticket_tco2_value, 'disabled': disabled }
       )}}
@@ -205,7 +205,7 @@
       {{ fields.dropdownField(
          "BusinessCriticity",
          "businesscriticities_id",
-         infocom,
+         infocom.fields['businesscriticities_id'],
          _n('Business criticity', 'Business criticities', 1),
          {
             'disabled': disabled
@@ -220,7 +220,7 @@
 
       {{ fields.dateField(
          "warranty_date",
-         infocom,
+         infocom.fields['warranty_date'],
          __('Start date of warranty'),
          { 'disabled': disabled }
       ) }}
@@ -228,7 +228,7 @@
       {# TODO withtemplate==2 #}
       {{ fields.dropdownNumberField(
          "warranty_duration",
-         infocom,
+         infocom.fields['warranty_duration'],
          __('Warranty duration'),
          {
             min     : 0,
@@ -243,7 +243,7 @@
 
       {{ fields.textField(
          "warranty_info",
-         infocom,
+         infocom.fields['warranty_info'],
          __('Warranty information'),
          { 'disabled': disabled }
       ) }}

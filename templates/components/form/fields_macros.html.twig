@@ -31,9 +31,8 @@
 {% endmacro %}
 
 
-{% macro textField(name, item, label, options = {}) %}
+{% macro textField(name, value, label, options = {}) %}
    {% set options = { 'type': 'text' }|merge(options) %}
-   {% set value   = options.value|length > 0 ? options.value : item.fields[name] %}
 
    {% set field %}
       <input type="{{ options.type }}" class="form-control" id="%id%"
@@ -46,21 +45,19 @@
 {% endmacro %}
 
 
-{% macro numberField(name, item, label, options = {}) %}
+{% macro numberField(name, value, label, options = {}) %}
    {% set options = options|merge({ type: "text" }) %}
-   {{ _self.textField(name, item, label, options) }}
+   {{ _self.textField(name, value, label, options) }}
 {% endmacro %}
 
 
-{% macro readOnlyField(name, item, label, options = {}) %}
+{% macro readOnlyField(name, vaue, label, options = {}) %}
    {% set options = options|merge({ readonly: true }) %}
-   {{ _self.textField(name, item, label, options) }}
+   {{ _self.textField(name, vaue, label, options) }}
 {% endmacro %}
 
 
-{% macro textareaField(name, item, label, options = {}) %}
-   {% set value   = options.value|length > 0 ? options.value : item.fields[name] %}
-
+{% macro textareaField(name, value, label, options = {}) %}
    {% set field %}
       <textarea class="form-control" id="%id%" name="{{ name }}" rows="3"
                 {{ options.disabled ? 'disabled' : "" }}>
@@ -72,11 +69,11 @@
 {% endmacro %}
 
 
-{% macro dateField(name, item, label, options = {}) %}
+{% macro dateField(name, value, label, options = {}) %}
    {% set field %}
       <div class="input-icon">
          <input type="date" class="form-control" id="%id%"
-                name="{{name}}" value="{{ item.fields['name'] }}"
+                name="{{name}}" value="{{ value }}"
                 {{ options.disabled ? 'disabled' : "" }}>
          <i class="input-icon-addon far fa-calendar"></i>
       </div>
@@ -86,7 +83,7 @@
 {% endmacro %}
 
 
-{% macro dropdownNumberField(name, item, label, options = {}) %}
+{% macro dropdownNumberField(name, value, label, options = {}) %}
    {% set options = { 'rand': random() }|merge(options) %}
 
    {% if options.disabled %}
@@ -95,7 +92,7 @@
 
    {% set field %}
       {{ Dropdown__showNumber(name, {
-         'value'  : item.fields[name],
+         'value'  : value,
          'display': false,
          'rand'   : rand,
          'width'  : '100%',
@@ -108,7 +105,7 @@
 
 
 
-{% macro dropdownField(itemtype, name, item, label, options = {}) %}
+{% macro dropdownField(itemtype, name, value, label, options = {}) %}
    {% set options = { 'rand': random() }|merge(options) %}
 
    {% if options.disabled %}
@@ -117,7 +114,7 @@
 
    {% set field %}
       {{ itemtype|dropdown({
-         'value'  : item.fields['name'],
+         'value'  : value,
          'rand'   : rand,
          'width'  : '100%',
          'class'  : 'form-select',
