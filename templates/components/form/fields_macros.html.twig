@@ -51,9 +51,9 @@
 {% endmacro %}
 
 
-{% macro readOnlyField(name, vaue, label, options = {}) %}
+{% macro readOnlyField(name, value, label, options = {}) %}
    {% set options = options|merge({ readonly: true }) %}
-   {{ _self.textField(name, vaue, label, options) }}
+   {{ _self.textField(name, value, label, options) }}
 {% endmacro %}
 
 
@@ -130,32 +130,35 @@
 
    {% set id    = options.id|length > 0 ? options.id : (name ~ "_" ~ options.rand) %}
    {% set field = field | replace({'%id%': id})  %}
+   {% set add_field_html = options.add_field_html|length > 0 ? options.add_field_html : "" %}
 
    {% if options.is_horizontal %}
-      {{ _self.horizontalField(label, field, id) }}
+      {{ _self.horizontalField(label, field, id, add_field_html) }}
    {% else %}
-      {{ _self.verticalField(label, field, id) }}
+      {{ _self.verticalField(label, field, id, add_field_html) }}
    {% endif %}
 {% endmacro %}
 
 
-{% macro horizontalField(label, field, id) %}
+{% macro horizontalField(label, field, id, add_field_html) %}
    <div class="row mb-3 col-12 col-sm-6">
       <label class="col-sm-5 col-form-label text-sm-end" for="{{ id }}">
          {{ label }}
       </label>
       <div class="col-sm-7">
          {{ field | raw }}
+         {{ add_field_html|raw }}
       </div>
    </div>
 {% endmacro %}
 
 
-{% macro verticalField(label, field, id) %}
+{% macro verticalField(label, field, id, add_field_html = "") %}
    <div class="mb-3 col-12 col-sm-6">
       <label class="form-label" for="{{ id }}">
          {{ label }}
       </label>
       {{ field | raw }}
+      {{ add_field_html|raw }}
    </div>
 {% endmacro %}

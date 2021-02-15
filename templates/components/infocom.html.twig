@@ -155,13 +155,31 @@
          { 'disabled': disabled }
       ) }}
 
+      {% set amort %}
+         {{ Infocom__Amort(
+            infocom.fields["sink_type"],
+            infocom.fields["value"],
+            infocom.fields["sink_time"],
+            infocom.fields["sink_coeff"],
+            infocom.fields["buy_date"],
+            infocom.fields["use_date"],
+            config('date_tax'),
+            "n"
+         ) }}
+      {% endset %}
+      {{ fields.field(
+         '',
+         amort,
+         __('Account net value'),
+      )}}
+
       {# TODO AmortType #}
       {# TODO disabled #}
       {% set sink_type_field%}
          {{ Infocom__dropdownAmortType('sink_type', infocom.fields["sink_type"], false) }}
       {% endset %}
       {{ fields.field(
-         'sink_type',
+         '',
          sink_type_field,
          __('Amortization duration'),
       )}}
@@ -185,21 +203,23 @@
       ) }}
 
       {# TODO excluded types #}
-      {% set ticket_tco_value = Infocom__showTco(item.fields["ticket_tco"], infocom.fields['value']) %}
-      {{ fields.readOnlyField(
-         'ticket_tco',
-         infocom.fields['ticket_tco'],
-         __('TCO (value + tracking cost)'),
-         { value: ticket_tco_value, 'disabled': disabled }
-      )}}
+      {% if item.getType() not in Infocom__getExcludedTypes()|merge(['Cartridge', 'Consumable', 'SoftwareLicense'])  %}
+         {% set ticket_tco_value = Infocom__showTco(item.fields["ticket_tco"], infocom.fields['value']) %}
+         {{ fields.readOnlyField(
+            'ticket_tco',
+            ticket_tco_value,
+            __('TCO (value + tracking cost)'),
+            { 'disabled': disabled }
+         )}}
 
-      {% set ticket_tco2_value = Infocom__showTco(item.fields["ticket_tco"], infocom.fields['value'], infocom.fields['buy_date']) %}
-      {{ fields.readOnlyField(
-         'ticket_tco',
-         infocom.fields['ticket_tco'],
-         __('Monthly TCO'),
-         { value: ticket_tco2_value, 'disabled': disabled }
-      )}}
+         {% set ticket_tco2_value = Infocom__showTco(item.fields["ticket_tco"], infocom.fields['value'], infocom.fields['buy_date']) %}
+         {{ fields.readOnlyField(
+            'ticket_tco',
+            ticket_tco2_value,
+            __('Monthly TCO'),
+            { 'disabled': disabled }
+         )}}
+      {% endif %}
 
 
       {{ fields.dropdownField(
@@ -225,21 +245,31 @@
          { 'disabled': disabled }
       ) }}
 
-      {# TODO withtemplate==2 #}
-      {{ fields.dropdownNumberField(
-         "warranty_duration",
-         infocom.fields['warranty_duration'],
-         __('Warranty duration'),
-         {
-            min     : 0,
-            max     : 120,
-            step    : 1,
-            toadd   : {'-1': __('Lifelong')},
-            unit    : 'month',
-            disabled: disabled
-         }
-      ) }}
-      {# TODO getWarrantyExpir #}
+      {% if withtemplate == 2 %}
+         {% if infocom.fields["warranty_duration"] == -1 %}
+            {{ __('Lifelong') }}
+         {% else %}
+            {{ _n('%d month', '%d months', infocom.fields["warranty_duration"])|format(infocom.fields["warranty_duration"]) }}
+         {% endif %}
+      {% else %}
+         {% set warrantyexpir %}
+            {{ Infocom__getWarrantyExpir(infocom.fields['warranty_date'], infocom.fields['warranty_duration'], 0, true) }}
+         {% endset %}
+         {{ fields.dropdownNumberField(
+            "warranty_duration",
+            infocom.fields['warranty_duration'],
+            __('Warranty duration'),
+            {
+               min     : 0,
+               max     : 120,
+               step    : 1,
+               toadd   : {'-1': __('Lifelong')},
+               unit    : 'month',
+               disabled: disabled,
+               add_field_html: "<span class='text-muted'>" ~ __('Valid to %s')|format(warrantyexpir) ~ "</span>"
+            }
+         ) }}
+      {% endif %}
 
       {{ fields.textField(
          "warranty_info",
@@ -248,22 +278,26 @@
          { 'disabled': disabled }
       ) }}
 
-      {# TODO alerts #}
-
       {% if config('use_notifications') %}
+         {% set alert_html %}
+            {{ displayLastAlert('Infocom', infocom.fields['id']) }}
+         {% endset %}
+
          {% set alert_field %}
             {{ Infocom__dropdownAlert({
                name   : 'alert',
                value  : infocom.fields['alert'],
                display: false,
                width  : '100%',
-               class  : 'form-select',
+               class  : 'form-select'
             }) }}
          {% endset %}
+
          {{ fields.field(
             'alert',
             alert_field,
             __('Alarms on financial and administrative information'),
+            { add_field_html: "<span class='text-muted'>" ~ alert_html ~ "</span>" }
          )}}
       {% endif %}
 
