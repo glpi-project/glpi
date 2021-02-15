@@ -100,39 +100,19 @@ class RequirementsManager {
       global $PHPLOGGER;
       $requirements[] = new LogsWriteAccess($PHPLOGGER);
 
-      foreach ($this->getDataDirectories() as $directory) {
+      foreach (Variables::getDataDirectories() as $directory) {
+         if ($directory === GLPI_LOG_DIR) {
+            continue; // Specifically checked by LogsWriteAccess requirement
+         }
          $requirements[] = new DirectoryWriteAccess($directory);
       }
 
       $requirements[] = new DirectoryWriteAccess(GLPI_MARKETPLACE_DIR, true);
 
-      $requirements[] = new ProtectedWebAccess(array_merge($this->getDataDirectories(), [GLPI_LOG_DIR]));
+      $requirements[] = new ProtectedWebAccess(Variables::getDataDirectories());
 
       $requirements[] = new SeLinux();
 
       return new RequirementsList($requirements);
-   }
-
-   /**
-    * Returns list of directories that requires write access.
-    *
-    * @return string[]
-    */
-   private function getDataDirectories() {
-      return [
-         GLPI_CONFIG_DIR,
-         GLPI_DOC_DIR,
-         GLPI_DUMP_DIR,
-         GLPI_SESSION_DIR,
-         GLPI_CRON_DIR,
-         GLPI_GRAPH_DIR,
-         GLPI_LOCK_DIR,
-         GLPI_PLUGIN_DOC_DIR,
-         GLPI_TMP_DIR,
-         GLPI_CACHE_DIR,
-         GLPI_RSS_DIR,
-         GLPI_UPLOAD_DIR,
-         GLPI_PICTURE_DIR,
-      ];
    }
 }

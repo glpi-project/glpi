@@ -9,9 +9,5 @@ services:
         source: "${APPLICATION_ROOT:-..}"
         target: "/var/glpi"
       - type: "bind"
-        source: "${APPLICATION_HOME}"
+        source: "${APP_CONTAINER_HOME}"
         target: "/home/glpi"
-networks:
-    default:
-        driver: "bridge"
-        name: "glpi_bridge"
