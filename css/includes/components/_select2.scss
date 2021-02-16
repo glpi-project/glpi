@@ -63,6 +63,9 @@
       .select2-selection__rendered {
          direction: rtl; // ellipsis on left
          text-align: left;
+         &:before {
+            content: '\200E'; // left-to-right mark: be sure that content is displayed in ltr way
+         }
       }
 
       &.select2-selection--single {
