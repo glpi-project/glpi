@@ -128,8 +128,9 @@ if (isset($_GET['checkavailability'])) {
             }
          }
 
-         if ($ismine || $canview) {
+         if (($ismine || $canview) && Session::startImpersonating($_GET["uID"], true)) {
             Planning::generateIcal($_GET["uID"], $_GET["gID"], $_GET["limititemtype"]);
+            Session::destroy();
          }
       }
    }

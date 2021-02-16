@@ -1430,12 +1430,13 @@ class Session {
     * Impersonate user having given id.
     *
     * @param integer $user_id
+    * @param bool    $force   Bypass "canImpersonate" check
     *
     * @return boolean
     */
-   static function startImpersonating($user_id) {
+   static function startImpersonating($user_id, $force = false) {
 
-      if (!self::canImpersonate($user_id)) {
+      if (!$force && !self::canImpersonate($user_id)) {
          return false;
       }
 
