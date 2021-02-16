@@ -20,14 +20,15 @@
 
 
 {% macro autoNameField(name, item, label, withtemplate, options = {}) %}
+   {% set tpl_value = option.value|length > 0 ? option.value : item.fields[name] %}
    {% set tplmark = "" %}
    {% if item.isTemplate() %} {# TODO exluded types #}
-      {% set tplmark = getAutofillMark(item, name, {'withtemplate': withtemplate}) %}
+      {% set tplmark = getAutofillMark(item, name, {'withtemplate': withtemplate}, tpl_value) %}
    {% endif %}
    {% set value = autoName(item.fields[name], name, (withtemplate == 2), item.getType(), item.fields['entities_id']) %}
    {% set label = __('%1$s%2$s')|format(label, tplmark) %}
 
-   {{ _self.textField(name, item, label, options|merge({ 'value': value }) ) }}
+   {{ _self.textField(name, value, label, options) }}
 {% endmacro %}
 
 
@@ -37,6 +38,18 @@
    {% set field %}
       <input type="{{ options.type }}" class="form-control" id="%id%"
              name="{{ name }}" value="{{ value }}"
+             {{ options.readonly ? 'readonly' : "" }}
+             {{ options.disabled ? 'disabled' : "" }}>
+   {% endset %}
+
+   {{ _self.field(name, field, label, options) }}
+{% endmacro %}
+
+{% macro checkboxField(name, value, label, options = {}) %}
+   {% set field %}
+      <input type="hidden"   name="{{ name }}" value="0">
+      <input type="checkbox" name="{{ name }}" value="1" class="form-check-input" id="%id%"
+             {{ value == 1 ? "checked" : "" }}
              {{ options.readonly ? 'readonly' : "" }}
              {{ options.disabled ? 'disabled' : "" }}>
    {% endset %}
@@ -132,6 +145,16 @@
    {{ _self.field(name, field, label, options|merge({ 'id': "dropdown_" ~ name ~ "_" ~ options.rand})) }}
 {% endmacro %}
 
+{% macro htmlField(name, value, label, options = {}) %}
+   {% if value|length ==0 %}
+      {% set value = "&nbsp;" %}
+   {% endif %}
+
+   {% set value %}
+      <span class="form-control-plaintext">{{ value|raw }}</span>
+   {% endset %}
+   {{ _self.field(name, value, label, options) }}
+{% endmacro %}
 
 {% macro field(name, field, label, options = {}) %}
    {% set options = { 'rand': random(), 'is_horizontal': true }|merge(options) %}
@@ -139,6 +162,17 @@
    {% set id    = options.id|length > 0 ? options.id : (name ~ "_" ~ options.rand) %}
    {% set field = field | replace({'%id%': id})  %}
    {% set add_field_html = options.add_field_html|length > 0 ? options.add_field_html : "" %}
+
+   {% if options.is_horizontal %}
+      {{ _self.horizontalField(label, field, id, add_field_html) }}
+   {% else %}
+      {{ _self.verticalField(label, field, id, add_field_html) }}
+   {% endif %}
+{% endmacro %}
+
+
+{% macro nullField(options = {}) %}
+   {% set options = {'is_horizontal': true }|merge(options) %}
 
    {% if options.is_horizontal %}
       {{ _self.horizontalField(label, field, id, add_field_html) }}

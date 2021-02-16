@@ -112,10 +112,10 @@
 
       {{ fields.autoNameField(
          "immo_number",
-         infocom.fields['immo_number'],
+         item,
          __('Immobilization number'),
          withtemplate,
-         { 'disabled': disabled }
+         { 'disabled': disabled, 'value': infocom.fields['immo_number'] }
       ) }}
 
       {{ fields.textField(
