@@ -2385,7 +2385,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                ],
                'entities_id' => [
                   'type'   => 'hidden',
-                  'value'  => isset($project->fields["entities_id"]) ? $project->fields["entities_id"] : 0, //undefined in global kanban but manage by 'supported_itemtypes'
+                  'value'  => $ID > 0 ? $project->fields["entities_id"] : $_SESSION['glpiactive_entity'],
                ],
                'is_recursive' => [
                   'type'   => 'hidden',
@@ -2420,7 +2420,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                ],
                'entities_id' => [
                   'type'   => 'hidden',
-                  'value'  => isset($project->fields["entities_id"]) ? $project->fields["entities_id"] : 0, //undefined in global kanban but manage by 'supported_itemtypes'
+                  'value'  => $ID > 0 ? $project->fields["entities_id"] : $_SESSION['glpiactive_entity'],
                ],
                'is_recursive' => [
                   'type'   => 'hidden',
@@ -2448,7 +2448,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
 
       echo "<div id='kanban' class='kanban'></div>";
       $darkmode = ($_SESSION['glpipalette'] === 'darker') ? 'true' : 'false';
-      $canadd_item = json_encode($project->canEdit($ID) && $project->can($ID, UPDATE));
+      $canadd_item = json_encode($ID > 0 ? $project->canEdit($ID) && $project->can($ID, UPDATE) : self::canCreate() || ProjectTask::canCreate());
       $canmodify_view = json_encode(($ID == 0 || $project->canModifyGlobalState()));
       $cancreate_column = json_encode((bool)ProjectState::canCreate());
       $limit_addcard_columns = $canmodify_view !== 'false' ? '[]' : json_encode([0]);
