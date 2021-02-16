@@ -310,10 +310,8 @@ class RuleAsset extends DbTestCase {
                                           'users_id'    => $users_id,
                                        ]);
 
-
       $computer_em->getFromDB($computer_id);
       $this->integer($computer_em->getField('locations_id'))->isEqualTo($locations_id);
-
 
       // Test on update
       $computer_em = new \Computer();
@@ -330,7 +328,6 @@ class RuleAsset extends DbTestCase {
                               'id'       => $computer_id,
                               'users_id' => $users_id,
                            ]);
-
 
       $computer_em->getFromDB($computer_id);
       $this->integer($computer_em->getField('locations_id'))->isEqualTo($locations_id);
