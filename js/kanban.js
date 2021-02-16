@@ -1469,7 +1469,6 @@
          add_form += form_header;
 
          add_form += "<div class='kanban-item-content'>";
-         add_form += "<textarea name='bulk_item_list'></textarea>";
          $.each(self.supported_itemtypes[itemtype]['fields'], function(name, options) {
             var input_type = options['type'] !== undefined ? options['type'] : 'text';
             var value = options['value'] !== undefined ? options['value'] : '';
@@ -1481,8 +1480,11 @@
                   add_form += " value='" + value + "'";
                }
                add_form += "/>";
+            } else if (input_type.toLowerCase() === 'raw') {
+               add_form += value;
             }
          });
+         add_form += "<textarea name='bulk_item_list'></textarea>";
          add_form += "</div>";
 
          var column_id_elements = column_el.prop('id').split('-');
