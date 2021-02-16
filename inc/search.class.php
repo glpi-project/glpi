@@ -623,11 +623,11 @@ class Search {
          }
       }
 
-      if (!count($data['toview'])) {
+      /*if (!count($data['toview'])) {
          Toolbox::logWarning(
             'No columns found to display ' . $itemtype
          );
-      }
+      }*/
 
       return $data;
    }

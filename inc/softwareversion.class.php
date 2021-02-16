@@ -221,7 +221,7 @@ class SoftwareVersion extends CommonDBChild {
          ]
       ];
 
-      $tab[] = [
+      /*$tab[] = [
          'id'                 => '123',
          'table'              => 'glpi_softwarecategories',
          'field'              => 'name',
@@ -235,7 +235,7 @@ class SoftwareVersion extends CommonDBChild {
                ]
             ]
          ]
-      ];
+      ];*/
 
       $tab[] = [
          'id'                 => '124',
