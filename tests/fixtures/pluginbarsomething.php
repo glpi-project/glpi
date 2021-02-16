@@ -32,6 +32,9 @@
 
 namespace GlpiPlugin\Bar;
 
-class Foo extends \CommonDBTM {
+class Something extends \CommonDBTM {
 
+   public function __construct(array $param) {
+
+   }
 }
