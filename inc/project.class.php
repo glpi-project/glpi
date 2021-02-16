@@ -2385,7 +2385,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                ],
                'entities_id' => [
                   'type'   => 'hidden',
-                  'value'  => $project->getField("entities_id"),
+                  'value'  => isset($project->fields["entities_id"]) ? $project->fields["entities_id"] : 0, //undefined in global kanban but manage by 'supported_itemtypes'
                ],
                'is_recursive' => [
                   'type'   => 'hidden',
@@ -2420,7 +2420,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                ],
                'entities_id' => [
                   'type'   => 'hidden',
-                  'value'  => $project->getField("entities_id"),
+                  'value'  => isset($project->fields["entities_id"]) ? $project->fields["entities_id"] : 0, //undefined in global kanban but manage by 'supported_itemtypes'
                ],
                'is_recursive' => [
                   'type'   => 'hidden',
