@@ -371,7 +371,7 @@
          self.temp_forms = {};
          var columns = $(self.element + " .kanban-column");
          $.each(columns, function(i, column) {
-            var forms = $(column).find('.kanban-add-form').find('.kanban-bulk-add-form');
+            var forms = $(column).find('.kanban-add-form');
             if (forms.length > 0) {
                self.temp_forms[column.id] = [];
                $.each(forms, function(i2, form) {
@@ -704,7 +704,7 @@
             );
          }
 
-         $(self.element + ' .kanban-container').on('submit', '.kanban-add-form', function(e) {
+         $(self.element + ' .kanban-container').on('submit', '.kanban-add-form:not(.kanban-bulk-add-form)', function(e) {
             e.preventDefault();
             var form = $(e.target);
             var data = {};
@@ -1461,7 +1461,7 @@
 
          var uniqueID = Math.floor(Math.random() * 999999);
          var formID = "form_add_" + itemtype + "_" + uniqueID;
-         var add_form = "<form id='" + formID + "' class='kanban-bulk-add-form kanban-form no-track'>";
+         var add_form = "<form id='" + formID + "' class='kanban-add-form kanban-bulk-add-form kanban-form no-track'>";
          var form_header = "<div class='kanban-item-header'>";
          form_header += "<span class='kanban-item-title'>"+self.supported_itemtypes[itemtype]['name']+"</span>";
          form_header += "<i class='fas fa-times' title='Close' onclick='$(this).parent().parent().remove()'></i>";
