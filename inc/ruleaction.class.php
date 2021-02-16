@@ -389,19 +389,20 @@ class RuleAction extends CommonDBChild {
    static function getActions() {
 
       return ['assign'              => __('Assign'),
-                   'append'              => __('Add'),
-                   'regex_result'        => __('Assign the value from regular expression'),
-                   'append_regex_result' => __('Add the result of regular expression'),
-                   'affectbyip'          => __('Assign: equipment by IP address'),
-                   'affectbyfqdn'        => __('Assign: equipment by name + domain'),
-                   'affectbymac'         => __('Assign: equipment by MAC address'),
-                   'compute'             => __('Recalculate'),
-                   'do_not_compute'      => __('Do not calculate'),
-                   'send'                => __('Send'),
-                   'add_validation'      => __('Send'),
-                   'fromuser'            => __('Copy from user'),
-                   'defaultfromuser'     => __('Copy default from user'),
-                   'fromitem'            => __('Copy from item')];
+              'append'              => __('Add'),
+              'regex_result'        => __('Assign the value from regular expression'),
+              'append_regex_result' => __('Add the result of regular expression'),
+              'affectbyip'          => __('Assign: equipment by IP address'),
+              'affectbyfqdn'        => __('Assign: equipment by name + domain'),
+              'affectbymac'         => __('Assign: equipment by MAC address'),
+              'compute'             => __('Recalculate'),
+              'do_not_compute'      => __('Do not calculate'),
+              'send'                => __('Send'),
+              'add_validation'      => __('Send'),
+              'fromuser'            => __('Copy from user'),
+              'defaultfromuser'     => __('Copy default from user'),
+              'firstgroupfromuser'  => __('Copy first group from user'),
+              'fromitem'            => __('Copy from item')];
    }
 
 
@@ -493,6 +494,7 @@ class RuleAction extends CommonDBChild {
          case 'fromuser' :
          case 'defaultfromuser' :
          case 'fromitem' :
+         case 'firstgroupfromuser' :
             Dropdown::showYesNo("value", $param['value'], 0);
             $display = true;
             break;

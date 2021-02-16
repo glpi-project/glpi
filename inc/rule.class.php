@@ -2417,7 +2417,7 @@ class Rule extends CommonDBTM {
 
          switch ($action['type']) {
             case "dropdown" :
-               if ($type=='defaultfromuser' || $type=='fromuser' || $type=='fromitem') {
+               if ($type=='defaultfromuser' || $type=='fromuser' || $type=='fromitem' || $type=='firstgroupfromuser') {
                   return Dropdown::getYesNo($value);
                }
 

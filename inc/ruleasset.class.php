@@ -168,7 +168,7 @@ class RuleAsset extends Rule {
       $actions['groups_id']['type']          = 'dropdown';
       $actions['groups_id']['table']         = 'glpi_groups';
       $actions['groups_id']['condition']     = ['is_itemgroup' => 1];
-      $actions['groups_id']['force_actions'] = ['assign', 'defaultfromuser'];
+      $actions['groups_id']['force_actions'] = ['assign', 'defaultfromuser', 'firstgroupfromuser'];
 
       $actions['users_id_tech']['table']      = 'glpi_users';
       $actions['users_id_tech']['type']       = 'dropdown_users';
@@ -254,6 +254,13 @@ class RuleAsset extends Rule {
                   break;
 
                case 'defaultfromuser' :
+                  if (($action->fields['field'] == 'groups_id')
+                      && isset($input['_default_groups_id_of_user'])) {
+                     $output['groups_id'] = $input['_default_groups_id_of_user'];
+                  }
+                  break;
+
+               case 'firstgroupfromuser':
                   if (($action->fields['field'] == 'groups_id')
                       && isset($input['_groups_id_of_user'])) {
                      $output['groups_id'] = $input['_groups_id_of_user'];
