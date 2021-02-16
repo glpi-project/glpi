@@ -474,7 +474,7 @@ class RuleAsset extends DbTestCase {
          "users_id"  => $user->fields['id']
       ]);
       $this->checkInput($group_user, $group_user_id, $group_user_input);
-      
+
       // Check ticket that trigger rule on creation
       $computer     = new \Computer();
       $computers_id = $computer->add($computer_input = [
