@@ -9,7 +9,7 @@
          <h4 class="card-title {{ icon|length ? "ms-4" : "" }}">
             {% if icon|length %}
                <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
-                  <i class="fa-2x {{ icon}}"></i>
+                  <i class="fa-2x {{ icon }}"></i>
                </div>
             {% endif %}
             {{ label }}
@@ -33,7 +33,7 @@
 
 
 {% macro textField(name, value, label, options = {}) %}
-   {% set options = { 'type': 'text' }|merge(options) %}
+   {% set options = {'type': 'text'}|merge(options) %}
 
    {% set field %}
       <input type="{{ options.type }}" class="form-control" id="%id%"
@@ -59,15 +59,15 @@
 
 
 {% macro numberField(name, value, label, options = {}) %}
-   {% set options = options|merge({ type: "text" }) %}
+   {% set options = options|merge({'type': "text"}) %}
    {% set value = formatNumber(value, true) %}
    {{ _self.textField(name, value, label, options) }}
 {% endmacro %}
 
 
 {% macro readOnlyField(name, value, label, options = {}) %}
-   {% set options = options|merge({ readonly: true }) %}
-   {% if value|length ==0 %}
+   {% set options = options|merge({'readonly': true}) %}
+   {% if value|length == 0 %}
       {% set value = "&nbsp;" %}
    {% endif %}
 
@@ -94,7 +94,7 @@
    {% set field %}
       <div class="input-icon">
          <input type="date" class="form-control" id="%id%"
-                name="{{name}}" value="{{ value }}"
+                name="{{ name }}" value="{{ value }}"
                 {{ options.disabled ? 'disabled' : "" }}>
          <i class="input-icon-addon far fa-calendar"></i>
       </div>
@@ -105,7 +105,7 @@
 
 
 {% macro dropdownNumberField(name, value, label, options = {}) %}
-   {% set options = { 'rand': random() }|merge(options) %}
+   {% set options = {'rand': random()}|merge(options) %}
 
    {% if options.disabled %}
       {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
@@ -121,16 +121,16 @@
       }|merge(options)) }}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({ 'id': "dropdown_" ~ name ~ "_" ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': "dropdown_" ~ name ~ "_" ~ options.rand})) }}
 {% endmacro %}
 
 
 
 {% macro dropdownField(itemtype, name, value, label, options = {}) %}
-   {% set options = { 'rand': random() }|merge(options) %}
+   {% set options = {'rand': random()}|merge(options) %}
 
    {% if options.disabled %}
-      {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
+      {% set options = options|merge({'specific_tags': {'disabled': 'disabled'}}) %}
    {% endif %}
 
    {% set field %}
@@ -142,7 +142,7 @@
       }|merge(options)) }}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({ 'id': "dropdown_" ~ name ~ "_" ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': "dropdown_" ~ name ~ "_" ~ options.rand})) }}
 {% endmacro %}
 
 {% macro htmlField(name, value, label, options = {}) %}
@@ -157,10 +157,10 @@
 {% endmacro %}
 
 {% macro field(name, field, label, options = {}) %}
-   {% set options = { 'rand': random(), 'is_horizontal': true }|merge(options) %}
+   {% set options = {'rand': random(), 'is_horizontal': true}|merge(options) %}
 
    {% set id    = options.id|length > 0 ? options.id : (name ~ "_" ~ options.rand) %}
-   {% set field = field | replace({'%id%': id})  %}
+   {% set field = field|replace({'%id%': id}) %}
    {% set add_field_html = options.add_field_html|length > 0 ? options.add_field_html : "" %}
 
    {% if options.is_horizontal %}
@@ -188,7 +188,7 @@
          {{ label }}
       </label>
       <div class="col-sm-7">
-         {{ field | raw }}
+         {{ field|raw }}
          {{ add_field_html|raw }}
       </div>
    </div>
@@ -200,7 +200,7 @@
       <label class="form-label" for="{{ id }}">
          {{ label }}
       </label>
-      {{ field | raw }}
+      {{ field|raw }}
       {{ add_field_html|raw }}
    </div>
 {% endmacro %}

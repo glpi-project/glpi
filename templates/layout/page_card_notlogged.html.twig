@@ -1,13 +1,13 @@
 {% set theme = user_pref('palette') %}
 {% if css_files is not defined %}
-   {% set css_files = ["public/lib/base.css", "css/palettes/" ~ theme ~".scss"] %}
+   {% set css_files = ["public/lib/base.css", "css/palettes/" ~ theme ~ ".scss"] %}
    {# TODO : load hight contrast css #}
 {% endif %}
 {% if js_files is not defined %}
    {% set js_files = ["public/lib/base.js", "public/lib/tabler.js", "js/common.js"] %}
 {% endif %}
 
-{{ include('layout/parts/head.html.twig') }}
+{% include "layout/parts/head.html.twig" %}
 <body>
    <div class="flex-fill d-flex flex-column justify-content-center py-4 mt-4">
       {% set style = "" %}

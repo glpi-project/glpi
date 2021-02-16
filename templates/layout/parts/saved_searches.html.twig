@@ -3,7 +3,7 @@
 {% set itemtype_cls = itemtype|lower %}
 {% set rand = random() %}
 
-<div class="card col-2 d-flex flex-column responsive-toggle {{ pinned ? "pinned" : "d-none" }} saved-searches-panel {{ itemtype_cls}}"
+<div class="card col-2 d-flex flex-column responsive-toggle {{ pinned ? "pinned" : "d-none" }} saved-searches-panel {{ itemtype_cls }}"
      id="saved-searches-panel-{{ rand }}">
    <div class="card-header d-flex flex-nowrap pe-0 align-items-center text-muted">
       <i class="fas fa-star"></i>&nbsp;
@@ -13,7 +13,7 @@
          <a href="{{ path("front/savedsearch.php") }}" class="btn btn-sm btn-icon btn-ghost-secondary" data-bs-toggle="tooltip" title="{{ __("Manage all saved searches") }}">
             <i class="fas fa-cog"></i>
          </a>
-         <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1 d-none d-md-block pin-saved-searches-panel" data-bs-toggle="tooltip" title="{{ __("Pin this panel for the current page" ) }}">
+         <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1 d-none d-md-block pin-saved-searches-panel" data-bs-toggle="tooltip" title="{{ __("Pin this panel for the current page") }}">
             <i class="fas fa-thumbtack"></i>
          </button>
          <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1 close-saved-searches-panel" data-bs-toggle="tooltip" title="{{ __("Close the panel") }}">

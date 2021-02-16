@@ -10,14 +10,14 @@
    {% if firstlevel['content'] is defined %}
    <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}"
        title="{{ firstlevel['title'] }}">
-      <a class="nav-link dropdown-toggle {{ firstlevel_active ? 'active' : '' }} {{ firstlevel_shown  ? 'show' : '' }}"
+      <a class="nav-link dropdown-toggle {{ firstlevel_active ? 'active' : '' }} {{ firstlevel_shown ? 'show' : '' }}"
          data-bs-toggle="dropdown" role="button"
          aria-expanded="{{ firstlevel_shown ? 'true' : 'false' }}">
          <i class="fa-fw {{ firstlevel['icon'] ?? "" }}"></i>
          &nbsp;
          <span class="menu-label">{{ firstlevel['title'] }}</span>
       </a>
-      <div class="dropdown-menu {{ firstlevel_active and is_vertical != false ? "" : "animate__animated" }} {{ is_vertical ? 'animate__fadeInLeft' : 'animate__zoomIn' }} {{ firstlevel_shown  ? 'show' : '' }}">
+      <div class="dropdown-menu {{ firstlevel_active and is_vertical != false ? "" : "animate__animated" }} {{ is_vertical ? 'animate__fadeInLeft' : 'animate__zoomIn' }} {{ firstlevel_shown ? 'show' : '' }}">
          <h6 class="dropdown-header">{{ firstlevel['title'] }}</h6>
          <div class="dropdown-menu-columns">
             <div class="dropdown-menu-column">

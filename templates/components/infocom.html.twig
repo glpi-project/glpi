@@ -34,42 +34,42 @@
          "order_date",
          infocom.fields['order_date'],
          __("Order date"),
-         { 'disabled': disabled }
+         {'disabled': disabled}
       ) }}
 
       {{ fields.dateField(
          "buy_date",
          infocom.fields['buy_date'],
          __("Date of purchase"),
-         { 'disabled': disabled }
+         {'disabled': disabled}
       ) }}
 
       {{ fields.dateField(
          "delivery_date",
          infocom.fields['delivery_date'],
          __("Delivery date"),
-         { 'disabled': disabled }
+         {'disabled': disabled}
       ) }}
 
       {{ fields.dateField(
          "use_date",
          infocom.fields['use_date'],
          __("Startup date"),
-         { 'disabled': disabled }
+         {'disabled': disabled}
       ) }}
 
       {{ fields.dateField(
          "inventory_date",
          infocom.fields['inventory_date'],
          __("Date of last physical inventory"),
-         { 'disabled': disabled }
+         {'disabled': disabled}
       ) }}
 
       {{ fields.dateField(
          "decommission_date",
          infocom.fields['decommission_date'],
          __("Decommission date"),
-         { 'disabled': disabled }
+         {'disabled': disabled}
       ) }}
 
       {# ## FINANCIAL PART ## #}
@@ -107,7 +107,7 @@
          "order_number",
          infocom.fields['order_number'],
          __("Order number"),
-         { 'disabled': disabled }
+         {'disabled': disabled}
       ) }}
 
       {{ fields.autoNameField(
@@ -115,36 +115,37 @@
          item,
          __('Immobilization number'),
          withtemplate,
-         { 'disabled': disabled, 'value': infocom.fields['immo_number'] }
+         {'disabled': disabled, 'value': infocom.fields['immo_number']}
       ) }}
 
       {{ fields.textField(
          "bill",
          infocom.fields['bill'],
          __("Invoice number"),
-         { 'disabled': disabled }
+         {'disabled': disabled}
       ) }}
 
       {{ fields.textField(
          "delivery_number",
          infocom.fields['delivery_numbe'],
          __("Delivery form"),
-         { 'disabled': disabled }
+         {'disabled': disabled}
       ) }}
 
       {{ fields.numberField(
          "value",
          infocom.fields['value'],
          _x('price', 'Value'),
-         { 'disabled': disabled }
+         {'disabled': disabled}
       ) }}
 
       {{ fields.numberField(
          "warranty_value",
          infocom.fields['warranty_value'],
          __('Warranty extension value'),
-         { 'disabled': disabled }
+         {'disabled': disabled}
       ) }}
+
 
       {% set amort %}
          {{ Infocom__Amort(
@@ -162,7 +163,7 @@
          '',
          formatNumber(amort|trim),
          __('Account net value'),
-      )}}
+      ) }}
 
       {% if withtemplate == 2 or disabled == true %}
          {% set sink_type_field = Infocom__getAmortTypeName(infocom.fields["sink_type"]) %}
@@ -176,16 +177,16 @@
          '',
          sink_type_field,
          __('Amortization type'),
-      )}}
+      ) }}
 
       {{ fields.dropdownNumberField(
          "sink_time",
          infocom.fields['sink_time'],
          __('Amortization duration'),
          {
-            max     : 15,
-            unit    : 'year',
-            disabled: disabled
+            'max'      : 15,
+            'unit'     : 'year',
+            'disabled' : disabled
          }
       ) }}
 
@@ -193,7 +194,7 @@
          "sink_coeff",
          infocom.fields['sink_coeff'],
          __("Amortization coefficient"),
-         { 'disabled': disabled }
+         {'disabled': disabled}
       ) }}
 
       {% if item.getType() not in Infocom__getExcludedTypes()|merge(['Cartridge', 'Consumable', 'SoftwareLicense'])  %}
@@ -202,16 +203,16 @@
             'ticket_tco',
             ticket_tco_value,
             __('TCO (value + tracking cost)'),
-            { 'disabled': disabled }
-         )}}
+            {'disabled': disabled}
+         ) }}
 
          {% set ticket_tco2_value = Infocom__showTco(item.fields["ticket_tco"], infocom.fields['value'], infocom.fields['buy_date']) %}
          {{ fields.readOnlyField(
             'ticket_tco',
             ticket_tco2_value,
             __('Monthly TCO'),
-            { 'disabled': disabled }
-         )}}
+            {'disabled': disabled}
+         ) }}
       {% endif %}
 
 
@@ -229,7 +230,7 @@
          "comment",
          infocom.fields['comment'],
          __('Comments'),
-         { 'disabled': disabled }
+         {'disabled': disabled}
       ) }}
 
       {# ## WARRANTY PART ## #}
@@ -242,7 +243,7 @@
          "warranty_date",
          infocom.fields['warranty_date'],
          __('Start date of warranty'),
-         { 'disabled': disabled }
+         {'disabled': disabled}
       ) }}
 
       {% if withtemplate == 2 %}
@@ -260,13 +261,13 @@
             infocom.fields['warranty_duration'],
             __('Warranty duration'),
             {
-               min     : 0,
-               max     : 120,
-               step    : 1,
-               toadd   : {'-1': __('Lifelong')},
-               unit    : 'month',
-               disabled: disabled,
-               add_field_html: "<span class='text-muted'>" ~ __('Valid to %s')|format(warrantyexpir) ~ "</span>"
+               'min'            : 0,
+               'max'            : 120,
+               'step'           : 1,
+               'toadd'          : {'-1': __('Lifelong')},
+               'unit'           : 'month',
+               'disabled'       : disabled,
+               'add_field_html' : "<span class='text-muted'>" ~ __('Valid to %s')|format(warrantyexpir) ~ "</span>"
             }
          ) }}
       {% endif %}
@@ -275,7 +276,7 @@
          "warranty_info",
          infocom.fields['warranty_info'],
          __('Warranty information'),
-         { 'disabled': disabled }
+         {'disabled': disabled}
       ) }}
 
       {% if config('use_notifications') %}
@@ -285,11 +286,11 @@
 
          {% set alert_field %}
             {{ Infocom__dropdownAlert({
-               name   : 'alert',
-               value  : infocom.fields['alert'],
-               display: false,
-               width  : '100%',
-               class  : 'form-select'
+               'name'   : 'alert',
+               'value'  : infocom.fields['alert'],
+               'display': false,
+               'width'  : '100%',
+               'class'  : 'form-select'
             }) }}
          {% endset %}
 
@@ -297,8 +298,8 @@
             'alert',
             alert_field,
             __('Alarms on financial and administrative information'),
-            { add_field_html: "<span class='text-muted'>" ~ alert_html ~ "</span>" }
-         )}}
+            {'add_field_html': "<span class='text-muted'>" ~ alert_html ~ "</span>"}
+         ) }}
       {% endif %}
 
       {{ hook_infocom(item) }}

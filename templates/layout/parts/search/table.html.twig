@@ -1,5 +1,5 @@
 <div class="table-responsive">
-   <table class="search-results table card-table table-hover {{ data['search']['is_deleted'] ? "table-danger deleted-results" : ""}}"
+   <table class="search-results table card-table table-hover {{ data['search']['is_deleted'] ? "table-danger deleted-results" : "" }}"
           id="search_{{ rand }}">
       <thead>
          <tr>
@@ -19,7 +19,7 @@
                {% set so_no_sort = col['searchopt']['nosort'] ?? false %}
                {% set meta = col['meta'] ?? false %}
                {% if not meta and not no_sort and not so_no_sort %}
-                  {% set linkto = prehref ~ "sort=" ~ col['id'] ~ "&order=" ~ ( order == "ASC" ? "DESC" : "ASC") ~ "&start=" ~ start ~ "&" ~ posthref %}
+                  {% set linkto = prehref ~ "sort=" ~ col['id'] ~ "&order=" ~ (order == "ASC" ? "DESC" : "ASC") ~ "&start=" ~ start ~ "&" ~ posthref %}
                {% endif %}
 
                {% set col_name = col['name'] %}
@@ -35,7 +35,7 @@
                {% endif %}
 
                <th>
-                  {% set sort_icon = (sort == col['id'] ? "<i class=\"fas fa-sort-" ~ (order == "ASC" ? "down" : "up") ~ "\"></i>" : "" ) %}
+                  {% set sort_icon = (sort == col['id'] ? "<i class=\"fas fa-sort-" ~ (order == "ASC" ? "down" : "up") ~ "\"></i>" : "") %}
 
                   {% if linkto is empty %}
                      {{ col_name }}&nbsp;{{ sort_icon }}

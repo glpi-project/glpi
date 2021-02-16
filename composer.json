@@ -63,7 +63,7 @@
         "ext-xml": "*",
         "atoum/atoum": "^4.0",
         "consolidation/robo": "^2.0",
-        "friendsoftwig/twigcs": "^4.0",
+        "friendsoftwig/twigcs": "^5.0",
         "glpi-project/coding-standard": "^0.8",
         "glpi-project/tools": "^0.1.15",
         "maglnet/composer-require-checker": "^2.0",
@@ -87,6 +87,9 @@
             "php": "7.3.0"
         },
         "sort-packages": true
+    },
+    "autoload-dev": {
+        "psr-4": { "Glpi\\Tools\\": "tools/" }
     },
     "scripts": {
         "testdb": "atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database",

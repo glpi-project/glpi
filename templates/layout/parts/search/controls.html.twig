@@ -8,7 +8,7 @@
       <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
              name="as_map" value="1" autocomplete="off"
              onclick="toogle('as_map','','',''); document.forms['searchform{{ itemtype }}'].submit();"
-             {{ data['search']['as_map'] == 1  ? 'checked' : ''}}>
+             {{ data['search']['as_map'] == 1 ? 'checked' : '' }}>
       <span class="form-check-label" title="{{ __('Show as map') }}">
          <i class="fas fa-lg fa-globe-americas"></i>
       </span >
@@ -19,7 +19,7 @@
       <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
              name="is_deleted" value="1" autocomplete="off"
              onclick="toogle('is_deleted','','',''); document.forms['searchform{{ itemtype }}'].submit();"
-             {{ data['search']['is_deleted'] == 1  ? 'checked' : ''}}>
+             {{ data['search']['is_deleted'] == 1 ? 'checked' : '' }}>
       <span class="form-check-label" title="{{ __('Show the trashbin') }}">
          <i class="fas fa-lg fa-trash-alt"></i>
       </span>
@@ -91,7 +91,7 @@ $(document).ready(function() {
       modal += '</div>';
       modal += '<div class="modal-body">';
       modal += '<div class="ratio ratio-4x3">';
-      modal += '<iframe src="{{ path("front/displaypreference.form.php?itemtype=" ~itemtype) }}"></iframe>'
+      modal += '<iframe src="{{ path("front/displaypreference.form.php?itemtype=" ~ itemtype) }}"></iframe>'
       modal += '</div>';
       modal += '</div>';
       modal += '</div>';
