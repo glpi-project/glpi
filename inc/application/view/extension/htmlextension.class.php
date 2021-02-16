@@ -52,6 +52,7 @@ class HtmlExtension extends AbstractExtension implements ExtensionInterface {
       return [
          new TwigFunction('showMassiveActions', [$this, 'showMassiveActions']),
          new TwigFunction('isMassiveActionchecked', [$this, 'isMassiveActionchecked']),
+         new TwigFunction('formatNumber', [Html::class, 'formatNumber'], ['is_safe' => ['html']]),
       ];
    }
 

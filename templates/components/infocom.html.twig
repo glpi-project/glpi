@@ -146,15 +146,6 @@
          { 'disabled': disabled }
       ) }}
 
-      {# TODO Amort #}
-
-      {{ fields.textareaField(
-         "comment",
-         infocom.fields['comment'],
-         __('Comments'),
-         { 'disabled': disabled }
-      ) }}
-
       {% set amort %}
          {{ Infocom__Amort(
             infocom.fields["sink_type"],
@@ -167,21 +158,24 @@
             "n"
          ) }}
       {% endset %}
-      {{ fields.field(
+      {{ fields.readOnlyField(
          '',
-         amort,
+         formatNumber(amort|trim),
          __('Account net value'),
       )}}
 
-      {# TODO AmortType #}
-      {# TODO disabled #}
-      {% set sink_type_field%}
-         {{ Infocom__dropdownAmortType('sink_type', infocom.fields["sink_type"], false) }}
-      {% endset %}
+      {% if withtemplate == 2 or disabled == true %}
+         {% set sink_type_field = Infocom__getAmortTypeName(infocom.fields["sink_type"]) %}
+      {% else %}
+         {% set sink_type_field %}
+            {{ Infocom__dropdownAmortType('sink_type', infocom.fields["sink_type"], false) }}
+         {% endset %}
+      {% endif %}
+
       {{ fields.field(
          '',
          sink_type_field,
-         __('Amortization duration'),
+         __('Amortization type'),
       )}}
 
       {{ fields.dropdownNumberField(
@@ -202,7 +196,6 @@
          { 'disabled': disabled }
       ) }}
 
-      {# TODO excluded types #}
       {% if item.getType() not in Infocom__getExcludedTypes()|merge(['Cartridge', 'Consumable', 'SoftwareLicense'])  %}
          {% set ticket_tco_value = Infocom__showTco(item.fields["ticket_tco"], infocom.fields['value']) %}
          {{ fields.readOnlyField(
@@ -230,6 +223,13 @@
          {
             'disabled': disabled
          }
+      ) }}
+
+      {{ fields.textareaField(
+         "comment",
+         infocom.fields['comment'],
+         __('Comments'),
+         { 'disabled': disabled }
       ) }}
 
       {# ## WARRANTY PART ## #}

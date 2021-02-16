@@ -50,6 +50,7 @@ class InfocomExtension extends AbstractExtension implements ExtensionInterface {
          new TwigFunction('Infocom__dropdownAmortType', [Infocom::class, 'dropdownAmortType'], ['is_safe' => ['html']]),
          new TwigFunction('Infocom__dropdownAlert', [Infocom::class, 'dropdownAlert'], ['is_safe' => ['html']]),
          new TwigFunction('Infocom__getExcludedTypes', [Infocom::class, 'getExcludedTypes']),
+         new TwigFunction('Infocom__getAmortTypeName', [Infocom::class, 'getAmortTypeName']),
          new TwigFunction('Infocom__getWarrantyExpir', [Infocom::class, 'getWarrantyExpir'], ['is_safe' => ['html']]),
          new TwigFunction('Infocom__showTco', [Infocom::class, 'showTco'], ['is_safe' => ['html']]),
       ];

@@ -47,13 +47,21 @@
 
 {% macro numberField(name, value, label, options = {}) %}
    {% set options = options|merge({ type: "text" }) %}
+   {% set value = formatNumber(value, true) %}
    {{ _self.textField(name, value, label, options) }}
 {% endmacro %}
 
 
 {% macro readOnlyField(name, value, label, options = {}) %}
    {% set options = options|merge({ readonly: true }) %}
-   {{ _self.textField(name, value, label, options) }}
+   {% if value|length ==0 %}
+      {% set value = "&nbsp;" %}
+   {% endif %}
+
+   {% set value %}
+      <span class="form-control" readonly>{{ value|raw }}</span>
+   {% endset %}
+   {{ _self.field(name, value, label, options) }}
 {% endmacro %}
 
 
