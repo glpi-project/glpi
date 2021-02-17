@@ -228,17 +228,18 @@
          }
       }
    }
-}
 
-// avoid overflow of select2 with btn-group
-.btn-group.w-100 {
-   .select2-container {
+   .btn-group & {
+      // avoid overflow of select2 with btn-group
       width: 0 !important;
       flex-grow: 1;
       flex-basis: content;
 
-      & ~ .btn {
-         max-width: 25px;
+      &:not(:last-child) {
+         .select2-selection {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+         }
       }
    }
 }

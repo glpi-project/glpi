@@ -86,6 +86,14 @@ body.iframed {
 }
 
 .btn {
+   .btn-group .select2-container ~ & {
+      max-width: 25px;
+   }
+
+   a {
+      color: inherit;
+   }
+
    i.fas, i.far, i.fab {
       margin-inline-start: 0;
 
