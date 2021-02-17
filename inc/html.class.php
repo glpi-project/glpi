@@ -3377,7 +3377,8 @@ JS;
 
       if (empty($param['applyto'])) {
          if (!empty($param['link'])) {
-            $out .= "<a id='".(!empty($param['linkid'])?$param['linkid']:"tooltiplink$rand")."' class='dropdown_tooltip'";
+            $out .= "<a id='".(!empty($param['linkid'])?$param['linkid']:"tooltiplink$rand")."'
+                        class='dropdown_tooltip btn btn-outline-secondary'";
 
             if (!empty($param['linktarget'])) {
                $out .= " target='".$param['linktarget']."' ";
@@ -3391,9 +3392,9 @@ JS;
          }
          if (isset($param['img'])) {
             //for compatibility. Use fontawesome instead.
-            $out .= "<img id='tooltip$rand' src='".$param['img']."' class='pointer'>";
+            $out .= "<img id='tooltip$rand' src='".$param['img']."'>";
          } else {
-            $out .= "<span id='tooltip$rand' class='fas {$param['awesome-class']} pointer'></span>";
+            $out .= "<span id='tooltip$rand' class='fas {$param['awesome-class']} fa-fw'></span>";
          }
 
          if (!empty($param['link'])) {

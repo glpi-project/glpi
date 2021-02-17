@@ -4031,14 +4031,13 @@ JAVASCRIPT;
          '_idor_token'         => Session::getNewIDORToken(__CLASS__, ['right' => $p['right']]),
       ];
 
-      $output = "<span class='no-wrap ".($p['width'] == "100%" ? "w100" : "")."'>";
-      $output.= Html::jsAjaxDropdown($p['name'], $field_id,
+      $output = Html::jsAjaxDropdown($p['name'], $field_id,
                                       $p['url'],
                                       $param);
 
       // Display comment
+      $icons = "";
       if ($p['comments']) {
-         $output.= "<span class='dropdown-icons'>";
          $comment_id = Html::cleanId("comment_".$p['name'].$p['rand']);
          $link_id = Html::cleanId("comment_link_".$p["name"].$p['rand']);
          if (!$view_users) {
@@ -4055,11 +4054,6 @@ JAVASCRIPT;
                )
             );
          }
-         $output .= "&nbsp;".Html::showToolTip($user["comment"],
-                                      ['contentid' => $comment_id,
-                                            'display'   => false,
-                                            'link'      => $user["link"],
-                                            'linkid'    => $link_id]);
 
          $paramscomment = [
             'value'    => '__VALUE__',
@@ -4069,28 +4063,40 @@ JAVASCRIPT;
          if ($view_users) {
             $paramscomment['withlink'] = $link_id;
          }
-         $output .= Ajax::updateItemOnSelectEvent($field_id, $comment_id,
+         $icons .= Ajax::updateItemOnSelectEvent($field_id, $comment_id,
                                                   $CFG_GLPI["root_doc"]."/ajax/comments.php",
                                                   $paramscomment, false);
-         $output .= "</span>";
+
+         $icons .= Html::showToolTip($user["comment"], [
+            'contentid' => $comment_id,
+            'display'   => false,
+            'link'      => $user["link"],
+            'linkid'    => $link_id
+         ]);
       }
-      $output .= Ajax::commonDropdownUpdateItem($p, false);
-      $output .= "</span>";
 
       if (Session::haveRight('user', self::IMPORTEXTAUTHUSERS)
           && $p['ldap_import']
           && Entity::isEntityDirectoryConfigured($_SESSION['glpiactive_entity'])) {
 
-         $output .= "<span title=\"".__s('Import a user')."\" class='fa fa-plus pointer'".
-                     " data-bs-toggle='modal' data-bs-target='#userimport{$p['rand']}'>
-                     <span class='sr-only'>" . __s('Import a user') . "</span></span>";
-         $output .= Ajax::createIframeModalWindow('userimport'.$p['rand'],
+         $icons .= Ajax::createIframeModalWindow('userimport'.$p['rand'],
                                                   $CFG_GLPI["root_doc"].
                                                       "/front/ldap.import.php?entity=".
                                                       $_SESSION['glpiactive_entity'],
                                                   ['title'   => __('Import a user'),
                                                         'display' => false]);
+         $icons .= "<span title=\"".__s('Import a user')."\" class='btn btn-outline-secondary'".
+         " data-bs-toggle='modal' data-bs-target='#userimport{$p['rand']}'>
+            <i class='fas fa-plus fa-fw '></i>
+            <span class='sr-only'>" . __s('Import a user') . "</span>
+         </span>";
       }
+
+      if (strlen($icons) > 0) {
+         $output = "<div class='btn-group btn-group-sm ".($p['width'] == "100%" ? "w-100" : "")."' role='group'>{$output} {$icons}</div>";
+      }
+
+      $output .= Ajax::commonDropdownUpdateItem($p, false);
 
       if ($p['display']) {
          echo $output;

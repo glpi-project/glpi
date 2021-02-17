@@ -183,13 +183,13 @@ class Dropdown {
             'order'                => $params['order'] ?? null,
       ];
 
-      $output = "<span class='no-wrap ".($params['width'] == "100%" ? "w100" : "")."'>";
       $output.= Html::jsAjaxDropdown($params['name'], $field_id,
                                      $params['url'],
                                      $p);
       // Display comment
+      $icons = "";
       if ($params['comments']) {
-         $output.= "<span class='dropdown-icons'>";
+         //$icons .= "<span class='dropdown-icons'>";
          $comment_id      = Html::cleanId("comment_".$params['name'].$params['rand']);
          $link_id         = Html::cleanId("comment_link_".$params['name'].$params['rand']);
          $kblink_id       = Html::cleanId("kb_link_".$params['name'].$params['rand']);
@@ -215,30 +215,41 @@ class Dropdown {
                )
             );
          }
-         $output .= Html::showToolTip($comment, $options_tooltip);
+
+         if ($item->canView()) {
+            $paramscomment['withlink'] = $link_id;
+         }
+
+         $icons .= Ajax::updateItemOnSelectEvent($field_id, $comment_id,
+                                                  $CFG_GLPI["root_doc"]."/ajax/comments.php",
+                                                  $paramscomment, false);
+
+         $icons .= Html::showToolTip($comment, $options_tooltip);
 
          if (($item instanceof CommonDropdown)
              && $item->canCreate()
              && !isset($_REQUEST['_in_modal'])
              && $params['addicon']) {
-
-               $output .= "<span class='fa fa-plus-circle pointer' title=\"".__s('Add')."\"
+               $icons .= Ajax::createIframeModalWindow('add_'.$field_id, $item->getFormURL(), ['display' => false]);
+               $icons .= "<span class='btn btn-outline-secondary' title=\"".__s('Add')."\"
                                  data-bs-toggle='modal' data-bs-target='#add_$field_id'
-                           ><span class='sr-only'>" . __s('Add') . "</span></span>";
-               $output .= Ajax::createIframeModalWindow('add_'.$field_id,
-                                                        $item->getFormURL(),
-                                                        ['display' => false]);
+                           >
+                  <i class='fas fa-fw fa-plus-circle'></i>
+                  <span class='sr-only'>" . __s('Add') . "</span>
+               </span>";
          }
 
          // Display specific Links
          if ($itemtype == "Supplier") {
             if ($item->getFromDB($params['value'])) {
-               $output .= $item->getLinks();
+               $icons .= $item->getLinks();
             }
          }
 
          if ($itemtype == 'Location') {
-            $output .= "<span class='fa fa-globe-americas pointer' title='".__s('Display on map')."' onclick='showMapForLocation(this)' data-fid='$field_id'></span>";
+            $icons .= "<span class='btn btn-outline-secondary' title='".__s('Display on map')."' onclick='showMapForLocation(this)' data-fid='$field_id'>
+               <i class='fas fa-fw fa-globe-americas'></i>
+            </span>";
          }
 
          $paramscomment = [
@@ -250,27 +261,21 @@ class Dropdown {
              && Session::haveRight('knowbase', READ)) {
 
             if (method_exists($item, 'getLinks')) {
-               $output .= "<span id='$kblink_id'>";
-               $output .= '&nbsp;'.$item->getLinks();
-               $output .= "</span>";
                $paramscomment['withlink'] = $kblink_id;
-               $output .= Ajax::updateItemOnSelectEvent($field_id, $kblink_id,
+               $icons .= Ajax::updateItemOnSelectEvent($field_id, $kblink_id,
                                                         $CFG_GLPI["root_doc"]."/ajax/kblink.php",
                                                         $paramscomment, false);
+               $icons .= "<span id='$kblink_id'>";
+               $icons .= '&nbsp;'.$item->getLinks();
+               $icons .= "</span>";
             }
          }
-
-         if ($item->canView()) {
-            $paramscomment['withlink'] = $link_id;
-         }
-
-         $output .= Ajax::updateItemOnSelectEvent($field_id, $comment_id,
-                                                  $CFG_GLPI["root_doc"]."/ajax/comments.php",
-                                                  $paramscomment, false);
-         $output .= "</span>";
       }
+      if (strlen($icons) > 0) {
+         $output = "<div class='btn-group btn-group-sm ".($params['width'] == "100%" ? "w-100" : "")."' role='group'>{$output} {$icons}</div>";
+      }
+
       $output .= Ajax::commonDropdownUpdateItem($params, false);
-      $output .= "</span>";
       if ($params['display']) {
          echo $output;
          return $params['rand'];
