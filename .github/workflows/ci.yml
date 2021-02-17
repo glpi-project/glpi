@@ -22,6 +22,8 @@ on:
 
 jobs:
   lint:
+    # Do not run scheduled lint on tier repositories
+    if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
     name: "Lint on PHP ${{ matrix.php-version }}"
     runs-on: "${{ github.repository == 'glpi-network/glpi' && 'self-hosted' || 'ubuntu-latest' }}"
     strategy:
@@ -91,6 +93,8 @@ jobs:
           .github/actions/teardown_containers-cleanup.sh
 
   tests:
+    # Do not run scheduled tests on tier repositories
+    if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
     name: "Test on PHP ${{ matrix.php-version }} using ${{ matrix.db-image }}"
     runs-on: "${{ github.repository == 'glpi-network/glpi' && 'self-hosted' || 'ubuntu-latest' }}"
     strategy:
