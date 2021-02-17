@@ -3378,7 +3378,7 @@ JS;
       if (empty($param['applyto'])) {
          if (!empty($param['link'])) {
             $out .= "<a id='".(!empty($param['linkid'])?$param['linkid']:"tooltiplink$rand")."'
-                        class='dropdown_tooltip btn btn-outline-secondary'";
+                        class='dropdown_tooltip'";
 
             if (!empty($param['linktarget'])) {
                $out .= " target='".$param['linktarget']."' ";
@@ -3408,7 +3408,7 @@ JS;
          $param['contentid'] = "content".$param['applyto'];
       }
 
-      $out .= "<div id='".$param['contentid']."' class='invisible'>$content</div>";
+      $out .= "<div id='".$param['contentid']."' class='tooltip-invisible'>$content</div>";
       if (!empty($param['popup'])) {
          $out .= Ajax::createIframeModalWindow('tooltippopup'.$rand,
                                                $param['popup'],
@@ -4508,10 +4508,7 @@ JS;
          }
       }
 
-      $options['class'] = $params['class'] ?? 'form-select form-select-sm';
-
-      // display select tag
-      $output = self::select($name, $values, $options);
+      $output = '';
 
       $js = "
          var params_$field_id = {";
@@ -4602,6 +4599,11 @@ JS;
       $js .= " $('label[for=$field_id]').on('click', function(){ $('#$field_id').select2('open'); });";
 
       $output .= Html::scriptBlock('$(function() {' . $js . '});');
+
+      // display select tag
+      $options['class'] = $params['class'] ?? 'form-select form-select-sm';
+      $output .= self::select($name, $values, $options);
+
       return $output;
    }
 

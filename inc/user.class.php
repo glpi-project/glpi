@@ -4063,6 +4063,7 @@ JAVASCRIPT;
          if ($view_users) {
             $paramscomment['withlink'] = $link_id;
          }
+         $icons .= '<div class="btn btn-outline-secondary">';
          $icons .= Ajax::updateItemOnSelectEvent($field_id, $comment_id,
                                                   $CFG_GLPI["root_doc"]."/ajax/comments.php",
                                                   $paramscomment, false);
@@ -4073,23 +4074,26 @@ JAVASCRIPT;
             'link'      => $user["link"],
             'linkid'    => $link_id
          ]);
+         $icons .= '</div>';
       }
 
       if (Session::haveRight('user', self::IMPORTEXTAUTHUSERS)
           && $p['ldap_import']
           && Entity::isEntityDirectoryConfigured($_SESSION['glpiactive_entity'])) {
 
+         $icons .= '<div class="btn btn-outline-secondary">';
          $icons .= Ajax::createIframeModalWindow('userimport'.$p['rand'],
                                                   $CFG_GLPI["root_doc"].
                                                       "/front/ldap.import.php?entity=".
                                                       $_SESSION['glpiactive_entity'],
                                                   ['title'   => __('Import a user'),
                                                         'display' => false]);
-         $icons .= "<span title=\"".__s('Import a user')."\" class='btn btn-outline-secondary'".
+         $icons .= "<span title=\"".__s('Import a user')."\"".
          " data-bs-toggle='modal' data-bs-target='#userimport{$p['rand']}'>
             <i class='fas fa-plus fa-fw '></i>
             <span class='sr-only'>" . __s('Import a user') . "</span>
          </span>";
+         $icons .= '</div>';
       }
 
       if (strlen($icons) > 0) {

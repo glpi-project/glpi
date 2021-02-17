@@ -220,55 +220,65 @@ class Dropdown {
             $paramscomment['withlink'] = $link_id;
          }
 
+         // Comment icon
+         $icons .= '<div class="btn btn-outline-secondary">';
          $icons .= Ajax::updateItemOnSelectEvent($field_id, $comment_id,
                                                   $CFG_GLPI["root_doc"]."/ajax/comments.php",
                                                   $paramscomment, false);
-
          $icons .= Html::showToolTip($comment, $options_tooltip);
+         $icons .= '</div>';
 
+         // Add icon
          if (($item instanceof CommonDropdown)
              && $item->canCreate()
              && !isset($_REQUEST['_in_modal'])
              && $params['addicon']) {
+               $icons .= '<div class="btn btn-outline-secondary">';
                $icons .= Ajax::createIframeModalWindow('add_'.$field_id, $item->getFormURL(), ['display' => false]);
-               $icons .= "<span class='btn btn-outline-secondary' title=\"".__s('Add')."\"
+               $icons .= "<span title=\"".__s('Add')."\"
                                  data-bs-toggle='modal' data-bs-target='#add_$field_id'
                            >
                   <i class='fas fa-fw fa-plus-circle'></i>
                   <span class='sr-only'>" . __s('Add') . "</span>
                </span>";
+               $icons .= '</div>';
          }
 
-         // Display specific Links
+         // Supplier Links
          if ($itemtype == "Supplier") {
             if ($item->getFromDB($params['value'])) {
+               $icons .= '<div>';
                $icons .= $item->getLinks();
+               $icons .= '</div>';
             }
          }
 
+         // Location icon
          if ($itemtype == 'Location') {
-            $icons .= "<span class='btn btn-outline-secondary' title='".__s('Display on map')."' onclick='showMapForLocation(this)' data-fid='$field_id'>
+            $icons .= '<div class="btn btn-outline-secondary">';
+            $icons .= "<span title='".__s('Display on map')."' onclick='showMapForLocation(this)' data-fid='$field_id'>
                <i class='fas fa-fw fa-globe-americas'></i>
             </span>";
+            $icons .= '</div>';
          }
 
-         $paramscomment = [
-            'value'       => '__VALUE__',
-            'itemtype'    => $itemtype,
-            '_idor_token' => Session::getNewIDORToken($itemtype)
-         ];
-         if ($item->isField('knowbaseitemcategories_id')
-             && Session::haveRight('knowbase', READ)) {
-
-            if (method_exists($item, 'getLinks')) {
-               $paramscomment['withlink'] = $kblink_id;
-               $icons .= Ajax::updateItemOnSelectEvent($field_id, $kblink_id,
-                                                        $CFG_GLPI["root_doc"]."/ajax/kblink.php",
-                                                        $paramscomment, false);
-               $icons .= "<span id='$kblink_id'>";
-               $icons .= '&nbsp;'.$item->getLinks();
-               $icons .= "</span>";
-            }
+         // KB links
+         if ($item->isField('knowbaseitemcategories_id') && Session::haveRight('knowbase', READ)
+             && method_exists($item, 'getLinks')) {
+            $paramskblinks = [
+               'value'       => '__VALUE__',
+               'itemtype'    => $itemtype,
+               '_idor_token' => Session::getNewIDORToken($itemtype),
+               'withlink'    => $kblink_id,
+            ];
+            $icons .= '<div>';
+            $icons .= Ajax::updateItemOnSelectEvent($field_id, $kblink_id,
+                                                     $CFG_GLPI["root_doc"]."/ajax/kblink.php",
+                                                     $paramskblinks, false);
+            $icons .= "<span id='$kblink_id'>";
+            $icons .= '&nbsp;'.$item->getLinks();
+            $icons .= "</span>";
+            $icons .= '</div>';
          }
       }
       if (strlen($icons) > 0) {
