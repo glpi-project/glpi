@@ -25,6 +25,7 @@ jobs:
       PHP_IMAGE: "githubactions-php-coverage:${{ matrix.php-version }}"
       UPDATE_FILES_ACL: true
       IGNORE_LOCK_FILES: true
+      COMPOSE_INTERACTIVE_NO_CLI: 1
     steps:
       - name: "Clean workspace"
         if: env.skip != 'true'
