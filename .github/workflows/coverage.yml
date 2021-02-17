@@ -1,6 +1,10 @@
 name: "GLPI test code coverage"
 
 on:
+  # Runs coverage suite when a pull request updates workflow file
+  pull_request:
+    paths:
+      - ".github/workflows/coverage.yml"
   # Runs coverage suite every night
   schedule:
     - cron:  '0 0 * * *'
@@ -9,7 +13,8 @@ on:
 
 jobs:
   coverage:
-    if: github.repository == 'glpi-project/glpi'
+    # Do not run scheduled coverage on tier repositories
+    if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
     name: "Code coverage"
     runs-on: "ubuntu-latest"
     strategy:
@@ -63,16 +68,16 @@ jobs:
           docker-compose exec -T app .github/actions/test_install.sh
       - name: "Unit tests"
         run: |
-          docker-compose exec app sh -c "COVERAGE_DIR=coverage-unit .github/actions/test_tests-units.sh"
+          docker-compose exec -T app sh -c "COVERAGE_DIR=coverage-unit .github/actions/test_tests-units.sh"
       - name: "Functionnal tests"
         run: |
-          docker-compose exec app sh -c "COVERAGE_DIR=coverage-functionnal .github/actions/test_tests-functionnal.sh"
+          docker-compose exec -T app sh -c "COVERAGE_DIR=coverage-functionnal .github/actions/test_tests-functionnal.sh"
       - name: "LDAP tests"
         run: |
-          docker-compose exec app sh -c "COVERAGE_DIR=coverage-ldap .github/actions/test_tests-ldap.sh"
+          docker-compose exec -T app sh -c "COVERAGE_DIR=coverage-ldap .github/actions/test_tests-ldap.sh"
       - name: "IMAP tests"
         run: |
-          docker-compose exec app sh -c "COVERAGE_DIR=coverage-imap .github/actions/test_tests-imap.sh"
+          docker-compose exec -T app sh -c "COVERAGE_DIR=coverage-imap .github/actions/test_tests-imap.sh"
       - name: "Codecov"
         uses: "codecov/codecov-action@v1"
         with:
