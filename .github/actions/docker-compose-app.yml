@@ -5,6 +5,7 @@ services:
     container_name: "app"
     image: "ghcr.io/glpi-project/${PHP_IMAGE:-githubactions-php}"
     environment:
+      CODE_COVERAGE: "${CODE_COVERAGE:-false}"
       IGNORE_LOCK_FILES: "${IGNORE_LOCK_FILES:-false}"
     volumes: 
       - type: "bind"
