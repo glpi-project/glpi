@@ -263,13 +263,13 @@ class ITILFollowup  extends CommonDBChild {
              || ($parentitem->countSuppliers(CommonITILActor::ASSIGN) > 0)) {
 
             //check if lifecycle allowed new status
-            if (CommonITILObject::isAllowedStatus($parentitem->fields["status"], CommonITILObject::ASSIGNED)) {
+            if ($parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::ASSIGNED)) {
                $needupdateparent = true;
                $update['status'] = CommonITILObject::ASSIGNED;
             }
          } else {
             //check if lifecycle allowed new status
-            if (CommonITILObject::isAllowedStatus($parentitem->fields["status"], CommonITILObject::INCOMING)) {
+            if ($parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::INCOMING)) {
                $needupdateparent = true;
                $update['status'] = CommonITILObject::INCOMING;
             }
