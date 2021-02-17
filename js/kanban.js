@@ -704,7 +704,7 @@
             );
          }
 
-         $(self.element + ' .kanban-container').on('submit', '.kanban-add-form', function(e) {
+         $(self.element + ' .kanban-container').on('submit', '.kanban-add-form:not(.kanban-bulk-add-form)', function(e) {
             e.preventDefault();
             var form = $(e.target);
             var data = {};
@@ -1461,7 +1461,7 @@
 
          var uniqueID = Math.floor(Math.random() * 999999);
          var formID = "form_add_" + itemtype + "_" + uniqueID;
-         var add_form = "<form id='" + formID + "' class='kanban-add-form kanban-form no-track'>";
+         var add_form = "<form id='" + formID + "' class='kanban-add-form kanban-bulk-add-form kanban-form no-track'>";
          var form_header = "<div class='kanban-item-header'>";
          form_header += "<span class='kanban-item-title'>"+self.supported_itemtypes[itemtype]['name']+"</span>";
          form_header += "<i class='fas fa-times' title='Close' onclick='$(this).parent().parent().remove()'></i>";
@@ -1469,7 +1469,6 @@
          add_form += form_header;
 
          add_form += "<div class='kanban-item-content'>";
-         add_form += "<textarea name='bulk_item_list'></textarea>";
          $.each(self.supported_itemtypes[itemtype]['fields'], function(name, options) {
             var input_type = options['type'] !== undefined ? options['type'] : 'text';
             var value = options['value'] !== undefined ? options['value'] : '';
@@ -1481,8 +1480,11 @@
                   add_form += " value='" + value + "'";
                }
                add_form += "/>";
+            } else if (input_type.toLowerCase() === 'raw') {
+               add_form += value;
             }
          });
+         add_form += "<textarea name='bulk_item_list'></textarea>";
          add_form += "</div>";
 
          var column_id_elements = column_el.prop('id').split('-');
