@@ -2389,7 +2389,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                ],
                'entities_id' => [
                   'type'   => 'hidden',
-                  'value'  => $_SESSION['glpiactive_entity']
+                  'value'  => $ID > 0 ? $project->fields["entities_id"] : $_SESSION['glpiactive_entity'],
                ],
                'is_recursive' => [
                   'type'   => 'hidden',
@@ -2425,7 +2425,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                ],
                'entities_id' => [
                   'type'   => 'hidden',
-                  'value'  => $_SESSION['glpiactive_entity']
+                  'value'  => $ID > 0 ? $project->fields["entities_id"] : $_SESSION['glpiactive_entity'],
                ],
                'is_recursive' => [
                   'type'   => 'hidden',
@@ -2453,6 +2453,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
 
       echo "<div id='kanban' class='kanban'></div>";
       $darkmode = ($_SESSION['glpipalette'] === 'darker') ? 'true' : 'false';
+      $canadd_item = json_encode($ID > 0 ? $project->canEdit($ID) && $project->can($ID, UPDATE) : self::canCreate() || ProjectTask::canCreate());
       $canmodify_view = json_encode(($ID == 0 || $project->canModifyGlobalState()));
       $rights = json_encode([
          'create_item'                    => self::canCreate() || ProjectTask::canCreate(),

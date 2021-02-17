@@ -854,7 +854,7 @@ class GLPIKanbanRights {
             );
          }
 
-         $(self.element + ' .kanban-container').on('submit', '.kanban-add-form', function(e) {
+         $(self.element + ' .kanban-container').on('submit', '.kanban-add-form:not(.kanban-bulk-add-form)', function(e) {
             e.preventDefault();
             const form = $(e.target);
             const data = {
@@ -1668,7 +1668,7 @@ class GLPIKanbanRights {
 
          const uniqueID = Math.floor(Math.random() * 999999);
          const formID = "form_add_" + itemtype + "_" + uniqueID;
-         let add_form = "<form id='" + formID + "' class='kanban-add-form kanban-form no-track'>";
+         let add_form = "<form id='" + formID + "' class='kanban-add-form kanban-bulk-add-form kanban-form no-track'>";
 
          add_form += `
             <div class='kanban-item-header'>
@@ -1684,7 +1684,6 @@ class GLPIKanbanRights {
          `;
 
          add_form += "<div class='kanban-item-content'>";
-         add_form += "<textarea name='bulk_item_list'></textarea>";
          $.each(self.supported_itemtypes[itemtype]['fields'], function(name, options) {
             const input_type = options['type'] !== undefined ? options['type'] : 'text';
             const value = options['value'] !== undefined ? options['value'] : '';
@@ -1696,8 +1695,11 @@ class GLPIKanbanRights {
                   add_form += " value='" + value + "'";
                }
                add_form += "/>";
+            } else if (input_type.toLowerCase() === 'raw') {
+               add_form += value;
             }
          });
+         add_form += "<textarea name='bulk_item_list'></textarea>";
          add_form += "</div>";
 
          const column_id_elements = column_el.prop('id').split('-');
