@@ -1430,13 +1430,12 @@ class Session {
     * Impersonate user having given id.
     *
     * @param integer $user_id
-    * @param bool    $force   Bypass "canImpersonate" check
     *
     * @return boolean
     */
-   static function startImpersonating($user_id, $force = false) {
+   static function startImpersonating($user_id) {
 
-      if (!$force && !self::canImpersonate($user_id)) {
+      if (!self::canImpersonate($user_id)) {
          return false;
       }
 
@@ -1529,5 +1528,25 @@ class Session {
     */
    public static function getActiveEntity() {
       return $_SESSION['glpiactive_entity'] ?? 0;
+   }
+
+   /**
+    * Start session for a given user
+    *
+    * @param int $users_id ID of the user
+    *
+    * @return bool
+    */
+   public static function initForUser(int $users_id): bool {
+      $user = new User();
+      if (!$user->getFromDB($users_id)) {
+         return false;
+      }
+
+      $auth = new Auth();
+      $auth->auth_succeded = true;
+      $auth->user = $user;
+      Session::init($auth);
+      return true;
    }
 }
