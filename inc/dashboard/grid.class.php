@@ -32,7 +32,6 @@
 
 namespace Glpi\Dashboard;
 
-use CommonGLPI;
 use DBConnection;
 use Dropdown;
 use Entity;
@@ -50,7 +49,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-class Grid extends CommonGLPI {
+class Grid {
    protected $cell_margin     = 6;
    protected $grid_cols       = 26;
    protected $grid_rows       = 24;

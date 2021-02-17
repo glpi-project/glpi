@@ -47,6 +47,9 @@ use Session;
 use Toolbox;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
+/**
+ * Nota: `CommonGLPI` is required here to be able to provide a displayable name for its crons and notifications.
+ */
 class Controller extends CommonGLPI {
    protected $plugin_key = "";
 

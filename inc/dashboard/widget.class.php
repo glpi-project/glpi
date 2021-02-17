@@ -32,7 +32,6 @@
 
 namespace Glpi\Dashboard;
 
-use CommonGLPI;
 use Html;
 use Mexitek\PHPColors\Color;
 use Michelf\MarkdownExtra;
@@ -48,7 +47,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Widget class
 **/
-class Widget extends CommonGLPI {
+class Widget {
    static $animation_duration = 1000; // in millseconds
 
 

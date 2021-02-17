@@ -34,7 +34,6 @@ namespace Glpi\Dashboard;
 
 use Change;
 use CommonDBTM;
-use CommonGLPI;
 use CommonITILActor;
 use CommonITILObject;
 use CommonITILValidation;
@@ -60,7 +59,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Provider class
 **/
-class Provider extends CommonGLPI {
+class Provider {
 
 
    /**
