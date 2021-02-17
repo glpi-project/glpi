@@ -1,6 +1,13 @@
 name: "GLPI test code coverage"
 
 on:
+  push:
+    branches:
+      - master
+      - '*/bugfixes'
+      - 'feature/*'
+      - 'fix/*'
+      - 'security/*'
   # Runs coverage suite every night
   schedule:
     - cron:  '0 0 * * *'
