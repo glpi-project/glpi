@@ -29,6 +29,7 @@ jobs:
       PHP_IMAGE: "githubactions-php-coverage:${{ matrix.php-version }}"
       UPDATE_FILES_ACL: true
       IGNORE_LOCK_FILES: true
+      CODE_COVERAGE: true
     steps:
       - name: "Clean workspace"
         if: env.skip != 'true'
@@ -68,16 +69,16 @@ jobs:
           docker-compose exec -T app .github/actions/test_install.sh
       - name: "Unit tests"
         run: |
-          docker-compose exec -T app sh -c "COVERAGE_DIR=coverage-unit .github/actions/test_tests-units.sh"
+          docker-compose exec -T app .github/actions/test_tests-units.sh
       - name: "Functionnal tests"
         run: |
-          docker-compose exec -T app sh -c "COVERAGE_DIR=coverage-functionnal .github/actions/test_tests-functionnal.sh"
+          docker-compose exec -T app .github/actions/test_tests-functionnal.sh
       - name: "LDAP tests"
         run: |
-          docker-compose exec -T app sh -c "COVERAGE_DIR=coverage-ldap .github/actions/test_tests-ldap.sh"
+          docker-compose exec -T app .github/actions/test_tests-ldap.sh
       - name: "IMAP tests"
         run: |
-          docker-compose exec -T app sh -c "COVERAGE_DIR=coverage-imap .github/actions/test_tests-imap.sh"
+          docker-compose exec -T app .github/actions/test_tests-imap.sh
       - name: "Codecov"
         uses: "codecov/codecov-action@v1"
         with:
