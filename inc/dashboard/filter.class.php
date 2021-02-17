@@ -32,7 +32,6 @@
 
 namespace Glpi\Dashboard;
 
-use CommonGLPI;
 use Group;
 use Html;
 use ITILCategory;
@@ -50,7 +49,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Filter class
 **/
-class Filter extends CommonGLPI {
+class Filter {
 
    /**
     * Return all available filters

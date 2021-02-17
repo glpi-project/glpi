@@ -39,9 +39,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  *  Identification class used to login
  */
-class Auth extends CommonGLPI {
-
-   static $rightname = 'config';
+class Auth {
 
    /** @var array Array of errors */
    private $errors = [];

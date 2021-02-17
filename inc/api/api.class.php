@@ -41,7 +41,6 @@ use APIClient;
 use Auth;
 use Change;
 use CommonDevice;
-use CommonGLPI;
 use CommonITILObject;
 use Config;
 use Contract;
@@ -65,7 +64,7 @@ use Ticket;
 use Toolbox;
 use User;
 
-abstract class API extends CommonGLPI {
+abstract class API {
 
    // permit writing to $_SESSION
    protected $session_write = false;
