@@ -33,7 +33,6 @@
 
 .select2-container {
    display: inline-block;
-   //min-width: 0;
 
    *:focus {
       outline: 0;
@@ -227,6 +226,19 @@
                }
             }
          }
+      }
+   }
+}
+
+// avoid overflow of select2 with btn-group
+.btn-group.w-100 {
+   .select2-container {
+      width: 0 !important;
+      flex-grow: 1;
+      flex-basis: content;
+
+      & ~ .btn {
+         max-width: 30px;
       }
    }
 }
