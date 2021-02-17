@@ -4,9 +4,11 @@ services:
   app:
     container_name: "app"
     image: "ghcr.io/glpi-project/${PHP_IMAGE:-githubactions-php}"
+    environment:
+      IGNORE_LOCK_FILES: "${IGNORE_LOCK_FILES:-false}"
     volumes: 
       - type: "bind"
-        source: "${APPLICATION_ROOT:-..}"
+        source: "${APPLICATION_ROOT}"
         target: "/var/glpi"
       - type: "bind"
         source: "${APP_CONTAINER_HOME}"
