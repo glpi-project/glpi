@@ -1,5 +1,8 @@
 #!/bin/bash -e
 
+ROOT_DIR=$(readlink -f "$(dirname $0)/../..")
+echo $ROOT_DIR
+
 echo "Check for syntax errors"
 vendor/bin/parallel-lint \
   --exclude ./files/ \
@@ -18,12 +21,12 @@ php -d memory_limit=1G \
   check --config-file=.composer-require-checker.config.json
 
 echo "Check for coding standards violations"
-touch /home/glpi/phpcs.cache
+touch ~/phpcs.cache
 vendor/bin/phpcs \
-  --cache /home/glpi/phpcs.cache \
+  --cache ~/phpcs.cache \
   -d memory_limit=512M \
   -p \
   --extensions=php \
   --standard=vendor/glpi-project/coding-standard/GlpiStandard/ \
-  --ignore="/.git/,^/var/glpi/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/" \
+  --ignore="/.git/,^$ROOT_DIR/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/" \
   .
