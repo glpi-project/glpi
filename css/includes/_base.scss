@@ -28,6 +28,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+$is-dark: false !default;
 
 $info: #80abe4;
 $danger: #d49696;
@@ -36,6 +37,10 @@ $enable-negative-margins: true;
 $link-hover-decoration: none;
 
 @import "~@tabler/core/src/scss/tabler";
+
+@if $is-dark {
+   @import "css/includes/dark";
+}
 
 $mainmenu_bg: $dark !default;
 $mainmenu_fg: $light !default;

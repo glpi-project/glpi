@@ -1,0 +1,18 @@
+@mixin dark-mode {
+   $selector: &;
+
+   @media not print {
+      @if ($selector) {
+         body & {
+            @content;
+         }
+      } @else {
+         body {
+            @content;
+         }
+      }
+   }
+}
+
+@import "~@tabler/core/src/scss/dark";
+@import "~@tabler/core/src/scss/layout/navbar";
