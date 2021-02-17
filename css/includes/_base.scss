@@ -51,6 +51,13 @@ $logo: "../pics/logos/logo-GLPI-100-white.png" !default;
 $logo_reduced: "../pics/logos/logo-G-100-white.png" !default;
 $scrollbar-color-thumb: rgba($color: $secondary, $alpha: .8) !default;
 $scrollbar-color-track: rgba(0, 0, 0, .03)  !default;
+
+$tabs-bg: $card-cap-bg !default;
+$tabs-fg: $text-muted !default;
+$tabs-border: $card-border-color !default;
+$tabs-active-bg: #FFFFFF !default;
+$tabs-active-fg: $dark !default;
+$tabs-active-border: $tabs-border !default;
 $badge-bg: $dark !default;
 $badge-fg: $light !default;
 
@@ -112,7 +119,6 @@ body.iframed {
 
 .card-tabs.vertical .nav-tabs .nav-link {
    border-bottom: $card-border-width solid $card-border-color;
-   border-right: 0;
 }
 
 .toast-container {

@@ -1,0 +1,27 @@
+#tabspanel.nav-tabs {
+
+   .nav-link {
+
+      background: $tabs-bg;
+      color: $tabs-fg;
+      border-color: $tabs-border;
+
+      &.active {
+         background: $tabs-active-bg;
+         color: $tabs-active-fg;
+         border-color: $tabs-active-border;
+         border-left-width: 5px;
+         font-weight: bold;
+
+         .badge {
+            font-weight: bold;
+         }
+      }
+
+      .badge {
+         margin-left: 5px;
+         background-color: $badge-bg;
+         color: $badge-fg;
+      }
+   }
+}
