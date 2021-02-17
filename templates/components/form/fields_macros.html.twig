@@ -184,10 +184,10 @@
 
 {% macro horizontalField(label, field, id, add_field_html) %}
    <div class="row mb-3 col-12 col-sm-6">
-      <label class="col-sm-5 col-form-label text-sm-end" for="{{ id }}">
+      <label class="col-xxl-5 col-form-label text-xxl-end" for="{{ id }}">
          {{ label }}
       </label>
-      <div class="col-sm-7">
+      <div class="col-xxl-7">
          {{ field|raw }}
          {{ add_field_html|raw }}
       </div>
