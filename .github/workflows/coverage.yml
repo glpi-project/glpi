@@ -25,7 +25,6 @@ jobs:
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
-      APP_CONTAINER_HOME: "${{ github.workspace }}/../app_home"
       DB_IMAGE: "githubactions-${{ matrix.db-image }}"
       PHP_IMAGE: "githubactions-php-coverage:${{ matrix.php-version }}"
       UPDATE_FILES_ACL: true
@@ -34,6 +33,7 @@ jobs:
       - name: "Clean workspace"
         if: env.skip != 'true'
         run: |
+          echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
           rm -rf "${{ env.APPLICATION_ROOT }}/*"
           rm -rf "${{ env.APP_CONTAINER_HOME }}/*"
       - name: "Checkout"
