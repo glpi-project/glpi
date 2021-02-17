@@ -98,13 +98,11 @@
         "post-install-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
             "patch -f -p1 -d vendor/tecnickcom/tcpdf/ < tools/tcpdf-php8-compat.patch || echo 'Error applying patch, deprecation warnings related to TCPDF lib may pollute logs'",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/laminas-mail-128.patch || echo 'Error applying patch, retrieving some mail attachement could fail'",
             "@php -f vendor/bin/build_hw_jsons"
         ],
         "post-update-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
             "patch -f -p1 -d vendor/tecnickcom/tcpdf/ < tools/tcpdf-php8-compat.patch || echo 'Error applying patch, deprecation warnings related to TCPDF lib may pollute logs'",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/laminas-mail-128.patch || echo 'Error applying patch, retrieving some mail attachement could fail'",
             "@php -f vendor/bin/build_hw_jsons"
         ]
     },
