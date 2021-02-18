@@ -412,6 +412,7 @@ class Config extends DbTestCase {
       $expected = [
          //'aerialgreen'     => 'Aerialgreen',
          'auror'           => 'Auror',
+         'dark_auror'      => 'Dark_auror',
          //'automn'          => 'Automn',
          //'classic'         => 'Classic',
          //'clockworkorange' => 'Clockworkorange',
