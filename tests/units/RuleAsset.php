@@ -309,8 +309,8 @@ class RuleAsset extends DbTestCase {
                                           'entities_id' => 0,
                                           'users_id'    => $users_id,
                                        ]);
-
-      $computer_em->getFromDB($computer_id);
+      $this->integer($computer_id)->isGreaterThan(0);
+      $this->boolean($computer_em->getFromDB($computer_id))->isTrue();
       $this->integer($computer_em->getField('locations_id'))->isEqualTo($locations_id);
 
       // Test on update
