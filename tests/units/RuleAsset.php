@@ -254,4 +254,234 @@ class RuleAsset extends DbTestCase {
       $this->checkInput($ruleaction, $act_id, $act_input);
    }
 
+   public function testUserLocationAssignFromRule() {
+      $this->login();
+
+      // Create solution template
+      $location     = new \Location();
+      $locations_id = $location->add([
+                                        'name' => "test"
+                                     ]);
+      $this->integer($locations_id)->isGreaterThan(0);
+      $user     = new \User();
+      $users_id = $user->add([
+                                'name'         => "user test",
+                                'locations_id' => $locations_id
+                             ]);
+      $this->integer($users_id)->isGreaterThan(0);
+
+      // Create rule
+      $rule_asset_em = new \RuleAsset();
+      $rule_asset_id = $rule_asset_em->add($ruletinput = [
+         'name'         => "test to assign location from user",
+         'match'        => 'OR',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleAsset',
+         'condition'    => \RuleTicket::ONADD + \RuleTicket::ONUPDATE,
+         'is_recursive' => 1,
+      ]);
+      $this->integer($rule_asset_id)->isGreaterThan(0);
+
+      // Add condition (priority = 5) to rule
+      $rule_criteria_em = new \RuleCriteria();
+      $rule_criteria_id = $rule_criteria_em->add($crit_input = [
+         'rules_id'  => $rule_asset_id,
+         'criteria'  => 'users_id',
+         'condition' => \Rule::PATTERN_EXISTS,
+         'pattern'   => '',
+      ]);
+      $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+      // Add action to rule
+      $rule_action_em = new \RuleAction();
+      $rule_action_id = $rule_action_em->add($act_input = [
+         'rules_id'    => $rule_asset_id,
+         'action_type' => 'fromuser',
+         'field'       => 'locations_id',
+         'value'       => 1,
+      ]);
+      $this->integer($rule_action_id)->isGreaterThan(0);
+
+      // Test on creation
+      $computer_em = new \Computer();
+      $computer_id = $computer_em->add([
+                                          'name'        => 'test',
+                                          'entities_id' => 0,
+                                          'users_id'    => $users_id,
+                                       ]);
+      $this->integer($computer_id)->isGreaterThan(0);
+      $this->boolean($computer_em->getFromDB($computer_id))->isTrue();
+      $this->integer($computer_em->getField('locations_id'))->isEqualTo($locations_id);
+
+      // Test on update
+      $computer_em = new \Computer();
+      $computer_id = $computer_em->add([
+                                          'name'        => 'test2',
+                                          'entities_id' => 0,
+                                       ]);
+      $this->integer($computer_id)->isGreaterThan(0);
+      $this->boolean($computer_em->getFromDB($computer_id))->isTrue();
+      $this->integer($computer_em->getField('locations_id'))->isNotEqualTo($locations_id);
+
+      $update = $computer_em->update([
+                              'id'       => $computer_id,
+                              'users_id' => $users_id,
+                           ]);
+      $this->boolean($update)->isTrue();
+      $this->boolean($computer_em->getFromDB($computer_id))->isTrue();
+      $this->integer($computer_em->getField('locations_id'))->isEqualTo($locations_id);
+   }
+
+   public function testGroupUserAssignFromDefaultUser() {
+      $this->login();
+
+      // Create rule
+      $ruleasset  = new \RuleAsset();
+      $rulecrit   = new \RuleCriteria();
+      $ruleaction = new \RuleAction();
+
+      $ruletid = $ruleasset->add($ruletinput = [
+         'name'         => 'test default group from user criterion',
+         'match'        => 'AND',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleAsset',
+         'condition'    => \RuleTicket::ONADD,
+         'is_recursive' => 1,
+      ]);
+      $this->checkInput($ruleasset, $ruletid, $ruletinput);
+
+      //create criteria to check if group requester already define
+      $crit_id = $rulecrit->add($crit_input = [
+         'rules_id'  => $ruletid,
+         'criteria'  => 'groups_id',
+         'condition' => \Rule::PATTERN_DOES_NOT_EXISTS,
+         'pattern'   => 1,
+      ]);
+      $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+      //create action to put default user group as group requester
+      $action_id = $ruleaction->add($action_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'defaultfromuser',
+         'field'       => 'groups_id',
+         'value'       => 1,
+      ]);
+      $this->checkInput($ruleaction, $action_id, $action_input);
+
+      //create new group
+      $group    = new \Group();
+      $group_id = $group->add($group_input = [
+         "name"         => "group1",
+         "is_requester" => true
+      ]);
+      $this->checkInput($group, $group_id, $group_input);
+
+      //Load user tech
+      $user = getItemByTypeName('User', 'tech');
+
+      //add user to group
+      $group_user    = new \Group_User();
+      $group_user_id = $group_user->add($group_user_input = [
+         "groups_id" => $group_id,
+         "users_id"  => $user->fields['id']
+      ]);
+      $this->checkInput($group_user, $group_user_id, $group_user_input);
+
+      //add default group to user
+      $user->fields['groups_id'] = $group_id;
+      $this->boolean($user->update($user->fields))->isTrue();
+
+      // Check ticket that trigger rule on creation
+      $computer     = new \Computer();
+      $computers_id = $computer->add($computer_input = [
+         'name'        => 'test',
+         'entities_id' => 0,
+         'users_id'    => $user->fields['id']
+      ]);
+      $this->integer($computers_id)->isGreaterThan(0);
+      $this->boolean($computer->getFromDB($computers_id))->isTrue();
+      $this->integer($computer->getField('groups_id'))->isEqualTo($user->getField('groups_id'));
+   }
+
+   public function testFirstGroupUserAssignFromUser() {
+      $this->login();
+
+      // Create rule
+      $ruleasset  = new \RuleAsset();
+      $rulecrit   = new \RuleCriteria();
+      $ruleaction = new \RuleAction();
+
+      $ruletid = $ruleasset->add($ruletinput = [
+         'name'         => 'test first group from user criterion',
+         'match'        => 'AND',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleAsset',
+         'condition'    => \RuleTicket::ONADD,
+         'is_recursive' => 1,
+      ]);
+      $this->checkInput($ruleasset, $ruletid, $ruletinput);
+
+      //create criteria to check if group requester already define
+      $crit_id = $rulecrit->add($crit_input = [
+         'rules_id'  => $ruletid,
+         'criteria'  => 'groups_id',
+         'condition' => \Rule::PATTERN_DOES_NOT_EXISTS,
+         'pattern'   => 1,
+      ]);
+      $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+      //create action to put default user group as group requester
+      $action_id = $ruleaction->add($action_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'firstgroupfromuser',
+         'field'       => 'groups_id',
+         'value'       => 1,
+      ]);
+      $this->checkInput($ruleaction, $action_id, $action_input);
+
+      //create new group
+      $group    = new \Group();
+      $group_id = $group->add($group_input = [
+         "name"         => "group1",
+         "is_requester" => true
+      ]);
+      $this->checkInput($group, $group_id, $group_input);
+
+      //create second group
+      $group2    = new \Group();
+      $group_id2 = $group2->add($group_input2 = [
+         "name"         => "group2",
+         "is_requester" => true
+      ]);
+      $this->checkInput($group2, $group_id2, $group_input2);
+
+      //Load user tech
+      $user = getItemByTypeName('User', 'tech');
+
+      //add user to group
+      $group_user    = new \Group_User();
+      $group_user_id = $group_user->add($group_user_input = [
+         "groups_id" => $group_id,
+         "users_id"  => $user->fields['id']
+      ]);
+      $this->checkInput($group_user, $group_user_id, $group_user_input);
+
+      $group_user_id = $group_user->add($group_user_input = [
+         "groups_id" => $group_id2,
+         "users_id"  => $user->fields['id']
+      ]);
+      $this->checkInput($group_user, $group_user_id, $group_user_input);
+
+      // Check ticket that trigger rule on creation
+      $computer     = new \Computer();
+      $computers_id = $computer->add($computer_input = [
+         'name'        => 'test',
+         'entities_id' => 0,
+         'users_id'    => $user->fields['id']
+      ]);
+      $this->integer($computers_id)->isGreaterThan(0);
+      $this->boolean($computer->getFromDB($computers_id))->isTrue();
+      $this->integer($computer->getField('groups_id'))->isEqualTo($group_id);
+   }
+
 }
