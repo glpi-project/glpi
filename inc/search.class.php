@@ -975,7 +975,12 @@ class Search {
 
             if (isset($criterion['link'])
                   && in_array($criterion['link'], array_keys(self::getLogicalOperators()))) {
-               $tmplink = " ".$criterion['link'];
+               if (strstr($criterion['link'], "NOT")) {
+                  $tmplink = " ".str_replace(" NOT", "", $criterion['link']);
+                  $NOT     = 1;
+               } else {
+                  $tmplink = " ".$criterion['link'];
+               }
             } else {
                $tmplink = " AND ";
             }
@@ -983,8 +988,6 @@ class Search {
             // Manage Link if not first item
             if (!empty($sql)) {
                $LINK = $tmplink;
-            } else if (strstr($tmplink, "NOT")) {
-               $NOT = 1;
             }
 
             if (isset($criterion['criteria']) && count($criterion['criteria'])) {
