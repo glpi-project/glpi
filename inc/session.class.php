@@ -1556,17 +1556,29 @@ class Session {
       Session::init($auth);
 
       if (!is_null($entities_id) && !is_null($is_recursive)) {
-         $_SESSION["glpiactive_entity"]           = $entities_id;
-         $_SESSION["glpiactive_entity_recursive"] = $is_recursive;
-         if ($is_recursive) {
-            $entities = getSonsOf("glpi_entities", $entities_id);
-         } else {
-            $entities = [$entities_id];
-         }
-         $_SESSION['glpiactiveentities']        = $entities;
-         $_SESSION['glpiactiveentities_string'] = "'".implode("', '", $entities)."'";
+         self::loadEntity($entities_id, $is_recursive);
       }
 
       return $user;
+   }
+
+   /**
+    * Load given entity.
+    *
+    * @param integer $entities_id  Entity to use
+    * @param boolean $is_recursive Whether to load entities recursivly or not
+    *
+    * @return void
+    */
+   public static function loadEntity($entities_id, $is_recursive): void {
+      $_SESSION["glpiactive_entity"]           = $entities_id;
+      $_SESSION["glpiactive_entity_recursive"] = $is_recursive;
+      if ($is_recursive) {
+         $entities = getSonsOf("glpi_entities", $entities_id);
+      } else {
+         $entities = [$entities_id];
+      }
+      $_SESSION['glpiactiveentities']        = $entities;
+      $_SESSION['glpiactiveentities_string'] = "'".implode("', '", $entities)."'";
    }
 }

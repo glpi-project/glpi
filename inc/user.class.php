@@ -192,15 +192,7 @@ class User extends CommonDBTM {
          Session::start();
          $_SESSION["glpiID"]                      = $this->fields['id'];
          $_SESSION["glpi_use_mode"]               = Session::NORMAL_MODE;
-         $_SESSION["glpiactive_entity"]           = $entities_id;
-         $_SESSION["glpiactive_entity_recursive"] = $is_recursive;
-         if ($is_recursive) {
-            $entities = getSonsOf("glpi_entities", $entities_id);
-         } else {
-            $entities = [$entities_id];
-         }
-         $_SESSION['glpiactiveentities']        = $entities;
-         $_SESSION['glpiactiveentities_string'] = "'".implode("', '", $entities)."'";
+         Session::loadEntity($entities_id, $is_recursive);
          $this->computePreferences();
          foreach ($CFG_GLPI['user_pref_field'] as $field) {
             if (isset($this->fields[$field])) {
