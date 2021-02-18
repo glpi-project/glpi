@@ -1535,11 +1535,18 @@ class Session {
     *
     * @param int $users_id ID of the user
     *
-    * @return bool
+    * @return User|bool
     */
-   public static function initForUser(int $users_id): bool {
+   public static function authWithToken(
+      string $token,
+      string $token_type,
+      ?int $entities_id,
+      ?bool $is_recursive
+   ) {
       $user = new User();
-      if (!$user->getFromDB($users_id)) {
+
+      // Try to load from token
+      if (!$user->getFromDBByToken($token, $token_type)) {
          return false;
       }
 
@@ -1547,6 +1554,19 @@ class Session {
       $auth->auth_succeded = true;
       $auth->user = $user;
       Session::init($auth);
-      return true;
+
+      if (!is_null($entities_id) && !is_null($is_recursive)) {
+         $_SESSION["glpiactive_entity"]           = $entities_id;
+         $_SESSION["glpiactive_entity_recursive"] = $is_recursive;
+         if ($is_recursive) {
+            $entities = getSonsOf("glpi_entities", $entities_id);
+         } else {
+            $entities = [$entities_id];
+         }
+         $_SESSION['glpiactiveentities']        = $entities;
+         $_SESSION['glpiactiveentities_string'] = "'".implode("', '", $entities)."'";
+      }
+
+      return $user;
    }
 }
