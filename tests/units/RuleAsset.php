@@ -378,8 +378,7 @@ class RuleAsset extends DbTestCase {
       $this->checkInput($group, $group_id, $group_input);
 
       //Load user tech
-      $user = new \User();
-      $user->getFromDB(getItemByTypeName('User', 'tech', true));
+      $user = getItemByTypeName('User', 'tech');
 
       //add user to group
       $group_user    = new \Group_User();
