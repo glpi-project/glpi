@@ -263,7 +263,7 @@ class RuleAsset extends Rule {
                case 'firstgroupfromuser':
                   if (($action->fields['field'] == 'groups_id')
                       && isset($input['_groups_id_of_user'])) {
-                     $output['groups_id'] = $input['_groups_id_of_user'];
+                     $output['groups_id'] = reset($input['_groups_id_of_user']);
                   }
                   break;
 
