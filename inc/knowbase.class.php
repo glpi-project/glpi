@@ -100,13 +100,15 @@ class Knowbase extends CommonGLPI {
    **/
    static function showSearchView() {
 
+      global $CFG_GLPI;
+
       // Search a solution
       if (!isset($_GET["contains"])
           && isset($_GET["itemtype"])
           && isset($_GET["items_id"])) {
 
-         if ($item = getItemForItemtype($_GET["itemtype"])) {
-            if ($item->getFromDB($_GET["items_id"])) {
+         if (in_array($_GET["item_itemtype"], $CFG_GLPI['kb_types']) && $item = getItemForItemtype($_GET["itemtype"])) {
+            if ($item->can($_GET["item_items_id"], READ)) {
                $_GET["contains"] = addslashes($item->getField('name'));
             }
          }
