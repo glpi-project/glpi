@@ -161,6 +161,7 @@ class RuleRight extends DbTestCase {
       ];
 
       $user = new \User();
+      $this->login();
       $users_id = $user->add($testuser);
       $this->integer($users_id)->isGreaterThan(0);
 
@@ -182,9 +183,7 @@ class RuleRight extends DbTestCase {
       $right2 = array_pop($pu);
       $this->array($right2)->isEqualTo($right);
 
-      $_SESSION['glpiactiveprofile']['user'] = 7327;
-      $_SESSION['glpiactiveprofile']['profile'] = 23;
-
+      $this->login();
       // Change the $right profile, since this is the default profile it should
       // be fixed on next login
       $pu = new \Profile_User();
@@ -197,7 +196,6 @@ class RuleRight extends DbTestCase {
       $this->integer($pu->fields['is_default_profile'])->isEqualTo(1);
       $this->integer($pu->fields['is_dynamic'])->isEqualTo(1);
 
-      $this->login(TU_USER, TU_PASS, false);
       $this->login($testuser['name'], $testuser['password'], false);
       $pu = \Profile_User::getForUser($users_id, true);
       $this->array($pu)->hasSize(1);
@@ -209,6 +207,6 @@ class RuleRight extends DbTestCase {
       $this->array($right3)->isEqualTo($right);
 
       // Clean session
-      $this->login(TU_USER, TU_PASS, false);
+      $this->login();
    }
 }
