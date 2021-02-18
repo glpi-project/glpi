@@ -63,7 +63,12 @@ if (isset($_GET['checkavailability'])) {
 } else if (isset($_GET['genical'])) {
    if (isset($_GET['token'])) {
       // Check user token
-      $user = Session::authWithToken($_GET['token'], 'personal_token', $_GET['entities_id'], $_GET['is_recursive']);
+      $user = Session::authWithToken(
+         $_GET['token'],
+         'personal_token',
+         $_GET['entities_id'] ?? null,
+         $_GET['is_recursive'] ?? null
+      );
       if ($user) {
          if (isset($_GET['entities_id']) && isset($_GET['is_recursive'])) {
             // load entities & profiles
