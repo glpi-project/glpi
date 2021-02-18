@@ -1343,14 +1343,27 @@ class Session {
 
       if (isset($_SESSION['glpiidortokens'][$token])
           && $_SESSION['glpiidortokens'][$token]['expires'] >= time()) {
-         $params =  $_SESSION['glpiidortokens'][$token];
-         unset($params['expires']);
+         $idor_data =  $_SESSION['glpiidortokens'][$token];
+         unset($idor_data['expires']);
 
-         // check all stored keys/values are present and identical in provided data
-         $keys_exists = array_intersect_assoc($params, $data);
-         if ($params == $keys_exists) {
-            return true;
-         }
+         // check all stored data for the idor token are present (and identifical) in the posted data
+         $match_expected = function ($expected, $given) use (&$match_expected) {
+            if (is_array($expected)) {
+               if (!is_array($given)) {
+                  return false;
+               }
+               foreach ($expected as $key => $value) {
+                  if (!array_key_exists($key, $given) || !$match_expected($value, $given[$key])) {
+                     return false;
+                  }
+               }
+               return true;
+            } else {
+               return $expected == $given;
+            }
+         };
+
+         return $match_expected($idor_data, $data);
       }
 
       return false;
