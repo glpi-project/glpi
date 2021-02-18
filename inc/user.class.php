@@ -679,6 +679,7 @@ class User extends CommonDBTM {
             $profile                   = Profile::getDefault();
             // Default right as dynamic. If dynamic rights are set it will disappear.
             $affectation['is_dynamic'] = 1;
+            $affectation['is_default_profile'] = 1;
          }
 
          if ($profile) {
@@ -1052,10 +1053,12 @@ class User extends CommonDBTM {
             $return = true;
          } else if (count($dynamic_profiles) == 1) {
             $dynamic_profile = reset($dynamic_profiles);
-            $default_profile = Profile::getDefault();
+
             // If no rule applied and only one dynamic profile found, check if
             // it is the default profile
             if ($dynamic_profile['is_default_profile'] == true) {
+               $default_profile = Profile::getDefault();
+
                // Remove from to be deleted list
                $dynamic_profiles = [];
 
