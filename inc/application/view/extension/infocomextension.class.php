@@ -35,7 +35,6 @@ namespace Glpi\Application\View\Extension;
 use Infocom;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
-use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 /**
