@@ -7808,6 +7808,8 @@ JAVASCRIPT;
          return null;
       }
 
+      $val = trim($val);
+
       if ($val === '^') {
          // Special case, searching "^" or "$" means we are searching for a non empty/null field
          return '%';
@@ -7819,7 +7821,7 @@ JAVASCRIPT;
 
       if (preg_match('/^\^/', $val)) {
          // Remove leading `^`
-         $val = preg_replace('/^\^/', '', $val);
+         $val = ltrim(preg_replace('/^\^/', '', $val));
       } else {
          // Add % wildcard before searched string if not begining by a `^`
          $val = '%' . $val;
@@ -7827,7 +7829,7 @@ JAVASCRIPT;
 
       if (preg_match('/\$$/', $val)) {
          // Remove trailing `$`
-         $val = preg_replace('/\$$/', '', $val);
+         $val = rtrim(preg_replace('/\$$/', '', $val));
       } else {
          // Add % wildcard before searched string if not ending by a `$`
          $val = $val . '%';

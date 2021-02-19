@@ -1221,6 +1221,10 @@ class Search extends DbTestCase {
          ['a ^ in the middle$', '%a ^ in the middle'],
          ['^and $ not at the end', 'and $ not at the end%'],
          ['45$^ab5', '%45$^ab5%'],
+         ['^ ltrim', 'ltrim%'],
+         ['rtim this   $', '%rtim this'],
+         ['  extra spaces ', '%extra spaces%'],
+         ['^ exactval $', 'exactval'],
       ];
    }
 
