@@ -829,6 +829,11 @@
 
       .tab_cadre_fixehov th, .tab_cadrehov th {
          background-color: #F1F0F0;
+
+         @include dark-mode {
+            background-color: var(--header-bg);
+            color: var(--header-fg);
+         }
       }
    }
 
