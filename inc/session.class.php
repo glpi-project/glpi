@@ -1542,4 +1542,56 @@ class Session {
    public static function getActiveEntity() {
       return $_SESSION['glpiactive_entity'] ?? 0;
    }
+
+   /**
+    * Start session for a given user
+    *
+    * @param int $users_id ID of the user
+    *
+    * @return User|bool
+    */
+   public static function authWithToken(
+      string $token,
+      string $token_type,
+      ?int $entities_id,
+      ?bool $is_recursive
+   ) {
+      $user = new User();
+
+      // Try to load from token
+      if (!$user->getFromDBByToken($token, $token_type)) {
+         return false;
+      }
+
+      $auth = new Auth();
+      $auth->auth_succeded = true;
+      $auth->user = $user;
+      Session::init($auth);
+
+      if (!is_null($entities_id) && !is_null($is_recursive)) {
+         self::loadEntity($entities_id, $is_recursive);
+      }
+
+      return $user;
+   }
+
+   /**
+    * Load given entity.
+    *
+    * @param integer $entities_id  Entity to use
+    * @param boolean $is_recursive Whether to load entities recursivly or not
+    *
+    * @return void
+    */
+   public static function loadEntity($entities_id, $is_recursive): void {
+      $_SESSION["glpiactive_entity"]           = $entities_id;
+      $_SESSION["glpiactive_entity_recursive"] = $is_recursive;
+      if ($is_recursive) {
+         $entities = getSonsOf("glpi_entities", $entities_id);
+      } else {
+         $entities = [$entities_id];
+      }
+      $_SESSION['glpiactiveentities']        = $entities;
+      $_SESSION['glpiactiveentities_string'] = "'".implode("', '", $entities)."'";
+   }
 }
