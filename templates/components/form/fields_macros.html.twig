@@ -146,7 +146,7 @@
 {% endmacro %}
 
 {% macro htmlField(name, value, label, options = {}) %}
-   {% if value|length ==0 %}
+   {% if value|length == 0 %}
       {% set value = "&nbsp;" %}
    {% endif %}
 
@@ -172,7 +172,7 @@
 
 
 {% macro nullField(options = {}) %}
-   {% set options = {'is_horizontal': true }|merge(options) %}
+   {% set options = {'is_horizontal': true}|merge(options) %}
 
    {% if options.is_horizontal %}
       {{ _self.horizontalField(label, field, id, add_field_html) }}
