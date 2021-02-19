@@ -109,6 +109,34 @@ class Search extends DbTestCase {
             . '\)/im');
    }
 
+   public function testSoftwareLinkedToAnyComputer() {
+      $search_params = [
+         'is_deleted'   => 0,
+         'start'        => 0,
+         'criteria'     => [
+            [
+               'field'      => 'view',
+               'searchtype' => 'contains',
+               'value'      => '',
+            ],
+         ],
+         'metacriteria' => [
+            [
+               'link'       => 'AND NOT',
+               'itemtype'   => 'Computer',
+               'field'      => 2,
+               'searchtype' => 'contains',
+               'value'      => '^$', // search for "null" id
+            ],
+         ],
+      ];
+
+      $data = $this->doSearch('Software', $search_params);
+
+      $this->string($data['sql']['search'])
+         ->matches("/HAVING\s*\(`ITEM_Computer_2`\s+IS\s+NOT\s+NULL\s*\)/");
+   }
+
    public function testMetaComputerUser() {
       $search_params = ['is_deleted'   => 0,
                         'start'        => 0,
@@ -339,7 +367,7 @@ class Search extends DbTestCase {
          ->contains("(`glpi_users`.`id` = '2')")
          ->contains("OR (`glpi_users`.`id` = '3')")
          // match having
-         ->matches("/HAVING\s*\(`ITEM_Budget_2`\s+<>\s+5\)\s+AND NOT\s+\(`ITEM_Printer_1`\s+LIKE\s+'%HP%'\s*\)/");
+         ->matches("/HAVING\s*\(`ITEM_Budget_2`\s+<>\s+5\)\s+AND\s+\(\(`ITEM_Printer_1`\s+NOT LIKE\s+'%HP%'\s+OR\s+`ITEM_Printer_1`\s+IS NULL\)\s*\)/");
    }
 
    function testViewCriterion() {
@@ -1179,14 +1207,24 @@ class Search extends DbTestCase {
 
    protected function makeTextSearchValueProvider() {
       return [
+         ['NULL', null],
+         ['null', null],
          ['', ''],
          ['^', '%'],
          ['$', ''],
          ['^$', ''],
+         ['$^', '%$^%'], // inverted ^ and $
          ['looking for', '%looking for%'],
          ['^starts with', 'starts with%'],
          ['ends with$', '%ends with'],
-         ['^exact string$', 'exact string']
+         ['^exact string$', 'exact string'],
+         ['a ^ in the middle$', '%a ^ in the middle'],
+         ['^and $ not at the end', 'and $ not at the end%'],
+         ['45$^ab5', '%45$^ab5%'],
+         ['^ ltrim', 'ltrim%'],
+         ['rtim this   $', '%rtim this'],
+         ['  extra spaces ', '%extra spaces%'],
+         ['^ exactval $', 'exactval'],
       ];
    }
 
@@ -1194,7 +1232,7 @@ class Search extends DbTestCase {
     * @dataProvider makeTextSearchValueProvider
     */
    public function testMakeTextSearchValue($value, $expected) {
-      $this->string(\Search::makeTextSearchValue($value))->isIdenticalTo($expected);
+      $this->variable(\Search::makeTextSearchValue($value))->isIdenticalTo($expected);
    }
 
    public function providerAddWhere() {
