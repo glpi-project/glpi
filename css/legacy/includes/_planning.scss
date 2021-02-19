@@ -51,13 +51,22 @@
       height: 18px;
       width: 18px;
       display: block;
-      background: url(../pics/toggle-left.png) no-repeat;
+
+      &::before {
+         font-family: "Font Awesome 5 Free";
+         font-weight: 900;
+         content: "\f191";
+      }
    }
 
    &.folded {
       .toggle {
          float: none;
-         background: url(../pics/toggle-right.png) no-repeat;
+         &::before {
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            content: "\f152";
+         }
       }
 
       width: 18px;
@@ -72,7 +81,8 @@
 
 #planning_filter {
    h3 {
-      background: #e6e6e6;
+      background: $header-bg;
+      color: $header-fg;
       margin: 2px 0 0 0;
       padding: .5em .5em .5em .7em;
       font-weight: normal;
@@ -91,9 +101,9 @@
          clear: both;
          padding: 5px 0 5px 5px;
 
-         &:nth-child(even) {
+         /* &:nth-child(even) {
             background-color: #F3F3F3;
-         }
+         } */
 
          .form-group-checkbox {
             margin-right: 6px;
@@ -102,7 +112,6 @@
          .actor_icon {
             padding-bottom: 2px;
             vertical-align: top;
-            color: rgb(68, 68, 68);
             font-size: 14px;
          }
 
@@ -141,15 +150,23 @@
             .toggle {
                width: 14px;
                height: 14px;
-               background: url(../pics/expand.png) no-repeat;
-               display: inline-block;
                margin: 0 4px 2px 0;
                vertical-align: middle;
                float: right;
+
+               &::before {
+                  font-family: "Font Awesome 5 Free";
+                  font-weight: 900;
+                  content: "\f0fe";
+               }
             }
 
             &.expanded .toggle {
-               background: url(../pics/collapse.png) no-repeat;
+               &::before {
+                  font-family: "Font Awesome 5 Free";
+                  font-weight: 900;
+                  content: "\f146";
+               }
             }
 
             ul.group_listofusers {
@@ -205,32 +222,10 @@
 
       ul {
          display: none;
-         position: absolute;
-         background: #FFF repeat-x top left;
-         box-shadow: 0px 1px 1px #7F7979;
-         padding: 5px;
-         z-index: 2;
-         left: auto;
-         right: 0;
-         top: 15px;
-         margin-right: -10px;
          width: 140px;
-         text-align: right;
 
          li {
-            padding: 5px;
-            cursor: pointer;
-            font-size: 13px;
-
-            &:hover {
-               background-color: #EAEAEA;
-            }
-
-            a {
-               color: inherit;
-               font-size: 13px;
-               font-weight: normal;
-            }
+            white-space: normal;
          }
       }
    }
