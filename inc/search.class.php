@@ -7831,7 +7831,7 @@ JAVASCRIPT;
          // Remove trailing `$`
          $val = rtrim(preg_replace('/\$$/', '', $val));
       } else {
-         // Add % wildcard before searched string if not ending by a `$`
+         // Add % wildcard after searched string if not ending by a `$`
          $val = $val . '%';
       }
 
