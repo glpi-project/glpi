@@ -7811,7 +7811,7 @@ JAVASCRIPT;
       $val = trim($val);
 
       if ($val === '^') {
-         // Special case, searching "^" or "$" means we are searching for a non empty/null field
+         // Special case, searching "^" means we are searching for a non empty/null field
          return '%';
       }
 
