@@ -1281,10 +1281,7 @@ class Config extends CommonDBTM {
          });
       ");
       echo "</td>";
-      echo "<td><label for='dropdown_dark_mode$rand'>" . __('Dark mode') . "</label></td>";
-      echo "<td>";
-      Dropdown::showYesNo('dark_mode', $data['dark_mode'], -1, ['rand' => $rand]);
-      echo "</td>";
+      echo "<td></td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'><td><label for='dropdown_highcontrast_css$rand'>".__('Enable high contrast')."</label></td>";
