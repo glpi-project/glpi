@@ -234,23 +234,14 @@
       }
    }
 
-   textarea, input:not(.submit):not(.form-control):not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput) {
+   textarea:not(.form-control), input:not(.submit):not(.form-control):not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput) {
      border: var(--input-border-width) solid var(--input-border-color);
      border-radius: var(--input-border-radius);
      padding: 0 5px;
    }
 
-   textarea:not([disabled]), input:not(.submit):not(.form-control):not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput):not([disabled]) {
-     background-color: #FCFCFC;
-     color: black;
 
-     body.theme-dark & {
-        background-color: var(--dark-mode-darken);
-        color: var(--dark-mode-text);
-     }
-   }
-
-   textarea:focus, input:not([type=submit]):not(.form-control):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput):focus {
+   textarea:not(.form-control):focus, input:not([type=submit]):not(.form-control):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput):focus {
      border-color: #5897fb;
    }
 

@@ -1,27 +1,43 @@
-#tabspanel.nav-tabs {
+.card-tabs {
+   #tabspanel.nav-tabs {
 
-   .nav-link {
+      .nav-link {
 
-      background: $tabs-bg;
-      color: $tabs-fg;
-      border-color: $tabs-border;
+         background: $tabs-bg;
+         color: $tabs-fg;
+         border-color: $tabs-border;
 
-      &.active {
-         background: $tabs-active-bg;
-         color: $tabs-active-fg;
-         border-color: $tabs-active-border;
-         border-left-width: 5px;
-         font-weight: bold;
+         &.active {
+            background: $tabs-active-bg;
+            color: $tabs-active-fg;
+            border-color: $tabs-active-border;
+            font-weight: bold;
+
+            .badge {
+               font-weight: bold;
+            }
+         }
 
          .badge {
-            font-weight: bold;
+            margin-left: 5px;
+            background-color: $badge-bg;
+            color: $badge-fg;
          }
       }
+   }
 
-      .badge {
-         margin-left: 5px;
-         background-color: $badge-bg;
-         color: $badge-fg;
+   &.vertical {
+      .nav-link {
+         border-bottom: $card-border-width solid $card-border-color;
+         &.active {
+            border-left-width: 5px;
+         }
+      }
+   }
+
+   &.horizontal {
+      .nav-link.active {
+         border-top: 0;
       }
    }
 }

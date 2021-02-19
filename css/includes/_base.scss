@@ -36,10 +36,10 @@ $danger: #d49696;
 $enable-negative-margins: true;
 $link-hover-decoration: none;
 
-@import "~@tabler/core/src/scss/tabler";
-
 @if $is-dark {
    @import "css/includes/dark";
+} @else {
+   @import "~@tabler/core/src/scss/tabler";
 }
 
 $mainmenu_bg: $dark !default;
@@ -47,10 +47,14 @@ $mainmenu_fg: $light !default;
 
 $search_bg: transparentize($mainmenu_bg, 0.95) !default;
 $search_fg: lighten($mainmenu_bg, 5%) !default;
+$search_border: lighten($color: $search_fg, $amount: 35) !default;
 
-$header-color: $blue !default;
-$header-bg: theme-color-lighter($header-color, true) !default;
+$header-fg: $blue !default;
+$header-bg: theme-color-lighter($header-fg, true) !default;
+$header-border-color: tint-color($header-fg, 75%) !default;
 $header-danger-bg: $danger !default;
+$header-badge-bg: tint-color($header-fg, 80%)!default;
+$header-badge-fg: darken($header-fg, 20%) !default;
 
 $logo: "../pics/logos/logo-GLPI-100-white.png" !default;
 $logo_reduced: "../pics/logos/logo-G-100-white.png" !default;
@@ -65,6 +69,8 @@ $tabs-active-fg: $dark !default;
 $tabs-active-border: $tabs-border !default;
 $badge-bg: $dark !default;
 $badge-fg: $light !default;
+
+$input-border: $dark-mode-text !default;
 
 body.iframed {
    background-color: transparent;
@@ -122,9 +128,7 @@ body.iframed {
    }
 }
 
-.card-tabs.vertical .nav-tabs .nav-link {
-   border-bottom: $card-border-width solid $card-border-color;
-}
+
 
 .toast-container {
    z-index: 999999;

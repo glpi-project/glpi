@@ -42,7 +42,7 @@
    .search-form {
       background-color: $search_bg;
       color: $search_fg;
-      border-color: lighten($color: $search_fg, $amount: 35);
+      border-color: $search_border;
 
       // try having same width on link dropdowns
       .select2-container {

@@ -45,8 +45,11 @@
       @include box-shadow($input-box-shadow);
       @include transition($input-transition);
 
-      body.theme-dark & {
-         background-color: $dark-mode-darken;
+      @include dark-mode {
+         & {
+            background-color: $dark-mode-darken;
+            border-color: $input-border;
+         }
       }
 
       .select2-container--focus& {
@@ -79,8 +82,11 @@
          .select2-selection__rendered {
             line-height: $input-height;
 
-            body.theme-dark & {
-               color: $dark-mode-text;
+            @include dark-mode {
+               & {
+                  color: $dark-mode-text;
+                  border-color: $input-border;
+               }
             }
          }
 
@@ -135,8 +141,11 @@
                padding: 1px 3px;
                margin: 3px 3px 0 0;
 
-               body.theme-dark & {
-                  background-color: $dark;
+               @include dark-mode {
+                  & {
+                     background-color: $dark;
+                     border-color: $input-border;
+                  }
                }
 
                .select2-selection__choice__remove {
@@ -148,8 +157,10 @@
                      color: $black;
                   }
 
-                  body.theme-dark &, body.theme-dark &:hover {
-                     color: $light;
+                  @include dark-mode {
+                     &, &:hover {
+                        color: $light;
+                     }
                   }
                }
             }
@@ -162,8 +173,10 @@
       border-radius: 0;
       @include font-size($input-font-size);
 
-      body.theme-dark & {
-         background-color: $dark;
+      @include dark-mode {
+         & {
+            background-color: $dark;
+         }
       }
 
       &.select-dropdown-sm {
@@ -188,9 +201,12 @@
             border: $input-border-width solid $input-border-color;
             @include border-radius($input-border-radius);
 
-            body.theme-dark & {
-               background-color: $dark-mode-darken;
-               color: $dark-mode-text;
+            @include dark-mode {
+               & {
+                  background-color: $dark-mode-darken;
+                  color: $dark-mode-text;
+                  border-color: $input-border;
+               }
             }
          }
       }
@@ -201,17 +217,22 @@
                &[aria-selected=true]:not(.select2-results__option--highlighted) {
                   background-color: darken($light, 5%);
 
-                  body.theme-dark & {
-                     background-color: lighten($dark, 5%);
+                  @include dark-mode {
+                     & {
+                        background-color: lighten($dark, 5%);
+                     }
                   }
                }
                &.select2-results__option--highlighted {
                   background-color: $primary;
                   color: $light;
 
-                  body.theme-dark & {
-                     background-color: $dark-mode-darken;
-                     color: $dark-mode-text;
+                  @include dark-mode {
+                     & {
+                        background-color: $dark-mode-darken;
+                        color: $dark-mode-text;
+                        border-color: $input-border;
+                     }
                   }
                }
                &[role=group] {

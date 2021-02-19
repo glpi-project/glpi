@@ -232,7 +232,6 @@ $default_prefs = [
    'layout'                                  => 'lefttab',
    'palette'                                 => 'auror',
    'page_layout'                             => 'vertical',
-   'dark_mode'                               => '0',
    'fold_menu'                               => '0',
    'fold_search'                             => '0',
    'savedsearches_pinned'                    => '0',

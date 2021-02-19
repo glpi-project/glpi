@@ -1967,8 +1967,7 @@ class Html {
 
       echo "<tr>";
       if (!$onright) {
-         echo "<td><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".($ontop?'-top':'').".png'
-                    alt=''></td>";
+         echo "<td><i class='fas fa-level-down-alt fa-flip-horizontal fa-lg mx-2'></i></td>";
       } else {
          echo "<td class='left' width='80%'></td>";
       }
@@ -1981,8 +1980,7 @@ class Html {
              href='#'>".__('Uncheck all')."</a></td>";
 
       if ($onright) {
-         echo "<td><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-right".($ontop?'-top':'').".png'
-                    alt=''>";
+         echo "<td><i class='fas fa-level-down-alt fa-lg mx-2'></i>";
       } else {
          echo "<td class='left' width='80%'>";
       }
@@ -2442,7 +2440,7 @@ class Html {
             );
          }
          if ($p['display_arrow']) {
-            $out .= "<img class='mt-2' src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".($p['ontop']?'-top':'').".png' alt=''>";
+            $out .= "<i class='fas fa-level-".($p['ontop']?'down':'up')."-alt fa-flip-horizontal fa-lg mx-2'></i>";
          }
          $out .= "<a class='btn btn-sm btn-secondary me-2' ";
          if (is_array($p['confirm'] || strlen($p['confirm']))) {

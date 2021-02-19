@@ -38,13 +38,9 @@ $migration->displayMessage('Add page layout configuration / user preference');
 Config::setConfigurationValues('core', ['page_layout' => 'vertical']);
 $migration->addField('glpi_users', 'page_layout', 'char(20) DEFAULT NULL', ['after' => 'palette']);
 
-$migration->displayMessage('Add dark mode configuration / user preference');
-Config::setConfigurationValues('core', ['dark_mode' => 0]);
-$migration->addField('glpi_users', 'dark_mode', 'tinyint DEFAULT NULL', ['after' => 'page_layout']);
-
 $migration->displayMessage('Add global menu folding config / user preference');
 Config::setConfigurationValues('core', ['fold_menu' => 0]);
-$migration->addField('glpi_users', 'fold_menu', 'tinyint DEFAULT NULL', ['after' => 'dark_mode']);
+$migration->addField('glpi_users', 'fold_menu', 'tinyint DEFAULT NULL', ['after' => 'page_layout']);
 
 $migration->displayMessage('Add global menu folding config / user preference');
 Config::setConfigurationValues('core', ['fold_search' => 0]);

@@ -589,17 +589,6 @@ var langSwitch = function(elt) {
    });
 };
 
-var switchDarkMode = function() {
-   $.ajax({
-      url: CFG_GLPI.root_doc + '/ajax/switchdarkmode.php',
-      type: 'GET',
-      success: function(data) {
-         if (data.success === true) {
-            document.querySelector('body').classList.toggle('theme-dark');
-         }
-      }
-   });
-};
 
 var switchFoldMenu = function() {
    $.ajax({
@@ -666,13 +655,6 @@ $(function() {
       event.preventDefault();
       event.stopPropagation();
       langSwitch($(this));
-   });
-
-   // dark/light mode switch
-   $('[data-darkmode-switch], [data-lightmode-switch]').on('click', function(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      switchDarkMode();
    });
 
    $('.reduce-menu').on('click', function(event) {

@@ -32,7 +32,15 @@
 $is-dark: true;
 
 $primary: #FEC95C;
+$primary-fg: #644e21;
 $secondary: #b0bbd4;
+$secondary-fg: #262d3d;
+
+.btn-primary,
+.btn-outline-primary,
+.btn-ghost-primary {
+  --tblr-btn-color-text: red;
+}
 
 $dark: #232e3c;
 $light: #8892a8;
@@ -47,15 +55,27 @@ $logo_reduced: "../pics/logos/logo-G-100-white.png";
 $badge-bg: #d0d9f0;
 $badge-fg: rgb(58, 73, 102);
 
-$tabs-bg: inherit;
-$tabs-fg: inherit;
-$tabs-border: #30343a;
-$tabs-active-bg: inherit;
-$tabs-active-fg: inherit;
-$tabs-active-border: inherit;
+$header-fg: #6ba8f3;
+$header-border-color: transparent;
+$header-badge-bg: #1d2c3f;
+$header-badge-fg: #6ba8f3;
+
+$tabs-bg: #1d2531;
+$tabs-fg: $light;
+$tabs-border: transparent;
+$tabs-active-bg: #8892a8;
+$tabs-active-fg: #232e3c;
+$tabs-active-border: transparent;
 
 $badge-bg: $light;
 $badge-fg: $dark;
 
+$input-border-dark: #35455a;
+$input-focus-bg: #35455a;
+$input-focus-border-color: #b4bfce;
+
+$table-border-color: #1f2936;
+
+$search_border: rgba(101, 109, 119, 0.16);
 
 @import "css/styles";
