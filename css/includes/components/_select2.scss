@@ -251,11 +251,11 @@
    }
 
    .btn-group & {
-      // avoid overflow of select2 with btn-group
       flex-grow: 1;
       flex-basis: content;
 
-      .w-100& {
+      // avoid overflow of select2 with btn-group
+      @at-root .btn-group.w-100 .select2-container {
          width: 0 !important;
       }
 
