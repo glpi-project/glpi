@@ -1280,7 +1280,6 @@ class Html {
       }
 
       //  CSS link
-      $tpl_vars['css_files'][] = 'css/legacy.scss';
       if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
          $tpl_vars['css_files'][] = 'css/legacy/highcontrast.scss';
       }

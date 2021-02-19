@@ -629,7 +629,7 @@
       background-color: var(--contrast-light);
       color: var(--dark);
 
-      body.theme-dark & {
+      @include dark-mode {
          background-color: var(--contrast-dark);
          color: var(--light);
       }
@@ -726,7 +726,7 @@
       background-color: #F8F8F8;
       color: #2E2E2E;
       font-size: 11px;
-      border-bottom: 1px solid #EEE;
+      border-bottom: 1px solid $table_border;
    }
 
    .tab_cadre_fixehov td, .tab_cadrehov td {
@@ -738,12 +738,12 @@
    }
 
    .tab_cadre td, .tab_cadre_fixehov td {
-      border-bottom: 1px solid #EEE;
+      border-bottom: 1px solid $table_border;
    }
 
    .tab_cadrehov {
       td {
-         border-bottom: 1px solid #EEE;
+         border-bottom: 1px solid $table_border;
       }
    }
 
@@ -758,7 +758,7 @@
    .tab_cadre_fixehov td.rowHover {
       background-color: #F3F3F3;
 
-      body.theme-dark & {
+      @include dark-mode {
          background-color: #292929;
       }
    }
@@ -850,7 +850,8 @@
       }
 
       &.subheader {
-         background-color: #EEEEEE;
+         background-color: $header-bg;
+         color: $header-fg;
          text-align: center;
          font-weight: bold;
 
@@ -1496,7 +1497,6 @@
       text-align: center;
       border: 1px dashed #cccccc;
       min-height: 65px;
-      background-color: #fff;
       border-radius: 5px;
       max-width: 950px;
       margin: .5em auto;
