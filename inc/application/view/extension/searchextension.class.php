@@ -51,7 +51,7 @@ class SearchExtension extends AbstractExtension implements ExtensionInterface {
 
    public function showItem(
       int $displaytype,
-      string $value = "",
+      string $value = null,
       int $num = 0,
       int $row = 0,
       string $extraparams = ""
