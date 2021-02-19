@@ -1207,14 +1207,20 @@ class Search extends DbTestCase {
 
    protected function makeTextSearchValueProvider() {
       return [
+         ['NULL', null],
+         ['null', null],
          ['', ''],
          ['^', '%'],
          ['$', ''],
          ['^$', ''],
+         ['$^', '%$^%'], // inverted ^ and $
          ['looking for', '%looking for%'],
          ['^starts with', 'starts with%'],
          ['ends with$', '%ends with'],
-         ['^exact string$', 'exact string']
+         ['^exact string$', 'exact string'],
+         ['a ^ in the middle$', '%a ^ in the middle'],
+         ['^and $ not at the end', 'and $ not at the end%'],
+         ['45$^ab5', '%45$^ab5%'],
       ];
    }
 
@@ -1222,7 +1228,7 @@ class Search extends DbTestCase {
     * @dataProvider makeTextSearchValueProvider
     */
    public function testMakeTextSearchValue($value, $expected) {
-      $this->string(\Search::makeTextSearchValue($value))->isIdenticalTo($expected);
+      $this->variable(\Search::makeTextSearchValue($value))->isIdenticalTo($expected);
    }
 
    public function providerAddWhere() {
