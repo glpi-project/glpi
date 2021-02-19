@@ -109,7 +109,7 @@ class Search extends DbTestCase {
             . '\)/im');
    }
 
-   public function testSoftwareLinkedToNoComputer() {
+   public function testSoftwareLinkedToAnyComputer() {
       $search_params = [
          'is_deleted'   => 0,
          'start'        => 0,
@@ -126,7 +126,7 @@ class Search extends DbTestCase {
                'itemtype'   => 'Computer',
                'field'      => 2,
                'searchtype' => 'contains',
-               'value'      => '$^',
+               'value'      => '^$', // search for "null" id
             ],
          ],
       ];
@@ -134,7 +134,7 @@ class Search extends DbTestCase {
       $data = $this->doSearch('Software', $search_params);
 
       $this->string($data['sql']['search'])
-         ->matches("/HAVING\s*\(`ITEM_Computer_2`\s+IS\s+NULL\s*\)/");
+         ->matches("/HAVING\s*\(`ITEM_Computer_2`\s+IS\s+NOT\s+NULL\s*\)/");
    }
 
    public function testMetaComputerUser() {
