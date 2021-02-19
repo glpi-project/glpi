@@ -5277,6 +5277,7 @@ CREATE TABLE `glpi_profiles_users` (
   `entities_id` int(11) NOT NULL DEFAULT '0',
   `is_recursive` tinyint(1) NOT NULL DEFAULT '1',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `is_default_profile` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `entities_id` (`entities_id`),
   KEY `profiles_id` (`profiles_id`),
