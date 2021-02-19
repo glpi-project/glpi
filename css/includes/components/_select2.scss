@@ -252,9 +252,12 @@
 
    .btn-group & {
       // avoid overflow of select2 with btn-group
-      width: 0 !important;
       flex-grow: 1;
       flex-basis: content;
+
+      .w-100& {
+         width: 0 !important;
+      }
 
       &:not(:last-child) {
          .select2-selection {
