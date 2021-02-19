@@ -48,7 +48,7 @@ class ModelExtension extends AbstractExtension implements ExtensionInterface {
       ];
    }
 
-   public function getmodelPicture(CommonDBTM $item, string $picture_field = "picture_front"): string {
+   public function getmodelPicture(CommonDBTM $item, string $picture_field = "picture_front"): ?string {
       $itemtype  = $item->getType();
       $modeltype = $itemtype."Model";
       if (class_exists($modeltype)) {
