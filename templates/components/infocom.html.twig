@@ -6,7 +6,6 @@
 
 {% if infocom.fields['id'] <= 0 %}
    {% if can_create and withtemplate != 2 %}
-   test
       <div class="mx-auto my-4" style="width: 400px;">
             <input type="hidden" name="itemtype" value="{{ item.getType() }}">
             <input type="hidden" name="items_id" value="{{ item.fields['id'] }}">
