@@ -3635,4 +3635,5 @@ class Ticket extends DbTestCase {
       $this->login('post-only', 'postonly');
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
    }
+
 }

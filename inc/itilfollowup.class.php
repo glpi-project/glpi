@@ -238,6 +238,20 @@ class ITILFollowup  extends CommonDBChild {
          $this->input["users_id"]
       );
 
+      // Set pending reason data on parent and self
+      if ($this->input['pending'] ?? 0) {
+         PendingReason_Item::createForItem($parentitem, [
+            'pendingreasons_id'           => $this->input['pendingreasons_id'],
+            'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
+            'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
+         ]);
+         PendingReason_Item::createForItem($this, [
+            'pendingreasons_id'           => $this->input['pendingreasons_id'],
+            'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
+            'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
+         ]);
+      }
+
       if (isset($this->input["_close"])
           && $this->input["_close"]
           && ($parentitem->fields["status"] == CommonITILObject::SOLVED)) {
@@ -254,6 +268,11 @@ class ITILFollowup  extends CommonDBChild {
          $donotif = false; // Done for ITILObject update (new status)
       }
 
+      // Set parent status to pending
+      if ($this->input['pending'] ?? 0) {
+         $this->input['_status'] = CommonITILObject::WAITING;
+      }
+
       //manage reopening of ITILObject
       $reopened = false;
       if (!isset($this->input['_status'])) {
@@ -261,10 +280,13 @@ class ITILFollowup  extends CommonDBChild {
       }
       // if reopen set (from followup form or mailcollector)
       // and status is reopenable and not changed in form
+      $is_set_pending = $this->input['pending'] ?? 0;
       if (isset($this->input["_reopen"])
           && $this->input["_reopen"]
           && in_array($parentitem->fields["status"], $parentitem::getReopenableStatusArray())
-          && $this->input['_status'] == $parentitem->fields["status"]) {
+          && $this->input['_status'] == $parentitem->fields["status"]
+          && !$is_set_pending
+      ) {
 
          $needupdateparent = false;
          if (($parentitem->countUsers(CommonITILActor::ASSIGN) > 0)
@@ -362,7 +384,6 @@ class ITILFollowup  extends CommonDBChild {
 
 
    function prepareInputForAdd($input) {
-
       $input["_job"] = new $input['itemtype']();
 
       if (empty($input['content'])
@@ -418,7 +439,11 @@ class ITILFollowup  extends CommonDBChild {
       unset($input["add"]);
 
       $itemtype = $input['itemtype'];
-      $input['timeline_position'] = $itemtype::getTimelinePosition($input["items_id"], $this->getType(), $input["users_id"]);
+
+      // Only calculate timeline_position if not already specified in the input
+      if (!isset($input['timeline_position'])) {
+         $input['timeline_position'] = $itemtype::getTimelinePosition($input["items_id"], $this->getType(), $input["users_id"]);
+      }
 
       if (!isset($input['date'])) {
          $input["date"] = $_SESSION["glpi_currenttime"];
@@ -491,6 +516,8 @@ class ITILFollowup  extends CommonDBChild {
             NotificationEvent::raiseEvent("update_followup", $job, $options);
          }
       }
+
+      $this->input = PendingReason_Item::handleTimelineEdits($this);
 
       // change ITIL Object status (from splitted button)
       if (isset($this->input['_status'])
@@ -924,7 +951,9 @@ JAVASCRIPT;
                <span class='lever'></span>
             </label>
          </span>";
-         echo "</div></td></tr>";
+         echo "</div>";
+         echo "</td></tr>";
+         PendingReason_Item::showFormForTimelineItem($this, $rand);
 
          $this->showFormButtons($options);
 

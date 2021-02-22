@@ -4907,6 +4907,9 @@ JAVASCRIPT;
             echo "&nbsp;<a class='vsubmit' href='$link'>". __('Reopen')."</a>";
          }
       }
+
+      // If ticket have a pending reason, display the detail in a tooltip
+      PendingReason_Item::displayStatusTooltip($this);
       echo $tt->getEndHiddenFieldValue('status', $this);
 
       echo "</td>";
@@ -6964,49 +6967,6 @@ JAVASCRIPT;
 
    }
 
-
-   /**
-    * @since 0.90
-    *
-    * @param integer $tickets_id
-    * @param string  $action      (default 'add')
-   **/
-   static function getSplittedSubmitButtonHtml($tickets_id, $action = "add") {
-
-      $locale = _sx('button', 'Add');
-      if ($action == 'update') {
-         $locale = _x('button', 'Save');
-      }
-      $ticket       = new self();
-      $ticket->getFromDB($tickets_id);
-      $all_status   = Ticket::getAllowedStatusArray($ticket->fields['status']);
-      $rand = mt_rand();
-
-      $html = "<div class='x-split-button' id='x-split-button'>
-               <input type='submit' value='$locale' name='$action' class='x-button x-button-main'>
-               <span class='x-button x-button-drop'>&nbsp;</span>
-               <ul class='x-button-drop-menu'>";
-      foreach ($all_status as $status_key => $status_label) {
-         $checked = "";
-         if ($status_key == $ticket->fields['status']) {
-            $checked = "checked='checked'";
-         }
-         $html .= "<li data-status='".self::getStatusKey($status_key)."'>";
-         $html .= "<input type='radio' id='status_radio_$status_key$rand' name='_status'
-                    $checked value='$status_key'>";
-         $html .= "<label for='status_radio_$status_key$rand'>";
-         $html .= Ticket::getStatusIcon($status_key) . "&nbsp;";
-         $html .= $status_label;
-         $html .= "</label>";
-         $html .= "</li>";
-      }
-      $html .= "</ul></div>";
-
-      $html.= "<script type='text/javascript'>$(function() {split_button();});</script>";
-      return $html;
-   }
-
-
    /**
     * Get correct Calendar: Entity or Sla
     *
@@ -7732,5 +7692,9 @@ JAVASCRIPT;
 
    public static function getItemLinkClass(): string {
       return Item_Ticket::class;
+   }
+
+   public static function getTaskClass() {
+      return TicketTask::class;
    }
 }

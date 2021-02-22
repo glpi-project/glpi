@@ -281,7 +281,9 @@ JAVASCRIPT;
    }
 
    function prepareInputForAdd($input) {
-      $input['users_id'] = Session::getLoginUserID();
+      if (!isset($input['users_id']) && (Session::isCron() || strpos($_SERVER['REQUEST_URI'], 'crontask.form.php') !== false)) {
+         $input['users_id'] = Session::getLoginUserID();
+      }
 
       if ($this->item == null
          || (isset($input['itemtype']) && isset($input['items_id']))

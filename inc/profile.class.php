@@ -1132,9 +1132,18 @@ class Profile extends CommonDBTM {
       $matrix_options = ['canedit'       => $canedit,
                               'default_class' => 'tab_bg_2'];
 
-      $rights = [['itemtype'  => 'TicketTemplate',
-                            'label'     => _n('Template', 'Templates', Session::getPluralNumber()),
-                            'field'     => 'itiltemplate']];
+      $rights = [
+         [
+            'itemtype'  => 'TicketTemplate',
+            'label'     => _n('Template', 'Templates', Session::getPluralNumber()),
+            'field'     => 'itiltemplate'
+         ],
+         [
+            'itemtype'  => 'PendingReason',
+            'label'     => PendingReason::getTypeName(0),
+            'field'     => 'pendingreason'
+         ],
+      ];
       $matrix_options['title'] = _n('ITIL object', 'ITIL objects', Session::getPluralNumber());
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 

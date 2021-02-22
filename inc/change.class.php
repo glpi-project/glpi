@@ -961,6 +961,7 @@ class Change extends CommonITILObject {
             echo "&nbsp;<a class='vsubmit' href='$link'>". __('Reopen')."</a>";
          }
       }
+      PendingReason_Item::displayStatusTooltip($this);
       echo $tt->getEndHiddenFieldValue('status', $this);
 
       echo "</td>";
@@ -1662,5 +1663,9 @@ class Change extends CommonITILObject {
          default:
             return parent::getStatusKey($status);
       }
+   }
+
+   public static function getTaskClass() {
+      return ChangeTask::class;
    }
 }

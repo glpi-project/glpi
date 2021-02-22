@@ -97,7 +97,8 @@ class Transfer extends DbTestCase {
             'Printer_CartridgeInfo',
             'PrinterLog',
             'USBVendor',
-            'PCIVendor'
+            'PCIVendor',
+            'PendingReasonCron',
          ]
       );
 

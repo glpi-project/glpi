@@ -84,7 +84,7 @@ abstract class CommonITILObject extends CommonDBTM {
    const TIMELINE_MIDRIGHT = 3;
    const TIMELINE_RIGHT    = 4;
 
-
+   abstract public static function getTaskClass();
 
    function post_getFromDB() {
       $this->loadActors();
@@ -1099,6 +1099,13 @@ abstract class CommonITILObject extends CommonDBTM {
          ]);
       }
 
+      // If status changed from pending to anything else, remove pending reason
+      if (isset($this->input["status"])
+         && $this->input["status"] != self::WAITING
+      ) {
+         PendingReason_Item::deleteForItem($this);
+      }
+
       return $input;
    }
 
@@ -1206,7 +1213,6 @@ abstract class CommonITILObject extends CommonDBTM {
                $this->fields["solvedate"]    = $this->fields["closedate"];
             }
          }
-
       }
 
       // check dates
@@ -3424,6 +3430,25 @@ abstract class CommonITILObject extends CommonDBTM {
             'jointype'           => 'items_id',
             'beforejoin'         => [
                'table'              => 'glpi_documents_items',
+               'joinparams'         => [
+                  'jointype'           => 'itemtype_item'
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '400',
+         'table'              => PendingReason::getTable(),
+         'field'              => 'name',
+         'name'               => PendingReason::getTypeName(1),
+         'massiveaction'      => false,
+         'searchtype'         => ['equals', 'notequals'],
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'jointype'           => 'items_id',
+            'beforejoin'         => [
+               'table'              => PendingReason_Item::getTable(),
                'joinparams'         => [
                   'jointype'           => 'itemtype_item'
                ]
@@ -6483,34 +6508,19 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return string HTML code for splitted submit button
    **/
    static function getSplittedSubmitButtonHtml($items_id, $action = "add") {
+      global $CFG_GLPI;
+
       $locale = _sx('button', 'Add');
       if ($action == 'update') {
          $locale = _x('button', 'Save');
       }
       $item       = new static();
       $item->getFromDB($items_id);
-      $all_status   = static::getAllowedStatusArray($item->fields['status']);
-      $rand = mt_rand();
-      $html = "<div class='x-split-button' id='x-split-button'>
-               <input type='submit' value='$locale' name='$action' class='x-button x-button-main'>
-               <span class='x-button x-button-drop'>&nbsp;</span>
-               <ul class='x-button-drop-menu'>";
-      foreach ($all_status as $status_key => $status_label) {
-         $checked = "";
-         if ($status_key == $item->fields['status']) {
-            $checked = "checked='checked'";
-         }
-         $html .= "<li data-status='".static::getStatusKey($status_key)."'>";
-         $html .= "<input type='radio' id='status_radio_$status_key$rand' name='_status'
-                    $checked value='$status_key'>";
-         $html .= "<label for='status_radio_$status_key$rand'>";
-         $html .= static::getStatusIcon($status_key) . "&nbsp;";
-         $html .= $status_label;
-         $html .= "</label>";
-         $html .= "</li>";
-      }
-      $html .= "</ul></div>";
-      $html.= "<script type='text/javascript'>$(function() {split_button();});</script>";
+
+      $html = "<div class='x-split-button' id='x-split-button'>";
+      $html .= "<input type='submit' value='$locale' name='$action' class='x-button x-button-main'>";
+      $html .= "</div>";
+      $html .= "<script type='text/javascript'>$(function() {split_button();});</script>";
       return $html;
    }
 
@@ -7000,6 +7010,8 @@ abstract class CommonITILObject extends CommonDBTM {
       $this->showTimelineHeader();
 
       $timeline_index = 0;
+      $pending_found = false;
+      $pending_reason_item_parent = PendingReason_Item::getForItem($this);
       foreach ($timeline as $item) {
          $options = [ 'parent' => $this,
                            'rand' => $rand
@@ -7227,6 +7239,35 @@ abstract class CommonITILObject extends CommonDBTM {
          }
          if (isset($item_i['requesttypes_id']) && !empty($item_i['requesttypes_id'])) {
             echo Dropdown::getDropdownName("glpi_requesttypes", $item_i['requesttypes_id'])."<br>";
+         }
+
+         $item_class = $item['type'];
+
+         if ($item['type'] == ITILFollowup::getType()
+           || $item['type'] == TicketTask::getType()
+           || $item['type'] == ChangeTask::getType()
+           || $item['type'] == ProblemTask::getType()
+         ) {
+            $pending_item = $item_class::getById($item_i['id']);
+            $pending_reason_item = $pending_item ? PendingReason_Item::getForItem($pending_item) : false;
+            if ($pending_reason_item && $pending_reason = PendingReason::getById($pending_reason_item->fields['pendingreasons_id'])) {
+               echo __("Pending: ") . $pending_reason->getLink() . '<br>';
+
+               // Parent is pending and this is the first pending followup -> show full details
+               if ($pending_reason_item_parent && !$pending_found) {
+                  $pending_found = true;
+
+                  $next_bump = $pending_reason_item_parent->getNextFollowupDate();
+                  if ($next_bump) {
+                     echo sprintf(__("Next automatic follow-up scheduled on %s"), Html::convDate($next_bump)) . ".<br>";
+                  }
+
+                  $resolve = $pending_reason_item_parent->getAutoResolvedate();
+                  if ($resolve) {
+                     echo __("Automatic resolution scheduled on ") . Html::convDate($resolve) . ".<br>";
+                  }
+               }
+            }
          }
 
          if (isset($item_i['actiontime']) && !empty($item_i['actiontime'])) {
@@ -8459,4 +8500,5 @@ abstract class CommonITILObject extends CommonDBTM {
 
       return $input;
    }
+
 }

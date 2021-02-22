@@ -688,6 +688,16 @@ $tables['glpi_crontasks'] = [
       'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
+      'id'            => 42,
+      'itemtype'      => PendingReasonCron::getType(),
+      'name'          => PendingReasonCron::TASK_NAME,
+      'frequency'     => 30 * MINUTE_TIMESTAMP,
+      'param'         => null,
+      'state'         => 1,
+      'mode'          => 2,
+      'lastrun'       => null,
+      'logs_lifetime' => 60,
+   ], [
       'id'            => 40,
       'itemtype'      => 'Glpi\Inventory\Inventory',
       'name'          => 'cleantemp',
@@ -7511,6 +7521,38 @@ $tables['glpi_profilerights'] = [
       'profiles_id' => '8',
       'name'        => 'inventory',
       'rights'      => 0,
+   ], [
+      'profiles_id' => '1',
+      'name'        => 'pendingreason',
+      'rights'      => 0,
+   ], [
+      'profiles_id' => '2',
+      'name'        => 'pendingreason',
+      'rights'      => 0,
+   ], [
+      'profiles_id' => '3',
+      'name'        => 'pendingreason',
+      'rights'      => 31,
+   ], [
+      'profiles_id' => '4',
+      'name'        => 'pendingreason',
+      'rights'      => 31,
+   ], [
+      'profiles_id' => '5',
+      'name'        => 'pendingreason',
+      'rights'      => 1,
+   ], [
+      'profiles_id' => '6',
+      'name'        => 'pendingreason',
+      'rights'      => 1,
+   ], [
+      'profiles_id' => '7',
+      'name'        => 'pendingreason',
+      'rights'      => 1,
+   ], [
+      'profiles_id' => '8',
+      'name'        => 'pendingreason',
+      'rights'      => 1,
    ],
 ];
 
