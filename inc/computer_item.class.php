@@ -694,7 +694,7 @@ class Computer_Item extends CommonDBRelation{
          $canview = false;
 
          if ($item->getType() == Computer::getType()) {
-            foreach($CFG_GLPI['directconnect_types'] as $type) {
+            foreach ($CFG_GLPI['directconnect_types'] as $type) {
                if ($type::canView()) {
                   $canview = true;
                   break;
@@ -710,11 +710,10 @@ class Computer_Item extends CommonDBRelation{
 
          if (in_array($item->getType(), $CFG_GLPI['directconnect_types']) && Computer::canView()) {
                $canview = true;
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = self::countForItem($item);
-               }
+            if ($_SESSION['glpishow_count_on_tabs']) {
+               $nb = self::countForItem($item);
+            }
          }
-
 
          if ($canview) {
             return self::createTabEntry(
