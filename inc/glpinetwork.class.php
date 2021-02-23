@@ -120,7 +120,7 @@ class GLPINetwork {
       if ($canedit) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='2' class='center'>";
-         echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+         echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
          echo "</td></tr>";
       }
 

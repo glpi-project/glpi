@@ -635,12 +635,12 @@ class Html {
       }
 
       if ($ref_title != "") {
-         echo "<td><span class='vsubmit'>&nbsp;".$ref_title."&nbsp;</span></td>";
+         echo "<td><span class='btn btn-secondary'>&nbsp;".$ref_title."&nbsp;</span></td>";
       }
 
       if (is_array($ref_btts) && count($ref_btts)) {
          foreach ($ref_btts as $key => $val) {
-            echo "<td><a class='vsubmit' href='".$key."'>".$val."</a></td>";
+            echo "<td><a class='btn btn-secondary' href='".$key."'>".$val."</a></td>";
          }
       }
       echo "</tr></table></div>";

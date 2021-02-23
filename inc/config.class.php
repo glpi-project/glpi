@@ -475,7 +475,7 @@ class Config extends CommonDBTM {
       if ($canedit) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='4' class='center'>";
-         echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+         echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
          echo "</td></tr>";
       }
 
@@ -655,7 +655,7 @@ class Config extends CommonDBTM {
       if ($canedit) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='6' class='center'>";
-         echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+         echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
          echo "</td></tr>";
       }
 
@@ -699,7 +699,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' name='update_auth' class='submit' value=\""._sx('button', 'Save').
+      echo "<input type='submit' name='update_auth' class='btn btn-primary' value=\""._sx('button', 'Save').
            "\">";
       echo "</td></tr>";
 
@@ -768,7 +768,7 @@ class Config extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+      echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
       echo "</td></tr>";
 
       echo "</table></div>";
@@ -837,7 +837,7 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+      echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
       echo "<br><br><br>";
       echo "</td></tr>";
 
@@ -1008,7 +1008,7 @@ class Config extends CommonDBTM {
       if ($canedit) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='7' class='center'>";
-         echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+         echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
          echo "</td></tr>";
       }
 
@@ -1476,7 +1476,7 @@ class Config extends CommonDBTM {
       if ((!$userpref && $canedit) || ($userpref && $canedituser)) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='4' class='center'>";
-         echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+         echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
          echo "</td></tr>";
       }
 
@@ -1721,7 +1721,7 @@ class Config extends CommonDBTM {
 
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             echo "<tr><td></td><td colspan='3'>";
-            echo "<a class='vsubmit' href='config.form.php?reset_opcache=1'>";
+            echo "<a class='btn btn-secondary' href='config.form.php?reset_opcache=1'>";
             echo __('Reset');
             echo "</a></td></tr>\n";
          }
@@ -1767,7 +1767,7 @@ class Config extends CommonDBTM {
 
       if ($GLPI_CACHE instanceof FlushableInterface) {
          echo "<tr><td></td><td colspan='3'>";
-         echo "<a class='vsubmit' href='config.form.php?reset_cache=1&optname=cache_db'>";
+         echo "<a class='btn btn-secondary' href='config.form.php?reset_cache=1&optname=cache_db'>";
          echo __('Reset');
          echo "</a></td></tr>\n";
       }
@@ -1782,7 +1782,7 @@ class Config extends CommonDBTM {
 
       if ($translation_cache instanceof FlushableInterface) {
          echo "<tr><td></td><td colspan='3'>";
-         echo "<a class='vsubmit' href='config.form.php?reset_cache=1&optname=cache_trans'>";
+         echo "<a class='btn btn-secondary' href='config.form.php?reset_cache=1&optname=cache_trans'>";
          echo __('Reset');
          echo "</a></td></tr>\n";
       }
@@ -1873,7 +1873,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+      echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
       echo "</td></tr>";
 
       echo "</table>";
@@ -1886,7 +1886,7 @@ class Config extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th>". __('Information about system installation and configuration')."</th></tr>";
       echo "<tr class='tab_bg_1'><td>";
-      echo "<a class='vsubmit' href='?check_version'>".__('Check if a new version is available')."</a>";
+      echo "<a class='btn btn-secondary' href='?check_version'>".__('Check if a new version is available')."</a>";
       echo "</td></tr>";
 
        $oldlang = $_SESSION['glpilanguage'];
@@ -3202,7 +3202,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit' >";
+      echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary' >";
       echo"</td>";
       echo "</tr>";
 
@@ -3442,7 +3442,7 @@ class Config extends CommonDBTM {
 
       echo '<tr class="tab_bg_2">';
       echo '<td colspan="4" class="center">';
-      echo '<input type="submit" name="update" class="submit" value="' . _sx('button', 'Save') . '">';
+      echo '<input type="submit" name="update" class="btn btn-primary" value="' . _sx('button', 'Save') . '">';
       echo '</td>';
       echo '</tr>';
 
@@ -3497,7 +3497,7 @@ class Config extends CommonDBTM {
       if ($canedit) {
          echo '<tr class="tab_bg_2">';
          echo '<td colspan="4" class="center">';
-         echo '<input type="submit" name="update" class="submit" value="' . _sx('button', 'Save') . '">';
+         echo '<input type="submit" name="update" class="btn btn-primary" value="' . _sx('button', 'Save') . '">';
          echo '</td>';
          echo '</tr>';
       }
