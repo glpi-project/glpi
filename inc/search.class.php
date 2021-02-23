@@ -975,7 +975,12 @@ class Search {
 
             if (isset($criterion['link'])
                   && in_array($criterion['link'], array_keys(self::getLogicalOperators()))) {
-               $tmplink = " ".$criterion['link'];
+               if (strstr($criterion['link'], "NOT")) {
+                  $tmplink = " ".str_replace(" NOT", "", $criterion['link']);
+                  $NOT     = 1;
+               } else {
+                  $tmplink = " ".$criterion['link'];
+               }
             } else {
                $tmplink = " AND ";
             }
@@ -983,8 +988,6 @@ class Search {
             // Manage Link if not first item
             if (!empty($sql)) {
                $LINK = $tmplink;
-            } else if (strstr($tmplink, "NOT")) {
-               $NOT = 1;
             }
 
             if (isset($criterion['criteria']) && count($criterion['criteria'])) {
@@ -7821,24 +7824,38 @@ JAVASCRIPT;
       // escape _ char used as wildcard in mysql likes
       $val = str_replace('_', '\\_', $val);
 
-      if (($val == 'NULL') || ($val == 'null')) {
+      if ($val === 'NULL' || $val === 'null') {
          return null;
       }
 
-      $search = '';
-      preg_match('/^(\^?)([^\^\$]*)(\$?)$/', $val, $matches);
-      if (isset($matches[2]) && strlen(trim($matches[2])) > 0) {
-         $search =
-            ($matches[1] != '^' ? '%' : '') .
-            trim($matches[2]) .
-            ($matches[3] != '$' ? '%' : '');
-      } else if (isset($matches[1])
-            && strlen(trim($matches[1])) == 1
-            && (!isset($matches[3]) || empty($matches[3]))) {
-         // this case is for search with only ^, so mean the field is not empty / not null
-         $search = '%';
+      $val = trim($val);
+
+      if ($val === '^') {
+         // Special case, searching "^" means we are searching for a non empty/null field
+         return '%';
       }
-      return $search;
+
+      if ($val === '' || $val === '^$' || $val === '$') {
+         return '';
+      }
+
+      if (preg_match('/^\^/', $val)) {
+         // Remove leading `^`
+         $val = ltrim(preg_replace('/^\^/', '', $val));
+      } else {
+         // Add % wildcard before searched string if not begining by a `^`
+         $val = '%' . $val;
+      }
+
+      if (preg_match('/\$$/', $val)) {
+         // Remove trailing `$`
+         $val = rtrim(preg_replace('/\$$/', '', $val));
+      } else {
+         // Add % wildcard after searched string if not ending by a `$`
+         $val = $val . '%';
+      }
+
+      return $val;
    }
 
 

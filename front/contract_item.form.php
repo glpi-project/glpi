@@ -45,7 +45,7 @@ $contract_item   = new Contract_Item();
 if (isset($_POST["add"])) {
    if (!isset($_POST['contracts_id']) || empty($_POST['contracts_id'])) {
       $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
-                         _n('Contract', 'Contract', 1));
+                         Contract::getTypeName(1));
       Session::addMessageAfterRedirect($message, false, ERROR);
       Html::back();
    }

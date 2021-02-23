@@ -120,8 +120,9 @@ class Dropdown {
       $name         = $params['emptylabel'];
       $comment      = "";
 
-      // Check default value for dropdown : need to be a numeric
-      if ((strlen($params['value']) == 0) || !is_numeric($params['value']) && $params['value'] != 'mygroups') {
+      // Check default value for dropdown : need to be a numeric (or null)
+      if ($params['value'] !== null
+          && ((strlen($params['value']) == 0) || !is_numeric($params['value']) && $params['value'] != 'mygroups')) {
          $params['value'] = 0;
       }
 

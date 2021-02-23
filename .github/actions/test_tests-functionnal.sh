@@ -1,8 +1,10 @@
 #!/bin/bash -e
 
 ATOUM_ADDITIONNAL_OPTIONS=""
-if [[ -z "$COVERAGE_DIR" ]];
-  then ATOUM_ADDITIONNAL_OPTIONS="--no-code-coverage";
+if [[ "$CODE_COVERAGE" = true ]]; then
+  export COVERAGE_DIR="coverage-functionnal"
+else
+  ATOUM_ADDITIONNAL_OPTIONS="--no-code-coverage";
 fi
 
 vendor/bin/atoum \
@@ -15,3 +17,5 @@ vendor/bin/atoum \
   $ATOUM_ADDITIONNAL_OPTIONS \
   --max-children-number 1 \
   -d tests/functionnal
+
+unset COVERAGE_DIR

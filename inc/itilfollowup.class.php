@@ -257,19 +257,32 @@ class ITILFollowup  extends CommonDBChild {
           && in_array($parentitem->fields["status"], $parentitem::getReopenableStatusArray())
           && $this->input['_status'] == $parentitem->fields["status"]) {
 
+         $needupdateparent = false;
          if (($parentitem->countUsers(CommonITILActor::ASSIGN) > 0)
              || ($parentitem->countGroups(CommonITILActor::ASSIGN) > 0)
              || ($parentitem->countSuppliers(CommonITILActor::ASSIGN) > 0)) {
-            $update['status'] = CommonITILObject::ASSIGNED;
+
+            //check if lifecycle allowed new status
+            if ($parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::ASSIGNED)) {
+               $needupdateparent = true;
+               $update['status'] = CommonITILObject::ASSIGNED;
+            }
          } else {
-            $update['status'] = CommonITILObject::INCOMING;
+            //check if lifecycle allowed new status
+            if ($parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::INCOMING)) {
+               $needupdateparent = true;
+               $update['status'] = CommonITILObject::INCOMING;
+            }
          }
 
-         $update['id'] = $parentitem->fields['id'];
+         if ($needupdateparent) {
+            $update['id'] = $parentitem->fields['id'];
 
-         // Use update method for history
-         $parentitem->update($update);
-         $reopened     = true;
+            // Use update method for history
+            $parentitem->update($update);
+            $reopened     = true;
+         }
+
       }
 
       //change ITILObject status only if imput change

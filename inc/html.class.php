@@ -4743,14 +4743,11 @@ JS;
    static function jsAjaxDropdown($name, $field_id, $url, $params = []) {
       global $CFG_GLPI;
 
-      if (!isset($params['value'])) {
+      if (!array_key_exists('value', $params)) {
          $value = 0;
-      } else {
-         $value = $params['value'];
-      }
-      if (!isset($params['value'])) {
          $valuename = Dropdown::EMPTY_VALUE;
       } else {
+         $value = $params['value'];
          $valuename = $params['valuename'];
       }
       $on_change = '';
@@ -4796,9 +4793,7 @@ JS;
          $values = [];
 
          // simple select (multiple = no)
-         if ((isset($params['display_emptychoice']) && $params['display_emptychoice'])
-             || isset($params['toadd'][$value])
-             || $value > 0) {
+         if ($value !== null) {
             $values = ["$value" => $valuename];
          }
       }

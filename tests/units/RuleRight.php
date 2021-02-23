@@ -152,4 +152,61 @@ class RuleRight extends DbTestCase {
       }
       $this->boolean($found)->isFalse();
    }
+
+   public function testLocalAccountNoRules() {
+      $testuser = [
+         'name'      => 'testuser',
+         'password'  => 'test',
+         'password2' => 'test',
+      ];
+
+      $user = new \User();
+      $this->login();
+      $users_id = $user->add($testuser);
+      $this->integer($users_id)->isGreaterThan(0);
+
+      // Get rights
+      $pu = \Profile_User::getForUser($users_id, true);
+
+      // User should have a single dynamic right
+      $this->array($pu)->hasSize(1);
+      $right = array_pop($pu);
+      $this->integer($right['is_dynamic'])->isEqualTo(1);
+      $this->integer($right['is_default_profile'])->isEqualTo(1);
+
+      // Log in to force rules right processing
+      $this->login($testuser['name'], $testuser['password'], false);
+
+      // Get rights again, should not have changed
+      $pu = \Profile_User::getForUser($users_id, true);
+      $this->array($pu)->hasSize(1);
+      $right2 = array_pop($pu);
+      $this->array($right2)->isEqualTo($right);
+
+      $this->login();
+      // Change the $right profile, since this is the default profile it should
+      // be fixed on next login
+      $pu = new \Profile_User();
+      $res = $pu->update([
+         'id' => $right2['id'],
+         'profiles_id' => 2
+      ]);
+      $this->boolean($res)->isTrue();
+      $this->boolean($pu->getFromDB($right2['id']))->isTrue();
+      $this->integer($pu->fields['is_default_profile'])->isEqualTo(1);
+      $this->integer($pu->fields['is_dynamic'])->isEqualTo(1);
+
+      $this->login($testuser['name'], $testuser['password'], false);
+      $pu = \Profile_User::getForUser($users_id, true);
+      $this->array($pu)->hasSize(1);
+      $right3 = array_pop($pu);
+
+      // Compare without id which changed
+      unset($right['id']);
+      unset($right3['id']);
+      $this->array($right3)->isEqualTo($right);
+
+      // Clean session
+      $this->login();
+   }
 }

@@ -25,15 +25,16 @@ jobs:
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
-      APP_CONTAINER_HOME: "${{ github.workspace }}/../app_home"
       DB_IMAGE: "githubactions-${{ matrix.db-image }}"
       PHP_IMAGE: "githubactions-php-coverage:${{ matrix.php-version }}"
       UPDATE_FILES_ACL: true
       IGNORE_LOCK_FILES: true
+      CODE_COVERAGE: true
     steps:
       - name: "Clean workspace"
         if: env.skip != 'true'
         run: |
+          echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
           rm -rf "${{ env.APPLICATION_ROOT }}/*"
           rm -rf "${{ env.APP_CONTAINER_HOME }}/*"
       - name: "Checkout"
@@ -68,16 +69,16 @@ jobs:
           docker-compose exec -T app .github/actions/test_install.sh
       - name: "Unit tests"
         run: |
-          docker-compose exec -T app sh -c "COVERAGE_DIR=coverage-unit .github/actions/test_tests-units.sh"
+          docker-compose exec -T app .github/actions/test_tests-units.sh
       - name: "Functionnal tests"
         run: |
-          docker-compose exec -T app sh -c "COVERAGE_DIR=coverage-functionnal .github/actions/test_tests-functionnal.sh"
+          docker-compose exec -T app .github/actions/test_tests-functionnal.sh
       - name: "LDAP tests"
         run: |
-          docker-compose exec -T app sh -c "COVERAGE_DIR=coverage-ldap .github/actions/test_tests-ldap.sh"
+          docker-compose exec -T app .github/actions/test_tests-ldap.sh
       - name: "IMAP tests"
         run: |
-          docker-compose exec -T app sh -c "COVERAGE_DIR=coverage-imap .github/actions/test_tests-imap.sh"
+          docker-compose exec -T app .github/actions/test_tests-imap.sh
       - name: "Codecov"
         uses: "codecov/codecov-action@v1"
         with:

@@ -96,6 +96,6 @@ if (isset($_POST["add"])) {
 } else {
    Html::header(SoftwareLicense::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'],
                 "management", "softwarelicense");
-   $license->display($_REQUEST + ['formoptions' => "data-track-changes=true"]);
+   $license->display($_REQUEST);
    Html::footer();
 }
