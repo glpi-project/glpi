@@ -531,7 +531,7 @@ abstract class API {
     *    - 'with_disks':       Only for Computer, retrieve the associated filesystems. Optionnal.
     *    - 'with_softwares':   Only for Computer, retrieve the associated softwares installations. Optionnal.
     *    - 'with_connections': Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optionnal.
-    *    - 'with_networkports':Retrieve all network connections and advanced network informations. Optionnal.
+    *    - 'with_networkports':Retrieve all network connections and advanced informations. Optionnal.
     *    - 'with_infocoms':    Retrieve financial and administrative informations. Optionnal.
     *    - 'with_contracts':   Retrieve associated contracts. Optionnal.
     *    - 'with_documents':   Retrieve associated external documents. Optionnal.
@@ -999,7 +999,7 @@ abstract class API {
     * - 'searchText'       (default: NULL): array of filters to pass on the query (with key = field and value the search)
     * - 'is_deleted'       (default: false): show trashbin. Optionnal
     * - 'add_keys_names'   (default: []): insert raw name(s) for given itemtype(s) and fkey(s)
-    * - 'with_networkports':Retrieve all network connections and advanced network informations. Optionnal.
+    * - 'with_networkports'(default: false): Retrieve all network connections and advanced informations. Optional.
     * @param integer $totalcount output parameter who receive the total count of the query resulat.
     *                            As this function paginate results (with a mysql LIMIT),
     *                            we can have the full range. (default 0)
@@ -1014,14 +1014,15 @@ abstract class API {
 
       // default params
       $default = ['expand_dropdowns' => false,
-                       'get_hateoas'      => true,
-                       'only_id'          => false,
-                       'range'            => "0-".$_SESSION['glpilist_limit'],
-                       'sort'             => "id",
-                       'order'            => "ASC",
-                       'searchText'       => null,
-                       'is_deleted'       => false,
-                       'add_keys_names'   => [],
+                       'get_hateoas'       => true,
+                       'only_id'           => false,
+                       'range'             => "0-".$_SESSION['glpilist_limit'],
+                       'sort'              => "id",
+                       'order'             => "ASC",
+                       'searchText'        => null,
+                       'is_deleted'        => false,
+                       'add_keys_names'    => [],
+                       'with_networkports' => false,
       ];
       $params = array_merge($default, $params);
 
@@ -1248,7 +1249,7 @@ abstract class API {
     *    - 'with_disks':        Only for Computer, retrieve the associated filesystems. Optionnal.
     *    - 'with_softwares':    Only for Computer, retrieve the associated softwares installations. Optionnal.
     *    - 'with_connections':  Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optionnal.
-    *    - 'with_networkports': Retrieve all network connections and advanced network informations. Optionnal.
+    *    - 'with_networkports': Retrieve all network connections and advanced informations. Optionnal.
     *    - 'with_infocoms':     Retrieve financial and administrative informations. Optionnal.
     *    - 'with_contracts':    Retrieve associated contracts. Optionnal.
     *    - 'with_documents':    Retrieve associated external documents. Optionnal.
@@ -2647,18 +2648,17 @@ abstract class API {
    /**
     * Get network ports
     *
-    * @since 9.5
+    * @since x.x.x
     *
-    * @param array  $data
-    * @param array  $params         API parameters
-    * @param string $self_itemtype  Itemtype the API was called on
+    * @param int    $id         Id of the source item
+    * @param string  $itemtype  Type of the source item
     *
     * @return array
     */
    protected function getNetworkPorts(
       int $id,
       string $itemtype
-   ) {
+   ): array {
       global $DB;
 
       $_networkports = [];

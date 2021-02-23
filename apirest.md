@@ -504,7 +504,7 @@ $ curl -X GET \
   * *with_disks*: Only for Computer, retrieve the associated file-systems. Optional.
   * *with_softwares*: Only for Computer, retrieve the associated software's installations. Optional.
   * *with_connections*: Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optional.
-  * *with_networkports*: Retrieve all network's connections and advanced network's informations. Optional.
+  * *with_networkports*: Retrieve all network connections and advanced informations. Optionnal.
   * *with_infocoms*: Retrieve financial and administrative informations. Optional.
   * *with_contracts*: Retrieve associated contracts. Optional.
   * *with_documents*: Retrieve associated external documents. Optional.
@@ -605,7 +605,7 @@ Note: To download a document see [Download a document file](#download-a-document
   * *searchText* (default NULL): array of filters to pass on the query (with key = field and value the text to search)
   * *is_deleted* (default: false): Return deleted element. Optional.
   * *add_keys_names*: Retrieve friendly names. Array containing fkey(s) and/or "id". Optional.
-  * *with_networkports*: Retrieve all network's connections and advanced network's informations. Optional.
+  * *with_networkports*: Retrieve all network connections and advanced informations. Optionnal.
 * **Returns**:
   * 200 (OK) with items data.
   * 206 (PARTIAL CONTENT) with items data defined by range.
@@ -781,7 +781,7 @@ $ curl -X GET \
   * *with_disks*: Only for Computer, retrieve the associated file-systems. Optional.
   * *with_softwares*: Only for Computer, retrieve the associated software's installations. Optional.
   * *with_connections*: Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optional.
-  * *with_networkports*: Retrieve all network's connections and advanced network's informations. Optional.
+  * *with_networkports*: Retrieve all network connections and advanced informations. Optionnal.
   * *with_infocoms*: Retrieve financial and administrative informations. Optional.
   * *with_contracts*: Retrieve associated contracts. Optional.
   * *with_documents*: Retrieve associated external documents. Optional.
