@@ -49,7 +49,7 @@ var GLPIPlanning  = {
          height: GLPIPlanning.getHeight,
          plugins: [
             'dayGrid', 'interaction', 'list', 'timeGrid',
-            'resourceTimeline', 'rrule', 'bootstrapPlugin'
+            'resourceTimeline', 'rrule', 'bootstrap'
          ],
          license_key: "",
          resources: [],
