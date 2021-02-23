@@ -82,6 +82,7 @@ var libsConfig = {
             test: /\.js$/,
             include: [
                path.resolve(__dirname, 'node_modules/@fullcalendar'),
+               path.resolve(__dirname, 'node_modules/@fullcalendar'),
                path.resolve(__dirname, 'node_modules/codemirror'),
                path.resolve(__dirname, 'node_modules/cystoscape'),
                path.resolve(__dirname, 'node_modules/cytoscape-context-menus'),

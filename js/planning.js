@@ -47,7 +47,10 @@ var GLPIPlanning  = {
          full_view: true,
          default_view: 'timeGridWeek',
          height: GLPIPlanning.getHeight,
-         plugins: ['dayGrid', 'interaction', 'list', 'timeGrid', 'resourceTimeline', 'rrule'],
+         plugins: [
+            'dayGrid', 'interaction', 'list', 'timeGrid',
+            'resourceTimeline', 'rrule', 'bootstrapPlugin'
+         ],
          license_key: "",
          resources: [],
          now: null,
@@ -80,6 +83,7 @@ var GLPIPlanning  = {
       this.calendar = new FullCalendar.Calendar(document.getElementById(GLPIPlanning.dom_id), {
          plugins:     options.plugins,
          height:      options.height,
+         themeSystem: 'bootstrap',
          timeZone:    'UTC',
          theme:       true,
          weekNumbers: options.full_view ? true : false,

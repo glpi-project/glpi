@@ -6,6 +6,7 @@
     "license": "GPL-2.0",
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.12.1",
+        "@fullcalendar/bootstrap": "^4.4.0",
         "@fullcalendar/core": "^4.4.0",
         "@fullcalendar/daygrid": "^4.4.0",
         "@fullcalendar/interaction": "^4.4.0",
