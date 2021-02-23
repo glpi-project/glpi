@@ -734,8 +734,167 @@ abstract class API {
       }
 
       // retrieve item networkports
-      if (isset($params['with_networkports']) && $params['with_networkports']) {
-         $fields['_networkports'] = $this->getNetworkPorts($id, $itemtype);
+      if (isset($params['with_networkports'])
+          && $params['with_networkports']) {
+         $fields['_networkports'] = [];
+         if (!NetworkEquipment::canView()) {
+            $fields['_networkports'] = $this->arrayRightError();
+         } else {
+            foreach (NetworkPort::getNetworkPortInstantiations() as $networkport_type) {
+               $netport_table = $networkport_type::getTable();
+               $netp_iterator = $DB->request([
+                  'SELECT'    => [
+                     'netp.id AS netport_id',
+                     'netp.entities_id',
+                     'netp.is_recursive',
+                     'netp.logical_number',
+                     'netp.name',
+                     'netp.mac',
+                     'netp.comment',
+                     'netp.is_dynamic',
+                     'netp_subtable.*'
+                  ],
+                  'FROM'      => 'glpi_networkports AS netp',
+                  'LEFT JOIN' => [
+                     "$netport_table AS netp_subtable" => [
+                        'ON' => [
+                           'netp_subtable'   => 'networkports_id',
+                           'netp'            => 'id'
+                        ]
+                     ]
+                  ],
+                  'WHERE'     => [
+                     'netp.instantiation_type'  => $networkport_type,
+                     'netp.items_id'            => $id,
+                     'netp.itemtype'            => $itemtype,
+                     'netp.is_deleted'          => 0
+                  ]
+               ]);
+
+               while ($data = $netp_iterator->next()) {
+                  if (isset($data['netport_id'])) {
+                     // append network name
+                     $concat_expr = new QueryExpression(
+                        "GROUP_CONCAT(CONCAT(".$DB->quoteName('ipadr.id').", ".$DB->quoteValue(Search::SHORTSEP)." , ".$DB->quoteName('ipadr.name').")
+                        SEPARATOR ".$DB->quoteValue(Search::LONGSEP).") AS ".$DB->quoteName('ipadresses')
+                     );
+                     $netn_iterator = $DB->request([
+                        'SELECT'    => [
+                           $concat_expr,
+                           'netn.id AS networknames_id',
+                           'netn.name AS networkname',
+                           'netn.fqdns_id',
+                           'fqdn.name AS fqdn_name',
+                           'fqdn.fqdn'
+                        ],
+                        'FROM'      => [
+                           'glpi_networknames AS netn'
+                        ],
+                        'LEFT JOIN' => [
+                           'glpi_ipaddresses AS ipadr'               => [
+                              'ON' => [
+                                 'ipadr'  => 'items_id',
+                                 'netn'   => 'id',
+                                 [
+                                    'AND' => ['ipadr.itemtype' => 'NetworkName']
+                                 ]
+                              ]
+                           ],
+                           'glpi_fqdns AS fqdn'                      => [
+                              'ON' => [
+                                 'fqdn'   => 'id',
+                                 'netn'   => 'fqdns_id'
+                              ]
+                           ],
+                           'glpi_ipaddresses_ipnetworks AS ipadnet'  => [
+                              'ON' => [
+                                 'ipadnet'   => 'ipaddresses_id',
+                                 'ipadr'     => 'id'
+                              ]
+                           ],
+                           'glpi_ipnetworks AS ipnet'                => [
+                              'ON' => [
+                                 'ipnet'     => 'id',
+                                 'ipadnet'   => 'ipnetworks_id'
+                              ]
+                           ]
+                        ],
+                        'WHERE'     => [
+                           'netn.itemtype'   => 'NetworkPort',
+                           'netn.items_id'   => $data['netport_id']
+                        ],
+                        'GROUPBY'   => [
+                           'netn.id',
+                           'netn.name',
+                           'netn.fqdns_id',
+                           'fqdn.name',
+                           'fqdn.fqdn'
+                        ]
+                     ]);
+
+                     if (count($netn_iterator)) {
+                        $data_netn = $netn_iterator->next();
+
+                        $raw_ipadresses = explode(Search::LONGSEP, $data_netn['ipadresses']);
+                        $ipadresses = [];
+                        foreach ($raw_ipadresses as $ipadress) {
+                           $ipadress = explode(Search::SHORTSEP, $ipadress);
+
+                           //find ip network attached to these ip
+                           $ipnetworks = [];
+                           $ipnet_iterator = $DB->request([
+                              'SELECT'       => [
+                                 'ipnet.id',
+                                 'ipnet.completename',
+                                 'ipnet.name',
+                                 'ipnet.address',
+                                 'ipnet.netmask',
+                                 'ipnet.gateway',
+                                 'ipnet.ipnetworks_id',
+                                 'ipnet.comment'
+                              ],
+                              'FROM'         => 'glpi_ipnetworks AS ipnet',
+                              'INNER JOIN'   => [
+                                 'glpi_ipaddresses_ipnetworks AS ipadnet' => [
+                                    'ON' => [
+                                       'ipadnet'   => 'ipnetworks_id',
+                                       'ipnet'     => 'id'
+                                    ]
+                                 ]
+                              ],
+                              'WHERE'        => [
+                                 'ipadnet.ipaddresses_id'  => $ipadress[0]
+                              ]
+                           ]);
+                           while ($data_ipnet = $ipnet_iterator->next()) {
+                              $ipnetworks[] = $data_ipnet;
+                           }
+
+                           $ipadresses[] = [
+                              'id'        => $ipadress[0],
+                              'name'      => $ipadress[1],
+                              'IPNetwork' => $ipnetworks
+                           ];
+                        }
+
+                        $data['NetworkName'] = [
+                           'id'         => $data_netn['networknames_id'],
+                           'name'       => $data_netn['networkname'],
+                           'fqdns_id'   => $data_netn['fqdns_id'],
+                           'FQDN'       => [
+                              'id'   => $data_netn['fqdns_id'],
+                              'name' => $data_netn['fqdn_name'],
+                              'fqdn' => $data_netn['fqdn']
+                           ],
+                           'IPAddress' => $ipadresses
+                        ];
+                     }
+                  }
+
+                  $fields['_networkports'][$networkport_type][] = $data;
+               }
+            }
+         }
       }
 
       // retrieve item infocoms
@@ -999,7 +1158,6 @@ abstract class API {
     * - 'searchText'       (default: NULL): array of filters to pass on the query (with key = field and value the search)
     * - 'is_deleted'       (default: false): show trashbin. Optionnal
     * - 'add_keys_names'   (default: []): insert raw name(s) for given itemtype(s) and fkey(s)
-    * - 'with_networkports':Retrieve all network connections and advanced network informations. Optionnal.
     * @param integer $totalcount output parameter who receive the total count of the query resulat.
     *                            As this function paginate results (with a mysql LIMIT),
     *                            we can have the full range. (default 0)
@@ -1175,10 +1333,6 @@ abstract class API {
                   $params,
                   $itemtype
                );
-            }
-
-            if (isset($params['with_networkports']) && $params['with_networkports']) {
-               $data['_networkports'] = $this->getNetworkPorts($data['id'], $itemtype);
             }
 
             $found[] = $data;
@@ -2642,187 +2796,6 @@ abstract class API {
       }
 
       return $_names;
-   }
-
-   /**
-    * Get network ports
-    *
-    * @since 9.5
-    *
-    * @param array  $data
-    * @param array  $params         API parameters
-    * @param string $self_itemtype  Itemtype the API was called on
-    *
-    * @return array
-    */
-   protected function getNetworkPorts(
-      int $id,
-      string $itemtype
-   ) {
-      global $DB;
-
-      $_networkports = [];
-
-      if (!NetworkEquipment::canView()) {
-         $_networkports = $this->arrayRightError();
-      } else {
-         foreach (NetworkPort::getNetworkPortInstantiations() as $networkport_type) {
-            $netport_table = $networkport_type::getTable();
-            $netp_iterator = $DB->request([
-               'SELECT'    => [
-                  'netp.id AS netport_id',
-                  'netp.entities_id',
-                  'netp.is_recursive',
-                  'netp.logical_number',
-                  'netp.name',
-                  'netp.mac',
-                  'netp.comment',
-                  'netp.is_dynamic',
-                  'netp_subtable.*'
-               ],
-               'FROM'      => 'glpi_networkports AS netp',
-               'LEFT JOIN' => [
-                  "$netport_table AS netp_subtable" => [
-                     'ON' => [
-                        'netp_subtable'   => 'networkports_id',
-                        'netp'            => 'id'
-                     ]
-                  ]
-               ],
-               'WHERE'     => [
-                  'netp.instantiation_type'  => $networkport_type,
-                  'netp.items_id'            => $id,
-                  'netp.itemtype'            => $itemtype,
-                  'netp.is_deleted'          => 0
-               ]
-            ]);
-
-            while ($data = $netp_iterator->next()) {
-               if (isset($data['netport_id'])) {
-                  // append network name
-                  $concat_expr = new QueryExpression(
-                     "GROUP_CONCAT(CONCAT(".$DB->quoteName('ipadr.id').", ".$DB->quoteValue(Search::SHORTSEP)." , ".$DB->quoteName('ipadr.name').")
-                     SEPARATOR ".$DB->quoteValue(Search::LONGSEP).") AS ".$DB->quoteName('ipadresses')
-                  );
-                  $netn_iterator = $DB->request([
-                     'SELECT'    => [
-                        $concat_expr,
-                        'netn.id AS networknames_id',
-                        'netn.name AS networkname',
-                        'netn.fqdns_id',
-                        'fqdn.name AS fqdn_name',
-                        'fqdn.fqdn'
-                     ],
-                     'FROM'      => [
-                        'glpi_networknames AS netn'
-                     ],
-                     'LEFT JOIN' => [
-                        'glpi_ipaddresses AS ipadr'               => [
-                           'ON' => [
-                              'ipadr'  => 'items_id',
-                              'netn'   => 'id',
-                              [
-                                 'AND' => ['ipadr.itemtype' => 'NetworkName']
-                              ]
-                           ]
-                        ],
-                        'glpi_fqdns AS fqdn'                      => [
-                           'ON' => [
-                              'fqdn'   => 'id',
-                              'netn'   => 'fqdns_id'
-                           ]
-                        ],
-                        'glpi_ipaddresses_ipnetworks AS ipadnet'  => [
-                           'ON' => [
-                              'ipadnet'   => 'ipaddresses_id',
-                              'ipadr'     => 'id'
-                           ]
-                        ],
-                        'glpi_ipnetworks AS ipnet'                => [
-                           'ON' => [
-                              'ipnet'     => 'id',
-                              'ipadnet'   => 'ipnetworks_id'
-                           ]
-                        ]
-                     ],
-                     'WHERE'     => [
-                        'netn.itemtype'   => 'NetworkPort',
-                        'netn.items_id'   => $data['netport_id']
-                     ],
-                     'GROUPBY'   => [
-                        'netn.id',
-                        'netn.name',
-                        'netn.fqdns_id',
-                        'fqdn.name',
-                        'fqdn.fqdn'
-                     ]
-                  ]);
-
-                  if (count($netn_iterator)) {
-                     $data_netn = $netn_iterator->next();
-
-                     $raw_ipadresses = explode(Search::LONGSEP, $data_netn['ipadresses']);
-                     $ipadresses = [];
-                     foreach ($raw_ipadresses as $ipadress) {
-                        $ipadress = explode(Search::SHORTSEP, $ipadress);
-
-                        //find ip network attached to these ip
-                        $ipnetworks = [];
-                        $ipnet_iterator = $DB->request([
-                           'SELECT'       => [
-                              'ipnet.id',
-                              'ipnet.completename',
-                              'ipnet.name',
-                              'ipnet.address',
-                              'ipnet.netmask',
-                              'ipnet.gateway',
-                              'ipnet.ipnetworks_id',
-                              'ipnet.comment'
-                           ],
-                           'FROM'         => 'glpi_ipnetworks AS ipnet',
-                           'INNER JOIN'   => [
-                              'glpi_ipaddresses_ipnetworks AS ipadnet' => [
-                                 'ON' => [
-                                    'ipadnet'   => 'ipnetworks_id',
-                                    'ipnet'     => 'id'
-                                 ]
-                              ]
-                           ],
-                           'WHERE'        => [
-                              'ipadnet.ipaddresses_id'  => $ipadress[0]
-                           ]
-                        ]);
-                        while ($data_ipnet = $ipnet_iterator->next()) {
-                           $ipnetworks[] = $data_ipnet;
-                        }
-
-                        $ipadresses[] = [
-                           'id'        => $ipadress[0],
-                           'name'      => $ipadress[1],
-                           'IPNetwork' => $ipnetworks
-                        ];
-                     }
-
-                     $data['NetworkName'] = [
-                        'id'         => $data_netn['networknames_id'],
-                        'name'       => $data_netn['networkname'],
-                        'fqdns_id'   => $data_netn['fqdns_id'],
-                        'FQDN'       => [
-                           'id'   => $data_netn['fqdns_id'],
-                           'name' => $data_netn['fqdn_name'],
-                           'fqdn' => $data_netn['fqdn']
-                        ],
-                        'IPAddress' => $ipadresses
-                     ];
-                  }
-               }
-
-               $_networkports[$networkport_type][] = $data;
-            }
-         }
-      }
-
-      return $_networkports;
    }
 
    /**

@@ -179,7 +179,7 @@ $ curl -X GET \
 
 ## Lost password
 
-This endpoint allows to request password recovery and password reset. This endpoint works under the following 
+This endpoint allows to request password recovery and password reset. This endpoint works under the following
 conditions:
 * GLPI has notifications enabled
 * the email address of the user belongs to a user account.
@@ -605,6 +605,7 @@ Note: To download a document see [Download a document file](#download-a-document
   * *searchText* (default NULL): array of filters to pass on the query (with key = field and value the text to search)
   * *is_deleted* (default: false): Return deleted element. Optional.
   * *add_keys_names*: Retrieve friendly names. Array containing fkey(s) and/or "id". Optional.
+  * *with_networkports*: Retrieve all network's connections and advanced network's informations. Optional.
 * **Returns**:
   * 200 (OK) with items data.
   * 206 (PARTIAL CONTENT) with items data defined by range.
@@ -942,7 +943,7 @@ $ curl -X GET \
       ```
 
   * *metacriteria* (optional): array of meta-criterion objects to filter search. Optional.
-                                 A meta search is a link with another itemtype (ex: Computer with softwares).  
+                                 A meta search is a link with another itemtype (ex: Computer with softwares).
       **Deprecated: Now criteria support meta flag, you should use it instead direct metacriteria option.**
 
       Each meta-criterion object must provide:
@@ -1459,7 +1460,7 @@ You need to uncomment (removing #) theses lines:
 By enabling URL rewriting, you could use API with this URL : <http://path/to/glpi/api/>.
 You need also to enable rewrite module in apache httpd and permit GLPI's .htaccess to override server configuration (see AllowOverride directive).
 
-**Note for apache+fpm users:**  
+**Note for apache+fpm users:**
 
 You may have difficulties to pass Authorization header in this configuration.
 You have two options :
