@@ -5585,6 +5585,8 @@ JAVASCRIPT;
     *    - dropZone            string   DOM ID of the drop zone
     *    - rand                string   already computed rand value
     *    - display             boolean  display or return the generated html (default true)
+    *    - only_uploaded_files boolean  show only the uploaded files block, i.e. no title, no dropzone
+    *                                   (should be false when upload has to be enable only from rich text editor)
     *
     * @return void|string   the html if display parameter is false
    **/
@@ -5593,20 +5595,21 @@ JAVASCRIPT;
 
       $randupload             = mt_rand();
 
-      $p['name']              = 'filename';
-      $p['onlyimages']        = false;
-      $p['filecontainer']     = 'fileupload_info';
-      $p['showfilesize']      = true;
-      $p['showtitle']         = true;
-      $p['enable_richtext']   = false;
-      $p['pasteZone']         = false;
-      $p['dropZone']          = 'dropdoc'.$randupload;
-      $p['rand']              = $randupload;
-      $p['values']            = [];
-      $p['display']           = true;
-      $p['multiple']          = false;
-      $p['uploads']           = [];
-      $p['editor_id']         = null;
+      $p['name']                = 'filename';
+      $p['onlyimages']          = false;
+      $p['filecontainer']       = 'fileupload_info';
+      $p['showfilesize']        = true;
+      $p['showtitle']           = true;
+      $p['enable_richtext']     = false;
+      $p['pasteZone']           = false;
+      $p['dropZone']            = 'dropdoc'.$randupload;
+      $p['rand']                = $randupload;
+      $p['values']              = [];
+      $p['display']             = true;
+      $p['multiple']            = false;
+      $p['uploads']             = [];
+      $p['editor_id']           = null;
+      $p['only_uploaded_files'] = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -5615,13 +5618,17 @@ JAVASCRIPT;
       }
 
       $display = "";
-      $display .= "<div class='fileupload draghoverable' id='{$p['dropZone']}'>";
+      if ($p['only_uploaded_files']) {
+         $display .= "<div class='fileupload only-uploaded-files'>";
+      } else {
+         $display .= "<div class='fileupload draghoverable' id='{$p['dropZone']}'>";
 
-      if ($p['showtitle']) {
-         $display .= "<b>";
-         $display .= sprintf(__('%1$s (%2$s)'), __('File(s)'), Document::getMaxUploadSize());
-         $display .= DocumentType::showAvailableTypesLink(['display' => false]);
-         $display .= "</b>";
+         if ($p['showtitle']) {
+            $display .= "<b>";
+            $display .= sprintf(__('%1$s (%2$s)'), __('File(s)'), Document::getMaxUploadSize());
+            $display .= DocumentType::showAvailableTypesLink(['display' => false]);
+            $display .= "</b>";
+         }
       }
 
       $display .= self::uploadedFiles([
@@ -5634,15 +5641,31 @@ JAVASCRIPT;
       $max_file_size  = $CFG_GLPI['document_max_size'] * 1024 * 1024;
       $max_chunk_size = round(Toolbox::getPhpUploadSizeLimit() * 0.9); // keep some place for extra data
 
-      // manage file upload without tinymce editor
-      $display .= "<span class='b'>".__('Drag and drop your file here, or').'</span><br>';
+      if (!$p['only_uploaded_files']) {
+         // manage file upload without tinymce editor
+         $display .= "<span class='b'>".__('Drag and drop your file here, or').'</span><br>';
+      }
       $display .= "<input id='fileupload{$p['rand']}' type='file' name='".$p['name']."[]'
                       data-url='".$CFG_GLPI["root_doc"]."/ajax/fileupload.php'
                       data-form-data='{\"name\": \"".$p['name']."\", \"showfilesize\": \"".$p['showfilesize']."\"}'"
                       .($p['multiple']?" multiple='multiple'":"")
                       .($p['onlyimages']?" accept='.gif,.png,.jpg,.jpeg'":"").">";
-      $display .= "<div id='progress{$p['rand']}' style='display:none'>".
-              "<div class='uploadbar' style='width: 0%;'></div></div>";
+
+      $progressall_js = '';
+      if (!$p['only_uploaded_files']) {
+         $display .= "<div id='progress{$p['rand']}' style='display:none'>".
+                 "<div class='uploadbar' style='width: 0%;'></div></div>";
+         $progressall_js = "
+            progressall: function(event, data) {
+               var progress = parseInt(data.loaded / data.total * 100, 10);
+               $('#progress{$p['rand']}').show();
+               $('#progress{$p['rand']} .uploadbar')
+                  .text(progress + '%')
+                  .css('width', progress + '%')
+                  .show();
+            },
+         ";
+      }
 
       $display .= Html::scriptBlock("
       $(function() {
@@ -5660,14 +5683,6 @@ JAVASCRIPT;
                                  : DocumentType::getUploadableFilePattern()).",
             maxFileSize: {$max_file_size},
             maxChunkSize: {$max_chunk_size},
-            progressall: function(event, data) {
-               var progress = parseInt(data.loaded / data.total * 100, 10);
-               $('#progress{$p['rand']}').show();
-               $('#progress{$p['rand']} .uploadbar')
-                  .text(progress + '%')
-                  .css('width', progress + '%')
-                  .show();
-            },
             done: function (event, data) {
                handleUploadedFile(
                   data.files, // files as blob
@@ -5694,7 +5709,8 @@ JAVASCRIPT;
             messages: {
               acceptFileTypes: __('Filetype not allowed'),
               maxFileSize: __('File is too big'),
-            }
+            },
+            $progressall_js
          });
       });");
 
@@ -5763,13 +5779,10 @@ JAVASCRIPT;
                      ");
       }
       if (!$p['enable_fileupload'] && $p['enable_richtext']) {
-         $display .= self::uploadedFiles([
-            'filecontainer' => $p['filecontainer'],
-            'name'          => $p['name'],
-            'display'       => false,
-            'uploads'       => $p['uploads'],
-            'editor_id'     => $p['editor_id'],
-         ]);
+         $p_rt = $p;
+         $p_rt['display'] = false;
+         $p_rt['only_uploaded_files'] = true;
+         $display .= Html::file($p_rt);
       }
 
       if ($p['enable_fileupload']) {
