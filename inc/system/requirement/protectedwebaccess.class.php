@@ -113,13 +113,15 @@ class ProtectedWebAccess extends AbstractRequirement {
             $this->validation_messages[] = __('Web access to files directory is protected');
          }
       } else {
-         $this->validated = false;
-         $this->validation_messages[] = __('Web access to the files directory should not be allowed but this cannot be checked automatically on this instance.');
-         $this->validation_messages[] = sprintf(
-            __('Make sure access to %s (%s) is forbidden; otherwise review .htaccess file and web server configuration.'),
-            __('error log file'),
-            $CFG_GLPI['root_doc'] . '/files/_log/php-errors.log'
-         );
+         if(!$CFG_GLPI["ssovariables_id"] > 0){
+            $this->validated = false;
+            $this->validation_messages[] = __('Web access to the files directory should not be allowed but this cannot be checked automatically on this instance.');
+            $this->validation_messages[] = sprintf(
+               __('Make sure access to %s (%s) is forbidden; otherwise review .htaccess file and web server configuration.'),
+               __('error log file'),
+               $CFG_GLPI['root_doc'] . '/files/_log/php-errors.log'
+            );
+         }
       }
 
       error_reporting($oldlevel);
