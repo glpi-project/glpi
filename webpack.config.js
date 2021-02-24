@@ -175,6 +175,11 @@ var libs = {
          from: 'js/i18n/*.js',
       }
    ],
+   'tinymce': [
+      {
+         from: 'skins/**/*',
+      }
+   ],
    'tinymce-i18n': [
       {
          from: 'langs/*.js',

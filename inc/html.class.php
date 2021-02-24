@@ -3866,102 +3866,117 @@ JS;
       }
       $language_url = $CFG_GLPI['root_doc'] . '/public/lib/tinymce-i18n/langs/' . $language . '.js';
 
-      $readonlyjs = "readonly: false";
-      if ($readonly) {
-         $readonlyjs = "readonly: true";
+      $skin_url = $CFG_GLPI['root_doc'] . '/public/lib/tinymce/skins/ui/oxide';
+      $content_css = $CFG_GLPI['root_doc'] . '/public/lib/tinymce/skins/content/default/content.css';
+      if ($_SESSION['glpipalette'] === 'darker') {
+         $skin_url = $CFG_GLPI['root_doc'] . '/public/lib/tinymce/skins/ui/oxide-dark';
+         $content_css = $CFG_GLPI['root_doc'] . '/public/lib/tinymce/skins/content/dark/content.css';
       }
 
-      $darker_css = '';
-      if ($_SESSION['glpipalette'] === 'darker') {
-         $darker_css = $CFG_GLPI['root_doc']."/css/tiny_mce/dark_content.css";
-      }
+      $cache_suffix = '?v='.GLPI_VERSION;
+      $readonlyjs   = $readonly ? 'true' : 'false';
 
       // init tinymce
-      $js = "$(function() {
-         // init editor
-         tinyMCE.init({
-            language_url: '$language_url',
-            invalid_elements: 'form,object,embed,iframe,script,@[onclick|ondblclick|'
-               + 'onmousedown|onmouseup|onmouseover|onmousemove|onmouseout|onkeypress|'
-               + 'onkeydown|onkeyup]',
-            browser_spellcheck: true,
-            mode: 'exact',
-            elements: '$name',
-            relative_urls: false,
-            remove_script_host: false,
-            entity_encoding: 'raw',
-            paste_data_images: $('.fileupload').length,
-            menubar: false,
-            statusbar: false,
-            skin_url: '".$CFG_GLPI['root_doc']."/css/tiny_mce/skins/light',
-            content_css: '$darker_css,".$CFG_GLPI['root_doc']."/css/tiny_mce_custom.css',
-            cache_suffix: '?v=".GLPI_VERSION."',
-            min_height: '150px',
-            setup: function(editor) {
-               if ($('#$name').attr('required') == 'required') {
-                  $('#$name').closest('form').find('input[type=submit]').click(function() {
+      $js = <<<JS
+         $(function() {
+            // init editor
+            tinyMCE.init({
+               selector: '#{$name}',
+
+               plugins: [
+                  'autoresize',
+                  'code',
+                  'colorpicker',
+                  'directionality',
+                  'fullscreen',
+                  'image',
+                  'link',
+                  'lists',
+                  'paste',
+                  'searchreplace',
+                  'tabfocus',
+                  'table',
+                  'textcolor',
+
+                  'glpi_upload_doc', // glpi_upload_doc specific plugin to upload files
+               ],
+
+               // Appearance
+               language: '{$language}',
+               language_url: '{$language_url}',
+
+               skin_url: '{$skin_url}',
+               content_css: '{$content_css}',
+
+               min_height: '150px',
+               resize: true,
+
+               menubar: false,
+               toolbar: 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | table link image | code fullscreen',
+
+               // Content settings
+               entity_encoding: 'raw',
+               invalid_elements: 'applet,canvas,embed,form,object',
+               paste_data_images: true,
+               readonly: {$readonlyjs},
+               relative_urls: false,
+               remove_script_host: false,
+
+               // Misc options
+               browser_spellcheck: true,
+               cache_suffix: '{$cache_suffix}',
+
+               setup: function(editor) {
+
+                  // "required" state handling
+                  if ($('#$name').attr('required') == 'required') {
+                     $('#$name').removeAttr('required'); // Necessary to bypass browser validation
+
+                     editor.on('submit', function (e) {
+                        if ($('#$name').val() == '') {
+                           alert(__('The description field is mandatory'));
+                           evt.preventDefault();
+                        }
+                     });
+                     editor.on('keyup', function (e) {
+                        editor.save();
+                        if ($('#$name').val() == '') {
+                           $(editor.container).addClass('required');
+                        } else {
+                           $(editor.container).removeClass('required');
+                        }
+                     });
+                     editor.on('init', function (e) {
+                        if ($('#$name').val() == '') {
+                           $(editor.container).addClass('required');
+                        }
+                     });
+                     editor.on('paste', function (e) {
+                        // Remove required on paste event
+                        // This is only needed when pasting with right click (context menu)
+                        // Pasting with Ctrl+V is already handled by keyup event above
+                        $(editor.container).removeClass('required');
+                     });
+                  }
+
+                  editor.on('SaveContent', function (contentEvent) {
+                     contentEvent.content = contentEvent.content.replace(/\\r?\\n/g, '');
+                  });
+                  editor.on('Change', function (e) {
+                     // Nothing fancy here. Since this is only used for tracking unsaved changes,
+                     // we want to keep the logic in common.js with the other form input events.
+                     onTinyMCEChange(e);
+                  });
+   
+                  // ctrl + enter submit the parent form
+                  editor.addShortcut('ctrl+13', 'submit', function() {
                      editor.save();
-                     if ($('#$name').val() == '') {
-                        alert('".__s('The description field is mandatory')."');
-                     }
-                  });
-                  editor.on('keyup', function (e) {
-                     editor.save();
-                     if ($('#$name').val() == '') {
-                        $('.mce-edit-area').addClass('required');
-                     } else {
-                        $('.mce-edit-area').removeClass('required');
-                     }
-                  });
-                  editor.on('init', function (e) {
-                     if ($('#$name').val() == '') {
-                        $('.mce-edit-area').addClass('required');
-                     }
-                  });
-                  editor.on('paste', function (e) {
-                     // Remove required on paste event
-                     // This is only needed when pasting with right click (context menu)
-                     // Pasting with Ctrl+V is already handled by keyup event above
-                     $('.mce-edit-area').removeClass('required');
+                     submitparentForm($('#$name'));
                   });
                }
-               editor.on('SaveContent', function (contentEvent) {
-                  contentEvent.content = contentEvent.content.replace(/\\r?\\n/g, '');
-               });
-               editor.on('Change', function (e) {
-                  // Nothing fancy here. Since this is only used for tracking unsaved changes,
-                  // we want to keep the logic in common.js with the other form input events.
-                  onTinyMCEChange(e);
-               });
-
-               // ctrl + enter submit the parent form
-               editor.addShortcut('ctrl+13', 'submit', function() {
-                  editor.save();
-                  submitparentForm($('#$name'));
-               });
-            },
-            plugins: [
-               'table directionality searchreplace',
-               'tabfocus autoresize link image paste',
-               'code fullscreen stickytoolbar',
-               'textcolor colorpicker',
-               // load glpi_upload_doc specific plugin if we need to upload files
-               typeof tinymce.AddOnManager.PluginManager.lookup.glpi_upload_doc != 'undefined'
-                  ? 'glpi_upload_doc'
-                  : '',
-               'lists'
-            ],
-            toolbar: 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | table link image | code fullscreen',
-            $readonlyjs
+            });
          });
-
-         // set sticky for split view
-         $('.layout_vsplit .main_form, .layout_vsplit .ui-tabs-panel').scroll(function(event) {
-            var editor = tinyMCE.get('$name');
-            editor.settings.sticky_offset = $(event.target).offset().top;
-            editor.setSticky();
-         });
-      });";
+JS;
 
       if ($display) {
          echo  Html::scriptBlock($js);
