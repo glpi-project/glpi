@@ -2240,7 +2240,7 @@ a.icon_nav_move {
 
 /* ################--------------- File upload  ---------------#################### */
 
-.fileupload {
+.fileupload:not(.only-uploaded-files) {
    text-align: center;
    border: 1px dashed #cccccc;
    min-height: 65px;
@@ -2250,6 +2250,9 @@ a.icon_nav_move {
    margin: .5em auto;
    padding: .5em;
    margin-top: 5px;
+}
+.fileupload.only-uploaded-files input[type=file] {
+   display:none;
 }
 
 .fileupload_info {
