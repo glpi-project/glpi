@@ -29,7 +29,6 @@ phpunit.xml
 /**/*.min.css
 /css_compiled/
 /css/compiled/
-!/css/tiny_mce/**/*.min.css
 /**/*.min.js
 /node_modules/
 .package.hash
