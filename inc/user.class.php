@@ -5640,10 +5640,16 @@ JAVASCRIPT;
       $group_ids = array_unique($this->input["_ldap_rules"]['groups_id']);
       foreach ($group_ids as $group_id) {
          $group_user = new Group_User();
-         $group_user->add([
+
+         $data = [
             'groups_id' => $group_id,
             'users_id'  => $this->getId()
-         ]);
+         ];
+
+         if (!$group_user->getFromDBByCrit($data)) {
+            $group_user->add($data);
+         }
+
       }
    }
 }
