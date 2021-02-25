@@ -5173,10 +5173,11 @@ JAVASCRIPT;
     * @since 0.85
     *
     * @param string $picture Picture field value
+    * @param bool   $send_placeholder return placeholder picture if no picture passed
     *
     * @return string
     */
-   static function getThumbnailURLForPicture($picture) {
+   static function getThumbnailURLForPicture(string $picture = null, bool $send_placeholder = true) {
       global $CFG_GLPI;
 
       // prevent xss
@@ -5188,10 +5189,9 @@ JAVASCRIPT;
             return $CFG_GLPI["root_doc"]."/front/document.send.php?file=_pictures/".$tmp[0].
                    "_min.".$tmp[1];
          }
-         return $CFG_GLPI["root_doc"]."/pics/picture_min.png";
       }
-      return $CFG_GLPI["root_doc"]."/pics/picture_min.png";
 
+      return $send_placeholder ? $CFG_GLPI["root_doc"]."/pics/picture_min.png" : "";
    }
 
 
