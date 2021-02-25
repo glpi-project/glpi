@@ -686,6 +686,26 @@ $tables['glpi_crontasks'] = [
       'mode'          => 2,
       'lastrun'       => null,
       'logs_lifetime' => 30,
+   ], [
+      'id'            => 40,
+      'itemtype'      => 'Glpi\Inventory\Inventory',
+      'name'          => 'cleantemp',
+      'frequency'     => 86400,
+      'param'         => null,
+      'state'         => 0,
+      'mode'          => 2,
+      'lastrun'       => null,
+      'logs_lifetime' => 30,
+   ], [
+      'id'            => 41,
+      'itemtype'      => 'Glpi\Inventory\Inventory',
+      'name'          => 'cleanorphans',
+      'frequency'     => 604800,
+      'param'         => null,
+      'state'         => 1,
+      'mode'          => 2,
+      'lastrun'       => null,
+      'logs_lifetime' => 30,
    ],
 ];
 
