@@ -809,4 +809,7 @@ class Inventory
       return $cron_status;
    }
 
+   public static function getTypeName($nb = 0) {
+      return __("Inventory");
+   }
 }
