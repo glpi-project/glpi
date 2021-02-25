@@ -318,8 +318,10 @@ class KnowbaseItem_Revision extends CommonDBTM {
       $this->getEmpty();
       unset($this->fields['id']);
       $this->fields['knowbaseitems_id'] = $item->fields['knowbaseitems_id'];
-      $this->fields['name'] = $item->fields['name'];
-      $this->fields['answer'] = $item->fields['answer'];
+      $this->fields['name'] = Toolbox::addslashes_deep($item->fields['name']);
+      $this->fields['answer'] = Toolbox::clean_cross_side_scripting_deep(
+         Toolbox::addslashes_deep($item->fields['answer'])
+      );
       $this->fields['date_creation'] = $item->fields['date_mod'];
       $this->fields['language'] = $item->fields['language'];
       $this->fields['revision'] = $this->getNewRevision();
