@@ -1,0 +1,155 @@
+.timeline-item {
+   .timeline-content {
+      position: relative;
+      border-top-left-radius: 0;
+      max-width: 100%;
+      word-break: break-word;
+
+      &::before {
+         content: " ";
+         position: absolute;
+         width: 0;
+         height: 0;
+         left: -14px;
+         right: auto;
+         top: -1px;
+         bottom: auto;
+         border: 7px solid;
+         border-color: transparent;
+      }
+      &::after {
+         content: " ";
+         position: absolute;
+         width: 0;
+         height: 0;
+         left: -12px;
+         right: auto;
+         top: 0px;
+         bottom: auto;
+         border: 6px solid;
+         border-color: transparent;
+      }
+
+      &.t-right {
+         border-top-right-radius: 0;
+
+         &::before {
+            left: auto;
+            right: -14px;
+         }
+         &::after {
+            left: auto;
+            right: -12px;
+         }
+      }
+   }
+
+   &.ITILAnswer {
+      .timeline-content {
+         &::before {
+            border-color: $timeline-fup-border $timeline-fup-border transparent transparent;
+         }
+         &::after {
+            border-color: $timeline-fup-bg $timeline-fup-bg transparent transparent;
+         }
+         &.t-right::before {
+            border-color: $timeline-fup-border transparent transparent $timeline-fup-border;
+         }
+         &.t-right::after {
+            border-color: $timeline-fup-bg transparent transparent $timeline-fup-bg;
+         }
+      }
+   }
+
+   &.ITILContent {
+      .timeline-content {
+         background-color: $timeline-itilc-bg;
+         color: $timeline-itilc-fg;
+         border-color: $timeline-itilc-border;
+         background-image: url(../pics/timeline/followup.png);
+         background-repeat: no-repeat;
+
+         &::before {
+            border-color: $timeline-itilc-border $timeline-itilc-border transparent transparent;
+         }
+         &::after {
+            border-color: $timeline-itilc-bg $timeline-itilc-bg transparent transparent;
+         }
+         &.t-right::before {
+            border-color: $timeline-itilc-border transparent transparent $timeline-itilc-border;
+         }
+         &.t-right::after {
+            border-color: $timeline-itilc-bg transparent transparent $timeline-itilc-bg;
+         }
+      }
+   }
+
+   &.ITILFollowup,
+   &.KnowbaseItemComment {
+      .timeline-content {
+         background-color: $timeline-fup-bg;
+         color: $timeline-fup-fg;
+         border-color: $timeline-fup-border;
+         background-image: url(../pics/timeline/followup.png);
+         background-repeat: no-repeat;
+
+         &::before {
+            border-color: $timeline-fup-border $timeline-fup-border transparent transparent;
+         }
+         &::after {
+            border-color: $timeline-fup-bg $timeline-fup-bg transparent transparent;
+         }
+         &.t-right::before {
+            border-color: $timeline-fup-border transparent transparent $timeline-fup-border;
+         }
+         &.t-right::after {
+            border-color: $timeline-fup-bg transparent transparent $timeline-fup-bg;
+         }
+      }
+   }
+
+   &.ITILTask {
+      .timeline-content {
+         background-color: $timeline-task-bg;
+         color: $timeline-task-fg;
+         border-color: $timeline-task-border;
+         background-image: url(../pics/timeline/task.png);
+         background-repeat: no-repeat;
+
+         &::before {
+            border-color: $timeline-task-border $timeline-task-border transparent transparent;
+         }
+         &::after {
+            border-color: $timeline-task-bg $timeline-task-bg transparent transparent;
+         }
+         &.t-right::before {
+            border-color: $timeline-task-border transparent transparent $timeline-task-border;
+         }
+         &.t-right::after {
+            border-color: $timeline-task-bg transparent transparent $timeline-task-bg;
+         }
+      }
+   }
+
+   &.Solution {
+      .timeline-content {
+         border-left: 1em green solid;
+         background-color: #9fd6ed;
+         color: #425b64;
+
+         &.waiting {
+            border-left-color: orange;
+         }
+
+         &.refused {
+            border-left: 1em red solid;
+         }
+
+         .solimg {
+            position: absolute;
+            color: rgba(66, 91, 100, 0.1);
+            pointer-events: none;
+         }
+      }
+   }
+}

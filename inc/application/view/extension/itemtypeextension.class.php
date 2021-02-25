@@ -58,6 +58,7 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
          new TwigFilter('canUpdate', [$this, 'canUpdate']),
          new TwigFilter('canDelete', [$this, 'canDelete']),
          new TwigFilter('canPurge', [$this, 'canPurge']),
+         new TwigFilter('canPurge', [$this, 'canPurge']),
       ];
    }
 
@@ -70,6 +71,7 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
          new TwigFunction('getDcBreadcrumb', [$this, 'getDcBreadcrumb'], ['is_safe' => ['html']]),
          new TwigFunction('getAutofillMark', [$this, 'getAutofillMark'], ['is_safe' => ['html']]),
          new TwigFunction('getMassiveActions', [$this, 'getMassiveActions']),
+         new TwigFunction('getLinkURL', [$this, 'getLinkURL']),
       ];
    }
 
