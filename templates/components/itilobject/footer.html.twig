@@ -1,0 +1,12 @@
+<div class="d-flex justify-content-end border-top mx-n2 pe-4 itil-footer card-footer">
+   <button class="btn btn-outline-danger me-2" type="submit" name="purge"
+         onclick='return confirm("{{ __('Confirm the final deletion?') }}");'>
+      <i class='fas fa-trash-alt'></i>
+      <span>{{ _x('button', 'Delete permanently') }}</span>
+   </button>
+
+   <button class="btn btn-primary me-2" type="submit" name="update">
+      <i class="fas fa-save"></i>
+      <span>Sauvegarder</span>
+   </button>
+</div>
