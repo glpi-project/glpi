@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 
 if (!defined('GLPI_ROOT')) {
@@ -4641,6 +4642,16 @@ JAVASCRIPT;
             }
          }
       }
+
+      $this->initForm($ID, $options);
+      TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
+         'item'     => $this,
+         'params'   => $options,
+         'timeline' => $this->getTimelineItems(),
+         'template' => $tt,
+      ]);
+
+      return true;
 
       // In percent
       $colsize1 = '13';

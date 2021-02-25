@@ -1,0 +1,200 @@
+{% import "components/form/fields_macros.html.twig" as fields %}
+{% set field_options = {full_width: true} %}
+
+<div class="accordion open accordion-flush" id="itil-data">
+   <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOne">
+         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            <i class="fas fa-exclamation-circle me-1"></i>
+            <span>{{ __("Ticket") }}</span>
+         </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#itil-data">
+         <div class="accordion-body">
+            {{ fields.field(
+               'type',
+               item.dropdownType('type', {
+                  'value': item.fields["type"],
+                  'on_change': 'this.form.submit()',
+                  'width': '100%',
+                  'class': 'form-select',
+                  'display': false
+               }),
+               __('%1$s%2$s')|format(_n('Type', 'Types', 1), template.getMandatoryMark('type')),
+               field_options
+            ) }}
+
+            {{ fields.dropdownField(
+               'ITILCategory',
+               'itilcategories_id',
+               item.fields["itilcategories_id"],
+               __('%1$s%2$s')|format(__('Category'), template.getMandatoryMark('itilcategories_id')),
+               field_options
+            ) }}
+
+            {# TODO badge in dropdown #}
+            {{ fields.field(
+               'status',
+               item.dropdownStatus({
+                  'value': item.fields["status"],
+                  'showtype': 'allowed',
+                  'width': '100%',
+                  'class': 'form-select',
+                  'display': false
+               }),
+               __('%1$s%2$s')|format(__("Status"), template.getMandatoryMark('status')),
+               field_options
+            ) }}
+
+            {{ fields.dropdownField(
+               'RequestType',
+               'requesttypes_id',
+               item.fields["requesttypes_id"],
+               __('%1$s%2$s')|format("RequestType"|itemtype_name, template.getMandatoryMark('requesttypes_id')),
+               field_options|merge({
+                  'condition': {
+                     'is_active': 1,
+                     'is_ticketheader': 1
+                  }
+               })
+            ) }}
+
+            {{ fields.field(
+               'urgency',
+               item.dropdownUrgency({
+                  'value': item.fields["urgency"],
+                  'width': '100%',
+                  'class': 'form-select',
+                  'display': false
+               }),
+               __('%1$s%2$s')|format(__("Urgency"), template.getMandatoryMark('urgency')),
+               field_options
+            ) }}
+
+            {{ fields.field(
+               'impact',
+               item.dropdownImpact({
+                  'value': item.fields["impact"],
+                  'width': '100%',
+                  'class': 'form-select',
+                  'display': false
+               }),
+               __('%1$s%2$s')|format(__("impact"), template.getMandatoryMark('impact')),
+               field_options
+            ) }}
+
+            {# TODO ajax #}
+            {{ fields.field(
+               'priority',
+               item.dropdownPriority({
+                  'value': item.fields["priority"],
+                  'width': '100%',
+                  'class': 'form-select',
+                  'display': false
+               }),
+               __('%1$s%2$s')|format(__("priority"), template.getMandatoryMark('priority')),
+               field_options
+            ) }}
+         </div>
+      </div>
+   </div>
+   <div class="accordion-item">
+      <h2 class="accordion-header" id="headingTwo">
+         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fa fa-users me-1"></i>
+            <span>{{ __("Actors") }}</span>
+         </button>
+      </h2>
+      <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo" data-bs-parent="#itil-data">
+         <div class="accordion-body">
+            {% set requester_field %}
+               {% include "components/itilobject/actor_field.html.twig" with {'type': constant('CommonITILActor::REQUESTER')} only %}
+            {% endset %}
+            {{ fields.field(
+               'requester',
+               requester_field,
+               __("Requester"),
+               field_options
+            ) }}
+            {% set observer_field %}
+               {% include "components/itilobject/actor_field.html.twig" with {'type': constant('CommonITILActor::OBSERVER')} only %}
+            {% endset %}
+            {{ fields.field(
+               'observer',
+               observer_field,
+               __("Observer"),
+               field_options
+            ) }}
+            {% set assign_field %}
+               {% include "components/itilobject/actor_field.html.twig" with {'type': constant('CommonITILActor::ASSIGN')} only %}
+            {% endset %}
+            {{ fields.field(
+               'assign',
+               assign_field,
+               __("Assigned to"),
+               field_options
+            ) }}
+         </div>
+      </div>
+   </div>
+   <div class="accordion-item">
+      <h2 class="accordion-header" id="headingThree">
+         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+            <i class="fas fa-stopwatch me-1"></i>
+            <span>{{ _n('Service level', 'Service levels', getPluralNumber()) }}</span>
+         </button>
+      </h2>
+      <div id="collapseThree" class="accordion-collapse collapse show" aria-labelledby="headingThree" data-bs-parent="#itil-data">
+         <div class="accordion-body">
+            {{ fields.datetimeField(
+               'time_to_own',
+               item.fields["time_to_own"],
+               __("TTO"),
+               field_options
+            ) }}
+            {{ fields.datetimeField(
+               'time_to_resolve',
+               item.fields["time_to_resolve"],
+               __("TTR"),
+               field_options
+            ) }}
+
+            {# TODO display fields only when OLA exists, hide them otherwise #}
+            {# {{ fields.datetimeField(
+               'internal_time_to_own',
+               item.fields["internal_time_to_own"],
+               __("internal TTO"),
+               field_options
+            ) }}
+            {{ fields.datetimeField(
+               'internal_time_to_resolve',
+               item.fields["internal_time_to_resolve"],
+               __("internal TTR"),
+               field_options
+            ) }} #}
+         </div>
+      </div>
+   </div>
+   <div class="accordion-item">
+      <h2 class="accordion-header" id="headingFour">
+         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+            <i class="fas fa-check me-1"></i>
+            <span>{{ __("Misc") }}</span>
+         </button>
+      </h2>
+      <div id="collapseFour" class="accordion-collapse collapse show" aria-labelledby="headingFour" data-bs-parent="#itil-data">
+         <div class="accordion-body">
+            {{ fields.dropdownField(
+               'Location',
+               'locations_id',
+               item.fields["locations_id"],
+               __('%1$s%2$s')|format("Location"|itemtype_name, template.getMandatoryMark('locations_id')),
+               field_options
+            ) }}
+
+            <div>Validation</div>
+            <div>Linked Tickets</div>
+         </div>
+      </div>
+   </div>
+</div>
