@@ -36,7 +36,8 @@
    {% set options = {'type': 'text'}|merge(options) %}
 
    {% set field %}
-      <input type="{{ options.type }}" class="form-control" id="%id%"
+      <input type="{{ options.type }}" id="%id%"
+             class="form-control"
              name="{{ name }}" value="{{ value }}"
              {{ options.readonly ? 'readonly' : "" }}
              {{ options.disabled ? 'disabled' : "" }}>
@@ -81,9 +82,7 @@
 {% macro textareaField(name, value, label, options = {}) %}
    {% set field %}
       <textarea class="form-control" id="%id%" name="{{ name }}" rows="3"
-                {{ options.disabled ? 'disabled' : "" }}>
-         {{ value }}
-      </textarea>
+                {{ options.disabled ? 'disabled' : "" }}>{{ value }}</textarea>
    {% endset %}
 
    {{ _self.field(name, field, label, options) }}
@@ -98,6 +97,25 @@
                 {{ options.disabled ? 'disabled' : "" }}>
          <i class="input-icon-addon far fa-calendar"></i>
       </div>
+   {% endset %}
+
+   {{ _self.field(name, field, label, options) }}
+{% endmacro %}
+
+{% macro datetimeField(name, value, label, options = {}) %}
+   {% set id = options.id|length > 0 ? options.id : (name ~ "_" ~ options.rand) %}
+   {% set field %}
+      <div class="input-icon">
+         <input type="text" class="form-control" id="{{ id }}"
+                name="{{ name }}" value="{{ value }}"
+                {{ options.disabled ? 'disabled' : "" }}>
+         <i class="input-icon-addon far fa-calendar"></i>
+      </div>
+      <script type="text/javascrip">$(function() {
+         $("#{{ id }}").flatpickr({
+
+         });
+      });</script>
    {% endset %}
 
    {{ _self.field(name, field, label, options) }}
@@ -164,9 +182,9 @@
    {% set add_field_html = options.add_field_html|length > 0 ? options.add_field_html : "" %}
 
    {% if options.is_horizontal %}
-      {{ _self.horizontalField(label, field, id, add_field_html) }}
+      {{ _self.horizontalField(label, field, id, add_field_html, options) }}
    {% else %}
-      {{ _self.verticalField(label, field, id, add_field_html) }}
+      {{ _self.verticalField(label, field, id, add_field_html, options) }}
    {% endif %}
 {% endmacro %}
 
@@ -182,12 +200,30 @@
 {% endmacro %}
 
 
-{% macro horizontalField(label, field, id, add_field_html) %}
-   <div class="row mb-3 col-12 col-sm-6">
-      <label class="col-xxl-5 col-form-label text-xxl-end" for="{{ id }}">
+{% macro horizontalField(label, field, id, add_field_html = "", options = {}) %}
+   {% set options = {
+      'full_width': false,
+      'align_label_right': true
+   }|merge(options) %}
+   {% set class = "col-12 col-sm-6" %}
+   {% set label_class = "col-xxl-5" %}
+   {% set field_class = "col-xxl-7" %}
+
+   {% if options.full_width %}
+      {% set class = "col-12" %}
+      {% set label_class = "col-xxl-4" %}
+      {% set field_class = "col-xxl-8" %}
+   {% endif %}
+
+   {% if options.align_label_right %}
+      {% set label_class = label_class ~ " text-xxl-end" %}
+   {% endif %}
+
+   <div class="row {{ class }} mb-3 ">
+      <label class="col-form-label {{ label_class }}" for="{{ id }}">
          {{ label }}
       </label>
-      <div class="col-xxl-7">
+      <div class="{{ field_class }}">
          {{ field|raw }}
          {{ add_field_html|raw }}
       </div>
@@ -195,8 +231,15 @@
 {% endmacro %}
 
 
-{% macro verticalField(label, field, id, add_field_html = "") %}
-   <div class="mb-3 col-12 col-sm-6">
+{% macro verticalField(label, field, id, add_field_html = "", options = {}) %}
+   {% set options = {'full_width': false}|merge(options) %}
+
+   {% set class = "col-12 col-sm-6" %}
+   {% if options.full_width %}
+      {% set class = "col-12" %}
+   {% endif %}
+
+   <div class="{{ class }} mb-3">
       <label class="form-label" for="{{ id }}">
          {{ label }}
       </label>
