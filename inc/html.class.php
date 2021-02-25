@@ -7392,4 +7392,83 @@ CSS;
       echo '</form>';
       echo '</div>';
    }
+
+   /**
+    * Return a relative for the given timestamp
+    *
+    * @param mixed $ts
+    * @return string
+    */
+   static function time2str($ts) {
+      if (!ctype_digit($ts)) {
+         $ts = strtotime($ts);
+      }
+
+      $diff = time() - $ts;
+      if ($diff == 0) {
+         return __('Now');
+      } elseif ($diff > 0) {
+         $day_diff = floor($diff / 86400);
+         if ($day_diff == 0) {
+            if ($diff < 60) {
+               return __('Just now');
+            }
+            if ($diff < 3600) {
+               return  sprintf(__('%s minutes ago'), floor($diff / 60));
+            }
+            if ($diff < 86400) {
+               return  sprintf(__('%s hours ago'), floor($diff / 3600));
+            }
+         }
+         if ($day_diff == 1) {
+            return __('Yesterday');
+         }
+         if ($day_diff < 7) {
+            return sprintf(__('%s days ago'), $day_diff);
+         }
+         if ($day_diff < 31) {
+            return sprintf(__('%s weeks ago'), ceil($day_diff / 7));
+         }
+         if ($day_diff < 60) {
+            return __('Last month');
+         }
+
+         return date('F Y', $ts);
+      } else {
+         $diff     = abs($diff);
+         $day_diff = floor($diff / 86400);
+         if ($day_diff == 0) {
+            if ($diff < 120) {
+               return __('In a minute');
+            }
+            if ($diff < 3600) {
+               return sprintf(__('In %s minutes'), floor($diff / 60));
+            }
+            if ($diff < 7200) {
+               return __('In an hour');
+            }
+            if ($diff < 86400) {
+               return sprintf(__('In %s hours'), floor($diff / 3600));
+            }
+         }
+         if ($day_diff == 1) {
+            return __('Tomorrow');
+         }
+         if ($day_diff < 4) {
+            return date('l', $ts);
+         }
+         if ($day_diff < 7 + (7 - date('w'))) {
+            return __('next week');
+         }
+         if (ceil($day_diff / 7) < 4) {
+            return sprintf(__('In %s weeks'), ceil($day_diff / 7));
+         }
+         if (date('n', $ts) == date('n') + 1) {
+            return __('next month');
+         }
+         return date('F Y', $ts);
+      }
+
+      return "";
+   }
 }
