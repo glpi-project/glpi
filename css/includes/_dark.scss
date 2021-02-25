@@ -1,6 +1,16 @@
 $input-focus-bg: #444444 !default;
 $input-focus-border-color: #868686 !default;
 
+$timeline-itilc-bg: #1a221a !default;
+$timeline-itilc-fg: #85bd81 !default;
+$timeline-itilc-border: #324132 !default;
+$timeline-fup-bg: #222222 !default;
+$timeline-fup-fg: #cecece !default;
+$timeline-fup-border: #3b3b3b !default;
+$timeline-task-bg: #22211f !default;
+$timeline-task-fg: #ccb686 !default;
+$timeline-task-border: #363532 !default;
+
 @import "~@tabler/core/src/scss/tabler";
 
 @mixin dark-mode {

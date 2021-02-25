@@ -1,0 +1,38 @@
+{% set users_id = item.fields['users_id_recipient'] %}
+
+<div class="d-inline-block timeline-item mb-4 ITILContent">
+   <div class="row">
+      <div class="col-auto">
+         {% include "components/itilobject/user_picture.html.twig" with {'users_id': users_id} only %}
+      </div>
+      <div class="col">
+         <div class="row">
+            <div class="col">
+               <strong>{{ User__getLink(users_id) }}</strong>
+            </div>
+            <div class="text-muted col-auto order-last">
+               {% set date_creation = item.fields['date_creation'] ?? item.fields['date'] %}
+               {% set date_mod = item.fields['date_mod'] %}
+               <span title="{{ convDateTime(date_creation) }}">
+                  {{ __('Created: %1$s')|format(time2str(date_creation))|raw }}
+               </span>
+
+               {% if date_creation != date_mod%}
+                  {% set editor = User__getLink(item.fields['users_id_lastupdater']) %}
+                  <span class="text-muted text-end ms-3" title="{{ convDateTime(date_mod) }}">
+                     {{ __('Last modification: %1$s by %2$s')|format(time2str(date_mod), editor)|raw }}
+                  </span>
+               {% endif %}
+            </div>
+         </div>
+         <span class="row mt-2 timeline-content left card">
+            <div class="card-title card-header">
+               {{ item.fields['name'] }}
+            </div>
+            <div class="card-body">
+               {{ setRichTextContent('', item.fields['content'], '', true)}}
+            </div>
+         </span>
+      </div>
+   </div>
+</div>

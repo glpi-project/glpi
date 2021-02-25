@@ -52,6 +52,7 @@ use Glpi\Application\View\Extension\RoutingExtension;
 use Glpi\Application\View\Extension\SearchExtension;
 use Glpi\Application\View\Extension\SessionExtension;
 use Glpi\Application\View\Extension\ToolboxExtension;
+use Glpi\Application\View\Extension\UserExtension;
 use Session;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
@@ -106,6 +107,7 @@ class TemplateRenderer {
       $this->environment->addExtension(new SearchExtension());
       $this->environment->addExtension(new SessionExtension());
       $this->environment->addExtension(new ToolboxExtension());
+      $this->environment->addExtension(new UserExtension());
    }
 
    /**
