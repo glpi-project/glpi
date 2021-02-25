@@ -1,0 +1,21 @@
+{% import "components/form/fields_macros.html.twig" as fields %}
+
+<hr>
+
+<div class="d-inline-block timeline-item mb-4 ITILAnswer">
+   <div class="row">
+      <div class="col-auto">
+         {% include "components/itilobject/user_picture.html.twig" with {'users_id': session('glpiID')} only %}
+      </div>
+      <div class="col">
+         <span class="row mt-2 timeline-content left card p-0 mt-3">
+            {{ fields.textareaField(
+               'content',
+               "",
+               "",
+               {full_width: true, is_horizontal: false}
+            ) }}
+         </span>
+      </div>
+   </div>
+</div>
