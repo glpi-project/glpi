@@ -1,0 +1,15 @@
+.itil-object {
+   .itil-left-side {
+      height: calc(100vh - 190px);
+      overflow-y: auto;
+   }
+
+   .itil-right-side {
+
+   }
+
+   .itil-footer {
+      position: sticky;
+      bottom: 0;
+   }
+}

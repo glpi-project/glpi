@@ -1,0 +1,18 @@
+
+<div class="itil-object">
+
+   <div class="row">
+      <div class="col col-12 order-last order-md-first col-md-8 pe-2 pe-md-4 d-flex flex-column itil-left-side">
+         {% include("components/itilobject/main_description.html.twig") %}
+         <div class="flex-grow-1">
+            {% include("components/itilobject/timeline.html.twig") %}
+         </div>
+         {% include("components/itilobject/answer.html.twig") %}
+      </div>
+      <div class="col col-12 col-md-4 border-0 itil-right-side my-n2 card-footer p-0">
+         {% include("components/itilobject/fields_panel.html.twig") %}
+      </div>
+   </div>
+   {% include("components/itilobject/footer.html.twig") %}
+
+</div>
