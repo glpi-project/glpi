@@ -166,8 +166,7 @@ class StatusChecker extends DbTestCase {
       // afterTestMethod will rollback the DB changes for us
    }
 
-   protected function getCalculatedGlobalStatusProvider()
-   {
+   protected function getCalculatedGlobalStatusProvider() {
       return [
          [
             [
@@ -216,13 +215,11 @@ class StatusChecker extends DbTestCase {
     * @dataProvider getCalculatedGlobalStatusProvider
     * @param $status
     */
-   public function testGetCalculateGlobalStatus($status, $expected)
-   {
+   public function testGetCalculateGlobalStatus($status, $expected) {
       $this->string(GlpiStatusChecker::calculateGlobalStatus($status))->isEqualTo($expected);
    }
 
-   public function testGetServiceStatus()
-   {
+   public function testGetServiceStatus() {
       $services = GlpiStatusChecker::getServices();
       $this->boolean(is_array($services))->isTrue();
 

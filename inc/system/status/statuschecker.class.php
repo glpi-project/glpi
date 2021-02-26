@@ -97,8 +97,7 @@ final class StatusChecker {
     *    One of {@link STATUS_NO_DATA}, {@link STATUS_OK}, {@link STATUS_WARNING}, or {@link STATUS_PROBLEM}.
     * @since x.x.x
     */
-   public static function calculateGlobalStatus(array $status)
-   {
+   public static function calculateGlobalStatus(array $status) {
       $statuses = array_column($status, 'status');
       $global_status = self::STATUS_OK;
       if (in_array(self::STATUS_PROBLEM, $statuses, true)) {
@@ -535,8 +534,7 @@ final class StatusChecker {
     * @return string
     * @deprecated x.x.x
     */
-   private static function getPlaintextOutput(array $status): string
-   {
+   private static function getPlaintextOutput(array $status): string {
       // Deprecated notices are done on the /status.php endpoint and CLI commands to give better migration hints
       $output = '';
       // Plain-text output
