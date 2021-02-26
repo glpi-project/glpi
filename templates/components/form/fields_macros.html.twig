@@ -46,6 +46,7 @@
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
 
+
 {% macro checkboxField(name, value, label, options = {}) %}
    {% set field %}
       <input type="hidden"   name="{{ name }}" value="0">
@@ -53,6 +54,24 @@
              {{ value == 1 ? "checked" : "" }}
              {{ options.readonly ? 'readonly' : "" }}
              {{ options.disabled ? 'disabled' : "" }}>
+   {% endset %}
+
+   {{ _self.field(name, field, label, options) }}
+{% endmacro %}
+
+
+{% macro sliderField(name, value, label, options = {}) %}
+   {% set field %}
+      <label class="form-check form-switch pt-2">
+         <input type="hidden"   name="{{ name }}" value="0">
+         <input type="checkbox" name="{{ name }}" value="1" class="form-check-input" id="%id%"
+                {{ value == 1 ? "checked" : "" }}
+                {{ options.readonly ? 'readonly' : "" }}
+                {{ options.disabled ? 'disabled' : "" }}>
+         {% if options.label2 %}
+            <span class="form-check-label">{{options.label2}}</span>
+         {% endif %}
+      </label>
    {% endset %}
 
    {{ _self.field(name, field, label, options) }}
@@ -80,10 +99,29 @@
 
 
 {% macro textareaField(name, value, label, options = {}) %}
+   {% set options = {'rand': random()}|merge(options) %}
+   {% set id = options.id|length > 0 ? options.id : (name ~ "_" ~ options.rand) %}
+
    {% set field %}
-      <textarea class="form-control" id="%id%" name="{{ name }}" rows="3"
+      <textarea class="form-control" id="{{ id }}" name="{{ name }}" rows="3"
                 {{ options.disabled ? 'disabled' : "" }}>{{ value }}</textarea>
    {% endset %}
+
+   {% if options.enable_richtext %}
+      {{ Html__initEditorSystem(
+         id,
+         options.rand,
+         false
+      ) }}
+   {% endif %}
+   {% if options.enable_fileupload %}
+      {% set add_html %}
+         {{ Html__file({
+         }) }}
+      {% endset %}
+
+      {% set options = options|merge({'add_field_html': add_html}) %}
+   {% endif %}
 
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
@@ -181,7 +219,9 @@
    {% set field = field|replace({'%id%': id}) %}
    {% set add_field_html = options.add_field_html|length > 0 ? options.add_field_html : "" %}
 
-   {% if options.is_horizontal %}
+   {% if options.no_label %}
+      {{ _self.noLabelField(field, id, add_field_html, options) }}
+   {% elseif options.is_horizontal %}
       {{ _self.horizontalField(label, field, id, add_field_html, options) }}
    {% else %}
       {{ _self.verticalField(label, field, id, add_field_html, options) }}
@@ -200,6 +240,21 @@
 {% endmacro %}
 
 
+{% macro noLabelField(field, id, add_field_html = "", options = {}) %}
+   {% set options = {'full_width': false}|merge(options) %}
+
+   {% set class = "col-12 col-sm-6" %}
+   {% if options.full_width %}
+      {% set class = "col-12" %}
+   {% endif %}
+
+   <div class="{{ class }} mb-3">
+      {{ field|raw }}
+      {{ add_field_html|raw }}
+   </div>
+{% endmacro %}
+
+
 {% macro horizontalField(label, field, id, add_field_html = "", options = {}) %}
    {% set options = {
       'full_width': false,
@@ -213,6 +268,11 @@
       {% set class = "col-12" %}
       {% set label_class = "col-xxl-4" %}
       {% set field_class = "col-xxl-8" %}
+   {% endif %}
+
+   {% if options.icon_label %}
+      {% set label_class = "col-xxl-2" %}
+      {% set field_class = "col-xxl-10" %}
    {% endif %}
 
    {% if options.align_label_right %}
