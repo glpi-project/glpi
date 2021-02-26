@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Api\Deprecated\TicketFollowup;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 
@@ -4646,6 +4647,7 @@ JAVASCRIPT;
       $this->initForm($ID, $options);
       TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
          'item'     => $this,
+         'followup' => new ITILFollowup,
          'params'   => $options,
          'timeline' => $this->getTimelineItems(),
          'template' => $tt,
