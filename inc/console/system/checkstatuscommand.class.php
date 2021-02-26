@@ -41,6 +41,7 @@ use Glpi\System\Status\StatusChecker;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Toolbox;
 
 class CheckStatusCommand extends AbstractCommand {
 
@@ -66,6 +67,7 @@ class CheckStatusCommand extends AbstractCommand {
       if ($format === 'json') {
          $output->writeln(json_encode($status, JSON_PRETTY_PRINT));
       } else {
+         Toolbox::deprecated('Plain-text status output is deprecated please use the JSON format instead by specifically using the "--format json" parameter. In the future, JSON output will be the default.');
          $output->writeln($status);
       }
 

@@ -47,10 +47,13 @@ $fallback_response_type = 'text/plain';
 if (!isset($_SERVER['HTTP_ACCEPT']) || !in_array($_SERVER['HTTP_ACCEPT'], $valid_response_types, true)) {
    $_SERVER['HTTP_ACCEPT'] = $fallback_response_type;
 }
+if ($_SERVER['HTTP_ACCEPT'] === 'text/plain') {
+   Toolbox::deprecated('Plain-text status output is deprecated please use the JSON format instead by specifically setting the Accept header to "application/json". In the future, JSON output will be the default.');
+}
 header('Content-type: ' . $_SERVER['HTTP_ACCEPT']);
 
 if ($_SERVER['HTTP_ACCEPT'] === 'application/json') {
-   echo json_encode(StatusChecker::getFullStatus(true, true));
+   echo json_encode(StatusChecker::getServiceStatus(null, true, true));
 } else {
-   echo StatusChecker::getFullStatus(true, false);
+   echo StatusChecker::getServiceStatus(null, true, false);
 }

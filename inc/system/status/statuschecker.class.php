@@ -84,6 +84,18 @@ final class StatusChecker {
       ];
    }
 
+   private static function calculateGlobalStatus(array $status)
+   {
+      $statuses = array_column($status, 'status');
+      $global_status = self::STATUS_OK;
+      if (in_array(self::STATUS_PROBLEM, $statuses, true)) {
+         $global_status = self::STATUS_PROBLEM;
+      } else if (in_array(self::STATUS_WARNING, $statuses, true)) {
+         $global_status = self::STATUS_WARNING;
+      }
+      return $global_status;
+   }
+
    public static function getServiceStatus(?string $service, $public_only = true, $as_array = true) {
       $services = self::getServices();
       if ($service === 'all' || $service === null) {
@@ -93,13 +105,16 @@ final class StatusChecker {
             ]
          ];
          foreach ($services as $name => $service_check_method) {
-            $service_status = self::getServiceStatus($name, $public_only, $as_array);
-            if ($as_array) {
-               $status[$name] = $service_status;
-            }
+            $service_status = self::getServiceStatus($name, $public_only, true);
+            $status[$name] = $service_status;
          }
+
+         $status['glpi']['status'] = self::calculateGlobalStatus($status);
+
          if ($as_array) {
             return $status;
+         } else {
+            return self::getPlaintextOutput($status);
          }
       }
 
@@ -484,45 +499,21 @@ final class StatusChecker {
     * @param bool $public_only True if only public status information should be given.
     * @param bool $as_array
     * @return array|string
+    * @deprecated x.x.x Use {@link self::getServiceStatus} instead
     */
    public static function getFullStatus($public_only = true, $as_array = true) {
-      static $status = null;
+      //Toolbox::deprecated('Use StatusChecker::getServiceStatus for service checks instead');
+      return self::getServiceStatus(null, $public_only, $as_array);
+   }
 
-      if ($status === null) {
-         $status = [
-            'db'              => self::getDBStatus($public_only),
-            'cas'             => self::getCASStatus($public_only),
-            'ldap'            => self::getLDAPStatus($public_only),
-            'imap'            => self::getIMAPStatus($public_only),
-            'mail_collectors' => self::getMailCollectorStatus($public_only),
-            'crontasks'       => self::getCronTaskStatus($public_only),
-            'filesystem'      => self::getFilesystemStatus($public_only),
-            'glpi'            => [
-               'status'    => self::STATUS_OK,
-            ],
-            'plugins'         => self::getPluginsStatus($public_only)
-         ];
-         // Compute GLPI status from top-level services
-         $statuses = array_column($status, 'status');
-         $global_status = self::STATUS_OK;
-         if (in_array(self::STATUS_PROBLEM, $statuses, true)) {
-            $global_status = self::STATUS_PROBLEM;
-         } else if (in_array(self::STATUS_WARNING, $statuses, true)) {
-            $global_status = self::STATUS_WARNING;
-         }
-         $status['glpi']['status'] = $global_status ? self::STATUS_OK : self::STATUS_PROBLEM;
-      }
-
-      // Only show overall core status for public
-      // Giving out the version to anonymous users could make it easier to target insecure versions of GLPI
-      if (!$public_only) {
-         $status['glpi']['version'] = GLPI_VERSION;
-      }
-
-      if ($as_array) {
-         return $status;
-      }
-
+   /**
+    * @param array $status
+    * @return string
+    * @deprecated x.x.x
+    */
+   private static function getPlaintextOutput(array $status): string
+   {
+      // Deprecated notices are done on the /status.php endpoint and CLI commands to give better migration hints
       $output = '';
       // Plain-text output
       if (count($status['db']['slaves'])) {
