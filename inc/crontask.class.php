@@ -831,7 +831,7 @@ class CronTask extends CommonDBTM{
                $_SESSION["glpicronuserrunning"] = "cron_".$crontask->fields['name'];
 
                if ($plug = isPluginItemType($crontask->fields['itemtype'])) {
-                  Plugin::load($plug['plugin'], true);
+                  Plugin::load(strtolower($plug['plugin']), true);
                }
                $fonction = [$crontask->fields['itemtype'],
                                  'cron' . $crontask->fields['name']];
