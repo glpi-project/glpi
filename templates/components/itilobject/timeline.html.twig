@@ -1,8 +1,12 @@
 <div class="itil-timeline">
 {% for entry in timeline|reverse %}
-   {% set users_id = entry['item']['users_id'] %}
+   {% set entry_i = entry['item'] %}
+   {% set users_id = entry_i['users_id'] %}
+   {% set is_private = entry_i['is_private'] ?? false %}
+   {% set date_creation = entry_i['date_creation'] ?? entry_i['date'] %}
+   {% set date_mod = entry_i['date_mod'] %}
 
-   {% set timeline_position = entry['item']['timeline_position'] %}
+   {% set timeline_position = entry_i['timeline_position'] %}
    {% set item_position = 't-left' %}
    {% if timeline_position == constant('CommonITILObject::TIMELINE_LEFT') %}
       {% set item_position = 't-left' %}
@@ -25,25 +29,28 @@
                   <div class="{{ "right" in item_position ? "col-auto order-last" : "col" }}">
                      <strong>{{ User__getLink(users_id) }}</strong>
                   </div>
-                  <div class="text-muted {{ "right" in item_position ? "col" : "col-auto order-last" }}">
-                     {% set date_creation = entry['item']['date_creation'] ?? entry['item']['date'] %}
-                     {% set date_mod = entry['item']['date_mod'] %}
-                     <span title="{{ convDateTime(date_creation) }}">
+                  <div class="{{ "right" in item_position ? "col" : "col-auto order-last" }}">
+                     <span title="{{ convDateTime(date_creation) }}" class="text-muted">
                         {{ time2str(date_creation) }}
                      </span>
+
+                     {% if is_private %}
+                        <i class="fas fa-lock control_item" title="{{ __('Private') }}"></i>
+                        <span class='sr-only'>{{ __('Private') }}</span>
+                     {% endif %}
                   </div>
                </div>
                <span class="row mt-2 timeline-content {{ item_position }} card">
                   <div class="card-body">
-                     {{ setRichTextContent('', entry['item']['content'], '', true)}}
+                     {{ setRichTextContent('', entry_i['content'], '', true)}}
                   </div>
                </span>
 
-               {% if date_creation != date_mod%}
-               {% set editor = User__getLink(entry['item']['users_id_editor']) %}
-               <div class="text-muted text-end" title="{{ convDateTime(date_mod) }}">
-                  {{ __('Last edition: %1$s by %2$s')|format(time2str(date_mod), editor)|raw }}
-               </div>
+               {% if date_creation != date_mod %}
+                  {% set editor = User__getLink(entry_i['users_id_editor']) %}
+                  <div class="text-muted text-end" title="{{ convDateTime(date_mod) }}">
+                     {{ __('Last edition: %1$s by %2$s')|format(time2str(date_mod), editor)|raw }}
+                  </div>
                {% endif %}
             </div>
          </div>

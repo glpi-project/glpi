@@ -1,12 +1,46 @@
-<div class="d-flex justify-content-end border-top mx-n2 pe-4 itil-footer card-footer">
-   <button class="btn btn-outline-danger me-2" type="submit" name="purge"
-         onclick='return confirm("{{ __('Confirm the final deletion?') }}");'>
-      <i class='fas fa-trash-alt'></i>
-      <span>{{ _x('button', 'Delete permanently') }}</span>
-   </button>
+<div class="border-top mx-n2 pe-4 ms-n2 itil-footer card-footer itil-footer" id="itil-footer">
+   <div class="row col-12 col-md-8">
+      {% include("components/itilobject/answer.html.twig") %}
+   </div>
+   <div class="buttons-bar d-flex">
+      <div class="btn-group me-2 main-actions">
+         <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#new-ITILFollowup-block">
+            <i class='far fa-comment'></i>
+            <span>{{ _x('button', 'Answer') }}</span>
+         </button>
+         <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="visually-hidden">{{ __("View other actions") }}</span>
+         </button>
+         <ul class="dropdown-menu">
+            <li><a class="dropdown-item action-task" href="#"
+                  data-bs-toggle="collapse" data-bs-target="#new-ITILTask-block">
+               <i class='fas fa-wrench'></i>
+               <span>{{ _x('button', 'Create a task') }}</span>
+            </a></li>
+            <li><a class="dropdown-item action-validation" href="#"
+                  data-bs-toggle="collapse" data-bs-target="#new-ITILValidation-block">
+               <i class='far fa-thumbs-up'></i>
+               <span>{{ _x('button', 'Ask for validation') }}</span>
+            </a></li>
+            <li><a class="dropdown-item action-solution" href="#"
+                  data-bs-toggle="collapse" data-bs-target="#new-ITILSolution-block">
+               <i class='fas fa-check'></i>
+               <span>{{ _x('button', 'Add a solution') }}</span>
+            </a></li>
+         </ul>
+      </div>
 
-   <button class="btn btn-primary me-2" type="submit" name="update">
-      <i class="fas fa-save"></i>
-      <span>Sauvegarder</span>
-   </button>
+      <span class="ms-auto">
+         <button class="btn btn-outline-danger me-2" type="submit" name="purge"
+               onclick='return confirm("{{ __('Confirm the final deletion?') }}");'>
+            <i class='fas fa-trash-alt'></i>
+            <span>{{ _x('button', 'Delete permanently') }}</span>
+         </button>
+
+         <button class="btn btn-primary me-2" type="submit" name="update">
+            <i class="fas fa-save"></i>
+            <span>Sauvegarder</span>
+         </button>
+      </span>
+   <div>
 </div>
