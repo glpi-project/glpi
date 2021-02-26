@@ -210,8 +210,7 @@ class NotImportedEmail extends CommonDBTM {
    static function deleteLog() {
       global $DB;
 
-      $query = "TRUNCATE `glpi_notimportedemails`";
-      $DB->query($query);
+      $DB->truncate('glpi_notimportedemails');
    }
 
 
