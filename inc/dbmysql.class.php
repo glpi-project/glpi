@@ -1329,6 +1329,51 @@ class DBmysql {
 
 
    /**
+    * Truncate table in the database
+    *
+    * @since x.x.x
+    *
+    * @param string $table  Table name
+    *
+    * @return mysqli_result|boolean Query result handler
+    */
+   public function truncate($table) {
+      $table_name = $this::quoteName($table);
+      return $this->query("TRUNCATE $table_name");
+   }
+
+   /**
+    * Truncate table in the database or die
+    * (optionally with a message) if it fails
+    *
+    * @since x.x.x
+    *
+    * @param string $table   Table name
+    * @param string $message Explanation of query (default '')
+    *
+    * @return mysqli_result|boolean Query result handler
+    */
+   function truncateOrDie($table, $message = '') {
+      $table_name = $this::quoteName($table);
+      $res = $this->query("TRUNCATE $table_name");
+      if (!$res) {
+         //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
+         $message = sprintf(
+            __('%1$s - Error during the database query: %2$s - Error is %3$s'),
+            $message,
+            "TRUNCATE $table",
+            $this->error()
+         );
+         if (isCommandLine()) {
+            throw new \RuntimeException($message);
+         }
+         echo $message . "\n";
+         die(1);
+      }
+      return $res;
+   }
+
+   /**
     * Get table schema
     *
     * @param string $table Table name,
