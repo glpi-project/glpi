@@ -9,7 +9,7 @@
             <span>{{ __("Ticket") }}</span>
          </button>
       </h2>
-      <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#itil-data">
+      <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
          <div class="accordion-body">
             {{ fields.field(
                'type',
@@ -105,7 +105,7 @@
             <span>{{ __("Actors") }}</span>
          </button>
       </h2>
-      <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo" data-bs-parent="#itil-data">
+      <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo">
          <div class="accordion-body">
             {% set requester_field %}
                {% include "components/itilobject/actor_field.html.twig" with {'type': constant('CommonITILActor::REQUESTER')} only %}
@@ -114,7 +114,7 @@
                'requester',
                requester_field,
                __("Requester"),
-               field_options
+               field_options|merge({is_horizontal: false})
             ) }}
             {% set observer_field %}
                {% include "components/itilobject/actor_field.html.twig" with {'type': constant('CommonITILActor::OBSERVER')} only %}
@@ -123,7 +123,7 @@
                'observer',
                observer_field,
                __("Observer"),
-               field_options
+               field_options|merge({is_horizontal: false})
             ) }}
             {% set assign_field %}
                {% include "components/itilobject/actor_field.html.twig" with {'type': constant('CommonITILActor::ASSIGN')} only %}
@@ -132,7 +132,7 @@
                'assign',
                assign_field,
                __("Assigned to"),
-               field_options
+               field_options|merge({is_horizontal: false})
             ) }}
          </div>
       </div>
@@ -144,7 +144,7 @@
             <span>{{ _n('Service level', 'Service levels', getPluralNumber()) }}</span>
          </button>
       </h2>
-      <div id="collapseThree" class="accordion-collapse collapse show" aria-labelledby="headingThree" data-bs-parent="#itil-data">
+      <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
          <div class="accordion-body">
             {{ fields.datetimeField(
                'time_to_own',
@@ -182,7 +182,7 @@
             <span>{{ __("Misc") }}</span>
          </button>
       </h2>
-      <div id="collapseFour" class="accordion-collapse collapse show" aria-labelledby="headingFour" data-bs-parent="#itil-data">
+      <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour">
          <div class="accordion-body">
             {{ fields.dropdownField(
                'Location',
