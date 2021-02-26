@@ -84,7 +84,7 @@ final class StatusChecker {
       ];
    }
 
-   private static function calculateGlobalStatus(array $status)
+   public static function calculateGlobalStatus(array $status)
    {
       $statuses = array_column($status, 'status');
       $global_status = self::STATUS_OK;
@@ -502,7 +502,7 @@ final class StatusChecker {
     * @deprecated x.x.x Use {@link self::getServiceStatus} instead
     */
    public static function getFullStatus($public_only = true, $as_array = true) {
-      //Toolbox::deprecated('Use StatusChecker::getServiceStatus for service checks instead');
+      Toolbox::deprecated('Use StatusChecker::getServiceStatus for service checks instead');
       return self::getServiceStatus(null, $public_only, $as_array);
    }
 
