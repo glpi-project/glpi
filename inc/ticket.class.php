@@ -909,6 +909,8 @@ class Ticket extends CommonITILObject {
       // Get ticket : need for comparison
       $this->getFromDB($input['id']);
 
+      $input = parent::prepareInputForUpdate($input);
+
       // Clean new lines before passing to rules
       if (isset($input["content"])) {
          $input["content"] = preg_replace('/\\\\r\\\\n/', "\n", $input['content']);
@@ -1165,7 +1167,6 @@ class Ticket extends CommonITILObject {
             $input['_donotadddocs'] = true;
          }
       }
-
       $input = parent::prepareInputForUpdate($input);
       return $input;
    }
@@ -4163,6 +4164,15 @@ class Ticket extends CommonITILObject {
                $options[$name] = $saved[$name];
             } else {
                $options[$name] = $value;
+            }
+         }
+      }
+
+      // Restore saved value and override $this->fields
+      if (count($saved)) {
+         foreach ($saved as $name => $value) {
+            if (isset($this->fields[$name])) {
+               $this->fields[$name] = $saved[$name];
             }
          }
       }

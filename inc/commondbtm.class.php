@@ -1027,7 +1027,6 @@ class CommonDBTM extends CommonGLPI {
 
       if (isset($_SESSION['saveInput'][$this->getType()])) {
          $saved = Html::cleanPostForTextArea($_SESSION['saveInput'][$this->getType()]);
-
          // clear saved data when restored (only need once)
          $this->clearSavedInput();
 
@@ -1450,6 +1449,12 @@ class CommonDBTM extends CommonGLPI {
          $this->input['_no_history'] = !$history;
       }
 
+      if (isset($this->input['update'])) {
+         // Input from the interface
+         // Save this data to be available if add fail
+         $this->saveInput();
+      }
+
       // Plugin hook - $this->input can be altered
       Plugin::doHook("pre_item_update", $this);
       if ($this->input && is_array($this->input)) {
@@ -1540,6 +1545,11 @@ class CommonDBTM extends CommonGLPI {
                                                                       : []))) {
                      $this->addMessageOnUpdateAction();
                      Plugin::doHook("item_update", $this);
+
+                     // As update have suceed, clean the old input value
+                     if (isset($this->input['_update'])) {
+                        $this->clearSavedInput();
+                     }
 
                      //Fill forward_entity_to array with itemtypes coming from plugins
                      if (isset(self::$plugins_forward_entity[$this->getType()])) {
