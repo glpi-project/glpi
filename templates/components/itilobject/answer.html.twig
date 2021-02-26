@@ -1,21 +1,40 @@
 {% import "components/form/fields_macros.html.twig" as fields %}
 
-<hr>
+{% set itilblocks = {
+   'ITILFollowup': {
+      'include': "components/itilobject/followup_form.html.twig",
+      'item': followup,
+   },
+   'ITILTask': {
+      'content': "TODO ITILTask Form <textarea class='form-control'></textarea>",
+   },
+   'ITILValidation': {
+      'content': "TODO ITILValidation Form<textarea class='form-control'></textarea>",
+   },
+   'ITILSolution': {
+      'content': "TODO ITILSolution Form<textarea class='form-control'></textarea>",
+   },
+} %}
 
-<div class="d-inline-block timeline-item mb-4 ITILAnswer">
-   <div class="row">
-      <div class="col-auto">
-         {% include "components/itilobject/user_picture.html.twig" with {'users_id': session('glpiID')} only %}
-      </div>
-      <div class="col">
-         <span class="row mt-2 timeline-content left card p-0 mt-3">
-            {{ fields.textareaField(
-               'content',
-               "",
-               "",
-               {full_width: true, is_horizontal: false}
-            ) }}
-         </span>
+<div id="new-itilobject-form">
+   {% for itiltype, itildata in itilblocks %}
+   <div class="timeline-item mb-3 ms-auto {{ itiltype }} collapse"
+        id="new-{{ itiltype }}-block" aria-expanded="false" data-bs-parent="#new-itilobject-form">
+      <div class="row">
+         <div class="col-auto order-last">
+            {% include "components/itilobject/user_picture.html.twig" with {'users_id': session('glpiID')} only %}
+         </div>
+         <div class="col">
+            <div class="row timeline-content t-right card mt-4">
+               <div class="card-body">
+                  {% if itildata.include is defined %}
+                     {% include itildata.include with {'subitem': itildata.item} %}
+                  {% endif %}
+                  {{ itildata.content|raw }}
+               </div>
+            </div>
+         </div>
       </div>
    </div>
+   {% endfor %}
 </div>
