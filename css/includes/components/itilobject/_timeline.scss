@@ -44,23 +44,6 @@
       }
    }
 
-   &.ITILAnswer {
-      .timeline-content {
-         &::before {
-            border-color: $timeline-fup-border $timeline-fup-border transparent transparent;
-         }
-         &::after {
-            border-color: $timeline-fup-bg $timeline-fup-bg transparent transparent;
-         }
-         &.t-right::before {
-            border-color: $timeline-fup-border transparent transparent $timeline-fup-border;
-         }
-         &.t-right::after {
-            border-color: $timeline-fup-bg transparent transparent $timeline-fup-bg;
-         }
-      }
-   }
-
    &.ITILContent {
       .timeline-content {
          background-color: $timeline-itilc-bg;
@@ -131,24 +114,38 @@
       }
    }
 
-   &.Solution {
+   &.ITILSolution {
       .timeline-content {
-         border-left: 1em green solid;
-         background-color: #9fd6ed;
-         color: #425b64;
+         background-color: $timeline-sol-bg;
+         color: $timeline-sol-fg;
+         border-color: $timeline-sol-border;
+         //border-left: 1em green solid;
 
-         &.waiting {
+         /* &.waiting {
             border-left-color: orange;
          }
 
          &.refused {
             border-left: 1em red solid;
-         }
+         } */
 
          .solimg {
             position: absolute;
             color: rgba(66, 91, 100, 0.1);
             pointer-events: none;
+         }
+
+         &::before {
+            border-color: $timeline-sol-border $timeline-sol-border transparent transparent;
+         }
+         &::after {
+            border-color: $timeline-sol-bg $timeline-sol-bg transparent transparent;
+         }
+         &.t-right::before {
+            border-color: $timeline-sol-border transparent transparent $timeline-sol-border;
+         }
+         &.t-right::after {
+            border-color: $timeline-sol-bg transparent transparent $timeline-sol-bg;
          }
       }
    }

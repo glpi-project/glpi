@@ -6863,8 +6863,9 @@ abstract class CommonITILObject extends CommonDBTM {
          }, $solution_item['content']);
 
          $timeline[$solution_item['date_creation']."_solution_" . $solution_item['id'] ] = [
-            'type' => 'Solution',
-            'item' => [
+            'type'     => 'Solution',
+            'itiltype' => 'Solution',
+            'item'     => [
                'id'                 => $solution_item['id'],
                'content'            => Toolbox::unclean_cross_side_scripting_deep($solution_content),
                'date'               => $solution_item['date_creation'],
@@ -7138,8 +7139,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
          // show "is_private" icon
          if (isset($item_i['is_private']) && $item_i['is_private']) {
-            echo "<span class='private'><i class='fas fa-lock control_item' title='" . __s('Private') .
-               "'></i><span class='sr-only'>".__('Private')."</span></span>";
+            echo "<i class='fas fa-lock control_item' title='" . __s('Private') .
+            "'></i><span class='sr-only'>".__('Private')."</span>";
          }
 
          echo "</div>";
