@@ -29,15 +29,16 @@
  * ---------------------------------------------------------------------
  */
 
-import KanbanBoard from "./kanban/board";
+/**
+ * Kanban Card
+ */
+export default class KanbanCard {
 
-(function(){
-   window.GLPIKanban = function() {
-      /**
-       * Self-reference for property access in functions.
-       */
-      const self = this;
+   constructor() {
 
-      this.board = new KanbanBoard();
-   };
-})();
+   }
+
+   getTitle() {
+
+   }
+}

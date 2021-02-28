@@ -6492,7 +6492,7 @@ JAVASCRIPT;
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jquery-gantt.js';
             break;
          case 'kanban':
-            $_SESSION['glpi_js_toload'][$name][] = 'js/kanban.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'public/build/kanban.js';
             $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery.ui.touch-punch.js';
             break;
          case 'rateit':
