@@ -42,13 +42,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ListServiceCommand extends AbstractCommand {
+class ListServicesCommand extends AbstractCommand {
 
    protected function configure() {
       parent::configure();
 
-      $this->setName('glpi:system:service:list');
-      $this->setAliases(['system:service:list']);
+      $this->setName('glpi:system:list_services');
+      $this->setAliases(['system:list_services']);
       $this->setDescription(__('List system services'));
       $this->addOption('format', 'f', InputOption::VALUE_OPTIONAL,
          'Output format [plain or json]', 'plain');
