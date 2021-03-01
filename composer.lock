@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4d71d084c6131a2e565dd25a08dd7b67",
+    "content-hash": "37aecf85470bb72acf92e519a19401d7",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -165,24 +165,24 @@
         },
         {
             "name": "elvanto/litemoji",
-            "version": "3.0.1",
+            "version": "4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elvanto/litemoji.git",
-                "reference": "acd6fd944814683983dcdfcf4d33f24430631b77"
+                "reference": "ef96db0d4fa8fd8aa22e67d161c87b6ba3a06f06"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elvanto/litemoji/zipball/acd6fd944814683983dcdfcf4d33f24430631b77",
-                "reference": "acd6fd944814683983dcdfcf4d33f24430631b77",
+                "url": "https://api.github.com/repos/elvanto/litemoji/zipball/ef96db0d4fa8fd8aa22e67d161c87b6ba3a06f06",
+                "reference": "ef96db0d4fa8fd8aa22e67d161c87b6ba3a06f06",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.0"
+                "php": ">=7.3"
             },
             "require-dev": {
                 "milesj/emojibase": "6.0.*",
-                "phpunit/phpunit": "^6.0"
+                "phpunit/phpunit": "9.4.*"
             },
             "type": "library",
             "autoload": {
@@ -201,9 +201,9 @@
             ],
             "support": {
                 "issues": "https://github.com/elvanto/litemoji/issues",
-                "source": "https://github.com/elvanto/litemoji/tree/3.0.1"
+                "source": "https://github.com/elvanto/litemoji/tree/4.0.0"
             },
-            "time": "2020-11-27T05:08:33+00:00"
+            "time": "2020-11-27T05:16:11+00:00"
         },
         {
             "name": "glpi-project/inventory_format",
