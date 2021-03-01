@@ -6700,11 +6700,11 @@ class Ticket extends CommonITILObject {
    function getCalendar() {
 
       if (isset($this->fields['slas_id_ttr']) && $this->fields['slas_id_ttr'] > 0) {
-         $slm = new SLM();
-         if ($slm->getFromDB($this->fields['slas_id_ttr'])) {
+         $sla = new SLA();
+         if ($sla->getFromDB($this->fields['slas_id_ttr'])) {
             // not -1: calendar of the entity
-            if ($slm->getField('calendars_id') >= 0) {
-               return $slm->getField('calendars_id');
+            if ($sla->getField('calendars_id') >= 0) {
+               return $sla->getField('calendars_id');
             }
          }
       }
