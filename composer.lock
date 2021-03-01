@@ -4731,16 +4731,16 @@
         },
         {
             "name": "wapmorgan/unified-archive",
-            "version": "1.0.1",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wapmorgan/UnifiedArchive.git",
-                "reference": "7d3623fba223f690da42d3d6b18335eaa926f743"
+                "reference": "3d3019900ef924a7502a411b1a8f09a1a9ec7287"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wapmorgan/UnifiedArchive/zipball/7d3623fba223f690da42d3d6b18335eaa926f743",
-                "reference": "7d3623fba223f690da42d3d6b18335eaa926f743",
+                "url": "https://api.github.com/repos/wapmorgan/UnifiedArchive/zipball/3d3019900ef924a7502a411b1a8f09a1a9ec7287",
+                "reference": "3d3019900ef924a7502a411b1a8f09a1a9ec7287",
                 "shasum": ""
             },
             "require": {
@@ -4755,15 +4755,16 @@
                 "phpunit/phpunit": "~4.8"
             },
             "suggest": {
-                "bin-ncompress": "TAR.Z support",
+                "alchemy/zippy": "ZIP, TAR, GZIP, BZIP2 support (with combinations) via console programs",
+                "bin-ncompress": "TAR.Z support via console program",
                 "docopt/docopt": "Requirement for cam (Console Archive Manager)",
-                "ext-bz2": "BZ2 and TAR.BZ2 support",
+                "ext-bz2": "BZ2 and TAR.BZ2 (BZIP2) support",
                 "ext-phar": "TAR support",
                 "ext-rar": "RAR support",
-                "ext-xz": "XZ and TAR.XZ support",
+                "ext-xz": "XZ and TAR.XZ (LZMA) support",
                 "ext-zip": "ZIP support",
-                "ext-zlib": "GZ and TAR.GZ support",
-                "gemorroj/archive7z": "7ZIP support",
+                "ext-zlib": "GZ and TAR.GZ (GZIP) support",
+                "gemorroj/archive7z": "7ZIP (and a lot of formats) support via console program",
                 "pear/archive_tar": "another TAR support",
                 "phpclasses/php-iso-file": "ISO support",
                 "wapmorgan/cab-archive": "CAB support"
@@ -4805,7 +4806,7 @@
                     "role": "developer"
                 }
             ],
-            "description": "UnifiedArchive - unified interface to all popular archive formats (zip, 7z, rar, gz, bz2, xz, cab, tar, tar.gz, tar.bz2, tar.xz, tar.Z, iso) for listing, reading, extracting and creation + built-in console archive manager + PclZip-like interface for zip archives.",
+            "description": "UnifiedArchive - an archive manager with a unified way of working with all popular archive formats (zip/7z/rar/gz/bz2/xz/cab/tar/tar.gz/tar.bz2/tar.x/tar.Z/...) for PHP with ability for listing, reading, extracting and creation + built-in console archive manager.",
             "keywords": [
                 "7z",
                 "archive",
@@ -4822,9 +4823,9 @@
             ],
             "support": {
                 "issues": "https://github.com/wapmorgan/UnifiedArchive/issues",
-                "source": "https://github.com/wapmorgan/UnifiedArchive/tree/1.0.1"
+                "source": "https://github.com/wapmorgan/UnifiedArchive/tree/1.1.2"
             },
-            "time": "2020-11-28T13:04:06+00:00"
+            "time": "2021-03-01T00:37:56+00:00"
         }
     ],
     "packages-dev": [
