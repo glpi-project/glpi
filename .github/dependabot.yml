@@ -1,0 +1,28 @@
+version: 2
+
+updates:
+  # Strategy for npm dependencies on "future major release":
+  # - monthly check;
+  # - allow version increase in package.json.
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    allow:
+      - dependency-type: "direct"
+    open-pull-requests-limit: 100
+    target-branch: "master"
+    versioning-strategy: "increase-if-necessary"
+
+  # Strategy for composer dependencies on "future major release":
+  # - monthly check;
+  # - allow version increase in composer.json.
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    allow:
+      - dependency-type: "direct"
+    open-pull-requests-limit: 100
+    target-branch: "master"
+    versioning-strategy: "increase-if-necessary"
