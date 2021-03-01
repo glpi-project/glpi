@@ -51,7 +51,7 @@ class ListServicesCommand extends AbstractCommand {
       $this->setAliases(['system:list_services']);
       $this->setDescription(__('List system services'));
       $this->addOption('format', 'f', InputOption::VALUE_OPTIONAL,
-         'Output format [plain or json]', 'plain');
+         'Output format [json]', 'plain');
    }
 
    protected function execute(InputInterface $input, OutputInterface $output) {
