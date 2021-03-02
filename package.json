@@ -10,7 +10,7 @@
         "@fullcalendar/daygrid": "^4.4.0",
         "@fullcalendar/interaction": "^4.4.0",
         "@fullcalendar/list": "^4.4.0",
-        "@fullcalendar/rrule": "^4.4.0",
+        "@fullcalendar/rrule": "^5.5.1",
         "@fullcalendar/timegrid": "^4.4.0",
         "chartist": "^0.11.4",
         "chartist-plugin-legend": "^0.6.2",
