@@ -1830,7 +1830,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $prep_req['WHERE'][self::getTable() . '.groups_id_tech'] = $_SESSION['glpigroups'];
          } else {
             // Return empty iterator result
-            return new DBmysqlIterator($DB);
+            $prep_req['WHERE'][] = 0;
          }
       } else {
          $prep_req['WHERE'][self::getTable() . '.users_id_tech'] = $_SESSION['glpiID'];
