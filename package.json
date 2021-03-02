@@ -9,7 +9,7 @@
         "@fullcalendar/core": "^4.4.0",
         "@fullcalendar/daygrid": "^4.4.0",
         "@fullcalendar/interaction": "^4.4.0",
-        "@fullcalendar/list": "^4.4.0",
+        "@fullcalendar/list": "^5.5.0",
         "@fullcalendar/rrule": "^4.4.0",
         "@fullcalendar/timegrid": "^4.4.0",
         "chartist": "^0.11.4",
