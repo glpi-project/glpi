@@ -30,30 +30,31 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Console\System;
+
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
+
+use Glpi\Console\AbstractCommand;
 use Glpi\System\Status\StatusChecker;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-define('DO_NOT_CHECK_HTTP_REFERER', 1);
-include ('./inc/includes.php');
+class ListServicesCommand extends AbstractCommand {
 
-// Force in normal mode
-$_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+   protected function configure() {
+      parent::configure();
 
-// Need to be used using :
-// check_http -H servername -u /glpi/status.php -s GLPI_OK
+      $this->setName('glpi:system:list_services');
+      $this->setAliases(['system:list_services']);
+      $this->setDescription(__('List system services'));
+   }
 
-$valid_response_types = ['text/plain', 'application/json'];
-$fallback_response_type = 'text/plain';
+   protected function execute(InputInterface $input, OutputInterface $output) {
+      $services = array_keys(StatusChecker::getServices());
+      $output->writeln(json_encode($services, JSON_PRETTY_PRINT));
 
-if (!isset($_SERVER['HTTP_ACCEPT']) || !in_array($_SERVER['HTTP_ACCEPT'], $valid_response_types, true)) {
-   $_SERVER['HTTP_ACCEPT'] = $fallback_response_type;
-}
-if ($_SERVER['HTTP_ACCEPT'] === 'text/plain') {
-   Toolbox::deprecated('Plain-text status output is deprecated please use the JSON format instead by specifically setting the Accept header to "application/json". In the future, JSON output will be the default.');
-}
-header('Content-type: ' . $_SERVER['HTTP_ACCEPT']);
-
-if ($_SERVER['HTTP_ACCEPT'] === 'application/json') {
-   echo json_encode(StatusChecker::getServiceStatus(null, true, true));
-} else {
-   echo StatusChecker::getServiceStatus(null, true, false);
+      return 0; // Success
+   }
 }

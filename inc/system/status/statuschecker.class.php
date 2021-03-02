@@ -55,6 +55,11 @@ final class StatusChecker {
    public const STATUS_OK = 'OK';
 
    /**
+    * The plugin or service is working but may have some issues
+    */
+   public const STATUS_WARNING = 'WARNING';
+
+   /**
     * The plugin or service is reachable but not working as expected.
     */
    public const STATUS_PROBLEM = 'PROBLEM';
@@ -65,6 +70,89 @@ final class StatusChecker {
     * For example, some checks require the DB to be accessible.
     */
    public const STATUS_NO_DATA = 'NO_DATA';
+
+   /**
+    * Get all registered services
+    * @return array Array of services keyed by name.
+    *    The value for each service is expected to be an array containing a class name and a method name relating to the method that will do the check.
+    * @since x.x.x
+    */
+   public static function getServices(): array {
+      return [
+         'db'              => [self::class, 'getDBStatus'],
+         'cas'             => [self::class, 'getCASStatus'],
+         'ldap'            => [self::class, 'getLDAPStatus'],
+         'imap'            => [self::class, 'getIMAPStatus'],
+         'mail_collectors' => [self::class, 'getMailCollectorStatus'],
+         'crontasks'       => [self::class, 'getCronTaskStatus'],
+         'filesystem'      => [self::class, 'getFilesystemStatus'],
+         'plugins'         => [self::class, 'getPluginsStatus']
+      ];
+   }
+
+   /**
+    * Calculate the overall GLPI status or the overall service status based on all child status checks
+    * @param array $status The status array for all services or a specific service check.
+    * @return string The calculated status.
+    *    One of {@link STATUS_NO_DATA}, {@link STATUS_OK}, {@link STATUS_WARNING}, or {@link STATUS_PROBLEM}.
+    * @since x.x.x
+    */
+   public static function calculateGlobalStatus(array $status) {
+      $statuses = array_column($status, 'status');
+      $global_status = self::STATUS_OK;
+      if (in_array(self::STATUS_PROBLEM, $statuses, true)) {
+         $global_status = self::STATUS_PROBLEM;
+      } else if (in_array(self::STATUS_WARNING, $statuses, true)) {
+         $global_status = self::STATUS_WARNING;
+      }
+      return $global_status;
+   }
+
+   /**
+    * Get a service's status
+    *
+    * @param string|null $service The name of the service or if null/'all' all services will be checked
+    * @param bool $public_only True if only public information should be available in the status check.
+    *    If true, assume the data is being viewed by an anonymous user.
+    * @param bool $as_array True if the service check result should be returned as an array instead of a plain-text string.
+    * @return array|string An array or string with the result based on the $as_array parameter value.
+    * @since x.x.x
+    */
+   public static function getServiceStatus(?string $service, $public_only = true, $as_array = true) {
+      $services = self::getServices();
+      if ($service === 'all' || $service === null) {
+         $status = [
+            'glpi'   => [
+               'status' => self::STATUS_OK
+            ]
+         ];
+         foreach ($services as $name => $service_check_method) {
+            $service_status = self::getServiceStatus($name, $public_only, true);
+            $status[$name] = $service_status;
+         }
+
+         $status['glpi']['status'] = self::calculateGlobalStatus($status);
+
+         if ($as_array) {
+            return $status;
+         } else {
+            return self::getPlaintextOutput($status);
+         }
+      }
+
+      if (!array_key_exists($service, $services)) {
+         return $as_array ? [] : '';
+      }
+      $service_check_method = $services[$service];
+      if (method_exists($service_check_method[0], $service_check_method[1])) {
+         $service_status = $service_check_method($public_only);
+         if ($as_array) {
+            return $service_status;
+         }
+         return strtoupper($service).'_'.$service_status['status'];
+      }
+      return $as_array ? [] : '';
+   }
 
    /**
     * @param bool $public_only True if only public status information should be given.
@@ -394,11 +482,15 @@ final class StatusChecker {
 
          foreach ($plugins as $plugin) {
             // Old-style plugin status hook which only modified the global OK status.
-            $param = ['ok' => true];
+            $param = [
+               'ok' => true,
+               '_public_only' => $public_only
+            ];
             $plugin_status = Plugin::doOneHook($plugin, 'status', $param);
             if ($plugin_status === null) {
                continue;
             }
+            unset($plugin_status['_public_only']);
             if (isset($plugin_status['ok']) && count(array_keys($plugin_status)) === 1) {
                $status[$plugin] = [
                   'status'    => $plugin_status['ok'] ? self::STATUS_OK : self::STATUS_PROBLEM,
@@ -429,40 +521,21 @@ final class StatusChecker {
     * @param bool $public_only True if only public status information should be given.
     * @param bool $as_array
     * @return array|string
+    * @deprecated x.x.x Use {@link self::getServiceStatus} instead
     */
    public static function getFullStatus($public_only = true, $as_array = true) {
-      static $status = null;
+      Toolbox::deprecated('Use StatusChecker::getServiceStatus for service checks instead');
+      return self::getServiceStatus(null, $public_only, $as_array);
+   }
 
-      if ($status === null) {
-         $status = [
-            'db'              => self::getDBStatus($public_only),
-            'cas'             => self::getCASStatus($public_only),
-            'ldap'            => self::getLDAPStatus($public_only),
-            'imap'            => self::getIMAPStatus($public_only),
-            'mail_collectors' => self::getMailCollectorStatus($public_only),
-            'crontasks'       => self::getCronTaskStatus($public_only),
-            'filesystem'      => self::getFilesystemStatus($public_only),
-            'glpi'            => [
-               'status'    => self::STATUS_OK,
-            ],
-            'plugins'         => self::getPluginsStatus($public_only)
-         ];
-         // Compute GLPI status from top-level services
-         $statuses = array_column($status, 'status');
-         $all_ok = !in_array(self::STATUS_PROBLEM, $statuses, true);
-         $status['glpi']['status'] = $all_ok ? self::STATUS_OK : self::STATUS_PROBLEM;
-      }
-
-      // Only show overall core status for public
-      // Giving out the version to anonymous users could make it easier to target insecure versions of GLPI
-      if (!$public_only) {
-         $status['glpi']['version'] = GLPI_VERSION;
-      }
-
-      if ($as_array) {
-         return $status;
-      }
-
+   /**
+    * Format the given full service status result as a plain-text output compatible with previous versions of GLPI.
+    * @param array $status
+    * @return string
+    * @deprecated x.x.x
+    */
+   private static function getPlaintextOutput(array $status): string {
+      // Deprecated notices are done on the /status.php endpoint and CLI commands to give better migration hints
       $output = '';
       // Plain-text output
       if (count($status['db']['slaves'])) {

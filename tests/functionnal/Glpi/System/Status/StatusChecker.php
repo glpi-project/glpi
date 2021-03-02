@@ -41,15 +41,15 @@ use Glpi\System\Status\StatusChecker as GlpiStatusChecker;
 class StatusChecker extends DbTestCase {
 
    public function testStatusFormats() {
-      $status = GlpiStatusChecker::getFullStatus(true);
+      $status = GlpiStatusChecker::getServiceStatus(null, true);
       $this->boolean(is_array($status))->isTrue();
 
-      $status = GlpiStatusChecker::getFullStatus(true, false);
+      $status = GlpiStatusChecker::getServiceStatus(null, true, false);
       $this->boolean(is_string($status))->isTrue();
    }
 
    public function testDefaultStatus() {
-      $status = GlpiStatusChecker::getFullStatus(true);
+      $status = GlpiStatusChecker::getServiceStatus(null, true);
 
       $known_services = ['db', 'cas', 'ldap', 'imap', 'mail_collectors', 'crontasks', 'filesystem', 'glpi', 'plugins'];
       // Check we are getting all of the expected services
@@ -144,7 +144,7 @@ class StatusChecker extends DbTestCase {
          'state'        => \CronTask::STATE_RUNNING,
       ]);
 
-      $status = GlpiStatusChecker::getFullStatus(true);
+      $status = GlpiStatusChecker::getServiceStatus(null, true, true);
 
       // Test overall status is PROBLEM
       $this->string($status['glpi']['status'])->isEqualTo(GlpiStatusChecker::STATUS_PROBLEM);
@@ -164,5 +164,87 @@ class StatusChecker extends DbTestCase {
       $this->array($status['crontasks']['stuck'])->size->isEqualTo(2);
 
       // afterTestMethod will rollback the DB changes for us
+   }
+
+   protected function getCalculatedGlobalStatusProvider() {
+      return [
+         [
+            [
+               'db'  => ['status' => GlpiStatusChecker::STATUS_OK],
+               'cas'  => ['status' => GlpiStatusChecker::STATUS_OK],
+               'ldap'  => ['status' => GlpiStatusChecker::STATUS_OK]
+            ],
+            GlpiStatusChecker::STATUS_OK
+         ],
+         [
+            [
+               'db'  => ['status' => GlpiStatusChecker::STATUS_OK],
+               'cas'  => ['status' => GlpiStatusChecker::STATUS_WARNING],
+               'ldap'  => ['status' => GlpiStatusChecker::STATUS_OK]
+            ],
+            GlpiStatusChecker::STATUS_WARNING
+         ],
+         [
+            [
+               'db'  => ['status' => GlpiStatusChecker::STATUS_OK],
+               'cas'  => ['status' => GlpiStatusChecker::STATUS_OK],
+               'ldap'  => ['status' => GlpiStatusChecker::STATUS_PROBLEM]
+            ],
+            GlpiStatusChecker::STATUS_PROBLEM
+         ],
+         [
+            [
+               'db'  => ['status' => GlpiStatusChecker::STATUS_NO_DATA],
+               'cas'  => ['status' => GlpiStatusChecker::STATUS_OK],
+               'ldap'  => ['status' => GlpiStatusChecker::STATUS_OK]
+            ],
+            GlpiStatusChecker::STATUS_OK
+         ],
+         [
+            [
+               'db'  => ['status' => GlpiStatusChecker::STATUS_NO_DATA],
+               'cas'  => ['status' => GlpiStatusChecker::STATUS_WARNING],
+               'ldap'  => ['status' => GlpiStatusChecker::STATUS_PROBLEM]
+            ],
+            GlpiStatusChecker::STATUS_PROBLEM
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider getCalculatedGlobalStatusProvider
+    * @param $status
+    */
+   public function testGetCalculateGlobalStatus($status, $expected) {
+      $this->string(GlpiStatusChecker::calculateGlobalStatus($status))->isEqualTo($expected);
+   }
+
+   public function testGetServiceStatus() {
+      $services = GlpiStatusChecker::getServices();
+      $this->boolean(is_array($services))->isTrue();
+
+      foreach ($services as $name => $callback) {
+         $this->boolean(is_string($name))->isTrue();
+
+         $this->boolean(is_array($callback))->isTrue();
+         $this->integer(count($callback))->isEqualTo(2);
+         $this->boolean(method_exists($callback[0], $callback[1]))->isTrue();
+
+         $status = GlpiStatusChecker::getServiceStatus($name, true);
+         $this->boolean(is_array($status))->isTrue();
+         $this->array($status)->hasKey('status');
+
+         $status = GlpiStatusChecker::getServiceStatus($name, false);
+         $this->boolean(is_array($status))->isTrue();
+         $this->array($status)->hasKey('status');
+
+         $status = GlpiStatusChecker::getServiceStatus($name, true, false);
+         $this->boolean(is_string($status))->isTrue();
+         $this->string($status)->isNotEmpty();
+
+         $status = GlpiStatusChecker::getServiceStatus($name, false, false);
+         $this->boolean(is_string($status))->isTrue();
+         $this->string($status)->isNotEmpty();
+      }
    }
 }
