@@ -1504,7 +1504,7 @@ class Auth {
             echo "</p>";
          }
          echo "<p>" .__('Impossible to use CAS as external source of connection')."</p>";
-         echo "<p><strong>".GLPINetwork::getErrorMessage()."</strong></p>";
+         echo "<p><strong>".GLPINetwork::getSupportPromoteMessage()."</strong></p>";
 
          echo "</td></tr>\n";
       }

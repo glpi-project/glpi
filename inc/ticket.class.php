@@ -1546,6 +1546,16 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
+      // Check a self-service user can create a ticket for another user.
+      // We condition the check with a bool flag set in front/tracking.injector.php (self-service ticket controller).
+      // This to avoid plugins having their process broken.
+      if (isset($input['check_delegatee'])
+          && $input['check_delegatee']
+          && !self::canDelegateeCreateTicket($input['_users_id_requester'], ($input['entities_id'] ?? -2))) {
+         Session::addMessageAfterRedirect(__("You cannot create a ticket for this user"));
+         return false;
+      }
+
       if (!isset($input["requesttypes_id"])) {
          $input["requesttypes_id"] = RequestType::getDefault('helpdesk');
       }
@@ -2335,6 +2345,52 @@ class Ticket extends CommonITILObject {
          )
          || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
          || $this->haveAGroup(CommonITILActor::ASSIGN, $user_groups_ids);
+   }
+
+
+   /**
+    * Check current user can create a ticket for another given user
+    *
+    * @since 9.5.4
+    *
+    * @param int $requester_id the user for which we want to create the ticket
+    * @param int $entity_restrict check entity when search users
+    *            (keep null to check with current session entities)
+    *
+    * @return bool
+    */
+   public static function canDelegateeCreateTicket(int $requester_id, ?int $entity_restrict = null):bool {
+      // if the user is a technician, no need to check delegates
+      if (Session::getCurrentInterface() == "central") {
+         return true;
+      }
+
+      // if the connected user is the ticket requester, we can create
+      if ($requester_id == $_SESSION['glpiID']) {
+         return true;
+      }
+
+      if ($entity_restrict === null) {
+         $entity_restrict = $_SESSION["glpiactive_entity"] ?? 0;
+      }
+
+      // if user has no delegate groups, he can't create ticket for another user
+      $delegate_groups = User::getDelegateGroupsForUser($entity_restrict);
+      if (count($delegate_groups) == 0) {
+         return false;
+      }
+
+      // retrieve users to check if given requester is part of them
+      $users_delegatee_iterator = User::getSqlSearchResult(false, 'delegate', $entity_restrict);
+      foreach ($users_delegatee_iterator as $user_data) {
+         if ($user_data['id'] == $requester_id) {
+            // user found
+            return true;
+         }
+      }
+
+      // user not found
+      return false;
    }
 
 
@@ -4199,6 +4255,11 @@ class Ticket extends CommonITILObject {
 
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
+
+      // show full create form only to tech users
+      if ($ID <= 0 && Session::getCurrentInterface() !== "central") {
+         return;
+      }
 
       if (isset($options['_add_fromitem']) && isset($options['itemtype'])) {
          $item = new $options['itemtype'];
@@ -6752,11 +6813,11 @@ class Ticket extends CommonITILObject {
    function getCalendar() {
 
       if (isset($this->fields['slas_id_ttr']) && $this->fields['slas_id_ttr'] > 0) {
-         $slm = new SLM();
-         if ($slm->getFromDB($this->fields['slas_id_ttr'])) {
+         $sla = new SLA();
+         if ($sla->getFromDB($this->fields['slas_id_ttr'])) {
             // not -1: calendar of the entity
-            if ($slm->getField('calendars_id') >= 0) {
-               return $slm->getField('calendars_id');
+            if ($sla->getField('calendars_id') >= 0) {
+               return $sla->getField('calendars_id');
             }
          }
       }

@@ -452,7 +452,7 @@ class AuthLDAP extends CommonDBTM {
          echo "<p>".__('Impossible to use LDAP as external source of connection')."</p>".
               "</td></tr></table>";
 
-         echo "<p><strong>".GLPINetwork::getErrorMessage()."</strong></p>";
+         echo "<p><strong>".GLPINetwork::getSupportPromoteMessage()."</strong></p>";
          echo "</div>";
 
       }

@@ -3191,4 +3191,44 @@ class Ticket extends DbTestCase {
          }
       )->contains('src="data:image/png;base64,' . $base64Image . '"');
    }
+
+
+   public function testCanDelegateeCreateTicket() {
+      $normal_id   = getItemByTypeName('User', 'normal', true);
+      $tech_id     = getItemByTypeName('User', 'tech', true);
+      $postonly_id = getItemByTypeName('User', 'post-only', true);
+      $tuser_id    = getItemByTypeName('User', TU_USER, true);
+
+      // check base behavior (only standard interface can create for other users)
+      $this->login();
+      $this->boolean(\Ticket::canDelegateeCreateTicket($normal_id))->isTrue();
+      $this->login('tech', 'tech');
+      $this->boolean(\Ticket::canDelegateeCreateTicket($normal_id))->isTrue();
+      $this->login('post-only', 'postonly');
+      $this->boolean(\Ticket::canDelegateeCreateTicket($normal_id))->isFalse();
+
+      // create a test group
+      $group = new \Group;
+      $groups_id = $group->add(['name' => 'test delegatee']);
+      $this->integer($groups_id)->isGreaterThan(0);
+
+      // make postonly delegate of the group
+      $gu = new \Group_User;
+      $this->integer($gu->add([
+         'users_id'         => $postonly_id,
+         'groups_id'        => $groups_id,
+         'is_userdelegate' => 1,
+      ]))->isGreaterThan(0);
+      $this->integer($gu->add([
+         'users_id'  => $normal_id,
+         'groups_id' => $groups_id,
+      ]))->isGreaterThan(0);
+
+      // check postonly can now create (yes for normal and himself) or not (no for others) for other users
+      $this->login('post-only', 'postonly');
+      $this->boolean(\Ticket::canDelegateeCreateTicket($postonly_id))->isTrue();
+      $this->boolean(\Ticket::canDelegateeCreateTicket($normal_id))->isTrue();
+      $this->boolean(\Ticket::canDelegateeCreateTicket($tech_id))->isFalse();
+      $this->boolean(\Ticket::canDelegateeCreateTicket($tuser_id))->isFalse();
+   }
 }

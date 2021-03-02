@@ -29,6 +29,6 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-class PluginFooBar {
+class PluginFooBar extends CommonDBTM {
 
 }

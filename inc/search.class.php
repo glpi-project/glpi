@@ -4894,13 +4894,13 @@ JAVASCRIPT;
             // Plugin can override core definition for its type
             if ($plug = isPluginItemType($itemtype)) {
                $plugin_name   = $plug['plugin'];
-               $hook_function = 'plugin_' . $plugin_name . '_addDefaultJoin';
+               $hook_function = 'plugin_' . strtolower($plugin_name) . '_addDefaultJoin';
                $hook_closure  = function () use ($hook_function, $itemtype, $ref_table, &$already_link_tables) {
                   if (is_callable($hook_function)) {
                      return $hook_function($itemtype, $ref_table, $already_link_tables);
                   }
                };
-               $out = Plugin::doOneHook($plug['plugin'], $hook_closure);
+               $out = Plugin::doOneHook($plugin_name, $hook_closure);
             }
             break;
       }
@@ -4996,7 +4996,7 @@ JAVASCRIPT;
       // Plugin can override core definition for its type
       if ($plug = isPluginItemType($itemtype)) {
          $plugin_name   = $plug['plugin'];
-         $hook_function = 'plugin_' . $plugin_name . '_addLeftJoin';
+         $hook_function = 'plugin_' . strtolower($plugin_name) . '_addLeftJoin';
          $hook_closure  = function () use ($hook_function, $itemtype, $ref_table, $new_table, $linkfield, &$already_link_tables) {
             if (is_callable($hook_function)) {
                return $hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables);
@@ -5010,7 +5010,7 @@ JAVASCRIPT;
           && preg_match("/^glpi_plugin_([a-z0-9]+)/", $new_table, $matches)) {
          if (count($matches) == 2) {
             $plugin_name   = $matches[1];
-            $hook_function = 'plugin_' . $plugin_name . '_addLeftJoin';
+            $hook_function = 'plugin_' . strtolower($plugin_name) . '_addLeftJoin';
             $hook_closure  = function () use ($hook_function, $itemtype, $ref_table, $new_table, $linkfield, &$already_link_tables) {
                if (is_callable($hook_function)) {
                   return $hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables);
@@ -6396,7 +6396,7 @@ JAVASCRIPT;
 
             case "weblink" :
                $orig_link = trim($data[$ID][0]['name']);
-               if (!empty($orig_link)) {
+               if (!empty($orig_link) && Toolbox::isValidWebUrl($orig_link)) {
                   // strip begin of link
                   $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/', '', $orig_link);
                   $link = preg_replace('/\/$/', '', $link);

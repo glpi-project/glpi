@@ -133,25 +133,29 @@ class DbUtils extends DbTestCase {
 
    protected function dataTableType() {
       // Pseudo plugin class for test
-      require_once __DIR__ . '/../fixtures/pluginfoobar.php';
+      require_once __DIR__ . '/../fixtures/pluginbarabstractstuff.php';
       require_once __DIR__ . '/../fixtures/pluginbarfoo.php';
+      require_once __DIR__ . '/../fixtures/pluginfoobar.php';
+      require_once __DIR__ . '/../fixtures/pluginfooservice.php';
 
       return [
+         ['glpi_dbmysqls', 'DBmysql', false], // not a CommonGLPI, should not be valid
          ['glpi_computers', 'Computer', true],
-         ['glpi_events', 'Glpi\\Event', true],
+         ['glpi_events', 'Glpi\Event', true],
          ['glpi_users', 'User', true],
-         ['glpi_plugin_bar_foos', 'GlpiPlugin\\Bar\\Foo', true],
-         ['glpi_plugin_baz_foos', 'GlpiPlugin\\Baz\\Foo', false],
+         ['glpi_users', 'User', true],
+         ['glpi_plugin_bar_foos', 'GlpiPlugin\Bar\Foo', true],
+         ['glpi_plugin_baz_foos', 'GlpiPlugin\Baz\Foo', false], // class not exists
          ['glpi_plugin_foo_bars', 'PluginFooBar', true],
-         ['glpi_plugin_foo_bazs', 'PluginFooBaz', false],
-         ['glpi_networkportmetrics', 'NetworkPortMetrics', true]
+         ['glpi_plugin_foo_bazs', 'PluginFooBaz', false], // class not exists
+         ['glpi_plugin_foo_services', 'PluginFooService', false], // not a CommonGLPI should not be valid
       ];
    }
 
    /**
     * @dataProvider dataTableType
    **/
-   public function testGetTableForItemType($table, $type, $classexists) {
+   public function testGetTableForItemType($table, $type, $is_valid_type) {
       $this
          ->if($this->newTestedInstance)
          ->then
@@ -164,8 +168,8 @@ class DbUtils extends DbTestCase {
    /**
     * @dataProvider dataTableType
    **/
-   public function testGetItemTypeForTable($table, $type, $classexists) {
-      if ($classexists) {
+   public function testGetItemTypeForTable($table, $type, $is_valid_type) {
+      if ($is_valid_type) {
          $this
             ->if($this->newTestedInstance)
             ->then
@@ -178,7 +182,7 @@ class DbUtils extends DbTestCase {
       }
 
       //keep testing old method from db.function
-      if ($classexists) {
+      if ($is_valid_type) {
          $this->string(getItemTypeForTable($table))->isIdenticalTo($type);
       } else {
          $this->string(getItemTypeForTable($table))->isIdenticalTo('UNKNOWN');
@@ -188,8 +192,8 @@ class DbUtils extends DbTestCase {
    /**
     * @dataProvider dataTableType
    **/
-   public function testGetItemForItemtype($table, $itemtype, $classexists) {
-      if ($classexists) {
+   public function testGetItemForItemtype($table, $itemtype, $is_valid_type) {
+      if ($is_valid_type) {
          $this
             ->if($this->newTestedInstance)
             ->then
@@ -202,12 +206,60 @@ class DbUtils extends DbTestCase {
       }
 
       //keep testing old method from db.function
-      if ($classexists) {
+      if ($is_valid_type) {
          $this->object(getItemForItemtype($itemtype))
             ->isInstanceOf($itemtype);
       } else {
          $this->boolean(getItemForItemtype($itemtype))->isFalse();
       }
+   }
+
+   public function testGetItemForItemtypeSanitized() {
+      require_once __DIR__ . '/../fixtures/pluginbarfoo.php';
+
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->object($this->testedInstance->getItemForItemtype(addslashes('Glpi\Event')))->isInstanceOf('Glpi\Event')
+            ->object($this->testedInstance->getItemForItemtype(addslashes('GlpiPlugin\Bar\Foo')))->isInstanceOf('GlpiPlugin\Bar\Foo');
+   }
+
+   public function testGetItemForItemtypeAbstract() {
+      require_once __DIR__ . '/../fixtures/pluginbarabstractstuff.php';
+
+      $this
+         ->if($this->newTestedInstance)
+         ->when(
+            function () {
+               $this->boolean($this->testedInstance->getItemForItemtype('CommonDevice'))->isFalse();
+            }
+         )->error
+            ->withType(E_USER_WARNING)
+            ->withMessage('Cannot instanciate "CommonDevice" as it is an abstract class.')
+            ->exists()
+         ->when(
+            function () {
+               $this->boolean($this->testedInstance->getItemForItemtype('GlpiPlugin\Bar\AbstractStuff'))->isFalse();
+            }
+         )->error
+            ->withType(E_USER_WARNING)
+            ->withMessage('Cannot instanciate "GlpiPlugin\Bar\AbstractStuff" as it is an abstract class.')
+            ->exists();
+   }
+
+   public function testGetItemForItemtypeHavingConstructorWithMandatoryParameters() {
+      require_once __DIR__ . '/../fixtures/pluginbarsomething.php';
+
+      $this
+         ->if($this->newTestedInstance)
+         ->when(
+            function () {
+               $this->boolean($this->testedInstance->getItemForItemtype('GlpiPlugin\Bar\Something'))->isFalse();
+            }
+         )->error
+            ->withType(E_USER_WARNING)
+            ->withMessage('Cannot instanciate "GlpiPlugin\Bar\Something" as its constructor has non optionnal parameters.')
+            ->exists();
    }
 
    public function dataPlural() {

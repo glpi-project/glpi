@@ -451,7 +451,7 @@ class Toolbox {
    public static function getHtmLawedSafeConfig(): array {
       $config = [
          'elements'         => '* -applet -canvas -embed -object -script',
-         'deny_attribute'   => 'on*',
+         'deny_attribute'   => 'on*, srcdoc',
          'comment'          => 1, // 1: remove HTML comments (and do not display their contents)
          'cdata'            => 1, // 1: remove CDATA sections (and do not display their contents)
          'direct_list_nest' => 1, // 1: Allow usage of ul/ol tags nested in other ul/ol tags
@@ -3379,5 +3379,23 @@ HTML;
       }
 
       return $filename;
+   }
+
+   /**
+    * Clean _target argument
+    *
+    * @param string $target Target argument
+    *
+    * @return string
+    */
+   public static function cleanTarget(string $target): string {
+      global $CFG_GLPI;
+
+      $file = preg_replace('/^' . preg_quote($CFG_GLPI['root_doc'], '/') . '/', '', $target);
+      if (file_exists(GLPI_ROOT . $file)) {
+         return $target;
+      }
+
+      return '';
    }
 }

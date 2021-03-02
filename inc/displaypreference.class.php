@@ -706,12 +706,12 @@ class DisplayPreference extends CommonDBTM {
          case __CLASS__ :
             switch ($tabnum) {
                case 1 :
-                  $item->showFormGlobal($_GET['_target'], $_GET["displaytype"]);
+                  $item->showFormGlobal(Toolbox::cleanTarget($_GET['_target']), $_GET["displaytype"]);
                   return true;
 
                case 2 :
                   Session::checkRight(self::$rightname, self::PERSONAL);
-                  $item->showFormPerso($_GET['_target'], $_GET["displaytype"]);
+                  $item->showFormPerso(Toolbox::cleanTarget($_GET['_target']), $_GET["displaytype"]);
                   return true;
             }
       }
