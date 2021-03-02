@@ -31,13 +31,5 @@
 
 import KanbanBoard from "./kanban/board";
 
-(function(){
-   window.GLPIKanban = function() {
-      /**
-       * Self-reference for property access in functions.
-       */
-      const self = this;
-
-      this.board = new KanbanBoard();
-   };
-})();
+// Expose the KanbanBoard class as the old global name for BC
+window.GLPIKanban = KanbanBoard;

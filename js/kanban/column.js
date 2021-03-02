@@ -29,7 +29,8 @@
  * ---------------------------------------------------------------------
  */
 
-import {TeamMember, TeamMemberBadgeFactory} from "../teamwork";
+import {ColorUtil, TeamMember, TeamMemberBadgeFactory} from "../teamwork";
+import KanbanCard from "./card";
 
 /**
  * Kanban Column
@@ -40,7 +41,7 @@ export default class KanbanColumn {
       /**
        * The id for the column
        * @since x.x.x
-       * @type {string}
+       * @type {number}
        */
       this.id = params['id'];
       /**
@@ -69,6 +70,18 @@ export default class KanbanColumn {
        * @type {boolean}
        */
       this.protected = Boolean(params['_protected'] || false);
+
+      /**
+       *
+       * @type {boolean}
+       */
+      this.collapsed = false;
+
+      /**
+       *
+       * @type {KanbanCard[]}
+       */
+      this.cards = [];
    }
 
    getID() {
@@ -106,11 +119,70 @@ export default class KanbanColumn {
       return '#column-' + this.board.config.column_field.id + '-' + this.id;
    }
 
+   registerListeners() {
+
+   }
+
    /**
     *
     */
    createElement() {
+      const columns_container = $(this.board.element + " .kanban-container .kanban-columns").first();
 
+      const column_element_id = this.getElement().substring(1);
+
+      let collapse = '';
+      let position = -1;
+      $.each(this.board.user_state.state, (order, s_column) => {
+         if (parseInt(s_column['column']) === this.id) {
+            position = order;
+            if (s_column['folded'] === true || s_column['folded'] === 'true') {
+               collapse = 'collapsed';
+               return false;
+            }
+         }
+      });
+      const _protected = this.protected ? 'kanban-protected' : '';
+      const column_classes = "kanban-column " + collapse + " " + _protected;
+
+      const column_html = `<div id='${column_element_id}' style='border-top: 5px solid ${this.header_color}' class='${column_classes}'></div>`;
+
+      let column_el;
+      if (position < 0) {
+         column_el = $(column_html).appendTo(columns_container);
+      } else {
+         const prev_column = $(columns_container).find('.kanban-column:nth-child(' + (position) + ')');
+         if (prev_column.length === 1) {
+            column_el = $(column_html).insertAfter(prev_column);
+         } else {
+            column_el = $(column_html).appendTo(columns_container);
+         }
+      }
+
+      const is_header_light = this.header_color !== 'transparent' ? ColorUtil.isLightColor(this.header_color) : !this.board.config.dark_theme;
+      const header_text_class = is_header_light ? 'kanban-text-dark' : 'kanban-text-light';
+
+      const column_header = $("<header class='kanban-column-header'></header>");
+      const column_content = $("<div class='kanban-column-header-content'></div>").appendTo(column_header);
+      const column_left = $("<span class=''></span>").appendTo(column_content);
+      const column_right = $("<span class=''></span>").appendTo(column_content);
+      if (this.board.rights.canModifyView()) {
+         $(column_left).append("<i class='fas fa-caret-right fa-lg kanban-collapse-column pointer' title='" + __('Toggle collapse') + "'/>");
+      }
+      $(column_left).append("<span class='kanban-column-title "+header_text_class+"' style='background-color: "+this.header_color+";'>" + this.name + "</span></span>");
+      $(column_right).append("<span class='kanban_nb'>0</span>");
+
+      let toolbar_el = "<span class='kanban-column-toolbar'>";
+      if (this.board.rights.canCreateItem() && (this.board.rights.getAllowedColumnsForNewCards().length === 0 || this.board.rights.getAllowedColumnsForNewCards().includes(this.id))) {
+         toolbar_el += "<i id='kanban_add_" + column_element_id + "' class='kanban-add pointer fas fa-plus' title='" + __('Add') + "'></i>";
+         toolbar_el += "<i id='kanban_column_overflow_actions_" + column_element_id +"' class='kanban-column-overflow-actions pointer fas fa-ellipsis-h' title='" + __('More') + "'></i>";
+      }
+      toolbar_el += "</span>";
+
+      $(column_right).append(toolbar_el);
+      $(column_el).prepend(column_header);
+
+      $("<ul class='kanban-body'></ul>").appendTo(column_el);
    }
 
    /**
@@ -215,9 +287,7 @@ export default class KanbanColumn {
             }
          },
          success: () => {
-            const column = card_obj.closest('.kanban-column');
             card_obj.remove();
-            this.updateColumnCount(column);
             if (success) {
                success();
             }
@@ -226,50 +296,10 @@ export default class KanbanColumn {
    }
 
    /**
-    * Append the card in the specified column, handle duplicate cards in case the card moved, generate badges, and update column counts.
-    * @since 9.5.0
-    * @param {Element|string} column_el The column to add the card to.
-    * @param {Object} card The card to append.
-    * @param {boolean} revalidate Check for duplicate cards.
+    *
+    * @param {KanbanCard} card
     */
-   appendCard(column_el, card, revalidate = false) {
-      if (revalidate) {
-         const existing = $('#' + card['id']);
-         if (existing !== undefined) {
-            const existing_column = existing.closest('.kanban-column');
-            existing.remove();
-            this.updateColumnCount(existing_column);
-         }
-      }
-
-      const itemtype = card['id'].split('-')[0];
-      const col_body = $(column_el).find('.kanban-body').first();
-      const readonly = card['_readonly'] !== undefined && (card['_readonly'] === true || card['_readonly'] === 1);
-      let card_el = `
-            <li id="${card['id']}" class="kanban-item ${readonly ? 'readonly' : ''} ${card['is_deleted'] ? 'deleted' : ''}">
-                <div class="kanban-item-header">
-                    <span class="kanban-item-title" title="${card['title_tooltip']}">
-                    <i class="${this.board.config.supported_itemtypes[itemtype]['icon']}"></i>
-                        ${card['title']}
-                    </span>
-                    <i class="kanban-item-overflow-actions fas fa-ellipsis-h pointer"></i>
-                </div>
-                <div class="kanban-item-content">${(card['content'] || '')}</div>
-                <div class="kanban-item-team">
-         `;
-      const team_count = Object.keys(card['_team']).length;
-      if (card["_team"] !== undefined && team_count > 0) {
-         $.each(Object.values(card["_team"]).slice(0, self.max_team_images), function(teammember_id, teammember) {
-            const team_member = new TeamMember(teammember['itemtype'], teammember['items_id'],
-               teammember['name'] || '', teammember);
-            card_el += team_member.getBadge();
-         });
-         if (card["_team"].length > self.max_team_images) {
-            card_el += TeamMemberBadgeFactory.generateOverflowBadge(team_count - self.max_team_images);
-         }
-      }
-      card_el += "</div></li>";
-      $(card_el).appendTo(col_body).data('form_link', card['_form_link'] || undefined);
-      self.updateColumnCount(column_el);
-   };
+   addCard(card) {
+      this.cards.push(card);
+   }
 }

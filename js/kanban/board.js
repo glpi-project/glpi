@@ -29,15 +29,18 @@
  * ---------------------------------------------------------------------
  */
 
+// eslint-disable-next-line no-redeclare
+/* global CFG_GLPI */
+
 import KanbanRights from "./rights";
-import {ColorUtil} from '../teamwork';
+import KanbanColumn from "./column";
+import KanbanCard from "./card";
 
 /**
  * Kanban Board
  */
 export default class KanbanBoard {
-   constructor(params) {
-
+   constructor(params = {}) {
       /**
        * Selector for the parent Kanban element. This is specified in PHP and passed in the GLPIKanban constructor.
        * @since 9.5.0
@@ -166,8 +169,8 @@ export default class KanbanBoard {
       this.filters = params['filters'] || {
          _text: ''
       };
-      if (self.board.filters._text === undefined) {
-         self.board.filters._text = '';
+      if (this.filters._text === undefined) {
+         this.filters._text = '';
       }
 
       /**
@@ -240,7 +243,7 @@ export default class KanbanBoard {
          return;
       }
       this.applyFilters();
-      this.loadState(function() {
+      this.loadState(() => {
          this.build();
          $(document).ready(() => {
             $.ajax({
@@ -266,6 +269,10 @@ export default class KanbanBoard {
       });
    }
 
+   updateColumnCount(col) {
+      //TODO Remove. Only here to avoid errors. Needs to be handled in KanbanColumn class.
+   }
+
    /**
     * Create a new column and send it to the server.
     * This will create a new item in the DB based on the item type used for columns.
@@ -288,14 +295,14 @@ export default class KanbanBoard {
       }
       const ajax_promise = $.ajax({
          method: 'POST',
-         url: (self.ajax_root + "kanban.php"),
+         url: (this.ajax_root + "kanban.php"),
          contentType: 'application/json',
          dataType: 'json',
          data: {
             action: "create_column",
-            itemtype: self.item.itemtype,
-            items_id: self.item.items_id,
-            column_field: self.column_field.id,
+            itemtype: this.item.itemtype,
+            items_id: this.item.items_id,
+            column_field: this.config.column_field.id,
             column_name: name,
             params: params
          }
@@ -324,7 +331,7 @@ export default class KanbanBoard {
          return;
       }
       // Refresh and then schedule the next refresh (minutes)
-      self.refresh(null, null, () => {
+      this.refresh(null, null, () => {
          this._backgroundRefreshTimer = window.setTimeout(this.backgroundRefresh, this.config.background_refresh_interval * 60 * 1000);
       }, false);
    }
@@ -353,12 +360,12 @@ export default class KanbanBoard {
          $.ajax({
             method: 'GET',
             //async: false,
-            url: (self.ajax_root + "kanban.php"),
+            url: (this.ajax_root + "kanban.php"),
             data: {
                action: "refresh",
-               itemtype: self.item.itemtype,
-               items_id: self.item.items_id,
-               column_field: self.column_field.id
+               itemtype: this.item.itemtype,
+               items_id: this.item.items_id,
+               column_field: this.config.column_field.id
             },
             contentType: 'application/json',
             dataType: 'json'
@@ -367,18 +374,18 @@ export default class KanbanBoard {
                trim_cache: true
             });
             this.clearColumns();
-            self.columns = columns;
+            this.columns = columns;
             this.fillColumns();
             // Re-filter kanban
-            self.filter();
+            this.applyFilters();
             if (success) {
                success(columns, textStatus, jqXHR);
             }
-         }).fail(function(jqXHR, textStatus, errorThrown) {
+         }).fail((jqXHR, textStatus, errorThrown) => {
             if (fail) {
                fail(jqXHR, textStatus, errorThrown);
             }
-         }).always(function() {
+         }).always(() => {
             if (always) {
                always();
             }
@@ -420,7 +427,7 @@ export default class KanbanBoard {
       // Check specialized filters (By column item property). Not currently supported.
 
       // Update column counters
-      $(this.element + ' .kanban-column').each(function(i, column) {
+      $(this.element + ' .kanban-column').each((i, column) => {
          this.updateColumnCount(column);
       });
    }
@@ -473,7 +480,7 @@ export default class KanbanBoard {
          for (let i = 0; i < indices.length; i++) {
             const index = indices[i];
             const entry = state['state'][index];
-            const element = $('#column-' + self.column_field.id + "-" + entry.column);
+            const element = $('#column-' + this.config.column_field.id + "-" + entry.column);
             if (element.length === 0) {
                this.loadColumn(entry.column, true, false);
             }
@@ -642,75 +649,31 @@ export default class KanbanBoard {
    /**
     * Append a column to the Kanban
     * @param {number} column_id The ID of the column being added.
-    * @param {array} column The column data array.
+    * @param {array} column_params The column data array.
     * @param {string|Element|jQuery} columns_container The container that the columns are in.
-    *    If left null, a new JQueryobject is created with the selector "self.element + ' .kanban-container .kanban-columns'".
+    *    If left null, a new JQueryobject is created with the selector "this.element + ' .kanban-container .kanban-columns'".
     * @param {boolean} revalidate If true, all other columns are checked to see if they have an item in this new column.
     *    If they do, the item is removed from that other column and the counter is updated.
     *    This is useful if an item is changed in another tab or by another user to be in the new column after the original column was added.
     */
-   appendColumn(column_id, column, columns_container, revalidate) {
-      if (columns_container == null) {
-         columns_container = $(this.element + " .kanban-container .kanban-columns").first();
-      }
-      revalidate = revalidate !== undefined ? revalidate : false;
+   appendColumn(column_id, column_params, columns_container, revalidate) {
 
-      column['id'] = "column-" + this.config.column_field.id + '-' + column_id;
-      let collapse = '';
-      let position = -1;
-      $.each(this.user_state.state, function(order, s_column) {
-         if (parseInt(s_column['column']) === parseInt(column_id)) {
-            position = order;
-            if (s_column['folded'] === true || s_column['folded'] === 'true') {
-               collapse = 'collapsed';
-               return false;
-            }
-         }
+      const column = new KanbanColumn({
+         id: column_id,
+         board: this,
+         name: column_params['name'],
+         header_color: column_params['header_color'],
+         protected: column_params['protected']
       });
-      const _protected = column['_protected'] ? 'kanban-protected' : '';
-      const column_classes = "kanban-column " + collapse + " " + _protected;
-
-      const column_top_color = (typeof column['header_color'] !== 'undefined') ? column['header_color'] : 'transparent';
-      const column_html = "<div id='" + column['id'] + "' style='border-top: 5px solid "+column_top_color+"' class='"+column_classes+"'></div>";
-      let column_el = null;
-      if (position < 0) {
-         column_el = $(column_html).appendTo(columns_container);
-      } else {
-         const prev_column = $(columns_container).find('.kanban-column:nth-child(' + (position) + ')');
-         if (prev_column.length === 1) {
-            column_el = $(column_html).insertAfter(prev_column);
-         } else {
-            column_el = $(column_html).appendTo(columns_container);
-         }
-      }
-      const cards = column['items'] !== undefined ? column['items'] : [];
-
-      const header_color = column['header_color'];
-      const is_header_light = header_color ? ColorUtil.isLightColor(header_color) : !self.dark_theme;
-      const header_text_class = is_header_light ? 'kanban-text-dark' : 'kanban-text-light';
-
-      const column_header = $("<header class='kanban-column-header'></header>");
-      const column_content = $("<div class='kanban-column-header-content'></div>").appendTo(column_header);
-      const count = column['items'] !== undefined ? column['items'].length : 0;
-      const column_left = $("<span class=''></span>").appendTo(column_content);
-      const column_right = $("<span class=''></span>").appendTo(column_content);
-      if (self.rights.canModifyView()) {
-         $(column_left).append("<i class='fas fa-caret-right fa-lg kanban-collapse-column pointer' title='" + __('Toggle collapse') + "'/>");
-      }
-      $(column_left).append("<span class='kanban-column-title "+header_text_class+"' style='background-color: "+column['header_color']+";'>" + column['name'] + "</span></span>");
-      $(column_right).append("<span class='kanban_nb'>"+count+"</span>");
-      $(column_right).append(getColumnToolbarElement(column));
-      $(column_el).prepend(column_header);
-
-      $("<ul class='kanban-body'></ul>").appendTo(column_el);
+      column.createElement();
 
       let added = [];
-      $.each(self.user_state.state, function(i, c) {
+      $.each(this.user_state.state, (i, c) => {
          if (c['column'] === column_id) {
-            $.each(c['cards'], function(i2, card) {
-               $.each(cards, function(i3, card2) {
+            $.each(c['cards'], (i2, card) => {
+               $.each(cards, (i3, card2) => {
                   if (card2['id'] === card) {
-                     appendCard(column_el, card2);
+                     column.addCard(new KanbanCard(column, card2));
                      added.push(card2['id']);
                      return false;
                   }
@@ -718,30 +681,30 @@ export default class KanbanBoard {
             });
          }
       });
-
+      const cards = column_params['items'] !== undefined ? column_params['items'] : [];
       $.each(cards, function(card_id, card) {
          if (added.indexOf(card['id']) < 0) {
-            this.appendCard(column_el, card, revalidate);
+            column.addCard(new KanbanCard(column, card));
          }
       });
 
       this.refreshSortables();
-   };
+   }
 
    /**
     * Build DOM elements and defer registering event listeners for when the document is ready.
     * @since 9.5.0
     **/
    build() {
-      if (self.show_toolbar) {
-         buildToolbar();
+      if (this.config.show_toolbar) {
+         this.buildToolbar();
       }
-      const kanban_container = $("<div class='kanban-container'><div class='kanban-columns'></div></div>").appendTo($(self.element));
+      const kanban_container = $("<div class='kanban-container'><div class='kanban-columns'></div></div>").appendTo($(this.element));
 
       // Dropdown for single additions
       let add_itemtype_dropdown = "<ul id='kanban-add-dropdown' class='kanban-dropdown' style='display: none'>";
-      Object.keys(self.supported_itemtypes).forEach(function(itemtype) {
-         add_itemtype_dropdown += "<li id='kanban-add-" + itemtype + "'><span>" + self.supported_itemtypes[itemtype]['name'] + '</span></li>';
+      Object.keys(this.config.supported_itemtypes).forEach((itemtype) => {
+         add_itemtype_dropdown += "<li id='kanban-add-" + itemtype + "'><span>" + this.config.supported_itemtypes[itemtype]['name'] + '</span></li>';
       });
       add_itemtype_dropdown += '</ul>';
       kanban_container.append(add_itemtype_dropdown);
@@ -749,13 +712,13 @@ export default class KanbanBoard {
       // Dropdown for overflow (Column)
       let column_overflow_dropdown = "<ul id='kanban-overflow-dropdown' class='kanban-dropdown' style='display: none'>";
       let add_itemtype_bulk_dropdown = "<ul id='kanban-bulk-add-dropdown' class='' style='display: none'>";
-      Object.keys(self.supported_itemtypes).forEach(function(itemtype) {
-         add_itemtype_bulk_dropdown += "<li id='kanban-bulk-add-" + itemtype + "'><span>" + self.supported_itemtypes[itemtype]['name'] + '</span></li>';
+      Object.keys(this.config.supported_itemtypes).forEach((itemtype) => {
+         add_itemtype_bulk_dropdown += "<li id='kanban-bulk-add-" + itemtype + "'><span>" + this.config.supported_itemtypes[itemtype]['name'] + '</span></li>';
       });
       add_itemtype_bulk_dropdown += '</ul>';
       const add_itemtype_bulk_link = '<a href="#">' + '<i class="fas fa-list"></i>' + __('Bulk add') + '</a>';
       column_overflow_dropdown += '<li class="dropdown-trigger">' + add_itemtype_bulk_link + add_itemtype_bulk_dropdown + '</li>';
-      if (self.rights.canModifyView()) {
+      if (this.rights.canModifyView()) {
          column_overflow_dropdown += "<li class='kanban-remove' data-forbid-protected='true'><span>"  + '<i class="fas fa-trash-alt"></i>' + __('Delete') + "</span></li>";
       }
       column_overflow_dropdown += '</ul>';
@@ -763,7 +726,7 @@ export default class KanbanBoard {
 
       // Dropdown for overflow (Card)
       let card_overflow_dropdown = "<ul id='kanban-item-overflow-dropdown' class='kanban-dropdown' style='display: none'>";
-      if (self.rights.canDeleteItem()) {
+      if (this.rights.canDeleteItem()) {
          card_overflow_dropdown += `
                 <li class='kanban-item-goto'>
                    <a href="#"><i class="fas fa-share"></i>${__('Go to')}</a>
@@ -797,16 +760,16 @@ export default class KanbanBoard {
       });
 
       const on_refresh = () => {
-         if (Object.keys(self.user_state.state).length === 0) {
+         if (Object.keys(this.user_state.state).length === 0) {
             // Save new state since none was stored for the user
             this.saveState(true, true);
          }
       };
-      self.refresh(on_refresh, null, null, true);
+      this.refresh(on_refresh, null, null, true);
 
       if (this.rights.canModifyView()) {
          this.buildAddColumnForm();
-         if (self.rights.canCreateColumn()) {
+         if (this.rights.canCreateColumn()) {
             this.buildCreateColumnForm();
          }
       }
@@ -912,7 +875,7 @@ export default class KanbanBoard {
       }
 
       let already_processed = [];
-      $.each(self.user_state.state, (position, column) => {
+      $.each(this.user_state.state, (position, column) => {
          if (column['visible'] !== false && column !== 'false') {
             this.appendColumn(column['column'], this.columns[column['column']], columns_container);
          }
@@ -927,7 +890,7 @@ export default class KanbanBoard {
       });
       this.restoreNewItemForms();
       this.restoreScrolls();
-   };
+   }
 
    /**
     * Add all event listeners. At this point, all elements should have been added to the DOM.
@@ -940,7 +903,7 @@ export default class KanbanBoard {
 
       this.refreshSortables();
 
-      if (Object.keys(this.supported_itemtypes).length > 0) {
+      if (Object.keys(this.config.supported_itemtypes).length > 0) {
          $(this.element + ' .kanban-container').on('click', '.kanban-add', (e) => {
             const button = $(e.target);
             //Keep menu open if clicking on another add button
@@ -976,7 +939,7 @@ export default class KanbanBoard {
          }
       });
 
-      if (Object.keys(this.supported_itemtypes).length > 0) {
+      if (Object.keys(this.config.supported_itemtypes).length > 0) {
          $(this.element + ' .kanban-container').on('click', '.kanban-column-overflow-actions', (e) => {
             const button = $(e.target);
             //Keep menu open if clicking on another add button
@@ -1002,7 +965,7 @@ export default class KanbanBoard {
             column_overflow_dropdown.data('trigger-button', button);
          });
       }
-      $(self.element + ' .kanban-container').on('click', '.kanban-item-overflow-actions', (e) => {
+      $(this.element + ' .kanban-container').on('click', '.kanban-item-overflow-actions', (e) => {
          const button = $(e.target);
          //Keep menu open if clicking on another add button
          const force_stay_visible = $(card_overflow_dropdown.data('trigger-button')).prop('id') !== button.prop('id');
@@ -1031,7 +994,7 @@ export default class KanbanBoard {
          }
       });
 
-      $(window).on('click', function(e) {
+      $(window).on('click', (e) => {
          if (!$(e.target).hasClass('kanban-column-overflow-actions')) {
             column_overflow_dropdown.css({
                display: 'none'
@@ -1042,15 +1005,15 @@ export default class KanbanBoard {
                display: 'none'
             });
          }
-         if (self.rights.canModifyView()) {
-            if (!$.contains($(self.add_column_form)[0], e.target)) {
-               $(self.add_column_form).css({
+         if (this.rights.canModifyView()) {
+            if (!$.contains($(this.add_column_form)[0], e.target)) {
+               $(this.add_column_form).css({
                   display: 'none'
                });
             }
-            if (self.rights.canCreateColumn()) {
-               if (!$.contains($(self.create_column_form)[0], e.target) && !$.contains($(self.add_column_form)[0], e.target)) {
-                  $(self.create_column_form).css({
+            if (this.rights.canCreateColumn()) {
+               if (!$.contains($(this.create_column_form)[0], e.target) && !$.contains($(this.add_column_form)[0], e.target)) {
+                  $(this.create_column_form).css({
                      display: 'none'
                   });
                }
@@ -1058,33 +1021,33 @@ export default class KanbanBoard {
          }
       });
 
-      $(self.element + ' .kanban-container').on('click', '.kanban-remove', function(e) {
+      $(this.element + ' .kanban-container').on('click', '.kanban-remove', (e) => {
          // Get root dropdown, then the button that triggered it, and finally the column that the button is in
          const column = $(e.target.closest('.kanban-dropdown')).data('trigger-button').closest('.kanban-column');
          // Hide that column
          this.hideColumn(getColumnIDFromElement(column));
       });
-      $(self.element + ' .kanban-container').on('click', '.kanban-item-remove', function(e) {
+      $(this.element + ' .kanban-container').on('click', '.kanban-item-remove', (e) => {
          // Get root dropdown, then the button that triggered it, and finally the card that the button is in
          const card = $(e.target.closest('.kanban-dropdown')).data('trigger-button').closest('.kanban-item').prop('id');
          // Try to delete that card item
          this.deleteCard(card, undefined, undefined);
       });
-      $(self.element + ' .kanban-container').on('click', '.kanban-collapse-column', function(e) {
-         self.toggleCollapseColumn(e.target.closest('.kanban-column'));
+      $(this.element + ' .kanban-container').on('click', '.kanban-collapse-column', (e) => {
+         this.toggleCollapseColumn(e.target.closest('.kanban-column'));
       });
-      $(self.element).on('click', '.kanban-add-column', function() {
+      $(this.element).on('click', '.kanban-add-column', () => {
          this.refreshAddColumnForm();
       });
-      $(self.add_column_form).on('input', "input[name='column-name-filter']", function() {
-         const filter_input = $(this);
-         $(self.add_column_form + ' li').hide();
-         $(self.add_column_form + ' li').filter(function() {
+      $(this.add_column_form).on('input', "input[name='column-name-filter']", (e) => {
+         const filter_input = $(e.target);
+         $(this.add_column_form + ' li').hide();
+         $(this.add_column_form + ' li').filter(function() {
             return $(this).text().toLowerCase().includes(filter_input.val().toLowerCase());
          }).show();
       });
-      $(self.add_column_form).on('change', "input[type='checkbox']", function() {
-         const column_id = $(this).parent().data('list-id');
+      $(this.add_column_form).on('change', "input[type='checkbox']", (e) => {
+         const column_id = $(e.target).parent().data('list-id');
          if (column_id !== undefined) {
             if ($(this).is(':checked')) {
                this.showColumn(column_id);
@@ -1093,39 +1056,39 @@ export default class KanbanBoard {
             }
          }
       });
-      $(self.add_column_form).on('submit', 'form', (e) => {
+      $(this.add_column_form).on('submit', 'form', (e) => {
          e.preventDefault();
       });
-      $(self.add_column_form).on('click', '.kanban-create-column', function() {
-         const toolbar = $(self.element + ' .kanban-toolbar');
-         $(self.add_column_form).css({
+      $(this.add_column_form).on('click', '.kanban-create-column', () => {
+         const toolbar = $(this.element + ' .kanban-toolbar');
+         $(this.add_column_form).css({
             display: 'none'
          });
-         $(self.create_column_form).css({
+         $(this.create_column_form).css({
             display: 'block',
             position: 'fixed',
-            left: toolbar.offset().left + toolbar.outerWidth(true) - $(self.create_column_form).outerWidth(true),
+            left: toolbar.offset().left + toolbar.outerWidth(true) - $(this.create_column_form).outerWidth(true),
             top: toolbar.offset().top + toolbar.outerHeight(true)
          });
       });
-      $(self.create_column_form).on('submit', 'form', (e) => {
+      $(this.create_column_form).on('submit', 'form', (e) => {
          e.preventDefault();
 
-         const toolbar = $(self.element + ' .kanban-toolbar');
+         const toolbar = $(this.element + ' .kanban-toolbar');
 
-         $(self.create_column_form).css({
+         $(this.create_column_form).css({
             display: 'none'
          });
-         const name = $(self.create_column_form + " input[name='name']").val();
-         $(self.create_column_form + " input[name='name']").val("");
-         const color = $(self.create_column_form + " input[name='color']").val();
-         self.board.createColumn(name, {color: color}).then(() => {
+         const name = $(this.create_column_form + " input[name='name']").val();
+         $(this.create_column_form + " input[name='name']").val("");
+         const color = $(this.create_column_form + " input[name='color']").val();
+         this.board.createColumn(name, {color: color}).then(() => {
             // Refresh add column list
             this.refreshAddColumnForm();
-            $(self.add_column_form).css({
+            $(this.add_column_form).css({
                display: 'block',
                position: 'fixed',
-               left: toolbar.offset().left + toolbar.outerWidth(true) - $(self.add_column_form).outerWidth(true),
+               left: toolbar.offset().left + toolbar.outerWidth(true) - $(this.add_column_form).outerWidth(true),
                top: toolbar.offset().top + toolbar.outerHeight(true)
             });
          });
@@ -1140,8 +1103,8 @@ export default class KanbanBoard {
          const column = $($(dropdown.data('trigger-button')).closest('.kanban-column'));
          // kanban-add-ITEMTYPE (We want the ITEMTYPE token at position 2)
          const itemtype = selection.prop('id').split('-')[2];
-         self.clearAddItemForms(column);
-         self.showAddItemForm(column, itemtype);
+         this.clearAddItemForms(column);
+         this.showAddItemForm(column, itemtype);
          this.delayRefresh();
       });
       $('#kanban-bulk-add-dropdown li').on('click', (e) => {
@@ -1158,19 +1121,19 @@ export default class KanbanBoard {
          // Force-close the full dropdown
          dropdown.css({'display': 'none'});
 
-         self.clearAddItemForms(column);
-         self.showBulkAddItemForm(column, itemtype);
-         delayRefresh();
+         this.clearAddItemForms(column);
+         this.showBulkAddItemForm(column, itemtype);
+         this.delayRefresh();
       });
       const switcher = $("select[name='kanban-board-switcher']").first();
-      $(self.element + ' .kanban-toolbar').on('select2:select', switcher, function(e) {
+      $(this.element + ' .kanban-toolbar').on('select2:select', switcher, (e) => {
          const items_id = e.params.data.id;
          $.ajax({
             type: "GET",
-            url: (self.ajax_root + "kanban.php"),
+            url: (this.ajax_root + "kanban.php"),
             data: {
                action: "get_url",
-               itemtype: self.item.itemtype,
+               itemtype: this.item.itemtype,
                items_id: items_id
             },
             contentType: 'application/json',
@@ -1180,16 +1143,16 @@ export default class KanbanBoard {
          });
       });
 
-      $(self.element).on('input', '.kanban-add-form input, .kanban-add-form textarea', function() {
-         delayRefresh();
+      $(this.element).on('input', '.kanban-add-form input, .kanban-add-form textarea', () => {
+         this.delayRefresh();
       });
 
-      if (!self.rights.canOrderCard()) {
-         $(self.element).on(
+      if (!this.rights.canOrderCard()) {
+         $(this.element).on(
             'mouseenter',
             '.kanban-column',
             function () {
-               if (self.is_sorting_active) {
+               if (this.is_sorting_active) {
                   return; // Do not change readonly states if user is sorting elements
                }
                // If user cannot order cards, make items temporarily readonly except for current column.
@@ -1197,19 +1160,19 @@ export default class KanbanBoard {
                $(this).siblings().find('.kanban-body > li').addClass('temporarily-readonly');
             }
          );
-         $(self.element).on(
+         $(this.element).on(
             'mouseleave',
             '.kanban-column',
             function () {
-               if (self.is_sorting_active) {
+               if (this.is_sorting_active) {
                   return; // Do not change readonly states if user is sorting elements
                }
-               $(self.element).find('.kanban-body > li').removeClass('temporarily-readonly');
+               $(this.element).find('.kanban-body > li').removeClass('temporarily-readonly');
             }
          );
       }
 
-      $(self.element + ' .kanban-container').on('submit', '.kanban-add-form', function(e) {
+      $(this.element + ' .kanban-container').on('submit', '.kanban-add-form', function(e) {
          e.preventDefault();
          const form = $(e.target);
          const data = {
@@ -1220,21 +1183,21 @@ export default class KanbanBoard {
 
          $.ajax({
             method: 'POST',
-            url: (self.ajax_root + "kanban.php"),
+            url: (this.ajax_root + "kanban.php"),
             data: data
-         }).done(function() {
-            self.refresh();
+         }).done(() => {
+            this.refresh();
          });
       });
 
-      $(self.element + ' .kanban-container').on('click', '.kanban-item .kanban-item-title', function(e) {
+      $(this.element + ' .kanban-container').on('click', '.kanban-item .kanban-item-title', function(e) {
          e.preventDefault();
          const card = $(e.target).closest('.kanban-item');
          const [itemtype, items_id] = card.prop('id').split('-');
          if ($('#kanban-dialog').length === 0) {
-            $(self.element).append('<div id="kanban-dialog"></div>');
+            $(this.element).append('<div id="kanban-dialog"></div>');
             // After initializing the dialog, it gets moved automatically outside the Kanban container. That's why it has an ID instead of a class.
-            $(self.element + ' #kanban-dialog').dialog({
+            $(this.element + ' #kanban-dialog').dialog({
                autoOpen: false,
                modal: true,
                resizable: true,
@@ -1243,7 +1206,7 @@ export default class KanbanBoard {
                width: 800
             });
          }
-         $('#kanban-dialog').load((self.ajax_root + "kanban.php?action=show_card_edit_form&itemtype="+itemtype+"&card=" + items_id)).dialog("open");
+         $('#kanban-dialog').load((this.ajax_root + "kanban.php?action=show_card_edit_form&itemtype="+itemtype+"&card=" + items_id)).dialog("open");
       });
    }
 
@@ -1258,18 +1221,18 @@ export default class KanbanBoard {
          const column_id = this.id.split('-');
          columns_used.push(column_id[column_id.length - 1]);
       });
-      const column_dialog = $(self.add_column_form);
-      const toolbar = $(self.element + ' .kanban-toolbar');
+      const column_dialog = $(this.add_column_form);
+      const toolbar = $(this.element + ' .kanban-toolbar');
       $.ajax({
          method: 'GET',
-         url: (self.ajax_root + "kanban.php"),
+         url: (this.ajax_root + "kanban.php"),
          data: {
             action: "list_columns",
-            itemtype: self.item.itemtype,
-            column_field: self.column_field.id
+            itemtype: this.item.itemtype,
+            column_field: this.config.column_field.id
          }
-      }).done(function(data) {
-         const form_content = $(self.add_column_form + " .kanban-item-content");
+      }).done((data) => {
+         const form_content = $(this.add_column_form + " .kanban-item-content");
          form_content.empty();
          form_content.append("<input type='text' name='column-name-filter' placeholder='" + __('Search') + "'/>");
          let list = "<ul class='kanban-columns-list'>";
@@ -1304,7 +1267,7 @@ export default class KanbanBoard {
     */
    refreshSortables() {
       // Make sure all items in the columns can be sorted
-      const bodies = $(self.element + ' .kanban-body');
+      const bodies = $(this.element + ' .kanban-body');
       $.each(bodies, function(b) {
          const body = $(b);
          if (body.data('sortable')) {
@@ -1318,8 +1281,8 @@ export default class KanbanBoard {
          appendTo: '.kanban-container',
          items: '.kanban-item:not(.readonly):not(.temporarily-readonly)',
          placeholder: "sortable-placeholder",
-         start: function(event, ui) {
-            self.is_sorting_active = true;
+         start: (event, ui) => {
+            this.is_sorting_active = true;
 
             const card = ui.item;
             // Track the column and position the card was picked up from
@@ -1332,7 +1295,7 @@ export default class KanbanBoard {
                return self.onKanbanCardSort(ui, this);
             }
          },
-         change: function(event, ui) {
+         change: (event, ui) => {
             const card = ui.item;
             const source_column = card.data('source-col');
             const source_position = card.data('source-pos');
@@ -1345,7 +1308,7 @@ export default class KanbanBoard {
             const current_position = sortable_elements.index(ui.placeholder);
             card.data('current-pos', current_position);
 
-            if (!self.rights.canOrderCard()) {
+            if (!this.rights.canOrderCard()) {
                if (current_column === source_column) {
                   if (current_position !== source_position) {
                      ui.placeholder.addClass('invalid-position');
@@ -1367,7 +1330,7 @@ export default class KanbanBoard {
          }
       });
 
-      if (self.rights.canModifyView()) {
+      if (this.rights.canModifyView()) {
          // Enable column sorting
          $(self.element + ' .kanban-columns').sortable({
             connectWith: self.element + ' .kanban-columns',
@@ -1376,30 +1339,13 @@ export default class KanbanBoard {
             placeholder: "sortable-placeholder",
             handle: '.kanban-column-header',
             tolerance: 'pointer',
-            stop: function(event, ui) {
+            stop: (event, ui) => {
                const column = $(ui.item[0]);
-               updateColumnPosition(getColumnIDFromElement(ui.item[0]), column.index());
+               this.updateColumnPosition(getColumnIDFromElement(ui.item[0]), column.index());
             }
          });
          $(self.element + ' .kanban-columns .kanban-column:not(.kanban-protected) .kanban-column-header').addClass('grab');
       }
-   }
-
-   /**
-    * Construct and return the toolbar HTML for a specified column.
-    * @since 9.5.0
-    * @param {Object} column Column object that this toolbar will be made for.
-    * @returns {string} HTML coded for the toolbar.
-    */
-   getColumnToolbarElement(column) {
-      let toolbar_el = "<span class='kanban-column-toolbar'>";
-      const column_id = parseInt(getColumnIDFromElement(column['id']));
-      if (self.rights.canCreateItem() && (self.rights.getAllowedColumnsForNewCards().length === 0 || self.rights.getAllowedColumnsForNewCards().includes(column_id))) {
-         toolbar_el += "<i id='kanban_add_" + column['id'] + "' class='kanban-add pointer fas fa-plus' title='" + __('Add') + "'></i>";
-         toolbar_el += "<i id='kanban_column_overflow_actions_" + column['id'] +"' class='kanban-column-overflow-actions pointer fas fa-ellipsis-h' title='" + __('More') + "'></i>";
-      }
-      toolbar_el += "</span>";
-      return toolbar_el;
    }
 
    /**
@@ -1417,7 +1363,7 @@ export default class KanbanBoard {
       const target_params = $(target).attr('id').split('-');
       const column_id = target_params[target_params.length - 1];
 
-      if (el_params.length === 2 && source !== null && !(!self.rights.canOrderCard() && source.length === 0)) {
+      if (el_params.length === 2 && source !== null && !(!this.rights.canOrderCard() && source.length === 0)) {
          $.ajax({
             type: "POST",
             url: (self.ajax_root + "kanban.php"),
@@ -1425,7 +1371,7 @@ export default class KanbanBoard {
                action: "update",
                itemtype: el_params[0],
                items_id: el_params[1],
-               column_field: self.column_field.id,
+               column_field: this.config.column_field.id,
                column_value: column_id
             },
             contentType: 'application/json',
@@ -1433,9 +1379,9 @@ export default class KanbanBoard {
                $(sortable).sortable('cancel');
                return false;
             },
-            success: function() {
+            success: () => {
                let pos = card.data('current-pos');
-               if (!self.rights.canOrderCard()) {
+               if (!this.rights.canOrderCard()) {
                   card.appendTo($(target).find('.kanban-body').first());
                   pos = card.index();
                }
@@ -1443,7 +1389,7 @@ export default class KanbanBoard {
                self.updateColumnCount($(source).closest('.kanban-column'));
                self.updateColumnCount($(target).closest('.kanban-column'));
                card.removeData('source-col');
-               updateCardPosition(card.attr('id'), target.id, pos);
+               this.updateCardPosition(card.attr('id'), target.id, pos);
                return true;
             }
          });
@@ -1499,12 +1445,12 @@ export default class KanbanBoard {
    updateColumnPosition(column, position) {
       $.ajax({
          type: "POST",
-         url: (self.ajax_root + "kanban.php"),
+         url: (this.ajax_root + "kanban.php"),
          data: {
             action: "move_column",
             column: column,
             position: position,
-            kanban: self.item
+            kanban: this.item
          },
          contentType: 'application/json'
       });
@@ -1522,7 +1468,7 @@ export default class KanbanBoard {
     **/
    preloadBadgeCache(options) {
       let users = [];
-      $.each(self.columns, function(column_id, column) {
+      $.each(this.columns, function(column_id, column) {
          if (column['items'] !== undefined) {
             $.each(column['items'], function(card_id, card) {
                if (card["_team"] !== undefined) {
@@ -1653,7 +1599,7 @@ export default class KanbanBoard {
 
       const column_id_elements = column_el.prop('id').split('-');
       const column_value = column_id_elements[column_id_elements.length - 1];
-      add_form += "<input type='hidden' name='" + self.column_field.id + "' value='" + column_value + "'/>";
+      add_form += "<input type='hidden' name='" + this.config.column_field.id + "' value='" + column_value + "'/>";
       add_form += "<input type='submit' value='" + __('Add') + "' name='add' class='submit'/>";
       add_form += "</form>";
       $(column_el.find('.kanban-body')[0]).append(add_form);
@@ -1707,7 +1653,7 @@ export default class KanbanBoard {
 
       const column_id_elements = column_el.prop('id').split('-');
       const column_value = column_id_elements[column_id_elements.length - 1];
-      add_form += "<input type='hidden' name='" + self.column_field.id + "' value='" + column_value + "'/>";
+      add_form += "<input type='hidden' name='" + this.config.column_field.id + "' value='" + column_value + "'/>";
       add_form += "<input type='submit' value='" + __('Add') + "' name='add' class='submit'/>";
       add_form += "</form>";
       $(column_el.find('.kanban-body')[0]).append(add_form);
@@ -1740,7 +1686,7 @@ export default class KanbanBoard {
    buildAddColumnForm() {
       const uniqueID = Math.floor(Math.random() * 999999);
       const formID = "form_add_column_" + uniqueID;
-      self.add_column_form = '#' + formID;
+      this.add_column_form = '#' + formID;
       let add_form = `
             <div id="${formID}" class="kanban-form kanban-add-column-form" style="display: none">
                 <form class='no-track'>
@@ -1749,14 +1695,14 @@ export default class KanbanBoard {
                     </div>
                     <div class='kanban-item-content'></div>
          `;
-      if (self.rights.canCreateColumn()) {
+      if (this.rights.canCreateColumn()) {
          add_form += `
                <hr>${__('Or add a new status')}
                <input type='button' class='submit kanban-create-column' value="${__('Create status')}"/>
             `;
       }
       add_form += "</form></div>";
-      $(self.element).prepend(add_form);
+      $(this.element).prepend(add_form);
    }
 
    /**
@@ -1766,7 +1712,7 @@ export default class KanbanBoard {
    buildCreateColumnForm() {
       const uniqueID = Math.floor(Math.random() * 999999);
       const formID = "form_create_column_" + uniqueID;
-      self.create_column_form = '#' + formID;
+      this.create_column_form = '#' + formID;
       let create_form = `
             <div id='${formID}' class='kanban-form kanban-create-column-form' style='display: none'>
                 <form class='no-track'>
@@ -1776,7 +1722,7 @@ export default class KanbanBoard {
                     <div class='kanban-item-content'>
                     <input name='name'/>
          `;
-      $.each(self.column_field.extra_fields, function(name, field) {
+      $.each(this.config.column_field.extra_fields, function(name, field) {
          if (name === undefined) {
             return true;
          }
@@ -1793,6 +1739,6 @@ export default class KanbanBoard {
       create_form += "</div>";
       create_form += "<input type='button' class='submit kanban-create-column' value='" + __('Create status') + "'/>";
       create_form += "</form></div>";
-      $(self.element).prepend(create_form);
+      $(this.element).prepend(create_form);
    }
 }
