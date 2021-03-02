@@ -8,7 +8,6 @@
 # iwan van de weijer <i_van_de_weijer@hotmail.com>, 2019
 # kzpm <keesepema@linuxmail.org>, 2019
 # Bart Boerendans <bboerendans@gmail.com>, 2019
-# Frederik Van Helleputte <transifex.com@goorix.be>, 2019
 # Wim Aerts <wim.aerts@politie.antwerpen.be>, 2019
 # Joren Guillaume <chaos.side@gmail.com>, 2019
 # Eric Vervoordeldonk <eric.vervoordeldonk@gmail.com>, 2019
@@ -17,6 +16,7 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # Steven <Nevets82@gmail.com>, 2020
+# Frederik Van Helleputte <transifex.com@goorix.be>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -25,7 +25,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-22 09:43+0100\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Steven <Nevets82@gmail.com>, 2020\n"
+"Last-Translator: Frederik Van Helleputte <transifex.com@goorix.be>, 2021\n"
 "Language-Team: Dutch (Netherlands) (https://www.transifex.com/glpi/teams/1637/nl_NL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -8510,7 +8510,7 @@ msgstr[1] ""
 
 #: inc/notificationtargetproblem.class.php:50
 msgid "New problem"
-msgstr "Geen probleem"
+msgstr "Nieuw probleem"
 
 #: inc/notificationtargetproblem.class.php:51
 msgid "Update of a problem"

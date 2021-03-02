@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Kaya Zeren <kayazeren@gmail.com>, 2020
+# Kaya Zeren <kayazeren@gmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -13,7 +13,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-22 09:43+0100\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Kaya Zeren <kayazeren@gmail.com>, 2020\n"
+"Last-Translator: Kaya Zeren <kayazeren@gmail.com>, 2021\n"
 "Language-Team: Turkish (Turkey) (https://www.transifex.com/glpi/teams/1637/tr_TR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4979,8 +4979,8 @@ msgstr[1] "Yetkilendirmeler"
 #: inc/vlan.class.php:48
 msgid "VLAN"
 msgid_plural "VLANs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "VLAN"
+msgstr[1] "VLAN"
 
 #: inc/vlan.class.php:55 inc/vlan.class.php:78 inc/vlan.class.php:160
 #: inc/networkport_vlan.class.php:171 inc/ipnetwork_vlan.class.php:166
@@ -8519,8 +8519,8 @@ msgstr "Sorunun silinmesi"
 #: inc/notificationtargetcontract.class.php:186 inc/entity.class.php:1951
 msgid "Contract"
 msgid_plural "Contracts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Sözleşme"
+msgstr[1] "Sözleşmeler"
 
 #: inc/contract.class.php:231 inc/contract.class.php:520
 #: inc/contract.class.php:746 inc/contract.class.php:1736
@@ -16652,8 +16652,8 @@ msgstr "Sütun: %1$s, Satır: %2$s"
 #: inc/phonepowersupply.class.php:44
 msgid "Phone power supply type"
 msgid_plural "Phone power supply types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Telefon güç kaynağı türü"
+msgstr[1] "Telefon güç kaynağı türleri"
 
 #: inc/changetask.class.php:43
 msgid "Change task"
@@ -21157,7 +21157,7 @@ msgstr "Destek merkezi ayarlarını güncelle"
 
 #: inc/entity.class.php:3364
 msgid "Value inherited from a parent entity"
-msgstr ""
+msgstr "Değer üst varlıktan devir alınıyor"
 
 #: inc/itilcategory.class.php:73 inc/itilcategory.class.php:212
 msgid "Visible in the simplified interface"

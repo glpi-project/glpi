@@ -11,8 +11,8 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
 # Tiziano Sartori <tiziano.sartori@gmail.com>, 2020
 # Emiliano Centurelli <emilcen80@gmail.com>, 2020
-# Pierfrancesco Passerini <p.passerini@gmail.com>, 2020
 # Davide <spam@habilitas.it>, 2021
+# Pierfrancesco Passerini <p.passerini@gmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -21,7 +21,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-22 09:43+0100\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Davide <spam@habilitas.it>, 2021\n"
+"Last-Translator: Pierfrancesco Passerini <p.passerini@gmail.com>, 2021\n"
 "Language-Team: Italian (Italy) (https://www.transifex.com/glpi/teams/1637/it_IT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4993,8 +4993,8 @@ msgstr[1] "Autorizzazioni"
 #: inc/vlan.class.php:48
 msgid "VLAN"
 msgid_plural "VLANs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "VLAN"
+msgstr[1] "VLAN"
 
 #: inc/vlan.class.php:55 inc/vlan.class.php:78 inc/vlan.class.php:160
 #: inc/networkport_vlan.class.php:171 inc/ipnetwork_vlan.class.php:166
@@ -8536,8 +8536,8 @@ msgstr "Eliminazione di un problema"
 #: inc/notificationtargetcontract.class.php:186 inc/entity.class.php:1951
 msgid "Contract"
 msgid_plural "Contracts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Contratto"
+msgstr[1] "Contratti"
 
 #: inc/contract.class.php:231 inc/contract.class.php:520
 #: inc/contract.class.php:746 inc/contract.class.php:1736
@@ -11200,7 +11200,7 @@ msgstr "%s trasforma in commento dalla chiamata %s"
 
 #: inc/ticket.class.php:1930
 msgid "Your ticket has been registered."
-msgstr ""
+msgstr "La chiamata è stata registrata."
 
 #: inc/ticket.class.php:2112
 #, php-format
@@ -22938,7 +22938,7 @@ msgstr ""
 
 #: install/install.php:614
 msgid "Select your language"
-msgstr ""
+msgstr "Seleziona la lingua"
 
 #: install/install.php:639
 msgid "Beginning of the installation"
