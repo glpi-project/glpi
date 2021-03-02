@@ -50,23 +50,11 @@ class ListServicesCommand extends AbstractCommand {
       $this->setName('glpi:system:list_services');
       $this->setAliases(['system:list_services']);
       $this->setDescription(__('List system services'));
-      $this->addOption('format', 'f', InputOption::VALUE_OPTIONAL,
-         'Output format [json]', 'plain');
    }
 
    protected function execute(InputInterface $input, OutputInterface $output) {
-
-      $format = strtolower($input->getOption('format'));
-
       $services = array_keys(StatusChecker::getServices());
-
-      if ($format === 'json') {
-         $output->writeln(json_encode($services, JSON_PRETTY_PRINT));
-      } else {
-         foreach ($services as $service) {
-            $output->writeln($service);
-         }
-      }
+      $output->writeln(json_encode($services, JSON_PRETTY_PRINT));
 
       return 0; // Success
    }
