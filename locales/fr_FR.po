@@ -7,7 +7,6 @@
 # Cédric Anne, 2019
 # Thierry Bugier <tbugier@teclib.com>, 2019
 # Philippe P <fylip22@gmail.com>, 2019
-# Pierre <plebel@teclib.com>, 2019
 # Gilles WLT <gilles.wlt@gmail.com>, 2019
 # Jean-Christophe Pirmolin <jean-christophe@pirmolin.com>, 2019
 # Milan Lefort <milan.lefort@orange.fr>, 2020
@@ -18,6 +17,7 @@
 # Xavier CAILLAUD <thetsmr@gmail.com>, 2020
 # Legastelois François <flegastelois@teclib.com>, 2021
 # Johan Cwiklinski <jcwiklinski@teclib.com>, 2021
+# Pierre <plebel@teclib.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -26,7 +26,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-22 09:43+0100\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Johan Cwiklinski <jcwiklinski@teclib.com>, 2021\n"
+"Last-Translator: Pierre <plebel@teclib.com>, 2021\n"
 "Language-Team: French (France) (https://www.transifex.com/glpi/teams/1637/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4265,7 +4265,7 @@ msgstr "Date d'ouverture"
 #: inc/commonitilobject.class.php:5140 inc/commonitilobject.class.php:6122
 #: inc/slalevel.class.php:174 tests/functionnal/Rule.php:300
 msgid "Time to resolve"
-msgstr "Temps de résolution"
+msgstr "TTR"
 
 #: inc/problem.class.php:1252 inc/problem.class.php:1261
 #: inc/rssfeed.class.php:687 inc/tasktemplate.class.php:76
@@ -7721,7 +7721,7 @@ msgstr[1] "%d jours"
 #: inc/ruleticket.class.php:711 inc/slalevel.class.php:173
 #: tests/functionnal/Rule.php:303
 msgid "Time to own"
-msgstr "Temps de prise en charge"
+msgstr "TTO"
 
 #: inc/itilfollowuptemplate.class.php:49 inc/itilfollowup.class.php:843
 msgid "Followup template"
@@ -11296,39 +11296,39 @@ msgstr "Confirmez-vous la fusion ? Ce ticket sera supprimé !"
 
 #: inc/ticket.class.php:2610
 msgid "Time to own + Progress"
-msgstr "Temps de prise en charge + progression"
+msgstr "TTO + progression"
 
 #: inc/ticket.class.php:2620
 msgid "Time to own exceedeed"
-msgstr "Temps de prise en charge dépassé"
+msgstr "TTO dépassé"
 
 #: inc/ticket.class.php:2630 inc/ticket.class.php:2867
 #: inc/ticket.class.php:4432 inc/ticket.class.php:4434
 #: inc/ticket.class.php:6819 inc/notificationtargetticket.class.php:601
 msgid "Internal time to resolve"
-msgstr "Temps interne de résolution"
+msgstr "TTR interne"
 
 #: inc/ticket.class.php:2641
 msgid "Internal time to resolve + Progress"
-msgstr "Temps interne de résolution + progression"
+msgstr "TTR interne + progression"
 
 #: inc/ticket.class.php:2651
 msgid "Internal time to resolve exceedeed"
-msgstr "Temps interne de résolution dépassé"
+msgstr "TTR interne dépassé"
 
 #: inc/ticket.class.php:2661 inc/ticket.class.php:2853
 #: inc/ticket.class.php:4420 inc/ticket.class.php:4422
 #: inc/ticket.class.php:6803 inc/notificationtargetticket.class.php:598
 msgid "Internal time to own"
-msgstr "Temps interne de prise en compte"
+msgstr "TTO interne"
 
 #: inc/ticket.class.php:2672
 msgid "Internal time to own + Progress"
-msgstr "Temps interne de prise en charge + progression"
+msgstr "TTO interne + progression"
 
 #: inc/ticket.class.php:2682
 msgid "Internal time to own exceedeed"
-msgstr "Temps interne de prise en charge dépassé"
+msgstr "TTO interne dépassé"
 
 #: inc/ticket.class.php:2693
 msgid "Next escalation level"
@@ -21482,11 +21482,11 @@ msgstr "Au moins très haut"
 
 #: inc/commonitilobject.class.php:3335
 msgid "Time to resolve + Progress"
-msgstr "Temps de résolution + Progression"
+msgstr "TTR + Progression"
 
 #: inc/commonitilobject.class.php:3345
 msgid "Time to resolve exceedeed"
-msgstr "Temps de résolution dépassé"
+msgstr "TTR dépassé"
 
 #: inc/commonitilobject.class.php:3407
 msgid "Last edit by"
