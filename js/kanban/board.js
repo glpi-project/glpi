@@ -262,7 +262,7 @@ export default class KanbanBoard {
             this.registerEventListeners();
             if (this.config.background_refresh_interval > 0) {
                // Wait a short time and then start the background refresh loop
-               this.delayRefresh();
+               this.delayRefresh(this);
             }
          });
       });
@@ -316,22 +316,23 @@ export default class KanbanBoard {
    /**
     * Start a background refresh and then automatically schedule the next one
     * based on {@link this.config.background_refresh_interval}
+    * @param {KanbanBoard} board
     * @since x.x.x
     */
-   backgroundRefresh() {
-      if (this.config.background_refresh_interval === 0) {
+   backgroundRefresh(board) {
+      if (board.config.background_refresh_interval === 0) {
          return;
       }
       const sorting = $('.ui-sortable-helper');
       // Check if the user is current sorting items
       if (sorting.length > 0) {
          // Wait 10 seconds and try the background refresh again
-         this.delayRefresh();
+         board.delayRefresh(board);
          return;
       }
       // Refresh and then schedule the next refresh (minutes)
-      this.refresh(null, null, () => {
-         this._backgroundRefreshTimer = window.setTimeout(this.backgroundRefresh, this.config.background_refresh_interval * 60 * 1000);
+      board.refresh(null, null, () => {
+         board._backgroundRefreshTimer = window.setTimeout(board.backgroundRefresh(board), board.config.background_refresh_interval * 60 * 1000);
       }, false);
    }
 
@@ -340,9 +341,9 @@ export default class KanbanBoard {
     * This should be called any time the user is in the middle of an action so that the refresh is not disruptive.
     * @since 9.5.0
     */
-   delayRefresh() {
-      window.clearTimeout(this._backgroundRefreshTimer);
-      this._backgroundRefreshTimer = window.setTimeout(this.backgroundRefresh, 10000);
+   delayRefresh(board) {
+      window.clearTimeout(board._backgroundRefreshTimer);
+      board._backgroundRefreshTimer = window.setTimeout(board.backgroundRefresh(board), 10000);
    }
 
    /**
@@ -393,7 +394,7 @@ export default class KanbanBoard {
       if (initial_load === undefined || initial_load === true) {
          _refresh();
       } else {
-         this.saveState(false, false, null, null, function() {
+         this.saveState(false, false, null, null, () => {
             this.loadState(_refresh);
          });
       }
@@ -410,8 +411,8 @@ export default class KanbanBoard {
       });
 
       // Filter using built-in text filter (Check title)
-      $(this.element + ' .kanban-item').each(function(i, item) {
-         const title = $(item).find(".kanban-item-header a").text();
+      $(this.element + ' .kanban-item').each((i, item) => {
+         const title = $(item).find(".kanban-item-header .kanban-item-title span.pointer").first().text();
          try {
             if (!title.match(new RegExp(this.filters._text, 'i'))) {
                $(item).addClass('filtered-out');
@@ -667,6 +668,7 @@ export default class KanbanBoard {
       column.createElement();
 
       let added = [];
+      const cards = column_params['items'] !== undefined ? column_params['items'] : [];
       $.each(this.user_state.state, (i, c) => {
          if (c['column'] === column_id) {
             $.each(c['cards'], (i2, card) => {
@@ -680,7 +682,7 @@ export default class KanbanBoard {
             });
          }
       });
-      const cards = column_params['items'] !== undefined ? column_params['items'] : [];
+
       $.each(cards, function(card_id, card) {
          if (added.indexOf(card['id']) < 0) {
             column.addCard(new KanbanCard(column, card));
@@ -1104,7 +1106,7 @@ export default class KanbanBoard {
          const itemtype = selection.prop('id').split('-')[2];
          this.clearAddItemForms(column);
          this.showAddItemForm(column, itemtype);
-         this.delayRefresh();
+         this.delayRefresh(this);
       });
       $('#kanban-bulk-add-dropdown li').on('click', (e) => {
          e.preventDefault();
@@ -1122,7 +1124,7 @@ export default class KanbanBoard {
 
          this.clearAddItemForms(column);
          this.showBulkAddItemForm(column, itemtype);
-         this.delayRefresh();
+         this.delayRefresh(this);
       });
       const switcher = $("select[name='kanban-board-switcher']").first();
       $(this.element + ' .kanban-toolbar').on('select2:select', switcher, (e) => {
@@ -1143,35 +1145,27 @@ export default class KanbanBoard {
       });
 
       $(this.element).on('input', '.kanban-add-form input, .kanban-add-form textarea', () => {
-         this.delayRefresh();
+         this.delayRefresh(this);
       });
 
       if (!this.rights.canOrderCard()) {
-         $(this.element).on(
-            'mouseenter',
-            '.kanban-column',
-            function () {
-               if (this.is_sorting_active) {
-                  return; // Do not change readonly states if user is sorting elements
-               }
-               // If user cannot order cards, make items temporarily readonly except for current column.
-               $(this).find('.kanban-body > li').removeClass('temporarily-readonly');
-               $(this).siblings().find('.kanban-body > li').addClass('temporarily-readonly');
+         $(this.element).on('mouseenter', '.kanban-column', (e) => {
+            if (this.is_sorting_active) {
+               return; // Do not change readonly states if user is sorting elements
             }
-         );
-         $(this.element).on(
-            'mouseleave',
-            '.kanban-column',
-            function () {
-               if (this.is_sorting_active) {
-                  return; // Do not change readonly states if user is sorting elements
-               }
-               $(this.element).find('.kanban-body > li').removeClass('temporarily-readonly');
+            // If user cannot order cards, make items temporarily readonly except for current column.
+            $(e.target).find('.kanban-body > li').removeClass('temporarily-readonly');
+            $(e.target).siblings().find('.kanban-body > li').addClass('temporarily-readonly');
+         });
+         $(this.element).on('mouseleave', '.kanban-column', () => {
+            if (this.is_sorting_active) {
+               return; // Do not change readonly states if user is sorting elements
             }
-         );
+            $(this.element).find('.kanban-body > li').removeClass('temporarily-readonly');
+         });
       }
 
-      $(this.element + ' .kanban-container').on('submit', '.kanban-add-form', function(e) {
+      $(this.element + ' .kanban-container').on('submit', '.kanban-add-form', (e) => {
          e.preventDefault();
          const form = $(e.target);
          const data = {
@@ -1189,7 +1183,7 @@ export default class KanbanBoard {
          });
       });
 
-      $(this.element + ' .kanban-container').on('click', '.kanban-item .kanban-item-title', function(e) {
+      $(this.element + ' .kanban-container').on('click', '.kanban-item .kanban-item-title', (e) => {
          e.preventDefault();
          const card = $(e.target).closest('.kanban-item');
          const [itemtype, items_id] = card.prop('id').split('-');
@@ -1323,8 +1317,8 @@ export default class KanbanBoard {
                }
             }
          },
-         stop: function(event, ui) {
-            self.is_sorting_active = false;
+         stop: (event, ui) => {
+            this.is_sorting_active = false;
             ui.item.closest('.kanban-column').trigger('mouseenter'); // force readonly states refresh
          }
       });
@@ -1514,23 +1508,23 @@ export default class KanbanBoard {
             window.sessionStorage.setItem('badge_colors', JSON.stringify(cached_colors));
          }
       });
-   };
-
-   /**
-    * Update the counter for the specified column.
-    * @since 9.5.0
-    * @param {string|Element|jQuery} column_el The column
-    */
-   updateColumnCount(column_el) {
-      if (!(column_el instanceof jQuery)) {
-         column_el = $(column_el);
-      }
-      const column_body = $(column_el).find('.kanban-body:first');
-      const counter = $(column_el).find('.kanban_nb:first');
-      // Get all visible kanban items. This ensures the count is correct when items are filtered out.
-      const items = column_body.find('li:not(.filtered-out)');
-      counter.text(items.length);
    }
+
+   // /**
+   //  * Update the counter for the specified column.
+   //  * @since 9.5.0
+   //  * @param {string|Element|jQuery} column_el The column
+   //  */
+   // updateColumnCount(column_el) {
+   //    if (!(column_el instanceof jQuery)) {
+   //       column_el = $(column_el);
+   //    }
+   //    const column_body = $(column_el).find('.kanban-body:first');
+   //    const counter = $(column_el).find('.kanban_nb:first');
+   //    // Get all visible kanban items. This ensures the count is correct when items are filtered out.
+   //    const items = column_body.find('li:not(.filtered-out)');
+   //    counter.text(items.length);
+   // }
 
    /**
     * Remove all add item forms from the specified column.
@@ -1657,7 +1651,7 @@ export default class KanbanBoard {
       add_form += "</form>";
       $(column_el.find('.kanban-body')[0]).append(add_form);
       $('#' + formID).get(0).scrollIntoView(false);
-      $("#" + formID).on('submit', function(e) {
+      $("#" + formID).on('submit', (e) => {
          e.preventDefault();
          const form = $(e.target);
          const data = {
@@ -1669,11 +1663,11 @@ export default class KanbanBoard {
          $.ajax({
             method: 'POST',
             //async: false,
-            url: (self.ajax_root + "kanban.php"),
+            url: (this.ajax_root + "kanban.php"),
             data: data
-         }).done(function() {
+         }).done(() => {
             $('#'+formID).remove();
-            self.refresh();
+            this.refresh();
          });
       });
    }

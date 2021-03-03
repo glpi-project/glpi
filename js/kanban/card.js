@@ -102,7 +102,7 @@ export default class KanbanCard {
     */
    createElement(initial_column) {
       const itemtype = this.id.split('-')[0];
-      const col_body = $('#'+initial_column.getElement()).find('.kanban-body').first();
+      const col_body = $(initial_column.getElement()).find('.kanban-body').first();
       let card_el = `
             <li id="${this.id}" class="kanban-item ${this.readonly ? 'readonly' : ''} ${this.is_deleted ? 'deleted' : ''}">
                 <div class="kanban-item-header">
