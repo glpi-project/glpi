@@ -35,11 +35,13 @@
 import KanbanRights from "./rights";
 import KanbanColumn from "./column";
 import KanbanCard from "./card";
+import Teamwork from "../teamwork";
 
 /**
  * Kanban Board
  */
 export default class KanbanBoard {
+
    constructor(params = {}) {
       /**
        * Selector for the parent Kanban element. This is specified in PHP and passed in the GLPIKanban constructor.
@@ -148,14 +150,6 @@ export default class KanbanBoard {
           * @since 9.5.0
           */
          max_team_images: params['max_team_images'] || 3,
-         /**
-          * The size in pixels for the team badges.
-          * @name team_image_size
-          * @default 24
-          * @type {number} Time in minutes between background refreshes.
-          * @since 9.5.0
-          */
-         team_image_size: params['team_image_size'] || 24
       };
 
       /**
@@ -232,6 +226,11 @@ export default class KanbanBoard {
        * @type {boolean}
        */
       this.is_sorting_active = false;
+
+      this.teamwork = new Teamwork({
+         dark_theme: this.config.dark_theme,
+         team_image_size: params['team_image_size'] || 24
+      });
    }
 
    /**
