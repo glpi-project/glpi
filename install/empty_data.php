@@ -2773,6 +2773,13 @@ $tables['glpi_notifications'] = [
       'event'        => 'checkpluginsupdate',
       'is_recursive' => 1,
       'is_active'    => 1,
+   ], [
+      'id'           => 72,
+      'name'         => 'New user mentionned',
+      'itemtype'     => 'Ticket',
+      'event'        => 'user_mention',
+      'is_recursive' => 1,
+      'is_active'    => 1,
    ],
 ];
 
@@ -3132,6 +3139,11 @@ $tables['glpi_notifications_notificationtemplates'] = [
       'notifications_id'         =>  '71',
       'mode'                     =>  'mailing',
       'notificationtemplates_id' =>  28,
+   ], [
+      'id'                       => 72,
+      'notifications_id'         => '72',
+      'mode'                     => 'mailing',
+      'notificationtemplates_id' => 4,
    ],
 ];
 
@@ -3821,6 +3833,11 @@ $tables['glpi_notificationtargets'] = [
       'items_id'         => '1',
       'type'             => '1',
       'notifications_id' => '71',
+   ], [
+      'id'               => '140',
+      'items_id'         => '39',
+      'type'             => '1',
+      'notifications_id' => '72',
    ],
 ];
 

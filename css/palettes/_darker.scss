@@ -890,3 +890,10 @@ div.progress {
 .boxnote {
    background: #585957;
 }
+
+.rich_text_container .user-mention {
+   background: rgba(0, 0, 0, 0.5);
+}
+.mce-content-body [data-user-mention="true"] {
+   background: rgba(80, 80, 80, 0.5);
+}

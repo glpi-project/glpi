@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
  * @since 9.4.0
  */
 class ITILFollowup  extends CommonDBChild {
+   use \Glpi\Features\UserMention;
 
    // From CommonDBTM
    public $auto_message_on_action = false;
@@ -317,6 +318,8 @@ class ITILFollowup  extends CommonDBChild {
       ];
       Log::history($this->getField('items_id'), get_class($parentitem), $changes, $this->getType(),
                    Log::HISTORY_ADD_SUBITEM);
+
+      parent::post_addItem();
    }
 
 
@@ -500,6 +503,8 @@ class ITILFollowup  extends CommonDBChild {
       ];
       Log::history($this->getField('items_id'), $this->fields['itemtype'], $changes, $this->getType(),
                    Log::HISTORY_UPDATE_SUBITEM);
+
+      parent::post_updateItem($history);
    }
 
 
@@ -826,6 +831,7 @@ class ITILFollowup  extends CommonDBChild {
                          'enable_richtext'   => true,
                          'cols'              => $cols,
                          'rows'              => $rows]);
+         Html::activateUserMentions($content_id);
 
          if ($this->fields["date"]) {
             echo "</td><td>"._n('Date', 'Dates', 1)."</td>";

@@ -39,6 +39,7 @@ if (!defined('GLPI_ROOT')) {
  * ITILSolution Class
 **/
 class ITILSolution extends CommonDBChild {
+   use \Glpi\Features\UserMention;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -232,6 +233,7 @@ class ITILSolution extends CommonDBChild {
       if ($canedit) {
          $rand = mt_rand();
          Html::initEditorSystem("content$rand");
+         Html::activateUserMentions("content$rand");
 
          echo "<div id='solution$rand_text'>";
          echo "<textarea id='content$rand' name='content' rows='12' cols='80'>".
@@ -397,6 +399,8 @@ class ITILSolution extends CommonDBChild {
          'content_field' => 'content',
       ];
       $this->input = $this->addFiles($this->input, $options);
+
+      parent::post_updateItem($history);
    }
 
 

@@ -66,6 +66,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $this->options['sendprivate'] = $options['is_private'];
       }
 
+      if (isset($options['users_id'])) {
+         $this->options['users_id'] = $options['users_id'];
+      }
+
    }
 
 
@@ -127,6 +131,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          'add_followup'      => __("New followup"),
          'update_followup'   => __('Update of a followup'),
          'delete_followup'   => __('Deletion of a followup'),
+         'user_mention'      => __('User mentionned'),
       ];
 
       asort($events);
@@ -728,6 +733,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    **/
    function addAdditionalTargets($event = '') {
 
+      if ($event === 'user_mention') {
+         $this->addTarget(Notification::MENTIONNED_USER, __('Mentionned user'));
+         return; // Do not propose more targets
+      }
+
       if ($event=='update') {
          $this->addTarget(Notification::OLD_TECH_IN_CHARGE,
                           __('Former technician in charge of the ticket'));
@@ -893,7 +903,30 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                   $this->addLinkedGroupWithoutSupervisorByType(CommonITILActor::OBSERVER);
                   break;
 
+               case Notification::MENTIONNED_USER :
+                  $this->addMentionnedUser($options);
+                  break;
+
             }
+      }
+   }
+
+   /**
+    * Add mentionned user to recipients.
+    *
+    * @param array $options
+    *
+    * @return void
+    */
+   protected function addMentionnedUser(array $options): void {
+      $user = new User();
+      if (array_key_exists('users_id', $options) && $user->getFromDB($options['users_id'])) {
+         $this->addToRecipientsList(
+            [
+               'language' => $user->fields['language'],
+               'users_id' => $user->fields['id'],
+            ]
+         );
       }
    }
 

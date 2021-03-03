@@ -1,0 +1,348 @@
+<?php
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2021 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+namespace tests\units\Glpi\Features;
+
+use CommonITILActor;
+use CommonITILObject;
+use DbTestCase;
+use Notification;
+use Notification_NotificationTemplate;
+use NotificationTarget;
+use NotificationTemplate;
+use NotificationTemplateTranslation;
+use User;
+
+class UserMention extends DbTestCase {
+
+   protected function itilProvider() {
+      $tech_id = getItemByTypeName('User', 'tech', true);
+      $normal_id = getItemByTypeName('User', 'normal', true);
+
+      // Delete existing notifications targets (to prevent sending of notifications not related to user_mention)
+      $notification_targets = new NotificationTarget();
+      $notification_targets->deleteByCriteria(['NOT' => ['items_id' => Notification::MENTIONNED_USER]]);
+
+      // Add email to users for notifications
+      $user = new User();
+      $update = $user->update(['id' => $tech_id, '_useremails' => ['tech@glpi-project.org']]);
+      $this->boolean($update)->isTrue();
+      $update = $user->update(['id' => $normal_id, '_useremails' => ['normal@glpi-project.org']]);
+      $this->boolean($update)->isTrue();
+
+      $types_mapping = [
+         'Change' => [
+            'ITILFollowup',
+            'ChangeTask',
+            'ITILSolution',
+         ],
+         'Problem' => [
+            'ITILFollowup',
+            'ProblemTask',
+            'ITILSolution',
+         ],
+         'Ticket' => [
+            'ITILFollowup',
+            'TicketTask',
+            'ITILSolution',
+         ],
+      ];
+
+      foreach ($types_mapping as $main_type => $sub_types) {
+         $this->createNotification($main_type);
+
+         foreach (array_merge([$main_type], $sub_types) as $itemtype) {
+            yield [
+               'itemtype'      => $itemtype,
+               'main_itemtype' => $main_type,
+
+                // No user mention on creation => no observer
+               'add_content'            => <<<HTML
+                  <p>ping @tec</p>
+HTML
+               ,
+               'add_expected_observers' => [],
+               'add_expected_notified'  => [],
+
+               // Added mentions on update => new observers
+               'update_content'            => <<<HTML
+                  <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
+HTML
+               ,
+               'update_expected_observers' => [$tech_id],
+               'update_expected_notified'  => [$tech_id],
+            ];
+
+            yield [
+               'itemtype'      => $itemtype,
+               'main_itemtype' => $main_type,
+
+               // 1 user mention => 1 observer
+               'add_content'            => <<<HTML
+                  <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
+HTML
+               ,
+               'add_expected_observers' => [$tech_id],
+               'add_expected_notified'  => [$tech_id],
+
+               // Added mentions on update => new observers
+               'update_content'            => <<<HTML
+                  <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
+HTML
+               ,
+               'update_expected_observers' => [],
+               'update_expected_notified'  => [],
+            ];
+
+            yield [
+               'itemtype'      => $itemtype,
+               'main_itemtype' => $main_type,
+
+               // multiple user mentions => multiple observer
+               // validate that data-* attributes order has no impact
+               'add_content'            => <<<HTML
+                  <p>Hi <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span>,</p>
+                  <p>I discussed with <span data-user-id="{$normal_id}" data-user-mention="true">@normal</span> about ...</p>
+HTML
+               ,
+               'add_expected_observers' => [$tech_id, $normal_id],
+               'add_expected_notified'  => [$tech_id, $normal_id],
+
+               // Deleted mentions on update => no change on observers
+               'update_content'            => <<<HTML
+                  <p>Hi <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span>,</p>
+                  <p> ... </p>
+HTML
+               ,
+               'update_expected_observers' => [],
+               'update_expected_notified'  => [],
+            ];
+
+            $item = getItemForItemtype($itemtype);
+            if ($item->maybePrivate()) {
+               yield [
+                  'itemtype'      => $itemtype,
+                  'main_itemtype' => $main_type,
+
+                  // Created content => no notification to private users
+                  'add_content'            => <<<HTML
+                     <p>Hi <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span>,</p>
+                     <p>I discussed with <span data-user-id="{$normal_id}" data-user-mention="true">@normal</span> about ...</p>
+HTML
+                  ,
+                  'add_expected_observers' => [$tech_id, $normal_id],
+                  'add_expected_notified'  => [$tech_id],
+
+                  // Updated content => no notification to private users
+                  'update_content'            => <<<HTML
+                     <p>Hi <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span>,</p>
+                     <p>I discussed with <span data-user-id="{$normal_id}" data-user-mention="true">@normal</span> about ...</p>
+                     <p> ... </p>
+HTML
+                  ,
+                  'update_expected_observers' => [],
+                  'update_expected_notified'  => [],
+                  'is_private'                => true,
+               ];
+            }
+         }
+      }
+   }
+
+   /**
+    * @dataProvider itilProvider
+    */
+   public function testHandleUserMentions(
+      string $itemtype,
+      string $main_itemtype,
+      string $add_content,
+      array $add_expected_observers,
+      array $add_expected_notified,
+      string $update_content,
+      array $update_expected_observers,
+      array $update_expected_notified,
+      ?bool $is_private = null
+   ) {
+      global $CFG_GLPI;
+      $CFG_GLPI['use_notifications'] = 1;
+      $CFG_GLPI['notifications_mailing'] = 1;
+
+      $this->login();
+
+      $item = getItemForItemtype($itemtype);
+
+      $input = [
+         'content' => $add_content,
+      ];
+
+      if (is_a($itemtype, CommonITILObject::class, true)) {
+         $main_item = $item;
+
+         $input['name'] = $this->getUniqueString(); // code does not handle absence of name in input
+      } else {
+         // Create main item to be able to attach it the sub item
+         $main_item = getItemForItemtype($main_itemtype);
+
+         $main_item_id = $main_item->add(
+            [
+               'name'    => $this->getUniqueString(),
+               'content' => $this->getUniqueString(),
+            ]
+         );
+         $this->integer($main_item_id)->isGreaterThan(0);
+
+         if ($item->isField($main_item->getForeignKeyField())) {
+            $input[$main_item->getForeignKeyField()] = $main_item_id;
+         } else {
+            $input['itemtype'] = $main_itemtype;
+            $input['items_id'] = $main_item_id;
+         }
+      }
+
+      if ($is_private !== null) {
+         $input['is_private'] = $is_private ? 1 : 0;
+      }
+
+      // Create item
+      $item_id = $item->add($input);
+      $this->integer($item_id)->isGreaterThan(0);
+
+      // Check observers on creation
+      $observers = getAllDataFromTable(
+         $main_item->userlinkclass::getTable(),
+         [
+            'type' => CommonITILActor::OBSERVER,
+            $main_item->getForeignKeyField() => $main_item->getID(),
+         ]
+      );
+      $this->array($observers)->hasSize(count($add_expected_observers));
+      $this->array(array_column($observers, 'users_id'))->isEqualTo($add_expected_observers);
+
+      // Check notifications sent on creation
+      $notifications = getAllDataFromTable(
+         'glpi_queuednotifications',
+         [
+            'itemtype' => $main_itemtype,
+            'items_id' => $main_item->getID(),
+         ]
+      );
+      $this->array($notifications)->hasSize(count($add_expected_notified));
+
+      // Update item
+      $update = $item->update(['id' => $item->getID(), 'content' => $update_content]);
+      $this->boolean($update)->isTrue();
+
+      // Check observers on update
+      $observers = getAllDataFromTable(
+         $main_item->userlinkclass::getTable(),
+         [
+            'type' => CommonITILActor::OBSERVER,
+            $main_item->getForeignKeyField() => $main_item->getID(),
+         ]
+      );
+      $expected_observers = array_merge($add_expected_observers + $update_expected_observers);
+      $this->array($observers)->hasSize(count($expected_observers));
+      $this->array(array_column($observers, 'users_id'))->isEqualTo($expected_observers);
+
+      // Check notifications sent on update
+      $notifications = getAllDataFromTable(
+         'glpi_queuednotifications',
+         [
+            'itemtype' => $main_itemtype,
+            'items_id' => $main_item->getID(),
+         ]
+      );
+      $this->array($notifications)->hasSize(count($add_expected_notified) + count($update_expected_notified));
+   }
+
+   /**
+    * Create user_mention notification / template / targets for given itemtype.
+    *
+    * @param string $itemtype
+    *
+    * @return void
+    */
+   private function createNotification(string $itemtype): void {
+      $notification = new Notification();
+      $id = $notification->add(
+         [
+            'name'        => 'New user mentionned',
+            'entities_id' => 0,
+            'itemtype'    => $itemtype,
+            'event'       => 'user_mention',
+            'is_active'   => 1,
+         ]
+      );
+      $this->integer($id)->isGreaterThan(0);
+
+      $template = new NotificationTemplate();
+      $template_id = $template->add(
+         [
+            'name'     => 'New user mentionned',
+            'itemtype' => $itemtype,
+         ]
+      );
+      $this->integer($template_id)->isGreaterThan(0);
+
+      $template_translation = new NotificationTemplateTranslation();
+      $template_translation_id = $template_translation->add(
+         [
+            'notificationtemplates_id' => $template_id,
+            'language'                 => '',
+            'subject'                  => 'You have been mentioned',
+            'content_text'             => '...',
+            'content_html'             => '...',
+         ]
+      );
+      $this->integer($template_translation_id)->isGreaterThan(0);
+
+      $notification_notificationtemplate = new Notification_NotificationTemplate();
+      $notification_notificationtemplate_id = $notification_notificationtemplate->add(
+         [
+            'notifications_id'         => $id,
+            'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+            'notificationtemplates_id' => $template_id,
+         ]
+      );
+      $this->integer($notification_notificationtemplate_id)->isGreaterThan(0);
+
+      $target = new NotificationTarget();
+      $target_id = $target->add(
+         [
+            'items_id'         => Notification::MENTIONNED_USER,
+            'type'             => 1,
+            'notifications_id' => $id,
+         ]
+      );
+      $this->integer($target_id)->isGreaterThan(0);
+   }
+}

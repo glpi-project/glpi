@@ -131,6 +131,8 @@ class Notification extends CommonDBTM {
    const TASK_ASSIGN_GROUP                   = 37;
    //Notification to planning event's guests
    const PLANNING_EVENT_GUESTS               = 38;
+   //Notification to the mentionned user
+   const MENTIONNED_USER                     = 39;
 
    // From CommonDBTM
    public $dohistory = true;
