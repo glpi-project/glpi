@@ -4045,6 +4045,7 @@ class Ticket extends CommonITILObject {
             'value'           => $content,
             'uploads'         => $uploads,
          ]);
+         Html::activateUserMentions($content_id);
          echo "</div>";
 
          if (!$tt->isHiddenField('_documents_id')) {
@@ -4968,6 +4969,7 @@ class Ticket extends CommonITILObject {
             'value'           => Html::entities_deep($content), // Re-encode entities for textarea
             'uploads'         => $uploads,
          ]);
+         Html::activateUserMentions($content_id);
       } else {
          echo $content;
       }

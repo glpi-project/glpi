@@ -1189,6 +1189,7 @@ class Change extends CommonITILObject {
             'value'           => Html::entities_deep($content), // Re-encode entities for textarea
             'uploads'         => $uploads,
          ]);
+         Html::activateUserMentions($content_id);
       } else {
          echo $content;
       }

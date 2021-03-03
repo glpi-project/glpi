@@ -41,6 +41,7 @@ use Sabre\VObject\Component\VCalendar;
 /// TODO extends it from CommonDBChild
 abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItemInterface {
    use Glpi\Features\PlanningEvent;
+   use Glpi\Features\UserMention;
    use VobjectConverterTrait;
 
    // From CommonDBTM
@@ -395,6 +396,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          Log::history($this->getField($item->getForeignKeyField()), $itemtype, $changes,
                       $this->getType(), Log::HISTORY_UPDATE_SUBITEM);
       }
+
+      parent::post_updateItem($history);
    }
 
 
@@ -544,6 +547,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       Log::history($this->getField($this->input["_job"]->getForeignKeyField()),
                    $this->input["_job"]->getTYpe(), $changes, $this->getType(),
                    Log::HISTORY_ADD_SUBITEM);
+
+      parent::post_addItem();
    }
 
 
@@ -1485,6 +1490,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                       'enable_richtext'   => true,
                       'cols'              => $cols,
                       'rows'              => $rows]);
+      Html::activateUserMentions($content_id);
 
       echo "<input type='hidden' name='$fkfield' value='".$this->fields[$fkfield]."'>";
       echo "</td>";

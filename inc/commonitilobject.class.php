@@ -39,6 +39,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 abstract class CommonITILObject extends CommonDBTM {
    use \Glpi\Features\Clonable;
+   use \Glpi\Features\UserMention;
 
    /// Users by type
    protected $users       = [];
@@ -1119,6 +1120,8 @@ abstract class CommonITILObject extends CommonDBTM {
          }
          $this->input = $this->addFiles($this->input, $options);
       }
+
+      parent::post_updateItem();
    }
 
 
@@ -2022,6 +2025,7 @@ abstract class CommonITILObject extends CommonDBTM {
       // Additional actors
       $this->addAdditionalActors($this->input);
 
+      parent::post_addItem();
    }
 
    /**
@@ -7164,6 +7168,7 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "</p>";
 
             echo "<div class='rich_text_container'>";
+            $content = $this->refreshUserMentionsHtmlToDisplay($content);
             $content = Html::replaceImagesByGallery($content);
             echo $content;
             echo "</div>";
@@ -7446,6 +7451,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       echo "<div class='rich_text_container'>";
       $content = Toolbox::getHtmlToDisplay($this->fields['content']);
+      $content = $this->refreshUserMentionsHtmlToDisplay($content);
       $content = Html::replaceImagesByGallery($content);
       echo $content;
       echo "</div>";

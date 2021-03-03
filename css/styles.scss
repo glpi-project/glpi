@@ -56,6 +56,9 @@ body {
       background: inherit;
    }
 }
+body.mce-content-body {
+   background: transparent;
+}
 
 ul, li, dt, dl, dd, form, img, input {
    margin: 0;
@@ -341,6 +344,19 @@ hr {
    ol {
       ul ul, ol ul {
          list-style-type: square;
+      }
+   }
+
+   .user-mention, [data-user-mention="true"] {
+      border-radius: 3px;
+      padding: 5px;
+
+      @at-root .rich_text_container .user-mention {
+         background: rgba(255, 255, 255, 0.5);
+      }
+      @at-root .mce-content-body [data-user-mention="true"] {
+         background: rgba(200, 200, 200, 0.5);
+         cursor: default !important; // Overrides "not-allowed" cursor on noneditable content
       }
    }
 }

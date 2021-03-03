@@ -1424,6 +1424,10 @@ class CommonDBTM extends CommonGLPI {
     * @return void
    **/
    function post_addItem() {
+
+      if (Toolbox::hasTrait($this, \Glpi\Features\UserMention::class)) {
+         $this->handleUserMentions();
+      }
    }
 
    /**
@@ -1790,6 +1794,10 @@ class CommonDBTM extends CommonGLPI {
     * @return void
    **/
    function post_updateItem($history = 1) {
+
+      if (Toolbox::hasTrait($this, \Glpi\Features\UserMention::class)) {
+         $this->handleUserMentions();
+      }
    }
 
 

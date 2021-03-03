@@ -3872,11 +3872,13 @@ JS;
       $language_url = $CFG_GLPI['root_doc'] . '/public/lib/tinymce-i18n/langs/' . $language . '.js';
 
       $skin_url = $CFG_GLPI['root_doc'] . '/public/lib/tinymce/skins/ui/oxide';
-      $content_css = $CFG_GLPI['root_doc'] . '/public/lib/tinymce/skins/content/default/content.css';
       if ($_SESSION['glpipalette'] === 'darker') {
          $skin_url = $CFG_GLPI['root_doc'] . '/public/lib/tinymce/skins/ui/oxide-dark';
-         $content_css = $CFG_GLPI['root_doc'] . '/public/lib/tinymce/skins/content/dark/content.css';
       }
+      // Apply all GLPI styles to editor content
+      $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss('css/styles'))
+         . ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss('css/palettes/' . $_SESSION['glpipalette'] ?? 'auror'))
+         . ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/base.css'));
 
       $cache_suffix = '?v='.GLPI_VERSION;
       $readonlyjs   = $readonly ? 'true' : 'false';
@@ -3911,6 +3913,7 @@ JS;
                language_url: '{$language_url}',
 
                skin_url: '{$skin_url}',
+               body_class: 'rich_text_container',
                content_css: '{$content_css}',
 
                min_height: '150px',
@@ -3932,7 +3935,6 @@ JS;
                cache_suffix: '{$cache_suffix}',
 
                setup: function(editor) {
-
                   // "required" state handling
                   if ($('#$name').attr('required') == 'required') {
                      $('#$name').removeAttr('required'); // Necessary to bypass browser validation
@@ -3988,6 +3990,44 @@ JS;
       } else {
          return  Html::scriptBlock($js);
       }
+   }
+
+   /**
+    * Activate user mentions feature in rich text editor.
+    *
+    * @param string $editor_id
+    *
+    * @return void
+    */
+   public static function activateUserMentions(string $editor_id): void {
+      global $CFG_GLPI;
+
+      if (!$CFG_GLPI['use_notifications']) {
+         return; // Do not enable this feature if notifications are not enabled
+      }
+
+      $current_entity = Session::getActiveEntity();
+      $user_idor = Session::getNewIDORToken(
+         User::class,
+         [
+            'right'           => 'all',
+            'entity_restrict' => $current_entity,
+         ]
+      );
+
+      echo Html::scriptBlock(<<<JAVASCRIPT
+         $(
+            function() {
+               var user_mention = new GLPI.RichText.UserMention(
+                  tinymce.get('{$editor_id}'),
+                  {$current_entity},
+                  '{$user_idor}'
+               );
+               user_mention.register();
+            }
+         );
+JAVASCRIPT
+      );
    }
 
    /**
@@ -6485,6 +6525,7 @@ JAVASCRIPT;
             break;
          case 'tinymce':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/tinymce.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/UserMention.js';
             break;
          case 'planning':
             $_SESSION['glpi_js_toload'][$name][] = 'js/planning.js';

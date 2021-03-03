@@ -3583,6 +3583,10 @@ class Dropdown {
          $post['all'] = 0;
       }
 
+      if (!isset($post['display_emptychoice'])) {
+         $post['display_emptychoice'] = 1;
+      }
+
       $used = [];
 
       if (isset($post['used'])) {
@@ -3634,7 +3638,7 @@ class Dropdown {
 
       // Display first if empty search
       if ($post['page'] == 1 && empty($post['searchText'])) {
-         if ($post['all'] == 0) {
+         if ($post['all'] == 0 && $post['display_emptychoice']) {
             $results[] = [
                'id' => 0,
                'text' => Dropdown::EMPTY_VALUE
