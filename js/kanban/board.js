@@ -243,6 +243,7 @@ export default class KanbanBoard {
       }
       this.applyFilters();
       this.loadState(() => {
+         $(this.element).get(0).dispatchEvent(new CustomEvent('kanban:pre_build'));
          this.build();
          $(document).ready(() => {
             $.ajax({
@@ -264,6 +265,7 @@ export default class KanbanBoard {
                // Wait a short time and then start the background refresh loop
                this.delayRefresh(this);
             }
+            $(this.element).get(0).dispatchEvent(new CustomEvent('kanban:post_build'));
          });
       });
    }
@@ -332,7 +334,7 @@ export default class KanbanBoard {
       }
       // Refresh and then schedule the next refresh (minutes)
       board.refresh(null, null, () => {
-         board._backgroundRefreshTimer = window.setTimeout(() => {board.backgroundRefresh(board)}, board.config.background_refresh_interval * 60 * 1000);
+         board._backgroundRefreshTimer = window.setTimeout(() => {board.backgroundRefresh(board);}, board.config.background_refresh_interval * 60 * 1000);
       }, false);
    }
 
@@ -343,7 +345,7 @@ export default class KanbanBoard {
     */
    delayRefresh(board) {
       window.clearTimeout(board._backgroundRefreshTimer);
-      board._backgroundRefreshTimer = window.setTimeout(() => {board.backgroundRefresh(board)}, 10000);
+      board._backgroundRefreshTimer = window.setTimeout(() => {board.backgroundRefresh(board);}, 10000);
    }
 
    /**
@@ -386,6 +388,7 @@ export default class KanbanBoard {
                fail(jqXHR, textStatus, errorThrown);
             }
          }).always(() => {
+            $(this.element).get(0).dispatchEvent(new CustomEvent('kanban:refresh'));
             if (always) {
                always();
             }
@@ -424,7 +427,8 @@ export default class KanbanBoard {
             }
          }
       });
-      // Check specialized filters (By column item property). Not currently supported.
+      // Check specialized filters
+      $(this.element).get(0).dispatchEvent(new CustomEvent('kanban:filter'));
 
       // Update column counters
       $(this.element + ' .kanban-column').each((i, column) => {
@@ -491,6 +495,7 @@ export default class KanbanBoard {
          }
          this.last_refresh = state['timestamp'];
 
+         $(this.element).get(0).dispatchEvent(new CustomEvent('kanban:post_load_state'));
          if (callback) {
             callback(true);
          }
@@ -541,6 +546,7 @@ export default class KanbanBoard {
          contentType: 'application/json'
       }).done((data, textStatus, jqXHR) => {
          this.user_state.is_dirty = false;
+         $(this.element).get(0).dispatchEvent(new CustomEvent('kanban:post_save_state'));
          if (success) {
             success(data, textStatus, jqXHR);
          }
@@ -1283,9 +1289,9 @@ export default class KanbanBoard {
             card.data('source-col', current_column);
             card.data('source-pos', card.index());
          },
-         update: function(event, ui) {
-            if (this === ui.item.parent()[0]) {
-               return self.onKanbanCardSort(ui, this);
+         update: (event, ui) => {
+            if (event.target === ui.item.parent()[0]) {
+               return this.onKanbanCardSort(ui, event.target);
             }
          },
          change: (event, ui) => {
@@ -1359,7 +1365,7 @@ export default class KanbanBoard {
       if (el_params.length === 2 && source !== null && !(!this.rights.canOrderCard() && source.length === 0)) {
          $.ajax({
             type: "POST",
-            url: (self.ajax_root + "kanban.php"),
+            url: (this.ajax_root + "kanban.php"),
             data: {
                action: "update",
                itemtype: el_params[0],
@@ -1379,8 +1385,8 @@ export default class KanbanBoard {
                   pos = card.index();
                }
                // Update counters. Always pass the column element instead of the kanban body (card container)
-               self.updateColumnCount($(source).closest('.kanban-column'));
-               self.updateColumnCount($(target).closest('.kanban-column'));
+               this.updateColumnCount($(source).closest('.kanban-column'));
+               this.updateColumnCount($(target).closest('.kanban-column'));
                card.removeData('source-col');
                this.updateCardPosition(card.attr('id'), target.id, pos);
                return true;
@@ -1509,22 +1515,6 @@ export default class KanbanBoard {
          }
       });
    }
-
-   // /**
-   //  * Update the counter for the specified column.
-   //  * @since 9.5.0
-   //  * @param {string|Element|jQuery} column_el The column
-   //  */
-   // updateColumnCount(column_el) {
-   //    if (!(column_el instanceof jQuery)) {
-   //       column_el = $(column_el);
-   //    }
-   //    const column_body = $(column_el).find('.kanban-body:first');
-   //    const counter = $(column_el).find('.kanban_nb:first');
-   //    // Get all visible kanban items. This ensures the count is correct when items are filtered out.
-   //    const items = column_body.find('li:not(.filtered-out)');
-   //    counter.text(items.length);
-   // }
 
    /**
     * Remove all add item forms from the specified column.

@@ -120,7 +120,9 @@ export default class KanbanColumn {
    }
 
    registerListeners() {
-
+      $(this.board.element).on('kanban:filter', () => {
+         this.updateCounter();
+      });
    }
 
    /**
@@ -183,6 +185,8 @@ export default class KanbanColumn {
       $(column_el).prepend(column_header);
 
       $("<ul class='kanban-body'></ul>").appendTo(column_el);
+
+      this.registerListeners();
    }
 
    /**
@@ -301,5 +305,28 @@ export default class KanbanColumn {
     */
    addCard(card) {
       this.cards.push(card);
+   }
+
+   /**
+    * Move a card within this column
+    */
+   orderCard(card, position) {
+      const current_pos = this.cards.keys.filter((k) => {
+         return this.cards[k].getID() === card;
+      }).first();
+      if (current_pos.length === 1) {
+         this.cards[position] = this.cards[current_pos];
+         // TODO Handle card shifting
+         delete this.cards[current_pos];
+      }
+   }
+
+   updateCounter() {
+      const column_el = $(this.getElement());
+      const column_body = $(column_el).find('.kanban-body:first');
+      const counter = $(column_el).find('.kanban_nb:first');
+      // Get all visible kanban items. This ensures the count is correct when items are filtered out.
+      const items = column_body.find('li:not(.filtered-out)');
+      counter.text(items.length);
    }
 }
