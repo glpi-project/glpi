@@ -699,7 +699,7 @@ $tables['glpi_crontasks'] = [
    ], [
       'id'            => 41,
       'itemtype'      => 'Glpi\Inventory\Inventory',
-      'name'          => 'cleanorphans',
+      'name'          => 'cleaninventoryorphans',
       'frequency'     => 604800,
       'param'         => null,
       'state'         => 1,
