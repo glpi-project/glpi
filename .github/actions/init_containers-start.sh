@@ -15,6 +15,7 @@ docker-compose start
 
 if [[ "$UPDATE_FILES_ACL" = true ]]; then
   echo "Change files rights to give write access to app container user"
+  sudo apt-get install acl
   setfacl --recursive --modify u:1000:rwx $APPLICATION_ROOT
   setfacl --recursive --modify u:1000:rwx $APP_CONTAINER_HOME
 fi
