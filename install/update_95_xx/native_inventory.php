@@ -454,7 +454,7 @@ CronTask::Register(
 
 CronTask::Register(
    'Glpi\Inventory\Inventory',
-   'cleanorphans',
+   'cleaninventoryorphans',
    7 * DAY_TIMESTAMP,
    [
       'mode'  => CronTask::MODE_EXTERNAL,
