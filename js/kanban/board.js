@@ -332,7 +332,7 @@ export default class KanbanBoard {
       }
       // Refresh and then schedule the next refresh (minutes)
       board.refresh(null, null, () => {
-         board._backgroundRefreshTimer = window.setTimeout(board.backgroundRefresh(board), board.config.background_refresh_interval * 60 * 1000);
+         board._backgroundRefreshTimer = window.setTimeout(() => {board.backgroundRefresh(board)}, board.config.background_refresh_interval * 60 * 1000);
       }, false);
    }
 
@@ -343,7 +343,7 @@ export default class KanbanBoard {
     */
    delayRefresh(board) {
       window.clearTimeout(board._backgroundRefreshTimer);
-      board._backgroundRefreshTimer = window.setTimeout(board.backgroundRefresh(board), 10000);
+      board._backgroundRefreshTimer = window.setTimeout(() => {board.backgroundRefresh(board)}, 10000);
    }
 
    /**
