@@ -434,7 +434,9 @@ class Ajax {
                      }
                   });
                }
-               // We need to manually set the current tab if the main event was prevented
+               // We need to manually set the current tab if the main event was prevented.
+               // It happens when user switch between tabs and then select a tab that was already shown before.
+               // It is displayed without having to beeing reloaded.
                if (event.isDefaultPrevented()) {
                   var tabs = ui.tab.parent().children();
                   if (tabs.length > 1) {
