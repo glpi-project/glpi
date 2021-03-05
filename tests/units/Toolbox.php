@@ -477,12 +477,25 @@ class Toolbox extends \GLPITestCase {
    protected function cleanProvider() {
       return [
          ['mystring', 'mystring', null, 15, 0.56, false],
-         ['<strong>string</strong>', '&lt;strong&gt;string&lt;/strong&gt;', null, 15, 0.56, false],
+         ['<strong>string</strong>', '&#60;strong&#62;string&#60;/strong&#62;', null, 15, 0.56, false],
          [
             [null, '<strong>string</strong>', 3.2, 'string', true, '<p>my</p>', 9798],
-            [null, '&lt;strong&gt;string&lt;/strong&gt;', 3.2, 'string', true, '&lt;p&gt;my&lt;/p&gt;', 9798]
+            [null, '&#60;strong&#62;string&#60;/strong&#62;', 3.2, 'string', true, '&#60;p&#62;my&#60;/p&#62;', 9798]
          ]
       ];
+   }
+
+   protected function uncleanProvider() {
+      $dataset = $this->cleanProvider();
+
+      // Data produced by old XSS cleaning process
+      $dataset[] = ['<strong>string</strong>', '&lt;strong&gt;string&lt;/strong&gt;', null, 15, 0.56, false];
+      $dataset[] = [
+         [null, '<strong>string</strong>', 3.2, 'string', true, '<p>my</p>', 9798],
+         [null, '&lt;strong&gt;string&lt;/strong&gt;', 3.2, 'string', true, '&lt;p&gt;my&lt;/p&gt;', 9798]
+      ];
+
+      return $dataset;
    }
 
    /**
@@ -494,7 +507,7 @@ class Toolbox extends \GLPITestCase {
    }
 
    /**
-    * @dataProvider cleanProvider
+    * @dataProvider uncleanProvider
     */
    public function testUnclean_cross_side_scripting_deep($expected, $value) {
       $this->variable(\Toolbox::unclean_cross_side_scripting_deep($value))
@@ -507,9 +520,41 @@ class Toolbox extends \GLPITestCase {
       // nested list should be preserved
       $dataset[] = [
          '<div>Here a list example: <ul><li>one, with nested<ul><li>nested list</li></ul></li><li>two</li></ul></div>',
-         '&lt;div&gt;Here a list example: &lt;ul&gt;&lt;li&gt;one, with nested&lt;ul&gt;&lt;li&gt;nested list&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;two&lt;/li&gt;&lt;/ul&gt;'
+         '&#60;div&#62;Here a list example: &#60;ul&#62;&#60;li&#62;one, with nested&#60;ul&#62;&#60;li&#62;nested list&#60;/li&#62;&#60;/ul&#62;&#60;/li&#62;&#60;li&#62;two&#60;/li&#62;&#60;/ul&#62;'
       ];
       // on* attributes are not allowed
+      $dataset[] = [
+         '<img src="test.png" alt="test image" />',
+         '&#60;img src="test.png" alt="test image" onerror="javascript:alert(document.cookie);" /&#62;'
+      ];
+      $dataset[] = [
+         '<img src="test.png" alt="test image" />',
+         '&#60;img src="test.png" alt="test image" onload="javascript:alert(document.cookie);" /&#62;'
+      ];
+      // iframes should not be preserved by default
+      $dataset[] = [
+         'Here is an iframe: ', 'Here is an iframe: &#60;iframe src="http://glpi-project.org/"&#62;&#60;/iframe&#62;'
+      ];
+      // HTML comments should be removed
+      $dataset[] = [
+         '<p>Legit text</p>', '&#60;p&#62;Legit&#60;!-- This is an HTML comment --&#62; text&#60;/p&#62;'
+      ];
+      // CDATA should be removed
+      $dataset[] = [
+         '<p>Legit text</p>', '&#60;p&#62;Legit&#60;![CDATA[Some CDATA]]&#62; text&#60;/p&#62;'
+      ];
+
+      return $dataset;
+   }
+
+   protected function uncleanHtmlProvider() {
+      $dataset = $this->cleanHtmlProvider();
+
+      // Data produced by old XSS cleaning process
+      $dataset[] = [
+         '<div>Here a list example: <ul><li>one, with nested<ul><li>nested list</li></ul></li><li>two</li></ul></div>',
+         '&lt;div&gt;Here a list example: &lt;ul&gt;&lt;li&gt;one, with nested&lt;ul&gt;&lt;li&gt;nested list&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;two&lt;/li&gt;&lt;/ul&gt;'
+      ];
       $dataset[] = [
          '<img src="test.png" alt="test image" />',
          '&lt;img src="test.png" alt="test image" onerror="javascript:alert(document.cookie);" /&gt;'
@@ -518,15 +563,12 @@ class Toolbox extends \GLPITestCase {
          '<img src="test.png" alt="test image" />',
          '&lt;img src="test.png" alt="test image" onload="javascript:alert(document.cookie);" /&gt;'
       ];
-      // iframes should not be preserved by default
       $dataset[] = [
          'Here is an iframe: ', 'Here is an iframe: &lt;iframe src="http://glpi-project.org/"&gt;&lt;/iframe&gt;'
       ];
-      // HTML comments should be removed
       $dataset[] = [
          '<p>Legit text</p>', '&lt;p&gt;Legit&lt;!-- This is an HTML comment --&gt; text&lt;/p&gt;'
       ];
-      // CDATA should be removed
       $dataset[] = [
          '<p>Legit text</p>', '&lt;p&gt;Legit&lt;![CDATA[Some CDATA]]&gt; text&lt;/p&gt;'
       ];
@@ -535,7 +577,7 @@ class Toolbox extends \GLPITestCase {
    }
 
    /**
-    * @dataProvider cleanHtmlProvider
+    * @dataProvider uncleanHtmlProvider
     */
    public function testUnclean_html_cross_side_scripting_deep($expected, $value) {
       $this->variable(\Toolbox::unclean_html_cross_side_scripting_deep($value))
@@ -667,7 +709,7 @@ class Toolbox extends \GLPITestCase {
 
       // Processed data is expected to be escaped
       $content_text = \Toolbox::addslashes_deep($content_text);
-      $expected_result = \Html::entities_deep($expected_result);
+      $expected_result = \Toolbox::clean_cross_side_scripting_deep($expected_result);
 
       $this->string(
          \Toolbox::convertTagToImage($content_text, $item, [$doc_id => ['tag' => $img_tag]])
@@ -723,7 +765,7 @@ class Toolbox extends \GLPITestCase {
 
       // Processed data is expected to be escaped
       $content_text = \Toolbox::addslashes_deep($content_text);
-      $expected_result = \Html::entities_deep($expected_result);
+      $expected_result = \Toolbox::clean_cross_side_scripting_deep($expected_result);
 
       // Save old config
       global $CFG_GLPI;
@@ -796,7 +838,7 @@ class Toolbox extends \GLPITestCase {
 
       // Processed data is expected to be escaped
       $content_text = \Toolbox::addslashes_deep($content_text);
-      $expected_result = \Html::entities_deep($expected_result);
+      $expected_result = \Toolbox::clean_cross_side_scripting_deep($expected_result);
 
       $this->string(
          \Toolbox::convertTagToImage($content_text, $item, $doc_data)
@@ -840,8 +882,8 @@ class Toolbox extends \GLPITestCase {
 
       // Processed data is expected to be escaped
       $content_text = \Toolbox::addslashes_deep($content_text);
-      $expected_result_1 = \Html::entities_deep($expected_result_1);
-      $expected_result_2 = \Html::entities_deep($expected_result_2);
+      $expected_result_1 = \Toolbox::clean_cross_side_scripting_deep($expected_result_1);
+      $expected_result_2 = \Toolbox::clean_cross_side_scripting_deep($expected_result_2);
 
       $this->string(
          \Toolbox::convertTagToImage($content_text, $item, [$doc_id_1 => ['tag' => $img_tag]])
@@ -880,7 +922,7 @@ class Toolbox extends \GLPITestCase {
 
       // Processed data is expected to be escaped
       $content_text = \Toolbox::addslashes_deep($content_text);
-      $expected_result = \Html::entities_deep($expected_result);
+      $expected_result = \Toolbox::clean_cross_side_scripting_deep($expected_result);
 
       $this->string(
          \Toolbox::convertTagToImage($content_text, $item, [$doc_id => ['tag' => $img_tag]])
@@ -1108,8 +1150,12 @@ class Toolbox extends \GLPITestCase {
    protected function doubleEncodeEmailsProvider(): array {
       return [
          [
-            'source' => \Toolbox::clean_cross_side_scripting_deep('<test@glpi-project.org>'),
+            'source' => '&lt;test@glpi-project.org&gt;',
             'result' => '&amp;lt;test@glpi-project.org&amp;gt;',
+         ],
+         [
+            'source' => \Toolbox::clean_cross_side_scripting_deep('<test@glpi-project.org>'),
+            'result' => '&amp;#60;test@glpi-project.org&amp;#62;',
          ],
          [
             'source' => \Toolbox::clean_cross_side_scripting_deep('<a href="mailto:test@glpi-project.org">test@glpi-project.org</a>'),

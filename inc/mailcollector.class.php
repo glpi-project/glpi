@@ -1151,6 +1151,11 @@ class MailCollector  extends CommonDBTM {
                                                            $this->tags);
       }
 
+      if (!$DB->use_utf8mb4) {
+         // Replace emojis by their shortcode
+         $tkt['content'] = LitEmoji::encodeShortcode($tkt['content']);
+      }
+
       // Clean mail content
       $tkt['content'] = $this->cleanContent($tkt['content']);
 
@@ -1202,10 +1207,6 @@ class MailCollector  extends CommonDBTM {
          }
       }
 
-      if (!$DB->use_utf8mb4) {
-         $tkt['content'] = LitEmoji::encodeShortcode($tkt['content']);
-      }
-
       $tkt = Toolbox::addslashes_deep($tkt);
       return $tkt;
    }
@@ -1252,9 +1253,6 @@ class MailCollector  extends CommonDBTM {
       }
 
       $string = str_replace($br_marker, "<br />", $string);
-
-      // Double encoding for > and < char to avoid misinterpretations
-      $string = str_replace(['&lt;', '&gt;'], ['&amp;lt;', '&amp;gt;'], $string);
 
       // Prevent XSS
       $string = Toolbox::clean_cross_side_scripting_deep($string);

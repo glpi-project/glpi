@@ -367,9 +367,8 @@ class Toolbox {
          return $value;
       }
 
-      $in  = ['<', '>'];
-      $out = ['&lt;', '&gt;'];
-      return str_replace($in, $out, $value);
+      $mapping = self::getXssCleanCharsMapping();
+      return str_replace(array_keys($mapping), array_values($mapping), $value);
    }
 
 
@@ -392,9 +391,36 @@ class Toolbox {
          return $value;
       }
 
+      $mapping = self::getXssCleanCharsMapping();
+      foreach ($mapping as $htmlentity) {
+         if (strpos($value, $htmlentity) !== false) {
+            // Value was cleaned using new char mapping, so it must be uncleaned with same mapping
+            $mapping = array_reverse(self::getXssCleanCharsMapping());
+            return str_replace(array_values($mapping), array_keys($mapping), $value);
+         }
+      }
+
+      // Fallback to old chars mapping
       $in  = ['<', '>'];
       $out = ['&lt;', '&gt;'];
       return str_replace($out, $in, $value);
+   }
+
+   /**
+    * Get chars mapping used for XSS cleaning process.
+    * Keys are chars and values are corresponding html entities.
+    *
+    * @return string[]
+    */
+   private static function getXssCleanCharsMapping() {
+      // Order is important here.
+      // `str_replace` acts as a loop, so `&` replacement must be at first place, as other replacements
+      // will produce new `&` that should not be replaced.
+      return [
+         '&'  => '&#38;',
+         '<'  => '&#60;',
+         '>'  => '&#62;',
+      ];
    }
 
 
@@ -2662,11 +2688,11 @@ class Toolbox {
 
                   // 1 - Replace direct tag (with prefix and suffix) by the image
                   $content_text = preg_replace('/'.Document::getImageTag($image['tag']).'/',
-                                               Html::entities_deep($img), $content_text);
+                                               self::clean_cross_side_scripting_deep($img), $content_text);
 
                   // 2 - Replace img with tag in id attribute by the image
                   $regex = '/<img[^>]+' . preg_quote($image['tag'], '/') . '[^<]+>/im';
-                  preg_match_all($regex, Html::entity_decode_deep($content_text), $matches);
+                  preg_match_all($regex, self::unclean_cross_side_scripting_deep($content_text), $matches);
                   foreach ($matches[0] as $match_img) {
                      //retrieve dimensions
                      $width = $height = null;
@@ -2700,9 +2726,9 @@ class Toolbox {
                      $content_text = str_replace(
                         $match_img,
                         $new_image,
-                        Html::entity_decode_deep($content_text)
+                        self::unclean_cross_side_scripting_deep($content_text)
                      );
-                     $content_text = Html::entities_deep($content_text);
+                     $content_text = self::clean_cross_side_scripting_deep($content_text);
                   }
 
                   // Replace <br> TinyMce bug
@@ -3340,7 +3366,7 @@ HTML;
       // Search for strings that is an email surrounded by `<` and `>` but that cannot be an HTML tag:
       // - absence of quotes indicate that values is not part of an HTML attribute,
       // - absence of ; ensure that ending `&gt;` has not been reached.
-      $regex = "/(&lt;[^\"';]+?@[^\"';]+?&gt;)/";
+      $regex = "/((&lt;|&#60;)[^\"';]+?@[^\"';]+?(&gt;|&#62;))/";
       $string = preg_replace_callback($regex, function($matches) {
          return htmlentities($matches[1]);
       }, $string);
