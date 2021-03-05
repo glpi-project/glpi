@@ -5418,7 +5418,7 @@ JAVASCRIPT;
          if (!in_array($to_table, $already_link_tables2)) {
             array_push($already_link_tables2, $to_table);
             $JOIN .= "$LINK `$to_table`
-                         ON (`$items_table_alias`.`$to_fk` = `$from_table`.`id`
+                         ON (`$items_table_alias`.`$to_fk` = `$to_table`.`id`
                              $to_entity_restrict) ";
          }
       }
