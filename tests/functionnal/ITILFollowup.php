@@ -396,7 +396,7 @@ class ITILFollowup extends DbTestCase {
 
       $instance->add($input);
       $this->boolean($instance->isNewItem())->isFalse();
-      $expected = 'a href=&quot;/front/document.send.php?docid=';
+      $expected = 'a href="/front/document.send.php?docid=';
       $this->string($instance->fields['content'])->contains($expected);
 
       // Test uploads for item update
@@ -418,7 +418,7 @@ class ITILFollowup extends DbTestCase {
          ]
       ]);
       $this->boolean($success)->isTrue();
-      $expected = 'a href=&quot;/front/document.send.php?docid=';
+      $expected = 'a href="/front/document.send.php?docid=';
       $this->string($instance->fields['content'])->contains($expected);
    }
 

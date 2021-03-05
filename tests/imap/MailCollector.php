@@ -85,7 +85,7 @@ class MailCollector extends DbTestCase {
             'expected'  => "With a \ncarriage return"
          ], [
             'raw'       => 'We have a problem, <strong>URGENT</strong>',
-            'expected'  => 'We have a problem, &lt;strong&gt;URGENT&lt;/strong&gt;'
+            'expected'  => 'We have a problem, &#60;strong&#62;URGENT&#60;/strong&#62;'
          ], [ //dunno why...
             'raw'       => 'Subject with =20 character',
             'expected'  => "Subject with \n character"
@@ -659,10 +659,10 @@ class MailCollector extends DbTestCase {
       // Tickets on which content should be checked (key is ticket name)
       $tickets_contents = [
          // Plain text on mono-part email
-         'PHP fatal error' => 'On some cases, doing the following:&lt;br /&gt;# blahblah&lt;br /&gt;&lt;br /&gt;Will cause a PHP fatal error:&lt;br /&gt;# blahblah&lt;br /&gt;&lt;br /&gt;Best regards,',
+         'PHP fatal error' => 'On some cases, doing the following:<br /># blahblah<br /><br />Will cause a PHP fatal error:<br /># blahblah<br /><br />Best regards,',
          // HTML on multi-part email
-         'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine' => '&lt;p&gt;This message have reply to header, requester should be get from this header.&lt;/p&gt;',
-         'Mono-part HTML message' => '&lt;p&gt;This HTML message does not use &lt;strong&gt;"multipart/alternative"&lt;/strong&gt; format.&lt;/p&gt;',
+         'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine' => '<p>This message have reply to header, requester should be get from this header.</p>',
+         'Mono-part HTML message' => '<p>This HTML message does not use <strong>"multipart/alternative"</strong> format.</p>',
          '26 Illegal char in body' => '这是很坏的Minus C Blabla',
       ];
 
@@ -691,7 +691,7 @@ class MailCollector extends DbTestCase {
             $name = $data['name'];
 
             if (array_key_exists($name, $tickets_contents)) {
-               $this->string($data['content'])->isEqualTo($tickets_contents[$name]);
+               $this->string(\Toolbox::getHtmlToDisplay($data['content']))->isEqualTo($tickets_contents[$name]);
             }
 
             $this->string($data['content'])->notContains('cid:'); // check that image were correctly imported
@@ -751,27 +751,27 @@ class MailCollector extends DbTestCase {
          [
             'items_id' => 100,
             'users_id' => $tuid,
-            'content'  => 'This is a reply that references Ticket 100 in In-Reply-To header (old format).&lt;br /&gt;It should be added as followup.',
+            'content'  => 'This is a reply that references Ticket 100 in In-Reply-To header (old format).&#60;br /&#62;It should be added as followup.',
          ],
          [
             'items_id' => 100,
             'users_id' => $tuid,
-            'content'  => 'This is a reply that references Ticket 100 in References header (old format).&lt;br /&gt;It should be added as followup.',
+            'content'  => 'This is a reply that references Ticket 100 in References header (old format).&#60;br /&#62;It should be added as followup.',
          ],
          [
             'items_id' => 101,
             'users_id' => $tuid,
-            'content'  => 'This is a reply that references Ticket 101 in its subject.&lt;br /&gt;It should be added as followup.',
+            'content'  => 'This is a reply that references Ticket 101 in its subject.&#60;br /&#62;It should be added as followup.',
          ],
          [
             'items_id' => 100,
             'users_id' => $tuid,
-            'content'  => 'This is a reply that references Ticket 100 in In-Reply-To header (new format).&lt;br /&gt;It should be added as followup.',
+            'content'  => 'This is a reply that references Ticket 100 in In-Reply-To header (new format).&#60;br /&#62;It should be added as followup.',
          ],
          [
             'items_id' => 100,
             'users_id' => $tuid,
-            'content'  => 'This is a reply that references Ticket 100 in References header (new format).&lt;br /&gt;It should be added as followup.',
+            'content'  => 'This is a reply that references Ticket 100 in References header (new format).&#60;br /&#62;It should be added as followup.',
          ],
       ];
 
