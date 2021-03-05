@@ -646,6 +646,14 @@ class MassiveAction {
             }
          }
       }
+
+      // Remove icons as they are not displayed in list view
+      if (!$single) {
+         $actions = array_map(function($action) {
+            return strip_tags($action);
+         }, $actions);
+      }
+
       return $actions;
    }
 
