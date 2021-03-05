@@ -409,9 +409,12 @@ class Ajax {
             active: $selected_tab,
             // Loading indicator
             beforeLoad: function (event, ui) {
+               var event_prevented = false;
+
                if ($(ui.panel).html()
                    && !forceReload$rand) {
                   event.preventDefault();
+                  event_prevented = true;
                } else {
                   forceReload$rand = false;
                   var _loader = $('<div id=\'loadingtabs\'><div class=\'loadingindicator\'>" . addslashes(__('Loading...')) . "</div></div>');
@@ -433,14 +436,16 @@ class Ajax {
                      }
                   });
                }
-
-               var tabs = ui.tab.parent().children();
-               if (tabs.length > 1) {
-                  var newIndex = tabs.index(ui.tab);
-                  $.get(
-                     '".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
-                     { itemtype: '".addslashes($type)."', id: '$ID', tab: newIndex }
-                  );
+               // We need to manually set the current tab if the main event was prevented
+               if (event_prevented) {
+                  var tabs = ui.tab.parent().children();
+                  if (tabs.length > 1) {
+                     var newIndex = tabs.index(ui.tab);
+                     $.get(
+                        '".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
+                        { itemtype: '".addslashes($type)."', id: '$ID', tab: newIndex }
+                     );
+                  }
                }
             },
             load: function(event) {

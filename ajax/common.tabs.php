@@ -87,6 +87,11 @@ if (isset($_GET['_target'])) {
    $_GET['_target'] = Toolbox::cleanTarget($_GET['_target']);
 }
 
+$tabs = Toolbox::getAvailablesTabs($_UGET['_itemtype'], $_GET['id'] ?? null);
+if (isset($tabs[$_GET['_glpi_tab']])) {
+   Session::setActiveTab($_UGET['_itemtype'], $_GET['_glpi_tab']);
+}
+
 $notvalidoptions = ['_glpi_tab', '_itemtype', 'sort', 'order', 'withtemplate', 'formoptions'];
 $options         = $_GET;
 foreach ($notvalidoptions as $key) {
