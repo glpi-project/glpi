@@ -126,6 +126,73 @@ export default class KanbanColumn {
    }
 
    /**
+    * Create the required server-side items for a new column
+    * @param {KanbanBoard} board
+    * @param name
+    * @param params
+    * @returns {Promise<unknown>|*}
+    */
+   static createServerItem(board, name, params) {
+      if (name === undefined || name.length === 0) {
+         return new Promise(() => {});
+      }
+      return $.ajax({
+         method: 'POST',
+         url: (board.ajax_root + "kanban.php"),
+         contentType: 'application/json',
+         dataType: 'json',
+         data: {
+            action: "create_column",
+            itemtype: board.item.itemtype,
+            items_id: board.item.items_id,
+            column_field: board.config.column_field.id,
+            column_name: name,
+            params: params
+         }
+      });
+   }
+
+   /**
+    * Get a column from the server by ID
+    * @param {KanbanBoard} board
+    * @param column_id
+    */
+   static getColumn(board, column_id) {
+      let received_column = null;
+      $.ajax({
+         method: 'GET',
+         url: (board.ajax_root + "kanban.php"),
+         contentType: 'application/json',
+         dataType: 'json',
+         async: false,
+         data: {
+            action: "get_column",
+            itemtype: board.item.itemtype,
+            items_id: board.item.items_id,
+            column_field: board.config.column_field.id,
+            column_id: column_id
+         }
+      }).done((column) => {
+         if (column !== undefined) {
+            received_column = new KanbanColumn(column);
+         }
+      });
+      return received_column;
+   }
+
+   static getAvailableColumns(board) {
+      return $.ajax({
+         method: 'GET',
+         url: (board.ajax_root + "kanban.php"),
+         data: {
+            action: "list_columns",
+            itemtype: board.item.itemtype,
+            column_field: board.config.column_field.id
+         }
+      });
+   }
+
+   /**
     *
     */
    createElement() {

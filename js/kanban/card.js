@@ -89,6 +89,10 @@ export default class KanbanCard {
       this.createElement(initial_column);
    }
 
+   getID() {
+      return this.id;
+   }
+
    /**
     * @returns {KanbanColumn}
     */

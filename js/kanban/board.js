@@ -77,6 +77,8 @@ export default class KanbanBoard {
        * @since x.x.x Moved to new KanbanBoard class
        * @type {{}}
        */
+      this._columns = {};
+
       this.columns = {};
 
       /**
@@ -275,47 +277,6 @@ export default class KanbanBoard {
    }
 
    /**
-    * Create a new column and send it to the server.
-    * This will create a new item in the DB based on the item type used for columns.
-    * It does not automatically add it to the Kanban.
-    * @since 9.5.0
-    * @since x.x.x Moved to new KanbanBoard class
-    *  - Added promise return
-    *  - Deprecated callback parameter
-    * @param {string} name The name of the new column.
-    * @param {Object} params Extra fields needed to create the column.
-    * @param {function} callback Function to call after the column is created (or fails to be created).
-    * @return {Promise}
-    */
-   createColumn(name, params, callback = undefined) {
-      if (name === undefined || name.length === 0) {
-         if (callback) {
-            callback();
-         }
-         return new Promise(()=>{});
-      }
-      const ajax_promise = $.ajax({
-         method: 'POST',
-         url: (this.ajax_root + "kanban.php"),
-         contentType: 'application/json',
-         dataType: 'json',
-         data: {
-            action: "create_column",
-            itemtype: this.item.itemtype,
-            items_id: this.item.items_id,
-            column_field: this.config.column_field.id,
-            column_name: name,
-            params: params
-         }
-      });
-
-      if (callback) {
-         ajax_promise.always(callback);
-      }
-      return ajax_promise;
-   }
-
-   /**
     * Start a background refresh and then automatically schedule the next one
     * based on {@link this.config.background_refresh_interval}
     * @param {KanbanBoard} board
@@ -376,7 +337,7 @@ export default class KanbanBoard {
                trim_cache: true
             });
             this.clearColumns();
-            this.columns = columns;
+            this._columns = columns;
             this.fillColumns();
             // Re-filter kanban
             this.applyFilters();
@@ -429,11 +390,6 @@ export default class KanbanBoard {
       });
       // Check specialized filters
       $(this.element).get(0).dispatchEvent(new CustomEvent('kanban:filter'));
-
-      // Update column counters
-      $(this.element + ' .kanban-column').each((i, column) => {
-         this.updateColumnCount(column);
-      });
    }
 
    hideEmptyColumns() {
@@ -642,14 +598,22 @@ export default class KanbanBoard {
          }
       }).done((column) => {
          if (column !== undefined) {
-            this.columns[column_id] = column[column_id];
-            this.appendColumn(column_id, this.columns[column_id], null, revalidate);
+            this._columns[column_id] = column[column_id];
+            this.appendColumn(column_id, this._columns[column_id], null, revalidate);
          }
       }).always(function() {
          if (callback) {
             callback();
          }
       });
+      const column = KanbanColumn.getColumn(this, column_id);
+      if (column !== null) {
+         this.columns[column_id] = column;
+         this.appendColumn(column_id, this.columns[column_id], null, revalidate);
+      }
+      if (callback) {
+         callback();
+      }
    }
 
    /**
@@ -672,6 +636,7 @@ export default class KanbanBoard {
          protected: column_params['protected']
       });
       column.createElement();
+      this.columns[this.columns.length] = column;
 
       let added = [];
       const cards = column_params['items'] !== undefined ? column_params['items'] : [];
@@ -884,11 +849,11 @@ export default class KanbanBoard {
       let already_processed = [];
       $.each(this.user_state.state, (position, column) => {
          if (column['visible'] !== false && column !== 'false') {
-            this.appendColumn(column['column'], this.columns[column['column']], columns_container);
+            this.appendColumn(column['column'], this._columns[column['column']], columns_container);
          }
          already_processed.push(column['column']);
       });
-      $.each(this.columns, (column_id, column) => {
+      $.each(this._columns, (column_id, column) => {
          if (!already_processed.includes(column_id)) {
             if (column['id'] === undefined) {
                this.appendColumn(column_id, column, columns_container);
@@ -1089,7 +1054,7 @@ export default class KanbanBoard {
          const name = $(this.create_column_form + " input[name='name']").val();
          $(this.create_column_form + " input[name='name']").val("");
          const color = $(this.create_column_form + " input[name='color']").val();
-         this.board.createColumn(name, {color: color}).then(() => {
+         KanbanColumn.createServerItem(this, name, {color: color}).then(() => {
             // Refresh add column list
             this.refreshAddColumnForm();
             $(this.add_column_form).css({
@@ -1222,15 +1187,7 @@ export default class KanbanBoard {
       });
       const column_dialog = $(this.add_column_form);
       const toolbar = $(this.element + ' .kanban-toolbar');
-      $.ajax({
-         method: 'GET',
-         url: (this.ajax_root + "kanban.php"),
-         data: {
-            action: "list_columns",
-            itemtype: this.item.itemtype,
-            column_field: this.config.column_field.id
-         }
-      }).done((data) => {
+      KanbanColumn.getAvailableColumns(this).done((data) => {
          const form_content = $(this.add_column_form + " .kanban-item-content");
          form_content.empty();
          form_content.append("<input type='text' name='column-name-filter' placeholder='" + __('Search') + "'/>");
@@ -1385,8 +1342,8 @@ export default class KanbanBoard {
                   pos = card.index();
                }
                // Update counters. Always pass the column element instead of the kanban body (card container)
-               this.updateColumnCount($(source).closest('.kanban-column'));
-               this.updateColumnCount($(target).closest('.kanban-column'));
+               this.getColumn($(source).closest('.kanban-column').attr('id')).updateCounter();
+               this.getColumn($(target).closest('.kanban-column').attr('id')).updateCounter();
                card.removeData('source-col');
                this.updateCardPosition(card.attr('id'), target.id, pos);
                return true;
@@ -1396,7 +1353,7 @@ export default class KanbanBoard {
          $(sortable).sortable('cancel');
          return false;
       }
-   };
+   }
 
    /**
     * Send the new card position to the server.
@@ -1467,7 +1424,7 @@ export default class KanbanBoard {
     **/
    preloadBadgeCache(options) {
       let users = [];
-      $.each(this.columns, function(column_id, column) {
+      $.each(this._columns, function(column_id, column) {
          if (column['items'] !== undefined) {
             $.each(column['items'], function(card_id, card) {
                if (card["_team"] !== undefined) {
