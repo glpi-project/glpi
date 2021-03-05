@@ -41,6 +41,7 @@ use DeviceGraphicCard;
 use DeviceHardDrive;
 use DeviceMemory;
 use DeviceProcessor;
+use DeviceSimcard;
 use DeviceSoundCard;
 use Html;
 use NetworkPortType;
@@ -73,6 +74,7 @@ class Conf extends CommonGLPI
       'component_networkcardvirtual'   => 1,
       'component_control'              => 1,
       'component_battery'              => 1,
+      'component_simcard'              => 1,
       'states_id_default'              => 0,
       'location'                       => 0,
       'group'                          => 0,
@@ -530,6 +532,20 @@ class Conf extends CommonGLPI
          'checked'   => $config['component_graphiccard']
       ]);
       echo "</td>";
+
+      echo "<td>";
+      echo "<label for='component_simcard'>";
+      echo DeviceSimcard::getTypeName(Session::getPluralNumber());
+      echo "</label>";
+      echo "</td>";
+      echo "<td>";
+      Html::showCheckbox([
+         'name'      => 'component_simcard',
+         'id'        => 'component_simcard',
+         'checked'   => $config['component_simcard']
+      ]);
+      echo "</td>";
+
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
