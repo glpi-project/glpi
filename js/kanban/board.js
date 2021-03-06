@@ -1081,7 +1081,7 @@ export default class KanbanBoard {
       });
       $('#kanban-bulk-add-dropdown li').on('click', (e) => {
          e.preventDefault();
-         const selection = $(e.target);
+         const selection = $(e.target).closest('li');
          // Traverse all the way up to the top-level overflow dropdown
          const dropdown = selection.closest('.kanban-dropdown');
          // Get the button that triggered the dropdown and then get the column that it is a part of
@@ -1502,14 +1502,14 @@ export default class KanbanBoard {
       let form_header = "<div class='kanban-item-header'>";
       form_header += `
             <span class='kanban-item-title'>
-               <i class="${self.supported_itemtypes[itemtype]['icon']}"></i>
-               ${self.supported_itemtypes[itemtype]['name']}
+               <i class="${this.config.supported_itemtypes[itemtype]['icon']}"></i>
+               ${this.config.supported_itemtypes[itemtype]['name']}
             </span>`;
       form_header += "<i class='fas fa-times' title='Close' onclick='$(this).parent().parent().remove()'></i></div>";
       add_form += form_header;
 
       add_form += "<div class='kanban-item-content'>";
-      $.each(self.supported_itemtypes[itemtype]['fields'], function(name, options) {
+      $.each(this.config.supported_itemtypes[itemtype]['fields'], function(name, options) {
          const input_type = options['type'] !== undefined ? options['type'] : 'text';
          const value = options['value'] !== undefined ? options['value'] : '';
 
@@ -1561,11 +1561,13 @@ export default class KanbanBoard {
       const formID = "form_add_" + itemtype + "_" + uniqueID;
       let add_form = "<form id='" + formID + "' class='kanban-add-form kanban-form no-track'>";
 
+      console.dir(this.config);
+      console.log(itemtype);
       add_form += `
             <div class='kanban-item-header'>
                 <span class='kanban-item-title'>
-                   <i class="${self.supported_itemtypes[itemtype]['icon']}"></i>
-                   ${self.supported_itemtypes[itemtype]['name']}
+                   <i class="${this.config.supported_itemtypes[itemtype]['icon']}"></i>
+                   ${this.config.supported_itemtypes[itemtype]['name']}
                 </span>
                 <i class='fas fa-times' title='Close' onclick='$(this).parent().parent().remove()'></i>
                 <div>
@@ -1576,7 +1578,7 @@ export default class KanbanBoard {
 
       add_form += "<div class='kanban-item-content'>";
       add_form += "<textarea name='bulk_item_list'></textarea>";
-      $.each(self.supported_itemtypes[itemtype]['fields'], function(name, options) {
+      $.each(this.config.supported_itemtypes[itemtype]['fields'], function(name, options) {
          const input_type = options['type'] !== undefined ? options['type'] : 'text';
          const value = options['value'] !== undefined ? options['value'] : '';
 
