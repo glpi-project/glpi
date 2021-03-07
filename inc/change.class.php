@@ -1170,12 +1170,7 @@ class Change extends CommonITILObject {
          $content = Html::cleanPostForTextArea($content);
       }
 
-      $content = Html::setRichTextContent(
-         $content_id,
-         $content,
-         $rand,
-         !$canupdate
-      );
+      $content = Toolbox::getHtmlToDisplay($content);
 
       echo "<div id='content$rand_text'>";
       if ($canupdate) {
@@ -1191,11 +1186,11 @@ class Change extends CommonITILObject {
             'required'        => $tt->isMandatoryField('content'),
             'rows'            => $rows,
             'enable_richtext' => true,
-            'value'           => $content,
+            'value'           => Html::entities_deep($content), // Re-encode entities for textarea
             'uploads'         => $uploads,
          ]);
       } else {
-         echo Toolbox::getHtmlToDisplay($content);
+         echo $content;
       }
       echo "</div>";
 

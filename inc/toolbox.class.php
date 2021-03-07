@@ -2999,11 +2999,17 @@ class Toolbox {
     */
    public static function getHtmlToDisplay($content) {
       $content = Toolbox::unclean_cross_side_scripting_deep(
-         Html::entity_decode_deep(
-            $content
-         )
+         $content
       );
-      $content = nl2br(Html::clean($content, false, 1));
+
+      $content = Html::clean($content, false, 1);
+
+      // If content does not contain <br> or <p> html tag, use nl2br
+      // Required to correctly render linebreaks from "simple text mode" from GLPI prior to 9.4.0.
+      if (!preg_match('/<br\s?\/?>/', $content) && !preg_match('/<p>/', $content)) {
+         $content = nl2br($content);
+      }
+
       return $content;
    }
 

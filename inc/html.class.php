@@ -4023,8 +4023,12 @@ JS;
     * @param boolean $readonly true will set editor in readonly mode
     *
     * @return $content
+    *
+    * @deprecated x.x.x
    **/
    static function setRichTextContent($name, $content, $rand, $readonly = false) {
+
+      Toolbox::deprecated();
 
       // Init html editor (if name of textarea is provided)
       if (!empty($name)) {
