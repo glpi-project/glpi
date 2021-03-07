@@ -265,6 +265,8 @@ class Change extends CommonITILObject {
    function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
+      parent::post_updateItem($history);
+
       $donotif = count($this->updates);
 
       if (isset($this->input['_forcenotif'])) {
@@ -623,11 +625,18 @@ class Change extends CommonITILObject {
 
       $default_values = self::getDefaultValues();
 
+      // Restore saved value or override with page parameter
+      $saved = $this->restoreInput();
+
       // Set default options
       if (!$ID) {
          foreach ($default_values as $key => $val) {
             if (!isset($options[$key])) {
-               $options[$key] = $val;
+               if (isset($saved[$key])) {
+                  $options[$key] = $saved[$key];
+               } else {
+                  $options[$key] = $val;
+               }
             }
          }
 
@@ -675,7 +684,8 @@ class Change extends CommonITILObject {
          $this->check(-1, CREATE, $options);
       }
 
-      $canupdate = !$ID || $this->canUpdateItem();
+      $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());
+
       $showuserlink = 0;
       if (User::canView()) {
          $showuserlink = 1;
@@ -710,9 +720,6 @@ class Change extends CommonITILObject {
       } else {
          $options['_predefined_fields'] = [];
       }
-
-      // Restore saved value or override with page parameter
-      $saved = $this->restoreInput();
 
       // Store predefined fields to be able not to take into account on change template
       // Only manage predefined values on ticket creation
@@ -1114,20 +1121,17 @@ class Change extends CommonITILObject {
       printf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
       echo $tt->getEndHiddenFieldText('content', $this);
       echo "</th><td colspan='3'>";
-      $rand = mt_rand();
 
       echo $tt->getBeginHiddenFieldValue('content');
+      $rand       = mt_rand();
+      $rand_text  = mt_rand();
+      $rows       = 10;
+      $content_id = "content$rand";
 
       $content = $this->fields['content'];
       if (!isset($options['template_preview'])) {
          $content = Html::cleanPostForTextArea($content);
       }
-
-      $content_id = "content$rand";
-      $rows       = 10;
-      $canupdate     = !$ID
-                        || (Session::getCurrentInterface() == "central"
-                            && $this->canUpdateItem());
 
       $content = Html::setRichTextContent(
          $content_id,
@@ -1136,9 +1140,28 @@ class Change extends CommonITILObject {
          !$canupdate
       );
 
-      echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'".
-            ($tt->isMandatoryField('content') ? " required='required'" : '') . ">" .
-            $content."</textarea>";
+      echo "<div id='content$rand_text'>";
+      if ($canupdate) {
+         $uploads = [];
+         if (isset($this->input['_content'])) {
+            $uploads['_content'] = $this->input['_content'];
+            $uploads['_tag_content'] = $this->input['_tag_content'];
+         }
+         Html::textarea([
+            'name'            => 'content',
+            'filecontainer'   => 'content_info',
+            'editor_id'       => $content_id,
+            'required'        => $tt->isMandatoryField('content'),
+            'rows'            => $rows,
+            'enable_richtext' => true,
+            'value'           => $content,
+            'uploads'         => $uploads,
+         ]);
+      } else {
+         echo Toolbox::getHtmlToDisplay($content);
+      }
+      echo "</div>";
+
       echo $tt->getEndHiddenFieldValue('content', $this);
       echo "</td></tr>";
 
