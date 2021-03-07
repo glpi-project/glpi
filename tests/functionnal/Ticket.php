@@ -3056,7 +3056,7 @@ class Ticket extends DbTestCase {
             $instance = new \Ticket();
             $instance->showForm('-1');
          }
-      )->contains('src="data:image/png;base64,' . $base64Image . '"');
+      )->contains('src=&quot;data:image/png;base64,' . $base64Image . '&quot;');
    }
 
    public function testScreenshotConvertedIntoDocument() {
@@ -3189,7 +3189,7 @@ class Ticket extends DbTestCase {
             $instance->showForm('0');
             $_SESSION['glpiactiveprofile']['tickettemplates_id'] = $session_tpl_id_back;
          }
-      )->contains('src="data:image/png;base64,' . $base64Image . '"');
+      )->contains('src=&quot;data:image/png;base64,' . $base64Image . '&quot;');
    }
 
 

@@ -32,6 +32,7 @@ The present file will list all changes made to the project; according to the
 - `CommonDBTM::clone()`
 - `CommonDBTM::prepareInputForClone()`
 - `CommonDBTM::post_clone()`
+- `Html::setRichTextContent()`
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
 
