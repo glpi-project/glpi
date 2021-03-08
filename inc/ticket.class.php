@@ -5051,6 +5051,10 @@ class Ticket extends CommonITILObject {
       echo "</table>";
       echo "<input type='hidden' name='id' value='$ID'>";
 
+      if (isset($options['_projecttasks_id'])) {
+         echo Html::hidden('_projecttasks_id', ['value' => $options['_projecttasks_id']]);
+      }
+
       echo "</div>";
 
       if (!$options['template_preview']) {
