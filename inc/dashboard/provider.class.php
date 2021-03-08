@@ -277,8 +277,8 @@ class Provider extends CommonGLPI {
                   ]
                ]
             ]);
-            $query_criteria['WHERE']+= [
-               "$table.status" => Ticket::getNotSolvedStatusArray(),
+            $query_criteria['WHERE']["$table.status"] = Ticket::getNotSolvedStatusArray();
+            $query_criteria['WHERE'][] = [
                'OR' => [
                   CommonITILObject::generateSLAOLAComputation('time_to_resolve', 'glpi_tickets'),
                   CommonITILObject::generateSLAOLAComputation('internal_time_to_resolve', 'glpi_tickets'),
