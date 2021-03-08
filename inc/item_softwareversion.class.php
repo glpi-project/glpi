@@ -1568,7 +1568,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
          $table.'.is_deleted' => 0
       ];
       if ($noent === false) {
-         $params = array_merge($params, getEntitiesRestrictCriteria($table, '', '', 'auto'));
+         $params['WHERE'] += getEntitiesRestrictCriteria($table, '', '', 'auto');
       }
       return $params;
    }
