@@ -102,7 +102,7 @@ class Provider extends CommonGLPI {
 
       $criteria = array_merge_recursive(
          [
-            'COUNT'  => 'cpt',
+            'SELECT' => ['COUNT DISTINCT' => $item::getTableField($item::getIndexName()) . ' as cpt'],
             'FROM'   => $i_table,
             'WHERE'  => $where
          ],
