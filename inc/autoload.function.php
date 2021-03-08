@@ -87,7 +87,7 @@ function isAPI() {
 function isPluginItemType($classname) {
 
    /** @var array $matches */
-   if (preg_match("/Plugin([A-Z][a-z0-9]+)([A-Z]\w+)/", $classname, $matches)) {
+   if (preg_match("/^Plugin([A-Z][a-z0-9]+)([A-Z]\w+)$/", $classname, $matches)) {
       $plug           = [];
       $plug['plugin'] = $matches[1];
       $plug['class']  = $matches[2];
