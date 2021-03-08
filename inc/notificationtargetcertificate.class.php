@@ -52,11 +52,11 @@ class NotificationTargetCertificate extends NotificationTarget {
    function addAdditionalTargets($event = '') {
       $this->addTarget(
          Notification::ITEM_TECH_IN_CHARGE,
-         __('Technician in charge of the domain')
+         __('Technician in charge of the certificate')
       );
       $this->addTarget(
          Notification::ITEM_TECH_GROUP_IN_CHARGE,
-         __('Group in charge of the domain')
+         __('Group in charge of the certificate')
       );
    }
 
