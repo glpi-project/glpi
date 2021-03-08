@@ -79,6 +79,10 @@ export default class KanbanBoard {
        */
       this._columns = {};
 
+      /**
+       *
+       * @type {Object<string, KanbanColumn>}
+       */
       this.columns = {};
 
       /**
@@ -184,18 +188,6 @@ export default class KanbanBoard {
       this.create_column_form = '';
 
       /**
-       * Cache for images to reduce network requests and keep the same generated image between cards.
-       * @since 9.5.0
-       * @type {{Group: {}, User: {}, Supplier: {}, Contact: {}}}
-       */
-      this.team_badge_cache = {
-         User: {},
-         Group: {},
-         Supplier: {},
-         Contact: {}
-      };
-
-      /**
        * Reference for the background refresh timer
        * @since 9.5.0
        * @type {number|null}
@@ -272,10 +264,6 @@ export default class KanbanBoard {
       });
    }
 
-   updateColumnCount(col) {
-      //TODO Remove. Only here to avoid errors. Needs to be handled in KanbanColumn class.
-   }
-
    /**
     * Start a background refresh and then automatically schedule the next one
     * based on {@link this.config.background_refresh_interval}
@@ -338,6 +326,11 @@ export default class KanbanBoard {
             });
             this.clearColumns();
             this._columns = columns;
+            // $.each(columns, (i, c) => {
+            //    if (this.columns[i] === undefined) {
+            //       this.appendColumn(i, c);
+            //    }
+            // });
             this.fillColumns();
             // Re-filter kanban
             this.applyFilters();
@@ -358,9 +351,7 @@ export default class KanbanBoard {
       if (initial_load === undefined || initial_load === true) {
          _refresh();
       } else {
-         this.saveState(false, false, null, null, () => {
-            this.loadState(_refresh);
-         });
+         this.loadState(_refresh);
       }
    }
 
@@ -431,22 +422,18 @@ export default class KanbanBoard {
             }
             return;
          }
-         this.user_state = {
-            is_dirty: false,
-            state: state['state']
-         };
 
          const indices = Object.keys(state['state']);
          for (let i = 0; i < indices.length; i++) {
             const index = indices[i];
             const entry = state['state'][index];
             const element = $('#column-' + this.config.column_field.id + "-" + entry.column);
-            if (element.length === 0) {
+            if (this.columns[entry.column] === undefined) {
                this.loadColumn(entry.column, true, false);
             }
-            $(this.element + ' .kanban-columns .kanban-column:nth-child(' + index + ')').after(element);
-            if (entry.folded === 'true') {
-               element.addClass('collapsed');
+            //$(this.element + ' .kanban-columns .kanban-column:nth-child(' + index + ')').after(element);
+            if (entry.folded === true && !this.columns[entry.column].collapsed) {
+               this.columns[entry.column].toggleCollapse();
             }
          }
          this.last_refresh = state['timestamp'];
@@ -459,97 +446,10 @@ export default class KanbanBoard {
    }
 
    /**
-    * Saves the current state of the Kanban to the DB for the user.
-    * This saves the visible columns and their collapsed state.
-    * This should only be done if there is no state stored on the server, so one needs built.
-    * Do NOT use this for changes to the state such as moving cards/columns!
-    * @since 9.5.0
-    * @param {boolean} rebuild_state If true, the column state is recalculated before saving.
-    *    By default, this is false as updates are done as changes are made in most cases.
-    * @param {boolean} force_save If true, the user state is saved even if it has not changed.
-    * @param {function} success Callback for when the user state is successfully saved.
-    * @param {function} fail Callback for when the user state fails to be saved.
-    * @param {function} always Callback that is called regardless of the success of the save.
+    * Reset/save initial Kanban state
     */
-   saveState(rebuild_state, force_save, success, fail, always) {
-      rebuild_state = rebuild_state !== undefined ? rebuild_state : false;
-      if (!force_save && !this.user_state.is_dirty) {
-         if (always) {
-            always();
-         }
-         return;
-      }
-      // Reload state in case it changed in another tab/window
-      if (rebuild_state) {
-         // Build state of the Kanban
-         this.updateColumnState();
-      }
-      if (this.user_state.state === undefined || this.user_state.state === null || Object.keys(this.user_state.state).length === 0) {
-         if (always) {
-            always();
-         }
-         return;
-      }
-      $.ajax({
-         type: "POST",
-         url: (this.ajax_root + "kanban.php"),
-         data: {
-            action: "save_column_state",
-            itemtype: this.item.itemtype,
-            items_id: this.item.items_id,
-            state: this.user_state.state
-         },
-         contentType: 'application/json'
-      }).done((data, textStatus, jqXHR) => {
-         this.user_state.is_dirty = false;
-         $(this.element).get(0).dispatchEvent(new CustomEvent('kanban:post_save_state'));
-         if (success) {
-            success(data, textStatus, jqXHR);
-         }
-      }).fail(function(jqXHR, textStatus, errorThrown) {
-         if (fail) {
-            fail(jqXHR, textStatus, errorThrown);
-         }
-      }).always(function() {
-         if (always) {
-            always();
-         }
-      });
-   }
+   resetState() {
 
-   /**
-    * Update the user state object, but do not send it to the server.
-    * This should only be done if there is no state stored on the server, so one needs built.
-    * Do NOT use this for changes to the state such as moving cards/columns!
-    * @since 9.5.0
-    */
-   updateColumnState() {
-      const new_state = {
-         is_dirty: true,
-         state: {}
-      };
-      $(this.element + " .kanban-column").each((i, element) => {
-         const column = $(element);
-         const element_id = column.prop('id').split('-');
-         const column_id = element_id[element_id.length - 1];
-         if (this.user_state.state[i] === undefined || column_id !== this.user_state.state[i]['column'] ||
-            this.user_state.state[i]['folded'] !== column.hasClass('collapsed')) {
-            new_state.is_dirty = true;
-         }
-         new_state.state[i] = {
-            column: column_id,
-            folded: column.hasClass('collapsed'),
-            cards: {}
-         };
-         $.each(column.find('.kanban-item'), (i2, element2) => {
-            new_state.state[i]['cards'][i2] = $(element2).prop('id');
-            if (this.user_state.state[i] !== undefined && this.user_state.state[i]['cards'] !== undefined && this.user_state.state[i]['cards'][i2] !== undefined  &&
-               this.user_state.state[i]['cards'][i2] !== new_state.state[i]['cards'][i2]) {
-               new_state.is_dirty = true;
-            }
-         });
-      });
-      this.user_state = new_state;
    }
 
    /**
@@ -598,8 +498,7 @@ export default class KanbanBoard {
          }
       }).done((column) => {
          if (column !== undefined) {
-            this._columns[column_id] = column[column_id];
-            this.appendColumn(column_id, this._columns[column_id], null, revalidate);
+            this.appendColumn(column_id, column[column_id], null, revalidate);
          }
       }).always(function() {
          if (callback) {
@@ -626,32 +525,24 @@ export default class KanbanBoard {
     *    If they do, the item is removed from that other column and the counter is updated.
     *    This is useful if an item is changed in another tab or by another user to be in the new column after the original column was added.
     */
-   appendColumn(column_id, column_params, columns_container, revalidate) {
-
+   appendColumn(column_id, column_params) {
       const column = new KanbanColumn({
          id: column_id,
          board: this,
          name: column_params['name'],
          header_color: column_params['header_color'],
-         protected: column_params['protected']
+         protected: column_params['protected'],
+         folded: column_params['folded']
       });
       column.createElement();
-      this.columns[this.columns.length] = column;
+      this.columns[column.getID()] = column;
 
       let added = [];
       const cards = column_params['items'] !== undefined ? column_params['items'] : [];
-      $.each(this.user_state.state, (i, c) => {
-         if (c['column'] === column_id) {
-            $.each(c['cards'], (i2, card) => {
-               $.each(cards, (i3, card2) => {
-                  if (card2['id'] === card) {
-                     column.addCard(new KanbanCard(column, card2));
-                     added.push(card2['id']);
-                     return false;
-                  }
-               });
-            });
-         }
+      $.each(cards, (i3, card2) => {
+         column.addCard(new KanbanCard(column, card2));
+         added.push(card2['id']);
+         return false;
       });
 
       $.each(cards, function(card_id, card) {
@@ -734,7 +625,7 @@ export default class KanbanBoard {
       const on_refresh = () => {
          if (Object.keys(this.user_state.state).length === 0) {
             // Save new state since none was stored for the user
-            this.saveState(true, true);
+            this.resetState();
          }
       };
       this.refresh(on_refresh, null, null, true);
@@ -832,37 +723,34 @@ export default class KanbanBoard {
       this.preserveScrolls();
       this.preserveNewItemForms();
       $(this.element + " .kanban-column").remove();
+      this._columns = {};
+      this.columns = {};
    }
 
    /**
     * Add all columns to the kanban. This does not clear the existing columns first.
     *    If you are refreshing the Kanban, you should call {@link clearColumns()} first.
     * @since 9.5.0
-    * @param {Object} columns_container JQuery Object of columns container. Not required.
-    *    If not specified, a new object will be created to reference this Kanban's columns container.
     */
-   fillColumns(columns_container) {
-      if (columns_container === undefined) {
-         columns_container = $(this.element + " .kanban-container .kanban-columns").first();
-      }
-
+   fillColumns() {
       let already_processed = [];
       $.each(this.user_state.state, (position, column) => {
          if (column['visible'] !== false && column !== 'false') {
-            this.appendColumn(column['column'], this._columns[column['column']], columns_container);
+            this.appendColumn(column['column'], this._columns[column['column']]);
          }
          already_processed.push(column['column']);
       });
       $.each(this._columns, (column_id, column) => {
          if (!already_processed.includes(column_id)) {
             if (column['id'] === undefined) {
-               this.appendColumn(column_id, column, columns_container);
+               this.appendColumn(column_id, column);
             }
          }
       });
       this.restoreNewItemForms();
       this.restoreScrolls();
    }
+
 
    /**
     * Add all event listeners. At this point, all elements should have been added to the DOM.
@@ -997,7 +885,7 @@ export default class KanbanBoard {
          // Get root dropdown, then the button that triggered it, and finally the column that the button is in
          const column = $(e.target.closest('.kanban-dropdown')).data('trigger-button').closest('.kanban-column');
          // Hide that column
-         this.hideColumn(getColumnIDFromElement(column));
+         this.columns[KanbanColumn.getIDFromElement(column)].hide();
       });
       $(this.element + ' .kanban-container').on('click', '.kanban-item-remove', (e) => {
          // Get root dropdown, then the button that triggered it, and finally the card that the button is in
@@ -1006,7 +894,8 @@ export default class KanbanBoard {
          this.deleteCard(card, undefined, undefined);
       });
       $(this.element + ' .kanban-container').on('click', '.kanban-collapse-column', (e) => {
-         this.toggleCollapseColumn(e.target.closest('.kanban-column'));
+         const column = $(e.target.closest('.kanban-column'));
+         this.columns[KanbanColumn.getIDFromElement(column)].toggleCollapse();
       });
       $(this.element).on('click', '.kanban-add-column', () => {
          this.refreshAddColumnForm();
@@ -1366,7 +1255,7 @@ export default class KanbanBoard {
     */
    updateCardPosition(card, column, position, error, success) {
       if (typeof column === 'string' && column.lastIndexOf('column', 0) === 0) {
-         column = getColumnIDFromElement(column);
+         column = KanbanColumn.getIDFromElement(column);
       }
       $.ajax({
          type: "POST",
@@ -1424,13 +1313,13 @@ export default class KanbanBoard {
     **/
    preloadBadgeCache(options) {
       let users = [];
-      $.each(this._columns, function(column_id, column) {
-         if (column['items'] !== undefined) {
-            $.each(column['items'], function(card_id, card) {
-               if (card["_team"] !== undefined) {
-                  Object.values(card["_team"]).slice(0, self.max_team_images).forEach(function(teammember) {
+      $.each(this.columns, (column_id, column) => {
+         if (column.cards !== undefined) {
+            $.each(column.cards, (card_id, card) => {
+               if (card.team !== undefined) {
+                  Object.values(card.team).slice(0, this.config.max_team_images).forEach((teammember) => {
                      if (teammember['itemtype'] === 'User') {
-                        if (self.team_badge_cache['User'][teammember['items_id']] === undefined) {
+                        if (this.teamwork.team_badge_cache['User'][teammember['items_id']] === undefined) {
                            users[teammember['items_id']] = teammember;
                         }
                      }
@@ -1443,28 +1332,28 @@ export default class KanbanBoard {
          return;
       }
       $.ajax({
-         url: (self.ajax_root + "getUserPicture.php"),
+         url: (this.ajax_root + "getUserPicture.php"),
          async: false,
          data: {
             users_id: Object.keys(users),
-            size: self.team_image_size
+            size: this.config.team_image_size
          },
          contentType: 'application/json',
          dataType: 'json'
-      }).done(function(data) {
-         Object.keys(users).forEach(function(user_id) {
+      }).done((data) => {
+         Object.keys(users).forEach((user_id) => {
             const teammember = users[user_id];
             if (data[user_id] !== undefined) {
-               self.team_badge_cache['User'][user_id] = "<span>" + data[user_id] + "</span>";
+               this.teamwork.team_badge_cache['User'][user_id] = "<span>" + data[user_id] + "</span>";
             } else {
-               self.team_badge_cache['User'][user_id] = generateUserBadge(teammember);
+               this.teamwork.team_badge_cache['User'][user_id] = this.teamwork.generateUserBadge(teammember);
             }
          });
          if (options !== undefined && options['trim_cache'] !== undefined) {
             let cached_colors = JSON.parse(window.sessionStorage.getItem('badge_colors'));
-            Object.keys(self.team_badge_cache['User']).forEach(function(user_id) {
+            Object.keys(this.teamwork.team_badge_cache['User']).forEach((user_id) => {
                if (users[user_id] === undefined) {
-                  delete self.team_badge_cache['User'][user_id];
+                  delete this.teamwork.team_badge_cache['User'][user_id];
                   delete cached_colors['User'][user_id];
                }
             });
@@ -1561,8 +1450,6 @@ export default class KanbanBoard {
       const formID = "form_add_" + itemtype + "_" + uniqueID;
       let add_form = "<form id='" + formID + "' class='kanban-add-form kanban-form no-track'>";
 
-      console.dir(this.config);
-      console.log(itemtype);
       add_form += `
             <div class='kanban-item-header'>
                 <span class='kanban-item-title'>

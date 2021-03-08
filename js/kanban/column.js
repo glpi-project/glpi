@@ -75,7 +75,7 @@ export default class KanbanColumn {
        *
        * @type {boolean}
        */
-      this.collapsed = false;
+      this.collapsed = Boolean(params['folded'] || false);
 
       /**
        *
@@ -117,6 +117,16 @@ export default class KanbanColumn {
 
    getElement() {
       return '#column-' + this.board.config.column_field.id + '-' + this.id;
+   }
+
+   static getIDFromElement(column_el) {
+      let element_id;
+      if (typeof column_el !== 'string') {
+         element_id = $(column_el).prop('id').split('-');
+      } else {
+         element_id = column_el.split('-');
+      }
+      return element_id[element_id.length - 1];
    }
 
    registerListeners() {
@@ -278,6 +288,7 @@ export default class KanbanColumn {
                   return false;
                }
             });
+            delete this.board.columns[this.id];
             $(this.board.element + " .kanban-add-column-form li[data-list-id='" + this.id + "']").prop('checked', false);
          }
       });
@@ -325,7 +336,7 @@ export default class KanbanColumn {
          data: {
             action: action,
             column: this.id,
-            kanban: self.item
+            kanban: this.board.item
          },
          contentType: 'application/json'
       });
