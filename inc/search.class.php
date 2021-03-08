@@ -2425,12 +2425,23 @@ JAVASCRIPT;
       if ($p['mainform']) {
          $JS .= <<<JAVASCRIPT
          $('.fold-search').on('click', function(event) {
+            var search_criteria =  $('#searchcriteria ul li:not(:first-child)');
             event.preventDefault();
             $(this)
                .toggleClass('fa-angle-double-up')
                .toggleClass('fa-angle-double-down');
-            $('#searchcriteria ul li:not(:first-child)').toggle();
+            search_criteria.toggle();
+            window.localStorage.setItem(
+               'show_full_searchcriteria',
+               search_criteria.first().is(':visible')
+            );
          });
+
+         // Init search_criteria state
+         var search_criteria_visibility = window.localStorage.getItem('show_full_searchcriteria');
+         if (search_criteria_visibility !== undefined && search_criteria_visibility == 'false') {
+            $('.fold-search').click();
+         }
 
          $(document).on("click", ".remove-search-criteria", function() {
             var rowID = $(this).data('rowid');
