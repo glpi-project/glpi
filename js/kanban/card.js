@@ -84,7 +84,7 @@ export default class KanbanCard {
        *
        * @type {{}}
        */
-      this.team = params['_team'] = {};
+      this.team = params['_team'] || {};
 
       this.createElement(initial_column);
    }
@@ -121,8 +121,8 @@ export default class KanbanCard {
          `;
       const team_count = Object.keys(this.team).length;
       if (team_count > 0) {
-         $.each(Object.values(this.team).slice(0, this.board.config.max_team_images), function(teammember_id, teammember) {
-            const team_member = new TeamMember(teammember['itemtype'], teammember['items_id'],
+         $.each(Object.values(this.team).slice(0, this.board.config.max_team_images), (teammember_id, teammember) => {
+            const team_member = new TeamMember(this.board.teamwork, teammember['itemtype'], teammember['items_id'],
                teammember['name'] || '', teammember);
             card_el += team_member.getBadge();
          });

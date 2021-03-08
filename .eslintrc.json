@@ -72,9 +72,16 @@
     },
     "overrides": [
         {
-            "files": ["webpack.config.js"],
+            "files": ["webpack.config.js", "tests/js/*/*", "jest.config.js"],
             "env": {
                 "node": true
+            }
+        },
+        {
+            "files": ["tests/js/*/*"],
+            "env": {
+                "node": true,
+                "jest": true
             }
         }
     ]

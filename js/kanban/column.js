@@ -126,7 +126,7 @@ export default class KanbanColumn {
       } else {
          element_id = column_el.split('-');
       }
-      return element_id[element_id.length - 1];
+      return Number.parseInt(element_id[element_id.length - 1]);
    }
 
    registerListeners() {
@@ -329,7 +329,8 @@ export default class KanbanColumn {
    toggleCollapse() {
       const column_el = $(this.getElement());
       column_el.toggleClass('collapsed');
-      const action = column_el.hasClass('collapsed') ? 'collapse_column' : 'expand_column';
+      this.collapsed = !this.collapsed;
+      const action = this.collapsed ? 'collapse_column' : 'expand_column';
       $.ajax({
          type: "POST",
          url: (this.board.ajax_root + "kanban.php"),

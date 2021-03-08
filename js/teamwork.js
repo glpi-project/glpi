@@ -97,8 +97,8 @@ export class TeamMember {
       const itemtype = this.itemtype;
       const items_id = this.items_id;
 
-      if (team_badge_cache['badges'][this] === undefined ) {
-         team_badge_cache['badges'][this] = this.teamMemberBadgeFactory.generateBadge(this);
+      if (this.teamwork.team_badge_cache['badges'][this] === undefined ) {
+         this.teamwork.team_badge_cache['badges'][this] = TeamMemberBadgeFactory.generateBadge(this);
       }
       return this.teamwork.team_badge_cache[itemtype][items_id];
    }
@@ -134,9 +134,9 @@ export class TeamMemberBadgeFactory {
          });
 
          if (user_img) {
-            team_badge_cache[itemtype][items_id] = "<span>" + user_img + "</span>";
+            team_member.teamwork.team_badge_cache[itemtype][items_id] = "<span>" + user_img + "</span>";
          } else {
-            team_badge_cache[itemtype][items_id] = this.generateUserBadge(team_member);
+            team_member.teamwork.team_badge_cache[itemtype][items_id] = this.generateUserBadge(team_member);
          }
       } else {
          switch (itemtype) {
@@ -162,17 +162,17 @@ export class TeamMemberBadgeFactory {
     * @returns {string} Hex code color value
     */
    static getBadgeColor(team_member) {
-      let cached_colors = this.getBadgeCache();
+      let cached_colors = team_member.teamwork.team_badge_cache.colors;
       const itemtype = team_member.itemtype;
       const baseColor = Math.random();
       const lightness = (Math.random() * 10) + (team_member.teamwork.dark_theme ? 25 : 70);
       //var bg_color = "hsl(" + baseColor + ", 100%," + lightness + "%,1)";
       let bg_color = ColorUtil.hslToHexColor(baseColor, 1, lightness / 100);
 
-      if (cached_colors !== null && cached_colors[itemtype] !== null && cached_colors[itemtype][team_member['id']]) {
-         bg_color = cached_colors[itemtype][team_member['id']];
+      if (cached_colors !== undefined && cached_colors[itemtype] !== undefined && cached_colors[itemtype][team_member.items_id]) {
+         bg_color = cached_colors[itemtype][team_member.items_id];
       } else {
-         if (cached_colors === null) {
+         if (cached_colors === null || cached_colors === undefined) {
             cached_colors = {
                User: {},
                Group: {},
@@ -181,7 +181,7 @@ export class TeamMemberBadgeFactory {
                _dark_theme: team_member.teamwork.dark_theme
             };
          }
-         cached_colors[itemtype][team_member['id']] = bg_color;
+         cached_colors[itemtype][team_member.items_id] = bg_color;
          window.sessionStorage.setItem('badge_colors', JSON.stringify(cached_colors));
       }
 
