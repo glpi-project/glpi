@@ -7460,7 +7460,7 @@ class Ticket extends CommonITILObject {
 
       $criteria = [];
       if (count($where_profile)) {
-         $criteria['WHERE'] = ['OR' => $where_profile];
+         $criteria['WHERE'] = [['OR' => $where_profile]];
       }
       if (count($join_profile)) {
          $criteria['LEFT JOIN'] = $join_profile;
