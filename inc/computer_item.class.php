@@ -736,7 +736,7 @@ class Computer_Item extends CommonDBRelation{
          return true;
       }
 
-      if (in_array($CFG_GLPI['directconnect_types'])) {
+      if (in_array($item->getType(), $CFG_GLPI['directconnect_types'])) {
          self::showForItem($item, $withtemplate);
          return true;
       }
