@@ -2500,10 +2500,10 @@ JAVASCRIPT;
       $prefix      = isset($p['prefix_crit']) ? $p['prefix_crit'] :'';
       $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];
       $criteria    = [];
+      $from_meta   = isset($request['from_meta']) && $request['from_meta'];
 
       $sess_itemtype = $request["itemtype"];
-      if (isset($request['from_meta'])
-          && $request['from_meta']) {
+      if ($from_meta) {
          $sess_itemtype = $request["parent_itemtype"];
       }
 
@@ -2513,8 +2513,7 @@ JAVASCRIPT;
 
       if (isset($criteria['meta'])
           && $criteria['meta']
-          && (!isset($request['from_meta'])
-              || !$request['from_meta'])) {
+          && !$from_meta) {
          return self::displayMetaCriteria($request);
       }
 
@@ -2525,8 +2524,7 @@ JAVASCRIPT;
 
       echo "<li class='normalcriteria$addclass' id='$rowid'>";
 
-      if (!isset($request['from_meta'])
-          || !$request['from_meta']) {
+      if (!$from_meta) {
          // First line display add / delete images for normal and meta search items
          if ($num == 0
              && isset($p['mainform'])
@@ -2554,8 +2552,7 @@ JAVASCRIPT;
 
       // Display link item
       $value = '';
-      if (!isset($request['from_meta'])
-          || !$request['from_meta']) {
+      if (!$from_meta) {
          if (isset($criteria["link"])) {
             $value = $criteria["link"];
          }
@@ -2583,7 +2580,7 @@ JAVASCRIPT;
             $group = $val['name'];
          } else {
             if ((!isset($val['nosearch']) || ($val['nosearch'] == false))
-                && (!array_key_exists('nometa', $val) || $val['nometa'] !== true)) {
+                && (!$from_meta || !array_key_exists('nometa', $val) || $val['nometa'] !== true)) {
                $values[$group][$key] = $val["name"];
             }
          }
