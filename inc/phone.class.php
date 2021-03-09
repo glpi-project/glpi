@@ -56,9 +56,12 @@ class Phone extends CommonDBTM {
          Item_OperatingSystem::class,
          Item_Devices::class,
          Infocom::class,
-         NetworkPort::class,
+         Item_Disk::class,
+         Item_SoftwareVersion::class,
+         Item_SoftwareLicense::class,
          Contract_Item::class,
          Document_Item::class,
+         NetworkPort::class,
          Computer_Item::class,
          KnowbaseItem_Item::class,
          Item_RemoteManagement::class
