@@ -1520,15 +1520,15 @@ class Document extends CommonDBTM {
     * @return string Image path on disk
     */
    public static function getImage($path, $context, $mwidth = null, $mheight = null) {
-      if ($mwidth === null && $mheight === null) {
+      if ($mwidth === null || $mheight === null) {
          switch ($context) {
             case 'mail':
-               $mwidth = 400;
-               $mheight = 300;
+               $mwidth  = $mwidth ?? 400;
+               $mheight = $mheight ?? 300;
                break;
             case 'timeline':
-               $mwidth = 100;
-               $mheight = 100;
+               $mwidth  = $mwidth ?? 100;
+               $mheight = $mheight ?? 100;
                break;
             default:
                throw new \RuntimeException("Unknown context $context!");
