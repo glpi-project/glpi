@@ -475,9 +475,8 @@ class Provider extends CommonGLPI {
             'SELECT'    => [
                "$fk_table.$name AS fk_name",
                "$fk_table.id AS fk_id",
-               'COUNT' => "$c_table.id AS cpt",
+               'DISTINCT COUNT' => "$c_table.id AS cpt",
             ],
-            'DISTINCT'  => true,
             'FROM'      => $c_table,
             $params['join_key'] => [
                $fk_table => [
