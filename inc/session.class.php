@@ -1459,7 +1459,7 @@ class Session {
          return false;
       }
 
-      //store user who imprtonate another user
+      //store user who impersonated another user
       $impersonator = $_SESSION['glpiname'];
 
       // Store current user values
@@ -1481,7 +1481,7 @@ class Session {
 
       $_SESSION['impersonator_id'] = $impersonator_id;
 
-      Event::log(-1, "system", 3, "Impersonate", sprintf(__('%1$s start to impersonate user %2$s'),
+      Event::log(-1, "system", 3, "Impersonate", sprintf(__('%1$s starts impersonate user %2$s'),
                                                             $impersonator, $user->fields['name']));
 
       return true;
@@ -1503,7 +1503,7 @@ class Session {
          return false;
       }
 
-      //store user which was imprtonate by another user
+      //store user which was impersonates by another user
       $impersonate_user = $_SESSION['glpiname'];
 
       $auth = new Auth();
@@ -1511,7 +1511,7 @@ class Session {
       $auth->user = $user;
       Session::init($auth);
 
-      Event::log(-1, "system", 3, "Impersonate", sprintf(__('%1$s stop to impersonate user %2$s'),
+      Event::log(-1, "system", 3, "Impersonate", sprintf(__('%1$s stops to impersonate user %2$s'),
       $user->fields['name'], $impersonate_user));
 
       return true;
