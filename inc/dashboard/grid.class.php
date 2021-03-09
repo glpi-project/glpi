@@ -1469,6 +1469,7 @@ HTML;
     * @return string the dashboard key
     */
    function restoreLastDashboard():string {
+      global $CFG_GLPI;
       $new_key = "";
       $target = Toolbox::cleanTarget($_REQUEST['_target'] ?? $_SERVER['REQUEST_URI'] ?? "");
       if (isset($_SESSION['last_dashboards']) && strlen($target) > 0) {
