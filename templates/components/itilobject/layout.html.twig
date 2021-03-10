@@ -1,14 +1,14 @@
 
-<div class="itil-object">
+<div class="itil-object mt-n1" id="itil-object">
 
-   <div class="row">
-      <div class="col col-12  col-md-8 order-last order-md-first pe-2 pe-md-4 d-flex flex-column itil-left-side">
+   <div class="row d-flex align-items-stretch">
+      <div class="col col-12 col-md-8 order-last order-md-first pt-2 pt-md-0 pe-2 pe-md-4 d-flex flex-column border-top border-4 itil-left-side">
          {% include("components/itilobject/main_description.html.twig") %}
          <div class="flex-grow-1">
             {% include("components/itilobject/timeline.html.twig") %}
          </div>
       </div>
-      <div class="col col-12 col-md-4 border-0 itil-right-side my-n2 card-footer p-0">
+      <div class="col col-12 col-md-4 border-0 itil-right-side mt-0 mb-md-2 my-md-n2 card-footer p-0">
          {% include("components/itilobject/fields_panel.html.twig") %}
       </div>
    </div>
