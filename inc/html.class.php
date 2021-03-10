@@ -2512,7 +2512,12 @@ JAVASCRIPT;
       if (!isset($options['specific_tags']['data-glpicore-ma-tags'])) {
          $options['specific_tags']['data-glpicore-ma-tags'] = 'common';
       }
+
+      // encode quotes and brackets to prevent maformed name attribute
+      $id = htmlspecialchars($id, ENT_QUOTES);
+      $id = str_replace(['[', ']'], ['&amp;#91;', '&amp;#93;'], $id);
       $options['name']          = "item[$itemtype][".$id."]";
+
       $options['zero_on_empty'] = false;
 
       return self::getCheckbox($options);
