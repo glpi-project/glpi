@@ -3,13 +3,13 @@
 {% set rand = random() %}
 
 <div class="itilfollowup">
-   <form name="asset_form" method="post" action="{{ subitem.getFormURL() }}" enctype="multipart/form-data">
+   <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post" action="{{ subitem.getFormURL() }}" enctype="multipart/form-data">
       <input type="hidden" name="itemtype" value="{{ item.getType() }}">
       <input type="hidden" name="items_id" value="{{ item.fields['id'] }}">
       {# TODO reopen #}
 
       <div class="row">
-         <div class="col-9">
+         <div class="col-12 col-md-9">
             {{ fields.textareaField(
                'content',
                subitem.fields['content'],
@@ -23,7 +23,7 @@
                }
             ) }}
          </div>
-         <div class="col-3">
+         <div class="col-12 col-md-3 order-first order-md-last">
             <div class="row">
 
                {% set fup_template_lbl %}
@@ -76,7 +76,7 @@
          </div>
       </div>
 
-      <div class="f-flex justify-content-end">
+      <div class="d-flex">
          {% if subitem.fields['id'] <= 0 %}
             <button class="btn btn-primary me-2" type="submit" name="add">
                <i class='fas fa-plus'></i>
