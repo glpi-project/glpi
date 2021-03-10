@@ -21,7 +21,7 @@
    <div class="timeline-item mb-3 ms-auto {{ itiltype }} collapse"
         id="new-{{ itiltype }}-block" aria-expanded="false" data-bs-parent="#new-itilobject-form">
       <div class="row">
-         <div class="col-auto order-last">
+         <div class="col-auto order-last d-none d-md-block">
             {% include "components/itilobject/user_picture.html.twig" with {'users_id': session('glpiID')} only %}
          </div>
          <div class="col">
