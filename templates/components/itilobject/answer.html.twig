@@ -27,10 +27,16 @@
          <div class="col">
             <div class="row timeline-content t-right card mt-4">
                <div class="card-body">
-                  {% if itildata.include is defined %}
-                     {% include itildata.include with {'subitem': itildata.item} %}
-                  {% endif %}
-                  {{ itildata.content|raw }}
+                  <button class="btn btn-sm btn-ghost-secondary float-end close-itil-answer"
+                          data-bs-toggle="collapse" data-bs-target="#new-{{ itiltype }}-block">
+                     <i class="fas fa-2x fa-times"></i>
+                  </button>
+                  <div>
+                     {% if itildata.include is defined %}
+                        {% include itildata.include with {'subitem': itildata.item} %}
+                     {% endif %}
+                     {{ itildata.content|raw }}
+                  </div>
                </div>
             </div>
          </div>
