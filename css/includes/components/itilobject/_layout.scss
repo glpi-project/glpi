@@ -1,15 +1,30 @@
 .itil-object {
-   .itil-left-side {
-      height: calc(100vh - 232px);
-      overflow-y: auto;
-   }
+   position: relative;
+   @include media-breakpoint-up(sm) {
+      height: calc(100vh - 188px);
 
-   .itil-right-side {
+      & > .row {
+         height: 100%;
+      }
 
+      .itil-left-side, .itil-right-side {
+         height: 100%;
+         overflow-y: auto;
+      }
+
+      .itil-left-side {
+         border-top: 0 !important;
+      }
    }
 
    .itil-footer {
       position: sticky;
       bottom: 0;
+
+      #debugajax {
+         position: absolute;
+         top: 10px;
+         left: 50%;
+      }
    }
 }
