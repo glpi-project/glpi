@@ -3,13 +3,13 @@
 
 <div class="accordion open accordion-flush" id="itil-data">
    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingOne">
-         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+      <h2 class="accordion-header" id="heading-main-ticket">
+         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#ticket-main" aria-expanded="true" aria-controls="ticket-main">
             <i class="fas fa-exclamation-circle me-1"></i>
             <span>{{ __("Ticket") }}</span>
          </button>
       </h2>
-      <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
+      <div id="ticket-main" class="accordion-collapse collapse show" aria-labelledby="heading-main-ticket">
          <div class="accordion-body">
             {{ fields.field(
                'type',
@@ -99,13 +99,13 @@
       </div>
    </div>
    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingTwo">
-         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+      <h2 class="accordion-header" id="heading-actor">
+         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#actors" aria-expanded="true" aria-controls="actors">
             <i class="fa fa-users me-1"></i>
             <span>{{ __("Actors") }}</span>
          </button>
       </h2>
-      <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo">
+      <div id="actors" class="accordion-collapse collapse show" aria-labelledby="heading-actor">
          <div class="accordion-body">
             {% set requester_field %}
                {% include "components/itilobject/actor_field.html.twig" with {'type': constant('CommonITILActor::REQUESTER')} only %}
@@ -138,13 +138,13 @@
       </div>
    </div>
    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingThree">
-         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+      <h2 class="accordion-header" id="service-levels-heading">
+         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#service-levels" aria-expanded="true" aria-controls="service-levels">
             <i class="fas fa-stopwatch me-1"></i>
             <span>{{ _n('Service level', 'Service levels', getPluralNumber()) }}</span>
          </button>
       </h2>
-      <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
+      <div id="service-levels" class="accordion-collapse collapse" aria-labelledby="service-levels-heading">
          <div class="accordion-body">
             {{ fields.datetimeField(
                'time_to_own',
@@ -176,13 +176,13 @@
       </div>
    </div>
    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingFour">
-         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+      <h2 class="accordion-header" id="misc-heading">
+         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#misc" aria-expanded="true" aria-controls="misc">
             <i class="fas fa-check me-1"></i>
             <span>{{ __("Misc") }}</span>
          </button>
       </h2>
-      <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour">
+      <div id="misc" class="accordion-collapse collapse" aria-labelledby="misc-heading">
          <div class="accordion-body">
             {{ fields.dropdownField(
                'Location',
@@ -198,3 +198,13 @@
       </div>
    </div>
 </div>
+
+<script type="text/javascript">
+$(function() {
+   if ($(window).width() < 768) { // medium breakpoint (Todo check if it's possible to get bootstrap breakpoints withint javascript)
+      $('#itil-data .accordion-collapse').each(function() {
+         $(this).removeClass('show');
+      })
+   }
+});
+</script>
