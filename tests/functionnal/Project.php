@@ -32,6 +32,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use ProjectTask;
 
 /* Test for inc/project.class.php */
 class Project extends DbTestCase {
@@ -120,5 +121,70 @@ class Project extends DbTestCase {
       $project_3->restore(['id' => $project_id_3]);
       $this->boolean($project_2->getFromDB($project_id_2))->isTrue();
       $this->integer($project_2->fields['percent_done'])->isEqualTo(25);
+   }
+
+   public function testCreateFromTemplate() {
+      $this->login();
+
+      $date = date('Y-m-d H:i:s');
+      $_SESSION['glpi_currenttime'] = $date;
+
+      $project = new \Project();
+
+      // Create a project template
+      $template_id = $project->add(
+         [
+            'name'         => $this->getUniqueString(),
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+            'is_template'  => 1,
+         ]
+      );
+      $this->integer($template_id)->isGreaterThan(0);
+
+      $project_task = new ProjectTask();
+      $task1_id = $project_task->add(
+         [
+            'name'         => $this->getUniqueString(),
+            'projects_id'  => $template_id,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+         ]
+      );
+      $this->integer($task1_id)->isGreaterThan(0);
+      $task2_id = $project_task->add(
+         [
+            'name'         => $this->getUniqueString(),
+            'projects_id'  => $template_id,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+         ]
+      );
+      $this->integer($task2_id)->isGreaterThan(0);
+
+      // Create from template
+      $entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+      $project_id = $project->add(
+         [
+            'id'           => $template_id,
+            'name'         => $this->getUniqueString(),
+            'entities_id'  => $entity_id,
+            'is_recursive' => 0,
+         ]
+      );
+      $this->integer($project_id)->isGreaterThan(0);
+      $this->integer($project_id)->isNotEqualTo($template_id);
+
+      // Check created project
+      $this->integer($project->fields['entities_id'])->isEqualTo($entity_id);
+      $this->integer($project->fields['is_recursive'])->isEqualTo(0);
+
+      // Check created tasks
+      $tasks_data = getAllDataFromTable($project_task->getTable(), ['projects_id' => $project_id]);
+      $this->array($tasks_data)->hasSize(2);
+      foreach ($tasks_data as $task_data) {
+         $this->integer($task_data['entities_id'])->isEqualTo($entity_id);
+         $this->integer($task_data['is_recursive'])->isEqualTo(0);
+      }
    }
 }

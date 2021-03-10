@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use CommonDBConnexity;
+use Session;
 use Toolbox;
 
 /**
@@ -66,6 +67,11 @@ trait Clonable {
          }
 
          $override_input[$classname::getItemField($this->getType())] = $this->getID();
+
+         // Force entity / recursivity based on cloned parent, with fallback on session values
+         $override_input['entities_id'] = $this->isEntityAssign() ? $this->getEntityID() : Session::getActiveEntity();
+         $override_input['is_recursive'] = $this->maybeRecursive() ? $this->isRecursive() : Session::getIsActiveEntityRecursive();
+
          $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
          foreach ($relation_items as $relation_item) {
             $relation_item->clone($override_input, $history);
