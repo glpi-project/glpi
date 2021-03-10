@@ -35,7 +35,7 @@
    </div> {# .page #}
 
    {% if is_debug_active %}
-      <span class="btn btn-secondary" id="see_debug">
+      <span class="btn btn-secondary d-none d-mb-block" id="see_debug">
          <i class="fas fa-bug" title=" {{ __('Display GLPI debug informations') }}">
             <span class="sr-only">{{ __('Display GLPI debug informations') }}</span>
          </i>
@@ -54,7 +54,7 @@
       </div>
    {% endif %}
 
-   <span class="btn btn-secondary" id="backtotop" style="display: none">
+   <span class="btn btn-secondary d-none d-md-block" id="backtotop" style="display: none">
       <i class="fas fa-arrow-up" title="{{ __('Back to top of the page') }}">
          <span class="sr-only">{{ __("Top of the page") }}</span>
       </i>
