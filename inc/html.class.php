@@ -1657,7 +1657,7 @@ class Html {
 
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          $rand = mt_rand();
-         echo "<div class='center' id='debugajax'>";
+         echo "<div class='center d-none d-md-block' id='debugajax'>";
          echo "<a class='debug-float' href=\"javascript:showHideDiv('debugpanel$rand','','','');\">
                 AJAX DEBUG</a>";
          if (!isset($_GET['full_page_tab'])
