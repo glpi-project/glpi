@@ -1271,7 +1271,7 @@ class Provider extends CommonGLPI {
       return array_search($name."-".$tableToSearch, $sort);
    }
 
-   public static function getSearchFiltersCriteria(string $table = "", array $apply_filters = []) {
+   final public static function getSearchFiltersCriteria(string $table = "", array $apply_filters = []) {
       $DB = DBConnection::getReadConnection();
       $s_criteria = [];
 
