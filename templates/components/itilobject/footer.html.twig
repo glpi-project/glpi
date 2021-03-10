@@ -1,10 +1,7 @@
-<div class="border-top mx-n2 pe-4 ms-n2 itil-footer card-footer itil-footer" id="itil-footer">
-   <div class="row col-12 col-md-8">
-      {% include("components/itilobject/answer.html.twig") %}
-   </div>
+<div class="border-top ms-n2 itil-footer card-footer itil-footer" id="itil-footer">
    <div class="buttons-bar d-flex">
       <div class="btn-group me-2 main-actions">
-         <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#new-ITILFollowup-block">
+         <button class="btn btn-primary answer-action" data-bs-toggle="collapse" data-bs-target="#new-ITILFollowup-block">
             <i class='far fa-comment'></i>
             <span>{{ _x('button', 'Answer') }}</span>
          </button>
@@ -12,17 +9,17 @@
             <span class="visually-hidden">{{ __("View other actions") }}</span>
          </button>
          <ul class="dropdown-menu">
-            <li><a class="dropdown-item action-task" href="#"
+            <li><a class="dropdown-item action-task answer-action" href="#"
                   data-bs-toggle="collapse" data-bs-target="#new-ITILTask-block">
                <i class='fas fa-wrench'></i>
                <span>{{ _x('button', 'Create a task') }}</span>
             </a></li>
-            <li><a class="dropdown-item action-validation" href="#"
+            <li><a class="dropdown-item action-validation answer-action" href="#"
                   data-bs-toggle="collapse" data-bs-target="#new-ITILValidation-block">
                <i class='far fa-thumbs-up'></i>
                <span>{{ _x('button', 'Ask for validation') }}</span>
             </a></li>
-            <li><a class="dropdown-item action-solution" href="#"
+            <li><a class="dropdown-item action-solution answer-action" href="#"
                   data-bs-toggle="collapse" data-bs-target="#new-ITILSolution-block">
                <i class='fas fa-check'></i>
                <span>{{ _x('button', 'Add a solution') }}</span>
@@ -32,15 +29,42 @@
 
       <span class="ms-auto">
          <button class="btn btn-outline-danger me-2" type="submit" name="purge"
-               onclick='return confirm("{{ __('Confirm the final deletion?') }}");'>
+                 title="{{ _x('button', 'Delete permanently') }}"
+                 onclick='return confirm("{{ __('Confirm the final deletion?') }}");'>
             <i class='fas fa-trash-alt'></i>
-            <span>{{ _x('button', 'Delete permanently') }}</span>
+            <span class="d-none d-md-block">{{ _x('button', 'Delete permanently') }}</span>
          </button>
 
-         <button class="btn btn-primary me-2" type="submit" name="update">
+         <button class="btn btn-primary me-2" type="submit" name="update"
+                 title="{{ _x('button', 'Save') }}">
             <i class="fas fa-save"></i>
-            <span>Sauvegarder</span>
+            <span class="d-none d-md-block">{{ _x('button', 'Save') }}</span>
          </button>
       </span>
    <div>
 </div>
+
+<script type="text/javascript">
+$(function() {
+   $(document).on("click", "#itil-footer .answer-action", function() {
+      // scroll body to ensure we are at bottom (usefull for responsive display)
+      $('html, body').animate({
+         scrollTop: $(document).height()
+      }, function(){
+          // scroll timeline with animation
+         var timeline = $("#itil-object .itil-left-side");
+         timeline.animate(
+            { scrollTop: timeline.prop('scrollHeight') }, 'slow',
+         );
+      });
+
+      // hide answer button after clicking on it
+      $(this).closest(".main-actions").hide();
+   });
+
+   // when close button of new answer block is clicked, show again the new answer button
+   $(document).on("click", "#new-itilobject-form .close-itil-answer", function() {
+      $("#itil-footer .main-actions").show();
+   });
+});
+</script>
