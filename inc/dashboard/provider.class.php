@@ -226,11 +226,13 @@ class Provider extends CommonGLPI {
 
       $table = Ticket::getTable();
       $query_criteria = [
+         'SELECT'    => [
+            'COUNT DISTINCT' => "$table.id AS cpt",
+         ],
          'FROM'   => $table,
          'WHERE'  => [
             "$table.is_deleted" => 0,
          ] + getEntitiesRestrictCriteria($table),
-         'GROUPBY' => "$table.id"
       ];
 
       $query_criteria = array_merge_recursive(
@@ -387,9 +389,8 @@ class Provider extends CommonGLPI {
       ]);
 
       $iterator   = $DBread->request($query_criteria);
-      if ($nb_tickets === 0) {
-         $nb_tickets = count($iterator);
-      }
+      $result     = $iterator->next();
+      $nb_tickets = $result['cpt'];
 
       return [
          'number'     => $nb_tickets,
@@ -475,7 +476,7 @@ class Provider extends CommonGLPI {
             'SELECT'    => [
                "$fk_table.$name AS fk_name",
                "$fk_table.id AS fk_id",
-               'DISTINCT COUNT' => "$c_table.id AS cpt",
+               'COUNT DISTINCT' => "$c_table.id AS cpt",
             ],
             'FROM'      => $c_table,
             $params['join_key'] => [
