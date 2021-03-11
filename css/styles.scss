@@ -2706,6 +2706,7 @@ a.icon_nav_move {
 
 .boxnote {
    margin: 0 auto;
+   width: 950px;
    text-align: left;
    border-radius: 10px;
    background: #e7e7e2;
@@ -2728,6 +2729,10 @@ a.icon_nav_move {
    padding: 1px;
    padding: 5px 0 5px 0;
    width: 75%;
+
+   textarea {
+      max-width: 100%;
+   }
 }
 
 .boxnoteright {
