@@ -316,9 +316,7 @@ class Notepad extends CommonDBChild {
          echo Html::hidden('items_id', ['value' => $item->getID()]);
 
          echo "<div class='boxnotecontent'>";
-         echo "<div class='floatleft'>";
          echo "<textarea name='content' rows=5 cols=100></textarea>";
-         echo "</div>";
          echo "</div>"; // box notecontent
 
          echo "<div class='boxnoteright'><br>";
