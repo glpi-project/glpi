@@ -50,6 +50,9 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
 
    public function getFunctions() {
       return [
+         new TwigFunction('have_right', [Session::class, 'haveRight']),
+         new TwigFunction('have_rights_and', [Session::class, 'haveRightsAnd']),
+         new TwigFunction('have_rights_or', [Session::class, 'haveRightsOr']),
          new TwigFunction('has_global_right', [$this, 'hasGlobalRight']),
          new TwigFunction('has_item_right', [$this, 'hasItemRight']),
          new TwigFunction('user_pref', [$this, 'userPref']),
