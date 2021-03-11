@@ -192,8 +192,35 @@
                field_options
             ) }}
 
-            <div>Validation</div>
-            <div>Linked Tickets</div>
+            {# TODO validation #}
+            {{ fields.field(
+               'impact',
+               "...",
+               "Validation",
+               field_options
+            ) }}
+
+            <div>
+               {% include("components/itilobject/linked_tickets.html.twig") %}
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="accordion-item">
+      <h2 class="accordion-header" id="linked_tickets-heading">
+         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#linked_tickets" aria-expanded="true" aria-controls="linked_tickets">
+            <i class="fas fa-link me-1"></i>
+            {% set linked_tickets = ticket_ticket.getLinkedTicketsTo(item.fields['id']) %}
+            {% set nb_linked_tickets = linked_tickets|length %}
+            <span>{{ "Ticket_Ticket"|itemtype_name(nb_linked_tickets) }}</span>
+            {% if nb_linked_tickets > 0 %}
+               <span class="badge bg-secondary ms-2">{{ nb_linked_tickets }}</span>
+            {% endif %}
+         </button>
+      </h2>
+      <div id="linked_tickets" class="accordion-collapse collapse" aria-labelledby="linked_tickets-heading">
+         <div class="accordion-body">
+            {% include("components/itilobject/linked_tickets.html.twig") %}
          </div>
       </div>
    </div>

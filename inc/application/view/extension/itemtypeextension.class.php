@@ -58,7 +58,7 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
          new TwigFilter('canUpdate', [$this, 'canUpdate']),
          new TwigFilter('canDelete', [$this, 'canDelete']),
          new TwigFilter('canPurge', [$this, 'canPurge']),
-         new TwigFilter('canPurge', [$this, 'canPurge']),
+         new TwigFilter('getFromDB', [$this, 'getFromDB']),
       ];
    }
 
@@ -146,6 +146,16 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
       }
 
       return false;
+   }
+
+   public function getFromDB($itemtype, int $id = 0):? CommonDBTM {
+      if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
+         $item = new $itemtype;
+         $item->getFromDB($id);
+         return $item;
+      }
+
+      return null;
    }
 
 
