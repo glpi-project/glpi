@@ -33,11 +33,25 @@
 $AJAX_INCLUDE = 1;
 
 include ('../inc/includes.php');
-header("Content-Type: text/html; charset=UTF-8");
-Html::header_nocache();
+
 
 Session::checkLoginUser();
 
+if (isset($_POST['solutiontemplates_id'])
+    && $_POST['solutiontemplates_id'] > 0) {
+   header("Content-Type: application/json; charset=UTF-8");
+   Html::header_nocache();
+   $template = new SolutionTemplate();
+   $template->getFromDB($_POST['solutiontemplates_id']);
+
+   $template->fields = array_map('html_entity_decode', $template->fields);
+   echo json_encode($template->fields);
+   exit;
+}
+
+// legay call
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 $rand = mt_rand();
 
 Html::initEditorSystem("content$rand");
