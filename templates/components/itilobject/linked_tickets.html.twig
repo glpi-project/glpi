@@ -10,7 +10,6 @@
       {% set new_ticket = "Ticket"|getFromDB(linked['tickets_id']) %}
       <div class="list-group-item">
          <div class="row g-0">
-            
             <div class="col-1">
                {% if linked['link'] == constant('Ticket_Ticket::LINK_TO') %}
                   <i class="fas fa-link"></i>
@@ -25,7 +24,8 @@
             <div class="col-1">
                {{ new_ticket.getStatusIcon(new_ticket.fields['status'])|raw }}
             </div>
-            <a href="{{ form_path('Ticket', linked['tickets_id']) }}" class="col-9 overflow-hidden text-nowrap">
+            <a href="{{ form_path('Ticket', linked['tickets_id']) }}" class="col-9 overflow-hidden text-nowrap"
+               title="{{ new_ticket.fields['name'] }}">
                {{ new_ticket.fields['name'] }}
                &nbsp;({{ new_ticket.fields['id'] }})
             </a>
