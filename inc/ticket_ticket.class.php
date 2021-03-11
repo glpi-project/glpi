@@ -53,6 +53,11 @@ class Ticket_Ticket extends CommonDBRelation {
    const PARENT_OF      = 4;
 
 
+   static function getTypeName($nb = 0) {
+      return _n('Linked ticket', 'Linked tickets', $nb);
+   }
+
+
    /**
     * @since 0.85
     *
@@ -214,7 +219,10 @@ class Ticket_Ticket extends CommonDBRelation {
       $tmp[self::DUPLICATE_WITH] = __('Duplicates');
       $tmp[self::SON_OF]         = __('Son of');
       $tmp[self::PARENT_OF]      = __('Parent of');
-      Dropdown::showFromArray($myname, $tmp, ['value' => $value]);
+      Dropdown::showFromArray($myname, $tmp, [
+         'value' => $value,
+         'class' => 'form-select',
+      ]);
    }
 
 
@@ -354,12 +362,12 @@ class Ticket_Ticket extends CommonDBRelation {
     *
     * @return integer
     */
-   public function countOpenChildren($pid) {
+   public static function countOpenChildren($pid) {
       global $DB;
 
       $result = $DB->request([
          'COUNT'        => 'cpt',
-         'FROM'         => $this->getTable() . ' AS links',
+         'FROM'         => self::getTable() . ' AS links',
          'INNER JOIN'   => [
             Ticket::getTable() . ' AS tickets' => [
                'ON' => [
