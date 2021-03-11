@@ -95,6 +95,22 @@
                __('%1$s%2$s')|format(__("priority"), template.getMandatoryMark('priority')),
                field_options
             ) }}
+
+            {{ fields.dropdownField(
+               'Location',
+               'locations_id',
+               item.fields["locations_id"],
+               __('%1$s%2$s')|format("Location"|itemtype_name, template.getMandatoryMark('locations_id')),
+               field_options
+            ) }}
+
+            {# TODO validation #}
+            {{ fields.field(
+               'impact',
+               "...",
+               "Validation",
+               field_options
+            ) }}
          </div>
       </div>
    </div>
@@ -172,33 +188,6 @@
                __("internal TTR"),
                field_options
             ) }} #}
-         </div>
-      </div>
-   </div>
-   <div class="accordion-item">
-      <h2 class="accordion-header" id="misc-heading">
-         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#misc" aria-expanded="true" aria-controls="misc">
-            <i class="fas fa-check me-1"></i>
-            <span>{{ __("Misc") }}</span>
-         </button>
-      </h2>
-      <div id="misc" class="accordion-collapse collapse" aria-labelledby="misc-heading">
-         <div class="accordion-body">
-            {{ fields.dropdownField(
-               'Location',
-               'locations_id',
-               item.fields["locations_id"],
-               __('%1$s%2$s')|format("Location"|itemtype_name, template.getMandatoryMark('locations_id')),
-               field_options
-            ) }}
-
-            {# TODO validation #}
-            {{ fields.field(
-               'impact',
-               "...",
-               "Validation",
-               field_options
-            ) }}
          </div>
       </div>
    </div>
