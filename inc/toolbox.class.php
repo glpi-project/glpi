@@ -3559,4 +3559,33 @@ HTML;
 
       return '';
    }
+
+   /**
+    * Get available tabs for a given item
+    *
+    * @param string   $itemtype Type of the item
+    * @param int|null $itemtype Id the item, optional
+    *
+    * @return array
+    */
+   public static function getAvailablesTabs(string $itemtype, ?int $id = null): array {
+      $item = getItemForItemtype($itemtype);
+
+      if (!$item) {
+         return [];
+      }
+
+      if (isset($_GET['id']) && !$item->isNewID($_GET['id'])) {
+         $item->getFromDB($_GET['id']);
+      }
+
+      $tabs = $item->defineAllTabs();
+      if (isset($tabs['no_all_tab'])) {
+         unset($tabs['no_all_tab']);
+      }
+      // Add all tab
+      $tabs[-1] = 'All';
+
+      return $tabs;
+   }
 }
