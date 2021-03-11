@@ -50,7 +50,7 @@ $(function() {
       // scroll body to ensure we are at bottom (usefull for responsive display)
       $('html, body').animate({
          scrollTop: $(document).height()
-      }, function(){
+      }, 0, function(){
           // scroll timeline with animation
          var timeline = $("#itil-object .itil-left-side");
          timeline.animate(
