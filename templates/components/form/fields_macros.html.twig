@@ -212,7 +212,7 @@
    {{ _self.field(name, value, label, options) }}
 {% endmacro %}
 
-{% macro field(name, field, label, options = {}) %}
+{% macro field(name, field, label = "", options = {}) %}
    {% set options = {'rand': random(), 'is_horizontal': true}|merge(options) %}
 
    {% set id    = options.id|length > 0 ? options.id : (name ~ "_" ~ options.rand) %}
@@ -240,7 +240,7 @@
 {% endmacro %}
 
 
-{% macro noLabelField(field, id, add_field_html = "", options = {}) %}
+{% macro noLabelField(field, id = "", add_field_html = "", options = {}) %}
    {% set options = {'full_width': false}|merge(options) %}
 
    {% set class = "col-12 col-sm-6" %}
