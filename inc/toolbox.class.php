@@ -3564,19 +3564,19 @@ HTML;
     * Get available tabs for a given item
     *
     * @param string   $itemtype Type of the item
-    * @param int|null $itemtype Id the item, optional
+    * @param int|string|null $itemtype Id the item, optional
     *
     * @return array
     */
-   public static function getAvailablesTabs(string $itemtype, ?int $id = null): array {
+   public static function getAvailablesTabs(string $itemtype, $id = null): array {
       $item = getItemForItemtype($itemtype);
 
       if (!$item) {
          return [];
       }
 
-      if (isset($_GET['id']) && !$item->isNewID($_GET['id'])) {
-         $item->getFromDB($_GET['id']);
+      if (!is_null($id) && !$item->isNewID($id)) {
+         $item->getFromDB($id);
       }
 
       $tabs = $item->defineAllTabs();
