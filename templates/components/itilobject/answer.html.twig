@@ -2,7 +2,7 @@
 
 {% set itilblocks = {
    'ITILFollowup': {
-      'include': "components/itilobject/followup_form.html.twig",
+      'include': "components/itilobject/form_followup.html.twig",
       'item': followup,
    },
    'ITILTask': {
@@ -12,7 +12,8 @@
       'content': "TODO ITILValidation Form<textarea class='form-control'></textarea>",
    },
    'ITILSolution': {
-      'content': "TODO ITILSolution Form<textarea class='form-control'></textarea>",
+      'include': "components/itilobject/form_solution.html.twig",
+      'item': solution,
    },
 } %}
 
