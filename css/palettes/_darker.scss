@@ -436,6 +436,10 @@ body #page .mce-btn-group:not(:first-child) {
    color: #262626;
 }
 
+.timeline_history .filter_timeline {
+   opacity: 1;
+}
+
 .timeline_history .h_content.ITILFollowup,
 .timeline_history .h_content.KnowbaseItemComment {
    background-color: #686868;
