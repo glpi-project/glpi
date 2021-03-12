@@ -809,11 +809,9 @@ if ($('#backtotop').length) {
       backToTop = function () {
          var scrollTop = $(window).scrollTop();
          if (scrollTop > scrollTrigger) {
-            $('#backtotop').show('slow');
-            $('#see_debug').addClass('wbttop');
+            $('#backtotop').addClass('d-md-block');
          } else {
-            $('#backtotop').hide();
-            $('#see_debug').removeClass('wbttop');
+            $('#backtotop').removeClass('d-md-block');
          }
       };
    backToTop();
