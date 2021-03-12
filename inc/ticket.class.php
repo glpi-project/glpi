@@ -3195,24 +3195,7 @@ class Ticket extends CommonITILObject {
       }
 
       if (Session::haveRight('problem', READ)) {
-         $tab[] = [
-            'id'                 => 'problem',
-            'name'               => __('Problems')
-         ];
-
-         $tab[] = [
-            'id'                 => '141',
-            'table'              => 'glpi_problems_tickets',
-            'field'              => 'id',
-            'name'               => _x('quantity', 'Number of problems'),
-            'forcegroupby'       => true,
-            'usehaving'          => true,
-            'datatype'           => 'count',
-            'massiveaction'      => false,
-            'joinparams'         => [
-               'jointype'           => 'child'
-            ]
-         ];
+         $tab = array_merge($tab, Problem::rawSearchOptionsToAdd());
       }
 
       // Filter search fields for helpdesk
