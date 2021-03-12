@@ -29,21 +29,18 @@
  * ---------------------------------------------------------------------
  */
 
-#see_debug, #backtotop {
+.floating-buttons {
    position: fixed;
-   bottom: 35px;
+   bottom: 10px;
    right: 10px;
-   cursor: pointer;
    z-index: 99;
-}
 
-#see_debug:hover, #backtotop:hover {
-   opacity: .8;
-}
+   #see_debug, #backtotop {
+      cursor: pointer;
+   }
 
-#see_debug {
-   &.wbttop {
-      right: 60px;
+   #see_debug:hover, #backtotop:hover {
+      opacity: .8;
    }
 }
 
