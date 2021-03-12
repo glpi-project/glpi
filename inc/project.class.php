@@ -1985,6 +1985,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
             ]
          ];
       }
+      $criteria += getEntitiesRestrictCriteria(self::getTable(), '', '', 'auto');
       $iterator = $DB->request(array_merge_recursive([
          'SELECT'   => [
             'glpi_projects.id',
@@ -2048,6 +2049,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       $projectteam = new ProjectTeam();
       $project = new Project();
       $project_visibility = self::getVisibilityCriteria();
+      $project_visibility['WHERE'] += getEntitiesRestrictCriteria(self::getTable(), '', '', 'auto');
       $request = [
          'SELECT' => [
             'glpi_projects.*',

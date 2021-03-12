@@ -409,6 +409,7 @@ class Ajax {
             active: $selected_tab,
             // Loading indicator
             beforeLoad: function (event, ui) {
+
                if ($(ui.panel).html()
                    && !forceReload$rand) {
                   event.preventDefault();
@@ -433,14 +434,18 @@ class Ajax {
                      }
                   });
                }
-
-               var tabs = ui.tab.parent().children();
-               if (tabs.length > 1) {
-                  var newIndex = tabs.index(ui.tab);
-                  $.get(
-                     '".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
-                     { itemtype: '".addslashes($type)."', id: '$ID', tab: newIndex }
-                  );
+               // We need to manually set the current tab if the main event was prevented.
+               // It happens when user switch between tabs and then select a tab that was already shown before.
+               // It is displayed without having to be reloaded.
+               if (event.isDefaultPrevented()) {
+                  var tabs = ui.tab.parent().children();
+                  if (tabs.length > 1) {
+                     var newIndex = tabs.index(ui.tab);
+                     $.get(
+                        '".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
+                        { itemtype: '".addslashes($type)."', id: '$ID', tab: newIndex }
+                     );
+                  }
                }
             },
             load: function(event) {

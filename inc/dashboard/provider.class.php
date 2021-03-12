@@ -101,7 +101,7 @@ class Provider {
 
       $criteria = array_merge_recursive(
          [
-            'COUNT'  => 'cpt',
+            'SELECT' => ['COUNT DISTINCT' => $item::getTableField($item::getIndexName()) . ' as cpt'],
             'FROM'   => $i_table,
             'WHERE'  => $where
          ],
@@ -225,11 +225,13 @@ class Provider {
 
       $table = Ticket::getTable();
       $query_criteria = [
+         'SELECT'    => [
+            'COUNT DISTINCT' => "$table.id AS cpt",
+         ],
          'FROM'   => $table,
          'WHERE'  => [
             "$table.is_deleted" => 0,
          ] + getEntitiesRestrictCriteria($table),
-         'GROUPBY' => "$table.id"
       ];
 
       $query_criteria = array_merge_recursive(
@@ -386,9 +388,8 @@ class Provider {
       ]);
 
       $iterator   = $DBread->request($query_criteria);
-      if ($nb_tickets === 0) {
-         $nb_tickets = count($iterator);
-      }
+      $result     = $iterator->next();
+      $nb_tickets = $result['cpt'];
 
       return [
          'number'     => $nb_tickets,
@@ -474,9 +475,8 @@ class Provider {
             'SELECT'    => [
                "$fk_table.$name AS fk_name",
                "$fk_table.id AS fk_id",
-               'COUNT' => "$c_table.id AS cpt",
+               'COUNT DISTINCT' => "$c_table.id AS cpt",
             ],
-            'DISTINCT'  => true,
             'FROM'      => $c_table,
             $params['join_key'] => [
                $fk_table => [
@@ -1271,7 +1271,7 @@ class Provider {
       return array_search($name."-".$tableToSearch, $sort);
    }
 
-   private static function getSearchFiltersCriteria(string $table = "", array $apply_filters = []) {
+   final public static function getSearchFiltersCriteria(string $table = "", array $apply_filters = []) {
       $DB = DBConnection::getReadConnection();
       $s_criteria = [];
 

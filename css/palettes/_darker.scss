@@ -202,6 +202,12 @@ ul#menu ul.ssmenu,
    box-shadow: none;
 }
 
+#page tr.headerRow th {
+   .btn-linkstyled, a.fas, a.fa, a.far, button i {
+      color: inherit;
+   }
+}
+
 .actor_title {
    background: transparent;
 }
@@ -404,6 +410,10 @@ input:required:valid {
 
 .main_form tr.headerRow th {
    color: #262626;
+}
+
+.timeline_history .filter_timeline {
+   opacity: 1;
 }
 
 .timeline_history .h_content.ITILFollowup,
@@ -875,4 +885,8 @@ div.progress {
 
 .ui-tabs-nav li.ui-tabs-tab:focus, .ui-tabs-nav li.ui-tabs-tab a:focus {
    outline: none;
+}
+
+.boxnote {
+   background: #585957;
 }
