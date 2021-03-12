@@ -2171,17 +2171,17 @@ class Search {
 
       echo "<div class='card-footer d-flex search_actions'>";
       $linked = self::getMetaItemtypeAvailable($itemtype);
-      echo "<button id='addsearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary me-1'>
+      echo "<button id='addsearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary me-1' type='button'>
                <i class='fas fa-plus-square'></i>
                <span class='d-none d-sm-block'>".__s('rule')."</span>
             </button>";
       if (count($linked)) {
-         echo "<button id='addmetasearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary me-1'>
+         echo "<button id='addmetasearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary me-1' type='button'>
                   <i class='far fa-plus-square'></i>
                   <span class='d-none d-sm-block'>".__s('global rule')."</span>
                </button>";
       }
-      echo "<button id='addcriteriagroup$rand_criteria' class='btn btn-sm btn-outline-secondary me-1'>
+      echo "<button id='addcriteriagroup$rand_criteria' class='btn btn-sm btn-outline-secondary me-1' type='button'>
                <i class='fas fa-plus-circle'></i>
                <span class='d-none d-sm-block'>".__s('group')."</span>
             </button>";
@@ -2418,7 +2418,7 @@ JAVASCRIPT;
             ]);
          }
          echo "<div class='col-auto'>";
-         echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' data-rowid='$rowid'>
+         echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' type='button' data-rowid='$rowid'>
             <i class='far fa-minus-square' alt='-' title=\"".
                   __s('Delete a rule')."\"></i>
          </button>";
@@ -2569,7 +2569,7 @@ JAVASCRIPT;
       echo "<div class='row g-1'>";
 
       echo "<div class='col-auto'>";
-      echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' data-rowid='$rowid'>
+      echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' type='button' data-rowid='$rowid'>
          <i class='far fa-minus-square' alt='-' title=\"".
          __s('Delete a global rule')."\"></i>
       </button>";
@@ -2661,7 +2661,7 @@ JAVASCRIPT;
       echo "<div class='list-group-item p-2 border-0 normalcriteria$addclass' id='$rowid'>";
       echo "<div class='row g-1'>";
       echo "<div class='col-auto'>";
-      echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' data-rowid='$rowid'>
+      echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' type='button' data-rowid='$rowid'>
          <i class='far fa-minus-square' alt='-' title=\"".__s('Delete a rule')."\"></i>
       </button>";
       echo "</div>";
