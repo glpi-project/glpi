@@ -2,12 +2,18 @@
 
 <div class="timeline-item mb-4 ITILContent">
    <div class="row">
-      <div class="col-auto">
+      <div class="col-auto d-flex flex-column ">
          {% include "components/itilobject/user_picture.html.twig" with {'users_id': users_id} only %}
+
+         <div class="d-flex flex-column mt-2">
+            <button class="btn btn-ghost-secondary mt-1">
+               <i class="fas fa-edit"></i>
+            </button>
+         </div>
       </div>
       <div class="col">
          <div class="row">
-            <div class="col">
+            <div class="col d-none d-md-block">
                <strong>{{ User__getLink(users_id) }}</strong>
             </div>
             <div class="text-muted col-auto order-last">
@@ -19,7 +25,7 @@
 
                {% if date_creation != date_mod%}
                   {% set editor = User__getLink(item.fields['users_id_lastupdater']) %}
-                  <span class="text-muted text-end ms-3" title="{{ convDateTime(date_mod) }}">
+                  <span class="text-muted text-end ms-3 d-none d-md-block" title="{{ convDateTime(date_mod) }}">
                      {{ __('Last modification: %1$s by %2$s')|format(time2str(date_mod), editor)|raw }}
                   </span>
                {% endif %}
