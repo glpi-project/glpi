@@ -1,6 +1,21 @@
 <div class="itil-timeline">
+   {# TODO task state #}
+   {# TODO solutiontypes_id #}
+   {# TODO taskcategories_id #}
+   {# TODO requesttypes_id #}
+   {# TODO actiontime #}
+   {# TODO planification #}
+   {# TODO anonymize_support_agents #}
+   {# TODO groups_id_tech #}
+   {# TODO sourceitems_id - merge from #}
+   {# TODO validation shortcut #}
+   {# TODO Document_Item display with show/edit shortcut#}
+   {# TODO link #}
+   {# TODO mime #}
 
    {% include("components/itilobject/main_description.html.twig") %}
+
+   {% set status_closed = (item.fields['status'] in item.getClosedStatusArray()) %}
 
    {% for entry in timeline|reverse %}
       {% set entry_i = entry['item'] %}
@@ -8,6 +23,10 @@
       {% set is_private = entry_i['is_private'] ?? false %}
       {% set date_creation = entry_i['date_creation'] ?? entry_i['date'] %}
       {% set date_mod = entry_i['date_mod'] %}
+
+      {% set can_edit_i  = entry_i['candedit'] %}
+      {% set can_promote = entry['type'] == "ITILFollowup" and can_edit_i and not status_closed %}
+      {% set is_promoted = can_promote and entry_i['sourceof_items_id'] > 0 %}
 
       {% set timeline_position = entry_i['timeline_position'] %}
       {% set item_position = 't-left' %}
@@ -21,37 +40,74 @@
          {% set item_position = 't-right' %}
       {% endif %}
 
+      {% set itiltype = entry['itiltype'] is defined ? "ITIL" ~ entry['itiltype'] : entry['type'] %}
+
       <div class="d-flex">
-         <div class="timeline-item mb-4 {{ entry['itiltype'] is defined ? "ITIL" ~ entry['itiltype'] : entry['type'] }} {{ "right" in item_position ? "ms-auto" : "" }}">
+         <div class="timeline-item mb-4 {{ itiltype }} {{ "right" in item_position ? "ms-auto" : "" }}"
+              data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}">
             <div class="row">
-               <div class="col-auto {{ "right" in item_position ? "order-last" : "" }}">
+               <div class="col-auto d-flex flex-column {{ "right" in item_position ? "order-last" : "" }}">
                   {% include "components/itilobject/user_picture.html.twig" with {'users_id': users_id} only %}
+
+                  <div class="d-flex flex-column mt-2">
+                     {% if can_edit_i %}
+                        <button class="btn btn-ghost-secondary mt-1 edit-timeline-item">
+                           <i class="fas fa-edit"></i>
+                        </button>
+                     {% endif %}
+
+                     {% if can_promote %}
+                        <a href="{{ form_path('Ticket') ~ "?_promoted_fup_id=" ~ entry_i['id'] }}" class="btn btn-ghost-secondary mt-1">
+                           <i class="fas fa-code-branch"></i>
+                        </a>
+                     {% endif %}
+                  </div>
                </div>
-               <div class="col">
+               <div class="col d-flex flex-column">
                   <div class="row">
-                     <div class="{{ "right" in item_position ? "col-auto order-last" : "col" }}">
+                     <div class="{{ "right" in item_position ? "col-auto order-last" : "col" }} d-none d-md-block">
                         <strong>{{ User__getLink(users_id) }}</strong>
                      </div>
                      <div class="{{ "right" in item_position ? "col" : "col-auto order-last" }}">
-                        <span title="{{ convDateTime(date_creation) }}" class="text-muted">
+                        <span title="{{ convDateTime(date_creation) }}" class="text-muted text-nowrap">
                            {{ time2str(date_creation) }}
                         </span>
 
                         {% if is_private %}
-                           <i class="fas fa-lock control_item" title="{{ __('Private') }}"></i>
-                           <span class='sr-only'>{{ __('Private') }}</span>
+                           <span title="{{ __('Private') }}">
+                              <i class="fas fa-lock"></i>
+                              <span class="sr-only">{{ __('Private') }}</span>
+                           </span>
+                        {% endif %}
+
+                        {% if is_promoted %}
+                           <a href="{{ form_path('Ticket', entry_i['sourceof_items_id']) }}"
+                              title="{{ __('Followup promoted to a ticket') }}">
+                              <i class="fas code-branch"></i>
+                              <span class='sr-only'>{{ __('Followup promoted to a ticket') }}</span>
+                           </a>
                         {% endif %}
                      </div>
                   </div>
-                  <span class="row mt-2 timeline-content {{ item_position }} card">
+                  <span class="row mt-2 timeline-content flex-grow-1 {{ item_position }} card">
                      <div class="card-body">
-                        {{ setRichTextContent('', entry_i['content'], '', true)}}
+                        <div class="read-only-content">
+                           {{ setRichTextContent('', entry_i['content'], '', true)}}
+                        </div>
+                        <div class="edit-content collapse">
+                           <button class="btn btn-sm btn-ghost-secondary float-end close-edit-content">
+                              <i class="fas fa-2x fa-times"></i>
+                           </button>
+                           <div class="ajax-content">
+
+                           </div>
+                        </div>
                      </div>
                   </span>
 
                   {% if date_creation != date_mod %}
                      {% set editor = User__getLink(entry_i['users_id_editor']) %}
-                     <div class="text-muted text-end" title="{{ convDateTime(date_mod) }}">
+                     <div class="text-muted text-end d-none d-md-block" title="{{ convDateTime(date_mod) }}">
                         {{ __('Last edition: %1$s by %2$s')|format(time2str(date_mod), editor)|raw }}
                      </div>
                   {% endif %}
@@ -64,3 +120,31 @@
    {% include("components/itilobject/answer.html.twig") %}
 
 </div>
+
+<script type="text/javascript">
+$(function() {
+   $(document).on("click", ".edit-timeline-item", function() {
+      var timeline_item = $(this).closest(".timeline-item");
+      var content_block = timeline_item.find(".timeline-content");
+      var itemtype      = timeline_item.data('itemtype')
+      var items_id      = timeline_item.data('items-id')
+
+      content_block.find(".read-only-content").hide();
+      content_block.find(".edit-content").show()
+         .find(".ajax-content").load("{{ path('/ajax/timeline.php') }}", {
+         'action'    : 'viewsubitem',
+         'type'      : itemtype,
+         'parenttype': '{{ item.getType() }}',
+         '{{ item.getType()|get_foreignkey_field }}': {{ item.fields['id'] }},
+         'id'        : items_id
+      });
+   });
+
+   $(document).on("click", ".close-edit-content", function() {
+      $(this)
+         .siblings('.ajax-content').html('')
+         .closest('.edit-content').hide()
+         .siblings('.read-only-content').show();
+   });
+});
+</script>
