@@ -1,0 +1,71 @@
+
+{% import "components/form/fields_macros.html.twig" as fields %}
+{% set rand = random() %}
+
+<div class="itilvalidation">
+    <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post" action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true">
+        <input type="hidden" name="itemtype" value="{{ item.getType() }}">
+        <input type="hidden" name="items_id" value="{{ item.fields['id'] }}">
+        {# TODO reopen #}
+
+        <div class="row">
+            <div class="col-12 col-md-9">
+                <div>
+                    {{ __('Approval requester') }}: {{ session('glpiname') }}
+                </div>
+
+                {# TODO Choose approver type #}
+                {% set validation_approver_lbl %}
+                    <span>{{ __('Approver') }}</span>
+                {% endset %}
+                {{ fields.dropdownField(
+                    "User",
+                    "users_id",
+                    subitem.fields['users_id'],
+                    validation_approver_lbl,
+                    {
+                        'full_width': true,
+                        'entity': item.fields['entities_id'],
+                        'is_active': 1,
+                        'rand': rand,
+                    }
+                ) }}
+
+                {{ fields.textareaField(
+                    'comment_submission',
+                    subitem.fields['comment_submission'],
+                    '',
+                    {
+                        'full_width': true,
+                        'no_label': true,
+                        'rand': rand,
+                    }
+                ) }}
+            </div>
+        </div>
+
+        <div class="d-flex">
+            {% if subitem.fields['id'] <= 0 %}
+                <button class="btn btn-primary me-2" type="submit" name="add">
+                    <i class='fas fa-plus'></i>
+                    <span>{{ _x('button', 'Add') }}</span>
+                </button>
+            {% else %}
+                <button class="btn btn-primary me-2" type="submit" name="update">
+                    <i class='fas fa-save'></i>
+                    <span>{{ _x('button', 'Save') }}</span>
+                </button>
+
+                {% if subitem.can(id, constant('PURGE')) %}
+                    <button class="btn btn-outline-danger me-2" type="submit" name="purge"
+                            onclick='return confirm("{{ __('Confirm the final deletion?') }}");'>
+                        <i class='fas fa-trash-alt'></i>
+                        <span>{{ _x('button', 'Delete permanently') }}</span>
+                    </button>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+    </form>
+</div>
