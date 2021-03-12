@@ -24,7 +24,7 @@
       {% set date_creation = entry_i['date_creation'] ?? entry_i['date'] %}
       {% set date_mod = entry_i['date_mod'] %}
 
-      {% set can_edit_i  = entry_i['candedit'] %}
+      {% set can_edit_i  = entry_i['can_edit'] %}
       {% set can_promote = entry['type'] == "ITILFollowup" and can_edit_i and not status_closed %}
       {% set is_promoted = can_promote and entry_i['sourceof_items_id'] > 0 %}
 
