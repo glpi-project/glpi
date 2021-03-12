@@ -654,7 +654,9 @@ class Problem extends CommonITILObject {
 
       switch ($field) {
          case 'status':
-            return Problem::dropdownStatus(['value' => $values[$field], 'display' => false]);
+            return Problem::dropdownStatus(['name' => $name,
+                                             'value' => $values[$field],
+                                             'display' => false]);
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
