@@ -1,63 +1,66 @@
 <div class="itil-timeline">
-{% for entry in timeline|reverse %}
-   {% set entry_i = entry['item'] %}
-   {% set users_id = entry_i['users_id'] %}
-   {% set is_private = entry_i['is_private'] ?? false %}
-   {% set date_creation = entry_i['date_creation'] ?? entry_i['date'] %}
-   {% set date_mod = entry_i['date_mod'] %}
 
-   {% set timeline_position = entry_i['timeline_position'] %}
-   {% set item_position = 't-left' %}
-   {% if timeline_position == constant('CommonITILObject::TIMELINE_LEFT') %}
+   {% include("components/itilobject/main_description.html.twig") %}
+
+   {% for entry in timeline|reverse %}
+      {% set entry_i = entry['item'] %}
+      {% set users_id = entry_i['users_id'] %}
+      {% set is_private = entry_i['is_private'] ?? false %}
+      {% set date_creation = entry_i['date_creation'] ?? entry_i['date'] %}
+      {% set date_mod = entry_i['date_mod'] %}
+
+      {% set timeline_position = entry_i['timeline_position'] %}
       {% set item_position = 't-left' %}
-   {% elseif timeline_position == constant('CommonITILObject::TIMELINE_MIDLEFT') %}
-      {% set item_position = 't-left t-middle' %}
-   {% elseif timeline_position == constant('CommonITILObject::TIMELINE_MIDRIGHT') %}
-      {% set item_position = 't-right t-middle' %}
-   {% elseif timeline_position == constant('CommonITILObject::TIMELINE_RIGHT') %}
-      {% set item_position = 't-right' %}
-   {% endif %}
+      {% if timeline_position == constant('CommonITILObject::TIMELINE_LEFT') %}
+         {% set item_position = 't-left' %}
+      {% elseif timeline_position == constant('CommonITILObject::TIMELINE_MIDLEFT') %}
+         {% set item_position = 't-left t-middle' %}
+      {% elseif timeline_position == constant('CommonITILObject::TIMELINE_MIDRIGHT') %}
+         {% set item_position = 't-right t-middle' %}
+      {% elseif timeline_position == constant('CommonITILObject::TIMELINE_RIGHT') %}
+         {% set item_position = 't-right' %}
+      {% endif %}
 
-   <div class="d-flex">
-      <div class="d-inline-block timeline-item mb-4 {{ entry['itiltype'] is defined ? "ITIL" ~ entry['itiltype'] : entry['type'] }} {{ "right" in item_position ? "ms-auto" : "" }}">
-         <div class="row">
-            <div class="col-auto {{ "right" in item_position ? "order-last" : "" }}">
-               {% include "components/itilobject/user_picture.html.twig" with {'users_id': users_id} only %}
-            </div>
-            <div class="col">
-               <div class="row">
-                  <div class="{{ "right" in item_position ? "col-auto order-last" : "col" }}">
-                     <strong>{{ User__getLink(users_id) }}</strong>
-                  </div>
-                  <div class="{{ "right" in item_position ? "col" : "col-auto order-last" }}">
-                     <span title="{{ convDateTime(date_creation) }}" class="text-muted">
-                        {{ time2str(date_creation) }}
-                     </span>
-
-                     {% if is_private %}
-                        <i class="fas fa-lock control_item" title="{{ __('Private') }}"></i>
-                        <span class='sr-only'>{{ __('Private') }}</span>
-                     {% endif %}
-                  </div>
+      <div class="d-flex">
+         <div class="timeline-item mb-4 {{ entry['itiltype'] is defined ? "ITIL" ~ entry['itiltype'] : entry['type'] }} {{ "right" in item_position ? "ms-auto" : "" }}">
+            <div class="row">
+               <div class="col-auto {{ "right" in item_position ? "order-last" : "" }}">
+                  {% include "components/itilobject/user_picture.html.twig" with {'users_id': users_id} only %}
                </div>
-               <span class="row mt-2 timeline-content {{ item_position }} card">
-                  <div class="card-body">
-                     {{ setRichTextContent('', entry_i['content'], '', true)}}
-                  </div>
-               </span>
+               <div class="col">
+                  <div class="row">
+                     <div class="{{ "right" in item_position ? "col-auto order-last" : "col" }}">
+                        <strong>{{ User__getLink(users_id) }}</strong>
+                     </div>
+                     <div class="{{ "right" in item_position ? "col" : "col-auto order-last" }}">
+                        <span title="{{ convDateTime(date_creation) }}" class="text-muted">
+                           {{ time2str(date_creation) }}
+                        </span>
 
-               {% if date_creation != date_mod %}
-                  {% set editor = User__getLink(entry_i['users_id_editor']) %}
-                  <div class="text-muted text-end" title="{{ convDateTime(date_mod) }}">
-                     {{ __('Last edition: %1$s by %2$s')|format(time2str(date_mod), editor)|raw }}
+                        {% if is_private %}
+                           <i class="fas fa-lock control_item" title="{{ __('Private') }}"></i>
+                           <span class='sr-only'>{{ __('Private') }}</span>
+                        {% endif %}
+                     </div>
                   </div>
-               {% endif %}
+                  <span class="row mt-2 timeline-content {{ item_position }} card">
+                     <div class="card-body">
+                        {{ setRichTextContent('', entry_i['content'], '', true)}}
+                     </div>
+                  </span>
+
+                  {% if date_creation != date_mod %}
+                     {% set editor = User__getLink(entry_i['users_id_editor']) %}
+                     <div class="text-muted text-end" title="{{ convDateTime(date_mod) }}">
+                        {{ __('Last edition: %1$s by %2$s')|format(time2str(date_mod), editor)|raw }}
+                     </div>
+                  {% endif %}
+               </div>
             </div>
          </div>
       </div>
-   </div>
-{% endfor %}
+   {% endfor %}
 
-{% include("components/itilobject/answer.html.twig") %}
+   {% include("components/itilobject/answer.html.twig") %}
 
 </div>

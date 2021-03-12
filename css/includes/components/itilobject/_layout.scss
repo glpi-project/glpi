@@ -1,30 +1,35 @@
 .itil-object {
-   position: relative;
    @include media-breakpoint-up(sm) {
-      height: calc(100vh - 188px);
-
-      & > .row {
-         height: 100%;
-      }
+      height: calc(100vh - 205px);
+      //position: relative;
 
       .itil-left-side, .itil-right-side {
          height: 100%;
          overflow-y: auto;
+         /* position: absolute;
+         top: 0;
+         bottom: 0; */
       }
 
       .itil-left-side {
          border-top: 0 !important;
+         left: 0;
       }
+
+      /* .itil-right-side {
+         right: 0;
+      } */
    }
+}
 
-   .itil-footer {
-      position: sticky;
-      bottom: 0;
 
-      #debugajax {
-         position: absolute;
-         top: 10px;
-         left: 50%;
-      }
+.itil-footer {
+   position: sticky;
+   bottom: 0;
+
+   #debugajax {
+      position: absolute;
+      top: 10px;
+      left: 50%;
    }
 }
