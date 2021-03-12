@@ -75,16 +75,14 @@
 
                         {% if is_private %}
                            <span title="{{ __('Private') }}">
-                              <i class="fas fa-lock"></i>
-                              <span class="sr-only">{{ __('Private') }}</span>
+                              <i class="fas fa-lock" aria-label="{{ __('Private') }}"></i>
                            </span>
                         {% endif %}
 
                         {% if is_promoted %}
                            <a href="{{ form_path('Ticket', entry_i['sourceof_items_id']) }}"
                               title="{{ __('Followup promoted to a ticket') }}">
-                              <i class="fas code-branch"></i>
-                              <span class='sr-only'>{{ __('Followup promoted to a ticket') }}</span>
+                              <i class="fas code-branch" aria-label="{{ __('Followup promoted to a ticket') }}"></i>
                            </a>
                         {% endif %}
                      </div>
