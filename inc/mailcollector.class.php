@@ -1232,7 +1232,7 @@ class MailCollector  extends CommonDBTM {
       // Replace plain text line breaks to marker if content is not html
       // and rich text mode is enabled (otherwise remove them)
       $string = str_replace(
-         ["\r\n", "\n", "\r"],
+         ["\r\n", "\n\n", "\r"],
          $this->body_is_html ? ' ' : $br_marker,
          $string
       );
