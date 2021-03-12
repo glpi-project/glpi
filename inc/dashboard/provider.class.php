@@ -122,7 +122,7 @@ class Provider extends CommonGLPI {
 
       $url = $item::getSearchURL()."?".Toolbox::append_params([
          $search_criteria,
-         'reset'
+         'reset' => 'reset',
       ]);
 
       return [
