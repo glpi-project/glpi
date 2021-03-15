@@ -49,7 +49,7 @@
                <div class="col-auto d-flex flex-column {{ "right" in item_position ? "order-last" : "" }}">
                   {% include "components/itilobject/user_picture.html.twig" with {'users_id': users_id} only %}
 
-                  <div class="d-flex flex-column mt-2">
+                  <div class="d-flex flex-column mt-2 action-buttons">
                      {% if can_edit_i %}
                         <button class="btn btn-ghost-secondary mt-1 edit-timeline-item">
                            <i class="fas fa-edit"></i>
@@ -115,6 +115,7 @@
       </div>
    {% endfor %}
 
+   {# TODO content hidden in template #}
    {% include("components/itilobject/answer.html.twig") %}
 
 </div>
@@ -128,14 +129,17 @@ $(function() {
       var items_id      = timeline_item.data('items-id')
 
       content_block.find(".read-only-content").hide();
+      timeline_item.find(".action-buttons").addClass("d-none");
       content_block.find(".edit-content").show()
-         .find(".ajax-content").load("{{ path('/ajax/timeline.php') }}", {
-         'action'    : 'viewsubitem',
-         'type'      : itemtype,
-         'parenttype': '{{ item.getType() }}',
-         '{{ item.getType()|get_foreignkey_field }}': {{ item.fields['id'] }},
-         'id'        : items_id
-      });
+         .find(".ajax-content")
+         .html("<i class='fas fa-3x fa-spinner fa-spin ms-auto'></i>")
+         .load("{{ path('/ajax/timeline.php') }}", {
+            'action'    : 'viewsubitem',
+            'type'      : itemtype,
+            'parenttype': '{{ item.getType() }}',
+            '{{ item.getType()|get_foreignkey_field }}': {{ item.fields['id'] }},
+            'id'        : items_id
+         });
    });
 
    $(document).on("click", ".close-edit-content", function() {
@@ -143,6 +147,10 @@ $(function() {
          .siblings('.ajax-content').html('')
          .closest('.edit-content').hide()
          .siblings('.read-only-content').show();
+
+      $(this)
+         .closest(".timeline-item")
+         .find(".action-buttons").removeClass("d-none");
    });
 });
 </script>
