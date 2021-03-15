@@ -5,7 +5,7 @@
 <div class="itilvalidation">
     <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post" action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true">
         <input type="hidden" name="itemtype" value="{{ item.getType() }}">
-        <input type="hidden" name="items_id" value="{{ item.fields['id'] }}">
+        <input type="hidden" name="{{ item|get_foreignkey_field }}" value="{{ item.fields['id'] }}">
         {# TODO reopen #}
 
         <div class="row">
@@ -18,10 +18,11 @@
                 {% set validation_approver_lbl %}
                     <span>{{ __('Approver') }}</span>
                 {% endset %}
+                <input type="hidden" name="validatortype" value="User">
                 {{ fields.dropdownField(
                     "User",
-                    "users_id",
-                    subitem.fields['users_id'],
+                    "users_id_validate[]",
+                    subitem.fields['users_id_validate'],
                     validation_approver_lbl,
                     {
                         'full_width': true,
