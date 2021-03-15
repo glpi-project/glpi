@@ -5,41 +5,43 @@
       max-width: 100%;
       word-break: break-word;
 
-      &::before {
-         content: " ";
-         position: absolute;
-         width: 0;
-         height: 0;
-         left: -14px;
-         right: auto;
-         top: -1px;
-         bottom: auto;
-         border: 7px solid;
-         border-color: transparent;
-      }
-      &::after {
-         content: " ";
-         position: absolute;
-         width: 0;
-         height: 0;
-         left: -12px;
-         right: auto;
-         top: 0px;
-         bottom: auto;
-         border: 6px solid;
-         border-color: transparent;
-      }
-
-      &.t-right {
-         border-top-right-radius: 0;
-
+      @include media-breakpoint-up(sm) {
          &::before {
-            left: auto;
-            right: -14px;
+            content: " ";
+            position: absolute;
+            width: 0;
+            height: 0;
+            left: -14px;
+            right: auto;
+            top: -1px;
+            bottom: auto;
+            border: 7px solid;
+            border-color: transparent;
          }
          &::after {
-            left: auto;
-            right: -12px;
+            content: " ";
+            position: absolute;
+            width: 0;
+            height: 0;
+            left: -12px;
+            right: auto;
+            top: 0px;
+            bottom: auto;
+            border: 6px solid;
+            border-color: transparent;
+         }
+
+         &.t-right {
+            border-top-right-radius: 0;
+
+            &::before {
+               left: auto;
+               right: -14px;
+            }
+            &::after {
+               left: auto;
+               right: -12px;
+            }
          }
       }
    }
