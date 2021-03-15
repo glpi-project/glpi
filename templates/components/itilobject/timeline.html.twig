@@ -49,7 +49,7 @@
                <div class="col-auto d-flex flex-column {{ "right" in item_position ? "order-last" : "" }}">
                   {% include "components/itilobject/user_picture.html.twig" with {'users_id': users_id} only %}
 
-                  <div class="d-flex flex-column mt-2 action-buttons">
+                  {# <div class="d-flex flex-column mt-2 action-buttons">
                      {% if can_edit_i %}
                         <button class="btn btn-ghost-secondary mt-1 edit-timeline-item">
                            <i class="fas fa-edit"></i>
@@ -61,30 +61,50 @@
                            <i class="fas fa-code-branch"></i>
                         </a>
                      {% endif %}
-                  </div>
+                  </div> #}
                </div>
                <div class="col d-flex flex-column">
-                  <div class="row">
-                     <div class="{{ "right" in item_position ? "col-auto order-last" : "col" }} d-none d-md-block">
-                        <strong>{{ User__getLink(users_id) }}</strong>
-                     </div>
-                     <div class="{{ "right" in item_position ? "col" : "col-auto order-last" }}">
-                        <span title="{{ convDateTime(date_creation) }}" class="text-muted text-nowrap">
+                  <div class="d-flex ">
+                     <div class="d-flex">
+                        <div class="d-none d-md-block">
+                           <strong>{{ User__getLink(users_id) }}</strong>
+                        </div>
+
+                        <span title="{{ convDateTime(date_creation) }}" class="ms-2 text-muted text-nowrap">
                            {{ time2str(date_creation) }}
                         </span>
+                     </div>
 
+                     <div class="d-flex ms-auto">
                         {% if is_private %}
-                           <span title="{{ __('Private') }}">
+                           <span title="{{ __('Private') }}" class="ms-1">
                               <i class="fas fa-lock" aria-label="{{ __('Private') }}"></i>
                            </span>
                         {% endif %}
 
                         {% if is_promoted %}
                            <a href="{{ form_path('Ticket', entry_i['sourceof_items_id']) }}"
-                              title="{{ __('Followup promoted to a ticket') }}">
+                              title="{{ __('Followup promoted to a ticket') }}"
+                              class="ms-1">
                               <i class="fas code-branch" aria-label="{{ __('Followup promoted to a ticket') }}"></i>
                            </a>
                         {% endif %}
+
+                        <div class="dropdown ms-1">
+                           <button class="btn btn-sm btn-ghost-secondary" type="button" id="more-actions" data-bs-toggle="dropdown" aria-expanded="false">
+                              <i class="fas fa-ellipsis-h"></i>
+                           </button>
+                           <ul class="dropdown-menu" aria-labelledby="more-actions">
+                              <li><a class="dropdown-item edit-timeline-item" href="#">
+                                 <i class="fas fa-fw fa-edit"></i>
+                                 <span>{{ __("Edit") }}</span>
+                              </a></li>
+                              <li><a class="dropdown-item" href="{{ form_path('Ticket') ~ "?_promoted_fup_id=" ~ entry_i['id'] }}">
+                                 <i class="fas fa-fw fa-code-branch"></i>
+                                 <span>{{ __('Promote to Ticket') }}</span>
+                              </a></li>
+                           </ul>
+                        </div>
                      </div>
                   </div>
                   <span class="row mt-2 timeline-content flex-grow-1 {{ item_position }} card">
@@ -129,7 +149,6 @@ $(function() {
       var items_id      = timeline_item.data('items-id')
 
       content_block.find(".read-only-content").hide();
-      timeline_item.find(".action-buttons").addClass("d-none");
       content_block.find(".edit-content").show()
          .find(".ajax-content")
          .html("<i class='fas fa-3x fa-spinner fa-spin ms-auto'></i>")
@@ -147,10 +166,6 @@ $(function() {
          .siblings('.ajax-content').html('')
          .closest('.edit-content').hide()
          .siblings('.read-only-content').show();
-
-      $(this)
-         .closest(".timeline-item")
-         .find(".action-buttons").removeClass("d-none");
    });
 });
 </script>
