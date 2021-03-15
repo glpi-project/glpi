@@ -1,6 +1,10 @@
 {% set user_picture  = User__getPicture(users_id) %}
+{% set user_color  = User__getBgColor(users_id) %}
 <a href="{{ User__getLinkUrl(users_id) }}">
-   <span class="avatar avatar-md rounded mt-2" style="background-image: url({{ user_picture }})">
-      {{ (user_picture|length == 0) ? User__getInitials(users_id) : "" }}
+   <span class="avatar avatar-md rounded mt-2"
+         style="background-image: url({{ user_picture }}); background-color: {{ user_color }}">
+      {% if user_picture|length == 0 %}
+            {{ User__getInitials(users_id) }}
+      {% endif %}
    </span>
 </a>
