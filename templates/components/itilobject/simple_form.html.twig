@@ -1,0 +1,40 @@
+{% import "components/form/fields_macros.html.twig" as fields %}
+
+{% set target      = item.getFormURL() %}
+{% set is_new_item = (item.fields['id'] == 0) %}
+
+<form name="asset_form" method="post" action="{{ target }}" {{ formoptions }} enctype="multipart/form-data">
+   <div class="row flex-row">
+      {{ fields.textField(
+         "name",
+         item.fields['name'],
+         __('Title'),
+         {
+            is_horizontal: false,
+            full_width: true,
+         }
+      ) }}
+
+      {{ fields.textareaField(
+         "content",
+         item.fields['content'],
+         __('Description'),
+         {
+            is_horizontal: false,
+            full_width: true,
+            enable_richtext: true,
+            enable_fileupload: true,
+         }
+      ) }}
+   </div>
+
+   {% if not is_new_item %}
+      <button class="btn btn-primary me-2" type="submit" name="update">
+         <i class='fas fa-save'></i>
+         <span>{{ _x('button', 'Save') }}</span>
+      </button>
+   {% endif %}
+
+   <input type="hidden" name="id" value="{{ item.fields['id'] }}"/>
+   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+</form>
