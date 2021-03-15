@@ -1213,7 +1213,6 @@ class Problem extends CommonITILObject {
                }
                $options['time_to_resolve']     = $ticket->getField('time_to_resolve');
                $options['entities_id']         = $ticket->getField('entities_id');
-               $options['actiontime']          = $ticket->getField('actiontime');
             }
          }
       }
