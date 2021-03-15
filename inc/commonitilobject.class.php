@@ -34,6 +34,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * CommonITILObject Class
 **/
@@ -7503,10 +7506,18 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($item instanceof Document_Item) {
          Document_Item::showAddFormForItem($params['parent'], '');
 
+      } else if ($item->getType() == $params['parent']->getType()) {
+         return self::showEditDescriptionForm($params['parent']);
       } else if (method_exists($item, "showForm")
                  && $item->can(-1, CREATE, $params)) {
          $item->showForm($id, $params);
       }
+   }
+
+   static function showEditDescriptionForm(CommonITILObject $item) {
+      TemplateRenderer::getInstance()->display('components/itilobject/simple_form.html.twig', [
+         'item' => $item,
+      ]);
    }
 
 
