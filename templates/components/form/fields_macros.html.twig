@@ -104,7 +104,7 @@
 
    {% set field %}
       <textarea class="form-control" id="{{ id }}" name="{{ name }}" rows="3"
-                {{ options.disabled ? 'disabled' : "" }}>{{ value }}</textarea>
+                {{ options.disabled ? 'disabled' : "" }}>{{ value|raw }}</textarea>
    {% endset %}
 
    {% if options.enable_richtext %}
