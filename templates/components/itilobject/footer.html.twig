@@ -14,11 +14,13 @@
                <i class='fas fa-wrench'></i>
                <span>{{ _x('button', 'Create a task') }}</span>
             </a></li>
+            {% if item.getType() is same as ('Ticket') or item.getType() is same as ('Change') %}
             <li><a class="dropdown-item action-validation answer-action" href="#"
-                  data-bs-toggle="collapse" data-bs-target="#new-ITILValidation-block">
+                  data-bs-toggle="collapse" data-bs-target="#new-{{ item.getType() }}Validation-block">
                <i class='far fa-thumbs-up'></i>
                <span>{{ _x('button', 'Ask for validation') }}</span>
             </a></li>
+            {% endif %}
             <li><a class="dropdown-item action-solution answer-action" href="#"
                   data-bs-toggle="collapse" data-bs-target="#new-ITILSolution-block">
                <i class='fas fa-check'></i>
