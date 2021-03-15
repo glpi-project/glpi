@@ -9,15 +9,29 @@
       'include': "components/itilobject/form_task.html.twig",
       'item': task,
    },
-   'ITILValidation': {
-      'include': "components/itilobject/form_validation.html.twig",
-      'item': validation,
-   },
    'ITILSolution': {
       'include': "components/itilobject/form_solution.html.twig",
       'item': solution,
    },
 } %}
+
+{% if item.getType() is same as('Ticket') %}
+   {% set itilblocks = itilblocks|merge({
+      'TicketValidation': {
+         'include': "components/itilobject/form_validation.html.twig",
+         'item': validation,
+      },
+   }) %}
+{% endif %}
+
+{% if item.getType() is same as('Change') %}
+   {% set itilblocks = itilblocks|merge({
+      'ChangeValidation': {
+         'include': "components/itilobject/form_validation.html.twig",
+         'item': validation,
+      },
+   }) %}
+{% endif %}
 
 <div id="new-itilobject-form">
    {% for itiltype, itildata in itilblocks %}
