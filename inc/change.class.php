@@ -996,7 +996,7 @@ class Change extends CommonITILObject {
       echo $tt->getBeginHiddenFieldValue('actiontime');
       Dropdown::showTimeStamp(
          'actiontime', [
-            'value'           => $options['actiontime'],
+            'value'           => $this->fields["actiontime"],
             'addfirstminutes' => true
          ]
       );
