@@ -1,12 +1,14 @@
 {% set users_id = item.fields['users_id_recipient'] %}
 
-<div class="timeline-item mb-4 ITILContent">
+<div class="timeline-item mb-4 ITILContent"
+     data-itemtype="{{ item.getType() }}" data-items-id="{{ item.fields['id'] }}">
    <div class="row">
       <div class="col-auto d-flex flex-column ">
          {% include "components/itilobject/user_picture.html.twig" with {'users_id': users_id} only %}
 
-         <div class="d-flex flex-column mt-2">
-            <button class="btn btn-ghost-secondary mt-1">
+         {# TODO canedit #}
+         <div class="d-flex flex-column mt-2 action-buttons">
+            <button class="btn btn-ghost-secondary mt-1 edit-timeline-item">
                <i class="fas fa-edit"></i>
             </button>
          </div>
@@ -32,11 +34,21 @@
             </div>
          </div>
          <span class="row mt-2 timeline-content left card">
-            <div class="card-title card-header">
-               {{ item.fields['name'] }}
-            </div>
             <div class="card-body">
-               {{ setRichTextContent('', item.fields['content'], '', true)}}
+               <div class="read-only-content">
+                  <div class="card-title card-header mx-n3 mt-n3">
+                     {{ item.fields['name'] }}
+                  </div>
+                  {{ setRichTextContent('', item.fields['content'], '', true)}}
+               </div>
+               <div class="edit-content collapse">
+                  <button class="btn btn-sm btn-ghost-secondary float-end close-edit-content">
+                     <i class="fas fa-2x fa-times"></i>
+                  </button>
+                  <div class="ajax-content">
+
+                  </div>
+               </div>
             </div>
          </span>
       </div>
