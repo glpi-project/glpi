@@ -3,7 +3,16 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [9.5.4] unreleased
+## [9.5.5] unreleased
+
+### API changes
+
+#### Changed
+
+- Remove deprecation of `Search::getMetaReferenceItemtype()`
+
+
+## [9.5.4] 2021-03-02
 
 ### Changed
 
