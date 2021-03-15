@@ -5,20 +5,13 @@
    <div class="row">
       <div class="col-auto d-flex flex-column ">
          {% include "components/itilobject/user_picture.html.twig" with {'users_id': users_id} only %}
-
-         {# TODO canedit #}
-         <div class="d-flex flex-column mt-2 action-buttons">
-            <button class="btn btn-ghost-secondary mt-1 edit-timeline-item">
-               <i class="fas fa-edit"></i>
-            </button>
-         </div>
       </div>
       <div class="col">
-         <div class="row">
-            <div class="col d-none d-md-block">
+         <div class="d-flex">
+            <div class="d-none d-md-block">
                <strong>{{ User__getLink(users_id) }}</strong>
             </div>
-            <div class="text-muted col-auto order-last">
+            <div class="text-muted ms-2 d-flex">
                {% set date_creation = item.fields['date_creation'] ?? item.fields['date'] %}
                {% set date_mod = item.fields['date_mod'] %}
                <span title="{{ convDateTime(date_creation) }}">
@@ -27,10 +20,23 @@
 
                {% if date_creation != date_mod%}
                   {% set editor = User__getLink(item.fields['users_id_lastupdater']) %}
-                  <span class="text-muted text-end ms-3 d-none d-md-block" title="{{ convDateTime(date_mod) }}">
+                  <span class="text-muted text-end ms-2 d-none d-md-block" title="{{ convDateTime(date_mod) }}">
                      {{ __('Last modification: %1$s by %2$s')|format(time2str(date_mod), editor)|raw }}
                   </span>
                {% endif %}
+            </div>
+
+            {# TODO canedit #}
+            <div class="dropdown ms-auto">
+               <button class="btn btn-sm btn-ghost-secondary" type="button" id="more-actions" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa fa-ellipsis-h"></i>
+               </button>
+               <ul class="dropdown-menu" aria-labelledby="more-actions">
+                  <li><a class="dropdown-item edit-timeline-item" href="#">
+                     <i class="fas fa-fw fa-edit"></i>
+                     <span>{{ __("Edit") }}</span>
+                  </a></li>
+               </ul>
             </div>
          </div>
          <span class="row mt-2 timeline-content left card">
