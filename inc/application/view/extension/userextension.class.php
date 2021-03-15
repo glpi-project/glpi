@@ -33,6 +33,7 @@
 namespace Glpi\Application\View\Extension;
 
 use DbUtils;
+use Toolbox;
 use User;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
@@ -46,6 +47,7 @@ class UserExtension extends AbstractExtension implements ExtensionInterface {
    public function getFunctions() {
       return [
          new TwigFunction('User__getPicture', [$this, 'getPicture']),
+         new TwigFunction('User__getBgColor', [$this, 'getBgColor']),
          new TwigFunction('User__getInitials', [$this, 'getInitials']),
          new TwigFunction('User__getLink', [$this, 'getLink'], ['is_safe' => ['html']]),
          new TwigFunction('User__getLinkUrl', [$this, 'getLinkUrl']),
@@ -69,6 +71,15 @@ class UserExtension extends AbstractExtension implements ExtensionInterface {
             substr($user->fields['firstname'],0, 1).
             substr($user->fields['realname'], 0, 1)
          );
+      }
+
+      return "";
+   }
+
+   public function getBgColor(int $users_id = 0): string {
+      $user = new User;
+      if ($user->getFromDB($users_id)) {
+         return Toolbox::getColorForString($user->fields['firstname'].$user->fields['realname']);
       }
 
       return "";
