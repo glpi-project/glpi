@@ -2176,16 +2176,18 @@ class Dropdown {
    /**
     * Get dropdown value
     *
-    * @param array   $post Posted values
-    * @param boolean $json Encode to JSON, default to true
+    * @param array   $post  Posted values
+    * @param boolean $json  Encode to JSON, default to true
+    * @param array   $upost Raw posted values
     *
     * @return string|array
     */
-   public static function getDropdownValue($post, $json = true) {
+   public static function getDropdownValue($post, $json = true, array $upost = []) {
       global $DB, $CFG_GLPI;
 
       // check if asked itemtype is the one originaly requested by the form
-      if (!Session::validateIDOR($post)) {
+      $upost = !empty($upost) ? $upost : $post;
+      if (!Session::validateIDOR($upost)) {
          return;
       }
 
@@ -2956,14 +2958,16 @@ class Dropdown {
     *
     * @param array   $post Posted values
     * @param boolean $json Encode to JSON, default to true
+    * @param array   $upost Raw posted values
     *
     * @return string|array
     */
-   public static function getDropdownConnect($post, $json = true) {
+   public static function getDropdownConnect($post, $json = true, array $upost = []) {
       global $DB, $CFG_GLPI;
 
       // check if asked itemtype is the one originaly requested by the form
-      if (!Session::validateIDOR($post)) {
+      $upost = !empty($upost) ? $upost : $post;
+      if (!Session::validateIDOR($upost)) {
          return;
       }
 
@@ -3154,12 +3158,13 @@ class Dropdown {
    /**
     * Get dropdown find num
     *
-    * @param array   $post Posted values
-    * @param boolean $json Encode to JSON, default to true
+    * @param array   $post  Posted values
+    * @param boolean $json  Encode to JSON, default to true
+    * @param array   $upost Raw posted values
     *
     * @return string|array
     */
-   public static function getDropdownFindNum($post, $json = true) {
+   public static function getDropdownFindNum($post, $json = true, array $upost = []) {
       global $DB, $CFG_GLPI;
 
       // Security
@@ -3170,7 +3175,8 @@ class Dropdown {
       $itemtypeisplugin = isPluginItemType($post['itemtype']);
 
       // check if asked itemtype is the one originaly requested by the form
-      if (!Session::validateIDOR($post)) {
+      $upost = !empty($upost) ? $upost : $post;
+      if (!Session::validateIDOR($upost)) {
          return;
       }
 
@@ -3550,16 +3556,18 @@ class Dropdown {
    /**
     * Get dropdown users
     *
-    * @param array   $post Posted values
-    * @param boolean $json Encode to JSON, default to true
+    * @param array   $post  Posted values
+    * @param boolean $json  Encode to JSON, default to true
+    * @param array   $upost Raw posted values
     *
     * @return string|array
     */
-   public static function getDropdownUsers($post, $json = true) {
+   public static function getDropdownUsers($post, $json = true, array $upost = []) {
       global $CFG_GLPI;
 
       // check if asked itemtype is the one originaly requested by the form
-      if (!Session::validateIDOR($post + ['itemtype' => 'User', 'right' => ($post['right'] ?? "")])) {
+      $upost = !empty($upost) ? $upost : $post;
+      if (!Session::validateIDOR($upost + ['itemtype' => 'User', 'right' => ($upost['right'] ?? "")])) {
          return;
       }
 

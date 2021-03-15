@@ -45,4 +45,4 @@ if (strpos($_SERVER['PHP_SELF'], "getDropdownUsers.php")) {
 }
 
 Session::checkLoginUser();
-echo Dropdown::getDropdownUsers($_POST);
+echo Dropdown::getDropdownUsers($_POST, true, $_UPOST);

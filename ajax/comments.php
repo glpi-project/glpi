@@ -87,8 +87,8 @@ if (isset($_POST["itemtype"])
       default :
          if ($_POST["value"] > 0) {
             if (!Session::validateIDOR([
-               'itemtype'    => $_POST['itemtype'],
-               '_idor_token' => $_POST['_idor_token'] ?? ""
+               'itemtype'    => $_UPOST['itemtype'],
+               '_idor_token' => $_UPOST['_idor_token'] ?? ""
             ])) {
                exit();
             }

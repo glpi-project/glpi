@@ -54,7 +54,7 @@ if (isset($_POST["table"])
       $itemtype = getItemTypeForTable($_POST["table"]);
       if (!Session::validateIDOR([
          'itemtype'    => $itemtype,
-         '_idor_token' => $_POST['_idor_token'] ?? ""
+         '_idor_token' => $_UPOST['_idor_token'] ?? ""
       ])) {
          exit();
       }
