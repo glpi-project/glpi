@@ -439,6 +439,48 @@ class Appliance extends CommonDBTM {
          ]
       ];
 
+      $tab[] = [
+         'id'                 => '1212',
+         'table'              => User::getTable(),
+         'field'              => 'name',
+         'name'               => User::getTypeName(1),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => self::getTable(),
+               'joinparams'         => [
+                  'beforejoin' => [
+                     'table'      => Appliance_Item::getTable(),
+                     'joinparams' => ['jointype' => 'itemtype_item']
+                  ]
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '1213',
+         'table'              => Group::getTable(),
+         'field'              => 'name',
+         'name'               => Group::getTypeName(1),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => self::getTable(),
+               'joinparams'         => [
+                  'beforejoin' => [
+                     'table'      => Appliance_Item::getTable(),
+                     'joinparams' => ['jointype' => 'itemtype_item']
+                  ]
+               ]
+            ]
+         ]
+      ];
+
       return $tab;
    }
 

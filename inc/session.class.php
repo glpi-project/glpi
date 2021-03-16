@@ -1571,6 +1571,17 @@ class Session {
    }
 
    /**
+    * Get recursive state of active entity selection.
+    *
+    * @since 9.5.5
+    *
+    * @return bool
+    */
+   public static function getIsActiveEntityRecursive(): bool {
+      return $_SESSION['glpiactive_entity_recursive'] ?? false;
+   }
+
+   /**
     * Start session for a given user
     *
     * @param int $users_id ID of the user

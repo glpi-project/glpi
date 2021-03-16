@@ -527,6 +527,151 @@ class Problem extends CommonITILObject {
    }
 
 
+   static function rawSearchOptionsToAdd() {
+
+      $tab = [];
+
+      $tab[] = [
+         'id'                 => 'problem',
+         'name'               => __('Problems')
+      ];
+
+      $tab[] = [
+         'id'                 => '200',
+         'table'              => 'glpi_problems_tickets',
+         'field'              => 'id',
+         'name'               => _x('quantity', 'Number of problems'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'datatype'           => 'count',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '201',
+         'table'              => Problem::getTable(),
+         'field'              => 'name',
+         'name'               => Problem::getTypeName(1),
+         'datatype'           => 'dropdown',
+         'forcegroupby'       => true,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => Problem_Ticket::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child',
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                  => '202',
+         'table'               => Problem::getTable(),
+         'field'               => 'status',
+         'name'                => __('Status'),
+         'datatype'            => 'specific',
+         'searchtype'          => 'equals',
+         'searchequalsonfield' => true,
+         'massiveaction'       => false,
+         'forcegroupby'        => true,
+         'joinparams'          => [
+            'beforejoin'          => [
+               'table'               => Problem_Ticket::getTable(),
+               'joinparams'          => [
+                  'jointype'            => 'child',
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '203',
+         'table'              => Problem::getTable(),
+         'field'              => 'solvedate',
+         'name'               => __('Resolution date'),
+         'datatype'           => 'datetime',
+         'forcegroupby'       => true,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => Problem_Ticket::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child',
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '204',
+         'table'              => Problem::getTable(),
+         'field'              => 'date',
+         'name'               => __('Opening date'),
+         'datatype'           => 'datetime',
+         'forcegroupby'       => true,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => Problem_Ticket::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child',
+               ]
+            ]
+         ]
+      ];
+
+      return $tab;
+
+   }
+
+      /**
+    * @since 0.84
+    *
+    * @param $field
+    * @param $values
+    * @param $options   array
+   **/
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+
+      switch ($field) {
+         case 'status' :
+            return Problem::getStatus($values[$field]);
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+
+   /**
+    * @since 0.84
+    *
+    * @param $field
+    * @param $name            (default '')
+    * @param $values          (default '')
+    * @param $options   array
+    *
+    * @return string
+   **/
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
+
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+      $options['display'] = false;
+
+      switch ($field) {
+         case 'status':
+            return Problem::dropdownStatus(['name' => $name,
+                                             'value' => $values[$field],
+                                             'display' => false]);
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
+
    /**
     * get the problem status list
     *

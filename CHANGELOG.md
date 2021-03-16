@@ -108,7 +108,8 @@ The present file will list all changes made to the project; according to the
 - `Reservation::displayReservationDay()`
 - `Reservation::displayReservationsForAnItem()`
 
-## [9.5.4] unreleased
+
+## [9.5.4] 2021-03-02
 
 ### Changed
 
@@ -119,6 +120,14 @@ The present file will list all changes made to the project; according to the
 #### Deprecated
 
 - `Search::getMetaReferenceItemtype()`
+
+## [9.5.5] unreleased
+
+### API changes
+
+#### Changed
+
+- Remove deprecation of `Search::getMetaReferenceItemtype()`
 
 ## [9.5.3] 2020-11-25
 

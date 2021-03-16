@@ -2148,6 +2148,8 @@ class Search {
    static function getMetaItemtypeAvailable($itemtype) {
       global $CFG_GLPI;
 
+      $itemtype = self::getMetaReferenceItemtype($itemtype);
+
       if (!(($item = getItemForItemtype($itemtype)) instanceof CommonDBTM)) {
          return [];
       }
@@ -2205,13 +2207,14 @@ class Search {
     * @since 0.85
     *
     * @param $itemtype
-    *
-    * @deprecated 9.5.4
    **/
-   static function getMetaReferenceItemtype ($itemtype) {
+   static function getMetaReferenceItemtype($itemtype) {
 
-      Toolbox::deprecated();
+      if (!isPluginItemType($itemtype)) {
+         return $itemtype;
+      }
 
+      // Use reference type if given itemtype extends a reference type.
       $types = [
          'Computer',
          'Problem',
@@ -2228,6 +2231,7 @@ class Search {
             return $type;
          }
       }
+
       return false;
    }
 
@@ -5217,6 +5221,9 @@ JAVASCRIPT;
    static function addMetaLeftJoin($from_type, $to_type, array &$already_link_tables2,
                                    $joinparams = []) {
       global $CFG_GLPI;
+
+      $from_referencetype = self::getMetaReferenceItemtype($from_type);
+
       $LINK = " LEFT JOIN ";
 
       $from_table = $from_type::getTable();
@@ -5233,7 +5240,7 @@ JAVASCRIPT;
       $JOIN = "";
 
       // Specific JOIN
-      if ($from_type === 'Software' && in_array($to_type, $CFG_GLPI['software_types'])) {
+      if ($from_referencetype === 'Software' && in_array($to_type, $CFG_GLPI['software_types'])) {
          // From Software to software_types
          $softwareversions_table = "glpi_softwareversions{$alias_suffix}";
          if (!in_array($softwareversions_table, $already_link_tables2)) {
@@ -5259,7 +5266,7 @@ JAVASCRIPT;
          return $JOIN;
       }
 
-      if ($to_type === 'Software' && in_array($from_type, $CFG_GLPI['software_types'])) {
+      if ($to_type === 'Software' && in_array($from_referencetype, $CFG_GLPI['software_types'])) {
          // From software_types to Software
          $items_softwareversions_table = "glpi_items_softwareversions{$alias_suffix}";
          if (!in_array($items_softwareversions_table, $already_link_tables2)) {
@@ -5290,7 +5297,7 @@ JAVASCRIPT;
          return $JOIN;
       }
 
-      if ($from_type === 'Budget' && in_array($to_type, $CFG_GLPI['infocom_types'])) {
+      if ($from_referencetype === 'Budget' && in_array($to_type, $CFG_GLPI['infocom_types'])) {
          // From Budget to infocom_types
          $infocom_alias = "glpi_infocoms{$alias_suffix}";
          if (!in_array($infocom_alias, $already_link_tables2)) {
@@ -5308,7 +5315,7 @@ JAVASCRIPT;
          return $JOIN;
       }
 
-      if ($to_type === 'Budget' && in_array($from_type, $CFG_GLPI['infocom_types'])) {
+      if ($to_type === 'Budget' && in_array($from_referencetype, $CFG_GLPI['infocom_types'])) {
          // From infocom_types to Budget
          $infocom_alias = "glpi_infocoms{$alias_suffix}";
          if (!in_array($infocom_alias, $already_link_tables2)) {
@@ -5326,7 +5333,7 @@ JAVASCRIPT;
          return $JOIN;
       }
 
-      if ($from_type === 'Reservation' && in_array($to_type, $CFG_GLPI['reservation_types'])) {
+      if ($from_referencetype === 'Reservation' && in_array($to_type, $CFG_GLPI['reservation_types'])) {
          // From Reservation to reservation_types
          $reservationitems_alias = "glpi_reservationitems{$alias_suffix}";
          if (!in_array($reservationitems_alias, $already_link_tables2)) {
@@ -5344,7 +5351,7 @@ JAVASCRIPT;
          return $JOIN;
       }
 
-      if ($to_type === 'Reservation' && in_array($from_type, $CFG_GLPI['reservation_types'])) {
+      if ($to_type === 'Reservation' && in_array($from_referencetype, $CFG_GLPI['reservation_types'])) {
          // From reservation_types to Reservation
          $reservationitems_alias = "glpi_reservationitems{$alias_suffix}";
          if (!in_array($infocom_alias, $already_link_tables2)) {
@@ -5363,11 +5370,11 @@ JAVASCRIPT;
       }
 
       // Generic JOIN
-      $from_obj      = getItemForItemtype($from_type);
+      $from_obj      = getItemForItemtype($from_referencetype);
       $to_obj        = getItemForItemtype($to_type);
-      $from_item_obj = getItemForItemtype($from_type . '_Item');
+      $from_item_obj = getItemForItemtype($from_referencetype . '_Item');
       if (!$from_item_obj) {
-         $from_item_obj = getItemForItemtype('Item_' . $from_type);
+         $from_item_obj = getItemForItemtype('Item_' . $from_referencetype);
       }
       $to_item_obj   = getItemForItemtype($to_type . '_Item');
       if (!$to_item_obj) {

@@ -121,7 +121,7 @@ class Provider {
 
       $url = $item::getSearchURL()."?".Toolbox::append_params([
          $search_criteria,
-         'reset'
+         'reset' => 'reset',
       ]);
 
       return [
