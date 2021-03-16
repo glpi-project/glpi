@@ -44,4 +44,4 @@ if (strpos($_SERVER['PHP_SELF'], "getDropdownValue.php")) {
 }
 
 Session::checkLoginUser();
-echo Dropdown::getDropdownValue($_POST, true, $_UPOST);
+echo Dropdown::getDropdownValue($_POST);

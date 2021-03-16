@@ -41,7 +41,7 @@ if (!isset($_REQUEST['action'])) {
    die;
 }
 
-if (!Session::validateIDOR($_UREQUEST)) {
+if (!Session::validateIDOR($_REQUEST)) {
    die;
 }
 

@@ -1365,7 +1365,10 @@ class Session {
             }
          };
 
-         return $match_expected($idor_data, $data);
+         // Check also unsanitized data, as sanitizing process may alter expected data.
+         $unsanitized_data = Toolbox::stripslashes_deep($data);
+
+         return $match_expected($idor_data, $data) || $match_expected($idor_data, $unsanitized_data);
       }
 
       return false;
