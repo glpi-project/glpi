@@ -180,7 +180,25 @@
    {{ _self.field(name, field, label, options|merge({'id': "dropdown_" ~ name ~ "_" ~ options.rand})) }}
 {% endmacro %}
 
+{% macro dropdownArrayField(name, value, elements, label, options = {}) %}
+   {% set options = {'rand': random()}|merge(options) %}
 
+   {% if options.disabled %}
+      {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
+   {% endif %}
+
+   {% set field %}
+      {{ Dropdown__showFromArray(name, elements, {
+         'value'  : value,
+         'display': false,
+         'rand'   : rand,
+         'width'  : '100%',
+         'class'  : 'form-select',
+      }|merge(options)) }}
+   {% endset %}
+
+   {{ _self.field(name, field, label, options|merge({'id': "dropdown_" ~ name ~ "_" ~ options.rand})) }}
+{% endmacro %}
 
 {% macro dropdownField(itemtype, name, value, label, options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
