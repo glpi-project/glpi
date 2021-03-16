@@ -1066,4 +1066,24 @@ class Toolbox extends \GLPITestCase {
          ->withMessage('Calling this function is deprecated')
          ->exists();
    }
+
+   protected function doubleEncodeEmailsProvider(): array {
+      return [
+         [
+            'source' => \Toolbox::clean_cross_side_scripting_deep('<test@glpi-project.org>'),
+            'result' => '&amp;lt;test@glpi-project.org&amp;gt;',
+         ],
+         [
+            'source' => \Toolbox::clean_cross_side_scripting_deep('<a href="mailto:test@glpi-project.org">test@glpi-project.org</a>'),
+            'result' => \Toolbox::clean_cross_side_scripting_deep('<a href="mailto:test@glpi-project.org">test@glpi-project.org</a>'),
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider doubleEncodeEmailsProvider
+    */
+   public function testDoubleEncodeEmails(string $source, string $result): void {
+      $this->string(\Toolbox::doubleEncodeEmails($source))->isEqualTo($result);
+   }
 }
