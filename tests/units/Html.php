@@ -171,6 +171,10 @@ class Html extends \GLPITestCase {
          ['<p>Legit<!-- This is an HTML comment --> text</p>', 'Legit text', '<p>Legit text</p>'],
          // CDATA should be removed
          ['<p><![CDATA[Some CDATA]]>Legit text</p>', 'Legit text', '<p>Legit text</p>'],
+         // <email@domain.com> should be twice encoded
+         ['From: Test User <test@glpi-project.org>', 'From: Test User test@glpi-project.org', 'From: Test User test@glpi-project.org'],
+         // <a href="mailto:email@domain.com"> should be preserved
+         ['Email me @: <a href="mailto:email@domain.com">email@domain.com</a>', 'Email me @: email@domain.com', 'Email me @: <a href="mailto:email@domain.com">email@domain.com</a>'],
       ];
    }
 
