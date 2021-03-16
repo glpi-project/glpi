@@ -3503,7 +3503,10 @@ HTML;
     * @return string
     */
    public static function doubleEncodeEmails($string) {
-      $regex = "/(&lt;[^;]+?@[^;]+?&gt;)/";
+      // Search for strings that is an email surrounded by `<` and `>` but that cannot be an HTML tag:
+      // - absence of quotes indicate that values is not part of an HTML attribute,
+      // - absence of ; ensure that ending `&gt;` has not been reached.
+      $regex = "/(&lt;[^\"';]+?@[^\"';]+?&gt;)/";
       $string = preg_replace_callback($regex, function($matches) {
          return htmlentities($matches[1]);
       }, $string);
