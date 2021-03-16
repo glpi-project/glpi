@@ -1,0 +1,29 @@
+{% import "components/form/fields_macros.html.twig" as fields %}
+
+{% set requester_field %}
+   {% include "components/itilobject/actor_field.html.twig" with {'type': constant('CommonITILActor::REQUESTER')} only %}
+{% endset %}
+{{ fields.field(
+   'requester',
+   requester_field,
+   __("Requester"),
+   field_options|merge({is_horizontal: false})
+) }}
+{% set observer_field %}
+   {% include "components/itilobject/actor_field.html.twig" with {'type': constant('CommonITILActor::OBSERVER')} only %}
+{% endset %}
+{{ fields.field(
+   'observer',
+   observer_field,
+   __("Observer"),
+   field_options|merge({is_horizontal: false})
+) }}
+{% set assign_field %}
+   {% include "components/itilobject/actor_field.html.twig" with {'type': constant('CommonITILActor::ASSIGN')} only %}
+{% endset %}
+{{ fields.field(
+   'assign',
+   assign_field,
+   __("Assigned to"),
+   field_options|merge({is_horizontal: false})
+) }}
