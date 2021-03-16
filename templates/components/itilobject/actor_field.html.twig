@@ -1,1 +1,87 @@
-<input class="form-control">
+{% set rand = random() %}
+
+<select class="form-select" multiple="true" id="actor_{{ rand }}">
+   <option data-itemtype="User">John Doe</option>
+   <option data-itemtype="User">Alexandre Delaunay</option>
+   <option data-itemtype="Group">Techniciens</option>
+   <option data-itemtype="Group">Développeurs</option>
+   <option data-itemtype="Supplier">Dell</option>
+</select>
+
+<script type="text/javascript">
+$(function() {
+   $("#actor_{{ rand }}").select2({
+      tags: true,
+      width: '100%',
+      tokenSeparators: [',', ' '],
+      disabled: false, // TODO can edit
+      containerCssClass: 'actor-field',
+      templateSelection: function(option) { return genericTemplate(option, true); },
+      templateResult:    function(option) { return genericTemplate(option, false); },
+      createTag: function (params) {
+         var term = $.trim(params.term);
+
+         if (term === '') {
+            return null;
+         }
+
+         // Don't offset to create a tag if it's not an email
+         if (!new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).test(term)) {
+            // Return null to disable tag creation
+            return null;
+         }
+
+         return {
+            id: term,
+            text: term,
+            itemtype: "Email" // add additional parameters
+         }
+      }
+   });
+
+   var notify_user_clicked = false;
+   $(document).on("mouseup", "#actor_{{ rand }} + .select2 .edit-notify-user", function(event) {
+      event.preventDefault();
+      notify_user_clicked = true;
+
+      console.log("todo notify form");
+   });
+
+   $("#actor_{{ rand }}").on('select2:opening', function (event, test) {
+      if (notify_user_clicked) {
+         event.preventDefault();
+         notify_user_clicked = false;
+      }
+   });
+
+   var genericTemplate = function(option = {}, is_selection = false) {
+      var element  = $(option.element);
+      var itemtype = option.itemtype ?? element.data('itemtype');
+
+      var icon    = "";
+      var actions = "";
+      switch (itemtype) {
+         case "User":
+            icon = '<i class="fas fa-fw fa-user mx-1" title="{{ "User"|itemtype_name }}"></i>';
+            if (is_selection == true) {
+               actions = `<button class="btn btn-sm btn-ghost-secondary edit-notify-user"
+                                  title="{{ __("Email followup") }}">
+                  <i class="fas fa-bell"></i>
+               </button>`;
+            }
+            break;
+         case "Group":
+            icon = '<i class="fas fa-fw fa-users mx-1" title="{{ "Group"|itemtype_name }}"></i>';
+            break;
+         case "Supplier":
+            icon = '<i class="fas fa-fw fa-pallet mx-1" title="{{ "Supplier"|itemtype_name }}"></i>';
+            break;
+         case "Email":
+            icon = '<i class="fas fa-fw fa-envelope mx-1" title="{{ "Supplier"|itemtype_name }}"></i>';
+            break;
+      }
+
+      return $(`<span>${icon}${option.text}${actions}</span>`);
+   };
+});
+</script>
