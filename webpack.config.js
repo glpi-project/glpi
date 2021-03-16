@@ -51,15 +51,6 @@ var glpiConfig = {
    },
 };
 
-var glpiKanbanConfig = {
-   entry: {
-      'kanban': path.resolve(__dirname, 'js/kanban.js'),
-   },
-   output: {
-      path: path.resolve(__dirname, 'public/build'),
-   },
-};
-
 /*
  * External libraries files build configuration.
  */
@@ -239,8 +230,9 @@ libsConfig.plugins.push(
    )
 );
 
+
 module.exports = function() {
-   var configs = [glpiConfig, glpiKanbanConfig, libsConfig];
+   var configs = [glpiConfig, libsConfig];
 
    for (let config of configs) {
       config.mode = 'none'; // Force 'none' mode, as optimizations will be done on release process

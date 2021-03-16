@@ -29,8 +29,8 @@
  * ---------------------------------------------------------------------
  */
 
-import {ColorUtil, TeamMember, TeamMemberBadgeFactory} from "../teamwork";
-import KanbanCard from "./card";
+import {ColorUtil, TeamMember, TeamMemberBadgeFactory} from "../teamwork.js";
+import KanbanCard from "./card.js";
 
 /**
  * Kanban Column

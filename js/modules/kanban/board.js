@@ -32,10 +32,10 @@
 // eslint-disable-next-line no-redeclare
 /* global CFG_GLPI */
 
-import KanbanRights from "./rights";
-import KanbanColumn from "./column";
-import KanbanCard from "./card";
-import Teamwork from "../teamwork";
+import KanbanRights from "./rights.js";
+import KanbanColumn from "./column.js";
+import KanbanCard from "./card.js";
+import Teamwork from "../teamwork.js";
 
 /**
  * Kanban Board

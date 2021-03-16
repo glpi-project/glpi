@@ -29,7 +29,7 @@
  * ---------------------------------------------------------------------
  */
 
-import KanbanBoard from "./kanban/board";
+import KanbanBoard from "./kanban/board.js";
 
 // Expose the KanbanBoard class as the old global name for BC
 window.GLPIKanban = KanbanBoard;

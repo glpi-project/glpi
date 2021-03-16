@@ -29,7 +29,7 @@
  * ---------------------------------------------------------------------
  */
 
-import {TeamMember, TeamMemberBadgeFactory} from "../teamwork";
+import {TeamMember, TeamMemberBadgeFactory} from "../teamwork.js";
 
 /**
  * Kanban Card

@@ -5428,6 +5428,8 @@ JAVASCRIPT;
          unset($options['version']);
       }
 
+      $type = preg_match('/^js\/modules\//', $url) === 1 ? 'module' : 'text/javascript';
+
       if ($minify === true) {
          $url = self::getMiniFile($url);
       }
@@ -5438,7 +5440,7 @@ JAVASCRIPT;
          $url .= '?v=' . $version;
       }
 
-      return sprintf('<script type="text/javascript" src="%1$s"></script>', $url);
+      return sprintf('<script type="%s" src="%s"></script>', $type, $url);
    }
 
 
@@ -6492,7 +6494,7 @@ JAVASCRIPT;
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jquery-gantt.js';
             break;
          case 'kanban':
-            $_SESSION['glpi_js_toload'][$name][] = 'public/build/kanban.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'js/modules/kanban.js';
             $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery.ui.touch-punch.js';
             break;
          case 'rateit':
