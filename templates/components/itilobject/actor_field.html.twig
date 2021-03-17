@@ -1,12 +1,6 @@
 {% set rand = random() %}
 
-<select class="form-select" multiple="true" id="actor_{{ rand }}">
-   <option data-itemtype="User">John Doe</option>
-   <option data-itemtype="User">Alexandre Delaunay</option>
-   <option data-itemtype="Group">Techniciens</option>
-   <option data-itemtype="Group">Développeurs</option>
-   <option data-itemtype="Supplier">Dell</option>
-</select>
+<select class="form-select" multiple="true" id="actor_{{ rand }}"></select>
 
 <script type="text/javascript">
 $(function() {
@@ -34,54 +28,87 @@ $(function() {
          return {
             id: term,
             text: term,
-            itemtype: "Email" // add additional parameters
+            itemtype: "Email"
          }
+      },
+      ajax: {
+         url: '{{ path("/ajax/actors.php") }}',
+         datatype: 'json',
+         type: 'POST',
+         data: function (params) {
+            return {
+               action: 'getActors',
+               actortype: '{{ actortype }}',
+               entity_restrict: {{ entities_id }},
+               searchText: params.term,
+               _idor_token: '{{ getNewIDORToken() }}',
+            };
+         },
       }
    });
 
-   var notify_user_clicked = false;
-   $(document).on("mouseup", "#actor_{{ rand }} + .select2 .edit-notify-user", function(event) {
-      event.preventDefault();
-      notify_user_clicked = true;
-
-      console.log("todo notify form");
-   });
-
-   $("#actor_{{ rand }}").on('select2:opening', function (event, test) {
-      if (notify_user_clicked) {
-         event.preventDefault();
-         notify_user_clicked = false;
+   // edit email preference when .edit-notify-user button is activated
+   function openNotifyModal(event) {
+      alert("TODO openNotifyModal");
+      event.stopPropagation();
+   }
+   document.addEventListener('click', event => {
+      if (event.target.closest("#actor_{{ rand }} + .select2 .edit-notify-user")) {
+         openNotifyModal(event);
       }
-   });
+   }, {capture: true})
+   document.addEventListener('keydown', event => {
+      if (event.target.closest("#actor_{{ rand }} + .select2 .edit-notify-user")
+          && event.key == "Enter") {
+         openNotifyModal(event);
+      }
+   }, {capture: true})
 
+   // function to display an option in the list or the selected input
    var genericTemplate = function(option = {}, is_selection = false) {
       var element  = $(option.element);
       var itemtype = option.itemtype ?? element.data('itemtype');
 
-      var icon    = "";
-      var actions = "";
+      var icon = "";
+      var size = is_selection ? "fa-lg" : ""
       switch (itemtype) {
          case "User":
-            icon = '<i class="fas fa-fw fa-user mx-1" title="{{ "User"|itemtype_name }}"></i>';
-            if (is_selection == true) {
-               actions = `<button class="btn btn-sm btn-ghost-secondary edit-notify-user"
-                                  title="{{ __("Email followup") }}">
-                  <i class="fas fa-bell"></i>
-               </button>`;
-            }
+            icon = `<i class="fas ${size} fa-fw fa-user mx-1" title="{{ "User"|itemtype_name }}"></i>`;
             break;
          case "Group":
-            icon = '<i class="fas fa-fw fa-users mx-1" title="{{ "Group"|itemtype_name }}"></i>';
+            icon = `<i class="fas ${size} fa-fw fa-users mx-1" title="{{ "Group"|itemtype_name }}"></i>`;
             break;
          case "Supplier":
-            icon = '<i class="fas fa-fw fa-pallet mx-1" title="{{ "Supplier"|itemtype_name }}"></i>';
+            icon = `<i class="fas ${size} fa-fw fa-pallet mx-1" title="{{ "Supplier"|itemtype_name }}"></i>`;
             break;
          case "Email":
-            icon = '<i class="fas fa-fw fa-envelope mx-1" title="{{ "Supplier"|itemtype_name }}"></i>';
+            icon = `<i class="fas ${size} fa-fw fa-envelope mx-1" title="{{ "Supplier"|itemtype_name }}"></i>`;
             break;
       }
 
-      return $(`<span>${icon}${option.text}${actions}</span>`);
+      var actions = "";
+      if (['User', 'Supplier'].includes(itemtype)
+          && is_selection == true
+          && {{ Entity_getUsedConfig('is_notif_enable_default', entities_id, '', 1) }}) {
+         actions = `<button class="btn btn-sm btn-ghost-secondary edit-notify-user"
+                              title="{{ __("Email followup") }}">
+            <i class="fas fa-bell"></i>
+         </button>`;
+      }
+
+      // manage specific display for tree data (like groups)
+      var text   = (is_selection && itemtype == "Group")
+         ? (option.title ?? option.text)
+         : option.text;
+      var indent = "";
+      if (!is_selection && "level" in option && option.level > 1) {
+         for (let index = 1; index < option.level; index++) {
+            indent = "&nbsp;&nbsp;&nbsp;"+indent;
+         }
+         indent = indent+"&raquo;";
+      }
+
+      return $(`<span>${indent}${icon}${text}${actions}</span>`);
    };
 });
 </script>

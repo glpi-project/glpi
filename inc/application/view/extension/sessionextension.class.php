@@ -65,6 +65,7 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
          new TwigFunction('userhaveAccessToOneOfEntities', [$this, 'userhaveAccessToOneOfEntities']),
          new TwigFunction('getMessagesAfterRedirect', [$this, 'getMessagesAfterRedirect']),
          new TwigFunction('getPluralNumber', [Session::class, 'getPluralNumber']),
+         new TwigFunction('getNewIDORToken', [Session::class, 'getNewIDORToken']),
       ];
    }
 
