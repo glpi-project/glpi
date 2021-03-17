@@ -13,7 +13,7 @@
         "@fullcalendar/list": "^4.4.0",
         "@fullcalendar/rrule": "^4.4.0",
         "@fullcalendar/timegrid": "^4.4.0",
-        "@tabler/core": "^1.0.0-alpha.24",
+        "@tabler/core": "^1.0.0-beta",
         "animate.css": "^4.1.1",
         "bootstrap": "^5.0.0-beta2",
         "chartist": "^0.11.4",
