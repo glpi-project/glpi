@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 #
 # ---------------------------------------------------------------------
 # GLPI - Gestionnaire Libre de Parc Informatique

@@ -4974,10 +4974,10 @@ class Ticket extends CommonITILObject {
             'value'           => $content,
             'uploads'         => $uploads,
          ]);
-         echo "</div>";
       } else {
          echo Toolbox::getHtmlToDisplay($content);
       }
+      echo "</div>";
       echo $tt->getEndHiddenFieldValue('content', $this);
 
       echo "</td>";
