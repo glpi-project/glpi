@@ -43,6 +43,7 @@ Html::header_nocache();
 if (isset($_POST["validatortype"])) {
    switch ($_POST["validatortype"]) {
       case 'user' :
+      case 'User' :
          if (isset($_POST['users_id_validate']['groups_id'])) {
             $_POST['users_id_validate'] = [];
          }
@@ -55,6 +56,7 @@ if (isset($_POST["validatortype"])) {
          break;
 
       case 'group' :
+      case 'Group' :
          $name = !empty($_POST['name']) ? $_POST['name'].'[groups_id]':'groups_id';
          $value = (isset($_POST['users_id_validate']['groups_id']) ? $_POST['users_id_validate']['groups_id'] : $_POST['groups_id']);
 
