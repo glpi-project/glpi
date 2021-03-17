@@ -162,14 +162,14 @@ class Impact extends CommonGLPI {
             if (self::isEnabled($class)) {
                $item = new $class;
                foreach ($linked_item_ids as $linked_item_id) {
-                  if ($item->getFromDB($linked_item_id)) {
-                     $items_data[] = [
-                        'itemtype' => $itemtype,
-                        'items_id' => $linked_item_id,
-                        'name'     => $item->getNameID(),
-                     ];
+                  if (!$item->getFromDB($linked_item_id)) {
+                     continue;
                   }
-                  continue;
+                  $items_data[] = [
+                     'itemtype' => $itemtype,
+                     'items_id' => $linked_item_id,
+                     'name'     => $item->getNameID(),
+                  ];
                }
             }
          }
