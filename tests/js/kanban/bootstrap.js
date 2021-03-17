@@ -1,5 +1,5 @@
 window.$ = window.jQuery = require('jquery');
-require('../../../public/build/kanban');
+require('../../../js/modules/kanban.js');
 
 // Set faux CFG_GLPI variable. We cannot get the real values since they are set inline in PHP.
 window.CFG_GLPI = {

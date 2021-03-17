@@ -1,7 +1,7 @@
-import KanbanColumn from "../../../js/kanban/column";
+import KanbanColumn from "../../../js/modules/kanban/column.js";
 
 require('./bootstrap.js');
-import KanbanCard from "../../../js/kanban/card";
+import KanbanCard from "../../../js/modules/kanban/card.js";
 
 describe('Kanban card', () => {
    const column0 = new KanbanColumn({
