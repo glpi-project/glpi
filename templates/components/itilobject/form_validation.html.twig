@@ -18,19 +18,53 @@
                 {% set validation_approver_lbl %}
                     <span>{{ __('Approver') }}</span>
                 {% endset %}
-                <input type="hidden" name="validatortype" value="User">
-                {{ fields.dropdownField(
-                    "User",
-                    "users_id_validate[]",
-                    subitem.fields['users_id_validate'],
-                    validation_approver_lbl,
-                    {
-                        'full_width': true,
-                        'entity': item.fields['entities_id'],
-                        'is_active': 1,
-                        'rand': rand,
-                    }
-                ) }}
+{#                <input type="hidden" name="validatortype" value="User">#}
+{#                {{ fields.dropdownField(#}
+{#                    "User",#}
+{#                    "users_id_validate[]",#}
+{#                    subitem.fields['users_id_validate'],#}
+{#                    validation_approver_lbl,#}
+{#                    {#}
+{#                        'full_width': true,#}
+{#                        'entity': item.fields['entities_id'],#}
+{#                        'is_active': 1,#}
+{#                        'rand': rand,#}
+{#                    }#}
+{#                ) }}#}
+
+                {{ fields.dropdownArrayField('validatortype', subitem.fields['validatortype'], {
+                    'User': 'User',
+                    'Group': 'Group'
+                }, validation_approver_lbl, {
+                    'display_emptychoice': true,
+                    'full_width': true,
+                    'rand': rand,
+                }) }}
+                {% if subitem.fields['validatortype'] is not null %}
+                    <script type="application/javascript">
+                        $('#show_validator_field').load(CFG_GLPI.root_doc + '/ajax/dropdownValidator.php', {
+                           id: "{{ subitem.fields['id'] }}",
+                           entity: {{ item.fields['entities_id'] }},
+                           right: "{{ item.getType() is same as 'Ticket' and item.fields['type'] == 2 ?
+                              'validate_request'  : 'validate_incident' }}",
+                           validatortype: "{{ subitem.fields['users_id_validate']['groups_id'] is defined ? 'Group' :
+                            (subitem.fields['users_id_validate'] is not empty ? 'User' : '')}}"
+                        });
+                    </script>
+                {% else %}
+                    <script type="application/javascript">
+                       updateItemOnSelectEvent("dropdown_validatortype{{ rand }}", '#show_validator_field',
+                          CFG_GLPI.root_doc + '/ajax/dropdownValidator.php', {
+                             id: '',
+                             entity: {{ item.fields['entities_id'] }},
+                             right: "{{ item.getType() is same as 'Ticket' and item.fields['type'] == 2 ?
+                                   'validate_request'  : 'validate_incident' }}",
+                             validatortype: ''
+                          });
+                    </script>
+                {% endif %}
+                <br>
+                <span id="show_validator_field">&nbsp;</span>
 
                 {{ fields.textareaField(
                     'comment_submission',
