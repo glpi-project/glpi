@@ -3756,7 +3756,8 @@ class Dropdown {
             'id'       => "User_$ID",
             'text'     => $text,
             'title'    => sprintf(__('%1$s - %2$s'), $text, $user['name']),
-            'itemtype' => "User"
+            'itemtype' => "User",
+            'items_id' => $ID,
          ];
       }
 
@@ -3780,6 +3781,7 @@ class Dropdown {
       foreach ($groups['results'] as $group) {
          if (isset($group['children'])) {
             foreach ($group['children'] as &$children) {
+               $children['items_id'] = $children['id'];
                $children['id']       = "Group".$children['id'];
                $children['itemtype'] = "Group";
             }
@@ -3801,6 +3803,7 @@ class Dropdown {
          foreach ($suppliers['results'] as $supplier) {
             if (isset($supplier['children'])) {
                foreach ($supplier['children'] as &$children) {
+                  $children['items_id'] = $children['id'];
                   $children['id']       = "Supplier".$children['id'];
                   $children['itemtype'] = "Supplier";
                }
