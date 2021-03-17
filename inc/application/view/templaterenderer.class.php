@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\Extension\AlertExtension;
 use Glpi\Application\View\Extension\ConfigExtension;
 use Glpi\Application\View\Extension\CsrfExtension;
@@ -56,13 +57,10 @@ use Glpi\Application\View\Extension\ToolboxExtension;
 use Glpi\Application\View\Extension\UserExtension;
 use Session;
 use Twig\Environment;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
+use Twig\Error\Error;
 use Twig\Extension\DebugExtension;
 use Twig\Extra\String\StringExtension;
 use Twig\Loader\FilesystemLoader;
-use Twig\TemplateWrapper;
 
 /**
  * @since x.x.x
@@ -132,21 +130,6 @@ class TemplateRenderer {
    }
 
    /**
-    * Load a Twig template
-    *
-    * @param string $template
-    * @return ?TemplateWrapper
-    */
-   public function loadTemplate(string $template): ?TemplateWrapper {
-      try {
-         return $this->environment->load($template);
-      } catch (LoaderError|RuntimeError|SyntaxError $e) {
-         \Toolbox::logError($e->getMessage());
-      }
-      return null;
-   }
-
-   /**
     * Renders a template.
     *
     * @param string $template
@@ -155,9 +138,10 @@ class TemplateRenderer {
     * @return string
     */
    public function render(string $template, array $variables = []): string {
-      $loaded_template = $this->loadTemplate($template);
-      if ($loaded_template !== null) {
-         return $loaded_template->render($variables);
+      try {
+         return $this->environment->load($template)->render($variables);
+      } catch (\Twig\Error\Error $e) {
+         $this->handleError($e, $template);
       }
       return '';
    }
@@ -171,9 +155,26 @@ class TemplateRenderer {
     * @return void
     */
    public function display(string $template, array $variables = []): void {
-      $loaded_template = $this->loadTemplate($template);
-      if ($loaded_template !== null) {
-         $loaded_template->display($variables);
+      try {
+         $this->environment->load($template)->display($variables);
+      } catch (\Twig\Error\Error $e) {
+         $this->handleError($e, $template);
+      }
+   }
+
+   /**
+    * Log Twig error using GLPI error handler.
+    *
+    * @param \Twig\Error\Error $error
+    *
+    * @param string $template
+    */
+   private function handleError(Error $error, string $template): void {
+      global $GLPI;
+
+      $error_handler = $GLPI->getErrorHandler();
+      if ($error_handler instanceof ErrorHandler) {
+         $error_handler->handleTwigError($error, $template);
       }
    }
 }
