@@ -1286,3 +1286,61 @@ function showWarningMessage(message) {
 function showErrorMessage(message) {
    _showMessage(message, 'err_msg', __('Error'));
 }
+
+/**
+ *
+ * @param {string|Array<string>} dropdown_ids
+ * @param {string} target
+ * @param {string} url
+ * @param {{}} params
+ * @param {Array<string>} events
+ * @param {number} min_size
+ * @param {number} buffer_time
+ * @param {Array<string>} force_load_for
+ */
+function updateItemOnEvent(dropdown_ids, target, url, params = {}, events = ['change'],
+   min_size = -1, buffer_time = -1, force_load_for = []) {
+
+   if (!Array.isArray(dropdown_ids)) {
+      dropdown_ids = [dropdown_ids];
+   }
+   const zones = dropdown_ids;
+   $(zones).each((i, zone) => {
+      $(events).each((i2, event) => {
+         //TODO Manage buffer time
+
+         const cleaned_zone_id = zone.replace('[', '_').replace(']', '_');
+         const zone_obj = $(`#${cleaned_zone_id}`);
+
+         zone_obj.on(event, () => {
+            const conditional = (min_size >= 0 || force_load_for.length > 0);
+            const min_size_condition = (min_size >= 0 && zone_obj.val().length() >= min_size);
+            const force_load_condition = (force_load_for.length > 0 && force_load_for.includes(zone_obj.val()));
+
+            const doLoad = () => {
+               $(params).each((k, v) => {
+                  if (!Array.isArray(v) && typeof v !== "object") {
+                     const reqs = v.match(/^__VALUE(\d+)__$/);
+                     if (reqs !== null) {
+                        params[k] = $('#'+dropdown_ids[reqs[0]]).val();
+                     }
+                     if (v === '__VALUE__') {
+                        params[k] = $('#'+dropdown_ids[0]).val();
+                     }
+                  }
+               });
+               $(target).load(url, params);
+            };
+            if (conditional && (min_size_condition || force_load_condition)) {
+               doLoad();
+            } else {
+               doLoad();
+            }
+         });
+      });
+   });
+}
+
+function updateItemOnSelectEvent(dropdown_ids, target, url, params = {}) {
+   updateItemOnEvent(dropdown_ids, target, url, params, ['change'], -1, -1, []);
+}
