@@ -4,6 +4,9 @@
 
 <script type="text/javascript">
 $(function() {
+   var actorytype   = '{{ actortype }}';
+   var mainitemtype = '{{ item.getType() }}';
+
    $("#actor_{{ rand }}").select2({
       tags: true,
       width: '100%',
@@ -38,7 +41,7 @@ $(function() {
          data: function (params) {
             return {
                action: 'getActors',
-               actortype: '{{ actortype }}',
+               actortype: actorytype,
                entity_restrict: {{ entities_id }},
                searchText: params.term,
                _idor_token: '{{ getNewIDORToken() }}',
@@ -54,13 +57,17 @@ $(function() {
    }
    document.addEventListener('click', event => {
       if (event.target.closest("#actor_{{ rand }} + .select2 .edit-notify-user")) {
-         openNotifyModal(event);
+         return openNotifyModal(event);
+      }
+      // if a click on assign info is detected prevent opening of select2
+      if (event.target.closest("#actor_{{ rand }} + .select2 .assign_infos")) {
+         event.stopPropagation();
       }
    }, {capture: true})
    document.addEventListener('keydown', event => {
       if (event.target.closest("#actor_{{ rand }} + .select2 .edit-notify-user")
           && event.key == "Enter") {
-         openNotifyModal(event);
+         return openNotifyModal(event);
       }
    }, {capture: true})
 
@@ -68,18 +75,23 @@ $(function() {
    var genericTemplate = function(option = {}, is_selection = false) {
       var element  = $(option.element);
       var itemtype = option.itemtype ?? element.data('itemtype');
+      var items_id = option.items_id ?? element.data('items_id');
 
       var icon = "";
       var size = is_selection ? "fa-lg" : ""
+      var fk   = "";
       switch (itemtype) {
          case "User":
             icon = `<i class="fas ${size} fa-fw fa-user mx-1" title="{{ "User"|itemtype_name }}"></i>`;
+            fk   = "users_id_assign";
             break;
          case "Group":
             icon = `<i class="fas ${size} fa-fw fa-users mx-1" title="{{ "Group"|itemtype_name }}"></i>`;
+            fk   = "groups_id_assign";
             break;
          case "Supplier":
             icon = `<i class="fas ${size} fa-fw fa-pallet mx-1" title="{{ "Supplier"|itemtype_name }}"></i>`;
+            fk   = "suppliers_id_assign";
             break;
          case "Email":
             icon = `<i class="fas ${size} fa-fw fa-envelope mx-1" title="{{ "Supplier"|itemtype_name }}"></i>`;
@@ -88,7 +100,7 @@ $(function() {
 
       var actions = "";
       if (['User', 'Supplier'].includes(itemtype)
-          && is_selection == true
+          && is_selection
           && {{ Entity_getUsedConfig('is_notif_enable_default', entities_id, '', 1) }}) {
          actions = `<button class="btn btn-sm btn-ghost-secondary edit-notify-user"
                               title="{{ __("Email followup") }}">
@@ -108,7 +120,34 @@ $(function() {
          indent = indent+"&raquo;";
       }
 
-      return $(`<span>${indent}${icon}${text}${actions}</span>`);
+      // prepare html for option element
+      var option_element = $(`<span class="actor_entry">${indent}${icon}${text}${actions}</span>`);
+
+      // manage ticket information (number of assigned ticket for an actor)
+      if (is_selection && itemtype != "Email" && "{{ actortype }}" == "assign") {
+         var already_assign_element = $(
+            `<span class="assign_infos" title="{{ __("Number of tickets already assigned") }}"
+                   data-id="${items_id}" data-fk="${fk}">
+               <i class="fas fa-spinner fa-spin"></i>
+            </span>`
+         );
+         option_element.append(already_assign_element);
+
+         $.get("{{ path('/ajax/ticketassigninformation.php') }}", {
+            [fk]: items_id,
+            only_number: true
+         }).done(function(number) {
+            var badge = "";
+            if (number.length > 0) {
+               badge = `<span class="badge bg-secondary">
+                  ${number}
+               </span>`;
+            }
+            already_assign_element.html(badge);
+         });
+      }
+
+      return option_element;
    };
 });
 </script>
