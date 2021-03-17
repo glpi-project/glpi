@@ -1,6 +1,4 @@
 import KanbanColumn from "../../../js/modules/kanban/column.js";
-
-require('./bootstrap.js');
 import KanbanCard from "../../../js/modules/kanban/card.js";
 
 describe('Kanban card', () => {

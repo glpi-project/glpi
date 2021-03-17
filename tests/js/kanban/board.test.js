@@ -1,5 +1,3 @@
-require('./bootstrap.js');
-
 describe('Kanban board', () => {
    test('Kanban board initial properties', () => {
       // Test board property initialization
