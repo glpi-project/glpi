@@ -156,24 +156,30 @@ class Impact extends CommonGLPI {
          $linked_items = $item->getLinkedItems();
 
          // Search for a valid linked item of this ITILObject
-         $found = false;
+         $items_data = [];
          foreach ($linked_items as $itemtype => $linked_item_ids) {
             $class = $itemtype;
             if (self::isEnabled($class)) {
                $item = new $class;
                foreach ($linked_item_ids as $linked_item_id) {
-                  $found = $item->getFromDB($linked_item_id);
-                  break 2;
+                  if ($item->getFromDB($linked_item_id)) {
+                     $items_data[] = [
+                        'itemtype' => $itemtype,
+                        'items_id' => $linked_item_id,
+                        'name'     => $item->getNameID(),
+                     ];
+                  }
+                  continue;
                }
             }
          }
 
          // No valid linked item were found, tab shouldn't be visible
-         if (!$found) {
+         if (empty($items_data)) {
             return false;
          }
 
-         self::printAssetSelectionForm($linked_items);
+         self::printAssetSelectionForm($items_data);
       }
 
       // Check is the impact analysis is enabled for $class
@@ -798,6 +804,7 @@ class Impact extends CommonGLPI {
     * Print the asset selection form used in the impact tab of ITIL objects
     *
     * @param array $items
+    *    Each array should contains "itemtype", "items_id" and "name".
     *
     * @since 9.5
     */
