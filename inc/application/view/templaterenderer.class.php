@@ -56,9 +56,13 @@ use Glpi\Application\View\Extension\ToolboxExtension;
 use Glpi\Application\View\Extension\UserExtension;
 use Session;
 use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 use Twig\Extension\DebugExtension;
 use Twig\Extra\String\StringExtension;
 use Twig\Loader\FilesystemLoader;
+use Twig\TemplateWrapper;
 
 /**
  * @since x.x.x
@@ -128,6 +132,21 @@ class TemplateRenderer {
    }
 
    /**
+    * Load a Twig template
+    *
+    * @param string $template
+    * @return ?TemplateWrapper
+    */
+   public function loadTemplate(string $template): ?TemplateWrapper {
+      try {
+         return $this->environment->load($template);
+      } catch (LoaderError|RuntimeError|SyntaxError $e) {
+         \Toolbox::logError($e->getMessage());
+      }
+      return null;
+   }
+
+   /**
     * Renders a template.
     *
     * @param string $template
@@ -136,7 +155,11 @@ class TemplateRenderer {
     * @return string
     */
    public function render(string $template, array $variables = []): string {
-      return $this->environment->load($template)->render($variables);
+      $loaded_template = $this->loadTemplate($template);
+      if ($loaded_template !== null) {
+         return $loaded_template->render($variables);
+      }
+      return '';
    }
 
    /**
@@ -148,6 +171,9 @@ class TemplateRenderer {
     * @return void
     */
    public function display(string $template, array $variables = []): void {
-      $this->environment->load($template)->display($variables);
+      $loaded_template = $this->loadTemplate($template);
+      if ($loaded_template !== null) {
+         $loaded_template->display($variables);
+      }
    }
 }
