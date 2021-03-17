@@ -85,10 +85,12 @@
                                  <i class="fas fa-fw fa-edit"></i>
                                  <span>{{ __("Edit") }}</span>
                               </a></li>
-                              <li><a class="dropdown-item" href="{{ form_path('Ticket') ~ "?_promoted_fup_id=" ~ entry_i['id'] }}">
-                                 <i class="fas fa-fw fa-code-branch"></i>
-                                 <span>{{ __('Promote to Ticket') }}</span>
-                              </a></li>
+                              {% if item.getType() is same as 'Ticket' and entry['type'] is same as 'ITILFollowup' %}
+                                 <li><a class="dropdown-item" href="{{ form_path('Ticket') ~ "?_promoted_fup_id=" ~ entry_i['id'] }}">
+                                    <i class="fas fa-fw fa-code-branch"></i>
+                                    <span>{{ __('Promote to Ticket') }}</span>
+                                 </a></li>
+                              {% endif %}
                            </ul>
                         </div>
                      </div>
