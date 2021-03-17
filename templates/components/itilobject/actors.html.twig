@@ -6,6 +6,7 @@
 
 {% set requester_field %}
    {% include "components/itilobject/actor_field.html.twig" with {
+      'item':        item,
       'type':        constant('CommonITILActor::REQUESTER'),
       'actortype':   'requester',
       'entities_id': params['entities_id'],
@@ -20,6 +21,7 @@
 
 {% set observer_field %}
    {% include "components/itilobject/actor_field.html.twig" with {
+      'item':        item,
       'type':        constant('CommonITILActor::OBSERVER'),
       'actortype':   'observer',
       'entities_id': params['entities_id']
@@ -34,6 +36,7 @@
 
 {% set assign_field %}
    {% include "components/itilobject/actor_field.html.twig" with {
+      'item':        item,
       'type':        constant('CommonITILActor::ASSIGN'),
       'actortype':   'assign',
       'entities_id': params['entities_id']
