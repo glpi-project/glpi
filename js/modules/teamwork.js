@@ -54,7 +54,13 @@ export default class Teamwork {
 
       this.team_badge_cache = {
          badges: {},
-         colors: {}
+         colors: {
+            User: {},
+            Group: {},
+            Supplier: {},
+            Contact: {},
+            _dark_theme: this.dark_theme
+         }
       };
    }
 
@@ -100,7 +106,7 @@ export class TeamMember {
       if (this.teamwork.team_badge_cache['badges'][this] === undefined ) {
          this.teamwork.team_badge_cache['badges'][this] = TeamMemberBadgeFactory.generateBadge(this);
       }
-      return this.teamwork.team_badge_cache[itemtype][items_id];
+      return this.teamwork.team_badge_cache['badges'][this];
    }
 }
 
@@ -134,23 +140,23 @@ export class TeamMemberBadgeFactory {
          });
 
          if (user_img) {
-            team_member.teamwork.team_badge_cache[itemtype][items_id] = "<span>" + user_img + "</span>";
+            team_member.teamwork.team_badge_cache['badges'][team_member] = "<span>" + user_img + "</span>";
          } else {
-            team_member.teamwork.team_badge_cache[itemtype][items_id] = this.generateUserBadge(team_member);
+            team_member.teamwork.team_badge_cache['badges'][team_member] = this.generateUserBadge(team_member);
          }
       } else {
          switch (itemtype) {
             case 'Group':
-               team_member.teamwork.team_badge_cache[itemtype][items_id] = this.generateOtherBadge(team_member, 'fa-users');
+               team_member.teamwork.team_badge_cache['badges'][team_member] = this.generateOtherBadge(team_member, 'fa-users');
                break;
             case 'Supplier':
-               team_member.teamwork.team_badge_cache[itemtype][items_id] = this.generateOtherBadge(team_member, 'fa-briefcase');
+               team_member.teamwork.team_badge_cache['badges'][team_member] = this.generateOtherBadge(team_member, 'fa-briefcase');
                break;
             case 'Contact':
-               team_member.teamwork.team_badge_cache[itemtype][items_id] = this.generateOtherBadge(team_member, 'fa-user');
+               team_member.teamwork.team_badge_cache['badges'][team_member] = this.generateOtherBadge(team_member, 'fa-user');
                break;
             default:
-               team_member.teamwork.team_badge_cache[itemtype][items_id] = this.generateOtherBadge(team_member, 'fa-user');
+               team_member.teamwork.team_badge_cache['badges'][team_member] = this.generateOtherBadge(team_member, 'fa-user');
          }
       }
    }
