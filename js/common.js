@@ -1318,8 +1318,8 @@ function updateItemOnEvent(dropdown_ids, target, url, params = {}, events = ['ch
             const force_load_condition = (force_load_for.length > 0 && force_load_for.includes(zone_obj.val()));
 
             const doLoad = () => {
-               $(params).each((k, v) => {
-                  if (!Array.isArray(v) && typeof v !== "object") {
+               $.each(params, (k, v) => {
+                  if (typeof v === "string") {
                      const reqs = v.match(/^__VALUE(\d+)__$/);
                      if (reqs !== null) {
                         params[k] = $('#'+dropdown_ids[reqs[0]]).val();
@@ -1333,7 +1333,7 @@ function updateItemOnEvent(dropdown_ids, target, url, params = {}, events = ['ch
             };
             if (conditional && (min_size_condition || force_load_condition)) {
                doLoad();
-            } else {
+            } else if (!conditional) {
                doLoad();
             }
          });
