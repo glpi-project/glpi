@@ -70,6 +70,8 @@ abstract class MainAsset extends InventoryAsset
    protected $refused = [];
    /** @var array */
    protected $inventoried = [];
+   /** @var boolean */
+   protected $is_partial = false;
 
    public function __construct(CommonDBTM $item, $data) {
       $namespaced = explode('\\', static::class);
@@ -98,6 +100,10 @@ abstract class MainAsset extends InventoryAsset
 
       $models_id = $this->getModelsFieldName();
       $types_id = $this->getTypesFieldName();
+
+      if (property_exists($this->raw_data, 'partial') && $this->raw_data->partial) {
+         $this->setPartial();
+      }
 
       $val = new \stdClass();
 
@@ -700,5 +706,24 @@ abstract class MainAsset extends InventoryAsset
     */
    public function getRefused(): array {
       return $this->refused;
+   }
+
+   /**
+    * Set paertial inventory
+    *
+    * @return Inventory
+    */
+   protected function setPartial(): self {
+      $this->partial = true;
+      return $this;
+   }
+
+   /**
+    * Is inventory partial
+    *
+    * @return boolean
+    */
+   public function isPartial(): bool {
+      return $this->partial;
    }
 }

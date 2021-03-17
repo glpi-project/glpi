@@ -90,15 +90,19 @@ class Volume extends InventoryAsset
       return $this->data;
    }
 
-   public function handle() {
+   /**
+    * Get existing entries from database
+    *
+    * @return array
+    */
+   protected function getExisting(): array {
       global $DB;
 
-      $itemDisk = new Item_Disk();
-      $db_itemdisk = [];
+      $db_existing = [];
 
       $iterator = $DB->request([
          'SELECT' => ['id', 'name', 'device', 'mountpoint'],
-         'FROM'   => 'glpi_items_disks',
+         'FROM'   => Item_Disk::getTable(),
          'WHERE'  => [
             'items_id' => $this->item->fields['id'],
             'itemtype' => $this->item->getType(),
@@ -108,8 +112,18 @@ class Volume extends InventoryAsset
       while ($data = $iterator->next()) {
          $dbid = $data['id'];
          unset($data['id']);
-         $db_itemdisk[$dbid] = array_map('strtolower', $data);
+         $db_existing[$dbid] = array_map('strtolower', $data);
       }
+
+
+      return $db_existing;
+   }
+
+   public function handle() {
+      global $DB;
+
+      $itemDisk = new Item_Disk();
+      $db_itemdisk = $this->getExisting();
 
       $value = $this->data;
       foreach ($value as $key => $val) {
@@ -131,7 +145,7 @@ class Volume extends InventoryAsset
          }
       }
 
-      if (count($db_itemdisk) != 0) {
+      if (!$this->item->isPartial() && count($db_itemdisk) != 0) {
          // Delete Item_Disk in DB
          foreach ($db_itemdisk as $dbid => $data) {
             $itemDisk->delete(['id' => $dbid], 1);

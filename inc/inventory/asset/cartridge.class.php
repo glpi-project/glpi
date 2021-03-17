@@ -197,23 +197,37 @@ class Cartridge extends InventoryAsset
       return $this->data;
    }
 
+   /**
+    * Get existing entries from database
+    *
+    * @return array
+    */
+   protected function getExisting(): array {
+      global $DB;
+
+      $db_existing = [];
+
+      $iterator = $DB->request([
+         'FROM'   => Printer_CartridgeInfo::getTable(),
+         'FROM'   => ComputerAntivirus::getTable(),
+         'WHERE'  => ['printers_id' => $this->item->fields['id']]
+      ]);
+
+      while ($data = $iterator->next()) {
+         $idtmp = $data['id'];
+         unset($data['id']);
+         $data = array_map('strtolower', $data);
+         $db_existing[$idtmp] = $data;
+      }
+
+      return $db_existing;
+   }
+
    public function handle() {
       global $DB;
 
       $cartinfo = new Printer_CartridgeInfo();
-      $db_cartridges = [];
-
-      $iterator = $DB->request([
-         'FROM'   => Printer_CartridgeInfo::getTable(),
-         'WHERE'  => [
-            'printers_id'  => $this->item->fields['id']
-         ]
-      ]);
-      while ($data = $iterator->next()) {
-         $idtmp = $data['id'];
-         unset($data['id']);
-         $db_cartridges[$idtmp] = $data;
-      }
+      $db_cartridges = $this->getExisting();
 
       $value = $this->data[0];
       foreach ($value as $k => $val) {
@@ -230,7 +244,7 @@ class Cartridge extends InventoryAsset
          }
       }
 
-      if (count($db_cartridges) != 0) {
+      if (!$this->item->isPartial() && count($db_cartridges) != 0) {
          foreach ($db_cartridges as $idtmp => $data) {
             $cartinfo->delete(['id' => $idtmp], 1);
          }

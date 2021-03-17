@@ -51,6 +51,35 @@ abstract class Device extends InventoryAsset
       $this->id_class = $id_class;
    }
 
+   /**
+    * Get existing entries from database
+    *
+    * @return array
+    */
+   protected function getExisting($itemdevicetable, $fk): array {
+      global $DB;
+
+      $db_existing = [];
+
+      $iterator = $DB->request([
+         'SELECT'    => [
+            "$itemdevicetable.$fk",
+         ],
+         'FROM'      => $itemdevicetable,
+         'WHERE'     => [
+            "$itemdevicetable.items_id"     => $this->item->fields['id'],
+            "$itemdevicetable.itemtype"     => $this->item->getType(),
+            "$itemdevicetable.is_dynamic"   => 1
+         ]
+      ]);
+
+      while ($row = $iterator->next()) {
+         $db_existing[$row[$fk]] = $row[$fk];
+      }
+
+      return $db_existing;
+   }
+
    public function handle() {
       global $DB;
 
@@ -67,22 +96,7 @@ abstract class Device extends InventoryAsset
          $devicetable     = getTableForItemType($devicetype);
          $fk              = getForeignKeyFieldForTable($devicetable);
 
-         $iterator = $DB->request([
-            'SELECT'    => [
-               "$itemdevicetable.$fk",
-            ],
-            'FROM'      => $itemdevicetable,
-            'WHERE'     => [
-               "$itemdevicetable.items_id"     => $this->item->fields['id'],
-               "$itemdevicetable.itemtype"     => $this->item->getType(),
-               "$itemdevicetable.is_dynamic"   => 1
-            ]
-         ]);
-
-         $existing = [];
-         while ($row = $iterator->next()) {
-            $existing[$row[$fk]] = $row[$fk];
-         }
+         $existing = $this->getExisting($itemdevicetable, $fk);
 
          foreach ($value as $val) {
             if (!isset($val->designation) || $val->designation == '') {

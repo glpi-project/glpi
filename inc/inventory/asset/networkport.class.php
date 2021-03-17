@@ -374,8 +374,10 @@ class NetworkPort extends InventoryAsset
             }
          }
 
-         foreach (array_keys($db_vlans) as $vlans_id) {
-            $pvlan->delete(['id' => $vlans_id]);
+         if (!$this->item->isPartial()) {
+            foreach (array_keys($db_vlans) as $vlans_id) {
+               $pvlan->delete(['id' => $vlans_id]);
+            }
          }
       }
 

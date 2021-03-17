@@ -284,7 +284,7 @@ class Software extends InventoryAsset
       }
 
       //remaining entries in $db_software means relation must be dropped
-      if (count($db_software) > 0) {
+      if (!$this->item->isPartial() && count($db_software) > 0) {
          $DB->delete(
             'glpi_items_softwareversions', [
             'id' => $db_software

@@ -173,26 +173,41 @@ class VirtualMachine extends InventoryAsset
       return $this->data;
    }
 
+   /**
+    * Get existing entries from database
+    *
+    * @return array
+    */
+   protected function getExisting(): array {
+      global $DB;
+
+      $db_existing = [];
+
+      $iterator = $DB->request([
+         'SELECT' => ['id', 'name', 'uuid', 'virtualmachinesystems_id'],
+         'FROM'   => Computer::getTable(),
+         'WHERE'  => [
+            'computers_id' => $this->item->fields['id'],
+            'is_dynamic'   => 1
+         ]
+      ]);
+
+      while ($row = $iterator->next()) {
+         $idtmp = $row['id'];
+         unset($row['id']);
+         $db_existing[$idtmp] = $row;
+      }
+
+      return $db_existing;
+   }
+
    public function handle() {
       global $DB;
 
       $value = $this->data;
       $computerVirtualmachine = new ComputerVirtualMachine();
 
-      $db_vms = [];
-      $iterator = $DB->request([
-         'SELECT' => ['id', 'name', 'uuid', 'virtualmachinesystems_id'],
-         'FROM'   => 'glpi_computervirtualmachines',
-         'WHERE'  => [
-            'computers_id' => $this->item->fields['id'],
-            'is_dynamic'   => 1
-         ]
-      ]);
-      while ($row = $iterator->next()) {
-         $idtmp = $row['id'];
-         unset($row['id']);
-         $db_vms[$idtmp] = $row;
-      }
+      $db_vms = $this->getExisting();
 
       if (count($db_vms) == 0) {
          foreach ($value as $val) {
@@ -228,7 +243,7 @@ class VirtualMachine extends InventoryAsset
             }
          }
 
-         if (count($db_vms) != 0) {
+         if (!$this->item->isPartial() && count($db_vms) != 0) {
             // Delete virtual machines links in DB
             foreach ($db_vms as $idtmp => $data) {
                $computerVirtualmachine->delete(['id' => $idtmp], 1);

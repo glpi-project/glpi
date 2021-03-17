@@ -64,15 +64,18 @@ class RemoteManagement extends InventoryAsset
       return $this->data;
    }
 
-   public function handle() {
+   /**
+    * Get existing entries from database
+    *
+    * @return array
+    */
+   protected function getExisting(): array {
       global $DB;
 
-      $db_mgmt = [];
-      $value = $this->data;
-      $mgmt = new Item_RemoteManagement();
+      $db_existing = [];
 
       $iterator = $DB->request([
-         'FROM'   => $mgmt->getTable(),
+         'FROM'   => Item_RemoteManagement::getTable(),
          'WHERE'  => [
             'itemtype' => $this->item->getType(),
             'items_id' => $this->item->fields['id']
@@ -82,8 +85,18 @@ class RemoteManagement extends InventoryAsset
          $idtmp = $data['id'];
          unset($data['id']);
          $data = array_map('strtolower', $data);
-         $db_mgmt[$idtmp] = $data;
+         $db_existing[$idtmp] = $data;
       }
+
+      return $db_existing;
+   }
+
+   public function handle() {
+      global $DB;
+
+      $db_mgmt = $this->getExisting();
+      $value = $this->data;
+      $mgmt = new Item_RemoteManagement();
 
       foreach ($value as $k => $val) {
          $compare = ['remoteid' => $val->remoteid, 'type' => $val->type];
@@ -102,8 +115,10 @@ class RemoteManagement extends InventoryAsset
          }
       }
 
-      foreach ($db_mgmt as $idtmp => $data) {
-         $mgmt->delete(['id' => $idtmp], 1);
+      if (!$this->item->isPartial()) {
+         foreach ($db_mgmt as $idtmp => $data) {
+            $mgmt->delete(['id' => $idtmp], 1);
+         }
       }
 
       foreach ($value as $val) {

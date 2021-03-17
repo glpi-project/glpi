@@ -84,6 +84,48 @@ class Monitor extends InventoryAsset
       return $this->data;
    }
 
+   /**
+    * Get existing entries from database
+    *
+    * @return array
+    */
+   protected function getExisting(): array {
+      global $DB;
+
+      $db_existing = [];
+
+      $iterator = $DB->request([
+         'SELECT'    => [
+            'glpi_monitors.id',
+            'glpi_computers_items.id AS link_id'
+         ],
+         'FROM'      => 'glpi_computers_items',
+         'LEFT JOIN' => [
+            'glpi_monitors' => [
+               'FKEY' => [
+                  'glpi_monitors'         => 'id',
+                  'glpi_computers_items'  => 'items_id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'itemtype'                          => 'Monitor',
+            'computers_id'                      => $this->item->getID(),
+            'entities_id'                       => $this->entities_id,
+            'glpi_computers_items.is_dynamic'   => 1,
+            'glpi_monitors.is_global'           => 0
+         ]
+      ]);
+
+      while ($data = $iterator->next()) {
+         $idtmp = $data['link_id'];
+         unset($data['link_id']);
+         $db_existing[$idtmp] = $data['id'];
+      }
+
+      return $db_existing;
+   }
+
    public function handle() {
       global $DB;
 
@@ -134,36 +176,7 @@ class Monitor extends InventoryAsset
          }
       }
 
-      $db_monitors = [];
-      $iterator = $DB->request([
-         'SELECT'    => [
-            'glpi_monitors.id',
-            'glpi_computers_items.id AS link_id'
-         ],
-         'FROM'      => 'glpi_computers_items',
-         'LEFT JOIN' => [
-            'glpi_monitors' => [
-               'FKEY' => [
-                  'glpi_monitors'         => 'id',
-                  'glpi_computers_items'  => 'items_id'
-               ]
-            ]
-         ],
-         'WHERE'     => [
-            'itemtype'                          => 'Monitor',
-            'computers_id'                      => $this->item->getID(),
-            'entities_id'                       => $entities_id,
-            'glpi_computers_items.is_dynamic'   => 1,
-            'glpi_monitors.is_global'           => 0
-         ]
-      ]);
-
-      while ($data = $iterator->next()) {
-         $idtmp = $data['link_id'];
-         unset($data['link_id']);
-         $db_monitors[$idtmp] = $data['id'];
-      }
-
+      $db_monitors = $this->getExisting();
       if (count($db_monitors) == 0) {
          foreach ($monitors as $monitors_id) {
             $input = [
@@ -187,8 +200,10 @@ class Monitor extends InventoryAsset
          }
 
          // Delete monitors links in DB
-         foreach ($db_monitors as $idtmp => $monits_id) {
-            $computer_Item->delete(['id'=>$idtmp], 1);
+         if (!$this->item->isPartial()) {
+            foreach ($db_monitors as $idtmp => $monits_id) {
+               $computer_Item->delete(['id'=>$idtmp], 1);
+            }
          }
 
          foreach ($monitors as $key => $monitors_id) {

@@ -231,7 +231,7 @@ class Peripheral extends InventoryAsset
          }
 
          if (count($peripherals) || count($db_peripherals)) {
-            if (count($db_peripherals) != 0) {
+            if (!$this->item->isPartial() && count($db_peripherals) != 0) {
                // Delete peripherals links in DB
                foreach ($db_peripherals as $idtmp => $data) {
                   $computer_Item->delete(['id'=>$idtmp], 1);
