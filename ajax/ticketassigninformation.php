@@ -40,7 +40,9 @@ if (strpos($_SERVER['PHP_SELF'], "ticketassigninformation.php")) {
 
 Session::checkLoginUser();
 
-if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
+$only_number = boolval($_REQUEST['only_number'] ?? false);
+
+if (isset($_REQUEST['users_id_assign']) && ($_REQUEST['users_id_assign'] > 0)) {
 
    $ticket = new Ticket();
 
@@ -49,7 +51,7 @@ if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
          [
             'field'      => 5, // users_id assign
             'searchtype' => 'equals',
-            'value'      => $_POST['users_id_assign'],
+            'value'      => $_REQUEST['users_id_assign'],
             'link'       => 'AND',
          ],
          [
@@ -63,14 +65,19 @@ if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
    ];
 
    $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2, '&amp;');
+   $nb  = $ticket->countActiveObjectsForTech($_REQUEST['users_id_assign']);
 
-   //TRANS: %d is number of objects for the user
-   echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\">(";
-   printf(__('%1$s: %2$s'), __('Processing'),
-          $ticket->countActiveObjectsForTech($_POST['users_id_assign']));
-   echo ")</a>";
+   if ($only_number) {
+      if ($nb > 0) {
+         echo "<a href='$url'>".$nb."</a>";
+      }
+   } else {
+      echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\">(";
+      printf(__('%1$s: %2$s'), __('Processing'), $nb);
+      echo ")</a>";
+   }
 
-} else if (isset($_POST['groups_id_assign']) && ($_POST['groups_id_assign'] > 0)) {
+} else if (isset($_REQUEST['groups_id_assign']) && ($_REQUEST['groups_id_assign'] > 0)) {
    $ticket = new Ticket();
 
    $options2 = [
@@ -78,7 +85,7 @@ if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
          [
             'field'      => 8, // groups_id assign
             'searchtype' => 'equals',
-            'value'      => $_POST['groups_id_assign'],
+            'value'      => $_REQUEST['groups_id_assign'],
             'link'       => 'AND',
          ],
          [
@@ -92,13 +99,19 @@ if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
    ];
 
    $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2, '&amp;');
+   $nb  = $ticket->countActiveObjectsForTechGroup($_REQUEST['groups_id_assign']);
 
-   echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\">(";
-   printf(__('%1$s: %2$s'), __('Processing'),
-          $ticket->countActiveObjectsForTechGroup($_POST['groups_id_assign']));
-   echo ")</a>";
+   if ($only_number) {
+      if ($nb > 0) {
+         echo "<a href='$url'>".$nb."</a>";
+      }
+   } else {
+      echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\">(";
+      printf(__('%1$s: %2$s'), __('Processing'),$nb);
+      echo ")</a>";
+   }
 
-} else if (isset($_POST['suppliers_id_assign']) && ($_POST['suppliers_id_assign'] > 0)) {
+} else if (isset($_REQUEST['suppliers_id_assign']) && ($_REQUEST['suppliers_id_assign'] > 0)) {
 
    $ticket = new Ticket();
 
@@ -107,7 +120,7 @@ if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
          [
             'field'      => 6, // suppliers_id assign
             'searchtype' => 'equals',
-            'value'      => $_POST['suppliers_id_assign'],
+            'value'      => $_REQUEST['suppliers_id_assign'],
             'link'       => 'AND',
          ],
          [
@@ -121,11 +134,16 @@ if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
    ];
 
    $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2, '&amp;');
+   $nb  = $ticket->countActiveObjectsForSupplier($_REQUEST['suppliers_id_assign']);
 
-   //TRANS: %d is number of objects for the user
-   echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\">(";
-   printf(__('%1$s: %2$s'), __('Processing'),
-          $ticket->countActiveObjectsForSupplier($_POST['suppliers_id_assign']));
-   echo ")</a>";
+   if ($only_number) {
+      if ($nb > 0) {
+         echo "<a href='$url'>".$nb."</a>";
+      }
+   } else {
+      echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\">(";
+      printf(__('%1$s: %2$s'), __('Processing'), $nb);
+      echo ")</a>";
+   }
 }
 
