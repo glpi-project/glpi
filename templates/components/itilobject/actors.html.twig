@@ -1,7 +1,15 @@
 {% import "components/form/fields_macros.html.twig" as fields %}
 
+{# TODO check allow_email params #}
+{# TODO filter user/group (is_request/is_assign) #}
+
+
 {% set requester_field %}
-   {% include "components/itilobject/actor_field.html.twig" with {'type': constant('CommonITILActor::REQUESTER')} only %}
+   {% include "components/itilobject/actor_field.html.twig" with {
+      'type':        constant('CommonITILActor::REQUESTER'),
+      'actortype':   'requester',
+      'entities_id': params['entities_id'],
+   } only %}
 {% endset %}
 {{ fields.field(
    'requester',
@@ -9,8 +17,13 @@
    __("Requester"),
    field_options|merge({is_horizontal: false})
 ) }}
+
 {% set observer_field %}
-   {% include "components/itilobject/actor_field.html.twig" with {'type': constant('CommonITILActor::OBSERVER')} only %}
+   {% include "components/itilobject/actor_field.html.twig" with {
+      'type':        constant('CommonITILActor::OBSERVER'),
+      'actortype':   'observer',
+      'entities_id': params['entities_id']
+   } only %}
 {% endset %}
 {{ fields.field(
    'observer',
@@ -18,8 +31,13 @@
    __("Observer"),
    field_options|merge({is_horizontal: false})
 ) }}
+
 {% set assign_field %}
-   {% include "components/itilobject/actor_field.html.twig" with {'type': constant('CommonITILActor::ASSIGN')} only %}
+   {% include "components/itilobject/actor_field.html.twig" with {
+      'type':        constant('CommonITILActor::ASSIGN'),
+      'actortype':   'assign',
+      'entities_id': params['entities_id']
+   } only %}
 {% endset %}
 {{ fields.field(
    'assign',

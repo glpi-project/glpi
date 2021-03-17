@@ -2597,8 +2597,9 @@ class Dropdown {
                      if ($prev >= 0) {
                         if (count($datastoadd)) {
                            $datas[] = [
-                              'text' => Dropdown::getDropdownName("glpi_entities", $prev),
-                              'children' => $datastoadd
+                              'text'     => Dropdown::getDropdownName("glpi_entities", $prev),
+                              'children' => $datastoadd,
+                              'itemtype' => "Entity",
                            ];
                         }
                      }
@@ -2726,7 +2727,8 @@ class Dropdown {
                } else {
                   $datas[] = [
                      'text' => Dropdown::getDropdownName("glpi_entities", $prev),
-                     'children' => $datastoadd
+                     'children' => $datastoadd,
+                     'itemtype' => "Entity",
                   ];
                }
             }
@@ -2981,8 +2983,9 @@ class Dropdown {
                   if ($prev >= 0) {
                      if (count($datastoadd)) {
                         $datas[] = [
-                           'text' => Dropdown::getDropdownName("glpi_entities", $prev),
-                           'children' => $datastoadd
+                           'text'     => Dropdown::getDropdownName("glpi_entities", $prev),
+                           'children' => $datastoadd,
+                           'itemtype' => "Entity",
                         ];
                      }
                   }
@@ -3046,8 +3049,9 @@ class Dropdown {
             if ($multi) {
                if (count($datastoadd)) {
                   $datas[] = [
-                     'text' => Dropdown::getDropdownName("glpi_entities", $prev),
-                     'children' => $datastoadd
+                     'text'     => Dropdown::getDropdownName("glpi_entities", $prev),
+                     'children' => $datastoadd,
+                     'itemtype' => "Entity",
                   ];
                }
             } else {
@@ -3776,5 +3780,122 @@ class Dropdown {
       $ret['count']   = $count;
 
       return ($json === true) ? json_encode($ret) : $ret;
+   }
+
+
+   public static function getDropdownActors($post, $json = true) {
+      global $CFG_GLPI;
+
+      if (!Session::validateIDOR($post)) {
+         return;
+      }
+
+      $defaults = [
+         'actortype'        => 'requester',
+         'users_right'      => 'all',
+         'used'             => [],
+         'value'            => 0,
+         'page'             => 1,
+         'inactive_deleted' => 0,
+         '_idor_token'      => "",
+         'searchText'       => null,
+      ];
+      $post = array_merge($defaults, $post);
+
+      $entity_restrict = -1;
+      if (isset($post['entity_restrict'])) {
+         $entity_restrict = Toolbox::jsonDecode($post['entity_restrict']);
+      }
+
+      $results = [];
+      $users_iterator = User::getSqlSearchResult(
+         false,
+         $post['users_right'],
+         $entity_restrict,
+         $post['value'],
+         $post['used'],
+         $post['searchText'],
+         0,
+         -1,
+         $post['inactive_deleted'],
+      );
+      foreach ($users_iterator as $ID => $user) {
+         $text = formatUserName($user["id"], $user["name"], $user["realname"], $user["firstname"]);
+
+         $results[] = [
+            'id'       => "User_$ID",
+            'text'     => $text,
+            'title'    => sprintf(__('%1$s - %2$s'), $text, $user['name']),
+            'itemtype' => "User"
+         ];
+      }
+
+      $cond = ['is_requester' => 1];
+      if ($post["actortype"] == 'assign') {
+         $cond = ['is_assign' => 1];
+      }
+      if ($post["actortype"] == 'observer') {
+         $cond = ['is_watcher' => 1];
+      }
+      $post['condition'] = static::addNewCondition($cond);
+
+      $groups = Dropdown::getDropdownValue([
+         'itemtype'            => 'Group',
+         '_idor_token'         => $post['_idor_token'],
+         'display_emptychoice' => false,
+         'searchText'          => $post['searchText'],
+         'entity_restrict'     => $entity_restrict,
+         'condition'           => $post['condition'],
+      ], false);
+      foreach ($groups['results'] as $group) {
+         if (isset($group['children'])) {
+            foreach ($group['children'] as &$children) {
+               $children['id']       = "Group".$children['id'];
+               $children['itemtype'] = "Group";
+            }
+         }
+
+         $results[] = $group;
+      }
+
+      $possible_entities = array_column($results, "text");
+
+      if ($post["actortype"] == 'assign') {
+         $suppliers = Dropdown::getDropdownValue([
+            'itemtype'            => 'Supplier',
+            '_idor_token'         => $post['_idor_token'],
+            'display_emptychoice' => false,
+            'searchText'          => $post['searchText'],
+            'entity_restrict'     => $entity_restrict,
+         ], false);
+         foreach ($suppliers['results'] as $supplier) {
+            if (isset($supplier['children'])) {
+               foreach ($supplier['children'] as &$children) {
+                  $children['id']       = "Supplier".$children['id'];
+                  $children['itemtype'] = "Supplier";
+               }
+            }
+
+            // if the entity is already present in groups result, append data to its children
+            $entity = $supplier['text'];
+            if ($entity_index = array_search($entity, $possible_entities)) {
+               if ($results[$entity_index]['itemtype'] == "Entity") {
+                  $results[$entity_index]['children'] = array_merge($results[$entity_index]['children'], $supplier['children']);
+               }
+            } else {
+               // otherwise create a new entry
+               $results[] = $supplier;
+            }
+         }
+      }
+
+      $return = [
+         'results' => $results,
+         'count'   => count($results),
+      ];
+
+      return ($json === true)
+         ? json_encode($return)
+         : $return;
    }
 }
