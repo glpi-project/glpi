@@ -64,7 +64,7 @@ trait UserMention {
 
       // Compute newly mentionned actors
       $mentionned_actors_ids = $this->getUserIdsFromUserMentions($this->input['content'], true);
-      if (property_exists($this, 'oldvalues') && !in_array('content', $this->oldvalues)) {
+      if (property_exists($this, 'oldvalues') && array_key_exists('content', $this->oldvalues)) {
          $previously_mentionned_actors_ids = $this->getUserIdsFromUserMentions($this->oldvalues['content'], true);
          $mentionned_actors_ids = array_diff($mentionned_actors_ids, $previously_mentionned_actors_ids);
       }
