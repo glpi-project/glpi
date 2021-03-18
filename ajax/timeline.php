@@ -103,7 +103,7 @@ switch ($_REQUEST['action']) {
 
       if ($_REQUEST['type'] === ITILFollowup::class) {
          $template = 'form_followup';
-      } else if (is_subclass_of($_REQUEST['type'], ITILSolution::class)) {
+      } else if ($_REQUEST['type'] === ITILSolution::class) {
          $template = 'form_solution';
          $params['kb_id_toload'] = $_REQUEST['load_kb_sol'] ?? 0;
       } else if (is_subclass_of($_REQUEST['type'], CommonITILTask::class)) {
