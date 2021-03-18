@@ -4010,7 +4010,7 @@ class AuthLDAP extends CommonDBTM {
          $file = realpath($input['tls_certfile']);
          if (!file_exists($file)) {
             Session::addMessageAfterRedirect(
-               __('SSL certificate path is incorrect'),
+               __('TLS certificate path is incorrect'),
                false,
                ERROR
             );
@@ -4022,7 +4022,7 @@ class AuthLDAP extends CommonDBTM {
          $file = realpath($input['tls_keyfile']);
          if (!file_exists($file)) {
             Session::addMessageAfterRedirect(
-               __('SSL key file path is incorrect'),
+               __('TLS key file path is incorrect'),
                false,
                ERROR
             );

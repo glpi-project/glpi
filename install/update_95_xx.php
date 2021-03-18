@@ -51,6 +51,7 @@ function update95toXX() {
       'documents',
       'domains',
       'inventory_management',
+      'ldaps',
       'native_inventory',
       'notifications',
       'recurrentchange',
