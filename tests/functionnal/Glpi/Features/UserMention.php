@@ -269,7 +269,7 @@ HTML
             $main_item->getForeignKeyField() => $main_item->getID(),
          ]
       );
-      $expected_observers = array_merge($add_expected_observers + $update_expected_observers);
+      $expected_observers = array_merge($add_expected_observers, $update_expected_observers);
       $this->array($observers)->hasSize(count($expected_observers));
       $this->array(array_column($observers, 'users_id'))->isEqualTo($expected_observers);
 
