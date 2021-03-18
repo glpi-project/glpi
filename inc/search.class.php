@@ -6175,22 +6175,17 @@ JAVASCRIPT;
                $link = new Link();
                if (($item = getItemForItemtype($itemtype))
                    && $item->getFromDB($data['id'])
-                   && $link->getfromDB($data[$ID][0]['id'])
-                   && ($item->fields['entities_id'] == $link->fields['entities_id'])) {
-                  if (count($data[$ID])) {
-                     $count_display = 0;
-                     foreach ($data[$ID] as$val) {
-
-                        if (is_array($val)) {
-                           $links = Link::getAllLinksFor($item, $val);
-                           foreach ($links as $link) {
-                              if ($count_display) {
-                                 $out .=  self::LBBR;
-                              }
-                              $out .= $link;
-                              $count_display++;
-                           }
+               ) {
+                  $data = Link::getLinksDataForItem($item);
+                  $count_display = 0;
+                  foreach ($data as $val) {
+                     $links = Link::getAllLinksFor($item, $val);
+                     foreach ($links as $link) {
+                        if ($count_display) {
+                           $out .=  self::LBBR;
                         }
+                        $out .= $link;
+                        $count_display++;
                      }
                   }
                }

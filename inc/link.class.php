@@ -64,17 +64,23 @@ class Link extends CommonDBTM {
       }
    }
 
-
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (self::canView()) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
+            $entity_criteria = getEntitiesRestrictCriteria(
+               Link::getTable(),
+               '',
+               self::getEntityRestrictForItem($item),
+               $item instanceof CommonDBTM ? $item->maybeRecursive() : false
+            );
+
             $nb = countElementsInTable(
                ['glpi_links_itemtypes','glpi_links'], [
                   'glpi_links_itemtypes.links_id'  => new \QueryExpression(DB::quoteName('glpi_links.id')),
                   'glpi_links_itemtypes.itemtype'  => $item->getType()
-               ] + getEntitiesRestrictCriteria('glpi_links', '', '', false)
+               ] + $entity_criteria
             );
          }
          return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
@@ -501,33 +507,7 @@ class Link extends CommonDBTM {
          return false;
       }
 
-      $restrict = $item->getEntityID();
-      if ($item->getType() == 'User') {
-         $restrict = Profile_User::getEntitiesForUser($item->getID());
-      }
-
-      $iterator = $DB->request([
-         'SELECT'       => [
-            'glpi_links.id',
-            'glpi_links.link AS link',
-            'glpi_links.name AS name',
-            'glpi_links.data AS data',
-            'glpi_links.open_window AS open_window'
-         ],
-         'FROM'         => 'glpi_links',
-         'INNER JOIN'   => [
-            'glpi_links_itemtypes'  => [
-               'ON' => [
-                  'glpi_links_itemtypes'  => 'links_id',
-                  'glpi_links'            => 'id'
-               ]
-            ]
-         ],
-         'WHERE'        => [
-            'glpi_links_itemtypes.itemtype'  => $item->getType(),
-         ] + getEntitiesRestrictCriteria('glpi_links', 'entities_id', $restrict, true),
-         'ORDERBY'      => 'name'
-      ]);
+      $iterator = self::getLinksDataForItem($item);
 
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
 
@@ -549,7 +529,6 @@ class Link extends CommonDBTM {
          echo "</table></div>";
       }
    }
-
 
    /**
     * Show Links for an item
@@ -631,19 +610,13 @@ class Link extends CommonDBTM {
    static function rawSearchOptionsToAdd($itemtype = null) {
       $tab = [];
 
+      // "Fake" search options, processing is done in Search::giveItem() for glpi_links._virtual
       $newtab = [
          'id'                 => '145',
          'table'              => 'glpi_links',
          'field'              => '_virtual',
          'name'               => _n('External link', 'External links', Session::getPluralNumber()),
          'datatype'           => 'specific',
-         'additionalfields'   => [
-            'id',
-            'link',
-            'name',
-            'data',
-            'open_window'
-         ],
          'nosearch'           => true,
          'forcegroupby'       => true,
          'nosort'             => '1',
@@ -657,15 +630,52 @@ class Link extends CommonDBTM {
          ]
       ];
 
-      if (!Session::isCron()
-          && !isCommandLine() && isset($_SESSION['glpiactiveentities_string'])) {
-         $newtab['joinparams']['condition'] = getEntitiesRestrictRequest('AND', 'NEWTABLE');
-      }
       $tab[] = $newtab;
 
       return $tab;
    }
 
+   public static function getEntityRestrictForItem(CommonGLPI $item) {
+      if (!$item instanceof CommonDBTM) {
+         return '';
+      }
+
+      $restrict = $item->getEntityID();
+      if ($item->getType() == 'User') {
+         $restrict = Profile_User::getEntitiesForUser($item->getID());
+      }
+
+      return $restrict;
+   }
+
+   public static function getLinksDataForItem(CommonDBTM $item) {
+      global $DB;
+
+      $restrict = self::getEntityRestrictForItem($item);
+
+      return $DB->request([
+         'SELECT'       => [
+            'glpi_links.id',
+            'glpi_links.link AS link',
+            'glpi_links.name AS name',
+            'glpi_links.data AS data',
+            'glpi_links.open_window AS open_window'
+         ],
+         'FROM'         => 'glpi_links',
+         'INNER JOIN'   => [
+            'glpi_links_itemtypes'  => [
+               'ON' => [
+                  'glpi_links_itemtypes'  => 'links_id',
+                  'glpi_links'            => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            'glpi_links_itemtypes.itemtype'  => $item->getType(),
+         ] + getEntitiesRestrictCriteria('glpi_links', 'entities_id', $restrict, true),
+         'ORDERBY'      => 'name'
+      ]);
+   }
 
    static function getIcon() {
       return "fas fa-link";
