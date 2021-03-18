@@ -49,10 +49,10 @@ if (!$DB->fieldExists('glpi_authldaps', 'tls_certfile')) {
    );
 }
 
-if (!$DB->fieldExists('glpi_authldaps', 'tls_certkey')) {
+if (!$DB->fieldExists('glpi_authldaps', 'tls_keyfile')) {
    $migration->addField(
       'glpi_authldaps',
-      'tls_certkey',
+      'tls_keyfile',
       'text',
       [
          'after'  => 'tls_certfile'
@@ -66,7 +66,7 @@ if (!$DB->fieldExists('glpi_authldaps', 'use_bind')) {
       'use_bind',
       'bool',
       [
-         'after'  => 'tls_certkey'
+         'after'  => 'tls_keyfile'
       ]
    );
 }
