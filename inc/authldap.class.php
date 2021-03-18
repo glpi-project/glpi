@@ -226,6 +226,8 @@ class AuthLDAP extends CommonDBTM {
             return false;
          };
       }
+
+      $this->checkFilesExist($input);
       return $input;
    }
 
@@ -2665,12 +2667,12 @@ class AuthLDAP extends CommonDBTM {
          @ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
          @ldap_set_option($ds, LDAP_OPT_DEREF, $deref_options);
 
-         if (file_exists(GLPI_CONFIG_DIR . '/ldap/' . $tls_certfile)) {
-            @ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, GLPI_CONFIG_DIR . '/ldap/' . $tls_certfile);
+         if (file_exists($tls_certfile)) {
+            @ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile);
          }
 
-         if (GLPI_CONFIG_DIR . '/ldap/' . $tls_keyfile) {
-            @ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, GLPI_CONFIG_DIR . '/ldap/' . $tls_keyfile);
+         if ($tls_keyfile) {
+            @ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile);
          }
 
          if ($use_tls) {
@@ -3560,6 +3562,8 @@ class AuthLDAP extends CommonDBTM {
          $input["rootdn_passwd"] = Toolbox::sodiumEncrypt($input["rootdn_passwd"]);
       }
 
+      $this->checkFilesExist($input);
+
       return $input;
    }
 
@@ -3998,5 +4002,32 @@ class AuthLDAP extends CommonDBTM {
       }
 
       return $users;
+   }
+
+   public function checkFilesExist(&$input) {
+
+      if (isset($input['tls_certfile'])) {
+         $file = realpath($input['tls_certfile']);
+         if (!file_exists($file)) {
+            Session::addMessageAfterRedirect(
+               __('SSL certificate path is incorrect'),
+               false,
+               ERROR
+            );
+            return false;
+         }
+      }
+
+      if (isset($input['tls_keyfile'])) {
+         $file = realpath($input['tls_keyfile']);
+         if (!file_exists($file)) {
+            Session::addMessageAfterRedirect(
+               __('SSL key file path is incorrect'),
+               false,
+               ERROR
+            );
+            return false;
+         }
+      }
    }
 }
