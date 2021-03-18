@@ -2866,7 +2866,7 @@ HTML;
             dateFormat: 'Y-m-d',
             wrap: true, // permits to have controls in addition to input (like clear or open date buttons
             weekNumbers: true,
-            locale: "{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][3]}",
+            locale: getFlatPickerLocale("{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][0]}", "{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][3]}"),
             {$min_attr}
             {$max_attr}
             {$multiple_attr}
@@ -3036,7 +3036,7 @@ HTML;
          ? "maxDate: '{$p['max']}',"
          : "";
 
-      $js = <<<JS
+$js = <<<JS
       $(function() {
          $("#showdate{$p['rand']}").flatpickr({
             altInput: true, // Show the user a readable date (as per altFormat), but return something totally different to the server.
@@ -3046,7 +3046,7 @@ HTML;
             enableTime: true,
             enableSeconds: true,
             weekNumbers: true,
-            locale: "{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][3]}",
+            locale: getFlatPickerLocale("{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][0]}", "{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][3]}"),
             minuteIncrement: "{$p['timestep']}",
             {$min_attr}
             {$max_attr}
@@ -3165,7 +3165,7 @@ HTML;
             enableTime: true,
             noCalendar: true, // only time picker
             enableSeconds: true,
-            locale: "{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][3]}",
+            locale: getFlatPickerLocale("{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][0]}", "{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][3]}"),
             minuteIncrement: "{$p['timestep']}",
             onChange: function(selectedDates, dateStr, instance) {
                {$p['on_change']}
