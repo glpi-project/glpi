@@ -115,6 +115,50 @@ abstract class CommonITILObject extends CommonDBTM {
       }
    }
 
+   function getActorsForType(int $actortype = 1): array {
+      $actors = [];
+
+      if (isset($this->users[$actortype])) {
+         foreach ($this->users[$actortype] as $user) {
+            $name = getUserName($user['users_id']);
+            $actors[] = [
+               'id'       => $user['id'],
+               'items_id' => $user['users_id'],
+               'itemtype' => 'User',
+               'text'     => $name,
+               'title'    => $name,
+            ];
+         }
+      }
+      $group_obj = new Group;
+      if (isset($this->groups[$actortype])) {
+         foreach ($this->groups[$actortype] as $group) {
+            $group_obj->getFromDB($group['groups_id']);
+            $actors[] = [
+               'id'       => $group['id'],
+               'items_id' => $group['groups_id'],
+               'itemtype' => 'Group',
+               'text'     => $group_obj->getName(),
+               'title'    => $group_obj->getRawCompleteName(),
+            ];
+         }
+      }
+      if (isset($this->suppliers[$actortype])) {
+         foreach ($this->suppliers[$actortype] as $supplier) {
+            $name = Dropdown::getDropdownName(Supplier::getTable(), $supplier['suppliers_id']);
+            $actors[] = [
+               'id'       => $supplier['id'],
+               'items_id' => $supplier['suppliers_id'],
+               'itemtype' => 'Supplier',
+               'text'     => $name,
+               'title'    => $name,
+            ];
+         }
+      }
+
+      return $actors;
+   }
+
 
    /**
     * Retrieve an item from the database with datas associated (hardwares)
