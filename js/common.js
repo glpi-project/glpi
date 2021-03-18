@@ -29,6 +29,7 @@
  * ---------------------------------------------------------------------
  */
 
+/* global bootstrap */
 /* global L */
 /* global glpi_html_dialog */
 
@@ -1346,3 +1347,39 @@ function updateItemOnEvent(dropdown_ids, target, url, params = {}, events = ['ch
 function updateItemOnSelectEvent(dropdown_ids, target, url, params = {}) {
    updateItemOnEvent(dropdown_ids, target, url, params, ['change'], -1, -1, []);
 }
+
+/**
+ * Initialize tooltips on given container.
+ *
+ * @param {Node} [container=document]
+ *
+ * @returns {void}
+ */
+function initTooltips(container) {
+   if (container === undefined) {
+      container = document;
+   }
+
+   const tooltipNodes = container.querySelectorAll('[data-bs-toggle="tooltip"]:not([data-bs-original-title])');
+   tooltipNodes.forEach(
+      function(tooltipNode) {
+         const options = {
+            delay: {show: 50, hide: 50},
+            html: tooltipNode.hasAttribute("data-bs-html") ? tooltipNode.getAttribute("data-bs-html") === "true" : false,
+            placement: tooltipNode.hasAttribute("data-bs-placement") ? tooltipNode.getAttribute('data-bs-placement') : 'auto'
+         };
+         return new bootstrap.Tooltip(tooltipNode, options);
+      }
+   );
+}
+
+// Init uninitialized tooltips everytime an ajax query is completed.
+$(
+   function() {
+      $(document).ajaxComplete(
+         function() {
+            initTooltips();
+         }
+      );
+   }
+);
