@@ -1199,16 +1199,16 @@ function relativeDate(str) {
  * flatpickr but should have different first day of week.
  * We must manually set firstDayOfWeek for "English"
  *
- * @param {String} locale_label
- * @param {String} locale_code
+ * @param {String} language
+ * @param {String} region
  * @returns
  */
-function getFlatPickerLocale(locale_label, locale_code) {
-   if (locale_label == "English") {
+function getFlatPickerLocale(language, region) {
+   if (language == "en" && region == "GB") {
       return {
          firstDayOfWeek: 1 // No need to specify locale code, default is english
       };
    } else {
-      return locale_code;
+      return language;
    }
 }
