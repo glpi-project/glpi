@@ -1,11 +1,100 @@
 {% set rand = random() %}
 
-<select class="form-select" multiple="true" id="actor_{{ rand }}"></select>
+{% set actors = item.getActorsForType(actortypeint) %}
+
+<select class="form-select" multiple="true" id="actor_{{ rand }}">
+{% for actor in actors %}
+   <option selected="true" value="{{ actor['itemtype'] ~ "_" ~ actor['items_id'] }}"
+           data-itemtype="{{ actor['itemtype'] }}" data-items-id="{{ actor['items_id'] }}"
+           data-text="{{ actor['text'] }}" data-title="{{ actor['title'] }}">
+      {{ actor['title'] }}
+   </option>
+{% endfor %}
+</select>
 
 <script type="text/javascript">
 $(function() {
    var actorytype   = '{{ actortype }}';
    var mainitemtype = '{{ item.getType() }}';
+
+   // function to display an option in the list or the selected input
+   var genericTemplate_{{ rand }} = function(option = {}, is_selection = false) {
+      var element  = $(option.element);
+      var itemtype = element.data('itemtype') ?? option.itemtype;
+      var items_id = element.data('items-id') ?? option.items_id;
+      var text     = element.data('text')     ?? option.text;
+      var title    = element.data('title')    ?? option.title;
+
+      var icon = "";
+      var size = is_selection ? "fa-lg" : ""
+      var fk   = "";
+      switch (itemtype) {
+         case "User":
+            icon = `<i class="fas ${size} fa-fw fa-user mx-1" title="{{ "User"|itemtype_name }}"></i>`;
+            fk   = "users_id_assign";
+            break;
+         case "Group":
+            icon = `<i class="fas ${size} fa-fw fa-users mx-1" title="{{ "Group"|itemtype_name }}"></i>`;
+            fk   = "groups_id_assign";
+            break;
+         case "Supplier":
+            icon = `<i class="fas ${size} fa-fw fa-pallet mx-1" title="{{ "Supplier"|itemtype_name }}"></i>`;
+            fk   = "suppliers_id_assign";
+            break;
+         case "Email":
+            icon = `<i class="fas ${size} fa-fw fa-envelope mx-1" title="{{ "Supplier"|itemtype_name }}"></i>`;
+            break;
+      }
+
+      var actions = "";
+      if (['User', 'Supplier'].includes(itemtype)
+          && is_selection
+          && {{ Entity_getUsedConfig('is_notif_enable_default', entities_id, '', 1) }}) {
+         actions = `<button class="btn btn-sm btn-ghost-secondary edit-notify-user"
+                              title="{{ __("Email followup") }}">
+            <i class="fas fa-bell"></i>
+         </button>`;
+      }
+
+      // manage specific display for tree data (like groups)
+      var indent = "";
+      if (!is_selection && "level" in option && option.level > 1) {
+         for (let index = 1; index < option.level; index++) {
+            indent = "&nbsp;&nbsp;&nbsp;"+indent;
+         }
+         indent = indent+"&raquo;";
+      }
+
+      // prepare html for option element
+      var text = (is_selection && itemtype == "Group") ? title : text;
+      var option_element = $(`<span class="actor_entry">${indent}${icon}${text}${actions}</span>`);
+
+      // manage ticket information (number of assigned ticket for an actor)
+      if (is_selection && itemtype != "Email" && "{{ actortype }}" == "assign") {
+         var already_assign_element = $(
+            `<span class="assign_infos ms-1" title="{{ __("Number of tickets already assigned") }}"
+                   data-id="${items_id}" data-fk="${fk}">
+               <i class="fas fa-spinner fa-spin"></i>
+            </span>`
+         );
+         option_element.append(already_assign_element);
+
+         $.get("{{ path('/ajax/ticketassigninformation.php') }}", {
+            [fk]: items_id,
+            only_number: true
+         }).done(function(number) {
+            var badge = "";
+            if (number.length > 0) {
+               badge = `<span class="badge bg-secondary">
+                  ${number}
+               </span>`;
+            }
+            already_assign_element.html(badge);
+         });
+      }
+
+      return option_element;
+   };
 
    $("#actor_{{ rand }}").select2({
       tags: true,
@@ -13,8 +102,8 @@ $(function() {
       tokenSeparators: [',', ' '],
       disabled: false, // TODO can edit
       containerCssClass: 'actor-field',
-      templateSelection: function(option) { return genericTemplate(option, true); },
-      templateResult:    function(option) { return genericTemplate(option, false); },
+      templateSelection: function(option) { return genericTemplate_{{ rand }}(option, true); },
+      templateResult:    function(option) { return genericTemplate_{{ rand }}(option, false); },
       createTag: function (params) {
          var term = $.trim(params.term);
 
@@ -70,84 +159,5 @@ $(function() {
          return openNotifyModal(event);
       }
    }, {capture: true})
-
-   // function to display an option in the list or the selected input
-   var genericTemplate = function(option = {}, is_selection = false) {
-      var element  = $(option.element);
-      var itemtype = option.itemtype ?? element.data('itemtype');
-      var items_id = option.items_id ?? element.data('items_id');
-
-      var icon = "";
-      var size = is_selection ? "fa-lg" : ""
-      var fk   = "";
-      switch (itemtype) {
-         case "User":
-            icon = `<i class="fas ${size} fa-fw fa-user mx-1" title="{{ "User"|itemtype_name }}"></i>`;
-            fk   = "users_id_assign";
-            break;
-         case "Group":
-            icon = `<i class="fas ${size} fa-fw fa-users mx-1" title="{{ "Group"|itemtype_name }}"></i>`;
-            fk   = "groups_id_assign";
-            break;
-         case "Supplier":
-            icon = `<i class="fas ${size} fa-fw fa-pallet mx-1" title="{{ "Supplier"|itemtype_name }}"></i>`;
-            fk   = "suppliers_id_assign";
-            break;
-         case "Email":
-            icon = `<i class="fas ${size} fa-fw fa-envelope mx-1" title="{{ "Supplier"|itemtype_name }}"></i>`;
-            break;
-      }
-
-      var actions = "";
-      if (['User', 'Supplier'].includes(itemtype)
-          && is_selection
-          && {{ Entity_getUsedConfig('is_notif_enable_default', entities_id, '', 1) }}) {
-         actions = `<button class="btn btn-sm btn-ghost-secondary edit-notify-user"
-                              title="{{ __("Email followup") }}">
-            <i class="fas fa-bell"></i>
-         </button>`;
-      }
-
-      // manage specific display for tree data (like groups)
-      var text   = (is_selection && itemtype == "Group")
-         ? (option.title ?? option.text)
-         : option.text;
-      var indent = "";
-      if (!is_selection && "level" in option && option.level > 1) {
-         for (let index = 1; index < option.level; index++) {
-            indent = "&nbsp;&nbsp;&nbsp;"+indent;
-         }
-         indent = indent+"&raquo;";
-      }
-
-      // prepare html for option element
-      var option_element = $(`<span class="actor_entry">${indent}${icon}${text}${actions}</span>`);
-
-      // manage ticket information (number of assigned ticket for an actor)
-      if (is_selection && itemtype != "Email" && "{{ actortype }}" == "assign") {
-         var already_assign_element = $(
-            `<span class="assign_infos" title="{{ __("Number of tickets already assigned") }}"
-                   data-id="${items_id}" data-fk="${fk}">
-               <i class="fas fa-spinner fa-spin"></i>
-            </span>`
-         );
-         option_element.append(already_assign_element);
-
-         $.get("{{ path('/ajax/ticketassigninformation.php') }}", {
-            [fk]: items_id,
-            only_number: true
-         }).done(function(number) {
-            var badge = "";
-            if (number.length > 0) {
-               badge = `<span class="badge bg-secondary">
-                  ${number}
-               </span>`;
-            }
-            already_assign_element.html(badge);
-         });
-      }
-
-      return option_element;
-   };
 });
 </script>
