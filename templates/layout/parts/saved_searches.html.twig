@@ -10,13 +10,19 @@
       {{ _n('Saved search', 'Saved searches', 2) }}
 
       <li class="ms-auto btn-list me-1">
-         <a href="{{ path("front/savedsearch.php") }}" class="btn btn-sm btn-icon btn-ghost-secondary" data-bs-toggle="tooltip" title="{{ __("Manage all saved searches") }}">
+         <a href="{{ path("front/savedsearch.php") }}" class="btn btn-sm btn-icon btn-ghost-secondary"
+            data-bs-toggle="tooltip" data-bs-placement="bottom"
+            title="{{ __("Manage all saved searches") }}">
             <i class="fas fa-cog"></i>
          </a>
-         <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1 d-none d-md-block pin-saved-searches-panel" data-bs-toggle="tooltip" title="{{ __("Pin this panel for the current page") }}">
+         <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1 d-none d-md-block pin-saved-searches-panel"
+                 data-bs-toggle="tooltip" data-bs-placement="bottom"
+                 title="{{ __("Pin this panel for the current page") }}">
             <i class="fas fa-thumbtack"></i>
          </button>
-         <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1 close-saved-searches-panel" data-bs-toggle="tooltip" title="{{ __("Close the panel") }}">
+         <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1 close-saved-searches-panel"
+                 data-bs-toggle="tooltip" data-bs-placement="bottom"
+                 title="{{ __("Close the panel") }}">
             <i class="fas fa-times"></i>
          </button>
       </li>
