@@ -58,7 +58,10 @@ class Html {
       $value = Html::entity_decode_deep($value);
 
       // Change <email@domain> to email@domain so it is not removed by htmLawed
-      $regex = "/(<[^>]+?@[^;]+?>)/";
+      // Search for strings that is an email surrounded by `<` and `>` but that cannot be an HTML tag:
+      // - absence of quotes indicate that values is not part of an HTML attribute,
+      // - absence of > ensure that ending `>` has not been reached.
+      $regex = "/(<[^\"'>]+?@[^>\"']+?>)/";
       $value = preg_replace_callback($regex, function($matches) {
          return substr($matches[1], 1, (strlen($matches[1]) - 2));
       }, $value);
