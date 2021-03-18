@@ -717,54 +717,9 @@ class Document_Item extends CommonDBRelation{
          $linkparam = "&amp;tickets_id=".$item->fields['id'];
       }
 
-      $criteria = [
-         'SELECT'    => [
-            'glpi_documents_items.id AS assocID',
-            'glpi_documents_items.date_creation AS assocdate',
-            'glpi_entities.id AS entityID',
-            'glpi_entities.completename AS entity',
-            'glpi_documentcategories.completename AS headings',
-            'glpi_documents.*'
-         ],
-         'FROM'      => 'glpi_documents_items',
-         'LEFT JOIN' => [
-            'glpi_documents'  => [
-               'ON' => [
-                  'glpi_documents_items'  => 'documents_id',
-                  'glpi_documents'        => 'id'
-               ]
-            ],
-            'glpi_entities'   => [
-               'ON' => [
-                  'glpi_documents'  => 'entities_id',
-                  'glpi_entities'   => 'id'
-               ]
-            ],
-            'glpi_documentcategories'  => [
-               'ON' => [
-                  'glpi_documentcategories'  => 'id',
-                  'glpi_documents'           => 'documentcategories_id'
-               ]
-            ]
-         ],
-         'WHERE'     => [
-            'glpi_documents_items.items_id'  => $item->getID(),
-            'glpi_documents_items.itemtype'  => $item->getType()
-         ],
-         'ORDERBY'   => [
-            "$sort $order"
-         ]
-      ];
-
-      if (Session::getLoginUserID()) {
-         $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria('glpi_documents', '', '', true);
-      } else {
-         // Anonymous access from FAQ
-         $criteria['WHERE']['glpi_documents.entities_id'] = 0;
-      }
+      $criteria = self::getDocumentForItemRequest($item, ["$sort $order"]);
 
       // Document : search links in both order using union
-      $doc_criteria = [];
       if ($item->getType() == 'Document') {
          $owhere = $criteria['WHERE'];
          $o2where =  $owhere + ['glpi_documents_items.documents_id' => $item->getID()];
@@ -850,7 +805,6 @@ class Document_Item extends CommonDBRelation{
                Session::addToNavigateListItems('Document', $docID);
             }
             $used[$docID] = $docID;
-            $assocID      = $data["assocID"];
 
             echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
             if ($canedit
@@ -1050,5 +1004,53 @@ class Document_Item extends CommonDBRelation{
          // support agent that is no longer assigned to the ticket
          return true;
       }
+   }
+
+   public static function getDocumentForItemRequest(CommonDBTM $item, array $order = []): array {
+      $criteria = [
+         'SELECT'    => [
+            'glpi_documents_items.id AS assocID',
+            'glpi_documents_items.date_creation AS assocdate',
+            'glpi_entities.id AS entityID',
+            'glpi_entities.completename AS entity',
+            'glpi_documentcategories.completename AS headings',
+            'glpi_documents.*'
+         ],
+         'FROM'      => 'glpi_documents_items',
+         'LEFT JOIN' => [
+            'glpi_documents'  => [
+               'ON' => [
+                  'glpi_documents_items'  => 'documents_id',
+                  'glpi_documents'        => 'id'
+               ]
+            ],
+            'glpi_entities'   => [
+               'ON' => [
+                  'glpi_documents'  => 'entities_id',
+                  'glpi_entities'   => 'id'
+               ]
+            ],
+            'glpi_documentcategories'  => [
+               'ON' => [
+                  'glpi_documentcategories'  => 'id',
+                  'glpi_documents'           => 'documentcategories_id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_documents_items.items_id'  => $item->getID(),
+            'glpi_documents_items.itemtype'  => $item->getType()
+         ],
+         'ORDERBY'   => $order,
+      ];
+
+      if (Session::getLoginUserID()) {
+         $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria('glpi_documents', '', '', true);
+      } else {
+         // Anonymous access from FAQ
+         $criteria['WHERE']['glpi_documents.entities_id'] = 0;
+      }
+
+      return $criteria;
    }
 }

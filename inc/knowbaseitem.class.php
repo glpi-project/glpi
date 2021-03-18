@@ -908,7 +908,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
     *    string if option display=false (HTML code)
    **/
    function showFull($options = []) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       if (!$this->can($this->fields['id'], READ)) {
          return false;
@@ -956,6 +956,55 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       $out.= $this->getAnswer();
       $out.= "</div>";
       $out.= "</td></tr>";
+
+      // Show documents attached to the FAQ Item
+      $sort = 'name';
+      $order = 'ASC';
+      $criteria = Document_Item::getDocumentForItemRequest($this, ["$sort $order"]);
+      $iterator = $DB->request($criteria);
+      if (count($iterator) > 0) {
+         $columns = [
+            'name'      => __('Name'),
+            'filename'  => __('File'),
+            'headings'  => __('Heading'),
+            'assocdate' => _n('Date', 'Dates', 1),
+         ];
+
+         $header_begin  = "<tr>";
+         $header_top    = '';
+         $header_end    = '';
+
+         foreach ($columns as $key => $val) {
+            $header_end .= "<th".($sort == "$key" ? " class='order_$order'" : '').">".
+                           "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
+                              (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
+         }
+         $header_end .= "</tr>";
+         $out .= $header_begin.$header_top.$header_end;
+
+         $document = new Document();
+         foreach ($iterator as $data) {
+            $docID        = $data["id"];
+            $link         = NOT_AVAILABLE;
+            $downloadlink = NOT_AVAILABLE;
+
+            if ($document->getFromDB($docID)) {
+               $link         = $document->getLink();
+               $downloadlink = $document->getDownloadLink();
+            }
+
+            $used[$docID] = $docID;
+
+            $out .= "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
+            $out .= "<td>$link</td>";
+            $out .= "<td>$downloadlink</td>";
+            $out .= "<td>".Dropdown::getDropdownName("glpi_documentcategories",
+                     $data["documentcategories_id"]);
+            $out .= "</td>";
+            $out .= "<td>".Html::convDateTime($data["assocdate"])."</td>";
+            $out .= "</tr>";
+         }
+      }
 
       $out.= "<tr><th class='tdkb'  colspan='2'>";
       if ($this->fields["users_id"]) {
