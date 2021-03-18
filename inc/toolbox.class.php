@@ -3488,8 +3488,9 @@ HTML;
       // Verify absence of known disallowed characters.
       // It is still possible to have false positives, but a fireproof check would be too complex
       // (or would require usage of a dedicated lib).
+      // return filter_var($url, FILTER_VALIDATE_URL) !== false;
       return (preg_match(
-         "/^(?:http[s]?:\/\/(?:[^\s`!()\[\]{};'\",<>?«»“”‘’+]+|[^\s`!()\[\]{};:'\".,<>?«»“”‘’+]))$/iu",
+         "/^(?:http[s]?:\/\/(?:[^\s`!()\[\]{};'\",<>«»“”‘’+]+|[^\s`!()\[\]{};:'\".,<>?«»“”‘’+]))$/iu",
          $url
       ) === 1);
    }

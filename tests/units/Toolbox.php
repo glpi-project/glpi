@@ -1046,6 +1046,8 @@ class Toolbox extends \GLPITestCase {
          ['https://localhost<', false],
          ['https://localhost"', false],
          ['https://localhost\'', false],
+         ['https://localhost?test=true', true],
+         ['https://localhost?test=true&othertest=false', true],
       ];
    }
 
