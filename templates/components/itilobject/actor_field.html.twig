@@ -51,7 +51,8 @@ $(function() {
           && is_selection
           && {{ Entity_getUsedConfig('is_notif_enable_default', entities_id, '', 1) }}) {
          actions = `<button class="btn btn-sm btn-ghost-secondary edit-notify-user"
-                              title="{{ __("Email followup") }}">
+                            data-bs-toggle="tooltip" data-bs-placement="top"
+                            title="{{ __("Email followup") }}">
             <i class="fas fa-bell"></i>
          </button>`;
       }
@@ -73,6 +74,7 @@ $(function() {
       if (is_selection && itemtype != "Email" && "{{ actortype }}" == "assign") {
          var already_assign_element = $(
             `<span class="assign_infos ms-1" title="{{ __("Number of tickets already assigned") }}"
+                   data-bs-toggle="tooltip" data-bs-placement="top"
                    data-id="${items_id}" data-fk="${fk}">
                <i class="fas fa-spinner fa-spin"></i>
             </span>`
