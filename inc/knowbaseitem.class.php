@@ -963,6 +963,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       $criteria = Document_Item::getDocumentForItemRequest($this, ["$sort $order"]);
       $iterator = $DB->request($criteria);
       if (count($iterator) > 0) {
+         $out.= "<tr><td class='left' colspan='4'><h2>".Document::getTypeName(Session::getPluralNumber())."</h2></td></tr>\n";
+
          $columns = [
             'name'      => __('Name'),
             'filename'  => __('File'),
