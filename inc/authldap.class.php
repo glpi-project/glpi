@@ -2717,8 +2717,8 @@ class AuthLDAP extends CommonDBTM {
                                   $ldap_method['rootdn'],
                                   Toolbox::sodiumDecrypt($ldap_method['rootdn_passwd']),
                                   $ldap_method['use_tls'], $ldap_method['deref_option'],
-                                  $ldap_method['tls_certfile'],
-                                  $ldap_method['tls_keyfile'],
+                                  $ldap_method['tls_certfile'] ?? '',
+                                  $ldap_method['tls_keyfile'] ?? '',
                                   $ldap_method['use_bind']);
 
       // Test with login and password of the user if exists
@@ -2727,8 +2727,8 @@ class AuthLDAP extends CommonDBTM {
          $ds = self::connectToServer($ldap_method['host'], $ldap_method['port'], $login,
                                      $password, $ldap_method['use_tls'],
                                      $ldap_method['deref_option'],
-                                     $ldap_method['tls_certfile'],
-                                     $ldap_method['tls_keyfile'],
+                                     $ldap_method['tls_certfile'] ?? '',
+                                     $ldap_method['tls_keyfile'] ?? '',
                                      $ldap_method['use_bind']);
       }
 
@@ -2740,8 +2740,8 @@ class AuthLDAP extends CommonDBTM {
                                         $ldap_method['rootdn'],
                                         Toolbox::sodiumDecrypt($ldap_method['rootdn_passwd']),
                                         $ldap_method['use_tls'], $ldap_method['deref_option'],
-                                        $ldap_method['tls_certfile'],
-                                        $ldap_method['tls_keyfile'],
+                                        $ldap_method['tls_certfile'] ?? '',
+                                        $ldap_method['tls_keyfile'] ?? '',
                                         $ldap_method['use_bind']);
 
             // Test with login and password of the user
@@ -2750,8 +2750,8 @@ class AuthLDAP extends CommonDBTM {
                $ds = self::connectToServer($replicate["host"], $replicate["port"], $login,
                                            $password, $ldap_method['use_tls'],
                                            $ldap_method['deref_option'],
-                                           $ldap_method['tls_certfile'],
-                                           $ldap_method['tls_keyfile'],
+                                           $ldap_method['tls_certfile'] ?? '',
+                                           $ldap_method['tls_keyfile'] ?? '',
                                            $ldap_method['use_bind']);
             }
             if ($ds) {
