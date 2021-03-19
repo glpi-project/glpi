@@ -2877,6 +2877,7 @@ HTML;
          ? json_encode($p['value'])
          : "'{$p['value']}'";
 
+      $locale = Locale::parseLocale($_SESSION['glpilanguage']);
       $js = <<<JS
       $(function() {
          $("#showdate{$p['rand']}").flatpickr({
@@ -2886,7 +2887,7 @@ HTML;
             dateFormat: 'Y-m-d',
             wrap: true, // permits to have controls in addition to input (like clear or open date buttons
             weekNumbers: true,
-            locale: "{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][3]}",
+            locale: getFlatPickerLocale("{$locale['language']}", "{$locale['region']}"),
             {$min_attr}
             {$max_attr}
             {$multiple_attr}
@@ -3056,6 +3057,7 @@ HTML;
          ? "maxDate: '{$p['max']}',"
          : "";
 
+      $locale = Locale::parseLocale($_SESSION['glpilanguage']);
       $js = <<<JS
       $(function() {
          $("#showdate{$p['rand']}").flatpickr({
@@ -3066,7 +3068,7 @@ HTML;
             enableTime: true,
             enableSeconds: true,
             weekNumbers: true,
-            locale: "{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][3]}",
+            locale: getFlatPickerLocale("{$locale['language']}", "{$locale['region']}"),
             minuteIncrement: "{$p['timestep']}",
             {$min_attr}
             {$max_attr}
@@ -3176,7 +3178,7 @@ JS;
             $clear
          </div>
 HTML;
-
+      $locale = Locale::parseLocale($_SESSION['glpilanguage']);
       $js = <<<JS
       $(function() {
          $("#showtime{$p['rand']}").flatpickr({
@@ -3185,7 +3187,7 @@ HTML;
             enableTime: true,
             noCalendar: true, // only time picker
             enableSeconds: true,
-            locale: "{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][3]}",
+            locale: getFlatPickerLocale("{$locale['language']}", "{$locale['region']}"),
             minuteIncrement: "{$p['timestep']}",
             onChange: function(selectedDates, dateStr, instance) {
                {$p['on_change']}

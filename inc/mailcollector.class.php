@@ -135,9 +135,6 @@ class MailCollector  extends CommonDBTM {
    }
 
    public function prepareInput(array $input, $mode = 'add') :array {
-      if ('add' === $mode && !isset($input['name']) || empty($input['name'])) {
-         Session::addMessageAfterRedirect(__('Invalid email address'), false, ERROR);
-      }
 
       if (isset($input["passwd"])) {
          if (empty($input["passwd"])) {
@@ -149,10 +146,6 @@ class MailCollector  extends CommonDBTM {
 
       if (isset($input['mail_server']) && !empty($input['mail_server'])) {
          $input["host"] = Toolbox::constructMailServerConfig($input);
-      }
-
-      if (isset($input['name']) && !NotificationMailing::isUserAddressValid($input['name'])) {
-         Session::addMessageAfterRedirect(__('Invalid email address'), false, ERROR);
       }
 
       return $input;
@@ -228,8 +221,11 @@ class MailCollector  extends CommonDBTM {
       $options['colspan'] = 1;
       $this->showFormHeader($options);
 
-      echo "<tr class='tab_bg_1'><td>".sprintf(__('%1$s (%2$s)'), __('Name'), __('Email address')).
-           "</td><td>";
+      echo "<tr class='tab_bg_1'><td>";
+      echo __('Name');
+      echo '&nbsp;';
+      Html::showToolTip(__('If name is a valid email address, it will be automatically added to blacklisted senders.'));
+      echo "</td><td>";
       Html::autocompletionTextField($this, "name");
       echo "</td></tr>";
 

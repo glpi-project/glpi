@@ -1193,3 +1193,22 @@ function relativeDate(str) {
                            : (tmp = Math.round(y)) === 1 ? __('a year ago')
                               : '%s years ago'.replace('%s', tmp);
 }
+
+/**
+ * Special case as both "English" and "English (US)" use the same locale for
+ * flatpickr but should have different first day of week.
+ * We must manually set firstDayOfWeek for "English"
+ *
+ * @param {String} language
+ * @param {String} region
+ * @returns
+ */
+function getFlatPickerLocale(language, region) {
+   if (language == "en" && region == "GB") {
+      return {
+         firstDayOfWeek: 1 // No need to specify locale code, default is english
+      };
+   } else {
+      return language;
+   }
+}
