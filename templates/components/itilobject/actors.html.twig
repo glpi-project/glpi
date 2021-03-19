@@ -1,5 +1,11 @@
 {% import "components/form/fields_macros.html.twig" as fields %}
 
+{% set actortypes = {
+   'requester': constant('CommonITILActor::REQUESTER'),
+   'observer':  constant('CommonITILActor::OBSERVER'),
+   'assign':    constant('CommonITILActor::ASSIGN')
+} %}
+
 {# TODO check allow_email params #}
 {# TODO filter user/group (is_request/is_assign) #}
 
@@ -47,3 +53,67 @@
    __("Assigned to"),
    field_options|merge({is_horizontal: false})
 ) }}
+
+{# modal for edit notification setting for a user #}
+<div class="modal fade" id="editActorNotifySettings" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+         <h5 class="modal-title">
+            <i class="fas fa-envelope"></i>
+            &nbsp;{{ __("Edit notification settings") }}
+         </h5>
+         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __("Close") }}"></button>
+      </div>
+      <div class="modal-body">
+         <div class="mb-3">
+            <label class="form-label" for="actorname">{{ __("Actor") }}</label>
+            <input type="text" class="form-control" id="actorname" name="actorname">
+            <input type="hidden" name="actortype" value="">
+            <input type="hidden" name="actorindex" value="">
+         </div>
+         <div class="mb-3">
+            <label for="alternative_email" class="form-label">{{ __("Email address") }}</label>
+            <div class="form-check form-switch">
+               <input class="form-check-input" type="checkbox" id="use_notification" name="use_notification">
+               <label class="form-check-label" for="use_notification">{{ __("Email followup") }}</label>
+            </div>
+            <input type="email" class="form-control" id="alternative_email" name="alternative_email">
+         </div>
+      </div>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times"></i>
+            <span>{{ __("Close") }}<span>
+         </button>
+         <button type="button" class="btn btn-primary" id="saveActorNotifySettings">
+            <i class="fas fa-save"></i>
+            <span>{{ __("Save") }}</span>
+         </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+   var editActorNotifySettings_modal = new bootstrap.Modal(document.getElementById('editActorNotifySettings'), {});
+
+   var actors = {
+      {% for actortype, actortypeint in actortypes %}
+         {{ actortype }}: [
+            {% for actor in item.getActorsForType(actortypeint) %}
+            {
+               itemtype: "{{ actor['itemtype'] }}",
+               items_id: "{{ actor['items_id'] }}",
+               {% if actor['use_notification'] is defined %}
+                  use_notification: "{{ actor['use_notification'] }}",
+               {% endif %}
+               {% if actor['alternative_email'] is defined %}
+                  alternative_email: "{{ actor['alternative_email'] }}",
+               {% endif %}
+            },
+            {% endfor %}
+         ],
+      {% endfor %}
+   };
+</script>
