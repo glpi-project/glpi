@@ -66,7 +66,8 @@ if (!$DB->fieldExists('glpi_authldaps', 'use_bind')) {
       'use_bind',
       'bool',
       [
-         'after'  => 'tls_keyfile'
+         'after'  => 'tls_keyfile',
+         'value' => 1
       ]
    );
 }

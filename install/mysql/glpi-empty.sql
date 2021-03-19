@@ -113,7 +113,7 @@ CREATE TABLE `glpi_authldaps` (
   `inventory_domain` varchar(255) DEFAULT NULL,
   `tls_certfile` text,
   `tls_keyfile` text,
-  `use_bind` tinyint NOT NULL DEFAULT '0',
+  `use_bind` tinyint NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `is_default` (`is_default`),
