@@ -973,10 +973,8 @@ class MailCollector  extends CommonDBTM {
 
       // manage blacklist
       $blacklisted_emails   = Blacklist::getEmails();
-      if (GLPIMailer::ValidateAddress($this->fields['name'])) {
-         // Add name of the mailcollector as blacklisted
-         $blacklisted_emails[] = $this->fields['name'];
-      }
+      // Add name of the mailcollector as blacklisted
+      $blacklisted_emails[] = $this->fields['name'];
       if (Toolbox::inArrayCaseCompare($headers['from'], $blacklisted_emails)) {
          $tkt['_blacklisted'] = true;
          return $tkt;
