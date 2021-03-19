@@ -961,12 +961,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       $sort = 'name';
       $order = 'ASC';
       $criteria = Document_Item::getDocumentForItemRequest($this, ["$sort $order"]);
+      $criteria['WHERE'][] = ['is_deleted' => '0'];
       $iterator = $DB->request($criteria);
       if (count($iterator) > 0) {
          $out.= "<tr><td class='left' colspan='4'><h2>".Document::getTypeName(Session::getPluralNumber())."</h2></td></tr>\n";
 
          $columns = [
-            'name'      => __('Name'),
             'filename'  => __('File'),
             'headings'  => __('Heading'),
             'assocdate' => _n('Date', 'Dates', 1),
@@ -977,7 +977,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          $header_end    = '';
 
          foreach ($columns as $key => $val) {
-            $header_end .= "<th".($sort == "$key" ? " class='order_$order'" : '').">".
+            $colspan = $key == 'filename' ? 'colspan="2"' : '';
+            $header_end .= "<th $colspan".($sort == "$key" ? " class='order_$order'" : '').">".
                            "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
                               (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
          }
@@ -987,19 +988,16 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          $document = new Document();
          foreach ($iterator as $data) {
             $docID        = $data["id"];
-            $link         = NOT_AVAILABLE;
             $downloadlink = NOT_AVAILABLE;
 
             if ($document->getFromDB($docID)) {
-               $link         = $document->getLink();
                $downloadlink = $document->getDownloadLink();
             }
 
             $used[$docID] = $docID;
 
             $out .= "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
-            $out .= "<td>$link</td>";
-            $out .= "<td>$downloadlink</td>";
+            $out .= "<td colspan='2'>$downloadlink</td>";
             $out .= "<td>".Dropdown::getDropdownName("glpi_documentcategories",
                      $data["documentcategories_id"]);
             $out .= "</td>";
