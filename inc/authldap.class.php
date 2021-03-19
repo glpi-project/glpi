@@ -226,6 +226,8 @@ class AuthLDAP extends CommonDBTM {
             return false;
          };
       }
+
+      $this->checkFilesExist($input);
       return $input;
    }
 
@@ -396,6 +398,11 @@ class AuthLDAP extends CommonDBTM {
                 $this->fields["rootdn"]."\">";
          echo "</td></tr>";
 
+         echo "<tr class='tab_bg_1'><td><label for='use_bind'>" . __('Use Bind') . "</label></td>";
+         echo "<td colspan='3'>";
+         Dropdown::showYesNo('use_bind', $this->fields["use_bind"]);
+         echo "</td></tr>";
+
          echo "<tr class='tab_bg_1'><td><label for='rootdn_passwd'>" .
             __('Password (for non-anonymous binds)') . "</label></td>";
          echo "<td><input type='password' id='rootdn_passwd' name='rootdn_passwd' value='' autocomplete='new-password'>";
@@ -531,6 +538,15 @@ class AuthLDAP extends CommonDBTM {
       echo "<td colspan='3'>";
       Html::autocompletionTextField($this, "inventory_domain", ['size' => 100]);
       echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('TLS Certfile') . "</td><td>";
+      echo "<input type='text' name='tls_certfile' id='tls_certfile' value='".$this->fields["tls_certfile"]."'>";
+      echo "</td>";
+      echo "<td>" . __('TLS Keyfile') . "</td><td>";
+      echo "<input type='text' name='tls_keyfile' id='tls_keyfile' value='".$this->fields["tls_keyfile"]."'>";
+      echo "</td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
       echo "<input type='submit' name='update' class='submit' value=\"".__s('Save')."\">";
@@ -1459,7 +1475,10 @@ class AuthLDAP extends CommonDBTM {
       $ds = self::connectToServer($host, $port, $config_ldap->fields['rootdn'],
                                   Toolbox::sodiumDecrypt($config_ldap->fields['rootdn_passwd']),
                                   $config_ldap->fields['use_tls'],
-                                  $config_ldap->fields['deref_option']);
+                                  $config_ldap->fields['deref_option'],
+                                  $config_ldap->fields['tls_certfile'],
+                                  $config_ldap->fields['tls_keyfile'],
+                                  $config_ldap->fields['use_bind']);
       if ($ds) {
          return true;
       }
@@ -2615,7 +2634,10 @@ class AuthLDAP extends CommonDBTM {
                                     $this->fields['rootdn'],
                                     Toolbox::sodiumDecrypt($this->fields['rootdn_passwd']),
                                     $this->fields['use_tls'],
-                                    $this->fields['deref_option']);
+                                    $this->fields['deref_option'],
+                                    $this->fields['tls_certfile'],
+                                    $this->fields['tls_keyfile'],
+                                    $this->fields['use_bind']);
    }
 
 
@@ -2628,28 +2650,47 @@ class AuthLDAP extends CommonDBTM {
     * @param string  $password      password to use (default '')
     * @param boolean $use_tls       use a TLS connection? (false by default)
     * @param integer $deref_options deref options used
+    * @param string  $tls_certfile  TLS CERT file name within config directory (default '')
+    * @param string  $tls_keyfile   TLS KEY file name within config directory (default '')
+    * @param boolean $use_bind      do we need to do an ldap_bind? (true by default)
     *
     * @return resource link to the LDAP server : false if connection failed
     */
    static function connectToServer($host, $port, $login = "", $password = "",
-                                   $use_tls = false, $deref_options = 0) {
+                                   $use_tls = false, $deref_options = 0,
+                                   $tls_certfile = "", $tls_keyfile = "",
+                                   $use_bind = true) {
 
       $ds = @ldap_connect($host, intval($port));
       if ($ds) {
          @ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
          @ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
          @ldap_set_option($ds, LDAP_OPT_DEREF, $deref_options);
+
+         if (file_exists($tls_certfile)) {
+            @ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile);
+         }
+
+         if ($tls_keyfile) {
+            @ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile);
+         }
+
          if ($use_tls) {
             if (!@ldap_start_tls($ds)) {
                return false;
             }
          }
          // Auth bind
-         if ($login != '') {
-            $b = @ldap_bind($ds, $login, $password);
-         } else { // Anonymous bind
-            $b = @ldap_bind($ds);
+         if ($use_bind) {
+            if ($login != '') {
+               $b = @ldap_bind($ds, $login, $password);
+            } else { // Anonymous bind
+               $b = @ldap_bind($ds);
+            }
+         } else {
+            $b = true;
          }
+
          if ($b) {
             return $ds;
          }
@@ -2675,14 +2716,20 @@ class AuthLDAP extends CommonDBTM {
       $ds = self::connectToServer($ldap_method['host'], $ldap_method['port'],
                                   $ldap_method['rootdn'],
                                   Toolbox::sodiumDecrypt($ldap_method['rootdn_passwd']),
-                                  $ldap_method['use_tls'], $ldap_method['deref_option']);
+                                  $ldap_method['use_tls'], $ldap_method['deref_option'],
+                                  $ldap_method['tls_certfile'] ?? '',
+                                  $ldap_method['tls_keyfile'] ?? '',
+                                  $ldap_method['use_bind']);
 
       // Test with login and password of the user if exists
       if (!$ds
           && !empty($login)) {
          $ds = self::connectToServer($ldap_method['host'], $ldap_method['port'], $login,
                                      $password, $ldap_method['use_tls'],
-                                     $ldap_method['deref_option']);
+                                     $ldap_method['deref_option'],
+                                     $ldap_method['tls_certfile'] ?? '',
+                                     $ldap_method['tls_keyfile'] ?? '',
+                                     $ldap_method['use_bind']);
       }
 
       //If connection is not successful on this directory, try replicates (if replicates exists)
@@ -2692,14 +2739,20 @@ class AuthLDAP extends CommonDBTM {
             $ds = self::connectToServer($replicate["host"], $replicate["port"],
                                         $ldap_method['rootdn'],
                                         Toolbox::sodiumDecrypt($ldap_method['rootdn_passwd']),
-                                        $ldap_method['use_tls'], $ldap_method['deref_option']);
+                                        $ldap_method['use_tls'], $ldap_method['deref_option'],
+                                        $ldap_method['tls_certfile'] ?? '',
+                                        $ldap_method['tls_keyfile'] ?? '',
+                                        $ldap_method['use_bind']);
 
             // Test with login and password of the user
             if (!$ds
                 && !empty($login)) {
                $ds = self::connectToServer($replicate["host"], $replicate["port"], $login,
                                            $password, $ldap_method['use_tls'],
-                                           $ldap_method['deref_option']);
+                                           $ldap_method['deref_option'],
+                                           $ldap_method['tls_certfile'] ?? '',
+                                           $ldap_method['tls_keyfile'] ?? '',
+                                           $ldap_method['use_bind']);
             }
             if ($ds) {
                return $ds;
@@ -3447,7 +3500,10 @@ class AuthLDAP extends CommonDBTM {
                                 $authldap->getField('rootdn'),
                                 Toolbox::sodiumDecrypt($authldap->getField('rootdn_passwd')),
                                 $authldap->getField('use_tls'),
-                                $authldap->getField('deref_option'))) {
+                                $authldap->getField('deref_option'),
+                                $authldap->getField('tls_certfile'),
+                                $authldap->getField('tls_keyfile'),
+                                $authldap->getField('use_bind'))) {
          self::showLdapUsers();
 
       } else {
@@ -3505,6 +3561,8 @@ class AuthLDAP extends CommonDBTM {
       if (isset($input["rootdn_passwd"]) && !empty($input["rootdn_passwd"])) {
          $input["rootdn_passwd"] = Toolbox::sodiumEncrypt($input["rootdn_passwd"]);
       }
+
+      $this->checkFilesExist($input);
 
       return $input;
    }
@@ -3944,5 +4002,32 @@ class AuthLDAP extends CommonDBTM {
       }
 
       return $users;
+   }
+
+   public function checkFilesExist(&$input) {
+
+      if (isset($input['tls_certfile'])) {
+         $file = realpath($input['tls_certfile']);
+         if (!file_exists($file)) {
+            Session::addMessageAfterRedirect(
+               __('TLS certificate path is incorrect'),
+               false,
+               ERROR
+            );
+            return false;
+         }
+      }
+
+      if (isset($input['tls_keyfile'])) {
+         $file = realpath($input['tls_keyfile']);
+         if (!file_exists($file)) {
+            Session::addMessageAfterRedirect(
+               __('TLS key file path is incorrect'),
+               false,
+               ERROR
+            );
+            return false;
+         }
+      }
    }
 }
