@@ -6,6 +6,8 @@
 {% for actor in actors %}
    <option selected="true" value="{{ actor['itemtype'] ~ "_" ~ actor['items_id'] }}"
            data-itemtype="{{ actor['itemtype'] }}" data-items-id="{{ actor['items_id'] }}"
+           data-use-notification="{{ actor['use_notification'] }}"
+           data-alternative-email="{{ actor['alternative_email'] }}"
            data-text="{{ actor['text'] }}" data-title="{{ actor['title'] }}">
       {{ actor['title'] }}
    </option>
@@ -68,7 +70,7 @@ $(function() {
 
       // prepare html for option element
       var text = (is_selection && itemtype == "Group") ? title : text;
-      var option_element = $(`<span class="actor_entry">${indent}${icon}${text}${actions}</span>`);
+      var option_element = $(`<span class="actor_entry" data-itemtype="${itemtype}" data-items-id="${items_id}" data-actortype="${actorytype}" data-text="${text}">${indent}${icon}${text}${actions}</span>`);
 
       // manage ticket information (number of assigned ticket for an actor)
       if (is_selection && itemtype != "Email" && "{{ actortype }}" == "assign") {
@@ -141,10 +143,53 @@ $(function() {
       }
    });
 
+   // manage actors change
+   $("#actor_{{ rand }}").on('select2:select', function (event) {
+      var data = $("#actor_{{ rand }}").select2('data');
+      console.log(data);
+
+      var new_actors = [];
+      data.forEach(function(selection) {
+         var element = $(selection.element);
+
+         new_actors.push({
+            itemtype: selection.itemtype ?? element.data('itemtype'),
+            items_id: selection.items_id ?? element.data('items-id'),
+            use_notification: selection.use_notification ?? element.data('use-notification') ?? false,
+            alternative_email: selection.alternative_email ?? element.data('alternative-email') ?? "",
+         });
+      });
+
+      actors[actorytype] = new_actors;
+   });
+
    // edit email preference when .edit-notify-user button is activated
    function openNotifyModal(event) {
-      alert("TODO openNotifyModal");
       event.stopPropagation();
+
+      var element = $(event.target).closest('.actor_entry');
+      var itemtype  = element.data('itemtype');
+      var items_id  = element.data('items-id');
+      var actortype = element.data('actortype');
+      var text      = element.data('text');
+
+      console.log(itemtype, items_id, actortype);
+      console.log(actors);
+
+      var actorIndex = actors[actorytype].findIndex(element => (element.itemtype == itemtype && element.items_id == items_id));
+      var actor      = actors[actorytype][actorIndex];
+
+      var modal = $('#editActorNotifySettings');
+      console.log(modal.find("input[name=actorname]"));
+      modal.find("input[name=actortype]").val(actortype);
+      modal.find("input[name=actorindex]").val(actorIndex);
+      modal.find("input[name=actorname]").removeAttr('readonly').val(text).attr('readonly', 'true');
+      modal.find("input[name=use_notification]").prop('checked', actor.use_notification);
+      modal.find("input[name=alternative_email]").val(actor.alternative_email);
+
+      console.log(actor)
+
+      editActorNotifySettings_modal.show();
    }
    document.addEventListener('click', event => {
       if (event.target.closest("#actor_{{ rand }} + .select2 .edit-notify-user")) {
