@@ -7,79 +7,28 @@
          {{ setRichTextContent('', entry_i['content'], '', true) }}
       </div>
    {% else %}
-      <div class="itilfollowup">
+      <div class="itildocument">
          <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
                action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true">
             <input type="hidden" name="itemtype" value="{{ item.getType() }}">
             <input type="hidden" name="items_id" value="{{ item.fields['id'] }}">
-            {# TODO reopen #}
 
             <div class="row">
                <div class="col-12 col-md-9">
-                  {{ fields.textareaField(
-                     'content',
-                     subitem.fields['content'],
-                     '',
-                     {
-                        'full_width': true,
-                        'no_label': true,
-                        'enable_richtext': true,
-                        'enable_fileupload': true,
-                        'rand': rand,
-                     }
-                  ) }}
-               </div>
-               <div class="col-12 col-md-3 order-first order-md-last">
-                  <div class="row">
-
-                     {% set fup_template_lbl %}
-                        <i class="fas fa-reply fa-fw me-1"
-                           title="{{ _n('Followup template', 'Followup templates', getPluralNumber) }}"></i>
-                     {% endset %}
-                     {{ fields.dropdownField(
-                        "ITILFollowupTemplate",
-                        "itilfollowuptemplates_id",
-                        subitem.fields['itilfollowuptemplates_id'],
-                        fup_template_lbl,
-                        {
-                           'full_width': true,
-                           'icon_label': true,
-                           'on_change': 'itilfollowuptemplate_update' ~ rand ~ '(this.value)',
-                           'rand': rand,
-                        }
-                     ) }}
-
-                     {% set fup_source_lbl %}
-                        <i class="fas fa-inbox fa-fw me-1" title="{{ __('Source of followup') }}"></i>
-                     {% endset %}
-                     {{ fields.dropdownField(
-                        "RequestType",
-                        "requesttypes_id",
-                        subitem.fields['requesttypes_id'],
-                        fup_source_lbl,
-                        {
-                           'full_width': true,
-                           'icon_label': true,
-                           'is_active': 1,
-                           'is_itilfollowup': 1,
-                           'rand': rand,
-                        }
-                     ) }}
-
-                     {% set fup_private_lbl %}
-                        <i class="fas fa-lock fa-fw me-1" title="{{ __('Private') }}"></i>
-                     {% endset %}
-                     {{ fields.sliderField(
-                        "is_private",
-                        subitem.fields['is_private'],
-                        fup_private_lbl,
-                        {
-                           'full_width': true,
-                           'icon_label': true,
-                           'rand': rand,
-                        }
-                     ) }}
+                  <div>
+                     <ul>
+                        <li>Sample Image.png</li>
+                        <li>Screenshot1.png</li>
+                     </ul>
                   </div>
+                  {{ fields.dropdownArrayField('upload_sources', null, {
+                     'computer': 'Upload from Computer',
+                     'glpi': 'Add Existing',
+                     'screenshot': 'Add Screenshot'
+                  }, '', {
+                     'full_width': true,
+                     'no_label': true
+                  }) }}
                </div>
             </div>
 

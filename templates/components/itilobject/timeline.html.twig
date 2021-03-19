@@ -102,9 +102,19 @@
                   </div>
                   <span class="row mt-2 timeline-content flex-grow-1 {{ item_position }} card">
                      <div class="card-body">
-                        <div class="read-only-content">
-                           {{ setRichTextContent('', entry_i['content'], '', true) }}
-                        </div>
+                        {% if itiltype is same as 'ITILValidation' %}
+                           {% include 'components/itilobject/form_validation.html.twig' with {'form_mode': 'view'} %}
+                        {% elseif itiltype is same as 'ITILTask' %}
+                           {% include 'components/itilobject/form_task.html.twig' with {'form_mode': 'view'} %}
+                        {% elseif itiltype is same as 'ITILFollowup' %}
+                           {% include 'components/itilobject/form_followup.html.twig' with {'form_mode': 'view'} %}
+                        {% elseif itiltype is same as 'ITILSolution' %}
+                           {% include 'components/itilobject/form_solution.html.twig' with {'form_mode': 'view'} %}
+                        {% else %}
+                           <div class="read-only-content">
+                              {{ setRichTextContent('', entry_i['content'], '', true)}}
+                           </div>
+                        {% endif %}
                         <div class="edit-content collapse">
                            <button class="btn btn-sm btn-ghost-secondary float-end close-edit-content">
                               <i class="fas fa-2x fa-times"></i>
