@@ -122,11 +122,13 @@ abstract class CommonITILObject extends CommonDBTM {
          foreach ($this->users[$actortype] as $user) {
             $name = getUserName($user['users_id']);
             $actors[] = [
-               'id'       => $user['id'],
-               'items_id' => $user['users_id'],
-               'itemtype' => 'User',
-               'text'     => $name,
-               'title'    => $name,
+               'id'                => $user['id'],
+               'items_id'          => $user['users_id'],
+               'itemtype'          => 'User',
+               'text'              => $name,
+               'title'             => $name,
+               'use_notification'  => $user['use_notification'],
+               'alternative_email' => $user['alternative_email'],
             ];
          }
       }
@@ -147,11 +149,13 @@ abstract class CommonITILObject extends CommonDBTM {
          foreach ($this->suppliers[$actortype] as $supplier) {
             $name = Dropdown::getDropdownName(Supplier::getTable(), $supplier['suppliers_id']);
             $actors[] = [
-               'id'       => $supplier['id'],
-               'items_id' => $supplier['suppliers_id'],
-               'itemtype' => 'Supplier',
-               'text'     => $name,
-               'title'    => $name,
+               'id'                => $supplier['id'],
+               'items_id'          => $supplier['suppliers_id'],
+               'itemtype'          => 'Supplier',
+               'text'              => $name,
+               'title'             => $name,
+               'use_notification'  => $supplier['use_notification'],
+               'alternative_email' => $supplier['alternative_email'],
             ];
          }
       }
