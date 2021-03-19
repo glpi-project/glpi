@@ -7947,7 +7947,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
             default:
                $field = '';
-               Toolbox::logError('Missing type for Ticket template!');
+               trigger_error('Missing type for Ticket template!', E_USER_WARNING);
                break;
          }
       }
