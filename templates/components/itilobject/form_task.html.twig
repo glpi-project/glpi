@@ -4,11 +4,29 @@
 {% block timeline_card %}
    {% if form_mode == 'view' %}
       {% if entry_i['state'] is constant('Planning::TODO') %}
-         <span class="state state_1" onclick="change_task_state(30, this)" title="To do"></span>
+         <span class="state state_1" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('To do') }}"></span>
+      {% elseif entry_i['state'] is constant('Planning::DONE') %}
+         <span class="state state_2" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('Done') }}"></span>
       {% endif %}
       <div class="read-only-content">
          {{ setRichTextContent('', entry_i['content'], '', true) }}
       </div>
+
+      <script type='text/javascript'>
+         function change_task_state(tasks_id, target) {
+            $.post('{{ path("/ajax/timeline.php") }}',
+               {'action':     'change_task_state',
+                  'tasks_id':   tasks_id,
+                  'parenttype': '{{ item.getType() }}',
+                  '{{ item|get_foreignkey_field }}': {{ item.fields['id'] }}
+               })
+               .done((response) => {
+                  $(target).removeClass('state_1 state_2')
+                     .addClass('state_'+response.state)
+                     .attr('title', response.label);
+               });
+         }
+      </script>
    {% else %}
       <div class="itiltask">
          <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
