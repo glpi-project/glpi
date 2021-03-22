@@ -107,7 +107,7 @@ if (isset($_REQUEST['users_id_assign']) && ($_REQUEST['users_id_assign'] > 0)) {
       }
    } else {
       echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\">(";
-      printf(__('%1$s: %2$s'), __('Processing'),$nb);
+      printf(__('%1$s: %2$s'), __('Processing'), $nb);
       echo ")</a>";
    }
 
