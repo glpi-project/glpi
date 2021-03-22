@@ -32,10 +32,8 @@
                         $('#show_validator_field').load(CFG_GLPI.root_doc + '/ajax/dropdownValidator.php', {
                            id: {{ subitem.fields['id'] }},
                            entity: {{ item.fields['entities_id'] }},
-                           right: "{{ item.getType() is same as 'Ticket' and item.fields['type'] == 2 ?
-                              'validate_request'  : 'validate_incident' }}",
-                           validatortype: "{{ subitem.fields['users_id_validate']['groups_id'] is defined ? 'Group' :
-                            (subitem.fields['users_id_validate'] is not empty ? 'User' : '')}}"
+                           right: "{{ item.getType() is same as 'Ticket' and item.fields['type'] == 2 ? 'validate_request' : 'validate_incident' }}",
+                           validatortype: "{{ subitem.fields['users_id_validate']['groups_id'] is defined ? 'Group' : (subitem.fields['users_id_validate'] is not empty ? 'User' : '') }}"
                         });
                     </script>
                 {% else %}
@@ -44,8 +42,7 @@
                           CFG_GLPI.root_doc + '/ajax/dropdownValidator.php', {
                              id: 0,
                              entity: {{ item.fields['entities_id'] }},
-                             right: "{{ item.getType() is same as 'Ticket' and item.fields['type'] == 2 ?
-                                   'validate_request'  : 'validate_incident' }}",
+                             right: "{{ item.getType() is same as 'Ticket' and item.fields['type'] == 2 ? 'validate_request' : 'validate_incident' }}",
                              validatortype: '__VALUE__',
                              groups_id: 0
                           });
