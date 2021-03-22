@@ -6,7 +6,7 @@
    {% endif %}
 {% endif %}
 
-{% set href = href ~ "&amp;start=%start%" ~ additional_params|url_encode %}
+{% set href = href ~ "&start=%start%" ~ additional_params|url_encode %}
 {% if is_tab is defined and is_tab == true %}
    {% set href = "javascript:reloadTab('start=%start%" ~ additional_params|url_encode ~ "');" %}
 {% endif %}
