@@ -34,10 +34,10 @@ namespace Glpi\Application\View\Extension;
 
 use DbUtils;
 use Toolbox;
-use User;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
+use User;
 
 /**
  * @since x.x.x
@@ -68,7 +68,7 @@ class UserExtension extends AbstractExtension implements ExtensionInterface {
       $user = new User;
       if ($user->getFromDB($users_id)) {
          return strtoupper(
-            substr($user->fields['firstname'],0, 1).
+            substr($user->fields['firstname'], 0, 1).
             substr($user->fields['realname'], 0, 1)
          );
       }

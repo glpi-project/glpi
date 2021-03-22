@@ -7431,7 +7431,7 @@ CSS;
       $diff = time() - $ts;
       if ($diff == 0) {
          return __('Now');
-      } elseif ($diff > 0) {
+      } else if ($diff > 0) {
          $day_diff = floor($diff / 86400);
          if ($day_diff == 0) {
             if ($diff < 60) {

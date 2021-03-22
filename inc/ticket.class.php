@@ -30,7 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Api\Deprecated\TicketFollowup;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 use Glpi\Toolbox\RichText;

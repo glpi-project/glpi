@@ -1302,7 +1302,7 @@ function showErrorMessage(message) {
  * @param {Array<string>} force_load_for
  */
 function updateItemOnEvent(dropdown_ids, target, url, params = {}, events = ['change'],
-   min_size = -1, buffer_time = -1, force_load_for = []) {
+   min_size = -1, buffer_time = -1, force_load_for = []) { // eslint-disable-line
 
    if (!Array.isArray(dropdown_ids)) {
       dropdown_ids = [dropdown_ids];
