@@ -2452,9 +2452,11 @@ class Html {
             );
          }
          if ($p['display_arrow']) {
-            $out .= "<i class='fas fa-level-".($p['ontop']?'down':'up')."-alt fa-flip-horizontal fa-lg mx-2'></i>";
+            $out .= "<i class='fas fa-level-".($p['ontop']?'down':'up')."-alt fa-flip-horizontal fa-lg ms-2 me-1 mt-2'></i>";
          }
-         $out .= "<a class='btn btn-sm btn-secondary me-2' ";
+         $out .= "<a title='".__('Massive actions')."'
+                     data-bs-toggle='tooltip' data-bs-placement='top'
+                     class='btn btn-sm btn-outline-secondary me-2' ";
          if (is_array($p['confirm'] || strlen($p['confirm']))) {
             $out .= self::addConfirmationOnAction($p['confirm'], "modal_massiveaction_window$identifier.show();");
          } else {
