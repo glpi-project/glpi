@@ -141,13 +141,13 @@
             : parseInt(data.requesttypes_id);
 
          // set textarea content
-         if (tasktinymce = tinymce.get("content_{{rand}}")) {
+         if (tasktinymce = tinymce.get("content_{{ rand }}")) {
             tasktinymce.setContent(data.content);
          }
          // set category
-         $("#dropdown_requesttypes_id{{rand}}").trigger("setValue", requesttypes_id);
+         $("#dropdown_requesttypes_id{{ rand }}").trigger("setValue", requesttypes_id);
          // set is_private
-         $("#is_private_{{rand}}")
+         $("#is_private_{{ rand }}")
             .prop("checked", data.is_private == "0"
                ? false
                : true);

@@ -50,7 +50,7 @@
                {% if candedit %}
                   {% if can_read_kb %}
                      {% set search_solution_button %}
-                     <a href="{{ path("/front/knowbaseitem.php?item_itemtype=" ~  item.getType() ~ "&item_items_id=" ~ item.getID() ~ "&forcetab=Knowbase$1") }}"
+                     <a href="{{ path("/front/knowbaseitem.php?item_itemtype=" ~ item.getType() ~ "&item_items_id=" ~ item.getID() ~ "&forcetab=Knowbase$1") }}"
                         class="btn btn-secondary overflow-hidden text-nowrap" type="submit"
                         title="{{ __('Search a solution') }}">
                         <i class="fas fa-search"></i>
@@ -165,7 +165,7 @@ function solutiontemplate_update{{ rand }}(value) {
       }
    }).done(function(data) {
       // set textarea content
-      if (tasktinymce = tinymce.get("content_{{rand}}")) {
+      if (tasktinymce = tinymce.get("content_{{ rand }}")) {
          tasktinymce.setContent(data.content);
       }
 
@@ -173,7 +173,7 @@ function solutiontemplate_update{{ rand }}(value) {
       var solutiontypes_id = isNaN(parseInt(data.solutiontypes_id))
          ? 0
          : parseInt(data.solutiontypes_id);
-      $("#dropdown_solutiontypes_id{{rand}}").trigger("setValue", solutiontypes_id);
+      $("#dropdown_solutiontypes_id{{ rand }}").trigger("setValue", solutiontypes_id);
    });
 }
 </script>

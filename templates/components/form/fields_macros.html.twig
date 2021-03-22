@@ -69,7 +69,7 @@
                 {{ options.readonly ? 'readonly' : "" }}
                 {{ options.disabled ? 'disabled' : "" }}>
          {% if options.label2 %}
-            <span class="form-check-label">{{options.label2}}</span>
+            <span class="form-check-label">{{ options.label2 }}</span>
          {% endif %}
       </label>
    {% endset %}
@@ -116,8 +116,7 @@
    {% endif %}
    {% if options.enable_fileupload %}
       {% set add_html %}
-         {{ Html__file({
-         }) }}
+         {{ Html__file({}) }}
       {% endset %}
 
       {% set options = options|merge({'add_field_html': add_html}) %}
