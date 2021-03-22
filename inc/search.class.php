@@ -2200,7 +2200,9 @@ class Search {
             }
 
             if ($p['showreset']) {
-               echo "<a class='btn btn-ghost-secondary btn-icon btn-sm me-1' href='"
+               echo "<a class='btn btn-ghost-secondary btn-icon btn-sm me-1'
+                        data-bs-toggle='tooltip' data-bs-placement='bottom'
+                        href='"
                   .$p['target']
                   .(strpos($p['target'], '?') ? '&amp;' : '?')
                   ."reset=reset' title=\"".__s('Blank')."\"
@@ -2209,6 +2211,7 @@ class Search {
 
             if ($p['showfolding']) {
                echo "<a class='btn btn-ghost-secondary btn-icon btn-sm fold-search'
+                        data-bs-toggle='tooltip' data-bs-placement='bottom'
                         href='#'
                         title=\"".__("Fold search")."\"><i class='fas fa-lg fa-angle-double-up'></i></a>";
             }
@@ -2415,9 +2418,10 @@ JAVASCRIPT;
             ]);
          }
          echo "<div class='col-auto'>";
-         echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' type='button' data-rowid='$rowid'>
-            <i class='far fa-minus-square' alt='-' title=\"".
-                  __s('Delete a rule')."\"></i>
+         echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' type='button' data-rowid='$rowid'
+                       data-bs-toggle='tooltip' data-bs-placement='left'
+                       title=\"".__s('Delete a rule')."\">
+            <i class='far fa-minus-square' alt='-'></i>
          </button>";
          echo "</div>";
       }
@@ -2658,8 +2662,11 @@ JAVASCRIPT;
       echo "<div class='list-group-item p-2 border-0 normalcriteria$addclass' id='$rowid'>";
       echo "<div class='row g-1'>";
       echo "<div class='col-auto'>";
-      echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' type='button' data-rowid='$rowid'>
-         <i class='far fa-minus-square' alt='-' title=\"".__s('Delete a rule')."\"></i>
+      echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' type='button' data-rowid='$rowid'
+                    data-bs-toggle='tooltip' data-bs-placement='left'
+                    title=\"".__s('Delete a rule')."\"
+      >
+         <i class='far fa-minus-square' alt='-'></i>
       </button>";
       echo "</div>";
       echo "<div class='col-auto'>";
