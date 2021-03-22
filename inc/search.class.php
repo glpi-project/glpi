@@ -6503,12 +6503,15 @@ JAVASCRIPT;
                   ];
                }
 
-               $out = "{$progressbar_data['text']}<div class='center' style='background-color: #ffffff; width: 100%;
-                        border: 1px solid #9BA563; position: relative;' >";
-               $out .= "<div style='position:absolute;'>&nbsp;{$progressbar_data['percent_text']}%</div>";
-               $out .= "<div class='center' style='background-color: {$progressbar_data['color']};
-                        width: {$progressbar_data['percent']}%; height: 12px' ></div>";
-               $out .= "</div>";
+               $out = "";
+               if ($progressbar_data['percent'] != null) {
+                  $out = "{$progressbar_data['text']}<div class='center' style='background-color: #ffffff; width: 100%;
+                           border: 1px solid #9BA563; position: relative;' >";
+                  $out .= "<div style='position:absolute;'>&nbsp;{$progressbar_data['percent_text']}%</div>";
+                  $out .= "<div class='center' style='background-color: {$progressbar_data['color']};
+                           width: {$progressbar_data['percent']}%; height: 12px' ></div>";
+                  $out .= "</div>";
+               }
 
                return $out;
                break;
