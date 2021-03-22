@@ -1255,10 +1255,11 @@ function getFlatPickerLocale(language, region) {
  * @param {{}} params
  * @param {Array<string>} events
  * @param {number} min_size
+ * @param {number} buffer_time
  * @param {Array<string>} force_load_for
  */
 function updateItemOnEvent(dropdown_ids, target, url, params = {}, events = ['change'],
-   min_size = -1, force_load_for = []) {
+   min_size = -1, buffer_time = -1, force_load_for = []) {
 
    if (!Array.isArray(dropdown_ids)) {
       dropdown_ids = [dropdown_ids];
