@@ -2,8 +2,8 @@
 
 {% set actortypes = {
    'requester': constant('CommonITILActor::REQUESTER'),
-   'observer':  constant('CommonITILActor::OBSERVER'),
-   'assign':    constant('CommonITILActor::ASSIGN')
+   'observer': constant('CommonITILActor::OBSERVER'),
+   'assign': constant('CommonITILActor::ASSIGN')
 } %}
 
 {# TODO check allow_email params #}
@@ -11,10 +11,10 @@
 
 {% set requester_field %}
    {% include "components/itilobject/actor_field.html.twig" with {
-      'item':         item,
+      'item': item,
       'actortypeint': constant('CommonITILActor::REQUESTER'),
-      'actortype':    'requester',
-      'entities_id':   params['entities_id'],
+      'actortype': 'requester',
+      'entities_id': params['entities_id'],
    } only %}
 {% endset %}
 {{ fields.field(
@@ -26,10 +26,10 @@
 
 {% set observer_field %}
    {% include "components/itilobject/actor_field.html.twig" with {
-      'item':         item,
+      'item': item,
       'actortypeint': constant('CommonITILActor::OBSERVER'),
-      'actortype':    'observer',
-      'entities_id':   params['entities_id']
+      'actortype': 'observer',
+      'entities_id': params['entities_id']
    } only %}
 {% endset %}
 {{ fields.field(
@@ -41,10 +41,10 @@
 
 {% set assign_field %}
    {% include "components/itilobject/actor_field.html.twig" with {
-      'item':         item,
+      'item': item,
       'actortypeint': constant('CommonITILActor::ASSIGN'),
-      'actortype':    'assign',
-      'entities_id':   params['entities_id']
+      'actortype': 'assign',
+      'entities_id': params['entities_id']
    } only %}
 {% endset %}
 {{ fields.field(
