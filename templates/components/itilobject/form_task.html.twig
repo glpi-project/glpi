@@ -132,10 +132,40 @@
                      }) }}
 
                      {# User #}
-                     {# TODO Use actor field? #}
+                     {% set task_user_lbl %}
+                        <i class="fas fa-user fa-fw me-1" title="{{ __('User') }}"></i>
+                     {% endset %}
+                     {{ fields.dropdownField(
+                        "User",
+                        "users_id_tech",
+                        subitem.fields['users_id_tech']|default(session('glpiID')),
+                        task_user_lbl,
+                        {
+                           'full_width': true,
+                           'icon_label': true,
+                           'entity': item.fields['entities_id'],
+                           'right': 'own_ticket',
+                           'rand': rand,
+                        }
+                     ) }}
 
                      {# Group #}
-                     {# TODO Use actor field? #}
+                     {% set task_group_lbl %}
+                        <i class="fas fa-users fa-fw me-1" title="{{ __('Group') }}"></i>
+                     {% endset %}
+                     {{ fields.dropdownField(
+                        "Group",
+                        "groups_id_tech",
+                        subitem.fields['groups_id_tech'],
+                        task_group_lbl,
+                        {
+                           'full_width': true,
+                           'icon_label': true,
+                           'entity': item.fields['entities_id'],
+                           'condition': {'is_task': 1},
+                           'rand': rand,
+                        }
+                     ) }}
 
                   </div>
                </div>
