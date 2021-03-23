@@ -131,7 +131,7 @@ if (isset($_POST["add"])) {
                  //TRANS: %s is the user login
                  sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    }
-   $track->redirectToList();
+   Html::back();
 
 } else if (isset($_POST['sla_delete'])) {
    $track->check($_POST["id"], UPDATE);
