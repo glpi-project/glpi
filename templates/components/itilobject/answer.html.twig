@@ -2,7 +2,7 @@
 
 <div id="new-itilobject-form">
    {% for timeline_itemtype in timeline_itemtypes %}
-      <div class="timeline-item mb-3 ms-auto {{ timeline_itemtype.class }} collapse"
+      <div class="timeline-item mb-3 ms-auto {{ timeline_itemtype.type }} collapse"
         id="new-{{ timeline_itemtype.class }}-block" aria-expanded="false" data-bs-parent="#new-itilobject-form">
          <div class="row">
             <div class="col-auto order-last d-none d-md-block">

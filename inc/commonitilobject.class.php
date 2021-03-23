@@ -6591,7 +6591,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
       //check sub-items rights
       $tmp = [$foreign_key => $this->getID()];
-      $fup_class = "ITILFollowup";
       $fup = new ITILFollowup();
       $fup->getEmpty();
       $fup->fields['itemtype'] = $obj_type;
@@ -6620,6 +6619,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($canadd_fup) {
          $itemtypes['answer'] = [
+            'type'      => 'ITILFollowup',
             'class'     => 'ITILFollowup',
             'icon'      => 'far fa-comment',
             'label'     => _x('button', 'Answer'),
@@ -6629,7 +6629,8 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       if ($canadd_task) {
          $itemtypes['task'] = [
-            'class'     => 'CommonITILTask',
+            'type'      => 'ITILTask',
+            'class'     => $task_class,
             'icon'      => 'fas fa-wrench',
             'label'     => _x('button', 'Create a task'),
             'template'  => 'components/itilobject/form_task.html.twig',
@@ -6638,7 +6639,8 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       if ($canadd_solution) {
          $itemtypes['solution'] = [
-            'class'     => ITILSolution::class,
+            'type'      => 'ITILSolution',
+            'class'     => 'ITILSolution',
             'icon'      => 'fas fa-check',
             'label'     => _x('button', 'Add a solution'),
             'template'  => 'components/itilobject/form_solution.html.twig',
@@ -6647,6 +6649,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       if ($canadd_validation) {
          $itemtypes['validation'] = [
+            'type'      => 'ITILValidation',
             'class'     => $validation_class,
             'icon'      => 'far fa-thumbs-up',
             'label'     => _x('button', 'Ask for validation'),
