@@ -657,7 +657,7 @@ class Search {
          }
 
          if ($data['itemtype'] == 'Entity') {
-            $COMMONWHERE .= getEntitiesRestrictRequest($LINK, $itemtable, 'id', '', true);
+            $COMMONWHERE .= getEntitiesRestrictRequest($LINK, $itemtable);
 
          } else if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
             // Will be replace below in Union/Recursivity Hack
