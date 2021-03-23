@@ -1,4 +1,4 @@
-{% set users_id = item.fields['users_id_recipient'] %}
+{% set users_id = (item.fields['users_id_recipient'] > 0 ? item.fields['users_id_recipient'] : 0) %}
 
 <div class="timeline-item mb-4 ITILContent"
      data-itemtype="{{ item.getType() }}" data-items-id="{{ item.fields['id'] }}">
