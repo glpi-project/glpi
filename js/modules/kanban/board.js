@@ -236,7 +236,7 @@ export default class KanbanBoard {
          return;
       }
       this.applyFilters();
-      this.loadState(() => {
+      this.loadState().then((state) => {
          $(this.element).get(0).dispatchEvent(new CustomEvent('kanban:pre_build'));
          this.build();
          $(document).ready(() => {
@@ -254,6 +254,7 @@ export default class KanbanBoard {
                   switcher.replaceWith(data);
                }
             });
+            this.applyState(state);
             this.registerEventListeners();
             if (this.config.background_refresh_interval > 0) {
                // Wait a short time and then start the background refresh loop
@@ -404,8 +405,8 @@ export default class KanbanBoard {
     * This restores the visible columns and their collapsed state.
     * @since 9.5.0
     */
-   loadState(callback) {
-      $.ajax({
+   loadState() {
+      return $.ajax({
          type: "GET",
          url: (this.ajax_root + "kanban.php"),
          data: {
@@ -415,34 +416,29 @@ export default class KanbanBoard {
             last_load: this.last_refresh
          },
          contentType: 'application/json'
-      }).done((state) => {
-         if (state['state'] === undefined || state['state'] === null || Object.keys(state['state']).length === 0) {
-            if (callback) {
-               callback(false);
-            }
-            return;
-         }
-
-         const indices = Object.keys(state['state']);
-         for (let i = 0; i < indices.length; i++) {
-            const index = indices[i];
-            const entry = state['state'][index];
-            const element = $('#column-' + this.config.column_field.id + "-" + entry.column);
-            if (this.columns[entry.column] === undefined) {
-               this.loadColumn(entry.column, true, false);
-            }
-            //$(this.element + ' .kanban-columns .kanban-column:nth-child(' + index + ')').after(element);
-            if (entry.folded === true && !this.columns[entry.column].collapsed) {
-               this.columns[entry.column].toggleCollapse();
-            }
-         }
-         this.last_refresh = state['timestamp'];
-
-         $(this.element).get(0).dispatchEvent(new CustomEvent('kanban:post_load_state'));
-         if (callback) {
-            callback(true);
-         }
       });
+   }
+
+   applyState(state) {
+      if (state['state'] === undefined || state['state'] === null || Object.keys(state['state']).length === 0) {
+         return;
+      }
+
+      const indices = Object.keys(state['state']);
+      for (let i = 0; i < indices.length; i++) {
+         const index = indices[i];
+         const entry = state['state'][index];
+
+         if (this.columns[entry.column] === undefined) {
+            this.loadColumn(entry.column, true, false);
+         }
+         $(this.element + ' .kanban-columns .kanban-column:nth-child(' + index + ')').after($(this.columns[entry.column].getElement()));
+
+         if (entry.folded === true && !this.columns[entry.column].collapsed) {
+            this.columns[entry.column].toggleCollapse();
+         }
+      }
+      this.last_refresh = state['timestamp'];
    }
 
    /**
@@ -563,7 +559,6 @@ export default class KanbanBoard {
          this.buildToolbar();
       }
       const kanban_container = $("<div class='kanban-container'><div class='kanban-columns'></div></div>").appendTo($(this.element));
-
       // Dropdown for single additions
       let add_itemtype_dropdown = "<ul id='kanban-add-dropdown' class='kanban-dropdown' style='display: none'>";
       Object.keys(this.config.supported_itemtypes).forEach((itemtype) => {
@@ -656,11 +651,11 @@ export default class KanbanBoard {
       });
    }
 
-   preserveNewItemForms() {
+   preserveColumnForms() {
       this.temp_forms = {};
       let columns = $(this.element + " .kanban-column");
       $.each(columns, (i, column) => {
-         let forms = $(column).find('.kanban-add-form');
+         let forms = $(column).find('.kanban-form');
          if (forms.length > 0) {
             this.temp_forms[column.id] = [];
             $.each(forms, (i2, form) => {
@@ -670,7 +665,7 @@ export default class KanbanBoard {
       });
    }
 
-   restoreNewItemForms() {
+   restoreColumnForms() {
       if (this.temp_forms !== undefined && Object.keys(this.temp_forms).length > 0) {
          $.each(this.temp_forms, (column_id, forms) => {
             let column = $('#' + column_id);
@@ -721,7 +716,7 @@ export default class KanbanBoard {
     */
    clearColumns() {
       this.preserveScrolls();
-      this.preserveNewItemForms();
+      this.preserveColumnForms();
       $(this.element + " .kanban-column").remove();
       this._columns = {};
       this.columns = {};
@@ -747,7 +742,7 @@ export default class KanbanBoard {
             }
          }
       });
-      this.restoreNewItemForms();
+      this.restoreColumnForms();
       this.restoreScrolls();
    }
 
@@ -961,11 +956,12 @@ export default class KanbanBoard {
          const dropdown = selection.parent();
          // Get the button that triggered the dropdown and then get the column that it is a part of
          // This is because the dropdown exists outside all columns and is not recreated each time it is opened
-         const column = $($(dropdown.data('trigger-button')).closest('.kanban-column'));
+         const column_el = $($(dropdown.data('trigger-button')).closest('.kanban-column'));
          // kanban-add-ITEMTYPE (We want the ITEMTYPE token at position 2)
          const itemtype = selection.prop('id').split('-')[2];
-         this.clearAddItemForms(column);
-         this.showAddItemForm(column, itemtype);
+         const column = this.columns[KanbanColumn.getIDFromElement(column_el)];
+         column.clearForms();
+         this.showAddItemForm(column_el, itemtype);
          this.delayRefresh(this);
       });
       $('#kanban-bulk-add-dropdown li').on('click', (e) => {
@@ -975,15 +971,16 @@ export default class KanbanBoard {
          const dropdown = selection.closest('.kanban-dropdown');
          // Get the button that triggered the dropdown and then get the column that it is a part of
          // This is because the dropdown exists outside all columns and is not recreated each time it is opened
-         const column = $($(dropdown.data('trigger-button')).closest('.kanban-column'));
+         const column_el = $($(dropdown.data('trigger-button')).closest('.kanban-column'));
          // kanban-bulk-add-ITEMTYPE (We want the ITEMTYPE token at position 3)
          const itemtype = selection.prop('id').split('-')[3];
 
          // Force-close the full dropdown
          dropdown.css({'display': 'none'});
 
-         this.clearAddItemForms(column);
-         this.showBulkAddItemForm(column, itemtype);
+         const column = this.columns[KanbanColumn.getIDFromElement(column_el)];
+         column.clearForms();
+         this.showBulkAddItemForm(column_el, itemtype);
          this.delayRefresh(this);
       });
       const switcher = $("select[name='kanban-board-switcher']").first();
@@ -1061,6 +1058,8 @@ export default class KanbanBoard {
          }
          $('#kanban-dialog').load((this.ajax_root + "kanban.php?action=show_card_edit_form&itemtype="+itemtype+"&card=" + items_id)).dialog("open");
       });
+
+      //$(this.element).on('kanban:post_build', () => {this.loadState();});
    }
 
    /**
@@ -1076,7 +1075,7 @@ export default class KanbanBoard {
       });
       const column_dialog = $(this.add_column_form);
       const toolbar = $(this.element + ' .kanban-toolbar');
-      KanbanColumn.getAvailableColumns(this).done((data) => {
+      KanbanColumn.getAvailableColumns(this).then((data) => {
          const form_content = $(this.add_column_form + " .kanban-item-content");
          form_content.empty();
          form_content.append("<input type='text' name='column-name-filter' placeholder='" + __('Search') + "'/>");
@@ -1177,8 +1176,8 @@ export default class KanbanBoard {
 
       if (this.rights.canModifyView()) {
          // Enable column sorting
-         $(self.element + ' .kanban-columns').sortable({
-            connectWith: self.element + ' .kanban-columns',
+         $(this.element + ' .kanban-columns').sortable({
+            connectWith: this.element + ' .kanban-columns',
             appendTo: '.kanban-container',
             items: '.kanban-column:not(.kanban-protected)',
             placeholder: "sortable-placeholder",
@@ -1186,10 +1185,10 @@ export default class KanbanBoard {
             tolerance: 'pointer',
             stop: (event, ui) => {
                const column = $(ui.item[0]);
-               this.updateColumnPosition(getColumnIDFromElement(ui.item[0]), column.index());
+               this.updateColumnPosition(KanbanColumn.getIDFromElement(ui.item[0]), column.index());
             }
          });
-         $(self.element + ' .kanban-columns .kanban-column:not(.kanban-protected) .kanban-column-header').addClass('grab');
+         $(this.element + ' .kanban-columns .kanban-column:not(.kanban-protected) .kanban-column-header').addClass('grab');
       }
    }
 
@@ -1231,8 +1230,10 @@ export default class KanbanBoard {
                   pos = card.index();
                }
                // Update counters. Always pass the column element instead of the kanban body (card container)
-               this.getColumn($(source).closest('.kanban-column').attr('id')).updateCounter();
-               this.getColumn($(target).closest('.kanban-column').attr('id')).updateCounter();
+               const source_col = $(source).closest('.kanban-column');
+               const target_col = $(target).closest('.kanban-column');
+               this.columns[KanbanColumn.getIDFromElement(source_col)].updateCounter();
+               this.columns[KanbanColumn.getIDFromElement(target_col)].updateCounter();
                card.removeData('source-col');
                this.updateCardPosition(card.attr('id'), target.id, pos);
                return true;
@@ -1253,31 +1254,21 @@ export default class KanbanBoard {
     * @param {function} error Callback function called when the server reports an error.
     * @param {function} success Callback function called when the server processes the request successfully.
     */
-   updateCardPosition(card, column, position, error, success) {
+   updateCardPosition(card, column, position) {
       if (typeof column === 'string' && column.lastIndexOf('column', 0) === 0) {
          column = KanbanColumn.getIDFromElement(column);
       }
-      $.ajax({
+      return $.ajax({
          type: "POST",
-         url: (self.ajax_root + "kanban.php"),
+         url: (this.ajax_root + "kanban.php"),
          data: {
             action: "move_item",
             card: card,
             column: column,
             position: position,
-            kanban: self.item
+            kanban: this.item
          },
-         contentType: 'application/json',
-         error: function() {
-            if (error) {
-               error();
-            }
-         },
-         success: function() {
-            if (success) {
-               success();
-            }
-         }
+         contentType: 'application/json'
       });
    }
 
@@ -1312,66 +1303,54 @@ export default class KanbanBoard {
     * @see generateUserBadge()
     **/
    preloadBadgeCache(options) {
-      let users = [];
-      $.each(this.columns, (column_id, column) => {
-         if (column.cards !== undefined) {
-            $.each(column.cards, (card_id, card) => {
-               if (card.team !== undefined) {
-                  Object.values(card.team).slice(0, this.config.max_team_images).forEach((teammember) => {
-                     if (teammember['itemtype'] === 'User') {
-                        if (this.teamwork.team_badge_cache['User'][teammember['items_id']] === undefined) {
-                           users[teammember['items_id']] = teammember;
-                        }
-                     }
-                  });
-               }
-            });
-         }
-      });
-      if (users.length === 0) {
-         return;
-      }
-      $.ajax({
-         url: (this.ajax_root + "getUserPicture.php"),
-         async: false,
-         data: {
-            users_id: Object.keys(users),
-            size: this.config.team_image_size
-         },
-         contentType: 'application/json',
-         dataType: 'json'
-      }).done((data) => {
-         Object.keys(users).forEach((user_id) => {
-            const teammember = users[user_id];
-            if (data[user_id] !== undefined) {
-               this.teamwork.team_badge_cache['User'][user_id] = "<span>" + data[user_id] + "</span>";
-            } else {
-               this.teamwork.team_badge_cache['User'][user_id] = this.teamwork.generateUserBadge(teammember);
-            }
-         });
-         if (options !== undefined && options['trim_cache'] !== undefined) {
-            let cached_colors = JSON.parse(window.sessionStorage.getItem('badge_colors'));
-            Object.keys(this.teamwork.team_badge_cache['User']).forEach((user_id) => {
-               if (users[user_id] === undefined) {
-                  delete this.teamwork.team_badge_cache['User'][user_id];
-                  delete cached_colors['User'][user_id];
-               }
-            });
-            window.sessionStorage.setItem('badge_colors', JSON.stringify(cached_colors));
-         }
-      });
-   }
-
-   /**
-    * Remove all add item forms from the specified column.
-    * @since 9.5.0
-    * @param {string|Element|jQuery} column_el The column
-    */
-   clearAddItemForms(column_el) {
-      if (!(column_el instanceof jQuery)) {
-         column_el = $(column_el);
-      }
-      column_el.find('form').remove();
+      // let users = [];
+      // $.each(this.columns, (column_id, column) => {
+      //    if (column.cards !== undefined) {
+      //       $.each(column.cards, (card_id, card) => {
+      //          if (card.team !== undefined) {
+      //             Object.values(card.team).slice(0, this.config.max_team_images).forEach((teammember) => {
+      //                if (teammember['itemtype'] === 'User') {
+      //                   if (this.teamwork.team_badge_cache['User'][teammember['items_id']] === undefined) {
+      //                      users[teammember['items_id']] = teammember;
+      //                   }
+      //                }
+      //             });
+      //          }
+      //       });
+      //    }
+      // });
+      // if (users.length === 0) {
+      //    return;
+      // }
+      // $.ajax({
+      //    url: (this.ajax_root + "getUserPicture.php"),
+      //    async: false,
+      //    data: {
+      //       users_id: Object.keys(users),
+      //       size: this.config.team_image_size
+      //    },
+      //    contentType: 'application/json',
+      //    dataType: 'json'
+      // }).done((data) => {
+      //    Object.keys(users).forEach((user_id) => {
+      //       const teammember = users[user_id];
+      //       if (data[user_id] !== undefined) {
+      //          this.teamwork.team_badge_cache['User'][user_id] = "<span>" + data[user_id] + "</span>";
+      //       } else {
+      //          this.teamwork.team_badge_cache['User'][user_id] = this.teamwork.generateUserBadge(teammember);
+      //       }
+      //    });
+      //    if (options !== undefined && options['trim_cache'] !== undefined) {
+      //       let cached_colors = JSON.parse(window.sessionStorage.getItem('badge_colors'));
+      //       Object.keys(this.teamwork.team_badge_cache['User']).forEach((user_id) => {
+      //          if (users[user_id] === undefined) {
+      //             delete this.teamwork.team_badge_cache['User'][user_id];
+      //             delete cached_colors['User'][user_id];
+      //          }
+      //       });
+      //       window.sessionStorage.setItem('badge_colors', JSON.stringify(cached_colors));
+      //    }
+      // });
    }
 
    /**

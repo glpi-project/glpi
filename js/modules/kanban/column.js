@@ -166,6 +166,7 @@ export default class KanbanColumn {
     * Get a column from the server by ID
     * @param {KanbanBoard} board
     * @param column_id
+    * @return {KanbanColumn}
     */
    static getColumn(board, column_id) {
       let received_column = null;
@@ -407,5 +408,13 @@ export default class KanbanColumn {
       // Get all visible kanban items. This ensures the count is correct when items are filtered out.
       const items = column_body.find('li:not(.filtered-out)');
       counter.text(items.length);
+   }
+
+   /**
+    * Remove all forms from this column.
+    * @since x.x.x
+    */
+   clearForms() {
+      $(this.getElement()).find('form.kanban-form').remove();
    }
 }

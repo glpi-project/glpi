@@ -34,7 +34,7 @@
  * @since x.x.x
  */
 export default class KanbanRights {
-   constructor(rights) {
+   constructor(rights = {}) {
       /**
        * If true, then a button will be added to each column to allow new items to be added.
        * When an item is added, a request is made via AJAX to create the item in the DB.
