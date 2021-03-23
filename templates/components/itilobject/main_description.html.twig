@@ -45,7 +45,7 @@
                   <div class="card-title card-header mx-n3 mt-n3">
                      {{ item.fields['name'] }}
                   </div>
-                  {{ setRichTextContent('', item.fields['content'], '', true) }}
+                  {{ getHtmlToDisplay(item.fields['content']) }}
                </div>
                <div class="edit-content collapse">
                   <button class="btn btn-sm btn-ghost-secondary float-end close-edit-content">
