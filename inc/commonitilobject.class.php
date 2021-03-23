@@ -6636,15 +6636,6 @@ abstract class CommonITILObject extends CommonDBTM {
             'item'      => $task
          ];
       }
-//      if ($canadd_document) {
-//         $itemtypes['document'] = [
-//            'class'     => 'Document',
-//            'icon'      => 'fa fa-paperclip',
-//            'label'     => _x('button', 'Add a document'),
-//            'template'  => 'components/itilobject/form_document.html.twig',
-//            'item'      => new Document()
-//         ];
-//      }
       if ($canadd_solution) {
          $itemtypes['solution'] = [
             'class'     => ITILSolution::class,
