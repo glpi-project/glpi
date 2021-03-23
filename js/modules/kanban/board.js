@@ -51,6 +51,11 @@ export default class KanbanBoard {
       this.element = params['element'] || '';
 
       /**
+       * @type {boolean}
+       */
+      this.initialized = false;
+
+      /**
        * The AJAX directory.
        * @since 9.5.0
        * @type {string}
@@ -263,6 +268,7 @@ export default class KanbanBoard {
             $(this.element).get(0).dispatchEvent(new CustomEvent('kanban:post_build'));
          });
       });
+      this.initialized = true;
    }
 
    /**
@@ -634,7 +640,7 @@ export default class KanbanBoard {
    }
 
    buildToolbar() {
-      let toolbar = $("<div class='kanban-toolbar'></div>").appendTo(this.element);
+      let toolbar = $("<div class='kanban-toolbar'></div>").appendTo($(this.element));
       $("<select name='kanban-board-switcher'></select>").appendTo(toolbar);
       let filter_input = $("<input name='filter' type='text' placeholder='" + __('Search or filter results') + "'/>").appendTo(toolbar);
       if (this.rights.canModifyView()) {

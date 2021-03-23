@@ -30,6 +30,7 @@
  */
 
 import {TeamMember, TeamMemberBadgeFactory} from "../teamwork.js";
+import KanbanColumn from "./column";
 
 /**
  * Kanban Card
@@ -97,7 +98,8 @@ export default class KanbanCard {
     * @returns {KanbanColumn}
     */
    getColumn() {
-
+      const column_el = $('#'+this.id).closest('.kanban-column');
+      return this.board.columns[KanbanColumn.getIDFromElement(column_el)];
    }
 
    /**
@@ -127,7 +129,7 @@ export default class KanbanCard {
             card_el += team_member.getBadge();
          });
          if (this.team.length > self.max_team_images) {
-            card_el += TeamMemberBadgeFactory.generateOverflowBadge(team_count - self.max_team_images);
+            card_el += TeamMemberBadgeFactory.generateOverflowBadge(team_count - self.max_team_images, this.board.teamwork);
          }
       }
       card_el += "</div></li>";

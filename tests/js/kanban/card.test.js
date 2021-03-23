@@ -2,6 +2,7 @@ import KanbanColumn from "../../../js/modules/kanban/column.js";
 import KanbanCard from "../../../js/modules/kanban/card.js";
 
 describe('Kanban card', () => {
+
    const column0 = new KanbanColumn({
       id: 10,
       board: window.KanbanTestEnv.TestKanban,
@@ -11,6 +12,8 @@ describe('Kanban card', () => {
       folded: true,
       cards: []
    });
+   window.KanbanTestEnv.TestKanban.columns[10] = column0;
+   column0.createElement();
 
    const card0 = new KanbanCard(column0, {
       id: 'Project-10',
@@ -64,4 +67,8 @@ describe('Kanban card', () => {
       expect(card1.is_deleted).toBe(false);
       expect(card1.form_link).toBe('http://localhost/front/project.form.php?id=11');
    });
+
+   // test('getColumn', () => {
+   //    expect(card0.getColumn()).toStrictEqual(column0);
+   // });
 });

@@ -1,4 +1,5 @@
 describe('Kanban board', () => {
+
    test('Kanban board initial properties', () => {
       // Test board property initialization
       expect(window.KanbanTestEnv.TestKanban.element).toBe('#kanban');
@@ -31,5 +32,12 @@ describe('Kanban board', () => {
       expect(rights.getAllowedColumnsForNewCards()).toStrictEqual([]);
    });
 
+   // We are going to use the DOM now, so the Kanban needs initialized
    window.KanbanTestEnv.TestKanban.init();
+
+   test('Kanban element', () => {
+      const kanban_el = $(window.KanbanTestEnv.TestKanban.element);
+      expect(kanban_el.length).toBe(1);
+      expect(kanban_el.find('.kanban-container').length).toBe(1);
+   });
 });
