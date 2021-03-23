@@ -146,7 +146,6 @@ $(function() {
    // manage actors change
    $("#actor_{{ rand }}").on('select2:select', function (event) {
       var data = $("#actor_{{ rand }}").select2('data');
-      console.log(data);
 
       var new_actors = [];
       data.forEach(function(selection) {
@@ -161,36 +160,10 @@ $(function() {
       });
 
       actors[actorytype] = new_actors;
+
+      saveActorsToDom();
    });
 
-   // edit email preference when .edit-notify-user button is activated
-   function openNotifyModal(event) {
-      event.stopPropagation();
-
-      var element = $(event.target).closest('.actor_entry');
-      var itemtype  = element.data('itemtype');
-      var items_id  = element.data('items-id');
-      var actortype = element.data('actortype');
-      var text      = element.data('text');
-
-      console.log(itemtype, items_id, actortype);
-      console.log(actors);
-
-      var actorIndex = actors[actorytype].findIndex(element => (element.itemtype == itemtype && element.items_id == items_id));
-      var actor      = actors[actorytype][actorIndex];
-
-      var modal = $('#editActorNotifySettings');
-      console.log(modal.find("input[name=actorname]"));
-      modal.find("input[name=actortype]").val(actortype);
-      modal.find("input[name=actorindex]").val(actorIndex);
-      modal.find("input[name=actorname]").removeAttr('readonly').val(text).attr('readonly', 'true');
-      modal.find("input[name=use_notification]").prop('checked', actor.use_notification);
-      modal.find("input[name=alternative_email]").val(actor.alternative_email);
-
-      console.log(actor)
-
-      editActorNotifySettings_modal.show();
-   }
    document.addEventListener('click', event => {
       if (event.target.closest("#actor_{{ rand }} + .select2 .edit-notify-user")) {
          return openNotifyModal(event);
