@@ -122,7 +122,7 @@
                      {% set task_actiontime_lbl %}
                         <i class="fas fa-tasks fa-fw me-1" title="{{ __('Duration') }}"></i>
                      {% endset %}
-                     {{ fields.dropdownTimestampField('state', subitem.fields['actiontime'], task_actiontime_lbl, {
+                     {{ fields.dropdownTimestampField('actiontime', subitem.fields['actiontime'], task_actiontime_lbl, {
                         'full_width': true,
                         'rand': rand,
                         'min': 0,
