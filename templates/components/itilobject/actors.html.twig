@@ -54,6 +54,8 @@
    field_options|merge({is_horizontal: false})
 ) }}
 
+<input type="hidden" name="_actors" id="_actors">
+
 {# modal for edit notification setting for a user #}
 <div class="modal fade" id="editActorNotifySettings" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
@@ -116,4 +118,48 @@
          ],
       {% endfor %}
    };
+
+   // edit email preference when .edit-notify-user button is activated
+   function openNotifyModal(event) {
+      event.stopPropagation();
+
+      var element = $(event.target).closest('.actor_entry');
+      var itemtype  = element.data('itemtype');
+      var items_id  = element.data('items-id');
+      var actortype = element.data('actortype');
+      var text      = element.data('text');
+
+      var actorIndex = actors[actortype].findIndex(element => (element.itemtype == itemtype && element.items_id == items_id));
+      var actor      = actors[actortype][actorIndex];
+
+      var modal = $('#editActorNotifySettings');
+      modal.find("input[name=actortype]").val(actortype);
+      modal.find("input[name=actorindex]").val(actorIndex);
+      modal.find("input[name=actorname]").removeAttr('readonly').val(text).attr('readonly', 'true');
+      modal.find("input[name=use_notification]").prop('checked', actor.use_notification);
+      modal.find("input[name=alternative_email]").val(actor.alternative_email);
+
+      editActorNotifySettings_modal.show();
+   }
+
+   // save edited actor when clicking on save button
+   $(document).on('click', '#saveActorNotifySettings', function(event) {
+      var modal = $('#editActorNotifySettings');
+      var actortype  = modal.find("input[name=actortype]").val();
+      var actorIndex = modal.find("input[name=actorindex]").val();
+      var use_notif  = modal.find("input[name=use_notification]").prop('checked');
+      var alt_email  = modal.find("input[name=alternative_email]").val();
+
+      var actor = actors[actortype][actorIndex];
+      actor.use_notification = use_notif;
+      actor.alternative_email = alt_email;
+
+      editActorNotifySettings_modal.hide();
+      saveActorsToDom();
+   });
+
+   // save actors object to dom
+   (function saveActorsToDom() {
+      $('#_actors').val(JSON.stringify(actors));
+   })();
 </script>
