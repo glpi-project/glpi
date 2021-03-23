@@ -47,6 +47,7 @@ class ToolboxExtension extends AbstractExtension implements ExtensionInterface {
          new TwigFunction('getItemTypeSearchURL', [$this, 'getItemTypeSearchURL']),
          new TwigFunction('getPictureUrl', [Toolbox::class, 'getPictureUrl']),
          new TwigFunction('autoName', 'autoName', ['is_safe' => ['html']]),
+         new TwigFunction('getHtmlToDisplay', [Toolbox::class, 'getHtmlToDisplay'], ['is_safe' => ['html']]),
          new TwigFunction('file_exists', 'file_exists'),
       ];
    }
