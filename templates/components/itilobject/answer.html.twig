@@ -17,7 +17,7 @@
                      </button>
                      <div>
                         {% if timeline_itemtype.template is defined %}
-                           {% include timeline_itemtype.template with {'subitem': timeline_itemtype.item} %}
+                           {{ timeline_itemtype.item|showForm({'parent': item}) }}
                         {% endif %}
                      </div>
                   </div>

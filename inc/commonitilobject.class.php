@@ -6592,7 +6592,7 @@ abstract class CommonITILObject extends CommonDBTM {
       //check sub-items rights
       $tmp = [$foreign_key => $this->getID()];
       $fup_class = "ITILFollowup";
-      $fup = new $fup_class;
+      $fup = new ITILFollowup();
       $fup->getEmpty();
       $fup->fields['itemtype'] = $obj_type;
       $fup->fields['items_id'] = $this->getID();
@@ -6620,20 +6620,20 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($canadd_fup) {
          $itemtypes['answer'] = [
-            'class'     => $fup_class,
+            'class'     => 'ITILFollowup',
             'icon'      => 'far fa-comment',
             'label'     => _x('button', 'Answer'),
             'template'  => 'components/itilobject/form_followup.html.twig',
-            'item'      => new $fup_class()
+            'item'      => $fup
          ];
       }
       if ($canadd_task) {
          $itemtypes['task'] = [
-            'class'     => 'ITILTask',
+            'class'     => 'CommonITILTask',
             'icon'      => 'fas fa-wrench',
             'label'     => _x('button', 'Create a task'),
             'template'  => 'components/itilobject/form_task.html.twig',
-            'item'      => new $task_class()
+            'item'      => $task
          ];
       }
 //      if ($canadd_document) {
@@ -6660,7 +6660,7 @@ abstract class CommonITILObject extends CommonDBTM {
             'icon'      => 'far fa-thumbs-up',
             'label'     => _x('button', 'Ask for validation'),
             'template'  => 'components/itilobject/form_validation.html.twig',
-            'item'      => new $validation_class()
+            'item'      => $validation
          ];
       }
 
