@@ -123,6 +123,23 @@
    {% endif %}
 
    {{ _self.field(name, field, label, options) }}
+   {% if options.enable_mentions and config('use_notifications') %}
+      <script>
+         $(
+            function() {
+               const user_mention = new GLPI.RichText.UserMention(
+                  tinymce.get('{{ id }}'),
+                  {{ session('glpiactive_entity') }},
+                  '{{ getNewIDORToken('User', {
+                     'right': 'all',
+                     'entity_restrict': session('glpiactive_entity')
+                  }) }}'
+               );
+               user_mention.register();
+            }
+         )
+      </script>
+   {% endif %}
 {% endmacro %}
 
 
