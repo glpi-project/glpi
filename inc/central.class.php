@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 
 if (!defined('GLPI_ROOT')) {
@@ -347,13 +348,9 @@ class Central extends CommonGLPI {
          $warnings[] = __('SQL replica: read only');
       }
 
-      if (count($warnings)) {
-         echo "<div class='alert alert-important alert-warning d-flex' role='alert'>";
-         echo "<i class='fas fa-3x fa-exclamation-triangle'></i>";
-         echo "<ul><li>" . implode('</li><li>', $warnings) . "</li></ul>";
-         echo "<div class='sep'></div>";
-         echo "</div>";
-      }
+      TemplateRenderer::getInstance()->display('central/messages.html.twig', [
+         'warnings'  => $warnings
+      ]);
    }
 
 }
