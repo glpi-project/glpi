@@ -1,0 +1,11 @@
+{% if warnings is defined and warnings|length > 0 %}
+   <div class='alert alert-important alert-warning d-flex' role='alert'>
+      <i class='fas fa-3x fa-exclamation-triangle'></i>
+      <ul>
+         {% for warning in warnings %}
+            <li>{{ warning|raw }}</li>
+         {% endfor %}
+      </ul>
+      <div class='sep'></div>
+   </div>
+{% endif %}
