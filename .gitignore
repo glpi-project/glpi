@@ -18,6 +18,7 @@
 /vendor/
 phpunit.xml
 /tests/code-coverage/
+/tests/js-coverage/
 /tests/files/
 /tests/glpicrypt.key
 /config/based_config.php
