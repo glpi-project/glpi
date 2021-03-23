@@ -100,6 +100,7 @@
                         2: __('Done')
                      }, task_state_lbl, {
                         'full_width': true,
+                        'icon_label': true,
                         'rand': rand,
                      }) }}
 
@@ -120,10 +121,11 @@
 
                      {# Duration #}
                      {% set task_actiontime_lbl %}
-                        <i class="fas fa-tasks fa-fw me-1" title="{{ __('Duration') }}"></i>
+                        <i class="fas fa-stopwatch fa-fw me-1" title="{{ __('Duration') }}"></i>
                      {% endset %}
                      {{ fields.dropdownTimestampField('actiontime', subitem.fields['actiontime'], task_actiontime_lbl, {
                         'full_width': true,
+                        'icon_label': true,
                         'rand': rand,
                         'min': 0,
                         'max': 8*constant('HOUR_TIMESTAMP'),
