@@ -49,6 +49,7 @@ class PluginExtension extends AbstractExtension implements ExtensionInterface {
          new TwigFunction('preItemForm', [$this, 'preItemForm'], ['is_safe' => ['html']]),
          new TwigFunction('postItemForm', [$this, 'postItemForm'], ['is_safe' => ['html']]),
          new TwigFunction('hook_infocom', [$this, 'hook_infocom'], ['is_safe' => ['html']]),
+         new TwigFunction('hook_display_central', [$this, 'hook_display_central'], ['is_safe' => ['html']]),
       ];
    }
 
@@ -76,5 +77,9 @@ class PluginExtension extends AbstractExtension implements ExtensionInterface {
 
    public function hook_infocom(CommonDBTM $item) {
       Plugin::doHookFunction("infocom", $item);
+   }
+
+   public function hook_display_central(): void {
+      Plugin::doHook('display_central');
    }
 }
