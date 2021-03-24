@@ -4157,21 +4157,15 @@ class Ticket extends CommonITILObject {
       // Restore saved value or override with page parameter
       $saved = $this->restoreInput();
 
+      // Restore saved values and override $this->fields
+      $this->restoreSavedValues($saved);
+
       foreach ($default_values as $name => $value) {
          if (!isset($options[$name])) {
             if (isset($saved[$name])) {
                $options[$name] = $saved[$name];
             } else {
                $options[$name] = $value;
-            }
-         }
-      }
-
-      // Restore saved value and override $this->fields
-      if (count($saved)) {
-         foreach ($saved as $name => $value) {
-            if (isset($this->fields[$name])) {
-               $this->fields[$name] = $saved[$name];
             }
          }
       }

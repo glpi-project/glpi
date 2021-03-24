@@ -628,6 +628,9 @@ class Change extends CommonITILObject {
       // Restore saved value or override with page parameter
       $saved = $this->restoreInput();
 
+      // Restore saved values and override $this->fields
+      $this->restoreSavedValues($saved);
+
       // Set default options
       if (!$ID) {
          foreach ($default_values as $key => $val) {
