@@ -37,48 +37,6 @@ class DbConfiguration extends \GLPITestCase {
    protected function configurationProvider() {
       return [
          [
-            // Default variables on MySQL 5.6
-            'version'   => '5.6.50-log',
-            'variables' => [
-               'innodb_file_format'  => 'Antelope',
-               'innodb_large_prefix' => 0,
-               'innodb_page_size'    => 16384,
-            ],
-            'validated' => false,
-            'messages'  => [
-               '"innodb_file_format" must be set to "Barracuda".',
-               '"innodb_large_prefix" must be enabled.',
-            ]
-         ],
-         [
-            // Required variables on MySQL 5.6
-            'version'   => '5.6.50-log',
-            'variables' => [
-               'innodb_file_format'  => 'Barracuda',
-               'innodb_large_prefix' => 1,
-               'innodb_page_size'    => 16384,
-            ],
-            'validated' => true,
-            'messages'  => [
-               'Database configuration is OK.',
-            ]
-         ],
-         [
-            // Incompatible variables on MySQL 5.6
-            'version'   => '5.6.50-log',
-            'variables' => [
-               'innodb_file_format'  => 'Antelope',
-               'innodb_large_prefix' => 0,
-               'innodb_page_size'    => 4096,
-            ],
-            'validated' => false,
-            'messages'  => [
-               '"innodb_file_format" must be set to "Barracuda".',
-               '"innodb_large_prefix" must be enabled.',
-               '"innodb_page_size" must be >= 8KB.',
-            ]
-         ],
-         [
             // Default variables on MySQL 5.7
             'version'   => '5.7.34-standard',
             'variables' => [

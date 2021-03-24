@@ -58,20 +58,12 @@ class DbConfiguration extends AbstractRequirement {
    protected function check() {
       $version = preg_replace('/^((\d+\.?)+).*$/', '$1', $this->db->getVersion());
 
-      // On MySQL 5.6, "ROW_FORMAT = DYNAMIC" fallbacks to "ROW_FORMAT = COMPACT"
-      // if "innodb_file_format" is not set to "Barracuda".
-      // This variable has been removed in MySQL 8.0 and in MariaDB 10.3.
-      $check_file_format = version_compare($version, '5.7', '<');
-
       // "innodb_large_prefix" was required for "utf8mb4" indexes of VARCHAR(255) on older DB versions.
       // This variable has been removed in MySQL 8.0 and in MariaDB 10.3.
       $check_large_prefix = version_compare($version, '8.0', '<') // MySQL
          || (version_compare($version, '10.0', '>=') && version_compare($version, '10.3', '<')); // MariaDB
 
       $query = 'SELECT @@GLOBAL.' . $this->db->quoteName('innodb_page_size as innodb_page_size');
-      if ($check_file_format) {
-         $query .= ', @@GLOBAL.' . $this->db->quoteName('innodb_file_format as innodb_file_format');
-      }
       if ($check_large_prefix) {
          $query .= ', @@GLOBAL.' . $this->db->quoteName('innodb_large_prefix as innodb_large_prefix');
       }
@@ -84,9 +76,6 @@ class DbConfiguration extends AbstractRequirement {
       $db_config = $db_config_res->fetch_assoc();
 
       $incompatibilities = [];
-      if ($check_file_format && $db_config['innodb_file_format'] !== 'Barracuda') {
-         $incompatibilities[] = __('"innodb_file_format" must be set to "Barracuda".');
-      }
       if ($check_large_prefix && (int)$db_config['innodb_large_prefix'] == 0) {
          $incompatibilities[] = __('"innodb_large_prefix" must be enabled.');
       }

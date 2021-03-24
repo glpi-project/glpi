@@ -49,7 +49,7 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
 ## Prerequisites
 
 * A web server (Apache, Nginx, IIS, etc.)
-* MariaDB >= 10.0 or MySQL >= 5.6
+* MariaDB >= 10.2 or MySQL >= 5.7
 * PHP 7.3 or higher
 * Mandatory PHP extensions:
     - ctype

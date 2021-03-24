@@ -54,9 +54,16 @@ class DbEngine extends AbstractRequirement {
    }
 
    protected function check() {
-      $version = preg_replace('/^((\d+\.?)+).*$/', '$1', $this->db->getVersion());
+      $version_string = $this->db->getVersion();
 
-      if (version_compare($version, '5.6', '>=')) {
+      $server  = preg_match('/-MariaDB/', $version_string) ? 'MariaDB': 'MySQL';
+      $version = preg_replace('/^((\d+\.?)+).*$/', '$1', $version_string);
+
+      $is_supported = $server === 'MariaDB'
+         ? version_compare($version, '10.2', '>=')
+         : version_compare($version, '5.7', '>=');
+
+      if ($is_supported) {
          $this->validated = true;
          $this->validation_messages[] = sprintf(
             __('Database version seems correct (%s) - Perfect!'),
