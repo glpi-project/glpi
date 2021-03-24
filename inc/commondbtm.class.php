@@ -1048,6 +1048,9 @@ class CommonDBTM extends CommonGLPI {
    **/
    protected function restoreSavedValues(Array $saved = []) {
       if (count($saved)) {
+         //restore saved values as input (to manage uploaded img)
+         $this->input = $saved;
+
          foreach ($saved as $name => $value) {
             if (isset($this->fields[$name])) {
                $this->fields[$name] = $saved[$name];
