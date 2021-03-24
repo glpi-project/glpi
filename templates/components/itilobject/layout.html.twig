@@ -3,9 +3,13 @@
 
    <div class="row d-flex flex-column align-items-stretch itil-object ">
       <div class="col-12 col-md-8 order-last order-md-first pt-2 pe-2 pe-md-4 d-flex flex-column border-top border-4 itil-left-side">
-         {% include("components/itilobject/timeline.html.twig") %}
+         {% if item.isNewItem() %}
+            {# TODO content + title form #}
+         {% else %}
+            {% include("components/itilobject/timeline.html.twig") %}
+         {% endif %}
       </div>
-      <div class="col-12 col-md-4 border-0 itil-right-side mt-0 mt-md-n1 card-footer p-0">
+      <div class="col-12 col-md-4 border-0 itil-right-side mt-0 mt-md-n1 card-footer p-0 rounded-0">
          {% include("components/itilobject/fields_panel.html.twig") %}
       </div>
    </div>
