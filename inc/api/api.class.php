@@ -1140,7 +1140,9 @@ abstract class API {
       }
 
       // filter with entity
-      if ($item->isEntityAssign()
+      if ($item->getType() == 'Entity') {
+         $where.= " AND (" . getEntitiesRestrictRequest("", $itemtype::getTable()) . ")";
+      } else if ($item->isEntityAssign()
           // some CommonDBChild classes may not have entities_id fields and isEntityAssign still return true (like ITILTemplateMandatoryField)
           && array_key_exists('entities_id', $item->fields)) {
          $where.= " AND (". getEntitiesRestrictRequest("",
