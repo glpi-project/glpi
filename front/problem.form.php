@@ -40,6 +40,10 @@ if (empty($_GET["id"])) {
 
 Session::checkLoginUser();
 
+if (isset($_UPOST['_actors'])) {
+   $_POST['_actors'] = json_decode($_UPOST['_actors'], true);
+}
+
 $problem = new Problem();
 if (isset($_POST["add"])) {
    $problem->check(-1, CREATE, $_POST);
