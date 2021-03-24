@@ -1040,7 +1040,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Restore data saved in the session to $this->input
     *
-    * @since 9.5.4
+    * @since 9.5.5
     *
     * @param array $saved Array of values saved in session
     *
