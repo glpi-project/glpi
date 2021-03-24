@@ -29,7 +29,7 @@
                {{ include('layout/parts/search/table.html.twig') }}
             {% endif %}
             {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and data['search']['as_map'] == 0 %}
-               <div class="card-footer">
+               <div class="card-footer search-footer">
                   {{ include('layout/parts/search/pager.html.twig') }}
                </div>
             {% endif %}

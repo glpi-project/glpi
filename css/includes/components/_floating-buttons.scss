@@ -32,8 +32,8 @@
 .floating-buttons {
    position: fixed;
    bottom: 10px;
-   right: 10px;
-   z-index: 99;
+   left: 50%;
+   z-index: 99999;
 
    #see_debug, #backtotop {
       cursor: pointer;

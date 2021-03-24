@@ -1,62 +1,74 @@
-<div class="border-top mx-n2 mb-n2 itil-footer card-footer itil-footer" id="itil-footer">
-   <div class="buttons-bar d-flex">
-      <div class="btn-group me-2 main-actions">
-         <button class="btn btn-primary answer-action" data-bs-toggle="collapse" data-bs-target="#new-ITILFollowup-block">
-            <i class='far fa-comment'></i>
-            <span>{{ _x('button', 'Answer') }}</span>
-         </button>
-         <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-            <span class="visually-hidden">{{ __("View other actions") }}</span>
-         </button>
-         <ul class="dropdown-menu">
-            <li><a class="dropdown-item action-task answer-action" href="#"
-                  data-bs-toggle="collapse" data-bs-target="#new-ITILTask-block">
-               <i class='fas fa-wrench'></i>
-               <span>{{ _x('button', 'Create a task') }}</span>
-            </a></li>
-            {% if item.getType() is same as ('Ticket') or item.getType() is same as ('Change') %}
-            <li><a class="dropdown-item action-validation answer-action" href="#"
-                  data-bs-toggle="collapse" data-bs-target="#new-{{ item.getType() }}Validation-block">
-               <i class='far fa-thumbs-up'></i>
-               <span>{{ _x('button', 'Ask for validation') }}</span>
-            </a></li>
-            {% endif %}
-            <li><a class="dropdown-item action-solution answer-action" href="#"
-                  data-bs-toggle="collapse" data-bs-target="#new-ITILSolution-block">
-               <i class='fas fa-check'></i>
-               <span>{{ _x('button', 'Add a solution') }}</span>
-            </a></li>
-         </ul>
-      </div>
+<div class="mx-n2 mb-n2 itil-footer itil-footer p-0 border-top" id="itil-footer">
+   <div class="buttons-bar d-flex py-2">
+      {% if not item.isNewItem() %}
+         <div class="col-md-8 ps-3">
+            <div class="btn-group me-2 main-actions">
+               <button class="btn btn-primary answer-action" data-bs-toggle="collapse" data-bs-target="#new-ITILFollowup-block">
+                  <i class='far fa-comment'></i>
+                  <span>{{ _x('button', 'Answer') }}</span>
+               </button>
+               <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                  <span class="visually-hidden">{{ __("View other actions") }}</span>
+               </button>
+               <ul class="dropdown-menu">
+                  <li><a class="dropdown-item action-task answer-action" href="#"
+                        data-bs-toggle="collapse" data-bs-target="#new-ITILTask-block">
+                     <i class='fas fa-wrench'></i>
+                     <span>{{ _x('button', 'Create a task') }}</span>
+                  </a></li>
+                  {% if item.getType() is same as ('Ticket') or item.getType() is same as ('Change') %}
+                  <li><a class="dropdown-item action-validation answer-action" href="#"
+                        data-bs-toggle="collapse" data-bs-target="#new-{{ item.getType() }}Validation-block">
+                     <i class='far fa-thumbs-up'></i>
+                     <span>{{ _x('button', 'Ask for validation') }}</span>
+                  </a></li>
+                  {% endif %}
+                  <li><a class="dropdown-item action-solution answer-action" href="#"
+                        data-bs-toggle="collapse" data-bs-target="#new-ITILSolution-block">
+                     <i class='fas fa-check'></i>
+                     <span>{{ _x('button', 'Add a solution') }}</span>
+                  </a></li>
+               </ul>
+            </div>
+         </div>
+      {% endif %}
 
-      <span class="ms-auto form-buttons">
-         {% if item.isDeleted() %}
-            <button class="btn btn-outline-secondary me-2" type="submit" name="restore"
-                  title="{{ _x('button', 'Restore') }}">
-               <i class='fas fa-trash-alt'></i>
-               <span class="d-none d-md-block">{{ _x('button', 'Restore') }}</span>
-            </button>
-
-            <button class="btn btn-outline-danger me-2" type="submit" name="purge"
-                  title="{{ _x('button', 'Delete permanently') }}"
-                  onclick='return confirm("{{ __('Confirm the final deletion?') }}");'>
-               <i class='fas fa-trash-alt'></i>
-               <span class="d-none d-md-block">{{ _x('button', 'Delete permanently') }}</span>
+      <div class="form-buttons col-md d-flex justify-content-end ms-auto ms-md-0 my-n2 py-2 pe-3 card-footer border-top-0">
+         {% if item.isNewItem() %}
+            <button class="btn btn-primary me-2" type="submit" name="add"
+                  title="{{ _x('button', 'Add') }}">
+               <i class="fas fa-plus"></i>
+               <span class="d-none d-md-block">{{ _x('button', 'Add') }}</span>
             </button>
          {% else %}
-            <button class="btn btn-outline-danger me-2" type="submit" name="delete"
-                  title="{{ _x('button', 'Put in trashbin') }}">
-               <i class='fas fa-trash-alt'></i>
-               <span class="d-none d-md-block">{{ _x('button', 'Put in trashbin') }}</span>
+            {% if item.isDeleted() %}
+               <button class="btn btn-outline-secondary me-2" type="submit" name="restore"
+                     title="{{ _x('button', 'Restore') }}">
+                  <i class='fas fa-trash-alt'></i>
+                  <span class="d-none d-md-block">{{ _x('button', 'Restore') }}</span>
+               </button>
+
+               <button class="btn btn-outline-danger me-2" type="submit" name="purge"
+                     title="{{ _x('button', 'Delete permanently') }}"
+                     onclick='return confirm("{{ __('Confirm the final deletion?') }}");'>
+                  <i class='fas fa-trash-alt'></i>
+                  <span class="d-none d-md-block">{{ _x('button', 'Delete permanently') }}</span>
+               </button>
+            {% else %}
+               <button class="btn btn-outline-danger me-2" type="submit" name="delete"
+                     title="{{ _x('button', 'Put in trashbin') }}">
+                  <i class='fas fa-trash-alt'></i>
+                  <span class="d-none d-md-block">{{ _x('button', 'Put in trashbin') }}</span>
+               </button>
+            {% endif %}
+
+            <button class="btn btn-primary me-2" type="submit" name="update"
+                  title="{{ _x('button', 'Save') }}">
+               <i class="fas fa-save"></i>
+               <span class="d-none d-md-block">{{ _x('button', 'Save') }}</span>
             </button>
          {% endif %}
-
-         <button class="btn btn-primary me-2" type="submit" name="update"
-                 title="{{ _x('button', 'Save') }}">
-            <i class="fas fa-save"></i>
-            <span class="d-none d-md-block">{{ _x('button', 'Save') }}</span>
-         </button>
-      </span>
+      </div>
    <div>
 </div>
 
