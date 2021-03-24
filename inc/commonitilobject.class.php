@@ -1176,6 +1176,9 @@ abstract class CommonITILObject extends CommonDBTM {
          $this->input = $this->addFiles($this->input, $options);
       }
 
+      // handle actors changes
+      $this->updateActors();
+
       parent::post_updateItem();
    }
 
@@ -1821,6 +1824,9 @@ abstract class CommonITILObject extends CommonDBTM {
                                 'items_id'     => $this->fields['id']]);
          }
       }
+
+      // handle actors changes
+      $this->updateActors();
 
       $useractors = null;
       // Add user groups linked to ITIL objects
@@ -8488,6 +8494,115 @@ abstract class CommonITILObject extends CommonDBTM {
             '_disablenotif'               => true
          ]);
       }
+   }
+
+   /**
+    * Manage actors posted by itil form
+    * New way to do it with a general array containing all item actors.
+    * We compare to old actors (in case of items's update) to know which we need to remove/add/update
+    *
+    * @since x.x.x
+
+    * @return void
+    */
+   protected function updateActors() {
+      if (!isset($this->input['_actors'])
+         || !is_array($this->input['_actors'])
+         || !count($this->input['_actors'])
+      ) {
+         return;
+      }
+
+      // reload actors
+      $this->loadActors();
+
+      // parse posted actors
+      foreach ($this->input['_actors'] as $actortype_str => $actors) {
+         $actortype = constant("CommonITILActor::".strtoupper($actortype_str));
+         $existings = $this->getActorsForType($actortype);
+
+         $added   = [];
+         $updated = [];
+         $deleted = [];
+
+         // search for added/updated actors
+         foreach ($actors as $actor) {
+            $found = false;
+            foreach ($existings as $existing) {
+               if ($actor['itemtype'] == $existing['itemtype']
+                   && $actor['items_id'] == $existing['items_id']) {
+                  $found = true;
+
+                  // check is modifications exists
+                  if (isset($existing['use_notification'])
+                      && ($actor['use_notification'] != $existing['use_notification']
+                          || $actor['alternative_email'] != $existing['alternative_email'])) {
+                     $updated[] = $actor + ['id' => $existing['id']];
+                  }
+
+                  // as actor is found, don't continue to list existings
+                  break;
+               }
+            }
+
+            if ($found === false) {
+               $added[] = $actor;
+            }
+         }
+
+         //search for deleted actors
+         foreach ($existings as $existing) {
+            $found = false;
+            foreach ($actors as $actor) {
+               if ($actor['itemtype'] == $existing['itemtype']
+                   && $actor['items_id'] == $existing['items_id']) {
+                  $found = true;
+                  break;
+               }
+            }
+
+            if ($found === false) {
+               $deleted[] = $existing;
+            }
+         }
+
+         // update actors
+         foreach ($added as $actor) {
+            $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
+            $actor_obj->add($actor + [
+               $actor_obj::$items_id_1 => $this->fields['id'], // ex 'tickets_id' => 1
+               $actor_obj::$items_id_2 => $actor['items_id'],   // ex 'users_id' => 1
+               'type'                  => $actortype,
+            ]);
+         }
+         foreach ($updated as $actor) {
+            $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
+            $res = $actor_obj->update($actor + [
+               'type' => $actortype
+            ]);
+         }
+         foreach ($deleted as $actor) {
+            $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
+            $actor_obj->delete(['id' => $actor['id']]);
+         }
+      }
+
+   }
+
+
+   protected function getActorObjectForItem(string $itemtype = ""): CommonITILActor {
+      switch ($itemtype) {
+         case 'User':
+            $actor = new $this->userlinkclass();
+            break;
+         case 'Group':
+            $actor = new $this->grouplinkclass();
+            break;
+         case 'Supplier':
+            $actor = new $this->supplierlinkclass();
+            break;
+      }
+      return $actor;
    }
 
 
