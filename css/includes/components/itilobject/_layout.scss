@@ -31,25 +31,21 @@
 
 .itil-object {
    @include media-breakpoint-up(sm) {
-      height: calc(100vh - 205px);
-      //position: relative;
+      height: calc(100vh - 172px);
 
       .itil-left-side, .itil-right-side {
-         height: 100%;
          overflow-y: auto;
-         /* position: absolute;
-         top: 0;
-         bottom: 0; */
       }
 
       .itil-left-side {
+         height: 100%;
          border-top: 0 !important;
          left: 0;
       }
 
-      /* .itil-right-side {
-         right: 0;
-      } */
+      .itil-right-side {
+         height: calc(100% + 4px);
+      }
    }
 }
 
@@ -62,5 +58,15 @@
       position: absolute;
       top: 10px;
       left: 50%;
+   }
+
+   .buttons-bar {
+      background-color: $card-bg;
+
+      @include media-breakpoint-down(md) {
+         .form-buttons {
+            border-left: 0 !important;
+         }
+      }
    }
 }
