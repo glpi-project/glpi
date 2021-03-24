@@ -1023,10 +1023,11 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return array Array of value
    **/
-  protected function restoreInput(Array $default = []) {
+   protected function restoreInput(Array $default = []) {
 
       if (isset($_SESSION['saveInput'][$this->getType()])) {
          $saved = Html::cleanPostForTextArea($_SESSION['saveInput'][$this->getType()]);
+
          // clear saved data when restored (only need once)
          $this->clearSavedInput();
 
@@ -1036,18 +1037,16 @@ class CommonDBTM extends CommonGLPI {
       return $default;
    }
 
-
    /**
-    * Get the data saved in the session
+    * Restore data saved in the session to $this->input
     *
-    * @since 0.84
+    * @since 9.5.4
     *
-    * @param array $default Array of value used if session is empty
+    * @param array $saved Array of values saved in session
     *
-    * @return array Array of value
+    * @return array Array of values
    **/
    protected function restoreSavedValues(Array $saved = []) {
-
       if (count($saved)) {
          foreach ($saved as $name => $value) {
             if (isset($this->fields[$name])) {
@@ -1055,7 +1054,6 @@ class CommonDBTM extends CommonGLPI {
             }
          }
       }
-
    }
 
 
