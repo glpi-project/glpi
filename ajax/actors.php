@@ -39,6 +39,7 @@ switch ($_REQUEST['action']) {
    case "getActors":
       header("Content-Type: application/json; charset=UTF-8");
       Html::header_nocache();
+      session_write_close(); // don'l lock session to permits parallel calls
       echo Dropdown::getDropdownActors($_POST);
       break;
 }
