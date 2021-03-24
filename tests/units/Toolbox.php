@@ -1048,6 +1048,7 @@ class Toolbox extends \GLPITestCase {
          ['https://localhost\'', false],
          ['https://localhost?test=true', true],
          ['https://localhost?test=true&othertest=false', true],
+         ['https://localhost/front/computer.php?is_deleted=0&as_map=0&criteria[0][link]=AND&criteria[0][field]=80&criteria[0][searchtype]=equals&criteria[0][value]=254&search=Search&itemtype=Computer', true],
       ];
    }
 
