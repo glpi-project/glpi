@@ -93,7 +93,16 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation {
       $canedit = $camera->canEdit($ID);
 
       $items = $DB->request([
+         'SELECT' => [self::getTable() . '.*', ImageResolution::getTable() . '.is_video'],
          'FROM'   => self::getTable(),
+         'LEFT JOIN' => [
+            ImageResolution::getTable() => [
+               'ON' => [
+                  ImageResolution::getTable() => 'id',
+                  self::getTable() => 'imageresolutions_id'
+               ]
+            ]
+         ],
          'WHERE'  => [
             'item_devicecameras_id' => $camera->getID()
          ]
