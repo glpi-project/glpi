@@ -21,11 +21,12 @@ $(function() {
 
    // function to display an option in the list or the selected input
    var genericTemplate_{{ rand }} = function(option = {}, is_selection = false) {
-      var element  = $(option.element);
-      var itemtype = element.data('itemtype') ?? option.itemtype;
-      var items_id = element.data('items-id') ?? option.items_id;
-      var text     = element.data('text')     ?? option.text;
-      var title    = element.data('title')    ?? option.title;
+      var element   = $(option.element);
+      var itemtype  = element.data('itemtype') ?? option.itemtype;
+      var items_id  = element.data('items-id') ?? option.items_id;
+      var text      = element.data('text') ?? option.text;
+      var title     = element.data('title') ?? option.title;
+      var use_notif = element.data('use-notification') ?? option.use_notification;
 
       var icon = "";
       var size = is_selection ? "fa-lg" : ""
@@ -52,10 +53,15 @@ $(function() {
       if (['User', 'Supplier'].includes(itemtype)
           && is_selection
           && {{ Entity_getUsedConfig('is_notif_enable_default', entities_id, '', 1) }}) {
+         var fa_class = "far";
+         if (use_notif) {
+            fa_class = "fas";
+         }
          actions = `<button class="btn btn-sm btn-ghost-secondary edit-notify-user"
                             data-bs-toggle="tooltip" data-bs-placement="top"
-                            title="{{ __("Email followup") }}">
-            <i class="fas fa-bell"></i>
+                            title="{{ __("Email followup") }}"
+                            type="button">
+            <i class="${fa_class} fa-bell notify-icon"></i>
          </button>`;
       }
 
