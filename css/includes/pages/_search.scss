@@ -59,4 +59,11 @@
          color: rgb(56, 13, 13);
       }
    }
+
+   @include media-breakpoint-up(sm) {
+      .search-footer {
+         position: sticky;
+         bottom: 0;
+      }
+   }
 }
