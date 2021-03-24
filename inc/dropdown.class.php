@@ -888,6 +888,7 @@ class Dropdown {
                  'PhoneModel' => null,
 
                   // Devices models :
+                  'DeviceCameraModel' => null,
                   'DeviceCaseModel' => null,
                   'DeviceControlModel' => null,
                   'DeviceDriveModel' => null,
@@ -985,6 +986,10 @@ class Dropdown {
              __('Appliances') => [
                'ApplianceType' => null,
                'ApplianceEnvironment' => null,
+             ],
+             DeviceCamera::getTypeName(1) => [
+               'Resolution'     => null,
+               'ImageFormat'  => null
              ],
              __('Other') => [
                'USBVendor' => null,

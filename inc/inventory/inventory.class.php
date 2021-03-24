@@ -261,9 +261,6 @@ class Inventory
                true,
                WARNING
             );
-            Toolbox::logDebug(
-               $this->unhandled_data
-            );
          }
 
          $this->data = $data;
@@ -551,6 +548,9 @@ class Inventory
                break;
             case 'remote_mgmt':
                $assettype = '\Glpi\Inventory\Asset\RemoteManagement';
+               break;
+            case 'cameras':
+               $assettype = '\Glpi\Inventory\Asset\Camera';
                break;
             default:
                if (method_exists($this, 'processExtraInventoryData')) {

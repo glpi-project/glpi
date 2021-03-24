@@ -34,9 +34,9 @@ namespace tests\units\Glpi\Inventory\Asset;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
-/* Test for inc/inventory/asset/sensor.class.php */
+/* Test for inc/inventory/asset/camera.class.php */
 
-class Sensor extends AbstractInventoryAsset {
+class Camera extends AbstractInventoryAsset {
 
    protected function assetProvider() :array {
       return [
@@ -44,36 +44,32 @@ class Sensor extends AbstractInventoryAsset {
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
-    <SENSORS>
-      <NAME>LSM330DLC 3-axis Accelerometer</NAME>
-      <MANUFACTURER>STMicroelectronics</MANUFACTURER>
-      <TYPE>ACCELEROMETER</TYPE>
-      <POWER>0.23</POWER>
-      <VERSION>1</VERSION>
-    </SENSORS>
+    <CAMERAS>
+      <RESOLUTION>800x600</RESOLUTION>
+      <RESOLUTION>8000x6000</RESOLUTION>
+      <LENSFACING>BACK</LENSFACING>
+      <FLASHUNIT>1</FLASHUNIT>
+      <IMAGEFORMATS>RAW_SENSOR</IMAGEFORMATS>
+      <IMAGEFORMATS>JPEG</IMAGEFORMATS>
+      <IMAGEFORMATS></IMAGEFORMATS>
+      <IMAGEFORMATS>YUV_420_888</IMAGEFORMATS>
+      <IMAGEFORMATS></IMAGEFORMATS>
+      <IMAGEFORMATS>RAW10</IMAGEFORMATS>
+      <ORIENTATION>90</ORIENTATION>
+      <FOCALLENGTH>4.77</FOCALLENGTH>
+      <SENSORSIZE>6.4x4.8</SENSORSIZE>
+      <MANUFACTURER></MANUFACTURER>
+      <RESOLUTIONVIDEO>176x144</RESOLUTIONVIDEO>
+      <RESOLUTIONVIDEO>1760x1440</RESOLUTIONVIDEO>
+      <SUPPORTS></SUPPORTS>
+      <MODEL></MODEL>
+    </CAMERAS>
     <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
   </CONTENT>
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"name": "LSM330DLC 3-axis Accelerometer", "designation": "LSM330DLC 3-axis Accelerometer", "manufacturer": "STMicroelectronics", "type": "ACCELEROMETER", "power": "0.23", "version": "1", "manufacturers_id": "STMicroelectronics", "devicesensortypes_id": "ACCELEROMETER"}'
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
-<REQUEST>
-  <CONTENT>
-    <SENSORS>
-      <NAME>AK8975C 3-axis Magnetic field sensor</NAME>
-      <MANUFACTURER>Asahi Kasei Microdevices</MANUFACTURER>
-      <TYPE>MAGNETIC FIELD</TYPE>
-      <POWER>6.8</POWER>
-      <VERSION>1</VERSION>
-    </SENSORS>
-    <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
-  </CONTENT>
-  <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
-  <QUERY>INVENTORY</QUERY>
-  </REQUEST>",
-            'expected'  => '{"name": "AK8975C 3-axis Magnetic field sensor", "designation": "AK8975C 3-axis Magnetic field sensor", "manufacturer": "Asahi Kasei Microdevices", "type": "MAGNETIC FIELD", "power": "6.8", "version": "1", "manufacturers_id": "Asahi Kasei Microdevices", "devicesensortypes_id": "MAGNETIC FIELD"}'
+            'expected'  => '{"resolution":["800x600","8000x6000"],"lensfacing":"BACK","flashunit":"1","imageformats":["RAW_SENSOR","JPEG","YUV_420_888","RAW10"],"orientation":"90","focallength":"4.77","sensorsize":"6.4x4.8","resolutionvideo":["176x144","1760x1440"]}'
          ]
       ];
    }
@@ -87,7 +83,7 @@ class Sensor extends AbstractInventoryAsset {
       $json = json_decode($data);
 
       $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\Sensor($computer, $json->content->sensors);
+      $asset = new \Glpi\Inventory\Asset\Camera($computer, $json->content->cameras);
       $asset->setExtraData((array)$json->content);
       $result = $asset->prepare();
       $this->object($result[0])->isEqualTo(json_decode($expected));
@@ -96,10 +92,10 @@ class Sensor extends AbstractInventoryAsset {
    public function testHandle() {
       $computer = getItemByTypeName('Computer', '_test_pc01');
 
-      //first, check there are no sensor linked to this computer
-      $ids = new \Item_DeviceSensor();
-      $this->boolean($ids->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
-           ->isFalse('A sensor is already linked to computer!');
+      //first, check there are no camera linked to this computer
+      $idc = new \Item_DeviceCamera();
+      $this->boolean($idc->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+           ->isFalse('A camera is already linked to computer!');
 
       //convert data
       $expected = $this->assetProvider()[0];
@@ -109,7 +105,7 @@ class Sensor extends AbstractInventoryAsset {
       $json = json_decode($data);
 
       $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\Sensor($computer, $json->content->sensors);
+      $asset = new \Glpi\Inventory\Asset\Camera($computer, $json->content->cameras);
       $asset->setExtraData((array)$json->content);
       $result = $asset->prepare();
       $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
@@ -117,7 +113,25 @@ class Sensor extends AbstractInventoryAsset {
       //handle
       $asset->handleLinks();
       $asset->handle();
-      $this->boolean($ids->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
-           ->isTrue('Sensor has not been linked to computer :(');
+      $this->boolean($idc->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+           ->isTrue('Camera has not been linked to computer :(');
+
+      global $DB;
+
+      //four resolutions has been created
+      $iterator = $DB->request(['FROM' => \ImageResolution::getTable()]);
+      $this->integer(count($iterator))->isIdenticalTo(4);
+
+      //four images formats has been created
+      $iterator = $DB->request(['FROM' => \ImageFormat::getTable()]);
+      $this->integer(count($iterator))->isIdenticalTo(4);
+
+      //four links between images  formats and camera has been created
+      $iterator = $DB->request(['FROM' => \Item_DeviceCamera_ImageFormat::getTable()]);
+      $this->integer(count($iterator))->isIdenticalTo(4);
+
+      //four links between images resolutions and camera has been created
+      $iterator = $DB->request(['FROM' => \Item_DeviceCamera_ImageResolution::getTable()]);
+      $this->integer(count($iterator))->isIdenticalTo(4);
    }
 }

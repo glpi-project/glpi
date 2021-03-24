@@ -30,37 +30,16 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Inventory\Asset;
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
 
-use CommonDBTM;
-use Glpi\Inventory\Conf;
+class ImageResolution extends CommonDropdown {
 
-class Sensor extends Device
-{
-   public function __construct(CommonDBTM $item, array $data = null) {
-      parent::__construct($item, $data, 'Item_DeviceSensor');
+   public $can_be_translated = false;
+
+   static function getTypeName($nb = 0) {
+      return _nx('image', 'Resolution', 'Resolutions', $nb);
    }
 
-   public function prepare() :array {
-
-      $mapping = [
-         'manufacturer' => 'manufacturers_id',
-         'type'         => 'devicesensortypes_id',
-         'name'         => 'designation'
-      ];
-
-      foreach ($this->data as &$val) {
-         foreach ($mapping as $origin => $dest) {
-            if (property_exists($val, $origin)) {
-               $val->$dest = $val->$origin;
-            }
-         }
-      }
-
-      return $this->data;
-   }
-
-   public function checkConf(Conf $conf): bool {
-      return true;
-   }
 }

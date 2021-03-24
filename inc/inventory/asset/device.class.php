@@ -99,8 +99,14 @@ abstract class Device extends InventoryAsset
                   'is_dynamic'         => 1,
                ] + (array)$val;
                $itemdevice->add($itemdevice_data, [], $this->withHistory());
+
+               $this->itemdeviceAdded($itemdevice, $val);
             }
          }
       }
+   }
+
+   protected function itemdeviceAdded(Item_Devices $itemdevice, $val) {
+      //to be overrided
    }
 }

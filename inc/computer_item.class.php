@@ -689,6 +689,7 @@ class Computer_Item extends CommonDBRelation{
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $CFG_GLPI;
 
       // can exists for Template
       if ($item->can($item->getField('id'), READ)) {

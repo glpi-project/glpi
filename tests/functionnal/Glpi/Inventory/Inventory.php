@@ -90,7 +90,6 @@ class Inventory extends DbTestCase {
 
       $CFG_GLPI["is_contact_autoupdate"] = 0;
 
-      $nbprinters = countElementsInTable(\Printer::getTable());
       $inventory = new \Glpi\Inventory\Inventory($json);
 
       $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
@@ -3977,5 +3976,500 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
       //check created vms
       $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
+   }
+
+   public function testImportPhone() {
+      global $DB, $CFG_GLPI;
+
+      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/phone_1.json');
+
+      $CFG_GLPI["is_contact_autoupdate"] = 0;
+
+      $inventory = new \Glpi\Inventory\Inventory($json);
+
+      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+      if ($inventory->inError()) {
+         foreach ($inventory->getErrors() as $error) {
+            var_dump($error);
+         }
+      }
+      $this->boolean($inventory->inError())->isFalse();
+      $this->array($inventory->getErrors())->isEmpty();
+
+      //check inventory metadata
+      $metadata = $inventory->getMetadata();
+      $this->array($metadata)->hasSize(4)
+         ->string['deviceid']->isIdenticalTo('Mi9TPro-TéléphoneM-2019-12-18-14-30-16')
+         ->string['version']->isIdenticalTo('example-app-java')
+         ->string['itemtype']->isIdenticalTo('Phone');
+      $this->array($metadata['provider'])->hasSize(0);
+
+      //check created agent
+      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->next();
+      $agents = $DB->request(['FROM' => \Agent::getTable()]);
+      $this->integer(count($agents))->isIdenticalTo(1);
+      $agent = $agents->next();
+      $this->array($agent)
+         ->string['deviceid']->isIdenticalTo('Mi9TPro-TéléphoneM-2019-12-18-14-30-16')
+         ->string['name']->isIdenticalTo('Mi9TPro-TéléphoneM-2019-12-18-14-30-16')
+         ->string['itemtype']->isIdenticalTo('Phone')
+         ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
+
+      //get computer models, manufacturer, ...
+      $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->next();
+      $this->array($autoupdatesystems);
+      $autoupdatesystems_id = $autoupdatesystems['id'];
+
+      $cmodels = $DB->request(['FROM' => \PhoneModel::getTable(), 'WHERE' => ['name' => 'Mi 9T Pro']])->next();
+      $this->array($cmodels);
+      $computermodels_id = $cmodels['id'];
+
+      $ctypes = $DB->request(['FROM' => \PhoneType::getTable(), 'WHERE' => ['name' => 'Mi 9T Pro']])->next();
+      $this->array($ctypes);
+      $computertypes_id = $ctypes['id'];
+
+      $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Xiaomi']])->next();
+      $this->array($cmanuf);
+      $manufacturers_id = $cmanuf['id'];
+
+      //check created computer
+      $computers_id = $agent['items_id'];
+      $this->integer($computers_id)->isGreaterThan(0);
+      $computer = new \Phone();
+      $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+      $expected = [
+         'id' => $computers_id,
+         'entities_id' => 0,
+         'name' => 'Mi9TPro-TéléphoneM',
+         'date_mod' => $computer->fields['date_mod'],
+         'contact' => null,
+         'contact_num' => null,
+         'users_id_tech' => 0,
+         'groups_id_tech' => 0,
+         'comment' => null,
+         'serial' => 'af8d8fcfa6fa4794',
+         'otherserial' => 'release-keys',
+         'locations_id' => 0,
+         'phonetypes_id' => $computertypes_id,
+         'phonemodels_id' => $computermodels_id,
+         'brand' => null,
+         'phonepowersupplies_id' => 0,
+         'number_line' => null,
+         'have_headset' => 0,
+         'have_hp' => 0,
+         'manufacturers_id' => $manufacturers_id,
+         'is_global' => 0,
+         'is_deleted' => 0,
+         'is_template' => 0,
+         'template_name' => null,
+         'users_id' => 0,
+         'groups_id' => 0,
+         'states_id' => 0,
+         'ticket_tco' => '0.0000',
+         'is_dynamic' => 1,
+         'uuid' => 'af8d3fcfa6fe4784',
+         'date_creation' => $computer->fields['date_creation'],
+         'is_recursive' => 0,
+         //'autoupdatesystems_id' => $autoupdatesystems_id,
+      ];
+      $this->array($computer->fields)->isIdenticalTo($expected);
+
+      //operating system
+      $ios = new \Item_OperatingSystem();
+      $iterator = $ios->getFromItem($computer);
+      $record = $iterator->next();
+
+      $expected = [
+         'assocID' => $record['assocID'],
+         'name' => 'Q Android 10.0 api 29',
+         'version' => null,
+         'architecture' => 'arm64-v8a,armeabi-v7a,armeabi',
+         'servicepack' => null,
+      ];
+      $this->array($record)->isIdenticalTo($expected);
+
+      //remote management
+      $mgmt = new \Item_RemoteManagement();
+      $iterator = $mgmt->getFromItem($computer);
+      $this->integer(count($iterator))->isIdenticalTo(0);
+
+      //volumes
+      $idisks = new \Item_Disk();
+      $iterator = $idisks->getFromItem($computer);
+      $this->integer(count($iterator))->isIdenticalTo(4);
+
+      $expecteds = [
+         [
+            'totalsize' => 3471,
+            'freesize' => 23,
+         ], [
+            'totalsize' => 51913,
+            'freesize' => 33722,
+         ], [
+            'totalsize' => 51913,
+            'freesize' => 33722,
+         ], [
+            'totalsize' => 51913,
+            'freesize' => 33722,
+         ]
+      ];
+
+      $i = 0;
+      while ($volume = $iterator->next()) {
+         unset($volume['id']);
+         unset($volume['date_mod']);
+         unset($volume['date_creation']);
+         $expected = $expecteds[$i];
+         $expected = $expected + [
+            'fsname'       => null,
+            'name'         => null,
+            'device'       => null,
+            'mountpoint'   => null,
+            'filesystems_id' => 0,
+            'encryption_status' => 0,
+            'encryption_tool' => null,
+            'encryption_algorithm' => null,
+            'encryption_type' => null,
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Phone',
+            'entities_id'  => 0,
+            'is_deleted'   => 0,
+            'is_dynamic'   => 1
+         ];
+         ksort($volume);
+         ksort($expected);
+         $this->array($volume)->isEqualTo($expected);
+         ++$i;
+      }
+
+      //check network ports
+      $iterator = $DB->request([
+         'FROM'   => \NetworkPort::getTable(),
+         'WHERE'  => [
+            'items_id'           => $computers_id,
+            'itemtype'           => 'Phone',
+         ],
+      ]);
+      $this->integer(count($iterator))->isIdenticalTo(1);
+
+      $expecteds = [
+         [
+            'logical_number' => 1,
+            'name' => 'No description found',
+            'instantiation_type' => 'NetworkPortWifi',
+            'mac' => 'e0:dc:ff:ed:09:59',
+         ]
+      ];
+
+      $ips = [
+         'No description found'  => [
+            'v4'   => '172.28.214.132',
+         ]
+      ];
+
+      $i = 0;
+      $netport = new \NetworkPort();
+      while ($port = $iterator->next()) {
+         $ports_id = $port['id'];
+         $this->boolean($netport->getFromDB($ports_id))->isTrue();
+         $instantiation = $netport->getInstantiation();
+         if ($port['instantiation_type'] === null) {
+            $this->boolean($instantiation)->isFalse();
+         } else {
+            $this->object($instantiation)->isInstanceOf($port['instantiation_type']);
+         }
+
+         unset($port['id']);
+         unset($port['date_creation']);
+         unset($port['date_mod']);
+         unset($port['comment']);
+
+         $expected = $expecteds[$i];
+         $expected = $expected + [
+            'items_id' => $computers_id,
+            'itemtype' => 'Phone',
+            'entities_id' => 0,
+            'is_recursive' => 0,
+            'is_deleted' => 0,
+            'is_dynamic' => 1,
+            'ifmtu' => 0,
+            'ifspeed' => 0,
+            'ifinternalstatus' => null,
+            'ifconnectionstatus' => 0,
+            'iflastchange' => null,
+            'ifinbytes' => 0,
+            'ifinerrors' => 0,
+            'ifoutbytes' => 0,
+            'ifouterrors' => 0,
+            'ifstatus' => null,
+            'ifdescr' => null,
+            'ifalias' => null,
+            'portduplex' => null,
+            'trunk' => 0,
+            'lastup' => null
+         ];
+
+         $this->array($port)->isEqualTo($expected);
+         ++$i;
+
+         //check for ips
+         $ip_iterator = $DB->request([
+            'SELECT'       => [
+               \IPAddress::getTable() . '.name',
+               \IPAddress::getTable() . '.version'
+            ],
+            'FROM'   => \IPAddress::getTable(),
+            'INNER JOIN'   => [
+               \NetworkName::getTable()   => [
+                  'ON'  => [
+                     \IPAddress::getTable()     => 'items_id',
+                     \NetworkName::getTable()   => 'id', [
+                        'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()]
+                     ]
+                  ]
+               ]
+            ],
+            'WHERE'  => [
+               \NetworkName::getTable() . '.itemtype'  => \NetworkPort::getType(),
+               \NetworkName::getTable() . '.items_id'  => $ports_id
+            ]
+         ]);
+
+         $this->integer(count($ip_iterator))->isIdenticalTo(count($ips[$port['name']] ?? []));
+         if (isset($ips[$port['name']])) {
+            //FIXME: missing all ipv6 :(
+            $ip = $ip_iterator->next();
+            $this->integer((int)$ip['version'])->isIdenticalTo(4);
+            $this->string($ip['name'])->isIdenticalTo($ips[$port['name']]['v4']);
+         }
+      }
+
+      //check for components
+      $components = [];
+      $allcount = 0;
+      foreach (\Item_Devices::getItemAffinities('Computer') as $link_type) {
+         $link        = getItemForItemtype($link_type);
+         $iterator = $DB->request($link->getTableGroupCriteria($computer));
+         $allcount += count($iterator);
+         $components[$link_type] = [];
+
+         while ($row = $iterator->next()) {
+            $lid = $row['id'];
+            unset($row['id']);
+            $components[$link_type][$lid] = $row;
+         }
+      }
+
+      $expecteds = [
+         'Item_DeviceMotherboard' => 0,
+         'Item_DeviceFirmware' => 1,
+         'Item_DeviceProcessor' => 1,
+         'Item_DeviceMemory' => 1,
+         'Item_DeviceHardDrive' => 0,
+         'Item_DeviceNetworkCard' => 1,
+         'Item_DeviceDrive' => 0,
+         'Item_DeviceBattery' => 1,
+         'Item_DeviceGraphicCard' => 0,
+         'Item_DeviceSoundCard' => 0,
+         'Item_DeviceControl' => 0,
+         'Item_DevicePci' => 0,
+         'Item_DeviceCase' => 0,
+         'Item_DevicePowerSupply' => 0,
+         'Item_DeviceGeneric' => 0,
+         'Item_DeviceSimcard' => 1,
+         'Item_DeviceSensor' => 48,
+         'Item_DeviceCamera' => 2
+      ];
+
+      foreach ($expecteds as $type => $count) {
+         $this->integer(count($components[$type]))->isIdenticalTo($count, count($components[$type]) . ' ' . $type);
+      }
+
+      $expecteds = [
+         'Item_DeviceMotherboard' => [],
+         'Item_DeviceFirmware' => [
+            [
+               'items_id' => $computers_id,
+               'itemtype' => 'Phone',
+               'devicefirmwares_id' => 104,
+               'is_deleted' => 0,
+               'is_dynamic' => 1,
+               'entities_id' => 0,
+               'is_recursive' => 0,
+               'serial' => null,
+               'otherserial' => null,
+               'locations_id' => 0,
+               'states_id' => 0,
+            ]
+         ],
+         'Item_DeviceProcessor' => [
+            [
+               'items_id' => $computers_id,
+               'itemtype' => 'Phone',
+               'deviceprocessors_id' => 3060400,
+               'frequency' => 1785,
+               'serial' => null,
+               'is_deleted' => 0,
+               'is_dynamic' => 1,
+               'nbcores' => 8,
+               'nbthreads' => 8,
+               'entities_id' => 0,
+               'is_recursive' => 0,
+               'busID' => null,
+               'otherserial' => null,
+               'locations_id' => 0,
+               'states_id' => 0,
+            ],
+         ],
+         'Item_DeviceMemory' => [
+            [
+               'items_id' => $computers_id,
+               'itemtype' => 'Phone',
+               'devicememories_id' => 4,
+               'size' => 5523,
+               'serial' => null,
+               'is_deleted' => 0,
+               'is_dynamic' => 1,
+               'entities_id' => 0,
+               'is_recursive' => 0,
+               'busID' => null,
+               'otherserial' => null,
+               'locations_id' => 0,
+               'states_id' => 0
+            ],
+         ],
+         'Item_DeviceHardDrive' => [],
+         'Item_DeviceNetworkCard' => [
+            [
+               'items_id' => $computers_id,
+               'itemtype' => 'Phone',
+               'devicenetworkcards_id' => 66,
+               'mac' => 'e0:dc:ff:ed:09:59',
+               'is_deleted' => 0,
+               'is_dynamic' => 1,
+               'entities_id' => 0,
+               'is_recursive' => 0,
+               'serial' => null,
+               'busID' => null,
+               'otherserial' => null,
+               'locations_id' => 0,
+               'states_id' => 0,
+            ]
+         ],
+         'Item_DeviceDrive' => [],
+         'Item_DeviceBattery' => [
+            [
+               'items_id' => $computers_id,
+               'itemtype' => 'Phone',
+               'devicebatteries_id' => 70,
+               'manufacturing_date' => null,
+               'is_deleted' => 0,
+               'is_dynamic' => 1,
+               'entities_id' => 0,
+               'is_recursive' => 0,
+               'serial' => null,
+               'otherserial' => null,
+               'locations_id' => 0,
+               'states_id' => 0,
+               'real_capacity' => 0
+            ],
+         ],
+         'Item_DeviceGraphicCard' => [],
+         'Item_DeviceSoundCard' => [],
+         'Item_DeviceControl' => [],
+         'Item_DevicePci' => [],
+         'Item_DeviceCase' => [],
+         'Item_DevicePowerSupply' => [],
+         'Item_DeviceGeneric' => [],
+         'Item_DeviceSimcard' => [
+            [
+            'items_id' => $computers_id,
+            'itemtype' => 'Phone',
+            'devicesimcards_id' => 68,
+            'is_deleted' => 0,
+            'is_dynamic' => 1,
+            'entities_id' => 0,
+            'is_recursive' => 0,
+            'serial' => '8933150319050352521',
+            'otherserial' => null,
+            'states_id' => 0,
+            'locations_id' => 0,
+            'lines_id' => 0,
+            'users_id' => 0,
+            'groups_id' => 0,
+            'pin' => '',
+            'pin2' => '',
+            'puk' => '',
+            'puk2' => '',
+            'msin' => '',
+            ]
+         ],
+         'Item_DeviceCamera' => [
+            [
+               'items_id' => $computers_id,
+               'itemtype' => 'Phone',
+               'devicecameras_id' => 4,
+               'is_deleted' => 0,
+               'is_dynamic' => 1,
+               'entities_id' => 0,
+               'is_recursive' => 0,
+            ], [
+               'items_id' => $computers_id,
+               'itemtype' => 'Phone',
+               'devicecameras_id' => 4,
+               'is_deleted' => 0,
+               'is_dynamic' => 1,
+               'entities_id' => 0,
+               'is_recursive' => 0,
+            ]
+         ]
+      ];
+
+      foreach ($expecteds as $type => $expected) {
+         $component = array_values($components[$type]);
+         //hack to replace expected fkeys
+         foreach ($expected as $i => &$row) {
+            foreach (array_keys($row) as $key) {
+               if (isForeignKeyField($key)) {
+                  $row[$key] = $component[$i][$key];
+               }
+            }
+         }
+         $this->array($component)->isIdenticalTo($expected);
+      }
+
+      //softwares
+      $isoft = new \Item_SoftwareVersion();
+      $iterator = $isoft->getFromItem($computer);
+      $this->integer(count($iterator))->isIdenticalTo(3);
+
+      $expecteds = [
+         [
+            'softname' => 'Boutique Amazon',
+            'version' => '18.21.2.100',
+            'dateinstall' => '2019-08-31',
+         ], [
+            'softname' => 'CameraTools',
+            'version' => '1.0',
+            'dateinstall' => '2008-12-31',
+         ], [
+            'softname' => 'Enregistreur d\'écran',
+            'version' => '1.5.9',
+            'dateinstall' => '2008-12-31',
+         ]
+      ];
+
+      $i = 0;
+      while ($soft = $iterator->next()) {
+         $expected = $expecteds[$i];
+         $this->array([
+            'softname'     => $soft['softname'],
+            'version'      => $soft['version'],
+            'dateinstall'  => $soft['dateinstall']
+         ])->isEqualTo($expected);
+         ++$i;
+      }
    }
 }

@@ -229,6 +229,10 @@ $RELATION = [
       'glpi_devicebatteries' => 'devicebatterymodels_id',
    ],
 
+   'glpi_devicecameramodels' => [
+      'glpi_devicecameras' => 'devicecameramodels_id',
+   ],
+
    'glpi_devicebatterytypes' => [
       'glpi_devicebatteries' => 'devicebatterytypes_id',
    ],

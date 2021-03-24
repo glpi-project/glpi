@@ -30,37 +30,21 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Inventory\Asset;
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
 
-use CommonDBTM;
-use Glpi\Inventory\Conf;
+/**
+ * Relation between item and devices
+**/
+class Item_DeviceCamera extends Item_Devices {
 
-class Sensor extends Device
-{
-   public function __construct(CommonDBTM $item, array $data = null) {
-      parent::__construct($item, $data, 'Item_DeviceSensor');
-   }
+   static public $itemtype_2 = 'DeviceCamera';
+   static public $items_id_2 = 'devicecameras_id';
 
-   public function prepare() :array {
+   static protected $notable = false;
 
-      $mapping = [
-         'manufacturer' => 'manufacturers_id',
-         'type'         => 'devicesensortypes_id',
-         'name'         => 'designation'
-      ];
-
-      foreach ($this->data as &$val) {
-         foreach ($mapping as $origin => $dest) {
-            if (property_exists($val, $origin)) {
-               $val->$dest = $val->$origin;
-            }
-         }
-      }
-
-      return $this->data;
-   }
-
-   public function checkConf(Conf $conf): bool {
-      return true;
+   static function getSpecificities($specif = '') {
+      return [];
    }
 }

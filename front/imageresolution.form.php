@@ -30,37 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Inventory\Asset;
+include ('../inc/includes.php');
 
-use CommonDBTM;
-use Glpi\Inventory\Conf;
-
-class Sensor extends Device
-{
-   public function __construct(CommonDBTM $item, array $data = null) {
-      parent::__construct($item, $data, 'Item_DeviceSensor');
-   }
-
-   public function prepare() :array {
-
-      $mapping = [
-         'manufacturer' => 'manufacturers_id',
-         'type'         => 'devicesensortypes_id',
-         'name'         => 'designation'
-      ];
-
-      foreach ($this->data as &$val) {
-         foreach ($mapping as $origin => $dest) {
-            if (property_exists($val, $origin)) {
-               $val->$dest = $val->$origin;
-            }
-         }
-      }
-
-      return $this->data;
-   }
-
-   public function checkConf(Conf $conf): bool {
-      return true;
-   }
-}
+$dropdown = new ImageResolution();
+include (GLPI_ROOT . "/front/dropdown.common.form.php");

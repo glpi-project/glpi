@@ -197,7 +197,7 @@ $CFG_GLPI["project_asset_types"]          = ['Computer', 'Monitor', 'NetworkEqui
                                                   'DeviceHardDrive', 'DeviceNetworkCard', 'DeviceDrive',
                                                   'DeviceControl', 'DeviceGraphicCard', 'DeviceSoundCard',
                                                   'DevicePci', 'DeviceCase', 'DevicePowerSupply', 'DeviceGeneric',
-                                                  'DeviceBattery', 'DeviceFirmware',
+                                                  'DeviceBattery', 'DeviceFirmware', 'DeviceCamera',
                                                   'Certificate'];
 
 
@@ -272,7 +272,7 @@ $CFG_GLPI["dictionnary_types"]            = ['ComputerModel', 'ComputerType', 'M
                                                   'Printer', 'PrinterModel', 'PrinterType',
                                                   'Software', 'OperatingSystemArchitecture',
                                                   'OperatingSystemKernel', 'OperatingSystemKernelVersion',
-                                                  'OperatingSystemEdition'];
+                                                  'OperatingSystemEdition', 'ImageResolution', 'ImageFormat'];
 
 $CFG_GLPI["helpdesk_visible_types"]       = ['Software', 'Appliance'];
 
@@ -290,7 +290,7 @@ $CFG_GLPI['device_types']                 = ['DeviceMotherboard', 'DeviceFirmwar
                                                   'DeviceDrive', 'DeviceBattery', 'DeviceGraphicCard',
                                                   'DeviceSoundCard', 'DeviceControl', 'DevicePci',
                                                   'DeviceCase', 'DevicePowerSupply', 'DeviceGeneric',
-                                                  'DeviceSimcard', 'DeviceSensor'];
+                                                  'DeviceSimcard', 'DeviceSensor', 'DeviceCamera'];
 
 $CFG_GLPI['itemdevices'] = [];
 foreach ($CFG_GLPI['device_types'] as $dtype) {
@@ -303,9 +303,9 @@ $CFG_GLPI["itemdevices_types"]            = ['Computer', 'NetworkEquipment', 'Pe
 
 $CFG_GLPI["itemdevices_itemaffinity"]     = ['Computer'];
 
-$CFG_GLPI["itemdevicememory_types"]       = ['Computer', 'NetworkEquipment', 'Peripheral', 'Printer'];
+$CFG_GLPI["itemdevicememory_types"]       = ['Computer', 'NetworkEquipment', 'Peripheral', 'Printer', 'Phone'];
 
-$CFG_GLPI["itemdevicepowersupply_types"]  = ['Computer', 'NetworkEquipment', 'Enclosure'];
+$CFG_GLPI["itemdevicepowersupply_types"]  = ['Computer', 'NetworkEquipment', 'Enclosure', 'Phone'];
 
 $CFG_GLPI["itemdevicenetworkcard_types"]  = ['Computer', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer'];
 
@@ -327,9 +327,11 @@ $CFG_GLPI['itemdeviceprocessor_types']    = ['Computer', 'Phone'];
 
 $CFG_GLPI['itemdevicesoundcard_types']    = ['Computer'];
 
-$CFG_GLPI['itemdevicegraphiccard_types']  = ['Computer'];
+$CFG_GLPI['itemdevicegraphiccard_types']  = ['Computer', 'Phone'];
 
-$CFG_GLPI['itemdevicemotherboard_types']  = ['Computer'];
+$CFG_GLPI['itemdevicemotherboard_types']  = ['Computer', 'Phone'];
+
+$CFG_GLPI['itemdevicecamera_types']  = ['Computer', 'Phone'];
 
 $CFG_GLPI["notificationtemplates_types"]  = ['CartridgeItem', 'Change', 'ConsumableItem',
                                              'Contract', 'CronTask', 'DBConnection',
