@@ -3839,7 +3839,7 @@ JAVASCRIPT;
          $criteria['SELECT'] = ['COUNT' => 'glpi_users.id AS CPT'];
          $criteria['DISTINCT'] = true;
       } else {
-         $criteria['SELECT'] = 'glpi_users.*';
+         $criteria['SELECT'] = ['glpi_users.*', 'glpi_useremails.email AS default_email'];
          $criteria['DISTINCT'] = true;
       }
 
@@ -3894,9 +3894,10 @@ JAVASCRIPT;
             ];
          } else {
             $criteria['ORDERBY'] = [
-               'glpi_users.realname',
-               'glpi_users.firstname',
-               'glpi_users.name'
+               'glpi_users.realname ASC',
+               'glpi_users.firstname ASC',
+               'glpi_users.name ASC',
+               'glpi_useremails.is_default DESC'
             ];
          }
 
