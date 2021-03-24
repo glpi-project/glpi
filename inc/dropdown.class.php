@@ -3712,8 +3712,6 @@ class Dropdown {
 
 
    public static function getDropdownActors($post, $json = true) {
-      global $CFG_GLPI;
-
       if (!Session::validateIDOR($post)) {
          return;
       }
@@ -3751,11 +3749,13 @@ class Dropdown {
          $text = formatUserName($user["id"], $user["name"], $user["realname"], $user["firstname"]);
 
          $results[] = [
-            'id'       => "User_$ID",
-            'text'     => $text,
-            'title'    => sprintf(__('%1$s - %2$s'), $text, $user['name']),
-            'itemtype' => "User",
-            'items_id' => $ID,
+            'id'                => "User_$ID",
+            'text'              => $text,
+            'title'             => sprintf(__('%1$s - %2$s'), $text, $user['name']),
+            'itemtype'          => "User",
+            'items_id'          => $ID,
+            'use_notification'  => strlen($user['default_email']) > 0 ? 1 : 0,
+            'alternative_email' => $user['default_email'],
          ];
       }
 
@@ -3791,7 +3791,8 @@ class Dropdown {
       $possible_entities = array_column($results, "text");
 
       if ($post["actortype"] == 'assign') {
-         $suppliers = Dropdown::getDropdownValue([
+         $supplier_obj = new Supplier;
+         $suppliers    = Dropdown::getDropdownValue([
             'itemtype'            => 'Supplier',
             '_idor_token'         => $post['_idor_token'],
             'display_emptychoice' => false,
@@ -3801,9 +3802,13 @@ class Dropdown {
          foreach ($suppliers['results'] as $supplier) {
             if (isset($supplier['children'])) {
                foreach ($supplier['children'] as &$children) {
-                  $children['items_id'] = $children['id'];
-                  $children['id']       = "Supplier_".$children['id'];
-                  $children['itemtype'] = "Supplier";
+                  $supplier_obj->getFromDB($children['id']);
+
+                  $children['items_id']          = $children['id'];
+                  $children['id']                = "Supplier_".$children['id'];
+                  $children['itemtype']          = "Supplier";
+                  $children['use_notification']  = strlen($supplier_obj->fields['email']) > 0 ? 1 : 0;
+                  $children['alternative_email'] = $supplier_obj->fields['email'];
                }
             }
 
