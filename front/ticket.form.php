@@ -57,6 +57,10 @@ foreach ($date_fields as $date_field) {
    }
 }
 
+if (isset($_UPOST['_actors'])) {
+   $_POST['_actors'] = json_decode($_UPOST['_actors'], true);
+}
+
 if (isset($_POST["add"])) {
    $track->check(-1, CREATE, $_POST);
 
@@ -91,7 +95,6 @@ if (isset($_POST["add"])) {
    Event::log($_POST["id"], "ticket", 4, "tracking",
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
-
 
    if ($track->can($_POST["id"], READ)) {
       $toadd = '';
