@@ -4160,6 +4160,9 @@ class Ticket extends CommonITILObject {
       // Restore saved values and override $this->fields
       $this->restoreSavedValues($saved);
 
+      //restore saved values as input (to manage uploaded img)
+      $this->input = $saved;
+
       foreach ($default_values as $name => $value) {
          if (!isset($options[$name])) {
             if (isset($saved[$name])) {

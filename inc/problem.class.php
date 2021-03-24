@@ -1198,6 +1198,9 @@ class Problem extends CommonITILObject {
       // Restore saved values and override $this->fields
       $this->restoreSavedValues($saved);
 
+      //restore saved values as input (to manage uploaded img)
+      $this->input = $saved;
+
       // Set default options
       if (!$ID) {
          foreach ($default_values as $key => $val) {
