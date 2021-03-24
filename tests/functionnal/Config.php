@@ -443,30 +443,38 @@ class Config extends DbTestCase {
    protected function dbEngineProvider() {
       return [
          [
+            'raw'       => '10.1.48-MariaDB',
+            'version'   => '10.1.48',
+            'compat'    => false
+         ], [
             'raw'       => '10.2.14-MariaDB',
             'version'   => '10.2.14',
             'compat'    => true
          ], [
-            'raw'       => '5.5.10-MariaDB',
-            'version'   => '5.5.10',
-            'compat'    => false
+            'raw'       => '10.3.28-MariaDB',
+            'version'   => '10.3.28',
+            'compat'    => true
+         ], [
+            'raw'       => '10.4.8-MariaDB-1:10.4.8+maria~bionic',
+            'version'   => '10.4.8',
+            'compat'    => true
+         ], [
+            'raw'       => '10.5.9-MariaDB',
+            'version'   => '10.5.9',
+            'compat'    => true
          ], [
             'raw'       => '5.6.38-log',
             'version'   => '5.6.38',
-            'compat'    => true
-         ], [
-            'raw'       => '5-5-57',
-            'version'   => '5',
             'compat'    => false
-         ], [
-            'raw'       => '5-6-31',
-            'version'   => '5',
-            'compat'    => false // since version is 5, this is not compat.
-         ], [
-            'raw'       => '10-2-35',
-            'version'   => '10',
+         ],  [
+            'raw'       => '5.7.50-log',
+            'version'   => '5.7.50',
             'compat'    => true
-         ]
+         ], [
+            'raw'       => '8.0.23-standard',
+            'version'   => '8.0.23',
+            'compat'    => true
+         ],
       ];
    }
 

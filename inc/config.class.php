@@ -2409,18 +2409,20 @@ class Config extends CommonDBTM {
     * @return boolean
    **/
    static function checkDbEngine($raw = null) {
-      // MySQL >= 5.6 || MariaDB >= 10
       if ($raw === null) {
          global $DB;
          $raw = $DB->getVersion();
       }
 
-      /** @var array $found */
-      preg_match('/(\d+(\.)?)+/', $raw, $found);
-      $version = $found[0];
+      $server  = preg_match('/-MariaDB/', $raw) ? 'MariaDB': 'MySQL';
+      $version = preg_replace('/^((\d+\.?)+).*$/', '$1', $raw);
 
-      $db_ver = version_compare($version, '5.6', '>=');
-      return [$version => $db_ver];
+      // MySQL >= 5.7 || MariaDB >= 10.2
+      $is_supported = $server === 'MariaDB'
+         ? version_compare($version, '10.2', '>=')
+         : version_compare($version, '5.7', '>=');
+
+      return [$version => $is_supported];
    }
 
 

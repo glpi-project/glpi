@@ -56,7 +56,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB AUTO_INCREMENT=15
 SQL
             ,
-            'version_string' => '5.6.50-log',
+            'version_string' => '5.7.50-log',
             'args'           => [
             ],
             'expected_has'   => false,
@@ -321,7 +321,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 SQL
             ,
-            'version_string' => '10.1.48-MariaDB',
+            'version_string' => '10.2.36-MariaDB',
             'args'           => [
                'use_utf8mb4' => false,
                'ignore_utf8mb4_migration' => true,
@@ -351,7 +351,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 SQL
             ,
-            'version_string' => '10.1.48-MariaDB',
+            'version_string' => '10.2.36-MariaDB',
             'args'           => [
                'use_utf8mb4' => false,
                'ignore_utf8mb4_migration' => false,
@@ -395,7 +395,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 SQL
             ,
-            'version_string' => '10.1.48-MariaDB',
+            'version_string' => '10.2.36-MariaDB',
             'args'           => [
                'use_utf8mb4' => false,
                'ignore_utf8mb4_migration' => true,
@@ -437,7 +437,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB
 SQL
             ,
-            'version_string' => '10.1.48-MariaDB',
+            'version_string' => '10.2.36-MariaDB',
             'args'           => [
                'ignore_timestamps_migration' => true,
             ],
@@ -465,7 +465,7 @@ CREATE TABLE `table` (
 ) ENGINE=InnoDB
 SQL
             ,
-            'version_string' => '10.1.48-MariaDB',
+            'version_string' => '10.2.36-MariaDB',
             'args'           => [
                'ignore_timestamps_migration' => false,
             ],

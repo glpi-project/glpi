@@ -57,13 +57,6 @@ class DynamicRowFormatCommand extends AbstractCommand {
     */
    const ERROR_INNODB_REQUIRED = 2;
 
-   /**
-    * Error code returned if DB configuration is not compatible with large indexes.
-    *
-    * @var integer
-    */
-   const ERROR_INCOMPATIBLE_DB_CONFIG = 3;
-
    protected $requires_db_up_to_date = false;
 
    protected function configure() {
@@ -86,26 +79,6 @@ class DynamicRowFormatCommand extends AbstractCommand {
     * @return void
     */
    private function checkForPrerequisites(): void {
-      // Check that DB configuration is compatible
-      $version = preg_replace('/^((\d+\.?)+).*$/', '$1', $this->db->getVersion());
-      if (version_compare($version, '5.7', '<')) {
-         // On MySQL 5.6, "ROW_FORMAT = DYNAMIC" fallbacks to "ROW_FORMAT = COMPACT"
-         // if "innodb_file_format" is not set to "Barracuda".
-         // This variable has been removed in MySQL 8.0 and in MariaDB 10.3.
-         $query = 'SELECT @@GLOBAL.' . $this->db->quoteName('innodb_file_format as innodb_file_format');
-
-         if (($db_config_res = $this->db->query($query)) === false) {
-            $msg = '<error>' . __('Unable to validate database configuration variables.') . '</error>';
-            throw new \Glpi\Console\Exception\EarlyExitException($msg, self::ERROR_INCOMPATIBLE_DB_CONFIG);
-         }
-
-         $db_config = $db_config_res->fetch_assoc();
-         if ($db_config['innodb_file_format'] !== 'Barracuda') {
-            $msg = '<error>' . __('Database configuration is not compatible with "Dynamic" row format usage.') . '</error>'
-                 . "\n" . '<error> - ' . __('"innodb_file_format" must be set to "Barracuda".') . '</error>';
-            throw new \Glpi\Console\Exception\EarlyExitException($msg, self::ERROR_INCOMPATIBLE_DB_CONFIG);
-         }
-      }
 
       // Check that all tables are using InnoDB engine
       if (($myisam_count = $this->db->getMyIsamTables()->count()) > 0) {
