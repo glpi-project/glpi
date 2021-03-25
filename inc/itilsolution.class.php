@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -121,6 +123,14 @@ class ITILSolution extends CommonDBChild {
       if ($this->isNewItem()) {
          $this->getEmpty();
       }
+
+      TemplateRenderer::getInstance()->display('components/itilobject/form_solution.html.twig', [
+         'item'      => $options['parent'],
+         'subitem'   => $this
+      ]);
+      return;
+
+      //TODO Legacy form rendering kept for reference only. Remove when twig template is complete.
 
       if (!isset($options['item']) && isset($options['parent'])) {
          //when we came from aja/viewsubitem.php
