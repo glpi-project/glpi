@@ -58,6 +58,7 @@ class HtmlExtension extends AbstractExtension implements ExtensionInterface {
          new TwigFunction('Html__uploadedFiles', [Html::class , 'uploadedFiles'], ['is_safe' => ['html']]),
          new TwigFunction('Html__initEditorSystem', [Html::class , 'initEditorSystem'], ['is_safe' => ['html']]),
          new TwigFunction('Html__file', [Html::class , 'file'], ['is_safe' => ['html']]),
+         new TwigFunction('Html__showToolTip', [Html::class , 'showToolTip'], ['is_safe' => ['html']]),
       ];
    }
 
