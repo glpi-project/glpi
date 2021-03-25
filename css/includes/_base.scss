@@ -139,7 +139,13 @@ body.iframed {
 
       i.fas, i.far, i.fab {
          margin-right: 0;
-         line-height: 1.2em;
+         line-height: 1.5em;
+      }
+
+      &.btn-sm {
+         i.fas, i.far, i.fab {
+            line-height: 1.2em;
+         }
       }
    }
 }

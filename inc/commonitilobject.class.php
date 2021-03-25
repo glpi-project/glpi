@@ -8217,6 +8217,11 @@ abstract class CommonITILObject extends CommonDBTM {
          //a validation has already been requested/done
          $excluded[] = 'TicketValidation:submit_validation';
       }
+
+      $excluded[] = '*:add_actor';
+      $excluded[] = '*:add_task';
+      $excluded[] = '*:add_followup';
+
       return $excluded;
    }
 
