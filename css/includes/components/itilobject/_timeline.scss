@@ -30,6 +30,29 @@
  */
 
 .timeline-item {
+   .state {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      margin-right: 3px;
+      background-repeat: no-repeat;
+      vertical-align: middle;
+
+      &.state_0 {
+         background-image: url(../pics/timeline/information.png);
+      }
+
+      &.state_1 {
+         cursor: pointer;
+         background-image: url(../pics/timeline/todo.png);
+      }
+
+      &.state_2 {
+         cursor: pointer;
+         background-image: url(../pics/timeline/done.png);
+      }
+   }
+
    .timeline-content {
       position: relative;
       border-top-left-radius: 0;

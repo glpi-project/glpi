@@ -42,6 +42,7 @@ use Glpi\Application\View\TemplateRenderer;
 abstract class CommonITILObject extends CommonDBTM {
    use \Glpi\Features\Clonable;
    use \Glpi\Features\UserMention;
+   use \Glpi\Features\Timeline;
 
    /// Users by type
    protected $users       = [];
@@ -6588,6 +6589,85 @@ abstract class CommonITILObject extends CommonDBTM {
       $this->filterTimeline();
    }
 
+   public function getTimelineItemtypes(): array
+   {
+      /** @var CommonITILObject $obj_type */
+      $obj_type = static::getType();
+      $foreign_key = static::getForeignKeyField();
+
+      //check sub-items rights
+      $tmp = [$foreign_key => $this->getID()];
+      $fup = new ITILFollowup();
+      $fup->getEmpty();
+      $fup->fields['itemtype'] = $obj_type;
+      $fup->fields['items_id'] = $this->getID();
+
+      $task_class = $obj_type."Task";
+      $task = new $task_class;
+
+      $solved_statuses = static::getSolvedStatusArray();
+      $closed_statuses = static::getClosedStatusArray();
+      $solved_closed_statuses = array_merge($solved_statuses, $closed_statuses);
+
+      $canadd_fup = $fup->can(-1, CREATE, $tmp) && !in_array($this->fields["status"], $solved_closed_statuses, true);
+      $canadd_task = $task->can(-1, CREATE, $tmp) && !in_array($this->fields["status"], $solved_closed_statuses, true);
+      $canadd_document = $canadd_fup || ($this->canAddItem('Document') && !in_array($this->fields["status"], $solved_closed_statuses, true));
+      $canadd_solution = $obj_type::canUpdate() && $this->canSolve() && !in_array($this->fields["status"], $solved_statuses, true);
+
+      $validation_class = $obj_type.'Validation';
+      $canadd_validation = false;
+      if (class_exists($validation_class)) {
+         $validation = new $validation_class();
+         $canadd_validation = $validation->can(-1, CREATE, $tmp) && !in_array($this->fields["status"], $solved_closed_statuses, true);
+      }
+
+      $itemtypes = [];
+
+      if ($canadd_fup) {
+         $itemtypes['answer'] = [
+            'type'      => 'ITILFollowup',
+            'class'     => 'ITILFollowup',
+            'icon'      => 'far fa-comment',
+            'label'     => _x('button', 'Answer'),
+            'template'  => 'components/itilobject/form_followup.html.twig',
+            'item'      => $fup
+         ];
+      }
+      if ($canadd_task) {
+         $itemtypes['task'] = [
+            'type'      => 'ITILTask',
+            'class'     => $task_class,
+            'icon'      => 'fas fa-wrench',
+            'label'     => _x('button', 'Create a task'),
+            'template'  => 'components/itilobject/form_task.html.twig',
+            'item'      => $task
+         ];
+      }
+      if ($canadd_solution) {
+         $itemtypes['solution'] = [
+            'type'      => 'ITILSolution',
+            'class'     => 'ITILSolution',
+            'icon'      => 'fas fa-check',
+            'label'     => _x('button', 'Add a solution'),
+            'template'  => 'components/itilobject/form_solution.html.twig',
+            'item'      => new ITILSolution()
+         ];
+      }
+      if ($canadd_validation) {
+         $itemtypes['validation'] = [
+            'type'      => 'ITILValidation',
+            'class'     => $validation_class,
+            'icon'      => 'far fa-thumbs-up',
+            'label'     => _x('button', 'Ask for validation'),
+            'template'  => 'components/itilobject/form_validation.html.twig',
+            'item'      => $validation
+         ];
+      }
+
+      //TODO Call timeline_actions plugin hook
+
+      return $itemtypes;
+   }
 
    /**
     * Displays the form at the top of the timeline.
