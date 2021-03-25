@@ -59,6 +59,7 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
          new TwigFilter('canDelete', [$this, 'canDelete']),
          new TwigFilter('canPurge', [$this, 'canPurge']),
          new TwigFilter('getFromDB', [$this, 'getFromDB']),
+         new TwigFilter('showForm', [$this, 'showForm'], ['is_safe' => ['html']]),
       ];
    }
 
@@ -279,5 +280,11 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
       }
 
       return $ma->getInput();
+   }
+
+   public function showForm(CommonDBTM $item, $options = []): void {
+      if (method_exists($item, 'showForm')) {
+         $item->showForm($item->getID(), $options);
+      }
    }
 }
