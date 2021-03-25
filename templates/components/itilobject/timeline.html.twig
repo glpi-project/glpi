@@ -24,6 +24,11 @@
       {% set date_creation = entry_i['date_creation'] ?? entry_i['date'] %}
       {% set date_mod = entry_i['date_mod'] %}
 
+      {# Fix solution type #}
+      {% if entry['type'] is same as 'Solution' %}
+         {% set entry = entry|merge({'type': 'ITILSolution'}) %}
+      {% endif %}
+
       {% set can_edit_i  = entry_i['can_edit'] %}
       {% set can_promote = entry['type'] == "ITILFollowup" and can_edit_i and not status_closed %}
       {% set is_promoted = can_promote and entry_i['sourceof_items_id'] > 0 %}
@@ -85,19 +90,31 @@
                                  <i class="fas fa-fw fa-edit"></i>
                                  <span>{{ __("Edit") }}</span>
                               </a></li>
-                              <li><a class="dropdown-item" href="{{ form_path('Ticket') ~ "?_promoted_fup_id=" ~ entry_i['id'] }}">
-                                 <i class="fas fa-fw fa-code-branch"></i>
-                                 <span>{{ __('Promote to Ticket') }}</span>
-                              </a></li>
+                              {% if item.getType() is same as 'Ticket' and entry['type'] is same as 'ITILFollowup' %}
+                                 <li><a class="dropdown-item" href="{{ form_path('Ticket') ~ "?_promoted_fup_id=" ~ entry_i['id'] }}">
+                                    <i class="fas fa-fw fa-code-branch"></i>
+                                    <span>{{ __('Promote to Ticket') }}</span>
+                                 </a></li>
+                              {% endif %}
                            </ul>
                         </div>
                      </div>
                   </div>
                   <span class="row mt-2 timeline-content flex-grow-1 {{ item_position }} card">
                      <div class="card-body">
-                        <div class="read-only-content">
-                           {{ getHtmlToDisplay(entry_i['content']) }}
-                        </div>
+                        {% if itiltype is same as 'ITILValidation' %}
+                           {% include 'components/itilobject/form_validation.html.twig' with {'form_mode': 'view'} %}
+                        {% elseif itiltype is same as 'ITILTask' %}
+                           {% include 'components/itilobject/form_task.html.twig' with {'form_mode': 'view'} %}
+                        {% elseif itiltype is same as 'ITILFollowup' %}
+                           {% include 'components/itilobject/form_followup.html.twig' with {'form_mode': 'view'} %}
+                        {% elseif itiltype is same as 'ITILSolution' %}
+                           {% include 'components/itilobject/form_solution.html.twig' with {'form_mode': 'view'} %}
+                        {% else %}
+                           <div class="read-only-content">
+                              {{ getHtmlToDisplay(entry_i['content']) }}
+                           </div>
+                        {% endif %}
                         <div class="edit-content collapse">
                            <button class="btn btn-sm btn-ghost-secondary float-end close-edit-content">
                               <i class="fas fa-2x fa-times"></i>

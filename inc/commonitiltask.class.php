@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
 use Sabre\VObject\Component\VCalendar;
@@ -1442,6 +1443,14 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       $rand_is_private = mt_rand();
       $rand_group      = mt_rand();
       $rand_state      = mt_rand();
+
+      TemplateRenderer::getInstance()->display('components/itilobject/form_task.html.twig', [
+         'item'      => $options['parent'],
+         'subitem'   => $this
+      ]);
+      return;
+
+      //TODO Legacy form rendering kept for reference only. Remove when twig template is complete.
 
       if (isset($options['parent']) && !empty($options['parent'])) {
          $item = $options['parent'];
