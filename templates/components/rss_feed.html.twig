@@ -1,0 +1,62 @@
+{#
+---------------------------------------------------------------------
+GLPI - Gestionnaire Libre de Parc Informatique
+Copyright (C) 2015-2021 Teclib' and contributors.
+
+http://glpi-project.org
+
+based on GLPI - Gestionnaire Libre de Parc Informatique
+Copyright (C) 2003-2014 by the INDEPNET Development Team.
+
+---------------------------------------------------------------------
+
+LICENSE
+
+This file is part of GLPI.
+
+GLPI is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+GLPI is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+---------------------------------------------------------------------
+#}
+<div class="firstbloc">
+   {% if rss_feed.error is defined and rss_feed.error is not null %}
+      {{ __('Error retrieving RSS feed') }}
+   {% endif %}
+   <table class="tab_cadre_fixehov">
+      <tr>
+         <th colspan="3">{{ rss_feed.title }}</th>
+      </tr>
+      {% for rss_item in rss_feed.items %}
+         <tr class="tab_bg_1">
+            <td>{{ rss_item.timestamp }}</td>
+            <td>
+               {% if rss_item.link is defined and rss_item.link is not null %}
+                  <a target="_blank" href="{{ rss_item.link }}">{{ rss_item.title }}</a>
+               {% else %}
+                  {{ rss_item.title }}
+               {% endif %}
+            </td>
+            <td>
+               {% set rand = random() %}
+               {% set content = content|escape %}
+               {% set preview = content|length > 1000 ? content|slice(0, 1000)~'&nbsp;(...)' : content %}
+               <span id="rssitem{{ rand }}" class="pointer">{{ preview }}</span>
+               {{ Html__showToolTip(content, {
+                  'applyto': 'rssitem'~rand,
+                  'display': true
+               }) }}
+            </td>
+         </tr>
+      {% endfor %}
+   </table>
+</div>
