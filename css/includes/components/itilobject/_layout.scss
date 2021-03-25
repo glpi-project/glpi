@@ -48,25 +48,3 @@
       }
    }
 }
-
-
-.itil-footer {
-   position: sticky;
-   bottom: 0;
-
-   #debugajax {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-   }
-
-   .buttons-bar {
-      background-color: $card-bg;
-
-      @include media-breakpoint-down(md) {
-         .form-buttons {
-            border-left: 0 !important;
-         }
-      }
-   }
-}

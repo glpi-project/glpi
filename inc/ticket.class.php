@@ -2480,7 +2480,7 @@ class Ticket extends CommonITILObject {
 
          if (self::canUpdate()) {
             $actions[self::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'resolve_tickets']
-               = "<i class='ma-icon fa fa-check'></i>" .
+               = "<i class='ma-icon fas fa-check'></i>" .
                __("Resolve selected tickets");
          }
       }
@@ -7121,6 +7121,10 @@ class Ticket extends CommonITILObject {
          $excluded[] = 'TicketValidation:submit_validation';
          $excluded[] = 'Ticket:*';
       }
+
+      $excluded[] = 'Ticket_Ticket:add';
+      $excluded[] = 'Ticket:resolve_tickets';
+
       return $excluded;
    }
 
