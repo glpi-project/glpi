@@ -4,7 +4,7 @@
    </div>
 {% else %}
 
-   {% include 'layout/parts/search/pager.html.twig' with {count: filtered_number} %}
+   {% include 'components/search/pager.html.twig' with {count: filtered_number} %}
    <div class="table-responsive">
    <table class="table table-hover">
       <thead>
@@ -86,7 +86,7 @@
    </table>
    </div>{# .table-responsive #}
 
-   {% set limitdropdown = include('layout/parts/dropdown/limit.html.twig') %}
+   {% set limitdropdown = include('components/dropdown/limit.html.twig') %}
    <div class="ms-auto d-inline-flex align-items-center d-none d-md-block mb-2">
       {{ __("Show %s entries")|format(limitdropdown)|raw }}
    </div>
