@@ -1543,7 +1543,7 @@ class Search {
          Session::initNavigateListItems($data['itemtype']);
       }
 
-      TemplateRenderer::getInstance()->display('layout/parts/search/display_data.html.twig', [
+      TemplateRenderer::getInstance()->display('components/search/display_data.html.twig', [
          'data'                => $data,
          'union_search_type'   => $CFG_GLPI["union_search_type"],
          'rand'                => mt_rand(),
