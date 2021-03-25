@@ -284,10 +284,10 @@ class Central extends CommonGLPI {
    }
 
 
-   static function showMessages() {
+   public static function getMessages(): array {
       global $DB, $CFG_GLPI;
 
-      $warnings = [];
+      $messages = [];
 
       $user = new User();
       $user->getFromDB(Session::getLoginUserID());
@@ -296,7 +296,7 @@ class Central extends CommonGLPI {
             __('Your password will expire on %s.'),
             Html::convDateTime(date('Y-m-d H:i:s', $user->getPasswordExpirationTime()))
          );
-         $warnings[] = $expiration_msg
+         $messages['warnings'][] = $expiration_msg
             . ' '
             . '<a href="' . $CFG_GLPI['root_doc'] . '/front/updatepassword.php">'
             . __('Update my password')
@@ -312,18 +312,18 @@ class Central extends CommonGLPI {
                $user->getFromDBbyNameAndAuth($login, Auth::DB_GLPI, 0);
                $accounts[] = $user->getLink();
             }
-            $warnings[] = sprintf(__('For security reasons, please change the password for the default users: %s'),
-                               implode(" ", $accounts));
+            $messages['warnings'][] = sprintf(__('For security reasons, please change the password for the default users: %s'),
+               implode(" ", $accounts));
          }
 
          if (file_exists(GLPI_ROOT . "/install/install.php")) {
-            $warnings[] = sprintf(__('For security reasons, please remove file: %s'),
-                               "install/install.php");
+            $messages['warnings'][] = sprintf(__('For security reasons, please remove file: %s'),
+               "install/install.php");
          }
 
          $myisam_tables = $DB->getMyIsamTables();
          if (count($myisam_tables)) {
-            $warnings[] = sprintf(
+            $messages['warnings'][] = sprintf(
                __('%1$s tables not migrated to InnoDB engine.'),
                count($myisam_tables)
             );
@@ -331,25 +331,31 @@ class Central extends CommonGLPI {
          if ($DB->areTimezonesAvailable()) {
             $not_tstamp = $DB->notTzMigrated();
             if ($not_tstamp > 0) {
-                $warnings[] = sprintf(__('%1$s columns are not compatible with timezones usage.'), $not_tstamp)
-               . ' '
-               . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:timestamps');
+               $messages['warnings'][] = sprintf(__('%1$s columns are not compatible with timezones usage.'), $not_tstamp)
+                  . ' '
+                  . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:timestamps');
             }
          }
          if (($non_utf8mb4_tables = $DB->getNonUtf8mb4Tables()->count()) > 0) {
-            $warnings[] = sprintf(__('%1$s tables not migrated to utf8mb4 collation.'), $non_utf8mb4_tables)
+            $messages['warnings'][] = sprintf(__('%1$s tables not migrated to utf8mb4 collation.'), $non_utf8mb4_tables)
                . ' '
                . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:utf8mb4');
          }
       }
 
-      if ($DB->isSlave()
-          && !$DB->first_connection) {
-         $warnings[] = __('SQL replica: read only');
+      if ($DB->isSlave() && !$DB->first_connection) {
+         $messages['warnings'][] = __('SQL replica: read only');
       }
 
+      return $messages;
+   }
+
+
+   static function showMessages() {
+
+      $messages = self::getMessages();
       TemplateRenderer::getInstance()->display('central/messages.html.twig', [
-         'warnings'  => $warnings
+         'messages'  => $messages
       ]);
    }
 
