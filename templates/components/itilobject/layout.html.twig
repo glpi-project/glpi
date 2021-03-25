@@ -1,3 +1,4 @@
+{% set rand = random() %}
 
 <div class="mt-n1" id="itil-object">
 
@@ -13,6 +14,13 @@
          {% include("components/itilobject/fields_panel.html.twig") %}
       </div>
    </div>
+
    {% include("components/itilobject/footer.html.twig") %}
 
 </div>
+
+<form name='massaction_{{ rand }}' id='massaction_{{ rand }}' method='post'
+      action='{{ path("/front/massiveaction.php") }}'>
+   <div id='massive_container_{{ rand }}'></div>
+   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+</form>

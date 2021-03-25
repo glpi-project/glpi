@@ -29,41 +29,50 @@
 
       <div class="form-buttons col-md d-flex justify-content-end ms-auto ms-md-0 my-n2 py-2 pe-3 card-footer border-top-0">
          {% if item.isNewItem() %}
-            <button class="btn btn-primary me-2" type="submit" name="add"
+            <button class="btn btn-primary" type="submit" name="add"
                   title="{{ _x('button', 'Add') }}">
                <i class="fas fa-plus"></i>
                <span class="d-none d-md-block">{{ _x('button', 'Add') }}</span>
             </button>
          {% else %}
-            {% if item.isDeleted() %}
-               <button class="btn btn-outline-secondary me-2" type="submit" name="restore"
-                     title="{{ _x('button', 'Restore') }}">
-                  <i class='fas fa-trash-alt'></i>
-                  <span class="d-none d-md-block">{{ _x('button', 'Restore') }}</span>
-               </button>
 
-               <button class="btn btn-outline-danger me-2" type="submit" name="purge"
-                     title="{{ _x('button', 'Delete permanently') }}"
-                     onclick='return confirm("{{ __('Confirm the final deletion?') }}");'>
-                  <i class='fas fa-trash-alt'></i>
-                  <span class="d-none d-md-block">{{ _x('button', 'Delete permanently') }}</span>
-               </button>
-            {% else %}
-               <button class="btn btn-outline-danger me-2" type="submit" name="delete"
-                     title="{{ _x('button', 'Put in trashbin') }}">
-                  <i class='fas fa-trash-alt'></i>
-                  <span class="d-none d-md-block">{{ _x('button', 'Put in trashbin') }}</span>
-               </button>
-            {% endif %}
+            <div class="btn-group" role="group">
 
-            <button class="btn btn-primary me-2" type="submit" name="update"
-                  title="{{ _x('button', 'Save') }}">
-               <i class="fas fa-save"></i>
-               <span class="d-none d-md-block">{{ _x('button', 'Save') }}</span>
-            </button>
+               {% if item.isDeleted() %}
+                  <button class="btn btn-outline-secondary" type="submit" name="restore"
+                          title="{{ _x('button', 'Restore') }}">
+                     <i class='fas fa-trash-restore-alt'></i>
+                     <span class="d-none d-md-block">{{ _x('button', 'Restore') }}</span>
+                  </button>
+
+                  <button class="btn btn-outline-danger" type="submit" name="purge"
+                          title="{{ _x('button', 'Delete permanently') }}"
+                          onclick='return confirm("{{ __('Confirm the final deletion?') }}");'>
+                     <i class='fas fa-trash-alt'></i>
+                     <span class="d-none d-md-block">{{ _x('button', 'Delete permanently') }}</span>
+                  </button>
+               {% else %}
+                  <button class="btn btn-outline-danger" type="submit" name="delete"
+                          title="{{ _x('button', 'Put in trashbin') }}"
+                          data-bs-toggle="tooltip" data-bs-placement="top">
+                     <i class='fas fa-trash-alt'></i>
+                  </button>
+               {% endif %}
+
+               {% include"components/form/single-action.html.twig" with {
+                  'onlyicon': true
+               } %}
+
+               <button class="btn btn-primary" type="submit" name="update"
+                       title="{{ _x('button', 'Save') }}">
+                  <i class="fas fa-save"></i>
+                  <span class="d-none d-md-block">{{ _x('button', 'Save') }}</span>
+               </button>
+            </div>
+
          {% endif %}
       </div>
-   <div>
+   </div>
 </div>
 
 <script type="text/javascript">
