@@ -30,6 +30,9 @@
  */
 
 .itil-footer {
+   position: sticky;
+   bottom: 0;
+
    .action-task {
       background-color: $timeline-task-bg;
       color: $timeline-task-fg;
@@ -38,5 +41,24 @@
    .action-solution {
       background-color: $timeline-sol-bg;
       color: $timeline-sol-fg;
+   }
+
+   #debugajax {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+   }
+
+   .buttons-bar {
+      background-color: $card-bg;
+
+      .form-buttons {
+         background-color: inherit;
+         border-left: 1px solid $card-border-color;
+
+         @include media-breakpoint-down(md) {
+            border-left: 0 !important;
+         }
+      }
    }
 }

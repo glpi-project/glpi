@@ -271,7 +271,7 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
          ],
          $_GET,
          'initial',
-         $item->fields['id']
+         $item->fields['id'] > 0
       );
 
       $input = $ma->getInput();
