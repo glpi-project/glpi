@@ -12,10 +12,10 @@
                </a>
             {% endif %}
          {% else %}
-            {{ include('layout/parts/search/controls.html.twig') }}
+            {{ include('components/search/controls.html.twig') }}
 
             {% if count > 0 and data['search']['as_map'] == 0 %}
-               {% set limitdropdown = include('layout/parts/dropdown/limit.html.twig') %}
+               {% set limitdropdown = include('components/dropdown/limit.html.twig') %}
                <div class="ms-auto d-inline-flex align-items-center d-none d-md-block">
                   {{ __("Show %s entries")|format(limitdropdown)|raw }}
                </div>
@@ -26,11 +26,11 @@
       {% if count > 0 %}
          <div>
             {% if data['search']['as_map'] == 0 %}
-               {{ include('layout/parts/search/table.html.twig') }}
+               {{ include('components/search/table.html.twig') }}
             {% endif %}
             {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and data['search']['as_map'] == 0 %}
                <div class="card-footer search-footer">
-                  {{ include('layout/parts/search/pager.html.twig') }}
+                  {{ include('components/search/pager.html.twig') }}
                </div>
             {% endif %}
          </div>
