@@ -3,31 +3,25 @@
       {% if not item.isNewItem() %}
          <div class="col-md-8 ps-3">
             <div class="btn-group me-2 main-actions">
-               <button class="btn btn-primary answer-action" data-bs-toggle="collapse" data-bs-target="#new-ITILFollowup-block">
-                  <i class='far fa-comment'></i>
-                  <span>{{ _x('button', 'Answer') }}</span>
+               {% set default_action = timeline_itemtypes|keys|first %}
+               {% set default_action_data = timeline_itemtypes|first %}
+               <button class="btn btn-primary answer-action" data-bs-toggle="collapse" data-bs-target="#new-{{ default_action_data.class }}-block">
+                  <i class='{{ default_action_data.icon }}'></i>
+                  <span>{{ default_action_data.label }}</span>
                </button>
                <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                   <span class="visually-hidden">{{ __("View other actions") }}</span>
                </button>
                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item action-task answer-action" href="#"
-                        data-bs-toggle="collapse" data-bs-target="#new-ITILTask-block">
-                     <i class='fas fa-wrench'></i>
-                     <span>{{ _x('button', 'Create a task') }}</span>
-                  </a></li>
-                  {% if item.getType() is same as ('Ticket') or item.getType() is same as ('Change') %}
-                  <li><a class="dropdown-item action-validation answer-action" href="#"
-                        data-bs-toggle="collapse" data-bs-target="#new-{{ item.getType() }}Validation-block">
-                     <i class='far fa-thumbs-up'></i>
-                     <span>{{ _x('button', 'Ask for validation') }}</span>
-                  </a></li>
-                  {% endif %}
-                  <li><a class="dropdown-item action-solution answer-action" href="#"
-                        data-bs-toggle="collapse" data-bs-target="#new-ITILSolution-block">
-                     <i class='fas fa-check'></i>
-                     <span>{{ _x('button', 'Add a solution') }}</span>
-                  </a></li>
+                  {% for action, timeline_itemtype in timeline_itemtypes %}
+                     {% if loop.index0 > 0 %}
+                        <li><a class="dropdown-item action-{{ action}} answer-action" href="#"
+                           data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
+                           <i class='{{ timeline_itemtype.icon }}'></i>
+                           <span>{{ timeline_itemtype.label }}</span>
+                        </a></li>
+                     {% endif %}
+                  {% endfor %}
                </ul>
             </div>
          </div>
@@ -75,7 +69,7 @@
 <script type="text/javascript">
 $(function() {
    $(document).on("click", "#itil-footer .answer-action", function() {
-      // scroll body to ensure we are at bottom (usefull for responsive display)
+      // scroll body to ensure we are at bottom (useful for responsive display)
       $('html, body').animate({
          scrollTop: $(document).height()
       }, 0, function(){
