@@ -1,156 +1,230 @@
-
+{% extends 'components/itilobject/form_timeline_item.html.twig' %}
 {% import "components/form/fields_macros.html.twig" as fields %}
-{% set rand = random() %}
 
-<div class="itiltask">
-    <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post" action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true">
-        <input type="hidden" name="itemtype" value="{{ item.getType() }}">
-        <input type="hidden" name="items_id" value="{{ item.fields['id'] }}">
-        {# TODO reopen #}
+{% block timeline_card %}
+   {% if form_mode == 'view' %}
+      {% if entry_i['state'] is constant('Planning::TODO') %}
+         <span class="state state_1" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('To do') }}"></span>
+      {% elseif entry_i['state'] is constant('Planning::DONE') %}
+         <span class="state state_2" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('Done') }}"></span>
+      {% endif %}
+      <div class="read-only-content">
+         {{ getHtmlToDisplay(entry_i['content']) }}
+      </div>
 
-        <div class="row">
-            <div class="col-12 col-md-9">
-                {{ fields.textareaField(
-                    'content',
-                    subitem.fields['content'],
-                    '',
-                    {
+      <script type='text/javascript'>
+         function change_task_state(tasks_id, target) {
+            $.post('{{ path("/ajax/timeline.php") }}',
+               {'action':     'change_task_state',
+                  'tasks_id':   tasks_id,
+                  'parenttype': '{{ item.getType() }}',
+                  '{{ item|get_foreignkey_field }}': {{ item.fields['id'] }}
+               })
+               .done((response) => {
+                  $(target).removeClass('state_1 state_2')
+                     .addClass('state_'+response.state)
+                     .attr('title', response.label);
+               });
+         }
+      </script>
+   {% else %}
+      <div class="itiltask">
+         <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
+               action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true">
+            <input type="hidden" name="itemtype" value="{{ item.getType() }}">
+            <input type="hidden" name="{{ item|get_foreignkey_field }}" value="{{ item.fields['id'] }}">
+            {# TODO reopen #}
+
+            <div class="row">
+               <div class="col-12 col-md-9">
+                  {{ fields.textareaField(
+                     'content',
+                     subitem.fields['content'],
+                     '',
+                     {
                         'full_width': true,
                         'no_label': true,
                         'enable_richtext': true,
                         'enable_fileupload': true,
+                        'enable_mentions': true,
                         'rand': rand,
-                    }
-                ) }}
-            </div>
-            <div class="col-12 col-md-3 order-first order-md-last">
-                <div class="row">
+                     }
+                  ) }}
+               </div>
+               <div class="col-12 col-md-3 order-first order-md-last">
+                  <div class="row">
 
-                    {% set task_template_lbl %}
-                        <i class="fas fa-reply fa-fw me-1" title="{{ _n('Task template', 'Task templates', getPluralNumber) }}"></i>
-                    {% endset %}
-                    {{ fields.dropdownField(
+                     {% set task_template_lbl %}
+                        <i class="fas fa-reply fa-fw me-1"
+                           title="{{ _n('Task template', 'Task templates', getPluralNumber) }}"></i>
+                     {% endset %}
+                     {{ fields.dropdownField(
                         "TaskTemplate",
                         "tasktemplates_id",
                         subitem.fields['tasktemplates_id'],
                         task_template_lbl,
                         {
-                            'full_width': true,
-                            'icon_label': true,
-                            'on_change': 'tasktemplate_update' ~ rand ~ '(this.value)',
-                            'entity': item.fields['entities_id'],
-                            'rand': rand,
+                           'full_width': true,
+                           'icon_label': true,
+                           'on_change': 'tasktemplate_update' ~ rand ~ '(this.value)',
+                           'entity': item.fields['entities_id'],
+                           'rand': rand,
                         }
-                    ) }}
+                     ) }}
 
-                    {# Category #}
-                    {% set task_category_lbl %}
+                     {# Category #}
+                     {% set task_category_lbl %}
                         <i class="fas fa-tag fa-fw me-1" title="{{ __('Category') }}"></i>
-                    {% endset %}
-                    {{ fields.dropdownField(
+                     {% endset %}
+                     {{ fields.dropdownField(
                         "TaskCategory",
                         "taskcategories_id",
                         subitem.fields['taskcategories_id'],
                         task_category_lbl,
                         {
-                            'full_width': true,
-                            'icon_label': true,
-                            'entity': item.fields['entities_id'],
-                            'is_active': 1,
-                            'rand': rand,
+                           'full_width': true,
+                           'icon_label': true,
+                           'entity': item.fields['entities_id'],
+                           'is_active': 1,
+                           'rand': rand,
                         }
-                    ) }}
+                     ) }}
 
-                    {# Status #}
-{#                    {% set task_state_lbl %}#}
-{#                        <i class="fas fa-tasks fa-fw me-1" title="{{ __('Status') }}"></i>#}
-{#                    {% endset %}#}
-{#                    {{ fields.dropdownField(#}
-{#                        "State",#}
-{#                        "states_id",#}
-{#                        subitem.fields['states_id'],#}
-{#                        task_state_lbl,#}
-{#                        {#}
-{#                            'full_width': true,#}
-{#                            'icon_label': true,#}
-{#                            'rand': rand,#}
-{#                        }#}
-{#                    ) }}#}
+                     {# Status #}
+                     {% set task_state_lbl %}
+                        <i class="fas fa-tasks fa-fw me-1" title="{{ __('Status') }}"></i>
+                     {% endset %}
+                     {{ fields.dropdownArrayField('state', subitem.fields['state'], {
+                        0: _n('Information', 'Information', 1),
+                        1: __('To do'),
+                        2: __('Done')
+                     }, task_state_lbl, {
+                        'full_width': true,
+                        'icon_label': true,
+                        'rand': rand,
+                     }) }}
 
-                    {% set task_private_lbl %}
+
+                     {% set task_private_lbl %}
                         <i class="fas fa-lock fa-fw me-1" title="{{ __('Private') }}"></i>
-                    {% endset %}
-                    {{ fields.sliderField(
+                     {% endset %}
+                     {{ fields.sliderField(
                         "is_private",
                         subitem.fields['is_private'],
                         task_private_lbl,
                         {
-                            'full_width': true,
-                            'icon_label': true,
-                            'rand': rand,
+                           'full_width': true,
+                           'icon_label': true,
+                           'rand': rand,
                         }
-                    ) }}
+                     ) }}
 
-                    {# Duration #}
+                     {# Duration #}
+                     {% set task_actiontime_lbl %}
+                        <i class="fas fa-stopwatch fa-fw me-1" title="{{ __('Duration') }}"></i>
+                     {% endset %}
+                     {{ fields.dropdownTimestampField('actiontime', subitem.fields['actiontime'], task_actiontime_lbl, {
+                        'full_width': true,
+                        'icon_label': true,
+                        'rand': rand,
+                        'min': 0,
+                        'max': 8*constant('HOUR_TIMESTAMP'),
+                        'addfirstminutes': true,
+                        'inhours': true
+                     }) }}
 
-                    {# User #}
+                     {# User #}
+                     {% set task_user_lbl %}
+                        <i class="fas fa-user fa-fw me-1" title="{{ __('User') }}"></i>
+                     {% endset %}
+                     {{ fields.dropdownField(
+                        "User",
+                        "users_id_tech",
+                        subitem.fields['users_id_tech']|default(session('glpiID')),
+                        task_user_lbl,
+                        {
+                           'full_width': true,
+                           'icon_label': true,
+                           'entity': item.fields['entities_id'],
+                           'right': 'own_ticket',
+                           'rand': rand,
+                        }
+                     ) }}
 
-                    {# Group #}
+                     {# Group #}
+                     {% set task_group_lbl %}
+                        <i class="fas fa-users fa-fw me-1" title="{{ __('Group') }}"></i>
+                     {% endset %}
+                     {{ fields.dropdownField(
+                        "Group",
+                        "groups_id_tech",
+                        subitem.fields['groups_id_tech'],
+                        task_group_lbl,
+                        {
+                           'full_width': true,
+                           'icon_label': true,
+                           'entity': item.fields['entities_id'],
+                           'condition': {'is_task': 1},
+                           'rand': rand,
+                        }
+                     ) }}
 
-                </div>
+                  </div>
+               </div>
             </div>
-        </div>
 
-        <div class="d-flex">
-            {% if subitem.fields['id'] <= 0 %}
-                <button class="btn btn-primary me-2" type="submit" name="add">
-                    <i class='fas fa-plus'></i>
-                    <span>{{ _x('button', 'Add') }}</span>
-                </button>
-            {% else %}
-                <button class="btn btn-primary me-2" type="submit" name="update">
-                    <i class='fas fa-save'></i>
-                    <span>{{ _x('button', 'Save') }}</span>
-                </button>
+            <div class="d-flex">
+               {% if subitem.fields['id'] <= 0 %}
+                  <button class="btn btn-primary me-2" type="submit" name="add">
+                     <i class='fas fa-plus'></i>
+                     <span>{{ _x('button', 'Add') }}</span>
+                  </button>
+               {% else %}
+                  <button class="btn btn-primary me-2" type="submit" name="update">
+                     <i class='fas fa-save'></i>
+                     <span>{{ _x('button', 'Save') }}</span>
+                  </button>
 
-                {% if subitem.can(id, constant('PURGE')) %}
-                    <button class="btn btn-outline-danger me-2" type="submit" name="purge"
-                            onclick='return confirm("{{ __('Confirm the final deletion?') }}");'>
+                  {% if subitem.can(id, constant('PURGE')) %}
+                     <button class="btn btn-outline-danger me-2" type="submit" name="purge"
+                             onclick='return confirm("{{ __('Confirm the final deletion?') }}");'>
                         <i class='fas fa-trash-alt'></i>
                         <span>{{ _x('button', 'Delete permanently') }}</span>
-                    </button>
-                {% endif %}
-            {% endif %}
-        </div>
+                     </button>
+                  {% endif %}
+               {% endif %}
+            </div>
 
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
-    </form>
-</div>
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+         </form>
+      </div>
 
-<script type="text/javascript">
-   function itiltasktemplate_update{{ rand }}(value) {
-      $.ajax({
-         url: '{{ path("/ajax/task.php") }}',
-         type: 'POST',
-         data: {
-            tasktemplates_id: value
+      <script type="text/javascript">
+         function itiltasktemplate_update{{ rand }}(value) {
+            $.ajax({
+               url: '{{ path("/ajax/task.php") }}',
+               type: 'POST',
+               data: {
+                  tasktemplates_id: value
+               }
+            }).done(function (data) {
+               var requesttypes_id = isNaN(parseInt(data.requesttypes_id))
+                  ? 0
+                  : parseInt(data.requesttypes_id);
+
+               // set textarea content
+               if (tasktinymce = tinymce.get("content_{{ rand }}")) {
+                  tasktinymce.setContent(data.content);
+               }
+               // set category
+               $("#dropdown_requesttypes_id{{ rand }}").trigger("setValue", requesttypes_id);
+               // set is_private
+               $("#is_private_{{ rand }}")
+                  .prop("checked", data.is_private == "0"
+                     ? false
+                     : true);
+            });
          }
-      }).done(function(data) {
-         var requesttypes_id = isNaN(parseInt(data.requesttypes_id))
-            ? 0
-            : parseInt(data.requesttypes_id);
-
-         // set textarea content
-         if (tasktinymce = tinymce.get("content_{{ rand }}")) {
-            tasktinymce.setContent(data.content);
-         }
-         // set category
-         $("#dropdown_requesttypes_id{{ rand }}").trigger("setValue", requesttypes_id);
-         // set is_private
-         $("#is_private_{{ rand }}")
-            .prop("checked", data.is_private == "0"
-               ? false
-               : true);
-      });
-   }
-</script>
+      </script>
+   {% endif %}
+{% endblock %}

@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -943,6 +945,14 @@ abstract class CommonITILValidation  extends CommonDBChild {
          $options[static::$items_id] = $options['parent']->fields["id"];
          $this->check(-1, CREATE, $options);
       }
+
+      TemplateRenderer::getInstance()->display('components/itilobject/form_validation.html.twig', [
+         'item'      => $options['parent'],
+         'subitem'   => $this
+      ]);
+      return;
+
+      //TODO Legacy form rendering kept for reference only. Remove when twig template is complete.
 
       // No update validation is answer set
       $validation_admin   = (($this->fields["users_id"] == Session::getLoginUserID())
