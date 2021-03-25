@@ -30,25 +30,13 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Application\View\Extension;
-
-use Dropdown;
-use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
-use Twig\TwigFunction;
+namespace Glpi\Features;
 
 /**
- * @since x.x.x
+ * Trait Kanban.
+ * @since 9.5.0
  */
-class DropdownExtension extends AbstractExtension implements ExtensionInterface {
+trait Timeline {
 
-   public function getFunctions() {
-      return [
-         new TwigFunction('getDropdownName', [Dropdown::class, 'getDropdownName']),
-         new TwigFunction('Dropdown__showGlobalSwitch', [Dropdown::class, 'showGlobalSwitch']),
-         new TwigFunction('Dropdown__showNumber', [Dropdown::class, 'showNumber'], ['is_safe' => ['html']]),
-         new TwigFunction('Dropdown__showFromArray', [Dropdown::class, 'showFromArray'], ['is_safe' => ['html']]),
-         new TwigFunction('Dropdown__showTimestamp', [Dropdown::class, 'showTimestamp'], ['is_safe' => ['html']]),
-      ];
-   }
+   abstract public function getTimelineItemtypes(): array;
 }
