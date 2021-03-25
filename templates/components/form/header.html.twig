@@ -18,7 +18,7 @@
 
 {% if item.canEdit(item.fields['id']) %}
 <form name='massaction_{{ rand }}' id='massaction_{{ rand }}' method='post'
-               action='{{ path("/front/massiveaction.php") }}'>
+      action='{{ path("/front/massiveaction.php") }}'>
    <div id='massive_container_{{ rand }}'></div>
    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
 </form>
