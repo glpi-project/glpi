@@ -152,22 +152,26 @@ class TimestampsCommand extends AbstractCommand {
 
             //guess default value
             if (is_null($column['COLUMN_DEFAULT']) && !$nullable) { // no default
-               $default = null;
+               // Prevent MySQL/MariaDB to force "default current_timestamp on update current_timestamp"
+               // as "on update current_timestamp" could be a real problem on fields like "date_creation".
+               $default = "CURRENT_TIMESTAMP";
             } else if ((is_null($column['COLUMN_DEFAULT']) || strtoupper($column['COLUMN_DEFAULT']) == 'NULL') && $nullable) {
                $default = "NULL";
             } else if (!is_null($column['COLUMN_DEFAULT']) && strtoupper($column['COLUMN_DEFAULT']) != 'NULL') {
-               if ($column['COLUMN_DEFAULT'] < '1970-01-01 00:00:01') {
+               if (preg_match('/^current_timestamp(\(\))?$/i', $column['COLUMN_DEFAULT']) === 1) {
+                  $default = $column['COLUMN_DEFAULT'];
+               } else if ($column['COLUMN_DEFAULT'] < '1970-01-01 00:00:01') {
                   // Prevent default value to be out of range (lower to min possible value)
                   $defaultDate = new \DateTime('1970-01-01 00:00:01', new \DateTimeZone('UTC'));
                   $defaultDate->setTimezone(new \DateTimeZone(date_default_timezone_get()));
-                  $default = $defaultDate->format("Y-m-d H:i:s");
+                  $default = $this->db->quoteValue($defaultDate->format("Y-m-d H:i:s"));
                } else if ($column['COLUMN_DEFAULT'] > '2038-01-19 03:14:07') {
                   // Prevent default value to be out of range (greater to max possible value)
                   $defaultDate = new \DateTime('2038-01-19 03:14:07', new \DateTimeZone('UTC'));
                   $defaultDate->setTimezone(new \DateTimeZone(date_default_timezone_get()));
-                  $default = $defaultDate->format("Y-m-d H:i:s");
+                  $default = $this->db->quoteValue($defaultDate->format("Y-m-d H:i:s"));
                } else {
-                  $default = $column['COLUMN_DEFAULT'];
+                  $default = $this->db->quoteValue($column['COLUMN_DEFAULT']);
                }
             }
 
@@ -179,9 +183,6 @@ class TimestampsCommand extends AbstractCommand {
                $tablealter .= " NOT NULL";
             }
             if ($default !== null) {
-               if ($default !== 'NULL') {
-                  $default = "'" . $this->db->escape($default) . "'";
-               }
                $tablealter .= " DEFAULT $default";
             }
             if ($column['COLUMN_COMMENT'] != '') {
