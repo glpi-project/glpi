@@ -1,7 +1,7 @@
 
 <form id="massform{{ itemtype }}" method="get" action="{{ path("front/massiveaction.php") }}">
-   <div class="card card-sm mt-4">
-      <div class="card-body border-bottom d-flex justify-content-between">
+   <div class="card card-sm mt-4 search-card">
+      <div class="card-header border-bottom d-flex justify-content-between search-header">
          {% if data['display_type'] == constant('Search::GLOBAL_SEARCH') %}
             <h2>{{ itemtype|itemtype_name }}</h2>
 
@@ -16,7 +16,7 @@
 
             {% if count > 0 and data['search']['as_map'] == 0 %}
                {% set limitdropdown = include('components/dropdown/limit.html.twig') %}
-               <div class="ms-auto d-inline-flex align-items-center d-none d-md-block">
+               <div class="d-inline-flex align-items-center d-none d-md-block search-limit">
                   {{ __("Show %s entries")|format(limitdropdown)|raw }}
                </div>
             {% endif %}
@@ -24,16 +24,14 @@
       </div>
 
       {% if count > 0 %}
-         <div>
-            {% if data['search']['as_map'] == 0 %}
-               {{ include('components/search/table.html.twig') }}
-            {% endif %}
-            {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and data['search']['as_map'] == 0 %}
-               <div class="card-footer search-footer">
-                  {{ include('components/search/pager.html.twig') }}
-               </div>
-            {% endif %}
-         </div>
+         {% if data['search']['as_map'] == 0 %}
+            {{ include('components/search/table.html.twig') }}
+         {% endif %}
+         {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and data['search']['as_map'] == 0 %}
+            <div class="card-footer search-footer">
+               {{ include('components/search/pager.html.twig') }}
+            </div>
+         {% endif %}
       {% else %}
          <div class="alert alert-info" role="alert">
             {{ __('No item found') }}
