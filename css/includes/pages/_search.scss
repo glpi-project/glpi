@@ -39,10 +39,20 @@
 }
 
 .search_page {
+   @include media-breakpoint-up(sm) {
+      max-height: calc(100vh - 76px);
+      overflow: auto;
+   }
+
    .search-form {
       background-color: $search_bg;
       color: $search_fg;
       border-color: $search_border;
+
+      @include media-breakpoint-up(sm) {
+         position: sticky;
+         left: 10px;
+      }
 
       // try having same width on link dropdowns
       .select2-container {
@@ -54,16 +64,65 @@
       }
    }
 
-   .search-results {
-      &.deleted-results {
-         color: rgb(56, 13, 13);
-      }
-   }
+   .search-card {
+      @include media-breakpoint-up(sm) {
+         min-width: 100%;
+         width: min-content;
 
-   @include media-breakpoint-up(sm) {
+         .search-header {
+            .search-controls {
+               position: sticky;
+               left: 10px;
+            }
+
+            .search-limit {
+               position: sticky;
+               right: 10px;
+            }
+         }
+      }
+
+
+      .table-responsive-md {
+         @include media-breakpoint-down(md) {
+            max-width: calc(100vw - 2rem);
+         }
+      }
+      .search-results {
+         @include media-breakpoint-up(sm) {
+            thead:first-child {
+               th {
+                  position: sticky;
+                  top: 0;
+                  z-index: 2;
+                  box-shadow: inset 0 1px 0 $card-border-color;
+               }
+            }
+         }
+
+         &.deleted-results {
+            color: rgb(56, 13, 13);
+         }
+      }
+
       .search-footer {
          position: sticky;
          bottom: 0;
+
+         @include media-breakpoint-up(sm) {
+            .search-pager {
+
+               .page-infos {
+                  position: sticky;
+                  left: 10px;
+               }
+
+               .pagination {
+                  position: sticky;
+                  right: 10px;
+               }
+            }
+         }
       }
    }
 }
