@@ -356,13 +356,27 @@ class CronTask extends CommonDBTM{
       global $DB;
 
       $hour_criteria = new QueryExpression('hour(curtime())');
-      // First core ones
-      $WHERE = ['NOT' => ['itemtype' => ['LIKE', 'Plugin%']]];
 
-      // Only activated plugins
+      $itemtype_orwhere = [
+         // Core crontasks
+         [
+            ['NOT' => ['itemtype' => ['LIKE', 'Plugin%']]],
+            ['NOT' => ['itemtype' => ['LIKE', addslashes('GlpiPlugin\\\\') . '%']]]
+         ]
+      ];
       foreach (Plugin::getPlugins() as $plug) {
-         $WHERE = ['OR' => $WHERE + ['itemtype' => ['LIKE', "Plugin$plug%"]]];
+         // Activated plugin tasks
+         $itemtype_orwhere[] = [
+            'OR' => [
+               ['itemtype' => ['LIKE', sprintf('Plugin%s', $plug) . '%']],
+               ['itemtype' => ['LIKE', addslashes(sprintf('GlpiPlugin\\\\%s\\\\', $plug)) . '%']]
+            ]
+         ];
       }
+
+      $WHERE = [
+         ['OR' => $itemtype_orwhere]
+      ];
 
       if ($name) {
          $WHERE['name'] = addslashes($name);
@@ -952,7 +966,12 @@ class CronTask extends CommonDBTM{
 
       $iterator = $DB->request([
          'FROM'   => self::getTable(),
-         'WHERE'  => ['itemtype' => ['LIKE', "Plugin$plugin%"]]
+         'WHERE'  => [
+            'OR' => [
+               ['itemtype' => ['LIKE', sprintf('Plugin%s', $plugin) . '%']],
+               ['itemtype' => ['LIKE', addslashes(sprintf('GlpiPlugin\\\\%s\\\\', $plugin)) . '%']]
+            ]
+         ]
       ]);
 
       while ($data = $iterator->next()) {
