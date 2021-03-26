@@ -1056,6 +1056,28 @@ class CommonDBTM extends CommonGLPI {
       return $default;
    }
 
+   /**
+    * Restore data saved in the session to $this->input
+    *
+    * @since 9.5.5
+    *
+    * @param array $saved Array of values saved in session
+    *
+    * @return array Array of values
+   **/
+   protected function restoreSavedValues(Array $saved = []) {
+      if (count($saved)) {
+         //restore saved values as input (to manage uploaded img)
+         $this->input = $saved;
+
+         foreach ($saved as $name => $value) {
+            if (isset($this->fields[$name])) {
+               $this->fields[$name] = $saved[$name];
+            }
+         }
+      }
+   }
+
 
    // Common functions
    /**
@@ -1486,6 +1508,12 @@ class CommonDBTM extends CommonGLPI {
          $this->input['_no_history'] = !$history;
       }
 
+      if (isset($this->input['update'])) {
+         // Input from the interface
+         // Save this data to be available if add fail
+         $this->saveInput();
+      }
+
       // Plugin hook - $this->input can be altered
       Plugin::doHook("pre_item_update", $this);
       if ($this->input && is_array($this->input)) {
@@ -1578,6 +1606,11 @@ class CommonDBTM extends CommonGLPI {
                      $this->manageLocks();
                      $this->addMessageOnUpdateAction();
                      Plugin::doHook("item_update", $this);
+
+                     // As update have suceed, clean the old input value
+                     if (isset($this->input['_update'])) {
+                        $this->clearSavedInput();
+                     }
 
                      //Fill forward_entity_to array with itemtypes coming from plugins
                      if (isset(self::$plugins_forward_entity[$this->getType()])) {

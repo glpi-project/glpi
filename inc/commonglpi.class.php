@@ -860,7 +860,7 @@ JAVASCRIPT;
          if (isset($cleaned_options['stock_image'])) {
             unset($cleaned_options['stock_image']);
          }
-         if ($this instanceof CommonITILObject) {
+         if ($this instanceof CommonITILObject && $this->isNewItem()) {
             $this->input = $cleaned_options;
             $this->saveInput();
             // $extraparamhtml can be tool long in case of ticket with content
