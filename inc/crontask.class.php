@@ -355,7 +355,7 @@ class CronTask extends CommonDBTM{
    function getNeedToRun($mode = 0, $name = '') {
       global $DB;
 
-      $hour = date('H');
+      $hour_criteria = new QueryExpression('hour(curtime())');
       // First core ones
       $WHERE = ['NOT' => ['itemtype' => ['LIKE', 'Plugin%']]];
 
@@ -398,14 +398,14 @@ class CronTask extends CommonDBTM{
          $WHERE[] = ['OR' => [
             ['AND' => [
                ['hourmin'   => ['<', new QueryExpression($DB->quoteName('hourmax'))]],
-               'hourmin'   => ['<=', $hour],
-               'hourmax'   => ['>', $hour]
+               'hourmin'   => ['<=', $hour_criteria],
+               'hourmax'   => ['>', $hour_criteria]
             ]],
             ['AND' => [
                'hourmin'   => ['>', new QueryExpression($DB->quoteName('hourmax'))],
                'OR'        => [
-                  'hourmin'   => ['<=', $hour],
-                  'hourmax'   => ['>', $hour]
+                  'hourmin'   => ['<=', $hour_criteria],
+                  'hourmax'   => ['>', $hour_criteria]
                ]
             ]]
          ]];
