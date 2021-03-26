@@ -115,7 +115,6 @@ class Volume extends InventoryAsset
          $db_existing[$dbid] = array_map('strtolower', $data);
       }
 
-
       return $db_existing;
    }
 
