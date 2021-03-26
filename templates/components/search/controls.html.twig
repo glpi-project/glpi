@@ -1,4 +1,4 @@
-<div class="d-inline-flex align-items-center">
+<div class="d-inline-flex align-items-center search-controls">
    {% if showmassiveactions and count > 0 %}
    {{ showMassiveActions(massiveactionparams)|raw }}
    {% endif %}
@@ -31,7 +31,7 @@
 
       {% if can_config and count > 0 %}
       <button class="btn btn-sm btn-icon btn-ghost-secondary"
-              title="{{ __('Select default items to show') }}" data-bs-toggle="tooltip" data-bs-placement="top">
+             title="{{ __('Select default items to show') }}" data-bs-toggle="tooltip" data-bs-placement="top">
          <i class="fas fa-lg fa-wrench show_displaypreference_modal"></i>
       </button>
       {% endif %}
