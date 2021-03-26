@@ -32,7 +32,6 @@
 
 namespace Glpi\Inventory\Asset;
 
-use ComputerAntivirus;
 use Glpi\Inventory\Conf;
 use Printer_CartridgeInfo;
 
@@ -210,7 +209,6 @@ class Cartridge extends InventoryAsset
 
       $iterator = $DB->request([
          'FROM'   => Printer_CartridgeInfo::getTable(),
-         'FROM'   => ComputerAntivirus::getTable(),
          'WHERE'  => ['printers_id' => $this->item->fields['id']]
       ]);
 
