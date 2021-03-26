@@ -185,7 +185,7 @@ class VirtualMachine extends InventoryAsset
 
       $iterator = $DB->request([
          'SELECT' => ['id', 'name', 'uuid', 'virtualmachinesystems_id'],
-         'FROM'   => Computer::getTable(),
+         'FROM'   => ComputerVirtualMachine::getTable(),
          'WHERE'  => [
             'computers_id' => $this->item->fields['id'],
             'is_dynamic'   => 1
