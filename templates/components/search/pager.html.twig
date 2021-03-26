@@ -34,18 +34,18 @@
 {% set adjacents = 2 %}
 {% set skip_adjacents = false %}
 
-<div class="flex-grow-1 d-flex align-items-center justify-content-between mb-2">
-   <span class='d-block d-md-none'>
+<div class="flex-grow-1 d-flex flex-wrap flex-md-nowrap  align-items-center justify-content-center justify-content-md-between mb-2 search-pager">
+   <span class='d-block d-md-none page-infos'>
       {% set limitdropdown = include('components/dropdown/limit.html.twig') %}
       {{ limitdropdown|raw }}
    </span>
-   <p class="m-0 text-muted d-none d-md-block">
+   <p class="m-0 text-muted d-none d-md-block page-infos">
       {{ __("Showing %s to %s of %s entries")|format(current_start, current_end, count) }}
    </p>
-   <p class="m-0 text-muted d-block d-md-none text-nowrap ms-2">
+   <p class="m-0 text-muted d-block d-md-none text-nowrap ms-2 page-infos">
       {{ __("%s-%s/%s")|format(current_start, current_end, count) }}
    </p>
-   <ul class="pagination m-0 ms-auto">
+   <ul class="pagination m-0 mt-2 mt-md-0">
       {% set disabled = (start == 0 ? "disabled" : "") %}
       {% set aria_disabled = (start == 0 ? 'aria-disabled="true"' : "") %}
       <li class="page-item {{ disabled }}">
