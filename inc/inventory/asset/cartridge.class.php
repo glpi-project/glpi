@@ -32,6 +32,7 @@
 
 namespace Glpi\Inventory\Asset;
 
+use ComputerAntivirus;
 use Glpi\Inventory\Conf;
 use Printer_CartridgeInfo;
 
