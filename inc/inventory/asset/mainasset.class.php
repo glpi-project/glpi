@@ -709,7 +709,7 @@ abstract class MainAsset extends InventoryAsset
    }
 
    /**
-    * Set paertial inventory
+    * Set partial inventory
     *
     * @return Inventory
     */
