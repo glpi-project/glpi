@@ -267,13 +267,19 @@ class CronTask extends CommonDBTM{
 
 
    /**
-    * Start a task, timer, stat, log, ...
+    * End a task, timer, stat, log, ...
     *
-    * @param $retcode : <0 : need to run again, 0:nothing to do, >0:ok
+    * @param int|null $retcode
+    *    <0: need to run again
+    *    0 : nothing to do
+    *    >0: ok
+    * @param int $log_state
     *
     * @return bool : true if ok (not start by another)
+    *
+    * @since 9.5.5 Added parameter $log_state.
    **/
-   function end($retcode) {
+   function end($retcode, int $log_state = CronTaskLog::STATE_STOP) {
       global $DB;
 
       if (!isset($this->fields['id'])) {
@@ -292,7 +298,10 @@ class CronTask extends CommonDBTM{
       if ($DB->affectedRows($result) > 0) {
          // No gettext for log but add gettext line to be parsed for pot generation
          // order is important for insertion in english in the database
-         if (is_null($retcode)) {
+         if ($log_state === CronTaskLog::STATE_ERROR) {
+            $content = __('Execution error');
+            $content = 'Execution error';
+         } else if (is_null($retcode)) {
             $content = __('Action aborted');
             $content = 'Action aborted';
          } else if ($retcode < 0) {
@@ -312,7 +321,7 @@ class CronTask extends CommonDBTM{
                          'date'            => $_SESSION['glpi_currenttime'],
                          'content'         => $content,
                          'crontasklogs_id' => $this->startlog,
-                         'state'           => CronTaskLog::STATE_STOP,
+                         'state'           => $log_state,
                          'volume'          => $this->volume,
                          'elapsed'         => (microtime(true)-$this->timer)]);
          return true;
@@ -434,6 +443,74 @@ class CronTask extends CommonDBTM{
          return true;
       }
       return false;
+   }
+
+   /**
+    * Send a notification on task error.
+    */
+   private function sendNotificationOnError(): void {
+      global $DB;
+
+      $alert_iterator = $DB->request(
+         [
+            'FROM'      => 'glpi_alerts',
+            'WHERE'     => [
+               'items_id' => $this->fields['id'],
+               'itemtype' => 'CronTask',
+               'date'     => ['>', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL 1 day')],
+            ],
+         ]
+      );
+      if ($alert_iterator->count() > 0) {
+         // An alert has been sent within last day, so do not send a new one to not bother administrator
+         return;
+      }
+
+      // Check if errors threshold is exceeded, and send a notification in this case.
+      //
+      // We check on last "$threshold * 2" runs as a task that works only half of the time
+      // is not a normal behaviour.
+      // For instance, if threshold is 5, then a task that fails 5 times on last 10 executions
+      // will trigger a notification.
+      $threshold = 5;
+
+      $iterator = $DB->request(
+         [
+            'FROM'   => 'glpi_crontasklogs',
+            'WHERE'  => [
+               'crontasks_id' => $this->fields['id'],
+               'state'        => [CronTaskLog::STATE_STOP, CronTaskLog::STATE_ERROR],
+            ],
+            'ORDER'  => 'id DESC',
+            'LIMIT'  => $threshold * 2
+         ]
+      );
+
+      $error_count = 0;
+      foreach ($iterator as $row) {
+         if ($row['state'] === CronTaskLog::STATE_ERROR) {
+            $error_count++;
+         }
+      }
+
+      if ($error_count >= $threshold) {
+         // No alert has been sent within last day, so we can send one without bothering administrator
+         NotificationEvent::raiseEvent('alert', $this, ['items' => [$this->fields['id'] => $this->fields]]);
+         QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
+
+         // Delete existing outdated alerts
+         $alert = new Alert();
+         $alert->deleteByCriteria(['itemtype' => 'CronTask', 'items_id' => $this->fields['id']], 1);
+
+         // Create a new alert
+         $alert->add(
+            [
+               'type'     => Alert::THRESHOLD,
+               'itemtype' => 'CronTask',
+               'items_id' => $this->fields['id'],
+            ]
+         );
+      }
    }
 
 
@@ -825,52 +902,77 @@ class CronTask extends CommonDBTM{
 
       if (self::get_lock()) {
          for ($i=1; $i<=$max; $i++) {
-            $prefix = (abs($mode) == self::MODE_EXTERNAL ? __('External')
-                                                         : __('Internal'));
+            $msgprefix = sprintf(
+               //TRANS: %1$s is mode (external or internal), %2$s is an order number,
+               __('%1$s #%2$s'),
+               abs($mode) == self::MODE_EXTERNAL ? __('External') : __('Internal'),
+               $i
+            );
             if ($crontask->getNeedToRun($mode, $name)) {
                $_SESSION["glpicronuserrunning"] = "cron_".$crontask->fields['name'];
 
-               $fonction = [$crontask->fields['itemtype'],
-                                 'cron' . $crontask->fields['name']];
+               $function = sprintf('%s::cron%s', $crontask->fields['itemtype'], $crontask->fields['name']);
 
-               if (is_callable($fonction)) {
+               if (is_callable($function)) {
                   if ($crontask->start()) { // Lock in DB + log start
                      $taskname = $crontask->fields['name'];
-                     //TRANS: %1$s is mode (external or internal), %2$s is an order number,
-                     $msgcron = sprintf(__('%1$s #%2$s'), $prefix, $i);
-                     $msgcron = sprintf(__('%1$s: %2$s'), $msgcron,
-                                        sprintf(__('%1$s %2$s')."\n",
-                                                __('Launch'), $crontask->fields['name']));
-                     Toolbox::logInFile('cron', $msgcron);
-                     $retcode = call_user_func($fonction, $crontask);
+
+                     Toolbox::logInFile(
+                        'cron',
+                        sprintf(
+                           __('%1$s: %2$s'),
+                           $msgprefix,
+                           sprintf(__('%1$s %2$s')."\n", __('Launch'), $crontask->fields['name'])
+                        )
+                     );
+                     try {
+                        $retcode = call_user_func($function, $crontask);
+                     } catch (\Throwable $e) {
+                        global $GLPI;
+                        $GLPI->getErrorHandler()->handleException($e);
+                        Toolbox::logInFile(
+                           'cron',
+                           sprintf(
+                              __('%1$s: %2$s'),
+                              $msgprefix,
+                              sprintf(
+                                 __('Error during %s execution. Check in "%s" for more details.')."\n",
+                                 $crontask->fields['name'],
+                                 GLPI_LOG_DIR . '/php-errors.log'
+                              )
+                           )
+                        );
+                        $retcode = null;
+                        $crontask->end(null, CronTaskLog::STATE_ERROR);
+                        $crontask->sendNotificationOnError();
+                        continue;
+                     }
                      $crontask->end($retcode); // Unlock in DB + log end
                   } else {
-                     $msgcron = sprintf(__('%1$s #%2$s'), $prefix, $i);
-                     $msgcron = sprintf(__('%1$s: %2$s'), $msgcron,
-                                        sprintf(__('%1$s %2$s')."\n",
-                                                __("Can't start"), $crontask->fields['name']));
-                     Toolbox::logInFile('cron', $msgcron);
+                     Toolbox::logInFile(
+                        'cron',
+                        sprintf(
+                           __('%1$s: %2$s'),
+                           $msgprefix,
+                           sprintf(__('%1$s %2$s')."\n", __("Can't start"), $crontask->fields['name'])
+                        )
+                     );
                   }
-
                } else {
-                  if (is_array($fonction)) {
-                     $fonction = implode('::', $fonction);
-                  }
-                  Toolbox::logInFile('php-errors',
-                                     sprintf(__('Undefined function %s (for cron)')."\n",
-                                             $fonction));
-                  $msgcron = sprintf(__('%1$s #%2$s'), $prefix, $i);
-                  $msgcron = sprintf(__('%1$s: %2$s'), $msgcron,
-                                     sprintf(__('%1$s %2$s')."\n",
-                                             __("Can't start"), $crontask->fields['name']));
-                  Toolbox::logInFile('cron', $msgcron ."\n".
-                                             sprintf(__('Undefined function %s (for cron)')."\n",
-                                                     $fonction));
+                  $undefined_msg = sprintf(__('Undefined function %s (for cron)')."\n", $function);
+                  Toolbox::logInFile('php-errors', $undefined_msg);
+                  Toolbox::logInFile(
+                     'cron',
+                     sprintf(
+                        __('%1$s: %2$s'),
+                        $msgprefix,
+                        sprintf(__('%1$s %2$s')."\n", __("Can't start"), $crontask->fields['name'])
+                     ) ."\n". $undefined_msg
+                  );
                }
 
             } else if ($i==1) {
-               $msgcron = sprintf(__('%1$s #%2$s'), $prefix, $i);
-               $msgcron = sprintf(__('%1$s: %2$s'), $msgcron, __('Nothing to launch'));
+               $msgcron = sprintf(__('%1$s: %2$s'), $msgprefix, __('Nothing to launch'));
                Toolbox::logInFile('cron', $msgcron."\n");
             }
          } // end for
@@ -983,6 +1085,9 @@ class CronTask extends CommonDBTM{
       $nbstop  = countElementsInTable('glpi_crontasklogs',
                                       ['crontasks_id' => $this->fields['id'],
                                        'state'        => CronTaskLog::STATE_STOP ]);
+      $nberror = countElementsInTable('glpi_crontasklogs',
+                                      ['crontasks_id' => $this->fields['id'],
+                                       'state'        => CronTaskLog::STATE_ERROR ]);
 
       echo "<tr class='tab_bg_2'><td>".__('Run count')."</td><td class='right'>";
       if ($nbstart == $nbstop) {
@@ -994,6 +1099,9 @@ class CronTask extends CommonDBTM{
          echo "<br>";
          //TRANS: %s is the number of stops
          printf(_n('%s stop', '%s stops', $nbstop), $nbstop);
+         echo "<br>";
+         //TRANS: %s is the number of errors
+         printf(_n('%s error', '%s errors', $nberror), $nberror);
       }
       echo "</td></tr>";
 
@@ -1095,9 +1203,13 @@ class CronTask extends CommonDBTM{
       }
 
       // Total Number of events
-      $number = countElementsInTable('glpi_crontasklogs',
-                                     ['crontasks_id' => $this->fields['id'],
-                                      'state'        => CronTaskLog::STATE_STOP ]);
+      $number = countElementsInTable(
+         'glpi_crontasklogs',
+         [
+            'crontasks_id' => $this->fields['id'],
+            'state'        => [CronTaskLog::STATE_STOP, CronTaskLog::STATE_ERROR],
+         ]
+      );
 
       echo "<br><div class='center'>";
       if ($number < 1) {
@@ -1115,7 +1227,7 @@ class CronTask extends CommonDBTM{
          'FROM'   => 'glpi_crontasklogs',
          'WHERE'  => [
             'crontasks_id' => $this->fields['id'],
-            'state'        => CronTaskLog::STATE_STOP
+            'state'        => [CronTaskLog::STATE_STOP, CronTaskLog::STATE_ERROR],
          ],
          'ORDER'  => 'id DESC',
          'START'  => (int)$start,
@@ -1211,6 +1323,12 @@ class CronTask extends CommonDBTM{
 
                case CronTaskLog::STATE_STOP :
                   echo "<td>".__('End')."</td>";
+                  // Pass content to gettext
+                  $content = __($data['content']);
+                  break;
+
+               case CronTaskLog::STATE_ERROR :
+                  echo "<td>".__('Error')."</td>";
                   // Pass content to gettext
                   $content = __($data['content']);
                   break;
