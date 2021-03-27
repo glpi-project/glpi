@@ -5854,19 +5854,25 @@ class Ticket extends CommonITILObject {
       $options['criteria'][0]['value']      = 'process';
       $options['criteria'][0]['link']       = 'AND';
 
-      echo "<table class='tab_cadrehov' >";
-      echo "<tr class='noHover'><th colspan='2'>";
+      $twig_params = [
+         'subtitle'  => [
+            'text'   => self::getTypeName(Session::getPluralNumber())
+         ],
+         'items'     => []
+      ];
 
       if (Session::getCurrentInterface() != "central") {
-         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1\" class='pointer'>".
-                __('Create a ticket')."&nbsp;<i class='fa fa-plus'></i><span class='sr-only'>". __s('Add')."</span></a>";
+         $twig_params['title'] = [
+            'link'   => $CFG_GLPI["root_doc"].'/front/helpdesk.public.php?create_ticket=1',
+            'text'   => __('Create a ticket')."<i class='fa fa-plus mx-1'></i><span class='sr-only'>". __s('Add')."</span>",
+            '_raw'   => true
+         ];
       } else {
-         echo "<a href=\"".Ticket::getSearchURL()."?".
-                Toolbox::append_params($options, '&amp;')."\">".__('Ticket followup')."</a>";
+         $twig_params['title'] = [
+            'link'   => self::getSearchURL()."?".Toolbox::append_params($options),
+            'text'   => __('Ticket followup')
+         ];
       }
-      echo "</th></tr>";
-      echo "<tr><th>"._n('Ticket', 'Tickets', Session::getPluralNumber())."</th>
-            <th class='numeric'>"._x('quantity', 'Number')."</th></tr>";
 
       if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
            $number_waitapproval = TicketValidation::getNumberToValidate(Session::getLoginUserID());
@@ -5885,28 +5891,31 @@ class Ticket extends CommonITILObject {
            $opt['criteria'][1]['value']      = Session::getLoginUserID();
            $opt['criteria'][1]['link']       = 'AND';
 
-           echo "<tr class='tab_bg_2'>";
-           echo "<td><a href=\"".Ticket::getSearchURL()."?".
-               Toolbox::append_params($opt, '&amp;')."\">".__('Ticket waiting for your approval')."</a></td>";
-           echo "<td class='numeric'>".$number_waitapproval."</td></tr>";
+           $twig_params['items'][] = [
+              'link'    => self::getSearchURL()."?".Toolbox::append_params($opt),
+              'text'    => __('Ticket waiting for your approval'),
+              'count'   => $number_waitapproval
+           ];
       }
 
       foreach ($status as $key => $val) {
          $options['criteria'][0]['value'] = $key;
-         echo "<tr class='tab_bg_2'>";
-         echo "<td><a href=\"".Ticket::getSearchURL()."?".
-                    Toolbox::append_params($options, '&amp;')."\">".self::getStatus($key)."</a></td>";
-         echo "<td class='numeric'>$val</td></tr>";
+         $twig_params['items'][] = [
+            'link'   => self::getSearchURL()."?".Toolbox::append_params($options),
+            'text'   => self::getStatus($key),
+            'count'  => $val
+         ];
       }
 
       $options['criteria'][0]['value'] = 'all';
       $options['is_deleted']  = 1;
-      echo "<tr class='tab_bg_2'>";
-      echo "<td><a href=\"".Ticket::getSearchURL()."?".
-                 Toolbox::append_params($options, '&amp;')."\">".__('Deleted')."</a></td>";
-      echo "<td class='numeric'>".$number_deleted."</td></tr>";
+      $twig_params['items'][] = [
+         'link'   => self::getSearchURL()."?".Toolbox::append_params($options),
+         'text'   => __('Deleted'),
+         'count'  => $number_deleted
+      ];
 
-      echo "</table><br>";
+      TemplateRenderer::getInstance()->display('central/lists/itemtype_count.html.twig', $twig_params);
    }
 
 
