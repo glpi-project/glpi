@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -1077,32 +1079,35 @@ class Problem extends CommonITILObject {
       $options['criteria'][0]['link']       = 'AND';
       $options['reset']                     ='reset';
 
-      echo "<table class='tab_cadrehov' >";
-      echo "<tr class='noHover'><th colspan='2'>";
-
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
-               Toolbox::append_params($options, '&amp;')."\">".__('Problem followup')."</a>";
-
-      echo "</th></tr>";
-      echo "<tr><th>".Problem::getTypeName(Session::getPluralNumber())."</th>
-            <th class='numeric'>"._x('quantity', 'Number')."</th></tr>";
+      $twig_params = [
+         'title'     => [
+            'link'   => $CFG_GLPI["root_doc"]."/front/problem.php?".Toolbox::append_params($options),
+            'text'   => __('Problem followup')
+         ],
+         'subtitle'  => [
+            'text'   => self::getTypeName(Session::getPluralNumber())
+         ],
+         'items'     => []
+      ];
 
       foreach ($status as $key => $val) {
          $options['criteria'][0]['value'] = $key;
-         echo "<tr class='tab_bg_2'>";
-         echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
-                    Toolbox::append_params($options, '&amp;')."\">".self::getStatus($key)."</a></td>";
-         echo "<td class='numeric'>$val</td></tr>";
+         $twig_params['items'][] = [
+            'link'   => $CFG_GLPI["root_doc"]."/front/problem.php?".Toolbox::append_params($options),
+            'text'   => self::getStatus($key),
+            'count'  => $val
+         ];
       }
 
       $options['criteria'][0]['value'] = 'all';
       $options['is_deleted']  = 1;
-      echo "<tr class='tab_bg_2'>";
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
-                 Toolbox::append_params($options, '&amp;')."\">".__('Deleted')."</a></td>";
-      echo "<td class='numeric'>".$number_deleted."</td></tr>";
+      $twig_params['items'][] = [
+         'link'   => $CFG_GLPI["root_doc"]."/front/problem.php?".Toolbox::append_params($options),
+         'text'   => __('Deleted'),
+         'count'  => $number_deleted
+      ];
 
-      echo "</table><br>";
+      TemplateRenderer::getInstance()->display('central/lists/itemtype_count.html.twig', $twig_params);
    }
 
 
