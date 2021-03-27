@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -1065,12 +1067,14 @@ class Contract extends CommonDBTM {
       ])->next();
       $contractpre30 = $result['cpt'];
 
-      echo "<table class='tab_cadrehov'>";
-      echo "<tr class='noHover'><th colspan='2'>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset\">".
-             self::getTypeName(1)."</a></th></tr>";
+      $twig_params = [
+         'title'     => [
+            'link'   => $CFG_GLPI["root_doc"]."/front/contract.php?reset=reset",
+            'text'   =>  self::getTypeName(1)
+         ],
+         'items'     => []
+      ];
 
-      echo "<tr class='tab_bg_2'>";
       $options = [
          'reset' => 'reset',
          'sort'  => 12,
@@ -1090,46 +1094,50 @@ class Contract extends CommonDBTM {
             ]
          ]
       ];
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".
-                 Toolbox::append_params($options, '&amp;')."\">".
-                 __('Contracts expired in the last 30 days')."</a> </td>";
-      echo "<td class='numeric'>".$contract0."</td></tr>";
 
-      echo "<tr class='tab_bg_2'>";
+      $twig_params['items'][] = [
+         'link'   => $CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options),
+         'text'   => __('Contracts expired in the last 30 days'),
+         'count'  => $contract0
+      ];
+
       $options['criteria'][0]['value'] = '>0';
       $options['criteria'][1]['value'] = '<7';
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".
-                 Toolbox::append_params($options, '&amp;')."\">".
-                 __('Contracts expiring in less than 7 days')."</a></td>";
-      echo "<td class='numeric'>".$contract7."</td></tr>";
+      $twig_params['items'][] = [
+         'link'   => $CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options),
+         'text'   => __('Contracts expiring in less than 7 days'),
+         'count'  => $contract7
+      ];
 
-      echo "<tr class='tab_bg_2'>";
       $options['criteria'][0]['value'] = '>6';
       $options['criteria'][1]['value'] = '<30';
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".
-                 Toolbox::append_params($options, '&amp;')."\">".
-                 __('Contracts expiring in less than 30 days')."</a></td>";
-      echo "<td class='numeric'>".$contract30."</td></tr>";
+      $twig_params['items'][] = [
+         'link'   => $CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options),
+         'text'   => __('Contracts expiring in less than 30 days'),
+         'count'  => $contract30
+      ];
 
-      echo "<tr class='tab_bg_2'>";
       $options['criteria'][0]['field'] = 13;
       $options['criteria'][0]['value'] = '>0';
       $options['criteria'][1]['field'] = 13;
       $options['criteria'][1]['value'] = '<7';
-
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".
-                 Toolbox::append_params($options, '&amp;')."\">".
-                 __('Contracts where notice begins in less than 7 days')."</a></td>";
-      echo "<td class='numeric'>".$contractpre7."</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
       $options['criteria'][0]['value'] = '>6';
       $options['criteria'][1]['value'] = '<30';
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".
-                 Toolbox::append_params($options, '&amp;')."\">".
-                 __('Contracts where notice begins in less than 30 days')."</a></td>";
-      echo "<td class='numeric'>".$contractpre30."</td></tr>";
-      echo "</table>";
+      $twig_params['items'][] = [
+         'link'   => $CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options),
+         'text'   => __('Contracts where notice begins in less than 7 days'),
+         'count'  => $contractpre7
+      ];
+
+      $options['criteria'][0]['value'] = '>6';
+      $options['criteria'][1]['value'] = '<30';
+      $twig_params['items'][] = [
+         'link'   => $CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options),
+         'text'   => __('Contracts where notice begins in less than 30 days'),
+         'count'  => $contractpre30
+      ];
+
+      TemplateRenderer::getInstance()->display('central/lists/itemtype_count.html.twig', $twig_params);
    }
 
 

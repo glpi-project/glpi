@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -1661,6 +1663,435 @@ class Change extends CommonITILObject {
             return 'canceled';
          default:
             return parent::getStatusKey($status);
+      }
+   }
+
+   /**
+    * @since 0.84
+    *
+    * @param $start
+    * @param $status             (default 'proces)
+    * @param $showgroupproblems  (true by default)
+    **/
+   static function showCentralList($start, $status = "process", $showgroupproblems = true) {
+      global $DB, $CFG_GLPI;
+
+      if (!static::canView()) {
+         return false;
+      }
+
+      $WHERE = [
+         'is_deleted' => 0
+      ];
+      $search_users_id = [
+         'glpi_problems_users.users_id'   => Session::getLoginUserID(),
+         'glpi_problems_users.type'       => CommonITILActor::REQUESTER
+      ];
+      $search_assign = [
+         'glpi_problems_users.users_id'   => Session::getLoginUserID(),
+         'glpi_problems_users.type'       => CommonITILActor::ASSIGN
+      ];
+
+      if ($showgroupproblems) {
+         $search_users_id  = [0];
+         $search_assign = [0];
+
+         if (count($_SESSION['glpigroups'])) {
+            $search_users_id = [
+               'glpi_groups_problems.groups_id' => $_SESSION['glpigroups'],
+               'glpi_groups_problems.type'      => CommonITILActor::REQUESTER
+            ];
+            $search_assign = [
+               'glpi_groups_problems.groups_id' => $_SESSION['glpigroups'],
+               'glpi_groups_problems.type'      => CommonITILActor::ASSIGN
+            ];
+         }
+      }
+
+      switch ($status) {
+         case "waiting" : // on affiche les problemes en attente
+            $WHERE = array_merge(
+               $WHERE,
+               $search_assign,
+               ['status' => self::WAITING]
+            );
+            break;
+
+         case "process" : // on affiche les problemes planifi??s ou assign??s au user
+            $WHERE = array_merge(
+               $WHERE,
+               $search_assign,
+               ['status' => [self::PLANNED, self::ASSIGNED]]
+            );
+            break;
+
+         default :
+            $WHERE = array_merge(
+               $WHERE,
+               $search_users_id,
+               [
+                  'status' => [
+                     self::INCOMING,
+                     self::ACCEPTED,
+                     self::PLANNED,
+                     self::ASSIGNED,
+                     self::WAITING
+                  ]
+               ]
+            );
+            $WHERE['NOT'] = $search_assign;
+      }
+
+      $criteria = [
+         'SELECT'          => ['glpi_problems.id'],
+         'DISTINCT'        => true,
+         'FROM'            => 'glpi_problems',
+         'LEFT JOIN'       => [
+            'glpi_problems_users'   => [
+               'ON' => [
+                  'glpi_problems_users'   => 'problems_id',
+                  'glpi_problems'         => 'id'
+               ]
+            ],
+            'glpi_groups_problems'  => [
+               'ON' => [
+                  'glpi_groups_problems'  => 'problems_id',
+                  'glpi_problems'         => 'id'
+               ]
+            ]
+         ],
+         'WHERE'           => $WHERE + getEntitiesRestrictCriteria('glpi_problems'),
+         'ORDERBY'         => 'date_mod DESC'
+      ];
+      $iterator = $DB->request($criteria);
+
+      $total_row_count = count($iterator);
+      $displayed_row_count = (int)$_SESSION['glpidisplay_count_on_home'] > 0
+         ? min((int)$_SESSION['glpidisplay_count_on_home'], $total_row_count)
+         : $total_row_count;
+
+      if ($displayed_row_count > 0) {
+         echo "<table class='tab_cadrehov'>";
+         echo "<tr class='noHover'><th colspan='3'>";
+
+         $options  = [
+            'criteria' => [],
+            'reset'    => 'reset',
+         ];
+         $forcetab         = '';
+         if ($showgroupproblems) {
+            switch ($status) {
+
+               case "waiting" :
+                  $options['criteria'][0]['field']      = 12; // status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = self::WAITING;
+                  $options['criteria'][0]['link']       = 'AND';
+
+                  $options['criteria'][1]['field']      = 8; // groups_id_assign
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'mygroups';
+                  $options['criteria'][1]['link']       = 'AND';
+
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                     Toolbox::append_params($options, '&amp;')."\">".
+                     Html::makeTitle(__('Problems on pending status'), $displayed_row_count, $total_row_count)."</a>";
+                  break;
+
+               case "process" :
+                  $options['criteria'][0]['field']      = 12; // status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = 'process';
+                  $options['criteria'][0]['link']       = 'AND';
+
+                  $options['criteria'][1]['field']      = 8; // groups_id_assign
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'mygroups';
+                  $options['criteria'][1]['link']       = 'AND';
+
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                     Toolbox::append_params($options, '&amp;')."\">".
+                     Html::makeTitle(__('Problems to be processed'), $displayed_row_count, $total_row_count)."</a>";
+                  break;
+
+               default :
+                  $options['criteria'][0]['field']      = 12; // status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = 'notold';
+                  $options['criteria'][0]['link']       = 'AND';
+
+                  $options['criteria'][1]['field']      = 71; // groups_id
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'mygroups';
+                  $options['criteria'][1]['link']       = 'AND';
+
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                     Toolbox::append_params($options, '&amp;')."\">".
+                     Html::makeTitle(__('Your problems in progress'), $displayed_row_count, $total_row_count)."</a>";
+            }
+
+         } else {
+            switch ($status) {
+               case "waiting" :
+                  $options['criteria'][0]['field']      = 12; // status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = self::WAITING;
+                  $options['criteria'][0]['link']       = 'AND';
+
+                  $options['criteria'][1]['field']      = 5; // users_id_assign
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = Session::getLoginUserID();
+                  $options['criteria'][1]['link']       = 'AND';
+
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                     Toolbox::append_params($options, '&amp;')."\">".
+                     Html::makeTitle(__('Problems on pending status'), $displayed_row_count, $total_row_count)."</a>";
+                  break;
+
+               case "process" :
+                  $options['criteria'][0]['field']      = 5; // users_id_assign
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = Session::getLoginUserID();
+                  $options['criteria'][0]['link']       = 'AND';
+
+                  $options['criteria'][1]['field']      = 12; // status
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'process';
+                  $options['criteria'][1]['link']       = 'AND';
+
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                     Toolbox::append_params($options, '&amp;')."\">".
+                     Html::makeTitle(__('Problems to be processed'), $displayed_row_count, $total_row_count)."</a>";
+                  break;
+
+               default :
+                  $options['criteria'][0]['field']      = 4; // users_id
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = Session::getLoginUserID();
+                  $options['criteria'][0]['link']       = 'AND';
+
+                  $options['criteria'][1]['field']      = 12; // status
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'notold';
+                  $options['criteria'][1]['link']       = 'AND';
+
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                     Toolbox::append_params($options, '&amp;')."\">".
+                     Html::makeTitle(__('Your problems in progress'), $displayed_row_count, $total_row_count)."</a>";
+            }
+         }
+
+         echo "</th></tr>";
+         echo "<tr><th></th>";
+         echo "<th>"._n('Requester', 'Requesters', 1)."</th>";
+         echo "<th>".__('Description')."</th></tr>";
+         $i = 0;
+         while ($i < $displayed_row_count && ($data = $iterator->next())) {
+            self::showVeryShort($data['id'], $forcetab);
+            $i++;
+         }
+         echo "</table>";
+
+      }
+   }
+
+
+   /**
+    * Get problems count
+    *
+    * @since 0.84
+    *
+    * @param $foruser boolean : only for current login user as requester (false by default)
+    **/
+   static function showCentralCount($foruser = false) {
+      global $DB, $CFG_GLPI;
+
+      // show a tab with count of jobs in the central and give link
+      if (!static::canView()) {
+         return false;
+      }
+      if (!Session::haveRight(self::$rightname, self::READALL)) {
+         $foruser = true;
+      }
+
+      $table = self::getTable();
+      $criteria = [
+         'SELECT' => [
+            'status',
+            'COUNT'  => '* AS COUNT',
+         ],
+         'FROM'   => $table,
+         'WHERE'  => getEntitiesRestrictCriteria($table),
+         'GROUP'  => 'status'
+      ];
+
+      if ($foruser) {
+         $criteria['LEFT JOIN'] = [
+            'glpi_changes_users' => [
+               'ON' => [
+                  'glpi_changes_users'   => 'changes_id',
+                  $table                  => 'id', [
+                     'AND' => [
+                        'glpi_changes_users.type' => CommonITILActor::REQUESTER
+                     ]
+                  ]
+               ]
+            ]
+         ];
+         $WHERE = ['glpi_changes_users.users_id' => Session::getLoginUserID()];
+
+         if (isset($_SESSION["glpigroups"])
+            && count($_SESSION["glpigroups"])) {
+            $criteria['LEFT JOIN']['glpi_groups_changes'] = [
+               'ON' => [
+                  'glpi_groups_changes'  => 'changes_id',
+                  $table                  => 'id', [
+                     'AND' => [
+                        'glpi_groups_changes.type' => CommonITILActor::REQUESTER
+                     ]
+                  ]
+               ]
+            ];
+            $WHERE['glpi_groups_changes.groups_id'] = $_SESSION['glpigroups'];
+         }
+         $criteria['WHERE'][] = ['OR' => $WHERE];
+      }
+
+      $deleted_criteria = $criteria;
+      $criteria['WHERE']['glpi_changes.is_deleted'] = 0;
+      $deleted_criteria['WHERE']['glpi_changes.is_deleted'] = 1;
+      $iterator = $DB->request($criteria);
+      $deleted_iterator = $DB->request($deleted_criteria);
+
+      $status = [];
+      foreach (self::getAllStatusArray() as $key => $val) {
+         $status[$key] = 0;
+      }
+
+      while ($data = $iterator->next()) {
+         $status[$data["status"]] = $data["COUNT"];
+      }
+
+      $number_deleted = 0;
+      while ($data = $deleted_iterator->next()) {
+         $number_deleted += $data["COUNT"];
+      }
+
+      $options = [];
+      $options['criteria'][0]['field']      = 12;
+      $options['criteria'][0]['searchtype'] = 'equals';
+      $options['criteria'][0]['value']      = 'new';
+      $options['criteria'][0]['link']       = 'AND';
+      $options['reset']                     ='reset';
+
+      $twig_params = [
+         'title'     => [
+            'link'   => $CFG_GLPI["root_doc"]."/front/change.php?".Toolbox::append_params($options),
+            'text'   => __('Change followup')
+         ],
+         'subtitle'  => [
+            'text'   => self::getTypeName(Session::getPluralNumber())
+         ],
+         'items'     => []
+      ];
+
+      foreach ($status as $key => $val) {
+         $options['criteria'][0]['value'] = $key;
+         $twig_params['items'][] = [
+            'link'   => $CFG_GLPI["root_doc"]."/front/change.php?".Toolbox::append_params($options),
+            'text'   => self::getStatus($key),
+            'count'  => $val
+         ];
+      }
+
+      $options['criteria'][0]['value'] = 'all';
+      $options['is_deleted']  = 1;
+      $twig_params['items'][] = [
+         'link'   => $CFG_GLPI["root_doc"]."/front/change.php?".Toolbox::append_params($options),
+         'text'   => __('Deleted'),
+         'count'  => $number_deleted
+      ];
+
+      TemplateRenderer::getInstance()->display('central/lists/itemtype_count.html.twig', $twig_params);
+   }
+
+   /**
+    * @since x.x.x
+    *
+    * @param $ID
+    * @param $forcetab  string   name of the tab to force at the display (default '')
+    **/
+   static function showVeryShort($ID, $forcetab = '') {
+      // Prints a job in short form
+      // Should be called in a <table>-segment
+      // Print links or not in case of user view
+      // Make new job object and fill it from database, if success, print it
+      $viewusers = User::canView();
+
+      $change   = new self();
+      $rand      = mt_rand();
+      if ($change->getFromDBwithData($ID, 0)) {
+
+         $bgcolor = $_SESSION["glpipriority_".$change->fields["priority"]];
+         $name    = sprintf(__('%1$s: %2$s'), __('ID'), $change->fields["id"]);
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>
+            <div class='priority_block' style='border-color: $bgcolor'>
+               <span style='background: $bgcolor'></span>&nbsp;$name
+            </div>
+         </td>";
+         echo "<td class='center'>";
+
+         if (isset($change->users[CommonITILActor::REQUESTER])
+            && count($change->users[CommonITILActor::REQUESTER])) {
+            foreach ($change->users[CommonITILActor::REQUESTER] as $d) {
+               if ($d["users_id"] > 0) {
+                  $userdata = getUserName($d["users_id"], 2);
+                  $name     = "<span class='b'>".$userdata['name']."</span>";
+                  if ($viewusers) {
+                     $name = sprintf(__('%1$s %2$s'), $name,
+                        Html::showToolTip($userdata["comment"],
+                           ['link'    => $userdata["link"],
+                              'display' => false]));
+                  }
+                  echo $name;
+               } else {
+                  echo $d['alternative_email']."&nbsp;";
+               }
+               echo "<br>";
+            }
+         }
+
+         if (isset($change->groups[CommonITILActor::REQUESTER])
+            && count($change->groups[CommonITILActor::REQUESTER])) {
+            foreach ($change->groups[CommonITILActor::REQUESTER] as $d) {
+               echo Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+               echo "<br>";
+            }
+         }
+
+         echo "</td>";
+
+         echo "<td>";
+         $link = "<a id='problem".$change->fields["id"].$rand."' href='".
+            Problem::getFormURLWithID($change->fields["id"]);
+         if ($forcetab != '') {
+            $link .= "&amp;forcetab=".$forcetab;
+         }
+         $link .= "'>";
+         $link .= "<span class='b'>".$change->fields["name"]."</span></a>";
+         $link = printf(__('%1$s %2$s'), $link,
+            Html::showToolTip($change->fields['content'],
+               ['applyto' => 'change'.$change->fields["id"].$rand,
+                  'display' => false]));
+
+         echo "</td>";
+
+         // Finish Line
+         echo "</tr>";
+      } else {
+         echo "<tr class='tab_bg_2'>";
+         echo "<td colspan='6' ><i>".__('No change found.')."</i></td></tr>";
       }
    }
 }
