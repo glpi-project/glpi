@@ -1,0 +1,31 @@
+{% macro link_or_text(value) %}
+   {% if value.link is defined %}
+      <a href="{{ value.link }}">{{ value._raw|default('false') ? value.text|raw : value.text }}</a>
+   {% else %}
+      {{ value._raw|default('false') ? value.text|raw : value.text }}
+   {% endif %}
+{% endmacro %}
+<table class="tab_cadrehov table">
+   <tr class="noHover">
+      <th colspan="2">
+         {{ _self.link_or_text(title) }}
+      </th>
+   </tr>
+   {% if subtitle is defined %}
+      <tr>
+         <th>
+            {{ _self.link_or_text(subtitle) }}
+         </th>
+         <th class="numeric">{{ _x("quantity", "Number") }}</th>
+      </tr>
+   {% endif %}
+   {% for item in items %}
+      <tr class="tab_bg_2">
+         <td>
+            {{ _self.link_or_text(item) }}
+         </td>
+         <td class="numeric">{{ item.count }}</td>
+      </tr>
+   {% endfor %}
+</table>
+<br>
