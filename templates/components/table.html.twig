@@ -1,0 +1,19 @@
+<table class="{{ class|default('') }}">
+   {% for header_row in header_rows %}
+      <tr>
+         {% for header in header_row %}
+            {% if header is not iterable %}
+               {% set header = {'content': header} %}
+            {% endif %}
+            <th colspan="{{ header.colspan|default(1) }}" style="{{ header.style|default('') }}">{{ header.content|raw }}</th>
+         {% endfor %}
+      </tr>
+   {% endfor %}
+   {% for row in rows %}
+      <tr class="{{ row.class|default('') }}">
+         {% for value in row.values %}
+            <td>{{ value|raw }}</td>
+         {% endfor %}
+      </tr>
+   {% endfor %}
+</table>
