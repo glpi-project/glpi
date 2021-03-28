@@ -37,6 +37,7 @@ use CommonDBTM;
 use CronTask;
 use DBConnection;
 use Document;
+use Glpi\Application\View\TemplateRenderer;
 use Html;
 use Infocom;
 use Session;
@@ -250,34 +251,49 @@ class Event extends CommonDBTM {
       ]);
 
       // Number of results
-      $number = count($iterator);;
+      $number = count($iterator);
 
       // No Events in database
       if ($number < 1) {
-         echo "<br><div class='spaced'><table class='tab_cadrehov'>";
-         echo "<tr><th>".__('No Event')."</th></tr>";
-         echo "</table></div>";
+         $twig_params = [
+            'class'        => 'tab_cadrehov',
+            'header_rows'  => [
+               [__('No Event')]
+            ],
+            'rows'         => []
+         ];
+         TemplateRenderer::getInstance()->display('components/table.html.twig', $twig_params);
          return;
       }
 
-      // Output events
-      $i = 0;
-
-      echo "<br><div class='spaced'><table class='tab_cadre'>";
-      echo "<tr><th colspan='5'>";
-      //TRANS: %d is the number of item to display
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/event.php\">".
-             sprintf(__('Last %d events'), $_SESSION['glpilist_limit'])."</a>";
-      echo "</th></tr>";
-
-      echo "<tr><th>".__('Source')."</th>";
-      echo "<th>".__('Id')."</th>";
-      echo "<th>"._n('Date', 'Dates', 1)."</th>";
-      echo "<th width='10%'>".__('Service')."</th>";
-      echo "<th width='50%'>".__('Message')."</th></tr>";
+      $twig_params = [
+         'class'        => 'tab_cadre',
+         'header_rows'  => [
+            [
+               [
+                  'colspan'   => 5,
+                  'content'   => "<a href=\"".$CFG_GLPI["root_doc"]."/front/event.php\">".
+                     sprintf(__('Last %d events'), $_SESSION['glpilist_limit'])."</a>"
+               ]
+            ],
+            [
+               __('Source'),
+               __('Id'),
+               _n('Date', 'Dates', 1),
+               [
+                  'content'   => __('Service'),
+                  'style'     => 'width: 10%'
+               ],
+               [
+                  'content'   => __('Message'),
+                  'style'     => 'width: 50%'
+               ],
+            ]
+         ],
+         'rows'   => []
+      ];
 
       while ($data = $iterator->next()) {
-         $ID       = $data['id'];
          $items_id = $data['items_id'];
          $type     = $data['type'];
          $date     = $data['date'];
@@ -294,17 +310,23 @@ class Event extends CommonDBTM {
             }
          }
 
-         echo "<tr class='tab_bg_2'><td>".$itemtype."</td>";
-         echo "<td>";
+         // Capture the 'echo' output of the function
+         ob_start();
          self::displayItemLogID($type, $items_id);
-         echo "</td><td>".Html::convDateTime($date)."</td>";
-         echo "<td>".(isset($logService[$service])?$logService[$service]:'');
-         echo "</td><td>".$message."</td></tr>";
+         $item_log_id = ob_get_clean();
 
-         $i++;
+         $twig_params['rows'][] = [
+            'class'  => 'tab_bg_2',
+            'values' => [
+               $itemtype,
+               $item_log_id,
+               Html::convDateTime($date),
+               $logService[$service] ?? '',
+               $message
+            ]
+         ];
       }
-
-      echo "</table></div>";
+      TemplateRenderer::getInstance()->display('components/table.html.twig', $twig_params);
    }
 
 
