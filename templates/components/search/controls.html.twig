@@ -5,7 +5,7 @@
 
    {% if count > 0 %}
    <label class="form-check form-switch btn btn-sm btn-ghost-info me-1 px-1 mb-0"
-          data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Show as map') }}">
+          data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Show as map') }}">
       <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
              name="as_map" value="1" autocomplete="off"
              onclick="toogle('as_map','','',''); document.forms['searchform{{ itemtype }}'].submit();"
@@ -17,7 +17,7 @@
    {% endif %}
 
    <label class="form-check form-switch btn btn-sm btn-ghost-danger me-1 px-1 mb-0"
-          data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Show the trashbin') }}">
+          data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Show the trashbin') }}">
       <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
              name="is_deleted" value="1" autocomplete="off"
              onclick="toogle('is_deleted','','',''); document.forms['searchform{{ itemtype }}'].submit();"
@@ -27,19 +27,28 @@
       </span>
    </label>
 
+   <label class="form-check form-switch btn btn-sm btn-ghost-secondary me-1 px-1 mb-0"
+          data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Toggle search filters') }}">
+      <input type="checkbox" class="form-check-input ms-0 me-1 mt-0 fold-search" role="button"
+             {{ session('glpifold_search') ? "" : "checked" }} autocomplete="off">
+      <span class="form-check-label">
+         <i class="fas fa-lg fa-search"></i>
+      </span>
+   </label>
+
    <div class="d-inline-flex" role="group">
 
       {% if can_config and count > 0 %}
-      <button class="btn btn-sm btn-icon btn-ghost-secondary"
-             title="{{ __('Select default items to show') }}" data-bs-toggle="tooltip" data-bs-placement="top">
-         <i class="fas fa-lg fa-wrench show_displaypreference_modal"></i>
+      <button class="btn btn-sm btn-icon btn-ghost-secondary show_displaypreference_modal"
+             title="{{ __('Select default items to show') }}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+         <i class="fas fa-lg fa-wrench"></i>
       </button>
       {% endif %}
 
       {% if count > 0 %}
          <button class="dropdown-toggle btn btn-sm btn-icon btn-ghost-secondary" type="button" id="dropdown-export"
                data-bs-toggle="dropdown" aria-expanded="false" >
-            <span class="py-1 px-2 my-n1 mx-n2"data-bs-toggle="tooltip" data-bs-placement="top" title="{{ _x('button', 'Export') }}">
+            <span class="py-1 px-2 my-n1 mx-n2"data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ _x('button', 'Export') }}">
                <i class="fas fa-lg fa-file-download"></i>
             </span>
          </button>
@@ -112,6 +121,27 @@ $(document).ready(function() {
 
    $("body").on('hide.bs.modal', '#displayprefence_modal{{ rand }}', function() {
       location.reload();
-   })
+   });
+
+   $('.fold-search').change(function(event) {
+      var show_search = $(this).is(":checked");
+
+      // hide tooltips (issue maybe ?)
+      $('[data-toggle="tooltip"]').tooltip('hide');
+
+      event.preventDefault();
+      $.ajax({
+         url: '{{ path("/ajax/search.php") }}',
+         type: 'GET',
+         datatype: 'json',
+         data: {
+            'action': 'fold_search',
+            'show_search': (show_search ? 1 : 0),
+         },
+         success: function() {
+            toggle_fold_search(show_search);
+         }
+      });
+   });
 });
 </script>
