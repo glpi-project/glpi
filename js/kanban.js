@@ -31,7 +31,7 @@
 
 /**
  * Kanban rights structure
- * @since x.x.x
+ * @since 10.0.0
  */
 class GLPIKanbanRights {
    constructor(rights) {
@@ -41,7 +41,7 @@ class GLPIKanbanRights {
        * Permissions are re-checked server-side during this request.
        * Users will still be limited by the {@link create_card_limited_columns} right both client-side and server-side.
        * @since 9.5.0
-       * @since x.x.x Moved to new rights class
+       * @since 10.0.0 Moved to new rights class
        * @type {boolean}
        */
       this.create_item = rights['create_item'] || false;
@@ -50,7 +50,7 @@ class GLPIKanbanRights {
        * If true, then a button will be added to each card to allow deleting them and the underlying item directly from the kanban.
        * When a card is deleted, a request is made via AJAX to delete the item in the DB.
        * Permissions are re-checked server-side during this request.
-       * @since x.x.x
+       * @since 10.0.0
        * @type {boolean}
        */
       this.delete_item = rights['delete_item'] || false;
@@ -60,7 +60,7 @@ class GLPIKanbanRights {
        * For Projects as an example, it would create a new project state.
        * Permissions are re-checked server-side during this request.
        * @since 9.5.0
-       * @since x.x.x Moved to new rights class
+       * @since 10.0.0 Moved to new rights class
        * @type {boolean}
        */
       this.create_column = rights['create_column'] || false;
@@ -69,7 +69,7 @@ class GLPIKanbanRights {
        * Global permission for being able to modify the Kanban state/view.
        * This includes the order of cards in the columns.
        * @since 9.5.0
-       * @since x.x.x Moved to new rights class
+       * @since 10.0.0 Moved to new rights class
        * @type {boolean}
        */
       this.modify_view = rights['modify_view'] || false;
@@ -79,7 +79,7 @@ class GLPIKanbanRights {
        * By default, it is empty which allows cards to be added to all columns.
        * If you don't want the user to add cards to any column, {@link rights.create_item} should be false.
        * @since 9.5.0
-       * @since x.x.x Moved to new rights class
+       * @since 10.0.0 Moved to new rights class
        * @type {Array}
        */
       this.create_card_limited_columns = rights['create_card_limited_columns'] || [];
@@ -87,7 +87,7 @@ class GLPIKanbanRights {
       /**
        * Global right for ordering cards.
        * @since 9.5.0
-       * @since x.x.x Moved to new rights class
+       * @since 10.0.0 Moved to new rights class
        * @type {boolean}
        */
       this.order_card = rights['order_card'] || false;
@@ -197,17 +197,17 @@ class GLPIKanbanRights {
        */
       this.rights = new GLPIKanbanRights({});
 
-      /** @deprecated x.x.x Use rights.canCreateItem() instead */
+      /** @deprecated 10.0.0 Use rights.canCreateItem() instead */
       this.allow_add_item = false;
-      /** @deprecated x.x.x Use rights.canDeleteItem() instead */
+      /** @deprecated 10.0.0 Use rights.canDeleteItem() instead */
       this.allow_delete_item = false;
-      /** @deprecated x.x.x Use rights.canCreateColumn() instead */
+      /** @deprecated 10.0.0 Use rights.canCreateColumn() instead */
       this.allow_create_column = false;
-      /** @deprecated x.x.x Use rights.canModifyView() instead */
+      /** @deprecated 10.0.0 Use rights.canModifyView() instead */
       this.allow_modify_view = false;
-      /** @deprecated x.x.x Use rights.getAllowedColumnsForNewCards() instead */
+      /** @deprecated 10.0.0 Use rights.getAllowedColumnsForNewCards() instead */
       this.limit_addcard_columns = [];
-      /** @deprecated x.x.x Use rights.canOrderCard() instead */
+      /** @deprecated 10.0.0 Use rights.canOrderCard() instead */
       this.allow_order_card = false;
 
       /**
@@ -1161,7 +1161,7 @@ class GLPIKanbanRights {
 
       /**
        * Delete a card
-       * @since x.x.x
+       * @since 10.0.0
        * @param {string} card The ID of the card being deleted.
        * @param {function} error Callback function called when the server reports an error.
        * @param {function} success Callback function called when the server processes the request successfully.

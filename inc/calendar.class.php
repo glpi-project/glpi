@@ -198,7 +198,7 @@ class Calendar extends CommonDropdown {
     *
     * @param array $options Array of new values to set
     * @return boolean True on success or false on failure
-    * @deprecated x.x.x Use the {@link \Glpi\Features\Clonable} trait instead
+    * @deprecated 10.0.0 Use the {@link \Glpi\Features\Clonable} trait instead
     */
    function duplicate($options = []) {
 

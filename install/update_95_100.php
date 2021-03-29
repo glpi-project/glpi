@@ -31,20 +31,20 @@
  */
 
 /**
- * Update from 9.5.x to x.x.x
+ * Update from 9.5.x to 10.0.0
  *
  * @return bool for success (will die for most error)
 **/
-function update95toXX() {
+function update95to100() {
    global $DB, $migration;
 
    $updateresult     = true;
    $ADDTODISPLAYPREF = [];
-   $update_dir = __DIR__ . '/update_95_xx/';
+   $update_dir = __DIR__ . '/update_95_100/';
 
    //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(__('Update to %s'), 'x.x.x'));
-   $migration->setVersion('x.x.x');
+   $migration->displayTitle(sprintf(__('Update to %s'), '10.0.0'));
+   $migration->setVersion('10.0.0');
 
    $update_scripts = [
       'cameras',

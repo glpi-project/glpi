@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 use DBmysql;
 
 /**
- * @since x.x.x
+ * @since 10.0.0
  */
 class DatabaseKeysChecker {
 

@@ -41,7 +41,7 @@ use Symfony\Component\Console\Exception\ExceptionInterface;
 /**
  * This exception is used to easilly trigger an exit of current command from a sub method.
  *
- * @since x.x.x
+ * @since 10.0.0
  */
 class EarlyExitException extends \Exception implements ExceptionInterface {
 

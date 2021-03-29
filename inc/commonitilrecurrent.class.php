@@ -33,7 +33,7 @@
 /**
  * Base class for recurrent tickets and changes
  *
- * @since x.x.x
+ * @since 10.0.0
  */
 abstract class CommonITILRecurrent extends CommonDropdown
 {

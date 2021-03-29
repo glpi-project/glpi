@@ -38,7 +38,7 @@ use GuzzleHttp\Client as Guzzle_Client;
 use GuzzleHttp\Psr7\Response;
 
 /**
- * @since x.x.x
+ * @since 10.0.0
  **/
 class Agent extends CommonDBTM {
 

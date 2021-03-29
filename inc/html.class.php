@@ -4069,7 +4069,7 @@ JAVASCRIPT
     *
     * @return $content
     *
-    * @deprecated x.x.x
+    * @deprecated 10.0.0
    **/
    static function setRichTextContent($name, $content, $rand, $readonly = false) {
 
@@ -5586,7 +5586,7 @@ JAVASCRIPT;
     *                          - editor_id the dom id of the tinymce editor
     * @return string The Html
     *
-    * @deprecated x.x
+    * @deprecated 10.0.0
     */
    static function fileForRichText($options = []) {
       Toolbox::deprecated();

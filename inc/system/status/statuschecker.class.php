@@ -75,7 +75,7 @@ final class StatusChecker {
     * Get all registered services
     * @return array Array of services keyed by name.
     *    The value for each service is expected to be an array containing a class name and a method name relating to the method that will do the check.
-    * @since x.x.x
+    * @since 10.0.0
     */
    public static function getServices(): array {
       return [
@@ -95,7 +95,7 @@ final class StatusChecker {
     * @param array $status The status array for all services or a specific service check.
     * @return string The calculated status.
     *    One of {@link STATUS_NO_DATA}, {@link STATUS_OK}, {@link STATUS_WARNING}, or {@link STATUS_PROBLEM}.
-    * @since x.x.x
+    * @since 10.0.0
     */
    public static function calculateGlobalStatus(array $status) {
       $statuses = array_column($status, 'status');
@@ -116,7 +116,7 @@ final class StatusChecker {
     *    If true, assume the data is being viewed by an anonymous user.
     * @param bool $as_array True if the service check result should be returned as an array instead of a plain-text string.
     * @return array|string An array or string with the result based on the $as_array parameter value.
-    * @since x.x.x
+    * @since 10.0.0
     */
    public static function getServiceStatus(?string $service, $public_only = true, $as_array = true) {
       $services = self::getServices();
@@ -521,7 +521,7 @@ final class StatusChecker {
     * @param bool $public_only True if only public status information should be given.
     * @param bool $as_array
     * @return array|string
-    * @deprecated x.x.x Use {@link self::getServiceStatus} instead
+    * @deprecated 10.0.0 Use {@link self::getServiceStatus} instead
     */
    public static function getFullStatus($public_only = true, $as_array = true) {
       Toolbox::deprecated('Use StatusChecker::getServiceStatus for service checks instead');
@@ -532,7 +532,7 @@ final class StatusChecker {
     * Format the given full service status result as a plain-text output compatible with previous versions of GLPI.
     * @param array $status
     * @return string
-    * @deprecated x.x.x
+    * @deprecated 10.0.0
     */
    private static function getPlaintextOutput(array $status): string {
       // Deprecated notices are done on the /status.php endpoint and CLI commands to give better migration hints
