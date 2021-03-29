@@ -12,25 +12,32 @@
       </h2>
       <div id="ticket-main" class="accordion-collapse collapse show" aria-labelledby="heading-main-ticket">
          <div class="accordion-body">
+            {% set type_params = {
+               'value': item.fields["type"],
+               'width': '100%',
+               'class': 'form-select',
+               'display': false
+            } %}
+            {% if item.isNewItem() %}
+               {% set type_params = type_params|merge({'on_change': 'this.form.submit()',}) %}
+            {% endif %}
             {{ fields.field(
                'type',
-               item.dropdownType('type', {
-                  'value': item.fields["type"],
-                  'on_change': 'this.form.submit()',
-                  'width': '100%',
-                  'class': 'form-select',
-                  'display': false
-               }),
+               item.dropdownType('type', type_params),
                __('%1$s%2$s')|format(_n('Type', 'Types', 1), template.getMandatoryMark('type')),
                field_options
             ) }}
 
+            {% set cat_params = field_options %}
+            {% if item.isNewItem() %}
+               {% set cat_params = cat_params|merge({'on_change': 'this.form.submit()',}) %}
+            {% endif %}
             {{ fields.dropdownField(
                'ITILCategory',
                'itilcategories_id',
                item.fields["itilcategories_id"],
                __('%1$s%2$s')|format(__('Category'), template.getMandatoryMark('itilcategories_id')),
-               field_options
+               cat_params
             ) }}
 
             {# TODO badge in dropdown #}
