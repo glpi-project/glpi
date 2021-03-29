@@ -2,8 +2,11 @@
 
 {% set target      = item.getFormURL() %}
 {% set is_new_item = (item.fields['id'] == 0) %}
+{% set show_form   = no_form is not defined or true %}
 
+{% if show_form %}
 <form name="asset_form" method="post" action="{{ target }}" {{ formoptions }} enctype="multipart/form-data">
+{% endif %}
    <div class="row flex-row">
       {{ fields.textField(
          "name",
@@ -28,13 +31,13 @@
       ) }}
    </div>
 
-   {% if not is_new_item %}
+   {% if not is_new_item and show_form %}
       <button class="btn btn-primary me-2" type="submit" name="update">
          <i class='fas fa-save'></i>
          <span>{{ _x('button', 'Save') }}</span>
       </button>
-   {% endif %}
 
-   <input type="hidden" name="id" value="{{ item.fields['id'] }}"/>
-   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
-</form>
+      <input type="hidden" name="id" value="{{ item.fields['id'] }}"/>
+      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+   </form>
+   {% endif %}
