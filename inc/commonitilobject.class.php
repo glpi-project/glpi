@@ -2814,9 +2814,11 @@ abstract class CommonITILObject extends CommonDBTM {
    static function dropdownStatus(array $options = []) {
 
       $p = [
-         'name'     => 'status',
-         'showtype' => 'normal',
-         'display'  => true,
+         'name'              => 'status',
+         'showtype'          => 'normal',
+         'display'           => true,
+         'templateResult'    => "templateItilStatus",
+         'templateSelection' => "templateItilStatus",
       ];
 
       if (is_array($options) && count($options)) {
