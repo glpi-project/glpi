@@ -762,7 +762,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                                          __('ID')),
                     'linkedticket.link'       => sprintf(__('%1$s: %2$s'),
                                                          _n('Linked ticket', 'Linked tickets', 1),
-                                                         __('Link')),
+                                                         Link::getTypeName(1)),
                     'linkedticket.url'        => sprintf(__('%1$s: %2$s'),
                                                          _n('Linked ticket', 'Linked tickets', 1),
                                                          __('URL')),

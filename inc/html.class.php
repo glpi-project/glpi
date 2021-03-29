@@ -1658,6 +1658,23 @@ JAVASCRIPT;
       return $menu;
    }
 
+   /**
+    * Returns menu sector corresponding to given itemtype.
+    *
+    * @param string $itemtype
+    *
+    * @return string|null
+    */
+   static function getMenuSectorForItemtype(string $itemtype): ?string {
+      $menu = self::getMenuInfos();
+      foreach ($menu as $sector => $params) {
+         if (array_key_exists('types', $params) && in_array($itemtype, $params['types'])) {
+            return $sector;
+         }
+      }
+      return null;
+   }
+
 
    /**
     * Print a nice HTML head for every page

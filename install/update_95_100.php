@@ -53,6 +53,7 @@ function update95to100() {
       'domains',
       'inventory_management',
       'ldaps',
+      'manuallinks',
       'native_inventory',
       'notifications',
       'recurrentchange',

@@ -529,25 +529,32 @@ class Link extends CommonDBTM {
          'ORDERBY'      => 'name'
       ]);
 
-      echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+      echo "<div class='spaced'><table class='tab_cadrehov'>";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<th>".self::getTypeName(Session::getPluralNumber())."</th>";
+      echo "<th class='right'>";
+      if (self::canUpdate()) {
+         echo '<a class="vsubmit" href="' . self::getSearchURL() . '">';
+         echo '<i class="fas fa-cog"></i>&nbsp;';
+         echo __('Configure');
+         echo '</a>';
+      }
+      echo "</th>";
+      echo "</tr>";
       if (count($iterator)) {
-         echo "<tr><th>".self::getTypeName(Session::getPluralNumber())."</th></tr>";
          while ($data = $iterator->next()) {
             $links = self::getAllLinksFor($item, $data);
 
             foreach ($links as $link) {
                echo "<tr class='tab_bg_2'>";
-               echo "<td class='center'>$link</td></tr>";
+               echo "<td colspan='2'>$link</td></tr>";
             }
          }
-         echo "</table></div>";
-
       } else {
-         echo "<tr class='tab_bg_2'><th>".self::getTypeName(Session::getPluralNumber())."</th></tr>";
-         echo "<tr class='tab_bg_2'><td class='center b'>".__('No link defined')."</td></tr>";
-         echo "</table></div>";
+         echo "<tr class='tab_bg_2'><td>".__('No link defined')."</td></tr>";
       }
+      echo "</table></div>";
    }
 
 
@@ -617,6 +624,7 @@ class Link extends CommonDBTM {
                                  "&amp;itemtype=".$item->getType().
                                  "&amp;id=".$item->getID()."&amp;rank=$key";
             $newlink         = "<a href='$url' target='_blank'>";
+            $newlink        .= "<i class='fa-lg fa-fw fas fa-link'></i>&nbsp;";
             $linkname        = sprintf(__('%1$s #%2$s'), $name, $i);
             $newlink        .= sprintf(__('%1$s: %2$s'), $linkname, $val);
             $newlink        .= "</a>";
