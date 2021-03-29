@@ -1,0 +1,25 @@
+{% set users_id = session('glpiID') %}
+
+<div class="itil-timeline">
+   <div class="timeline-item ITILContent">
+      <div class="row">
+         <div class="col-auto d-flex flex-column ">
+            {% include "components/itilobject/user_picture.html.twig" with {'users_id': users_id} only %}
+         </div>
+         <div class="col-12 col-sm">
+            <div class="d-flex">
+               <div class="d-none d-md-block">
+                  <strong>{{ User__getLink(users_id) }}</strong>
+               </div>
+            </div>
+            <span class="row mt-2 timeline-content left card">
+               <div class="card-body">
+                  {% include "components/itilobject/simple_form.html.twig" with {
+                     'no_form': true
+                  } %}
+               </div>
+            </span>
+         </div>
+      </div>
+   </div>
+</div>
