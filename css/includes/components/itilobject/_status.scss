@@ -1,0 +1,32 @@
+.itilstatus {
+   margin-right: .4em;
+
+   &.assigned, &.new {
+      color: #49bf4d;
+   }
+
+   &.accepted {
+      color: green;
+   }
+
+   &.test, &.qualif, &.waiting {
+      color: orange;
+   }
+
+   &.approval {
+      color: #8CABDB;
+   }
+
+   &.eval {
+      color: lightblue;
+   }
+
+   &.closed, &.solved, &.observe, &.refused, &.canceled {
+      color: black;
+   }
+
+   &.planned {
+      color: #1B2F62;
+   }
+}
+
