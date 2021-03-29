@@ -106,7 +106,7 @@ class DBConnection extends CommonDBTM {
     *
     * @return boolean
     *
-    * @since x.x.x
+    * @since 10.0.0
     */
    static function updateConfigProperty($name, $value, $update_slave = true, string $config_dir = GLPI_CONFIG_DIR): bool {
       $main_config_file = 'config_db.php';
@@ -611,7 +611,7 @@ class DBConnection extends CommonDBTM {
     *
     * @return void
     *
-    * @since x.x.x
+    * @since 10.0.0
     */
    public static function setConnectionCharset(mysqli $dbh, bool $use_utf8mb4): void {
       $charset = $use_utf8mb4 ? 'utf8mb4' : 'utf8';
@@ -639,7 +639,7 @@ class DBConnection extends CommonDBTM {
     *
     * @return string
     *
-    * @since x.x.x
+    * @since 10.0.0
     */
    public static function getDefaultCharset(): string {
       global $DB;
@@ -656,7 +656,7 @@ class DBConnection extends CommonDBTM {
     *
     * @return string
     *
-    * @since x.x.x
+    * @since 10.0.0
     */
    public static function getDefaultCollation(): string {
       global $DB;

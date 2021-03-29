@@ -33,7 +33,7 @@
 /**
  * Cron task creating recurrent tickets and changes
  *
- * @since x.x.x
+ * @since 10.0.0
  */
 class CommonITILRecurrentCron extends CommonDBTM
 {

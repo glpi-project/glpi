@@ -377,9 +377,9 @@ class Update {
          case "9.5.7":
          case "9.5.8":
          case "9.5.9":
-         case "x.x.x-dev":
-            include_once "{$updir}update_95_xx.php";
-            update95toXX();
+         case "10.0.0-dev":
+            include_once "{$updir}update_95_100.php";
+            update95to100();
             break;
 
          case GLPI_VERSION:

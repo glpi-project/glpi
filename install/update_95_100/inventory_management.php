@@ -50,5 +50,5 @@ if (!$DB->tableExists('glpi_items_remotemanagements')) {
          KEY `is_dynamic` (`is_dynamic`),
          KEY `item` (`itemtype`,`items_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "x.x add table glpi_items_remotemanagements");
+   $DB->queryOrDie($query, "10.0 add table glpi_items_remotemanagements");
 }

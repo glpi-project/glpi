@@ -60,7 +60,7 @@ trait Clonable {
     *
     * @return array
     *
-    * @since x.x.x
+    * @since 10.0.0
     */
    private function cleanCloneInput(array $input): array {
       $properties_to_clean = [
@@ -87,7 +87,7 @@ trait Clonable {
     *
     * @return void
     *
-    * @since x.x.x
+    * @since 10.0.0
     */
    private function cloneRelations(CommonDBTM $source, bool $history): void {
       $clone_relations = $this->getCloneRelations();
@@ -119,7 +119,7 @@ trait Clonable {
     * Prepare input datas for cloning the item.
     * This empty method is meant to be redefined in objects that need a specific prepareInputForClone logic.
     *
-    * @since x.x.x
+    * @since 10.0.0
     *
     * @param array $input datas used to add the item
     *
@@ -132,7 +132,7 @@ trait Clonable {
    /**
     * Clones the current item
     *
-    * @since x.x.x
+    * @since 10.0.0
     *
     * @param array $override_input custom input to override
     * @param boolean $history do history log ?

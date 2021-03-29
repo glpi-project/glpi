@@ -47,7 +47,7 @@ if (!$DB->tableExists('glpi_agenttypes')) {
          PRIMARY KEY (`id`),
          KEY `name` (`name`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "x.x add table glpi_agenttypes");
+   $DB->queryOrDie($query, "10.0 add table glpi_agenttypes");
    $migration->addPostQuery(
       $DB->buildInsert(
          "glpi_agenttypes",
@@ -83,7 +83,7 @@ if (!$DB->tableExists('glpi_agents')) {
          KEY `agenttypes_id` (`agenttypes_id`),
          CONSTRAINT `agenttypes_id` FOREIGN KEY (`agenttypes_id`) REFERENCES `glpi_agenttypes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "x.x add table glpi_agents");
+   $DB->queryOrDie($query, "10.0 add table glpi_agents");
 } else {
    $migration->dropKey('glpi_agents', 'items_id');
    $migration->dropKey('glpi_agents', 'itemtype');
@@ -108,7 +108,7 @@ if (!$DB->tableExists('glpi_rulematchedlogs')) {
          KEY `agents_id` (`agents_id`),
          KEY `rules_id` (`rules_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "x.x add table glpi_rulematchedlogs");
+   $DB->queryOrDie($query, "10.0 add table glpi_rulematchedlogs");
 } else {
    $migration->addKey('glpi_rulematchedlogs', 'agents_id');
    $migration->addKey('glpi_rulematchedlogs', 'rules_id');
@@ -133,7 +133,7 @@ if (!$DB->tableExists('glpi_lockedfields')) {
          UNIQUE KEY `unicity` (`itemtype`, `items_id`, `field`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "x.x add table glpi_lockedfields");
+   $DB->queryOrDie($query, "10.0 add table glpi_lockedfields");
 } else {
    $migration->dropKey('glpi_lockedfields', 'item');
    $migration->migrationOneTable('glpi_lockedfields');
@@ -260,7 +260,7 @@ if (!$DB->tableExists('glpi_unmanageds')) {
          KEY `domains_id` (`domains_id`),
          KEY `agents_id` (`agents_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "x.x add table glpi_unmanageds");
+   $DB->queryOrDie($query, "10.0 add table glpi_unmanageds");
 } else {
    $migration->addKey('glpi_unmanageds', 'is_recursive');
 }
@@ -287,7 +287,7 @@ if (!$DB->tableExists('glpi_networkporttypes')) {
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "x.x add table glpi_networkporttypes");
+   $DB->queryOrDie($query, "10.0 add table glpi_networkporttypes");
 } else {
    $migration->addKey('glpi_networkporttypes', 'is_recursive');
 }
@@ -346,7 +346,7 @@ if (!$DB->tableExists('glpi_printers_cartridgeinfos')) {
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "x.x add table glpi_printers_cartridgeinfos");
+   $DB->queryOrDie($query, "10.0 add table glpi_printers_cartridgeinfos");
 }
 
 if (!$DB->tableExists('glpi_printerlogs')) {
@@ -370,7 +370,7 @@ if (!$DB->tableExists('glpi_printerlogs')) {
          KEY `printers_id` (`printers_id`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "x.x add table glpi_printerlogs");
+   $DB->queryOrDie($query, "10.0 add table glpi_printerlogs");
 } else {
    $migration->addKey('glpi_printerlogs', 'date_creation');
 }
@@ -387,7 +387,7 @@ if (!$DB->tableExists('glpi_networkportconnectionlogs')) {
          KEY `networkports_id_destination` (`networkports_id_destination`),
          KEY `networkports_id_source` (`networkports_id_source`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "x.x add table glpi_networkportconnectionlogs");
+   $DB->queryOrDie($query, "10.0 add table glpi_networkportconnectionlogs");
 } else {
    $migration->addKey('glpi_networkportconnectionlogs', 'networkports_id_destination');
    $migration->addKey('glpi_networkportconnectionlogs', 'networkports_id_source');
@@ -406,7 +406,7 @@ if (!$DB->tableExists('glpi_networkportmetrics')) {
          KEY `date_creation` (`date_creation`),
          KEY `networkports_id` (`networkports_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "x.x add table glpi_networkportmetrics");
+   $DB->queryOrDie($query, "10.0 add table glpi_networkportmetrics");
 }
 
 if (!$DB->tableExists('glpi_refusedequipments')) {
@@ -431,7 +431,7 @@ if (!$DB->tableExists('glpi_refusedequipments')) {
          KEY `date_creation` (`date_creation`),
          KEY `date_mod` (`date_mod`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "x.x add table glpi_refusedequipments");
+   $DB->queryOrDie($query, "10.0 add table glpi_refusedequipments");
 } else {
    $migration->addKey('glpi_refusedequipments', 'entities_id');
    $migration->addKey('glpi_refusedequipments', 'agents_id');
@@ -482,7 +482,7 @@ if (!$DB->tableExists('glpi_usbvendors')) {
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "x.x add table glpi_usbvendors");
+   $DB->queryOrDie($query, "10.0 add table glpi_usbvendors");
 } else {
    $migration->dropKey('glpi_usbvendors', 'vendorid');
    $migration->migrationOneTable('glpi_usbvendors');
@@ -510,7 +510,7 @@ if (!$DB->tableExists('glpi_pcivendors')) {
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "x.x add table glpi_pcivendors");
+   $DB->queryOrDie($query, "10.0 add table glpi_pcivendors");
 } else {
    $migration->dropKey('glpi_pcivendors', 'vendorid');
    $migration->migrationOneTable('glpi_pcivendors');

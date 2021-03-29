@@ -1328,7 +1328,7 @@ HTML
       $DB->queryOrDie($query, "add table glpi_domainrecordtypes");
       $types = DomainRecordType::getDefaults();
       foreach ($types as $type) {
-         unset($type['fields']); // This field was not present before GLPI x.x
+         unset($type['fields']); // This field was not present before GLPI 10.0
          $migration->addPostQuery(
             $DB->buildInsert(
                DomainRecordType::getTable(),

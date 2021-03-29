@@ -2035,7 +2035,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @param Message $message
     *
-    * @since x.x.x
+    * @since 10.0.0
     *
     * @return bool
     */

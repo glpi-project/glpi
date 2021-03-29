@@ -2650,7 +2650,7 @@ abstract class API {
    /**
     * Get network ports
     *
-    * @since x.x.x
+    * @since 10.0.0
     *
     * @param int    $id         Id of the source item
     * @param string  $itemtype  Type of the source item

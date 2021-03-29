@@ -2637,7 +2637,7 @@ class Config extends CommonDBTM {
     *
     * @return boolean True for success, false if an error occured
     *
-    * @since x.x.x Parameter $older_to_latest is not longer used.
+    * @since 10.0.0 Parameter $older_to_latest is not longer used.
     */
    public static function loadLegacyConfiguration() {
 
@@ -3414,7 +3414,7 @@ class Config extends CommonDBTM {
    /**
     * Security form related to management entries.
     *
-    * @since x.x.x
+    * @since 10.0.0
     *
     * @return void|boolean (display) Returns false if there is a rights error.
     */

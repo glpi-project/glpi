@@ -50,7 +50,7 @@ if (!$notification_exists) {
          'date_creation'   => new \QueryExpression('NOW()'),
          'date_mod'        => new \QueryExpression('NOW()')
       ],
-      'x.x Add user mention notification'
+      '10.0 Add user mention notification'
    );
    $notification_id = $DB->insertId();
 
@@ -63,7 +63,7 @@ if (!$notification_exists) {
             'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
             'notificationtemplates_id' => $notificationtemplate->fields['id'],
          ],
-         'x.x Add user mention notification template'
+         '10.0 Add user mention notification template'
       );
    }
 
@@ -74,6 +74,6 @@ if (!$notification_exists) {
          'type'             => '1',
          'notifications_id' => $notification_id,
       ],
-      'x.x Add user mention notification target'
+      '10.0 Add user mention notification target'
    );
 }

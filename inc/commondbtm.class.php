@@ -1254,7 +1254,7 @@ class CommonDBTM extends CommonGLPI {
     * @param boolean $history do history log ? (true by default)
     *
     * @return integer the new ID of the clone (or false if fail)
-    * @deprecated x.x.x Use the {@link \Glpi\Features\Clonable} trait instead
+    * @deprecated 10.0.0 Use the {@link \Glpi\Features\Clonable} trait instead
     */
    function clone(array $override_input = [], bool $history = true) {
       global $DB, $CFG_GLPI;
@@ -1429,7 +1429,7 @@ class CommonDBTM extends CommonGLPI {
     * @param array $input datas used to add the item
     *
     * @return array the modified $input array
-    * @deprecated x.x.x Use the {@link \Glpi\Features\Clonable} trait
+    * @deprecated 10.0.0 Use the {@link \Glpi\Features\Clonable} trait
    **/
    function prepareInputForClone($input) {
       \Toolbox::deprecated();
@@ -1461,7 +1461,7 @@ class CommonDBTM extends CommonGLPI {
     * @param $history do history log ?
     *
     * @return void
-    * @deprecated x.x.x Use the {@link \Glpi\Features\Clonable} trait
+    * @deprecated 10.0.0 Use the {@link \Glpi\Features\Clonable} trait
    **/
    function post_clone($source, $history) {
       \Toolbox::deprecated();

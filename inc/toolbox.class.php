@@ -3341,7 +3341,7 @@ HTML;
    /**
     * Checks if the given class or object has the specified trait.
     * This function checks the class itself and all parent classes for the trait.
-    * @since x.x.x
+    * @since 10.0.0
     * @param string|object $class The class or object
     * @param string $trait The trait
     * @return bool True if the class or its parents have the specified trait

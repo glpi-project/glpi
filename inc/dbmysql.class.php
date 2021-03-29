@@ -1331,7 +1331,7 @@ class DBmysql {
    /**
     * Truncate table in the database
     *
-    * @since x.x.x
+    * @since 10.0.0
     *
     * @param string $table  Table name
     *
@@ -1346,7 +1346,7 @@ class DBmysql {
     * Truncate table in the database or die
     * (optionally with a message) if it fails
     *
-    * @since x.x.x
+    * @since 10.0.0
     *
     * @param string $table   Table name
     * @param string $message Explanation of query (default '')
@@ -1381,7 +1381,7 @@ class DBmysql {
     *
     * @return array
     *
-    * @deprecated x.x.x
+    * @deprecated 10.0.0
     */
    public function getTableSchema($table, $structure = null) {
       Toolbox::deprecated();

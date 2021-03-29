@@ -37,7 +37,7 @@ GLPI.RichText = GLPI.RichText || {};
 /**
  * User mention rich text autocompleter.
  *
- * @since x.x.x
+ * @since 10.0.0
  */
 GLPI.RichText.UserMention = class {
 

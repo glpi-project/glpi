@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// OCS Rules class
-// @deprecated x.x.x @see RuleImportAsset
+// @deprecated 10.0.0 @see RuleImportAsset
 class RuleImportComputer extends Rule {
 
    const RULE_ACTION_LINK_OR_IMPORT    = 0;
