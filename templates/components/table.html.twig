@@ -12,7 +12,10 @@
    {% for row in rows %}
       <tr class="{{ row.class|default('') }}">
          {% for value in row.values %}
-            <td>{{ value|raw }}</td>
+            {% if value is not iterable %}
+               {% set value = {'content': value} %}
+            {% endif %}
+            <td colspan="{{ value.colspan|default(1) }}" class="{{ value.class|default('') }}" style="{{ value.style|default('') }}">{{ value.content|raw }}</td>
          {% endfor %}
       </tr>
    {% endfor %}
