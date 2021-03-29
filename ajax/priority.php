@@ -32,21 +32,24 @@
 
 include ('../inc/includes.php');
 
-// Send UTF8 Headers
-header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_POST["urgency"])
-    && isset($_POST["impact"])
-    && isset($_POST["priority"])) {
+if (isset($_REQUEST["urgency"])
+    && isset($_REQUEST["impact"])) {
 
-   $priority = Ticket::computePriority($_POST["urgency"], $_POST["impact"]);
+   $priority = Ticket::computePriority($_REQUEST["urgency"], $_REQUEST["impact"]);
 
-   if ($_POST["priority"]) {
+   if (isset($_REQUEST['getJson'])) {
+      header("Content-Type: application/json; charset=UTF-8");
+      echo json_encode(['priority' => $priority]);
+
+   } elseif ($_REQUEST["priority"]) {
+      // Send UTF8 Headers
+      header("Content-Type: text/html; charset=UTF-8");
       echo "<script type='text/javascript' >\n";
-      echo Html::jsSetDropdownValue($_POST["priority"], $priority);
+      echo Html::jsSetDropdownValue($_REQUEST["priority"], $priority);
       echo "\n</script>";
 
    } else {
