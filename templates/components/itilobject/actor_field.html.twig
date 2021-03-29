@@ -91,7 +91,7 @@ $(function() {
 
          $.get("{{ path('/ajax/ticketassigninformation.php') }}", {
             [fk]: items_id,
-            only_number: true
+            only_number: true,
          }).done(function(number) {
             var badge = "";
             if (number.length > 0) {
