@@ -7014,8 +7014,10 @@ JAVASCRIPT;
          }
 
          if (in_array($itemtype, $CFG_GLPI["link_types"])) {
-            self::$search[$itemtype]['link'] = _n('External link', 'External links', Session::getPluralNumber());
+            self::$search[$itemtype]['link'] = Link::getTypeName(Session::getPluralNumber());
             self::$search[$itemtype] += Link::getSearchOptionsToAdd($itemtype);
+            self::$search[$itemtype]['manuallink'] = ManualLink::getTypeName(Session::getPluralNumber());
+            self::$search[$itemtype] += ManualLink::getSearchOptionsToAdd($itemtype);
          }
 
          if ($withplugins) {

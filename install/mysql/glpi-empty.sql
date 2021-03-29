@@ -8682,4 +8682,23 @@ CREATE TABLE `glpi_items_remotemanagements` (
   KEY `item` (`itemtype`,`items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_manuallinks`;
+CREATE TABLE `glpi_manuallinks` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `url` varchar(8096) NOT NULL,
+  `open_window` tinyint NOT NULL DEFAULT '1',
+  `icon` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `items_id` int NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `items_id` (`items_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 SET FOREIGN_KEY_CHECKS=1;

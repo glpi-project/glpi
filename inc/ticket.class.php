@@ -2545,7 +2545,7 @@ class Ticket extends CommonITILObject {
          case 'link_to_problem':
             Problem::dropdown(['name' => 'problems_id']);
             echo '<br><br>';
-            echo Html::submit(__('Link'), [
+            echo Html::submit(_x('button', 'Link'), [
                'name'      => 'link'
             ]);
             return true;

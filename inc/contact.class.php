@@ -72,7 +72,7 @@ class Contact extends CommonDBTM{
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Contact_Supplier', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
-      $this->addStandardTab('Link', $ong, $options);
+      $this->addStandardTab('ManualLink', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 

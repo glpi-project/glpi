@@ -257,7 +257,7 @@ a, .btn-linkstyled {
    }
 }
 
-a .fa, a .far, a .fas, .btn-linkstyled .fa, .btn-linkstyled .far, .btn-linkstyled .fas {
+a:not(.vsubmit) .fa, a:not(.vsubmit) .far, a:not(.vsubmit) .fas, .btn-linkstyled .fa, .btn-linkstyled .far, .btn-linkstyled .fas {
    color: #222;
 }
 

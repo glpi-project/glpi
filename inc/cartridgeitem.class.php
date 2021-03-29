@@ -110,7 +110,7 @@ class CartridgeItem extends CommonDBTM {
       $this->addStandardTab('CartridgeItem_PrinterModel', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
-      $this->addStandardTab('Link', $ong, $options);
+      $this->addStandardTab('ManualLink', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
