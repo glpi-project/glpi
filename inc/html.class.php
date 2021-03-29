@@ -4396,6 +4396,9 @@ JAVASCRIPT
          $placeholder = "placeholder: ".json_encode($params["placeholder"]).",";
       }
 
+      $templateresult    = $params["templateResult"] ?? "templateResult";
+      $templateselection = $params["templateSelection"] ?? "templateSelection";
+
       $js = "$(function() {
          $('#$id').select2({
             $placeholder
@@ -4481,8 +4484,8 @@ JAVASCRIPT
                // Return `null` if the term should not be displayed
                return null;
             },
-            templateResult: templateResult,
-            templateSelection: templateSelection,
+            templateResult: $templateresult,
+            templateSelection: $templateselection,
          })
          .bind('setValue', function(e, value) {
             $('#$id').val(value).trigger('change');
