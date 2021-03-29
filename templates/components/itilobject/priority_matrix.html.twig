@@ -1,0 +1,61 @@
+{% import "components/form/fields_macros.html.twig" as fields %}
+{% set rand = random() %}
+
+{{ fields.field(
+   'urgency',
+   item.dropdownUrgency({
+      'value': item.fields["urgency"],
+      'width': '100%',
+      'class': 'form-select',
+      'display': false,
+      'rand': rand,
+   }),
+   __('%1$s%2$s')|format(__("Urgency"), template.getMandatoryMark('urgency')),
+   field_options
+) }}
+
+{{ fields.field(
+   'impact',
+   item.dropdownImpact({
+      'value': item.fields["impact"],
+      'width': '100%',
+      'class': 'form-select',
+      'display': false,
+      'rand': rand,
+   }),
+   __('%1$s%2$s')|format(__("impact"), template.getMandatoryMark('impact')),
+   field_options
+) }}
+
+{# TODO ajax #}
+{{ fields.field(
+   'priority',
+   item.dropdownPriority({
+      'value': item.fields["priority"],
+      'width': '100%',
+      'class': 'form-select',
+      'display': false,
+      'rand': rand,
+   }),
+   __('%1$s%2$s')|format(__("priority"), template.getMandatoryMark('priority')),
+   field_options
+) }}
+
+<script type="text/javascript">
+$(function() {
+   $('#dropdown_urgency{{ rand }}, #dropdown_impact{{ rand }}').on('change.select2', function (e) {
+      $.ajax({
+         url: "{{ path('/ajax/priority.php') }}",
+         datatype: 'json',
+         data: {
+            'urgency': $('#dropdown_urgency{{ rand }}').select2('data')[0].id ?? 0,
+            'impact':  $('#dropdown_impact{{ rand }}').select2('data')[0].id ?? 0,
+            'getJson': true,
+         }
+      }).done(function(data) {
+         $('#dropdown_priority{{ rand }}').val(data.priority);
+         $('#dropdown_priority{{ rand }}').trigger('change');
+      });
+   })
+});
+</script>
