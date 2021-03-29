@@ -2,20 +2,34 @@
 
 <div class="mt-n1" id="itil-object">
 
+   {% if item.isNewItem %}
+      {% include("components/itilobject/mainform_open.html.twig") %}
+   {% endif %}
+
    <div class="row d-flex flex-column align-items-stretch itil-object ">
       <div class="col-12 col-md-8 order-last order-md-first pt-2 pe-2 pe-md-4 d-flex flex-column border-top border-4 itil-left-side">
          {% if item.isNewItem() %}
-            {# TODO content + title form #}
+            {% include("components/itilobject/new_form.html.twig") %}
          {% else %}
             {% include("components/itilobject/timeline.html.twig") %}
          {% endif %}
       </div>
       <div class="col-12 col-md-4 border-0 itil-right-side mt-0 mt-md-n1 card-footer p-0 rounded-0">
+         {% if not item.isNewItem() %}
+            {% include("components/itilobject/mainform_open.html.twig") %}
+         {% endif %}
          {% include("components/itilobject/fields_panel.html.twig") %}
+         {% if not item.isNewItem() %}
+            {% include("components/itilobject/mainform_close.html.twig") %}
+         {% endif %}
       </div>
    </div>
 
    {% include("components/itilobject/footer.html.twig") %}
+
+   {% if not item.isNewItem() %}
+      {% include("components/itilobject/mainform_close.html.twig") %}
+   {% endif %}
 
 </div>
 
