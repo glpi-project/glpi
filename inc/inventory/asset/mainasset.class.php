@@ -71,7 +71,7 @@ abstract class MainAsset extends InventoryAsset
    /** @var array */
    protected $inventoried = [];
    /** @var boolean */
-   protected $is_partial = false;
+   protected $partial = false;
 
    public function __construct(CommonDBTM $item, $data) {
       $namespaced = explode('\\', static::class);
@@ -101,107 +101,72 @@ abstract class MainAsset extends InventoryAsset
       $models_id = $this->getModelsFieldName();
       $types_id = $this->getTypesFieldName();
 
-      if (property_exists($this->raw_data, 'partial') && $this->raw_data->partial) {
-         $this->setPartial();
+      $raw_data = $this->raw_data;
+      if (!is_array($raw_data)) {
+          $raw_data = [$raw_data];
       }
 
-      $val = new \stdClass();
+      $this->data = [];
+      foreach ($raw_data as $entry) {
 
-      //set update system
-      $val->autoupdatesystems_id = $this->raw_data->content->autoupdatesystems_id ?? 'GLPI Native Inventory';
-
-      if (isset($this->extra_data['hardware'])) {
-         $hardware = (object)$this->extra_data['hardware'];
-
-         $hw_mapping = [
-            'name'           => 'name',
-            'winprodid'      => 'licenseid',
-            'winprodkey'     => 'license_number',
-            'workgroup'      => 'domains_id',
-            'lastloggeduser' => 'users_id',
-         ];
-
-         foreach ($hw_mapping as $origin => $dest) {
-            if (property_exists($hardware, $origin)) {
-               $hardware->$dest = $hardware->$origin;
-            }
+         if (property_exists($entry, 'partial') && $entry->partial) {
+            $this->setPartial();
          }
-         $this->hardware = $hardware;
 
-         foreach ($hardware as $key => $property) {
-            $val->$key = $property;
+         $val = new \stdClass();
+
+         //set update system
+         $val->autoupdatesystems_id = $entry->content->autoupdatesystems_id ?? 'GLPI Native Inventory';
+
+         if (isset($this->extra_data['hardware'])) {
+            $this->prepareForHardware($val);
          }
+
+         if (property_exists($val, 'users_id')) {
+            $this->prepareForUsers($val);
+         }
+
+         if (isset($this->extra_data['bios'])) {
+            $this->prepareForBios($val);
+         }
+
+         if (method_exists($this, 'postPrepare')) {
+            $this->postPrepare($val);
+         }
+
+         $this->data[] = $val;
       }
 
-      if (property_exists($val, 'users_id')) {
-         if ($val->users_id == '') {
-            unset($val->users_id);
-         } else {
-            $val->contact = $val->users_id;
-            $split_user = explode("@", $val->users_id);
-            $iterator = $DB->request([
-               'SELECT' => 'id',
-               'FROM'   => 'glpi_users',
-               'WHERE'  => [
-                  'name'   => $split_user[0]
-               ],
-               'LIMIT'  => 1
-            ]);
-            $result = $iterator->next();
-            if (count($iterator)) {
-               $result = $iterator->next();
-               $val->users_id = $result['id'];
-            } else {
-               $val->users_id = 0;
-            }
+      return $this->data;
+   }
+
+   /**
+    * Prepare hardware information
+    *
+    * @param stdClass $val
+    *
+    * @return void
+    */
+   protected function prepareForHardware($val) {
+      $hardware = (object)$this->extra_data['hardware'];
+
+      $hw_mapping = [
+         'name'           => 'name',
+         'winprodid'      => 'licenseid',
+         'winprodkey'     => 'license_number',
+         'workgroup'      => 'domains_id',
+         'lastloggeduser' => 'users_id',
+      ];
+
+      foreach ($hw_mapping as $origin => $dest) {
+         if (property_exists($hardware, $origin)) {
+            $hardware->$dest = $hardware->$origin;
          }
       }
+      $this->hardware = $hardware;
 
-      if (isset($this->extra_data['bios'])) {
-         $bios = (object)$this->extra_data['bios'];
-         if (property_exists($bios, 'assettag')
-               && !empty($bios->assettag)) {
-            $val->otherserial = $bios->assettag;
-         }
-         if (property_exists($bios, 'smanufacturer')
-               && !empty($bios->smanufacturer)) {
-            $val->manufacturers_id = $bios->smanufacturer;
-         } else if (property_exists($bios, 'mmanufacturer')
-               && !empty($bios->mmanufacturer)) {
-            $val->manufacturers_id = $bios->mmanufacturer;
-            $val->mmanufacturer = $bios->mmanufacturer;
-         } else if (property_exists($bios, 'bmanufacturer')
-               && !empty($bios->bmanufacturer)) {
-            $val->manufacturers_id = $bios->bmanufacturer;
-            $val->bmanufacturer = $bios->bmanufacturer;
-         }
-
-         if (property_exists($bios, 'smodel') && $bios->smodel != '') {
-            $val->$models_id = $bios->smodel;
-         } else if (property_exists($bios, 'mmodel') && $bios->mmodel != '') {
-            $val->$models_id = $bios->mmodel;
-            $val->model = $bios->mmodel;
-         }
-
-         if (property_exists($bios, 'ssn')) {
-            $val->serial = trim($bios->ssn);
-            // HP patch for serial begin with 'S'
-            if (property_exists($val, 'manufacturers_id')
-                  && strstr($val->manufacturers_id, "ewlett")
-                  && preg_match("/^[sS]/", $val->serial)) {
-               $val->serial = trim(
-                  preg_replace(
-                     "/^[sS]/",
-                     "",
-                     $val->serial
-                  )
-               );
-            }
-         }
-
-         if (property_exists($bios, 'msn')) {
-            $val->mserial = $bios->msn;
-         }
+      foreach ($hardware as $key => $property) {
+         $val->$key = $property;
       }
 
       // * Type of the asset
@@ -231,6 +196,37 @@ abstract class MainAsset extends InventoryAsset
             }
          }
       }
+   }
+
+   /**
+    * Prepare users information
+    *
+    * @param stdClass $val
+    *
+    * @return void
+    */
+   protected function prepareForUsers($val) {
+      if ($val->users_id == '') {
+         unset($val->users_id);
+      } else {
+         $val->contact = $val->users_id;
+         $split_user = explode("@", $val->users_id);
+         $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_users',
+            'WHERE'  => [
+               'name'   => $split_user[0]
+            ],
+            'LIMIT'  => 1
+         ]);
+
+         if (count($iterator)) {
+            $result = $iterator->next();
+            $val->users_id = $result['id'];
+         } else {
+            $val->users_id = 0;
+         }
+      }
 
       // * USERS
       $cnt = 0;
@@ -247,7 +243,7 @@ abstract class MainAsset extends InventoryAsset
             if (property_exists($a_users, 'login')) {
                $user = $a_users->login;
                if (property_exists($a_users, 'domain')
-                       && !empty($a_users->domain)) {
+                        && !empty($a_users->domain)) {
                   $user .= "@" . $a_users->domain;
                }
             }
@@ -256,7 +252,7 @@ abstract class MainAsset extends InventoryAsset
                   // Search on domain
                   $where_add = [];
                   if (property_exists($a_users, 'domain')
-                          && !empty($a_users->domain)) {
+                           && !empty($a_users->domain)) {
                      $ldaps = $DB->request('glpi_authldaps',
                            ['WHERE'  => ['inventory_domain' => $a_users->domain]]
                      );
@@ -300,14 +296,51 @@ abstract class MainAsset extends InventoryAsset
             $val->contact = $user_temp;
          }
       }
+   }
 
-      if (method_exists($this, 'postPrepare')) {
-         $this->postPrepare($val);
+   protected function prepareForBios($val) {
+      $bios = (object)$this->extra_data['bios'];
+
+      if (property_exists($bios, 'assettag') && !empty($bios->assettag)) {
+         $val->otherserial = $bios->assettag;
       }
 
-      $this->data = [$val];
+      if (property_exists($bios, 'smanufacturer') && !empty($bios->smanufacturer)) {
+         $val->manufacturers_id = $bios->smanufacturer;
+      } else if (property_exists($bios, 'mmanufacturer') && !empty($bios->mmanufacturer)) {
+         $val->manufacturers_id = $bios->mmanufacturer;
+         $val->mmanufacturer = $bios->mmanufacturer;
+      } else if (property_exists($bios, 'bmanufacturer') && !empty($bios->bmanufacturer)) {
+         $val->manufacturers_id = $bios->bmanufacturer;
+         $val->bmanufacturer = $bios->bmanufacturer;
+      }
 
-      return $this->data;
+      if (property_exists($bios, 'smodel') && $bios->smodel != '') {
+         $val->$models_id = $bios->smodel;
+      } else if (property_exists($bios, 'mmodel') && $bios->mmodel != '') {
+         $val->$models_id = $bios->mmodel;
+         $val->model = $bios->mmodel;
+      }
+
+      if (property_exists($bios, 'ssn')) {
+         $val->serial = trim($bios->ssn);
+         // HP patch for serial begin with 'S'
+         if (property_exists($val, 'manufacturers_id')
+            && strstr($val->manufacturers_id, "ewlett")
+            && preg_match("/^[sS]/", $val->serial)) {
+            $val->serial = trim(
+               preg_replace(
+                  "/^[sS]/",
+                  "",
+                  $val->serial
+               )
+            );
+         }
+      }
+
+      if (property_exists($bios, 'msn')) {
+          $val->mserial = $bios->msn;
+      }
    }
 
    /**

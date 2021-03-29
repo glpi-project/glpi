@@ -243,7 +243,7 @@ class Cartridge extends InventoryAsset
          }
       }
 
-      if (!$this->item->isPartial() && count($db_cartridges) != 0) {
+      if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_cartridges) != 0) {
          foreach ($db_cartridges as $idtmp => $data) {
             $cartinfo->delete(['id' => $idtmp], 1);
          }

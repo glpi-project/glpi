@@ -114,8 +114,8 @@ class Antivirus extends AbstractInventoryAsset {
    }
 
    public function testWrongMainItem() {
-      $mainasset = getItemByTypeName('Printer', '_test_printer_all');
-      $asset = new \Glpi\Inventory\Asset\Antivirus($mainasset);
+      $mainitem = getItemByTypeName('Printer', '_test_printer_all');
+      $asset = new \Glpi\Inventory\Asset\Antivirus($mainitem);
       $this->exception(
          function () use ($asset) {
             $asset->prepare();

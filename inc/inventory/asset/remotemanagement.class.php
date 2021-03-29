@@ -115,7 +115,7 @@ class RemoteManagement extends InventoryAsset
          }
       }
 
-      if (!$this->item->isPartial()) {
+      if (!$this->main_asset || !$this->main_asset->isPartial()) {
          foreach ($db_mgmt as $idtmp => $data) {
             $mgmt->delete(['id' => $idtmp], 1);
          }

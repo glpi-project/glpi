@@ -153,7 +153,7 @@ class OperatingSystem extends InventoryAsset
       $this->operatingsystems_id = $val->operatingsystems_id;
 
       //cleanup
-      if (!$this->item->isPartial()) {
+      if (!$this->main_asset || !$this->main_asset->isPartial()) {
          $iterator = $DB->request([
             'FROM' => $ios->getTable(),
             'WHERE' => [

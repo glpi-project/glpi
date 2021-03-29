@@ -116,7 +116,7 @@ class Antivirus extends InventoryAsset
          }
       }
 
-      if (!$this->item->isPartial() && count($db_antivirus) != 0) {
+      if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_antivirus) != 0) {
          foreach ($db_antivirus as $idtmp => $data) {
             $computerAntivirus->delete(['id' => $idtmp], 1);
          }

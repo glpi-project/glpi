@@ -144,7 +144,7 @@ class Volume extends InventoryAsset
          }
       }
 
-      if (!$this->item->isPartial() && count($db_itemdisk) != 0) {
+      if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_itemdisk) != 0) {
          // Delete Item_Disk in DB
          foreach ($db_itemdisk as $dbid => $data) {
             $itemDisk->delete(['id' => $dbid], 1);
