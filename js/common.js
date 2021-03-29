@@ -1028,6 +1028,54 @@ var templateSelection = function (selection) {
    return _elt;
 };
 
+var templateItilStatus = function(option) {
+   var status = option.id ?? 0;
+
+   console.log(option)
+
+   var classes = "";
+   switch (parseInt(status)) {
+      case 1 :
+         classes = 'new fas fa-circle';
+         break;
+      case 2 :
+         classes = 'assigned far fa-circle';
+         break;
+      case 3 :
+         classes = 'planned fas fa-calendar';
+         break;
+      case 4 :
+         classes = 'waiting fas fa-circle';
+         break;
+      case 5 :
+         classes = 'solved far fa-circle';
+         break;
+      case 6 :
+         classes = 'closed fas fa-circle';
+         break;
+      case 7:
+         classes = 'accepted fas fa-check-circle';
+         break;
+      case 8 :
+         classes = 'observe fas fa-eye';
+         break;
+      case 9 :
+         classes = 'eval far fa-circle';
+         break;
+      case 10 :
+         classes = 'approval fas fa-question-circle';
+         break;
+      case 11 :
+         classes = 'test fas fa-question-circle';
+         break;
+      case 12 :
+         classes = 'qualif far fa-circle';
+         break;
+   }
+
+   return $(`<span><i class="itilstatus ${classes}"></i>${option.text}</span>`);
+};
+
 /**
  * Returns given text without is diacritical marks.
  *

@@ -1787,6 +1787,8 @@ class Dropdown {
     *    - tooltip             : string / message to add as tooltip on the dropdown (default '')
     *    - option_tooltips     : array / message to add as tooltip on the dropdown options. Use the same keys as for the $elements parameter, but none is mandotary. Missing keys will just be ignored and no tooltip will be added. To add a tooltip on an option group, is the '__optgroup_label' key inside the array describing option tooltips : 'optgroupname1' => array('__optgroup_label' => 'tooltip for option group') (default empty)
     *    - noselect2           : if true, don't use select2 lib
+    *    - templateResult      : if not empty, call this as template results of select2
+    *    - templateSelection   : if not empty, call this as template selection of select2
     *
     * Permit to use optgroup defining items in arrays
     * array('optgroupname'  => array('key1' => 'val1',
@@ -1818,6 +1820,8 @@ class Dropdown {
       $param['display_emptychoice'] = false;
       $param['disabled']            = false;
       $param['noselect2']           = false;
+      $param['templateResult']      = "templateResult";
+      $param['templateSelection']   = "templateSelection";
 
       if (is_array($options) && count($options)) {
          if (isset($options['value']) && strlen($options['value'])) {
@@ -1982,7 +1986,12 @@ class Dropdown {
 
       if (!$param['noselect2']) {
          // Width set on select
-         $output .= Html::jsAdaptDropdown($field_id, ['width' => $param["width"]]);
+         $adapt_params = [
+            'width'             => $param["width"],
+            'templateResult'    => $param["templateResult"],
+            'templateSelection' => $param["templateSelection"],
+         ];
+         $output .= Html::jsAdaptDropdown($field_id, $adapt_params);
       }
 
       if ($param["multiple"]) {
