@@ -2129,15 +2129,17 @@ class Search {
 
       $rand_criteria = mt_rand();
       $main_block_class = '';
-      $card_class = 'search-form card card-sm mb-2';
+      $card_class = 'search-form card card-sm mb-4';
       if ($p['mainform']) {
          echo "<form name='searchform$itemtype' method='get' action='".$p['target']."'>";
       } else {
          $main_block_class = "sub_criteria";
          $card_class = 'border d-inline-block ms-1';
       }
-      echo "<div class='$card_class'>";
-      echo "<div id='searchcriteria$rand_criteria' class='$main_block_class'>";
+      $display = $_SESSION['glpifold_search'] ? 'style="display: none;"' : '';
+      echo "<div class='$card_class' $display>";
+
+      echo "<div id='searchcriteria$rand_criteria' class='$main_block_class' >";
       $nbsearchcountvar      = 'nbcriteria'.strtolower($itemtype).mt_rand();
       $searchcriteriatableid = 'criteriatable'.strtolower($itemtype).mt_rand();
       // init criteria count
@@ -2213,13 +2215,6 @@ class Search {
                   ."reset=reset' title=\"".__s('Blank')."\"
                   ><i class='fas fa-lg fa-undo'></i></a>";
             }
-
-            if ($p['showfolding']) {
-               echo "<a class='btn btn-ghost-secondary btn-icon btn-sm fold-search'
-                        data-bs-toggle='tooltip' data-bs-placement='bottom'
-                        href='#'
-                        title=\"".__("Fold search")."\"><i class='fas fa-lg fa-angle-double-up'></i></a>";
-            }
          }
       }
       echo "</div>"; //.search_actions
@@ -2278,34 +2273,11 @@ class Search {
          });
 JAVASCRIPT;
 
-      $toggled = $_SESSION['glpifold_search'] ? 'true' : 'false';
-
       if ($p['mainform']) {
          $JS .= <<<JAVASCRIPT
-         var toggle_fold_search = function() {
-            $('.fold-search').children('i.fas')
-               .toggleClass('fa-angle-double-up')
-               .toggleClass('fa-angle-double-down');
-            $('#searchcriteria{$rand_criteria} .criteria-list .list-group-item:not(:first-child)').toggle();
+         var toggle_fold_search = function(show_search) {
+            $('#searchcriteria{$rand_criteria}').closest('.search-form').toggle(show_search);
          };
-
-         if ({$toggled}) {
-            toggle_fold_search();
-         }
-
-         $('.fold-search').on('click', function(event) {
-            event.preventDefault();
-            $.ajax({
-               url: CFG_GLPI.root_doc + '/ajax/search.php',
-               type: 'GET',
-               data: {
-                  action: 'fold_search'
-               },
-               success: function() {
-                  toggle_fold_search();
-               }
-            });
-         });
 
          // Init search_criteria state
          var search_criteria_visibility = window.localStorage.getItem('show_full_searchcriteria');

@@ -46,8 +46,8 @@ switch ($_REQUEST['action']) {
    case "fold_search":
       $user = new User();
       $success = $user->update([
-         'id'          => Session::getLoginUserID(),
-         'fold_search' => (bool) $_SESSION['glpifold_search'] ? 0 : 1,
+         'id'          => (int) Session::getLoginUserID(),
+         'fold_search' => (int) !$_REQUEST['show_search'],
       ]);
 
       echo json_encode(['success' => $success]);
