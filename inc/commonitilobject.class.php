@@ -8502,7 +8502,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * New way to do it with a general array containing all item actors.
     * We compare to old actors (in case of items's update) to know which we need to remove/add/update
     *
-    * @since x.x.x
+    * @since 10.0.0
 
     * @return void
     */

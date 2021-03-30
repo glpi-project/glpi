@@ -44,7 +44,7 @@ use Twig\TwigFunction;
 use User;
 
 /**
- * @since x.x.x
+ * @since 10.0.0
  */
 class SessionExtension extends AbstractExtension implements ExtensionInterface, GlobalsInterface {
 
