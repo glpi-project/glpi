@@ -90,7 +90,7 @@ $input-border: $dark-mode-text !default;
 // helpers
 $topbar-height: 79px;
 $contextbar-height: 56px;
-$content-mt: 20px;
+$content-margin: 20px;
 
 body.iframed {
    background-color: transparent;
@@ -101,6 +101,10 @@ body.iframed {
       background: url($logo) no-repeat;
       height: 55px;
       width: 100px;
+   }
+
+   .page-body {
+      margin-bottom: 0;
    }
 
    .footer {
