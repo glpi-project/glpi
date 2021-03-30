@@ -96,11 +96,6 @@ abstract class MainAsset extends InventoryAsset
    abstract protected function getTypesFieldName();
 
    public function prepare() :array {
-      global $DB;
-
-      $models_id = $this->getModelsFieldName();
-      $types_id = $this->getTypesFieldName();
-
       $raw_data = $this->raw_data;
       if (!is_array($raw_data)) {
           $raw_data = [$raw_data];
@@ -171,6 +166,7 @@ abstract class MainAsset extends InventoryAsset
 
       // * Type of the asset
       if (isset($hardware)) {
+         $types_id = $this->getTypesFieldName();
          if (property_exists($hardware, 'vmsystem')
             && $hardware->vmsystem != ''
             && $hardware->vmsystem != 'Physical'
@@ -206,6 +202,8 @@ abstract class MainAsset extends InventoryAsset
     * @return void
     */
    protected function prepareForUsers($val) {
+      global $DB;
+
       if ($val->users_id == '') {
          unset($val->users_id);
       } else {
@@ -315,6 +313,7 @@ abstract class MainAsset extends InventoryAsset
          $val->bmanufacturer = $bios->bmanufacturer;
       }
 
+      $models_id = $this->getModelsFieldName();
       if (property_exists($bios, 'smodel') && $bios->smodel != '') {
          $val->$models_id = $bios->smodel;
       } else if (property_exists($bios, 'mmodel') && $bios->mmodel != '') {

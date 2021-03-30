@@ -109,7 +109,7 @@ class Antivirus extends InventoryAsset
                   'is_dynamic'   => 1
                ];
                $computerAntivirus->update($input, $this->withHistory());
-               unset($data[$k]);
+               unset($value[$k]);
                unset($db_antivirus[$keydb]);
                break;
             }
