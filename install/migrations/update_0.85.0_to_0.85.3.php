@@ -31,19 +31,19 @@
  */
 
 /**
- * Update from 0.84 to 0.84.1
+ * Update from 0.85 to 0.85.3
  *
  * @return bool for success (will die for most error)
 **/
-function update084to0841() {
+function update0850to0853() {
    global $DB, $migration;
 
    $updateresult     = true;
    $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(__('Update to %s'), '0.84.1'));
-   $migration->setVersion('0.84.1');
+   $migration->displayTitle(sprintf(__('Update to %s'), '0.85.3'));
+   $migration->setVersion('0.85.3');
 
    $backup_tables = false;
    $newtables     = [];
@@ -63,48 +63,70 @@ function update084to0841() {
                                  true);
    }
 
-   // Convert html fields from numeric encoding to raw encoding
-   $fields_to_clean = ['glpi_knowbaseitems'                    => 'answer',
-                            'glpi_tickets'                          => 'solution',
-                            'glpi_problems'                         => 'solution',
-                            'glpi_reminders'                        => 'text',
-                            'glpi_solutiontemplates'                => 'content',
-                            'glpi_notificationtemplatetranslations' => 'content_text'];
-   foreach ($fields_to_clean as $table => $field) {
-      foreach ($DB->request($table) as $data) {
-         $text  = Toolbox::unclean_html_cross_side_scripting_deep($data[$field]);
-         $text  = html_entity_decode($text, ENT_NOQUOTES, 'UTF-8');
-         $text  = addslashes($text);
-         $text  = Toolbox::clean_cross_side_scripting_deep($text);
-         $query = "UPDATE `$table`
-                   SET `$field` = '$text'
-                   WHERE `id` = '".$data['id']."';";
-         $DB->queryOrDie($query, "0.84.1 fix encoding of html field : $table.$field");
+   // Increase cron_limit
+   $current_config = Config::getConfigurationValues('core');
+   if ($current_config['cron_limit'] == 1) {
+      Config::setConfigurationValues('core', ['cron_limit' => 5]);
+   }
+   Config::setConfigurationValues('core', ['task_state' => Planning::TODO]);
+   $migration->addField("glpi_users", "task_state", "int(11) DEFAULT NULL");
+
+   $migration->addField('glpi_projecttasks', 'is_milestone', 'bool');
+   $migration->addKey('glpi_projecttasks', 'is_milestone');
+
+   // Change Ticket items
+   // Add glpi_items_tickets table for associated elements
+   if (!$DB->tableExists('glpi_items_tickets')) {
+      $query = "CREATE TABLE `glpi_items_tickets` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `itemtype` varchar(255) DEFAULT NULL,
+                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `tickets_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `unicity` (`itemtype`, `items_id`, `tickets_id`),
+                  KEY `tickets_id` (`tickets_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.85 add table glpi_items_tickets");
+
+      $query = "SELECT `itemtype`, `items_id`, `id`
+                FROM `glpi_tickets`
+                WHERE `itemtype` IS NOT NULL
+                    AND `itemtype` <> ''
+                AND `items_id` != 0";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            while ($data = $DB->fetchAssoc($result)) {
+                $query = "INSERT INTO `glpi_items_tickets`
+                             (`id`, `items_id`, `itemtype`, `tickets_id`)
+                          VALUES (NULL, '".$data['items_id']."', '".$data['itemtype']."', '".$data['id']."')";
+                $DB->queryOrDie($query, "0.85 associated ticket sitems migration");
+            }
+
+         }
       }
+      // Delete old columns and keys
+      $migration->dropField("glpi_tickets", "itemtype");
+      $migration->dropField("glpi_tickets", "items_id");
+      $migration->dropKey("glpi_tickets", "item");
+
    }
 
-   // Add date_mod to document_item
-   $migration->addField('glpi_documents_items', 'date_mod', 'datetime');
-   $migration->migrationOneTable('glpi_documents_items');
-   $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`
-                   INNER JOIN `glpi_documents` as `doc`
-                     ON  `doc`.`id` = `doc_i`.`documents_id`
-                   SET `doc_i`.`date_mod` = `doc`.`date_mod`";
-   $DB->queryOrDie($query_doc_i,
-                  "0.84.1 update date_mod in glpi_documents_items");
+   // correct value of status for changes
+   $query = "UPDATE `glpi_changes`
+             SET `status` = 1
+             WHERE `status` = 2";
+   $DB->queryOrDie($query, "0.85.3 correct status for change");
 
-   // correct entities_id in documents_items
-   $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`
-                   INNER JOIN `glpi_documents` as `doc`
-                     ON  `doc`.`id` = `doc_i`.`documents_id`
-                   SET `doc_i`.`entities_id` = `doc`.`entities_id`,
-                       `doc_i`.`is_recursive` = `doc`.`is_recursive`";
-   $DB->queryOrDie($query_doc_i, "0.84.1 change entities_id in documents_items");
-
-   // add delete_problem
-   $migration->addField('glpi_profiles', 'delete_problem', 'char',
-                        ['after'  => 'edit_all_problem',
-                              'update' => 'edit_all_problem']);
+   if ($migration->addField("glpi_entities", "is_notif_enable_default", "integer",
+                            ['value' => -2])) {
+      $migration->migrationOneTable('glpi_entities');
+      // Set directly to root entity
+      $query = 'UPDATE `glpi_entities`
+                SET `is_notif_enable_default` = 1
+                WHERE `id` = 0';
+      $DB->queryOrDie($query, "0.85.3 default value for is_notif_enable_default for root entity");
+   }
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
@@ -155,6 +177,10 @@ function update084to0841() {
          }
       }
    }
+   // change type of field solution in ticket.change and problem
+   $migration->changeField('glpi_tickets', 'solution', 'solution', 'longtext');
+   $migration->changeField('glpi_changes', 'solution', 'solution', 'longtext');
+   $migration->changeField('glpi_problems', 'solution', 'solution', 'longtext');
 
    // must always be at the end
    $migration->executeMigration();

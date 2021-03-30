@@ -35,7 +35,7 @@
  *
  * @return bool for success (will die for most error)
 **/
-function update93to94() {
+function update93xto940() {
    global $DB, $migration;
    $dbutils = new DbUtils();
 

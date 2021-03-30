@@ -35,7 +35,7 @@
  *
  * @return bool for success (will die for most error)
 **/
-function update0905to91() {
+function update090xto910() {
    global $DB, $migration, $CFG_GLPI;
 
    $current_config   = Config::getConfigurationValues('core');

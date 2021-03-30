@@ -35,7 +35,7 @@
  *
  * @return bool for success (will die for most error)
 **/
-function update94to95() {
+function update94xto950() {
    global $CFG_GLPI, $DB, $migration;
 
    $updateresult     = true;
@@ -1032,7 +1032,7 @@ function update94to95() {
    // default dashboards
    if (countElementsInTable("glpi_dashboards_dashboards") === 0) {
       $dashboard_obj   = new \Glpi\Dashboard\Dashboard();
-      $dashboards_data = include_once __DIR__."/update_94_95/dashboards.php";
+      $dashboards_data = include_once __DIR__."/update_9.4.x_to_9.5.0/dashboards.php";
       foreach ($dashboards_data as $default_dashboard) {
          $items = $default_dashboard['_items'];
          unset($default_dashboard['_items']);
@@ -1527,7 +1527,7 @@ HTML
    /** /Document_Item unicity */
 
    /** Appliances & webapps */
-   require __DIR__ . '/update_94_95/appliances.php';
+   require __DIR__ . '/update_9.4.x_to_9.5.0/appliances.php';
    /** /Appliances & webapps */
 
    /** update project and itil task templates to tinymce content **/
