@@ -63,7 +63,7 @@ use Twig\Extra\String\StringExtension;
 use Twig\Loader\FilesystemLoader;
 
 /**
- * @since x.x.x
+ * @since 10.0.0
  *
  * @TODO Create a custom loader that will load template for plugin (e.g. when name matches "plugin_name:/path/to/template").
  * @TODO Create a custom loader that will automatically append ".twig" to template names.
