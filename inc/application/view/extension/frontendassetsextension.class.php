@@ -42,7 +42,7 @@ use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**
- * @since x.x.x
+ * @since 10.0.0
  */
 class FrontEndAssetsExtension extends AbstractExtension implements ExtensionInterface {
 
