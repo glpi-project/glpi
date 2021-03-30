@@ -39,7 +39,7 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 /**
- * @since x.x.x
+ * @since 10.0.0
  */
 class HtmlExtension extends AbstractExtension implements ExtensionInterface {
    public function getFilters() {
