@@ -78,7 +78,7 @@ class Search {
       TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
          'itemtype' => $itemtype,
       ]);
-      echo "<div class='col'>";
+      echo "<div class='col search-container'>";
 
       if ($itemtype == "Ticket"
           && $default = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('mini_ticket', true)) {
@@ -2131,7 +2131,7 @@ class Search {
       $main_block_class = '';
       $card_class = 'search-form card card-sm mb-4';
       if ($p['mainform']) {
-         echo "<form name='searchform$itemtype' method='get' action='".$p['target']."'>";
+         echo "<form name='searchform$itemtype'  class='search-form-container' method='get' action='".$p['target']."'>";
       } else {
          $main_block_class = "sub_criteria";
          $card_class = 'border d-inline-block ms-1';
