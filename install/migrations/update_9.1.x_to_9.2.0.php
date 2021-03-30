@@ -35,7 +35,7 @@
  *
  * @return bool for success (will die for most error)
 **/
-function update91to92() {
+function update91xto920() {
    global $DB, $migration;
 
    $current_config   = Config::getConfigurationValues('core');

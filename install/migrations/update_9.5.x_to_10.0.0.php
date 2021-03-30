@@ -31,43 +31,61 @@
  */
 
 /**
- * Update from 0.90 to 0.90.1
+ * Update from 9.5.x to 10.0.0
  *
  * @return bool for success (will die for most error)
 **/
-function update090to0901() {
+function update95xto1000() {
    global $DB, $migration;
 
    $updateresult     = true;
    $ADDTODISPLAYPREF = [];
+   $update_dir = __DIR__ . '/update_9.5.x_to_10.0.0/';
 
    //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(__('Update to %s'), '0.90.1'));
-   $migration->setVersion('0.90.1');
+   $migration->displayTitle(sprintf(__('Update to %s'), '10.0.0'));
+   $migration->setVersion('10.0.0');
 
-   $backup_tables = false;
-   $newtables     = [];
+   $update_scripts = [
+      'cameras',
+      'devicebattery',
+      'documents',
+      'domains',
+      'inventory_management',
+      'ldaps',
+      'manuallinks',
+      'native_inventory',
+      'notifications',
+      'recurrentchange',
+      'reservationitem',
+      'schema_fixes',
+      'softwares',
+      'uuids',
+   ];
 
-   foreach ($newtables as $new_table) {
-      // rename new tables if exists ?
-      if ($DB->tableExists($new_table)) {
-         $migration->dropTable("backup_$new_table");
-         $migration->displayWarning("$new_table table already exists. ".
-                                    "A backup have been done to backup_$new_table.");
-         $backup_tables = true;
-         $query         = $migration->renameTable("$new_table", "backup_$new_table");
-      }
+   foreach ($update_scripts as $update_script) {
+       require $update_dir . $update_script . '.php';
    }
-   if ($backup_tables) {
-      $migration->displayWarning("You can delete backup tables if you have no need of them.",
-                                 true);
-   }
-
-   // Add missing fill in 0.90 empty version
-   $migration->addField("glpi_entities", 'inquest_duration', "integer", ['value' => 0]);
 
    // ************ Keep it at the end **************
+   foreach ($ADDTODISPLAYPREF as $type => $tab) {
+      $rank = 1;
+      foreach ($tab as $newval) {
+         $DB->updateOrInsert("glpi_displaypreferences", [
+            'rank'      => $rank++
+         ], [
+            'users_id'  => "0",
+            'itemtype'  => $type,
+            'num'       => $newval,
+         ]);
+      }
+   }
+
    $migration->executeMigration();
+
+   $migration->displayWarning(
+      '"utf8mb4" support requires additional migration which can be performed via the "php bin/console glpi:migration:utf8mb4" command.'
+   );
 
    return $updateresult;
 }

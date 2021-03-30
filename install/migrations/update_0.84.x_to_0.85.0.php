@@ -35,7 +35,7 @@
  *
  * @return bool for success (will die for most error)
 **/
-function update084to085() {
+function update084xto0850() {
    global $DB, $migration;
 
    $updateresult       = true;

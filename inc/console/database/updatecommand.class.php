@@ -179,20 +179,8 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
          }
       }
 
-      if (version_compare($current_db_version, GLPI_SCHEMA_VERSION, 'ne')) {
-         $update->doUpdates($current_version);
-
-         // Migration is considered as done as Update class has the responsibility
-         // to run updates if schema has changed (even for "pre-versions").
-         $output->writeln('<info>' . __('Migration done.') . '</info>');
-      } else if ($force) {
-         // Replay last update script even if there is no schema change.
-         // It can be used in dev environment when update script has been updated/fixed.
-         include_once(GLPI_ROOT . '/install/update_95_100.php');
-         update95to100();
-
-         $output->writeln('<info>' . __('Last migration replayed.') . '</info>');
-      }
+      $update->doUpdates($current_version, $force);
+      $output->writeln('<info>' . __('Migration done.') . '</info>');
 
       return 0; // Success
    }
