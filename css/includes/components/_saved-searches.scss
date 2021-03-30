@@ -29,18 +29,13 @@
  * ---------------------------------------------------------------------
  */
 
-
-$topbar-height: 79px;
-$contextbar-height: 56px;
-
 .saved-searches-panel {
    border-color: rgba($color: $secondary, $alpha: .3);
    border-left-width: 0;
    border-radius: unset;
-   overflow: hidden;
 
    position: fixed;
-   top: 0;
+   top: $contextbar-height;
    bottom: 0;
    left: $sidebar-width;
    z-index: 1010;
@@ -55,10 +50,7 @@ $contextbar-height: 56px;
       top: 0;
       left: 0;
       border-left-width: 1px;
-      margin-top: calc(-#{$content-padding-y});
-      height: calc(100vh - #{$navbar-height} + 1px);
-      margin-left: -#{$container-padding-x};
-      margin-right: $container-padding-x;
+      height: calc(100vh - #{$contextbar-height} - #{$content-mt});
       min-width: 320px;
 
       .pin-saved-searches-panel {
@@ -72,30 +64,38 @@ $contextbar-height: 56px;
       }
    }
 
-   .saved-searches-panel-content {
-      overflow: hidden;
+   .card-tabs {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
 
-      .saved-searches-panel-lists {
-         overflow-x: hidden;
-         overflow-y: auto;
-         margin: 0;
-         padding: 0;
-         height: 100%;
+      .saved-searches-panel-content {
+         display: flex;
+         flex-direction: column;
+         min-height: 0;
 
-         .saved-searches-link {
-            &:hover {
-               text-decoration: underline;
+         .saved-searches-panel-lists {
+            overflow-x: hidden;
+            overflow-y: auto;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+
+            .saved-searches-link {
+               &:hover {
+                  text-decoration: underline;
+               }
             }
-         }
 
-         .default-ctrl {
-            padding-right: 0;
+            .default-ctrl {
+               padding-right: 0;
 
-         }
+            }
 
-         .badge {
-            background-color: $badge-bg;
-            color: $badge-fg;
+            .badge {
+               background-color: $badge-bg;
+               color: $badge-fg;
+            }
          }
       }
    }
@@ -121,7 +121,7 @@ body.horizontal-layout {
 
       &.pinned {
          top: 0;
-         height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - 15px);
+         height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - #{$content-mt});
       }
    }
 
