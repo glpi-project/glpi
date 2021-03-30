@@ -38,7 +38,7 @@ use Twig\Extension\ExtensionInterface;
 use Twig\TwigFilter;
 
 /**
- * @since x.x.x
+ * @since 10.0.0
  */
 class NumberFormatExtension extends AbstractExtension implements ExtensionInterface {
 
