@@ -47,7 +47,7 @@
    .search-container {
       @include media-breakpoint-up(sm) {
          overflow: auto;
-         height: calc(100vh - #{$contextbar-height} - #{$content-mt});
+         height: calc(100vh - #{$contextbar-height} - #{$content-margin});
          padding: 0;
          margin-left: calc(var(--tblr-gutter-x) / 2);
 
@@ -149,7 +149,7 @@ body.horizontal-layout {
    .search_page {
       .search-container {
          @include media-breakpoint-up(sm) {
-            height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - #{$content-mt});
+            height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - #{$content-margin});
          }
       }
    }
