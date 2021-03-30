@@ -37,7 +37,7 @@ use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**
- * @since x.x.x
+ * @since 10.0.0
  */
 class I18nExtension extends AbstractExtension implements ExtensionInterface {
 

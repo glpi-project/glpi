@@ -38,7 +38,7 @@ use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**
- * @since x.x.x
+ * @since 10.0.0
  */
 class ConfigExtension extends AbstractExtension implements ExtensionInterface {
 
