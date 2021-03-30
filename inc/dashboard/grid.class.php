@@ -384,7 +384,7 @@ HTML;
 HTML;
 
       if ($mini) {
-         $html = "<div class='card mb-4 d-none d-md-block'>
+         $html = "<div class='card mb-4 d-none d-md-block dashboard-card'>
             <div class='card-body'>
                $html
             </div>
