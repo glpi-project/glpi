@@ -50,7 +50,7 @@
       top: 0;
       left: 0;
       border-left-width: 1px;
-      height: calc(100vh - #{$contextbar-height} - #{$content-mt});
+      height: calc(100vh - #{$contextbar-height} - #{$content-margin});
       min-width: 320px;
 
       .pin-saved-searches-panel {
@@ -121,7 +121,7 @@ body.horizontal-layout {
 
       &.pinned {
          top: 0;
-         height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - #{$content-mt});
+         height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - #{$content-margin});
       }
    }
 
