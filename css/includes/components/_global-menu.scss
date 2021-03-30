@@ -54,7 +54,7 @@
 
 .sidebar {
 
-   & ~ .content, ~ .navbar {
+   & ~ .page-wrapper, ~ .navbar {
       transition: margin-inline-start var(--animate-duration);
    }
 
@@ -119,7 +119,7 @@
          width: $siderbar-collasped-width;
          overflow-x: visible;
 
-         & ~ .content, ~ .navbar {
+         & ~ .page-wrapper, ~ .navbar {
             margin-inline-start: $siderbar-collasped-width;
          }
 
