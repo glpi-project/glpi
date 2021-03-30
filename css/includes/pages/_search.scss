@@ -40,83 +40,116 @@
 
 .search_page {
    @include media-breakpoint-up(sm) {
-      max-height: calc(100vh - 76px);
-      overflow: auto;
+      display: flex;
+      align-items: stretch;
    }
 
-   .search-form {
-      background-color: $search_bg;
-      color: $search_fg;
-      border-color: $search_border;
-
+   .search-container {
       @include media-breakpoint-up(sm) {
-         position: sticky;
-         left: 10px;
-      }
+         overflow: auto;
+         height: calc(100vh - #{$contextbar-height} - #{$content-mt});
+         padding: 0;
+         margin-left: calc(var(--tblr-gutter-x) / 2);
 
-      // try having same width on link dropdowns
-      .select2-container {
-         min-width:58px;
-      }
-
-      .sub_criteria {
-         background-color: darken($search_bg, 1%);
-      }
-   }
-
-   .search-card {
-      @include media-breakpoint-up(sm) {
-         min-width: 100%;
-         width: min-content;
-
-         .search-header {
-            .search-limit {
+         .dashboard-card {
+            @include media-breakpoint-up(sm) {
                position: sticky;
-               right: 10px;
+               left: 0;
             }
          }
       }
 
-
-      .table-responsive-md {
-         @include media-breakpoint-down(md) {
-            max-width: calc(100vw - 2rem);
-         }
-      }
-      .search-results {
+      .search-form-container {
          @include media-breakpoint-up(sm) {
-            thead:first-child {
-               th {
-                  position: sticky;
-                  top: 0;
-                  z-index: 2;
-                  box-shadow: inset 0 1px 0 $card-border-color;
-               }
+            position: sticky;
+            left: 0;
+         }
+
+         .search-form {
+            background-color: $search_bg;
+            color: $search_fg;
+            border-color: $search_border;
+
+            // try having same width on link dropdowns
+            .select2-container {
+               min-width:58px;
+            }
+
+            .sub_criteria {
+               background-color: darken($search_bg, 1%);
             }
          }
-
-         &.deleted-results {
-            color: rgb(56, 13, 13);
-         }
       }
 
-      .search-footer {
-         position: sticky;
-         bottom: 0;
-
+      .search-card {
          @include media-breakpoint-up(sm) {
-            .search-pager {
+            min-width: 100%;
+            width: min-content;
 
-               .page-infos {
+            .search-header {
+               .search-controls {
                   position: sticky;
-                  left: 10px;
+                  left: 15px;
                }
 
-               .pagination {
+               .search-limit {
                   position: sticky;
                   right: 10px;
                }
             }
+         }
+
+
+         .table-responsive-md {
+            @include media-breakpoint-down(md) {
+               max-width: calc(100vw - 2rem);
+            }
+         }
+         .search-results {
+            @include media-breakpoint-up(sm) {
+               thead:first-child {
+                  th {
+                     position: sticky;
+                     top: 0;
+                     z-index: 2;
+                     box-shadow: inset 0 1px 0 $card-border-color;
+                  }
+               }
+            }
+
+            &.deleted-results {
+               color: rgb(56, 13, 13);
+            }
+         }
+
+         .search-footer {
+            position: sticky;
+            bottom: 0;
+
+            @include media-breakpoint-up(sm) {
+               .search-pager {
+
+                  .page-infos {
+                     position: sticky;
+                     left: 10px;
+                  }
+
+                  .pagination {
+                     position: sticky;
+                     right: 10px;
+                  }
+               }
+            }
+         }
+      }
+   }
+}
+
+body.horizontal-layout {
+   .search_page {
+      .search-container {
+         @include media-breakpoint-up(sm) {
+            height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - #{$content-mt});
          }
       }
    }
