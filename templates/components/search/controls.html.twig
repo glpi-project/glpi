@@ -28,7 +28,8 @@
    </label>
 
    <label class="form-check form-switch btn btn-sm btn-ghost-secondary me-1 px-1 mb-0"
-          data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Toggle search filters') }}">
+          data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover"
+          title="{{ __('Toggle search filters') }}">
       <input type="checkbox" class="form-check-input ms-0 me-1 mt-0 fold-search" role="button"
              {{ session('glpifold_search') ? "" : "checked" }} autocomplete="off">
       <span class="form-check-label">
