@@ -962,23 +962,27 @@ class Html {
 
       $out = '';
       if ($params['create']) {
-         $out .= "<div class='doaction_cadre'>";
-         $out .= "<div class='doaction_progress' id='$id'>";
-         $out .= "<div class='doaction_progress_text' id='".$id."_text' >&nbsp;</div>";
-         $out .= "</div>";
-         $out .= "</div><br>";
-         $out .= Html::scriptBlock(self::jsGetElementbyID($id).".progressbar();");
+         $out = <<<HTML
+            <div class="progress" style="height: 16px" id="{$id}">
+               <div class="progress-bar progress-bar-striped bg-info" role="progressbar"
+                     style="width: 0%;"
+                     aria-valuenow="0"
+                     aria-valuemin="0" aria-valuemax="100"
+                     id="{$id}_text">
+               </div>
+            </div>
+         HTML;
       }
 
       if ($params['message'] !== null) {
-         $out .= Html::scriptBlock(self::jsGetElementbyID($id.'_text').".text(\"".
+         $out .= Html::scriptBlock(self::jsGetElementbyID($id.'_text').".html(\"".
                                 addslashes($params['message'])."\");");
       }
 
       if (($params['percent'] >= 0)
           && ($params['percent'] <= 100)) {
-         $out .= Html::scriptBlock(self::jsGetElementbyID($id).".progressbar('option', 'value', ".
-                                $params['percent']." );");
+         $out .= Html::scriptBlock(self::jsGetElementbyID($id.'_text').".css('width', '".
+                                $params['percent']."%' );");
       }
 
       if (!$params['display']) {
