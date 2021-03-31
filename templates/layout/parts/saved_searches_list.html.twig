@@ -13,11 +13,14 @@
       </a>
       <div class="{{ search['is_default'] > 0 ? "" : "list-group-item-actions" }} ms-auto default-ctrl">
          <i class="{{ search['is_default'] > 0 ? "fas" : "far" }} fa-star fa-xs mark-default me-1"
-            title="{{ search['is_default'] > 0 ? __("Default search") : __("mark as default") }}" role="button"></i>
+            title="{{ search['is_default'] > 0 ? __("Default search") : __("mark as default") }}"
+            data-bs-toggle="tooltip" data-bs-placement="right"
+            role="button"></i>
       </div>
       <div class="d-flex flex-nowrap align-items-center">
          {% if search['is_private'] == 1 %}
-         <i class="fas fa-lock fa-xs text-muted me-1" title="{{ __("private") }}"></i>
+         <i class="fas fa-lock fa-xs text-muted me-1" title="{{ __("private") }}"
+            data-bs-toggle="tooltip" data-bs-placement="right"></i>
          {% endif %}
          <span class="badge">
             {{ search['count']|raw }}
