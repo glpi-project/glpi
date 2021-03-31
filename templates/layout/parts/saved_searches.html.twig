@@ -158,8 +158,9 @@ $(function() {
          var searchparts = searchtext.toLowerCase().split(/\s+/);
          var _rows = _this
             .closest('.card-footer')
-            .siblings('.saved-searches-panel-content')
-            .find('.savedsearches-item');
+            .siblings('.card-tabs')
+            .find('.saved-searches-panel-content .savedsearches-item');
+         console.log(_rows)
          _rows.each(function() {
             var _row = $(this);
             var rowtext = _row.text().toLowerCase();
