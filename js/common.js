@@ -1379,13 +1379,19 @@ function initTooltips(container) {
    );
 }
 
-// Init uninitialized tooltips everytime an ajax query is completed.
+// init tooltips
 $(
    function() {
+      // Init uninitialized tooltips everytime an ajax query is completed.
       $(document).ajaxComplete(
          function() {
             initTooltips();
          }
       );
+
+      // init tooltips after a little time on dom load
+      setTimeout(function() {
+         initTooltips();
+      }, 50);
    }
 );
