@@ -176,6 +176,8 @@ class Central extends CommonGLPI {
 
       $showproblem = Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
 
+      $showchanges = Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
+
       $lists = [];
 
       if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
@@ -236,6 +238,17 @@ class Central extends CommonGLPI {
          ];
          $lists[] = [
             'itemtype'  => ProblemTask::class,
+            'status'    => 'todo'
+         ];
+      }
+
+      if ($showchanges) {
+         $lists[] = [
+            'itemtype'  => Change::class,
+            'status'    => 'process'
+         ];
+         $lists[] = [
+            'itemtype'  => ChangeTask::class,
             'status'    => 'todo'
          ];
       }
@@ -371,6 +384,8 @@ class Central extends CommonGLPI {
 
       $showproblem = Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
 
+      $showchange = Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
+
       $lists = [];
 
       if ($showticket) {
@@ -396,6 +411,17 @@ class Central extends CommonGLPI {
          ];
          $lists[] = [
             'itemtype'  => ProblemTask::class,
+            'status'    => 'todo'
+         ];
+      }
+
+      if ($showchange) {
+         $lists[] = [
+            'itemtype'  => Change::class,
+            'status'    => 'process'
+         ];
+         $lists[] = [
+            'itemtype'  => ChangeTask::class,
             'status'    => 'todo'
          ];
       }
