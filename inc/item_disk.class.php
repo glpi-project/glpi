@@ -305,9 +305,9 @@ class Item_Disk extends CommonDBChild {
             echo "<td>".$data['fsname']."</td>";
             //TRANS: %s is a size
             $tmp = Toolbox::getSize($data['totalsize'] * 1024 * 1024);
-            echo "<td class='right'>$tmp<span class='small_space'></span></td>";
+            echo "<td>$tmp<span class='small_space'></span></td>";
             $tmp = Toolbox::getSize($data['freesize'] * 1024 * 1024);
-            echo "<td class='right'>$tmp<span class='small_space'></span></td>";
+            echo "<td>$tmp<span class='small_space'></span></td>";
             echo "<td>";
             $percent = 0;
             if ($data['totalsize'] > 0) {
