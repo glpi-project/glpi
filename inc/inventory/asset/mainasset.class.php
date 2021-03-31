@@ -117,9 +117,7 @@ abstract class MainAsset extends InventoryAsset
             $this->prepareForHardware($val);
          }
 
-         if (property_exists($val, 'users_id')) {
-            $this->prepareForUsers($val);
-         }
+         $this->prepareForUsers($val);
 
          if (isset($this->extra_data['bios'])) {
             $this->prepareForBios($val);
@@ -205,25 +203,32 @@ abstract class MainAsset extends InventoryAsset
    protected function prepareForUsers($val) {
       global $DB;
 
-      if ($val->users_id == '') {
+      if ($this->isPartial()) {
          unset($val->users_id);
-      } else {
-         $val->contact = $val->users_id;
-         $split_user = explode("@", $val->users_id);
-         $iterator = $DB->request([
-            'SELECT' => 'id',
-            'FROM'   => 'glpi_users',
-            'WHERE'  => [
-               'name'   => $split_user[0]
-            ],
-            'LIMIT'  => 1
-         ]);
+         return;
+      }
 
-         if (count($iterator)) {
-            $result = $iterator->next();
-            $val->users_id = $result['id'];
+      if (property_exists($val, 'users_id')) {
+         if ($val->users_id == '') {
+            unset($val->users_id);
          } else {
-            $val->users_id = 0;
+            $val->contact = $val->users_id;
+            $split_user = explode("@", $val->users_id);
+            $iterator = $DB->request([
+               'SELECT' => 'id',
+               'FROM'   => 'glpi_users',
+               'WHERE'  => [
+                  'name'   => $split_user[0]
+               ],
+               'LIMIT'  => 1
+            ]);
+
+            if (count($iterator)) {
+               $result = $iterator->next();
+               $val->users_id = $result['id'];
+            } else {
+               $val->users_id = 0;
+            }
          }
       }
 
