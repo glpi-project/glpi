@@ -868,8 +868,6 @@ class Problem extends CommonITILObject {
          : $total_row_count;
 
       if ($displayed_row_count > 0) {
-         echo "<table class='tab_cadrehov'>";
-         echo "<tr class='noHover'><th colspan='3'>";
 
          $options  = [
             'criteria' => [],
@@ -890,7 +888,7 @@ class Problem extends CommonITILObject {
                   $options['criteria'][1]['value']      = 'mygroups';
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                          Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Problems on pending status'), $displayed_row_count, $total_row_count)."</a>";
                   break;
@@ -906,7 +904,7 @@ class Problem extends CommonITILObject {
                   $options['criteria'][1]['value']      = 'mygroups';
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                          Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Problems to be processed'), $displayed_row_count, $total_row_count)."</a>";
                   break;
@@ -922,7 +920,7 @@ class Problem extends CommonITILObject {
                   $options['criteria'][1]['value']      = 'mygroups';
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                          Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Your problems in progress'), $displayed_row_count, $total_row_count)."</a>";
             }
@@ -940,7 +938,7 @@ class Problem extends CommonITILObject {
                   $options['criteria'][1]['value']      = Session::getLoginUserID();
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                          Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Problems on pending status'), $displayed_row_count, $total_row_count)."</a>";
                   break;
@@ -956,7 +954,7 @@ class Problem extends CommonITILObject {
                   $options['criteria'][1]['value']      = 'process';
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                          Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Problems to be processed'), $displayed_row_count, $total_row_count)."</a>";
                   break;
@@ -972,23 +970,109 @@ class Problem extends CommonITILObject {
                   $options['criteria'][1]['value']      = 'notold';
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                         Toolbox::append_params($options, '&amp;')."\">".
                         Html::makeTitle(__('Your problems in progress'), $displayed_row_count, $total_row_count)."</a>";
             }
          }
 
-         echo "</th></tr>";
-         echo "<tr><th></th>";
-         echo "<th>"._n('Requester', 'Requesters', 1)."</th>";
-         echo "<th>".__('Description')."</th></tr>";
+         $twig_params = [
+            'class'        => 'tab_cadrehov',
+            'header_rows'  => [
+               [
+                  [
+                     'colspan'   => 3,
+                     'content'   => $main_header
+                  ]
+               ],
+               [
+                  [
+                     'content'   => __('ID'),
+                     'style'     => 'width: 75px'
+                  ],
+                  [
+                     'content'   => _n('Requester', 'Requesters', 1),
+                     'style'     => 'width: 20%'
+                  ],
+                  __('Description')
+               ]
+            ],
+            'rows'         => []
+         ];
+
          $i = 0;
          while ($i < $displayed_row_count && ($data = $iterator->next())) {
-            self::showVeryShort($data['id'], $forcetab);
-            $i++;
-         }
-         echo "</table>";
+            $viewusers = User::canView();
 
+            $problem   = new self();
+            $rand      = mt_rand();
+            $row = [
+               'values' => []
+            ];
+
+            if ($problem->getFromDBwithData($data['id'], 0)) {
+               $bgcolor = $_SESSION["glpipriority_".$problem->fields["priority"]];
+               $name    = sprintf(__('%1$s: %2$s'), __('ID'), $problem->fields["id"]);
+               $row['values'][] = [
+                  'class'  => 'priority_block',
+                  'style'  => "border-color: {$bgcolor}",
+                  'content'   => "<span style='background: $bgcolor'></span>&nbsp;$name"
+               ];
+
+               $requesters = [];
+               if (isset($problem->users[CommonITILActor::REQUESTER])
+                  && count($problem->users[CommonITILActor::REQUESTER])) {
+                  foreach ($problem->users[CommonITILActor::REQUESTER] as $d) {
+                     if ($d["users_id"] > 0) {
+                        $userdata = getUserName($d["users_id"], 2);
+                        $name     = "<span class='b'>".$userdata['name']."</span>";
+                        if ($viewusers) {
+                           $name = sprintf(__('%1$s %2$s'), $name,
+                              Html::showToolTip($userdata["comment"],
+                                 ['link'    => $userdata["link"],
+                                    'display' => false]));
+                        }
+                        $requesters[] = $name;
+                     } else {
+                        $requesters[] = $d['alternative_email']."&nbsp;";
+                     }
+                  }
+               }
+
+               if (isset($problem->groups[CommonITILActor::REQUESTER])
+                  && count($problem->groups[CommonITILActor::REQUESTER])) {
+                  foreach ($problem->groups[CommonITILActor::REQUESTER] as $d) {
+                     $requesters[] = Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+                  }
+               }
+               $row['values'][] = implode('<br>', $requesters);
+
+               $link = "<a id='problem".$problem->fields["id"].$rand."' href='".
+                  Problem::getFormURLWithID($problem->fields["id"]);
+               if ($forcetab != '') {
+                  $link .= "&amp;forcetab=".$forcetab;
+               }
+               $link .= "'>";
+               $link .= "<span class='b'>".$problem->fields["name"]."</span></a>";
+               $link = sprintf(__('%1$s %2$s'), $link,
+                  Html::showToolTip($problem->fields['content'],
+                     ['applyto' => 'problem'.$problem->fields["id"].$rand,
+                        'display' => false]));
+
+               $row['values'][] = $link;
+            } else {
+               $row['class'] = 'tab_bg_2';
+               $row['values'] = [
+                  [
+                     'colspan'   => 6,
+                     'content'   => "<i>".__('No problem in progress.')."</i>"
+                  ]
+               ];
+            }
+            $i++;
+            $twig_params['rows'][] = $row;
+         }
+         TemplateRenderer::getInstance()->display('components/table.html.twig', $twig_params);
       }
    }
 
