@@ -69,7 +69,7 @@ trait InventoryNetworkPort {
       if ($this instanceof MainAsset) {
          return $this->isPartial();
       } else {
-         if (method_exists($this->main_asset, 'isPartial')) {
+         if (isset($this->main_asset) && method_exists($this->main_asset, 'isPartial')) {
             return $this->main_asset->isPartial();
          }
       }
