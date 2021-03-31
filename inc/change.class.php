@@ -1667,13 +1667,13 @@ class Change extends CommonITILObject {
    }
 
    /**
-    * @since 0.84
-    *
     * @param $start
-    * @param $status             (default 'proces)
-    * @param $showgroupproblems  (true by default)
-    **/
-   static function showCentralList($start, $status = "process", $showgroupproblems = true) {
+    * @param $status             (default 'process')
+    * @param $showgroupchanges  (true by default)
+    * @since 10.0.0
+    *
+    */
+   static function showCentralList($start, $status = "process", $showgroupchanges = true) {
       global $DB, $CFG_GLPI;
 
       if (!static::canView()) {
@@ -1684,32 +1684,32 @@ class Change extends CommonITILObject {
          'is_deleted' => 0
       ];
       $search_users_id = [
-         'glpi_problems_users.users_id'   => Session::getLoginUserID(),
-         'glpi_problems_users.type'       => CommonITILActor::REQUESTER
+         'glpi_changes_users.users_id'   => Session::getLoginUserID(),
+         'glpi_changes_users.type'       => CommonITILActor::REQUESTER
       ];
       $search_assign = [
-         'glpi_problems_users.users_id'   => Session::getLoginUserID(),
-         'glpi_problems_users.type'       => CommonITILActor::ASSIGN
+         'glpi_changes_users.users_id'   => Session::getLoginUserID(),
+         'glpi_changes_users.type'       => CommonITILActor::ASSIGN
       ];
 
-      if ($showgroupproblems) {
+      if ($showgroupchanges) {
          $search_users_id  = [0];
          $search_assign = [0];
 
          if (count($_SESSION['glpigroups'])) {
             $search_users_id = [
-               'glpi_groups_problems.groups_id' => $_SESSION['glpigroups'],
-               'glpi_groups_problems.type'      => CommonITILActor::REQUESTER
+               'glpi_changes_groups.groups_id' => $_SESSION['glpigroups'],
+               'glpi_changes_groups.type'      => CommonITILActor::REQUESTER
             ];
             $search_assign = [
-               'glpi_groups_problems.groups_id' => $_SESSION['glpigroups'],
-               'glpi_groups_problems.type'      => CommonITILActor::ASSIGN
+               'glpi_changes_groups.groups_id' => $_SESSION['glpigroups'],
+               'glpi_changes_groups.type'      => CommonITILActor::ASSIGN
             ];
          }
       }
 
       switch ($status) {
-         case "waiting" : // on affiche les problemes en attente
+         case "waiting":
             $WHERE = array_merge(
                $WHERE,
                $search_assign,
@@ -1717,11 +1717,11 @@ class Change extends CommonITILObject {
             );
             break;
 
-         case "process" : // on affiche les problemes planifi??s ou assign??s au user
+         case "process":
             $WHERE = array_merge(
                $WHERE,
                $search_assign,
-               ['status' => [self::PLANNED, self::ASSIGNED]]
+               ['status' => [self::ACCEPTED, self::TEST, self::QUALIFICATION]]
             );
             break;
 
@@ -1730,37 +1730,31 @@ class Change extends CommonITILObject {
                $WHERE,
                $search_users_id,
                [
-                  'status' => [
-                     self::INCOMING,
-                     self::ACCEPTED,
-                     self::PLANNED,
-                     self::ASSIGNED,
-                     self::WAITING
-                  ]
+                  'status' => array_diff(self::getAllStatusArray(), self::getClosedStatusArray())
                ]
             );
             $WHERE['NOT'] = $search_assign;
       }
 
       $criteria = [
-         'SELECT'          => ['glpi_problems.id'],
+         'SELECT'          => ['glpi_changes.id'],
          'DISTINCT'        => true,
-         'FROM'            => 'glpi_problems',
+         'FROM'            => 'glpi_changes',
          'LEFT JOIN'       => [
-            'glpi_problems_users'   => [
+            'glpi_changes_users'   => [
                'ON' => [
-                  'glpi_problems_users'   => 'problems_id',
-                  'glpi_problems'         => 'id'
+                  'glpi_changes_users'   => 'changes_id',
+                  'glpi_changes'         => 'id'
                ]
             ],
-            'glpi_groups_problems'  => [
+            'glpi_changes_groups'  => [
                'ON' => [
-                  'glpi_groups_problems'  => 'problems_id',
-                  'glpi_problems'         => 'id'
+                  'glpi_changes_groups'  => 'changes_id',
+                  'glpi_changes'         => 'id'
                ]
             ]
          ],
-         'WHERE'           => $WHERE + getEntitiesRestrictCriteria('glpi_problems'),
+         'WHERE'           => $WHERE + getEntitiesRestrictCriteria('glpi_changes'),
          'ORDERBY'         => 'date_mod DESC'
       ];
       $iterator = $DB->request($criteria);
@@ -1771,15 +1765,13 @@ class Change extends CommonITILObject {
          : $total_row_count;
 
       if ($displayed_row_count > 0) {
-         echo "<table class='tab_cadrehov'>";
-         echo "<tr class='noHover'><th colspan='3'>";
 
          $options  = [
             'criteria' => [],
             'reset'    => 'reset',
          ];
          $forcetab         = '';
-         if ($showgroupproblems) {
+         if ($showgroupchanges) {
             switch ($status) {
 
                case "waiting" :
@@ -1793,15 +1785,15 @@ class Change extends CommonITILObject {
                   $options['criteria'][1]['value']      = 'mygroups';
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/change.php?".
                      Toolbox::append_params($options, '&amp;')."\">".
-                     Html::makeTitle(__('Problems on pending status'), $displayed_row_count, $total_row_count)."</a>";
+                     Html::makeTitle(__('Changes on pending status'), $displayed_row_count, $total_row_count)."</a>";
                   break;
 
                case "process" :
                   $options['criteria'][0]['field']      = 12; // status
                   $options['criteria'][0]['searchtype'] = 'equals';
-                  $options['criteria'][0]['value']      = 'process';
+                  $options['criteria'][0]['value']      = self::EVALUATION;
                   $options['criteria'][0]['link']       = 'AND';
 
                   $options['criteria'][1]['field']      = 8; // groups_id_assign
@@ -1809,9 +1801,9 @@ class Change extends CommonITILObject {
                   $options['criteria'][1]['value']      = 'mygroups';
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/change.php?".
                      Toolbox::append_params($options, '&amp;')."\">".
-                     Html::makeTitle(__('Problems to be processed'), $displayed_row_count, $total_row_count)."</a>";
+                     Html::makeTitle(__('Changes to be processed'), $displayed_row_count, $total_row_count)."</a>";
                   break;
 
                default :
@@ -1825,9 +1817,9 @@ class Change extends CommonITILObject {
                   $options['criteria'][1]['value']      = 'mygroups';
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/change.php?".
                      Toolbox::append_params($options, '&amp;')."\">".
-                     Html::makeTitle(__('Your problems in progress'), $displayed_row_count, $total_row_count)."</a>";
+                     Html::makeTitle(__('Your changes in progress'), $displayed_row_count, $total_row_count)."</a>";
             }
 
          } else {
@@ -1843,9 +1835,9 @@ class Change extends CommonITILObject {
                   $options['criteria'][1]['value']      = Session::getLoginUserID();
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/change.php?".
                      Toolbox::append_params($options, '&amp;')."\">".
-                     Html::makeTitle(__('Problems on pending status'), $displayed_row_count, $total_row_count)."</a>";
+                     Html::makeTitle(__('Changes on pending status'), $displayed_row_count, $total_row_count)."</a>";
                   break;
 
                case "process" :
@@ -1859,9 +1851,9 @@ class Change extends CommonITILObject {
                   $options['criteria'][1]['value']      = 'process';
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/change.php?".
                      Toolbox::append_params($options, '&amp;')."\">".
-                     Html::makeTitle(__('Problems to be processed'), $displayed_row_count, $total_row_count)."</a>";
+                     Html::makeTitle(__('Changes to be processed'), $displayed_row_count, $total_row_count)."</a>";
                   break;
 
                default :
@@ -1875,31 +1867,116 @@ class Change extends CommonITILObject {
                   $options['criteria'][1]['value']      = 'notold';
                   $options['criteria'][1]['link']       = 'AND';
 
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                  $main_header = "<a href=\"".$CFG_GLPI["root_doc"]."/front/change.php?".
                      Toolbox::append_params($options, '&amp;')."\">".
-                     Html::makeTitle(__('Your problems in progress'), $displayed_row_count, $total_row_count)."</a>";
+                     Html::makeTitle(__('Your changes in progress'), $displayed_row_count, $total_row_count)."</a>";
             }
          }
 
-         echo "</th></tr>";
-         echo "<tr><th></th>";
-         echo "<th>"._n('Requester', 'Requesters', 1)."</th>";
-         echo "<th>".__('Description')."</th></tr>";
+         $twig_params = [
+            'class'        => 'tab_cadrehov',
+            'header_rows'  => [
+               [
+                  [
+                     'colspan'   => 3,
+                     'content'   => $main_header
+                  ]
+               ],
+               [
+                  [
+                     'content'   => __('ID'),
+                     'style'     => 'width: 75px'
+                  ],
+                  [
+                     'content'   => _n('Requester', 'Requesters', 1),
+                     'style'     => 'width: 20%'
+                  ],
+                  __('Description')
+               ]
+            ],
+            'rows'         => []
+         ];
          $i = 0;
          while ($i < $displayed_row_count && ($data = $iterator->next())) {
-            self::showVeryShort($data['id'], $forcetab);
-            $i++;
-         }
-         echo "</table>";
+            $viewusers = User::canView();
 
+            $change   = new self();
+            $rand      = mt_rand();
+            $row = [
+               'values' => []
+            ];
+
+            if ($change->getFromDBwithData($data['id'], 0)) {
+               $bgcolor = $_SESSION["glpipriority_".$change->fields["priority"]];
+               $name    = sprintf(__('%1$s: %2$s'), __('ID'), $change->fields["id"]);
+               $row['values'][] = [
+                  'class'  => 'priority_block',
+                  'style'  => "border-color: {$bgcolor}",
+                  'content'   => "<span style='background: $bgcolor'></span>&nbsp;$name"
+               ];
+
+               $requesters = [];
+               if (isset($change->users[CommonITILActor::REQUESTER])
+                  && count($change->users[CommonITILActor::REQUESTER])) {
+                  foreach ($change->users[CommonITILActor::REQUESTER] as $d) {
+                     if ($d["users_id"] > 0) {
+                        $userdata = getUserName($d["users_id"], 2);
+                        $name     = "<span class='b'>".$userdata['name']."</span>";
+                        if ($viewusers) {
+                           $name = sprintf(__('%1$s %2$s'), $name,
+                              Html::showToolTip($userdata["comment"],
+                                 ['link'    => $userdata["link"],
+                                    'display' => false]));
+                        }
+                        $requesters[] = $name;
+                     } else {
+                        $requesters[] = $d['alternative_email']."&nbsp;";
+                     }
+                  }
+               }
+
+               if (isset($change->groups[CommonITILActor::REQUESTER])
+                  && count($change->groups[CommonITILActor::REQUESTER])) {
+                  foreach ($change->groups[CommonITILActor::REQUESTER] as $d) {
+                     $requesters[] = Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+                  }
+               }
+               $row['values'][] = implode('<br>', $requesters);
+
+               $link = "<a id='change".$change->fields["id"].$rand."' href='".
+                  Change::getFormURLWithID($change->fields["id"]);
+               if ($forcetab != '') {
+                  $link .= "&amp;forcetab=".$forcetab;
+               }
+               $link .= "'>";
+               $link .= "<span class='b'>".$change->fields["name"]."</span></a>";
+               $link = sprintf(__('%1$s %2$s'), $link,
+                  Html::showToolTip($change->fields['content'],
+                     ['applyto' => 'change'.$change->fields["id"].$rand,
+                        'display' => false]));
+
+               $row['values'][] = $link;
+            } else {
+               $row['class'] = 'tab_bg_2';
+               $row['values'] = [
+                  [
+                     'colspan'   => 6,
+                     'content'   => "<i>".__('No ticket in progress.')."</i>"
+                  ]
+               ];
+            }
+            $i++;
+            $twig_params['rows'][] = $row;
+         }
+         TemplateRenderer::getInstance()->display('components/table.html.twig', $twig_params);
       }
    }
 
 
    /**
-    * Get problems count
+    * Get changes count
     *
-    * @since 0.84
+    * @since 10.0.0
     *
     * @param $foruser boolean : only for current login user as requester (false by default)
     **/
@@ -1942,17 +2019,17 @@ class Change extends CommonITILObject {
 
          if (isset($_SESSION["glpigroups"])
             && count($_SESSION["glpigroups"])) {
-            $criteria['LEFT JOIN']['glpi_groups_changes'] = [
+            $criteria['LEFT JOIN']['glpi_changes_groups'] = [
                'ON' => [
-                  'glpi_groups_changes'  => 'changes_id',
+                  'glpi_changes_groups'  => 'changes_id',
                   $table                  => 'id', [
                      'AND' => [
-                        'glpi_groups_changes.type' => CommonITILActor::REQUESTER
+                        'glpi_changes_groups.type' => CommonITILActor::REQUESTER
                      ]
                   ]
                ]
             ];
-            $WHERE['glpi_groups_changes.groups_id'] = $_SESSION['glpigroups'];
+            $WHERE['glpi_changes_groups.groups_id'] = $_SESSION['glpigroups'];
          }
          $criteria['WHERE'][] = ['OR' => $WHERE];
       }
@@ -2016,7 +2093,7 @@ class Change extends CommonITILObject {
    }
 
    /**
-    * @since x.x.x
+    * @since 10.0.0
     *
     * @param $ID
     * @param $forcetab  string   name of the tab to force at the display (default '')
@@ -2073,8 +2150,8 @@ class Change extends CommonITILObject {
          echo "</td>";
 
          echo "<td>";
-         $link = "<a id='problem".$change->fields["id"].$rand."' href='".
-            Problem::getFormURLWithID($change->fields["id"]);
+         $link = "<a id='change".$change->fields["id"].$rand."' href='".
+            Change::getFormURLWithID($change->fields["id"]);
          if ($forcetab != '') {
             $link .= "&amp;forcetab=".$forcetab;
          }
