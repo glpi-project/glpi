@@ -6360,6 +6360,7 @@ JAVASCRIPT;
                $out = "";
                if ($progressbar_data['percent'] != null) {
                   $out = <<<HTML
+                  {$progressbar_data['text']}
                   <div class="progress" style="height: 16px">
                      <div class="progress-bar progress-bar-striped" role="progressbar"
                           style="width: {$progressbar_data['percent']}%; background-color: {$progressbar_data['color']};"
