@@ -1414,7 +1414,8 @@ function initTooltips(container) {
          const options = {
             delay: {show: 50, hide: 50},
             html: tooltipNode.hasAttribute("data-bs-html") ? tooltipNode.getAttribute("data-bs-html") === "true" : false,
-            placement: tooltipNode.hasAttribute("data-bs-placement") ? tooltipNode.getAttribute('data-bs-placement') : 'auto'
+            placement: tooltipNode.hasAttribute("data-bs-placement") ? tooltipNode.getAttribute('data-bs-placement') : 'auto',
+            trigger : 'hover',
          };
          return new bootstrap.Tooltip(tooltipNode, options);
       }
