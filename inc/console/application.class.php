@@ -40,6 +40,7 @@ use Config;
 use DB;
 use GLPI;
 use Glpi\Application\ErrorHandler;
+use Glpi\Cache\CacheManager;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Command\GlpiCommandInterface;
 use Glpi\System\RequirementsManager;
@@ -361,7 +362,8 @@ class Application extends BaseApplication {
    private function initCache() {
 
       global $GLPI_CACHE;
-      $GLPI_CACHE = Config::getCache('cache_db');
+      $cache_manager = new CacheManager();
+      $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
    }
 
    /**

@@ -34,6 +34,7 @@
  * @since 9.1
  */
 
+use Glpi\Cache\CacheManager;
 
 define('GLPI_ROOT', __DIR__);
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
@@ -46,7 +47,8 @@ $GLPI->initLogger();
 $GLPI->initErrorHandler();
 
 //init cache
-$GLPI_CACHE = Config::getCache('cache_db');
+$cache_manager = new CacheManager();
+$GLPI_CACHE = $cache_manager->getCoreCacheInstance();
 
 $api = new Glpi\Api\APIXmlrpc;
 $api->call();

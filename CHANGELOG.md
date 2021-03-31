@@ -9,6 +9,7 @@ The present file will list all changes made to the project; according to the
 - Added UUID to all other itemtypes that are related to Operating Systems (Phones, Printers, etc)
 
 ### Changed
+- APCu and WinCache are not anymore use by GLPI, use `php bin/console cache:configure` command to configure cache system.
 
 ### Deprecated
 - Usage of XML-RPC API is deprecated.
@@ -32,9 +33,11 @@ The present file will list all changes made to the project; according to the
 - `CommonDBTM::clone()`
 - `CommonDBTM::prepareInputForClone()`
 - `CommonDBTM::post_clone()`
+- `Config::getCache()`
 - `Html::setRichTextContent()`
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
+- `Toolbox::useCache()`
 
 #### Removed
 - `Update::declareOldItems()`

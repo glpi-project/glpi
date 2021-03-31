@@ -37,22 +37,18 @@ use atoum\atoum;
 class GLPITestCase extends atoum {
    private $int;
    private $str;
-   protected $cached_methods = [];
    protected $has_failed = false;
 
    public function beforeTestMethod($method) {
       // By default, no session, not connected
       $this->resetSession();
 
-      if (in_array($method, $this->cached_methods)) {
-         //run with cache
-         define('CACHED_TESTS', true);
-      }
+      // Ensure cache is clear
+      global $GLPI_CACHE;
+      $GLPI_CACHE->clear();
    }
 
    public function afterTestMethod($method) {
-      global $GLPI_CACHE;
-      $GLPI_CACHE->clear();
 
       global $PHPLOGGER;
       $handlers = $PHPLOGGER->getHandlers();

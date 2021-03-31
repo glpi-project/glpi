@@ -14,3 +14,6 @@ services:
   openldap:
     container_name: "openldap"
     image: "ghcr.io/glpi-project/githubactions-openldap"
+  redis:
+    container_name: "redis"
+    image: "ghcr.io/glpi-project/githubactions-redis"

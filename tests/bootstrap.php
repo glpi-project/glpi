@@ -30,6 +30,10 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Cache\CacheManager;
+use Glpi\Cache\SimpleCache;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
+
 ini_set('display_errors', 'On');
 error_reporting(E_ALL);
 
@@ -66,7 +70,14 @@ foreach (get_defined_constants() as $constant_name => $constant_value) {
 }
 
 //init cache
-$GLPI_CACHE = Config::getCache('cache_db');
+if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FILENAME)) {
+   // Use configured cache for cache tests
+   $cache_manager = new CacheManager();
+   $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
+} else {
+   // Use "in-memory" cache for other tests
+   $GLPI_CACHE = new SimpleCache(new ArrayAdapter());
+}
 
 include_once __DIR__ . '/../inc/includes.php';
 include_once __DIR__ . '/GLPITestCase.php';
@@ -680,6 +691,10 @@ function loadDataset() {
    $DB->commit();
 
    $_SESSION = $session_bak; // Unset force session variables
+
+   // Ensure cache is clear after dataset reload
+   global $GLPI_CACHE;
+   $GLPI_CACHE->clear();
 }
 
 /**

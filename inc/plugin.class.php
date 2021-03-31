@@ -40,7 +40,6 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
-use Psr\SimpleCache\CacheInterface;
 
 class Plugin extends CommonDBTM {
 
@@ -704,10 +703,8 @@ class Plugin extends CommonDBTM {
 
       if ($this->getFromDB($ID)) {
          // Clear locale cache to prevent errors while reloading plugin locales
-         $translation_cache = Config::getCache('cache_trans', 'core', true);
-         if ($translation_cache instanceof CacheInterface) {
-            $translation_cache->clear();
-         }
+         $translation_cache = Config::getTranslationCacheInstance();
+         $translation_cache->clear();
 
          self::load($this->fields['directory'], true); // Load plugin hooks
 

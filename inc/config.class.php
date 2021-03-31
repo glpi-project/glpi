@@ -30,13 +30,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Cache\SimpleCache;
+use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
 use Glpi\Exception\PasswordTooWeakException;
 use Glpi\System\RequirementsManager;
-use Laminas\Cache\Storage\AvailableSpaceCapableInterface;
-use Laminas\Cache\Storage\FlushableInterface;
-use Laminas\Cache\Storage\TotalSpaceCapableInterface;
+use Laminas\Cache\Psr\SimpleCache\SimpleCacheDecorator;
+use Laminas\Cache\StorageFactory;
 use PHPMailer\PHPMailer\PHPMailer;
 
 if (!defined('GLPI_ROOT')) {
@@ -1615,12 +1614,13 @@ class Config extends CommonDBTM {
    /**
     * Display a report about system performance
     * - opcode cache (opcache)
-    * - user data cache (apcu / apcu-bc)
+    * - core cache
+    * - translations cache
     *
     * @since 9.1
    **/
    function showPerformanceInformations() {
-      $GLPI_CACHE = self::getCache('cache_db', 'core', false);
+      global $GLPI_CACHE;
 
       if (!Config::canUpdate()) {
          return false;
@@ -1701,9 +1701,10 @@ class Config extends CommonDBTM {
       }
 
       echo "<tr><th colspan='4'>" . __('User data cache') . "</th></tr>";
-      $ext = strtolower(get_class($GLPI_CACHE));
-      $ext = substr($ext, strrpos($ext, '\\')+1);
-      if (in_array($ext, ['apcu', 'memcache', 'memcached', 'wincache', 'redis'])) {
+      echo '<tr><td class="b">' . __('You can use "php bin/console cache:configure" command to configure cache system.') . '</td></tr>';
+      $ext = strtolower(get_class($GLPI_CACHE->getStorage()));
+      $ext = preg_replace('/^.*\\\([a-z]+?)(?:adapter)?$/', '$1', $ext);
+      if (in_array($ext, ['couchbase', 'memcached', 'redis'])) {
          $msg = sprintf(__s('The "%s" cache extension is installed'), $ext);
       } else {
          $msg = sprintf(__s('"%s" cache system is used'), $ext);
@@ -1713,48 +1714,23 @@ class Config extends CommonDBTM {
             <td></td>
             <td class='icons_block'><i class='fa fa-check-circle ok' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
 
-      if ($ext != 'filesystem' && $GLPI_CACHE instanceof AvailableSpaceCapableInterface && $GLPI_CACHE instanceof TotalSpaceCapableInterface) {
-         $free = $GLPI_CACHE->getAvailableSpace();
-         $max  = $GLPI_CACHE->getTotalSpace();
-         $used = $max - $free;
-         $rate = round(100.0 * $used / $max);
-         $max  = Toolbox::getSize($max);
-         $used = Toolbox::getSize($used);
-
-         echo "<tr><td>" . _n('Memory', 'Memories', 1) . "</td>
-         <td>" . sprintf(__('%1$s / %2$s'), $used, $max) . "</td><td>";
-         Html::displayProgressBar('100', $rate, ['simple'       => true,
-                                                 'forcepadding' => false]);
-         $class   = 'info-circle missing';
-            $msg     = sprintf(__s('%1$s memory usage is too high'), $ext);
-         if ($rate < 80) {
-            $class   = 'check-circle ok';
-            $msg     = sprintf(__s('%1$s memory usage is correct'), $ext);
-         }
-         echo "</td><td class='icons_block'><i title='$msg' class='fa fa-$class'></td></tr>";
-      }
-
-      if ($GLPI_CACHE instanceof FlushableInterface) {
-         echo "<tr><td></td><td colspan='3'>";
-         echo "<a class='vsubmit' href='config.form.php?reset_cache=1&optname=cache_db'>";
-         echo __('Reset');
-         echo "</a></td></tr>\n";
-      }
+      echo "<tr><td></td><td colspan='3'>";
+      echo "<a class='vsubmit' href='config.form.php?reset_core_cache=1'>";
+      echo __('Reset');
+      echo "</a></td></tr>\n";
 
       echo "<tr><th colspan='4'>" . __('Translation cache') . "</th></tr>";
-      $translation_cache = self::getCache('cache_trans', 'core', false);
+      $translation_cache = self::getTranslationCacheInstance(false);
       $adapter_class = strtolower(get_class($translation_cache));
       $adapter = substr($adapter_class, strrpos($adapter_class, '\\')+1);
       $msg = sprintf(__s('"%s" cache system is used'), $adapter);
       echo "<tr><td colspan='3'>" . $msg . "</td>
             <td class='icons_block'><i class='fa fa-check-circle ok' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
 
-      if ($translation_cache instanceof FlushableInterface) {
-         echo "<tr><td></td><td colspan='3'>";
-         echo "<a class='vsubmit' href='config.form.php?reset_cache=1&optname=cache_trans'>";
-         echo __('Reset');
-         echo "</a></td></tr>\n";
-      }
+      echo "<tr><td></td><td colspan='3'>";
+      echo "<a class='vsubmit' href='config.form.php?reset_translation_cache=1'>";
+      echo __('Reset');
+      echo "</a></td></tr>\n";
 
       echo "</table></div>\n";
    }
@@ -2073,6 +2049,8 @@ class Config extends CommonDBTM {
                  'check'   => 'Psr\\Log\\LoggerInterface' ],
                [ 'name'    => 'psr/simple-cache',
                  'check'   => 'Psr\\SimpleCache\\CacheInterface' ],
+               [ 'name'    => 'psr/cache',
+                 'check'   => 'Psr\\Cache\\CacheItemPoolInterface' ],
                [ 'name'    => 'league/csv',
                  'check'   => 'League\\Csv\\Writer' ],
                [ 'name'    => 'mexitek/phpcolors',
@@ -2087,6 +2065,8 @@ class Config extends CommonDBTM {
                  'check'   => 'wapmorgan\\UnifiedArchive\\UnifiedArchive' ],
                [ 'name'    => 'paragonie/sodium_compat',
                  'check'   => 'ParagonIE_Sodium_Compat' ],
+               [ 'name'    => 'symfony/cache',
+                 'check'   => 'Symfony\\Component\\Cache\\Psr16Cache' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [
@@ -2494,11 +2474,6 @@ class Config extends CommonDBTM {
             'Zend OPcache' => [
                'required'  => false
             ],
-            //to enhance perfs
-            'APCu'      => [
-               'required'  => false,
-               'function'  => 'apcu_fetch'
-            ],
             //for CAS lib
             'CAS'     => [
                'required' => false,
@@ -2806,191 +2781,55 @@ class Config extends CommonDBTM {
     * @param string  $context name of the configuration context (default 'core')
     * @param boolean $psr16   Whether to return a PSR16 compliant obkect or not (since Laminas Translator is NOT PSR16 compliant).
     *
-    * @return Psr\SimpleCache\CacheInterface|Laminas\Cache\Storage\StorageInterface object
+    * @return \Psr\SimpleCache\CacheInterface|\Psr\Cache\CacheItemPoolInterface|\Laminas\Cache\Psr\SimpleCache\SimpleCacheDecorator|\Laminas\Cache\Storage\StorageInterface
     */
    public static function getCache($optname, $context = 'core', $psr16 = true) {
-      global $DB;
+      Toolbox::deprecated();
 
-      /* Tested configuration values
-       *
-       * - {"adapter":"apcu"}
-       * - {"adapter":"redis","options":{"server":{"host":"127.0.0.1"}},"plugins":["serializer"]}
-       * - {"adapter":"filesystem"}
-       * - {"adapter":"filesystem","options":{"cache_dir":"_cache_trans"},"plugins":["serializer"]}
-       * - {"adapter":"dba"}
-       * - {"adapter":"dba","options":{"pathname":"trans.db","handler":"flatfile"},"plugins":["serializer"]}
-       * - {"adapter":"memcache","options":{"servers":["127.0.0.1"]}}
-       * - {"adapter":"memcached","options":{"servers":["127.0.0.1"]}}
-       * - {"adapter":"wincache"}
-       *
-       */
-      // Read configuration
-      $conf = [];
-      if ($DB
-         && $DB->connected
-         && $DB->fieldExists(self::getTable(), 'context')
-      ) {
-         $conf = self::getConfigurationValues($context, [$optname]);
+      if ($optname === 'cache_trans') {
+         return self::getTranslationCacheInstance($psr16);
       }
 
-      // Adapter default options
-      $opt = [];
-      if (isset($conf[$optname])) {
-         $opt = json_decode($conf[$optname], true);
-         Toolbox::logDebug("CACHE CONFIG  $optname", $opt);
-      }
-
-      if (!isset($opt['options']['namespace'])) {
-         $namespace = "glpi_${optname}_" . GLPI_VERSION;
-         if ($DB) {
-            $namespace .= md5(
-               (is_array($DB->dbhost) ? implode(' ', $DB->dbhost) : $DB->dbhost) . $DB->dbdefault
-            );
-         }
-         $opt['options']['namespace'] = $namespace;
-      }
-      if (!isset($opt['adapter'])) {
-         if (function_exists('apcu_fetch')) {
-            $opt['adapter'] = (version_compare(PHP_VERSION, '7.0.0') >= 0) ? 'apcu' : 'apc';
-         } else if (function_exists('wincache_ucache_add')) {
-            $opt['adapter'] = 'wincache';
-         } else {
-            $opt['adapter'] = 'filesystem';
-         }
-
-         // Cannot skip integrity checks if 'adapter' was computed,
-         // as computation result may differ for a different context (CLI VS web server).
-         $skip_integrity_checks = false;
-
-         $is_computed_config = true;
+      $cache_manager = new CacheManager();
+      $instance = $cache_manager->getCacheInstance($context);
+      if ($psr16) {
+         return $instance;
       } else {
-         // Adapter names can be written using case variations.
-         // see Laminas\Cache\Storage\AdapterPluginManager::$aliases
-         $opt['adapter'] = strtolower($opt['adapter']);
+         return $instance->getStorage();
+      }
+   }
 
-         switch ($opt['adapter']) {
-            // Cache adapters that can share their data accross processes
-            case 'dba':
-            case 'ext_mongo_db':
-            case 'extmongodb':
-            case 'filesystem':
-            case 'memcache':
-            case 'memcached':
-            case 'mongo_db':
-            case 'mongodb':
-            case 'redis':
-               $skip_integrity_checks = true;
-               break;
+   /**
+    * Get translation cache instance.
+    *
+    * @param boolean $psr16   Whether to return a PSR16 compliant obkect or not (since Laminas Translator is NOT PSR16 compliant).
+    *
+    * @return \Laminas\Cache\Psr\SimpleCache\SimpleCacheDecorator|\Laminas\Cache\Storage\StorageInterface
+    */
+   public static function getTranslationCacheInstance(bool $psr16 = true) {
+      // Translation cache has to use Laminas\Cache components as Laminas\I18n is not PSR compliant.
+      $cache_dir = GLPI_CACHE_DIR . DIRECTORY_SEPARATOR . 'cache_trans';
 
-            // Cache adapters that cannot share their data accross processes
-            case 'apc':
-            case 'apcu':
-            case 'memory':
-            case 'session':
-
-               // wincache activation uses different configuration variable for CLI and web server
-               // so it may not be available for all contexts
-            case 'win_cache':
-            case 'wincache':
-
-               // zend server adapters are not available for CLI context
-            case 'zend_server_disk':
-            case 'zendserverdisk':
-            case 'zend_server_shm':
-            case 'zendservershm':
-
-            default:
-               $skip_integrity_checks = false;
-               break;
-         }
-
-         $is_computed_config = false;
+      if (!is_dir($cache_dir)) {
+         mkdir($cache_dir);
       }
 
-      // Adapter specific options
-      $ser = false;
-      switch ($opt['adapter']) {
-         case 'filesystem':
-            if (!isset($opt['options']['cache_dir'])) {
-               $opt['options']['cache_dir'] = $optname;
-            }
-            // Make configured directory relative to GLPI cache directory
-            $opt['options']['cache_dir'] = GLPI_CACHE_DIR . '/' . $opt['options']['cache_dir'];
-            if (!is_dir($opt['options']['cache_dir'])) {
-               mkdir($opt['options']['cache_dir']);
-            }
-            $ser = true;
-            break;
-
-         case 'dba':
-            if (!isset($opt['options']['pathname'])) {
-               $opt['options']['pathname'] = "$optname.data";
-            }
-            // Make configured path relative to GLPI cache directory
-            $opt['options']['pathname'] = GLPI_CACHE_DIR . '/' . $opt['options']['pathname'];
-            $ser = true;
-            break;
-
-         case 'redis':
-            $ser = true;
-            break;
-      }
-      // Some know plugins require data serialization
-      if ($ser && !isset($opt['plugins'])) {
-         $opt['plugins'] = ['serializer'];
-      }
-
-      // Create adapter
-      try {
-         $storage = Laminas\Cache\StorageFactory::factory($opt);
-      } catch (\Exception $e) {
-         if (!$is_computed_config) {
-            Toolbox::logError($e->getMessage());
-         }
-
-         // fallback to filesystem cache system if adapter was not explicitely defined in config
-         $fallback = false;
-         if ($is_computed_config && $opt['adapter'] != 'filesystem') {
-            $opt = [
-               'adapter'   => 'filesystem',
-               'options'   => [
-                  'cache_dir' => GLPI_CACHE_DIR . '/' . $optname,
-                  'namespace' => $namespace,
-               ],
-               'plugins'   => ['serializer']
-            ];
-
-            if (!is_dir($opt['options']['cache_dir'])) {
-               mkdir($opt['options']['cache_dir']);
-            }
-            try {
-               $storage = Laminas\Cache\StorageFactory::factory($opt);
-               $fallback = true;
-            } catch (\Exception $e1) {
-               Toolbox::logError($e1->getMessage());
-               if (isset($_SESSION['glpi_use_mode'])
-                   && Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
-                  //preivous attempt has faled as well.
-                  Toolbox::logDebug($e->getMessage());
-               }
-            }
-         }
-
-         if ($fallback === false) {
-            $opt = ['adapter' => 'memory'];
-            $storage = Laminas\Cache\StorageFactory::factory($opt);
-         }
-         if (isset($_SESSION['glpi_use_mode'])
-             && Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
-            Toolbox::logDebug($e->getMessage());
-         }
-      }
+      $storage = StorageFactory::factory(
+         [
+            'adapter'   => 'filesystem',
+            'options'   => [
+               'cache_dir' => GLPI_CACHE_DIR . DIRECTORY_SEPARATOR . 'cache_trans',
+               'namespace' => 'glpi_cache_trans_' . GLPI_VERSION,
+            ],
+            'plugins'   => ['serializer']
+         ]
+      );
 
       if ($psr16) {
-         return new SimpleCache($storage, GLPI_CACHE_DIR, !$skip_integrity_checks);
-      } else {
-         return $storage;
+         return new SimpleCacheDecorator($storage);
       }
+
+      return $storage;
    }
 
    /**

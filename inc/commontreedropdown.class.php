@@ -187,10 +187,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          // Parent changes => clear ancestors and update its level and completename
          if ($input[$this->getForeignKeyField()] != $this->fields[$this->getForeignKeyField()]) {
             $input["ancestors_cache"] = '';
-            if (Toolbox::useCache()) {
-               $ckey = 'ancestors_cache_' . $this->getTable() . '_' . $this->getID();
-               $GLPI_CACHE->delete($ckey);
-            }
+            $ckey = 'ancestors_cache_' . $this->getTable() . '_' . $this->getID();
+            $GLPI_CACHE->delete($ckey);
             return $this->adaptTreeFieldsFromUpdateOrAdd($input);
          }
       }
@@ -212,7 +210,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       global $DB, $GLPI_CACHE;
 
       //drop from sons cache when needed
-      if ($changeParent && Toolbox::useCache()) {
+      if ($changeParent) {
          $ckey = 'ancestors_cache_' . $this->getTable() . '_' . $ID;
          $GLPI_CACHE->delete($ckey);
       }
@@ -304,7 +302,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       );
 
       //drop from sons cache when needed
-      if ($cache && Toolbox::useCache()) {
+      if ($cache) {
          foreach ($ancestors as $ancestor) {
             $ckey = 'sons_cache_' . $this->getTable() . '_' . $ancestor;
             if ($GLPI_CACHE->has($ckey)) {
@@ -313,11 +311,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                   unset($sons[$this->getID()]);
                   $GLPI_CACHE->set($ckey, $sons);
                }
-            } else {
-               // If cache key does not exists in current context (UI using APCu), it may exists
-               // in another context (CLI using filesystem). So we force deletion of cache in all contexts
-               // to be sure to not use a stale value.
-               $GLPI_CACHE->delete($ckey);
             }
          }
       }
@@ -333,21 +326,14 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       global $GLPI_CACHE;
 
       //add sons cache when needed
-      if (Toolbox::useCache()) {
-         $ancestors = getAncestorsOf($this->getTable(), $this->getID());
-         foreach ($ancestors as $ancestor) {
-            $ckey = 'sons_cache_' . $this->getTable() . '_' . $ancestor;
-            if ($GLPI_CACHE->has($ckey)) {
-               $sons = $GLPI_CACHE->get($ckey);
-               if (!isset($sons[$this->getID()])) {
-                  $sons[$this->getID()] = $this->getID();
-                  $GLPI_CACHE->set($ckey, $sons);
-               }
-            } else {
-               // If cache key does not exists in current context (UI using APCu), it may exists
-               // in another context (CLI using filesystem). So we force deletion of cache in all contexts
-               // to be sure to not use a stale value.
-               $GLPI_CACHE->delete($ckey);
+      $ancestors = getAncestorsOf($this->getTable(), $this->getID());
+      foreach ($ancestors as $ancestor) {
+         $ckey = 'sons_cache_' . $this->getTable() . '_' . $ancestor;
+         if ($GLPI_CACHE->has($ckey)) {
+            $sons = $GLPI_CACHE->get($ckey);
+            if (!isset($sons[$this->getID()])) {
+               $sons[$this->getID()] = $this->getID();
+               $GLPI_CACHE->set($ckey, $sons);
             }
          }
       }
@@ -357,7 +343,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    function post_addItem() {
 
       $parent = $this->fields[$this->getForeignKeyField()];
-      //do not clean APCu, it will be updated
+      //do not clean cache, it will be updated
       $this->cleanParentsSons(null, false);
       $this->addSonInParents();
       if ($parent && $this->dohistory) {

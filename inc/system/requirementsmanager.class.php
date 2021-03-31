@@ -84,7 +84,6 @@ class RequirementsManager {
       $requirements[] = new Extension('libxml');
       $requirements[] = new Extension('intl');
       $requirements[] = new Extension('ldap', true); // to sync/connect from LDAP
-      $requirements[] = new Extension('apcu', true); // to enhance perfs
       $requirements[] = new Extension('Zend OPcache', true); // to enhance perfs
       $requirements[] = new ExtensionClass('CAS', 'phpCAS', true); // for CAS lib
       $requirements[] = new Extension('exif', true); // for security reasons (images checks)

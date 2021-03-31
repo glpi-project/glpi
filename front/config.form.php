@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Cache\CacheManager;
+
 include ('../inc/includes.php');
 Session::checkRight("config", READ);
 
@@ -63,15 +65,23 @@ if (!empty($_POST["update"])) {
 if (!empty($_GET['reset_opcache'])) {
    $config->checkGlobal(UPDATE);
    if (opcache_reset()) {
-      Session::addMessageAfterRedirect(__('Cache reset successful'));
+      Session::addMessageAfterRedirect(__('PHP OPcache reset successful'));
    }
    Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
-if (!empty($_GET['reset_cache'])) {
+if (!empty($_GET['reset_core_cache'])) {
    $config->checkGlobal(UPDATE);
-   $cache = isset($_GET['optname']) ? Config::getCache($_GET['optname']) : $GLPI_CACHE;
+   $cache_manager = new CacheManager();
+   if ($cache_manager->getCoreCacheInstance()->clear()) {
+      Session::addMessageAfterRedirect(__('GLPI cache reset successful'));
+   }
+   Html::redirect(Toolbox::getItemTypeFormURL('Config'));
+}
+if (!empty($_GET['reset_translation_cache'])) {
+   $config->checkGlobal(UPDATE);
+   $cache = Config::getTranslationCacheInstance();
    if ($cache->clear()) {
-      Session::addMessageAfterRedirect(__('Cache reset successful'));
+      Session::addMessageAfterRedirect(__('Translation cache reset successful'));
    }
    Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }

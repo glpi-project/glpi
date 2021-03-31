@@ -43,6 +43,9 @@ abstract class APIBaseClass extends atoum {
                                      $expected_codes = 200);
 
    public function beforeTestMethod($method) {
+      global $GLPI_CACHE;
+      $GLPI_CACHE->clear();
+
       $this->initSessionCredentials();
    }
 

@@ -715,12 +715,10 @@ final class DbUtils {
       $ckey = 'sons_cache_' . $table . '_' . $IDf;
       $sons = false;
 
-      if (Toolbox::useCache()) {
-         if ($GLPI_CACHE->has($ckey)) {
-            $sons = $GLPI_CACHE->get($ckey);
-            if ($sons !== null) {
-               return $sons;
-            }
+      if ($GLPI_CACHE->has($ckey)) {
+         $sons = $GLPI_CACHE->get($ckey);
+         if ($sons !== null) {
+            return $sons;
          }
       }
 
@@ -801,9 +799,7 @@ final class DbUtils {
          }
       }
 
-      if (Toolbox::useCache()) {
-         $GLPI_CACHE->set($ckey, $sons);
-      }
+      $GLPI_CACHE->set($ckey, $sons);
 
       return $sons;
    }
@@ -827,12 +823,10 @@ final class DbUtils {
       }
       $ancestors = [];
 
-      if (Toolbox::useCache()) {
-         if ($GLPI_CACHE->has($ckey)) {
-            $ancestors = $GLPI_CACHE->get($ckey);
-            if ($ancestors !== null) {
-               return $ancestors;
-            }
+      if ($GLPI_CACHE->has($ckey)) {
+         $ancestors = $GLPI_CACHE->get($ckey);
+         if ($ancestors !== null) {
+            return $ancestors;
          }
       }
 
@@ -916,9 +910,7 @@ final class DbUtils {
          }
       }
 
-      if (Toolbox::useCache()) {
-         $GLPI_CACHE->set($ckey, $ancestors);
-      }
+      $GLPI_CACHE->set($ckey, $ancestors);
 
       return $ancestors;
    }
