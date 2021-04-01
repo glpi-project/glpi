@@ -4486,7 +4486,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       //initial import
       $this->testImportComputer();
 
-      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1_partial.json');
+      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1_partial_volumes.json');
 
       $CFG_GLPI["is_contact_autoupdate"] = 0;
 
