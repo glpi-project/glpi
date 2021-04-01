@@ -32,7 +32,14 @@
 
 namespace Glpi\Application\View\Extension;
 
+use CommonITILObject;
+use CommonITILTask;
 use DbUtils;
+use Document_Item;
+use Entity;
+use ITILFollowup;
+use ITILSolution;
+use Session;
 use Toolbox;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
@@ -88,6 +95,21 @@ class UserExtension extends AbstractExtension implements ExtensionInterface {
    public function getLink(int $users_id = null, array $options = []):string {
       $user = new User;
       if ($user->getFromDB($users_id)) {
+         if (isset($options['timeline_item'], $options['timeline_subitem']) && Session::getCurrentInterface() === 'helpdesk'
+            && Entity::getUsedConfig('anonymize_support_agents', $options['timeline_item']->getEntityID())) {
+            $timeline_item = $options['timeline_item'];
+            $timeline_subitem = $options['timeline_subitem'];
+            $always_anonymized_types = [ITILSolution::class, CommonITILTask::class];
+            foreach ($always_anonymized_types as $class) {
+               if ($timeline_subitem['type'] === $class || is_subclass_of($timeline_subitem['type'], $class)) {
+                  return __("Helpdesk");
+               }
+            }
+            if (($timeline_subitem['type'] === ITILFollowup::class && ITILFollowup::getById($timeline_subitem['item']['id']))
+               || ($timeline_subitem['type'] === Document_Item::class && Document_Item::getById($timeline_subitem['item']['documents_item_id']))) {
+               return __("Helpdesk");
+            }
+         }
          return $user->getLink($options);
       }
 
