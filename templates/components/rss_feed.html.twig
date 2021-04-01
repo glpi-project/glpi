@@ -32,10 +32,12 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
    {% if rss_feed.error is defined and rss_feed.error is not null %}
       {{ __('Error retrieving RSS feed') }}
    {% endif %}
-   <table class="tab_cadre_fixehov">
-      <tr>
-         <th colspan="3">{{ rss_feed.title }}</th>
-      </tr>
+   <table class="table table-striped table-hover">
+      <thead>
+         <tr>
+            <th colspan="3">{{ rss_feed.title }}</th>
+         </tr>
+      </thead>
       {% for rss_item in rss_feed.items %}
          <tr class="tab_bg_1">
             <td>{{ rss_item.timestamp }}</td>
