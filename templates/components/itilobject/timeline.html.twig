@@ -23,6 +23,7 @@
       {% set is_private = entry_i['is_private'] ?? false %}
       {% set date_creation = entry_i['date_creation'] ?? entry_i['date'] %}
       {% set date_mod = entry_i['date_mod'] %}
+      {% set entry_rand = random() %}
 
       {# Fix solution type #}
       {% if entry['type'] is same as 'Solution' %}
@@ -85,10 +86,10 @@
                         {% endif %}
 
                         <div class="dropdown ms-2">
-                           <button class="btn btn-sm btn-ghost-secondary" type="button" id="more-actions" data-bs-toggle="dropdown" aria-expanded="false">
+                           <button class="btn btn-sm btn-ghost-secondary" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false">
                               <i class="fas fa-ellipsis-h"></i>
                            </button>
-                           <ul class="dropdown-menu" aria-labelledby="more-actions">
+                           <ul class="dropdown-menu" aria-labelledby="more-actions-{{ entry_rand }}">
                               <li><a class="dropdown-item edit-timeline-item" href="#">
                                  <i class="fas fa-fw fa-edit"></i>
                                  <span>{{ __("Edit") }}</span>
@@ -151,8 +152,8 @@ $(function() {
    $(document).on("click", ".edit-timeline-item", function() {
       var timeline_item = $(this).closest(".timeline-item");
       var content_block = timeline_item.find(".timeline-content");
-      var itemtype      = timeline_item.data('itemtype')
-      var items_id      = timeline_item.data('items-id')
+      var itemtype      = timeline_item.data('itemtype');
+      var items_id      = timeline_item.data('items-id');
 
       content_block.find(".read-only-content").hide();
       content_block.find(".edit-content").show()
@@ -165,6 +166,13 @@ $(function() {
             '{{ item.getType()|get_foreignkey_field }}': {{ item.fields['id'] }},
             'id'        : items_id
          });
+
+      $("#itil-footer").find(".main-actions").hide();
+
+      // scroll to edited element
+      $("#itil-object .itil-left-side").animate(
+         { scrollTop:  timeline_item.offset().top }, 'slow',
+      );
    });
 
    $(document).on("click", ".close-edit-content", function() {
@@ -172,6 +180,8 @@ $(function() {
          .siblings('.ajax-content').html('')
          .closest('.edit-content').hide()
          .siblings('.read-only-content').show();
+
+      $("#itil-footer .main-actions").show();
    });
 });
 </script>
