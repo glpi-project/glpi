@@ -42,6 +42,7 @@ use RuleDictionnarySoftwareCollection;
 use Software as GSoftware;
 use SoftwareVersion;
 use Toolbox;
+use Glpi\Inventory\Asset\OperatingSystem;
 
 class Software extends InventoryAsset
 {
@@ -55,7 +56,7 @@ class Software extends InventoryAsset
 
    /** @var array */
    protected $extra_data = [
-      '\Glpi\Inventory\Asset\OperatingSystem' => null
+      OperatingSystem::class => null
    ];
 
    public function prepare() :array {

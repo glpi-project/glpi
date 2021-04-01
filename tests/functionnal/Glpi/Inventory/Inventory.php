@@ -869,50 +869,6 @@ class Inventory extends DbTestCase {
          $this->array($component)->isIdenticalTo($expected);
       }
 
-      //softwares
-      $isoft = new \Item_SoftwareVersion();
-      $iterator = $isoft->getFromItem($computer);
-      $this->integer(count($iterator))->isIdenticalTo(6);
-
-      $expecteds = [
-         [
-            'softname' => 'expat',
-            'version' => '2.2.8-1.fc31',
-            'dateinstall' => '2019-12-19',
-         ], [
-            'softname' => 'gettext',
-            'version' => '0.20.1-3.fc31',
-            'dateinstall' => '2020-01-15',
-         ], [
-            'softname' => 'gitg',
-            'version' => '3.32.1-1.fc31',
-            'dateinstall' => '2019-12-19',
-         ], [
-            'softname' => 'gnome-calculator',
-            'version' => '3.34.1-1.fc31',
-            'dateinstall' => '2019-12-19',
-         ], [
-            'softname' => 'libcryptui',
-            'version' => '3.12.2-18.fc31',
-            'dateinstall' => '2019-12-19',
-         ], [
-            'softname' => 'tar',
-            'version' => '1.32-2.fc31',
-            'dateinstall' => '2019-12-19',
-         ],
-      ];
-
-      $i = 0;
-      while ($soft = $iterator->next()) {
-         $expected = $expecteds[$i];
-         $this->array([
-            'softname'     => $soft['softname'],
-            'version'      => $soft['version'],
-            'dateinstall'  => $soft['dateinstall']
-         ])->isEqualTo($expected);
-         ++$i;
-      }
-
       //check printer
       $iterator = \Computer_Item::getTypeItems($computers_id, 'Printer');
       $this->integer(count($iterator))->isIdenticalTo(1);
@@ -1074,6 +1030,55 @@ class Inventory extends DbTestCase {
       }
    }
 
+   private function checkComputer1Softwares(\Computer $computer, array $versions = []) {
+      //softwares
+      $isoft = new \Item_SoftwareVersion();
+      $iterator = $isoft->getFromItem($computer);
+      $this->integer(count($iterator))->isIdenticalTo(6);
+
+      $expecteds = [
+         [
+            'softname' => 'expat',
+            'version' => '2.2.8-1.fc31',
+            'dateinstall' => '2019-12-19',
+         ], [
+            'softname' => 'gettext',
+            'version' => '0.20.1-3.fc31',
+            'dateinstall' => '2020-01-15',
+         ], [
+            'softname' => 'gitg',
+            'version' => '3.32.1-1.fc31',
+            'dateinstall' => '2019-12-19',
+         ], [
+            'softname' => 'gnome-calculator',
+            'version' => '3.34.1-1.fc31',
+            'dateinstall' => '2019-12-19',
+         ], [
+            'softname' => 'libcryptui',
+            'version' => '3.12.2-18.fc31',
+            'dateinstall' => '2019-12-19',
+         ], [
+            'softname' => 'tar',
+            'version' => '1.32-2.fc31',
+            'dateinstall' => '2019-12-19',
+         ],
+      ];
+
+      $i = 0;
+      while ($soft = $iterator->next()) {
+         $expected = $expecteds[$i];
+         if (count($versions)) {
+            $expected['version'] = $versions[$i];
+         }
+         $this->array([
+            'softname'     => $soft['softname'],
+            'version'      => $soft['version'],
+            'dateinstall'  => $soft['dateinstall']
+         ])->isEqualTo($expected);
+         ++$i;
+      }
+   }
+
    public function testImportComputer() {
       global $DB, $CFG_GLPI;
 
@@ -1117,6 +1122,7 @@ class Inventory extends DbTestCase {
       //check created computer
       $computer = $this->checkComputer1($agent['items_id']);
       $this->checkComputer1Volumes($computer);
+      $this->checkComputer1Softwares($computer);
    }
 
    public function testUpdateComputer() {
@@ -4494,11 +4500,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->testImportComputer();
 
       $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1_partial_volumes.json');
-
       $CFG_GLPI["is_contact_autoupdate"] = 0;
-
       $inventory = new \Glpi\Inventory\Inventory($json);
-
       $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
       if ($inventory->inError()) {
@@ -4540,5 +4543,32 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          191
       ];
       $this->checkComputer1Volumes($computer, $sizes);
+      $this->checkComputer1Softwares($computer);
+
+      /*
+       * FIXME: currently, software import does not permit partial inventory.
+      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1_partial_softs.json');
+      $CFG_GLPI["is_contact_autoupdate"] = 0;
+      $inventory = new \Glpi\Inventory\Inventory($json);
+      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+      if ($inventory->inError()) {
+         foreach ($inventory->getErrors() as $error) {
+            var_dump($error);
+         }
+      }
+      $this->boolean($inventory->inError())->isFalse();
+      $this->array($inventory->getErrors())->isEmpty();
+
+      //software versions
+      $versions = [
+         '2.2.8-1.fc31',
+         '0.20.1-3.fc31',
+         '3.32.1-1.fc31',
+         '3.34.1-1.fc31',
+         '3.12.2-18.fc31',
+         '1.32-2.fc31'
+      ];
+      $this->checkComputer1Softwares($computer, $versions);*/
    }
 }
