@@ -256,7 +256,7 @@ class Event extends CommonDBTM {
       // No Events in database
       if ($number < 1) {
          $twig_params = [
-            'class'        => 'tab_cadrehov',
+            'class'        => 'table table-hover table-bordered',
             'header_rows'  => [
                [__('No Event')]
             ],
@@ -267,7 +267,7 @@ class Event extends CommonDBTM {
       }
 
       $twig_params = [
-         'class'        => 'tab_cadre',
+         'class'        => 'table table-hover table-striped table-bordered',
          'header_rows'  => [
             [
                [

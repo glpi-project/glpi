@@ -2280,10 +2280,12 @@ class Planning extends CommonGLPI {
          return false;
       }
 
-      echo "<table class='tab_cadrehov'>";
+      echo "<table class='table'>";
+      echo "<thead>";
       echo "<tr class='noHover'><th>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php'>".__('Your planning')."</a>";
       echo "</th></tr>";
+      echo "</thead>";
 
       echo "<tr class='noHover'>";
       echo "<td class='planning_on_central'>";
