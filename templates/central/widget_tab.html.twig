@@ -6,7 +6,7 @@
 {% include 'central/messages.html.twig' with {'messages': messages} %}
 <div id="home-dashboard{{ rand }}" class="row row-cols-2 .row-cols-md-2 mt-3">
    {% for card in cards %}
-      <div class="col">
+      <div class="col mb-4">
          <div class="card h-100 {{ card.class|default('') }}">
             {% if card.title is defined %}
                <div class="card-header">

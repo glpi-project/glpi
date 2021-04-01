@@ -1,4 +1,5 @@
 <table class="{{ class|default('') }}">
+   <thead>
    {% for header_row in header_rows %}
       <tr>
          {% for header in header_row %}
@@ -9,6 +10,8 @@
          {% endfor %}
       </tr>
    {% endfor %}
+   </thead>
+   <tbody>
    {% for row in rows %}
       <tr class="{{ row.class|default('') }}">
          {% for value in row.values %}
@@ -19,4 +22,5 @@
          {% endfor %}
       </tr>
    {% endfor %}
+   </tbody>
 </table>

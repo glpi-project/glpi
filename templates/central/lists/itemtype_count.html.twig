@@ -5,26 +5,30 @@
       {{ value._raw|default('false') ? value.text|raw : value.text }}
    {% endif %}
 {% endmacro %}
-<table class="tab_cadrehov">
-   <tr class="noHover">
-      <th colspan="2">
-         {{ _self.link_or_text(title) }}
-      </th>
-   </tr>
-   {% if subtitle is defined %}
-      <tr>
-         <th>
-            {{ _self.link_or_text(subtitle) }}
+<table class="table table-hover table-bordered">
+   <thead>
+      <tr class="noHover">
+         <th colspan="2">
+            {{ _self.link_or_text(title) }}
          </th>
-         <th class="numeric">{{ _x("quantity", "Number") }}</th>
       </tr>
-   {% endif %}
+      {% if subtitle is defined %}
+         <tr>
+            <th>
+               {{ _self.link_or_text(subtitle) }}
+            </th>
+            <th class="numeric">{{ _x("quantity", "Number") }}</th>
+         </tr>
+      {% endif %}
+   </thead>
    {% for item in items %}
       <tr class="tab_bg_2">
-         <td>
+         <td class="b">
             {{ _self.link_or_text(item) }}
          </td>
-         <td class="numeric">{{ item.count }}</td>
+         <td class="numeric">
+            <span class="badge bg-secondary">{{ item.count }}</span>
+         </td>
       </tr>
    {% endfor %}
 </table>
