@@ -993,32 +993,32 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 9,
+               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'mac',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'mac',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'ifnumber',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'ifnumber',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'link_criteria_port',
-               'condition' => 203,
+               'condition' => self::PATTERN_NETWORK_PORT_RESTRICT,
                'pattern'   => 1
             ],
          ],
@@ -1032,27 +1032,27 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 9,
+               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'mac',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'mac',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'ifnumber',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'ifnumber',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
          ],
@@ -1066,17 +1066,17 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 9,
+               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'mac',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'ifnumber',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
          ],
@@ -1091,32 +1091,32 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 9,
+               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'ip',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'ip',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'ifdescr',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'ifdescr',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'link_criteria_port',
-               'condition' => 203,
+               'condition' => self::PATTERN_NETWORK_PORT_RESTRICT,
                'pattern'   => 1
             ],
          ],
@@ -1130,27 +1130,27 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 9,
+               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'ip',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'ip',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'ifdescr',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'ifdescr',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
          ],
@@ -1164,17 +1164,17 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 9,
+               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'ip',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'ifdescr',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
          ],
@@ -1188,22 +1188,22 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 9,
+               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'mac',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'mac',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'only_these_criteria',
-               'condition' => 204,
+               'condition' => self::PATTERN_ONLY_CRITERIA_RULE,
                'pattern'   => 1
             ],
          ],
@@ -1217,17 +1217,17 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 9,
+               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'mac',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'only_these_criteria',
-               'condition' => 204,
+               'condition' => self::PATTERN_ONLY_CRITERIA_RULE,
                'pattern'   => 1
             ],
          ],
@@ -1241,12 +1241,12 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Computer'
             ],
             [
                'criteria'  => 'name',
-               'condition' => 9,
+               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1260,27 +1260,27 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Computer'
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'uuid',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'uuid',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1293,17 +1293,17 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Computer'
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1317,17 +1317,17 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Computer'
             ],
             [
                'criteria'  => 'uuid',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'uuid',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1341,17 +1341,17 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Computer'
             ],
             [
                'criteria'  => 'mac',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'mac',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1365,17 +1365,17 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Computer'
             ],
             [
                'criteria'  => 'name',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'name',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1389,17 +1389,17 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Computer'
             ],
             [
                'criteria'  => 'uuid',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1413,12 +1413,12 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Computer'
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1432,12 +1432,12 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Computer'
             ],
             [
                'criteria'  => 'uuid',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1451,12 +1451,12 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Computer'
             ],
             [
                'criteria'  => 'mac',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1470,12 +1470,12 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Computer'
             ],
             [
                'criteria'  => 'name',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1489,7 +1489,7 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Computer'
             ]
          ],
@@ -1503,12 +1503,12 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Printer'
             ],
             [
                'criteria'  => 'name',
-               'condition' => 9,
+               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1522,17 +1522,17 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Printer'
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ]
          ],
@@ -1546,17 +1546,17 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Printer'
             ],
             [
                'criteria'  => 'mac',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'mac',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ]
          ],
@@ -1570,12 +1570,12 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Printer'
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1589,12 +1589,12 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Printer'
             ],
             [
                'criteria'  => 'mac',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1608,7 +1608,7 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Printer'
             ]
          ],
@@ -1622,12 +1622,12 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'NetworkEquipment'
             ],
             [
                'criteria'  => 'name',
-               'condition' => 9,
+               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1641,17 +1641,17 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'NetworkEquipment'
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ]
          ],
@@ -1665,17 +1665,17 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'NetworkEquipment'
             ],
             [
                'criteria'  => 'mac',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'mac',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ]
          ],
@@ -1689,12 +1689,12 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'NetworkEquipment'
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1708,12 +1708,12 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'NetworkEquipment'
             ],
             [
                'criteria'  => 'mac',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1727,7 +1727,7 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'NetworkEquipment'
             ]
          ],
@@ -1741,17 +1741,17 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Peripheral'
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ]
          ],
@@ -1765,12 +1765,12 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Peripheral'
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1784,7 +1784,7 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Peripheral'
             ]
          ],
@@ -1798,17 +1798,17 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Monitor'
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ]
          ],
@@ -1822,12 +1822,12 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Monitor'
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1841,7 +1841,7 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Monitor'
             ]
          ],
@@ -1855,12 +1855,12 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Phone'
             ],
             [
                'criteria'  => 'name',
-               'condition' => 9,
+               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1874,17 +1874,17 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Phone'
             ],
             [
                'criteria'  => 'mac',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'mac',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1898,12 +1898,12 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Phone'
             ],
             [
                'criteria'  => 'mac',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1917,7 +1917,7 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Phone'
             ]
          ],
@@ -1931,17 +1931,17 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Cluster'
             ],
             [
                'criteria'  => 'uuid',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'uuid',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ]
          ],
@@ -1955,12 +1955,12 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Cluster'
             ],
             [
                'criteria'  => 'uuid',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -1974,7 +1974,7 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Cluster'
             ]
          ],
@@ -1988,17 +1988,17 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Enclosure'
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ]
          ],
@@ -2012,12 +2012,12 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Enclosure'
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -2031,7 +2031,7 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => 'Enclosure'
             ]
          ],
@@ -2045,7 +2045,7 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'name',
-               'condition' => 9,
+               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -2059,12 +2059,12 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'serial',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'serial',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ]
          ],
@@ -2078,12 +2078,12 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'mac',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ],
             [
                'criteria'  => 'mac',
-               'condition' => 10,
+               'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
             ]
          ],
@@ -2097,7 +2097,7 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'serial',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -2111,7 +2111,7 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'mac',
-               'condition' => 8,
+               'condition' => Rule::PATTERN_EXISTS,
                'pattern'   => 1
             ]
          ],
@@ -2125,7 +2125,7 @@ class RuleImportAsset extends Rule {
          'criteria'  => [
             [
                'criteria'  => 'itemtype',
-               'condition' => 0,
+               'condition' => Rule::PATTERN_IS,
                'pattern'   => ''
             ]
          ],
