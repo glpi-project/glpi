@@ -33,10 +33,7 @@ body.mce-content-body {
    background: transparent;
 
    [data-user-mention="true"] {
-      background: rgba(200, 200, 200, 0.5);
-      border-radius: 3px;
       cursor: default !important; // Overrides "not-allowed" cursor on noneditable content
-      padding: 5px;
    }
 }
 
@@ -44,10 +41,10 @@ body.mce-content-body {
    img {
       max-width: 100%;
    }
+}
 
-   .user-mention {
-      background: rgba(255, 255, 255, 0.5);
-      border-radius: 3px;
-      padding: 5px;
-   }
+.user-mention, [data-user-mention="true"] {
+   background: rgba(0, 0, 0, 0.2);
+   border-radius: 3px;
+   padding: 5px;
 }
