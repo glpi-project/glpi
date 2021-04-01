@@ -1788,7 +1788,7 @@ class GLPIKanbanRights {
             }
          });
          create_form += "</div>";
-         create_form += "<input type='button' class='submit kanban-create-column' value='" + __('Create status') + "'/>";
+         create_form += "<input type='submit' class='submit' value='" + __('Create status') + "'/>";
          create_form += "</form></div>";
          $(self.element).prepend(create_form);
       };

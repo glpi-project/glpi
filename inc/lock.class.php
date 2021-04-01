@@ -47,7 +47,7 @@ if (!defined('GLPI_ROOT')) {
  *
  * @since 0.84
  **/
-class Lock {
+class Lock extends CommonGLPI {
 
    static function getTypeName($nb = 0) {
       return _n('Lock', 'Locks', $nb);
