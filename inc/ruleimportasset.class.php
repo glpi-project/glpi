@@ -206,7 +206,7 @@ class RuleImportAsset extends Rule {
             'name'   => __('Is partial'),
             'type'   => 'yesno',
             'tabel'  => '',
-            'allow_condition' => [Rule::PATTERN_IS, RUle::PATTERN_IS_NOT]
+            'allow_condition' => [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT]
          ]
       ];
 
