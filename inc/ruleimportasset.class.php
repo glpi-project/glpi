@@ -202,7 +202,12 @@ class RuleImportAsset extends Rule {
             'allow_condition' => [self::PATTERN_ONLY_CRITERIA_RULE],
             'is_global'       => true
          ],
-
+         'partial' => [
+            'name'   => __('Is partial'),
+            'type'   => 'yesno',
+            'tabel'  => '',
+            'allow_condition' => [Rule::PATTERN_IS, RUle::PATTERN_IS_NOT]
+         ]
       ];
 
       return $criteria;
@@ -985,6 +990,24 @@ class RuleImportAsset extends Rule {
       }
 
       $rules = [];
+
+      $rules[] = [
+         'name'      => 'No creation on partial import',
+         'match'     => 'AND',
+         'is_active' => 1,
+         'criteria'  => [
+            [
+               'criteria'  => 'partial',
+               'condition' => Rule::PATTERN_IS,
+               'pattern'   => 1
+            ], [
+               'criteria'  => 'itemtype',
+               'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
+               'pattern'   => 1
+            ],
+         ],
+         'action'    => '_deny'
+      ];
 
       $rules[] = [
          'name'      => 'Device update (by mac+ifnumber restricted port)',
