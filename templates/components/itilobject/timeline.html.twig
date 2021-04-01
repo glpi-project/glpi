@@ -58,7 +58,10 @@
                   <div class="d-flex ">
                      <div class="d-flex">
                         <div class="d-none d-md-block">
-                           <strong>{{ User__getLink(users_id) }}</strong>
+                           <strong>{{ User__getLink(users_id, {
+                                 'timeline_item': item,
+                                 'timeline_subitem': entry
+                              }) }}</strong>
                         </div>
 
                         <span title="{{ convDateTime(date_creation) }}" class="ms-2 text-muted text-nowrap">
