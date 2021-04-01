@@ -74,7 +74,7 @@ class Bios extends Device
    }
 
    public function handle() {
-      if ($this->main_item->isPartial()) {
+      if (isset($this->main_item) && $this->main_item->isPartial()) {
          return;
       }
 
