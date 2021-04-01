@@ -5955,7 +5955,7 @@ JAVASCRIPT;
          }
 
          $twig_params = [
-            'class'        => 'tab_cadrehov',
+            'class'        => 'table table-borderless table-striped table-hover',
             'header_rows'  => [
                [
                   [
@@ -5998,9 +5998,8 @@ JAVASCRIPT;
                $bgcolor = $_SESSION["glpipriority_".$job->fields["priority"]];
                $name    = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
                $row['values'][] = [
-                  'class'  => 'priority_block',
-                  'style'  => "border-color: {$bgcolor}",
-                  'content'   => "<span style='background: $bgcolor'></span>&nbsp;$name"
+                  'class'   => 'priority_block',
+                  'content' => "<span style='background: $bgcolor'></span>&nbsp;$name"
                ];
 
                $requesters = [];
@@ -6009,14 +6008,12 @@ JAVASCRIPT;
                   foreach ($job->users[CommonITILActor::REQUESTER] as $d) {
                      if ($d["users_id"] > 0) {
                         $userdata = getUserName($d["users_id"], 2);
-                        $name     = "<span class='b'>".$userdata['name']."</span>";
-                        $name     = sprintf(__('%1$s %2$s'), $name,
-                           Html::showToolTip($userdata["comment"],
-                              ['link'    => $userdata["link"],
-                                 'display' => false]));
+                        $name     = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>'.
+                                    $userdata['name'];
                         $requesters[] = $name;
                      } else {
-                        $requesters[] = $d['alternative_email']."&nbsp;";
+                        $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>'.
+                                       $d['alternative_email'];
                      }
                   }
                }
@@ -6024,7 +6021,8 @@ JAVASCRIPT;
                if (isset($job->groups[CommonITILActor::REQUESTER])
                   && count($job->groups[CommonITILActor::REQUESTER])) {
                   foreach ($job->groups[CommonITILActor::REQUESTER] as $d) {
-                     $requesters[] = Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+                     $requesters[] = '<i class="fas fa-sm fa-fw fa-users text-muted me-1"></i>'.
+                                     Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
                   }
                }
                $row['values'][] = implode('<br>', $requesters);

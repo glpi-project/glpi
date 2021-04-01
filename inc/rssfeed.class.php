@@ -965,7 +965,8 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
          }
       }
 
-      echo "<br><table class='tab_cadrehov'>";
+      echo "<table class='table table-striped table-hover'>";
+      echo "<thead>";
       echo "<tr class='noHover'><th colspan='2'><div class='relative'><span>$titre</span>";
 
       if (($personal && self::canCreate())
@@ -976,7 +977,8 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
                 __s('Add')."\"></a></span>";
       }
 
-      echo "</div></th></tr>\n";
+      echo "</div></th></tr>";
+      echo "</thead>";
 
       if ($nb) {
          usort($items, ['SimplePie', 'sort_items']);

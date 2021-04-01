@@ -67,7 +67,7 @@
    }
 
    .b {
-     font-weight: bold;
+     font-weight: 600;
    }
 
    .center {
@@ -981,21 +981,6 @@
 
       tr, td {
          background-color: inherit;
-      }
-   }
-
-   .priority_block {
-      white-space: nowrap;
-      border: 1px solid transparent;
-      padding-right: 6px;
-      border-radius: 2px;
-      display: inline-block;
-
-      span {
-         width: 20px;
-         height: 20px;
-         display: inline-block;
-         vertical-align: middle;
       }
    }
 
