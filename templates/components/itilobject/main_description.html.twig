@@ -1,4 +1,5 @@
 {% set users_id = (item.fields['users_id_recipient'] > 0 ? item.fields['users_id_recipient'] : 0) %}
+{% set entry_rand = random() %}
 
 <div class="timeline-item mb-4 ITILContent"
      data-itemtype="{{ item.getType() }}" data-items-id="{{ item.fields['id'] }}">
@@ -28,10 +29,10 @@
 
             {# TODO canedit #}
             <div class="dropdown ms-auto">
-               <button class="btn btn-sm btn-ghost-secondary" type="button" id="more-actions" data-bs-toggle="dropdown" aria-expanded="false">
+               <button class="btn btn-sm btn-ghost-secondary" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false">
                   <i class="fas fa fa-ellipsis-h"></i>
                </button>
-               <ul class="dropdown-menu" aria-labelledby="more-actions">
+               <ul class="dropdown-menu" aria-labelledby="more-actions-{{ entry_rand }}">
                   <li><a class="dropdown-item edit-timeline-item" href="#">
                      <i class="fas fa-fw fa-edit"></i>
                      <span>{{ __("Edit") }}</span>
