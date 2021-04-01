@@ -1,6 +1,6 @@
 <div class="mx-n2 mb-n2 itil-footer itil-footer p-0 border-top" id="itil-footer">
    <div class="buttons-bar d-flex py-2">
-      {% if not item.isNewItem() %}
+      {% if not item.isNewItem() and item.isNotSolved() %}
          <div class="col-md-8 ps-3">
             <div class="btn-group me-2 main-actions">
                {% set default_action = timeline_itemtypes|keys|first %}
@@ -63,11 +63,13 @@
                   'onlyicon': true
                } %}
 
-               <button class="btn btn-primary" type="submit" name="update"
-                       title="{{ _x('button', 'Save') }}">
-                  <i class="fas fa-save"></i>
-                  <span class="d-none d-md-block">{{ _x('button', 'Save') }}</span>
-               </button>
+               {% if item.isNotSolved() %}
+                  <button class="btn btn-primary" type="submit" name="update"
+                        title="{{ _x('button', 'Save') }}">
+                     <i class="fas fa-save"></i>
+                     <span class="d-none d-md-block">{{ _x('button', 'Save') }}</span>
+                  </button>
+               {% endif %}
             </div>
 
          {% endif %}
