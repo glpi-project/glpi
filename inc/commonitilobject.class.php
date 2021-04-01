@@ -1217,8 +1217,7 @@ abstract class CommonITILObject extends CommonDBTM {
              && ($this->countSuppliers(CommonITILActor::ASSIGN) == 0)
              && ($this->countUsers(CommonITILActor::ASSIGN) == 0)
              && ($this->countGroups(CommonITILActor::ASSIGN) == 0)
-             && !in_array($this->fields['status'], array_merge($this->getSolvedStatusArray(),
-                                                              $this->getClosedStatusArray()))) {
+             && !$this->isNotSolved()) {
 
             if (!in_array('status', $this->updates)) {
                $this->oldvalues['status'] = $this->fields['status'];
@@ -2755,6 +2754,24 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       return false;
+   }
+
+
+   /**
+    * Check if an itil object is still in an open status
+    *
+    * @since 10.0
+    *
+    * @return bool
+    */
+   function isNotSolved() {
+      return !in_array(
+         $this->fields['status'],
+         array_merge(
+            $this->getSolvedStatusArray(),
+            $this->getClosedStatusArray()
+         )
+      );
    }
 
 
@@ -5195,8 +5212,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>".__('Time to resolve')."</td>";
       echo "<td>".Html::convDateTime($this->fields['time_to_resolve'])."</td></tr>";
 
-      if (in_array($this->fields['status'], array_merge($this->getSolvedStatusArray(),
-                                                        $this->getClosedStatusArray()))) {
+      if (!$this->isNotSolved()) {
          echo "<tr class='tab_bg_2'><td>".__('Resolution date')."</td>";
          echo "<td>".Html::convDateTime($this->fields['solvedate'])."</td></tr>";
       }
@@ -5223,8 +5239,7 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "</td></tr>";
       }
 
-      if (in_array($this->fields['status'], array_merge($this->getSolvedStatusArray(),
-                                                        $this->getClosedStatusArray()))) {
+      if (!$this->isNotSolved()) {
          echo "<tr class='tab_bg_2'><td>".__('Resolution')."</td><td>";
 
          if ($this->fields['solve_delay_stat'] > 0) {
@@ -6704,20 +6719,18 @@ abstract class CommonITILObject extends CommonDBTM {
       $taskClass = $objType."Task";
       $task = new $taskClass;
 
-      $canadd_fup = $fup->can(-1, CREATE, $tmp) && !in_array($this->fields["status"],
-                        array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
-      $canadd_task = $task->can(-1, CREATE, $tmp) && !in_array($this->fields["status"],
-                         array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
-      $canadd_document = $canadd_fup || $this->canAddItem('Document') && !in_array($this->fields["status"],
-                         array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
+      $is_notsolved = $this->isNotSolved();
+
+      $canadd_fup = $fup->can(-1, CREATE, $tmp) && !$is_notsolved;
+      $canadd_task = $task->can(-1, CREATE, $tmp) && !$is_notsolved;
+      $canadd_document = $canadd_fup || $this->canAddItem('Document') && !$is_notsolved;
       $canadd_solution = $objType::canUpdate() && $this->canSolve() && !in_array($this->fields["status"], $this->getSolvedStatusArray());
 
       $validation_class = $objType.'Validation';
       $canadd_validation = false;
       if (class_exists($validation_class)) {
          $validation = new $validation_class();
-         $canadd_validation = $validation->can(-1, CREATE, $tmp) && !in_array($this->fields["status"],
-               array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
+         $canadd_validation = $validation->can(-1, CREATE, $tmp) && !$is_notsolved;
       }
 
       // javascript function for add and edit items
