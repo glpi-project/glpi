@@ -1147,7 +1147,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                      $interv[$key]["end"] = $data["end"];
                   }
 
-                  $interv[$key]["name"]     = $parentitem->fields["name"];
+                  $interv[$key]["name"]     = Html::entity_decode_deep($parentitem->fields["name"]);
                   $interv[$key]["content"]  = Html::resume_text($item->fields["content"],
                                                                 $CFG_GLPI["cut"]);
                   $interv[$key]["status"]   = $parentitem->fields["status"];
