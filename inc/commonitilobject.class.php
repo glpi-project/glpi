@@ -8564,7 +8564,7 @@ abstract class CommonITILObject extends CommonDBTM {
          }
          foreach ($updated as $actor) {
             $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
-            $res = $actor_obj->update($actor + [
+            $actor_obj->update($actor + [
                'type' => $actortype
             ]);
          }

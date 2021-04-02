@@ -27,13 +27,19 @@ $(function() {
       var text      = element.data('text') ?? option.text;
       var title     = element.data('title') ?? option.title;
       var use_notif = element.data('use-notification') ?? option.use_notification ?? 1;
+      var alt_email = element.data('alternative-email') ?? option.alternative_email ?? "";
 
       var icon = "";
       var size = is_selection ? "fa-lg" : ""
       var fk   = "";
       switch (itemtype) {
          case "User":
-            icon = `<i class="fas ${size} fa-fw fa-user mx-1" title="{{ "User"|itemtype_name }}"></i>`;
+            if (items_id == 0) {
+               text = alt_email;
+               icon = `<i class="fas ${size} fa-fw fa-envelope mx-1" title="{{ __("Direct email") }}"></i>`;
+            } else {
+               icon = `<i class="fas ${size} fa-fw fa-user mx-1" title="{{ "User"|itemtype_name }}"></i>`;
+            }
             fk   = "users_id_assign";
             break;
          case "Group":
@@ -44,13 +50,10 @@ $(function() {
             icon = `<i class="fas ${size} fa-fw fa-pallet mx-1" title="{{ "Supplier"|itemtype_name }}"></i>`;
             fk   = "suppliers_id_assign";
             break;
-         case "Email":
-            icon = `<i class="fas ${size} fa-fw fa-envelope mx-1" title="{{ "Supplier"|itemtype_name }}"></i>`;
-            break;
       }
 
       var actions = "";
-      if (['User', 'Supplier'].includes(itemtype)
+      if (['User', 'Supplier', 'Email'].includes(itemtype)
           && is_selection
           && {{ Entity_getUsedConfig('is_notif_enable_default', entities_id, '', 1) }}) {
          var fa_class = "far";
@@ -76,7 +79,8 @@ $(function() {
 
       // prepare html for option element
       var text = (is_selection && itemtype == "Group") ? title : text;
-      var option_element = $(`<span class="actor_entry" data-itemtype="${itemtype}" data-items-id="${items_id}" data-actortype="${actorytype}" data-text="${text}">${indent}${icon}${text}${actions}</span>`);
+      var option_text    = `<span class="actor_text">${text}</span>`;
+      var option_element = $(`<span class="actor_entry" data-itemtype="${itemtype}" data-items-id="${items_id}" data-actortype="${actorytype}" data-text="${text}">${indent}${icon}${option_text}${actions}</span>`);
 
       // manage ticket information (number of assigned ticket for an actor)
       if (is_selection && itemtype != "Email" && "{{ actortype }}" == "assign") {
@@ -130,7 +134,10 @@ $(function() {
          return {
             id: term,
             text: term,
-            itemtype: "Email"
+            itemtype: "User",
+            items_id: 0,
+            use_notification: 1,
+            alternative_email: term,
          }
       },
       ajax: {
@@ -150,26 +157,44 @@ $(function() {
    });
 
    // manage actors change
-   $("#actor_{{ rand }}").on('select2:select', function (event) {
+   var updateActors{{ rand }} = function() {
       var data = $("#actor_{{ rand }}").select2('data');
 
       var new_actors = [];
       data.forEach(function(selection) {
          var element = $(selection.element);
 
+         var itemtype  = selection.itemtype ?? element.data('itemtype');
+         var items_id  = selection.items_id ?? element.data('items-id');
+         var use_notif = selection.use_notification  ?? element.data('use-notification')  ?? false;
+         var alt_email = selection.alternative_email ?? element.data('alternative-email') ?? "";
+
+         if (itemtype == "Email") {
+            itemtype  = "User";
+            use_notif = true;
+            alt_email = selection.id;
+         }
+
          new_actors.push({
-            itemtype: selection.itemtype ?? element.data('itemtype'),
-            items_id: selection.items_id ?? element.data('items-id'),
-            use_notification: selection.use_notification ?? element.data('use-notification') ?? false,
-            alternative_email: selection.alternative_email ?? element.data('alternative-email') ?? "",
+            itemtype: itemtype,
+            items_id: items_id,
+            use_notification: use_notif,
+            alternative_email: alt_email,
          });
       });
 
       actors[actorytype] = new_actors;
 
       saveActorsToDom();
+   };
+   $("#actor_{{ rand }}").on('select2:select', function () {
+      updateActors{{ rand }}();
+   });
+   $("#actor_{{ rand }}").on('select2:unselect', function () {
+      updateActors{{ rand }}();
    });
 
+   // intercept event for edit notification button
    document.addEventListener('click', event => {
       if (event.target.closest("#actor_{{ rand }} + .select2 .edit-notify-user")) {
          return openNotifyModal(event);
