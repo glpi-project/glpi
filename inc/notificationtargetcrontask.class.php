@@ -90,7 +90,7 @@ class NotificationTargetCrontask extends NotificationTarget {
       }
 
       $this->addTagToList(['tag'     => 'crontasks',
-                                'label'   => __('Device list'),
+                                'label'   => __('Automatic actions list'),
                                 'value'   => false,
                                 'foreach' => true]);
 

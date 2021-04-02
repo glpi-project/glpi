@@ -43,6 +43,7 @@ class CronTaskLog extends CommonDBTM{
    const STATE_START = 0;
    const STATE_RUN   = 1;
    const STATE_STOP  = 2;
+   const STATE_ERROR = 3;
 
 
    /**

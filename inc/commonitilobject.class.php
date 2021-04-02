@@ -7345,7 +7345,11 @@ abstract class CommonITILObject extends CommonDBTM {
                echo "<a href='{$item_i['link']}' target='_blank'><i class='fa fa-external-link'></i>{$item_i['name']}</a>";
             }
             if (!empty($item_i['mime'])) {
-               echo "&nbsp;(".$item_i['mime'].")";
+               echo "&nbsp;";
+               echo Html::showToolTip(
+                  sprintf(__('File size: %s'), Toolbox::getSize(filesize(GLPI_VAR_DIR . "/" . $item_i['filepath']))) . '<br>'
+                  . sprintf(__('MIME type: %s'), $item_i['mime'])
+               );
             }
             echo "<span class='buttons'>";
             echo "<a href='".Document::getFormURLWithID($item_i['id'])."' class='edit_document fa fa-eye pointer' title='".
