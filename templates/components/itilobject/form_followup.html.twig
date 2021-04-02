@@ -91,6 +91,7 @@
                      <span>{{ _x('button', 'Add') }}</span>
                   </button>
                {% else %}
+                  <input type="hidden" name="id" value="{{ subitem.fields['id'] }}"/>
                   <button class="btn btn-primary me-2" type="submit" name="update">
                      <i class='fas fa-save'></i>
                      <span>{{ _x('button', 'Save') }}</span>
