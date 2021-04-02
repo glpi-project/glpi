@@ -173,9 +173,19 @@
       if (use_notif) {
          fa_class = "fas";
       }
-      $('.actor_entry[data-itemtype='+actor.itemtype+'][data-items-id='+actor.items_id+'][data-actortype='+actortype+'] .notify-icon')
+
+      var actor_entry = $('.actor_entry[data-itemtype='+actor.itemtype+'][data-items-id='+actor.items_id+'][data-actortype='+actortype+']');
+
+      // toggle notify icon
+      actor_entry.find('.notify-icon')
          .removeClass('fas far')
          .addClass(fa_class);
+
+      // toggle text for direct email
+      if (actor.itemtype == "User" && parseInt(actor.items_id) == 0) {
+         actor_entry.find('.actor_text').html(alt_email);
+      }
+
 
       editActorNotifySettings_modal.hide();
       saveActorsToDom();
