@@ -63,6 +63,8 @@
                                  'timeline_item': item,
                                  'timeline_subitem': entry
                               }) }}</strong>
+                           {% set user = User__getUserName(users_id, 2) %}
+                           {{ Html__showToolTip(user['comment']) }}
                         </div>
 
                         <span title="{{ convDateTime(date_creation) }}" class="ms-2 text-muted text-nowrap">

@@ -59,12 +59,16 @@ class UserExtension extends AbstractExtension implements ExtensionInterface {
          new TwigFunction('User__getLink', [$this, 'getLink'], ['is_safe' => ['html']]),
          new TwigFunction('User__getLinkUrl', [$this, 'getLinkUrl']),
          new TwigFunction('User__getUserName', [$this, 'getUserName']),
+         new TwigFunction('User__isAnonymous', [$this, 'isAnonymous']),
       ];
    }
 
    public function getPicture(int $users_id = 0): string {
       $user = new User;
       if ($user->getFromDB($users_id)) {
+         if ($this->isAnonymous($users_id)) {
+            return User::getThumbnailURLForPicture(null, true);
+         }
          return User::getThumbnailURLForPicture($user->fields['picture'], false);
       }
 
@@ -95,20 +99,8 @@ class UserExtension extends AbstractExtension implements ExtensionInterface {
    public function getLink(int $users_id = null, array $options = []):string {
       $user = new User;
       if ($user->getFromDB($users_id)) {
-         if (isset($options['timeline_item'], $options['timeline_subitem']) && Session::getCurrentInterface() === 'helpdesk'
-            && Entity::getUsedConfig('anonymize_support_agents', $options['timeline_item']->getEntityID())) {
-            $timeline_item = $options['timeline_item'];
-            $timeline_subitem = $options['timeline_subitem'];
-            $always_anonymized_types = [ITILSolution::class, CommonITILTask::class];
-            foreach ($always_anonymized_types as $class) {
-               if ($timeline_subitem['type'] === $class || is_subclass_of($timeline_subitem['type'], $class)) {
-                  return __("Helpdesk");
-               }
-            }
-            if (($timeline_subitem['type'] === ITILFollowup::class && ITILFollowup::getById($timeline_subitem['item']['id']))
-               || ($timeline_subitem['type'] === Document_Item::class && Document_Item::getById($timeline_subitem['item']['documents_item_id']))) {
-               return __("Helpdesk");
-            }
+         if ($this->isAnonymous($users_id, $options)) {
+            return __("Helpdesk");
          }
          return $user->getLink($options);
       }
@@ -125,8 +117,35 @@ class UserExtension extends AbstractExtension implements ExtensionInterface {
       return "";
    }
 
-   public function getUserName(int $users_id = 0, int $link = 0):string {
+   /**
+    * Get name of the user with ID=$ID (optional with link to user.form.php)
+    *
+    * @param int $users_id ID of the user
+    * @param int $link 1 = Show link to user.form.php 2 = return array with comments and link
+    *                      (default =0)
+    * @return string|string[] The username (realname if not empty and name if realname is empty) if link is not set to 2.
+    *    If link is set to 2, an array containing the name, link and comment (Tooltip content) is returned.
+    */
+   public function getUserName(int $users_id = 0, int $link = 0) {
       $dbu = new DbUtils();
       return $dbu->getUserName($users_id, $link);
+   }
+
+   public function isAnonymous(int $users_id = null, array $options = []): bool {
+      if (isset($options['timeline_item'], $options['timeline_subitem']) && Session::getCurrentInterface() === 'helpdesk'
+         && Entity::getUsedConfig('anonymize_support_agents', $options['timeline_item']->getEntityID())) {
+         $timeline_subitem = $options['timeline_subitem'];
+         $always_anonymized_types = [ITILSolution::class, CommonITILTask::class];
+         foreach ($always_anonymized_types as $class) {
+            if ($timeline_subitem['type'] === $class || is_subclass_of($timeline_subitem['type'], $class)) {
+               return true;
+            }
+         }
+         if (($timeline_subitem['type'] === ITILFollowup::class && ITILFollowup::getById($timeline_subitem['item']['id'])->isFromSupportAgent())
+            || ($timeline_subitem['type'] === Document_Item::class && Document_Item::getById($timeline_subitem['item']['documents_item_id'])->isFromSupportAgent())) {
+            return true;
+         }
+      }
+      return false;
    }
 }
