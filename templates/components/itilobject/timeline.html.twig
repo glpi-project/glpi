@@ -53,7 +53,10 @@
               data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}">
             <div class="row">
                <div class="col-auto d-flex flex-column {{ "right" in item_position ? "ms-auto ms-0 order-sm-last" : "" }}">
-                  {% include "components/itilobject/user_picture.html.twig" with {'users_id': users_id} only %}
+                  {% set avatar_rand = random() %}
+                  <span id="timeline-avatar{{ avatar_rand }}">
+                     {% include "components/itilobject/user_picture.html.twig" with {'users_id': users_id} only %}
+                  </span>
                </div>
                <div class="col-12 col-sm d-flex flex-column">
                   <div class="d-flex ">
@@ -64,7 +67,9 @@
                                  'timeline_subitem': entry
                               }) }}</strong>
                            {% set user = User__getUserName(users_id, 2) %}
-                           {{ Html__showToolTip(user['comment']) }}
+                           {{ Html__showToolTip(user['comment'], {
+                              'applyto': "timeline-avatar"~avatar_rand
+                           }) }}
                         </div>
 
                         <span title="{{ convDateTime(date_creation) }}" class="ms-2 text-muted text-nowrap">
