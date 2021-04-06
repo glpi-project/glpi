@@ -19,7 +19,7 @@
                   {{ __('Created: %1$s')|format(time2str(date_creation))|raw }}
                </span>
 
-               {% if date_creation != date_mod%}
+               {% if date_creation != date_mod %}
                   {% set editor = User__getLink(item.fields['users_id_lastupdater']) %}
                   <span class="text-muted text-end ms-2 d-none d-md-block" title="{{ convDateTime(date_mod) }}">
                      {{ __('Last modification: %1$s by %2$s')|format(time2str(date_mod), editor)|raw }}
@@ -43,10 +43,14 @@
          <span class="row mt-2 timeline-content left card">
             <div class="card-body">
                <div class="read-only-content">
-                  <div class="card-title card-header mx-n3 mt-n3">
-                     {{ item.fields['name'] }}
-                  </div>
-                  {{ getHtmlToDisplay(item.fields['content']) }}
+                  {% if not itiltemplate.isHiddenField('name') %}
+                     <div class="card-title card-header mx-n3 mt-n3">
+                        {{ item.fields['name'] }}
+                     </div>
+                  {% endif %}
+                  {% if not itiltemplate.isHiddenField('content') %}
+                     {{ getHtmlToDisplay(item.fields['content']) }}
+                  {% endif %}
                </div>
                <div class="edit-content collapse">
                   <button class="btn btn-sm btn-ghost-secondary float-end close-edit-content">
