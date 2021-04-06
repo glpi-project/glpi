@@ -4477,7 +4477,7 @@ class Ticket extends CommonITILObject {
          'timeline_itemtypes' => $this->getTimelineItemtypes(),
          'params'             => $options,
          'timeline'           => $this->getTimelineItems(),
-         'template'           => $tt,
+         'itiltemplate'       => $tt,
          'ticket_ticket'      => new Ticket_Ticket,
       ]);
 
