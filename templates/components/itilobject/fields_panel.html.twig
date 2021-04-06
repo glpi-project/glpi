@@ -1,5 +1,8 @@
 {% import "components/form/fields_macros.html.twig" as fields %}
-{% set field_options = {full_width: true} %}
+{% set field_options = {
+   full_width: true,
+   fields_template: itiltemplate
+} %}
 {% set enctype = (item.isNewItem() ? 'enctype="multipart/form-data"' : "") %}
 
 <div class="accordion open accordion-flush" id="itil-data">
@@ -24,7 +27,7 @@
             {{ fields.field(
                'type',
                item.dropdownType('type', type_params),
-               __('%1$s%2$s')|format(_n('Type', 'Types', 1), template.getMandatoryMark('type')),
+               _n('Type', 'Types', 1),
                field_options
             ) }}
 
@@ -36,11 +39,10 @@
                'ITILCategory',
                'itilcategories_id',
                item.fields["itilcategories_id"],
-               __('%1$s%2$s')|format(__('Category'), template.getMandatoryMark('itilcategories_id')),
+               __('Category'),
                cat_params
             ) }}
 
-            {# TODO badge in dropdown #}
             {{ fields.field(
                'status',
                item.dropdownStatus({
@@ -50,7 +52,7 @@
                   'class': 'form-select',
                   'display': false
                }),
-               __('%1$s%2$s')|format(__("Status"), template.getMandatoryMark('status')),
+               __("Status"),
                field_options
             ) }}
 
@@ -58,7 +60,7 @@
                'RequestType',
                'requesttypes_id',
                item.fields["requesttypes_id"],
-               __('%1$s%2$s')|format("RequestType"|itemtype_name, template.getMandatoryMark('requesttypes_id')),
+               "RequestType"|itemtype_name,
                field_options|merge({
                   'condition': {
                      'is_active': 1,
@@ -73,7 +75,7 @@
                'Location',
                'locations_id',
                item.fields["locations_id"],
-               __('%1$s%2$s')|format("Location"|itemtype_name, template.getMandatoryMark('locations_id')),
+               "Location"|itemtype_name,
                field_options
             ) }}
 
