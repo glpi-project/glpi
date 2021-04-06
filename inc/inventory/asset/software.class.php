@@ -42,7 +42,6 @@ use RuleDictionnarySoftwareCollection;
 use Software as GSoftware;
 use SoftwareVersion;
 use Toolbox;
-use Glpi\Inventory\Asset\OperatingSystem;
 
 class Software extends InventoryAsset
 {
