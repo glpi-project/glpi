@@ -1815,6 +1815,7 @@ class Dropdown {
       $param['emptylabel']          = self::EMPTY_VALUE;
       $param['display_emptychoice'] = false;
       $param['disabled']            = false;
+      $param['required']            = false;
       $param['noselect2']           = false;
       $param['templateResult']      = "templateResult";
       $param['templateSelection']   = "templateSelection";
@@ -1893,6 +1894,10 @@ class Dropdown {
 
          if ($param["disabled"]) {
             $output .= " disabled='disabled'";
+         }
+
+         if ($param["required"]) {
+            $output .= " required='required'";
          }
 
          $output .= '>';
@@ -3726,14 +3731,16 @@ class Dropdown {
       }
 
       $defaults = [
-         'actortype'        => 'requester',
-         'users_right'      => 'all',
-         'used'             => [],
-         'value'            => 0,
-         'page'             => 1,
-         'inactive_deleted' => 0,
-         '_idor_token'      => "",
-         'searchText'       => null,
+         'actortype'          => 'requester',
+         'users_right'        => 'all',
+         'used'               => [],
+         'value'              => 0,
+         'page'               => 1,
+         'inactive_deleted'   => 0,
+         '_idor_token'        => "",
+         'searchText'         => null,
+         'itiltemplate_class' => 'TicketTemplate',
+         'itiltemplates_id'   => 0,
       ];
       $post = array_merge($defaults, $post);
 
@@ -3742,64 +3749,78 @@ class Dropdown {
          $entity_restrict = Toolbox::jsonDecode($post['entity_restrict']);
       }
 
+      // prevent instanciation of bad classes
+      if (!is_subclass_of($post['itiltemplate_class'], 'ITILTemplate')) {
+         return false;
+      }
+      $template = new $post['itiltemplate_class'];
+      $template->getFromDBWithData((int) $post['itiltemplates_id']);
+
       $results = [];
-      $users_iterator = User::getSqlSearchResult(
-         false,
-         $post['users_right'],
-         $entity_restrict,
-         $post['value'],
-         $post['used'],
-         $post['searchText'],
-         0,
-         -1,
-         $post['inactive_deleted'],
-      );
-      foreach ($users_iterator as $ID => $user) {
-         $text = formatUserName($user["id"], $user["name"], $user["realname"], $user["firstname"]);
 
-         $results[] = [
-            'id'                => "User_$ID",
-            'text'              => $text,
-            'title'             => sprintf(__('%1$s - %2$s'), $text, $user['name']),
-            'itemtype'          => "User",
-            'items_id'          => $ID,
-            'use_notification'  => strlen($user['default_email']) > 0 ? 1 : 0,
-            'alternative_email' => $user['default_email'],
-         ];
-      }
+      if (!$template->isHiddenField("_users_id_{$post['actortype']}")) {
+         $users_iterator = User::getSqlSearchResult(
+            false,
+            $post['users_right'],
+            $entity_restrict,
+            $post['value'],
+            $post['used'],
+            $post['searchText'],
+            0,
+            -1,
+            $post['inactive_deleted'],
+         );
+         foreach ($users_iterator as $ID => $user) {
+            $text = formatUserName($user["id"], $user["name"], $user["realname"], $user["firstname"]);
 
-      $cond = ['is_requester' => 1];
-      if ($post["actortype"] == 'assign') {
-         $cond = ['is_assign' => 1];
-      }
-      if ($post["actortype"] == 'observer') {
-         $cond = ['is_watcher' => 1];
-      }
-      $post['condition'] = static::addNewCondition($cond);
-
-      $groups = Dropdown::getDropdownValue([
-         'itemtype'            => 'Group',
-         '_idor_token'         => $post['_idor_token'],
-         'display_emptychoice' => false,
-         'searchText'          => $post['searchText'],
-         'entity_restrict'     => $entity_restrict,
-         'condition'           => $post['condition'],
-      ], false);
-      foreach ($groups['results'] as $group) {
-         if (isset($group['children'])) {
-            foreach ($group['children'] as &$children) {
-               $children['items_id'] = $children['id'];
-               $children['id']       = "Group_".$children['id'];
-               $children['itemtype'] = "Group";
-            }
+            $results[] = [
+               'id'                => "User_$ID",
+               'text'              => $text,
+               'title'             => sprintf(__('%1$s - %2$s'), $text, $user['name']),
+               'itemtype'          => "User",
+               'items_id'          => $ID,
+               'use_notification'  => strlen($user['default_email']) > 0 ? 1 : 0,
+               'alternative_email' => $user['default_email'],
+            ];
          }
-
-         $results[] = $group;
       }
 
+      if (!$template->isHiddenField("_groups_id_{$post['actortype']}")) {
+         $cond = ['is_requester' => 1];
+         if ($post["actortype"] == 'assign') {
+            $cond = ['is_assign' => 1];
+         }
+         if ($post["actortype"] == 'observer') {
+            $cond = ['is_watcher' => 1];
+         }
+         $post['condition'] = static::addNewCondition($cond);
+
+         $groups = Dropdown::getDropdownValue([
+            'itemtype'            => 'Group',
+            '_idor_token'         => $post['_idor_token'],
+            'display_emptychoice' => false,
+            'searchText'          => $post['searchText'],
+            'entity_restrict'     => $entity_restrict,
+            'condition'           => $post['condition'],
+         ], false);
+         foreach ($groups['results'] as $group) {
+            if (isset($group['children'])) {
+               foreach ($group['children'] as &$children) {
+                  $children['items_id'] = $children['id'];
+                  $children['id']       = "Group_".$children['id'];
+                  $children['itemtype'] = "Group";
+               }
+            }
+
+            $results[] = $group;
+         }
+      }
+
+      // extract entities from groups (present in special `text` key)
       $possible_entities = array_column($results, "text");
 
-      if ($post["actortype"] == 'assign') {
+      if ($post["actortype"] == 'assign'
+          && !$template->isHiddenField("_suppliers_id_{$post['actortype']}")) {
          $supplier_obj = new Supplier;
          $suppliers    = Dropdown::getDropdownValue([
             'itemtype'            => 'Supplier',
