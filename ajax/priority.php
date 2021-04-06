@@ -45,7 +45,7 @@ if (isset($_REQUEST["urgency"])
       header("Content-Type: application/json; charset=UTF-8");
       echo json_encode(['priority' => $priority]);
 
-   } elseif ($_REQUEST["priority"]) {
+   } else if ($_REQUEST["priority"]) {
       // Send UTF8 Headers
       header("Content-Type: text/html; charset=UTF-8");
       echo "<script type='text/javascript' >\n";
