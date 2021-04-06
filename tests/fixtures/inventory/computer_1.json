@@ -10,6 +10,7 @@
         "batteries": [
             {
                 "capacity": 57570,
+                "real_capacity": 50570,
                 "chemistry": "lithium-ion",
                 "date": "2019-07-06",
                 "manufacturer": "SMP",

@@ -115,6 +115,9 @@ abstract class Device extends InventoryAsset
                $itemdevice->add($itemdevice_data, [], $this->withHistory());
 
                $this->itemdeviceAdded($itemdevice, $val);
+            } else {
+                $itemdevice->getFromDBByCrit([$fk => $device_id]);
+                $itemdevice->update(['id' => $itemdevice->fields['id']] + \Toolbox::addslashes_deep((array)$val));
             }
          }
       }

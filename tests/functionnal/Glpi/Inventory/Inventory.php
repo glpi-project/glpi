@@ -486,23 +486,7 @@ class Inventory extends DbTestCase {
             ],
             'Item_DeviceNetworkCard' => [],
             'Item_DeviceDrive' => [],
-            'Item_DeviceBattery' => [
-               [
-                  'items_id' => $computers_id,
-                  'itemtype' => 'Computer',
-                  'devicebatteries_id' => 104,
-                  'manufacturing_date' => '2019-07-06',
-                  'is_deleted' => 0,
-                  'is_dynamic' => 1,
-                  'entities_id' => 0,
-                  'is_recursive' => 0,
-                  'serial' => '34605',
-                  'otherserial' => null,
-                  'locations_id' => 0,
-                  'states_id' => 0,
-                  'real_capacity' => 0
-               ],
-            ],
+            // 'Item_DeviceBattery' is not tested here, see self::checkComputer1Batteries()
             'Item_DeviceGraphicCard' => [],
             'Item_DeviceSoundCard' => [
                [
@@ -873,8 +857,7 @@ class Inventory extends DbTestCase {
       $iterator = \Computer_Item::getTypeItems($computers_id, 'Printer');
       $this->integer(count($iterator))->isIdenticalTo(1);
       $printer_link = $iterator->next();
-      unset($printer_link['date_mod']);
-      unset($printer_link['date_creation']);
+      unset($printer_link['date_mod'], $printer_link['date_creation']);
 
       $expected = [
          'id' => $printer_link['id'],
@@ -1079,6 +1062,45 @@ class Inventory extends DbTestCase {
       }
    }
 
+   private function checkComputer1Batteries(\Computer $computer, array $capacities = []) {
+      global $DB;
+
+      $link        = getItemForItemtype(\Item_DeviceBattery::class);
+      $iterator = $DB->request($link->getTableGroupCriteria($computer));
+      $this->integer(count($iterator))->isIdenticalTo(1);
+
+      $battery = [];
+      while ($row = $iterator->next()) {
+         unset($row['id']);
+         $battery = $row;
+      }
+
+      $expected = [
+         'items_id' => $computer->fields['id'],
+         'itemtype' => $computer->getType(),
+         'devicebatteries_id' => 104,
+         'manufacturing_date' => '2019-07-06',
+         'is_deleted' => 0,
+         'is_dynamic' => 1,
+         'entities_id' => 0,
+         'is_recursive' => 0,
+         'serial' => '34605',
+         'otherserial' => null,
+         'locations_id' => 0,
+         'states_id' => 0,
+         'real_capacity' => $capacities[0] ?? 50570
+      ];
+
+      //hack to replace expected fkeys
+      foreach (array_keys($expected) as $key) {
+         if (isForeignKeyField($key)) {
+            $expected[$key] = $battery[$key];
+         }
+      }
+
+      $this->array($battery)->isIdenticalTo($expected);
+   }
+
    public function testImportComputer() {
       global $DB, $CFG_GLPI;
 
@@ -1123,6 +1145,7 @@ class Inventory extends DbTestCase {
       $computer = $this->checkComputer1($agent['items_id']);
       $this->checkComputer1Volumes($computer);
       $this->checkComputer1Softwares($computer);
+      $this->checkComputer1Batteries($computer);
    }
 
    public function testUpdateComputer() {
@@ -4544,6 +4567,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       ];
       $this->checkComputer1Volumes($computer, $sizes);
       $this->checkComputer1Softwares($computer);
+      $this->checkComputer1Batteries($computer);
 
       /*
        * FIXME: currently, software import does not permit partial inventory.
@@ -4570,5 +4594,24 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          '1.32-2.fc31'
       ];
       $this->checkComputer1Softwares($computer, $versions);*/
+
+      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1_partial_batteries.json');
+      $CFG_GLPI["is_contact_autoupdate"] = 0;
+      $inventory = new \Glpi\Inventory\Inventory($json);
+      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+      if ($inventory->inError()) {
+         foreach ($inventory->getErrors() as $error) {
+            var_dump($error);
+         }
+      }
+      $this->boolean($inventory->inError())->isFalse();
+      $this->array($inventory->getErrors())->isEmpty();
+
+      //software versions
+      $capacities = [
+         40570,
+      ];
+      $this->checkComputer1Batteries($computer, $capacities);
    }
 }
