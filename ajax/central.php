@@ -75,8 +75,8 @@ switch ($_REQUEST['widget']) {
          $personal = $params['personal'] !== 'false';
          $itemtype::showListForCentral($personal);
       } else if ($itemtype === Planning::class) {
-      $itemtype::showCentral($params['who']);
-   }
+         $itemtype::showCentral($params['who']);
+      }
       break;
    default:
       echo __('Invalid widget');
