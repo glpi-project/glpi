@@ -5534,9 +5534,9 @@ class Ticket extends CommonITILObject {
                   $options['criteria'][1]['value']      = 'mygroups';
                   $options['criteria'][1]['link']       = 'AND';
 
-               $main_header = "<a href=\"".Ticket::getSearchURL()."?".
-                         Toolbox::append_params($options, '&amp;')."\">".
-                         Html::makeTitle(__('Your tickets in progress'), $displayed_row_count, $total_row_count)."</a>";
+                  $main_header = "<a href=\"".Ticket::getSearchURL()."?".
+                     Toolbox::append_params($options, '&amp;')."\">".
+                     Html::makeTitle(__('Your tickets in progress'), $displayed_row_count, $total_row_count)."</a>";
             }
 
          } else {
@@ -5726,9 +5726,9 @@ class Ticket extends CommonITILObject {
                   $options['criteria'][1]['value']      = 'notold';
                   $options['criteria'][1]['link']       = 'AND';
 
-               $main_header = "<a href=\"".Ticket::getSearchURL()."?".
-                        Toolbox::append_params($options, '&amp;')."\">".
-                        Html::makeTitle(__('Your tickets in progress'), $displayed_row_count, $total_row_count)."</a>";
+                  $main_header = "<a href=\"".Ticket::getSearchURL()."?".
+                     Toolbox::append_params($options, '&amp;')."\">".
+                     Html::makeTitle(__('Your tickets in progress'), $displayed_row_count, $total_row_count)."</a>";
             }
          }
 
