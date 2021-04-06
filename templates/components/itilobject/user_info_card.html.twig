@@ -1,0 +1,45 @@
+<div class="container p-0 user-info-card">
+   <div class="row">
+      <div class="col-3">
+         {% include 'components/itilobject/user_picture.html.twig' with {'users_id': user['id']} %}
+      </div>
+      <div class="col-9">
+         <h3>{{ user['user_name'] }}</h3>
+         {% if have_right('user', constant('READ')) %}
+            {{ user['login'] }}
+            <br>
+         {% endif %}
+         {% if user['email'] is not empty %}
+            <i class="fas fa-envelope"></i>
+            <a href="mailto:{{ user['email'] }}">{{ user['email'] }}</a>
+            <br>
+         {% endif %}
+         {% if user['phone'] is not empty %}
+            <i class="fas fa-phone"></i>
+            <a href="tel:{{ user['phone'] }}">{{ user['phone'] }}</a>
+            <br>
+         {% endif %}
+         {% if user['mobile'] is not empty %}
+            <i class="fas fa-mobile"></i>
+            <a href="tel:{{ user['mobile'] }}">{{ user['mobile'] }}</a>
+            <br>
+         {% endif %}
+         {% if user['locations_id'] > 0 %}
+            {{ 'Location'|itemtype_name }}: {{ getDropdownName('glpi_locations', user['locations_id']) }}
+            <br>
+         {% endif %}
+         {% if user['usertitles_id'] > 0 %}
+            {{ _x('person', 'Title') }}: {{ getDropdownName('glpi_usertitles', user['usertitles_id']) }}
+            <br>
+         {% endif %}
+         {% if user['usercategories_id'] > 0 %}
+            {{ __('Category') }}: {{ getDropdownName('glpi_usercategories', user['usercategories_id']) }}
+            <br>
+         {% endif %}
+         {% if user['groups_id'] > 0 %}
+            {{ __('Default group') }}: {{ getDropdownName('glpi_groups', user['groups_id']) }}
+            <br>
+         {% endif %}
+      </div>
+   </div>
+</div>

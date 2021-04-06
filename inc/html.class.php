@@ -3441,13 +3441,18 @@ JS;
       if (!$param['autoclose']) {
          $js .=", title: {text: ' ',button: true}";
       }
-      $js .= "}, style: { classes: 'qtip-shadow qtip-bootstrap'}";
+      $js .= "}, style: { classes: 'qtip-shadow qtip-bootstrap'}, hide: {
+                  fixed: true,
+                  delay: 200,
+                  leave: false,
+                  when: { event: 'unfocus' }
+                }";
       if ($param['onclick']) {
          $js .= ",show: 'click', hide: false,";
       } else if (!$param['autoclose']) {
          $js .= ",show: {
                         solo: true, // ...and hide all other tooltips...
-                }, hide: false,";
+                },";
       }
       $js .= "});";
       $js .= "});";
