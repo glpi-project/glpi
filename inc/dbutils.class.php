@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -1476,70 +1478,25 @@ final class DbUtils {
                $user["link"]    = User::getFormURLWithID($ID);
                $user['comment'] = '';
 
-               $comments        = [];
-               $comments[]      = ['name'  => __('Name'),
-                                   'value' => $username];
-               // Ident only if you have right to read user
+               $user_params = [
+                  'id'                 => $ID,
+                  'user_name'          => $username,
+                  'email'              => UserEmail::getDefaultForUser($ID),
+                  'phone'              => $data["phone"],
+                  'mobile'             => $data["mobile"],
+                  'locations_id'       => $data['locations_id'],
+                  'usertitles_id'      => $data['usertitles_id'],
+                  'usercategories_id'  => $data['usercategories_id'],
+               ];
                if (Session::haveRight('user', READ)) {
-                  $comments[]      = ['name'  => __('Login'),
-                                      'value' => $data["name"]];
+                  $user_params['login'] = $data['name'];
                }
-
-               $email           = UserEmail::getDefaultForUser($ID);
-               if (!empty($email)) {
-                  $comments[] = ['name'  => _n('Email', 'Emails', 1),
-                                 'value' => $email];
-               }
-
-               if (!empty($data["phone"])) {
-                  $comments[] = ['name'  => Phone::getTypeName(1),
-                                 'value' => $data["phone"]];
-               }
-
-               if (!empty($data["mobile"])) {
-                  $comments[] = ['name'  => __('Mobile phone'),
-                                 'value' => $data["mobile"]];
-               }
-
-               if ($data["locations_id"] > 0) {
-                  $comments[] = ['name'  => Location::getTypeName(1),
-                                 'value' => Dropdown::getDropdownName("glpi_locations",
-                                                                           $data["locations_id"])];
-               }
-
-               if ($data["usertitles_id"] > 0) {
-                  $comments[] = ['name'  => _x('person', 'Title'),
-                                 'value' => Dropdown::getDropdownName("glpi_usertitles",
-                                                                           $data["usertitles_id"])];
-               }
-
-               if ($data["usercategories_id"] > 0) {
-                  $comments[] = ['name'  => __('Category'),
-                                 'value' => Dropdown::getDropdownName("glpi_usercategories",
-                                                                           $data["usercategories_id"])];
-               }
-
                if (!empty($data["groups_id"])) {
-                  $comments[] = ['name'  => __('Default group'),
-                                 'value' => Dropdown::getDropdownName("glpi_groups",
-                                                                      $data["groups_id"])];
+                  $user_params['groups_id'] = $data["groups_id"];
                }
-
-               if (count($comments)) {
-                  foreach ($comments as $datas) {
-                     // Do not use SPAN here
-                     $user['comment'] .= sprintf(__('%1$s: %2$s')."<br>",
-                                                "<strong>".$datas['name']."</strong>",
-                                                $datas['value']);
-                  }
-               }
-
-               if (!empty($data['picture'])) {
-                  $user['comment'] = "<div class='tooltip_picture_border'>".
-                                    "<img  class='tooltip_picture' src='".
-                                       User::getThumbnailURLForPicture($data['picture'])."' /></div>".
-                                    "<div class='tooltip_text'>".$user['comment']."</div>";
-               }
+               $user['comment'] = TemplateRenderer::getInstance()->render('components/itilobject/user_info_card.html.twig', [
+                  'user'   => $user_params
+               ]);
             } else {
                $user = $username;
             }
