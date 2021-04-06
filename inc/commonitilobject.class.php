@@ -4663,8 +4663,8 @@ abstract class CommonITILObject extends CommonDBTM {
             echo '<hr>';
          } else { // predefined value
             if (!is_array($options['_users_id_observer'])){
-+			      $options['_users_id_observer'] = [$options['_users_id_observer']];
-+	      	}
+               $options['_users_id_observer'] = [$options['_users_id_observer']];
+            }
             if (isset($options["_users_id_observer"][0]) && $options["_users_id_observer"][0]) {               
                echo static::getActorIcon('user', CommonITILActor::OBSERVER)."&nbsp;";
                echo Dropdown::getDropdownName("glpi_users", $options["_users_id_observer"][0]);
