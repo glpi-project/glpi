@@ -6644,8 +6644,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $this->filterTimeline();
    }
 
-   public function getTimelineItemtypes(): array
-   {
+   public function getTimelineItemtypes(): array {
       /** @var CommonITILObject $obj_type */
       $obj_type = static::getType();
       $foreign_key = static::getForeignKeyField();
