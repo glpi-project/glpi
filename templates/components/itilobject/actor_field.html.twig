@@ -1,6 +1,22 @@
 {% set rand = random() %}
 
-{% set actors = item.getActorsForType(actortypeint) %}
+{% set actors = item.getActorsForType(actortypeint, params) %}
+{# TODO getDefaultActorRightSearch on create #}
+{# TODO LDAP import shortcut #}
+{# TODO userentity_oncreate form submit #}
+
+{% set required = false %}
+{% if itiltemplate.isMandatoryField("TODO") %}
+   {% set required = true %}
+{% endif %}
+
+{% set is_actor_hidden = false %}
+{% if itiltemplate.isMandatoryField("_users_id_" ~ actortype)
+   and itiltemplate.isMandatoryField("_groups_id_" ~ actortype)
+   and (actortype != "assign"
+      or itiltemplate.isMandatoryField("_suppliers_id_" ~ actortype)) %}
+   {% set is_actor_hidden = true %}
+{% endif %}
 
 <select class="form-select" multiple="true" id="actor_{{ rand }}">
 {% for actor in actors %}
@@ -8,7 +24,8 @@
            data-itemtype="{{ actor['itemtype'] }}" data-items-id="{{ actor['items_id'] }}"
            data-use-notification="{{ actor['use_notification'] }}"
            data-alternative-email="{{ actor['alternative_email'] }}"
-           data-text="{{ actor['text'] }}" data-title="{{ actor['title'] }}">
+           data-text="{{ actor['text'] }}" data-title="{{ actor['title'] }}"
+           {{ required ? 'required' : "" }}>
       {{ actor['title'] }}
    </option>
 {% endfor %}
@@ -16,8 +33,7 @@
 
 <script type="text/javascript">
 $(function() {
-   var actorytype   = '{{ actortype }}';
-   var mainitemtype = '{{ item.getType() }}';
+   var actorytype = '{{ actortype }}';
 
    // function to display an option in the list or the selected input
    var genericTemplate_{{ rand }} = function(option = {}, is_selection = false) {
@@ -151,6 +167,8 @@ $(function() {
                entity_restrict: {{ entities_id }},
                searchText: params.term,
                _idor_token: '{{ getNewIDORToken() }}',
+               itiltemplate_class: '{{ itiltemplate.getType() }}',
+               itiltemplates_id: {{ itiltemplate.fields['id'] ?? 0 }},
             };
          },
       }
