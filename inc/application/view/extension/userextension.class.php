@@ -32,7 +32,6 @@
 
 namespace Glpi\Application\View\Extension;
 
-use CommonITILObject;
 use CommonITILTask;
 use DbUtils;
 use Document_Item;
