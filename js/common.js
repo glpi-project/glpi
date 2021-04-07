@@ -1029,9 +1029,7 @@ var templateSelection = function (selection) {
 };
 
 var templateItilStatus = function(option) {
-   var status = option.id ?? 0;
-
-   console.log(option)
+   var status = option.id || 0;
 
    var classes = "";
    switch (parseInt(status)) {
