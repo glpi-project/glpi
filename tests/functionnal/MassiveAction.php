@@ -33,6 +33,7 @@
 namespace tests\units;
 
 use CommonDBTM;
+use Contract;
 use DbTestCase;
 use Notepad;
 use Problem;
@@ -58,8 +59,8 @@ class MassiveAction extends DbTestCase {
          ], [
             'itemtype'     => 'Ticket',
             'items_id'     => '_ticket01',
-            'allcount'     => 18,
-            'singlecount'  => 13
+            'allcount'     => 19,
+            'singlecount'  => 14
          ], [
             'itemtype'     => 'Profile',
             'items_id'     => 'Super-Admin',
@@ -479,6 +480,102 @@ class MassiveAction extends DbTestCase {
       // Execute action
       $this->processMassiveActionsForOneItemtype(
          "resolve_tickets",
+         $item,
+         [$item->fields['id']],
+         $input,
+         $expected_ok,
+         $expected_ko,
+         Ticket::class
+      );
+
+      // Reset rights
+      $_SESSION['glpiactiveprofile'][Ticket::$rightname] = $old_session;
+   }
+
+   protected function addContractProvider() {
+      $ticket = new Ticket();
+      $id = $ticket->add([
+         'name'    => 'test',
+         'content' => 'test',
+      ]);
+      $ticket->getFromDB($id);
+
+      $contract = new Contract();
+      $contract_id = $contract->add([
+         'name'        => 'test',
+         'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+      ]);
+
+      return [
+         [
+            // Expected failure: wrong itemtype
+            'item'        => getItemByTypeName("Computer", "_test_pc01"),
+            'input'       => [],
+            'has_right'   => false,
+            'should_work' => false,
+         ],
+         [
+            // Expected failure: missing rights
+            'item'        => $ticket,
+            'input'       => [],
+            'has_right'   => false,
+            'should_work' => false,
+         ],
+         [
+            // Expected failure: input is empty
+            'item'        => $ticket,
+            'input'       => [],
+            'has_right'   => true,
+            'should_work' => false,
+         ],
+         [
+            // Should work
+            'item'        => $ticket,
+            'input'       => [
+               'contracts_id' => $contract_id,
+            ],
+            'has_right'   => true,
+            'should_work' => true,
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider addContractProvider
+    */
+   public function testProcessMassiveActionsForOneItemtype_addContract(
+      CommonDBTM $item,
+      array $input,
+      bool $has_right,
+      bool $should_work
+   ) {
+      $this->login();
+
+      // Set up session rights
+      $old_session = $_SESSION['glpiactiveprofile'][Ticket::$rightname] ?? 0;
+      if ($has_right) {
+         $_SESSION['glpiactiveprofile'][Ticket::$rightname] = UPDATE;
+      } else {
+         $_SESSION['glpiactiveprofile'][Ticket::$rightname] = 0;
+      }
+
+      // Default expectation: can't run
+      $expected_ok = 0;
+      $expected_ko = 0;
+
+      // Check rights set up was successful
+      $this
+         ->boolean(boolval(Session::haveRight(Ticket::$rightname, UPDATE)))
+         ->isIdenticalTo($has_right);
+
+      // Update expectation: this item should be OK
+      if ($should_work) {
+         $expected_ok = 1;
+      }
+
+      // Execute action
+      $this->processMassiveActionsForOneItemtype(
+         "add_contract",
          $item,
          [$item->fields['id']],
          $input,

@@ -33,11 +33,14 @@
 namespace tests\units;
 
 use CommonITILValidation;
+use Contract;
+use ContractType;
 use DbTestCase;
 use Group_User;
 use RuleAction;
 use RuleCriteria;
 use TaskTemplate;
+use TicketContract;
 use TicketTask;
 use Toolbox;
 
@@ -985,5 +988,131 @@ class RuleTicket extends DbTestCase {
       // Check that the rule was NOT executed
       $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
       $this->integer($ticket->fields['impact'])->isNotEqualTo(1);
+   }
+
+   /**
+    * Test contract type criteria
+    */
+   public function testContractType() {
+      $this->login();
+
+      // Create contract type (we need its id to setup the rule)
+      $contract_type = new ContractType();
+      $contract_type_input = [
+         'name'        => 'test_contract',
+      ];
+      $contract_type_id = $contract_type->add($contract_type_input);
+      $this->checkInput($contract_type, $contract_type_id, $contract_type_input);
+
+      // Create rule
+      $ruleticket = new \RuleTicket();
+      $rulecrit   = new \RuleCriteria();
+      $ruleaction = new \RuleAction();
+
+      $ruletid = $ruleticket->add($ruletinput = [
+         'name'         => 'test contract type',
+         'match'        => 'AND',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleTicket',
+         'condition'    => \RuleTicket::ONADD | \RuleTicket::ONUPDATE,
+         'is_recursive' => 1,
+      ]);
+      $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+      // Create criteria to check if category code is R
+      $crit_id = $rulecrit->add($crit_input = [
+         'rules_id'  => $ruletid,
+         'criteria'  => '_contract_types',
+         'condition' => \Rule::PATTERN_IS,
+         'pattern'   => $contract_type_id,
+      ]);
+      $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+      // Create action to put impact to very low
+      $rule_value = 2;
+      $action_id = $ruleaction->add($action_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'assign',
+         'field'       => 'impact',
+         'value'       => $rule_value,
+      ]);
+      $this->checkInput($ruleaction, $action_id, $action_input);
+
+      // Create new group
+      $category = new \ITILCategory();
+      $category_id = $category->add($category_input = [
+         "name" => "group1",
+         "code" => "R"
+      ]);
+      $this->checkInput($category, $category_id, $category_input);
+
+      // Create a ticket
+      $ticket = new \Ticket();
+      $tickets_id = $ticket->add($ticket_input = [
+         'name'              => 'test category code',
+         'content'           => 'test category code',
+         'itilcategories_id' => $category_id
+      ]);
+      $this->checkInput($ticket, $tickets_id, $ticket_input);
+
+      // Check that the rule was not executed yet
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+      $this->integer($ticket->fields['impact'])->isNotEqualTo($rule_value);
+
+      // Update ticket
+      $update_1_res = $ticket->update([
+         'id' => $ticket->fields['id'],
+         'content' => 'content update 1',
+      ]);
+      $this->boolean($update_1_res)->isTrue();
+
+      // Check that rule was not executed yet
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+      $this->integer($ticket->fields['impact'])->isNotEqualTo($rule_value);
+
+      // Create contract
+      $contract = new Contract();
+      $contract_input = [
+         'name'             => 'test_contract',
+         'contracttypes_id' => $contract_type_id,
+         'entities_id'      => getItemByTypeName('Entity', '_test_root_entity', true),
+      ];
+      $contract_id = $contract->add($contract_input);
+      $this->checkInput($contract, $contract_id, $contract_input);
+
+      // Link contract to ticket
+      $ticketcontract = new TicketContract();
+      $ticketcontract_input = [
+         'contracts_id' => $contract_id,
+         'tickets_id'   => $ticket->fields['id'],
+      ];
+      $ticketcontract_id = $ticketcontract->add($ticketcontract_input);
+      $this->checkInput($ticketcontract, $ticketcontract_id, $ticketcontract_input);
+
+      // Update ticket a second time
+      $update_2_res = $ticket->update([
+         'id' => $ticket->fields['id'],
+         'content' => 'content update 2',
+      ]);
+      $this->boolean($update_2_res)->isTrue();
+
+      // Check that rule was executed correctly
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+      $this->integer($ticket->fields['impact'])->isEqualTo($rule_value);
+
+      // Create a second ticket with the contract linked
+      $ticket_2 = new \Ticket();
+      $tickets_id_2 = $ticket->add($ticket_input_2 = [
+         'name'              => 'test category code',
+         'content'           => 'test category code',
+         'itilcategories_id' => $category_id,
+         '_contracts_id'     => $contract_id,
+      ]);
+      unset($ticket_input_2['_contracts_id']); // Remove temporary field as the "checkInput" method will not be able to find it
+      $this->checkInput($ticket_2, $tickets_id_2, $ticket_input_2);
+
+      // Check that the rule was executed correctly
+      $this->boolean($ticket_2->getFromDB($tickets_id_2))->isTrue();
+      $this->integer($ticket_2->fields['impact'])->isEqualTo($rule_value);
    }
 }

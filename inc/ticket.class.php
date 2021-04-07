@@ -829,6 +829,7 @@ class Ticket extends CommonITILObject {
       $this->addStandardTab('ProjectTask_Ticket', $ong, $options);
       $this->addStandardTab('Problem_Ticket', $ong, $options);
       $this->addStandardTab('Change_Ticket', $ong, $options);
+      $this->addStandardTab(TicketContract::class, $ong, $options);
 
       if (Entity::getAnonymizeConfig($this->getEntityID()) == Entity::ANONYMIZE_DISABLED
          || Session::getCurrentInterface() == 'central'
@@ -986,6 +987,24 @@ class Ticket extends CommonITILObject {
          $input['itilcategories_id_code'] = ITILCategory::getById($cat_id)->fields['code'];
       }
 
+      // Set _contract_type for rules
+      $input['_contract_types'] = [];
+      $contracts_link = TicketContract::getItemsForItem($this);
+      foreach ($contracts_link as $contract_link) {
+         // Load linked contract
+         $contract = Contract::getById($contract_link['contracts_id']);
+         if (!$contract) {
+            continue;
+         }
+
+         // Check if contract has a linked type
+         $contract_type_id = $contract->fields[ContractType::getForeignKeyField()];
+         if (!$contract_type_id) {
+            continue;
+         }
+
+         $input['_contract_types'][$contract_type_id] = $contract_type_id;
+      }
       // Process Business Rules
       $this->fillInputForBusinessRules($input);
 
@@ -1630,6 +1649,16 @@ class Ticket extends CommonITILObject {
          $input['itilcategories_id_code'] = ITILCategory::getById($cat_id)->fields['code'];
       }
 
+      // Set _contract_type for rules
+      $contracts_id = $this->input['_contracts_id'] ?? 0;
+      if ($contracts_id) {
+         $contract = Contract::getById($contracts_id);
+
+         if ($contract && $contract_type_id = $contract->fields[ContractType::getForeignKeyField()]) {
+            $input['_contract_types'][$contract_type_id] = $contract_type_id;
+         }
+      }
+
       // Process Business Rules
       $this->fillInputForBusinessRules($input);
 
@@ -1854,6 +1883,16 @@ class Ticket extends CommonITILObject {
          ]);
          Event::log($this->getID(), "ticket", 4, "tracking",
               sprintf(__('%s promotes a followup from ticket %s'), $_SESSION["glpiname"], $fup->fields['items_id']));
+      }
+
+      // Add linked contract
+      $contracts_id = $this->input['_contracts_id'] ?? 0;
+      if ($contracts_id) {
+         $ticketcontract = new TicketContract();
+         $ticketcontract->add([
+            'contracts_id' => $this->input['_contracts_id'],
+            'tickets_id'   => $this->getID(),
+         ]);
       }
 
       $this->handleItemsIdInput();
@@ -2467,6 +2506,9 @@ class Ticket extends CommonITILObject {
             $actions['Ticket_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
                = "<i class='ma-icon fas fa-link'></i>".
                  _x('button', 'Link tickets');
+            $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_contract']
+               = "<i class='ma-icon fas fa-file-signature'></i>".
+                 _x('button', 'Add contract');
 
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
          }
@@ -2621,6 +2663,16 @@ JAVASCRIPT;
                'name' => 'resolve'
             ]);
             return true;
+
+         case 'add_contract':
+            Contract::dropdown([
+               'name' => 'contracts_id'
+            ]);
+            echo '&nbsp;';
+            echo Html::submit(__('Add'), [
+               'name' => 'add_contract'
+            ]);
+            return true;
       }
       return parent::showMassiveActionsSubForm($ma);
    }
@@ -2764,6 +2816,56 @@ JAVASCRIPT;
 
                // Insert new solution
                $res = $em->add($input);
+
+               // Check if creation was successful
+               if ($res) {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+               }
+            }
+            return;
+
+         case 'add_contract':
+            // Skip if wrong itemtype
+            if ($item::getType() !== self::getType()) {
+               $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
+               return;
+            }
+
+            // Skip if missing update rights
+            if (!self::canUpdate()) {
+               $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+               return;
+            }
+
+            // Check input
+            $input = $ma->getInput();
+            $contracts_id = $input['contracts_id'] ?? 0;
+            if (!$contracts_id) {
+               $ma->addMessage(__("No contract specified"));
+               return;
+            }
+
+            $em = new TicketContract();
+            foreach ($ids as $id) {
+               $links = $em->find([
+                  'contracts_id' => $contracts_id,
+                  'tickets_id'   => $id,
+               ]);
+
+               // Link already exist, skip
+               if (count($links)) {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                  continue;
+               }
+
+               // Add link
+               $res = $em->add([
+                  'contracts_id' => $contracts_id,
+                  'tickets_id'   => $id,
+               ]);
 
                // Check if creation was successful
                if ($res) {
@@ -3335,6 +3437,55 @@ JAVASCRIPT;
       if (Session::haveRight('problem', READ)) {
          $tab = array_merge($tab, Problem::rawSearchOptionsToAdd());
       }
+
+      $tab[] = [
+         'id'                 => 'tools',
+         'name'               => __('Tools')
+      ];
+
+      $tab[] = [
+         'id'                 => '193',
+         'table'              => Contract::getTable(),
+         'field'              => 'name',
+         'linkfield'          => 'contracts_id',
+         'name'               => Contract::getTypeName(1),
+         'massiveaction'      => false,
+         'searchtype'         => 'equals',
+         'datatype'           => 'dropdown',
+         'usehaving'          => true,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => TicketContract::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child',
+                  'linkfield'          => 'tickets_id',
+               ]
+            ]
+         ],
+         'forcegroupby'       => true
+      ];
+
+      $tab[] = [
+         'id'                 => '194',
+         'table'              => ContractType::getTable(),
+         'field'              => 'name',
+         'linkfield'          => 'contracts_id',
+         'name'               => ContractType::getTypeName(1),
+         'massiveaction'      => false,
+         'searchtype'         => 'equals',
+         'datatype'           => 'dropdown',
+         'usehaving'          => true,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => TicketContract::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child',
+                  'linkfield'          => 'tickets_id',
+               ]
+            ]
+         ],
+         'forcegroupby'       => true
+      ];
 
       // Filter search fields for helpdesk
       if (!Session::isCron() // no filter for cron
@@ -4922,6 +5073,24 @@ JAVASCRIPT;
          echo "<td></td>";
       }
       echo "</tr>";
+
+      if ($this->isNewItem() && !$tt->isHiddenField('_contracts_id')) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<th>".$tt->getBeginHiddenFieldText('_contracts_id');
+         printf(__('%1$s%2$s'), Contract::getTypeName(1), $tt->getMandatoryMark('_contracts_id'));
+         echo $tt->getEndHiddenFieldText('_contracts_id')."</th>";
+         echo "<td>";
+         echo $tt->getBeginHiddenFieldValue('_contracts_id');
+         Contract::dropdown([
+            'value'  => $tt->predefined['_contracts_id'] ?? 0,
+            'entity' => $this->fields['entities_id'],
+            'name'   => '_contracts_id',
+         ]);
+
+         echo $tt->getEndHiddenFieldValue('_contracts_id', $this);
+         echo "</td>";
+         echo "</tr>";
+      }
 
       if (!$ID
           && Session::haveRight('followup', ITILFollowup::ADDALLTICKET)) {

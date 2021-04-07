@@ -171,4 +171,5 @@ abstract class CommonItilObject_Item extends CommonDBRelation
       }
       return $rand;
    }
+
 }

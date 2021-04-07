@@ -103,6 +103,7 @@ class Contract extends CommonDBTM {
       $this->addStandardTab('ManualLink', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
+      $this->addStandardTab(TicketContract::class, $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -1763,6 +1764,86 @@ class Contract extends CommonDBTM {
       }
    }
 
+   /**
+    * @param integer $output_type Output type
+    * @param string  $mass_id     id of the form to check all
+    */
+   public static function commonListHeader(
+      $output_type = Search::HTML_OUTPUT,
+      $mass_id = '',
+      array $params = []
+   ) {
+      echo Search::showNewLine($output_type);
+      $header_num = 1;
+
+      $items = [];
+      $items[(empty($mass_id) ? '&nbsp' : Html::getCheckAllAsCheckbox($mass_id))] = '';
+      $items[__('Name')] = "name";
+      $items[_n('Type', 'Types', 1)] = ContractType::getForeignKeyField();
+      $items[_x('phone', 'Number')] = "num";
+
+      foreach (array_keys($items) as $key) {
+         $link   = "";
+         echo Search::showHeaderItem($output_type, $key, $header_num, $link);
+      }
+      // End Line for column headers
+      echo Search::showEndLine($output_type);
+   }
+
+   /**
+    * Display a line for an object
+    *
+    * @param $id                 Integer  ID of the object
+    * @param $options            array of options
+    *      output_type            : Default output type (see Search class / default Search::HTML_OUTPUT)
+    *      row_num                : row num used for display
+    *      type_for_massiveaction : itemtype for massive action
+    *      id_for_massaction      : default 0 means no massive action
+    *      followups              : show followup columns
+    */
+   public static function showShort($id, $options = []) {
+      $p = [
+         'output_type'            => Search::HTML_OUTPUT,
+         'row_num'                => 0,
+         'type_for_massiveaction' => 0,
+         'id_for_massiveaction'   => 0,
+      ];
+
+      if (count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+
+      $item = new self();
+      $align = "class='left'";
+
+      $candelete = self::canDelete();
+      $canupdate = self::canUpdate();
+
+      if ($item->getFromDB($id)) {
+         $item_num = 1;
+         echo Search::showNewLine($p['output_type'], $p['row_num']%2, $item->isDeleted());
+
+         $check_col = '';
+         if (($candelete || $canupdate) && ($p['output_type'] == Search::HTML_OUTPUT) && $p['id_for_massiveaction']) {
+            $check_col = Html::getMassiveActionCheckBox($p['type_for_massiveaction'], $p['id_for_massiveaction']);
+         }
+         echo Search::showItem($p['output_type'], $check_col, $item_num, $p['row_num'], $align);
+
+         $name = $item->getLink();
+         echo Search::showItem($p['output_type'], $name, $item_num, $p['row_num'], $align);
+
+         $type =  Dropdown::getDropdownName(ContractType::getTable(), $item->fields[ContractType::getForeignKeyField()]);
+         echo Search::showItem($p['output_type'], $type, $item_num, $p['row_num'], $align);
+
+         $num = $item->fields['num'];
+         echo Search::showItem($p['output_type'], $num, $item_num, $p['row_num'], $align);
+      } else {
+         echo "<tr class='tab_bg_2'>";
+         echo "<td colspan='6' ><i>".__('No item.')."</i></td></tr>";
+      }
+   }
 
    static function getIcon() {
       return "fas fa-file-signature";
