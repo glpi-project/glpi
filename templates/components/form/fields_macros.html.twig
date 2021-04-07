@@ -211,7 +211,7 @@
       {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
    {% endif %}
    {% if options.fields_template.isMandatoryField(name) %}
-      {% set options = {'specific_tags': {'required': true} }|merge(options) %}
+      {% set options = {'specific_tags': {'required': true}}|merge(options) %}
    {% endif %}
 
    {% set field %}
@@ -277,7 +277,7 @@
 {% macro dropdownField(itemtype, name, value, label, options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
    {% if options.fields_template.isMandatoryField(name) %}
-      {% set options = {'specific_tags': {'required': true} }|merge(options) %}
+      {% set options = {'specific_tags': {'required': true}}|merge(options) %}
    {% endif %}
 
    {% if options.disabled %}

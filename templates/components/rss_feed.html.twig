@@ -51,10 +51,10 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
             <td>
                {% set rand = random() %}
                {% set content = content|escape %}
-               {% set preview = content|length > 1000 ? content|slice(0, 1000)~'&nbsp;(...)' : content %}
+               {% set preview = content|length > 1000 ? content|slice(0, 1000) ~ '&nbsp;(...)' : content %}
                <span id="rssitem{{ rand }}" class="pointer">{{ preview }}</span>
                {{ Html__showToolTip(content, {
-                  'applyto': 'rssitem'~rand,
+                  'applyto': 'rssitem' ~ rand,
                   'display': true
                }) }}
             </td>
