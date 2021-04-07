@@ -57,7 +57,7 @@
                      {% if candedit %}
                         {% if can_read_kb %}
                            {% set search_solution_button %}
-                              <a href="{{ path("/front/knowbaseitem.php?item_itemtype=" ~  item.getType() ~ "&item_items_id=" ~ item.getID() ~ "&forcetab=Knowbase$1") }}"
+                              <a href="{{ path("/front/knowbaseitem.php?item_itemtype=" ~ item.getType() ~ "&item_items_id=" ~ item.getID() ~ "&forcetab=Knowbase$1") }}"
                                  class="btn btn-secondary overflow-hidden text-nowrap" type="submit"
                                  title="{{ __('Search a solution') }}">
                                  <i class="fas fa-search"></i>

@@ -11,10 +11,7 @@
 {% endif %}
 
 {% set is_actor_hidden = false %}
-{% if itiltemplate.isMandatoryField("_users_id_" ~ actortype)
-   and itiltemplate.isMandatoryField("_groups_id_" ~ actortype)
-   and (actortype != "assign"
-      or itiltemplate.isMandatoryField("_suppliers_id_" ~ actortype)) %}
+{% if itiltemplate.isMandatoryField("_users_id_" ~ actortype) and itiltemplate.isMandatoryField("_groups_id_" ~ actortype) and (actortype != "assign" or itiltemplate.isMandatoryField("_suppliers_id_" ~ actortype)) %}
    {% set is_actor_hidden = true %}
 {% endif %}
 
