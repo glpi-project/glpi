@@ -15,7 +15,7 @@
                <ul class="dropdown-menu">
                   {% for action, timeline_itemtype in timeline_itemtypes %}
                      {% if loop.index0 > 0 %}
-                        <li><a class="dropdown-item action-{{ action}} answer-action" href="#"
+                        <li><a class="dropdown-item action-{{ action }} answer-action" href="#"
                            data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
                            <i class='{{ timeline_itemtype.icon }}'></i>
                            <span>{{ timeline_itemtype.label }}</span>
