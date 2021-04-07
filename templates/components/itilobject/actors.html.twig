@@ -4,8 +4,7 @@
 
 {# TODO check allow_email params #}
 
-{% if not itiltemplate.isHiddenField("_users_id_requester")
-   or not itiltemplate.isHiddenField("_groups_id_requester") %}
+{% if not itiltemplate.isHiddenField("_users_id_requester") or not itiltemplate.isHiddenField("_groups_id_requester") %}
    {% set requester_field %}
       {% include "components/itilobject/actor_field.html.twig" with {
          'item': item,
@@ -21,14 +20,12 @@
       requester_field,
       __("Requester"),
       actor_options|merge({
-         required: itiltemplate.isMandatoryField("_users_id_requester")
-                or itiltemplate.isMandatoryField("_groups_id_requester")
+         required: itiltemplate.isMandatoryField("_users_id_requester") or itiltemplate.isMandatoryField("_groups_id_requester")
       })
    ) }}
 {% endif %}
 
-{% if not itiltemplate.isHiddenField("_users_id_observer")
-   or not itiltemplate.isHiddenField("_groups_id_observer") %}
+{% if not itiltemplate.isHiddenField("_users_id_observer") or not itiltemplate.isHiddenField("_groups_id_observer") %}
    {% set observer_field %}
       {% include "components/itilobject/actor_field.html.twig" with {
          'item': item,
@@ -44,15 +41,12 @@
       observer_field,
       __("Observer"),
       actor_options|merge({
-         required: itiltemplate.isMandatoryField("_users_id_observer")
-                or itiltemplate.isMandatoryField("_groups_id_observer")
+         required: itiltemplate.isMandatoryField("_users_id_observer") or itiltemplate.isMandatoryField("_groups_id_observer")
       })
    ) }}
 {% endif %}
 
-{% if not itiltemplate.isHiddenField("_users_id_assign")
-   or not itiltemplate.isHiddenField("_groups_id_assign")
-   or not itiltemplate.isHiddenField("_supplier_id_assign") %}
+{% if not itiltemplate.isHiddenField("_users_id_assign") or not itiltemplate.isHiddenField("_groups_id_assign") or not itiltemplate.isHiddenField("_supplier_id_assign") %}
    {% set assign_field %}
       {% include "components/itilobject/actor_field.html.twig" with {
          'item': item,
@@ -68,9 +62,7 @@
       assign_field,
       __("Assigned to"),
       actor_options|merge({
-         required: itiltemplate.isMandatoryField("_users_id_assign")
-                or itiltemplate.isMandatoryField("_groups_id_assign")
-                or itiltemplate.isMandatoryField("_supplier_id_assign")
+         required: itiltemplate.isMandatoryField("_users_id_assign") or itiltemplate.isMandatoryField("_groups_id_assign") or itiltemplate.isMandatoryField("_supplier_id_assign")
       })
    ) }}
 {% endif %}
