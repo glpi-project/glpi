@@ -4569,8 +4569,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->checkComputer1Softwares($computer);
       $this->checkComputer1Batteries($computer);
 
-      /*
-       * FIXME: currently, software import does not permit partial inventory.
       $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1_partial_softs.json');
       $CFG_GLPI["is_contact_autoupdate"] = 0;
       $inventory = new \Glpi\Inventory\Inventory($json);
@@ -4588,12 +4586,12 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $versions = [
          '2.2.8-1.fc31',
          '0.20.1-3.fc31',
-         '3.32.1-1.fc31',
+         '3.33.0-1.fc31',
          '3.34.1-1.fc31',
          '3.12.2-18.fc31',
          '1.32-2.fc31'
       ];
-      $this->checkComputer1Softwares($computer, $versions);*/
+      $this->checkComputer1Softwares($computer, $versions);
 
       $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1_partial_batteries.json');
       $CFG_GLPI["is_contact_autoupdate"] = 0;
