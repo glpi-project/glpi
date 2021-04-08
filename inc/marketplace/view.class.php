@@ -665,7 +665,7 @@ HTML;
                                 title='".__s("Download")."'>
                <i class='fas fa-cloud-download-alt'></i>
             </button>";
-         } else if ($can_be_updated) {
+         } else if ($can_be_updated && GLPI_ALLOW_UPDATE_MARKETPLACE) {
             $update_title = sprintf(
                __s("A new version (%s) is available, update ?", 'marketplace'),
                $web_update_version
