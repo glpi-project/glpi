@@ -940,6 +940,7 @@ JAVASCRIPT;
                          'enable_richtext'   => true,
                          'cols'              => $cols,
                          'rows'              => $rows]);
+         Html::activateUserMentions($content_id);
 
          echo Html::hidden('itemtype', ['value' => $item->getType()]);
          echo Html::hidden('items_id', ['value' => $item->getID()]);
