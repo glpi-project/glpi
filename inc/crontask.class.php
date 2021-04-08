@@ -1768,13 +1768,29 @@ class CronTask extends CommonDBTM{
       // max time to keep the file session
       $maxlifetime = HOUR_TIMESTAMP;
       $nb          = 0;
-      foreach (glob(GLPI_TMP_DIR."/*") as $filename) {
+
+      $dir = new RecursiveDirectoryIterator(GLPI_TMP_DIR, RecursiveDirectoryIterator::SKIP_DOTS);
+      $files = new RecursiveIteratorIterator($dir,
+                   RecursiveIteratorIterator::CHILD_FIRST);
+
+      //first step unlike only file if needed
+      foreach ($files as $filename) {
          if (basename($filename) == "remove.txt" && is_dir(GLPI_ROOT.'/.git')) {
             continue;
          }
          if (is_file($filename) && is_writable($filename)
              && (filemtime($filename) + $maxlifetime) < time()) {
             if (@unlink($filename)) {
+               $nb++;
+            }
+         }
+      }
+
+      //second step drop director if empty
+      foreach ($files as $filename) {
+         if (is_dir($filename) && is_readable($filename)
+            && count(scandir($filename)) == 2 /* .. and . */ ) {
+            if (@rmdir($filename)) {
                $nb++;
             }
          }
