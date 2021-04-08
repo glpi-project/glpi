@@ -2839,6 +2839,41 @@ abstract class CommonITILObject extends CommonDBTM {
       );
    }
 
+   /**
+    * Check if an itil object has a solved status
+    *
+    * @since 10.0
+    *
+    * @param bool $include_closed do we want ticket with closed status also ?
+    *
+    * @return bool
+    */
+   function isSolved(bool $include_closed = false) {
+      $status = $this->getSolvedStatusArray();
+      if ($include_closed) {
+         $status = array_merge($status, $this->getClosedStatusArray());
+      }
+
+      return in_array(
+         $this->fields['status'],
+         $status
+      );
+   }
+
+   /**
+    * Check if an itil object has a closed status
+    *
+    * @since 10.0
+    *
+    * @return bool
+    */
+   function isClosed() {
+      return in_array(
+         $this->fields['status'],
+         $this->getClosedStatusArray()
+      );
+   }
+
 
    /**
     * Get the ITIL object status allowed for a current status
