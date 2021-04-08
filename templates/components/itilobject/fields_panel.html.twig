@@ -15,6 +15,31 @@
       </h2>
       <div id="ticket-main" class="accordion-collapse collapse show" aria-labelledby="heading-main-ticket">
          <div class="accordion-body">
+            {{ fields.datetimeField(
+               'date',
+               item.fields["date"],
+               __('Opening date'),
+               field_options
+            ) }}
+
+            {% if item.isSolved(true) %}
+               {{ fields.datetimeField(
+               'solvedate',
+               item.fields["solvedate"],
+               __('Resolution date'),
+               field_options
+            ) }}
+            {% endif %}
+
+            {% if item.isClosed() %}
+               {{ fields.datetimeField(
+               'closedate',
+               item.fields["closedate"],
+               __('Close date'),
+               field_options
+            ) }}
+            {% endif %}
+
             {% set type_params = {
                'value': item.fields["type"],
                'width': '100%',
@@ -111,32 +136,7 @@
       </h2>
       <div id="service-levels" class="accordion-collapse collapse" aria-labelledby="service-levels-heading">
          <div class="accordion-body">
-            {{ fields.datetimeField(
-               'time_to_own',
-               item.fields["time_to_own"],
-               __("TTO"),
-               field_options
-            ) }}
-            {{ fields.datetimeField(
-               'time_to_resolve',
-               item.fields["time_to_resolve"],
-               __("TTR"),
-               field_options
-            ) }}
-
-            {# TODO display fields only when OLA exists, hide them otherwise #}
-            {# {{ fields.datetimeField(
-               'internal_time_to_own',
-               item.fields["internal_time_to_own"],
-               __("internal TTO"),
-               field_options
-            ) }}
-            {{ fields.datetimeField(
-               'internal_time_to_resolve',
-               item.fields["internal_time_to_resolve"],
-               __("internal TTR"),
-               field_options
-            ) }} #}
+            {% include("components/itilobject/service_levels.html.twig") %}
          </div>
       </div>
    </div>

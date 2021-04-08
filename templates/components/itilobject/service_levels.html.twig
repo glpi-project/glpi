@@ -1,0 +1,28 @@
+{% import "components/form/fields_macros.html.twig" as fields %}
+
+{{ fields.datetimeField(
+   'time_to_own',
+   item.fields["time_to_own"],
+   __("TTO"),
+   field_options
+) }}
+{{ fields.datetimeField(
+   'time_to_resolve',
+   item.fields["time_to_resolve"],
+   __("TTR"),
+   field_options
+) }}
+
+{# TODO display fields only when OLA exists, hide them otherwise #}
+{{ fields.datetimeField(
+   'internal_time_to_own',
+   item.fields["internal_time_to_own"],
+   __("internal TTO"),
+   field_options
+) }}
+{{ fields.datetimeField(
+   'internal_time_to_resolve',
+   item.fields["internal_time_to_resolve"],
+   __("internal TTR"),
+   field_options
+) }}
