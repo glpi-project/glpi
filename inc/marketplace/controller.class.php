@@ -195,28 +195,40 @@ class Controller extends CommonGLPI {
     * @return bool
     */
    public function canBeOverwritten(): bool {
-      foreach (PLUGINS_DIRECTORIES as $base_dir) {
-         $is_in_marketplace_dir = realpath($base_dir) !== false
-            && realpath($base_dir) === realpath(GLPI_MARKETPLACE_DIR);
+      $found_in_marketplace_dir  = file_exists(GLPI_MARKETPLACE_DIR . '/' . $this->plugin_key . '/setup.php');
 
-         $plugin_dir = $base_dir . '/' . $this->plugin_key;
-         $found_in_dir = file_exists($plugin_dir . '/setup.php');
-
-         if ($found_in_dir && !$is_in_marketplace_dir) {
-            // Plugin will not be loaded from marketplace directory as
-            // it has been found in an higher priority directory.
-            // So it cannot be overrided.
-            return false;
-         } else if ($found_in_dir && $is_in_marketplace_dir) {
-            return is_writable($plugin_dir);
-         }
-
-         if ($is_in_marketplace_dir) {
-            // Current directory is GLPI_MARKETPLACE_DIR, meaning that following
-            // checked directories will have a lower priority than GLPI_MARKETPLACE_DIR
-            // in autoload process.
-            // No need to check them.
+      // Compute marketplace dir priority
+      $marketplace_priority = null;
+      foreach (PLUGINS_DIRECTORIES as $position => $base_dir) {
+         if (realpath($base_dir) !== false && realpath($base_dir) === realpath(GLPI_MARKETPLACE_DIR)) {
+            $marketplace_priority = -$position;
             break;
+         }
+      }
+
+      $found_outside_marketplace = false;
+      $found_dir_priority        = null;
+      foreach (PLUGINS_DIRECTORIES as $position => $base_dir) {
+         if (file_exists($base_dir . '/' . $this->plugin_key . '/setup.php')) {
+            $found_outside_marketplace = true;
+            $found_dir_priority = -$position;
+            break; // Do not search in other directories with lower priorities
+         }
+      }
+
+      if ($found_outside_marketplace) {
+         if ($found_dir_priority > $marketplace_priority) {
+            // Plugin has been found outside marketplace and marketplace priority is lower than its parent directory
+            // -> disallow plugin update from marketplace as it cannot be loaded from there.
+            return false;
+         } else if ($found_in_marketplace_dir) {
+            // Plugin has been found on marketplace and marketplace priority is higher than other location
+            // -> allow plugin update from marketplace as it is already loaded from there.
+            return is_writable(GLPI_MARKETPLACE_DIR . '/' . $this->plugin_key);
+         } else {
+            // Plugin has been found outside marketplace and does not exist in marketplace
+            // -> allow plugin update unless GLPI_MARKETPLACE_ALLOW_OVERRIDE is false.
+            return GLPI_MARKETPLACE_ALLOW_OVERRIDE && self::hasWriteAccess();
          }
       }
 

@@ -88,6 +88,8 @@ include_once (GLPI_ROOT . "/inc/autoload.function.php");
       'GLPI_MARKETPLACE_PLUGINS_API_URI'  => '{GLPI_NETWORK_SERVICES}/api/glpi-plugins/',
       // TODO set false before final release of 9.5.0 and remove this comment
       'GLPI_MARKETPLACE_PRERELEASES'      => false, // display pre-releases of plugins in marketplace
+      'GLPI_MARKETPLACE_ALLOW_OVERRIDE'   => true, // allow marketplace to override a plugin found outside GLPI_MARKETPLACE_DIR
+      'GLPI_MARKETPLACE_MANUAL_DOWNLOADS' => true, // propose manual download of plugins that cannot be overrided by marketplace
       'GLPI_USER_AGENT_EXTRA_COMMENTS'    => '', // Extra comment to add to GLPI User-Agent
 
       // Other constants
