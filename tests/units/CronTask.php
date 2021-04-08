@@ -39,7 +39,7 @@ use \RecursiveIteratorIterator;
 
 class Crontask extends \GLPITestCase {
 
-   public function testCronTemp(){
+   public function testCronTemp() {
 
       //create some files
       $Data = [
@@ -63,7 +63,7 @@ class Crontask extends \GLPITestCase {
             'name'    => GLPI_TMP_DIR.'/auto_orient/file4.txt',
             'content' => 'content4',
          ]
-     ];
+      ];
 
       //create auto_orient directory
       if (!file_exists(GLPI_TMP_DIR.'/auto_orient/')) {
@@ -76,7 +76,7 @@ class Crontask extends \GLPITestCase {
          fclose($file);
 
          //change filemtime (except recent_file.txt)
-         if($Row['name'] != GLPI_TMP_DIR.'/recent_file.txt') {
+         if ($Row['name'] != GLPI_TMP_DIR.'/recent_file.txt') {
             touch($Row['name'], time() - (HOUR_TIMESTAMP * 2));
          }
 

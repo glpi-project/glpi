@@ -1789,7 +1789,7 @@ class CronTask extends CommonDBTM{
       //second step drop director if empty
       foreach ($files as $filename) {
          if (is_dir($filename) && is_readable($filename)
-            && count(scandir($filename)) == 2 /* .. and . */ ) {
+            && count(scandir($filename)) == 2) {
             if (@rmdir($filename)) {
                $nb++;
             }
