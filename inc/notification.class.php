@@ -466,7 +466,7 @@ class Notification extends CommonDBTM {
             $notification_notificationtemplate->showFormMassiveAction($ma);
             return true;
          case 'remove_all_template':
-            //no subform
+            echo Html::submit(__('Delete'), ['name' => 'massiveaction']);
             return true;
       }
       return false;
