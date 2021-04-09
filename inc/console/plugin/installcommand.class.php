@@ -117,12 +117,13 @@ class InstallCommand extends AbstractPluginCommand {
             OutputInterface::VERBOSITY_NORMAL
          );
 
+         $plugin = new Plugin();
+         $plugin->checkPluginState($directory); // Be sure that plugin informations are up to date in DB
+
          if (!$this->canRunInstallMethod($directory, $force)) {
             continue;
          }
 
-         $plugin = new Plugin();
-         $plugin->checkPluginState($directory); // Be sure that plugin informations are up to date in DB
          if (!$plugin->getFromDBByCrit(['directory' => $directory])) {
             $this->output->writeln(
                '<error>' . sprintf(__('Unable to load plugin "%s" informations.'), $directory) . '</error>',
