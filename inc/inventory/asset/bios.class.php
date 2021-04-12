@@ -73,6 +73,14 @@ class Bios extends Device
       return $this->data;
    }
 
+   public function handle() {
+      if (isset($this->main_item) && $this->main_item->isPartial()) {
+         return;
+      }
+
+      parent::handle();
+   }
+
    public function checkConf(Conf $conf): bool {
       return true;
    }

@@ -568,6 +568,7 @@ class Inventory
             $asset = new $assettype($this->item, $value);
             $asset->withHistory($this->mainasset->withHistory());
             if ($asset->checkConf($this->conf)) {
+               $asset->setMainAsset($this->mainasset);
                $asset->setAgent($this->getAgent());
                $asset->setExtraData($this->data);
                $asset->setEntityID($this->mainasset->getEntityID());

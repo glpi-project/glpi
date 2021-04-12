@@ -58,6 +58,8 @@ abstract class InventoryAsset
    protected $links_handled = false;
    /** @var boolean */
    protected $with_history = true;
+   /** @var InventoryAsset */
+   protected $main_asset;
 
    /**
     * Constructor
@@ -282,7 +284,7 @@ abstract class InventoryAsset
    /**
     * Set item and itemtype
     *
-    * @param CommonDBTM $item $item Item instance
+    * @param CommonDBTM $item Item instance
     *
     * @return InventoryAsset
     */
@@ -290,5 +292,26 @@ abstract class InventoryAsset
       $this->item = $item;
       $this->itemtype = $item->getType();
       return $this;
+   }
+
+   /**
+    * Set inventory item
+    *
+    * @param InventoryAsset $mainitem Main inventory asset instance
+    *
+    * @return InventoryAsset
+    */
+   public function setMainAsset(InventoryAsset $mainasset): self {
+       $this->main_asset = $mainasset;
+       return $this;
+   }
+
+   /**
+    * Get main inventory asset
+    *
+    * @return InventoryAsset
+    */
+   public function getMainAsset(): InventoryAsset {
+      return $this->main_asset;
    }
 }

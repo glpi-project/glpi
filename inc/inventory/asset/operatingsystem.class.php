@@ -107,9 +107,12 @@ class OperatingSystem extends InventoryAsset
    }
 
    public function handle() {
+      global $DB;
+
       $ios = new Item_OperatingSystem();
 
       $val = $this->data[0];
+
       $ios->getFromDBByCrit([
          'itemtype'  => $this->item->getType(),
          'items_id'  => $this->item->fields['id']
@@ -148,6 +151,23 @@ class OperatingSystem extends InventoryAsset
 
       $val->operatingsystems_id = $ios->fields['id'];;
       $this->operatingsystems_id = $val->operatingsystems_id;
+
+      //cleanup
+      if (!$this->main_asset || !$this->main_asset->isPartial()) {
+         $iterator = $DB->request([
+            'FROM' => $ios->getTable(),
+            'WHERE' => [
+               'itemtype'  => $this->item->getType(),
+               'items_id'  => $this->item->fields['id'],
+               'NOT'       => ['id' => $ios->fields['id']]
+            ]
+         ]);
+
+         while ($row = $iterator->next()) {
+            $ios->delete($row['id'], true);
+         }
+      }
+
    }
 
    public function checkConf(Conf $conf): bool {

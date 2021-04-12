@@ -1,0 +1,58 @@
+{
+    "content": {
+        "batteries": [
+            {
+                "capacity": 57570,
+                "real_capacity": 40570,
+                "chemistry": "lithium-ion",
+                "date": "2019-07-06",
+                "manufacturer": "SMP",
+                "name": "DELL RWT1R43",
+                "serial": "34605",
+                "voltage": 8465,
+                "designation": "DELL RWT1R43",
+                "manufacturers_id": 23,
+                "manufacturing_date": "2019-07-06",
+                "devicebatterytypes_id": 2
+            }
+        ],
+        "bios": {
+            "bdate": "2016-02-06",
+            "bmanufacturer": "Dell Inc.",
+            "bversion": "1.4.3",
+            "mmanufacturer": "Dell Inc.",
+            "mmodel": "07TYC2",
+            "msn": "\/640HP72\/CE129536461378\/",
+            "skunumber": "0704",
+            "smanufacturer": "Dell Inc.",
+            "smodel": "XPS 13 9350",
+            "ssn": "640HP72"
+        },
+        "hardware": {
+            "chassis_type": "Laptop",
+            "checksum": "513",
+            "datelastloggeduser": "Fri Jun 12 14:15",
+            "defaultgateway": "192.168.1.1",
+            "dns": "192.168.1.1",
+            "etime": 4,
+            "ipaddr": "192.168.1.142\/192.168.1.118\/192.168.122.1",
+            "lastloggeduser": "root",
+            "memory": 7800,
+            "name": "glpixps",
+            "oscomments": "#1 SMP Fri May 29 14:59:49 UTC 2020",
+            "osname": "Fedora 31 (Workstation Edition)",
+            "osversion": "5.6.15-200.fc31.x86_64",
+            "processorn": "1",
+            "processors": "2300",
+            "processort": "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",
+            "swap": 7951,
+            "userid": "root",
+            "uuid": "4c4c4544-0034-3010-8048-b6c04f503732",
+            "vmsystem": "Physical"
+        },
+        "versionclient": "FusionInventory-Agent_v2.5.2-1.fc31"
+    },
+    "deviceid": "glpixps-2018-07-09-09-07-13",
+    "query": "INVENTORY",
+    "partial": true
+}

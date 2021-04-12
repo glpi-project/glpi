@@ -65,25 +65,40 @@ class Antivirus extends InventoryAsset
       return $this->data;
    }
 
-   public function handle() {
+   /**
+    * Get existing entries from database
+    *
+    * @return array
+    */
+   protected function getExisting(): array {
       global $DB;
 
-      $db_antivirus = [];
-      $value = $this->data;
-      $computerAntivirus = new ComputerAntivirus();
+      $db_existing = [];
 
       $iterator = $DB->request([
          'SELECT' => ['id', 'name', 'antivirus_version'],
-         'FROM'   => $computerAntivirus->getTable(),
+         'FROM'   => ComputerAntivirus::getTable(),
          'WHERE'  => ['computers_id' => $this->item->fields['id']]
       ]);
+
       while ($data = $iterator->next()) {
          $idtmp = $data['id'];
          unset($data['id']);
          $data = array_map('strtolower', $data);
-         $db_antivirus[$idtmp] = $data;
+         $db_existing[$idtmp] = $data;
       }
 
+      return $db_existing;
+   }
+
+   public function handle() {
+      global $DB;
+
+      $db_antivirus = $this->getExisting();
+      $value = $this->data;
+      $computerAntivirus = new ComputerAntivirus();
+
+      //check for existing
       foreach ($value as $k => $val) {
          $compare = ['name' => $val->name, 'antivirus_version' => $val->antivirus_version];
          $compare = array_map('strtolower', $compare);
@@ -94,18 +109,19 @@ class Antivirus extends InventoryAsset
                   'is_dynamic'   => 1
                ];
                $computerAntivirus->update($input, $this->withHistory());
-               unset($data[$k]);
+               unset($value[$k]);
                unset($db_antivirus[$keydb]);
                break;
             }
          }
       }
 
-      if (count($db_antivirus) != 0) {
+      if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_antivirus) != 0) {
          foreach ($db_antivirus as $idtmp => $data) {
             $computerAntivirus->delete(['id' => $idtmp], 1);
          }
       }
+
       if (count($value) != 0) {
          foreach ($value as $val) {
             $val->computers_id = $this->item->fields['id'];

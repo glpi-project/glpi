@@ -83,45 +83,8 @@ class Inventory extends DbTestCase {
       }
    }
 
-   public function testImportComputer() {
-      global $DB, $CFG_GLPI;
-
-      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1.json');
-
-      $CFG_GLPI["is_contact_autoupdate"] = 0;
-
-      $inventory = new \Glpi\Inventory\Inventory($json);
-
-      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
-
-      if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
-
-      //check inventory metadata
-      $metadata = $inventory->getMetadata();
-      $this->array($metadata)->hasSize(5)
-         ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
-         ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.5.2-1.fc31')
-         ->string['itemtype']->isIdenticalTo('Computer')
-         ->string['tag']->isIdenticalTo('000005');
-      $this->array($metadata['provider'])->hasSize(10);
-
-      //check created agent
-      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->next();
-      $agents = $DB->request(['FROM' => \Agent::getTable()]);
-      $this->integer(count($agents))->isIdenticalTo(1);
-      $agent = $agents->next();
-      $this->array($agent)
-         ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
-         ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
-         ->string['version']->isIdenticalTo('2.5.2-1.fc31')
-         ->string['itemtype']->isIdenticalTo('Computer')
-         ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
+   private function checkComputer1($computers_id) {
+      global $DB;
 
       //get computer models, manufacturer, ...
       $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->next();
@@ -140,8 +103,6 @@ class Inventory extends DbTestCase {
       $this->array($cmanuf);
       $manufacturers_id = $cmanuf['id'];
 
-      //check created computer
-      $computers_id = $agent['items_id'];
       $this->integer($computers_id)->isGreaterThan(0);
       $computer = new \Computer();
       $this->boolean($computer->getFromDB($computers_id))->isTrue();
@@ -205,104 +166,6 @@ class Inventory extends DbTestCase {
          'type' => 'teamviewer',
          'is_dynamic' => 1
       ]);
-
-      //volumes
-      $idisks = new \Item_Disk();
-      $iterator = $idisks->getFromItem($computer);
-      $this->integer(count($iterator))->isIdenticalTo(6);
-
-      $expecteds = [
-         [
-            'fsname' => 'ext4',
-            'name' => '/',
-            'device' => '/dev/mapper/xps-root',
-            'mountpoint' => '/',
-            'filesystems_id' => 4,
-            'totalsize' => 40189,
-            'freesize' => 11683,
-            'encryption_status' => 1,
-            'encryption_tool' => 'LUKS1',
-            'encryption_algorithm' => 'aes-xts-plain64',
-            'encryption_type' => null,
-         ], [
-            'fsname' => 'ext4',
-            'name' => '/var/www',
-            'device' => '/dev/mapper/xps-www',
-            'mountpoint' => '/var/www',
-            'filesystems_id' => 4,
-            'totalsize' => 20030,
-            'freesize' => 11924,
-            'encryption_status' => 0,
-            'encryption_tool' => null,
-            'encryption_algorithm' => null,
-            'encryption_type' => null,
-         ], [
-            'fsname' => 'ext4',
-            'name' => '/boot',
-            'device' => '/dev/nvme0n1p2',
-            'mountpoint' => '/boot',
-            'filesystems_id' => 4,
-            'totalsize' => 975,
-            'freesize' => 703,
-            'encryption_status' => 0,
-            'encryption_tool' => null,
-            'encryption_algorithm' => null,
-            'encryption_type' => null,
-         ], [
-            'fsname' => 'ext4',
-            'name' => '/var/lib/mysql',
-            'device' => '/dev/mapper/xps-maria',
-            'mountpoint' => '/var/lib/mysql',
-            'filesystems_id' => 4,
-            'totalsize' => 20030,
-            'freesize' => 15740,
-            'encryption_status' => 1,
-            'encryption_tool' => 'LUKS1',
-            'encryption_algorithm' => 'aes-xts-plain64',
-            'encryption_type' => null,
-         ], [
-            'fsname' => 'ext4',
-            'name' => '/home',
-            'device' => '/dev/mapper/xps-home',
-            'mountpoint' => '/home',
-            'filesystems_id' => 4,
-            'totalsize' => 120439,
-            'freesize' => 24872,
-            'encryption_status' => 1,
-            'encryption_tool' => 'LUKS1',
-            'encryption_algorithm' => 'aes-xts-plain64',
-            'encryption_type' => null,
-         ], [
-            'fsname' => 'VFAT',
-            'name' => '/boot/efi',
-            'device' => '/dev/nvme0n1p1',
-            'mountpoint' => '/boot/efi',
-            'filesystems_id' => 7,
-            'totalsize' => 199,
-            'freesize' => 191,
-            'encryption_status' => 0,
-            'encryption_tool' => null,
-            'encryption_algorithm' => null,
-            'encryption_type' => null,
-         ]
-      ];
-
-      $i = 0;
-      while ($volume = $iterator->next()) {
-         unset($volume['id']);
-         unset($volume['date_mod']);
-         unset($volume['date_creation']);
-         $expected = $expecteds[$i];
-         $expected = $expected + [
-            'items_id'     => $computers_id,
-            'itemtype'     => 'Computer',
-            'entities_id'  => 0,
-            'is_deleted'   => 0,
-            'is_dynamic'   => 1
-         ];
-         $this->array($volume)->isEqualTo($expected);
-         ++$i;
-      }
 
       //connections
       $iterator = \Computer_Item::getTypeItems($computers_id, 'Monitor');
@@ -623,23 +486,7 @@ class Inventory extends DbTestCase {
             ],
             'Item_DeviceNetworkCard' => [],
             'Item_DeviceDrive' => [],
-            'Item_DeviceBattery' => [
-               [
-                  'items_id' => $computers_id,
-                  'itemtype' => 'Computer',
-                  'devicebatteries_id' => 104,
-                  'manufacturing_date' => '2019-07-06',
-                  'is_deleted' => 0,
-                  'is_dynamic' => 1,
-                  'entities_id' => 0,
-                  'is_recursive' => 0,
-                  'serial' => '34605',
-                  'otherserial' => null,
-                  'locations_id' => 0,
-                  'states_id' => 0,
-                  'real_capacity' => 0
-               ],
-            ],
+            // 'Item_DeviceBattery' is not tested here, see self::checkComputer1Batteries()
             'Item_DeviceGraphicCard' => [],
             'Item_DeviceSoundCard' => [
                [
@@ -1006,56 +853,11 @@ class Inventory extends DbTestCase {
          $this->array($component)->isIdenticalTo($expected);
       }
 
-      //softwares
-      $isoft = new \Item_SoftwareVersion();
-      $iterator = $isoft->getFromItem($computer);
-      $this->integer(count($iterator))->isIdenticalTo(6);
-
-      $expecteds = [
-         [
-            'softname' => 'expat',
-            'version' => '2.2.8-1.fc31',
-            'dateinstall' => '2019-12-19',
-         ], [
-            'softname' => 'gettext',
-            'version' => '0.20.1-3.fc31',
-            'dateinstall' => '2020-01-15',
-         ], [
-            'softname' => 'gitg',
-            'version' => '3.32.1-1.fc31',
-            'dateinstall' => '2019-12-19',
-         ], [
-            'softname' => 'gnome-calculator',
-            'version' => '3.34.1-1.fc31',
-            'dateinstall' => '2019-12-19',
-         ], [
-            'softname' => 'libcryptui',
-            'version' => '3.12.2-18.fc31',
-            'dateinstall' => '2019-12-19',
-         ], [
-            'softname' => 'tar',
-            'version' => '1.32-2.fc31',
-            'dateinstall' => '2019-12-19',
-         ],
-      ];
-
-      $i = 0;
-      while ($soft = $iterator->next()) {
-         $expected = $expecteds[$i];
-         $this->array([
-            'softname'     => $soft['softname'],
-            'version'      => $soft['version'],
-            'dateinstall'  => $soft['dateinstall']
-         ])->isEqualTo($expected);
-         ++$i;
-      }
-
       //check printer
       $iterator = \Computer_Item::getTypeItems($computers_id, 'Printer');
       $this->integer(count($iterator))->isIdenticalTo(1);
       $printer_link = $iterator->next();
-      unset($printer_link['date_mod']);
-      unset($printer_link['date_creation']);
+      unset($printer_link['date_mod'], $printer_link['date_creation']);
 
       $expected = [
          'id' => $printer_link['id'],
@@ -1103,6 +905,247 @@ class Inventory extends DbTestCase {
       $this->boolean($printer->getFromDB($printer_link['id']))->isTrue();
       $this->boolean((bool)$printer->fields['is_dynamic'])->isTrue();
       $this->string($printer->fields['name'])->isIdenticalTo('Officejet_Pro_8600_34AF9E_');
+
+      return $computer;
+   }
+
+   private function checkComputer1Volumes(\Computer $computer, array $freesizes = []) {
+      $idisks = new \Item_Disk();
+      $iterator = $idisks->getFromItem($computer);
+      $this->integer(count($iterator))->isIdenticalTo(6);
+
+      $expecteds = [
+         [
+            'fsname' => 'ext4',
+            'name' => '/',
+            'device' => '/dev/mapper/xps-root',
+            'mountpoint' => '/',
+            'filesystems_id' => 4,
+            'totalsize' => 40189,
+            'freesize' => 11683,
+            'encryption_status' => 1,
+            'encryption_tool' => 'LUKS1',
+            'encryption_algorithm' => 'aes-xts-plain64',
+            'encryption_type' => null,
+         ], [
+            'fsname' => 'ext4',
+            'name' => '/var/www',
+            'device' => '/dev/mapper/xps-www',
+            'mountpoint' => '/var/www',
+            'filesystems_id' => 4,
+            'totalsize' => 20030,
+            'freesize' => 11924,
+            'encryption_status' => 0,
+            'encryption_tool' => null,
+            'encryption_algorithm' => null,
+            'encryption_type' => null,
+         ], [
+            'fsname' => 'ext4',
+            'name' => '/boot',
+            'device' => '/dev/nvme0n1p2',
+            'mountpoint' => '/boot',
+            'filesystems_id' => 4,
+            'totalsize' => 975,
+            'freesize' => 703,
+            'encryption_status' => 0,
+            'encryption_tool' => null,
+            'encryption_algorithm' => null,
+            'encryption_type' => null,
+         ], [
+            'fsname' => 'ext4',
+            'name' => '/var/lib/mysql',
+            'device' => '/dev/mapper/xps-maria',
+            'mountpoint' => '/var/lib/mysql',
+            'filesystems_id' => 4,
+            'totalsize' => 20030,
+            'freesize' => 15740,
+            'encryption_status' => 1,
+            'encryption_tool' => 'LUKS1',
+            'encryption_algorithm' => 'aes-xts-plain64',
+            'encryption_type' => null,
+         ], [
+            'fsname' => 'ext4',
+            'name' => '/home',
+            'device' => '/dev/mapper/xps-home',
+            'mountpoint' => '/home',
+            'filesystems_id' => 4,
+            'totalsize' => 120439,
+            'freesize' => 24872,
+            'encryption_status' => 1,
+            'encryption_tool' => 'LUKS1',
+            'encryption_algorithm' => 'aes-xts-plain64',
+            'encryption_type' => null,
+         ], [
+            'fsname' => 'VFAT',
+            'name' => '/boot/efi',
+            'device' => '/dev/nvme0n1p1',
+            'mountpoint' => '/boot/efi',
+            'filesystems_id' => 7,
+            'totalsize' => 199,
+            'freesize' => 191,
+            'encryption_status' => 0,
+            'encryption_tool' => null,
+            'encryption_algorithm' => null,
+            'encryption_type' => null,
+         ]
+      ];
+
+      $i = 0;
+      while ($volume = $iterator->next()) {
+         unset($volume['id'], $volume['date_mod'], $volume['date_creation']);
+         $expected = $expecteds[$i];
+         if (count($freesizes)) {
+            $expected['freesize'] = $freesizes[$i];
+         }
+         $expected += [
+            'items_id' => $computer->fields['id'],
+            'itemtype' => 'Computer',
+            'entities_id' => 0,
+            'is_deleted' => 0,
+            'is_dynamic' => 1
+         ];
+
+         ksort($expected);
+         ksort($volume);
+
+         $this->array($volume)->isEqualTo($expected);
+         ++$i;
+      }
+   }
+
+   private function checkComputer1Softwares(\Computer $computer, array $versions = []) {
+      //softwares
+      $isoft = new \Item_SoftwareVersion();
+      $iterator = $isoft->getFromItem($computer);
+      $this->integer(count($iterator))->isIdenticalTo(6);
+
+      $expecteds = [
+         [
+            'softname' => 'expat',
+            'version' => '2.2.8-1.fc31',
+            'dateinstall' => '2019-12-19',
+         ], [
+            'softname' => 'gettext',
+            'version' => '0.20.1-3.fc31',
+            'dateinstall' => '2020-01-15',
+         ], [
+            'softname' => 'gitg',
+            'version' => '3.32.1-1.fc31',
+            'dateinstall' => '2019-12-19',
+         ], [
+            'softname' => 'gnome-calculator',
+            'version' => '3.34.1-1.fc31',
+            'dateinstall' => '2019-12-19',
+         ], [
+            'softname' => 'libcryptui',
+            'version' => '3.12.2-18.fc31',
+            'dateinstall' => '2019-12-19',
+         ], [
+            'softname' => 'tar',
+            'version' => '1.32-2.fc31',
+            'dateinstall' => '2019-12-19',
+         ],
+      ];
+
+      $i = 0;
+      while ($soft = $iterator->next()) {
+         $expected = $expecteds[$i];
+         if (count($versions)) {
+            $expected['version'] = $versions[$i];
+         }
+         $this->array([
+            'softname'     => $soft['softname'],
+            'version'      => $soft['version'],
+            'dateinstall'  => $soft['dateinstall']
+         ])->isEqualTo($expected);
+         ++$i;
+      }
+   }
+
+   private function checkComputer1Batteries(\Computer $computer, array $capacities = []) {
+      global $DB;
+
+      $link        = getItemForItemtype(\Item_DeviceBattery::class);
+      $iterator = $DB->request($link->getTableGroupCriteria($computer));
+      $this->integer(count($iterator))->isIdenticalTo(1);
+
+      $battery = [];
+      while ($row = $iterator->next()) {
+         unset($row['id']);
+         $battery = $row;
+      }
+
+      $expected = [
+         'items_id' => $computer->fields['id'],
+         'itemtype' => $computer->getType(),
+         'devicebatteries_id' => 104,
+         'manufacturing_date' => '2019-07-06',
+         'is_deleted' => 0,
+         'is_dynamic' => 1,
+         'entities_id' => 0,
+         'is_recursive' => 0,
+         'serial' => '34605',
+         'otherserial' => null,
+         'locations_id' => 0,
+         'states_id' => 0,
+         'real_capacity' => $capacities[0] ?? 50570
+      ];
+
+      //hack to replace expected fkeys
+      foreach (array_keys($expected) as $key) {
+         if (isForeignKeyField($key)) {
+            $expected[$key] = $battery[$key];
+         }
+      }
+
+      $this->array($battery)->isIdenticalTo($expected);
+   }
+
+   public function testImportComputer() {
+      global $DB, $CFG_GLPI;
+
+      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1.json');
+
+      $CFG_GLPI["is_contact_autoupdate"] = 0;
+
+      $inventory = new \Glpi\Inventory\Inventory($json);
+
+      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+      if ($inventory->inError()) {
+         foreach ($inventory->getErrors() as $error) {
+            var_dump($error);
+         }
+      }
+      $this->boolean($inventory->inError())->isFalse();
+      $this->array($inventory->getErrors())->isEmpty();
+
+      //check inventory metadata
+      $metadata = $inventory->getMetadata();
+      $this->array($metadata)->hasSize(5)
+         ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+         ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.5.2-1.fc31')
+         ->string['itemtype']->isIdenticalTo('Computer')
+         ->string['tag']->isIdenticalTo('000005');
+      $this->array($metadata['provider'])->hasSize(10);
+
+      //check created agent
+      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->next();
+      $agents = $DB->request(['FROM' => \Agent::getTable()]);
+      $this->integer(count($agents))->isIdenticalTo(1);
+      $agent = $agents->next();
+      $this->array($agent)
+         ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+         ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+         ->string['version']->isIdenticalTo('2.5.2-1.fc31')
+         ->string['itemtype']->isIdenticalTo('Computer')
+         ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
+
+      //check created computer
+      $computer = $this->checkComputer1($agent['items_id']);
+      $this->checkComputer1Volumes($computer);
+      $this->checkComputer1Softwares($computer);
+      $this->checkComputer1Batteries($computer);
    }
 
    public function testUpdateComputer() {
@@ -4471,5 +4514,102 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          ])->isEqualTo($expected);
          ++$i;
       }
+   }
+
+   public function testPartialComputerImport() {
+      global $DB;
+
+      //initial import
+      $this->testImportComputer();
+
+      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1_partial_volumes.json');
+      $CFG_GLPI["is_contact_autoupdate"] = 0;
+      $inventory = new \Glpi\Inventory\Inventory($json);
+      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+      if ($inventory->inError()) {
+         foreach ($inventory->getErrors() as $error) {
+            var_dump($error);
+         }
+      }
+      $this->boolean($inventory->inError())->isFalse();
+      $this->array($inventory->getErrors())->isEmpty();
+
+      //check inventory metadata
+      $metadata = $inventory->getMetadata();
+      $this->array($metadata)->hasSize(4)
+         ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+         ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.5.2-1.fc31')
+         ->string['itemtype']->isIdenticalTo('Computer');
+
+      //check created agent
+      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->next();
+      $agents = $DB->request(['FROM' => \Agent::getTable()]);
+      $this->integer(count($agents))->isIdenticalTo(1);
+      $agent = $agents->next();
+      $this->array($agent)
+         ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+         ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+         ->string['version']->isIdenticalTo('2.5.2-1.fc31')
+         ->string['itemtype']->isIdenticalTo('Computer')
+         ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
+
+      $computer = $this->checkComputer1($agent['items_id']);
+
+      //volumes free sizes
+      $sizes = [
+         11883,
+         15924,
+         603,
+         10740,
+         20872,
+         191
+      ];
+      $this->checkComputer1Volumes($computer, $sizes);
+      $this->checkComputer1Softwares($computer);
+      $this->checkComputer1Batteries($computer);
+
+      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1_partial_softs.json');
+      $CFG_GLPI["is_contact_autoupdate"] = 0;
+      $inventory = new \Glpi\Inventory\Inventory($json);
+      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+      if ($inventory->inError()) {
+         foreach ($inventory->getErrors() as $error) {
+            var_dump($error);
+         }
+      }
+      $this->boolean($inventory->inError())->isFalse();
+      $this->array($inventory->getErrors())->isEmpty();
+
+      //software versions
+      $versions = [
+         '2.2.8-1.fc31',
+         '0.20.1-3.fc31',
+         '3.33.0-1.fc31',
+         '3.34.1-1.fc31',
+         '3.12.2-18.fc31',
+         '1.32-2.fc31'
+      ];
+      $this->checkComputer1Softwares($computer, $versions);
+
+      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1_partial_batteries.json');
+      $CFG_GLPI["is_contact_autoupdate"] = 0;
+      $inventory = new \Glpi\Inventory\Inventory($json);
+      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+      if ($inventory->inError()) {
+         foreach ($inventory->getErrors() as $error) {
+            var_dump($error);
+         }
+      }
+      $this->boolean($inventory->inError())->isFalse();
+      $this->array($inventory->getErrors())->isEmpty();
+
+      //software versions
+      $capacities = [
+         40570,
+      ];
+      $this->checkComputer1Batteries($computer, $capacities);
    }
 }

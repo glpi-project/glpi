@@ -70,6 +70,8 @@ abstract class MainAsset extends InventoryAsset
    protected $refused = [];
    /** @var array */
    protected $inventoried = [];
+   /** @var boolean */
+   protected $partial = false;
 
    public function __construct(CommonDBTM $item, $data) {
       $namespaced = explode('\\', static::class);
@@ -94,37 +96,116 @@ abstract class MainAsset extends InventoryAsset
    abstract protected function getTypesFieldName();
 
    public function prepare() :array {
-      global $DB;
+      $raw_data = $this->raw_data;
+      if (!is_array($raw_data)) {
+          $raw_data = [$raw_data];
+      }
 
-      $models_id = $this->getModelsFieldName();
-      $types_id = $this->getTypesFieldName();
+      $this->data = [];
+      foreach ($raw_data as $entry) {
 
-      $val = new \stdClass();
+         if (property_exists($entry, 'partial') && $entry->partial) {
+            $this->setPartial();
+         }
 
-      //set update system
-      $val->autoupdatesystems_id = $this->raw_data->content->autoupdatesystems_id ?? 'GLPI Native Inventory';
+         $val = new \stdClass();
 
-      if (isset($this->extra_data['hardware'])) {
-         $hardware = (object)$this->extra_data['hardware'];
+         //set update system
+         $val->autoupdatesystems_id = $entry->content->autoupdatesystems_id ?? 'GLPI Native Inventory';
 
-         $hw_mapping = [
-            'name'           => 'name',
-            'winprodid'      => 'licenseid',
-            'winprodkey'     => 'license_number',
-            'workgroup'      => 'domains_id',
-            'lastloggeduser' => 'users_id',
-         ];
+         if (isset($this->extra_data['hardware'])) {
+            $this->prepareForHardware($val);
+         }
 
-         foreach ($hw_mapping as $origin => $dest) {
-            if (property_exists($hardware, $origin)) {
-               $hardware->$dest = $hardware->$origin;
+         $this->prepareForUsers($val);
+
+         if (isset($this->extra_data['bios'])) {
+            $this->prepareForBios($val);
+         }
+
+         if (method_exists($this, 'postPrepare')) {
+            $this->postPrepare($val);
+         }
+
+         $this->data[] = $val;
+      }
+
+      return $this->data;
+   }
+
+   /**
+    * Prepare hardware information
+    *
+    * @param stdClass $val
+    *
+    * @return void
+    */
+   protected function prepareForHardware($val) {
+      $hardware = (object)$this->extra_data['hardware'];
+
+      $hw_mapping = [
+         'name'           => 'name',
+         'winprodid'      => 'licenseid',
+         'winprodkey'     => 'license_number',
+         'workgroup'      => 'domains_id',
+         'lastloggeduser' => 'users_id',
+      ];
+
+      foreach ($hw_mapping as $origin => $dest) {
+         if (property_exists($hardware, $origin)) {
+            $hardware->$dest = $hardware->$origin;
+         }
+      }
+      $this->hardware = $hardware;
+
+      foreach ($hardware as $key => $property) {
+         $val->$key = $property;
+      }
+
+      // * Type of the asset
+      if (isset($hardware)) {
+         $types_id = $this->getTypesFieldName();
+         if (property_exists($hardware, 'vmsystem')
+            && $hardware->vmsystem != ''
+            && $hardware->vmsystem != 'Physical'
+         ) {
+            $val->$types_id = $hardware->vmsystem;
+            // HACK FOR BSDJail, remove serial and UUID (because it's of host, not container)
+            if ($hardware->vmsystem == 'BSDJail') {
+               if (property_exists($val, 'serial')) {
+                  $val->serial = '';
+               }
+               $val->uuid .= '-' . $val->name;
+            }
+         } else {
+            $bios = (object)$this->extra_data['bios'];
+            if (property_exists($hardware, 'chassis_type')
+                  && !empty($hardware->chassis_type)) {
+               $val->$types_id = $hardware->chassis_type;
+            } else if (isset($bios) && property_exists($bios, 'type')
+                  && !empty($bios->type)) {
+               $val->$types_id = $bios->type;
+            } else if (isset($bios) && property_exists($bios, 'mmodel')
+                  && !empty($bios->mmodel)) {
+               $val->$types_id = $bios->mmodel;
             }
          }
-         $this->hardware = $hardware;
+      }
+   }
 
-         foreach ($hardware as $key => $property) {
-            $val->$key = $property;
-         }
+   /**
+    * Prepare users information
+    *
+    * @param stdClass $val
+    *
+    * @return void
+    */
+   protected function prepareForUsers($val) {
+      global $DB;
+
+      if ($this->isPartial()) {
+         unset($val->users_id);
+         return;
       }
 
       if (property_exists($val, 'users_id')) {
@@ -141,87 +222,12 @@ abstract class MainAsset extends InventoryAsset
                ],
                'LIMIT'  => 1
             ]);
-            $result = $iterator->next();
+
             if (count($iterator)) {
                $result = $iterator->next();
                $val->users_id = $result['id'];
             } else {
                $val->users_id = 0;
-            }
-         }
-      }
-
-      if (isset($this->extra_data['bios'])) {
-         $bios = (object)$this->extra_data['bios'];
-         if (property_exists($bios, 'assettag')
-               && !empty($bios->assettag)) {
-            $val->otherserial = $bios->assettag;
-         }
-         if (property_exists($bios, 'smanufacturer')
-               && !empty($bios->smanufacturer)) {
-            $val->manufacturers_id = $bios->smanufacturer;
-         } else if (property_exists($bios, 'mmanufacturer')
-               && !empty($bios->mmanufacturer)) {
-            $val->manufacturers_id = $bios->mmanufacturer;
-            $val->mmanufacturer = $bios->mmanufacturer;
-         } else if (property_exists($bios, 'bmanufacturer')
-               && !empty($bios->bmanufacturer)) {
-            $val->manufacturers_id = $bios->bmanufacturer;
-            $val->bmanufacturer = $bios->bmanufacturer;
-         }
-
-         if (property_exists($bios, 'smodel') && $bios->smodel != '') {
-            $val->$models_id = $bios->smodel;
-         } else if (property_exists($bios, 'mmodel') && $bios->mmodel != '') {
-            $val->$models_id = $bios->mmodel;
-            $val->model = $bios->mmodel;
-         }
-
-         if (property_exists($bios, 'ssn')) {
-            $val->serial = trim($bios->ssn);
-            // HP patch for serial begin with 'S'
-            if (property_exists($val, 'manufacturers_id')
-                  && strstr($val->manufacturers_id, "ewlett")
-                  && preg_match("/^[sS]/", $val->serial)) {
-               $val->serial = trim(
-                  preg_replace(
-                     "/^[sS]/",
-                     "",
-                     $val->serial
-                  )
-               );
-            }
-         }
-
-         if (property_exists($bios, 'msn')) {
-            $val->mserial = $bios->msn;
-         }
-      }
-
-      // * Type of the asset
-      if (isset($hardware)) {
-         if (property_exists($hardware, 'vmsystem')
-            && $hardware->vmsystem != ''
-            && $hardware->vmsystem != 'Physical'
-         ) {
-            $val->$types_id = $hardware->vmsystem;
-            // HACK FOR BSDJail, remove serial and UUID (because it's of host, not container)
-            if ($hardware->vmsystem == 'BSDJail') {
-               if (property_exists($val, 'serial')) {
-                  $val->serial = '';
-               }
-               $val->uuid .= '-' . $val->name;
-            }
-         } else {
-            if (property_exists($hardware, 'chassis_type')
-                  && !empty($hardware->chassis_type)) {
-               $val->$types_id = $hardware->chassis_type;
-            } else if (isset($bios) && property_exists($bios, 'type')
-                  && !empty($bios->type)) {
-               $val->$types_id = $bios->type;
-            } else if (isset($bios) && property_exists($bios, 'mmodel')
-                  && !empty($bios->mmodel)) {
-               $val->$types_id = $bios->mmodel;
             }
          }
       }
@@ -241,7 +247,7 @@ abstract class MainAsset extends InventoryAsset
             if (property_exists($a_users, 'login')) {
                $user = $a_users->login;
                if (property_exists($a_users, 'domain')
-                       && !empty($a_users->domain)) {
+                        && !empty($a_users->domain)) {
                   $user .= "@" . $a_users->domain;
                }
             }
@@ -250,7 +256,7 @@ abstract class MainAsset extends InventoryAsset
                   // Search on domain
                   $where_add = [];
                   if (property_exists($a_users, 'domain')
-                          && !empty($a_users->domain)) {
+                           && !empty($a_users->domain)) {
                      $ldaps = $DB->request('glpi_authldaps',
                            ['WHERE'  => ['inventory_domain' => $a_users->domain]]
                      );
@@ -294,14 +300,52 @@ abstract class MainAsset extends InventoryAsset
             $val->contact = $user_temp;
          }
       }
+   }
 
-      if (method_exists($this, 'postPrepare')) {
-         $this->postPrepare($val);
+   protected function prepareForBios($val) {
+      $bios = (object)$this->extra_data['bios'];
+
+      if (property_exists($bios, 'assettag') && !empty($bios->assettag)) {
+         $val->otherserial = $bios->assettag;
       }
 
-      $this->data = [$val];
+      if (property_exists($bios, 'smanufacturer') && !empty($bios->smanufacturer)) {
+         $val->manufacturers_id = $bios->smanufacturer;
+      } else if (property_exists($bios, 'mmanufacturer') && !empty($bios->mmanufacturer)) {
+         $val->manufacturers_id = $bios->mmanufacturer;
+         $val->mmanufacturer = $bios->mmanufacturer;
+      } else if (property_exists($bios, 'bmanufacturer') && !empty($bios->bmanufacturer)) {
+         $val->manufacturers_id = $bios->bmanufacturer;
+         $val->bmanufacturer = $bios->bmanufacturer;
+      }
 
-      return $this->data;
+      $models_id = $this->getModelsFieldName();
+      if (property_exists($bios, 'smodel') && $bios->smodel != '') {
+         $val->$models_id = $bios->smodel;
+      } else if (property_exists($bios, 'mmodel') && $bios->mmodel != '') {
+         $val->$models_id = $bios->mmodel;
+         $val->model = $bios->mmodel;
+      }
+
+      if (property_exists($bios, 'ssn')) {
+         $val->serial = trim($bios->ssn);
+         // HP patch for serial begin with 'S'
+         if (property_exists($val, 'manufacturers_id')
+            && strstr($val->manufacturers_id, "ewlett")
+            && preg_match("/^[sS]/", $val->serial)) {
+            $val->serial = trim(
+               preg_replace(
+                  "/^[sS]/",
+                  "",
+                  $val->serial
+               )
+            );
+         }
+      }
+
+      if (property_exists($bios, 'msn')) {
+          $val->mserial = $bios->msn;
+      }
    }
 
    /**
@@ -700,5 +744,24 @@ abstract class MainAsset extends InventoryAsset
     */
    public function getRefused(): array {
       return $this->refused;
+   }
+
+   /**
+    * Set partial inventory
+    *
+    * @return Inventory
+    */
+   protected function setPartial(): self {
+      $this->partial = true;
+      return $this;
+   }
+
+   /**
+    * Is inventory partial
+    *
+    * @return boolean
+    */
+   public function isPartial(): bool {
+      return $this->partial;
    }
 }

@@ -65,6 +65,18 @@ trait InventoryNetworkPort {
       return $this->ports;
    }
 
+   private function isMainPartial(): bool {
+      if ($this instanceof MainAsset) {
+         return $this->isPartial();
+      } else {
+         if (isset($this->main_asset) && method_exists($this->main_asset, 'isPartial')) {
+            return $this->main_asset->isPartial();
+         }
+      }
+
+      return false;
+   }
+
    /**
     * Manage network ports
     *
@@ -77,7 +89,9 @@ trait InventoryNetworkPort {
       $this->itemtype = $itemtype ?? $this->item->getType();
       $this->items_id = $items_id ?? $this->item->fields['id'];
 
-      $this->cleanUnmanageds();
+      if (!$this->isMainPartial()) {
+         $this->cleanUnmanageds();
+      }
       $this->handleIpNetworks();
       $this->handleUpdates();
       $this->handleCreates();
@@ -412,7 +426,7 @@ trait InventoryNetworkPort {
                   }
                }
 
-               if (count($db_addresses) && count($ips)) {
+               if (!$this->isMainPartial() && count($db_addresses) && count($ips)) {
                   $ipaddress = new IPAddress();
                   //deleted IP addresses
                   foreach (array_keys($db_addresses) as $id_ipa) {
@@ -434,7 +448,7 @@ trait InventoryNetworkPort {
       }
 
       //delete remaning network ports, if any
-      if (count($db_ports)) {
+      if (!$this->isMainPartial() && count($db_ports)) {
          foreach ($db_ports as $netpid => $netpdata) {
             if ($netpdata['name'] != 'management') { //prevent removing internal management port
                $networkport->delete(['id' => $netpid], true);

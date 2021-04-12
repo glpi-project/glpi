@@ -55,7 +55,7 @@ class Software extends InventoryAsset
 
    /** @var array */
    protected $extra_data = [
-      '\Glpi\Inventory\Asset\OperatingSystem' => null
+      OperatingSystem::class => null
    ];
 
    public function prepare() :array {
@@ -272,6 +272,7 @@ class Software extends InventoryAsset
       }
 
       //check for existing links
+      $count_import = count($this->data);
       foreach ($this->data as $k => &$val) {
          //operating system id is not known before handle(); set it in value
          $val->operatingsystems_id = $operatingsystems_id;
@@ -283,11 +284,11 @@ class Software extends InventoryAsset
          }
       }
 
-      //remaining entries in $db_software means relation must be dropped
-      if (count($db_software) > 0) {
+      //not found version means soft has been removed or updated, drop it
+      if (count($db_software) > 0 && (!$this->main_asset || !$this->main_asset->isPartial() || $this->main_asset->isPartial() && $count_import)) {
          $DB->delete(
             'glpi_items_softwareversions', [
-            'id' => $db_software
+               'id' => $db_software
             ]
          );
       }
@@ -311,6 +312,14 @@ class Software extends InventoryAsset
       }
    }
 
+   public function getOsForKey($val) {
+      if (!$this->main_asset || !$this->main_asset->isPartial()) {
+         return $val->operatingsystems_id;
+      } else {
+         return '%';
+      }
+   }
+
    /**
     * Get software comparison key
     *
@@ -326,7 +335,7 @@ class Software extends InventoryAsset
    /**
     * Get software version comparison key
     *
-    * @param string  $name                Software name
+    * @param string  $version             Version name
     * @param integer $softwares_id        Manufacturers id
     * @param integer $operatingsystems_id Operating system ID
     *
@@ -353,7 +362,7 @@ class Software extends InventoryAsset
          strtolower($val->version),
          $val->manufacturers_id,
          $val->entities_id,
-         $val->operatingsystems_id
+         $this->getOsForKey($val)
       ]);
    }
 
@@ -369,7 +378,7 @@ class Software extends InventoryAsset
          strtolower($val->name),
          strtolower($val->version),
          $val->entities_id,
-         $val->operatingsystems_id
+         $this->getOsForKey($val)
       ]);
    }
 
@@ -482,7 +491,7 @@ class Software extends InventoryAsset
          $key = $this->getVersionKey(
             $val->version,
             $softwares_id,
-            $val->operatingsystems_id
+            $this->getOsForKey($val)
          );
 
          if (isset($this->versions[$key])) {
@@ -490,11 +499,12 @@ class Software extends InventoryAsset
             continue;
          }
 
+         $osid = $this->getOsForKey($val);
          $stmt->bind_param(
             'sss',
             $val->version,
             $softwares_id,
-            $val->operatingsystems_id
+            $osid
          );
          $stmt->execute();
          $results = $stmt->get_result();
@@ -555,7 +565,7 @@ class Software extends InventoryAsset
          $vkey = $this->getVersionKey(
             $val->version,
             $softwares_id,
-            $val->operatingsystems_id
+            $this->getOsForKey($val)
          );
 
          if (!isset($this->versions[$vkey])) {
@@ -605,7 +615,7 @@ class Software extends InventoryAsset
          $vkey = $this->getVersionKey(
             $val->version,
             $softwares_id,
-            $val->operatingsystems_id
+            $this->getOsForKey($val)
          );
          $versions_id = $this->versions[$vkey];
 
