@@ -209,53 +209,45 @@ class VirtualMachine extends InventoryAsset
 
       $db_vms = $this->getExisting();
 
-      if (count($db_vms) == 0) {
+      foreach ($db_vms as $keydb => $arraydb) {
+         foreach ($value as $key => $val) {
+            $sinput = [
+               'name'                     => $val->name ?? '',
+               'uuid'                     => $val->uuid ?? '',
+               'virtualmachinesystems_id' => $val->virtualmachinesystems_id ?? 0
+            ];
+            if ($sinput == $arraydb) {
+               $input = [
+                  'id'           => $keydb,
+                  'is_dynamic'   => 1
+               ];
+
+               foreach (['vcpu', 'memory', 'virtualmachinetypes_id', 'virtualmachinestates_id'] as $prop) {
+                  if (property_exists($val, $prop)) {
+                     $input[$prop] = $val->$prop;
+                  }
+               }
+               $computerVirtualmachine->update(Toolbox::addslashes_deep($input), $this->withHistory());
+               unset($value[$key]);
+               unset($db_vms[$keydb]);
+               break;
+            }
+         }
+      }
+
+      if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_vms) != 0) {
+         // Delete virtual machines links in DB
+         foreach ($db_vms as $idtmp => $data) {
+            $computerVirtualmachine->delete(['id' => $idtmp], 1);
+         }
+      }
+
+      if (count($value) != 0) {
          foreach ($value as $val) {
             $input = (array)$val;
             $input['computers_id'] = $this->item->fields['id'];
             $input['is_dynamic']  = 1;
             $computerVirtualmachine->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
-         }
-      } else {
-         foreach ($db_vms as $keydb => $arraydb) {
-            foreach ($value as $key => $val) {
-               $sinput = [
-                  'name'                     => $val->name ?? '',
-                  'uuid'                     => $val->uuid ?? '',
-                  'virtualmachinesystems_id' => $val->virtualmachinesystems_id ?? ''
-               ];
-               if ($sinput == $arraydb) {
-                  $input = [
-                     'id'           => $keydb,
-                     'is_dynamic'   => 1
-                  ];
-
-                  foreach (['vcpu', 'memory', 'virtualmachinetypes_id', 'virtualmachinestates_id'] as $prop) {
-                     if (property_exists($val, $prop)) {
-                        $input[$prop] = $val->$prop;
-                     }
-                  }
-                  $computerVirtualmachine->update(Toolbox::addslashes_deep($input), $this->withHistory());
-                  unset($value[$key]);
-                  unset($db_vms[$keydb]);
-                  break;
-               }
-            }
-         }
-
-         if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_vms) != 0) {
-            // Delete virtual machines links in DB
-            foreach ($db_vms as $idtmp => $data) {
-               $computerVirtualmachine->delete(['id' => $idtmp], 1);
-            }
-         }
-
-         if (count($value) != 0) {
-            foreach ($value as $val) {
-               $input = (array)$val;
-               $input['computers_id'] = $this->item->fields['id'];
-               $computerVirtualmachine->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
-            }
          }
       }
 
