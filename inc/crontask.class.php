@@ -1778,17 +1778,16 @@ class CronTask extends CommonDBTM{
          if (basename($filename) == "remove.txt" && is_dir(GLPI_ROOT.'/.git')) {
             continue;
          }
+
          if (is_file($filename) && is_writable($filename)
              && (filemtime($filename) + $maxlifetime) < time()) {
             if (@unlink($filename)) {
                $nb++;
             }
          }
-      }
 
-      //second step drop director if empty
-      foreach ($files as $filename) {
          if (is_dir($filename) && is_readable($filename)
+            //be sure that the directory is empty
             && count(scandir($filename)) == 2) {
             if (@rmdir($filename)) {
                $nb++;
