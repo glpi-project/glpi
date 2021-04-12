@@ -1511,6 +1511,13 @@ final class DbUtils {
                                  'value' => Dropdown::getDropdownName("glpi_usercategories",
                                                                            $data["usercategories_id"])];
                }
+
+               if (!empty($data["groups_id"])) {
+                  $comments[] = ['name'  => __('Default group'),
+                                 'value' => Dropdown::getDropdownName("glpi_groups",
+                                                                      $data["groups_id"])];
+               }
+
                if (count($comments)) {
                   foreach ($comments as $datas) {
                      // Do not use SPAN here
