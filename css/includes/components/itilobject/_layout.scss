@@ -31,7 +31,7 @@
 
 .itil-object {
    @include media-breakpoint-up(sm) {
-      height: calc(100vh - 172px);
+      height: calc(100vh - 173px);
 
       .itil-left-side, .itil-right-side {
          overflow-y: auto;
@@ -45,6 +45,9 @@
 
       .itil-right-side {
          height: calc(100% + 4px);
+         position: relative;
+         background-color: $itil-secondary-bg;
+
       }
    }
 }
