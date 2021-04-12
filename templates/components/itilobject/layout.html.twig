@@ -7,14 +7,18 @@
    {% endif %}
 
    <div class="row d-flex flex-column align-items-stretch itil-object ">
-      <div class="col-12 col-md-8 order-last order-md-first pt-2 pe-2 pe-md-4 d-flex flex-column border-top border-4 itil-left-side">
+      <div class="itil-left-side col-12 col-md-8 order-last order-md-first pt-2 pe-2 pe-md-4 d-flex flex-column border-top border-4">
          {% if item.isNewItem() %}
             {% include("components/itilobject/new_form.html.twig") %}
          {% else %}
             {% include("components/itilobject/timeline.html.twig") %}
          {% endif %}
       </div>
-      <div class="col-12 col-md-4 border-0 itil-right-side mt-0 mt-md-n1 card-footer p-0 rounded-0">
+      <div class="itil-right-side col-12 col-md-4 border-0 mt-0 mt-md-n1 card-footer p-0 rounded-0">
+         <button class="switch-panel-width btn btn-sm btn-outline-secondary btn-square btn-icon d-none d-md-block border-top-0 border-start-0">
+            <i class="fas fa-caret-left"></i>
+         </button>
+
          {% if not item.isNewItem() %}
             {% include("components/itilobject/mainform_open.html.twig") %}
          {% endif %}
@@ -38,3 +42,23 @@
    <div id='massive_container_{{ rand }}'></div>
    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
 </form>
+
+<script type="text/javascript">
+$(function() {
+   $(document).on("click", ".switch-panel-width", function() {
+      if ($('.itil-left-side').hasClass('col-md-8')) {
+         $('.itil-left-side').removeClass('col-md-8').addClass('col-md-4');
+         $('.itil-right-side').removeClass('col-md-4').addClass('col-md-8');
+         $('.switch-panel-width i.fas').removeClass('fa-caret-left').addClass('fa-caret-right');
+         $('.itil-right-side .accordion-body:not(.accordion-actors).row .col-12').removeClass('col-12').addClass('col-6');
+         $('#actors .col-12').removeClass('col-12').addClass('col-4');
+      } else {
+         $('.itil-left-side').removeClass('col-md-4').addClass('col-md-8');
+         $('.itil-right-side').removeClass('col-md-8').addClass('col-md-4');
+         $('.switch-panel-width i.fas').removeClass('fa-caret-right').addClass('fa-caret-left');
+         $('.itil-right-side .accordion-body:not(.accordion-actors).row .col-6').removeClass('col-6').addClass('col-12');
+         $('#actors .col-4').removeClass('col-4').addClass('col-12');
+      }
+   });
+});
+</script>
