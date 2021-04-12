@@ -116,6 +116,19 @@ abstract class CommonITILObject extends CommonDBTM {
       }
    }
 
+
+   /**
+    * Return the number of actors currently assigned to the object
+    *
+    * @since 10.0
+    *
+    * @return int
+    */
+   function countActors(): int {
+      return count($this->groups) + count($this->users) + count($this->suppliers);
+   }
+
+
    function getActorsForType(int $actortype = 1, array $params = []): array {
       $actors = [];
 
