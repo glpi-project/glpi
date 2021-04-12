@@ -3967,6 +3967,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
    }
 
    public function testImportVirtualMachines() {
+      global $DB;
+
       $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_2.json');
 
       $count_vms = count(json_decode($json)->content->virtualmachines);
@@ -4019,6 +4021,47 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
       //check created vms
       $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
+
+      //partial inventory: postgres vm has been stopped
+      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_2_partial_vms.json');
+      $CFG_GLPI["is_contact_autoupdate"] = 0;
+      $inventory = new \Glpi\Inventory\Inventory($json);
+      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+      if ($inventory->inError()) {
+         foreach ($inventory->getErrors() as $error) {
+            var_dump($error);
+         }
+      }
+      $this->boolean($inventory->inError())->isFalse();
+      $this->array($inventory->getErrors())->isEmpty();
+
+      //check nothing has changed
+      $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
+      $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
+
+      //check postgres has been turned off
+      $iterator = $DB->request([
+         'SELECT' => [
+            \ComputerVirtualMachine::getTable() . '.id',
+            \ComputerVirtualMachine::getTable() . '.name AS vm_name',
+            \VirtualMachineState::getTable() . '.name AS state_name',
+         ],
+         'FROM' => \ComputerVirtualMachine::getTable(),
+         'INNER JOIN' => [
+            \VirtualMachineState::getTable() => [
+               'ON' => [
+                  \VirtualMachineState::getTable() => 'id',
+                  \ComputerVirtualMachine::getTable() => 'virtualmachinestates_id'
+               ]
+            ]
+         ],
+         'WHERE' => [
+            \ComputerVirtualMachine::getTable() . '.name' => 'db',
+            \VirtualMachineState::getTable() . '.name' => 'off'
+         ]
+      ]);
+      $this->integer(count($iterator))->isIdenticalTo(1);
    }
 
    public function testImportPhone() {
