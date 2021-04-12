@@ -119,6 +119,9 @@
          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#actors" aria-expanded="true" aria-controls="actors">
             <i class="fa fa-users me-1"></i>
             <span>{{ __("Actors") }}</span>
+            <span class="badge bg-secondary ms-2">
+               {{ item.countActors() }}
+            </span>
          </button>
       </h2>
       <div id="actors" class="accordion-collapse collapse show" aria-labelledby="heading-actor">
