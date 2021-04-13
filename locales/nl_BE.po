@@ -5018,6 +5018,9 @@ msgid ""
 "Unable to create security key file! You have to run \"php bin/console "
 "glpi:security:change_key\" command to manually create this file."
 msgstr ""
+"Kan bestand met beveiligingssleutel niet maken! U moet het \"php bin/console"
+" glpi:security:change_key\" commando uitvoeren om dit bestand handmatig te "
+"maken."
 
 #: inc/ruleasset.class.php:70 inc/ruleasset.class.php:72
 #: inc/rssfeed.class.php:980 inc/rssfeed.class.php:981
@@ -5188,7 +5191,7 @@ msgstr "Verantwoordelijke groep"
 
 #: inc/domain.class.php:200
 msgid "Entity-ID"
-msgstr ""
+msgstr "Entiteit-ID"
 
 #: inc/domain.class.php:332 inc/certificate.class.php:523
 msgid "Empty for infinite"
@@ -5215,13 +5218,13 @@ msgstr "Verlopen en aflopende domeinen"
 
 #: inc/domain.class.php:650
 msgid "Domains expired since more"
-msgstr ""
+msgstr "Domeinen verlopen sinds meer"
 
 #: inc/planningexternaleventtemplate.class.php:54
 msgid "External events template"
 msgid_plural "External events templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Sjabloon voor externe gebeurtenissen"
+msgstr[1] "Sjablonen voor externe gebeurtenissen"
 
 #: inc/planningexternaleventtemplate.class.php:71
 #: inc/planningexternalevent.class.php:289
@@ -5233,7 +5236,7 @@ msgstr "Achtergrondgebeurtenis"
 #: inc/planningexternalevent.class.php:313
 #: inc/features/planningevent.class.php:937
 msgid "Repeat"
-msgstr ""
+msgstr "Herhalen"
 
 #: inc/ola.class.php:51 inc/ticket.class.php:2845 inc/ticket.class.php:2853
 #: inc/ticket.class.php:2867 inc/ticket.class.php:2880
@@ -5264,8 +5267,8 @@ msgstr ""
 #: inc/contact_supplier.class.php:49
 msgid "Link Contact/Supplier"
 msgid_plural "Links Contact/Supplier"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Koppeling Contactpersoon/Leverancier"
+msgstr[1] "Koppelingen Contactpersoon/Leverancier"
 
 #: inc/contact_supplier.class.php:129 inc/contract_supplier.class.php:262
 msgid "Add a supplier"
@@ -5318,20 +5321,20 @@ msgstr "GSM (mobiel toestel)"
 #: inc/devicegraphiccardmodel.class.php:44
 msgid "Device graphic card model"
 msgid_plural "Device graphic card models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Apparaat grafische kaart model"
+msgstr[1] "Apparaat grafische kaart modellen"
 
 #: inc/rssfeed.class.php:80 inc/central.class.php:70
 msgid "RSS feed"
 msgid_plural "RSS feed"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "RSS feed"
+msgstr[1] "RSS feeds"
 
 #: inc/rssfeed.class.php:82 inc/rssfeed.class.php:933
 msgid "Personal RSS feed"
 msgid_plural "Personal RSS feed"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Persoonlijke RSS feed"
+msgstr[1] "Persoonlijke RSS feeds"
 
 #: inc/rssfeed.class.php:420 inc/projecttask.class.php:1014
 msgid "Creator"
@@ -5393,8 +5396,8 @@ msgstr "Gebruik"
 #: inc/profile.class.php:2628
 msgid "Public RSS feed"
 msgid_plural "Public RSS feeds"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Publieke RSS feed"
+msgstr[1] "Publieke RSS feeds"
 
 #: inc/rssfeed.class.php:1032 inc/stat.class.php:1565 inc/report.class.php:542
 #: inc/profile.class.php:906 inc/profile.class.php:1560
@@ -5407,8 +5410,8 @@ msgstr "Lezen"
 #: inc/savedsearch_alert.class.php:56
 msgid "Saved search alert"
 msgid_plural "Saved searches alerts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Bewaarde zoekopdracht waarschuwing"
+msgstr[1] "Bewaarde zoekopdracht waarschuwingen"
 
 #: inc/savedsearch_alert.class.php:147 inc/savedsearch_alert.class.php:252
 msgid "Operator"
@@ -5433,8 +5436,8 @@ msgstr "maak dit nu aan"
 #: inc/savedsearch_alert.class.php:213
 msgid "Notification used:"
 msgid_plural "Notifications used:"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gebruikte melding:"
+msgstr[1] "Gebruikte meldingen:"
 
 #: inc/savedsearch_alert.class.php:235
 msgid "Add an alert"
@@ -5476,8 +5479,8 @@ msgstr "Resultaten tellen voor %1$s is %2$s %3$s"
 #: inc/ipaddress.class.php:108 inc/ruleimportcomputer.class.php:94
 msgid "IP address"
 msgid_plural "IP addresses"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "IP-adres"
+msgstr[1] "IP-adressen"
 
 #: inc/ipaddress.class.php:134 inc/networkportmigration.class.php:112
 msgid "Invalid IP address"
@@ -5498,8 +5501,8 @@ msgstr "Geen ip adres gevonden"
 #: inc/devicebattery.class.php:42
 msgid "Battery"
 msgid_plural "Batteries"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Batterij"
+msgstr[1] "Batterijen"
 
 #: inc/devicebattery.class.php:57 inc/devicebattery.class.php:79
 #: inc/devicebattery.class.php:117 inc/item_deviceharddrive.class.php:49
@@ -5524,8 +5527,8 @@ msgstr "mV"
 #: inc/contact.class.php:53 inc/profile.class.php:954
 msgid "Contact"
 msgid_plural "Contacts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Contactpersoon"
+msgstr[1] "Contactpersonen"
 
 #: inc/contact.class.php:165 inc/authldap.class.php:768
 #: inc/authldap.class.php:970 inc/authldap.class.php:3279
@@ -5608,21 +5611,21 @@ msgstr "Familienaam"
 #: inc/contact.class.php:419 inc/contract.class.php:895
 msgid "Associated supplier"
 msgid_plural "Associated suppliers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Geassocieerde leverancier"
+msgstr[1] "Geassocieerde leveranciers"
 
 #: inc/solutiontemplate.class.php:51 inc/itilsolution.class.php:172
 #: inc/profile.class.php:1619 inc/ruleticket.class.php:766
 msgid "Solution template"
 msgid_plural "Solution templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Oplossingssjabloon"
+msgstr[1] "Oplossingssjablonen"
 
 #: inc/appliancetype.class.php:40
 msgid "Appliance type"
 msgid_plural "Appliance types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Apparaattype"
+msgstr[1] "Apparaattypes"
 
 #: inc/blacklist.class.php:216 inc/networkname.class.php:216
 msgid "IP"
@@ -5689,8 +5692,8 @@ msgstr "Receiver fouten"
 #: inc/item_operatingsystem.class.php:578
 msgid "Kernel version"
 msgid_plural "Kernel versions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kernel versie"
+msgstr[1] "Kernel versies"
 
 #: inc/devicefirmware.class.php:42 inc/networkequipment.class.php:548
 #: inc/phone.class.php:506
@@ -6006,8 +6009,8 @@ msgstr "Gehele Naam"
 #: inc/notificationtargetproject.class.php:734
 msgid "Team member"
 msgid_plural "Team members"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Teamlid"
+msgstr[1] "Teamleden"
 
 #: inc/notificationtargetprojecttask.class.php:582
 #: inc/notificationtargetprojecttask.class.php:595
@@ -6022,8 +6025,8 @@ msgstr[1] ""
 #: inc/notificationtargetproject.class.php:729
 msgid "Task"
 msgid_plural "Tasks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Taak"
+msgstr[1] "Taken"
 
 #: inc/notificationtargetprojecttask.class.php:584
 #: inc/notificationtargetprojecttask.class.php:596 inc/event.class.php:157
@@ -6043,8 +6046,8 @@ msgstr[1] "Tickets"
 #: inc/deviceharddrive.class.php:43
 msgid "Hard drive"
 msgid_plural "Hard drives"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Harde schijf"
+msgstr[1] "Harde schijven"
 
 #: inc/deviceharddrive.class.php:51 inc/deviceharddrive.class.php:77
 msgid "Capacity by default"
@@ -6090,8 +6093,8 @@ msgstr "HD grootte (in GB)"
 #: inc/devicenetworkcard.class.php:45
 msgid "Network card"
 msgid_plural "Network cards"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Netwerkkaart"
+msgstr[1] "Netwerkkaarten"
 
 #: inc/devicenetworkcard.class.php:66 inc/devicenetworkcard.class.php:90
 msgid "MAC address by default"
@@ -6153,8 +6156,8 @@ msgstr "Initiële contract duur"
 #, php-format
 msgid "%d month"
 msgid_plural "%d months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d maand"
+msgstr[1] "%d maanden"
 
 #: inc/contract_item.class.php:82
 msgid "Link Contract/Item"
@@ -6164,14 +6167,14 @@ msgstr[1] ""
 
 #: inc/contract_item.class.php:144 inc/queuednotification.class.php:342
 msgid "Associated item ID"
-msgstr "Bijbehorend item ID"
+msgstr "Geassocieerd item ID"
 
 #: inc/contract_item.class.php:399 inc/cartridge.class.php:794
 #: inc/cartridge.class.php:797
 msgid "month"
 msgid_plural "months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "maand"
+msgstr[1] "maanden"
 
 #: inc/contract_item.class.php:561 inc/item_ticket.class.php:391
 #: inc/domain_item.class.php:191 inc/appliance_item.class.php:141
@@ -6238,7 +6241,7 @@ msgstr "Foto achterkant"
 
 #: inc/commondcmodeldropdown.class.php:307 inc/dcroom.class.php:213
 msgid "Unable to save picture file."
-msgstr ""
+msgstr "Kan fotobestand niet opslaan."
 
 #: inc/commondcmodeldropdown.class.php:325
 msgid "1"
@@ -6266,8 +6269,8 @@ msgstr "Niet mogelijk om melding te versturen gebruikmakend van %1$s"
 #: inc/notificationtarget.class.php:361
 msgid "Recipient"
 msgid_plural "Recipients"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ontvanger"
+msgstr[1] "Ontvangers"
 
 #: inc/notificationevent.class.php:231 inc/notification.class.php:166
 #: inc/notification.class.php:383 inc/notificationsettingconfig.class.php:154
@@ -6275,8 +6278,8 @@ msgstr[1] ""
 #: inc/notificationtemplate.class.php:56
 msgid "Notification template"
 msgid_plural "Notification templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Meldingssjabloon"
+msgstr[1] "Meldingssjablonen"
 
 #: inc/notificationevent.class.php:232
 #: inc/notification_notificationtemplate.class.php:148
@@ -6406,27 +6409,27 @@ msgstr "Globaal woordenboek"
 #: inc/rulecollection.class.php:2023
 msgid "Device model"
 msgid_plural "Device models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Apparaatmodel"
+msgstr[1] "Apparaatmodellen"
 
 #: inc/rulecollection.class.php:2026
 msgid "Network equipment model"
 msgid_plural "Network equipment models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Netwerkapparatuurmodel"
+msgstr[1] "Netwerkapparatuurmodellen"
 
 #: inc/rulecollection.class.php:2050 inc/report.class.php:458
 #: inc/report.class.php:467
 msgid "Device type"
 msgid_plural "Device types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Apparaattype"
+msgstr[1] "Apparaattypes"
 
 #: inc/rulecollection.class.php:2053
 msgid "Network equipment type"
 msgid_plural "Network equipment types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Netwerkapparatuurtype"
+msgstr[1] "Netwerkapparatuurtypes"
 
 #: inc/rulecollection.class.php:2071
 #: inc/operatingsystemservicepack.class.php:44
@@ -6479,8 +6482,8 @@ msgstr[1] "Sluitingstijden"
 #, php-format
 msgid "%1$s template"
 msgid_plural "%1$s templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1$s sjabloon"
+msgstr[1] "%1$s sjablonen"
 
 #: inc/itiltemplate.class.php:265 inc/ticket.class.php:2456
 #: inc/ticket.class.php:4610 inc/change.class.php:1047
@@ -6501,7 +6504,7 @@ msgstr "Voorbeeld"
 
 #: inc/itiltemplate.class.php:549 inc/commondropdown.class.php:878
 msgid "Merge and assign to current entity"
-msgstr ""
+msgstr "Samenvoegen en toewijzen aan de huidige entiteit"
 
 #: inc/itiltemplate.class.php:561 inc/ticket.class.php:2530
 #: inc/commondropdown.class.php:895
@@ -6512,8 +6515,8 @@ msgstr "Samenvoegen"
 #: inc/devicecontrolmodel.class.php:44
 msgid "Device control model"
 msgid_plural "Device control models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Apparaatbesturingsmodel"
+msgstr[1] "Apparaatbesturingsmodellen"
 
 #: inc/networkport_vlan.class.php:132 inc/networkport.class.php:977
 #: inc/ipnetwork_vlan.class.php:131
@@ -6609,8 +6612,8 @@ msgstr "zonder e-mail reactie"
 #: inc/commonitilobject.class.php:6696
 msgid "Solution"
 msgid_plural "Solutions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Oplossing"
+msgstr[1] "Oplossingen"
 
 #: inc/itilsolution.class.php:140
 msgid ""
@@ -6664,20 +6667,20 @@ msgstr ""
 #: inc/devicememorytype.class.php:42
 msgid "Memory type"
 msgid_plural "Memory types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Geheugentype"
+msgstr[1] "Geheugentypes"
 
 #: inc/devicedrivemodel.class.php:44
 msgid "Device drive model"
 msgid_plural "Device drive models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Apparaatschijfmodel"
+msgstr[1] "Apparaatschijfmodellen"
 
 #: inc/devicecasetype.class.php:42
 msgid "Case type"
 msgid_plural "Case types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Behuizingstype"
+msgstr[1] "Behuizingstypes"
 
 #: inc/ruledictionnarymonitortypecollection.class.php:45
 msgid "Dictionnary of monitor types"
@@ -6763,20 +6766,20 @@ msgstr "Item is reeds gedefinieerd"
 #: inc/interfacetype.class.php:44
 msgid "Interface type (Hard drive...)"
 msgid_plural "Interface types (Hard drive...)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Interface type (Harde schijf...)"
+msgstr[1] "Interface types (Harde schijf...)"
 
 #: inc/devicesoundcard.class.php:45
 msgid "Soundcard"
 msgid_plural "Soundcards"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Geluidskaart"
+msgstr[1] "Geluidskaarten"
 
 #: inc/apiclient.class.php:61
 msgid "API client"
 msgid_plural "API clients"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "API client"
+msgstr[1] "API clients"
 
 #: inc/apiclient.class.php:111 inc/apiclient.class.php:206
 msgid "Log connections"
@@ -6813,12 +6816,12 @@ msgstr "Regenereer"
 #: inc/event.class.php:59 inc/profile.class.php:2382
 msgid "Log"
 msgid_plural "Logs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Logboek"
+msgstr[1] "Logboeken"
 
 #: inc/notification.class.php:215
 msgid "Allow response"
-msgstr ""
+msgstr "Reactie toestaan"
 
 #: inc/notification.class.php:366 inc/notificationtarget.class.php:1432
 msgid "Notification method"
@@ -6827,12 +6830,12 @@ msgstr "Meldingsmethode"
 #: inc/notification.class.php:455
 msgctxt "button"
 msgid "Add notification template"
-msgstr ""
+msgstr "Meldingssjabloon toevoegen"
 
 #: inc/notification.class.php:456
 msgctxt "button"
 msgid "Remove all notification templates"
-msgstr ""
+msgstr "Verwijder alle meldingssjablonen"
 
 #: inc/notification.class.php:660 inc/notification.class.php:672
 msgid "Field itemtype is mandatory"
@@ -6847,8 +6850,8 @@ msgstr "Een versie toevoegen"
 #: inc/item_softwareversion.class.php:54
 msgid "Installation"
 msgid_plural "Installations"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Installatie"
+msgstr[1] "Installaties"
 
 #: inc/softwareversion.class.php:358 inc/consumable.class.php:673
 #: inc/consumable.class.php:711 inc/supplier.class.php:635
@@ -6864,8 +6867,8 @@ msgstr "Totaal"
 #: inc/planningeventcategory.class.php:41
 msgid "Event category"
 msgid_plural "Event categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Evenementcategorie"
+msgstr[1] "Evenementcategorieën"
 
 #: inc/planningeventcategory.class.php:48 inc/impact.class.php:1525
 #: inc/projectstate.class.php:58 inc/projectstate.class.php:75
@@ -6875,8 +6878,8 @@ msgstr "Kleur"
 #: inc/devicegraphiccard.class.php:43
 msgid "Graphics card"
 msgid_plural "Graphics cards"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Grafische kaart"
+msgstr[1] "Grafische kaarten"
 
 #: inc/devicegraphiccard.class.php:51 inc/devicegraphiccard.class.php:79
 #: inc/devicegraphiccard.class.php:154 inc/devicemotherboard.class.php:51
@@ -6891,8 +6894,8 @@ msgstr "Geheugen standaard"
 #: inc/tasktemplate.class.php:52
 msgid "Task template"
 msgid_plural "Task templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Taaksjabloon"
+msgstr[1] "Taaksjablonen"
 
 #: inc/tasktemplate.class.php:70 inc/itilfollowuptemplate.class.php:66
 #: inc/itilfollowuptemplate.class.php:95
@@ -7138,8 +7141,8 @@ msgstr "Lijst van LDAP-directory replicas"
 #: inc/authldap.class.php:593 inc/authldap.class.php:3631
 msgid "Replicate"
 msgid_plural "Replicates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Replica"
+msgstr[1] "Replica's"
 
 #: inc/authldap.class.php:660 inc/group.class.php:553
 msgid "In users"
@@ -7195,7 +7198,7 @@ msgstr "Administratief nummer"
 #: inc/authldap.class.php:3281
 msgctxt "ldap"
 msgid "Phone"
-msgstr ""
+msgstr "Telefoon"
 
 #: inc/authldap.class.php:817 inc/authldap.class.php:1104
 #: inc/notificationtemplatetranslation.class.php:124
@@ -7253,8 +7256,8 @@ msgstr "Zoekfilter voor entiteiten"
 #: inc/auth.class.php:1489
 msgid "Port"
 msgid_plural "Ports"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Poort"
+msgstr[1] "Poorten"
 
 #: inc/authldap.class.php:1175
 msgid "Domain name used by inventory tool"
@@ -7352,7 +7355,8 @@ msgstr "Geen directory geselecteerd"
 
 #: inc/authldap.class.php:3338
 msgid "No directory associated to entity: impossible search"
-msgstr "Er is geen directory verbonden met de entiteit : zoeken is onmogelijk"
+msgstr ""
+"Er is geen directory geassocieerd met de entiteit: zoeken is onmogelijk"
 
 #: inc/authldap.class.php:3521 inc/transfer.class.php:3441
 #: inc/transfer.class.php:3443
@@ -7423,8 +7427,8 @@ msgstr "systeem"
 #: inc/reservation.class.php:54 install/update_0723_078.php:4794
 msgid "Reservation"
 msgid_plural "Reservations"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Reservatie"
+msgstr[1] "Reservaties"
 
 #: inc/event.class.php:156 inc/transfer.class.php:3458
 #: inc/profile.class.php:114 inc/profile.class.php:911
@@ -7468,8 +7472,8 @@ msgstr "Beheer"
 #: inc/computer_item.class.php:723
 msgid "Connection"
 msgid_plural "Connections"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Verbinding"
+msgstr[1] "Verbindingen"
 
 #: inc/event.class.php:164 inc/config.class.php:2258
 msgid "Security"
@@ -7480,8 +7484,8 @@ msgstr "Beveiliging"
 #: inc/html.class.php:1509 inc/html.class.php:7115 inc/html.class.php:7144
 msgid "Plugin"
 msgid_plural "Plugins"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Invoegtoepassing"
+msgstr[1] "Invoegtoepassingen"
 
 #: inc/event.class.php:259 inc/event.class.php:359
 msgid "No Event"
@@ -7523,8 +7527,8 @@ msgstr "De aangevraagde actie werd niet toegestaan"
 #: inc/notificationtemplatetranslation.class.php:50
 msgid "Template translation"
 msgid_plural "Template translations"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Sjabloonvertaling"
+msgstr[1] "Sjabloonvertalingen"
 
 #: inc/notificationtemplatetranslation.class.php:120
 msgid "Show list of available tags"
@@ -7607,8 +7611,8 @@ msgstr "Maximum duur"
 #: inc/levelagreement.class.php:200
 msgid "Minute"
 msgid_plural "Minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Minuut"
+msgstr[1] "Minuten"
 
 #: inc/levelagreement.class.php:202
 #: inc/notificationtargetcommonitilobject.class.php:1579
@@ -7617,8 +7621,8 @@ msgstr[1] ""
 #: inc/reservation.class.php:1025
 msgid "Day"
 msgid_plural "Days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Dag"
+msgstr[1] "Dagen"
 
 #: inc/levelagreement.class.php:222 inc/levelagreement.class.php:713
 msgid "End of working day"
@@ -7657,7 +7661,7 @@ msgstr "Kalender van een ticket"
 #: inc/levelagreement.class.php:702
 msgctxt "hour"
 msgid "Time"
-msgstr ""
+msgstr "Tijd"
 
 #. TRANS: %d is a number of minutes
 #: inc/levelagreement.class.php:760 inc/dropdown.class.php:1540
@@ -7666,8 +7670,8 @@ msgstr ""
 #, php-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d minuut"
+msgstr[1] "%d minuten"
 
 #. TRANS: %d is a number of hours
 #: inc/levelagreement.class.php:763 inc/dropdown.class.php:1536
@@ -7676,8 +7680,8 @@ msgstr[1] ""
 #, php-format
 msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d uur"
+msgstr[1] "%d uren"
 
 #. TRANS: %d is a number of days
 #: inc/levelagreement.class.php:766 inc/dropdown.class.php:1532
@@ -7689,8 +7693,8 @@ msgstr[1] ""
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d dag"
+msgstr[1] "%d dagen"
 
 #: inc/levelagreement.class.php:939 inc/ticket.class.php:2599
 #: inc/ticket.class.php:2802 inc/ticket.class.php:4393
@@ -7707,8 +7711,8 @@ msgstr "Behandeltijd"
 #: inc/itilfollowuptemplate.class.php:49 inc/itilfollowup.class.php:843
 msgid "Followup template"
 msgid_plural "Followup templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Opvolgingssjabloon"
+msgstr[1] "Opvolgingssjablonen"
 
 #: inc/itilfollowuptemplate.class.php:61 inc/itilfollowuptemplate.class.php:87
 #: inc/itilfollowup.class.php:884 inc/itilfollowup.class.php:1092
@@ -7828,8 +7832,8 @@ msgstr[1] "%s items"
 #: inc/operatingsystemversion.class.php:44
 msgid "Version of the operating system"
 msgid_plural "Versions of the operating systems"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Versie van het besturingssysteem"
+msgstr[1] "Versies van de besturingssystemen"
 
 #: inc/notificationajaxsetting.class.php:43
 msgid "Browser followups configuration"
@@ -7842,8 +7846,8 @@ msgstr "Schakel web browser opvolgingen in"
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
 msgid_plural "Browser notifications"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Browsermelding"
+msgstr[1] "Browsermeldingen"
 
 #: inc/notificationajaxsetting.class.php:70
 #: inc/notificationajaxsetting.class.php:71
@@ -7913,8 +7917,8 @@ msgstr "Voorgenomen actie"
 #: inc/profile.class.php:1073 inc/projecttask.class.php:633
 msgid "Project"
 msgid_plural "Projects"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Project"
+msgstr[1] "Projecten"
 
 #: inc/project.class.php:130 inc/projecttask.class.php:191
 msgid "See (actor)"
@@ -7976,7 +7980,7 @@ msgstr "Aantal problemen"
 
 #: inc/project.class.php:1032
 msgid "Planned Duration"
-msgstr ""
+msgstr "Geplande duur"
 
 #: inc/project.class.php:1084 inc/project.class.php:2301
 #: inc/projecttasktemplate.class.php:70 inc/projecttasktemplate.class.php:137
@@ -7995,7 +7999,7 @@ msgstr "Geen items aanwezig"
 
 #: inc/project.class.php:1316 inc/projecttask.class.php:393
 msgid "Circular relation found. Parent not updated."
-msgstr ""
+msgstr "Circulaire relatie gevonden. Ouder niet bijgewerkt."
 
 #: inc/project.class.php:1335
 msgid "Invalid planned dates. Dates not updated."
@@ -8019,13 +8023,16 @@ msgstr "Als kind van"
 
 #: inc/project.class.php:1489 inc/projecttask.class.php:707
 msgid "Automatically calculate"
-msgstr ""
+msgstr "Automatisch berekenen"
 
 #: inc/project.class.php:1497
 msgid ""
 "When automatic computation is active, percentage is computed based on the "
 "average of all child project and task percent done."
 msgstr ""
+"Wanneer automatische berekening actief is, wordt het percentage berekend op "
+"basis van het gemiddelde van alle onderliggende projecten- en "
+"taakpercentages."
 
 #: inc/project.class.php:1556
 msgid "Sum of planned durations of tasks"
@@ -8042,8 +8049,8 @@ msgstr "Teamlid toevoegen"
 #: inc/project.class.php:1690 inc/projecttask.class.php:1452
 msgid "Member"
 msgid_plural "Members"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Lid"
+msgstr[1] "Leden"
 
 #: inc/project.class.php:1922
 #, php-format
@@ -8147,39 +8154,39 @@ msgstr "zaterdag"
 
 #: inc/project.class.php:2244
 msgid "No status"
-msgstr ""
+msgstr "Geen status"
 
 #: inc/project.class.php:2286
 msgid "Subproject"
-msgstr ""
+msgstr "Deelproject"
 
 #: inc/project.class.php:2286
 msgid "Subtask"
-msgstr ""
+msgstr "Deeltaak"
 
 #: inc/project.class.php:2290
 #, php-format
 msgid "%s of %s"
-msgstr ""
+msgstr "%s van %s"
 
 #: inc/project.class.php:2309
 #, php-format
 msgid "%s / %s tasks complete"
-msgstr ""
+msgstr "%s / %s taken voltooid"
 
 #: inc/item_operatingsystem.class.php:47
 msgid "Item operating system"
 msgid_plural "Item operating systems"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Item besturingssysteem"
+msgstr[1] "Item besturingssystemen"
 
 #: inc/item_operatingsystem.class.php:336
 #: inc/item_operatingsystem.class.php:555
 #: inc/operatingsystemkernel.class.php:42
 msgid "Kernel"
 msgid_plural "Kernels"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kernel"
+msgstr[1] "Kernels"
 
 #: inc/item_operatingsystem.class.php:345
 #: inc/item_operatingsystem.class.php:596
@@ -8187,8 +8194,8 @@ msgstr[1] ""
 #: inc/operatingsystemedition.class.php:42
 msgid "Edition"
 msgid_plural "Editions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Editie"
+msgstr[1] "Edities"
 
 #: inc/item_operatingsystem.class.php:354
 #: inc/item_operatingsystem.class.php:437
@@ -8245,8 +8252,8 @@ msgstr[1] ""
 #: install/update_0713_072.php:641
 msgid "Volume"
 msgid_plural "Volumes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Volume"
+msgstr[1] "Volumes"
 
 #: inc/item_disk.class.php:199 inc/item_disk.class.php:330
 #: inc/item_disk.class.php:428 inc/item_disk.class.php:558
@@ -8270,22 +8277,22 @@ msgstr "Vrije ruimte"
 
 #: inc/item_disk.class.php:225 inc/item_disk.class.php:336
 msgid "Encryption"
-msgstr ""
+msgstr "Encryptie"
 
 #: inc/item_disk.class.php:228 inc/item_disk.class.php:380
 #: inc/item_disk.class.php:604
 msgid "Encryption tool"
-msgstr ""
+msgstr "Encryptieprogramma"
 
 #: inc/item_disk.class.php:234 inc/item_disk.class.php:382
 #: inc/item_disk.class.php:617
 msgid "Encryption algorithm"
-msgstr ""
+msgstr "Encryptie-algoritme"
 
 #: inc/item_disk.class.php:237 inc/item_disk.class.php:384
 #: inc/item_disk.class.php:630
 msgid "Encryption type"
-msgstr ""
+msgstr "Encryptietype"
 
 #: inc/item_disk.class.php:309
 msgid "Add a volume"
@@ -8297,23 +8304,23 @@ msgstr "Vrij percentage"
 
 #: inc/item_disk.class.php:377
 msgid "Partial encryption"
-msgstr ""
+msgstr "Gedeeltelijke encryptie"
 
 #: inc/item_disk.class.php:589
 msgid "Encryption status"
-msgstr ""
+msgstr "Encryptiestatus"
 
 #: inc/item_disk.class.php:649
 msgid "Not encrypted"
-msgstr ""
+msgstr "Niet geëncrypteerd"
 
 #: inc/item_disk.class.php:650
 msgid "Partially encrypted"
-msgstr ""
+msgstr "Gedeeltelijk geëncrypteerd"
 
 #: inc/item_disk.class.php:651
 msgid "Encrypted"
-msgstr ""
+msgstr "Geëncrypteerd"
 
 #: inc/devicepowersupplymodel.class.php:44
 msgid "Device power supply model"
@@ -8402,21 +8409,21 @@ msgstr[1] ""
 #: inc/operatingsystemarchitecture.class.php:44
 msgid "Operating system architecture"
 msgid_plural "Operating system architectures"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Besturingssysteemarchitectuur"
+msgstr[1] "Besturingssysteemarchitecturen"
 
 #: inc/projecttasktemplate.class.php:50 inc/projecttask.class.php:576
 msgid "Project task template"
 msgid_plural "Project task templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Projecttaaksjabloon"
+msgstr[1] "Projecttaaksjablonen"
 
 #: inc/notification_notificationtemplate.class.php:63
 #: inc/profile.class.php:1136
 msgid "Template"
 msgid_plural "Templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Sjabloon"
+msgstr[1] "Sjablonen"
 
 #: inc/notification_notificationtemplate.class.php:130
 msgid "Add a template"
@@ -8526,8 +8533,8 @@ msgstr "Verwijder een probleem"
 #: inc/notificationtargetcontract.class.php:186 inc/entity.class.php:1951
 msgid "Contract"
 msgid_plural "Contracts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Contract"
+msgstr[1] "Contracten"
 
 #: inc/contract.class.php:231 inc/contract.class.php:520
 #: inc/contract.class.php:746 inc/contract.class.php:1736
@@ -8703,8 +8710,8 @@ msgstr "Verwijder een contract"
 #: inc/devicesimcard.class.php:42 inc/item_devicesimcard.class.php:54
 msgid "Simcard"
 msgid_plural "Simcards"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Simkaart"
+msgstr[1] "Simkaarten"
 
 #: inc/devicesimcard.class.php:63 inc/devicesimcard.class.php:94
 msgid "Allow VOIP"
@@ -8736,15 +8743,15 @@ msgstr "Geen verbruiksartikel"
 msgctxt "consumable"
 msgid "New"
 msgid_plural "New"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Nieuw"
+msgstr[1] "Nieuw"
 
 #: inc/consumable.class.php:405
 msgctxt "consumable"
 msgid "Used"
 msgid_plural "Used"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gebruikt"
+msgstr[1] "Gebruikt"
 
 #: inc/consumable.class.php:434
 msgctxt "button"
@@ -8803,15 +8810,15 @@ msgstr "Geen verbruiksartikelen gevonden"
 #: inc/rackmodel.class.php:43
 msgid "Rack model"
 msgid_plural "Rack models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Rackmodel"
+msgstr[1] "Rackmodellen"
 
 #: inc/item_ticket.class.php:300
 #, php-format
 msgid "%1$s item not saved"
 msgid_plural "%1$s items not saved"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1$s item niet opgeslagen"
+msgstr[1] "%1$s items niet opgeslagen"
 
 #: inc/item_ticket.class.php:304
 msgid "Display all items"
@@ -8853,8 +8860,8 @@ msgstr "Item succesvol verwijderd"
 #: inc/enclosuremodel.class.php:41
 msgid "Enclosure model"
 msgid_plural "Enclosure models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Behuizingsmodel"
+msgstr[1] "Behuizingsmodellen"
 
 #: inc/computervirtualmachine.class.php:55
 msgid "Virtualization"
@@ -8891,8 +8898,8 @@ msgstr "Geen bijbehorende gevirtualiseerde omgeving voor computer"
 #: inc/features/planningevent.class.php:1016
 msgid "Comment"
 msgid_plural "Comments"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Opmerking"
+msgstr[1] "Opmerkingen"
 
 #: inc/computervirtualmachine.class.php:547
 #: inc/computervirtualmachine.class.php:636
@@ -8902,18 +8909,18 @@ msgstr "processor nummer"
 #: inc/computervirtualmachine.class.php:559 inc/dropdown.class.php:908
 msgid "Virtual machine"
 msgid_plural "Virtual machines"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Virtuele machine"
+msgstr[1] "Virtuele machines"
 
 #: inc/computervirtualmachine.class.php:675
 msgid "Virtual machine Comment"
-msgstr ""
+msgstr "Virtuele machine-opmerking"
 
 #: inc/cartridgeitemtype.class.php:42 inc/cartridge.class.php:982
 msgid "Cartridge type"
 msgid_plural "Cartridge types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Inktpatroontype"
+msgstr[1] "Inktpatroontypes"
 
 #: inc/ruleright.class.php:56 inc/dropdown.class.php:967
 #: inc/profile.class.php:1480 inc/profile.class.php:2256
@@ -8931,7 +8938,7 @@ msgstr "Globale criteria"
 
 #: inc/ruleright.class.php:236
 msgid "Authentication type"
-msgstr ""
+msgstr "Authenticatietype"
 
 #: inc/ruleright.class.php:249 inc/authmail.class.php:87
 #: inc/auth.class.php:1098
@@ -8967,7 +8974,7 @@ msgstr "Standaardprofiel"
 
 #: inc/ruleright.class.php:374 inc/config.class.php:1254
 msgid "Timezone"
-msgstr ""
+msgstr "Tijdzone"
 
 #: inc/ruleright.class.php:407
 msgid "LDAP criteria"
@@ -9456,7 +9463,7 @@ msgstr ""
 
 #: inc/console/migration/racksplugintocorecommand.class.php:556
 msgid "Ignore (default)"
-msgstr ""
+msgstr "Negeren (standaard)"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:611
 #, php-format
@@ -9823,69 +9830,69 @@ msgstr ""
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:425
 msgid "Importing domains..."
-msgstr ""
+msgstr "Domeinen aan het importeren..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:454
 #, php-format
 msgid "Updating existing domain %s..."
-msgstr ""
+msgstr "Bestaand domein %s aan het bijwerken..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:459
 #, php-format
 msgid "Importing domain %s..."
-msgstr ""
+msgstr "Domein %s aan het importeren..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:472
 #, php-format
 msgid "Unable to find mapping for type %s."
-msgstr ""
+msgstr "Kan geen toewijzing vinden voor type %s."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:513
 #, php-format
 msgid "Unable to add domain %s."
-msgstr ""
+msgstr "Kan domein %s niet toevoegen."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:514
 #, php-format
 msgid "Unable to update domain %s."
-msgstr ""
+msgstr "Kan domein %s niet bijwerken."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:557
 msgid "No domains found."
-msgstr ""
+msgstr "Geen domeinen gevonden."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:574
 msgid "Importing domains items..."
-msgstr ""
+msgstr "Domeinitems aan het importeren..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:601
 #, php-format
 msgid "Unable to find corresponding domain for item %s (%s)."
-msgstr ""
+msgstr "Kan overeenkomstig domein voor item %s (%s) niet vinden."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:614
 #, php-format
 msgid "Skip existing domain item %s..."
-msgstr ""
+msgstr "Bestaand domeinitem %s overslaan..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:619
 #, php-format
 msgid "Importing domain item %s..."
-msgstr ""
+msgstr "Domeinitem %s aan het importeren..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:654
 #, php-format
 msgid "Unable to add domain item %s."
-msgstr ""
+msgstr "Kan domeinitem %s niet toevoegen."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:655
 #, php-format
 msgid "Unable to update domain item %s."
-msgstr ""
+msgstr "Kan domeinitem %s niet bijwerken."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:667
 msgid "No domains items found."
-msgstr ""
+msgstr "Geen domeinitems gevonden."
 
 #: inc/console/task/unlockcommand.class.php:56
 msgid "Unlock automatic tasks"
@@ -9993,17 +10000,21 @@ msgstr ""
 #: inc/console/application.class.php:185
 msgid "Disable GLPI plugins (unless commands forces plugins loading)"
 msgstr ""
+"Schakel GLPI-invoegtoepassingen uit (tenzij commando's het laden van "
+"invoegtoepassingen  afdwingen)"
 
 #: inc/console/application.class.php:191
 msgid ""
 "Output language (default value is existing GLPI \"language\" configuration "
 "or \"en_GB\")"
 msgstr ""
+"Uitvoertaal (standaardwaarde is bestaande GLPI taalconfiguratie of "
+"\"en_GB\")"
 
 #: inc/console/application.class.php:212
 #, php-format
 msgid "Invalid \"--lang\" option value \"%s\"."
-msgstr ""
+msgstr "Ongeldige \"--lang\" optiewaarde \"%s\"."
 
 #: inc/console/application.class.php:238 inc/config.php:171 inc/config.php:225
 msgid ""
@@ -12606,8 +12617,8 @@ msgstr "Contactpersoon toevoegen"
 #: inc/supplier.class.php:356
 msgid "Associated contact"
 msgid_plural "Associated contacts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Geassocieerde contactpersoon"
+msgstr[1] "Geassocieerde contactenpersonen"
 
 #: inc/supplier.class.php:401
 msgid "Associated contract"
@@ -14884,8 +14895,8 @@ msgid ""
 "Purchase date incompatible with the associated budget. %1$s not in budget "
 "period: %2$s / %3$s"
 msgstr ""
-"Aankoopdatum stemt niet overeen met het bijbehorend budget. %1$s valt niet "
-"in de budget periode: %2$s / %3$s"
+"Aankoopdatum stemt niet overeen met het geassocieerde budget. %1$s valt niet"
+" in de budget periode: %2$s / %3$s"
 
 #: inc/infocom.class.php:431
 msgid "Send alarms on financial and administrative information"
@@ -15390,7 +15401,7 @@ msgstr "Door %s"
 #: inc/reminder.class.php:782
 #, php-format
 msgid "Recall on %s"
-msgstr "%s ingetrokken"
+msgstr "Herinnering voor %s"
 
 #: inc/commonitiltask.class.php:1306 inc/planning.class.php:225
 #: inc/planning.class.php:246 inc/ticketrecurrent.class.php:84
@@ -18663,7 +18674,7 @@ msgstr "Voeg project taak toe"
 
 #: inc/notificationtargetplanningrecall.class.php:46
 msgid "Planning recall"
-msgstr "Herroepen van de planning"
+msgstr "Herinnering voor de planning"
 
 #: inc/commonitilobject_item.class.php:120
 msgid "Or complete search"
@@ -20933,7 +20944,7 @@ msgstr ""
 
 #: inc/entity.class.php:1557
 msgid "LDAP filter associated to the entity (if necessary)"
-msgstr "Bijbehorende LDAP filter voor entiteit (indien noodzakelijk)"
+msgstr "Geassocieerde LDAP filter voor entiteit (indien noodzakelijk)"
 
 #: inc/entity.class.php:1601
 msgid "Autofill dates for financial and administrative information"
@@ -22583,7 +22594,7 @@ msgstr ""
 
 #: install/update.php:533
 msgid "Ignore warning"
-msgstr ""
+msgstr "Negeer waarschuwing"
 
 #: install/update.php:575
 msgid "Impossible to accomplish an update by this way!"
@@ -22655,11 +22666,11 @@ msgstr "Automatische omleiding, of klik"
 
 #: install/update_94_95/dashboards.php:36
 msgid "Central"
-msgstr ""
+msgstr "Centraal"
 
 #: install/update_94_95/dashboards.php:342
 msgid "Mini tickets dashboard"
-msgstr ""
+msgstr "Mini tickets dashboard"
 
 #: install/install.php:113
 msgid "Unofficial translations are also available"
@@ -22805,7 +22816,7 @@ msgstr ""
 
 #: install/install.php:614
 msgid "Select your language"
-msgstr ""
+msgstr "Selecteer jouw taal"
 
 #: install/install.php:639
 msgid "Beginning of the installation"
@@ -22870,40 +22881,40 @@ msgstr "Toegang tot de FAQ"
 
 #: js/common.js:1185
 msgid "just now"
-msgstr ""
+msgstr "zojuist"
 
 #: js/common.js:1187
 msgid "a minute ago"
-msgstr ""
+msgstr "een minuut geleden"
 
 #: js/common.js:1189
 msgid "an hour ago"
-msgstr ""
+msgstr "een uur geleden"
 
 #: js/common.js:1191
 msgid "yesterday"
-msgstr ""
+msgstr "gisteren"
 
 #: js/common.js:1193
 msgid "a year ago"
-msgstr ""
+msgstr "een jaar geleden"
 
 #: js/dashboard.js:333
 msgid "Add a card"
-msgstr ""
+msgstr "Voeg een kaart toe"
 
 #: js/dashboard.js:366
 msgid "Add a filter"
-msgstr ""
+msgstr "Voeg een filter toe"
 
 #: js/dashboard.js:415
 msgid "Saved"
-msgstr ""
+msgstr "Opgeslagen"
 
 #: js/dashboard.js:839
 #, javascript-format
 msgid "Are you sure you want to delete the dashboard %s ?"
-msgstr ""
+msgstr "Ben je zeker dat je dashboard %s wil verwijderen?"
 
 #: js/impact.js:1309
 msgid "Go to"
@@ -22911,15 +22922,15 @@ msgstr "Ga naar"
 
 #: js/impact.js:1310
 msgid "Open this element in a new tab"
-msgstr ""
+msgstr "Open dit element in een nieuw tabblad"
 
 #: js/impact.js:1316
 msgid "Show ongoing tickets"
-msgstr ""
+msgstr "Toon lopende tickets"
 
 #: js/impact.js:1317
 msgid "Show ongoing tickets for this item"
-msgstr ""
+msgstr "Toon lopende tickets voor dit item"
 
 #: js/impact.js:1323
 msgid "Group properties..."
@@ -22927,7 +22938,7 @@ msgstr "Groep opties..."
 
 #: js/impact.js:1324
 msgid "Set name and/or color for this group"
-msgstr ""
+msgstr "Stel naam en/of kleur in voor deze groep"
 
 #: js/impact.js:1331
 msgid "Remove from group"

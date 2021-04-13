@@ -27,9 +27,9 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
 # Seweryn Kolano <seweryn.kolano+transifex@gmail.com>, 2020
 # edasmax <edasmax@gmail.com>, 2020
-# Yild, 2020
 # Paweł Dederko <paweld10@o2.pl>, 2020
 # Jan Kowalski <wireks@gmail.com>, 2021
+# Yild, 2021
 # 
 #, fuzzy
 msgid ""
@@ -38,7 +38,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-22 09:43+0100\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Jan Kowalski <wireks@gmail.com>, 2021\n"
+"Last-Translator: Yild, 2021\n"
 "Language-Team: Polish (Poland) (https://www.transifex.com/glpi/teams/1637/pl_PL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -987,7 +987,7 @@ msgstr "Dostępność"
 
 #: front/migrationcleaner.php:44
 msgid "You don't need the \"migration cleaner\" tool anymore..."
-msgstr "Nie potrzebuje już narzędzia \"sprzątacz migracji\""
+msgstr "Nie potrzebujesz już narzędzia \"sprzątacz migracji\""
 
 #: front/migrationcleaner.php:48 inc/migrationcleaner.class.php:47
 msgid "Migration cleaner"
@@ -2084,11 +2084,11 @@ msgstr "Język został zmieniony!"
 
 #: front/user.form.php:158
 msgid "Unable to impersonate user"
-msgstr ""
+msgstr "Nie można wcielić się w użytkownika"
 
 #: front/user.form.php:169
 msgid "Unable to stop impersonating user"
-msgstr ""
+msgstr "Nie można przestać wcielać się w użytkownika"
 
 #: front/itiltemplatefield.form.php:63
 msgid "hidden"
@@ -3332,7 +3332,7 @@ msgstr "Id"
 
 #: front/impactcsv.php:91 inc/impact.class.php:254
 msgid "Impacted by"
-msgstr ""
+msgstr "Pod wpływem"
 
 #: front/report.contract.list.php:45
 msgid "List of the hardware under contract"
@@ -4465,7 +4465,7 @@ msgstr "Podrzędne grupy"
 
 #: inc/problem.class.php:1694
 msgid "New problem for this item..."
-msgstr ""
+msgstr "Nowy problem dla..."
 
 #. TRANS : %d is the number of problems
 #: inc/problem.class.php:1728
@@ -5116,10 +5116,10 @@ msgstr[3] "Autoryzacji"
 #: inc/vlan.class.php:48
 msgid "VLAN"
 msgid_plural "VLANs"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "VLAN"
+msgstr[1] "VLANy"
+msgstr[2] "VLANów"
+msgstr[3] "VLANy"
 
 #: inc/vlan.class.php:55 inc/vlan.class.php:78 inc/vlan.class.php:160
 #: inc/networkport_vlan.class.php:171 inc/ipnetwork_vlan.class.php:166
@@ -6413,7 +6413,7 @@ msgstr "Maksymalny pobór mocy [W]"
 #: inc/commondcmodeldropdown.class.php:122
 #: inc/commondcmodeldropdown.class.php:214
 msgid "Is half rack"
-msgstr ""
+msgstr "Połówkowa szerokość rack"
 
 #: inc/commondcmodeldropdown.class.php:130
 #: inc/commondcmodeldropdown.class.php:224
@@ -8449,10 +8449,10 @@ msgstr[3] "Systemy operacyjne"
 #: inc/operatingsystemkernel.class.php:42
 msgid "Kernel"
 msgid_plural "Kernels"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Jądro"
+msgstr[1] "Jądra"
+msgstr[2] "Jąder"
+msgstr[3] "Jądra"
 
 #: inc/item_operatingsystem.class.php:345
 #: inc/item_operatingsystem.class.php:596
@@ -8549,7 +8549,7 @@ msgstr "Wolne miejsce"
 
 #: inc/item_disk.class.php:225 inc/item_disk.class.php:336
 msgid "Encryption"
-msgstr ""
+msgstr "Szyfrowanie"
 
 #: inc/item_disk.class.php:228 inc/item_disk.class.php:380
 #: inc/item_disk.class.php:604
@@ -8559,12 +8559,12 @@ msgstr ""
 #: inc/item_disk.class.php:234 inc/item_disk.class.php:382
 #: inc/item_disk.class.php:617
 msgid "Encryption algorithm"
-msgstr ""
+msgstr "Algorytm szyfrowania"
 
 #: inc/item_disk.class.php:237 inc/item_disk.class.php:384
 #: inc/item_disk.class.php:630
 msgid "Encryption type"
-msgstr ""
+msgstr "Typ szyfrowania"
 
 #: inc/item_disk.class.php:309
 msgid "Add a volume"
@@ -8576,23 +8576,23 @@ msgstr "Procent wolnego"
 
 #: inc/item_disk.class.php:377
 msgid "Partial encryption"
-msgstr ""
+msgstr "Częściowe szyfrowanie"
 
 #: inc/item_disk.class.php:589
 msgid "Encryption status"
-msgstr ""
+msgstr "Status szyfrowania"
 
 #: inc/item_disk.class.php:649
 msgid "Not encrypted"
-msgstr ""
+msgstr "Nie zaszyfrowany"
 
 #: inc/item_disk.class.php:650
 msgid "Partially encrypted"
-msgstr ""
+msgstr "Częściowo zaszyfrowany"
 
 #: inc/item_disk.class.php:651
 msgid "Encrypted"
-msgstr ""
+msgstr "Zaszyfrowany"
 
 #: inc/devicepowersupplymodel.class.php:44
 msgid "Device power supply model"
@@ -8687,18 +8687,18 @@ msgstr[3] "Pamięci"
 #: inc/operatingsystemarchitecture.class.php:44
 msgid "Operating system architecture"
 msgid_plural "Operating system architectures"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Architektura systemu operacyjnego"
+msgstr[1] "Architektury systemu operacyjnego"
+msgstr[2] "Architektur systemu operacyjnego"
+msgstr[3] "Architektura systemu operacyjnego"
 
 #: inc/projecttasktemplate.class.php:50 inc/projecttask.class.php:576
 msgid "Project task template"
 msgid_plural "Project task templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Szablon zadań projektu"
+msgstr[1] "Szablony zadań projektu"
+msgstr[2] "Szablonów zadań projektu"
+msgstr[3] "Szablon zadań projektu"
 
 #: inc/notification_notificationtemplate.class.php:63
 #: inc/profile.class.php:1136
@@ -8715,11 +8715,11 @@ msgstr "Dodaj szablon"
 
 #: inc/notification_notificationtemplate.class.php:168
 msgid "No template selected"
-msgstr ""
+msgstr "Nie wybrano szablonu"
 
 #: inc/notification_notificationtemplate.class.php:399
 msgid "Browser"
-msgstr ""
+msgstr "Przeglądarka"
 
 #: inc/notificationtargetdbconnection.class.php:55
 msgid "Desynchronization SQL replica"
@@ -8820,10 +8820,10 @@ msgstr "Usuwanie problemu"
 #: inc/notificationtargetcontract.class.php:186 inc/entity.class.php:1951
 msgid "Contract"
 msgid_plural "Contracts"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Umowa"
+msgstr[1] "Umowy"
+msgstr[2] "Umów"
+msgstr[3] "Umowy"
 
 #: inc/contract.class.php:231 inc/contract.class.php:520
 #: inc/contract.class.php:746 inc/contract.class.php:1736
@@ -9101,10 +9101,10 @@ msgstr "Nie znaleziono materiału eksploatacyjnego"
 #: inc/rackmodel.class.php:43
 msgid "Rack model"
 msgid_plural "Rack models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Model rack"
+msgstr[1] "Modele rack"
+msgstr[2] "Modeli rack"
+msgstr[3] "Model rack"
 
 #: inc/item_ticket.class.php:300
 #, php-format
@@ -9155,10 +9155,10 @@ msgstr "Element usunięty poprawnie"
 #: inc/enclosuremodel.class.php:41
 msgid "Enclosure model"
 msgid_plural "Enclosure models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Model obudowy"
+msgstr[1] "Modele obudów"
+msgstr[2] "Modeli obudów"
+msgstr[3] "Modele obudów"
 
 #: inc/computervirtualmachine.class.php:55
 msgid "Virtualization"
@@ -9431,7 +9431,7 @@ msgstr ""
 #: inc/console/ldap/synchronizeuserscommand.class.php:306
 #, php-format
 msgid "Import new users from server \"%s\"..."
-msgstr ""
+msgstr "Importowanie nowych użytkowników z serwera \"%s\"..."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:309
 #, php-format
@@ -9473,6 +9473,8 @@ msgid ""
 "Option --only-create-new is not compatible with option --only-update-"
 "existing."
 msgstr ""
+"Opcja --only-create-new nie jest kompatybilna z opcją --only-update-"
+"existing."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:438
 #, php-format
@@ -9488,6 +9490,7 @@ msgstr ""
 msgid ""
 "Option --begin-date value has to be lower than option --end-date value."
 msgstr ""
+"Wartość opcji --begin-date musi być mniejsza od wartości opcji --end-date."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:472
 #, php-format
@@ -9601,7 +9604,7 @@ msgstr "Migracja przerwana."
 #: inc/console/migration/myisamtoinnodbcommand.class.php:102
 #, php-format
 msgid "Migrating table \"%s\"..."
-msgstr ""
+msgstr "Migracja tabeli \"%s\"..."
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:109
 #, php-format
@@ -9639,7 +9642,7 @@ msgstr ""
 
 #: inc/console/migration/racksplugintocorecommand.class.php:162
 msgid "Migrate Racks plugin data into GLPI core tables"
-msgstr ""
+msgstr "Migruj dane wtyczki 'Racks' do tabel podstawowych GLPI"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:168
 msgid "Ignore \"PluginRacksOther\" models and elements"
@@ -9672,6 +9675,8 @@ msgid ""
 "You are about to launch migration of Racks plugin data into GLPI core "
 "tables."
 msgstr ""
+"Za chwilę rozpoczniesz migrację danych wtyczki 'Racks' do podstawowych tabel"
+" GLPI."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:217
 #: inc/console/migration/appliancesplugintocorecommand.class.php:162
@@ -9695,13 +9700,15 @@ msgid ""
 "Racks plugin is not part of GLPI plugin list. It has never been installed or"
 " has been cleaned."
 msgstr ""
+"Wtyczka 'Racks' nie znajduje się na liście wtyczek GLPI. Nigdy nie była "
+"zainstalowana lub została wyczyszczona."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:281
 #: inc/console/migration/racksplugintocorecommand.class.php:296
 #, php-format
 msgid ""
 "You have to install Racks plugin files in version %s to be able to continue."
-msgstr ""
+msgstr "Musisz zainstalować wtyczkę 'Racks' w wersji %sby móc kontynuować."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:317
 #: inc/console/migration/domainsplugintocorecommand.class.php:221
@@ -9721,11 +9728,13 @@ msgid ""
 "Racks plugin data has to be updated to %s version. It can be done using the "
 "--update-plugin option."
 msgstr ""
+"Wtyczka 'Racks' musi zostać zaktualizowana do wersji %s. Może to być "
+"zrobione poprzez opcję --update-plugin."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:384
 #, php-format
 msgid "Racks plugin table \"%s\" is missing."
-msgstr ""
+msgstr "Brak tabeli '%s' z wtyczki 'Racks'."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:392
 #: inc/console/migration/appliancesplugintocorecommand.class.php:227
@@ -9815,31 +9824,31 @@ msgstr ""
 
 #: inc/console/migration/racksplugintocorecommand.class.php:802
 msgid "Importing rack models..."
-msgstr ""
+msgstr "Importowanie modeli rack..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:820
 #, php-format
 msgid "Importing rack model \"%s\"..."
-msgstr ""
+msgstr "Importowanie modelu rack \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:841
 #, php-format
 msgid "Unable to import rack model \"%s\"."
-msgstr ""
+msgstr "Nie można zaimportować modelu rack \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:862
 #: inc/console/migration/racksplugintocorecommand.class.php:942
 msgid "No rack models found."
-msgstr ""
+msgstr "Nie znaleziono modeli rack."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:880
 msgid "Importing rack types..."
-msgstr ""
+msgstr "Importowanie typów rack..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:898
 #, php-format
 msgid "Importing rack type \"%s\"..."
-msgstr ""
+msgstr "Importowanie typu rack \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:921
 #, php-format
@@ -9934,7 +9943,7 @@ msgstr ""
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:145
 msgid "Migrate Appliances plugin data into GLPI core tables"
-msgstr ""
+msgstr "Migruj dane wtyczki 'Appliances' do tabel podstawowych GLPI"
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:160
 msgid ""
@@ -10067,7 +10076,7 @@ msgstr ""
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:91
 msgid "Migrate Domains plugin data into GLPI core tables"
-msgstr ""
+msgstr "Migruj dane wtyczki 'Domains' do tabel podstawowych GLPI"
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:98
 #, php-format
@@ -10100,6 +10109,8 @@ msgid ""
 "Domains plugin data has to be updated to %s version. It can be done using "
 "the --update-plugin option."
 msgstr ""
+"Wtyczka 'Domains' musi zostać zaktualizowana do wersji %s. Może to być "
+"zrobione poprzez opcję --update-plugin."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:283
 #, php-format
@@ -10246,7 +10257,7 @@ msgstr ""
 
 #: inc/console/task/unlockcommand.class.php:181
 msgid "Option --cycle is not compatible with option --delay."
-msgstr ""
+msgstr "Opcja --cycle nie jest kompatybilna z opcją --delay."
 
 #: inc/console/task/unlockcommand.class.php:187
 msgid "Option --cycle has to be an integer."
@@ -10619,7 +10630,7 @@ msgstr ""
 #: inc/console/plugin/abstractplugincommand.class.php:71
 #: inc/marketplace/notificationtargetcontroller.class.php:120
 msgid "Plugin directory"
-msgstr ""
+msgstr "Katalog wtyczek"
 
 #: inc/console/plugin/abstractplugincommand.class.php:82
 msgid "Option --all is not compatible with usage of directory argument."
@@ -10627,7 +10638,7 @@ msgstr ""
 
 #: inc/console/plugin/abstractplugincommand.class.php:93
 msgid "All plugins"
-msgstr ""
+msgstr "Wszystkie wtyczki"
 
 #: inc/console/plugin/deactivatecommand.class.php:62
 #: inc/console/plugin/installcommand.class.php:116
@@ -10646,12 +10657,12 @@ msgstr ""
 #: inc/console/plugin/deactivatecommand.class.php:82
 #, php-format
 msgid "Plugin \"%s\" deactivation failed."
-msgstr ""
+msgstr "Deaktywacja wtyczki %snie powiodła się."
 
 #: inc/console/plugin/deactivatecommand.class.php:90
 #, php-format
 msgid "Plugin \"%1$s\" has been deactivated."
-msgstr ""
+msgstr "Wtyczka %1$szostała zdeaktywowana."
 
 #: inc/console/plugin/deactivatecommand.class.php:113
 #: inc/console/plugin/installcommand.class.php:274
@@ -10664,12 +10675,12 @@ msgstr ""
 #: inc/console/plugin/activatecommand.class.php:123
 #, php-format
 msgid "Plugin \"%s\" is not yet installed."
-msgstr ""
+msgstr "Wtyczka \"%s\" nie została jeszcze zainstalowana."
 
 #: inc/console/plugin/deactivatecommand.class.php:131
 #, php-format
 msgid "Plugin \"%s\" is already inactive."
-msgstr ""
+msgstr "Wtyczka \"%s\" jest już nieaktywna."
 
 #: inc/console/plugin/deactivatecommand.class.php:142
 msgid "Which plugin(s) do you want to deactivate (comma separated values) ?"
@@ -10695,7 +10706,7 @@ msgstr ""
 
 #: inc/console/plugin/installcommand.class.php:83
 msgid "Force execution of installation, even if plugin is already installed"
-msgstr ""
+msgstr "Wymuś instalację nawet gdy wtyczka jest już zainstalowana."
 
 #: inc/console/plugin/installcommand.class.php:138
 #, php-format
@@ -10730,27 +10741,27 @@ msgstr ""
 #: inc/console/plugin/installcommand.class.php:302
 #, php-format
 msgid "Plugin \"%s\" function \"%s\" is missing."
-msgstr ""
+msgstr "We wtyczce \"%s\" brakuje funkcji \"%s\"."
 
 #: inc/console/plugin/installcommand.class.php:325
 #, php-format
 msgid "Plugin \"%s\" requirements not met."
-msgstr ""
+msgstr "Nie spełniono wymagań dla wtyczki \"%s\"."
 
 #: inc/console/plugin/activatecommand.class.php:82
 #, php-format
 msgid "Plugin \"%s\" activation failed."
-msgstr ""
+msgstr "Aktywacja wtyczki \"%s\" nie powiodła się."
 
 #: inc/console/plugin/activatecommand.class.php:90
 #, php-format
 msgid "Plugin \"%1$s\" has been activated."
-msgstr ""
+msgstr "Wtyczka \"%1$s\" została aktywowana."
 
 #: inc/console/plugin/activatecommand.class.php:131
 #, php-format
 msgid "Plugin \"%s\" is already active."
-msgstr ""
+msgstr "Wtyczka \"%s\" jest już aktywna."
 
 #: inc/console/plugin/activatecommand.class.php:139
 #, php-format
@@ -11430,7 +11441,7 @@ msgstr ""
 
 #: inc/ticket.class.php:1930
 msgid "Your ticket has been registered."
-msgstr ""
+msgstr "Twoje zgłoszenie zostało zarejestrowane."
 
 #: inc/ticket.class.php:2112
 #, php-format
@@ -12483,10 +12494,10 @@ msgstr[3] "Stany wirtualnej maszyny"
 #: inc/racktype.class.php:41
 msgid "Rack type"
 msgid_plural "Rack types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Typ rack"
+msgstr[1] "Typy rack"
+msgstr[2] "Typów rack"
+msgstr[3] "Typ rack"
 
 #: inc/commondevice.class.php:120
 #, php-format
@@ -13299,10 +13310,10 @@ msgstr[3] "Systemy wirtualizacji"
 #: inc/pdu_plug.class.php:49
 msgid "PDU plug"
 msgid_plural "PDU plugs"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Gniazdo listwy zasilającej"
+msgstr[1] "Gniazda listwy zasilającej"
+msgstr[2] "Gniazd listwy zasilającej"
+msgstr[3] "Gniazdo listwy zasilającej"
 
 #: inc/pdu_plug.class.php:120
 msgid "Add a new plug"
@@ -13866,10 +13877,10 @@ msgstr[3] "Typów umów"
 #: inc/problemtemplate.class.php:49 inc/entity.class.php:2474
 msgid "Problem template"
 msgid_plural "Problem templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Szablon problemu"
+msgstr[1] "Szablony problemu"
+msgstr[2] "Szablonów problemu"
+msgstr[3] "Szablony problemu"
 
 #: inc/printer.class.php:364 inc/monitor.class.php:252
 #: inc/peripheral.class.php:253 inc/ruledictionnaryprinter.class.php:107
@@ -14033,7 +14044,7 @@ msgstr "Słownik modeli urządzeń peryferyjnych"
 
 #: inc/search.class.php:163
 msgid "assets"
-msgstr ""
+msgstr "zasoby"
 
 #: inc/search.class.php:165
 msgid "Search results for localized items only"
@@ -14280,7 +14291,7 @@ msgstr ""
 
 #: inc/profile.class.php:776
 msgid "Default problem template"
-msgstr ""
+msgstr "Domyślny szablon problemu"
 
 #: inc/profile.class.php:831 inc/profile.class.php:1047
 #: inc/profile.class.php:2600 inc/reminder.class.php:881
@@ -14422,7 +14433,7 @@ msgstr "Personalizacja"
 
 #: inc/profile.class.php:1568
 msgid "All dashboards"
-msgstr ""
+msgstr "Wszystkie pulpity"
 
 #: inc/profile.class.php:1573
 msgid "Search result display"
@@ -15335,10 +15346,10 @@ msgstr "MSIN to ostatnie 8 lub 10 cyfr numeru IMSI"
 #: inc/plug.class.php:42
 msgid "Plug"
 msgid_plural "Plugs"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Wtyczka"
+msgstr[1] "Wtyczki"
+msgstr[2] "Wtyczek"
+msgstr[3] "Wtyczek"
 
 #: inc/notificationtargetcertificate.class.php:49 inc/entity.class.php:941
 #: inc/entity.class.php:2061
@@ -15858,7 +15869,7 @@ msgstr "Automatyczne akcje SLA"
 
 #: inc/commonitiltask.class.php:243
 msgid "You can't remove description of a task."
-msgstr ""
+msgstr "Nie możesz usunąć opisu zadania."
 
 #: inc/commonitiltask.class.php:279 inc/commonitiltask.class.php:427
 #: inc/features/planningevent.class.php:151
@@ -15881,7 +15892,7 @@ msgstr ""
 
 #: inc/commonitiltask.class.php:406
 msgid "You can't add a task without description."
-msgstr ""
+msgstr "Nie możesz dodać zadania bez jego opisu."
 
 #: inc/commonitiltask.class.php:634
 msgid "Public followup"
@@ -16110,15 +16121,15 @@ msgstr ""
 
 #: inc/dashboard/grid.class.php:269 js/dashboard.js:161
 msgid "Share or embed this dashboard"
-msgstr ""
+msgstr "Udostępnij lub osadź ten pulpit"
 
 #: inc/dashboard/grid.class.php:270 js/dashboard.js:841
 msgid "Delete this dashboard"
-msgstr ""
+msgstr "Usuń ten pulpit"
 
 #: inc/dashboard/grid.class.php:271
 msgid "Toggle auto-refresh"
-msgstr ""
+msgstr "Włącz automatyczne odświeżanie"
 
 #: inc/dashboard/grid.class.php:272
 msgid "Toggle night mode"
@@ -16126,15 +16137,15 @@ msgstr ""
 
 #: inc/dashboard/grid.class.php:273 inc/html.class.php:5016
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "Włącz tryb pełnoekranowy"
 
 #: inc/dashboard/grid.class.php:274
 msgid "Clone this dashboard"
-msgstr ""
+msgstr "Klonuj ten pulpit"
 
 #: inc/dashboard/grid.class.php:275
 msgid "Toggle edit mode"
-msgstr ""
+msgstr "Włącz tryb edycji"
 
 #: inc/dashboard/grid.class.php:276
 msgid "Add filter"
@@ -16142,19 +16153,19 @@ msgstr ""
 
 #: inc/dashboard/grid.class.php:277 js/dashboard.js:863
 msgid "Add a new dashboard"
-msgstr ""
+msgstr "Dodaj nowy pulpit"
 
 #: inc/dashboard/grid.class.php:582 js/dashboard.js:576
 msgid "Refresh this card"
-msgstr ""
+msgstr "Odśwież tę kartę"
 
 #: inc/dashboard/grid.class.php:583 js/dashboard.js:307 js/dashboard.js:577
 msgid "Edit this card"
-msgstr ""
+msgstr "Edytuj tę kartę"
 
 #: inc/dashboard/grid.class.php:584 js/dashboard.js:578
 msgid "Delete this card"
-msgstr ""
+msgstr "Usuń tę kartę"
 
 #: inc/dashboard/grid.class.php:675
 msgid "others"
@@ -16163,7 +16174,7 @@ msgstr ""
 #: inc/dashboard/grid.class.php:682 inc/pdu_rack.class.php:280
 #: inc/item_rack.class.php:686 inc/rack.class.php:316
 msgid "Background color"
-msgstr ""
+msgstr "Kolor tła"
 
 #: inc/dashboard/grid.class.php:708
 msgid "Widget"
@@ -16191,7 +16202,7 @@ msgstr ""
 
 #: inc/dashboard/grid.class.php:868
 msgid "Direct link"
-msgstr ""
+msgstr "Link bezpośrednie"
 
 #: inc/dashboard/grid.class.php:877
 msgid "Iframe"
@@ -16224,7 +16235,7 @@ msgstr[3] "Grupy"
 
 #: inc/dashboard/grid.class.php:957
 msgid "Or share the dashboard to these target objects:"
-msgstr ""
+msgstr "Lub udostępnij pulpit do wskazanych obiektów:"
 
 #: inc/dashboard/grid.class.php:996
 msgid "empty card !"
@@ -16275,7 +16286,7 @@ msgstr "Top kategorie zgłoszeń"
 
 #: inc/dashboard/grid.class.php:1376
 msgid "Top ticket's entities"
-msgstr ""
+msgstr "Top jednostek zgłaszających"
 
 #: inc/dashboard/grid.class.php:1377
 msgid "Top ticket's request types"
@@ -16405,7 +16416,7 @@ msgstr[3] "Modele dysków twardych"
 
 #: inc/pdu_rack.class.php:95
 msgid "A pdu is required"
-msgstr ""
+msgstr "Listwa zasilająca jest wymagana"
 
 #: inc/pdu_rack.class.php:99 inc/item_rack.class.php:952
 msgid "A rack is required"
@@ -16414,7 +16425,7 @@ msgstr ""
 #: inc/pdu_rack.class.php:103 inc/item_enclosure.class.php:313
 #: inc/item_rack.class.php:956
 msgid "A position is required"
-msgstr ""
+msgstr "Pozycja jest wymagana"
 
 #: inc/pdu_rack.class.php:107
 msgid "A side is required"
@@ -16466,7 +16477,7 @@ msgstr ""
 
 #: inc/pdu_rack.class.php:497
 msgid "The pdu will be"
-msgstr ""
+msgstr "Listwa zasilająca będzie"
 
 #: inc/pdu_rack.class.php:499
 msgid "racked"
@@ -16602,7 +16613,7 @@ msgstr "E-mail nie znaleziony. Import niemożliwy."
 
 #: inc/notimportedemail.class.php:242
 msgid "Not enough rights"
-msgstr ""
+msgstr "Brak wystarczających uprawnień"
 
 #: inc/impact.class.php:65 inc/impact.class.php:119 inc/impact.class.php:749
 msgid "Impact analysis"
@@ -16610,11 +16621,11 @@ msgstr "Analiza wpływu"
 
 #: inc/impact.class.php:347
 msgid "This asset doesn't have any dependencies."
-msgstr ""
+msgstr "Ten zasób nie ma żadnych zależności."
 
 #: inc/impact.class.php:358
 msgid "Export to csv"
-msgstr ""
+msgstr "Eksportuj do CSV"
 
 #: inc/impact.class.php:362 inc/impact.class.php:370 inc/impact.class.php:1050
 #: inc/impact.class.php:1109 inc/preference.class.php:43
@@ -16644,7 +16655,7 @@ msgstr "Wyświetl w formie graficznej"
 
 #: inc/impact.class.php:986
 msgid "Add assets"
-msgstr ""
+msgstr "Dodaj zasoby"
 
 #: inc/impact.class.php:991
 msgid "Filter itemtypes..."
@@ -16664,7 +16675,7 @@ msgstr ""
 
 #: inc/impact.class.php:1059
 msgid "Show impact"
-msgstr ""
+msgstr "Pokaż wpływ"
 
 #: inc/impact.class.php:1068
 msgid "Show depends"
@@ -16672,7 +16683,7 @@ msgstr ""
 
 #: inc/impact.class.php:1071
 msgid "Colors"
-msgstr ""
+msgstr "Kolory"
 
 #: inc/impact.class.php:1074
 msgid "Depends"
@@ -16692,7 +16703,7 @@ msgstr ""
 
 #: inc/impact.class.php:1102
 msgid "Add asset"
-msgstr ""
+msgstr "Dodaj zasób"
 
 #: inc/impact.class.php:1103
 msgid "Add relation"
@@ -16772,6 +16783,7 @@ msgstr ""
 msgid ""
 "Let us know your usage to improve future versions of GLPI and its plugins!"
 msgstr ""
+"Daj nam znać, jak używasz GLPI, aby ulepszyć przyszłe wersje oraz wtyczki!"
 
 #: inc/telemetry.class.php:444
 msgid "Reference your GLPI"
@@ -17282,34 +17294,34 @@ msgstr "Edytuj"
 #: inc/marketplace/controller.class.php:100
 #: inc/marketplace/controller.class.php:185
 msgid "Unable to download plugin archive."
-msgstr ""
+msgstr "Nie można pobrać pliku wtyczki."
 
 #: inc/marketplace/controller.class.php:111
 #, php-format
 msgid "Plugin archive format is not supported by your system : %s."
-msgstr ""
+msgstr "Format pliku wtyczki nie jest wspierany przez twój system : %s."
 
 #: inc/marketplace/controller.class.php:133
 msgid "Unable to extract plugin archive."
-msgstr ""
+msgstr "Nie można wypakować pliku wtyczki."
 
 #: inc/marketplace/controller.class.php:278
 #: inc/marketplace/notificationtargetcontroller.class.php:61
 msgid "Check all plugin updates"
-msgstr ""
+msgstr "Sprawdź aktualizację dla wszystkich wtyczek"
 
 #: inc/marketplace/controller.class.php:303
 #, php-format
 msgid "New version for plugin %s: %s"
-msgstr ""
+msgstr "Nowa wersja dla wtyczki %s: %s"
 
 #: inc/marketplace/view.class.php:103
 msgid "Installed"
-msgstr ""
+msgstr "Zainstalowane"
 
 #: inc/marketplace/view.class.php:104
 msgid "Discover"
-msgstr ""
+msgstr "Wykryj"
 
 #: inc/marketplace/view.class.php:142 inc/glpinetwork.class.php:80
 #, php-format
@@ -17332,6 +17344,7 @@ msgstr ""
 #: inc/marketplace/view.class.php:157
 msgid "A registration, at least a free one, is required to use marketplace!"
 msgstr ""
+"Rejestracja, przynajmniej ta darmowa jest wymagana do używania sklepu!"
 
 #: inc/marketplace/view.class.php:158
 #, php-format
@@ -17389,7 +17402,7 @@ msgstr ""
 
 #: inc/marketplace/view.class.php:382
 msgid "Refresh plugin list"
-msgstr ""
+msgstr "Odśwież listę wtyczek"
 
 #: inc/marketplace/view.class.php:383
 msgid "Filter plugin list"
@@ -17424,7 +17437,7 @@ msgstr ""
 #: inc/marketplace/view.class.php:670
 #, php-format
 msgid "A new version (%s) is available, update ?"
-msgstr ""
+msgstr "Nowa wersja (%s) jest dostępna, aktualizować?"
 
 #: inc/marketplace/view.class.php:683
 #, php-format
@@ -17480,19 +17493,19 @@ msgstr ""
 
 #: inc/marketplace/notificationtargetcontroller.class.php:91
 msgid "Some updates are available for your installed plugins!"
-msgstr ""
+msgstr "Dostępne są aktualizacje do niektórych zainstalowanych wtyczek"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:119
 msgid "Plugin name"
-msgstr ""
+msgstr "Nazwa wtyczki"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:121
 msgid "Plugin new version number"
-msgstr ""
+msgstr "Nowa wersja wtyczki"
 
 #: inc/marketplace/notificationtargetcontroller.class.php:122
 msgid "Plugin old version number"
-msgstr ""
+msgstr "Stara wersja wtyczki"
 
 #: inc/peripheral.class.php:73
 msgid "Device"
@@ -17509,11 +17522,11 @@ msgstr "Marka"
 
 #: inc/item_enclosure.class.php:104
 msgid "Add new item to this enclosure..."
-msgstr ""
+msgstr "Dodaj nowy element do obudowy..."
 
 #: inc/item_enclosure.class.php:309
 msgid "An enclosure is required"
-msgstr ""
+msgstr "Obudowa jest wymagana"
 
 #: inc/softwarelicense.class.php:82
 msgid "Please select a software for this license"
@@ -17607,18 +17620,18 @@ msgstr "Podrzędne do %s"
 #: inc/pdu.class.php:57
 msgid "PDU"
 msgid_plural "PDUs"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Listwa zasilająca"
+msgstr[1] "Listwy zasilające"
+msgstr[2] "Listew zasilających"
+msgstr[3] "Listwy zasilające"
 
 #: inc/features/planningevent.class.php:702
 msgid "Each year"
-msgstr ""
+msgstr "Każdego roku"
 
 #: inc/features/planningevent.class.php:727
 msgid "Interval"
-msgstr ""
+msgstr "Interwał"
 
 #: inc/features/planningevent.class.php:736
 msgid "Until"
@@ -17630,7 +17643,7 @@ msgstr ""
 
 #: inc/features/planningevent.class.php:791
 msgid "Exceptions"
-msgstr ""
+msgstr "Wyjątki"
 
 #. TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
 #: inc/features/planningevent.class.php:821
@@ -17722,10 +17735,10 @@ msgstr "Wyślij zaplanowane przypomnienia"
 #: inc/usercategory.class.php:42
 msgid "User category"
 msgid_plural "User categories"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Kategoria użytkowników"
+msgstr[1] "Kategorie użytkowników"
+msgstr[2] "Kategorii użytkowników"
+msgstr[3] "Kategorie użytkowników"
 
 #: inc/glpinetwork.class.php:64
 msgid "Registration"
@@ -17736,6 +17749,8 @@ msgid ""
 "A registration key is needed to use advanced feature (like marketplace) in "
 "GLPI"
 msgstr ""
+"Wymagany jest klucz rejestracyjny by używać zaawansowanych funkcji (takich "
+"jak Sklep) w GLPI."
 
 #: inc/glpinetwork.class.php:69
 #, php-format
@@ -17773,11 +17788,11 @@ msgstr ""
 
 #: inc/glpinetwork.class.php:232
 msgid "The registration key is valid."
-msgstr ""
+msgstr "Klucz rejestracyjny jest poprawny."
 
 #: inc/glpinetwork.class.php:233
 msgid "The registration key is invalid."
-msgstr ""
+msgstr "Klucz rejestracyjny jest niewłaściwy."
 
 #: inc/glpinetwork.class.php:253
 #, php-format
@@ -17820,10 +17835,10 @@ msgstr[3] "Modele baterii"
 msgctxt "appliance"
 msgid "Relation"
 msgid_plural "Relations"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Relacja"
+msgstr[1] "Relacje"
+msgstr[2] "Relacji"
+msgstr[3] "Relacje"
 
 #: inc/devicecamera_item_format.class.php:116
 #: inc/appliance_item_relation.class.php:116
@@ -17835,7 +17850,7 @@ msgstr ""
 #: inc/appliance_item_relation.class.php:212
 #: inc/appliance_item_relation.class.php:213
 msgid "New relation"
-msgstr ""
+msgstr "Nowa relacja"
 
 #: inc/ruledictionnaryprinter.class.php:52
 #: inc/ruledictionnaryprintercollection.class.php:51
@@ -18283,7 +18298,7 @@ msgstr "Pobierz wizytówkę vCard użytkownika"
 
 #: inc/user.class.php:2081 inc/user.class.php:2082
 msgid "Impersonate"
-msgstr "Udawaj kogoś innego"
+msgstr "Wciel się w kogoś innego"
 
 #: inc/user.class.php:2182 inc/user.class.php:2666 inc/user.class.php:4741
 msgid "Password confirmation"
@@ -18532,7 +18547,7 @@ msgstr "Widok Grupowy"
 
 #: inc/central.class.php:75
 msgid "Dashboard"
-msgstr ""
+msgstr "Pulpit"
 
 #: inc/central.class.php:316
 #, php-format
@@ -18624,7 +18639,7 @@ msgstr ""
 
 #: inc/planning.class.php:1257
 msgid "Calendar name"
-msgstr ""
+msgstr "Nazwa kalendarza"
 
 #: inc/planning.class.php:1269
 msgid "Calendar URL"
@@ -18764,10 +18779,10 @@ msgstr "Nieudane stworzenie zgłoszenia (brak szablonu)"
 #: inc/pdumodel.class.php:41
 msgid "PDU model"
 msgid_plural "PDU models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Model listwy zasilającej"
+msgstr[1] "Modele listew zasilających"
+msgstr[2] "Modeli listew zasilających"
+msgstr[3] "Model listwy zasilającej"
 
 #: inc/itiltemplatepredefinedfield.class.php:48
 msgid "Predefined field"
@@ -18856,7 +18871,7 @@ msgstr "Oprogramowanie usunięte przez reguły słownikowe GLPI"
 #: inc/location.class.php:70 inc/location.class.php:156
 #: inc/location.class.php:270 inc/location.class.php:327
 msgid "Town"
-msgstr ""
+msgstr "Miasto"
 
 #: inc/location.class.php:96 inc/entity.class.php:1448
 #: inc/entity.class.php:1453
@@ -20014,11 +20029,11 @@ msgstr ""
 
 #: inc/html.class.php:5031
 msgid "Previous (arrow left)"
-msgstr ""
+msgstr "Poprzedni (strzałka w lewo)"
 
 #: inc/html.class.php:5033
 msgid "Next (arrow right)"
-msgstr ""
+msgstr "Następny (strzałka w prawo)"
 
 #: inc/html.class.php:5555
 msgid "Attach file by drag & drop or copy & paste in editor or "
@@ -20087,11 +20102,11 @@ msgstr ""
 #: inc/html.class.php:7589
 #, php-format
 msgid "You are impersonating %s."
-msgstr ""
+msgstr "Wcieliłeś się w %s."
 
 #: inc/html.class.php:7592
 msgid "Stop impersonating"
-msgstr ""
+msgstr "Zaprzestań wcielania się"
 
 #: inc/notificationtemplate.class.php:131
 msgid "CSS"
@@ -20737,7 +20752,7 @@ msgstr ""
 
 #: inc/config.class.php:1408
 msgid "Dashboards"
-msgstr ""
+msgstr "Pulpity"
 
 #: inc/config.class.php:1411
 msgid "Default for central"
@@ -21245,17 +21260,17 @@ msgstr ""
 
 #: inc/item_rack.class.php:154
 msgid "Orientation"
-msgstr ""
+msgstr "Orientacja"
 
 #: inc/item_rack.class.php:169 inc/item_rack.class.php:308
 #: inc/item_rack.class.php:678
 msgid "Front"
-msgstr ""
+msgstr "Przód"
 
 #: inc/item_rack.class.php:169 inc/item_rack.class.php:339
 #: inc/item_rack.class.php:679
 msgid "Rear"
-msgstr ""
+msgstr "Tył"
 
 #: inc/item_rack.class.php:287
 msgid "Following elements are out of rack bounds"
@@ -21263,7 +21278,7 @@ msgstr ""
 
 #: inc/item_rack.class.php:302
 msgid "images"
-msgstr ""
+msgstr "Obrazki"
 
 #: inc/item_rack.class.php:304
 msgid "texts"
@@ -21279,7 +21294,7 @@ msgstr ""
 
 #: inc/item_rack.class.php:518
 msgid "Space"
-msgstr ""
+msgstr "Przestrzeń"
 
 #: inc/item_rack.class.php:674
 msgid "Orientation (front rack point of view)"
@@ -21287,27 +21302,27 @@ msgstr ""
 
 #: inc/item_rack.class.php:698
 msgid "Horizontal position (from rack point of view)"
-msgstr ""
+msgstr "Pozycja horyzontalna (z perspektywy szafy)"
 
 #: inc/item_rack.class.php:712
 msgid "Reserved position ?"
-msgstr ""
+msgstr "Pozycja zarezerwowana?"
 
 #: inc/item_rack.class.php:827
 msgid "asset rear side"
-msgstr ""
+msgstr "Tył zasobu"
 
 #: inc/item_rack.class.php:828
 msgid "asset front side"
-msgstr ""
+msgstr "Przód zasobu"
 
 #: inc/item_rack.class.php:1010
 msgid "You must define an horizontal position for this item"
-msgstr ""
+msgstr "Musisz wskazać pozycję horyzontalną elementu"
 
 #: inc/item_rack.class.php:1016
 msgid "You must define an orientation for this item"
-msgstr ""
+msgstr "Musisz wskazać orientację elementu"
 
 #: inc/item_rack.class.php:1082
 #, php-format
@@ -21715,7 +21730,7 @@ msgstr ""
 
 #: inc/itilcategory.class.php:105 inc/itilcategory.class.php:172
 msgid "Template for a problem"
-msgstr ""
+msgstr "Szablon dla problemu"
 
 #: inc/itilcategory.class.php:277
 msgid "ITIL category"
@@ -22260,7 +22275,7 @@ msgstr[3] "Pozostałe rodzaje"
 #: inc/log.class.php:211
 #, php-format
 msgid "%1$s impersonated by %2$s"
-msgstr ""
+msgstr "%2$swciela się w %1$s"
 
 #: inc/log.class.php:276
 msgid "No historical"
@@ -22366,10 +22381,10 @@ msgstr "Odblokuj element"
 #: inc/pdutype.class.php:41
 msgid "PDU type"
 msgid_plural "PDU types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Typ listwy zasilającej"
+msgstr[1] "Typy listew zasilających"
+msgstr[2] "Typów listew zasilających"
+msgstr[3] "Typ listwy zasilającej"
 
 #: inc/change_ticket.class.php:62
 msgid "Link Ticket/Change"
@@ -22888,7 +22903,7 @@ msgstr ""
 
 #: inc/rack.class.php:940
 msgid "Position must be set"
-msgstr ""
+msgstr "Pozycja musi być podana"
 
 #: inc/rack.class.php:961
 #, php-format
@@ -23548,7 +23563,7 @@ msgstr ""
 #: js/dashboard.js:839
 #, javascript-format
 msgid "Are you sure you want to delete the dashboard %s ?"
-msgstr ""
+msgstr "Czy na pewno chcesz usunąć pulpit %s?"
 
 #: js/impact.js:1309
 msgid "Go to"
@@ -23580,11 +23595,11 @@ msgstr "Usuń z grupy"
 
 #: js/impact.js:1332
 msgid "Remove this asset from the group"
-msgstr ""
+msgstr "Usuń ten zasób z grupy"
 
 #: js/impact.js:1358
 msgid "This asset already exists."
-msgstr ""
+msgstr "Ten zasób już istnieje."
 
 #: js/impact.js:1377
 msgid "Unexpected error."
@@ -23600,7 +23615,7 @@ msgstr "Edytuj grupę"
 
 #: js/impact.js:2291
 msgid "Draw a line between two assets to add an impact relation"
-msgstr ""
+msgstr "Narysuj linię pomiędzy dwoma zasobami by dodać analizę wpływu"
 
 #: js/impact.js:2298
 msgid "Click on an element to remove it from the network"
@@ -23608,7 +23623,7 @@ msgstr ""
 
 #: js/impact.js:2306
 msgid "Draw a square containing the assets you wish to group"
-msgstr ""
+msgstr "Narysuj kwadrat zawierający zasoby, które chcesz zgrupować"
 
 #: js/impact.js:2438
 msgid "Requests"
@@ -23624,7 +23639,7 @@ msgstr "Zmiany"
 
 #: js/impact.js:2477
 msgid "You need to select at least 2 assets to make a group"
-msgstr ""
+msgstr "Musisz wybrać co najmniej dwa zasoby by utworzyć grupę"
 
 #: js/kanban.js:306
 msgid "Bulk add"
@@ -23640,7 +23655,7 @@ msgstr "Dodaj kolumnę"
 
 #: js/kanban.js:875
 msgid "More"
-msgstr ""
+msgstr "Więcej"
 
 #: js/kanban.js:1346
 #, javascript-format

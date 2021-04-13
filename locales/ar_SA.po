@@ -6,8 +6,8 @@
 # Translators:
 # Roshan Roche <roshan6@gmail.com>, 2019
 # Khaled Al Matri <abuhilal1@gmail.com>, 2019
-# Mohammad Mousa <mm84010@gmail.com>, 2019
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
+# Mohammad Mousa <mm84010@gmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -16,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-22 09:43+0100\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2020\n"
+"Last-Translator: Mohammad Mousa <mm84010@gmail.com>, 2021\n"
 "Language-Team: Arabic (Saudi Arabia) (https://www.transifex.com/glpi/teams/1637/ar_SA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4423,7 +4423,7 @@ msgstr "تاريخ الفتح"
 #: inc/commonitilobject.class.php:5140 inc/commonitilobject.class.php:6122
 #: inc/slalevel.class.php:174 tests/functionnal/Rule.php:300
 msgid "Time to resolve"
-msgstr ""
+msgstr "الوقت لإنجازه"
 
 #: inc/problem.class.php:1252 inc/problem.class.php:1261
 #: inc/rssfeed.class.php:687 inc/tasktemplate.class.php:76
@@ -8160,7 +8160,7 @@ msgstr[5] ""
 #: inc/ruleticket.class.php:711 inc/slalevel.class.php:173
 #: tests/functionnal/Rule.php:303
 msgid "Time to own"
-msgstr ""
+msgstr "الوقت لإمتلاكه"
 
 #: inc/itilfollowuptemplate.class.php:49 inc/itilfollowup.class.php:843
 msgid "Followup template"

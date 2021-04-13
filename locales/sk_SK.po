@@ -5098,10 +5098,10 @@ msgstr[3] "Oprávnenia"
 #: inc/vlan.class.php:48
 msgid "VLAN"
 msgid_plural "VLANs"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "VLAN"
+msgstr[1] "VLAN"
+msgstr[2] "VLAN"
+msgstr[3] "VLAN"
 
 #: inc/vlan.class.php:55 inc/vlan.class.php:78 inc/vlan.class.php:160
 #: inc/networkport_vlan.class.php:171 inc/ipnetwork_vlan.class.php:166
@@ -8812,10 +8812,10 @@ msgstr "Zmazanie problému"
 #: inc/notificationtargetcontract.class.php:186 inc/entity.class.php:1951
 msgid "Contract"
 msgid_plural "Contracts"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Zmluva"
+msgstr[1] "Zmluvy"
+msgstr[2] "Zmluvy"
+msgstr[3] "Zmluvy"
 
 #: inc/contract.class.php:231 inc/contract.class.php:520
 #: inc/contract.class.php:746 inc/contract.class.php:1736
@@ -10599,16 +10599,16 @@ msgstr "Posledná migrácia znovu spustená."
 
 #: inc/console/config/setcommand.class.php:62
 msgid "Set configuration value"
-msgstr ""
+msgstr "Nastaviť konfiguračnú hodnotu"
 
 #: inc/console/config/setcommand.class.php:72
 msgid "Configuration value:"
-msgstr ""
+msgstr "Konfiguračná hodnota:"
 
 #: inc/console/config/setcommand.class.php:88
 #, php-format
 msgid "Invalid context \"%s\"."
-msgstr ""
+msgstr "Neplatný kontext \"%s\"."
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:53
 msgid "Replay dictionnary rules on existing items"

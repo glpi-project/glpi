@@ -19,7 +19,6 @@
 # Kirill Lavrik <kirill.lavrik@gmail.com>, 2019
 # Nickolas Cage <workmail666@gmail.com>, 2019
 # - - <wemian@mail.ru>, 2019
-# Mikhail Vlasenko <biggysmoke32@gmail.com>, 2019
 # 1 2 <frolikovon@gmail.com>, 2019
 # Alexander <mr_slam@rambler.ru>, 2020
 # Gleb Mekhrenin <mehrenin@gmail.com>, 2020
@@ -32,6 +31,7 @@
 # Vitaliy Zhukov <DragonZX@yandex.ru>, 2020
 # Welder <kvaluev@me.com>, 2020
 # Andrey Kaptelin <andrey.kaptelin@gmail.com>, 2021
+# Ilya Pavlov <spirkaa@gmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -40,7 +40,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-22 09:43+0100\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Andrey Kaptelin <andrey.kaptelin@gmail.com>, 2021\n"
+"Last-Translator: Ilya Pavlov <spirkaa@gmail.com>, 2021\n"
 "Language-Team: Russian (Russia) (https://www.transifex.com/glpi/teams/1637/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1010,19 +1010,19 @@ msgstr "Очистить ошибки миграции сетевого порт
 #: front/computerantivirus.form.php:53
 #, php-format
 msgid "%s adds an antivirus"
-msgstr "%s добавляет антивирус"
+msgstr "%s добавил антивирус"
 
 #. TRANS: %s is the user login
 #: front/computerantivirus.form.php:66
 #, php-format
 msgid "%s purges an antivirus"
-msgstr "%s очищает антивирус"
+msgstr "%s очистил антивирус"
 
 #. TRANS: %s is the user login
 #: front/computerantivirus.form.php:79
 #, php-format
 msgid "%s updates an antivirus"
-msgstr "%s обновляет антивирус"
+msgstr "%s обновил антивирус"
 
 #: front/rulesengine.test.php:61 front/documenttype.list.php:37
 #: front/setup.auth.php:43 front/rule.test.php:60 front/dropdown.php:37
@@ -1063,7 +1063,7 @@ msgstr "%s добавил задачу"
 #: front/commonitiltask.form.php:71 front/projecttask.form.php:73
 #, php-format
 msgid "%s purges a task"
-msgstr "%s очищает задачу"
+msgstr "%s очистил задачу"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:80 front/projecttask.form.php:82
@@ -1151,7 +1151,7 @@ msgstr "%1$s добавил объект %2$s"
 #: front/reminder.form.php:60
 #, php-format
 msgid "%s purges an item"
-msgstr "%s очищает элемент"
+msgstr "%s очистил объект"
 
 #. TRANS: %s is the user login
 #: front/notepad.form.php:65 front/printer.form.php:92
@@ -1233,7 +1233,7 @@ msgstr "%s удалил объект"
 #: front/computer.form.php:77
 #, php-format
 msgid "%s restores an item"
-msgstr "%s восстанавливает элемент"
+msgstr "%s восстановил объект"
 
 #. TRANS: %s is the user login
 #: front/printer.form.php:101 front/peripheral.form.php:102
@@ -1478,7 +1478,7 @@ msgstr "%s добавил виртуальную машину"
 #: front/computervirtualmachine.form.php:67
 #, php-format
 msgid "%s purges a virtual machine"
-msgstr "%s очищает виртуальную машину"
+msgstr "%s очистил виртуальную машину"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:80
@@ -1489,13 +1489,13 @@ msgstr "%s обновил виртуальную машину"
 #: front/lockedfield.form.php:50
 #, php-format
 msgid "%1$s adds the item %2$s-%3$s:%4$s"
-msgstr "%1$s добавил элемент %2$s-%3$s:%4$s"
+msgstr "%1$s добавил объект %2$s-%3$s:%4$s"
 
 #. TRANS: %s is the user login
 #: front/group.form.php:92 front/dropdown.common.form.php:101
 #, php-format
 msgid "%s replaces an item"
-msgstr "%s заменяет элемент"
+msgstr "%s заменил объект"
 
 #. TRANS: %s is the user login
 #: front/supplier_ticket.form.php:61 front/group_problem.form.php:53
@@ -1516,7 +1516,8 @@ msgstr "Панель Поддержки"
 #: front/group_ticket.form.php:58 front/change_user.form.php:68
 msgid ""
 "You have been redirected because you no longer have access to this item"
-msgstr "Вы были перенаправлены потому что не имеете доступа к объекту"
+msgstr ""
+"Вы были перенаправлены, так как более не имеете доступа к этому объекту"
 
 #: front/stat.php:35 front/stat.item.php:35 front/stat.global.php:35
 #: front/stat.graph.php:35 front/stat.tracking.php:35
@@ -1604,31 +1605,31 @@ msgstr "Вход"
 #: front/softwarelicense.form.php:55
 #, php-format
 msgid "%1$s adds the license %2$s"
-msgstr "%1$s добавлено лицензий %2$s"
+msgstr "%1$s добавил лицензию %2$s"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:76
 #, php-format
 msgid "%1$s deletes the license %2$s"
-msgstr "%1$s удалено лицензий %2$s"
+msgstr "%1$s удалил лицензию %2$s"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:84
 #, php-format
 msgid "%1$s purges the license %2$s"
-msgstr "%1$s очищает лицензию %2$s"
+msgstr "%1$s очистил лицензию %2$s"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:93
 #, php-format
 msgid "%1$s updates the license %2$s"
-msgstr "%1$s обновлено лицензий %2$s"
+msgstr "%1$s обновил лицензию %2$s"
 
 #. TRANS: %s is the user login
 #: front/networkname.form.php:45 front/networkport.form.php:64
 #, php-format
 msgid "%s adds an item"
-msgstr "%s добавляет элемент"
+msgstr "%s добавил объект"
 
 #. TRANS: %s is the user login
 #: front/networkname.form.php:96
@@ -1666,7 +1667,7 @@ msgstr "Обязательные поля не заполнены!"
 #: front/knowbaseitem_comment.form.php:60
 #, php-format
 msgid "%s adds a comment on knowledge base"
-msgstr "%s добавил комментарий к базе зананий"
+msgstr "%s добавил комментарий в базе знаний"
 
 #: front/knowbaseitem_comment.form.php:62
 msgid "Your comment has been added"
@@ -1675,7 +1676,7 @@ msgstr "Ваш комментарий был добавлен"
 #: front/knowbaseitem_comment.form.php:81
 #, php-format
 msgid "%s edit a comment on knowledge base"
-msgstr "%s редактировать комментарий к базе знаний"
+msgstr "%s отредактировал комментарий в базе знаний"
 
 #: front/knowbaseitem_comment.form.php:83
 msgid "Your comment has been edited"
@@ -1726,7 +1727,7 @@ msgstr "%s добавил картриджи"
 #: front/cartridge.form.php:60
 #, php-format
 msgid "%s purges a cartridge"
-msgstr "%s очищает картридж"
+msgstr "%s очистил картридж"
 
 #. TRANS: %s is the user login
 #: front/cartridge.form.php:71
@@ -1743,7 +1744,7 @@ msgstr "%s обновил картридж"
 #: front/item_device.common.form.php:64
 #, php-format
 msgid "%1$s adds an item"
-msgstr "%1$s добавил элемент"
+msgstr "%1$s добавил объект"
 
 #: front/document.send.php:43
 msgid "Unknown file"
@@ -1844,7 +1845,7 @@ msgstr "Обновить мой пароль"
 #: front/reservationitem.form.php:49
 #, php-format
 msgid "%1$s adds the item %2$s (%3$d)"
-msgstr "%1$s добавляет элемент %2$s (%3$d)"
+msgstr "%1$s добавил объект %2$s (%3$d)"
 
 #: front/stat.item.php:69 front/report.year.list.php:186
 #: front/report.infocom.php:64 front/report.infocom.conso.php:64
@@ -2053,19 +2054,19 @@ msgstr "%s очистил связь между заявками"
 #: front/item_disk.form.php:56
 #, php-format
 msgid "%s adds a volume"
-msgstr "%s добавил том"
+msgstr "%s добавил раздел"
 
 #. TRANS: %s is the user login
 #: front/item_disk.form.php:69
 #, php-format
 msgid "%s purges a volume"
-msgstr "%s очищает объем"
+msgstr "%s очистил раздел"
 
 #. TRANS: %s is the user login
 #: front/item_disk.form.php:83
 #, php-format
 msgid "%s updates a volume"
-msgstr "%s обновил том"
+msgstr "%s обновил раздел"
 
 #. TRANS: %s is the user login
 #: front/user.form.php:116 front/group_user.form.php:50
@@ -2107,7 +2108,7 @@ msgstr "предустановленное"
 #: front/itiltemplatefield.form.php:81
 #, php-format
 msgid "%1$s adds %2$s field"
-msgstr "%1$s добавил %2$s поля"
+msgstr "%1$s добавил поле %2$s "
 
 #: front/rule.common.php:76
 msgid "Replay the rules dictionary"
@@ -2236,7 +2237,7 @@ msgstr "Удовлетворенность"
 #: front/knowbaseitem_item.form.php:52
 #, php-format
 msgid "%s adds a link with an knowledge base"
-msgstr "%s добавит ссылку на базу знаний"
+msgstr "%s добавил ссылку на базу знаний"
 
 #: front/report.infocom.php:158 inc/infocom.class.php:1153
 #: inc/infocom.class.php:1529 inc/infocom.class.php:1770
@@ -2302,7 +2303,7 @@ msgstr "%s добавил затраты"
 #: front/ticketcost.form.php:59 front/contractcost.form.php:67
 #, php-format
 msgid "%s purges a cost"
-msgstr "%s очищает стоимость"
+msgstr "%s очистил затраты"
 
 #. TRANS: %s is the user login
 #: front/commonitilcost.form.php:85 front/projectcost.form.php:78
@@ -2315,19 +2316,19 @@ msgstr "%s обновил затраты"
 #: front/savedsearch_alert.form.php:53
 #, php-format
 msgid "%s adds an alert"
-msgstr "%s добавление предупреждения"
+msgstr "%s добавил предупреждение"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:66
 #, php-format
 msgid "%s purges an alert"
-msgstr "%s очистка предупреждения"
+msgstr "%s очистил предупреждение"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:78
 #, php-format
 msgid "%s updates an alert"
-msgstr "%s обновление предупреждения"
+msgstr "%s обновил предупреждение"
 
 #: front/ldap.php:45
 msgid "Bulk import users from a LDAP directory"
@@ -2381,7 +2382,7 @@ msgstr[3] "Объекты"
 #: front/item_softwarelicense.form.php:51
 #, php-format
 msgid "%s associates an item and a license"
-msgstr "%s привязал элемент и лицензию"
+msgstr "%s связал объект и лицензию"
 
 #: front/report.networking.php:48 inc/report.class.php:89
 msgid "Network report"
@@ -2629,17 +2630,17 @@ msgstr "%s обновил согласование"
 #: front/commonitilvalidation.form.php:91
 #, php-format
 msgid "%s purges an approval"
-msgstr "%s очищает согласование"
+msgstr "%s очистил согласование"
 
 #: front/lock.form.php:56
 #, php-format
 msgid "You do not have rights to restore %s item."
-msgstr "У вас недостаточно прав для восстановления %s объекта"
+msgstr "У вас недостаточно прав для восстановления объекта %s."
 
 #: front/lock.form.php:82
 #, php-format
 msgid "You do not have rights to delete %s item."
-msgstr "У вас недостаточно прав для удаления %s объекта"
+msgstr "У вас недостаточно прав для удаления объекта %s."
 
 #: front/search.php:36 inc/mapgeolocation.class.php:90
 #: inc/mapgeolocation.class.php:91 inc/html.class.php:6951
@@ -2855,7 +2856,7 @@ msgstr "%1$s исследование удовлетворенности (%2$s)"
 #: front/itilfollowup.form.php:53
 #, php-format
 msgid "%s adds a followup"
-msgstr "%s добавляет комментарий"
+msgstr "%s добавил комментарий"
 
 #. TRANS: %s is the user login
 #: front/itilfollowup.form.php:63
@@ -2867,13 +2868,13 @@ msgstr "%s одобрил или отклонил решение"
 #: front/itilfollowup.form.php:73
 #, php-format
 msgid "%s updates a followup"
-msgstr "%s обновляет комментарий"
+msgstr "%s обновил комментарий"
 
 #. TRANS: %s is the user login
 #: front/itilfollowup.form.php:82
 #, php-format
 msgid "%s purges a followup"
-msgstr "%s очищает комментарий"
+msgstr "%s очистил комментарий"
 
 #. TRANS: %s is the user login
 #: front/cartridgeitem_printermodel.form.php:47
@@ -2921,12 +2922,12 @@ msgstr "%s добавил назначение"
 #: front/knowbaseitem.form.php:125
 #, php-format
 msgid "Knowledge base item has been reverted to revision %s"
-msgstr "Запись в базе знаний была откачена к ревизии %s"
+msgstr "Запись в базе знаний возвращена к ревизии %s"
 
 #: front/knowbaseitem.form.php:132
 #, php-format
 msgid "Knowledge base item has not been reverted to revision %s"
-msgstr "Запись в базе знаний не была откачена к ревизии %s"
+msgstr "Запись в базе знаний не возвращена к ревизии %s"
 
 #: front/knowbaseitem.form.php:146 inc/knowbaseitem_item.class.php:85
 #: inc/profile.class.php:1059 inc/profile.class.php:2030
@@ -2959,13 +2960,13 @@ msgstr "Благодарим Вас за использование нашей �
 #: front/slalevel.form.php:47
 #, php-format
 msgid "%s updates a sla level"
-msgstr "%s обновляет уровень sla"
+msgstr "%s обновил уровень SLA"
 
 #. TRANS: %s is the user login
 #: front/slalevel.form.php:71
 #, php-format
 msgid "%s purges a sla level"
-msgstr "%s очищает уровень sla"
+msgstr "%s очистил уровень SLA"
 
 #: front/report.contract.php:46
 msgid "Hardware under contract"
@@ -2979,12 +2980,12 @@ msgstr "Невозможно подключиться к LDAP"
 #: front/knowbaseitemtranslation.form.php:54
 #, php-format
 msgid "Knowledge base item translation has been reverted to revision %s"
-msgstr "Переведенная статья базы знаний была возвращена для доработки %s"
+msgstr "Перевод элемента базы знаний возвращен к ревизии %s"
 
 #: front/knowbaseitemtranslation.form.php:61
 #, php-format
 msgid "Knowledge base item translation has not been reverted to revision %s"
-msgstr "Переведенный элемент базы знаний не был возвращен для пересмотра %s"
+msgstr "Перевод элемента базы знаний не возвращен к ревизии %s"
 
 #: front/knowbaseitemtranslation.form.php:85 inc/user.class.php:2266
 #: inc/user.class.php:3197 inc/config.class.php:682 inc/config.class.php:820
@@ -3004,19 +3005,19 @@ msgstr "Импортировать новые группы"
 #: front/softwareversion.form.php:54
 #, php-format
 msgid "%1$s adds the version %2$s"
-msgstr "%1$s добавлено лицензий %2$s"
+msgstr "%1$s добавил версию %2$s"
 
 #. TRANS: %s is the user login, %2$s is the version id
 #: front/softwareversion.form.php:64
 #, php-format
 msgid "%1$s purges the version %2$s"
-msgstr "%1$s очищает версию %2$s"
+msgstr "%1$s очистил версию %2$s"
 
 #. TRANS: %s is the user login, %2$s is the version id
 #: front/softwareversion.form.php:73
 #, php-format
 msgid "%1$s updates the version %2$s"
-msgstr "%1$s обновлено версий %2$s"
+msgstr "%1$s обновил версию %2$s"
 
 #: front/setup.notification.php:38 inc/notificationevent.class.php:222
 #: inc/notification.class.php:143 inc/notification.class.php:157
@@ -3214,7 +3215,7 @@ msgstr "Глобально"
 #: front/projectteam.form.php:51 front/projecttaskteam.form.php:51
 #, php-format
 msgid "%s adds a team member"
-msgstr "%s добавляет участника команды"
+msgstr "%s добавил участника команды"
 
 #. TRANS: R for Recursive
 #. TRANS: %1$s is the name of the tab, $2$d is number of items in the tab
@@ -3312,7 +3313,7 @@ msgstr "%s добавил пользователя в организацию"
 #: front/reservation.form.php:67
 #, php-format
 msgid "%1$s purges the reservation for item %2$s"
-msgstr "%1$s удалил из резерва %2$s"
+msgstr "%1$s очистил резерв %2$s"
 
 #: front/reservation.form.php:120
 #, php-format
@@ -3376,13 +3377,13 @@ msgstr "Управление шаблонами..."
 #: front/computer_item.form.php:50
 #, php-format
 msgid "%s disconnects an item"
-msgstr "%s разорвал связь объекта"
+msgstr "%s отключил объект"
 
 #. TRANS: %s is the user login
 #: front/computer_item.form.php:60
 #, php-format
 msgid "%s connects an item"
-msgstr "%s связал объект"
+msgstr "%s подключил объект"
 
 #: front/report.netpoint.list.php:45
 #, php-format
@@ -3393,13 +3394,13 @@ msgstr "Отчет по использованию сети: %s"
 #: front/olalevel.form.php:51
 #, php-format
 msgid "%s updates an ola level"
-msgstr "%s обновлений уровня OLA "
+msgstr "%s обновил уровень OLA"
 
 #. TRANS: %s is the user login
 #: front/olalevel.form.php:75
 #, php-format
 msgid "%s purges an ola level"
-msgstr "%s очисток уровня OLA"
+msgstr "%s очистил уровень OLA"
 
 #: inc/rule.class.php:110 inc/rulecollection.class.php:1925
 #: inc/event.class.php:154 inc/profile.class.php:1502
@@ -5247,7 +5248,7 @@ msgid_plural "Costs"
 msgstr[0] "Расход"
 msgstr[1] "Расходы"
 msgstr[2] "Расходы"
-msgstr[3] "Расходы"
+msgstr[3] "Затраты"
 
 #: inc/contractcost.class.php:142 inc/contractcost.class.php:287
 #: inc/contractcost.class.php:365 inc/contract.class.php:968
@@ -6004,7 +6005,7 @@ msgstr "Запланированная дата начала"
 #: inc/notificationtargetproject.class.php:596
 #: inc/notificationtargetproject.class.php:620
 msgid "Planned end date"
-msgstr "Запланированная дата окончания."
+msgstr "Запланированная дата окончания"
 
 #: inc/notificationtargetprojecttask.class.php:487
 #: inc/notificationtargetprojecttask.class.php:511 inc/project.class.php:647
@@ -6024,7 +6025,7 @@ msgstr "Реальная дата начала"
 #: inc/notificationtargetproject.class.php:598
 #: inc/notificationtargetproject.class.php:622
 msgid "Real end date"
-msgstr "Реальная дата окончания."
+msgstr "Реальная дата окончания"
 
 #: inc/notificationtargetprojecttask.class.php:489 inc/project.class.php:524
 #: inc/softwarelicense.class.php:617 inc/projecttask_ticket.class.php:382
@@ -6367,7 +6368,7 @@ msgstr[3] "месяца"
 #: inc/log.class.php:1157 inc/item_problem.class.php:100
 #: tests/functionnal/Log.php:465
 msgid "Add an item"
-msgstr "Добавление объекта"
+msgstr "Добавить объект"
 
 #: inc/commondcmodeldropdown.class.php:60
 #: inc/commondcmodeldropdown.class.php:155 inc/commondropdown.class.php:144
@@ -7926,7 +7927,7 @@ msgstr "Время"
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d минута"
-msgstr[1] "%d минут"
+msgstr[1] "%d минуты"
 msgstr[2] "%d минут"
 msgstr[3] "%d минут"
 
@@ -7938,7 +7939,7 @@ msgstr[3] "%d минут"
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d час"
-msgstr[1] "%d часов"
+msgstr[1] "%d часа"
 msgstr[2] "%d часов"
 msgstr[3] "%d часов"
 
@@ -7953,7 +7954,7 @@ msgstr[3] "%d часов"
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d день"
-msgstr[1] "%d дней"
+msgstr[1] "%d дня"
 msgstr[2] "%d дней"
 msgstr[3] "%d дней"
 
@@ -8580,7 +8581,7 @@ msgstr "Тип шифрования"
 
 #: inc/item_disk.class.php:309
 msgid "Add a volume"
-msgstr "Добавить диск"
+msgstr "Добавить раздел"
 
 #: inc/item_disk.class.php:335 inc/item_disk.class.php:528
 msgid "Free percentage"
@@ -8910,13 +8911,13 @@ msgstr "Периодичность"
 #: inc/appliance.class.php:481
 msgctxt "button"
 msgid "Add an item"
-msgstr "Добавление объекта"
+msgstr "Добавить объект"
 
 #: inc/contract.class.php:591 inc/ticket.class.php:2461
 #: inc/document.class.php:1446 inc/appliance.class.php:482
 msgctxt "button"
 msgid "Remove an item"
-msgstr "Удаление объекта"
+msgstr "Удалить объект"
 
 #: inc/contract.class.php:814 inc/softwarelicense.class.php:463
 #: inc/softwarelicense.class.php:585 inc/softwarelicense.class.php:820
@@ -11452,7 +11453,7 @@ msgstr ""
 #: inc/ticket.class.php:2112
 #, php-format
 msgid "%1$s updates the item %2$s"
-msgstr "%1$s обновил элемент %2$s"
+msgstr "%1$s обновил объект %2$s"
 
 #: inc/ticket.class.php:2432
 msgid "Merge as Followup"
@@ -11808,9 +11809,9 @@ msgstr "У Вас недостаточно прав для просмотра в
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
 msgstr[0] "Заявка на связанные элементы"
-msgstr[1] "Заявок на связанные элементы"
-msgstr[2] "Заявок на связанные элементы"
-msgstr[3] "Заявок на связанные элементы"
+msgstr[1] "Заявки на связанные элементы"
+msgstr[2] "Заявки на связанные элементы"
+msgstr[3] "Заявки на связанные элементы"
 
 #: inc/ticket.class.php:6151
 msgid "No ticket in progress."
@@ -12071,7 +12072,7 @@ msgstr "Добавить связанный элемент"
 
 #: inc/knowbaseitem_item.class.php:149
 msgid "Link a knowledge base entry"
-msgstr "Ссылка на запись базы знаний"
+msgstr "Добавить ссылку на базу знаний"
 
 #: inc/knowbaseitem_item.class.php:182
 msgid "No linked items"
@@ -13292,7 +13293,7 @@ msgstr[3] "Кластеры"
 #: inc/computer_item.class.php:323 inc/log.class.php:1133
 #: tests/functionnal/Log.php:457
 msgid "Connect an item"
-msgstr "Подключить устройство"
+msgstr "Подключить объект"
 
 #: inc/computer_item.class.php:475
 msgid "Connect a computer"
@@ -13478,10 +13479,10 @@ msgstr[3] "Игнорировать значения уникальности"
 #: inc/reservationitem.class.php:65
 msgid "Reservable item"
 msgid_plural "Reservable items"
-msgstr[0] "Резервный элемент"
-msgstr[1] "Резервные элементы"
-msgstr[2] "Резервные элементы"
-msgstr[3] "Резервные элементы"
+msgstr[0] "Резервируемый объект"
+msgstr[1] "Резервируемые объекты"
+msgstr[2] "Резервируемые объекты"
+msgstr[3] "Резервируемые объекты"
 
 #: inc/reservationitem.class.php:301 inc/reservation.class.php:652
 msgid "Reserve an item"
@@ -13799,7 +13800,7 @@ msgstr "Связи расходных материалов и их типов"
 
 #: inc/transfer.class.php:3522
 msgid "Links between computers and volumes"
-msgstr "Связи между компьютерами и томами"
+msgstr "Связи между компьютерами и разделами"
 
 #: inc/transfer.class.php:3528
 msgid "Direct connections"
@@ -14840,7 +14841,7 @@ msgstr "Очистка временных файлов"
 
 #: inc/crontask.class.php:1774
 msgid "Archives log files and deletes aging ones"
-msgstr "Архивы логов и их удаление"
+msgstr "Архивация и удаление логов"
 
 #: inc/crontask.class.php:1775
 msgid "Number of days to keep archived logs"
@@ -15013,7 +15014,7 @@ msgstr "Самые популярные темы"
 
 #: inc/knowbaseitem.class.php:1848
 msgid "FAQ item"
-msgstr "Элемент  ЧАВО"
+msgstr "Элемент ЧаВо (FAQ)"
 
 #: inc/knowbaseitem.class.php:1856 inc/item_devices.class.php:922
 msgid "View"
@@ -15051,7 +15052,7 @@ msgstr "Прочитать FAQ"
 #: inc/knowbaseitem.class.php:1990
 #, php-format
 msgid "%1$s reverts item to revision %2$s"
-msgstr "%1$s возвращает элемент к ревизии номер %2$s"
+msgstr "%1$s вернул элемент к ревизии %2$s"
 
 #: inc/displaypreference.class.php:300
 msgid "No personal criteria. Create personal parameters?"
@@ -15190,10 +15191,10 @@ msgstr "Ответ на опрос по удовлетворенности об�
 msgid "Without a reply, the ticket will be automatically closed after %s day"
 msgid_plural ""
 "Without a reply, the ticket will be automatically closed after %s days"
-msgstr[0] "Без ответа, заявка будет автоматически закрыта через %s день"
-msgstr[1] "Без ответа, заявка будет автоматически закрыта через %s дней"
-msgstr[2] "Без ответа, заявка будет автоматически закрыта через %s дней"
-msgstr[3] "Без ответа, заявка будет автоматически закрыта через %s дней"
+msgstr[0] "Без ответа заявка автоматически закроется через %s день"
+msgstr[1] "Без ответа заявка автоматически закроется через %s дня"
+msgstr[2] "Без ответа заявка автоматически закроется через %s дней"
+msgstr[3] "Без ответа заявка автоматически закроется через %s дней"
 
 #. TRANS: %s is the user name
 #: inc/notificationtargetticket.class.php:486
@@ -16557,7 +16558,7 @@ msgstr "Перевод не найден"
 #: inc/knowbaseitemtranslation.class.php:432
 #, php-format
 msgid "%1$s reverts item translation to revision %2$s"
-msgstr "%1$s возвращает элемент перевода к ревизии номер %2$s"
+msgstr "%1$s вернул перевод элемента к ревизии %2$s"
 
 #: inc/devicefirmwaretype.class.php:41
 msgid "Firmware type"
@@ -18386,7 +18387,7 @@ msgstr "Пользователь отсутствует в каталоге LDAP
 
 #: inc/user.class.php:2407 inc/user.class.php:2811
 msgid "Remote access keys"
-msgstr "Удаленный ключ доступа"
+msgstr "Ключи удаленного доступа"
 
 #: inc/user.class.php:2410 inc/user.class.php:2814
 msgid "Personal token"
@@ -19813,7 +19814,7 @@ msgstr "Содержимое черного списка почты"
 #: inc/netpoint.class.php:95
 #, php-format
 msgid "%1$s adds several netpoints"
-msgstr "%1$s добавляет несколько netpoints"
+msgstr "%1$s добавил несколько netpoints"
 
 #: inc/netpoint.class.php:318 inc/netpoint.class.php:377
 #, php-format

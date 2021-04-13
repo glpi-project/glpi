@@ -6,6 +6,8 @@
 # Translators:
 # Óscar Beiro - TICgal, 2020
 # Pruebas, 2020
+# FranciscoFJ <dev-ooo@satel-sa.com>, 2021
+# Javier García, 2021
 # 
 #, fuzzy
 msgid ""
@@ -14,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-22 09:43+0100\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Pruebas, 2020\n"
+"Last-Translator: Javier García, 2021\n"
 "Language-Team: Spanish (Spain) (https://www.transifex.com/glpi/teams/1637/es_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4992,8 +4994,8 @@ msgstr[1] "Autorizaciones"
 #: inc/vlan.class.php:48
 msgid "VLAN"
 msgid_plural "VLANs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "VLAN"
+msgstr[1] "VLANs"
 
 #: inc/vlan.class.php:55 inc/vlan.class.php:78 inc/vlan.class.php:160
 #: inc/networkport_vlan.class.php:171 inc/ipnetwork_vlan.class.php:166
@@ -8540,8 +8542,8 @@ msgstr "Supresión de un problema"
 #: inc/notificationtargetcontract.class.php:186 inc/entity.class.php:1951
 msgid "Contract"
 msgid_plural "Contracts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Contrato"
+msgstr[1] "Contratos"
 
 #: inc/contract.class.php:231 inc/contract.class.php:520
 #: inc/contract.class.php:746 inc/contract.class.php:1736
@@ -9123,41 +9125,41 @@ msgstr ""
 #: inc/console/ldap/synchronizeuserscommand.class.php:257
 #, php-format
 msgid "Processing LDAP server \"%s\"..."
-msgstr ""
+msgstr "Procesando servidor LDAP \"%s\"..."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:285
 #, php-format
 msgid "LDAP server \"%s\" size limit exceeded."
-msgstr ""
+msgstr "Límite de tamaño excedido en el servidor LDAP server \"%s\""
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:291
 #, php-format
 msgid "Error while contacting the LDAP server \"%s\"."
-msgstr ""
+msgstr "Error al contactar con el servidor LDAP \"%s\"."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:306
 #, php-format
 msgid "Import new users from server \"%s\"..."
-msgstr ""
+msgstr "Importando nuevos usuarios desde el servidor \"%s\"..."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:309
 #, php-format
 msgid "Update existing users with server \"%s\"..."
-msgstr ""
+msgstr "Actualizando usuarios existentes con el servidor \"%s\"..."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:312
 #, php-format
 msgid "Synchronize users with server \"%s\"..."
-msgstr ""
+msgstr "Sincronizar usuarios con el servidor \"%s\"..."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:323
 msgid "No users found."
-msgstr ""
+msgstr "No se encontraron usuarios."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:379
 #, php-format
 msgid "Unable to synchronize user \"%s\"."
-msgstr ""
+msgstr "Imposible sincronizar usuario: \"%s\"."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:393
 msgid "LDAP server"
@@ -9186,7 +9188,7 @@ msgstr ""
 #: inc/console/ldap/synchronizeuserscommand.class.php:438
 #, php-format
 msgid "--ldap-server-id value \"%s\" is not a valid LDAP server id."
-msgstr ""
+msgstr "--ldap-server-id value \"%s\" no es un ID de servidor LDAP válido."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:451
 #, php-format
@@ -9201,7 +9203,7 @@ msgstr ""
 #: inc/console/ldap/synchronizeuserscommand.class.php:472
 #, php-format
 msgid "--deleted-user-strategy value \"%s\" is not valid."
-msgstr ""
+msgstr "--deleted-user-strategy valor \"%s\" inválido."
 
 #: inc/console/maintenance/disablemaintenancemodecommand.class.php:58
 msgid "Disable maintenance mode"
@@ -9321,7 +9323,7 @@ msgstr "Migración de la tabla \"%s\"..."
 #: inc/console/migration/myisamtoinnodbcommand.class.php:109
 #, php-format
 msgid "Migration of table \"%s\"  failed with message \"(%s) %s\"."
-msgstr ""
+msgstr "Fallo en la migración de la tabla \"%s\"  con el mesanje \"(%s) %s\"."
 
 #: inc/console/migration/myisamtoinnodbcommand.class.php:122
 #: inc/console/migration/timestampscommand.class.php:221
@@ -9335,7 +9337,7 @@ msgstr "Migración realizada."
 
 #: inc/console/migration/timestampscommand.class.php:52
 msgid "Convert \"datetime\" fields to \"timestamp\" to use timezones."
-msgstr ""
+msgstr "Convertir el campo \"datetime\" a \"timestamp\" para usar timezones."
 
 #: inc/console/migration/timestampscommand.class.php:92
 #, php-format
@@ -9345,7 +9347,7 @@ msgstr ""
 #: inc/console/migration/timestampscommand.class.php:197
 #, php-format
 msgid "Running %s"
-msgstr ""
+msgstr "Ejecutando %s"
 
 #: inc/console/migration/timestampscommand.class.php:205
 #, php-format
@@ -9373,6 +9375,8 @@ msgstr "Eliminar los datos principales existentes"
 #, php-format
 msgid "Run Racks plugin update (you need version %s files to do this)"
 msgstr ""
+"Ejecutar actualización del plugin Racks (necesita archivos de la versión %s "
+"para hacerlo)"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:200
 #: inc/console/migration/domainsplugintocorecommand.class.php:108
@@ -9428,13 +9432,13 @@ msgstr ""
 #: inc/console/migration/domainsplugintocorecommand.class.php:221
 #, php-format
 msgid "Migrating plugin to %s version..."
-msgstr ""
+msgstr "Migrando complemento a la versión %s ......"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:333
 #: inc/console/migration/domainsplugintocorecommand.class.php:237
 #, php-format
 msgid "Plugin migration to %s version failed."
-msgstr ""
+msgstr "Falló la migración del complemento a la versión %s "
 
 #: inc/console/migration/racksplugintocorecommand.class.php:344
 #, php-format
@@ -9488,7 +9492,7 @@ msgstr ""
 #: inc/console/migration/racksplugintocorecommand.class.php:548
 #, php-format
 msgid "Where do you want to import \"%s\" ?"
-msgstr ""
+msgstr "¿Dónde quieres importar \"%s\" ?"
 
 #: inc/console/migration/racksplugintocorecommand.class.php:556
 msgid "Ignore (default)"
@@ -9497,17 +9501,17 @@ msgstr "Ignorar (predeterminado)"
 #: inc/console/migration/racksplugintocorecommand.class.php:611
 #, php-format
 msgid "Unable to import other model \"%s\"."
-msgstr ""
+msgstr "No se puede importar otro modelo \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:628
 #, php-format
 msgid "Importing items from model \"%s\"..."
-msgstr ""
+msgstr "Importar elementos del modelo \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:666
 #, php-format
 msgid "Unable to import other item \"%s\"."
-msgstr ""
+msgstr "No se puede importar otro elemento \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:689
 msgid "No items found."
@@ -9530,7 +9534,7 @@ msgstr ""
 #: inc/console/migration/racksplugintocorecommand.class.php:767
 #, php-format
 msgid "Unable to update model %s (%s)."
-msgstr ""
+msgstr "Imposible actualizar el modelo %s (%s)."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:784
 msgid "No items specifications found."
@@ -9589,21 +9593,21 @@ msgstr "No se han encontrado estados de bastidor."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1043
 msgid "Importing rooms..."
-msgstr ""
+msgstr "Importando salas..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1061
 #, php-format
 msgid "Importing room \"%s\"..."
-msgstr ""
+msgstr "Importando la sala \"%s\"..."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1086
 #, php-format
 msgid "Unable to import room \"%s\"."
-msgstr ""
+msgstr "No se puede importar la sala \"%s\"."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1107
 msgid "No rooms found."
-msgstr ""
+msgstr "No se encontraron salas."
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1125
 msgid "Importing racks..."
@@ -9653,7 +9657,7 @@ msgstr ""
 
 #: inc/console/migration/racksplugintocorecommand.class.php:1443
 msgid "Unable to create default room."
-msgstr ""
+msgstr "No se pudo crear la sala predeterminada."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:145
 msgid "Migrate Appliances plugin data into GLPI core tables"
@@ -9681,7 +9685,7 @@ msgstr ""
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:302
 msgid "Updating profiles..."
-msgstr ""
+msgstr "Actualizando perfiles..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:317
 #, php-format
@@ -9724,7 +9728,7 @@ msgstr ""
 #: inc/console/migration/appliancesplugintocorecommand.class.php:457
 #, php-format
 msgid "Importing environment \"%s\"..."
-msgstr ""
+msgstr "Importando entorno \"%s\"..."
 
 #: inc/console/migration/appliancesplugintocorecommand.class.php:477
 #: inc/console/migration/appliancesplugintocorecommand.class.php:612
@@ -9823,6 +9827,8 @@ msgid ""
 "Domains plugin data has to be updated to %s version. It can be done using "
 "the --update-plugin option."
 msgstr ""
+"Los datos del complemento de dominios deben actualizarse a la versión %s. Se"
+" puede hacer usando la opción --update-plugin."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:283
 #, php-format
@@ -9859,7 +9865,7 @@ msgstr ""
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:425
 msgid "Importing domains..."
-msgstr ""
+msgstr "Importando dominios ..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:454
 #, php-format
@@ -9869,7 +9875,7 @@ msgstr ""
 #: inc/console/migration/domainsplugintocorecommand.class.php:459
 #, php-format
 msgid "Importing domain %s..."
-msgstr ""
+msgstr "Importando dominio %s..."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:472
 #, php-format
@@ -9879,12 +9885,12 @@ msgstr ""
 #: inc/console/migration/domainsplugintocorecommand.class.php:513
 #, php-format
 msgid "Unable to add domain %s."
-msgstr ""
+msgstr "No se pudo agregar el dominio %s."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:514
 #, php-format
 msgid "Unable to update domain %s."
-msgstr ""
+msgstr "No se pudo actualizar el dominio %s."
 
 #: inc/console/migration/domainsplugintocorecommand.class.php:557
 msgid "No domains found."
@@ -9955,17 +9961,17 @@ msgstr ""
 #: inc/console/task/unlockcommand.class.php:143
 #, php-format
 msgid "Task \"%s\" unlocked."
-msgstr ""
+msgstr "Tarea \"%s\" desbloqueada."
 
 #: inc/console/task/unlockcommand.class.php:149
 #, php-format
 msgid "An error occurs while trying to unlock \"%s\" task."
-msgstr ""
+msgstr "Ha ocurrido un error tratando de desbloquear la tarea \"%s\"."
 
 #: inc/console/task/unlockcommand.class.php:157
 #, php-format
 msgid "Number of tasks unlocked: %d."
-msgstr ""
+msgstr "Número de tareas desbloqueadas: %d."
 
 #: inc/console/task/unlockcommand.class.php:181
 msgid "Option --cycle is not compatible with option --delay."
@@ -10060,12 +10066,12 @@ msgstr ""
 #: inc/console/application.class.php:260
 #, php-format
 msgid "Memory usage: %s."
-msgstr ""
+msgstr "Uso de memoria: %s."
 
 #: inc/console/application.class.php:340
 #, php-format
 msgid "Cannot write in \"%s\" directory."
-msgstr ""
+msgstr "No se puede escribir en el directorio \"%s\" ."
 
 #: inc/console/application.class.php:469
 msgid "Some mandatory system requirements are missing."
@@ -10081,12 +10087,12 @@ msgstr ""
 #: inc/console/database/checkcommand.class.php:68
 #, php-format
 msgid "Unable to read installation file \"%s\"."
-msgstr ""
+msgstr "Imposible leer fichero de instalación \"%s\"."
 
 #: inc/console/database/checkcommand.class.php:85
 #, php-format
 msgid "Processing table \"%s\"..."
-msgstr ""
+msgstr "Procesando la tabla \"%s\"..."
 
 #: inc/console/database/checkcommand.class.php:93
 #, php-format
@@ -10450,7 +10456,7 @@ msgstr ""
 #: inc/console/plugin/installcommand.class.php:138
 #, php-format
 msgid "Plugin \"%s\" installation failed."
-msgstr ""
+msgstr "Falló la instalación del complemento \"%s\"."
 
 #: inc/console/plugin/installcommand.class.php:146
 #, php-format
@@ -12086,7 +12092,7 @@ msgstr ""
 #: inc/system/requirement/directorywriteaccess.class.php:123
 #, php-format
 msgid "The file could not be created in %s."
-msgstr ""
+msgstr "El archivo no se pudo crear en %s."
 
 #: inc/system/requirement/directorywriteaccess.class.php:126
 #, php-format
@@ -15628,7 +15634,7 @@ msgstr ""
 
 #: inc/dashboard/widget.class.php:132
 msgid "Area"
-msgstr ""
+msgstr "Área"
 
 #: inc/dashboard/widget.class.php:141
 msgid "Multiple areas"
@@ -16704,8 +16710,8 @@ msgstr "Puerto de red no encontrado"
 #: inc/networkport.class.php:1016
 msgid "Port number"
 msgid_plural "Port numbers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Número de puerto"
+msgstr[1] "Números de puerto"
 
 #: inc/networkport.class.php:930 inc/networkport.class.php:1034
 msgid "Network port type"
@@ -16856,11 +16862,11 @@ msgstr ""
 #: inc/marketplace/controller.class.php:303
 #, php-format
 msgid "New version for plugin %s: %s"
-msgstr ""
+msgstr "Nueva versión para el complemento %s: %s"
 
 #: inc/marketplace/view.class.php:103
 msgid "Installed"
-msgstr ""
+msgstr "Instalado"
 
 #: inc/marketplace/view.class.php:104
 msgid "Discover"
@@ -16924,19 +16930,19 @@ msgstr ""
 
 #: inc/marketplace/view.class.php:360
 msgid "Most popular"
-msgstr ""
+msgstr "Mas popular"
 
 #: inc/marketplace/view.class.php:365
 msgid "Last updated"
-msgstr ""
+msgstr "Última actualización"
 
 #: inc/marketplace/view.class.php:370
 msgid "Most recent"
-msgstr ""
+msgstr "Mas reciente"
 
 #: inc/marketplace/view.class.php:375
 msgid "Best notes"
-msgstr ""
+msgstr "Mejores notas"
 
 #: inc/marketplace/view.class.php:380
 msgid "Your plugin here ? Contact us."
@@ -16952,7 +16958,7 @@ msgstr ""
 
 #: inc/marketplace/view.class.php:472
 msgid "Homepage"
-msgstr ""
+msgstr "Página principal"
 
 #: inc/marketplace/view.class.php:477
 msgid "Get help"
@@ -16960,7 +16966,7 @@ msgstr ""
 
 #: inc/marketplace/view.class.php:482
 msgid "Readme"
-msgstr ""
+msgstr "Léame"
 
 #: inc/marketplace/view.class.php:634
 msgid "Clean"
@@ -16969,6 +16975,8 @@ msgstr "Limpiar"
 #: inc/marketplace/view.class.php:643
 msgid "The plugin has an available update but its directory is not writable."
 msgstr ""
+"El complemento tiene una actualización disponible, pero no se puede escribir"
+" en su directorio."
 
 #: inc/marketplace/view.class.php:647
 #, php-format
@@ -17371,8 +17379,8 @@ msgstr[1] "Modelos de baterías de dispositivos"
 msgctxt "appliance"
 msgid "Relation"
 msgid_plural "Relations"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Relación"
+msgstr[1] "Relaciones"
 
 #: inc/devicecamera_item_format.class.php:116
 #: inc/appliance_item_relation.class.php:116
@@ -21469,7 +21477,7 @@ msgstr "Histórico de acciones"
 #: inc/commonitilobject.class.php:6725
 #, php-format
 msgid "Total duration: %s"
-msgstr ""
+msgstr "Duración total: %s"
 
 #: inc/commonitilobject.class.php:6734
 #, php-format
@@ -22911,7 +22919,7 @@ msgstr ""
 
 #: install/install.php:614
 msgid "Select your language"
-msgstr ""
+msgstr "Elija su idioma"
 
 #: install/install.php:639
 msgid "Beginning of the installation"
