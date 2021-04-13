@@ -2321,6 +2321,7 @@ class Dropdown {
       if (!isset($post['emptylabel']) || ($post['emptylabel'] == '')) {
          $post['emptylabel'] = Dropdown::EMPTY_VALUE;
       }
+
       $where = [];
 
       if ($item->maybeDeleted()) {
