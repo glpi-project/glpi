@@ -4,7 +4,7 @@ var url = '/glpi/ajax/gantt.php';
 
 function initGantt($ID) {
  
-    /** >>>>> Configs  **/
+    // >>>>> Configs
 
     gantt.config.grid_width = 650;
     gantt.config.date_format = "%Y-%m-%d %H:%i";
@@ -32,7 +32,7 @@ function initGantt($ID) {
         return "<span style='text-align:left; color: #fff;'>"+Math.round(task.progress * 100) + "% </span>";
     };
 
-    /** enable tooltips and fullscreen mode **/
+    // enable tooltips and fullscreen mode
     gantt.plugins({ tooltip: true, fullscreen: true }); 
 
     gantt.templates.tooltip_text = function(start,end,task){
@@ -42,7 +42,7 @@ function initGantt($ID) {
         "<br/><b>Progress:</b> "+parseInt(task.progress * 100)+"%";
     };
     
-    /** columns definition **/
+    // columns definition
     gantt.config.columns = [
         {name:"wbs", label:" ", width:45, template:gantt.getWBSCode, align:"left" }, 
         {name:"text", label:"Project / Task",  width:200, tree:true, align: "left" },
@@ -64,7 +64,7 @@ function initGantt($ID) {
         // TODO {name:"add", label:"", width: 40 }
     ];
 
-    /** specify fullscreen root element **/
+    // specify fullscreen root element
     gantt.ext.fullscreen.getFullscreenElement = function() {
         return document.getElementById("gantt-container");
     }
@@ -141,11 +141,11 @@ function initGantt($ID) {
     gantt.ext.zoom.init(zoomConfig);
     gantt.ext.zoom.setLevel("month");
 
-    /** <<<<< Configs **/
+    // <<<<< Configs
 
 
 
-    /** >>>>> Event handlers **/
+    // >>>>> Event handlers
 
 	gantt.ext.zoom.attachEvent("onAfterZoom", function(level, config){
 		document.querySelector(".gantt_radio[value='" + config.name + "']").checked = true;
@@ -158,7 +158,7 @@ function initGantt($ID) {
 		};
 	}
 
-    /** enable task reordering (on same level) between projects **/ 
+    // enable task reordering (on same level) between projects
     gantt.attachEvent("onBeforeTaskMove", function(id, parent, tindex) {
         var task = gantt.getTask(id);
         if(task.parent != parent)
@@ -167,7 +167,7 @@ function initGantt($ID) {
     });
 
     if (!readonly) {
-    /** catch task drag event to update db **/
+    // catch task drag event to update db
     gantt.attachEvent("onAfterTaskDrag", function(id, mode, e) {
         var task = gantt.getTask(id);
         var progress = (Math.round(task.progress * 100 / 5) * 5) / 100;   // prevent server side exception for wrong stepping
@@ -198,9 +198,9 @@ function initGantt($ID) {
         parentProgress(id);
     });
     
-    /** handle lightbox Save action **/
+    // handle lightbox Save action
     gantt.attachEvent("onLightboxSave", function(id, item, is_new) {
-        /** add new item **/
+        // add new item
         /* TODO: continue server side 
         if (is_new) {
             if (item.parent) {
@@ -240,7 +240,7 @@ function initGantt($ID) {
         }
         else if (item.type == 'project') { */
 
-        /** update item **/
+        // update item
         if (item.type == 'project') {
             $.ajax({
                 url,
@@ -300,7 +300,7 @@ function initGantt($ID) {
         }
     });
 
-    /** handle lightbox Delete action **/
+    // handle lightbox Delete action
     gantt.attachEvent("onLightboxDelete", function(id) {
 
         var msg = "Item will be deleted, do you want to continue ?";
@@ -321,7 +321,7 @@ function initGantt($ID) {
                 callback: function(result) {
                     if (result) {
                         if (item.type == 'project') {
-                            /** move project to trashbin **/
+                            // move project to trashbin
                             $.ajax({
                                 url,
                                 type: 'POST',
@@ -341,7 +341,7 @@ function initGantt($ID) {
                             });
                         }
                         else {
-                            /** delete task or milestone **/
+                            // delete task or milestone
                             $.ajax({
                                 url,
                                 type: 'POST',
@@ -408,7 +408,7 @@ function initGantt($ID) {
             return false;
     });
 
-    /** >>>>> link double click event to handle edit/save/delete actions **/
+    // >>>>> link double click event to handle edit/save/delete actions
     (function() {
 
         var modal;
@@ -496,9 +496,9 @@ function initGantt($ID) {
             */
         }
     })();
-    /** <<<<< link double click **/    
+    // <<<<< link double click
 
-    /** adjust elements visibility on Fullscreen expand/collapse **/
+    // adjust elements visibility on Fullscreen expand/collapse
     gantt.attachEvent("onBeforeExpand", function() {
         $('#c_ssmenu2, #c_logo').fadeOut('fast');
         $('#gantt-features').css({
@@ -546,13 +546,13 @@ function initGantt($ID) {
 
     $('.flatpickr').flatpickr();
 
-    /** <<<<< Event handlers **/
+    // <<<<< Event handlers
 
 
     gantt.config.readonly = readonly;
     gantt.init('gantt-container');
 
-    /** load Gantt data **/
+    // load Gantt data
     $.ajax({
        url,
        type: 'POST',
@@ -582,11 +582,11 @@ function initGantt($ID) {
     });
 }
 
-    /** >>>>> Functions **/
+    // >>>>> Functions
 
     var formatFunc = gantt.date.date_to_str("%Y-%m-%d %H:%i");
 
-    /** update parent item progress **/
+    // update parent item progress
     function parentProgress(id) {
         gantt.eachParent(function(task) {
              var children = gantt.getChildren(task.id);
@@ -704,4 +704,4 @@ function callExport(type) {
     $('#dlg-export').dialog('open');
 }
 
-/** <<<<< Functions **/
+// <<<<< Functions

@@ -12,6 +12,9 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
+/**
+ * DAO class for handling project task records
+ */
 class TaskDAO {
 
     function updateTask($task) {
@@ -34,7 +37,7 @@ class TaskDAO {
     function deleteTask(&$failed, $taskId) {
         global $DB;
         if ($taskId > 0) {
-            foreach($DB->request('glpi_projecttasks', ['projecttasks_id' => $taskId]) as $record) {
+            foreach ($DB->request('glpi_projecttasks', ['projecttasks_id' => $taskId]) as $record) {
                 if (isset($record['id']))
                     if (!$this->deleteTask($failed, $record['id']))
                         $failed[] = $record;
@@ -44,7 +47,7 @@ class TaskDAO {
                     'id' => $taskId
                 ]);
             } 
-            catch(Exception $ex) {
+            catch (Exception $ex) {
                 return false;
             }
         }

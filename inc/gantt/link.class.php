@@ -5,6 +5,9 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
+/**
+ * Class used to hold project task link details
+ */
 class Link {
     public $id;
     public $source;
@@ -26,6 +29,9 @@ class Link {
         $this->lead = 0;
     }
 
+    /**
+    * Enables Json serialization of Link objects
+    */
     public function jsonSerialize() {
         return (array)$this;
     }    

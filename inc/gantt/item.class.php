@@ -4,6 +4,10 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
+/**
+ * Generic class for holding Gantt item details.
+ * Used to exchange Json data between client-server functions with Ajax calls.
+ */
 class Item implements JsonSerializable {
     public $id;
     public $start_date; // format 2019-09-07 04:06:15
@@ -23,6 +27,11 @@ class Item implements JsonSerializable {
         $this->open = 1;
     }
 
+    /**
+     * Populates Item instances with Json data
+     * 
+     * @param $json Json data 
+     */
     public function populateFrom($json) {
         $this->id = $json["id"];
         if (isset($json["start_date"]))
@@ -35,6 +44,9 @@ class Item implements JsonSerializable {
             $this->text = $json["name"];
     }
 
+    /**
+     * Enables Json serialization of Item objects
+     */
     public function jsonSerialize() {
         return (array)$this;
     }

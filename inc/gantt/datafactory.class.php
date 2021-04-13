@@ -13,8 +13,18 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
+/**
+ * Class used to prepare data for Gantt
+ */
 class DataFactory {
     
+    /**
+     * Recursive function used to get all subitems of a project, when $id > 0.
+     * Returns all projects with their subitems if $id == -1 (for global gantt view).
+     * 
+     * @param array $itemArray Array holding the result
+     * @param integer $id ID of the parent project
+     */
     function getItemsForProject(&$itemArray, $id) {
         global $DB;
         $project = new Project();
@@ -39,40 +49,68 @@ class DataFactory {
         }
     }
 
+    /**
+     * Function used to get project task links
+     * 
+     * @param array $itemArray Input array holding project and task items
+     * 
+     * @return array $links Array of Link objects
+     */
     function getProjectTaskLinks($itemArray) {
         $links = [];
         if (isset($itemArray)) {
             
             $ids = [];
-            foreach($itemArray as $item) {
+            foreach ($itemArray as $item) {
                 if ($item->type != 'project')
                     $ids[] = $item->linktask_id;
             }
             
             if (count($ids) > 0) {
-            $linkDao = new LinkDAO();
-            $links = $linkDao->getLinksForItemIDs($ids);
-        }
+                $linkDao = new LinkDAO();
+                $links = $linkDao->getLinksForItemIDs($ids);
+            }
         }
         return $links;
     }
 
+    /**
+     * Recursive function used to get all subprojects and tasks of a project
+     * 
+     * @param array $itemArray Array holding the items
+     * @param integer $projectId ID of the parent project
+     * 
+     */
     function getSubprojects(&$itemArray, $projectId) {
         global $DB;
-        foreach($DB->request('glpi_projects', ['projects_id' => $projectId, 'is_deleted' => 0]) as $record) {
+        foreach ($DB->request('glpi_projects', ['projects_id' => $projectId, 'is_deleted' => 0]) as $record) {
             array_push($itemArray, $this->populateGanttItem($record, "project"));
             $this->getSubprojects($itemArray, $record['id']);
             $this->getProjectTasks($itemArray, $record['id']);
         }
     }
 
+    /**
+     * Function used to get all tasks of a project
+     * 
+     * @param array @itemArray Array holding the task items
+     * @param integer @projectId ID of the project
+     */
     function getProjectTasks(&$itemArray, $projectId) {
         $taskRecords[] = ProjectTask::getAllForProject($projectId);
-        foreach($taskRecords[0] as $record) {
+        foreach ($taskRecords[0] as $record) {
             array_push($itemArray, $this->populateGanttItem($record, "task"));
         }
     }
 
+    /**
+     * Function used to populate gantt Item objects with projects/tasks/milestones data
+     * 
+     * @param $record Project or task record from database
+     * @param string $type Specifies the type of the record (project, task or milestone)
+     * 
+     * @return Item instance
+     */
     function populateGanttItem($record, $type) {
         if (isset($record['is_milestone']) && $record['is_milestone'] > 0) 
             $type = 'milestone';

@@ -12,6 +12,9 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
+/**
+ * DAO class for handling project records
+ */
 class ProjectDAO {
 
     function updateProject($project) {

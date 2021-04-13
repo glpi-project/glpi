@@ -12,6 +12,9 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
+/**
+ * DAO class for handling project task links
+ */
 class LinkDAO {
 
     public function getLinksForItemIDs($ids) {
@@ -27,6 +30,13 @@ class LinkDAO {
         return $links;
     }
 
+    /**
+     * Populates a Link object with data
+     * 
+     * @param $data Database record
+     * 
+     * @return Link object
+     */
     function populateFromDB($data) {
         $link = new Link();
         $link->id = $data["id"];
