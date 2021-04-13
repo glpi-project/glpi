@@ -30,34 +30,27 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
-
-Session ::checkLoginUser();
-
-$item = new TicketContract();
-
-if (isset($_POST["add"])) {
-   if (!empty($_POST['tickets_id']) && empty($_POST['contracts_id'])) {
-      $message = sprintf(
-         __('Mandatory fields are not filled. Please correct: %s'),
-         Contract::getTypeName(1)
-      );
-      Session::addMessageAfterRedirect($message, false, ERROR);
-      Html::back();
-   }
-   if (empty($_POST['tickets_id']) && !empty($_POST['contracts_id'])) {
-      $message = sprintf(
-         __('Mandatory fields are not filled. Please correct: %s'),
-         Ticket::getTypeName(1)
-      );
-      Session::addMessageAfterRedirect($message, false, ERROR);
-      Html::back();
-   }
-   $item->check(-1, CREATE, $_POST);
-   $item->add($_POST);
-
-   Html::back();
-
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
 }
 
-Html::displayErrorAndDie("lost");
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
+
+$default_charset = DBConnection::getDefaultCharset();
+$default_collation = DBConnection::getDefaultCollation();
+
+if (!$DB->tableExists('glpi_tickets_contracts')) {
+   $query = "CREATE TABLE `glpi_tickets_contracts` (
+      `id` int NOT NULL AUTO_INCREMENT,
+      `tickets_id` int NOT NULL DEFAULT '0',
+      `contracts_id` int NOT NULL DEFAULT '0',
+      PRIMARY KEY (`id`),
+      UNIQUE KEY `unicity` (`tickets_id`,`contracts_id`),
+      -- KEY `tickets_id` (`tickets_id`),
+      KEY `contracts_id` (`contracts_id`)
+   ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+   $DB->queryOrDie($query, "add table glpi_tickets_contracts");
+}

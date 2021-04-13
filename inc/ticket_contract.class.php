@@ -34,7 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-class TicketContract extends CommonDBRelation {
+class Ticket_Contract extends CommonDBRelation {
 
    public static $itemtype_1 = 'Ticket';
    public static $items_id_1 = 'tickets_id';

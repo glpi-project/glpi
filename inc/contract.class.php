@@ -103,7 +103,7 @@ class Contract extends CommonDBTM {
       $this->addStandardTab('ManualLink', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
-      $this->addStandardTab(TicketContract::class, $ong, $options);
+      $this->addStandardTab(Ticket_Contract::class, $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;

@@ -8707,8 +8707,8 @@ CREATE TABLE `glpi_manuallinks` (
   KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-DROP TABLE IF EXISTS `glpi_ticketcontracts`;
-CREATE TABLE `glpi_ticketcontracts` (
+DROP TABLE IF EXISTS `glpi_tickets_contracts`;
+CREATE TABLE `glpi_tickets_contracts` (
   `id` int NOT NULL AUTO_INCREMENT,
   `tickets_id` int NOT NULL DEFAULT '0',
   `contracts_id` int NOT NULL DEFAULT '0',

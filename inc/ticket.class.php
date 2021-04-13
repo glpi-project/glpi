@@ -829,7 +829,7 @@ class Ticket extends CommonITILObject {
       $this->addStandardTab('ProjectTask_Ticket', $ong, $options);
       $this->addStandardTab('Problem_Ticket', $ong, $options);
       $this->addStandardTab('Change_Ticket', $ong, $options);
-      $this->addStandardTab(TicketContract::class, $ong, $options);
+      $this->addStandardTab(Ticket_Contract::class, $ong, $options);
 
       if (Entity::getAnonymizeConfig($this->getEntityID()) == Entity::ANONYMIZE_DISABLED
          || Session::getCurrentInterface() == 'central'
@@ -989,7 +989,7 @@ class Ticket extends CommonITILObject {
 
       // Set _contract_type for rules
       $input['_contract_types'] = [];
-      $contracts_link = TicketContract::getItemsForItem($this);
+      $contracts_link = Ticket_Contract::getItemsForItem($this);
       foreach ($contracts_link as $contract_link) {
          // Load linked contract
          $contract = Contract::getById($contract_link['contracts_id']);
@@ -1888,7 +1888,7 @@ class Ticket extends CommonITILObject {
       // Add linked contract
       $contracts_id = $this->input['_contracts_id'] ?? 0;
       if ($contracts_id) {
-         $ticketcontract = new TicketContract();
+         $ticketcontract = new Ticket_Contract();
          $ticketcontract->add([
             'contracts_id' => $this->input['_contracts_id'],
             'tickets_id'   => $this->getID(),
@@ -2848,7 +2848,7 @@ JAVASCRIPT;
                return;
             }
 
-            $em = new TicketContract();
+            $em = new Ticket_Contract();
             foreach ($ids as $id) {
                $links = $em->find([
                   'contracts_id' => $contracts_id,
@@ -3455,7 +3455,7 @@ JAVASCRIPT;
          'usehaving'          => true,
          'joinparams'         => [
             'beforejoin'         => [
-               'table'              => TicketContract::getTable(),
+               'table'              => Ticket_Contract::getTable(),
                'joinparams'         => [
                   'jointype'           => 'child',
                   'linkfield'          => 'tickets_id',
@@ -3477,7 +3477,7 @@ JAVASCRIPT;
          'usehaving'          => true,
          'joinparams'         => [
             'beforejoin'         => [
-               'table'              => TicketContract::getTable(),
+               'table'              => Ticket_Contract::getTable(),
                'joinparams'         => [
                   'jointype'           => 'child',
                   'linkfield'          => 'tickets_id',
