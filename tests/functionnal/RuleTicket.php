@@ -40,7 +40,7 @@ use Group_User;
 use RuleAction;
 use RuleCriteria;
 use TaskTemplate;
-use TicketContract;
+use Ticket_Contract;
 use TicketTask;
 use Toolbox;
 
@@ -1081,7 +1081,7 @@ class RuleTicket extends DbTestCase {
       $this->checkInput($contract, $contract_id, $contract_input);
 
       // Link contract to ticket
-      $ticketcontract = new TicketContract();
+      $ticketcontract = new Ticket_Contract();
       $ticketcontract_input = [
          'contracts_id' => $contract_id,
          'tickets_id'   => $ticket->fields['id'],
