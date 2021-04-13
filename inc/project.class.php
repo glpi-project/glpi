@@ -1832,6 +1832,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
     *
    * @param $ID ID of the project or -1 for all projects
    */
+   /*
    static function showGantt($ID) {
       global $DB;
 
@@ -1957,6 +1958,76 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          echo __('No item to display');
       }
    }
+   */
+
+  /**
+   * Show GANTT diagram for a project
+   * @param $ID ID of the project
+   */
+  static function showGantt($ID) {
+      echo "<div id=\"gantt-container\" style=\"width:100%; height:63vh;\"></div>";
+      echo "<div id=\"gantt-features\">
+               <ul class=\"gantt-controls\">
+                  <li class=\"gantt-menu-item gantt-menu-item-right\">
+                  <a href=\"#\" class=\"fullscreen\" onclick=\"gantt.ext.fullscreen.toggle();\"><img src=\"../pics/icones/ic_fullscreen_24.png\">Fullscreen</a>
+               </li>
+               <li class=\"gantt-menu-item gantt-menu-item-right\">
+                  <fieldset style=\"line-height:normal\">
+                     <legend style=\"margin:0 auto;\">Export</legend>
+                     <a href=\"#\" class=\"inline\" onclick='callExport(1);'>PNG</a>&nbsp;|&nbsp;<a href=\"#\" class=\"inline\" onclick='callExport(2);'>PDF</a>
+                  </fieldset>
+                  </li>
+               <li class=\"gantt-menu-item gantt-menu-item-right\">
+                  <fieldset style=\"line-height:normal\">
+                     <legend style=\"margin:0 auto;\">Time scale</legend>
+                     <input type=\"radio\" id=\"scale1\" class=\"gantt_radio\" name=\"scale\" value=\"day\">
+                     <label for=\"scale1\">Days</label>
+                     <input type=\"radio\" id=\"scale2\" class=\"gantt_radio\" name=\"scale\" value=\"week\">
+                     <label for=\"scale2\">Weeks</label>
+                     <input type=\"radio\" id=\"scale3\" class=\"gantt_radio\" name=\"scale\" value=\"month\" checked>
+                     <label for=\"scale3\">Months</label>
+                     <input type=\"radio\" id=\"scale4\" class=\"gantt_radio\" name=\"scale\" value=\"quarter\">
+                     <label for=\"scale4\">Quarters</label>
+                     <input type=\"radio\" id=\"scale5\" class=\"gantt_radio\" name=\"scale\" value=\"year\">
+                     <label for=\"scale5\">Years</label>
+                  </fieldset>
+                  </li>
+               </ul>                
+            </div>";      
+      echo "<div id=\"dlg-export\">
+               <table>
+                  <tr>
+                     <td>From</td>
+                     <td><input type=\"text\" name=\"dlg-start\" class=\"flatpickr\" placeholder=\"start date\" /></td>
+                  </tr>
+                  <tr>
+                     <td>To</td>
+                     <td><input type=\"text\" name=\"dlg-end\" class=\"flatpickr\" placeholder=\"end date\" /></td>
+                  </tr>
+               </table>
+               <input type=\"hidden\" name=\"exp-type\" />
+            </div>";
+
+      echo "<script type='text/javascript'>
+               $(function() {
+                  
+                  $(document).ajaxStart(function () {
+                     $('#gantt-loader, #gantt-loader-overlay').fadeIn('fast');
+                  });
+             
+                  $(document).ajaxStop(function (event, request, settings) {
+                     $('#gantt-loader, #gantt-loader-overlay').fadeOut('fast');
+                  });
+                  
+                  initGantt(".$ID.");
+
+                  $('#gantt-container').append('<div id=\"gantt-loader\" class=\"spin-center\"></div>');
+                  $('#page').append('<div id=\"gantt-loader-overlay\" style=\"display: none;\"></div>');
+              
+               });
+            </script>
+            ";
+  }
 
    static function getAllForKanban($active = true, $current_id = -1) {
       global $DB;
