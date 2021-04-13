@@ -989,10 +989,10 @@ class Ticket extends CommonITILObject {
 
       // Set _contract_type for rules
       $input['_contract_types'] = [];
-      $contracts_link = Ticket_Contract::getItemsForItem($this);
+      $contracts_link = Ticket_Contract::getListForItem($this);
       foreach ($contracts_link as $contract_link) {
          // Load linked contract
-         $contract = Contract::getById($contract_link['contracts_id']);
+         $contract = Contract::getById($contract_link['id']);
          if (!$contract) {
             continue;
          }

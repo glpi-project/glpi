@@ -51,25 +51,17 @@ class Ticket_Contract extends CommonDBRelation {
       $nb = 0;
       if (get_class($item) == Ticket::class) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            $nb = count(self::getItemsForItem($item));
+            $nb = count(self::getListForItem($item));
          }
          return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), $nb);
       } else if (get_class($item) == Contract::class) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            $nb = count(self::getItemsForItem($item));
+            $nb = count(self::getListForItem($item));
          }
          return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb);
       } else {
          return '';
       }
-   }
-
-   public static function getItemsForItem(CommonDBTM $item) {
-      $em = new self();
-
-      return $em->find([
-         $item::getForeignKeyField() => $item->getID()
-      ]);
    }
 
    public static function displayTabContentForItem(
@@ -86,12 +78,10 @@ class Ticket_Contract extends CommonDBRelation {
       if (get_class($item) == Ticket::class) {
          $add_label = __('Add a contract');
          $item_a_fkey = self::$items_id_1;
-         $item_b_fkey = self::$items_id_2;
          $linked_itemtype = self::$itemtype_2;
       } else if (get_class($item) == Contract::class) {
          $add_label = __('Add a ticket');
          $item_a_fkey = self::$items_id_2;
-         $item_b_fkey = self::$items_id_1;
          $linked_itemtype = self::$itemtype_1;
       }
 
@@ -103,11 +93,11 @@ class Ticket_Contract extends CommonDBRelation {
 
       $canedit = $item->canEdit($ID);
 
-      $linked_items = self::getItemsForItem($item);
+      $linked_items = self::getListForItem($item);
       $used    = [];
       $numrows = count($linked_items);
       foreach ($linked_items as $linked_item) {
-         $used[$linked_item[$item_b_fkey]] = $linked_item[$item_b_fkey];
+         $used[$linked_item['id']] = $linked_item['id'];
       }
 
       if ($canedit) {
@@ -168,11 +158,11 @@ class Ticket_Contract extends CommonDBRelation {
          $i = 0;
          foreach ($linked_items as $data) {
             Session::addToNavigateListItems($linked_itemtype, $data["id"]);
-            $linked_itemtype::showShort($data[$item_b_fkey], [
+            $linked_itemtype::showShort($data['id'], [
                'followups'              => false,
                'row_num'                => $i,
                'type_for_massiveaction' => __CLASS__,
-               'id_for_massiveaction'   => $data['id'],
+               'id_for_massiveaction'   => $data['linkid'],
                'ticket_stats'           => true,
             ]);
             $i++;
