@@ -554,11 +554,10 @@ class MassiveAction extends DbTestCase {
       $this->login();
 
       // Set up session rights
-      $old_session = $_SESSION['glpiactiveprofile'][Ticket::$rightname] ?? 0;
       if ($has_right) {
-         $_SESSION['glpiactiveprofile'][Ticket::$rightname] = UPDATE;
+         $this->login('tech', 'tech');
       } else {
-         $_SESSION['glpiactiveprofile'][Ticket::$rightname] = 0;
+         $this->login('post-only', 'postonly');
       }
 
       // Default expectation: can't run
@@ -585,8 +584,5 @@ class MassiveAction extends DbTestCase {
          $expected_ko,
          Ticket::class
       );
-
-      // Reset rights
-      $_SESSION['glpiactiveprofile'][Ticket::$rightname] = $old_session;
    }
 }
