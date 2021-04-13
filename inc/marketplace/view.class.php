@@ -634,7 +634,7 @@ HTML;
             <i class='fas fa-broom'></i>
          </button>";
       } else if ((!$exists && !$mk_controller->hasWriteAccess())
-         || ($has_web_update && !$can_be_overwritten)) {
+         || ($has_web_update && !$can_be_overwritten && GLPI_MARKETPLACE_MANUAL_DOWNLOADS)) {
          $plugin_data = $mk_controller->getAPI()->getPlugin($plugin_key);
          if (array_key_exists('installation_url', $plugin_data) && $can_be_downloaded) {
             $warning = "";
