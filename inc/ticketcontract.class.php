@@ -44,9 +44,8 @@ class TicketContract extends CommonItilObject_Item {
    public static $checkItem_2_Rights = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
    public static function getTypeName($nb = 0) {
-      return _n('fsefesfsfe', 'fsefsefsef', $nb);
+      return __('Tickets / Contracts');
    }
-
 
    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       $nb = 0;
