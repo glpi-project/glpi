@@ -8714,7 +8714,6 @@ CREATE TABLE `glpi_tickets_contracts` (
   `contracts_id` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickets_id`,`contracts_id`),
-  -- KEY `tickets_id` (`tickets_id`),
   KEY `contracts_id` (`contracts_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 

@@ -49,7 +49,6 @@ if (!$DB->tableExists('glpi_tickets_contracts')) {
       `contracts_id` int NOT NULL DEFAULT '0',
       PRIMARY KEY (`id`),
       UNIQUE KEY `unicity` (`tickets_id`,`contracts_id`),
-      -- KEY `tickets_id` (`tickets_id`),
       KEY `contracts_id` (`contracts_id`)
    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
    $DB->queryOrDie($query, "add table glpi_tickets_contracts");
