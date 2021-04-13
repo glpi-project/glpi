@@ -115,7 +115,7 @@ var initRack = function() {
          // disable qtip
          element.qtip('hide', true);
       })
-      .on('click', function(event) {
+      .on('click', '.grid-stack-item', function(event) {
          var element = $(event.target);
          var el_url  = element.find('.itemrack_name').attr('href');
 
