@@ -6323,7 +6323,12 @@ abstract class CommonITILObject extends CommonDBTM {
                                  $align_desc." width='150'");
          } else {
             echo Search::showItem($p['output_type'], $name_column, $item_num, $p['row_num'], $align_desc." width='200'");
-            $takeintoaccountdelay_column = Html::timestampToString($item->fields['takeintoaccount_delay_stat']);
+
+            $takeintoaccountdelay_column = "";
+            // Show only for tickets taken into account
+            if ($item->fields['takeintoaccount_delay_stat'] > 0) {
+               $takeintoaccountdelay_column = Html::timestampToString($item->fields['takeintoaccount_delay_stat']);
+            }
             echo Search::showItem($p['output_type'], $takeintoaccountdelay_column, $item_num, $p['row_num'], $align_desc." width='150'");
 
             $solvedelay_column = "";
