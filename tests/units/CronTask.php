@@ -32,8 +32,8 @@
 
 namespace tests\units;
 
-use \RecursiveDirectoryIterator;
-use \RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 /* Test for inc/crontask.class.php */
 
