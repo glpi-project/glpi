@@ -499,12 +499,14 @@ class MassiveAction extends DbTestCase {
          'content' => 'test',
       ]);
       $ticket->getFromDB($id);
+      $this->integer($id)->isGreaterThan(0);
 
       $contract = new Contract();
       $contract_id = $contract->add([
          'name'        => 'test',
          'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
       ]);
+      $this->integer($contract_id)->isGreaterThan(0);
 
       return [
          [
