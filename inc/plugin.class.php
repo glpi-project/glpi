@@ -1220,9 +1220,12 @@ class Plugin extends CommonDBTM {
       $plug     = new Plugin();
       $pluglist = $plug->find([], "name, directory");
       foreach ($pluglist as $plugin) {
+         $name = Html::clean($plugin['name']);
+         $version = Html::clean($plugin['version']);
+
          $msg  = substr(str_pad($plugin['directory'], 30), 0, 20).
-                 " Name: ".Toolbox::substr(str_pad($plugin['name'], 40), 0, 30).
-                 " Version: ".str_pad($plugin['version'], 10).
+                 " Name: ".Toolbox::substr(str_pad($name, 40), 0, 30).
+                 " Version: ".str_pad($version, 10).
                  " State: ";
 
          $state = $plug->isLoadable($plugin['directory']) ? $plugin['state'] : self::TOBECLEANED;
@@ -2127,7 +2130,7 @@ class Plugin extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'version',
          'name'               => _n('Version', 'Versions', 1),
-         'datatype'           => 'text',
+         'datatype'           => 'specific',
          'massiveaction'      => false
       ];
 
@@ -2136,7 +2139,7 @@ class Plugin extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'license',
          'name'               => SoftwareLicense::getTypeName(1),
-         'datatype'           => 'text',
+         'datatype'           => 'specific',
          'massiveaction'      => false
       ];
 
@@ -2154,7 +2157,8 @@ class Plugin extends CommonDBTM {
          'id'                 => '6',
          'table'              => $this->getTable(),
          'field'              => 'author',
-         'name'               => __('Authors')
+         'name'               => __('Authors'),
+         'datatype'           => 'specific',
       ];
 
       $tab[] = [
@@ -2340,16 +2344,16 @@ class Plugin extends CommonDBTM {
             return self::getState($state);
             break;
          case 'homepage':
-            $value = $values[$field];
+            $value = Html::entities_deep(Toolbox::formatOutputWebLink($values[$field]));
             if (!empty($value)) {
-               return "<a href=\"".Toolbox::formatOutputWebLink($value)."\" target='_blank'>
+               return "<a href=\"".$value."\" target='_blank'>
                      <i class='fas fa-external-link-alt fa-2x'></i><span class='sr-only'>$value</span>
                   </a>";
             }
             return "&nbsp;";
             break;
          case 'name':
-            $value = $values[$field];
+            $value = Html::clean($values[$field]);
             $state = $values['state'];
             $directory = $values['directory'];
             self::load($directory); // Load plugin to give it ability to define its config_page hook
@@ -2362,6 +2366,13 @@ class Plugin extends CommonDBTM {
             } else {
                return $value;
             }
+            break;
+         case 'author':
+            return $value = Html::clean($values[$field], false);
+            break;
+         case 'license':
+         case 'version':
+            return $value = Html::clean($values[$field]);
             break;
       }
 
