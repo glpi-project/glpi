@@ -219,6 +219,7 @@ class Dropdown {
             );
          }
 
+         $paramscomment = [];
          if ($item->canView()) {
             $paramscomment['withlink'] = $link_id;
          }
