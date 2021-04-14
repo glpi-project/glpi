@@ -140,7 +140,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $actortypestring = self::getActorFieldNameType($actortype);
       if ($this->isNewItem()) {
          // for user actor, we load firstly from template, else default actor
-         $users_id = $params['_users_id_'.$actortypestring] ?: $this->getDefaultActor($actortype);
+         $users_id = ($params['_users_id_'.$actortypestring] ?? false) ?: $this->getDefaultActor($actortype);
          if ($userobj->getFromDB($users_id)) {
             $name = formatUserName($userobj->fields["id"], $userobj->fields["name"], $userobj->fields["realname"],
                                     $userobj->fields["firstname"]);
