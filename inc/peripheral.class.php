@@ -282,7 +282,7 @@ class Peripheral extends CommonDBTM {
       echo "</td>\n";
       echo "</tr>\n";
 
-      // Display auto inventory informations
+      // Display auto inventory information
       if (!empty($ID)
          && $this->fields["is_dynamic"]) {
          echo "<tr class='tab_bg_1'><td colspan='4'>";

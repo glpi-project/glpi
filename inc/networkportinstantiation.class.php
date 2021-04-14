@@ -135,7 +135,7 @@ class NetworkPortInstantiation extends CommonDBChild {
 
    /**
     * Get HTMLTable columns headers for a given item type
-    * Beware : the internet informations are "sons" of each instantiation ...
+    * Beware : the internet information are "sons" of each instantiation ...
     *
     * @param HTMLTableSuperHeader $group           HTMLTableGroup object
     * @param HTMLTableSuperHeader $super           HTMLTableSuperHeader object
@@ -210,7 +210,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     *       - 'dont_display' : array of the elements that must not be display
     *       - 'withtemplate' : integer withtemplate param
     *
-    * @return HTMLTableCell  the father cell for the Internet Informations ...
+    * @return HTMLTableCell  the father cell for the Internet Information ...
    **/
    function getInstantiationHTMLTableWithPeer(NetworkPort $netport, HTMLTableRow $row,
                                               HTMLTableCell $father = null, array $options = []) {

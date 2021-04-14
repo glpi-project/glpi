@@ -461,7 +461,7 @@ function step4 ($databasename, $newdatabasename) {
 
 }
 
-//send telemetry informations
+//send telemetry information
 function step6() {
    global $DB;
    echo "<h3>".__('Collect data')."</h3>";
@@ -676,7 +676,7 @@ if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
                $_POST["newdatabasename"]);
          break;
 
-      case "Etape_4" : // send telemetry informations
+      case "Etape_4" : // send telemetry information
          header_html(sprintf(__('Step %d'), 4));
          step6();
          break;

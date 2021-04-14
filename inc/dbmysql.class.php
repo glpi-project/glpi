@@ -879,7 +879,7 @@ class DBmysql {
 
 
    /**
-    * Get information about DB connection for showSystemInformations
+    * Get information about DB connection for showSystemInformation
     *
     * @since 0.84
     *
@@ -1658,7 +1658,7 @@ class DBmysql {
    }
 
    /**
-    * Clear cached schema informations.
+    * Clear cached schema information.
     *
     * @return void
     */

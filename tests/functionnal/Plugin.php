@@ -339,7 +339,7 @@ class Plugin extends DbTestCase {
          $initial_data,
          null,
          $expected_data,
-         'Unable to load plugin "' . $this->test_plugin_directory . '" informations.'
+         'Unable to load plugin "' . $this->test_plugin_directory . '" information.'
       );
 
       // check also Plugin::isActivated method
@@ -797,7 +797,7 @@ class Plugin extends DbTestCase {
     * the plugin on each test.
     *
     * @param array|null  $initial_data       Initial data in DB, null for none.
-    * @param array|null  $setup_informations Informations hosted by setup file, null for none.
+    * @param array|null  $setup_informations Information hosted by setup file, null for none.
     * @param array|null  $expected_data      Expected data in DB, null for none.
     * @param string|null $expected_warning   Expected warning message, null for none.
     *
@@ -872,7 +872,7 @@ class Plugin extends DbTestCase {
     * Create test plugin files.
     *
     * @param boolean     $withsetup     Include setup file ?
-    * @param array       $informations  Informations to put in setup files.
+    * @param array       $informations  Information to put in setup files.
     * @param null|string $directory     Directory where to create files, null to use default location.
     *
     * @return void

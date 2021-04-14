@@ -304,7 +304,7 @@ class Report extends CommonGLPI{
 
 
    /**
-    * Get report informations
+    * Get report information
     *
     * @param string $from      From table
     * @param array  $joincrit  Join criteria

@@ -64,7 +64,7 @@ class SessionsConfiguration extends \GLPITestCase {
          ->isEqualTo(
             [
                '"session.auto_start" must be set to off.',
-               'See .htaccess file in the GLPI root for more informations.',
+               'See .htaccess file in the GLPI root for more information.',
             ]
          );
    }
@@ -81,7 +81,7 @@ class SessionsConfiguration extends \GLPITestCase {
          ->isEqualTo(
             [
                '"session.use_trans_sid" must be set to off.',
-               'See .htaccess file in the GLPI root for more informations.',
+               'See .htaccess file in the GLPI root for more information.',
             ]
          );
    }
@@ -96,7 +96,7 @@ class SessionsConfiguration extends \GLPITestCase {
          ->isEqualTo(
             [
                '"session.auto_start" and "session.use_trans_sid" must be set to off.',
-               'See .htaccess file in the GLPI root for more informations.',
+               'See .htaccess file in the GLPI root for more information.',
             ]
          );
    }

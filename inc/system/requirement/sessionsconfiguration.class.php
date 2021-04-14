@@ -68,7 +68,7 @@ class SessionsConfiguration extends AbstractRequirement {
          }
 
          $this->validated = false;
-         $this->validation_messages[] = __('See .htaccess file in the GLPI root for more informations.');
+         $this->validation_messages[] = __('See .htaccess file in the GLPI root for more information.');
 
          return;
       }

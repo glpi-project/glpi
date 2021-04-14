@@ -388,7 +388,7 @@ class Printer  extends CommonDBTM {
       Network::dropdown(['value' => $this->fields["networks_id"]]);
       echo "</td></tr>\n";
 
-      // Display auto inventory informations
+      // Display auto inventory information
       $rowspan        = 5;
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2'></td>\n";
@@ -440,7 +440,7 @@ class Printer  extends CommonDBTM {
       echo "</td></tr></table>\n";
       echo "</td>";
       echo "</tr>";
-      // Display auto inventory informations
+      // Display auto inventory information
       if (!empty($ID)
          && $this->fields["is_dynamic"]) {
          echo "<tr class='tab_bg_1'><td colspan='4'>";
