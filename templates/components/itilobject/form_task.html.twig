@@ -135,7 +135,7 @@
 
                      {# User #}
                      {% set task_user_lbl %}
-                        <i class="fas fa-user fa-fw me-1" title="{{ __('User') }}"></i>
+                        <i class="fas fa-user fa-fw me-1" title="{{ "User"|itemtype_name }}"></i>
                      {% endset %}
                      {{ fields.dropdownField(
                         "User",
@@ -153,7 +153,7 @@
 
                      {# Group #}
                      {% set task_group_lbl %}
-                        <i class="fas fa-users fa-fw me-1" title="{{ __('Group') }}"></i>
+                        <i class="fas fa-users fa-fw me-1" title="{{ "Group"|itemtype_name }}"></i>
                      {% endset %}
                      {{ fields.dropdownField(
                         "Group",
