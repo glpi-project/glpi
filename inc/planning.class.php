@@ -2209,7 +2209,7 @@ class Planning extends CommonGLPI {
    }
 
    /**
-    * Clean timezone informations from dates fields,
+    * Clean timezone information from dates fields,
     * as fullcalendar doesn't support easily timezones, let's consider it sends raw dates
     * (remove timezone suffix), we will manage timezone directy on database
     * see https://fullcalendar.io/docs/timeZone

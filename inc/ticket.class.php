@@ -1013,7 +1013,7 @@ class Ticket extends CommonITILObject {
          }
 
          //handle existing actors: load all existing actors from ticket
-         //to make sure business rules will receive all informations, and not just
+         //to make sure business rules will receive all information, and not just
          //what have been entered in the html form.
          //
          //ref also this actor into $post_added to avoid the filling of $changes

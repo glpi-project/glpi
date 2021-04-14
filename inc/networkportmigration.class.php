@@ -450,7 +450,7 @@ class NetworkPortMigration extends CommonDBChild {
                                                              HTMLTableSuperHeader $internet_super = null,
                                                              HTMLTableHeader $father = null,
                                                              array $options = []) {
-      // TODO : study to display the correct informations for this undefined NetworkPort
+      // TODO : study to display the correct information for this undefined NetworkPort
       return null;
    }
 

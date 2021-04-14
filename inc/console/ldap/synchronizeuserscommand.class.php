@@ -73,7 +73,7 @@ class SynchronizeUsersCommand extends AbstractCommand {
 
       $this->setName('glpi:ldap:synchronize_users');
       $this->setAliases(['ldap:sync']);
-      $this->setDescription(__('Synchronize users against LDAP server informations'));
+      $this->setDescription(__('Synchronize users against LDAP server information'));
 
       $this->addOption(
          'only-create-new',
@@ -241,7 +241,7 @@ class SynchronizeUsersCommand extends AbstractCommand {
       foreach ($servers_id as $server_id) {
          $server = new AuthLDAP();
          if (!$server->getFromDB($server_id)) {
-            throw new RuntimeException(__('Unable to load LDAP server informations.'));
+            throw new RuntimeException(__('Unable to load LDAP server information.'));
          }
          if (!$server->isActive()) {
             // Can happen if id is specified in command call

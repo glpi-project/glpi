@@ -1348,7 +1348,7 @@ Regards,',
                       OR `os_license_number` IS NOT NULL
                       OR `os_kernel_version` IS NOT NULL
                       OR `os_licenseid` IS NOT NULL";
-      $DB->queryOrDie($query, "9.2 migrate main operating system informations");
+      $DB->queryOrDie($query, "9.2 migrate main operating system information");
 
       //migrate kernel versions.
       $kver = new OperatingSystemKernelVersion();

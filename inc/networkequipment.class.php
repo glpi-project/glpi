@@ -395,7 +395,7 @@ class NetworkEquipment extends CommonDBTM {
       Html::autocompletionTextField($this, "ram");
       echo "</td></tr>";
 
-      // Display auto inventory informations
+      // Display auto inventory information
       if (!empty($ID)
          && $this->fields["is_dynamic"]) {
          echo "<tr class='tab_bg_1'><td colspan='4'>";

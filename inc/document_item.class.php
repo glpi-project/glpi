@@ -969,7 +969,7 @@ class Document_Item extends CommonDBRelation{
     *
     * @param integer $items_id Object id to restrict on
     * @param string  $itemtype Type for items to retrieve
-    * @param boolean $noent    Flag to not compute enitty informations (see Document_Item::getTypeItemsQueryParams)
+    * @param boolean $noent    Flag to not compute enitty information (see Document_Item::getTypeItemsQueryParams)
     * @param array   $where    Inital WHERE clause. Defaults to []
     *
     * @return DBmysqlIterator
@@ -1011,7 +1011,7 @@ class Document_Item extends CommonDBRelation{
     * @since 9.3.1
     *
     * @param CommonDBTM $item  Item instance
-    * @param boolean    $noent Flag to not compute entity informations (see Document_Item::getTypeItemsQueryParams)
+    * @param boolean    $noent Flag to not compute entity information (see Document_Item::getTypeItemsQueryParams)
     *
     * @return array
     */
