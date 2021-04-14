@@ -3317,8 +3317,16 @@ class Toolbox {
     * @return string shortened number
     */
    static function shortenNumber($number = 0, $precision = 1, bool $html = true): string {
+
+      $formatted = "";
       $suffix = "";
-      if ($number < 900) {
+      if (!is_numeric($number)) {
+         // Already formatted number
+         if (preg_match("/^([0-9\.]+)(.*)/", $number, $matches)) {
+            $formatted = $matches[1];
+            $suffix = $matches[2];
+         }
+      } else if ($number < 900) {
          $formatted = number_format($number);
       } else if ($number < 900000) {
          $formatted = number_format($number / 1000, $precision);
