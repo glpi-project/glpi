@@ -4645,8 +4645,8 @@ JAVASCRIPT;
 
       $this->initForm($ID, $options);
 
-      $sla = new Sla;
-      $ola = new Ola;
+      $sla = new SLA;
+      $ola = new OLA;
 
       TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
          'item'               => $this,
