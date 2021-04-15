@@ -913,7 +913,11 @@ class Toolbox extends \GLPITestCase {
             'number'    => "14%",
             'precision' => 1,
             'expected'  => '14%',
-         ],
+         ], [
+            'number'    => "test",
+            'precision' => 1,
+            'expected'  => 'test',
+         ]
       ];
    }
 
