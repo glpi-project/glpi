@@ -250,7 +250,8 @@ abstract class LevelAgreement extends CommonDBChild {
     * @param  ITILTemplate $tt ticket template object
     * @param  bool           $canupdate update right
     */
-   function showForTicket(Ticket $ticket, $type, $tt, $canupdate) {
+   // TODO Cleanup need after modern ui done
+   /**function showForTicket(Ticket $ticket, $type, $tt, $canupdate) {
       list($dateField, $laField) = static::getFieldNames($type);
       $rand = mt_rand();
       $pre  = static::$prefix;
@@ -399,9 +400,18 @@ abstract class LevelAgreement extends CommonDBChild {
 
       echo "</tr>";
       echo "</table>";
-   }
+   }**/
 
 
+   /**
+    * Get a level for a given action
+    *
+    * since 10.0
+    *
+    * @param mixed $nextaction
+    *
+    * @return false|LevelAgreementLevel
+    */
    function getLevelFromAction($nextaction) {
       if ($nextaction === false) {
          return false;
@@ -417,6 +427,16 @@ abstract class LevelAgreement extends CommonDBChild {
    }
 
 
+   /**
+    * Get then next levelagreement action for a given ticket and "LA" type
+    *
+    * since 10.0
+    *
+    * @param Ticket $ticket
+    * @param int $type
+    *
+    * @return false|OlaLevel_Ticket|SlaLevel_Ticket
+    */
    function getNextActionForTicket(Ticket $ticket, int $type) {
       $nextaction = new static::$levelticketclass();
       if (!$nextaction->getFromDBForTicket($ticket->fields["id"], $type)) {
