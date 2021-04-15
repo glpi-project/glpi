@@ -3318,13 +3318,15 @@ class Toolbox {
     */
    static function shortenNumber($number = 0, $precision = 1, bool $html = true): string {
 
-      $formatted = "";
       $suffix = "";
       if (!is_numeric($number)) {
-         // Already formatted number
          if (preg_match("/^([0-9\.]+)(.*)/", $number, $matches)) {
+            // Preformatted value: {Number}{Suffix}
             $formatted = $matches[1];
             $suffix = $matches[2];
+         } else {
+            // Unknwown format
+            $formatted = $number;
          }
       } else if ($number < 900) {
          $formatted = number_format($number);
