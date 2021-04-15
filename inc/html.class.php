@@ -1276,7 +1276,7 @@ class Html {
          }
 
          if (in_array('gantt', $jslibs)) {
-            echo Html::css('public/lib/jquery-gantt.css');
+            echo Html::css('public/lib/dhtmlx-gantt.css');
             Html::requireJs('gantt');
          }
 
@@ -1356,6 +1356,7 @@ class Html {
       Html::requireJs('log_filters');
 
       echo Html::css('css/jquery-glpi.css');
+      echo Html::css('css/glpi-gantt.css');
       if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {
          echo Html::css('public/lib/scrollable-tabs.css');
@@ -6517,7 +6518,9 @@ JAVASCRIPT;
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jstree.js';
             break;
          case 'gantt':
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jquery-gantt.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/dhtmlx-gantt.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'js/gantt-api.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'js/gantt-helper.js';
             break;
          case 'kanban':
             $_SESSION['glpi_js_toload'][$name][] = 'js/kanban.js';

@@ -1827,135 +1827,74 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       return $todisplay;
    }
 
-
-   /** show GANTT diagram for a project or for all
-    *
-   * @param $ID ID of the project or -1 for all projects
+   /**
+     * Show GANTT diagram for a project
+     * @param $ID ID of the project
    */
    static function showGantt($ID) {
-      global $DB;
+      echo "<div id=\"gantt-container\" style=\"width:100%; height:63vh;\"></div>";
+      echo "<div id=\"gantt-features\">
+               <ul class=\"gantt-controls\">
+                  <li class=\"gantt-menu-item gantt-menu-item-right\">
+                  <a href=\"#\" class=\"fullscreen\" onclick=\"gantt.ext.fullscreen.toggle();\"><img src=\"../pics/icones/ic_fullscreen_24.png\">Fullscreen</a>
+               </li>
+               <li class=\"gantt-menu-item gantt-menu-item-right\">
+                  <fieldset style=\"line-height:normal\">
+                     <legend style=\"margin:0 auto;\">Export</legend>
+                     <a href=\"#\" class=\"inline\" onclick='callExport(1);'>PNG</a>&nbsp;|&nbsp;<a href=\"#\" class=\"inline\" onclick='callExport(2);'>PDF</a>
+                  </fieldset>
+                  </li>
+               <li class=\"gantt-menu-item gantt-menu-item-right\">
+                  <fieldset style=\"line-height:normal\">
+                     <legend style=\"margin:0 auto;\">Time scale</legend>
+                     <input type=\"radio\" id=\"scale1\" class=\"gantt_radio\" name=\"scale\" value=\"day\">
+                     <label for=\"scale1\">Days</label>
+                     <input type=\"radio\" id=\"scale2\" class=\"gantt_radio\" name=\"scale\" value=\"week\">
+                     <label for=\"scale2\">Weeks</label>
+                     <input type=\"radio\" id=\"scale3\" class=\"gantt_radio\" name=\"scale\" value=\"month\" checked>
+                     <label for=\"scale3\">Months</label>
+                     <input type=\"radio\" id=\"scale4\" class=\"gantt_radio\" name=\"scale\" value=\"quarter\">
+                     <label for=\"scale4\">Quarters</label>
+                     <input type=\"radio\" id=\"scale5\" class=\"gantt_radio\" name=\"scale\" value=\"year\">
+                     <label for=\"scale5\">Years</label>
+                  </fieldset>
+                  </li>
+               </ul>
+            </div>";
+      echo "<div id=\"dlg-export\">
+               <table>
+                  <tr>
+                     <td>From</td>
+                     <td><input type=\"text\" name=\"dlg-start\" class=\"flatpickr\" placeholder=\"start date\" /></td>
+                  </tr>
+                  <tr>
+                     <td>To</td>
+                     <td><input type=\"text\" name=\"dlg-end\" class=\"flatpickr\" placeholder=\"end date\" /></td>
+                  </tr>
+               </table>
+               <input type=\"hidden\" name=\"exp-type\" />
+            </div>";
 
-      if ($ID > 0) {
-         $project = new Project();
-         if ($project->getFromDB($ID) && $project->canView()) {
-            $todisplay = static::getDataToDisplayOnGantt($ID);
-         } else {
-            return false;
-         }
-      } else {
-         $todisplay = [];
-         // Get all root projects
-         $iterator = $DB->request([
-            'FROM'   => 'glpi_projects',
-            'WHERE'  => [
-               'projects_id'           => 0,
-               'show_on_global_gantt'  => 1,
-               'is_template'           => 0
-            ] + getEntitiesRestrictCriteria('glpi_projects', '', '', true)
-         ]);
-         while ($data = $iterator->next()) {
-            $todisplay += static::getDataToDisplayOnGantt($data['id'], false);
-         }
-         ksort($todisplay);
-      }
+      echo "<script type='text/javascript'>
+               $(function() {
 
-      $data    = [];
-      $invalid = [];
-      if (count($todisplay)) {
-
-         // Prepare for display
-         foreach ($todisplay as $val) {
-            if (!empty($val['from']) && !empty($val['to'])) {
-               $temp  = [];
-               $color = 'ganttRed';
-               if ($val['percent'] > 50) {
-                  $color = 'ganttOrange';
-               }
-               if ($val['percent'] == 100) {
-                  $color = 'ganttGreen';
-               }
-               switch ($val['type']) {
-                  case 'project' :
-                     $temp = ['name'   => $val['link'],
-                                   'desc'   => '',
-                                   'values' => [['from'
-                                                            => "/Date(".strtotime($val['from'])."000)/",
-                                                           'to'
-                                                            => "/Date(".strtotime($val['to'])."000)/",
-                                                           'desc'
-                                                            => $val['desc'],
-                                                         'label'
-                                                            => $val['percent']."%",
-                                                         'customClass'
-                                                            => $color]]
-                                 ];
-                     break;
-
-                  case 'task' :
-                     if (isset($val['is_milestone']) && $val['is_milestone']) {
-                        $color = 'ganttMilestone';
+                  $(document).ajaxSend(function(event, request, settings) {
+                     if (settings.url.indexOf('gantt.php') != -1) {
+                        $('#gantt-loader, #gantt-loader-overlay').fadeIn('fast');
                      }
-                     $temp = ['name'   => ' ',
-                                   'desc'   => str_repeat('-', $val['parents']).$val['link'],
-                                   'values' => [['from'
-                                                            => "/Date(".strtotime($val['from'])."000)/",
-                                                           'to'
-                                                            => "/Date(".strtotime($val['to'])."000)/",
-                                                           'desc'
-                                                            => $val['desc'],
-                                                           'label'
-                                                            => strlen($val['percent']==0)?'':$val['percent']."%",
-                                                           'customClass'
-                                                            => $color]]
-                                 ];
-                     break;
-               }
-               $data[] = $temp;
-            } else {
-               $invalid[] = $val['link'];
-            }
-         }
-         // Html::printCleanArray($data);
-      }
+                  });
 
-      if (count($invalid)) {
-         echo sprintf(__('Invalid items (no start or end date): %s'), implode(',', $invalid));
-         echo "<br><br>";
-      }
+                  $(document).ajaxStop(function (event, request, settings) {
+                     $('#gantt-loader, #gantt-loader-overlay').fadeOut('fast');
+                  });
 
-      if (count($data)) {
-         $months = [__('January'), __('February'), __('March'), __('April'), __('May'),
-                         __('June'), __('July'), __('August'), __('September'),
-                         __('October'), __('November'), __('December')];
+                  initGantt(".$ID.");
 
-         $dow    = [Toolbox::substr(__('Sunday'), 0, 1), Toolbox::substr(__('Monday'), 0, 1),
-                         Toolbox::substr(__('Tuesday'), 0, 1), Toolbox::substr(__('Wednesday'), 0, 1),
-                         Toolbox::substr(__('Thursday'), 0, 1), Toolbox::substr(__('Friday'), 0, 1),
-                         Toolbox::substr(__('Saturday'), 0, 1)
-                     ];
+                  $('#gantt-container').append('<div id=\"gantt-loader\" class=\"spin-center\"></div>');
+                  $('#page').append('<div id=\"gantt-loader-overlay\" style=\"display: none;\"></div>');
 
-         echo "<div class='gantt'></div>";
-         $js = "
-                           $(function() {
-                              $('.gantt').gantt({
-                                    source: ".json_encode($data).",
-                                    navigate: 'scroll',
-                                    maxScale: 'months',
-                                    itemsPerPage: 20,
-                                    months: ".json_encode($months).",
-                                    dow: ".json_encode($dow).",
-                                    onItemClick: function(data) {
-                                    //    alert('Item clicked - show some details');
-                                    },
-                                    onAddClick: function(dt, rowId) {
-                                    //    alert('Empty space clicked - add an item!');
-                                    },
                               });
-                           });";
-         echo Html::scriptBlock($js);
-      } else {
-         echo __('No item to display');
-      }
+            </script>";
    }
 
    static function getAllForKanban($active = true, $current_id = -1) {
