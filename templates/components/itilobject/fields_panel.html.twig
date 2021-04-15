@@ -14,7 +14,7 @@
          </button>
       </h2>
       <div id="ticket-main" class="accordion-collapse collapse show" aria-labelledby="heading-main-ticket">
-         <div class="accordion-body row m-0 my-n3">
+         <div class="accordion-body row m-0 mt-n3">
             {{ fields.datetimeField(
                'date',
                item.fields["date"],
@@ -114,53 +114,64 @@
          </div>
       </div>
    </div>
+
    <div class="accordion-item">
       <h2 class="accordion-header" id="heading-actor">
          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#actors" aria-expanded="true" aria-controls="actors">
             <i class="fa fa-users me-1"></i>
             <span>{{ __("Actors") }}</span>
-            <span class="badge bg-secondary ms-2">
+            <span class="badge bg-info ms-2">
                {{ item.countActors() }}
             </span>
          </button>
       </h2>
       <div id="actors" class="accordion-collapse collapse show" aria-labelledby="heading-actor">
-         <div class="accordion-body accordion-actors row m-0 my-n3">
+         <div class="accordion-body accordion-actors row m-0 mt-n3">
             {% include("components/itilobject/actors.html.twig") %}
          </div>
       </div>
    </div>
-   <div class="accordion-item">
-      <h2 class="accordion-header" id="service-levels-heading">
-         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#service-levels" aria-expanded="true" aria-controls="service-levels">
-            <i class="fas fa-stopwatch me-1"></i>
-            <span>{{ _n('Service level', 'Service levels', getPluralNumber()) }}</span>
-         </button>
-      </h2>
-      <div id="service-levels" class="accordion-collapse collapse" aria-labelledby="service-levels-heading">
-         <div class="accordion-body row m-0 my-n3">
-            {% include("components/itilobject/service_levels.html.twig") %}
+
+   {% if item.getType() == "Ticket" %}
+      {% if glpi_has_sla or glpi_has_ola %}
+         {% set nb_la = (item.fields['slas_id_tto'] > 0 ? 1 : 0) + (item.fields['slas_id_ttr'] > 0 ? 1 : 0) + (item.fields['olas_id_tto'] > 0 ? 1 : 0) + (item.fields['olas_id_ttr'] > 0 ? 1 : 0) %}
+         <div class="accordion-item">
+            <h2 class="accordion-header" id="service-levels-heading">
+               <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#service-levels" aria-expanded="true" aria-controls="service-levels">
+                  <i class="fas fa-stopwatch me-1"></i>
+                  <span>{{ _n('Service level', 'Service levels', getPluralNumber()) }}</span>
+                  {% if nb_la > 0 %}
+                     <span class="badge bg-info ms-2">{{ nb_la }}</span>
+                  {% endif %}
+               </button>
+            </h2>
+            <div id="service-levels" class="accordion-collapse collapse" aria-labelledby="service-levels-heading">
+               <div class="accordion-body row m-0 mt-n3">
+                  {% include("components/itilobject/service_levels.html.twig") %}
+               </div>
+            </div>
+         </div>
+      {% endif %}
+
+      <div class="accordion-item">
+         <h2 class="accordion-header" id="linked_tickets-heading">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#linked_tickets" aria-expanded="true" aria-controls="linked_tickets">
+               <i class="fas fa-link me-1"></i>
+               {% set linked_tickets = ticket_ticket.getLinkedTicketsTo(item.fields['id']) %}
+               {% set nb_linked_tickets = linked_tickets|length %}
+               <span>{{ "Ticket_Ticket"|itemtype_name(nb_linked_tickets) }}</span>
+               {% if nb_linked_tickets > 0 %}
+                  <span class="badge bg-info ms-2">{{ nb_linked_tickets }}</span>
+               {% endif %}
+            </button>
+         </h2>
+         <div id="linked_tickets" class="accordion-collapse collapse" aria-labelledby="linked_tickets-heading">
+            <div class="accordion-body">
+               {% include("components/itilobject/linked_tickets.html.twig") %}
+            </div>
          </div>
       </div>
-   </div>
-   <div class="accordion-item">
-      <h2 class="accordion-header" id="linked_tickets-heading">
-         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#linked_tickets" aria-expanded="true" aria-controls="linked_tickets">
-            <i class="fas fa-link me-1"></i>
-            {% set linked_tickets = ticket_ticket.getLinkedTicketsTo(item.fields['id']) %}
-            {% set nb_linked_tickets = linked_tickets|length %}
-            <span>{{ "Ticket_Ticket"|itemtype_name(nb_linked_tickets) }}</span>
-            {% if nb_linked_tickets > 0 %}
-               <span class="badge bg-secondary ms-2">{{ nb_linked_tickets }}</span>
-            {% endif %}
-         </button>
-      </h2>
-      <div id="linked_tickets" class="accordion-collapse collapse" aria-labelledby="linked_tickets-heading">
-         <div class="accordion-body">
-            {% include("components/itilobject/linked_tickets.html.twig") %}
-         </div>
-      </div>
-   </div>
+   {% endif %}
 </div>
 
 <script type="text/javascript">

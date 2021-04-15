@@ -46,6 +46,7 @@ class ToolboxExtension extends AbstractExtension implements ExtensionInterface {
          new TwigFunction('getMaxInputVar', [Toolbox::class, 'get_max_input_vars']),
          new TwigFunction('getItemTypeSearchURL', [$this, 'getItemTypeSearchURL']),
          new TwigFunction('getPictureUrl', [Toolbox::class, 'getPictureUrl']),
+         new TwigFunction('getDateFormat', [Toolbox::class, 'getDateFormat']),
          new TwigFunction('autoName', 'autoName', ['is_safe' => ['html']]),
          new TwigFunction('getHtmlToDisplay', [Toolbox::class, 'getHtmlToDisplay'], ['is_safe' => ['html']]),
          new TwigFunction('file_exists', 'file_exists'),
