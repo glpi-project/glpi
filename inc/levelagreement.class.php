@@ -48,6 +48,11 @@ abstract class LevelAgreement extends CommonDBChild {
    static public $itemtype = 'SLM';
    static public $items_id = 'slms_id';
 
+   static protected $prefix            = '';
+   static protected $prefixticket      = '';
+   static protected $levelclass        = '';
+   static protected $levelticketclass  = '';
+
 
    /**
     * Display a specific OLA or SLA warning.
@@ -394,6 +399,31 @@ abstract class LevelAgreement extends CommonDBChild {
 
       echo "</tr>";
       echo "</table>";
+   }
+
+
+   function getLevelFromAction($nextaction) {
+      if ($nextaction === false) {
+         return false;
+      }
+
+      $pre  = static::$prefix;
+      $nextlevel  = new static::$levelclass();
+      if (!$nextlevel->getFromDB($nextaction->fields[$pre.'levels_id'])) {
+         return false;
+      }
+
+      return $nextlevel;
+   }
+
+
+   function getNextActionForTicket(Ticket $ticket, int $type) {
+      $nextaction = new static::$levelticketclass();
+      if (!$nextaction->getFromDBForTicket($ticket->fields["id"], $type)) {
+         return false;
+      }
+
+      return $nextaction;
    }
 
 
