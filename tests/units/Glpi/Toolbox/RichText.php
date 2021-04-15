@@ -38,12 +38,18 @@ namespace tests\units\Glpi\Toolbox;
 class RichText extends \GLPITestCase {
 
    protected function getSafeHtmlProvider(): iterable {
-      // Empty content would result in an empty `<p>`
+      // Empty content would not be altered
+      yield [
+         'content'                => null,
+         'sanitized_input'        => false,
+         'encode_output_entities' => false,
+         'expected_result'        => '',
+      ];
       yield [
          'content'                => '',
          'sanitized_input'        => false,
          'encode_output_entities' => false,
-         'expected_result'        => '<p></p>',
+         'expected_result'        => '',
       ];
 
       // Handling of sanitized content
@@ -323,7 +329,7 @@ HTML,
     * @dataProvider getSafeHtmlProvider
     */
    public function testGetSafeHtml(
-      string $content,
+      ?string $content,
       bool $sanitized_input,
       bool $encode_output_entities,
       string $expected_result

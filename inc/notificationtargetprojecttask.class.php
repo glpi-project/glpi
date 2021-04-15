@@ -245,7 +245,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
       $this->data["##projecttask.comments##"]
                   = $item->getField('comment');
       $this->data["##projecttask.creationdate##"]
-                  = Html::convDateTime($item->getField('date'));
+                  = Html::convDateTime($item->getField('date_creation'));
       $this->data["##projecttask.lastupdatedate##"]
                   = Html::convDateTime($item->getField('date_mod'));
       $this->data["##projecttask.percent##"]
@@ -309,7 +309,6 @@ class NotificationTargetProjectTask extends NotificationTarget {
 
       // Team infos
       $restrict = ['projecttasks_id' => $item->getField('id')];
-      $order    = ['date DESC', 'id ASC'];
       $items    = getAllDataFromTable('glpi_projecttaskteams', $restrict);
 
       $this->data['teammembers'] = [];
@@ -332,7 +331,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
       $tasks                = getAllDataFromTable(
          'glpi_projecttasks', [
             'WHERE'  => $restrict,
-            'ORDER'  => $order
+            'ORDER'  => ['date_creation DESC', 'id ASC']
          ]
       );
       $this->data['tasks'] = [];

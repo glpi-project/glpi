@@ -5698,6 +5698,24 @@ CREATE TABLE `glpi_projecttasks` (
   KEY `is_milestone` (`is_milestone`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+
+### Dump table glpi_projecttasklinks
+
+DROP TABLE IF EXISTS `glpi_projecttasklinks`;
+CREATE TABLE `glpi_projecttasklinks` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `projecttasks_id_source` int NOT NULL,
+  `source_uuid` varchar(255) NOT NULL,
+  `projecttasks_id_target` int NOT NULL,
+  `target_uuid` varchar(255) NOT NULL,
+  `type` tinyint NOT NULL DEFAULT '0',
+  `lag` smallint DEFAULT '0',
+  `lead` smallint DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `projecttasks_id_source` (`projecttasks_id_source`),
+  KEY `projecttasks_id_target` (`projecttasks_id_target`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 ### Dump table glpi_projecttasktemplates
 
 DROP TABLE IF EXISTS `glpi_projecttasktemplates`;
