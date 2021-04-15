@@ -1418,6 +1418,19 @@ function initTooltips(container) {
          return new bootstrap.Tooltip(tooltipNode, options);
       }
    );
+
+   const popoverNodes = container.querySelectorAll('[data-bs-toggle="popover"]');
+   popoverNodes.forEach(
+      function(popoverNode) {
+         const options = {
+            delay: {show: 50, hide: 50},
+            html: popoverNode.hasAttribute("data-bs-html") ? popoverNode.getAttribute("data-bs-html") === "true" : false,
+            placement: popoverNode.hasAttribute("data-bs-placement") ? popoverNode.getAttribute('data-bs-placement') : 'auto',
+            trigger : 'hover',
+         };
+         return new bootstrap.Popover(popoverNode, options);
+      }
+   );
 }
 
 // init tooltips

@@ -4651,6 +4651,10 @@ JAVASCRIPT;
       }
 
       $this->initForm($ID, $options);
+
+      $sla = new Sla;
+      $ola = new Ola;
+
       TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
          'item'               => $this,
          'timeline_itemtypes' => $this->getTimelineItemtypes(),
@@ -4658,6 +4662,10 @@ JAVASCRIPT;
          'timeline'           => $this->getTimelineItems(),
          'itiltemplate'       => $tt,
          'ticket_ticket'      => new Ticket_Ticket,
+         'sla'                => $sla,
+         'ola'                => $ola,
+         'glpi_has_sla'       => (count($sla->find(getEntitiesRestrictCriteria(Entity::getTable()))) > 0),
+         'glpi_has_ola'       => (count($ola->find(getEntitiesRestrictCriteria(Entity::getTable()))) > 0),
       ]);
 
       return true;

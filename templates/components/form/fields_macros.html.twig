@@ -1,3 +1,5 @@
+{% import _self as forms %}
+
 {% macro largeTitle(label, icon = "", first = false) %}
    {% set margins = "mt-3" %}
    {% if first %}
@@ -19,7 +21,7 @@
 {% endmacro %}
 
 
-{% macro autoNameField(name, item, label, withtemplate, options = {}) %}
+{% macro autoNameField(name, item, label = "", withtemplate, options = {}) %}
    {% set tpl_value = option.value|length > 0 ? option.value : item.fields[name] %}
    {% set tplmark = "" %}
    {% if item.isTemplate() %} {# TODO exluded types #}
@@ -32,7 +34,7 @@
 {% endmacro %}
 
 
-{% macro textField(name, value, label, options = {}) %}
+{% macro textField(name, value, label = "", options = {}) %}
    {% set options = {'type': 'text'}|merge(options) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
@@ -51,7 +53,7 @@
 {% endmacro %}
 
 
-{% macro checkboxField(name, value, label, options = {}) %}
+{% macro checkboxField(name, value, label = "", options = {}) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
@@ -69,7 +71,7 @@
 {% endmacro %}
 
 
-{% macro sliderField(name, value, label, options = {}) %}
+{% macro sliderField(name, value, label = "", options = {}) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
@@ -92,14 +94,14 @@
 {% endmacro %}
 
 
-{% macro numberField(name, value, label, options = {}) %}
+{% macro numberField(name, value, label = "", options = {}) %}
    {% set options = options|merge({'type': "text"}) %}
    {% set value = formatNumber(value, true) %}
    {{ _self.textField(name, value, label, options) }}
 {% endmacro %}
 
 
-{% macro readOnlyField(name, value, label, options = {}) %}
+{% macro readOnlyField(name, value, label = "", options = {}) %}
    {% set options = options|merge({'readonly': true}) %}
    {% if value|length == 0 %}
       {% set value = "&nbsp;" %}
@@ -112,7 +114,7 @@
 {% endmacro %}
 
 
-{% macro textareaField(name, value, label, options = {}) %}
+{% macro textareaField(name, value, label = "", options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
@@ -161,50 +163,79 @@
 {% endmacro %}
 
 
-{% macro dateField(name, value, label, options = {}) %}
+{% macro dateField(name, value, label = "", options = {}) %}
+   {% set options = {'rand': random()}|merge(options) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
    {% set field %}
-      <div class="input-icon">
+      <div class="input-icon flex-grow-1">
          <input type="date" class="form-control" id="%id%"
                 name="{{ name }}" value="{{ value }}"
                 {{ options.required ? 'required' : "" }}
                 {{ options.disabled ? 'disabled' : "" }}>
          <i class="input-icon-addon far fa-calendar"></i>
       </div>
+      <script type="text/javascript">$(function() {
+         $("#{{ id }}").flatpickr({
+            altInput: true,
+            altFormat: '{{ getDateFormat("js") }}',
+            dateFormat: 'Y-m-d',
+            enableTime: true,
+            weekNumbers: true,
+            allowInput: true,
+            /* TODO locale */
+            onClose(dates, currentdatestring, picker) {
+               picker.setDate(picker.altInput.value, true, picker.config.altFormat)
+            }
+         });
+      });
+      </script>
    {% endset %}
 
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
 
-{% macro datetimeField(name, value, label, options = {}) %}
+{% macro datetimeField(name, value, label = "", options = {}) %}
+   {% set options = {'rand': random()}|merge(options) %}
    {% set id = options.id|length > 0 ? options.id : (name ~ "_" ~ options.rand) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
    {% set field %}
-      <div class="input-icon">
+      <div class="input-icon flex-grow-1">
          <input type="text" class="form-control" id="{{ id }}"
                 name="{{ name }}" value="{{ value }}"
                 {{ options.required ? 'required' : "" }}
                 {{ options.disabled ? 'disabled' : "" }}>
          <i class="input-icon-addon far fa-calendar"></i>
       </div>
-      <script type="text/javascrip">$(function() {
+      <script type="text/javascript">$(function() {
          $("#{{ id }}").flatpickr({
-
+            //wrap: true,
+            altInput: true,
+            dateFormat: 'Y-m-d H:i:S',
+            altFormat: '{{ getDateFormat("js") }} H:i:S',
+            enableTime: true,
+            enableSeconds: true,
+            weekNumbers: true,
+            allowInput: true,
+            /* TODO locale */
+            onClose(dates, currentdatestring, picker) {
+               picker.setDate(picker.altInput.value, true, picker.config.altFormat)
+            }
          });
-      });</script>
+      });
+      </script>
    {% endset %}
 
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
 
 
-{% macro dropdownNumberField(name, value, label, options = {}) %}
+{% macro dropdownNumberField(name, value, label = "", options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
 
    {% if options.disabled %}
@@ -216,18 +247,18 @@
 
    {% set field %}
       {{ Dropdown__showNumber(name, {
-         'value'  : value,
+         'value': value,
          'display': false,
-         'rand'   : rand,
-         'width'  : '100%',
-         'class'  : 'form-select',
+         'rand': rand,
+         'width': '100%',
+         'class': 'form-select',
       }|merge(options)) }}
    {% endset %}
 
    {{ _self.field(name, field, label, options|merge({'id': "dropdown_" ~ name ~ "_" ~ options.rand})) }}
 {% endmacro %}
 
-{% macro dropdownArrayField(name, value, elements, label, options = {}) %}
+{% macro dropdownArrayField(name, value, elements, label = "", options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
 
    {% if options.disabled %}
@@ -240,18 +271,18 @@
 
    {% set field %}
       {{ Dropdown__showFromArray(name, elements, {
-         'value'  : value,
+         'value': value,
          'display': false,
-         'rand'   : rand,
-         'width'  : '100%',
-         'class'  : 'form-select',
+         'rand': rand,
+         'width': '100%',
+         'class': 'form-select',
       }|merge(options)) }}
    {% endset %}
 
    {{ _self.field(name, field, label, options|merge({'id': "dropdown_" ~ name ~ "_" ~ options.rand})) }}
 {% endmacro %}
 
-{% macro dropdownTimestampField(name, value, label, options) %}
+{% macro dropdownTimestampField(name, value, label = "", options) %}
    {% set options = {'rand': random()}|merge(options) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
@@ -263,18 +294,18 @@
 
    {% set field %}
       {{ Dropdown__showTimestamp(name, {
-         'value'  : value,
+         'value': value,
          'display': false,
-         'rand'   : rand,
-         'width'  : '100%',
-         'class'  : 'form-select',
+         'rand': rand,
+         'width': '100%',
+         'class': 'form-select',
       }|merge(options)) }}
    {% endset %}
 
    {{ _self.field(name, field, label, options|merge({'id': "dropdown_" ~ name ~ "_" ~ options.rand})) }}
 {% endmacro %}
 
-{% macro dropdownField(itemtype, name, value, label, options = {}) %}
+{% macro dropdownField(itemtype, name, value, label = "", options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'specific_tags': {'required': true}}|merge(options) %}
@@ -286,18 +317,18 @@
 
    {% set field %}
       {{ itemtype|dropdown({
-         'name'   : name,
-         'value'  : value,
-         'rand'   : rand,
-         'width'  : '100%',
-         'class'  : 'form-select',
+         'name': name,
+         'value': value,
+         'rand': rand,
+         'width': '100%',
+         'class': 'form-select',
       }|merge(options)) }}
    {% endset %}
 
    {{ _self.field(name, field, label, options|merge({'id': "dropdown_" ~ name ~ "_" ~ options.rand})) }}
 {% endmacro %}
 
-{% macro htmlField(name, value, label, options = {}) %}
+{% macro htmlField(name, value, label = "", options = {}) %}
    {% if value|length == 0 %}
       {% set value = "&nbsp;" %}
    {% endif %}
@@ -309,19 +340,28 @@
 {% endmacro %}
 
 {% macro field(name, field, label = "", options = {}) %}
-   {% set options = {'rand': random(), 'is_horizontal': true}|merge(options) %}
+   {% set options = {
+      'rand': random(),
+      'is_horizontal': true,
+      'include_field': true,
+      'add_field_html': '',
+   }|merge(options) %}
 
-   {% set id    = options.id|length > 0 ? options.id : (name ~ "_" ~ options.rand) %}
-   {% set field = field|replace({'%id%': id}) %}
-   {% set add_field_html = options.add_field_html|length > 0 ? options.add_field_html : "" %}
+   {% if not options.include_field %}
+      {{ field }}
+   {% else %}
+      {% set id    = options.id|length > 0 ? options.id : (name ~ "_" ~ options.rand) %}
+      {% set field = field|replace({'%id%': id}) %}
+      {% set add_field_html = options.add_field_html|length > 0 ? options.add_field_html : "" %}
 
-   {% if options.fields_template is not defined or not options.fields_template.isHiddenField(name) %}
-      {% if options.no_label %}
-         {{ _self.noLabelField(field, id, add_field_html, options) }}
-      {% elseif options.is_horizontal %}
-         {{ _self.horizontalField(label, field, id, add_field_html, options|merge({'name': name})) }}
-      {% else %}
-         {{ _self.verticalField(label, field, id, add_field_html, options|merge({'name': name})) }}
+      {% if options.fields_template is not defined or not options.fields_template.isHiddenField(name) %}
+         {% if options.no_label %}
+            {{ _self.noLabelField(field, id, add_field_html, options) }}
+         {% elseif options.is_horizontal %}
+            {{ _self.horizontalField(label, field, id, add_field_html, options|merge({'name': name})) }}
+         {% else %}
+            {{ _self.verticalField(label, field, id, add_field_html, options|merge({'name': name})) }}
+         {% endif %}
       {% endif %}
    {% endif %}
 {% endmacro %}
@@ -356,21 +396,17 @@
 {% macro horizontalField(label, field, id, add_field_html = "", options = {}) %}
    {% set options = {
       'full_width': false,
-      'align_label_right': true
+      'align_label_right': true,
+      'mb': 'mb-2'
    }|merge(options) %}
    {% set class = "col-12 col-sm-6" %}
    {% set label_class = "col-xxl-5" %}
    {% set field_class = "col-xxl-7" %}
 
-   {% set required_mark = "" %}
-   {% if options.fields_template.isMandatoryField(options.name) or options.required %}
-      {% set required_mark = "<span class='required'>*</span>" %}
-   {% endif %}
-
    {% if options.full_width %}
       {% set class = "col-12" %}
-      {% set label_class = "col-xxl-4" %}
-      {% set field_class = "col-xxl-8" %}
+      {% set label_class = "col-xxl-3" %}
+      {% set field_class = "col-xxl-9" %}
    {% endif %}
 
    {% if options.icon_label %}
@@ -382,11 +418,8 @@
       {% set label_class = label_class ~ " text-xxl-end" %}
    {% endif %}
 
-   <div class="row {{ class }} mb-3 ">
-      <label class="col-form-label {{ label_class }}" for="{{ id }}">
-         {{ label }}
-         {{ required_mark|raw }}
-      </label>
+   <div class="row {{ class }} {{ options.mb }} ">
+      {{ _self.label(label, id, options, "col-form-label " ~ label_class) }}
       <div class="{{ field_class }}">
          {{ field|raw }}
          {{ add_field_html|raw }}
@@ -396,24 +429,43 @@
 
 
 {% macro verticalField(label, field, id, add_field_html = "", options = {}) %}
-   {% set options = {'full_width': false}|merge(options) %}
-
-   {% set required_mark = "" %}
-   {% if options.fields_template.isMandatoryField(options.name) or options.required %}
-      {% set required_mark = "<span class='required'>*</span>" %}
-   {% endif %}
+   {% set options = {
+      'full_width': false,
+      'mb': 'mb-2'
+   }|merge(options) %}
 
    {% set class = "col-12 col-sm-6" %}
    {% if options.full_width %}
       {% set class = "col-12" %}
    {% endif %}
 
-   <div class="{{ class }} mb-3">
-      <label class="form-label" for="{{ id }}">
-         {{ label }}
-         {{ required_mark|raw }}
-      </label>
+   <div class="{{ class }} {{ options.mb }}">
+      {{ _self.label(label, id, options) }}
       {{ field|raw }}
       {{ add_field_html|raw }}
    </div>
+{% endmacro %}
+
+
+{% macro label(label, id, options = {}, class = "form-label") %}
+   {% set required_mark = "" %}
+   {% if options.fields_template.isMandatoryField(options.name) or options.required %}
+      {% set required_mark = "<span class='required'>*</span>" %}
+   {% endif %}
+
+   {% set helper = "" %}
+   {% if options.helper %}
+      {% set helper %}
+         <span class="form-help" data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true"
+               data-bs-content="{{ options.helper }}">
+            ?
+         <span>
+      {% endset %}
+   {% endif %}
+
+   <label class="{{ class }}" for="{{ id }}">
+      {{ label }}
+      {{ required_mark|raw }}
+      {{ helper|raw }}
+   </label>
 {% endmacro %}
