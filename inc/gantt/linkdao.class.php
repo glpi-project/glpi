@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -29,6 +31,47 @@
  * ---------------------------------------------------------------------
  */
 
-// Gantt jQuery plugin
-require('../jqueryplugins/jquery-gantt/js/jquery.fn.gantt');
-require('../jqueryplugins/jquery-gantt/css/style.css');
+namespace Glpi\Gantt;
+
+use ProjectTaskLink;
+
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
+
+/**
+ * DAO class for handling project task links
+ */
+class LinkDAO {
+
+   public function getLinksForItemIDs($ids) {
+      $links = [];
+      $tasklink = new ProjectTaskLink();
+
+      $ids = implode(',', $ids);
+      $iterator = $tasklink->getFromDBForItemIDs($ids);
+      while ($data = $iterator->next()) {
+         array_push($links, $this->populateFromDB($data));
+      }
+
+      return $links;
+   }
+
+   /**
+    * Populates a Link object with data
+    *
+    * @param $data Database record
+    *
+    * @return Link object
+    */
+   function populateFromDB($data) {
+      $link = new Link();
+      $link->id = $data["id"];
+      $link->source = $data["source_uuid"];
+      $link->target = $data["target_uuid"];
+      $link->type = $data["type"];
+      $link->lag = $data["lag"];
+      $link->lead = $data["lead"];
+      return $link;
+   }
+}

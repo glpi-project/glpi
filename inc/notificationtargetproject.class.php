@@ -355,13 +355,13 @@ class NotificationTargetProject extends NotificationTarget {
       $tasks                = getAllDataFromTable(
          'glpi_projecttasks', [
             'WHERE'  => $restrict,
-            'ORDER'  => ['date DESC', 'id ASC']
+            'ORDER'  => ['date_creation DESC', 'id ASC']
          ]
       );
       $this->data['tasks'] = [];
       foreach ($tasks as $task) {
          $tmp                            = [];
-         $tmp['##task.creationdate##']   = Html::convDateTime($task['date']);
+         $tmp['##task.creationdate##']   = Html::convDateTime($task['date_creation']);
          $tmp['##task.lastupdatedate##'] = Html::convDateTime($task['date_mod']);
          $tmp['##task.name##']           = $task['name'];
          $tmp['##task.description##']    = $task['content'];

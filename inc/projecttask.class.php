@@ -154,6 +154,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             ProjectTask_Ticket::class,
             ProjectTaskTeam::class,
             VObject::class,
+            ProjectTaskLink::class,
          ]
       );
 
@@ -1536,9 +1537,18 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             $percent = isset($task->fields['percent_done'])?$task->fields['percent_done']:0;
          }
 
+         // use uuid as parent_id for DHTMLX Gantt tasks
+         $parent_id = $task->fields['projects_id']; // default
+         if ($task->fields['projecttasks_id'] > 0) {
+            $pt = new ProjectTask();
+            $pt->getFromDB($task->fields['projecttasks_id']);
+            $parent_id = $pt->fields['uuid'];       // uuid if parent task exist
+         }
+
          // Add current task
          $todisplay[$real_begin.'#'.$real_end.'#task'.$task->getID()]
-                        = ['id'    => $task->getID(),
+                           = ['id'      => $task->fields['uuid'],
+                              'parent_id' => $parent_id,
                               'name'    => $task->fields['name'],
                               'desc'    => RichText::getTextFromHtml($task->fields['content'], true, true),
                               'link'    => $task->getlink(),

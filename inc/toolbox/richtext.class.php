@@ -43,13 +43,17 @@ class RichText {
     *
     * @since 10.0.0
     *
-    * @param string  $content                HTML string to be made safe
-    * @param boolean $sanitized_input        Indicates whether the input has been transformed by GLPI sanitize process
-    * @param boolean $encode_output_entities Indicates whether the output should be encoded (encoding of HTML special chars)
+    * @param null|string   $content                HTML string to be made safe
+    * @param boolean       $sanitized_input        Indicates whether the input has been transformed by GLPI sanitize process
+    * @param boolean       $encode_output_entities Indicates whether the output should be encoded (encoding of HTML special chars)
     *
     * @return string
     */
-   public static function getSafeHtml(string $content, bool $sanitized_input = false, bool $encode_output_entities = false): string {
+   public static function getSafeHtml(?string $content, bool $sanitized_input = false, bool $encode_output_entities = false): string {
+
+      if (empty($content)) {
+         return '';
+      }
 
       if ($sanitized_input) {
          $content = Toolbox::unclean_cross_side_scripting_deep($content);
