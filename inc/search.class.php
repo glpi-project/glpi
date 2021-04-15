@@ -6520,46 +6520,44 @@ JAVASCRIPT;
          $separate = self::LBHR;
       }
       for ($k=0; $k<$data[$ID]['count']; $k++) {
-         if (strlen(trim($data[$ID][$k]['name'])) > 0) {
-            if ($count_display) {
-               $out .= $separate;
-            }
-            $count_display++;
-            // Get specific display if available
-            if (isset($table)) {
-               $itemtype = getItemTypeForTable($table);
-               if ($item = getItemForItemtype($itemtype)) {
-                  $tmpdata  = $data[$ID][$k];
-                  // Copy name to real field
-                  $tmpdata[$field] = $data[$ID][$k]['name'];
+         if ($count_display) {
+            $out .= $separate;
+         }
+         $count_display++;
+         // Get specific display if available
+         if (isset($table)) {
+            $itemtype = getItemTypeForTable($table);
+            if ($item = getItemForItemtype($itemtype)) {
+               $tmpdata  = $data[$ID][$k];
+               // Copy name to real field
+               $tmpdata[$field] = $data[$ID][$k]['name'] ?? '';
 
-                  $specific = $item->getSpecificValueToDisplay(
-                     $field,
-                     $tmpdata, [
-                        'html'      => true,
-                        'searchopt' => $so,
-                        'raw_data'  => $data
-                     ]
-                  );
-               }
+               $specific = $item->getSpecificValueToDisplay(
+                  $field,
+                  $tmpdata, [
+                     'html'      => true,
+                     'searchopt' => $so,
+                     'raw_data'  => $data
+                  ]
+               );
             }
-            if (!empty($specific)) {
-               $out .= $specific;
+         }
+         if (!empty($specific)) {
+            $out .= $specific;
+         } else {
+            if (isset($so['toadd'])
+                && isset($so['toadd'][$data[$ID][$k]['name']])) {
+               $out .= $so['toadd'][$data[$ID][$k]['name']];
             } else {
-               if (isset($so['toadd'])
-                   && isset($so['toadd'][$data[$ID][$k]['name']])) {
-                  $out .= $so['toadd'][$data[$ID][$k]['name']];
+               // Empty is 0 or empty
+               if (empty($split[0])&& isset($so['emptylabel'])) {
+                  $out .= $so['emptylabel'];
                } else {
-                  // Empty is 0 or empty
-                  if (empty($split[0])&& isset($so['emptylabel'])) {
-                     $out .= $so['emptylabel'];
+                  // Trans field exists
+                  if (isset($data[$ID][$k]['trans']) && !empty($data[$ID][$k]['trans'])) {
+                     $out .=  Dropdown::getValueWithUnit($data[$ID][$k]['trans'], $unit);
                   } else {
-                     // Trans field exists
-                     if (isset($data[$ID][$k]['trans']) && !empty($data[$ID][$k]['trans'])) {
-                        $out .=  Dropdown::getValueWithUnit($data[$ID][$k]['trans'], $unit);
-                     } else {
-                        $out .= Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit);
-                     }
+                     $out .= Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit);
                   }
                }
             }
