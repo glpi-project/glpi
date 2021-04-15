@@ -396,31 +396,43 @@
 {% macro horizontalField(label, field, id, add_field_html = "", options = {}) %}
    {% set options = {
       'full_width': false,
+      'full_width_adapt_column': true,
       'align_label_right': true,
-      'mb': 'mb-2'
+      'mb': 'mb-2',
+      'field_class': 'col-12 col-sm-6',
+      'label_class': 'col-xxl-5',
+      'input_class': 'col-xxl-7',
    }|merge(options) %}
-   {% set class = "col-12 col-sm-6" %}
-   {% set label_class = "col-xxl-5" %}
-   {% set field_class = "col-xxl-7" %}
 
    {% if options.full_width %}
-      {% set class = "col-12" %}
-      {% set label_class = "col-xxl-3" %}
-      {% set field_class = "col-xxl-9" %}
+      {% set options = options|merge({
+         field_class: "col-12",
+      }) %}
+
+      {% if options.full_width_adapt_column %}
+         {% set options = options|merge({
+            label_class: "col-xxl-3",
+            input_class: "col-xxl-9",
+      }) %}
+      {% endif %}
    {% endif %}
 
    {% if options.icon_label %}
-      {% set label_class = "col-2" %}
-      {% set field_class = "col-10" %}
+      {% set options = options|merge({
+         label_class: "col-2",
+         input_class: "col-10",
+      }) %}
    {% endif %}
 
    {% if options.align_label_right %}
-      {% set label_class = label_class ~ " text-xxl-end" %}
+      {% set options = options|merge({
+         label_class: options.label_class ~ " text-xxl-end",
+      }) %}
    {% endif %}
 
-   <div class="row {{ class }} {{ options.mb }} ">
-      {{ _self.label(label, id, options, "col-form-label " ~ label_class) }}
-      <div class="{{ field_class }}">
+   <div class="row {{ options.field_class }} {{ options.mb }} ">
+      {{ _self.label(label, id, options, "col-form-label " ~ options.label_class) }}
+      <div class="{{ options.input_class }}">
          {{ field|raw }}
          {{ add_field_html|raw }}
       </div>

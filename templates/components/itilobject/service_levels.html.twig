@@ -186,9 +186,12 @@
       la_field.lafieldname,
       la_html,
       la_field.label,
-      field_options|merge({
+      {
          helper: la_field.helper,
          mb: 'mb-2',
-      })
+         label_class: 'col-auto',
+         full_width: true,
+         full_width_adapt_column: false,
+      }
    ) }}
 {% endfor %}
