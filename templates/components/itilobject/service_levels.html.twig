@@ -86,12 +86,13 @@
                   </span>
                {% endif %}
 
-               <i class="fa fa-times-circle pointer ms-2" role="button"
-                  onclick="delete_date_{{ rand }}(event)"
-                  title="{{ _x('button', 'Delete permanently') }}"
-                  data-bs-toggle="tooltip" data-bs-placement="top"></i>
+               {% if canupdate %}
+                  <i class="fa fa-times-circle pointer ms-2" role="button"
+                     onclick="delete_date_{{ rand }}(event)"
+                     title="{{ _x('button', 'Delete permanently') }}"
+                     data-bs-toggle="tooltip" data-bs-placement="top"></i>
+               {% endif %}
             </span>
-
             <script type="text/javascript">
                function delete_date_{{ rand }}(e) {
                   e.preventDefault();
@@ -125,7 +126,7 @@
                      {
                         'include_field': false,
                         'id': "date_" ~ assign_la_id,
-
+                        'disabled': (not canupdate),
                      }
                   ) }}
                </div>
@@ -142,42 +143,45 @@
                         'include_field': false,
                         'entity': item.fields['entities_id'],
                         'condition': {'type': la_field.type},
+                        'disabled': (not canupdate),
                      }
                   ) }}
                </div>
 
-               <button class="btn btn-sm btn-ghost-secondary ms-1" type="button"
-                     id="button_{{ assign_la_id }}"
-                     data-bs-toggle="modal" data-bs-target="#{{ assign_la_id }}"
-                     aria-expanded="false" aria-controls="{{ assign_la_id }}">
-                  <i class='fas fa-stopwatch slt pointer'
-                     title='{{ __("Assign a SLA") }}'
-                     data-bs-toggle="tooltip" data-bs-placement="top"></i>
-               </button>
+               {% if canupdate %}
+                  <button class="btn btn-sm btn-ghost-secondary ms-1" type="button"
+                        id="button_{{ assign_la_id }}"
+                        data-bs-toggle="modal" data-bs-target="#{{ assign_la_id }}"
+                        aria-expanded="false" aria-controls="{{ assign_la_id }}">
+                     <i class='fas fa-stopwatch slt pointer'
+                        title='{{ __("Assign a SLA") }}'
+                        data-bs-toggle="tooltip" data-bs-placement="top"></i>
+                  </button>
 
-               {{ modals.confirm(
-                  __("Warning"),
-                  la_field.la.getAddConfirmation()|join("<br>"),
-                  {
-                     'id': assign_la_id,
-                     'confirm_label': "<i class='fas fa-stopwatch me-1'></i>" ~ __("Assign"),
-                     'confirm_event': 'toggleAssignLA_' ~ rand ~ '()',
-                  }
-               ) }}
+                  {{ modals.confirm(
+                     __("Warning"),
+                     la_field.la.getAddConfirmation()|join("<br>"),
+                     {
+                        'id': assign_la_id,
+                        'confirm_label': "<i class='fas fa-stopwatch me-1'></i>" ~ __("Assign"),
+                        'confirm_event': 'toggleAssignLA_' ~ rand ~ '()',
+                     }
+                  ) }}
 
-               <script type="text/javascript">
-                  function toggleAssignLA_{{ rand }}() {
-                     // hide button clicked
-                     $("#button_{{ assign_la_id }}").hide();
+                  <script type="text/javascript">
+                     function toggleAssignLA_{{ rand }}() {
+                        // hide button clicked
+                        $("#button_{{ assign_la_id }}").hide();
 
-                     // hide date field
-                     $("#date_{{ assign_la_id }}").closest('.la_datefield').hide();
+                        // hide date field
+                        $("#date_{{ assign_la_id }}").closest('.la_datefield').hide();
 
-                     // show level agreement dropdown
-                     var myCollapse = new bootstrap.Collapse(document.getElementById('dropdown_{{ assign_la_id }}'));
-                     myCollapse.show();
-                  }
-               </script>
+                        // show level agreement dropdown
+                        var myCollapse = new bootstrap.Collapse(document.getElementById('dropdown_{{ assign_la_id }}'));
+                        myCollapse.show();
+                     }
+                  </script>
+               {% endif %}
             {% endif %}
          </div>
       {% endif %}

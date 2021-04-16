@@ -28,10 +28,12 @@
                &nbsp;({{ new_ticket.fields['id'] }})
             </a>
 
-            <a href="{{ form_path('Ticket_Ticket', id) }}&purge&tickets_id={{ item.fields['id'] }}"
-               class="col-1 btn btn-sm btn-ghost-danger" role="button" data-bs-toggle="tooltip" title="{{ _x('button', 'Delete permanently') }}">
-               <i class="fas fa-unlink ms-2"></i>
-            </a>
+            {% if canupdate %}
+               <a href="{{ form_path('Ticket_Ticket', id) }}&purge&tickets_id={{ item.fields['id'] }}"
+                  class="col-1 btn btn-sm btn-ghost-danger" role="button" data-bs-toggle="tooltip" title="{{ _x('button', 'Delete permanently') }}">
+                  <i class="fas fa-unlink ms-2"></i>
+               </a>
+            {% endif %}
          </div>
       </div>
       {% endfor %}
@@ -39,26 +41,28 @@
 </div>
 {% endif %}
 
-<div class="mt-2">
-   <button class="btn btn-sm btn-ghost-secondary"
-            data-bs-toggle="collapse" data-bs-target="#link_ticket_dropdowns"
-            aria-expanded="false" aria-controls="link_ticket_dropdowns">
-      <i class="fas fa-plus"></i>
-      <span>{{ __("Add") }}</span>
-   </button>
+{% if canupdate %}
+   <div class="mt-2">
+      <button class="btn btn-sm btn-ghost-secondary"
+               data-bs-toggle="collapse" data-bs-target="#link_ticket_dropdowns"
+               aria-expanded="false" aria-controls="link_ticket_dropdowns">
+         <i class="fas fa-plus"></i>
+         <span>{{ __("Add") }}</span>
+      </button>
 
-   <span class="collapse" id="link_ticket_dropdowns">
-      {{ ticket_ticket.dropdownLinks(
-         '_link[link]',
-         params["_link"]['link'] ?? ""
-      ) }}
+      <span class="collapse" id="link_ticket_dropdowns">
+         {{ ticket_ticket.dropdownLinks(
+            '_link[link]',
+            params["_link"]['link'] ?? ""
+         ) }}
 
-      {{ item.dropdown({
-         'name'       : '_link[tickets_id_2]',
-         'used'       : [item.fields['id']],
-         'displaywith': ['id'],
-         'display'    : false,
-         'class'      : 'form-select',
-      })|raw }}
-   </span>
-</div>
+         {{ item.dropdown({
+            'name'       : '_link[tickets_id_2]',
+            'used'       : [item.fields['id']],
+            'displaywith': ['id'],
+            'display'    : false,
+            'class'      : 'form-select',
+         })|raw }}
+      </span>
+   </div>
+{% endif %}
