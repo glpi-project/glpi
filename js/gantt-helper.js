@@ -191,45 +191,7 @@ function initGantt($ID) {
 
       // handle lightbox Save action
       gantt.attachEvent("onLightboxSave", function(id, item, is_new) {
-         // add new item
-         /* TODO: continue server side
-         if (is_new) {
-             if (item.parent) {
-                 item.type = 'task';
-                 $.ajax({
-                     url,
-                     type: 'POST',
-                     data: {
-                         addTask: 1,
-                         item
-                     },
-                     success: function(resp) {
-                         var json = JSON.parse(resp);
-                         if (json.ok) {
-
-                         }
-                     }
-                 });
-             }
-             else {
-                 item.type = 'project';
-                 $.ajax({
-                     url,
-                     type: 'POST',
-                     data: {
-                         addProject: 1,
-                         item
-                     },
-                     success: function(resp) {
-                         var json = JSON.parse(resp);
-                         if (json.ok) {
-
-                         }
-                     }
-                 });
-             }
-         }
-         else if (item.type == 'project') { */
+         // TODO add new item
 
          // update item
          if (item.type == 'project') {
