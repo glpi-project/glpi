@@ -66,6 +66,7 @@ $(function() {
       }
 
       var actions = "";
+      {% if canupdate %}
       if (['User', 'Supplier', 'Email'].includes(itemtype)
           && is_selection
           && {{ Entity_getUsedConfig('is_notif_enable_default', entities_id, '', 1) }}) {
@@ -80,6 +81,7 @@ $(function() {
             <i class="${fa_class} fa-bell notify-icon"></i>
          </button>`;
       }
+      {% endif %}
 
       // manage specific display for tree data (like groups)
       var indent = "";
@@ -131,6 +133,7 @@ $(function() {
       containerCssClass: 'actor-field',
       templateSelection: function(option) { return genericTemplate_{{ rand }}(option, true); },
       templateResult:    function(option) { return genericTemplate_{{ rand }}(option, false); },
+      disabled: {{ canupdate ? "false" : "true" }},
       createTag: function (params) {
          var term = $.trim(params.term);
 

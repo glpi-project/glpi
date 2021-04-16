@@ -4666,6 +4666,11 @@ JAVASCRIPT;
          'ola'                => $ola,
          'glpi_has_sla'       => (count($sla->find(getEntitiesRestrictCriteria(Entity::getTable()))) > 0),
          'glpi_has_ola'       => (count($ola->find(getEntitiesRestrictCriteria(Entity::getTable()))) > 0),
+         'canupdate'          => $canupdate,
+         'can_requester'      => $can_requester,
+         'canpriority'        => $canpriority,
+         'canassign'          => $canassign,
+         'canassigntome'      => $canassigntome,
       ]);
 
       return true;
