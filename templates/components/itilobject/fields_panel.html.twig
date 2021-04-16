@@ -1,7 +1,8 @@
 {% import "components/form/fields_macros.html.twig" as fields %}
 {% set field_options = {
    full_width: true,
-   fields_template: itiltemplate
+   fields_template: itiltemplate,
+   disabled: (not canupdate)
 } %}
 {% set enctype = (item.isNewItem() ? 'enctype="multipart/form-data"' : "") %}
 
@@ -40,21 +41,23 @@
             ) }}
             {% endif %}
 
-            {% set type_params = {
-               'value': item.fields["type"],
-               'width': '100%',
-               'class': 'form-select',
-               'display': false
-            } %}
-            {% if item.isNewItem() %}
-               {% set type_params = type_params|merge({'on_change': 'this.form.submit()',}) %}
+            {% if item.getType() == "Ticket" %}
+               {% set type_params = {
+                  'value': item.fields["type"],
+                  'width': '100%',
+                  'class': 'form-select',
+                  'display': false
+               }|merge(field_options) %}
+               {% if item.isNewItem() %}
+                  {% set type_params = type_params|merge({'on_change': 'this.form.submit()',}) %}
+               {% endif %}
+               {{ fields.field(
+                  'type',
+                  item.dropdownType('type', type_params),
+                  _n('Type', 'Types', 1),
+                  field_options
+               ) }}
             {% endif %}
-            {{ fields.field(
-               'type',
-               item.dropdownType('type', type_params),
-               _n('Type', 'Types', 1),
-               field_options
-            ) }}
 
             {% set cat_params = field_options %}
             {% if item.isNewItem() %}
@@ -76,7 +79,7 @@
                   'width': '100%',
                   'class': 'form-select',
                   'display': false
-               }),
+               }|merge(field_options)),
                __("Status"),
                field_options
             ) }}
