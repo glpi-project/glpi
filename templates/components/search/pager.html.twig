@@ -1,15 +1,3 @@
-{% if additional_params is not defined %}
-   {% set additional_params = "" %}
-{% else %}
-   {% if additional_params|length > 0 and not (additional_params starts with '&') %}
-      {% set additional_params = "&" ~ additional_params %}
-   {% endif %}
-{% endif %}
-
-{% set href = href ~ "&start=%start%" ~ additional_params|url_encode %}
-{% if is_tab is defined and is_tab == true %}
-   {% set href = "javascript:reloadTab('start=%start%" ~ additional_params|url_encode ~ "');" %}
-{% endif %}
 {% if limit is not defined %}
    {% set limit = user_pref('list_limit') %}
 {% endif %}
@@ -49,12 +37,12 @@
       {% set disabled = (start == 0 ? "disabled" : "") %}
       {% set aria_disabled = (start == 0 ? 'aria-disabled="true"' : "") %}
       <li class="page-item {{ disabled }}">
-         <a class="page-link" href="{{ href|replace({'%start%': 0}) }}" title="{{ __("Start") }}" {{ aria_disabled }}>
+         <a class="page-link page-link-start" href="#" title="{{ __("Start") }}" data-start="0" {{ aria_disabled|raw }}>
             <i class="fas fa-angle-double-left"></i>
          </a>
       </li>
       <li class="page-item {{ disabled }}">
-         <a class="page-link" href="{{ href|replace({'%start%': back}) }}" title="{{ __("Previous") }}" {{ aria_disabled }}>
+         <a class="page-link page-link-prev" href="#" title="{{ __("Previous") }}" data-start="{{ back }}" {{ aria_disabled|raw }}>
             <i class="fas fa-angle-left"></i>
          </a>
       </li>
@@ -63,7 +51,7 @@
             {% set page_start = (page - 1) * limit %}
             {% set active = (page == current_page ? "active" : "") %}
             <li class="page-item {{ active }}">
-               <a class="page-link" href="{{ href|replace({'%start%': page_start}) }}">{{ page }}</a>
+               <a class="page-link page-link-num" href="#" data-start="{{ page_start }}">{{ page }}</a>
             </li>
             {% if current_page + adjacents == page %}
                {% set skip_adjacents = false %}
@@ -79,12 +67,12 @@
       {% set disabled = (forward >= count ? "disabled" : "") %}
       {% set aria_disabled = (forward > count ? 'aria-disabled="true"' : "") %}
       <li class="page-item {{ disabled }}">
-         <a class="page-link" href="{{ href|replace({'%start%': forward}) }}" title="{{ __("Next") }}" {{ aria_disabled }}>
+         <a class="page-link page-link-next" href="#" title="{{ __("Next") }}" data-start="{{ forward }}" {{ aria_disabled|raw }}>
             <i class="fas fa-angle-right"></i>
          </a>
       </li>
       <li class="page-item {{ disabled }}">
-         <a class="page-link" href="{{ href|replace({'%start%': end}) }}" title="{{ __("End") }}" {{ aria_disabled }}>
+         <a class="page-link page-link-last" href="#" title="{{ __("End") }}" data-start="{{ end }}" {{ aria_disabled|raw }}>
             <i class="fas fa-angle-double-right"></i>
          </a>
       </li>

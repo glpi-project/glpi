@@ -10,6 +10,8 @@ The present file will list all changes made to the project; according to the
 
 ### Changed
 - APCu and WinCache are not anymore use by GLPI, use `php bin/console cache:configure` command to configure cache system.
+- The search engine and search results page now support sorting by multiple fields.
+- The search result lists now refresh/update without triggering a full page reload.
 
 ### Deprecated
 - Usage of XML-RPC API is deprecated.
@@ -24,6 +26,7 @@ The present file will list all changes made to the project; according to the
 #### Changes
 - Format of `Message-Id` header sent in Tickets notifications changed to match format used by other items.
 - Added `DB::truncate()` to replace raw SQL queries
+- `Search::addOrderBy()` signature changed.
 
 #### Deprecated
 - Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant

@@ -6,9 +6,11 @@
    {% endif %}
 {% endif %}
 
-{% set href = "location.href='" ~ href ~ "glpilist_limit='+this.value" ~ additional_params %}
-{% if is_tab is defined and is_tab == true %}
-   {% set href = "javascript:reloadTab('glpilist_limit='+this.value+'" ~ additional_params ~ "');" %}
+{% if not no_onchange %}
+   {% set href = "location.href='" ~ href ~ "glpilist_limit='+this.value" ~ additional_params %}
+   {% if is_tab is defined and is_tab == true %}
+      {% set href = "javascript:reloadTab('glpilist_limit='+this.value+'" ~ additional_params ~ "');" %}
+   {% endif %}
 {% endif %}
 
 {% set options = [] %}
@@ -35,8 +37,8 @@
 {% if max > 10 %}
    {% set options = options|merge([max - 10]) %}
 {% endif %}
-<select class="form-select form-select-sm mx-1 d-inline-block w-auto"
-        onChange="{{ href }}">
+<select class="form-select form-select-sm mx-1 d-inline-block w-auto {{ select_class|default('') }}"
+        {% if not no_onchange %}onChange="{{ href }}"{% endif %}>
    {% for value in options|sort %}
       <option value="{{ value }}" {{ value == user_pref('list_limit') ? 'selected' : '' }}>
          {{ value }}

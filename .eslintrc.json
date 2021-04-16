@@ -70,6 +70,12 @@
     },
     "overrides": [
         {
+            "files": ["js/modules/**"],
+            "parserOptions": {
+                "sourceType": "module"
+            }
+        },
+        {
             "files": ["webpack.config.js"],
             "env": {
                 "node": true
