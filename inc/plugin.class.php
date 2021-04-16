@@ -2487,6 +2487,9 @@ class Plugin extends CommonDBTM {
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'disable']
             = "<i class='ma-icon fas fa-code-branch'></i>".
             __('Disable');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'clean']
+            = "<i class='ma-icon fas fa-broom'></i>".
+            __('Clean');
       }
 
       $actions += parent::getSpecificMassiveActions($checkitem);
@@ -2525,6 +2528,14 @@ class Plugin extends CommonDBTM {
             echo "<td>".__('This will only affect plugins already enabled')."</td><td colspan='3'>";
             echo Html::submit(_x('button', 'Disable'), [
                'name'      => 'disable',
+            ]);
+            echo "</td></tr></table>";
+            return true;
+         case 'clean':
+            echo "<table class='center-h'><tr>";
+            echo "<td>".__('This will only affect plugins ready to be cleaned')."</td><td colspan='3'>";
+            echo Html::submit(_x('button', 'Clean'), [
+               'name'      => 'clean',
             ]);
             echo "</td></tr></table>";
             return true;
@@ -2592,6 +2603,17 @@ class Plugin extends CommonDBTM {
                   } else {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                   }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+               }
+            }
+            return;
+         case 'clean':
+            foreach ($ids as $id) {
+               $plugin->getFromDB($id);
+               if (!$plugin->isLoadable($plugin->fields['directory'])) {
+                  $plugin->clean($id);
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                } else {
                   $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
                }
