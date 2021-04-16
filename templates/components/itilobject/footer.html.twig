@@ -37,33 +37,37 @@
          {% else %}
 
             <div class="btn-group" role="group">
+               {% if item.canDelete() %}
+                  {% if item.isDeleted() %}
+                     <button class="btn btn-outline-secondary" type="submit" name="restore"
+                           title="{{ _x('button', 'Restore') }}">
+                        <i class='fas fa-trash-restore-alt'></i>
+                        <span class="d-none d-md-block">{{ _x('button', 'Restore') }}</span>
+                     </button>
 
-               {% if item.isDeleted() %}
-                  <button class="btn btn-outline-secondary" type="submit" name="restore"
-                          title="{{ _x('button', 'Restore') }}">
-                     <i class='fas fa-trash-restore-alt'></i>
-                     <span class="d-none d-md-block">{{ _x('button', 'Restore') }}</span>
-                  </button>
-
-                  <button class="btn btn-outline-danger" type="submit" name="purge"
-                          title="{{ _x('button', 'Delete permanently') }}"
-                          onclick='return confirm("{{ __('Confirm the final deletion?') }}");'>
-                     <i class='fas fa-trash-alt'></i>
-                     <span class="d-none d-md-block">{{ _x('button', 'Delete permanently') }}</span>
-                  </button>
-               {% else %}
-                  <button class="btn btn-outline-danger" type="submit" name="delete"
-                          title="{{ _x('button', 'Put in trashbin') }}"
-                          data-bs-toggle="tooltip" data-bs-placement="top">
-                     <i class='fas fa-trash-alt'></i>
-                  </button>
+                     <button class="btn btn-outline-danger" type="submit" name="purge"
+                           title="{{ _x('button', 'Delete permanently') }}"
+                           onclick='return confirm("{{ __('Confirm the final deletion?') }}");'>
+                        <i class='fas fa-trash-alt'></i>
+                        <span class="d-none d-md-block">{{ _x('button', 'Delete permanently') }}</span>
+                     </button>
+                  {% else %}
+                     <button class="btn btn-outline-danger" type="submit" name="delete"
+                           title="{{ _x('button', 'Put in trashbin') }}"
+                           data-bs-toggle="tooltip" data-bs-placement="top">
+                        <i class='fas fa-trash-alt'></i>
+                     </button>
+                  {% endif %}
                {% endif %}
 
-               {% include"components/form/single-action.html.twig" with {
-                  'onlyicon': true
-               } %}
+               {% if canupdate %}
+                  {% include"components/form/single-action.html.twig" with {
+                     'onlyicon': true
+                  } %}
+               {% endif %}
 
-               {% if item.isNotSolved() %}
+               {% set display_save_btn = (canupdate or can_requester or canpriority or canassign or canassigntome) %}
+               {% if display_save_btn and item.isNotSolved() %}
                   <button class="btn btn-primary" type="submit" name="update"
                         title="{{ _x('button', 'Save') }}">
                      <i class="fas fa-save"></i>
