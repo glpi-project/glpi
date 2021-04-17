@@ -1618,7 +1618,7 @@ class Html {
     * @param $keepDB boolean, closeDBConnections if false (false by default)
    **/
    static function footer($keepDB = false) {
-      global $CFG_GLPI, $FOOTER_LOADED, $TIMER_DEBUG;
+      global $CFG_GLPI, $FOOTER_LOADED, $TIMER_DEBUG, $PLUGIN_HOOKS;
 
       // If in modal : display popFooter
       if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
@@ -1666,7 +1666,46 @@ class Html {
       $tpl_vars['js_files'][] = 'js/misc.js';
 
       // TODO Add Ajax notifications script block
-      // TODO Add plugins scripts
+      if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
+         foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $files) {
+            if (!Plugin::isPluginActive($plugin)) {
+               continue;
+            }
+            $plugin_root_dir = Plugin::getPhpDir($plugin, true);
+            $plugin_web_dir  = Plugin::getWebDir($plugin, false);
+
+            if (!is_array($files)) {
+               $files = [$files];
+            }
+            foreach ($files as $file) {
+               if (file_exists($plugin_root_dir."/{$file}")) {
+                  $tpl_vars['js_files'][] = $plugin_web_dir."/{$file}";
+               } else {
+                  Toolbox::logWarning("{$file} file not found from plugin $plugin!");
+               }
+            }
+         }
+      }
+      if (isset($PLUGIN_HOOKS['add_javascript_module']) && count($PLUGIN_HOOKS['add_javascript_module'])) {
+         foreach ($PLUGIN_HOOKS["add_javascript_module"] as $plugin => $files) {
+            if (!Plugin::isPluginActive($plugin)) {
+               continue;
+            }
+            $plugin_root_dir = Plugin::getPhpDir($plugin, true);
+            $plugin_web_dir  = Plugin::getWebDir($plugin, false);
+
+            if (!is_array($files)) {
+               $files = [$files];
+            }
+            foreach ($files as $file) {
+               if (file_exists($plugin_root_dir."/{$file}")) {
+                  $tpl_vars['js_modules'][] = $plugin_web_dir."/{$file}";
+               } else {
+                  Toolbox::logWarning("{$file} file not found from plugin $plugin!");
+               }
+            }
+         }
+      }
 
       TemplateRenderer::getInstance()->display('layout/parts/page_footer.html.twig', $tpl_vars);
 
@@ -5244,6 +5283,9 @@ JAVASCRIPT;
          unset($options['version']);
       }
 
+      $type = (isset($options['type']) && $options['type'] === 'module') ||
+         preg_match('/^js\/modules\//', $url) === 1 ? 'module' : 'text/javascript';
+
       if ($minify === true) {
          $url = self::getMiniFile($url);
       }
@@ -5254,7 +5296,7 @@ JAVASCRIPT;
          $url .= '?v=' . $version;
       }
 
-      return sprintf('<script type="text/javascript" src="%1$s"></script>', $url);
+      return sprintf('<script type="%s" src="%s"></script>', $type, $url);
    }
 
 
@@ -6285,20 +6327,47 @@ JAVASCRIPT;
       // Add specific javascript for plugins
       if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
          foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $files) {
-            $plugin_root_dir = Plugin::getPhpDir($plugin, true);
-            $plugin_web_dir  = Plugin::getWebDir($plugin, false);
             if (!Plugin::isPluginActive($plugin)) {
                continue;
             }
+            $plugin_root_dir = Plugin::getPhpDir($plugin, true);
+            $plugin_web_dir  = Plugin::getWebDir($plugin, false);
             $version = Plugin::getInfo($plugin, 'version');
             if (!is_array($files)) {
                $files = [$files];
             }
             foreach ($files as $file) {
-               if (file_exists($plugin_root_dir."/$file")) {
-                  echo Html::script("$plugin_web_dir/$file", ['version' => $version]);
+               if (file_exists($plugin_root_dir."/{$file}")) {
+                  echo Html::script("$plugin_web_dir/{$file}", [
+                     'version'   => $version,
+                     'type'      => 'text/javascript'
+                  ]);
                } else {
-                  Toolbox::logWarning("$file file not found from plugin $plugin!");
+                  Toolbox::logWarning("{$file} file not found from plugin {$plugin}!");
+               }
+            }
+         }
+      }
+
+      if (isset($PLUGIN_HOOKS['add_javascript_module']) && count($PLUGIN_HOOKS['add_javascript_module'])) {
+         foreach ($PLUGIN_HOOKS["add_javascript_module"] as $plugin => $files) {
+            if (!Plugin::isPluginActive($plugin)) {
+               continue;
+            }
+            $plugin_root_dir = Plugin::getPhpDir($plugin, true);
+            $plugin_web_dir  = Plugin::getWebDir($plugin, false);
+            $version = Plugin::getInfo($plugin, 'version');
+            if (!is_array($files)) {
+               $files = [$files];
+            }
+            foreach ($files as $file) {
+               if (file_exists($plugin_root_dir."/{$file}")) {
+                  echo self::script("$plugin_web_dir/{$file}", [
+                     'version'   => $version,
+                     'type'      => 'module'
+                  ]);
+               } else {
+                  Toolbox::logWarning("{$file} file not found from plugin {$plugin}!");
                }
             }
          }
