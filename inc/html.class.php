@@ -7320,6 +7320,9 @@ CSS;
     * @return string
     */
    static function time2str($ts) {
+      if ($ts === null) {
+         return __('Never');
+      }
       if (!ctype_digit($ts)) {
          $ts = strtotime($ts);
       }
