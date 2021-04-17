@@ -52,5 +52,9 @@
       <script type="text/javascript" src="{{ js_path(js_file) }}"></script>
    {% endfor %}
 
+   {% for js_file in js_modules %}
+      <script type="module" src="{{ js_path(js_file) }}"></script>
+   {% endfor %}
+
 </body>
 </html>
