@@ -1,12 +1,12 @@
-{% macro confirm(modal_title = "", modal_body = "", options = {}) %}
+{% macro confirm(modal_title = '', modal_body = '', options = {}) %}
    {% set rand = random() %}
    {% set options = {
-      'id': "modal" ~ rand,
+      'id': 'modal' ~ rand,
       'rand': rand,
-      'confirm_label': _x("button", "Ok"),
-      'cancel_label': _x("button", "Cancel"),
-      'confirm_event': "",
-      'cancel_event': "",
+      'confirm_label': _x('button', 'Ok'),
+      'cancel_label': _x('button', 'Cancel'),
+      'confirm_event': '',
+      'cancel_event': '',
    }|merge(options) %}
 
    <div class="modal fade" id="{{ options.id }}" tabindex="-1" role="dialog" aria-hidden="true">
@@ -14,7 +14,7 @@
          <div class="modal-content">
             <div class="modal-header">
                <h5 class="modal-title">{{ modal_title }}</h5>
-               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _x('button', 'Close') }}"></button>
             </div>
             <div class="modal-body">
                {{ modal_body|raw }}
@@ -32,7 +32,7 @@
          </div>
       </div>
    </div>
-   <script type="text/javascript">
+   <script>
    $(function () {
       $(document).on('click', '#confirm_{{ rand }}', function (event) {
          {{ options.confirm_event|raw }}
@@ -40,6 +40,6 @@
       $(document).on('click', '#cancel_{{ rand }}', function (event) {
          {{ options.cancel_event|raw }}
       });
-});
-</script>
+   });
+   </script>
 {% endmacro %}
