@@ -1,8 +1,8 @@
 {% if additional_params is not defined %}
-   {% set additional_params = "" %}
+   {% set additional_params = '' %}
 {% else %}
    {% if additional_params|length > 0 and not (additional_params starts with '&') %}
-      {% set additional_params = "&" ~ additional_params %}
+      {% set additional_params = '&' ~ additional_params %}
    {% endif %}
 {% endif %}
 
@@ -35,12 +35,10 @@
 {% if max > 10 %}
    {% set options = options|merge([max - 10]) %}
 {% endif %}
-<select class="form-select form-select-sm mx-1 d-inline-block"
-        style="width: auto;"
-        aria-label="Default select example"
+<select class="form-select form-select-sm mx-1 d-inline-block w-auto"
         onChange="{{ href }}">
    {% for value in options|sort %}
-      <option value="{{ value }}" {{ value == user_pref("list_limit") ? "selected" : "" }}>
+      <option value="{{ value }}" {{ value == user_pref('list_limit') ? 'selected' : '' }}>
          {{ value }}
       </option>
    {% endfor %}
