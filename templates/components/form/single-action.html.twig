@@ -5,14 +5,14 @@
 {% endif %}
 
 {% if not(item.isNewItem()) and actions|length %}
-<div class="d-none d-sm-block btn-group" title="{{ __("Actions") }}"
+<div class="d-none d-sm-block btn-group" title="{{ __('Actions') }}"
      {{ onlyicon ? 'data-bs-toggle="tooltip" data-bs-placement="top"' : '' }}>
    <button class="btn {{ onlyicon ? "btn-icon" : "dropdown-toggle" }} btn-outline-secondary" type="button"
            id="single-action" data-bs-toggle="dropdown" aria-haspopup="true"
            aria-expanded="false">
       <i class="fas fa-ellipsis-v"></i>
       {% if not onlyicon %}
-         <span>{{ __("Actions") }}</span>
+         <span>{{ __('Actions') }}</span>
       {% endif %}
    </button>
 
@@ -22,7 +22,7 @@
       {% endfor %}
    </div>
 </div>
-<script type="text/javascript">
+<script>
 $(function () {
    var ma = {{ input|json_encode|raw }};
 
@@ -46,7 +46,7 @@ $(function () {
       var current_action = $(this).data('action');
 
       glpi_ajax_dialog({
-         url: '{{ path("/ajax/dropdownMassiveAction.php") }}',
+         url: '{{ path('/ajax/dropdownMassiveAction.php') }}',
          title: ma.actions[current_action],
          params: Object.assign(
             { action: current_action },
