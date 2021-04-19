@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 
 use AuthLDAP;
 use Glpi\Console\AbstractCommand;
-use Symfony\Component\Console\Exception\InvalidArgumentException;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
