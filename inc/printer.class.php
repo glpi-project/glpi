@@ -391,7 +391,7 @@ class Printer  extends CommonDBTM {
       Network::dropdown(['value' => $this->fields["networks_id"]]);
       echo "</td></tr>\n";
 
-      // Display auto inventory informations
+      // Display auto inventory information
       $rowspan        = 5;
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2'></td>\n";

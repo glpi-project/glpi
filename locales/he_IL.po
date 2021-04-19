@@ -4,12 +4,12 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Michael Altynikov <maltyx@hotmail.com>, 2019
 # Daat Computers <daatcomputer@gmail.com>, 2019
 # meira <meira@ariel.muni.il>, 2020
 # cffff fdddf <yogpt@walla.com>, 2020
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
+# Michael Altynikov <maltyx@hotmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-22 09:43+0100\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2020\n"
+"Last-Translator: Michael Altynikov <maltyx@hotmail.com>, 2021\n"
 "Language-Team: Hebrew (Israel) (https://www.transifex.com/glpi/teams/1637/he_IL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -830,7 +830,7 @@ msgstr "הערות"
 
 #: ajax/kanban.php:184 inc/project.class.php:154
 msgid "Kanban"
-msgstr ""
+msgstr "Kanban"
 
 #: ajax/telemetry.php:42
 msgid ""
@@ -861,7 +861,7 @@ msgstr "עדכון"
 #: ajax/dropdownMassiveActionOs.php:46 inc/massiveaction.class.php:546
 msgctxt "button"
 msgid "Clone"
-msgstr ""
+msgstr "שכפל"
 
 #: ajax/dcroom_size.php:61 inc/rack.class.php:257
 msgid "No room found or selected"
@@ -1549,7 +1549,7 @@ msgstr "עדכון סיסמה"
 
 #: front/updatepassword.php:60
 msgid "Incorrect password"
-msgstr ""
+msgstr "סיסמה שגויה"
 
 #: front/updatepassword.php:69
 msgid "The new password must be different from current password"
@@ -1557,7 +1557,7 @@ msgstr ""
 
 #: front/updatepassword.php:71
 msgid "The two passwords do not match"
-msgstr ""
+msgstr "הסימאות אינן זהות"
 
 #: front/updatepassword.php:78
 msgid "An error occured during password update"
@@ -1565,7 +1565,7 @@ msgstr ""
 
 #: front/updatepassword.php:89 inc/user.class.php:4624
 msgid "Password update"
-msgstr ""
+msgstr "עדכון סיסמה"
 
 #: front/updatepassword.php:92
 msgid "Your password has been successfully updated."
@@ -23542,7 +23542,7 @@ msgstr ""
 
 #: js/planning.js:238
 msgid "Clone"
-msgstr ""
+msgstr "שכפל"
 
 #: js/planning.js:312
 msgid "Make a choice"

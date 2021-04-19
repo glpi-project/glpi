@@ -117,7 +117,7 @@ class InstallCommand extends AbstractPluginCommand {
          );
 
          $plugin = new Plugin();
-         $plugin->checkPluginState($directory); // Be sure that plugin informations are up to date in DB
+         $plugin->checkPluginState($directory); // Be sure that plugin information are up to date in DB
 
          if (!$this->canRunInstallMethod($directory, $force)) {
             continue;
@@ -125,7 +125,7 @@ class InstallCommand extends AbstractPluginCommand {
 
          if (!$plugin->getFromDBByCrit(['directory' => $directory])) {
             $this->output->writeln(
-               '<error>' . sprintf(__('Unable to load plugin "%s" informations.'), $directory) . '</error>',
+               '<error>' . sprintf(__('Unable to load plugin "%s" information.'), $directory) . '</error>',
                OutputInterface::VERBOSITY_QUIET
             );
             continue;
@@ -176,14 +176,14 @@ class InstallCommand extends AbstractPluginCommand {
          }
       }
 
-      // Fetch plugins informations
+      // Fetch plugins information
       $choices = [];
       foreach ($directories as $directory) {
          $plugin = new Plugin();
          $informations = $plugin->getInformationsFromDirectory($directory);
 
          if (empty($informations)) {
-            continue; // Ignore directory if not able to load plugin informations.
+            continue; // Ignore directory if not able to load plugin information.
          }
 
          if ($only_not_installed

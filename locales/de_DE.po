@@ -25,6 +25,7 @@
 # Administrator System, 2020
 # Thofl, 2020
 # Viktor Schopf, 2021
+# Reto Wartmann <rerowar@gmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -33,7 +34,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-22 09:43+0100\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Viktor Schopf, 2021\n"
+"Last-Translator: Reto Wartmann <rerowar@gmail.com>, 2021\n"
 "Language-Team: German (Germany) (https://www.transifex.com/glpi/teams/1637/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -8565,8 +8566,8 @@ msgstr "Problem löschen"
 #: inc/notificationtargetcontract.class.php:186 inc/entity.class.php:1951
 msgid "Contract"
 msgid_plural "Contracts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Vertrag"
+msgstr[1] "Verträge"
 
 #: inc/contract.class.php:231 inc/contract.class.php:520
 #: inc/contract.class.php:746 inc/contract.class.php:1736
@@ -11141,7 +11142,7 @@ msgstr "%s wandelt eine Anmerkung von Ticket %s um"
 
 #: inc/ticket.class.php:1930
 msgid "Your ticket has been registered."
-msgstr ""
+msgstr "Ihr Supportticket wurde erfasst."
 
 #: inc/ticket.class.php:2112
 #, php-format
@@ -17286,7 +17287,7 @@ msgstr "Unbekannt"
 
 #: inc/glpinetwork.class.php:115
 msgid "Registered by"
-msgstr ""
+msgstr "Registriert von"
 
 #: inc/glpinetwork.class.php:218
 msgid "Unable to fetch registration informations."

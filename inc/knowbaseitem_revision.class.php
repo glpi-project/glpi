@@ -287,7 +287,7 @@ class KnowbaseItem_Revision extends CommonDBTM {
    }
 
    /**
-    * Populate and create a new revision from KnowbaseItem informations
+    * Populate and create a new revision from KnowbaseItem information
     *
     * @param KnowbaseItem $item Knowledge base item
     *
@@ -308,7 +308,7 @@ class KnowbaseItem_Revision extends CommonDBTM {
    }
 
    /**
-    * Populate and create a new revision from KnowbaseItem informations
+    * Populate and create a new revision from KnowbaseItem information
     *
     * @param KnowbaseItemTranslation $item Knowledge base item translation
     *

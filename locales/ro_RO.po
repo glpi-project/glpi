@@ -10,7 +10,7 @@
 # Doru  DEACONU <dumitrudeaconu@yahoo.com>, 2020
 # Drastic Solutions <yixay88559@win-777.net>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
-# Laurenţiu Dobrotă <rauldobrota@gmail.com>, 2020
+# Laurenţiu Dobrotă <rauldobrota@gmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -19,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-22 09:43+0100\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Laurenţiu Dobrotă <rauldobrota@gmail.com>, 2020\n"
+"Last-Translator: Laurenţiu Dobrotă <rauldobrota@gmail.com>, 2021\n"
 "Language-Team: Romanian (Romania) (https://www.transifex.com/glpi/teams/1637/ro_RO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20543,7 +20543,7 @@ msgstr ""
 
 #: inc/config.class.php:1738
 msgid "Translation cache"
-msgstr ""
+msgstr "Cache traducere"
 
 #: inc/config.class.php:1774
 msgid "Log Level"
@@ -20656,7 +20656,7 @@ msgstr ""
 
 #: inc/config.class.php:3337
 msgid "Change all"
-msgstr ""
+msgstr "Schimbă tot"
 
 #: inc/config.class.php:3353
 msgid "Add/update relation between items"
@@ -20726,7 +20726,7 @@ msgstr "Ștergere componentă"
 
 #: inc/config.class.php:3467
 msgid "All sections"
-msgstr ""
+msgstr "Toate secţiunile"
 
 #: inc/config.class.php:3469
 msgid "Purge all log entries"
@@ -20738,7 +20738,7 @@ msgstr "Ștergere tot"
 
 #: inc/config.class.php:3499
 msgid "Keep all"
-msgstr ""
+msgstr "Păstrează tot"
 
 #: inc/config.class.php:3504
 #, php-format
@@ -20750,7 +20750,7 @@ msgstr[2] ""
 
 #: inc/config.class.php:3543
 msgid "Security setup"
-msgstr ""
+msgstr "Configurare securitate"
 
 #: inc/config.class.php:3552
 msgid "Password security policy validation"
@@ -20794,7 +20794,7 @@ msgstr ""
 
 #: inc/config.class.php:3706
 msgid "Do not deactivate"
-msgstr ""
+msgstr "Nu deactiva"
 
 #: inc/itil_project.class.php:51
 msgid "Link Project/Itil"
@@ -20903,17 +20903,17 @@ msgstr ""
 
 #: inc/item_rack.class.php:154
 msgid "Orientation"
-msgstr ""
+msgstr "Orientare"
 
 #: inc/item_rack.class.php:169 inc/item_rack.class.php:308
 #: inc/item_rack.class.php:678
 msgid "Front"
-msgstr ""
+msgstr "În faţă"
 
 #: inc/item_rack.class.php:169 inc/item_rack.class.php:339
 #: inc/item_rack.class.php:679
 msgid "Rear"
-msgstr ""
+msgstr "În spate"
 
 #: inc/item_rack.class.php:287
 msgid "Following elements are out of rack bounds"
@@ -20921,11 +20921,11 @@ msgstr ""
 
 #: inc/item_rack.class.php:302
 msgid "images"
-msgstr ""
+msgstr "imagini"
 
 #: inc/item_rack.class.php:304
 msgid "texts"
-msgstr ""
+msgstr "texte"
 
 #: inc/item_rack.class.php:376
 msgid "Insert an item here"
@@ -20937,7 +20937,7 @@ msgstr ""
 
 #: inc/item_rack.class.php:518
 msgid "Space"
-msgstr ""
+msgstr "Spaţiu"
 
 #: inc/item_rack.class.php:674
 msgid "Orientation (front rack point of view)"
@@ -20949,7 +20949,7 @@ msgstr ""
 
 #: inc/item_rack.class.php:712
 msgid "Reserved position ?"
-msgstr ""
+msgstr "Poziţie rezervată ?"
 
 #: inc/item_rack.class.php:827
 msgid "asset rear side"
@@ -21002,7 +21002,7 @@ msgstr ""
 
 #: inc/entity.class.php:353
 msgid "UI customization"
-msgstr ""
+msgstr "Personalizare UI"
 
 #: inc/entity.class.php:677 inc/entity.class.php:1529
 msgid "LDAP directory information attribute representing the entity"
@@ -21138,7 +21138,7 @@ msgstr "pentru a vedea entitatea si subentităţile ei"
 
 #: inc/entity.class.php:1218
 msgid "Load more entities..."
-msgstr ""
+msgstr "Încarcă mai multe entităţi"
 
 #. TRANS: %s is the user login
 #: inc/entity.class.php:1315
@@ -21258,19 +21258,19 @@ msgstr "Alerte pe tichetele nesoluţionate înca din"
 
 #: inc/entity.class.php:2121
 msgid "Alarms on domains expiries"
-msgstr ""
+msgstr "Alarme la domeniile care expiră"
 
 #: inc/entity.class.php:2133
 msgid "Domains closes expiries"
-msgstr ""
+msgstr "Domenii gata să expire"
 
 #: inc/entity.class.php:2149
 msgid "Domains expired"
-msgstr ""
+msgstr "Domenii expirate"
 
 #: inc/entity.class.php:2217
 msgid "UI options"
-msgstr ""
+msgstr "Opţiuni UI"
 
 #: inc/entity.class.php:2220
 msgid "Enable CSS customization"
@@ -21282,11 +21282,11 @@ msgstr ""
 
 #: inc/entity.class.php:2419
 msgid "Templates configuration"
-msgstr ""
+msgstr "Configurare şabloane"
 
 #: inc/entity.class.php:2501
 msgid "Tickets configuration"
-msgstr ""
+msgstr "Configurare tichete"
 
 #: inc/entity.class.php:2559
 msgid "Mark followup added by a supplier though an email collector as private"
@@ -21560,7 +21560,7 @@ msgstr ""
 
 #: inc/commonitilobject.class.php:3512
 msgid "Last solution status"
-msgstr ""
+msgstr "Statusul ultimei soluţii"
 
 #: inc/commonitilobject.class.php:3548
 msgid "Resolution time"
@@ -21688,7 +21688,7 @@ msgstr ""
 #: inc/commonitilobject.class.php:7454
 #, php-format
 msgid "# %s description"
-msgstr ""
+msgstr "# %s descriere"
 
 #: inc/commonitilobject.class.php:7542
 #, php-format
@@ -21698,7 +21698,7 @@ msgstr ""
 #: inc/commonitilobject.class.php:7548
 #, php-format
 msgid "New %s"
-msgstr ""
+msgstr " %s nou"
 
 #: inc/group.class.php:234
 msgid "Visible in a ticket"
@@ -21772,7 +21772,7 @@ msgstr ""
 
 #: inc/projecttaskteam.class.php:163
 msgid "An item ID is mandatory"
-msgstr ""
+msgstr "Un ID de element este obligatoriu"
 
 #: inc/projecttaskteam.class.php:172
 msgid "A project task is mandatory"
@@ -21951,11 +21951,11 @@ msgstr "Deblochează elementul"
 
 #: inc/log.class.php:1101 tests/functionnal/Log.php:451
 msgid "Add a component"
-msgstr ""
+msgstr "Adaugă o componentă"
 
 #: inc/log.class.php:1105 tests/functionnal/Log.php:452
 msgid "Change a component"
-msgstr ""
+msgstr "Schimbă o componentă"
 
 #: inc/log.class.php:1109 tests/functionnal/Log.php:453
 msgid "Delete a component"
@@ -21975,11 +21975,11 @@ msgstr "Instalează un soft"
 
 #: inc/log.class.php:1125 tests/functionnal/Log.php:455
 msgid "Uninstall a software"
-msgstr ""
+msgstr "Dezinstalează un software"
 
 #: inc/log.class.php:1129 tests/functionnal/Log.php:456
 msgid "Disconnect an item"
-msgstr ""
+msgstr "Deconectează un element"
 
 #: inc/log.class.php:1137 tests/functionnal/Log.php:463
 msgid "Add a link with an item"
@@ -22420,7 +22420,7 @@ msgstr "Actualizează (actor)"
 
 #: inc/projecttask.class.php:415
 msgid "A linked project is mandatory"
-msgstr ""
+msgstr "Un proiect asociat este obligatoriu"
 
 #: inc/projecttask.class.php:715
 msgid ""
@@ -22461,7 +22461,7 @@ msgstr "Poziţie în cameră"
 
 #: inc/rack.class.php:263
 msgid "Door orientation in room"
-msgstr ""
+msgstr "Orientarea uşii în cameră"
 
 #: inc/rack.class.php:268
 msgid "North"
@@ -22485,7 +22485,7 @@ msgstr "Număr de unităţi"
 
 #: inc/rack.class.php:293
 msgid "U"
-msgstr ""
+msgstr "U"
 
 #: inc/rack.class.php:295
 msgid "Width"
@@ -22497,7 +22497,7 @@ msgstr "Înălţime"
 
 #: inc/rack.class.php:309
 msgid "Measured power (in watts)"
-msgstr ""
+msgstr "Putere măsurată (în waţi)"
 
 #: inc/rack.class.php:314
 msgid "Max. weight"
@@ -22505,7 +22505,7 @@ msgstr "Greutate max."
 
 #: inc/rack.class.php:569
 msgid "No rack found"
-msgstr ""
+msgstr "Niciun rack nu a fost găsit"
 
 #: inc/rack.class.php:657
 msgid "Following elements are out of room bounds"
@@ -22521,7 +22521,7 @@ msgstr "Grid"
 
 #: inc/rack.class.php:731
 msgid "Insert a rack here"
-msgstr ""
+msgstr "Inserează un rack aici"
 
 #: inc/rack.class.php:940
 msgid "Position must be set"
@@ -22701,7 +22701,7 @@ msgstr[2] ""
 
 #: inc/massiveaction.class.php:975
 msgid "Amendment to insert"
-msgstr ""
+msgstr "Amendament de inserat"
 
 #: inc/massiveaction.class.php:988
 msgid "New Note"
@@ -22860,11 +22860,11 @@ msgstr "Aceasta este noua ierarhie creată. Dacă este OK o puteți valida."
 
 #: install/update.php:525
 msgid "Missing security key file"
-msgstr ""
+msgstr "Fişierul cheie de securitate lipseşte"
 
 #: install/update.php:533
 msgid "Ignore warning"
-msgstr ""
+msgstr "Ignoră avertizarea"
 
 #: install/update.php:575
 msgid "Impossible to accomplish an update by this way!"
@@ -22939,7 +22939,7 @@ msgstr "Central"
 
 #: install/update_94_95/dashboards.php:342
 msgid "Mini tickets dashboard"
-msgstr ""
+msgstr "Dashboard mini tichete"
 
 #: install/install.php:113
 msgid "Unofficial translations are also available"
@@ -23218,7 +23218,7 @@ msgstr ""
 
 #: js/impact.js:1358
 msgid "This asset already exists."
-msgstr ""
+msgstr "Acest asset există deja."
 
 #: js/impact.js:1377
 msgid "Unexpected error."
@@ -23266,7 +23266,7 @@ msgstr "Adăugare Bulk"
 
 #: js/kanban.js:341
 msgid "Search or filter results"
-msgstr ""
+msgstr "Căutare sau filtrare rezultate"
 
 #: js/kanban.js:343
 msgid "Add column"
@@ -23279,7 +23279,7 @@ msgstr "Mai mult"
 #: js/kanban.js:1346
 #, javascript-format
 msgid "%d other team members"
-msgstr ""
+msgstr "%d alţi membri ai echipei"
 
 #: js/kanban.js:1468
 msgid "One item per line"
@@ -23311,7 +23311,7 @@ msgstr "Alege"
 
 #: js/planning.js:313
 msgid "Delete the whole serie of the recurrent event"
-msgstr ""
+msgstr "Şterge întreaga serie a evenimentului recurent"
 
 #: js/planning.js:314
 msgid "or just add an exception by deleting this instance?"
@@ -23327,7 +23327,7 @@ msgstr "Instanţă"
 
 #: js/planning.js:438
 msgid "Recurring event resized"
-msgstr ""
+msgstr "Eveniment recurent redimensionat"
 
 #: js/planning.js:456
 msgid ""
@@ -23337,7 +23337,7 @@ msgstr ""
 
 #: js/planning.js:486
 msgid "Recurring event dragged"
-msgstr ""
+msgstr "Eveniment recurent mutat"
 
 #: js/planning.js:504
 msgid ""

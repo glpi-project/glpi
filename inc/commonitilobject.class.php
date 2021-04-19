@@ -7537,15 +7537,16 @@ abstract class CommonITILObject extends CommonDBTM {
          echo $text;
       } else {
          if ($ismultientities) {
-            printf(
-               __('The %s will be added in the entity %s'),
-               strtolower(static::getTypeName()),
+            sprintf(
+               //TRANS first parameter is the type name, second the entity name
+               __('%1$s will be added in entity %2$s'),
+               static::getTypeName(1),
                Dropdown::getDropdownName("glpi_entities", $this->fields['entities_id'])
             );
          } else {
             echo sprintf(
                __('New %s'),
-               strtolower(static::getTypeName())
+               static::getTypeName(1)
             );
          }
       }

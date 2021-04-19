@@ -242,7 +242,7 @@ module.exports = function() {
       config.mode = 'none'; // Force 'none' mode, as optimizations will be done on release process
       config.devtool = 'source-map'; // Add sourcemap to files
 
-      // Limit verbosity to only usefull informations
+      // Limit verbosity to only usefull information
       config.stats = {
          all: false,
          errors: true,

@@ -386,7 +386,7 @@ class NetworkEquipment extends CommonDBTM {
       Html::autocompletionTextField($this, "ram");
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
+      // Display auto inventory information
       $randDropdown = mt_rand();
       echo "<td><label for='dropdown_autoupdatesystems_id$randDropdown'>".AutoUpdateSystem::getTypeName(1)."</label></td>";
       echo "<td >";

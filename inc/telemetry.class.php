@@ -41,7 +41,7 @@ class Telemetry extends CommonGLPI {
    }
 
    /**
-    * Grab telemetry informations
+    * Grab telemetry information
     *
     * @return array
     */
@@ -60,7 +60,7 @@ class Telemetry extends CommonGLPI {
    }
 
    /**
-    * Grab GLPI part informations
+    * Grab GLPI part information
     *
     * @return array
     */
@@ -109,7 +109,7 @@ class Telemetry extends CommonGLPI {
    }
 
    /**
-    * Grab DB part informations
+    * Grab DB part information
     *
     * @return array
     */
@@ -136,7 +136,7 @@ class Telemetry extends CommonGLPI {
    }
 
    /**
-    * Grab web server part informations
+    * Grab web server part information
     *
     * @return array
     */
@@ -187,7 +187,7 @@ class Telemetry extends CommonGLPI {
    }
 
    /**
-    * Grab PHP part informations
+    * Grab PHP part information
     *
     * @return array
     */
@@ -209,7 +209,7 @@ class Telemetry extends CommonGLPI {
    }
 
    /**
-    * Grab OS part informations
+    * Grab OS part information
     *
     * @return array
     */
@@ -260,13 +260,13 @@ class Telemetry extends CommonGLPI {
    static function cronInfo($name) {
       switch ($name) {
          case 'telemetry' :
-            return ['description' => __('Send telemetry informations')];
+            return ['description' => __('Send telemetry information')];
       }
       return [];
    }
 
    /**
-    * Send telemetry informations
+    * Send telemetry information
     *
     * @param CronTask $task CronTask instance
     *
@@ -289,7 +289,7 @@ class Telemetry extends CommonGLPI {
          //all is OK!
          return 1;
       } else {
-         $message = 'Something went wrong sending telemetry informations';
+         $message = 'Something went wrong sending telemetry information';
          if ($errstr != '') {
             $message .= ": $errstr";
          }
@@ -418,7 +418,7 @@ class Telemetry extends CommonGLPI {
 
 
    /**
-    * Display telemetry informations
+    * Display telemetry information
     *
     * @return string
     */
@@ -435,7 +435,7 @@ class Telemetry extends CommonGLPI {
    }
 
    /**
-    * Display reference informations
+    * Display reference information
     *
     * @return string
     */

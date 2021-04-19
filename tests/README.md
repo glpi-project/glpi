@@ -74,7 +74,7 @@ Running `atoum` without any arguments will show you the possible options. Most i
 - `-d` to run tests located in a whole directory,
 - `-f` to run tests on a standalone file,
 - `-m` to run tests on all \<class::method>, * may be used as wildcard for class name or method name,
-- `--debug` to get extra informations when something goes wrong,
+- `--debug` to get extra information when something goes wrong,
 - `-mcn` limit number of concurrent runs. This is unfortunately mandatory running the whole test suite right now :/,
 - `-ncc` do not generate code coverage,
 - `--php` to change PHP executable to use,

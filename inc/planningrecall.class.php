@@ -127,7 +127,7 @@ class PlanningRecall extends CommonDBChild {
    **/
    static function manageDatas(array $data) {
 
-      // Check data informations
+      // Check data information
       if (!isset($data['itemtype'])
           || !isset($data['items_id'])
           || !isset($data['users_id'])

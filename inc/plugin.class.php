@@ -430,12 +430,12 @@ class Plugin extends CommonDBTM {
 
       if (empty($informations)) {
          if (!$is_already_known) {
-            // Plugin is not known and we are unable to load informations, we ignore it
+            // Plugin is not known and we are unable to load information, we ignore it
             return;
          }
 
          // Try to get information from a plugin that lists current name as its old name
-         // If something found, and not already registerd in DB,, base plugin informations on it
+         // If something found, and not already registerd in DB,, base plugin information on it
          // If nothing found, mark plugin as "To be cleaned"
          $new_specs = $this->getNewInfoAndDirBasedOnOldName($plugin_key);
          if (null !== $new_specs
@@ -445,12 +445,12 @@ class Plugin extends CommonDBTM {
          } else {
             trigger_error(
                sprintf(
-                  'Unable to load plugin "%s" informations.',
+                  'Unable to load plugin "%s" information.',
                   $plugin_key
                ),
                E_USER_WARNING
             );
-            // Plugin is known but we are unable to load informations, we ignore it
+            // Plugin is known but we are unable to load information, we ignore it
             return;
          }
       }
@@ -476,8 +476,8 @@ class Plugin extends CommonDBTM {
 
       if ($informations['version'] != $plugin->fields['version']
           || $plugin_key != $plugin->fields['directory']) {
-         // Plugin known version differs from informations or plugin has been renamed,
-         // update informations in database
+         // Plugin known version differs from information or plugin has been renamed,
+         // update information in database
          $input              = $informations;
          $input['id']        = $plugin->fields['id'];
          $input['directory'] = $plugin_key;

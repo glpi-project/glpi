@@ -63,7 +63,7 @@ class ActivateCommand extends AbstractPluginCommand {
          );
 
          $plugin = new Plugin();
-         $plugin->checkPluginState($directory); // Be sure that plugin informations are up to date in DB
+         $plugin->checkPluginState($directory); // Be sure that plugin information are up to date in DB
 
          if (!$this->canRunActivateMethod($directory)) {
             continue;
@@ -71,7 +71,7 @@ class ActivateCommand extends AbstractPluginCommand {
 
          if (!$plugin->getFromDBByCrit(['directory' => $directory])) {
             $this->output->writeln(
-               '<error>' . sprintf(__('Unable to load plugin "%s" informations.'), $directory) . '</error>',
+               '<error>' . sprintf(__('Unable to load plugin "%s" information.'), $directory) . '</error>',
                OutputInterface::VERBOSITY_QUIET
             );
             continue;

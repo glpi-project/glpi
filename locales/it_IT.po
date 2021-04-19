@@ -9,10 +9,11 @@
 # Marco Arrigoni <arri89@hotmail.it>, 2020
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
-# Tiziano Sartori <tiziano.sartori@gmail.com>, 2020
 # Emiliano Centurelli <emilcen80@gmail.com>, 2020
 # Davide <spam@habilitas.it>, 2021
 # Pierfrancesco Passerini <p.passerini@gmail.com>, 2021
+# Tiziano Sartori <tiziano.sartori@gmail.com>, 2021
+# Stefano Ceccherini <stefano.ceccherini@gmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -21,7 +22,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-22 09:43+0100\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Pierfrancesco Passerini <p.passerini@gmail.com>, 2021\n"
+"Last-Translator: Stefano Ceccherini <stefano.ceccherini@gmail.com>, 2021\n"
 "Language-Team: Italian (Italy) (https://www.transifex.com/glpi/teams/1637/it_IT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -7945,7 +7946,7 @@ msgstr "Code"
 #: inc/project.class.php:562 inc/computervirtualmachine.class.php:355
 #: inc/computervirtualmachine.class.php:582
 msgid "State"
-msgstr "Provincia"
+msgstr "Stato"
 
 #: inc/project.class.php:592 inc/project.class.php:1506
 msgid "Show on global GANTT"

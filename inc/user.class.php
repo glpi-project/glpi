@@ -1556,7 +1556,7 @@ class User extends CommonDBTM {
 
 
    /**
-    * Function that tries to load the user informations from LDAP.
+    * Function that tries to load the user information from LDAP.
     *
     * @param resource $ldap_connection LDAP connection
     * @param array    $ldap_method     LDAP method
@@ -1826,7 +1826,7 @@ class User extends CommonDBTM {
 
 
    /**
-    * Function that tries to load the user informations from IMAP.
+    * Function that tries to load the user information from IMAP.
     *
     * @param array  $mail_method  mail method description array
     * @param string $name         login of the user
@@ -1883,7 +1883,7 @@ class User extends CommonDBTM {
 
 
    /**
-    * Function that tries to load the user informations from the SSO server.
+    * Function that tries to load the user information from the SSO server.
     *
     * @since 0.84
     *

@@ -1033,7 +1033,7 @@ VCALENDAR
 
       $this->validateCommonVComponentProperties($vcomp, $event->fields);
 
-      // Be sure that VJOURNAL does not contains plan informations
+      // Be sure that VJOURNAL does not contains plan information
       $this->variable($vcomp->DTSTART)->isNull();
       $this->variable($vcomp->DTEND)->isNull();
       $this->variable($vcomp->DUE)->isNull();
@@ -1298,7 +1298,7 @@ VCALENDAR
 
       $this->validateCommonVComponentProperties($vcomp, $ticket_task->fields);
 
-      // Test updating VTODO object (without plan informations)
+      // Test updating VTODO object (without plan information)
       $server = $this->getServerInstance('PUT', $ticket_task_path);
       $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
       $server->httpRequest->setBody(
@@ -1331,7 +1331,7 @@ VCALENDAR
          ->string['content']->isEqualTo('Updated description.')
          ->integer['state']->isEqualTo(\Planning::TODO);
 
-      // Test updating VTODO object (with plan informations)
+      // Test updating VTODO object (with plan information)
       $server = $this->getServerInstance('PUT', $ticket_task_path);
       $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
       $server->httpRequest->setBody(
@@ -1428,7 +1428,7 @@ VCALENDAR
       $this->object($vcomp->{'PERCENT-COMPLETE'})->isInstanceOf(\Sabre\VObject\Property\IntegerValue::class);
       $this->integer($vcomp->{'PERCENT-COMPLETE'}->getValue())->isEqualTo((int)$project_task->fields['percent_done']);
 
-      // Test updating VTODO object (without plan informations)
+      // Test updating VTODO object (without plan information)
       $server = $this->getServerInstance('PUT', $project_task_path);
       $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
       $server->httpRequest->setBody(
@@ -1462,7 +1462,7 @@ VCALENDAR
          ->string['content']->isEqualTo('Updated description.')
          ->integer['percent_done']->isEqualTo(35);
 
-      // Test updating VTODO object (with plan informations)
+      // Test updating VTODO object (with plan information)
       $server = $this->getServerInstance('PUT', $project_task_path);
       $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
       $server->httpRequest->setBody(

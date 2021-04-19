@@ -434,7 +434,7 @@ class NotificationTargetProject extends NotificationTarget {
 
       $this->data["##project.numberoflogs##"] = count($this->data['log']);
 
-      // ITIL items informations
+      // ITIL items information
       foreach ([Change::class, Problem::class, Ticket::class] as $itemtype) {
          $values = [];
 

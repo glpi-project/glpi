@@ -37,6 +37,10 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
+if (!Session::haveRight('datacenter', UPDATE)) {
+   http_response_code(403);
+   die;
+}
 if (isset($_REQUEST['action'])) {
    $answer = [];
 

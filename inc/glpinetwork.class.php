@@ -166,7 +166,7 @@ class GLPINetwork extends CommonGLPI {
    }
 
    /**
-    * Get GLPI Network registration informations.
+    * Get GLPI Network registration information.
     *
     * @return array  Registration data:
     *    - is_valid (boolean):          indicates if key is valid;
@@ -215,9 +215,9 @@ class GLPINetwork extends CommonGLPI {
       $registration_data = $error_message === null ? json_decode($registration_response, true) : null;
       if ($error_message !== null || json_last_error() !== JSON_ERROR_NONE
           || !is_array($registration_data) || !array_key_exists('is_valid', $registration_data)) {
-         $informations['validation_message'] = __('Unable to fetch registration informations.');
+         $informations['validation_message'] = __('Unable to fetch registration information.');
          Toolbox::logError(
-            'Unable to fetch registration informations.',
+            'Unable to fetch registration information.',
             $error_message,
             $registration_response
          );
@@ -307,7 +307,7 @@ class GLPINetwork extends CommonGLPI {
 
       if ($error_message !== null || json_last_error() !== JSON_ERROR_NONE || !is_array($offers)) {
          Toolbox::logError(
-            'Unable to fetch offers informations.',
+            'Unable to fetch offers information.',
             $error_message,
             $response
          );

@@ -560,7 +560,7 @@ class Lock extends CommonGLPI {
     * @param string $itemtype      itemtype of the item to look for locked fields
     * @param string $baseitemtype  itemtype of the based item
     *
-    * @return array  which contains necessary informations to build the SQL query
+    * @return array  which contains necessary information to build the SQL query
    **/
    static function getLocksQueryInfosByItemType($itemtype, $baseitemtype) {
       global $DB;

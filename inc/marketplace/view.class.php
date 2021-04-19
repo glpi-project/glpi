@@ -439,7 +439,7 @@ JS;
    /**
     * Return HTML part for plugin card
     *
-    * @param array $plugin informations (title, description, etc) of the plugins
+    * @param array $plugin information (title, description, etc) of the plugins
     * @param string $tab current displayed tab (installed or discover)
     *
     * @return string the plugin card
@@ -789,7 +789,7 @@ HTML;
 
 
    /**
-    * Return HTML part for Glpi Network informations for a given plugin
+    * Return HTML part for Glpi Network information for a given plugin
     * @param array $plugin data of the plugin.
     *                      if check agains plugin key if we need some subscription to use it
     * @return string the subscription information html

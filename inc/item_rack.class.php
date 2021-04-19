@@ -287,7 +287,7 @@ class Item_Rack extends CommonDBRelation {
          echo __('Following elements are out of rack bounds');
          echo "</th></thead><tbody>";
          foreach ($outbound as $out) {
-            echo "<tr><td>".self::getCell($out)."</td></tr>";
+            echo "<tr><td>".self::getCell($out, !$canedit)."</td></tr>";
          }
          echo "</tbody></table>";
       }
@@ -322,7 +322,7 @@ class Item_Rack extends CommonDBRelation {
       }
 
       foreach ($data[Rack::FRONT] as $current_item) {
-         echo self::getCell($current_item);
+         echo self::getCell($current_item, !$canedit);
       }
       echo '   <div class="grid-stack-item lock-bottom"
                     data-gs-no-resize="true" data-gs-no-move="true"
@@ -351,7 +351,7 @@ class Item_Rack extends CommonDBRelation {
       }
 
       foreach ($data[Rack::REAR] as $current_item) {
-         echo self::getCell($current_item);
+         echo self::getCell($current_item, !$canedit);
       }
       echo '   <div class="grid-stack-item lock-bottom"
                     data-gs-no-resize="true" data-gs-no-move="true"
@@ -438,6 +438,11 @@ class Item_Rack extends CommonDBRelation {
                            dirty = false;
                         }
                      }
+                  }).fail(function() {
+                     dirty = true;
+                     grid.move(item.el, x_before_drag, y_before_drag);
+                     dirty = false;
+                     displayAjaxMessageAfterRedirect();
                   });
                });
             })
@@ -768,7 +773,7 @@ JAVASCRIPT;
     *
     * @return string
     */
-   private static function getCell($cell) {
+   private static function getCell($cell, $readonly = false) {
       if ($cell) {
          $item        = $cell['item'];
          $gs_item     = $cell['gs_item'];
@@ -861,11 +866,12 @@ JAVASCRIPT;
 
          $tip.= "</span>";
 
+         $readonly_attr = $readonly ? 'data-gs-no-move="true"' : '';
          return "
          <div class='grid-stack-item $back_class $half_class $reserved_cl $img_class'
                data-gs-width='{$gs_item['width']}' data-gs-height='{$gs_item['height']}'
                data-gs-x='{$gs_item['x']}' data-gs-y='{$gs_item['y']}'
-               data-gs-id='{$gs_item['id']}'
+               data-gs-id='{$gs_item['id']}' {$readonly_attr}
                style='background-color: $bg_color; color: $fg_color;'>
             <div class='grid-stack-item-content' style='$fg_color_s $img_s'>
                $icon".

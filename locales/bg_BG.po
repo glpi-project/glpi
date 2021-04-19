@@ -3775,7 +3775,7 @@ msgstr "Резултат на регулярния израз"
 
 #: inc/rule.class.php:2079
 msgid "Key"
-msgstr ""
+msgstr "Ключ"
 
 #: inc/rule.class.php:2175 inc/savedsearch_user.class.php:54
 #: inc/savedsearch_user.class.php:76 inc/mailcollector.class.php:289
@@ -5019,6 +5019,8 @@ msgid ""
 "Unable to create security key file! You have to run \"php bin/console "
 "glpi:security:change_key\" command to manually create this file."
 msgstr ""
+"Невъзможно създаване на защитен ключ! Трябва да стартирате командата \"php "
+"bin/console glpi:security:change_key\", за да създадете файла ръчно."
 
 #: inc/ruleasset.class.php:70 inc/ruleasset.class.php:72
 #: inc/rssfeed.class.php:980 inc/rssfeed.class.php:981
@@ -9231,11 +9233,11 @@ msgstr ""
 
 #: inc/console/security/changekeycommand.class.php:98
 msgid "Unable to change security key!"
-msgstr ""
+msgstr "Невъзможна смяната на защитния ключ."
 
 #: inc/console/security/changekeycommand.class.php:106
 msgid "New security key generated; database updated."
-msgstr ""
+msgstr "Нов защитен ключ беше създаден; базата обновена."
 
 #: inc/console/abstractcommand.class.php:100
 msgid "Unable to connect to database."
@@ -10146,7 +10148,7 @@ msgstr ""
 
 #: inc/console/database/installcommand.class.php:207 install/install.php:379
 msgid "Security key cannot be generated!"
-msgstr ""
+msgstr "Защитният ключ не може да бъде генериран!"
 
 #: inc/console/database/installcommand.class.php:233
 msgid "Creating the database..."
@@ -16751,7 +16753,7 @@ msgstr ""
 
 #: inc/marketplace/view.class.php:160
 msgid "fill your registration key in setup."
-msgstr ""
+msgstr "попълнете регистрационният ключ в настройките."
 
 #: inc/marketplace/view.class.php:331
 #, php-format
@@ -17146,7 +17148,7 @@ msgstr ""
 
 #: inc/glpinetwork.class.php:91
 msgid "Registration key"
-msgstr ""
+msgstr "Регистрационен ключ"
 
 #: inc/glpinetwork.class.php:110
 msgid "Subscription"
@@ -17166,11 +17168,11 @@ msgstr ""
 
 #: inc/glpinetwork.class.php:232
 msgid "The registration key is valid."
-msgstr ""
+msgstr "Регистрационният ключ е валиден."
 
 #: inc/glpinetwork.class.php:233
 msgid "The registration key is invalid."
-msgstr ""
+msgstr "Регистрационният ключ е невалиден."
 
 #: inc/glpinetwork.class.php:253
 #, php-format
@@ -22463,7 +22465,7 @@ msgstr "Това е новата иерархия. Ако всичко е пра
 
 #: install/update.php:525
 msgid "Missing security key file"
-msgstr ""
+msgstr "Липсва файла за защитен ключ"
 
 #: install/update.php:533
 msgid "Ignore warning"

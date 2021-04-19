@@ -1125,7 +1125,7 @@ class Toolbox {
    static function resizePicture($source_path, $dest_path, $new_width = 71, $new_height = 71,
                                  $img_y = 0, $img_x = 0, $img_width = 0, $img_height = 0, $max_size = 500) {
 
-      //get img informations (dimensions and extension)
+      //get img information (dimensions and extension)
       $img_infos  = getimagesize($source_path);
       if (empty($img_width)) {
          $img_width  = $img_infos[0];
