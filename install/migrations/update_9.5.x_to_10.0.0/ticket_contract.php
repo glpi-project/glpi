@@ -54,10 +54,10 @@ if (!$DB->tableExists('glpi_tickets_contracts')) {
    $DB->queryOrDie($query, "add table glpi_tickets_contracts");
 }
 
-if (!$DB->fieldExists("glpi_entities", "default_contracts_id")) {
+if (!$DB->fieldExists("glpi_entities", "contracts_id_default")) {
    $migration->addField(
       "glpi_entities",
-      "default_contracts_id",
+      "contracts_id_default",
       "integer",
       [
          'after'     => "anonymize_support_agents",
@@ -67,5 +67,5 @@ if (!$DB->fieldExists("glpi_entities", "default_contracts_id")) {
       ]
    );
 
-   $migration->addKey("glpi_entities", "default_contracts_id");
+   $migration->addKey("glpi_entities", "contracts_id_default");
 }

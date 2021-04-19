@@ -121,7 +121,7 @@ class Entity extends CommonTreeDropdown {
          'max_closedate', 'tickettemplates_id',
          'changetemplates_id', 'problemtemplates_id',
          'suppliers_as_private', 'autopurge_delay', 'anonymize_support_agents',
-         'default_contracts_id'
+         'contracts_id_default'
       ],
       // Configuration
       'config' => ['enable_custom_css', 'custom_css_code']
@@ -2644,14 +2644,14 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Default contract')."</td>";
       echo "<td colspan='2'>";
       $default_contract_values = self::getDefaultContractValues();
-      $current_default_contract_value = $entity->fields['default_contracts_id'];
+      $current_default_contract_value = $entity->fields['contracts_id_default'];
 
       if ($ID == 0) { // Remove parent option for root entity
          unset($default_contract_values[self::CONFIG_PARENT]);
       }
 
       Dropdown::showFromArray(
-         'default_contracts_id',
+         'contracts_id_default',
          $default_contract_values,
          [
             'value' => $current_default_contract_value,
@@ -2662,7 +2662,7 @@ class Entity extends CommonTreeDropdown {
       // If the entity is using it's parent value, print it
       if ($current_default_contract_value == self::CONFIG_PARENT && $ID != 0) {
          $parent_default_contract_value = self::getUsedConfig(
-            'default_contracts_id',
+            'contracts_id_default',
             $entity->fields['entities_id']
          );
          self::inheritedValue($default_contract_values[$parent_default_contract_value], true);
@@ -3445,7 +3445,7 @@ class Entity extends CommonTreeDropdown {
    }
 
    /**
-    * Get values for default_contracts_id field
+    * Get values for contracts_id_default field
     *
     * @since 9.5
     *

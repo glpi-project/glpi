@@ -2715,7 +2715,7 @@ CREATE TABLE `glpi_entities` (
   `autofill_decommission_date` varchar(255) NOT NULL DEFAULT '-2',
   `suppliers_as_private` int NOT NULL DEFAULT '-2',
   `anonymize_support_agents` int NOT NULL DEFAULT '-2',
-  `default_contracts_id` int NOT NULL DEFAULT '-2',
+  `contracts_id_default` int NOT NULL DEFAULT '-2',
   `enable_custom_css` int NOT NULL DEFAULT '-2',
   `custom_css_code` text,
   `latitude` varchar(255) DEFAULT NULL,
@@ -2733,7 +2733,7 @@ CREATE TABLE `glpi_entities` (
   KEY `authldaps_id` (`authldaps_id`),
   KEY `calendars_id` (`calendars_id`),
   KEY `entities_id_software` (`entities_id_software`),
-  KEY `default_contracts_id` (`default_contracts_id`)
+  KEY `contracts_id_default` (`contracts_id_default`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 

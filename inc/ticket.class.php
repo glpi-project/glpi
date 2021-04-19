@@ -7732,8 +7732,14 @@ JAVASCRIPT;
    }
 
    public function getDefaultContract(): int {
-      $entity = $this->fields['entities_id'];
-      $entity_default_contract = Entity::getUsedConfig('default_contracts_id', $entity);
+      $entity = $this->fields['entities_id'] ?? false;
+
+      // Entity isn't set, can't load config
+      if ($entity === false) {
+         return 0;
+      }
+
+      $entity_default_contract = Entity::getUsedConfig('contracts_id_default', $entity);
       if ($entity_default_contract == 0) {
          // No default contract set
          return 0;
