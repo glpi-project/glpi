@@ -36,15 +36,15 @@
       </div>
    {% endfor %}
    <script>
-      $("#home-dashboard{{ rand }} .lazy-widget").each(function() {
+      $('#home-dashboard{{ rand }} .lazy-widget').each(function() {
          const this_obj = $(this);
          const params = {
             'itemtype': this_obj.data('itemtype'),
             'widget': this_obj.data('widget'),
             'params': this_obj.data('params')
          };
-         this_obj.html("<i class='fas fa-3x fa-spinner fa-spin ms-auto'></i>")
-            .load("{{ path('/ajax/central.php') }}", params, function(response, status, xhr) {
+         this_obj.html('<i class="fas fa-3x fa-spinner fa-spin ms-auto"></i>')
+            .load('{{ path('/ajax/central.php') }}', params, function(response, status, xhr) {
                if (status === 'error' || !response) {
                   this_obj.closest('.col').remove();
                }
