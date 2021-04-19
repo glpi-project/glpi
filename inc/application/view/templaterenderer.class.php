@@ -55,6 +55,7 @@ use Glpi\Application\View\Extension\SearchExtension;
 use Glpi\Application\View\Extension\SessionExtension;
 use Glpi\Application\View\Extension\ToolboxExtension;
 use Glpi\Application\View\Extension\UserExtension;
+use Plugin;
 use Session;
 use Twig\Environment;
 use Twig\Error\Error;
@@ -64,9 +65,6 @@ use Twig\Loader\FilesystemLoader;
 
 /**
  * @since 10.0.0
- *
- * @TODO Create a custom loader that will load template for plugin (e.g. when name matches "plugin_name:/path/to/template").
- * @TODO Create a custom loader that will automatically append ".twig" to template names.
  */
 class TemplateRenderer {
 
@@ -76,19 +74,23 @@ class TemplateRenderer {
    private $environment;
 
    public function __construct(string $rootdir = GLPI_ROOT, string $cachedir = GLPI_CACHE_DIR) {
-      $paths = [
-         $rootdir . '/templates',
-      ];
+      $loader = new FilesystemLoader($rootdir . '/templates', $rootdir);
 
-      $options = [
-         'cache'       => $cachedir . '/templates',
-         'debug'       => $_SESSION['glpi_use_mode'] ?? null === Session::DEBUG_MODE,
-         'auto_reload' => true, // Force refresh
-      ];
+      $active_plugins = Plugin::getPlugins();
+      foreach ($active_plugins as $plugin_key) {
+         // Add a dedicated namespace for each active plugin, so templates would be loadable using
+         // `@my_plugin/path/to/template.html.twig` where `my_plugin` is the plugin key and `path/to/template.html.twig`
+         // is the path of the template inside the `/templates` directory of the plugin.
+         $loader->addPath(Plugin::getPhpDir($plugin_key . '/templates'), $plugin_key);
+      }
 
       $this->environment = new Environment(
-         new FilesystemLoader($paths, $rootdir),
-         $options
+         $loader,
+         [
+            'cache'       => $cachedir . '/templates',
+            'debug'       => $_SESSION['glpi_use_mode'] ?? null === Session::DEBUG_MODE,
+            'auto_reload' => true, // Force refresh
+         ]
       );
       // Vendor extensions
       $this->environment->addExtension(new DebugExtension());
