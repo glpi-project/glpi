@@ -2732,7 +2732,8 @@ CREATE TABLE `glpi_entities` (
   KEY `transfers_id` (`transfers_id`),
   KEY `authldaps_id` (`authldaps_id`),
   KEY `calendars_id` (`calendars_id`),
-  KEY `entities_id_software` (`entities_id_software`)
+  KEY `entities_id_software` (`entities_id_software`),
+  KEY `default_contracts_id` (`default_contracts_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 

@@ -66,4 +66,6 @@ if (!$DB->fieldExists("glpi_entities", "default_contracts_id")) {
          'condition' => 'WHERE `id` = 0'
       ]
    );
+
+   $migration->addKey("glpi_entities", "default_contracts_id");
 }
