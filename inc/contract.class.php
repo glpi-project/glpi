@@ -1779,7 +1779,7 @@ class Contract extends CommonDBTM {
       $items = [];
       $items[(empty($mass_id) ? '&nbsp' : Html::getCheckAllAsCheckbox($mass_id))] = '';
       $items[__('Name')] = "name";
-      $items[__('Entity')] = "entities_id";
+      $items[Entity::getTypeName(1)] = "entities_id";
       $items[_n('Type', 'Types', 1)] = ContractType::getForeignKeyField();
       $items[_x('phone', 'Number')] = "num";
       $items[__('Start date')] = "begin_date";
