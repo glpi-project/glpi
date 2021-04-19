@@ -46,25 +46,12 @@ function update95xto1000() {
    $migration->displayTitle(sprintf(__('Update to %s'), '10.0.0'));
    $migration->setVersion('10.0.0');
 
-   $update_scripts = [
-      'cameras',
-      'devicebattery',
-      'documents',
-      'domains',
-      'inventory_management',
-      'ldaps',
-      'manuallinks',
-      'native_inventory',
-      'notifications',
-      'recurrentchange',
-      'reservationitem',
-      'schema_fixes',
-      'softwares',
-      'uuids',
-   ];
-
+   $update_scripts = scandir($update_dir);
    foreach ($update_scripts as $update_script) {
-       require $update_dir . $update_script . '.php';
+      if (preg_match('/\.php$/', $update_script) !== 1) {
+         continue;
+      }
+      require $update_dir . $update_script;
    }
 
    // ************ Keep it at the end **************

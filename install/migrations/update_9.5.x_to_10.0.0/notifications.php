@@ -34,6 +34,7 @@
  * @var Migration $migration
  */
 
+/** User mention notification */
 $notification_exists = countElementsInTable('glpi_notifications', ['itemtype' => 'Ticket', 'event' => 'user_mention']) > 0;
 if (!$notification_exists) {
    $DB->insertOrDie(
@@ -77,3 +78,4 @@ if (!$notification_exists) {
       '10.0 Add user mention notification target'
    );
 }
+/** /User mention notification */

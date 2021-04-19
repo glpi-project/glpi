@@ -165,6 +165,10 @@ jobs:
         if: env.skip != 'true'
         run: |
           docker-compose exec -T app .github/actions/init_install-dependencies.sh
+      - name: "Install DB tests"
+        if: env.skip != 'true'
+        run: |
+          docker-compose exec -T app .github/actions/test_install.sh
       - name: "Update DB tests (from 0.80, not using utf8mb4)"
         if: env.skip != 'true'
         run: |
@@ -173,10 +177,6 @@ jobs:
         if: env.skip != 'true'
         run: |
           docker-compose exec -T app .github/actions/test_update-from-9.5.sh
-      - name: "Install DB tests"
-        if: env.skip != 'true'
-        run: |
-          docker-compose exec -T app .github/actions/test_install.sh
       - name: "Unit tests"
         if: env.skip != 'true'
         run: |

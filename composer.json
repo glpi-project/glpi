@@ -85,6 +85,9 @@
         },
         "sort-packages": true
     },
+    "autoload-dev": {
+        "psr-4": { "GlpiTests\\": "tests/src/" }
+    },
     "scripts": {
         "testdb": "atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database",
         "testfunc": "atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/functionnal/",

@@ -458,7 +458,7 @@ CronTask::Register(
    7 * DAY_TIMESTAMP,
    [
       'mode'  => CronTask::MODE_EXTERNAL,
-      'state' => CronTask::STATE_DISABLE
+      'state' => CronTask::STATE_WAITING
    ]
 );
 

@@ -629,7 +629,7 @@ function update92xto930() {
                                                                    'after' => 'is_visible_certificate']);
    $migration->addKey('glpi_states', 'is_visible_rack');
 
-   $ADDTODISPLAYPREF['datacenter'] = [3];
+   $ADDTODISPLAYPREF['Datacenter'] = [3];
    $ADDTODISPLAYPREF['Rack']       = [31, 23, 5, 7];
    $ADDTODISPLAYPREF['DCRoom']     = [4, 5, 6];
    $ADDTODISPLAYPREF['PDU']        = [31, 23, 5];

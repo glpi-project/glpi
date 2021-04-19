@@ -52,3 +52,11 @@ if [[ -z $(grep "No migration needed." ~/migration.log) ]];
 fi
 # Check DB
 bin/console glpi:database:check_schema --config-dir=./tests --ansi --no-interaction
+
+# Check updated data
+bin/console glpi:database:configure \
+  --config-dir=./tests --no-interaction --ansi \
+  --reconfigure --db-name=glpi --db-host=db --db-user=root --use-utf8mb4 \
+  --log-deprecation-warnings
+mkdir -p ./tests/files/_cache
+tests/bin/test-updated-data --host=db --user=root --fresh-db=glpi --updated-db=glpitest-9.5.3 --ansi --no-interaction

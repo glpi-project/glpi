@@ -2363,7 +2363,6 @@ class Toolbox {
                'language'      => $lang,
                'version'       => GLPI_VERSION,
                'dbversion'     => GLPI_SCHEMA_VERSION,
-               'use_timezones' => $DB->areTimezonesAvailable()
             ]
          );
 

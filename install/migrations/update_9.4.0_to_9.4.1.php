@@ -56,6 +56,30 @@ function update940to941() {
       ]
    ));
 
+   // Manually add using addPostQuery to be sure it will be added before num 2->5 update request
+   $rank_result = $DB->request(
+      [
+         'SELECT' => ['MAX' => 'rank AS maxrank'],
+         'FROM'   => 'glpi_displaypreferences',
+         'WHERE'  => [
+            'itemtype'  => 'Profile',
+            'users_id'  => '0',
+         ]
+      ]
+   )->next();
+   $migration->addPostQuery(
+      $DB->buildInsert(
+         'glpi_displaypreferences',
+         [
+            'num'      => '2',
+            'itemtype' => 'Profile',
+            'users_id' => '0',
+            'rank'     => $rank_result['maxrank'] + 1,
+         ]
+      )
+   );
+   /** /Add a search option for profile id */
+
    /** Fix URL of images inside ITIL objects contents */
    // There is an exact copy of this process in "update941to942()".
    // First version of this migration was working

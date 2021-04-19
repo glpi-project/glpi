@@ -211,7 +211,6 @@ class Update {
       $crontask_telemetry = new CronTask;
       $crontask_telemetry->getFromDBbyName("Telemetry", "telemetry");
       $crontask_telemetry->resetDate();
-      $crontask_telemetry->resetState();
 
       //generate security key if missing, and update db
       $glpikey = new GLPIKey();
