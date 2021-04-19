@@ -53,3 +53,17 @@ if (!$DB->tableExists('glpi_tickets_contracts')) {
    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
    $DB->queryOrDie($query, "add table glpi_tickets_contracts");
 }
+
+if (!$DB->fieldExists("glpi_entities", "default_contracts_id")) {
+   $migration->addField(
+      "glpi_entities",
+      "default_contracts_id",
+      "integer",
+      [
+         'after'     => "anonymize_support_agents",
+         'value'     => -2,               // Inherit as default value
+         'update'    => '0',              // Not enabled for root entity
+         'condition' => 'WHERE `id` = 0'
+      ]
+   );
+}

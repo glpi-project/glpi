@@ -829,7 +829,10 @@ class Ticket extends CommonITILObject {
       $this->addStandardTab('ProjectTask_Ticket', $ong, $options);
       $this->addStandardTab('Problem_Ticket', $ong, $options);
       $this->addStandardTab('Change_Ticket', $ong, $options);
-      $this->addStandardTab(Ticket_Contract::class, $ong, $options);
+
+      if (Session::getCurrentInterface() == 'central') {
+         $this->addStandardTab(Ticket_Contract::class, $ong, $options);
+      }
 
       if (Entity::getAnonymizeConfig($this->getEntityID()) == Entity::ANONYMIZE_DISABLED
          || Session::getCurrentInterface() == 'central'
@@ -1649,8 +1652,13 @@ class Ticket extends CommonITILObject {
          $input['itilcategories_id_code'] = ITILCategory::getById($cat_id)->fields['code'];
       }
 
+      // There is no contract input for self-service so we need to retrieve the value
+      if (Session::getCurrentInterface() == 'helpdesk') {
+         $input['_contracts_id'] = $this->getDefaultContract();
+      }
+
       // Set _contract_type for rules
-      $contracts_id = $this->input['_contracts_id'] ?? 0;
+      $contracts_id = $input['_contracts_id'] ?? 0;
       if ($contracts_id) {
          $contract = Contract::getById($contracts_id);
 
@@ -5081,8 +5089,10 @@ JAVASCRIPT;
          echo $tt->getEndHiddenFieldText('_contracts_id')."</th>";
          echo "<td>";
          echo $tt->getBeginHiddenFieldValue('_contracts_id');
+
+         $contract_value = $this->getDefaultContract() ?: $tt->predefined['_contracts_id'] ?? 0;
          Contract::dropdown([
-            'value'  => $tt->predefined['_contracts_id'] ?? 0,
+            'value'  => $contract_value,
             'entity' => $this->fields['entities_id'],
             'name'   => '_contracts_id',
          ]);
@@ -7719,5 +7729,31 @@ JAVASCRIPT;
 
    public static function getItemLinkClass(): string {
       return Item_Ticket::class;
+   }
+
+   public function getDefaultContract(): int {
+      $entity = $this->fields['entities_id'];
+      $entity_default_contract = Entity::getUsedConfig('default_contracts_id', $entity);
+      if ($entity_default_contract == 0) {
+         // No default contract set
+         return 0;
+      }
+
+      if ($entity_default_contract == -1) {
+         // Contract in current entity
+         $contract = new Contract();
+         $contracts = $contract->find(['entities_id' => $entity]);
+
+         if ($contracts) {
+            // Return first contract found
+            return current($contracts)['id'];
+         } else {
+            // No contract found for this entity
+            return 0;
+         }
+      }
+
+      // Default contract defined in entity
+      return $entity_default_contract;
    }
 }

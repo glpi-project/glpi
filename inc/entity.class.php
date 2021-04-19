@@ -120,7 +120,8 @@ class Entity extends CommonTreeDropdown {
          'inquest_duration','inquest_URL',
          'max_closedate', 'tickettemplates_id',
          'changetemplates_id', 'problemtemplates_id',
-         'suppliers_as_private', 'autopurge_delay', 'anonymize_support_agents'
+         'suppliers_as_private', 'autopurge_delay', 'anonymize_support_agents',
+         'default_contracts_id'
       ],
       // Configuration
       'config' => ['enable_custom_css', 'custom_css_code']
@@ -2640,6 +2641,34 @@ class Entity extends CommonTreeDropdown {
       }
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Default contract')."</td>";
+      echo "<td colspan='2'>";
+      $default_contract_values = self::getDefaultContractValues();
+      $current_default_contract_value = $entity->fields['default_contracts_id'];
+
+      if ($ID == 0) { // Remove parent option for root entity
+         unset($default_contract_values[self::CONFIG_PARENT]);
+      }
+
+      Dropdown::showFromArray(
+         'default_contracts_id',
+         $default_contract_values,
+         [
+            'value' => $current_default_contract_value,
+            'display_emptychoice' => true,
+         ]
+      );
+
+      // If the entity is using it's parent value, print it
+      if ($current_default_contract_value == self::CONFIG_PARENT && $ID != 0) {
+         $parent_default_contract_value = self::getUsedConfig(
+            'default_contracts_id',
+            $entity->fields['entities_id']
+         );
+         self::inheritedValue($default_contract_values[$parent_default_contract_value], true);
+      }
+      echo "</td></tr>";
+
       echo "<tr><th colspan='4'>".__('Automatic closing configuration')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>".
@@ -3413,6 +3442,29 @@ class Entity extends CommonTreeDropdown {
 
    static function getIcon() {
       return "fas fa-layer-group";
+   }
+
+   /**
+    * Get values for default_contracts_id field
+    *
+    * @since 9.5
+    *
+    * @return array
+    */
+   public static function getDefaultContractValues(): array {
+      $values = [
+         self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+         -1 => __('Contract in ticket entity'),
+      ];
+
+      $contract = new Contract();
+      $contracts = $contract->find(getEntitiesRestrictRequest());
+
+      foreach ($contracts as $contract) {
+         $values[$contract['id']] = $contract['name'];
+      }
+
+      return $values;
    }
 
    public static function getAnonymizeConfig(?int $entities_id = null) {

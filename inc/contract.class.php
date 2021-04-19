@@ -1779,8 +1779,12 @@ class Contract extends CommonDBTM {
       $items = [];
       $items[(empty($mass_id) ? '&nbsp' : Html::getCheckAllAsCheckbox($mass_id))] = '';
       $items[__('Name')] = "name";
+      $items[__('Entity')] = "entities_id";
       $items[_n('Type', 'Types', 1)] = ContractType::getForeignKeyField();
       $items[_x('phone', 'Number')] = "num";
+      $items[__('Start date')] = "begin_date";
+      $items[__('End date')] = "end_date";
+      $items[__('Comments')] = "comment";
 
       foreach (array_keys($items) as $key) {
          $link   = "";
@@ -1834,11 +1838,23 @@ class Contract extends CommonDBTM {
          $name = $item->getLink();
          echo Search::showItem($p['output_type'], $name, $item_num, $p['row_num'], $align);
 
-         $type =  Dropdown::getDropdownName(ContractType::getTable(), $item->fields[ContractType::getForeignKeyField()]);
+         $entity = Dropdown::getDropdownName(Entity::getTable(), $item->fields[Entity::getForeignKeyField()]);
+         echo Search::showItem($p['output_type'], $entity, $item_num, $p['row_num'], $align);
+
+         $type = Dropdown::getDropdownName(ContractType::getTable(), $item->fields[ContractType::getForeignKeyField()]);
          echo Search::showItem($p['output_type'], $type, $item_num, $p['row_num'], $align);
 
          $num = $item->fields['num'];
          echo Search::showItem($p['output_type'], $num, $item_num, $p['row_num'], $align);
+
+         $start_date = Html::convDate($item->fields['begin_date']);
+         echo Search::showItem($p['output_type'], $start_date, $item_num, $p['row_num'], $align);
+
+         $end_date = Html::convDate(Infocom::getWarrantyExpir($item->fields['begin_date'], $item->fields['duration'], 0, true));
+         echo Search::showItem($p['output_type'], $end_date, $item_num, $p['row_num'], $align);
+
+         $comment = $item->fields['comment'];
+         echo Search::showItem($p['output_type'], $comment, $item_num, $p['row_num'], $align);
       } else {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='6' ><i>".__('No item.')."</i></td></tr>";
