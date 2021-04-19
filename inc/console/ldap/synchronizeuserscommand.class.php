@@ -38,7 +38,6 @@ if (!defined('GLPI_ROOT')) {
 
 use AuthLDAP;
 use Glpi\Console\AbstractCommand;
-use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -239,7 +238,7 @@ class SynchronizeUsersCommand extends AbstractCommand {
       foreach ($servers_id as $server_id) {
          $server = new AuthLDAP();
          if (!$server->getFromDB($server_id)) {
-            throw new RuntimeException(__('Unable to load LDAP server information.'));
+            throw new \Symfony\Component\Console\Exception\RuntimeException(__('Unable to load LDAP server information.'));
          }
          if (!$server->isActive()) {
             // Can happen if id is specified in command call
