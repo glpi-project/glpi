@@ -75,9 +75,9 @@ jobs:
       - name: "Show versions"
         run: |
           .github/actions/init_show-versions.sh
-      - name: "Install dependencies"
+      - name: "Build dependencies / translations"
         run: |
-          docker-compose exec -T app .github/actions/init_install-dependencies.sh
+          docker-compose exec -T app .github/actions/init_build.sh
       - name: "PHP lint"
         run: |
           docker-compose exec -T app .github/actions/lint_php-lint.sh
@@ -161,10 +161,10 @@ jobs:
         run: |
           .github/actions/init_initialize-old-dbs.sh
           .github/actions/init_initialize-services-fixtures.sh
-      - name: "Install dependencies"
+      - name: "Build dependencies / translations"
         if: env.skip != 'true'
         run: |
-          docker-compose exec -T app .github/actions/init_install-dependencies.sh
+          docker-compose exec -T app .github/actions/init_build.sh
       - name: "Install DB tests"
         if: env.skip != 'true'
         run: |

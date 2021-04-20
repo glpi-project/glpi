@@ -52,7 +52,7 @@ echo "Compile SCSS"
 $WORKING_DIR/bin/console build:compile_scss
 
 echo "Compile locale files"
-$WORKING_DIR/tools/locale/update_mo.pl
+$WORKING_DIR/bin/console locales:compile
 
 echo "Remove dev files and directories"
 # Remove PHP dev dependencies that are not anymore used
@@ -69,6 +69,7 @@ dev_nodes=(
     "composer.json"
     "composer.lock"
     "ISSUE_TEMPLATE.md"
+    "locales/glpi.pot"
     "node_modules"
     "package.json"
     "package-lock.json"
