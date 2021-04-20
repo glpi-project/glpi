@@ -670,7 +670,7 @@ class Domain extends CommonDropdown {
                   }
                } else {
                   $message = sprintf(
-                     'Domains alerts not send for entity %1$s',
+                     __('Domains alerts not send for entity %1$s'),
                      Dropdown::getDropdownName("glpi_entities", $entity)
                   );
                   if ($task) {
