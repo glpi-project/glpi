@@ -2638,6 +2638,7 @@ class AuthLDAP extends CommonDBTM {
       if ($ds) {
          @ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
          @ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+         @ldap_set_option($ds, LDAP_OPT_NETWORK_TIMEOUT, 3);
          @ldap_set_option($ds, LDAP_OPT_DEREF, $deref_options);
          if ($use_tls) {
             if (!@ldap_start_tls($ds)) {
