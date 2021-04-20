@@ -117,6 +117,14 @@ fieldset {
 	font-weight: bold;
 }
 
+.no_progress_drag .gantt_task_progress_drag {
+   display: none !important;
+}
+
+.no_link_drag .gantt_link_control {
+   display: none;
+}
+
 .gantt_task_content {
 	padding-left: 15px;
 }

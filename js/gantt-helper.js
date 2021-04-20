@@ -27,6 +27,16 @@ function initGantt($ID) {
       { name: "time", type: "duration", single_date: true, map_to: "auto" }
    ];
 
+   // disable task specific controls on projects
+   gantt.templates.task_class = function(start, end, task) {
+      var css = [];
+      if (task.type == "project") {
+         css.push("no_progress_drag");
+         css.push("no_link_drag");
+      }
+      return css.join(" ");
+   }
+
    gantt.templates.progress_text = function(start, end, task) {
       return "<span style='text-align:left; color: #fff;'>" + Math.round(task.progress * 100) + "% </span>";
    };

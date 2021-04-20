@@ -30,6 +30,9 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+namespace Glpi\Gantt;
+use \ProjectTaskLink;
+use \Exception;
 
 include ('../inc/includes.php');
 
@@ -41,7 +44,7 @@ if (isset($_REQUEST['id'])) {
 
 if (isset($_REQUEST['getData'])) {
    $itemArray = array();
-   $factory = new Glpi\Gantt\DataFactory();
+   $factory = new DataFactory();
    $factory->getItemsForProject($itemArray, $id);
    $links = $factory->getProjectTaskLinks($itemArray);
 
@@ -59,10 +62,10 @@ else if (isset($_REQUEST["updateTask"])) {
    $result;
    try {
       $updated = false;
-      $item = new Glpi\Gantt\Item();
+      $item = new Item();
       $task = $_POST["task"];
       $item->populateFrom($task);
-      $taskDAO = new Glpi\Gantt\TaskDAO();
+      $taskDAO = new TaskDAO();
       $updated = $taskDAO->updateTask($item);
       $result = (object)[
          'ok' => $updated
@@ -81,7 +84,7 @@ else if (isset($_REQUEST["deleteTask"])) {
    try {
       $failed = array();
       $taskId = $_POST["taskId"];
-      $taskDAO = new Glpi\Gantt\TaskDAO();
+      $taskDAO = new TaskDAO();
       $taskDAO->deleteTask($failed, $taskId);
 
       if (count($failed) > 0)
@@ -103,10 +106,10 @@ else if (isset($_REQUEST["updateProject"])) {
    $result;
    try {
       $updated = false;
-      $item = new Glpi\Gantt\Item();
+      $item = new Item();
       $project = $_POST["project"];
       $item->populateFrom($project);
-      $projectDAO = new Glpi\Gantt\ProjectDAO();
+      $projectDAO = new ProjectDAO();
       $updated = $projectDAO->updateProject($item);
       $result = (object)[
          'ok' => $updated
@@ -124,7 +127,7 @@ else if (isset($_REQUEST["putInTrashbin"])) {
    $result;
    try {
       $projectId = $_POST["projectId"];
-      $projectDAO = new Glpi\Gantt\ProjectDAO();
+      $projectDAO = new ProjectDAO();
       $projectDAO->putInTrashbin($projectId);
       $result = (object)[
          'ok' => true

@@ -1277,6 +1277,7 @@ class Html {
 
          if (in_array('gantt', $jslibs)) {
             echo Html::css('public/lib/dhtmlx-gantt.css');
+            echo Html::scss('css/glpi-gantt');
             Html::requireJs('gantt');
          }
 
@@ -1356,7 +1357,6 @@ class Html {
       Html::requireJs('log_filters');
 
       echo Html::css('css/jquery-glpi.css');
-      echo Html::css('css/glpi-gantt.css');
       if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {
          echo Html::css('public/lib/scrollable-tabs.css');
