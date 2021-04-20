@@ -7732,8 +7732,7 @@ JAVASCRIPT;
    }
 
    public function getDefaultContract(): int {
-      $entity = $this->fields['entities_id'] ?? false;
-
+      $entity = $this->input['entities_id'] ?? $this->fields['entities_id'] ?? false;
       // Entity isn't set, can't load config
       if ($entity === false) {
          return 0;
