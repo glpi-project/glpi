@@ -15,9 +15,9 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
 # Xavier CAILLAUD <thetsmr@gmail.com>, 2020
 # Legastelois François <flegastelois@teclib.com>, 2021
-# Johan Cwiklinski <jcwiklinski@teclib.com>, 2021
 # Pierre <plebel@teclib.com>, 2021
 # Tiago Graça, 2021
+# Johan Cwiklinski <jcwiklinski@teclib.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -26,7 +26,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-20 08:27+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Tiago Graça, 2021\n"
+"Last-Translator: Johan Cwiklinski <jcwiklinski@teclib.com>, 2021\n"
 "Language-Team: French (France) (https://www.transifex.com/glpi/teams/1637/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4762,6 +4762,8 @@ msgid ""
 "If name is a valid email address, it will be automatically added to "
 "blacklisted senders."
 msgstr ""
+"SI le nom est une adresse de courriel valide, elle sera automatiquement "
+"ajoutée à la liste noire des expéditeurs."
 
 #: inc/mailcollector.class.php:234 inc/mailcollector.class.php:533
 #: inc/notificationtargetmailcollector.class.php:77
@@ -5246,7 +5248,7 @@ msgstr "Domaines expirés depuis plus de"
 #: inc/domain.class.php:673
 #, php-format
 msgid "Domains alerts not send for entity %1$s"
-msgstr ""
+msgstr "Alertes de domaines non envoyées pour l'entité %1$s"
 
 #: inc/planningexternaleventtemplate.class.php:54
 msgid "External events template"
@@ -7562,12 +7564,12 @@ msgstr "L'action que vous avez réalisée n'est pas autorisée."
 #: inc/session.class.php:1487
 #, php-format
 msgid "%1$s starts impersonating user %2$s"
-msgstr ""
+msgstr "%1$s commence la prise d'identité de l'utilisateur %2$s"
 
 #: inc/session.class.php:1517
 #, php-format
 msgid "%1$s stops impersonating user %2$s"
-msgstr ""
+msgstr "%2$s termine la prise d'identité de l'utilisateur %1$s "
 
 #: inc/notificationtemplatetranslation.class.php:50
 msgid "Template translation"
@@ -9061,7 +9063,7 @@ msgstr "Test de connexion au serveur de messagerie"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:76
 msgid "Synchronize users against LDAP server information"
-msgstr ""
+msgstr "Synchroniser les utilisateurs avec les informations du serveur LDAP"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:82
 msgid "Only create new users"
@@ -9139,7 +9141,7 @@ msgstr "Synchronisation annulée."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:244
 msgid "Unable to load LDAP server information."
-msgstr ""
+msgstr "Impossible de charger les informations du serveur LDAP."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:249
 #, php-format
@@ -10470,7 +10472,7 @@ msgstr "Traitement du plugin « %s »..."
 #: inc/console/plugin/activatecommand.class.php:75
 #, php-format
 msgid "Unable to load plugin \"%s\" information."
-msgstr ""
+msgstr "Impossible de charger les informations du plugin « %s »"
 
 #: inc/console/plugin/deactivatecommand.class.php:83
 #, php-format
@@ -11237,7 +11239,7 @@ msgstr "Ticket inconnu"
 
 #: inc/ticket.class.php:1555
 msgid "You cannot create a ticket for this user"
-msgstr ""
+msgstr "Vous ne pouvez pas créer de ticket pour cet utilisateur"
 
 #: inc/ticket.class.php:1683
 #, php-format
@@ -12073,6 +12075,7 @@ msgstr "\"session.use_trans_sid\" doit être désactivé."
 #: inc/system/requirement/sessionsconfiguration.class.php:71
 msgid "See .htaccess file in the GLPI root for more information."
 msgstr ""
+"Voyez le fichier .htaccess dans le dossier de GLPI pour plus d'informations."
 
 #: inc/system/requirement/sessionsconfiguration.class.php:77
 msgid "Sessions support is available - Perfect!"
@@ -12403,11 +12406,11 @@ msgstr "Groupe observateur sans superviseur"
 #: inc/notificationtargetcommonitilobject.class.php:771
 #: inc/notificationtargetplanningrecall.class.php:55
 msgid "Technician in charge of the task"
-msgstr "Technicien en charge de la tâche"
+msgstr "Technicien chargé de la tâche"
 
 #: inc/notificationtargetcommonitilobject.class.php:772
 msgid "Group in charge of the task"
-msgstr "Groupe en charge de la tâche"
+msgstr "Groupe chargé de la tâche"
 
 #: inc/notificationtargetcommonitilobject.class.php:773
 msgid "Task author"
@@ -12515,7 +12518,7 @@ msgstr "Utilisateur affecté à la tâche"
 
 #: inc/notificationtargetcommonitilobject.class.php:1531
 msgid "Group assigned to task"
-msgstr "Groupe en charge de la tâche"
+msgstr "Groupe assigné à la tâche"
 
 #: inc/notificationtargetcommonitilobject.class.php:1565
 #: inc/itilfollowup.class.php:69 inc/itilfollowup.class.php:594
@@ -13735,7 +13738,7 @@ msgstr "Surveillance des actions automatiques"
 
 #: inc/notificationtargetcrontask.class.php:93
 msgid "Automatic actions list"
-msgstr ""
+msgstr "Liste des actions automatiques"
 
 #: inc/notificationtargetcrontask.class.php:99
 msgid ""
@@ -14261,7 +14264,7 @@ msgstr "Action interrompue"
 
 #: inc/crontask.class.php:302
 msgid "Execution error"
-msgstr ""
+msgstr "Erreur d'exécution"
 
 #: inc/crontask.class.php:308
 msgid "Action completed, partially processed"
@@ -14355,6 +14358,7 @@ msgstr "Démarrage"
 #, php-format
 msgid "Error during %s execution. Check in \"%s\" for more details."
 msgstr ""
+"Erreur durant l'exécution de %s. Vérifiez \"%s\" pour davantage de détails."
 
 #: inc/crontask.class.php:971 inc/crontask.class.php:983
 msgid "Can't start"
@@ -14398,8 +14402,8 @@ msgstr[1] "%s arrêts"
 #, php-format
 msgid "%s error"
 msgid_plural "%s errors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s erreur"
+msgstr[1] "%s erreurs"
 
 #: inc/crontask.class.php:1158
 msgid "Minimal time"
@@ -15044,11 +15048,11 @@ msgstr "Alarme à l'expiration des certificats"
 
 #: inc/notificationtargetcertificate.class.php:55
 msgid "Technician in charge of the certificate"
-msgstr ""
+msgstr "Technicien chargé du certificat"
 
 #: inc/notificationtargetcertificate.class.php:59
 msgid "Group in charge of the certificate"
-msgstr ""
+msgstr "Groupe chargé du certificat"
 
 #: inc/itiltemplatehiddenfield.class.php:48
 msgid "Hidden field"
@@ -16392,7 +16396,7 @@ msgstr "Télémétrie"
 
 #: inc/telemetry.class.php:263
 msgid "Send telemetry information"
-msgstr ""
+msgstr "Envoyer les informations de télémétrie"
 
 #: inc/telemetry.class.php:346
 msgid "See what would be sent..."
@@ -17437,7 +17441,7 @@ msgstr "Enregistré par"
 
 #: inc/glpinetwork.class.php:218
 msgid "Unable to fetch registration information."
-msgstr ""
+msgstr "Impossible de récupérer les informations d'enregistrement."
 
 #: inc/glpinetwork.class.php:232
 msgid "The registration key is valid."
@@ -18703,11 +18707,11 @@ msgstr "Domaines en cours d'expiration"
 
 #: inc/notificationtargetdomain.class.php:49
 msgid "Technician in charge of the domain"
-msgstr "Technicien en charge du domaine"
+msgstr "Technicien chargé du domaine"
 
 #: inc/notificationtargetdomain.class.php:53
 msgid "Group in charge of the domain"
-msgstr "Groupe en charge du domaine"
+msgstr "Groupe chargé du domaine"
 
 #: inc/document.class.php:55 inc/commonitilobject.class.php:6517
 msgid "Document"
@@ -18728,7 +18732,7 @@ msgstr "Échec de la suppression du fichier %s"
 
 #: inc/document.class.php:272 inc/document.class.php:350
 msgid "Invalid link"
-msgstr ""
+msgstr "Lien invalide"
 
 #: inc/document.class.php:383
 #, php-format
@@ -19481,7 +19485,7 @@ msgstr[1] "%1$s%2$s secondes"
 
 #: inc/html.class.php:788
 msgid "Display GLPI debug information"
-msgstr ""
+msgstr "Afficher les informations de déboguage GLPI"
 
 #: inc/html.class.php:1153
 msgid "Progress"
@@ -21670,12 +21674,12 @@ msgstr "%1$s le %2$s par %3$s"
 #: inc/commonitilobject.class.php:7362
 #, php-format
 msgid "File size: %s"
-msgstr ""
+msgstr "Taille du fichier : %s"
 
 #: inc/commonitilobject.class.php:7363
 #, php-format
 msgid "MIME type: %s"
-msgstr ""
+msgstr "Type MIME : %s"
 
 #: inc/commonitilobject.class.php:7456
 msgid "Followup promotion source"
@@ -21690,7 +21694,7 @@ msgstr "# 1%s description"
 #: inc/commonitilobject.class.php:7550
 #, php-format
 msgid "%1$s will be added in entity %2$s"
-msgstr ""
+msgstr "%1$s sera ajouté à l'entité %2$s"
 
 #: inc/commonitilobject.class.php:7556
 #, php-format

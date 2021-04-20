@@ -9253,7 +9253,7 @@ msgstr[3] "Wirtualne maszyny"
 
 #: inc/computervirtualmachine.class.php:675
 msgid "Virtual machine Comment"
-msgstr ""
+msgstr "Wirtualna maszyna - komentarz"
 
 #: inc/cartridgeitemtype.class.php:42 inc/cartridge.class.php:982
 msgid "Cartridge type"
