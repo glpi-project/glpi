@@ -1653,7 +1653,7 @@ class Ticket extends CommonITILObject {
       }
 
       // Set default contract if not specified
-      if (!isset($input['_contracts_id']) {
+      if (!isset($input['_contracts_id'])) {
          $input['_contracts_id'] = $this->getDefaultContract();
       }
 
