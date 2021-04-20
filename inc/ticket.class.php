@@ -1652,13 +1652,13 @@ class Ticket extends CommonITILObject {
          $input['itilcategories_id_code'] = ITILCategory::getById($cat_id)->fields['code'];
       }
 
-      // There is no contract input for self-service so we need to retrieve the value
-      if (Session::getCurrentInterface() == 'helpdesk') {
+      // Set default contract if not specified
+      if (!isset($input['_contracts_id']) {
          $input['_contracts_id'] = $this->getDefaultContract();
       }
 
       // Set _contract_type for rules
-      $contracts_id = $input['_contracts_id'] ?? 0;
+      $contracts_id = $input['_contracts_id'];
       if ($contracts_id) {
          $contract = Contract::getById($contracts_id);
 
