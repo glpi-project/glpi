@@ -36,3 +36,4 @@ phpunit.xml
 /public/lib/
 /tests/web/error.log
 /inventory-vendors/*.json
+/locales/*.mo

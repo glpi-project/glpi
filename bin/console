@@ -70,6 +70,25 @@ if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SER
    exit($exit_code);
 }
 
+// Handle specific "locales:compile" command that cannot be made upon symfony console
+if (isset($_SERVER['argv']) && ($_SERVER['argv'][1] ?? '') === 'locales:compile') {
+   chdir(dirname(__FILE__, 2));
+
+   $exit_code = 0;
+
+   $po_files = preg_grep('/\.po$/', scandir('./locales'));
+   foreach ($po_files as $po_file) {
+      $mo_file = preg_replace('/\.po$/', '.mo', $po_file);
+      echo("Processing {$po_file}\n");
+      passthru("cd ./locales && msgfmt -f -o {$mo_file} {$po_file}", $exit_code);
+      if ($exit_code > 0) {
+         exit($exit_code);
+      }
+   }
+
+   exit($exit_code);
+}
+
 // If "config-dir" option is used in command line, defines GLPI_CONFIG_DIR with its value
 if (array_key_exists('config-dir', $options)) {
    $config_dir = $options['config-dir'];

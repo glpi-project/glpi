@@ -19,3 +19,6 @@ if [[ "$PHP_MAJOR_VERSION" == "8.0" ]]; then
   COMPOSER_ADD_OPTS=--ignore-platform-reqs;
 fi
 bin/console dependencies install --composer-options="$COMPOSER_ADD_OPTS --prefer-dist --no-progress"
+
+# Compile translation files
+php bin/console locales:compile
