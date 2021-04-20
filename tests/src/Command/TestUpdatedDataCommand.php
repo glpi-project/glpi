@@ -184,7 +184,6 @@ class TestUpdatedDataCommand extends Command {
                $missing = true;
                $msg = sprintf('Unable to found following object in table "%s": %s', $table_name, json_encode($row_data));
                $output->writeln('<error>‣</error> ' . $msg, OutputInterface::VERBOSITY_QUIET);
-               $output->writeln('<info>' . $found_in_updated->getSql() . '</info> ', OutputInterface::VERBOSITY_QUIET);
             }
          }
       }
