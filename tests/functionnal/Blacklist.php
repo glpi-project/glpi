@@ -42,9 +42,9 @@ class Blacklist extends DbTestCase {
       $defaults = \Blacklist::getDefaults();
 
       $expecteds = [
-         \Blacklist::SERIAL => 41,
+         \Blacklist::SERIAL => 40,
          \Blacklist::UUID => 5,
-         \Blacklist::MAC => 20,
+         \Blacklist::MAC => 19,
          \Blacklist::MODEL => 7,
          \Blacklist::MANUFACTURER => 1,
          \Blacklist::IP => 3
