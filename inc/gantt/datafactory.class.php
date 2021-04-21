@@ -32,9 +32,6 @@
 
 namespace Glpi\Gantt;
 
-use Glpi\Gantt\Item;
-use Glpi\Gantt\LinkDAO;
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -109,7 +106,8 @@ class DataFactory {
     */
    function getSubprojects(&$itemArray, $projectId) {
       global $DB;
-      foreach ($DB->request('glpi_projects', ['projects_id' => $projectId, 'is_deleted' => 0]) as $record) {
+      $iterator = $DB->request('glpi_projects', ['projects_id' => $projectId, 'is_deleted' => 0]);
+      while ($record = $iterator->next()) {
          array_push($itemArray, $this->populateGanttItem($record, "project"));
          $this->getSubprojects($itemArray, $record['id']);
          $this->getProjectTasks($itemArray, $record['id']);
