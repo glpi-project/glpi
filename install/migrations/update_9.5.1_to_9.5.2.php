@@ -108,7 +108,7 @@ function update951to952() {
       DAY_TIMESTAMP,
       [
          'mode'  => CronTask::MODE_EXTERNAL,
-         'state' => CronTask::STATE_DISABLE,
+         'state' => CronTask::STATE_WAITING,
       ]
    );
    /* /Register missing DomainAlert crontask */

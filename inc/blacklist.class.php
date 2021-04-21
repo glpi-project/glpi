@@ -342,7 +342,6 @@ class Blacklist extends CommonDropdown {
          '000000000',
          '00000000',
          '0000000',
-         '0000000',
          'NNNNNNN',
          'xxxxxxxxxxx',
          'EVAL',
@@ -395,7 +394,6 @@ class Blacklist extends CommonDropdown {
          '00:50:56:C0:00:01', //vmnet
          '00:50:56:C0:00:08', //vmnet
          '02:80:37:EC:02:00', //Dell Wireless 5530 HSPA Mobile Broadband Minicard NetworkAdapter mac address
-         '50:50:54:50:30:30',
          '50:50:54:50:30:30',
          '24:b6:20:52:41:53',
          '00:50:56:C0:00:02',

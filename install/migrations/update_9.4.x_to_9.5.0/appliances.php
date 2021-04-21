@@ -126,4 +126,4 @@ if (!$DB->tableExists('glpi_appliancerelations')) {
 }
 
 $migration->addRight('appliance', ALLSTANDARDRIGHT);
-$ADDTODISPLAYPREF['appliance'] = [2, 3, 4, 5];
+$ADDTODISPLAYPREF['Appliance'] = [2, 3, 4, 5];

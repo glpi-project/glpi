@@ -272,7 +272,7 @@ function update090xto910() {
       );
 
       $DB->insertOrDie("glpi_notifications", [
-            'name'                     => "Request Unlock Item",
+            'name'                     => "Request Unlock Items",
             'entities_id'              => 0,
             'itemtype'                 => "ObjectLock",
             'event'                    => "unlock",
@@ -291,7 +291,7 @@ function update090xto910() {
             'id'                 => null,
             'notifications_id'   => $notifid,
             'type'               => Notification::USER_TYPE,
-            'items_id'           => Notification::USER_TYPE
+            'items_id'           => Notification::USER
          ],
          "9.1 add Unlock Request notification target"
       );
@@ -401,6 +401,7 @@ function update090xto910() {
          "change budget display preference"
       );
    }
+   $ADDTODISPLAYPREF['Budget'] = [4];
 
    /************** New Planning with fullcalendar.io *************/
    $migration->addField("glpi_users", "plannings", "text");
@@ -711,7 +712,7 @@ function update090xto910() {
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
-   $ADDTODISPLAYPREF['SoftwareLicense'] = [3, 10, 162, 5];
+   $ADDTODISPLAYPREF['SoftwareLicense'] = [1, 3, 10, 162, 5];
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $displaypreferencesIterator = $DB->request([
          'SELECT'    => "users_id",

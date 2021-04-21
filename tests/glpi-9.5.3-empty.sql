@@ -1548,14 +1548,6 @@ CREATE TABLE `glpi_crontasklogs` (
   KEY `crontasklogs_id_state` (`crontasklogs_id`,`state`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_crontasklogs` (`id`, `crontasks_id`, `crontasklogs_id`, `date`, `state`, `elapsed`, `volume`, `content`) VALUES
-(1,	33,	0,	'2021-01-19 11:05:01',	0,	0,	0,	'Run mode: CLI'),
-(2,	33,	1,	'2021-01-19 11:05:01',	2,	0.18689,	0,	'Action completed, fully processed'),
-(3,	37,	0,	'2021-01-19 11:05:01',	0,	0,	0,	'Run mode: CLI'),
-(4,	37,	3,	'2021-01-19 11:05:01',	2,	0.048599,	0,	'Action completed, no processing required'),
-(5,	38,	0,	'2021-01-19 11:05:01',	0,	0,	0,	'Run mode: CLI'),
-(6,	38,	5,	'2021-01-19 11:05:01',	2,	0.0481498,	0,	'Action completed, no processing required');
-
 DROP TABLE IF EXISTS `glpi_crontasks`;
 CREATE TABLE `glpi_crontasks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1585,18 +1577,18 @@ INSERT INTO `glpi_crontasks` (`id`, `itemtype`, `name`, `frequency`, `param`, `s
 (2,	'CartridgeItem',	'cartridge',	86400,	10,	0,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
 (3,	'ConsumableItem',	'consumable',	86400,	10,	0,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
 (4,	'SoftwareLicense',	'software',	86400,	NULL,	0,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
-(5,	'Contract',	'contract',	86400,	NULL,	1,	1,	3,	0,	24,	30,	'2010-05-06 09:31:02',	NULL,	NULL,	NULL,	NULL),
-(6,	'Infocom',	'infocom',	86400,	NULL,	1,	1,	3,	0,	24,	30,	'2011-01-18 11:40:43',	NULL,	NULL,	NULL,	NULL),
+(5,	'Contract',	'contract',	86400,	NULL,	1,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
+(6,	'Infocom',	'infocom',	86400,	NULL,	1,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
 (7,	'CronTask',	'logs',	86400,	30,	0,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
-(9,	'MailCollector',	'mailgate',	600,	10,	1,	1,	3,	0,	24,	30,	'2011-06-28 11:34:37',	NULL,	NULL,	NULL,	NULL),
+(9,	'MailCollector',	'mailgate',	600,	10,	1,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
 (10,	'DBconnection',	'checkdbreplicate',	300,	NULL,	0,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
 (11,	'CronTask',	'checkupdate',	604800,	NULL,	0,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
-(12,	'CronTask',	'session',	86400,	NULL,	1,	1,	3,	0,	24,	30,	'2011-08-30 08:22:27',	NULL,	NULL,	NULL,	NULL),
-(13,	'CronTask',	'graph',	3600,	NULL,	1,	1,	3,	0,	24,	30,	'2011-12-06 09:48:42',	NULL,	NULL,	NULL,	NULL),
-(14,	'ReservationItem',	'reservation',	3600,	NULL,	1,	1,	3,	0,	24,	30,	'2012-04-05 20:31:57',	NULL,	NULL,	NULL,	NULL),
-(15,	'Ticket',	'closeticket',	43200,	NULL,	1,	1,	3,	0,	24,	30,	'2012-04-05 20:31:57',	NULL,	NULL,	NULL,	NULL),
-(16,	'Ticket',	'alertnotclosed',	43200,	NULL,	1,	1,	3,	0,	24,	30,	'2014-04-16 15:32:00',	NULL,	NULL,	NULL,	NULL),
-(17,	'SlaLevel_Ticket',	'slaticket',	300,	NULL,	1,	1,	3,	0,	24,	30,	'2014-06-18 08:02:00',	NULL,	NULL,	NULL,	NULL),
+(12,	'CronTask',	'session',	86400,	NULL,	1,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
+(13,	'CronTask',	'graph',	3600,	NULL,	1,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
+(14,	'ReservationItem',	'reservation',	3600,	NULL,	1,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
+(15,	'Ticket',	'closeticket',	43200,	NULL,	1,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
+(16,	'Ticket',	'alertnotclosed',	43200,	NULL,	1,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
+(17,	'SlaLevel_Ticket',	'slaticket',	300,	NULL,	1,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
 (18,	'Ticket',	'createinquest',	86400,	NULL,	1,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
 (19,	'CronTask',	'watcher',	86400,	NULL,	1,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
 (20,	'TicketRecurrent',	'ticketrecurrent',	3600,	NULL,	1,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
@@ -1607,17 +1599,17 @@ INSERT INTO `glpi_crontasks` (`id`, `itemtype`, `name`, `frequency`, `param`, `s
 (25,	'MailCollector',	'mailgateerror',	86400,	NULL,	1,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
 (26,	'CronTask',	'circularlogs',	86400,	4,	0,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
 (27,	'ObjectLock',	'unlockobject',	86400,	4,	0,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
-(28,	'SavedSearch',	'countAll',	604800,	NULL,	0,	1,	3,	0,	24,	10,	NULL,	NULL,	NULL,	NULL,	NULL),
-(29,	'SavedSearch_Alert',	'savedsearchesalerts',	86400,	NULL,	0,	1,	3,	0,	24,	10,	NULL,	NULL,	NULL,	NULL,	NULL),
-(30,	'Telemetry',	'telemetry',	2592000,	NULL,	0,	1,	3,	0,	24,	10,	NULL,	NULL,	NULL,	NULL,	NULL),
-(31,	'Certificate',	'certificate',	86400,	NULL,	0,	1,	3,	0,	24,	10,	NULL,	NULL,	NULL,	NULL,	NULL),
-(32,	'OlaLevel_Ticket',	'olaticket',	300,	NULL,	1,	1,	3,	0,	24,	30,	'2014-06-18 08:02:00',	NULL,	NULL,	NULL,	NULL),
-(33,	'PurgeLogs',	'PurgeLogs',	604800,	24,	1,	2,	3,	0,	24,	30,	'2021-01-19 11:05:00',	NULL,	NULL,	NULL,	NULL),
-(34,	'Ticket',	'purgeticket',	43200,	NULL,	0,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
-(35,	'Document',	'cleanorphans',	43200,	NULL,	0,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
+(28,	'SavedSearch',	'countAll',	604800,	NULL,	0,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
+(29,	'SavedSearch_Alert',	'savedsearchesalerts',	86400,	NULL,	0,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
+(30,	'Telemetry',	'telemetry',	2592000,	NULL,	0,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
+(31,	'Certificate',	'certificate',	86400,	NULL,	1,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
+(32,	'OlaLevel_Ticket',	'olaticket',	300,	NULL,	1,	1,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
+(33,	'PurgeLogs',	'PurgeLogs',	604800,	24,	1,	2,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
+(34,	'Ticket',	'purgeticket',	604800,	NULL,	0,	2,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
+(35,	'Document',	'cleanorphans',	604800,	NULL,	0,	2,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
 (36,	'User',	'passwordexpiration',	86400,	100,	0,	2,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
-(37,	'Glpi\\Marketplace\\Controller',	'checkAllUpdates',	86400,	NULL,	1,	2,	3,	0,	24,	30,	'2021-01-19 11:05:00',	NULL,	NULL,	NULL,	NULL),
-(38,	'Domain',	'DomainsAlert',	86400,	NULL,	1,	2,	3,	0,	24,	30,	'2021-01-19 11:05:00',	NULL,	NULL,	NULL,	NULL);
+(37,	'Glpi\\Marketplace\\Controller',	'checkAllUpdates',	86400,	NULL,	1,	2,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL),
+(38,	'Domain',	'DomainsAlert',	86400,	NULL,	1,	2,	3,	0,	24,	30,	NULL,	NULL,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `glpi_dashboards_dashboards`;
 CREATE TABLE `glpi_dashboards_dashboards` (
@@ -4905,12 +4897,6 @@ CREATE TABLE `glpi_logs` (
   KEY `item` (`itemtype`,`items_id`),
   KEY `id_search_option` (`id_search_option`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-INSERT INTO `glpi_logs` (`id`, `itemtype`, `items_id`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES
-(1,	'Config',	1,	'',	0,	'',	'2021-01-19 11:02:24',	1,	'version FILLED AT INSTALL',	'9.5.3'),
-(2,	'Config',	1,	'',	0,	'',	'2021-01-19 11:02:24',	1,	'dbversion FILLED AT INSTALL',	'9.5.3'),
-(3,	'Config',	1,	'',	0,	'',	'2021-01-19 11:02:24',	1,	'use_timezones ',	'1'),
-(4,	'PurgeLogs',	0,	'',	12,	'cron_PurgeLogs',	'2021-01-19 11:05:01',	0,	'3',	'3');
 
 DROP TABLE IF EXISTS `glpi_mailcollectors`;
 CREATE TABLE `glpi_mailcollectors` (

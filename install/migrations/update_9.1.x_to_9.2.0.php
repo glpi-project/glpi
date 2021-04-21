@@ -663,13 +663,19 @@ function update91xto920() {
    ];
 
    if ($DB->fieldExists("glpi_notifications", "mode", false)) {
+      $notificationtemplates_id = 0;
+      $notificationtemplate = new NotificationTemplate();
+      if ($notificationtemplate->getFromDBByCrit(['name' => 'Tickets', 'itemtype' => 'Ticket'])) {
+         $notificationtemplates_id = $notificationtemplate->fields['id'];
+      }
+
       foreach ($new_notifications as $event => $notif_options) {
          $notifications_id = $notification->add([
             'name'                     => $notif_options['label'],
             'itemtype'                 => 'Ticket',
             'event'                    => $event,
             'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
-            'notificationtemplates_id' => 0,
+            'notificationtemplates_id' => $notificationtemplates_id,
             'is_recursive'             => 1,
             'is_active'                => 0,
          ]);
@@ -773,12 +779,12 @@ function update91xto920() {
       $DB->updateOrInsert("glpi_crontasks", [
             'frequency'       => "604800",
             'param'           => null,
-            'state'           => "0",
+            'state'           => "1",
             'mode'            => "1",
             'allowmode'       => "3",
             'hourmin'         => "0",
             'hourmax'         => "24",
-            'logs_lifetime'   => "10",
+            'logs_lifetime'   => "30",
             'lastrun'         => null,
             'lastcode'        => null,
             'comment'         => null
@@ -958,14 +964,15 @@ function update91xto920() {
                              ['sub_type' => 'RuleSoftwareCategory',
                               'uuid'     => '500717c8-2bd6e957-53a12b5fd38869.86003425'])) {
       $rule = new Rule();
-      $rules_id = $rule->add(['name'        => 'Import category from inventory tool',
-                              'is_active'   => 0,
-                              'uuid'        => '500717c8-2bd6e957-53a12b5fd38869.86003425',
-                              'entities_id' => 0,
-                              'sub_type'    => 'RuleSoftwareCategory',
-                              'match'       => Rule::AND_MATCHING,
-                              'condition'   => 0,
-                              'description' => '']);
+      $rules_id = $rule->add(['name'         => 'Import category from inventory tool',
+                              'is_active'    => 0,
+                              'uuid'         => '500717c8-2bd6e957-53a12b5fd38869.86003425',
+                              'entities_id'  => 0,
+                              'is_recursive' => 1,
+                              'sub_type'     => 'RuleSoftwareCategory',
+                              'match'        => Rule::AND_MATCHING,
+                              'condition'    => 1,
+                              'description'  => '']);
       if ($rules_id) {
          $criteria = new RuleCriteria();
          $criteria->add(['rules_id'  => $rules_id,
@@ -1141,7 +1148,7 @@ function update91xto920() {
             'allowmode'       => "3",
             'hourmin'         => "0",
             'hourmax'         => "24",
-            'logs_lifetime'   => "10",
+            'logs_lifetime'   => "30",
             'lastrun'         => null,
             'lastcode'        => null,
             'comment'         => null
@@ -1163,7 +1170,7 @@ function update91xto920() {
             'allowmode'       => "3",
             'hourmin'         => "0",
             'hourmax'         => "24",
-            'logs_lifetime'   => "10",
+            'logs_lifetime'   => "30",
             'lastrun'         => null,
             'lastcode'        => null,
             'comment'         => null
@@ -1562,7 +1569,7 @@ Regards,',
       $notid = $DB->insertId();
 
       $DB->insertOrDie("glpi_notificationtemplates", [
-            'name'      => "Certificates alerts",
+            'name'      => "Certificates",
             'itemtype'  => "Certificate",
             'date_mod'  => new \QueryExpression("NOW()")
          ],
@@ -1608,6 +1615,23 @@ Regards,',
 &lt;/a&gt;&lt;br /&gt; ##ENDFOREACHcertificates##&lt;/p&gt;')";
 
       $DB->queryOrDie($query, "9.2 add certificates alerts notification translation");
+
+      $DB->insertOrDie("glpi_notificationtargets", [
+            'id'                 => null,
+            'notifications_id'   => $notid,
+            'type'               => Notification::USER_TYPE,
+            'items_id'           => Notification::ITEM_TECH_IN_CHARGE
+         ],
+         "9.2 add certificates alerts notification target"
+      );
+      $DB->insertOrDie("glpi_notificationtargets", [
+            'id'                 => null,
+            'notifications_id'   => $notid,
+            'type'               => Notification::USER_TYPE,
+            'items_id'           => Notification::ITEM_TECH_GROUP_IN_CHARGE
+         ],
+         "9.2 add certificates alerts notification target"
+      );
    }
 
    /************** Simcard component **************/

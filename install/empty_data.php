@@ -354,7 +354,7 @@ $tables['glpi_crontasks'] = [
       'param'         => null,
       'state'         => 1,
       'mode'          => 1,
-      'lastrun'       => '2010-05-06 09:31:02',
+      'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 6,
@@ -364,7 +364,7 @@ $tables['glpi_crontasks'] = [
       'param'         => null,
       'state'         => 1,
       'mode'          => 1,
-      'lastrun'       => '2011-01-18 11:40:43',
+      'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 7,
@@ -384,7 +384,7 @@ $tables['glpi_crontasks'] = [
       'param'         => '10',
       'state'         => 1,
       'mode'          => 1,
-      'lastrun'       => '2011-06-28 11:34:37',
+      'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 10,
@@ -414,7 +414,7 @@ $tables['glpi_crontasks'] = [
       'param'         => null,
       'state'         => 1,
       'mode'          => 1,
-      'lastrun'       => '2011-08-30 08:22:27',
+      'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 13,
@@ -424,7 +424,7 @@ $tables['glpi_crontasks'] = [
       'param'         => null,
       'state'         => 1,
       'mode'          => 1,
-      'lastrun'       => '2011-12-06 09:48:42',
+      'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 14,
@@ -434,7 +434,7 @@ $tables['glpi_crontasks'] = [
       'param'         => null,
       'state'         => 1,
       'mode'          => 1,
-      'lastrun'       => '2012-04-05 20:31:57',
+      'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 15,
@@ -444,7 +444,7 @@ $tables['glpi_crontasks'] = [
       'param'         => null,
       'state'         => 1,
       'mode'          => 1,
-      'lastrun'       => '2012-04-05 20:31:57',
+      'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 16,
@@ -454,7 +454,7 @@ $tables['glpi_crontasks'] = [
       'param'         => null,
       'state'         => 1,
       'mode'          => 1,
-      'lastrun'       => '2014-04-16 15:32:00',
+      'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 17,
@@ -464,7 +464,7 @@ $tables['glpi_crontasks'] = [
       'param'         => null,
       'state'         => 1,
       'mode'          => 1,
-      'lastrun'       => '2014-06-18 08:02:00',
+      'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 18,
@@ -575,7 +575,7 @@ $tables['glpi_crontasks'] = [
       'state'         => 0,
       'mode'          => 1,
       'lastrun'       => null,
-      'logs_lifetime' => 10,
+      'logs_lifetime' => 30,
    ], [
       'id'            => 29,
       'itemtype'      => 'SavedSearch_Alert',
@@ -585,7 +585,7 @@ $tables['glpi_crontasks'] = [
       'state'         => 0,
       'mode'          => 1,
       'lastrun'       => null,
-      'logs_lifetime' => 10,
+      'logs_lifetime' => 30,
    ], [
       'id'            => 30,
       'itemtype'      => 'Telemetry',
@@ -595,17 +595,17 @@ $tables['glpi_crontasks'] = [
       'state'         => 0,
       'mode'          => 1,
       'lastrun'       => null,
-      'logs_lifetime' => 10,
+      'logs_lifetime' => 30,
    ], [
       'id'            => 31,
       'itemtype'      => 'Certificate',
       'name'          => 'certificate',
       'frequency'     => 86400,
       'param'         => null,
-      'state'         => 0,
+      'state'         => 1,
       'mode'          => 1,
       'lastrun'       => null,
-      'logs_lifetime' => 10,
+      'logs_lifetime' => 30,
    ], [
       'id'            => 32,
       'itemtype'      => 'OlaLevel_Ticket',
@@ -614,7 +614,7 @@ $tables['glpi_crontasks'] = [
       'param'         => null,
       'state'         => 1,
       'mode'          => 1,
-      'lastrun'       => '2014-06-18 08:02:00',
+      'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 33,
@@ -630,20 +630,20 @@ $tables['glpi_crontasks'] = [
       'id'            => 34,
       'itemtype'      => 'Ticket',
       'name'          => 'purgeticket',
-      'frequency'     => 43200,
+      'frequency'     => 604800,
       'param'         => null,
       'state'         => 0,
-      'mode'          => 1,
+      'mode'          => 2,
       'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 35,
       'itemtype'      => 'Document',
       'name'          => 'cleanorphans',
-      'frequency'     => 43200,
+      'frequency'     => 604800,
       'param'         => null,
       'state'         => 0,
-      'mode'          => 1,
+      'mode'          => 2,
       'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
