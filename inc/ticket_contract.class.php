@@ -42,6 +42,7 @@ class Ticket_Contract extends CommonDBRelation {
    public static $itemtype_2 = 'Contract';
    public static $items_id_2 = 'contracts_id';
    public static $checkItem_2_Rights = self::HAVE_VIEW_RIGHT_ON_ITEM;
+   public static $check_entity_coherency = false;
 
    public static function getTypeName($nb = 0) {
       return __('Tickets / Contracts');
@@ -112,8 +113,6 @@ class Ticket_Contract extends CommonDBRelation {
          echo "<input type='hidden' name='$item_a_fkey' value='$ID'>";
          $linked_itemtype::dropdown([
             'used'        => $used,
-            'entity'      => $item->getEntityID(),
-            'entity_sons' => $item->isRecursive(),
             'displaywith' => ['id'],
          ]);
          echo "</td><td class='center'>";

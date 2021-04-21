@@ -5093,7 +5093,6 @@ JAVASCRIPT;
          $contract_value = $this->getDefaultContract() ?: $tt->predefined['_contracts_id'] ?? 0;
          Contract::dropdown([
             'value'  => $contract_value,
-            'entity' => $this->fields['entities_id'],
             'name'   => '_contracts_id',
          ]);
 
@@ -7747,7 +7746,9 @@ JAVASCRIPT;
       if ($entity_default_contract == -1) {
          // Contract in current entity
          $contract = new Contract();
-         $contracts = $contract->find(['entities_id' => $entity]);
+         $criteria = ['entities_id' => $entity];
+         $criteria[] = Contract::getExpiredCriteria();
+         $contracts = $contract->find($criteria);
 
          if ($contracts) {
             // Return first contract found

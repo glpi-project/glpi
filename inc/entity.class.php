@@ -3458,7 +3458,9 @@ class Entity extends CommonTreeDropdown {
       ];
 
       $contract = new Contract();
-      $contracts = $contract->find(getEntitiesRestrictRequest());
+      $criteria = getEntitiesRestrictCriteria();
+      $criteria[] = Contract::getExpiredCriteria();
+      $contracts = $contract->find($criteria);
 
       foreach ($contracts as $contract) {
          $values[$contract['id']] = $contract['name'];

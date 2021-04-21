@@ -1531,11 +1531,7 @@ class Contract extends CommonDBTM {
          $WHERE['NOT'] = ['glpi_contracts.id' => $p['used']];
       }
       if (!$p['expired']) {
-         $WHERE[] = ['OR' => [
-            'glpi_contracts.renewal' => 1,
-            new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName('glpi_contracts.begin_date') . ', INTERVAL ' . $DB->quoteName('glpi_contracts.duration') . ' MONTH), CURDATE()) > 0'),
-            'glpi_contracts.begin_date'   => null,
-         ]];
+         $WHERE[] = self::getExpiredCriteria();
       }
 
       $iterator = $DB->request([
@@ -1863,5 +1859,14 @@ class Contract extends CommonDBTM {
 
    static function getIcon() {
       return "fas fa-file-signature";
+   }
+
+   public static function getExpiredCriteria() {
+      global $DB;
+
+      return ['OR' => [
+         'glpi_contracts.renewal' => 1,
+         new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName('glpi_contracts.begin_date') . ', INTERVAL ' . $DB->quoteName('glpi_contracts.duration') . ' MONTH), CURDATE()) > 0'),
+      ]];
    }
 }
