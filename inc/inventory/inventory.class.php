@@ -146,25 +146,57 @@ class Inventory
          throw new \RuntimeException(print_r($this->getErrors(), true));
       }
 
-      $this->metadata = [
-           'deviceid'  => $this->raw_data->deviceid,
-           'version'   => $this->raw_data->content->versionclient,
-           'itemtype'   => $this->raw_data->itemtype ?? 'Computer'
-       ];
+      if (property_exists($this->raw_data, 'action')) {
+         //new protocol
+         $this->metadata = [
+            'deviceid'  => $this->raw_data->deviceid,
+            'version'   => $this->raw_data->version,
+            'itemtype'   => $this->raw_data->itemtype ?? 'Computer',
+         ];
 
-      // Get tag if defined
-      if (property_exists($this->raw_data->content, 'accountinfo')) {
-         $ainfos = $this->raw_data->content->accountinfo;
-         if (property_exists($ainfos, 'keyname')
-            && $ainfos->keyname == 'TAG'
-            && property_exists($ainfos, 'keyvalue')
-            && $ainfos->keyvalue != ''
-         ) {
-            $this->metadata['tag'] = $ainfos->keyvalue;
+         // Get tag if defined
+         $expecteds = ['action', 'name', 'installed-tasks', 'enabled-tasks', 'tag'];
+         foreach ($expecteds as $expected) {
+            if (property_exists($this->raw_data, $expected)) {
+               $this->metadata[$expected] = $this->raw_data->{$expected};
+            }
          }
+      } else {
+         //old protocol
+         $this->metadata = [
+            'deviceid'  => $this->raw_data->deviceid,
+            'version'   => $this->raw_data->content->versionclient ?? $this->raw_data->version,
+            'itemtype'   => $this->raw_data->itemtype ?? 'Computer'
+         ];
+
+         // Get tag if defined
+         if (property_exists($this->raw_data, 'tag')) {
+            $this->metadata['tag'] = $this->raw_data->tag;
+         } else if (property_exists($this->raw_data->content, 'accountinfo')) {
+            $ainfos = $this->raw_data->content->accountinfo;
+            if (property_exists($ainfos, 'keyname')
+               && $ainfos->keyname == 'TAG'
+               && property_exists($ainfos, 'keyvalue')
+               && $ainfos->keyvalue != ''
+            ) {
+               $this->metadata['tag'] = $ainfos->keyvalue;
+            }
+         }
+
       }
 
       return $this->metadata;
+   }
+
+    /**
+     * CONTACT request from agent
+     */
+   public function contact($data) {
+       $this->raw_data = json_decode($data);
+       $this->extractMetadata();
+       //create/load agent
+       $this->agent = new Agent();
+       $this->agent->handleAgent($this->metadata);
    }
 
    /**

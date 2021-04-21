@@ -124,10 +124,9 @@ class Inventory extends \GLPITestCase {
          ]
       );
       $this->integer($res->getStatusCode())->isIdenticalTo(200);
-      $this->string($res->getHeader('content-type')[0])->isIdenticalTo('application/xml');
-      //FIXME: should send something else obviously
       $this->string((string)$res->getBody())
          ->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><RESPONSE>SEND</RESPONSE></REPLY>\n");
+      $this->string($res->getHeader('content-type')[0])->isIdenticalTo('application/xml');
 
       //check agent in database
       $agent = new \Agent();

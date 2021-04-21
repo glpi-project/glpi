@@ -62,7 +62,11 @@
     "sodium_crypto_aead_chacha20poly1305_ietf_keygen", "SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES", "sodium_crypto_aead_xchacha20poly1305_ietf_encrypt", "sodium_crypto_aead_xchacha20poly1305_ietf_decrypt",
 
     "//xhprof",
-    "XHPROF_FLAGS_NO_BUILTINS", "XHPROF_FLAGS_CPU", "XHPROF_FLAGS_MEMORY"
+    "XHPROF_FLAGS_NO_BUILTINS", "XHPROF_FLAGS_CPU", "XHPROF_FLAGS_MEMORY",
+
+    "//brotli compression",
+    "brotli_uncompress",
+    "brotli_compress"
   ],
   "scan-files": [
     "ajax/**/*.php",

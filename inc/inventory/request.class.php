@@ -34,6 +34,7 @@ namespace Glpi\Inventory;
 
 use DOMDocument;
 use DOMElement;
+use Glpi\Agent\Communication\Headers\Common;
 use Toolbox;
 use Unmanaged;
 
@@ -45,19 +46,31 @@ use Unmanaged;
  */
 class Request
 {
-    const DEFAULT_FREQUENCY = 24;
+   const DEFAULT_FREQUENCY = 24;
 
-    const XML_MODE    = 0;
-    const JSON_MODE   = 1;
+   const XML_MODE    = 0;
+   const JSON_MODE   = 1;
 
-    const PROLOG_QUERY = 'PROLOG';
-    const INVENT_QUERY = 'INVENTORY';
-    const SNMP_QUERY   = 'SNMP';
-    const OLD_SNMP_QUERY   = 'SNMPQUERY';
+   const PROLOG_QUERY = 'PROLOG';
+   const INVENT_QUERY = 'INVENTORY';
+   const SNMP_QUERY   = 'SNMP';
+   const OLD_SNMP_QUERY   = 'SNMPQUERY';
 
-    const COMPRESS_NONE = 0;
-    const COMPRESS_ZLIB = 1;
-    const COMPRESS_GZIP = 2;
+   const CONTACT_ACTION = 'contact';
+   const REGISTER_ACTION = 'register';
+   const CONFI_ACTION = 'configuration';
+   const INVENT_ACTION = 'inventory';
+   const NETDISCOVERY_ACTION = 'network-discovery';
+   const NETINV_ACTION = 'network-inventory';
+   const ESX_ACTION = 'esx';
+   const COLLECT_ACTION = 'collect';
+   const DEPLOY_ACTION = 'deploy';
+   const WOL_ACTION = 'wakeonlan';
+
+   const COMPRESS_NONE = 0;
+   const COMPRESS_ZLIB = 1;
+   const COMPRESS_GZIP = 2;
+   const COMPRESS_BR   = 3;
 
    /** @var integer */
    private $mode; //will be usefull when agent will send json
@@ -73,9 +86,14 @@ class Request
    private $test_rules = false;
    /** @var Inventory */
    private $inventory;
+   /** @var Glpi\Agent\Communication\Headers\Common */
+   private $headers;
+   /** @var int */
+   private $http_response_code = 200;
 
    public function __construct() {
-      $this->handleContentType($_SERVER['CONTENT_TYPE'] ?? false);
+       $this->headers = new Common();
+       $this->handleContentType($_SERVER['CONTENT_TYPE'] ?? false);
    }
 
    /**
@@ -102,6 +120,7 @@ class Request
          default:
               throw new \RuntimeException("Unknown mode $mode");
       }
+      $this->prepareHeaders();
    }
 
    /**
@@ -119,6 +138,27 @@ class Request
       }
    }
 
+    /**
+     * Handle request headers
+     *
+     * @param $data
+     */
+   public function handleHeaders() {
+       $req_headers = [];
+      if (!function_exists('getallheaders')) {
+         foreach ($_SERVER as $name => $value) {
+             /* RFC2616 (HTTP/1.1) defines header fields as case-insensitive entities. */
+            if (strtolower(substr($name, 0, 5)) == 'http_') {
+               $req_headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+            }
+         }
+      } else {
+          $req_headers = getallheaders();
+      }
+
+       $this->headers->setHeaders($req_headers);
+   }
+
    /**
     * Handle agent request
     *
@@ -130,13 +170,19 @@ class Request
       if ($this->compression !== self::COMPRESS_NONE) {
          switch ($this->compression) {
             case self::COMPRESS_ZLIB:
-                $data = gzuncompress($data);
-                break;
+               $data = gzuncompress($data);
+               break;
             case self::COMPRESS_GZIP:
-                $data = gzdecode($data);
-                break;
+               $data = gzdecode($data);
+               break;
+            case self::COMPRESS_BR:
+               if (!function_exists('brotli_uncompress')) {
+                  throw new \UnexpectedValueException("You must install Brotli PHP extension.");
+               }
+               $data = brotli_uncompress($data);
+               break;
             default:
-                throw new \UnexpectedValueException("Unknown compression mode" . $this->compression);
+               throw new \UnexpectedValueException("Unknown compression mode" . $this->compression);
          }
       }
 
@@ -163,16 +209,20 @@ class Request
      */
    private function handleQuery($query, $content = null) :bool {
       switch ($query) {
+         case self::CONTACT_ACTION:
+            $this->contact($content);
+            break;
          case self::PROLOG_QUERY:
             $this->prolog();
             break;
          case self::INVENT_QUERY:
+         case self::INVENT_ACTION:
          case self::SNMP_QUERY:
          case self::OLD_SNMP_QUERY:
             $this->inventory($content);
             break;
          default:
-            $this->addError("Query '$query' is not supported.");
+            $this->addError("Query '$query' is not supported.", 400);
             return false;
       }
        return true;
@@ -195,7 +245,7 @@ class Request
       if (!$xml) {
          $xml_errors = libxml_get_errors();
          Toolbox::logWarning('Invalid XML: ' . print_r($xml_errors, true));
-         $this->addError('XML not well formed!');
+         $this->addError('XML not well formed!', 400);
          return false;
       }
       $this->deviceid = (string)$xml->DEVICEID;
@@ -221,6 +271,8 @@ class Request
       $query = self::INVENT_QUERY;
       if (property_exists($jdata, 'query')) {
          $query = $jdata->query;
+      } else if (property_exists($jdata, 'action')) {
+         $query = $jdata->action;
       }
       return $this->handleQuery($query, $data);
    }
@@ -241,9 +293,18 @@ class Request
      *
      * @return void
      */
-   public function addError($message) {
+   public function addError($message, $code = 500) {
       $this->error = true;
-      $this->addToResponse(['ERROR' => $message]);
+      $this->http_repsonse_code = $code;
+      if ($this->headers->hasHeader('GLPI-Agent-ID')) {
+         $this->addToResponse([
+            'status' => 'error',
+            'message' => $message,
+            'expiration' => self::DEFAULT_FREQUENCY
+         ]);
+      } else {
+          $this->addToResponse(['ERROR' => $message]);
+      }
    }
 
    /**
@@ -326,6 +387,15 @@ class Request
          throw new \RuntimeException("Mode has not been set");
       }
 
+      switch (strtolower($this->compression)) {
+         case self::COMPRESS_ZLIB:
+            return 'application/x-compress-zlib';
+         case self::COMPRESS_GZIP:
+            return 'application/x-compress-gzip';
+         case self::COMPRESS_BR:
+            return 'application/x-br';
+      }
+
       switch ($this->mode) {
          case self::XML_MODE:
             return 'application/xml';
@@ -346,14 +416,39 @@ class Request
          throw new \RuntimeException("Mode has not been set");
       }
 
+      $data = null;
       switch ($this->mode) {
          case self::XML_MODE:
-            return $this->response->saveXML();
+            $data = $this->response->saveXML();
+            break;
          case self::JSON_MODE:
-            return json_encode($this->response);
+            $data = json_encode($this->response);
+            break;
          default:
             throw new \RuntimeException("Unknown mode " . $this->mode);
+            break;
       }
+
+      if ($this->compression !== self::COMPRESS_NONE) {
+         switch ($this->compression) {
+            case self::COMPRESS_ZLIB:
+               $data = gzcompress($data);
+               break;
+            case self::COMPRESS_GZIP:
+                $data = gzencode($data);
+                break;
+            case self::COMPRESS_BR:
+               if (!function_exists('brotli_compress')) {
+                   throw new \UnexpectedValueException("You must install Brotli PHP extension.");
+               }
+               $data = brotli_compress($data);
+               break;
+            default:
+               throw new \UnexpectedValueException("Unknown compression mode" . $this->compression);
+         }
+      }
+
+       return $data;
    }
 
    /**
@@ -362,10 +457,33 @@ class Request
     * @return void
     */
    public function prolog() {
-       $this->addToResponse([
-        'PROLOG_FREQ'  => self::DEFAULT_FREQUENCY,
-        'RESPONSE'     => 'SEND'
-       ]);
+      if ($this->headers->hasHeader('GLPI-Agent-ID')) {
+          $this->setMode(self::JSON_MODE);
+          $response = [
+              'expiration'  => self::DEFAULT_FREQUENCY,
+              'status'     => 'ok'
+          ];
+      } else {
+         $response = [
+            'PROLOG_FREQ'  => self::DEFAULT_FREQUENCY,
+            'RESPONSE'     => 'SEND'
+         ];
+      }
+       $this->addToResponse($response);
+   }
+
+    /**
+     * Handle agent CONTACT request
+     */
+   public function contact($data) {
+      $this->inventory = new Inventory();
+      $this->inventory->contact($data);
+
+      $response = [
+         'expiration'  => self::DEFAULT_FREQUENCY,
+         'status'     => 'ok'
+      ];
+      $this->addToResponse($response);
    }
 
    /**
@@ -382,10 +500,19 @@ class Request
 
       if ($this->inventory->inError()) {
          foreach ($this->inventory->getErrors() as $error) {
-            $this->addError($error);
+            $this->addError($error, 500);
          }
       } else {
-          $this->addToResponse(['RESPONSE' => 'SEND']);
+         if ($this->headers->hasHeader('GLPI-Agent-ID')) {
+            $response = [
+               'expiration'  => self::DEFAULT_FREQUENCY,
+               'status'     => 'ok'
+            ];
+         } else {
+            $response = ['RESPONSE' => 'SEND'];
+         }
+
+         $this->addToResponse($response);
       }
    }
 
@@ -403,6 +530,9 @@ class Request
             break;
          case 'application/x-compress-gzip':
             $this->compression = self::COMPRESS_GZIP;
+            break;
+         case 'application/x-br':
+            $this->compression = self::COMPRESS_BR;
             break;
          case 'application/xml':
             $this->compression = self::COMPRESS_NONE;
@@ -472,5 +602,50 @@ class Request
    public function testRules(): Request {
       $this->test_rules = true;
       return $this;
+   }
+
+    /**
+     * Accepted encodings
+     *
+     * @return string[]
+     */
+   public function acceptedEncodings(): array {
+      $encodings = [
+         'gzip',
+         'deflate'
+      ];
+
+      if (!function_exists('brotli_uncompress')) {
+         $encodings[] = 'br';
+      }
+
+      return $encodings;
+   }
+
+   /**
+    * Prepare HTTP headers
+    *
+    * @return void
+    */
+   private function prepareHeaders() {
+      $headers = [
+          'Content-Type' => $this->getContentType(),
+      ];
+      $this->headers->setHeaders($headers);
+   }
+
+    /**
+     * Get HTTP headers
+     *
+     * @param boolean $legacy Set to true to shunt required headers checks
+     *
+     * @return array
+     */
+   public function getHeaders($legacy = false): array {
+       return $this->headers->getHeaders($legacy);
+   }
+
+   public function getHttpResponseCode(): int {
+       return $this->http_response_code;
    }
 }
