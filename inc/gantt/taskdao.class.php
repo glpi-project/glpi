@@ -64,14 +64,14 @@ class TaskDAO {
       if ($taskId > 0) {
          foreach ($DB->request('glpi_projecttasks', ['projecttasks_id' => $taskId]) as $record) {
             if (isset($record['id'])) {
-               if (!$this->deleteTask($failed, $record['id']))
+               if (!$this->deleteTask($failed, $record['id'])) {
                   $failed[] = $record;
+               }
             }
          }
          try {
             $DB->delete(\ProjectTask::getTable(), ['id' => $taskId]);
-         }
-         catch (Exception $ex) {
+         } catch (Exception $ex) {
             return false;
          }
       }

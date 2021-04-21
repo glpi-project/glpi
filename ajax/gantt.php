@@ -40,7 +40,7 @@ if (isset($_REQUEST['id'])) {
 }
 
 if (isset($_REQUEST['getData'])) {
-   $itemArray = array();
+   $itemArray = [];
    $factory = new Glpi\Gantt\DataFactory();
    $factory->getItemsForProject($itemArray, $id);
    $links = $factory->getProjectTaskLinks($itemArray);
@@ -54,8 +54,7 @@ if (isset($_REQUEST['getData'])) {
       'links' => $links
    ];
    echo json_encode($result);
-}
-else if (isset($_REQUEST["updateTask"])) {
+} else if (isset($_REQUEST["updateTask"])) {
    $result;
    try {
       $updated = false;
@@ -67,39 +66,36 @@ else if (isset($_REQUEST["updateTask"])) {
       $result = (object)[
          'ok' => $updated
       ];
-   }
-   catch (\Exception $ex) {
+   } catch (\Exception $ex) {
       $result = (object)[
          'ok' => false,
          'error' => $ex->getMessage()
       ];
    }
    echo json_encode($result);
-}
-else if (isset($_REQUEST["deleteTask"])) {
+} else if (isset($_REQUEST["deleteTask"])) {
    $result;
    try {
-      $failed = array();
+      $failed = [];
       $taskId = $_POST["taskId"];
       $taskDAO = new Glpi\Gantt\TaskDAO();
       $taskDAO->deleteTask($failed, $taskId);
 
-      if (count($failed) > 0)
-        throw new \Exception("Some tasks may have not been deleted");
+      if (count($failed) > 0) {
+         throw new \Exception("Some tasks may have not been deleted");
+      }
 
       $result = (object)[
           'ok' => true
       ];
-   }
-   catch (\Exception $ex) {
+   } catch (\Exception $ex) {
       $result = (object)[
          'ok' => false,
          'error' => $ex->getMessage()
       ];
    }
    echo json_encode($result);
-}
-else if (isset($_REQUEST["updateProject"])) {
+} else if (isset($_REQUEST["updateProject"])) {
    $result;
    try {
       $updated = false;
@@ -111,16 +107,14 @@ else if (isset($_REQUEST["updateProject"])) {
       $result = (object)[
          'ok' => $updated
       ];
-   }
-   catch (\Exception $ex) {
+   } catch (\Exception $ex) {
       $result = (object)[
          'ok' => false,
          'error' => $ex->getMessage()
       ];
    }
    echo json_encode($result);
-}
-else if (isset($_REQUEST["putInTrashbin"])) {
+} else if (isset($_REQUEST["putInTrashbin"])) {
    $result;
    try {
       $projectId = $_POST["projectId"];
@@ -129,38 +123,35 @@ else if (isset($_REQUEST["putInTrashbin"])) {
       $result = (object)[
          'ok' => true
       ];
-   }
-   catch (\Exception $ex) {
+   } catch (\Exception $ex) {
       $result = (object)[
          'ok' => false,
          'error' => $ex->getMessage()
       ];
    }
    echo json_encode($result);
-}
-else if (isset($_REQUEST["addTaskLink"])) {
+} else if (isset($_REQUEST["addTaskLink"])) {
    $result;
    try {
       $taskLink = new \ProjectTaskLink();
 
-      if ($taskLink->checkIfExist($_POST["taskLink"]))
+      if ($taskLink->checkIfExist($_POST["taskLink"])) {
          throw new \Exception("Link already exist!");
+      }
 
       $id = $taskLink->add($_POST["taskLink"]);
       $result = (object)[
          'ok' => true,
          'id' => $id
       ];
-   }
-   catch (\Exception $ex) {
+   } catch (\Exception $ex) {
       $result = (object)[
          'ok' => false,
          'error' => $ex->getMessage()
       ];
    }
    echo json_encode($result);
-}
-else if (isset($_REQUEST["updateTaskLink"])) {
+} else if (isset($_REQUEST["updateTaskLink"])) {
    $result;
    try {
       $taskLink = new \ProjectTaskLink();
@@ -168,16 +159,14 @@ else if (isset($_REQUEST["updateTaskLink"])) {
       $result = (object)[
          'ok' => true
       ];
-   }
-   catch (\Exception $ex) {
+   } catch (\Exception $ex) {
       $result = (object)[
          'ok' => false,
          'error' => $ex->getMessage()
       ];
    }
    echo json_encode($result);
-}
-else if (isset($_REQUEST["deleteTaskLink"])) {
+} else if (isset($_REQUEST["deleteTaskLink"])) {
    $result;
    try {
       $taskLink = new \ProjectTaskLink();
@@ -185,8 +174,7 @@ else if (isset($_REQUEST["deleteTaskLink"])) {
       $result = (object)[
          'ok' => true
       ];
-   }
-   catch (\Exception $ex) {
+   } catch (\Exception $ex) {
       $result = (object)[
          'ok' => false,
          'error' => $ex->getMessage()

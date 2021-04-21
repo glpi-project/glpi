@@ -1836,7 +1836,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       echo "<div id=\"gantt-features\">
                <ul class=\"gantt-controls\">
                   <li class=\"gantt-menu-item gantt-menu-item-right\">
-                  <a href=\"#\" class=\"fullscreen\" onclick=\"gantt.ext.fullscreen.toggle();\"><img src=\"../pics/icones/ic_fullscreen_24.png\">Fullscreen</a>
+                  <a href=\"#\" onclick=\"gantt.ext.fullscreen.toggle();\"><i class=\"fas fa-expand\"></i>Fullscreen</a>
                </li>
                <li class=\"gantt-menu-item gantt-menu-item-right\">
                   <fieldset style=\"line-height:normal\">
@@ -1893,7 +1893,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                   $('#gantt-container').append('<div id=\"gantt-loader\" class=\"spin-center\"></div>');
                   $('#page').append('<div id=\"gantt-loader-overlay\" style=\"display: none;\"></div>');
 
-                              });
+               });
             </script>";
    }
 

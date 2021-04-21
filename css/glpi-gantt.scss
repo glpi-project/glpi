@@ -129,6 +129,10 @@ fieldset {
 	padding-left: 15px;
 }
 
+.gantt_side_content.gantt_right {
+   padding-left: 22px;
+}
+
 .lag-input {
 	font-size: 13px !important;
 	color: #727272;
@@ -208,4 +212,8 @@ fieldset {
 		text-align: center;
 		margin-left: 5px;
 	}
+}
+
+.fas.fa-expand {
+   margin-right: 5px;
 }

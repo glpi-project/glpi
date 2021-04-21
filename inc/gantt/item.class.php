@@ -67,14 +67,18 @@ class Item implements \JsonSerializable {
     */
    public function populateFrom($json) {
       $this->id = $json["id"];
-      if (isset($json["start_date"]))
+      if (isset($json["start_date"])) {
          $this->start_date = $json["start_date"];
-      if (isset($json["end_date"]))
+      }
+      if (isset($json["end_date"])) {
          $this->end_date = $json["end_date"];
-      if (isset($json["progress"]))
+      }
+      if (isset($json["progress"])) {
          $this->progress = $json["progress"];
-      if (isset($json["name"]))
+      }
+      if (isset($json["name"])) {
          $this->text = $json["name"];
+      }
    }
 
    /**

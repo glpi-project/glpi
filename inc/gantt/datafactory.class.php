@@ -64,8 +64,7 @@ class DataFactory {
          while ($data = $iterator->next()) {
             $this->getItemsForProject($itemArray, $data['id']);
          }
-      }
-      else if ($project->getFromDB($id)) {
+      } else if ($project->getFromDB($id)) {
          array_push($itemArray, $this->populateGanttItem($project->fields, "root-project"));
          $this->getProjectTasks($itemArray, $id);
          $this->getSubprojects($itemArray, $id); // subproject tasks included
@@ -85,8 +84,9 @@ class DataFactory {
 
          $ids = [];
          foreach ($itemArray as $item) {
-            if ($item->type != 'project')
+            if ($item->type != 'project') {
                $ids[] = $item->linktask_id;
+            }
          }
 
          if (count($ids) > 0) {
@@ -136,7 +136,9 @@ class DataFactory {
     * @return Item instance
     */
    function populateGanttItem($record, $type) {
-      if (isset($record['is_milestone']) && $record['is_milestone'] > 0) $type = 'milestone';
+      if (isset($record['is_milestone']) && $record['is_milestone'] > 0) {
+         $type = 'milestone';
+      }
 
       $parentTaskUid = "";
       if (($type == 'task' || $type == 'milestone') && $record["projecttasks_id"] > 0) {

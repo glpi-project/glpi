@@ -37,6 +37,14 @@ function initGantt($ID) {
       return css.join(" ");
    }
 
+   // set text labels for milestones
+   gantt.templates.rightside_text = function(start, end, task) {
+      if(task.type == gantt.config.types.milestone){
+          return task.text;
+      }
+      return "";
+   };
+
    gantt.templates.progress_text = function(start, end, task) {
       return "<span style='text-align:left; color: #fff;'>" + Math.round(task.progress * 100) + "% </span>";
    };
