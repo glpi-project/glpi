@@ -1434,7 +1434,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
                       'itemtype'        => SavedSearch_Alert::getType(),
                       'event'           => 'alert_' . $this->getID(),
                       'is_active'       => 0,
-                      'datate_creation' => date('Y-m-d H:i:s')
+                      'date_creation' => date('Y-m-d H:i:s')
                      ]);
 
          Session::addMessageAfterRedirect(__('Notification has been created!'), INFO);
