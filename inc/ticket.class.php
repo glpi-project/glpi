@@ -2396,7 +2396,7 @@ class Ticket extends CommonITILObject {
             && ($this->isUser(CommonITILActor::REQUESTER, $user_id)
                || (
                   isset($this->fields['users_id_recipient'])
-                  && ($this->fields['users_id_recipient'] === $user_id)
+                  && ($this->fields['users_id_recipient'] == $user_id)
                )
             )
          )
@@ -2405,7 +2405,7 @@ class Ticket extends CommonITILObject {
             Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADDGROUPTICKET, $entity_id)
             && $this->haveAGroup(CommonITILActor::REQUESTER, $user_groups_ids)
          )
-         || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+         || $this->isUser(CommonITILActor::ASSIGN, $user_id)
          || $this->haveAGroup(CommonITILActor::ASSIGN, $user_groups_ids);
    }
 
