@@ -36,4 +36,4 @@
 
 // Add a config entry for default central tabl.
 Config::setConfigurationValues('core', ['default_central_tab' => 0]);
-$migration->addField("glpi_users", "default_central_tab", "tinyint(1) DEFAULT 0");
+$migration->addField("glpi_users", "default_central_tab", "tinyint DEFAULT 0");
