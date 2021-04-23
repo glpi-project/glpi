@@ -1269,7 +1269,14 @@ class Config extends CommonDBTM {
          echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\">";
          echo $tz_warning;
       }
-      echo "</td>";
+
+
+      echo "<tr class='tab_bg_2'><td><label for='dropdown_default_central_tab$rand'>".__('Default central tab')."</label></td>";
+      echo "<td>";
+      $central = new Central();
+      Dropdown::showFromArray('default_central_tab', $central->getTabNameForItem($central, 0),['value'=> $data['default_central_tab'], 'rand' => $rand]);
+      echo "<tr>";
+      echo "<td>";
       echo "</tr>";
 
       if ($oncentral) {
