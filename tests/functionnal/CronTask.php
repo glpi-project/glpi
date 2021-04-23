@@ -204,7 +204,7 @@ class CronTask extends DbTestCase {
          $itemtype = $row['itemtype'];
          $this->boolean(class_exists($itemtype))->isTrue(
             sprintf(
-               'Class %1$s frmo crontask table does not exists.',
+               'Class %1$s from crontask table does not exists.',
                $itemtype
             )
          );
