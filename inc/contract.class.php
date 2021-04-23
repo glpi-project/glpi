@@ -480,6 +480,7 @@ class Contract extends CommonDBTM {
          'name'               => __('Start date'),
          'forcegroupby'       => true,
          'datatype'           => 'date',
+         'maybefuture'        => true,
          'massiveaction'      => false,
          'joinparams'         => $joinparams
       ];
@@ -503,6 +504,7 @@ class Contract extends CommonDBTM {
          'name'               => __('End date'),
          'forcegroupby'       => true,
          'datatype'           => 'date_delay',
+         'maybefuture'        => true,
          'datafields'         => [
             '1'                  => 'begin_date',
             '2'                  => 'duration'
