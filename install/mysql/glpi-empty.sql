@@ -7320,7 +7320,6 @@ CREATE TABLE `glpi_users` (
   `lock_directunlock_notification` tinyint DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `highcontrast_css` tinyint DEFAULT '0',
-  `default_central_tab` tinyint(1) DEFAULT 0,
   `plannings` text,
   `sync_field` varchar(255) DEFAULT NULL,
   `groups_id` int NOT NULL DEFAULT '0',

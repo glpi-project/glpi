@@ -135,7 +135,7 @@ class Session {
                }
 
                if (isset($_SESSION['glpidefault_central_tab']) && $_SESSION['glpidefault_central_tab']) {
-                  Session::setActiveTab("central","Central$". $_SESSION['glpidefault_central_tab']);
+                  Session::setActiveTab("central", "Central$". $_SESSION['glpidefault_central_tab']);
                }
                // Do it here : do not reset on each page, cause export issue
                if ($_SESSION["glpilist_limit"] > $CFG_GLPI['list_limit_max']) {

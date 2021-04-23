@@ -1270,11 +1270,10 @@ class Config extends CommonDBTM {
          echo $tz_warning;
       }
 
-
       echo "<tr class='tab_bg_2'><td><label for='dropdown_default_central_tab$rand'>".__('Default central tab')."</label></td>";
       echo "<td>";
       $central = new Central();
-      Dropdown::showFromArray('default_central_tab', $central->getTabNameForItem($central, 0),['value'=> $data['default_central_tab'], 'rand' => $rand]);
+      Dropdown::showFromArray('default_central_tab', $central->getTabNameForItem($central, 0), ['value'=> $data['default_central_tab'], 'rand' => $rand]);
       echo "<tr>";
       echo "<td>";
       echo "</tr>";
