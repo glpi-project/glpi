@@ -194,4 +194,29 @@ class CronTask extends DbTestCase {
          $this->variable($crontask->fields['name'])->isEqualTo($name);
       }
    }
+
+   public function testMethodsPresence() {
+      global $DB;
+
+      $iterator = $DB->request(['FROM' => \CronTask::getTable()]);
+
+      while ($row = $iterator->next()) {
+         $itemtype = $row['itemtype'];
+         $this->boolean(class_exists($itemtype))->isTrue(
+            sprintf(
+               'Class %1$s frmo crontask table does not exists.',
+               $itemtype
+            )
+         );
+
+         $method = 'cron' . ucfirst($row['name']);
+         $this->boolean(method_exists($itemtype, $method))->isTrue(
+            sprintf(
+               'Method %1$s::%2$s does not exists!',
+               $itemtype,
+               $method
+            )
+         );
+      }
+   }
 }
