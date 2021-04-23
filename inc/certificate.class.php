@@ -150,7 +150,8 @@ class Certificate extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'date_expiration',
          'name'               => __('Expiration date'),
-         'datatype'           => 'date'
+         'datatype'           => 'date',
+         'maybefuture'        => true,
       ];
 
       $tab[] = [
