@@ -57,6 +57,12 @@ class ITILFollowup  extends CommonDBChild {
    const ADDALLTICKET    = 4096;
    const SEEPRIVATE      = 8192;
 
+   /**
+    * Right allowing the user to add a follow-up as soon as he is an observer of an ITIL object.
+    * @var integer
+    */
+   const ADD_AS_OBSERVER = 16384;
+
    static public $itemtype = 'itemtype';
    static public $items_id = 'items_id';
 
@@ -1090,6 +1096,8 @@ JAVASCRIPT;
       $values[self::UPDATEMY]    = __('Update followups (author)');
       $values[self::ADDMYTICKET] = ['short' => __('Add followup (requester)'),
                                          'long'  => __('Add a followup to tickets (requester)')];
+      $values[self::ADD_AS_OBSERVER] = ['short' => __('Add followup (watcher)'),
+                                         'long'  => __('Add a followup to tickets (watcher)')];
       $values[self::SEEPUBLIC]   = __('See public ones');
 
       if ($interface == 'helpdesk') {

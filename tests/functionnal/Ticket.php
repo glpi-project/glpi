@@ -3559,7 +3559,6 @@ class Ticket extends DbTestCase {
          ])
       )->isGreaterThan(0);
 
-      $ticket_user = new \Group_Ticket();
       $group_ticket = new \Group_Ticket();
       $input_group_ticket = [
          'tickets_id' => $ticket->getID(),
@@ -3576,4 +3575,60 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
    }
 
+   public function testCanAddFollowupsAsObserver() {
+      global $DB;
+
+      $post_only_id = getItemByTypeName('User', 'post-only', true);
+
+      $this->login();
+
+      $ticket = new \Ticket();
+      $this->integer(
+         (int)$ticket->add([
+            'name'    => '',
+            'content' => 'A ticket to check ACLS',
+         ])
+      )->isGreaterThan(0);
+
+      // Cannot add followups by default
+      $this->login();
+      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isFalse();
+      $this->login('post-only', 'postonly');
+      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+
+      // Add user as observer
+      $this->login();
+      $ticket_user = new \Ticket_User();
+      $input_ticket_user = [
+         'tickets_id' => $ticket->getID(),
+         'users_id'   => $post_only_id,
+         'type'       => \CommonITILActor::OBSERVER
+      ];
+      $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
+      $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
+
+      // Cannot add followup as user do not have ADD_AS_FOLLOWUP right
+      $this->login();
+      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isFalse();
+      $this->login('post-only', 'postonly');
+      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+
+      // Add user right
+      $DB->update(
+         'glpi_profilerights',
+         [
+            'rights' => \ITILFollowup::ADD_AS_OBSERVER
+         ],
+         [
+            'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            'name'        => \ITILFollowup::$rightname,
+         ]
+      );
+
+      // User is observer and have ADD_AS_OBSERVER, he should be able to add followup
+      $this->login();
+      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isTrue();
+      $this->login('post-only', 'postonly');
+      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+   }
 }
