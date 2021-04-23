@@ -1429,7 +1429,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
 
       if ($notif->isNewItem()) {
          $notif->check(-1, CREATE);
-         $notif->add(['name'            => SavedSearch::getTypeName(1) . ' ' . $this->getName(),
+         $notif->add(['name'            => SavedSearch::getTypeName(1) . ' ' . addslashes($this->getName()),
                       'entities_id'     => $_SESSION["glpidefault_entity"],
                       'itemtype'        => SavedSearch_Alert::getType(),
                       'event'           => 'alert_' . $this->getID(),
