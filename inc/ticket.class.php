@@ -2338,6 +2338,10 @@ class Ticket extends CommonITILObject {
                )
             )
          )
+         || (
+            Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADD_AS_OBSERVER, $entity_id)
+            && $this->isUser(CommonITILActor::OBSERVER, $user_id)
+         )
          || Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADDALLTICKET, $entity_id)
          || (
             Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADDGROUPTICKET, $entity_id)
