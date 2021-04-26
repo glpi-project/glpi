@@ -725,12 +725,7 @@ class Search {
       if ($data['search']['no_search']) {
          $LIMIT = " LIMIT ".(int)$data['search']['start'].", ".(int)$data['search']['list_limit'];
 
-         // Force group by for all the type -> need to count only on table ID
-         if (!isset($searchopt[1]['forcegroupby'])) {
-            $count = "count(*)";
-         } else {
-            $count = "count(DISTINCT `$itemtable`.`id`)";
-         }
+         $count = "count(DISTINCT `$itemtable`.`id`)";
          // request currentuser for SQL supervision, not displayed
          $query_num = "SELECT $count,
                               '".Toolbox::addslashes_deep($_SESSION['glpiname'])."' AS currentuser
