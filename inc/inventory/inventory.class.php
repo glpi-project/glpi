@@ -794,7 +794,7 @@ class Inventory
 
          foreach ($orphans as $orphan) {
             $dropfile = $ids[$orphan]->getFileName();
-            unlink($dropfile);
+            @unlink($dropfile);
             $message = sprintf(__('File %1$s has been removed'), $dropfile);
             if ($task) {
                $task->log($message);

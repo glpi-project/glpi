@@ -33,6 +33,8 @@
 namespace tests\units\Glpi\Inventory;
 
 use DbTestCase;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
 class Inventory extends DbTestCase {
@@ -81,6 +83,17 @@ class Inventory extends DbTestCase {
          ]);
          $this->integer(count($logs))->isIdenticalTo(0/*, print_r(iterator_to_array($logs), true)*/);
       }
+
+      $files = new RecursiveIteratorIterator(
+         new RecursiveDirectoryIterator(GLPI_INVENTORY_DIR, RecursiveDirectoryIterator::SKIP_DOTS),
+         RecursiveIteratorIterator::CHILD_FIRST
+      );
+
+      foreach ($files as $fileinfo) {
+         $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+         $todo($fileinfo->getRealPath());
+      }
+
    }
 
    private function checkComputer1($computers_id) {
