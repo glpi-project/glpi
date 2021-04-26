@@ -309,7 +309,8 @@ class Group_User extends CommonDBRelation{
    **/
    private static function showAddUserForm(Group $group, $used_ids, $entityrestrict, $crit) {
       $rand = mt_rand();
-      $res  = User::getSqlSearchResult(true, "all", $entityrestrict, 0, $used_ids);
+      $res  = User::getSqlSearchResult(true, "all", $entityrestrict, 0, $used_ids, '', 0, -1, 0, 1);
+
       $nb = count($res);
 
       if ($nb) {
@@ -324,6 +325,7 @@ class Group_User extends CommonDBRelation{
 
          User::dropdown(['right'  => "all",
                               'entity' => $entityrestrict,
+                              'with_no_right' => true,
                               'used'   => $used_ids]);
 
          echo "</td><td>".__('Manager')."</td><td>";
