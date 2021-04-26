@@ -756,6 +756,11 @@ var Dashboard = {
             var number    = count.children('.number');
             var suffix    = count.children('.suffix').text();
 
+            // Some custom formats may contain text in the number field, no animation in this case
+            if (isNaN(number.text())) {
+               return true;
+            }
+
             jQuery({ Counter: 0 }).animate({ Counter: number.text() }, {
                duration: 800,
                easing: 'swing',
