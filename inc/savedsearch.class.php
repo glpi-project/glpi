@@ -1478,12 +1478,12 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
 
       if ($notif->isNewItem()) {
          $notif->check(-1, CREATE);
-         $notif->add(['name'            => SavedSearch::getTypeName(1) . ' ' . $this->getName(),
+         $notif->add(['name'            => SavedSearch::getTypeName(1) . ' ' . addslashes($this->getName()),
                       'entities_id'     => $_SESSION["glpidefault_entity"],
                       'itemtype'        => SavedSearch_Alert::getType(),
                       'event'           => 'alert_' . $this->getID(),
                       'is_active'       => 0,
-                      'datate_creation' => date('Y-m-d H:i:s')
+                      'date_creation' => date('Y-m-d H:i:s')
                      ]);
 
          Session::addMessageAfterRedirect(__('Notification has been created!'), INFO);
