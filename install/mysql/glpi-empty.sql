@@ -56,7 +56,7 @@ CREATE TABLE `glpi_authldapreplicates` (
   `host` varchar(255) DEFAULT NULL,
   `port` int NOT NULL DEFAULT '389',
   `name` varchar(255) DEFAULT NULL,
-  `timeout` int NOT NULL DEFAULT '0',
+  `timeout` int NOT NULL DEFAULT '3',
   PRIMARY KEY (`id`),
   KEY `authldaps_id` (`authldaps_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -115,7 +115,7 @@ CREATE TABLE `glpi_authldaps` (
   `tls_certfile` text,
   `tls_keyfile` text,
   `use_bind` tinyint NOT NULL DEFAULT '1',
-  `timeout` int NOT NULL DEFAULT '0',
+  `timeout` int NOT NULL DEFAULT '3',
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `is_default` (`is_default`),
