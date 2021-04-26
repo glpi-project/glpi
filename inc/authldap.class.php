@@ -403,7 +403,7 @@ class AuthLDAP extends CommonDBTM {
          Dropdown::showYesNo('use_bind', $this->fields["use_bind"]);
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td><label for='use_bind'>" . __('Timeout') . "</label></td>";
+         echo "<tr class='tab_bg_1'><td><label for='timeout'>" . __('Timeout') . "</label></td>";
          echo "<td colspan='3'>";
          Dropdown::showNumber('timeout', ['value' => $this->fields["timeout"] , 'min' => 3, 'max' => 10, 'step' => 1]);
          echo "</td></tr>";
