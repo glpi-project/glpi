@@ -89,7 +89,7 @@ class AuthLdapReplicate extends CommonDBTM {
       echo "<td class='center'><input type='text' name='host'></td>";
       echo "<td class='center'><input type='text' name='port'></td>";
       echo "<td class='center'>";
-      Dropdown::showNumber('timeoout',['min' => 0, 'max' => 10, 'step' => 1]);
+      Dropdown::showNumber('timeoout', ['min' => 0, 'max' => 10, 'step' => 1]);
       echo "</td>";
       echo "<td class='center'><input type='hidden' name='next' value='extauth_ldap'>";
       echo "<input type='hidden' name='authldaps_id' value='$master_id'>";

@@ -405,7 +405,7 @@ class AuthLDAP extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td><label for='use_bind'>" . __('Timeout') . "</label></td>";
          echo "<td colspan='3'>";
-         Dropdown::showNumber('timeout',['value' => $this->fields["timeout"] , 'min' => 0, 'max' => 10, 'step' => 1]);
+         Dropdown::showNumber('timeout', ['value' => $this->fields["timeout"] , 'min' => 0, 'max' => 10, 'step' => 1]);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td><label for='rootdn_passwd'>" .
