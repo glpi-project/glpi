@@ -3595,6 +3595,7 @@ class Dropdown {
       $start  = intval(($post['page']-1)*$post['page_limit']);
       $searchText = (isset($post['searchText']) ? $post['searchText'] : null);
       $inactive_deleted = isset($post['inactive_deleted']) ? $post['inactive_deleted'] : 0;
+      $with_no_right = isset($post['with_no_right']) ? $post['with_no_right'] : 0;
       $result = User::getSqlSearchResult(
          false,
          $post['right'],
@@ -3604,7 +3605,8 @@ class Dropdown {
          $searchText,
          $start,
          (int)$post['page_limit'],
-         $inactive_deleted
+         $inactive_deleted,
+         $with_no_right
       );
 
       $users = [];
