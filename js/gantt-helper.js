@@ -35,12 +35,12 @@ function initGantt($ID) {
          css.push("no_link_drag");
       }
       return css.join(" ");
-   }
+   };
 
    // set text labels for milestones
    gantt.templates.rightside_text = function(start, end, task) {
-      if(task.type == gantt.config.types.milestone){
-          return task.text;
+      if (task.type == gantt.config.types.milestone) {
+         return task.text;
       }
       return "";
    };
@@ -83,7 +83,7 @@ function initGantt($ID) {
    // specify fullscreen root element
    gantt.ext.fullscreen.getFullscreenElement = function() {
       return document.getElementById("gantt-container");
-   }
+   };
 
    var zoomConfig = {
       levels: [{
@@ -197,8 +197,9 @@ function initGantt($ID) {
                if (json.ok) {
                   task.progress = progress;
                   gantt.updateTask(task.id);
-               } else
+               } else {
                   console.log('Could not update Task[' + id + ']: ' + json.error);
+               }
             }
          });
       });
@@ -226,8 +227,8 @@ function initGantt($ID) {
                success: function(resp) {
                   var json = JSON.parse(resp);
                   if (json.ok) {
-                     $project = gantt.getTask(id);
-                     $project.text = item.text;
+                     var project = gantt.getTask(id);
+                     project.text = item.text;
                      gantt.updateTask(id);
                      gantt.hideLightbox();
                   } else
@@ -253,10 +254,10 @@ function initGantt($ID) {
                success: function(resp) {
                   var json = JSON.parse(resp);
                   if (json.ok) {
-                     $task = gantt.getTask(id);
-                     $task.text = item.text;
-                     $task.start_date = item.start_date;
-                     $task.end_date = item.end_date;
+                     var task = gantt.getTask(id);
+                     task.text = item.text;
+                     task.start_date = item.start_date;
+                     task.end_date = item.end_date;
                      gantt.updateTask(id);
                      gantt.hideLightbox();
                   } else
@@ -504,8 +505,9 @@ function initGantt($ID) {
                   expire: -1
                });
             }
-         } else
+         } else {
             console.log(json.error);
+         }
       },
       error: function(resp) {
          console.log(resp.responseText);
@@ -572,8 +574,9 @@ function updateTaskLink(link, callback) {
          var json = JSON.parse(resp);
          if (json.ok) {
             callback(); // close popup
-         } else
+         } else {
             console.log(json.error);
+         }
       },
       error: function(resp) {
          console.log(resp.responseText);
@@ -594,8 +597,9 @@ function deleteTaskLink(linkId, callback) {
          if (json.ok) {
             gantt.deleteLink(linkId);
             callback(); // close popup
-         } else
+         } else {
             console.log(json.error);
+         }
       },
       error: function(resp) {
          console.log(resp.responseText);
