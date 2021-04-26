@@ -476,28 +476,6 @@ function initGantt($ID) {
       return true;
    });
 
-   $('#dlg-export').dialog({
-      autoOpen: false,
-      resizable: false,
-      width: 200,
-      title: 'Export period',
-      modal: true,
-      buttons: {
-         "OK": function() {
-            let from = $('#dlg-export').find('input[name="dlg-start"]').val();
-            let to = $('#dlg-export').find('input[name="dlg-end"]').val();
-            let expType = parseInt($('#dlg-export').find('input[name="exp-type"]').val());
-            if (from && to && new Date(from) < new Date(to)) {
-               chartExport(from, to, expType);
-               $(this).dialog('close');
-            }
-         },
-         "Cancel": function() {
-            $(this).dialog('close');
-         }
-      }
-   });
-
    $('.flatpickr').flatpickr();
 
    // <<<<< Event handlers
@@ -623,31 +601,6 @@ function deleteTaskLink(linkId, callback) {
          console.log(resp.responseText);
       }
    });
-}
-
-function chartExport(from, to, expType) {
-   switch (expType) {
-      case 1:
-         gantt.exportToPNG({
-            start: from,
-            end: to
-         })
-         break;
-      case 2:
-         gantt.exportToPDF({
-            start: from,
-            end: to
-         })
-         break;
-      default:
-         break;
-   }
-}
-
-function callExport(type) {
-
-   $('#dlg-export').find('input[name="exp-type"]').val(type);
-   $('#dlg-export').dialog('open');
 }
 
 // <<<<< Functions

@@ -1840,12 +1840,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                </li>
                <li class=\"gantt-menu-item gantt-menu-item-right\">
                   <fieldset style=\"line-height:normal\">
-                     <legend style=\"margin:0 auto;\">Export</legend>
-                     <a href=\"#\" class=\"inline\" onclick='callExport(1);'>PNG</a>&nbsp;|&nbsp;<a href=\"#\" class=\"inline\" onclick='callExport(2);'>PDF</a>
-                  </fieldset>
-                  </li>
-               <li class=\"gantt-menu-item gantt-menu-item-right\">
-                  <fieldset style=\"line-height:normal\">
                      <legend style=\"margin:0 auto;\">Time scale</legend>
                      <input type=\"radio\" id=\"scale1\" class=\"gantt_radio\" name=\"scale\" value=\"day\">
                      <label for=\"scale1\">Days</label>
@@ -1860,19 +1854,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                   </fieldset>
                   </li>
                </ul>
-            </div>";
-      echo "<div id=\"dlg-export\">
-               <table>
-                  <tr>
-                     <td>From</td>
-                     <td><input type=\"text\" name=\"dlg-start\" class=\"flatpickr\" placeholder=\"start date\" /></td>
-                  </tr>
-                  <tr>
-                     <td>To</td>
-                     <td><input type=\"text\" name=\"dlg-end\" class=\"flatpickr\" placeholder=\"end date\" /></td>
-                  </tr>
-               </table>
-               <input type=\"hidden\" name=\"exp-type\" />
             </div>";
 
       echo "<script type='text/javascript'>

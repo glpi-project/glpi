@@ -6519,7 +6519,6 @@ JAVASCRIPT;
             break;
          case 'gantt':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/dhtmlx-gantt.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'js/gantt-api.js';
             $_SESSION['glpi_js_toload'][$name][] = 'js/gantt-helper.js';
             break;
          case 'kanban':
