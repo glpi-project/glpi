@@ -1,7 +1,7 @@
 <div class="mx-n2 mb-n2 itil-footer itil-footer p-0 border-top" id="itil-footer">
    <div class="buttons-bar d-flex py-2">
       {% if not item.isNewItem() and item.isNotSolved() %}
-         <div class="col-md-8 ps-3">
+         <div class="col-md-8 ps-3 timeline-buttons">
             <div class="btn-group me-2 main-actions">
                {% set default_action = timeline_itemtypes|keys|first %}
                {% set default_action_data = timeline_itemtypes|first %}
