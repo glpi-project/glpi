@@ -3231,4 +3231,349 @@ class Ticket extends DbTestCase {
       $this->boolean(\Ticket::canDelegateeCreateTicket($tech_id))->isFalse();
       $this->boolean(\Ticket::canDelegateeCreateTicket($tuser_id))->isFalse();
    }
+
+   public function testCanAddFollowupsDefaults() {
+      $tech_id = getItemByTypeName('User', 'tech', true);
+      $normal_id = getItemByTypeName('User', 'normal', true);
+      $post_only_id = getItemByTypeName('User', 'post-only', true);
+
+      $this->login();
+
+      $ticket = new \Ticket();
+      $this->integer(
+         (int)$ticket->add([
+            'name'    => '',
+            'content' => 'A ticket to check ACLS',
+         ])
+      )->isGreaterThan(0);
+
+      $this->boolean((boolean)$ticket->canUserAddFollowups($tech_id))->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups($normal_id))->isFalse();
+      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isFalse();
+
+      $this->login('tech', 'tech');
+      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->login('normal', 'normal');
+      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+      $this->login('post-only', 'postonly');
+      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+   }
+
+   public function testCanAddFollowupsAsRecipient() {
+      global $DB;
+
+      $post_only_id = getItemByTypeName('User', 'post-only', true);
+
+      $this->login();
+
+      $ticket = new \Ticket();
+      $this->integer(
+         (int)$ticket->add([
+            'name'               => '',
+            'content'            => 'A ticket to check ACLS',
+            'users_id_recipient' => $post_only_id,
+            '_auto_import'       => false,
+         ])
+      )->isGreaterThan(0);
+
+      // Drop all followup rights
+      $DB->update(
+         'glpi_profilerights',
+         [
+            'rights' => 0
+         ],
+         [
+            'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            'name'        => \ITILFollowup::$rightname,
+         ]
+      );
+
+      // Cannot add followup as user do not have ADDMYTICKET right
+      $this->login();
+      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isFalse();
+      $this->login('post-only', 'postonly');
+      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+
+      // Add user right
+      $DB->update(
+         'glpi_profilerights',
+         [
+            'rights' => \ITILFollowup::ADDMYTICKET
+         ],
+         [
+            'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            'name'        => \ITILFollowup::$rightname,
+         ]
+      );
+
+      // User is recipient and have ADDMYTICKET, he should be able to add followup
+      $this->login();
+      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isTrue();
+      $this->login('post-only', 'postonly');
+      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+   }
+
+   public function testCanAddFollowupsAsRequester() {
+      global $DB;
+
+      $post_only_id = getItemByTypeName('User', 'post-only', true);
+
+      $this->login();
+
+      $ticket = new \Ticket();
+      $this->integer(
+         (int)$ticket->add([
+            'name'    => '',
+            'content' => 'A ticket to check ACLS',
+         ])
+      )->isGreaterThan(0);
+
+      // Drop all followup rights
+      $DB->update(
+         'glpi_profilerights',
+         [
+            'rights' => 0
+         ],
+         [
+            'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            'name'        => \ITILFollowup::$rightname,
+         ]
+      );
+
+      // Cannot add followups by default
+      $this->login();
+      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isFalse();
+      $this->login('post-only', 'postonly');
+      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+
+      // Add user as requester
+      $this->login();
+      $ticket_user = new \Ticket_User();
+      $input_ticket_user = [
+         'tickets_id' => $ticket->getID(),
+         'users_id'   => $post_only_id,
+         'type'       => \CommonITILActor::REQUESTER
+      ];
+      $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
+      $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
+
+      // Cannot add followup as user do not have ADDMYTICKET right
+      $this->login();
+      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isFalse();
+      $this->login('post-only', 'postonly');
+      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+
+      // Add user right
+      $DB->update(
+         'glpi_profilerights',
+         [
+            'rights' => \ITILFollowup::ADDMYTICKET
+         ],
+         [
+            'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            'name'        => \ITILFollowup::$rightname,
+         ]
+      );
+
+      // User is requester and have ADDMYTICKET, he should be able to add followup
+      $this->login();
+      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isTrue();
+      $this->login('post-only', 'postonly');
+      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+   }
+
+   public function testCanAddFollowupsAsRequesterGroup() {
+      global $DB;
+
+      $post_only_id = getItemByTypeName('User', 'post-only', true);
+
+      $this->login();
+
+      $ticket = new \Ticket();
+      $this->integer(
+         (int)$ticket->add([
+            'name'    => '',
+            'content' => 'A ticket to check ACLS',
+         ])
+      )->isGreaterThan(0);
+
+      // Drop all followup rights
+      $DB->update(
+         'glpi_profilerights',
+         [
+            'rights' => 0
+         ],
+         [
+            'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            'name'        => \ITILFollowup::$rightname,
+         ]
+      );
+
+      // Cannot add followups by default
+      $this->login();
+      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isFalse();
+      $this->login('post-only', 'postonly');
+      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+
+      // Add user's group as requester
+      $this->login();
+      $group = new \Group();
+      $group_id = $group->add(['name' => 'Test group']);
+      $this->integer((int)$group_id)->isGreaterThan(0);
+      $group_user = new \Group_User();
+      $this->integer(
+         (int)$group_user->add([
+            'groups_id' => $group_id,
+            'users_id'  => $post_only_id,
+         ])
+      )->isGreaterThan(0);
+
+      $group_ticket = new \Group_Ticket();
+      $input_group_ticket = [
+         'tickets_id' => $ticket->getID(),
+         'groups_id'  => $group_id,
+         'type'       => \CommonITILActor::REQUESTER
+      ];
+      $this->integer((int) $group_ticket->add($input_group_ticket))->isGreaterThan(0);
+      $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
+
+      // Cannot add followup as user do not have ADDGROUPTICKET right
+      $this->login();
+      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isFalse();
+      $this->login('post-only', 'postonly');
+      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+
+      // Add user right
+      $DB->update(
+         'glpi_profilerights',
+         [
+            'rights' => \ITILFollowup::ADDGROUPTICKET
+         ],
+         [
+            'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            'name'        => \ITILFollowup::$rightname,
+         ]
+      );
+
+      // User is requester and have ADDGROUPTICKET, he should be able to add followup
+      $this->login();
+      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isTrue();
+      $this->login('post-only', 'postonly');
+      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+   }
+
+   public function testCanAddFollowupsAsAssigned() {
+      global $DB;
+
+      $post_only_id = getItemByTypeName('User', 'post-only', true);
+
+      $this->login();
+
+      $ticket = new \Ticket();
+      $this->integer(
+         (int)$ticket->add([
+            'name'    => '',
+            'content' => 'A ticket to check ACLS',
+         ])
+      )->isGreaterThan(0);
+
+      // Drop all followup rights
+      $DB->update(
+         'glpi_profilerights',
+         [
+            'rights' => 0
+         ],
+         [
+            'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            'name'        => \ITILFollowup::$rightname,
+         ]
+      );
+
+      // Cannot add followups by default
+      $this->login();
+      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isFalse();
+      $this->login('post-only', 'postonly');
+      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+
+      // Add user as requester
+      $this->login();
+      $ticket_user = new \Ticket_User();
+      $input_ticket_user = [
+         'tickets_id' => $ticket->getID(),
+         'users_id'   => $post_only_id,
+         'type'       => \CommonITILActor::ASSIGN
+      ];
+      $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
+      $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
+
+      // Can add followup as user is assigned
+      $this->login();
+      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isTrue();
+      $this->login('post-only', 'postonly');
+      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+   }
+
+   public function testCanAddFollowupsAsAssignedGroup() {
+      global $DB;
+
+      $post_only_id = getItemByTypeName('User', 'post-only', true);
+
+      $this->login();
+
+      $ticket = new \Ticket();
+      $this->integer(
+         (int)$ticket->add([
+            'name'    => '',
+            'content' => 'A ticket to check ACLS',
+         ])
+      )->isGreaterThan(0);
+
+      // Drop all followup rights
+      $DB->update(
+         'glpi_profilerights',
+         [
+            'rights' => 0
+         ],
+         [
+            'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            'name'        => \ITILFollowup::$rightname,
+         ]
+      );
+
+      // Cannot add followups by default
+      $this->login();
+      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isFalse();
+      $this->login('post-only', 'postonly');
+      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+
+      // Add user's group as requester
+      $this->login();
+      $group = new \Group();
+      $group_id = $group->add(['name' => 'Test group']);
+      $this->integer((int)$group_id)->isGreaterThan(0);
+      $group_user = new \Group_User();
+      $this->integer(
+         (int)$group_user->add([
+            'groups_id' => $group_id,
+            'users_id'  => $post_only_id,
+         ])
+      )->isGreaterThan(0);
+
+      $ticket_user = new \Group_Ticket();
+      $group_ticket = new \Group_Ticket();
+      $input_group_ticket = [
+         'tickets_id' => $ticket->getID(),
+         'groups_id'  => $group_id,
+         'type'       => \CommonITILActor::ASSIGN
+      ];
+      $this->integer((int) $group_ticket->add($input_group_ticket))->isGreaterThan(0);
+      $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
+
+      // Can add followup as user is assigned
+      $this->login();
+      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isTrue();
+      $this->login('post-only', 'postonly');
+      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+   }
+
 }

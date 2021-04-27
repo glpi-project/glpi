@@ -913,14 +913,22 @@ class Toolbox extends \GLPITestCase {
             'number'    => 1600000000000,
             'precision' => 1,
             'expected'  => '1.6T',
-         ],
+         ], [
+            'number'    => "14%",
+            'precision' => 1,
+            'expected'  => '14%',
+         ], [
+            'number'    => "test",
+            'precision' => 1,
+            'expected'  => 'test',
+         ]
       ];
    }
 
    /**
     * @dataProvider shortenNumbers
     */
-   public function testShortenNumber(int $number, int $precision, string $expected) {
+   public function testShortenNumber($number, int $precision, string $expected) {
       $this->string(\Toolbox::shortenNumber($number, $precision, false))
          ->isEqualTo($expected);
    }
