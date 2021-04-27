@@ -535,7 +535,8 @@ class MailCollector extends DbTestCase {
                'Mono-part HTML message',
                '24.1 Test attachment with long multibyte filename',
                '24.2 Test attachment with short multibyte filename',
-               '25 - Test attachment with invalid chars for OS'
+               '25 - Test attachment with invalid chars for OS',
+               '26 Illegal char in body',
             ]
          ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -555,6 +556,7 @@ class MailCollector extends DbTestCase {
          // HTML on multi-part email
          'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine' => '&lt;p&gt;This message have reply to header, requester should be get from this header.&lt;/p&gt;',
          'Mono-part HTML message' => '&lt;p&gt;This HTML message does not use &lt;strong&gt;"multipart/alternative"&lt;/strong&gt; format.&lt;/p&gt;',
+         '26 Illegal char in body' => '这是很坏的Minus C Blabla',
       ];
 
       foreach ($actors_specs as $actor_specs) {
