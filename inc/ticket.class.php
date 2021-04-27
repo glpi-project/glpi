@@ -5095,6 +5095,7 @@ JAVASCRIPT;
          Contract::dropdown([
             'value'  => $contract_value,
             'name'   => '_contracts_id',
+            'entity' => $this->fields['entities_id'],
          ]);
 
          echo $tt->getEndHiddenFieldValue('_contracts_id', $this);
