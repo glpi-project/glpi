@@ -169,7 +169,7 @@ class CacheManager {
 
       if (!array_key_exists($context, $raw_config)) {
          // Default to filesystem, inside GLPI_CACHE_DIR/$context, with a generic namespace.
-         return new SimpleCache(new FilesystemAdapter($context, 0, GLPI_CACHE_DIR));
+         return new SimpleCache(new FilesystemAdapter($this->normalizeNamespace($context), 0, GLPI_CACHE_DIR));
       }
 
       $config = $raw_config[$context];
@@ -177,11 +177,7 @@ class CacheManager {
       $dsn       = $config['dsn'];
       $options   = $config['options'] ?? [];
       $scheme    = $this->extractScheme($dsn);
-      $namespace = preg_replace(
-         '/[' . preg_quote(CacheItem::RESERVED_CHARACTERS, '/') . ']/',
-         '_',
-         $config['namespace'] ?? $context
-      );
+      $namespace = $this->normalizeNamespace($config['namespace'] ?? $context);
 
       switch ($scheme) {
          case self::SCHEME_MEMCACHED:
@@ -344,6 +340,21 @@ PHP;
       }
 
       return in_array($this->extractScheme($dsn), array_keys($this->getAvailableAdapters()));
+   }
+
+   /**
+    * Normalize namespace to prevent usage of reserved chars.
+    *
+    * @param string $namespace
+    *
+    * @return string
+    */
+   private function normalizeNamespace(string $namespace): string {
+      return preg_replace(
+         '/[' . preg_quote(CacheItem::RESERVED_CHARACTERS, '/') . ']/',
+         '_',
+         $namespace
+      );
    }
 
    /**
