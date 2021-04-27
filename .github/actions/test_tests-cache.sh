@@ -15,7 +15,17 @@ for CONFIG in {"--use-default","--dsn=memcached://memcached","--dsn=redis://redi
     --bootstrap-file tests/bootstrap.php \
     --fail-if-skipped-methods \
     --no-code-coverage \
+    -d tests/units \
+    -t cache
+  vendor/bin/atoum \
+    -p 'php -d memory_limit=512M' \
+    --debug \
+    --force-terminal \
+    --use-dot-report \
+    --bootstrap-file tests/bootstrap.php \
+    --fail-if-skipped-methods \
+    --no-code-coverage \
     --max-children-number 1 \
-    -d tests/units -d tests/functionnal \
+    -d tests/functionnal \
     -t cache
 done
