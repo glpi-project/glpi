@@ -1,6 +1,11 @@
 {% import "components/form/fields_macros.html.twig" as fields %}
 
 {% set actor_options = field_options|merge({is_horizontal: false}) %}
+{% set can_admin = item.canAdminActors() %}
+{% if item.isNewItem() %}
+   {% set can_admin = true %}
+{% endif %}
+{# TODO can_admin is usefull for "assign to me" shortcut #}
 
 {# TODO check allow_email params #}
 
@@ -57,7 +62,7 @@
          'entities_id': params['entities_id'],
          'itiltemplate': itiltemplate,
          'params': params,
-         'canupdate': canupdate,
+         'canupdate': (canupdate or canassign),
       } only %}
    {% endset %}
    {{ fields.field(

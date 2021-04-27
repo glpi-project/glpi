@@ -9,7 +9,9 @@
       'class': 'form-select',
       'display': false,
       'rand': rand,
-   }|merge(field_options)),
+   }|merge(field_options|merge({
+      'disabled': (not (canupdate or can_requester))
+   }))),
    __("Urgency"),
    field_options
 ) }}
@@ -36,7 +38,9 @@
       'class': 'form-select',
       'display': false,
       'rand': rand,
-   }|merge(field_options)),
+   }|merge(field_options|merge({
+      'disabled': (not (canupdate or canpriority))
+   }))),
    __("priority"),
    field_options
 ) }}
