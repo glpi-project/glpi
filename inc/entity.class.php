@@ -2665,7 +2665,12 @@ class Entity extends CommonTreeDropdown {
             'contracts_id_default',
             $entity->fields['entities_id']
          );
-         self::inheritedValue($default_contract_values[$parent_default_contract_value], true);
+         if (!$parent_default_contract_value) {
+            $display_value = Dropdown::EMPTY_VALUE;
+         } else {
+            $display_value = $default_contract_values[$parent_default_contract_value];
+         }
+         self::inheritedValue($display_value, true);
       }
       echo "</td></tr>";
 
