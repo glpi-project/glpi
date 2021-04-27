@@ -207,6 +207,34 @@ DIFF
             ,
          ],
 
+         // utf8mb3 should be normalized to utf8.
+         [
+            'proper_sql'     => <<<SQL
+CREATE TABLE `table` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `content` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+SQL
+            ,
+            'effective_sql'  => <<<SQL
+CREATE TABLE `table` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `content` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
+SQL
+            ,
+            'version_string' => '8.0.24-standard',
+            'args'           => [
+               'use_utf8mb4' => false,
+            ],
+            'expected_has'   => false,
+            'expected_diff'  => '',
+         ],
+
          // DB using utf8mb4:
          // - should accept missing default charset/collate on columns if matching utf8mb4;
          // - should not accept non utf8mb4 charset;
@@ -300,6 +328,51 @@ DIFF
             ,
          ],
 
+         // DB using utf8mb3:
+         // - should accept missing default charset/collate on columns if matching utf8/utf8mb3;
+         // - should not accept non utf8/utf8mb3 charset;
+         // - should not accept 'mediumtext' instead of 'text'.
+         [
+            'proper_sql'     => <<<SQL
+CREATE TABLE `table` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `content` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+SQL
+            ,
+            'effective_sql'  => <<<SQL
+CREATE TABLE `table` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `content` mediumtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
+SQL
+            ,
+            'version_string' => '8.0.24-standard',
+            'args'           => [
+               'use_utf8mb4' => false,
+            ],
+            'expected_has'   => true,
+            'expected_diff'  => <<<DIFF
+--- Original
++++ New
+@@ @@
+ CREATE TABLE `table` (
+   `id` int NOT NULL AUTO_INCREMENT,
+-  `name` varchar(255) NOT NULL,
+-  `content` text,
++  `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
++  `content` mediumtext,
+   PRIMARY KEY (`id`)
+ ) COLLATE=utf8_unicode_ci DEFAULT CHARSET=utf8 ENGINE=InnoDB
+
+DIFF
+            ,
+         ],
+
          // Charset/collation difference should be ignored if related to utf8mb4 migration
          // when using ignore_utf8mb4_migration flag.
          [
@@ -322,6 +395,37 @@ CREATE TABLE `table` (
 SQL
             ,
             'version_string' => '10.2.36-MariaDB',
+            'args'           => [
+               'use_utf8mb4' => false,
+               'ignore_utf8mb4_migration' => true,
+            ],
+            'expected_has'   => false,
+            'expected_diff'  => '',
+         ],
+
+         // Charset/collation difference should be ignored if related to utf8mb4 migration
+         // when using ignore_utf8mb4_migration flag.
+         // utf8mb3 case
+         [
+            'proper_sql'     => <<<SQL
+CREATE TABLE `table` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `content` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+SQL
+            ,
+            'effective_sql'  => <<<SQL
+CREATE TABLE `table` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `content` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
+SQL
+            ,
+            'version_string' => '8.0.24-standard',
             'args'           => [
                'use_utf8mb4' => false,
                'ignore_utf8mb4_migration' => true,
@@ -374,7 +478,52 @@ DIFF
             ,
          ],
 
-         // Charset/collation difference should not be ignored if not related to utf8mb4 migration
+         // Charset/collation difference should NOT be ignored if related to utf8mb4 migration
+         // when NOT using ignore_utf8mb4_migration flag.
+         // utf8mb3 case
+         [
+            'proper_sql'     => <<<SQL
+CREATE TABLE `table` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+SQL
+            ,
+            'effective_sql'  => <<<SQL
+CREATE TABLE `table` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `content` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
+SQL
+            ,
+            'version_string' => '8.0.24-standard',
+            'args'           => [
+               'use_utf8mb4' => false,
+               'ignore_utf8mb4_migration' => false,
+            ],
+            'expected_has'   => true,
+            'expected_diff'  => <<<DIFF
+--- Original
++++ New
+@@ @@
+ CREATE TABLE `table` (
+   `id` int NOT NULL AUTO_INCREMENT,
+   `name` varchar(255) NOT NULL,
+-  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
++  `content` text,
+   PRIMARY KEY (`id`)
+-) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB
++) COLLATE=utf8_unicode_ci DEFAULT CHARSET=utf8 ENGINE=InnoDB
+
+DIFF
+            ,
+         ],
+
+         // Charset/collation difference should NOT be ignored if not related to utf8mb4 migration
          // when using ignore_utf8mb4_migration flag.
          [
             'proper_sql'     => <<<SQL
@@ -396,6 +545,50 @@ CREATE TABLE `table` (
 SQL
             ,
             'version_string' => '10.2.36-MariaDB',
+            'args'           => [
+               'use_utf8mb4' => false,
+               'ignore_utf8mb4_migration' => true,
+            ],
+            'expected_has'   => true,
+            'expected_diff'  => <<<DIFF
+--- Original
++++ New
+@@ @@
+ CREATE TABLE `table` (
+   `id` int NOT NULL AUTO_INCREMENT,
+   `name` varchar(255) NOT NULL,
+-  `content` text,
++  `content` text CHARACTER SET latin1 COLLATE latin1_general_ci,
+   PRIMARY KEY (`id`)
+ ) ENGINE=InnoDB
+
+DIFF
+            ,
+         ],
+
+         // Charset/collation difference should NOT be ignored if not related to utf8mb4 migration
+         // when using ignore_utf8mb4_migration flag.
+         // utf8mb3 case
+         [
+            'proper_sql'     => <<<SQL
+CREATE TABLE `table` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `content` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+SQL
+            ,
+            'effective_sql'  => <<<SQL
+CREATE TABLE `table` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  `content` text CHARACTER SET latin1 COLLATE latin1_general_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
+SQL
+            ,
+            'version_string' => '8.0.24-standard',
             'args'           => [
                'use_utf8mb4' => false,
                'ignore_utf8mb4_migration' => true,
