@@ -1213,6 +1213,10 @@ class AuthLDAP extends CommonDBTM {
          'name'               => __('Timeout'),
          'massiveaction'      => false,
          'datatype'           => 'number',
+         'unit'               => 'second',
+         'toadd'              => [
+            '0'                  => 'No timeout'
+         ],
          'autocomplete'       => true,
       ];
 
