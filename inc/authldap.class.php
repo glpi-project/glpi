@@ -1207,7 +1207,7 @@ class AuthLDAP extends CommonDBTM {
          'field'              => 'timeout',
          'name'               => __('Timeout'),
          'massiveaction'      => false,
-         'datatype'           => 'text',
+         'datatype'           => 'number',
          'autocomplete'       => true,
       ];
 
