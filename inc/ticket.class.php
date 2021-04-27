@@ -4528,6 +4528,7 @@ JAVASCRIPT;
             // If entity is not in the list of user's entities,
             // then use as default value the first value of the user's entites list
             $this->fields["entities_id"] = $this->userentities[0];
+            $this->input["entities_id"] = $this->userentities[0];
             // Pass to values
             $options['entities_id']       = $this->userentities[0];
          }
@@ -7731,7 +7732,7 @@ JAVASCRIPT;
    }
 
    public function getDefaultContract(): int {
-      $entity = $this->fields['entities_id'] ?? false;
+      $entity = $this->input['entities_id'] ?? $this->fields['entities_id'] ?? false;
       // Entity isn't set, can't load config
       if ($entity === false) {
          return 0;
