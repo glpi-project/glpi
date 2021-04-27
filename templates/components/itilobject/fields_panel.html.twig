@@ -61,7 +61,10 @@
 
             {% set cat_params = field_options %}
             {% if item.isNewItem() %}
-               {% set cat_params = cat_params|merge({'on_change': 'this.form.submit()',}) %}
+               {% set cat_params = cat_params|merge({
+                  'on_change': 'this.form.submit()',
+                  'disabled': (not (canupdate or can_requester))
+               }) %}
             {% endif %}
             {{ fields.dropdownField(
                'ITILCategory',

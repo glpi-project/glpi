@@ -4,6 +4,13 @@
 {% set is_new_item = (item.fields['id'] == 0) %}
 {% set show_form   = no_form is not defined or true %}
 
+{% set field_options = {
+   'is_horizontal': false,
+   'full_width': true,
+   'fields_template': itiltemplate
+   'disabled': (not (canupdate or can_requester))
+} %}
+
 {% if show_form %}
 <form name="asset_form" method="post" action="{{ target }}" {{ formoptions }} enctype="multipart/form-data">
 {% endif %}
@@ -12,24 +19,17 @@
          "name",
          item.fields['name'],
          __('Title'),
-         {
-            is_horizontal: false,
-            full_width: true,
-            fields_template: itiltemplate
-         }
+         field_options
       ) }}
 
       {{ fields.textareaField(
          "content",
          item.fields['content'],
          __('Description'),
-         {
-            is_horizontal: false,
-            full_width: true,
-            enable_richtext: true,
-            enable_fileupload: true,
-            fields_template: itiltemplate
-         }
+         field_options|merge({
+            'enable_richtext': true,
+            'enable_fileupload': true,
+         })
       ) }}
    </div>
 
