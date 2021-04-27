@@ -46,8 +46,16 @@
       .itil-right-side {
          height: calc(100% + 4px);
          position: relative;
-         background-color: $itil-secondary-bg;
+         border: 0px;
+         border-left: 1px solid $border-color;
 
+         .accordion-button {
+            background-color: $itil-secondary-bg;
+         }
+
+         .switch-panel-width {
+            z-index: 1040;
+         }
       }
    }
 }

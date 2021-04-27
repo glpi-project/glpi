@@ -14,8 +14,8 @@
             {% include("components/itilobject/timeline.html.twig") %}
          {% endif %}
       </div>
-      <div class="itil-right-side col-12 col-md-4 border-0 mt-0 mt-md-n1 card-footer p-0 rounded-0">
-         <button class="switch-panel-width btn btn-sm btn-outline-secondary btn-square btn-icon d-none d-md-block border-top-0 border-start-0">
+      <div class="itil-right-side col-12 col-md-4 mt-0 mt-md-n1 card-footer p-0 rounded-0">
+         <button class="switch-panel-width btn btn-sm btn-square btn-icon d-none d-md-block border-bottom-0 border-start-0 position-fixed bottom-0 left-0">
             <i class="fas fa-caret-left"></i>
          </button>
 
@@ -48,6 +48,8 @@ $(function() {
    $(document).on("click", ".switch-panel-width", function() {
       if ($('.itil-left-side').hasClass('col-md-8')) {
          $('.itil-left-side').removeClass('col-md-8').addClass('col-md-4');
+         $('.itil-footer .timeline-buttons').removeClass('col-md-8').addClass('col-md-4');
+         $('.itil-footer .form-buttons').removeClass('col-md').addClass('col-md-8');
          $('.itil-right-side').removeClass('col-md-4').addClass('col-md-8');
          $('.switch-panel-width i.fas').removeClass('fa-caret-left').addClass('fa-caret-right');
          $('.itil-right-side .accordion-body:not(.accordion-actors).row .col-12').removeClass('col-12').addClass('col-6');
@@ -55,6 +57,8 @@ $(function() {
       } else {
          $('.itil-left-side').removeClass('col-md-4').addClass('col-md-8');
          $('.itil-right-side').removeClass('col-md-8').addClass('col-md-4');
+         $('.itil-footer .timeline-buttons').removeClass('col-md-4').addClass('col-md-8');
+         $('.itil-footer .form-buttons').removeClass('col-md-8').addClass('col-md');
          $('.switch-panel-width i.fas').removeClass('fa-caret-right').addClass('fa-caret-left');
          $('.itil-right-side .accordion-body:not(.accordion-actors).row .col-6').removeClass('col-6').addClass('col-12');
          $('#actors .col-4').removeClass('col-4').addClass('col-12');
