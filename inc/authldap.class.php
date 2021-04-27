@@ -548,7 +548,6 @@ class AuthLDAP extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
-
       echo "<tr class='tab_bg_1'><td><label for='timeout'>" . __('Timeout') . "</label></td>";
       echo "<td colspan='3'>";
 
