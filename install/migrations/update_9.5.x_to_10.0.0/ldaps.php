@@ -79,7 +79,7 @@ if (!$DB->fieldExists('glpi_authldaps', 'timeout')) {
       'int',
       [
          'after'  => 'use_bind',
-         'value' => 3
+         'value' => 10
       ]
    );
 }
@@ -91,7 +91,7 @@ if (!$DB->fieldExists('glpi_authldapreplicates', 'timeout')) {
       'int',
       [
          'after'  => 'name',
-         'value' => 3
+         'value' => 10
       ]
    );
 }
