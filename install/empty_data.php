@@ -238,6 +238,7 @@ $default_prefs = [
    'lock_lockprofile_id'                     => '8',
    'set_default_requester'                   => '1',
    'highcontrast_css'                        => '0',
+   'default_central_tab'                     => '0',
    'smtp_check_certificate'                  => '1',
    'enable_api'                              => '0',
    'enable_api_login_credentials'            => '0',

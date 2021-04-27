@@ -124,6 +124,7 @@ class Session {
                // Default tab
                // $_SESSION['glpi_tab']=1;
                $_SESSION['glpi_tabs']           = [];
+
                $auth->user->computePreferences();
                foreach ($CFG_GLPI['user_pref_field'] as $field) {
                   if ($field == 'language' && isset($_POST['language']) && $_POST['language'] != '') {
@@ -131,6 +132,10 @@ class Session {
                   } else if (isset($auth->user->fields[$field])) {
                      $_SESSION["glpi$field"] = $auth->user->fields[$field];
                   }
+               }
+
+               if (isset($_SESSION['glpidefault_central_tab']) && $_SESSION['glpidefault_central_tab']) {
+                  Session::setActiveTab("central", "Central$". $_SESSION['glpidefault_central_tab']);
                }
                // Do it here : do not reset on each page, cause export issue
                if ($_SESSION["glpilist_limit"] > $CFG_GLPI['list_limit_max']) {
