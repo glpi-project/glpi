@@ -1003,6 +1003,7 @@ SCSS
                '-4HOUR'    => "- 4 hours",
                '-14MINUTE' => "- 14 minutes",
             ],
+            'unwanted' => ['0', '4DAY', 'LASTMONDAY'],
          ],
          [
             'options' => [
@@ -1018,6 +1019,7 @@ SCSS
                '5DAY'      => "+ 5 days",
                '11HOUR'    => "+ 11 hours",
             ],
+            'unwanted' => ['0', 'LASTMONDAY'],
          ],
          [
             'options' => [
@@ -1031,6 +1033,7 @@ SCSS
                '4DAY'      => "+ 4 days",
                '-3DAY'      => "- 3 days",
             ],
+            'unwanted' => ['0', 'LASTMONDAY', '-3MINUTE'],
          ],
          [
             'options' => [
@@ -1048,6 +1051,7 @@ SCSS
                'BEGINMONTH' => "Beginning of the month",
                'BEGINYEAR'  => "Beginning of the year",
             ],
+            'unwanted' => ['0', '+2DAY',],
          ],
          [
             'options' => [
@@ -1057,8 +1061,9 @@ SCSS
                'with_specific_date' => true,
             ],
             'check_values' => [
-               '0'        => "Specify a date",
+               '0' => "Specify a date",
             ],
+            'unwanted' => ['+2DAY', 'LASTMONDAY', '-3MINUTE'],
          ],
       ];
    }
@@ -1068,12 +1073,18 @@ SCSS
     */
    public function testGetGenericDateTimeSearchItems(
       array $options,
-      array $check_values
+      array $check_values,
+      array $unwanted
    ) {
       $values = \Html::getGenericDateTimeSearchItems($options);
+
       foreach ($check_values as $key => $value) {
          $this->array($values)->hasKey($key);
          $this->string($values[$key])->isEqualTo($value);
+      }
+
+      foreach ($unwanted as $key) {
+         $this->array($values)->notHasKey($key);
       }
    }
 }
