@@ -237,6 +237,8 @@ class DatabaseSchemaChecker {
       if ($this->ignore_timestamps_migration) {
          $column_replacements['/ timestamp( NULL)?/i'] = ' datetime';
       }
+      // Normalize utf8mb3 to utf8
+      $column_replacements['/utf8mb3/i'] = 'utf8';
       if ($this->ignore_utf8mb4_migration) {
          $column_replacements['/( CHARACTER SET (utf8|utf8mb4))? COLLATE (utf8_unicode_ci|utf8mb4_unicode_ci)/i'] = '';
       }
@@ -273,6 +275,13 @@ class DatabaseSchemaChecker {
       }
       if ($this->ignore_innodb_migration) {
          unset($properties['ENGINE']);
+      }
+      // Normalize utf8mb3 to utf8
+      if (array_key_exists('DEFAULT CHARSET', $properties)) {
+         $properties['DEFAULT CHARSET'] = str_replace('utf8mb3', 'utf8', $properties['DEFAULT CHARSET']);
+      }
+      if (array_key_exists('COLLATE', $properties)) {
+         $properties['COLLATE'] = str_replace('utf8mb3', 'utf8', $properties['COLLATE']);
       }
       if ($this->ignore_utf8mb4_migration) {
          // Remove non specific character set / collate
