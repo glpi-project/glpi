@@ -7545,7 +7545,7 @@ abstract class CommonITILObject extends CommonDBTM {
          echo $text;
       } else {
          if ($ismultientities) {
-            sprintf(
+            echo sprintf(
                //TRANS first parameter is the type name, second the entity name
                __('%1$s will be added in entity %2$s'),
                static::getTypeName(1),
