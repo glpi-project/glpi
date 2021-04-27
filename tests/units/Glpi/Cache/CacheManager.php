@@ -68,11 +68,14 @@ class CacheManager extends \GLPITestCase {
       // Also test argument checks on other methods
       if (!$is_valid) {
          $exception_msg = sprintf('Invalid context: "%s".', $context);
-         $this->exception(
-            function () use ($context) {
-               $this->testedInstance->setConfiguration($context, 'file:///tmp');
-            }
-         )->message->isEqualTo($exception_msg);
+
+         if (extension_loaded('memcached')) {
+            $this->exception(
+               function () use ($context) {
+                  $this->testedInstance->setConfiguration($context, 'memcached://localhost');
+               }
+            )->message->isEqualTo($exception_msg);
+         }
 
          $this->exception(
             function () use ($context) {
@@ -89,7 +92,10 @@ class CacheManager extends \GLPITestCase {
          return;
       }
 
-      $this->boolean($this->testedInstance->setConfiguration($context, 'file:///tmp'))->isTrue();
+      if (extension_loaded('memcached')) {
+         $this->boolean($this->testedInstance->setConfiguration($context, 'memcached://localhost'))->isTrue();
+      }
+
       $this->boolean($this->testedInstance->unsetConfiguration($context))->isTrue();
       $this->object($this->testedInstance->getCacheInstance($context))->isInstanceOf(SimpleCache::class);
    }
@@ -109,21 +115,11 @@ class CacheManager extends \GLPITestCase {
          // Invalid multiple DSN
          yield [
             'context'          => $context,
-            'dsn'              => ['file:///tmp/a', 'file:///tmp/b'],
+            'dsn'              => ['redis://cache1.glpi-project.org', 'redis://cache2.glpi-project.org'],
             'options'          => [],
             'namespace'        => null,
-            'expected_error'   => 'Invalid DSN: ["file:///tmp/a","file:///tmp/b"].',
+            'expected_error'   => 'Invalid DSN: ["redis://cache1.glpi-project.org","redis://cache2.glpi-project.org"].',
             'expected_adapter' => FilesystemAdapter::class, // Fallback adapter
-         ];
-
-         // Filesystem config
-         yield [
-            'context'          => $context,
-            'dsn'              => 'file:///tmp',
-            'options'          => [],
-            'namespace'        => null,
-            'expected_error'   => null,
-            'expected_adapter' => FilesystemAdapter::class,
          ];
 
          if (extension_loaded('memcached')) {
@@ -212,7 +208,7 @@ class CacheManager extends \GLPITestCase {
 
       $expected_config = [
          'core' => [
-            'dsn'       => 'file:///var/glpi/cache',
+            'dsn'       => 'memcached://localhost',
          ],
          'plugin:tester' => [
             'dsn'       => 'redis://cache.glpi-project.org/glpi',
@@ -345,11 +341,6 @@ class CacheManager extends \GLPITestCase {
 
    protected function dsnProvider(): iterable {
       yield [
-         'dsn'      => 'file:///tmp/cache',
-         'is_valid' => true,
-         'scheme'   => 'file',
-      ];
-      yield [
          'dsn'      => 'memcached://user:pass@127.0.0.1:1015?weight=20',
          'is_valid' => true,
          'scheme'   => 'memcached',
@@ -380,7 +371,7 @@ class CacheManager extends \GLPITestCase {
          'scheme'   => null,
       ];
       yield [
-         'dsn'      => ['file:///tmp/cache', 'redis://localhost/glpi'],
+         'dsn'      => ['redis:///tmp/cache', 'redis://localhost/glpi'], // invalid multiple DSN
          'is_valid' => false,
          'scheme'   => null,
       ];

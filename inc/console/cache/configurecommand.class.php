@@ -111,7 +111,6 @@ class ConfigureCommand extends AbstractCommand {
       );
 
       $this->addUsage('--use-default');
-      $this->addUsage('--dsn=filesystem://path/to/cache');
       $this->addUsage('--dsn=memcached://cache1.glpi-project.org --dsn=memcached://cache2.glpi-project.org');
       $this->addUsage('--dsn=redis://redis.glpi-project.org:6379/glpi');
 
@@ -122,12 +121,11 @@ class ConfigureCommand extends AbstractCommand {
             '<comment>' . implode('</comment>, <comment>', $adapters) . '</comment>'
          ),
          '',
-         sprintf(__('%s DSN format: %s'), $adapters[CacheManager::SCHEME_FILESYSTEM], 'file:///path/to/cache/dir'),
          sprintf(__('%s DSN format: %s'), $adapters[CacheManager::SCHEME_MEMCACHED], 'memcached://[user:pass@][ip|host|socket[:port]][?weight=int]'),
          sprintf(__('%s DSN format: %s'), $adapters[CacheManager::SCHEME_REDIS], 'redis://[pass@][ip|host|socket[:port]][/db-index]'),
          sprintf(__('%s DSN format: %s'), $adapters[CacheManager::SCHEME_REDISS], 'rediss://[pass@][ip|host|socket[:port]][/db-index]'),
          '',
-         __('Cache namespace can be use to ensure either separation or sharing of multiple GLPI instances data on same cache system.')
+         __('Cache namespace can be use to ensure either separation or sharing of multiple GLPI instances data on same cache system.'),
       ];
       $this->setHelp(implode("\n", $help_lines));
    }

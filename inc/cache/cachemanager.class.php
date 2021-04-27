@@ -45,12 +45,6 @@ use Toolbox;
 class CacheManager {
 
    /**
-    * Filesystem scheme.
-    * @var string
-    */
-   public const SCHEME_FILESYSTEM = 'file';
-
-   /**
     * Memcached scheme.
     * @var string
     */
@@ -173,15 +167,12 @@ class CacheManager {
 
       $raw_config = $this->getRawConfig();
 
-      if (array_key_exists($context, $raw_config)) {
-         $config = $raw_config[$context];
-      } else {
+      if (!array_key_exists($context, $raw_config)) {
          // Default to filesystem, inside GLPI_CACHE_DIR/$context, with a generic namespace.
-         $config = [
-            'dsn'       => sprintf('file://%s', GLPI_CACHE_DIR),
-            'namespace' => $context,
-         ];
+         return new SimpleCache(new FilesystemAdapter($context, 0, GLPI_CACHE_DIR));
       }
+
+      $config = $raw_config[$context];
 
       $dsn       = $config['dsn'];
       $options   = $config['options'] ?? [];
@@ -193,11 +184,6 @@ class CacheManager {
       );
 
       switch ($scheme) {
-         case self::SCHEME_FILESYSTEM:
-            $path = preg_replace('/^file:\/\/(.+)$/', '$1', $dsn);
-            $storage = new FilesystemAdapter($namespace, 0, $path);
-         break;
-
          case self::SCHEME_MEMCACHED:
             $storage = new MemcachedAdapter(
                MemcachedAdapter::createConnection($dsn, $options),
@@ -369,7 +355,6 @@ PHP;
     */
    public static function getAvailableAdapters(): array {
       return [
-         self::SCHEME_FILESYSTEM => __('File system cache'),
          self::SCHEME_MEMCACHED  => __('Memcached'),
          self::SCHEME_REDIS      => __('Redis (TCP)'),
          self::SCHEME_REDISS     => __('Redis (TLS)'),
