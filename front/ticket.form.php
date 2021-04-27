@@ -156,37 +156,23 @@ if (isset($_POST["add"])) {
 
    Html::redirect(Ticket::getFormURLWithID($_POST["id"]));
 
-} else if (isset($_POST['addme_observer'])) {
-   $track->check($_POST['tickets_id'], READ);
+} else if (isset($_REQUEST['addme_as_actor'])) {
+   $id = (int) $_REQUEST['id'];
+   $track->check($id, READ);
    $input = array_merge(Toolbox::addslashes_deep($track->fields), [
-      'id' => $_POST['tickets_id'],
-      '_itil_observer' => [
+      'id' => $id,
+      '_itil_'.$_REQUEST['actortype'] => [
          '_type' => "user",
          'users_id' => Session::getLoginUserID(),
          'use_notification' => 1,
       ]
    ]);
    $track->update($input);
-   Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
+   Event::log($id, "ticket", 4, "tracking",
               //TRANS: %s is the user login
               sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
-   Html::redirect(Ticket::getFormURLWithID($_POST['tickets_id']));
+   Html::redirect(Ticket::getFormURLWithID($id));
 
-} else if (isset($_POST['addme_assign'])) {
-   $track->check($_POST['tickets_id'], READ);
-   $input = array_merge(Toolbox::addslashes_deep($track->fields), [
-      'id' => $_POST['tickets_id'],
-      '_itil_assign' => [
-         '_type' => "user",
-         'users_id' => Session::getLoginUserID(),
-         'use_notification' => 1,
-      ]
-   ]);
-   $track->update($input);
-   Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
-              //TRANS: %s is the user login
-              sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
-   Html::redirect(Ticket::getFormURLWithID($_POST['tickets_id']));
 } else if (isset($_REQUEST['delete_document'])) {
    $track->getFromDB((int)$_REQUEST['tickets_id']);
    $doc = new Document();

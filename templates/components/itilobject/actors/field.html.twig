@@ -29,6 +29,8 @@
    {% endfor %}
    </select>
 
+   {% include "components/itilobject/actors/assign_to_me.html.twig" %}
+
    <script type="text/javascript">
    $(function() {
       var actorytype = '{{ actortype }}';
@@ -128,7 +130,7 @@
 
       $("#actor_{{ rand }}").select2({
          tags: true,
-         width: '100%',
+         width: 'calc(100% - 30px)',
          tokenSeparators: [',', ' '],
          disabled: false, // TODO can edit
          containerCssClass: 'actor-field',
