@@ -11,7 +11,7 @@
 
 {% if not itiltemplate.isHiddenField("_users_id_requester") or not itiltemplate.isHiddenField("_groups_id_requester") %}
    {% set requester_field %}
-      {% include "components/itilobject/actor_field.html.twig" with {
+      {% include "components/itilobject/actors/field.html.twig" with {
          'item': item,
          'actortypeint': constant('CommonITILActor::REQUESTER'),
          'actortype': 'requester',
@@ -33,7 +33,7 @@
 
 {% if not itiltemplate.isHiddenField("_users_id_observer") or not itiltemplate.isHiddenField("_groups_id_observer") %}
    {% set observer_field %}
-      {% include "components/itilobject/actor_field.html.twig" with {
+      {% include "components/itilobject/actors/field.html.twig" with {
          'item': item,
          'actortypeint': constant('CommonITILActor::OBSERVER'),
          'actortype': 'observer',
@@ -55,7 +55,7 @@
 
 {% if not itiltemplate.isHiddenField("_users_id_assign") or not itiltemplate.isHiddenField("_groups_id_assign") or not itiltemplate.isHiddenField("_supplier_id_assign") %}
    {% set assign_field %}
-      {% include "components/itilobject/actor_field.html.twig" with {
+      {% include "components/itilobject/actors/field.html.twig" with {
          'item': item,
          'actortypeint': constant('CommonITILActor::ASSIGN'),
          'actortype': 'assign',
