@@ -36,7 +36,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use Symfony\Component\Cache\Adapter\CouchbaseBucketAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
@@ -44,12 +43,6 @@ use Symfony\Component\Cache\CacheItem;
 use Toolbox;
 
 class CacheManager {
-
-   /**
-    * Couchbase scheme.
-    * @var string
-    */
-   public const SCHEME_COUCHBASE  = 'couchbase';
 
    /**
     * Filesystem scheme.
@@ -148,10 +141,6 @@ class CacheManager {
     */
    public function testConnection($dsn, array $options = []): void {
       switch ($this->extractScheme($dsn)) {
-         case self::SCHEME_COUCHBASE:
-            // Init Couchbase connection to find potential connection errors.
-            $client = CouchbaseBucketAdapter::createConnection($dsn, $options);
-            break;
          case self::SCHEME_MEMCACHED:
             // Init Memcached connection to find potential connection errors.
             $client = MemcachedAdapter::createConnection($dsn, $options);
@@ -204,13 +193,6 @@ class CacheManager {
       );
 
       switch ($scheme) {
-         case self::SCHEME_COUCHBASE:
-            $storage = new CouchbaseBucketAdapter(
-               CouchbaseBucketAdapter::createConnection($dsn, $options),
-               $namespace
-            );
-            break;
-
          case self::SCHEME_FILESYSTEM:
             $path = preg_replace('/^file:\/\/(.+)$/', '$1', $dsn);
             $storage = new FilesystemAdapter($namespace, 0, $path);
@@ -272,8 +254,8 @@ class CacheManager {
             return null; // Mixed schemes are not allowed
          }
          $scheme = reset($schemes);
-         // Only Couchbase and Memcached systems accept multiple DSN.
-         return in_array($scheme, [self::SCHEME_COUCHBASE, self::SCHEME_MEMCACHED]) ? $scheme : null;
+         // Only Memcached system accept multiple DSN.
+         return $scheme === self::SCHEME_MEMCACHED ? $scheme : null;
       }
 
       if (!is_string($dsn)) {
@@ -371,8 +353,8 @@ PHP;
             return false; // Mixed schemes are not allowed
          }
 
-         // Only Couchbase and Memcached systems accept multiple DSN.
-         return in_array(reset($schemes), [self::SCHEME_COUCHBASE, self::SCHEME_MEMCACHED]);
+         // Only Memcached system accept multiple DSN.
+         return reset($schemes) === self::SCHEME_MEMCACHED;
       }
 
       return in_array($this->extractScheme($dsn), array_keys($this->getAvailableAdapters()));
@@ -388,7 +370,6 @@ PHP;
    public static function getAvailableAdapters(): array {
       return [
          self::SCHEME_FILESYSTEM => __('File system cache'),
-         self::SCHEME_COUCHBASE  => __('Couchbase'),
          self::SCHEME_MEMCACHED  => __('Memcached'),
          self::SCHEME_REDIS      => __('Redis (TCP)'),
          self::SCHEME_REDISS     => __('Redis (TLS)'),

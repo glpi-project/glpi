@@ -1704,7 +1704,7 @@ class Config extends CommonDBTM {
       echo '<tr><td class="b">' . __('You can use "php bin/console cache:configure" command to configure cache system.') . '</td></tr>';
       $ext = strtolower(get_class($GLPI_CACHE->getStorage()));
       $ext = preg_replace('/^.*\\\([a-z]+?)(?:adapter)?$/', '$1', $ext);
-      if (in_array($ext, ['couchbase', 'memcached', 'redis'])) {
+      if (in_array($ext, ['memcached', 'redis'])) {
          $msg = sprintf(__s('The "%s" cache extension is installed'), $ext);
       } else {
          $msg = sprintf(__s('"%s" cache system is used'), $ext);

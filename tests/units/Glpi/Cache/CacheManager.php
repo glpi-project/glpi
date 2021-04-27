@@ -34,7 +34,6 @@ namespace tests\units\Glpi\Cache;
 
 use Glpi\Cache\SimpleCache;
 use org\bovigo\vfs\vfsStream;
-use Symfony\Component\Cache\Adapter\CouchbaseBucketAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
@@ -126,28 +125,6 @@ class CacheManager extends \GLPITestCase {
             'expected_error'   => null,
             'expected_adapter' => FilesystemAdapter::class,
          ];
-
-         if (extension_loaded('couchbase')) {
-            // Couchbase config (unique DSN)
-            yield [
-               'context'          => $context,
-               'dsn'              => 'couchbase://cache.glpi-project.org/glpi',
-               'options'          => [],
-               'namespace'        => null,
-               'expected_error'   => null,
-               'expected_adapter' => CouchbaseBucketAdapter::class,
-            ];
-
-            // Couchbase config (multiple DSN)
-            yield [
-               'context'          => $context,
-               'dsn'              => ['couchbase://cache1.glpi-project.org/glpi', 'couchbase://cache2.glpi-project.org/glpi'],
-               'options'          => [],
-               'namespace'        => 'ns',
-               'expected_error'   => null,
-               'expected_adapter' => CouchbaseBucketAdapter::class,
-            ];
-         }
 
          if (extension_loaded('memcached')) {
             // Memcached config (unique DSN)
@@ -373,16 +350,6 @@ class CacheManager extends \GLPITestCase {
          'scheme'   => 'file',
       ];
       yield [
-         'dsn'      => 'couchbase://user:pass@127.0.0.1:1015/glpi',
-         'is_valid' => true,
-         'scheme'   => 'couchbase',
-      ];
-      yield [
-         'dsn'      => ['couchbase://cache1.glpi-project.org/glpi', 'couchbase://cache2.glpi-project.org/glpi'],
-         'is_valid' => true,
-         'scheme'   => 'couchbase',
-      ];
-      yield [
          'dsn'      => 'memcached://user:pass@127.0.0.1:1015?weight=20',
          'is_valid' => true,
          'scheme'   => 'memcached',
@@ -409,11 +376,6 @@ class CacheManager extends \GLPITestCase {
       ];
       yield [
          'dsn'      => 'donotknowit://127.0.0.1', // unknown scheme
-         'is_valid' => false,
-         'scheme'   => null,
-      ];
-      yield [
-         'dsn'      => ['couchbase://cache1.glpi-project.org/glpi', 'memcached://cache2.glpi-project.org'],
          'is_valid' => false,
          'scheme'   => null,
       ];

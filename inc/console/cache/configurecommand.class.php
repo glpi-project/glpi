@@ -123,7 +123,6 @@ class ConfigureCommand extends AbstractCommand {
          ),
          '',
          sprintf(__('%s DSN format: %s'), $adapters[CacheManager::SCHEME_FILESYSTEM], 'file:///path/to/cache/dir'),
-         sprintf(__('%s DSN format: %s'), $adapters[CacheManager::SCHEME_COUCHBASE], 'couchbase://[user:pass@][ip|host[:port]]/bucket-name'),
          sprintf(__('%s DSN format: %s'), $adapters[CacheManager::SCHEME_MEMCACHED], 'memcached://[user:pass@][ip|host|socket[:port]][?weight=int]'),
          sprintf(__('%s DSN format: %s'), $adapters[CacheManager::SCHEME_REDIS], 'redis://[pass@][ip|host|socket[:port]][/db-index]'),
          sprintf(__('%s DSN format: %s'), $adapters[CacheManager::SCHEME_REDISS], 'rediss://[pass@][ip|host|socket[:port]][/db-index]'),
