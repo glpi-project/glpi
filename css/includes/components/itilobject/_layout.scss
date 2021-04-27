@@ -31,7 +31,7 @@
 
 .itil-object {
    @include media-breakpoint-up(sm) {
-      height: calc(100vh - 173px);
+      height: calc(100vh - 178px);
 
       .itil-left-side, .itil-right-side {
          overflow-y: auto;
@@ -56,6 +56,14 @@
          .switch-panel-width {
             z-index: 1040;
          }
+      }
+   }
+}
+
+.debug-active {
+   .itil-object {
+      @include media-breakpoint-up(sm) {
+         height: calc(100vh - 201px);
       }
    }
 }
