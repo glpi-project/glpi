@@ -405,7 +405,11 @@ class AuthLDAP extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td><label for='timeout'>" . __('Timeout') . "</label></td>";
          echo "<td colspan='3'>";
-         if (empty($this->fields["timeout"])) $this->fields["timeout"] = 10;
+
+         //set deffault value to 10 on create
+         if (empty($this->fields["timeout"])) {
+            $this->fields["timeout"] = 10;
+         }
          Dropdown::showNumber('timeout', ['value'  => $this->fields["timeout"],
                                           'min'    => 1,
                                           'max'    => 10,
