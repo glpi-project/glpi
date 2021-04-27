@@ -79,14 +79,22 @@ class AuthLdapReplicate extends CommonDBTM {
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='4'>".__('Add a LDAP directory replica'). "</th></tr>";
+      echo "<tr><th colspan='5'>".__('Add a LDAP directory replica'). "</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>".__('Name')."</td>";
       echo "<td class='center'>".__('Server')."</td>";
-      echo "<td class='center'>"._n('Port', 'Ports', 1)."</td><td></td></tr>";
+      echo "<td class='center'>"._n('Port', 'Ports', 1)."</td>";
+      echo "<td class='center'>".__('Timeout')."</td><td></td></tr>";
       echo "<tr class='tab_bg_1'>";
       echo "<td class='center'><input type='text' name='name'></td>";
       echo "<td class='center'><input type='text' name='host'></td>";
       echo "<td class='center'><input type='text' name='port'></td>";
+      echo "<td class='center'>";
+      Dropdown::showNumber('timeout', ['value'  => 10,
+                                       'min'    => 1,
+                                       'max'    => 30,
+                                       'step'   => 1,
+                                       'toadd'  => [0 => __('No timeout')]]);
+      echo "</td>";
       echo "<td class='center'><input type='hidden' name='next' value='extauth_ldap'>";
       echo "<input type='hidden' name='authldaps_id' value='$master_id'>";
       echo "<input type='submit' name='add_replicate' value='"._sx('button', 'Add') ."' class='submit'></td>";

@@ -71,3 +71,27 @@ if (!$DB->fieldExists('glpi_authldaps', 'use_bind')) {
       ]
    );
 }
+
+if (!$DB->fieldExists('glpi_authldaps', 'timeout')) {
+   $migration->addField(
+      'glpi_authldaps',
+      'timeout',
+      'int',
+      [
+         'after'  => 'use_bind',
+         'value' => 10
+      ]
+   );
+}
+
+if (!$DB->fieldExists('glpi_authldapreplicates', 'timeout')) {
+   $migration->addField(
+      'glpi_authldapreplicates',
+      'timeout',
+      'int',
+      [
+         'after'  => 'name',
+         'value' => 10
+      ]
+   );
+}

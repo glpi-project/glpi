@@ -548,6 +548,16 @@ class AuthLDAP extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
+      echo "<tr class='tab_bg_1'><td><label for='timeout'>" . __('Timeout') . "</label></td>";
+      echo "<td colspan='3'>";
+
+      Dropdown::showNumber('timeout', ['value'  => $this->fields["timeout"],
+                                       'min'    => 1,
+                                       'max'    => 30,
+                                       'step'   => 1,
+                                       'toadd'  => [0 => __('No timeout')]]);
+      echo "</td></tr>";
+
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
       echo "<input type='submit' name='update' class='submit' value=\"".__s('Save')."\">";
       echo $hidden;
@@ -606,7 +616,8 @@ class AuthLDAP extends CommonDBTM {
          $header_top     = "<th>".Html::getCheckAllAsCheckbox('massAuthLdapReplicate'.$rand)."</th>";
          $header_bottom  = "<th>".Html::getCheckAllAsCheckbox('massAuthLdapReplicate'.$rand)."</th>";
          $header_end     = "<th class='center b'>".__('Name')."</th>";
-         $header_end    .= "<th class='center b'>"._n('Replicate', 'Replicates', 1)."</th>".
+         $header_end    .= "<th class='center b'>"._n('Replicate', 'Replicates', 1)."</th>";
+         $header_end    .= "<th class='center b'>".__('Timeout')."</th>".
               "<th class='center'></th></tr>";
          echo $header_begin.$header_top.$header_end;
 
@@ -618,6 +629,7 @@ class AuthLDAP extends CommonDBTM {
             echo "<td class='center'>".sprintf(__('%1$s: %2$s'), $ldap_replicate["host"],
                                                $ldap_replicate["port"]);
             echo "</td>";
+            echo "<td class='center'>" . $ldap_replicate["timeout"] . "</td>";
             echo "<td class='center'>";
             Html::showSimpleForm(static::getFormURL(),
                                  'test_ldap_replicate', _sx('button', 'Test'),
@@ -1194,6 +1206,20 @@ class AuthLDAP extends CommonDBTM {
          'autocomplete'       => true,
       ];
 
+      $tab[] = [
+         'id'                 => '32',
+         'table'              => $this->getTable(),
+         'field'              => 'timeout',
+         'name'               => __('Timeout'),
+         'massiveaction'      => false,
+         'datatype'           => 'number',
+         'unit'               => 'second',
+         'toadd'              => [
+            '0'                  => __('No timeout')
+         ],
+         'autocomplete'       => true,
+      ];
+
       return $tab;
    }
 
@@ -1478,7 +1504,8 @@ class AuthLDAP extends CommonDBTM {
                                   $config_ldap->fields['deref_option'],
                                   $config_ldap->fields['tls_certfile'],
                                   $config_ldap->fields['tls_keyfile'],
-                                  $config_ldap->fields['use_bind']);
+                                  $config_ldap->fields['use_bind'],
+                                  $config_ldap->fields['timeout']);
       if ($ds) {
          return true;
       }
@@ -2637,7 +2664,8 @@ class AuthLDAP extends CommonDBTM {
                                     $this->fields['deref_option'],
                                     $this->fields['tls_certfile'],
                                     $this->fields['tls_keyfile'],
-                                    $this->fields['use_bind']);
+                                    $this->fields['use_bind'],
+                                    $this->fields['timeout']);
    }
 
 
@@ -2659,13 +2687,14 @@ class AuthLDAP extends CommonDBTM {
    static function connectToServer($host, $port, $login = "", $password = "",
                                    $use_tls = false, $deref_options = 0,
                                    $tls_certfile = "", $tls_keyfile = "",
-                                   $use_bind = true) {
+                                   $use_bind = true, $timeout = 0) {
 
       $ds = @ldap_connect($host, intval($port));
       if ($ds) {
          @ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
          @ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
          @ldap_set_option($ds, LDAP_OPT_DEREF, $deref_options);
+         @ldap_set_option($ds, LDAP_OPT_NETWORK_TIMEOUT, $timeout);
 
          if (file_exists($tls_certfile)) {
             @ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile);
@@ -2719,7 +2748,8 @@ class AuthLDAP extends CommonDBTM {
                                   $ldap_method['use_tls'], $ldap_method['deref_option'],
                                   $ldap_method['tls_certfile'] ?? '',
                                   $ldap_method['tls_keyfile'] ?? '',
-                                  $ldap_method['use_bind']);
+                                  $ldap_method['use_bind'],
+                                  $ldap_method['timeout']);
 
       // Test with login and password of the user if exists
       if (!$ds
@@ -2729,7 +2759,8 @@ class AuthLDAP extends CommonDBTM {
                                      $ldap_method['deref_option'],
                                      $ldap_method['tls_certfile'] ?? '',
                                      $ldap_method['tls_keyfile'] ?? '',
-                                     $ldap_method['use_bind']);
+                                     $ldap_method['use_bind'],
+                                     $ldap_method['timeout']);
       }
 
       //If connection is not successful on this directory, try replicates (if replicates exists)
@@ -2742,7 +2773,8 @@ class AuthLDAP extends CommonDBTM {
                                         $ldap_method['use_tls'], $ldap_method['deref_option'],
                                         $ldap_method['tls_certfile'] ?? '',
                                         $ldap_method['tls_keyfile'] ?? '',
-                                        $ldap_method['use_bind']);
+                                        $ldap_method['use_bind'],
+                                        $ldap_method['timeout']);
 
             // Test with login and password of the user
             if (!$ds
@@ -2752,7 +2784,8 @@ class AuthLDAP extends CommonDBTM {
                                            $ldap_method['deref_option'],
                                            $ldap_method['tls_certfile'] ?? '',
                                            $ldap_method['tls_keyfile'] ?? '',
-                                           $ldap_method['use_bind']);
+                                           $ldap_method['use_bind'],
+                                           $ldap_method['timeout']);
             }
             if ($ds) {
                return $ds;
@@ -3503,7 +3536,8 @@ class AuthLDAP extends CommonDBTM {
                                 $authldap->getField('deref_option'),
                                 $authldap->getField('tls_certfile'),
                                 $authldap->getField('tls_keyfile'),
-                                $authldap->getField('use_bind'))) {
+                                $authldap->getField('use_bind'),
+                                $authldap->getField('timeout'))) {
          self::showLdapUsers();
 
       } else {

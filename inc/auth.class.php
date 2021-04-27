@@ -761,7 +761,8 @@ class Auth {
                                                   $ldap_method["deref_option"],
                                                   $ldap_method["tls_certfile"],
                                                   $ldap_method["tls_keyfile"],
-                                                  $ldap_method["use_bind"]);
+                                                  $ldap_method["use_bind"],
+                                                  $ldap_method["timeout"]);
 
                   if ($ds) {
                      $ldapservers_status = true;
