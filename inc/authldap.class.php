@@ -403,20 +403,6 @@ class AuthLDAP extends CommonDBTM {
          Dropdown::showYesNo('use_bind', $this->fields["use_bind"]);
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td><label for='timeout'>" . __('Timeout') . "</label></td>";
-         echo "<td colspan='3'>";
-
-         //set deffault value to 10 on create
-         if ($this->isNewItem()) {
-            $this->fields["timeout"] = 10;
-         }
-         Dropdown::showNumber('timeout', ['value'  => $this->fields["timeout"],
-                                          'min'    => 1,
-                                          'max'    => 30,
-                                          'step'   => 1,
-                                          'toadd'  => [0 => __('No timeout')]]);
-         echo "</td></tr>";
-
          echo "<tr class='tab_bg_1'><td><label for='rootdn_passwd'>" .
             __('Password (for non-anonymous binds)') . "</label></td>";
          echo "<td><input type='password' id='rootdn_passwd' name='rootdn_passwd' value='' autocomplete='new-password'>";
@@ -561,6 +547,21 @@ class AuthLDAP extends CommonDBTM {
       echo "<input type='text' name='tls_keyfile' id='tls_keyfile' value='".$this->fields["tls_keyfile"]."'>";
       echo "</td>";
       echo "</tr>";
+
+
+      echo "<tr class='tab_bg_1'><td><label for='timeout'>" . __('Timeout') . "</label></td>";
+      echo "<td colspan='3'>";
+
+      //set deffault value to 10 on create
+      if ($this->isNewItem()) {
+         $this->fields["timeout"] = 10;
+      }
+      Dropdown::showNumber('timeout', ['value'  => $this->fields["timeout"],
+                                       'min'    => 1,
+                                       'max'    => 30,
+                                       'step'   => 1,
+                                       'toadd'  => [0 => __('No timeout')]]);
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
       echo "<input type='submit' name='update' class='submit' value=\"".__s('Save')."\">";
