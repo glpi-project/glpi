@@ -2,7 +2,7 @@
 
 TMP_CACHE_DIR=$(mktemp -d -t glpi-cache-test-XXXXXXXXXX)
 
-for CONFIG in {"--use-default","--dsn=redis://redis"}; do
+for CONFIG in {"--use-default","--dsn=memcached://memcached","--dsn=redis://redis"}; do
   echo "Test cache using following config: $CONFIG"
   php bin/console cache:configure \
     --config-dir=./tests --ansi --no-interaction \
