@@ -1,99 +1,108 @@
 {% set debug = is_debug_active ? "bg-red-lt" : "" %}
 {% set rand_header = random() %}
+<div class="btn-group">
+   {% if is_debug_active %}
+      <button class="btn btn-danger d-none d-md-block see_debug" role="button">
+         <i class="fas fa-bug fa-lg mt-1" title=" {{ __('Display GLPI debug informations') }}">
+            <span class="visually-hidden">{{ __('Display GLPI debug informations') }}</span>
+         </i>
+      </button>
+   {% endif %}
 
-{% if is_user_connected %}
-<div class="navbar-nav flex-row order-md-last user-menu">
-   <div class="nav-item dropdown">
-      <a href="#" class="nav-link d-flex lh-1 text-reset p-1 dropdown-toggle {{ debug }}" data-bs-toggle="dropdown">
-         <div class="pe-2 d-none d-xl-block">
-            <div>{{ active_profile_name|u.truncate(35, '...') }}</div>
-            <div class="mt-1 small text-muted">{{ active_entity_name|u.truncate(35, '...') }}</div>
-         </div>
-         {% if current_user_picture is not empty %}
-            <span class="avatar" style="background-image: url({{ path(current_user_picture) }})"></span>
-         {% else %}
-            <i class="fas fa-2x fa-user"></i>
-         {% endif %}
-      </a>
-      <div class="dropdown-menu dropdown-menu-end mt-1 dropdown-menu-arrow animate__animated animate__fadeInRight">
-         <h6 class="dropdown-header">{{ current_user_name }}</h6>
-
-         {{ include('layout/parts/profile_selector.html.twig') }}
-
-         <div class="dropdown-divider"></div>
-
-         {% if has_global_right('Config', constant('UPDATE')) %}
-            <a href="{{ path('/ajax/switchdebug.php') }}"
-               class="dropdown-item {{ is_debug_active ? "bg-red-lt" : "" }}"
-               title="{{ __('Change mode') }}">
-               <i class="fas fa-fw fa-bug debug"></i>
-               {{ is_debug_active ? __('Debug mode enabled') : __('Debug mode disabled') }}
-            </a>
-         {% endif %}
-
-         {# @TODO Saved searches panel #}
-
-         <a href="{{ path('/front/preference.php?forcetab=User$1') }}" class="dropdown-item" title="{{ language_name }}"
-            data-language-selector>
-            <i class="fas fa-fw fa-language"></i>
-            {{ language_name }}
-         </a>
-
-         <div class="dropdown-divider"></div>
-
-         <a href="{{ help_url }}" class="dropdown-item" title="{{ __('Help') }}">
-            <i class="fas fa-fw fa-question"></i>
-            {{ __('Help') }}
-         </a>
-
-         <a href="#" class="dropdown-item" title="{{ __('About') }}"
-            id="show_about_modal_{{ rand_header }}">
-            <i class="fas fa-fw fa-info"></i>
-            {{ __('About') }}
-            {% if founded_new_version is not null %}
-               <span class="badge bg-info text-dark ms-2">
-                  1
-               </span>
+   {% if is_user_connected %}
+   <div class="navbar-nav flex-row order-md-last user-menu">
+      <div class="nav-item dropdown">
+         <a href="#" class="nav-link d-flex lh-1 text-reset p-1 dropdown-toggle {{ debug }}" data-bs-toggle="dropdown">
+            <div class="pe-2 d-none d-xl-block">
+               <div>{{ active_profile_name|u.truncate(35, '...') }}</div>
+               <div class="mt-1 small text-muted">{{ active_entity_name|u.truncate(35, '...') }}</div>
+            </div>
+            {% if current_user_picture is not empty %}
+               <span class="avatar" style="background-image: url({{ path(current_user_picture) }})"></span>
+            {% else %}
+               <i class="fas fa-2x fa-user"></i>
             {% endif %}
          </a>
+         <div class="dropdown-menu dropdown-menu-end mt-1 dropdown-menu-arrow animate__animated animate__fadeInRight">
+            <h6 class="dropdown-header">{{ current_user_name }}</h6>
 
-         <div class="dropdown-divider"></div>
+            {{ include('layout/parts/profile_selector.html.twig') }}
 
-         <a href="{{ path('/front/preference.php') }}" class="dropdown-item" title="{{ __('My settings') }}">
-            <i class="fas fa-fw fa-user-cog"></i>
-            {{ __('My settings') }}
-         </a>
-         <a href="{{ logout_path }}" class="dropdown-item" title="{{ __('Logout') }}">
-            <i class="fas fa-fw fa-sign-out-alt"></i>
-            {{ __('Logout') }}
-         </a>
+            <div class="dropdown-divider"></div>
+
+            {% if has_global_right('Config', constant('UPDATE')) %}
+               <a href="{{ path('/ajax/switchdebug.php') }}"
+                  class="dropdown-item {{ is_debug_active ? "bg-red-lt" : "" }}"
+                  title="{{ __('Change mode') }}">
+                  <i class="fas fa-fw fa-bug debug"></i>
+                  {{ is_debug_active ? __('Debug mode enabled') : __('Debug mode disabled') }}
+               </a>
+            {% endif %}
+
+            {# @TODO Saved searches panel #}
+
+            <a href="{{ path('/front/preference.php?forcetab=User$1') }}" class="dropdown-item" title="{{ language_name }}"
+               data-language-selector>
+               <i class="fas fa-fw fa-language"></i>
+               {{ language_name }}
+            </a>
+
+            <div class="dropdown-divider"></div>
+
+            <a href="{{ help_url }}" class="dropdown-item" title="{{ __('Help') }}">
+               <i class="fas fa-fw fa-question"></i>
+               {{ __('Help') }}
+            </a>
+
+            <a href="#" class="dropdown-item" title="{{ __('About') }}"
+               id="show_about_modal_{{ rand_header }}">
+               <i class="fas fa-fw fa-info"></i>
+               {{ __('About') }}
+               {% if founded_new_version is not null %}
+                  <span class="badge bg-info text-dark ms-2">
+                     1
+                  </span>
+               {% endif %}
+            </a>
+
+            <div class="dropdown-divider"></div>
+
+            <a href="{{ path('/front/preference.php') }}" class="dropdown-item" title="{{ __('My settings') }}">
+               <i class="fas fa-fw fa-user-cog"></i>
+               {{ __('My settings') }}
+            </a>
+            <a href="{{ logout_path }}" class="dropdown-item" title="{{ __('Logout') }}">
+               <i class="fas fa-fw fa-sign-out-alt"></i>
+               {{ __('Logout') }}
+            </a>
+         </div>
       </div>
    </div>
-</div>
 
-<div class="modal fade" id="about_modal_{{ rand_header }}" role="dialog">
-   <div class="modal-dialog">
-      <div class="modal-content">
-         <div class="modal-header">
-            <h4 class="modal-title">{{ __("About") }}</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __("Close") }}"></button>
-         </div>
-         <div class="modal-body">
-            <p><a href="http://glpi-project.org/" title="Powered by Teclib and contributors" class="copyright">
-               GLPI {{ constant('GLPI_VERSION') }}
-               Copyright (C) 2015-{{ constant('GLPI_YEAR') }} Teclib' and contributors
-            </a></p>
-            {% if founded_new_version is not null %}
-               <p>
-                  <a href="http://www.glpi-project.org" target="_blank"
-                     title="{{ __('You will find it on the GLPI-PROJECT.org site.') }}">
-                     {{ __('A new version is available: %s.')|format(founded_new_version) }}
-                     <span class="badge bg-info text-dark">
-                        1
-                     </span>
-                  </a>
-               </p>
-            {% endif %}
+   <div class="modal fade" id="about_modal_{{ rand_header }}" role="dialog">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h4 class="modal-title">{{ __("About") }}</h4>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __("Close") }}"></button>
+            </div>
+            <div class="modal-body">
+               <p><a href="http://glpi-project.org/" title="Powered by Teclib and contributors" class="copyright">
+                  GLPI {{ constant('GLPI_VERSION') }}
+                  Copyright (C) 2015-{{ constant('GLPI_YEAR') }} Teclib' and contributors
+               </a></p>
+               {% if founded_new_version is not null %}
+                  <p>
+                     <a href="http://www.glpi-project.org" target="_blank"
+                        title="{{ __('You will find it on the GLPI-PROJECT.org site.') }}">
+                        {{ __('A new version is available: %s.')|format(founded_new_version) }}
+                        <span class="badge bg-info text-dark">
+                           1
+                        </span>
+                     </a>
+                  </p>
+               {% endif %}
+            </div>
          </div>
       </div>
    </div>

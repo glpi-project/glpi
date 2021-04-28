@@ -35,12 +35,11 @@
    left: 50%;
    z-index: 99999;
 
-   #see_debug, #backtotop {
+   #backtotop {
       cursor: pointer;
-   }
-
-   #see_debug:hover, #backtotop:hover {
-      opacity: .8;
+      &:hover {
+         opacity: .8;
+      }
    }
 }
 
