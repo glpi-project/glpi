@@ -33,6 +33,9 @@
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
+
+use Glpi\Toolbox\RichText;
+
 // $feed = new SimplePie();
 // $feed->set_cache_location('../files/_rss');
 // $feed->set_cache_duration(3600);
@@ -802,10 +805,10 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
             echo "</td><td>";
             $rand = mt_rand();
             echo "<span id='rssitem$rand' class='pointer'>";
-            echo Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($item->get_content())),
+            echo Html::resume_text(RichText::getTextFromHtml($item->get_content(), false),
                                    1000);
             echo "</span>";
-            Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($item->get_content()),
+            Html::showToolTip(RichText::getSafeHtml($item->get_content()),
                                ['applyto' => "rssitem$rand",
                                      'display' => true]);
             echo "</td></tr>";
@@ -1006,12 +1009,11 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
                echo "<a target='_blank' href='$link'>";
             }
             echo $item->get_title();
-            // echo Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($item->get_content())), 300);
             if (!is_null($link)) {
                echo "</a>";
             }
             echo "</div>";
-            Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($item->get_content()),
+            Html::showToolTip(RichText::getSafeHtml($item->get_content()),
                                                                         ['applyto' => "rssitem$rand",
                                                                               'display' => true]);
             echo "</td></tr>";

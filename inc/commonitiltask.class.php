@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
+use Glpi\Toolbox\RichText;
 use Sabre\VObject\Component\VCalendar;
 
 /// TODO extends it from CommonDBChild
@@ -1102,7 +1103,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          while ($data = $iterator->next()) {
             if ($item->getFromDB($data["id"])
                 && $item->canViewItem()) {
-               if ($parentitem->getFromDBwithData($item->fields[$parentitem->getForeignKeyField()], 0)) {
+               if ($parentitem->getFromDBwithData($item->fields[$parentitem->getForeignKeyField()])) {
                   //not planned
                   if (isset($data['notp_date'])) {
                      $data['begin'] = $data['notp_date'];
@@ -1158,9 +1159,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                      $interv[$key]["end"] = $data["end"];
                   }
 
-                  $interv[$key]["name"]     = Html::entity_decode_deep($parentitem->fields["name"]);
-                  $interv[$key]["content"]  = Html::resume_text($item->fields["content"],
-                                                                $CFG_GLPI["cut"]);
+                  $interv[$key]["name"]     = Toolbox::unclean_cross_side_scripting_deep($parentitem->fields['name']); // name is re-encoded on JS side
+                  $interv[$key]["content"]  = RichText::getSafeHtml($item->fields['content'], true);
                   $interv[$key]["status"]   = $parentitem->fields["status"];
                   $interv[$key]["priority"] = $parentitem->fields["priority"];
 
@@ -1276,7 +1276,10 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       $html.= "<div>";
       $html.= sprintf(__('%1$s: %2$s'), __('Priority'), $parent->getPriorityName($val["priority"]));
       $html.= "</div>";
-      $html.= "<div class='event-description rich_text_container'>".html_entity_decode($val["content"])."</div>";
+
+      // $val['content'] has already been sanitized and decoded by self::populatePlanning()
+      $content = $val['content'];
+      $html.= "<div class='event-description rich_text_container'>".$content."</div>";
       $html.= $recall;
 
       return $html;
@@ -1343,7 +1346,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       $rows       = 10;
 
       Html::textarea(['name'              => 'content',
-                      'value'             => $this->fields["content"],
+                      'value'             => RichText::getSafeHtml($this->fields['content'], true, true),
                       'rand'              => $rand_text,
                       'editor_id'         => $content_id,
                       'enable_fileupload' => true,
@@ -1862,10 +1865,11 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          $link .= "&amp;forcetab=".$tab_name."$1";
          $link   .= "'>";
          $link    = sprintf(__('%1$s'), $link);
-         $content = Toolbox::unclean_cross_side_scripting_deep(html_entity_decode($job->fields['content'],
-                                                                                  ENT_QUOTES,
-                                                                                  "UTF-8"));
-         printf(__('%1$s %2$s'), $link, Html::resume_text(Html::Clean($content), 50));
+         printf(
+            __('%1$s %2$s'),
+            $link,
+            Html::resume_text(RichText::getTextFromHtml($job->fields['content'], false, true), 50)
+         );
 
          echo "</a>";
          echo "</td>";
@@ -1951,13 +1955,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       if (!$parent_item->getFromDB($parent_id)) {
          return null;
       }
-
-      // Transform HTML text to plain text
-      $this->fields['content'] = Html::clean(
-         Toolbox::unclean_cross_side_scripting_deep(
-            $this->fields['content']
-         )
-      );
 
       $is_task =true;
       $is_planned = !empty($this->fields['begin']) && !empty($this->fields['end']);

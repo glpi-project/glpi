@@ -96,22 +96,6 @@ class Html extends \GLPITestCase {
       $this->string(\Html::cleanParametersURL($url))->isIdenticalTo($expected);
    }
 
-   public function testNl2br_deep() {
-      $origin = "A string\nwith breakline.";
-      $expected = "A string<br />\nwith breakline.";
-      $this->string(\Html::nl2br_deep($origin))->isIdenticalTo($expected);
-
-      $origin = [
-         "Another string\nwith breakline.",
-         "And another\none"
-      ];
-      $expected = [
-         "Another string<br />\nwith breakline.",
-         "And another<br />\none"
-      ];
-      $this->array(\Html::nl2br_deep($origin))->isIdenticalTo($expected);
-   }
-
    public function testResume_text() {
       $origin = 'This is a very long string which will be truncated by a dedicated method. ' .
          'If the string is not truncated, well... We\'re wrong and got a very serious issue in our codebase!' .
@@ -154,42 +138,6 @@ class Html extends \GLPITestCase {
          "Another\none!"
       ];
       $this->array(\Html::cleanPostForTextArea($aorigin))->isIdenticalTo($aexpected);
-   }
-
-   public function providerClean() {
-      return [
-         // script is not allowed
-         ['<p>Hello<script type="text/javascript">alert("Damn!");</script></p>', 'Hello', '<p>Hello</p>'],
-         // nested list should be preserved
-         ['<ul><li>one<ul><li>nested</li></ul></li><li>two</li></ul>', 'onenestedtwo', '<ul><li>one<ul><li>nested</li></ul></li><li>two</li></ul>'],
-         // on* attributes are not allowed
-         ['<img src="test.png" onerror="javascript:alert(document.cookie);" alt="test image" />', '', '<img src="test.png" alt="test image" />'],
-         ['<img src="test.png" onload="javascript:alert(document.cookie);" alt="test image" />', '', '<img src="test.png" alt="test image" />'],
-         // iframes should not be preserved by default
-         ['Here is an iframe: <iframe src="http://glpi-project.org/"></iframe>', 'Here is an iframe:', 'Here is an iframe:'],
-         // HTML comments should be removed
-         ['<p>Legit<!-- This is an HTML comment --> text</p>', 'Legit text', '<p>Legit text</p>'],
-         // CDATA should be removed
-         ['<p><![CDATA[Some CDATA]]>Legit text</p>', 'Legit text', '<p>Legit text</p>'],
-         // <email@domain.com> should be twice encoded
-         ['From: Test User <test@glpi-project.org>', 'From: Test User test@glpi-project.org', 'From: Test User test@glpi-project.org'],
-         // <a href="mailto:email@domain.com"> should be preserved
-         ['Email me @: <a href="mailto:email@domain.com">email@domain.com</a>', 'Email me @: email@domain.com', 'Email me @: <a href="mailto:email@domain.com">email@domain.com</a>'],
-      ];
-   }
-
-   /**
-    * @dataProvider providerClean
-    */
-   public function testCleanDropTags($in, $outnotag, $outtag) {
-      $this->string(\Html::clean($in, true))->isIdenticalTo($outnotag);
-   }
-
-   /**
-    * @dataProvider providerClean
-    */
-   public function testCleanKeepTags($in, $outnotag, $outtag) {
-      $this->string(\Html::clean($in, false))->isIdenticalTo($outtag);
    }
 
    public function testFormatNumber() {
@@ -292,25 +240,6 @@ class Html extends \GLPITestCase {
 
       $expected = '43 hours 40 minutes';
       $this->string(\Html::timestampToString($tstamp, false, false))->isIdenticalTo($expected);
-   }
-
-   public function testWeblink_extract() {
-      $origin = '<a href="http://glpi-project.org" class="example">THE GLPI Project!</a>';
-      $expected = 'http://glpi-project.org';
-      $this->string($expected, \Html::weblink_extract($origin))->isIdenticalTo($expected);
-
-      $origin = '<a href="http://glpi-project.org/?one=two">THE GLPI Project!</a>';
-      $expected = 'http://glpi-project.org/?one=two';
-      $this->string(\Html::weblink_extract($origin))->isIdenticalTo($expected);
-
-      //These ones does not work, but probably should...
-      $origin = '<a class="example" href="http://glpi-project.org">THE GLPI Project!</a>';
-      $expected = $origin;
-      $this->string(\Html::weblink_extract($origin))->isIdenticalTo($expected);
-
-      $origin = '<a href="http://glpi-project.org" class="example">THE <span>GLPI</span> Project!</a>';
-      $expected = $origin;
-      $this->string(\Html::weblink_extract($origin))->isIdenticalTo($expected);
    }
 
    public function testGetMenuInfos() {

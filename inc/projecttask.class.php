@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
+use Glpi\Toolbox\RichText;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Property\FlatText;
 use Sabre\VObject\Property\IntegerValue;
@@ -783,8 +784,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          'name'            => 'content',
          'enable_richtext' => true,
          'editor_id'       => "description$rand_description",
-         'value'           => $this->fields["content"],
-
+         'value'           => RichText::getSafeHtml($this->fields["content"], true, true),
       ]);
       echo "</td></tr>";
 
@@ -1290,7 +1290,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         ProjectTask::getFormURLWithID($data['id'])."'>".$data['name'].
                         (empty($data['name'])?"(".$data['id'].")":"")."</a>";
             echo sprintf(__('%1$s %2$s'), $link,
-                           Html::showToolTip(Html::entity_decode_deep($data['content']),
+                           Html::showToolTip(RichText::getSafeHtml($data['content'], true),
                                              ['display' => false,
                                                    'applyto' => "ProjectTask".$data["id"].$rand]));
             echo "</td>";
@@ -1543,7 +1543,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          $todisplay[$real_begin.'#'.$real_end.'#task'.$task->getID()]
                         = ['id'    => $task->getID(),
                               'name'    => $task->fields['name'],
-                              'desc'    => $task->fields['content'],
+                              'desc'    => RichText::getTextFromHtml($task->fields['content'], true, true),
                               'link'    => $task->getlink(),
                               'type'    => 'task',
                               'percent' => $percent,
@@ -1775,9 +1775,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                   $interv[$key]["end"]   = $data["plan_end_date"];
                }
 
-               $interv[$key]["name"]     = $task->fields["name"];
-               $interv[$key]["content"]  = Html::resume_text($task->fields["content"],
-                                                             $CFG_GLPI["cut"]);
+               $interv[$key]["name"]     = Toolbox::unclean_cross_side_scripting_deep($task->fields["name"]); // name is re-encoded on JS side
+               $interv[$key]["content"]  = $task->fields["content"] !== null
+                  ? RichText::getSafeHtml($task->fields["content"], true)
+                  : '';
                $interv[$key]["status"]   = $task->fields["percent_done"];
 
                $ttask->getFromDB($data["id"]);
@@ -1871,7 +1872,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
       $html.= "<div class='b'>";
       $html.= sprintf(__('%1$s: %2$s'), __('Percent done'), $val["status"]."%");
       $html.= "</div>";
-      $html.= "<div class='event-description rich_text_container'>".html_entity_decode($val["content"])."</div>";
+
+      // $val['content'] has already been sanitized and decoded by self::populatePlanning()
+      $content = $val['content'];
+      $html.= "<div class='event-description rich_text_container'>".$content."</div>";
       return $html;
    }
 

@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
+use Glpi\Toolbox\RichText;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VTodo;
 
@@ -724,12 +725,12 @@ class Reminder extends CommonDBVisible implements
 
       if ($canedit) {
          Html::textarea(['name'              => 'text',
-                         'value'             => $this->fields["text"],
+                         'value'             => RichText::getSafeHtml($this->fields["text"], true, true),
                          'enable_richtext'   => true,
                          'enable_fileupload' => true]);
       } else {
-         echo "<div  id='kbanswer'>";
-         echo Toolbox::unclean_html_cross_side_scripting_deep($this->fields["text"]);
+         echo "<div class='rich_text_container'>";
+         echo RichText::getSafeHtml($this->fields["text"], true);
          echo "</div>";
       }
 
@@ -932,7 +933,7 @@ class Reminder extends CommonDBVisible implements
             if (isset($data['transtext']) && !empty($data['transtext'])) {
                $text = $data['transtext'];
             }
-            $tooltip = Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($text),
+            $tooltip = Html::showToolTip(RichText::getSafeHtml($text, true),
                                          ['applyto' => "content_reminder_".$data["id"].$rand,
                                           'display' => false]);
             printf(__('%1$s %2$s'), $link, $tooltip);
@@ -1036,13 +1037,6 @@ class Reminder extends CommonDBVisible implements
       if (!$this->canViewItem()) {
          return null;
       }
-
-      // Transform HTML text to plain text
-      $this->fields['text'] = Html::clean(
-         Toolbox::unclean_cross_side_scripting_deep(
-            $this->fields['text']
-         )
-      );
 
       $is_task = in_array($this->fields['state'], [Planning::DONE, Planning::TODO]);
       $is_planned = !empty($this->fields['begin']) && !empty($this->fields['end']);

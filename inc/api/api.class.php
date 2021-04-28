@@ -266,7 +266,7 @@ abstract class API {
 
       // login on glpi
       if (!$auth->login($params['login'], $params['password'], $noAuto, false, $params['auth'])) {
-         $err = Html::clean($auth->getErr());
+         $err = Toolbox::stripTags($auth->getErr());
          if (isset($params['user_token'])
              && !empty($params['user_token'])) {
             return $this->returnError(__("parameter user_token seems invalid"), 401, "ERROR_GLPI_LOGIN_USER_TOKEN", false);
@@ -2192,7 +2192,7 @@ abstract class API {
       // clean html
       foreach ($messages_after_redirect as $messages) {
          foreach ($messages as $message) {
-            $all_messages[] = Html::clean($message);
+            $all_messages[] = Toolbox::stripTags($message);
          }
       }
 
@@ -2341,11 +2341,7 @@ abstract class API {
 
                // expand dropdown
                if ($params['expand_dropdowns']) {
-                  $value = Dropdown::getDropdownName($tablename, $value);
-                  // fix value for inexistent items
-                  if ($value == "&nbsp;") {
-                     $value = "";
-                  }
+                  $value = Dropdown::getDropdownName($tablename, $value, false, true, false, '');
                }
             }
          }

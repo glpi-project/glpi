@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
+use Glpi\Toolbox\RichText;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VTodo;
 
@@ -323,15 +324,15 @@ JAVASCRIPT;
       if ($canedit) {
          Html::textarea([
             'name'              => 'text',
-            'value'             => $this->fields["text"],
+            'value'             => RichText::getSafeHtml($this->fields["text"], true, true),
             'enable_richtext'   => true,
             'enable_fileupload' => true,
             'rand'              => $rand,
             'editor_id'         => 'text'.$rand,
          ]);
       } else {
-         echo "<div>";
-         echo Toolbox::unclean_html_cross_side_scripting_deep($this->fields["text"]);
+         echo "<div class='rich_text_container'>";
+         echo RichText::getSafeHtml($this->fields["text"], true);
          echo "</div>";
       }
 
@@ -418,13 +419,6 @@ JAVASCRIPT;
       if (!$this->canViewItem()) {
          return null;
       }
-
-      // Transform HTML text to plain text
-      $this->fields['text'] = Html::clean(
-         Toolbox::unclean_cross_side_scripting_deep(
-            $this->fields['text']
-         )
-      );
 
       $is_task = in_array($this->fields['state'], [Planning::DONE, Planning::TODO]);
       $is_planned = !empty($this->fields['begin']) && !empty($this->fields['end']);

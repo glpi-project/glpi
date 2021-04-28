@@ -34,6 +34,8 @@
  * @since 9.5
  */
 
+use Glpi\Toolbox\RichText;
+
 $AJAX_INCLUDE = 1;
 
 include ('../inc/includes.php');
@@ -47,6 +49,11 @@ if (isset($_POST['itilfollowuptemplates_id'])
    $template = new ITILFollowupTemplate();
    $template->getFromDB($_POST['itilfollowuptemplates_id']);
 
-   $template->fields = array_map('html_entity_decode', $template->fields);
-   echo json_encode($template->fields);
+   echo json_encode(
+      [
+         'content'         => RichText::getSafeHtml($template->fields['content'], true),
+         'requesttypes_id' => $template->fields['requesttypes_id'],
+         'is_private'      => $template->fields['is_private'],
+      ]
+   );
 }

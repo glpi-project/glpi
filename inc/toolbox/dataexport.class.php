@@ -30,24 +30,32 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\RichText;
+namespace Glpi\Toolbox;
 
-$AJAX_INCLUDE = 1;
+use Toolbox;
 
-include ('../inc/includes.php');
-header("Content-Type: application/json; charset=UTF-8");
-Html::header_nocache();
+class DataExport {
 
-Session::checkLoginUser();
+   /**
+    * Normalize a value for text export (PDF, CSV, SYLK, ...).
+    * Assume value cames from DB and has been processed by GLPI sanitize process.
+    *
+    * @param string $value
+    *
+    * @return string
+    *
+    * @TODO rich-text: Unit test
+    */
+   public static function normalizeValueForTextExport(string $value): string {
+      $value = Toolbox::unclean_cross_side_scripting_deep($value);
 
-if (isset($_POST['solutiontemplates_id']) && $_POST['solutiontemplates_id'] > 0) {
-   $template = new SolutionTemplate();
-   $template->getFromDB($_POST['solutiontemplates_id']);
+      if (RichText::isRichTextHtmlContent($value)) {
+         // Remove invisible contents (tooltips for instance)
+         $value = preg_replace('/<div[^>]*invisible[^>]*>.*?<\/div[^>]*>/si', '', $value);
 
-   echo json_encode(
-      [
-         'content'          => RichText::getSafeHtml($template->fields['content'], true),
-         'solutiontypes_id' => $template->fields['solutiontypes_id'],
-      ]
-   );
+         $value = RichText::getTextFromHtml($value);
+      }
+
+      return $value;
+   }
 }

@@ -44,16 +44,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     */
    public $central_profiles = [];
 
-   public $html_tags        = [
-      '##change.solution.description##',
-      '##followup.description##',
-      '##linkedticket.content##',
-      '##problem.solution.description##',
-      '##ticket.content##',
-      '##ticket.description##',
-      '##ticket.solution.description##'
-   ];
-
    /**
     * @param $entity          (default '')
     * @param $event           (default '')
@@ -1295,6 +1285,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       ]);
 
       if ($solution) {
+         $data["##$objettype.solution.type##"] = '';
          if ($itilsolution->getField('solutiontypes_id')) {
             $data["##$objettype.solution.type##"] = Dropdown::getDropdownName(
                'glpi_solutiontypes',
@@ -1337,11 +1328,14 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             ) {
                $tmp['##followup.author##'] = $anon_name;
             } else {
-               $tmp['##followup.author##'] = Html::clean(getUserName($followup['users_id']));
+               $tmp['##followup.author##'] = getUserName($followup['users_id']);
             }
 
-            $tmp['##followup.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
-                                                                         $followup['requesttypes_id']);
+            $tmp['##followup.requesttype##'] = '';
+            if ($followup['requesttypes_id']) {
+               $tmp['##followup.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
+                                                                            $followup['requesttypes_id']);
+            }
             $tmp['##followup.date##']        = Html::convDateTime($followup['date']);
             $tmp['##followup.description##'] = $followup['content'];
 
@@ -1417,9 +1411,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $tmp['##document.downloadurl##']
                                        = $this->formatURL($options['additionnaloption']['usertype'],
                                                          $downloadurl.$addtodownloadurl);
-            $tmp['##document.heading##']
-                                       = Dropdown::getDropdownName('glpi_documentcategories',
-                                                                  $row['documentcategories_id']);
+
+            $tmp['##document.heading##'] = '';
+            if ($row['documentcategories_id']) {
+               $tmp['##document.heading##']
+                                          = Dropdown::getDropdownName('glpi_documentcategories',
+                                                                     $row['documentcategories_id']);
+            }
 
             $tmp['##document.filename##']
                                        = $row['filename'];
@@ -1464,8 +1462,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                                                              $cost['cost_time'],
                                                                              $cost['cost_fixed'],
                                                                              $cost['cost_material']);
-            $tmp['##cost.budget##']       = Dropdown::getDropdownName('glpi_budgets',
-                                                                      $cost['budgets_id']);
+            $tmp['##cost.budget##']       = '';
+            if ($cost['budgets_id']) {
+               $tmp['##cost.budget##'] = Dropdown::getDropdownName('glpi_budgets', $cost['budgets_id']);
+            }
             $data['costs'][]             = $tmp;
          }
          $data["##$objettype.numberofcosts##"] = count($data['costs']);
@@ -1493,10 +1493,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             if ($taskobj->maybePrivate()) {
                $tmp['##task.isprivate##'] = Dropdown::getYesNo($task['is_private']);
             }
-            $tmp['##task.author##']       = Html::clean(getUserName($task['users_id']));
+            $tmp['##task.author##']       = getUserName($task['users_id']);
 
             $tmp_taskcatinfo = Dropdown::getDropdownName('glpi_taskcategories',
-                                                         $task['taskcategories_id'], true, true, false);
+                                                         $task['taskcategories_id'], true, true, false, '');
             $tmp['##task.categoryid##']      = $task['taskcategories_id'];
             $tmp['##task.category##']        = $tmp_taskcatinfo['name'];
             $tmp['##task.categorycomment##'] = $tmp_taskcatinfo['comment'];
@@ -1506,10 +1506,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $tmp['##task.time##']         = Ticket::getActionTime($task['actiontime']);
             $tmp['##task.status##']       = Planning::getState($task['state']);
 
-            $tmp['##task.user##']         = Html::clean(getUserName($task['users_id_tech']));
-            $tmp['##task.group##']
-               = Html::clean(Toolbox::clean_cross_side_scripting_deep(Dropdown::getDropdownName("glpi_groups",
-                                                        $task['groups_id_tech'])), true, 2, false);
+            $tmp['##task.user##']         = getUserName($task['users_id_tech']);
+            $tmp['##task.group##'] = '';
+            if ($task['groups_id_tech']) {
+               $tmp['##task.group##'] = Dropdown::getDropdownName("glpi_groups", $task['groups_id_tech']);
+            }
             $tmp['##task.begin##']        = "";
             $tmp['##task.end##']          = "";
             if (!is_null($task['begin'])) {

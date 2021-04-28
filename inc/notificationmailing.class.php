@@ -156,7 +156,7 @@ class NotificationMailing implements NotificationInterface {
 
       $queue = new QueuedNotification();
 
-      if (!$queue->add(Toolbox::addslashes_deep($data))) {
+      if (!$queue->add(Toolbox::sanitize($data))) {
          Session::addMessageAfterRedirect(__('Error inserting email to queue'), true, ERROR);
          return false;
       } else {

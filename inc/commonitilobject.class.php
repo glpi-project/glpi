@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\RichText;
+
 /**
  * CommonITILObject Class
 **/
@@ -116,18 +118,13 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Retrieve an item from the database with datas associated (hardwares)
     *
-    * @param integer $ID          ID of the item to get
-    * @param boolean $purecontent true : nothing change / false : convert to HTML display
+    * @param integer $ID ID of the item to get
     *
     * @return boolean true if succeed else false
    **/
-   function getFromDBwithData($ID, $purecontent) {
+   function getFromDBwithData($ID) {
 
       if ($this->getFromDB($ID)) {
-         if (!$purecontent) {
-            $this->fields["content"] = nl2br(preg_replace("/\r\n\r\n/", "\r\n",
-                                             $this->fields["content"]));
-         }
          $this->getAdditionalDatas();
          return true;
       }
@@ -1573,15 +1570,23 @@ abstract class CommonITILObject extends CommonDBTM {
       $input["name"]    = ltrim($input["name"]);
       $input['content'] = ltrim($input['content']);
       if (empty($input["name"])) {
-         $input['name'] = Html::clean(Html::entity_decode_deep($input['content']));
-         $input["name"] = preg_replace('/\\r\\n/', ' ', $input['name']);
-         $input["name"] = preg_replace('/\\n/', ' ', $input['name']);
-         // For mailcollector
-         $input["name"] = preg_replace('/\\\\r\\\\n/', ' ', $input['name']);
-         $input["name"] = preg_replace('/\\\\n/', ' ', $input['name']);
-         $input['name'] = Toolbox::stripslashes_deep($input['name']);
-         $input["name"] = Toolbox::substr($input['name'], 0, 70);
-         $input['name'] = Toolbox::addslashes_deep($input['name']);
+         // Build name based on content
+
+         // Unsanitize
+         //
+         // Using `Toolbox::stripslashes_deep()` on sanitized content will produce "r" and "n" instead of "\r" and \n",
+         // so newlines have to be removed before calling it.
+         $content = str_replace(['\r', '\n'], ' ', $input['content']);
+         $content = Toolbox::stripslashes_deep(Toolbox::unclean_cross_side_scripting_deep($content));
+
+         // Get unformatted text
+         $name = RichText::getTextFromHtml($content, false);
+
+         // Shorten result
+         $name = Toolbox::substr(preg_replace('/\s{2,}/', ' ', $name), 0, 70);
+
+         // Sanitize result
+         $input['name'] = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($name));
       }
 
       // Set default dropdown
@@ -6217,7 +6222,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          if ($p['output_type'] == Search::HTML_OUTPUT) {
             $name_column = sprintf(__('%1$s %2$s'), $name_column,
-                                    Html::showToolTip(Html::clean(Html::entity_decode_deep($item->fields["content"])),
+                                    Html::showToolTip(RichText::getSafeHtml($item->fields['content'], true),
                                                       ['display' => false,
                                                             'applyto' => $item->getType().$item->fields["id"].
                                                                            $rand]));
@@ -6885,16 +6890,11 @@ abstract class CommonITILObject extends CommonDBTM {
          'items_id'  => $this->getID()
       ]);
       foreach ($solution_items as $solution_item) {
-         // fix trouble with html_entity_decode who skip accented characters (on windows browser)
-         $solution_content = preg_replace_callback("/(&#[0-9]+;)/", function($m) {
-            return mb_convert_encoding($m[1], "UTF-8", "HTML-ENTITIES");
-         }, $solution_item['content']);
-
          $timeline[$solution_item['date_creation']."_solution_" . $solution_item['id'] ] = [
             'type' => 'Solution',
             'item' => [
                'id'                 => $solution_item['id'],
-               'content'            => Toolbox::unclean_cross_side_scripting_deep($solution_content),
+               'content'            => $solution_item['content'],
                'date'               => $solution_item['date_creation'],
                'users_id'           => $solution_item['users_id'],
                'solutiontypes_id'   => $solution_item['solutiontypes_id'],
@@ -6969,14 +6969,12 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return void
     */
    function showTimeline($rand) {
-      global $DB, $CFG_GLPI, $autolink_options;
+      global $DB, $CFG_GLPI;
 
       $user              = new User();
       $group             = new Group();
       $pics_url          = $CFG_GLPI['root_doc']."/pics/timeline";
       $timeline          = $this->getTimelineItems();
-
-      $autolink_options['strip_protocols'] = false;
 
       $objType = static::getType();
       $foreignKey = static::getForeignKeyField();
@@ -7181,9 +7179,7 @@ abstract class CommonITILObject extends CommonDBTM {
          }
 
          if (isset($item_i['content'])) {
-            $content = $item_i['content'];
-            $content = Toolbox::getHtmlToDisplay($content);
-            $content = autolink($content, false);
+            $content = RichText::getSafeHtml($item_i['content'], true);
 
             $long_text = "";
             if ((substr_count($content, "<br") > 30) || (strlen($content) > 2000)) {
@@ -7505,11 +7501,11 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "</div>";
 
       echo "<div class='title'>";
-      echo Html::setSimpleTextContent($this->fields['name']);
+      echo $this->fields['name'];
       echo "</div>";
 
       echo "<div class='rich_text_container'>";
-      $content = Toolbox::getHtmlToDisplay($this->fields['content']);
+      $content = RichText::getSafeHtml($this->fields['content'], true);
       $content = $this->refreshUserMentionsHtmlToDisplay($content);
       $content = Html::replaceImagesByGallery($content);
       echo $content;

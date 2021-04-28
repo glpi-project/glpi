@@ -72,7 +72,7 @@ function update0840to0841() {
                             'glpi_notificationtemplatetranslations' => 'content_text'];
    foreach ($fields_to_clean as $table => $field) {
       foreach ($DB->request($table) as $data) {
-         $text  = Toolbox::unclean_html_cross_side_scripting_deep($data[$field]);
+         $text  = @Toolbox::unclean_html_cross_side_scripting_deep($data[$field]);
          $text  = html_entity_decode($text, ENT_NOQUOTES, 'UTF-8');
          $text  = addslashes($text);
          $text  = Toolbox::clean_cross_side_scripting_deep($text);

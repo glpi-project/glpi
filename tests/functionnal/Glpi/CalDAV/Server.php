@@ -560,6 +560,7 @@ class Server extends DbTestCase {
       $event = new \PlanningExternalEvent();
       $event_id = (int)$event->add([
          'name'        => 'Test event created in GLPI',
+         'text'        => 'Evt description',
          'entities_id' => $_SESSION['glpiactive_entity'],
          'plan'        => [
             'begin' => '2019-06-15 13:00:00',
@@ -645,8 +646,8 @@ VCALENDAR
       $this->boolean($updated_event->getFromDBByCrit(['uuid' => $event->fields['uuid']]))->isTrue();
       $this->array($updated_event->fields)
          ->string['name']->isEqualTo('Test event updated from external source')
-         ->string['begin']->isEqualTo('2019-10-10 11:30:00')
-         ->string['rrule']->isEqualTo(''); // Validate that RRULE has been removed
+         ->string['begin']->isEqualTo('2019-10-10 11:30:00');
+      $this->variable($updated_event->fields['rrule'])->isNull(); // Validate that RRULE has been removed
 
       // Validate DELETE method
       $server = $this->getServerInstance('DELETE', $event_path);
@@ -950,8 +951,8 @@ VCALENDAR
          ->string['text']->isEqualTo('Description of the task.')
          ->integer['state']->isEqualTo(\Planning::TODO)
          ->string['begin']->isEqualTo('2019-11-01 08:00:00') // 1 hour offset between Europe/Paris and UTC
-         ->string['end']->isEqualTo('2019-11-01 08:15:00') // 1 hour offset between Europe/Paris and UTC
-         ->string['rrule']->isEqualTo('');
+         ->string['end']->isEqualTo('2019-11-01 08:15:00'); // 1 hour offset between Europe/Paris and UTC
+      $this->variable($event->fields['rrule'])->isNull();
 
       // Create done and not planned task
       $event_uuid = \Ramsey\Uuid\Uuid::uuid4()->toString();
@@ -991,8 +992,8 @@ VCALENDAR
          ->string['text']->isEqualTo('Description of the task.')
          ->integer['state']->isEqualTo(\Planning::DONE)
          ->variable['begin']->isEqualTo(null)
-         ->variable['end']->isEqualTo(null)
-         ->string['rrule']->isEqualTo('');
+         ->variable['end']->isEqualTo(null);
+      $this->variable($event->fields['rrule'])->isNull();
    }
 
    /**
@@ -1087,8 +1088,8 @@ VCALENDAR
          ->string['text']->isEqualTo('Description of the note.')
          ->integer['state']->isEqualTo(\Planning::INFO)
          ->variable['begin']->isEqualTo(null)
-         ->variable['end']->isEqualTo(null)
-         ->string['rrule']->isEqualTo('');
+         ->variable['end']->isEqualTo(null);
+      $this->variable($event->fields['rrule'])->isNull();
    }
 
    /**

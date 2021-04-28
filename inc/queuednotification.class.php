@@ -556,6 +556,8 @@ class QueuedNotification extends CommonDBTM {
       );
 
       foreach ($pendings as $mode => $data) {
+         $data = Toolbox::unclean_cross_side_scripting_deep($data);
+
          $eventclass = 'NotificationEvent' . ucfirst($mode);
          $conf = Notification_NotificationTemplate::getMode($mode);
          if ($conf['from'] != 'core') {
@@ -627,6 +629,8 @@ class QueuedNotification extends CommonDBTM {
          );
 
          foreach ($pendings as $mode => $data) {
+            $data = Toolbox::unclean_cross_side_scripting_deep($data);
+
             $eventclass = Notification_NotificationTemplate::getModeClass($mode, 'event');
             $eventclass::send($data);
          }
@@ -738,7 +742,9 @@ class QueuedNotification extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1 top' >";
-      echo "<td colspan='2' class='queuemail_preview'>".self::cleanHtml($this->fields['body_html'])."</td>";
+      echo "<td colspan='2' class='queuemail_preview'>";
+      echo self::cleanHtml(Toolbox::unclean_cross_side_scripting_deep($this->fields['body_html']));
+      echo "</td>";
       echo "<td colspan='2'>".nl2br($this->fields['body_text'], false)."</td>";
       echo "</tr>";
 
@@ -780,7 +786,7 @@ class QueuedNotification extends CommonDBTM {
             }
          }
       }
-      return nl2br($newstring, false);
+      return $newstring;
    }
 
 

@@ -34,6 +34,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\DataExport;
+use Glpi\Toolbox\RichText;
+
 /**
  * Search Class
  *
@@ -6135,10 +6138,8 @@ JAVASCRIPT;
                      $name = sprintf(__('%1$s (%2$s)'), $name, $data[$ID][0]['id']);
                   }
                   $out    .= $name."</a>";
-                  $hdecode = Html::entity_decode_deep($data[$ID][0]['content']);
-                  $content = Toolbox::unclean_cross_side_scripting_deep($hdecode);
                   $out     = sprintf(__('%1$s %2$s'), $out,
-                                     Html::showToolTip(nl2br(Html::Clean($content)),
+                                     Html::showToolTip(RichText::getSafeHtml($data[$ID][0]['content'], true),
                                                              ['applyto' => $itemtype.
                                                                                 $data[$ID][0]['id'],
                                                                    'display' => false]));
@@ -6305,39 +6306,26 @@ JAVASCRIPT;
                         $out .= $separate;
                      }
                      $count_display++;
-                     $text = "";
-                     if (isset($so['htmltext']) && $so['htmltext']) {
-                        $text = Html::clean(Toolbox::unclean_cross_side_scripting_deep(nl2br($data[$ID][$k]['name'])));
-                     } else {
-                        $text = nl2br($data[$ID][$k]['name']);
-                     }
 
-                     if (self::$output_type == self::HTML_OUTPUT
-                         && (Toolbox::strlen($text) > $CFG_GLPI['cut'])) {
+                     $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true);
+
+                     if (self::$output_type == self::HTML_OUTPUT && (Toolbox::strlen($plaintext) > $CFG_GLPI['cut'])) {
                         $rand = mt_rand();
                         $popup_params = [
-                           'display'   => false
+                           'display'       => false,
+                           'awesome-class' => 'fa-comments',
+                           'autoclose'     => false,
+                           'onclick'       => true,
                         ];
-                        if (Toolbox::strlen($text) > $CFG_GLPI['cut']) {
-                           $popup_params += [
-                              'awesome-class'   => 'fa-comments',
-                              'autoclose'       => false,
-                              'onclick'         => true
-                           ];
-                        } else {
-                           $popup_params += [
-                              'applyto'   => "text$rand",
-                           ];
-                        }
                         $out .= sprintf(
                            __('%1$s %2$s'),
-                           "<span id='text$rand'>". Html::resume_text($text, $CFG_GLPI['cut']).'</span>',
+                           "<span id='text$rand'>". Html::resume_text($plaintext, $CFG_GLPI['cut']).'</span>',
                            Html::showToolTip(
-                              '<div class="fup-popup">'.$text.'</div>', $popup_params
+                              '<div class="fup-popup">'.RichText::getSafeHtml($data[$ID][$k]['name'], true).'</div>', $popup_params
                               )
                         );
                      } else {
-                        $out .= $text;
+                        $out .= $plaintext;
                      }
                   }
                }
@@ -7264,7 +7252,7 @@ JAVASCRIPT;
          case self::PDF_OUTPUT_PORTRAIT :
             global $PDF_TABLE;
             $PDF_TABLE .= "<th $options>";
-            $PDF_TABLE .= Html::clean($value);
+            $PDF_TABLE .= $value;
             $PDF_TABLE .= "</th>\n";
             break;
 
@@ -7320,17 +7308,18 @@ JAVASCRIPT;
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
          case self::PDF_OUTPUT_PORTRAIT :
             global $PDF_TABLE;
+            $value = DataExport::normalizeValueForTextExport($value);
             $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
             $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);
             $PDF_TABLE .= "<td $extraparam valign='top'>";
-            $PDF_TABLE .= Html::weblink_extract(Html::clean($value));
+            $PDF_TABLE .= $value;
             $PDF_TABLE .= "</td>\n";
 
             break;
 
          case self::SYLK_OUTPUT : //sylk
             global $SYLK_ARRAY,$SYLK_SIZE;
-            $value                  = Html::weblink_extract(Html::clean($value));
+            $value = DataExport::normalizeValueForTextExport($value);
             $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
             $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);
             $SYLK_ARRAY[$row][$num] = self::sylk_clean($value);
@@ -7339,9 +7328,9 @@ JAVASCRIPT;
             break;
 
          case self::CSV_OUTPUT : //csv
+            $value = DataExport::normalizeValueForTextExport($value);
             $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
             $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);
-            $value = Html::weblink_extract(Html::clean($value));
             $out   = "\"".self::csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
             break;
 
@@ -7802,9 +7791,6 @@ JAVASCRIPT;
    static function csv_clean($value) {
 
       $value = str_replace("\"", "''", $value);
-      $value = Html::clean($value, true, 2, false);
-      $value = str_replace("&gt;", ">", $value);
-      $value = str_replace("&lt;", "<", $value);
 
       return $value;
    }
@@ -7822,10 +7808,7 @@ JAVASCRIPT;
       $value = preg_replace('/\x0A/', ' ', $value);
       $value = preg_replace('/\x0D/', null, $value);
       $value = str_replace("\"", "''", $value);
-      $value = Html::clean($value);
       $value = str_replace("\n", " | ", $value);
-      $value = str_replace("&gt;", ">", $value);
-      $value = str_replace("&lt;", "<", $value);
 
       return $value;
    }

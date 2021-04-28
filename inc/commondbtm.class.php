@@ -32,6 +32,7 @@
 
 use Glpi\Event;
 use Glpi\Features\CacheableListInterface;
+use Glpi\Toolbox\RichText;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -4673,16 +4674,11 @@ class CommonDBTM extends CommonGLPI {
                   return $value;
 
                case "text" :
-
-                  if ($options['html']) {
-                     $text = nl2br($value);
-                  } else {
-                     $text = $value;
-                  }
                   if (isset($searchoptions['htmltext']) && $searchoptions['htmltext']) {
-                     $text = Html::clean(Toolbox::unclean_cross_side_scripting_deep($text));
+                     $value = RichText::getTextFromHtml($value, true, true);
                   }
-                  return $text;
+
+                  return $options['html'] ? nl2br($value) : $value;
 
                case "bool" :
                   return Dropdown::getYesNo($value);
@@ -4909,13 +4905,18 @@ class CommonDBTM extends CommonGLPI {
                return Html::autocompletionTextField($this, $name, $options);
 
             case "text" :
+               $is_htmltext = isset($searchoptions['htmltext']) && $searchoptions['htmltext'];
+               if ($is_htmltext) {
+                  $value = RichText::getSafeHtml($value, true, true);
+               }
+
                return Html::textarea(
                   [
                      'display'           => false,
                      'name'              => $name,
                      'value'             => $value,
                      'enable_fileupload' => false,
-                     'enable_richtext'   => isset($searchoptions['htmltext']) && $searchoptions['htmltext'],
+                     'enable_richtext'   => $is_htmltext,
                      // For now, this textarea is displayed only in the "update" massive action form, for fields
                      // corresponding to a search option having "htmltext" property.
                      // Uploaded images processing is not able to handle multiple use of same uploaded file, so until this is fixed,

@@ -54,9 +54,7 @@ class NotificationTargetFieldUnicity extends NotificationTarget {
       if ($item = getItemForItemtype($options['itemtype'])) {
          $this->data['##unicity.itemtype##'] = $item->getTypeName(1);
          $this->data['##unicity.message##']
-                  = Html::clean($item->getUnicityErrorMessage($options['label'],
-                                                              $options['field'],
-                                                              $options['double']));
+                  = $item->getUnicityErrorMessage($options['label'], $options['field'], $options['double']);
       }
       $this->data['##unicity.entity##']      = Dropdown::getDropdownName('glpi_entities',
                                                                           $options['entities_id']);

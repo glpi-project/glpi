@@ -659,11 +659,33 @@ class MailCollector extends DbTestCase {
       // Tickets on which content should be checked (key is ticket name)
       $tickets_contents = [
          // Plain text on mono-part email
-         'PHP fatal error' => 'On some cases, doing the following:<br /># blahblah<br /><br />Will cause a PHP fatal error:<br /># blahblah<br /><br />Best regards,',
+         'PHP fatal error' => <<<PLAINTEXT
+On some cases, doing the following:
+# blahblah
+
+Will cause a PHP fatal error:
+# blahblah
+
+Best regards,
+PLAINTEXT,
          // HTML on multi-part email
-         'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine' => '<p>This message have reply to header, requester should be get from this header.</p>',
-         'Mono-part HTML message' => '<p>This HTML message does not use <strong>"multipart/alternative"</strong> format.</p>',
-         '26 Illegal char in body' => '这是很坏的Minus C Blabla',
+         'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine' => <<<HTML
+<html>
+<body>
+<p>This message have reply to header, requester should be get from this header.</p>
+</body>
+</html>
+HTML,
+         'Mono-part HTML message' => <<<HTML
+<html>
+<body>
+<p>This HTML message does not use <strong>"multipart/alternative"</strong> format.</p>
+</body>
+</html>
+HTML,
+         '26 Illegal char in body' => <<<PLAINTEXT
+这是很坏的Minus C Blabla
+PLAINTEXT,
       ];
 
       foreach ($actors_specs as $actor_specs) {
@@ -691,7 +713,7 @@ class MailCollector extends DbTestCase {
             $name = $data['name'];
 
             if (array_key_exists($name, $tickets_contents)) {
-               $this->string(\Toolbox::getHtmlToDisplay($data['content']))->isEqualTo($tickets_contents[$name]);
+               $this->string(\Toolbox::unclean_cross_side_scripting_deep($data['content']))->isEqualTo($tickets_contents[$name]);
             }
 
             $this->string($data['content'])->notContains('cid:'); // check that image were correctly imported
@@ -751,32 +773,32 @@ class MailCollector extends DbTestCase {
          [
             'items_id' => 100,
             'users_id' => $tuid,
-            'content'  => 'This is a reply that references Ticket 100 in In-Reply-To header (old format).&#60;br /&#62;It should be added as followup.',
+            'content'  => 'This is a reply that references Ticket 100 in In-Reply-To header (old format).'. "\r\n" . 'It should be added as followup.',
          ],
          [
             'items_id' => 100,
             'users_id' => $tuid,
-            'content'  => 'This is a reply that references Ticket 100 in References header (old format).&#60;br /&#62;It should be added as followup.',
+            'content'  => 'This is a reply that references Ticket 100 in References header (old format).'. "\r\n" . 'It should be added as followup.',
          ],
          [
             'items_id' => 101,
             'users_id' => $tuid,
-            'content'  => 'This is a reply that references Ticket 101 in its subject.&#60;br /&#62;It should be added as followup.',
+            'content'  => 'This is a reply that references Ticket 101 in its subject.'. "\r\n" . 'It should be added as followup.',
          ],
          [
             'items_id' => 100,
             'users_id' => $tuid,
-            'content'  => 'This is a reply that references Ticket 100 in In-Reply-To header (new format).&#60;br /&#62;It should be added as followup.',
+            'content'  => 'This is a reply that references Ticket 100 in In-Reply-To header (new format).'. "\r\n" . 'It should be added as followup.',
          ],
          [
             'items_id' => 100,
             'users_id' => $tuid,
-            'content'  => 'This is a reply that references Ticket 100 in References header (new format).&#60;br /&#62;It should be added as followup.',
+            'content'  => 'This is a reply that references Ticket 100 in References header (new format).'. "\r\n" . 'It should be added as followup.',
          ],
       ];
 
       foreach ($expected_followups as $expected_followup) {
-         $this->integer(countElementsInTable(ITILFollowup::getTable(), $expected_followup))->isEqualTo(1);
+         $this->integer(countElementsInTable(ITILFollowup::getTable(), \Toolbox::sanitize($expected_followup)))->isEqualTo(1);
       }
    }
 

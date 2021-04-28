@@ -35,6 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\Features\UserMention;
+use Glpi\Toolbox\RichText;
 
 /**
  * CommonITILValidation Class
@@ -892,16 +893,16 @@ abstract class CommonITILValidation  extends CommonDBChild {
             echo "<td><div style='background-color:".$bgcolor.";'>".$status."</div></td>";
             echo "<td>".Html::convDateTime($row["submission_date"])."</td>";
             echo "<td>".getUserName($row["users_id"])."</td>";
-            $comment_submission = Toolbox::getHtmlToDisplay($this->fields["comment_submission"]);
+            $comment_submission = RichText::getSafeHtml($this->fields['comment_submission'], true);
             $comment_submission = $this->refreshUserMentionsHtmlToDisplay($comment_submission);
             $comment_submission = Html::replaceImagesByGallery($comment_submission);
-            echo "<td>".$comment_submission."</td>";
+            echo "<td><div class='rich_text_container'>".$comment_submission."</div></td>";
             echo "<td>".Html::convDateTime($row["validation_date"])."</td>";
             echo "<td>".getUserName($row["users_id_validate"])."</td>";
-            $comment_validation = Toolbox::getHtmlToDisplay($this->fields["comment_validation"]);
+            $comment_validation = RichText::getSafeHtml($this->fields['comment_validation'], true);
             $comment_validation = $this->refreshUserMentionsHtmlToDisplay($comment_validation);
             $comment_validation = Html::replaceImagesByGallery($comment_validation);
-            echo "<td>".$comment_validation."</td>";
+            echo "<td><div class='rich_text_container'>".$comment_validation."</div></td>";
 
             $doc_item = new Document_Item();
             $docs = $doc_item->find(["itemtype"          => $this->getType(),
@@ -955,8 +956,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $this->showFormHeader($options);
 
-      $comment_submission = Toolbox::getHtmlToDisplay($this->fields["comment_submission"]);
-
       if ($validation_admin) {
          if ($this->getType() == 'ChangeValidation') {
             $validation_right = 'validate';
@@ -1003,7 +1002,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          $cols    = 60;
          $rows    = 3;
          Html::textarea(['name'              => 'comment_submission',
-                        'value'             => Html::entities_deep($comment_submission), // Re-encode entities for textarea
+                        'value'             => RichText::getSafeHtml($this->fields['comment_submission'], true, true),
                         'rand'              => $rand,
                         'editor_id'         => $content_id,
                         'enable_fileupload' => false,
@@ -1025,7 +1024,12 @@ abstract class CommonITILValidation  extends CommonDBChild {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Comments')."</td>";
          echo "<td>";
+         $comment_submission = RichText::getSafeHtml($this->fields['comment_submission'], true);
+         $comment_submission = $this->refreshUserMentionsHtmlToDisplay($comment_submission);
+         $comment_submission = Html::replaceImagesByGallery($comment_submission);
+         echo '<div class="rich_text_container">';
          echo $comment_submission;
+         echo '</div>';
          echo "</td></tr>";
       }
 
@@ -1054,9 +1058,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
             $cols    = 100;
             $rows    = 10;
 
-            $comment_validation = Toolbox::getHtmlToDisplay($this->fields["comment_validation"]);
-            Html::textarea(['name'              => 'comment_validation',
-                           'value'             => Html::entities_deep($comment_validation), // Re-encode entities for textarea
+            Html::textarea(['name'             => 'comment_validation',
+                           'value'             => RichText::getSafeHtml($this->fields['comment_validation'], true, true),
                            'rand'              => $rand,
                            'editor_id'         => $content_id,
                            'enable_fileupload' => true,
@@ -1151,10 +1154,12 @@ abstract class CommonITILValidation  extends CommonDBChild {
                echo "<tr class='tab_bg_1'>";
                echo "<td>".__('Approval comments')."</td>";
                echo "<td>";
-               $richtext = Toolbox::getHtmlToDisplay($this->fields["comment_validation"]);
-               $richtext = $this->refreshUserMentionsHtmlToDisplay($richtext);
-               $richtext = Html::replaceImagesByGallery($richtext);
-               echo $richtext;
+               echo '<div class="rich_text_container">';
+               $comment_validation = RichText::getSafeHtml($this->fields['comment_validation'], true);
+               $comment_validation = $this->refreshUserMentionsHtmlToDisplay($comment_validation);
+               $comment_validation = Html::replaceImagesByGallery($comment_validation);
+               echo $comment_validation;
+               echo '</div>';
                echo "</td>";
             }
          }

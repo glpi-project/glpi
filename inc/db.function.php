@@ -259,19 +259,20 @@ function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = tr
 /**
  * Get completename of a Dropdown Tree table
  *
- * @param $table        string   Dropdown Tree table
- * @param $ID           integer  ID of the element
- * @param $withcomment  boolean  1 if you want to give the array with the comments (false by default)
- * @param $translate    boolean  (true by default)
- * @param $tooltip      boolean  (true by default) returns a tooltip, else returns only 'comment'
+ * @param string  $table          Dropdown Tree table
+ * @param integer $ID            ID of the element
+ * @param boolean $withcomment   1 if you want to give the array with the comments (false by default)
+ * @param boolean $translate     (true by default)
+ * @param boolean $tooltip       (true by default) returns a tooltip, else returns only 'comment'
+ * @param string  $default       default value returned when item not exists
  *
  * @return string : completename of the element
  *
  * @see getTreeLeafValueName()
 **/
-function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true) {
+function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true, string $default = '&nbsp;') {
    $dbu = new DbUtils();
-   return $dbu->getTreeValueCompleteName($table, $ID, $withcomment, $translate, $tooltip);
+   return $dbu->getTreeValueCompleteName($table, $ID, $withcomment, $translate, $tooltip, $default);
 }
 
 

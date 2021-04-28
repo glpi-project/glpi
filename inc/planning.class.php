@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\RichText;
 use RRule\RRule;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VEvent;
@@ -2381,21 +2382,12 @@ class Planning extends CommonGLPI {
 
             if (isset($val["content"])) {
                $description = $val["content"];
-               // be sure to replace nl by \r\n
-               $description = preg_replace("/<br( [^>]*)?".">/i", "\r\n", $description);
-               $description = Html::clean($description);
             } else if (isset($val["text"])) {
                $description = $val["text"];
-               // be sure to replace nl by \r\n
-               $description = preg_replace("/<br( [^>]*)?".">/i", "\r\n", $description);
-               $description = Html::clean($description);
             } else if (isset($val["name"])) {
                $description = $val["name"];
-               // be sure to replace nl by \r\n
-               $description = preg_replace("/<br( [^>]*)?".">/i", "\r\n", $description);
-               $description = Html::clean($description);
             }
-            $vevent['DESCRIPTION'] = $description;
+            $vevent['DESCRIPTION'] = RichText::getTextFromHtml($description);
 
             if (isset($val["url"])) {
                $vevent['URL'] = $val["url"];

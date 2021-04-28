@@ -925,9 +925,14 @@ class RuleCollection extends CommonDBTM {
             $available_criteria = $rule->getCriterias();
             $crit               = $criteria['criteria'];
             if (self::isCriteraADropdown($available_criteria, $criteria['condition'], $crit)) {
-               $criteria['pattern']
-                  = Html::clean(Dropdown::getDropdownName($available_criteria[$crit]['table'],
-                                                          $criteria['pattern']));
+               $criteria['pattern'] = Dropdown::getDropdownName(
+                  $available_criteria[$crit]['table'],
+                  $criteria['pattern'],
+                  false,
+                  true,
+                  false,
+                  ''
+               );
             }
 
             //convert criterias in XML
@@ -954,7 +959,14 @@ class RuleCollection extends CommonDBTM {
                }
                $table = getTableNameForForeignKeyField($field);
 
-               $action['value'] = Html::clean(Dropdown::getDropdownName($table, $action['value']));
+               $action['value'] = Dropdown::getDropdownName(
+                  $table,
+                  $action['value'],
+                  false,
+                  true,
+                  false,
+                  ''
+               );
             }
 
             //convert actions in XML

@@ -1099,7 +1099,9 @@ class MailCollector  extends CommonDBTM {
                                                                     $requester)))) {
 
             if ($tkt['_supplier_email']) {
-               $tkt['content'] = sprintf(__('From %s'), $requester)."\n\n".$tkt['content'];
+               $tkt['content'] = sprintf(__('From %s'), $requester)
+                  . ($this->body_is_html ? '<br /><br />' : "\n\n")
+                  . $tkt['content'];
             }
 
             $header_tag      = NotificationTargetTicket::HEADERTAG;
@@ -1207,13 +1209,13 @@ class MailCollector  extends CommonDBTM {
          }
       }
 
-      $tkt = Toolbox::addslashes_deep($tkt);
+      $tkt = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($tkt));
       return $tkt;
    }
 
 
    /**
-    * Clean mail content : HTML + XSS + blacklisted content
+    * Clean blacklisted content
     *
     * @since 0.85
     *
@@ -1224,23 +1226,12 @@ class MailCollector  extends CommonDBTM {
    function cleanContent($string) {
       global $DB;
 
-      // Clean HTML
-      $string = Html::clean(Html::entities_deep($string), false, 2);
+      $original = $string;
 
       $br_marker = '==' . mt_rand() . '==';
 
-      // Replace HTML line breaks to marker
-      $string = preg_replace('/<br\s*\/?>/', $br_marker, $string);
-
-      // Replace plain text line breaks to marker if content is not html
-      // and rich text mode is enabled (otherwise remove them)
-      $string = str_replace(
-         ["\r\n", "\n", "\r"],
-         $this->body_is_html ? ' ' : $br_marker,
-         $string
-      );
-
       // Wrap content for blacklisted items
+      $cleaned_count = 0;
       $itemstoclean = [];
       foreach ($DB->request('glpi_blacklistedmailcontents') as $data) {
          $toclean = trim($data['content']);
@@ -1249,15 +1240,23 @@ class MailCollector  extends CommonDBTM {
          }
       }
       if (count($itemstoclean)) {
-         $string = str_replace($itemstoclean, '', $string);
+         // Replace HTML line breaks to marker
+         $string = preg_replace('/<br\s*\/?>/', $br_marker, $string);
+
+         // Replace plain text line breaks to marker if content is not html, otherwise remove them
+         $string = str_replace(
+            ["\r\n", "\n", "\r"],
+            $this->body_is_html ? ' ' : $br_marker,
+            $string
+         );
+         $string = str_replace($itemstoclean, '', $string, $cleaned_count);
+         $string = str_replace($br_marker, $this->body_is_html ? "<br />" : "\r\n", $string);
       }
 
-      $string = str_replace($br_marker, "<br />", $string);
-
-      // Prevent XSS
-      $string = Toolbox::clean_cross_side_scripting_deep($string);
-
-      return $string;
+      // If no clean were done, return original string, as cleaning process may alter
+      // specific contents due to removal of newlines (can break "<pre>" contents for instance).
+      // FIXME: Find a way to clean without removing newlines on legitimate content.
+      return $cleaned_count > 0 ? $string : $original;
    }
 
 
@@ -1675,6 +1674,8 @@ class MailCollector  extends CommonDBTM {
             $content = $this->getDecodedContent($part);
          }
       }
+
+      $content = rtrim($content); // Remove extra ending spaces
 
       return $content;
    }

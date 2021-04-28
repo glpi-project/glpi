@@ -367,10 +367,14 @@ class NotificationTargetProject extends NotificationTarget {
          $tmp['##task.description##']    = $task['content'];
          $tmp['##task.comments##']       = $task['comment'];
 
-         $tmp['##task.state##']          = Dropdown::getDropdownName('glpi_projectstates',
-                                                                     $task['projectstates_id']);
-         $tmp['##task.type##']           = Dropdown::getDropdownName('glpi_projecttasktypes',
-                                                                     $task['projecttasktypes_id']);
+         $tmp['##task.state##']          = '';
+         if ($task['projectstates_id']) {
+            $tmp['##task.state##'] = Dropdown::getDropdownName('glpi_projectstates', $task['projectstates_id']);
+         }
+         $tmp['##task.type##']           = '';
+         if ($task['projecttasktypes_id']) {
+            $tmp['##task.type##'] = Dropdown::getDropdownName('glpi_projecttasktypes', $task['projecttasktypes_id']);
+         }
          $tmp['##task.percent##']        = Dropdown::getValueWithUnit($task['percent_done'], "%");
 
          $this->data["##task.planstartdate##"]  = '';
@@ -411,8 +415,10 @@ class NotificationTargetProject extends NotificationTarget {
          $tmp['##cost.datebegin##']    = Html::convDate($cost['begin_date']);
          $tmp['##cost.dateend##']      = Html::convDate($cost['end_date']);
          $tmp['##cost.cost##']         = Html::formatNumber($cost['cost']);
-         $tmp['##cost.budget##']       = Dropdown::getDropdownName('glpi_budgets',
-                                                                     $cost['budgets_id']);
+         $tmp['##cost.budget##']       = '';
+         if ($cost['budgets_id']) {
+            $tmp['##cost.budget##'] = Dropdown::getDropdownName('glpi_budgets', $cost['budgets_id']);
+         }
          $this->data["##project.totalcost##"] += $cost['cost'];
          $this->data['costs'][]                = $tmp;
 
@@ -499,9 +505,10 @@ class NotificationTargetProject extends NotificationTarget {
          $tmp['##document.downloadurl##']
                                        = $this->formatURL($options['additionnaloption']['usertype'],
                                                          $downloadurl);
-         $tmp['##document.heading##']
-                                       = Dropdown::getDropdownName('glpi_documentcategories',
-                                                                  $data['documentcategories_id']);
+         $tmp['##document.heading##']  = '';
+         if ($data['documentcategories_id']) {
+            $tmp['##document.heading##'] = Dropdown::getDropdownName('glpi_documentcategories', $data['documentcategories_id']);
+         }
 
          $tmp['##document.filename##']
                                        = $data['filename'];
@@ -537,10 +544,8 @@ class NotificationTargetProject extends NotificationTarget {
                   $tmp['##item.model##']       = '';
 
                   //Object location
-                  if ($item2->getField('locations_id') != NOT_AVAILABLE) {
-                     $tmp['##item.location##']
-                                    = Dropdown::getDropdownName('glpi_locations',
-                                                                  $item2->getField('locations_id'));
+                  if ($item2->isField('locations_id') && $item_loc_id = $item2->getField('locations_id')) {
+                     $tmp['##item.location##'] = Dropdown::getDropdownName('glpi_locations', $item_loc_id);
                   }
 
                   //Object user
