@@ -1680,13 +1680,17 @@ class Html {
 
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          $rand = mt_rand();
-         echo "<div class='center d-none d-md-block' id='debugajax'>";
-         echo "<a class='debug-float' href=\"javascript:showHideDiv('debugpanel$rand','','','');\">
-                AJAX DEBUG</a>";
+         echo "<div class='center d-none d-md-block btn-group' id='debugajax'>";
+         echo "<a class='btn btn-sm btn-danger debug-float' href=\"javascript:showHideDiv('debugpanel$rand','','','');\">
+            <i class='fas fa-bug'></i>
+            <span>AJAX DEBUG</span>
+         </a>";
          if (!isset($_GET['full_page_tab'])
              && strstr($_SERVER['REQUEST_URI'], '/ajax/common.tabs.php')) {
-            echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-            echo "<a href='".$_SERVER['REQUEST_URI']."&full_page_tab=1' class='btn btn-sm'>Display only tab for debug</a>";
+            echo "<a href='".$_SERVER['REQUEST_URI']."&full_page_tab=1' class='btn btn-sm btn-danger'>
+               <i class='fas fa-external-link-alt'></i>
+               <span>Display only tab for debug</span>
+            </a>";
          }
          echo "</div>";
          self::displayDebugInfos(false, true, $rand);
