@@ -2,7 +2,7 @@
 {% set rand_header = random() %}
 <div class="btn-group">
    {% if is_debug_active %}
-      <button class="btn btn-danger d-none d-md-block see_debug" role="button">
+      <button class="btn btn-outline-danger d-none d-md-block see_debug" role="button">
          <i class="fas fa-bug fa-lg mt-1" title=" {{ __('Display GLPI debug informations') }}">
             <span class="visually-hidden">{{ __('Display GLPI debug informations') }}</span>
          </i>
