@@ -40,20 +40,6 @@
             <span class="visually-hidden">{{ __("Top of the page") }}</span>
          </i>
       </span>
-
-      {% if is_debug_active %}
-         <span class="btn btn-danger d-none d-md-block" id="see_debug">
-            <i class="fas fa-bug" title=" {{ __('Display GLPI debug informations') }}">
-               <span class="visually-hidden">{{ __('Display GLPI debug informations') }}</span>
-            </i>
-         </span>
-         <script type="text/javascript">
-            $($('#see_debug').click(function(e) {
-               e.preventDefault();
-               $('body > .debug-panel').css('display', 'block');
-            }));
-         </script>
-      {% endif %}
    </div>
 
    {% if config('maintenance_mode') %}

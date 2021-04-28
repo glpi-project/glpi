@@ -672,6 +672,12 @@ $(function() {
       }
    });
 
+   // toggle debug panel
+   $(document).on('click', '.see_debug', function(e) {
+      console.log("see debug")
+      $('body > .debug-panel').toggle();
+   });
+
    // permits to have html in dialogs title
    /*$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
       _title: function(title) {
