@@ -993,4 +993,104 @@ SCSS
       $this->string(\Html::getScssFileHash(vfsStream::url('glpi/css/another.scss')))
          ->isEqualTo($files_md5['another.scss']);
    }
+
+
+   protected function testGetGenericDateTimeSearchItemsProvider(): array {
+      return [
+         [
+            'options' => [
+               'with_time'          => true,
+               'with_future'        => false,
+               'with_days'          => false,
+               'with_specific_date' => false,
+            ],
+            'check_values' => [
+               'NOW'       => "Now",
+               '-4HOUR'    => "- 4 hours",
+               '-14MINUTE' => "- 14 minutes",
+            ],
+            'unwanted' => ['0', '4DAY', 'LASTMONDAY'],
+         ],
+         [
+            'options' => [
+               'with_time'          => true,
+               'with_future'        => true,
+               'with_days'          => false,
+               'with_specific_date' => false,
+            ],
+            'check_values' => [
+               'NOW'       => "Now",
+               '-4HOUR'    => "- 4 hours",
+               '-14MINUTE' => "- 14 minutes",
+               '5DAY'      => "+ 5 days",
+               '11HOUR'    => "+ 11 hours",
+            ],
+            'unwanted' => ['0', 'LASTMONDAY'],
+         ],
+         [
+            'options' => [
+               'with_time'          => false,
+               'with_future'        => true,
+               'with_days'          => false,
+               'with_specific_date' => false,
+            ],
+            'check_values' => [
+               'NOW'       => "Today",
+               '4DAY'      => "+ 4 days",
+               '-3DAY'      => "- 3 days",
+            ],
+            'unwanted' => ['0', 'LASTMONDAY', '-3MINUTE'],
+         ],
+         [
+            'options' => [
+               'with_time'          => true,
+               'with_future'        => false,
+               'with_days'          => true,
+               'with_specific_date' => false,
+            ],
+            'check_values' => [
+               'NOW'        => "Now",
+               'TODAY'      => "Today",
+               '-4HOUR'     => "- 4 hours",
+               '-14MINUTE'  => "- 14 minutes",
+               'LASTMONDAY' => "last Monday",
+               'BEGINMONTH' => "Beginning of the month",
+               'BEGINYEAR'  => "Beginning of the year",
+            ],
+            'unwanted' => ['0', '+2DAY',],
+         ],
+         [
+            'options' => [
+               'with_time'          => false,
+               'with_future'        => false,
+               'with_days'          => false,
+               'with_specific_date' => true,
+            ],
+            'check_values' => [
+               '0' => "Specify a date",
+            ],
+            'unwanted' => ['+2DAY', 'LASTMONDAY', '-3MINUTE'],
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider testGetGenericDateTimeSearchItemsProvider
+    */
+   public function testGetGenericDateTimeSearchItems(
+      array $options,
+      array $check_values,
+      array $unwanted
+   ) {
+      $values = \Html::getGenericDateTimeSearchItems($options);
+
+      foreach ($check_values as $key => $value) {
+         $this->array($values)->hasKey($key);
+         $this->string($values[$key])->isEqualTo($value);
+      }
+
+      foreach ($unwanted as $key) {
+         $this->array($values)->notHasKey($key);
+      }
+   }
 }

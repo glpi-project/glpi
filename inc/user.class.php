@@ -3564,7 +3564,7 @@ JAVASCRIPT;
     */
    static function getSqlSearchResult ($count = true, $right = "all", $entity_restrict = -1, $value = 0,
                                        array $used = [], $search = '', $start = 0, $limit = -1,
-                                       $inactive_deleted = 0) {
+                                       $inactive_deleted = 0, $with_no_right = 0) {
       global $DB;
 
       // No entity define : use active ones
@@ -3663,10 +3663,12 @@ JAVASCRIPT;
          case "all" :
             $WHERE = [
                'glpi_users.id' => ['>', 0],
-               'OR' => [
-                  'glpi_profiles_users.entities_id' => null
-               ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
+               'OR' => getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
             ];
+
+            if ($with_no_right) {
+               $WHERE['OR'][] = ['glpi_profiles_users.entities_id' => null];
+            }
             break;
 
          default :
@@ -3971,6 +3973,7 @@ JAVASCRIPT;
          'specific_tags'       => [],
          'url'                 => $CFG_GLPI['root_doc'] . "/ajax/getDropdownUsers.php",
          'inactive_deleted'    => 0,
+         'with_no_right'       => 0,
       ];
 
       if (is_array($options) && count($options)) {
@@ -4036,6 +4039,7 @@ JAVASCRIPT;
          'on_change'           => $p['on_change'],
          'used'                => $p['used'],
          'inactive_deleted'    => $p['inactive_deleted'],
+         'with_no_right'       => $p['with_no_right'],
          'entity_restrict'     => ($entity_restrict = (is_array($p['entity']) ? json_encode(array_values($p['entity'])) : $p['entity'])),
          'specific_tags'       => $p['specific_tags'],
          '_idor_token'         => Session::getNewIDORToken(__CLASS__, [

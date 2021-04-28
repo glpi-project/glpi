@@ -1613,6 +1613,7 @@ class Infocom extends CommonDBChild {
          'field'              => 'decommission_date',
          'name'               => __('Decommission date'),
          'datatype'           => 'date',
+         'maybefuture'        => true,
          'forcegroupby'       => true,
          'joinparams'         => $joinparams
       ];
@@ -1695,6 +1696,7 @@ class Infocom extends CommonDBChild {
          'table'              => $this->getTable(),
          'field'              => 'decommission_date',
          'name'               => __('Decommission date'),
+         'maybefuture'        => true,
          'datatype'           => 'date',
          'forcegroupby'       => true
       ];
