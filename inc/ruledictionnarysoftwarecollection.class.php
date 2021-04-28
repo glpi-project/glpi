@@ -190,7 +190,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                   'SELECT' => 'id',
                   'FROM'   => 'glpi_softwares',
                   'WHERE'  => [
-                     'name'               => $input['name'],
+                     'name'               => addslashes($input['name']),
                      'manufacturers_id'   => $input['manufacturers_id']
                   ]
                ]);
