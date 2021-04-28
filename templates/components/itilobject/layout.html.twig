@@ -15,10 +15,6 @@
          {% endif %}
       </div>
       <div class="itil-right-side col-12 col-md-4 mt-0 mt-md-n1 card-footer p-0 rounded-0">
-         <button class="switch-panel-width btn btn-sm btn-square btn-icon btn-outline-secondary d-none d-md-block border-bottom-0 border-start-0 position-fixed bottom-0 left-0">
-            <i class="fas fa-caret-left"></i>
-         </button>
-
          {% if not item.isNewItem() %}
             {% include("components/itilobject/mainform_open.html.twig") %}
          {% endif %}
