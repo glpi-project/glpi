@@ -521,7 +521,7 @@ class Certificate extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Expiration date');
       echo "&nbsp;";
-      Html::showToolTip(nl2br(__('Empty for infinite')));
+      Html::showToolTip(__('Empty for infinite'));
       echo "&nbsp;</td>";
       echo "<td>";
       Html::showDateField('date_expiration', ['value' => $this->fields["date_expiration"]]);

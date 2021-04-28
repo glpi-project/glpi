@@ -31,6 +31,7 @@
  */
 
 use Glpi\Event;
+use Glpi\Toolbox\RichText;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -160,9 +161,8 @@ class KnowbaseItemTranslation extends CommonDBChild {
       echo "</td></tr>";
       echo "<tr><td class='left' colspan='4'><h2>".__('Content')."</h2>\n";
 
-      echo "<div id='kbanswer'>";
-      $answer = $this->fields["answer"];
-      echo Toolbox::unclean_html_cross_side_scripting_deep($answer);
+      echo "<div class='rich_text_container' id='kbanswer'>";
+      echo RichText::getSafeHtml($this->fields['answer'], true);
       echo "</div>";
       echo "</td></tr>";
       echo "</table>";
@@ -240,7 +240,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
             }
             if (isset($data['answer']) && !empty($data['answer'])) {
                echo "&nbsp;";
-               Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($data['answer']));
+               Html::showToolTip(RichText::getSafeHtml($data['answer'], true));
             }
             echo "</td></tr>";
          }
@@ -278,7 +278,6 @@ class KnowbaseItemTranslation extends CommonDBChild {
          $this->check(-1, CREATE, $options);
 
       }
-      Html::initEditorSystem('answer');
       $this->showFormHeader($options);
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Language')."&nbsp;:</td>";
@@ -304,8 +303,17 @@ class KnowbaseItemTranslation extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Content')."</td>";
       echo "<td colspan='3'>";
-      echo "<textarea cols='100' rows='30' id='answer' name='answer'>".$this->fields["answer"];
-      echo "</textarea>";
+      Html::textarea(
+         [
+            'name'              => 'answer',
+            'value'             => RichText::getSafeHtml($this->fields['answer'], true, true),
+            'editor_id'         => 'answer',
+            'enable_fileupload' => false,
+            'enable_richtext'   => true,
+            'cols'              => 100,
+            'rows'              => 30
+         ]
+      );
       echo "</td></tr>\n";
 
       $this->showFormButtons($options);

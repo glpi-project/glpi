@@ -52,8 +52,12 @@ class Html {
     *          1 : neutralize tag anb content,
     *          2 : remove tag and neutralize content
     * @return string
+    *
+    * @deprecated 10.0.0
    **/
    static function clean($value, $striptags = true, $keep_bad = 2) {
+      Toolbox::deprecated('Use Toolbox::stripTags(), Glpi\Toolbox\RichText::getSafeHtml() or Glpi\Toolbox\RichText::getTextFromHtml().');
+
       $value = Html::entity_decode_deep($value);
 
       // Change <email@domain> to email@domain so it is not removed by htmLawed
@@ -241,8 +245,11 @@ class Html {
     * @param string|array $value
     *
     * @return string|array
+    *
+    * @deprecated 10.0.0
    **/
    static function nl2br_deep($value) {
+      Toolbox::deprecated();
 
       return (is_array($value) ? array_map([__CLASS__, 'nl2br_deep'], $value)
                                : nl2br($value));
@@ -473,8 +480,11 @@ class Html {
     * @param string $value
     *
     * @return string
+    *
+    * @deprecated 10.0.0
    **/
    static function weblink_extract($value) {
+      Toolbox::deprecated();
 
       $value = preg_replace('/<a\s+href\="([^"]+)"[^>]*>[^<]*<\/a>/i', "$1", $value);
       return $value;
@@ -719,11 +729,9 @@ class Html {
    **/
    static function displayTitle($ref_pic_link = "", $ref_pic_text = "", $ref_title = "", $ref_btts = "") {
 
-      $ref_pic_text = htmlentities($ref_pic_text, ENT_QUOTES, 'UTF-8');
-
       echo "<div class='center'><table class='tab_glpi'><tr>";
       if ($ref_pic_link!="") {
-         $ref_pic_text = self::clean($ref_pic_text);
+         $ref_pic_text = Toolbox::stripTags($ref_pic_text);
          echo "<td>".Html::image($ref_pic_link, ['alt' => $ref_pic_text])."</td>";
       }
 
@@ -3986,9 +3994,6 @@ JS;
                      });
                   }
 
-                  editor.on('SaveContent', function (contentEvent) {
-                     contentEvent.content = contentEvent.content.replace(/\\r?\\n/g, '');
-                  });
                   editor.on('Change', function (e) {
                      // Nothing fancy here. Since this is only used for tracking unsaved changes,
                      // we want to keep the logic in common.js with the other form input events.
@@ -4057,8 +4062,11 @@ JAVASCRIPT
     * @param $content : content to convert in html
     *
     * @return $content
+    *
+    * @deprecated 10.0.0
    **/
    static function setSimpleTextContent($content) {
+      Toolbox::deprecated();
 
       $content = Html::entity_decode_deep($content);
       $content = Toolbox::convertImageToTag($content);

@@ -344,10 +344,14 @@ class NotificationTargetProjectTask extends NotificationTarget {
          $tmp['##task.description##']    = $task['content'];
          $tmp['##task.comments##']       = $task['comment'];
 
-         $tmp['##task.state##']          = Dropdown::getDropdownName('glpi_projectstates',
-                                                                     $task['projectstates_id']);
-         $tmp['##task.type##']           = Dropdown::getDropdownName('glpi_projecttasktypes',
-                                                                     $task['projecttasktypes_id']);
+         $tmp['##task.state##']          = '';
+         if ($task['projectstates_id']) {
+            $tmp['##task.state##'] = Dropdown::getDropdownName('glpi_projectstates', $task['projectstates_id']);
+         }
+         $tmp['##task.type##']           = '';
+         if ($task['projecttasktypes_id']) {
+            $tmp['##task.type##'] = Dropdown::getDropdownName('glpi_projecttasktypes', $task['projecttasktypes_id']);
+         }
          $tmp['##task.percent##']        = Dropdown::getValueWithUnit($task['percent_done'], "%");
 
          $this->data["##task.planstartdate##"]    = '';
@@ -446,9 +450,10 @@ class NotificationTargetProjectTask extends NotificationTarget {
          $tmp['##document.downloadurl##']
                                     = $this->formatURL($options['additionnaloption']['usertype'],
                                                       $downloadurl);
-         $tmp['##document.heading##']
-                                    = Dropdown::getDropdownName('glpi_documentcategories',
-                                                               $data['documentcategories_id']);
+         $tmp['##document.heading##'] = '';
+         if ($data['documentcategories_id']) {
+            $tmp['##document.heading##'] = Dropdown::getDropdownName('glpi_documentcategories', $data['documentcategories_id']);
+         }
 
          $tmp['##document.filename##']
                                     = $data['filename'];

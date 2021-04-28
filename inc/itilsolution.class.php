@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\RichText;
 
 /**
  * ITILSolution Class
@@ -240,7 +241,7 @@ JAVASCRIPT;
 
       if ($canedit) {
          Html::textarea(['name'              => 'content',
-                         'value'             => $this->fields["content"],
+                         'value'             => RichText::getSafeHtml($this->fields['content'], true, true),
                          'rand'              => $rand,
                          'editor_id'         => $content_id,
                          'enable_fileupload' => false,
@@ -249,7 +250,9 @@ JAVASCRIPT;
                          'rows'              => 80]);
          Html::activateUserMentions($content_id);
       } else {
-         echo Toolbox::unclean_cross_side_scripting_deep($this->fields['content']);
+         echo '<div class="rich_text_container">';
+         echo RichText::getSafeHtml($this->fields['content'], true);
+         echo '</div>';
       }
       echo "</td></tr>";
 

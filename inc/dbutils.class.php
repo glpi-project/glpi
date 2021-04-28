@@ -1036,12 +1036,13 @@ final class DbUtils {
     * @param boolean $withcomment 1 if you want to give the array with the comments (false by default)
     * @param boolean $translate   (true by default)
     * @param boolean $tooltip     (true by default) returns a tooltip, else returns only 'comment'
+    * @param string  $default     default value returned when item not exists
     *
     * @return string completename of the element
     *
     * @see DbUtils::getTreeLeafValueName
     */
-   public function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true) {
+   public function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true, string $default = '&nbsp;') {
       global $DB;
 
       $name    = "";
@@ -1160,7 +1161,7 @@ final class DbUtils {
       }
 
       if (empty($name)) {
-         $name = "&nbsp;";
+         $name = $default;
       }
 
       if ($withcomment) {

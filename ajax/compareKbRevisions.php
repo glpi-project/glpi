@@ -34,6 +34,8 @@
  * @since 9.1
  */
 
+use Glpi\Toolbox\RichText;
+
 include ('../inc/includes.php');
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
@@ -52,14 +54,14 @@ $revision = new KnowbaseItem_Revision();
 $revision->getFromDB($oldid);
 $old = [
    'name'   => $revision->fields['name'],
-   'answer' => Toolbox::unclean_html_cross_side_scripting_deep($revision->fields['answer'])
+   'answer' => RichText::getSafeHtml($revision->fields['answer'], true)
 ];
 
 $revision = $diffid == 0 ? new KnowbaseItem() : new KnowbaseItem_Revision();
 $revision->getFromDB($diffid == 0 ? $kbid : $diffid);
 $diff = [
    'name'   => $revision->fields['name'],
-   'answer' => Toolbox::unclean_html_cross_side_scripting_deep($revision->fields['answer'])
+   'answer' => RichText::getSafeHtml($revision->fields['answer'], true)
 ];
 
 echo json_encode([

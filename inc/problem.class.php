@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\RichText;
+
 /**
  * Problem class
 **/
@@ -1121,7 +1123,7 @@ class Problem extends CommonITILObject {
 
       $problem   = new self();
       $rand      = mt_rand();
-      if ($problem->getFromDBwithData($ID, 0)) {
+      if ($problem->getFromDBwithData($ID)) {
 
          $bgcolor = $_SESSION["glpipriority_".$problem->fields["priority"]];
          $name    = sprintf(__('%1$s: %2$s'), __('ID'), $problem->fields["id"]);
@@ -1172,7 +1174,7 @@ class Problem extends CommonITILObject {
          $link .= "'>";
          $link .= "<span class='b'>".$problem->fields["name"]."</span></a>";
          $link = printf(__('%1$s %2$s'), $link,
-                        Html::showToolTip($problem->fields['content'],
+                        Html::showToolTip(RichText::getSafeHtml($problem->fields['content'], true),
                                           ['applyto' => 'problem'.$problem->fields["id"].$rand,
                                                 'display' => false]));
 
@@ -1638,8 +1640,6 @@ class Problem extends CommonITILObject {
          $content = Html::cleanPostForTextArea($content);
       }
 
-      $content = Toolbox::getHtmlToDisplay($content);
-
       echo "<div id='content$rand_text'>";
       if ($canupdate) {
          $uploads = [];
@@ -1654,12 +1654,14 @@ class Problem extends CommonITILObject {
             'required'        => $tt->isMandatoryField('content'),
             'rows'            => $rows,
             'enable_richtext' => true,
-            'value'           => Html::entities_deep($content), // Re-encode entities for textarea
+            'value'           => RichText::getSafeHtml($content, true, true),
             'uploads'         => $uploads,
          ]);
          Html::activateUserMentions($content_id);
       } else {
-         echo $content;
+         echo '<div class="rich_text_container">';
+         echo RichText::getSafeHtml($content, true);
+         echo '</div>';
       }
       echo "</div>";
 

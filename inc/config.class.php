@@ -1882,7 +1882,7 @@ class Config extends CommonDBTM {
          $msg .= $_SERVER["SERVER_SOFTWARE"];
       }
       if (isset($_SERVER["SERVER_SIGNATURE"])) {
-         $msg .= ' ('.Html::clean($_SERVER["SERVER_SIGNATURE"]).')';
+         $msg .= ' ('.Toolbox::stripTags($_SERVER["SERVER_SIGNATURE"]).')';
       }
       echo wordwrap($msg."\n", $width, "\n\t");
 
@@ -2067,6 +2067,8 @@ class Config extends CommonDBTM {
                  'check'   => 'ParagonIE_Sodium_Compat' ],
                [ 'name'    => 'symfony/cache',
                  'check'   => 'Symfony\\Component\\Cache\\Psr16Cache' ],
+               [ 'name'    => 'html2text/html2text',
+                 'check'   => 'Html2Text\\Html2Text' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [

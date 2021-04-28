@@ -302,22 +302,21 @@ class Dropdown {
     * @param boolean $withcomment  give array with name and comment (default 0)
     * @param boolean $translate    (true by default)
     * @param boolean $tooltip      (true by default) returns a tooltip, else returns only 'comment'
+    * @param string  $default      default value returned when item not exists
     *
-    * @return string the value of the dropdown or &nbsp; if not exists
+    * @return string the value of the dropdown
    **/
-   static function getDropdownName($table, $id, $withcomment = 0, $translate = true, $tooltip = true) {
+   static function getDropdownName($table, $id, $withcomment = 0, $translate = true, $tooltip = true, string $default = '&nbsp;') {
       global $DB;
-
-      $dft_retval = "&nbsp;";
 
       $item = getItemForItemtype(getItemTypeForTable($table));
 
       if (!is_object($item)) {
-         return $dft_retval;
+         return $default;
       }
 
       if ($item instanceof CommonTreeDropdown) {
-         return getTreeValueCompleteName($table, $id, $withcomment, $translate, $tooltip);
+         return getTreeValueCompleteName($table, $id, $withcomment, $translate, $tooltip, $default);
       }
 
       $name    = "";
@@ -490,7 +489,7 @@ class Dropdown {
       }
 
       if (empty($name)) {
-         $name = $dft_retval;
+         $name = $default;
       }
 
       if ($withcomment) {

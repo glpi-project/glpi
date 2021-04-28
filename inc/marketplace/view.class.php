@@ -451,21 +451,21 @@ JS;
       $plugin_state = Plugin::getStateKey($plugin_inst->fields['state'] ?? -1);
       $buttons      = self::getButtons($plugin_key);
 
-      $name = Html::clean($plugin['name']);
-      $description = Html::clean($plugin['description']);
+      $name = Toolbox::stripTags($plugin['name']);
+      $description = Toolbox::stripTags($plugin['description']);
 
-      $authors = Html::clean(implode(', ', array_column($plugin['authors'] ?? [], 'name', 'id')), false);
-      $authors_title = Html::clean($authors);
+      $authors = Toolbox::stripTags(implode(', ', array_column($plugin['authors'] ?? [], 'name', 'id')));
+      $authors_title = Html::entities_deep($authors);
       $authors = strlen($authors)
          ? "<i class='fas fa-fw fa-user-friends'></i>{$authors}"
          : "";
 
-      $licence = Html::clean($plugin['license'] ?? '');
+      $licence = Toolbox::stripTags($plugin['license'] ?? '');
       $licence = strlen($licence)
          ? "<i class='fas fa-fw fa-balance-scale'></i>{$licence}"
          : "";
 
-      $version = Html::clean($plugin['version'] ?? '');
+      $version = Toolbox::stripTags($plugin['version'] ?? '');
       $version = strlen($version)
          ? "<i class='fas fa-fw fa-code-branch'></i>{$version}"
          : "";
@@ -785,7 +785,7 @@ HTML;
       if (strlen($logo_url)) {
          $icon = "<img src='{$logo_url}'>";
       } else {
-         $words = explode(" ", Html::clean($plugin['name']));
+         $words = explode(" ", Toolbox::stripTags($plugin['name']));
          $initials = "";
          for ($i = 0; $i < 2; $i++) {
             if (isset($words[$i])) {

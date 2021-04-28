@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\RichText;
+
 /**
  * NotificationTemplateTranslation Class
 **/
@@ -243,8 +245,18 @@ class NotificationTemplateTranslation extends CommonDBChild {
    */
    static function cleanContentHtml(array $input) {
 
-      $txt = Html::clean(Toolbox::unclean_cross_side_scripting_deep($input['content_html']));
-      $txt = trim(html_entity_decode($txt, 0, 'UTF-8'));
+      // Unsanitize
+      //
+      // Using `Toolbox::stripslashes_deep()` on sanitized content will produce "r" and "n" instead of "\r" and \n",
+      // so newlines have to be removed before calling it.
+      $txt = str_replace(['\r', '\n'], ' ', $input['content_html']);
+      $txt = Toolbox::stripslashes_deep(Toolbox::unclean_cross_side_scripting_deep($txt));
+
+      // Get as text plain text
+      $txt = RichText::getTextFromHtml($txt, true);
+
+      // Sanitize result
+      $txt = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($txt));
 
       if (!$txt) {
          // No HTML (nothing to display)

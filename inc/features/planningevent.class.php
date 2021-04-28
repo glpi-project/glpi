@@ -44,6 +44,7 @@ use DateTime;
 use DateTimeZone;
 use Dropdown;
 use Entity;
+use Glpi\Toolbox\RichText;
 use Group_User;
 use Html;
 use Planning;
@@ -542,9 +543,10 @@ trait PlanningEvent {
                   'users_id'         => $data["users_id"],
                   'state'            => $data["state"],
                   'background'       => $has_bg ? $data['background'] : false,
-                  'name'             => Html::clean(Html::resume_text($data["name"], $CFG_GLPI["cut"])),
-                  'text'             => Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($data["text"])),
-                  $CFG_GLPI["cut"]),
+                  'name'             => Toolbox::unclean_cross_side_scripting_deep($data['name']), // name is re-encoded on JS side
+                  'text'             => $data['text'] !== null
+                     ? RichText::getSafeHtml($data['text'], true)
+                     : '',
                   'ajaxurl'          => $CFG_GLPI["root_doc"]."/ajax/planning.php".
                                         "?action=edit_event_form".
                                         "&itemtype=$itemtype".
@@ -653,12 +655,14 @@ trait PlanningEvent {
          }
       }
 
+      // $val["text"] has already been sanitized and decoded by self::populatePlanning()
+      $content = $val["text"].$recall;
+
       if ($complete) {
          $html.= "<span>".Planning::getState($val["state"])."</span><br>";
-         $html.= "<div class='event-description rich_text_container'>".$val["text"].$recall."</div>";
+         $html.= "<div class='event-description rich_text_container'>".$content."</div>";
       } else {
-         $html.= Html::showToolTip("<span class='b'>".Planning::getState($val["state"])."</span><br>
-                                   ".$val["text"].$recall,
+         $html.= Html::showToolTip("<span class='b'>".Planning::getState($val["state"])."</span><br>".$content,
                                    ['applyto' => "reminder_".$val[$item_fk].$rand,
                                          'display' => false]);
       }

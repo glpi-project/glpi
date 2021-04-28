@@ -28,16 +28,23 @@ The present file will list all changes made to the project; according to the
 #### Deprecated
 - Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
 - Usage of `CommonDBTM::notificationqueueonaction` property
+- Usage of `NotificationTarget::html_tags` property
 - `DBmysql::getTableSchema()`
 - `Calendar::duplicate()`
 - `CommonDBTM::clone()`
 - `CommonDBTM::prepareInputForClone()`
 - `CommonDBTM::post_clone()`
 - `Config::getCache()`
+- `Html::clean()`
+- `Html::setSimpleTextContent()`
 - `Html::setRichTextContent()`
+- `Html::weblink_extract()`
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
+- `Toolbox::doubleEncodeEmails()`
+- `Toolbox::getHtmlToDisplay()`
 - `Toolbox::useCache()`
+- `Toolbox::unclean_html_cross_side_scripting_deep()`
 
 #### Removed
 - `Update::declareOldItems()`

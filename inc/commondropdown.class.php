@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\RichText;
+
 /// CommonDropdown class - generic dropdown
 abstract class CommonDropdown extends CommonDBTM {
 
@@ -473,7 +475,7 @@ abstract class CommonDropdown extends CommonDBTM {
             case 'tinymce':
                Html::textarea([
                   'name'            => $field['name'],
-                  'value'           => $this->fields[$field['name']],
+                  'value'           => RichText::getSafeHtml($this->fields[$field['name']], true, true),
                   'enable_richtext' => true,
                   'enable_images'   => !($field['disable_images'] ?? false),
                ]);

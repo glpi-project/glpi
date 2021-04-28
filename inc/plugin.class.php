@@ -1217,8 +1217,8 @@ class Plugin extends CommonDBTM {
       $plug     = new Plugin();
       $pluglist = $plug->find([], "name, directory");
       foreach ($pluglist as $plugin) {
-         $name = Html::clean($plugin['name']);
-         $version = Html::clean($plugin['version']);
+         $name = Toolbox::stripTags($plugin['name']);
+         $version = Toolbox::stripTags($plugin['version']);
 
          $msg  = substr(str_pad($plugin['directory'], 30), 0, 20).
                  " Name: ".Toolbox::substr(str_pad($name, 40), 0, 30).
@@ -2350,7 +2350,7 @@ class Plugin extends CommonDBTM {
             return "&nbsp;";
             break;
          case 'name':
-            $value = Html::clean($values[$field]);
+            $value = Toolbox::stripTags($values[$field]);
             $state = $values['state'];
             $directory = $values['directory'];
             self::load($directory); // Load plugin to give it ability to define its config_page hook
@@ -2365,11 +2365,9 @@ class Plugin extends CommonDBTM {
             }
             break;
          case 'author':
-            return $value = Html::clean($values[$field], false);
-            break;
          case 'license':
          case 'version':
-            return $value = Html::clean($values[$field]);
+            return $value = Toolbox::stripTags($values[$field]);
             break;
       }
 

@@ -153,13 +153,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    function getDataForObject(CommonDBTM $item, array $options, $simple = false) {
       // Common ITIL data
       $data = parent::getDataForObject($item, $options, $simple);
-      /*$data['##ticket.description##'] = Html::clean($data['##ticket.description##']);*/
-
-      // Double encode emails stored between '<' and '>' tags
-      // Common case of this is when the ticket was created from a forwarded email
-      // Without double encoding, these emails are interpreted as html and not
-      // rendered in the final mail
-      $data['##ticket.description##'] = Toolbox::doubleEncodeEmails($data['##ticket.description##']);
 
       $data['##ticket.content##'] = $data['##ticket.description##'];
       // Specific data
@@ -170,9 +163,10 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                         = TicketValidation::getStatus($item->getField('global_validation'));
       $data['##ticket.type##']
                         = Ticket::getTicketTypeName($item->getField('type'));
-      $data['##ticket.requesttype##']
-                        = Dropdown::getDropdownName('glpi_requesttypes',
-                                                    $item->getField('requesttypes_id'));
+      $data['##ticket.requesttype##'] = '';
+      if ($requesttype_id = $item->getField('requesttypes_id')) {
+         $data['##ticket.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes', $requesttype_id);
+      }
 
       $autoclose_value  = Entity::getUsedConfig('autoclose_delay', $this->getEntity(), '',
                                                 Entity::CONFIG_NEVER);
@@ -299,11 +293,12 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
                //Object location
                if ($hardware->isField('locations_id')) {
-                  $tmp['##ticket.item.location##']
-                              = Dropdown::getDropdownName('glpi_locations',
-                                                          $hardware->getField('locations_id'));
+                  $tmp['##ticket.item.location##'] = '';
+                  if ($h_locations_id = $hardware->getField('locations_id')) {
+                     $tmp['##ticket.item.location##'] = Dropdown::getDropdownName('glpi_locations', $h_locations_id);
+                  }
                   $locations = new Location();
-                  $locations->getFromDB($hardware->getField('locations_id'));
+                  $locations->getFromDB($h_locations_id);
                   if ($hardware->getField('comment')) {
                      $data['##ticket.item.locationcomment##'] = $locations->getField('comment');
                   }
@@ -325,7 +320,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                }
 
                //Object user
-               if ($hardware->getField('users_id')) {
+               if ($hardware->isField('users_id')) {
+                  $tmp['##ticket.item.user##'] = '';
                   $user_tmp = new User();
                   if ($user_tmp->getFromDB($hardware->getField('users_id'))) {
                      $tmp['##ticket.item.user##'] = $user_tmp->getName();
@@ -333,17 +329,21 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                }
 
                //Object group
-               if ($hardware->getField('groups_id')) {
-                  $tmp['##ticket.item.group##']
-                              = Dropdown::getDropdownName('glpi_groups', $hardware->getField('groups_id'));
+               if ($hardware->isField('groups_id')) {
+                  $tmp['##ticket.item.group##'] = '';
+                  if ($h_group_id = $hardware->getField('groups_id')) {
+                     $tmp['##ticket.item.group##'] = Dropdown::getDropdownName('glpi_groups', $h_group_id);
+                  }
                }
 
                $modeltable = getSingular($hardware->getTable())."models";
                $modelfield = getForeignKeyFieldForTable($modeltable);
 
                if ($hardware->isField($modelfield)) {
-                  $tmp['##ticket.item.model##']
-                              = Dropdown::getDropdownName($modeltable, $hardware->getField($modelfield));
+                  $tmp['##ticket.item.model##'] = '';
+                  if ($h_model_id = $hardware->getField($modelfield)) {
+                     $tmp['##ticket.item.model##'] = Dropdown::getDropdownName($modeltable, $h_model_id);
+                  }
                }
 
                $data['items'][] = $tmp;
@@ -453,7 +453,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $current = current($replysolved);
          $data['##ticket.solution.approval.description##'] = $current ? $current['content'] : '';
          $data['##ticket.solution.approval.date##']        = $current ? Html::convDateTime($current['date']) : '';
-         $data['##ticket.solution.approval.author##']      = $current ? Html::clean(getUserName($current['users_id'])) : '';
+         $data['##ticket.solution.approval.author##']      = $current ? getUserName($current['users_id']) : '';
 
          //Validation infos
          $restrict = ['tickets_id' => $item->getField('id')];
@@ -474,14 +474,14 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             $tmp['##validation.submission.title##']
                               //TRANS: %s is the user name
                               = sprintf(__('An approval request has been submitted by %s'),
-                                        Html::clean(getUserName($validation['users_id'])));
+                                        getUserName($validation['users_id']));
             $tmp['##validation.answer.title##']
                               //TRANS: %s is the user name
                               = sprintf(__('An answer to an approval request was produced by %s'),
-                                        Html::clean(getUserName($validation['users_id_validate'])));
+                                        getUserName($validation['users_id_validate']));
 
             $tmp['##validation.author##']
-                              = Html::clean(getUserName($validation['users_id']));
+                              = getUserName($validation['users_id']);
 
             $tmp['##validation.status##']
                               = TicketValidation::getStatus($validation['status']);
@@ -494,7 +494,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             $tmp['##validation.validationdate##']
                               = Html::convDateTime($validation['validation_date']);
             $tmp['##validation.validator##']
-                              =  Html::clean(getUserName($validation['users_id_validate']));
+                              =  getUserName($validation['users_id_validate']);
             $tmp['##validation.commentvalidation##']
                               = $validation['comment_validation'];
 

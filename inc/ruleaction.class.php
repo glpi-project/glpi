@@ -92,7 +92,7 @@ class RuleAction extends CommonDBChild {
    protected function computeFriendlyName() {
 
       if ($rule = getItemForItemtype(static::$itemtype)) {
-         return Html::clean($rule->getMinimalActionText($this->fields));
+         return Toolbox::stripTags($rule->getMinimalActionText($this->fields));
       }
       return '';
    }

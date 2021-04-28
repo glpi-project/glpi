@@ -32,6 +32,7 @@
 
 namespace Glpi\Dashboard;
 
+use Glpi\Toolbox\RichText;
 use Html;
 use Mexitek\PHPColors\Color;
 use Michelf\MarkdownExtra;
@@ -1682,7 +1683,7 @@ HTML;
 
          $content_size = strlen($entry['content']);
          $content = strlen($entry['content'])
-            ? Toolbox::getHtmlToDisplay($entry['content']).
+            ? RichText::getSafeHtml($entry['content'], true).
               ($content_size > 300
                ? "<p class='read_more'><span class='read_more_button'>...</span></p>"
                : ""

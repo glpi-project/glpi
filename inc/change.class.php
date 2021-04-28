@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\RichText;
+
 /**
  * Change Class
 **/
@@ -1174,8 +1176,6 @@ class Change extends CommonITILObject {
          $content = Html::cleanPostForTextArea($content);
       }
 
-      $content = Toolbox::getHtmlToDisplay($content);
-
       echo "<div id='content$rand_text'>";
       if ($canupdate) {
          $uploads = [];
@@ -1190,12 +1190,14 @@ class Change extends CommonITILObject {
             'required'        => $tt->isMandatoryField('content'),
             'rows'            => $rows,
             'enable_richtext' => true,
-            'value'           => Html::entities_deep($content), // Re-encode entities for textarea
+            'value'           => RichText::getSafeHtml($content, true, true),
             'uploads'         => $uploads,
          ]);
          Html::activateUserMentions($content_id);
       } else {
-         echo $content;
+         echo '<div class="rich_text_container">';
+         echo RichText::getSafeHtml($content, true);
+         echo '</div>';
       }
       echo "</div>";
 

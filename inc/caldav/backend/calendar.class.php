@@ -323,8 +323,7 @@ class Calendar extends AbstractBackend {
          $input['uuid'] = Uuid::uuid4();
       }
 
-      $input = \Html::entities_deep($input);
-      $input = \Toolbox::addslashes_deep($input);
+      $input = \Toolbox::sanitize($input);
 
       if ($item->isNewItem()) {
          // Auto set entities_id if exists and not set

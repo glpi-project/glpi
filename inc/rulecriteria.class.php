@@ -95,7 +95,7 @@ class RuleCriteria extends CommonDBChild {
    protected function computeFriendlyName() {
 
       if ($rule = getItemForItemtype(static::$itemtype)) {
-         return Html::clean($rule->getMinimalCriteriaText($this->fields));
+         return Toolbox::stripTags($rule->getMinimalCriteriaText($this->fields));
       }
       return '';
    }

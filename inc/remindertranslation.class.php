@@ -35,6 +35,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\RichText;
 
 /**
  * ReminderTranslation Class
@@ -175,7 +176,7 @@ class ReminderTranslation extends CommonDBChild {
             }
             if (isset($data['text']) && !empty($data['text'])) {
                echo "&nbsp;";
-               Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($data['text']));
+               Html::showToolTip(RichText::getSafeHtml($data['text'], true));
             }
             echo "</td></tr>";
          }
@@ -212,7 +213,6 @@ class ReminderTranslation extends CommonDBChild {
          $this->check(-1, CREATE, $options);
 
       }
-      Html::initEditorSystem('text');
       $this->showFormHeader($options);
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Language')."&nbsp;:</td>";
@@ -242,7 +242,7 @@ class ReminderTranslation extends CommonDBChild {
       echo "<td>".__('Description')."</td>";
       echo "<td colspan='3'>";
       Html::textarea(['name'              => 'text',
-                      'value'             => $this->fields["text"],
+                      'value'             => RichText::getSafeHtml($this->fields["text"], true, true),
                       'enable_richtext'   => true,
                       'enable_fileupload' => false]);
       echo "</td></tr>\n";

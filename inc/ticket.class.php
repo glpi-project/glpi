@@ -31,6 +31,7 @@
  */
 
 use Glpi\Event;
+use Glpi\Toolbox\RichText;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -914,8 +915,8 @@ class Ticket extends CommonITILObject {
 
       // Clean new lines before passing to rules
       if (isset($input["content"])) {
-         $input["content"] = preg_replace('/\\\\r\\\\n/', "\n", $input['content']);
-         $input["content"] = preg_replace('/\\\\n/', "\n", $input['content']);
+         $input["content"] = preg_replace('/\\\\r\\\\n/', "\\n", $input['content']);
+         $input["content"] = preg_replace('/\\\\n/', "\\n", $input['content']);
       }
 
       // automatic recalculate if user changes urgence or technician change impact
@@ -3533,14 +3534,6 @@ JAVASCRIPT;
          $values = [$field => $values];
       }
       switch ($field) {
-         case 'content' :
-            $content = Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($values[$field]));
-            $content = Html::clean($content);
-            if (empty($content)) {
-               $content = ' ';
-            }
-            return nl2br($content);
-
          case 'type':
             return self::getTicketTypeName($values[$field]);
       }
@@ -3555,8 +3548,6 @@ JAVASCRIPT;
       }
       $options['display'] = false;
       switch ($field) {
-         case 'content' :
-            return "<textarea cols='90' rows='6' name='$name'>".$values['content']."</textarea>";
 
          case 'type':
             $options['value'] = $values[$field];
@@ -4221,7 +4212,7 @@ JAVASCRIPT;
             'cols'            => $cols,
             'rows'            => $rows,
             'enable_richtext' => true,
-            'value'           => $content,
+            'value'           => RichText::getSafeHtml($content, true, true),
             'uploads'         => $uploads,
          ]);
          Html::activateUserMentions($content_id);
@@ -4448,9 +4439,8 @@ JAVASCRIPT;
       }
 
       if (isset($options['content'])) {
-         // Clean new lines to be fix encoding
-         $order              = ['\\r', '\\n', "\\'", '\\"', "\\\\"];
-         $replace            = ["", "", "'", '"', "\\"];
+         $order              = ["\\'", '\\"', "\\\\"];
+         $replace            = ["'", '"', "\\"];
          $options['content'] = str_replace($order, $replace, $options['content']);
       }
       if (isset($options['name'])) {
@@ -5160,8 +5150,7 @@ JAVASCRIPT;
       echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('content');
       printf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
       if ($canupdate || $can_requester) {
-         $content = Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($this->fields['content']));
-         Html::showTooltip(nl2br(Html::Clean($content)));
+         Html::showTooltip(RichText::getSafeHtml($this->fields['content'], true));
       }
       echo $tt->getEndHiddenFieldText('content')."</th>";
       echo "<td colspan='3'>";
@@ -5177,8 +5166,6 @@ JAVASCRIPT;
          $content = Html::cleanPostForTextArea($content);
       }
 
-      $content = Toolbox::getHtmlToDisplay($content);
-
       echo "<div id='content$rand_text'>";
       if ($canupdate || $can_requester) {
          $uploads = [];
@@ -5193,12 +5180,14 @@ JAVASCRIPT;
             'required'        => $tt->isMandatoryField('content'),
             'rows'            => $rows,
             'enable_richtext' => true,
-            'value'           => Html::entities_deep($content), // Re-encode entities for textarea
+            'value'           => RichText::getSafeHtml($content, true, true),
             'uploads'         => $uploads,
          ]);
          Html::activateUserMentions($content_id);
       } else {
-         echo $content;
+         echo '<div class="rich_text_container">';
+         echo RichText::getSafeHtml($content, true);
+         echo '</div>';
       }
       echo "</div>";
       echo $tt->getEndHiddenFieldValue('content', $this);
@@ -6439,7 +6428,7 @@ JAVASCRIPT;
 
       $job  = new self();
       $rand = mt_rand();
-      if ($job->getFromDBwithData($ID, 0)) {
+      if ($job->getFromDBwithData($ID)) {
          $bgcolor = $_SESSION["glpipriority_".$job->fields["priority"]];
          $name    = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
          // $rand    = mt_rand();
@@ -6504,11 +6493,8 @@ JAVASCRIPT;
          $link    = sprintf(__('%1$s (%2$s)'), $link,
                             sprintf(__('%1$s - %2$s'), $job->numberOfFollowups($showprivate),
                                     $job->numberOfTasks($showprivate)));
-         $content = Toolbox::unclean_cross_side_scripting_deep(html_entity_decode($job->fields['content'],
-                                                                                  ENT_QUOTES,
-                                                                                  "UTF-8"));
          $link    = printf(__('%1$s %2$s'), $link,
-                           Html::showToolTip(nl2br(Html::Clean($content)),
+                           Html::showToolTip(RichText::getSafeHtml($job->fields['content'], true),
                                              ['applyto' => 'ticket'.$job->fields["id"].$rand,
                                                    'display' => false]));
          echo "</td>";
@@ -7341,7 +7327,7 @@ JAVASCRIPT;
                $input = [
                   'itemtype'        => 'Ticket',
                   'items_id'        => $merge_target_id,
-                  'content'         => $DB->escape($ticket->fields['name']."\n\n".$ticket->fields['content']),
+                  'content'         => $DB->escape($ticket->fields['name']."<br /><br />".$ticket->fields['content']),
                   'users_id'        => $ticket->fields['users_id_recipient'],
                   'date_creation'   => $ticket->fields['date_creation'],
                   'date_mod'        => $ticket->fields['date_mod'],

@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\RichText;
+
 /**
  * @since 9.4.0
  */
@@ -859,7 +861,7 @@ class ITILFollowup  extends CommonDBChild {
          echo "<td rowspan='3'>";
 
          Html::textarea(['name'              => 'content',
-                         'value'             => $this->fields["content"],
+                         'value'             => RichText::getSafeHtml($this->fields['content'], true, true),
                          'rand'              => $rand,
                          'editor_id'         => $content_id,
                          'enable_fileupload' => true,
@@ -970,7 +972,7 @@ JAVASCRIPT;
          echo "<td class='center middle'>";
 
          Html::textarea(['name'              => 'content',
-                         'value'             => $this->fields["content"],
+                         'value'             => RichText::getSafeHtml($this->fields['content'], true, true),
                          'rand'              => $rand_text,
                          'editor_id'         => $content_id,
                          'enable_fileupload' => true,

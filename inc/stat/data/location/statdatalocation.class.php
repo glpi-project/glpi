@@ -33,7 +33,6 @@
 namespace Glpi\Stat\Data\Location;
 
 use Glpi\Stat\StatData;
-use Html;
 use Stat;
 use Toolbox;
 
@@ -63,7 +62,7 @@ abstract class StatDataLocation extends StatData
 
       foreach ($data[$data_key] as $key => $val) {
          if ($val > 0) {
-            $newkey = Toolbox::unclean_cross_side_scripting_deep(Html::clean($key));
+            $newkey = Toolbox::stripTags($key, true);
             $this->labels[] = $newkey;
             $this->series[] = ['name' => $newkey, 'data' => $val];
             $this->total += $val;

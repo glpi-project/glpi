@@ -434,8 +434,11 @@ class Toolbox {
     * @return array|string  unclean item
     *
     * @see clean_cross_side_scripting_deep()
+    *
+    * @deprecated 10.0.0
    **/
    static function unclean_html_cross_side_scripting_deep($value) {
+      Toolbox::deprecated();
 
       if ((array) $value === $value) {
          $value = array_map([__CLASS__, 'unclean_html_cross_side_scripting_deep'], $value);
@@ -476,7 +479,7 @@ class Toolbox {
     */
    public static function getHtmLawedSafeConfig(): array {
       $config = [
-         'elements'         => '* -applet -canvas -embed -object -script',
+         'elements'         => '* -applet -canvas -embed -form -object -script',
          'deny_attribute'   => 'on*, srcdoc',
          'comment'          => 1, // 1: remove HTML comments (and do not display their contents)
          'cdata'            => 1, // 1: remove CDATA sections (and do not display their contents)
@@ -2731,10 +2734,6 @@ class Toolbox {
                      $content_text = self::clean_cross_side_scripting_deep($content_text);
                   }
 
-                  // Replace <br> TinyMce bug
-                  $content_text = str_replace(['&gt;rn&lt;','&gt;\r\n&lt;','&gt;\r&lt;','&gt;\n&lt;'],
-                                              '&gt;&lt;', $content_text);
-
                   // If the tag is from another ticket : link document to ticket
                   if ($item instanceof Ticket
                      && $item->getID()
@@ -2797,12 +2796,13 @@ class Toolbox {
     * @return string  html content
    **/
    static function cleanTagOrImage($content, array $tags) {
-      // RICH TEXT : delete img tag
-      $content = Html::entity_decode_deep($content);
+      $content = Toolbox::unclean_cross_side_scripting_deep($content);
 
       foreach ($tags as $tag) {
          $content = preg_replace("/<img.*alt=['|\"]".$tag."['|\"][^>]*\>/", "<p></p>", $content);
       }
+
+      $content = Toolbox::clean_cross_side_scripting_deep($content);
 
       return $content;
    }
@@ -3022,8 +3022,12 @@ class Toolbox {
     * @param string $content Content to display
     *
     * @return string
+    *
+    * @deprecated 10.0.0
     */
    public static function getHtmlToDisplay($content) {
+      Toolbox::deprecated('Use Glpi\Toolbox\RichText::getSafeHtml()');
+
       $content = Toolbox::unclean_cross_side_scripting_deep(
          $content
       );
@@ -3037,6 +3041,27 @@ class Toolbox {
       }
 
       return $content;
+   }
+
+   /**
+    * Strip HTML tags from a string.
+    *
+    * @since 10.0.0
+    *
+    * @param string  $str              String to strip tags on
+    * @param boolean $sanitized_input  Indicates whether the input has been transformed by GLPI sanitize process
+    *
+    * @return string
+    *
+    * @TODO Unit test
+    */
+   public static function stripTags(string $str, bool $sanitized_input = false): string {
+
+      if ($sanitized_input) {
+         $str = self::unclean_cross_side_scripting_deep($str);
+      }
+
+      return strip_tags($str);
    }
 
    /**
@@ -3362,8 +3387,12 @@ HTML;
     * @param string $string
     *
     * @return string
+    *
+    * @deprecated 10.0.0
     */
    public static function doubleEncodeEmails($string) {
+      Toolbox::deprecated();
+
       // Search for strings that is an email surrounded by `<` and `>` but that cannot be an HTML tag:
       // - absence of quotes indicate that values is not part of an HTML attribute,
       // - absence of ; ensure that ending `&gt;` has not been reached.

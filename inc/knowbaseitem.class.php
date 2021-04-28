@@ -31,6 +31,7 @@
  */
 
 use Glpi\Event;
+use Glpi\Toolbox\RichText;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -830,7 +831,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          echo Html::hidden('_in_modal', ['value' => 1]);
       }
       Html::textarea(['name'              => 'answer',
-                      'value'             => $this->fields["answer"],
+                      'value'             => RichText::getSafeHtml($this->fields['answer'], true, true),
                       'enable_fileupload' => true,
                       'enable_richtext'   => true,
                       'cols'              => $cols,
@@ -952,7 +953,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       $out.= "</td></tr>";
       $out.= "<tr><td class='left' colspan='4'><h2>".__('Content')."</h2>\n";
 
-      $out.= "<div id='kbanswer'>";
+      $out.= "<div class='rich_text_container' id='kbanswer'>";
       $out.= $this->getAnswer();
       $out.= "</div>";
       $out.= "</td></tr>";
@@ -1616,17 +1617,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
                }
                echo Search::showItem($output_type,
                                        "<div class='kb'>$toadd <i class='fa fa-fw $fa_class' title='$fa_title'></i> <a $href>".Html::resume_text($name, 80)."</a></div>
-                                       <div class='kb_resume'>".
-                                       Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($answer)),
-                                                         600)."</div>",
+                                       <div class='kb_resume'>".Html::resume_text(RichText::getTextFromHtml($answer, false, true), 600)."</div>",
                                        $item_num, $row_num);
             } else {
                echo Search::showItem($output_type, $name, $item_num, $row_num);
-               echo Search::showItem($output_type,
-                  Html::clean(Toolbox::unclean_cross_side_scripting_deep(html_entity_decode($answer,
-                                                                                             ENT_QUOTES,
-                                                                                             "UTF-8"))),
-                              $item_num, $row_num);
+               echo Search::showItem($output_type, RichText::getTextFromHtml($answer, true, true, true), $item_num, $row_num);
             }
 
             $showuserlink = 0;
@@ -1978,8 +1973,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       } else {
          $answer = $this->fields["answer"];
       }
-      $answer = html_entity_decode($answer);
-      $answer = Toolbox::unclean_html_cross_side_scripting_deep($answer);
+      $answer = RichText::getSafeHtml($answer, true);
 
       $callback = function ($matches) {
          //1 => tag name, 2 => existing attributes, 3 => title contents
