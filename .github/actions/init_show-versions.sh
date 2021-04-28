@@ -12,3 +12,6 @@ fi
 if [[ -n $(docker-compose ps --all --services | grep "redis") ]]; then
   docker-compose exec -T redis redis-server --version;
 fi
+if [[ -n $(docker-compose ps --all --services | grep "memcached") ]]; then
+  docker-compose exec -T memcached memcached --version;
+fi
