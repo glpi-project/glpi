@@ -114,6 +114,7 @@ class Ticket_Contract extends CommonDBRelation {
          $linked_itemtype::dropdown([
             'used'        => $used,
             'displaywith' => ['id'],
+            'entity'      => $item->fields['entities_id'],
          ]);
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
