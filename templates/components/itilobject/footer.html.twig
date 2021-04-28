@@ -27,7 +27,11 @@
          </div>
       {% endif %}
 
-      <div class="form-buttons col-md d-flex justify-content-end ms-auto ms-md-0 my-n2 py-2 pe-3 card-footer border-top-0">
+      <div class="form-buttons col-md d-flex justify-content-end ms-auto ms-md-0 my-n2 py-2 pe-3 card-footer border-top-0 position-relative">
+         <button class="switch-panel-width btn btn-sm btn-square btn-icon btn-ghost-secondary d-none d-md-block border-top-0 border-start-0 position-absolute top-0 start-0">
+            <i class="fas fa-caret-left"></i>
+         </button>
+
          {% if item.isNewItem() %}
             <button class="btn btn-primary" type="submit" name="add"
                   title="{{ _x('button', 'Add') }}">
