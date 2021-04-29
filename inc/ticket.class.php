@@ -1093,37 +1093,40 @@ class Ticket extends CommonITILObject {
          if (isset($input["_itil_requester"]["users_id"])
                && $user->getFromDB($input["_itil_requester"]["users_id"])) {
             $input['_locations_id_of_requester'] = $user->fields['locations_id'];
+            $input['_users_default_groups']      = $user->fields['groups_id'];
             $changes[]                           = '_locations_id_of_requester';
          }
          // If _users_id_requester changed : add _groups_id_of_requester to changes
          $changes[] = '_groups_id_of_requester';
       } else {
          $user = new User();
-         if (!is_array($input["_users_id_requester"])
+         if (isset($input["_users_id_requester"]) && !is_array($input["_users_id_requester"])
             && $user->getFromDB($input["_users_id_requester"])) {
             $input['_locations_id_of_requester']   = $user->fields['locations_id'];
-            $input['users_default_groups']         = $user->fields['groups_id'];
+            $input['users_default_groups']        = $user->fields['groups_id'];
             $changes[]                             = '_locations_id_of_requester';
-            $changes[]                             = 'users_default_groups';
-         } else if (is_array($input["_users_id_requester"]) && ($user_id = reset($input["_users_id_requester"])) !== false) {
+            $changes[]                             = '_groups_id_of_requester';
+         } else if ($input["_users_id_requester"] && is_array($input["_users_id_requester"])
+            && ($user_id = reset($input["_users_id_requester"])) !== false) {
             if ($user->getFromDB($user_id)) {
                $input['_locations_id_of_requester']   = $user->fields['locations_id'];
-               $input['users_default_groups']         = $user->fields['groups_id'];
+               $input['users_default_groups']        = $user->fields['groups_id'];
                $changes[]                             = '_locations_id_of_requester';
-               $changes[]                             = 'users_default_groups';
+               $changes[]                             = '_groups_id_of_requester';
             }
          }
-         $changes[] = '_groups_id_of_requester';
       }
 
-         $input = $rules->processAllRules($input,
-                                          $input,
-                                          ['recursive'   => true,
-                                                'entities_id' => $entid],
-                                          ['condition'     => RuleTicket::ONUPDATE,
-                                          'only_criteria' => $changes]);
-         $input = Toolbox::stripslashes_deep($input);
-      
+      $input = $rules->processAllRules($input,
+                                       $input,
+                                       ['recursive'   => true,
+                                             'entities_id' => $entid],
+                                       ['condition'     => RuleTicket::ONUPDATE,
+                                       'only_criteria' => $changes]);
+      $input = Toolbox::stripslashes_deep($input);
+
+      //var_dump($input);
+      //die;
 
       // Clean actors fields added for rules
       foreach ($tocleanafterrules as $key => $val) {
