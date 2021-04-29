@@ -1107,15 +1107,15 @@ class Ticket extends CommonITILObject {
             $changes[]                             = '_locations_id_of_requester';
             $changes[]                             = '_groups_id_of_requester';
          }
-      }
 
-      $input = $rules->processAllRules($input,
-                                       $input,
-                                       ['recursive'   => true,
-                                             'entities_id' => $entid],
-                                       ['condition'     => RuleTicket::ONUPDATE,
-                                       'only_criteria' => $changes]);
-      $input = Toolbox::stripslashes_deep($input);
+         $input = $rules->processAllRules($input,
+                                          $input,
+                                          ['recursive'   => true,
+                                          'entities_id' => $entid],
+                                          ['condition'     => RuleTicket::ONUPDATE,
+                                          'only_criteria' => $changes]);
+         $input = Toolbox::stripslashes_deep($input);
+      }
 
       // Clean actors fields added for rules
       foreach ($tocleanafterrules as $key => $val) {
