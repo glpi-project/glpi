@@ -1086,25 +1086,22 @@ class Ticket extends CommonITILObject {
          }
       }
 
-
-
-
       // Only process rules on changes
       if (count($changes)) {
          $user = new User();
+         $user_id = 0;
          //try to find user from changes if exist (defined as _itil_requester)
-         if (isset($input["_itil_requester"]["users_id"]) ) {
+         if (isset($input["_itil_requester"]["users_id"])) {
             $user_id = $input["_itil_requester"]["users_id"];
-         //else try to find user from input
-         } else {
-            if (isset($input["_users_id_requester"]) && !is_array($input["_users_id_requester"])){
+         } else {  //else try to find user from input
+            if (isset($input["_users_id_requester"]) && !is_array($input["_users_id_requester"])) {
                $user_id = $input["_users_id_requester"];
-            } else if (isset($input["_users_id_requester"]) && is_array($input["_users_id_requester"])){
+            } else if (isset($input["_users_id_requester"]) && is_array($input["_users_id_requester"])) {
                $user_id = reset($input["_users_id_requester"]);
             }
          }
 
-         if($user->getFromDB($user_id)){
+         if ($user->getFromDB($user_id)) {
             $input['_locations_id_of_requester']   = $user->fields['locations_id'];
             $input['users_default_groups']         = $user->fields['groups_id'];
             $changes[]                             = '_locations_id_of_requester';
@@ -1119,9 +1116,6 @@ class Ticket extends CommonITILObject {
                                        ['condition'     => RuleTicket::ONUPDATE,
                                        'only_criteria' => $changes]);
       $input = Toolbox::stripslashes_deep($input);
-
-      //var_dump($input);
-      //die;
 
       // Clean actors fields added for rules
       foreach ($tocleanafterrules as $key => $val) {
