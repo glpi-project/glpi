@@ -50,6 +50,7 @@ class Search {
    const PDF_OUTPUT_LANDSCAPE = 2;
    const CSV_OUTPUT           = 3;
    const PDF_OUTPUT_PORTRAIT  = 4;
+   const NAMES_OUTPUT         = 5;
 
    const LBBR = '#LBBR#';
    const LBHR = '#LBHR#';
@@ -1719,7 +1720,9 @@ class Search {
                                                       $header_num);
             }
             // End Line for column headers
-            $headers_line        .= self::showEndLine($data['display_type']);
+            if (!empty($headers_line)) {
+               $headers_line .= self::showEndLine($data['display_type']);
+            }
 
             $headers_line_top    .= $headers_line;
             if ($data['display_type'] == self::HTML_OUTPUT) {
@@ -7280,6 +7283,10 @@ JAVASCRIPT;
             $out = "\"".self::csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
             break;
 
+         case self::NAMES_OUTPUT:
+            $out = "";
+            break;
+
          default :
             $class = "";
             if ($issort) {
@@ -7341,6 +7348,30 @@ JAVASCRIPT;
             $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);
             $value = Html::weblink_extract(Html::clean($value));
             $out   = "\"".self::csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
+            break;
+
+         case self::NAMES_OUTPUT:
+            // We only want to display one column (the name of the item).
+            // The name field is always the first column expect for tickets
+            // which have their ids as the first column instead, thus moving the
+            // name to the second column.
+            // We don't have access to the itemtype so we must rely on data
+            // types to figure which column to use :
+            //    - Ticket will have a numeric first column (id) and an HTML
+            //    link containing the name as the second column.
+            //    - Other items will have an HTML link containing the name as
+            //    the first column and a simple string containing the entity
+            //    name as the second column.
+            // -> We can check that the column is the first or second AND is html
+            if (strip_tags($value) !== $value
+               && ($num == 1 || $num == 2)
+            ) {
+               // Use a regex to keep only the link, there may be other content
+               // after that we don't need (script, tooltips, ...)
+               if (preg_match('/<a.*<\/a>/', $value, $matches)) {
+                  $out = html_entity_decode(strip_tags($matches[0]));
+               }
+            }
             break;
 
          default :
@@ -7493,6 +7524,7 @@ JAVASCRIPT;
             break;
 
          case self::CSV_OUTPUT : //csv
+         case self::NAMES_OUTPUT:
             break;
 
          default :
@@ -7564,6 +7596,11 @@ JAVASCRIPT;
             echo"\xEF\xBB\xBF";
             break;
 
+         case self::NAMES_OUTPUT:
+            header("Content-disposition: filename=glpi.txt");
+            header('Content-type: file/txt');
+            break;
+
          default :
             if ($fixed) {
                $out = "<div class='center'><table border='0' class='tab_cadre_fixehov'>\n";
@@ -7596,6 +7633,7 @@ JAVASCRIPT;
 
          case self::SYLK_OUTPUT : //sylk
          case self::CSV_OUTPUT : //csv
+         case self::NAMES_OUTPUT:
             break;
 
          default :
@@ -7626,6 +7664,7 @@ JAVASCRIPT;
 
          case self::SYLK_OUTPUT : //sylk
          case self::CSV_OUTPUT : //csv
+         case self::NAMES_OUTPUT:
             break;
 
          default :
@@ -7660,6 +7699,7 @@ JAVASCRIPT;
 
          case self::SYLK_OUTPUT : //sylk
          case self::CSV_OUTPUT : //csv
+         case self::NAMES_OUTPUT:
             break;
 
          default :
@@ -7694,6 +7734,7 @@ JAVASCRIPT;
             break;
 
          case self::CSV_OUTPUT : //csv
+         case self::NAMES_OUTPUT:
             $out = "\n";
             break;
 
