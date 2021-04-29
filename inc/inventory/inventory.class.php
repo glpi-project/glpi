@@ -119,8 +119,9 @@ class Inventory
          //convert legacy format
          $data = $converter->convert($data->asXML());
       } else {
-         file_put_contents($dir . '/'. $this->inventory_id . '.json', json_encode(json_decode($data), JSON_PRETTY_PRINT));
+         file_put_contents($dir . '/'. $this->inventory_id . '.json', $data);
       }
+      $data = json_decode($data);
 
       try {
          $converter->validate($data);
@@ -129,7 +130,7 @@ class Inventory
          return false;
       }
 
-      $this->raw_data = json_decode($data);
+      $this->raw_data = $data;
       $this->extractMetadata();
       return true;
    }
