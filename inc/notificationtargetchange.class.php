@@ -213,7 +213,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
 
             $tmp['##validation.answer.title##']
                                  //TRANS: %s is the user name
-                     = sprintf(__('An answer to an an approval request was produced by %s'),
+                     = sprintf(__('An answer to an approval request was produced by %s'),
                                   Html::clean(getUserName($validation['users_id_validate'])));
 
             $tmp['##validation.author##']
