@@ -1243,7 +1243,7 @@ function _showMessage(message, css_class, title) {
 }
 
 function showInfoMessage(message) {
-   _showMessage(message, 'info_msg', __('Information'));
+   _showMessage(message, 'info_msg', _n('Information', 'Information', 1));
 }
 
 function showWarningMessage(message) {
