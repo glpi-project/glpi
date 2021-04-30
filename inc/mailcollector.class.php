@@ -2204,7 +2204,11 @@ class MailCollector  extends CommonDBTM {
                $charset = preg_replace('/^WINDOWS-(\d{4})$/i', 'CP$1', $charset);
             }
 
-            if ($converted = iconv($charset, 'UTF-8//TRANSLIT', $contents)) {
+            // Try to convert using iconv with TRANSLIT, then with IGNORE.
+            // TRANSLIT may result in failure depending on system iconv implementation.
+            if ($converted = @iconv($charset, 'UTF-8//TRANSLIT', $contents)) {
+               $contents = $converted;
+            } else if ($converted = iconv($charset, 'UTF-8//IGNORE', $contents)) {
                $contents = $converted;
             }
          }
