@@ -165,23 +165,23 @@
         },
         {
             "name": "elvanto/litemoji",
-            "version": "4.0.0",
+            "version": "4.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elvanto/litemoji.git",
-                "reference": "ef96db0d4fa8fd8aa22e67d161c87b6ba3a06f06"
+                "reference": "4531979f7ec86a3267c51e3a279216bf46a35e21"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elvanto/litemoji/zipball/ef96db0d4fa8fd8aa22e67d161c87b6ba3a06f06",
-                "reference": "ef96db0d4fa8fd8aa22e67d161c87b6ba3a06f06",
+                "url": "https://api.github.com/repos/elvanto/litemoji/zipball/4531979f7ec86a3267c51e3a279216bf46a35e21",
+                "reference": "4531979f7ec86a3267c51e3a279216bf46a35e21",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.3"
             },
             "require-dev": {
-                "milesj/emojibase": "6.0.*",
+                "milesj/emojibase": "6.1.*",
                 "phpunit/phpunit": "9.4.*"
             },
             "type": "library",
@@ -201,9 +201,9 @@
             ],
             "support": {
                 "issues": "https://github.com/elvanto/litemoji/issues",
-                "source": "https://github.com/elvanto/litemoji/tree/4.0.0"
+                "source": "https://github.com/elvanto/litemoji/tree/4.0.1"
             },
-            "time": "2020-11-27T05:16:11+00:00"
+            "time": "2021-04-27T21:51:29+00:00"
         },
         {
             "name": "glpi-project/inventory_format",
