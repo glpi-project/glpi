@@ -958,7 +958,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       $out.= "</td></tr>";
 
       // Show documents attached to the FAQ Item
-      $sort = 'name';
+      $sort = 'filename';
       $order = 'ASC';
       $criteria = Document_Item::getDocumentForItemRequest($this, ["$sort $order"]);
       $criteria['WHERE'][] = ['is_deleted' => '0'];
