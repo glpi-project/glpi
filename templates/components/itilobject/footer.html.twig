@@ -85,19 +85,12 @@
    </div>
 </div>
 
+{% set openfollowup = (_get['_openfollowup'] ?? false) and item.isSolved(true) %}
+
 <script type="text/javascript">
 $(function() {
    $(document).on("click", "#itil-footer .answer-action", function() {
-      // scroll body to ensure we are at bottom (useful for responsive display)
-      $('html, body').animate({
-         scrollTop: $(document).height()
-      }, 0, function(){
-          // scroll timeline with animation
-         var timeline = $("#itil-object-container .itil-left-side");
-         timeline.animate(
-            { scrollTop: timeline.prop('scrollHeight') }, 'slow',
-         );
-      });
+      scrollToTimelineBottom();
 
       // hide answer button after clicking on it
       $(this).closest(".main-actions").hide();
@@ -113,5 +106,27 @@ $(function() {
       var button_name = $(this).attr('name');
       $('#itil-form').append(`<input type='hidden' name='${button_name}' value='1'>`).submit();
    });
+
+   var scrollToTimelineBottom = function() {
+      // scroll body to ensure we are at bottom (useful for responsive display)
+      $('html, body').animate({
+         scrollTop: $(document).height()
+      }, 0, function(){
+          // scroll timeline with animation
+         var timeline = $("#itil-object-container .itil-left-side");
+         timeline.animate(
+            { scrollTop: timeline.prop('scrollHeight') }, 'slow',
+         );
+      });
+   };
+
+   {% if openfollowup %}
+      // trigger for reopen, show followup form in timeline
+      var myCollapse = document.getElementById('new-ITILFollowup-block')
+      var bsCollapse = new bootstrap.Collapse(myCollapse);
+      bsCollapse.show();
+
+      scrollToTimelineBottom();
+   {% endif %}
 });
 </script>

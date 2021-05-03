@@ -114,6 +114,11 @@ class TemplateRenderer {
       $this->environment->addExtension(new SessionExtension());
       $this->environment->addExtension(new ToolboxExtension());
       $this->environment->addExtension(new UserExtension());
+
+      // add superglobals
+      $this->environment->addGlobal('_post', $_POST);
+      $this->environment->addGlobal('_get', $_GET);
+      $this->environment->addGlobal('_request', $_REQUEST);
    }
 
    /**
