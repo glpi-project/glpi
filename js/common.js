@@ -1080,6 +1080,25 @@ var templateItilStatus = function(option) {
    return $(`<span><i class="itilstatus ${classes}"></i>${option.text}</span>`);
 };
 
+var templateValidation = function(option) {
+   var status = option.id || 0;
+
+   var classes = "";
+   switch (parseInt(status)) {
+      case 2 : // WAITING
+         classes = 'waiting fas fa-clock';
+         break;
+      case 3 : // ACCEPTED
+         classes = 'accepted fas fa-check';
+         break;
+      case 4 : // REFUSED
+         classes = 'refused fas fa-times';
+         break;
+   }
+
+   return $(`<span><i class="validationstatus ${classes}"></i>${option.text}</span>`);
+};
+
 /**
  * Returns given text without is diacritical marks.
  *
