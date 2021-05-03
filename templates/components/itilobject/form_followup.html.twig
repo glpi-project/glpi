@@ -12,7 +12,11 @@
                action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true">
             <input type="hidden" name="itemtype" value="{{ item.getType() }}">
             <input type="hidden" name="items_id" value="{{ item.fields['id'] }}">
-            {# TODO reopen #}
+
+            {% set openfollowup = _get['_openfollowup'] ?? false %}
+            {% if openfollowup %}
+               <input type='hidden' name='add_reopen' value='1'>
+            {% endif %}
 
             <div class="row">
                <div class="col-12 col-md-9">
