@@ -29,7 +29,7 @@
  * ---------------------------------------------------------------------
  */
 
-.itilstatus {
+.itilstatus, .validationstatus{
    margin-right: .4em;
 
    &.assigned, &.new {
@@ -38,6 +38,10 @@
 
    &.accepted {
       color: green;
+   }
+
+   &.refused {
+      color: rgb(167, 47, 0);
    }
 
    &.test, &.qualif, &.waiting {
@@ -52,7 +56,7 @@
       color: lightblue;
    }
 
-   &.closed, &.solved, &.observe, &.refused, &.canceled {
+   &.closed, &.solved, &.observe, &.canceled {
       color: black;
    }
 
