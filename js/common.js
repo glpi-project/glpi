@@ -673,8 +673,7 @@ $(function() {
    });
 
    // toggle debug panel
-   $(document).on('click', '.see_debug', function(e) {
-      console.log("see debug")
+   $(document).on('click', '.see_debug', function() {
       $('body > .debug-panel').toggle();
    });
 
