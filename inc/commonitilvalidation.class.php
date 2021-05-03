@@ -1741,7 +1741,22 @@ abstract class CommonITILValidation  extends CommonDBChild {
             if (!in_array($item->fields['status'], $status)
                && isset($item->fields['global_validation'])
                && $item->fields['global_validation'] == self::WAITING) {
-               Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
+               $title   = __s("This item is waiting for approval.");
+               $message = __s("Do you really want to resolve or close it?");;
+               $html = <<<HTML
+                  <div class="alert alert-warning" role="alert">
+                     <div class="d-flex">
+                        <div class="me-2">
+                           <i class="fas fa-2x fa-exclamation-triangle"></i>
+                        </div>
+                        <div>
+                           <h4 class="alert-title">$title</h4>
+                           <div class="text-muted">$message</div>
+                        </div>
+                     </div>
+                  </div>
+               HTML;
+               echo $html;
             }
             break;
       }
