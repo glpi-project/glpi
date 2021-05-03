@@ -1,4 +1,6 @@
- <form method="POST" action="{{ item.getFormURL() }}?id={{ item.fields['id'] }}"
+{% set enctype = (item.isNewItem() ? 'enctype="multipart/form-data"' : "") %}
+
+<form method="POST" action="{{ item.getFormURL() }}?id={{ item.fields['id'] }}"
        {{ enctype }} data-track-changes="true" id="itil-form">
    <input type="hidden" name="id" value="{{ item.fields['id'] }}">
    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>

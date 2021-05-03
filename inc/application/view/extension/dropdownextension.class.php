@@ -33,6 +33,7 @@
 namespace Glpi\Application\View\Extension;
 
 use Dropdown;
+use TicketValidation;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
@@ -49,6 +50,8 @@ class DropdownExtension extends AbstractExtension implements ExtensionInterface 
          new TwigFunction('Dropdown__showNumber', [Dropdown::class, 'showNumber'], ['is_safe' => ['html']]),
          new TwigFunction('Dropdown__showFromArray', [Dropdown::class, 'showFromArray'], ['is_safe' => ['html']]),
          new TwigFunction('Dropdown__showTimestamp', [Dropdown::class, 'showTimestamp'], ['is_safe' => ['html']]),
+         new TwigFunction('TicketValidation__dropdownStatus', [TicketValidation::class, 'dropdownStatus'], ['is_safe' => ['html']]),
+         new TwigFunction('TicketValidation__dropdownValidator', [TicketValidation::class, 'dropdownValidator'], ['is_safe' => ['html']]),
       ];
    }
 }

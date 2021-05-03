@@ -478,9 +478,11 @@ abstract class CommonITILValidation  extends CommonDBChild {
    **/
    static function getAllStatusArray($withmetaforsearch = false, $global = false) {
 
-      $tab = [self::WAITING  => __('Waiting for approval'),
-                   self::REFUSED  => _x('validation', 'Refused'),
-                   self::ACCEPTED => __('Granted')];
+      $tab = [
+         self::WAITING  => __('Waiting for approval'),
+         self::REFUSED  => _x('validation', 'Refused'),
+         self::ACCEPTED => __('Granted')
+      ];
       if ($global) {
          $tab[self::NONE] = __('Not subject to approval');
 
@@ -512,10 +514,15 @@ abstract class CommonITILValidation  extends CommonDBChild {
    static function dropdownStatus($name, $options = []) {
 
       $p = [
-         'value'    => self::WAITING,
-         'global'   => false,
-         'all'      => false,
-         'display'  => true,
+         'value'             => self::WAITING,
+         'global'            => false,
+         'all'               => false,
+         'display'           => true,
+         'templateResult'    => "templateValidation",
+         'templateSelection' => "templateValidation",
+         'class'             => 'form-select',
+         'width'             => '100%',
+         'required'          => false,
       ];
 
       if (is_array($options) && count($options)) {
@@ -1478,14 +1485,16 @@ abstract class CommonITILValidation  extends CommonDBChild {
         'groups_id'         => 0,
         'users_id_validate' => [],
         'applyto'           => 'show_validator_field',
+        'display'           => true,
+        'class'             => 'form-select',
+        'width'             => '100%',
+        'required'          => false,
+        'rand'              => mt_rand(),
       ];
 
       foreach ($options as $key => $val) {
          $params[$key] = $val;
       }
-
-      $types = ['user'  => User::getTypeName(1),
-                     'group' => Group::getTypeName(1)];
 
       $type  = '';
       if (isset($params['users_id_validate']['groups_id'])) {
@@ -1494,21 +1503,37 @@ abstract class CommonITILValidation  extends CommonDBChild {
          $type = 'user';
       }
 
-      $rand = Dropdown::showFromArray("validatortype", $types,
-                                      ['value'               => $type,
-                                            'display_emptychoice' => true]);
+      $out = Dropdown::showFromArray("validatortype", [
+         'user'  => User::getTypeName(1),
+         'group' => Group::getTypeName(1)
+      ], [
+         'value'               => $type,
+         'display_emptychoice' => true,
+         'display'             => $params['display'],
+         'rand'                => $params['rand'],
+         'class'               => $params['class'],
+         'width'               => $params['width'],
+         'required'            => $params['required'],
+         ]);
 
       if ($type) {
          $params['validatortype'] = $type;
-         Ajax::updateItem($params['applyto'], $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php",
-                          $params);
+         $out.= Ajax::updateItem($params['applyto'], $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php",
+                                 $params, "", $params['display']);
       }
       $params['validatortype'] = '__VALUE__';
-      Ajax::updateItemOnSelectEvent("dropdown_validatortype$rand", $params['applyto'],
-                                    $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php", $params);
+      $out.= Ajax::updateItemOnSelectEvent("dropdown_validatortype{$params['rand']}", $params['applyto'],
+                                           $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php", $params, $params['display']);
 
       if (!isset($options['applyto'])) {
-         echo "<br><span id='".$params['applyto']."'>&nbsp;</span>\n";
+         $out.= "<br><span id='".$params['applyto']."'>&nbsp;</span>\n";
+      }
+
+      if ($params['display']) {
+         echo $out;
+         return $params['rand'];
+      } else {
+         return $out;
       }
    }
 
