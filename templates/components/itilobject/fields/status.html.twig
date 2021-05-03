@@ -9,6 +9,8 @@
          'class': 'form-select',
          'display': false
       }|merge(field_options))|raw }}
+
+      {{ alertValidation(item, 'status') }}
    {% endset %}
 {% else %}
    {% set status_field %}
@@ -22,7 +24,6 @@
             <span>{{ __('Reopen') }}</span>
          </a>
       {% endif %}
-
    {% endset %}
 {% endif %}
 
@@ -32,5 +33,3 @@
    __("Status"),
    field_options
 ) }}
-
-{# TODO TicketValidation::alertValidation #}

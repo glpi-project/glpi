@@ -7,7 +7,6 @@
 {% set kb_id_toload = params['kb_id_toload'] ?? 0 %}
 {% set disabled = (candedit == false) %}
 {# TODO kb_id_toload #}
-{# TODO validation alert #}
 
 {% block timeline_card %}
    {% if form_mode == 'view' %}
@@ -16,6 +15,8 @@
       </div>
    {% else %}
       <div class="itilsolution">
+         {{ alertValidation(item, 'solution') }}
+
          <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
                action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true">
             <input type="hidden" name="itemtype" value="{{ item.getType() }}">
