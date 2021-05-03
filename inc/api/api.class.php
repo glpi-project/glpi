@@ -2662,7 +2662,7 @@ abstract class API extends CommonGLPI {
    public function messageRightError($return_error = true) {
 
       $this->returnError(__("You don't have permission to perform this action."),
-                         401,
+                         403,
                          "ERROR_RIGHT_MISSING",
                          false,
                          $return_error);
