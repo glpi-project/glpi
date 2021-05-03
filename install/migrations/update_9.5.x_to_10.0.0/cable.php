@@ -1,0 +1,71 @@
+<?php
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2021 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+$default_charset = DBConnection::getDefaultCharset();
+$default_collation = DBConnection::getDefaultCollation();
+
+if (!$DB->tableExists('glpi_networkportbnctypes')) {
+   $query = "CREATE TABLE `glpi_networkportbnctypes` (
+      `id` int NOT NULL AUTO_INCREMENT,
+      `name` varchar(255) DEFAULT NULL,
+      `comment` text,
+      `date_mod` timestamp NULL DEFAULT NULL,
+      `date_creation` timestamp NULL DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      KEY `name` (`name`),
+      KEY `date_mod` (`date_mod`),
+      KEY `date_creation` (`date_creation`)
+      ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+   $DB->queryOrDie($query, "10.0 add table glpi_networkportbnctypes");
+}
+
+if (!$DB->tableExists('glpi_networkportbncs')) {
+   $query = "CREATE TABLE `glpi_networkportbncs` (
+      `id` int NOT NULL AUTO_INCREMENT,
+      `networkports_id` int NOT NULL DEFAULT '0',
+      `items_devicenetworkcards_id` int NOT NULL DEFAULT '0',
+      `netpoints_id` int NOT NULL DEFAULT '0',
+      `networkportbnctypes_id` int NOT NULL DEFAULT '0',
+      `speed` int NOT NULL DEFAULT '10' COMMENT 'Mbit/s: 10, 100, 1000, 10000',
+      `date_mod` timestamp NULL DEFAULT NULL,
+      `date_creation` timestamp NULL DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      UNIQUE KEY `networkports_id` (`networkports_id`),
+      KEY `card` (`items_devicenetworkcards_id`),
+      KEY `netpoint` (`netpoints_id`),
+      KEY `type` (`networkportbnctypes_id`),
+      KEY `speed` (`speed`),
+      KEY `date_mod` (`date_mod`),
+      KEY `date_creation` (`date_creation`)
+      ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+   $DB->queryOrDie($query, "10.0 add table glpi_networkportbncs");
+}
