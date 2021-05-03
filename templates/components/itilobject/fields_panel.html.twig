@@ -4,7 +4,6 @@
    fields_template: itiltemplate,
    disabled: (not canupdate)
 } %}
-{% set enctype = (item.isNewItem() ? 'enctype="multipart/form-data"' : "") %}
 
 <div class="accordion open accordion-flush" id="itil-data">
    <div class="accordion-item">
@@ -110,13 +109,7 @@
                field_options
             ) }}
 
-            {# TODO validation #}
-            {{ fields.field(
-               'impact',
-               "...",
-               "Validation",
-               field_options
-            ) }}
+            {% include("components/itilobject/global_validation.html.twig") %}
          </div>
       </div>
    </div>

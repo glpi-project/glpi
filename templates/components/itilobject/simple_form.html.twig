@@ -7,8 +7,8 @@
 {% set field_options = {
    'is_horizontal': false,
    'full_width': true,
-   'fields_template': itiltemplate
-   'disabled': (not (canupdate or can_requester))
+   'fields_template': itiltemplate,
+   'disabled': (not (canupdate or can_requester)),
 } %}
 
 {% if show_form %}

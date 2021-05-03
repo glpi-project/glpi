@@ -1,6 +1,15 @@
 {% import "components/form/fields_macros.html.twig" as fields %}
 {% set rand = random() %}
 
+{% set urgency_options = field_options|merge({
+   'disabled': (not (canupdate or can_requester))
+}) %}
+{% if field_options.fields_template.isMandatoryField('urgency') %}
+   {% set urgency_options = urgency_option|merge({
+      'required': true,
+   }) %}
+{% endif %}
+
 {{ fields.field(
    'urgency',
    item.dropdownUrgency({
@@ -9,12 +18,17 @@
       'class': 'form-select',
       'display': false,
       'rand': rand,
-   }|merge(field_options|merge({
-      'disabled': (not (canupdate or can_requester))
-   }))),
+   }|merge(urgency_options)),
    __("Urgency"),
    field_options
 ) }}
+
+{% set impact_options = field_options %}
+{% if field_options.fields_template.isMandatoryField('impact') %}
+   {% set impact_options = impact_option|merge({
+      'required': true,
+   }) %}
+{% endif %}
 
 {{ fields.field(
    'impact',
@@ -24,12 +38,20 @@
       'class': 'form-select',
       'display': false,
       'rand': rand,
-   }|merge(field_options)),
+   }|merge(impact_options)),
    __("impact"),
    field_options
 ) }}
 
-{# TODO ajax #}
+{% set priority_options = field_options|merge({
+   'disabled': (not (canupdate or canpriority))
+}) %}
+{% if field_options.fields_template.isMandatoryField('priority') %}
+   {% set priority_options = priority_options|merge({
+      'required': true,
+   }) %}
+{% endif %}
+
 {{ fields.field(
    'priority',
    item.dropdownPriority({
@@ -38,9 +60,7 @@
       'class': 'form-select',
       'display': false,
       'rand': rand,
-   }|merge(field_options|merge({
-      'disabled': (not (canupdate or canpriority))
-   }))),
+   }|merge(field_options|merge(priority_options))),
    __("priority"),
    field_options
 ) }}
