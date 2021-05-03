@@ -164,4 +164,68 @@ class Document_Item extends DbTestCase {
       ];
       $this->array(\Document_Item::getDistinctTypesParams(1, $extra_where))->isIdenticalTo($expected);
    }
+
+
+   public function testPostAddItem() {
+      $uid = getItemByTypeName('User', TU_USER, true);
+
+      $ticket = new \Ticket();
+      $tickets_id = $ticket->add([
+         'name' => '',
+         'content' => 'Test modification date not updated from Document_Item',
+         'date_mod' => '2020-01-01'
+      ]);
+
+      $this->integer($tickets_id)->isGreaterThan(0);
+
+      // Document and Document_Item
+      $doc = new \Document();
+      $this->integer(
+         (int)$doc->add([
+            'users_id'     => $uid,
+            'tickets_id'   => $tickets_id,
+            'name'         => 'A simple document object'
+         ])
+      )->isGreaterThan(0);
+
+      //do not change ticket modification date
+      $doc_item = new \Document_Item();
+      $this->integer(
+         (int)$doc_item->add([
+            'users_id'      => $uid,
+            'items_id'      => $tickets_id,
+            'itemtype'      => 'Ticket',
+            'documents_id'  => $doc->getID(),
+            '_do_update_ticket' => false
+         ])
+      )->isGreaterThan(0);
+
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+      $this->string($ticket->fields['date_mod'])->isIdenticalTo('2020-01-01 00:00:00');
+
+      //do change ticket modification date
+      $_SESSION["glpi_currenttime"] = '2021-01-01 00:00:01';
+      $doc = new \Document();
+      $this->integer(
+         (int)$doc->add([
+            'users_id'     => $uid,
+            'tickets_id'   => $tickets_id,
+            'name'         => 'A simple document object'
+         ])
+      )->isGreaterThan(0);
+
+      $doc_item = new \Document_Item();
+      $this->integer(
+         (int)$doc_item->add([
+            'users_id'      => $uid,
+            'items_id'      => $tickets_id,
+            'itemtype'      => 'Ticket',
+            'documents_id'  => $doc->getID(),
+         ])
+      )->isGreaterThan(0);
+
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+      $this->string($ticket->fields['date_mod'])->isNotEqualTo('2021-01-01 00:00:01');
+
+   }
 }

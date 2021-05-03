@@ -185,7 +185,7 @@ class Document_Item extends CommonDBRelation{
 
    function post_addItem() {
 
-      if ($this->fields['itemtype'] == 'Ticket') {
+      if ($this->fields['itemtype'] == 'Ticket' && ($this->input['_do_update_ticket'] ?? true)) {
          $ticket = new Ticket();
          $input  = [
             'id'              => $this->fields['items_id'],
