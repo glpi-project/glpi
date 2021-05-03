@@ -73,19 +73,7 @@
                cat_params
             ) }}
 
-            {{ fields.field(
-               'status',
-               item.dropdownStatus({
-                  'value': item.fields["status"],
-                  'showtype': 'allowed',
-                  'width': '100%',
-                  'class': 'form-select',
-                  'display': false
-               }|merge(field_options)),
-               __("Status"),
-               field_options
-            ) }}
-            {# TODO TicketValidation::alertValidation #}
+            {% include("components/itilobject/fields/status.html.twig") %}
 
             {{ fields.dropdownField(
                'RequestType',
@@ -100,7 +88,7 @@
                })
             ) }}
 
-            {% include("components/itilobject/priority_matrix.html.twig") %}
+            {% include("components/itilobject/fields/priority_matrix.html.twig") %}
 
             {{ fields.dropdownField(
                'Location',
@@ -110,7 +98,7 @@
                field_options
             ) }}
 
-            {% include("components/itilobject/global_validation.html.twig") %}
+            {% include("components/itilobject/fields/global_validation.html.twig") %}
          </div>
       </div>
    </div>
