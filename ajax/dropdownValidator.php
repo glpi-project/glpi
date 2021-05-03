@@ -48,11 +48,14 @@ if (isset($_POST["validatortype"])) {
             $_POST['users_id_validate'] = [];
          }
          $value = (isset($_POST['users_id_validate'][0]) ? $_POST['users_id_validate'][0] : 0);
-         User::dropdown(['name'   => !empty($_POST['name']) ? $_POST['name'].'[]'
-                                                                 :'users_id_validate[]',
-                              'entity' => $_POST['entity'],
-                              'value'  => $value,
-                              'right'  => $_POST['right']]);
+         User::dropdown([
+            'name'   => !empty($_POST['name']) ? $_POST['name'].'[]' :'users_id_validate[]',
+            'entity' => $_POST['entity'],
+            'value'  => $value,
+            'right'  => $_POST['right'],
+            'class'  => 'form-select',
+            'width'  => '100%',
+         ]);
          break;
 
       case 'group' :
@@ -60,9 +63,13 @@ if (isset($_POST["validatortype"])) {
          $name = !empty($_POST['name']) ? $_POST['name'].'[groups_id]':'groups_id';
          $value = (isset($_POST['users_id_validate']['groups_id']) ? $_POST['users_id_validate']['groups_id'] : $_POST['groups_id']);
 
-         $rand = Group::dropdown(['name'      => $name,
-                                       'value'     => $value,
-                                       'entity'    => $_POST["entity"]]);
+         $rand = Group::dropdown([
+            'name'   => $name,
+            'value'  => $value,
+            'entity' => $_POST["entity"],
+            'class'  => 'form-select',
+            'width'  => '100%',
+         ]);
 
          $param                        = ['validatortype' => 'list_users'];
          $param['name']                = !empty($_POST['name']) ? $_POST['name'] : '';
