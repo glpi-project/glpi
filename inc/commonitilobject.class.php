@@ -2403,6 +2403,8 @@ abstract class CommonITILObject extends CommonDBTM {
          'showtype'  => 'normal',
          'display'   => true,
          'withmajor' => false,
+         'templateResult'    => "templateItilPriority",
+         'templateSelection' => "templateItilPriority",
       ];
 
       if (is_array($options) && count($options)) {

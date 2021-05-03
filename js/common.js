@@ -1099,6 +1099,15 @@ var templateValidation = function(option) {
    return $(`<span><i class="validationstatus ${classes}"></i>${option.text}</span>`);
 };
 
+var templateItilPriority = function(option) {
+   var priority = option.id || 0;
+   var priority_color = CFG_GLPI['priority_'+priority] ?? "";
+
+   var color_badge = `<i class='fas fa-circle' style='color: ${priority_color}'></i>`;
+
+   return $(`<span>${color_badge}&nbsp;${option.text}</span>`);
+};
+
 /**
  * Returns given text without is diacritical marks.
  *
