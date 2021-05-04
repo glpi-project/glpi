@@ -673,8 +673,7 @@ $(function() {
    });
 
    // toggle debug panel
-   $(document).on('click', '.see_debug', function(e) {
-      console.log("see debug")
+   $(document).on('click', '.see_debug', function() {
       $('body > .debug-panel').toggle();
    });
 
@@ -1099,7 +1098,7 @@ var templateValidation = function(option) {
 
 var templateItilPriority = function(option) {
    var priority = option.id || 0;
-   var priority_color = CFG_GLPI['priority_'+priority] ?? "";
+   var priority_color = CFG_GLPI['priority_'+priority] || "";
 
    var color_badge = `<i class='fas fa-circle' style='color: ${priority_color}'></i>`;
 
