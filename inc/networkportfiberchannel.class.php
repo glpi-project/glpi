@@ -84,7 +84,7 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
       if (!$options['several']) {
          echo "<tr class='tab_bg_1'>";
-         $this->showNetpointField($netport, $options, $recursiveItems);
+         $this->showSocketField($netport, $options, $recursiveItems);
          $this->showNetworkCardField($netport, $options, $recursiveItems);
          echo "</tr>\n";
       }
@@ -135,9 +135,9 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
       $group->addHeader('speed', __('Fiber channel port speed'), $super, $header);
       $group->addHeader('wwn', __('World Wide Name'), $super, $header);
 
-      Netpoint::getHTMLTableHeader('NetworkPortFiberchannel', $group, $super, $header, $options);
+      Socket::getHTMLTableHeader('NetworkPortFiberchannel', $group, $super, $header, $options);
 
-      $group->addHeader('Outlet', _n('Network outlet', 'Network outlets', 1), $super, $header);
+      $group->addHeader('Socket', _n('Network socket', 'Network sockets', 1), $super, $header);
 
       parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $header, $options);
       return $header;
@@ -160,7 +160,7 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
       }
 
       parent::getInstantiationHTMLTable($netport, $row, $father, $options);
-      Netpoint::getHTMLTableCellsForItem($row, $this, $father, $options);
+      Socket::getHTMLTableCellsForItem($row, $this, $father, $options);
    }
 
 
@@ -342,10 +342,10 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
    static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams) {
       $tab[] = [
          'id'                 => '62',
-         'table'              => 'glpi_netpoints',
+         'table'              => 'glpi_sockets',
          'field'              => 'name',
          'datatype'           => 'dropdown',
-         'name'               => __('Network fiber outlet'),
+         'name'               => __('Network fiber socket'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [

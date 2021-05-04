@@ -220,21 +220,21 @@ class Dropdown extends DbTestCase {
       $this->array($ret)->isIdenticalTo($expected);
 
       ///////////
-      // Netpoint
-      $netpoint = getItemByTypeName( 'Netpoint', '_netpoint01' );
+      // Socket
+      $socket = getItemByTypeName( 'Socket', '_socket01' );
       $location = getItemByTypeName( 'Location', '_location01' );
-      $expected = $netpoint->getName()." (".$location->getName().")";
-      $ret = \Dropdown::getDropdownName( 'glpi_netpoints', $netpoint->getID());
+      $expected = $socket->getName()." (".$location->getName().")";
+      $ret = \Dropdown::getDropdownName( 'glpi_sockets', $socket->getID());
       $this->string($ret)->isIdenticalTo($expected);
 
       // test of return with comments
       $expected = ['name'    => $expected,
-                        'comment' => "Comment for netpoint _netpoint01"];
-      $ret = \Dropdown::getDropdownName( 'glpi_netpoints', $netpoint->getID(), true );
+                        'comment' => "Comment for socket _socket01"];
+      $ret = \Dropdown::getDropdownName( 'glpi_sockets', $socket->getID(), true );
       $this->array($ret)->isIdenticalTo($expected);
 
       // test of return without $tooltip
-      $ret = \Dropdown::getDropdownName( 'glpi_netpoints', $netpoint->getID(), true, true, false );
+      $ret = \Dropdown::getDropdownName( 'glpi_sockets', $socket->getID(), true, true, false );
       $this->array($ret)->isIdenticalTo($expected);
 
       ///////////
@@ -259,19 +259,19 @@ class Dropdown extends DbTestCase {
       $this->array($ret)->isIdenticalTo($expected);
    }
 
-   public function testGetDropdownNetpoint() {
-      $netpoint = getItemByTypeName( 'Netpoint', '_netpoint01' );
+   public function testGetDropdownsocket() {
+      $socket = getItemByTypeName( 'Socket', '_socket01' );
       $location = getItemByTypeName( 'Location', '_location01' );
-      $ret = \Dropdown::getDropdownNetpoint([], false);
+      $ret = \Dropdown::getDropdownSocket([], false);
       $this->array($ret)->hasKeys(['count', 'results'])->integer['count']->isIdenticalTo(1);
       $this->array($ret['results'])->isIdenticalTo([
          [
             'id'     => 0,
             'text'   => '-----'
          ], [
-            'id'     => $netpoint->fields['id'],
-            'text'   => $netpoint->getName() . ' (' . $location->getName() . ')',
-            'title'  =>  $netpoint->getName() . ' - ' . $location->getName() . ' - ' . $netpoint->fields['comment']
+            'id'     => $socket->fields['id'],
+            'text'   => $socket->getName() . ' (' . $location->getName() . ')',
+            'title'  =>  $socket->getName() . ' - ' . $location->getName() . ' - ' . $socket->fields['comment']
          ]
       ]);
    }

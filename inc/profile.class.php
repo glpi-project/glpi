@@ -1637,9 +1637,9 @@ class Profile extends CommonDBTM {
             'field'     => 'knowbasecategory'
          ],
          [
-            'itemtype'  => 'Netpoint',
-            'label'     => _n('Network outlet', 'Network outlets', Session::getPluralNumber()),
-            'field'     => 'netpoint'
+            'itemtype'  => 'Socket',
+            'label'     => _n('Network socket', 'Network sockets', Session::getPluralNumber()),
+            'field'     => 'socket'
          ],
          [
             'itemtype'  => 'TaskCategory',

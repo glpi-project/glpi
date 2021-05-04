@@ -452,7 +452,7 @@ class Dropdown {
                   }
                   break;
 
-               case "glpi_netpoints" :
+               case "glpi_sockets" :
                   $name = sprintf(__('%1$s (%2$s)'), $name,
                                     self::getDropdownName("glpi_locations",
                                                          $data["locations_id"], false, $translate));
@@ -946,7 +946,7 @@ class Dropdown {
 
              __('Networking') => [
                  'NetworkInterface' => null,
-                 'Netpoint' => null,
+                 'Socket' => null,
                  'Network' => null,
                  'NetworkPortType' => null,
                  'Vlan' => null,
@@ -3383,14 +3383,14 @@ class Dropdown {
    }
 
    /**
-    * Get dropdown netpoint
+    * Get dropdown socket
     *
     * @param array   $post Posted values
     * @param boolean $json Encode to JSON, default to true
     *
     * @return string|array
     */
-   public static function getDropdownNetpoint($post, $json = true) {
+   public static function getDropdownSocket($post, $json = true) {
       global $DB, $CFG_GLPI;
 
       // Make a select box with preselected values
@@ -3407,16 +3407,16 @@ class Dropdown {
 
       $criteria = [
          'SELECT'    => [
-            'glpi_netpoints.comment AS comment',
-            'glpi_netpoints.id',
-            'glpi_netpoints.name AS netpname',
+            'glpi_sockets.comment AS comment',
+            'glpi_sockets.id',
+            'glpi_sockets.name AS netpname',
             'glpi_locations.completename AS loc'
          ],
-         'FROM'      => 'glpi_netpoints',
+         'FROM'      => 'glpi_sockets',
          'LEFT JOIN' => [
             'glpi_locations'  => [
                'ON' => [
-                  'glpi_netpoints'  => 'locations_id',
+                  'glpi_sockets'  => 'locations_id',
                   'glpi_locations'  => 'id'
                ]
             ]
@@ -3424,7 +3424,7 @@ class Dropdown {
          'WHERE'     => [],
          'ORDERBY'   => [
             'glpi_locations.completename',
-            'glpi_netpoints.name'
+            'glpi_sockets.name'
          ],
          'START'     => $start,
          'LIMIT'     => $limit
@@ -3436,7 +3436,7 @@ class Dropdown {
             && ($post["locations_id"] > 0))) {
 
          if (isset($post["entity_restrict"]) && ($post["entity_restrict"] >= 0)) {
-            $criteria['WHERE']['glpi_netpoints.entities_id'] = $post['entity_restrict'];
+            $criteria['WHERE']['glpi_sockets.entities_id'] = $post['entity_restrict'];
          } else {
             $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria('glpi_locations');
          }
@@ -3444,7 +3444,7 @@ class Dropdown {
 
       if (isset($post['searchText']) && strlen($post['searchText']) > 0) {
          $criteria['WHERE']['OR'] = [
-            'glpi_netpoints.name'         => ['LIKE', Search::makeTextSearchValue($post['searchText'])],
+            'glpi_sockets.name'         => ['LIKE', Search::makeTextSearchValue($post['searchText'])],
             'glpi_locations.completename' => ['LIKE', Search::makeTextSearchValue($post['searchText'])]
          ];
       }
@@ -3452,8 +3452,8 @@ class Dropdown {
       if (isset($post["devtype"]) && !empty($post["devtype"])) {
          $criteria['LEFT JOIN']['glpi_networkportethernets'] = [
             'ON' => [
-               'glpi_networkportethernets'   => 'netpoints_id',
-               'glpi_netpoints'              => 'id'
+               'glpi_networkportethernets'   => 'sockets_id',
+               'glpi_sockets'              => 'id'
             ]
          ];
 
@@ -3464,7 +3464,7 @@ class Dropdown {
             $extra_and['NOT'] = ['glpi_networkports.itemtype' => 'NetworkEquipment'];
             if (isset($post["locations_id"]) && ($post["locations_id"] >= 0)) {
                $location_restrict = true;
-               $criteria['WHERE']['glpi_netpoints.locations_id'] = $post['locations_id'];
+               $criteria['WHERE']['glpi_sockets.locations_id'] = $post['locations_id'];
             }
          }
 
@@ -3478,10 +3478,10 @@ class Dropdown {
                ]
             ]
          ];
-         $criteria['WHERE']['glpi_networkportethernets.netpoints_id'] = null;
+         $criteria['WHERE']['glpi_networkportethernets.sockets_id'] = null;
       } else if (isset($post["locations_id"]) && ($post["locations_id"] >= 0)) {
          $location_restrict = true;
-         $criteria['WHERE']['glpi_netpoints.locations_id'] = $post['locations_id'];
+         $criteria['WHERE']['glpi_sockets.locations_id'] = $post['locations_id'];
       }
 
       $iterator = $DB->request($criteria);

@@ -72,12 +72,12 @@ echo "</td></tr>";
 echo "</table>";
 Html::closeForm();
 
-if (countElementsInTableForMyEntities("glpi_netpoints") > 0) {
-   echo "<form name='form3' method='post' action='report.netpoint.list.php'>";
+if (countElementsInTableForMyEntities("glpi_sockets") > 0) {
+   echo "<form name='form3' method='post' action='report.socket.list.php'>";
    echo "<table class='tab_cadre' width='500'>";
-   echo "<tr class='tab_bg_1'><td width='120'>".__('By network outlet')."</td>";
+   echo "<tr class='tab_bg_1'><td width='120'>".__('By network socket')."</td>";
    echo "<td>";
-   Netpoint::dropdownNetpoint("prise", 0, -1, 1, $_SESSION["glpiactive_entity"]);
+   Socket::dropdownSocket("prise", 0, -1, 1, $_SESSION["glpiactive_entity"]);
    echo "</td><td class='center' width='120'>";
    echo "<input type='submit' value=\"".__s('Display report')."\" class='submit'>";
    echo "</td></tr>";

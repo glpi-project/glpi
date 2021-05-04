@@ -36,8 +36,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-/// Netpoint class
-class Netpoint extends CommonDropdown {
+/// Socket class
+class Socket extends CommonDropdown {
 
    // From CommonDBTM
    public $dohistory          = true;
@@ -57,7 +57,7 @@ class Netpoint extends CommonDropdown {
 
 
    static function getTypeName($nb = 0) {
-      return _n('Network outlet', 'Network outlets', $nb);
+      return _n('Socket', 'Sockets', $nb);
    }
 
 
@@ -92,7 +92,7 @@ class Netpoint extends CommonDropdown {
          $this->add($input);
       }
       Event::log(0, "dropdown", 5, "setup",
-                 sprintf(__('%1$s adds several netpoints'), $_SESSION["glpiname"]));
+                 sprintf(__('%1$s adds several sockets'), $_SESSION["glpiname"]));
    }
 
 
@@ -108,7 +108,7 @@ class Netpoint extends CommonDropdown {
     *
     * @return integer random part of elements id
    **/
-   static function dropdownNetpoint($myname, $value = 0, $locations_id = -1, $display_comment = 1,
+   static function dropdownSocket($myname, $value = 0, $locations_id = -1, $display_comment = 1,
                                     $entity_restrict = -1, $devtype = '') {
       global $CFG_GLPI;
 
@@ -119,7 +119,7 @@ class Netpoint extends CommonDropdown {
          $value = 0;
       }
       if ($value > 0) {
-         $tmpname = Dropdown::getDropdownName("glpi_netpoints", $value, 1);
+         $tmpname = Dropdown::getDropdownName("glpi_sockets", $value, 1);
          if ($tmpname["name"] != "&nbsp;") {
             $name          = $tmpname["name"];
             $comment       = $tmpname["comment"];
@@ -133,7 +133,7 @@ class Netpoint extends CommonDropdown {
                         'devtype'             => $devtype,
                         'locations_id'        => $locations_id];
       echo Html::jsAjaxDropdown($myname, $field_id,
-                                $CFG_GLPI['root_doc']."/ajax/getDropdownNetpoint.php",
+                                $CFG_GLPI['root_doc']."/ajax/getDropdownSocket.php",
                                 $param);
 
       // Display comment
@@ -144,16 +144,16 @@ class Netpoint extends CommonDropdown {
          $item = new self();
          if ($item->canCreate()) {
             echo "<span class='fa fa-plus pointer' title=\"".__s('Add')."\" ".
-                  "onClick=\"".Html::jsGetElementbyID('netpoint'.$rand).".dialog('open');\">" .
+                  "onClick=\"".Html::jsGetElementbyID('socket'.$rand).".dialog('open');\">" .
                   "<span class='sr-only'>" . __s('Add') . "</span></span>";
-            Ajax::createIframeModalWindow('netpoint'.$rand,
+            Ajax::createIframeModalWindow('sokcet'.$rand,
                                           $item->getFormURL());
 
          }
          $paramscomment = [
             'value'       => '__VALUE__',
-            'itemtype'    => Netpoint::getType(),
-            '_idor_token' => Session::getNewIDORToken("Netpoint")
+            'itemtype'    => Socket::getType(),
+            '_idor_token' => Session::getNewIDORToken("Socket")
          ];
          echo Ajax::updateItemOnSelectEvent($field_id, $comment_id,
                                             $CFG_GLPI["root_doc"]."/ajax/comments.php",
@@ -164,7 +164,7 @@ class Netpoint extends CommonDropdown {
 
 
    /**
-    * check if a netpoint already exists (before import)
+    * check if a socket already exists (before import)
     *
     * @param $input array of value to import (name, locations_id, entities_id)
     *
@@ -244,7 +244,7 @@ class Netpoint extends CommonDropdown {
 
 
    /**
-    * Print the HTML array of the Netpoint associated to a Location
+    * Print the HTML array of the Socket associated to a Location
     *
     * @param $item Location
     *
@@ -254,7 +254,7 @@ class Netpoint extends CommonDropdown {
       global $DB;
 
       $ID       = $item->getField('id');
-      $netpoint = new self();
+      $socket = new self();
       $item->check($ID, READ);
       $canedit  = $item->canEdit($ID);
 
@@ -263,15 +263,15 @@ class Netpoint extends CommonDropdown {
       } else {
          $start = 0;
       }
-      $number = countElementsInTable('glpi_netpoints', ['locations_id' => $ID ]);
+      $number = countElementsInTable('glpi_sockets', ['locations_id' => $ID ]);
 
       if ($canedit) {
          echo "<div class='first-bloc'>";
          // Minimal form for quick input.
-         echo "<form action='".$netpoint->getFormURL()."' method='post'>";
+         echo "<form action='".$socket->getFormURL()."' method='post'>";
          echo "<br><table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2 center'>";
-         echo "<td class='b'>"._n('Network outlet', 'Network outlets', 1)."</td>";
+         echo "<td class='b'>"._n('Network socket', 'Network sockets', 1)."</td>";
          echo "<td>".__('Name')."</td><td>";
          Html::autocompletionTextField($item, "name", ['value' => '']);
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
@@ -282,10 +282,10 @@ class Netpoint extends CommonDropdown {
          Html::closeForm();
 
          // Minimal form for massive input.
-         echo "<form action='".$netpoint->getFormURL()."' method='post'>";
+         echo "<form action='".$socket->getFormURL()."' method='post'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2 center'>";
-         echo "<td class='b'>"._n('Network outlet', 'Network outlets', Session::getPluralNumber())."</td>";
+         echo "<td class='b'>"._n('Network socket', 'Network sockets', Session::getPluralNumber())."</td>";
          echo "<td>".__('Name')."</td><td>";
          echo "<input type='text' maxlength='100' size='10' name='_before'>&nbsp;";
          Dropdown::showNumber('_from', ['value' => 0,
@@ -315,7 +315,7 @@ class Netpoint extends CommonDropdown {
          echo "<th>".__('No item found')."</th></tr>";
          echo "</table>\n";
       } else {
-         Html::printAjaxPager(sprintf(__('Network outlets for %s'), $item->getTreeLink()),
+         Html::printAjaxPager(sprintf(__('Network sockets for %s'), $item->getTreeLink()),
                               $start, $number);
 
          if ($canedit) {
@@ -348,20 +348,20 @@ class Netpoint extends CommonDropdown {
                        'START'        => $start,
                        'LIMIT'        => $_SESSION['glpilist_limit']];
 
-         Session::initNavigateListItems('Netpoint',
+         Session::initNavigateListItems('Socket',
          //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'),
                                                 $item->getTypeName(1), $item->getName()));
 
-         foreach ($DB->request('glpi_netpoints', $crit) as $data) {
-            Session::addToNavigateListItems('Netpoint', $data["id"]);
+         foreach ($DB->request('glpi_sockets', $crit) as $data) {
+            Session::addToNavigateListItems('Socket', $data["id"]);
             echo "<tr class='tab_bg_1'>";
 
             if ($canedit) {
                echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["id"])."</td>";
             }
 
-            echo "<td><a href='".$netpoint->getFormURL();
+            echo "<td><a href='".$socket->getFormURL();
             echo '?id='.$data['id']."'>".$data['name']."</a></td>";
             echo "<td>".$data['comment']."</td>";
             echo "</tr>\n";
@@ -374,7 +374,7 @@ class Netpoint extends CommonDropdown {
             Html::showMassiveActions($massiveactionparams);
             Html::closeForm();
          }
-         Html::printAjaxPager(sprintf(__('Network outlets for %s'), $item->getTreeLink()),
+         Html::printAjaxPager(sprintf(__('Network sockets for %s'), $item->getTreeLink()),
                               $start, $number);
 
       }
@@ -402,7 +402,7 @@ class Netpoint extends CommonDropdown {
          return;
       }
 
-      $base->addHeader($column_name, _n('Network outlet', 'Network outlets', 1), $super, $father);
+      $base->addHeader($column_name, _n('Network socket', 'Network sockets', 1), $super, $father);
 
    }
 
@@ -425,7 +425,7 @@ class Netpoint extends CommonDropdown {
       }
 
       $row->addCell($row->getHeaderByName($column_name),
-                    Dropdown::getDropdownName("glpi_netpoints", $item->fields["netpoints_id"]),
+                    Dropdown::getDropdownName("glpi_sockets", $item->fields["sockets_id"]),
                     $father);
    }
 

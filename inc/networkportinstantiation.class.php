@@ -576,21 +576,21 @@ class NetworkPortInstantiation extends CommonDBChild {
 
 
    /**
-    * Display the Netpoint field. Used by Ethernet, and Migration
+    * Display the Socket field. Used by Ethernet, and Migration
     *
     * @param NetworkPort $netport         NetworkPort object :the port that owns this instantiation
     *                                     (usefull, for instance to get network port attributs
     * @param array       $options         array of options given to NetworkPort::showForm
     * @param array       $recursiveItems  list of the items on which this port is attached
    **/
-   function showNetpointField(NetworkPort $netport, $options = [], $recursiveItems = []) {
+   function showSocketField(NetworkPort $netport, $options = [], $recursiveItems = []) {
 
-      echo "<td>" . _n('Network outlet', 'Network outlets', 1) . "</td>\n";
+      echo "<td>" . _n('Network socket', 'Network sockets', 1) . "</td>\n";
       echo "<td>";
       if (count($recursiveItems) > 0) {
          $lastItem = $recursiveItems[count($recursiveItems) - 1];
-         Netpoint::dropdownNetpoint("netpoints_id", $this->fields["netpoints_id"],
-                                    $lastItem->fields['locations_id'] ?? -1, 1, $lastItem->getEntityID(),
+         Socket::dropdownSocket("sockets_id", $this->fields["sockets_id"],
+                                    $lastItem->fields['locations_id'], 1, $lastItem->getEntityID(),
                                     $netport->fields["itemtype"]);
       } else {
          echo __('item not linked to an object');

@@ -30,7 +30,19 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+/**
+ * @since 0.85
+ */
 
-$dropdown = new Netpoint();
-include (GLPI_ROOT . "/front/dropdown.common.form.php");
+// Direct access to file
+if (strpos($_SERVER['PHP_SELF'], "getDropdownSocket.php")) {
+   $AJAX_INCLUDE = 1;
+   include ('../inc/includes.php');
+   header("Content-Type: application/json; charset=UTF-8");
+   Html::header_nocache();
+} else if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
+
+Session::checkLoginUser();
+echo Dropdown::getDropdownSocket($_POST);

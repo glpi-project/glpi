@@ -32,5 +32,5 @@
 
 include ('../inc/includes.php');
 
-$dropdown = new Netpoint();
+$dropdown = new Socket();
 include (GLPI_ROOT . "/front/dropdown.common.php");

@@ -85,9 +85,41 @@ if (!$DB->tableExists('glpi_networkportfiberchanneltypes')) {
    $DB->queryOrDie($query, "10.0 add table glpi_networkportfiberchanneltypes");
 
    $migration->addField('glpi_networkportfiberchannels', 'networkportfiberchanneltypes_id', 'int', [
-      'after' => 'netpoints_id'
+      'after' => 'sockets_id'
    ]);
 
    $migration->addKey('glpi_networkportfiberchannels', 'networkportfiberchanneltypes_id', 'type');
 }
 
+
+if (!$DB->tableExists('glpi_sockets') && $DB->tableExists('glpi_netpoints')) {
+   $migration->renameTable('glpi_netpoints', 'glpi_sockets');
+
+   $migration->dropKey('glpi_networkportethernets', 'netpoint');
+   $migration->changeField(
+      'glpi_networkportethernets',
+      'netpoints_id',
+      'sockets_id',
+      'integer'
+   );
+   $migration->addKey('glpi_networkportethernets', 'sockets_id', 'socket');
+
+   $migration->dropKey('glpi_networkportbncs', 'netpoint');
+   $migration->changeField(
+      'glpi_networkportbncs',
+      'netpoints_id',
+      'sockets_id',
+      'integer'
+   );
+   $migration->addKey('glpi_networkportbncs', 'sockets_id', 'socket');
+
+   $migration->dropKey('glpi_networkportfiberchannels', 'netpoint');
+   $migration->changeField(
+      'glpi_networkportfiberchannels',
+      'netpoints_id',
+      'sockets_id',
+      'integer'
+   );
+   $migration->addKey('glpi_networkportfiberchannels', 'sockets_id', 'socket');
+
+}
