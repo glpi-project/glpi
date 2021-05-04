@@ -32,11 +32,9 @@
 
 namespace Glpi\Application\View\Extension;
 
-use CommonITILObject;
 use Change;
 use ChangeValidation;
-use Problem;
-use ProblemValidation;
+use CommonITILObject;
 use Ticket;
 use TicketValidation;
 use Twig\Extension\AbstractExtension;
@@ -57,10 +55,10 @@ class ValidationExtension extends AbstractExtension implements ExtensionInterfac
    }
 
 
-    public function alertValidation(CommonITILObject $item, string $type = "status") {
+   public function alertValidation(CommonITILObject $item, string $type = "status") {
       if ($item instanceof Ticket) {
          return TicketValidation::alertValidation($item, $type);
-      } elseif ($item instanceof Change) {
+      } else if ($item instanceof Change) {
          return ChangeValidation::alertValidation($item, $type);
       }
    }
