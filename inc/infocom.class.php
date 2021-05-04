@@ -1322,9 +1322,9 @@ class Infocom extends CommonDBChild {
       switch ($itemtype) {
          case 'Software' :
             // Return the infocom linked to the license, not the template linked to the software
-            $beforejoin        = ['table'      => 'glpi_softwarelicenses',
+            $beforejoin        = ['table'      => Software::getTable(),
                                        'joinparams' => ['jointype' => 'child']];
-            $specific_itemtype = 'SoftwareLicense';
+            $specific_itemtype = 'Software';
             break;
 
          case 'CartridgeItem' :
