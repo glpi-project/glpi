@@ -1487,6 +1487,7 @@ class Contract extends CommonDBTM {
     *    - on_change     : string / value to transmit to "onChange"
     *    - display       : boolean / display or return string (default true)
     *    - expired       : boolean / display expired contract (default false)
+    *    - toadd         : array / array of specific values to add at the beginning
     *
     * @return string|integer HTML output, or random part of dropdown ID.
    **/
@@ -1505,6 +1506,7 @@ class Contract extends CommonDBTM {
          'on_change'      => '',
          'display'        => true,
          'expired'        => false,
+         'toadd'          => [],
       ];
 
       if (is_array($options) && count($options)) {
@@ -1558,7 +1560,7 @@ class Contract extends CommonDBTM {
 
       $group  = '';
       $prev   = -1;
-      $values = [];
+      $values = $p['toadd'];
       while ($data = $iterator->next()) {
          if ($p['nochecklimit']
              || ($data["max_links_allowed"] == 0)

@@ -2643,21 +2643,24 @@ class Entity extends CommonTreeDropdown {
 
       echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Default contract')."</td>";
       echo "<td colspan='2'>";
-      $default_contract_values = self::getDefaultContractValues($entity->fields['id']);
       $current_default_contract_value = $entity->fields['contracts_id_default'];
 
+      $toadd = [
+         self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+         -1 => __('Contract in ticket entity'),
+      ];
+
       if ($ID == 0) { // Remove parent option for root entity
-         unset($default_contract_values[self::CONFIG_PARENT]);
+         unset($toadd[self::CONFIG_PARENT]);
       }
 
-      Dropdown::showFromArray(
-         'contracts_id_default',
-         $default_contract_values,
-         [
-            'value' => $current_default_contract_value,
-            'display_emptychoice' => true,
-         ]
-      );
+      Contract::dropdown([
+         'name'      => 'contracts_id_default',
+         'condition' => Contract::getExpiredCriteria(),
+         'entity'    => $entity->getID(),
+         'toadd'     => $toadd,
+         'value'     => $current_default_contract_value,
+      ]);
 
       // If the entity is using it's parent value, print it
       if ($current_default_contract_value == self::CONFIG_PARENT && $ID != 0) {
@@ -2667,9 +2670,14 @@ class Entity extends CommonTreeDropdown {
          );
          if (!$parent_default_contract_value) {
             $display_value = Dropdown::EMPTY_VALUE;
+         } else if ($parent_default_contract_value == -1) {
+            $display_value = __('Contract in ticket entity');
          } else {
-            $display_value = $default_contract_values[$parent_default_contract_value] ?? "";
+            $contract = new Contract();
+            $contract->getFromDB($parent_default_contract_value);
+            $display_value = $contract->fields['name'];
          }
+
          self::inheritedValue($display_value, true);
       }
       echo "</td></tr>";
