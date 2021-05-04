@@ -2643,7 +2643,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Default contract')."</td>";
       echo "<td colspan='2'>";
-      $default_contract_values = self::getDefaultContractValues();
+      $default_contract_values = self::getDefaultContractValues($entity->fields['id']);
       $current_default_contract_value = $entity->fields['contracts_id_default'];
 
       if ($ID == 0) { // Remove parent option for root entity
@@ -2668,7 +2668,7 @@ class Entity extends CommonTreeDropdown {
          if (!$parent_default_contract_value) {
             $display_value = Dropdown::EMPTY_VALUE;
          } else {
-            $display_value = $default_contract_values[$parent_default_contract_value];
+            $display_value = $default_contract_values[$parent_default_contract_value] ?? "";
          }
          self::inheritedValue($display_value, true);
       }
@@ -3456,14 +3456,14 @@ class Entity extends CommonTreeDropdown {
     *
     * @return array
     */
-   public static function getDefaultContractValues(): array {
+   public static function getDefaultContractValues($entities_id): array {
       $values = [
          self::CONFIG_PARENT => __('Inheritance of the parent entity'),
          -1 => __('Contract in ticket entity'),
       ];
 
       $contract = new Contract();
-      $criteria = getEntitiesRestrictCriteria();
+      $criteria = getEntitiesRestrictCriteria('', '', $entities_id, true);
       $criteria[] = Contract::getExpiredCriteria();
       $contracts = $contract->find($criteria);
 
