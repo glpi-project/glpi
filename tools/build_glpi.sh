@@ -45,14 +45,14 @@ echo "Install dependencies"
 # PHP dev dependencies are usefull at this point as they are used by some build operations
 $WORKING_DIR/bin/console dependencies install --composer-options="--ignore-platform-reqs --prefer-dist --no-progress"
 
+echo "Compile locale files"
+$WORKING_DIR/bin/console locales:compile
+
 echo "Minify stylesheets and javascripts"
 php -d memory_limit=2G $WORKING_DIR/vendor/bin/robo minify --load-from $WORKING_DIR/tools
 
 echo "Compile SCSS"
 $WORKING_DIR/bin/console build:compile_scss
-
-echo "Compile locale files"
-$WORKING_DIR/bin/console locales:compile
 
 echo "Remove dev files and directories"
 # Remove PHP dev dependencies that are not anymore used
