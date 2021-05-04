@@ -113,6 +113,11 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
       echo "<td>".__('Connected to').'</td><td>';
       self::showConnection($netport, true);
       echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('BNC port type') . "</td><td>\n";
+      Dropdown::show('NetworkPortFiberchannelType', ['name' => 'networkportfiberchanneltypes_id', 'value' => $this->fields['networkportfiberchanneltypes_id']]);
+      echo "</td></tr>\n";
    }
 
 
@@ -203,6 +208,14 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
          'name'               => __('Fiber channel port speed'),
          'massiveaction'      => false,
          'datatype'           => 'specific'
+      ];
+
+      $tab[] = [
+         'id'                 => '13',
+         'table'              => 'glpi_networkportfiberchanneltypes',
+         'field'              => 'name',
+         'name'               => __('Fiber port type'),
+         'datatype'           => 'dropdown'
       ];
 
       return $tab;

@@ -69,3 +69,25 @@ if (!$DB->tableExists('glpi_networkportbncs')) {
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
    $DB->queryOrDie($query, "10.0 add table glpi_networkportbncs");
 }
+
+if (!$DB->tableExists('glpi_networkportfiberchanneltypes')) {
+   $query = "CREATE TABLE `glpi_networkportfiberchanneltypes` (
+      `id` int NOT NULL AUTO_INCREMENT,
+      `name` varchar(255) DEFAULT NULL,
+      `comment` text,
+      `date_mod` timestamp NULL DEFAULT NULL,
+      `date_creation` timestamp NULL DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      KEY `name` (`name`),
+      KEY `date_mod` (`date_mod`),
+      KEY `date_creation` (`date_creation`)
+      ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+   $DB->queryOrDie($query, "10.0 add table glpi_networkportfiberchanneltypes");
+
+   $migration->addField('glpi_networkportfiberchannels', 'networkportfiberchanneltypes_id', 'int', [
+      'after' => 'netpoints_id'
+   ]);
+
+   $migration->addKey('glpi_networkportfiberchannels', 'networkportfiberchanneltypes_id', 'type');
+}
+
