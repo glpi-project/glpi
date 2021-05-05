@@ -12,7 +12,7 @@
 } %}
 
 {% if show_form %}
-<form name="asset_form" method="post" action="{{ target }}" {{ formoptions }} enctype="multipart/form-data">
+<form method="post" action="{{ target }}" {{ formoptions }} enctype="multipart/form-data">
 {% endif %}
    <div class="row flex-row">
       {{ fields.textField(
