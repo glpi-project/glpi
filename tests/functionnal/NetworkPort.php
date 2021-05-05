@@ -169,14 +169,15 @@ class NetworkPort extends DbTestCase {
       unset($networkname['date_mod']);
       unset($networkname['date_creation']);
       $expected = [
-          'entities_id' => $computer1->fields['entities_id'],
-          'items_id'    => $new_id,
-          'itemtype'    => 'NetworkPort',
-          'name'        => 'test1',
-          'comment'     => 'test1 comment',
-          'fqdns_id'    => 0,
-          'is_deleted'  => 0,
-          'is_dynamic'  => 0,
+          'entities_id'   => $computer1->fields['entities_id'],
+          'items_id'      => $new_id,
+          'itemtype'      => 'NetworkPort',
+          'name'          => 'test1',
+          'comment'       => 'test1 comment',
+          'fqdns_id'      => 0,
+          'ipnetworks_id' => 0,
+          'is_deleted'    => 0,
+          'is_dynamic'    => 0,
       ];
       $this->array($networkname)->isIdenticalTo($expected);
 

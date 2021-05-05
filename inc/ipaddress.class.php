@@ -422,10 +422,10 @@ class IPAddress extends CommonDBChild {
       if (!isset($array[$textualField])) {
          return false;
       }
-      if (!isset($array[$binaryField."_0"])
-          || !isset($array[$binaryField."_1"])
-          || !isset($array[$binaryField."_2"])
-          || !isset($array[$binaryField."_3"])) {
+      if ((!isset($array[$binaryField."_0"]) || !is_numeric($array[$binaryField."_0"]))
+         || (!isset($array[$binaryField."_1"]) || !is_numeric($array[$binaryField."_0"]))
+         || (!isset($array[$binaryField."_2"]) || !is_numeric($array[$binaryField."_0"]))
+         || (!isset($array[$binaryField."_3"]) || !is_numeric($array[$binaryField."_0"]))) {
          return false;
       }
 
