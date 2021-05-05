@@ -149,7 +149,7 @@ class NetworkName extends FQDNLabel {
       echo __('IP network is not included in the database. However, you can see current available networks.');
       echo "</td></tr>";
       echo "<tr class='tab_bg_1'><td>&nbsp;</td><td>";
-      IPNetwork::showIPNetworkProperties($this->getEntityID());
+      IPNetwork::showIPNetworkProperties($this->getEntityID(), $this->fields['ipnetworks_id']);
       echo "</td></tr>\n";
 
       $this->showFormButtons($options);
