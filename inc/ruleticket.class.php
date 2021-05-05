@@ -598,7 +598,7 @@ class RuleTicket extends Rule {
       $criterias['olas_id_tto']['type']                     = 'dropdown';
       $criterias['olas_id_tto']['condition']                = ['glpi_olas.type' => SLM::TTO];
 
-      $criterias['global_validation']['name']               = __('Validation');
+      $criterias['global_validation']['name']               = _n('Validation', 'Validations', 1);
       $criterias['global_validation']['type']               = 'dropdown_validation_status';
 
       $criterias['_date_creation_calendars_id'] = [
