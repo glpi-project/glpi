@@ -350,8 +350,9 @@ class NetworkPort extends CommonDBChild {
          } else {
 
             if (!$empty_networkName) { // Only create a NetworkName if it is not empty
-               $this->input_for_NetworkName['itemtype'] = 'NetworkPort';
-               $this->input_for_NetworkName['items_id'] = $this->getID();
+               $this->input_for_NetworkName['itemtype']    = 'NetworkPort';
+               $this->input_for_NetworkName['items_id']    = $this->getID();
+               $this->input_for_NetworkName['entities_id'] = $this->fields['entities_id'];
                $network_name->add($this->input_for_NetworkName, [], $history);
             }
          }

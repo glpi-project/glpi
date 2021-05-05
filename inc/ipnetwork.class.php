@@ -996,12 +996,13 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     * @param $entities_id  entity of the IPNetworks (-1 for all entities)
     *                      (default -1)
    **/
-   static function showIPNetworkProperties($entities_id = -1) {
+   static function showIPNetworkProperties($entities_id = -1, $value = 0) {
       global $CFG_GLPI;
 
       $rand = mt_rand();
       self::dropdown(['entity' => $entities_id,
-                           'rand'   => $rand]);
+                           'rand'   => $rand,
+                           'value' => $value]);
 
       $params = ['ipnetworks_id' => '__VALUE__'];
 
@@ -1010,6 +1011,13 @@ class IPNetwork extends CommonImplicitTreeDropdown {
                                     $params);
 
       echo "<span id='show_ipnetwork_$rand'>&nbsp;</span>\n";
+
+      if ($value > 0) {
+         $params = ["ipnetworks_id" => $value];
+         Ajax::updateItem("show_ipnetwork_$rand",
+                           $CFG_GLPI["root_doc"]. "/ajax/dropdownShowIPNetwork.php",
+                           $params);
+      }
    }
 
 

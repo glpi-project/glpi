@@ -4518,6 +4518,7 @@ CREATE TABLE `glpi_networknames` (
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `fqdns_id` int NOT NULL DEFAULT '0',
+  `ipnetworks_id` int NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -4530,7 +4531,8 @@ CREATE TABLE `glpi_networknames` (
   KEY `is_dynamic` (`is_dynamic`),
   KEY `item` (`itemtype`,`items_id`,`is_deleted`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `ipnetworks_id` (`ipnetworks_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
