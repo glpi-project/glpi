@@ -32,8 +32,17 @@
 
 namespace tests\units;
 
+use CommonITILActor;
 use DbTestCase;
+use ITILFollowup;
+use ITILSolution;
+use NotificationTarget;
+use NotificationTargetCommonITILObject;
+use NotificationTargetTicket;
 use Profile_User;
+use Search;
+use Ticket;
+use User;
 
 /* Test for inc/entity.class.php */
 
@@ -516,5 +525,187 @@ class Entity extends DbTestCase {
       // Validate method result
       $this->boolean($entity->getFromDB($entity_id))->isTrue();
       $this->string($entity->getCustomCssTag())->isEqualTo($expected);
+   }
+
+   protected function testAnonymizeSettingProvider(): array {
+      return [
+         [
+            'interface' => 'central',
+            'setting'   => \Entity::ANONYMIZE_DISABLED,
+            'expected'  => 'tech',
+         ],
+         [
+            'interface' => 'helpdesk',
+            'setting'   => \Entity::ANONYMIZE_DISABLED,
+            'expected'  => 'tech',
+         ],
+         [
+            'interface' => 'central',
+            'setting'   => \Entity::ANONYMIZE_USE_GENERIC,
+            'expected'  => 'tech',
+         ],
+         [
+            'interface' => 'helpdesk',
+            'setting'   => \Entity::ANONYMIZE_USE_GENERIC,
+            'expected'  => "Helpdesk",
+         ],
+         [
+            'interface' => 'central',
+            'setting'   => \Entity::ANONYMIZE_USE_NICKNAME,
+            'expected'  => 'tech',
+            'user_nick' => 'user_nick_6436345654'
+         ],
+         [
+            'interface' => 'helpdesk',
+            'setting'   => \Entity::ANONYMIZE_USE_NICKNAME,
+            'expected'  => 'user_nick_6436345654',
+            'user_nick' => 'user_nick_6436345654'
+         ],
+         [
+            'interface' => 'helpdesk',
+            'setting'   => \Entity::ANONYMIZE_USE_NICKNAME,
+            'expected'  => 'tech',
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider testAnonymizeSettingProvider
+    */
+   public function testAnonymizeSetting(
+      string $interface,
+      int $setting,
+      string $expected,
+      string $user_nick = ""
+   ) {
+      $this->login();
+      $possible_values = ['tech', 'user_nick_6436345654', "Helpdesk"];
+
+      // Save and replace session data
+      $old_interface = $_SESSION['glpiactiveprofile']['interface'];
+      $_SESSION['glpiactiveprofile']['interface'] = $interface;
+
+      // Set entity setting
+      $entity = getItemByTypeName("Entity", "_test_root_entity");
+      $update = $entity->update([
+         'id'                       => $entity->getID(),
+         'anonymize_support_agents' => $setting,
+      ]);
+      $this->boolean($update)->isTrue();
+
+      // // Set user nickname
+      $user = getItemByTypeName('User', 'tech');
+
+      if ($user_nick == "" && $user->fields['nickname'] == null) {
+         // Special case, glpi wont update null to "" so we need to set
+         // another value first
+         $update = $user->update([
+            'id'       => $user->getID(),
+            'nickname' => 'TMP',
+         ]);
+         $this->boolean($update)->isTrue();
+         $this->boolean($user->getFromDB($user->getID()))->isTrue();
+         $this->string($user->fields['nickname'])->isEqualTo('TMP');
+      }
+
+      $update = $user->update([
+         'id'       => $user->getID(),
+         'nickname' => $user_nick,
+      ]);
+      $this->boolean($update)->isTrue();
+      $this->boolean($user->getFromDB($user->getID()))->isTrue();
+      $this->string($user->fields['nickname'])->isEqualTo($user_nick);
+
+      // Build test ticket
+      $ticket = new Ticket();
+      $tickets_id = $ticket->add([
+         'name'             => 'test',
+         'content'          => 'test',
+         '_users_id_assign' => getItemByTypeName('User', 'tech', true),
+         'entities_id'      => $entity->getID(),
+      ]);
+      $this->integer($tickets_id)->isGreaterThan(0);
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+
+      // Add followup to test ticket
+      $fup = new ITILFollowup();
+      $fup_id = $fup->add([
+         'content' => 'test',
+         'users_id' => getItemByTypeName('User', 'tech', true),
+         'users_id_editor' => getItemByTypeName('User', 'tech', true),
+         'itemtype' => 'Ticket',
+         'items_id' => $tickets_id,
+      ]);
+      $this->integer($fup_id)->isGreaterThan(0);
+
+      // Add solution to test ticket
+      $solution = new ITILSolution();
+      $solutions_id = $solution->add([
+         'content' => 'test',
+         'users_id' => getItemByTypeName('User', 'tech', true),
+         'users_id_editor' => getItemByTypeName('User', 'tech', true),
+         'itemtype' => 'Ticket',
+         'items_id' => $tickets_id,
+      ]);
+      $this->integer($solutions_id)->isGreaterThan(0);
+
+      // Case 1: test values recovered from CommonITILObject::showUsersAssociated()
+      ob_start();
+      $ticket->showUsersAssociated(CommonITILActor::ASSIGN, false, []);
+      $html = ob_get_clean();
+
+      foreach ($possible_values as $value) {
+         if ($value == $expected) {
+            $this->string($html)->contains($value);
+         } else {
+            $this->string($html)->notContains($value);
+         }
+      }
+
+      // Case 2: test values recovered from CommonITILObject:::showShort()
+      ob_start();
+      Ticket::showShort($tickets_id);
+      $html = ob_get_clean();
+
+      foreach ($possible_values as $value) {
+         if ($value == $expected) {
+            $this->string($html)->contains($value);
+         } else {
+            $this->string($html)->notContains($value);
+         }
+      }
+
+      // Case 3: test values recovered from CommonITILObject::showTimeline()
+      ob_start();
+      $ticket->showTimeline(mt_rand());
+      $html = ob_get_clean();
+
+      foreach ($possible_values as $value) {
+         if ($value == $expected) {
+            $this->string($html)->contains($value);
+         } else {
+            $this->string($html)->notContains($value);
+         }
+      }
+
+      // Case 4: test values recovered from NotificationTargetCommonITILObject::getDataForObject()
+      $notification = new NotificationTargetTicket();
+      $notif_data = $notification->getDataForObject($ticket, [
+         'additionnaloption' => [
+            'usertype' => NotificationTarget::GLPI_USER
+         ]
+      ]);
+      foreach($notif_data['followups'] as $n_fup) {
+         foreach ($possible_values as $value) {
+            if ($value == $expected) {
+               $this->string($n_fup['##followup.author##'])->contains($value);
+            } else {
+               $this->string($n_fup['##followup.author##'])->notContains($value);
+            }
+         }
+      }
+
+      // Reset session
+      $_SESSION['glpiactiveprofile']['interface'] = $old_interface;
    }
 }

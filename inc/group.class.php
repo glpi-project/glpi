@@ -952,6 +952,17 @@ class Group extends CommonTreeDropdown {
       ) > 0;
    }
 
+   public static function getAnonymizedName(?int $entities_id = null): string {
+      switch (Entity::getAnonymizeConfig($entities_id)) {
+         default:
+         case Entity::ANONYMIZE_DISABLED:
+            return "";
+
+         case Entity::ANONYMIZE_USE_GENERIC:
+         case Entity::ANONYMIZE_USE_NICKNAME:
+            return __("Helpdesk group");
+      }
+   }
 
    static function getIcon() {
       return "fas fa-users";

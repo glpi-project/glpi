@@ -2869,12 +2869,11 @@ abstract class CommonITILObject extends CommonDBTM {
             $k = $d['groups_id'];
             echo "$mandatory$groupicon&nbsp;";
             if ($group->getFromDB($k)) {
-               $entity = $this->getEntityID();
-               if (Entity::getUsedConfig('anonymize_support_agents', $entity)
-                  && Session::getCurrentInterface() == 'helpdesk'
+               if (Session::getCurrentInterface() == 'helpdesk'
                   && $type == CommonITILActor::ASSIGN
+                  && !empty($anon_name = Group::getAnonymizedName($this->getEntityID()))
                ) {
-                  echo __("Helpdesk group");
+                  echo $anon_name;
                } else {
                   echo $group->getLink(['comments' => true]);
                }
@@ -4048,12 +4047,14 @@ abstract class CommonITILObject extends CommonDBTM {
                $userdata      = "<a href='mailto:$email'>$email</a>";
             }
 
-            $entity = $this->getEntityID();
-            if (Entity::getUsedConfig('anonymize_support_agents', $entity)
-               && Session::getCurrentInterface() == 'helpdesk'
+            if (Session::getCurrentInterface() == 'helpdesk'
                && $type == CommonITILActor::ASSIGN
+               && !empty($anon_name = User::getAnonymizedName(
+                  $k,
+                  $this->getEntityID()
+               ))
             ) {
-               echo __("Helpdesk");
+               echo $anon_name;
             } else {
                if ($k) {
                   $param = ['display' => false];
@@ -6166,13 +6167,14 @@ abstract class CommonITILObject extends CommonDBTM {
          // Fifth column
          $fifth_col = "";
 
-         $entity = $item->getEntityID();
-         $anonymize_helpdesk = Entity::getUsedConfig('anonymize_support_agents', $entity)
-            && Session::getCurrentInterface() == 'helpdesk';
-
          foreach ($item->getUsers(CommonITILActor::ASSIGN) as $d) {
-            if ($anonymize_helpdesk) {
-               $fifth_col .= __("Helpdesk");
+            if (Session::getCurrentInterface() == 'helpdesk'
+               && !empty($anon_name = User::getAnonymizedName(
+                  $d['users_id'],
+                  $item->getEntityID()
+               ))
+            ) {
+               $fifth_col .= $anon_name;
             } else {
                $userdata   = getUserName($d["users_id"], 2);
                $fifth_col .= sprintf(__('%1$s %2$s'),
@@ -6186,8 +6188,10 @@ abstract class CommonITILObject extends CommonDBTM {
          }
 
          foreach ($item->getGroups(CommonITILActor::ASSIGN) as $d) {
-            if ($anonymize_helpdesk) {
-               $fifth_col .= __("Helpdesk group");
+            if (Session::getCurrentInterface() == 'helpdesk'
+               && !empty($anon_name = Group::getAnonymizedName($item->getEntityID()))
+            ) {
+               $fifth_col .= $anon_name;
             } else {
                $fifth_col .= Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
             }
@@ -7038,21 +7042,25 @@ abstract class CommonITILObject extends CommonDBTM {
 
                echo "<span class='h_user_name'>";
                $userdata = getUserName($item_i['users_id'], 2);
-               $entity = $this->getEntityID();
-               if (Entity::getUsedConfig('anonymize_support_agents', $entity)
-                  && Session::getCurrentInterface() == 'helpdesk'
+               if (Session::getCurrentInterface() == 'helpdesk'
                   && (
                      $item['type'] == "Solution"
                      || is_subclass_of($item['type'], "CommonITILTask")
-                     || ($item['type'] == "ITILFollowup"
+                     || (
+                        $item['type'] == "ITILFollowup"
                         && ITILFollowup::getById($item_i['id'])->isFromSupportAgent()
                      )
-                     || ($item['type'] == "Document_Item"
+                     || (
+                        $item['type'] == "Document_Item"
                         && Document_Item::getById($item_i['documents_item_id'])->isFromSupportAgent()
                      )
                   )
+                  && !empty($anon_name = User::getAnonymizedName(
+                     $item_i['users_id'],
+                     $this->getEntityID()
+                  ))
                ) {
-                  echo __("Helpdesk");
+                  echo $anon_name;
                } else {
                   echo $user->getLink()."&nbsp;";
                   echo Html::showToolTip(
@@ -7186,7 +7194,6 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "</div>";
          }
 
-         $entity = $this->getEntityID();
          echo "<div class='b_right'>";
          if (isset($item_i['solutiontypes_id']) && !empty($item_i['solutiontypes_id'])) {
             echo Dropdown::getDropdownName("glpi_solutiontypes", $item_i['solutiontypes_id'])."<br>";
@@ -7214,10 +7221,13 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "<div class='users_id_tech' id='users_id_tech_".$item_i['users_id_tech']."'>";
             $user->getFromDB($item_i['users_id_tech']);
 
-            if (Entity::getUsedConfig('anonymize_support_agents', $entity)
-               && Session::getCurrentInterface() == 'helpdesk'
+            if (Session::getCurrentInterface() == 'helpdesk'
+               && !empty($anon_name = User::getAnonymizedName(
+                  $item_i['users_id_tech'],
+                  $this->getEntityID()
+               ))
             ) {
-               echo __("Helpdesk");
+               echo $anon_name;
             } else {
                echo "<i class='fas fa-user'></i> ";
                $userdata = getUserName($item_i['users_id_tech'], 2);
@@ -7239,13 +7249,16 @@ abstract class CommonITILObject extends CommonDBTM {
          if (isset($item_i['users_id_editor']) && $item_i['users_id_editor'] > 0) {
             echo "<div class='users_id_editor' id='users_id_editor_".$item_i['users_id_editor']."'>";
 
-            if (Entity::getUsedConfig('anonymize_support_agents', $entity)
-               && Session::getCurrentInterface() == 'helpdesk'
+            if (Session::getCurrentInterface() == 'helpdesk'
+               && !empty($anon_name = User::getAnonymizedName(
+                  $item_i['users_id_editor'],
+                  $this->getEntityID()
+               ))
             ) {
                echo sprintf(
                   __('Last edited on %1$s by %2$s'),
                   Html::convDateTime($item_i['date_mod']),
-                  __("Helpdesk")
+                  $anon_name
                );
             } else {
                $user->getFromDB($item_i['users_id_editor']);

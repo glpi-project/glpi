@@ -5583,17 +5583,6 @@ JAVASCRIPT;
 
          switch ($table.'.'.$field) {
             case "glpi_users.name" :
-               if ($itemtype == 'Ticket'
-                  && Session::getCurrentInterface() == 'helpdesk'
-                  && $orig_id == 5
-                  && Entity::getUsedConfig(
-                     'anonymize_support_agents',
-                     $itemtype::getById($data['id'])->getEntityId()
-                  )
-               ) {
-                  return __("Helpdesk");
-               }
-
                // USER search case
                if (($itemtype != 'User')
                    && isset($so["forcegroupby"]) && $so["forcegroupby"]) {
@@ -5616,15 +5605,27 @@ JAVASCRIPT;
 
                         if ($itemtype == 'Ticket') {
                            if (isset($data[$ID][$k]['name'])
-                                 && $data[$ID][$k]['name'] > 0) {
-                              $userdata = getUserName($data[$ID][$k]['name'], 2);
-                              $tooltip  = "";
-                              if (Session::haveRight('user', READ)) {
-                                 $tooltip = Html::showToolTip($userdata["comment"],
-                                                              ['link'    => $userdata["link"],
-                                                                    'display' => false]);
+                              && $data[$ID][$k]['name'] > 0
+                           ) {
+                              if (Session::getCurrentInterface() == 'helpdesk'
+                                 && $orig_id == 5 // -> Assigned user
+                                 && !empty($anon_name = User::getAnonymizedName(
+                                    2,
+                                    $itemtype::getById($data['id'])->getEntityId()
+                                 ))
+                              ) {
+                                 $out .= $anon_name;
+                              } else {
+                                 $userdata = getUserName($data[$ID][$k]['name'], 2);
+                                 $tooltip  = "";
+                                 if (Session::haveRight('user', READ)) {
+                                    $tooltip = Html::showToolTip($userdata["comment"],
+                                                               ['link'    => $userdata["link"],
+                                                                     'display' => false]);
+                                 }
+                                 $out .= sprintf(__('%1$s %2$s'), $userdata['name'], $tooltip);
                               }
-                              $out .= sprintf(__('%1$s %2$s'), $userdata['name'], $tooltip);
+
                               $count_display++;
                            }
                         } else {
@@ -6230,13 +6231,12 @@ JAVASCRIPT;
       if ($itemtype == 'Ticket'
          && Session::getCurrentInterface() == 'helpdesk'
          && $orig_id == 8
-         && Entity::getUsedConfig(
-            'anonymize_support_agents',
+         && !empty($anon_name = Group::getAnonymizedName(
             $itemtype::getById($data['id'])->getEntityId()
-         )
+         ))
       ) {
          // Assigned groups
-         return __("Helpdesk group");
+         return $anon_name;
       }
 
       // Link with plugin tables : need to know left join structure
