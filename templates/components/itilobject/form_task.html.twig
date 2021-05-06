@@ -3,13 +3,52 @@
 
 {% block timeline_card %}
    {% if form_mode == 'view' %}
-      {% if entry_i['state'] is constant('Planning::TODO') %}
-         <span class="state state_1" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('To do') }}"></span>
-      {% elseif entry_i['state'] is constant('Planning::DONE') %}
-         <span class="state state_2" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('Done') }}"></span>
-      {% endif %}
       <div class="read-only-content">
+         {% if entry_i['state'] is constant('Planning::TODO') %}
+            <span class="state state_1" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('To do') }}"></span>
+         {% elseif entry_i['state'] is constant('Planning::DONE') %}
+            <span class="state state_2" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('Done') }}"></span>
+         {% endif %}
+
          {{ getHtmlToDisplay(entry_i['content']) }}
+
+         <div>
+            {% if entry_i['users_id_tech'] %}
+               <span class="badge bg-orange-lt">
+                  <i class="fas fa-user me-1"></i>
+                  {{ User__getLink(entry_i['users_id_tech']) }}
+               </span>
+            {% endif %}
+
+            {% if entry_i['groups_id_tech'] %}
+               <span class="badge bg-orange-lt">
+                  <i class="fas fa-users me-1"></i>
+                  {{ "Group"|getLink(entry_i['groups_id_tech']) }}
+               </span>
+            {% endif %}
+
+            {% if entry_i['taskcategories_id'] %}
+               <span class="badge bg-orange-lt">
+                  {{ getDropdownName("glpi_taskcategories", entry_i['taskcategories_id']) }}
+               </span>
+            {% endif %}
+
+            {% if entry_i['actiontime'] %}
+               <span class="actiontime badge bg-orange-lt">
+                  <i class="fas fa-stopwatch me-1"></i>
+                  {{ timestampToString(entry_i['actiontime']) }}
+               </span>
+            {% endif %}
+
+            {% if entry_i['begin'] %}
+               <span class="planification badge bg-orange-lt">
+                  <i class="fas fa-calendar me-1"></i>
+                  {{ entry_i['begin']|conv_datetime }}
+                  &rArr;
+                  {{ entry_i['end']|conv_datetime }}
+               </span>
+            {% endif %}
+         </div>
       </div>
 
       <script type='text/javascript'>

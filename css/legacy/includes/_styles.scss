@@ -2337,13 +2337,6 @@
          align-self: flex-end;
          width: 100%;
          background: rgba(255, 255, 255, .2);
-
-         .actiontime {
-            padding-left: 15px;
-            background-image: url(../pics/timeline/actiontime.png);
-            background-repeat: no-repeat;
-            margin-right: 6px;
-         }
       }
 
       .state {
@@ -2367,12 +2360,6 @@
             cursor: pointer;
             background-image: url(../pics/timeline/done.png);
          }
-      }
-
-      .b_right .planification {
-         padding-left: 17px;
-         background-image: url(../pics/timeline/planification.png);
-         background-repeat: no-repeat;
       }
 
       .approbation_separator {
