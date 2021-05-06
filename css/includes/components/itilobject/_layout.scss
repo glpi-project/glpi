@@ -61,3 +61,46 @@
    bottom: 10px;
    left: 45%
 }
+
+// force description field of new item form to use max possible height
+.new-itil-object {
+   .itil-timeline {
+      height: 100%;
+
+      .timeline-item {
+         height: 100%;
+
+         & > .row {
+            height: 100%;
+
+            .content-block {
+               height: calc(100% - 1rem);
+               display: flex;
+               flex-direction: column;
+
+               .timeline-content {
+                  flex: 1;
+
+                  .card-body {
+                     height: 100%;
+
+                     .row {
+                        height: 100%;
+
+                        .form-field:nth-of-type(2) {
+                           flex: 1;
+                           display: flex;
+                           flex-direction: column;
+
+                           .tox.tox-tinymce {
+                              flex: 1;
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+}
