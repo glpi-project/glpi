@@ -2,7 +2,7 @@
 
 <div class="mt-n1" id="itil-object-container">
 
-   {% if item.isNewItem %}
+   {% if item.isNewItem and not params['template_preview'] %}
       {% include("components/itilobject/mainform_open.html.twig") %}
    {% endif %}
 
@@ -25,9 +25,11 @@
       </div>
    </div>
 
-   {% include("components/itilobject/footer.html.twig") %}
+   {% if not params['template_preview'] %}
+      {% include("components/itilobject/footer.html.twig") %}
+   {% endif %}
 
-   {% if not item.isNewItem() %}
+   {% if not item.isNewItem() and not params['template_preview'] %}
       {% include("components/itilobject/mainform_close.html.twig") %}
    {% endif %}
 

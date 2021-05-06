@@ -29,7 +29,9 @@
    {% endfor %}
    </select>
 
-   {% include "components/itilobject/actors/assign_to_me.html.twig" %}
+   {% if not params['template_preview'] %}
+      {% include "components/itilobject/actors/assign_to_me.html.twig" %}
+   {% endif %}
 
    <script type="text/javascript">
    $(function() {
