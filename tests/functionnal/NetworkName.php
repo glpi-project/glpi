@@ -53,47 +53,49 @@ class NetworkName extends DbTestCase
          'is_recursive'       => 1,
          'addressable'        => 0,
       ]);
-      $this->integer((int)$ipnetwork_id)->isGreaterThan(0);
 
-      $all_ipnetwork = getAllDataFromTable('glpi_ipnetworks', ['ORDER' => 'id']);
-      $current_ipnetwor = end($all_ipnetwork);
-      unset($current_ipnetwor['id']);
-      unset($current_ipnetwor['date_mod']);
-      unset($current_ipnetwor['date_creation']);
-      unset($current_ipnetwor['level']);
-      unset($current_ipnetwor["ancestors_cache"]);
-      unset($current_ipnetwor["sons_cache"]);
+      $this->integer((int)$ipnetwork_id)->isGreaterThan(0);
+      $this->boolean($IPNetwork->getFromDB($ipnetwork_id))->isTrue();
+      $current_ipnetwork = $IPNetwork->fields;
+
+      unset($current_ipnetwork['id']);
+      unset($current_ipnetwork['date_mod']);
+      unset($current_ipnetwork['date_creation']);
+      unset($current_ipnetwork['level']);
+      unset($current_ipnetwork["ancestors_cache"]);
+      unset($current_ipnetwork["sons_cache"]);
 
       $expected = [
-         "entities_id"     => 0,
-         "is_recursive"    => 1,
-         "ipnetworks_id"   => 0,
-         "completename"    => "test",
-         "addressable"     => 0,
-         "version"         => 4,
-         "name"            => "test",
-         "address"         => "1.1.1.0",
-         "address_0"       => 0,
-         "address_1"       => 0,
-         "address_2"       => 65535,
-         "address_3"       => 16843008,
-         "netmask"         => "255.255.255.0",
-         "netmask_0"       => 4294967295,
-         "netmask_1"       => 4294967295,
-         "netmask_2"       => 4294967295,
-         "netmask_3"       => 4294967040,
-         "gateway"         => "1.1.1.254",
-         "gateway_0"       => 0,
-         "gateway_1"       => 0,
-         "gateway_2"       => 65535,
-         "gateway_3"       => 16843262,
-         "comment"         => null,
+         "entities_id"   => 0,
+         "is_recursive"  => 1,
+         "ipnetworks_id" => 0,
+         "completename"  => "test",
+         "addressable"   => 0,
+         "version"       => 4,
+         "name"          => "test",
+         "address"       => "1.1.1.0",
+         "address_0"     => 0,
+         "address_1"     => 0,
+         "address_2"     => 65535,
+         "address_3"     => 16843008,
+         "netmask"       => "255.255.255.0",
+         "netmask_0"     => 4294967295,
+         "netmask_1"     => 4294967295,
+         "netmask_2"     => 4294967295,
+         "netmask_3"     => 4294967040,
+         "gateway"       => "1.1.1.254",
+         "gateway_0"     => 0,
+         "gateway_1"     => 0,
+         "gateway_2"     => 65535,
+         "gateway_3"     => 16843262,
+         "comment"       => null,
+         "network"       => "1.1.1.0 / 255.255.255.0",
       ];
-      $this->array($current_ipnetwor)->isIdenticalTo($expected);
+      $this->array($current_ipnetwork)->isIdenticalTo($expected);
 
-      //Second add NetorkName
+      //Second add NetworkName
       $Networkname = new \NetworkName();
-      $new_id = $Networkname->add([
+      $networkname_id = $Networkname->add([
          'name'          => "test",
          '_ipaddresses'  => [-1 => '1.1.1.24'],
          'entities_id'    => 0,
@@ -103,10 +105,11 @@ class NetworkName extends DbTestCase
          'comment'       => '',
          'ipnetworks_id' => 0
       ]);
-      $this->integer((int)$new_id)->isGreaterThan(0);
 
-      $all_networkname = getAllDataFromTable('glpi_networknames', ['ORDER' => 'id']);
-      $current_networkname = end($all_networkname);
+      $this->integer((int)$networkname_id)->isGreaterThan(0);
+      $this->boolean($Networkname->getFromDB($networkname_id))->isTrue();
+      $current_networkname = $Networkname->fields;
+
       unset($current_networkname['id']);
       unset($current_networkname['date_mod']);
       unset($current_networkname['date_creation']);

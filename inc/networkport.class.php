@@ -338,7 +338,6 @@ class NetworkPort extends CommonDBChild {
          $network_name = new NetworkName();
          if (isset($this->input_for_NetworkName['id'])) {
 
-
             if ($empty_networkName) {
                // If the NetworkName is empty, then delete it !
                $network_name->delete($this->input_for_NetworkName, true, $history);

@@ -111,14 +111,14 @@ abstract class FQDNLabel extends CommonDBChild {
          // Before adding a name, we must unsure its is valid : it conforms to RFC
          if (!self::checkFQDNLabel($input['name'])) {
             Session::addMessageAfterRedirect(sprintf(__('Invalid internet name: %s'),
-                                                   $input['name']),
-                                             false, ERROR);
+                                             $input['name']), false, ERROR);
             return false;
          }
 
       }
       return $input;
    }
+
 
    /**
     * @param $input
@@ -155,8 +155,6 @@ abstract class FQDNLabel extends CommonDBChild {
       $input = $this->prepareIPNetworkFromInput($input);
       return parent::prepareInputForUpdate($this->prepareLabelInput($input));
    }
-
-
 
 
    /**
