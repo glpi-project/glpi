@@ -41,7 +41,7 @@
 </div>
 {% endif %}
 
-{% if canupdate %}
+{% if canupdate and not params['template_preview'] %}
    <div class="mt-2">
       <button class="btn btn-sm btn-ghost-secondary"
                data-bs-toggle="collapse" data-bs-target="#link_ticket_dropdowns"
