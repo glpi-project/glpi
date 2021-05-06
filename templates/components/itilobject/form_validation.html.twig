@@ -5,6 +5,33 @@
    {% if form_mode == 'view' %}
       <div class="read-only-content">
          {{ getHtmlToDisplay(entry_i['content']) }}
+
+         {% if entry_i['can_answer'] %}
+            <hr class="my-2">
+            <form id='validationanswers_id_{{ entry_i['id'] }}'
+                  action='{{ form_path(entry['type']) }}' method='post'>
+
+               <input type="hidden" name="id" value="{{ entry_i['id'] }}"/>
+               <input type="hidden" name="users_id_validate" value="{{ entry_i['users_id_validate'] }}"/>
+               <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+
+               <div class="mb-3">
+                  <label class="form-label">
+                     {{ __("Comment") }}
+                  </label>
+                  <textarea name="comment_validation" class="form-control"></textarea>
+               </div>
+
+               <button type="submit" class="btn btn-outline-green" name="approval_action" value="approve">
+                  <i class="fas fa-thumbs-up"></i>
+                  <span>{{ __('Approve') }}</span>
+               </button>
+               <button type="submit" class="btn btn-outline-red" name="approval_action" value="refuse">
+                  <i class="fas fa-thumbs-down"></i>
+                  <span>{{ __('Refuse') }}</span>
+               </button>
+            </form>
+         {% endif %}
       </div>
    {% else %}
       <div class="itilvalidation">
@@ -15,21 +42,24 @@
 
             <div class="row">
                <div class="col-12 col-md-9">
-                  <div>
-                     {{ __('Approval requester') }}: {{ session('glpiname') }}
-                  </div>
-
-                  {% set validation_approver_lbl %}
-                     <span>{{ __('Approver') }}</span>
-                  {% endset %}
+                  {{ fields.readOnlyField(
+                     'approval_requester',
+                     session('glpiname'),
+                     __('Requester'),
+                     {
+                        'full_width': true,
+                        'rand': rand,
+                     }
+                  ) }}
 
                   {{ fields.dropdownArrayField('validatortype', subitem.fields['validatortype'], {
                      'User': 'User',
                      'Group': 'Group'
-                  }, validation_approver_lbl, {
+                  }, __('Approver'), {
                      'display_emptychoice': true,
                      'full_width': true,
                      'rand': rand,
+                     'add_field_html': '<span id="show_validator_field">&nbsp;</span>',
                   }) }}
                   {% if subitem.fields['validatortype'] is not null %}
                      <script type="application/javascript">
@@ -52,16 +82,13 @@
                            });
                      </script>
                   {% endif %}
-                  <br>
-                  <span id="show_validator_field">&nbsp;</span>
 
                   {{ fields.textareaField(
                      'comment_submission',
                      subitem.fields['comment_submission'],
-                     '',
+                     __("Comments"),
                      {
                         'full_width': true,
-                        'no_label': true,
                         'rand': rand,
                      }
                   ) }}

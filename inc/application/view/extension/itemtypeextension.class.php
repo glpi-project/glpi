@@ -59,6 +59,8 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
          new TwigFilter('canDelete', [$this, 'canDelete']),
          new TwigFilter('canPurge', [$this, 'canPurge']),
          new TwigFilter('getFromDB', [$this, 'getFromDB']),
+         new TwigFilter('getLinkURL', [$this, 'getLinkURL'], ['is_safe' => ['html']]),
+         new TwigFilter('getLink', [$this, 'getLink'], ['is_safe' => ['html']]),
          new TwigFilter('showForm', [$this, 'showForm'], ['is_safe' => ['html']]),
       ];
    }
@@ -72,7 +74,6 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
          new TwigFunction('getDcBreadcrumb', [$this, 'getDcBreadcrumb'], ['is_safe' => ['html']]),
          new TwigFunction('getAutofillMark', [$this, 'getAutofillMark'], ['is_safe' => ['html']]),
          new TwigFunction('getMassiveActions', [$this, 'getMassiveActions']),
-         new TwigFunction('getLinkURL', [$this, 'getLinkURL']),
       ];
    }
 
@@ -154,6 +155,26 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
          $item = new $itemtype;
          $item->getFromDB($id);
          return $item;
+      }
+
+      return null;
+   }
+
+   public function getLinkURL($itemtype, int $id = 0):? string {
+      if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
+         $item = new $itemtype;
+         $item->getFromDB($id);
+         return $item->getLinkURL();
+      }
+
+      return null;
+   }
+
+   public function getLink($itemtype, int $id = 0, array $options = []): string {
+      if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
+         $item = new $itemtype;
+         $item->getFromDB($id);
+         return $item->getLink($options);
       }
 
       return null;
