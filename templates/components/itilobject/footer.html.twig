@@ -3,7 +3,6 @@
       {% if not item.isNewItem() and item.isNotSolved() %}
          <div class="col-md-8 ps-3 timeline-buttons">
             <div class="btn-group me-2 main-actions">
-               {% set default_action = timeline_itemtypes|keys|first %}
                {% set default_action_data = timeline_itemtypes|first %}
                <button class="btn btn-primary answer-action" data-bs-toggle="collapse" data-bs-target="#new-{{ default_action_data.class }}-block">
                   <i class='{{ default_action_data.icon }}'></i>
