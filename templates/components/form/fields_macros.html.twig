@@ -430,7 +430,7 @@
       }) %}
    {% endif %}
 
-   <div class="row {{ options.field_class }} {{ options.mb }} ">
+   <div class="form-field row {{ options.field_class }} {{ options.mb }}">
       {{ _self.label(label, id, options, 'col-form-label ' ~ options.label_class) }}
       <div class="{{ options.input_class }}">
          {{ field|raw }}
@@ -451,7 +451,7 @@
       {% set class = 'col-12' %}
    {% endif %}
 
-   <div class="{{ class }} {{ options.mb }}">
+   <div class="form-field {{ class }} {{ options.mb }}">
       {{ _self.label(label, id, options) }}
       {{ field|raw }}
       {{ add_field_html|raw }}

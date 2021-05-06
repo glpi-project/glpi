@@ -14,7 +14,7 @@
 {% if show_form %}
 <form method="post" action="{{ target }}" {{ formoptions }} enctype="multipart/form-data">
 {% endif %}
-   <div class="row flex-row">
+   <div class="row flex-column">
       {{ fields.textField(
          "name",
          item.fields['name'],
