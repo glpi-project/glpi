@@ -33,7 +33,7 @@
       ) }}
    </div>
 
-   {% if not is_new_item and show_form %}
+   {% if not is_new_item and show_form and not params['template_preview'] %}
       <button class="btn btn-primary me-2" type="submit" name="update">
          <i class='fas fa-save'></i>
          <span>{{ _x('button', 'Save') }}</span>
