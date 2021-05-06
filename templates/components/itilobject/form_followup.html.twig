@@ -5,6 +5,22 @@
    {% if form_mode == 'view' %}
       <div class="read-only-content">
          {{ getHtmlToDisplay(entry_i['content']) }}
+
+          <div>
+            {% if entry_i['sourceitems_id'] %}
+               <span class="badge bg-blue-lt">
+                  <i class="fas fa-code-branch me-1"></i>
+                  {{ __('Merged from Ticket %1$s')|format("Ticket"|getLink(entry_i['sourceitems_id'])) }}
+               </span>
+            {% endif %}
+
+            {% if entry_i['sourceof_items_id'] %}
+               <span class="badge bg-blue-lt">
+                  <i class="fas fa-code-branch me-1"></i>
+                  {{ __('Promoted to Ticket %1$s')|format("Ticket"|getLink(entry_i['sourceof_items_id'])) }}
+               </span>
+            {% endif %}
+         </div>
       </div>
    {% else %}
       <div class="itilfollowup">
