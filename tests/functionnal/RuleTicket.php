@@ -32,6 +32,7 @@
 
 namespace tests\units;
 
+use CommonITILValidation;
 use DbTestCase;
 use Group_User;
 use RuleAction;
@@ -760,6 +761,83 @@ class RuleTicket extends DbTestCase {
             'type'               => \CommonITILActor::REQUESTER
          ])
       )->isTrue();
+   }
+
+   public function testValidationCriteria() {
+      $this->login();
+
+      // Create rule
+      $ruleticket = new \RuleTicket();
+      $rulecrit   = new \RuleCriteria();
+      $ruleaction = new \RuleAction();
+
+      $ruletid = $ruleticket->add($ruletinput = [
+         'name'         => 'test validation criteria',
+         'match'        => 'AND',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleTicket',
+         'condition'    => \RuleTicket::ONADD | \RuleTicket::ONUPDATE,
+         'is_recursive' => 1,
+      ]);
+      $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+      // Create criteria to check if validation code is accepted
+      $crit_id = $rulecrit->add($crit_input = [
+         'rules_id'  => $ruletid,
+         'criteria'  => 'global_validation',
+         'condition' => \Rule::PATTERN_IS,
+         'pattern'   => CommonITILValidation::ACCEPTED,
+      ]);
+      $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+      // Create action to put impact to very low
+      $action_value = 2;
+      $action_id = $ruleaction->add($action_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'assign',
+         'field'       => 'impact',
+         'value'       => $action_value,
+      ]);
+      $this->checkInput($ruleaction, $action_id, $action_input);
+
+      // Case 1: create a ticket without validation, should not trigger the rule
+      $ticket = new \Ticket();
+      $tickets_id = $ticket->add($ticket_input = [
+         'name'              => 'test validation criteria',
+         'content'           => 'test validation criteria',
+         'global_validation' => CommonITILValidation::WAITING,
+      ]);
+      $this->checkInput($ticket, $tickets_id, $ticket_input);
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+
+      // Check that the rule was NOT executed
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+      $this->integer($ticket->fields['impact'])->isNotEqualTo($action_value);
+
+      // Case 2: add validation to the ticket, should trigger the rule
+      $update = $ticket->update([
+         'id'                => $tickets_id,
+         'global_validation' => CommonITILValidation::ACCEPTED,
+      ]);
+      $this->boolean($update)->isTrue();
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+
+      // Check that the rule was executed
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+      $this->integer($ticket->fields['impact'])->isEqualTo($action_value);
+
+      // Case 3: create a ticket with validation, should trigger the rule
+      $ticket = new \Ticket();
+      $tickets_id = $ticket->add($ticket_input = [
+         'name'              => 'test validation criteria',
+         'content'           => 'test validation criteria',
+         'global_validation' => CommonITILValidation::ACCEPTED,
+      ]);
+      $this->checkInput($ticket, $tickets_id, $ticket_input);
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+
+      // Check that the rule was executed
+      $this->integer($ticket->fields['impact'])->isEqualTo($action_value);
    }
 
    public function testITILCategoryCode() {
