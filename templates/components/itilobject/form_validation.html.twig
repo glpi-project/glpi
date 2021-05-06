@@ -45,7 +45,7 @@
                   {{ fields.readOnlyField(
                      'approval_requester',
                      session('glpiname'),
-                     __('Requester'),
+                     _n('Requester', 'Requester', 1),
                      {
                         'full_width': true,
                         'rand': rand,
@@ -86,7 +86,7 @@
                   {{ fields.textareaField(
                      'comment_submission',
                      subitem.fields['comment_submission'],
-                     __("Comments"),
+                     _n('Comment', 'Comments', getPluralNumber()),
                      {
                         'full_width': true,
                         'rand': rand,
