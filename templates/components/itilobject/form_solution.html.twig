@@ -12,6 +12,22 @@
    {% if form_mode == 'view' %}
       <div class="read-only-content">
          {{ getHtmlToDisplay(entry_i['content']) }}
+
+         <div>
+            {% if entry_i['solutiontypes_id'] %}
+               <span class="badge bg-blue-lt">
+                  <i class="fas fa-tag me-1"></i>
+                  {{ getDropdownName("glpi_solutiontypes", entry_i['solutiontypes_id']) }}
+               </span>
+            {% endif %}
+
+            {% if entry_i['status'] != constant("CommonITILValidation::WAITING") and entry_i['status'] != constant("CommonITILValidation::NONE") %}
+               <span class="badge bg-blue-lt">
+                  {% set action = entry_i['status'] == constant("CommonITILValidation::ACCEPTED") ? __('Accepted') : _x('validation', 'Refused') %}
+                  {{ __('%1$s on %2$s by %3$s')|format(action, (entry_i['date_approval']|conv_datetime), User__getLink(entry_i['users_id_approval'])) }}
+               </span>
+            {% endif %}
+         </div>
       </div>
    {% else %}
       <div class="itilsolution">

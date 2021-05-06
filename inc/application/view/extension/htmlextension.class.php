@@ -53,7 +53,8 @@ class HtmlExtension extends AbstractExtension implements ExtensionInterface {
          new TwigFunction('showMassiveActions', [$this, 'showMassiveActions']),
          new TwigFunction('isMassiveActionchecked', [$this, 'isMassiveActionchecked']),
          new TwigFunction('formatNumber', [Html::class, 'formatNumber'], ['is_safe' => ['html']]),
-         new TwigFunction('time2str', [$this, 'time2str'], ['is_safe' => ['html']]),
+         new TwigFunction('time2str', [Html::class, 'time2str'], ['is_safe' => ['html']]),
+         new TwigFunction('timestampToString', [Html::class, 'timestampToString'], ['is_safe' => ['html']]),
          new TwigFunction('convDateTime', [Html::class , 'convDateTime']),
          new TwigFunction('Html__uploadedFiles', [Html::class , 'uploadedFiles'], ['is_safe' => ['html']]),
          new TwigFunction('Html__initEditorSystem', [Html::class , 'initEditorSystem'], ['is_safe' => ['html']]),
@@ -72,9 +73,5 @@ class HtmlExtension extends AbstractExtension implements ExtensionInterface {
 
    public function isMassiveActionchecked(string $itemtype = "", int $id = 0): bool {
       return isset($_SESSION['glpimassiveactionselected'][$itemtype][$id]);
-   }
-
-   public function time2str(string $timestamp = null): string {
-      return Html::time2str($timestamp);
    }
 }
