@@ -124,17 +124,20 @@ abstract class FQDNLabel extends CommonDBChild {
     * @param $input
    **/
    function prepareIPNetworkFromInput($input) {
+
       //getIPNetwork from IPV4 if not set
       if (!isset($input['ipnetworks_id']) || (isset($input['ipnetworks_id']) && $input['ipnetworks_id'] == 0 )) {
-         foreach ($input['_ipaddresses'] as $value) {
-            //if its an ipv4, find it's IPNetwork
-            if (filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-               // get first IPNetwork because :
-               // see IPNetwork::searchNetworks
-               // By ordering on the netmask, we ensure that the first element is the nearest one (ie:
-               // the last should be 0.0.0.0/0.0.0.0 of x.y.z.a/255.255.255.255 regarding the interested element
-               $ipnetworks_ids = IPNetwork::searchNetworksContainingIP($value, $input['entities_id']);
-               $input['ipnetworks_id'] = reset($ipnetworks_ids);
+         if (isset($input['_ipaddresses'])) {
+            foreach ($input['_ipaddresses'] as $value) {
+               //if its an ipv4, find it's IPNetwork
+               if (filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+                  // get first IPNetwork because :
+                  // see IPNetwork::searchNetworks
+                  // By ordering on the netmask, we ensure that the first element is the nearest one (ie:
+                  // the last should be 0.0.0.0/0.0.0.0 of x.y.z.a/255.255.255.255 regarding the interested element
+                  $ipnetworks_ids = IPNetwork::searchNetworksContainingIP($value, $input['entities_id']);
+                  $input['ipnetworks_id'] = reset($ipnetworks_ids);
+               }
             }
          }
       }
