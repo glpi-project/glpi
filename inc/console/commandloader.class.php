@@ -195,15 +195,23 @@ class CommandLoader implements CommandLoaderInterface {
          $directory = str_replace(GLPI_ROOT, $this->rootdir, $directory);
          $plugins_directories->append(new DirectoryIterator($directory));
       }
+
+      $already_loaded = [];
+
       /** @var SplFileInfo $plugin_directory */
       foreach ($plugins_directories as $plugin_directory) {
-         // Do not load commands of disabled plugins
-         if (!$this->plugin->isActivated($plugin_directory)) {
+         if (in_array($plugin_directory->getFilename(), ['.', '..'])) {
             continue;
          }
 
-         if (in_array($plugin_directory->getFilename(), ['.', '..'])) {
-            continue;
+         $plugin_key = $plugin_directory->getFilename();
+
+         if (in_array($plugin_key, $already_loaded)) {
+            continue; // Do not load twice commands of plugin that is installed on multiple locations
+         }
+
+         if (!$this->plugin->isActivated($plugin_key)) {
+            continue; // Do not load commands of disabled plugins
          }
 
          $plugin_basedir = $plugin_directory->getPathname() . DIRECTORY_SEPARATOR . 'inc';
@@ -225,8 +233,8 @@ class CommandLoader implements CommandLoaderInterface {
                $file,
                $plugin_basedir,
                [
-                  NS_PLUG . ucfirst($plugin_directory->getFilename()) . '\\',
-                  'Plugin' . ucfirst($plugin_directory->getFilename()),
+                  NS_PLUG . ucfirst($plugin_key) . '\\',
+                  'Plugin' . ucfirst($plugin_key),
                ]
             );
 
@@ -236,6 +244,8 @@ class CommandLoader implements CommandLoaderInterface {
 
             $this->registerCommand(new $class());
          }
+
+         $already_loaded[] = $plugin_key;
       }
    }
 
