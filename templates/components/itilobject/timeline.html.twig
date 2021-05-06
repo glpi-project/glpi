@@ -129,7 +129,7 @@
                      </div>
                   </span>
 
-                  {% if date_creation != date_mod %}
+                  {% if entry_i['users_id_editor'] and date_creation != date_mod %}
                      {% set editor = User__getLink(entry_i['users_id_editor']) %}
                      <div class="text-muted text-end d-none d-md-block" title="{{ convDateTime(date_mod) }}">
                         {{ __('Last edition: %1$s by %2$s')|format(time2str(date_mod), editor)|raw }}
