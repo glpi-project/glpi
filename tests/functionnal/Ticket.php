@@ -756,7 +756,7 @@ class Ticket extends DbTestCase {
          $output,
          $matches
       );
-      $this->array($matches)->hasSize(($openDate === true ? 1 : 0));
+      $this->array($matches)->hasSize(($openDate === true ? 1 : 0), 'RW Opening date');
 
       // Time to own, editable
       preg_match(
@@ -764,7 +764,7 @@ class Ticket extends DbTestCase {
          $output,
          $matches
       );
-      $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0));
+      $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Time to own editable');
 
       // Internal time to own, editable
       preg_match(
@@ -772,7 +772,7 @@ class Ticket extends DbTestCase {
          $output,
          $matches
       );
-      $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0));
+      $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Internal time to own editable');
 
       // Time to resolve, editable
       preg_match(
@@ -780,7 +780,7 @@ class Ticket extends DbTestCase {
          $output,
          $matches
       );
-      $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0));
+      $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Time to resolve');
 
       // Internal time to resolve, editable
       preg_match(
@@ -788,7 +788,7 @@ class Ticket extends DbTestCase {
          $output,
          $matches
       );
-      $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0));
+      $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Internal time to resolve');
 
       //Type
       preg_match(
@@ -796,7 +796,7 @@ class Ticket extends DbTestCase {
          $output,
          $matches
       );
-      $this->array($matches)->hasSize(($type === true ? 1 : 0));
+      $this->array($matches)->hasSize(($type === true ? 1 : 0), 'Type');
 
       //Status
       preg_match(
@@ -804,7 +804,7 @@ class Ticket extends DbTestCase {
          $output,
          $matches
       );
-      $this->array($matches)->hasSize(($status === true ? 1 : 0));
+      $this->array($matches)->hasSize(($status === true ? 1 : 0), 'Status');
 
       //Urgency
       preg_match(
@@ -812,7 +812,7 @@ class Ticket extends DbTestCase {
          $output,
          $matches
       );
-      $this->array($matches)->hasSize(($urgency === true ? 1 : 0));
+      $this->array($matches)->hasSize(($urgency === true ? 1 : 0), 'Urgency');
 
       //Impact
       preg_match(
@@ -820,7 +820,7 @@ class Ticket extends DbTestCase {
          $output,
          $matches
       );
-      $this->array($matches)->hasSize(($impact === true ? 1 : 0));
+      $this->array($matches)->hasSize(($impact === true ? 1 : 0), 'Impact');
 
       //Category
       preg_match(
@@ -828,7 +828,7 @@ class Ticket extends DbTestCase {
          $output,
          $matches
       );
-      $this->array($matches)->hasSize(($category === true ? 1 : 0));
+      $this->array($matches)->hasSize(($category === true ? 1 : 0), 'Category');
 
       //Request source file_put_contents('/tmp/out.html', $output)
       if ($requestSource === true) {
@@ -837,14 +837,14 @@ class Ticket extends DbTestCase {
             $output,
             $matches
             );
-         $this->array($matches)->hasSize(1);
+         $this->array($matches)->hasSize(1, 'Request source');
       } else {
          preg_match(
             '/.*<input[^>]*name="requesttypes_id"[^>]*>.*/',
             $output,
             $matches
             );
-         $this->array($matches)->hasSize(1);
+         $this->array($matches)->hasSize(1, 'Request type');
       }
 
       //Location
@@ -853,7 +853,7 @@ class Ticket extends DbTestCase {
          $output,
          $matches
       );
-      $this->array($matches)->hasSize(($location === true ? 1 : 0));
+      $this->array($matches)->hasSize(($location === true ? 1 : 0), 'Location');
 
       //Ticket name, not editable
       preg_match(
@@ -861,7 +861,7 @@ class Ticket extends DbTestCase {
          $output,
          $matches
       );
-      $this->array($matches)->hasSize(($name === true ? 1 : 0));
+      $this->array($matches)->hasSize(($name === true ? 1 : 0), 'RO ticket name');
 
       //Priority, editable
       preg_match(
@@ -869,7 +869,7 @@ class Ticket extends DbTestCase {
          $output,
          $matches
       );
-      $this->array($matches)->hasSize(($priority === true ? 1 : 0));
+      $this->array($matches)->hasSize(($priority === true ? 1 : 0), 'RW priority');
 
       //Save button
       preg_match(
