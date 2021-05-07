@@ -635,8 +635,8 @@ class Session {
          Toolbox::logWarning('Missing required intl PHP extension');
       }
 
-      $cache = Config::getCache('cache_trans', 'core', false);
-      if ($cache !== false && !defined('TU_USER')) {
+      $cache = Config::getTranslationCacheInstance(false);
+      if (!defined('TU_USER')) {
          $TRANSLATE->setCache($cache);
       }
 

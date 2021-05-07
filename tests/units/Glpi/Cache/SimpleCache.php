@@ -32,230 +32,20 @@
 
 namespace tests\units\Glpi\Cache;
 
-use org\bovigo\vfs\vfsStream;
+use Glpi\Cache\CacheManager;
 
 /* Test for inc/cache/simplecache.class.php */
 
 class SimpleCache extends \GLPITestCase {
 
    /**
-    * Test case: cache dir is empty and writable, footprint file should be created and used.
-    */
-   public function testCacheWithEmptyWritableCacheDir() {
-      $cache_dir = vfsStream::url('glpi/cache');
-      $cache_namespace = uniqid(true);
-
-      vfsStream::setup(
-         'glpi',
-         null,
-         [
-            'cache' => [],
-         ]
-      );
-
-      $footprint_file = vfsStream::url('glpi/cache/' . $cache_namespace . '.json');
-
-      $this->newTestedInstance(
-         new \mock\Laminas\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
-         $cache_dir
-      );
-
-      // File has been initialized
-      $this->string(file_get_contents($footprint_file))->isEqualTo('[]');
-
-      $this->testOperationsOnCache($footprint_file);
-   }
-
-   /**
-    * Test case: footprint file exists, is writable and empty, it should be initialized and used.
-    */
-   public function testCacheWithEmptyFootprintFile() {
-      $cache_dir = vfsStream::url('glpi/cache');
-      $cache_namespace = uniqid(true);
-
-      vfsStream::setup(
-         'glpi',
-         null,
-         [
-            'cache' => [
-               $cache_namespace . '.json' => ''
-            ],
-         ]
-      );
-
-      $footprint_file = vfsStream::url('glpi/cache/' . $cache_namespace . '.json');
-
-      $this->newTestedInstance(
-         new \mock\Laminas\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
-         $cache_dir
-      );
-
-      // File has initialized
-      $this->string(file_get_contents($footprint_file))->isEqualTo('[]');
-
-      $this->testOperationsOnCache($footprint_file);
-   }
-
-   /**
-    * Test case: footprint file exists and is writable, it should be used.
-    */
-   public function testCacheWithExistingFootprintFile() {
-      $cache_dir = vfsStream::url('glpi/cache');
-      $cache_namespace = uniqid(true);
-
-      $existing_footprint = '{"existing_key":"752c14ea195c460bac3c3b7896975ee9fd15eeb7"}';
-
-      vfsStream::setup(
-         'glpi',
-         null,
-         [
-            'cache' => [
-               $cache_namespace . '.json' => $existing_footprint
-            ],
-         ]
-      );
-
-      $footprint_file = vfsStream::url('glpi/cache/' . $cache_namespace . '.json');
-
-      $this->newTestedInstance(
-         new \mock\Laminas\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
-         $cache_dir
-      );
-
-      // File has not been erased
-      $this->string(file_get_contents($footprint_file))->isEqualTo($existing_footprint);
-
-      $this->testOperationsOnCache($footprint_file);
-   }
-
-   /**
-    * Test case: footprint file is corrupted, it should be regenerated.
-    */
-   public function testCacheWithCorruptedFootprintFile() {
-      $self = $this;
-      $cache_dir = vfsStream::url('glpi/cache');
-      $cache_namespace = uniqid(true);
-
-      vfsStream::setup(
-         'glpi',
-         null,
-         [
-            'cache' => [
-               $cache_namespace . '.json' => 'invalid json'
-            ],
-         ]
-      );
-
-      $footprint_file = vfsStream::url('glpi/cache/' . $cache_namespace . '.json');
-
-      $this->when(
-         function() use ($self, $cache_dir, $cache_namespace) {
-            $self->newTestedInstance(
-               new \mock\Laminas\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
-               $cache_dir
-            );
-         }
-      )->error()
-         ->withType(E_USER_WARNING)
-         ->withMessage('Cache footprint file "' . $footprint_file . '" contents was invalid, it has been cleaned.')
-            ->exists();
-
-      // File has been regenerated
-      $this->string(file_get_contents($footprint_file))->isEqualTo('[]');
-
-      $this->testOperationsOnCache($footprint_file);
-   }
-
-   /**
-    * Test case: cache dir is not writable, footprint file cannot be used.
-    */
-   public function testCacheWithoutFootprintFile() {
-      $cache_dir = vfsStream::url('glpi/cache');
-      $cache_namespace = uniqid(true);
-
-      $root_directory = vfsStream::setup(
-         'glpi',
-         null,
-         [
-            'cache' => [],
-         ]
-      );
-
-      // Simulate existing cache with footprint.
-      $this->newTestedInstance(
-         new \mock\Laminas\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
-         $cache_dir
-      );
-
-      $this->boolean($this->testedInstance->set('footprinted', 'some value'))->isTrue();
-      $this->boolean($this->testedInstance->has('footprinted'))->isTrue();
-
-      $root_directory->getChild('cache/' . $cache_namespace . '.json')->chmod(0500); // Make file not writable
-
-      $footprint_file = vfsStream::url('glpi/cache/' . $cache_namespace . '.json');
-
-      $self = $this;
-      $this->when(
-         function() use ($self, $cache_dir, $cache_namespace) {
-            $self->newTestedInstance(
-               new \mock\Laminas\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
-               $cache_dir
-            );
-         }
-      )->error()
-         ->withType(E_USER_WARNING)
-         ->withMessage('Cannot write "' . $footprint_file . '" cache footprint file. Cache performance can be lowered.')
-            ->exists();
-
-      // Previously set value is not valid anymore as footprint file is not usable and cannot be trusted.
-      $this->boolean($this->testedInstance->has('footprinted'))->isFalse();
-
-      $this->testOperationsOnCache(null);
-   }
-
-   /**
-    * Test case: cache dir is not writable, footprint file cannot be used.
-    */
-   public function testCacheWithUnreadableFootprintFile() {
-      $cache_dir = vfsStream::url('glpi/cache');
-      $cache_namespace = uniqid(true);
-
-      $root_directory = vfsStream::setup(
-         'glpi',
-         null,
-         [
-            'cache' => [
-               $cache_namespace . '.json' => '[]',
-            ],
-         ]
-      );
-      // Make file writable but not readable
-      $root_directory->getChild('cache/' . $cache_namespace . '.json')->chmod(0200);
-
-      $footprint_file = vfsStream::url('glpi/cache/' . $cache_namespace . '.json');
-
-      $self = $this;
-      $this->when(
-         function() use ($self, $cache_dir, $cache_namespace) {
-            $self->newTestedInstance(
-               new \mock\Laminas\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
-               $cache_dir
-            );
-         }
-      )->error()
-         ->withType(E_USER_WARNING)
-         ->withMessage('Cannot read "' . $footprint_file . '" cache footprint file. Cache performance can be lowered.')
-            ->exists();
-
-      $this->testOperationsOnCache(null);
-   }
-
-   /**
     * Test all possible cache operations.
-    *
-    * @param string|null $footprint_file
     */
-   private function testOperationsOnCache($footprint_file) {
+   public function testOperationsOnCache() {
+
+      $cache_manager = new CacheManager();
+      $instance = $cache_manager->getCoreCacheInstance();
+
       // Different scalar types to test.
       $values = [
          'null'         => null,
@@ -267,65 +57,58 @@ class SimpleCache extends \GLPITestCase {
          'zero'         => 0,
          'float'        => 15.358,
          'simple array' => ['a', 'b', 'c'],
-         'assoc array'  => ['some' => 'value', 'from' => 'assoc', 'array' => null]
+         'assoc array'  => ['some' => 'value', 'from' => 'assoc', 'array' => null],
+         '{}()/\@:'     => 'reserved chars in key',
       ];
 
       // Test single set/get/has/delete
       foreach ($values as $key => $value) {
          // Not yet existing
-         $this->boolean($this->testedInstance->has($key))->isFalse();
+         $this->boolean($instance->has($key))->isFalse();
 
          // Can be set if not existing
-         $this->boolean($this->testedInstance->set($key, $value))->isTrue();
+         $this->boolean($instance->set($key, $value))->isTrue();
 
          // Is existing after being set
-         $this->boolean($this->testedInstance->has($key))->isTrue();
+         $this->boolean($instance->has($key))->isTrue();
 
          // Cached value is equal to value that was set
-         $this->variable($this->testedInstance->get($key))->isEqualTo($value);
+         $this->variable($instance->get($key))->isEqualTo($value);
 
          // Overwriting an existing value works
          $rand = mt_rand();
-         $this->boolean($this->testedInstance->set($key, $rand))->isTrue();
-         $this->variable($this->testedInstance->get($key))->isEqualTo($rand);
+         $this->boolean($instance->set($key, $rand))->isTrue();
+         $this->variable($instance->get($key))->isEqualTo($rand);
 
          // Can delete a value
-         $this->boolean($this->testedInstance->delete($key))->isTrue();
+         $this->boolean($instance->delete($key))->isTrue();
       }
 
       // Test multiple set/get
-      $this->testedInstance->setMultiple($values);
+      $instance->setMultiple($values);
       foreach ($values as $key => $value) {
          // Cached value exists and is equal to value that was set
-         $this->boolean($this->testedInstance->has($key))->isTrue();
-         $this->variable($this->testedInstance->get($key))->isEqualTo($value);
+         $this->boolean($instance->has($key))->isTrue();
+         $this->variable($instance->get($key))->isEqualTo($value);
       }
 
       // Test only on partial result to be sure that "*Multiple" methods acts only on targetted elements
       $some_keys = array_rand($values, 4);
       $some_values = array_intersect_key($values, array_fill_keys($some_keys, null));
 
-      $this->array($this->testedInstance->getMultiple($some_keys))->isEqualTo($some_values);
+      $this->array($instance->getMultiple($some_keys))->isEqualTo($some_values);
 
-      $this->testedInstance->deleteMultiple($some_keys);
+      $instance->deleteMultiple($some_keys);
       foreach ($some_keys as $key) {
          // Cached value should not exists as it has been deleted
-         $this->boolean($this->testedInstance->has($key))->isFalse();
+         $this->boolean($instance->has($key))->isFalse();
       }
 
       // Test global clear
-      $this->testedInstance->clear();
+      $instance->clear();
       foreach (array_keys($values) as $key) {
          // Cached value should not exists as it has been deleted
-         $this->boolean($this->testedInstance->has($key))->isFalse();
-      }
-
-      // Test that footprint changes made cache stale
-      if (null !== $footprint_file) {
-         $this->boolean($this->testedInstance->set('another_key', 'another value'))->isTrue();
-         $this->boolean($this->testedInstance->has('another_key'))->isTrue();
-         file_put_contents($footprint_file, '{"another_key":"752c14ea195c460bac3c3b7896975ee9fd15eeb7"}');
-         $this->boolean($this->testedInstance->has('another_key'))->isFalse();
+         $this->boolean($instance->has($key))->isFalse();
       }
    }
 }

@@ -11,6 +11,12 @@ services:
   dovecot:
     container_name: "dovecot"
     image: "ghcr.io/glpi-project/githubactions-dovecot"
+  memcached:
+    container_name: "memcached"
+    image: "ghcr.io/glpi-project/githubactions-memcached"
   openldap:
     container_name: "openldap"
     image: "ghcr.io/glpi-project/githubactions-openldap"
+  redis:
+    container_name: "redis"
+    image: "ghcr.io/glpi-project/githubactions-redis"

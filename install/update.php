@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Cache\CacheManager;
+
 if (!defined('GLPI_ROOT')) {
    define('GLPI_ROOT', realpath('..'));
 }
@@ -44,10 +46,11 @@ $GLPI = new GLPI();
 $GLPI->initLogger();
 $GLPI->initErrorHandler();
 
-$GLPI_CACHE = Config::getCache('cache_db');
+$cache_manager = new CacheManager();
+$GLPI_CACHE = $cache_manager->getCoreCacheInstance();
 $GLPI_CACHE->clear(); // Force cache cleaning to prevent usage of outdated cache data
 
-$translation_cache = Config::getCache('cache_trans');
+$translation_cache = Config::getTranslationCacheInstance();
 $translation_cache->clear(); // Force cache cleaning to prevent usage of outdated cache data
 
 Config::detectRootDoc();

@@ -72,6 +72,9 @@ class Calendar_Holiday extends DbTestCase {
       $this->array($holidays)->isEqualTo([]);
    }
 
+   /**
+    * @tags cache
+    */
    public function testHolidaysCache() {
       global $GLPI_CACHE;
 

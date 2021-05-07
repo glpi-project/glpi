@@ -38,9 +38,6 @@ use Profile_User;
 /* Test for inc/entity.class.php */
 
 class Entity extends DbTestCase {
-   protected $cached_methods = [
-      'testChangeEntityParentCached'
-   ];
 
    public function testSonsAncestors() {
       $ent0 = getItemByTypeName('Entity', '_test_root_entity');
@@ -120,7 +117,7 @@ class Entity extends DbTestCase {
     *
     * @return void
     */
-   public function runChangeEntityParent($cache = false, $hit = false) {
+   private function runChangeEntityParent($cache = false, $hit = false) {
       global $GLPI_CACHE;
 
       $this->login();
@@ -240,7 +237,7 @@ class Entity extends DbTestCase {
    }
 
    /**
-    * @extensions apcu
+    * @tags cache
     */
    public function testChangeEntityParentCached() {
       //run with cache

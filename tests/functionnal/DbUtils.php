@@ -37,10 +37,6 @@ use DbTestCase;
 /* Test for inc/dbutils.class.php */
 
 class DbUtils extends DbTestCase {
-   protected $cached_methods = [
-      'testGetAncestorsOfCached',
-      'testGetSonsOfCached'
-   ];
 
    public function setUp() {
       global $CFG_GLPI;
@@ -743,7 +739,7 @@ class DbUtils extends DbTestCase {
 
       //test with new sub entity
       //Cache tests:
-      //APCu cache is updated on entity creation; so even if we do not expect $hit; we got it.
+      //Cache is updated on entity creation; so even if we do not expect $hit; we got it.
       $new_id = getItemByTypeName('Entity', 'Sub child entity', true);
       if (!$new_id) {
          $entity = new \Entity();
@@ -826,7 +822,7 @@ class DbUtils extends DbTestCase {
    }
 
    /**
-    * @extensions apcu
+    * @tags cache
     */
    public function testGetAncestorsOfCached() {
       $this->login();
@@ -914,7 +910,7 @@ class DbUtils extends DbTestCase {
 
       //test with new sub entity
       //Cache tests:
-      //APCu cache is updated on entity creation; so even if we do not expect $hit; we got it.
+      //Cache is updated on entity creation; so even if we do not expect $hit; we got it.
       $new_id = getItemByTypeName('Entity', 'Sub child entity', true);
       if (!$new_id) {
          $entity = new \Entity();
@@ -993,7 +989,7 @@ class DbUtils extends DbTestCase {
    }
 
    /**
-    * @extensions apcu
+    * @tags cache
     */
    public function testGetSonsOfCached() {
       $this->login();

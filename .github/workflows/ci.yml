@@ -185,6 +185,10 @@ jobs:
         if: env.skip != 'true'
         run: |
           docker-compose exec -T app .github/actions/test_tests-functionnal.sh
+      - name: "Cache tests"
+        if: env.skip != 'true'
+        run: |
+          docker-compose exec -T app .github/actions/test_tests-cache.sh
       - name: "LDAP tests"
         if: env.skip != 'true'
         run: |

@@ -29,24 +29,23 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
 
-define('GLPI_CONFIG_DIR', __DIR__);
-define('GLPI_VAR_DIR', __DIR__ . '/files');
+$had_custom_config = false;
+if (countElementsInTable('glpi_configs', ['name' => 'cache_db', 'context' => 'core'])) {
+   $DB->delete('glpi_configs', ['name' => 'cache_db', 'context' => 'core']);
+   $had_custom_config = true;
+}
+if (countElementsInTable('glpi_configs', ['name' => 'cache_trans', 'context' => 'core'])) {
+   $DB->delete('glpi_configs', ['name' => 'cache_trans', 'context' => 'core']);
+   $had_custom_config = true;
+}
 
-define(
-   'PLUGINS_DIRECTORIES',
-   [
-      __DIR__ . '/fixtures/plugins',
-   ]
+$migration->displayWarning(
+   'GLPI cache has been changed and will not use anymore APCu or Wincache extensions. '
+   . ($had_custom_config ? 'Existing cache configuration will not be reused. ' : '')
+   . 'Use "php bin/console cache:configure" command to configure cache system.'
 );
-
-// Avoid warnings because of missing globals
-$DEBUG_SQL = [
-    'queries' => [],
-    'errors'  => [],
-    'times'   => [],
-];
-
-ini_set("error_log", "tests/web/error.log");
-
-return false;

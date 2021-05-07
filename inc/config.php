@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Cache\CacheManager;
+
 // Be sure to use global objects if this file is included outside normal process
 global $CFG_GLPI, $GLPI, $GLPI_CACHE;
 
@@ -53,7 +55,8 @@ $GLPI->initLogger();
 $GLPI->initErrorHandler();
 
 //init cache
-$GLPI_CACHE = Config::getCache('cache_db');
+$cache_manager = new CacheManager();
+$GLPI_CACHE = $cache_manager->getCoreCacheInstance();
 
 Config::detectRootDoc();
 
@@ -231,6 +234,4 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       }
       exit();
    }
-
-   $GLPI_CACHE = Config::getCache('cache_db');
 }

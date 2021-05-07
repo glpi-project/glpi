@@ -6,7 +6,7 @@
 
     "curl", "gd", "intl", "mbstring", "mysqli", "zlib",
 
-    "apcu", "exif", "ldap", "pcntl", "xmlrpc", "zip"
+    "exif", "ldap", "pcntl", "xmlrpc", "zip"
   ],
   "symbol-whitelist": [
     "// PHP symbols",

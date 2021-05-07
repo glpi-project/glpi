@@ -30,7 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Cache\SimpleCache;
 use ScssPhp\ScssPhp\Compiler;
 
 if (!defined('GLPI_ROOT')) {
@@ -776,7 +775,6 @@ class Html {
    **/
    static function displayDebugInfos($with_session = true, $ajax = false) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $DEBUG_AUTOLOAD;
-      $GLPI_CACHE = Config::getCache('cache_db');
 
       // Only for debug mode so not need to be translated
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
@@ -803,9 +801,6 @@ class Html {
                echo "<li><a href='#debugsession$rand'>SESSION VARIABLE</a></li>";
             }
             echo "<li><a href='#debugserver$rand'>SERVER VARIABLE</a></li>";
-            if ($GLPI_CACHE instanceof SimpleCache) {
-               echo "<li><a href='#debugcache$rand'>CACHE VARIABLE</a></li>";
-            }
          }
          echo "</ul>";
 
@@ -851,14 +846,6 @@ class Html {
             echo "<div id='debugserver$rand'>";
             self::printCleanArray($_SERVER, 0, true);
             echo "</div>";
-
-            if ($GLPI_CACHE instanceof SimpleCache) {
-               echo "<div id='debugcache$rand'>";
-               $cache_keys = $GLPI_CACHE->getAllKnownCacheKeys();
-               $cache_contents = $GLPI_CACHE->getMultiple($cache_keys);
-               self::printCleanArray($cache_contents, 0, true);
-               echo "</div>";
-            }
          }
 
          echo Html::scriptBlock("
