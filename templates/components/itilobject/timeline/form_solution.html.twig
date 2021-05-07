@@ -1,4 +1,4 @@
-{% extends 'components/itilobject/form_timeline_item.html.twig' %}
+{% extends 'components/itilobject/timeline/form_timeline_item.html.twig' %}
 {% import "components/form/fields_macros.html.twig" as fields %}
 {% set candedit = item.maySolve() %}
 {% set can_read_kb   = have_rights_or('knowbase', [constant("READ"), constant('KnowbaseItem::READFAQ')]) %}
