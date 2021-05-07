@@ -87,6 +87,12 @@
             <i class="fas fa-lg fa-file-csv"></i>
             {{ __("All pages in CSV") }}
          </a></li>
+         {% if itemtype != 'Stat' %}
+         <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::NAMES_OUTPUT') }}">
+            <i class="fas fa-lg fa-copy"></i>
+            {{ __("Copy names to clipboard") }}
+         </a></li>
+         {% endif %}
       </ul>
       {% endif %}
    </div>
