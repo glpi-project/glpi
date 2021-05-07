@@ -1,0 +1,42 @@
+{% extends 'components/itilobject/timeline/form_timeline_item.html.twig' %}
+
+{# TODO image gallery #}
+
+{% block timeline_card %}
+   {% if form_mode == 'view' %}
+      <div class="m-n2">
+         {% set filename = entry_i['filename'] ?? entry_i['name'] %}
+
+         {% if entry_i['filename'] %}
+            <a href="{{ path("front/document.send.php?docid=" ~ entry_i['id']) }}" target='_blank'>
+               <img src="{{ getIconForFilename(filename) }}" alt="{{ __("File extension") }}">
+               {{ filename }}
+            </a>
+         {% endif %}
+
+         {% if entry_i['link'] %}
+            <a href='{{ entry_i['link'] }}' target='_blank'>
+               <i class='fas fa-external-link'></i>
+               {{ entry_i['name'] }}
+            </a>
+         {% endif %}
+
+         <span class="text-muted ms-2">
+            {{ getSizeForFilePath(entry_i['filepath']) }}
+         </span>
+
+         <a href="{{ form_path("Document", entry_i['id']) }}"
+            class="btn btn-sm btn-ghost-secondary ms-2" title="{{ _x("button", "Edit") }}"
+            data-bs-toggle="tooltip" data-bs-placement="top">
+            <i class="fas fa-edit"></i>
+         </a>
+
+         {% set fk = item.getForeignKeyField() %}
+         <a href="{{ form_url(item.getType()) }}?delete_document&amp;documents_id={{ entry_i['id'] }}&amp;{{ fk }}={{ item.fields['id'] }}"
+            class="btn btn-sm btn-ghost-secondary" title="{{ _x("button", "Delete permanently") }}"
+            data-bs-toggle="tooltip" data-bs-placement="top">
+            <i class="fas fa-trash-alt"></i>
+         </a>
+      </div>
+   {% endif %}
+{% endblock %}
