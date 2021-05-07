@@ -110,13 +110,15 @@ class Search {
    static function showList($itemtype, $params) {
       $data = self::getDatas($itemtype, $params);
 
-      switch (abs($data['display_type'])) {
+      switch ($data['display_type']) {
          case self::CSV_OUTPUT:
          case self::PDF_OUTPUT_LANDSCAPE:
          case self::PDF_OUTPUT_PORTRAIT:
          case self::SYLK_OUTPUT:
             self::outputData($data);
             break;
+         case self::GLOBAL_SEARCH:
+         case self::HTML_OUTPUT:
          default:
             self::displayData($data);
             break;
