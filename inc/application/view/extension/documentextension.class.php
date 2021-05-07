@@ -68,7 +68,11 @@ class DocumentExtension extends AbstractExtension implements ExtensionInterface 
          $filepath = GLPI_VAR_DIR."/".$filepath;
       }
 
-      $filesize = filesize($filepath);
-      return Toolbox::getSize($filesize);
+      if (file_exists($filepath)) {
+         $filesize = filesize($filepath);
+         return Toolbox::getSize($filesize);
+      }
+
+      return "";
    }
 }
