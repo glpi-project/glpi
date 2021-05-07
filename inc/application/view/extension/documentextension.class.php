@@ -32,6 +32,7 @@
 
 namespace Glpi\Application\View\Extension;
 
+use Document;
 use Toolbox;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
@@ -40,21 +41,34 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class ToolboxExtension extends AbstractExtension implements ExtensionInterface {
+class DocumentExtension extends AbstractExtension implements ExtensionInterface {
+
    public function getFunctions() {
       return [
-         new TwigFunction('getMaxInputVar', [Toolbox::class, 'get_max_input_vars']),
-         new TwigFunction('getItemTypeSearchURL', [$this, 'getItemTypeSearchURL']),
-         new TwigFunction('getPictureUrl', [Toolbox::class, 'getPictureUrl']),
-         new TwigFunction('getDateFormat', [Toolbox::class, 'getDateFormat']),
-         new TwigFunction('getSize', [Toolbox::class, 'getSize']),
-         new TwigFunction('autoName', 'autoName', ['is_safe' => ['html']]),
-         new TwigFunction('getHtmlToDisplay', [Toolbox::class, 'getHtmlToDisplay'], ['is_safe' => ['html']]),
-         new TwigFunction('file_exists', 'file_exists'),
+         new TwigFunction('getIconForFilename', [$this, 'getIconForFilename']),
+         new TwigFunction('getSizeForFilePath', [$this, 'getSizeForFilePath']),
       ];
    }
 
-   public function getItemTypeSearchURL(string $itemtype = ""): string {
-      return Toolbox::getItemTypeSearchURL($itemtype, true);
+   public function getIconForFilename(string $filename = ""): string {
+      global $CFG_GLPI;
+
+      $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
+      if (file_exists(GLPI_ROOT."/pics/icones/$extension-dist.png")) {
+         return  $CFG_GLPI['root_doc']."/pics/icones/$extension-dist.png";
+      }
+
+      return $CFG_GLPI['root_doc']."/pics/timeline/file.png";
+   }
+
+
+   public function getSizeForFilePath(string $filepath = "", bool $is_relative = true): string {
+      if ($is_relative) {
+         $filepath = GLPI_VAR_DIR."/".$filepath;
+      }
+
+      $filesize = filesize($filepath);
+      return Toolbox::getSize($filesize);
    }
 }

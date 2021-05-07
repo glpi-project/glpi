@@ -40,6 +40,7 @@ use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\Extension\AlertExtension;
 use Glpi\Application\View\Extension\ConfigExtension;
 use Glpi\Application\View\Extension\CsrfExtension;
+use Glpi\Application\View\Extension\DocumentExtension;
 use Glpi\Application\View\Extension\DropdownExtension;
 use Glpi\Application\View\Extension\EntityExtension;
 use Glpi\Application\View\Extension\FrontEndAssetsExtension;
@@ -100,6 +101,7 @@ class TemplateRenderer {
       $this->environment->addExtension(new AlertExtension());
       $this->environment->addExtension(new ConfigExtension());
       $this->environment->addExtension(new CsrfExtension());
+      $this->environment->addExtension(new DocumentExtension());
       $this->environment->addExtension(new DropdownExtension());
       $this->environment->addExtension(new EntityExtension());
       $this->environment->addExtension(new FrontEndAssetsExtension());
