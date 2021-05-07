@@ -66,6 +66,9 @@ if (isset($_GET['id'])) {
       'racks_id'     => $_GET['racks_id'],
    ];
 }
+
+$_SESSION['glpilisturl'][PDU_Rack::getType()] = $rack->getSearchURL();
+
 $ajax = isset($_REQUEST['ajax']) ? true : false;
 
 if (!$ajax) {
