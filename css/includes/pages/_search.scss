@@ -57,6 +57,10 @@
                left: 0;
             }
          }
+
+         &.disable-overflow-y {
+            height: auto;
+         }
       }
 
       .search-form-container {
