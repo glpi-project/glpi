@@ -2119,7 +2119,9 @@ class Dropdown {
     *
     * @since 0.83
    **/
-   static function showOutputFormat() {
+   static function showOutputFormat($itemtype) {
+      global $CFG_GLPI;
+
       $values[Search::PDF_OUTPUT_LANDSCAPE]     = __('Current page in landscape PDF');
       $values[Search::PDF_OUTPUT_PORTRAIT]      = __('Current page in portrait PDF');
       $values[Search::SYLK_OUTPUT]              = __('Current page in SLK');
@@ -2129,10 +2131,71 @@ class Dropdown {
       $values['-'.Search::SYLK_OUTPUT]          = __('All pages in SLK');
       $values['-'.Search::CSV_OUTPUT]           = __('All pages in CSV');
 
-      Dropdown::showFromArray('display_type', $values);
-      echo "<button type='submit' name='export' class='unstyled pointer' ".
-             " title=\"" . _sx('button', 'Export') . "\">" .
-             "<i class='far fa-save'></i><span class='sr-only'>"._sx('button', 'Export')."<span>";
+      if ($itemtype != "Stat") {
+         // Do not show this option for stat page
+         $values['-'.Search::NAMES_OUTPUT] = __('Copy names to clipboard');
+      }
+
+      $rand = mt_rand();
+      Dropdown::showFromArray('display_type', $values, ['rand' => $rand]);
+
+      // Export button -> save to file
+      $export_label =  _sx('button', 'Export');
+      echo "<button type='submit' id='export$rand' name='export' class='unstyled pointer' title='$export_label'>";
+      echo "<i class='far fa-save'></i><span class='sr-only'>$export_label<span>";
+      echo "</button>";
+
+      // Copy button -> copy to clipboard
+      $copy_label =  _sx('button', 'Copy');
+      echo "<button type='submit' id='copy$rand' name='export' class='unstyled pointer starthidden' title='$copy_label'>";
+      echo "<i class='far fa-copy'></i><span class='sr-only'>$copy_label<span>";
+      echo "</button>";
+      echo "<span id='copy_loading_$rand' class='spinner-18'></span>";
+
+      echo Html::scriptBlock("
+         // Switch Export/Copy button depending on the selected option
+         $('#dropdown_display_type$rand').change(function() {
+            if ($('#dropdown_display_type$rand').val() == '-" . Search::NAMES_OUTPUT . "') {
+               $('#export$rand').hide();
+               $('#copy$rand').show();
+            } else {
+               $('#export$rand').show();
+               $('#copy$rand').hide();
+            }
+         });
+
+         // Callback to be used later if copy to clipboard is succesful
+         function copy_success() {
+            $('#copy_loading_$rand').hide();
+            $('#copy$rand').show();
+            showInfoMessage(__('Results copied to clipboard'));
+         }
+
+         // Callback to be used later if copy to clipboard fail
+         function copy_error() {
+            $('#copy_loading_$rand').hide();
+            $('#copy$rand').show();
+            showErrorMessage(__('Unexpected error'));
+         }
+
+         $('#copy$rand').click(function(e) {
+            // Get parent form
+            var form = $(e.target).closest('form');
+
+            // Prevent form submitting
+            e.preventDefault();
+
+            // Hide button, show loading incator
+            $('#copy$rand').hide();
+            $('#copy_loading_$rand').css({'display': 'inline-block'});
+
+            // Send form using ajax
+            $.get(form.prop('action') + '?' + $(form).serialize(), function (data) {
+               // Put result in clipboard
+               navigator.clipboard.writeText(data).then(copy_success, copy_error);
+            }).fail(copy_error);
+         });
+      ");
    }
 
 

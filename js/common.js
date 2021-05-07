@@ -1212,3 +1212,44 @@ function getFlatPickerLocale(language, region) {
       return language;
    }
 }
+
+function _showMessage(message, css_class, title) {
+   var rand = Math.round(Math.random() * 1000000);
+
+   var html = "<div id='message_after_redirect_" +  rand + "' title='" + title + "'>";
+   html += message;
+   html += "</div>";
+   $('body').append(html);
+
+   var _of = window;
+   var _at = 'right-20 bottom-20';
+
+   $("#message_after_redirect_" + rand).dialog({
+      dialogClass: 'message_after_redirect ' + css_class,
+      minHeight: 40,
+      minWidth: 200,
+      position: {
+         my: 'right bottom',
+         at: _at,
+         of: _of,
+         collision: 'none'
+      },
+      show: {
+         effect: 'slide',
+         direction: 'down',
+         'duration': 800
+      }
+   });
+}
+
+function showInfoMessage(message) {
+   _showMessage(message, 'info_msg', _n('Information', 'Information', 1));
+}
+
+function showWarningMessage(message) {
+   _showMessage(message, 'warn_msg', __('Warning'));
+}
+
+function showErrorMessage(message) {
+   _showMessage(message, 'err_msg', __('Error'));
+}

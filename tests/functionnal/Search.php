@@ -1476,6 +1476,68 @@ class Search extends DbTestCase {
 
       return $searchable_classes;
    }
+
+   protected function testNamesOutputProvider(): array {
+      return [
+         [
+            'params' => [
+               'display_type' => \Search::NAMES_OUTPUT,
+               'export_all'   => 1,
+               'criteria'     => [],
+               'item_type'    => 'Ticket',
+               'is_deleted'   => 0,
+               'as_map'       => 0,
+            ],
+            'expected' => [
+               '_ticket01',
+               '_ticket02',
+               '_ticket03',
+               '_ticket100',
+               '_ticket101',
+            ]
+         ],
+         [
+            'params' => [
+               'display_type' => \Search::NAMES_OUTPUT,
+               'export_all'   => 1,
+               'criteria'     => [],
+               'item_type'    => 'Computer',
+               'is_deleted'   => 0,
+               'as_map'       => 0,
+            ],
+            'expected' => [
+               '_test_pc01',
+               '_test_pc02',
+               '_test_pc03',
+               '_test_pc11',
+               '_test_pc12',
+               '_test_pc13',
+               '_test_pc21',
+               '_test_pc22',
+            ]
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider testNamesOutputProvider
+    */
+   public function testNamesOutput(array $params, array $expected) {
+      $this->login();
+
+      // Run search and capture results
+      ob_start();
+      \Search::showList($params['item_type'], $params);
+      $names = ob_get_contents();
+      ob_end_clean();
+
+      // Convert results to array and remove last row (always empty)
+      $names = explode("\n", $names);
+      array_pop($names);
+
+      // Check results
+      $this->array($names)->isEqualTo($expected);
+   }
 }
 
 class DupSearchOpt extends \CommonDBTM {

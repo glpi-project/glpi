@@ -3996,7 +3996,6 @@ JS;
                      // we want to keep the logic in common.js with the other form input events.
                      onTinyMCEChange(e);
                   });
-   
                   // ctrl + enter submit the parent form
                   editor.addShortcut('ctrl+13', 'submit', function() {
                      editor.save();
@@ -4373,7 +4372,7 @@ JAVASCRIPT
             echo Html::hidden(Toolbox::substr($split[$i], 0, $pos), ['value' => urldecode(Toolbox::substr($split[$i], $pos+1))]);
          }
 
-         Dropdown::showOutputFormat();
+         Dropdown::showOutputFormat($item_type_output);
          Html::closeForm();
          echo "</td>";
       }
