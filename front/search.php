@@ -41,6 +41,7 @@ if (!$CFG_GLPI['allow_search_global']) {
 if (isset($_GET["globalsearch"])) {
    $searchtext=trim($_GET["globalsearch"]);
 
+   echo "<div class='search_page flex-row flex-wrap'>";
    foreach ($CFG_GLPI["globalsearch_types"] as $itemtype) {
       if (($item = getItemForItemtype($itemtype))
           && $item->canView()) {
@@ -54,13 +55,13 @@ if (isset($_GET["globalsearch"])) {
          $params["criteria"][$count]["field"]       = 'view';
          $params["criteria"][$count]["searchtype"]  = 'contains';
          $params["criteria"][$count]["value"]       = $searchtext;
-         //          $_SESSION["glpisearchcount"][$itemtype]  = $count+1;
-         //          $_SESSION["glpisearchcount2"][$itemtype] = 0;
 
+         echo "<div class='my-4 search-container w-100 disable-overflow-y'>";
          Search::showList($itemtype, $params);
-         echo "<hr>";
+         echo "</div>";
       }
    }
+   echo "</div>";
 }
 
 Html::footer();
