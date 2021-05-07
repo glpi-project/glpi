@@ -1,9 +1,5 @@
 <div class="itil-timeline">
-   {# TODO Document_Item display with show/edit shortcut#}
-   {# TODO link #}
-   {# TODO mime #}
    {# TODO timeline filter #}
-   {# TODO disable edition of (some) item timeline when ticket solved/closed #}
 
    {% include("components/itilobject/timeline/main_description.html.twig") %}
 
@@ -84,23 +80,44 @@
                            </a>
                         {% endif %}
 
-                        <div class="dropdown ms-2">
-                           <button class="btn btn-sm btn-ghost-secondary" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false">
-                              <i class="fas fa-ellipsis-h"></i>
-                           </button>
-                           <ul class="dropdown-menu" aria-labelledby="more-actions-{{ entry_rand }}">
-                              <li><a class="dropdown-item edit-timeline-item" href="#">
-                                 <i class="fas fa-fw fa-edit"></i>
-                                 <span>{{ __("Edit") }}</span>
-                              </a></li>
-                              {% if item.getType() is same as 'Ticket' and entry['type'] is same as 'ITILFollowup' %}
-                                 <li><a class="dropdown-item" href="{{ form_path('Ticket') ~ "?_promoted_fup_id=" ~ entry_i['id'] }}">
+                        {% set actions = {} %}
+
+                        {% if entry_i['can_edit'] and not status_closed and not (entry['type'] in ['Document_Item', 'Assign']) %}
+                           {% set edit_btn %}
+                              <li>
+                                 <a class="dropdown-item edit-timeline-item" href="#">
+                                    <i class="fas fa-fw fa-edit"></i>
+                                    <span>{{ __("Edit") }}</span>
+                                 </a>
+                              </li>
+                           {% endset %}
+                           {% set actions = actions|merge({edit_btn}) %}
+                        {% endif %}
+
+                        {% if item.getType() is same as 'Ticket' and entry['type'] is same as 'ITILFollowup' %}
+                           {% set promote_btn %}
+                              <li>
+                                 <a class="dropdown-item" href="{{ form_path('Ticket') ~ "?_promoted_fup_id=" ~ entry_i['id'] }}">
                                     <i class="fas fa-fw fa-code-branch"></i>
                                     <span>{{ __('Promote to Ticket') }}</span>
-                                 </a></li>
-                              {% endif %}
-                           </ul>
-                        </div>
+                                 </a>
+                              </li>
+                           {% endset %}
+                           {% set actions = actions|merge({promote_btn}) %}
+                        {% endif %}
+
+                        {% if actions|length %}
+                           <div class="dropdown ms-2">
+                              <button class="btn btn-sm btn-ghost-secondary" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                 <i class="fas fa-ellipsis-h"></i>
+                              </button>
+                              <ul class="dropdown-menu" aria-labelledby="more-actions-{{ entry_rand }}">
+                                 {% for action in actions %}
+                                    {{ action }}
+                                 {% endfor %}
+                              </ul>
+                           </div>
+                        {% endif %}
                      </div>
                   </div>
                   <span class="row mt-2 timeline-content flex-grow-1 {{ item_position }} card">
