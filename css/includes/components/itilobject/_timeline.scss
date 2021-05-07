@@ -205,4 +205,11 @@
          }
       }
    }
+
+   &.Document_Item  {
+      .timeline-content {
+         border: 0;
+         box-shadow: none;
+      }
+   }
 }

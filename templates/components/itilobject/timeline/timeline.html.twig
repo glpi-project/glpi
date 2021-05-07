@@ -113,6 +113,8 @@
                            {% include 'components/itilobject/timeline/form_followup.html.twig' with {'form_mode': 'view'} %}
                         {% elseif itiltype is same as 'ITILSolution' %}
                            {% include 'components/itilobject/timeline/form_solution.html.twig' with {'form_mode': 'view'} %}
+                        {% elseif itiltype is same as 'Document_Item' %}
+                           {% include 'components/itilobject/timeline/form_document_item.html.twig' with {'form_mode': 'view'} %}
                         {% else %}
                            <div class="read-only-content">
                               {{ getHtmlToDisplay(entry_i['content']) }}
