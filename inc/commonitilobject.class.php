@@ -6745,7 +6745,7 @@ abstract class CommonITILObject extends CommonDBTM {
             'class'     => 'ITILFollowup',
             'icon'      => 'far fa-comment',
             'label'     => _x('button', 'Answer'),
-            'template'  => 'components/itilobject/form_followup.html.twig',
+            'template'  => 'components/itilobject/timeline/form_followup.html.twig',
             'item'      => $fup
          ];
       }
@@ -6755,7 +6755,7 @@ abstract class CommonITILObject extends CommonDBTM {
             'class'     => $task_class,
             'icon'      => 'fas fa-wrench',
             'label'     => _x('button', 'Create a task'),
-            'template'  => 'components/itilobject/form_task.html.twig',
+            'template'  => 'components/itilobject/timeline/form_task.html.twig',
             'item'      => $task
          ];
       }
@@ -6765,7 +6765,7 @@ abstract class CommonITILObject extends CommonDBTM {
             'class'     => 'ITILSolution',
             'icon'      => 'fas fa-check',
             'label'     => _x('button', 'Add a solution'),
-            'template'  => 'components/itilobject/form_solution.html.twig',
+            'template'  => 'components/itilobject/timeline/form_solution.html.twig',
             'item'      => new ITILSolution()
          ];
       }
@@ -6775,7 +6775,7 @@ abstract class CommonITILObject extends CommonDBTM {
             'class'     => $validation_class,
             'icon'      => 'far fa-thumbs-up',
             'label'     => _x('button', 'Ask for validation'),
-            'template'  => 'components/itilobject/form_validation.html.twig',
+            'template'  => 'components/itilobject/timeline/form_validation.html.twig',
             'item'      => $validation
          ];
       }
@@ -7747,7 +7747,7 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
    static function showEditDescriptionForm(CommonITILObject $item) {
-      TemplateRenderer::getInstance()->display('components/itilobject/simple_form.html.twig', [
+      TemplateRenderer::getInstance()->display('components/itilobject/timeline/simple_form.html.twig', [
          'item' => $item,
       ]);
    }
