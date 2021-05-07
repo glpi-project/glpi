@@ -810,7 +810,7 @@ class ITILFollowup  extends CommonDBChild {
          $this->getEmpty();
       }
 
-      TemplateRenderer::getInstance()->display('components/itilobject/form_followup.html.twig', [
+      TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_followup.html.twig', [
          'item'      => $options['parent'],
          'subitem'   => $this
       ]);

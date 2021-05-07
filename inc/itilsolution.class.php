@@ -125,7 +125,7 @@ class ITILSolution extends CommonDBChild {
          $this->getEmpty();
       }
 
-      TemplateRenderer::getInstance()->display('components/itilobject/form_solution.html.twig', [
+      TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_solution.html.twig', [
          'item'      => $options['parent'],
          'subitem'   => $this
       ]);

@@ -954,7 +954,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          $this->check(-1, CREATE, $options);
       }
 
-      TemplateRenderer::getInstance()->display('components/itilobject/form_validation.html.twig', [
+      TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_validation.html.twig', [
          'item'      => $options['parent'],
          'subitem'   => $this
       ]);

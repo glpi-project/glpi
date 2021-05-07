@@ -1323,7 +1323,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       $rand_group      = mt_rand();
       $rand_state      = mt_rand();
 
-      TemplateRenderer::getInstance()->display('components/itilobject/form_task.html.twig', [
+      TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_task.html.twig', [
          'item'      => $options['parent'],
          'subitem'   => $this
       ]);

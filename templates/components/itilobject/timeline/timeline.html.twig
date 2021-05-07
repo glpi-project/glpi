@@ -5,7 +5,7 @@
    {# TODO timeline filter #}
    {# TODO disable edition of (some) item timeline when ticket solved/closed #}
 
-   {% include("components/itilobject/main_description.html.twig") %}
+   {% include("components/itilobject/timeline/main_description.html.twig") %}
 
    {% set status_closed = (item.fields['status'] in item.getClosedStatusArray()) %}
 
@@ -106,13 +106,13 @@
                   <span class="row mt-2 timeline-content flex-grow-1 {{ item_position }} card">
                      <div class="card-body">
                         {% if itiltype is same as 'ITILValidation' %}
-                           {% include 'components/itilobject/form_validation.html.twig' with {'form_mode': 'view'} %}
+                           {% include 'components/itilobject/timeline/form_validation.html.twig' with {'form_mode': 'view'} %}
                         {% elseif itiltype is same as 'ITILTask' %}
-                           {% include 'components/itilobject/form_task.html.twig' with {'form_mode': 'view'} %}
+                           {% include 'components/itilobject/timeline/form_task.html.twig' with {'form_mode': 'view'} %}
                         {% elseif itiltype is same as 'ITILFollowup' %}
-                           {% include 'components/itilobject/form_followup.html.twig' with {'form_mode': 'view'} %}
+                           {% include 'components/itilobject/timeline/form_followup.html.twig' with {'form_mode': 'view'} %}
                         {% elseif itiltype is same as 'ITILSolution' %}
-                           {% include 'components/itilobject/form_solution.html.twig' with {'form_mode': 'view'} %}
+                           {% include 'components/itilobject/timeline/form_solution.html.twig' with {'form_mode': 'view'} %}
                         {% else %}
                            <div class="read-only-content">
                               {{ getHtmlToDisplay(entry_i['content']) }}
