@@ -918,7 +918,7 @@ abstract class APIBaseClass extends atoum {
                     'id'       => $tickets_id,
                     'headers'  => [
                         'Session-Token' => $data['session_token']]],
-                   401,
+                   403,
                    'ERROR_RIGHT_MISSING');
 
       // try to access ticket list (we should get empty return)
