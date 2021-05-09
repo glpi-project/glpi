@@ -6995,9 +6995,12 @@ HTML;
 
                      case "showall" :
                         echo "<span>";
-                        echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_showall.png",
-                                       ['alt' => __('Show all'),
-                                             'url' => $CFG_GLPI["root_doc"].$val]);
+                        echo Html::link('
+                           <span class="fa-stack" style="vertical-align: middle; font-size: 0.8em" title="'.__('Show all').'">
+                              <i class="fas fa-check fa-stack-1x" style="top: 1px; left: -7px; font-size: 1.2em"></i>
+                              <i class="far fa-clock fa-stack-1x" style="top: 6px; left: -3px"></i>
+                           </span>
+                        ', $CFG_GLPI["root_doc"].$val);
                         echo "</span>";
                         break;
 
@@ -7054,10 +7057,12 @@ HTML;
 
             $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".
                            Toolbox::append_params($opt, '&amp;');
-            $pic_validate = "<a href='$url_validate'>".
-                           "<img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
-                              __s('Ticket waiting for your approval')."\" src='".
-                              $CFG_GLPI["root_doc"]."/pics/menu_showall.png' class='pointer'></a>";
+            $pic_validate = Html::link('
+                <span class="fa-stack" style="vertical-align: middle; font-size: 0.8em" title="'.__s('Ticket waiting for your approval').'">
+                   <i class="fas fa-check fa-stack-1x" style="top: 1px; left: -7px; font-size: 1.2em"></i>
+                   <i class="far fa-clock fa-stack-1x" style="top: 6px; left: -3px"></i>
+                </span>
+            ', $url_validate);
             echo "<li class='icons_block'>$pic_validate</li>\n";
          }
 
