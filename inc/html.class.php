@@ -3644,10 +3644,6 @@ JS;
       }
       $language_url = $CFG_GLPI['root_doc'] . '/public/lib/tinymce-i18n/langs/' . $language . '.js';
 
-      $skin_url = $CFG_GLPI['root_doc'] . '/public/lib/tinymce/skins/ui/oxide';
-      if ($_SESSION['glpipalette'] === 'darker') {
-         $skin_url = $CFG_GLPI['root_doc'] . '/public/lib/tinymce/skins/ui/oxide-dark';
-      }
       // Apply all GLPI styles to editor content
       $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss('css/palettes/' . $_SESSION['glpipalette'] ?? 'auror'))
          . ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/base.css'));
@@ -3693,7 +3689,8 @@ JS;
                language: '{$language}',
                language_url: '{$language_url}',
 
-               skin_url: '{$skin_url}',
+               skin_url: $('html').css('--is-dark').trim() === 'true' ? CFG_GLPI['root_doc']+'/public/lib/tinymce/skins/ui/oxide-dark' :
+                  CFG_GLPI['root_doc']+'/public/lib/tinymce/skins/ui/oxide-dark',
                body_class: 'rich_text_container',
                content_css: '{$content_css}',
 
