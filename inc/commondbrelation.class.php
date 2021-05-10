@@ -1703,7 +1703,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $order_col = "designation";
       } else if ($item instanceof Item_Devices) {
          $order_col = "itemtype";
-      } else if ($itemtype == 'Ticket') {
+      } else if ($itemtype == 'Ticket' || $itemtype == 'TicketValidation') {
          $order_col = 'id';
       }
 

@@ -400,6 +400,12 @@ class Document_Item extends CommonDBRelation{
                   $item->getFromDB($data[$item->getForeignKeyField()]);
                   $data['id'] = $item->fields['id'];
                   $data['entity'] = $item->fields['entities_id'];
+               } else if ($item instanceof TicketValidation) {
+                  $itemtype = $item->getItilObjectItemType();
+                  $item = new $itemtype();
+                  $item->getFromDB($data[$item->getForeignKeyField()]);
+                  $data['id'] = $item->fields['id'];
+                  $data['entity'] = $item->fields['entities_id'];
                }
 
                if ($item instanceof CommonITILObject) {

@@ -7283,10 +7283,21 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "<form id='validationanswers_id_{$item_i['id']}' class='center' action='$form_url' method='post'>";
             echo Html::hidden('id', ['value' => $item_i['id']]);
             echo Html::hidden('users_id_validate', ['value' => $item_i['users_id_validate']]);
-            Html::textarea([
-               'name'   => 'comment_validation',
-               'rows'   => 5
-            ]);
+
+            $rand       = mt_rand();
+            $content_id = "content$rand";
+            $cols    = 100;
+            $rows    = 10;
+
+            Html::textarea(['name'              => 'comment_validation',
+                           'value'             => '',
+                           'rand'              => $rand,
+                           'editor_id'         => $content_id,
+                           'enable_fileupload' => true,
+                           'enable_richtext'   => true,
+                           'cols'              => $cols,
+                           'rows'              => $rows]);
+
             echo "<button type='submit' class='submit approve' name='approval_action' value='approve'>";
             echo "<i class='far fa-thumbs-up'></i>&nbsp;&nbsp;".__('Approve')."</button>";
 
@@ -8125,6 +8136,22 @@ abstract class CommonITILObject extends CommonDBTM {
                   'WHERE'  => [
                      ITILSolution::getTableField('itemtype') => $this->getType(),
                      ITILSolution::getTableField('items_id') => $this->getID(),
+                  ],
+               ]
+            ),
+         ];
+      }
+
+      // documents associated to ticketvalidation
+      if (TicketValidation::canView() && $this->getType() == Ticket::getType()) {
+         $or_crits[] = [
+            Document_Item::getTableField('itemtype') => TicketValidation::getType(),
+            Document_Item::getTableField('items_id') => new QuerySubQuery(
+               [
+                  'SELECT' => 'id',
+                  'FROM'   => TicketValidation::getTable(),
+                  'WHERE'  => [
+                     TicketValidation::getTableField('tickets_id') => $this->getID(),
                   ],
                ]
             ),

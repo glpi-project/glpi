@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use atoum\atoum\writer\decorators\eol;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -259,6 +261,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $mailsend = false;
       if ($item->getFromDB($this->fields[static::$items_id])) {
 
+
          // Set global validation to waiting
          if (($item->fields['global_validation'] == self::ACCEPTED)
              || ($item->fields['global_validation'] == self::NONE)) {
@@ -355,6 +358,21 @@ abstract class CommonITILValidation  extends CommonDBChild {
       if (isset($this->input['_disablenotif'])) {
          $donotif = false;
       }
+
+
+      // Add screenshots if needed, without notification
+      $this->input = $this->addFiles($this->input, [
+         'force_update'  => true,
+         'name'          => 'comment_validation',
+         'content_field' => 'comment_validation',
+      ]);
+
+      // Add documents if needed, without notification
+      $this->input = $this->addFiles($this->input, [
+         'force_update'  => true,
+      ]);
+
+
       if ($item->getFromDB($this->fields[static::$items_id])) {
          if (count($this->updates)
              && $donotif) {
@@ -800,7 +818,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $colonnes = [_x('item', 'State'), __('Request date'), __('Approval requester'),
                      __('Request comments'), __('Approval status'),
-                     __('Approver'), __('Approval comments')];
+                     __('Approver'), __('Approval comments'), __('Documents')];
       $nb_colonnes = count($colonnes);
 
       echo "<table class='tab_cadre_fixehov'>";
@@ -861,7 +879,22 @@ abstract class CommonITILValidation  extends CommonDBChild {
             echo "<td>".$row["comment_submission"]."</td>";
             echo "<td>".Html::convDateTime($row["validation_date"])."</td>";
             echo "<td>".getUserName($row["users_id_validate"])."</td>";
-            echo "<td>".$row["comment_validation"]."</td>";
+            echo "<td>".$this->getValueToDisplay(2, $row["comment_validation"],
+                                                   ['html' => true])."</td>";
+
+            $doc_item = new Document_Item();
+            $docs = $doc_item->find(["itemtype" => $this->getType(), "items_id" => $this->getID()]);
+            $out = "";
+            foreach ($docs as $docs_values) {
+               $doc = new Document();
+               $doc->getFromDB($docs_values['documents_id']);
+               $out  .= "<a ";
+               $out .= "href=\"".Document::getFormURLWithID($docs_values['documents_id'])."\">";
+               $out .= $doc->getField('name')."</a><br>";
+            }
+
+            echo "<td>".$out."</td>";
+
             echo "</tr>";
          }
          echo $header;
@@ -977,16 +1010,114 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Approval comments')."<br>(".__('Optional when approved').")</td>";
-            echo "<td><textarea cols='60' rows='3' name='comment_validation'>".
-                       $this->fields["comment_validation"]."</textarea>";
-            echo "</td></tr>";
+            echo "<td>";
+
+            $rand       = mt_rand();
+            $content_id = "content$rand";
+            $cols    = 100;
+            $rows    = 10;
+
+            //switch to br
+            $this->fields["comment_validation"] = nl2br($this->fields["comment_validation"]);
+            Html::textarea(['name'              => 'comment_validation',
+                           'value'             => $this->fields["comment_validation"],
+                           'rand'              => $rand,
+                           'editor_id'         => $content_id,
+                           'enable_fileupload' => true,
+                           'enable_richtext'   => true,
+                           'cols'              => $cols,
+                           'rows'              => $rows]);
+
+            echo "</td>";
+            echo"</tr>";
+
+            //show docs already upload
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>".__('Documents')."</td>";
+            echo "<td>";
+
+            global $CFG_GLPI;
+            $pics_url          = $CFG_GLPI['root_doc']."/pics/timeline";
+            $doc_item = new Document_Item();
+            $docs = $doc_item->find(["itemtype"          => $this->getType(), 
+                                    "items_id"           => $this->getID(),
+                                    "timeline_position"  => ['>', CommonITILObject::NO_TIMELINE]]);
+            $foreignKey = static::getForeignKeyField();
+            foreach ($docs as $docs_values) {
+               $doc = new Document();
+               $doc->getFromDB($docs_values['documents_id']);
+               if ($doc->can($doc->getID(), UPDATE) || true) {
+                  if ($doc->fields['filename']) {
+                     $filename = $doc->fields['filename'];
+                     $ext      = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                     echo "<img src='";
+                     if (empty($filename)) {
+                        $filename = $doc->fields['name'];
+                     }
+                     if (file_exists(GLPI_ROOT."/pics/icones/$ext-dist.png")) {
+                        echo $CFG_GLPI['root_doc']."/pics/icones/$ext-dist.png";
+                     } else {
+                        echo "$pics_url/file.png";
+                     }
+                     echo "'/>&nbsp;";
+
+                     $docsrc = $CFG_GLPI['root_doc']."/front/document.send.php?docid=".$doc->fields['id']
+                            ."&$foreignKey=".$this->getID();
+                     echo Html::link($filename, $docsrc, ['target' => '_blank']);
+                     $docpath = GLPI_DOC_DIR . '/' . $doc->fields['filepath'];
+                     if (Document::isImage($docpath)) {
+                        $imgsize = getimagesize($docpath);
+                        echo Html::imageGallery([
+                           [
+                              'src'             => $docsrc,
+                              'thumbnail_src'   => $docsrc . '&context=timeline',
+                              'w'               => $imgsize[0],
+                              'h'               => $imgsize[1]
+                           ]
+                        ], [
+                           'gallery_item_class' => 'timeline_img_preview'
+                        ]);
+                     }
+                  }
+                  if ($doc->fields['link']) {
+                     echo "<a href='{$doc->fields['link']}' target='_blank'><i class='fa fa-external-link'></i>{$doc->fields['name']}</a>";
+                  }
+                  if (!empty($doc->fields['mime'])) {
+                     echo "&nbsp;";
+                     echo Html::showToolTip(
+                        sprintf(__('File size: %s'), Toolbox::getSize(filesize(GLPI_VAR_DIR . "/" . $doc->fields['filepath']))) . '<br>'
+                        . sprintf(__('MIME type: %s'), $doc->fields['mime'])
+                     );
+                  }
+                  echo "<span class='buttons'>";
+                  echo "<a href='".Document::getFormURLWithID($doc->fields['id'])."' class='edit_document fa fa-eye pointer' title='".
+                         _sx("button", "Show")."'>";
+                  echo "<span class='sr-only'>" . _sx('button', 'Show') . "</span></a>";
+                     if ($doc->can($doc->fields['id'], UPDATE)) {
+                     echo "<a href='".static::getFormURL().
+                           "?delete_document&documents_id=".$doc->fields['id'].
+                           "&$foreignKey=".$this->getID()."&tickets_id=".$this->fields['tickets_id']."' class='delete_document fas fa-trash-alt pointer' title='".
+                           _sx("button", "Delete permanently")."'>";
+                     echo "<span class='sr-only'>" . _sx('button', 'Delete permanently')  . "</span></a>";
+                  }
+                  echo "<br>";
+                  echo "</span>";
+               }
+            }
+            echo "</td>";
+
+            echo"</tr>";
 
          } else {
             $status = [self::REFUSED,self::ACCEPTED];
             if (in_array($this->fields["status"], $status)) {
                echo "<tr class='tab_bg_1'>";
                echo "<td>".__('Approval comments')."</td>";
-               echo "<td>".$this->fields["comment_validation"]."</td></tr>";
+               echo "<td>";
+               $richtext = Html::setRichTextContent('', $this->fields["comment_validation"], '', true);
+               $richtext = Html::replaceImagesByGallery($richtext);
+               echo $richtext;
+               echo "</td>";
             }
          }
       }
@@ -1018,7 +1149,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
          'table'              => $this->getTable(),
          'field'              => 'comment_validation',
          'name'               => __('Approval comments'),
-         'datatype'           => 'text'
+         'datatype'           => 'text',
+         'htmltext'           => true
       ];
 
       $tab[] = [
