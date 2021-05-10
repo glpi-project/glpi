@@ -113,6 +113,7 @@ class Search {
          case self::PDF_OUTPUT_LANDSCAPE:
          case self::PDF_OUTPUT_PORTRAIT:
          case self::SYLK_OUTPUT:
+         case self::NAMES_OUTPUT:
             self::outputData($data);
             break;
          case self::GLOBAL_SEARCH:

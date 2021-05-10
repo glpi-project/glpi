@@ -91,6 +91,7 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
       if ($itemtype instanceof CommonGLPI || is_a($itemtype, CommonGLPI::class, true)) {
          return $itemtype::getTypeName($count);
       }
+      return null;
    }
 
 

@@ -1,3 +1,4 @@
+{% set users_id = users_id|number_format %}
 {% set user_picture  = User__getPicture(users_id) %}
 {% set user_color  = User__getBgColor(users_id) %}
 <a href="{{ User__getLinkUrl(users_id) }}">
