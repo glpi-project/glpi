@@ -1039,7 +1039,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
             $docs = $doc_item->find(["itemtype"          => $this->getType(),
                                     "items_id"           => $this->getID(),
                                     "timeline_position"  => ['>', CommonITILObject::NO_TIMELINE]]);
-            $foreignKey = static::getForeignKeyField();
+            $itilForeignKey = $this->getItilObjectItemType()::getForeignKeyField();
             foreach ($docs as $docs_values) {
                $doc = new Document();
                $doc->getFromDB($docs_values['documents_id']);
@@ -1059,7 +1059,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
                      echo "'/>&nbsp;";
 
                      $docsrc = $CFG_GLPI['root_doc']."/front/document.send.php?docid=".$doc->fields['id']
-                            ."&$foreignKey=".$this->getID();
+                            ."&$itilForeignKey=".$this->getID();
                      echo Html::link($filename, $docsrc, ['target' => '_blank']);
                      $docpath = GLPI_DOC_DIR . '/' . $doc->fields['filepath'];
                      if (Document::isImage($docpath)) {
