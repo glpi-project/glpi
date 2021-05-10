@@ -873,7 +873,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
             echo "<td>".Html::convDateTime($row["submission_date"])."</td>";
             echo "<td>".getUserName($row["users_id"])."</td>";
-            echo "<td>".$row["comment_submission"]."</td>";
+            echo "<td>".$this->getValueToDisplay(2, $row["comment_submission"],
+            ['html' => true])."</td>";
             echo "<td>".Html::convDateTime($row["validation_date"])."</td>";
             echo "<td>".getUserName($row["users_id_validate"])."</td>";
             echo "<td>".$this->getValueToDisplay(2, $row["comment_validation"],
@@ -972,8 +973,22 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Comments')."</td>";
-         echo "<td><textarea cols='60' rows='3' name='comment_submission'>".
-               $this->fields["comment_submission"]."</textarea></td></tr>";
+         echo "<td>";
+         $rand       = mt_rand();
+         $content_id = "content$rand";
+         $cols    = 60;
+         $rows    = 3;
+                     //switch to br
+         $this->fields["comment_submission"] = nl2br($this->fields["comment_submission"]);
+         Html::textarea(['name'              => 'comment_submission',
+                        'value'             => $this->fields["comment_submission"],
+                        'rand'              => $rand,
+                        'editor_id'         => $content_id,
+                        'enable_fileupload' => false,
+                        'enable_richtext'   => true,
+                        'cols'              => $cols,
+                        'rows'              => $rows]);
+         echo "</td>";
 
       } else {
          echo "<tr class='tab_bg_1'>";
