@@ -7289,14 +7289,15 @@ abstract class CommonITILObject extends CommonDBTM {
             $cols    = 100;
             $rows    = 10;
 
-            Html::textarea(['name'              => 'comment_validation',
-                           'value'             => '',
-                           'rand'              => $rand,
-                           'editor_id'         => $content_id,
-                           'enable_fileupload' => true,
-                           'enable_richtext'   => true,
-                           'cols'              => $cols,
-                           'rows'              => $rows]);
+            Html::textarea([
+               'name'              => 'comment_validation',
+               'value'             => '',
+               'rand'              => $rand,
+               'editor_id'         => $content_id,
+               'enable_fileupload' => true,
+               'enable_richtext'   => true,
+               'cols'              => $cols,
+               'rows'              => $rows]);
 
             echo "<button type='submit' class='submit approve' name='approval_action' value='approve'>";
             echo "<i class='far fa-thumbs-up'></i>&nbsp;&nbsp;".__('Approve')."</button>";
