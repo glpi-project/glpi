@@ -395,7 +395,7 @@ class Document_Item extends CommonDBRelation{
                   $data['id'] = $item->fields['id'];
                   $data['entity'] = $item->fields['entities_id'];
                } else if ($item instanceof CommonITILTask
-                  || $item instanceof TicketValidation) {
+                  || $item instanceof CommonITILValidation) {
                   $itemtype = $item->getItilObjectItemType();
                   $item = new $itemtype();
                   $item->getFromDB($data[$item->getForeignKeyField()]);
