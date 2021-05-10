@@ -1110,7 +1110,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
                   if ($doc->can($doc->fields['id'], UPDATE)) {
                      echo "<a href='".$this->getItilObjectItemType()::getFormURL().
                         "?delete_document&documents_id=".$doc->fields['id'].
-                        "&tickets_id=".$this->fields[$itilForeignKey].
+                        "&$itilForeignKey=".$this->fields[$itilForeignKey].
                         "' class='delete_document fas fa-trash-alt pointer' title='".
                         _sx("button", "Delete permanently")."'>";
                      echo "<span class='sr-only'>" . _sx('button', 'Delete permanently')  . "</span></a>";
