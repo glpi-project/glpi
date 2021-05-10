@@ -1091,9 +1091,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
                          _sx("button", "Show")."'>";
                   echo "<span class='sr-only'>" . _sx('button', 'Show') . "</span></a>";
                   if ($doc->can($doc->fields['id'], UPDATE)) {
-                     echo "<a href='".static::getFormURL().
+                     echo "<a href='".Ticket::getFormURL().
                         "?delete_document&documents_id=".$doc->fields['id'].
-                        "&$foreignKey=".$this->getID()."&tickets_id=".$this->fields['tickets_id'].
+                        "&tickets_id=".$this->fields['tickets_id'].
                         "' class='delete_document fas fa-trash-alt pointer' title='".
                         _sx("button", "Delete permanently")."'>";
                      echo "<span class='sr-only'>" . _sx('button', 'Delete permanently')  . "</span></a>";
