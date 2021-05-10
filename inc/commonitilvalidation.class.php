@@ -1128,7 +1128,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
                echo "<tr class='tab_bg_1'>";
                echo "<td>".__('Approval comments')."</td>";
                echo "<td>";
-               $richtext = Html::setRichTextContent('', $this->fields["comment_validation"], '', true);
+               $richtext = Toolbox::getHtmlToDisplay($this->fields["comment_validation"]);
                $richtext = Html::replaceImagesByGallery($richtext);
                echo $richtext;
                echo "</td>";
