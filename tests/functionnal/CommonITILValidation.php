@@ -32,8 +32,7 @@
 
 namespace tests\units;
 
-use \DbTestCase;
-use TicketValidation;
+use DbTestCase;
 
 /* Test for inc/commonitilvalidation.class.php */
 
