@@ -5610,7 +5610,7 @@ JAVASCRIPT;
                               if (Session::getCurrentInterface() == 'helpdesk'
                                  && $orig_id == 5 // -> Assigned user
                                  && !empty($anon_name = User::getAnonymizedName(
-                                    2,
+                                    $data[$ID][$k]['name'],
                                     $itemtype::getById($data['id'])->getEntityId()
                                  ))
                               ) {
