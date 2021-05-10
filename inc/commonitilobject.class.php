@@ -8144,15 +8144,16 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // documents associated to ticketvalidation
-      if (TicketValidation::canView() && $this->getType() == Ticket::getType()) {
+      $validation_class = static::getType() . 'Validation';
+      if ($validation_class::canView()) {
          $or_crits[] = [
-            Document_Item::getTableField('itemtype') => TicketValidation::getType(),
+            Document_Item::getTableField('itemtype') => $validation_class::getType(),
             Document_Item::getTableField('items_id') => new QuerySubQuery(
                [
                   'SELECT' => 'id',
-                  'FROM'   => TicketValidation::getTable(),
+                  'FROM'   => $validation_class::getTable(),
                   'WHERE'  => [
-                     TicketValidation::getTableField('tickets_id') => $this->getID(),
+                     $validation_class::getTableField('tickets_id') => $this->getID(),
                   ],
                ]
             ),
