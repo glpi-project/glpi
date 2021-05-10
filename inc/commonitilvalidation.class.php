@@ -34,12 +34,16 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Features\UserMention;
+
 /**
  * CommonITILValidation Class
  *
  * @since 0.85
 **/
 abstract class CommonITILValidation  extends CommonDBChild {
+
+   use UserMention;
 
    // From CommonDBTM
    public $auto_message_on_action    = false;
@@ -255,6 +259,20 @@ abstract class CommonITILValidation  extends CommonDBChild {
    function post_addItem() {
       global $CFG_GLPI;
 
+      // Add screenshots if needed, without notification
+      $this->input = $this->addFiles($this->input, [
+         'force_update'  => true,
+         'name'          => 'comment_submission',
+         'content_field' => 'comment_submission',
+      ]);
+
+      // Add documents if needed, without notification
+      $this->input = $this->addFiles($this->input, [
+         'force_update'  => true,
+         'name'          => 'filename',
+         'content_field' => 'comment_validation',
+      ]);
+
       $item     = new static::$itemtype();
       $mailsend = false;
       if ($item->getFromDB($this->fields[static::$items_id])) {
@@ -359,13 +377,15 @@ abstract class CommonITILValidation  extends CommonDBChild {
       // Add screenshots if needed, without notification
       $this->input = $this->addFiles($this->input, [
          'force_update'  => true,
-         'name'          => 'comment_validation',
-         'content_field' => 'comment_validation',
+         'name'          => 'comment_submission',
+         'content_field' => 'comment_submission',
       ]);
 
       // Add documents if needed, without notification
       $this->input = $this->addFiles($this->input, [
          'force_update'  => true,
+         'name'          => 'filename',
+         'content_field' => 'comment_validation',
       ]);
 
       if ($item->getFromDB($this->fields[static::$items_id])) {
@@ -871,12 +891,16 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
             echo "<td>".Html::convDateTime($row["submission_date"])."</td>";
             echo "<td>".getUserName($row["users_id"])."</td>";
-            echo "<td>".$this->getValueToDisplay(2, $row["comment_submission"],
-            ['html' => true])."</td>";
+            $comment_submission = Toolbox::getHtmlToDisplay($this->fields["comment_submission"]);
+            $comment_submission = $this->refreshUserMentionsHtmlToDisplay($comment_submission);
+            $comment_submission = Html::replaceImagesByGallery($comment_submission);
+            echo "<td>".$comment_submission."</td>";
             echo "<td>".Html::convDateTime($row["validation_date"])."</td>";
             echo "<td>".getUserName($row["users_id_validate"])."</td>";
-            echo "<td>".$this->getValueToDisplay(2, $row["comment_validation"],
-                                                   ['html' => true])."</td>";
+            $comment_validation = Toolbox::getHtmlToDisplay($this->fields["comment_validation"]);
+            $comment_validation = $this->refreshUserMentionsHtmlToDisplay($comment_validation);
+            $comment_validation = Html::replaceImagesByGallery($comment_validation);
+            echo "<td>".$comment_validation."</td>";
 
             $doc_item = new Document_Item();
             $docs = $doc_item->find(["itemtype"          => $this->getType(),
@@ -931,6 +955,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $this->showFormHeader($options);
 
+      $comment_submission = Toolbox::getHtmlToDisplay($this->fields["comment_submission"]);
+
       if ($validation_admin) {
          if ($this->getType() == 'ChangeValidation') {
             $validation_right = 'validate';
@@ -976,16 +1002,15 @@ abstract class CommonITILValidation  extends CommonDBChild {
          $content_id = "content$rand";
          $cols    = 60;
          $rows    = 3;
-                     //switch to br
-         $this->fields["comment_submission"] = nl2br($this->fields["comment_submission"]);
          Html::textarea(['name'              => 'comment_submission',
-                        'value'             => $this->fields["comment_submission"],
+                        'value'             => Html::entities_deep($comment_submission), // Re-encode entities for textarea
                         'rand'              => $rand,
                         'editor_id'         => $content_id,
                         'enable_fileupload' => false,
                         'enable_richtext'   => true,
                         'cols'              => $cols,
                         'rows'              => $rows]);
+         Html::activateUserMentions($content_id);
          echo "</td>";
 
       } else {
@@ -1000,7 +1025,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Comments')."</td>";
          echo "<td>";
-         echo $this->fields["comment_submission"];
+         echo $comment_submission;
          echo "</td></tr>";
       }
 
@@ -1029,16 +1054,16 @@ abstract class CommonITILValidation  extends CommonDBChild {
             $cols    = 100;
             $rows    = 10;
 
-            //switch to br
-            $this->fields["comment_validation"] = nl2br($this->fields["comment_validation"]);
+            $comment_validation = Toolbox::getHtmlToDisplay($this->fields["comment_validation"]);
             Html::textarea(['name'              => 'comment_validation',
-                           'value'             => $this->fields["comment_validation"],
+                           'value'             => Html::entities_deep($comment_validation), // Re-encode entities for textarea
                            'rand'              => $rand,
                            'editor_id'         => $content_id,
                            'enable_fileupload' => true,
                            'enable_richtext'   => true,
                            'cols'              => $cols,
                            'rows'              => $rows]);
+            Html::activateUserMentions($content_id);
 
             echo "</td>";
             echo"</tr>";
@@ -1127,6 +1152,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
                echo "<td>".__('Approval comments')."</td>";
                echo "<td>";
                $richtext = Toolbox::getHtmlToDisplay($this->fields["comment_validation"]);
+               $richtext = $this->refreshUserMentionsHtmlToDisplay($richtext);
                $richtext = Html::replaceImagesByGallery($richtext);
                echo $richtext;
                echo "</td>";
@@ -1153,7 +1179,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
          'table'              => $this->getTable(),
          'field'              => 'comment_submission',
          'name'               => __('Request comments'),
-         'datatype'           => 'text'
+         'datatype'           => 'text',
+         'htmltext'           => true
       ];
 
       $tab[] = [
@@ -1254,6 +1281,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          'field'              => 'comment_submission',
          'name'               => __('Request comments'),
          'datatype'           => 'text',
+         'htmltext'           => true,
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [
@@ -1267,6 +1295,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          'field'              => 'comment_validation',
          'name'               => __('Approval comments'),
          'datatype'           => 'text',
+         'htmltext'           => true,
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [

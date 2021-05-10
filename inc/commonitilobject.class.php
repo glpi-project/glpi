@@ -7298,6 +7298,7 @@ abstract class CommonITILObject extends CommonDBTM {
                'enable_richtext'   => true,
                'cols'              => $cols,
                'rows'              => $rows]);
+            Html::activateUserMentions($content_id);
 
             echo "<button type='submit' class='submit approve' name='approval_action' value='approve'>";
             echo "<i class='far fa-thumbs-up'></i>&nbsp;&nbsp;".__('Approve')."</button>";
