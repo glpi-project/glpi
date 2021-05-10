@@ -31,7 +31,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Cache\SimpleCache;
 use Glpi\Console\Application;
 use ScssPhp\ScssPhp\Compiler;
 
