@@ -121,25 +121,23 @@
    </div>
 
    {% if item.getType() == "Ticket" %}
-      {% if glpi_has_sla or glpi_has_ola %}
-         {% set nb_la = (item.fields['slas_id_tto'] > 0 ? 1 : 0) + (item.fields['slas_id_ttr'] > 0 ? 1 : 0) + (item.fields['olas_id_tto'] > 0 ? 1 : 0) + (item.fields['olas_id_ttr'] > 0 ? 1 : 0) %}
-         <div class="accordion-item">
-            <h2 class="accordion-header" id="service-levels-heading">
-               <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#service-levels" aria-expanded="true" aria-controls="service-levels">
-                  <i class="fas fa-stopwatch me-1"></i>
-                  <span>{{ _n('Service level', 'Service levels', getPluralNumber()) }}</span>
-                  {% if nb_la > 0 %}
-                     <span class="badge bg-info ms-2">{{ nb_la }}</span>
-                  {% endif %}
-               </button>
-            </h2>
-            <div id="service-levels" class="accordion-collapse collapse" aria-labelledby="service-levels-heading">
-               <div class="accordion-body row m-0 mt-n2">
-                  {% include("components/itilobject/service_levels.html.twig") %}
-               </div>
+      {% set nb_la = (item.fields['slas_id_tto'] > 0 ? 1 : 0) + (item.fields['slas_id_ttr'] > 0 ? 1 : 0) + (item.fields['olas_id_tto'] > 0 ? 1 : 0) + (item.fields['olas_id_ttr'] > 0 ? 1 : 0) %}
+      <div class="accordion-item">
+         <h2 class="accordion-header" id="service-levels-heading">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#service-levels" aria-expanded="true" aria-controls="service-levels">
+               <i class="fas fa-stopwatch me-1"></i>
+               <span>{{ _n('Service level', 'Service levels', getPluralNumber()) }}</span>
+               {% if nb_la > 0 %}
+                  <span class="badge bg-info ms-2">{{ nb_la }}</span>
+               {% endif %}
+            </button>
+         </h2>
+         <div id="service-levels" class="accordion-collapse collapse" aria-labelledby="service-levels-heading">
+            <div class="accordion-body row m-0 mt-n2">
+               {% include("components/itilobject/service_levels.html.twig") %}
             </div>
          </div>
-      {% endif %}
+      </div>
 
       <div class="accordion-item">
          <h2 class="accordion-header" id="linked_tickets-heading">

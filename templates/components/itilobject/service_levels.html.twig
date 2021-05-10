@@ -3,49 +3,45 @@
 
 {% set la_fields = [] %}
 
-{% if glpi_has_sla %}
-   {% set la_fields = la_fields|merge([
-      {
-         'la': sla,
-         'type_str': "sla",
-         'type': constant("SLM::TTO"),
-         'datefieldname': 'time_to_own',
-         'lafieldname': 'slas_id_tto',
-         'label': __("TTO"),
-         'helper': __("Time to own"),
-      }, {
-         'la': sla,
-         'type_str': "sla",
-         'type': constant("SLM::TTR"),
-         'datefieldname': 'time_to_resolve',
-         'lafieldname': 'slas_id_ttr',
-         'label': __("TTR"),
-         'helper': __("Time to resolve"),
-      }
-   ]) %}
-{% endif %}
+{% set la_fields = la_fields|merge([
+   {
+      'la': sla,
+      'type_str': "sla",
+      'type': constant("SLM::TTO"),
+      'datefieldname': 'time_to_own',
+      'lafieldname': 'slas_id_tto',
+      'label': __("TTO"),
+      'helper': __("Time to own"),
+   }, {
+      'la': sla,
+      'type_str': "sla",
+      'type': constant("SLM::TTR"),
+      'datefieldname': 'time_to_resolve',
+      'lafieldname': 'slas_id_ttr',
+      'label': __("TTR"),
+      'helper': __("Time to resolve"),
+   }
+]) %}
 
-{% if glpi_has_ola %}
-   {% set la_fields = la_fields|merge([
-      {
-         'la': ola,
-         'type_str': "ola",
-         'type': constant("SLM::TTO"),
-         'datefieldname': 'internal_time_to_own',
-         'lafieldname': 'olas_id_tto',
-         'label': __("Internal TTO"),
-         'helper': __("Internal Time to own"),
-      }, {
-         'la': ola,
-         'type_str': "ola",
-         'type': constant("SLM::TTR"),
-         'datefieldname': 'internal_time_to_resolve',
-         'lafieldname': 'olas_id_ttr',
-         'label': __("Internal TTR"),
-         'helper': __("Internal Time to resolve"),
-      }
-   ]) %}
-{% endif %}
+{% set la_fields = la_fields|merge([
+   {
+      'la': ola,
+      'type_str': "ola",
+      'type': constant("SLM::TTO"),
+      'datefieldname': 'internal_time_to_own',
+      'lafieldname': 'olas_id_tto',
+      'label': __("Internal TTO"),
+      'helper': __("Internal Time to own"),
+   }, {
+      'la': ola,
+      'type_str': "ola",
+      'type': constant("SLM::TTR"),
+      'datefieldname': 'internal_time_to_resolve',
+      'lafieldname': 'olas_id_ttr',
+      'label': __("Internal TTR"),
+      'helper': __("Internal Time to resolve"),
+   }
+]) %}
 
 
 {% for la_field in la_fields %}
