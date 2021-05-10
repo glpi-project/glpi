@@ -37,12 +37,9 @@ use DbTestCase;
 use ITILFollowup;
 use ITILSolution;
 use NotificationTarget;
-use NotificationTargetCommonITILObject;
 use NotificationTargetTicket;
 use Profile_User;
-use Search;
 use Ticket;
-use User;
 
 /* Test for inc/entity.class.php */
 
@@ -695,7 +692,7 @@ class Entity extends DbTestCase {
             'usertype' => NotificationTarget::GLPI_USER
          ]
       ]);
-      foreach($notif_data['followups'] as $n_fup) {
+      foreach ($notif_data['followups'] as $n_fup) {
          foreach ($possible_values as $value) {
             if ($value == $expected) {
                $this->string($n_fup['##followup.author##'])->contains($value);
