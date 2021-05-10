@@ -7041,7 +7041,6 @@ abstract class CommonITILObject extends CommonDBTM {
                echo "</div>";
 
                echo "<span class='h_user_name'>";
-               $userdata = getUserName($item_i['users_id'], 2);
                if (Session::getCurrentInterface() == 'helpdesk'
                   && (
                      $item['type'] == "Solution"
@@ -7062,6 +7061,7 @@ abstract class CommonITILObject extends CommonDBTM {
                ) {
                   echo $anon_name;
                } else {
+                  $userdata = getUserName($item_i['users_id'], 2);
                   echo $user->getLink()."&nbsp;";
                   echo Html::showToolTip(
                      $userdata["comment"],
