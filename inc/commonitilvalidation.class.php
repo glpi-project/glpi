@@ -880,7 +880,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
                                                    ['html' => true])."</td>";
 
             $doc_item = new Document_Item();
-            $docs = $doc_item->find(["itemtype" => $this->getType(), "items_id" => $this->getID()]);
+            $docs = $doc_item->find(["itemtype"          => $this->getType(), 
+                                    "items_id"           => $this->getID(),
+                                    "timeline_position"  => ['>', CommonITILObject::NO_TIMELINE]]);
             $out = "";
             foreach ($docs as $docs_values) {
                $doc = new Document();
