@@ -261,7 +261,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $mailsend = false;
       if ($item->getFromDB($this->fields[static::$items_id])) {
 
-
          // Set global validation to waiting
          if (($item->fields['global_validation'] == self::ACCEPTED)
              || ($item->fields['global_validation'] == self::NONE)) {
@@ -359,7 +358,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
          $donotif = false;
       }
 
-
       // Add screenshots if needed, without notification
       $this->input = $this->addFiles($this->input, [
          'force_update'  => true,
@@ -371,7 +369,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $this->input = $this->addFiles($this->input, [
          'force_update'  => true,
       ]);
-
 
       if ($item->getFromDB($this->fields[static::$items_id])) {
          if (count($this->updates)
@@ -1039,7 +1036,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
             global $CFG_GLPI;
             $pics_url          = $CFG_GLPI['root_doc']."/pics/timeline";
             $doc_item = new Document_Item();
-            $docs = $doc_item->find(["itemtype"          => $this->getType(), 
+            $docs = $doc_item->find(["itemtype"          => $this->getType(),
                                     "items_id"           => $this->getID(),
                                     "timeline_position"  => ['>', CommonITILObject::NO_TIMELINE]]);
             $foreignKey = static::getForeignKeyField();
@@ -1093,11 +1090,12 @@ abstract class CommonITILValidation  extends CommonDBChild {
                   echo "<a href='".Document::getFormURLWithID($doc->fields['id'])."' class='edit_document fa fa-eye pointer' title='".
                          _sx("button", "Show")."'>";
                   echo "<span class='sr-only'>" . _sx('button', 'Show') . "</span></a>";
-                     if ($doc->can($doc->fields['id'], UPDATE)) {
+                  if ($doc->can($doc->fields['id'], UPDATE)) {
                      echo "<a href='".static::getFormURL().
-                           "?delete_document&documents_id=".$doc->fields['id'].
-                           "&$foreignKey=".$this->getID()."&tickets_id=".$this->fields['tickets_id']."' class='delete_document fas fa-trash-alt pointer' title='".
-                           _sx("button", "Delete permanently")."'>";
+                        "?delete_document&documents_id=".$doc->fields['id'].
+                        "&$foreignKey=".$this->getID()."&tickets_id=".$this->fields['tickets_id'].
+                        "' class='delete_document fas fa-trash-alt pointer' title='".
+                        _sx("button", "Delete permanently")."'>";
                      echo "<span class='sr-only'>" . _sx('button', 'Delete permanently')  . "</span></a>";
                   }
                   echo "<br>";
@@ -1105,7 +1103,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
                }
             }
             echo "</td>";
-
             echo"</tr>";
 
          } else {

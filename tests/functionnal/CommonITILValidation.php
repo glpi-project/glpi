@@ -206,7 +206,6 @@ class CommonITILValidation extends DbTestCase {
          ])
       )->isTrue();
 
-
       $res = $validation->update([
          'id'           => $validation->fields['id'],
          'tickets_id'   => $tickets_id,
@@ -215,7 +214,6 @@ class CommonITILValidation extends DbTestCase {
 
       $this->hasSessionMessages(ERROR, ['If approval is denied, specify a reason.']);
       $this->boolean($res)->isFalse();
-
 
       //retry with comment / img paste and doc upload
       $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/foo.png'));
@@ -231,18 +229,18 @@ class CommonITILValidation extends DbTestCase {
             'status'             => \CommonITILValidation::REFUSED,
             'comment_validation' => 'Meh &lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000"'
          . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
-         '_comment_validation' => [
-            $filename_img,
-            $filename_txt
-         ],
-         '_tag_comment_validation' => [
-            '3e29dffe-0237ea21-5e5e7034b1d1a1.00000000',
-            '3e29dffe-0237ea21-5e5e7034b1ffff.00000000',
-         ],
-         '_prefix_comment_validation' => [
-            '5e5e92ffd9bd91.11111111',
-            '5e5e92ffd9bd91.11111111',
-         ]
+            '_comment_validation' => [
+               $filename_img,
+               $filename_txt
+            ],
+            '_tag_comment_validation' => [
+               '3e29dffe-0237ea21-5e5e7034b1d1a1.00000000',
+               '3e29dffe-0237ea21-5e5e7034b1ffff.00000000',
+            ],
+            '_prefix_comment_validation' => [
+               '5e5e92ffd9bd91.11111111',
+               '5e5e92ffd9bd91.11111111',
+            ]
          ])
       )->isTrue();
 
@@ -251,7 +249,6 @@ class CommonITILValidation extends DbTestCase {
          \Document_Item::getTable(),
          ['itemtype' =>  \TicketValidation::getType()]
       ))->isEqualTo(2);
-
 
       $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
       $this->integer((int)$ticket->getField('global_validation'))->isEqualTo(\CommonITILValidation::REFUSED);
