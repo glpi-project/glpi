@@ -35,6 +35,8 @@ namespace tests\units;
 use CommonITILObject;
 use DbTestCase;
 
+use Symfony\Component\DomCrawler\Crawler;
+
 /* Test for inc/ticket.class.php */
 
 class Ticket extends DbTestCase {
@@ -747,136 +749,69 @@ class Ticket extends DbTestCase {
    ) {
       ob_start();
       $ticket->showForm($ticket->getID());
-      $output =ob_get_contents();
+      $output = ob_get_contents();
       ob_end_clean();
+      $crawler = new Crawler($output);
 
       // Opening date, editable
-      preg_match(
-         '/.*<input[^>]*name=[\'"]date[\'"][^>]*>.*/',
-         $output,
-         $matches
-      );
+      $matches = iterator_to_array($crawler->filter('input[name=date]:not([disabled])'));
       $this->array($matches)->hasSize(($openDate === true ? 1 : 0), 'RW Opening date');
 
       // Time to own, editable
-      preg_match(
-         '/.*<input[^>]*name=[\'"]time_to_own[\'"][^>]*>.*/',
-         $output,
-         $matches
-      );
+      $matches = iterator_to_array($crawler->filter('input[name=time_to_own]:not([disabled])'));
       $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Time to own editable');
 
       // Internal time to own, editable
-      preg_match(
-         '/.*<input[^>]*name=[\'"]internal_time_to_own[\'"][^>]*>.*/',
-         $output,
-         $matches
-      );
+      $matches = iterator_to_array($crawler->filter('input[name=internal_time_to_own]:not([disabled])'));
       $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Internal time to own editable');
 
       // Time to resolve, editable
-      preg_match(
-         '/.*<input[^>]*name=[\'"]time_to_resolve[\'"][^>]*>.*/',
-         $output,
-         $matches
-      );
+      $matches = iterator_to_array($crawler->filter('input[name=time_to_resolve]:not([disabled])'));
       $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Time to resolve');
 
       // Internal time to resolve, editable
-      preg_match(
-         '/.*<input[^>]*name=[\'"]internal_time_to_resolve[\'"][^>]*>.*/',
-         $output,
-         $matches
-      );
+      $matches = iterator_to_array($crawler->filter('input[name=internal_time_to_resolve]:not([disabled])'));
       $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Internal time to resolve');
 
       //Type
-      preg_match(
-         '/.*<select[^>]*name=\'type\'[^>]*>.*/',
-         $output,
-         $matches
-      );
+      $matches = iterator_to_array($crawler->filter('select[name=type]:not([disabled])'));
       $this->array($matches)->hasSize(($type === true ? 1 : 0), 'Type');
 
       //Status
-      preg_match(
-         '/.*<select[^>]*name=\'status\'[^>]*>.*/',
-         $output,
-         $matches
-      );
+      $matches = iterator_to_array($crawler->filter('select[name=status]:not([disabled])'));
       $this->array($matches)->hasSize(($status === true ? 1 : 0), 'Status');
 
       //Urgency
-      preg_match(
-         '/.*<select[^>]*name=\'urgency\'[^>]*>.*/',
-         $output,
-         $matches
-      );
+      $matches = iterator_to_array($crawler->filter('select[name=urgency]:not([disabled])'));
       $this->array($matches)->hasSize(($urgency === true ? 1 : 0), 'Urgency');
 
       //Impact
-      preg_match(
-         '/.*<select[^>]*name=\'impact\'[^>]*>.*/',
-         $output,
-         $matches
-      );
+      $matches = iterator_to_array($crawler->filter('select[name=impact]:not([disabled])'));
       $this->array($matches)->hasSize(($impact === true ? 1 : 0), 'Impact');
 
       //Category
-      preg_match(
-         '/.*<select[^>]*name="itilcategories_id"[^>]*>.*/',
-         $output,
-         $matches
-      );
+      $matches = iterator_to_array($crawler->filter('select[name=itilcategories_id]:not([disabled])'));
       $this->array($matches)->hasSize(($category === true ? 1 : 0), 'Category');
 
       //Request source file_put_contents('/tmp/out.html', $output)
       if ($requestSource === true) {
-         preg_match(
-            '/.*<select[^>]*name="requesttypes_id"[^>]*>.*/',
-            $output,
-            $matches
-            );
+         $matches = iterator_to_array($crawler->filter('select[name=requesttypes_id]:not([disabled])'));
          $this->array($matches)->hasSize(1, 'Request source');
       } else {
-         preg_match(
-            '/.*<input[^>]*name="requesttypes_id"[^>]*>.*/',
-            $output,
-            $matches
-            );
+         $matches = iterator_to_array($crawler->filter('select[name=requesttypes_id]:not([disabled])'));
          $this->array($matches)->hasSize(1, 'Request type');
       }
 
       //Location
-      preg_match(
-         '/.*<select[^>]*name="locations_id"[^>]*>.*/',
-         $output,
-         $matches
-      );
+      $matches = iterator_to_array($crawler->filter('select[name=locations_id]:not([disabled])'));
       $this->array($matches)->hasSize(($location === true ? 1 : 0), 'Location');
 
-      //Ticket name, not editable
-      preg_match(
-         '/.*<div[^>]*class="[^"]*card-title[^"]*"[^>]*>.*/',
-         $output,
-         $matches
-      );
-      $this->array($matches)->hasSize(($name === true ? 1 : 0), 'RO ticket name');
-
       //Priority, editable
-      preg_match(
-         '/.*<select name=\'priority\'[^>]*>.*/',
-         $output,
-         $matches
-      );
+      $matches = iterator_to_array($crawler->filter('select[name=priority]:not([disabled])'));
       $this->array($matches)->hasSize(($priority === true ? 1 : 0), 'RW priority');
 
       //Save button
-      preg_match(
-         '/.*<button[^>]*type="submit"[^>]*name="update"[^>]*>.*/',
-         $output,
-         $matches
-      );
+      $matches = iterator_to_array($crawler->filter('button[type=submit][name=update]:not([disabled])'));
       $this->array($matches)->hasSize(($save === true ? 1 : 0), ($save === true ? 'Save button missing' : 'Save button present'));
 
       //Assign to

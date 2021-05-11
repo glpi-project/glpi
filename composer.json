@@ -71,7 +71,9 @@
         "maglnet/composer-require-checker": "^2.0",
         "mikey179/vfsstream": "^1.6",
         "natxet/cssmin": "^3.0",
-        "php-parallel-lint/php-parallel-lint": "^1.1"
+        "php-parallel-lint/php-parallel-lint": "^1.1",
+        "symfony/css-selector": "^5.2",
+        "symfony/dom-crawler": "^5.2"
     },
     "replace": {
         "laminas/laminas-cache-storage-adapter-apc": "*",

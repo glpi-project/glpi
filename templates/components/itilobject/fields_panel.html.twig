@@ -58,13 +58,10 @@
                ) }}
             {% endif %}
 
-            {% set cat_params = field_options %}
-            {% if item.isNewItem() %}
-               {% set cat_params = cat_params|merge({
-                  'on_change': 'this.form.submit()',
-                  'disabled': (not (canupdate or can_requester))
-               }) %}
-            {% endif %}
+            {% set cat_params = field_options|merge({
+               'on_change': 'this.form.submit()',
+               'disabled': (not (canupdate or can_requester))
+            }) %}
             {{ fields.dropdownField(
                'ITILCategory',
                'itilcategories_id',
