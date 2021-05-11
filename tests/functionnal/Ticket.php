@@ -744,7 +744,7 @@ class Ticket extends DbTestCase {
       $impact = true,
       $category = true,
       $requestSource = true,
-      $location = true,
+      $location = true
    ) {
       ob_start();
       $ticket->showForm($ticket->getID());
