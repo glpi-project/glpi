@@ -831,7 +831,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          'ORDER'  => 'submission_date DESC'
       ]);
 
-      $colonnes = [_x('item', 'State'), __('Request date'), __('Approval requester'),
+      $colonnes = ['', _x('item', 'State'), __('Request date'), __('Approval requester'),
                      __('Request comments'), __('Approval status'),
                      __('Approver'), __('Approval comments'), __('Documents')];
       $nb_colonnes = count($colonnes);
@@ -867,13 +867,14 @@ abstract class CommonITILValidation  extends CommonDBChild {
             $bgcolor = self::getStatusColor($row['status']);
             $status  = self::getStatus($row['status']);
 
-            echo "<tr class='tab_bg_1' ".
-                   ($canedit ? "style='cursor:pointer' onClick=\"viewEditValidation".
-                               $item->fields['id'].$row["id"]."$rand();\""
-                             : '') .
-                  " id='viewvalidation" . $this->fields[static::$items_id] . $row["id"] . "$rand'>";
+            echo "<tr class='tab_bg_1'>";
+
             echo "<td>";
             if ($canedit) {
+               echo "<span class='far fa-edit' style='cursor:pointer' title='".__('Edit')."' ";
+               echo "onClick=\"viewEditValidation".$item->fields['id'].$row["id"]."$rand();\"";
+               echo " id='viewvalidation" . $this->fields[static::$items_id] . $row["id"] . "$rand'";
+               echo "></span>";
                echo "\n<script type='text/javascript' >\n";
                echo "function viewEditValidation" .$item->fields['id']. $row["id"]. "$rand() {\n";
                $params = ['type'             => $this->getType(),
@@ -886,9 +887,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
                echo "};";
                echo "</script>\n";
             }
+            echo "</td>";
 
-            echo "<div style='background-color:".$bgcolor.";'>".$status."</div></td>";
-
+            echo "<td><div style='background-color:".$bgcolor.";'>".$status."</div></td>";
             echo "<td>".Html::convDateTime($row["submission_date"])."</td>";
             echo "<td>".getUserName($row["users_id"])."</td>";
             $comment_submission = Toolbox::getHtmlToDisplay($this->fields["comment_submission"]);
@@ -914,7 +915,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
                $out .= "href=\"".Document::getFormURLWithID($docs_values['documents_id'])."\">";
                $out .= $doc->getField('name')."</a><br>";
             }
-
             echo "<td>".$out."</td>";
 
             echo "</tr>";
