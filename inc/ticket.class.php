@@ -4528,7 +4528,6 @@ JAVASCRIPT;
             // If entity is not in the list of user's entities,
             // then use as default value the first value of the user's entites list
             $this->fields["entities_id"] = $this->userentities[0];
-            $this->input["entities_id"] = $this->userentities[0];
             // Pass to values
             $options['entities_id']       = $this->userentities[0];
          }
@@ -5091,7 +5090,7 @@ JAVASCRIPT;
          echo "<td>";
          echo $tt->getBeginHiddenFieldValue('_contracts_id');
 
-         $contract_value = $this->getDefaultContract() ?: $tt->predefined['_contracts_id'] ?? 0;
+         $contract_value = $this->getDefaultContract($options['entities_id'] ?? null) ?: $tt->predefined['_contracts_id'] ?? 0;
          Contract::dropdown([
             'value'  => $contract_value,
             'name'   => '_contracts_id',
@@ -7732,14 +7731,16 @@ JAVASCRIPT;
       return Item_Ticket::class;
    }
 
-   public function getDefaultContract(): int {
-      $entity = $this->input['entities_id'] ?? $this->fields['entities_id'] ?? false;
+   public function getDefaultContract(?int $entities_id = null): int {
+      if (is_null($entities_id)) {
+         $entities_id = $this->input['entities_id'] ?? $this->fields['entities_id'] ?? false;
+      }
       // Entity isn't set, can't load config
-      if ($entity === false) {
+      if ($entities_id === false) {
          return 0;
       }
 
-      $entity_default_contract = Entity::getUsedConfig('contracts_id_default', $entity);
+      $entity_default_contract = Entity::getUsedConfig('contracts_id_default', $entities_id);
       if ($entity_default_contract == 0) {
          // No default contract set
          return 0;
@@ -7748,7 +7749,7 @@ JAVASCRIPT;
       if ($entity_default_contract == -1) {
          // Contract in current entity
          $contract = new Contract();
-         $criteria = ['entities_id' => $entity];
+         $criteria = ['entities_id' => $entities_id];
          $criteria[] = Contract::getExpiredCriteria();
          $contracts = $contract->find($criteria);
 
