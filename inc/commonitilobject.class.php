@@ -8128,7 +8128,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // documents associated to solutions
-      if (ITILSolution::canView()) {
+      if ($bypass_rights || ITILSolution::canView()) {
          $or_crits[] = [
             Document_Item::getTableField('itemtype') => ITILSolution::getType(),
             Document_Item::getTableField('items_id') => new QuerySubQuery(
@@ -8146,7 +8146,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // documents associated to ticketvalidation
       $validation_class = static::getType() . 'Validation';
-      if (class_exists($validation_class) && $validation_class::canView()) {
+      if (class_exists($validation_class) && ($bypass_rights ||  $validation_class::canView())) {
          $or_crits[] = [
             Document_Item::getTableField('itemtype') => $validation_class::getType(),
             Document_Item::getTableField('items_id') => new QuerySubQuery(
@@ -8154,7 +8154,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   'SELECT' => 'id',
                   'FROM'   => $validation_class::getTable(),
                   'WHERE'  => [
-                     $validation_class::getTableField('tickets_id') => $this->getID(),
+                     $validation_class::getTableField($validation_class::$items_id) => $this->getID(),
                   ],
                ]
             ),

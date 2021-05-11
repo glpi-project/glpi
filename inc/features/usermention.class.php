@@ -35,6 +35,7 @@ namespace Glpi\Features;
 use CommonITILActor;
 use CommonITILObject;
 use CommonITILTask;
+use CommonITILValidation;
 use ITILFollowup;
 use ITILSolution;
 use NotificationEvent;
@@ -52,22 +53,45 @@ trait UserMention {
     */
    protected function handleUserMentions(): void {
 
-      if (property_exists($this, 'updates') && !in_array('content', $this->updates)) {
-         // Triggered from an update that does not changed `content` property.
-         // Nothing to do.
-         return;
-      } else if (!array_key_exists('content', $this->input)) {
-         // Triggered from a creation that does not set `content` property.
-         // Nothing to do.
-         return;
+      $content_fields = $this instanceof CommonITILValidation
+         ? ['comment_submission', 'comment_validation']
+         : ['content'];
+
+      $previously_mentionned_actors_ids = [];
+      $mentionned_actors_ids = [];
+
+      foreach ($content_fields as $content_field) {
+         if (property_exists($this, 'oldvalues') && array_key_exists($content_field, $this->oldvalues)) {
+            // Update case: content field was updated
+            $previous_value = $this->oldvalues[$content_field];
+         } else if (property_exists($this, 'updates')) {
+            // Update case: content field was not updated
+            $previous_value = $this->fields[$content_field];
+         } else {
+            // Creation case
+            $previous_value = null;
+         }
+
+         $new_value = $this->input[$content_field] ?? null;
+
+         if ($new_value !== null) {
+            $mentionned_actors_ids = array_merge(
+               $mentionned_actors_ids,
+               $this->getUserIdsFromUserMentions($new_value, true)
+            );
+         }
+
+         if ($previous_value !== null) {
+            $previously_mentionned_actors_ids = array_merge(
+               $previously_mentionned_actors_ids,
+               $this->getUserIdsFromUserMentions($previous_value, true)
+            );
+         }
       }
 
-      // Compute newly mentionned actors
-      $mentionned_actors_ids = $this->getUserIdsFromUserMentions($this->input['content'], true);
-      if (property_exists($this, 'oldvalues') && array_key_exists('content', $this->oldvalues)) {
-         $previously_mentionned_actors_ids = $this->getUserIdsFromUserMentions($this->oldvalues['content'], true);
-         $mentionned_actors_ids = array_diff($mentionned_actors_ids, $previously_mentionned_actors_ids);
-      }
+      // Keep only newly mentionned actors
+      $mentionned_actors_ids = array_diff($mentionned_actors_ids, $previously_mentionned_actors_ids);
+
       if (empty($mentionned_actors_ids)) {
          return;
       }
@@ -82,6 +106,14 @@ trait UserMention {
          ];
 
          $item = $this->getItem();
+      } else if ($this instanceof CommonITILValidation) {
+         $options = [
+            'validation_id'     => $this->fields['id'],
+            'validation_status' => $this->fields['status']
+         ];
+
+         $item = getItemForItemtype($this->getItilObjectItemType());
+         $item->getFromDB($this->fields[$this::$items_id]);
       } else if ($this instanceof ITILFollowup) {
          $options = [
             'followup_id' => $this->fields['id'],

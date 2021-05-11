@@ -40,6 +40,10 @@ use Notification_NotificationTemplate;
 use NotificationTarget;
 use NotificationTemplate;
 use NotificationTemplateTranslation;
+use Session;
+use Ticket;
+use Ticket_User;
+use TicketValidation;
 use User;
 
 class UserMention extends DbTestCase {
@@ -114,7 +118,7 @@ HTML
                'add_expected_observers' => [$tech_id],
                'add_expected_notified'  => [$tech_id],
 
-               // Added mentions on update => new observers
+               // Same mentions on update => mentionned users are not notified
                'update_content'            => <<<HTML
                   <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
 HTML
@@ -279,6 +283,257 @@ HTML
          [
             'itemtype' => $main_itemtype,
             'items_id' => $main_item->getID(),
+         ]
+      );
+      $this->array($notifications)->hasSize(count($add_expected_notified) + count($update_expected_notified));
+   }
+
+   protected function ticketValidationProvider() {
+      $tech_id = getItemByTypeName('User', 'tech', true);
+      $normal_id = getItemByTypeName('User', 'normal', true);
+
+      // Delete existing notifications targets (to prevent sending of notifications not related to user_mention)
+      $notification_targets = new NotificationTarget();
+      $notification_targets->deleteByCriteria(['NOT' => ['items_id' => Notification::MENTIONNED_USER]]);
+
+      // Add email to users for notifications
+      $user = new User();
+      $update = $user->update(['id' => $tech_id, '_useremails' => ['tech@glpi-project.org']]);
+      $this->boolean($update)->isTrue();
+      $update = $user->update(['id' => $normal_id, '_useremails' => ['normal@glpi-project.org']]);
+      $this->boolean($update)->isTrue();
+
+      yield [
+          // No user mention on creation => no observer
+         'submission_add'            => <<<HTML
+            <p>ping @tec</p>
+HTML
+         ,
+         'validation_add'            => null,
+
+         'add_expected_observers'    => [],
+         'add_expected_notified'     => [],
+
+         // Added mentions on update (submission) => new observers
+         'submission_update'         => <<<HTML
+            <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
+HTML
+         ,
+         'validation_update'         => null,
+
+         'update_expected_observers' => [$tech_id],
+         'update_expected_notified'  => [$tech_id],
+      ];
+
+      yield [
+          // No user mention on creation => no observer
+         'submission_add'            => <<<HTML
+            <p>ping @tec</p>
+HTML
+         ,
+         'validation_add'            => null,
+
+         'add_expected_observers'    => [],
+         'add_expected_notified'     => [],
+
+         // Added mentions on update (validation) => new observers
+         'submission_update'         => null,
+         'validation_update'         => <<<HTML
+            <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
+HTML
+,
+
+         'update_expected_observers' => [$tech_id],
+         'update_expected_notified'  => [$tech_id],
+      ];
+
+      yield [
+         // 1 user mention => 1 observer
+         'submission_add'            => <<<HTML
+            <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
+HTML
+         ,
+         'validation_add'            => null,
+         'add_expected_observers'    => [$tech_id],
+         'add_expected_notified'     => [$tech_id],
+
+         // Same mentions on update (submission) => mentionned users are not notified
+         'submission_update'         => <<<HTML
+            <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
+HTML
+         ,
+         'validation_update'         => null,
+         'update_expected_observers' => [],
+         'update_expected_notified'  => [],
+      ];
+
+      yield [
+         // 1 user mention => 1 observer
+         'submission_add'            => <<<HTML
+            <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
+HTML
+         ,
+         'validation_add'            => null,
+         'add_expected_observers'    => [$tech_id],
+         'add_expected_notified'     => [$tech_id],
+
+         // Same mentions on update (validation) => mentionned users are not notified
+         'submission_update'         => null,
+         'validation_update'         => <<<HTML
+            <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
+HTML
+         ,
+         'update_expected_observers' => [],
+         'update_expected_notified'  => [],
+      ];
+
+      yield [
+          // No user mention on creation => no observer
+         'submission_add'            => <<<HTML
+            <p>ping @tec</p>
+HTML
+         ,
+         'validation_add'            => null,
+
+         'add_expected_observers'    => [],
+         'add_expected_notified'     => [],
+
+         // Added mentions on update (submission and validation) => new observers
+         'submission_update'         => <<<HTML
+            <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
+HTML
+         ,
+         'validation_update'         => <<<HTML
+            <p>I discussed with <span data-user-id="{$normal_id}" data-user-mention="true">@normal</span> about ...</p>
+HTML
+         ,
+
+         'update_expected_observers' => [$tech_id, $normal_id],
+         'update_expected_notified'  => [$tech_id, $normal_id],
+      ];
+
+      yield [
+         // multiple user mentions => multiple observer
+         // validate that data-* attributes order has no impact
+         'submission_add'            => <<<HTML
+            <p>Hi <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span>,</p>
+            <p>I discussed with <span data-user-id="{$normal_id}" data-user-mention="true">@normal</span> about ...</p>
+HTML
+         ,
+         'validation_add'            => null,
+         'add_expected_observers'    => [$tech_id, $normal_id],
+         'add_expected_notified'     => [$tech_id, $normal_id],
+
+         // Deleted mentions on update => no change on observers
+         'submission_update'            => <<<HTML
+            <p>Hi <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span>,</p>
+            <p> ... </p>
+HTML
+         ,
+         'validation_update'            => null,
+         'update_expected_observers'    => [],
+         'update_expected_notified'     => [],
+      ];
+   }
+
+   /**
+    * Specific tests on TicketValidation that contains 2 content fields.
+    *
+    * @dataProvider ticketValidationProvider
+    */
+   public function testHandleUserMentionsOnTicketValidation(
+      ?string $submission_add,
+      ?string $validation_add,
+      array $add_expected_observers,
+      array $add_expected_notified,
+      ?string $submission_update,
+      ?string $validation_update,
+      array $update_expected_observers,
+      array $update_expected_notified
+   ) {
+      global $CFG_GLPI;
+      $CFG_GLPI['use_notifications'] = 1;
+      $CFG_GLPI['notifications_mailing'] = 1;
+
+      $this->login();
+
+      // Create ticket
+      $ticket = new Ticket();
+      $ticket_id = $ticket->add(
+         [
+            'name'    => $this->getUniqueString(),
+            'content' => $this->getUniqueString(),
+         ]
+      );
+      $this->integer($ticket_id)->isGreaterThan(0);
+
+      // Create TicketValidation
+      $input = [
+         'tickets_id'        => $ticket_id,
+         'users_id_validate' => Session::getLoginUserID(),
+      ];
+      if ($submission_add !== null) {
+         $input['comment_submission'] = $submission_add;
+      }
+      if ($validation_add !== null) {
+         $input['comment_validation'] = $validation_add;
+      }
+      $ticket_validation = new TicketValidation();
+      $ticket_validation_id = $ticket_validation->add($input);
+      $this->integer($ticket_validation_id)->isGreaterThan(0);
+
+      // Check observers on creation
+      $observers = getAllDataFromTable(
+         Ticket_User::getTable(),
+         [
+            'type'       => CommonITILActor::OBSERVER,
+            'tickets_id' => $ticket->getID(),
+         ]
+      );
+      $this->array($observers)->hasSize(count($add_expected_observers));
+      $this->array(array_column($observers, 'users_id'))->isEqualTo($add_expected_observers);
+
+      // Check notifications sent on creation
+      $notifications = getAllDataFromTable(
+         'glpi_queuednotifications',
+         [
+            'itemtype' => Ticket::getType(),
+            'items_id' => $ticket_id,
+         ]
+      );
+      $this->array($notifications)->hasSize(count($add_expected_notified));
+
+      // Update TicketValidation
+      $input = [
+         'id' => $ticket_validation_id
+      ];
+      if ($submission_update !== null) {
+         $input['comment_submission'] = $submission_update;
+      }
+      if ($validation_update !== null) {
+         $input['comment_validation'] = $validation_update;
+      }
+      $update = $ticket_validation->update($input);
+      $this->boolean($update)->isTrue();
+
+      // Check observers on update
+      $observers = getAllDataFromTable(
+         Ticket_User::getTable(),
+         [
+            'type'       => CommonITILActor::OBSERVER,
+            'tickets_id' => $ticket->getID(),
+         ]
+      );
+      $expected_observers = array_merge($add_expected_observers, $update_expected_observers);
+      $this->array($observers)->hasSize(count($expected_observers));
+      $this->array(array_column($observers, 'users_id'))->isEqualTo($expected_observers);
+
+      // Check notifications sent on update
+      $notifications = getAllDataFromTable(
+         'glpi_queuednotifications',
+         [
+            'itemtype' => Ticket::getType(),
+            'items_id' => $ticket_id,
          ]
       );
       $this->array($notifications)->hasSize(count($add_expected_notified) + count($update_expected_notified));

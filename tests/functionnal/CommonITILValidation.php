@@ -228,15 +228,15 @@ class CommonITILValidation extends DbTestCase {
             'status'             => \CommonITILValidation::REFUSED,
             'comment_validation' => 'Meh &lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000"'
          . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
-            '_comment_validation' => [
+            '_filename' => [
                $filename_img,
                $filename_txt
             ],
-            '_tag_comment_validation' => [
+            '_tag_filename' => [
                '3e29dffe-0237ea21-5e5e7034b1d1a1.00000000',
                '3e29dffe-0237ea21-5e5e7034b1ffff.00000000',
             ],
-            '_prefix_comment_validation' => [
+            '_prefix_filename' => [
                '5e5e92ffd9bd91.11111111',
                '5e5e92ffd9bd91.11111111',
             ]
