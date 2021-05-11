@@ -383,6 +383,25 @@ class RuleTicket extends Rule {
                         }
                      }
                   }
+
+                  if ($action->fields["field"] == "assign_appliance") {
+                     if (isset($this->regex_results[0])) {
+                        $regexvalue = RuleAction::getRegexResultById($action->fields["value"],
+                                                                     $this->regex_results[0]);
+                     } else {
+                        $regexvalue = $action->fields["value"];
+                     }
+
+                     if (!is_null($regexvalue)) {
+                        $appliances = new Appliance();
+                        $target_appliances = $appliances->find(["name" => $regexvalue, "is_helpdesk_visible" => true]);
+                        $output["items_id"] = [];
+                        foreach ($target_appliances as $key) {
+                           $output["items_id"][Appliance::getType()][] = $key;
+                        }
+                     }
+
+                  }
                   break;
             }
          }
@@ -718,7 +737,8 @@ class RuleTicket extends Rule {
       $actions['assign_appliance']['name']                  = _n('Associated element', 'Associated elements', Session::getPluralNumber())." : ".Appliance::getTypeName(1);
       $actions['assign_appliance']['type']                  = 'dropdown';
       $actions['assign_appliance']['table']                 = 'glpi_appliances';
-      $actions['assign_appliance']['force_actions']         = ['assign'];
+      $actions['assign_appliance']['force_actions']         = ['assign','regex_result','append'];
+      $actions['assign_appliance']['permitseveral']         = ['append'];
 
       $actions['slas_id_ttr']['table']                      = 'glpi_slas';
       $actions['slas_id_ttr']['field']                      = 'name';
