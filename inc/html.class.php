@@ -641,22 +641,24 @@ class Html {
    **/
    static function displayTitle($ref_pic_link = "", $ref_pic_text = "", $ref_title = "", $ref_btts = "") {
 
-      echo "<div class='center'><table class='tab_glpi'><tr>";
+      echo "<div class='btn-group mb-3'>";
       if ($ref_pic_link!="") {
          $ref_pic_text = Toolbox::stripTags($ref_pic_text);
-         echo "<td>".Html::image($ref_pic_link, ['alt' => $ref_pic_text])."</td>";
+         echo Html::image($ref_pic_link, ['alt' => $ref_pic_text]);
       }
 
       if ($ref_title != "") {
-         echo "<td><span class='btn btn-secondary'>&nbsp;".$ref_title."&nbsp;</span></td>";
+         echo "<span class='btn btn-secondary pe-none' aria-disabled='true'>
+            $ref_title
+         </span>";
       }
 
       if (is_array($ref_btts) && count($ref_btts)) {
          foreach ($ref_btts as $key => $val) {
-            echo "<td><a class='btn btn-secondary' href='".$key."'>".$val."</a></td>";
+            echo "<a class='btn btn-outline-secondary' href='".$key."'>".$val."</a>";
          }
       }
-      echo "</tr></table></div>";
+      echo "</div>";
    }
 
 
