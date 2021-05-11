@@ -400,7 +400,6 @@ class RuleTicket extends Rule {
                            $output["items_id"] = [];
                         }
 
-                        //var_dump($target_appliances);
                         foreach ($target_appliances as $value) {
                            $output["items_id"][Appliance::getType()][] = $value['id'];
                         }
