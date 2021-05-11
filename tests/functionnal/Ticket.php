@@ -744,7 +744,7 @@ class Ticket extends DbTestCase {
       $impact = true,
       $category = true,
       $requestSource = true,
-      $location = true
+      $location = true,
    ) {
       ob_start();
       $ticket->showForm($ticket->getID());
@@ -753,64 +753,59 @@ class Ticket extends DbTestCase {
       $crawler = new Crawler($output);
 
       // Opening date, editable
-      $matches = iterator_to_array($crawler->filter('input[name=date]:not([disabled])'));
+      $matches = iterator_to_array($crawler->filter("#itil-data input[name=date]:not([disabled])"));
       $this->array($matches)->hasSize(($openDate === true ? 1 : 0), 'RW Opening date');
 
       // Time to own, editable
-      $matches = iterator_to_array($crawler->filter('input[name=time_to_own]:not([disabled])'));
+      $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_own]:not([disabled])"));
       $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Time to own editable');
 
       // Internal time to own, editable
-      $matches = iterator_to_array($crawler->filter('input[name=internal_time_to_own]:not([disabled])'));
+      $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_own]:not([disabled])"));
       $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Internal time to own editable');
 
       // Time to resolve, editable
-      $matches = iterator_to_array($crawler->filter('input[name=time_to_resolve]:not([disabled])'));
+      $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_resolve]:not([disabled])"));
       $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Time to resolve');
 
       // Internal time to resolve, editable
-      $matches = iterator_to_array($crawler->filter('input[name=internal_time_to_resolve]:not([disabled])'));
+      $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_resolve]:not([disabled])"));
       $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Internal time to resolve');
 
       //Type
-      $matches = iterator_to_array($crawler->filter('select[name=type]:not([disabled])'));
+      $matches = iterator_to_array($crawler->filter("#itil-data select[name=type]:not([disabled])"));
       $this->array($matches)->hasSize(($type === true ? 1 : 0), 'Type');
 
       //Status
-      $matches = iterator_to_array($crawler->filter('select[name=status]:not([disabled])'));
+      $matches = iterator_to_array($crawler->filter("#itil-data select[name=status]:not([disabled])"));
       $this->array($matches)->hasSize(($status === true ? 1 : 0), 'Status');
 
       //Urgency
-      $matches = iterator_to_array($crawler->filter('select[name=urgency]:not([disabled])'));
+      $matches = iterator_to_array($crawler->filter("#itil-data select[name=urgency]:not([disabled])"));
       $this->array($matches)->hasSize(($urgency === true ? 1 : 0), 'Urgency');
 
       //Impact
-      $matches = iterator_to_array($crawler->filter('select[name=impact]:not([disabled])'));
+      $matches = iterator_to_array($crawler->filter("#itil-data select[name=impact]:not([disabled])"));
       $this->array($matches)->hasSize(($impact === true ? 1 : 0), 'Impact');
 
       //Category
-      $matches = iterator_to_array($crawler->filter('select[name=itilcategories_id]:not([disabled])'));
+      $matches = iterator_to_array($crawler->filter("#itil-data select[name=itilcategories_id]:not([disabled])"));
       $this->array($matches)->hasSize(($category === true ? 1 : 0), 'Category');
 
       //Request source file_put_contents('/tmp/out.html', $output)
-      if ($requestSource === true) {
-         $matches = iterator_to_array($crawler->filter('select[name=requesttypes_id]:not([disabled])'));
-         $this->array($matches)->hasSize(1, 'Request source');
-      } else {
-         $matches = iterator_to_array($crawler->filter('select[name=requesttypes_id]:not([disabled])'));
-         $this->array($matches)->hasSize(1, 'Request type');
-      }
+      $matches = iterator_to_array($crawler->filter("#itil-data select[name=requesttypes_id]:not([disabled])"));
+      $this->array($matches)->hasSize($requestSource === true ? 1 : 0, 'Request source');
 
       //Location
-      $matches = iterator_to_array($crawler->filter('select[name=locations_id]:not([disabled])'));
+      $matches = iterator_to_array($crawler->filter("#itil-data select[name=locations_id]:not([disabled])"));
       $this->array($matches)->hasSize(($location === true ? 1 : 0), 'Location');
 
       //Priority, editable
-      $matches = iterator_to_array($crawler->filter('select[name=priority]:not([disabled])'));
+      $matches = iterator_to_array($crawler->filter("#itil-data select[name=priority]:not([disabled])"));
       $this->array($matches)->hasSize(($priority === true ? 1 : 0), 'RW priority');
 
       //Save button
-      $matches = iterator_to_array($crawler->filter('button[type=submit][name=update]:not([disabled])'));
+      $matches = iterator_to_array($crawler->filter("#itil-footer button[type=submit][name=update]:not([disabled])"));
       $this->array($matches)->hasSize(($save === true ? 1 : 0), ($save === true ? 'Save button missing' : 'Save button present'));
 
       //Assign to
@@ -1042,6 +1037,8 @@ class Ticket extends DbTestCase {
 
    public function changeTechRight($rights = 168967) {
       global $DB;
+
+      $this->dump("changeTechRight: $rights");
 
       // set new rights
       $DB->update(
