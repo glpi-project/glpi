@@ -250,12 +250,11 @@ class RuleTicket extends Rule {
 
                   // special case of appliance
                   if ($action->fields["field"] == "assign_appliance") {
-                     if (!array_key_exists("items_id", $output)) {
+                     if (!array_key_exists("items_id", $output) || $output['items_id'] == '0') {
                         $output["items_id"] = [];
                      }
                      $output["items_id"][Appliance::getType()][] = $action->fields["value"];
                   }
-
                   break;
 
                case "append" :
@@ -270,8 +269,7 @@ class RuleTicket extends Rule {
 
                   // special case of appliance
                   if ($action->fields["field"] === "assign_appliance") {
-                     if (!array_key_exists("items_id", $output)
-                        || (array_key_exists("items_id", $output) && !is_array($output['items_id']))) {
+                     if (!array_key_exists("items_id", $output) || $output['items_id'] == '0') {
                         $output["items_id"] = [];
                      }
                      $output["items_id"][Appliance::getType()][] = $value;
@@ -407,7 +405,7 @@ class RuleTicket extends Rule {
                         $appliances = new Appliance();
                         $target_appliances = $appliances->find(["name" => $regexvalue, "is_helpdesk_visible" => true]);
 
-                        if (!array_key_exists("items_id", $output) && count($target_appliances) > 0) {
+                        if ((!array_key_exists("items_id", $output) || $output['items_id'] == '0') && count($target_appliances) > 0) {
                            $output["items_id"] = [];
                         }
 
