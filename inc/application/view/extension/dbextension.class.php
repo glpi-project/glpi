@@ -32,48 +32,34 @@
 
 namespace Glpi\Application\View\Extension;
 
-use Toolbox;
+use DbUtils;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**
  * @since 10.0.0
  */
-class DocumentExtension extends AbstractExtension implements ExtensionInterface {
+class DBExtension extends AbstractExtension {
+
+   private function getDBUtils(): DbUtils {
+      static $dbu = null;
+      if ($dbu === null) {
+         $dbu = new DbUtils();
+      }
+      return $dbu;
+   }
+
+   public function getFilters() {
+      return [];
+   }
 
    public function getFunctions() {
+      $dbu = $this->getDBUtils();
       return [
-         new TwigFunction('getIconForFilename', [$this, 'getIconForFilename']),
-         new TwigFunction('getSizeForFilePath', [$this, 'getSizeForFilePath']),
-         new TwigFunction('getMaxUploadSize', [Document::class, 'getMaxUploadSize'], ['is_safe' => ['html']]),
-         new TwigFunction('showAvailableTypesLink', [\DocumentType::class, 'showAvailableTypesLink'], ['is_safe' => ['html']])
+         new TwigFunction('getSonsOf', [$dbu, 'getSonsOf']),
+         new TwigFunction('getTableNameForForeignKeyField', [$dbu, 'getTableNameForForeignKeyField']),
+         new TwigFunction('getItemTypeForTable', [$dbu, 'getItemTypeForTable']),
+         new TwigFunction('getItemtypeForForeignKeyField', [$dbu, 'getItemtypeForForeignKeyField']),
       ];
-   }
-
-   public function getIconForFilename(string $filename = ""): string {
-      global $CFG_GLPI;
-
-      $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-
-      if (file_exists(GLPI_ROOT."/pics/icones/$extension-dist.png")) {
-         return  $CFG_GLPI['root_doc']."/pics/icones/$extension-dist.png";
-      }
-
-      return $CFG_GLPI['root_doc']."/pics/timeline/file.png";
-   }
-
-
-   public function getSizeForFilePath(string $filepath = "", bool $is_relative = true): string {
-      if ($is_relative) {
-         $filepath = GLPI_VAR_DIR."/".$filepath;
-      }
-
-      if (file_exists($filepath)) {
-         $filesize = filesize($filepath);
-         return Toolbox::getSize($filesize);
-      }
-
-      return "";
    }
 }

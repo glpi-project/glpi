@@ -204,30 +204,23 @@ class Fieldblacklist extends CommonDropdown {
       return $input;
    }
 
-
-   /**
-    * Display specific fields for FieldUnicity
-    *
-    * @param integer $ID     Unused
-    * @param array   $field  Array of fields
-   **/
-   function displaySpecificTypeField($ID, $field = []) {
-
+   public function getSpecificTypeField(int $ID, array $field): string {
       switch ($field['type']) {
-         case 'blacklist_itemtype' :
+         case 'blacklist_itemtype':
+            ob_start();
             $this->showItemtype();
-            break;
-
-         case 'blacklist_field' :
+            return ob_get_clean();
+         case 'blacklist_field':
+            ob_start();
             $this->selectCriterias();
-            break;
-
-         case 'blacklist_value' :
+            return ob_get_clean();
+         case 'blacklist_value':
+            ob_start();
             $this->selectValues();
-            break;
+            return ob_get_clean();
       }
+      return '';
    }
-
 
    /**
     * Display a dropdown which contains all the available itemtypes

@@ -105,49 +105,53 @@ class TaskTemplate extends CommonDropdown {
       return $tab;
    }
 
-
-   /**
-    * @see CommonDropdown::displaySpecificTypeField()
-   **/
-   function displaySpecificTypeField($ID, $field = []) {
-
+   public function getSpecificTypeField(int $ID, array $field): string {
       switch ($field['type']) {
          case 'state' :
-            Planning::dropdownState("state", $this->fields["state"]);
-            break;
-         case 'users_id_tech' :
-            User::dropdown([
-               'name'   => "users_id_tech",
-               'right'  => "own_ticket",
-               'value'  => $this->fields["users_id_tech"],
-               'entity' => $this->fields["entities_id"],
+            return Planning::dropdownState("state", $this->fields["state"], false, [
+               'class'     => 'form-select',
+               'width'     => '100%',
             ]);
-            break;
+         case 'users_id_tech' :
+            return User::dropdown([
+               'name'      => "users_id_tech",
+               'right'     => "own_ticket",
+               'value'     => $this->fields["users_id_tech"],
+               'entity'    => $this->fields["entities_id"],
+               'class'     => 'form-select',
+               'width'     => '100%',
+               'display'   => false,
+            ]);
          case 'groups_id_tech' :
-            Group::dropdown([
+            return Group::dropdown([
                'name'     => "groups_id_tech",
                'condition' => ['is_task' => 1],
                'value'     => $this->fields["groups_id_tech"],
                'entity'    => $this->fields["entities_id"],
+               'class'     => 'form-select',
+               'width'     => '100%',
+               'display'   => false,
             ]);
-            break;
          case 'actiontime' :
             $toadd = [];
             for ($i=9; $i<=100; $i++) {
                $toadd[] = $i*HOUR_TIMESTAMP;
             }
-            Dropdown::showTimeStamp(
+            return Dropdown::showTimeStamp(
                "actiontime", [
                   'min'             => 0,
                   'max'             => 8*HOUR_TIMESTAMP,
                   'value'           => $this->fields["actiontime"],
                   'addfirstminutes' => true,
                   'inhours'         => true,
-                  'toadd'           => $toadd
+                  'toadd'           => $toadd,
+                  'class'           => 'form-select',
+                  'width'           => '100%',
+                  'display'         => false,
                ]
             );
-            break;
       }
+      return '';
    }
 
    static function getIcon() {

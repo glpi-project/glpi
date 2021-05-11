@@ -280,10 +280,16 @@ abstract class CommonDropdown extends CommonDBTM {
          // Create item
          $this->check(-1, CREATE);
       }
-      $this->showFormHeader($options);
 
       $fields = $this->getAdditionalFields();
       $nb     = count($fields);
+
+      echo \Glpi\Application\View\TemplateRenderer::getInstance()->render('dropdown_form.html.twig', [
+         'item'   => $this,
+         'params' => $options,
+         'additional_fields' => $fields
+      ]);
+      return;
 
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td>";
@@ -536,7 +542,18 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
+   function getSpecificTypeField(int $ID, array $field): string {
+      return '';
+   }
+
+   /**
+    * @param $ID
+    * @param array $field
+    * @deprecated 10.0.0 Use {@link CommonDropdown::getSpecificTypeField()} instead
+    */
    function displaySpecificTypeField($ID, $field = []) {
+      Toolbox::deprecated();
+      echo $this->getSpecificTypeField((int) $ID, $field);
    }
 
 

@@ -45,10 +45,11 @@ class ModelExtension extends AbstractExtension implements ExtensionInterface {
    public function getFunctions() {
       return [
          new TwigFunction('getmodelPicture', [$this, 'getmodelPicture']),
+         new TwigFunction('getItemtypeOrModelPicture', [$this, 'getItemtypeOrModelPicture'])
       ];
    }
 
-   public function getmodelPicture(CommonDBTM $item, string $picture_field = "picture_front"): ?string {
+   public function getmodelPicture(CommonDBTM $item, string $picture_field = "picture_front") {
       $itemtype  = $item->getType();
       $modeltype = $itemtype."Model";
       if (class_exists($modeltype)) {
@@ -59,10 +60,28 @@ class ModelExtension extends AbstractExtension implements ExtensionInterface {
 
          $fk = getForeignKeyFieldForItemType($modeltype);
          if ($model->getFromDB(($item->fields[$fk]) ?? 0)) {
+            if ($picture_field === 'pictures') {
+               return importArrayFromDB($model->fields[$picture_field]);
+            }
             return $model->fields[$picture_field];
          }
       }
 
       return "";
+   }
+
+   public function getItemtypeOrModelPicture(CommonDBTM $item, string $picture_field = "picture_front") {
+      $itemtype  = $item->getType();
+      if (class_exists($itemtype)) {
+         if (isset($itemtype->fields[$picture_field])) {
+            if ($picture_field === 'pictures') {
+               return importArrayFromDB($itemtype->fields[$picture_field]);
+            }
+            return $itemtype->fields[$picture_field];
+         }
+         return $this->getmodelPicture($item, $picture_field);
+      }
+
+      return '';
    }
 }
