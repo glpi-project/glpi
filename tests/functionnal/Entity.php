@@ -690,7 +690,9 @@ class Entity extends DbTestCase {
       $notif_data = $notification->getDataForObject($ticket, [
          'additionnaloption' => [
             'usertype' => NotificationTarget::GLPI_USER,
-            'show_private' => $interface == 'central', // Workaround to "simulate" different notification target and test this part more easily
+            // Workaround to "simulate" different notification target and test
+            // this part more easily
+            'is_self_service' => $interface == 'helpdesk',
          ]
       ]);
       foreach ($notif_data['followups'] as $n_fup) {

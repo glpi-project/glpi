@@ -38,6 +38,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
    public $private_profiles = [];
 
+   /**
+    * Keep track of profiles who have acces to the "central" interface
+    * Will only be loaded if the source item's entity is using anonymisation
+    */
+   public $central_profiles = [];
+
    public $html_tags        = [
       '##change.solution.description##',
       '##followup.description##',
@@ -664,14 +670,35 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       while ($data = $iterator->next()) {
          $this->private_profiles[$data['profiles_id']] = $data['profiles_id'];
       }
+
+      if (Entity::getAnonymizeConfig($this->getEntity()) !== Entity::ANONYMIZE_DISABLED) {
+         $profiles_iterator = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => Profile::getTable(),
+            'WHERE'  => [
+               'interface' => 'central',
+            ]
+         ]);
+
+         while ($profiles_data = $profiles_iterator->next()) {
+            $this->central_profiles[$profiles_data['id']] = $profiles_data['id'];
+         }
+      }
    }
 
 
    function addAdditionnalUserInfo(array $data) {
+      return [
+         'show_private'    => $this->getShowPrivateInfo($data),
+         'is_self_service' => $this->getIsSelfServiceInfo($data),
+      ];
+   }
+
+   protected function getShowPrivateInfo(array $data) {
       global $DB;
 
       if (!isset($data['users_id']) || count($this->private_profiles) === 0) {
-         return ['show_private' => 0];
+         return false;
       }
 
       $result = $DB->request([
@@ -684,11 +711,32 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       ])->next();
 
       if ($result['cpt']) {
-         return ['show_private' => 1];
+         return true;
       }
-      return ['show_private' => 0];
+      return false;
    }
 
+   protected function getIsSelfServiceInfo(array $data) {
+      global $DB;
+
+      if (!isset($data['users_id']) || count($this->central_profiles) === 0) {
+         return true;
+      }
+
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => Profile_User::getTable(),
+         'WHERE'  => [
+            'users_id'     => $data['users_id'],
+            'profiles_id'  => $this->central_profiles
+         ] + getEntitiesRestrictCriteria(Profile_User::getTable(), 'entities_id', $this->getEntity(), true)
+      ])->next();
+
+      if ($result['cpt']) {
+         return false;
+      }
+      return true;
+   }
 
    public function getProfileJoinCriteria() {
       $criteria = parent::getProfileJoinCriteria();
@@ -992,6 +1040,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    function getDataForObject(CommonDBTM $item, array $options, $simple = false) {
       global $CFG_GLPI, $DB;
 
+      $is_self_service = $options['additionnaloption']['is_self_service'] ?? true;
       $objettype = strtolower($item->getType());
 
       $data["##$objettype.title##"]        = $item->getField('name');
@@ -1155,8 +1204,19 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          foreach ($item->getUsers(CommonITILActor::ASSIGN) as $tmp) {
             $uid      = $tmp['users_id'];
             $user_tmp = new User();
+
             if ($user_tmp->getFromDB($uid)) {
-               $users[$uid] = $user_tmp->getName();
+               // Check if the user need to be anonymized
+               if ($is_self_service
+                  && !empty($anon_name = User::getAnonymizedName(
+                     $uid,
+                     $item->getField('entities_id')
+                  ))
+               ) {
+                  $users[$uid] = $anon_name;
+               } else {
+                  $users[$uid] = $user_tmp->getName();
+               }
             }
          }
          $data["##$objettype.assigntousers##"] = implode(', ', $users);
@@ -1269,7 +1329,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
             // Check if the author need to be anonymized
             if (ITILFollowup::getById($followup['id'])->isFromSupportAgent()
-               && !$show_private
+               && $is_self_service
                && !empty($anon_name = User::getAnonymizedName(
                   $followup['users_id'],
                   $item->getField('entities_id')
