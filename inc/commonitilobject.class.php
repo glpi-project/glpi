@@ -7283,10 +7283,23 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "<form id='validationanswers_id_{$item_i['id']}' class='center' action='$form_url' method='post'>";
             echo Html::hidden('id', ['value' => $item_i['id']]);
             echo Html::hidden('users_id_validate', ['value' => $item_i['users_id_validate']]);
+
+            $rand       = mt_rand();
+            $content_id = "content$rand";
+            $cols    = 100;
+            $rows    = 10;
+
             Html::textarea([
-               'name'   => 'comment_validation',
-               'rows'   => 5
-            ]);
+               'name'              => 'comment_validation',
+               'value'             => '',
+               'rand'              => $rand,
+               'editor_id'         => $content_id,
+               'enable_fileupload' => true,
+               'enable_richtext'   => true,
+               'cols'              => $cols,
+               'rows'              => $rows]);
+            Html::activateUserMentions($content_id);
+
             echo "<button type='submit' class='submit approve' name='approval_action' value='approve'>";
             echo "<i class='far fa-thumbs-up'></i>&nbsp;&nbsp;".__('Approve')."</button>";
 
@@ -8115,7 +8128,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // documents associated to solutions
-      if (ITILSolution::canView()) {
+      if ($bypass_rights || ITILSolution::canView()) {
          $or_crits[] = [
             Document_Item::getTableField('itemtype') => ITILSolution::getType(),
             Document_Item::getTableField('items_id') => new QuerySubQuery(
@@ -8125,6 +8138,23 @@ abstract class CommonITILObject extends CommonDBTM {
                   'WHERE'  => [
                      ITILSolution::getTableField('itemtype') => $this->getType(),
                      ITILSolution::getTableField('items_id') => $this->getID(),
+                  ],
+               ]
+            ),
+         ];
+      }
+
+      // documents associated to ticketvalidation
+      $validation_class = static::getType() . 'Validation';
+      if (class_exists($validation_class) && ($bypass_rights ||  $validation_class::canView())) {
+         $or_crits[] = [
+            Document_Item::getTableField('itemtype') => $validation_class::getType(),
+            Document_Item::getTableField('items_id') => new QuerySubQuery(
+               [
+                  'SELECT' => 'id',
+                  'FROM'   => $validation_class::getTable(),
+                  'WHERE'  => [
+                     $validation_class::getTableField($validation_class::$items_id) => $this->getID(),
                   ],
                ]
             ),
