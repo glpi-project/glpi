@@ -2014,22 +2014,22 @@ class User extends CommonDBTM {
       $title   = self::getTypeName(Session::getPluralNumber());
 
       if (static::canCreate()) {
-         $buttons["user.form.php"] = __('Add user...');
-         $title                    = "";
+         $buttons["user.form.php"] = "<i class='fas fa-user-plus fa-lg me-2'></i>".__('Add user...');
+         $title = __("Actions");
 
          if (Auth::useAuthExt()
              && Session::haveRight("user", self::IMPORTEXTAUTHUSERS)) {
             // This requires write access because don't use entity config.
-            $buttons["user.form.php?new=1&amp;ext_auth=1"] = __('... From an external source');
+            $buttons["user.form.php?new=1&amp;ext_auth=1"] = "<i class='fas fa-user-cog fa-lg me-2'></i>".__('... From an external source');
          }
       }
       if (Session::haveRight("user", self::IMPORTEXTAUTHUSERS)
          && (static::canCreate() || static::canUpdate())) {
          if (AuthLDAP::useAuthLdap()) {
-            $buttons["ldap.php"] = __('LDAP directory link');
+            $buttons["ldap.php"] = "<i class='fas fa-cog fa-lg me-2'></i>".__('LDAP directory link');
          }
       }
-      Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", self::getTypeName(Session::getPluralNumber()), $title,
+      Html::displayTitle("", self::getTypeName(Session::getPluralNumber()), $title,
                          $buttons);
    }
 
@@ -2084,14 +2084,29 @@ class User extends CommonDBTM {
       $formtitle = $this->getTypeName(1);
 
       if ($ID > 0) {
-         $formtitle .= "<a class='pointer far fa-address-card fa-lg' target='_blank' href='".
-                       User::getFormURLWithID($ID)."&amp;getvcard=1' title='".__s('Download user VCard').
-                       "'><span class='sr-only'>". __('Vcard')."</span></a>";
+         $vcard_lbl = __s('Download user VCard');
+         $vcard_url = User::getFormURLWithID($ID)."&amp;getvcard=1";
+         $vcard_btn = <<<HTML
+            <a href="{$vcard_url}" target="_blank"
+                     class="btn btn-sm btn-ghost-secondary"
+                     title="{$vcard_lbl}"
+                     data-bs-toggle="tooltip" data-bs-placement="bottom">
+               <i class="far fa-address-card fa-lg"></i>
+            </a>
+         HTML;
+         $formtitle.= $vcard_btn;
+
          if (Session::canImpersonate($ID)) {
-            $formtitle .= '<button type="button" class="pointer btn-linkstyled btn-impersonate" name="impersonate" value="1">'
-               . '<i class="fas fa-user-secret fa-lg" title="' . __s('Impersonate') . '"></i> '
-               . '<span class="sr-only">' . __s('Impersonate') . '</span>'
-               . '</button>';
+            $impersonate_lbl = __s('Impersonate');
+            $impersonate_btn = <<<HTML
+               <button type="button" name="impersonate" value="1"
+                       class="btn btn-sm btn-ghost-secondary btn-impersonate"
+                       title="{$impersonate_lbl}"
+                       data-bs-toggle="tooltip" data-bs-placement="bottom">
+                  <i class="fas fa-user-secret fa-lg"></i>
+               </button>
+            HTML;
+            $formtitle.= $impersonate_btn;
 
             // "impersonate" button type is set to "button" on form display to prevent it to be used
             // by default (as it is the first found in current form) when pressing "enter" key.
