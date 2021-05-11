@@ -250,7 +250,9 @@ class RuleTicket extends Rule {
 
                   // special case of appliance
                   if ($action->fields["field"] == "assign_appliance") {
-                     $output["items_id"] = [];
+                     if (!array_key_exists("items_id", $output)) {
+                        $output["items_id"] = [];
+                     }
                      $output["items_id"][Appliance::getType()][] = $action->fields["value"];
                   }
 
@@ -265,7 +267,17 @@ class RuleTicket extends Rule {
                      $value[$actions[$action->fields["field"]]["appendtoarrayfield"]]
                             = $action->fields["value"];
                   }
-                  $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
+
+                  // special case of appliance
+                  if ($action->fields["field"] === "assign_appliance") {
+                     if (!array_key_exists("items_id", $output)
+                        || (array_key_exists("items_id", $output) && !is_array($output['items_id']))) {
+                        $output["items_id"] = [];
+                     }
+                     $output["items_id"][Appliance::getType()][] = $value;
+                  } else {
+                     $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
+                  }
 
                   // Special case of users_id_requester
                   if ($action->fields["field"] === '_users_id_requester') {
@@ -395,7 +407,7 @@ class RuleTicket extends Rule {
                         $appliances = new Appliance();
                         $target_appliances = $appliances->find(["name" => $regexvalue, "is_helpdesk_visible" => true]);
 
-                        if (count($target_appliances) > 0) {
+                        if (!array_key_exists("items_id", $output) && count($target_appliances) > 0) {
                            $output["items_id"] = [];
                         }
 
@@ -739,7 +751,9 @@ class RuleTicket extends Rule {
       $actions['assign_appliance']['name']                  = _n('Associated element', 'Associated elements', Session::getPluralNumber())." : ".Appliance::getTypeName(1);
       $actions['assign_appliance']['type']                  = 'dropdown';
       $actions['assign_appliance']['table']                 = 'glpi_appliances';
-      $actions['assign_appliance']['force_actions']         = ['assign','regex_result'];
+      $actions['assign_appliance']['permitseveral']         = ['append'];
+      $actions['assign_appliance']['force_actions']         = ['assign','regex_result', 'append'];
+      $actions['assign_appliance']['appendto']              = 'items_id';
 
       $actions['slas_id_ttr']['table']                      = 'glpi_slas';
       $actions['slas_id_ttr']['field']                      = 'name';
