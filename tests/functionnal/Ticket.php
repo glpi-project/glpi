@@ -34,7 +34,6 @@ namespace tests\units;
 
 use CommonITILObject;
 use DbTestCase;
-
 use Symfony\Component\DomCrawler\Crawler;
 
 /* Test for inc/ticket.class.php */
