@@ -4626,7 +4626,7 @@ JAVASCRIPT;
                         || (Session::getCurrentInterface() == "central"
                             && $this->canUpdateItem());
       $can_requester = $this->canRequesterUpdateItem();
-      $canpriority   = Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
+      $canpriority   = (bool) Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
       $canassign     = $this->canAssign();
       $canassigntome = $this->canAssignTome();
 
