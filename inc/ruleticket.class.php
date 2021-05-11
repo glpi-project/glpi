@@ -277,7 +277,6 @@ class RuleTicket extends Rule {
                         $output['_groups_id_of_requester'][$g['id']] = $g['id'];
                      }
                   }
-
                   break;
 
                case 'fromuser' :
@@ -740,8 +739,7 @@ class RuleTicket extends Rule {
       $actions['assign_appliance']['name']                  = _n('Associated element', 'Associated elements', Session::getPluralNumber())." : ".Appliance::getTypeName(1);
       $actions['assign_appliance']['type']                  = 'dropdown';
       $actions['assign_appliance']['table']                 = 'glpi_appliances';
-      $actions['assign_appliance']['force_actions']         = ['assign','regex_result','append'];
-      $actions['assign_appliance']['permitseveral']         = ['append'];
+      $actions['assign_appliance']['force_actions']         = ['assign','regex_result'];
 
       $actions['slas_id_ttr']['table']                      = 'glpi_slas';
       $actions['slas_id_ttr']['field']                      = 'name';
