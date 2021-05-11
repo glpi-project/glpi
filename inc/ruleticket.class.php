@@ -395,12 +395,16 @@ class RuleTicket extends Rule {
                      if (!is_null($regexvalue)) {
                         $appliances = new Appliance();
                         $target_appliances = $appliances->find(["name" => $regexvalue, "is_helpdesk_visible" => true]);
-                        $output["items_id"] = [];
-                        foreach ($target_appliances as $key) {
-                           $output["items_id"][Appliance::getType()][] = $key;
+
+                        if (count($target_appliances) > 0) {
+                           $output["items_id"] = [];
+                        }
+
+                        //var_dump($target_appliances);
+                        foreach ($target_appliances as $value) {
+                           $output["items_id"][Appliance::getType()][] = $value['id'];
                         }
                      }
-
                   }
                   break;
             }
