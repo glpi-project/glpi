@@ -1247,10 +1247,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       // Complex mode
       if (!$simple) {
+         $show_private = $options['additionnaloption']['show_private'] ?? false;
          $followup_restrict = [];
          $followup_restrict['items_id'] = $item->getField('id');
-         if (!isset($options['additionnaloption']['show_private'])
-             || !$options['additionnaloption']['show_private']) {
+         if (!$show_private) {
             $followup_restrict['is_private'] = 0;
          }
          $followup_restrict['itemtype'] = $objettype;
@@ -1269,7 +1269,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
             // Check if the author need to be anonymized
             if (ITILFollowup::getById($followup['id'])->isFromSupportAgent()
-               && isset($followup_restrict['is_private'])
+               && !$show_private
                && !empty($anon_name = User::getAnonymizedName(
                   $followup['users_id'],
                   $item->getField('entities_id')
