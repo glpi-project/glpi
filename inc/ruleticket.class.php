@@ -248,6 +248,12 @@ class RuleTicket extends Rule {
                      }
                   }
 
+                  // special case of appliance
+                  if ($action->fields["field"] == "assign_appliance") {
+                     $output["items_id"] = [];
+                     $output["items_id"][Appliance::getType()][] = $action->fields["value"];
+                  }
+
                   break;
 
                case "append" :
@@ -708,6 +714,11 @@ class RuleTicket extends Rule {
       $actions['affectobject']['type']                      = 'text';
       $actions['affectobject']['force_actions']             = ['affectbyip', 'affectbyfqdn',
                                                                     'affectbymac'];
+
+      $actions['assign_appliance']['name']                  = _n('Associated element', 'Associated elements', Session::getPluralNumber())." : ".Appliance::getTypeName(1);
+      $actions['assign_appliance']['type']                  = 'dropdown';
+      $actions['assign_appliance']['table']                 = 'glpi_appliances';
+      $actions['assign_appliance']['force_actions']         = ['assign'];
 
       $actions['slas_id_ttr']['table']                      = 'glpi_slas';
       $actions['slas_id_ttr']['field']                      = 'name';

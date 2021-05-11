@@ -1596,4 +1596,306 @@ class RuleTicket extends DbTestCase {
       $this->boolean($ticket_2->getFromDB($tickets_id_2))->isTrue();
       $this->integer($ticket_2->fields['impact'])->isEqualTo($rule_value);
    }
+
+   public function testAssignAppliance() {
+      $this->login();
+
+      //create appliance "appliance"
+      $applianceTest1 = new \Appliance();
+      $appliancetest1_id = $applianceTest1->add($applianceTest1_input = [
+         "name"                  => "appliance",
+         "is_helpdesk_visible"   => true
+      ]);
+      $this->checkInput($applianceTest1, $appliancetest1_id, $applianceTest1_input);
+
+      //add appliance to ticket type
+      $CFG_GLPI["ticket_types"][] = \Appliance::getType();
+
+      // Add rule for create / update trigger (and assign action)
+      $ruleticket = new \RuleTicket();
+      $rulecrit   = new \RuleCriteria();
+      $ruleaction = new \RuleAction();
+
+      $ruletid = $ruleticket->add($ruletinput = [
+         'name'         => 'test associated element : appliance',
+         'match'        => 'AND',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleTicket',
+         'condition'    => \RuleTicket::ONUPDATE + \RuleTicket::ONADD,
+         'is_recursive' => 1,
+      ]);
+      $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+      // Create criteria to check if content contain key word
+      $crit_id = $rulecrit->add($crit_input = [
+         'rules_id'  => $ruletid,
+         'criteria'  => 'content',
+         'condition' => \Rule::PATTERN_CONTAIN,
+         'pattern'   => 'appliance',
+      ]);
+      $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+      // Create action to add appliance
+      $action_id = $ruleaction->add($action_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'assign',
+         'field'       => 'assign_appliance',
+         'value'       => $appliancetest1_id,
+      ]);
+      $this->checkInput($ruleaction, $action_id, $action_input);
+
+      //create ticket to match rule on create
+      $ticketCreate = new \Ticket();
+      $ticketsCreate_id = $ticketCreate->add($ticketCreate_input = [
+         'name'              => 'test appliance',
+         'content'           => 'test appliance'
+      ]);
+      $this->checkInput($ticketCreate, $ticketsCreate_id, $ticketCreate_input);
+
+      //check for one associated element
+      $this->integer(countElementsInTable(
+         \Item_Ticket::getTable(),
+         ['itemtype'  =>  \Appliance::getType(),
+         'items_id'   => $appliancetest1_id,
+         'tickets_id' => $ticketsCreate_id]
+      ))->isEqualTo(1);
+
+      //create ticket to match rule on update
+      $ticketUpdate = new \Ticket();
+      $ticketsUpdate_id = $ticketUpdate->add($ticketUpdate_input = [
+         'name'              => 'test',
+         'content'           => 'test'
+      ]);
+      $this->checkInput($ticketUpdate, $ticketsUpdate_id, $ticketUpdate_input);
+
+      //no appliance associated
+      $this->integer(countElementsInTable(
+         \Item_Ticket::getTable(),
+         ['itemtype'  =>  \Appliance::getType(),
+         'items_id'   => $appliancetest1_id,
+         'tickets_id' => $ticketsUpdate_id]
+      ))->isEqualTo(0);
+
+      //update ticket content to match rule
+      $ticketUpdate->update(
+         [
+            'id'      => $ticketsUpdate_id,
+            'name'    => 'test erp',
+            'content' => 'appliance'
+         ]);
+
+      //check for one associated element
+      $this->integer(countElementsInTable(
+         \Item_Ticket::getTable(),
+         ['itemtype'  =>  \Appliance::getType(),
+         'items_id'   => $appliancetest1_id,
+         'tickets_id' => $ticketsUpdate_id]
+      ))->isEqualTo(1);
+   }
+
+   public function testRegexAppliance() {
+      $this->login();
+
+      //create appliance "erp"
+      $applianceTest1 = new \Appliance();
+      $appliancetest1_id = $applianceTest1->add($applianceTest1_input = [
+         "name"                  => "erp",
+         "is_helpdesk_visible"   => true
+      ]);
+      $this->checkInput($applianceTest1, $appliancetest1_id, $applianceTest1_input);
+
+      // Create rule for create / update trigger (and regex action)
+      $ruleticket = new \RuleTicket();
+      $rulecrit   = new \RuleCriteria();
+      $ruleaction = new \RuleAction();
+
+      $ruletid = $ruleticket->add($ruletinput = [
+         'name'         => 'test associated element with regex : erp',
+         'match'        => 'AND',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleTicket',
+         'condition'    => \RuleTicket::ONUPDATE + \RuleTicket::ONADD,
+         'is_recursive' => 1,
+      ]);
+      $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+      // Create criteria to match regex
+      $crit_id = $rulecrit->add($crit_input = [
+         'rules_id'  => $ruletid,
+         'criteria'  => 'name',
+         'condition' => \Rule::REGEX_MATCH,
+         'pattern'   => '/(erp)/',
+      ]);
+      $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+      // Create action to add appliance
+      $action_id = $ruleaction->add($action_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'regex_result',
+         'field'       => 'assign_appliance',
+         'value'       => '#0',
+      ]);
+      $this->checkInput($ruleaction, $action_id, $action_input);
+
+      //create ticket to match rule on create
+      //create ticket to match rule on create
+      $ticketCreate = new \Ticket();
+      $ticketsCreate_id = $ticketCreate->add($ticketCreate_input = [
+         'name'              => 'test erp',
+         'content'           => 'test erp'
+      ]);
+
+      $this->checkInput($ticketCreate, $ticketsCreate_id, $ticketCreate_input);
+      $this->integer($ticketsCreate_id)->isGreaterThan(0);
+
+      //check for one associated element
+      $this->integer(countElementsInTable(
+         \Item_Ticket::getTable(),
+         ['itemtype'  =>  \Appliance::getType(),
+         'items_id'   => $appliancetest1_id,
+         'tickets_id' => $ticketsCreate_id]
+      ))->isEqualTo(1);
+
+      //create ticket to match rule on update
+      $ticketUpdate = new \Ticket();
+      $ticketsUpdate_id = $ticketUpdate->add($ticketUpdate_input = [
+         'name'              => 'test',
+         'content'           => 'test'
+      ]);
+      $this->checkInput($ticketUpdate, $ticketsUpdate_id, $ticketUpdate_input);
+
+      //no appliance associated
+      $this->integer(countElementsInTable(
+         \Item_Ticket::getTable(),
+         ['itemtype'  =>  \Appliance::getType(),
+         'items_id'   => $appliancetest1_id,
+         'tickets_id' => $ticketsUpdate_id]
+      ))->isEqualTo(0);
+
+      //update ticket content to match rule
+      $ticketUpdate->update(
+         [
+            'id'      => $ticketsUpdate_id,
+            'name' => 'erp'
+         ]);
+
+      //check for one associated element
+      $this->integer(countElementsInTable(
+         \Item_Ticket::getTable(),
+         ['itemtype'  =>  \Appliance::getType(),
+         'items_id'   => $appliancetest1_id,
+         'tickets_id' => $ticketsUpdate_id]
+      ))->isEqualTo(1);
+
+   }
+
+   public function testAppendAppliance() {
+      $this->login();
+
+      //create appliance "erp"
+      $applianceTest1 = new \Appliance();
+      $appliancetest1_id = $applianceTest1->add($applianceTest1_input = [
+         "name"                  => "erp",
+         "is_helpdesk_visible"   => true
+      ]);
+      $this->checkInput($applianceTest1, $appliancetest1_id, $applianceTest1_input);
+
+      //create appliance "glpi"
+      $applianceTest2 = new \Appliance();
+      $appliancetest2_id = $applianceTest2->add($applianceTest2_input = [
+         "name"                  => "glpi",
+         "is_helpdesk_visible"   => true
+      ]);
+      $this->checkInput($applianceTest2, $appliancetest2_id, $applianceTest2_input);
+
+      // Create rule for create / update trigger (and regex action)
+      $ruleticket = new \RuleTicket();
+      $rulecrit   = new \RuleCriteria();
+      $ruleaction = new \RuleAction();
+
+      $ruletid = $ruleticket->add($ruletinput = [
+         'name'         => 'test associated element with  : erp',
+         'match'        => 'AND',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleTicket',
+         'condition'    => \RuleTicket::ONUPDATE + \RuleTicket::ONADD,
+         'is_recursive' => 1,
+      ]);
+      $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+      // Create criteria to match regex
+      $crit_id = $rulecrit->add($crit_input = [
+         'rules_id'  => $ruletid,
+         'criteria'  => 'name',
+         'condition' => \Rule::PATTERN_CONTAIN,
+         'pattern'   => 'erp',
+      ]);
+      $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+      // Create action to add appliance1
+      $action_id1 = $ruleaction->add($action_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'append',
+         'field'       => 'assign_appliance',
+         'value'       => $appliancetest1_id,
+      ]);
+      $this->checkInput($ruleaction, $action_id1, $action_input);
+
+      //Create action to add appliance2
+      $action_id2 = $ruleaction->add($action_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'append',
+         'field'       => 'assign_appliance',
+         'value'       => $appliancetest2_id,
+      ]);
+      $this->checkInput($ruleaction, $action_id2, $action_input);
+
+      //create ticket to match rule on create
+      $ticketCreate = new \Ticket();
+      $ticketsCreate_id = $ticketCreate->add($ticketCreate_input = [
+         'name'              => 'test erp',
+         'content'           => 'test erp'
+      ]);
+
+      $this->checkInput($ticketCreate, $ticketsCreate_id, $ticketCreate_input);
+      $this->integer($ticketsCreate_id)->isGreaterThan(0);
+
+      //check for one associated element
+      $this->integer(countElementsInTable(
+         \Item_Ticket::getTable(),
+         ['itemtype'  =>  \Appliance::getType(),
+         'tickets_id' => $ticketsCreate_id]
+      ))->isEqualTo(2);
+
+      //create ticket to match rule on update
+      $ticketUpdate = new \Ticket();
+      $ticketsUpdate_id = $ticketUpdate->add($ticketUpdate_input = [
+         'name'              => 'test',
+         'content'           => 'test'
+      ]);
+      $this->checkInput($ticketUpdate, $ticketsUpdate_id, $ticketUpdate_input);
+
+      //no appliance associated
+      $this->integer(countElementsInTable(
+         \Item_Ticket::getTable(),
+         ['itemtype'  =>  \Appliance::getType(),
+         'items_id'   => $appliancetest1_id,
+         'tickets_id' => $ticketsUpdate_id]
+      ))->isEqualTo(0);
+
+      //update ticket content to match rule
+      $ticketUpdate->update(
+         [
+            'id'      => $ticketsUpdate_id,
+            'name' => 'test erp'
+         ]);
+
+      //check for one associated element
+      $this->integer(countElementsInTable(
+         \Item_Ticket::getTable(),
+         ['itemtype'  =>  \Appliance::getType(),
+         'tickets_id' => $ticketsUpdate_id]
+      ))->isEqualTo(2);
+
+   }
 }
