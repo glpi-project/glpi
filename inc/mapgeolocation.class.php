@@ -83,7 +83,9 @@ trait MapGeolocation {
       }
 
       $(function(){
-         map_elt = initMap($('#setlocation_container'), 'setlocation', '200px');
+         if(typeof map_elt === 'undefined') {
+            map_elt = initMap($('#setlocation_container'), 'setlocation', '200px');
+         }
 
          var osmGeocoder = new L.Control.OSMGeocoder({
             collapsed: false,
