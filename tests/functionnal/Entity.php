@@ -40,6 +40,7 @@ use NotificationTarget;
 use NotificationTargetTicket;
 use Profile_User;
 use Ticket;
+use Ticket_User;
 
 /* Test for inc/entity.class.php */
 
@@ -575,12 +576,10 @@ class Entity extends DbTestCase {
       string $expected,
       string $user_nick = ""
    ) {
+      global $DB;
+
       $this->login();
       $possible_values = ['tech', 'user_nick_6436345654', "Helpdesk"];
-
-      // Save and replace session data
-      $old_interface = $_SESSION['glpiactiveprofile']['interface'];
-      $_SESSION['glpiactiveprofile']['interface'] = $interface;
 
       // Set entity setting
       $entity = getItemByTypeName("Entity", "_test_root_entity");
@@ -614,15 +613,48 @@ class Entity extends DbTestCase {
       $this->string($user->fields['nickname'])->isEqualTo($user_nick);
 
       // Build test ticket
+      $this->login('tech', 'tech');
       $ticket = new Ticket();
-      $tickets_id = $ticket->add([
+      $tickets_id = $ticket->add($input = [
          'name'             => 'test',
          'content'          => 'test',
          '_users_id_assign' => getItemByTypeName('User', 'tech', true),
+         '_users_id_requester' => getItemByTypeName('User', 'post-only', true),
          'entities_id'      => $entity->getID(),
+         'users_id_recipient' => getItemByTypeName('User', 'tech', true),
+         'users_id_lastupdater' => getItemByTypeName('User', 'tech', true),
+         // The default requesttype is "Helpdesk" and will mess up our tests,
+         // we need another one to be sure the "Helpdesk" string will only be
+         // printed by the anonymization code
+         'requesttypes_id'  => 4,
       ]);
       $this->integer($tickets_id)->isGreaterThan(0);
-      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+
+      // Unset temporary fields that will not be found in tickets table
+      unset($input['_users_id_assign']);
+      unset($input['_users_id_requester']);
+
+      // Check expected fields and reload object from DB
+      $this->checkInput($ticket, $tickets_id, $input);
+
+      // Check linked users
+      $ticket_users = $DB->request([
+         'SELECT' => ['tickets_id', 'users_id', 'type'],
+         'FROM'   => Ticket_User::getTable(),
+         'WHERE'  => ['tickets_id' => $tickets_id],
+      ]);
+      $this->array(iterator_to_array($ticket_users))->isEqualTo([
+         0 => [
+            'tickets_id' => $tickets_id,
+            'users_id' => getItemByTypeName('User', 'post-only', true),
+            'type' => CommonITILActor::REQUESTER,
+         ],
+         1 => [
+            'tickets_id' => $tickets_id,
+            'users_id' => getItemByTypeName('User', 'tech', true),
+            'type' => CommonITILActor::ASSIGN,
+         ],
+      ]);
 
       // Add followup to test ticket
       $fup = new ITILFollowup();
@@ -645,6 +677,10 @@ class Entity extends DbTestCase {
          'items_id' => $tickets_id,
       ]);
       $this->integer($solutions_id)->isGreaterThan(0);
+
+      // Save and replace session data
+      $old_interface = $_SESSION['glpiactiveprofile']['interface'];
+      $_SESSION['glpiactiveprofile']['interface'] = $interface;
 
       // Case 1: test values recovered from CommonITILObject::showUsersAssociated()
       ob_start();
@@ -702,6 +738,19 @@ class Entity extends DbTestCase {
             } else {
                $this->string($n_fup['##followup.author##'])->notContains($value);
             }
+         }
+      }
+
+      // Case 5: test values recovered from Ticket::showForm()
+      ob_start();
+      $ticket->showForm($tickets_id);
+      $html = ob_get_clean();
+
+      foreach ($possible_values as $value) {
+         if ($value == $expected) {
+            $this->string($html)->contains($value);
+         } else {
+            $this->string($html)->notContains($value);
          }
       }
 

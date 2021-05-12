@@ -4511,7 +4511,16 @@ class Ticket extends CommonITILObject {
                                  'entity' => $this->fields["entities_id"],
                                  'right'  => 'all']);
          } else {
-            echo getUserName($this->fields["users_id_recipient"], $showuserlink);
+            if (Session::getCurrentInterface() == 'helpdesk'
+               && !empty($anon_name = User::getAnonymizedName(
+                  $this->fields['users_id_recipient'],
+                  $this->getEntityID()
+               ))
+            ) {
+               echo $anon_name;
+            } else {
+               echo getUserName($this->fields["users_id_recipient"], $showuserlink);
+            }
          }
 
          echo "</td>";
@@ -4527,8 +4536,21 @@ class Ticket extends CommonITILObject {
          echo "<td width='$colsize4%' colspan='3'>";
          if ($this->fields['users_id_lastupdater'] > 0) {
             //TRANS: %1$s is the update date, %2$s is the last updater name
-            printf(__('%1$s by %2$s'), Html::convDateTime($this->fields["date_mod"]),
-                   getUserName($this->fields["users_id_lastupdater"], $showuserlink));
+            if (Session::getCurrentInterface() == 'helpdesk'
+               && !empty($anon_name = User::getAnonymizedName(
+                  $this->fields["users_id_lastupdater"],
+                  $this->getEntityID()
+               ))
+            ) {
+               $edited_by_name = $anon_name;
+            } else {
+               $edited_by_name = getUserName($this->fields["users_id_lastupdater"], $showuserlink);
+            }
+            printf(
+               __('%1$s by %2$s'),
+               Html::convDateTime($this->fields["date_mod"]),
+               $edited_by_name
+            );
          }
          echo "</td>";
       }
