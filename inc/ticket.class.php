@@ -830,9 +830,8 @@ class Ticket extends CommonITILObject {
       $this->addStandardTab('Problem_Ticket', $ong, $options);
       $this->addStandardTab('Change_Ticket', $ong, $options);
 
-      $entity = $this->getEntityID();
-      if (!(Entity::getUsedConfig('anonymize_support_agents', $entity)
-         && Session::getCurrentInterface() == 'helpdesk')
+      if (Entity::getAnonymizeConfig($this->getEntityID()) == Entity::ANONYMIZE_DISABLED
+         || Session::getCurrentInterface() == 'central'
       ) {
          $this->addStandardTab('Log', $ong, $options);
       }

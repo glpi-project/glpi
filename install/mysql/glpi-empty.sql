@@ -7332,6 +7332,7 @@ CREATE TABLE `glpi_users` (
   `default_dashboard_helpdesk` varchar(100) DEFAULT NULL,
   `default_dashboard_mini_ticket` varchar(100) DEFAULT NULL,
   `default_central_tab` tinyint DEFAULT '0',
+  `nickname` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicityloginauth` (`name`,`authtype`,`auths_id`),
   KEY `firstname` (`firstname`),

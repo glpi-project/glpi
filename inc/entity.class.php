@@ -61,6 +61,13 @@ class Entity extends CommonTreeDropdown {
    const AUTO_ASSIGN_HARDWARE_CATEGORY  = 1;
    const AUTO_ASSIGN_CATEGORY_HARDWARE  = 2;
 
+   /**
+    * Possible values for "anonymize_support_agents" setting
+    */
+   const ANONYMIZE_DISABLED     = 0;
+   const ANONYMIZE_USE_GENERIC  = 1;
+   const ANONYMIZE_USE_NICKNAME = 2;
+
    // Array of "right required to update" => array of fields allowed
    // Missing field here couldn't be update (no right)
    private static $field_right = [
@@ -2610,26 +2617,26 @@ class Entity extends CommonTreeDropdown {
 
       echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Anonymize support agents')."</td>";
       echo "<td colspan='2'>";
-      $anonymizeValues = self::getAnonymizeSupportAgentsValues();
-      $currentAnonymizeValue = $entity->fields['anonymize_support_agents'];
+      $anonymize_values = self::getAnonymizeSupportAgentsValues();
+      $current_anonymize_value = $entity->fields['anonymize_support_agents'];
 
       if ($ID == 0) { // Remove parent option for root entity
-         unset($anonymizeValues[self::CONFIG_PARENT]);
+         unset($anonymize_values[self::CONFIG_PARENT]);
       }
 
       Dropdown::showFromArray(
          'anonymize_support_agents',
-         $anonymizeValues,
-         ['value' => $currentAnonymizeValue]
+         $anonymize_values,
+         ['value' => $current_anonymize_value]
       );
 
       // If the entity is using it's parent value, print it
-      if ($currentAnonymizeValue == self::CONFIG_PARENT && $ID != 0) {
-         $parentHelpdeskValue = self::getUsedConfig(
+      if ($current_anonymize_value == self::CONFIG_PARENT && $ID != 0) {
+         $parent_helpdesk_value = self::getUsedConfig(
             'anonymize_support_agents',
             $entity->fields['entities_id']
          );
-         self::inheritedValue($anonymizeValues[$parentHelpdeskValue], true);
+         self::inheritedValue($anonymize_values[$parent_helpdesk_value], true);
       }
       echo "</td></tr>";
 
@@ -3038,8 +3045,9 @@ class Entity extends CommonTreeDropdown {
 
       return [
          self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-         0 => __('No'),
-         1 => __('Yes'),
+         self::ANONYMIZE_DISABLED => __('Disabled'),
+         self::ANONYMIZE_USE_GENERIC => __("Replace the agent's name with a generic name"),
+         self::ANONYMIZE_USE_NICKNAME => __("Replace the agent's name with a customisable nickname"),
       ];
    }
 
@@ -3405,5 +3413,9 @@ class Entity extends CommonTreeDropdown {
 
    static function getIcon() {
       return "fas fa-layer-group";
+   }
+
+   public static function getAnonymizeConfig(?int $entities_id = null) {
+      return Entity::getUsedConfig('anonymize_support_agents', $entities_id);
    }
 }

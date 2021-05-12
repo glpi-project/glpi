@@ -2413,6 +2413,23 @@ JAVASCRIPT;
             echo "</td></tr>";
          }
 
+         if (Entity::getAnonymizeConfig() == Entity::ANONYMIZE_USE_NICKNAME
+            && Session::getCurrentInterface() == "central"
+         ) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td><label for='nickname$rand'> " . __('Nickname') . "</label></td>";
+            echo "<td>";
+            if ($this->can($ID, UPDATE)) {
+               echo Html::input('nickname', [
+                  'value' => $this->fields['nickname']
+                  ]);
+            } else {
+               echo $this->fields['nickname'];
+            }
+            echo "</td>";
+            echo "</tr>";
+         }
+
          if ($this->can($ID, UPDATE)) {
             echo "<tr class='tab_bg_1'><th colspan='4'>". __('Remote access keys') ."</th></tr>";
 
@@ -2817,6 +2834,23 @@ JAVASCRIPT;
             echo "<td colspan='2'>&nbsp;";
          }
          echo "</td></tr>";
+
+         if (Entity::getAnonymizeConfig() == Entity::ANONYMIZE_USE_NICKNAME
+            && Session::getCurrentInterface() == "central"
+         ) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td><label for='nickname$rand'> " . __('Nickname') . "</label></td>";
+            echo "<td>";
+            if ($this->can($ID, UPDATE)) {
+               echo Html::input('nickname', [
+                  'value' => $this->fields['nickname']
+               ]);
+            } else {
+               echo $this->fields['nickname'];
+            }
+            echo "</td>";
+            echo "</tr>";
+         }
 
          echo "<tr class='tab_bg_1'><th colspan='4'>". __('Remote access keys') ."</th></tr>";
 
@@ -5684,6 +5718,25 @@ JAVASCRIPT;
             $group_user->add($data);
          }
 
+      }
+   }
+
+   public static function getAnonymizedName(int $users_id, ?int $entities_id = null): ?string {
+      switch (Entity::getAnonymizeConfig($entities_id)) {
+         default:
+         case Entity::ANONYMIZE_DISABLED:
+            return "";
+
+         case Entity::ANONYMIZE_USE_GENERIC:
+            return __("Helpdesk");
+
+         case Entity::ANONYMIZE_USE_NICKNAME:
+            $user = new User();
+            if (!$user->getFromDB($users_id)) {
+               return "";
+            }
+
+            return $user->fields['nickname'];
       }
    }
 }
