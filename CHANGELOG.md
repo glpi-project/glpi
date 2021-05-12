@@ -3,14 +3,21 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [9.5.5] unreleased
+## [9.5.6] unreleased
+
+### API changes
+
+#### Deprecated
+
+- `CommonITILTask::showInObjectSumnary()`
+
+## [9.5.5] 2021-04-13
 
 ### API changes
 
 #### Changed
 
 - Remove deprecation of `Search::getMetaReferenceItemtype()`
-
 
 ## [9.5.4] 2021-03-02
 

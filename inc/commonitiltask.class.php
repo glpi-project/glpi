@@ -1278,8 +1278,12 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     * @param $item         CommonITILObject
     * @param $rand
     * @param $showprivate  (false by default)
+    *
+    * @deprecated 9.5.6
    **/
    function showInObjectSumnary(CommonITILObject $item, $rand, $showprivate = false) {
+      Toolbox::deprecated();
+
       global $CFG_GLPI;
 
       $canedit = (isset($this->fields['can_edit']) && !$this->fields['can_edit']) ? false : $this->canEdit($this->fields['id']);
