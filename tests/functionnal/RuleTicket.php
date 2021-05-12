@@ -840,6 +840,83 @@ class RuleTicket extends DbTestCase {
       $this->integer($ticket->fields['impact'])->isEqualTo($action_value);
    }
 
+   public function testValidationAction() {
+      $this->login();
+
+      // Create rule
+      $ruleticket = new \RuleTicket();
+      $rulecrit   = new \RuleCriteria();
+      $ruleaction = new \RuleAction();
+
+      $ruletid = $ruleticket->add($ruletinput = [
+         'name'         => 'test validation action',
+         'match'        => 'AND',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleTicket',
+         'condition'    => \RuleTicket::ONADD | \RuleTicket::ONUPDATE,
+         'is_recursive' => 1,
+      ]);
+      $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+      // Create criteria to check if validation code is accepted
+      $crit_id = $rulecrit->add($crit_input = [
+         'rules_id'  => $ruletid,
+         'criteria'  => 'priority',
+         'condition' => \Rule::PATTERN_IS,
+         'pattern'   => 6,
+      ]);
+      $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+      // Create action to put impact to very low
+      $action_value = CommonITILValidation::REFUSED;
+      $action_id = $ruleaction->add($action_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'assign',
+         'field'       => 'global_validation',
+         'value'       => $action_value,
+      ]);
+      $this->checkInput($ruleaction, $action_id, $action_input);
+
+      // Case 1: create a ticket that should not trigger the rule
+      $ticket = new \Ticket();
+      $tickets_id = $ticket->add($ticket_input = [
+         'name'     => 'test validation action',
+         'content'  => 'test validation action',
+         'priority' => 4,
+      ]);
+      $this->checkInput($ticket, $tickets_id, $ticket_input);
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+
+      // Check that the rule was NOT executed
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+      $this->integer($ticket->fields['global_validation'])->isNotEqualTo($action_value);
+
+      // Case 2: add target priority to the ticket, should trigger the rule
+      $update = $ticket->update([
+         'id'       => $tickets_id,
+         'priority' => 6,
+      ]);
+      $this->boolean($update)->isTrue();
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+
+      // Check that the rule was executed
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+      $this->integer($ticket->fields['global_validation'])->isEqualTo($action_value);
+
+      // Case 3: create a ticket with target priority, should trigger the rule
+      $ticket = new \Ticket();
+      $tickets_id = $ticket->add($ticket_input = [
+         'name'     => 'test validation action',
+         'content'  => 'test validation action',
+         'priority' => 6
+      ]);
+      $this->checkInput($ticket, $tickets_id, $ticket_input);
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+
+      // Check that the rule was executed
+      $this->integer($ticket->fields['global_validation'])->isEqualTo($action_value);
+   }
+
    public function testITILCategoryCode() {
       $this->login();
 

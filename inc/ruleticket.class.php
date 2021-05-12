@@ -796,6 +796,9 @@ class RuleTicket extends Rule {
       $actions['task_template']['table']                     = TaskTemplate::getTable();
       $actions['task_template']['force_actions']             = ['assign'];
 
+      $actions['global_validation']['name']                  = _n('Validation', 'Validations', 1);
+      $actions['global_validation']['type']                  = 'dropdown_validation_status';
+
       return $actions;
    }
 
