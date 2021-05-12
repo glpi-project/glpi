@@ -1526,7 +1526,7 @@ class Stat extends CommonGLPI {
             }
             if (is_array($pages) && count($pages)) {
                foreach ($pages as $page => $name) {
-                  $names[$plug.'/'.$page] = ["name" => $name,
+                  $names[Plugin::getWebDir($plug, false).'/'.$page] = ["name" => $name,
                                                   "plug" => $plug];
                   $optgroup[$plug] = Plugin::getInfo($plug, 'name');
                }
@@ -1539,7 +1539,7 @@ class Stat extends CommonGLPI {
          $group = $title;
          foreach ($names as $key => $val) {
             if ($opt == $val["plug"]) {
-               $file                  = $CFG_GLPI["root_doc"]."/plugins/".$key;
+               $file                  = $CFG_GLPI["root_doc"]."/".$key;
                $values[$group][$file] = $val["name"];
                if (stripos($_SERVER['REQUEST_URI'], $file) !== false) {
                   $selected = $file;
