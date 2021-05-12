@@ -3485,4 +3485,37 @@ class Entity extends CommonTreeDropdown {
    public static function getAnonymizeConfig(?int $entities_id = null) {
       return Entity::getUsedConfig('anonymize_support_agents', $entities_id);
    }
+
+   public static function getDefaultContract(int $entities_id): int {
+      // Entity isn't set, can't load config
+      if ($entities_id === false) {
+         return 0;
+      }
+
+      $entity_default_contract = self::getUsedConfig('contracts_id_default', $entities_id);
+      if ($entity_default_contract == 0) {
+         // No default contract set
+         return 0;
+      }
+
+      if ($entity_default_contract == -1) {
+         // Contract in current entity
+         $contract = new Contract();
+         $criteria = ['entities_id' => $entities_id];
+         $criteria[] = Contract::getExpiredCriteria();
+         $contracts = $contract->find($criteria);
+
+         if ($contracts) {
+            // Return first contract found
+            return current($contracts)['id'];
+         } else {
+            // No contract found for this entity
+            return 0;
+         }
+      }
+
+      // Default contract defined in entity
+      return $entity_default_contract;
+   }
+
 }

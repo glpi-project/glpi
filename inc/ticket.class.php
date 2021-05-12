@@ -1654,7 +1654,7 @@ class Ticket extends CommonITILObject {
 
       // Set default contract if not specified
       if (!isset($input['_contracts_id'])) {
-         $input['_contracts_id'] = $this->getDefaultContract();
+         $input['_contracts_id'] = Entity::getDefaultContract($this->input['entities_id'] ?? $this->fields['entities_id'] ?? false);
       }
 
       // Set _contract_type for rules
@@ -5090,7 +5090,7 @@ JAVASCRIPT;
          echo "<td>";
          echo $tt->getBeginHiddenFieldValue('_contracts_id');
 
-         $contract_value = $this->getDefaultContract($options['entities_id'] ?? null) ?: $tt->predefined['_contracts_id'] ?? 0;
+         $contract_value = Entity::getDefaultContract($options['entities_id'] ?? $this->fields['entities_id']) ?: $tt->predefined['_contracts_id'] ?? 0;
          Contract::dropdown([
             'value'  => $contract_value,
             'name'   => '_contracts_id',
