@@ -463,7 +463,7 @@ class Rack extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '50',
+         'id'                 => '61',
          'table'              => $this->getTable(),
          'field'              => 'template_name',
          'name'               => __('Template name'),
