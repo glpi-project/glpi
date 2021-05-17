@@ -49,7 +49,8 @@ $search_bg: transparentize($mainmenu_bg, 0.95) !default;
 $search_fg: lighten($mainmenu_bg, 5%) !default;
 $search_border: lighten($color: $search_fg, $amount: 35) !default;
 
-$table_border: #c4c4c4 !default;
+$table_border: #eeeeee !default;
+$table_header_bg: #f8f8f8 !default;
 
 $header-fg: $blue !default;
 $header-bg: theme-color-lighter($header-fg, true) !default;

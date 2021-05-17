@@ -91,6 +91,8 @@
             width: min-content;
 
             .search-header {
+               border-bottom: 0;
+
                .search-limit {
                   position: sticky;
                   right: 10px;
@@ -105,13 +107,20 @@
             }
          }
          .search-results {
+            border-collapse: separate;
+            border-spacing: 0;
+
             @include media-breakpoint-up(sm) {
                thead:first-child {
+                  position: sticky;
+                  top: 0;
+                  z-index: 2;
+
                   th {
-                     position: sticky;
-                     top: 0;
-                     z-index: 2;
-                     box-shadow: inset 0 1px 0 $card-border-color;
+                     border: 1px solid $card-border-color;
+                     border-left: 0;
+                     border-right: 0;
+                     background-color: $table_header_bg;
                   }
                }
             }
