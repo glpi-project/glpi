@@ -88,17 +88,6 @@ class Link extends CommonDBTM {
       return '';
    }
 
-   protected function countForTab($item, $tab, $deleted = 0, $template = 0) {
-      global $DB;
-
-      return countElementsInTable(
-         ['glpi_links_itemtypes','glpi_links'],
-         [
-            'glpi_links_itemtypes.links_id'  => new \QueryExpression($DB->quoteName('glpi_links.id')),
-            'glpi_links_itemtypes.itemtype'  => $item->getType()
-         ] + getEntitiesRestrictCriteria('glpi_links', '', '', false)
-      );
-   }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 

@@ -539,9 +539,6 @@ class Lock extends CommonGLPI {
       return '';
    }
 
-   public function countForTab($item, $tab, $deleted = 0, $template = 0) {
-      return;
-   }
 
    /**
     * @param $item            CommonGLPI object

@@ -275,17 +275,6 @@ class Document_Item extends CommonDBRelation {
       return '';
    }
 
-   protected function countForTab($item, $tab, $deleted = 0, $template = 0) {
-      if ($item->getType() == Document::getType()) {
-         switch ($tab) {
-            case self::getType() . '__1':
-               return self::countForMainItem($item, ['NOT' => ['itemtype' => 'Document']]);
-            case self::getType() . '__2':
-               return self::countForMainItem($item, ['itemtype' => 'Document']);
-         }
-      }
-      return self::countForItem($item);
-   }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 

@@ -531,20 +531,6 @@ class Item_Ticket extends CommonItilObject_Item {
    }
 
 
-   protected function countForTab($item, $tab, $deleted = 0, $template = 0) {
-      return countElementsInTable(
-         'glpi_items_tickets',
-         [
-            'AND' => [
-               'tickets_id' => $item->getID()
-            ],
-            [
-               'itemtype' => $_SESSION["glpiactiveprofile"]["helpdesk_item_type"]
-            ]
-         ]
-      );
-   }
-
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {

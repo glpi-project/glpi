@@ -1988,25 +1988,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       return $join;
    }
 
-   protected function countForTab($item, $tab, $deleted = 0, $template = 0) {
-      $sub_link_item = $this;
-      if ($item->getType() == $sub_link_item::$itemtype_1) {
-         $link_type = $sub_link_item::$itemtype_2;
-      } else if ($item->getType() == $sub_link_item::$itemtype_2) {
-         $link_type = $sub_link_item::$itemtype_1;
-      } else {
-         $link_type = ($sub_link_item::$itemtype_1 != 'itemtype' ? $sub_link_item::$itemtype_1 : $sub_link_item::$itemtype_2);
-      }
-
-      $link = new $link_type;
-      $search = new \Search($link, []);
-      $search_data =  $search->getData([
-         'item'      => $item,
-         'sub_item'  => $sub_link_item
-      ]);
-
-      return $search_data['data']['totalcount'];
-   }
 
    public function getSubItems(CommonGLPI $item, array $params): array {
       if ($item->getType() == static::$itemtype_1) {

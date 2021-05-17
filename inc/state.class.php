@@ -501,12 +501,4 @@ class State extends CommonTreeDropdown {
       }
       return $fields;
    }
-
-   public function countForTab($item, $tab, $deleted = 0, $template = 0) {
-      return countElementsInTable(
-         $this->getTable(),
-         [$this->getForeignKeyField() => $item->getID()]
-      );
-   }
-
 }

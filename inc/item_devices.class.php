@@ -556,28 +556,6 @@ class Item_Devices extends CommonDBRelation {
       return '';
    }
 
-   protected function countForTab($item, $tab, $deleted = 0, $template = 0) {
-      $count = 0;
-      if (static::class != 'Item_Devices' && !Toolbox::endsWith('__main', $tab)) {
-         $count = countElementsInTable(
-            self::getTable(), [
-               $item->getForeignKeyField() => $item->fields['id']
-            ]
-         );
-      } else {
-         foreach (self::getItemAffinities($item->getType()) as $link_type) {
-            $count += countElementsInTable(
-               $link_type::getTable(), [
-                  'items_id'   => $item->getID(),
-                  'itemtype'   => $item->getType(),
-                  'is_deleted' => 0
-               ]
-            );
-         }
-      }
-      return $count;
-   }
-
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
