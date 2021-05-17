@@ -46,13 +46,148 @@ class Socket extends CommonDropdown {
 
    public $can_be_translated  = false;
 
+   const REAR    = 1;
+   const FRONT   = 2;
+
 
    function getAdditionalFields() {
 
       return [['name'  => 'locations_id',
-                         'label' => Location::getTypeName(1),
-                         'type'  => 'dropdownValue',
-                         'list'  => true]];
+               'label' => Location::getTypeName(1),
+               'type'  => 'dropdownValue',
+               'list'  => true],
+               ['name'  => 'connectormodels_id',
+               'label' => ConnectorModel::getTypeName(1),
+               'type'  => 'dropdownValue',
+               'list'  => true],
+               ['name'  => 'wiring_side',
+               'label' => __('Wiring side'),
+               'type'  => ' '],
+               ['name'  => 'networkports_id',
+               'label' => _n('Network port', 'Network ports', Session::getPluralNumber()),
+               'type'  => ' ']];
+   }
+
+   function displaySpecificTypeField($ID, $field = []) {
+      if ($field['name'] == 'wiring_side') {
+         self::dropdownType($field['name'], ['value' => $this->fields['wiring_side']]);
+      }
+
+      if ($field['name'] == 'networkports_id') {
+         self::showNetworkPortForm($this->fields['itemtype'], $this->fields['items_id'], $this->fields['networkports_id']);
+      }
+   }
+
+   /**
+   * NetworkPort Form
+   * @return string ID of the select
+   **/
+   static function showNetworkPortForm($itemtype, $items_id, $networkports_id = 0) {
+      global $CFG_GLPI;
+
+      $rand_itemtype = Dropdown::showFromArray('itemtype', self::getAssets(), ['value'                => $itemtype,
+                                                                               'display_emptychoice'  => true]);
+
+      $params = ['itemtype' => '__VALUE__',
+                 'action'   => 'getItemsFromItemtype'];
+      Ajax::updateItemOnSelectEvent("dropdown_itemtype$rand_itemtype",
+                                    "show_items_id_field",
+                                    $CFG_GLPI["root_doc"]."/ajax/networkport.php",
+                                    $params);
+
+      echo "<span id='show_items_id_field'>";
+      if (!empty($itemtype)) {
+         $rand_items_id =  $itemtype::dropdown(['name'                  => 'items_id',
+                                                'value'                 => $items_id,
+                                                'display_emptychoice'   => true]);
+
+         $params = ['items_id'   => '__VALUE__',
+                    'itemtype'   => $itemtype,
+                    'action'     => 'getNetworkPortFromItem'];
+
+         Ajax::updateItemOnSelectEvent("dropdown_items_id$rand_items_id",
+                                       "show_networkport_field",
+                                       $CFG_GLPI["root_doc"]."/ajax/networkport.php",
+                                       $params);
+      }
+      echo "</span>";
+
+      echo "<span id='show_networkport_field'>";
+
+      $rand_items_id =  NetworkPort::dropdown(['name'                => 'networkports_id',
+                                                'value'               => $networkports_id,
+                                                'display_emptychoice' => true,
+                                                'condition' => ["items_id" => $items_id,
+                                                "itemtype"  => $itemtype]]);
+
+      echo "</span>";
+
+   }
+
+   /**
+    * Get sides
+    * @return array Array of types
+   **/
+   static function getAssets() {
+
+      $assets  = [Computer::gettype()           => Computer::getTypeName(),
+                  NetworkEquipment::gettype()   => NetworkEquipment::getTypeName(),
+                  Peripheral::gettype()         => Peripheral::getTypeName(),
+                  Phone::gettype()              => Phone::getTypeName(),
+                  Printer::gettype()            => Printer::getTypeName()];
+
+      return $assets;
+   }
+
+   /**
+    * Dropdown of blacklist types
+    *
+    * @param string $name   select name
+    * @param array  $options possible options:
+    *    - value       : integer / preselected value (default 0)
+    *    - toadd       : array / array of specific values to add at the beginning
+    *    - on_change   : string / value to transmit to "onChange"
+    *    - display
+    *
+    * @return string ID of the select
+   **/
+   static function dropdownType($name, $options = []) {
+
+      $params = [
+         'value'     => 0,
+         'toadd'     => [],
+         'on_change' => '',
+         'display'   => true,
+      ];
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
+      }
+
+      $items = [];
+      if (count($params['toadd'])>0) {
+         $items = $params['toadd'];
+      }
+
+      $items += self::getSides();
+
+      return Dropdown::showFromArray($name, $items, $params);
+   }
+
+   /**
+    * Get sides
+    * @return array Array of types
+   **/
+   static function getSides() {
+
+      $options = [
+         self::REAR   => __('Rear'),
+         self::FRONT  => __('Front'),
+      ];
+
+      return $options;
    }
 
 
@@ -127,11 +262,11 @@ class Socket extends CommonDropdown {
       }
 
       $field_id = Html::cleanId("dropdown_".$myname.$rand);
-      $param    = ['value'               => $value,
-                        'valuename'           => $name,
-                        'entity_restrict'     => $entity_restrict,
-                        'devtype'             => $devtype,
-                        'locations_id'        => $locations_id];
+      $param    = ['value'             => $value,
+                   'valuename'         => $name,
+                   'entity_restrict'   => $entity_restrict,
+                   'devtype'           => $entity_restrict,
+                   'locations_id'      => $locations_id];
       echo Html::jsAjaxDropdown($myname, $field_id,
                                 $CFG_GLPI['root_doc']."/ajax/getDropdownSocket.php",
                                 $param);
@@ -146,7 +281,7 @@ class Socket extends CommonDropdown {
             echo "<span class='fa fa-plus pointer' title=\"".__s('Add')."\" ".
                   "onClick=\"".Html::jsGetElementbyID('socket'.$rand).".dialog('open');\">" .
                   "<span class='sr-only'>" . __s('Add') . "</span></span>";
-            Ajax::createIframeModalWindow('sokcet'.$rand,
+            Ajax::createIframeModalWindow('socket'.$rand,
                                           $item->getFormURL());
 
          }
@@ -202,8 +337,8 @@ class Socket extends CommonDropdown {
          $changes[2] = addslashes($this->getNameID());
          Log::history($parent, 'Location', $changes, $this->getType(), Log::HISTORY_ADD_SUBITEM);
       }
-   }
 
+   }
 
    function post_deleteFromDB() {
 

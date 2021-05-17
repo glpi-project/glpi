@@ -4244,17 +4244,40 @@ CREATE TABLE `glpi_sockets` (
   `entities_id` int NOT NULL DEFAULT '0',
   `locations_id` int NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
+  `connectormodels_id` int NOT NULL DEFAULT '0',
+  `wiring_side` tinyint DEFAULT '0',
+  `itemtype` varchar(255) DEFAULT NULL,
+  `items_id` int NOT NULL DEFAULT '0',
+  `networkports_id` int NOT NULL DEFAULT '0',
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
+  KEY `connectormodels_id` (`connectormodels_id`),
   KEY `complete` (`entities_id`,`locations_id`,`name`),
   KEY `location_name` (`locations_id`,`name`),
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `networkports_id` (`networkports_id`),
+  KEY `wiring_side` (`wiring_side`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+### Dump table glpi_connectormodels
+
+DROP TABLE IF EXISTS `glpi_connectormodels`;
+CREATE TABLE `glpi_connectormodels` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_networkaliases
 

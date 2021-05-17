@@ -121,5 +121,74 @@ if (!$DB->tableExists('glpi_sockets') && $DB->tableExists('glpi_netpoints')) {
       'integer'
    );
    $migration->addKey('glpi_networkportfiberchannels', 'sockets_id', 'socket');
+}
 
+if (!$DB->tableExists('glpi_connectormodels')) {
+   $query = "CREATE TABLE `glpi_connectormodels` (
+      `id` int NOT NULL AUTO_INCREMENT,
+      `name` varchar(255) DEFAULT NULL,
+      `comment` text,
+      `date_mod` timestamp NULL DEFAULT NULL,
+      `date_creation` timestamp NULL DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      KEY `name` (`name`),
+      KEY `date_mod` (`date_mod`),
+      KEY `date_creation` (`date_creation`)
+    ) ENGINE=InnoDB DEFAULT CHARSET= {$default_charset} COLLATE = {$default_collation};";
+   $DB->queryOrDie($query, "10.0 add table glpi_connectormodels");
+
+   $migration->addField('glpi_sockets', 'connectormodels_id', 'int', [
+      'after' => 'name'
+   ]);
+   $migration->addKey('glpi_sockets', 'connectormodels_id');
+
+   $migration->addField("glpi_sockets", "wiring_side", "tinyint DEFAULT 0", [
+      'after' => 'connectormodels_id'
+   ]);
+   $migration->addKey('glpi_sockets', 'wiring_side');
+
+   $migration->addField('glpi_sockets', 'itemtype', 'string', [
+      'after' => 'wiring_side'
+   ]);
+
+   $migration->addField('glpi_sockets', 'items_id', 'int', [
+      'after' => 'itemtype'
+   ]);
+   $migration->addKey("glpi_sockets", ['itemtype','items_id'], 'item');
+
+
+   $migration->addField('glpi_sockets', 'networkports_id', 'int', [
+      'after' => 'items_id'
+   ]);
+   $migration->addKey('glpi_sockets', 'networkports_id');
+
+   //migrate link between NetworkPort and Socket (with sockets_id on NetworkPortEthernet / NetworkPortFiberchannel)
+   //to link between NetworkPort and Socket (link is now on socket side (itemtype, items_id, networkports_id))
+   $classes = [NetworkPortEthernet::getType(), NetworkPortFiberchannel::getType()];
+   foreach ($classes as $itemtype) {
+
+      $item = new $itemtype();
+      $datas = $item->find(['networkports_id' => ['<>', 0]]);
+
+      foreach ($datas as $id => $values) {
+         $sockets_id = $values['sockets_id'];
+         $socket = new Socket();
+
+         $networkport = new NetworkPort();
+         $networkport->getFromDB($socket->fields['networkports_id']);
+
+
+         $socket->getFromDB($values['sockets_id']);
+         $socket->update([
+            'id' =>  $values['sockets_id'],
+            'itemtype' => $socket->fields['itemtype'],
+            'items_id' => $socket->fields['items_id']
+         ]);
+      }
+   }
+
+   //remove "useless "sockets_id" field
+   $migration->dropField('glpi_networkportethernets', 'sockets_id');
+   $migration->dropField('glpi_networkportfiberchannels', 'sockets_id');
+   $migration->dropField('glpi_networkportbncs', 'sockets_id');
 }

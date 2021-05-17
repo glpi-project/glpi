@@ -101,11 +101,46 @@ class NetworkPortInstantiation extends CommonDBChild {
       return parent::prepareInputForAdd($this->prepareInput($input));
    }
 
-
    function prepareInputForUpdate($input) {
       return parent::prepareInputForUpdate($this->prepareInput($input));
    }
 
+   function post_addItem() {
+      $this->manageSocket();
+   }
+
+   function post_updateItem($history = 1) {
+      $this->manageSocket();
+   }
+
+   function manageSocket() {
+
+      //remove link between old socket and networkport
+      if (isset($this->oldvalues['sockets_id']) && $this->oldvalues['sockets_id'] > 0) {
+         $socket = new Socket();
+         $socket->getFromDB($this->oldvalues['sockets_id']);
+         $socket->update([
+            "id" => $socket->getID(),
+            "itemtype" => '',
+            "items_id" => 0,
+            "networkports_id" => 0
+         ]);
+      }
+
+      if (isset($this->input['sockets_id']) && $this->input['sockets_id'] > 0) {
+         $networkport = new NetworkPort();
+         $networkport->getFromDB($this->fields['networkports_id']);
+
+         $socket = new Socket();
+         $socket->getFromDB($this->input['sockets_id']);
+         $socket->update([
+            "id" => $socket->getID(),
+            "itemtype" => $networkport->fields['itemtype'],
+            "items_id" => $networkport->fields['items_id'],
+            "networkports_id" => $this->fields['networkports_id'],
+         ]);
+      }
+   }
 
    /**
     * Get all the instantiation specific options to display
@@ -589,7 +624,15 @@ class NetworkPortInstantiation extends CommonDBChild {
       echo "<td>";
       if (count($recursiveItems) > 0) {
          $lastItem = $recursiveItems[count($recursiveItems) - 1];
-         Socket::dropdownSocket("sockets_id", $this->fields["sockets_id"],
+
+         //find socket attached to NetworkPortEthernet
+         $socket = new Socket();
+         $value = 0;
+         if ($socket->getFromDBByCrit(["networkports_id" => $this->fields['networkports_id']])) {
+            $value = $socket->getID();
+         }
+
+         Socket::dropdownSocket("sockets_id", $value,
                                     $lastItem->fields['locations_id'], 1, $lastItem->getEntityID(),
                                     $netport->fields["itemtype"]);
       } else {
