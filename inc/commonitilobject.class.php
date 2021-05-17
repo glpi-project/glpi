@@ -6033,9 +6033,8 @@ abstract class CommonITILObject extends CommonDBTM {
     *      row_num                : row num used for display
     *      type_for_massiveaction : itemtype for massive action
     *      id_for_massaction      : default 0 means no massive action
-    *      followups              : show followup columns
     *
-    * @since 9.5.6 Usage of "followups" option is deprecated
+    * @since 10.0.0 "followups" option has been dropped
     */
    static function showShort($id, $options = []) {
       global $DB;
@@ -6045,17 +6044,12 @@ abstract class CommonITILObject extends CommonDBTM {
          'row_num'                => 0,
          'type_for_massiveaction' => 0,
          'id_for_massiveaction'   => 0,
-         'followups'              => false,
       ];
 
       if (count($options)) {
          foreach ($options as $key => $val) {
             $p[$key] = $val;
          }
-      }
-
-      if ($p['followups']) {
-         Toolbox::deprecated('Usage of "followups" option is deprecated.');
       }
 
       $rand = mt_rand();
@@ -6072,15 +6066,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $canupdate   = Session::haveRight(static::$rightname, UPDATE);
       $showprivate = Session::haveRight('followup', ITILFollowup::SEEPRIVATE);
       $align       = "class='left'";
-      $align_desc  = "class='left";
-
-      if ($p['followups']) {
-         $align      .= " top'";
-         $align_desc .= " top'";
-      } else {
-         $align      .= "'";
-         $align_desc .= "'";
-      }
+      $align_desc  = "class='left'";
 
       if ($item->getFromDB($id)) {
          $item_num = 1;
@@ -6258,23 +6244,15 @@ abstract class CommonITILObject extends CommonDBTM {
 
          // Add link
          if ($item->canViewItem()) {
-            $eigth_column = "<a id='".$item->getType().$item->fields["id"]."$rand' href=\"".$item->getLinkURL()
-                              ."\">$eigth_column</a>";
-
-            if ($p['followups']
-                && ($p['output_type'] == Search::HTML_OUTPUT)) {
-               $eigth_column .= ITILFollowup::showShortForITILObject($item->fields["id"], static::class);
-            } else {
-               $eigth_column  = sprintf(
-                  __('%1$s (%2$s)'),
-                  $eigth_column,
-                  sprintf(
-                     __('%1$s - %2$s'),
-                     $item->numberOfFollowups($showprivate),
-                     $item->numberOfTasks($showprivate)
-                  )
-               );
-            }
+            $eigth_column  = sprintf(
+               __('%1$s (%2$s)'),
+               "<a id='".$item->getType().$item->fields["id"]."$rand' href=\"".$item->getLinkURL()."\">$eigth_column</a>",
+               sprintf(
+                  __('%1$s - %2$s'),
+                  $item->numberOfFollowups($showprivate),
+                  $item->numberOfTasks($showprivate)
+               )
+            );
          }
 
          if ($p['output_type'] == Search::HTML_OUTPUT) {
