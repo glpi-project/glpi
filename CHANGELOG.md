@@ -9,7 +9,9 @@ The present file will list all changes made to the project; according to the
 
 #### Deprecated
 
+- Usage of "followups" option in `CommonITILObject::showShort()`
 - `CommonITILTask::showInObjectSumnary()`
+- `ITILFollowup::showShortForITILObject()`
 
 ## [9.5.5] 2021-04-13
 

@@ -1012,8 +1012,11 @@ JAVASCRIPT;
    /**
     * @param $ID  integer  ID of the ITILObject
     * @param $itemtype  string   parent itemtype
+    *
+    * @deprecated 9.5.6
    **/
    static function showShortForITILObject($ID, $itemtype) {
+      Toolbox::deprecated();
 
       global $DB, $CFG_GLPI;
 
