@@ -442,9 +442,9 @@
         ],
         "cameras": [
             {
-                "resolution": "8000x6000",
+                "resolution": ["8000x6000"],
                 "lensfacing": "BACK",
-                "flashunit": "1",
+                "flashunit": true,
                 "imageformats": [
                     "RAW_SENSOR",
                     "JPEG",
@@ -454,12 +454,12 @@
                 "orientation": "90",
                 "focallength": "4.77",
                 "sensorsize": "6.4x4.8",
-                "resolutionvideo": "176x144"
+                "resolutionvideo": ["176x144"]
             },
             {
-                "resolution": "176x144",
+                "resolution": ["176x144"],
                 "lensfacing": "FRONT",
-                "flashunit": "0",
+                "flashunit": false,
                 "imageformats": [
                     "RAW_SENSOR",
                     "JPEG",
@@ -469,7 +469,7 @@
                 "orientation": "270",
                 "focallength": "3.52",
                 "sensorsize": "4.67x3.49",
-                "resolutionvideo": "176x144"
+                "resolutionvideo": ["176x144"]
             }
         ],
         "networks": [
@@ -488,7 +488,8 @@
                 "speed": "240",
                 "type": "wifi",
                 "wifi_bssid": "<unknown ssid>",
-                "wifi_ssid": "02:00:00:00:00:00"
+                "wifi_ssid": "02:00:00:00:00:00",
+                "status": "up"
             }
         ],
         "jvms": {
