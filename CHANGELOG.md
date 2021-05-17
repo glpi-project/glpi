@@ -112,6 +112,23 @@ The present file will list all changes made to the project; according to the
 - `Reservation::displayReservationDay()`
 - `Reservation::displayReservationsForAnItem()`
 
+## [9.5.6] unreleased
+
+### API changes
+
+#### Deprecated
+
+- Usage of "followups" option in `CommonITILObject::showShort()`
+- `CommonITILTask::showInObjectSumnary()`
+- `ITILFollowup::showShortForITILObject()`
+
+## [9.5.5] 2021-04-13
+
+### API changes
+
+#### Changed
+
+- Remove deprecation of `Search::getMetaReferenceItemtype()`
 
 ## [9.5.4] 2021-03-02
 
@@ -124,14 +141,6 @@ The present file will list all changes made to the project; according to the
 #### Deprecated
 
 - `Search::getMetaReferenceItemtype()`
-
-## [9.5.5] unreleased
-
-### API changes
-
-#### Changed
-
-- Remove deprecation of `Search::getMetaReferenceItemtype()`
 
 ## [9.5.3] 2020-11-25
 

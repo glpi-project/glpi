@@ -281,8 +281,13 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
     */
    public function prepareSearchUrlForDB(array $input): array {
       $taburl = parse_url(rawurldecode($input['url']));
-      $index  = strpos($taburl["path"], "plugins");
 
+      $key = "plugins";
+      if (preg_match('/marketplace/i', $taburl["path"])) {
+         $key = "marketplace";
+      }
+
+      $index  = strpos($taburl["path"], $key);
       if (!$index) {
          $index = strpos($taburl["path"], "front");
       }

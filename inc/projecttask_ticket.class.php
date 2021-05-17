@@ -219,10 +219,14 @@ class ProjectTask_Ticket extends CommonDBRelation{
          $i = 0;
          foreach ($tickets as $data) {
             Session::addToNavigateListItems('Ticket', $data["id"]);
-            Ticket::showShort($data['id'], ['followups'              => false,
-                                                 'row_num'                => $i,
-                                                 'type_for_massiveaction' => __CLASS__,
-                                                 'id_for_massiveaction'   => $data['linkid']]);
+            Ticket::showShort(
+               $data['id'],
+               [
+                  'row_num'                => $i,
+                  'type_for_massiveaction' => __CLASS__,
+                  'id_for_massiveaction'   => $data['linkid']
+               ]
+            );
             $i++;
          }
       }

@@ -6034,6 +6034,8 @@ abstract class CommonITILObject extends CommonDBTM {
     *      type_for_massiveaction : itemtype for massive action
     *      id_for_massaction      : default 0 means no massive action
     *      followups              : show followup columns
+    *
+    * @since 9.5.6 Usage of "followups" option is deprecated
     */
    static function showShort($id, $options = []) {
       global $DB;
@@ -6050,6 +6052,10 @@ abstract class CommonITILObject extends CommonDBTM {
          foreach ($options as $key => $val) {
             $p[$key] = $val;
          }
+      }
+
+      if ($p['followups']) {
+         Toolbox::deprecated('Usage of "followups" option is deprecated.');
       }
 
       $rand = mt_rand();
