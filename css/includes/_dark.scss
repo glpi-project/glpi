@@ -47,6 +47,8 @@ $timeline-sol-bg: #3a4d55 !default;
 $timeline-sol-fg: #89bfd3 !default;
 $timeline-sol-border: #435963 !default;
 
+$scrollbar-color-thumb: rgba($color: $secondary, $alpha: .2) !default;
+
 @import "~@tabler/core/src/scss/tabler";
 
 @mixin dark-mode {
