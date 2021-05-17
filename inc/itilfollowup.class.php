@@ -1026,62 +1026,6 @@ JAVASCRIPT;
    }
 
 
-   /**
-    * @param $ID  integer  ID of the ITILObject
-    * @param $itemtype  string   parent itemtype
-    *
-    * @deprecated 9.5.6
-   **/
-   static function showShortForITILObject($ID, $itemtype) {
-      Toolbox::deprecated();
-
-      global $DB, $CFG_GLPI;
-
-      // Print Followups for a job
-      $showprivate = Session::haveRight(self::$rightname, self::SEEPRIVATE);
-
-      $where = [
-         'itemtype'  => $itemtype,
-         'items_id'  => $ID
-      ];
-      if (!$showprivate) {
-         $where['OR'] = [
-            'is_private'   => 0,
-            'users_id'     => Session::getLoginUserID()
-         ];
-      }
-
-      // Get Followups
-      $iterator = $DB->request([
-         'FROM'   => 'glpi_itilfollowups',
-         'WHERE'  => $where,
-         'ORDER'  => 'date DESC'
-      ]);
-
-      $out = "";
-      if (count($iterator)) {
-         $out .= "<div class='center'><table class='tab_cadre' width='100%'>\n
-                  <tr><th>"._n('Date', 'Dates', 1)."</th><th>"._n('Requester', 'Requesters', 1)."</th>
-                  <th>".__('Description')."</th></tr>\n";
-
-         $showuserlink = 0;
-         if (Session::haveRight('user', READ)) {
-            $showuserlink = 1;
-         }
-         while ($data = $iterator->next()) {
-            $out .= "<tr class='tab_bg_3'>
-                     <td class='center'>".Html::convDateTime($data["date"])."</td>
-                     <td class='center'>".getUserName($data["users_id"], $showuserlink)."</td>
-                     <td width='70%' class='b'>".Html::resume_text($data["content"],
-                                                                   $CFG_GLPI["cut"])."
-                     </td></tr>";
-         }
-         $out .= "</table></div>";
-      }
-      return $out;
-   }
-
-
    function getRights($interface = 'central') {
 
       $values = parent::getRights();
