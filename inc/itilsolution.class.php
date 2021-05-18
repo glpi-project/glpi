@@ -161,31 +161,39 @@ class ITILSolution extends CommonDBChild {
          $this->showFormHeader($options);
       }
 
-      $show_template = $canedit;
-      $rand_template = mt_rand();
-      $rand_text     = $rand_type = 0;
+      $rand = mt_rand();
+      $content_id = "content$rand";
+
       if ($canedit) {
-         $rand_text = mt_rand();
-         $rand_type = mt_rand();
-      }
-      if ($show_template) {
          echo "<tr class='tab_bg_2'>";
          echo "<td>"._n('Solution template', 'Solution templates', 1)."</td><td>";
 
          SolutionTemplate::dropdown([
             'value'    => 0,
             'entity'   => $entities_id,
-            'rand'     => $rand_template,
-            // Load type and solution from bookmark
-            'toupdate' => [
-               'value_fieldname' => 'value',
-               'to_update'       => 'solution'.$rand_text,
-               'url'             => $CFG_GLPI["root_doc"]. "/ajax/solution.php",
-               'moreparams' => [
-                  'type_id' => 'dropdown_solutiontypes_id'.$rand_type
-               ]
-            ]
+            'rand'     => $rand,
+            'on_change' => "solutiontemplate_update{$rand}(this.value)"
          ]);
+
+         $JS = <<<JAVASCRIPT
+            function solutiontemplate_update{$rand}(value) {
+               $.ajax({
+                  url: '{$CFG_GLPI['root_doc']}/ajax/solution.php',
+                  type: 'POST',
+                  data: {
+                     solutiontemplates_id: value
+                  }
+               }).done(function(data) {
+                  tinymce.get("{$content_id}").setContent(data.content);
+
+                  var solutiontypes_id = isNaN(parseInt(data.solutiontypes_id))
+                     ? 0
+                     : parseInt(data.solutiontypes_id);
+                  $("#dropdown_solutiontypes_id{$rand}").trigger("setValue", solutiontypes_id);
+               });
+            }
+JAVASCRIPT;
+         echo Html::scriptBlock($JS);
 
          echo "</td><td colspan='2'>";
          if (Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ])) {
@@ -207,7 +215,7 @@ class ITILSolution extends CommonDBChild {
       // Settings a solution will set status to solved
       if ($canedit) {
          SolutionType::dropdown(['value'  => $this->getField('solutiontypes_id'),
-                                 'rand'   => $rand_type,
+                                 'rand'   => $rand,
                                  'entity' => $entities_id]);
       } else {
          echo Dropdown::getDropdownName('glpi_solutiontypes',
@@ -231,24 +239,17 @@ class ITILSolution extends CommonDBChild {
       echo "<td>".__('Description')."</td><td colspan='3'>";
 
       if ($canedit) {
-         $rand = mt_rand();
-         Html::initEditorSystem("content$rand");
-         Html::activateUserMentions("content$rand");
-
-         echo "<div id='solution$rand_text'>";
-         echo "<textarea id='content$rand' name='content' rows='12' cols='80'>".
-                $this->getField('content')."</textarea></div>";
-
-         // Hide file input to handle only images pasted in text editor
-         echo '<div style="display:none;">';
-         Html::file(['editor_id' => "content$rand",
-                     'filecontainer' => "filecontainer$rand",
-                     'onlyimages' => true,
-                     'showtitle' => false,
-                     'multiple' => true]);
-         echo '</div>';
+         Html::textarea(['name'              => 'content',
+                         'value'             => $this->fields["content"],
+                         'rand'              => $rand,
+                         'editor_id'         => $content_id,
+                         'enable_fileupload' => false,
+                         'enable_richtext'   => true,
+                         'cols'              => 12,
+                         'rows'              => 80]);
+         Html::activateUserMentions($content_id);
       } else {
-         echo Toolbox::unclean_cross_side_scripting_deep($this->getField('content'));
+         echo Toolbox::unclean_cross_side_scripting_deep($this->fields['content']);
       }
       echo "</td></tr>";
 

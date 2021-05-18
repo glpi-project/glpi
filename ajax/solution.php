@@ -33,28 +33,19 @@
 $AJAX_INCLUDE = 1;
 
 include ('../inc/includes.php');
-header("Content-Type: text/html; charset=UTF-8");
+header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
 
-$rand = mt_rand();
-
-Html::initEditorSystem("content$rand");
-
-if (isset($_POST['value']) && ($_POST['value'] > 0)) {
+if (isset($_POST['solutiontemplates_id']) && $_POST['solutiontemplates_id'] > 0) {
    $template = new SolutionTemplate();
+   $template->getFromDB($_POST['solutiontemplates_id']);
 
-   if ($template->getFromDB($_POST['value'])) {
-      echo "<textarea id='content$rand' name='content' rows='12' cols='80'>";
-      echo $template->getField('content');
-      echo "</textarea>\n";
-      echo "<script type='text/javascript'>".
-               Html::jsSetDropdownValue($_POST["type_id"],
-                                        $template->getField('solutiontypes_id')).
-           "</script>";
-   }
-
-} else {
-      echo "<textarea id='content$rand' name='content' rows='12' cols='80'></textarea>";
+   echo json_encode(
+      [
+         'content'          => Toolbox::unclean_cross_side_scripting_deep($template->fields['content']),
+         'solutiontypes_id' => $template->fields['solutiontypes_id'],
+      ]
+   );
 }
