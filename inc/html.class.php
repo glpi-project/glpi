@@ -3857,16 +3857,17 @@ JS;
    /**
     * Init the Editor System to a textarea
     *
-    * @param string  $name      name of the html textarea to use
-    * @param string  $rand      rand of the html textarea to use (if empty no image paste system)(default '')
-    * @param boolean $display   display or get js script (true by default)
-    * @param boolean $readonly  editor will be readonly or not
+    * @param string  $name          name of the html textarea to use
+    * @param string  $rand          rand of the html textarea to use (if empty no image paste system)(default '')
+    * @param boolean $display       display or get js script (true by default)
+    * @param boolean $readonly      editor will be readonly or not
+    * @param boolean $enable_images enable image pasting in rich text
     *
     * @return void|string
     *    integer if param display=true
     *    string if param display=false (HTML code)
    **/
-   static function initEditorSystem($name, $rand = '', $display = true, $readonly = false) {
+   static function initEditorSystem($name, $rand = '', $display = true, $readonly = false, $enable_images = true) {
       global $CFG_GLPI;
 
       // load tinymce lib
@@ -3893,6 +3894,31 @@ JS;
       $cache_suffix = '?v='.GLPI_VERSION;
       $readonlyjs   = $readonly ? 'true' : 'false';
 
+      $invalid_elements = 'applet,canvas,embed,form,object';
+      if (!$enable_images) {
+         $invalid_elements .= ',img';
+      }
+
+      $plugins = [
+         'autoresize',
+         'code',
+         'colorpicker',
+         'directionality',
+         'fullscreen',
+         'link',
+         'lists',
+         'paste',
+         'searchreplace',
+         'tabfocus',
+         'table',
+         'textcolor',
+      ];
+      if ($enable_images) {
+         $plugins[] = 'image';
+         $plugins[] = 'glpi_upload_doc';
+      }
+      $pluginsjs = json_encode($plugins);
+
       // init tinymce
       $js = <<<JS
          $(function() {
@@ -3900,23 +3926,7 @@ JS;
             tinyMCE.init({
                selector: '#{$name}',
 
-               plugins: [
-                  'autoresize',
-                  'code',
-                  'colorpicker',
-                  'directionality',
-                  'fullscreen',
-                  'image',
-                  'link',
-                  'lists',
-                  'paste',
-                  'searchreplace',
-                  'tabfocus',
-                  'table',
-                  'textcolor',
-
-                  'glpi_upload_doc', // glpi_upload_doc specific plugin to upload files
-               ],
+               plugins: {$pluginsjs},
 
                // Appearance
                language: '{$language}',
@@ -3934,7 +3944,7 @@ JS;
 
                // Content settings
                entity_encoding: 'raw',
-               invalid_elements: 'applet,canvas,embed,form,object',
+               invalid_elements: '{$invalid_elements}',
                paste_data_images: true,
                readonly: {$readonlyjs},
                relative_urls: false,
@@ -5808,6 +5818,7 @@ JAVASCRIPT;
     *  - editor_id (string):         id attribute for the textarea
     *  - value (string):             value attribute for the textarea
     *  - enable_richtext (bool):     enable tinymce for this textarea
+    *  - enable_images (bool):       enable image pasting in tinymce (default: true)
     *  - enable_fileupload (bool):   enable the inline fileupload system
     *  - display (bool):             display or return the generated html
     *  - cols (int):                 textarea cols attribute (witdh)
@@ -5825,6 +5836,7 @@ JAVASCRIPT;
       $p['editor_id']         = 'text'.$p['rand'];
       $p['value']             = '';
       $p['enable_richtext']   = false;
+      $p['enable_images']     = true;
       $p['enable_fileupload'] = false;
       $p['display']           = true;
       $p['cols']              = 100;
@@ -5843,7 +5855,7 @@ JAVASCRIPT;
                   $p['value']."</textarea>";
 
       if ($p['enable_richtext']) {
-         $display .= Html::initEditorSystem($p['editor_id'], $p['rand'], false);
+         $display .= Html::initEditorSystem($p['editor_id'], $p['rand'], false, false, $p['enable_images']);
       } else {
          $display .= Html::scriptBlock("
                         $(document).ready(function() {
@@ -5851,7 +5863,7 @@ JAVASCRIPT;
                         });
                      ");
       }
-      if (!$p['enable_fileupload'] && $p['enable_richtext']) {
+      if (!$p['enable_fileupload'] && $p['enable_richtext'] && $p['enable_images']) {
          $p_rt = $p;
          $p_rt['display'] = false;
          $p_rt['only_uploaded_files'] = true;
