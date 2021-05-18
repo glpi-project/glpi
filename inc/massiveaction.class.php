@@ -1290,8 +1290,25 @@ class MassiveAction {
                                                     $input[$input["field"]])) {
                         if ((count($link_entity_type) == 0)
                             || in_array($item->fields["entities_id"], $link_entity_type)) {
-                           if ($item->update(['id'            => $key,
-                                                   $input["field"] => $input[$input["field"]]])) {
+                           $field = $input['field'];
+                           $update_input = [
+                              'id'   => $key,
+                              $field => $input[$field],
+                           ];
+                           // Add fields related to uploaded images from rich text
+                           $_field        = sprintf('_%s', $field);
+                           $_tag_field    = sprintf('_tag_%s', $field);
+                           $_prefix_field = sprintf('_prefix_%s', $field);
+                           if (array_key_exists($_field, $input)
+                               && array_key_exists($_tag_field, $input)
+                               && array_key_exists($_prefix_field, $input)) {
+                              $update_input += [
+                                 $_field        => $input[$_field],
+                                 $_tag_field    => $input[$_tag_field],
+                                 $_prefix_field => $input[$_prefix_field],
+                              ];
+                           }
+                           if ($item->update($update_input)) {
                               $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                            } else {
                               $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);

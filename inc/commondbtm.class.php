@@ -4909,11 +4909,17 @@ class CommonDBTM extends CommonGLPI {
                return Html::autocompletionTextField($this, $name, $options);
 
             case "text" :
-               $out = '';
-               if (isset($searchoptions['htmltext']) && $searchoptions['htmltext']) {
-                  $out = Html::initEditorSystem($name, '', false);
-               }
-               return $out."<textarea cols='45' rows='5' name='$name'>$value</textarea>";
+               return Html::textarea(
+                  [
+                     'display'           => false,
+                     'name'              => $name,
+                     'value'             => $value,
+                     'enable_fileupload' => false,
+                     'enable_richtext'   => isset($searchoptions['htmltext']) && $searchoptions['htmltext'],
+                     'cols'              => 45,
+                     'rows'              => 5,
+                  ]
+               );
 
             case "bool" :
                return Dropdown::showYesNo($name, $value, -1, $options);

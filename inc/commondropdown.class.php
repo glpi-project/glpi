@@ -233,6 +233,42 @@ abstract class CommonDropdown extends CommonDBTM {
       return self::prepareInputForAdd($input);
    }
 
+   function post_addItem() {
+      $this->addFilesFromRichText();
+
+      parent::post_addItem();
+   }
+
+   function post_updateItem($history = 1) {
+      $this->addFilesFromRichText();
+
+      parent::post_updateItem($history);
+   }
+
+   /**
+    * Add files from rich text fields.
+    *
+    * @return void
+    */
+   private function addFilesFromRichText(): void {
+
+      $fields = $this->getAdditionalFields();
+      foreach ($fields as $field) {
+         $type = $field['type'] ?? '';
+         if ($type === 'tinymce') {
+            // Add files from inline images
+            $this->input = $this->addFiles(
+               $this->input,
+               [
+                  'force_update'  => true,
+                  'name'          => $field['name'],
+                  'content_field' => $field['name'],
+               ]
+            );
+         }
+      }
+   }
+
 
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
