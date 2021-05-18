@@ -2554,7 +2554,9 @@ class Ticket extends CommonITILObject {
             return true;
 
          case 'resolve_tickets':
-            $rand_type = mt_rand();
+            $rand = mt_rand();
+            $content_id = "content$rand";
+
             echo '<div class="horizontal-form">';
 
             echo '<div class="form-row">';
@@ -2563,16 +2565,29 @@ class Ticket extends CommonITILObject {
             SolutionTemplate::dropdown([
                'name'     => "solution_template",
                'value'    => 0,
-               // Load type and solution from bookmark
-               'toupdate' => [
-                  'value_fieldname' => 'value',
-                  'to_update'       => 'solution',
-                  'url'             => $CFG_GLPI["root_doc"]. "/ajax/solution.php",
-                  'moreparams' => [
-                     'type_id' => "dropdown_solutiontypes_id$rand_type"
-                  ]
-               ]
+               'rand'     => $rand,
+               'on_change' => "solutiontemplate_update{$rand}(this.value)"
             ]);
+
+            $JS = <<<JAVASCRIPT
+               function solutiontemplate_update{$rand}(value) {
+                  $.ajax({
+                     url: '{$CFG_GLPI['root_doc']}/ajax/solution.php',
+                     type: 'POST',
+                     data: {
+                        solutiontemplates_id: value
+                     }
+                  }).done(function(data) {
+                     tinymce.get("{$content_id}").setContent(data.content);
+
+                     var solutiontypes_id = isNaN(parseInt(data.solutiontypes_id))
+                        ? 0
+                        : parseInt(data.solutiontypes_id);
+                     $("#dropdown_solutiontypes_id{$rand}").trigger("setValue", solutiontypes_id);
+                  });
+               }
+JAVASCRIPT;
+            echo Html::scriptBlock($JS);
             echo '</div>'; // .form-row
 
             echo '<div class="form-row">';
@@ -2580,29 +2595,21 @@ class Ticket extends CommonITILObject {
             echo "<label for='solutiontypes_id'>$label</label>";
             SolutionType::dropdown([
                'name'  => 'solutiontypes_id',
-               'rand'  => $rand_type
+               'rand'  => $rand
             ]);
             echo '</div>'; // .form-row
 
             echo '<div class="form-row-vertical">';
             $label = __('Description');
             echo "<label for='content'>$label</label>";
-
-            Html::initEditorSystem("content");
-            echo "<div id='solution'>";
-            echo "<textarea id='content' name='content' rows='12' cols='80'></textarea>";
-            echo "</div>";
-
-            // Hide file input to handle only images pasted in text editor
-            echo '<div style="display:none;">';
-            Html::file([
-               'editor_id' => "content",
-               'filecontainer' => "filecontainer",
-               'onlyimages' => true,
-               'showtitle' => false,
-               'multiple' => true
-            ]);
-            echo '</div>';
+            Html::textarea(['name'              => 'content',
+                            'value'             => '',
+                            'rand'              => $rand,
+                            'editor_id'         => $content_id,
+                            'enable_fileupload' => false,
+                            'enable_richtext'   => true,
+                            'cols'              => 12,
+                            'rows'              => 80]);
             echo '</div>'; // .form-row
 
             echo '</div>'; // .horizontal-form
