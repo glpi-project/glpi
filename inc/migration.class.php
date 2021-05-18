@@ -1386,6 +1386,7 @@ class Migration {
     * @param int    $new_search_opt The new search option ID
     *
     * @return void
+    * @since 9.5.6
     */
    public function changeSearchOption(string $itemtype, int $old_search_opt, int $new_search_opt) {
       if (!isset($this->search_opts[$itemtype])) {
@@ -1401,6 +1402,7 @@ class Migration {
     * Finalize search option migrations
     *
     * @return void
+    * @since 9.5.6
     */
    private function migrateSearchOptions() {
       global $DB;
