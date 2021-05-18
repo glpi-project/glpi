@@ -1,7 +1,10 @@
-{% set enctype = (item.isNewItem() ? 'enctype="multipart/form-data"' : "") %}
+{% set enctype = (item.isNewItem() ? "multipart/form-data" : "application/x-www-form-urlencoded") %}
 {% set new_cls = item.isNewItem() ? "new-itil-object" : "" %}
 
 <form method="POST" action="{{ item.getFormURL() }}?id={{ item.fields['id'] }}"
-      {{ enctype }} data-track-changes="true" id="itil-form" class="{{ new_cls }}">
+      enctype="{{ enctype }}"
+      data-track-changes="true" id="itil-form" class="{{ new_cls }}">
    <input type="hidden" name="id" value="{{ item.fields['id'] }}">
    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+   <input type="hidden" name="{{ itiltemplate_key }}" value="{{ itiltemplate.fields['id'] }}"/>
+   <input type="hidden" name="_predefined_fields" value="{{ prepareArrayForInput(predefined_fields) }}"/>
