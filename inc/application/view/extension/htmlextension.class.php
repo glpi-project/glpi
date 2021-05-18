@@ -58,8 +58,11 @@ class HtmlExtension extends AbstractExtension implements ExtensionInterface {
          new TwigFunction('convDateTime', [Html::class , 'convDateTime']),
          new TwigFunction('Html__uploadedFiles', [Html::class , 'uploadedFiles'], ['is_safe' => ['html']]),
          new TwigFunction('Html__initEditorSystem', [Html::class , 'initEditorSystem'], ['is_safe' => ['html']]),
+         new TwigFunction('Html__cleanId', [Html::class , 'cleanId'], ['is_safe' => ['html']]),
          new TwigFunction('Html__file', [Html::class , 'file'], ['is_safe' => ['html']]),
+         new TwigFunction('Html__getCheckbox', [Html::class , 'getCheckbox'], ['is_safe' => ['html']]),
          new TwigFunction('Html__showToolTip', [Html::class , 'showToolTip'], ['is_safe' => ['html']]),
+         new TwigFunction('Html__showCheckbox', [Html::class , 'showCheckbox'], ['is_safe' => ['html']]),
       ];
    }
 

@@ -715,33 +715,42 @@ class Profile extends CommonDBTM {
       $matrix_options['title'] = __('Assistance');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
-      echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr class='tab_bg_5'><th colspan='2'>".__('Association')."</th></tr>\n";
+      echo "<div class='mt-4 mx-n2'>";
+      echo "<table class='table table-hover card-table'>";
+      echo "<thead>";
+      echo "<tr class='border-top'><th colspan='2'><h4>".__('Association')."</h4></th></tr>";
+      echo "</thead>";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td width=30%>".__('See hardware of my groups')."</td><td>";
-      Html::showCheckbox(['name'    => '_show_group_hardware',
-                               'checked' => $this->fields['show_group_hardware']]);
-      echo "</td></tr>\n";
+      echo "<tr'>";
+      echo "<td>".__('See hardware of my groups')."</td>";
+      echo "<td>";
+      Html::showCheckbox([
+         'name'    => '_show_group_hardware',
+         'checked' => $this->fields['show_group_hardware']
+      ]);
+      echo "</td>";
+      echo "</tr>";
 
-      echo "<tr class='tab_bg_2'>";
+      echo "<tr>";
       echo "<td>".__('Link with items for the creation of tickets')."</td>";
       echo "<td>";
       self::getLinearRightChoice(self::getHelpdeskHardwareTypes(true),
                                  ['field' => 'helpdesk_hardware',
                                        'value' => $this->fields['helpdesk_hardware']]);
-      echo "</td></tr>\n";
+      echo "</td>";
+      echo "</tr>";
 
-      echo "<tr class='tab_bg_2'>";
+      echo "<tr>";
       echo "<td>".__('Associable items to a ticket')."</td>";
       echo "<td><input type='hidden' name='_helpdesk_item_types' value='1'>";
       self::dropdownHelpdeskItemtypes(['values' => $this->fields["helpdesk_item_type"]]);
 
       echo "</td>";
-      echo "</tr>\n";
+      echo "</tr>";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Default ticket template')."</td><td>";
+      echo "<tr>";
+      echo "<td>".__('Default ticket template')."</td>";
+      echo "<td>";
       // Only root entity ones and recursive
       $options = ['value'     => $this->fields["tickettemplates_id"],
                        'entity'    => 0];
@@ -754,10 +763,11 @@ class Profile extends CommonDBTM {
       }
       TicketTemplate::dropdown($options);
       echo "</td>";
-      echo "</tr>\n";
+      echo "</tr>";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Default change template')."</td><td>";
+      echo "<tr>";
+      echo "<td>".__('Default change template')."</td>";
+      echo "<td>";
       // Only root entity ones and recursive
       $options = ['value'     => $this->fields["changetemplates_id"],
                        'entity'    => 0];
@@ -770,10 +780,11 @@ class Profile extends CommonDBTM {
       }
       ChangeTemplate::dropdown($options);
       echo "</td>";
-      echo "</tr>\n";
+      echo "</tr>";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Default problem template')."</td><td>";
+      echo "<tr>";
+      echo "<td>".__('Default problem template')."</td>";
+      echo "<td>";
       // Only root entity ones and recursive
       $options = ['value'     => $this->fields["problemtemplates_id"],
                        'entity'    => 0];
@@ -786,19 +797,23 @@ class Profile extends CommonDBTM {
       }
       ProblemTemplate::dropdown($options);
       echo "</td>";
-      echo "</tr>\n";
+      echo "</tr>";
 
       if ($canedit) {
-         echo "<tr class='tab_bg_1'>";
+         echo "<tr'>";
          echo "<td colspan='4' class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
-         echo "</td></tr>\n";
-         echo "</table>\n";
+         echo Html::submit("<i class='fas fa-save'></i><span>"._sx('button', 'Save')."</span>", [
+            'class' => 'btn btn-primary mt-2',
+            'name'  => 'update'
+         ]);
+         echo "</td></tr>";
+         echo "</table>";
          Html::closeForm();
       } else {
-         echo "</table>\n";
+         echo "</table>";
       }
+      echo "</div>";
       echo "</div>";
    }
 
@@ -840,8 +855,11 @@ class Profile extends CommonDBTM {
       if ($canedit) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
-         echo "</div>\n";
+         echo Html::submit("<i class='fas fa-save'></i><span>"._sx('button', 'Save')."</span>", [
+            'class' => 'btn btn-primary mt-2',
+            'name'  => 'update'
+         ]);
+         echo "</div>";
          Html::closeForm();
       }
       echo "</div>";
@@ -914,7 +932,10 @@ class Profile extends CommonDBTM {
           && $closeform) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
+         echo Html::submit("<i class='fas fa-save'></i><span>"._sx('button', 'Save')."</span>", [
+            'class' => 'btn btn-primary mt-2',
+            'name'  => 'update'
+         ]);
          echo "</div>\n";
          Html::closeForm();
       }
@@ -989,7 +1010,7 @@ class Profile extends CommonDBTM {
       $matrix_options['title'] = __('Management');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
-      echo "<div class='tab_cadre_fixehov'>";
+      echo "<div class='tab_cadre_fixehov mx-n2'>";
       echo "<input type='hidden' name='_managed_domainrecordtypes' value='1'>";
       $rand = rand();
       echo "<label for='dropdown_managed_domainrecordtypes$rand'>".__('Manageable domain records')."</label>";
@@ -1005,14 +1026,17 @@ class Profile extends CommonDBTM {
             'values'    => $this->fields['managed_domainrecordtypes']
          ]
       );
-      echo "</div>\n";
+      echo "</div>";
 
       if ($canedit
           && $closeform) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
-         echo "</div>\n";
+         echo Html::submit("<i class='fas fa-save'></i><span>"._sx('button', 'Save')."</span>", [
+            'class' => 'btn btn-primary mt-2',
+            'name'  => 'update'
+         ]);
+         echo "</div>";
          Html::closeForm();
       }
       echo "</div>";
@@ -1077,8 +1101,11 @@ class Profile extends CommonDBTM {
           && $closeform) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
-         echo "</div>\n";
+         echo Html::submit("<i class='fas fa-save'></i><span>"._sx('button', 'Save')."</span>", [
+            'class' => 'btn btn-primary mt-2',
+            'name'  => 'update'
+         ]);
+         echo "</div>";
          Html::closeForm();
       }
       echo "</div>";
@@ -1102,14 +1129,18 @@ class Profile extends CommonDBTM {
          echo "<form method='post' action='".$this->getFormURL()."' data-track-changes='true'>";
       }
 
-      echo "<table class='tab_cadre_fixe'>";
+      echo "<div class='mt-n2 mx-n2 mb-4'>";
+      echo "<table class='table table-hover card-table'>";
       // Assistance / Tracking-helpdesk
-      echo "<tr class='tab_bg_1'><th colspan='2'>".__('ITIL Templates')."</th></tr>\n";
+      echo "<thead>";
+      echo "<tr><th colspan='2'><h4>".__('ITIL Templates')."<h4></th></tr>";
+      echo "</thead>";
 
+      echo "<tbody>";
       foreach (['Ticket', 'Change', 'Problem'] as $itiltype) {
          $object = new $itiltype;
-         echo "<tr class='tab_bg_2'>";
-         echo "<td>".sprintf(__('Default %1$s template'), $object->getTypeName())."</td><td  width='30%'>";
+         echo "<tr>";
+         echo "<td>".sprintf(__('Default %1$s template'), $object->getTypeName())."</td><td>";
          // Only root entity ones and recursive
          $options = [
             'value'     => $this->fields[strtolower($itiltype)."templates_id"],
@@ -1124,10 +1155,12 @@ class Profile extends CommonDBTM {
 
          $tpl_class = $itiltype . 'Template';
          $tpl_class::dropdown($options);
-         echo "</td></tr>\n";
+         echo "</td></tr>";
       }
 
+      echo "</tbody>";
       echo "</table>";
+      echo "</div>";
 
       $matrix_options = ['canedit'       => $canedit,
                               'default_class' => 'tab_bg_2'];
@@ -1165,43 +1198,37 @@ class Profile extends CommonDBTM {
       $matrix_options['title'] = _n('Validation', 'Validations', Session::getPluralNumber());
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
-      echo "<table class='tab_cadre_fixe'>";
+      echo "<div class='mx-n2 my-4'>";
+      echo "<table class='table table-hover card-table'>";
 
-      echo "<tr class='tab_bg_5'><th colspan='2'>".__('Association')."</th>";
-      echo "</tr>\n";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('See hardware of my groups')."</td><td>";
+      echo "<thead>";
+      echo "<tr class='border-top'><th colspan='2'><h4>".__('Association')."<h4></th></tr>";
+      echo "</thead>";
+
+      echo "<tr>";
+      echo "<td>".__('See hardware of my groups')."</td>";
+      echo "<td>";
       Html::showCheckbox(['name'    => '_show_group_hardware',
                                'checked' => $this->fields['show_group_hardware']]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'>";
+      echo "<tr>";
       echo "<td>".__('Link with items for the creation of tickets')."</td>";
-      echo "\n<td>";
+      echo "<td>";
       self::getLinearRightChoice(self::getHelpdeskHardwareTypes(true),
                                  ['field' => 'helpdesk_hardware',
                                        'value' => $this->fields['helpdesk_hardware']]);
-      echo "</td></tr>\n";
+      echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'>";
+      echo "<tr>";
       echo "<td>".__('Associable items to a ticket')."</td>";
       echo "<td><input type='hidden' name='_helpdesk_item_types' value='1'>";
       self::dropdownHelpdeskItemtypes(['values' => $this->fields["helpdesk_item_type"]]);
-      // Linear_HIT
-      // self::getLinearRightChoice(self::getHelpdeskItemtypes(),
-      //                               array('field'         => 'helpdesk_item_type',
-      //                                     'value'         => $this->fields['helpdesk_item_type'],
-      //                                     'check_all'     => true,
-      //                                     'zero_on_empty' => false,
-      //                                     'max_per_line'  => 4,
-      //                                     'check_method'  =>
-      //                                     function ($element, $field) {
-      //                                        return in_array($element,$field);
-      //                                     }));
       echo "</td>";
-      echo "</tr>\n";
+      echo "</tr>";
       echo "</table>";
+      echo "</div>";
 
       $rights = [
          [
@@ -1258,7 +1285,10 @@ class Profile extends CommonDBTM {
           && $closeform) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
+         echo Html::submit("<i class='fas fa-save'></i><span>"._sx('button', 'Save')."</span>", [
+            'class' => 'btn btn-primary mt-2',
+            'name'  => 'update'
+         ]);
          echo "</div>\n";
          Html::closeForm();
       }
@@ -1341,8 +1371,11 @@ class Profile extends CommonDBTM {
           && $closeform) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
-         echo "</div>\n";
+         echo Html::submit("<i class='fas fa-save'></i><span>"._sx('button', 'Save')."</span>", [
+            'class' => 'btn btn-primary mt-2',
+            'name'  => 'update'
+         ]);
+         echo "</div>";
          Html::closeForm();
       }
       echo "</div>";
@@ -1436,8 +1469,11 @@ class Profile extends CommonDBTM {
           && $closeform) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
-         echo "</div>\n";
+         echo Html::submit("<i class='fas fa-save'></i><span>"._sx('button', 'Save')."</span>", [
+            'class' => 'btn btn-primary mt-2',
+            'name'  => 'update'
+         ]);
+         echo "</div>";
          Html::closeForm();
       }
       echo "</div>";
@@ -1542,8 +1578,11 @@ class Profile extends CommonDBTM {
           && $closeform) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
-         echo "</div>\n";
+         echo Html::submit("<i class='fas fa-save'></i><span>"._sx('button', 'Save')."</span>", [
+            'class' => 'btn btn-primary mt-2',
+            'name'  => 'update'
+         ]);
+         echo "</div>";
          Html::closeForm();
       }
       echo "</div>";
@@ -1683,8 +1722,11 @@ class Profile extends CommonDBTM {
           && $closeform) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
-         echo "</div>\n";
+         echo Html::submit("<i class='fas fa-save'></i><span>"._sx('button', 'Save')."</span>", [
+            'class' => 'btn btn-primary mt-2',
+            'name'  => 'update'
+         ]);
+         echo "</div>";
          Html::closeForm();
       }
       echo "</div>";
@@ -1730,8 +1772,11 @@ class Profile extends CommonDBTM {
           && $closeform) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
-         echo "</div>\n";
+         echo Html::submit("<i class='fas fa-save'></i><span>"._sx('button', 'Save')."</span>", [
+            'class' => 'btn btn-primary mt-2',
+            'name'  => 'update'
+         ]);
+         echo "</div>";
          Html::closeForm();
       }
       echo "</div>";
