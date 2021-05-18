@@ -54,13 +54,25 @@ class SolutionTemplate extends CommonDropdown {
 
    function getAdditionalFields() {
 
-      return [['name'  => 'solutiontypes_id',
-                         'label' => SolutionType::getTypeName(1),
-                         'type'  => 'dropdownValue',
-                         'list'  => true],
-                   ['name'  => 'content',
-                         'label' => __('Content'),
-                         'type'  => 'tinymce']];
+      return [
+         [
+            'name'  => 'solutiontypes_id',
+            'label' => SolutionType::getTypeName(1),
+            'type'  => 'dropdownValue',
+            'list'  => true,
+         ],
+         [
+            'name'           => 'content',
+            'label'          => __('Content'),
+            'type'           => 'tinymce',
+            // As content copying from template is not using the image pasting process, these images
+            // are not correctly processed. Indeed, document item corresponding to the destination item is not created and
+            // image src is not containing the ITIL item foreign key, so image will not be visible for helpdesk profiles.
+            // As fixing it is really complex (requires lot of refactoring in images handling, both on JS and PHP side),
+            // it is preferable to disable usage of images in templates.
+            'disable_images' => true,
+         ]
+      ];
    }
 
 

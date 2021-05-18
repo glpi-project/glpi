@@ -4909,11 +4909,22 @@ class CommonDBTM extends CommonGLPI {
                return Html::autocompletionTextField($this, $name, $options);
 
             case "text" :
-               $out = '';
-               if (isset($searchoptions['htmltext']) && $searchoptions['htmltext']) {
-                  $out = Html::initEditorSystem($name, '', false);
-               }
-               return $out."<textarea cols='45' rows='5' name='$name'>$value</textarea>";
+               return Html::textarea(
+                  [
+                     'display'           => false,
+                     'name'              => $name,
+                     'value'             => $value,
+                     'enable_fileupload' => false,
+                     'enable_richtext'   => isset($searchoptions['htmltext']) && $searchoptions['htmltext'],
+                     // For now, this textarea is displayed only in the "update" massive action form, for fields
+                     // corresponding to a search option having "htmltext" property.
+                     // Uploaded images processing is not able to handle multiple use of same uploaded file, so until this is fixed,
+                     // it is preferable to disable image pasting in rich text inside massive actions.
+                     'enable_images'     => false,
+                     'cols'              => 45,
+                     'rows'              => 5,
+                  ]
+               );
 
             case "bool" :
                return Dropdown::showYesNo($name, $value, -1, $options);
