@@ -865,7 +865,7 @@
          }
       }
 
-      &.rotate {
+      &.rotate, & > .rotate {
          -moz-transform: rotate(-70deg);
 
          /* FF3.5+ */
