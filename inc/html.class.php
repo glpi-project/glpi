@@ -2589,7 +2589,8 @@ JAVASCRIPT;
          $name = 'massaction_'.mt_rand();
       }
       return  "<form name='$name' id='$name' method='post'
-               action='".$CFG_GLPI["root_doc"]."/front/massiveaction.php'>";
+               action='".$CFG_GLPI["root_doc"]."/front/massiveaction.php'
+               enctype='multipart/form-data'>";
    }
 
 
