@@ -4471,8 +4471,6 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      $this->initForm($ID, $options);
-
       $sla = new SLA;
       $ola = new OLA;
 
@@ -4481,7 +4479,9 @@ class Ticket extends CommonITILObject {
          'timeline_itemtypes' => $this->getTimelineItemtypes(),
          'params'             => $options,
          'timeline'           => $this->getTimelineItems(),
+         'itiltemplate_key'   => $tpl_key,
          'itiltemplate'       => $tt,
+         'predefined_fields'  => $predefined_fields,
          'ticket_ticket'      => new Ticket_Ticket,
          'sla'                => $sla,
          'ola'                => $ola,

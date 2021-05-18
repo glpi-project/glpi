@@ -50,6 +50,7 @@ class ToolboxExtension extends AbstractExtension implements ExtensionInterface {
          new TwigFunction('getSize', [Toolbox::class, 'getSize']),
          new TwigFunction('autoName', 'autoName', ['is_safe' => ['html']]),
          new TwigFunction('getHtmlToDisplay', [Toolbox::class, 'getHtmlToDisplay'], ['is_safe' => ['html']]),
+         new TwigFunction('prepareArrayForInput', [Toolbox::class, 'prepareArrayForInput'], ['is_safe' => ['html']]),
          new TwigFunction('file_exists', 'file_exists'),
       ];
    }

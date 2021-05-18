@@ -62,6 +62,16 @@
                'on_change': 'this.form.submit()',
                'disabled': (not (canupdate or can_requester))
             }) %}
+            {% if not item.isNewItem() and itiltemplate.isMandatoryField('itilcategories_id') and item.fields['itilcategories_id'] > 0 %}
+               {% set cat_params = cat_params|merge({'display_emptychoice': false}) %}
+            {% endif %}
+            {% if item.getType() == "Ticket" %}
+               {% if item.fields['type'] == constant("Ticket::INCIDENT_TYPE") %}
+                  {% set cat_params = cat_params|merge({'condition': {'is_incident': 1}}) %}
+               {% elseif item.fields['type'] == constant("Ticket::DEMAND_TYPE") %}
+                  {% set cat_params = cat_params|merge({'condition': {'is_request': 1}}) %}
+               {% endif %}
+            {% endif %}
             {{ fields.dropdownField(
                'ITILCategory',
                'itilcategories_id',
