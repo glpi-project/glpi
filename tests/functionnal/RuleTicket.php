@@ -867,7 +867,7 @@ class RuleTicket extends DbTestCase {
       ]);
       $this->checkInput($rulecrit, $crit_id, $crit_input);
 
-      // Create action to put impact to very low
+      // Create action to set validation to "refused"
       $action_value = CommonITILValidation::REFUSED;
       $action_id = $ruleaction->add($action_input = [
          'rules_id'    => $ruletid,
