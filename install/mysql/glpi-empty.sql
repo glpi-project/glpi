@@ -4264,6 +4264,74 @@ CREATE TABLE `glpi_sockets` (
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+
+### Dump table glpi_cables
+
+DROP TABLE IF EXISTS `glpi_cables`;
+CREATE TABLE `glpi_cables` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `entities_id` int NOT NULL DEFAULT '0',
+  `rear_connectormodels_id` int NOT NULL DEFAULT '0',
+  `front_connectormodels_id` int NOT NULL DEFAULT '0',
+  `rear_sockets_id` int NOT NULL DEFAULT '0',
+  `front_sockets_id` int NOT NULL DEFAULT '0',
+  `cablestrands_id` int NOT NULL DEFAULT '0',
+  `color` varchar(255) DEFAULT NULL,
+  `otherserial` varchar(255) DEFAULT NULL,
+  `states_id` int NOT NULL DEFAULT '0',
+  `users_id_tech` int NOT NULL DEFAULT '0',
+  `cabletypes_id` int NOT NULL DEFAULT '0',
+  `comment` text,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `rear_connectormodels_id` (`rear_connectormodels_id`),
+  KEY `front_connectormodels_id` (`front_connectormodels_id`),
+  KEY `rear_sockets_id` (`rear_sockets_id`),
+  KEY `front_sockets_id` (`front_sockets_id`),
+  KEY `cablestrands_id` (`cablestrands_id`),
+  KEY `states_id` (`states_id`),
+  KEY `complete` (`entities_id`,`name`),
+  KEY `users_id_tech` (`users_id_tech`),
+  KEY `cabletypes_id` (`cabletypes_id`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+
+### Dump table glpi_cabletypes
+
+DROP TABLE IF EXISTS `glpi_cabletypes`;
+CREATE TABLE `glpi_cabletypes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+
+### Dump table glpi_cablestrands
+
+DROP TABLE IF EXISTS `glpi_cablestrands`;
+CREATE TABLE `glpi_cablestrands` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 ### Dump table glpi_connectormodels
 
 DROP TABLE IF EXISTS `glpi_connectormodels`;
@@ -4278,6 +4346,7 @@ CREATE TABLE `glpi_connectormodels` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 
 ### Dump table glpi_networkaliases
 

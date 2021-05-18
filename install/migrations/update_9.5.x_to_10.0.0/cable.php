@@ -44,7 +44,7 @@ if (!$DB->tableExists('glpi_networkportbnctypes')) {
       KEY `name` (`name`),
       KEY `date_mod` (`date_mod`),
       KEY `date_creation` (`date_creation`)
-      ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+      ) ENGINE = InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC;";
    $DB->queryOrDie($query, "10.0 add table glpi_networkportbnctypes");
 }
 
@@ -66,7 +66,7 @@ if (!$DB->tableExists('glpi_networkportbncs')) {
       KEY `speed` (`speed`),
       KEY `date_mod` (`date_mod`),
       KEY `date_creation` (`date_creation`)
-      ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+      ) ENGINE = InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC;";
    $DB->queryOrDie($query, "10.0 add table glpi_networkportbncs");
 }
 
@@ -81,7 +81,7 @@ if (!$DB->tableExists('glpi_networkportfiberchanneltypes')) {
       KEY `name` (`name`),
       KEY `date_mod` (`date_mod`),
       KEY `date_creation` (`date_creation`)
-      ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+      ) ENGINE = InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC;";
    $DB->queryOrDie($query, "10.0 add table glpi_networkportfiberchanneltypes");
 
    $migration->addField('glpi_networkportfiberchannels', 'networkportfiberchanneltypes_id', 'int', [
@@ -90,7 +90,6 @@ if (!$DB->tableExists('glpi_networkportfiberchanneltypes')) {
 
    $migration->addKey('glpi_networkportfiberchannels', 'networkportfiberchanneltypes_id', 'type');
 }
-
 
 if (!$DB->tableExists('glpi_sockets') && $DB->tableExists('glpi_netpoints')) {
    $migration->renameTable('glpi_netpoints', 'glpi_sockets');
@@ -134,7 +133,7 @@ if (!$DB->tableExists('glpi_connectormodels')) {
       KEY `name` (`name`),
       KEY `date_mod` (`date_mod`),
       KEY `date_creation` (`date_creation`)
-    ) ENGINE=InnoDB DEFAULT CHARSET= {$default_charset} COLLATE = {$default_collation};";
+    ) ENGINE=InnoDB DEFAULT CHARSET= {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC;";
    $DB->queryOrDie($query, "10.0 add table glpi_connectormodels");
 
    $migration->addField('glpi_sockets', 'connectormodels_id', 'int', [
@@ -191,4 +190,70 @@ if (!$DB->tableExists('glpi_connectormodels')) {
    $migration->dropField('glpi_networkportethernets', 'sockets_id');
    $migration->dropField('glpi_networkportfiberchannels', 'sockets_id');
    $migration->dropField('glpi_networkportbncs', 'sockets_id');
+}
+
+
+if (!$DB->tableExists('glpi_cables')) {
+   $query = "CREATE TABLE `glpi_cables` (
+      `id` int NOT NULL AUTO_INCREMENT,
+      `name` varchar(255) DEFAULT NULL,
+      `entities_id` int NOT NULL DEFAULT '0',
+      `rear_connectormodels_id` int NOT NULL DEFAULT '0',
+      `front_connectormodels_id` int NOT NULL DEFAULT '0',
+      `rear_sockets_id` int NOT NULL DEFAULT '0',
+      `front_sockets_id` int NOT NULL DEFAULT '0',
+      `cablestrands_id` int NOT NULL DEFAULT '0',
+      `color` varchar(255) DEFAULT NULL,
+      `otherserial` varchar(255) DEFAULT NULL,
+      `states_id` int NOT NULL DEFAULT '0',
+      `users_id_tech` int NOT NULL DEFAULT '0',
+      `cabletypes_id` int NOT NULL DEFAULT '0',
+      `comment` text,
+      `date_mod` timestamp NULL DEFAULT NULL,
+      `date_creation` timestamp NULL DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      KEY `name` (`name`),
+      KEY `rear_connectormodels_id` (`rear_connectormodels_id`),
+      KEY `front_connectormodels_id` (`front_connectormodels_id`),
+      KEY `rear_sockets_id` (`rear_sockets_id`),
+      KEY `front_sockets_id` (`front_sockets_id`),
+      KEY `cablestrands_id` (`cablestrands_id`),
+      KEY `states_id` (`states_id`),
+      KEY `complete` (`entities_id`,`name`),
+      KEY `users_id_tech` (`users_id_tech`),
+      KEY `cabletypes_id` (`cabletypes_id`),
+      KEY `date_mod` (`date_mod`),
+      KEY `date_creation` (`date_creation`)
+    ) ENGINE=InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC;";
+   $DB->queryOrDie($query, "10.0 add table glpi_cables");
+}
+
+if (!$DB->tableExists('glpi_cabletypes')) {
+   $query = "CREATE TABLE `glpi_cabletypes` (
+      `id` int NOT NULL AUTO_INCREMENT,
+      `name` varchar(255) DEFAULT NULL,
+      `comment` text,
+      `date_mod` timestamp NULL DEFAULT NULL,
+      `date_creation` timestamp NULL DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      KEY `name` (`name`),
+      KEY `date_mod` (`date_mod`),
+      KEY `date_creation` (`date_creation`)
+    ) ENGINE=InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC;";
+   $DB->queryOrDie($query, "10.0 add table glpi_cabletypes");
+}
+
+if (!$DB->tableExists('glpi_cablestrands')) {
+   $query = "CREATE TABLE `glpi_cablestrands` (
+      `id` int NOT NULL AUTO_INCREMENT,
+      `name` varchar(255) DEFAULT NULL,
+      `comment` text,
+      `date_mod` timestamp NULL DEFAULT NULL,
+      `date_creation` timestamp NULL DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      KEY `name` (`name`),
+      KEY `date_mod` (`date_mod`),
+      KEY `date_creation` (`date_creation`)
+    ) ENGINE=InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC;";
+   $DB->queryOrDie($query, "10.0 add table glpi_cablestrands");
 }
