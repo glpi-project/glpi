@@ -1210,7 +1210,6 @@ class Profile extends CommonDBTM {
       echo "<div class='mx-n2 my-4'>";
       echo "<table class='table table-hover card-table'>";
 
-
       echo "<thead>";
       echo "<tr class='border-top'><th colspan='2'><h4>".__('Association')."<h4></th></tr>";
       echo "</thead>";
