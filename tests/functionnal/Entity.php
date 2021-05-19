@@ -748,9 +748,9 @@ class Entity extends DbTestCase {
 
       foreach ($possible_values as $value) {
          if ($value == $expected) {
-            $this->string($html)->contains($value);
+            $this->string($html)->contains($value, 'Ticket form must contains ' . $value);
          } else {
-            $this->string($html)->notContains($value);
+            $this->string($html)->notContains($value, 'Ticket form must not contains ' . $value);
          }
       }
 
