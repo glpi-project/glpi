@@ -32,12 +32,6 @@
 
 namespace Glpi\Application\View\Extension;
 
-use CommonITILTask;
-use DbUtils;
-use Document_Item;
-use Entity;
-use ITILFollowup;
-use ITILSolution;
 use Session;
 use Toolbox;
 use Twig\Extension\AbstractExtension;
@@ -137,7 +131,7 @@ class UserExtension extends AbstractExtension implements ExtensionInterface {
    }
 
 
-   public function getAnonymizedName(int $users_id = null, array $options = []): ?string  {
+   public function getAnonymizedName(int $users_id = null, array $options = []): ?string {
       $entities_id = Session::getActiveEntity();
       if (isset($options['timeline_item'])) {
          $entities_id = $options['timeline_item']->getEntityID();
