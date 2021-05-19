@@ -44,7 +44,7 @@
                <div class="col-12 col-md-9">
                   {{ fields.readOnlyField(
                      'approval_requester',
-                     session('glpiname'),
+                     User__getUserName(),
                      _n('Requester', 'Requester', 1),
                      {
                         'full_width': true,
