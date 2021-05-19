@@ -632,6 +632,14 @@ class RuleAction extends CommonDBChild {
                      $display       = true;
                      break;
 
+                  case "dropdown_validation_status":
+                     TicketValidation::dropdownStatus('value', [
+                        'global' => true,
+                        'value' => $param['value'],
+                     ]);
+                     $display = true;
+                     break;
+
                   default :
                      if ($rule = getItemForItemtype($options["sub_type"])) {
                         $display = $rule->displayAdditionalRuleAction($actions[$options["field"]], $param['value']);
