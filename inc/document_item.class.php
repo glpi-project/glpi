@@ -426,13 +426,16 @@ class Document_Item extends CommonDBRelation{
             }
 
             while ($data = $iterator->next()) {
+               $linkname_extra = "";
                if ($item instanceof ITILFollowup || $item instanceof ITILSolution) {
+                  $linkname_extra = "(" . $item::getTypeName(1) . ")";
                   $itemtype = $data['itemtype'];
                   $item = new $itemtype();
                   $item->getFromDB($data['items_id']);
                   $data['id'] = $item->fields['id'];
                   $data['entity'] = $item->fields['entities_id'];
                } else if ($item instanceof CommonITILTask) {
+                  $linkname_extra = "(" . CommonITILTask::getTypeName(1) . ")";
                   $itemtype = $item->getItilObjectItemType();
                   $item = new $itemtype();
                   $item->getFromDB($data[$item->getForeignKeyField()]);
@@ -466,8 +469,9 @@ class Document_Item extends CommonDBRelation{
                      $linkname = $tmpitem->getLink();
                   }
                }
+
                $link     = $itemtype::getFormURLWithID($data['id']);
-               $name = "<a href=\"".$link."\">".$linkname."</a>";
+               $name = "<a href='$link'>$linkname $linkname_extra</a>";
 
                echo "<tr class='tab_bg_1'>";
 
