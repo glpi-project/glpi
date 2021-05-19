@@ -32,5 +32,5 @@
 
 include ('../inc/includes.php');
 
-$dropdown = new ConnectorModel();
-include (GLPI_ROOT . "/front/dropdown.common.php");
+$dropdown = new SocketModel();
+include (GLPI_ROOT . "/front/dropdown.common.form.php");

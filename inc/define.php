@@ -277,7 +277,7 @@ $CFG_GLPI["dictionnary_types"]            = ['ComputerModel', 'ComputerType', 'M
                                                   'Software', 'OperatingSystemArchitecture',
                                                   'OperatingSystemKernel', 'OperatingSystemKernelVersion',
                                                   'OperatingSystemEdition', 'ImageResolution', 'ImageFormat',
-                                                  'DatabaseInstanceType', 'ConnectorModel', 'CableType'];
+                                                  'SocketModel', 'CableType'];
 
 $CFG_GLPI["helpdesk_visible_types"]       = ['Software', 'Appliance', 'DatabaseInstance'];
 

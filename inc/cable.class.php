@@ -120,19 +120,19 @@ class Cable extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => ConnectorModel::getTable(),
+         'table'              => SocketModel::getTable(),
          'field'              => 'name',
-         'linkfield'          => 'rear_connectormodels_id',
-         'name'               => ConnectorModel::getTypeName(1)." (".__('Rear').")",
+         'linkfield'          => 'rear_socketmodels_id',
+         'name'               => SocketModel::getTypeName(1)." (".__('Rear').")",
          'datatype'           => 'dropdown'
       ];
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => ConnectorModel::getTable(),
+         'table'              => SocketModel::getTable(),
          'field'              => 'name',
-         'linkfield'          => 'front_connectormodels_id',
-         'name'               => ConnectorModel::getTypeName(1)." (".__('Front').")",
+         'linkfield'          => 'front_socketmodels_id',
+         'name'               => SocketModel::getTypeName(1)." (".__('Front').")",
          'datatype'           => 'dropdown'
       ];
 
@@ -303,34 +303,34 @@ class Cable extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".ConnectorModel::getTypeName(1)." (".__('Rear').")</td>";
+      echo "<td>".SocketModel::getTypeName(1)." (".__('Rear').")</td>";
       echo "<td>";
-      $rand_rear_connector = ConnectorModel::dropdown(['name'    => 'rear_connectormodels_id',
-                                'value'   => $this->fields["rear_connectormodels_id"],
+      $rand_rear_socketmodel = SocketModel::dropdown(['name'    => 'rear_socketmodels_id',
+                                'value'   => $this->fields["rear_socketmodels_id"],
                                 'entity'  => $this->fields["entities_id"]]);
 
-      $params = ['connectormodels_id'  => '__VALUE__',
+      $params = ['socketmodels_id'  => '__VALUE__',
                   'entity'             => $this->fields["entities_id"],
                   'entity'             => $this->fields["entities_id"],
                   'dom_name'           => 'rear_sockets_id',
-                  'action'             => 'getSocketByConnector'];
-      Ajax::updateItemOnSelectEvent("dropdown_rear_connectormodels_id$rand_rear_connector",
+                  'action'             => 'getSocketByModel'];
+      Ajax::updateItemOnSelectEvent("dropdown_rear_socketmodels_id$rand_rear_socketmodel",
                                     "show_rear_sockets_field",
                                     $CFG_GLPI["root_doc"]."/ajax/socket.php",
                                     $params);
       echo "</td>";
 
-      echo "<td>".ConnectorModel::getTypeName(1)." (".__('Front').")</td>";
+      echo "<td>".SocketModel::getTypeName(1)." (".__('Front').")</td>";
       echo "<td>";
-      $rand_front_connector = ConnectorModel::dropdown(['name'    => 'front_connectormodels_id',
-                                                        'value'   => $this->fields["front_connectormodels_id"],
+      $rand_front_socketmodel = SocketModel::dropdown(['name'    => 'front_socketmodels_id',
+                                                        'value'   => $this->fields["front_socketmodels_id"],
                                                         'entity'  => $this->fields["entities_id"]]);
 
-      $params = ['connectormodels_id'  => '__VALUE__',
+      $params = ['socketmodels_id'  => '__VALUE__',
                   'entity'             => $this->fields["entities_id"],
                   'dom_name'           => 'front_sockets_id',
-                  'action'             => 'getSocketByConnector'];
-      Ajax::updateItemOnSelectEvent("dropdown_front_connectormodels_id$rand_front_connector",
+                  'action'             => 'getSocketByModel'];
+      Ajax::updateItemOnSelectEvent("dropdown_front_socketmodels_id$rand_front_socketmodel",
                                     "show_front_sockets_field",
                                     $CFG_GLPI["root_doc"]."/ajax/socket.php",
                                     $params);
@@ -343,7 +343,7 @@ class Cable extends CommonDBTM {
       Socket::dropdown(['name'      => 'rear_sockets_id',
                         'value'     => $this->fields["rear_sockets_id"],
                         'entity'    => $this->fields["entities_id"],
-                        'condition' => [ 'connectormodels_id' => $this->fields['rear_connectormodels_id']]]);
+                        'condition' => [ 'socketmodels_id' => $this->fields['rear_socketmodels_id']]]);
       echo "</span></td>";
 
       echo "<td>".Socket::getTypeName(1)." (".__('Front').")</td>";
@@ -352,7 +352,7 @@ class Cable extends CommonDBTM {
       Socket::dropdown(['name'      => 'front_sockets_id',
                         'value'     => $this->fields["front_sockets_id"],
                         'entity'    => $this->fields["entities_id"],
-                        'condition' => [ 'connectormodels_id' => $this->fields['front_connectormodels_id']]
+                        'condition' => [ 'socketmodels_id' => $this->fields['front_socketmodels_id']]
                         ]);
       echo "</span></td></tr>";
 

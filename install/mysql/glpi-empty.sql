@@ -4245,7 +4245,7 @@ CREATE TABLE `glpi_sockets` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `locations_id` int NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
-  `connectormodels_id` int NOT NULL DEFAULT '0',
+  `socketmodels_id` int NOT NULL DEFAULT '0',
   `wiring_side` tinyint DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
   `items_id` int NOT NULL DEFAULT '0',
@@ -4255,7 +4255,7 @@ CREATE TABLE `glpi_sockets` (
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `connectormodels_id` (`connectormodels_id`),
+  KEY `socketmodels_id` (`socketmodels_id`),
   KEY `complete` (`entities_id`,`locations_id`,`name`),
   KEY `is_recursive` (`is_recursive`),
   KEY `location_name` (`locations_id`,`name`),
@@ -4275,8 +4275,8 @@ CREATE TABLE `glpi_cables` (
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `rear_connectormodels_id` int NOT NULL DEFAULT '0',
-  `front_connectormodels_id` int NOT NULL DEFAULT '0',
+  `rear_socketmodels_id` int NOT NULL DEFAULT '0',
+  `front_socketmodels_id` int NOT NULL DEFAULT '0',
   `rear_sockets_id` int NOT NULL DEFAULT '0',
   `front_sockets_id` int NOT NULL DEFAULT '0',
   `cablestrands_id` int NOT NULL DEFAULT '0',
@@ -4290,8 +4290,8 @@ CREATE TABLE `glpi_cables` (
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `rear_connectormodels_id` (`rear_connectormodels_id`),
-  KEY `front_connectormodels_id` (`front_connectormodels_id`),
+  KEY `rear_socketmodels_id` (`rear_socketmodels_id`),
+  KEY `front_socketmodels_id` (`front_socketmodels_id`),
   KEY `rear_sockets_id` (`rear_sockets_id`),
   KEY `front_sockets_id` (`front_sockets_id`),
   KEY `cablestrands_id` (`cablestrands_id`),
@@ -4336,10 +4336,10 @@ CREATE TABLE `glpi_cablestrands` (
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-### Dump table glpi_connectormodels
+### Dump table glpi_socketmodels
 
-DROP TABLE IF EXISTS `glpi_connectormodels`;
-CREATE TABLE `glpi_connectormodels` (
+DROP TABLE IF EXISTS `glpi_socketmodels`;
+CREATE TABLE `glpi_socketmodels` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,

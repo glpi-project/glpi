@@ -35,11 +35,11 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class ConnectorModel
-class ConnectorModel extends CommonDropdown {
+class SocketModel extends CommonDropdown {
 
 
    static function getTypeName($nb = 0) {
-      return _n('Connector model', 'Connector models', $nb);
+      return _n('Socket model', 'Socket models', $nb);
    }
 
 

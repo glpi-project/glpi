@@ -39,11 +39,11 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 switch ($_POST['action']) {
-   case 'getSocketByConnector':
+   case 'getSocketByModel':
       $rand = Socket::dropdown(['name'                => $_POST['dom_name'],
                                 'display_emptychoice' => true,
                                 'entity'              => $_POST['entity'],
-                                'condition'           => [ 'connectormodels_id' => $_POST['connectormodels_id']]]);
+                                'condition'           => [ 'socketmodels_id' => $_POST['socketmodels_id']]]);
 
       break;
 }

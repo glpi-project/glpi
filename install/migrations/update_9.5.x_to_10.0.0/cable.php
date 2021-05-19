@@ -63,8 +63,8 @@ if (!$DB->tableExists('glpi_cablestrands')) {
    $DB->queryOrDie($query, "10.0 add table glpi_cablestrands");
 }
 
-if (!$DB->tableExists('glpi_connectormodels')) {
-   $query = "CREATE TABLE `glpi_connectormodels` (
+if (!$DB->tableExists('glpi_socketmodels')) {
+   $query = "CREATE TABLE `glpi_socketmodels` (
       `id` int NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `comment` text,
@@ -75,7 +75,7 @@ if (!$DB->tableExists('glpi_connectormodels')) {
       KEY `date_mod` (`date_mod`),
       KEY `date_creation` (`date_creation`)
     ) ENGINE=InnoDB DEFAULT CHARSET= {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC;";
-   $DB->queryOrDie($query, "10.0 add table glpi_connectormodels");
+   $DB->queryOrDie($query, "10.0 add table glpi_socketmodels");
 }
 
 if (!$DB->tableExists('glpi_cables')) {
@@ -84,8 +84,8 @@ if (!$DB->tableExists('glpi_cables')) {
       `name` varchar(255) DEFAULT NULL,
       `entities_id` int NOT NULL DEFAULT '0',
       `is_recursive` tinyint NOT NULL DEFAULT '0',
-      `rear_connectormodels_id` int NOT NULL DEFAULT '0',
-      `front_connectormodels_id` int NOT NULL DEFAULT '0',
+      `rear_socketmodels_id` int NOT NULL DEFAULT '0',
+      `front_socketmodels_id` int NOT NULL DEFAULT '0',
       `rear_sockets_id` int NOT NULL DEFAULT '0',
       `front_sockets_id` int NOT NULL DEFAULT '0',
       `cablestrands_id` int NOT NULL DEFAULT '0',
@@ -99,8 +99,8 @@ if (!$DB->tableExists('glpi_cables')) {
       `date_creation` timestamp NULL DEFAULT NULL,
       PRIMARY KEY (`id`),
       KEY `name` (`name`),
-      KEY `rear_connectormodels_id` (`rear_connectormodels_id`),
-      KEY `front_connectormodels_id` (`front_connectormodels_id`),
+      KEY `rear_socketmodels_id` (`rear_socketmodels_id`),
+      KEY `front_socketmodels_id` (`front_socketmodels_id`),
       KEY `rear_sockets_id` (`rear_sockets_id`),
       KEY `front_sockets_id` (`front_sockets_id`),
       KEY `cablestrands_id` (`cablestrands_id`),
@@ -165,10 +165,10 @@ if (!$DB->tableExists('glpi_sockets') && $DB->tableExists('glpi_netpoints')) {
    $migration->addfield('glpi_sockets', 'is_recursive', 'bool', ['value' => '0', 'after' => 'entities_id']);
    $migration->addKey('glpi_sockets', 'is_recursive');
 
-   $migration->addField('glpi_sockets', 'connectormodels_id', 'int', ['after' => 'name']);
-   $migration->addKey('glpi_sockets', 'connectormodels_id');
+   $migration->addField('glpi_sockets', 'socketmodels_id', 'int', ['after' => 'name']);
+   $migration->addKey('glpi_sockets', 'socketmodels_id');
 
-   $migration->addField("glpi_sockets", "wiring_side", "tinyint DEFAULT 0", ['after' => 'connectormodels_id']);
+   $migration->addField("glpi_sockets", "wiring_side", "tinyint DEFAULT 0", ['after' => 'socketmodels_id']);
    $migration->addKey('glpi_sockets', 'wiring_side');
 
    $migration->addField('glpi_sockets', 'itemtype', 'string', ['after' => 'wiring_side']);

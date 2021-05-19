@@ -956,7 +956,7 @@ class Dropdown {
                  'DomainRecordType' => null,
                  'NetworkPortBncType' => null,
                  'NetworkPortFiberchannelType' => null,
-                 'ConnectorModel' => null,
+                 'SocketModel' => null,
                  'CableType' => null,
                  'Cable' => null,
                  'CableStrand' => null,
