@@ -32,6 +32,7 @@
 
 namespace tests\units;
 
+use DbTestCase;
 use Glpi\Api\Deprecated\TicketFollowup;
 use Glpi\Features\Clonable;
 use Glpi\Features\DCBreadcrumb;
@@ -42,7 +43,7 @@ use Ticket;
 
 /* Test for inc/toolbox.class.php */
 
-class Toolbox extends \GLPITestCase {
+class Toolbox extends DbTestCase {
 
    public function testGetRandomString() {
       for ($len = 20; $len < 50; $len += 5) {
