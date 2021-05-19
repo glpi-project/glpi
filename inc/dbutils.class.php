@@ -1455,8 +1455,14 @@ final class DbUtils {
 
          if (count($iterator) == 1) {
             $data     = $iterator->next();
-            $username = $this->formatUserName($data["id"], $data["name"], $data["realname"],
-                                       $data["firstname"], $link);
+
+            if (Session::getCurrentInterface() == 'helpdesk'
+               && !empty($anon_name = User::getAnonymizedName($data["id"]))) {
+               $username = $anon_name;
+            } else {
+               $username = $this->formatUserName($data["id"], $data["name"], $data["realname"],
+                                          $data["firstname"], $link);
+            }
 
             if ($link == 2) {
                $user["name"]    = $username;
@@ -1466,22 +1472,28 @@ final class DbUtils {
                $user_params = [
                   'id'                 => $ID,
                   'user_name'          => $username,
-                  'email'              => UserEmail::getDefaultForUser($ID),
-                  'phone'              => $data["phone"],
-                  'mobile'             => $data["mobile"],
-                  'locations_id'       => $data['locations_id'],
-                  'usertitles_id'      => $data['usertitles_id'],
-                  'usercategories_id'  => $data['usercategories_id'],
                ];
-               if (Session::haveRight('user', READ)) {
-                  $user_params['login'] = $data['name'];
+
+               if (empty($anon_name)) {
+                  $user_params = array_merge($user_params, [
+                     'email'              => UserEmail::getDefaultForUser($ID),
+                     'phone'              => $data["phone"],
+                     'mobile'             => $data["mobile"],
+                     'locations_id'       => $data['locations_id'],
+                     'usertitles_id'      => $data['usertitles_id'],
+                     'usercategories_id'  => $data['usercategories_id'],
+                  ]);
+
+                  if (Session::haveRight('user', READ)) {
+                     $user_params['login'] = $data['name'];
+                  }
+                  if (!empty($data["groups_id"])) {
+                     $user_params['groups_id'] = $data["groups_id"];
+                  }
+                  $user['comment'] = TemplateRenderer::getInstance()->render('components/itilobject/user_info_card.html.twig', [
+                     'user'   => $user_params
+                  ]);
                }
-               if (!empty($data["groups_id"])) {
-                  $user_params['groups_id'] = $data["groups_id"];
-               }
-               $user['comment'] = TemplateRenderer::getInstance()->render('components/itilobject/user_info_card.html.twig', [
-                  'user'   => $user_params
-               ]);
             } else {
                $user = $username;
             }

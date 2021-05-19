@@ -5687,7 +5687,7 @@ JAVASCRIPT;
             return "";
 
          case Entity::ANONYMIZE_USE_GENERIC:
-            return __("Helpdesk");
+            return __("Helpdesk user");
 
          case Entity::ANONYMIZE_USE_NICKNAME:
             $user = new User();
@@ -5697,5 +5697,8 @@ JAVASCRIPT;
 
             return $user->fields['nickname'];
       }
+
+      return "";
    }
+
 }
