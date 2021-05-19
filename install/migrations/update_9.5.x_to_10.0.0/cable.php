@@ -226,7 +226,15 @@ if (!$DB->tableExists('glpi_cables')) {
       KEY `date_creation` (`date_creation`)
     ) ENGINE=InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC;";
    $DB->queryOrDie($query, "10.0 add table glpi_cables");
+
+   $migration->addField('glpi_states', 'is_visible_cable', 'bool', [
+      'value' => 1,
+      'after' => 'is_visible_appliance'
+   ]);
+   $migration->addKey('glpi_states', 'is_visible_cable');
 }
+
+
 
 if (!$DB->tableExists('glpi_cabletypes')) {
    $query = "CREATE TABLE `glpi_cabletypes` (
@@ -257,3 +265,4 @@ if (!$DB->tableExists('glpi_cablestrands')) {
     ) ENGINE=InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC;";
    $DB->queryOrDie($query, "10.0 add table glpi_cablestrands");
 }
+

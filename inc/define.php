@@ -185,7 +185,7 @@ $CFG_GLPI["state_types"]                  = ['Computer', 'Monitor', 'NetworkEqui
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
                                                   'Certificate', 'Enclosure', 'PDU', 'Line',
                                                   'Rack', 'SoftwareVersion', 'Cluster', 'Contract',
-                                                  'Appliance', 'DatabaseInstance'];
+                                                  'Appliance', 'DatabaseInstance', 'Cable'];
 
 $CFG_GLPI["asset_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
@@ -259,7 +259,7 @@ $CFG_GLPI["ticket_types"]                 = ['Computer', 'Monitor', 'NetworkEqui
                                                   'SoftwareLicense', 'Certificate',
                                                   'Line', 'DCRoom', 'Rack', 'Enclosure', 'Cluster', 'PDU',
                                                   'Domain', 'DomainRecord', 'Appliance', 'Item_DeviceSimcard', 'PassiveDCEquipment',
-                                                  'DatabaseInstance', 'DatabaseInstance_Item'];
+                                                  'DatabaseInstance', 'DatabaseInstance_Item', 'Cable'];
 
 $CFG_GLPI["link_types"]                   = ['Budget', 'CartridgeItem', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract', 'Monitor',
@@ -277,7 +277,7 @@ $CFG_GLPI["dictionnary_types"]            = ['ComputerModel', 'ComputerType', 'M
                                                   'Software', 'OperatingSystemArchitecture',
                                                   'OperatingSystemKernel', 'OperatingSystemKernelVersion',
                                                   'OperatingSystemEdition', 'ImageResolution', 'ImageFormat',
-                                                  'DatabaseInstanceType', 'ConnectorModel'];
+                                                  'DatabaseInstanceType', 'ConnectorModel', 'CableType'];
 
 $CFG_GLPI["helpdesk_visible_types"]       = ['Software', 'Appliance', 'DatabaseInstance'];
 

@@ -39,23 +39,11 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 switch ($_POST['action']) {
-   case 'getItemsFromItemtype':
-      $rand = $_POST['itemtype']::dropdown(['name' => 'items_id', 'display_emptychoice' => true]);
+   case 'getSocketByConnector':
+      $rand = Socket::dropdown(['name'                => $_POST['dom_name'],
+                                'display_emptychoice' => true,
+                                'entity'              => $_POST['entity'],
+                                'condition'           => [ 'connectormodels_id' => $_POST['connectormodels_id']]]);
 
-      $params = ['items_id'   => '__VALUE__',
-                 'itemtype'   => $_POST['itemtype'],
-                 'action'     => 'getNetworkPortFromItem'];
-
-      Ajax::updateItemOnSelectEvent("dropdown_items_id$rand",
-                                    "show_networkport_field",
-                                    $CFG_GLPI["root_doc"]."/ajax/networkport.php",
-                                    $params);
-      break;
-
-   case 'getNetworkPortFromItem':
-      NetworkPort::dropdown(['name'                   => 'networkports_id',
-                              'display_emptychoice'   => true,
-                              'condition' => ["items_id" => $_POST['items_id'],
-                                              "itemtype" => $_POST['itemtype']]]);
       break;
 }

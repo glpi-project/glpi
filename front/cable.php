@@ -32,30 +32,10 @@
 
 include ('../inc/includes.php');
 
-// Send UTF8 Headers
-header("Content-Type: text/html; charset=UTF-8");
-Html::header_nocache();
+Session::checkRight("netpoint", READ);
 
-Session::checkLoginUser();
+Html::header(Cable::getTypeName(1), $_SERVER['PHP_SELF'], "management", "cable");
 
-switch ($_POST['action']) {
-   case 'getItemsFromItemtype':
-      $rand = $_POST['itemtype']::dropdown(['name' => 'items_id', 'display_emptychoice' => true]);
+Search::show('Cable');
 
-      $params = ['items_id'   => '__VALUE__',
-                 'itemtype'   => $_POST['itemtype'],
-                 'action'     => 'getNetworkPortFromItem'];
-
-      Ajax::updateItemOnSelectEvent("dropdown_items_id$rand",
-                                    "show_networkport_field",
-                                    $CFG_GLPI["root_doc"]."/ajax/networkport.php",
-                                    $params);
-      break;
-
-   case 'getNetworkPortFromItem':
-      NetworkPort::dropdown(['name'                   => 'networkports_id',
-                              'display_emptychoice'   => true,
-                              'condition' => ["items_id" => $_POST['items_id'],
-                                              "itemtype" => $_POST['itemtype']]]);
-      break;
-}
+Html::footer();

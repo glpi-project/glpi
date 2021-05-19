@@ -957,6 +957,9 @@ class Dropdown {
                  'NetworkPortBncType' => null,
                  'NetworkPortFiberchannelType' => null,
                  'ConnectorModel' => null,
+                 'CableType' => null,
+                 'Cable' => null,
+                 'CableStrand' => null,
              ],
 
              __('Internet') => [
