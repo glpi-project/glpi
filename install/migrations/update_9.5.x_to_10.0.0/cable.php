@@ -136,6 +136,9 @@ if (!$DB->tableExists('glpi_connectormodels')) {
     ) ENGINE=InnoDB DEFAULT CHARSET= {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC;";
    $DB->queryOrDie($query, "10.0 add table glpi_connectormodels");
 
+   $migration->addfield('glpi_sockets', 'is_recursive', 'bool', ['value' => '0', 'after' => 'entities_id']);
+   $migration->addKey('glpi_sockets', 'is_recursive');
+
    $migration->addField('glpi_sockets', 'connectormodels_id', 'int', [
       'after' => 'name'
    ]);
@@ -198,6 +201,7 @@ if (!$DB->tableExists('glpi_cables')) {
       `id` int NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `entities_id` int NOT NULL DEFAULT '0',
+      `is_recursive` tinyint NOT NULL DEFAULT '0',
       `rear_connectormodels_id` int NOT NULL DEFAULT '0',
       `front_connectormodels_id` int NOT NULL DEFAULT '0',
       `rear_sockets_id` int NOT NULL DEFAULT '0',
@@ -220,6 +224,7 @@ if (!$DB->tableExists('glpi_cables')) {
       KEY `cablestrands_id` (`cablestrands_id`),
       KEY `states_id` (`states_id`),
       KEY `complete` (`entities_id`,`name`),
+      KEY `is_recursive` (`is_recursive`),
       KEY `users_id_tech` (`users_id_tech`),
       KEY `cabletypes_id` (`cabletypes_id`),
       KEY `date_mod` (`date_mod`),
@@ -233,7 +238,6 @@ if (!$DB->tableExists('glpi_cables')) {
    ]);
    $migration->addKey('glpi_states', 'is_visible_cable');
 }
-
 
 
 if (!$DB->tableExists('glpi_cabletypes')) {
