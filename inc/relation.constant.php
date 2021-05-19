@@ -569,6 +569,8 @@ $RELATION = [
       'glpi_users'                       => 'entities_id',
       'glpi_vlans'                       => 'entities_id',
       'glpi_wifinetworks'                => 'entities_id',
+      'glpi_sockets'                     => 'entities_id',
+      'glpi_cables'                      => 'entities_id',
    ],
 
    'glpi_filesystems' => [
@@ -816,12 +818,6 @@ $RELATION = [
       'glpi_monitors' => 'monitortypes_id',
    ],
 
-   'glpi_sockets' => [
-      'glpi_networkportethernets'     => 'sockets_id',
-      'glpi_networkportfiberchannels' => 'sockets_id',
-      'glpi_networkportbncs'          => 'sockets_id',
-   ],
-
    'glpi_networkequipmentmodels' => [
       'glpi_networkequipments' => 'networkequipmentmodels_id',
    ],
@@ -850,6 +846,7 @@ $RELATION = [
       ],
       '_glpi_networkports_vlans'        => 'networkports_id',
       'glpi_networkportwifis'           => 'networkports_id',
+      'glpi_sockets'                    => 'networkports_id',
    ],
 
    'glpi_networkportwifis' => [

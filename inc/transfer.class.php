@@ -3557,8 +3557,7 @@ class Transfer extends CommonDBTM {
 
       $iterator = $DB->request([
          'SELECT'    => [
-            'glpi_networkports.*',
-            'glpi_networkportethernets.sockets_id'
+            'glpi_networkports.*'
          ],
          'FROM'      => 'glpi_networkports',
          'LEFT JOIN' => [
@@ -3597,20 +3596,29 @@ class Transfer extends CommonDBTM {
                      if ($nn->getFromDBForNetworkPort($data['id'])) {
                         $nn->delete($data);
                      }
-                     if ($data['sockets_id']) {
-                        $socketID  = $this->transferDropdownSocket($data['sockets_id']);
-                        $input['id']           = $data['id'];
-                        $input['sockets_id'] = $socketID;
-                        $np->update($input);
+
+                     //find socket attached to NetworkPortEthernet and transfert it
+                     $socket = new Socket();
+                     if ($socket->getFromDBByCrit(["networkports_id" => $data['id']])) {
+                        if ($socket->getID()) {
+                           $socketID  = $this->transferDropdownSocket($socket->getID());
+                           $input['id']           = $data['id'];
+                           $input['sockets_id'] = $socketID;
+                           $np->update($input);
+                        }
                      }
                   }
                } else { // Copy -> copy netports
                   while ($data = $iterator->next()) {
                      $data             = Toolbox::addslashes_deep($data);
+                     $socket = new Socket();
+                     if ($socket->getFromDBByCrit(["networkports_id" => $data['id']])) {
+                        if ($socket->getID()) {
+                           $data['sockets_id'] = $this->transferDropdownSocket($socket->getID());
+                        }
+                     }
                      unset($data['id']);
                      $data['items_id'] = $newID;
-                     $data['sockets_id']
-                                       = $this->transferDropdownSocket($data['sockets_id']);
                      unset($np->fields);
                      $np->add(Toolbox::addslashes_deep($data));
                   }
@@ -3622,10 +3630,15 @@ class Transfer extends CommonDBTM {
                // Copy -> Copy sockets (do not keep links)
                if ($ID != $newID) {
                   while ($data = $iterator->next()) {
+
+                     $socket = new Socket();
+                     if ($socket->getFromDBByCrit(["networkports_id" => $data['id']])) {
+                        if ($socket->getID()) {
+                           $data['sockets_id'] = $this->transferDropdownSocket($socket->getID());
+                        }
+                     }
                      unset($data['id']);
                      $data['items_id'] = $newID;
-                     $data['sockets_id']
-                                       = $this->transferDropdownSocket($data['sockets_id']);
                      unset($np->fields);
                      $np->add(Toolbox::addslashes_deep($data));
                   }
@@ -3633,7 +3646,12 @@ class Transfer extends CommonDBTM {
                   while ($data = $iterator->next()) {
                      // Not a copy -> only update socket
                      if ($data['sockets_id']) {
-                        $socketID  = $this->transferDropdownSocket($data['sockets_id']);
+                        $socket = new Socket();
+                        if ($socket->getFromDBByCrit(["networkports_id" => $data['id']])) {
+                           if ($socket->getID()) {
+                              $socketID = $this->transferDropdownSocket($socket->getID());
+                           }
+                        }
                         $input['id']           = $data['id'];
                         $input['sockets_id'] = $socketID;
                         $np->update($input);

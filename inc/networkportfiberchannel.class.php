@@ -349,7 +349,8 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [
-            'jointype'           => 'standard',
+            'jointype'           => 'child',
+            'linkfield'           => 'networkports_id',
             'beforejoin'         => [
                'table'              => 'glpi_networkportfiberchannels',
                'joinparams'         => $joinparams

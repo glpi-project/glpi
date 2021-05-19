@@ -365,11 +365,12 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
          'table'              => 'glpi_sockets',
          'field'              => 'name',
          'datatype'           => 'dropdown',
-          'name'              => __('Ethernet socket'),
+         'name'               => __('Ethernet socket'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [
-            'jointype'           => 'standard',
+            'jointype'           => 'child',
+            'linkfield'           => 'networkports_id',
             'beforejoin'         => [
                'table'              => 'glpi_networkportethernets',
                'joinparams'         => $joinparams

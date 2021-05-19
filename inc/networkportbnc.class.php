@@ -335,7 +335,8 @@ class NetworkPortBnc extends NetworkPortInstantiation {
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [
-            'jointype'           => 'standard',
+            'jointype'           => 'child',
+            'linkfield'           => 'networkports_id',
             'beforejoin'         => [
                'table'              => 'glpi_networkportbncs',
                'joinparams'         => $joinparams

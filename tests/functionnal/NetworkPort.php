@@ -133,7 +133,6 @@ class NetworkPort extends DbTestCase {
          'instantiation_type'          => 'NetworkPortEthernet',
          'name'                        => 'em3',
          'comment'                     => 'Comment me!',
-         'sockets_id'                => 0,
          'items_devicenetworkcards_id' => 0,
          'type'                        => 'T',
          'speed'                       => 1000,
@@ -157,7 +156,6 @@ class NetworkPort extends DbTestCase {
       $expected = [
           'networkports_id'             => $new_id,
           'items_devicenetworkcards_id' => 0,
-          'sockets_id'                => 0,
           'type'                        => 'T',
           'speed'                       => 1000,
       ];
