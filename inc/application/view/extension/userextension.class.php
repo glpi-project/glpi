@@ -58,15 +58,14 @@ class UserExtension extends AbstractExtension implements ExtensionInterface {
          new TwigFunction('User__getLink', [$this, 'getLink'], ['is_safe' => ['html']]),
          new TwigFunction('User__getLinkUrl', [$this, 'getLinkUrl']),
          new TwigFunction('User__getUserName', [$this, 'getUserName']),
-         new TwigFunction('User__isAnonymous', [$this, 'isAnonymous']),
       ];
    }
 
    public function getPicture(int $users_id = 0): string {
       $user = new User;
       if ($user->getFromDB($users_id)) {
-         if ($this->isAnonymous($users_id)) {
-            return User::getThumbnailURLForPicture(null, true);
+         if ($this->getAnonymizedName($users_id) === "") {
+            return User::getThumbnailURLForPicture(null, false);
          }
          return User::getThumbnailURLForPicture($user->fields['picture'], false);
       }
@@ -98,8 +97,8 @@ class UserExtension extends AbstractExtension implements ExtensionInterface {
    public function getLink(int $users_id = null, array $options = []):string {
       $user = new User;
       if ($user->getFromDB($users_id)) {
-         if ($this->isAnonymous($users_id, $options)) {
-            return __("Helpdesk");
+         if (strlen($anon_name = $this->getAnonymizedName($users_id, $options)) > 0) {
+            return $anon_name;
          }
          return $user->getLink($options);
       }
@@ -126,25 +125,26 @@ class UserExtension extends AbstractExtension implements ExtensionInterface {
     *    If link is set to 2, an array containing the name, link and comment (Tooltip content) is returned.
     */
    public function getUserName(int $users_id = 0, int $link = 0) {
-      $dbu = new DbUtils();
-      return $dbu->getUserName($users_id, $link);
+      if ($users_id === 0) {
+         $users_id = Session::getLoginUserID();
+      }
+
+      if (strlen($anon_name = $this->getAnonymizedName($users_id)) > 0) {
+         return $anon_name;
+      }
+
+      return getUserName($users_id, $link);
    }
 
-   public function isAnonymous(int $users_id = null, array $options = []): bool {
-      if (isset($options['timeline_item'], $options['timeline_subitem']) && Session::getCurrentInterface() === 'helpdesk'
-         && Entity::getUsedConfig('anonymize_support_agents', $options['timeline_item']->getEntityID())) {
-         $timeline_subitem = $options['timeline_subitem'];
-         $always_anonymized_types = [ITILSolution::class, CommonITILTask::class];
-         foreach ($always_anonymized_types as $class) {
-            if ($timeline_subitem['type'] === $class || is_subclass_of($timeline_subitem['type'], $class)) {
-               return true;
-            }
-         }
-         if (($timeline_subitem['type'] === ITILFollowup::class && ITILFollowup::getById($timeline_subitem['item']['id'])->isFromSupportAgent())
-            || ($timeline_subitem['type'] === Document_Item::class && Document_Item::getById($timeline_subitem['item']['documents_item_id'])->isFromSupportAgent())) {
-            return true;
-         }
+
+   public function getAnonymizedName(int $users_id = null, array $options = []): ?string  {
+      $entities_id = Session::getActiveEntity();
+      if (isset($options['timeline_item'])) {
+         $entities_id = $options['timeline_item']->getEntityID();
       }
-      return false;
+
+      return Session::getCurrentInterface() == 'helpdesk'
+         ? User::getAnonymizedName($users_id, $entities_id)
+         : "";
    }
 }
