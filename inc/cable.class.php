@@ -124,7 +124,8 @@ class Cable extends CommonDBTM {
          'field'              => 'name',
          'linkfield'          => 'rear_socketmodels_id',
          'name'               => SocketModel::getTypeName(1)." (".__('Rear').")",
-         'datatype'           => 'dropdown'
+         'datatype'           => 'dropdown',
+         'massiveaction'      => false,
       ];
 
       $tab[] = [
@@ -133,7 +134,8 @@ class Cable extends CommonDBTM {
          'field'              => 'name',
          'linkfield'          => 'front_socketmodels_id',
          'name'               => SocketModel::getTypeName(1)." (".__('Front').")",
-         'datatype'           => 'dropdown'
+         'datatype'           => 'dropdown',
+         'massiveaction'      => false,
       ];
 
       $tab[] = [
@@ -142,7 +144,8 @@ class Cable extends CommonDBTM {
          'field'              => 'name',
          'linkfield'          => 'front_sockets_id',
          'name'               => Socket::getTypeName(1)." (".__('Front').")",
-         'datatype'           => 'dropdown'
+         'datatype'           => 'dropdown',
+         'massiveaction'       => false,
       ];
 
       $tab[] = [
@@ -151,7 +154,8 @@ class Cable extends CommonDBTM {
          'field'              => 'name',
          'linkfield'          => 'rear_sockets_id',
          'name'               => Socket::getTypeName(1)." (".__('Rear').")",
-         'datatype'           => 'dropdown'
+         'datatype'           => 'dropdown',
+         'massiveaction'      => false,
       ];
 
       $tab[] = [
@@ -293,68 +297,227 @@ class Cable extends CommonDBTM {
       User::dropdown(['name'  => 'users_id_tech',
                      'value'  => $this->fields["users_id_tech"],
                      'entity' => $this->fields["entities_id"]]);
-      echo "</td>";
+      echo "</td><td></td></tr>";
 
-      echo "<td>".__('Comments')."</td>";
-      echo "<td>";
+      echo "<tr><td>".__('Comments')."</td>";
+      echo "<td  colspan='3'>";
       echo "<textarea cols='45' rows='5' id='comment' name='comment' >".
            $this->fields["comment"];
       echo "</textarea></td>";
-      echo "</td></tr>";
+      echo "</tr>";
 
+      $rand_itemtype_rear = rand();
+      $rand_itemtype_front = rand();
+
+      $rand_items_id_rear = rand();
+      $rand_items_id_front = rand();
+
+      $rand_socket_model_rear = rand();
+      $rand_socket_model_front = rand();
+
+      $rand_socket_rear = rand();
+      $rand_socket_front = rand();
+
+      echo "<tr class='headerRow'>";
+      echo "<th colspan='2'>".__('Rear')."</th>";
+      echo "<th colspan='2'>".__('Front')."</th>";
+      echo "<tr>";
+
+      //Line to display itemtype dropdown
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".SocketModel::getTypeName(1)." (".__('Rear').")</td>";
+      echo "<td>".__('Asset')."</td>";
       echo "<td>";
-      $rand_rear_socketmodel = SocketModel::dropdown(['name'    => 'rear_socketmodels_id',
-                                'value'   => $this->fields["rear_socketmodels_id"],
-                                'entity'  => $this->fields["entities_id"]]);
 
-      $params = ['socketmodels_id'  => '__VALUE__',
-                  'entity'             => $this->fields["entities_id"],
-                  'entity'             => $this->fields["entities_id"],
-                  'dom_name'           => 'rear_sockets_id',
-                  'action'             => 'getSocketByModel'];
-      Ajax::updateItemOnSelectEvent("dropdown_rear_socketmodels_id$rand_rear_socketmodel",
-                                    "show_rear_sockets_field",
-                                    $CFG_GLPI["root_doc"]."/ajax/socket.php",
+      Dropdown::showFromArray('rear_itemtype', Socket::getAssets(), ['value'                 => $this->fields["rear_itemtype"],
+                                                                     'rand'                  => $rand_itemtype_rear,
+                                                                     'display_emptychoice'   => true]);
+
+      $params = ['itemtype'        => '__VALUE__',
+                  'dom_name'       => 'rear_items_id',
+                  'rand'           => $rand_items_id_rear,
+                  'action'         => 'getItemsFromItemtype'];
+      Ajax::updateItemOnSelectEvent("dropdown_rear_itemtype$rand_itemtype_rear",
+                                    "show_rear_items_id_field",
+                                    $CFG_GLPI["root_doc"]."/ajax/cable.php",
                                     $params);
+
+      echo "<span id='show_rear_items_id_field'>";
+      if (!empty($this->fields["rear_itemtype"])) {
+         $this->fields["rear_itemtype"]::dropdown(['name'                  => 'rear_items_id',
+                                                   'value'                 => $this->fields["rear_items_id"],
+                                                   'rand'                  => $rand_items_id_rear,
+                                                   'display_emptychoice'   => true]);
+      }
+      echo "</span></td>";
+
+      echo "<td>".__('Asset')."</td>";
+      echo "<td>";
+
+      Dropdown::showFromArray('front_itemtype', Socket::getAssets(), ['value'                => $this->fields["front_itemtype"],
+                                                                      'rand'                 => $rand_itemtype_front,
+                                                                      'display_emptychoice'  => true]);
+
+      $params = ['itemtype'   => '__VALUE__',
+                 'dom_name'   => 'front_items_id',
+                 'rand'       => $rand_items_id_front,
+                 'action'     => 'getItemsFromItemtype'];
+
+      Ajax::updateItemOnSelectEvent("dropdown_front_itemtype$rand_itemtype_front",
+                                    "show_front_items_id_field",
+                                    $CFG_GLPI["root_doc"]."/ajax/cable.php",
+                                    $params);
+
+      echo "<span id='show_front_items_id_field'>";
+      if (!empty($this->fields["front_itemtype"])) {
+         $this->fields["front_itemtype"]::dropdown(['name'                 => 'front_items_id',
+                                                    'value'                => $this->fields["front_items_id"],
+                                                    'rand'                 => $rand_items_id_front,
+                                                    'display_emptychoice'  => true]);
+
+      }
+      echo "</span></td>";
+      echo "</tr>";
+
+      //Line to display dropdown socketmodel
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".SocketModel::getTypeName(1)."</td>";
+      echo "<td>";
+
+      SocketModel::dropdown(['name'    => 'rear_socketmodels_id',
+                             'value'   => $this->fields["rear_socketmodels_id"],
+                             'rand'    => $rand_socket_model_rear,
+                             'entity'  => $this->fields["entities_id"]]);
+
+      $params = ['itemtype'          => '__VALUE0__',
+                  'items_id'         => '__VALUE1__',
+                  'socketmodels_id'  => '__VALUE2__',
+                  'dom_name'         => 'rear_sockets_id',
+                  'rand'             => $rand_socket_rear,
+                  'action'           => 'getSocketByModelAndItem'];
+
+      Ajax::updateItemOnSelectEvent(["dropdown_rear_itemtype".$rand_itemtype_rear,
+                                     "dropdown_rear_items_id".$rand_items_id_rear,
+                                     "dropdown_rear_socketmodels_id".$rand_socket_model_rear],
+                                    "show_rear_sockets_field",
+                                    $CFG_GLPI["root_doc"]."/ajax/cable.php",
+                                    $params);
+
       echo "</td>";
 
-      echo "<td>".SocketModel::getTypeName(1)." (".__('Front').")</td>";
+      echo "<td>".SocketModel::getTypeName(1)."</td>";
       echo "<td>";
-      $rand_front_socketmodel = SocketModel::dropdown(['name'    => 'front_socketmodels_id',
-                                                        'value'   => $this->fields["front_socketmodels_id"],
-                                                        'entity'  => $this->fields["entities_id"]]);
 
-      $params = ['socketmodels_id'  => '__VALUE__',
-                  'entity'             => $this->fields["entities_id"],
-                  'dom_name'           => 'front_sockets_id',
-                  'action'             => 'getSocketByModel'];
-      Ajax::updateItemOnSelectEvent("dropdown_front_socketmodels_id$rand_front_socketmodel",
+      SocketModel::dropdown(['name'    => 'front_socketmodels_id',
+                             'value'   => $this->fields["front_socketmodels_id"],
+                             'rand'    => $rand_socket_model_front,
+                             'entity'  => $this->fields["entities_id"]]);
+
+      $params = ['itemtype'         => '__VALUE0__',
+                 'items_id'         => '__VALUE1__',
+                 'socketmodels_id'  => '__VALUE2__',
+                 'dom_name'         => 'front_sockets_id',
+                 'rand'             => $rand_socket_front,
+                 'action'           => 'getSocketByModelAndItem'];
+
+      Ajax::updateItemOnSelectEvent(["dropdown_front_itemtype".$rand_itemtype_front,
+                                    "dropdown_front_items_id".$rand_items_id_front,
+                                    "dropdown_front_socketmodels_id".$rand_socket_model_front],
                                     "show_front_sockets_field",
-                                    $CFG_GLPI["root_doc"]."/ajax/socket.php",
+                                    $CFG_GLPI["root_doc"]."/ajax/cable.php",
                                     $params);
+
       echo "</td></tr>";
 
+      //Line to display dropdown socket
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".Socket::getTypeName(1)." (".__('Rear').")</td>";
+      echo "<td>".Socket::getTypeName(1)."</td>";
       echo "<td>";
       echo "<span id='show_rear_sockets_field'>";
       Socket::dropdown(['name'      => 'rear_sockets_id',
+                        'rand'      => $rand_socket_rear,
                         'value'     => $this->fields["rear_sockets_id"],
-                        'entity'    => $this->fields["entities_id"],
-                        'condition' => [ 'socketmodels_id' => $this->fields['rear_socketmodels_id']]]);
-      echo "</span></td>";
+                        'condition' => ['socketmodels_id' => $this->fields['rear_socketmodels_id'],
+                                        'itemtype'  => $this->fields['rear_itemtype'],
+                                        'items_id'  => $this->fields['rear_items_id']]
+                        ]);
 
-      echo "<td>".Socket::getTypeName(1)." (".__('Front').")</td>";
+      $params = ['sockets_id' => '__VALUE__',
+                  'action'     => 'getItemBreadCrumb'];
+      Ajax::updateItemOnSelectEvent("dropdown_rear_sockets_id$rand_socket_rear",
+                                    "show_rear_asset_breadcrumb",
+                                    $CFG_GLPI["root_doc"]."/ajax/cable.php",
+                                    $params);
+
+      echo "</span>";
+      echo "</td>";
+
+      echo "<td>".Socket::getTypeName(1)."</td>";
       echo "<td>";
       echo "<span id='show_front_sockets_field'>";
+
       Socket::dropdown(['name'      => 'front_sockets_id',
+                        'rand'      => $rand_socket_front,
                         'value'     => $this->fields["front_sockets_id"],
-                        'entity'    => $this->fields["entities_id"],
-                        'condition' => [ 'socketmodels_id' => $this->fields['front_socketmodels_id']]
-                        ]);
-      echo "</span></td></tr>";
+                        'condition' => ['socketmodels_id' => $this->fields['front_socketmodels_id'],
+                                        'itemtype'  => $this->fields['front_itemtype'],
+                                        'items_id'  => $this->fields['front_items_id']]
+                     ]);
+
+      echo "</span>";
+      echo "</td></tr>";
+
+      //Line to display asset breadcrum (item, datacenter / dcroom / position)
+
+      $paramsPosition = [
+         'with_item_location'       => true,
+         'with_rack_location'       => true,
+         'with_dcroom_location'     => true,
+         'with_datacenter_location' => true,
+      ];
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Position')."</td>";
+      echo "<td>";
+
+      $params = ['itemtype'  => '__VALUE0__',
+                 'items_id'  => '__VALUE1__',
+                 'action'    => 'getItemBreadCrumb'];
+
+      Ajax::updateItemOnSelectEvent(["dropdown_rear_itemtype".$rand_itemtype_rear,
+                                     "dropdown_rear_items_id".$rand_items_id_rear],
+                                     "show_rear_asset_breadcrumb",
+                                     $CFG_GLPI["root_doc"]."/ajax/cable.php",
+                                     $params);
+
+      echo "<span id='show_rear_asset_breadcrumb'>";
+      if ($this->fields['rear_items_id']) {
+         $item = new $this->fields['rear_itemtype']();
+         $item->getFromDB($this->fields['rear_items_id']);
+         echo Toolbox::getDCRoomPosition($item, $paramsPosition);
+      }
+      echo "</span></td>";
+
+      echo "<td>".__('Position')."</td>";
+      echo "<td>";
+
+      $params = ['itemtype'  => '__VALUE0__',
+                 'items_id'  => '__VALUE1__',
+                 'action'    => 'getItemBreadCrumb'];
+
+      Ajax::updateItemOnSelectEvent(["dropdown_front_itemtype".$rand_itemtype_front,
+                                    "dropdown_front_items_id".$rand_items_id_front],
+                                    "show_front_asset_breadcrumb",
+                                    $CFG_GLPI["root_doc"]."/ajax/cable.php",
+                                    $params);
+
+      echo "<span id='show_front_asset_breadcrumb'>";
+      if ($this->fields['front_items_id']) {
+         $item = new $this->fields['front_itemtype']();
+         $item->getFromDB($this->fields['front_items_id']);
+         echo Toolbox::getDCRoomPosition($item, $paramsPosition);
+      }
+      echo "</span>";
+      echo "</td></tr>";
 
       $this->showFormButtons($options);
       return true;

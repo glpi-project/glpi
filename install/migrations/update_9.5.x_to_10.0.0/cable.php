@@ -84,6 +84,10 @@ if (!$DB->tableExists('glpi_cables')) {
       `name` varchar(255) DEFAULT NULL,
       `entities_id` int NOT NULL DEFAULT '0',
       `is_recursive` tinyint NOT NULL DEFAULT '0',
+      `rear_itemtype` varchar(255) DEFAULT NULL,
+      `front_itemtype` varchar(255) DEFAULT NULL,
+      `rear_items_id` int NOT NULL DEFAULT '0',
+      `front_items_id` int NOT NULL DEFAULT '0',
       `rear_socketmodels_id` int NOT NULL DEFAULT '0',
       `front_socketmodels_id` int NOT NULL DEFAULT '0',
       `rear_sockets_id` int NOT NULL DEFAULT '0',
@@ -99,6 +103,10 @@ if (!$DB->tableExists('glpi_cables')) {
       `date_creation` timestamp NULL DEFAULT NULL,
       PRIMARY KEY (`id`),
       KEY `name` (`name`),
+      KEY `rear_item` (`rear_itemtype`),
+      KEY `front_item` (`front_itemtype`),
+      KEY `front_items_id` (`front_items_id`),
+      KEY `rear_items_id` (`rear_items_id`),
       KEY `rear_socketmodels_id` (`rear_socketmodels_id`),
       KEY `front_socketmodels_id` (`front_socketmodels_id`),
       KEY `rear_sockets_id` (`rear_sockets_id`),
@@ -185,22 +193,25 @@ if (!$DB->tableExists('glpi_sockets') && $DB->tableExists('glpi_netpoints')) {
    foreach ($classes as $itemtype) {
 
       $item = new $itemtype();
-      $datas = $item->find(['networkports_id' => ['<>', 0]]);
+      $datas = $item->find(['networkports_id'   => ['<>', 0],
+                            'netpoints_id'      => ['<>', 0]]);
 
       foreach ($datas as $id => $values) {
-         $sockets_id = $values['netpoints_id'];
-         $socket = new Socket();
 
          //Load NetworkPort to get associated item
          $networkport = new NetworkPort();
-         $networkport->getFromDB($socket->fields['networkports_id']);
-
-         $socket->getFromDB($sockets_id);
-         $socket->update([
-            'id' =>  $sockets_id,
-            'itemtype' => $socket->fields['itemtype'],
-            'items_id' => $socket->fields['items_id']
-         ]);
+         if ($networkport->getFromDB($values['networkports_id'])) {
+            $sockets_id = $values['netpoints_id'];
+            $socket = new Socket();
+            if ($socket->getFromDB($sockets_id)) {
+               $socket->update([
+                  'id'              => $sockets_id,
+                  'itemtype'        => $networkport->fields['itemtype'],
+                  'items_id'        => $networkport->fields['items_id'],
+                  'networkports_id' => $networkport->getID()
+               ]);
+            }
+         }
       }
    }
 

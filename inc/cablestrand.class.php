@@ -143,7 +143,6 @@ class CableStrand extends CommonDropdown {
          echo "<tr><th>"._n('Type', 'Types', 1)."</th>";
          echo "<th>".Entity::getTypeName(1)."</th>";
          echo "<th>".__('Name')."</th>";
-         echo "<th>".__('Serial number')."</th>";
          echo "<th>".__('Inventory number')."</th>";
          echo "</tr>";
 
@@ -154,9 +153,6 @@ class CableStrand extends CommonDropdown {
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                $item->getEntityID());
             echo "</td><td class='center'>".$item->getLink()."</td>";
-            echo "<td class='center'>".
-                  (isset($item->fields["serial"])? "".$item->fields["serial"]."" :"-");
-            echo "</td>";
             echo "<td class='center'>".
                   (isset($item->fields["otherserial"])? "".$item->fields["otherserial"]."" :"-");
             echo "</td></tr>";

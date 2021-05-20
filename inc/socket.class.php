@@ -89,6 +89,7 @@ class Socket extends CommonDropdown {
                                                                                'display_emptychoice'  => true]);
 
       $params = ['itemtype' => '__VALUE__',
+                 'dom_name' => 'items_id',
                  'action'   => 'getItemsFromItemtype'];
       Ajax::updateItemOnSelectEvent("dropdown_itemtype$rand_itemtype",
                                     "show_items_id_field",
@@ -129,14 +130,16 @@ class Socket extends CommonDropdown {
     * @return array Array of types
    **/
    static function getAssets() {
-
-      $assets  = [Computer::gettype()           => Computer::getTypeName(),
-                  NetworkEquipment::gettype()   => NetworkEquipment::getTypeName(),
-                  Peripheral::gettype()         => Peripheral::getTypeName(),
-                  Phone::gettype()              => Phone::getTypeName(),
-                  Printer::gettype()            => Printer::getTypeName()];
-
-      return $assets;
+      global $CFG_GLPI;
+      $values = [];
+      foreach ($CFG_GLPI["socket_type"] as $key => $itemtype) {
+         if ($item = getItemForItemtype($itemtype)) {
+            $values[$itemtype] = $item->getTypeName();
+         } else {
+            unset($CFG_GLPI["ticket_types"][$key]);
+         }
+      }
+      return $values;
    }
 
    /**
