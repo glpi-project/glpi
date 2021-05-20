@@ -89,14 +89,18 @@ class NotificationSettingConfig extends CommonDBTM {
       $out = '';
       $modes_settings = [];
       if (Session::haveRight("config", UPDATE)) {
-         $out .= "<div class='center notifs_setup'>";
+         $out .= "<div class='card col-md-4 mx-auto'>";
          $out .= "<form method='POST' action='{$CFG_GLPI['root_doc']}/front/setup.notification.php'>";
 
-         $out .= "<table class='tab_cadre'>";
-         $out .= "<tr><th colspan='3'>" . __('Notifications configuration') . "</th></tr>";
+         $out .= "<div class='card-header'><h3>" . __('Notifications configuration') . "</h3></div>";
+         $out .= "<div class='card-table'>";
          if ($CFG_GLPI['use_notifications'] && !Notification_NotificationTemplate::hasActiveMode()) {
-            $out .= "<tr><td colspan='3'><div class='warning'><i class='fa fa-exclamation-triangle'></i>".__('You must enable at least one notification mode.')."</div></td></tr>";
+            $out .= "<div class='alert alert-important alert-warning m-3'>
+                        <i class='fa fa-exclamation-triangle me-2'></i>".
+                        __('You must enable at least one notification mode.').
+                     "</div>";
          }
+         $out .= "<table class='table table-hover table-borderless card-table'>";
          $out .= "<tr>";
          $out .= "<td>" . __('Enable followup') . "</td>";
          $out .= "<td>";
@@ -117,8 +121,13 @@ class NotificationSettingConfig extends CommonDBTM {
             $out .= "</tr>";
          }
 
-         $out .= "<tr><td colspan='3' class='center'><input class='submit' type='submit' value='" . __('Save')  . "'/></td></tr>";
          $out .= "</table>";
+         $out .= "<div class='card-footer center'>";
+         $out .= Html::submit("<i class='fas fa-save'></i><span>".__('Save')."</span>", [
+            'class' => 'btn btn-primary'
+         ]);
+         $out .= "</div>";
+         $out .= "</div>";
          $out .= Html::closeForm(false);
 
          $js = "$(function(){
