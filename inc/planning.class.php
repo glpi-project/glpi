@@ -1710,8 +1710,9 @@ class Planning extends CommonGLPI {
          }
       }
 
-      $time_begin = strtotime($param['start']);
-      $time_end   = strtotime($param['end']);
+      $timezone = new DateTimeZone(date_default_timezone_get());
+      $time_begin = strtotime($param['start']) - $timezone->getOffset(new DateTime($param['start']));
+      $time_end   = strtotime($param['end']) - $timezone->getOffset(new DateTime($param['end']));
 
       // if the dates range is greater than a certain amount, and we're not on a list view
       // we certainly are on this view (as our biggest view apart list is month one).
