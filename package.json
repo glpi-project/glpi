@@ -49,6 +49,7 @@
         "leaflet.awesome-markers": "^2.0.5",
         "leaflet.markercluster": "^1.4.1",
         "lodash": "^4.17.21",
+        "masonry-layout": "^4.2.2",
         "photoswipe": "^4.1.3",
         "prismjs": "^1.23.0",
         "qtip2": "^3.0.3",

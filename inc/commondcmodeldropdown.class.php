@@ -335,4 +335,10 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
             throw new \RuntimeException("Unknown {$field['type']}");
       }
    }
+
+   static function getIcon() {
+      $model_class  = get_called_class();
+      $device_class = str_replace('Model', '', $model_class);
+      return $device_class::getIcon();
+   }
 }

@@ -214,4 +214,8 @@ class DocumentType  extends CommonDropdown {
 
       return '/(' . implode('|', $valid_ext_patterns) . ')/i';
    }
+
+   static function getIcon() {
+      return "far fa-file";
+   }
 }

@@ -149,4 +149,8 @@ class TaskTemplate extends CommonDropdown {
             break;
       }
    }
+
+   static function getIcon() {
+      return "fas fa-layer-group";
+   }
 }

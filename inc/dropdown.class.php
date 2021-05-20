@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -900,7 +902,7 @@ class Dropdown {
                  'ClusterType' => null,
              ],
 
-             _n('Model', 'Models', 1) => [
+             _n('Model', 'Models', Session::getPluralNumber()) => [
                  'ComputerModel' => null,
                  'NetworkEquipmentModel' => null,
                  'PrinterModel' => null,
@@ -1012,7 +1014,7 @@ class Dropdown {
                'Resolution'     => null,
                'ImageFormat'  => null
              ],
-             __('Other') => [
+             __('Others') => [
                'USBVendor' => null,
                'PCIVendor' => null
              ]
@@ -1055,9 +1057,9 @@ class Dropdown {
     * @param $value     string   URL of selected current value (default '')
    **/
    static function showItemTypeMenu($title, $optgroup, $value = '') {
-
-      echo "<table class='tab_cadre' width='50%'>";
-      echo "<tr class='tab_bg_1'><td class='b'>&nbsp;".$title."&nbsp; ";
+      echo "<div class='container-xl text-start'>";
+      echo "<div class='mb-3 row'>";
+      echo "<label class='col-sm-1 col-form-label'>$title</label>";
       $selected = '';
 
       foreach ($optgroup as $label => $dp) {
@@ -1070,14 +1072,17 @@ class Dropdown {
             $values[$label][$search] = $val;
          }
       }
-      Dropdown::showFromArray('dpmenu', $values,
-                              ['on_change'
-                                       => "var _value = this.options[this.selectedIndex].value; if (_value != 0) {window.location.href=_value;}",
-                                    'value'               => $selected,
-                                    'display_emptychoice' => true]);
-
-      echo "</td></tr>";
-      echo "</table><br>";
+      echo "<div class='col-sm-11'>";
+      Dropdown::showFromArray('dpmenu', $values, [
+         'on_change'           => "var _value = this.options[this.selectedIndex].value; if (_value != 0) {window.location.href=_value;}",
+         'value'               => $selected,
+         'display_emptychoice' => true,
+         'class'               => 'form-select',
+         'width'               => '300px',
+      ]);
+      echo "</div>";
+      echo "</div>";
+      echo "</div>";
    }
 
 
@@ -1087,37 +1092,13 @@ class Dropdown {
     * @param $optgroup array (group of dropdown) of array (itemtype => localized name)
     */
    static function showItemTypeList($optgroup) {
-
-      echo "<div id='list_nav'>";
-      $nb = 0;
-      foreach ($optgroup as $label => $dp) {
-         $nb += count($dp);
-      }
-      $step = ($nb > 15 ? ($nb/3) : $nb);
-      echo "<table class='tab_glpi'><tr class='top'><td width='33%' class='center'>";
-      echo "<table class='tab_cadre'>";
-      $i = 1;
-
-      foreach ($optgroup as $label => $dp) {
-         echo "<tr><th>$label</th></tr>\n";
-
-         foreach ($dp as $key => $val) {
-            $class="class='tab_bg_4'";
-            if (($itemtype = getItemForItemtype($key))
-                && $itemtype->isEntityAssign()) {
-               $class="class='tab_bg_2'";
-            }
-            echo "<tr $class><td><a href='".$key::getSearchURL()."'>";
-            echo "$val</a></td></tr>\n";
-            $i++;
-         }
-
-         if (($i >= $step) && ($i < $nb)) {
-            echo "</table></td><td width='25'>&nbsp;</td><td><table class='tab_cadre'>";
-            $step += $step;
-         }
-      }
-      echo "</table></td></tr></table></div>";
+      Html::requireJs('masonry');
+      echo TemplateRenderer::getInstance()->render(
+         'components/dropdowns_list.html.twig',
+         [
+            'optgroup' => $optgroup,
+         ]
+      );
    }
 
 

@@ -44,4 +44,8 @@ class Filesystem extends CommonDropdown {
       return _n('File system', 'File systems', $nb);
    }
 
+   static function getIcon() {
+      return "far fa-folder";
+   }
+
 }

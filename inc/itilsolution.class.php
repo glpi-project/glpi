@@ -471,4 +471,8 @@ JAVASCRIPT;
          CommonITILValidation::ACCEPTED => __('Accepted'),
       ];
    }
+
+   static function getIcon() {
+      return "fas fa-check";
+   }
 }

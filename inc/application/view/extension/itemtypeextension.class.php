@@ -59,8 +59,11 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
          new TwigFilter('canDelete', [$this, 'canDelete']),
          new TwigFilter('canPurge', [$this, 'canPurge']),
          new TwigFilter('getFromDB', [$this, 'getFromDB']),
+         new TwigFilter('getIcon', [$this, 'getIcon']),
+         new TwigFilter('getSearchUrl', [$this, 'getSearchUrl']),
          new TwigFilter('getLinkURL', [$this, 'getLinkURL'], ['is_safe' => ['html']]),
          new TwigFilter('getLink', [$this, 'getLink'], ['is_safe' => ['html']]),
+         new TwigFilter('isEntityAssign', [$this, 'isEntityAssign']),
          new TwigFilter('showForm', [$this, 'showForm'], ['is_safe' => ['html']]),
       ];
    }
@@ -161,6 +164,22 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
       return null;
    }
 
+   public function getIcon($itemtype):? string {
+      if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
+         return $itemtype::getIcon();
+      }
+
+      return null;
+   }
+
+   public function getSearchUrl($itemtype):? string {
+      if ($itemtype instanceof CommonGLPI || is_a($itemtype, CommonGLPI::class, true)) {
+         return $itemtype::getSearchURL();
+      }
+
+      return null;
+   }
+
    public function getLinkURL($itemtype, int $id = 0):? string {
       if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
          $item = new $itemtype;
@@ -169,6 +188,15 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
       }
 
       return null;
+   }
+
+   public function isEntityAssign($itemtype): bool {
+      if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
+         $item = new $itemtype;
+         return $item->isEntityAssign();
+      }
+
+      return false;
    }
 
    public function getLink($itemtype, int $id = 0, array $options = []): string {

@@ -31,20 +31,18 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
+   die("Sorry. You can't access directly to this file");
 }
 
-class ImageFormat extends CommonDropdown {
+abstract class CommonType extends CommonDropdown {
 
-   public $can_be_translated = false;
-
-
-   static function getTypeName($nb = 0) {
-      return _n('Image format', 'Image formats', $nb);
+   static function getFieldLabel() {
+      return _n('Type', 'Types', 1);
    }
 
    static function getIcon() {
-      return "far fa-file-image";
+      $type_class  = get_called_class();
+      $device_class = str_replace('Type', '', $type_class);
+      return $device_class::getIcon();
    }
-
 }
