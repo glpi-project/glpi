@@ -47,4 +47,8 @@ class SoftwareLicenseType extends CommonTreeDropdown {
       return _n('Type', 'Types', 1);
    }
 
+   static function getIcon() {
+      return SoftwareLicense::getIcon();
+   }
+
 }

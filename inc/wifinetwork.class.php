@@ -128,4 +128,8 @@ class WifiNetwork extends CommonDropdown {
 
       return $tab;
    }
+
+   static function getIcon() {
+      return "fas fa-wifi";
+   }
 }

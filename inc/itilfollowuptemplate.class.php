@@ -100,4 +100,8 @@ class ITILFollowupTemplate extends CommonDropdown {
 
       return $tab;
    }
+
+   static function getIcon() {
+      return "fas fa-layer-group";
+   }
 }

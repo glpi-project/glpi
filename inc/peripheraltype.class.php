@@ -35,15 +35,11 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class PeripheralType
-class PeripheralType extends CommonDropdown {
+class PeripheralType extends CommonType {
 
 
    static function getTypeName($nb = 0) {
       return _n('Devices type', 'Devices types', $nb);
-   }
-
-   static function getFieldLabel() {
-      return _n('Type', 'Types', 1);
    }
 
 }

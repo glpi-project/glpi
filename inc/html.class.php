@@ -6151,8 +6151,11 @@ JAVASCRIPT;
          case 'marketplace':
             $_SESSION['glpi_js_toload'][$name][] = 'js/marketplace.js';
             break;
-         case 'gridstack':
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/gridstack.js';
+         case 'marketplace':
+            $_SESSION['glpi_js_toload'][$name][] = 'js/marketplace.js';
+            break;
+         case 'masonry':
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/masonry.js';
             break;
          case 'sortable':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/sortable.js';

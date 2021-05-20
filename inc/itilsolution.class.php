@@ -470,4 +470,8 @@ class ITILSolution extends CommonDBChild {
          CommonITILValidation::ACCEPTED => __('Accepted'),
       ];
    }
+
+   static function getIcon() {
+      return "fas fa-check";
+   }
 }

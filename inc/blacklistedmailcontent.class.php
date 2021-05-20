@@ -89,4 +89,8 @@ class BlacklistedMailContent extends CommonDropdown {
       return $tab;
    }
 
+   static function getIcon() {
+      return "fas fa-envelope-square";
+   }
+
 }

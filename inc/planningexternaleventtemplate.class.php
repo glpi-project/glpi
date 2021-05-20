@@ -172,4 +172,8 @@ class PlanningExternalEventTemplate extends CommonDropdown {
    function rawSearchOptions() {
       return $this->trait_rawSearchOptions();
    }
+
+   static function getIcon() {
+      return "fas fa-layer-group";
+   }
 }

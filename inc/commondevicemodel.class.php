@@ -56,4 +56,10 @@ abstract class CommonDeviceModel extends CommonDropdown {
 
       return $link;
    }
+
+   static function getIcon() {
+      $model_class  = get_called_class();
+      $device_class = str_replace('Model', '', $model_class);
+      return $device_class::getIcon();
+   }
 }
