@@ -218,16 +218,12 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
 
                         //find width
                         $width = null;
-                        if (preg_match("/width=[\"|'](\d*(\.\d*)?)[\"|']/", $matches[0][$pos], $wmatches)) {
-                           if (isset($wmatches[1])) {
-                              $width = round($wmatches[1]);
-                           }
+                        if (preg_match("/width=[\"|'](\d+)(\.\d+)?[\"|']/", $matches[0][$pos], $wmatches)) {
+                           $width = intval($wmatches[1]);
                         }
                         $height = null;
-                        if (preg_match("/height=[\"|'](\d*(\.\d*)?)[\"|']/", $matches[0][$pos], $hmatches)) {
-                           if (isset($wmatches[1])) {
-                              $height = round($hmatches[1]);
-                           }
+                        if (preg_match("/height=[\"|'](\d+)(\.\d+)?[\"|']/", $matches[0][$pos], $hmatches)) {
+                           $height = intval($hmatches[1]);
                         }
 
                         $image_path = Document::getImage(
