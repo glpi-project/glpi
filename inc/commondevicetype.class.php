@@ -34,7 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-abstract class CommonDeviceType extends CommonDropdown {
+abstract class CommonDeviceType extends CommonType {
 
    static function getFormURL($full = true) {
       global $CFG_GLPI;

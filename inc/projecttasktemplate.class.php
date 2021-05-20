@@ -245,4 +245,8 @@ class ProjectTaskTemplate extends CommonDropdown {
       return $ong;
    }
 
+   static function getIcon() {
+      return "fas fa-layer-group";
+   }
+
 }

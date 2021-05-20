@@ -84,4 +84,8 @@ class DocumentCategory extends CommonTreeDropdown {
       return array_key_exists('documentcategories_id_forticket', $config_values)
          && $config_values['documentcategories_id_forticket'] == $this->fields['id'];
    }
+
+   static function getIcon() {
+      return "fas fa-tags";
+   }
 }

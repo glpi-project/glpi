@@ -507,4 +507,8 @@ class Blacklist extends CommonDropdown {
          }
       }
    }
+
+   static function getIcon() {
+      return "fas fa-ban";
+   }
 }

@@ -60,4 +60,8 @@ class PrinterModel extends CommonDropdown {
       );
    }
 
+   static function getIcon() {
+      return Printer::getIcon();
+   }
+
 }
