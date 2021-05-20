@@ -3460,7 +3460,7 @@ class Entity extends CommonTreeDropdown {
    /**
     * Get values for contracts_id_default field
     *
-    * @since 9.5
+    * @since 10.0.0
     *
     * @return array
     */
@@ -3487,11 +3487,6 @@ class Entity extends CommonTreeDropdown {
    }
 
    public static function getDefaultContract(int $entities_id): int {
-      // Entity isn't set, can't load config
-      if ($entities_id === false) {
-         return 0;
-      }
-
       $entity_default_contract = self::getUsedConfig('contracts_id_default', $entities_id);
       if ($entity_default_contract == 0) {
          // No default contract set
