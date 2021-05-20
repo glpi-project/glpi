@@ -47,6 +47,9 @@ class Contract extends CommonDBTM {
    static $rightname                   = 'contract';
    protected $usenotepad               = true;
 
+   const RENEWAL_NEVER = 0;
+   const RENEWAL_TACIT = 1;
+   const RENEWAL_EXPRESS = 2;
 
    public function getCloneRelations() :array {
       return [
@@ -222,8 +225,13 @@ class Contract extends CommonDBTM {
                                              'toadd' => [0 => Dropdown::EMPTY_VALUE],
                                              'unit'  => 'month']);
       if (!empty($this->fields["begin_date"])) {
-         echo " -> ".Infocom::getWarrantyExpir($this->fields["begin_date"],
-                                               $this->fields["duration"], 0, true);
+         echo " -> " . Infocom::getWarrantyExpir(
+            $this->fields["begin_date"],
+            $this->fields["duration"],
+            0,
+            true,
+            $this->fields['renewal'] == self::RENEWAL_TACIT
+         );
       }
       echo "</td></tr>";
 
@@ -1557,15 +1565,9 @@ class Contract extends CommonDBTM {
       }
       if (!$p['expired']) {
          $WHERE[] = ['OR' => [
+            'glpi_contracts.renewal' => 1,
             new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName('glpi_contracts.begin_date') . ', INTERVAL ' . $DB->quoteName('glpi_contracts.duration') . ' MONTH), CURDATE()) > 0'),
             'glpi_contracts.begin_date'   => null,
-            ['AND' => [
-               'glpi_contracts.duration'  => 0,
-               'OR' => [
-                  new \QueryExpression('DATEDIFF(' . $DB->quoteName('glpi_contracts.begin_date') . ', CURDATE() ) < 0'),
-                  'glpi_contracts.renewal' => 1
-               ]
-            ]]
          ]];
       }
 
@@ -1637,9 +1639,9 @@ class Contract extends CommonDBTM {
    static function dropdownContractRenewal($name, $value = 0, $display = true) {
 
       $values = [
-         __('Never'),
-         __('Tacit'),
-         __('Express'),
+         self::RENEWAL_NEVER => __('Never'),
+         self::RENEWAL_TACIT => __('Tacit'),
+         self::RENEWAL_EXPRESS => __('Express'),
       ];
       return Dropdown::showFromArray($name, $values, ['value'   => $value,
                                                         'display' => $display]);

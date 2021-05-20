@@ -1935,10 +1935,11 @@ class Infocom extends CommonDBChild {
     * @param integer $addwarranty   period in months
     * @param integer $deletenotice  period in months of notice (default 0)
     * @param boolean $color         if show expire date in red color (false by default)
+    * @param boolean $auto_renew
     *
     * @return string expiration date
    **/
-   static function getWarrantyExpir($from, $addwarranty, $deletenotice = 0, $color = false) {
+   static function getWarrantyExpir($from, $addwarranty, $deletenotice = 0, $color = false, $auto_renew = false) {
 
       // Life warranty
       if (($addwarranty == -1)
@@ -1950,11 +1951,20 @@ class Infocom extends CommonDBChild {
          return "";
       }
 
-      $datetime = strtotime("$from+$addwarranty month -$deletenotice month");
-      if ($color && ($datetime < time())) {
-         return "<span class='red'>".Html::convDate(date("Y-m-d", $datetime))."</span>";
+      $timestamp = strtotime("$from+$addwarranty month -$deletenotice month");
+
+      if ($auto_renew) {
+         while ($timestamp < time()) {
+            $datetime = new DateTime();
+            $datetime->setTimestamp($timestamp);
+            $timestamp = strtotime($datetime->format("Y-m-d H:i:s") . "+$addwarranty month");
+         }
       }
-      return Html::convDate(date("Y-m-d", $datetime));
+
+      if ($color && ($timestamp < time())) {
+         return "<span class='red'>".Html::convDate(date("Y-m-d", $timestamp))."</span>";
+      }
+      return Html::convDate(date("Y-m-d", $timestamp));
    }
 
 
