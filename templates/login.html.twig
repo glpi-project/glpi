@@ -12,7 +12,7 @@
             <h2 class="card-header text-center mb-4">{{ __("Login to your account") }}</h2>
             <div class="mb-3">
                <label class="form-label">{{ __('Login') }}</label>
-               <input type="text" class="form-control" id="login_name" name="{{ namfield }}" placeholder="">
+               <input type="text" class="form-control" id="login_name" name="{{ namfield }}" placeholder="" tabindex="1">
             </div>
             <div class="mb-4">
                <label class="form-label">
@@ -26,7 +26,7 @@
                      </span>
                   {% endif %}
                </label>
-               <input type="password" class="form-control" name="{{ pwdfield }}" placeholder="" autocomplete="off">
+               <input type="password" class="form-control" name="{{ pwdfield }}" placeholder="" autocomplete="off" tabindex="2">
             </div>
 
             {% if constant("GLPI_DEMO_MODE") %}
@@ -53,7 +53,9 @@
             {% endif %}
 
             <div class="form-footer">
-               <button type="submit" name="submit" class="btn btn-primary w-100">{{ __("Sign in") }}</button>
+               <button type="submit" name="submit" class="btn btn-primary w-100" tabindex="3">
+                  {{ __("Sign in") }}
+               </button>
             </div>
 
             {% if errors|length > 0 %}
