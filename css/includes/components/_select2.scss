@@ -267,3 +267,8 @@
       }
    }
 }
+
+// fix z-index issue for select2 dropdown container with a boostrap modal
+.modal-backdrop + .select2-container--open {
+   z-index: $zindex-modal;
+}
