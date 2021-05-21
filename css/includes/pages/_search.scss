@@ -110,6 +110,8 @@
             border-collapse: separate;
             border-spacing: 0;
 
+            --tblr-table-bg: #{$card-bg};
+
             @include media-breakpoint-up(sm) {
                thead:first-child {
                   th {
@@ -120,8 +122,27 @@
                      border-left: 0;
                      border-right: 0;
                      background-color: $table_header_bg;
+
+                     &:nth-child(1) {
+                        left: 0;
+                        z-index: 6;
+                     }
+                     &:nth-child(2) {
+                        left: 40px;
+                        z-index: 6;
+                     }
                   }
                }
+               tbody > tr > td:nth-child(1) {
+                  position: sticky;
+                  left: 0;
+                  z-index: 2;
+               }
+               tbody > tr > td:nth-child(2) {
+                  position: sticky;
+                  left: 40px;
+                  z-index: 2;
+               };
             }
 
             &.deleted-results {
@@ -132,6 +153,7 @@
          .search-footer {
             position: sticky;
             bottom: 0;
+            z-index: 2;
 
             @include media-breakpoint-up(sm) {
                .search-pager {
