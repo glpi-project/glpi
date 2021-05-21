@@ -125,6 +125,6 @@ switch ($_REQUEST['action']) {
          Html::ajaxFooter();
          break;
       }
-      $twig->display("components/itilobject/{$template}.html.twig", $params);
+      $twig->display("components/itilobject/timeline/{$template}.html.twig", $params);
       break;
 }
