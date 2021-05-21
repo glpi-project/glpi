@@ -49,7 +49,7 @@
       {% for page in range(1, nb_pages) %}
          {% if current_page - adjacents <= page and current_page + adjacents >= page %}
             {% set page_start = (page - 1) * limit %}
-            {% set active = (page == current_page ? "active" : "") %}
+            {% set active = (page == current_page ? "active selected" : "") %}
             <li class="page-item {{ active }}">
                <a class="page-link page-link-num" href="#" data-start="{{ page_start }}">{{ page }}</a>
             </li>

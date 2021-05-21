@@ -119,8 +119,8 @@ window.GLPI.Search.Table = class Table extends GenericView {
 
    onPageChange(target) {
       const page_link = $(target);
-      page_link.closest('.pagination').find('.page-item').removeClass('active');
-      page_link.parent().addClass('active');
+      page_link.closest('.pagination').find('.page-item').removeClass('selected');
+      page_link.closest('.page-item').addClass('selected');
 
       this.refreshResults();
    }
@@ -147,7 +147,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
             search_form_values.forEach((v) => {
                search_criteria[v['name']] = v['value'];
             });
-            const start = $(ajax_container).find('.pagination .page-item.active .page-link').attr('data-start');
+            const start = $(ajax_container).find('.pagination .page-item.selected .page-link').attr('data-start');
             search_criteria['start'] = start || 0;
 
             search_data = {
