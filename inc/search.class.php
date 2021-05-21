@@ -375,8 +375,8 @@ class Search {
       // Default values of parameters
       $p['criteria']            = [];
       $p['metacriteria']        = [];
-      $p['sort']                = '1'; //
-      $p['order']               = 'ASC';//
+      $p['sort']                = ['1'];
+      $p['order']               = ['ASC'];
       $p['start']               = 0;//
       $p['is_deleted']          = 0;
       $p['export_all']          = 0;
@@ -397,15 +397,25 @@ class Search {
       foreach ($params as $key => $val) {
          switch ($key) {
             case 'order':
-               if (in_array($val, ['ASC', 'DESC'])) {
-                  $p[$key] = $val;
+               if (!is_array($val)) {
+                  // Backward compatibility with GLPI < 10.0 links
+                  if (in_array($val, ['ASC', 'DESC'])) {
+                     $p[$key] = [$val];
+                  }
+                  break;
                }
+               $p[$key] = $val;
                break;
             case 'sort':
-               $p[$key] = intval($val);
-               if ($p[$key] < 0) {
-                  $p[$key] = 1;
+               if (!is_array($val)) {
+                  // Backward compatibility with GLPI < 10.0 links
+                  $val = (int) $val;
+                  if ($val >= 0) {
+                     $p[$key] = [$val];
+                  }
+                  break;
                }
+               $p[$key] = $val;
                break;
             case 'is_deleted':
                if ($val == 1) {
@@ -524,9 +534,8 @@ class Search {
       }
 
       // Add order item
-      if (!in_array($p['sort'], $data['toview'])) {
-         array_push($data['toview'], $p['sort']);
-      }
+      $to_add_view = array_diff($p['sort'], $data['toview']);
+      array_push($data['toview'], ...$to_add_view);
 
       // Special case for Ticket : put ID in front
       if ($itemtype == 'Ticket') {
@@ -716,14 +725,20 @@ class Search {
 
       //// 4 - ORDER
       $ORDER = " ORDER BY `id` ";
-      foreach ($data['tocompute'] as $val) {
-         if ($data['search']['sort'] == $val) {
-            $ORDER = self::addOrderBy(
-               $data['itemtype'],
-               $data['search']['sort'],
-               $data['search']['order']
-            );
+      $sort_fields = [];
+      $sort_count = count($data['search']['sort']);
+      for ($i = 0; $i < $sort_count; $i++) {
+         foreach ($data['tocompute'] as $val) {
+            if ($data['search']['sort'][$i] == $val) {
+               $sort_fields[] = [
+                  'searchopt_id' => $data['search']['sort'][$i],
+                  'order'        => $data['search']['order'][$i] ?? null
+               ];
+            }
          }
+      }
+      if (count($sort_fields)) {
+         $ORDER = self::addOrderBy($data['itemtype'], $sort_fields);
       }
 
       $SELECT = rtrim(trim($SELECT), ',');
@@ -1523,7 +1538,13 @@ class Search {
             'criteria'     => Toolbox::stripslashes_deep($search['criteria']),
             'metacriteria' => Toolbox::stripslashes_deep($search['metacriteria'])
       ], '&');
-      $parameters = "sort={$search['sort']}&order={$search['order']}&{$globallinkto}";
+
+      $parameters = http_build_query([
+         'sort'   => $search['sort'],
+         'order'  => $search['order']
+      ]);
+
+      $parameters .= "&{$globallinkto}";
 
       if (isset($_GET['_in_modal'])) {
          $parameters .= "&_in_modal=1";
@@ -1549,8 +1570,8 @@ class Search {
          'union_search_type'   => $CFG_GLPI["union_search_type"],
          'rand'                => mt_rand(),
          'no_sort'             => $search['no_sort'] ?? false,
-         'order'               => $search['order'] ?? "ASC",
-         'sort'                => $search['sort'] ?? "",
+         'order'               => $search['order'] ?? [],
+         'sort'                => $search['sort'] ?? [],
          'start'               => $search['start'] ?? 0,
          'limit'               => $_SESSION['glpilist_limit'],
          'count'               => $data['data']['totalcount'] ?? 0,
@@ -2210,7 +2231,7 @@ class Search {
             }
 
             if ($p['showreset']) {
-               echo "<a class='btn btn-ghost-secondary btn-icon btn-sm me-1'
+               echo "<a class='btn btn-ghost-secondary btn-icon btn-sm me-1 search-reset'
                         data-bs-toggle='tooltip' data-bs-placement='bottom'
                         href='"
                   .$p['target']
@@ -3111,129 +3132,167 @@ JAVASCRIPT;
     * Generic Function to add ORDER BY to a request
     *
     * @since 9.4: $key param has been dropped
+    * @since 10.0.0: Parameters changed to allow multiple sort fields.
+    *    Old functionality maintained by checking the type of the first parameter.
+    *    This backwards compatibility will be removed in a later version.
     *
-    * @param string  $itemtype  ID of the device type
-    * @param integer $ID        field to add
-    * @param string  $order     order define
+    * @param string $itemtype The itemtype
+    * @param array  $sort_fields The search options to order on. This array should contain one or more associative arrays containing:
+    *    - id: The search option ID
+    *    - order: The sort direction (Default: ASC). Invalid sort directions will be replaced with the default option
+    * @param ?integer $_id    field to add (Deprecated)
     *
-    * @return select string
+    * @return string ORDER BY query string
     *
    **/
-   static function addOrderBy($itemtype, $ID, $order) {
+   static function addOrderBy($itemtype, $sort_fields, $_id = 'ASC') {
       global $CFG_GLPI;
 
-      // Security test for order
-      if ($order != "ASC") {
-         $order = "DESC";
+      // BC parameter conversion
+      if (!is_array($sort_fields)) {
+         // < 10.0.0 parameters
+         Toolbox::deprecated('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.');
+         $sort_fields = [
+            [
+               'searchopt_id' => $sort_fields,
+               'order'        => $_id
+            ]
+         ];
       }
+
+      $orderby_criteria = [];
       $searchopt = &self::getOptions($itemtype);
 
-      $table     = $searchopt[$ID]["table"];
-      $field     = $searchopt[$ID]["field"];
-
-      $addtable = '';
-
-      $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
-         && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
-      $orig_table = self::getOrigTableName($itemtype);
-      if (($is_fkey_composite_on_self || $table != $orig_table)
-          && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
-         $addtable .= "_".$searchopt[$ID]["linkfield"];
-      }
-
-      if (isset($searchopt[$ID]['joinparams'])) {
-         $complexjoin = self::computeComplexJoinID($searchopt[$ID]['joinparams']);
-
-         if (!empty($complexjoin)) {
-            $addtable .= "_".$complexjoin;
+      foreach ($sort_fields as $sort_field) {
+         $ID = $sort_field['searchopt_id'];
+         $order = $sort_field['order'] ?? 'ASC';
+         // Order security check
+         if ($order != 'ASC') {
+            $order = 'DESC';
          }
-      }
 
-      if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
-         return " ORDER BY `ITEM_{$itemtype}_{$ID}` $order ";
-      }
+         $criterion = null;
 
-      // Plugin can override core definition for its type
-      if ($plug = isPluginItemType($itemtype)) {
-         $out = Plugin::doOneHook(
-            $plug['plugin'],
-            'addOrderBy',
-            $itemtype, $ID, $order, "{$itemtype}_{$ID}"
-         );
-         if (!empty($out)) {
-            return $out;
+         $table = $searchopt[$ID]["table"];
+         $field = $searchopt[$ID]["field"];
+
+         $addtable = '';
+
+         $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
+            && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
+         $orig_table = self::getOrigTableName($itemtype);
+         if (($is_fkey_composite_on_self || $table != $orig_table)
+            && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
+            $addtable .= "_" . $searchopt[$ID]["linkfield"];
          }
-      }
 
-      switch ($table.".".$field) {
-         case "glpi_auth_tables.name" :
-            $user_searchopt = self::getOptions('User');
-            return " ORDER BY `glpi_users`.`authtype` $order,
-                              `glpi_authldaps".$addtable."_".
-                                 self::computeComplexJoinID($user_searchopt[30]['joinparams'])."`.
-                                 `name` $order,
-                              `glpi_authmails".$addtable."_".
-                                 self::computeComplexJoinID($user_searchopt[31]['joinparams'])."`.
-                                 `name` $order ";
+         if (isset($searchopt[$ID]['joinparams'])) {
+            $complexjoin = self::computeComplexJoinID($searchopt[$ID]['joinparams']);
 
-         case "glpi_users.name" :
-            if ($itemtype!='User') {
-               if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
-                  $name1 = 'firstname';
-                  $name2 = 'realname';
-               } else {
-                  $name1 = 'realname';
-                  $name2 = 'firstname';
-               }
-               return " ORDER BY `".$table.$addtable."`.`$name1` $order,
-                                 `".$table.$addtable."`.`$name2` $order,
-                                 `".$table.$addtable."`.`name` $order";
+            if (!empty($complexjoin)) {
+               $addtable .= "_" . $complexjoin;
             }
-            return " ORDER BY `".$table.$addtable."`.`name` $order";
+         }
 
-         case "glpi_networkequipments.ip" :
-         case "glpi_ipaddresses.name" :
-            return " ORDER BY INET_ATON(`$table$addtable`.`$field`) $order ";
-      }
+         if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
+            $criterion = "`ITEM_{$itemtype}_{$ID}` $order";
+         }
 
-      //// Default cases
-
-      // Link with plugin tables
-      if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table, $matches)) {
-         if (count($matches) == 2) {
-            $plug     = $matches[1];
+         // Plugin can override core definition for its type
+         if ($criterion === null && $plug = isPluginItemType($itemtype)) {
             $out = Plugin::doOneHook(
-               $plug,
+               $plug['plugin'],
                'addOrderBy',
                $itemtype, $ID, $order, "{$itemtype}_{$ID}"
             );
+            $out = trim($out);
             if (!empty($out)) {
-               return $out;
+               $out = preg_replace('/^ORDER BY /', '', $out);
+               $criterion = $out;
             }
          }
-      }
 
-      // Preformat items
-      if (isset($searchopt[$ID]["datatype"])) {
-         switch ($searchopt[$ID]["datatype"]) {
-            case "date_delay" :
-               $interval = "MONTH";
-               if (isset($searchopt[$ID]['delayunit'])) {
-                  $interval = $searchopt[$ID]['delayunit'];
-               }
+         if ($criterion === null) {
+            switch ($table . "." . $field) {
+               // FIXME Dead case? Can't see any itemtype referencing this table in their search options to be able to get here.
+               case "glpi_auth_tables.name" :
+                  $user_searchopt = self::getOptions('User');
+                  $criterion = "`glpi_users`.`authtype` $order,
+                              `glpi_authldaps" . $addtable . "_" .
+                     self::computeComplexJoinID($user_searchopt[30]['joinparams']) . "`.
+                                 `name` $order,
+                              `glpi_authmails" . $addtable . "_" .
+                     self::computeComplexJoinID($user_searchopt[31]['joinparams']) . "`.
+                                 `name` $order";
+                  break;
 
-               $add_minus = '';
-               if (isset($searchopt[$ID]["datafields"][3])) {
-                  $add_minus = "- `$table$addtable`.`".$searchopt[$ID]["datafields"][3]."`";
-               }
-               return " ORDER BY ADDDATE(`$table$addtable`.`".$searchopt[$ID]["datafields"][1]."`,
-                                         INTERVAL (`$table$addtable`.`".
-                                                   $searchopt[$ID]["datafields"][2]."` $add_minus)
-                                         $interval) $order ";
+               case "glpi_users.name" :
+                  if ($itemtype != 'User') {
+                     if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
+                        $name1 = 'firstname';
+                        $name2 = 'realname';
+                     } else {
+                        $name1 = 'realname';
+                        $name2 = 'firstname';
+                     }
+                     $criterion = "`" . $table . $addtable . "`.`$name1` $order,
+                                 `" . $table . $addtable . "`.`$name2` $order,
+                                 `" . $table . $addtable . "`.`name` $order";
+                  } else {
+                     $criterion = "`" . $table . $addtable . "`.`name` $order";
+                  }
+                  break;
+               //FIXME glpi_networkequipments.ip seems like a dead case
+               case "glpi_networkequipments.ip" :
+               case "glpi_ipaddresses.name" :
+                  $criterion = "INET_ATON(`$table$addtable`.`$field`) $order";
+                  break;
+            }
          }
+
+         //// Default cases
+
+         // Link with plugin tables
+         if ($criterion === null && preg_match("/^glpi_plugin_([a-z0-9]+)/", $table, $matches)) {
+            if (count($matches) == 2) {
+               $plug = $matches[1];
+               $out = Plugin::doOneHook(
+                  $plug,
+                  'addOrderBy',
+                  $itemtype, $ID, $order, "{$itemtype}_{$ID}"
+               );
+               $out = trim($out);
+               if (!empty($out)) {
+                  $out = preg_replace('/^ORDER BY /', '', $out);
+                  $criterion = $out;
+               }
+            }
+         }
+
+         // Preformat items
+         if ($criterion === null && isset($searchopt[$ID]["datatype"])) {
+            switch ($searchopt[$ID]["datatype"]) {
+               case "date_delay" :
+                  $interval = "MONTH";
+                  if (isset($searchopt[$ID]['delayunit'])) {
+                     $interval = $searchopt[$ID]['delayunit'];
+                  }
+
+                  $add_minus = '';
+                  if (isset($searchopt[$ID]["datafields"][3])) {
+                     $add_minus = "- `$table$addtable`.`" . $searchopt[$ID]["datafields"][3] . "`";
+                  }
+                  $criterion = "ADDDATE(`$table$addtable`.`" . $searchopt[$ID]["datafields"][1] . "`,
+                                         INTERVAL (`$table$addtable`.`" .
+                     $searchopt[$ID]["datafields"][2] . "` $add_minus)
+                                         $interval) $order";
+            }
+         }
+
+         $orderby_criteria[] = $criterion ?? "`ITEM_{$itemtype}_{$ID}` $order";
       }
 
-      return " ORDER BY `ITEM_{$itemtype}_{$ID}` $order ";
+      return ' ORDER BY '.implode(', ', $orderby_criteria).' ';
    }
 
 

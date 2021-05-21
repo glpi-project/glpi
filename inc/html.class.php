@@ -1315,6 +1315,10 @@ class Html {
       // AJAX library
       $tpl_vars['js_files'][] = 'public/lib/base.js';
 
+      // Search
+      $tpl_vars['js_modules'][] = 'js/modules/Search/ResultsView.js';
+      $tpl_vars['js_modules'][] = 'js/modules/Search/Table.js';
+
       // layout
       if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {

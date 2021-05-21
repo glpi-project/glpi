@@ -31,6 +31,7 @@
  */
 
 // Direct access to file
+
 include ('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -51,6 +52,26 @@ switch ($_REQUEST['action']) {
       ]);
 
       echo json_encode(['success' => $success]);
+      break;
+
+   case 'display_results':
+      if (!isset($_REQUEST['itemtype'])) {
+         http_response_code(400);
+         die;
+      }
+
+      /** @var CommonDBTM $itemtype */
+      $itemtype = $_REQUEST['itemtype'];
+      if (!$itemtype::canView()) {
+         http_response_code(403);
+         die;
+      }
+
+      $search_params = Search::manageParams($itemtype, $_REQUEST);
+
+      $results = Search::getDatas($itemtype, $search_params);
+      $results['searchform_id'] = $_REQUEST['searchform_id'] ?? null;
+      Search::displayData($results);
       break;
 }
 

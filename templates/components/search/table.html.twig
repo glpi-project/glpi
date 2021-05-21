@@ -1,8 +1,10 @@
+{% set searchform_id = data['searchform_id']|default('search_' ~ rand) %}
+
 <div class="table-responsive-md">
    <table class="search-results table card-table table-hover {{ data['search']['is_deleted'] ? "table-danger deleted-results" : "" }}"
-          id="search_{{ rand }}">
+          id="{{ searchform_id }}">
       <thead>
-         <tr>
+         <tr {{ count == 0 ? 'style="display: none;"' : '' }}>
             {% if showmassiveactions %}
             <th style="width: 30px;">
                <div>
@@ -13,13 +15,23 @@
             </th>
             {% endif %}
 
+            {% set sorts = data['search']['sort'] %}
+
             {% for col in data['data']['cols'] %}
                {# construct header link (for sorting) #}
                {% set linkto = "" %}
                {% set so_no_sort = col['searchopt']['nosort'] ?? false %}
                {% set meta = col['meta'] ?? false %}
-               {% if not meta and not no_sort and not so_no_sort %}
-                  {% set linkto = prehref ~ "sort=" ~ col['id'] ~ "&order=" ~ (order == "ASC" ? "DESC" : "ASC") ~ "&start=" ~ start ~ "&" ~ posthref %}
+               {% set sort_order = 'nosort' %}
+               {% set sort_num = '' %}
+               {% set can_sort = not meta and not no_sort and not so_no_sort %}
+               {% if can_sort %}
+                  {% for sort_opt in sorts %}
+                     {% if sort_opt == col['id'] %}
+                        {% set sort_order = data['search']['order'][loop.index0]|default('ASC') %}
+                        {% set sort_num = loop.index %}
+                     {% endif %}
+                  {% endfor %}
                {% endif %}
 
                {% set col_name = col['name'] %}
@@ -34,13 +46,12 @@
                   {% set col_name = __('%1$s - %2$s')|format(col['itemtype']|itemtype_name, col_name) %}
                {% endif %}
 
-               <th>
-                  {% set sort_icon = (sort == col['id'] ? "<i class=\"fas fa-sort-" ~ (order == "ASC" ? "down" : "up") ~ "\"></i>" : "") %}
-
-                  {% if linkto is empty %}
-                     {{ col_name }}&nbsp;{{ sort_icon }}
-                  {% else %}
-                     <a href="{{ linkto }}">{{ col_name }}&nbsp;{{ sort_icon|raw }}</a>
+               <th data-searchopt-id="{{ col['id'] }}" {{ not can_sort ? 'data-nosort="true"' }} data-sort-order="{{ sort_order }}"
+                  {{ sort_num is not empty ? 'data-sort-num=' ~ (sort_num - 1) ~ '' : '' }}>
+                  {% set sort_icon = sort_order == 'ASC' ? 'fas fa-sort-up' : (sort_order == 'DESC' ? 'fas fa-sort-down' : '') %}
+                  {{ col_name }}
+                  {% if can_sort %}
+                     <span class="sort-indicator"><i class="{{ sort_icon }}"></i><span class="sort-num">{{ sorts|length > 1 ? sort_num : '' }}</span></span>
                   {% endif %}
                </th>
             {% endfor %}
@@ -54,39 +65,49 @@
          </tr>
       </thead>
       <tbody>
-         {% for rowkey, row in data['data']['rows'] %}
-         <tr>
-            {% if showmassiveactions %}
-            <td>
-               <div>
-                  {# disable massiveaction checkbox for some specific cases #}
-                  {% if itemtype == 'Entity' and not haveAccessToEntity(row['id']) %}
-                  {% elseif itemtype == 'User' and not canViewAllEntities() and not userhaveAccessToOneOfEntities(row['id'], false) %}
-                  {% elseif itemInstanceOf(item, 'CommonDBTM') and maybeRecursive(item) and not haveAccessToEntity(row["entities_id"])  %}
-                  {% else %}
-                     {% set checked = isMassiveActionchecked(itemtype, row['id']) ? "checked" : "" %}
-                     <input class="form-check-input" type="checkbox" data-glpicore-ma-tags="common"
-                        value="1" aria-label="" {{ checked }}
-                        name="item[{{ row['TYPE'] ?? itemtype }}][{{ row['id'] }}]">
-                  {% endif %}
-               </div>
-            </td>
-            {% endif %}
-
-            {% for col in data['data']['cols'] %}
-               {% set colkey = col['itemtype'] ~ "_" ~ col['id'] %}
-               {# showItem function returns "<td ...>...</td>" #}
-               {{ showItem(0, row[colkey]['displayname'], 0, 0, displayConfigItem(itemtype, col['id'], row))|raw }}
-            {% endfor %}
-
-            {# display itemtype in AllAssets #}
-            {% if union_search_type[itemtype] is defined %}
-               <td>
-                  {{ row["TYPE"]|itemtype_name }}
+         {% if count == 0 %}
+            <tr>
+               <td colspan="{{ data['data']['cols']|length }}">
+                  <div class="alert alert-info mb-0 rounded-0 border-top-0 border-bottom-0 border-right-0" role="alert">
+                     {{ __('No item found') }}
+                  </div>
                </td>
-            {% endif %}
-         </tr>
-         {% endfor %}
+            </tr>
+         {% else %}
+            {% for rowkey, row in data['data']['rows'] %}
+               <tr>
+                  {% if showmassiveactions %}
+                  <td>
+                     <div>
+                        {# disable massiveaction checkbox for some specific cases #}
+                        {% if itemtype == 'Entity' and not haveAccessToEntity(row['id']) %}
+                        {% elseif itemtype == 'User' and not canViewAllEntities() and not userhaveAccessToOneOfEntities(row['id'], false) %}
+                        {% elseif itemInstanceOf(item, 'CommonDBTM') and maybeRecursive(item) and not haveAccessToEntity(row["entities_id"])  %}
+                        {% else %}
+                           {% set checked = isMassiveActionchecked(itemtype, row['id']) ? "checked" : "" %}
+                           <input class="form-check-input" type="checkbox" data-glpicore-ma-tags="common"
+                              value="1" aria-label="" {{ checked }}
+                              name="item[{{ row['TYPE'] ?? itemtype }}][{{ row['id'] }}]">
+                        {% endif %}
+                     </div>
+                  </td>
+                  {% endif %}
+
+                  {% for col in data['data']['cols'] %}
+                     {% set colkey = col['itemtype'] ~ "_" ~ col['id'] %}
+                     {# showItem function returns "<td ...>...</td>" #}
+                     {{ showItem(0, row[colkey]['displayname'], 0, 0, displayConfigItem(itemtype, col['id'], row))|raw }}
+                  {% endfor %}
+
+                  {# display itemtype in AllAssets #}
+                  {% if union_search_type[itemtype] is defined %}
+                     <td>
+                        {{ row["TYPE"]|itemtype_name }}
+                     </td>
+                  {% endif %}
+               </tr>
+            {% endfor %}
+         {% endif %}
       </tbody>
    </table>
 </div>

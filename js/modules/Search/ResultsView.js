@@ -1,4 +1,3 @@
-<?php
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,23 +29,31 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+// Explicitly bind to window so Jest tests work properly
+window.GLPI = window.GLPI || {};
+window.GLPI.Search = window.GLPI.Search || {};
 
-Session::checkLoginUser();
+window.GLPI.Search.ResultsView = class ResultsView {
 
-if (Session::getCurrentInterface() == "helpdesk") {
-   Html::helpHeader(Ticket::getTypeName(Session::getPluralNumber()), '', $_SESSION["glpiname"]);
-} else {
-   Html::header(Ticket::getTypeName(Session::getPluralNumber()), '', "helpdesk", "ticket");
-}
+   constructor(element_id, view_class) {
+      this.element_id = element_id;
 
-echo Html::manageRefreshPage(false, "$('div.ajax-container.search-display-data').data('js_class').getView().refreshResults();");
+      if (this.getElement()) {
+         this.getElement().closest('div.ajax-container.search-display-data').data('js_class', this);
+         this.view = new view_class(this.element_id);
+      }
+   }
 
-Search::show('Ticket');
+   getElement() {
+      return $('#'+this.element_id);
+   }
 
-if (Session::getCurrentInterface() == "helpdesk") {
-   Html::helpFooter();
-} else {
-   Html::footer();
-}
+   getAJAXContainer() {
+      return this.getElement().closest('div.ajax-container.search-display-data');
+   }
 
+   getView() {
+      return this.view;
+   }
+};
+export default window.GLPI.Search.ResultsView;
