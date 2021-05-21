@@ -298,11 +298,6 @@ class Provider extends CommonGLPI {
                   'field'      => 55,
                   'searchtype' => 'equals',
                   'value'      => CommonITILValidation::WAITING,
-               ],  [
-                  'link'       => 'AND',
-                  'field'      => 59,
-                  'searchtype' => 'equals',
-                  'value'      => Session::getLoginUserID(),
                ]
             ];
             $query_criteria = array_merge_recursive($query_criteria, [
@@ -315,8 +310,7 @@ class Provider extends CommonGLPI {
                   ]
                ],
                'WHERE' => [
-                  'glpi_ticketvalidations.status'            => CommonITILValidation::WAITING,
-                  'glpi_ticketvalidations.users_id_validate' => Session::getLoginUserID()
+                  'glpi_ticketvalidations.status' => CommonITILValidation::WAITING,
                ]
             ]);
             break;
