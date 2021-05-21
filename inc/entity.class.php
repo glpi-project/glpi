@@ -3467,7 +3467,7 @@ class Entity extends CommonTreeDropdown {
    public static function getDefaultContractValues($entities_id): array {
       $values = [
          self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-         -1 => __('Contract in ticket entity'),
+         -1 => __('First found valid contract in ticket entity'),
       ];
 
       $contract = new Contract();
