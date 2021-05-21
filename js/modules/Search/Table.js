@@ -114,7 +114,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
          $(this).val(new_limit);
       });
 
-      this.refreshResults();
+      this.refreshResults({start: 0});
    }
 
    onPageChange(target) {
