@@ -5422,7 +5422,7 @@ JAVASCRIPT;
 
       $p['name']                = 'filename';
       $p['onlyimages']          = false;
-      $p['filecontainer']       = 'fileupload_info';
+      $p['filecontainer']       = 'fileupload_info'.$randupload;
       $p['showfilesize']        = true;
       $p['showtitle']           = true;
       $p['enable_richtext']     = false;
