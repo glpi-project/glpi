@@ -1958,7 +1958,7 @@ class Infocom extends CommonDBChild {
 
       $timestamp = strtotime("$from+$addwarranty month -$deletenotice month");
 
-      if ($auto_renew) {
+      if ($auto_renew && $addwarranty > 0) {
          while ($timestamp < time()) {
             $datetime = new DateTime();
             $datetime->setTimestamp($timestamp);
