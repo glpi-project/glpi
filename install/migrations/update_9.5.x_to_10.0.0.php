@@ -64,6 +64,21 @@ function update95xto1000() {
             'users_id'  => "0",
             'itemtype'  => $type,
             'num'       => $newval,
+            'is_main'   => 1
+         ]);
+      }
+   }
+
+   foreach ($ADDTOSUBDISPLAYPREF as $type => $tab) {
+      $rank = 1;
+      foreach ($tab as $newval) {
+         $DB->updateOrInsert("glpi_displaypreferences", [
+            'rank'      => $rank++
+         ], [
+            'users_id'  => "0",
+            'itemtype'  => $type,
+            'num'       => $newval,
+            'is_main'   => 0
          ]);
       }
    }

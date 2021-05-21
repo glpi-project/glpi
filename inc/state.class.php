@@ -501,5 +501,4 @@ class State extends CommonTreeDropdown {
       }
       return $fields;
    }
-
 }

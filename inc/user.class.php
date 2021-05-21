@@ -3911,7 +3911,8 @@ JAVASCRIPT;
 
       if (!$count) {
          if ((strlen($search) > 0)) {
-            $txt_search = Search::makeTextSearchValue($search);
+            $search_inst = new Search(new User(), []);
+            $txt_search = $search_inst->makeTextSearchValue($search);
 
             $firstname_field = $DB->quoteName(self::getTableField('firstname'));
             $realname_field = $DB->quoteName(self::getTableField('realname'));

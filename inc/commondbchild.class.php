@@ -222,7 +222,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @param $getFromDB   (true by default)
     * @param $getEmpty    (true by default)
     *
-    * @return object of the concerned item or false on error
+    * @return CommonDBTM|boolean object of the concerned item or false on error
    **/
    function getItem($getFromDB = true, $getEmpty = true) {
 
@@ -896,5 +896,46 @@ abstract class CommonDBChild extends CommonDBConnexity {
          echo __('No');
       }
       echo "</td>";
+   }
+
+   /**
+    * Add default where for search
+    *
+    * @since 10.0.0
+    *
+    * @param CommonDBTM $item Item instance
+    * @param boolean    $self Condition is to add on current object itself
+    *
+    * @return array
+    */
+   public static function addSubDefaultWhere(CommonDBTM $item, $self = false) {
+      global $DB;
+
+      $item_type  = $item->getType();
+      $where_id   = static::$items_id;
+
+      $current_table = static::getTable();
+      $condition = $current_table . '.' . $where_id . '=' . $item->fields['id'];
+
+      if ($DB->fieldExists(static::getTable(), 'itemtype')/* && $self === false*/) {
+         $condition .= ' AND ' . $DB->quoteName($current_table . '.itemtype')  . ' = ' . $DB->quote($item_type);
+      }
+
+      return $condition;
+   }
+
+
+   public function getSubItems(CommonGLPI $item, array $params): array {
+      $search = new \Search($this, $params);
+      if (isset($args['page'])) {
+         $search->setPage((int)$args['page']);
+      }
+      $data = $search->getData([
+         'item'      => $item,
+         'sub_item'  => $this
+      ]);
+
+      $this->sub_search = $search;
+      return $data;
    }
 }

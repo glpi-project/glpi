@@ -1522,4 +1522,102 @@ class Item_Devices extends CommonDBRelation {
       $device_class = static::$itemtype_2 ?? "CommonDevice";
       return $device_class::getIcon();
    }
+
+   public static function addSubDefaultJoin(CommonDBTM $item, $itemtype = null) {
+      if ($itemtype === 'AllAssets') {
+         $joins = '';
+         foreach (static::itemAffinity() as $link_type) {
+            $joins .= static::addSubDefaultJoin($item, $link_type);
+         }
+         return $joins;
+      }
+
+      $sub_link_item = new $itemtype;
+      if ($item->getType() == static::$itemtype_1) {
+         $link_type = static::$itemtype_2;
+         $link_id = static::$items_id_2;
+      } else if ($item->getType() == static::$itemtype_2) {
+         $link_type = static::$itemtype_1;
+         $link_id = static::$items_id_1;
+      } else {
+         $link_type = (static::$itemtype_1 != 'itemtype' ? static::$itemtype_1 : static::$itemtype_2);
+         $link_id = (static::$itemtype_1 != 'itemtype' ? static::$items_id_1 : static::$items_id_2);
+      }
+
+      if (empty($link_type) || $link_type == 'itemtype') {
+         $link_type = $itemtype;
+      }
+
+      $link_table = getTableForItemType($link_type);
+
+      $existing = [];
+      $search = new \Search($link_type, []);
+      $join = $search->addLeftJoin(
+         $link_type,
+         $link_table,
+         $existing,
+         static::getTable(),
+         $link_id,
+         0,
+         0,
+         ['jointype' => 'child']
+      );
+
+      return $join;
+   }
+
+
+   public function getSubItems(CommonGLPI $item, array $params): array {
+      $data = [];
+
+      if ($item instanceof \CommonDevice) {
+         $types = $this->itemAffinity();
+
+         foreach ($types as $sub_type) {
+            $sub_link_item = new $sub_type;
+            $search = new \Search($item, $params);
+            $data[$sub_type] = [
+               'search_data'  => $search->getData([
+                     'item'      => $item,
+                     'sub_item'  => $sub_link_item
+               ]),
+               'item'         => $sub_link_item
+            ];
+         }
+      } else {
+         $types = $this->getDeviceTypes();
+
+         foreach ($types as $sub_type) {
+            $sub_link_item = new $sub_type;
+            if ($item->getType() == $sub_link_item::$itemtype_1) {
+               $link_type = $sub_link_item::$itemtype_2;
+            } else if ($item->getType() == $sub_link_item::$itemtype_2) {
+               $link_type = $sub_link_item::$itemtype_1;
+            } else {
+               $link_type = ($sub_link_item::$itemtype_1 != 'itemtype' ?
+                     $sub_link_item::$itemtype_1 :
+                     $sub_link_item::$itemtype_2
+               );
+            }
+
+            if (!empty($link_type) && $link_type != 'itemtype') {
+               $link = new $link_type;
+            } else {
+               $link = $this;
+            }
+
+            $search = new \Search($link, $params);
+            $data[$link->getType()] = [
+               'search_data'  => $search->getData([
+                     'item'      => $item,
+                     'sub_item'  => $sub_link_item
+               ]),
+               'item'         => $sub_link_item
+            ];
+         }
+      }
+
+      $this->sub_search = $search;
+      return $data;
+   }
 }

@@ -310,94 +310,8 @@ class ComputerVirtualMachine extends CommonDBChild {
          echo "</a></div>\n";
       }
 
-      echo "<div class='center table-responsive'>";
-
-      $virtualmachines = getAllDataFromTable(
-         self::getTable(), [
-            'WHERE'  => [
-               'computers_id' => $ID,
-               'is_deleted'   => 0
-            ],
-            'ORDER'  => 'name'
-         ]
-      );
-
-      echo "<table class='tab_cadre_fixehov'>";
-
-      Session::initNavigateListItems('ComputerVirtualMachine',
-                                     sprintf(__('%1$s = %2$s'), Computer::getTypeName(1),
-                                             (empty($comp->fields['name'])
-                                                ? "($ID)" : $comp->fields['name'])));
-
-      if (empty($virtualmachines)) {
-         echo "<tr><th>".__('No virtualized environment associated with the computer')."</th></tr>";
-      } else {
-         echo "<tr class='noHover'><th colspan='10'>".__('List of virtualized environments')."</th></tr>";
-
-         $header = "<tr><th>".__('Name')."</th>";
-         $header .= "<th>"._n('Comment', 'Comments', 1)."</th>";
-         $header .= "<th>".__('Automatic inventory')."</th>";
-         $header .= "<th>".VirtualMachineType::getTypeName(1)."</th>";
-         $header .= "<th>".VirtualMachineSystem::getTypeName(1)."</th>";
-         $header .= "<th>".__('State')."</th>";
-         $header .= "<th>".__('UUID')."</th>";
-         $header .= "<th>"._x('quantity', 'Processors number')."</th>";
-         $header .= "<th>".sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio'))."</th>";
-         $header .= "<th>".__('Machine')."</th>";
-         $header .= "</tr>";
-         echo $header;
-
-         $vm = new self();
-         foreach ($virtualmachines as $virtualmachine) {
-            $vm->getFromDB($virtualmachine['id']);
-            echo "<tr class='tab_bg_2'>";
-            echo "<td>".$vm->getLink()."</td>";
-            echo "<td>".$virtualmachine['comment']."</td>";
-            echo "<td>".Dropdown::getYesNo($vm->isDynamic())."</td>";
-            echo "<td>";
-            echo Dropdown::getDropdownName('glpi_virtualmachinetypes',
-                                           $virtualmachine['virtualmachinetypes_id']);
-            echo "</td>";
-            echo "<td>";
-            echo Dropdown::getDropdownName('glpi_virtualmachinesystems',
-                                           $virtualmachine['virtualmachinesystems_id']);
-            echo "</td>";
-            echo "<td>";
-            echo Dropdown::getDropdownName('glpi_virtualmachinestates',
-                                           $virtualmachine['virtualmachinestates_id']);
-            echo "</td>";
-            echo "<td>".$virtualmachine['uuid']."</td>";
-            echo "<td>".$virtualmachine['vcpu']."</td>";
-            echo "<td>".$virtualmachine['ram']."</td>";
-            echo "<td>";
-            if ($link_computer = self::findVirtualMachine($virtualmachine)) {
-               $computer = new Computer();
-               if ($computer->can($link_computer, READ)) {
-                  $url  = "<a href='".$computer->getFormURLWithID($link_computer)."'>";
-                  $url .= $computer->fields["name"]."</a>";
-
-                  $tooltip = "<table><tr><td>".__('Name')."</td><td>".$computer->fields['name'].
-                             '</td></tr>';
-                  $tooltip.= "<tr><td>".__('Serial number')."</td><td>".$computer->fields['serial'].
-                             '</td></tr>';
-                  $tooltip.= "<tr><td>".__('Comments')."</td><td>".$computer->fields['comment'].
-                             '</td></tr></table>';
-
-                  $url .= "&nbsp; ".Html::showToolTip($tooltip, ['display' => false]);
-               } else {
-                  $url = $computer->fields['name'];
-               }
-               echo $url;
-            }
-            echo "</td>";
-            echo "</tr>";
-            Session::addToNavigateListItems('ComputerVirtualMachine', $virtualmachine['id']);
-
-         }
-         echo $header;
-      }
-      echo "</table>";
-      echo "</div>";
+      $get = ['add' => true] + $_GET;
+      $comp->showSublist(self::getType(), $get);
    }
 
 
@@ -521,6 +435,7 @@ class ComputerVirtualMachine extends CommonDBChild {
          'field'              => 'ram',
          'name'               => _n('Memory', 'Memories', 1),
          'datatype'           => 'string',
+         'unit'               => 'auto',
          'massiveaction'      => false,
          'autocomplete'       => true,
       ];
@@ -533,6 +448,44 @@ class ComputerVirtualMachine extends CommonDBChild {
          'datatype'           => 'string',
          'massiveaction'      => false,
          'autocomplete'       => true,
+      ];
+
+      $tab[] = [
+         'id'                 => 5,
+         'table'              => VirtualMachineState::getTable(),
+         'field'              => 'name',
+         'name'               => VirtualMachineState::getTypeName(1),
+         'datatype'           => 'dropdown',
+         'massiveaction'      => false
+
+      ];
+
+      $tab[] = [
+         'id'                 => 6,
+         'table'              => VirtualMachineSystem::getTable(),
+         'field'              => 'name',
+         'name'               => VirtualMachineSystem::getTypeName(1),
+         'datatype'           => 'dropdown',
+         'massiveaction'      => false
+
+      ];
+
+      $tab[] = [
+         'id'                 => 7,
+         'table'              => VirtualMachineType::getTable(),
+         'field'              => 'name',
+         'name'               => VirtualMachineType::getTypeName(1),
+         'datatype'           => 'dropdown',
+         'massiveaction'      => false
+      ];
+
+      $tab[] = [
+         'id'                 => '8',
+         'table'              => self::getTable(),
+         'field'              => 'uuid',
+         'name'               => __('Machine'),
+         'datatype'           => 'specific',
+         'massiveaction'      => false
       ];
 
       return $tab;
@@ -668,4 +621,24 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       return $tab;
    }
+
+
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+
+      if ($options['searchopt']['datatype'] !== 'specific') {
+         return;
+      }
+
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+      switch ($field) {
+         case 'uuid':
+            $computer = new Computer();
+            $computer->getFromDBByCrit(['uuid' => $values['uuid']]);
+            return $computer->getLink();
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
 }

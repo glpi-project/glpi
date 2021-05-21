@@ -1201,7 +1201,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
               && ($this->getField('last_execution_time') != null)
               && ($this->fields['last_execution_time'] <= $CFG_GLPI['max_time_for_count']))) {
 
-         $search = new Search();
          //Do the same as self::getParameters() but getFromDB is useless
          $query_tab = [];
          parse_str($this->getField('query'), $query_tab);
@@ -1215,8 +1214,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
          if (!$params) {
             throw new \RuntimeException('Saved search #' . $this->getID() . ' seems to be broken!');
          } else {
-            $data                   = $search->prepareDatasForSearch($this->getField('itemtype'),
-                                                                     $params);
+            $search = new Search($this, []);
+            $data = $search->prepareDataForSearch(
+               $this->getField('itemtype'),
+               $params
+            );
             $data['search']['sort'] = null;
             $search->constructSQL($data);
             $search->constructData($data, true);

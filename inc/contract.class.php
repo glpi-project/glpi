@@ -596,6 +596,26 @@ class Contract extends CommonDBTM {
 
          case 'renewal' :
             return self::getContractRenewalName($values[$field]);
+
+         case 'id':
+            $contract = new Contract();
+            $contract->getFromDB($values[$field]);
+
+            $out = sprintf(
+               __('%1$s %2$s'),
+               $contract->fields["duration"],
+               _n('month', 'months', $contract->fields["duration"])
+            );
+            if (!empty($contract->fields["begin_date"])) {
+               $out .= "\n -> " . Infocom::getWarrantyExpir(
+                  $con->fields["begin_date"],
+                  $con->fields["duration"],
+                  0,
+                  true
+               );
+            }
+            return $out;
+
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
@@ -875,6 +895,15 @@ class Contract extends CommonDBTM {
                ]
             ]
          ]
+      ];
+
+      $tab[] = [
+         'id'                 => '46',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('Initial contract period'),
+         'massiveaction'      => false,
+         'datatype'           => 'specific'
       ];
 
       $tab[] = [

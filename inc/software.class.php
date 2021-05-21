@@ -535,7 +535,7 @@ class Software extends CommonDBTM {
 
       $tab = array_merge($tab, SoftwareLicense::rawSearchOptionsToAdd());
 
-      $name = _n('Version', 'Versions', Session::getPluralNumber());
+      $name = SoftwareVersion::getTypeName(Session::getPluralNumber());
       $tab[] = [
          'id'                 => 'versions',
          'name'               => $name
