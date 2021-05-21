@@ -112,11 +112,11 @@
 
             @include media-breakpoint-up(sm) {
                thead:first-child {
-                  position: sticky;
-                  top: 0;
                   z-index: 2;
 
                   th {
+                     position: sticky;
+                     top: 0;
                      border: 1px solid $card-border-color;
                      border-left: 0;
                      border-right: 0;
