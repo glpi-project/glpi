@@ -45,7 +45,7 @@ $secondary-fg: #262d3d;
 $dark: #000000;//#0d0d0d;
 $dark-mode-darken: #000000;
 $color-contrast-dark: #1a1a1a;
-$light: #cccccc;
+$light: #e6e6e6;
 $link-color: #b6c3e0;
 
 $text-muted: #757d91;
@@ -64,11 +64,11 @@ $header-border-color: transparent;
 $header-badge-bg: #1d2c3f;
 $header-badge-fg: #6ba8f3;
 
-$tabs-bg: #1d2531;
+$tabs-bg: $color-contrast-dark;
 $tabs-fg: $light;
 $tabs-border: transparent;
-$tabs-active-bg: #8892a8;
-$tabs-active-fg: #232e3c;
+$tabs-active-bg: #737373;
+$tabs-active-fg: #ffffff;
 $tabs-active-border: transparent;
 
 $badge-bg: $light;
