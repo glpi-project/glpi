@@ -329,6 +329,11 @@ class Certificate_Item extends CommonDBRelation {
       }
 
       $get = ['withtemplate' => $withtemplate] + $_GET;
+
+      if ($item->canAddItem('Certificate') && $withtemplate < 2 && Certificate::canView) {
+         $get['addlink'] =  true;
+      }
+
       $item->showSublist(self::getType(), $get);
    }
 }

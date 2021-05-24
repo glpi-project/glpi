@@ -77,7 +77,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       // Check item 1 type
       $request = false;
-      if (preg_match('/^itemtype/', static::$itemtype)) {
+      if (Toolbox::startsWith(static::$itemtype, 'itemtype')) {
          $criteria['SELECT'][] = static::$itemtype . ' AS itemtype';
          $criteria['WHERE'][static::$itemtype] = $itemtype;
          $request = true;
@@ -807,7 +807,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
          ]
       ];
 
-      if (preg_match('/^itemtype/', static::$itemtype)) {
+      if (Toolbox::startsWith(static::$itemtype, 'itemtype')) {
          $query['WHERE']['itemtype'] = $item->getType();
       }
 
@@ -858,7 +858,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       $input = [static::getIndexName() => $id,
                      static::$items_id      => $items_id];
 
-      if (preg_match('/^itemtype/', static::$itemtype)) {
+      if (Toolbox::startsWith(static::$itemtype, 'itemtype')) {
          $input[static::$itemtype] = $itemtype;
       }
 
@@ -874,7 +874,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
          return static::$items_id;
       }
 
-      if (isset (static::$itemtype) && preg_match('/^itemtype/', static::$itemtype)) {
+      if (isset (static::$itemtype) && Toolbox::startsWith(static::$itemtype, 'itemtype')) {
          return static::$items_id;
       }
 
@@ -917,8 +917,8 @@ abstract class CommonDBChild extends CommonDBConnexity {
       $current_table = static::getTable();
       $condition = $current_table . '.' . $where_id . '=' . $item->fields['id'];
 
-      if ($DB->fieldExists(static::getTable(), 'itemtype')/* && $self === false*/) {
-         $condition .= ' AND ' . $DB->quoteName($current_table . '.itemtype')  . ' = ' . $DB->quote($item_type);
+      if (Toolbox::startsWith(static::$itemtype, 'itemtype')) {
+         $condition .= ' AND ' . $DB->quoteName($current_table . '.' . static::$itemtype)  . ' = ' . $DB->quote($item_type);
       }
 
       return $condition;
@@ -927,9 +927,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
    public function getSubItems(CommonGLPI $item, array $params): array {
       $search = new \Search($this, $params);
-      if (isset($args['page'])) {
-         $search->setPage((int)$args['page']);
-      }
       $data = $search->getData([
          'item'      => $item,
          'sub_item'  => $this

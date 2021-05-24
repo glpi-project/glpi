@@ -223,7 +223,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
    static function getItemFromArray($itemtype, $items_id, array $array, $getFromDB = true,
                                     $getEmpty = true, $getFromDBOrEmpty = false) {
 
-      if (preg_match('/^itemtype/', $itemtype)) {
+      if (Toolbox::startsWith($itemtype, 'itemtype')) {
          if (isset($array[$itemtype])) {
             $type = $array[$itemtype];
          } else {
@@ -344,7 +344,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
    static function canConnexity($method, $item_right, $itemtype, $items_id) {
 
       if (($item_right != self::DONT_CHECK_ITEM_RIGHTS)
-          && (!preg_match('/^itemtype/', $itemtype))) {
+          && (!Toolbox::startsWith($itemtype, 'itemtype'))) {
          if ($item_right == self::HAVE_VIEW_RIGHT_ON_ITEM) {
             $method = 'canView';
          }
@@ -391,7 +391,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
                $methodItem    = 'canViewItem';
             }
             // here, we can check item's global rights
-            if (preg_match('/^itemtype/', $itemtype)) {
+            if (Toolbox::startsWith($itemtype, 'itemtype')) {
                if (!$connexityItem->$methodNotItem()) {
                   return false;
                }
@@ -446,7 +446,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
          $previousItemArray[$items_id] = $this->fields[$items_id];
       }
 
-      if (preg_match('/^itemtype/', $itemtype)) {
+      if (Toolbox::startsWith($itemtype, 'itemtype')) {
          $newItemArray[$itemtype] = $this->fields[$itemtype];
          if (isset($this->oldvalues[$itemtype])) {
             $previousItemArray[$itemtype] = $this->oldvalues[$itemtype];
@@ -575,14 +575,14 @@ abstract class CommonDBConnexity extends CommonDBTM {
                      // Should never occur ... But we must care !
                      $values = [];
                      if ((empty($itemtype::$itemtype_1))
-                      || (preg_match('/^itemtype/', $itemtype::$itemtype_1))) {
+                      || (Toolbox::startsWith($itemtype::$itemtype_1, 'itemtype'))) {
                         $values[0] = __('First Item');
                      } else {
                         $itemtype_1 = $itemtype::$itemtype_1;
                         $values[0]  = $itemtype_1::getTypeName(Session::getPluralNumber());
                      }
                      if ((empty($itemtype::$itemtype_2))
-                         || (preg_match('/^itemtype/', $itemtype::$itemtype_2))) {
+                         || (Toolbox::startsWith($itemtype::$itemtype_2, 'itemtype'))) {
                         $values[1] = __('Second Item');
                      } else {
                         $itemtype_2 = $itemtype::$itemtype_2;
@@ -616,7 +616,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
                } else {
                   $peertype = $itemtype::$itemtype;
                }
-               if (preg_match('/^itemtype/', $peertype)) {
+               if (Toolbox::startsWith($peertype, 'itemtype')) {
                   $peertypes = array_merge($peertypes, $specificities['itemtypes']);
                } else {
                   $peertypes[] = $peertype;
@@ -631,7 +631,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
             if (count($peertypes) == 1) {
                $options['name']   = 'peers_id';
                $type_for_dropdown = $peertypes[0];
-               if (preg_match('/^itemtype/', $peertype)) {
+               if (Toolbox::startsWith($peertype, 'itemtype')) {
                   echo Html::hidden('peertype', ['value' => $type_for_dropdown]);
                }
                $type_for_dropdown::dropdown($options);
@@ -751,7 +751,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
             $input2 = $itemtype::getConnexityInputForProcessingOfMassiveActions($action, $item,
                                                                                 $ids, $input);
             $input2[$peers_id] = $input['peers_id'];
-            if (preg_match('/^itemtype/', $peertype)) {
+            if (Toolbox::startsWith($peertype, 'itemtype')) {
                if (!in_array($input['peertype'], $specificities['itemtypes'])) {
                   $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
                   $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
@@ -771,7 +771,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
                   $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                   continue;
                }
-               if (preg_match('/^itemtype/', $peertype)) {
+               if (Toolbox::startsWith($peertype, 'itemtype')) {
                   if (($input2[$peertype] == $item->fields[$peertype])
                       && ($input2[$peers_id] == $item->fields[$peers_id])) {
                      $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);

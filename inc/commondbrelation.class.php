@@ -106,7 +106,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       ];
 
       $request = false;
-      if (preg_match('/^itemtype/', static::$itemtype_1)) {
+      if (Toolbox::startsWith(static::$itemtype_1, 'itemtype')) {
          $fields[] = static::$itemtype_1 . ' AS itemtype_1';
          $where1[static::$itemtype_1] = $itemtype;
          $request = true;
@@ -132,7 +132,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          static::$items_id_2 => $items_id
       ];
       $request = false;
-      if (preg_match('/^itemtype/', static::$itemtype_2)) {
+      if (Toolbox::startsWith(static::$itemtype_2, 'itemtype')) {
          $fields[] = static::$itemtype_2 . ' AS itemtype_2';
          $where2[static::$itemtype_2] = $itemtype;
          $request = true;
@@ -270,14 +270,14 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       $wheres[static::$items_id_2] = $item2->getID();
 
       // Check item 1 type
-      if (preg_match('/^itemtype/', static::$itemtype_1)) {
+      if (Toolbox::startsWith(static::$itemtype_1, 'itemtype')) {
          $wheres[static::$itemtype_1] = $item1->getType();
       } else if (!is_a($item1, static::$itemtype_1)) {
          return false;
       }
 
       // Check item 1 type
-      if (preg_match('/^itemtype/', static::$itemtype_2)) {
+      if (Toolbox::startsWith(static::$itemtype_2, 'itemtype')) {
          $wheres[static::$itemtype_2] = $item2->getType();
       } else if (!is_a($item2, static::$itemtype_2)) {
          return false;
@@ -309,7 +309,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       ];
 
       $itemtype1 = static::$itemtype_1;
-      if (!preg_match('/^itemtype/', $itemtype1)) {
+      if (!Toolbox::startsWith($itemtype1, 'itemtype')) {
          $tab[] = [
             'id'                 => '3',
             'table'              => getTableForItemType($itemtype1),
@@ -322,7 +322,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
 
       $itemtype2 = static::$itemtype_2;
-      if (!preg_match('/^itemtype/', $itemtype2)) {
+      if (!Toolbox::startsWith($itemtype2, 'itemtype')) {
          $tab[] = [
             'id'                 => '4',
             'table'              => getTableForItemType($itemtype2),
@@ -1059,14 +1059,14 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       if ($peer == 0) {
          $input[static::$items_id_1] = $items_id;
 
-         if (preg_match('/^itemtype/', static::$itemtype_1)) {
+         if (Toolbox::startsWith(static::$itemtype_1, 'itemtype')) {
             $input[static::$itemtype_1] = $itemtype;
          }
 
       } else {
 
          $input[static::$items_id_2] = $items_id;
-         if (preg_match('/^itemtype/', static::$itemtype_2)) {
+         if (Toolbox::startsWith(static::$itemtype_2, 'itemtype')) {
             $input[static::$itemtype_2] = $itemtype;
          }
 
@@ -1149,10 +1149,10 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
 
       // Else, check if one of both peer is 'itemtype*'
-      if (preg_match('/^itemtype/', static::$itemtype_1)) {
+      if (Toolbox::startsWith(static::$itemtype_1, 'itemtype')) {
          return 2;
       }
-      if (preg_match('/^itemtype/', static::$itemtype_2)) {
+      if (Toolbox::startsWith(static::$itemtype_2, 'itemtype')) {
          return 1;
       }
 
@@ -1206,7 +1206,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                    && $specificities['can_remove_all_at_once']) {
                   $options['emptylabel'] = __('Remove all at once');
                }
-               if (preg_match('/^itemtype/', $peertype)) {
+               if (Toolbox::startsWith($peertype, 'itemtype')) {
                   if (count($specificities['itemtypes']) > 0) {
                      $options['itemtype_name'] = 'peer_'.$peertype;
                      $options['items_id_name'] = 'peer_'.$peers_id;
@@ -1325,7 +1325,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $peers_id = static::$items_id_1;
       }
 
-      if (preg_match('/^itemtype/', $itemtype)) {
+      if (Toolbox::startsWith($itemtype, 'itemtype')) {
          $input2[$itemtype] = $item->getType();
       }
 
@@ -1449,10 +1449,10 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                      static::$items_id_1  => $item_1->getID(),
                      static::$items_id_2  => $item_2->getID()
                   ];
-                  if (preg_match('/^itemtype/', static::$itemtype_1)) {
+                  if (Toolbox::startsWith(static::$itemtype_1, 'itemtype')) {
                      $WHERE[static::$itemtype_1] = $item_1->getType();
                   }
-                  if (preg_match('/^itemtype/', static::$itemtype_2)) {
+                  if (Toolbox::startsWith(static::$itemtype_2, 'itemtype')) {
                      $WHERE[static::$itemtype_2] = $item_2->getType();
                   }
 
@@ -1462,10 +1462,10 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                         static::$items_id_1 = $item_2->getID(),
                         static::$items_id_2 = $item_2->getID()
                      ];
-                     if (preg_match('/^itemtype/', static::$itemtype_1)) {
+                     if (Toolbox::startsWith(static::$itemtype_1, 'itemtype')) {
                         $ORWHERE[static::$itemtype_1] = $item_2->getType();
                      }
-                     if (preg_match('/^itemtype/', static::$itemtype_2)) {
+                     if (Toolbox::startsWith(static::$itemtype_2, 'itemtype')) {
                         $ORWHERE[static::$itemtype_2] = $item_2->getType();
                      }
                      $WHERE = [
@@ -1539,7 +1539,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $noent = true;
       }
 
-      $inverse = $item->getType() == static::$itemtype_1 || static::$itemtype_1 === 'itemtype';
+      $inverse = $item->getType() == static::$itemtype_1 || Toolbox::startsWith(static::$itemtype_1, 'itemtype');
 
       $link_type  = static::$itemtype_1;
       $link_id    = static::$items_id_1;
@@ -1547,7 +1547,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
       if ($inverse === true) {
          $link_type  = static::$itemtype_2;
-         if ($link_type == 'itemtype') {
+         if (Toolbox::startsWith($link_type, 'itemtype')) {
             throw new \RuntimeException(
                sprintf(
                   'Cannot use getListForItemParams() for a %s',
@@ -1836,14 +1836,14 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          return static::$items_id_2;
       }
 
-      if (isset(static::$itemtype_1) && isset(static::$itemtype_2) && preg_match('/^itemtype/', static::$itemtype_1) && preg_match('/^itemtype/', static::$itemtype_2)) {
+      if (isset(static::$itemtype_1) && isset(static::$itemtype_2) && Toolbox::startsWith(static::$itemtype_1, 'itemtype') && Toolbox::startsWith(static::$itemtype_2, 'itemtype')) {
          throw new \RuntimeException('Bad relation (' . $itemtype . ', ' .static::class . ', ' . static::$itemtype_1 . ', ' . static::$itemtype_2 . ')');
       }
 
-      if (isset(static::$itemtype_1) && preg_match('/^itemtype/', static::$itemtype_1)) {
+      if (isset(static::$itemtype_1) && Toolbox::startsWith(static::$itemtype_1, 'itemtype')) {
          return static::$items_id_1;
       }
-      if (isset(static::$itemtype_2) && preg_match('/^itemtype/', static::$itemtype_2)) {
+      if (isset(static::$itemtype_2) && Toolbox::startsWith(static::$itemtype_2, 'itemtype')) {
          return static::$items_id_2;
       }
 
@@ -1878,18 +1878,11 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $link_id   = static::$items_id_1;
          $where_id  = static::$items_id_2;
       } else {
-         $link_type = (static::$itemtype_1 != 'itemtype' ? static::$itemtype_1 : static::$itemtype_2);
-         $link_id   = (static::$itemtype_1 != 'itemtype' ? static::$items_id_1 : static::$items_id_2);
-         $where_id  = (static::$itemtype_1 != 'itemtype' ? static::$items_id_2 : static::$items_id_1);
+         $link_type = (!Toolbox::startsWith(static::$itemtype_1, 'itemtype') ? static::$itemtype_1 : static::$itemtype_2);
+         $link_id   = (!Toolbox::startsWith(static::$itemtype_1, 'itemtype') ? static::$items_id_1 : static::$items_id_2);
+         $where_id  = (!Toolbox::startsWith(static::$itemtype_1, 'itemtype') ? static::$items_id_2 : static::$items_id_1);
       }
 
-      if (!empty($link_type) && $link_type != 'itemtype') {
-         $link = new $link_type;
-      } else {
-         $link = new static();
-      }
-
-      $link_table = getTableForItemType($link_type);
       $current_table = static::getTable();
       $item_type  = $item->getType();
 
@@ -1898,8 +1891,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
       $condition = $current_table . '.' . $where_id . '=' . $item->fields['id'];
 
-      if ($DB->fieldExists(static::getTable(), 'itemtype') && $self === false) {
-         $condition .= ' AND ' . $DB->quoteName($current_table . '.itemtype') . ' = ' . $DB->quote($item_type);
+      if (Toolbox::startsWith($link_type, 'itemtype')) {
+         $condition .= ' AND ' . $DB->quoteName($current_table . '.' . $link_type) . ' = ' . $DB->quote($item_type);
       }
 
       return $condition;
@@ -1960,11 +1953,11 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $link_type = static::$itemtype_1;
          $link_id    = static::$items_id_1;
       } else {
-         $link_type = (static::$itemtype_1 != 'itemtype' ? static::$itemtype_1 : static::$itemtype_2);
-         $link_id = (static::$itemtype_1 != 'itemtype' ? static::$items_id_1 : static::$items_id_2);
+         $link_type = (!Toolbox::startsWith(static::$itemtype_1, 'itemtype') ? static::$itemtype_1 : static::$itemtype_2);
+         $link_id = (!Toolbox::startsWith(static::$itemtype_1, 'itemtype') ? static::$items_id_1 : static::$items_id_2);
       }
 
-      if (!empty($link_type) && $link_type != 'itemtype') {
+      if (!empty($link_type) && Toolbox::startsWith($link_type, 'itemtype')) {
          $link = new $link_type;
       } else {
          $link = new static();
@@ -1995,13 +1988,13 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       } else if ($item->getType() == static::$itemtype_2) {
          $link_type = static::$itemtype_1;
       } else {
-         $link_type = (static::$itemtype_1 != 'itemtype' ?
+         $link_type = (!Toolbox::startsWith(static::$itemtype_1, 'itemtype') ?
             static::$itemtype_1 :
             static::$itemtype_2
          );
       }
 
-      if (!empty($link_type) && $link_type != 'itemtype') {
+      if (!empty($link_type) && !Toolbox::startsWith($link_type, 'itemtype')) {
          $link = new $link_type;
       } else {
          $link = $this;
