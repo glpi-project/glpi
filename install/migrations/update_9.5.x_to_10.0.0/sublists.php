@@ -56,7 +56,7 @@ if ($migration->addField(
 /** /Add main column on displaypreferences */
 
 /** add display preferences for sub items */
-$ADDTOSUBDISPLAYPREF['Contract'] = [3, 4, 29, 5];
+$ADDTOSUBDISPLAYPREF['Contract'] = [3, 4, 29, 5, 8];
 $ADDTOSUBDISPLAYPREF['Item_Disk'] = [2, 3, 4, 5, 6, 7, 8];
 $ADDTOSUBDISPLAYPREF['Certificate'] = [7, 4, 8, 121, 10, 31];
 $ADDTOSUBDISPLAYPREF['Notepad'] = [200, 201, 202, 203, 204];

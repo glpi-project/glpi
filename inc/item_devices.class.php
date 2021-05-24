@@ -1524,14 +1524,6 @@ class Item_Devices extends CommonDBRelation {
    }
 
    public static function addSubDefaultJoin(CommonDBTM $item, $itemtype = null) {
-      if ($itemtype === 'AllAssets') {
-         $joins = '';
-         foreach (static::itemAffinity() as $link_type) {
-            $joins .= static::addSubDefaultJoin($item, $link_type);
-         }
-         return $joins;
-      }
-
       $sub_link_item = new $itemtype;
       if ($item->getType() == static::$itemtype_1) {
          $link_type = static::$itemtype_2;

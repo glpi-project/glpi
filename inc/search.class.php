@@ -4356,10 +4356,12 @@ JAVASCRIPT;
                 && ($val != 'NULL') && ($val != 'null')) {
                $toadd2 = " OR `$table`.`$field` IS NULL";
             }
-            return $link." (((".$this->db->quoteName("$table.$name1")." ".$this->getSearchFromType($searchtype, $val, $nott, $inittable, true)."
-                            $tmplink ".$this->db->quoteName("$table.$name2")." ".$this->getSearchFromType($searchtype, $val, $nott, $inittable, true)."
-                            $tmplink ".$this->db->quoteName("$table.$field")." ".$this->getSearchFromType($searchtype, $val, $nott, $inittable, true)."
-                            $tmplink CONCAT(".$this->db->quoteName("$table.$name1").", ' ', ".$this->db->quoteName("$table.$name2").") ".$this->getSearchFromType($searchtype, $val, $nott, $inittable, true)." )
+
+            $clause = $this->getSearchFromType($searchtype, $val, $nott, $inittable, true);
+            return $link." (((".$this->db->quoteName("$table.$name1")." ".$clause."
+                            $tmplink ".$this->db->quoteName("$table.$name2")." ".$clause."
+                            $tmplink ".$this->db->quoteName("$table.$field")." ".$clause."
+                            $tmplink CONCAT(".$this->db->quoteName("$table.$name1").", ' ', ".$this->db->quoteName("$table.$name2").") ".$clause." )
                             $toadd2) $toadd)";
 
          case "glpi_groups.completename" :

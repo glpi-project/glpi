@@ -5599,12 +5599,12 @@ class CommonDBTM extends CommonGLPI {
          echo sprintf(
              //TRANS: parameter will be replaced with an item name like Contract or Disk
              __('Add link to %1$s'),
-             $link->getTypeName(1)
+             $sub_item->getTypeName(1)
           );
          echo "</th></tr>";
 
          echo "<tr class='tab_bg_1'><td>";
-         $link::dropdown([
+         $sub_item::dropdown([
             'entity'  => $this->getEntityID(),
             'expired' => false
          ]);

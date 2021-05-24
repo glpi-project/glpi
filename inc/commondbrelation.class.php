@@ -2001,9 +2001,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
 
       $search = new \Search($link, $params);
-      if (isset($args['page'])) {
-         $search->setPage((int)$params['page']);
-      }
       $data = $search->getData([
          'item'      => $item,
          'sub_item'  => $this

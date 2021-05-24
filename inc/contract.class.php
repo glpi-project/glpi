@@ -608,8 +608,8 @@ class Contract extends CommonDBTM {
             );
             if (!empty($contract->fields["begin_date"])) {
                $out .= "\n -> " . Infocom::getWarrantyExpir(
-                  $con->fields["begin_date"],
-                  $con->fields["duration"],
+                  $contract->fields["begin_date"],
+                  $contract->fields["duration"],
                   0,
                   true
                );
