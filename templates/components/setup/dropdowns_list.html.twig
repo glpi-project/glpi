@@ -1,14 +1,16 @@
-<div class="container-xl text-start mb-4">
+<div class="container-fluid text-start mb-4">
    <div class="row row-cards" data-masonry='{"percentPosition": true }' >
       {% for label, dropdown in optgroup %}
-         <div class="col-sm-6 col-lg-4">
+         <div class="col-lg-6 col-xl-3 col-xxl-2">
             <div class="card">
                <div class="card-header">
                   <h3 class="card-title">{{ label }}</h3>
                </div>
                <div class="list-group list-group-flush list-group-hoverable">
                   {% for itemtype, dropdown_label in dropdown %}
-                     <a class="list-group-item list-group-item-action" href="{{ itemtype|getSearchUrl() }}">
+                     {% set is_entity_assign = itemtype|isEntityAssign() %}
+                     <a class="list-group-item list-group-item-action {{ is_entity_assign ? "" : "list-group-item-dark" }}"
+                        href="{{ itemtype|getSearchUrl() }}">
                         <div class="row">
                            <div class="col-auto">
                               <i class="fa-fw {{ itemtype|getIcon() }}"></i>
@@ -17,7 +19,7 @@
                               {{ dropdown_label }}
                            </div>
                            <div class="col-1 text-muted">
-                              {% if itemtype|isEntityAssign() %}
+                              {% if is_entity_assign %}
                                  <i class="{{ "Entity"|getIcon() }} fa-sm"
                                     data-bs-toggle="tooltip"
                                     title="{{ __("Dropdown with entity management") }}"></i>
