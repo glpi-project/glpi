@@ -269,4 +269,8 @@ class NotificationMailingSetting extends NotificationSetting {
 
    }
 
+   static function getIcon() {
+      return "far fa-envelope";
+   }
+
 }

@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -85,106 +87,25 @@ class NotificationSettingConfig extends CommonDBTM {
       }
 
       $modes = Notification_NotificationTemplate::getModes();
-
-      $out = '';
-      $modes_settings = [];
-      if (Session::haveRight("config", UPDATE)) {
-         $out .= "<div class='card col-md-4 mx-auto'>";
-         $out .= "<form method='POST' action='{$CFG_GLPI['root_doc']}/front/setup.notification.php'>";
-
-         $out .= "<div class='card-header'><h3>" . __('Notifications configuration') . "</h3></div>";
-         $out .= "<div class='card-table'>";
-         if ($CFG_GLPI['use_notifications'] && !Notification_NotificationTemplate::hasActiveMode()) {
-            $out .= "<div class='alert alert-important alert-warning m-3'>
-                        <i class='fa fa-exclamation-triangle me-2'></i>".
-                        __('You must enable at least one notification mode.').
-                     "</div>";
-         }
-         $out .= "<table class='table table-hover table-borderless card-table'>";
-         $out .= "<tr>";
-         $out .= "<td>" . __('Enable followup') . "</td>";
-         $out .= "<td>";
-         $out .= Dropdown::showYesNo('use_notifications', $CFG_GLPI['use_notifications'], -1, ['display' => false]);
-         $out .= "</td>";
-         $out .= "</tr>";
-
-         foreach (array_keys($modes) as $mode) {
-            $settings_class = Notification_NotificationTemplate::getModeClass($mode, 'setting');
-            $settings = new $settings_class();
-            $modes_settings[$mode] = $settings;
-
-            $out .= "<tr>";
-            $out .= "<td>" . $settings->getEnableLabel() . "</td>";
-            $out .= "<td>";
-            $out .= Dropdown::showYesNo("notifications_$mode", $CFG_GLPI["notifications_$mode"], -1, ['display' => false, 'disabled' => !$CFG_GLPI['use_notifications']]);
-            $out .= "</td>";
-            $out .= "</tr>";
-         }
-
-         $out .= "</table>";
-         $out .= "<div class='card-footer center'>";
-         $out .= Html::submit("<i class='fas fa-save'></i><span>".__('Save')."</span>", [
-            'class' => 'btn btn-primary'
-         ]);
-         $out .= "</div>";
-         $out .= "</div>";
-         $out .= Html::closeForm(false);
-
-         $js = "$(function(){
-            $('[name=use_notifications]').on('change', function() {
-               var _val = $(this).find('option:selected').val();
-               if (_val == '1') {
-                  $('select[name!=use_notifications]').prop('disabled', false);
-               } else {
-                  $('select[name!=use_notifications]').select2('enable', false);
-               }
-            });
-         })";
-         $out .= Html::scriptBlock($js);
+      foreach ($modes as $mode_key => &$mode) {
+         $settings_class = Notification_NotificationTemplate::getModeClass($mode_key, 'setting');
+         $settings = new $settings_class();
+         $mode['label']          = $settings->getEnableLabel();
+         $mode['label_settings'] = $settings->getTypeName();
+         $mode['is_active']      = (bool) $CFG_GLPI["notifications_$mode_key"];
+         $mode['setting_url']    = $settings->getFormURL();
+         $mode['icon']           = $settings::getIcon();
       }
 
-      $notifs_on = false;
-      if ($CFG_GLPI['use_notifications']) {
-         foreach (array_keys($modes) as $mode) {
-            if ($CFG_GLPI['notifications_' . $mode]) {
-               $notifs_on = true;
-               break;
-            }
-         }
-      }
-
-      if ($notifs_on) {
-         $out .= "<table class='tab_cadre'>";
-         $out .= "<tr><th>" . _n('Notification', 'Notifications', Session::getPluralNumber())."</th></tr>";
-
-         /* Glocal parameters */
-         if (Session::haveRight("config", READ)) {
-            $out .= "<tr class='tab_bg_1'><td class='center'><a href='notificationtemplate.php'>" .
-                  _n('Notification template', 'Notification templates', Session::getPluralNumber()) ."</a></td> </tr>";
-         }
-
-         if (Session::haveRight("notification", READ) && $notifs_on) {
-            $out .= "<tr class='tab_bg_1'><td class='center'>".
-                  "<a href='notification.php'>". _n('Notification', 'Notifications', Session::getPluralNumber())."</a></td></tr>";
-         } else {
-            $out .= "<tr class='tab_bg_1'><td class='center'>" .
-               __('Unable to configure notifications: please configure at least one followup type using the above configuration.') .
-                     "</td></tr>";
-         }
-
-         /* Per notification parameters */
-         foreach (array_keys($modes) as $mode) {
-            if (Session::haveRight("config", UPDATE) && $CFG_GLPI['notifications_' . $mode]) {
-               $settings = $modes_settings[$mode];
-               $out .= "<tr class='tab_bg_1'><td class='center'>".
-                  "<a href='" . $settings->getFormURL() ."'>". $settings->getTypeName() .
-                  "</a></td></tr>";
-            }
-         }
-
-         $out .= "</table>";
-         $out .= "</div>";
-      }
+      $out = TemplateRenderer::getInstance()->render(
+         'components/setup/setup_notifications.html.twig',
+         [
+            'use_notifications' => (bool) $CFG_GLPI['use_notifications'],
+            'has_active_mode'   => Notification_NotificationTemplate::hasActiveMode(),
+            'can_update_config' => Session::haveRight("config", UPDATE) > 0,
+            'modes'             => $modes,
+         ]
+      );
 
       if ($options['display']) {
          echo $out;
