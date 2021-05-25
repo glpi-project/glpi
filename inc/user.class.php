@@ -2316,7 +2316,7 @@ JAVASCRIPT;
       Html::autocompletionTextField($this, "mobile", ['rand' => $mobilerand]);
       echo "</td>";
       $catrand = mt_rand();
-      echo "<td><label for='dropdown_usercategories_id$catrand'>" . __('Category') . "</label></td><td>";
+      echo "<td><label for='dropdown_usercategories_id$catrand'>" . _n('Category', 'Categories', 1) . "</label></td><td>";
       UserCategory::dropdown(['value' => $this->fields["usercategories_id"], 'rand' => $catrand]);
       echo "</td></tr>";
 
@@ -3405,7 +3405,7 @@ JAVASCRIPT;
          'id'                 => '82',
          'table'              => 'glpi_usercategories',
          'field'              => 'name',
-         'name'               => __('Category'),
+         'name'               => _n('Category', 'Categories', 1),
          'datatype'           => 'dropdown'
       ];
 

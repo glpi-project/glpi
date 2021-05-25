@@ -3432,7 +3432,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'id'                 => '7',
          'table'              => 'glpi_itilcategories',
          'field'              => 'completename',
-         'name'               => __('Category'),
+         'name'               => _n('Category', 'Categories', 1),
          'datatype'           => 'dropdown'
       ];
 
@@ -6478,7 +6478,7 @@ abstract class CommonITILObject extends CommonDBTM {
          if (static::getType() == 'Ticket') {
             $items[_n('Associated element', 'Associated elements', Session::getPluralNumber())] = "";
          }
-         $items[__('Category')]           = "glpi_itilcategories.completename";
+         $items[_n('Category', 'Categories', 1)]           = "glpi_itilcategories.completename";
          $items[__('Title')]              = "name";
          $items[__('Planification')]      = "glpi_tickettasks.begin";
       } else {

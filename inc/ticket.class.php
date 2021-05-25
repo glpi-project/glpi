@@ -4053,7 +4053,7 @@ JAVASCRIPT;
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".sprintf(__('%1$s%2$s'), __('Category'),
+      echo "<td>".sprintf(__('%1$s%2$s'), _n('Category', 'Categories', 1),
                           $tt->getMandatoryMark('itilcategories_id'))."</td>";
       echo "<td>";
 
@@ -4852,7 +4852,7 @@ JAVASCRIPT;
          echo self::getTicketTypeName($this->fields["type"]);
       }
       echo "</td>";
-      echo "<th width='$colsize3%'>".sprintf(__('%1$s%2$s'), __('Category'),
+      echo "<th width='$colsize3%'>".sprintf(__('%1$s%2$s'), _n('Category', 'Categories', 1),
                                              $tt->getMandatoryMark('itilcategories_id'))."</th>";
       echo "<td width='$colsize4%'>";
       // Permit to set category when creating ticket without update right

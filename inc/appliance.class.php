@@ -75,6 +75,7 @@ class Appliance extends CommonDBTM {
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
          ->addStandardTab('ManualLink', $ong, $options)
+         ->addStandardTab('DatabaseInstance', $ong, $options)
          ->addStandardTab('Notepad', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
 

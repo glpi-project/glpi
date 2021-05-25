@@ -879,6 +879,7 @@ class Dropdown {
                  'PDUType' => null,
                  'PassiveDCEquipmentType' => null,
                  'ClusterType' => null,
+                 'DatabaseInstanceType' => null
              ],
 
              _n('Model', 'Models', 1) => [
