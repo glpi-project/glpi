@@ -1057,7 +1057,7 @@ class Dropdown {
     * @param $value     string   URL of selected current value (default '')
    **/
    static function showItemTypeMenu($title, $optgroup, $value = '') {
-      echo "<div class='container-xl text-start'>";
+      echo "<div class='container-fluid text-start'>";
       echo "<div class='mb-3 row'>";
       echo "<label class='col-sm-1 col-form-label'>$title</label>";
       $selected = '';
