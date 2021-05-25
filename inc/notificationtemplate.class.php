@@ -307,18 +307,18 @@ class NotificationTemplate extends CommonDBTM {
                                 $data)."\n\n-- \n".$this->signature.
                                       "\n".Html::entity_decode_deep($generated_by))."\n\n".$add_footer;
             $this->templates_by_languages[$tid] = $lang;
+         }
 
-            // Restore default language
-            $_SESSION["glpilanguage"] = $bak_language;
-            Session::loadLanguage();
-            if ($bak_dropdowntranslations !== null) {
-               $_SESSION['glpi_dropdowntranslations'] = $bak_dropdowntranslations;
-            } else {
-               unset($_SESSION['glpi_dropdowntranslations']);
-            }
-            if ($plug = isPluginItemType(get_class($target->obj))) {
-               Plugin::loadLang(strtolower($plug['plugin']));
-            }
+         // Restore default language
+         $_SESSION["glpilanguage"] = $bak_language;
+         Session::loadLanguage();
+         if ($bak_dropdowntranslations !== null) {
+            $_SESSION['glpi_dropdowntranslations'] = $bak_dropdowntranslations;
+         } else {
+            unset($_SESSION['glpi_dropdowntranslations']);
+         }
+         if ($plug = isPluginItemType(get_class($target->obj))) {
+            Plugin::loadLang(strtolower($plug['plugin']));
          }
       }
       if (isset($this->templates_by_languages[$tid])) {
