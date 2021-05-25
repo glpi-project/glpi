@@ -841,7 +841,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<td><input type='text' name='title_field' value='".$this->fields["title_field"]."'>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . __('Category') . "</td>";
+      echo "<tr class='tab_bg_2'><td>" . _n('Category', 'Categories', 1) . "</td>";
       echo "<td><input type='text' name='category_field' value='".
                  $this->fields["category_field"]."'></td>";
       echo "<td>" . __('Language') . "</td>";
@@ -1051,7 +1051,7 @@ class AuthLDAP extends CommonDBTM {
          'id'                 => '15',
          'table'              => $this->getTable(),
          'field'              => 'category_field',
-         'name'               => __('Category'),
+         'name'               => _n('Category', 'Categories', 1),
          'massiveaction'      => false,
          'datatype'           => 'string'
       ];
@@ -3380,7 +3380,7 @@ class AuthLDAP extends CommonDBTM {
                                  'phone2_field'    => __('Phone 2'),
                                  'mobile_field'    => __('Mobile phone'),
                                  'title_field'     => _x('person', 'Title'),
-                                 'category_field'  => __('Category'),
+                                 'category_field'  => _n('Category', 'Categories', 1),
                                  'picture_field'   => __('Picture')];
                $available_fields = [];
                foreach ($fields as $field => $label) {

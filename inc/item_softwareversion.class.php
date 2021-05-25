@@ -971,7 +971,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'><th colspan='2'>".Software::getTypeName(Session::getPluralNumber())."</th></tr>";
       echo "<tr class='tab_bg_1'><td>";
-      echo __('Category')."</td><td>";
+      echo _n('Category', 'Categories', 1)."</td><td>";
       SoftwareCategory::dropdown(['value'      => $crit,
                                        'toadd'      => ['-1' =>  __('All categories')],
                                        'emptylabel' => __('Uncategorized software'),

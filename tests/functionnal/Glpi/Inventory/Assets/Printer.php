@@ -138,7 +138,6 @@ class Printer extends AbstractInventoryAsset {
       $pcounter->rv_pages = 831;
       $pcounter->total = 1802;
       $pcounter->total_pages = 1802;
-      var_dump($main->getCounters());
       $this->object($main->getCounters())->isEqualTo($pcounter);
 
       $main->handle();

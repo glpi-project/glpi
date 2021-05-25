@@ -109,7 +109,7 @@ class NetworkPortConnectionLog extends CommonDBChild {
 
       echo "<table class='tab_cadre_fixehov'>";
       echo "<thead><tr>";
-      echo "<th>" . __('State')  . "</th>";
+      echo "<th>" . _n('State', 'States', 1)  . "</th>";
       echo "<th>" . _n('Date', 'Dates', 1)  . "</th>";
       echo "<th>" . __('Connected item')  . "</th>";
       echo "</tr></thead>";

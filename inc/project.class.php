@@ -561,7 +561,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'id'                 => '12',
          'table'              => 'glpi_projectstates',
          'field'              => 'name',
-         'name'               => __('State'),
+         'name'               => _n('State', 'States', 1),
          'datatype'           => 'dropdown',
          'additionalfields'   => ['color'],
       ];

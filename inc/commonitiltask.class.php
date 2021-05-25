@@ -751,7 +751,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          'table'              => 'glpi_taskcategories',
          'field'              => 'name',
          'datatype'           => 'dropdown',
-         'name'               => __('Category'),
+         'name'               => _n('Category', 'Categories', 1),
          'forcegroupby'       => true,
          'splititems'         => true,
          'massiveaction'      => false,
@@ -1452,7 +1452,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
       echo "<div class='fa-label'>
          <i class='fas fa-tag fa-fw'
-            title='".__('Category')."'></i>";
+            title='"._n('Category', 'Categories', 1)."'></i>";
       TaskCategory::dropdown([
          'value'     => $this->fields["taskcategories_id"],
          'rand'      => $rand_type,
@@ -1649,7 +1649,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       echo '<tr><th colspan=4>'.__('Add a new task').'</th></tr>';
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Category')."</td>";
+      echo "<td>"._n('Category', 'Categories', 1)."</td>";
       echo "<td>";
       TaskCategory::dropdown(['condition' => ['is_active' => 1]]);
       echo "</td>";

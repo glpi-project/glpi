@@ -63,7 +63,7 @@ class PlanningExternalEventTemplate extends CommonDropdown {
             'type'  => 'planningstate',
          ], [
             'name'  => 'planningeventcategories_id',
-            'label' => __('Category'),
+            'label' => _n('Category', 'Categories', 1),
             'type'  => 'dropdownValue',
             'list'  => true
          ], [

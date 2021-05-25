@@ -489,13 +489,13 @@ class RuleTicket extends Rule {
 
       $criterias['itilcategories_id']['table']              = 'glpi_itilcategories';
       $criterias['itilcategories_id']['field']              = 'name';
-      $criterias['itilcategories_id']['name']               = __('Category')." - ".__('Name');
+      $criterias['itilcategories_id']['name']               = _n('Category', 'Categories', 1)." - ".__('Name');
       $criterias['itilcategories_id']['linkfield']          = 'itilcategories_id';
       $criterias['itilcategories_id']['type']               = 'dropdown';
 
       $criterias['itilcategories_id_cn']['table']           = 'glpi_itilcategories';
       $criterias['itilcategories_id_cn']['field']           = 'completename';
-      $criterias['itilcategories_id_cn']['name']            = __('Category').' - '.__('Complete name');
+      $criterias['itilcategories_id_cn']['name']            = _n('Category', 'Categories', 1).' - '.__('Complete name');
       $criterias['itilcategories_id_cn']['linkfield']       = 'itilcategories_id';
       $criterias['itilcategories_id_cn']['type']            = 'dropdown';
 
@@ -691,7 +691,7 @@ class RuleTicket extends Rule {
 
       $actions                                              = [];
 
-      $actions['itilcategories_id']['name']                 = __('Category');
+      $actions['itilcategories_id']['name']                 = _n('Category', 'Categories', 1);
       $actions['itilcategories_id']['type']                 = 'dropdown';
       $actions['itilcategories_id']['table']                = 'glpi_itilcategories';
 

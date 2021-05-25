@@ -125,7 +125,7 @@ switch ($_GET["type"]) {
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"],
                                 $parent);
-      $title   = sprintf(__('%1$s: %2$s'), __('Category'),
+      $title   = sprintf(__('%1$s: %2$s'), _n('Category', 'Categories', 1),
                          Dropdown::getDropdownName("glpi_itilcategories", $_GET["id"]));
       break;
 
@@ -212,7 +212,7 @@ switch ($_GET["type"]) {
       $val1    = $_GET["id"];
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), __('Category'),
+      $title   = sprintf(__('%1$s: %2$s'), _n('Category', 'Categories', 1),
                          Dropdown::getDropdownName("glpi_usercategories", $_GET["id"]));
       break;
 

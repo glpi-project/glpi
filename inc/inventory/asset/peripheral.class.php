@@ -208,18 +208,7 @@ class Peripheral extends InventoryAsset
          $db_peripherals[$idtmp] = $data['id'];
       }
 
-      if (count($db_peripherals) == 0) {
-         foreach ($peripherals as $peripherals_id) {
-            $input = [
-               'computers_id'    => $this->item->fields['id'],
-               'itemtype'        => 'Peripheral',
-               'items_id'        => $peripherals_id,
-               'is_dynamic'      => 1,
-            ];
-            $computer_Item->add($input, [], $this->withHistory());
-         }
-      } else {
-         // Check all fields from source:
+      if (count($db_peripherals) && count($peripherals)) {
          foreach ($peripherals as $key => $peripherals_id) {
             foreach ($db_peripherals as $keydb => $periphs_id) {
                if ($peripherals_id == $periphs_id) {
@@ -229,25 +218,23 @@ class Peripheral extends InventoryAsset
                }
             }
          }
+      }
 
-         if (count($peripherals) || count($db_peripherals)) {
-            if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_peripherals) != 0) {
-               // Delete peripherals links in DB
-               foreach ($db_peripherals as $idtmp => $data) {
-                  $computer_Item->delete(['id'=>$idtmp], 1);
-               }
-            }
-            if (count($peripherals) != 0) {
-               foreach ($peripherals as $peripherals_id) {
-                  $input = [
-                     'computers_id'    => $this->item->fields['id'],
-                     'itemtype'        => 'Peripheral',
-                     'items_id'        => $peripherals_id,
-                     'is_dynamic'      => 1,
-                  ];
-                  $computer_Item->add($input, [], $this->withHistory());
-               }
-            }
+      if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_peripherals)) {
+         // Delete peripherals links in DB
+         foreach ($db_peripherals as $idtmp => $data) {
+            $computer_Item->delete(['id'=>$idtmp], 1);
+         }
+      }
+      if (count($peripherals)) {
+         foreach ($peripherals as $peripherals_id) {
+            $input = [
+               'computers_id'    => $this->item->fields['id'],
+               'itemtype'        => 'Peripheral',
+               'items_id'        => $peripherals_id,
+               'is_dynamic'      => 1,
+            ];
+            $computer_Item->add($input, [], $this->withHistory());
          }
       }
    }
