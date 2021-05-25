@@ -292,7 +292,7 @@ class Provider extends CommonGLPI {
 
          case 'waiting_validation':
             $params['icon']  = "far fa-eye";
-            $params['label'] = __("Tickets waiting your validation");
+            $params['label'] = __("Tickets waiting for validation");
             $search_criteria = [
                [
                   'field'      => 55,
