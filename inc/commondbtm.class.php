@@ -5167,10 +5167,11 @@ class CommonDBTM extends CommonGLPI {
     *                        - content_field (default content) the field who receive the main text
     *                                                          (with images)
     *                        - name (default filename) name of the HTML input containing files
+    * @param mixed $date     Date to set on document_items
     *
     * @return array the input param transformed
    **/
-   function addFiles(array $input, $options = []) {
+   function addFiles(array $input, $options = [], $date = false) {
       global $CFG_GLPI;
 
       $default_options = [
@@ -5276,6 +5277,14 @@ class CommonDBTM extends CommonGLPI {
                'itemtype'      => $this->getType(),
                'items_id'      => $this->getID()
             ];
+
+            if ($date) {
+               // Set date, needed if it differs from the creation date
+               $toadd['date'] = $date;
+            } else {
+               $toadd['date'] = $_SESSION['glpi_currenttime'];
+            }
+
             if (isset($input['users_id'])) {
                $toadd['users_id'] = $input['users_id'];
             }
