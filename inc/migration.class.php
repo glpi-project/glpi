@@ -47,6 +47,7 @@ class Migration {
    private   $change    = [];
    private   $fulltexts = [];
    private   $uniques   = [];
+   private   $search_opts = [];
    protected $version;
    private   $deb;
    private   $lastMessage;
@@ -765,6 +766,7 @@ class Migration {
       $this->queries[self::POST_QUERY] = [];
 
       $this->storeConfig();
+      $this->migrateSearchOptions();
 
       // end of global message
       $this->displayMessage(__('Task completed.'));
@@ -1373,6 +1375,106 @@ class Migration {
                [$itemtype_column['COLUMN_NAME'] => $old_itemtype]
             )
          );
+      }
+   }
+
+   /**
+    * Migrate search option values in various locations in the database.
+    * This does not change the actual search option ID. This must still be changed manually in the itemtype's class file.
+    * The changes made by this function will only be applied when the migration is finalized through {@link Migration::executeMigration()}.
+    *
+    * @param string $itemtype The itemtype
+    * @param int    $old_search_opt The old search option ID
+    * @param int    $new_search_opt The new search option ID
+    *
+    * @return void
+    * @since 9.5.6
+    */
+   public function changeSearchOption(string $itemtype, int $old_search_opt, int $new_search_opt) {
+      if (!isset($this->search_opts[$itemtype])) {
+         $this->search_opts[$itemtype] = [];
+      }
+      $this->search_opts[$itemtype][] = [
+         'old' => $old_search_opt,
+         'new' => $new_search_opt
+      ];
+   }
+
+   /**
+    * Finalize search option migrations
+    *
+    * @return void
+    * @since 9.5.6
+    */
+   private function migrateSearchOptions() {
+      global $DB;
+
+      if (empty($this->search_opts)) {
+         return;
+      }
+
+      foreach ($this->search_opts as $itemtype => $changes) {
+         foreach ($changes as $p) {
+            $old_search_opt = $p['old'];
+            $new_search_opt = $p['new'];
+
+            // Update display preferences
+            $DB->updateOrDie(DisplayPreference::getTable(), [
+               'num' => $new_search_opt
+            ], [
+               'itemtype' => $itemtype,
+               'num'      => $old_search_opt
+            ]);
+         }
+      }
+
+      // Update saved searches. We have to parse every query to account for the search option in meta criteria
+      $iterator = $DB->request([
+         'SELECT' => ['id', 'itemtype', 'query'],
+         'FROM'   => SavedSearch::getTable(),
+      ]);
+
+      foreach ($iterator as $data) {
+         $query = [];
+         parse_str($data['query'], $query);
+         $is_changed = false;
+
+         foreach ($this->search_opts as $itemtype => $changes) {
+            foreach ($changes as $p) {
+               $old_search_opt = $p['old'];
+               $new_search_opt = $p['new'];
+
+               if ($data['itemtype'] === $itemtype) {
+                  // Fix sort
+                  if (isset($query['sort']) && (int)$query['sort'] === $old_search_opt) {
+                     $query['sort'] = $new_search_opt;
+                     $is_changed = true;
+                  }
+               }
+
+               // Fix criteria
+               if (isset($query['criteria'])) {
+                  foreach ($query['criteria'] as $cid => $criterion) {
+                     $is_meta = isset($criterion['meta']) && (int)$criterion['meta'] === 1;
+                     if (($is_meta && isset($criterion['itemtype'], $criterion['field']) &&
+                           $criterion['itemtype'] === $itemtype && (int)$criterion['field'] === $old_search_opt)
+                        || (!$is_meta && $data['itemtype'] === $itemtype && isset($criterion['field']) && (int)$criterion['field'] === $old_search_opt)) {
+                        $query['criteria'][$cid]['field'] = $new_search_opt;
+                        $is_changed = true;
+                     }
+                  }
+               }
+            }
+         }
+
+         // Write changes if any were made
+         if ($is_changed) {
+            $DB->updateOrDie(SavedSearch::getTable(), [
+               'query'  => http_build_query($query)
+            ], [
+               'id'     => $data['id']
+            ]);
+         }
       }
    }
 }

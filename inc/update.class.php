@@ -170,6 +170,10 @@ class Update {
       $plugin->unactivateAll();
 
       if (version_compare($current_version, '0.80', '<') || version_compare($current_version, GLPI_VERSION, '>')) {
+
+         case "9.5.5":
+            include_once "{$updir}update_955_956.php";
+            update955to956();
          $message = sprintf(
             __('Unsupported version (%1$s)'),
             $current_version
