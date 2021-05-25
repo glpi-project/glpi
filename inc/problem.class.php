@@ -1507,7 +1507,7 @@ class Problem extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".sprintf(__('%1$s%2$s'), __('Category'),
+      echo "<th>".sprintf(__('%1$s%2$s'), _n('Category', 'Categories', 1),
                                              $tt->getMandatoryMark('itilcategories_id'))."</th>";
       echo "<td >";
 

@@ -339,7 +339,7 @@ class ComputerVirtualMachine extends CommonDBChild {
          $header .= "<th>".__('Automatic inventory')."</th>";
          $header .= "<th>".VirtualMachineType::getTypeName(1)."</th>";
          $header .= "<th>".VirtualMachineSystem::getTypeName(1)."</th>";
-         $header .= "<th>".__('State')."</th>";
+         $header .= "<th>"._n('State', 'States', 1)."</th>";
          $header .= "<th>".__('UUID')."</th>";
          $header .= "<th>"._x('quantity', 'Processors number')."</th>";
          $header .= "<th>".sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio'))."</th>";
@@ -564,7 +564,7 @@ class ComputerVirtualMachine extends CommonDBChild {
          'id'                 => '161',
          'table'              => 'glpi_virtualmachinestates',
          'field'              => 'name',
-         'name'               => __('State'),
+         'name'               => _n('State', 'States', 1),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'dropdown',

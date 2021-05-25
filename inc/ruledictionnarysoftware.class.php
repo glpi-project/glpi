@@ -125,7 +125,7 @@ class RuleDictionnarySoftware extends Rule {
       $actions['new_entities_id']['table']      = 'glpi_entities';
       $actions['new_entities_id']['type']       = 'dropdown';
 
-      $actions['softwarecategories_id']['name']  = __('Category');
+      $actions['softwarecategories_id']['name']  = _n('Category', 'Categories', 1);
       $actions['softwarecategories_id']['type']  = 'dropdown';
       $actions['softwarecategories_id']['table'] = 'glpi_softwarecategories';
       $actions['softwarecategories_id']['force_actions'] = ['assign','regex_result'];

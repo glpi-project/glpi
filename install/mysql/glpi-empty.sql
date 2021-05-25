@@ -6645,6 +6645,7 @@ CREATE TABLE `glpi_states` (
   `is_visible_cluster` tinyint NOT NULL DEFAULT '1',
   `is_visible_contract` tinyint NOT NULL DEFAULT '1',
   `is_visible_appliance` tinyint NOT NULL DEFAULT '1',
+  `is_visible_database` tinyint NOT NULL DEFAULT '1',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -6669,6 +6670,7 @@ CREATE TABLE `glpi_states` (
   KEY `is_visible_cluster` (`is_visible_cluster`),
   KEY `is_visible_contract` (`is_visible_contract`),
   KEY `is_visible_appliance` (`is_visible_appliance`),
+  KEY `is_visible_database` (`is_visible_database`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -8836,6 +8838,113 @@ CREATE TABLE `glpi_tickets_contracts` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickets_id`,`contracts_id`),
   KEY `contracts_id` (`contracts_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_databaseservertypes`;
+CREATE TABLE `glpi_databaseservertypes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_databaseservercategories`;
+CREATE TABLE `glpi_databaseservercategories` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_databaseservers`;
+CREATE TABLE `glpi_databaseservers` (
+   `id` int NOT NULL AUTO_INCREMENT,
+   `entities_id` int NOT NULL DEFAULT '0',
+   `is_recursive` tinyint NOT NULL DEFAULT '0',
+   `name` varchar(255) NOT NULL DEFAULT '',
+   `version` varchar(255) NOT NULL DEFAULT '',
+   `is_active` tinyint NOT NULL DEFAULT '0',
+   `is_deleted` tinyint NOT NULL DEFAULT '0',
+   `databaseservertypes_id` int NOT NULL DEFAULT '0',
+   `databaseservercategories_id` int NOT NULL DEFAULT '0',
+   `locations_id` int NOT NULL DEFAULT '0',
+   `manufacturers_id` int NOT NULL DEFAULT '0',
+   `users_id_tech` int NOT NULL DEFAULT '0',
+   `groups_id_tech` int NOT NULL DEFAULT '0',
+   `date_mod` timestamp NULL DEFAULT NULL,
+   `date_creation` timestamp NULL DEFAULT NULL,
+   `states_id` int NOT NULL DEFAULT '0',
+   `is_helpdesk_visible` tinyint NOT NULL DEFAULT '1',
+   `is_dynamic` tinyint NOT NULL DEFAULT '0',
+   `comment` text,
+   PRIMARY KEY (`id`),
+   KEY `entities_id` (`entities_id`),
+   KEY `is_recursive` (`is_recursive`),
+   KEY `name` (`name`),
+   KEY `is_active` (`is_active`),
+   KEY `is_deleted` (`is_deleted`),
+   KEY `databaseservertypes_id` (`databaseservertypes_id`),
+   KEY `databaseservercategories_id` (`databaseservercategories_id`),
+   KEY `locations_id` (`locations_id`),
+   KEY `manufacturers_id` (`manufacturers_id`),
+   KEY `users_id_tech` (`users_id_tech`),
+   KEY `groups_id_tech` (`groups_id_tech`),
+   KEY `states_id` (`states_id`),
+   KEY `date_mod` (`date_mod`),
+   KEY `date_creation` (`date_creation`),
+   KEY `is_helpdesk_visible` (`is_helpdesk_visible`),
+   KEY `is_dynamic` (`is_dynamic`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_databaseserverinstances`;
+CREATE TABLE `glpi_databaseserverinstances` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `entities_id` int NOT NULL DEFAULT '0',
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `databaseservers_id` int NOT NULL,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `port` varchar(10) NOT NULL DEFAULT '',
+  `size` int NOT NULL DEFAULT '0',
+  `is_onbackup` tinyint NOT NULL DEFAULT '0',
+  `is_active` tinyint NOT NULL DEFAULT '0',
+  `is_deleted` tinyint NOT NULL DEFAULT '0',
+  `comment` text,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_lastboot` timestamp NULL DEFAULT NULL,
+  `date_lastbackup` timestamp NULL DEFAULT NULL,
+  `is_dynamic` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `name` (`name`),
+  KEY `is_active` (`is_active`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `databaseservers_id` (`databaseservers_id`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`),
+  KEY `is_dynamic` (`is_dynamic`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_databaseservers_items`;
+CREATE TABLE `glpi_databaseservers_items` (
+ `id` int NOT NULL AUTO_INCREMENT,
+ `databaseservers_id` int NOT NULL DEFAULT '0',
+ `items_id` int NOT NULL DEFAULT '0',
+ `itemtype` varchar(100) NOT NULL DEFAULT '',
+ PRIMARY KEY (`id`),
+ UNIQUE KEY `unicity` (`databaseservers_id`,`items_id`,`itemtype`),
+ KEY `item` (`itemtype`,`items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;

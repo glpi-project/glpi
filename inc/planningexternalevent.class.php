@@ -270,7 +270,7 @@ JAVASCRIPT;
 
       echo "<tr class='tab_bg_2'>";
       echo "<tr class='tab_bg_2'>";
-      echo "<td colspan='2'>".__('Category')."</td>";
+      echo "<td colspan='2'>"._n('Category', 'Categories', 1)."</td>";
       echo "<td colspan='2'>";
       if ($canedit) {
          PlanningEventCategory::dropdown([
