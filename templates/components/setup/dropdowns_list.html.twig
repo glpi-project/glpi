@@ -1,4 +1,4 @@
-<div class="container-fluid text-start mb-4">
+<div class="container-fluid text-start mb-4 dropdowns-list">
    <div class="row row-cards" data-masonry='{"percentPosition": true }' >
       {% for label, dropdown in optgroup %}
          <div class="col-lg-6 col-xl-3 col-xxl-2">
@@ -9,7 +9,7 @@
                <div class="list-group list-group-flush list-group-hoverable">
                   {% for itemtype, dropdown_label in dropdown %}
                      {% set is_entity_assign = itemtype|isEntityAssign() %}
-                     <a class="list-group-item list-group-item-action {{ is_entity_assign ? "" : "bg-dark-lt" }}"
+                     <a class="list-group-item list-group-item-action {{ is_entity_assign ? "" : "dropdown-no-entity" }}"
                         href="{{ itemtype|getSearchUrl() }}">
                         <div class="row">
                            <div class="col-auto">
