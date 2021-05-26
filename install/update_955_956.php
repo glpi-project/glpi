@@ -42,6 +42,7 @@ function update955to956() {
    $current_config   = Config::getConfigurationValues('core');
    $updateresult     = true;
    $ADDTODISPLAYPREF = [];
+   $init_date = false;
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '9.5.6'));
@@ -55,9 +56,17 @@ function update955to956() {
 
    /* Add `date` to some glpi_documents_items */
    if (!$DB->fieldExists('glpi_documents_items', 'date')) {
+      $init_date = true;
       $migration->addField('glpi_documents_items', 'date', 'timestamp');
       $migration->addKey('glpi_documents_items', 'date');
+   }
+   /* /Add `date` to glpi_documents_items */
 
+   // ************ Keep it at the end **************
+   $migration->executeMigration();
+
+   // Must be run after migration is executed so we can access the new fields
+   if ($init_date) {
       // Init date from the parent followup
       $parent_date = new QuerySubQuery([
          'SELECT' => 'date',
@@ -79,10 +88,6 @@ function update955to956() {
          ['itemtype' => ['!=', 'ITILFollowup']]
       );
    }
-   /* /Add `date` to glpi_documents_items */
-
-   // ************ Keep it at the end **************
-   $migration->executeMigration();
 
    return $updateresult;
 }
