@@ -1093,7 +1093,7 @@ class Ticket extends CommonITILObject {
          //try to find user from changes if exist (defined as _itil_requester)
          if (isset($input["_itil_requester"]["users_id"])) {
             $user_id = $input["_itil_requester"]["users_id"];
-         } else {  //else try to find user from input
+         } else if (isset($input["_users_id_requester"])) {  //else try to find user from input
             $user_id = is_array($input["_users_id_requester"]) ? reset($input["_users_id_requester"]) : $input["_users_id_requester"];
          }
 
