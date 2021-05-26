@@ -29,9 +29,9 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
 # Евгений Гаранин <eagaranin.pro@gmail.com>, 2020
 # Vitaliy Zhukov <DragonZX@yandex.ru>, 2020
-# Welder <kvaluev@me.com>, 2020
 # Andrey Kaptelin <andrey.kaptelin@gmail.com>, 2021
 # Ilya Pavlov <spirkaa@gmail.com>, 2021
+# Welder <kvaluev@me.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -40,7 +40,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-20 08:27+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Ilya Pavlov <spirkaa@gmail.com>, 2021\n"
+"Last-Translator: Welder <kvaluev@me.com>, 2021\n"
 "Language-Team: Russian (Russia) (https://www.transifex.com/glpi/teams/1637/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -8855,10 +8855,10 @@ msgstr "Удаление проблемы"
 #: inc/notificationtargetcontract.class.php:186 inc/entity.class.php:1951
 msgid "Contract"
 msgid_plural "Contracts"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Договор"
+msgstr[1] "Договоров"
+msgstr[2] "Договоры"
+msgstr[3] "Договоры"
 
 #: inc/contract.class.php:231 inc/contract.class.php:520
 #: inc/contract.class.php:746 inc/contract.class.php:1736
@@ -10464,7 +10464,7 @@ msgstr ""
 
 #: inc/console/database/abstractconfigurecommand.class.php:250
 msgid "Saving configuration file..."
-msgstr ""
+msgstr "Сохранить конфигурационный файл..."
 
 #: inc/console/database/abstractconfigurecommand.class.php:255
 #, php-format
@@ -10485,7 +10485,7 @@ msgstr ""
 
 #: inc/console/database/installcommand.class.php:91
 msgid "Default language of GLPI"
-msgstr ""
+msgstr "Язык GLPI по умолчанию"
 
 #: inc/console/database/installcommand.class.php:99
 msgid "Force execution of installation, overriding existing database"
@@ -10503,7 +10503,7 @@ msgstr ""
 
 #: inc/console/database/installcommand.class.php:197
 msgid "Installation aborted."
-msgstr ""
+msgstr "Установка прервана."
 
 #: inc/console/database/installcommand.class.php:207 install/install.php:379
 msgid "Security key cannot be generated!"
@@ -10511,7 +10511,7 @@ msgstr "Секретный ключ нельзя сгенерировать!"
 
 #: inc/console/database/installcommand.class.php:233
 msgid "Creating the database..."
-msgstr ""
+msgstr "Создание базы данных..."
 
 #: inc/console/database/installcommand.class.php:239
 #, php-format
@@ -10526,11 +10526,11 @@ msgstr ""
 
 #: inc/console/database/installcommand.class.php:284
 msgid "Loading default schema..."
-msgstr ""
+msgstr "Загрузка схемы по умолчанию..."
 
 #: inc/console/database/installcommand.class.php:296
 msgid "Installation done."
-msgstr ""
+msgstr "Установка завершена."
 
 #: inc/console/database/updatecommand.class.php:74
 msgid "Update database schema to new version"
@@ -10548,11 +10548,11 @@ msgstr ""
 
 #: inc/console/database/updatecommand.class.php:124
 msgid "Current"
-msgstr ""
+msgstr "Текущий"
 
 #: inc/console/database/updatecommand.class.php:128
 msgid "GLPI version"
-msgstr ""
+msgstr "Версия GLPI"
 
 #: inc/console/database/updatecommand.class.php:129
 msgid "GLPI database version"
@@ -10575,7 +10575,7 @@ msgstr ""
 
 #: inc/console/database/updatecommand.class.php:176
 msgid "Update aborted."
-msgstr ""
+msgstr "Обновление прервано."
 
 #: inc/console/database/updatecommand.class.php:195
 msgid "Last migration replayed."
@@ -16089,7 +16089,7 @@ msgstr "Назначено"
 
 #: inc/dashboard/provider.class.php:1236
 msgid "To validate"
-msgstr ""
+msgstr "Для проверки"
 
 #: inc/dashboard/widget.class.php:67
 msgid "Pie"
@@ -16198,7 +16198,7 @@ msgstr "Переключить режим редактирования"
 
 #: inc/dashboard/grid.class.php:276
 msgid "Add filter"
-msgstr ""
+msgstr "Добавить фильтр"
 
 #: inc/dashboard/grid.class.php:277 js/dashboard.js:863
 msgid "Add a new dashboard"
@@ -16243,7 +16243,7 @@ msgstr "Ограничить количество данных"
 
 #: inc/dashboard/grid.class.php:831
 msgid "Filters"
-msgstr ""
+msgstr "Фильтры"
 
 #: inc/dashboard/grid.class.php:866
 msgid "Embed in another application"
@@ -19157,7 +19157,7 @@ msgstr "Не удалось удалить файл %s"
 
 #: inc/document.class.php:272 inc/document.class.php:350
 msgid "Invalid link"
-msgstr ""
+msgstr "Неверная ссылка"
 
 #: inc/document.class.php:383
 #, php-format
@@ -23364,7 +23364,7 @@ msgstr ""
 
 #: install/update.php:533
 msgid "Ignore warning"
-msgstr ""
+msgstr "Игнорировать предупреждение"
 
 #: install/update.php:575
 msgid "Impossible to accomplish an update by this way!"
@@ -23435,7 +23435,7 @@ msgstr "Автоматическое перенаправление, нажми�
 
 #: install/update_94_95/dashboards.php:36
 msgid "Central"
-msgstr ""
+msgstr "Центральный"
 
 #: install/update_94_95/dashboards.php:342
 msgid "Mini tickets dashboard"
@@ -23580,7 +23580,7 @@ msgstr "Невозможно создать файл соединения с Б�
 
 #: install/install.php:614
 msgid "Select your language"
-msgstr ""
+msgstr "Выберите свой язык"
 
 #: install/install.php:639
 msgid "Beginning of the installation"
@@ -23645,23 +23645,23 @@ msgstr "Перейти на часто задаваемые вопросы (FAQ)
 
 #: js/common.js:1185
 msgid "just now"
-msgstr ""
+msgstr "сейчас"
 
 #: js/common.js:1187
 msgid "a minute ago"
-msgstr ""
+msgstr "минуту назад"
 
 #: js/common.js:1189
 msgid "an hour ago"
-msgstr ""
+msgstr "час назад"
 
 #: js/common.js:1191
 msgid "yesterday"
-msgstr ""
+msgstr "вчера"
 
 #: js/common.js:1193
 msgid "a year ago"
-msgstr ""
+msgstr "год назад"
 
 #: js/dashboard.js:333
 msgid "Add a card"
@@ -23669,7 +23669,7 @@ msgstr "Добавить карточку"
 
 #: js/dashboard.js:366
 msgid "Add a filter"
-msgstr ""
+msgstr "Добавить фильтр"
 
 #: js/dashboard.js:415
 msgid "Saved"
@@ -23758,7 +23758,7 @@ msgstr "Вы должны выбрать как минимум 2 актива д
 
 #: js/kanban.js:306
 msgid "Bulk add"
-msgstr ""
+msgstr "Массовое добавление"
 
 #: js/kanban.js:341
 msgid "Search or filter results"

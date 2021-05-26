@@ -4758,6 +4758,8 @@ msgid ""
 "If name is a valid email address, it will be automatically added to "
 "blacklisted senders."
 msgstr ""
+"Si el nombre es una dirección de correo electrónico válida, se agregará "
+"automáticamente a los remitentes de la lista negra."
 
 #: inc/mailcollector.class.php:234 inc/mailcollector.class.php:533
 #: inc/notificationtargetmailcollector.class.php:77
@@ -5241,7 +5243,7 @@ msgstr "Dominios caducados desde más"
 #: inc/domain.class.php:673
 #, php-format
 msgid "Domains alerts not send for entity %1$s"
-msgstr ""
+msgstr "Las alertas de dominios no se envían para la entidad %1$s"
 
 #: inc/planningexternaleventtemplate.class.php:54
 msgid "External events template"
@@ -7554,12 +7556,12 @@ msgstr "La acción que ha solicitado no está permitida."
 #: inc/session.class.php:1487
 #, php-format
 msgid "%1$s starts impersonating user %2$s"
-msgstr ""
+msgstr "%1$s comienza a hacerse pasar por usuario %2$s"
 
 #: inc/session.class.php:1517
 #, php-format
 msgid "%1$s stops impersonating user %2$s"
-msgstr ""
+msgstr "%1$s deja de hacerse pasar por usuario %2$s"
 
 #: inc/notificationtemplatetranslation.class.php:50
 msgid "Template translation"
@@ -9054,7 +9056,7 @@ msgstr "Prueba de conexión al servidor IMAP/POP"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:76
 msgid "Synchronize users against LDAP server information"
-msgstr ""
+msgstr "Sincronizar usuarios con la información del servidor LDAP"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:82
 msgid "Only create new users"
@@ -9132,7 +9134,7 @@ msgstr "Sincronización abortada."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:244
 msgid "Unable to load LDAP server information."
-msgstr ""
+msgstr "No se puede cargar la información del servidor LDAP."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:249
 #, php-format
@@ -10461,7 +10463,7 @@ msgstr "Procesando complemento \"%s\"..."
 #: inc/console/plugin/activatecommand.class.php:75
 #, php-format
 msgid "Unable to load plugin \"%s\" information."
-msgstr ""
+msgstr "No se puede cargar la información del complemento \"%s\"."
 
 #: inc/console/plugin/deactivatecommand.class.php:83
 #, php-format
@@ -11231,7 +11233,7 @@ msgstr "Caso desconocido"
 
 #: inc/ticket.class.php:1555
 msgid "You cannot create a ticket for this user"
-msgstr ""
+msgstr "No puedes crear un caso para este usuario"
 
 #: inc/ticket.class.php:1683
 #, php-format
@@ -12066,6 +12068,7 @@ msgstr "\"session.use_trans_sid\" debería ser desactivada."
 #: inc/system/requirement/sessionsconfiguration.class.php:71
 msgid "See .htaccess file in the GLPI root for more information."
 msgstr ""
+"Consulte el archivo .htaccess en la raíz GLPI para obtener más información."
 
 #: inc/system/requirement/sessionsconfiguration.class.php:77
 msgid "Sessions support is available - Perfect!"
@@ -13729,7 +13732,7 @@ msgstr "Seguimiento de las acciones automáticas"
 
 #: inc/notificationtargetcrontask.class.php:93
 msgid "Automatic actions list"
-msgstr ""
+msgstr "Lista de acciones automáticas"
 
 #: inc/notificationtargetcrontask.class.php:99
 msgid ""
@@ -14254,7 +14257,7 @@ msgstr "Acción abortada"
 
 #: inc/crontask.class.php:302
 msgid "Execution error"
-msgstr ""
+msgstr "Error de ejecución"
 
 #: inc/crontask.class.php:308
 msgid "Action completed, partially processed"
@@ -14348,7 +14351,7 @@ msgstr "Ejecutar"
 #: inc/crontask.class.php:953
 #, php-format
 msgid "Error during %s execution. Check in \"%s\" for more details."
-msgstr ""
+msgstr "Error durante la ejecución %s. Consulte \"%s\" para obtener más detalles."
 
 #: inc/crontask.class.php:971 inc/crontask.class.php:983
 msgid "Can't start"
@@ -14392,8 +14395,8 @@ msgstr[1] "%s se detienen"
 #, php-format
 msgid "%s error"
 msgid_plural "%s errors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s error"
+msgstr[1] "%s errores"
 
 #: inc/crontask.class.php:1158
 msgid "Minimal time"
@@ -15038,11 +15041,11 @@ msgstr "Alertas para certificados caducados"
 
 #: inc/notificationtargetcertificate.class.php:55
 msgid "Technician in charge of the certificate"
-msgstr ""
+msgstr "Técnico encargado del certificado"
 
 #: inc/notificationtargetcertificate.class.php:59
 msgid "Group in charge of the certificate"
-msgstr ""
+msgstr "Grupo encargado del certificado"
 
 #: inc/itiltemplatehiddenfield.class.php:48
 msgid "Hidden field"
@@ -16382,7 +16385,7 @@ msgstr "Telemetría"
 
 #: inc/telemetry.class.php:263
 msgid "Send telemetry information"
-msgstr ""
+msgstr "Enviar información de telemetría"
 
 #: inc/telemetry.class.php:346
 msgid "See what would be sent..."
@@ -17422,7 +17425,7 @@ msgstr "Registrado por"
 
 #: inc/glpinetwork.class.php:218
 msgid "Unable to fetch registration information."
-msgstr ""
+msgstr "No se pudo obtener la información de registro."
 
 #: inc/glpinetwork.class.php:232
 msgid "The registration key is valid."
@@ -18698,7 +18701,7 @@ msgstr "Falló el borrado del archivo %s"
 
 #: inc/document.class.php:272 inc/document.class.php:350
 msgid "Invalid link"
-msgstr ""
+msgstr "Enlace invalido"
 
 #: inc/document.class.php:383
 #, php-format
@@ -19453,7 +19456,7 @@ msgstr[1] "%1$s%2$s segundos"
 
 #: inc/html.class.php:788
 msgid "Display GLPI debug information"
-msgstr ""
+msgstr "Mostrar información de depuración GLPI"
 
 #: inc/html.class.php:1153
 msgid "Progress"
@@ -21640,12 +21643,12 @@ msgstr "%1$s activado %2$s por %3$s"
 #: inc/commonitilobject.class.php:7362
 #, php-format
 msgid "File size: %s"
-msgstr ""
+msgstr "Tamaño del archivo: %s"
 
 #: inc/commonitilobject.class.php:7363
 #, php-format
 msgid "MIME type: %s"
-msgstr ""
+msgstr "Tipo MIME: %s"
 
 #: inc/commonitilobject.class.php:7456
 msgid "Followup promotion source"
@@ -21660,7 +21663,7 @@ msgstr "# %s descripción"
 #: inc/commonitilobject.class.php:7550
 #, php-format
 msgid "%1$s will be added in entity %2$s"
-msgstr ""
+msgstr "%1$s se agregará en la entidad %2$s"
 
 #: inc/commonitilobject.class.php:7556
 #, php-format

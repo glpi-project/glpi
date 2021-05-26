@@ -7,7 +7,7 @@
 # Hugo Castelo Branco <hugo.castelobranco@gmail.com>, 2019
 # halext <halext@gmail.com>, 2019
 # Luis Pinho <lj.pinho@gmail.com>, 2020
-# Manuela Silva <manuelarodsilva@gmail.com>, 2020
+# Manuela Silva <mmsrs@sky.com>, 2020
 # Rui Melo <viper5000pt@gmail.com>, 2020
 # Henrique Amaral, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
@@ -16,6 +16,8 @@
 # Emperium <real.emperium@gmail.com>, 2020
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # Pedro B., 2021
+# Humberto Chula, 2021
+# Ricardo Jorge Basílio de Almeida <ricardo.j.basilio@gmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -24,7 +26,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-20 08:27+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Pedro B., 2021\n"
+"Last-Translator: Ricardo Jorge Basílio de Almeida <ricardo.j.basilio@gmail.com>, 2021\n"
 "Language-Team: Portuguese (Portugal) (https://www.transifex.com/glpi/teams/1637/pt_PT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -157,7 +159,7 @@ msgstr "%1$s (%2$s)"
 #: install/update.php:369 install/update.php:385 index.php:168
 msgctxt "button"
 msgid "Post"
-msgstr "Publicar"
+msgstr "Submeter"
 
 #: ajax/dropdownMassiveAction.php:42 ajax/massiveaction.php:49
 #: front/massiveaction.php:48 front/tracking.injector.php:82
@@ -945,7 +947,7 @@ msgstr "Os meus grupos"
 #: ajax/dropdownTrackingDeviceType.php:68 front/find_num.php:77
 msgid "Enter the first letters (user, item name, serial or asset number)"
 msgstr ""
-"Insira as primeiras letras (nome de utilizador/item, número de série/artigo)"
+"Insira as primeiras letras (nome de utilizador/item, número de série/activo)"
 
 #. TRANS: %d is number of objects for the user
 #: ajax/ticketassigninformation.php:68 ajax/ticketassigninformation.php:69
@@ -1461,7 +1463,7 @@ msgstr "%s actualiza uma máquina virtual"
 #: front/lockedfield.form.php:50
 #, php-format
 msgid "%1$s adds the item %2$s-%3$s:%4$s"
-msgstr "%1$s adicionar o artigo %2$s-%3$s:%4$s"
+msgstr "%1$s adicionar o elemento %2$s-%3$s:%4$s"
 
 #. TRANS: %s is the user login
 #: front/group.form.php:92 front/dropdown.common.form.php:101
@@ -2333,7 +2335,7 @@ msgstr "Você não pode solucionar este item!"
 msgid "Item"
 msgid_plural "Items"
 msgstr[0] "Artigo"
-msgstr[1] "Artigos"
+msgstr[1] "Elementos"
 
 #. TRANS: %s is the user login
 #: front/item_softwarelicense.form.php:51
@@ -3739,7 +3741,7 @@ msgstr "Razão"
 #: inc/rule.class.php:1377 inc/planning.class.php:581
 #: tests/functionnal/Rule.php:276
 msgid "Unavailable"
-msgstr "Indisponivel"
+msgstr "Indisponível"
 
 #. TRANS: R for Recursive
 #: inc/rule.class.php:1875 inc/profile_user.class.php:225
@@ -4776,7 +4778,7 @@ msgstr "Erros de ligação"
 #: tests/functionnal/Session.php:222 tests/functionnal/Session.php:236
 #: tests/functionnal/Session.php:246 index.php:131 index.php:133
 msgid "Login"
-msgstr "Iniciar sessão"
+msgstr "Nome de utilizador"
 
 #: inc/mailcollector.class.php:249 inc/authmail.class.php:224
 #: inc/user.class.php:2177 inc/user.class.php:2660 inc/user.class.php:4739
@@ -5194,7 +5196,7 @@ msgstr "Técnico responsável"
 msgid "Associated item"
 msgid_plural "Associated items"
 msgstr[0] "Artigo associado"
-msgstr[1] "Artigos associados"
+msgstr[1] "Elementos associados"
 
 #: inc/domain.class.php:150 inc/domain.class.php:309
 #: inc/dashboard/grid.class.php:1428 inc/log.class.php:964
@@ -9051,7 +9053,7 @@ msgstr "Teste de ligação ao servidor de email"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:76
 msgid "Synchronize users against LDAP server information"
-msgstr ""
+msgstr "Sincronizar utilizadores com informação do servidor LDAP"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:82
 msgid "Only create new users"
@@ -9129,7 +9131,7 @@ msgstr "Sincronização abortada."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:244
 msgid "Unable to load LDAP server information."
-msgstr ""
+msgstr "Não foi possível ler informações do servidor LDAP."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:249
 #, php-format
@@ -10376,7 +10378,7 @@ msgstr ""
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:81
 msgid "No software to process."
-msgstr ""
+msgstr "Nenhuma aplicação para processar"
 
 #: inc/console/rules/processsoftwarecategoryrulescommand.class.php:93
 #, php-format
@@ -11544,7 +11546,7 @@ msgstr "Não tem permissão para visualizar todos os tickets"
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
 msgstr[0] "Senha em artigo ligado"
-msgstr[1] "Tickets em artigos ligados"
+msgstr[1] "Tickets em elementos ligados"
 
 #: inc/ticket.class.php:6202
 msgid "No ticket in progress."
@@ -11822,7 +11824,7 @@ msgstr "modelo"
 #: inc/knowbaseitem_item.class.php:440
 msgctxt "button"
 msgid "Link knowledgebase article"
-msgstr "Link artigo base de conhecimento"
+msgstr "Ligar artigo da base de conhecimento"
 
 #: inc/system/requirement/selinux.class.php:45
 msgid "Check SELinux configuration"
@@ -13742,7 +13744,7 @@ msgstr "%1$s %2$s (%3$s)"
 #: inc/search.class.php:1965 inc/search.class.php:2573
 #: inc/search.class.php:2593 inc/config.class.php:403
 msgid "Items seen"
-msgstr "Artigos vistos"
+msgstr "Elementos vistos"
 
 #: inc/search.class.php:2005 inc/search.class.php:2007
 #: inc/search.class.php:2025 inc/search.class.php:2089
@@ -14609,11 +14611,11 @@ msgstr "Todos os meus artigos"
 
 #: inc/knowbaseitem.class.php:1132
 msgid "All unpublished articles"
-msgstr "Todos os meus artigos não publicados"
+msgstr "Todos os artigos não publicados"
 
 #: inc/knowbaseitem.class.php:1133
 msgid "All published articles"
-msgstr "Todos os meus artigos publicados"
+msgstr "Todos os artigos publicados"
 
 #: inc/knowbaseitem.class.php:1566
 msgid "This item is not published yet"
@@ -15059,7 +15061,7 @@ msgstr ""
 
 #: inc/infocom.class.php:1062
 msgid "Asset lifecycle"
-msgstr "Vida útil do artigo"
+msgstr "Ciclo de vida do activo"
 
 #: inc/infocom.class.php:1064 inc/infocom.class.php:1436
 #: inc/infocom.class.php:1670 inc/entity.class.php:1069
@@ -19684,7 +19686,7 @@ msgstr ""
 
 #: inc/commondbtm.class.php:2782
 msgid "Flag change forbidden. Linked items found."
-msgstr "Não é permitido alterar marca. Foi encontrado um artigo ligado."
+msgstr "Não é permitido alterar marca. Foram encontrados elementos ligados."
 
 #: inc/commondbtm.class.php:2786
 msgid "Change visibility in child entities"
@@ -19712,7 +19714,7 @@ msgstr "Registo impossível para %s"
 #: inc/commondbtm.class.php:4222
 #, php-format
 msgid "Item successfully added but duplicate record on %s"
-msgstr "Artigo adicionado com sucesso está duplicado %s"
+msgstr "Elemento adicionado com sucesso mas registo duplicado em %s"
 
 #: inc/commondbtm.class.php:4225
 msgid "Other item exist"
@@ -21671,7 +21673,9 @@ msgstr "Dicionário dos modelos de impressora"
 
 #: inc/reservation.class.php:289
 msgid "The required item is already reserved for this timeframe"
-msgstr "O artigo requerido já se encontra reservado para o tempo pretendido"
+msgstr ""
+"O elemento requisitado já se encontra reservado para o intervalo de tempo "
+"pretendido"
 
 #: inc/reservation.class.php:293
 msgid "Unknown error"
@@ -23038,7 +23042,7 @@ msgstr ""
 
 #: js/dashboard.js:366
 msgid "Add a filter"
-msgstr ""
+msgstr "Adicionar um filtro"
 
 #: js/dashboard.js:415
 msgid "Saved"
