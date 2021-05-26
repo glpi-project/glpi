@@ -223,7 +223,7 @@ class Socket extends CommonDropdown {
       $tab  = parent::rawSearchOptions();
 
       $tab[] = [
-         'id'                 => '3',
+         'id'                 => '4',
          'table'              => Socket::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
@@ -231,7 +231,7 @@ class Socket extends CommonDropdown {
       ];
 
       $tab[] = [
-         'id'                 => '4',
+         'id'                 => '5',
          'table'              => SocketModel::getTable(),
          'field'              => 'name',
          'name'               => SocketModel::getTypeName(1),
@@ -239,7 +239,7 @@ class Socket extends CommonDropdown {
       ];
 
       $tab[] = [
-         'id'                 => '5',
+         'id'                 => '6',
          'table'              => Socket::getTable(),
          'field'              => 'itemtype',
          'name'               => _n('Associated item type', 'Associated item types', Session::getPluralNumber()),
@@ -255,7 +255,7 @@ class Socket extends CommonDropdown {
       ];
 
       $tab[] = [
-         'id'                 => '6',
+         'id'                 => '7',
          'table'              => $this->getTable(),
          'field'              => 'items_id',
          'name'               => __('Associated item ID'),
@@ -266,7 +266,7 @@ class Socket extends CommonDropdown {
       ];
 
       $tab[] = [
-         'id'                 => '7',
+         'id'                 => '8',
          'table'              => Socket::getTable(),
          'field'              => 'wiring_side',
          'name'               => __('Wiring side'),
