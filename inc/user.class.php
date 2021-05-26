@@ -5693,7 +5693,7 @@ JAVASCRIPT;
       switch (Entity::getAnonymizeConfig($entities_id)) {
          default:
          case Entity::ANONYMIZE_DISABLED:
-            return "";
+            return null;
 
          case Entity::ANONYMIZE_USE_GENERIC:
             return __("Helpdesk user");
@@ -5707,7 +5707,7 @@ JAVASCRIPT;
             return $user->fields['nickname'];
       }
 
-      return "";
+      return null;
    }
 
    /**
