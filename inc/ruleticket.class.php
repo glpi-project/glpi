@@ -749,6 +749,7 @@ class RuleTicket extends Rule {
       $actions['assign_appliance']['name']                  = _n('Associated element', 'Associated elements', Session::getPluralNumber())." : ".Appliance::getTypeName(1);
       $actions['assign_appliance']['type']                  = 'dropdown';
       $actions['assign_appliance']['table']                 = 'glpi_appliances';
+      $actions['assign_appliance']['condition']             = ['is_helpdesk_visible' => 1];
       $actions['assign_appliance']['permitseveral']         = ['append'];
       $actions['assign_appliance']['force_actions']         = ['assign','regex_result', 'append'];
       $actions['assign_appliance']['appendto']              = 'items_id';
