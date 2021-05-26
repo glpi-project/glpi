@@ -79,13 +79,14 @@ class NotificationTargetTicket extends DbTestCase {
       // advanced test for ##task.categorycomment## and ##task.categoryid## tags
       // test of the getDataForObject for default language en_GB
       $taskcat = getItemByTypeName('TaskCategory', '_subcat_1');
+      $encoded_sep = \Toolbox::clean_cross_side_scripting_deep('>');
       $expected = [
                      [
                      '##task.id##'              => 1,
                      '##task.isprivate##'       => 'No',
                      '##task.author##'          => '_test_user',
                      '##task.categoryid##'      => $taskcat->getID(),
-                     '##task.category##'        => '_cat_1 > _subcat_1',
+                     '##task.category##'        => '_cat_1 ' . $encoded_sep . ' _subcat_1',
                      '##task.categorycomment##' => 'Comment for sub-category _subcat_1',
                      '##task.date##'            => '2016-10-19 11:50',
                      '##task.description##'     => 'Task to be done',
@@ -120,7 +121,7 @@ class NotificationTargetTicket extends DbTestCase {
                      '##task.isprivate##'       => 'Non',
                      '##task.author##'          => '_test_user',
                      '##task.categoryid##'      => $taskcat->getID(),
-                     '##task.category##'        => 'FR - _cat_1 > FR - _subcat_1',
+                     '##task.category##'        => 'FR - _cat_1 ' . $encoded_sep . ' FR - _subcat_1',
                      '##task.categorycomment##' => 'FR - Commentaire pour sous-catégorie _subcat_1',
                      '##task.date##'            => '2016-10-19 11:50',
                      '##task.description##'     => 'Task to be done',

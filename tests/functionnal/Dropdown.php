@@ -122,6 +122,8 @@ class Dropdown extends DbTestCase {
    public function testGetDropdownName() {
       global $CFG_GLPI;
 
+      $encoded_sep = \Toolbox::clean_cross_side_scripting_deep(' > ');
+
       $ret = \Dropdown::getDropdownName('not_a_known_table', 1);
       $this->string($ret)->isIdenticalTo('&nbsp;');
 
@@ -130,20 +132,20 @@ class Dropdown extends DbTestCase {
       $subCat = getItemByTypeName('TaskCategory', '_subcat_1');
 
       // basic test returns string only
-      $expected = $cat->fields['name']." > ".$subCat->fields['name'];
+      $expected = $cat->fields['name'].$encoded_sep.$subCat->fields['name'];
       $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subCat->getID());
       $this->string($ret)->isIdenticalTo($expected);
 
       // test of return with comments
-      $expected = ['name'    => $cat->fields['name']." > ".$subCat->fields['name'],
-                        'comment' => "<span class='b'>Complete name</span>: ".$cat->fields['name']." > "
+      $expected = ['name'    => $cat->fields['name'].$encoded_sep.$subCat->fields['name'],
+                        'comment' => "<span class='b'>Complete name</span>: ".$cat->fields['name'].$encoded_sep
                                     .$subCat->fields['name']."<br><span class='b'>&nbsp;Comments&nbsp;</span>"
                                     .$subCat->fields['comment']];
       $ret = \Dropdown::getDropdownName( 'glpi_taskcategories', $subCat->getID(), true );
       $this->array($ret)->isIdenticalTo($expected);
 
       // test of return without $tooltip
-      $expected = ['name'    => $cat->fields['name']." > ".$subCat->fields['name'],
+      $expected = ['name'    => $cat->fields['name'].$encoded_sep.$subCat->fields['name'],
                         'comment' => $subCat->fields['comment']];
       $ret = \Dropdown::getDropdownName( 'glpi_taskcategories', $subCat->getID(), true, true, false );
       $this->array($ret)->isIdenticalTo($expected);
@@ -152,7 +154,7 @@ class Dropdown extends DbTestCase {
       $CFG_GLPI['translate_dropdowns'] = 1;
       $_SESSION["glpilanguage"] = \Session::loadLanguage( 'fr_FR' );
       $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
-      $expected = ['name'    => 'FR - _cat_1 > FR - _subcat_1',
+      $expected = ['name'    => 'FR - _cat_1' . $encoded_sep . 'FR - _subcat_1',
                         'comment' => 'FR - Commentaire pour sous-catégorie _subcat_1'];
       $ret = \Dropdown::getDropdownName( 'glpi_taskcategories', $subCat->getID(), true, true, false );
       // switch back to default language
@@ -793,6 +795,8 @@ class Dropdown extends DbTestCase {
    }
 
    protected function getDropdownConnectProvider() {
+      $encoded_sep = \Toolbox::clean_cross_side_scripting_deep('>');
+
       return [
          [
             'params'    => [
@@ -806,7 +810,7 @@ class Dropdown extends DbTestCase {
                      'text' => '-----',
                   ],
                   1 => [
-                     'text' => 'Root entity > _test_root_entity',
+                     'text' => "Root entity {$encoded_sep} _test_root_entity",
                      'children' => [
                         0 => [
                            'id'     => getItemByTypeName('Printer', '_test_printer_all', true),
@@ -819,7 +823,7 @@ class Dropdown extends DbTestCase {
                      ]
                   ],
                   2 => [
-                     'text' => 'Root entity > _test_root_entity > _test_child_1',
+                     'text' => "Root entity {$encoded_sep} _test_root_entity {$encoded_sep} _test_child_1",
                      'children' => [
                         0 => [
                            'id'     => getItemByTypeName('Printer', '_test_printer_ent1', true),
@@ -828,7 +832,7 @@ class Dropdown extends DbTestCase {
                      ]
                   ],
                   3 => [
-                     'text' => 'Root entity > _test_root_entity > _test_child_2',
+                     'text' => "Root entity {$encoded_sep} _test_root_entity {$encoded_sep} _test_child_2",
                      'children' => [
                         0 => [
                            'id'     => getItemByTypeName('Printer', '_test_printer_ent2', true),
@@ -856,7 +860,7 @@ class Dropdown extends DbTestCase {
                      'text' => '-----',
                   ],
                   1 => [
-                     'text' => 'Root entity > _test_root_entity',
+                     'text' => "Root entity {$encoded_sep} _test_root_entity",
                      'children' => [
                         0 => [
                            'id'     => getItemByTypeName('Printer', '_test_printer_all', true),
@@ -865,7 +869,7 @@ class Dropdown extends DbTestCase {
                      ]
                   ],
                   2 => [
-                     'text' => 'Root entity > _test_root_entity > _test_child_1',
+                     'text' => "Root entity {$encoded_sep} _test_root_entity {$encoded_sep} _test_child_1",
                      'children' => [
                         0 => [
                            'id'     => getItemByTypeName('Printer', '_test_printer_ent1', true),
@@ -884,7 +888,7 @@ class Dropdown extends DbTestCase {
             'expected'  => [
                'results' => [
                   0 => [
-                     'text' => 'Root entity > _test_root_entity',
+                     'text' => "Root entity {$encoded_sep} _test_root_entity",
                      'children' => [
                         0 => [
                            'id'     => getItemByTypeName('Printer', '_test_printer_ent0', true),
@@ -903,7 +907,7 @@ class Dropdown extends DbTestCase {
             'expected'  => [
                'results' => [
                   0 => [
-                     'text' => 'Root entity > _test_root_entity',
+                     'text' => "Root entity {$encoded_sep} _test_root_entity",
                      'children' => [
                         0 => [
                            'id'     => getItemByTypeName('Printer', '_test_printer_ent0', true),
