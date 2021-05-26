@@ -120,6 +120,50 @@ class Cable extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '7',
+         'table'              => $this->getTable(),
+         'field'              => 'rear_itemtype',
+         'name'               => _n('Associated item type', 'Associated item types', Session::getPluralNumber())." ".__('Rear'),
+         'datatype'           => 'itemtypename',
+         'itemtype_list'      => 'socket_link_types',
+         'forcegroupby'       => true,
+         'massiveaction'      => false
+      ];
+
+      $tab[] = [
+         'id'                 => '8',
+         'table'              => $this->getTable(),
+         'field'              => 'front_items_id',
+         'name'               => __('Associated item ID')." ".__('Front'),
+         'massiveaction'      => false,
+         'datatype'           => 'specific',
+         'searchtype'         => 'equals',
+         'additionalfields'   => ['front_itemtype']
+      ];
+
+      $tab[] = [
+         'id'                 => '9',
+         'table'              => $this->getTable(),
+         'field'              => 'front_itemtype',
+         'name'               => _n('Associated item type', 'Associated item types', Session::getPluralNumber())." ".__('Front'),
+         'datatype'           => 'itemtypename',
+         'itemtype_list'      => 'socket_link_types',
+         'forcegroupby'       => true,
+         'massiveaction'      => false
+      ];
+
+      $tab[] = [
+         'id'                 => '10',
+         'table'              => $this->getTable(),
+         'field'              => 'rear_items_id',
+         'name'               => __('Associated item ID')." ".__('Rear'),
+         'massiveaction'      => false,
+         'datatype'           => 'specific',
+         'searchtype'         => 'equals',
+         'additionalfields'   => ['rear_itemtype']
+      ];
+
+      $tab[] = [
+         'id'                 => '11',
          'table'              => SocketModel::getTable(),
          'field'              => 'name',
          'linkfield'          => 'rear_socketmodels_id',
@@ -129,7 +173,7 @@ class Cable extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '8',
+         'id'                 => '12',
          'table'              => SocketModel::getTable(),
          'field'              => 'name',
          'linkfield'          => 'front_socketmodels_id',
@@ -139,7 +183,7 @@ class Cable extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '9',
+         'id'                 => '13',
          'table'              => Socket::getTable(),
          'field'              => 'name',
          'linkfield'          => 'front_sockets_id',
@@ -149,7 +193,7 @@ class Cable extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '10',
+         'id'                 => '14',
          'table'              => Socket::getTable(),
          'field'              => 'name',
          'linkfield'          => 'rear_sockets_id',
@@ -159,7 +203,7 @@ class Cable extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '11',
+         'id'                 => '15',
          'table'              => $this->getTable(),
          'field'              => 'color',
          'name'               => __('Color'),
@@ -229,6 +273,81 @@ class Cable extends CommonDBTM {
 
       return $tab;
    }
+
+   /**
+    * @since 0.84
+    *
+    * @param $field
+    * @param $name            (default '')
+    * @param $values          (default '')
+    * @param $options   array
+    *
+    * @return string
+   **/
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
+
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+      $options['display'] = false;
+      switch ($field) {
+         case 'items_id' :
+            if (isset($values['itemtype']) && !empty($values['itemtype'])) {
+               $options['name']  = $name;
+               $options['value'] = $values[$field];
+               return Dropdown::show($values['itemtype'], $options);
+            }
+            break;
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
+
+   /**
+    * @since 0.84
+    *
+    * @param $field
+    * @param $values
+    * @param $options   array
+   **/
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+
+      switch ($field) {
+         case 'items_id':
+
+            if (isset($values['itemtype'])) {
+               if (isset($options['comments']) && $options['comments']) {
+                  $valueData = Dropdown::getDropdownName(
+                     getTableForItemType($values['itemtype']),
+                     $values[$field],
+                     1
+                  );
+                  return sprintf(
+                     __('%1$s %2$s'),
+                     $valueData['name'],
+                     Html::showToolTip($valueData['comment'], ['display' => false])
+                  );
+
+               }
+
+               if ($values[$field] > 0) {
+                  return Dropdown::getDropdownName(
+                     getTableForItemType($values['itemtype']),
+                     $values[$field]
+                  );
+               }
+
+            } else {
+               return ' ';
+            }
+            break;
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
 
    /**
    * Print the main form

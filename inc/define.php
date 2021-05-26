@@ -227,7 +227,7 @@ $CFG_GLPI["infocom_types"]                = ['Cartridge', 'CartridgeItem', 'Comp
                                                   'Printer', 'Software', 'SoftwareLicense',
                                                   'Line', 'Certificate', 'Domain', 'Appliance', 'Item_DeviceSimcard',
                                                   'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment',
-                                                  'DatabaseInstance'];
+                                                  'DatabaseInstance', 'Cable'];
 
 $CFG_GLPI["reservation_types"]            = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software'];

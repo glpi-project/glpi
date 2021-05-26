@@ -288,7 +288,7 @@ class Socket extends CommonDropdown {
 
       $tab[] = [
          'id'                 => 'socket',
-         'name'               => __('Socket')
+         'name'               => Socket::getTypeName(0)
       ];
 
       $tab[] = [
@@ -712,7 +712,7 @@ class Socket extends CommonDropdown {
                                                'front_sockets_id' => $socket->fields["id"]
                                               ]])) {
             echo "<td>" . Dropdown::getDropdownName(Cable::getTable(), $cable->fields["id"]) . "</td>";
-         }else{
+         } else {
             echo "<td></td>";
          }
 

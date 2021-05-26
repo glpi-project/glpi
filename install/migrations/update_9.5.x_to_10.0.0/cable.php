@@ -241,3 +241,4 @@ $migration->addField('glpi_networkportfiberchannels', 'networkportfiberchannelty
 $migration->addKey('glpi_networkportfiberchannels', 'networkportfiberchanneltypes_id', 'type');
 
 $ADDTODISPLAYPREF['Socket'] = [5, 8, 6, 7];
+$ADDTODISPLAYPREF['Cable'] = [4, 31, 6, 15, 24];
