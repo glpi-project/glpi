@@ -5278,12 +5278,9 @@ class CommonDBTM extends CommonGLPI {
                'items_id'      => $this->getID()
             ];
 
-            if ($date) {
-               // Set date, needed if it differs from the creation date
-               $toadd['date'] = $date;
-            } else {
-               $toadd['date'] = $_SESSION['glpi_currenttime'];
-            }
+            
+            // Set date, needed if it differs from the creation date
+            $toadd['date'] = $date ?? $_SESSION['glpi_currenttime'];
 
             if (isset($input['users_id'])) {
                $toadd['users_id'] = $input['users_id'];
