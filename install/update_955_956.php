@@ -58,28 +58,28 @@ function update955to956() {
    if (!$DB->fieldExists('glpi_documents_items', 'date')) {
       $migration->addField('glpi_documents_items', 'date', 'timestamp');
       $migration->addKey('glpi_documents_items', 'date');
-      $migration->migrationOneTable('glpi_documents_items');
 
       // Init date from the parent followup
-       $parent_date = new QuerySubQuery([
+      $parent_date = new QuerySubQuery([
          'SELECT' => 'date',
          'FROM' => 'glpi_itilfollowups',
          'WHERE' => [
             'id' => new QueryExpression($DB->quoteName('glpi_documents_items.items_id'))
          ]
       ]);
-      $DB->update(
+
+      $migration->addPostQuery($DB->buildUpdate(
          'glpi_documents_items',
          ['date' => new QueryExpression($parent_date->getQuery())],
          ['itemtype' => ['ITILFollowup']]
-      );
+      ));
 
       // Init date as the value of date_creation for others items
-      $DB->update(
+      $migration->addPostQuery($DB->buildUpdate(
          'glpi_documents_items',
          ['date' => new QueryExpression($DB->quoteName('glpi_documents_items.date_creation'))],
          ['itemtype' => ['!=', 'ITILFollowup']]
-      );
+      ));
    }
    /* /Add `date` to glpi_documents_items */
 
