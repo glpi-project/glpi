@@ -115,7 +115,7 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('BNC port type') . "</td><td>\n";
+      echo "<td>" . NetworkPortFiberchannelType::getTypeName(0) . "</td><td>\n";
       Dropdown::show('NetworkPortFiberchannelType', ['name' => 'networkportfiberchanneltypes_id', 'value' => $this->fields['networkportfiberchanneltypes_id']]);
       echo "</td></tr>\n";
    }

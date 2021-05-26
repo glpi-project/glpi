@@ -437,6 +437,7 @@ class Cable extends CommonDBTM {
       $rand_socket_rear = rand();
       $rand_socket_front = rand();
 
+
       echo "<tr class='headerRow'>";
       echo "<th colspan='2'>".__('Rear')."</th>";
       echo "<th colspan='2'>".__('Front')."</th>";
@@ -448,8 +449,7 @@ class Cable extends CommonDBTM {
       echo "<td>";
 
       Dropdown::showFromArray('rear_itemtype', Socket::getSocketLinkTypes(), ['value'                 => $this->fields["rear_itemtype"],
-                                                                              'rand'                  => $rand_itemtype_rear,
-                                                                              'display_emptychoice'   => true]);
+                                                                              'rand'                  => $rand_itemtype_rear]);
 
       $params = ['itemtype'        => '__VALUE__',
                   'dom_name'       => 'rear_items_id',
@@ -461,20 +461,25 @@ class Cable extends CommonDBTM {
                                     $params);
 
       echo "<span id='show_rear_items_id_field'>";
+
+
       if (!empty($this->fields["rear_itemtype"])) {
-         $this->fields["rear_itemtype"]::dropdown(['name'                  => 'rear_items_id',
-                                                   'value'                 => $this->fields["rear_items_id"],
-                                                   'rand'                  => $rand_items_id_rear,
-                                                   'display_emptychoice'   => true]);
+         $rear_itemtype = $this->fields["rear_itemtype"];
+      } else{
+         $rear_itemtype = "Computer";
       }
+      $rear_itemtype::dropdown(['name'                  => 'rear_items_id',
+                                                'value'                 => $this->fields["rear_items_id"],
+                                                'rand'                  => $rand_items_id_rear,
+                                                'display_emptychoice'   => true]);
+      
       echo "</span></td>";
 
       echo "<td>".__('Asset')."</td>";
       echo "<td>";
 
       Dropdown::showFromArray('front_itemtype', Socket::getSocketLinkTypes(), ['value'                => $this->fields["front_itemtype"],
-                                                                               'rand'                 => $rand_itemtype_front,
-                                                                               'display_emptychoice'  => true]);
+                                                                               'rand'                 => $rand_itemtype_front]);
 
       $params = ['itemtype'   => '__VALUE__',
                  'dom_name'   => 'front_items_id',
@@ -488,12 +493,17 @@ class Cable extends CommonDBTM {
 
       echo "<span id='show_front_items_id_field'>";
       if (!empty($this->fields["front_itemtype"])) {
-         $this->fields["front_itemtype"]::dropdown(['name'                 => 'front_items_id',
-                                                    'value'                => $this->fields["front_items_id"],
-                                                    'rand'                 => $rand_items_id_front,
-                                                    'display_emptychoice'  => true]);
-
+         $front_itemtype = $this->fields["front_itemtype"];
+      } else{
+         $front_itemtype = "Computer";
       }
+
+      $front_itemtype ::dropdown(['name'                 => 'front_items_id',
+                                 'value'                => $this->fields["front_items_id"],
+                                 'rand'                 => $rand_items_id_front,
+                                 'display_emptychoice'  => true]);
+
+      
       echo "</span></td>";
       echo "</tr>";
 
@@ -612,7 +622,7 @@ class Cable extends CommonDBTM {
       if ($this->fields['rear_items_id']) {
          $item = new $this->fields['rear_itemtype']();
          $item->getFromDB($this->fields['rear_items_id']);
-         echo Toolbox::getDCRoomPosition($item, $paramsPosition);
+         echo $item->showDcBreadcrumb(true);
       }
       echo "</span></td>";
 
@@ -633,7 +643,7 @@ class Cable extends CommonDBTM {
       if ($this->fields['front_items_id']) {
          $item = new $this->fields['front_itemtype']();
          $item->getFromDB($this->fields['front_items_id']);
-         echo Toolbox::getDCRoomPosition($item, $paramsPosition);
+         echo $item->showDcBreadcrumb(true);
       }
       echo "</span>";
       echo "</td></tr>";

@@ -711,7 +711,7 @@ class Socket extends CommonDropdown {
          if ($cable->getFromDBByCrit(['OR' => ['rear_sockets_id' => $socket->fields["id"],
                                                'front_sockets_id' => $socket->fields["id"]
                                               ]])) {
-            echo "<td>" . Dropdown::getDropdownName(Cable::getTable(), $cable->fields["id"]) . "</td>";
+            echo "<td><a href='" . $cable->getLinkURL(). "'>".$cable->getName()."</a></td>";
          } else {
             echo "<td></td>";
          }

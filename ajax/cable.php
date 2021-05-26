@@ -41,57 +41,37 @@ Session::checkLoginUser();
 switch ($_POST['action']) {
 
    case 'getItemsFromItemtype':
-
       if ($_POST['itemtype'] && class_exists($_POST['itemtype'])) {
-         $rand = $_POST['itemtype']::dropdown(['name' => $_POST['dom_name'], 'display_emptychoice' => true, 'rand' => $_POST['rand'] ]);
+         $rand = $_POST['itemtype']::dropdown(['name'                => $_POST['dom_name'],
+                                               'display_emptychoice' => true,
+                                               'withDCLocation'      => true,
+                                               'rand'                => $_POST['rand'] ]);
       } else {
          echo "";
       }
-
       break;
-
-   case 'getSocketModel':
-
-      $rand = SocketModel::dropdown(['name'    => $_POST['dom_name']]);
-      $params = ['socketmodels_id'  => '__VALUE__',
-                  'itemtype'        => $_POST['itemtype'],
-                  'items_id'        => $_POST['items_id'],
-                  'dom_name'        => 'rear_sockets_id',
-                  'action'          => 'getSocketByModel'];
-      Ajax::updateItemOnSelectEvent("dropdown_".$_POST['dom_name'].$rand,
-                                    $_POST['dom_toupdate'],
-                                    $CFG_GLPI["root_doc"]."/ajax/cable.php",
-                                    $params);
-      break;
-
 
    case 'getSocketByModelAndItem':
-      Socket::dropdown(['name'      =>  $_POST['dom_name'],
-                        'rand'      => $_POST['rand'],
-                        'condition'    => ['socketmodels_id'   => $_POST['socketmodels_id'],
-                                           'itemtype'          => $_POST['itemtype'],
-                                           'items_id'          => $_POST['items_id']],
-                        'displaywith'  => ['itemtype', 'items_id', 'networkports_id'],
-                     ]);
+      if ((isset($_POST['itemtype'])&& class_exists($_POST['itemtype']))
+         && isset($_POST['items_id'])) {
+            Socket::dropdown(['name'         =>  $_POST['dom_name'],
+                              'rand'         => $_POST['rand'],
+                              'condition'    => ['socketmodels_id'   => $_POST['socketmodels_id'],
+                                                'itemtype'           => $_POST['itemtype'],
+                                                'items_id'           => $_POST['items_id']],
+                              'displaywith'  => ['itemtype', 'items_id', 'networkports_id'],
+         ]);
+      }
       break;
 
    case 'getItemBreadCrumb':
-
-      if (($_POST['itemtype'] && class_exists($_POST['itemtype']))
-         && $_POST['items_id']) {
+      if ((isset($_POST['itemtype'])&& class_exists($_POST['itemtype']))
+         && isset($_POST['items_id']) && $_POST['items_id'] > 0) {
          $item = new $_POST['itemtype']();
          $item->getFromDB($_POST['items_id']);
-
-         $params = [
-            'with_item_location'       => true,
-            'with_rack_location'       => true,
-            'with_dcroom_location'     => true,
-            'with_datacenter_location' => true,
-         ];
-         echo Toolbox::getDCRoomPosition($item, $params);
+         echo $item->showDcBreadcrumb(true);
       } else {
          echo "";
       }
-
       break;
 }
