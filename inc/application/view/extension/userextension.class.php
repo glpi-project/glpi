@@ -58,7 +58,7 @@ class UserExtension extends AbstractExtension implements ExtensionInterface {
    public function getPicture(int $users_id = 0): string {
       $user = new User;
       if ($user->getFromDB($users_id)) {
-         if ($this->getAnonymizedName($users_id) === "") {
+         if ($this->getAnonymizedName($users_id) !== null) {
             return User::getThumbnailURLForPicture(null, false);
          }
          return User::getThumbnailURLForPicture($user->fields['picture'], false);
@@ -91,7 +91,7 @@ class UserExtension extends AbstractExtension implements ExtensionInterface {
    public function getLink(int $users_id = null, array $options = []):string {
       $user = new User;
       if ($user->getFromDB($users_id)) {
-         if (strlen($anon_name = $this->getAnonymizedName($users_id, $options)) > 0) {
+         if (($anon_name = $this->getAnonymizedName($users_id, $options)) !== null) {
             return $anon_name;
          }
          return $user->getLink($options);
@@ -123,7 +123,7 @@ class UserExtension extends AbstractExtension implements ExtensionInterface {
          $users_id = Session::getLoginUserID();
       }
 
-      if (strlen($anon_name = $this->getAnonymizedName($users_id)) > 0) {
+      if (($anon_name = $this->getAnonymizedName($users_id)) !== null) {
          return $anon_name;
       }
 
@@ -139,6 +139,6 @@ class UserExtension extends AbstractExtension implements ExtensionInterface {
 
       return Session::getCurrentInterface() == 'helpdesk'
          ? User::getAnonymizedName($users_id, $entities_id)
-         : "";
+         : null;
    }
 }
