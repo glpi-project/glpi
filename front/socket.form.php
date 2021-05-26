@@ -33,4 +33,22 @@
 include ('../inc/includes.php');
 
 $dropdown = new Socket();
+
+// Add a ticket from item : format data
+if (isset($_REQUEST['_add_fromitem'])
+      && isset($_REQUEST['_from_itemtype'])
+      && isset($_REQUEST['_from_items_id'])) {
+
+      $options['_add_fromitem'] = [
+         '_from_itemtype' => $_REQUEST['_from_itemtype'] ,
+         '_from_items_id' => $_REQUEST['_from_items_id'] ,
+      ];
+
+}
+
 include (GLPI_ROOT . "/front/dropdown.common.form.php");
+
+
+
+
+

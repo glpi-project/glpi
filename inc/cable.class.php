@@ -328,9 +328,9 @@ class Cable extends CommonDBTM {
       echo "<td>".__('Asset')."</td>";
       echo "<td>";
 
-      Dropdown::showFromArray('rear_itemtype', Socket::getAssets(), ['value'                 => $this->fields["rear_itemtype"],
-                                                                     'rand'                  => $rand_itemtype_rear,
-                                                                     'display_emptychoice'   => true]);
+      Dropdown::showFromArray('rear_itemtype', Socket::getSocketLinkTypes(), ['value'                 => $this->fields["rear_itemtype"],
+                                                                              'rand'                  => $rand_itemtype_rear,
+                                                                              'display_emptychoice'   => true]);
 
       $params = ['itemtype'        => '__VALUE__',
                   'dom_name'       => 'rear_items_id',
@@ -353,9 +353,9 @@ class Cable extends CommonDBTM {
       echo "<td>".__('Asset')."</td>";
       echo "<td>";
 
-      Dropdown::showFromArray('front_itemtype', Socket::getAssets(), ['value'                => $this->fields["front_itemtype"],
-                                                                      'rand'                 => $rand_itemtype_front,
-                                                                      'display_emptychoice'  => true]);
+      Dropdown::showFromArray('front_itemtype', Socket::getSocketLinkTypes(), ['value'                => $this->fields["front_itemtype"],
+                                                                               'rand'                 => $rand_itemtype_front,
+                                                                               'display_emptychoice'  => true]);
 
       $params = ['itemtype'   => '__VALUE__',
                  'dom_name'   => 'front_items_id',

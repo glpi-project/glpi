@@ -316,7 +316,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
       return $input;
    }
 
-   function displaySpecificTypeField($ID, $field = []) {
+   function displaySpecificTypeField($ID, $field = [], $options = []) {
       switch ($field['type']) {
          case 'depth':
             Dropdown::showFromArray(

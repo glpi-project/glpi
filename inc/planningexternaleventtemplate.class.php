@@ -87,7 +87,7 @@ class PlanningExternalEventTemplate extends CommonDropdown {
    }
 
 
-   function displaySpecificTypeField($ID, $field = []) {
+   function displaySpecificTypeField($ID, $field = [], $options = []) {
 
       switch ($field['type']) {
          case 'planningstate' :

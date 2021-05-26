@@ -211,7 +211,7 @@ class DomainRecordType extends CommonDropdown
       ];
    }
 
-   public function displaySpecificTypeField($ID, $field = []) {
+   public function displaySpecificTypeField($ID, $field = [], $options = []) {
       $field_name  = $field['name'];
       $field_type  = $field['type'];
       $field_value = $this->fields[$field_name];

@@ -49,7 +49,6 @@ class Socket extends CommonDropdown {
    const REAR    = 1;
    const FRONT   = 2;
 
-
    function getAdditionalFields() {
 
       return [['name'  => 'locations_id',
@@ -68,13 +67,13 @@ class Socket extends CommonDropdown {
                'type'  => ' ']];
    }
 
-   function displaySpecificTypeField($ID, $field = []) {
+   function displaySpecificTypeField($ID, $field = [], $options = []) {
       if ($field['name'] == 'wiring_side') {
-         self::dropdownType($field['name'], ['value' => $this->fields['wiring_side']]);
+         self::dropdownWiringSide($field['name'], ['value' => $this->fields['wiring_side']]);
       }
 
       if ($field['name'] == 'networkports_id') {
-         self::showNetworkPortForm($this->fields['itemtype'], $this->fields['items_id'], $this->fields['networkports_id']);
+         self::showNetworkPortForm($this->fields['itemtype'], $this->fields['items_id'], $this->fields['networkports_id'], $options);
       }
    }
 
@@ -82,11 +81,17 @@ class Socket extends CommonDropdown {
    * NetworkPort Form
    * @return string ID of the select
    **/
-   static function showNetworkPortForm($itemtype, $items_id, $networkports_id = 0) {
+   static function showNetworkPortForm($itemtype, $items_id, $networkports_id = 0, $options = []) {
+
       global $CFG_GLPI;
 
-      $rand_itemtype = Dropdown::showFromArray('itemtype', self::getAssets(), ['value'                => $itemtype,
-                                                                               'display_emptychoice'  => true]);
+      if (isset($options['_add_fromitem'])) {
+         $itemtype = $options['_add_fromitem']["_from_itemtype"];
+         $items_id = $options['_add_fromitem']["_from_items_id"];
+      }
+
+      $rand_itemtype = Dropdown::showFromArray('itemtype', self::getSocketLinkTypes(), ['value'                => $itemtype,
+                                                                                        'display_emptychoice'  => true]);
 
       $params = ['itemtype' => '__VALUE__',
                  'dom_name' => 'items_id',
@@ -129,14 +134,14 @@ class Socket extends CommonDropdown {
     * Get sides
     * @return array Array of types
    **/
-   static function getAssets() {
+   static function getSocketLinkTypes() {
       global $CFG_GLPI;
       $values = [];
-      foreach ($CFG_GLPI["socket_type"] as $key => $itemtype) {
+      foreach ($CFG_GLPI["socket_link_types"] as $key => $itemtype) {
          if ($item = getItemForItemtype($itemtype)) {
             $values[$itemtype] = $item->getTypeName();
          } else {
-            unset($CFG_GLPI["ticket_types"][$key]);
+            unset($CFG_GLPI["socket_link_types"][$key]);
          }
       }
       return $values;
@@ -154,7 +159,7 @@ class Socket extends CommonDropdown {
     *
     * @return string ID of the select
    **/
-   static function dropdownType($name, $options = []) {
+   static function dropdownWiringSide($name, $options = []) {
 
       $params = [
          'value'     => 0,
@@ -194,6 +199,21 @@ class Socket extends CommonDropdown {
    }
 
 
+   /**
+    * Get wiring side name
+    *
+    * @since 0.84
+    *
+    * @param integer $value     status ID
+   **/
+   static function getWiringSideName($value) {
+
+      $tab  = static::getSides();
+      // Return $value if not defined
+      return (isset($tab[$value]) ? $tab[$value] : $value);
+   }
+
+
    static function getTypeName($nb = 0) {
       return _n('Socket', 'Sockets', $nb);
    }
@@ -201,6 +221,58 @@ class Socket extends CommonDropdown {
 
    function rawSearchOptions() {
       $tab  = parent::rawSearchOptions();
+
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => Socket::getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'dropdown'
+      ];
+
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => SocketModel::getTable(),
+         'field'              => 'name',
+         'name'               => SocketModel::getTypeName(1),
+         'datatype'           => 'dropdown'
+      ];
+
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => Socket::getTable(),
+         'field'              => 'itemtype',
+         'name'               => _n('Associated item type', 'Associated item types', Session::getPluralNumber()),
+         'datatype'           => 'itemtypename',
+         'itemtype_list'      => 'socket_link_types',
+         'additionalfields'   => ['itemtype'],
+         'nosort'             => true,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ],
+         'forcegroupby'       => true,
+         'massiveaction'      => false
+      ];
+
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'items_id',
+         'name'               => __('Associated item ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'specific',
+         'searchtype'         => 'equals',
+         'additionalfields'   => ['itemtype']
+      ];
+
+      $tab[] = [
+         'id'                 => '7',
+         'table'              => Socket::getTable(),
+         'field'              => 'wiring_side',
+         'name'               => __('Wiring side'),
+         'searchtype'         => 'equals',
+         'datatype'           => 'specific'
+      ];
 
       $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
@@ -213,6 +285,81 @@ class Socket extends CommonDropdown {
 
       return $tab;
    }
+
+   /**
+    * @since 0.84
+    *
+    * @param $field
+    * @param $name            (default '')
+    * @param $values          (default '')
+    * @param $options   array
+    *
+    * @return string
+   **/
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
+
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+      $options['display'] = false;
+      switch ($field) {
+         case 'items_id' :
+            if (isset($values['itemtype']) && !empty($values['itemtype'])) {
+               $options['name']  = $name;
+               $options['value'] = $values[$field];
+               return Dropdown::show($values['itemtype'], $options);
+            }
+            break;
+
+         case 'wiring_side' :
+            return self::dropdownWiringSide($name, $options);
+            break;
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
+
+   /**
+    * @since 0.84
+    *
+    * @param $field
+    * @param $values
+    * @param $options   array
+   **/
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+      switch ($field) {
+         case 'items_id':
+            if (isset($values['itemtype'])) {
+               if (isset($options['comments']) && $options['comments']) {
+                  $valueData = Dropdown::getDropdownName(
+                     getTableForItemType($values['itemtype']),
+                     $values[$field],
+                     1
+                  );
+                  return sprintf(
+                     __('%1$s %2$s'),
+                     $valueData['name'],
+                     Html::showToolTip($valueData['comment'], ['display' => false])
+                  );
+
+               }
+               return Dropdown::getDropdownName(
+                  getTableForItemType($values['itemtype']),
+                  $values[$field]
+               );
+            }
+            break;
+         case 'wiring_side' :
+            return self::getWiringSideName($values[$field]);
+            break;
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+
 
 
    /**
@@ -356,7 +503,7 @@ class Socket extends CommonDropdown {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-
+      global $CFG_GLPI;
       if (!$withtemplate) {
          $nb = 0;
          switch ($item->getType()) {
@@ -366,6 +513,16 @@ class Socket extends CommonDropdown {
                                               ['locations_id' => $item->getID()]);
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            default:
+               if (in_array($item->getType(), $CFG_GLPI['socket_link_types'])) {
+                  if ($_SESSION['glpishow_count_on_tabs']) {
+                     $nb =  countElementsInTable($this->getTable(),
+                                                 ['itemtype' => $item->getType(),
+                                                   'items_id' => $item->getID()]);
+                  }
+                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+               }
+
          }
       }
       return '';
@@ -374,10 +531,152 @@ class Socket extends CommonDropdown {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
+      global $CFG_GLPI;
       if ($item->getType() == 'Location') {
          self::showForLocation($item);
+      } else if (in_array($item->getType(), $CFG_GLPI['socket_link_types'])) {
+         self::showListForItem($item);
       }
       return true;
+   }
+
+      /**
+    * Print the HTML array of the Socket associated to a Location
+    *
+    * @param $item Location
+    *
+    * @return void
+   **/
+   static function showListForItem($item) {
+
+      global $DB;
+
+      $canedit = self::canUpdate();
+      $rand = mt_rand();
+
+      if (!Session::haveRight(self::$rightname, READ)) {
+         return false;
+      }
+
+      if ($item->isNewID($item->getID())) {
+         return false;
+      }
+
+      // Link to open a new change
+      if ($item->getID() && self::canCreate()) {
+         echo "<div class='firstbloc'>";
+         Html::showSimpleForm(
+            Socket::getFormURL(),
+            '_add_fromitem',
+            __('New socket for this item...'),
+            [
+               '_from_itemtype' => $item->getType(),
+               '_from_items_id' => $item->getID(),
+            ]
+         );
+         echo "</div>";
+      }
+
+      $iterator = $DB->request([
+         'FROM'   => Socket::getTable(),
+         'WHERE'  => [
+            'itemtype'   => $item->getType(),
+            'items_id'   => $item->getID(),
+         ]
+      ]);
+      $numrows = count($iterator);
+
+      if ($canedit) {
+         Html::openMassiveActionsForm('mass'.get_called_class().$rand);
+         $massiveactionparams
+            = ['num_displayed'
+                        => min($_SESSION['glpilist_limit'], $numrows),
+               'specific_actions'
+                        => ['update' => _x('button', 'Update'),
+                            'purge'  => _x('button', 'Delete permanently')]];
+
+         Html::showMassiveActions($massiveactionparams);
+      }
+
+      echo "<table class='tab_cadre_fixehov'>";
+      $header_begin  = "<tr>";
+      $header_top    = '';
+      $header_bottom = '';
+      $header_end    = '';
+
+      if ($canedit) {
+         $header_begin  .= "<th width='10'>";
+         $header_top    .= Html::getCheckAllAsCheckbox('mass'.get_called_class().$rand);
+         $header_bottom .= Html::getCheckAllAsCheckbox('mass'.get_called_class().$rand);
+         $header_end    .= "</th>";
+      }
+      $header_end .= "<th>" . __('Name') . "</th>";
+      $header_end .= "<th>" . SocketModel::getTypeName(0) . "</th>";
+      $header_end .= "<th>" . __('Wiring side') . "</th>";
+      $header_end .= "<th>" .  _n('Network port', 'Network ports', Session::getPluralNumber()) . "</th>";
+      $header_end .= "</tr>\n";
+      echo $header_begin.$header_top.$header_end;
+
+      Session::initNavigateListItems("Socket",
+                           //TRANS: %1$s is the itemtype name,
+                           //       %2$s is the name of the item (used for headings of a list)
+                                     sprintf(__('%1$s = %2$s'),
+                                             $item->getTypeName(1), $item->getName()));
+
+      while ($data = $iterator->next()) {
+         $socket = new Socket();
+         $socket->getFromDB($data['id']);
+         Session::addToNavigateListItems(get_class($socket), $socket->fields["id"]);
+         echo "<tr class='tab_bg_1'>";
+
+         if ($canedit) {
+            echo "<td width='10'>";
+            Html::showMassiveActionCheckBox(__CLASS__, $socket->fields["id"]);
+            echo "</td>";
+            echo "<td><a href='".$socket->getFormURLWithID($socket->fields["id"])
+                                . "&amp;onglet=1'>" .$socket->fields["name"] ."</a></td>";
+
+         } else {
+            echo "<td>" . $socket->fields["name"] . "</td>";
+         }
+
+         echo "<td>" . Dropdown::getDropdownName(SocketModel::getTable(), $socket->fields["socketmodels_id"]) . "</td>";
+         echo "<td>" . self::getWiringSideName($socket->fields["wiring_side"]) . "</td>";
+         echo "<td>" . Dropdown::getDropdownName(NetworkPort::getTable(), $socket->fields["networkports_id"]) . "</td>";
+         echo "</tr>\n";
+      }
+      echo $header_begin.$header_bottom.$header_end;
+      echo "</table>\n";
+
+      if ($canedit) {
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
+         Html::closeForm();
+      }
+   }
+
+   /**
+    * @param integer $output_type Output type
+    * @param string  $mass_id     id of the form to check all
+    */
+   static function commonListHeader($output_type = Search::HTML_OUTPUT, $mass_id = '') {
+
+      // New Line for Header Items Line
+      echo Search::showNewLine($output_type);
+      // $show_sort if
+      $header_num                      = 1;
+
+      $items                           = [];
+      $items[(empty($mass_id)?'&nbsp':Html::getCheckAllAsCheckbox($mass_id))] = '';
+      $items[__('Name')]             = "name";
+
+      foreach (array_keys($items) as $key) {
+         $link   = "";
+         echo Search::showHeaderItem($output_type, $key, $header_num, $link);
+      }
+
+      // End Line for column headers
+      echo Search::showEndLine($output_type);
    }
 
 
