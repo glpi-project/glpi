@@ -227,8 +227,6 @@ class Socket extends CommonDropdown {
          'name'               => __('Characteristics')
       ];
 
-
-
       $tab[] = [
          'id'                 => '5',
          'table'              => SocketModel::getTable(),
@@ -620,6 +618,7 @@ class Socket extends CommonDropdown {
       $header_end .= "<th>" . SocketModel::getTypeName(0) . "</th>";
       $header_end .= "<th>" . __('Wiring side') . "</th>";
       $header_end .= "<th>" .  _n('Network port', 'Network ports', Session::getPluralNumber()) . "</th>";
+      $header_end .= "<th>" .  Cable::getTypeName(0) . "</th>";
       $header_end .= "</tr>\n";
       echo $header_begin.$header_top.$header_end;
 
@@ -649,6 +648,16 @@ class Socket extends CommonDropdown {
          echo "<td>" . Dropdown::getDropdownName(SocketModel::getTable(), $socket->fields["socketmodels_id"]) . "</td>";
          echo "<td>" . self::getWiringSideName($socket->fields["wiring_side"]) . "</td>";
          echo "<td>" . Dropdown::getDropdownName(NetworkPort::getTable(), $socket->fields["networkports_id"]) . "</td>";
+
+         $cable = new Cable();
+         if ($cable->getFromDBByCrit(['OR' => ['rear_sockets_id' => $socket->fields["id"],
+                                               'front_sockets_id' => $socket->fields["id"]
+                                              ]])) {
+            echo "<td>" . Dropdown::getDropdownName(Cable::getTable(), $cable->fields["id"]) . "</td>";
+         }else{
+            echo "<td></td>";
+         }
+
          echo "</tr>\n";
       }
       echo $header_begin.$header_bottom.$header_end;
