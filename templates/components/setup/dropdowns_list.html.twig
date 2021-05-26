@@ -9,7 +9,7 @@
                <div class="list-group list-group-flush list-group-hoverable">
                   {% for itemtype, dropdown_label in dropdown %}
                      {% set is_entity_assign = itemtype|isEntityAssign() %}
-                     <a class="list-group-item list-group-item-action {{ is_entity_assign ? "" : "list-group-item-dark" }}"
+                     <a class="list-group-item list-group-item-action {{ is_entity_assign ? "" : "bg-dark-lt" }}"
                         href="{{ itemtype|getSearchUrl() }}">
                         <div class="row">
                            <div class="col-auto">
