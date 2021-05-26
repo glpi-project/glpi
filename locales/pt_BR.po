@@ -29,7 +29,6 @@
 # Danilo Santos <danilo.santos@servicedeskbrasil.com.br>, 2020
 # Daniel Berton <danielsberton@gmail.com>, 2020
 # Stevenes Donato <stevenesdonato@gmail.com>, 2020
-# Paulo Henrique de A. Morais <atual.paulo@gmail.com>, 2020
 # Gustavo Macedo <gxbm91@gmail.com>, 2020
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
@@ -38,6 +37,8 @@
 # Arthur Ramos Schaefer <arthur.r.schaefer@gmail.com>, 2020
 # Diego Nobre <diego@koruma.com.br>, 2021
 # Rodrigo de Almeida Sottomaior Macedo <rmsolucoeseminformatica@protonmail.com>, 2021
+# Eduardo Mozart de Oliveira <eduardomozart182@gmail.com>, 2021
+# Paulo Henrique <atual.paulo@gmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -46,7 +47,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-20 08:27+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Rodrigo de Almeida Sottomaior Macedo <rmsolucoeseminformatica@protonmail.com>, 2021\n"
+"Last-Translator: Paulo Henrique <atual.paulo@gmail.com>, 2021\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/glpi/teams/1637/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1504,7 +1505,7 @@ msgstr "%s excluiu um ator"
 
 #: front/dashboard_helpdesk.php:49
 msgid "Helpdesk Dashboard"
-msgstr "Painel de Controle do Helpdesk"
+msgstr "Dashboard do Helpdesk"
 
 #: front/group_problem.form.php:58 front/change_group.form.php:58
 #: front/problem_user.form.php:71 front/ticket_user.form.php:66
@@ -1593,7 +1594,7 @@ msgstr "Sua senha foi atualizada com sucesso."
 
 #: front/updatepassword.php:94
 msgid "Log in"
-msgstr "Acessar"
+msgstr "Login"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:55
@@ -2784,7 +2785,7 @@ msgstr "Características"
 #: inc/commonitilobject.class.php:4720 inc/group.class.php:250
 #: inc/group.class.php:450 inc/log.class.php:601
 msgid "Assigned to"
-msgstr "Atribuído para"
+msgstr "Atribuído"
 
 #: front/stat.tracking.php:102
 msgid "Technician as assigned"
@@ -3330,7 +3331,7 @@ msgstr "Nenhum elemento selecionado ou operação mal definida"
 
 #: front/dashboard_assets.php:49
 msgid "Assets Dashboard"
-msgstr "Painel de Controle de Ativos"
+msgstr "Dashboard de Ativos"
 
 #. TRANS: %s is the user login
 #: front/consumable.form.php:51
@@ -4191,19 +4192,19 @@ msgstr "Novo"
 #: inc/problem.class.php:677 inc/change.class.php:540
 msgctxt "status"
 msgid "Accepted"
-msgstr "Aceitou"
+msgstr "Aceito"
 
 #: inc/problem.class.php:678 inc/ticket.class.php:3351
 #: inc/dashboard/provider.class.php:885
 msgctxt "status"
 msgid "Processing (assigned)"
-msgstr "Processando (atribuído)"
+msgstr "Em atendimento (atribuído) "
 
 #: inc/problem.class.php:679 inc/ticket.class.php:3352
 #: inc/dashboard/provider.class.php:889
 msgctxt "status"
 msgid "Processing (planned)"
-msgstr "Processando (planejado)"
+msgstr "Em atendimento (planejado)"
 
 #: inc/problem.class.php:680 inc/ticket.class.php:3353
 #: inc/dashboard/provider.class.php:893 inc/dashboard/provider.class.php:1231
@@ -4787,6 +4788,8 @@ msgid ""
 "If name is a valid email address, it will be automatically added to "
 "blacklisted senders."
 msgstr ""
+"Se o nome for um endereço de e-mail válido, ele será adicionado "
+"automaticamente aos remetentes na lista negra."
 
 #: inc/mailcollector.class.php:234 inc/mailcollector.class.php:533
 #: inc/notificationtargetmailcollector.class.php:77
@@ -5270,7 +5273,7 @@ msgstr "Os domínios expiraram porque mais"
 #: inc/domain.class.php:673
 #, php-format
 msgid "Domains alerts not send for entity %1$s"
-msgstr ""
+msgstr "Os alertas de domínios não são enviados para a entidade %1$s"
 
 #: inc/planningexternaleventtemplate.class.php:54
 msgid "External events template"
@@ -7579,12 +7582,12 @@ msgstr "A ação que você requisitou não é permitida."
 #: inc/session.class.php:1487
 #, php-format
 msgid "%1$s starts impersonating user %2$s"
-msgstr ""
+msgstr "%1$s começa a personificar o usuário %2$s"
 
 #: inc/session.class.php:1517
 #, php-format
 msgid "%1$s stops impersonating user %2$s"
-msgstr ""
+msgstr "%1$s pára de personificar o usuário %2$s"
 
 #: inc/notificationtemplatetranslation.class.php:50
 msgid "Template translation"
@@ -9076,7 +9079,7 @@ msgstr "Testar conexão com o servidor de e-mail"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:76
 msgid "Synchronize users against LDAP server information"
-msgstr ""
+msgstr "Sincronizar usuários em relação às informações do servidor LDAP"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:82
 msgid "Only create new users"
@@ -9154,7 +9157,7 @@ msgstr "Sincronização abortada."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:244
 msgid "Unable to load LDAP server information."
-msgstr ""
+msgstr "Não foi possível carregar as informações do servidor LDAP."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:249
 #, php-format
@@ -10475,7 +10478,7 @@ msgstr "Processando plugin \"%s\"..."
 #: inc/console/plugin/activatecommand.class.php:75
 #, php-format
 msgid "Unable to load plugin \"%s\" information."
-msgstr ""
+msgstr "Não foi possível carregar as informações do plug-in \"%s\"."
 
 #: inc/console/plugin/deactivatecommand.class.php:83
 #, php-format
@@ -11240,7 +11243,7 @@ msgstr "Chamado desconhecido"
 
 #: inc/ticket.class.php:1555
 msgid "You cannot create a ticket for this user"
-msgstr ""
+msgstr "Você não pode criar um chamado para este usuário"
 
 #: inc/ticket.class.php:1683
 #, php-format
@@ -12077,6 +12080,7 @@ msgstr "\"session.use_trans_sid\" precisa estar desabilitado."
 #: inc/system/requirement/sessionsconfiguration.class.php:71
 msgid "See .htaccess file in the GLPI root for more information."
 msgstr ""
+"Consulte o arquivo .htaccess na raiz do GLPI para obter mais informações."
 
 #: inc/system/requirement/sessionsconfiguration.class.php:77
 msgid "Sessions support is available - Perfect!"
@@ -13737,7 +13741,7 @@ msgstr "Monitoramento de ações automáticas"
 
 #: inc/notificationtargetcrontask.class.php:93
 msgid "Automatic actions list"
-msgstr ""
+msgstr "Lista de ações automáticas"
 
 #: inc/notificationtargetcrontask.class.php:99
 msgid ""
@@ -14261,7 +14265,7 @@ msgstr "Ação abortada"
 
 #: inc/crontask.class.php:302
 msgid "Execution error"
-msgstr ""
+msgstr "Erro de execução"
 
 #: inc/crontask.class.php:308
 msgid "Action completed, partially processed"
@@ -14354,7 +14358,7 @@ msgstr "Executar"
 #: inc/crontask.class.php:953
 #, php-format
 msgid "Error during %s execution. Check in \"%s\" for more details."
-msgstr ""
+msgstr "Erro durante a execução de %s. Verifique em \"%s\" para mais detalhes."
 
 #: inc/crontask.class.php:971 inc/crontask.class.php:983
 msgid "Can't start"
@@ -14398,8 +14402,8 @@ msgstr[1] "%s paradas"
 #, php-format
 msgid "%s error"
 msgid_plural "%s errors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s erro"
+msgstr[1] "%s erros"
 
 #: inc/crontask.class.php:1158
 msgid "Minimal time"
@@ -15042,11 +15046,11 @@ msgstr "Alerta de certificado expirado"
 
 #: inc/notificationtargetcertificate.class.php:55
 msgid "Technician in charge of the certificate"
-msgstr ""
+msgstr "Técnico encarregado do certificado"
 
 #: inc/notificationtargetcertificate.class.php:59
 msgid "Group in charge of the certificate"
-msgstr ""
+msgstr "Grupo encarregado do certificado"
 
 #: inc/itiltemplatehiddenfield.class.php:48
 msgid "Hidden field"
@@ -16384,7 +16388,7 @@ msgstr "Telemetria"
 
 #: inc/telemetry.class.php:263
 msgid "Send telemetry information"
-msgstr ""
+msgstr "Enviar informações de telemetria"
 
 #: inc/telemetry.class.php:346
 msgid "See what would be sent..."
@@ -17422,7 +17426,7 @@ msgstr "Registrado por"
 
 #: inc/glpinetwork.class.php:218
 msgid "Unable to fetch registration information."
-msgstr ""
+msgstr "Não foi possível buscar as informações de registro."
 
 #: inc/glpinetwork.class.php:232
 msgid "The registration key is valid."
@@ -18695,7 +18699,7 @@ msgstr "Falha na exclusão do arquivo %s"
 
 #: inc/document.class.php:272 inc/document.class.php:350
 msgid "Invalid link"
-msgstr ""
+msgstr "Link inválido"
 
 #: inc/document.class.php:383
 #, php-format
@@ -19445,7 +19449,7 @@ msgstr[1] "%1$s%2$s segundos"
 
 #: inc/html.class.php:788
 msgid "Display GLPI debug information"
-msgstr ""
+msgstr "Exibir informações de depuração do GLPI"
 
 #: inc/html.class.php:1153
 msgid "Progress"
@@ -21619,12 +21623,12 @@ msgstr "%1$s em %2$s por %3$s"
 #: inc/commonitilobject.class.php:7362
 #, php-format
 msgid "File size: %s"
-msgstr ""
+msgstr "Tamanho do arquivo: %s"
 
 #: inc/commonitilobject.class.php:7363
 #, php-format
 msgid "MIME type: %s"
-msgstr ""
+msgstr "Tipo MIME: %s"
 
 #: inc/commonitilobject.class.php:7456
 msgid "Followup promotion source"
@@ -21639,7 +21643,7 @@ msgstr "%s descrição"
 #: inc/commonitilobject.class.php:7550
 #, php-format
 msgid "%1$s will be added in entity %2$s"
-msgstr ""
+msgstr "%1$s será adicionado na entidade %2$s"
 
 #: inc/commonitilobject.class.php:7556
 #, php-format

@@ -9,6 +9,7 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
 # Jokin Zengotitabengoa <jzengotitabengoa@olabide.com>, 2020
+# Alexander Gabilondo <alexgabi@disroot.org>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-20 08:27+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Jokin Zengotitabengoa <jzengotitabengoa@olabide.com>, 2020\n"
+"Last-Translator: Alexander Gabilondo <alexgabi@disroot.org>, 2021\n"
 "Language-Team: Basque (Spain) (https://www.transifex.com/glpi/teams/1637/eu_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -162,7 +163,7 @@ msgstr "Kontuz"
 
 #: ajax/getMapPoint.php:43 ajax/map.php:44
 msgid "Required argument missing!"
-msgstr ""
+msgstr "Beharrezkoa den parametroa falta da|"
 
 #: ajax/getMapPoint.php:58
 msgid "Element seems not geolocalized or cannot be found"
@@ -822,7 +823,7 @@ msgstr "Iruzkinak"
 
 #: ajax/kanban.php:186 inc/project.class.php:154
 msgid "Kanban"
-msgstr ""
+msgstr "Kanban"
 
 #: ajax/telemetry.php:42
 msgid ""
@@ -830,6 +831,9 @@ msgid ""
 "responsiveness statistics about user interface features, memory, and "
 "hardware configuration."
 msgstr ""
+"Datu hauek soilik biltzen ditugu: pluginen erabilerari, interfazearen "
+"errendimenduaren eta moldaketen estatistikei, memoriari eta hardware "
+"konfigurazioari buruzkoak."
 
 #: ajax/switchdebug.php:46
 msgid "Debug mode has been enabled!"
@@ -851,7 +855,7 @@ msgstr "Eguneratu"
 #: ajax/dropdownMassiveActionOs.php:46 inc/massiveaction.class.php:546
 msgctxt "button"
 msgid "Clone"
-msgstr ""
+msgstr "Klonatu"
 
 #: ajax/dcroom_size.php:61 inc/rack.class.php:257
 msgid "No room found or selected"
@@ -1257,7 +1261,7 @@ msgstr "Kontaktua"
 
 #: front/find_num.php:91
 msgid "Hardware type"
-msgstr "Material mota"
+msgstr "Hardware mota"
 
 #: front/find_num.php:92 front/item_ticket.form.php:52
 #: inc/problem.class.php:423 inc/stat.class.php:1411
@@ -1539,7 +1543,7 @@ msgstr "Pasahitz okerra"
 
 #: front/updatepassword.php:69
 msgid "The new password must be different from current password"
-msgstr ""
+msgstr "Pasahitz berria unekoaren desberdina izan behar du"
 
 #: front/updatepassword.php:71
 msgid "The two passwords do not match"
@@ -1547,7 +1551,7 @@ msgstr "Bi pasahitzak ez datoz bat"
 
 #: front/updatepassword.php:78
 msgid "An error occured during password update"
-msgstr ""
+msgstr "Errore bat gertatu da pasahitza eguneratzean"
 
 #: front/updatepassword.php:89 inc/user.class.php:4627
 msgid "Password update"
@@ -1555,11 +1559,11 @@ msgstr "Pasahitza eguneratu"
 
 #: front/updatepassword.php:92
 msgid "Your password has been successfully updated."
-msgstr ""
+msgstr "Zure pasahitza behar bezala eguneratu da."
 
 #: front/updatepassword.php:94
 msgid "Log in"
-msgstr "Izena eman"
+msgstr "Hasi saioa"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:55
@@ -1704,7 +1708,7 @@ msgstr "%s kartutxoa eguneratzen du"
 #: front/item_device.common.form.php:64
 #, php-format
 msgid "%1$s adds an item"
-msgstr ""
+msgstr "%1$s-k elementu bat gehitu du"
 
 #: front/document.send.php:43
 msgid "Unknown file"
@@ -1796,7 +1800,7 @@ msgstr "Etxea"
 #: front/helpdesk.public.php:104 inc/central.class.php:295
 #, php-format
 msgid "Your password will expire on %s."
-msgstr ""
+msgstr "Zure pasahitza %s barru iraungiko da."
 
 #: front/helpdesk.public.php:115 inc/central.class.php:301
 msgid "Update my password"
@@ -2067,7 +2071,7 @@ msgstr "lehenetsia"
 #: front/itiltemplatefield.form.php:81
 #, php-format
 msgid "%1$s adds %2$s field"
-msgstr ""
+msgstr "%1$s-k %2$s eremua gehitu du"
 
 #: front/rule.common.php:76
 msgid "Replay the rules dictionary"
@@ -2144,7 +2148,7 @@ msgstr "Noiz itxia"
 #: front/stat.global.php:134 front/stat.graph.php:384 inc/stat.class.php:483
 #: inc/commonitilobject.class.php:5176
 msgid "Resolution"
-msgstr "Ebazpena"
+msgstr "Konpontzea"
 
 #: front/stat.global.php:137 front/stat.graph.php:387
 msgid "Real duration"
@@ -3256,7 +3260,7 @@ msgstr "Harremana"
 
 #: front/impactcsv.php:81 inc/appliance_item.class.php:184
 msgid "Itemtype"
-msgstr ""
+msgstr "Elementu mota"
 
 #: front/impactcsv.php:82 inc/event.class.php:275
 msgid "Id"
@@ -3403,8 +3407,8 @@ msgstr[1] "Ordenagailu motak"
 #: inc/monitortype.class.php:42
 msgid "Monitor type"
 msgid_plural "Monitors types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Monitore mota"
+msgstr[1] "Monitore motak"
 
 #: inc/rule.class.php:383 inc/rulecollection.class.php:2047
 #: inc/printertype.class.php:42
@@ -3429,8 +3433,8 @@ msgstr[1] "Sare ekipamendu motak"
 #: inc/phonetype.class.php:42
 msgid "Phone type"
 msgid_plural "Phone types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Telefono mota"
+msgstr[1] "Telefono motak"
 
 #: inc/rule.class.php:479 inc/rulecollection.class.php:1997
 #: inc/cartridge.class.php:1128 inc/transfer.class.php:3541
@@ -3474,7 +3478,7 @@ msgstr "Mugitu"
 
 #: inc/rule.class.php:688
 msgid "Ranking"
-msgstr ""
+msgstr "Sailkapena"
 
 #: inc/rule.class.php:697 inc/rule.class.php:851 inc/rule.class.php:2771
 #: inc/rule.class.php:2840 inc/problem.class.php:969
@@ -3697,7 +3701,7 @@ msgstr "Value"
 
 #: inc/rule.class.php:1164
 msgid "Add a new criterion"
-msgstr ""
+msgstr "Gehitu irizpide berria"
 
 #: inc/rule.class.php:1184 inc/rule.class.php:1200 inc/rule.class.php:1248
 #: inc/rule.class.php:2029 inc/rule.class.php:2519
@@ -3961,25 +3965,25 @@ msgstr[1] "Birtualizazio modeloak"
 #: inc/devicesensortype.class.php:43
 msgid "Sensor type"
 msgid_plural "Sensor types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Sentsore mota"
+msgstr[1] "Sentsore motak"
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
 #: inc/datacenter.class.php:48 inc/datacenter.class.php:149
 msgid "Data center"
 msgid_plural "Data centers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Datu-zentroa"
+msgstr[1] "Datu-zentroak"
 
 #: inc/datacenter.class.php:159 inc/features/dcbreadcrumb.class.php:119
 msgid "Data center position"
-msgstr ""
+msgstr "Datu-zentroaren posizioa"
 
 #: inc/domaintype.class.php:42
 msgid "Domain type"
 msgid_plural "Domain types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Domeinu mota"
+msgstr[1] "Domeinu motak"
 
 #: inc/ruleimportcomputercollection.class.php:60
 #: inc/ruleimportcomputer.class.php:52
@@ -3994,7 +3998,7 @@ msgstr[1] "Arazoak"
 
 #: inc/problem.class.php:166
 msgid "Processing problem"
-msgstr ""
+msgstr "Arazoa prozesatzen"
 
 #: inc/problem.class.php:167 inc/problem.class.php:456
 #: inc/change.class.php:176
@@ -4365,7 +4369,7 @@ msgstr "Seme taldeak"
 
 #: inc/problem.class.php:1864
 msgid "New problem for this item..."
-msgstr ""
+msgstr "Elementu honen arazo berria..."
 
 #. TRANS : %d is the number of problems
 #: inc/problem.class.php:1898
@@ -4542,7 +4546,7 @@ msgstr "Log-ak ezabatu"
 
 #: inc/purgelogs.class.php:70
 msgid "Purge history"
-msgstr ""
+msgstr "Garbitu historia"
 
 #: inc/calendar.class.php:72 inc/planningexternaleventtemplate.class.php:75
 #: inc/levelagreement.class.php:463 inc/dropdown.class.php:926
@@ -4801,11 +4805,11 @@ msgstr ""
 
 #: inc/mailcollector.class.php:289
 msgid "Add CC users as observer"
-msgstr ""
+msgstr "Gehitu CC erabiltzaileak behatzaile gisa"
 
 #: inc/mailcollector.class.php:294
 msgid "Collect only unread mail"
-msgstr ""
+msgstr "Bildu soilik irakurri gabeko posta mezuak"
 
 #: inc/mailcollector.class.php:379 inc/mailcollector.class.php:692
 msgid "An error occured trying to connect to collector."
@@ -4814,7 +4818,7 @@ msgstr ""
 #: inc/mailcollector.class.php:394
 #, php-format
 msgid "No child found for folder '%s'."
-msgstr ""
+msgstr "Ez da  '%s' karpetaren azpikorik aurkitu."
 
 #: inc/mailcollector.class.php:433
 msgctxt "button"
@@ -4835,7 +4839,7 @@ msgstr "%s posta ez da aurkitu. Ezin izan da inportatu."
 #: inc/mailcollector.class.php:723
 #, php-format
 msgid "Message is invalid: %1$s"
-msgstr ""
+msgstr "Mezua ez da baliozkoa: %1$s"
 
 #: inc/mailcollector.class.php:769
 #, php-format
@@ -4986,8 +4990,8 @@ msgstr[1] "Autorizazioak"
 #: inc/vlan.class.php:48
 msgid "VLAN"
 msgid_plural "VLANs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "VLAN"
+msgstr[1] "VLANak"
 
 #: inc/vlan.class.php:55 inc/vlan.class.php:78 inc/vlan.class.php:160
 #: inc/networkport_vlan.class.php:171 inc/ipnetwork_vlan.class.php:166
@@ -5022,6 +5026,9 @@ msgid ""
 "Unable to create security key file! You have to run \"php bin/console "
 "glpi:security:change_key\" command to manually create this file."
 msgstr ""
+"Ezin izan da seguritate kakoa sortu. \"php bin/console "
+"glpi:security:change_key\" komandoa exekutatu behar duzu fitxategi hori "
+"sortzeko."
 
 #: inc/ruleasset.class.php:70 inc/ruleasset.class.php:72
 #: inc/rssfeed.class.php:980 inc/rssfeed.class.php:981
@@ -5242,7 +5249,7 @@ msgstr ""
 #: inc/planningexternalevent.class.php:313
 #: inc/features/planningevent.class.php:937
 msgid "Repeat"
-msgstr ""
+msgstr "Errepikatu"
 
 #: inc/ola.class.php:51 inc/ticket.class.php:2901 inc/ticket.class.php:2909
 #: inc/ticket.class.php:2923 inc/ticket.class.php:2936
@@ -5323,14 +5330,14 @@ msgstr "Sakelekoa"
 #: inc/devicegraphiccardmodel.class.php:44
 msgid "Device graphic card model"
 msgid_plural "Device graphic card models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gailuaren txartel grafikoen modeloa"
+msgstr[1] "Gailuaren txartel grafikoen modeloak"
 
 #: inc/rssfeed.class.php:80 inc/central.class.php:68
 msgid "RSS feed"
 msgid_plural "RSS feed"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "RSS jarioa"
+msgstr[1] "RSS jarioak"
 
 #: inc/rssfeed.class.php:82 inc/rssfeed.class.php:933
 msgid "Personal RSS feed"
@@ -5432,17 +5439,17 @@ msgstr ""
 
 #: inc/savedsearch_alert.class.php:209
 msgid "create it now"
-msgstr ""
+msgstr "sortu orain"
 
 #: inc/savedsearch_alert.class.php:213
 msgid "Notification used:"
 msgid_plural "Notifications used:"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Erabilitako jakinarazpena:"
+msgstr[1] "Erabilitako jakinarazpenak:"
 
 #: inc/savedsearch_alert.class.php:235
 msgid "Add an alert"
-msgstr ""
+msgstr "Gehitu alerta bat"
 
 #: inc/savedsearch_alert.class.php:300
 msgid "Saved searches alerts"
@@ -5454,7 +5461,7 @@ msgstr " Hau baino gutxiago"
 
 #: inc/savedsearch_alert.class.php:391
 msgid "less or equals than"
-msgstr ""
+msgstr "hau baino gutxiago edo berdin"
 
 #: inc/savedsearch_alert.class.php:395
 msgid "equals to"
@@ -5462,11 +5469,11 @@ msgstr "honen berdina"
 
 #: inc/savedsearch_alert.class.php:399
 msgid "not equals to"
-msgstr ""
+msgstr "desberdina"
 
 #: inc/savedsearch_alert.class.php:403
 msgid "greater or equals than"
-msgstr ""
+msgstr "hau baino handiago edo berdina"
 
 #: inc/savedsearch_alert.class.php:407
 msgid "greater than"
@@ -5502,8 +5509,8 @@ msgstr "Ez da IP helbiderik aurkitu"
 #: inc/devicebattery.class.php:42
 msgid "Battery"
 msgid_plural "Batteries"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Bateria"
+msgstr[1] "Bateriak"
 
 #: inc/devicebattery.class.php:57 inc/devicebattery.class.php:79
 #: inc/devicebattery.class.php:117 inc/item_deviceharddrive.class.php:49
@@ -5679,7 +5686,7 @@ msgstr "Mezua"
 
 #: inc/notificationtargetsavedsearch_alert.class.php:104
 msgid "Number of results"
-msgstr ""
+msgstr "Emaitza kopurua"
 
 #: inc/notificationtargetsavedsearch_alert.class.php:106
 msgid "Load saved search"
@@ -5693,15 +5700,15 @@ msgstr "Jasotzaile erroreak"
 #: inc/item_operatingsystem.class.php:578
 msgid "Kernel version"
 msgid_plural "Kernel versions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kernelaren bertsioa"
+msgstr[1] "Kernelaren bertsioak"
 
 #: inc/devicefirmware.class.php:42 inc/networkequipment.class.php:548
 #: inc/phone.class.php:506
 msgid "Firmware"
 msgid_plural "Firmware"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Firmwarea"
+msgstr[1] "Firmwareak"
 
 #: inc/devicefirmware.class.php:58 inc/devicefirmware.class.php:83
 #: inc/devicefirmware.class.php:128 inc/software.class.php:588
@@ -6242,7 +6249,7 @@ msgstr "Atzeko argazkia"
 
 #: inc/commondcmodeldropdown.class.php:307 inc/dcroom.class.php:213
 msgid "Unable to save picture file."
-msgstr ""
+msgstr "Ezin izan da irudi fitxategia gorde."
 
 #: inc/commondcmodeldropdown.class.php:325
 msgid "1"
@@ -6263,7 +6270,7 @@ msgstr "1/4"
 #: inc/notificationevent.class.php:198
 #, php-format
 msgid "Unable to send notification using %1$s"
-msgstr ""
+msgstr "Ezin izan da jakinarazpena bidali %1$sbidez."
 
 #: inc/notificationevent.class.php:230 inc/notificationevent.class.php:233
 #: inc/commondbvisible.class.php:197 inc/notificationtarget.class.php:265
@@ -6289,7 +6296,7 @@ msgstr[1] "Jakinarazpen ereduak"
 #: inc/notification_notificationtemplate.class.php:329
 #: inc/queuednotification.class.php:360
 msgid "Mode"
-msgstr ""
+msgstr "Modua"
 
 #: inc/notificationevent.class.php:240 inc/levelagreement.class.php:514
 #: inc/project.class.php:1957 inc/fieldunicity.class.php:591
@@ -6483,8 +6490,8 @@ msgstr[1] "Itxiera data/orduak"
 #, php-format
 msgid "%1$s template"
 msgid_plural "%1$s templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Txantiloi %1$s "
+msgstr[1] "%1$s txantiloi"
 
 #: inc/itiltemplate.class.php:265 inc/ticket.class.php:2512
 #: inc/ticket.class.php:4657 inc/change.class.php:1057
@@ -6505,7 +6512,7 @@ msgstr "Aurreikusketa"
 
 #: inc/itiltemplate.class.php:549 inc/commondropdown.class.php:878
 msgid "Merge and assign to current entity"
-msgstr ""
+msgstr "Batu eta esleitu uneko entitateari"
 
 #: inc/itiltemplate.class.php:561 inc/ticket.class.php:2586
 #: inc/commondropdown.class.php:895
@@ -6829,12 +6836,12 @@ msgstr "Jakinarazpen-modua"
 #: inc/notification.class.php:455
 msgctxt "button"
 msgid "Add notification template"
-msgstr ""
+msgstr "Gehitu jakinarazpen txantiloia"
 
 #: inc/notification.class.php:456
 msgctxt "button"
 msgid "Remove all notification templates"
-msgstr ""
+msgstr "Kendu jakinarazpen txantiloi guztiak"
 
 #: inc/notification.class.php:469 inc/displaypreference.class.php:315
 #: inc/planning.class.php:944 inc/commondbtm.class.php:5128 js/impact.js:1339
@@ -6973,24 +6980,24 @@ msgstr[1] ""
 #: inc/domainrecord.class.php:102 inc/domainrecord.class.php:378
 #: inc/domainrecord.class.php:508
 msgid "TTL"
-msgstr ""
+msgstr "TTL"
 
 #: inc/domainrecord.class.php:109 inc/domainrecord.class.php:354
 #: inc/dashboard/grid.class.php:692
 msgid "Data"
-msgstr ""
+msgstr "Datu"
 
 #: inc/domainrecord.class.php:274
 msgid "You are not allowed to use this type of records"
-msgstr ""
+msgstr "Ez duzu erregistro mota hau erabiltzeko baimenik"
 
 #: inc/domainrecord.class.php:283
 msgid "You are not allowed to edit this type of records"
-msgstr ""
+msgstr "Ez duzu erregistro mota hau editatzeko baimenik"
 
 #: inc/domainrecord.class.php:443
 msgid "Link a record"
-msgstr ""
+msgstr "Estekatu erregistro bat"
 
 #: inc/ruledictionnarycomputertypecollection.class.php:45
 msgid "Dictionnary of computer types"
@@ -7125,6 +7132,7 @@ msgstr "Ubikatzerakoan erreferentziatu gabea (baina ez bilaketan)"
 #: inc/authldap.class.php:530
 msgid "Domain name used by inventory tool for link the user"
 msgstr ""
+"Inbentarioko tresnak erabiltzailea lotzeko erabiltzen duen domeinu-izena."
 
 #: inc/authldap.class.php:536 inc/authldap.class.php:711
 #: inc/authldap.class.php:837 inc/authldap.class.php:872
@@ -7200,7 +7208,7 @@ msgstr "Matrikula"
 #: inc/authldap.class.php:3281
 msgctxt "ldap"
 msgid "Phone"
-msgstr ""
+msgstr "Telefonoa"
 
 #: inc/authldap.class.php:817 inc/authldap.class.php:1104
 #: inc/notificationtemplatetranslation.class.php:124
@@ -7265,7 +7273,7 @@ msgstr[1] "Portuak"
 
 #: inc/authldap.class.php:1175
 msgid "Domain name used by inventory tool"
-msgstr ""
+msgstr "Inbentarioko tresnak erabiltzen duen domeinu-izena"
 
 #: inc/authldap.class.php:1306 inc/authldap.class.php:1320
 #: inc/authldap.class.php:3215
@@ -7316,6 +7324,8 @@ msgstr "Ez dago inportatzeko talderik"
 #: inc/authldap.class.php:2380
 msgid "Please choose LDAP directory to import users and groups from"
 msgstr ""
+"Aukeratu erabiltzaileak eta taldeak zein LDAP direktoriotik inportatu behar "
+"diren."
 
 #: inc/authldap.class.php:2382 inc/authldap.class.php:3198
 #: inc/authldap.class.php:3226
@@ -7653,11 +7663,11 @@ msgstr[1] "Eskalazio mailak"
 
 #: inc/levelagreement.class.php:305
 msgid "Also delete date?"
-msgstr ""
+msgstr "Data ere ezabatu?"
 
 #: inc/levelagreement.class.php:432
 msgid "Add a new item"
-msgstr ""
+msgstr "Gehitu elementu berria"
 
 #: inc/levelagreement.class.php:496 inc/slm.class.php:123
 #: inc/entity.class.php:2506 inc/entity.class.php:2518
@@ -7672,7 +7682,7 @@ msgstr "Tiketaren egutegia"
 #: inc/levelagreement.class.php:702
 msgctxt "hour"
 msgid "Time"
-msgstr ""
+msgstr "Denbora"
 
 #. TRANS: %d is a number of minutes
 #: inc/levelagreement.class.php:760 inc/dropdown.class.php:1542
@@ -7722,8 +7732,8 @@ msgstr "Propietatean izateko denbora"
 #: inc/itilfollowuptemplate.class.php:49 inc/itilfollowup.class.php:847
 msgid "Followup template"
 msgid_plural "Followup templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Jarraitu txantiloia"
+msgstr[1] "Jarraitu txantiloiak"
 
 #: inc/itilfollowuptemplate.class.php:61 inc/itilfollowuptemplate.class.php:87
 #: inc/itilfollowup.class.php:888 inc/itilfollowup.class.php:1096
@@ -7843,8 +7853,8 @@ msgstr[1] "%s elementu"
 #: inc/operatingsystemversion.class.php:44
 msgid "Version of the operating system"
 msgid_plural "Versions of the operating systems"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Sistema eragilearen bertsioa"
+msgstr[1] "Sistema eragilearen bertsioak"
 
 #: inc/notificationajaxsetting.class.php:43
 msgid "Browser followups configuration"
@@ -7857,41 +7867,41 @@ msgstr ""
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
 msgid_plural "Browser notifications"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Nabigatzailearen jakinarazpena"
+msgstr[1] "Nabigatzailearen jakinarazpenak"
 
 #: inc/notificationajaxsetting.class.php:70
 #: inc/notificationajaxsetting.class.php:71
 #: inc/notificationajaxsetting.class.php:72
 #: inc/notificationajaxsetting.class.php:73
 msgid "Sound"
-msgstr ""
+msgstr "Soinua"
 
 #: inc/notificationajaxsetting.class.php:77
 msgid "Default notification sound"
-msgstr ""
+msgstr "Jakinarazpenen lehenetsitako soinua"
 
 #: inc/notificationajaxsetting.class.php:87
 msgid "Time to check for new notifications (in seconds)"
-msgstr ""
+msgstr "Jakinarazpenak eguneratzek denbora (segundotan)"
 
 #: inc/notificationajaxsetting.class.php:96
 msgid "URL of the icon"
-msgstr ""
+msgstr "Ikonoaren URLa"
 
 #: inc/notificationajaxsetting.class.php:103
 #: inc/notificationmailingsetting.class.php:257
 msgid "Notifications are disabled."
-msgstr ""
+msgstr "Jakinarazpenak desgaituta daude"
 
 #: inc/notificationajaxsetting.class.php:105
 #: inc/notificationmailingsetting.class.php:259
 msgid "See configuration"
-msgstr ""
+msgstr "Ikusi ezarpenak"
 
 #: inc/notificationajaxsetting.class.php:109
 msgid "Send a test browser notification to you"
-msgstr ""
+msgstr "Bidali nabigatzailearen probako jakinarazpena zuri"
 
 #: inc/notificationtargetfieldunicity.class.php:42
 #: inc/notificationtargetfieldunicity.class.php:85
@@ -7901,11 +7911,11 @@ msgstr "Bikoiztutako erregistroen jakinarazpena"
 #: inc/notificationtargetfieldunicity.class.php:49 inc/config.class.php:3362
 #: inc/log.class.php:1081 tests/functionnal/Log.php:468
 msgid "Add the item"
-msgstr "elementua gehitu"
+msgstr "Gehitu elementua"
 
 #: inc/notificationtargetfieldunicity.class.php:49 inc/config.class.php:3374
 msgid "Update the item"
-msgstr "Elementua eguneratu"
+msgstr "Eguneratu elementua"
 
 #: inc/notificationtargetfieldunicity.class.php:64
 #: inc/fieldunicity.class.php:85 inc/fieldunicity.class.php:357
@@ -7983,7 +7993,7 @@ msgstr "Aldaketa kopurua"
 
 #: inc/project.class.php:1032
 msgid "Planned Duration"
-msgstr ""
+msgstr "Aurreikusitako iraupena"
 
 #: inc/project.class.php:1084 inc/project.class.php:2303
 #: inc/projecttasktemplate.class.php:70 inc/projecttasktemplate.class.php:137
@@ -8002,7 +8012,7 @@ msgstr "Ez dago elementurik bidean"
 
 #: inc/project.class.php:1316 inc/projecttask.class.php:393
 msgid "Circular relation found. Parent not updated."
-msgstr ""
+msgstr "Harreman zirkularra aurkitu da. Gurasoa ez da eguneratu."
 
 #: inc/project.class.php:1335
 msgid "Invalid planned dates. Dates not updated."
@@ -8026,13 +8036,15 @@ msgstr "Honen semetzat"
 
 #: inc/project.class.php:1489 inc/projecttask.class.php:707
 msgid "Automatically calculate"
-msgstr ""
+msgstr "Kalkulatu automatikoki"
 
 #: inc/project.class.php:1497
 msgid ""
 "When automatic computation is active, percentage is computed based on the "
 "average of all child project and task percent done."
 msgstr ""
+"Kalkulu automatikoa aktibo dagoenean, ehunekoa kalkulatzen da azpiko "
+"proiektu guztien batez bestekoa eta egindako atazaren ehunekoaren arabera."
 
 #: inc/project.class.php:1556
 msgid "Sum of planned durations of tasks"
@@ -8154,25 +8166,25 @@ msgstr "Larunbata"
 
 #: inc/project.class.php:2246
 msgid "No status"
-msgstr ""
+msgstr "Egoerarik ez"
 
 #: inc/project.class.php:2288
 msgid "Subproject"
-msgstr ""
+msgstr "Azpi-proiektua"
 
 #: inc/project.class.php:2288
 msgid "Subtask"
-msgstr ""
+msgstr "Azpi-ataza"
 
 #: inc/project.class.php:2292
 #, php-format
 msgid "%s of %s"
-msgstr ""
+msgstr "%s / %s"
 
 #: inc/project.class.php:2311
 #, php-format
 msgid "%s / %s tasks complete"
-msgstr ""
+msgstr "%s / %s ataza beteak"
 
 #: inc/item_operatingsystem.class.php:47
 msgid "Item operating system"
@@ -8185,8 +8197,8 @@ msgstr[1] ""
 #: inc/operatingsystemkernel.class.php:42
 msgid "Kernel"
 msgid_plural "Kernels"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kernela"
+msgstr[1] "Kernelak"
 
 #: inc/item_operatingsystem.class.php:345
 #: inc/item_operatingsystem.class.php:596
@@ -8194,8 +8206,8 @@ msgstr[1] ""
 #: inc/operatingsystemedition.class.php:42
 msgid "Edition"
 msgid_plural "Editions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Edizioa"
+msgstr[1] "Edizioak"
 
 #: inc/item_operatingsystem.class.php:354
 #: inc/item_operatingsystem.class.php:437
@@ -8277,22 +8289,22 @@ msgstr "Tamaina librea"
 
 #: inc/item_disk.class.php:225 inc/item_disk.class.php:336
 msgid "Encryption"
-msgstr ""
+msgstr "Enkriptatzea"
 
 #: inc/item_disk.class.php:228 inc/item_disk.class.php:380
 #: inc/item_disk.class.php:604
 msgid "Encryption tool"
-msgstr ""
+msgstr "Enkriptatzeko tresna"
 
 #: inc/item_disk.class.php:234 inc/item_disk.class.php:382
 #: inc/item_disk.class.php:617
 msgid "Encryption algorithm"
-msgstr ""
+msgstr "Enkriptatzeko algoritmoa"
 
 #: inc/item_disk.class.php:237 inc/item_disk.class.php:384
 #: inc/item_disk.class.php:630
 msgid "Encryption type"
-msgstr ""
+msgstr "Enkriptatze mota"
 
 #: inc/item_disk.class.php:309
 msgid "Add a volume"
@@ -8304,23 +8316,23 @@ msgstr "Portzentai librea"
 
 #: inc/item_disk.class.php:377
 msgid "Partial encryption"
-msgstr ""
+msgstr "Enkriptatze partziala"
 
 #: inc/item_disk.class.php:589
 msgid "Encryption status"
-msgstr ""
+msgstr "Enkriptatzearen egoera"
 
 #: inc/item_disk.class.php:649
 msgid "Not encrypted"
-msgstr ""
+msgstr "Enkriptatu gabe"
 
 #: inc/item_disk.class.php:650
 msgid "Partially encrypted"
-msgstr ""
+msgstr "Partzialki enkriptatuta"
 
 #: inc/item_disk.class.php:651
 msgid "Encrypted"
-msgstr ""
+msgstr "Enkriptatuta"
 
 #: inc/devicepowersupplymodel.class.php:44
 msgid "Device power supply model"
@@ -8403,8 +8415,8 @@ msgstr "Iturri portua"
 #: inc/config.class.php:1718
 msgid "Memory"
 msgid_plural "Memories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Memoria"
+msgstr[1] "Memoriak"
 
 #: inc/operatingsystemarchitecture.class.php:44
 msgid "Operating system architecture"
@@ -8422,20 +8434,20 @@ msgstr[1] ""
 #: inc/profile.class.php:1136
 msgid "Template"
 msgid_plural "Templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Txantiloia"
+msgstr[1] "Txantiloiak"
 
 #: inc/notification_notificationtemplate.class.php:130
 msgid "Add a template"
-msgstr ""
+msgstr "Gehitu txantiloi bat"
 
 #: inc/notification_notificationtemplate.class.php:168
 msgid "No template selected"
-msgstr ""
+msgstr "Ez dago txantiloirik hautatuta"
 
 #: inc/notification_notificationtemplate.class.php:399
 msgid "Browser"
-msgstr ""
+msgstr "Nabigatzailea"
 
 #: inc/notificationtargetdbconnection.class.php:55
 msgid "Desynchronization SQL replica"
@@ -8532,8 +8544,8 @@ msgstr "Arazo bat ezabatzen"
 #: inc/notificationtargetcontract.class.php:186 inc/entity.class.php:1951
 msgid "Contract"
 msgid_plural "Contracts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kontaktua"
+msgstr[1] "Kontaktuak"
 
 #: inc/contract.class.php:231 inc/contract.class.php:520
 #: inc/contract.class.php:746 inc/contract.class.php:1736
@@ -8705,8 +8717,8 @@ msgstr "Kontratu bat ezabatu"
 #: inc/devicesimcard.class.php:42 inc/item_devicesimcard.class.php:54
 msgid "Simcard"
 msgid_plural "Simcards"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "SIM txartela"
+msgstr[1] "SIM txartelak"
 
 #: inc/devicesimcard.class.php:63 inc/devicesimcard.class.php:94
 msgid "Allow VOIP"
@@ -8805,15 +8817,15 @@ msgstr "Ez da kontsumigarririk aurkitu"
 #: inc/rackmodel.class.php:43
 msgid "Rack model"
 msgid_plural "Rack models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Rack modeloa"
+msgstr[1] "Rack modeloak"
 
 #: inc/item_ticket.class.php:300
 #, php-format
 msgid "%1$s item not saved"
 msgid_plural "%1$s items not saved"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Elementu %1$s gorde gabe dago"
+msgstr[1] " %1$s elementu gorde gabe daude"
 
 #: inc/item_ticket.class.php:304
 msgid "Display all items"
@@ -8876,7 +8888,7 @@ msgstr "Prozesagailu kantitatea"
 #: inc/computervirtualmachine.class.php:257
 #: inc/computervirtualmachine.class.php:346
 msgid "List of virtualized environments"
-msgstr ""
+msgstr "Birtualizatutako inguruneen zerrenda"
 
 #: inc/computervirtualmachine.class.php:320
 msgid "Add a virtual machine"
@@ -8933,7 +8945,7 @@ msgstr "Kriterio globala"
 
 #: inc/ruleright.class.php:236
 msgid "Authentication type"
-msgstr ""
+msgstr "Identifikazio mota"
 
 #: inc/ruleright.class.php:249 inc/authmail.class.php:87
 #: inc/auth.class.php:1098
@@ -8959,7 +8971,7 @@ msgstr "Lehenetsitako entitatea"
 
 #: inc/ruleright.class.php:363 inc/user.class.php:2382
 msgid "Default group"
-msgstr ""
+msgstr "Talde lehenetsia"
 
 #: inc/ruleright.class.php:370 inc/profile.class.php:657
 #: inc/profile.class.php:1777 inc/ruleticket.class.php:523
@@ -8969,7 +8981,7 @@ msgstr "Lehenetsitako profila"
 
 #: inc/ruleright.class.php:374 inc/config.class.php:1254
 msgid "Timezone"
-msgstr ""
+msgstr "Denbora-zona"
 
 #: inc/ruleright.class.php:407
 msgid "LDAP criteria"
@@ -9062,7 +9074,7 @@ msgstr ""
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:129
 msgid "unknown"
-msgstr ""
+msgstr "ezezaguna"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:131
 msgid "Possible values are:"
@@ -9070,15 +9082,15 @@ msgstr ""
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:189
 msgid "No active LDAP server found."
-msgstr ""
+msgstr "Ez da aurkitu LDAP zerbitzari aktiborik."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:219
 msgid "LDAP servers"
-msgstr ""
+msgstr "LDAP zerbitzariak"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:220
 msgid "LDAP filter"
-msgstr ""
+msgstr "LDAP iragazkia"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:230
 #: inc/console/security/changekeycommand.class.php:84
@@ -9087,15 +9099,15 @@ msgstr ""
 #: inc/console/database/abstractconfigurecommand.class.php:350
 #: inc/console/database/updatecommand.class.php:172
 msgid "Do you want to continue ?"
-msgstr ""
+msgstr "Segitu nahi duzu?"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:234
 msgid "Synchronization aborted."
-msgstr ""
+msgstr "Bertan behera utzitako sinkronizazioa"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:244
 msgid "Unable to load LDAP server information."
-msgstr ""
+msgstr "Ezin izan da LDAP zerbitzariaren informazioa kargatu."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:249
 #, php-format
@@ -9135,7 +9147,7 @@ msgstr ""
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:323
 msgid "No users found."
-msgstr ""
+msgstr "Ez da erabiltzailerik aurkitu."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:379
 #, php-format
@@ -9144,15 +9156,15 @@ msgstr ""
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:393
 msgid "LDAP server"
-msgstr ""
+msgstr "LDAP zerbitzaria"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:394
 msgid "Imported"
-msgstr ""
+msgstr "Inportatuta"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:395
 msgid "Synchronized"
-msgstr ""
+msgstr "Sinkronizatuta"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:396
 msgid "Deleted from LDAP"
@@ -23000,7 +23012,7 @@ msgstr ""
 
 #: js/planning.js:238
 msgid "Clone"
-msgstr ""
+msgstr "Klonatu"
 
 #: js/planning.js:312
 msgid "Make a choice"

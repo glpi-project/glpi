@@ -9,11 +9,11 @@
 # Marco Arrigoni <arri89@hotmail.it>, 2020
 # DOMBRE Julien <moyo@indepnet.net>, 2020
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2020
-# Emiliano Centurelli <emilcen80@gmail.com>, 2020
 # Davide <spam@habilitas.it>, 2021
 # Pierfrancesco Passerini <p.passerini@gmail.com>, 2021
-# Tiziano Sartori <tiziano.sartori@gmail.com>, 2021
 # Stefano Ceccherini <stefano.ceccherini@gmail.com>, 2021
+# Tiziano Sartori <tiziano.sartori@gmail.com>, 2021
+# Emiliano Centurelli <emilcen80@gmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -22,7 +22,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-20 08:27+0200\n"
 "PO-Revision-Date: 2019-04-24 11:58+0000\n"
-"Last-Translator: Stefano Ceccherini <stefano.ceccherini@gmail.com>, 2021\n"
+"Last-Translator: Emiliano Centurelli <emilcen80@gmail.com>, 2021\n"
 "Language-Team: Italian (Italy) (https://www.transifex.com/glpi/teams/1637/it_IT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -176,11 +176,11 @@ msgstr ""
 
 #: ajax/getMapPoint.php:75
 msgid "Location seems not geolocalized!"
-msgstr "Il luogo sembra non essere geolocalizzato!"
+msgstr "La posizione sembra non essere geolocalizzata!"
 
 #: ajax/getMapPoint.php:76
 msgid "Consider filling latitude and longitude on this location."
-msgstr "Prego inserire latitudine e longitudine per questo luogo."
+msgstr "Prego inserire latitudine e longitudine per questa posizione."
 
 #. TRANS: %1$s is a type name - %2$s is a name
 #. TRANS: %1$s is the location, %2$s is the comment
@@ -4758,6 +4758,8 @@ msgid ""
 "If name is a valid email address, it will be automatically added to "
 "blacklisted senders."
 msgstr ""
+"Se il nome è un indirizzo email valido, questo verrà automaticamente "
+"aggiunto alla blacklist dei mittenti."
 
 #: inc/mailcollector.class.php:234 inc/mailcollector.class.php:533
 #: inc/notificationtargetmailcollector.class.php:77
@@ -5241,7 +5243,7 @@ msgstr "Domini scaduti da più di"
 #: inc/domain.class.php:673
 #, php-format
 msgid "Domains alerts not send for entity %1$s"
-msgstr ""
+msgstr "Allert domini non inviata per l'entità %1$s"
 
 #: inc/planningexternaleventtemplate.class.php:54
 msgid "External events template"
@@ -7553,12 +7555,12 @@ msgstr "L'azione richiesta non è permessa."
 #: inc/session.class.php:1487
 #, php-format
 msgid "%1$s starts impersonating user %2$s"
-msgstr ""
+msgstr "%1$s sta impersonando l'utente %2$s"
 
 #: inc/session.class.php:1517
 #, php-format
 msgid "%1$s stops impersonating user %2$s"
-msgstr ""
+msgstr "%1$s non sta più impersonando l'utente %2$s"
 
 #: inc/notificationtemplatetranslation.class.php:50
 msgid "Template translation"
@@ -9050,7 +9052,7 @@ msgstr "Verifica della connessione al server di posta elettronica"
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:76
 msgid "Synchronize users against LDAP server information"
-msgstr ""
+msgstr "Sincronizza gli utenti ricavando le informazioni dal server LDAP."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:82
 msgid "Only create new users"
@@ -9128,7 +9130,7 @@ msgstr "Sincronizzazione annullata."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:244
 msgid "Unable to load LDAP server information."
-msgstr ""
+msgstr "Impossibile caricare le informazioni dal server LDAP."
 
 #: inc/console/ldap/synchronizeuserscommand.class.php:249
 #, php-format
@@ -10337,6 +10339,9 @@ msgid ""
 "should retrieve it from your previous installation or encrypted data will be"
 " unreadable."
 msgstr ""
+"Il file chiave \"%s\" usato per crittare/decrittare i dati sensibili risulta"
+" mancante. Devi recuperarlo da una installazione precedente altrimenti i "
+"dati protetti risulteranno illeggibili."
 
 #: inc/console/database/updatecommand.class.php:176
 msgid "Update aborted."
@@ -10344,7 +10349,7 @@ msgstr "Aggiornamento annullato."
 
 #: inc/console/database/updatecommand.class.php:195
 msgid "Last migration replayed."
-msgstr ""
+msgstr "L'ultima migrazione riprodotta."
 
 #: inc/console/config/setcommand.class.php:62
 msgid "Set configuration value"
@@ -10357,11 +10362,11 @@ msgstr "Valore della configurazione"
 #: inc/console/config/setcommand.class.php:88
 #, php-format
 msgid "Invalid context \"%s\"."
-msgstr ""
+msgstr "Contesto non valido \"%s\"."
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:53
 msgid "Replay dictionnary rules on existing items"
-msgstr ""
+msgstr "Riprodurre le regole del dizionario sugli elementi esistenti"
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:60
 #, php-format
@@ -10372,6 +10377,8 @@ msgstr "Dizionario da usare. I valori possibili sono: %s"
 msgid ""
 "If option is set, only items having given manufacturer ID will be processed."
 msgstr ""
+"Se l'opzione è impostata, solo gli elementi che un ID produttore verranno "
+"processati."
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:70
 msgid "Currently only available for Software dictionnary."
@@ -10379,7 +10386,7 @@ msgstr "Attualmente disponibile solo per il dizionario Software."
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:81
 msgid "Which dictionnary do you want to replay ?"
-msgstr ""
+msgstr "Quale dizionario vuoi riprodurre?"
 
 #: inc/console/rules/replaydictionnaryrulescommand.class.php:101
 msgid "Invalid \"dictionnary\" value."
@@ -10445,7 +10452,7 @@ msgstr "Sto processando il plugin \"%s\"..."
 #: inc/console/plugin/activatecommand.class.php:75
 #, php-format
 msgid "Unable to load plugin \"%s\" information."
-msgstr ""
+msgstr "Impossibile caricare le informazioni per il plugin \"%s\"."
 
 #: inc/console/plugin/deactivatecommand.class.php:83
 #, php-format
@@ -10497,6 +10504,8 @@ msgid ""
 "Name of user used during installation script (among other things to set "
 "plugin admin rights)"
 msgstr ""
+"Il nome dell'utente usato durante gli script di installazione (anche "
+"utilizzato per impostare i diritti amministrativi del plugin)"
 
 #: inc/console/plugin/installcommand.class.php:83
 msgid "Force execution of installation, even if plugin is already installed"
@@ -11209,7 +11218,7 @@ msgstr "Chiamata sconosciuta"
 
 #: inc/ticket.class.php:1555
 msgid "You cannot create a ticket for this user"
-msgstr ""
+msgstr "Non puoi creare un ticket per questo utente"
 
 #: inc/ticket.class.php:1683
 #, php-format
@@ -11218,7 +11227,7 @@ msgstr "Indirizzo e-mail %s non valido"
 
 #: inc/ticket.class.php:1848
 msgid "Auto-created task"
-msgstr ""
+msgstr "Attività creata automaticamente"
 
 #: inc/ticket.class.php:1919
 #, php-format
@@ -11929,7 +11938,7 @@ msgstr "L'estensione %s non è presente"
 #: inc/system/requirement/mysqlimysqlnd.class.php:61
 #, php-format
 msgid "%s extension is installed but is not using mysqlnd driver"
-msgstr ""
+msgstr "L'estensione %s è stata installata ma non utilizza il driver mysqlnd."
 
 #: inc/system/requirement/dbengine.class.php:52
 msgid "Testing DB engine version"
@@ -12045,6 +12054,7 @@ msgstr "\"session.use_trans_sid\" dev'essere impostato su off."
 #: inc/system/requirement/sessionsconfiguration.class.php:71
 msgid "See .htaccess file in the GLPI root for more information."
 msgstr ""
+"Visualizza il file .htaccess nella root di GLPI per maggiori informazioni."
 
 #: inc/system/requirement/sessionsconfiguration.class.php:77
 msgid "Sessions support is available - Perfect!"
@@ -13119,7 +13129,7 @@ msgstr "Seriale"
 
 #: inc/appliance_item.class.php:265
 msgid "Add to an appliance"
-msgstr ""
+msgstr "Aggiungi ad una appliance"
 
 #: inc/appliance_item.class.php:375 inc/item_enclosure.class.php:301
 #: inc/devicecamera_item_format.class.php:108
@@ -13137,7 +13147,7 @@ msgstr "E' richiesto un elemento"
 
 #: inc/appliance_item.class.php:383
 msgid "An appliance is required"
-msgstr ""
+msgstr "E' richiesta una appliance"
 
 #: inc/notificationtargetobjectlock.class.php:52
 msgid "Unlock Item Request"
@@ -13707,7 +13717,7 @@ msgstr "Monitoraggio delle azioni automatiche"
 
 #: inc/notificationtargetcrontask.class.php:93
 msgid "Automatic actions list"
-msgstr ""
+msgstr "Lista azioni automatiche"
 
 #: inc/notificationtargetcrontask.class.php:99
 msgid ""
@@ -14233,7 +14243,7 @@ msgstr "Azione terminata"
 
 #: inc/crontask.class.php:302
 msgid "Execution error"
-msgstr ""
+msgstr "Errore di esecuzione"
 
 #: inc/crontask.class.php:308
 msgid "Action completed, partially processed"
@@ -14331,6 +14341,8 @@ msgstr "Avvia"
 #, php-format
 msgid "Error during %s execution. Check in \"%s\" for more details."
 msgstr ""
+"Errore durante l'esecuzione di %s. Controlla in \"%s\" per maggiori "
+"dettagli."
 
 #: inc/crontask.class.php:971 inc/crontask.class.php:983
 msgid "Can't start"
@@ -14374,8 +14386,8 @@ msgstr[1] "%s interruzioni"
 #, php-format
 msgid "%s error"
 msgid_plural "%s errors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%serrore"
+msgstr[1] "%serrori"
 
 #: inc/crontask.class.php:1158
 msgid "Minimal time"
@@ -15020,11 +15032,11 @@ msgstr "Avvisi di certificati scaduti"
 
 #: inc/notificationtargetcertificate.class.php:55
 msgid "Technician in charge of the certificate"
-msgstr ""
+msgstr "Tecnico incaricato per il certificato"
 
 #: inc/notificationtargetcertificate.class.php:59
 msgid "Group in charge of the certificate"
-msgstr ""
+msgstr "Gruppo incaricato per il certificato"
 
 #: inc/itiltemplatehiddenfield.class.php:48
 msgid "Hidden field"
@@ -15268,7 +15280,7 @@ msgstr "Conteggio"
 
 #: inc/savedsearch.class.php:248
 msgid "Default"
-msgstr "Default"
+msgstr "Predefinito"
 
 #: inc/savedsearch.class.php:259
 msgid "Counter"
@@ -15399,8 +15411,8 @@ msgstr "Seleziona il tipo di elemento da sbloccare"
 #: inc/applianceenvironment.class.php:40
 msgid "Appliance environment"
 msgid_plural "Appliance environments"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ambiente appliance"
+msgstr[1] "Ambienti appliance"
 
 #: inc/ruledictionnarynetworkequipmentmodelcollection.class.php:41
 msgid "Dictionnary of networking equipment models"
@@ -15740,11 +15752,11 @@ msgstr "Risultato di ricerca"
 
 #: inc/dashboard/widget.class.php:210
 msgid "Summary numbers"
-msgstr ""
+msgstr "Numeri sommario"
 
 #: inc/dashboard/widget.class.php:219
 msgid "List of articles"
-msgstr ""
+msgstr "Lista articoli"
 
 #: inc/dashboard/widget.class.php:397 inc/dashboard/widget.class.php:503
 #: inc/dashboard/widget.class.php:945 inc/dashboard/widget.class.php:1710
@@ -15822,7 +15834,7 @@ msgstr "Usa palette dei colori"
 
 #: inc/dashboard/grid.class.php:756
 msgid "Display value labels on points/bars"
-msgstr ""
+msgstr "Visualizza etichette dei valori sui punti/barre"
 
 #: inc/dashboard/grid.class.php:773
 msgid "Limit number of data"
@@ -15896,7 +15908,7 @@ msgstr "Numero chiamate per mese"
 
 #: inc/dashboard/grid.class.php:1330
 msgid "Evolution of ticket in the past year"
-msgstr "Andamento della chiamata nello scorso anno"
+msgstr "Andamento delle chiamate nell'ultimo anno"
 
 #: inc/dashboard/grid.class.php:1342
 msgid "Tickets status by month"
@@ -15908,7 +15920,7 @@ msgstr "Durata dei tickets (in ore)"
 
 #: inc/dashboard/grid.class.php:1366
 msgid "Tickets summary"
-msgstr ""
+msgstr "Riassunto dei tickets"
 
 #: inc/dashboard/grid.class.php:1375
 msgid "Top ticket's categories"
@@ -15952,7 +15964,7 @@ msgstr "Gruppi assegnatari delle chiamate più popolari"
 
 #: inc/dashboard/grid.class.php:1419
 msgid "List of reminders"
-msgstr ""
+msgstr "Lista promemoria"
 
 #: inc/dashboard/grid.class.php:1427
 msgid "Editable markdown card"
@@ -16367,7 +16379,7 @@ msgstr "Telemetria"
 
 #: inc/telemetry.class.php:263
 msgid "Send telemetry information"
-msgstr ""
+msgstr "Invia informazioni telemetria"
 
 #: inc/telemetry.class.php:346
 msgid "See what would be sent..."
@@ -16733,8 +16745,8 @@ msgstr "col: %1$s, riga: %2$s"
 #: inc/phonepowersupply.class.php:44
 msgid "Phone power supply type"
 msgid_plural "Phone power supply types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo di alimentazione elettrica telefono"
+msgstr[1] "Tipi di alimentazione elettrica telefono"
 
 #: inc/changetask.class.php:43
 msgid "Change task"
@@ -16780,8 +16792,8 @@ msgstr "Nessuna porta di rete trovata"
 #: inc/networkport.class.php:1016
 msgid "Port number"
 msgid_plural "Port numbers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Numero porta"
+msgstr[1] "Numeri porta"
 
 #: inc/networkport.class.php:930 inc/networkport.class.php:1034
 msgid "Network port type"
@@ -16946,6 +16958,8 @@ msgstr "Ricerca"
 #, php-format
 msgid "%1$s services website seems not available from your network or offline"
 msgstr ""
+"I servizi web %1$s sembrano non essere raggiungibili dalla tua rete oppure "
+"offline"
 
 #: inc/marketplace/view.class.php:144
 msgid "Maybe you could setup a proxy"
@@ -16958,7 +16972,7 @@ msgstr "oppure controlla più tardi"
 #: inc/marketplace/view.class.php:156
 #, php-format
 msgid "Your %1$s registration is not valid."
-msgstr ""
+msgstr "La tua registrazione %1$snon è valida."
 
 #: inc/marketplace/view.class.php:157
 msgid "A registration, at least a free one, is required to use marketplace!"
@@ -16969,7 +16983,7 @@ msgstr ""
 #: inc/marketplace/view.class.php:158
 #, php-format
 msgid "Register on %1$s"
-msgstr ""
+msgstr "Registrati su %1$s"
 
 #: inc/marketplace/view.class.php:160
 msgid "fill your registration key in setup."
@@ -17089,7 +17103,7 @@ msgstr "Disinstalla"
 #: inc/marketplace/view.class.php:811
 #, php-format
 msgid "You must have a %s subscription to get this plugin"
-msgstr ""
+msgstr "Devi avere una sottoscrizione %s per ottenere questo plugin"
 
 #: inc/marketplace/view.class.php:816
 #, php-format
@@ -17374,7 +17388,7 @@ msgstr ""
 #: inc/glpinetwork.class.php:69
 #, php-format
 msgid "Register on %1$s!"
-msgstr ""
+msgstr "Registrati su %1$s!"
 
 #: inc/glpinetwork.class.php:70
 msgid "And retrieve your key to paste it below"
@@ -17403,7 +17417,7 @@ msgstr "Registrato da"
 
 #: inc/glpinetwork.class.php:218
 msgid "Unable to fetch registration information."
-msgstr ""
+msgstr "Impossibile ricavare le informazioni di registrazione."
 
 #: inc/glpinetwork.class.php:232
 msgid "The registration key is valid."
@@ -17466,7 +17480,7 @@ msgstr[1] "Relazioni"
 #: inc/devicecamera_item_format.class.php:116
 #: inc/appliance_item_relation.class.php:116
 msgid "An appliance item is required"
-msgstr ""
+msgstr "È richiesta una appliance."
 
 #: inc/devicecamera_item_format.class.php:212
 #: inc/devicecamera_item_format.class.php:213
@@ -18203,7 +18217,7 @@ msgstr "Replica SQL: sola lettura"
 
 #: inc/planning.class.php:133
 msgid "CalDAV browser interface"
-msgstr ""
+msgstr "Interfaccia browser di CalDAV."
 
 #: inc/planning.class.php:304
 #, php-format
@@ -18672,7 +18686,7 @@ msgstr "Impossibile eliminare il file %s"
 
 #: inc/document.class.php:272 inc/document.class.php:350
 msgid "Invalid link"
-msgstr ""
+msgstr "Link non valido"
 
 #: inc/document.class.php:383
 #, php-format
@@ -19421,7 +19435,7 @@ msgstr[1] "%1$s%2$s secondi"
 
 #: inc/html.class.php:788
 msgid "Display GLPI debug information"
-msgstr ""
+msgstr "Visualizza informazioni di debug GLPI"
 
 #: inc/html.class.php:1153
 msgid "Progress"
@@ -19738,7 +19752,7 @@ msgstr "Sblocca elementi"
 #: inc/commondbtm.class.php:3940
 msgctxt "button"
 msgid "Associate to an appliance"
-msgstr ""
+msgstr "Associa ad una appliance"
 
 #: inc/commondbtm.class.php:4158
 msgid "At least one field has an incorrect value"
@@ -21182,7 +21196,7 @@ msgstr "Avviso sulla scadenza del dominio"
 
 #: inc/entity.class.php:2133
 msgid "Domains closes expiries"
-msgstr ""
+msgstr "Scadenze chiusure domini"
 
 #: inc/entity.class.php:2149
 msgid "Domains expired"
@@ -21216,7 +21230,7 @@ msgstr ""
 
 #: inc/entity.class.php:2584
 msgid "Anonymize support agents"
-msgstr ""
+msgstr "Anonimizza gli agenti di supporto"
 
 #: inc/entity.class.php:2609
 msgid "Automatic closing configuration"
@@ -21228,7 +21242,7 @@ msgstr "L'azione di chiusura chiamata è disabilitata."
 
 #: inc/entity.class.php:2663
 msgid "Purge ticket action is disabled."
-msgstr ""
+msgstr "l'azione di pulizia dei ticket è disabilitata"
 
 #: inc/entity.class.php:2702 inc/entity.class.php:2705
 msgid "Configuring the satisfaction survey"
@@ -21260,7 +21274,7 @@ msgstr "Aggiorna parametri helpdesk"
 
 #: inc/entity.class.php:3364
 msgid "Value inherited from a parent entity"
-msgstr ""
+msgstr "Valore ereditato dall'entità padre"
 
 #: inc/itilcategory.class.php:73 inc/itilcategory.class.php:212
 msgid "Visible in the simplified interface"
@@ -21316,7 +21330,7 @@ msgstr "Date errate. Variazione annullata."
 
 #: inc/commonitilobject.class.php:1616
 msgid "You cannot use predefined description verbatim"
-msgstr ""
+msgstr "Non puoi usare la descrizione predefinita alla lettera"
 
 #: inc/commonitilobject.class.php:2326
 msgctxt "priority"
@@ -21604,12 +21618,12 @@ msgstr "%1$s il %2$s da %3$s"
 #: inc/commonitilobject.class.php:7362
 #, php-format
 msgid "File size: %s"
-msgstr ""
+msgstr "Dimensione file: %s"
 
 #: inc/commonitilobject.class.php:7363
 #, php-format
 msgid "MIME type: %s"
-msgstr ""
+msgstr "Tipo MIME: %s"
 
 #: inc/commonitilobject.class.php:7456
 msgid "Followup promotion source"
@@ -21624,7 +21638,7 @@ msgstr "# %s descrizione"
 #: inc/commonitilobject.class.php:7550
 #, php-format
 msgid "%1$s will be added in entity %2$s"
-msgstr ""
+msgstr "%1$s sarà aggiunto nell'entità %2$s"
 
 #: inc/commonitilobject.class.php:7556
 #, php-format
@@ -21992,11 +22006,11 @@ msgstr[1] "Appliances"
 
 #: inc/appliance.class.php:138
 msgid "Technician in charge of the appliance"
-msgstr ""
+msgstr "Tecnico incaricato per l'appliance"
 
 #: inc/appliance.class.php:154
 msgid "Group in charge of the appliance"
-msgstr ""
+msgstr "Gruppo incaricato per l'appliance"
 
 #: inc/appliance.class.php:315
 msgid "Environment"
@@ -22005,12 +22019,12 @@ msgstr "Ambiente"
 #: inc/appliance.class.php:552
 msgctxt "button"
 msgid "Add to an appliance"
-msgstr ""
+msgstr "Aggiungi ad una appliance"
 
 #: inc/appliance.class.php:553
 msgctxt "button"
 msgid "Remove from an appliance"
-msgstr ""
+msgstr "Rimuovi da un'appliance"
 
 #: inc/requesttype.class.php:42
 msgid "Request source"
@@ -22773,7 +22787,7 @@ msgstr "Questa è la nuova gerarchia. Se corretta, la puoi confermare."
 
 #: install/update.php:525
 msgid "Missing security key file"
-msgstr ""
+msgstr "File chiave di sicurezza mancante"
 
 #: install/update.php:533
 msgid "Ignore warning"
