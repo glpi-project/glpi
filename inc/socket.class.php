@@ -282,6 +282,64 @@ class Socket extends CommonDropdown {
       return $tab;
    }
 
+
+   static public function rawSearchOptionsToAdd() {
+      $tab = [];
+
+      $tab[] = [
+         'id'                 => 'socket',
+         'name'               => __('Socket')
+      ];
+
+      $tab[] = [
+         'id'                 => '1310',
+         'table'              => Socket::getTable(),
+         'field'              => 'id',
+         'name'               => Socket::getTypeName(0),
+         'searchtype'         => 'equals',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item',
+         ],
+         'datatype'           => 'dropdown'
+      ];
+
+      $tab[] = [
+         'id'                 => '1311',
+         'table'              => SocketModel::getTable(),
+         'field'              => 'name',
+         'name'               => SocketModel::getTypeName(0),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'searchtype'         => 'equals',
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => self::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'itemtype_item'
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '1312',
+         'table'              => Socket::getTable(),
+         'field'              => 'wiring_side',
+         'name'               => __('Wiring side'),
+         'searchtype'         => 'equals',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item',
+         ],
+         'datatype'           => 'specific'
+      ];
+
+      return $tab;
+   }
+
+
+
+
    /**
     * @since 0.84
     *
