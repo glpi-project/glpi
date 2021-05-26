@@ -1,0 +1,5 @@
+.dropdowns-list {
+   .list-group-item.dropdown-no-entity:not(:hover) {
+      background: $dropdowns-list-contrast;
+   }
+}
