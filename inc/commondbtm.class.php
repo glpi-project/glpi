@@ -5171,7 +5171,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return array the input param transformed
    **/
-   function addFiles(array $input, $options = [], $date = false) {
+   function addFiles(array $input, $options = [], $date = null) {
       global $CFG_GLPI;
 
       $default_options = [
