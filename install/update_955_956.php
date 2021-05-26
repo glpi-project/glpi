@@ -78,7 +78,7 @@ function update955to956() {
       $DB->update(
          'glpi_documents_items',
          ['date' => new QueryExpression($parent_date->getQuery())],
-         ['itemtype' => ['ITILFollowup']],
+         ['itemtype' => ['ITILFollowup']]
       );
 
       // Init date as the value of date_creation for others items
