@@ -176,7 +176,7 @@ if (!$DB->tableExists('glpi_sockets') && $DB->tableExists('glpi_netpoints')) {
    $migration->addField('glpi_sockets', 'socketmodels_id', 'int', ['after' => 'name']);
    $migration->addKey('glpi_sockets', 'socketmodels_id');
 
-   $migration->addField("glpi_sockets", "wiring_side", "tinyint DEFAULT 0", ['after' => 'socketmodels_id']);
+   $migration->addField("glpi_sockets", "wiring_side", "tinyint DEFAULT 1", ['after' => 'socketmodels_id']);
    $migration->addKey('glpi_sockets', 'wiring_side');
 
    $migration->addField('glpi_sockets', 'itemtype', 'string', ['after' => 'wiring_side']);
@@ -239,3 +239,5 @@ if (!$DB->tableExists('glpi_networkportfiberchanneltypes')) {
 
 $migration->addField('glpi_networkportfiberchannels', 'networkportfiberchanneltypes_id', 'int', ['after' => 'items_devicenetworkcards_id']);
 $migration->addKey('glpi_networkportfiberchannels', 'networkportfiberchanneltypes_id', 'type');
+
+$ADDTODISPLAYPREF['Socket'] = [5, 8, 6, 7];

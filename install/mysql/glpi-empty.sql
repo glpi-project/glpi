@@ -4246,7 +4246,7 @@ CREATE TABLE `glpi_sockets` (
   `locations_id` int NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `socketmodels_id` int NOT NULL DEFAULT '0',
-  `wiring_side` tinyint DEFAULT '0',
+  `wiring_side` tinyint DEFAULT '1',
   `itemtype` varchar(255) DEFAULT NULL,
   `items_id` int NOT NULL DEFAULT '0',
   `networkports_id` int NOT NULL DEFAULT '0',

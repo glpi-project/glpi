@@ -223,12 +223,11 @@ class Socket extends CommonDropdown {
       $tab  = parent::rawSearchOptions();
 
       $tab[] = [
-         'id'                 => '4',
-         'table'              => Socket::getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'dropdown'
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
       ];
+
+
 
       $tab[] = [
          'id'                 => '5',
@@ -246,7 +245,6 @@ class Socket extends CommonDropdown {
          'datatype'           => 'itemtypename',
          'itemtype_list'      => 'socket_link_types',
          'additionalfields'   => ['itemtype'],
-         'nosort'             => true,
          'joinparams'         => [
             'jointype'           => 'child'
          ],
@@ -330,8 +328,10 @@ class Socket extends CommonDropdown {
       if (!is_array($values)) {
          $values = [$field => $values];
       }
+
       switch ($field) {
          case 'items_id':
+
             if (isset($values['itemtype'])) {
                if (isset($options['comments']) && $options['comments']) {
                   $valueData = Dropdown::getDropdownName(
@@ -346,10 +346,16 @@ class Socket extends CommonDropdown {
                   );
 
                }
-               return Dropdown::getDropdownName(
-                  getTableForItemType($values['itemtype']),
-                  $values[$field]
-               );
+
+               if ($values[$field] > 0) {
+                  return Dropdown::getDropdownName(
+                     getTableForItemType($values['itemtype']),
+                     $values[$field]
+                  );
+               }
+
+            } else {
+               return ' ';
             }
             break;
          case 'wiring_side' :
