@@ -60,7 +60,7 @@ switch ($_POST['action']) {
                                                 'itemtype'           => $_POST['itemtype'],
                                                 'items_id'           => $_POST['items_id']],
                               'displaywith'  => ['itemtype', 'items_id', 'networkports_id'],
-         ]);
+            ]);
       }
       break;
 
@@ -69,7 +69,7 @@ switch ($_POST['action']) {
          && isset($_POST['items_id']) && $_POST['items_id'] > 0) {
          $item = new $_POST['itemtype']();
          $item->getFromDB($_POST['items_id']);
-         if (method_exists($item,'showDcBreadcrumb')) {
+         if (method_exists($item, 'showDcBreadcrumb')) {
             echo $item->showDcBreadcrumb(true);
          }
       } else {
