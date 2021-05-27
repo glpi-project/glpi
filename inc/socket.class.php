@@ -128,6 +128,30 @@ class Socket extends CommonDropdown {
 
       echo "</span>";
 
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Position')."</td>";
+      echo "<td>";
+
+      echo "<span id='show_asset_breadcrumb'>";
+      if (!empty($itemtype) && !empty($items_id)) {
+         $item = new $itemtype();
+         $item->getFromDB($items_id);
+         if (method_exists($item,'showDcBreadcrumb')) {
+            echo $item->showDcBreadcrumb(true);
+         }
+      }
+      echo "</span>";
+      $params = ['itemtype'  => '__VALUE0__',
+                 'items_id'  => '__VALUE1__',
+                 'action'    => 'getItemBreadCrumb'];
+
+      Ajax::updateItemOnSelectEvent(["dropdown_itemtype".$rand_itemtype,
+                                     "dropdown_items_id".$rand_items_id],
+                                     "show_asset_breadcrumb",
+                                     $CFG_GLPI["root_doc"]."/ajax/cable.php",
+                                     $params);
+      echo "</td></tr>";
+
    }
 
    /**

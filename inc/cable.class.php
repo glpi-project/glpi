@@ -600,9 +600,7 @@ class Cable extends CommonDBTM {
 
       echo "<span id='show_rear_asset_breadcrumb'>";
       if ($this->fields['rear_items_id']) {
-         if ($this->fields['front_items_id']) {
-            $this->getDCBreadCrumb('rear');
-         }
+         $this->getDCBreadCrumb('rear');
       }
       echo "</span>";
       
