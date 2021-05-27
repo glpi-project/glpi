@@ -31,7 +31,7 @@
  */
 
 include ('../inc/includes.php');
-
+$dropdown = new Socket();
 // Add a socket from item : format data
 // see socket.class.php:607
 if (isset($_REQUEST['_add_fromitem'])
