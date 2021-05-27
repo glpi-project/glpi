@@ -34,7 +34,7 @@ use Glpi\Event;
 
 include ('../inc/includes.php');
 
-Session::checkRight("netpoint", READ);
+Session::checkRight("cable_management", READ);
 
 if (empty($_GET["id"])) {
    $_GET["id"] = '';

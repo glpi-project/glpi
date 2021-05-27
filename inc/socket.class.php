@@ -42,7 +42,7 @@ class Socket extends CommonDropdown {
    // From CommonDBTM
    public $dohistory          = true;
 
-   static $rightname          = 'netpoint';
+   static $rightname          = 'cable_management';
 
    public $can_be_translated  = false;
 

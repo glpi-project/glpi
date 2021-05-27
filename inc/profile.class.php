@@ -988,7 +988,10 @@ class Profile extends CommonDBTM {
                       ['itemtype'  => 'DatabaseInstance',
                             'label'     => Database::getTypeName(Session::getPluralNumber()),
                             'field'     => 'database'],
-
+                      ['itemtype'  => 'Cable',
+                            'label'     => __('Cable management'),
+                            'field'     => 'cable_management'
+                      ],
                   ];
       $matrix_options['title'] = __('Management');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
@@ -1635,11 +1638,6 @@ class Profile extends CommonDBTM {
             'itemtype'  => 'KnowbaseItemCategory',
             'label'     => _n('Knowledge base category', 'Knowledge base categories', Session::getPluralNumber()),
             'field'     => 'knowbasecategory'
-         ],
-         [
-            'itemtype'  => 'Socket',
-            'label'     => _n('Network socket', 'Network sockets', Session::getPluralNumber()),
-            'field'     => 'socket'
          ],
          [
             'itemtype'  => 'TaskCategory',

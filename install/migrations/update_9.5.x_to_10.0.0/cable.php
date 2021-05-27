@@ -242,3 +242,13 @@ $migration->addKey('glpi_networkportfiberchannels', 'networkportfiberchanneltype
 
 $ADDTODISPLAYPREF['Socket'] = [5, 8, 6, 7];
 $ADDTODISPLAYPREF['Cable'] = [4, 31, 6, 15, 24];
+
+
+//rename profilerights values ('netpoint' to 'cable_management')
+$migration->addPostQuery(
+   $DB->buildUpdate(
+      'glpi_profilerights',
+      ['name' => 'cable_management'],
+      ['name' => 'netpoint']
+   )
+);

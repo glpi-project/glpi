@@ -39,7 +39,7 @@ class Cable extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory         = true;
-   static $rightname         = 'netpoint';
+   static $rightname         = 'cable_management';
    public $can_be_translated = false;
 
    static function getTypeName($nb = 0) {
@@ -348,7 +348,6 @@ class Cable extends CommonDBTM {
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
-
    /**
    * Print the main form
    *
@@ -443,9 +442,13 @@ class Cable extends CommonDBTM {
       echo "<th colspan='2'>".__('Front')."</th>";
       echo "<tr>";
 
+      $side = ['rear', 'front'];
+
+
       //Line to display itemtype dropdown
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Asset')."</td>";
+
       echo "<td>";
 
       Dropdown::showFromArray('rear_itemtype', Socket::getSocketLinkTypes(), ['value'                 => $this->fields["rear_itemtype"],
@@ -503,7 +506,7 @@ class Cable extends CommonDBTM {
                                  'rand'                 => $rand_items_id_front,
                                  'display_emptychoice'  => true]);
 
-      
+
       echo "</span></td>";
       echo "</tr>";
 
@@ -570,13 +573,6 @@ class Cable extends CommonDBTM {
                                         'items_id'  => $this->fields['rear_items_id']]
                         ]);
 
-      $params = ['sockets_id' => '__VALUE__',
-                  'action'     => 'getItemBreadCrumb'];
-      Ajax::updateItemOnSelectEvent("dropdown_rear_sockets_id$rand_socket_rear",
-                                    "show_rear_asset_breadcrumb",
-                                    $CFG_GLPI["root_doc"]."/ajax/cable.php",
-                                    $params);
-
       echo "</span>";
       echo "</td>";
 
@@ -597,16 +593,19 @@ class Cable extends CommonDBTM {
 
       //Line to display asset breadcrum (item, datacenter / dcroom / position)
 
-      $paramsPosition = [
-         'with_item_location'       => true,
-         'with_rack_location'       => true,
-         'with_dcroom_location'     => true,
-         'with_datacenter_location' => true,
-      ];
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Position')."</td>";
       echo "<td>";
+
+      echo "<span id='show_rear_asset_breadcrumb'>";
+      if ($this->fields['rear_items_id']) {
+         if ($this->fields['front_items_id']) {
+            $this->getDCBreadCrumb('rear');
+         }
+      }
+      echo "</span>";
+      
 
       $params = ['itemtype'  => '__VALUE0__',
                  'items_id'  => '__VALUE1__',
@@ -618,38 +617,39 @@ class Cable extends CommonDBTM {
                                      $CFG_GLPI["root_doc"]."/ajax/cable.php",
                                      $params);
 
-      echo "<span id='show_rear_asset_breadcrumb'>";
-      if ($this->fields['rear_items_id']) {
-         $item = new $this->fields['rear_itemtype']();
-         $item->getFromDB($this->fields['rear_items_id']);
-         echo $item->showDcBreadcrumb(true);
-      }
-      echo "</span></td>";
-
+      echo "</td>";
       echo "<td>".__('Position')."</td>";
       echo "<td>";
 
-      $params = ['itemtype'  => '__VALUE0__',
-                 'items_id'  => '__VALUE1__',
-                 'action'    => 'getItemBreadCrumb'];
-
-      Ajax::updateItemOnSelectEvent(["dropdown_front_itemtype".$rand_itemtype_front,
-                                    "dropdown_front_items_id".$rand_items_id_front],
-                                    "show_front_asset_breadcrumb",
-                                    $CFG_GLPI["root_doc"]."/ajax/cable.php",
-                                    $params);
-
       echo "<span id='show_front_asset_breadcrumb'>";
       if ($this->fields['front_items_id']) {
-         $item = new $this->fields['front_itemtype']();
-         $item->getFromDB($this->fields['front_items_id']);
-         echo $item->showDcBreadcrumb(true);
+         $this->getDCBreadCrumb('front');
       }
       echo "</span>";
+
+      $params = ['itemtype'  => '__VALUE0__',
+                  'items_id'  => '__VALUE1__',
+                  'action'    => 'getItemBreadCrumb'];
+
+      Ajax::updateItemOnSelectEvent(["dropdown_front_itemtype".$rand_itemtype_front,
+                              "dropdown_front_items_id".$rand_items_id_front],
+                              "show_front_asset_breadcrumb",
+                              $CFG_GLPI["root_doc"]."/ajax/cable.php",
+                              $params);
       echo "</td></tr>";
 
       $this->showFormButtons($options);
       return true;
+   }
+
+   private function getDCBreadCrumb($side = 'front'){
+      if ($this->fields[$side.'_items_id']) {
+         $item = new $this->fields[$side.'_itemtype']();
+         $item->getFromDB($this->fields[$side.'_items_id']);
+         if (method_exists($item,'showDcBreadcrumb')) {
+            echo $item->showDcBreadcrumb(true);
+         }
+      }
    }
 
    static function getIcon() {

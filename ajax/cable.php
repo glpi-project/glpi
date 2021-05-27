@@ -65,11 +65,13 @@ switch ($_POST['action']) {
       break;
 
    case 'getItemBreadCrumb':
-      if ((isset($_POST['itemtype'])&& class_exists($_POST['itemtype']))
+      if ((isset($_POST['itemtype']) && class_exists($_POST['itemtype']))
          && isset($_POST['items_id']) && $_POST['items_id'] > 0) {
          $item = new $_POST['itemtype']();
          $item->getFromDB($_POST['items_id']);
-         echo $item->showDcBreadcrumb(true);
+         if (method_exists($item,'showDcBreadcrumb')) {
+            echo $item->showDcBreadcrumb(true);
+         }
       } else {
          echo "";
       }
