@@ -6826,8 +6826,10 @@ abstract class CommonITILObject extends CommonDBTM {
       foreach ($document_items as $document_item) {
          $document_obj->getFromDB($document_item['documents_id']);
 
+         $date = $document_item['date'] ?? $document_item['date_creation'];
+
          $item = $document_obj->fields;
-         $item['date']     = $document_item['date_creation'];
+         $item['date'] = $date;
          // #1476 - set date_mod and owner to attachment ones
          $item['date_mod'] = $document_item['date_mod'];
          $item['users_id'] = $document_item['users_id'];
@@ -6835,7 +6837,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          $item['timeline_position'] = $document_item['timeline_position'];
 
-         $timeline[$document_item['date_creation']."_document_".$document_item['documents_id']]
+         $timeline[$date."_document_".$document_item['documents_id']]
             = ['type' => 'Document_Item', 'item' => $item];
       }
 

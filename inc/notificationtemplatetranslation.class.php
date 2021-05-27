@@ -130,9 +130,10 @@ class NotificationTemplateTranslation extends CommonDBChild {
             unset($used[$this->getField('language')]);
          }
       }
-      Dropdown::showLanguages("language", ['display_emptychoice' => true,
-                                                'value'               => $this->fields['language'],
-                                                'used'                => $used]);
+      Dropdown::showLanguages("language", ['display_emptychoice'  => true,
+                                             'value'              => $this->fields['language'],
+                                             'emptylabel'         => __('Default translation'),
+                                          ]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Subject') . "</td>";

@@ -2550,6 +2550,7 @@ CREATE TABLE `glpi_documents_items` (
   `users_id` int DEFAULT '0',
   `timeline_position` tinyint NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
+  `date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`documents_id`,`itemtype`,`items_id`,`timeline_position`),
   KEY `item` (`itemtype`,`items_id`,`entities_id`,`is_recursive`),
@@ -2557,7 +2558,8 @@ CREATE TABLE `glpi_documents_items` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `date_creation` (`date_creation`),
-  KEY `date_mod` (`date_mod`)
+  KEY `date_mod` (`date_mod`),
+  KEY `date` (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 

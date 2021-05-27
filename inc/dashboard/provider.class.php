@@ -206,9 +206,10 @@ class Provider {
       $DBread = DBConnection::getReadConnection();
 
       $default_params = [
-         'label'         => "",
-         'icon'          => Ticket::getIcon(),
-         'apply_filters' => [],
+         'label'                 => "",
+         'icon'                  => Ticket::getIcon(),
+         'apply_filters'         => [],
+         'validation_check_user' => false,
       ];
       $params = array_merge($default_params, $params);
 
@@ -291,19 +292,32 @@ class Provider {
 
          case 'waiting_validation':
             $params['icon']  = "far fa-eye";
-            $params['label'] = __("Tickets waiting your validation");
+            $params['label'] = __("Tickets waiting for validation");
             $search_criteria = [
                [
                   'field'      => 55,
                   'searchtype' => 'equals',
                   'value'      => CommonITILValidation::WAITING,
-               ],  [
+               ]
+            ];
+
+            if ($params['validation_check_user']) {
+               $search_criteria[] = [
                   'link'       => 'AND',
                   'field'      => 59,
                   'searchtype' => 'equals',
                   'value'      => Session::getLoginUserID(),
-               ]
+               ];
+            }
+
+            $where = [
+               'glpi_ticketvalidations.status' => CommonITILValidation::WAITING,
             ];
+
+            if ($params['validation_check_user']) {
+               $where['glpi_ticketvalidations.users_id_validate'] = Session::getLoginUserID();
+            }
+
             $query_criteria = array_merge_recursive($query_criteria, [
                'LEFT JOIN' => [
                   'glpi_ticketvalidations' => [
@@ -313,10 +327,7 @@ class Provider {
                      ]
                   ]
                ],
-               'WHERE' => [
-                  'glpi_ticketvalidations.status'            => CommonITILValidation::WAITING,
-                  'glpi_ticketvalidations.users_id_validate' => Session::getLoginUserID()
-               ]
+               'WHERE' => $where,
             ]);
             break;
 
