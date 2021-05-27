@@ -41,8 +41,8 @@ use NotificationTarget;
 use NotificationTargetTicket;
 use Profile_User;
 use Ticket;
-use Ticket_User;
 use Ticket_Contract;
+use Ticket_User;
 
 /* Test for inc/entity.class.php */
 
