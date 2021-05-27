@@ -1446,20 +1446,21 @@ function initTooltips(container) {
             delay: {show: 50, hide: 50},
             html: tooltipNode.hasAttribute("data-bs-html") ? tooltipNode.getAttribute("data-bs-html") === "true" : false,
             placement: tooltipNode.hasAttribute("data-bs-placement") ? tooltipNode.getAttribute('data-bs-placement') : 'auto',
-            trigger : 'hover',
+            trigger : tooltipNode.hasAttribute("data-bs-trigger") ? tooltipNode.getAttribute("data-bs-trigger") : "hover",
          };
          return new bootstrap.Tooltip(tooltipNode, options);
       }
    );
 
-   const popoverNodes = container.querySelectorAll('[data-bs-toggle="popover"]');
+   const popoverNodes = container.querySelectorAll('[data-bs-toggle="popover"]:not([data-bs-original-title])');
    popoverNodes.forEach(
       function(popoverNode) {
          const options = {
             delay: {show: 50, hide: 50},
             html: popoverNode.hasAttribute("data-bs-html") ? popoverNode.getAttribute("data-bs-html") === "true" : false,
             placement: popoverNode.hasAttribute("data-bs-placement") ? popoverNode.getAttribute('data-bs-placement') : 'auto',
-            trigger : 'hover',
+            trigger : popoverNode.hasAttribute("data-bs-trigger") ? popoverNode.getAttribute("data-bs-trigger") : "hover",
+            sanitize : popoverNode.hasAttribute("data-bs-sanitize") ? popoverNode.getAttribute("data-bs-sanitize") === "true" : true,
          };
          return new bootstrap.Popover(popoverNode, options);
       }
