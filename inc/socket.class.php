@@ -136,7 +136,7 @@ class Socket extends CommonDropdown {
       if (!empty($itemtype) && !empty($items_id)) {
          $item = new $itemtype();
          $item->getFromDB($items_id);
-         if (method_exists($item,'showDcBreadcrumb')) {
+         if (method_exists($item, 'showDcBreadcrumb')) {
             echo $item->showDcBreadcrumb(true);
          }
       }

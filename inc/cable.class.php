@@ -586,7 +586,6 @@ class Cable extends CommonDBTM {
 
       //Line to display asset breadcrum (item, datacenter / dcroom / position)
 
-
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Position')."</td>";
       echo "<td>";
@@ -596,7 +595,6 @@ class Cable extends CommonDBTM {
          $this->getDCBreadCrumb('rear');
       }
       echo "</span>";
-      
 
       $params = ['itemtype'  => '__VALUE0__',
                  'items_id'  => '__VALUE1__',
@@ -633,11 +631,11 @@ class Cable extends CommonDBTM {
       return true;
    }
 
-   private function getDCBreadCrumb($side = 'front'){
+   private function getDCBreadCrumb($side = 'front') {
       if ($this->fields[$side.'_items_id']) {
          $item = new $this->fields[$side.'_itemtype']();
          $item->getFromDB($this->fields[$side.'_items_id']);
-         if (method_exists($item,'showDcBreadcrumb')) {
+         if (method_exists($item, 'showDcBreadcrumb')) {
             echo $item->showDcBreadcrumb(true);
          }
       }
