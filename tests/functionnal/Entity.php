@@ -779,12 +779,14 @@ class Entity extends DbTestCase {
       $contracts_id_1 = $contract->add([
          'name'        => 'test1',
          'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+         'renewal'    => Contract::RENEWAL_TACIT,
       ]);
       $this->integer($contracts_id_1)->isGreaterThan(0);
 
       $contracts_id_2 = $contract->add([
          'name'        => 'test2',
-         'entities_id' => $entities_id
+         'entities_id' => $entities_id,
+         'renewal'    => Contract::RENEWAL_TACIT,
       ]);
       $this->integer($contracts_id_2)->isGreaterThan(0);
 
@@ -846,7 +848,6 @@ class Entity extends DbTestCase {
       $this->boolean($res)->isTrue();
 
       // Case 1: root entity, expect no contract (no config for this entity)
-      // $ticket = new Ticket();
       $tickets_id_2 = $ticket->add([
          'name'        => 'Test ticket 1',
          'content'     => 'Test ticket 1',
