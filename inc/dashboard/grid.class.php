@@ -1309,7 +1309,6 @@ HTML;
                   'validation_check_user' => true,
                ]
             ],
-            ],
             'filters'    => [
                'dates', 'dates_mod', 'itilcategory',
                'group_tech', 'user_tech', 'requesttype', 'location'
