@@ -111,19 +111,25 @@ trait DCBreadcrumb {
     *
     * @return void
     */
-   public function showDcBreadcrumb($withouTable = false) {
+   public function showDcBreadcrumb($withouTable = false, $display = true) {
       $breadcrumb = $this->getDcBreadcrumb();
+      $out = "";
 
       if (count($breadcrumb)) {
          if ($withouTable) {
-            echo implode(' > ', array_reverse($breadcrumb));
+            $out .= implode(' > ', array_reverse($breadcrumb));
          } else {
-            echo "<tr class='tab_bg_1'>
+            $out .= "<tr class='tab_bg_1'>
                <td>" . __('Data center position') . "</td>
                <td colspan='3'>" . implode(' > ', array_reverse($breadcrumb)) . "</td>
                </tr>";
          }
       }
+
+      if ($display) {
+         echo $out;
+      }
+      return $out;
    }
 
    /**

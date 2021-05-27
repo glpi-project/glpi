@@ -636,7 +636,7 @@ class Cable extends CommonDBTM {
          $item = new $this->fields[$side.'_itemtype']();
          $item->getFromDB($this->fields[$side.'_items_id']);
          if (method_exists($item, 'showDcBreadcrumb')) {
-            echo $item->showDcBreadcrumb(true);
+            $item->showDcBreadcrumb(true);
          }
       }
    }

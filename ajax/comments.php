@@ -101,8 +101,17 @@ if (isset($_POST["itemtype"])
             }
             $tmpname = Dropdown::getDropdownName($table, $_POST["value"], 1);
             if (is_array($tmpname) && isset($tmpname["comment"])) {
-                echo $tmpname["comment"];
+                echo $tmpname["comment"]."<br />";
             }
+
+            //return DCPosittion
+            $item = new $_POST['itemtype']();
+            $item->getFromDB($_POST["value"]);
+            if (method_exists($item, 'showDcBreadcrumb')) {
+               echo $item->showDcBreadcrumb(true);
+            }
+
+
             if (isset($_POST['withlink'])) {
                echo "<script type='text/javascript' >\n";
                echo Html::jsGetElementbyID($_POST['withlink']).".

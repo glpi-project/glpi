@@ -70,7 +70,7 @@ switch ($_POST['action']) {
          $item = new $_POST['itemtype']();
          $item->getFromDB($_POST['items_id']);
          if (method_exists($item, 'showDcBreadcrumb')) {
-            echo $item->showDcBreadcrumb(true);
+            $item->showDcBreadcrumb(true);
          }
       } else {
          echo "";

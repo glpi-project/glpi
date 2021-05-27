@@ -138,6 +138,14 @@ class Dropdown {
          if ($tmpname["name"] != "&nbsp;") {
             $name    = $tmpname["name"];
             $comment = $tmpname["comment"];
+
+            //get DCPosittion if exist
+            $item = new $itemtype();
+            $item->getFromDB($params['value']);
+            if (method_exists($item, 'showDcBreadcrumb')) {
+               $comment .= "<br />".$item->showDcBreadcrumb(true, false);
+            }
+
          }
       }
 
