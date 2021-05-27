@@ -32,9 +32,8 @@
 
 include ('../inc/includes.php');
 
-$dropdown = new Socket();
-
-// Add a ticket from item : format data
+// Add a socket from item : format data
+// see socket.class.php:607
 if (isset($_REQUEST['_add_fromitem'])
       && isset($_REQUEST['_from_itemtype'])
       && isset($_REQUEST['_from_items_id'])) {

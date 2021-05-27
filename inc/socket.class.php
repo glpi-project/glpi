@@ -85,6 +85,7 @@ class Socket extends CommonDropdown {
 
       global $CFG_GLPI;
 
+      //if Form is called from an item, retrive itemtype and items
       if (isset($options['_add_fromitem'])) {
          $itemtype = $options['_add_fromitem']["_from_itemtype"];
          $items_id = $options['_add_fromitem']["_from_items_id"];
@@ -98,7 +99,7 @@ class Socket extends CommonDropdown {
                  'action'   => 'getItemsFromItemtype'];
       Ajax::updateItemOnSelectEvent("dropdown_itemtype$rand_itemtype",
                                     "show_items_id_field",
-                                    $CFG_GLPI["root_doc"]."/ajax/networkport.php",
+                                    $CFG_GLPI["root_doc"]."/ajax/socket.php",
                                     $params);
 
       echo "<span id='show_items_id_field'>";
@@ -113,49 +114,35 @@ class Socket extends CommonDropdown {
 
          Ajax::updateItemOnSelectEvent("dropdown_items_id$rand_items_id",
                                        "show_networkport_field",
-                                       $CFG_GLPI["root_doc"]."/ajax/networkport.php",
+                                       $CFG_GLPI["root_doc"]."/ajax/socket.php",
                                        $params);
       }
       echo "</span>";
 
       echo "<span id='show_networkport_field'>";
-
       $rand_items_id =  NetworkPort::dropdown(['name'                => 'networkports_id',
                                                 'value'               => $networkports_id,
                                                 'display_emptychoice' => true,
                                                 'condition' => ["items_id" => $items_id,
                                                 "itemtype"  => $itemtype]]);
-
       echo "</span>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Position')."</td>";
-      echo "<td>";
-
-      echo "<span id='show_asset_breadcrumb'>";
+      //DC position
       if (!empty($itemtype) && !empty($items_id)) {
          $item = new $itemtype();
          $item->getFromDB($items_id);
          if (method_exists($item, 'showDcBreadcrumb')) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>".__('Position')."</td>";
+            echo "<td>";
             $item->showDcBreadcrumb(true);
+            echo "</td></tr>";
          }
       }
-      echo "</span>";
-      $params = ['itemtype'  => '__VALUE0__',
-                 'items_id'  => '__VALUE1__',
-                 'action'    => 'getItemBreadCrumb'];
-
-      Ajax::updateItemOnSelectEvent(["dropdown_itemtype".$rand_itemtype,
-                                     "dropdown_items_id".$rand_items_id],
-                                     "show_asset_breadcrumb",
-                                     $CFG_GLPI["root_doc"]."/ajax/cable.php",
-                                     $params);
-      echo "</td></tr>";
-
    }
 
    /**
-    * Get sides
+    * Get possible itemtype
     * @return array Array of types
    **/
    static function getSocketLinkTypes() {
@@ -164,8 +151,6 @@ class Socket extends CommonDropdown {
       foreach ($CFG_GLPI["socket_link_types"] as $key => $itemtype) {
          if ($item = getItemForItemtype($itemtype)) {
             $values[$itemtype] = $item->getTypeName();
-         } else {
-            unset($CFG_GLPI["socket_link_types"][$key]);
          }
       }
       return $values;
@@ -213,13 +198,10 @@ class Socket extends CommonDropdown {
     * @return array Array of types
    **/
    static function getSides() {
-
-      $options = [
+      return [
          self::REAR   => __('Rear'),
          self::FRONT  => __('Front'),
       ];
-
-      return $options;
    }
 
 
@@ -231,7 +213,6 @@ class Socket extends CommonDropdown {
     * @param integer $value     status ID
    **/
    static function getWiringSideName($value) {
-
       $tab  = static::getSides();
       // Return $value if not defined
       return (isset($tab[$value]) ? $tab[$value] : $value);
@@ -356,9 +337,6 @@ class Socket extends CommonDropdown {
       return $tab;
    }
 
-
-
-
    /**
     * @since 0.84
     *
@@ -408,19 +386,6 @@ class Socket extends CommonDropdown {
          case 'items_id':
 
             if (isset($values['itemtype'])) {
-               if (isset($options['comments']) && $options['comments']) {
-                  $valueData = Dropdown::getDropdownName(
-                     getTableForItemType($values['itemtype']),
-                     $values[$field],
-                     1
-                  );
-                  return sprintf(
-                     __('%1$s %2$s'),
-                     $valueData['name'],
-                     Html::showToolTip($valueData['comment'], ['display' => false])
-                  );
-
-               }
 
                if ($values[$field] > 0) {
                   return Dropdown::getDropdownName(
@@ -439,8 +404,6 @@ class Socket extends CommonDropdown {
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
-
-
 
 
    /**
@@ -599,11 +562,10 @@ class Socket extends CommonDropdown {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nb =  countElementsInTable($this->getTable(),
                                                  ['itemtype' => $item->getType(),
-                                                   'items_id' => $item->getID()]);
+                                                  'items_id' => $item->getID()]);
                   }
                   return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
                }
-
          }
       }
       return '';
@@ -611,7 +573,6 @@ class Socket extends CommonDropdown {
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-
       global $CFG_GLPI;
       if ($item->getType() == 'Location') {
          self::showForLocation($item);
@@ -643,7 +604,7 @@ class Socket extends CommonDropdown {
          return false;
       }
 
-      // Link to open a new change
+      // Link to open a new socket
       if ($item->getID() && self::canCreate()) {
          echo "<div class='firstbloc'>";
          Html::showSimpleForm(
@@ -724,7 +685,13 @@ class Socket extends CommonDropdown {
 
          echo "<td>" . Dropdown::getDropdownName(SocketModel::getTable(), $socket->fields["socketmodels_id"]) . "</td>";
          echo "<td>" . self::getWiringSideName($socket->fields["wiring_side"]) . "</td>";
-         echo "<td>" . Dropdown::getDropdownName(NetworkPort::getTable(), $socket->fields["networkports_id"]) . "</td>";
+
+         $networkport = new NetworkPort();
+         if ($networkport->getFromDB($socket->fields["networkports_id"])) {
+            echo "<td><a href='" . $networkport->getLinkURL(). "'>".$networkport->fields['name']."</a></td>";
+         } else {
+            echo "<td></td>";
+         }
 
          $cable = new Cable();
          if ($cable->getFromDBByCrit(['OR' => ['rear_sockets_id' => $socket->fields["id"],

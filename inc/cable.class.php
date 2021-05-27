@@ -317,29 +317,13 @@ class Cable extends CommonDBTM {
 
       switch ($field) {
          case 'items_id':
-
             if (isset($values['itemtype'])) {
-               if (isset($options['comments']) && $options['comments']) {
-                  $valueData = Dropdown::getDropdownName(
-                     getTableForItemType($values['itemtype']),
-                     $values[$field],
-                     1
-                  );
-                  return sprintf(
-                     __('%1$s %2$s'),
-                     $valueData['name'],
-                     Html::showToolTip($valueData['comment'], ['display' => false])
-                  );
-
-               }
-
                if ($values[$field] > 0) {
                   return Dropdown::getDropdownName(
                      getTableForItemType($values['itemtype']),
                      $values[$field]
                   );
                }
-
             } else {
                return ' ';
             }

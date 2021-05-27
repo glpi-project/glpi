@@ -46,8 +46,6 @@ switch ($_POST['action']) {
                                                'display_emptychoice' => true,
                                                'withDCLocation'      => true,
                                                'rand'                => $_POST['rand'] ]);
-      } else {
-         echo "";
       }
       break;
 

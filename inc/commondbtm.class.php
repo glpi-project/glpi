@@ -3170,34 +3170,6 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return integer ID of the entity
    **/
-   function getLocationID() {
-      if ($this->isLocationAssign()) {
-         return $this->fields["locations_id"];
-      }
-      return  -1;
-   }
-
-   /**
-    * Is the object assigned to a location
-    *
-    * Can be overloaded (ex : infocom)
-    *
-    * @return boolean
-   **/
-   function isLocationAssign() {
-      if (!array_key_exists('id', $this->fields)) {
-         $this->getEmpty();
-      }
-      return array_key_exists('locations_id', $this->fields);
-   }
-
-   /**
-    * Get the ID of entity assigned to the object
-    *
-    * Can be overloaded (ex : infocom)
-    *
-    * @return integer ID of the entity
-   **/
    function getEntityID() {
 
       if ($this->isEntityAssign()) {
@@ -5782,5 +5754,4 @@ class CommonDBTM extends CommonGLPI {
    public function getNonLoggedFields(): array {
       return [];
    }
-
 }

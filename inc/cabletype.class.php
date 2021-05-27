@@ -37,11 +37,9 @@ if (!defined('GLPI_ROOT')) {
 /// Class Cabletype
 class CableType extends CommonDropdown {
 
-
    static function getTypeName($nb = 0) {
       return _n('Cable type', 'Cable types', $nb);
    }
-
 
    static function getFieldLabel() {
       return _n('Cable type', 'Cable types', 1);

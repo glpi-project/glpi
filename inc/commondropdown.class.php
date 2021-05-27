@@ -528,6 +528,9 @@ abstract class CommonDropdown extends CommonDBTM {
                return false;
 
             default:
+               //pass $options arg to allow the creation of an item from another
+               //see socket.class.php:607
+               //see socket.form.php:36
                $this->displaySpecificTypeField($ID, $field, $options);
                break;
          }

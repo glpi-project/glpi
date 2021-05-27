@@ -111,12 +111,12 @@ trait DCBreadcrumb {
     *
     * @return void
     */
-   public function showDcBreadcrumb($withouTable = false, $display = true) {
+   public function showDcBreadcrumb($withoutHTMLTable = false, $display = true) {
       $breadcrumb = $this->getDcBreadcrumb();
       $out = "";
 
       if (count($breadcrumb)) {
-         if ($withouTable) {
+         if ($withoutHTMLTable) {
             $out .= implode(' > ', array_reverse($breadcrumb));
          } else {
             $out .= "<tr class='tab_bg_1'>
@@ -124,12 +124,12 @@ trait DCBreadcrumb {
                <td colspan='3'>" . implode(' > ', array_reverse($breadcrumb)) . "</td>
                </tr>";
          }
-      }
 
-      if ($display) {
-         echo $out;
+         if ($display) {
+            echo $out;
+         }
+         return $out;
       }
-      return $out;
    }
 
    /**

@@ -1736,6 +1736,7 @@ JAVASCRIPT;
       self::displayTopMenu(true);
       echo "</header>"; // header_top
 
+      //Main menu
       self::displayMainMenu(
          true, [
             'sector' => $sector,

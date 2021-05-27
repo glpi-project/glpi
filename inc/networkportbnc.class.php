@@ -88,7 +88,8 @@ class NetworkPortBnc extends NetworkPortInstantiation {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('BNC port type') . "</td><td>\n";
-      Dropdown::show('NetworkPortBncType', ['name' => 'networkportbnctypes_id', 'value' => $this->fields['networkportbnctypes_id']]);
+      Dropdown::show('NetworkPortBncType', ['name'    => 'networkportbnctypes_id',
+                                            'value'   => $this->fields['networkportbnctypes_id']]);
       echo "</td>";
 
       echo "<td>" . __('BNC port speed') . "</td><td>\n";

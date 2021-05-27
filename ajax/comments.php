@@ -111,7 +111,6 @@ if (isset($_POST["itemtype"])
                echo $item->showDcBreadcrumb(true);
             }
 
-
             if (isset($_POST['withlink'])) {
                echo "<script type='text/javascript' >\n";
                echo Html::jsGetElementbyID($_POST['withlink']).".

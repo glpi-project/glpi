@@ -39,12 +39,15 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 switch ($_POST['action']) {
+
    case 'getItemsFromItemtype':
       if ($_POST['itemtype'] && class_exists($_POST['itemtype'])) {
-         $rand = $_POST['itemtype']::dropdown(['name' => $_POST['dom_name'], 'display_emptychoice' => true]);
+         $rand = $_POST['itemtype']::dropdown(['name'                => $_POST['dom_name'],
+                                               'display_emptychoice' => true]);
+
          $params = ['items_id'   => '__VALUE__',
-                  'itemtype'   => $_POST['itemtype'],
-                  'action'     => 'getNetworkPortFromItem'];
+                    'itemtype'   => $_POST['itemtype'],
+                    'action'     => 'getNetworkPortFromItem'];
 
          Ajax::updateItemOnSelectEvent("dropdown_items_id$rand",
                                        "show_networkport_field",

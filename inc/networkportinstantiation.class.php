@@ -115,30 +115,34 @@ class NetworkPortInstantiation extends CommonDBChild {
 
    function manageSocket() {
 
+      //To keep backward compatibility with old field 'sockets_id'
+
       //remove link between old socket and networkport
       if (isset($this->oldvalues['sockets_id']) && $this->oldvalues['sockets_id'] > 0) {
          $socket = new Socket();
-         $socket->getFromDB($this->oldvalues['sockets_id']);
-         $socket->update([
-            "id" => $socket->getID(),
-            "itemtype" => '',
-            "items_id" => 0,
-            "networkports_id" => 0
-         ]);
+         if ($socket->getFromDB($this->oldvalues['sockets_id'])) {
+            $socket->update([
+               "id" => $socket->getID(),
+               "itemtype" => '',
+               "items_id" => 0,
+               "networkports_id" => 0
+            ]);
+         }
       }
 
+      //add link to new socket
       if (isset($this->input['sockets_id']) && $this->input['sockets_id'] > 0) {
          $networkport = new NetworkPort();
-         $networkport->getFromDB($this->fields['networkports_id']);
-
-         $socket = new Socket();
-         $socket->getFromDB($this->input['sockets_id']);
-         $socket->update([
-            "id" => $socket->getID(),
-            "itemtype" => $networkport->fields['itemtype'],
-            "items_id" => $networkport->fields['items_id'],
-            "networkports_id" => $this->fields['networkports_id'],
-         ]);
+         if ($networkport->getFromDB($this->fields['networkports_id'])) {
+            $socket = new Socket();
+            $socket->getFromDB($this->input['sockets_id']);
+            $socket->update([
+               "id" => $socket->getID(),
+               "itemtype" => $networkport->fields['itemtype'],
+               "items_id" => $networkport->fields['items_id'],
+               "networkports_id" => $this->fields['networkports_id'],
+            ]);
+         }
       }
    }
 
