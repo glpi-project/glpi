@@ -1,0 +1,83 @@
+{% set filters_buttons = {
+   'description': {
+      'title': __("Description"),
+      'icon': item|getIcon(),
+      'itemtype': 'ITILContent'
+   },
+   'followups': {
+      'title': _n("Followup", "Followups", getPluralNumber()),
+      'icon': 'far fa-comment',
+      'itemtype': 'ITILFollowup'
+   },
+   'tasks': {
+      'title': _n("Task", "Tasks", getPluralNumber()),
+      'icon': 'far fa-check-square',
+      'itemtype': 'ITILTask'
+   },
+   'documents': {
+      'title': _n("Document", "Documents", getPluralNumber()),
+      'icon': 'fas fa-paperclip',
+      'itemtype': 'Document_Item'
+   },
+   'validations': {
+      'title': _n("Validation", "Validations", getPluralNumber()),
+      'icon': 'far fa-thumbs-up',
+      'itemtype': 'ITILValidation'
+   },
+   'solutions': {
+      'title': _n("Solution", "Solutions", getPluralNumber()),
+      'icon': 'fas fa-check',
+      'itemtype': 'ITILSolution'
+   },
+} %}
+
+<div class="filter-timeline d-none d-md-block float-end mt-n2">
+   {% set popover_content %}
+   {# warning, simple quotes are important to be embedded in popover content #}
+   <div class='filter-timeline-popover list-group list-group-flush m-n3'>
+      {% for filter_key, filter_button in filters_buttons %}
+         <li class='list-group-item list-group-item-action py-1'>
+            <div class='form-check form-switch trigger-filter {{ filter_button['itemtype'] }}' role='button'>
+               <input class='form-check-input' type='checkbox' id='timeline-filter-{{ filter_key }}'
+                     autocomplete='off' checked
+                     data-itemtype='{{ filter_button['itemtype'] }}'>
+               <label class='form-check-label' for='timeline-filter-{{ filter_key }}' role='button'>
+                  <i class='{{ filter_button['icon'] }} ms-2'></i>
+                  {{ filter_button['title'] }}
+               </label>
+            </div>
+         </li>
+      {% endfor %}
+   </div>
+   {% endset %}
+
+   <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __("Timeline filter") }}">
+      <button type="button"
+            class="btn btn-sm btn-icon btn-ghost-secondary open-timeline-filter-popover"
+            title="{{ __("Timeline filter") }}"
+            data-bs-toggle="popover" data-bs-placement="top"
+            data-bs-trigger="click"
+            data-bs-sanitize="false"data-bs-html="true"
+            data-bs-content="{{ popover_content }}">
+         <i class="fas fa-filter"></i>
+      </button>
+   </span>
+</div>
+
+<script type="text/javascript">
+$(function() {
+   $(document).on("click", ".filter-timeline-popover .trigger-filter", function() {
+      var timeline       = $('#itil-object-container .itil-timeline');
+      var timeline_items = timeline.find(".timeline-item");
+
+      timeline_items.addClass('d-none');
+      $('.filter-timeline-popover .trigger-filter input[type=checkbox]').each(function() {
+         if(!$(this).is(':checked')) {
+            return;
+         }
+         var itemtype = $(this).data('itemtype');
+         timeline_items.filter("."+itemtype).removeClass('d-none');
+      });
+   });
+});
+</script>

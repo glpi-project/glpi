@@ -1,35 +1,42 @@
 <div class="mx-n2 mb-n2 itil-footer itil-footer p-0 border-top" id="itil-footer">
    <div class="buttons-bar d-flex py-2">
-      {% if not item.isNewItem() and item.isNotSolved() %}
+      {% if not item.isNewItem() %}
          <div class="col-md-8 ps-3 timeline-buttons">
-            <div class="btn-group me-2 main-actions">
-               {% set default_action_data = timeline_itemtypes|first %}
-               <button class="btn btn-primary answer-action" data-bs-toggle="collapse" data-bs-target="#new-{{ default_action_data.class }}-block">
-                  <i class='{{ default_action_data.icon }}'></i>
-                  <span>{{ default_action_data.label }}</span>
-               </button>
-               <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                  <span class="visually-hidden">{{ __("View other actions") }}</span>
-               </button>
-               <ul class="dropdown-menu">
-                  {% for action, timeline_itemtype in timeline_itemtypes %}
-                     {% if loop.index0 > 0 %}
-                        <li><a class="dropdown-item action-{{ action }} answer-action" href="#"
-                           data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
-                           <i class='{{ timeline_itemtype.icon }}'></i>
-                           <span>{{ timeline_itemtype.label }}</span>
-                        </a></li>
-                     {% endif %}
-                  {% endfor %}
-               </ul>
-            </div>
+            {% if item.isNotSolved() %}
+               <div class="btn-group me-2 main-actions">
+                  {% set default_action_data = timeline_itemtypes|first %}
+                  <button class="btn btn-primary answer-action" data-bs-toggle="collapse" data-bs-target="#new-{{ default_action_data.class }}-block">
+                     <i class='{{ default_action_data.icon }}'></i>
+                     <span>{{ default_action_data.label }}</span>
+                  </button>
+                  <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                     <span class="visually-hidden">{{ __("View other actions") }}</span>
+                  </button>
+                  <ul class="dropdown-menu">
+                     {% for action, timeline_itemtype in timeline_itemtypes %}
+                        {% if loop.index0 > 0 %}
+                           <li><a class="dropdown-item action-{{ action }} answer-action" href="#"
+                              data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
+                              <i class='{{ timeline_itemtype.icon }}'></i>
+                              <span>{{ timeline_itemtype.label }}</span>
+                           </a></li>
+                        {% endif %}
+                     {% endfor %}
+                  </ul>
+               </div>
+            {% endif %}
+
+            {% include "components/itilobject/timeline/filter_timeline.html.twig" %}
          </div>
       {% endif %}
 
       <div class="form-buttons col-md d-flex justify-content-end ms-auto ms-md-0 my-n2 py-2 pe-3 card-footer border-top-0 position-relative">
-         <button class="switch-panel-width btn btn-sm btn-square btn-icon btn-ghost-secondary d-none d-md-block border-top-0 border-start-0 position-absolute top-0 start-0">
-            <i class="fas fa-caret-left"></i>
-         </button>
+         <span class="d-none d-md-block position-absolute top-0 start-0"
+               data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __("Toggle panels width") }}">
+            <button class="switch-panel-width btn btn-sm btn-square btn-icon btn-ghost-secondary border-top-0 border-start-0">
+               <i class="fas fa-caret-left"></i>
+            </button>
+         </span>
 
          {% if item.isNewItem() %}
             <button class="btn btn-primary" type="submit" name="add"

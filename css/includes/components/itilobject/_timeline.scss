@@ -213,3 +213,31 @@
       }
    }
 }
+
+.filter-timeline-popover {
+   .form-check {
+      .form-check-input:checked {
+         background-color: $timeline-fup-bg;
+         border-color: $timeline-fup-border;
+      }
+
+      &.ITILContent {
+         .form-check-input:checked {
+            background-color: $timeline-itilc-bg;
+            border-color: $timeline-itilc-border;
+         }
+      }
+      &.ITILTask {
+         .form-check-input:checked {
+            background-color: $timeline-task-bg;
+            border-color: $timeline-task-border;
+         }
+      }
+      &.ITILSolution {
+         .form-check-input:checked {
+            background-color: $timeline-sol-bg;
+            border-color: $timeline-sol-border;
+         }
+      }
+   }
+}

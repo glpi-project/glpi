@@ -35,6 +35,7 @@
 
       .itil-left-side, .itil-right-side {
          overflow-y: auto;
+         transition: all 400ms ease;
       }
 
       .itil-left-side {
