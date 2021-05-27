@@ -1305,7 +1305,10 @@ HTML;
             'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsGeneric",
             'args'       => [
                'case' => $case,
-               'validation_check_user' => true,
+               'params' => [
+                  'validation_check_user' => true,
+               ]
+            ],
             ],
             'filters'    => [
                'dates', 'dates_mod', 'itilcategory',
