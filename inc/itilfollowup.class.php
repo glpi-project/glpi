@@ -210,11 +210,13 @@ class ITILFollowup  extends CommonDBChild {
          'force_update'  => true,
          'name'          => 'content',
          'content_field' => 'content',
+         'date' => $this->fields['date'],
       ]);
 
       // Add documents if needed, without notification
       $this->input = $this->addFiles($this->input, [
          'force_update'  => true,
+         'date' => $this->fields['date'],
       ]);
 
       $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
