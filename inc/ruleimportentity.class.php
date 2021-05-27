@@ -346,7 +346,7 @@ class RuleImportEntity extends Rule {
          '_affect_entity_by_tag' => [
             'name' => __('Entity from TAG'),
             'type' => 'text',
-            'force_actions' => 'regex_result',
+            'force_actions' => ['regex_result'],
          ],
          '_ignore_import' => [
             'name' => __('Refuse import'),
