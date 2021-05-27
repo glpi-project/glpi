@@ -115,15 +115,14 @@ trait DCBreadcrumb {
       $breadcrumb = $this->getDcBreadcrumb();
 
       if (count($breadcrumb)) {
-         if ($withouTable){
+         if ($withouTable) {
             echo implode(' > ', array_reverse($breadcrumb));
-         }else{
+         } else {
             echo "<tr class='tab_bg_1'>
                <td>" . __('Data center position') . "</td>
                <td colspan='3'>" . implode(' > ', array_reverse($breadcrumb)) . "</td>
                </tr>";
          }
-
       }
    }
 
