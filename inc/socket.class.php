@@ -247,11 +247,6 @@ class Socket extends CommonDropdown {
       $tab  = parent::rawSearchOptions();
 
       $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
-      ];
-
-      $tab[] = [
          'id'                 => '5',
          'table'              => SocketModel::getTable(),
          'field'              => 'name',
