@@ -3458,9 +3458,8 @@ JAVASCRIPT;
          'linkfield'          => 'contracts_id',
          'name'               => Contract::getTypeName(1),
          'massiveaction'      => false,
-         'searchtype'         => 'equals',
+         'searchtype'         => ['equals', 'contains'],
          'datatype'           => 'dropdown',
-         'usehaving'          => true,
          'joinparams'         => [
             'beforejoin'         => [
                'table'              => Ticket_Contract::getTable(),
@@ -3470,29 +3469,33 @@ JAVASCRIPT;
                ]
             ]
          ],
-         'forcegroupby'       => true
       ];
 
       $tab[] = [
          'id'                 => '194',
          'table'              => ContractType::getTable(),
          'field'              => 'name',
-         'linkfield'          => 'contracts_id',
+         'linkfield'          => 'contracttypes_id',
          'name'               => ContractType::getTypeName(1),
          'massiveaction'      => false,
-         'searchtype'         => 'equals',
+         'searchtype'         => ['equals', 'contains'],
          'datatype'           => 'dropdown',
-         'usehaving'          => true,
          'joinparams'         => [
             'beforejoin'         => [
-               'table'              => Ticket_Contract::getTable(),
+               'table'              => Contract::getTable(),
                'joinparams'         => [
-                  'jointype'           => 'child',
-                  'linkfield'          => 'tickets_id',
+                  'jointype'           => 'empty',
+                  'linkfield'          => 'contracts_id',
+                  'beforejoin'   => [
+                     'table'        => Ticket_Contract::getTable(),
+                     'joinparams'   => [
+                        'jointype'   => 'child',
+                        'linkfield'  => 'tickets_id',
+                     ]
+                  ]
                ]
             ]
          ],
-         'forcegroupby'       => true
       ];
 
       // Filter search fields for helpdesk
