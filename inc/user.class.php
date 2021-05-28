@@ -2841,13 +2841,9 @@ JAVASCRIPT;
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='nickname$rand'> " . __('Nickname') . "</label></td>";
             echo "<td>";
-            if ($this->can($ID, UPDATE)) {
-               echo Html::input('nickname', [
-                  'value' => $this->fields['nickname']
-               ]);
-            } else {
-               echo $this->fields['nickname'];
-            }
+            echo Html::input('nickname', [
+               'value' => $this->fields['nickname']
+            ]);
             echo "</td>";
             echo "</tr>";
          }
