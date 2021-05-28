@@ -1436,6 +1436,20 @@ class Problem extends CommonITILObject {
          }
       }
 
+
+      TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
+         'item'               => $this,
+         'timeline_itemtypes' => $this->getTimelineItemtypes(),
+         'params'             => $options,
+         'timeline'           => $this->getTimelineItems(),
+         'itiltemplate_key'   => $tpl_key,
+         'itiltemplate'       => $tt,
+         'predefined_fields'  => $predefined_fields,
+         'canupdate'          => $canupdate,
+         'canpriority'        => $canupdate,
+         'canassign'          => $canupdate,
+      ]);
+
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
