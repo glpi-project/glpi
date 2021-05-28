@@ -1072,6 +1072,12 @@ var templateItilStatus = function(option) {
       case 12 :
          classes = 'qualif far fa-circle';
          break;
+      case 13 :
+         classes = 'refused far fa-times-circle';
+         break;
+      case 14 :
+         classes = 'canceled fas fa-ban';
+         break;
    }
 
    return $(`<span><i class="itilstatus ${classes}"></i>${option.text}</span>`);
