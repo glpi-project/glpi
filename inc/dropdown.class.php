@@ -1611,6 +1611,7 @@ class Dropdown {
       $params['display']             = true;
       $params['display_emptychoice'] = true;
       $params['width']               = '';
+      $params['class']               = 'form-select-sm';
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1701,13 +1702,15 @@ class Dropdown {
             }
          }
       }
-      return Dropdown::showFromArray($myname, $values,
-                                     ['value'                => $params['value'],
-                                            'display'             => $params['display'],
-                                            'width'               => $params['width'],
-                                            'display_emptychoice' => $params['display_emptychoice'],
-                                            'rand'                => $params['rand'],
-                                            'emptylabel'          => $params['emptylabel']]);
+      return Dropdown::showFromArray($myname, $values, [
+         'value'               => $params['value'],
+         'display'             => $params['display'],
+         'width'               => $params['width'],
+         'display_emptychoice' => $params['display_emptychoice'],
+         'rand'                => $params['rand'],
+         'emptylabel'          => $params['emptylabel'],
+         'class'               => $params['class'],
+      ]);
    }
 
 

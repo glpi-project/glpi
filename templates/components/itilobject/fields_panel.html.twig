@@ -22,6 +22,15 @@
                field_options
             ) }}
 
+            {% if item.getType() != "Ticket" %}
+               {{ fields.datetimeField(
+                  'time_to_resolve',
+                  item.fields["time_to_resolve"],
+                  __('Time to resolve'),
+                  field_options
+               ) }}
+            {% endif %}
+
             {% if item.isSolved(true) %}
                {{ fields.datetimeField(
                'solvedate',
@@ -71,6 +80,10 @@
                {% elseif item.fields['type'] == constant("Ticket::DEMAND_TYPE") %}
                   {% set cat_params = cat_params|merge({'condition': {'is_request': 1}}) %}
                {% endif %}
+            {% elseif item.getType() == "Problem" %}
+               {% set cat_params = cat_params|merge({'condition': {'is_problem': 1}}) %}
+            {% elseif item.getType() == "Change" %}
+               {% set cat_params = cat_params|merge({'condition': {'is_change': 1}}) %}
             {% endif %}
             {{ fields.dropdownField(
                'ITILCategory',
@@ -82,30 +95,43 @@
 
             {% include("components/itilobject/fields/status.html.twig") %}
 
-            {{ fields.dropdownField(
-               'RequestType',
-               'requesttypes_id',
-               item.fields["requesttypes_id"],
-               "RequestType"|itemtype_name,
-               field_options|merge({
-                  'condition': {
-                     'is_active': 1,
-                     'is_ticketheader': 1
-                  }
-               })
-            ) }}
+            {% if item.isField('requesttypes_id') %}
+               {{ fields.dropdownField(
+                  'RequestType',
+                  'requesttypes_id',
+                  item.fields["requesttypes_id"],
+                  "RequestType"|itemtype_name,
+                  field_options|merge({
+                     'condition': {
+                        'is_active': 1,
+                        'is_ticketheader': 1
+                     }
+                  })
+               ) }}
+            {% endif %}
 
             {% include("components/itilobject/fields/priority_matrix.html.twig") %}
 
-            {{ fields.dropdownField(
-               'Location',
-               'locations_id',
-               item.fields["locations_id"],
-               "Location"|itemtype_name,
-               field_options
-            ) }}
+            {% if item.isField('location') %}
+               {{ fields.dropdownField(
+                  'Location',
+                  'locations_id',
+                  item.fields["locations_id"],
+                  "Location"|itemtype_name,
+                  field_options
+               ) }}
+            {% endif %}
 
             {% include("components/itilobject/fields/global_validation.html.twig") %}
+
+            {% if item.getType() != "Ticket" %}
+               {{ fields.dropdownTimestampField(
+                  'actiontime',
+                  item.fields["actiontime"],
+                  __('Total duration'),
+                  field_options
+               ) }}
+            {% endif %}
          </div>
       </div>
    </div>
@@ -145,7 +171,9 @@
             </div>
          </div>
       </div>
+   {% endif %}
 
+   {% if ticket_ticket %}
       <div class="accordion-item">
          <h2 class="accordion-header" id="linked_tickets-heading">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#linked_tickets" aria-expanded="true" aria-controls="linked_tickets">
