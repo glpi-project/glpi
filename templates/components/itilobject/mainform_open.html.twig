@@ -8,3 +8,16 @@
    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
    <input type="hidden" name="{{ itiltemplate_key }}" value="{{ itiltemplate.fields['id'] }}"/>
    <input type="hidden" name="_predefined_fields" value="{{ prepareArrayForInput(predefined_fields) }}"/>
+
+   {% if params['tickets_id'] is defined or params['_tickets_id'] is defined %}
+      <input type="hidden" name="_tickets_id" value="{{ params['tickets_id'] ?? params['_tickets_id'] }}"/>
+   {% endif %}
+
+   {% if params['problems_id'] is defined or params['_problems_id'] is defined %}
+      <input type="hidden" name="_problems_id" value="{{ params['problems_id'] ?? params['_problems_id'] }}"/>
+   {% endif %}
+
+   {% if params['_add_fromitem'] is defined %}
+      <input type="hidden" name="_from_items_id" value="{{ params['_from_items_id'] ?? 0 }}"/>
+      <input type="hidden" name="_from_itemtype" value="{{ params['_from_itemtype'] ?? "" }}"/>
+   {% endif %}
