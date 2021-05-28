@@ -849,6 +849,8 @@ class Change extends CommonITILObject {
          'canassign'          => $canupdate,
       ]);
 
+      return true;
+
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
