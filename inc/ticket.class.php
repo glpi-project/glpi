@@ -1088,22 +1088,26 @@ class Ticket extends CommonITILObject {
 
       // Only process rules on changes
       if (count($changes)) {
-         if (in_array('_users_id_requester', $changes)) {
-            // If _users_id_requester changed : set _locations_id_of_requester
-            $user = new User();
-            if (isset($input["_itil_requester"]["users_id"])
-                && $user->getFromDB($input["_itil_requester"]["users_id"])) {
-               $input['_locations_id_of_requester'] = $user->fields['locations_id'];
-               $changes[]                           = '_locations_id_of_requester';
-            }
-            // If _users_id_requester changed : add _groups_id_of_requester to changes
-            $changes[] = '_groups_id_of_requester';
+         $user = new User();
+         $user_id = null;
+         //try to find user from changes if exist (defined as _itil_requester)
+         if (isset($input["_itil_requester"]["users_id"])) {
+            $user_id = $input["_itil_requester"]["users_id"];
+         } else if (isset($input["_users_id_requester"])) {  //else try to find user from input
+            $user_id = is_array($input["_users_id_requester"]) ? reset($input["_users_id_requester"]) : $input["_users_id_requester"];
+         }
+
+         if ($user_id !== null && $user->getFromDB($user_id)) {
+            $input['_locations_id_of_requester']   = $user->fields['locations_id'];
+            $input['users_default_groups']         = $user->fields['groups_id'];
+            $changes[]                             = '_locations_id_of_requester';
+            $changes[]                             = '_groups_id_of_requester';
          }
 
          $input = $rules->processAllRules($input,
                                           $input,
                                           ['recursive'   => true,
-                                                'entities_id' => $entid],
+                                          'entities_id' => $entid],
                                           ['condition'     => RuleTicket::ONUPDATE,
                                           'only_criteria' => $changes]);
          $input = Toolbox::stripslashes_deep($input);
