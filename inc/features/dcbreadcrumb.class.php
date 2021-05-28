@@ -67,7 +67,8 @@ trait DCBreadcrumb {
          //check if asset is part of an enclosure
          if ($enclosure = $this->isEnclosurePart($item->getType(), $item->getID(), true)) {
             $options = ['linkoption' => $enclosure->isDeleted() ? 'class="target-deleted"' : ''];
-            $breadcrumb[] = $enclosure->getLink($options);
+            $position = $this->getItemEnclosurePosition($item->getType(), $item->getID());
+            $breadcrumb[] = $enclosure->getLink($options).$position;
             $item = $enclosure;
          }
       }
@@ -76,7 +77,8 @@ trait DCBreadcrumb {
          //check if asset (or its enclosure) is part of a rack
          if ($rack = $this->isRackPart($item->getType(), $item->getID(), true)) {
             $options = ['linkoption' => $rack->isDeleted() ? 'class="target-deleted"' : ''];
-            $breadcrumb[] = $rack->getLink($options);
+            $position = $this->getItemRackPosition($item->getType(), $item->getID());
+            $breadcrumb[] = $rack->getLink($options).$position;
             $item = $rack;
          }
       }
@@ -141,7 +143,7 @@ trait DCBreadcrumb {
     *
     * @return false|Enclosure
     */
-   public function isEnclosurePart($itemtype, $items_id, $getobj = false) {
+    public function isEnclosurePart($itemtype, $items_id, $getobj = false) {
       $ien = new Item_Enclosure();
       $found = $ien->getFromDBByCrit([
          'itemtype'  => $itemtype,
@@ -159,6 +161,52 @@ trait DCBreadcrumb {
       }
 
       return $found;
+   }
+
+   /**
+    * get item osition from Enclosure
+    *
+    * @param string  $itemtype Item type
+    * @param integer $items_id Item ID
+    *
+    * @return string
+    */
+    public function getItemEnclosurePosition($itemtype, $items_id) {
+      $position = 0;
+      $ien = new Item_Enclosure();
+
+      if ($ien->getFromDBByCrit([
+         'itemtype'  => $itemtype,
+         'items_id'  => $items_id
+      ])){
+         $position = $ien->getField('position');
+      }
+
+      $position = "&nbsp;".sprintf(__('(U%1$u)'), $position);
+      return $position;
+   }
+
+   /**
+    * get item position from Rack
+    *
+    * @param string  $itemtype Item type
+    * @param integer $items_id Item ID
+    *
+    * @return string
+    */
+    public function getItemRackPosition($itemtype, $items_id) {
+      $position = 0;
+      $ien = new Item_Rack();
+
+      if ($ien->getFromDBByCrit([
+         'itemtype'  => $itemtype,
+         'items_id'  => $items_id
+      ])){
+         $position = $ien->getField('position');
+      }
+
+      $position = "&nbsp;".sprintf(__('(U%1$u)'), $position);
+      return $position;
    }
 
    /**
