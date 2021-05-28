@@ -112,7 +112,7 @@
 
             {% include("components/itilobject/fields/priority_matrix.html.twig") %}
 
-            {% if item.isField('location') %}
+            {% if item.isField('locations_id') %}
                {{ fields.dropdownField(
                   'Location',
                   'locations_id',
