@@ -1089,7 +1089,7 @@ class Ticket extends CommonITILObject {
       // Only process rules on changes
       if (count($changes)) {
          $user = new User();
-         $user_id = 0;
+         $user_id = null;
          //try to find user from changes if exist (defined as _itil_requester)
          if (isset($input["_itil_requester"]["users_id"])) {
             $user_id = $input["_itil_requester"]["users_id"];
@@ -1097,7 +1097,7 @@ class Ticket extends CommonITILObject {
             $user_id = is_array($input["_users_id_requester"]) ? reset($input["_users_id_requester"]) : $input["_users_id_requester"];
          }
 
-         if ($user->getFromDB($user_id)) {
+         if ($user_id !== null && $user->getFromDB($user_id)) {
             $input['_locations_id_of_requester']   = $user->fields['locations_id'];
             $input['users_default_groups']         = $user->fields['groups_id'];
             $changes[]                             = '_locations_id_of_requester';
