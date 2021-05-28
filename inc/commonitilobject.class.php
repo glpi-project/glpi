@@ -8068,7 +8068,13 @@ abstract class CommonITILObject extends CommonDBTM {
          }
 
          if (1 === count($tab)) {
-            $tab[$this->getType().'$main'] = $this->getTypeName(1);
+            $timeline    = $this->getTimelineItems();
+            $nb_elements = count($timeline);
+            $label = $this->getTypeName(1);
+            if ($nb_elements > 0) {
+               $label.= " <span class='badge'>$nb_elements</span>";
+            }
+            $tab[$this->getType().'$main'] = $label;
          }
       }
 
