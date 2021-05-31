@@ -36,33 +36,45 @@ include ('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
+if (!isset($_POST["action"])) {
+   exit;
+}
 Session::checkLoginUser();
 
 switch ($_POST['action']) {
 
-   case 'getItemsFromItemtype':
+   case 'get_items_from_itemtype':
       if ($_POST['itemtype'] && class_exists($_POST['itemtype'])) {
          $rand = $_POST['itemtype']::dropdown(['name'                => $_POST['dom_name'],
+                                               'rand'                => $_POST['dom_rand'],
                                                'display_emptychoice' => true,
                                                'withDCLocation'      => true,
-                                               'rand'                => $_POST['rand'] ]);
+         ]);
       }
       break;
 
-   case 'getSocketByModelAndItem':
+   case 'get_socket_dropdown':
       if ((isset($_POST['itemtype'])&& class_exists($_POST['itemtype']))
          && isset($_POST['items_id'])) {
-            Socket::dropdown(['name'         =>  $_POST['dom_name'],
-                              'rand'         => $_POST['rand'],
-                              'condition'    => ['socketmodels_id'   => $_POST['socketmodels_id'],
-                                                'itemtype'           => $_POST['itemtype'],
-                                                'items_id'           => $_POST['items_id']],
-                              'displaywith'  => ['itemtype', 'items_id', 'networkports_id'],
-            ]);
+         Socket::dropdown(['name'         =>  $_POST['dom_name'],
+                           'entity'       => $_POST['entity'],
+                           'condition'    => ['socketmodels_id'   => isset ($_POST['socketmodels_id']) ? $_POST['socketmodels_id'] : 0 ,
+                                             'itemtype'           => $_POST['itemtype'],
+                                             'items_id'           => $_POST['items_id']],
+                           'displaywith'  => ['itemtype', 'items_id', 'networkports_id'],
+         ]);
       }
       break;
 
-   case 'getItemBreadCrumb':
+   case 'get_networkport_dropdown':
+         NetworkPort::dropdown(['name'                => 'networkports_id',
+                                'display_emptychoice' => true,
+                                'condition'           => ['items_id' => $_POST['items_id'],
+                                                          'itemtype' => $_POST['itemtype']]]);
+      break;
+
+
+   case 'get_item_breadcrum':
       if ((isset($_POST['itemtype']) && class_exists($_POST['itemtype']))
          && isset($_POST['items_id']) && $_POST['items_id'] > 0) {
          if (method_exists($_POST['itemtype'], 'getDcBreadcrumbSpecificValueToDisplay')) {

@@ -113,7 +113,7 @@ class Dropdown {
       $params['addicon']              = true;
       $params['specific_tags']        = [];
       $params['url']                  = $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php";
-      $params['diplay_dc_position']   = false;
+      $params['display_dc_position']  = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -253,7 +253,7 @@ class Dropdown {
 
          if ($params['display_dc_position']) {
             if ($rack = $item->isRackPart($itemtype, $params['value'], true)) {
-               $output .= "<span id='".$breadcrum_id."'>";
+               $output .= "<span id='".$breadcrum_id."' title='".__s('Display on datacenter')."'>";
                $output .= "&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL(). "'></a>";
                $output .= "</span>";
                $paramscomment['with_dc_position'] = $breadcrum_id;

@@ -29,12 +29,70 @@
  * ---------------------------------------------------------------------
  */
 
-$(document).ready(function() {
-   ajax_url = CFG_GLPI.root_doc+"/ajax/cable.php";
-
-   // set a function to track change on rear/front items_id (from cable form)
-   $(document).on("click", ".copy_to_clipboard_wrapper", function(event) {
-
-
+function refreshAssetBreadcrumb(itemtype, items_id, dom_to_update) {
+   // get asset breadcrumb
+   $.ajax({
+      method: 'POST',
+      url: CFG_GLPI.root_doc+"/ajax/cable.php",
+      data: {
+         action:   'get_item_breadcrum',
+         items_id: items_id,
+         itemtype: itemtype,
+      }
+   }).done(function(html_breadcrum) {
+      $('#'+dom_to_update).empty();
+      $('#'+dom_to_update).append(html_breadcrum);
    });
-});
+
+}
+
+function refreshNetworkPortDropdown(itemtype, items_id, dom_to_update) {
+   // get networkport dropdown
+   $.ajax({
+      method: 'POST',
+      url: CFG_GLPI.root_doc+"/ajax/cable.php",
+      data: {
+         action:   'get_networkport_dropdown',
+         items_id: items_id,
+         itemtype: itemtype,
+      }
+   }).done(function(html_data) {
+      $('#'+dom_to_update).empty();
+      $('#'+dom_to_update).append(html_data);
+   });
+}
+
+function refreshSocketDropdown(itemtype, items_id, dom_to_update) {
+   // get networkport dropdown
+   $.ajax({
+      method: 'POST',
+      url: CFG_GLPI.root_doc+"/ajax/cable.php",
+      data: {
+         action:   'get_networkport_dropdown',
+         items_id: items_id,
+         itemtype: itemtype,
+      }
+   }).done(function(html_data) {
+      $('#'+dom_to_update).empty();
+      $('#'+dom_to_update).append(html_data);
+   });
+}
+
+function refreshSocketModelDropdown(itemtype, items_id, socketmodels_id, entity, dom_name, dom_to_update) {
+   // get networkport dropdown
+   $.ajax({
+      method: 'POST',
+      url: CFG_GLPI.root_doc+"/ajax/cable.php",
+      data: {
+         action:   'get_socket_dropdown',
+         items_id: items_id,
+         itemtype: itemtype,
+         socketmodels_id: socketmodels_id,
+         entity: entity,
+         dom_name: dom_name
+      }
+   }).done(function(html_data) {
+      $('#'+dom_to_update).empty();
+      $('#'+dom_to_update).append(html_data);
+   });
+}

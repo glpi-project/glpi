@@ -42,17 +42,10 @@ switch ($_POST['action']) {
 
    case 'getItemsFromItemtype':
       if ($_POST['itemtype'] && class_exists($_POST['itemtype'])) {
-         $rand = $_POST['itemtype']::dropdown(['name'                => $_POST['dom_name'],
-                                               'display_emptychoice' => true]);
+         $_POST['itemtype']::dropdown(['name'                => $_POST['dom_name'],
+                                       'display_emptychoice' => true,
+                                       'rand' => $_POST['dom_rand']]);
 
-         $params = ['items_id'   => '__VALUE__',
-                    'itemtype'   => $_POST['itemtype'],
-                    'action'     => 'getNetworkPortFromItem'];
-
-         Ajax::updateItemOnSelectEvent("dropdown_items_id$rand",
-                                       "show_networkport_field",
-                                       $CFG_GLPI["root_doc"]."/ajax/networkport.php",
-                                       $params);
       }
       break;
 

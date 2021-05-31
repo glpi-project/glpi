@@ -81,11 +81,13 @@ class Socket extends CommonDropdown {
 
       if ($field['name'] == '_virtual_datacenter_position') {
          //DC position
+         echo "<span id='show_asset_breadcrumb'>";;
          if (!empty($this->fields['itemtype']) && !empty($this->fields['items_id'])) {
             if (method_exists($this->fields['itemtype'], 'getDcBreadcrumbSpecificValueToDisplay')) {
                echo $this->fields['itemtype']::getDcBreadcrumbSpecificValueToDisplay($this->fields['items_id']);
             }
          }
+         echo "</span>";
       }
    }
 
@@ -103,41 +105,56 @@ class Socket extends CommonDropdown {
          $items_id = $options['_add_fromitem']["_from_items_id"];
       }
 
-      $rand_itemtype = Dropdown::showFromArray('itemtype', self::getSocketLinkTypes(), ['value'                => $itemtype]);
+      $rand_itemtype = rand();
+      $rand_items_id = rand();
 
-      $params = ['itemtype' => '__VALUE__',
-                 'dom_name' => 'items_id',
-                 'action'   => 'getItemsFromItemtype'];
+      echo "<span id='show_itemtype_field' class='input_listener'>";
+      Dropdown::showFromArray('itemtype', self::getSocketLinkTypes(), ['value' => $itemtype,
+                                                                       'rand' => $rand_itemtype]);
+      echo "</span>";
+
+      $params = ['itemtype'   => '__VALUE__',
+                 'dom_rand'   => $rand_items_id,
+                 'dom_name'   => 'items_id',
+                 'action'     => 'get_items_from_itemtype'];
       Ajax::updateItemOnSelectEvent("dropdown_itemtype$rand_itemtype",
                                     "show_items_id_field",
-                                    $CFG_GLPI["root_doc"]."/ajax/socket.php",
+                                    $CFG_GLPI["root_doc"]."/ajax/cable.php",
                                     $params);
 
-      echo "<span id='show_items_id_field'>";
+      echo "<span id='show_items_id_field' class='input_listener'>";
       if (!empty($itemtype)) {
          $rand_items_id =  $itemtype::dropdown(['name'                  => 'items_id',
                                                 'value'                 => $items_id,
                                                 'display_emptychoice'   => true,
-                                                'display_dc_position'   => true]);
-
-         $params = ['items_id'   => '__VALUE__',
-                    'itemtype'   => $itemtype,
-                    'action'     => 'getNetworkPortFromItem'];
-
-         Ajax::updateItemOnSelectEvent("dropdown_items_id$rand_items_id",
-                                       "show_networkport_field",
-                                       $CFG_GLPI["root_doc"]."/ajax/socket.php",
-                                       $params);
+                                                'display_dc_position'   => true,
+                                                'rand' => $rand_items_id]);
       }
       echo "</span>";
 
       echo "<span id='show_networkport_field'>";
-      $rand_items_id =  NetworkPort::dropdown(['name'                => 'networkports_id',
-                                                'value'               => $networkports_id,
-                                                'display_emptychoice' => true,
-                                                'condition' => ["items_id" => $items_id,
-                                                "itemtype"  => $itemtype]]);
+      NetworkPort::dropdown(['name'                => 'networkports_id',
+                             'value'               => $networkports_id,
+                             'display_emptychoice' => true,
+                             'condition'           => ['items_id' => $items_id,
+                                                       'itemtype' => $itemtype]]);
       echo "</span>";
+
+      //Listener to update breacrumb / networkport
+      // when itemtype / items_id dropdown are selected
+      echo Html::scriptBlock("
+         $(document).on('change', '.input_listener', function(e) {
+            //wait a little to be sure that dropdown_items_id DOM is effectively refresh
+            //due to Ajax::updateItemOnSelectEvent
+            setTimeout(function(){
+               items_id = $('#dropdown_items_id".$rand_items_id."').find(':selected').val();
+               itemtype = $('#dropdown_itemtype".$rand_itemtype."').find(':selected').val();
+               refreshAssetBreadcrumb(itemtype, items_id, 'show_asset_breadcrumb');
+               refreshNetworkPortDropdown(itemtype, items_id, 'show_networkport_field');
+            }, 40);
+         });
+      ");
+
    }
 
    /**

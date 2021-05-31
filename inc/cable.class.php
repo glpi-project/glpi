@@ -133,7 +133,7 @@ class Cable extends CommonDBTM {
          'id'                 => '8',
          'table'              => $this->getTable(),
          'field'              => 'front_items_id',
-         'name'               => __('Associated item')." (".__('Front').")",
+         'name'               => _n('Associated item', 'Associated items', 0)." (".__('Front').")",
          'massiveaction'      => false,
          'datatype'           => 'specific',
          'searchtype'         => 'equals',
@@ -155,7 +155,7 @@ class Cable extends CommonDBTM {
          'id'                 => '10',
          'table'              => $this->getTable(),
          'field'              => 'rear_items_id',
-         'name'               => __('Associated item')." (".__('Rear').")",
+         'name'               => _n('Associated item', 'Associated items', 0)." (".__('Rear').")",
          'massiveaction'      => false,
          'datatype'           => 'specific',
          'searchtype'         => 'equals',
@@ -470,72 +470,66 @@ class Cable extends CommonDBTM {
       $rand_socket_model_rear = rand();
       $rand_socket_model_front = rand();
 
-      $rand_socket_rear = rand();
-      $rand_socket_front = rand();
-
       echo "<tr class='headerRow'>";
       echo "<th colspan='2'>".__('Rear')."</th>";
       echo "<th colspan='2'>".__('Front')."</th>";
       echo "<tr>";
 
-      //Line to display itemtype dropdown
+      //Line to display itemtype / items_id dropdown
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Asset')."</td>";
 
-      echo "<td>";
-
+      //rear itemtype
+      echo "<td><span id='show_itemtype_field' class='input_rear_listener'>";
       Dropdown::showFromArray('rear_itemtype', Socket::getSocketLinkTypes(), ['value'                 => $this->fields["rear_itemtype"],
                                                                               'rand'                  => $rand_itemtype_rear]);
+      echo "</span>";
 
-      $params = ['itemtype'        => '__VALUE__',
-                  'dom_name'       => 'rear_items_id',
-                  'rand'           => $rand_items_id_rear,
-                  'action'         => 'getItemsFromItemtype'];
+      $params = ['itemtype'   => '__VALUE__',
+                  'dom_name'  => 'rear_items_id',
+                  'dom_rand'  => $rand_items_id_rear,
+                  'action'    => 'get_items_from_itemtype'];
       Ajax::updateItemOnSelectEvent("dropdown_rear_itemtype$rand_itemtype_rear",
                                     "show_rear_items_id_field",
                                     $CFG_GLPI["root_doc"]."/ajax/cable.php",
                                     $params);
 
-      echo "<span id='show_rear_items_id_field'>";
-
-      if (!empty($this->fields["rear_itemtype"])) {
-         $rear_itemtype = $this->fields["rear_itemtype"];
-      } else {
-         $rear_itemtype = "Computer";
-      }
-      $rear_itemtype::dropdown(['name'                  => 'rear_items_id',
-                                                'value'                 => $this->fields["rear_items_id"],
-                                                'rand'                  => $rand_items_id_rear,
-                                                'display_emptychoice'   => true]);
-
+      //front items_id
+      echo "<span id='show_rear_items_id_field' class='input_rear_listener'>";
+      $rear_itemtype = (!empty($this->fields["rear_itemtype"])) ? $this->fields["rear_itemtype"] : "Computer";
+      $rear_itemtype::dropdown(['name'                => 'rear_items_id',
+                                'value'               => $this->fields["rear_items_id"],
+                                'rand'                => $rand_items_id_rear,
+                                'display_emptychoice' => true,
+                                'display_dc_position' => true,
+                                'entity'              => $this->fields["entities_id"]]);
       echo "</span></td>";
-
       echo "<td>".__('Asset')."</td>";
-      echo "<td>";
+
+      //rear itemtype
+      echo "<td><span id='show_itemtype_field' class='input_front_listener'>";
       Dropdown::showFromArray('front_itemtype', Socket::getSocketLinkTypes(), ['value'                => $this->fields["front_itemtype"],
                                                                                'rand'                 => $rand_itemtype_front]);
-
+      echo "</span>";
       $params = ['itemtype'   => '__VALUE__',
                  'dom_name'   => 'front_items_id',
-                 'rand'       => $rand_items_id_front,
-                 'action'     => 'getItemsFromItemtype'];
+                 'dom_rand'   => $rand_items_id_front,
+                 'action'     => 'get_items_from_itemtype'];
 
       Ajax::updateItemOnSelectEvent("dropdown_front_itemtype$rand_itemtype_front",
                                     "show_front_items_id_field",
                                     $CFG_GLPI["root_doc"]."/ajax/cable.php",
                                     $params);
 
+      //rear iteitems_idmype
       echo "<span id='show_front_items_id_field'>";
-      if (!empty($this->fields["front_itemtype"])) {
-         $front_itemtype = $this->fields["front_itemtype"];
-      } else {
-         $front_itemtype = "Computer";
-      }
-
-      $front_itemtype ::dropdown(['name'                 => 'front_items_id',
+      $front_itemtype = (!empty($this->fields["front_itemtype"])) ? $this->fields["front_itemtype"] : "Computer";
+      $front_itemtype::dropdown(['name'                 => 'front_items_id',
                                  'value'                => $this->fields["front_items_id"],
                                  'rand'                 => $rand_items_id_front,
-                                 'display_emptychoice'  => true]);
+                                 'display_emptychoice'  => true,
+                                 'display_dc_position'  => true,
+                                 'entity'               => $this->fields["entities_id"]]);
 
       echo "</span></td>";
       echo "</tr>";
@@ -544,50 +538,20 @@ class Cable extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".SocketModel::getTypeName(1)."</td>";
       echo "<td>";
-
+      echo "<span id='show_rear_socketmodels_id_field' class='input_rear_listener'>";
       SocketModel::dropdown(['name'    => 'rear_socketmodels_id',
                              'value'   => $this->fields["rear_socketmodels_id"],
-                             'rand'    => $rand_socket_model_rear,
-                             'entity'  => $this->fields["entities_id"]]);
-
-      $params = ['itemtype'          => '__VALUE0__',
-                  'items_id'         => '__VALUE1__',
-                  'socketmodels_id'  => '__VALUE2__',
-                  'dom_name'         => 'rear_sockets_id',
-                  'rand'             => $rand_socket_rear,
-                  'action'           => 'getSocketByModelAndItem'];
-
-      Ajax::updateItemOnSelectEvent(["dropdown_rear_itemtype".$rand_itemtype_rear,
-                                     "dropdown_rear_items_id".$rand_items_id_rear,
-                                     "dropdown_rear_socketmodels_id".$rand_socket_model_rear],
-                                    "show_rear_sockets_field",
-                                    $CFG_GLPI["root_doc"]."/ajax/cable.php",
-                                    $params);
-
+                             'rand'    => $rand_socket_model_rear]);
+      echo "</span>";
       echo "</td>";
 
       echo "<td>".SocketModel::getTypeName(1)."</td>";
       echo "<td>";
-
+      echo "<span id='show_front_socketmodels_id_field' class='input_front_listener'>";
       SocketModel::dropdown(['name'    => 'front_socketmodels_id',
                              'value'   => $this->fields["front_socketmodels_id"],
-                             'rand'    => $rand_socket_model_front,
-                             'entity'  => $this->fields["entities_id"]]);
-
-      $params = ['itemtype'         => '__VALUE0__',
-                 'items_id'         => '__VALUE1__',
-                 'socketmodels_id'  => '__VALUE2__',
-                 'dom_name'         => 'front_sockets_id',
-                 'rand'             => $rand_socket_front,
-                 'action'           => 'getSocketByModelAndItem'];
-
-      Ajax::updateItemOnSelectEvent(["dropdown_front_itemtype".$rand_itemtype_front,
-                                    "dropdown_front_items_id".$rand_items_id_front,
-                                    "dropdown_front_socketmodels_id".$rand_socket_model_front],
-                                    "show_front_sockets_field",
-                                    $CFG_GLPI["root_doc"]."/ajax/cable.php",
-                                    $params);
-
+                             'rand'    => $rand_socket_model_front]);
+      echo "</span>";
       echo "</td></tr>";
 
       //Line to display dropdown socket
@@ -596,33 +560,29 @@ class Cable extends CommonDBTM {
       echo "<td>";
       echo "<span id='show_rear_sockets_field'>";
       Socket::dropdown(['name'      => 'rear_sockets_id',
-                        'rand'      => $rand_socket_rear,
                         'value'     => $this->fields["rear_sockets_id"],
-                        'condition' => ['socketmodels_id' => $this->fields['rear_socketmodels_id'],
-                                        'itemtype'  => $this->fields['rear_itemtype'],
-                                        'items_id'  => $this->fields['rear_items_id']]
+                        'entity'    => $this->fields["entities_id"],
+                        'condition' => ['socketmodels_id'   => $this->fields['rear_socketmodels_id'],
+                                        'itemtype'          => $this->fields['rear_itemtype'],
+                                        'items_id'          => $this->fields['rear_items_id']]
                         ]);
-
       echo "</span>";
       echo "</td>";
 
       echo "<td>".Socket::getTypeName(1)."</td>";
       echo "<td>";
       echo "<span id='show_front_sockets_field'>";
-
       Socket::dropdown(['name'      => 'front_sockets_id',
-                        'rand'      => $rand_socket_front,
                         'value'     => $this->fields["front_sockets_id"],
-                        'condition' => ['socketmodels_id' => $this->fields['front_socketmodels_id'],
-                                        'itemtype'  => $this->fields['front_itemtype'],
-                                        'items_id'  => $this->fields['front_items_id']]
+                        'entity'    => $this->fields["entities_id"],
+                        'condition' => ['socketmodels_id'   => $this->fields['front_socketmodels_id'],
+                                        'itemtype'          => $this->fields['front_itemtype'],
+                                        'items_id'          => $this->fields['front_items_id']]
                      ]);
-
       echo "</span>";
       echo "</td></tr>";
 
       //Line to display asset breadcrum (item, datacenter / dcroom / position)
-
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Position')."</td>";
       echo "<td>";
@@ -635,15 +595,20 @@ class Cable extends CommonDBTM {
       }
       echo "</span>";
 
-      $params = ['itemtype'  => '__VALUE0__',
-                 'items_id'  => '__VALUE1__',
-                 'action'    => 'getItemBreadCrumb'];
-
-      Ajax::updateItemOnSelectEvent(["dropdown_rear_itemtype".$rand_itemtype_rear,
-                                     "dropdown_rear_items_id".$rand_items_id_rear],
-                                     "show_rear_asset_breadcrumb",
-                                     $CFG_GLPI["root_doc"]."/ajax/cable.php",
-                                     $params);
+      //Listener to update breacrumb / networkport
+      echo Html::scriptBlock("
+         $(document).on('change', '.input_rear_listener', function(e) {
+            //wait a little to be sure that dropdown_items_id DOM is effectively refresh
+            //due to Ajax::updateItemOnSelectEvent
+            setTimeout(function(){
+               items_id = $('#dropdown_rear_items_id".$rand_items_id_rear."').find(':selected').val();
+               itemtype = $('#dropdown_rear_itemtype".$rand_itemtype_rear."').find(':selected').val();
+               socketmodels_id = $('#dropdown_rear_socketmodels_id".$rand_socket_model_rear."').find(':selected').val();
+               refreshAssetBreadcrumb(itemtype, items_id, 'show_rear_asset_breadcrumb');
+               refreshSocketModelDropdown(itemtype, items_id, socketmodels_id, ".$this->fields["entities_id"].", 'rear_sockets_id', 'show_rear_sockets_field');
+            }, 40);
+         });
+      ");
 
       echo "</td>";
       echo "<td>".__('Position')."</td>";
@@ -657,15 +622,20 @@ class Cable extends CommonDBTM {
       }
       echo "</span>";
 
-      $params = ['itemtype'  => '__VALUE0__',
-                  'items_id'  => '__VALUE1__',
-                  'action'    => 'getItemBreadCrumb'];
-
-      Ajax::updateItemOnSelectEvent(["dropdown_front_itemtype".$rand_itemtype_front,
-                              "dropdown_front_items_id".$rand_items_id_front],
-                              "show_front_asset_breadcrumb",
-                              $CFG_GLPI["root_doc"]."/ajax/cable.php",
-                              $params);
+      //Listener to update breacrumb / networkport
+      echo Html::scriptBlock("
+         $(document).on('change', '.input_front_listener', function(e) {
+            //wait a little to be sure that dropdown_items_id DOM is effectively refresh
+            //due to Ajax::updateItemOnSelectEvent
+            setTimeout(function(){
+               items_id = $('#dropdown_front_items_id".$rand_items_id_front."').find(':selected').val();
+               itemtype = $('#dropdown_front_itemtype".$rand_itemtype_front."').find(':selected').val();
+               socketmodels_id = $('#dropdown_front_socketmodels_id".$rand_socket_model_front."').find(':selected').val();
+               refreshAssetBreadcrumb(itemtype, items_id, 'show_front_asset_breadcrumb');
+               refreshSocketModelDropdown(itemtype, items_id, socketmodels_id, ".$this->fields["entities_id"].", 'front_sockets_id', 'show_front_sockets_field');
+            }, 40);
+         });
+      ");
       echo "</td></tr>";
 
       $this->showFormButtons($options);
