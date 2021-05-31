@@ -84,7 +84,9 @@ class CommonITILObjectExtension extends AbstractExtension implements ExtensionIn
          'state'     => Planning::DONE,
       ];
       $done_tasks = countElementsInTable($task_table, $criteria);
-      $stats['percent_done'] = floor(100 * $done_tasks / $total_tasks);
+      if ($total_tasks != 0) {
+         $stats['percent_done'] = floor(100 * $done_tasks / $total_tasks);
+      }
 
       return $stats;
    }
