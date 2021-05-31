@@ -120,7 +120,8 @@ class Entity extends CommonTreeDropdown {
          'inquest_duration','inquest_URL',
          'max_closedate', 'tickettemplates_id',
          'changetemplates_id', 'problemtemplates_id',
-         'suppliers_as_private', 'autopurge_delay', 'anonymize_support_agents'
+         'suppliers_as_private', 'autopurge_delay', 'anonymize_support_agents',
+         'contracts_id_default'
       ],
       // Configuration
       'config' => ['enable_custom_css', 'custom_css_code']
@@ -2640,6 +2641,47 @@ class Entity extends CommonTreeDropdown {
       }
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Default contract')."</td>";
+      echo "<td colspan='2'>";
+      $current_default_contract_value = $entity->fields['contracts_id_default'];
+
+      $toadd = [
+         self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+         -1 => __('Contract in ticket entity'),
+      ];
+
+      if ($ID == 0) { // Remove parent option for root entity
+         unset($toadd[self::CONFIG_PARENT]);
+      }
+
+      Contract::dropdown([
+         'name'      => 'contracts_id_default',
+         'condition' => Contract::getExpiredCriteria(),
+         'entity'    => $entity->getID(),
+         'toadd'     => $toadd,
+         'value'     => $current_default_contract_value,
+      ]);
+
+      // If the entity is using it's parent value, print it
+      if ($current_default_contract_value == self::CONFIG_PARENT && $ID != 0) {
+         $parent_default_contract_value = self::getUsedConfig(
+            'contracts_id_default',
+            $entity->fields['entities_id']
+         );
+         if (!$parent_default_contract_value) {
+            $display_value = Dropdown::EMPTY_VALUE;
+         } else if ($parent_default_contract_value == -1) {
+            $display_value = __('Contract in ticket entity');
+         } else {
+            $contract = new Contract();
+            $contract->getFromDB($parent_default_contract_value);
+            $display_value = $contract->fields['name'];
+         }
+
+         self::inheritedValue($display_value, true);
+      }
+      echo "</td></tr>";
+
       echo "<tr><th colspan='4'>".__('Automatic closing configuration')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>".
@@ -3415,7 +3457,60 @@ class Entity extends CommonTreeDropdown {
       return "fas fa-layer-group";
    }
 
+   /**
+    * Get values for contracts_id_default field
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   public static function getDefaultContractValues($entities_id): array {
+      $values = [
+         self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+         -1 => __('First found valid contract in ticket entity'),
+      ];
+
+      $contract = new Contract();
+      $criteria = getEntitiesRestrictCriteria('', '', $entities_id, true);
+      $criteria[] = Contract::getExpiredCriteria();
+      $contracts = $contract->find($criteria);
+
+      foreach ($contracts as $contract) {
+         $values[$contract['id']] = $contract['name'];
+      }
+
+      return $values;
+   }
+
    public static function getAnonymizeConfig(?int $entities_id = null) {
       return Entity::getUsedConfig('anonymize_support_agents', $entities_id);
    }
+
+   public static function getDefaultContract(int $entities_id): int {
+      $entity_default_contract = self::getUsedConfig('contracts_id_default', $entities_id);
+      if ($entity_default_contract == 0) {
+         // No default contract set
+         return 0;
+      }
+
+      if ($entity_default_contract == -1) {
+         // Contract in current entity
+         $contract = new Contract();
+         $criteria = ['entities_id' => $entities_id];
+         $criteria[] = Contract::getExpiredCriteria();
+         $contracts = $contract->find($criteria);
+
+         if ($contracts) {
+            // Return first contract found
+            return current($contracts)['id'];
+         } else {
+            // No contract found for this entity
+            return 0;
+         }
+      }
+
+      // Default contract defined in entity
+      return $entity_default_contract;
+   }
+
 }

@@ -2715,6 +2715,7 @@ CREATE TABLE `glpi_entities` (
   `autofill_decommission_date` varchar(255) NOT NULL DEFAULT '-2',
   `suppliers_as_private` int NOT NULL DEFAULT '-2',
   `anonymize_support_agents` int NOT NULL DEFAULT '-2',
+  `contracts_id_default` int NOT NULL DEFAULT '-2',
   `enable_custom_css` int NOT NULL DEFAULT '-2',
   `custom_css_code` text,
   `latitude` varchar(255) DEFAULT NULL,
@@ -2731,7 +2732,8 @@ CREATE TABLE `glpi_entities` (
   KEY `transfers_id` (`transfers_id`),
   KEY `authldaps_id` (`authldaps_id`),
   KEY `calendars_id` (`calendars_id`),
-  KEY `entities_id_software` (`entities_id_software`)
+  KEY `entities_id_software` (`entities_id_software`),
+  KEY `contracts_id_default` (`contracts_id_default`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -8705,6 +8707,16 @@ CREATE TABLE `glpi_manuallinks` (
   KEY `items_id` (`items_id`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_tickets_contracts`;
+CREATE TABLE `glpi_tickets_contracts` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `tickets_id` int NOT NULL DEFAULT '0',
+  `contracts_id` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`tickets_id`,`contracts_id`),
+  KEY `contracts_id` (`contracts_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;

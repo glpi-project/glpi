@@ -2364,7 +2364,6 @@ class Dropdown {
 
       // Count real items returned
       $count = 0;
-
       if ($item instanceof CommonTreeDropdown) {
          if ($one_item >= 0) {
             $where["$table.id"] = $one_item;

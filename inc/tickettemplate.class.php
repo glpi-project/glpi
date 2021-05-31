@@ -85,6 +85,8 @@ class TicketTemplate extends ITILTemplate {
                                              'glpi_tickets')   => 'actiontime',
          $itil_object->getSearchOptionIDByField('field', 'global_validation',
                                              'glpi_tickets')   => 'global_validation',
+         $itil_object->getSearchOptionIDByField('field', 'name',
+                                             'glpi_contracts')   => '_contracts_id',
 
       ];
 

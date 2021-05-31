@@ -598,6 +598,11 @@ class RuleTicket extends Rule {
       $criterias['olas_id_tto']['type']                     = 'dropdown';
       $criterias['olas_id_tto']['condition']                = ['glpi_olas.type' => SLM::TTO];
 
+      $criterias['_contract_types']['table']                = ContractType::getTable();
+      $criterias['_contract_types']['field']                = 'name';
+      $criterias['_contract_types']['name']                 = ContractType::getTypeName(1);
+      $criterias['_contract_types']['type']                 = 'dropdown';
+
       $criterias['global_validation']['name']               = _n('Validation', 'Validations', 1);
       $criterias['global_validation']['type']               = 'dropdown_validation_status';
 

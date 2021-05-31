@@ -33,6 +33,7 @@
 namespace tests\units;
 
 use CommonITILActor;
+use Contract;
 use DbTestCase;
 use ITILFollowup;
 use ITILSolution;
@@ -40,6 +41,7 @@ use NotificationTarget;
 use NotificationTargetTicket;
 use Profile_User;
 use Ticket;
+use Ticket_Contract;
 use Ticket_User;
 
 /* Test for inc/entity.class.php */
@@ -756,5 +758,134 @@ class Entity extends DbTestCase {
 
       // Reset session
       $_SESSION['glpiactiveprofile']['interface'] = $old_interface;
+   }
+
+   public function testDefaultContractConfig() {
+      $this->login();
+
+      $entity = new \Entity();
+      $ticket = new Ticket();
+      $ticket_contract = new Ticket_Contract();
+      $contract = new Contract();
+
+      // Create test entity
+      $entities_id = $entity->add([
+         'name'        => 'Test',
+         'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+      ]);
+      $this->integer($entities_id)->isGreaterThan(0);
+
+      // Create test contracts
+      $contracts_id_1 = $contract->add([
+         'name'        => 'test1',
+         'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+         'renewal'    => Contract::RENEWAL_TACIT,
+      ]);
+      $this->integer($contracts_id_1)->isGreaterThan(0);
+
+      $contracts_id_2 = $contract->add([
+         'name'        => 'test2',
+         'entities_id' => $entities_id,
+         'renewal'    => Contract::RENEWAL_TACIT,
+      ]);
+      $this->integer($contracts_id_2)->isGreaterThan(0);
+
+      // Test 1: no config
+      $tickets_id = $ticket->add([
+         'name'        => 'Test ticket 1',
+         'content'     => 'Test ticket 1',
+         'entities_id' => $entities_id,
+      ]);
+      $this->integer($tickets_id)->isGreaterThan(0);
+
+      // Case 1: no entity specified, no contract expected
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+
+      $links = $ticket_contract::getListForItem($ticket);
+      $this->integer(count($links))->isEqualTo(0);
+
+      // Test 2: Use specific contract
+      $res = $entity->update([
+         'id' => $entities_id,
+         'contracts_id_default' => $contracts_id_1,
+      ]);
+      $this->boolean($res)->isTrue();
+
+      // Case 1: no contract specified, specific default expected
+      $tickets_id = $ticket->add([
+         'name'        => 'Test ticket 1',
+         'content'     => 'Test ticket 1',
+         'entities_id' => $entities_id,
+      ]);
+      $this->integer($tickets_id)->isGreaterThan(0);
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+
+      $links = $ticket_contract::getListForItem($ticket);
+      $this->integer(count($links))->isEqualTo(1);
+      $link = $links->next();
+      $this->integer($link['id'])->isEqualTo($contracts_id_1);
+
+      // Case 2: contract specified, should not change
+      $tickets_id = $ticket->add([
+         'name'          => 'Test ticket 1',
+         'content'       => 'Test ticket 1',
+         'entities_id'   => $entities_id,
+         '_contracts_id' => $contracts_id_2,
+      ]);
+      $this->integer($tickets_id)->isGreaterThan(0);
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+
+      $links = $ticket_contract::getListForItem($ticket);
+      $this->integer(count($links))->isEqualTo(1);
+      $link = $links->next();
+      $this->integer($link['id'])->isEqualTo($contracts_id_2);
+
+      // Test 3: Use contract in current entity
+      $res = $entity->update([
+         'id' => $entities_id,
+         'contracts_id_default' => '-1',
+      ]);
+      $this->boolean($res)->isTrue();
+
+      // Case 1: root entity, expect no contract (no config for this entity)
+      $tickets_id_2 = $ticket->add([
+         'name'        => 'Test ticket 1',
+         'content'     => 'Test ticket 1',
+         'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+      ]);
+      $this->integer($tickets_id_2)->isGreaterThan(0);
+      $this->boolean($ticket->getFromDB($tickets_id_2))->isTrue();
+
+      $links = $ticket_contract::getListForItem($ticket);
+      $this->integer(count($links))->isEqualTo(0);
+
+      // Case 2: sub entity, expect contract 2
+      $tickets_id = $ticket->add([
+         'name'        => 'Test ticket 1',
+         'content'     => 'Test ticket 1',
+         'entities_id' => $entities_id,
+      ]);
+      $this->integer($tickets_id)->isGreaterThan(0);
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+
+      $links = $ticket_contract::getListForItem($ticket);
+      $this->integer(count($links))->isEqualTo(1);
+      $link = $links->next();
+      $this->integer($link['id'])->isEqualTo($contracts_id_2);
+
+      // Case 3: contract specified, should not change
+      $tickets_id = $ticket->add([
+         'name'          => 'Test ticket 1',
+         'content'       => 'Test ticket 1',
+         'entities_id'   => $entities_id,
+         '_contracts_id' => $contracts_id_1,
+      ]);
+      $this->integer($tickets_id)->isGreaterThan(0);
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+
+      $links = $ticket_contract::getListForItem($ticket);
+      $this->integer(count($links))->isEqualTo(1);
+      $link = $links->next();
+      $this->integer($link['id'])->isEqualTo($contracts_id_1);
    }
 }
