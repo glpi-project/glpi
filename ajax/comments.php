@@ -104,17 +104,25 @@ if (isset($_POST["itemtype"])
                 echo $tmpname["comment"]."<br />";
             }
 
-            //return DCPosittion
-            $item = new $_POST['itemtype']();
-            $item->getFromDB($_POST["value"]);
-            if (method_exists($item, 'showDcBreadcrumb')) {
-               echo $item->showDcBreadcrumb(true);
-            }
-
             if (isset($_POST['withlink'])) {
                echo "<script type='text/javascript' >\n";
                echo Html::jsGetElementbyID($_POST['withlink']).".
                     attr('href', '".$_POST['itemtype']::getFormURLWithID($_POST["value"])."');";
+               echo "</script>\n";
+            }
+
+            if (isset($_POST['with_dc_position'])) {
+               $item = new $_POST['itemtype']();
+               echo "<script type='text/javascript' >\n";
+
+               //if item have a DC position (reload url to it's rack)
+               if ($rack = $item->isRackPart($_POST['itemtype'], $_POST["value"], true)) {
+                  echo Html::jsGetElementbyID($_POST['with_dc_position']).".
+                  append(\"&nbsp;<a class='fas fa-crosshairs' href='".$rack->getLinkURL()."'></a>\");";
+               } else {
+                  //remove old dc position
+                  echo Html::jsGetElementbyID($_POST['with_dc_position']).".empty();";
+               }
                echo "</script>\n";
             }
          }

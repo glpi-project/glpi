@@ -64,6 +64,9 @@ class Socket extends CommonDropdown {
                'type'  => ' '],
                ['name'  => 'networkports_id',
                'label' => _n('Network port', 'Network ports', Session::getPluralNumber()),
+               'type'  => ' '],
+               ['name'  => '_virtual_datacenter_position',
+               'label' => __('Position'),
                'type'  => ' ']];
    }
 
@@ -74,6 +77,15 @@ class Socket extends CommonDropdown {
 
       if ($field['name'] == 'networkports_id') {
          self::showNetworkPortForm($this->fields['itemtype'], $this->fields['items_id'], $this->fields['networkports_id'], $options);
+      }
+
+      if ($field['name'] == '_virtual_datacenter_position') {
+         //DC position
+         if (!empty($this->fields['itemtype']) && !empty($this->fields['items_id'])) {
+            if (method_exists($this->fields['itemtype'], 'getDcBreadcrumbSpecificValueToDisplay')) {
+               echo $this->fields['itemtype']::getDcBreadcrumbSpecificValueToDisplay($this->fields['items_id']);
+            }
+         }
       }
    }
 
@@ -91,8 +103,7 @@ class Socket extends CommonDropdown {
          $items_id = $options['_add_fromitem']["_from_items_id"];
       }
 
-      $rand_itemtype = Dropdown::showFromArray('itemtype', self::getSocketLinkTypes(), ['value'                => $itemtype,
-                                                                                        'display_emptychoice'  => true]);
+      $rand_itemtype = Dropdown::showFromArray('itemtype', self::getSocketLinkTypes(), ['value'                => $itemtype]);
 
       $params = ['itemtype' => '__VALUE__',
                  'dom_name' => 'items_id',
@@ -106,7 +117,8 @@ class Socket extends CommonDropdown {
       if (!empty($itemtype)) {
          $rand_items_id =  $itemtype::dropdown(['name'                  => 'items_id',
                                                 'value'                 => $items_id,
-                                                'display_emptychoice'   => true]);
+                                                'display_emptychoice'   => true,
+                                                'display_dc_position'   => true]);
 
          $params = ['items_id'   => '__VALUE__',
                     'itemtype'   => $itemtype,
@@ -126,19 +138,6 @@ class Socket extends CommonDropdown {
                                                 'condition' => ["items_id" => $items_id,
                                                 "itemtype"  => $itemtype]]);
       echo "</span>";
-
-      //DC position
-      if (!empty($itemtype) && !empty($items_id)) {
-         $item = new $itemtype();
-         $item->getFromDB($items_id);
-         if (method_exists($item, 'showDcBreadcrumb')) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Position')."</td>";
-            echo "<td>";
-            $item->showDcBreadcrumb(true);
-            echo "</td></tr>";
-         }
-      }
    }
 
    /**
@@ -203,6 +202,11 @@ class Socket extends CommonDropdown {
          self::FRONT  => __('Front'),
       ];
    }
+
+   function post_getEmpty() {
+      $this->fields['itemtype'] = 'Computer';
+   }
+
 
 
    /**

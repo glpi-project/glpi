@@ -74,6 +74,7 @@ class Dropdown {
     *    - specific_tags        : array of HTML5 tags to add the the field
     *    - url                  : url of the ajax php code which should return the json data to show in
     *                                       the dropdown
+    *    - diplay_dc_position   :  Display datacenter position  ? (default false)
     *
     * @return boolean : false if error and random id if OK
     *
@@ -112,6 +113,7 @@ class Dropdown {
       $params['addicon']              = true;
       $params['specific_tags']        = [];
       $params['url']                  = $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php";
+      $params['diplay_dc_position']   = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -138,14 +140,6 @@ class Dropdown {
          if ($tmpname["name"] != "&nbsp;") {
             $name    = $tmpname["name"];
             $comment = $tmpname["comment"];
-
-            //get DCPosittion if exist
-            $item = new $itemtype();
-            $item->getFromDB($params['value']);
-            if (method_exists($item, 'showDcBreadcrumb')) {
-               $comment .= "<br />".$item->showDcBreadcrumb(true, false);
-            }
-
          }
       }
 
@@ -202,6 +196,7 @@ class Dropdown {
          $comment_id      = Html::cleanId("comment_".$params['name'].$params['rand']);
          $link_id         = Html::cleanId("comment_link_".$params['name'].$params['rand']);
          $kblink_id       = Html::cleanId("kb_link_".$params['name'].$params['rand']);
+         $breadcrum_id    = Html::cleanId("dc_breadcrumb_".$params['name'].$params['rand']);
          $options_tooltip = ['contentid' => $comment_id,
                                   'linkid'    => $link_id,
                                   'display'   => false];
@@ -255,6 +250,16 @@ class Dropdown {
             'itemtype'    => $itemtype,
             '_idor_token' => Session::getNewIDORToken($itemtype)
          ];
+
+         if ($params['display_dc_position']) {
+            if ($rack = $item->isRackPart($itemtype, $params['value'], true)) {
+               $output .= "<span id='".$breadcrum_id."'>";
+               $output .= "&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL(). "'></a>";
+               $output .= "</span>";
+               $paramscomment['with_dc_position'] = $breadcrum_id;
+            }
+         }
+
          if ($item->isField('knowbaseitemcategories_id')
              && Session::haveRight('knowbase', READ)) {
 
@@ -277,6 +282,7 @@ class Dropdown {
                                                   $CFG_GLPI["root_doc"]."/ajax/comments.php",
                                                   $paramscomment, false);
       }
+
       $output .= Ajax::commonDropdownUpdateItem($params, false);
       $output .= "</span>";
       if ($params['display']) {

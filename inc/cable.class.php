@@ -133,7 +133,7 @@ class Cable extends CommonDBTM {
          'id'                 => '8',
          'table'              => $this->getTable(),
          'field'              => 'front_items_id',
-         'name'               => __('Associated item ID')." ".__('Front'),
+         'name'               => __('Associated item')." (".__('Front').")",
          'massiveaction'      => false,
          'datatype'           => 'specific',
          'searchtype'         => 'equals',
@@ -155,7 +155,7 @@ class Cable extends CommonDBTM {
          'id'                 => '10',
          'table'              => $this->getTable(),
          'field'              => 'rear_items_id',
-         'name'               => __('Associated item ID')." ".__('Rear'),
+         'name'               => __('Associated item')." (".__('Rear').")",
          'massiveaction'      => false,
          'datatype'           => 'specific',
          'searchtype'         => 'equals',
@@ -271,6 +271,36 @@ class Cable extends CommonDBTM {
          'datatype'           => 'bool'
       ];
 
+      $tab[] = [
+         'id'                 => '87',
+         'table'              => $this->getTable(),
+         'field'              => '_virtual_datacenter_position', // virtual field
+         'additionalfields'   => [
+            'rear_items_id',
+            'rear_itemtype'
+         ],
+         'name'               => __('Data center position')." (".__('Rear').")",
+         'datatype'           => 'specific',
+         'nosearch'           => true,
+         'nosort'             => true,
+         'massiveaction'      => false
+      ];
+
+      $tab[] = [
+         'id'                 => '88',
+         'table'              => $this->getTable(),
+         'field'              => '_virtual_datacenter_position', // virtual field
+         'additionalfields'   => [
+            'front_items_id',
+            'front_itemtype'
+         ],
+         'name'               => __('Data center position')." (".__('Front').")",
+         'datatype'           => 'specific',
+         'nosearch'           => true,
+         'nosort'             => true,
+         'massiveaction'      => false
+      ];
+
       return $tab;
    }
 
@@ -291,11 +321,17 @@ class Cable extends CommonDBTM {
       }
       $options['display'] = false;
       switch ($field) {
-         case 'items_id' :
-            if (isset($values['itemtype']) && !empty($values['itemtype'])) {
+         case 'rear_items_id' :
+            if (isset($values['rear_itemtype']) && !empty($values['rear_itemtype'])) {
                $options['name']  = $name;
                $options['value'] = $values[$field];
-               return Dropdown::show($values['itemtype'], $options);
+               return Dropdown::show($values['rear_itemtype'], $options);
+            }
+         case 'front_items_id' :
+            if (isset($values['front_itemtype']) && !empty($values['front_itemtype'])) {
+               $options['name']  = $name;
+               $options['value'] = $values[$field];
+               return Dropdown::show($values['front_itemtype'], $options);
             }
             break;
       }
@@ -316,18 +352,35 @@ class Cable extends CommonDBTM {
       }
 
       switch ($field) {
-         case 'items_id':
-            if (isset($values['itemtype'])) {
+         case 'rear_items_id' :
+            if (isset($values['rear_itemtype'])) {
                if ($values[$field] > 0) {
-                  return Dropdown::getDropdownName(
-                     getTableForItemType($values['itemtype']),
-                     $values[$field]
-                  );
+                  $item = new $values['rear_itemtype'];
+                  $item->getFromDB($values[$field]);
+                  return "<a href='" . $item->getLinkURL(). "'>".$item->fields['name']."</a>";
                }
             } else {
                return ' ';
             }
             break;
+         case 'front_items_id' :
+            if (isset($values['front_itemtype'])) {
+               if ($values[$field] > 0) {
+                  $item = new $values['front_itemtype'];
+                  $item->getFromDB($values[$field]);
+                  return "<a href='" . $item->getLinkURL(). "'>".$item->fields['name']."</a>";
+               }
+            } else {
+               return ' ';
+            }
+            break;
+         case '_virtual_datacenter_position':
+            $itemtype = isset($values['front_itemtype']) ? $values['front_itemtype'] : $values['rear_itemtype'];
+            $items_id = isset($values['front_items_id']) ? $values['front_items_id'] : $values['rear_items_id'];
+
+            if (method_exists($itemtype, 'getDcBreadcrumbSpecificValueToDisplay')) {
+               return $itemtype::getDcBreadcrumbSpecificValueToDisplay($items_id);
+            }
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
@@ -576,7 +629,9 @@ class Cable extends CommonDBTM {
 
       echo "<span id='show_rear_asset_breadcrumb'>";
       if ($this->fields['rear_items_id']) {
-         $this->getDCBreadCrumb('rear');
+         if (method_exists($this->fields['rear_itemtype'], 'getDcBreadcrumbSpecificValueToDisplay')) {
+            echo $this->fields['rear_itemtype']::getDcBreadcrumbSpecificValueToDisplay($this->fields['rear_items_id']);
+         }
       }
       echo "</span>";
 
@@ -596,7 +651,9 @@ class Cable extends CommonDBTM {
 
       echo "<span id='show_front_asset_breadcrumb'>";
       if ($this->fields['front_items_id']) {
-         $this->getDCBreadCrumb('front');
+         if (method_exists($this->fields['front_itemtype'], 'getDcBreadcrumbSpecificValueToDisplay')) {
+            echo $this->fields['front_itemtype']::getDcBreadcrumbSpecificValueToDisplay($this->fields['front_items_id']);
+         }
       }
       echo "</span>";
 
@@ -613,16 +670,6 @@ class Cable extends CommonDBTM {
 
       $this->showFormButtons($options);
       return true;
-   }
-
-   private function getDCBreadCrumb($side = 'front') {
-      if ($this->fields[$side.'_items_id']) {
-         $item = new $this->fields[$side.'_itemtype']();
-         $item->getFromDB($this->fields[$side.'_items_id']);
-         if (method_exists($item, 'showDcBreadcrumb')) {
-            $item->showDcBreadcrumb(true);
-         }
-      }
    }
 
    static function getIcon() {

@@ -113,26 +113,17 @@ trait DCBreadcrumb {
     *
     * @return void
     */
-   public function showDcBreadcrumb($withoutHTMLTable = false, $display = true) {
+   protected function showDcBreadcrumb() {
       $breadcrumb = $this->getDcBreadcrumb();
-      $out = "";
 
       if (count($breadcrumb)) {
-         if ($withoutHTMLTable) {
-            $out .= implode(' > ', array_reverse($breadcrumb));
-         } else {
-            $out .= "<tr class='tab_bg_1'>
-               <td>" . __('Data center position') . "</td>
-               <td colspan='3'>" . implode(' > ', array_reverse($breadcrumb)) . "</td>
+         echo "<tr class='tab_bg_1'>
+                  <td>" . __('Data center position') . "</td>
+                  <td colspan='3'>" . implode(' > ', array_reverse($breadcrumb)) . "</td>
                </tr>";
-         }
-
-         if ($display) {
-            echo $out;
-         }
-         return $out;
       }
    }
+
 
    /**
     * Check if an item is part of an Enclosure
@@ -143,7 +134,7 @@ trait DCBreadcrumb {
     *
     * @return false|Enclosure
     */
-    public function isEnclosurePart($itemtype, $items_id, $getobj = false) {
+   public function isEnclosurePart($itemtype, $items_id, $getobj = false) {
       $ien = new Item_Enclosure();
       $found = $ien->getFromDBByCrit([
          'itemtype'  => $itemtype,
@@ -171,14 +162,14 @@ trait DCBreadcrumb {
     *
     * @return string
     */
-    public function getItemEnclosurePosition($itemtype, $items_id) {
+   public function getItemEnclosurePosition($itemtype, $items_id) {
       $position = 0;
       $ien = new Item_Enclosure();
 
       if ($ien->getFromDBByCrit([
          'itemtype'  => $itemtype,
          'items_id'  => $items_id
-      ])){
+      ])) {
          $position = $ien->getField('position');
       }
 
@@ -194,14 +185,14 @@ trait DCBreadcrumb {
     *
     * @return string
     */
-    public function getItemRackPosition($itemtype, $items_id) {
+   public function getItemRackPosition($itemtype, $items_id) {
       $position = 0;
       $ien = new Item_Rack();
 
       if ($ien->getFromDBByCrit([
          'itemtype'  => $itemtype,
          'items_id'  => $items_id
-      ])){
+      ])) {
          $position = $ien->getField('position');
       }
 
@@ -242,7 +233,7 @@ trait DCBreadcrumb {
     *
     * @return array
     */
-   protected static function getDcBreadcrumbSpecificValueToDisplay($items_id) {
+   public static function getDcBreadcrumbSpecificValueToDisplay($items_id) {
 
       $item = new static();
 
