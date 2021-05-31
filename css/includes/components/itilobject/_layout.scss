@@ -50,8 +50,12 @@
          border: 0px;
          border-left: 1px solid $border-color;
 
-         .accordion-button {
-            background-color: $itil-secondary-bg;
+         .accordion-item {
+            background: none;
+
+            .accordion-button {
+               background-color: $accordion-button-bg;
+            }
          }
       }
    }
