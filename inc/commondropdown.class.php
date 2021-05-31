@@ -59,6 +59,13 @@ abstract class CommonDropdown extends CommonDBTM {
    static $rightname = 'dropdown';
 
 
+   public function __call($name, $arguments)
+   {
+      if ($name === 'displaySpecificTypeField') {
+         Toolbox::deprecated();
+      }
+   }
+
    /**
     * @since 0.85
     *
@@ -293,19 +300,14 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    function getSpecificTypeField(int $ID, array $field): string {
+      if (method_exists($this, 'displaySpecificTypeField')) {
+         Toolbox::deprecated();
+         ob_start();
+         $this->displaySpecificTypeField($ID, $field);
+         return ob_get_clean();
+      }
       return '';
    }
-
-   /**
-    * @param $ID
-    * @param array $field
-    * @deprecated 10.0.0 Use {@link CommonDropdown::getSpecificTypeField()} instead
-    */
-   function displaySpecificTypeField($ID, $field = []) {
-      Toolbox::deprecated();
-      echo $this->getSpecificTypeField((int) $ID, $field);
-   }
-
 
    function pre_deleteItem() {
 
