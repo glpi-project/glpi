@@ -54,7 +54,6 @@
    <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __("Timeline filter") }}">
       <button type="button"
             class="btn btn-sm btn-icon btn-ghost-secondary open-timeline-filter-popover"
-            title="{{ __("Timeline filter") }}"
             data-bs-toggle="popover" data-bs-placement="top"
             data-bs-trigger="click"
             data-bs-sanitize="false"data-bs-html="true"
@@ -62,6 +61,15 @@
          <i class="fas fa-filter"></i>
       </button>
    </span>
+
+   {% if getCurrentInterface() == "central" %}
+      <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __("View TODO list") }}">
+         <button type="button"
+               class="btn btn-sm btn-icon btn-ghost-secondary view-timeline-todo-list">
+            <i class="fas fa-tasks"></i>
+         </button>
+      </span>
+   {% endif %}
 </div>
 
 <script type="text/javascript">
@@ -78,6 +86,11 @@ $(function() {
          var itemtype = $(this).data('itemtype');
          timeline_items.filter("."+itemtype).removeClass('d-none');
       });
+   });
+
+   $(document).on("click", ".view-timeline-todo-list", function() {
+      $('body').toggleClass('timeline-todo-list');
+      $('.open-timeline-filter-popover').toggle();
    });
 });
 </script>

@@ -40,15 +40,23 @@
          <div class="timeline-item mb-4 {{ itiltype }} {{ "right" in item_position ? "ms-auto" : "" }}"
               data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}">
             <div class="row">
-               <div class="col-auto d-flex flex-column {{ "right" in item_position ? "ms-auto ms-0 order-sm-last" : "" }}">
+               <div class="col-auto todo-list-state d-none">
+                  {% if entry_i['state'] is constant('Planning::TODO') %}
+                     <span class="state state_1" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('To do') }}"></span>
+                  {% elseif entry_i['state'] is constant('Planning::DONE') %}
+                     <span class="state state_2" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('Done') }}"></span>
+                  {% endif %}
+               </div>
+
+               <div class="col-auto d-flex flex-column user-part {{ "right" in item_position ? "ms-auto ms-0 order-sm-last" : "" }}">
                   {% set avatar_rand = random() %}
                   <span id="timeline-avatar{{ avatar_rand }}">
                      {% include "components/itilobject/user_picture.html.twig" with {'users_id': users_id} only %}
                   </span>
                </div>
-               <div class="col-12 col-sm d-flex flex-column">
+               <div class="col-12 col-sm d-flex flex-column content-part">
                   <div class="d-flex ">
-                     <div class="d-flex">
+                     <div class="d-flex creator">
                         <div class="d-none d-md-block">
                            <strong>{{ User__getLink(users_id, {
                                  'timeline_item': item,
@@ -65,9 +73,9 @@
                         </span>
                      </div>
 
-                     <div class="d-flex ms-auto">
+                     <div class="d-flex ms-auto timeline-item-buttons">
                         {% if is_private %}
-                           <span title="{{ __('Private') }}" class="ms-2">
+                           <span title="{{ __('Private') }}" class="is-private ms-2">
                               <i class="fas fa-lock" aria-label="{{ __('Private') }}"></i>
                            </span>
                         {% endif %}

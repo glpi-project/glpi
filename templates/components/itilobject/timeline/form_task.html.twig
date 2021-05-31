@@ -3,14 +3,17 @@
 
 {% block timeline_card %}
    {% if form_mode == 'view' %}
-      <div class="read-only-content">
+      <div class="read-only-content {{ entry_i['state'] is constant('Planning::DONE') ? "done" : "" }}">
          {% if entry_i['state'] is constant('Planning::TODO') %}
             <span class="state state_1" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('To do') }}"></span>
          {% elseif entry_i['state'] is constant('Planning::DONE') %}
             <span class="state state_2" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('Done') }}"></span>
          {% endif %}
 
-         {{ getHtmlToDisplay(entry_i['content']) }}
+         <div class="text-content" data-bs-html="true" data-bs-custom-class="todo-list-tooltip"
+              title="{{ getHtmlToDisplay(entry_i['content'])|escape('html_attr') }}" data-bs-toggle="tooltip">
+            {{ getHtmlToDisplay(entry_i['content']) }}
+         </div>
 
          <div>
             {% if entry_i['users_id_tech'] %}
@@ -59,10 +62,24 @@
                   'parenttype': '{{ item.getType() }}',
                   '{{ item|get_foreignkey_field }}': {{ item.fields['id'] }}
                })
-               .done((response) => {
-                  $(target).removeClass('state_1 state_2')
+               .done(function(response) {
+                  $(target).closest('.timeline-item').find('.state')
+                     .removeClass('state_1 state_2')
                      .addClass('state_'+response.state)
                      .attr('title', response.label);
+
+                  $(target).closest('.timeline-item').find('.read-only-content')
+                     .toggleClass('done');
+
+                  var todo_tasks   = $('.todo-list-state .state.state_1').length;
+                  var done_tasks   = $('.todo-list-state .state.state_2').length;
+                  var total_tasks  = todo_tasks + done_tasks;
+                  var percent_done = Math.floor(100 * done_tasks / total_tasks);
+
+                  $('.timeline-progress')
+                     .css('width', percent_done + '%')
+                     .attr('aria-valuenow', percent_done);
+                  $('.task-progress-label').html(percent_done + '%');
                });
          }
       </script>

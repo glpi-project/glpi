@@ -1750,22 +1750,6 @@
    }
 
    /** TIMELINE **/
-   .timeline_stats {
-      opacity: 0.2;
-      text-align: right;
-      margin-top: 0.2em;
-
-      &:hover {
-         opacity: 1;
-      }
-
-      h3 {
-         font-weight: bold;
-         font-size: 1em;
-         margin: 0 .5em 0 0;
-         padding: 0;
-      }
-   }
 
    .timeline_history {
       border-top: 1px dashed #3C5874;
