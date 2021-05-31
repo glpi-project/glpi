@@ -271,8 +271,7 @@
    {% set options = {
       'rand': random(),
       'name': name,
-      'dropZone': 'dropdoc'~options['rand'],
-   } %}
+   }|merge(options) %}
    {% set field %}
       {{ Html__file(options) }}
    {% endset %}
