@@ -241,3 +241,88 @@
       }
    }
 }
+
+.timeline-todo-list {
+   .itil-left-side {
+      padding-right: .4rem !important;
+      transition: none;
+
+      .timeline-item {
+         &.ITILContent,
+         &.ITILSolution,
+         &.ITILFollowup,
+         &.KnowbaseItemComment {
+            display: none;
+         }
+
+         margin-left: 0 !important;
+         margin-right: 0 !important;
+         margin-bottom: 0 !important;
+         width: 99.9%;
+         transition: all 200ms ease;
+
+         .todo-list-state {
+            display: inline-block !important;
+            margin-top: 1.5rem;
+            margin-left: 0.5rem;
+         }
+
+         .creator,
+         .user-part {
+            display: none !important;
+         }
+
+         .content-part {
+            flex-direction: row-reverse !important;
+
+            .timeline-item-buttons {
+               flex-direction: column;
+               margin-top: 1rem;
+
+               .is-private {
+                  display: none;
+               }
+            }
+
+            .timeline-content {
+               border-radius: 0;
+
+               .card-body {
+                  padding: 0.5rem;
+
+                  .read-only-content {
+                     .state {
+                        display: none;
+                     }
+
+                     .text-content {
+                        max-height: 1.2rem;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                     }
+
+                     &.done {
+                        text-decoration: line-through;
+                     }
+                  }
+               }
+
+               &:before,
+               &:after {
+                  display: none;
+               }
+            }
+         }
+      }
+   }
+
+   .timeline_stats,
+   .todo-list-tooltip {
+      display: block;
+   }
+}
+
+.timeline_stats,
+.todo-list-tooltip {
+   display: none;
+}

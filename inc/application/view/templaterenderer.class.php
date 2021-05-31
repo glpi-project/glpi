@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\Extension\AlertExtension;
+use Glpi\Application\View\Extension\CommonITILObjectExtension;
 use Glpi\Application\View\Extension\ConfigExtension;
 use Glpi\Application\View\Extension\CsrfExtension;
 use Glpi\Application\View\Extension\DocumentExtension;
@@ -99,6 +100,7 @@ class TemplateRenderer {
       $this->environment->addExtension(new StringExtension());
       // GLPI extensions
       $this->environment->addExtension(new AlertExtension());
+      $this->environment->addExtension(new CommonITILObjectExtension());
       $this->environment->addExtension(new ConfigExtension());
       $this->environment->addExtension(new CsrfExtension());
       $this->environment->addExtension(new DocumentExtension());
