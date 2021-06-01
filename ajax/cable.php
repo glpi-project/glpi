@@ -57,7 +57,7 @@ switch ($_POST['action']) {
       if ((isset($_POST['itemtype'])&& class_exists($_POST['itemtype']))
          && isset($_POST['items_id'])) {
          Socket::dropdown(['name'         =>  $_POST['dom_name'],
-                           'entity'       => $_POST['entity'],
+                           /*'entity'       => $_POST['entity'],*/
                            'condition'    => ['socketmodels_id'   => isset ($_POST['socketmodels_id']) ? $_POST['socketmodels_id'] : 0 ,
                                              'itemtype'           => $_POST['itemtype'],
                                              'items_id'           => $_POST['items_id']],

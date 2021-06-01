@@ -116,7 +116,6 @@ class NetworkPortInstantiation extends CommonDBChild {
    function manageSocket() {
 
       //To keep backward compatibility with old field 'sockets_id'
-
       //remove link between old socket and networkport
       if (isset($this->oldvalues['sockets_id']) && $this->oldvalues['sockets_id'] > 0) {
          $socket = new Socket();
@@ -309,6 +308,8 @@ class NetworkPortInstantiation extends CommonDBChild {
    **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
                                       HTMLTableCell $father = null, array $options = []) {
+
+                                       Toolbox::backtrace("php-errors");
       global $DB;
 
       $display_options = $options['display_options'];
@@ -632,13 +633,15 @@ class NetworkPortInstantiation extends CommonDBChild {
          //find socket attached to NetworkPortEthernet
          $socket = new Socket();
          $value = 0;
-         if ($socket->getFromDBByCrit(["networkports_id" => $this->fields['networkports_id']])) {
+         if ($socket->getFromDBByCrit(["networkports_id" => $netport->getID()])) {
             $value = $socket->getID();
          }
 
-         Socket::dropdownSocket("sockets_id", $value,
-                                    $lastItem->fields['locations_id'], 1, $lastItem->getEntityID(),
-                                    $netport->fields["itemtype"]);
+         Socket::dropdown(['name'      => 'sockets_id',
+                           'value'     => $value,
+                           'entity'    => $lastItem->getEntityID(),
+                           'condition' => ["networkports_id" => 0],
+                           ]);
       } else {
          echo __('item not linked to an object');
       }

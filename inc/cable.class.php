@@ -462,8 +462,8 @@ class Cable extends CommonDBTM {
 
       //rear itemtype
       echo "<td><span id='show_itemtype_field' class='input_rear_listener'>";
-      Dropdown::showFromArray('rear_itemtype', Socket::getSocketLinkTypes(), ['value'                 => $this->fields["rear_itemtype"],
-                                                                              'rand'                  => $rand_itemtype_rear]);
+      Dropdown::showFromArray('rear_itemtype', Socket::getSocketLinkTypes(), ['value'  => $this->fields["rear_itemtype"],
+                                                                              'rand'   => $rand_itemtype_rear]);
       echo "</span>";
 
       $params = ['itemtype'   => '__VALUE__',
@@ -478,11 +478,16 @@ class Cable extends CommonDBTM {
       //front items_id
       echo "<span id='show_rear_items_id_field' class='input_rear_listener'>";
       $rear_itemtype = (!empty($this->fields["rear_itemtype"])) ? $this->fields["rear_itemtype"] : "Computer";
-      $rear_itemtype::dropdown(['name'                => 'rear_items_id',
+
+      $rear_itemtype::dropdown(['name'                 => 'rear_items_id',
                                 'value'               => $this->fields["rear_items_id"],
                                 'rand'                => $rand_items_id_rear,
+                                'entity_restrict' => ($this->fields['is_recursive'] ?? false)
+                                 ? getSonsOf('glpi_entities', $this->fields['entities_id'])
+                                 : $this->fields['entities_id'],
                                 'display_emptychoice' => true,
                                 'display_dc_position' => true]);
+
       echo "</span></td>";
       echo "<td>".__('Asset')."</td>";
 
@@ -501,12 +506,15 @@ class Cable extends CommonDBTM {
                                     $CFG_GLPI["root_doc"]."/ajax/cable.php",
                                     $params);
 
-      //rear iteitems_idmype
+      //rear items_id
       echo "<span id='show_front_items_id_field'>";
       $front_itemtype = (!empty($this->fields["front_itemtype"])) ? $this->fields["front_itemtype"] : "Computer";
       $front_itemtype::dropdown(['name'                 => 'front_items_id',
                                  'value'                => $this->fields["front_items_id"],
                                  'rand'                 => $rand_items_id_front,
+                                 'entity_restrict' => ($this->fields['is_recursive'] ?? false)
+                                 ? getSonsOf('glpi_entities', $this->fields['entities_id'])
+                                 : $this->fields['entities_id'],
                                  'display_emptychoice'  => true,
                                  'display_dc_position'  => true]);
 
@@ -540,7 +548,7 @@ class Cable extends CommonDBTM {
       echo "<span id='show_rear_sockets_field'>";
       Socket::dropdown(['name'      => 'rear_sockets_id',
                         'value'     => $this->fields["rear_sockets_id"],
-                        'entity'    => $this->fields["entities_id"],
+                        //'entity'    => $this->fields["entities_id"],
                         'condition' => ['socketmodels_id'   => $this->fields['rear_socketmodels_id'],
                                         'itemtype'          => $this->fields['rear_itemtype'],
                                         'items_id'          => $this->fields['rear_items_id']]
@@ -553,7 +561,7 @@ class Cable extends CommonDBTM {
       echo "<span id='show_front_sockets_field'>";
       Socket::dropdown(['name'      => 'front_sockets_id',
                         'value'     => $this->fields["front_sockets_id"],
-                        'entity'    => $this->fields["entities_id"],
+                        //'entity'    => $this->fields["entities_id"],
                         'condition' => ['socketmodels_id'   => $this->fields['front_socketmodels_id'],
                                         'itemtype'          => $this->fields['front_itemtype'],
                                         'items_id'          => $this->fields['front_items_id']]
@@ -561,7 +569,7 @@ class Cable extends CommonDBTM {
       echo "</span>";
       echo "</td></tr>";
 
-      //Line to display asset breadcrum (item, datacenter / dcroom / position)
+      //Line to display asset breadcrum (datacenter / dcroom / rack / position)
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Position')."</td>";
       echo "<td>";
@@ -574,7 +582,7 @@ class Cable extends CommonDBTM {
       }
       echo "</span>";
 
-      //Listener to update breacrumb / networkport
+      //Listener to update breacrumb / socket
       echo Html::scriptBlock("
          $(document).on('change', '.input_rear_listener', function(e) {
             //wait a little to be sure that dropdown_items_id DOM is effectively refresh
@@ -584,8 +592,8 @@ class Cable extends CommonDBTM {
                itemtype = $('#dropdown_rear_itemtype".$rand_itemtype_rear."').find(':selected').val();
                socketmodels_id = $('#dropdown_rear_socketmodels_id".$rand_socket_model_rear."').find(':selected').val();
                refreshAssetBreadcrumb(itemtype, items_id, 'show_rear_asset_breadcrumb');
-               refreshSocketModelDropdown(itemtype, items_id, socketmodels_id, ".$this->fields["entities_id"].", 'rear_sockets_id', 'show_rear_sockets_field');
-            }, 40);
+               refreshSocketDropdown(itemtype, items_id, socketmodels_id, 'rear_sockets_id', 'show_rear_sockets_field');
+            }, 50);
          });
       ");
 
@@ -601,7 +609,7 @@ class Cable extends CommonDBTM {
       }
       echo "</span>";
 
-      //Listener to update breacrumb / networkport
+      //Listener to update breacrumb / socket
       echo Html::scriptBlock("
          $(document).on('change', '.input_front_listener', function(e) {
             //wait a little to be sure that dropdown_items_id DOM is effectively refresh
@@ -611,8 +619,8 @@ class Cable extends CommonDBTM {
                itemtype = $('#dropdown_front_itemtype".$rand_itemtype_front."').find(':selected').val();
                socketmodels_id = $('#dropdown_front_socketmodels_id".$rand_socket_model_front."').find(':selected').val();
                refreshAssetBreadcrumb(itemtype, items_id, 'show_front_asset_breadcrumb');
-               refreshSocketModelDropdown(itemtype, items_id, socketmodels_id, ".$this->fields["entities_id"].", 'front_sockets_id', 'show_front_sockets_field');
-            }, 40);
+               refreshSocketDropdown(itemtype, items_id, socketmodels_id, 'front_sockets_id', 'show_front_sockets_field');
+            }, 50);
          });
       ");
       echo "</td></tr>";

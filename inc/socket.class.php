@@ -225,7 +225,6 @@ class Socket extends CommonDropdown {
    }
 
 
-
    /**
     * Get wiring side name
     *
@@ -445,74 +444,6 @@ class Socket extends CommonDropdown {
                  sprintf(__('%1$s adds several sockets'), $_SESSION["glpiname"]));
    }
 
-
-   /**
-    * Print out an HTML "<select>" for a dropdown with preselected value
-    *
-    * @param string  $myname             the name of the HTML select
-    * @param integer $value              the preselected value we want (default 0)
-    * @param integer $locations_id       default location ID for search (default -1)
-    * @param boolean $display_comment    display the comment near the dropdown (default 1)
-    * @param integer $entity_restrict    Restrict to a defined entity(default -1)
-    * @param string  $devtype            (default '')
-    *
-    * @return integer random part of elements id
-   **/
-   static function dropdownSocket($myname, $value = 0, $locations_id = -1, $display_comment = 1,
-                                    $entity_restrict = -1, $devtype = '') {
-      global $CFG_GLPI;
-
-      $rand          = mt_rand();
-      $name          = Dropdown::EMPTY_VALUE;
-      $comment       = "";
-      if (empty($value)) {
-         $value = 0;
-      }
-      if ($value > 0) {
-         $tmpname = Dropdown::getDropdownName("glpi_sockets", $value, 1);
-         if ($tmpname["name"] != "&nbsp;") {
-            $name          = $tmpname["name"];
-            $comment       = $tmpname["comment"];
-         }
-      }
-
-      $field_id = Html::cleanId("dropdown_".$myname.$rand);
-      $param    = ['value'             => $value,
-                   'valuename'         => $name,
-                   'entity_restrict'   => $entity_restrict,
-                   'devtype'           => $entity_restrict,
-                   'locations_id'      => $locations_id];
-      echo Html::jsAjaxDropdown($myname, $field_id,
-                                $CFG_GLPI['root_doc']."/ajax/getDropdownSocket.php",
-                                $param);
-
-      // Display comment
-      if ($display_comment) {
-         $comment_id = Html::cleanId("comment_".$myname.$rand);
-         Html::showToolTip($comment, ['contentid' => $comment_id]);
-
-         $item = new self();
-         if ($item->canCreate()) {
-            echo "<span class='fa fa-plus pointer' title=\"".__s('Add')."\" ".
-                  "onClick=\"".Html::jsGetElementbyID('socket'.$rand).".dialog('open');\">" .
-                  "<span class='sr-only'>" . __s('Add') . "</span></span>";
-            Ajax::createIframeModalWindow('socket'.$rand,
-                                          $item->getFormURL());
-
-         }
-         $paramscomment = [
-            'value'       => '__VALUE__',
-            'itemtype'    => Socket::getType(),
-            '_idor_token' => Session::getNewIDORToken("Socket")
-         ];
-         echo Ajax::updateItemOnSelectEvent($field_id, $comment_id,
-                                            $CFG_GLPI["root_doc"]."/ajax/comments.php",
-                                            $paramscomment, false);
-      }
-      return $rand;
-   }
-
-
    /**
     * check if a socket already exists (before import)
     *
@@ -544,7 +475,6 @@ class Socket extends CommonDropdown {
 
 
    function post_addItem() {
-
       $parent = $this->fields['locations_id'];
       if ($parent) {
          $changes[0] = '0';
@@ -552,11 +482,10 @@ class Socket extends CommonDropdown {
          $changes[2] = addslashes($this->getNameID());
          Log::history($parent, 'Location', $changes, $this->getType(), Log::HISTORY_ADD_SUBITEM);
       }
-
    }
 
-   function post_deleteFromDB() {
 
+   function post_deleteFromDB() {
       $parent = $this->fields['locations_id'];
       if ($parent) {
          $changes[0] = '0';
@@ -603,7 +532,8 @@ class Socket extends CommonDropdown {
       return true;
    }
 
-      /**
+
+   /**
     * Print the HTML array of the Socket associated to a Location
     *
     * @param $item Location
@@ -733,30 +663,6 @@ class Socket extends CommonDropdown {
          Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
-   }
-
-   /**
-    * @param integer $output_type Output type
-    * @param string  $mass_id     id of the form to check all
-    */
-   static function commonListHeader($output_type = Search::HTML_OUTPUT, $mass_id = '') {
-
-      // New Line for Header Items Line
-      echo Search::showNewLine($output_type);
-      // $show_sort if
-      $header_num                      = 1;
-
-      $items                           = [];
-      $items[(empty($mass_id)?'&nbsp':Html::getCheckAllAsCheckbox($mass_id))] = '';
-      $items[__('Name')]             = "name";
-
-      foreach (array_keys($items) as $key) {
-         $link   = "";
-         echo Search::showHeaderItem($output_type, $key, $header_num, $link);
-      }
-
-      // End Line for column headers
-      echo Search::showEndLine($output_type);
    }
 
 

@@ -34,7 +34,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("cable_management", READ);
 
-Html::header(Cable::getTypeName(1), $_SERVER['PHP_SELF'], "cable", "cable");
+Html::header(Cable::getTypeName(1), $_SERVER['PHP_SELF'], "management", "cable");
 
 Search::show('Cable');
 

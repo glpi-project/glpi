@@ -259,23 +259,6 @@ class Dropdown extends DbTestCase {
       $this->array($ret)->isIdenticalTo($expected);
    }
 
-   public function testGetDropdownsocket() {
-      $socket = getItemByTypeName( 'Socket', '_socket01' );
-      $location = getItemByTypeName( 'Location', '_location01' );
-      $ret = \Dropdown::getDropdownSocket([], false);
-      $this->array($ret)->hasKeys(['count', 'results'])->integer['count']->isIdenticalTo(1);
-      $this->array($ret['results'])->isIdenticalTo([
-         [
-            'id'     => 0,
-            'text'   => '-----'
-         ], [
-            'id'     => $socket->fields['id'],
-            'text'   => $socket->getName() . ' (' . $location->getName() . ')',
-            'title'  =>  $socket->getName() . ' - ' . $location->getName() . ' - ' . $socket->fields['comment']
-         ]
-      ]);
-   }
-
    public function dataGetValueWithUnit() {
       return [
             [1,      'auto',        null, '1024 Kio'],

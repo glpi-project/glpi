@@ -5065,7 +5065,7 @@ $tables['glpi_profilerights'] = [
       'rights'      => '0',
    ], [
       'profiles_id' => '2',
-      'name'        => 'netpoint',
+      'name'        => 'cable_management',
       'rights'      => '0',
    ], [
       'profiles_id' => '4',
@@ -5345,7 +5345,7 @@ $tables['glpi_profilerights'] = [
       'rights'      => '1057',
    ], [
       'profiles_id' => '1',
-      'name'        => 'netpoint',
+      'name'        => 'cable_management',
       'rights'      => '0',
    ], [
       'profiles_id' => '3',
@@ -5573,7 +5573,7 @@ $tables['glpi_profilerights'] = [
       'rights'      => '23',
    ], [
       'profiles_id' => '7',
-      'name'        => 'netpoint',
+      'name'        => 'cable_management',
       'rights'      => '23',
    ], [
       'profiles_id' => '3',
@@ -5853,7 +5853,7 @@ $tables['glpi_profilerights'] = [
       'rights'      => '0',
    ], [
       'profiles_id' => '6',
-      'name'        => 'netpoint',
+      'name'        => 'cable_management',
       'rights'      => '0',
    ], [
       'profiles_id' => '4',
@@ -6137,7 +6137,7 @@ $tables['glpi_profilerights'] = [
       'rights'      => '0',
    ], [
       'profiles_id' => '5',
-      'name'        => 'netpoint',
+      'name'        => 'cable_management',
       'rights'      => '0',
    ], [
       'profiles_id' => '5',
@@ -6417,7 +6417,7 @@ $tables['glpi_profilerights'] = [
       'rights'      => '23',
    ], [
       'profiles_id' => '4',
-      'name'        => 'netpoint',
+      'name'        => 'cable_management',
       'rights'      => '23',
    ], [
       'profiles_id' => '6',
@@ -6693,7 +6693,7 @@ $tables['glpi_profilerights'] = [
       'rights'      => '23',
    ], [
       'profiles_id' => '3',
-      'name'        => 'netpoint',
+      'name'        => 'cable_management',
       'rights'      => '23',
    ], [
       'profiles_id' => '7',
@@ -6905,7 +6905,7 @@ $tables['glpi_profilerights'] = [
       'rights'      => '33',
    ], [
       'profiles_id' => '8',
-      'name'        => 'netpoint',
+      'name'        => 'cable_management',
       'rights'      => '1',
    ], [
       'profiles_id' => '8',

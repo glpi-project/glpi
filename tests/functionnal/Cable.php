@@ -261,7 +261,7 @@ class Cable extends DbTestCase {
 
       $this->array($current_socket)->isIdenticalTo($expected);
 
-      //Second step add networkport / socket form switch '_test_pc021'
+      //Second step add networkport / socket form switch '_test_pc02'
       $computer2 = getItemByTypeName('Computer', '_test_pc02');
       $networkport = new \NetworkPort();
 
@@ -358,6 +358,8 @@ class Cable extends DbTestCase {
       $cable = new \Cable();
       $cable_id = $cable->add([
          'name'                  => 'cable',
+         'entities_id'           => $computer1->fields['entities_id'],
+         'is_recursive'          => 0,
          'rear_itemtype'         => 'Computer',
          'front_itemtype'        => 'Computer',
          'rear_items_id'         => $computer1->getID(),
@@ -384,6 +386,8 @@ class Cable extends DbTestCase {
       unset($current_cable['date_creation']);
       $expected = [
          'name'                  => 'cable',
+         'entities_id'           => $computer1->fields['entities_id'],
+         'is_recursive'          => 0,
          'rear_itemtype'         => 'Computer',
          'front_itemtype'        => 'Computer',
          'rear_items_id'         => $computer1->getID(),
@@ -401,4 +405,5 @@ class Cable extends DbTestCase {
          'comment'               => 'comment',
       ];
    }
+
 }
