@@ -53,6 +53,16 @@
       }
    }
 
+   .timeline-more-actions {
+      visibility: hidden;
+   }
+
+   &:hover {
+      .timeline-more-actions {
+         visibility: visible;
+      }
+   }
+
    .timeline-content {
       position: relative;
       border-top-left-radius: 0;
