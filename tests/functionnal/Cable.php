@@ -192,4 +192,219 @@ class Cable extends DbTestCase {
 
    }
 
+
+   public function testAddCable() {
+      $this->login();
+
+      //First step add networkport / socket for computer '_test_pc01'
+      $computer1 = getItemByTypeName('Computer', '_test_pc01');
+      $networkport1 = new \NetworkPort();
+
+      // Be sure added
+      $nb_log = (int)countElementsInTable('glpi_logs');
+      $new1_id = $networkport1->add([
+         'items_id'           => $computer1->getID(),
+         'itemtype'           => 'Computer',
+         'entities_id'        => $computer1->fields['entities_id'],
+         'is_recursive'       => 0,
+         'logical_number'     => 1,
+         'mac'                => '00:24:81:eb:c6:d0',
+         'instantiation_type' => 'NetworkPortEthernet',
+         'name'               => 'eth1',
+      ]);
+      $this->integer((int)$new1_id)->isGreaterThan(0);
+      $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
+
+      //add socket model
+      $socketModel1 = new \SocketModel();
+      $nb_log = (int)countElementsInTable('glpi_logs');
+      $socketModel1_id = $socketModel1->add([
+         'name' => 'socketModel1'
+      ]);
+      $this->integer((int)$socketModel1_id)->isGreaterThan(0);
+      $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
+
+      //add socket
+      $socket1 = new \Socket();
+      $socket1_id = $socket1->add([
+         'name'               => 'socket1',
+         'networkports_id'    => $new1_id,
+         'wiring_side'        => \Socket::FRONT, //default is REAR
+         'items_id'           => $computer1->getID(),
+         'itemtype'           => 'Computer',
+         'entities_id'        => $computer1->fields['entities_id'],
+         'is_recursive'       => 0,
+         'socketmodels_id'    => $socketModel1_id,
+         'locations_id'       => 0,
+         'comment'            => 'comment',
+      ]);
+      $this->integer((int)$socket1_id)->isGreaterThan(0);
+
+      // check data in db
+      $all_sockets = getAllDataFromTable('glpi_sockets', ['ORDER' => 'id']);
+      $current_socket = end($all_sockets);
+      unset($current_socket['id']);
+      unset($current_socket['date_mod']);
+      unset($current_socket['date_creation']);
+      $expected = [
+         'entities_id'        => $computer1->fields['entities_id'],
+         'is_recursive'       => 0,
+         'locations_id'       => 0,
+         'name'               => 'socket1',
+         'socketmodels_id'    => $socketModel1_id,
+         'wiring_side'        => \Socket::FRONT, //default is REAR
+         'itemtype'           => 'Computer',
+         'items_id'           => $computer1->getID(),
+         'networkports_id'    => $new1_id,
+         'comment'            => 'comment',
+      ];
+
+      $this->array($current_socket)->isIdenticalTo($expected);
+
+
+      //Second step add networkport / socket form switch '_test_pc021'
+      $computer2 = getItemByTypeName('Computer', '_test_pc02');
+      $networkport = new \NetworkPort();
+
+      // Be sure added
+      $nb_log = (int)countElementsInTable('glpi_logs');
+      $new2_id = $networkport->add([
+         'items_id'           => $computer2->getID(),
+         'itemtype'           => 'Computer',
+         'entities_id'        => $computer2->fields['entities_id'],
+         'is_recursive'       => 0,
+         'logical_number'     => 1,
+         'mac'                => '00:24:81:eb:c6:d0',
+         'instantiation_type' => 'NetworkPortEthernet',
+         'name'               => 'eth1',
+      ]);
+      $this->integer((int)$new2_id)->isGreaterThan(0);
+      $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
+
+      //add socket model
+      $socketModel2 = new \SocketModel();
+      $nb_log = (int)countElementsInTable('glpi_logs');
+      $socketModel2_id = $socketModel2->add([
+         'name' => 'socketModel2'
+      ]);
+      $this->integer((int)$socketModel2_id)->isGreaterThan(0);
+      $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
+
+      //add socket
+      $socket2 = new \Socket();
+      $socket2_id = $socket2->add([
+         'name'               => 'socket2',
+         'networkports_id'    => $new2_id,
+         'wiring_side'        => \Socket::FRONT, //default is REAR
+         'items_id'           => $computer2->getID(),
+         'itemtype'           => 'Computer',
+         'entities_id'        => $computer2->fields['entities_id'],
+         'is_recursive'       => 0,
+         'socketmodels_id'    => $socketModel2_id,
+         'locations_id'       => 0,
+         'comment'            => 'comment',
+      ]);
+      $this->integer((int)$socket2_id)->isGreaterThan(0);
+
+      // check data in db
+      $all_sockets = getAllDataFromTable('glpi_sockets', ['ORDER' => 'id']);
+      $current_socket = end($all_sockets);
+      unset($current_socket['id']);
+      unset($current_socket['date_mod']);
+      unset($current_socket['date_creation']);
+      $expected = [
+         'entities_id'        => $computer2->fields['entities_id'],
+         'is_recursive'       => 0,
+         'locations_id'       => 0,
+         'name'               => 'socket2',
+         'socketmodels_id'    => $socketModel2_id,
+         'wiring_side'        => \Socket::FRONT, //default is REAR
+         'itemtype'           => 'Computer',
+         'items_id'           => $computer2->getID(),
+         'networkports_id'    => $new2_id,
+         'comment'            => 'comment',
+      ];
+
+      $this->array($current_socket)->isIdenticalTo($expected);
+
+      //add CableStradn
+      $cableStrand = new \CableStrand();
+      $nb_log = (int)countElementsInTable('glpi_logs');
+      $cableStrand_id = $cableStrand->add([
+         'name' => 'cable_strand'
+      ]);
+      $this->integer((int)$cableStrand_id)->isGreaterThan(0);
+      $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
+
+      //add State
+      $cableState = new \State();
+      $nb_log = (int)countElementsInTable('glpi_logs');
+      $cableState_id = $cableState->add([
+         'name' => 'cable_state',
+         'is_visible_cable' => true,
+      ]);
+      $this->integer((int)$cableState_id)->isGreaterThan(0);
+      $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
+
+      //add Cabletype
+      $cableType = new \CableType();
+      $nb_log = (int)countElementsInTable('glpi_logs');
+      $cableType_id = $cableType->add([
+         'name' => 'cable_type'
+      ]);
+      $this->integer((int)$cableType_id)->isGreaterThan(0);
+      $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
+
+      //add cable
+      $cable = new \Cable();
+      $cable_id = $cable->add([
+         'name'                  => 'cable',
+         'entities_id'           => $computer1->fields['entities_id'],
+         'is_recursive'          => 0,
+         'rear_itemtype'         => 'Computer',
+         'front_itemtype'        => 'Computer',
+         'rear_items_id'         => $computer1->getID(),
+         'front_items_id'        => $computer2->getID(),
+         'rear_socketmodels_id'  => $socketModel1_id,
+         'front_socketmodels_id' => $socketModel2_id,
+         'rear_sockets_id'       => $socket1_id,
+         'front_sockets_id'      => $socket2_id,
+         'cablestrands_id'       => $cableStrand_id,
+         'color'                 => '#f72f04',
+         'otherserial'           => 'otherserial',
+         'sates_id'              => $cableState_id,
+         'users_id_tech'         => 2,
+         'cabletypes_id'         => $cableType_id,
+         'comment'               => 'comment',
+      ]);
+      $this->integer((int)$cable_id)->isGreaterThan(0);
+
+      // check data in db
+      $all_cables = getAllDataFromTable('glpi_cables', ['ORDER' => 'id']);
+      $current_cable = end($all_cables);
+      unset($current_cable['id']);
+      unset($current_cable['date_mod']);
+      unset($current_cable['date_creation']);
+      $expected = [
+         'name'                  => 'cable',
+         'entities_id'           => $computer1->fields['entities_id'],
+         'is_recursive'          => 0,
+         'rear_itemtype'         => 'Computer',
+         'front_itemtype'        => 'Computer',
+         'rear_items_id'         => $computer1->getID(),
+         'front_items_id'        => $computer2->getID(),
+         'rear_socketmodels_id'  => $socketModel1_id,
+         'front_socketmodels_id' => $socketModel2_id,
+         'rear_sockets_id'       => $socket1_id,
+         'front_sockets_id'      => $socket2_id,
+         'cablestrands_id'       => $cableStrand_id,
+         'color'                 => '#f72f04',
+         'otherserial'           => 'otherserial',
+         'sates_id'              => $cableState_id,
+         'users_id_tech'         => 2,
+         'cabletypes_id'         => $cableType_id,
+         'comment'               => 'comment',
+      ];
+   }
+
 }
