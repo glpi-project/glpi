@@ -62,22 +62,6 @@ function refreshNetworkPortDropdown(itemtype, items_id, dom_to_update) {
    });
 }
 
-function refreshSocketDropdown(itemtype, items_id, dom_to_update) {
-   // get networkport dropdown
-   $.ajax({
-      method: 'POST',
-      url: CFG_GLPI.root_doc+"/ajax/cable.php",
-      data: {
-         action:   'get_networkport_dropdown',
-         items_id: items_id,
-         itemtype: itemtype,
-      }
-   }).done(function(html_data) {
-      $('#'+dom_to_update).empty();
-      $('#'+dom_to_update).append(html_data);
-   });
-}
-
 function refreshSocketDropdown(itemtype, items_id, socketmodels_id, dom_name, dom_to_update) {
    // get networkport dropdown
    $.ajax({
@@ -88,7 +72,6 @@ function refreshSocketDropdown(itemtype, items_id, socketmodels_id, dom_name, do
          items_id: items_id,
          itemtype: itemtype,
          socketmodels_id: socketmodels_id,
-         //entity: entity,
          dom_name: dom_name
       }
    }).done(function(html_data) {
