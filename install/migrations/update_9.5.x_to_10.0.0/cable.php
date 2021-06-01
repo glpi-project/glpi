@@ -82,8 +82,6 @@ if (!$DB->tableExists('glpi_cables')) {
    $query = "CREATE TABLE `glpi_cables` (
       `id` int NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
-      `entities_id` int NOT NULL DEFAULT '0',
-      `is_recursive` tinyint NOT NULL DEFAULT '0',
       `rear_itemtype` varchar(255) DEFAULT NULL,
       `front_itemtype` varchar(255) DEFAULT NULL,
       `rear_items_id` int NOT NULL DEFAULT '0',
@@ -113,8 +111,6 @@ if (!$DB->tableExists('glpi_cables')) {
       KEY `front_sockets_id` (`front_sockets_id`),
       KEY `cablestrands_id` (`cablestrands_id`),
       KEY `states_id` (`states_id`),
-      KEY `complete` (`entities_id`,`name`),
-      KEY `is_recursive` (`is_recursive`),
       KEY `users_id_tech` (`users_id_tech`),
       KEY `cabletypes_id` (`cabletypes_id`),
       KEY `date_mod` (`date_mod`),
