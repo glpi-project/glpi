@@ -255,23 +255,6 @@ class Cable extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '80',
-         'table'              => 'glpi_entities',
-         'field'              => 'completename',
-         'name'               => Entity::getTypeName(1),
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown'
-      ];
-
-      $tab[] = [
-         'id'                 => '86',
-         'table'              => $this->getTable(),
-         'field'              => 'is_recursive',
-         'name'               => __('Child entities'),
-         'datatype'           => 'bool'
-      ];
-
-      $tab[] = [
          'id'                 => '87',
          'table'              => $this->getTable(),
          'field'              => '_virtual_datacenter_position', // virtual field
@@ -441,7 +424,6 @@ class Cable extends CommonDBTM {
       echo "<td>";
       State::dropdown([
          'value'     => $this->fields["states_id"],
-         'entity'    => $this->fields["entities_id"],
          'condition' => ['is_visible_computer' => 1],
       ]);
       echo "</td><td colspan='2'></td></tr>";
@@ -450,8 +432,7 @@ class Cable extends CommonDBTM {
       echo "<td>".__('Technician in charge of the hardware')."</td>";
       echo "<td>";
       User::dropdown(['name'  => 'users_id_tech',
-                     'value'  => $this->fields["users_id_tech"],
-                     'entity' => $this->fields["entities_id"]]);
+                     'value'  => $this->fields["users_id_tech"]]);
       echo "</td><td></td></tr>";
 
       echo "<tr><td>".__('Comments')."</td>";
@@ -501,8 +482,7 @@ class Cable extends CommonDBTM {
                                 'value'               => $this->fields["rear_items_id"],
                                 'rand'                => $rand_items_id_rear,
                                 'display_emptychoice' => true,
-                                'display_dc_position' => true,
-                                'entity'              => $this->fields["entities_id"]]);
+                                'display_dc_position' => true]);
       echo "</span></td>";
       echo "<td>".__('Asset')."</td>";
 
@@ -528,8 +508,7 @@ class Cable extends CommonDBTM {
                                  'value'                => $this->fields["front_items_id"],
                                  'rand'                 => $rand_items_id_front,
                                  'display_emptychoice'  => true,
-                                 'display_dc_position'  => true,
-                                 'entity'               => $this->fields["entities_id"]]);
+                                 'display_dc_position'  => true]);
 
       echo "</span></td>";
       echo "</tr>";
