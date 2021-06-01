@@ -7174,7 +7174,7 @@ abstract class CommonITILObject extends CommonDBTM {
                'item' => [
                   'id'        => $validations_id,
                   'date'      => $validation['submission_date'],
-                  'content'   => __('Validation request')." => ".$user->getlink().
+                  'content'   => __('Validation request')." => <i class='fas fa-user text-muted me-1'></i>".$user->getlink().
                                                  "<br>".$validation['comment_submission'],
                   'users_id'  => $validation['users_id'],
                   'can_edit'  => $canedit,
@@ -7182,7 +7182,11 @@ abstract class CommonITILObject extends CommonDBTM {
                   'users_id_validate'  => $validation['users_id_validate'],
                   'timeline_position' => $validation['timeline_position']
                ],
-               'itiltype' => 'Validation'
+               'itiltype' => 'Validation',
+               'class'    => 'validation-request '.
+                  ($validation['status'] == CommonITILValidation::WAITING  ? "validation-waiting"  : "").
+                  ($validation['status'] == CommonITILValidation::ACCEPTED ? "validation-accepted" : "").
+                  ($validation['status'] == CommonITILValidation::REFUSED  ? "validation-refused"  : ""),
             ];
 
             if (!empty($validation['validation_date'])) {
@@ -7197,8 +7201,9 @@ abstract class CommonITILObject extends CommonDBTM {
                      'users_id'  => $validation['users_id_validate'],
                      'status'    => "status_".$validation['status'],
                      'can_edit'  => $canedit,
-                     'timeline_position' => $validation['timeline_position']
+                     'timeline_position' => $validation['timeline_position'],
                   ],
+                  'class'    => 'validation-answer',
                   'itiltype' => 'Validation'
                ];
             }

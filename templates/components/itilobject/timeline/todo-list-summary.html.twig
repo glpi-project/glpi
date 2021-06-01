@@ -3,7 +3,7 @@
 {% set todo_percent = timeline_stats['percent_done'] ?? 0 %}
 
 <div class="timeline_stats my-3">
-   <div class="mb-2">
+   <div class="mb-2 ms-1 text-muted">
       {{ __('Total duration: %s')|format(timestampToString(total_duration)) }}
    </div>
    <div class="d-flex">

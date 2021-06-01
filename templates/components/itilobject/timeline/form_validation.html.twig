@@ -15,21 +15,23 @@
                <input type="hidden" name="users_id_validate" value="{{ entry_i['users_id_validate'] }}"/>
                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
 
-               <div class="mb-3">
+               <div class="mb-3 comment-part">
                   <label class="form-label">
                      {{ _n('Comment', 'Comments', 1) }}
                   </label>
                   <textarea name="comment_validation" class="form-control"></textarea>
                </div>
 
-               <button type="submit" class="btn btn-outline-green" name="approval_action" value="approve">
-                  <i class="fas fa-thumbs-up"></i>
-                  <span>{{ __('Approve') }}</span>
-               </button>
-               <button type="submit" class="btn btn-outline-red" name="approval_action" value="refuse">
-                  <i class="fas fa-thumbs-down"></i>
-                  <span>{{ __('Refuse') }}</span>
-               </button>
+               <div class="validation-footer">
+                  <button type="submit" class="btn btn-outline-green" name="approval_action" value="approve">
+                     <i class="fas fa-thumbs-up"></i>
+                     <span class="validation-label">{{ __('Approve') }}</span>
+                  </button>
+                  <button type="submit" class="btn btn-outline-red" name="approval_action" value="refuse">
+                     <i class="fas fa-thumbs-down"></i>
+                     <span class="validation-label">{{ __('Refuse') }}</span>
+                  </button>
+               </div>
             </form>
          {% endif %}
       </div>
