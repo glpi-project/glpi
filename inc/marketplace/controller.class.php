@@ -45,6 +45,7 @@ use NotificationEvent;
 use Plugin;
 use Session;
 use Toolbox;
+use wapmorgan\UnifiedArchive\Formats;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
 /**
@@ -106,8 +107,8 @@ class Controller extends CommonGLPI {
       }
 
       // extract the archive
-      if (!UnifiedArchive::canOpenArchive($dest)) {
-         $type = UnifiedArchive::detectArchiveType($dest);
+      if (!UnifiedArchive::canOpen($dest)) {
+         $type = Formats::detectArchiveFormat($dest);
          Session::addMessageAfterRedirect(
             sprintf(__('Plugin archive format is not supported by your system : %s.'), $type),
             false,
