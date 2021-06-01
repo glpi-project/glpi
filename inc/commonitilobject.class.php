@@ -7264,7 +7264,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
                   $resolve = $pending_reason_item_parent->getAutoResolvedate();
                   if ($resolve) {
-                     echo __("Automatic resolution scheduled on ") . Html::convDate($resolve) . ".<br>";
+                     echo sprintf(__("Automatic resolution scheduled on %s"), Html::convDate($resolve)) . ".<br>";
                   }
                }
             }
