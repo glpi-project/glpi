@@ -110,7 +110,8 @@
       }
    }
 
-   &.ITILContent {
+   &.ITILContent,
+   &.ITILValidation {
       .timeline-content {
          background-color: $timeline-itilc-bg;
          color: $timeline-itilc-fg;
@@ -257,6 +258,14 @@
       padding-right: .4rem !important;
       transition: none;
 
+      & .ITILValidation {
+         margin-top: 3rem;
+
+         & ~ .ITILValidation {
+            margin-top: 0;
+         }
+      }
+
       .timeline-item {
          &.ITILContent,
          &.ITILSolution,
@@ -264,6 +273,50 @@
          &.ITILTask.info,
          &.KnowbaseItemComment {
             display: none;
+         }
+
+         &.ITILValidation:not(.expanded) {
+            padding-left: 23px;
+
+            &.validation-answer,
+            &.validation-accepted,
+            &.validation-refused {
+               display: none;
+            }
+
+            hr,
+            .comment-part,
+            .validation-label {
+               display: none;
+            }
+
+            .validation-footer {
+               position: absolute;
+               left: -45px;
+               display: none;
+               flex-direction: column;
+               top: 3px;
+               width: 30px;
+
+               .btn {
+                  padding: 0.2rem 0.5rem;
+                  font-size: 0.75rem;
+                  border-radius: 2px;
+                  margin-bottom: 0.3rem;
+
+                  &:not(:hover) {
+                     border-color: transparent;
+                  }
+               }
+            }
+         }
+
+         &:hover {
+            &.ITILValidation {
+               .validation-footer {
+                  display: flex;
+               }
+            }
          }
 
          margin-left: 0 !important;

@@ -1,4 +1,4 @@
-<div class="itil-timeline">
+<div class="itil-timeline d-flex flex-column">
    {# TODO timeline filter #}
 
    {% include("components/itilobject/timeline/main_description.html.twig") %}
@@ -47,133 +47,131 @@
          {% set state_class = "done" %}
       {% endif %}
 
-      <div class="d-flex">
-         <div class="timeline-item mb-4 {{ itiltype }} {{ state_class }} {{ "right" in item_position ? "ms-auto" : "" }}"
-              data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}">
-            <div class="row">
-               <div class="col-auto todo-list-state d-none">
-                  {% if entry_i['state'] is constant('Planning::TODO') %}
-                     <span class="state state_1" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('To do') }}"></span>
-                  {% elseif entry_i['state'] is constant('Planning::DONE') %}
-                     <span class="state state_2" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('Done') }}"></span>
-                  {% endif %}
-               </div>
+      <div class="timeline-item mb-4 {{ itiltype }} {{ state_class }} {{ entry['class'] }} {{ "right" in item_position ? "ms-auto" : "" }}"
+            data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}">
+         <div class="row">
+            <div class="col-auto todo-list-state d-none">
+               {% if entry_i['state'] is constant('Planning::TODO') %}
+                  <span class="state state_1" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('To do') }}"></span>
+               {% elseif entry_i['state'] is constant('Planning::DONE') %}
+                  <span class="state state_2" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('Done') }}"></span>
+               {% endif %}
+            </div>
 
-               <div class="col-auto d-flex flex-column user-part {{ "right" in item_position ? "ms-auto ms-0 order-sm-last" : "" }}">
-                  {% set avatar_rand = random() %}
-                  <span id="timeline-avatar{{ avatar_rand }}">
-                     {% include "components/itilobject/user_picture.html.twig" with {'users_id': users_id} only %}
-                  </span>
-               </div>
-               <div class="col-12 col-sm d-flex flex-column content-part">
-                  <div class="d-flex ">
-                     <div class="d-flex creator">
-                        <div class="d-none d-md-block">
-                           <strong>{{ User__getLink(users_id, {
-                                 'timeline_item': item,
-                                 'timeline_subitem': entry
-                              }) }}</strong>
-                           {% set user = User__getUserName(users_id, 2) %}
-                           {{ Html__showToolTip(user['comment'], {
-                              'applyto': "timeline-avatar" ~ avatar_rand
-                           }) }}
-                        </div>
-
-                        <span title="{{ convDateTime(date_creation) }}" class="ms-2 text-muted text-nowrap">
-                           {{ time2str(date_creation) }}
-                        </span>
+            <div class="col-auto d-flex flex-column user-part {{ "right" in item_position ? "ms-auto ms-0 order-sm-last" : "" }}">
+               {% set avatar_rand = random() %}
+               <span id="timeline-avatar{{ avatar_rand }}">
+                  {% include "components/itilobject/user_picture.html.twig" with {'users_id': users_id} only %}
+               </span>
+            </div>
+            <div class="col-12 col-sm d-flex flex-column content-part">
+               <div class="d-flex ">
+                  <div class="d-flex creator">
+                     <div class="d-none d-md-block">
+                        <strong>{{ User__getLink(users_id, {
+                              'timeline_item': item,
+                              'timeline_subitem': entry
+                           }) }}</strong>
+                        {% set user = User__getUserName(users_id, 2) %}
+                        {{ Html__showToolTip(user['comment'], {
+                           'applyto': "timeline-avatar" ~ avatar_rand
+                        }) }}
                      </div>
 
-                     <div class="d-flex ms-auto timeline-item-buttons">
-                        {% if is_private %}
-                           <span title="{{ __('Private') }}" class="is-private ms-2">
-                              <i class="fas fa-lock" aria-label="{{ __('Private') }}"></i>
-                           </span>
-                        {% endif %}
+                     <span title="{{ convDateTime(date_creation) }}" class="ms-2 text-muted text-nowrap">
+                        {{ time2str(date_creation) }}
+                     </span>
+                  </div>
 
-                        {% if is_promoted %}
-                           <a href="{{ form_path('Ticket', entry_i['sourceof_items_id']) }}"
-                              title="{{ __('Followup promoted to a ticket') }}"
-                              class="ms-2">
-                              <i class="fas code-branch" aria-label="{{ __('Followup promoted to a ticket') }}"></i>
-                           </a>
-                        {% endif %}
+                  <div class="d-flex ms-auto timeline-item-buttons">
+                     {% if is_private %}
+                        <span title="{{ __('Private') }}" class="is-private ms-2">
+                           <i class="fas fa-lock" aria-label="{{ __('Private') }}"></i>
+                        </span>
+                     {% endif %}
 
-                        {% set actions = {} %}
+                     {% if is_promoted %}
+                        <a href="{{ form_path('Ticket', entry_i['sourceof_items_id']) }}"
+                           title="{{ __('Followup promoted to a ticket') }}"
+                           class="ms-2">
+                           <i class="fas code-branch" aria-label="{{ __('Followup promoted to a ticket') }}"></i>
+                        </a>
+                     {% endif %}
 
-                        {% if entry_i['can_edit'] and not status_closed and not (entry['type'] in ['Document_Item', 'Assign']) %}
-                           {% set edit_btn %}
-                              <li>
-                                 <a class="dropdown-item edit-timeline-item" href="#">
-                                    <i class="fas fa-fw fa-edit"></i>
-                                    <span>{{ __("Edit") }}</span>
-                                 </a>
-                              </li>
-                           {% endset %}
-                           {% set actions = actions|merge({edit_btn}) %}
-                        {% endif %}
+                     {% set actions = {} %}
 
-                        {% if item.getType() is same as 'Ticket' and entry['type'] is same as 'ITILFollowup' %}
-                           {% set promote_btn %}
-                              <li>
-                                 <a class="dropdown-item" href="{{ form_path('Ticket') ~ "?_promoted_fup_id=" ~ entry_i['id'] }}">
-                                    <i class="fas fa-fw fa-code-branch"></i>
-                                    <span>{{ __('Promote to Ticket') }}</span>
-                                 </a>
-                              </li>
-                           {% endset %}
-                           {% set actions = actions|merge({promote_btn}) %}
-                        {% endif %}
+                     {% if entry_i['can_edit'] and not status_closed and not (entry['type'] in ['Document_Item', 'Assign']) %}
+                        {% set edit_btn %}
+                           <li>
+                              <a class="dropdown-item edit-timeline-item" href="#">
+                                 <i class="fas fa-fw fa-edit"></i>
+                                 <span>{{ __("Edit") }}</span>
+                              </a>
+                           </li>
+                        {% endset %}
+                        {% set actions = actions|merge({edit_btn}) %}
+                     {% endif %}
 
-                        {% if actions|length %}
-                           <div class="dropdown ms-2">
-                              <button class="btn btn-sm btn-ghost-secondary timeline-more-actions" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false">
-                                 <i class="fas fa-ellipsis-h"></i>
-                              </button>
-                              <ul class="dropdown-menu" aria-labelledby="more-actions-{{ entry_rand }}">
-                                 {% for action in actions %}
-                                    {{ action }}
-                                 {% endfor %}
-                              </ul>
-                           </div>
-                        {% endif %}
+                     {% if item.getType() is same as 'Ticket' and entry['type'] is same as 'ITILFollowup' %}
+                        {% set promote_btn %}
+                           <li>
+                              <a class="dropdown-item" href="{{ form_path('Ticket') ~ "?_promoted_fup_id=" ~ entry_i['id'] }}">
+                                 <i class="fas fa-fw fa-code-branch"></i>
+                                 <span>{{ __('Promote to Ticket') }}</span>
+                              </a>
+                           </li>
+                        {% endset %}
+                        {% set actions = actions|merge({promote_btn}) %}
+                     {% endif %}
+
+                     {% if actions|length %}
+                        <div class="dropdown ms-2">
+                           <button class="btn btn-sm btn-ghost-secondary timeline-more-actions" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false">
+                              <i class="fas fa-ellipsis-h"></i>
+                           </button>
+                           <ul class="dropdown-menu" aria-labelledby="more-actions-{{ entry_rand }}">
+                              {% for action in actions %}
+                                 {{ action }}
+                              {% endfor %}
+                           </ul>
+                        </div>
+                     {% endif %}
+                  </div>
+               </div>
+               <span class="row mt-2 timeline-content flex-grow-1 {{ item_position }} card">
+                  <div class="card-body">
+                     {% if itiltype is same as 'ITILValidation' %}
+                        {% include 'components/itilobject/timeline/form_validation.html.twig' with {'form_mode': 'view'} %}
+                     {% elseif itiltype is same as 'ITILTask' %}
+                        {% include 'components/itilobject/timeline/form_task.html.twig' with {'form_mode': 'view'} %}
+                     {% elseif itiltype is same as 'ITILFollowup' %}
+                        {% include 'components/itilobject/timeline/form_followup.html.twig' with {'form_mode': 'view'} %}
+                     {% elseif itiltype is same as 'ITILSolution' %}
+                        {% include 'components/itilobject/timeline/form_solution.html.twig' with {'form_mode': 'view'} %}
+                     {% elseif itiltype is same as 'Document_Item' %}
+                        {% include 'components/itilobject/timeline/form_document_item.html.twig' with {'form_mode': 'view'} %}
+                     {% else %}
+                        <div class="read-only-content">
+                           {{ getHtmlToDisplay(entry_i['content']) }}
+                        </div>
+                     {% endif %}
+                     <div class="edit-content collapse">
+                        <button class="btn btn-sm btn-ghost-secondary float-end close-edit-content">
+                           <i class="fas fa-2x fa-times"></i>
+                        </button>
+                        <div class="ajax-content">
+
+                        </div>
                      </div>
                   </div>
-                  <span class="row mt-2 timeline-content flex-grow-1 {{ item_position }} card">
-                     <div class="card-body">
-                        {% if itiltype is same as 'ITILValidation' %}
-                           {% include 'components/itilobject/timeline/form_validation.html.twig' with {'form_mode': 'view'} %}
-                        {% elseif itiltype is same as 'ITILTask' %}
-                           {% include 'components/itilobject/timeline/form_task.html.twig' with {'form_mode': 'view'} %}
-                        {% elseif itiltype is same as 'ITILFollowup' %}
-                           {% include 'components/itilobject/timeline/form_followup.html.twig' with {'form_mode': 'view'} %}
-                        {% elseif itiltype is same as 'ITILSolution' %}
-                           {% include 'components/itilobject/timeline/form_solution.html.twig' with {'form_mode': 'view'} %}
-                        {% elseif itiltype is same as 'Document_Item' %}
-                           {% include 'components/itilobject/timeline/form_document_item.html.twig' with {'form_mode': 'view'} %}
-                        {% else %}
-                           <div class="read-only-content">
-                              {{ getHtmlToDisplay(entry_i['content']) }}
-                           </div>
-                        {% endif %}
-                        <div class="edit-content collapse">
-                           <button class="btn btn-sm btn-ghost-secondary float-end close-edit-content">
-                              <i class="fas fa-2x fa-times"></i>
-                           </button>
-                           <div class="ajax-content">
+               </span>
 
-                           </div>
-                        </div>
-                     </div>
-                  </span>
-
-                  {% if entry_i['users_id_editor'] and date_creation != date_mod %}
-                     {% set editor = User__getLink(entry_i['users_id_editor']) %}
-                     <div class="text-muted text-end d-none d-md-block" title="{{ convDateTime(date_mod) }}">
-                        {{ __('Last edition: %1$s by %2$s')|format(time2str(date_mod), editor)|raw }}
-                     </div>
-                  {% endif %}
-               </div>
+               {% if entry_i['users_id_editor'] and date_creation != date_mod %}
+                  {% set editor = User__getLink(entry_i['users_id_editor']) %}
+                  <div class="text-muted text-end d-none d-md-block" title="{{ convDateTime(date_mod) }}">
+                     {{ __('Last edition: %1$s by %2$s')|format(time2str(date_mod), editor)|raw }}
+                  </div>
+               {% endif %}
             </div>
          </div>
       </div>
