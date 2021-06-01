@@ -36,8 +36,19 @@
 
       {% set itiltype = entry['itiltype'] is defined ? "ITIL" ~ entry['itiltype'] : entry['type'] %}
 
+      {% set state_class = "" %}
+      {% if entry_i['state'] is constant('Planning::INFO') %}
+         {% set state_class = "info" %}
+      {% endif %}
+      {% if entry_i['state'] is constant('Planning::TODO') %}
+         {% set state_class = "todo" %}
+      {% endif %}
+      {% if entry_i['state'] is constant('Planning::DONE') %}
+         {% set state_class = "done" %}
+      {% endif %}
+
       <div class="d-flex">
-         <div class="timeline-item mb-4 {{ itiltype }} {{ "right" in item_position ? "ms-auto" : "" }}"
+         <div class="timeline-item mb-4 {{ itiltype }} {{ state_class }} {{ "right" in item_position ? "ms-auto" : "" }}"
               data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}">
             <div class="row">
                <div class="col-auto todo-list-state d-none">
