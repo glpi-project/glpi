@@ -6412,8 +6412,7 @@ JAVASCRIPT;
                            && isset($so['toadd'][$data[$ID][$k]['name']])) {
                         $out .= $so['toadd'][$data[$ID][$k]['name']];
                      } else {
-                        $number = str_replace(' ', '&nbsp;',
-                                              Html::formatNumber($data[$ID][$k]['name'], false, 0));
+                        $number = Html::formatNumber($data[$ID][$k]['name'], false, 0));
                         $out .= Dropdown::getValueWithUnit($number, $unit);
                      }
                   }
