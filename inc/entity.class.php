@@ -999,7 +999,7 @@ class Entity extends CommonTreeDropdown {
          'min'                => 1,
          'max'                => 3650,
          'step'               => 1,
-         'unit'               => 'day',
+         'unit'               => 'days',
          'toadd'              => [
             self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
             self::CONFIG_NEVER   => __('Never'),
