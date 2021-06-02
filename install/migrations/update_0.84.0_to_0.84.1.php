@@ -63,26 +63,6 @@ function update0840to0841() {
                                  true);
    }
 
-   // Convert html fields from numeric encoding to raw encoding
-   $fields_to_clean = ['glpi_knowbaseitems'                    => 'answer',
-                            'glpi_tickets'                          => 'solution',
-                            'glpi_problems'                         => 'solution',
-                            'glpi_reminders'                        => 'text',
-                            'glpi_solutiontemplates'                => 'content',
-                            'glpi_notificationtemplatetranslations' => 'content_text'];
-   foreach ($fields_to_clean as $table => $field) {
-      foreach ($DB->request($table) as $data) {
-         $text  = @Toolbox::unclean_html_cross_side_scripting_deep($data[$field]);
-         $text  = html_entity_decode($text, ENT_NOQUOTES, 'UTF-8');
-         $text  = addslashes($text);
-         $text  = Toolbox::clean_cross_side_scripting_deep($text);
-         $query = "UPDATE `$table`
-                   SET `$field` = '$text'
-                   WHERE `id` = '".$data['id']."';";
-         $DB->queryOrDie($query, "0.84.1 fix encoding of html field : $table.$field");
-      }
-   }
-
    // Add date_mod to document_item
    $migration->addField('glpi_documents_items', 'date_mod', 'datetime');
    $migration->migrationOneTable('glpi_documents_items');
