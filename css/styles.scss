@@ -7231,3 +7231,16 @@ div.progress {
    height: 24px;
    width: 24px;
 }
+
+.mr10px {
+   margin-right: 10px !important
+}
+
+.pending_detail{
+   margin-top: 6px;
+   margin-left: 2px;
+
+   .fas {
+      margin-left: 5px;
+   }
+}

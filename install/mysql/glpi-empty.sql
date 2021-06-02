@@ -8690,6 +8690,41 @@ CREATE TABLE `glpi_items_remotemanagements` (
   KEY `item` (`itemtype`,`items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_pendingreasons`;
+CREATE TABLE `glpi_pendingreasons` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `entities_id` int NOT NULL DEFAULT '0',
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `name` varchar(255) DEFAULT NULL,
+  `followup_frequency` int NOT NULL DEFAULT '0',
+  `followups_before_resolution` int NOT NULL DEFAULT '0',
+  `itilfollowuptemplates_id` int NOT NULL DEFAULT '0',
+  `solutiontemplates_id` int NOT NULL DEFAULT '0',
+  `comment` text,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `itilfollowuptemplates_id` (`itilfollowuptemplates_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `solutiontemplates_id` (`solutiontemplates_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_pendingreasons_items`;
+CREATE TABLE `glpi_pendingreasons_items` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `pendingreasons_id` int NOT NULL DEFAULT '0',
+  `items_id` int NOT NULL DEFAULT '0',
+  `itemtype` varchar(100) NOT NULL DEFAULT '',
+  `followup_frequency` int NOT NULL DEFAULT '0',
+  `followups_before_resolution` int NOT NULL DEFAULT '0',
+  `bump_count` int NOT NULL DEFAULT '0',
+  `last_bump_date` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`items_id`,`itemtype`),
+  KEY `pendingreasons_id` (`pendingreasons_id`),
+  KEY `item` (`itemtype`,`items_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 DROP TABLE IF EXISTS `glpi_manuallinks`;
 CREATE TABLE `glpi_manuallinks` (
   `id` int NOT NULL AUTO_INCREMENT,

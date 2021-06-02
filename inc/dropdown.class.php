@@ -847,6 +847,7 @@ class Dropdown {
                  'ProjectTaskTemplate' => null,
                  'PlanningExternalEventTemplate' => null,
                  'PlanningEventCategory' => null,
+                 'PendingReason' => null,
              ],
 
              _n('Type', 'Types', Session::getPluralNumber()) => [

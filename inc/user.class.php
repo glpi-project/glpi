@@ -253,6 +253,12 @@ class User extends CommonDBTM {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
+
+      $config = Config::getConfigurationValues('core');
+      if ($config['system_user'] == $this->getID()) {
+         return $ong;
+      }
+
       $this->addImpactTab($ong, $options);
       $this->addStandardTab('Profile_User', $ong, $options);
       $this->addStandardTab('Group_User', $ong, $options);
@@ -2046,7 +2052,6 @@ class User extends CommonDBTM {
       return Profile::currentUserHaveMoreRightThan($user_prof);
    }
 
-
    /**
     * Print the user form.
     *
@@ -2063,6 +2068,11 @@ class User extends CommonDBTM {
       // Affiche un formulaire User
       if (($ID != Session::getLoginUserID()) && !self::canView()) {
          return false;
+      }
+
+      $config = Config::getConfigurationValues('core');
+      if ($config['system_user'] == $this->getID()) {
+         return $this->showSystemUserForm($ID, $options);
       }
 
       $this->initForm($ID, $options);
@@ -5734,5 +5744,67 @@ JAVASCRIPT;
 
             return $user->fields['nickname'];
       }
+   }
+
+   /**
+    * Print a simplified user form.
+    *
+    * @param integer $ID    ID of the user
+    * @param array $options Options
+    *     - string   target        Form target
+    *     - boolean  withtemplate  Template or basic item
+    *
+    * @return boolean true
+    */
+   public function showSystemUserForm($ID, array $options = []): bool {
+      $this->initForm($ID, $options);
+
+      $formtitle = $this->getTypeName(1);
+      $options['formtitle']   = $formtitle;
+      $options['formoptions'] = ($options['formoptions'] ?? '') . " enctype='multipart/form-data'";
+      $options['candel'] = false;
+      $options['canedit'] = self::canUpdate();
+      $this->showFormHeader($options);
+      $rand = mt_rand();
+
+      echo "<tr class='tab_bg_1'>";
+      $surnamerand = mt_rand();
+      echo "<td><label for='textfield_realname$surnamerand'>" . __('Surname') . "</label></td>";
+      echo "<td>";
+      Html::autocompletionTextField($this, "realname", ['rand' => $surnamerand]);
+      echo "</td>";
+
+      echo "<td rowspan='3'>" . __('Picture') . "</td>";
+      echo "<td rowspan='3'>";
+      echo "<div class='user_picture_border_small' id='picture$rand'>";
+      echo "<img class='user_picture_small' alt=\"".__s('Picture')."\" src='".
+               User::getThumbnailURLForPicture($this->fields['picture'])."'>";
+      echo "</div>";
+      $full_picture = "<div class='user_picture_border'>";
+      $full_picture .= "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
+                           User::getURLForPicture($this->fields['picture'])."'>";
+      $full_picture .= "</div>";
+      Html::showTooltip($full_picture, ['applyto' => "picture$rand"]);
+      echo Html::file(['name' => 'picture', 'display' => false, 'onlyimages' => true]);
+      echo "<input type='checkbox' name='_blank_picture'>&nbsp;".__('Clear');
+      echo "</td>";
+      echo "</tr>";
+
+      $firstnamerand = mt_rand();
+      echo "<tr class='tab_bg_1'><td><label for='textfield_firstname$firstnamerand'>" . __('First name') . "</label></td><td>";
+      Html::autocompletionTextField($this, "firstname", ['rand' => $firstnamerand]);
+      echo "</td></tr>";
+
+      echo "<tr><td colspan='2'>";
+      echo "<span>";
+      echo  __("This is a special user used for automated actions. ");
+      echo '<br>';
+      echo  __("You can set its name to your organisation's name. ");
+      echo "</span>";
+      echo "</td></tr>";
+
+      $this->showFormButtons($options);
+
+      return true;
    }
 }

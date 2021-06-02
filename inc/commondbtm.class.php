@@ -5675,7 +5675,11 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return static|boolean false on failure
    */
-   public static function getById(int $id) {
+   public static function getById(?int $id) {
+      if (is_null($id)) {
+         return false;
+      }
+
       $item = new static();
 
       if (!$item->getFromDB($id)) {

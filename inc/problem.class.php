@@ -1477,6 +1477,7 @@ class Problem extends CommonITILObject {
             echo "&nbsp;<a class='vsubmit' href='$link'>". __('Reopen')."</a>";
          }
       }
+      PendingReason_Item::displayStatusTooltip($this);
       echo $tt->getEndHiddenFieldValue('status', $this);
 
       echo "</td>";
@@ -2032,5 +2033,9 @@ class Problem extends CommonITILObject {
 
    public static function getItemLinkClass(): string {
       return Item_Problem::class;
+   }
+
+   public static function getTaskClass() {
+      return ProblemTask::class;
    }
 }

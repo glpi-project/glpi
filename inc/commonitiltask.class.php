@@ -327,6 +327,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       $itemtype    = $this->getItilObjectItemType();
       $item        = new $itemtype();
 
+      $this->input = PendingReason_Item::handleTimelineEdits($this);
+
       if ($item->getFromDB($this->fields[$item->getForeignKeyField()])) {
          $item->updateDateMod($this->fields[$item->getForeignKeyField()]);
 
@@ -434,7 +436,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       }
 
       $input["_job"] = new $itemtype();
-
       if (!$input["_job"]->getFromDB($input[$input["_job"]->getForeignKeyField()])) {
          return false;
       }
@@ -506,6 +507,23 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
       if (isset($this->input["actiontime"]) && ($this->input["actiontime"] > 0)) {
          $this->input["_job"]->updateActionTime($this->input[$this->input["_job"]->getForeignKeyField()]);
+      }
+
+      // Set pending reason data on parent and self
+      if ($this->input['pending'] ?? 0) {
+         PendingReason_Item::createForItem($this->input["_job"], [
+            'pendingreasons_id'           => $this->input['pendingreasons_id'],
+            'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
+            'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
+         ]);
+         PendingReason_Item::createForItem($this, [
+            'pendingreasons_id'           => $this->input['pendingreasons_id'],
+            'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
+            'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
+         ]);
+
+         // Set parent status to pending
+         $this->input['_status'] = CommonITILObject::WAITING;
       }
 
       //change status only if input change
@@ -1604,6 +1622,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          echo "</td><td colspan='2'></td></tr>";
       }
 
+      PendingReason_Item::showFormForTimelineItem($this, $rand);
       $this->showFormButtons($options);
 
       return true;
