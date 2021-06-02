@@ -995,11 +995,11 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Automatic purge of closed tickets after'),
          'massiveaction'      => false,
          'nosearch'           => true,
-         'datatype'           => 'number',
+         'datatype'           => 'rawnumber',
          'min'                => 1,
          'max'                => 3650,
          'step'               => 1,
-         'unit'               => 'days',
+         'unit'               => 'day',
          'toadd'              => [
             self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
             self::CONFIG_NEVER   => __('Never'),
