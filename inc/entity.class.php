@@ -995,7 +995,7 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Automatic purge of closed tickets after'),
          'massiveaction'      => false,
          'nosearch'           => true,
-         'datatype'           => 'rawnumber',
+         'datatype'           => 'number',
          'min'                => 1,
          'max'                => 3650,
          'step'               => 1,

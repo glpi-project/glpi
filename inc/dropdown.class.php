@@ -1513,51 +1513,53 @@ class Dropdown {
     *
     * @param $value   integer   number of item
     * @param $unit    string    of unit (maybe year, month, day, hour, % for standard management)
+    * @param $decimals integer  number of decimal
    **/
-   static function getValueWithUnit($value, $unit) {
+   static function getValueWithUnit($value, $unit, $decimals = null) {
+
+      $formatted_number = Html::formatNumber($value, false, $decimals !== null ? $decimals : -1);
 
       if (strlen($unit) == 0) {
-         return $value;
+         return $formatted_number;
       }
 
       switch ($unit) {
          case 'year' :
-            //TRANS: %d is a number of years
-            return sprintf(_n('%d year', '%d years', $value), $value);
+            //TRANS: %s is a number of years
+            return sprintf(_n('%s year', '%s years', $value), $formatted_number);
 
          case 'month' :
-            //TRANS: %d is a number of months
-            return sprintf(_n('%d month', '%d months', $value), $value);
+            //TRANS: %s is a number of months
+            return sprintf(_n('%s month', '%s months', $value), $formatted_number);
 
          case 'day' :
-            //TRANS: %d is a number of days
-            return sprintf(_n('%d day', '%d days', $value), $value);
+            //TRANS: %s is a number of days
+            return sprintf(_n('%s day', '%s days', $value), $formatted_number);
 
          case 'hour' :
-            //TRANS: %d is a number of hours
-            return sprintf(_n('%d hour', '%d hours', $value), $value);
+            //TRANS: %s is a number of hours
+            return sprintf(_n('%s hour', '%s hours', $value), $formatted_number);
 
          case 'minute' :
-            //TRANS: %d is a number of minutes
-            return sprintf(_n('%d minute', '%d minutes', $value), $value);
+            //TRANS: %s is a number of minutes
+            return sprintf(_n('%s minute', '%s minutes', $value), $formatted_number);
 
          case 'second' :
-            //TRANS: %d is a number of seconds
-            return sprintf(_n('%d second', '%d seconds', $value), $value);
+            //TRANS: %s is a number of seconds
+            return sprintf(_n('%s second', '%s seconds', $value), $formatted_number);
 
          case 'millisecond' :
-            //TRANS: %d is a number of milliseconds
-            return sprintf(_n('%d millisecond', '%d milliseconds', $value), $value);
+            //TRANS: %s is a number of milliseconds
+            return sprintf(_n('%s millisecond', '%s milliseconds', $value), $formatted_number);
 
          case 'auto':
-               $value = str_replace([' ', '&nbsp;'], ['', ''], $value); // unformat value
-               return Toolbox::getSize($value*1024*1024);
+            return Toolbox::getSize($value*1024*1024);
 
          case '%' :
-            return sprintf(__('%d%%'), $value);
+            return sprintf(__('%s%%'), $formatted_number);
 
          default :
-            return sprintf(__('%1$s %2$s'), $value, $unit);
+            return sprintf(__('%1$s %2$s'), $formatted_number, $unit);
       }
    }
 

@@ -6412,27 +6412,7 @@ JAVASCRIPT;
                            && isset($so['toadd'][$data[$ID][$k]['name']])) {
                         $out .= $so['toadd'][$data[$ID][$k]['name']];
                      } else {
-                        $number = Html::formatNumber($data[$ID][$k]['name'], false, 0);
-                        $out .= Dropdown::getValueWithUnit($number, $unit);
-                     }
-                  }
-               }
-               return $out;
-
-            case "rawnumber" :
-               $out           = "";
-               $count_display = 0;
-               for ($k=0; $k<$data[$ID]['count']; $k++) {
-                  if (strlen(trim($data[$ID][$k]['name'])) > 0) {
-                     if ($count_display) {
-                        $out .= self::LBBR;
-                     }
-                     $count_display++;
-                     if (isset($so['toadd'])
-                           && isset($so['toadd'][$data[$ID][$k]['name']])) {
-                        $out .= $so['toadd'][$data[$ID][$k]['name']];
-                     } else {
-                        $out .= Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit);
+                        $out .= Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit, 0);
                      }
                   }
                }
@@ -6452,9 +6432,7 @@ JAVASCRIPT;
                            && isset($so['toadd'][$data[$ID][$k]['name']])) {
                         $out .= $so['toadd'][$data[$ID][$k]['name']];
                      } else {
-                        $number = str_replace(' ', '&nbsp;',
-                                              Html::formatNumber($data[$ID][$k]['name']));
-                        $out   .= Dropdown::getValueWithUnit($number, $unit);
+                        $out .= Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit);
                      }
                   }
                }
