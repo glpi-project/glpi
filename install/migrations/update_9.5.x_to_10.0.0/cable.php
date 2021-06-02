@@ -187,7 +187,7 @@ if (!$DB->tableExists('glpi_sockets') && $DB->tableExists('glpi_netpoints')) {
    $migration->addKey('glpi_sockets', 'networkports_id');
 
    //migrate link between NetworkPort and Socket
-   // BEFORE : supported by NetworkPortEthernet / NetworkPortFiberchannel whit 'sockets_id' foreign key
+   // BEFORE : supported by NetworkPortEthernet / NetworkPortFiberchannel with 'sockets_id' foreign key
    // AFTER  : supported by Socket with (itemtype, items_id, networkports_id)
    $classes = [NetworkPortEthernet::getType(), NetworkPortFiberchannel::getType()];
    foreach ($classes as $itemtype) {
@@ -241,8 +241,7 @@ $migration->addField('glpi_networkportfiberchannels', 'networkportfiberchannelty
 $migration->addKey('glpi_networkportfiberchannels', 'networkportfiberchanneltypes_id', 'type');
 
 $ADDTODISPLAYPREF['Socket'] = [5, 8, 6, 7];
-$ADDTODISPLAYPREF['Cable'] = [4, 31, 6, 15, 24];
-
+$ADDTODISPLAYPREF['Cable'] = [4, 31, 6, 15, 24, 8, 10, 13, 14];
 
 //rename profilerights values ('netpoint' to 'cable_management')
 $migration->addPostQuery(

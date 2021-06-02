@@ -64,6 +64,8 @@ class Cable extends CommonDBTM {
 
    function post_getEmpty() {
       $this->fields['color'] = '#dddddd';
+      $this->fields['rear_itemtype'] = 'Computer';
+      $this->fields['front_itemtype'] = 'Computer';
    }
 
    function rawSearchOptions() {
@@ -456,7 +458,7 @@ class Cable extends CommonDBTM {
       echo "<th colspan='2'>".__('Front')."</th>";
       echo "<tr>";
 
-      //Line to display itemtype / items_id dropdown
+      //Line to display itemtype / items_id dropdown for REAR and FRONT
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Asset')."</td>";
 
@@ -466,6 +468,7 @@ class Cable extends CommonDBTM {
                                                                               'rand'   => $rand_itemtype_rear]);
       echo "</span>";
 
+      //listerner to update rear items_id
       $params = ['itemtype'   => '__VALUE__',
                   'dom_name'  => 'rear_items_id',
                   'dom_rand'  => $rand_items_id_rear,
@@ -475,27 +478,27 @@ class Cable extends CommonDBTM {
                                     $CFG_GLPI["root_doc"]."/ajax/cable.php",
                                     $params);
 
-      //front items_id
+      //rear items_id
       echo "<span id='show_rear_items_id_field' class='input_rear_listener'>";
-      $rear_itemtype = (!empty($this->fields["rear_itemtype"])) ? $this->fields["rear_itemtype"] : "Computer";
-
-      $rear_itemtype::dropdown(['name'                 => 'rear_items_id',
-                                'value'               => $this->fields["rear_items_id"],
-                                'rand'                => $rand_items_id_rear,
-                                'entity_restrict' => ($this->fields['is_recursive'] ?? false)
-                                 ? getSonsOf('glpi_entities', $this->fields['entities_id'])
-                                 : $this->fields['entities_id'],
-                                'display_emptychoice' => true,
-                                'display_dc_position' => true]);
+      $this->fields["rear_itemtype"]::dropdown(['name'                => 'rear_items_id',
+                                                'value'               => $this->fields["rear_items_id"],
+                                                'rand'                => $rand_items_id_rear,
+                                                'entity_restrict'     => ($this->fields['is_recursive'] ?? false)
+                                                                              ? getSonsOf('glpi_entities', $this->fields['entities_id'])
+                                                                              : $this->fields['entities_id'],
+                                                'display_emptychoice' => true,
+                                                'display_dc_position' => true]);
 
       echo "</span></td>";
       echo "<td>".__('Asset')."</td>";
 
-      //rear itemtype
+      //font itemtype
       echo "<td><span id='show_itemtype_field' class='input_front_listener'>";
-      Dropdown::showFromArray('front_itemtype', Socket::getSocketLinkTypes(), ['value'                => $this->fields["front_itemtype"],
-                                                                               'rand'                 => $rand_itemtype_front]);
+      Dropdown::showFromArray('front_itemtype', Socket::getSocketLinkTypes(), ['value' => $this->fields["front_itemtype"],
+                                                                               'rand'  => $rand_itemtype_front]);
       echo "</span>";
+
+      //listerner to update front items_id
       $params = ['itemtype'   => '__VALUE__',
                  'dom_name'   => 'front_items_id',
                  'dom_rand'   => $rand_items_id_front,
@@ -506,17 +509,16 @@ class Cable extends CommonDBTM {
                                     $CFG_GLPI["root_doc"]."/ajax/cable.php",
                                     $params);
 
-      //rear items_id
+      //front items_id
       echo "<span id='show_front_items_id_field'>";
-      $front_itemtype = (!empty($this->fields["front_itemtype"])) ? $this->fields["front_itemtype"] : "Computer";
-      $front_itemtype::dropdown(['name'                 => 'front_items_id',
-                                 'value'                => $this->fields["front_items_id"],
-                                 'rand'                 => $rand_items_id_front,
-                                 'entity_restrict' => ($this->fields['is_recursive'] ?? false)
-                                 ? getSonsOf('glpi_entities', $this->fields['entities_id'])
-                                 : $this->fields['entities_id'],
-                                 'display_emptychoice'  => true,
-                                 'display_dc_position'  => true]);
+      $this->fields["front_itemtype"]::dropdown(['name'                 => 'front_items_id',
+                                                 'value'                => $this->fields["front_items_id"],
+                                                 'rand'                 => $rand_items_id_front,
+                                                 'entity_restrict'      => ($this->fields['is_recursive'] ?? false)
+                                                                           ? getSonsOf('glpi_entities', $this->fields['entities_id'])
+                                                                           : $this->fields['entities_id'],
+                                                 'display_emptychoice'  => true,
+                                                 'display_dc_position'  => true]);
 
       echo "</span></td>";
       echo "</tr>";
@@ -525,7 +527,7 @@ class Cable extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".SocketModel::getTypeName(1)."</td>";
       echo "<td>";
-      echo "<span id='show_rear_socketmodels_id_field' class='input_rear_listener'>";
+      echo "<span class='input_rear_listener'>";
       SocketModel::dropdown(['name'    => 'rear_socketmodels_id',
                              'value'   => $this->fields["rear_socketmodels_id"],
                              'rand'    => $rand_socket_model_rear]);
@@ -534,7 +536,7 @@ class Cable extends CommonDBTM {
 
       echo "<td>".SocketModel::getTypeName(1)."</td>";
       echo "<td>";
-      echo "<span id='show_front_socketmodels_id_field' class='input_front_listener'>";
+      echo "<span class='input_front_listener'>";
       SocketModel::dropdown(['name'    => 'front_socketmodels_id',
                              'value'   => $this->fields["front_socketmodels_id"],
                              'rand'    => $rand_socket_model_front]);
@@ -548,7 +550,6 @@ class Cable extends CommonDBTM {
       echo "<span id='show_rear_sockets_field'>";
       Socket::dropdown(['name'      => 'rear_sockets_id',
                         'value'     => $this->fields["rear_sockets_id"],
-                        //'entity'    => $this->fields["entities_id"],
                         'condition' => ['socketmodels_id'   => $this->fields['rear_socketmodels_id'],
                                         'itemtype'          => $this->fields['rear_itemtype'],
                                         'items_id'          => $this->fields['rear_items_id']]
@@ -561,11 +562,10 @@ class Cable extends CommonDBTM {
       echo "<span id='show_front_sockets_field'>";
       Socket::dropdown(['name'      => 'front_sockets_id',
                         'value'     => $this->fields["front_sockets_id"],
-                        //'entity'    => $this->fields["entities_id"],
                         'condition' => ['socketmodels_id'   => $this->fields['front_socketmodels_id'],
                                         'itemtype'          => $this->fields['front_itemtype'],
                                         'items_id'          => $this->fields['front_items_id']]
-                     ]);
+                        ]);
       echo "</span>";
       echo "</td></tr>";
 

@@ -41,16 +41,13 @@ class Socket extends CommonDropdown {
 
    // From CommonDBTM
    public $dohistory          = true;
-
    static $rightname          = 'cable_management';
-
    public $can_be_translated  = false;
 
    const REAR    = 1;
    const FRONT   = 2;
 
    function getAdditionalFields() {
-
       return [['name'  => 'locations_id',
                'label' => Location::getTypeName(1),
                'type'  => 'dropdownValue',
@@ -99,7 +96,7 @@ class Socket extends CommonDropdown {
 
       global $CFG_GLPI;
 
-      //if Form is called from an item, retrive itemtype and items
+      //if form is called from an item, retrive itemtype and items
       if (isset($options['_add_fromitem'])) {
          $itemtype = $options['_add_fromitem']["_from_itemtype"];
          $items_id = $options['_add_fromitem']["_from_items_id"];
@@ -157,6 +154,7 @@ class Socket extends CommonDropdown {
 
    }
 
+
    /**
     * Get possible itemtype
     * @return array Array of types
@@ -164,7 +162,7 @@ class Socket extends CommonDropdown {
    static function getSocketLinkTypes() {
       global $CFG_GLPI;
       $values = [];
-      foreach ($CFG_GLPI["socket_link_types"] as $key => $itemtype) {
+      foreach ($CFG_GLPI["socket_link_types"] as $itemtype) {
          if ($item = getItemForItemtype($itemtype)) {
             $values[$itemtype] = $item->getTypeName();
          }
@@ -172,24 +170,19 @@ class Socket extends CommonDropdown {
       return $values;
    }
 
+
    /**
-    * Dropdown of blacklist types
+    * Dropdown of Wiring Side
     *
     * @param string $name   select name
     * @param array  $options possible options:
     *    - value       : integer / preselected value (default 0)
-    *    - toadd       : array / array of specific values to add at the beginning
-    *    - on_change   : string / value to transmit to "onChange"
     *    - display
-    *
     * @return string ID of the select
    **/
    static function dropdownWiringSide($name, $options = []) {
-
       $params = [
          'value'     => 0,
-         'toadd'     => [],
-         'on_change' => '',
          'display'   => true,
       ];
 
@@ -199,15 +192,9 @@ class Socket extends CommonDropdown {
          }
       }
 
-      $items = [];
-      if (count($params['toadd'])>0) {
-         $items = $params['toadd'];
-      }
-
-      $items += self::getSides();
-
-      return Dropdown::showFromArray($name, $items, $params);
+      return Dropdown::showFromArray($name, self::getSides(), $params);
    }
+
 
    /**
     * Get sides
@@ -219,6 +206,7 @@ class Socket extends CommonDropdown {
          self::FRONT  => __('Front'),
       ];
    }
+
 
    function post_getEmpty() {
       $this->fields['itemtype'] = 'Computer';
@@ -403,20 +391,15 @@ class Socket extends CommonDropdown {
       }
 
       switch ($field) {
-         case 'items_id':
-
+         case 'items_id' :
             if (isset($values['itemtype'])) {
-
                if ($values[$field] > 0) {
-                  return Dropdown::getDropdownName(
-                     getTableForItemType($values['itemtype']),
-                     $values[$field]
-                  );
+                  $item = new $values['itemtype'];
+                  $item->getFromDB($values[$field]);
+                  return "<a href='" . $item->getLinkURL(). "'>".$item->fields['name']."</a>";
                }
-
-            } else {
-               return ' ';
             }
+            return ' ';
             break;
          case 'wiring_side' :
             return self::getWiringSideName($values[$field]);
@@ -697,6 +680,12 @@ class Socket extends CommonDropdown {
          echo "<td class='b'>"._n('Network socket', 'Network sockets', 1)."</td>";
          echo "<td>".__('Name')."</td><td>";
          Html::autocompletionTextField($item, "name", ['value' => '']);
+         echo "</td>";
+         echo "<td>".SocketModel::getTypeName(1)."</td><td>";
+         SocketModel::dropdown("socketmodels_id", []);
+         echo "</td>";
+         echo "<td>".__('Wiring side')."</td><td>";
+         Socket::dropdownWiringSide("wiring_side", []);
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
          echo "<td><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
@@ -718,7 +707,15 @@ class Socket extends CommonDropdown {
          Dropdown::showNumber('_to', ['value' => 0,
                                            'min'   => 0,
                                            'max'   => 400]);
+
          echo "&nbsp;<input type='text' maxlength='100' size='10' name='_after'><br>";
+         echo "</td>";
+         echo "<td>".SocketModel::getTypeName(1)."</td><td>";
+         SocketModel::dropdown("socketmodels_id", []);
+         echo "</td>";
+         echo "<td>".__('Wiring side')."</td><td>";
+         Socket::dropdownWiringSide("wiring_side", []);
+
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'>";
          echo "<input type='hidden' name='_method' value='AddMulti'></td>";

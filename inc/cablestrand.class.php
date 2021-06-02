@@ -144,18 +144,48 @@ class CableStrand extends CommonDropdown {
          echo "<th>".Entity::getTypeName(1)."</th>";
          echo "<th>".__('Name')."</th>";
          echo "<th>".__('Inventory number')."</th>";
+         echo "<th>"._n('Associated item', 'Associated items', 0)." (".__('Front').")"."</th>";
+         echo "<th>".Socket::getTypeName(1)." (".__('Front').")"."</th>";
+         echo "<th>"._n('Associated item', 'Associated items', 0)." (".__('Rear').")"."</th>";
+         echo "<th>".Socket::getTypeName(1)." (".__('Rear').")"."</th>";
          echo "</tr>";
 
          while ($data = $iterator->next()) {
             $item = getItemForItemtype($data['type']);
             $item->getFromDB($data['id']);
-            echo "<tr class='tab_bg_1'><td class='center top'>".$item->getTypeName()."</td>";
-            echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
-                                                               $item->getEntityID());
-            echo "</td><td class='center'>".$item->getLink()."</td>";
-            echo "<td class='center'>".
-                  (isset($item->fields["otherserial"])? "".$item->fields["otherserial"]."" :"-");
-            echo "</td></tr>";
+            echo "<tr class='tab_bg_1'><td>".$item->getTypeName()."</td>";
+            echo "<td>".Dropdown::getDropdownName("glpi_entities", $item->getEntityID())."</td>";
+            echo "<td>".$item->getLink()."</td>";
+            echo "<td>".(isset($item->fields["otherserial"])? "".$item->fields["otherserial"]."" :"-")."</td>";
+            echo "<td>";
+            if ($item->fields["front_items_id"] > 0) {
+               $front_item = new $item->fields["front_itemtype"]();
+               $front_item->getFromDB($item->fields["front_items_id"]);
+               echo $front_item->getLink();
+            }
+            echo "</td>";
+            echo "<td>";
+            if ($item->fields["front_sockets_id"] > 0) {
+               $front_socket = new Socket();
+               $front_socket->getFromDB($item->fields["front_sockets_id"]);
+               echo $front_socket->getLink();
+            }
+            echo "</td>";
+            echo "<td>";
+            if ($item->fields["rear_items_id"] > 0) {
+               $rear_item = new $item->fields["rear_itemtype"]();
+               $res = $rear_item->getFromDB($item->fields["rear_items_id"]);
+               echo $rear_item->getLink();
+            }
+            echo "</td>";
+            echo "<td>";
+            if ($item->fields["rear_sockets_id"] > 0) {
+               $rear_socket = new Socket();
+               $rear_socket->getFromDB($item->fields["rear_sockets_id"]);
+               echo $rear_socket->getLink();
+            }
+            echo "</td>";
+            echo"</tr>";
          }
       } else {
          echo "<p class='center b'>".__('No item found')."</p>";

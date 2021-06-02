@@ -6231,6 +6231,10 @@ JAVASCRIPT;
                }
                return $out;
 
+            case 'glpi_cables.color' :
+               //do not display 'real' value (#.....)
+               return "";
+
             case 'glpi_ticketsatisfactions.satisfaction' :
                if (self::$output_type == self::HTML_OUTPUT) {
                   return TicketSatisfaction::displaySatisfaction($data[$ID][0]['name']);
