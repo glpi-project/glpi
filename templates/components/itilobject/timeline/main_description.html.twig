@@ -10,19 +10,23 @@
       <div class="col-12 col-sm">
          <div class="d-flex">
             <div class="d-none d-md-block">
+               <i class="far fa-user"></i>
                <strong>{{ User__getLink(users_id) }}</strong>
             </div>
             <div class="text-muted ms-2 d-flex">
                {% set date_creation = item.fields['date_creation'] ?? item.fields['date'] %}
                {% set date_mod = item.fields['date_mod'] %}
-               <span title="{{ convDateTime(date_creation) }}">
-                  {{ __('Created: %1$s')|format(time2str(date_creation))|raw }}
+               <span title="{{ convDateTime(date_creation) }}" data-bs-toggle="tooltip"
+                     data-bs-placement="bottom">
+                  {{ __('Created: %1$s')|format('<i class="far fa-clock me-1"></i>' ~ time2str(date_creation))|raw }}
                </span>
 
                {% if date_creation != date_mod %}
                   {% set editor = User__getLink(item.fields['users_id_lastupdater']) %}
-                  <span class="text-muted text-end ms-2 d-none d-md-block" title="{{ convDateTime(date_mod) }}">
-                     {{ __('Last modification: %1$s by %2$s')|format(time2str(date_mod), editor)|raw }}
+                  <span class="text-muted text-end ms-3 d-none d-md-block"
+                        title="{{ convDateTime(date_mod) }}" data-bs-toggle="tooltip"
+                        data-bs-placement="bottom">
+                     {{ __('Last modification: %1$s by %2$s')|format('<i class="far fa-clock me-1"></i>' ~ time2str(date_mod), '<i class="far fa-user me-1"></i>' ~ editor)|raw }}
                   </span>
                {% endif %}
             </div>

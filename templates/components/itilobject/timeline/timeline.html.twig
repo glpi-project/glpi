@@ -65,23 +65,64 @@
             <div class="col-12 col-sm d-flex flex-column content-part">
                <div class="d-flex ">
                   <div class="d-flex creator">
-                     <div class="d-none d-md-block">
-                        <strong>{{ User__getLink(users_id, {
-                              'timeline_item': item,
-                              'timeline_subitem': entry
-                           }) }}</strong>
-                        {% set user = User__getUserName(users_id, 2) %}
-                        {{ Html__showToolTip(user['comment'], {
-                           'applyto': "timeline-avatar" ~ avatar_rand
-                        }) }}
-                     </div>
+                     {% if users_id != "0" %}
+                        <div class="d-none d-md-block">
+                           <i class="far fa-user"></i>
+                           <strong>{{ User__getLink(users_id, {
+                                 'timeline_item': item,
+                                 'timeline_subitem': entry
+                              }) }}</strong>
+                           {% set user = User__getUserName(users_id, 2) %}
+                           {{ Html__showToolTip(user['comment'], {
+                              'applyto': "timeline-avatar" ~ avatar_rand
+                           }) }}
+                        </div>
+                     {% endif %}
 
-                     <span title="{{ convDateTime(date_creation) }}" class="ms-2 text-muted text-nowrap">
+                     <span class="itil-date-creation ms-2 text-muted text-nowrap"
+                           title="{{ convDateTime(date_creation) }}" data-bs-toggle="tooltip"
+                           data-bs-placement="bottom">
+                        <i class="far fa-clock"></i>
                         {{ time2str(date_creation) }}
                      </span>
+
+                     {% if entry_i['users_id_editor'] and date_creation != date_mod %}
+                        {% set editor = User__getLink(entry_i['users_id_editor']) %}
+                        <span class="ms-3 text-muted text-end d-none d-md-block"
+                              title="{{ convDateTime(date_mod) }}" data-bs-toggle="tooltip"
+                              data-bs-placement="bottom">
+                           {{ __('Last edition: %1$s by %2$s')|format('<i class="far fa-clock me-1"></i>' ~ time2str(date_mod), '<i class="far fa-user me-1"></i>' ~ editor)|raw }}
+                        </span>
+                     {% endif %}
                   </div>
 
                   <div class="d-flex ms-auto timeline-item-buttons">
+                     {% set actions = {} %}
+                     {% if entry_i['can_edit'] and not status_closed and not (entry['type'] in ['Document_Item', 'Assign']) %}
+                        {% set edit_btn %}
+                           <li>
+                              <a class="dropdown-item edit-timeline-item" href="#">
+                                 <i class="fas fa-fw fa-edit"></i>
+                                 <span>{{ __("Edit") }}</span>
+                              </a>
+                           </li>
+                        {% endset %}
+                        {% set actions = actions|merge({edit_btn}) %}
+                     {% endif %}
+
+                     {% if actions|length %}
+                        <div class="dropdown ms-2">
+                           <button class="btn btn-sm btn-ghost-secondary timeline-more-actions" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false">
+                              <i class="fas fa-ellipsis-v"></i>
+                           </button>
+                           <ul class="dropdown-menu" aria-labelledby="more-actions-{{ entry_rand }}">
+                              {% for action in actions %}
+                                 {{ action }}
+                              {% endfor %}
+                           </ul>
+                        </div>
+                     {% endif %}
+
                      {% if is_private %}
                         <span title="{{ __('Private') }}" class="is-private ms-2">
                            <i class="fas fa-lock" aria-label="{{ __('Private') }}"></i>
@@ -96,20 +137,6 @@
                         </a>
                      {% endif %}
 
-                     {% set actions = {} %}
-
-                     {% if entry_i['can_edit'] and not status_closed and not (entry['type'] in ['Document_Item', 'Assign']) %}
-                        {% set edit_btn %}
-                           <li>
-                              <a class="dropdown-item edit-timeline-item" href="#">
-                                 <i class="fas fa-fw fa-edit"></i>
-                                 <span>{{ __("Edit") }}</span>
-                              </a>
-                           </li>
-                        {% endset %}
-                        {% set actions = actions|merge({edit_btn}) %}
-                     {% endif %}
-
                      {% if item.getType() is same as 'Ticket' and entry['type'] is same as 'ITILFollowup' %}
                         {% set promote_btn %}
                            <li>
@@ -120,19 +147,6 @@
                            </li>
                         {% endset %}
                         {% set actions = actions|merge({promote_btn}) %}
-                     {% endif %}
-
-                     {% if actions|length %}
-                        <div class="dropdown ms-2">
-                           <button class="btn btn-sm btn-ghost-secondary timeline-more-actions" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false">
-                              <i class="fas fa-ellipsis-h"></i>
-                           </button>
-                           <ul class="dropdown-menu" aria-labelledby="more-actions-{{ entry_rand }}">
-                              {% for action in actions %}
-                                 {{ action }}
-                              {% endfor %}
-                           </ul>
-                        </div>
                      {% endif %}
                   </div>
                </div>
@@ -163,13 +177,6 @@
                      </div>
                   </div>
                </span>
-
-               {% if entry_i['users_id_editor'] and date_creation != date_mod %}
-                  {% set editor = User__getLink(entry_i['users_id_editor']) %}
-                  <div class="text-muted text-end d-none d-md-block" title="{{ convDateTime(date_mod) }}">
-                     {{ __('Last edition: %1$s by %2$s')|format(time2str(date_mod), editor)|raw }}
-                  </div>
-               {% endif %}
             </div>
          </div>
       </div>

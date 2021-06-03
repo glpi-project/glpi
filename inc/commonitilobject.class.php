@@ -6969,6 +6969,36 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
+      //add logs to timeline
+      $log_obj = new Log();
+      $log_items = $log_obj->find([
+         'itemtype'         => static::getType(),
+         'items_id'         => $this->getID(),
+         'id_search_option' => ['>', 0]
+      ]);
+      foreach ($log_items as $log_item) {
+
+
+         $log_data = Log::getRowHistoryChanges($this, $log_item);
+         $content = $log_data['change'];
+         if (strlen($log_data['field']) > 0 ) {
+            $content = sprintf(__("%s: %s"), $log_data['field'], $content);
+         }
+         $content = "<i class='fas fa-history me-1' title='".__("Log entry")."' data-bs-toggle='tooltip'></i>".$content;
+         $timeline[$log_item['date_mod']."_log_" . $log_item['id'] ] = [
+            'type'     => 'Log',
+            'class'    => 'text-muted',
+            'item'     => [
+               'id'                 => $log_item['id'],
+               'content'            => $content,
+               'date'               => $log_item['date_mod'],
+               'users_id'           => 0,
+               'can_edit'           => false,
+               'timeline_position'  => self::TIMELINE_LEFT,
+            ]
+         ];
+      }
+
       //reverse sort timeline items by key (date)
       krsort($timeline);
 
