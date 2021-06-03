@@ -6952,7 +6952,7 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      if  ($with_logs) {
+      if ($with_logs) {
          //add logs to timeline
          $log_obj = new Log();
          $log_items = $log_obj->find([
@@ -6962,10 +6962,9 @@ abstract class CommonITILObject extends CommonDBTM {
          ]);
          foreach ($log_items as $log_item) {
 
-
             $log_data = Log::getRowHistoryChanges($this, $log_item);
             $content = $log_data['change'];
-            if (strlen($log_data['field']) > 0 ) {
+            if (strlen($log_data['field']) > 0) {
                $content = sprintf(__("%s: %s"), $log_data['field'], $content);
             }
             $content = "<i class='fas fa-history me-1' title='".__("Log entry")."' data-bs-toggle='tooltip'></i>".$content;
