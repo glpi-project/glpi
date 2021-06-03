@@ -6412,7 +6412,7 @@ JAVASCRIPT;
                            && isset($so['toadd'][$data[$ID][$k]['name']])) {
                         $out .= $so['toadd'][$data[$ID][$k]['name']];
                      } else {
-                        $out .= Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit, 0);
+                        $out .= Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit);
                      }
                   }
                }
@@ -6432,7 +6432,7 @@ JAVASCRIPT;
                            && isset($so['toadd'][$data[$ID][$k]['name']])) {
                         $out .= $so['toadd'][$data[$ID][$k]['name']];
                      } else {
-                        $out .= Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit);
+                        $out .= Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit, $CFG_GLPI["decimal_number"]);
                      }
                   }
                }

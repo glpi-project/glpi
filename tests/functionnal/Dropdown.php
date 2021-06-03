@@ -275,34 +275,41 @@ class Dropdown extends DbTestCase {
 
    public function dataGetValueWithUnit() {
       return [
-            [1,         'auto',        '1024 Kio'],
-            [1025,      'auto',        '1 Gio'],
-            ['1 025',   'auto',        '1 Gio'],
-            [1,         'year',        '1 year'],
-            [2,         'year',        '2 years'],
-            [3,         '%',           '3%'],
-            ['foo',     'bar',         'foo bar'],
-            [1,         'month',       '1 month'],
-            [2,         'month',       '2 months'],
-            ['any',     '',            'any'],
-            [1,         'day',         '1 day'],
-            [2,         'day',         '2 days'],
-            [1,         'hour',        '1 hour'],
-            [2,         'hour',        '2 hours'],
-            [1,         'minute',      '1 minute'],
-            [2,         'minute',      '2 minutes'],
-            [1,         'second',      '1 second'],
-            [2,         'second',      '2 seconds'],
-            [1,         'millisecond', '1 millisecond'],
-            [2,         'millisecond', '2 milliseconds'],
+            [1,      'auto',        null, '1024 Kio'],
+            [1,      'auto',        null, '1024 Kio'],
+            [1025,   'auto',        null, '1 Gio'],
+            [1,      'year',        null, '1 year'],
+            [2,      'year',        null, '2 years'],
+            [3,      '%',           null, '3%'],
+            [1,      'month',       null, '1 month'],
+            [2,      'month',       null, '2 months'],
+            [1,      'day',         null, '1 day'],
+            [2,      'day',         null, '2 days'],
+            [1,      'hour',        null, '1 hour'],
+            [2,      'hour',        null, '2 hours'],
+            [1,      'minute',      null, '1 minute'],
+            [2,      'minute',      null, '2 minutes'],
+            [1,      'second',      null, '1 second'],
+            [2,      'second',      null, '2 seconds'],
+            [1,      'millisecond', null, '1 millisecond'],
+            [2,      'millisecond', null, '2 milliseconds'],
+            [10,     'bar',         null, '10 bar'],
+
+            [3.3597, '%',           0,    '3%'],
+            [3.3597, '%',           2,    '3.36%'],
+            [3.3597, '%',           6,    '3.359700%'],
+            [3579,   'day',         0,    '3&nbsp;579 days'],
       ];
    }
 
    /**
     * @dataProvider dataGetValueWithUnit
     */
-   public function testGetValueWithUnit($input, $unit, $expected) {
-      $this->string(\Dropdown::getValueWithUnit($input, $unit))->isIdenticalTo($expected);
+   public function testGetValueWithUnit($input, $unit, $decimals, $expected) {
+      $value = $decimals !== null
+         ? \Dropdown::getValueWithUnit($input, $unit, $decimals)
+         : \Dropdown::getValueWithUnit($input, $unit);
+      $this->string($value)->isIdenticalTo($expected);
    }
 
    protected function getDropdownValueProvider() {

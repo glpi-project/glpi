@@ -1511,13 +1511,13 @@ class Dropdown {
     *
     * @since 0.84
     *
-    * @param $value   integer   number of item
-    * @param $unit    string    of unit (maybe year, month, day, hour, % for standard management)
-    * @param $decimals integer  number of decimal
+    * @param integer $value    numeric value
+    * @param string  $unit     unit (maybe year, month, day, hour, % for standard management)
+    * @param integer $decimals number of decimal
    **/
-   static function getValueWithUnit($value, $unit, $decimals = null) {
+   static function getValueWithUnit($value, $unit, $decimals = 0) {
 
-      $formatted_number = Html::formatNumber($value, false, $decimals !== null ? $decimals : -1);
+      $formatted_number = Html::formatNumber($value, false, $decimals);
 
       if (strlen($unit) == 0) {
          return $formatted_number;

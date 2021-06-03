@@ -4556,13 +4556,13 @@ class CommonDBTM extends CommonGLPI {
                      return $searchoptions['toadd'][$value];
                   }
                   if ($options['html']) {
-                     return Dropdown::getValueWithUnit($value, $unit, 0);
+                     return Dropdown::getValueWithUnit($value, $unit);
                   }
                   return $value;
 
                case "decimal" :
                   if ($options['html']) {
-                     return Dropdown::getValueWithUnit($value, $unit);
+                     return Dropdown::getValueWithUnit($value, $unit, $CFG_GLPI["decimal_number"]);
                   }
                   return $value;
 
