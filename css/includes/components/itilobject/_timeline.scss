@@ -302,6 +302,8 @@
          &.ITILSolution,
          &.ITILFollowup,
          &.ITILTask.info,
+         &.Document_Item,
+         &.Log,
          &.KnowbaseItemComment {
             display: none;
          }
