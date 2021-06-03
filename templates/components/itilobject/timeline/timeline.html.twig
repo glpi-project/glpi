@@ -1,6 +1,4 @@
 <div class="itil-timeline d-flex flex-column align-items-start">
-   {# TODO timeline filter #}
-
    {% include("components/itilobject/timeline/main_description.html.twig") %}
 
    {% set status_closed = (item.fields['status'] in item.getClosedStatusArray()) %}
@@ -177,7 +175,6 @@
       </div>
    {% endfor %}
 
-   {# TODO content hidden in template #}
    {% include("components/itilobject/answer.html.twig") %}
 
 </div>

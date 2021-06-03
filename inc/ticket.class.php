@@ -742,10 +742,6 @@ class Ticket extends CommonITILObject {
          case __CLASS__ :
             $ong    = [];
 
-            $timeline    = $item->getTimelineItems();
-            $nb_elements = count($timeline);
-            $ong[1]      = __("Processing ticket")." <span class='badge'>$nb_elements</span>";
-
             // enquete si statut clos
             $satisfaction = new TicketSatisfaction();
             if ($satisfaction->getFromDB($item->getID())
@@ -816,8 +812,8 @@ class Ticket extends CommonITILObject {
 
    function defineTabs($options = []) {
       $ong = [];
-
-      $this->defineDefaultObjectTabs($ong, $options);
+      $this->addDefaultFormTab($ong);
+      $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('TicketValidation', $ong, $options);
       $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Item_Ticket', $ong, $options);
