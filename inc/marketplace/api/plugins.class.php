@@ -181,12 +181,11 @@ class Plugins {
    ) {
       global $GLPI_CACHE;
 
-      $plugins_colct = [];
-      if (!$force_refresh && $GLPI_CACHE->has('marketplace_all_plugins')) {
-         $plugins_colct = $GLPI_CACHE->get('marketplace_all_plugins');
-      }
+      $plugins_colct = !$force_refresh
+         ? $GLPI_CACHE->get('marketplace_all_plugins', null)
+         : null;
 
-      if (!count($plugins_colct)) {
+      if ($plugins_colct === null) {
          $plugins = $this->getPaginatedCollection('plugins');
 
          // replace keys indexes by system names
@@ -226,14 +225,6 @@ class Plugins {
          }
       }
       self::$plugins = $plugins_colct;
-
-      // Remove plugins with no versions for current config (i.e. only unstable versions that are not proposed).
-      $plugins_colct = array_filter(
-         $plugins_colct,
-         function($plugin) {
-            return count($plugin['versions']) > 0;
-         }
-      );
 
       if (strlen($tag_filter) > 0) {
          $tagged_plugins = array_column($this->getPluginsForTag($tag_filter), 'key');
