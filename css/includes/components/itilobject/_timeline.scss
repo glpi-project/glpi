@@ -223,6 +223,37 @@
          box-shadow: none;
       }
    }
+
+   &.Log {
+      margin-top: -1.5rem;
+      width: 100%;
+
+      .user-part {
+         display: none !important;
+      }
+
+      .content-part {
+         margin-top: 0.5rem;
+         flex-direction: row-reverse !important;
+         justify-content: flex-end;
+
+         .timeline-content {
+            border: 0;
+            box-shadow: none;
+            margin-top: 0 !important;
+            flex-grow: 0 !important;
+            margin-left: 75px;
+
+            .card-body {
+               padding: 0;
+            }
+         }
+
+         .itil-date-creation {
+            margin-left: 1rem !important;
+         }
+      }
+   }
 }
 
 .filter-timeline-popover {

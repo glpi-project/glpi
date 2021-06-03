@@ -316,9 +316,6 @@ class Log extends CommonDBTM {
 
       $itemtype  = $item->getType();
       $items_id  = $item->getField('id');
-      $itemtable = $item->getTable();
-
-      $SEARCHOPTION = Search::getOptions($itemtype);
 
       $query = [
          'FROM'   => self::getTable(),
@@ -338,371 +335,383 @@ class Log extends CommonDBTM {
 
       $changes = [];
       while ($data = $iterator->next()) {
-         $tmp = [];
-         $tmp['display_history'] = true;
-         $tmp['id']              = $data["id"];
-         $tmp['date_mod']        = Html::convDateTime($data["date_mod"]);
-         $tmp['user_name']       = $data["user_name"];
-         $tmp['field']           = "";
-         $tmp['change']          = "";
-         $tmp['datatype']        = "";
+         $changes[] = self::getRowHistoryChanges($item, $data);
+      }
+      return $changes;
+   }
 
-         // This is an internal device ?
-         if ($data["linked_action"]) {
-            $action_label = self::getLinkedActionLabel($data["linked_action"]);
 
-            // Yes it is an internal device
-            switch ($data["linked_action"]) {
-               case self::HISTORY_CREATE_ITEM :
-               case self::HISTORY_DELETE_ITEM :
-               case self::HISTORY_LOCK_ITEM :
-               case self::HISTORY_UNLOCK_ITEM :
-               case self::HISTORY_RESTORE_ITEM :
-                  $tmp['change'] = $action_label;
-                  break;
+   static function getRowHistoryChanges(CommonDBTM $item, array $data = []) {
+      $DBread = DBConnection::getReadConnection();
 
-               case self::HISTORY_ADD_DEVICE :
-                  $tmp['field'] = NOT_AVAILABLE;
-                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
-                     if ($item2 instanceof Item_Devices) {
-                        $tmp['field'] = $item2->getDeviceTypeName(1);
-                     } else {
-                        $tmp['field'] = $item2->getTypeName(1);
-                     }
+      $itemtype  = $item->getType();
+      $itemtable = $item->getTable();
+
+      $SEARCHOPTION = Search::getOptions($itemtype);
+
+      $tmp = [];
+      $tmp['display_history'] = true;
+      $tmp['id']              = $data["id"];
+      $tmp['date_mod']        = Html::convDateTime($data["date_mod"]);
+      $tmp['user_name']       = $data["user_name"];
+      $tmp['field']           = "";
+      $tmp['change']          = "";
+      $tmp['datatype']        = "";
+
+      // This is an internal device ?
+      if ($data["linked_action"]) {
+         $action_label = self::getLinkedActionLabel($data["linked_action"]);
+
+         // Yes it is an internal device
+         switch ($data["linked_action"]) {
+            case self::HISTORY_CREATE_ITEM :
+            case self::HISTORY_DELETE_ITEM :
+            case self::HISTORY_LOCK_ITEM :
+            case self::HISTORY_UNLOCK_ITEM :
+            case self::HISTORY_RESTORE_ITEM :
+               $tmp['change'] = $action_label;
+               break;
+
+            case self::HISTORY_ADD_DEVICE :
+               $tmp['field'] = NOT_AVAILABLE;
+               if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                  if ($item2 instanceof Item_Devices) {
+                     $tmp['field'] = $item2->getDeviceTypeName(1);
+                  } else {
+                     $tmp['field'] = $item2->getTypeName(1);
                   }
-                  //TRANS: %s is the component name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
-                  break;
+               }
+               //TRANS: %s is the component name
+               $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
+               break;
 
-               case self::HISTORY_UPDATE_DEVICE :
-                  $tmp['field'] = NOT_AVAILABLE;
-                  $change = '';
-                  $linktype_field = explode('#', $data["itemtype_link"]);
-                  $linktype       = $linktype_field[0];
-                  $field          = $linktype_field[1];
-                  $devicetype     = $linktype::getDeviceType();
+            case self::HISTORY_UPDATE_DEVICE :
+               $tmp['field'] = NOT_AVAILABLE;
+               $linktype_field = explode('#', $data["itemtype_link"]);
+               $linktype       = $linktype_field[0];
+               $field          = $linktype_field[1];
+               $devicetype     = $linktype::getDeviceType();
+               $tmp['field']   = $devicetype;
+               $specif_fields  = $linktype::getSpecificities();
+               if (isset($specif_fields[$field]['short name'])) {
                   $tmp['field']   = $devicetype;
-                  $specif_fields  = $linktype::getSpecificities();
-                  if (isset($specif_fields[$field]['short name'])) {
-                     $tmp['field']   = $devicetype;
-                     $tmp['field']  .= " (".$specif_fields[$field]['short name'].")";
-                  }
-                  //TRANS: %1$s is the old_value, %2$s is the new_value
-                  $tmp['change']  = sprintf(__('%1$s: %2$s'),
-                                            sprintf(__('%1$s (%2$s)'), $action_label, $tmp['field']),
-                                            sprintf(__('%1$s by %2$s'), $data["old_value"], $data[ "new_value"]));
-                  break;
+                  $tmp['field']  .= " (".$specif_fields[$field]['short name'].")";
+               }
+               //TRANS: %1$s is the old_value, %2$s is the new_value
+               $tmp['change']  = sprintf(__('%1$s: %2$s'),
+                                          sprintf(__('%1$s (%2$s)'), $action_label, $tmp['field']),
+                                          sprintf(__('%1$s by %2$s'), $data["old_value"], $data[ "new_value"]));
+               break;
 
-               case self::HISTORY_DELETE_DEVICE :
-                  $tmp['field']=NOT_AVAILABLE;
-                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
-                     if ($item2 instanceof Item_Devices) {
-                        $tmp['field'] = $item2->getDeviceTypeName(1);
+            case self::HISTORY_DELETE_DEVICE :
+               $tmp['field']=NOT_AVAILABLE;
+               if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                  if ($item2 instanceof Item_Devices) {
+                     $tmp['field'] = $item2->getDeviceTypeName(1);
+                  } else {
+                     $tmp['field'] = $item2->getTypeName(1);
+                  }
+
+               }
+               //TRANS: %s is the component name
+               $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["old_value"]);
+               break;
+
+            case self::HISTORY_LOCK_DEVICE :
+               $tmp['field'] = NOT_AVAILABLE;
+               if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                  if ($item2 instanceof Item_Devices) {
+                     $tmp['field'] = $item2->getDeviceTypeName(1);
+                  } else {
+                     $tmp['field'] = $item2->getTypeName(1);
+                  }
+
+               }
+               //TRANS: %s is the component name
+               $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["old_value"]);
+               break;
+
+            case self::HISTORY_UNLOCK_DEVICE :
+               $tmp['field'] = NOT_AVAILABLE;
+               if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                  if ($item2 instanceof Item_Devices) {
+                     $tmp['field'] = $item2->getDeviceTypeName(1);
+                  } else {
+                     $tmp['field'] = $item2->getTypeName(1);
+                  }
+
+               }
+               //TRANS: %s is the component name
+               $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
+               break;
+
+            case self::HISTORY_INSTALL_SOFTWARE :
+               $tmp['field']  = _n('Software', 'Software', 1);
+               //TRANS: %s is the software name
+               $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
+               break;
+
+            case self::HISTORY_UNINSTALL_SOFTWARE :
+               $tmp['field']  = _n('Software', 'Software', 1);
+               //TRANS: %s is the software name
+               $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["old_value"]);
+               break;
+
+            case self::HISTORY_DISCONNECT_DEVICE :
+               $tmp['field'] = NOT_AVAILABLE;
+               if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                  if ($item2 instanceof Item_Devices) {
+                     $tmp['field'] = $item2->getDeviceTypeName(1);
+                  } else {
+                     $tmp['field'] = $item2->getTypeName(1);
+                  }
+
+               }
+               //TRANS: %s is the item name
+               $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["old_value"]);
+               break;
+
+            case self::HISTORY_CONNECT_DEVICE :
+               $tmp['field'] = NOT_AVAILABLE;
+               if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                  if ($item2 instanceof Item_Devices) {
+                     $tmp['field'] = $item2->getDeviceTypeName(1);
+                  } else {
+                     $tmp['field'] = $item2->getTypeName(1);
+                  }
+
+               }
+               //TRANS: %s is the item name
+               $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
+               break;
+
+            case self::HISTORY_LOG_SIMPLE_MESSAGE :
+               $tmp['field']  = "";
+               $tmp['change'] = $data["new_value"];
+               break;
+
+            case self::HISTORY_ADD_RELATION :
+               $tmp['field'] = NOT_AVAILABLE;
+               if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                  $tmp['field'] = $item2->getTypeName(1);
+               }
+               $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
+
+               if ($data['itemtype'] == 'Ticket') {
+                  if ($data['id_search_option']) { // Recent record - see CommonITILObject::getSearchOptionsActors()
+                     $as = $SEARCHOPTION[$data['id_search_option']]['name'];
+                  } else { // Old record
+                     switch ($data['itemtype_link']) {
+                        case 'Group':
+                           $is = 'isGroup';
+                           break;
+
+                        case 'User':
+                           $is = 'isUser';
+                           break;
+
+                        case 'Supplier':
+                           $is = 'isSupplier';
+                           break;
+
+                        default:
+                           $is = $isr = $isa = $iso = false;
+                           break;
+                     }
+                     if ($is) {
+                        $iditem = intval(substr($data['new_value'], strrpos($data['new_value'], '(')+1)); // This is terrible idea
+                        $isr = $item->$is(CommonITILActor::REQUESTER, $iditem);
+                        $isa = $item->$is(CommonITILActor::ASSIGN, $iditem);
+                        $iso = $item->$is(CommonITILActor::OBSERVER, $iditem);
+                     }
+                     // Simple Heuristic, of course not enough
+                     if ($isr && !$isa && !$iso) {
+                        $as = _n('Requester', 'Requesters', 1);
+                     } else if (!$isr && $isa && !$iso) {
+                        $as = __('Assigned to');
+                     } else if (!$isr && !$isa && $iso) {
+                        $as = _n('Watcher', 'Watchers', 1);
                      } else {
-                        $tmp['field'] = $item2->getTypeName(1);
-                     }
-
-                  }
-                  //TRANS: %s is the component name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["old_value"]);
-                  break;
-
-               case self::HISTORY_LOCK_DEVICE :
-                  $tmp['field'] = NOT_AVAILABLE;
-                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
-                     if ($item2 instanceof Item_Devices) {
-                        $tmp['field'] = $item2->getDeviceTypeName(1);
-                     } else {
-                        $tmp['field'] = $item2->getTypeName(1);
-                     }
-
-                  }
-                  //TRANS: %s is the component name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["old_value"]);
-                  break;
-
-               case self::HISTORY_UNLOCK_DEVICE :
-                  $tmp['field'] = NOT_AVAILABLE;
-                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
-                     if ($item2 instanceof Item_Devices) {
-                        $tmp['field'] = $item2->getDeviceTypeName(1);
-                     } else {
-                        $tmp['field'] = $item2->getTypeName(1);
-                     }
-
-                  }
-                  //TRANS: %s is the component name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
-                  break;
-
-               case self::HISTORY_INSTALL_SOFTWARE :
-                  $tmp['field']  = _n('Software', 'Software', 1);
-                  //TRANS: %s is the software name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
-                  break;
-
-               case self::HISTORY_UNINSTALL_SOFTWARE :
-                  $tmp['field']  = _n('Software', 'Software', 1);
-                  //TRANS: %s is the software name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["old_value"]);
-                  break;
-
-               case self::HISTORY_DISCONNECT_DEVICE :
-                  $tmp['field'] = NOT_AVAILABLE;
-                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
-                     if ($item2 instanceof Item_Devices) {
-                        $tmp['field'] = $item2->getDeviceTypeName(1);
-                     } else {
-                        $tmp['field'] = $item2->getTypeName(1);
-                     }
-
-                  }
-                  //TRANS: %s is the item name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["old_value"]);
-                  break;
-
-               case self::HISTORY_CONNECT_DEVICE :
-                  $tmp['field'] = NOT_AVAILABLE;
-                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
-                     if ($item2 instanceof Item_Devices) {
-                        $tmp['field'] = $item2->getDeviceTypeName(1);
-                     } else {
-                        $tmp['field'] = $item2->getTypeName(1);
-                     }
-
-                  }
-                  //TRANS: %s is the item name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
-                  break;
-
-               case self::HISTORY_LOG_SIMPLE_MESSAGE :
-                  $tmp['field']  = "";
-                  $tmp['change'] = $data["new_value"];
-                  break;
-
-               case self::HISTORY_ADD_RELATION :
-                  $tmp['field'] = NOT_AVAILABLE;
-                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item2->getTypeName(1);
-                  }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
-
-                  if ($data['itemtype'] == 'Ticket') {
-                     if ($data['id_search_option']) { // Recent record - see CommonITILObject::getSearchOptionsActors()
-                        $as = $SEARCHOPTION[$data['id_search_option']]['name'];
-                     } else { // Old record
-                        switch ($data['itemtype_link']) {
-                           case 'Group':
-                              $is = 'isGroup';
-                              break;
-
-                           case 'User':
-                              $is = 'isUser';
-                              break;
-
-                           case 'Supplier':
-                              $is = 'isSupplier';
-                              break;
-
-                           default:
-                              $is = $isr = $isa = $iso = false;
-                              break;
-                        }
-                        if ($is) {
-                           $iditem = intval(substr($data['new_value'], strrpos($data['new_value'], '(')+1)); // This is terrible idea
-                           $isr = $item->$is(CommonITILActor::REQUESTER, $iditem);
-                           $isa = $item->$is(CommonITILActor::ASSIGN, $iditem);
-                           $iso = $item->$is(CommonITILActor::OBSERVER, $iditem);
-                        }
-                        // Simple Heuristic, of course not enough
-                        if ($isr && !$isa && !$iso) {
-                           $as = _n('Requester', 'Requesters', 1);
-                        } else if (!$isr && $isa && !$iso) {
-                           $as = __('Assigned to');
-                        } else if (!$isr && !$isa && $iso) {
-                           $as = _n('Watcher', 'Watchers', 1);
-                        } else {
-                           // Deleted or Ambiguous
-                           $as = false;
-                        }
-                     }
-                     if ($as) {
-                        $tmp['change'] = sprintf(__('%1$s: %2$s'),
-                                                 $action_label,
-                                                 sprintf(__('%1$s (%2$s)'), $data["new_value"], $as));
-                     } else {
-                        $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
+                        // Deleted or Ambiguous
+                        $as = false;
                      }
                   }
-                  break;
-
-               case self::HISTORY_UPDATE_RELATION :
-                  $tmp['field']   = NOT_AVAILABLE;
-                  if ($linktype_field = explode('#', $data["itemtype_link"])) {
-                     $linktype     = $linktype_field[0];
-                     $tmp['field'] = $linktype::getTypeName();
+                  if ($as) {
+                     $tmp['change'] = sprintf(__('%1$s: %2$s'),
+                                                $action_label,
+                                                sprintf(__('%1$s (%2$s)'), $data["new_value"], $as));
+                  } else {
+                     $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
                   }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'),
-                                           $action_label,
-                                           sprintf(__('%1$s (%2$s)'), $data["old_value"], $data["new_value"]));
-                  break;
+               }
+               break;
 
-               case self::HISTORY_DEL_RELATION :
-                  $tmp['field'] = NOT_AVAILABLE;
-                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item2->getTypeName(1);
-                  }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["old_value"]);
-                  break;
+            case self::HISTORY_UPDATE_RELATION :
+               $tmp['field']   = NOT_AVAILABLE;
+               if ($linktype_field = explode('#', $data["itemtype_link"])) {
+                  $linktype     = $linktype_field[0];
+                  $tmp['field'] = $linktype::getTypeName();
+               }
+               $tmp['change'] = sprintf(__('%1$s: %2$s'),
+                                          $action_label,
+                                          sprintf(__('%1$s (%2$s)'), $data["old_value"], $data["new_value"]));
+               break;
 
-               case self::HISTORY_LOCK_RELATION :
-                  $tmp['field'] = NOT_AVAILABLE;
-                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item2->getTypeName(1);
-                  }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["old_value"]);
-                  break;
+            case self::HISTORY_DEL_RELATION :
+               $tmp['field'] = NOT_AVAILABLE;
+               if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                  $tmp['field'] = $item2->getTypeName(1);
+               }
+               $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["old_value"]);
+               break;
 
-               case self::HISTORY_UNLOCK_RELATION :
-                  $tmp['field'] = NOT_AVAILABLE;
-                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item2->getTypeName(1);
-                  }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
-                  break;
+            case self::HISTORY_LOCK_RELATION :
+               $tmp['field'] = NOT_AVAILABLE;
+               if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                  $tmp['field'] = $item2->getTypeName(1);
+               }
+               $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["old_value"]);
+               break;
 
-               case self::HISTORY_ADD_SUBITEM :
-                  $tmp['field'] = '';
-                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item2->getTypeName(1);
-                  }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'),
-                                           $action_label,
-                                           sprintf(__('%1$s (%2$s)'), $tmp['field'], $data["new_value"]));
+            case self::HISTORY_UNLOCK_RELATION :
+               $tmp['field'] = NOT_AVAILABLE;
+               if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                  $tmp['field'] = $item2->getTypeName(1);
+               }
+               $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
+               break;
 
-                  break;
+            case self::HISTORY_ADD_SUBITEM :
+               $tmp['field'] = '';
+               if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                  $tmp['field'] = $item2->getTypeName(1);
+               }
+               $tmp['change'] = sprintf(__('%1$s: %2$s'),
+                                          $action_label,
+                                          sprintf(__('%1$s (%2$s)'), $tmp['field'], $data["new_value"]));
 
-               case self::HISTORY_UPDATE_SUBITEM :
-                  $tmp['field'] = '';
-                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item2->getTypeName(1);
-                  }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'),
-                                           $action_label,
-                                           sprintf(__('%1$s (%2$s)'), $tmp['field'], $data["new_value"]));
-                  break;
+               break;
 
-               case self::HISTORY_DELETE_SUBITEM :
-                  $tmp['field'] = '';
-                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item2->getTypeName(1);
-                  }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'),
-                                           $action_label,
-                                           sprintf(__('%1$s (%2$s)'), $tmp['field'], $data["new_value"]));
-                  break;
+            case self::HISTORY_UPDATE_SUBITEM :
+               $tmp['field'] = '';
+               if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                  $tmp['field'] = $item2->getTypeName(1);
+               }
+               $tmp['change'] = sprintf(__('%1$s: %2$s'),
+                                          $action_label,
+                                          sprintf(__('%1$s (%2$s)'), $tmp['field'], $data["new_value"]));
+               break;
 
-               case self::HISTORY_LOCK_SUBITEM :
-                  $tmp['field'] = '';
-                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item2->getTypeName(1);
-                  }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'),
-                                           $action_label,
-                                           sprintf(__('%1$s (%2$s)'), $tmp['field'], $data["old_value"]));
-                  break;
+            case self::HISTORY_DELETE_SUBITEM :
+               $tmp['field'] = '';
+               if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                  $tmp['field'] = $item2->getTypeName(1);
+               }
+               $tmp['change'] = sprintf(__('%1$s: %2$s'),
+                                          $action_label,
+                                          sprintf(__('%1$s (%2$s)'), $tmp['field'], $data["new_value"]));
+               break;
 
-               case self::HISTORY_UNLOCK_SUBITEM :
-                  $tmp['field'] = '';
-                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item2->getTypeName(1);
-                  }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'),
-                                           $action_label,
-                                           sprintf(__('%1$s (%2$s)'), $tmp['field'], $data["new_value"]));
+            case self::HISTORY_LOCK_SUBITEM :
+               $tmp['field'] = '';
+               if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                  $tmp['field'] = $item2->getTypeName(1);
+               }
+               $tmp['change'] = sprintf(__('%1$s: %2$s'),
+                                          $action_label,
+                                          sprintf(__('%1$s (%2$s)'), $tmp['field'], $data["old_value"]));
+               break;
+
+            case self::HISTORY_UNLOCK_SUBITEM :
+               $tmp['field'] = '';
+               if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                  $tmp['field'] = $item2->getTypeName(1);
+               }
+               $tmp['change'] = sprintf(__('%1$s: %2$s'),
+                                          $action_label,
+                                          sprintf(__('%1$s (%2$s)'), $tmp['field'], $data["new_value"]));
+               break;
+
+            default :
+               $fct = [$data['itemtype_link'], 'getHistoryEntry'];
+               if (($data['linked_action'] >= self::HISTORY_PLUGIN)
+                     && $data['itemtype_link']
+                     && is_callable($fct)) {
+                  $tmp['field']  = $data['itemtype_link']::getTypeName(1);
+                  $tmp['change'] = call_user_func($fct, $data);
+               }
+               $tmp['display_history'] = !empty($tmp['change']);
+         }
+
+      } else {
+         $fieldname = "";
+         $searchopt = [];
+         $tablename = '';
+         // It's not an internal device
+         foreach ($SEARCHOPTION as $key2 => $val2) {
+            if ($key2 === $data["id_search_option"]) {
+               $tmp['field'] =  $val2["name"];
+               $tablename    =  $val2["table"];
+               $fieldname    = $val2["field"];
+               $searchopt    = $val2;
+               if (isset($val2['datatype'])) {
+                  $tmp['datatype'] = $val2["datatype"];
+               }
+               break;
+            }
+         }
+         if (($itemtable == $tablename)
+               || ($tmp['datatype'] == 'right')) {
+            switch ($tmp['datatype']) {
+               // specific case for text field
+               case 'text' :
+                  $tmp['change'] = __('Update of the field');
                   break;
 
                default :
-                  $fct = [$data['itemtype_link'], 'getHistoryEntry'];
-                  if (($data['linked_action'] >= self::HISTORY_PLUGIN)
-                      && $data['itemtype_link']
-                      && is_callable($fct)) {
-                     $tmp['field']  = $data['itemtype_link']::getTypeName(1);
-                     $tmp['change'] = call_user_func($fct, $data);
-                  }
-                  $tmp['display_history'] = !empty($tmp['change']);
-            }
-
-         } else {
-            $fieldname = "";
-            $searchopt = [];
-            $tablename = '';
-            // It's not an internal device
-            foreach ($SEARCHOPTION as $key2 => $val2) {
-               if ($key2 === $data["id_search_option"]) {
-                  $tmp['field'] =  $val2["name"];
-                  $tablename    =  $val2["table"];
-                  $fieldname    = $val2["field"];
-                  $searchopt    = $val2;
-                  if (isset($val2['datatype'])) {
-                     $tmp['datatype'] = $val2["datatype"];
-                  }
+                  $data["old_value"] = $item->getValueToDisplay($searchopt, $data["old_value"]);
+                  $data["new_value"] = $item->getValueToDisplay($searchopt, $data["new_value"]);
                   break;
-               }
-            }
-            if (($itemtable == $tablename)
-                || ($tmp['datatype'] == 'right')) {
-               switch ($tmp['datatype']) {
-                  // specific case for text field
-                  case 'text' :
-                     $tmp['change'] = __('Update of the field');
-                     break;
-
-                  default :
-                     $data["old_value"] = $item->getValueToDisplay($searchopt, $data["old_value"]);
-                     $data["new_value"] = $item->getValueToDisplay($searchopt, $data["new_value"]);
-                     break;
-               }
-            }
-
-            if (empty($tmp['change'])) {
-               $newval = $data["new_value"];
-               $oldval = $data["old_value"];
-
-               if ($data['id_search_option'] == '70') {
-                  $newval_expl = explode(' ', $newval);
-                  $oldval_expl = explode(' ', $oldval);
-
-                  if ($oldval_expl[0] == '&nbsp;') {
-                     $oldval = $data["old_value"];
-                  } else {
-                     $old_iterator = $DBread->request('glpi_users', ['name' => $oldval_expl[0]]);
-                     while ($val = $old_iterator->next()) {
-                        $oldval = sprintf(__('%1$s %2$s'),
-                              formatUserName($val['id'], $oldval_expl[0], $val['realname'],
-                                    $val['firstname']),
-                              ($oldval_expl[1] ?? "0"));
-                     }
-                  }
-
-                  if ($newval_expl[0] == '&nbsp;') {
-                     $newval = $data["new_value"];
-                  } else {
-                     $new_iterator = $DBread->request('glpi_users', ['name' => $newval_expl[0]]);
-                     while ($val = $new_iterator->next()) {
-                        $newval = sprintf(__('%1$s %2$s'),
-                              formatUserName($val['id'], $newval_expl[0], $val['realname'],
-                                    $val['firstname']),
-                              ($newval_expl[1] ?? "0"));
-                     }
-                  }
-               }
-               $tmp['change'] = sprintf(__('Change %1$s to %2$s'), $oldval, $newval);
             }
          }
-         $changes[] = $tmp;
+
+         if (empty($tmp['change'])) {
+            $newval = $data["new_value"];
+            $oldval = $data["old_value"];
+
+            if ($data['id_search_option'] == '70') {
+               $newval_expl = explode(' ', $newval);
+               $oldval_expl = explode(' ', $oldval);
+
+               if ($oldval_expl[0] == '&nbsp;') {
+                  $oldval = $data["old_value"];
+               } else {
+                  $old_iterator = $DBread->request('glpi_users', ['name' => $oldval_expl[0]]);
+                  while ($val = $old_iterator->next()) {
+                     $oldval = sprintf(__('%1$s %2$s'),
+                           formatUserName($val['id'], $oldval_expl[0], $val['realname'],
+                                 $val['firstname']),
+                           ($oldval_expl[1] ?? "0"));
+                  }
+               }
+
+               if ($newval_expl[0] == '&nbsp;') {
+                  $newval = $data["new_value"];
+               } else {
+                  $new_iterator = $DBread->request('glpi_users', ['name' => $newval_expl[0]]);
+                  while ($val = $new_iterator->next()) {
+                     $newval = sprintf(__('%1$s %2$s'),
+                           formatUserName($val['id'], $newval_expl[0], $val['realname'],
+                                 $val['firstname']),
+                           ($newval_expl[1] ?? "0"));
+                  }
+               }
+            }
+            $tmp['change'] = sprintf(__('Change %1$s to %2$s'), $oldval, $newval);
+         }
       }
-      return $changes;
+
+      return $tmp;
    }
 
    /**
