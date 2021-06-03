@@ -597,7 +597,6 @@ HTML;
    static function getButtons(string $plugin_key = ""): string {
       global $CFG_GLPI, $PLUGIN_HOOKS;
 
-      $rand               = mt_rand();
       $plugin_inst        = new Plugin;
       $exists             = $plugin_inst->getFromDBbyDir($plugin_key);
       $is_installed       = $plugin_inst->isInstalled($plugin_key);
@@ -605,16 +604,18 @@ HTML;
       $mk_controller      = new Controller($plugin_key);
       $web_update_version = $mk_controller->checkUpdate($plugin_inst);
       $has_web_update     = $web_update_version !== false;
-      $has_loc_update     = $plugin_inst->isUpdatable($plugin_key);
+      $is_available       = $mk_controller->isAvailable();
       $can_be_overwritten = $mk_controller->canBeOverwritten();
       $can_be_downloaded  = $mk_controller->canBeDownloaded();
       $required_offers    = $mk_controller->getRequiredOffers();
       $can_be_updated     = $has_web_update && $can_be_overwritten;
-      $can_be_cleaned     = $exists && !$plugin_inst->isLoadable($plugin_key);
       $config_page        = $PLUGIN_HOOKS['config_page'][$plugin_key] ?? "";
+      $must_be_cleaned   = $exists && !$plugin_inst->isLoadable($plugin_key);
+      $has_local_install = $exists && !$must_be_cleaned && !$is_installed;
+      $has_local_update  = $exists && !$must_be_cleaned && $plugin_inst->isUpdatable($plugin_key);
 
       $error = "";
-      if ($exists) {
+      if ($exists && !$must_be_cleaned) {
          ob_start();
          $do_activate = $plugin_inst->checkVersions($plugin_key);
          if (!$do_activate) {
@@ -631,22 +632,35 @@ HTML;
             ob_end_clean();
          }
       }
+      $can_run_local_install = ($has_local_install || $has_local_update) && !strlen($error);
 
       $buttons = "";
 
       if (strlen($error)) {
+         $rand = mt_rand();
          $buttons .="<i class='fas fa-exclamation-triangle plugin-error' id='plugin-error-$rand'></i>";
          Html::showToolTip($error, [
             'applyto' => "plugin-error-$rand",
          ]);
       }
 
-      if ($can_be_cleaned) {
+      if ($must_be_cleaned) {
          $buttons .="<button class='modify_plugin'
                              data-action='clean_plugin'
                              title='".__s("Clean")."'>
             <i class='fas fa-broom'></i>
          </button>";
+      } else if (!$is_available) {
+         if (!$can_run_local_install) {
+            $rand = mt_rand();
+            $buttons .="<i class='fas fa-exclamation-triangle plugin-unavailable' id='plugin-tooltip-$rand'></i>";
+            Html::showToolTip(
+               __('This plugin is not available for your GLPI version.'),
+               [
+                  'applyto' => "plugin-tooltip-$rand",
+               ]
+            );
+         }
       } else if ((!$exists && !$mk_controller->hasWriteAccess())
          || ($has_web_update && !$can_be_overwritten && GLPI_MARKETPLACE_MANUAL_DOWNLOADS)) {
          $plugin_data = $mk_controller->getAPI()->getPlugin($plugin_key);
@@ -704,10 +718,10 @@ HTML;
             </a>";
       }
 
-      if ($exists && !$can_be_cleaned && !$is_installed && !strlen($error)) {
+      if ($can_run_local_install) {
          $title = __s("Install");
          $icon  = "fas fa-folder-plus";
-         if ($has_loc_update) {
+         if ($has_local_update) {
             $title = __s("Update");
             $icon  =  "far fa-caret-square-up";
          }
