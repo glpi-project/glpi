@@ -359,6 +359,17 @@ class Controller extends CommonGLPI {
    }
 
    /**
+    * Check if a given plugin has available versions for current GLPI instance.
+    *
+    * @return bool
+    */
+   public function isAvailable() {
+      $api          = self::getAPI();
+      $api_plugin   = $api->getPlugin($this->plugin_key);
+      return count($api_plugin['versions'] ?? []) > 0;
+   }
+
+   /**
     * Check if plugin is eligible inside an higher offer.
     *
     * @return bool

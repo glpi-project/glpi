@@ -1223,6 +1223,7 @@ class Provider {
       $waiting    = self::nbTicketsGeneric('waiting', $params);
       $tovalidate = self::nbTicketsGeneric('waiting_validation', $params);
       $closed     = self::nbTicketsGeneric('closed', $params);
+      $solved     = self::nbTicketsGeneric('solved', $params);
 
       return [
          'data'  => [
@@ -1246,6 +1247,11 @@ class Provider {
                'label'  => __("To validate"),
                'url'    => $tovalidate['url'],
                'color'  => '#266ae9',
+            ], [
+               'number' => $solved['number'],
+               'label'  => __("Solved"),
+               'url'    => $solved['url'],
+               'color'  => '#edc949',
             ], [
                'number' => $closed['number'],
                'label'  => __("Closed"),

@@ -261,7 +261,7 @@ class Link extends CommonDBTM {
     * @return array of link contents (may have several when item have several IP / MAC cases)
    **/
    static function generateLinkContents($link, CommonDBTM $item) {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
       // Replace [FIELD:<field name>]
       $matches = [];
@@ -302,6 +302,28 @@ class Link extends CommonDBTM {
             $link = str_replace("[LOCATION]",
                                 Dropdown::getDropdownName("glpi_locations",
                                                           $item->getField('locations_id')), $link);
+      }
+      if (strstr($link, "[DOMAIN]")
+         && in_array($item->getType(), $CFG_GLPI['domain_types'], true)) {
+         $domain_table = Domain::getTable();
+         $domain_item_table = Domain_Item::getTable();
+         $iterator = $DB->request([
+            'SELECT'    => ['name'],
+            'FROM'      => $domain_table,
+            'LEFT JOIN' => [
+               $domain_item_table => [
+                  'FKEY'   => [
+                     $domain_table        => 'id',
+                     $domain_item_table   => 'domains_id'
+                  ],
+                  'AND'    => ['itemtype' => $item->getType()]
+               ]
+            ],
+            'WHERE'     => ['items_id' => $item->getID()]
+         ]);
+         if ($iterator->count()) {
+            $link = str_replace("[DOMAIN]", $iterator->next()['name'], $link);
+         }
       }
       if (strstr($link, "[NETWORK]")
           && $item->isField('networks_id')) {

@@ -325,10 +325,14 @@ $break_s_screen: 1400px;
                      }
                   }
 
-                  .plugin-error {
-                     color: red;
+                  > .fa-exclamation-triangle {
+                     color: #8f5a0a;
                      margin: 1px;
                      padding: 3px 5px;
+
+                     &.plugin-error {
+                        color: red;
+                     }
                   }
                }
             }
@@ -490,6 +494,11 @@ $break_s_screen: 1400px;
                .buttons {
                   width: 26px;
                   padding: 4px 5px;
+
+                  .plugin-unavailable {
+                     // Do not display unavailability on marketplace in installed view
+                     display: none;
+                  }
                }
             }
 

@@ -1424,7 +1424,7 @@ Regards,',
    }
 
    //add db version
-   $migration->addConfig(['dbversion' => GLPI_SCHEMA_VERSION]);
+   $migration->addConfig(['dbversion' => '9.1.3']);
 
    // Add certificates management
    if (!$DB->tableExists('glpi_certificates')) {
