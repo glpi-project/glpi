@@ -710,18 +710,7 @@ class Entity extends DbTestCase {
          }
       }
 
-      // Case 3: test values recovered from CommonITILObject::showTimeline()
-      ob_start();
-      $ticket->showTimeline(mt_rand());
-      $html = ob_get_clean();
-
-      foreach ($possible_values as $value) {
-         if ($value == $expected) {
-            $this->string($html)->contains($value);
-         } else {
-            $this->string($html)->notContains($value);
-         }
-      }
+      // Case 3: removed (timeline merged with main form)
 
       // Case 4: test values recovered from NotificationTargetCommonITILObject::getDataForObject()
       $notification = new NotificationTargetTicket();
