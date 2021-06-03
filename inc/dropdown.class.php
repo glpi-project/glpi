@@ -1517,7 +1517,9 @@ class Dropdown {
    **/
    static function getValueWithUnit($value, $unit, $decimals = 0) {
 
-      $formatted_number = Html::formatNumber($value, false, $decimals);
+      $formatted_number = is_numeric($value)
+         ? Html::formatNumber($value, false, $decimals)
+         : $value;
 
       if (strlen($unit) == 0) {
          return $formatted_number;
