@@ -155,7 +155,7 @@ trait DCBreadcrumb {
    }
 
    /**
-    * get item osition from Enclosure
+    * get item position from Enclosure
     *
     * @param string  $itemtype Item type
     * @param integer $items_id Item ID

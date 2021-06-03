@@ -46,8 +46,3 @@ if (isset($_REQUEST['_add_fromitem'])
 }
 
 include (GLPI_ROOT . "/front/dropdown.common.form.php");
-
-
-
-
-
