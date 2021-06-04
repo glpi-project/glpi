@@ -1,7 +1,7 @@
 {% set users_id = (item.fields['users_id_recipient'] > 0 ? item.fields['users_id_recipient'] : 0) %}
 {% set entry_rand = random() %}
 
-<div class="timeline-item mb-4 ITILContent"
+<div class="timeline-item mb-3 ITILContent"
      data-itemtype="{{ item.getType() }}" data-items-id="{{ item.fields['id'] }}">
    <div class="row">
       <div class="col-auto d-flex flex-column ">
@@ -10,7 +10,7 @@
       <div class="col-12 col-sm">
          <div class="d-flex">
             <div class="d-none d-md-block">
-               <i class="far fa-user"></i>
+               <i class="far fa-user text-muted"></i>
                <strong>{{ User__getLink(users_id) }}</strong>
             </div>
             <div class="text-muted ms-2 d-flex">
