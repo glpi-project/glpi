@@ -110,7 +110,7 @@ class Cable extends DbTestCase {
 
    public function testBackwardCompatibility() {
 
-      //test when sockets_id is defined from NetworkPort instanciation (NetworkPortEthernet, NetworkPortBNC, NetworkPortFiberChannel)
+      //test when sockets_id is defined from NetworkPort instanciation (NetworkPortEthernet, NetworkPortFiberChannel)
       //before it was the NetworkPort instantiation that had the socket reference
       //now it's the socket that have the networkport reference
 

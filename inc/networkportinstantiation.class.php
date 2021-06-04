@@ -46,7 +46,6 @@ if (!defined('GLPI_ROOT')) {
  *    - NetworkPortWifi
  *    - NetworkPortAggregate
  *    - NetworkPortAlias
- *    - NetworkPortBnc
  *
  * @since 0.84
  *

@@ -129,41 +129,6 @@ if (!$DB->tableExists('glpi_cables')) {
    $migration->addKey('glpi_states', 'is_visible_cable');
 }
 
-if (!$DB->tableExists('glpi_networkportbnctypes')) {
-   $query = "CREATE TABLE `glpi_networkportbnctypes` (
-      `id` int NOT NULL AUTO_INCREMENT,
-      `name` varchar(255) DEFAULT NULL,
-      `comment` text,
-      `date_mod` timestamp NULL DEFAULT NULL,
-      `date_creation` timestamp NULL DEFAULT NULL,
-      PRIMARY KEY (`id`),
-      KEY `name` (`name`),
-      KEY `date_mod` (`date_mod`),
-      KEY `date_creation` (`date_creation`)
-      ) ENGINE = InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC;";
-   $DB->queryOrDie($query, "10.0 add table glpi_networkportbnctypes");
-}
-
-if (!$DB->tableExists('glpi_networkportbncs')) {
-   $query = "CREATE TABLE `glpi_networkportbncs` (
-      `id` int NOT NULL AUTO_INCREMENT,
-      `networkports_id` int NOT NULL DEFAULT '0',
-      `items_devicenetworkcards_id` int NOT NULL DEFAULT '0',
-      `networkportbnctypes_id` int NOT NULL DEFAULT '0',
-      `speed` int NOT NULL DEFAULT '10' COMMENT 'Mbit/s: 10, 100, 1000, 10000',
-      `date_mod` timestamp NULL DEFAULT NULL,
-      `date_creation` timestamp NULL DEFAULT NULL,
-      PRIMARY KEY (`id`),
-      UNIQUE KEY `networkports_id` (`networkports_id`),
-      KEY `card` (`items_devicenetworkcards_id`),
-      KEY `type` (`networkportbnctypes_id`),
-      KEY `speed` (`speed`),
-      KEY `date_mod` (`date_mod`),
-      KEY `date_creation` (`date_creation`)
-      ) ENGINE = InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC;";
-   $DB->queryOrDie($query, "10.0 add table glpi_networkportbncs");
-}
-
 if (!$DB->tableExists('glpi_sockets') && $DB->tableExists('glpi_netpoints')) {
 
    //Rename table

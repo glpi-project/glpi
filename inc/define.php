@@ -288,7 +288,7 @@ $CFG_GLPI["networkport_types"]            = ['Computer', 'Monitor', 'NetworkEqui
 $CFG_GLPI['networkport_instantiations']   = ['NetworkPortEthernet', 'NetworkPortWifi' ,
                                                   'NetworkPortAggregate', 'NetworkPortAlias',
                                                   'NetworkPortDialup',   'NetworkPortLocal',
-                                                  'NetworkPortFiberchannel', 'NetworkPortBnc'];
+                                                  'NetworkPortFiberchannel'];
 
 $CFG_GLPI['device_types']                 = ['DeviceMotherboard', 'DeviceFirmware', 'DeviceProcessor',
                                                   'DeviceMemory', 'DeviceHardDrive', 'DeviceNetworkCard',

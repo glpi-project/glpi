@@ -95,13 +95,7 @@ class NetworkPortType extends DbTestCase {
             'comment' => 'Multirate HDSL2 [Bob_Ray]',
             'is_importable' => 1,
             'instantiation_type' => 'NetworkPortEthernet',
-         ], [
-            'value_decimal' => 169,
-            'name' => 'bnc',
-            'comment' => 'BNC network',
-            'is_importable' => 1,
-            'instantiation_type' => 'NetworkPortBNC',
-         ]
+         ],
       ];
 
       while ($row = $iterator->next()) {

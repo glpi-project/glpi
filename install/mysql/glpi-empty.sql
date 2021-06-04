@@ -4590,43 +4590,6 @@ CREATE TABLE `glpi_networkportethernets` (
 
 ### Dump table glpi_networkportbnctypes
 
-DROP TABLE IF EXISTS `glpi_networkportbnctypes`;
-CREATE TABLE `glpi_networkportbnctypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `comment` text,
-  `date_mod` timestamp NULL DEFAULT NULL,
-  `date_creation` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `name` (`name`),
-  KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-
-
-### Dump table glpi_networkportbnc
-
-DROP TABLE IF EXISTS `glpi_networkportbncs`;
-CREATE TABLE `glpi_networkportbncs` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `networkports_id` int NOT NULL DEFAULT '0',
-  `items_devicenetworkcards_id` int NOT NULL DEFAULT '0',
-  `networkportbnctypes_id` int NOT NULL DEFAULT '0',
-  `speed` int NOT NULL DEFAULT '10' COMMENT 'Mbit/s: 10, 100, 1000, 10000',
-  `date_mod` timestamp NULL DEFAULT NULL,
-  `date_creation` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `networkports_id` (`networkports_id`),
-  KEY `card` (`items_devicenetworkcards_id`),
-  KEY `type` (`networkportbnctypes_id`),
-  KEY `speed` (`speed`),
-  KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-
-
-### Dump table glpi_networkportbnctypes
-
 DROP TABLE IF EXISTS `glpi_networkportfiberchanneltypes`;
 CREATE TABLE `glpi_networkportfiberchanneltypes` (
   `id` int NOT NULL AUTO_INCREMENT,

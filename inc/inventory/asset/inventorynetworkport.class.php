@@ -474,7 +474,7 @@ trait InventoryNetworkPort {
    private function handleInstantiation($type, $data, $ports_id, $load) {
       global $DB;
 
-      if (!in_array($type, ['NetworkPortEthernet', 'NetworkPortFiberchannel', 'NetworkPortBnc'])) {
+      if (!in_array($type, ['NetworkPortEthernet', 'NetworkPortFiberchannel'])) {
          return;
       }
 

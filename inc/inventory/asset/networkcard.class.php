@@ -178,9 +178,6 @@ class NetworkCard extends Device
                      case 'Ethernet':
                         $val_port->instantiation_type = 'NetworkPortEthernet';
                         break;
-                     case 'Bnc':
-                        $val_port->instantiation_type = 'NetworkPortBnc';
-                        break;
                      case 'wifi':
                         $val_port->instantiation_type = 'NetworkPortWifi';
                         break;
