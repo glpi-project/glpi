@@ -161,6 +161,7 @@ class IPAddress extends CommonDBChild {
 
 
    function prepareInputForAdd($input) {
+
       return parent::prepareInputForAdd($this->prepareInput($input));
    }
 
