@@ -263,7 +263,8 @@
          border-color: $timeline-fup-border;
       }
 
-      &.ITILContent {
+      &.ITILContent,
+      &.ITILValidation {
          .form-check-input:checked {
             background-color: $timeline-itilc-bg;
             border-color: $timeline-itilc-border;
