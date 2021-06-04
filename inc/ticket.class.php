@@ -2680,7 +2680,7 @@ class Ticket extends CommonITILObject {
          'id'                 => '159',
          'table'              => 'glpi_tickets',
          'field'              => 'is_late',
-         'name'               => __('Time to own exceedeed'),
+         'name'               => __('Time to own exceeded'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
          'computation'        => self::generateSLAOLAComputation('time_to_own')
@@ -2711,7 +2711,7 @@ class Ticket extends CommonITILObject {
          'id'                 => '182',
          'table'              => $this->getTable(),
          'field'              => 'is_late',
-         'name'               => __('Internal time to resolve exceedeed'),
+         'name'               => __('Internal time to resolve exceeded'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
          'computation'        => self::generateSLAOLAComputation('internal_time_to_resolve')
@@ -2742,7 +2742,7 @@ class Ticket extends CommonITILObject {
          'id'                 => '187',
          'table'              => 'glpi_tickets',
          'field'              => 'is_late',
-         'name'               => __('Internal time to own exceedeed'),
+         'name'               => __('Internal time to own exceeded'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
          'computation'        => self::generateSLAOLAComputation('internal_time_to_own')
