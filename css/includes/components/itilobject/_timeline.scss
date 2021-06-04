@@ -225,7 +225,6 @@
    }
 
    &.Log {
-      margin-top: -1.5rem;
       width: 100%;
 
       .user-part {
@@ -233,20 +232,26 @@
       }
 
       .content-part {
-         margin-top: 0.5rem;
          flex-direction: row-reverse !important;
          justify-content: flex-end;
+         margin-left: 75px;
+         margin-right: 83px;
+         //background-color: $timeline-log-bg;
 
          .timeline-content {
             border: 0;
             box-shadow: none;
             margin-top: 0 !important;
             flex-grow: 0 !important;
-            margin-left: 15px;
+            background: transparent;
 
             .card-body {
                padding: 0;
             }
+         }
+
+         .user_link {
+            display: none !important;
          }
 
          .itil-date-creation {

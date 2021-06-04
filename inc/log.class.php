@@ -697,7 +697,7 @@ class Log extends CommonDBTM {
                      }
                   }
                }
-               $tmp['change'] = sprintf(__('Change %1$s to %2$s'), $oldval, $newval);
+               $tmp['change'] = sprintf(__('Change %1$s to %2$s'), "<s>$oldval</s>", $newval);
             }
          }
          $changes[] = $tmp;

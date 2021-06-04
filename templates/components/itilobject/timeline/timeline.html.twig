@@ -45,7 +45,7 @@
          {% set state_class = "done" %}
       {% endif %}
 
-      <div class="timeline-item mb-4 {{ itiltype }} {{ state_class }} {{ entry['class'] }} {{ "right" in item_position ? "ms-auto" : "" }}"
+      <div class="timeline-item mb-3 {{ itiltype }} {{ state_class }} {{ entry['class'] }} {{ "right" in item_position ? "ms-auto" : "" }}"
             data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}">
          <div class="row">
             <div class="col-auto todo-list-state d-none">
@@ -66,8 +66,8 @@
                <div class="d-flex ">
                   <div class="d-flex creator">
                      {% if users_id != "0" %}
-                        <div class="d-none d-md-block">
-                           <i class="far fa-user"></i>
+                        <div class="d-none d-md-block user_link">
+                           <i class="far fa-user text-muted"></i>
                            <strong>{{ User__getLink(users_id, {
                                  'timeline_item': item,
                                  'timeline_subitem': entry
