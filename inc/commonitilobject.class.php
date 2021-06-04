@@ -6954,18 +6954,14 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($with_logs) {
          //add logs to timeline
-         $log_obj = new Log();
-         $log_items = $log_obj->find([
-            'itemtype'         => static::getType(),
-            'items_id'         => $this->getID(),
+         $log_items = Log::getHistoryData($this, 0, 0, [
             'id_search_option' => ['>', 0]
          ]);
-         foreach ($log_items as $log_item) {
 
-            $log_data = Log::getRowHistoryChanges($this, $log_item);
-            $content = $log_data['change'];
-            if (strlen($log_data['field']) > 0) {
-               $content = sprintf(__("%s: %s"), $log_data['field'], $content);
+         foreach ($log_items as $log_item) {
+            $content = $log_item['change'];
+            if (strlen($log_item['field']) > 0) {
+               $content = sprintf(__("%s: %s"), $log_item['field'], $content);
             }
             $content = "<i class='fas fa-history me-1' title='".__("Log entry")."' data-bs-toggle='tooltip'></i>".$content;
             $timeline[$log_item['date_mod']."_log_" . $log_item['id'] ] = [
