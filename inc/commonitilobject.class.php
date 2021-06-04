@@ -3342,7 +3342,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'id'                 => '82',
          'table'              => $this->getTable(),
          'field'              => 'is_late',
-         'name'               => __('Time to resolve exceedeed'),
+         'name'               => __('Time to resolve exceeded'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
          'computation'        => self::generateSLAOLAComputation('time_to_resolve')
