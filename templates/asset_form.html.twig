@@ -189,6 +189,20 @@
                   ) }}
                {% endif %}
 
+               {% if item.isField('dcrooms_id') %}
+                  {{ fields.dropdownField('DCRoom', 'dcrooms_id', item.fields['dcrooms_id'], 'DCRoom'|itemtype_name) }}
+                  {% set current_position = item.fields['position'] %}
+                  {{ updateItemOnSelectEvent('dropdown_dcrooms_id'~rand, 'room_positions', CFG_GLPI.root_doc~"/ajax/dcroom_size.php", {
+                     'id': '__VALUE__',
+                     'current': current_position,
+                     'rand': rand
+                  }) }}
+                  {{ updateItemOnSelectEvent('dropdown_dcrooms_id'~rand, 'dropdown_locations_id'~rand, CFG_GLPI.root_doc~"/ajax/dropdownLocation.php", {
+                     'items_id': '__VALUE__',
+                     'itemtype': 'DCRoom'
+                  }) }}
+               {% endif %}
+
                {% if item.isField('users_id') %}
                   {{ fields.dropdownField(
                      "User",
