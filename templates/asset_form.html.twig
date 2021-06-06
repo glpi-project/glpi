@@ -42,6 +42,15 @@
                   ) }}
                {% endif %}
 
+               {% if item.isField('power_supplies') %}
+                  {{ fields.dropdownNumberField('power_supplies', item.fields['power_supplies'], 'DevicePowerSupply'|itemtype_name(getPluralNumber()), {
+                     'rand': rand,
+                     'min': 1,
+                     'max': 6,
+                     'step': 1
+                  }) }}
+               {% endif %}
+
                {% if item.isField('is_helpdesk_visible') %}
                   {{ fields.checkboxField(
                      "is_helpdesk_visible",
