@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -313,78 +315,10 @@ class Domain extends CommonDropdown {
 
    function showForm($ID, $options = []) {
       $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-
-      echo "<tr class='tab_bg_1'>";
-
-      echo "<td>" . __('Name') . "</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "name");
-      echo "</td>";
-
-      echo "<td>" . __('Is active') . "</td>";
-      echo "<td>";
-      if (!empty($options['withtemplate']) && ($options['withtemplate'] == 1)) {
-         echo __('No');
-         echo Html::input('is_active', ['type' => 'hidden', 'value' => 0]);
-      } else {
-         Dropdown::showYesNo('is_active', $this->fields['is_active']);
-      }
-      echo "</td>";
-
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Creation date') . "</td>";
-      echo "<td>";
-      Html::showDateField("date_creation", ['value' => $this->fields["date_creation"]]);
-      echo "</td>";
-
-      echo "<td>" . _n('Type', 'Types', 1) . "</td><td>";
-      Dropdown::show('DomainType', ['name'   => "domaintypes_id",
-                                                      'value'  => $this->fields["domaintypes_id"],
-                                                      'entity' => $this->fields["entities_id"]]);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Expiration date');
-      echo "&nbsp;";
-      Html::showToolTip(nl2br(__('Empty for infinite')));
-      echo "</td>";
-      echo "<td>";
-      Html::showDateField("date_expiration", ['value' => $this->fields["date_expiration"]]);
-      echo "</td>";
-
-      echo "<td>" . __('Technician in charge') . "</td><td>";
-      User::dropdown(['name'   => "users_id_tech",
-                           'value'  => $this->fields["users_id_tech"],
-                           'entity' => $this->fields["entities_id"],
-                           'right'  => 'interface']);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Group in charge') . "</td>";
-      echo "<td colspan='3'>";
-      Dropdown::show('Group', ['name'      => "groups_id_tech",
-                                    'value'     => $this->fields["groups_id_tech"],
-                                    'entity'    => $this->fields["entities_id"],
-                                    'condition' => ['is_assign' => 1]]);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('Comments') . "</td>";
-      echo "<td colspan = '3' class='center'>";
-      echo "<textarea cols='115' rows='5' name='comment' >" . $this->fields["comment"] . "</textarea>";
-      echo "</td>";
-
-      echo "</tr>";
-
-      $this->showFormButtons($options);
-
+      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
+         'item'   => $this,
+         'params' => $options,
+      ]);
       return true;
    }
 

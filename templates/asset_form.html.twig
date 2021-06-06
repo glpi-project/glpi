@@ -29,6 +29,15 @@
                   ) }}
                {% endif %}
 
+               {% if item.isField('is_active') %}
+                  {% if withtemplate is not empty or withtemplate == 1 %}
+                     {{ fields.hiddenField('is_active', item.fields['is_active'], __('Is active'), {
+                        'add_field_html': __('No')
+                     }) }}
+                  {% else %}
+                  {% endif %}
+               {% endif %}
+
                {% if item.isField('states_id') %}
                   {{ fields.dropdownField(
                      "State",
@@ -105,6 +114,10 @@
                   ]) }}
                {% endif %}
 
+               {% if item.getType == "Domain" and item.isField('date_creation') %}
+                  {{ fields.dateField('date_creation', item.fields['date_creation'], __('Creation date')) }}
+               {% endif %}
+
                {% set type_itemtype = item.getType ~ "Type" %}
                {% set type_fk = type_itemtype|get_foreignkey_field %}
                {% if item.isField(type_fk) %}
@@ -114,6 +127,14 @@
                      item.fields[type_fk],
                      _n('Type', 'Types', 1),
                   ) }}
+               {% endif %}
+
+               {% if item.isField('date_expiration') %}
+                  {{ fields.dateField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
+                     'add_field_html': Html__showToolTip(__('Empty for infinite')|nl2br, {
+                        'display': false
+                     })
+                  }) }}
                {% endif %}
 
                {% if item.isField('ref') %}
