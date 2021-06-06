@@ -369,7 +369,7 @@
                   ) }}
                {% endif %}
 
-               {% if item.isField('contact') %}
+               {% if item.isField('size') %}
                   {{ fields.numberField(
                      "size",
                      item.fields['size'],
@@ -416,12 +416,46 @@
                   ) }}
                {% endif %}
 
+               {% if item.isField('is_autosign') %}
+                  {{ fields.dropdownYesNo('is_autosign', item.fields['is_autosign'], __('Self-signed')) }}
+               {% endif %}
+
                {% if item.isField('comment') %}
                   {{ fields.textareaField(
                      "comment",
                      item.fields['comment'],
                      _n('Comment', 'Comments', getPluralNumber()),
                   ) }}
+               {% endif %}
+
+               {% if item.isField('dns_name') %}
+                  {{ fields.autoNameField(
+                     "dns_name",
+                     item,
+                     __('DNS name'),
+                     withtemplate
+                  ) }}
+               {% endif %}
+
+               {% if item.isField('dns_suffix') %}
+                  {{ fields.autoNameField(
+                     "dns_suffix",
+                     item,
+                     __('DNS suffix'),
+                     withtemplate
+                  ) }}
+               {% endif %}
+
+               {% if item.isField('command') %}
+                  {{ fields.textareaField('command', item.fields['command'], __('Command used')) }}
+               {% endif %}
+
+               {% if item.isField('certificate_request') %}
+                  {{ fields.textareaField('certificate_request', item.fields['certificate_request'], __('Certificate request (CSR)')) }}
+               {% endif %}
+
+               {% if item.isField('certificate_item') %}
+                  {{ fields.textareaField('certificate_item', item.fields['certificate_item'], item|itemtype_name) }}
                {% endif %}
 
                {% if item.isField('ram') %}

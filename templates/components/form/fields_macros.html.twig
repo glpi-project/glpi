@@ -361,7 +361,7 @@
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
 {% endmacro %}
 
-{% macro dropdownTimestampField(name, value, label = '', options) %}
+{% macro dropdownTimestampField(name, value, label = '', options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
@@ -384,7 +384,7 @@
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
 {% endmacro %}
 
-{% macro dropdownYesNo(name, value, label = '', options) %}
+{% macro dropdownYesNo(name, value, label = '', options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
@@ -406,7 +406,7 @@
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
 {% endmacro %}
 
-{% macro dropdownItemTypes(name, value, label = '', options) %}
+{% macro dropdownItemTypes(name, value, label = '', options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
@@ -431,7 +431,7 @@
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
 {% endmacro %}
 
-{% macro dropdownIcons(name, value, label = '', options) %}
+{% macro dropdownIcons(name, value, label = '', options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
