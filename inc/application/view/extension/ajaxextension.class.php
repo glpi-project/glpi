@@ -33,7 +33,6 @@
 namespace Glpi\Application\View\Extension;
 
 use Ajax;
-use Alert;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;

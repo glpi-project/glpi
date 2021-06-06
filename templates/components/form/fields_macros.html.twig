@@ -514,6 +514,16 @@
    {% endif %}
 {% endmacro %}
 
+{% macro ajaxField(id, value, label = '', options = {}) %}
+   {% set field %}
+      <div id="{{ id|e }}" class="form-field-ajax">
+         {% if value is not null %}
+            {{ value|raw }}
+         {% endif %}
+      </div>
+   {% endset %}
+   {{ _self.field(id, field, label, options|merge({'id': id ~ '_' ~ options.rand})) }}
+{% endmacro %}
 
 {% macro nullField(options = {}) %}
    {% set options = {'is_horizontal': true}|merge(options) %}

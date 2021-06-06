@@ -190,17 +190,90 @@
                {% endif %}
 
                {% if item.isField('dcrooms_id') %}
-                  {{ fields.dropdownField('DCRoom', 'dcrooms_id', item.fields['dcrooms_id'], 'DCRoom'|itemtype_name) }}
+                  {{ fields.dropdownField('DCRoom', 'dcrooms_id', item.fields['dcrooms_id'], 'DCRoom'|itemtype_name, {
+                     'rand': rand,
+                  }) }}
                   {% set current_position = item.fields['position'] %}
-                  {{ updateItemOnSelectEvent('dropdown_dcrooms_id'~rand, 'room_positions', CFG_GLPI.root_doc~"/ajax/dcroom_size.php", {
+                  {{ updateItemOnSelectEvent('dropdown_dcrooms_id'~rand, 'room_positions', config('root_doc')~"/ajax/dcroom_size.php", {
                      'id': '__VALUE__',
                      'current': current_position,
                      'rand': rand
-                  }) }}
-                  {{ updateItemOnSelectEvent('dropdown_dcrooms_id'~rand, 'dropdown_locations_id'~rand, CFG_GLPI.root_doc~"/ajax/dropdownLocation.php", {
+                  })|raw }}
+                  {{ updateItemOnSelectEvent('dropdown_dcrooms_id'~rand, 'dropdown_locations_id'~rand, config('root_doc')~"/ajax/dropdownLocation.php", {
                      'items_id': '__VALUE__',
                      'itemtype': 'DCRoom'
+                  })|raw }}
+
+                  {% set inital_field %}
+                     {% if item.fields['dcrooms_id'] > 0 %}
+                        {% set dcroom = 'DCRoom'|getFromDB(item.fields['dcrooms_id']) %}
+                        {% if dcroom is not null %}
+                           {% set used = dcroom.getFilled(current_position) %}
+                           {% set positions = dcroom.getAllPositions() %}
+                           {{ fields.dropdownArrayField('position', current_position, positions, null, {
+                              'rand': rand,
+                              'used': used,
+                              'no_label': true
+                           }) }}
+                        {% else %}
+                           {{ __('No room found or selected') }}
+                        {% endif %}
+                     {% else %}
+                        {{ __('No room found or selected') }}
+                     {% endif %}
+                  {% endset %}
+                  {{ fields.ajaxField('room_positions', inital_field, __('Position in room'), {
+                     'rand': rand
                   }) }}
+               {% endif %}
+
+               {% if item.isField('room_position') %}
+                  {{ fields.dropdownArrayField('room_orientation', item.fields['room_position'], __('Door orientation in room'), {
+                     (constant('ROOM_O_NORTH', 'Rack')): __('North'),
+                     (constant('ROOM_O_EAST', 'Rack')): __('East'),
+                     (constant('ROOM_O_SOUTH', 'Rack')): __('South'),
+                     (constant('ROOM_O_WEST', 'Rack')): __('West'),
+                  }, {
+                     'rand': rand
+                  }) }}
+               {% endif %}
+
+               {% if item.isField('number_units') %}
+                  {{ fields.dropdownNumberField('number_units', item.fields['number_units'], __('Number of units'), {
+                     'rand': rand,
+                     'min': 1,
+                     'max': 100,
+                     'step': 1,
+                     'unit': 'rack_unit'
+                  }) }}
+               {% endif %}
+
+               {% if item.isField('width') %}
+                  {{ fields.textField('width', item.fields['width'], __('Width')) }}
+               {% endif %}
+
+               {% if item.isField('height') %}
+                  {{ fields.textField('height', item.fields['height'], __('Height')) }}
+               {% endif %}
+
+               {% if item.isField('depth') %}
+                  {{ fields.textField('depth', item.fields['depth'], __('Depth')) }}
+               {% endif %}
+
+               {% if item.isField('max_power') %}
+                  {{ fields.textField('max_power', item.fields['max_power'], __('Max. power (in watts)')) }}
+               {% endif %}
+
+               {% if item.isField('mesured_power') %}
+                  {{ fields.textField('mesured_power', item.fields['mesured_power'], __('Measured power (in watts)')) }}
+               {% endif %}
+
+               {% if item.isField('max_weight') %}
+                  {{ fields.textField('max_weight', item.fields['max_weight'], __('Max. weight')) }}
+               {% endif %}
+
+               {% if item.isField('bgcolor') %}
+                  {{ fields.colorField('bgcolor', item.fields['bgcolor'], __('Background color')) }}
                {% endif %}
 
                {% if item.isField('users_id') %}
