@@ -2595,6 +2595,7 @@ CREATE TABLE `glpi_domains` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `domaintypes_id` int NOT NULL DEFAULT '0',
   `date_expiration` timestamp NULL DEFAULT NULL,
+  `date_domaincreation` timestamp NULL DEFAULT NULL,
   `users_id_tech` int NOT NULL DEFAULT '0',
   `groups_id_tech` int NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
@@ -2616,6 +2617,7 @@ CREATE TABLE `glpi_domains` (
   KEY `is_template` (`is_template`),
   KEY `is_active` (`is_active`),
   KEY `date_expiration` (`date_expiration`),
+  KEY `date_domaincreation` (`date_domaincreation`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
