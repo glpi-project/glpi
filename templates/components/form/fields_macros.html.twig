@@ -18,6 +18,22 @@
    </div>
 {% endmacro %}
 
+{% macro smallTitle(label, icon = '') %}
+   {% set margins = 'mt-3' %}
+
+   <div class="card border-0 shadow-none p-0 m-0 {{ margins }}">
+      <div class="card-header mb-1 p-0 ps-3">
+         <h4 class="card-subtitle {{ icon|length ? 'ms-4' : '' }}">
+            {% if icon|length %}
+               <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
+                  <i class="fa-2x {{ icon }}"></i>
+               </div>
+            {% endif %}
+            {{ label }}
+         </h4>
+      </div>
+   </div>
+{% endmacro %}
 
 {% macro autoNameField(name, item, label = '', withtemplate, options = {}) %}
    {% set tpl_value = option.value|length > 0 ? option.value : item.fields[name] %}
@@ -447,6 +463,31 @@
          'rand': rand,
          'width': '100%',
          'class': 'form-select',
+      }|merge(options)) }}
+   {% endset %}
+
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
+{% endmacro %}
+
+{% macro dropdownHoursField(name, value, label = '', options = {}) %}
+   {% set options = {'rand': random()}|merge(options) %}
+   {% if options.fields_template.isMandatoryField(name) %}
+      {% set options = {'required': true}|merge(options) %}
+   {% endif %}
+
+   {% if options.disabled %}
+      {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
+   {% endif %}
+
+   {% set types = options['types']|default([]) %}
+
+   {% set field %}
+      {{ Dropdown__showHours(name, types, {
+         'display': false,
+         'rand': rand,
+         'width': '100%',
+         'class': 'form-select',
+         'value': value
       }|merge(options)) }}
    {% endset %}
 

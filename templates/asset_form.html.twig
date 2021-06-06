@@ -51,6 +51,15 @@
                   ) }}
                {% endif %}
 
+               {% if item.isField('num') %}
+                  {{ fields.autoNameField(
+                     "num",
+                     item,
+                     _x('phone', 'Number'),
+                     withtemplate
+                  ) }}
+               {% endif %}
+
                {% if item.isField('power_supplies') %}
                   {{ fields.dropdownNumberField('power_supplies', item.fields['power_supplies'], 'DevicePowerSupply'|itemtype_name(getPluralNumber()), {
                      'rand': rand,
@@ -291,10 +300,10 @@
 
                {% if item.isField('room_position') %}
                   {{ fields.dropdownArrayField('room_orientation', item.fields['room_position'], __('Door orientation in room'), {
-                     (constant('ROOM_O_NORTH', 'Rack')): __('North'),
-                     (constant('ROOM_O_EAST', 'Rack')): __('East'),
-                     (constant('ROOM_O_SOUTH', 'Rack')): __('South'),
-                     (constant('ROOM_O_WEST', 'Rack')): __('West'),
+                     (constant('Rack::ROOM_O_NORTH')): __('North'),
+                     (constant('Rack::ROOM_O_EAST')): __('East'),
+                     (constant('Rack::ROOM_O_SOUTH')): __('South'),
+                     (constant('Rack::ROOM_O_WEST')): __('West'),
                   }, {
                      'rand': rand
                   }) }}
@@ -587,6 +596,141 @@
                      item.fields['phonepowersupplies_id'],
                      "PhonePowerSupply"|itemtype_name,
                   ) }}
+               {% endif %}
+
+               {% if item.isField('begin_date') %}
+                  {{ fields.dateField('begin_date', item.fields['begin_date'], __('Start date')) }}
+               {% endif %}
+
+               {% if item.getType == 'Contract' and item.isField('duration') %}
+                  {% if item.fields['begin_date'] is not empty and item.fields['duration'] is not empty %}
+                     {% set warranty_expiration %}
+                        -> {{ Infocom__getWarrantyExpir(
+                           item.fields['begin_date'],
+                           item.fields['duration'],
+                           0,
+                           true,
+                           item.fields['renewal'] == constant('Contract::RENEWAL_TACIT'))
+                        }}
+                     {% endset %}
+                  {% endif %}
+                  {{ fields.dropdownNumberField('duration', item.fields['duration'], __('Initial contract period'), {
+                     'rand': rand,
+                     'min': 1,
+                     'max': 120,
+                     'step': 1,
+                     'toadd': [constant('Dropdown::EMPTY_VALUE')],
+                     'unit': 'month',
+                     'add_field_html': warranty_expiration|default('')
+                  }) }}
+               {% endif %}
+
+               {% if item.isField('notice') %}
+                  {% if item.fields['begin_date'] is not empty and item.fields['notice'] > 0 and item.fields['duration'] is not empty %}
+                     {% set notice_info %}
+                        -> {{ Infocom__getWarrantyExpir(
+                        item.fields['begin_date'],
+                        item.fields['duration'],
+                        item.fields['notice'],
+                        true)
+                     }}
+                     {% endset %}
+                  {% endif %}
+                  {{ fields.dropdownNumberField('notice', item.fields['notice'], __('Notice'), {
+                     'rand': rand,
+                     'min': 0,
+                     'max': 120,
+                     'step': 1,
+                     'unit': 'month',
+                     'add_field_html': notice_info|default('')
+                  }) }}
+               {% endif %}
+
+               {% if item.isField('accounting_number') %}
+                  {{ fields.autoNameField(
+                     "accounting_number",
+                     item,
+                     __('Account number'),
+                     withtemplate
+                  ) }}
+               {% endif %}
+
+               {% if item.isField('periodicity') %}
+                  {{ fields.dropdownNumberField('periodicity', item.fields['periodicity'], __('Contract renewal period'), {
+                     'rand': rand,
+                     'min': 12,
+                     'max': 60,
+                     'step': 12,
+                     'toadd': {
+                        0: constant('Dropdown::EMPTY_VALUE'),
+                        1: _n('%d month', '%d months', 1)|format(1),
+                        2: _n('%d month', '%d months', 2)|format(2),
+                        3: _n('%d month', '%d months', 3)|format(3),
+                        6: _n('%d month', '%d months', 6)|format(6),
+                     },
+                     'unit': 'month',
+                  }) }}
+               {% endif %}
+
+               {% if item.isField('billing') %}
+                  {{ fields.dropdownNumberField('billing', item.fields['billing'], __('Invoice period'), {
+                     'rand': rand,
+                     'min': 12,
+                     'max': 60,
+                     'step': 12,
+                     'toadd': {
+                        0: constant('Dropdown::EMPTY_VALUE'),
+                        1: _n('%d month', '%d months', 1)|format(1),
+                        2: _n('%d month', '%d months', 2)|format(2),
+                        3: _n('%d month', '%d months', 3)|format(3),
+                        6: _n('%d month', '%d months', 6)|format(6),
+                     },
+                     'unit': 'month',
+                  }) }}
+               {% endif %}
+
+               {% if item.isField('renewal') %}
+                  {{ fields.dropdownArrayField('renewal', item.fields['renewal'], {
+                     (constant('Contract::RENEWAL_NEVER')): __('Never'),
+                     (constant('Contract::RENEWAL_TACIT')): __('Tacit'),
+                     (constant('Contract::RENEWAL_EXPRESS')): __('Express'),
+                  }, __('Renewal')) }}
+               {% endif %}
+
+               {% if item.isField('max_links_allowed') %}
+                  {{ fields.numberField('max_links_allowed', item.fields['max_links_allowed'], __('Max number of items'), {
+                     'min': 1,
+                     'max': 200000,
+                     'step': 1,
+                     'toadd': {0: __('Unlimited')}
+                  }) }}
+               {% endif %}
+
+               {% if item.isField('alert') and Entity_getUsedConfig('use_contracts_alert') %}
+                  {% set alert_html %}
+                     {{ displayLastAlert('Contract', item.fields['id']) }}
+                  {% endset %}
+                  {{ fields.dropdownArrayField('alert', item.fields['alert'], item.getAlertName(), __('Email alarms'), {
+                     'add_field_html': "<span class='text-muted'>" ~ alert_html ~ "</span>"
+                  }) }}
+               {% endif %}
+
+               {% if item.getType == 'Contract' %}
+                  {# Support hours #}
+                  {{ fields.largeTitle(__('Support hours')) }}
+                  {{ fields.smallTitle(__('On week')) }}
+                  {{ fields.dropdownHoursField('week_begin_hour', item.fields['week_begin_hour'], __('Start')) }}
+                  {{ fields.dropdownHoursField('week_end_hour', item.fields['week_end_hour'], __('End')) }}
+
+                  {{ fields.smallTitle(__('On Saturday')) }}
+                  {{ fields.dropdownYesNo('use_saturday', item.fields['use_saturday'], __('Use Saturday')) }}
+                  {{ fields.dropdownHoursField('saturday_begin_hour', item.fields['saturday_begin_hour'], __('Start')) }}
+                  {{ fields.dropdownHoursField('saturday_end_hour', item.fields['saturday_end_hour'], __('End')) }}
+
+                  {{ fields.smallTitle(__('Sundays and holidays')) }}
+                  {{ fields.dropdownYesNo('use_monday', item.fields['use_monday'], __('Use Sunday')) }}
+                  {{ fields.dropdownHoursField('monday_begin_hour', item.fields['monday_begin_hour'], __('Start')) }}
+                  {{ fields.dropdownHoursField('monday_end_hour', item.fields['monday_end_hour'], __('End')) }}
                {% endif %}
 
                {% if item.isField('autoupdatesystems_id') %}
