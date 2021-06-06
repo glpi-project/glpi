@@ -407,6 +407,15 @@
                   ) }}
                {% endif %}
 
+               {% if item.isField('version') %}
+                  {{ fields.autoNameField(
+                     "version",
+                     item,
+                     _n('Version', 'Versions', 1),
+                     withtemplate
+                  ) }}
+               {% endif %}
+
                {% if item.isField('comment') %}
                   {{ fields.textareaField(
                      "comment",
