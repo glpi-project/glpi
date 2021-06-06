@@ -159,6 +159,14 @@
                   ) }}
                {% endif %}
 
+               {% if item.isField('applianceenvironments_id') %}
+                  {{ fields.dropdownField(
+                     'ApplianceEnvironment',
+                     'applianceenvironments_id',
+                     item.fields['applianceenvironments_id'],
+                     'ApplianceEnvironment'|itemtype_name) }}
+               {% endif %}
+
                {# TODO check dropdown value not selected #}
                {% set model_itemtype = item.getType ~ "Model" %}
                {% set model_fk = model_itemtype|get_foreignkey_field %}
