@@ -338,6 +338,24 @@
                   {{ fields.colorField('bgcolor', item.fields['bgcolor'], __('Background color')) }}
                {% endif %}
 
+               {% if item.isField('caller_num') %}
+                  {{ fields.autoNameField(
+                     "caller_num",
+                     item,
+                     __('Caller number'),
+                     withtemplate
+                  ) }}
+               {% endif %}
+
+               {% if item.isField('caller_name') %}
+                  {{ fields.autoNameField(
+                     "caller_name",
+                     item,
+                     __('Caller name'),
+                     withtemplate
+                  ) }}
+               {% endif %}
+
                {% if item.isField('users_id') %}
                   {{ fields.dropdownField(
                      "User",
@@ -425,6 +443,18 @@
                      "comment",
                      item.fields['comment'],
                      _n('Comment', 'Comments', getPluralNumber()),
+                  ) }}
+               {% endif %}
+
+               {% if item.isField('lineoperators_id') %}
+                  {{ fields.dropdownField(
+                     "LineOperator",
+                     "lineoperators_id",
+                     item.fields['lineoperators_id'],
+                     "LineOperator"|itemtype_name,
+                     {
+                        'entity'   : item.fields['entities_id'],
+                     }
                   ) }}
                {% endif %}
 
