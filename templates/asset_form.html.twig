@@ -114,8 +114,8 @@
                   ]) }}
                {% endif %}
 
-               {% if item.getType == "Domain" and item.isField('date_creation') %}
-                  {{ fields.dateField('date_creation', item.fields['date_creation'], __('Creation date')) }}
+               {% if item.isField('date_domaincreation') %}
+                  {{ fields.datetimeField('date_domaincreation', item.fields['date_domaincreation'], __('Creation date')) }}
                {% endif %}
 
                {% set type_itemtype = item.getType ~ "Type" %}
@@ -130,7 +130,7 @@
                {% endif %}
 
                {% if item.isField('date_expiration') %}
-                  {{ fields.dateField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
+                  {{ fields.datetimeField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
                      'add_field_html': Html__showToolTip(__('Empty for infinite')|nl2br, {
                         'display': false
                      })

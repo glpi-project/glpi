@@ -159,3 +159,7 @@ $migration->addField(
    ]
 );
 
+// Rename date_creation (date the domain is created outside GLPI) field, then re-add field (Date the GLPI item was created)
+$migration->changeField(Domain::getTable(), 'date_creation', 'date_domaincreation', 'datetime');
+$migration->migrationOneTable(Domain::getTable());
+$migration->addField(Domain::getTable(), 'date_creation', 'datetime');
