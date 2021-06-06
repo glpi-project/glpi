@@ -121,3 +121,19 @@ $secondary-fg: $body-color !default;
 input[type="color"] {
    background-color: transparent;
 }
+
+.table-danger {
+   --tblr-table-bg: #a44646;
+   --tblr-table-striped-bg: #a44646;
+   --tblr-table-striped-color: var(--light);
+   --tblr-table-active-bg: #a44646;
+   --tblr-table-active-color: var(--light);
+   --tblr-table-hover-bg: #a44646;
+   --tblr-table-hover-color: var(--light);
+   color: var(--light);
+   border-color: #6d000a;
+}
+
+.search_page .search-container .search-card .search-results.deleted-results td {
+   color: var(--light);
+}
