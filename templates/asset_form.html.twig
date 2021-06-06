@@ -99,6 +99,12 @@
                   ) }}
                {% endif %}
 
+               {% if item.getType == 'Unmanaged' and item.isField('item_type') %}
+                  {{ fields.dropdownArrayField('item_type', item.fields['itemtype'], _n('Type', 'Types', 1), [
+                     'Computer', 'NetworkEquipment', 'Printer', 'Peripheral', 'Phone'
+                  ]) }}
+               {% endif %}
+
                {% set type_itemtype = item.getType ~ "Type" %}
                {% set type_fk = type_itemtype|get_foreignkey_field %}
                {% if item.isField(type_fk) %}
@@ -173,12 +179,20 @@
                   ) }}
                {% endif %}
 
+               {% if item.isField('accepted') %}
+                  {{ fields.dropdownYesNo('accepted', item.fields['accepted'], __('Approved device')) }}
+               {% endif %}
+
                {% if item.isField('serial') %}
                   {{ fields.textField(
                      "serial",
                      item.fields['serial'],
                      __("Serial number"),
                   ) }}
+               {% endif %}
+
+               {% if item.isField('hub') %}
+                  {{ fields.dropdownYesNo('hub', item.fields['hub'], __('Network hub')) }}
                {% endif %}
 
                {% if item.isField('contact') %}
@@ -196,6 +210,16 @@
                      __('Inventory number'),
                      withtemplate
                   ) }}
+               {% endif %}
+
+               {% if item.getType == 'Unmanaged' %}
+                  {% if item.fields['ip'] is not empty or item.fields['mac'] is not empty %}
+                     {{ fields.autoNameField("ip", item, __('IP'), withtemplate) }}
+                  {% endif %}
+               {% endif %}
+
+               {% if item.isField('sysdescr') %}
+                  {{ fields.textareaField('sysdescr', item.fields['sysdescr'], __('Sysdescr')) }}
                {% endif %}
 
                {% if item.isField('dcrooms_id') %}
