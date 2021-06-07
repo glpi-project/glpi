@@ -30,6 +30,24 @@
  */
 
 .timeline-item {
+   .timeline-header {
+      margin-top: -0.5rem;
+      margin-bottom: 1rem;
+
+      .creator {
+         .badge {
+            background-color: rgba(97, 97, 97, 0.15);
+            color: rgba(43, 43, 43, 0.8);
+         }
+      }
+
+      .timeline-item-buttons {
+         .is-private {
+            color: rgba(43, 43, 43, 0.7);
+         }
+      }
+   }
+
    .state {
       float: left;
       width: 20px;
@@ -247,6 +265,13 @@
 
             .card-body {
                padding: 0;
+               display: flex;
+               flex-direction: row-reverse;
+
+               .timeline-header {
+                  margin-left: 1rem;
+                  margin-top: 0;
+               }
             }
          }
 
@@ -258,6 +283,10 @@
             margin-left: 1rem !important;
          }
       }
+   }
+
+   .timeline-badges {
+      margin-bottom: -0.5rem;
    }
 }
 
@@ -407,6 +436,9 @@
 
                .card-body {
                   padding: 0.5rem;
+                  display: flex;
+                  flex-direction: row-reverse;
+                  justify-content: space-between;
 
                   .read-only-content {
                      .state {

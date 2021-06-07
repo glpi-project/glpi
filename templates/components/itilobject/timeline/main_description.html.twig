@@ -8,44 +8,36 @@
          {% include "components/itilobject/user_picture.html.twig" with {'users_id': users_id} only %}
       </div>
       <div class="col-12 col-sm">
-         <div class="d-flex">
-            <div class="d-none d-md-block">
-               <i class="far fa-user text-muted"></i>
-               <strong>{{ User__getLink(users_id) }}</strong>
-            </div>
-            <div class="text-muted ms-2 d-flex">
-               {% set date_creation = item.fields['date_creation'] ?? item.fields['date'] %}
-               {% set date_mod = item.fields['date_mod'] %}
-               <span title="{{ convDateTime(date_creation) }}" data-bs-toggle="tooltip"
-                     data-bs-placement="bottom">
-                  {{ __('Created: %1$s')|format('<i class="far fa-clock me-1"></i>' ~ time2str(date_creation))|raw }}
-               </span>
-
-               {% if date_creation != date_mod %}
-                  {% set editor = User__getLink(item.fields['users_id_lastupdater']) %}
-                  <span class="text-muted text-end ms-3 d-none d-md-block"
-                        title="{{ convDateTime(date_mod) }}" data-bs-toggle="tooltip"
-                        data-bs-placement="bottom">
-                     {{ __('Last modification: %1$s by %2$s')|format('<i class="far fa-clock me-1"></i>' ~ time2str(date_mod), '<i class="far fa-user me-1"></i>' ~ editor)|raw }}
-                  </span>
-               {% endif %}
-            </div>
-
-            {# TODO canedit #}
-            <div class="dropdown ms-auto">
-               <button class="btn btn-sm btn-ghost-secondary timeline-more-actions" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="fas fa fa-ellipsis-h"></i>
-               </button>
-               <ul class="dropdown-menu" aria-labelledby="more-actions-{{ entry_rand }}">
-                  <li><a class="dropdown-item edit-timeline-item" href="#">
-                     <i class="fas fa-fw fa-edit"></i>
-                     <span>{{ __("Edit") }}</span>
-                  </a></li>
-               </ul>
-            </div>
-         </div>
          <span class="row mt-2 timeline-content left card">
             <div class="card-body">
+               <div class="d-flex timeline-header">
+                  <div class="d-flex creator">
+                     {% include "components/itilobject/timeline/timeline_item_header_badges.html.twig" with {
+                        'creator': User__getLink(users_id),
+                        'date_creation': item.fields['date_creation'],
+                        'date_mod': item.fields['date_mod'],
+                        'editor': User__getLink(item.fields['users_id_lastupdater']),
+                     } only %}
+                  </div>
+
+                  {# TODO canedit #}
+                  <div class="dropdown ms-auto timeline-item-buttons">
+                     <button class="btn btn-sm btn-ghost-secondary timeline-more-actions" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa fa-ellipsis-h"></i>
+                     </button>
+                     <ul class="dropdown-menu" aria-labelledby="more-actions-{{ entry_rand }}">
+                        <li><a class="dropdown-item edit-timeline-item" href="#">
+                           <i class="fas fa-fw fa-edit"></i>
+                           <span>{{ __("Edit") }}</span>
+                        </a></li>
+                     </ul>
+                  </div>
+
+                  <button class="btn btn-sm btn-ghost-secondary float-end close-edit-content d-none mx-auto">
+                     <i class="fas fa-times"></i>
+                  </button>
+               </div>
+
                <div class="read-only-content">
                   {% if not itiltemplate.isHiddenField('name') %}
                      <div class="card-title card-header mx-n3 mt-n3">
@@ -57,12 +49,7 @@
                   {% endif %}
                </div>
                <div class="edit-content collapse">
-                  <button class="btn btn-sm btn-ghost-secondary float-end close-edit-content">
-                     <i class="fas fa-2x fa-times"></i>
-                  </button>
-                  <div class="ajax-content">
-
-                  </div>
+                  <div class="ajax-content"></div>
                </div>
             </div>
          </span>

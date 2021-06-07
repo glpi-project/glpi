@@ -61,97 +61,16 @@
                <span id="timeline-avatar{{ avatar_rand }}">
                   {% include "components/itilobject/user_picture.html.twig" with {'users_id': users_id} only %}
                </span>
+               {% set user = User__getUserName(users_id, 2) %}
+               {{ Html__showToolTip(user['comment'], {
+                  'applyto': "timeline-avatar" ~ avatar_rand
+               }) }}
             </div>
             <div class="col-12 col-sm d-flex flex-column content-part">
-               <div class="d-flex ">
-                  <div class="d-flex creator">
-                     {% if users_id != "0" %}
-                        <div class="d-none d-md-block user_link">
-                           <i class="far fa-user text-muted"></i>
-                           <strong>{{ User__getLink(users_id, {
-                                 'timeline_item': item,
-                                 'timeline_subitem': entry
-                              }) }}</strong>
-                           {% set user = User__getUserName(users_id, 2) %}
-                           {{ Html__showToolTip(user['comment'], {
-                              'applyto': "timeline-avatar" ~ avatar_rand
-                           }) }}
-                        </div>
-                     {% endif %}
-
-                     <span class="itil-date-creation ms-2 text-muted text-nowrap"
-                           title="{{ convDateTime(date_creation) }}" data-bs-toggle="tooltip"
-                           data-bs-placement="bottom">
-                        <i class="far fa-clock"></i>
-                        {{ time2str(date_creation) }}
-                     </span>
-
-                     {% if entry_i['users_id_editor'] and date_creation != date_mod %}
-                        {% set editor = User__getLink(entry_i['users_id_editor']) %}
-                        <span class="ms-3 text-muted text-end d-none d-md-block"
-                              title="{{ convDateTime(date_mod) }}" data-bs-toggle="tooltip"
-                              data-bs-placement="bottom">
-                           {{ __('Last edition: %1$s by %2$s')|format('<i class="far fa-clock me-1"></i>' ~ time2str(date_mod), '<i class="far fa-user me-1"></i>' ~ editor)|raw }}
-                        </span>
-                     {% endif %}
-                  </div>
-
-                  <div class="d-flex ms-auto timeline-item-buttons">
-                     {% set actions = {} %}
-                     {% if entry_i['can_edit'] and not status_closed and not (entry['type'] in ['Document_Item', 'Assign']) %}
-                        {% set edit_btn %}
-                           <li>
-                              <a class="dropdown-item edit-timeline-item" href="#">
-                                 <i class="fas fa-fw fa-edit"></i>
-                                 <span>{{ __("Edit") }}</span>
-                              </a>
-                           </li>
-                        {% endset %}
-                        {% set actions = actions|merge({edit_btn}) %}
-                     {% endif %}
-
-                     {% if actions|length %}
-                        <div class="dropdown ms-2">
-                           <button class="btn btn-sm btn-ghost-secondary timeline-more-actions" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false">
-                              <i class="fas fa-ellipsis-v"></i>
-                           </button>
-                           <ul class="dropdown-menu" aria-labelledby="more-actions-{{ entry_rand }}">
-                              {% for action in actions %}
-                                 {{ action }}
-                              {% endfor %}
-                           </ul>
-                        </div>
-                     {% endif %}
-
-                     {% if is_private %}
-                        <span title="{{ __('Private') }}" class="is-private ms-2">
-                           <i class="fas fa-lock" aria-label="{{ __('Private') }}"></i>
-                        </span>
-                     {% endif %}
-
-                     {% if is_promoted %}
-                        <a href="{{ form_path('Ticket', entry_i['sourceof_items_id']) }}"
-                           title="{{ __('Followup promoted to a ticket') }}"
-                           class="ms-2">
-                           <i class="fas code-branch" aria-label="{{ __('Followup promoted to a ticket') }}"></i>
-                        </a>
-                     {% endif %}
-
-                     {% if item.getType() is same as 'Ticket' and entry['type'] is same as 'ITILFollowup' %}
-                        {% set promote_btn %}
-                           <li>
-                              <a class="dropdown-item" href="{{ form_path('Ticket') ~ "?_promoted_fup_id=" ~ entry_i['id'] }}">
-                                 <i class="fas fa-fw fa-code-branch"></i>
-                                 <span>{{ __('Promote to Ticket') }}</span>
-                              </a>
-                           </li>
-                        {% endset %}
-                        {% set actions = actions|merge({promote_btn}) %}
-                     {% endif %}
-                  </div>
-               </div>
                <span class="row mt-2 timeline-content flex-grow-1 {{ item_position }} card">
                   <div class="card-body">
+                     {% include("components/itilobject/timeline/timeline_item_header.html.twig") %}
+
                      {% if itiltype is same as 'ITILValidation' %}
                         {% include 'components/itilobject/timeline/form_validation.html.twig' with {'form_mode': 'view'} %}
                      {% elseif itiltype is same as 'ITILTask' %}
@@ -168,12 +87,7 @@
                         </div>
                      {% endif %}
                      <div class="edit-content collapse">
-                        <button class="btn btn-sm btn-ghost-secondary float-end close-edit-content">
-                           <i class="fas fa-2x fa-times"></i>
-                        </button>
-                        <div class="ajax-content">
-
-                        </div>
+                        <div class="ajax-content"></div>
                      </div>
                   </div>
                </span>
@@ -216,6 +130,9 @@ $(function() {
             'id'        : items_id
          });
 
+      timeline_item.find('.timeline-item-buttons').addClass('d-none');
+      timeline_item.find('.close-edit-content').removeClass('d-none');
+
       $("#itil-footer").find(".main-actions").hide();
 
       // scroll to edited element
@@ -225,6 +142,10 @@ $(function() {
    });
 
    $(document).on("click", ".close-edit-content", function() {
+      var timeline_item = $(this).closest(".timeline-item");
+      timeline_item.find('.timeline-item-buttons').removeClass('d-none');
+      timeline_item.find('.close-edit-content').addClass('d-none');
+
       $(this)
          .siblings('.ajax-content').html('')
          .closest('.edit-content').hide()
