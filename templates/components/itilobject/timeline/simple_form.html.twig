@@ -34,10 +34,12 @@
    </div>
 
    {% if not is_new_item and show_form and not params['template_preview'] %}
-      <button class="btn btn-primary me-2" type="submit" name="update">
-         <i class='fas fa-save'></i>
-         <span>{{ _x('button', 'Save') }}</span>
-      </button>
+      <div class="d-flex card-footer mx-n3 mb-n3">
+         <button class="btn btn-primary me-2" type="submit" name="update">
+            <i class='fas fa-save'></i>
+            <span>{{ _x('button', 'Save') }}</span>
+         </button>
+      </div>
 
       <input type="hidden" name="id" value="{{ item.fields['id'] }}"/>
       <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>

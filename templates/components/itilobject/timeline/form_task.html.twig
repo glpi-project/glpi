@@ -15,7 +15,7 @@
             {{ getHtmlToDisplay(entry_i['content']) }}
          </div>
 
-         <div>
+         <div class="timeline-badges">
             {% if entry_i['users_id_tech'] %}
                <span class="badge bg-orange-lt">
                   <i class="fas fa-user me-1"></i>
@@ -229,7 +229,7 @@
                </div>
             </div>
 
-            <div class="d-flex">
+            <div class="d-flex card-footer mx-n3 mb-n3">
                {% if subitem.fields['id'] <= 0 %}
                   <button class="btn btn-primary me-2" type="submit" name="add">
                      <i class='fas fa-plus'></i>
