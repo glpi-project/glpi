@@ -295,14 +295,6 @@
       padding-right: .4rem !important;
       transition: none;
 
-      & .ITILValidation {
-         margin-top: 3rem;
-
-         & ~ .ITILValidation {
-            margin-top: 0;
-         }
-      }
-
       .timeline-item {
          &.ITILContent,
          &.ITILSolution,
@@ -321,6 +313,11 @@
          &.ITILValidation:not(.expanded) {
             order: 2;
             padding-left: 23px;
+            margin-top: 3rem;
+
+            & ~ .ITILValidation {
+               margin-top: 0;
+            }
 
             &.validation-answer,
             &.validation-accepted,
