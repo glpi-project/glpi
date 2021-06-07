@@ -70,7 +70,8 @@
             data-bs-toggle="popover" data-bs-placement="top"
             data-bs-trigger="click"
             data-bs-sanitize="false"data-bs-html="true"
-            data-bs-content="{{ popover_content }}">
+            data-bs-content="{{ popover_content }}"
+            data-bs-custom-class="timeline-filter">
          <i class="fas fa-filter"></i>
       </button>
    </span>
@@ -104,6 +105,18 @@ $(function() {
    $(document).on("click", ".view-timeline-todo-list", function() {
       $('body').toggleClass('timeline-todo-list');
       $('.open-timeline-filter-popover').toggle();
+   });
+
+   $(document).mouseup(function(e) {
+      var container = $(".timeline-filter");
+
+      // if the target of the click isn't the container nor a descendant of the container
+      if (!container.is(e.target) && container.has(e.target).length === 0) {
+         var mypopover = bootstrap.Popover.getInstance(container[0]);
+         if (mypopover !== null) {
+            mypopover.hide();
+         }
+      }
    });
 });
 </script>
