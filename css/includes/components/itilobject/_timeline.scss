@@ -306,14 +306,27 @@
             display: none;
          }
 
-         &.ITILTask {
+         &.tasks-title {
             order: 1;
+            display: block !important;
+         }
+
+         &.timeline_stats {
+            order: 2;
+         }
+
+         &.ITILTask {
+            order: 3;
+         }
+
+         &.validations-title {
+            order: 4;
+            display: block !important;
          }
 
          &.ITILValidation:not(.expanded) {
-            order: 2;
+            order: 5;
             padding-left: 23px;
-            margin-top: 3rem;
 
             & ~ .ITILValidation {
                margin-top: 0;
