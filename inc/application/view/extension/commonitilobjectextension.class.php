@@ -42,7 +42,7 @@ use Twig\TwigFilter;
  * @since 10.0.0
  */
 class CommonITILObjectExtension extends AbstractExtension implements ExtensionInterface {
-   
+
    public function getFilters() {
       return [
          new TwigFilter('getTimelineStats', [$this, 'getTimelineStats']),
