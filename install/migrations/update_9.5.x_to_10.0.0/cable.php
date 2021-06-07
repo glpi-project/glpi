@@ -135,6 +135,8 @@ if (!$DB->tableExists('glpi_sockets') && $DB->tableExists('glpi_netpoints')) {
    $migration->renameTable('glpi_netpoints', 'glpi_sockets');
 
    //add missing fields / keys
+   $migration->addField('glpi_sockets', 'position', 'int', ['value' => '0', 'after' => 'name']);
+
    $migration->addfield('glpi_sockets', 'is_recursive', 'bool', ['value' => '0', 'after' => 'entities_id']);
    $migration->addKey('glpi_sockets', 'is_recursive');
 
@@ -171,6 +173,7 @@ if (!$DB->tableExists('glpi_sockets') && $DB->tableExists('glpi_netpoints')) {
             if ($socket->getFromDB($sockets_id)) {
                $socket->update([
                   'id'              => $sockets_id,
+                  'position'        => $networkport->fields['logical_number'],
                   'itemtype'        => $networkport->fields['itemtype'],
                   'items_id'        => $networkport->fields['items_id'],
                   'networkports_id' => $networkport->getID()
@@ -205,7 +208,7 @@ if (!$DB->tableExists('glpi_networkportfiberchanneltypes')) {
 $migration->addField('glpi_networkportfiberchannels', 'networkportfiberchanneltypes_id', 'int', ['after' => 'items_devicenetworkcards_id']);
 $migration->addKey('glpi_networkportfiberchannels', 'networkportfiberchanneltypes_id', 'type');
 
-$ADDTODISPLAYPREF['Socket'] = [5, 8, 6, 7];
+$ADDTODISPLAYPREF['Socket'] = [5, 6, 9, 8, 7];
 $ADDTODISPLAYPREF['Cable'] = [4, 31, 6, 15, 24, 8, 10, 13, 14];
 
 //rename profilerights values ('netpoint' to 'cable_management')

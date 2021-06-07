@@ -48,26 +48,39 @@ class Socket extends CommonDropdown {
    const FRONT   = 2;
 
    function getAdditionalFields() {
-      return [['name'  => 'locations_id',
+      return [['name'  => 'position',
+               'label' => __('Position'),
+               'type'  => ' ',
+               'list'  => true],
+               ['name' => 'locations_id',
                'label' => Location::getTypeName(1),
                'type'  => 'dropdownValue',
                'list'  => true],
-               ['name'  => 'socketmodels_id',
+               ['name' => 'socketmodels_id',
                'label' => SocketModel::getTypeName(1),
                'type'  => 'dropdownValue',
                'list'  => true],
-               ['name'  => 'wiring_side',
+               ['name' => 'wiring_side',
                'label' => __('Wiring side'),
                'type'  => ' '],
-               ['name'  => 'networkports_id',
+               ['name' => 'networkports_id',
                'label' => _n('Network port', 'Network ports', Session::getPluralNumber()),
                'type'  => ' '],
-               ['name'  => '_virtual_datacenter_position',
+               ['name' => '_virtual_datacenter_position',
                'label' => __('Position'),
                'type'  => ' ']];
    }
 
    function displaySpecificTypeField($ID, $field = [], $options = []) {
+
+      if ($field['name'] == 'position') {
+         $params = ['value' => $this->fields[$field['name']]];
+         $params['min'] = 0;
+         $params['step'] = 1;
+         $params['toadd'] = ['auto' => "Auto"];
+         Dropdown::showNumber($field['name'], $params);
+      }
+
       if ($field['name'] == 'wiring_side') {
          self::dropdownWiringSide($field['name'], ['value' => $this->fields['wiring_side']]);
       }
@@ -154,6 +167,35 @@ class Socket extends CommonDropdown {
 
    }
 
+   function prepareInputForAdd($input) {
+      $input = $this->retrievedataFromNetworkPort($input);
+      return $input;
+   }
+
+
+   function prepareInputForUpdate($input) {
+      $input = $this->retrievedataFromNetworkPort($input);
+      return $input;
+   }
+
+   function retrievedataFromNetworkPort($input) {
+      //get position from networkport if needed
+      if ((isset($input["networkports_id"]) && $input["networkports_id"] > 0 ) && $input["position"] == 'auto') {
+         $networkport = new NetworkPort();
+         $networkport->getFromDB($input["networkports_id"]);
+         $input['position'] = $networkport->fields['logical_number'];
+      }
+
+      //get name from networkport if needed
+      if ((isset($input["networkports_id"]) && $input["networkports_id"] > 0 ) && empty($input["name"])) {
+         $networkport = new NetworkPort();
+         $networkport->getFromDB($input["networkports_id"]);
+         $input['name'] = $networkport->fields['name'];
+      }
+
+      return $input;
+   }
+
 
    /**
     * Get possible itemtype
@@ -210,6 +252,7 @@ class Socket extends CommonDropdown {
 
    function post_getEmpty() {
       $this->fields['itemtype'] = 'Computer';
+      $this->fields['position'] = 'auto';
    }
 
 
@@ -237,6 +280,14 @@ class Socket extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '5',
+         'table'              => Socket::getTable(),
+         'field'              => 'position',
+         'name'               => __('Position'),
+         'datatype'           => 'text'
+      ];
+
+      $tab[] = [
+         'id'                 => '6',
          'table'              => SocketModel::getTable(),
          'field'              => 'name',
          'name'               => SocketModel::getTypeName(1),
@@ -244,7 +295,7 @@ class Socket extends CommonDropdown {
       ];
 
       $tab[] = [
-         'id'                 => '6',
+         'id'                 => '7',
          'table'              => Socket::getTable(),
          'field'              => 'itemtype',
          'name'               => _n('Associated item type', 'Associated item types', Session::getPluralNumber()),
@@ -259,7 +310,7 @@ class Socket extends CommonDropdown {
       ];
 
       $tab[] = [
-         'id'                 => '7',
+         'id'                 => '8',
          'table'              => $this->getTable(),
          'field'              => 'items_id',
          'name'               => __('Associated item ID'),
@@ -270,7 +321,7 @@ class Socket extends CommonDropdown {
       ];
 
       $tab[] = [
-         'id'                 => '8',
+         'id'                 => '9',
          'table'              => Socket::getTable(),
          'field'              => 'wiring_side',
          'name'               => __('Wiring side'),
@@ -587,6 +638,7 @@ class Socket extends CommonDropdown {
          $header_end    .= "</th>";
       }
       $header_end .= "<th>" . __('Name') . "</th>";
+      $header_end .= "<th>" . __('Position') . "</th>";
       $header_end .= "<th>" . SocketModel::getTypeName(0) . "</th>";
       $header_end .= "<th>" . __('Wiring side') . "</th>";
       $header_end .= "<th>" .  _n('Network port', 'Network ports', Session::getPluralNumber()) . "</th>";
@@ -617,6 +669,7 @@ class Socket extends CommonDropdown {
             echo "<td>" . $socket->fields["name"] . "</td>";
          }
 
+         echo "<td>" . $socket->fields["position"] . "</td>";
          echo "<td>" . Dropdown::getDropdownName(SocketModel::getTable(), $socket->fields["socketmodels_id"]) . "</td>";
          echo "<td>" . self::getWiringSideName($socket->fields["wiring_side"]) . "</td>";
 

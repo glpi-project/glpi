@@ -73,6 +73,7 @@ class Cable extends DbTestCase {
       $socket = new \Socket();
       $socket_id = $socket->add([
          'name'               => 'socket1',
+         'position'           => 10,
          'networkports_id'    => $new_id,
          'wiring_side'        => \Socket::FRONT, //default is REAR
          'items_id'           => $computer1->getID(),
@@ -92,6 +93,7 @@ class Cable extends DbTestCase {
       unset($current_socket['date_mod']);
       unset($current_socket['date_creation']);
       $expected = [
+         'position'           => 10,
          'entities_id'        => $computer1->fields['entities_id'],
          'is_recursive'       => 0,
          'locations_id'       => 0,
@@ -228,6 +230,7 @@ class Cable extends DbTestCase {
       $socket1 = new \Socket();
       $socket1_id = $socket1->add([
          'name'               => 'socket1',
+         'position'           => 10,
          'networkports_id'    => $new1_id,
          'wiring_side'        => \Socket::FRONT, //default is REAR
          'items_id'           => $computer1->getID(),
@@ -246,7 +249,9 @@ class Cable extends DbTestCase {
       unset($current_socket['id']);
       unset($current_socket['date_mod']);
       unset($current_socket['date_creation']);
+
       $expected = [
+         'position'           => 10,
          'entities_id'        => $computer1->fields['entities_id'],
          'is_recursive'       => 0,
          'locations_id'       => 0,
@@ -293,6 +298,7 @@ class Cable extends DbTestCase {
       $socket2 = new \Socket();
       $socket2_id = $socket2->add([
          'name'               => 'socket2',
+         'position'           => 10,
          'networkports_id'    => $new2_id,
          'wiring_side'        => \Socket::FRONT, //default is REAR
          'items_id'           => $computer2->getID(),
@@ -312,6 +318,7 @@ class Cable extends DbTestCase {
       unset($current_socket['date_mod']);
       unset($current_socket['date_creation']);
       $expected = [
+         'position'           => 10,
          'entities_id'        => $computer2->fields['entities_id'],
          'is_recursive'       => 0,
          'locations_id'       => 0,

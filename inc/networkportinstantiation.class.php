@@ -123,6 +123,7 @@ class NetworkPortInstantiation extends CommonDBChild {
                "id" => $socket->getID(),
                "itemtype" => '',
                "items_id" => 0,
+               "position" => 0,
                "networkports_id" => 0
             ]);
          }
@@ -137,6 +138,7 @@ class NetworkPortInstantiation extends CommonDBChild {
             $socket->update([
                "id" => $socket->getID(),
                "itemtype" => $networkport->fields['itemtype'],
+               "position" => $networkport->fields['logical_number'],
                "items_id" => $networkport->fields['items_id'],
                "networkports_id" => $this->fields['networkports_id'],
             ]);
