@@ -1739,7 +1739,7 @@ $ADDTODISPLAYPREF['NetworkPortType'] = [10, 11, 12];
 $ADDTODISPLAYPREF['NetworkPort'] = [3, 30, 31, 32, 33, 34, 35, 36, 38, 39, 40];
 $ADDTODISPLAYPREF['USBVendor'] = [10, 11];
 $ADDTODISPLAYPREF['PCIVendor'] = [10, 11];
-$ADDTODISPLAYPREF['Socket'] = [5, 8, 6, 7];
+$ADDTODISPLAYPREF['Socket'] = [5, 6, 9, 8, 7];
 $ADDTODISPLAYPREF['Cable'] = [4, 31, 6, 15, 24];
 
 foreach ($ADDTODISPLAYPREF as $type => $options) {
