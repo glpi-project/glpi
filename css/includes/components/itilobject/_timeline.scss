@@ -314,7 +314,12 @@
             display: none;
          }
 
+         &.ITILTask {
+            order: 1;
+         }
+
          &.ITILValidation:not(.expanded) {
+            order: 2;
             padding-left: 23px;
 
             &.validation-answer,
