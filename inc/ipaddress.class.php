@@ -68,6 +68,8 @@ class IPAddress extends CommonDBChild {
    /// $this->binary (bytes[4]) : binary version for the SQL requests. For IPv4 addresses, the
    /// first three bytes are set to [0, 0, 0xffff]
    protected $binary  = [0, 0, 0, 0];
+   //to know is IPV4 is Dotted quoad Format
+   protected $isDottedQuoadFormat = false;
 
    static $rightname  = 'internet';
 
@@ -159,6 +161,7 @@ class IPAddress extends CommonDBChild {
 
 
    function prepareInputForAdd($input) {
+
       return parent::prepareInputForAdd($this->prepareInput($input));
    }
 
@@ -578,6 +581,15 @@ class IPAddress extends CommonDBChild {
          }
       }
 
+      //if it IPV4 dotted-quoad format ::ffff:192.168.1.1
+      //remove ::ffff: to manage only IPV4 part
+      //keep in memory that have a special format
+      $this->isDottedQuoadFormat = false;
+      if (preg_match("/^::ffff:(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/", $address, $regs)) {
+         $address = substr($address, 7);
+         $this->isDottedQuoadFormat = true;
+      }
+
       unset($binary);
       $singletons = explode(".", $address);
       // First, check to see if it is an IPv4 address
@@ -814,7 +826,15 @@ class IPAddress extends CommonDBChild {
          }
          $textual = implode(':', $textual);
       }
-      $this->textual = $textual;
+
+      $prefix = "";
+
+      //If it a special format, add prefix previsouly removed (to manage IPV4 part)
+      if ($this->isDottedQuoadFormat) {
+         $prefix = "::ffff:";
+      }
+
+      $this->textual = $prefix.$textual;
       return true;
    }
 
