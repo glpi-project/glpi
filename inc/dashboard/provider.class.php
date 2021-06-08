@@ -1538,20 +1538,20 @@ class Provider extends CommonGLPI {
             $itemtype  = getItemTypeForTable($table);
             $main_item = getItemForItemtype($itemtype);
             $userlink  = $main_item->userlinkclass;
-            $gl_table  = $userlink::getTable();
+            $ul_table  = $userlink::getTable();
             $fk        = $main_item->getForeignKeyField();
 
             $join += [
-               "$gl_table as gl" => [
+               "$ul_table as ul" => [
                   'ON' => [
-                     'gl'   => $fk,
+                     'ul'   => $fk,
                      $table => 'id',
                   ]
                ]
             ];
             $where += [
-               "gl.type"     => \CommonITILActor::ASSIGN,
-               "gl.users_id" => (int) $apply_filters['user_tech']
+               "ul.type"     => \CommonITILActor::ASSIGN,
+               "ul.users_id" => (int) $apply_filters['user_tech']
             ];
          }
       }
