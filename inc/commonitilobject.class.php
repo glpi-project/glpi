@@ -2090,7 +2090,6 @@ abstract class CommonITILObject extends CommonDBTM {
       // Additional groups actors
       if (!is_null($groupactors)) {
          $group_input = [
-            $groupactors->getItilObjectForeignKey() => $this->fields['id'],
             '_do_not_compute_takeintoaccount'       => $do_not_compute_takeintoaccount,
             '_from_object'                          => true,
          ];
@@ -2101,12 +2100,17 @@ abstract class CommonITILObject extends CommonDBTM {
              && count($input['_additional_groups_requesters'])) {
             foreach ($input['_additional_groups_requesters'] as $tmp) {
                if ($tmp > 0) {
-                  $groupactors->add(
-                     [
-                        'type'      => CommonITILActor::REQUESTER,
-                        'groups_id' => $tmp,
-                     ] + $group_input
-                  );
+
+                  $crit = [
+                     $groupactors->getItilObjectForeignKey() => $this->fields['id'],
+                     'type'      => CommonITILActor::REQUESTER,
+                     'groups_id' => $tmp,
+                  ];
+
+                  if (!$groupactors->getFromDBByCrit($crit)) {
+                     $groupactors->add($crit + $group_input);
+                  }
+
                }
             }
          }
@@ -2117,12 +2121,15 @@ abstract class CommonITILObject extends CommonDBTM {
              && count($input['_additional_groups_observers'])) {
             foreach ($input['_additional_groups_observers'] as $tmp) {
                if ($tmp > 0) {
-                  $groupactors->add(
-                     [
-                        'type'      => CommonITILActor::OBSERVER,
-                        'groups_id' => $tmp,
-                     ] + $group_input
-                  );
+                  $crit = [
+                     $groupactors->getItilObjectForeignKey() => $this->fields['id'],
+                     'type'      => CommonITILActor::OBSERVER,
+                     'groups_id' => $tmp,
+                  ];
+
+                  if (!$groupactors->getFromDBByCrit($crit)) {
+                     $groupactors->add($crit + $group_input);
+                  }
                }
             }
          }
@@ -2133,12 +2140,15 @@ abstract class CommonITILObject extends CommonDBTM {
              && count($input['_additional_groups_assigns'])) {
             foreach ($input['_additional_groups_assigns'] as $tmp) {
                if ($tmp > 0) {
-                  $groupactors->add(
-                     [
-                        'type'      => CommonITILActor::ASSIGN,
-                        'groups_id' => $tmp,
-                     ] + $group_input
-                  );
+                  $crit = [
+                     $groupactors->getItilObjectForeignKey() => $this->fields['id'],
+                     'type'      => CommonITILActor::ASSIGN,
+                     'groups_id' => $tmp,
+                  ];
+
+                  if (!$groupactors->getFromDBByCrit($crit)) {
+                     $groupactors->add($crit + $group_input);
+                  }
                }
             }
          }
