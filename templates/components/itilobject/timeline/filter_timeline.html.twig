@@ -43,38 +43,38 @@
    },
 } %}
 
-<div class="filter-timeline d-none d-md-block float-end mt-n2">
-   {% set popover_content %}
-   {# warning, simple quotes are important to be embedded in popover content #}
-   <div class='filter-timeline-popover list-group list-group-flush m-n3'>
-      {% for filter_key, filter_button in filters_buttons %}
-         <li class='list-group-item list-group-item-action py-1'>
-            <div class='form-check form-switch trigger-filter {{ filter_button['itemtype'] }}' role='button'>
-               <input class='form-check-input' type='checkbox' id='timeline-filter-{{ filter_key }}'
-                     autocomplete='off'
-                     {{ filter_button['checked'] ? "checked" : "" }}
-                     data-itemtype='{{ filter_button['itemtype'] }}'>
-               <label class='form-check-label' for='timeline-filter-{{ filter_key }}' role='button'>
-                  <i class='{{ filter_button['icon'] }} ms-2'></i>
-                  {{ filter_button['title'] }}
-               </label>
-            </div>
-         </li>
-      {% endfor %}
-   </div>
-   {% endset %}
-
+<div class="filter-timeline d-none d-md-block float-end mt-n2 position-relative">
    <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __("Timeline filter") }}">
       <button type="button"
             class="btn btn-sm btn-icon btn-ghost-secondary open-timeline-filter-popover"
-            data-bs-toggle="popover" data-bs-placement="top"
-            data-bs-trigger="click"
-            data-bs-sanitize="false"data-bs-html="true"
-            data-bs-content="{{ popover_content }}"
-            data-bs-custom-class="timeline-filter">
+            data-bs-toggle="collapse"
+            data-bs-target="#filter-timeline-popover"
+            data-bs-trigger="click">
          <i class="fas fa-filter"></i>
       </button>
    </span>
+
+   <div class="filter-timeline-popover collapse position-absolute bottom-100 end-0 text-nowrap"
+        id="filter-timeline-popover">
+      <div class="card pt-2">
+         <div class="list-group list-group-flush">
+            {% for filter_key, filter_button in filters_buttons %}
+               <li class="list-group-item list-group-item-action py-1">
+                  <div class="form-check form-switch trigger-filter {{ filter_button['itemtype'] }}" role="button">
+                     <input class="form-check-input" type="checkbox" id="timeline-filter-{{ filter_key }}"
+                           autocomplete="off"
+                           {{ filter_button['checked'] ? "checked" : "" }}
+                           data-itemtype='{{ filter_button['itemtype'] }}'>
+                     <label class="form-check-label" for="timeline-filter-{{ filter_key }}" role="button">
+                        <i class="{{ filter_button['icon'] }} ms-2"></i>
+                        {{ filter_button['title'] }}
+                     </label>
+                  </div>
+               </li>
+            {% endfor %}
+         </div>
+      </div>
+   </div>
 
    {% if getCurrentInterface() == "central" %}
       <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __("View TODO list") }}">
@@ -108,13 +108,14 @@ $(function() {
    });
 
    $(document).mouseup(function(e) {
-      var container = $(".timeline-filter");
+      var container = $("#filter-timeline-popover");
 
       // if the target of the click isn't the container nor a descendant of the container
       if (!container.is(e.target) && container.has(e.target).length === 0) {
-         var mypopover = bootstrap.Popover.getInstance(container[0]);
-         if (mypopover !== null) {
-            mypopover.hide();
+         var mycollapse = bootstrap.Collapse.getInstance(container[0]);
+         console.log()
+         if (mycollapse !== null) {
+            mycollapse.hide();
          }
       }
    });
