@@ -536,15 +536,18 @@ class Html {
     * @return void
    **/
    static function redirectToLogin($params = '') {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $AJAX_INCLUDE;
 
       $dest     = $CFG_GLPI["root_doc"] . "/index.php";
-      $url_dest = preg_replace(
-         '/^' . preg_quote($CFG_GLPI["root_doc"], '/') . '/',
-         '',
-         $_SERVER['REQUEST_URI']
-      );
-      $dest    .= "?redirect=".rawurlencode($url_dest);
+
+      if (!isset($AJAX_INCLUDE)) {
+         $url_dest = preg_replace(
+            '/^' . preg_quote($CFG_GLPI["root_doc"], '/') . '/',
+            '',
+            $_SERVER['REQUEST_URI']
+         );
+         $dest .= "?redirect=" . rawurlencode($url_dest);
+      }
 
       if (!empty($params)) {
          $dest .= '&'.$params;
