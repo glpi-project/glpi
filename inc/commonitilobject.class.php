@@ -7009,8 +7009,14 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
    static function showEditDescriptionForm(CommonITILObject $item) {
+      $can_requester = true;
+      if (method_exists($item, "canRequesterUpdateItem")) {
+         $can_requester = $item->canRequesterUpdateItem();
+      }
       TemplateRenderer::getInstance()->display('components/itilobject/timeline/simple_form.html.twig', [
-         'item' => $item,
+         'item'          => $item,
+         'canupdate'     => (Session::getCurrentInterface() == "central" && $item->canUpdateItem()),
+         'can_requester' => $can_requester,
       ]);
    }
 
