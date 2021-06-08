@@ -1123,12 +1123,7 @@ class Ticket extends CommonITILObject {
             $input['_locations_id_of_requester']   = $user->fields['locations_id'];
             $input['users_default_groups']         = $user->fields['groups_id'];
             $changes[]                             = '_locations_id_of_requester';
-
-            //add _groups_id_of_requester to changes only if users change
-            if (in_array('_users_id_requester', $changes)) {
-               $changes[] = '_groups_id_of_requester';
-            }
-
+            $changes[] = '_groups_id_of_requester';
          }
 
          $input = $rules->processAllRules($input,
