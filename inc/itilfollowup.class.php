@@ -1273,9 +1273,7 @@ JAVASCRIPT;
       if (in_array(CommonITILActor::ASSIGN, $roles)) {
          // The author is assigned -> support agent
          return true;
-      } else if (in_array(CommonITILActor::OBSERVER, $roles)
-         || in_array(CommonITILActor::REQUESTER, $roles)
-      ) {
+      } else if (in_array(CommonITILActor::OBSERVER, $roles)) {
          // The author is an observer or a requester -> can be support agent OR
          // requester depending on how GLPI is used so we must check the user's
          // profiles
@@ -1300,6 +1298,9 @@ JAVASCRIPT;
          }
 
          return $central_profiles->next()['total'] > 0;
+      } else if (in_array(CommonITILActor::REQUESTER, $roles)) {
+         // The author is a requester -> not from support agent
+         return false;
       } else {
          // The author is not an actor of the ticket -> he was most likely a
          // support agent that is no longer assigned to the ticket
