@@ -32,8 +32,7 @@
 
 namespace tests\units;
 
-use \DbTestCase;
-use NetworkName;
+use DbTestCase;
 
 /* Test for inc/networkport.class.php */
 
