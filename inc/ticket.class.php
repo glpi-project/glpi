@@ -2530,6 +2530,9 @@ class Ticket extends CommonITILObject {
             $actions['Ticket_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
                = "<i class='ma-icon fas fa-link'></i>".
                  _x('button', 'Link tickets');
+            $actions['ProjectTask_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
+               = "<i class='ma-icon fas fa-link'></i>".
+               _x('button', 'Link project task');
 
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
          }
