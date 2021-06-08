@@ -61,7 +61,9 @@
         "unorm": "^1.6.0"
     },
     "scripts": {
-        "build": "webpack --config webpack.config.js"
+        "build:patch_dependencies": "(patch -f -p1 -d node_modules/@tabler/core/ < tools/tabler-831.patch || echo 'Error applying patch')",
+        "build:pack": "webpack --config webpack.config.js",
+        "build": "npm run build:patch_dependencies && npm run build:pack"
     },
     "devDependencies": {
         "assert": "^2.0.0",
