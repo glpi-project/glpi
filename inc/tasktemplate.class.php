@@ -126,7 +126,7 @@ class TaskTemplate extends CommonDropdown {
          'field'              => 'completename',
          'linkfield'          => 'groups_id_tech',
          'name'               => Group::getTypeName(1),
-         'condition'          => ['is_assign' => 1],
+         'condition'          => ['is_task' => 1],
          'datatype'           => 'dropdown'
       ];
 
