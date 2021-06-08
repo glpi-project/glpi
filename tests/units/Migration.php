@@ -417,6 +417,32 @@ class Migration extends \GLPITestCase {
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
+            'format'    => 'mediumtext',
+            'options'   => [],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` MEDIUMTEXT COLLATE utf8_unicode_ci DEFAULT NULL   ",
+            'utf8mb4'   => false,
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'mediumtext',
+            'options'   => [],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` MEDIUMTEXT COLLATE utf8mb4_unicode_ci DEFAULT NULL   ",
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'mediumtext',
+            'options'   => ['value' => 'A medium text'],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` MEDIUMTEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A medium text'   ",
+            'utf8mb4'   => false,
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'mediumtext',
+            'options'   => ['value' => 'A medium text'],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` MEDIUMTEXT COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'A medium text'   ",
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
             'format'    => 'longtext',
             'options'   => [],
             'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8_unicode_ci DEFAULT NULL   ",

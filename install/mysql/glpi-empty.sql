@@ -1255,7 +1255,7 @@ CREATE TABLE `glpi_impactitems` (
 DROP TABLE IF EXISTS `glpi_impactcontexts`;
 CREATE TABLE `glpi_impactcontexts` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `positions` text NOT NULL,
+  `positions` mediumtext NOT NULL,
   `zoom` float NOT NULL DEFAULT '0',
   `pan_x` float NOT NULL DEFAULT '0',
   `pan_y` float NOT NULL DEFAULT '0',

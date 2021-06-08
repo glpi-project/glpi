@@ -24,6 +24,7 @@ The present file will list all changes made to the project; according to the
 #### Changes
 - Format of `Message-Id` header sent in Tickets notifications changed to match format used by other items.
 - Added `DB::truncate()` to replace raw SQL queries
+- Impact context `positions` field type changed from `TEXT` to `MEDIUMTEXT`
 
 #### Deprecated
 - Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
