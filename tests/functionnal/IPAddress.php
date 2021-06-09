@@ -44,7 +44,7 @@ class IPAddress extends DbTestCase {
 
       //first create NetworkName
       $networkName = new \NetworkName();
-      $networkName_id = $networkName->add(["name" => "test"]);
+      $networkName_id = $networkName->add(["name" => "test", "itemtype" => ""]);
       $this->integer($networkName_id)->isGreaterThan(0);
 
       $IPV4ShouldWork = [];
@@ -173,7 +173,7 @@ class IPAddress extends DbTestCase {
 
       //first create NetworkName
       $networkName = new \NetworkName();
-      $networkName_id = $networkName->add(["name" => "test"]);
+      $networkName_id = $networkName->add(["name" => "test", "itemtype" => ""]);
       $this->integer($networkName_id)->isGreaterThan(0);
 
       $IPV6ShouldWork = [];
