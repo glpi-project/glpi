@@ -134,6 +134,10 @@ input[type="color"] {
    border-color: #6d000a;
 }
 
+.btn-danger, .btn-outline-danger, .btn-ghost-danger {
+   background-color: #a44646;
+}
+
 .search_page .search-container .search-card .search-results.deleted-results td {
    color: var(--light);
 }
