@@ -123,19 +123,24 @@ input[type="color"] {
 }
 
 .table-danger {
-   --tblr-table-bg: #a44646;
-   --tblr-table-striped-bg: #a44646;
+   --tblr-table-bg: #642b2b;
+   --tblr-table-striped-bg: #642b2b;
    --tblr-table-striped-color: var(--light);
-   --tblr-table-active-bg: #a44646;
+   --tblr-table-active-bg: #642b2b;
    --tblr-table-active-color: var(--light);
-   --tblr-table-hover-bg: #a44646;
+   --tblr-table-hover-bg: #642b2b;
    --tblr-table-hover-color: var(--light);
    color: var(--light);
    border-color: #6d000a;
 }
 
 .btn-danger, .btn-outline-danger, .btn-ghost-danger {
-   background-color: #a44646;
+   --tblr-btn-color: #642b2b;
+   --tblr-btn-color-darker: #6d000a;
+   background-color: var(--tblr-btn-color);
+   &:hover {
+      background-color: var(--tblr-btn-color-darker);
+   }
 }
 
 .search_page .search-container .search-card .search-results.deleted-results td {
