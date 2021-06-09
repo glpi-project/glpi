@@ -281,7 +281,7 @@ HTML;
          $dropdown_dashboards = self::dropdownDashboard("", [
             'value'        => $this->current,
             'display'      => false,
-            'class'        => 'dashboard_select',
+            'class'        => 'dashboard_select form-select',
             'can_view_all' => $can_view_all,
             'noselect2'    => true,
          ]);
