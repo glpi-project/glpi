@@ -858,10 +858,9 @@ class RuleTicket extends DbTestCase {
          '_users_id_requester'   => $user->fields['id']
       ]);
       unset($ticket_input['_users_id_requester']);
-      unset($ticket_input['id']);
       $this->checkInput($ticket, $tickets_id, $ticket_input);
 
-      //link between groupe1 and ticket will not exist
+      //link between group1 and ticket will not exist
       $ticketGroup = new \Group_Ticket();
       $this->boolean(
          $ticketGroup->getFromDBByCrit([
@@ -871,7 +870,7 @@ class RuleTicket extends DbTestCase {
          ])
       )->isFalse();
 
-      //link between groupe2 and ticket will not exist
+      //link between group2 and ticket will not exist
       $this->boolean(
          $ticketGroup->getFromDBByCrit([
             'tickets_id'         => $tickets_id,
@@ -880,7 +879,7 @@ class RuleTicket extends DbTestCase {
          ])
       )->isFalse();
 
-      //link between groupe3 and ticket will not exist
+      //link between group3 and ticket will not exist
       $this->boolean(
          $ticketGroup->getFromDBByCrit([
             'tickets_id'         => $tickets_id,
@@ -1042,7 +1041,6 @@ class RuleTicket extends DbTestCase {
          '_users_id_requester'   => $user->fields['id']
       ]);
       unset($ticket_input['_users_id_requester']);
-      unset($ticket_input['id']);
       $this->checkInput($ticket, $tickets_id, $ticket_input);
 
       //link between group1 and ticket will exist
@@ -1171,10 +1169,9 @@ class RuleTicket extends DbTestCase {
          '_users_id_requester'   => $userPostOnly->fields['id']
       ]);
       unset($ticket_input['_users_id_requester']);
-      unset($ticket_input['id']);
       $this->checkInput($ticket, $tickets_id, $ticket_input);
 
-      //link between groupe1 and ticket will not exist
+      //link between group1 and ticket will not exist
       $ticketGroup = new \Group_Ticket();
       $this->boolean(
          $ticketGroup->getFromDBByCrit([
@@ -1184,7 +1181,7 @@ class RuleTicket extends DbTestCase {
          ])
       )->isFalse();
 
-      //link between groupe2 and ticket will not exist
+      //link between group2 and ticket will not exist
       $this->boolean(
          $ticketGroup->getFromDBByCrit([
             'tickets_id'         => $tickets_id,
@@ -1193,7 +1190,7 @@ class RuleTicket extends DbTestCase {
          ])
       )->isFalse();
 
-      //link between groupe2 and ticket will not exist
+      //link between group2 and ticket will not exist
       $this->boolean(
          $ticketGroup->getFromDBByCrit([
             'tickets_id'         => $tickets_id,
