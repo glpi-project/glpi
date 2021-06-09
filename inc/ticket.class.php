@@ -2519,6 +2519,9 @@ class Ticket extends CommonITILObject {
             $actions['Ticket_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
                = "<i class='ma-icon fas fa-link'></i>".
                  _x('button', 'Link tickets');
+            $actions['ProjectTask_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
+               = "<i class='ma-icon fas fa-link'></i>".
+               _x('button', 'Link project task');
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_contract']
                = "<i class='ma-icon fas fa-file-signature'></i>".
                  _x('button', 'Add contract');
@@ -2926,7 +2929,7 @@ JAVASCRIPT;
          'id'                 => '159',
          'table'              => 'glpi_tickets',
          'field'              => 'is_late',
-         'name'               => __('Time to own exceedeed'),
+         'name'               => __('Time to own exceeded'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
          'computation'        => self::generateSLAOLAComputation('time_to_own')
@@ -2957,7 +2960,7 @@ JAVASCRIPT;
          'id'                 => '182',
          'table'              => $this->getTable(),
          'field'              => 'is_late',
-         'name'               => __('Internal time to resolve exceedeed'),
+         'name'               => __('Internal time to resolve exceeded'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
          'computation'        => self::generateSLAOLAComputation('internal_time_to_resolve')
@@ -2988,7 +2991,7 @@ JAVASCRIPT;
          'id'                 => '187',
          'table'              => 'glpi_tickets',
          'field'              => 'is_late',
-         'name'               => __('Internal time to own exceedeed'),
+         'name'               => __('Internal time to own exceeded'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
          'computation'        => self::generateSLAOLAComputation('internal_time_to_own')
