@@ -62,6 +62,8 @@ $gray-900: #f8f9fa !default;
 $toast-header-background-color: $gray-400;
 $toast-header-color: $light;
 
+$btn-close-color: $light;
+
 @import "~@tabler/core/src/scss/tabler";
 
 @mixin dark-mode {
