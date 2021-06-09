@@ -11,11 +11,12 @@ jobs:
     runs-on: "ubuntu-latest"
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         include:
           # build on lower supported version to ensure building tools are compatible with this version
-          - {branch: "9.4/bugfixes", php-version: "5.6", artifact: "9.4-bugfixes"}
-          - {branch: "9.5/bugfixes", php-version: "7.2", artifact: "9.5-bugfixes"}
+          - {branch: "9.4/bugfixes", php-version: "5.6"}
+          - {branch: "9.5/bugfixes", php-version: "7.2"}
     services:
       app:
         image: "ghcr.io/glpi-project/githubactions-php:${{ matrix.php-version }}"
@@ -26,95 +27,79 @@ jobs:
         uses: "actions/checkout@v2"
         with:
           ref: ${{ matrix.branch }}
+      - name: "Build if updated during the last 24h"
+        id: updated
+        run: |
+          SHA=$( git rev-parse HEAD )
+          if [ -n "$( git rev-list -n 1 --after="24 hours" $SHA )" ]; then
+            echo "::set-output name=build::yes"
+          else
+            echo "::set-output name=build::no"
+          fi
       - name: "Deploy source into app container"
+        if: ${{ steps.updated.outputs.build == 'yes' }}
         run: |
           sudo cp --no-target-directory --preserve --recursive `pwd` /glpi
           sudo chown -R 1000:1000 /glpi
       - name: "Install dependencies"
+        if: ${{ steps.updated.outputs.build == 'yes' }}
         run: |
           docker exec ${{ job.services.app.id }} composer install --optimize-autoloader --prefer-dist --no-interaction --no-progress --no-suggest
       - name: "Define release name"
+        id: release-name
+        if: ${{ steps.updated.outputs.build == 'yes' }}
         run: |
           REF_NAME=$(echo ${{ matrix.branch }} | sed -E 's|/|-|')
+          echo "::set-output name=base::$REF_NAME"
           SHA=$(git rev-parse --short HEAD)
           echo "release_name=$REF_NAME.$SHA" >> $GITHUB_ENV
       - name: "Build"
+        if: ${{ steps.updated.outputs.build == 'yes' }}
         run: |
           echo "Y" | docker exec --interactive ${{ job.services.app.id }} tools/make_release.sh . ${{ env.release_name }}
           docker cp ${{ job.services.app.id }}:/tmp/glpi-${{ env.release_name }}.tgz ${{ github.workspace }}/${{ env.release_name }}.tar.gz
       - name: "Store archive"
+        if: ${{ steps.updated.outputs.build == 'yes' }}
         uses: actions/upload-artifact@v2
         with:
-            name: ${{ matrix.artifact }}
+            name: ${{ steps.release-name.outputs.basename}}
             path: ${{ github.workspace }}/${{ env.release_name }}.tar.gz
-
-  publish:
-    needs: [ build ]
-    runs-on: "ubuntu-latest"
-    steps:
       - uses: actions/checkout@v2
+        if: ${{ steps.updated.outputs.build == 'yes' }}
         with:
           repository: ${{ github.repository_owner }}/glpi-project.github.io
           token: ${{ secrets.GH_PUBLISHING_TOKEN }}
           fetch-depth: 0
-      - name: "Make temporary folder"
-        run: |
-          rm -rf glpi/tmp
-          mkdir glpi/tmp
-      - uses: actions/download-artifact@v2
-        with:
-          name: 9.4-bugfixes
-          path: glpi/tmp
-      - uses: actions/download-artifact@v2
-        with:
-          name: 9.5-bugfixes
-          path: glpi/tmp
+          path: nightly
       - name: "Publish nightly"
+        if: ${{ steps.updated.outputs.build == 'yes' }}
         id: publish-nightly
         run: |
-          # Get script to prepare page
-          curl -L -s -o github-nightly-description.sh https://github.com/glpi-project/glpi/raw/develop/tools/github-nightly-description.sh
-          chmod +x github-nightly-description.sh
-          git config --local user.email "$(git log --format='%ae' HEAD^!)"
-          git config --local user.name "$(git log --format='%an' HEAD^!)"
-          git fetch --tags
-          TAG=$( git tag -l glpi-nightly )
-          if [ -n "$TAG" ]; then
-              set x $(gh api /repos/{owner}/{repo}/git/refs/tags/$TAG --jq '.object.sha')
-              shift
-              SHA="$1"
-              echo "Removing glpi nightly build ($TAG) on $SHA commit"
-              [ -z "$SHA" ] && exit 1
-              # Rebase repository and mark old commit to be dropped
-              git status
-              git rebase --root -x false || true
-              grep -v 'exec false' .git/rebase-merge/git-rebase-todo | \
-              sed -e "s/pick $SHA/drop $SHA/" >.git/rebase-merge/git-rebase-todo.fixed
-              mv -vf .git/rebase-merge/git-rebase-todo.fixed .git/rebase-merge/git-rebase-todo
-              git rebase --continue
-              # Finally delete tag here and remotely
-              echo "Cleanup $TAG repo tag"
-              gh api /repos/{owner}/{repo}/git/refs/tags/$TAG --method DELETE
-              git tag -d $TAG
-          done
-          mv -vf glpi/tmp/* glpi
-          rmdir glpi/tmp
-          echo "Repository status"
+          EMAIL="$(git log --format='%ae' HEAD^!)"
+          NAME="$(git log --format='%an' HEAD^!)"
+          chmod +x tools/github-nightly-description.sh
+          cd nightly
+          git config --local user.email "$EMAIL"
+          git config --local user.name "$NAME"
+          FILE=$( ls "glpi/${{ steps.release-name.outputs.basename}}.*.tar.gz" 2>/dev/null )
+          if [ -n "$FILE" ]; then
+              BUILD=${FILE#glpi/}
+              echo "Removing GLPI ${BUILD%.tar.gz} build"
+              git filter-branch --prune-empty -f --index-filter "git rm --cached --ignore-unmatch $FILE" HEAD
+          fi
+          cp -vf "${{ github.workspace }}/${{ env.release_name }}.tar.gz" glpi
+          # script argument should be the ordered list of builds to index
+          ../tools/github-nightly-description.sh glpi/{9.5-bugfixes,9.4-bugfixes}*.tar.gz >glpi/index.md
+          echo "Repository status:"
           git status
           ls -lt glpi
           # Prepare commit
-          echo "Adding GLPI nightly builds"
-          git add glpi/*.tar.gz
-          git commit -m "Add GLPI nightly builds"
-          git tag glpi-nightly
-          echo "Using new glpi index page"
-          ./github-nightly-description.sh glpi/{9.5-bugfixes,9.4-bugfixes}*.tar.gz >glpi/index.md
-          git add glpi/index.md
-          git commit -m "glpi nightly index update"
+          echo "Adding GLPI ${{ env.release_name }} build"
+          git add glpi/*
+          git commit -m "Add GLPI ${{ env.release_name }} nightly build"
           # Force commit
           git push --force
-          git push --tags
           git status
         shell: bash
         env:
-          GH_TOKEN: ${{ secrets.GH_PUBLISHING_TOKEN }}
+          FILTER_BRANCH_SQUELCH_WARNING: 1
