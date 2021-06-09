@@ -143,6 +143,10 @@ input[type="color"] {
    }
 }
 
+.accordion-item .accordion-button {
+   background-color: var(--dark) !important;
+}
+
 .search_page .search-container .search-card .search-results.deleted-results td {
    color: var(--light);
 }
