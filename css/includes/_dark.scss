@@ -150,3 +150,7 @@ input[type="color"] {
 .search_page .search-container .search-card .search-results.deleted-results td {
    color: var(--light);
 }
+
+body .modal-content, body .modal-header {
+   background-color: $dark-mode-lighten;
+}
