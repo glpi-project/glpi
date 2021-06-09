@@ -790,7 +790,7 @@ class RuleTicket extends DbTestCase {
    public function testGroupRequesterAssignFromUserGroupsAndRegexOnUpdateTicketContent() {
       $this->login();
 
-      // Create rule
+      // Create rule to be triggered on ticket update
       $ruleticket = new \RuleTicket();
       $rulecrit   = new \RuleCriteria();
       $ruleaction = new \RuleAction();
@@ -805,18 +805,16 @@ class RuleTicket extends DbTestCase {
       ]);
       $this->checkInput($ruleticket, $ruletid, $ruletinput);
 
-      //create criteria to check if group requester match regex
+      //create criteria to check if group requester match regex (group with parenthesia)
       $crit_id = $rulecrit->add($crit_input = [
          'rules_id'  => $ruletid,
          'criteria'  => '_groups_id_of_requester',
          'condition' => \Rule::REGEX_MATCH,
-         'pattern'   => Toolbox::addslashes_deep('/(.+\([^()]*\))/'),   //retrieve groupe with '(' and ')'
+         'pattern'   => Toolbox::addslashes_deep('/(.+\([^()]*\))/'),   //retrieve group with '(' and ')'
       ]);
-      //change value because of addslashes
-      $crit_input['pattern'] = '/(.+\([^()]*\))/';
       $this->checkInput($rulecrit, $crit_id, $crit_input);
 
-      //create action to put  group matching on criteria
+      //create action to put the groups that match the criteria
       $action_id = $ruleaction->add($action_input = [
          'rules_id'    => $ruletid,
          'action_type' => 'regex_result',
@@ -829,7 +827,7 @@ class RuleTicket extends DbTestCase {
       $user = new \User();
       $user->getFromDB(getItemByTypeName('User', 'post-only', true));
 
-      //create 2 new group
+      //create group that matches the rule
       $group = new \Group();
       $group_id1 = $group->add($group_input = [
          "name"         => "group1 (5215)",
@@ -837,27 +835,33 @@ class RuleTicket extends DbTestCase {
       ]);
       $this->checkInput($group, $group_id1, $group_input);
 
-      //create new group
+      //create group that matches the rule
       $group_id2 = $group->add($group_input = [
          "name"         => "group2 (13)",
          "is_requester" => true
       ]);
       $this->checkInput($group, $group_id2, $group_input);
 
-      // create ticket that trigger rule on creation
+      //create group that not matches the rule
+      $group_id3 = $group->add($group_input = [
+         "name"         => "group3",
+         "is_requester" => true
+      ]);
+      $this->checkInput($group, $group_id3, $group_input);
+
+      // create ticket
       $ticket = new \Ticket();
       $ticket->getEmpty();
       $tickets_id = $ticket->add($ticket_input = [
          'name'                  => 'Add group requester',
-         'id'                    => 0, //pass id = 0 because in IHM it's passed as POST
          'content'               => 'test',
          '_users_id_requester'   => $user->fields['id']
       ]);
       unset($ticket_input['_users_id_requester']);
-      $ticket_input['id'] = $tickets_id; //force id to $input
+      unset($ticket_input['id']);
       $this->checkInput($ticket, $tickets_id, $ticket_input);
 
-      //link between groupe1 and ticket will exist
+      //link between groupe1 and ticket will not exist
       $ticketGroup = new \Group_Ticket();
       $this->boolean(
          $ticketGroup->getFromDBByCrit([
@@ -872,6 +876,15 @@ class RuleTicket extends DbTestCase {
          $ticketGroup->getFromDBByCrit([
             'tickets_id'         => $tickets_id,
             'groups_id'          => $group_id2,
+            'type'               => \CommonITILActor::REQUESTER
+         ])
+      )->isFalse();
+
+      //link between groupe3 and ticket will not exist
+      $this->boolean(
+         $ticketGroup->getFromDBByCrit([
+            'tickets_id'         => $tickets_id,
+            'groups_id'          => $group_id3,
             'type'               => \CommonITILActor::REQUESTER
          ])
       )->isFalse();
@@ -891,14 +904,21 @@ class RuleTicket extends DbTestCase {
       ]);
       $this->checkInput($group_user, $group_user_id2, $group_user_input);
 
-      //update ticket and update only content
+      $group_user = new Group_User();
+      $group_user_id3 = $group_user->add($group_user_input = [
+         "groups_id" => $group_id3,
+         "users_id"  => $user->fields['id']
+      ]);
+      $this->checkInput($group_user, $group_user_id3, $group_user_input);
+
+      //update ticket
       $ticket->update($ticket_input = [
          'id'                    => $tickets_id,
          'content'               => 'testupdated',
       ]);
       $this->checkInput($ticket, $tickets_id, $ticket_input);
 
-      //link between groupe1 and ticket will exist
+      //link between group1 and ticket will exist
       $ticketGroup = new \Group_Ticket();
       $this->boolean(
          $ticketGroup->getFromDBByCrit([
@@ -908,7 +928,7 @@ class RuleTicket extends DbTestCase {
          ])
       )->isTrue();
 
-      //link between groupe2 and ticket will not exist
+      //link between group2 and ticket will exist
       $this->boolean(
          $ticketGroup->getFromDBByCrit([
             'tickets_id'         => $tickets_id,
@@ -917,12 +937,21 @@ class RuleTicket extends DbTestCase {
          ])
       )->isTrue();
 
+      //link between group3 and ticket will not exist
+      $this->boolean(
+         $ticketGroup->getFromDBByCrit([
+            'tickets_id'         => $tickets_id,
+            'groups_id'          => $group_id3,
+            'type'               => \CommonITILActor::REQUESTER
+         ])
+      )->isFalse();
+
    }
 
    public function testGroupRequesterAssignFromUserGroupsAndRegexOnAdd() {
       $this->login();
 
-      // Create rule
+      // Create rule to be triggered on add
       $ruleticket = new \RuleTicket();
       $rulecrit   = new \RuleCriteria();
       $ruleaction = new \RuleAction();
@@ -942,13 +971,12 @@ class RuleTicket extends DbTestCase {
          'rules_id'  => $ruletid,
          'criteria'  => '_groups_id_of_requester',
          'condition' => \Rule::REGEX_MATCH,
-         'pattern'   => Toolbox::addslashes_deep('/(.+\([^()]*\))/'),   //retrieve groupe with '(' and ')'
+         'pattern'   => Toolbox::addslashes_deep('/(.+\([^()]*\))/'),   //retrieve group with '(' and ')'
       ]);
       //change value because of addslashes
-      $crit_input['pattern'] = '/(.+\([^()]*\))/';
       $this->checkInput($rulecrit, $crit_id, $crit_input);
 
-      //create action to put  group matching on criteria
+      //create action to put group matching on criteria
       $action_id = $ruleaction->add($action_input = [
          'rules_id'    => $ruletid,
          'action_type' => 'regex_result',
@@ -957,7 +985,7 @@ class RuleTicket extends DbTestCase {
       ]);
       $this->checkInput($ruleaction, $action_id, $action_input);
 
-      //create 2 new group
+      //create group that matches the rule
       $group = new \Group();
       $group_id1 = $group->add($group_input = [
          "name"         => "group1 (5215)",
@@ -965,12 +993,19 @@ class RuleTicket extends DbTestCase {
       ]);
       $this->checkInput($group, $group_id1, $group_input);
 
-      //create new group
+      //create group that matches the rule
       $group_id2 = $group->add($group_input = [
          "name"         => "group2 (13)",
          "is_requester" => true
       ]);
       $this->checkInput($group, $group_id2, $group_input);
+
+      //create group that not matches the rule
+      $group_id3 = $group->add($group_input = [
+         "name"         => "group3",
+         "is_requester" => true
+      ]);
+      $this->checkInput($group, $group_id3, $group_input);
 
       //Load user post_only
       $user = new \User();
@@ -991,20 +1026,26 @@ class RuleTicket extends DbTestCase {
       ]);
       $this->checkInput($group_user, $group_user_id2, $group_user_input);
 
+      $group_user = new Group_User();
+      $group_user_id3 = $group_user->add($group_user_input = [
+         "groups_id" => $group_id3,
+         "users_id"  => $user->fields['id']
+      ]);
+      $this->checkInput($group_user, $group_user_id3, $group_user_input);
+
       // create ticket that trigger rule on creation
       $ticket = new \Ticket();
       $ticket->getEmpty();
       $tickets_id = $ticket->add($ticket_input = [
          'name'                  => 'Add group requester',
-         'id'                    => 0, //pass id = 0 because in IHM it's passed as POST
          'content'               => 'test',
          '_users_id_requester'   => $user->fields['id']
       ]);
       unset($ticket_input['_users_id_requester']);
-      $ticket_input['id'] = $tickets_id; //force id to $input
+      unset($ticket_input['id']);
       $this->checkInput($ticket, $tickets_id, $ticket_input);
 
-      //link between groupe1 and ticket will exist
+      //link between group1 and ticket will exist
       $ticketGroup = new \Group_Ticket();
       $this->boolean(
          $ticketGroup->getFromDBByCrit([
@@ -1014,7 +1055,7 @@ class RuleTicket extends DbTestCase {
          ])
       )->isTrue();
 
-      //link between groupe2 and ticket will not exist
+      //link between group2 and ticket will exist
       $this->boolean(
          $ticketGroup->getFromDBByCrit([
             'tickets_id'         => $tickets_id,
@@ -1022,16 +1063,25 @@ class RuleTicket extends DbTestCase {
             'type'               => \CommonITILActor::REQUESTER
          ])
       )->isTrue();
+
+      //link between group3 and ticket will not exist
+      $this->boolean(
+         $ticketGroup->getFromDBByCrit([
+            'tickets_id'         => $tickets_id,
+            'groups_id'          => $group_id3,
+            'type'               => \CommonITILActor::REQUESTER
+         ])
+      )->isFalse();
    }
 
    public function testGroupRequesterAssignFromUserGroupsAndRegexOnUpdate() {
       $this->login();
 
-      // Create rule
       $ruleticket = new \RuleTicket();
       $rulecrit   = new \RuleCriteria();
       $ruleaction = new \RuleAction();
 
+      // Create rule to be triggered on add
       $ruletid = $ruleticket->add($ruletinput = [
          'name'         => 'test regex group requester criterion',
          'match'        => 'AND',
@@ -1047,10 +1097,8 @@ class RuleTicket extends DbTestCase {
          'rules_id'  => $ruletid,
          'criteria'  => '_groups_id_of_requester',
          'condition' => \Rule::REGEX_MATCH,
-         'pattern'   => Toolbox::addslashes_deep('/(.+\([^()]*\))/'),   //retrieve groupe with '(' and ')'
+         'pattern'   => Toolbox::addslashes_deep('/(.+\([^()]*\))/'),   //retrieve group with '(' and ')'
       ]);
-      //change value because of addslashes
-      $crit_input['pattern'] = '/(.+\([^()]*\))/';
       $this->checkInput($rulecrit, $crit_id, $crit_input);
 
       //create action to put  group matching on criteria
@@ -1062,7 +1110,7 @@ class RuleTicket extends DbTestCase {
       ]);
       $this->checkInput($ruleaction, $action_id, $action_input);
 
-      //create 2 new group
+      //create group that matches the rule
       $group = new \Group();
       $group_id1 = $group->add($group_input = [
          "name"         => "group1 (5215)",
@@ -1070,12 +1118,19 @@ class RuleTicket extends DbTestCase {
       ]);
       $this->checkInput($group, $group_id1, $group_input);
 
-      //create new group
+      //create group that matches the rule
       $group_id2 = $group->add($group_input = [
          "name"         => "group2 (13)",
          "is_requester" => true
       ]);
       $this->checkInput($group, $group_id2, $group_input);
+
+      //create group that not matches the rule
+      $group_id3 = $group->add($group_input = [
+         "name"         => "group3",
+         "is_requester" => true
+      ]);
+      $this->checkInput($group, $group_id3, $group_input);
 
       //Load user post_only
       $userPostOnly = new \User();
@@ -1085,7 +1140,7 @@ class RuleTicket extends DbTestCase {
       $userNormal = new \User();
       $userNormal->getFromDB(getItemByTypeName('User', 'normal', true));
 
-      //add user to groups
+      //add to normal user to groups
       $group_user = new Group_User();
       $group_user_id1 = $group_user->add($group_user_input = [
          "groups_id" => $group_id1,
@@ -1100,17 +1155,23 @@ class RuleTicket extends DbTestCase {
       ]);
       $this->checkInput($group_user, $group_user_id2, $group_user_input);
 
+      $group_user = new Group_User();
+      $group_user_id3 = $group_user->add($group_user_input = [
+         "groups_id" => $group_id3,
+         "users_id"  => $userNormal->fields['id']
+      ]);
+      $this->checkInput($group_user, $group_user_id3, $group_user_input);
+
       // create ticket that trigger rule on creation
       $ticket = new \Ticket();
       $ticket->getEmpty();
       $tickets_id = $ticket->add($ticket_input = [
          'name'                  => 'Add group requester',
-         'id'                    => 0, //pass id = 0 because in IHM it's passed as POST
          'content'               => 'test',
          '_users_id_requester'   => $userPostOnly->fields['id']
       ]);
       unset($ticket_input['_users_id_requester']);
-      $ticket_input['id'] = $tickets_id; //force id to $input
+      unset($ticket_input['id']);
       $this->checkInput($ticket, $tickets_id, $ticket_input);
 
       //link between groupe1 and ticket will not exist
@@ -1128,6 +1189,15 @@ class RuleTicket extends DbTestCase {
          $ticketGroup->getFromDBByCrit([
             'tickets_id'         => $tickets_id,
             'groups_id'          => $group_id2,
+            'type'               => \CommonITILActor::REQUESTER
+         ])
+      )->isFalse();
+
+      //link between groupe2 and ticket will not exist
+      $this->boolean(
+         $ticketGroup->getFromDBByCrit([
+            'tickets_id'         => $tickets_id,
+            'groups_id'          => $group_id3,
             'type'               => \CommonITILActor::REQUESTER
          ])
       )->isFalse();
@@ -1150,7 +1220,7 @@ class RuleTicket extends DbTestCase {
       unset($ticket_input['_itil_requester']);
       $this->checkInput($ticket, $tickets_id, $ticket_input);
 
-      //link between groupe1 and ticket will exist
+      //link between group1 and ticket will exist
       $ticketGroup = new \Group_Ticket();
       $this->boolean(
          $ticketGroup->getFromDBByCrit([
@@ -1160,7 +1230,7 @@ class RuleTicket extends DbTestCase {
          ])
       )->isTrue();
 
-      //link between groupe2 and ticket will not exist
+      //link between group2 and ticket will exist
       $this->boolean(
          $ticketGroup->getFromDBByCrit([
             'tickets_id'         => $tickets_id,
@@ -1168,6 +1238,15 @@ class RuleTicket extends DbTestCase {
             'type'               => \CommonITILActor::REQUESTER
          ])
       )->isTrue();
+
+      //link between group3 and ticket will not exist
+      $this->boolean(
+         $ticketGroup->getFromDBByCrit([
+            'tickets_id'         => $tickets_id,
+            'groups_id'          => $group_id3,
+            'type'               => \CommonITILActor::REQUESTER
+         ])
+      )->isFalse();
 
    }
 
