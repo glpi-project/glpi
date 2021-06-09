@@ -15583,7 +15583,7 @@ msgstr "Não há tarefas para fazer."
 
 #: inc/dashboard/provider.class.php:254 inc/dashboard/grid.class.php:1270
 msgid "Late tickets"
-msgstr "Tickects atrasados"
+msgstr "Tickets atrasados"
 
 #: inc/dashboard/provider.class.php:295
 msgid "Tickets waiting your validation"
