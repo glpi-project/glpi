@@ -856,18 +856,19 @@ class RuleCollection extends CommonDBTM {
    static function titleBackup() {
       global $CFG_GLPI;
 
-      $buttons = [];
-      $title   = "";
+      $base_url = "{$CFG_GLPI["root_doc"]}/front/rule.backup.php";
+      $buttons  = [
+         "{$base_url}?action=import" =>
+            "<i class='fas fa-upload'></i><span>"._x('button', 'Import')."</span>",
+         "{$base_url}?action=export" =>
+            "<i class='fas fa-download'></i><span>"._x('button', 'Export')."</span>",
+      ];
 
-      $buttons["{$CFG_GLPI["root_doc"]}/front/rule.backup.php?action=import"] = _x('button', 'Import');
-      $buttons["{$CFG_GLPI["root_doc"]}/front/rule.backup.php?action=export"] = _x('button', 'Export');
-
-      echo "<div class='center'><table class='tab_glpi'><tr>";
-      echo "<td><i class='far fa-save fa-3x'></i></td>";
+      echo "<div class='center mb-3'>";
       foreach ($buttons as $key => $val) {
-         echo "<td><a class='vsubmit' href='".$key."'>".$val."</a></td>";
+         echo "<a class='btn btn-primary me-2' href='".$key."'>".$val."</a></td>";
       }
-      echo "</tr></table></div>";
+      echo "</div>";
    }
 
 

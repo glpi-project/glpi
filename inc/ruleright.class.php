@@ -414,4 +414,8 @@ class RuleRight extends Rule {
       }
    }
 
+   static function getIcon() {
+      return Profile::getIcon();
+   }
+
 }
