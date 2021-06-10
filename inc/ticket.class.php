@@ -4212,6 +4212,13 @@ class Ticket extends CommonITILObject {
                   'link'         => Ticket_Ticket::SON_OF,
                   'tickets_id_2' => $fup->fields['items_id']
                ];
+
+               // Set entity from parent
+               $parent_itemtype = $fup->getField('itemtype');
+               $parent = new $parent_itemtype();
+               if ($parent->getFromDB($fup->getField('items_id'))) {
+                  $options['entities_id'] = $parent->getField('entities_id');
+               }
             }
             //Allow overriding the default values
             $options['_skip_promoted_fields'] = true;
