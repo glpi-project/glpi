@@ -154,8 +154,8 @@ class DatabaseSchemaChecker {
 
       $differ = new Differ();
       return $differ->diff(
-         $this->getNomalizedSql($proper_create_table_sql),
-         $this->getNomalizedSql($effective_create_table_sql)
+         $proper_create_table_sql,
+         $effective_create_table_sql
       );
    }
 
@@ -245,8 +245,10 @@ class DatabaseSchemaChecker {
       if ($this->db->use_utf8mb4) {
          // Remove default charset / collate
          $column_replacements['/( CHARACTER SET utf8mb4)? COLLATE utf8mb4_unicode_ci/i'] = '';
-         // text were replaced by mediumtext during utf8mb4 migration
-         $column_replacements['/mediumtext/i'] = 'text';
+         // "text" fields were replaced by larger type during utf8mb4 migration.
+         // As is it not really possible to know if checked database has been modified by utf8mb4 migration
+         // or not, we normalize "mediumtext" and "longtext" fields to "text".
+         $column_replacements['/(medium|long)text/i'] = 'text';
       } else {
          // Remove default charset / collate
          $column_replacements['/( CHARACTER SET utf8)? COLLATE utf8_unicode_ci/i'] = '';
