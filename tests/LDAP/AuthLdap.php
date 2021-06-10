@@ -1062,7 +1062,7 @@ class AuthLDAP extends DbTestCase {
       $this->variable($user->fields['sync_field'])->isEqualTo(42);
       $this->string($user->fields['name'])->isIdenticalTo('testecuador');
 
-      // ## test we can sync the when the syncfield is different but after we reset it manually
+      // ## test we can sync the user when the syncfield is different but after we reset it manually
       $this->boolean(
          ldap_mod_add(
             $ldap->connect(),
