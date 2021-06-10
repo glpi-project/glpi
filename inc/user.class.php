@@ -3056,7 +3056,7 @@ JAVASCRIPT;
                if ($item->can($id, UPDATE)) {
                   if (($item->fields["authtype"] == Auth::LDAP)
                       || ($item->fields["authtype"] == Auth::EXTERNAL)) {
-                     if (AuthLDAP::forceOneUserSynchronization($item, false)) {
+                     if (AuthLDAP::forceOneUserSynchronization($item, false, false)) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      } else {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
