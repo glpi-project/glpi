@@ -85,7 +85,7 @@ jobs:
           git filter-branch --prune-empty -f --index-filter 'git rm --cached --ignore-unmatch "glpi/${{ steps.release-name.outputs.basename}}.*.tar.gz"' HEAD
           cp -vf "${{ github.workspace }}/${{ env.release_name }}.tar.gz" glpi
           # script argument should be the ordered list of builds to index
-          ../tools/github-nightly-description.sh glpi/{9.5-bugfixes,9.4-bugfixes}*.tar.gz >glpi/index.md
+          ../tools/github-nightly-description.sh `ls -r glpi/*.tar.gz` >glpi/index.md
           echo "Repository status:"
           git status
           ls -lt glpi
