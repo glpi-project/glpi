@@ -38,8 +38,10 @@ Html::header(Rule::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF']
 
 RuleCollection::titleBackup();
 
-echo "<table class='tab_cadre'>";
-echo "<tr><th>" . __('Rule type') . "</th></tr>";
+echo "<div class='row justify-content-evenly'>";
+echo "<div class='card col-12 col-xxl-4'>";
+echo "<div class='card-header'><h3>".__('Rule type')."</h3></div>";
+echo "<div class='list-group list-group-flush'>";
 
 foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
    $rulecollection = new $rulecollectionclass();
@@ -50,27 +52,31 @@ foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
       } else {
          $title = $rulecollection->getTitle();
       }
-      echo "<tr class='tab_bg_1'><td class='center b'>";
       $ruleClassName = $rulecollection->getRuleClassName();
-      echo "<a href='".$ruleClassName::getSearchURL()."'>";
-      echo $title."</a></td></tr>";
+      echo "<a class='list-group-item list-group-item-action' href='".$ruleClassName::getSearchURL()."'>";
+      echo "<i class='fa-fw ".$ruleClassName::getIcon()." me-1'></i>";
+      echo $title;
+      echo "</a>";
    }
 }
 
 if (Session::haveRight("transfer", READ)
     && Session::isMultiEntitiesMode()) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/front/transfer.php'>".__('Transfer')."</a>";
-   echo "</td></tr>";
+   echo "<a class='list-group-item list-group-item-action' href='".Transfer::getSearchURL()."'>";
+   echo "<i class='fa-fw ".Transfer::getIcon()." me-1'></i>";
+   echo __('Transfer');
+   echo "</a>";
 }
 
 if (Session::haveRight("config", READ)) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/front/blacklist.php'>".
-        _n('Blacklist', 'Blacklists', Session::getPluralNumber())."</a>";
-   echo "</td></tr>";
+   echo "<a class='list-group-item list-group-item-action' href='".Blacklist::getSearchURL()."'>";
+   echo "<i class='fa-fw ".Blacklist::getIcon()." me-1'></i>";
+   echo _n('Blacklist', 'Blacklists', Session::getPluralNumber());
+   echo "</a>";
 }
 
-echo "</table>";
+echo "</div>"; // .list-group
+echo "</div>"; // .card
+echo "</div>"; // .row
 
 Html::footer();

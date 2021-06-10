@@ -3722,4 +3722,9 @@ class Transfer extends CommonDBTM {
       return array_key_exists('transfers_id_auto', $config_values)
          && $config_values['transfers_id_auto'] == $this->fields['id'];
    }
+
+
+   static function getIcon() {
+      return "fas fa-level-up-alt";
+   }
 }
