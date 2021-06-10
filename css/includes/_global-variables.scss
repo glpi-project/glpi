@@ -30,6 +30,7 @@
  */
 
 :root {
+   --is-dark: #{$is-dark};
    --animate-duration: .3s;
 
    --light: #{$light};

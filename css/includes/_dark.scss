@@ -49,6 +49,21 @@ $timeline-sol-border: #435963 !default;
 
 $scrollbar-color-thumb: rgba($color: $secondary, $alpha: .2) !default;
 
+$gray-100: #212529 !default;
+$gray-200: #343a40 !default;
+$gray-300: #495057 !default;
+$gray-400: #6c757d !default;
+$gray-500: #adb5bd !default;
+$gray-600: #ced4da !default;
+$gray-700: #dee2e6 !default;
+$gray-800: #e9ecef !default;
+$gray-900: #f8f9fa !default;
+
+$toast-header-background-color: $gray-400;
+$toast-header-color: $light;
+
+$btn-close-color: $light;
+
 @import "~@tabler/core/src/scss/tabler";
 
 @mixin dark-mode {
@@ -103,4 +118,41 @@ $secondary-fg: $body-color !default;
 .btn-outline-secondary,
 .btn-ghost-secondary {
    --tblr-btn-color-text: #{$secondary-fg};
+}
+
+input[type="color"] {
+   background-color: transparent;
+}
+
+.table-danger {
+   --tblr-table-bg: #642b2b;
+   --tblr-table-striped-bg: #642b2b;
+   --tblr-table-striped-color: var(--light);
+   --tblr-table-active-bg: #642b2b;
+   --tblr-table-active-color: var(--light);
+   --tblr-table-hover-bg: #642b2b;
+   --tblr-table-hover-color: var(--light);
+   color: var(--light);
+   border-color: #6d000a;
+}
+
+.btn-danger, .btn-outline-danger, .btn-ghost-danger {
+   --tblr-btn-color: #642b2b;
+   --tblr-btn-color-darker: #6d000a;
+   background-color: var(--tblr-btn-color);
+   &:hover {
+      background-color: var(--tblr-btn-color-darker);
+   }
+}
+
+.accordion-item .accordion-button {
+   background-color: var(--dark) !important;
+}
+
+.search_page .search-container .search-card .search-results.deleted-results td {
+   color: var(--light);
+}
+
+body .modal-content, body .modal-header {
+   background-color: $dark-mode-lighten;
 }
