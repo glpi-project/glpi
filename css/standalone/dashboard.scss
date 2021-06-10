@@ -276,21 +276,21 @@ $break_tablet: 1400px;
             margin-left: 0;
             font-size: 1em;
          }
-
-         &:hover {
-            select.dashboard_select {
-               border: 2px solid rgba(0, 0, 0, .5);
-            }
-         }
       }
 
       select.dashboard_select {
          padding: 5px;
-         border: 2px solid rgba(0, 0, 0, .1);
+         border: 2px solid var(--input-border);
          border-radius: 3px;
          min-width: 100px;
          font-weight: bold;
-         color: rgb(70, 70, 70);
+         color: var(--light);
+         cursor: pointer;
+
+         option {
+            color: var(--light);
+            border-color: var(--input-border) !important;
+         }
       }
 
       i.fas {

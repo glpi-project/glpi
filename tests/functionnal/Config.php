@@ -427,6 +427,7 @@ class Config extends DbTestCase {
          //'purplehaze'      => 'Purplehaze',
          //'teclib'          => 'Teclib',
          //'vintage'         => 'Vintage',
+         'midnight'        => 'Midnight',
       ];
       $this
          ->if($this->newTestedInstance)

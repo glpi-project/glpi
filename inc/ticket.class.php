@@ -160,9 +160,12 @@ class Ticket extends CommonITILObject {
          $opt['criteria'][4]['value']      = Ticket::SOLVED;
          $opt['criteria'][4]['link']       = 'AND NOT';
 
-         $pic_validate = "<img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
-                           __s('Ticket waiting for your approval')."\" src='".
-                           $CFG_GLPI["root_doc"]."/pics/menu_showall.png' class='pointer'>";
+         $pic_validate = '
+            <span class="fa-stack" style="vertical-align: middle; font-size: 0.8em" title="'.__s('Ticket waiting for your approval').'">
+                <i class="fas fa-check fa-stack-1x" style="top: 1px; left: -7px; font-size: 1.2em"></i>
+                <i class="far fa-clock fa-stack-1x" style="top: 6px; left: -3px"></i>
+            </span>
+         ';
 
          $links[$pic_validate] = Ticket::getSearchURL(false) . '?'.Toolbox::append_params($opt, '&amp;');
       }
