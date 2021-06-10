@@ -239,12 +239,14 @@ SQL
          // - should accept missing default charset/collate on columns if matching utf8mb4;
          // - should not accept non utf8mb4 charset;
          // - should accept 'mediumtext' instead of 'text'.
+         // - should accept 'longtext' instead of 'mediumtext'.
          [
             'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `content` text,
+  `description` mediumtext,
   `bis` varchar(100),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
@@ -255,6 +257,7 @@ CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL CHARACTER SET utf8 COLLATE utf8_unicode_ci,
   `content` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `bis` varchar(100) CHARSET latin1,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
@@ -274,6 +277,7 @@ SQL
 -  `name` varchar(255) NOT NULL,
 +  `name` varchar(255) NOT NULL CHARACTER SET utf8 COLLATE utf8_unicode_ci,
    `content` text,
+   `description` text,
 -  `bis` varchar(100),
 +  `bis` varchar(100) CHARSET latin1,
    PRIMARY KEY (`id`)
@@ -287,12 +291,14 @@ DIFF
          // - should accept missing default charset/collate on columns if matching utf8;
          // - should not accept non utf8 charset;
          // - should not accept 'mediumtext' instead of 'text'.
+         // - should not accept 'longtext' instead of 'mediumtext'.
          [
             'proper_sql'     => <<<SQL
 CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `content` text,
+  `description` mediumtext,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 SQL
@@ -302,6 +308,7 @@ CREATE TABLE `table` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `content` mediumtext CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+  `description` longtext CHARACTER SET utf8 COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 SQL
@@ -319,8 +326,10 @@ SQL
    `id` int NOT NULL AUTO_INCREMENT,
 -  `name` varchar(255) NOT NULL,
 -  `content` text,
+-  `description` mediumtext,
 +  `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
 +  `content` mediumtext,
++  `description` longtext,
    PRIMARY KEY (`id`)
  ) COLLATE=utf8_unicode_ci DEFAULT CHARSET=utf8 ENGINE=InnoDB
 

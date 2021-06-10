@@ -315,23 +315,18 @@ class Migration {
             break;
 
          case 'text' :
-            $format = "TEXT COLLATE $collate";
-            if (!$nodefault) {
-               if (is_null($default_value)) {
-                  $format.= " DEFAULT NULL";
-               } else {
-                  $format.= " NOT NULL DEFAULT '$default_value'";
-               }
-            }
-            break;
-
+         case 'mediumtext' :
          case 'longtext' :
-            $format = "LONGTEXT COLLATE $collate";
+            $format = sprintf('%s COLLATE %s', strtoupper($type), $collate);
             if (!$nodefault) {
                if (is_null($default_value)) {
                   $format .= " DEFAULT NULL";
                } else {
-                  $format .= " NOT NULL DEFAULT '$default_value'";
+                  if (empty($default_value)) {
+                     $format .= " NOT NULL";
+                  } else {
+                     $format .= " NOT NULL DEFAULT '$default_value'";
+                  }
                }
             }
             break;
@@ -429,7 +424,7 @@ class Migration {
     * @param string $newfield New name of the field
     * @param string $type     Field type, @see Migration::fieldFormat()
     * @param array  $options  Options:
-    *                         - default_value new field's default value, if a specific default value needs to be used
+    *                         - value     : new field's default value, if a specific default value needs to be used
     *                         - first     : add the new field at first column
     *                         - after     : where adding the new field
     *                         - null      : value could be NULL (default false)
