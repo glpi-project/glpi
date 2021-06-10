@@ -317,7 +317,7 @@ class Migration {
          case 'text' :
          case 'mediumtext' :
          case 'longtext' :
-            $format = sprintf('%s collate %s', strtoupper($type), $collate);
+            $format = sprintf('%s COLLATE %s', strtoupper($type), $collate);
             if (!$nodefault) {
                if (is_null($default_value)) {
                   $format .= " DEFAULT NULL";
