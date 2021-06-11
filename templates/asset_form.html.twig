@@ -285,10 +285,10 @@
                               'no_label': true
                            }) }}
                         {% else %}
-                           {{ __('No room found or selected') }}
+                           <div class="col-form-label">{{ __('No room found or selected') }}</div>
                         {% endif %}
                      {% else %}
-                        {{ __('No room found or selected') }}
+                        <div class="col-form-label">{{ __('No room found or selected') }}</div>
                      {% endif %}
                   {% endset %}
                   {{ fields.ajaxField('room_positions', inital_field, __('Position in room'), {

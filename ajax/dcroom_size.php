@@ -51,6 +51,7 @@ if ($room->getFromDB($id)) {
    Dropdown::showFromArray(
       'position',
       $positions, [
+         'class'                 => 'form-select',
          'value'                 => $current,
          'rand'                  => $rand,
          'display_emptychoice'   => true,
@@ -58,5 +59,5 @@ if ($room->getFromDB($id)) {
       ]
    );
 } else {
-   echo __('No room found or selected');
+   echo "<div class='col-form-label'>".__('No room found or selected')."</div>";
 }
