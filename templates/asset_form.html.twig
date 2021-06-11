@@ -140,9 +140,7 @@
 
                {% if item.isField('date_expiration') %}
                   {{ fields.datetimeField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
-                     'add_field_html': Html__showToolTip(__('Empty for infinite')|nl2br, {
-                        'display': false
-                     })
+                     'helper': __('Empty for infinite')
                   }) }}
                {% endif %}
 
