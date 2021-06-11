@@ -1,7 +1,7 @@
 {% import "components/form/fields_macros.html.twig" as fields %}
 
 <div class="row mx-n2">
-   {{ fields.largeTitle(__('Support hours')) }}
+   {{ fields.largeTitle(__('Support hours'), 'fas fa-business-time') }}
    {{ fields.smallTitle(__('On week')) }}
    {{ fields.nullField({'field_class': 'col-12 col-sm-4'}) }}
    {{ fields.dropdownHoursField('week_begin_hour', item.fields['week_begin_hour'], __('Start'), {'field_class': 'col-12 col-sm-4'}) }}
