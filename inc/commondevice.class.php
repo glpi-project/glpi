@@ -134,19 +134,16 @@ abstract class CommonDevice extends CommonDropdown {
    }
 
 
-   /**
-    * @since 0.85
-    * @see CommonDropdown::displaySpecificTypeField()
-   **/
-   function displaySpecificTypeField($ID, $field = []) {
-
+   public function getSpecificTypeField(int $ID, array $field): string
+   {
       switch ($field['type']) {
-         case 'registeredIDChooser' :
+         case 'registeredIDChooser':
+            ob_start();
             RegisteredID::showChildsForItemForm($this, '_registeredID');
-            break;
+            return ob_get_clean();
       }
+      return '';
    }
-
 
    function getAdditionalFields() {
 

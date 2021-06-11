@@ -49,7 +49,10 @@ class DropdownExtension extends AbstractExtension implements ExtensionInterface 
          new TwigFunction('Dropdown__showGlobalSwitch', [Dropdown::class, 'showGlobalSwitch']),
          new TwigFunction('Dropdown__showNumber', [Dropdown::class, 'showNumber'], ['is_safe' => ['html']]),
          new TwigFunction('Dropdown__showFromArray', [Dropdown::class, 'showFromArray'], ['is_safe' => ['html']]),
+         new TwigFunction('Dropdown__showYesNo', [Dropdown::class, 'showYesNo'], ['is_safe' => ['html']]),
          new TwigFunction('Dropdown__showTimestamp', [Dropdown::class, 'showTimestamp'], ['is_safe' => ['html']]),
+         new TwigFunction('Dropdown__showItemTypes', [Dropdown::class, 'showItemTypes'], ['is_safe' => ['html']]),
+         new TwigFunction('Dropdown__dropdownIcons', [Dropdown::class, 'dropdownIcons'], ['is_safe' => ['html']]),
          new TwigFunction('TicketValidation__dropdownStatus', [TicketValidation::class, 'dropdownStatus'], ['is_safe' => ['html']]),
          new TwigFunction('TicketValidation__dropdownValidator', [TicketValidation::class, 'dropdownValidator'], ['is_safe' => ['html']]),
       ];

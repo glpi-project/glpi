@@ -52,6 +52,7 @@ class ToolboxExtension extends AbstractExtension implements ExtensionInterface {
          new TwigFunction('getHtmlToDisplay', [Toolbox::class, 'getHtmlToDisplay'], ['is_safe' => ['html']]),
          new TwigFunction('prepareArrayForInput', [Toolbox::class, 'prepareArrayForInput'], ['is_safe' => ['html']]),
          new TwigFunction('file_exists', 'file_exists'),
+         new TwigFunction('getPhpUploadSizeLimit', [Toolbox::class, 'getPhpUploadSizeLimit'], ['is_safe' => ['html']])
       ];
    }
 

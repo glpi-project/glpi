@@ -660,9 +660,8 @@ class Dropdown {
     *    void if param display=true
     *    string if param display=false (HTML code)
    **/
-   static function dropdownIcons($myname, $value, $store_path, $display = true) {
+   static function dropdownIcons($myname, $value, $store_path, $display = true, $options = []) {
 
-      $output = '';
       if (is_dir($store_path)) {
          if ($dh = opendir($store_path)) {
             $files = [];
@@ -679,9 +678,12 @@ class Dropdown {
                   $values[$file] = $file;
                }
             }
-            Dropdown::showFromArray($myname, $values,
-                                    ['value'               => $value,
-                                          'display_emptychoice' => true]);
+            self::showFromArray($myname, $values,
+                                    array_merge([
+                                       'value'                 => $value,
+                                       'display_emptychoice'   => true,
+                                       'display'               => $display
+                                    ], $options));
 
          } else {
             //TRANS: %s is the store path
@@ -691,11 +693,6 @@ class Dropdown {
       } else {
          //TRANS: %s is the store path
          printf(__('Error: %s is not a directory'), $store_path);
-      }
-      if ($display) {
-         echo $output;
-      } else {
-         return $output;
       }
    }
 

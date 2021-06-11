@@ -63,6 +63,7 @@ class HtmlExtension extends AbstractExtension implements ExtensionInterface {
          new TwigFunction('Html__getCheckbox', [Html::class , 'getCheckbox'], ['is_safe' => ['html']]),
          new TwigFunction('Html__showToolTip', [Html::class , 'showToolTip'], ['is_safe' => ['html']]),
          new TwigFunction('Html__showCheckbox', [Html::class , 'showCheckbox'], ['is_safe' => ['html']]),
+         new TwigFunction('Html__parseAttributes', [Html::class, 'parseAttributes'], ['is_safe' => ['html']]),
       ];
    }
 

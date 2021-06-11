@@ -3433,11 +3433,12 @@ class Entity extends CommonTreeDropdown {
       return $values;
    }
 
-   function displaySpecificTypeField($ID, $field = []) {
+   public function getSpecificTypeField(int $ID, array $field): string {
       switch ($field['type']) {
          case 'setlocation':
+            ob_start();
             $this->showMap();
-            break;
+            return ob_get_clean();
          default:
             throw new \RuntimeException("Unknown {$field['type']}");
       }

@@ -2,34 +2,52 @@
 {% set model_fk = model_itemtype|get_foreignkey_field %}
 {% if item.isField(model_fk) %}
 
-   {% set picture_front = getmodelPicture(item, 'picture_front') %}
-   {% set picture_rear = getmodelPicture(item, 'picture_rear') %}
+   {% set picture_single = getItemtypeOrModelPicture(item, 'picture') %}
+   {% set picture_front = getItemtypeOrModelPicture(item, 'picture_front') %}
+   {% set picture_rear = getItemtypeOrModelPicture(item, 'picture_rear') %}
+   {% set pictures_misc = getItemtypeOrModelPicture(item, 'pictures') %}
 
-   {% if picture_front|length > 1 or picture_rear|length > 1 %}
-   <div class="col-12 col-xl-4 me-n2">
-      <h3 class="card-title">
-         {{ __("Pictures") }}
-      </h3>
+   {% if picture_single|length > 1 || picture_front|length > 1 or picture_rear|length > 1 || pictures_misc|length > 0 %}
+      <div class="col-12 col-xl-4 me-n2">
+         {% if picture_single|length > 1 %}
+            <img src="{{ getPictureUrl(picture_single) }}" class="" alt="{{ __("Picture") }}">
+         {% else %}
+            <h3 class="card-title">
+               {{ __("Pictures") }}
+            </h3>
 
-      <div class="card-body">
-         <div class="d-flex">
-            {% if picture_front|length > 1 %}
-            <div class="m-1">
-               <h4 class="text-muted">{{ __("Front picture") }}</h4>
-               <img src="{{ getPictureUrl(picture_front) }}" class="" alt="{{ __("Front picture") }}">
+            <div class="card-body">
+               <div class="d-flex">
+
+                  {% if picture_front|length > 1 %}
+                     <div class="m-1">
+                        <h4 class="text-muted">{{ __("Front picture") }}</h4>
+                        <img src="{{ getPictureUrl(picture_front) }}" class="" alt="{{ __("Front picture") }}">
+                     </div>
+                  {% endif %}
+
+                  {% if picture_rear|length > 1 %}
+                     <div class="m-1">
+                        <h4 class="text-muted">{{ __("Rear picture") }}</h4>
+                        <img src="{{ getPictureUrl(picture_rear) }}" class="" alt="{{ __("Rear picture") }}">
+                     </div>
+                  {% endif %}
+
+                  {% if pictures_misc is iterable and pictures_misc|length > 0 %}
+                     <div class="picture-gallery picture-gallery-featured">
+                        {% for img in pictures_misc %}
+                           <img src="{{ getPictureUrl(img) }}" class="" alt="">
+                        {% endfor %}
+                     </div>
+                  {% endif %}
+               </div>
             </div>
-            {% endif %}
-
-            {% if picture_rear|length > 1 %}
-            <div class="m-1">
-               <h4 class="text-muted">{{ __("Rear picture") }}</h4>
-               <img src="{{ getPictureUrl(picture_rear) }}" class="" alt="{{ __("Rear picture") }}">
-            </div>
-            {% endif %}
-         </div>
+         {% endif %}
       </div>
-   </div>
-   {# TODO photoswipe #}
+      {# TODO photoswipe #}
+
+      {# Photoswipe #}
+
 
    {% endif %}
 {% endif %}

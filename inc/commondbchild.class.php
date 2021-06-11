@@ -755,7 +755,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
    }
 
-
    /**
     * We can add several single CommonDBChild to a given Item. In such case, we display a "+"
     * button and the fields already entered.

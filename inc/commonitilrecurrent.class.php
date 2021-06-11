@@ -196,12 +196,14 @@ abstract class CommonITILRecurrent extends CommonDropdown
       ];
    }
 
-   public function displaySpecificTypeField($ID, $field = []) {
+   public function getSpecificTypeField(int $ID, array $field): string {
       switch ($field['name']) {
          case 'periodicity':
+            ob_start();
             $this->displayPeriodicityInput();
-            break;
+            return ob_get_clean();
       }
+      return '';
    }
 
    public static function getSpecificValueToDisplay(
