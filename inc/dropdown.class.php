@@ -1094,7 +1094,7 @@ class Dropdown {
    static function showItemTypeList($optgroup) {
       Html::requireJs('masonry');
       echo TemplateRenderer::getInstance()->render(
-         'components/setup/dropdowns_list.html.twig',
+         'pages/setup/dropdowns_list.html.twig',
          [
             'optgroup' => $optgroup,
          ]
