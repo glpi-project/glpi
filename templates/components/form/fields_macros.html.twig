@@ -570,9 +570,9 @@
    {% set options = {'is_horizontal': true}|merge(options) %}
 
    {% if options.is_horizontal %}
-      {{ _self.horizontalField(label, field, id, add_field_html) }}
+      {{ _self.horizontalField(label, field, id, add_field_html, options) }}
    {% else %}
-      {{ _self.verticalField(label, field, id, add_field_html) }}
+      {{ _self.verticalField(label, field, id, add_field_html, options) }}
    {% endif %}
 {% endmacro %}
 
