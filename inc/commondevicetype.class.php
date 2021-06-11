@@ -36,6 +36,10 @@ if (!defined('GLPI_ROOT')) {
 
 abstract class CommonDeviceType extends CommonType {
 
+   static function getTypeName($nb = 0) {
+      return _n('Device type', 'Device types', $nb);
+   }
+
    static function getFormURL($full = true) {
       global $CFG_GLPI;
 
