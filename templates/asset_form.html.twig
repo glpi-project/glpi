@@ -273,7 +273,7 @@
                      'itemtype': 'DCRoom'
                   })|raw }}
 
-                  {% set inital_field %}
+                  {% set initial_field %}
                      {% if item.fields['dcrooms_id'] > 0 %}
                         {% set dcroom = 'DCRoom'|getFromDB(item.fields['dcrooms_id']) %}
                         {% if dcroom is not null %}
@@ -291,7 +291,7 @@
                         <div class="col-form-label">{{ __('No room found or selected') }}</div>
                      {% endif %}
                   {% endset %}
-                  {{ fields.ajaxField('room_positions', inital_field, __('Position in room'), {
+                  {{ fields.ajaxField('room_positions', initial_field, __('Position in room'), {
                      'rand': rand
                   }) }}
                {% endif %}
