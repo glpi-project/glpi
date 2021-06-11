@@ -93,9 +93,17 @@
 
 
 {% macro numberField(name, value, label = '', options = {}) %}
-   {% set options = options|merge({'type': 'text'}) %}
    {% set value = formatNumber(value, true) %}
-   {{ _self.textField(name, value, label, options) }}
+
+   {% set field %}
+      <input type="number" id="%id%"
+             class="form-control"
+             name="{{ name }}" value="{{ value }}"
+         {{ options.readonly ? 'readonly' : '' }}
+         {{ options.disabled ? 'disabled' : '' }}
+         {{ options.required ? 'required' : '' }} />
+   {% endset %}
+   {{ _self.field(name, field, label, options) }}
 {% endmacro %}
 
 
@@ -234,6 +242,77 @@
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
 
+{% macro colorField(name, value, label = '', options = {}) %}
+   {% set field %}
+      <input type="color" id="%id%"
+             class="form-control"
+             name="{{ name }}" value="{{ value }}"
+         {{ options.readonly ? 'readonly' : '' }}
+         {{ options.disabled ? 'disabled' : '' }}
+         {{ options.required ? 'required' : '' }} />
+   {% endset %}
+   {{ _self.field(name, field, label, options) }}
+{% endmacro %}
+
+{% macro passwordField(name, value, label = '', options = {}) %}
+   {% set options = {'autocomplete': 'new-password'}|merge(options) %}
+   {% set field %}
+      <input type="password" id="%id%"
+             class="form-control"
+             name="{{ name }}" value="{{ value }}"
+         {{ options.readonly ? 'readonly' : '' }}
+         {{ options.disabled ? 'disabled' : '' }}
+         {{ options.required ? 'required' : '' }} />
+   {% endset %}
+   {{ _self.field(name, field, label, options) }}
+{% endmacro %}
+
+{% macro fileField(name, value, label = '', options = {}) %}
+   {% set options = {
+      'rand': random(),
+      'name': name,
+   }|merge(options) %}
+   {% set field %}
+      {{ Html__file(options) }}
+   {% endset %}
+   {{ _self.field(name, field, label, options) }}
+{% endmacro %}
+
+{% macro imageField(name, value, label = '', options = {}) %}
+   {% set field %}
+      <div class="img-overlay-wrapper position-relative">
+         {% set clearable = options['clearable'] %}
+         {% set url = options['url'] %}
+         {% set options = options | filter((v, k) => k != 'url' and k != 'clearable') %}
+         {% if url is not empty %}
+            <a href="{{ url }}">
+         {% endif %}
+         <img src="{{ value }}" {{ Html__parseAttributes(options) }} {{ url is defined ? 'class="pointer"' : '' }}/>
+         {% if url is defined %}
+            </a>
+         {% endif %}
+         {% if clearable %}
+            <button type="button" class="btn p-2 position-absolute top-0 start-0" title="{{ __('Delete') }}"
+                    onclick="const blank_input = $('input[name=\'_blank_{{ field['name'] }}\']'); blank_input.val(blank_input.val() ? '' : true); $(this).toggleClass('btn-danger')">
+               <i class='fas fa-times'></i>
+            </button>
+         {% endif %}
+      </div>
+   {% endset %}
+   {{ _self.field(name, field, label, options) }}
+{% endmacro %}
+
+{% macro hiddenField(name, value, label = '', options = {}) %}
+   {% set field %}
+      <input type="hidden" id="%id%"
+             class="form-control"
+             name="{{ name }}" value="{{ value }}"
+         {{ options.readonly ? 'readonly' : '' }}
+         {{ options.disabled ? 'disabled' : '' }}
+         {{ options.required ? 'required' : '' }} />
+   {% endset %}
+   {{ _self.field(name, field, label, options) }}
+{% endmacro %}
 
 {% macro dropdownNumberField(name, value, label = '', options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
@@ -295,6 +374,75 @@
    {% set field %}
       {{ Dropdown__showTimestamp(name, {
          'value': value,
+         'display': false,
+         'rand': rand,
+         'width': '100%',
+         'class': 'form-select',
+      }|merge(options)) }}
+   {% endset %}
+
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
+{% endmacro %}
+
+{% macro dropdownYesNo(name, value, label = '', options) %}
+   {% set options = {'rand': random()}|merge(options) %}
+   {% if options.fields_template.isMandatoryField(name) %}
+      {% set options = {'required': true}|merge(options) %}
+   {% endif %}
+
+   {% if options.disabled %}
+      {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
+   {% endif %}
+
+   {% set field %}
+      {{ Dropdown__showYesNo(name, value, -1, {
+         'display': false,
+         'rand': rand,
+         'width': '100%',
+         'class': 'form-select',
+      }|merge(options)) }}
+   {% endset %}
+
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
+{% endmacro %}
+
+{% macro dropdownItemTypes(name, value, label = '', options) %}
+   {% set options = {'rand': random()}|merge(options) %}
+   {% if options.fields_template.isMandatoryField(name) %}
+      {% set options = {'required': true}|merge(options) %}
+   {% endif %}
+
+   {% if options.disabled %}
+      {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
+   {% endif %}
+
+   {% set types = options['types']|default([]) %}
+
+   {% set field %}
+      {{ Dropdown__showItemTypes(name, types, {
+         'display': false,
+         'rand': rand,
+         'width': '100%',
+         'class': 'form-select',
+         'value': value
+      }|merge(options)) }}
+   {% endset %}
+
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
+{% endmacro %}
+
+{% macro dropdownIcons(name, value, label = '', options) %}
+   {% set options = {'rand': random()}|merge(options) %}
+   {% if options.fields_template.isMandatoryField(name) %}
+      {% set options = {'required': true}|merge(options) %}
+   {% endif %}
+
+   {% if options.disabled %}
+      {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
+   {% endif %}
+
+   {% set field %}
+      {{ Dropdown__dropdownIcons(name, value, constant('GLPI_ROOT')~'/pics/icones', {
          'display': false,
          'rand': rand,
          'width': '100%',
@@ -471,7 +619,7 @@
          <span class="form-help" data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true"
                data-bs-content="{{ options.helper }}">
             ?
-         <span>
+         </span>
       {% endset %}
    {% endif %}
 

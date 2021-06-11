@@ -34,6 +34,7 @@ namespace Glpi\Application\View\Extension;
 
 use Agent;
 use CommonDBTM;
+use CommonDropdown;
 use CommonGLPI;
 use Computer;
 use Computer_Item;
@@ -65,6 +66,7 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
          new TwigFilter('getLink', [$this, 'getLink'], ['is_safe' => ['html']]),
          new TwigFilter('isEntityAssign', [$this, 'isEntityAssign']),
          new TwigFilter('showForm', [$this, 'showForm'], ['is_safe' => ['html']]),
+         new TwigFilter('getTable', [$this, 'getTable'], ['is_safe' => ['html']]),
       ];
    }
 
@@ -77,6 +79,7 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
          new TwigFunction('getDcBreadcrumb', [$this, 'getDcBreadcrumb'], ['is_safe' => ['html']]),
          new TwigFunction('getAutofillMark', [$this, 'getAutofillMark'], ['is_safe' => ['html']]),
          new TwigFunction('getMassiveActions', [$this, 'getMassiveActions']),
+         new TwigFunction('getSpecificTypeField', [$this, 'getSpecificTypeField']),
       ];
    }
 
@@ -154,7 +157,7 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
       return false;
    }
 
-   public function getFromDB($itemtype, int $id = 0):? CommonDBTM {
+   public function getFromDB($itemtype, int $id = 0): ?CommonDBTM {
       if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
          $item = new $itemtype;
          $item->getFromDB($id);
@@ -180,7 +183,7 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
       return null;
    }
 
-   public function getLinkURL($itemtype, int $id = 0):? string {
+   public function getLinkURL($itemtype, int $id = 0): ?string {
       if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
          $item = new $itemtype;
          $item->getFromDB($id);
@@ -199,7 +202,7 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
       return false;
    }
 
-   public function getLink($itemtype, int $id = 0, array $options = []): string {
+   public function getLink($itemtype, int $id = 0, array $options = []): ?string {
       if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
          $item = new $itemtype;
          $item->getFromDB($id);
@@ -336,5 +339,17 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
       if (method_exists($item, 'showForm')) {
          $item->showForm($item->getID(), $options);
       }
+   }
+
+   /**
+    * @param CommonDBTM|string $item A CommonDBTM child class name or instance
+    * @return string Table name
+    */
+   public function getTable($item): string {
+      return $item::getTable();
+   }
+
+   public function getSpecificTypeField(CommonDropdown $item, $ID, $field = []) {
+      return $item->getSpecificTypeField((int) $ID, $field);
    }
 }

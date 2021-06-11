@@ -199,29 +199,34 @@ class ProjectTaskTemplate extends CommonDropdown {
       return $tab;
    }
 
-
-   function displaySpecificTypeField($ID, $field = []) {
-
+   public function getSpecificTypeField(int $ID, array $field): string {
       switch ($field['type']) {
          case 'percent_done' :
-            Dropdown::showNumber("percent_done", ['value' => $this->fields['percent_done'],
-                                                  'min'   => 0,
-                                                  'max'   => 100,
-                                                  'step'  => 5,
-                                                  'unit'  => '%']);
-            break;
+            return Dropdown::showNumber("percent_done", [
+               'value'     => $this->fields['percent_done'],
+               'min'       => 0,
+               'max'       => 100,
+               'step'      => 5,
+               'unit'      => '%',
+               'class'     => 'form-select',
+               'width'     => '100%',
+               'display'   => false,
+            ]);
          case 'actiontime' :
-            Dropdown::showTimeStamp($field["name"],
-                                    ['min'             => 0,
-                                     'max'             => 100 * HOUR_TIMESTAMP,
-                                     'step'            => HOUR_TIMESTAMP,
-                                     'value'           => $this->fields[$field["name"]],
-                                     'addfirstminutes' => true,
-                                     'inhours'         => true]);
-            break;
+            return Dropdown::showTimeStamp($field["name"], [
+               'min'             => 0,
+               'max'             => 100 * HOUR_TIMESTAMP,
+               'step'            => HOUR_TIMESTAMP,
+               'value'           => $this->fields[$field["name"]],
+               'addfirstminutes' => true,
+               'inhours'         => true,
+               'class'     => 'form-select',
+               'width'     => '100%',
+               'display'   => false,
+            ]);
       }
+      return '';
    }
-
 
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
