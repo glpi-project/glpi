@@ -96,6 +96,8 @@ class DbTestCase extends \GLPITestCase {
     * @return void
     */
    protected function checkInput(CommonDBTM $object, $id = 0, $input = []) {
+      $input = \Toolbox::stripslashes_deep($input); // slashes in input should not be stored in DB
+
       $this->integer((int)$id)->isGreaterThan(0);
       $this->boolean($object->getFromDB($id))->isTrue();
       $this->variable($object->getField('id'))->isEqualTo($id);

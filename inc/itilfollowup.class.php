@@ -1264,6 +1264,8 @@ JAVASCRIPT;
     * @return bool
     */
    public function isFromSupportAgent() {
+      global $DB;
+
       // Get parent item
       $commonITILObject = new $this->fields['itemtype']();
       $commonITILObject->getFromDB($this->fields['items_id']);
@@ -1275,10 +1277,33 @@ JAVASCRIPT;
       if (in_array(CommonITILActor::ASSIGN, $roles)) {
          // The author is assigned -> support agent
          return true;
-      } else if (in_array(CommonITILActor::OBSERVER, $roles)
-         || in_array(CommonITILActor::REQUESTER, $roles)
-      ) {
-         // The author is an observer or a requester -> not a support agent
+      } else if (in_array(CommonITILActor::OBSERVER, $roles)) {
+         // The author is an observer or a requester -> can be support agent OR
+         // requester depending on how GLPI is used so we must check the user's
+         // profiles
+         $central_profiles = $DB->request([
+            'COUNT' => 'total',
+            'FROM' => Profile::getTable(),
+            'WHERE' => [
+               'interface' => 'central',
+               'id' => new QuerySubQuery([
+                  'SELECT' => ['profiles_id'],
+                  'FROM' => Profile_User::getTable(),
+                  'WHERE' => [
+                     'users_id' => $user_id
+                  ]
+               ])
+            ]
+         ]);
+
+         // No profiles, let's assume it is a support agent to be safe
+         if (!count($central_profiles)) {
+            return false;
+         }
+
+         return $central_profiles->next()['total'] > 0;
+      } else if (in_array(CommonITILActor::REQUESTER, $roles)) {
+         // The author is a requester -> not from support agent
          return false;
       } else {
          // The author is not an actor of the ticket -> he was most likely a

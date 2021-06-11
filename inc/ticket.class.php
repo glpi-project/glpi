@@ -2530,6 +2530,9 @@ class Ticket extends CommonITILObject {
             $actions['Ticket_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
                = "<i class='ma-icon fas fa-link'></i>".
                  _x('button', 'Link tickets');
+            $actions['ProjectTask_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
+               = "<i class='ma-icon fas fa-link'></i>".
+               _x('button', 'Link project task');
 
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
          }
@@ -2677,7 +2680,7 @@ class Ticket extends CommonITILObject {
          'id'                 => '159',
          'table'              => 'glpi_tickets',
          'field'              => 'is_late',
-         'name'               => __('Time to own exceedeed'),
+         'name'               => __('Time to own exceeded'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
          'computation'        => self::generateSLAOLAComputation('time_to_own')
@@ -2708,7 +2711,7 @@ class Ticket extends CommonITILObject {
          'id'                 => '182',
          'table'              => $this->getTable(),
          'field'              => 'is_late',
-         'name'               => __('Internal time to resolve exceedeed'),
+         'name'               => __('Internal time to resolve exceeded'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
          'computation'        => self::generateSLAOLAComputation('internal_time_to_resolve')
@@ -2739,7 +2742,7 @@ class Ticket extends CommonITILObject {
          'id'                 => '187',
          'table'              => 'glpi_tickets',
          'field'              => 'is_late',
-         'name'               => __('Internal time to own exceedeed'),
+         'name'               => __('Internal time to own exceeded'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
          'computation'        => self::generateSLAOLAComputation('internal_time_to_own')
@@ -4209,6 +4212,13 @@ class Ticket extends CommonITILObject {
                   'link'         => Ticket_Ticket::SON_OF,
                   'tickets_id_2' => $fup->fields['items_id']
                ];
+
+               // Set entity from parent
+               $parent_itemtype = $fup->getField('itemtype');
+               $parent = new $parent_itemtype();
+               if ($parent->getFromDB($fup->getField('items_id'))) {
+                  $options['entities_id'] = $parent->getField('entities_id');
+               }
             }
             //Allow overriding the default values
             $options['_skip_promoted_fields'] = true;
