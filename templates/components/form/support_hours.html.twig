@@ -1,0 +1,16 @@
+{% import "components/form/fields_macros.html.twig" as fields %}
+
+{{ fields.largeTitle(__('Support hours')) }}
+{{ fields.smallTitle(__('On week')) }}
+{{ fields.dropdownHoursField('week_begin_hour', item.fields['week_begin_hour'], __('Start')) }}
+{{ fields.dropdownHoursField('week_end_hour', item.fields['week_end_hour'], __('End')) }}
+
+{{ fields.smallTitle(__('On Saturday')) }}
+{{ fields.dropdownYesNo('use_saturday', item.fields['use_saturday'], __('Use Saturday')) }}
+{{ fields.dropdownHoursField('saturday_begin_hour', item.fields['saturday_begin_hour'], __('Start')) }}
+{{ fields.dropdownHoursField('saturday_end_hour', item.fields['saturday_end_hour'], __('End')) }}
+
+{{ fields.smallTitle(__('Sundays and holidays')) }}
+{{ fields.dropdownYesNo('use_monday', item.fields['use_monday'], __('Use Sunday')) }}
+{{ fields.dropdownHoursField('monday_begin_hour', item.fields['monday_begin_hour'], __('Start')) }}
+{{ fields.dropdownHoursField('monday_end_hour', item.fields['monday_end_hour'], __('End')) }}
