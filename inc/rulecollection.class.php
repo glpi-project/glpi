@@ -2009,34 +2009,87 @@ class RuleCollection extends CommonDBTM {
       return false;
    }
 
+
+   /**
+    * Get list of Rules
+    *
+    * @return array
+    */
+    public static function getRules():array {
+      global $CFG_GLPI;
+
+      $rules = [];
+      foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
+         $rulecollection = new $rulecollectionclass();
+         if ($rulecollection->canList()) {
+            if ($plug = isPluginItemType($rulecollectionclass)) {
+               $title = sprintf(__('%1$s - %2$s'), Plugin::getInfo($plug['plugin'], 'name'),
+                                                   $rulecollection->getTitle());
+            } else {
+               $title = $rulecollection->getTitle();
+            }
+            $ruleClassName = $rulecollection->getRuleClassName();
+
+            $rules[] = [
+               'label' => $title,
+               'link'  => $ruleClassName::getSearchURL(),
+               'icon'  => $ruleClassName::getIcon(),
+            ];
+         }
+      }
+
+      if (Session::haveRight("transfer", READ)
+         && Session::isMultiEntitiesMode()) {
+         $rules[] = [
+            'label' => __('Transfer'),
+            'link'  => Transfer::getSearchURL(),
+            'icon'  => Transfer::getIcon(),
+         ];
+      }
+
+      if (Session::haveRight("config", READ)) {
+         $rules[] = [
+            'label' => _n('Blacklist', 'Blacklists', Session::getPluralNumber()),
+            'link'  => Blacklist::getSearchURL(),
+            'icon'  => Blacklist::getIcon(),
+         ];
+      }
+
+      return $rules;
+   }
+
+
    /**
     * Get list of dictionnaries
     *
     * @return array
     */
-   public static function getDictionnaries() {
+   public static function getDictionnaries():array {
       $dictionnaries =[];
 
       $entries = [];
 
       if (Session::haveRight("rule_dictionnary_software", READ)) {
          $entries[] = [
-            'label'  => _n('Software', 'Software', Session::getPluralNumber()),
-            'link'   => 'ruledictionnarysoftware.php'
+            'label'  => Software::getTypeName(Session::getPluralNumber()),
+            'link'   => 'ruledictionnarysoftware.php',
+            'icon'   => Software::getIcon(),
          ];
       }
 
       if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
          $entries[] = [
-            'label'  => _n('Manufacturer', 'Manufacturers', Session::getPluralNumber()),
-            'link'   => 'ruledictionnarymanufacturer.php'
+            'label'  => Manufacturer::getTypeName(Session::getPluralNumber()),
+            'link'   => 'ruledictionnarymanufacturer.php',
+            'icon'   => Manufacturer::getIcon(),
          ];
       }
 
       if (Session::haveRight("rule_dictionnary_printer", READ)) {
          $entries[] = [
-            'label'  => _n('Printer', 'Printers', Session::getPluralNumber()),
-            'link'   => 'ruledictionnaryprinter.php'
+            'label'  => Printer::getTypeName(Session::getPluralNumber()),
+            'link'   => 'ruledictionnaryprinter.php',
+            'icon'   => Printer::getIcon(),
          ];
       }
 
@@ -2052,23 +2105,29 @@ class RuleCollection extends CommonDBTM {
             'type'      => _n('Model', 'Models', Session::getPluralNumber()),
             'entries'   => [
                [
-                  'label'  => _n('Computer model', 'Computer models', Session::getPluralNumber()),
-                  'link'   => 'ruledictionnarycomputermodel.php'
+                  'label'  => ComputerModel::getTypeName(Session::getPluralNumber()),
+                  'link'   => 'ruledictionnarycomputermodel.php',
+                  'icon'   => ComputerModel::getIcon(),
                ], [
-                  'label'  => _n('Monitor model', 'Monitor models', Session::getPluralNumber()),
-                  'link'   => 'ruledictionnarymonitormodel.php'
+                  'label'  => MonitorModel::getTypeName(Session::getPluralNumber()),
+                  'link'   => 'ruledictionnarymonitormodel.php',
+                  'icon'   => MonitorModel::getIcon(),
                ], [
-                  'label'  => _n('Printer model', 'Printer models', Session::getPluralNumber()),
-                  'link'   => 'ruledictionnaryprintermodel.php'
+                  'label'  => PrinterModel::getTypeName(Session::getPluralNumber()),
+                  'link'   => 'ruledictionnaryprintermodel.php',
+                  'icon'   => PrinterModel::getIcon(),
                ], [
-                  'label'  => _n('Device model', 'Device models', Session::getPluralNumber()),
-                  'link'   => 'ruledictionnaryperipheralmodel.php'
+                  'label'  => CommonDeviceModel::getTypeName(Session::getPluralNumber()),
+                  'link'   => 'ruledictionnaryperipheralmodel.php',
+                  'icon'   => CommonDeviceModel::getIcon(),
                ], [
-                  'label'  => _n('Network equipment model', 'Network equipment models', Session::getPluralNumber()),
-                  'link'   => 'ruledictionnarynetworkequipmentmodel.php'
+                  'label'  => NetworkEquipmentModel::getTypeName(Session::getPluralNumber()),
+                  'link'   => 'ruledictionnarynetworkequipmentmodel.php',
+                  'icon'   => NetworkEquipmentModel::getIcon(),
                ], [
-                  'label'  => _n('Phone model', 'Phone models', Session::getPluralNumber()),
-                  'link'   => 'ruledictionnaryphonemodel.php'
+                  'label'  => PhoneModel::getTypeName(Session::getPluralNumber()),
+                  'link'   => 'ruledictionnaryphonemodel.php',
+                  'icon'   => PhoneModel::getIcon(),
                ]
             ]
          ];
@@ -2079,23 +2138,29 @@ class RuleCollection extends CommonDBTM {
             'type'      => _n('Type', 'Types', Session::getPluralNumber()),
             'entries'   => [
                [
-                  'label'  => _n('Computer type', 'Computer types', Session::getPluralNumber()),
-                  'link'   => 'ruledictionnarycomputertype.php'
+                  'label'  => ComputerType::getTypeName(Session::getPluralNumber()),
+                  'link'   => 'ruledictionnarycomputertype.php',
+                  'icon'   => ComputerType::getIcon(),
                ], [
-                  'label'  => _n('Monitor type', 'Monitor types', Session::getPluralNumber()),
-                  'link'   => 'ruledictionnarymonitortype.php'
+                  'label'  => MonitorType::getTypeName(Session::getPluralNumber()),
+                  'link'   => 'ruledictionnarymonitortype.php',
+                  'icon'   => MonitorType::getIcon(),
                ], [
-                  'label'  => _n('Printer type', 'Printer types', Session::getPluralNumber()),
-                  'link'   => 'ruledictionnaryprintertype.php'
+                  'label'  => PrinterType::getTypeName(Session::getPluralNumber()),
+                  'link'   => 'ruledictionnaryprintertype.php',
+                  'icon'   => PrinterType::getIcon(),
                ], [
-                  'label'  => _n('Device type', 'Device types', Session::getPluralNumber()),
-                  'link'   => 'ruledictionnaryperipheraltype.php'
+                  'label'  => CommonDeviceType::getTypeName(Session::getPluralNumber()),
+                  'link'   => 'ruledictionnaryperipheraltype.php',
+                  'icon'   => CommonDeviceType::getIcon(),
                ], [
-                  'label'  => _n('Network equipment type', 'Network equipment types', Session::getPluralNumber()),
-                  'link'   => 'ruledictionnarynetworkequipmenttype.php'
+                  'label'  => NetworkEquipmentType::getTypeName(Session::getPluralNumber()),
+                  'link'   => 'ruledictionnarynetworkequipmenttype.php',
+                  'icon'   => NetworkEquipmentType::getIcon(),
                ], [
-                  'label'  => _n('Phone type', 'Phone types', Session::getPluralNumber()),
-                  'link'   => 'ruledictionnaryphonetype.php'
+                  'label'  => PhoneType::getTypeName(Session::getPluralNumber()),
+                  'link'   => 'ruledictionnaryphonetype.php',
+                  'icon'   => PhoneType::getIcon(),
                ]
             ]
          ];
@@ -2107,16 +2172,20 @@ class RuleCollection extends CommonDBTM {
             'entries'   => [
                [
                   'label'  => OperatingSystem::getTypeName(Session::getPluralNumber()),
-                  'link'   => 'ruledictionnaryoperatingsystem.php'
+                  'link'   => 'ruledictionnaryoperatingsystem.php',
+                  'icon'   => OperatingSystem::getIcon(),
                ], [
-                  'label'  => _n('Service pack', 'Service packs', Session::getPluralNumber()),
-                  'link'   => 'ruledictionnaryoperatingsystemservicepack.php'
+                  'label'  => OperatingSystemServicePack::getTypeName(Session::getPluralNumber()),
+                  'link'   => 'ruledictionnaryoperatingsystemservicepack.php',
+                  'icon'   => OperatingSystemServicePack::getIcon(),
                ], [
-                  'label'  => _n('Version', 'Versions', Session::getPluralNumber()),
-                  'link'   => 'ruledictionnaryoperatingsystemversion.php'
+                  'label'  => OperatingSystemVersion::getTypeName(Session::getPluralNumber()),
+                  'link'   => 'ruledictionnaryoperatingsystemversion.php',
+                  'icon'   => OperatingSystemVersion::getIcon(),
                ], [
-                  'label'  => _n('Architecture', 'Architectures', Session::getPluralNumber()),
-                  'link'   => 'ruledictionnaryoperatingsystemarchitecture.php'
+                  'label'  => OperatingSystemArchitecture::getTypeName(Session::getPluralNumber()),
+                  'link'   => 'ruledictionnaryoperatingsystemarchitecture.php',
+                  'icon'   => OperatingSystemArchitecture::getIcon(),
                ]
             ]
          ];
