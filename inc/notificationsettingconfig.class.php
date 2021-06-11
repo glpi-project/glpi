@@ -98,7 +98,7 @@ class NotificationSettingConfig extends CommonDBTM {
       }
 
       $out = TemplateRenderer::getInstance()->render(
-         'components/setup/setup_notifications.html.twig',
+         'pages/setup/setup_notifications.html.twig',
          [
             'use_notifications' => (bool) $CFG_GLPI['use_notifications'],
             'has_active_mode'   => Notification_NotificationTemplate::hasActiveMode(),
