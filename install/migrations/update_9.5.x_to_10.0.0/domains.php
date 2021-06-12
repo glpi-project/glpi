@@ -165,3 +165,4 @@ $migration->changeField(Domain::getTable(), 'date_creation', 'date_domaincreatio
 ]);
 $migration->migrationOneTable(Domain::getTable());
 $migration->addField(Domain::getTable(), 'date_creation', 'datetime');
+$migration->addKey(Domain::getTable(), 'date_domaincreation');
