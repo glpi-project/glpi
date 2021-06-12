@@ -61,7 +61,7 @@
                {% endif %}
 
                {% if item.isField('power_supplies') %}
-                  {{ fields.dropdownNumberField('power_supplies', item.fields['power_supplies'], 'DevicePowerSupply'|itemtype_name(getPluralNumber()), {
+                  {{ fields.numberField('power_supplies', max(item.fields['power_supplies'], 1), 'DevicePowerSupply'|itemtype_name(getPluralNumber()), {
                      'rand': rand,
                      'min': 1,
                      'max': 6,
@@ -308,37 +308,60 @@
                {% endif %}
 
                {% if item.isField('number_units') %}
-                  {{ fields.dropdownNumberField('number_units', item.fields['number_units'], __('Number of units'), {
+                  {{ fields.numberField('number_units', item.fields['number_units'], __('Number of units'), {
                      'rand': rand,
                      'min': 1,
                      'max': 100,
                      'step': 1,
-                     'unit': 'rack_unit'
                   }) }}
                {% endif %}
 
                {% if item.isField('width') %}
-                  {{ fields.textField('width', item.fields['width'], __('Width')) }}
+                  {{ fields.numberField('width', item.fields['width'], __('Width'), {
+                     'rand': rand,
+                     'min': 0,
+                     'step': 1,
+                  }) }}
                {% endif %}
 
                {% if item.isField('height') %}
-                  {{ fields.textField('height', item.fields['height'], __('Height')) }}
+                  {{ fields.numberField('height', item.fields['height'], __('Height'), {
+                     'rand': rand,
+                     'min': 0,
+                     'step': 1,
+                  }) }}
                {% endif %}
 
                {% if item.isField('depth') %}
-                  {{ fields.textField('depth', item.fields['depth'], __('Depth')) }}
+                  {{ fields.numberField('depth', item.fields['depth'], __('Depth'), {
+                     'rand': rand,
+                     'min': 0,
+                     'step': 1,
+                  }) }}
                {% endif %}
 
                {% if item.isField('max_power') %}
-                  {{ fields.textField('max_power', item.fields['max_power'], __('Max. power (in watts)')) }}
+                  {{ fields.numberField('max_power', item.fields['max_power'], __('Max. power (in watts)'), {
+                     'rand': rand,
+                     'min': 0,
+                     'step': 1,
+                  }) }}
                {% endif %}
 
                {% if item.isField('mesured_power') %}
-                  {{ fields.textField('mesured_power', item.fields['mesured_power'], __('Measured power (in watts)')) }}
+                  {{ fields.numberField('mesured_power', item.fields['mesured_power'], __('Measured power (in watts)'), {
+                     'rand': rand,
+                     'min': 0,
+                     'step': 1,
+                  }) }}
                {% endif %}
 
                {% if item.isField('max_weight') %}
-                  {{ fields.textField('max_weight', item.fields['max_weight'], __('Max. weight')) }}
+                  {{ fields.numberField('max_weight', item.fields['max_weight'], __('Max. weight'), {
+                     'rand': rand,
+                     'min': 0,
+                     'step': 1,
+                  }) }}
                {% endif %}
 
                {% if item.isField('bgcolor') %}

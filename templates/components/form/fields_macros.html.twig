@@ -109,7 +109,10 @@
 
 
 {% macro numberField(name, value, label = '', options = {}) %}
-   {% set value = formatNumber(value, true) %}
+   {% if options.step|round(0, 'floor') != options.step %}
+      {# Only format number if not a whole number #}
+      {% set value = formatNumber(value, true) %}
+   {% endif %}
 
    {% set field %}
       <input type="number" id="%id%"
@@ -117,7 +120,10 @@
              name="{{ name }}" value="{{ value }}"
          {{ options.readonly ? 'readonly' : '' }}
          {{ options.disabled ? 'disabled' : '' }}
-         {{ options.required ? 'required' : '' }} />
+         {{ options.required ? 'required' : '' }}
+         {{ options.min ? 'min='~options.min : '' }}
+         {{ options.max ? 'max='~options.max : '' }}
+         {{ options.step ? 'step='~options.step : '' }}/>
    {% endset %}
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
