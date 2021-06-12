@@ -13,7 +13,7 @@
    {{ fields.dropdownHoursField('saturday_end_hour', item.fields['saturday_end_hour'], __('End'), {'field_class': 'col-12 col-sm-4'}) }}
 
    {{ fields.smallTitle(__('Sundays and holidays')) }}
-   {{ fields.dropdownYesNo('use_monday', item.fields['use_monday'], __('Use Sunday'), {'field_class': 'col-12 col-sm-4'}) }}
-   {{ fields.dropdownHoursField('monday_begin_hour', item.fields['monday_begin_hour'], __('Start'), {'field_class': 'col-12 col-sm-4'}) }}
-   {{ fields.dropdownHoursField('monday_end_hour', item.fields['monday_end_hour'], __('End'), {'field_class': 'col-12 col-sm-4'}) }}
+   {{ fields.dropdownYesNo('use_sunday', item.fields['use_sunday'], __('Use Sunday'), {'field_class': 'col-12 col-sm-4'}) }}
+   {{ fields.dropdownHoursField('sunday_begin_hour', item.fields['sunday_begin_hour'], __('Start'), {'field_class': 'col-12 col-sm-4'}) }}
+   {{ fields.dropdownHoursField('sunday_end_hour', item.fields['sunday_end_hour'], __('End'), {'field_class': 'col-12 col-sm-4'}) }}
 </div>

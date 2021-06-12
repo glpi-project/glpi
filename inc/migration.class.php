@@ -302,6 +302,17 @@ class Migration {
             }
             break;
 
+         case 'time':
+            $format = "TIME";
+            if (!$nodefault) {
+               if (is_null($default_value)) {
+                  $format.= " DEFAULT NULL";
+               } else {
+                  $format.= " NOT NULL DEFAULT '$default_value'";
+               }
+            }
+            break;
+
          case 'timestamp':
          case 'datetime':
             $format = "TIMESTAMP";

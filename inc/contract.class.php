@@ -1575,8 +1575,8 @@ class Contract extends CommonDBTM {
    function getUnallowedFieldsForUnicity() {
 
       return array_merge(parent::getUnallowedFieldsForUnicity(),
-                         ['begin_date', 'duration', 'entities_id', 'monday_begin_hour',
-                               'monday_end_hour', 'saturday_begin_hour', 'saturday_end_hour',
+                         ['begin_date', 'duration', 'entities_id', 'sunday_begin_hour',
+                               'sunday_end_hour', 'saturday_begin_hour', 'saturday_end_hour',
                                'week_begin_hour', 'week_end_hour']);
    }
 
