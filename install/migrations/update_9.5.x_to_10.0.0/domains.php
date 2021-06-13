@@ -163,6 +163,8 @@ $migration->addField(
 $migration->changeField(Domain::getTable(), 'date_creation', 'date_domaincreation', 'datetime', [
    'after'  => 'date_expiration'
 ]);
+$migration->dropKey(Domain::getTable(), 'date_creation');
 $migration->migrationOneTable(Domain::getTable());
 $migration->addField(Domain::getTable(), 'date_creation', 'datetime');
+$migration->addKey(Domain::getTable(), 'date_creation');
 $migration->addKey(Domain::getTable(), 'date_domaincreation');
