@@ -676,7 +676,7 @@ class Config extends CommonDBTM {
       }
 
       echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post' data-track-changes='true'>";
-      echo "<div class='center' id='tabsbody'>";
+      echo "<div class='card' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>" . __('Authentication') . "</th></tr>";
 
