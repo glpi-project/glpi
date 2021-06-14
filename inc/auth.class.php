@@ -1464,7 +1464,7 @@ class Auth extends CommonGLPI {
          return false;
       }
       echo "<form name=cas action='".$CFG_GLPI['root_doc']."/front/auth.others.php' method='post'>";
-      echo "<div class='center'>";
+      echo "<div class='card'>";
       echo "<table class='tab_cadre_fixe'>";
 
       // CAS config
@@ -1646,7 +1646,7 @@ class Auth extends CommonGLPI {
                  $CFG_GLPI['language_ssofield']."'></td></tr>";
 
       echo "<tr class='tab_bg_1'><td class='center' colspan='2'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".__s('Save')."\" >";
+      echo "<input type='submit' name='update' class='btn btn-primary' value=\"".__s('Save')."\" >";
       echo "</td></tr>\n";
 
       echo "</table></div>\n";

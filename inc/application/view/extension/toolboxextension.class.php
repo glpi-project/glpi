@@ -43,6 +43,7 @@ use Twig\TwigFunction;
 class ToolboxExtension extends AbstractExtension implements ExtensionInterface {
    public function getFunctions() {
       return [
+         new TwigFunction('canUseLdap', [Toolbox::class, 'canUseLdap']),
          new TwigFunction('getMaxInputVar', [Toolbox::class, 'get_max_input_vars']),
          new TwigFunction('getItemTypeSearchURL', [$this, 'getItemTypeSearchURL']),
          new TwigFunction('getPictureUrl', [Toolbox::class, 'getPictureUrl']),
