@@ -134,8 +134,7 @@ abstract class CommonDevice extends CommonDropdown {
    }
 
 
-   public function getSpecificTypeField(int $ID, array $field): string
-   {
+   public function getSpecificTypeField(int $ID, array $field): string {
       switch ($field['type']) {
          case 'registeredIDChooser':
             ob_start();
@@ -146,7 +145,6 @@ abstract class CommonDevice extends CommonDropdown {
    }
 
    function getAdditionalFields() {
-
       return [['name'  => 'manufacturers_id',
                          'label' => Manufacturer::getTypeName(1),
                          'type'  => 'dropdownValue']];

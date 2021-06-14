@@ -2003,7 +2003,7 @@ class RuleCollection extends CommonDBTM {
     *
     * @return array
     */
-    public static function getRules():array {
+   public static function getRules():array {
       global $CFG_GLPI;
 
       $rules = [];

@@ -86,8 +86,7 @@ class PlanningExternalEventTemplate extends CommonDropdown {
       ];
    }
 
-   public function getSpecificTypeField(int $ID, array $field): string
-   {
+   public function getSpecificTypeField(int $ID, array $field): string {
       switch ($field['type']) {
          case 'planningstate' :
             return Planning::dropdownState("state", $this->fields["state"], false, [

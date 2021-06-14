@@ -32,6 +32,8 @@
 
 namespace Glpi\Application\View\Extension;
 
+use Document;
+use DocumentType;
 use Toolbox;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
@@ -47,7 +49,7 @@ class DocumentExtension extends AbstractExtension implements ExtensionInterface 
          new TwigFunction('getIconForFilename', [$this, 'getIconForFilename']),
          new TwigFunction('getSizeForFilePath', [$this, 'getSizeForFilePath']),
          new TwigFunction('getMaxUploadSize', [Document::class, 'getMaxUploadSize'], ['is_safe' => ['html']]),
-         new TwigFunction('showAvailableTypesLink', [\DocumentType::class, 'showAvailableTypesLink'], ['is_safe' => ['html']])
+         new TwigFunction('showAvailableTypesLink', [DocumentType::class, 'showAvailableTypesLink'], ['is_safe' => ['html']])
       ];
    }
 
