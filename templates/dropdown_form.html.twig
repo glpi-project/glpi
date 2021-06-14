@@ -98,7 +98,7 @@
                         {% elseif type == 'icon' %}
                            {{ fields.dropdownIcons(field['name'], item.fields[field['name']], field['label'], params) }}
                            {% if item.fields[field['name']] is not empty %}
-                              <img class="align-middle" alt="" src="{{ config('typedoc_icon_dir')~'/'~item.fields[field['name']] }}">
+                              <img class="align-middle" alt="" src="{{ config('typedoc_icon_dir') ~ '/' ~ item.fields[field['name']] }}">
                            {% endif %}
                         {% elseif type == 'bool' %}
                            {{ fields.dropdownYesNo(field['name'], item.fields[field['name']], field['label'], params) }}
@@ -124,7 +124,7 @@
                         {% elseif type == 'duration' %}
                            {% set toadd = [] %}
                            {% for i in 9..100 %}
-                              {% set toadd = toadd|merge([i*constant('HOUR_TIMESTAMP')]) %}
+                              {% set toadd = toadd|merge([i * constant('HOUR_TIMESTAMP')]) %}
                            {% endfor %}
                            {{ fields.dropdownTimestampField(field['name'], item.fields[field['name']], field['label'], params) }}
                         {% elseif type == 'itemtypename' %}

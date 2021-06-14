@@ -45,7 +45,7 @@
                      item.fields['states_id'],
                      __("Status"),
                      {
-                        'entity'  : item.fields['entities_id'],
+                        'entity': item.fields['entities_id'],
                         'condition': {'is_visible_computer': 1},
                      }
                   ) }}
@@ -103,7 +103,7 @@
                      item.fields['locations_id'],
                      "Location"|itemtype_name,
                      {
-                        'entity'  : item.fields['entities_id'],
+                        'entity': item.fields['entities_id'],
                      }
                   ) }}
                {% endif %}
@@ -159,8 +159,8 @@
                      item.fields['users_id_tech'],
                      __('Technician in charge of the hardware'),
                      {
-                        'entity'  : item.fields['entities_id'],
-                        'right' : 'own_ticket',
+                        'entity': item.fields['entities_id'],
+                        'right': 'own_ticket',
                      }
                   ) }}
                {% endif %}
@@ -181,7 +181,7 @@
                      item.fields['groups_id_tech'],
                      __('Group in charge of the hardware'),
                      {
-                        'entity'  : item.fields['entities_id'],
+                        'entity': item.fields['entities_id'],
                         'condition': {'is_assign': 1},
                      }
                   ) }}
@@ -192,7 +192,8 @@
                      'ApplianceEnvironment',
                      'applianceenvironments_id',
                      item.fields['applianceenvironments_id'],
-                     'ApplianceEnvironment'|itemtype_name) }}
+                     'ApplianceEnvironment'|itemtype_name
+                  ) }}
                {% endif %}
 
                {# TODO check dropdown value not selected #}
@@ -263,12 +264,12 @@
                      'rand': rand,
                   }) }}
                   {% set current_position = item.fields['position'] %}
-                  {{ updateItemOnSelectEvent('dropdown_dcrooms_id'~rand, 'room_positions', config('root_doc')~"/ajax/dcroom_size.php", {
+                  {{ updateItemOnSelectEvent('dropdown_dcrooms_id' ~ rand, 'room_positions', config('root_doc') ~ "/ajax/dcroom_size.php", {
                      'id': '__VALUE__',
                      'current': current_position,
                      'rand': rand
                   })|raw }}
-                  {{ updateItemOnSelectEvent('dropdown_dcrooms_id'~rand, 'dropdown_locations_id'~rand, config('root_doc')~"/ajax/dropdownLocation.php", {
+                  {{ updateItemOnSelectEvent('dropdown_dcrooms_id' ~ rand, 'dropdown_locations_id' ~ rand, config('root_doc') ~ "/ajax/dropdownLocation.php", {
                      'items_id': '__VALUE__',
                      'itemtype': 'DCRoom'
                   })|raw }}
@@ -393,8 +394,8 @@
                      item.fields['users_id'],
                      "User"|itemtype_name,
                      {
-                        'entity'  : item.fields['entities_id'],
-                        'right' : 'all',
+                        'entity': item.fields['entities_id'],
+                        'right': 'all',
                      }
                   ) }}
                {% endif %}
@@ -402,12 +403,12 @@
                {% if item.isField('is_global') %}
                   {% set dd_globalswitch %}
                      {{ Dropdown__showGlobalSwitch(item.fields['id'], {
-                        'withtemplate'       : withtemplate,
-                        'value'              : item.fields['is_global'],
+                        'withtemplate': withtemplate,
+                        'value': item.fields['is_global'],
                         'management_restrict': config('monitors_management_restrict'),
-                        'target'             : target,
-                        'width'              : '100%',
-                        'class'              : 'form-select',
+                        'target': target,
+                        'width': '100%',
+                        'class': 'form-select',
                      }) }}
                   {% endset %}
                   {{ fields.htmlField(
@@ -441,7 +442,7 @@
                      item.fields['groups_id'],
                      "Group"|itemtype_name,
                      {
-                        'entity'   : item.fields['entities_id'],
+                        'entity': item.fields['entities_id'],
                         'condition': {'is_itemgroup': 1},
                      }
                   ) }}
@@ -483,7 +484,7 @@
                      item.fields['lineoperators_id'],
                      "LineOperator"|itemtype_name,
                      {
-                        'entity'   : item.fields['entities_id'],
+                        'entity': item.fields['entities_id'],
                      }
                   ) }}
                {% endif %}
@@ -554,7 +555,7 @@
                   {% set dd_software %}
                      {{ "Software"|dropdown({
                         'value': item.fields['softwares_id'],
-                        'rand' : rand,
+                        'rand': rand,
                         'class': 'form-select',
                      }) }}
                   {% endset %}
@@ -570,15 +571,15 @@
                {% if item.isField('alarm_threshold') %}
                   {% set dd_alarm_treshold %}
                      {{ Dropdown__showNumber('alarm_threshold', {
-                        'value'  : item.fields['alarm_threshold'],
+                        'value': item.fields['alarm_threshold'],
                         'display': false,
-                        'rand'   : rand,
-                        'width'  : '100%',
-                        'class'  : 'form-select',
-                        'min'    : 0,
-                        'max'    : 100,
-                        'step'   : 1,
-                        'toadd'  : {'-1': __('Never')}
+                        'rand': rand,
+                        'width': '100%',
+                        'class': 'form-select',
+                        'min': 0,
+                        'max': 100,
+                        'step': 1,
+                        'toadd': {'-1': __('Never')}
                      }) }}
                   {% endset %}
                   {% set last_alert_html %}
@@ -626,13 +627,14 @@
                {% if item.getType == 'Contract' and item.isField('duration') %}
                   {% if item.fields['begin_date'] is not empty and item.fields['duration'] is not empty %}
                      {% set warranty_expiration %}
-                        -> {{ Infocom__getWarrantyExpir(
+                        <i class="fas fa-arrow-right"></i>
+                        {{ Infocom__getWarrantyExpir(
                            item.fields['begin_date'],
                            item.fields['duration'],
                            0,
                            true,
-                           item.fields['renewal'] == constant('Contract::RENEWAL_TACIT'))
-                        }}
+                           item.fields['renewal'] == constant('Contract::RENEWAL_TACIT')
+                        ) }}
                      {% endset %}
                   {% endif %}
                   {{ fields.dropdownNumberField('duration', item.fields['duration'], __('Initial contract period'), {
@@ -649,12 +651,13 @@
                {% if item.isField('notice') %}
                   {% if item.fields['begin_date'] is not empty and item.fields['notice'] > 0 and item.fields['duration'] is not empty %}
                      {% set notice_info %}
-                        -> {{ Infocom__getWarrantyExpir(
-                        item.fields['begin_date'],
-                        item.fields['duration'],
-                        item.fields['notice'],
-                        true)
-                     }}
+                        <i class="fas fa-arrow-right"></i>
+                        {{ Infocom__getWarrantyExpir(
+                           item.fields['begin_date'],
+                           item.fields['duration'],
+                           item.fields['notice'],
+                           true
+                        ) }}
                      {% endset %}
                   {% endif %}
                   {{ fields.dropdownNumberField('notice', item.fields['notice'], __('Notice'), {

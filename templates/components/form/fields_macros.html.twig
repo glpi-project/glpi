@@ -121,9 +121,9 @@
          {{ options.readonly ? 'readonly' : '' }}
          {{ options.disabled ? 'disabled' : '' }}
          {{ options.required ? 'required' : '' }}
-         {{ options.min ? 'min='~options.min : '' }}
-         {{ options.max ? 'max='~options.max : '' }}
-         {{ options.step ? 'step='~options.step : '' }}/>
+         {{ options.min ? 'min=' ~ options.min : '' }}
+         {{ options.max ? 'max=' ~ options.max : '' }}
+         {{ options.step ? 'step=' ~ options.step : '' }}/>
    {% endset %}
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
@@ -305,7 +305,7 @@
       <div class="img-overlay-wrapper position-relative">
          {% set clearable = options['clearable'] %}
          {% set url = options['url'] %}
-         {% set options = options | filter((v, k) => k != 'url' and k != 'clearable') %}
+         {% set options = options|filter((v, k) => k != 'url' and k != 'clearable') %}
          {% if url is not empty %}
             <a href="{{ url }}">
          {% endif %}
@@ -464,7 +464,7 @@
    {% endif %}
 
    {% set field %}
-      {{ Dropdown__dropdownIcons(name, value, constant('GLPI_ROOT')~'/pics/icones', {
+      {{ Dropdown__dropdownIcons(name, value, constant('GLPI_ROOT') ~ '/pics/icones', {
          'display': false,
          'rand': rand,
          'width': '100%',
