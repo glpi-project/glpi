@@ -251,6 +251,7 @@ class Ajax {
          'modal'         => true,
          'title'         => '',
          'display'       => true,
+         'dialog_class'  => 'modal-lg',
          'autoopen'      => false,
          'reloadonclose' => false
       ];
@@ -268,7 +269,7 @@ class Ajax {
 
       $html = <<<HTML
          <div id="$domid" class="modal fade" tabindex="-1" role="dialog">
-            <div class="modal-dialog">
+            <div class="modal-dialog {$param['dialog_class']}">
                <div class="modal-content">
                   <div class="modal-header">
                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
