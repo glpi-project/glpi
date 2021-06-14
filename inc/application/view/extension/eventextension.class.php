@@ -32,36 +32,18 @@
 
 namespace Glpi\Application\View\Extension;
 
-use DbUtils;
+use Glpi\Event;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 /**
  * @since 10.0.0
  */
-class DBExtension extends AbstractExtension {
-
-   private function getDBUtils(): DbUtils {
-      static $dbu = null;
-      if ($dbu === null) {
-         $dbu = new DbUtils();
-      }
-      return $dbu;
-   }
-
-   public function getFilters() {
-      return [];
-   }
+class EventExtension extends AbstractExtension {
 
    public function getFunctions() {
-      $dbu = $this->getDBUtils();
       return [
-         new TwigFunction('getPlural', [$dbu, 'getPlural']),
-         new TwigFunction('getSingular', [$dbu, 'getSingular']),
-         new TwigFunction('getSonsOf', [$dbu, 'getSonsOf']),
-         new TwigFunction('getTableNameForForeignKeyField', [$dbu, 'getTableNameForForeignKeyField']),
-         new TwigFunction('getItemTypeForTable', [$dbu, 'getItemTypeForTable']),
-         new TwigFunction('getItemtypeForForeignKeyField', [$dbu, 'getItemtypeForForeignKeyField']),
+         new TwigFunction('Event_displayItemLogID', [Event::class, 'displayItemLogID'], ['is_safe' => ['html']]),
       ];
    }
 }

@@ -194,7 +194,7 @@ class Event extends CommonDBTM {
                echo " <a href='#' data-bs-toggle='modal' data-bs-target='#infocom$rand'>$items_id</a>";
                Ajax::createIframeModalWindow('infocom'.$rand,
                                              Infocom::getFormURLWithID($items_id),
-                                             ['height' => 600]);
+                                             ['dialog_class' => 'modal-xl']);
                break;
 
             case "devices" :
@@ -347,12 +347,14 @@ class Event extends CommonDBTM {
       list($logItemtype, $logService) = self::logArray();
 
       // Columns of the Table
-      $items = ["type"     => [__('Source'), ""],
-                     "items_id" => [__('ID'), ""],
-                     "date"     => [_n('Date', 'Dates', 1), ""],
-                     "service"  => [__('Service'), "width='8%'"],
-                     "level"    => [__('Level'), "width='8%'"],
-                     "message"  => [__('Message'), "width='50%'"]];
+      $items = [
+         "type"     => [__('Source'), ""],
+         "items_id" => [__('ID'), ""],
+         "date"     => [_n('Date', 'Dates', 1), ""],
+         "service"  => [__('Service'), "width='8%'"],
+         "level"    => [__('Level'), "width='8%'"],
+         "message"  => [__('Message'), "width='50%'"]
+      ];
 
       // define default sorting
       if (!isset($items[$sort])) {
@@ -372,65 +374,17 @@ class Event extends CommonDBTM {
 
       // Number of results
       $numrows = countElementsInTable("glpi_events");
-      // Get results
-      $number = count($iterator);
 
-      // No Events in database
-      if ($number < 1) {
-         echo "<div class='center b'>".__('No Event')."</div>";
-         return;
-      }
-
-      // Output events
-      $i = 0;
-
-      echo "<div class='center'>";
-      $parameters = "sort=$sort&amp;order=$order";
-      Html::printPager($start, $numrows, $target, $parameters);
-
-      echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr>";
-
-      foreach ($items as $field => $args) {
-         echo "<th ".$args[1]."";
-         if ($sort == $field) {
-            echo " class='order_$order' ";
-         }
-         echo "><a href='$target?sort=$field&amp;order=".(($order=="ASC")?"DESC":"ASC")."'>".$args[0].
-              "</a></th>";
-      }
-      echo "</tr>";
-
-      while ($row = $iterator->next()) {
-         $ID       = $row["id"];
-         $items_id = $row["items_id"];
-         $type     = $row["type"];
-         $date     = $row["date"];
-         $service  = $row["service"];
-         $level    = $row["level"];
-         $message  = $row["message"];
-
-         $itemtype = "&nbsp;";
-         if (isset($logItemtype[$type])) {
-            $itemtype = $logItemtype[$type];
-         } else {
-            $type = getSingular($type);
-            if ($item = getItemForItemtype($type)) {
-               $itemtype = $item->getTypeName(1);
-            }
-         }
-
-         echo "<tr class='tab_bg_2'>";
-         echo "<td>$itemtype</td>";
-         echo "<td class='center b'>";
-         self::displayItemLogID($type, $items_id);
-         echo "</td><td>".Html::convDateTime($date)."</td>";
-         echo "<td class='center'>".(isset($logService[$service])?$logService[$service]:$service);
-         echo "</td><td class='center'>".$level."</td><td>".$message."</td></tr>";
-
-         $i++;
-      }
-      echo "</table></div><br>";
+      TemplateRenderer::getInstance()->display('pages/admin/events_list.html.twig', [
+         'count'     => $numrows,
+         'order'     => $order,
+         'sort'      => $sort,
+         'start'     => $start,
+         'target'    => $target,
+         'events'    => $iterator,
+         'itemtypes' => $logItemtype,
+         'services'  => $logService,
+      ]);
    }
 
 

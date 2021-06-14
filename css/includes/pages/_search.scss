@@ -50,6 +50,7 @@
          height: calc(100vh - #{$contextbar-height} - #{$content-margin});
          padding: 0;
          margin-left: calc(var(--tblr-gutter-x) / 2);
+         width: 100%;
 
          .dashboard-card {
             @include media-breakpoint-up(sm) {
