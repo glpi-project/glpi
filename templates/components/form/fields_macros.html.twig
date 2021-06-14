@@ -18,6 +18,22 @@
    </div>
 {% endmacro %}
 
+{% macro smallTitle(label, icon = '') %}
+   {% set margins = 'mt-2' %}
+
+   <div class="card border-0 shadow-none p-0 m-0 {{ margins }}">
+      <div class="card-header mb-1 p-0 ps-3">
+         <h4 class="card-subtitle {{ icon|length ? 'ms-4' : '' }}">
+            {% if icon|length %}
+               <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
+                  <i class="fa-2x {{ icon }}"></i>
+               </div>
+            {% endif %}
+            {{ label }}
+         </h4>
+      </div>
+   </div>
+{% endmacro %}
 
 {% macro autoNameField(name, item, label = '', withtemplate, options = {}) %}
    {% set tpl_value = option.value|length > 0 ? option.value : item.fields[name] %}
@@ -93,7 +109,10 @@
 
 
 {% macro numberField(name, value, label = '', options = {}) %}
-   {% set value = formatNumber(value, true) %}
+   {% if options.step|round(0, 'floor') != options.step %}
+      {# Only format number if not a whole number #}
+      {% set value = formatNumber(value, true) %}
+   {% endif %}
 
    {% set field %}
       <input type="number" id="%id%"
@@ -101,7 +120,10 @@
              name="{{ name }}" value="{{ value }}"
          {{ options.readonly ? 'readonly' : '' }}
          {{ options.disabled ? 'disabled' : '' }}
-         {{ options.required ? 'required' : '' }} />
+         {{ options.required ? 'required' : '' }}
+         {{ options.min ? 'min=' ~ options.min : '' }}
+         {{ options.max ? 'max=' ~ options.max : '' }}
+         {{ options.step ? 'step=' ~ options.step : '' }}/>
    {% endset %}
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
@@ -283,7 +305,7 @@
       <div class="img-overlay-wrapper position-relative">
          {% set clearable = options['clearable'] %}
          {% set url = options['url'] %}
-         {% set options = options | filter((v, k) => k != 'url' and k != 'clearable') %}
+         {% set options = options|filter((v, k) => k != 'url' and k != 'clearable') %}
          {% if url is not empty %}
             <a href="{{ url }}">
          {% endif %}
@@ -361,7 +383,7 @@
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
 {% endmacro %}
 
-{% macro dropdownTimestampField(name, value, label = '', options) %}
+{% macro dropdownTimestampField(name, value, label = '', options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
@@ -384,7 +406,7 @@
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
 {% endmacro %}
 
-{% macro dropdownYesNo(name, value, label = '', options) %}
+{% macro dropdownYesNo(name, value, label = '', options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
@@ -406,7 +428,7 @@
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
 {% endmacro %}
 
-{% macro dropdownItemTypes(name, value, label = '', options) %}
+{% macro dropdownItemTypes(name, value, label = '', options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
@@ -431,7 +453,7 @@
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
 {% endmacro %}
 
-{% macro dropdownIcons(name, value, label = '', options) %}
+{% macro dropdownIcons(name, value, label = '', options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
@@ -442,11 +464,36 @@
    {% endif %}
 
    {% set field %}
-      {{ Dropdown__dropdownIcons(name, value, constant('GLPI_ROOT')~'/pics/icones', {
+      {{ Dropdown__dropdownIcons(name, value, constant('GLPI_ROOT') ~ '/pics/icones', {
          'display': false,
          'rand': rand,
          'width': '100%',
          'class': 'form-select',
+      }|merge(options)) }}
+   {% endset %}
+
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
+{% endmacro %}
+
+{% macro dropdownHoursField(name, value, label = '', options = {}) %}
+   {% set options = {'rand': random()}|merge(options) %}
+   {% if options.fields_template.isMandatoryField(name) %}
+      {% set options = {'required': true}|merge(options) %}
+   {% endif %}
+
+   {% if options.disabled %}
+      {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
+   {% endif %}
+
+   {% set types = options['types']|default([]) %}
+
+   {% set field %}
+      {{ Dropdown__showHours(name, types, {
+         'display': false,
+         'rand': rand,
+         'width': '100%',
+         'class': 'form-select',
+         'value': value
       }|merge(options)) }}
    {% endset %}
 
@@ -514,14 +561,24 @@
    {% endif %}
 {% endmacro %}
 
+{% macro ajaxField(id, value, label = '', options = {}) %}
+   {% set field %}
+      <div id="{{ id|e }}" class="form-field-ajax">
+         {% if value is not null %}
+            {{ value|raw }}
+         {% endif %}
+      </div>
+   {% endset %}
+   {{ _self.field(id, field, label, options|merge({'id': id ~ '_' ~ options.rand})) }}
+{% endmacro %}
 
 {% macro nullField(options = {}) %}
    {% set options = {'is_horizontal': true}|merge(options) %}
 
    {% if options.is_horizontal %}
-      {{ _self.horizontalField(label, field, id, add_field_html) }}
+      {{ _self.horizontalField(label, field, id, add_field_html, options) }}
    {% else %}
-      {{ _self.verticalField(label, field, id, add_field_html) }}
+      {{ _self.verticalField(label, field, id, add_field_html, options) }}
    {% endif %}
 {% endmacro %}
 

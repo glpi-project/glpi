@@ -33,7 +33,7 @@
 
                         {% for field, label in headings %}
                            <th>
-                              <a href="{{ target }}?sort={{ field }}&amp;order={{ order =="ASC" ? "DESC" : "ASC" }}">
+                              <a href="{{ target }}?sort={{ field }}&amp;order={{ order == "ASC" ? "DESC" : "ASC" }}">
                                  {% if sort == field %}
                                     {% set sort_icon = (order == 'ASC' ? 'fa-sort-up' : 'fa-sort-down') %}
                                     <i class="fas fa-lg {{ sort_icon }}"></i>
