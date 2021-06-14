@@ -37,6 +37,7 @@ use DbTestCase;
 use ITILFollowup as CoreITILFollowup;
 use Ticket;
 use Ticket_User;
+use User;
 
 /* Test for inc/itilfollowup.class.php */
 
@@ -274,21 +275,31 @@ class ITILFollowup extends DbTestCase {
          [
             // Case 1: user is not an actor of the ticket
             "roles"    => [],
+            "profile" => "Technician",
             "expected" => true,
          ],
          [
             // Case 2: user is a requester
             "roles"    => [CommonITILActor::REQUESTER],
+            "profile" => "Technician",
             "expected" => false,
          ],
          [
-            // Case 3: user is an observer
+            // Case 3: user is an observer with a central profile
             "roles"    => [CommonITILActor::OBSERVER],
+            "profile" => "Technician",
+            "expected" => true,
+         ],
+         [
+            // Case 3b: user is an observer without central profiles
+            "roles"    => [CommonITILActor::OBSERVER],
+            "profile" => "Self-Service",
             "expected" => false,
          ],
          [
             // Case 4: user is assigned
             "roles"    => [CommonITILActor::ASSIGN],
+            "profile" => "Technician",
             "expected" => true,
          ],
          [
@@ -297,6 +308,7 @@ class ITILFollowup extends DbTestCase {
                CommonITILActor::OBSERVER,
                CommonITILActor::ASSIGN,
             ],
+            "profile" => "Technician",
             "expected" => true,
          ],
       ];
@@ -307,6 +319,7 @@ class ITILFollowup extends DbTestCase {
     */
    public function testIsFromSupportAgent(
       array $roles,
+      string $profile,
       bool $expected
    ) {
       global $CFG_GLPI, $DB;
@@ -325,12 +338,23 @@ class ITILFollowup extends DbTestCase {
       ]);
       $this->integer($ticket_id);
 
+      // Create test user
+      $rand = mt_rand();
+      $user = new User();
+      $users_id = $user->add([
+         'name' => "testIsFromSupportAgent$rand",
+         'password' => 'testIsFromSupportAgent',
+         'password2' => 'testIsFromSupportAgent',
+         '_profiles_id' => getItemByTypeName('Profile', $profile, true),
+         '_entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+      ]);
+      $this->integer($users_id)->isGreaterThan(0);
+
       // Insert a followup
-      $user1 = getItemByTypeName('User', TU_USER, true);
       $fup = new CoreITILFollowup();
       $fup_id = $fup->add([
          'content'  => "testIsFromSupportAgent",
-         'users_id' => $user1,
+         'users_id' => $users_id,
          'items_id' => $ticket_id,
          'itemtype' => "Ticket",
       ]);
@@ -346,7 +370,7 @@ class ITILFollowup extends DbTestCase {
       foreach ($roles as $role) {
          $this->integer($tuser->add([
             'tickets_id' => $ticket_id,
-            'users_id'   => $user1,
+            'users_id'   => $users_id,
             'type'       => $role,
          ]));
       }

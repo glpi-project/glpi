@@ -138,6 +138,10 @@ class RuleRight extends Rule {
                         $output_src["_stop_import"] = true;
                         break;
 
+                     default:
+                        $output[$action->fields["field"]] = $action->fields["value"];
+                        break;
+
                   } // switch (field)
                   break;
 
