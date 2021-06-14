@@ -1568,6 +1568,9 @@ class Dropdown {
             //TRANS: %s is a number of milliseconds
             return sprintf(_n('%s millisecond', '%s milliseconds', $value), $formatted_number);
 
+         case 'rack_unit':
+            return sprintf(_n('%d unit', '%d units', $value), $value);
+
          case 'auto':
             return Toolbox::getSize($value*1024*1024);
 

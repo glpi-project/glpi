@@ -30,34 +30,21 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
-Html::header_nocache();
+namespace Glpi\Application\View\Extension;
 
-Session::checkLoginUser();
+use Ajax;
+use Twig\Extension\AbstractExtension;
+use Twig\Extension\ExtensionInterface;
+use Twig\TwigFunction;
 
-if (!isset($_REQUEST['id'])) {
-   throw new \RuntimeException('Required argument missing!');
-}
+/**
+ * @since 10.0.0
+ */
+class AjaxExtension extends AbstractExtension implements ExtensionInterface {
 
-$id = $_REQUEST['id'];
-$current = isset($_REQUEST['current']) ? $_REQUEST['current'] : null;
-$rand = isset($_REQUEST['rand']) ? $_REQUEST['rand'] : mt_rand();
-
-$room = new DCRoom();
-if ($room->getFromDB($id)) {
-   $used = $room->getFilled($current);
-   $positions = $room->getAllPositions();
-
-   Dropdown::showFromArray(
-      'position',
-      $positions, [
-         'class'                 => 'form-select',
-         'value'                 => $current,
-         'rand'                  => $rand,
-         'display_emptychoice'   => true,
-         'used'                  => $used
-      ]
-   );
-} else {
-   echo "<div class='col-form-label'>".__('No room found or selected')."</div>";
+   public function getFunctions() {
+      return [
+         new TwigFunction('updateItemOnSelectEvent', [Ajax::class, 'updateItemOnSelectEvent']),
+      ];
+   }
 }

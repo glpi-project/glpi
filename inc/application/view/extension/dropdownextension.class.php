@@ -52,9 +52,15 @@ class DropdownExtension extends AbstractExtension implements ExtensionInterface 
          new TwigFunction('Dropdown__showYesNo', [Dropdown::class, 'showYesNo'], ['is_safe' => ['html']]),
          new TwigFunction('Dropdown__showTimestamp', [Dropdown::class, 'showTimestamp'], ['is_safe' => ['html']]),
          new TwigFunction('Dropdown__showItemTypes', [Dropdown::class, 'showItemTypes'], ['is_safe' => ['html']]),
+         new TwigFunction('Dropdown__showHours', [$this, 'showHours'], ['is_safe' => ['html']]),
          new TwigFunction('Dropdown__dropdownIcons', [Dropdown::class, 'dropdownIcons'], ['is_safe' => ['html']]),
          new TwigFunction('TicketValidation__dropdownStatus', [TicketValidation::class, 'dropdownStatus'], ['is_safe' => ['html']]),
          new TwigFunction('TicketValidation__dropdownValidator', [TicketValidation::class, 'dropdownValidator'], ['is_safe' => ['html']]),
       ];
+   }
+
+   public function showHours($name, $options = []) {
+      // Suppress returned ID value
+      Dropdown::showHours($name, $options);
    }
 }

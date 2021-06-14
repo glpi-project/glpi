@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -57,28 +59,11 @@ class Datacenter extends CommonDBTM {
    }
 
    function showForm($ID, $options = []) {
-      $rand = mt_rand();
-
       $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='textfield_name$rand'>".__('Name')."</label></td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "name", ['rand' => $rand]);
-      echo "</td>";
-
-      echo "<td><label for='dropdown_locations_id$rand'>".Location::getTypeName(1)."</label></td>";
-      echo "<td>";
-      Location::dropdown([
-         'value'  => $this->fields["locations_id"],
-         'entity' => $this->fields["entities_id"],
-         'rand'   => $rand
+      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
+         'item'   => $this,
+         'params' => $options,
       ]);
-      echo "</td>";
-      echo "</tr>";
-
-      $this->showFormButtons($options);
       return true;
    }
 

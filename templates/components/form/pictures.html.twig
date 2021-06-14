@@ -7,7 +7,7 @@
    {% set picture_rear = getItemtypeOrModelPicture(item, 'picture_rear') %}
    {% set pictures_misc = getItemtypeOrModelPicture(item, 'pictures') %}
 
-   {% if picture_single|length > 1 || picture_front|length > 1 or picture_rear|length > 1 || pictures_misc|length > 0 %}
+   {% if picture_single|length > 1 or picture_front|length > 1 or picture_rear|length > 1 or pictures_misc|length > 0 %}
       <div class="col-12 col-xl-4 me-n2">
          {% if picture_single|length > 1 %}
             <img src="{{ getPictureUrl(picture_single) }}" class="" alt="{{ __("Picture") }}">

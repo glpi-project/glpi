@@ -30,34 +30,17 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
-Html::header_nocache();
+/**
+ * @var Migration $migration
+ */
 
-Session::checkLoginUser();
-
-if (!isset($_REQUEST['id'])) {
-   throw new \RuntimeException('Required argument missing!');
-}
-
-$id = $_REQUEST['id'];
-$current = isset($_REQUEST['current']) ? $_REQUEST['current'] : null;
-$rand = isset($_REQUEST['rand']) ? $_REQUEST['rand'] : mt_rand();
-
-$room = new DCRoom();
-if ($room->getFromDB($id)) {
-   $used = $room->getFilled($current);
-   $positions = $room->getAllPositions();
-
-   Dropdown::showFromArray(
-      'position',
-      $positions, [
-         'class'                 => 'form-select',
-         'value'                 => $current,
-         'rand'                  => $rand,
-         'display_emptychoice'   => true,
-         'used'                  => $used
-      ]
-   );
-} else {
-   echo "<div class='col-form-label'>".__('No room found or selected')."</div>";
-}
+$migration->changeField(Contract::getTable(), 'use_monday', 'use_sunday', 'bool');
+$migration->dropKey(Contract::getTable(), 'use_monday');
+$migration->changeField(Contract::getTable(), 'monday_begin_hour', 'sunday_begin_hour', 'time', [
+   'value'  => '00:00:00'
+]);
+$migration->changeField(Contract::getTable(), 'monday_end_hour', 'sunday_end_hour', 'time', [
+   'value'  => '00:00:00'
+]);
+$migration->migrationOneTable(Contract::getTable());
+$migration->addKey(Contract::getTable(), 'use_sunday');

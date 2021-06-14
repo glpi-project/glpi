@@ -1459,9 +1459,9 @@ CREATE TABLE `glpi_contracts` (
   `saturday_begin_hour` time NOT NULL DEFAULT '00:00:00',
   `saturday_end_hour` time NOT NULL DEFAULT '00:00:00',
   `use_saturday` tinyint NOT NULL DEFAULT '0',
-  `monday_begin_hour` time NOT NULL DEFAULT '00:00:00',
-  `monday_end_hour` time NOT NULL DEFAULT '00:00:00',
-  `use_monday` tinyint NOT NULL DEFAULT '0',
+  `sunday_begin_hour` time NOT NULL DEFAULT '00:00:00',
+  `sunday_end_hour` time NOT NULL DEFAULT '00:00:00',
+  `use_sunday` tinyint NOT NULL DEFAULT '0',
   `max_links_allowed` int NOT NULL DEFAULT '0',
   `alert` int NOT NULL DEFAULT '0',
   `renewal` int NOT NULL DEFAULT '0',
@@ -1478,7 +1478,7 @@ CREATE TABLE `glpi_contracts` (
   KEY `is_recursive` (`is_recursive`),
   KEY `is_deleted` (`is_deleted`),
   KEY `is_template` (`is_template`),
-  KEY `use_monday` (`use_monday`),
+  KEY `use_sunday` (`use_sunday`),
   KEY `use_saturday` (`use_saturday`),
   KEY `alert` (`alert`),
   KEY `states_id` (`states_id`),
@@ -2595,6 +2595,7 @@ CREATE TABLE `glpi_domains` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `domaintypes_id` int NOT NULL DEFAULT '0',
   `date_expiration` timestamp NULL DEFAULT NULL,
+  `date_domaincreation` timestamp NULL DEFAULT NULL,
   `users_id_tech` int NOT NULL DEFAULT '0',
   `groups_id_tech` int NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
@@ -2616,6 +2617,7 @@ CREATE TABLE `glpi_domains` (
   KEY `is_template` (`is_template`),
   KEY `is_active` (`is_active`),
   KEY `date_expiration` (`date_expiration`),
+  KEY `date_domaincreation` (`date_domaincreation`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
