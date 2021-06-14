@@ -3055,6 +3055,13 @@ JAVASCRIPT;
                   case "glpi_users.name" :
                      $options2['right']            = (isset($searchopt['right']) ? $searchopt['right'] : 'all');
                      $options2['inactive_deleted'] = 1;
+                     $searchopt['toadd'] = [
+                        [
+                           'id'    => 'myself',
+                           'text'  => __('Myself'),
+                        ]
+                     ];
+
                      break;
                }
 
@@ -4261,6 +4268,16 @@ JAVASCRIPT;
          // case "glpi_users_validation.name" :
 
          case "glpi_users.name" :
+            if ($val == 'myself') {
+               switch ($searchtype) {
+                  case 'equals' :
+                     return " $link (`$table`.`id` =  " . $DB->quoteValue($_SESSION['glpiID']) . ") ";
+
+                  case 'notequals' :
+                     return " $link (`$table`.`id` <>  " . $DB->quoteValue($_SESSION['glpiID']) . ") ";
+               }
+            }
+
             if ($itemtype == 'User') { // glpi_users case / not link table
                if (in_array($searchtype, ['equals', 'notequals'])) {
                   $search_str = "`$table`.`id`" . $SEARCH;
