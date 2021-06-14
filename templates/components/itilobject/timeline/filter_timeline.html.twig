@@ -35,13 +35,18 @@
       'itemtype': 'ITILSolution',
       'checked': true,
    },
-   'logs': {
-      'title': __('Historical'),
-      'icon': 'fas fa-history',
-      'itemtype': 'Log',
-      'checked': false,
-   },
 } %}
+
+{% if getCurrentInterface() == "central" %}
+   {% set filters_buttons = filters_buttons|merge({
+      'logs': {
+         'title': __('Historical'),
+         'icon': 'fas fa-history',
+         'itemtype': 'Log',
+         'checked': false,
+      },
+   }) %}
+{% endif %}
 
 <div class="filter-timeline d-none d-md-block float-end mt-n2 position-relative">
    <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __("Timeline filter") }}">

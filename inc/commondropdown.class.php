@@ -61,8 +61,7 @@ abstract class CommonDropdown extends CommonDBTM {
    static $rightname = 'dropdown';
 
 
-   public function __call($name, $arguments)
-   {
+   public function __call($name, $arguments) {
       if ($name === 'displaySpecificTypeField') {
          Toolbox::deprecated();
       }
