@@ -309,8 +309,6 @@ class NetworkPortInstantiation extends CommonDBChild {
    **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
                                       HTMLTableCell $father = null, array $options = []) {
-
-                                       Toolbox::backtrace("php-errors");
       global $DB;
 
       $display_options = $options['display_options'];
