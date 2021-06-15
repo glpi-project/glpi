@@ -959,6 +959,7 @@ class AuthLDAP extends DbTestCase {
          ->string['phone']->isIdenticalTo('034596780')
          ->string['user_dn']->isIdenticalTo('uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org');
 
+      // update the user in ldap (change phone number)
       $this->boolean(
          ldap_modify(
             $ldap->connect(),
@@ -983,12 +984,14 @@ class AuthLDAP extends DbTestCase {
          ->integer['action']->isIdenticalTo(\AuthLDAP::USER_SYNCHRONIZED)
          ->variable['id']->isEqualTo($user->getID());
 
+      // check phone number has been synced
       $this->boolean($user->getFromDB($user->getID()))->isTrue();
       $this->array($user->fields)
          ->string['name']->isIdenticalTo('ecuador0')
          ->string['phone']->isIdenticalTo('+33101010101')
          ->string['user_dn']->isIdenticalTo('uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org');
 
+      // update sync field of user
       $this->boolean(
          $ldap->update([
             'id'           => $ldap->getID(),
@@ -998,6 +1001,7 @@ class AuthLDAP extends DbTestCase {
 
       $this->boolean($ldap->isSyncFieldEnabled())->isTrue();
 
+      // add sync field attribute in ldap user
       $this->boolean(
          ldap_mod_add(
             $ldap->connect(),
@@ -1016,6 +1020,7 @@ class AuthLDAP extends DbTestCase {
 
       $this->variable($user->fields['sync_field'])->isEqualTo(42);
 
+      // rename the user (uid change, syncfield keep its value)
       $this->boolean(
          ldap_rename(
             $ldap->connect(),
@@ -1047,6 +1052,7 @@ class AuthLDAP extends DbTestCase {
          )
       )->isTrue();
 
+      // check the `name` field (corresponding to the uid) has been updated for the user
       $this->boolean($user->getFromDB($user->getID()))->isTrue();
       $this->array($synchro)
          ->hasSize(2)
@@ -1055,6 +1061,66 @@ class AuthLDAP extends DbTestCase {
 
       $this->variable($user->fields['sync_field'])->isEqualTo(42);
       $this->string($user->fields['name'])->isIdenticalTo('testecuador');
+
+      // ## test we can sync the user when the syncfield is different but after we reset it manually
+      $this->boolean(
+         ldap_mod_add(
+            $ldap->connect(),
+            'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
+            ['employeeNumber' => '42']
+         )
+      )->isTrue();
+
+      $synchro = $ldap->forceOneUserSynchronization($user);
+
+      $this->boolean($user->getFromDB($user->getID()))->isTrue();
+      $this->array($synchro)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_SYNCHRONIZED)
+         ->variable['id']->isEqualTo($user->getID());
+
+      $this->variable($user->fields['sync_field'])->isEqualTo(42);
+
+      $this->boolean(
+         ldap_mod_replace(
+            $ldap->connect(),
+            'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
+            ['employeeNumber' => '43']
+         )
+      )->isTrue();
+
+      // do a simple sync
+      $synchro = $ldap->forceOneUserSynchronization($user);
+      $this->boolean($user->getFromDB($user->getID()))->isTrue();
+
+      // the sync field should have been kept
+      // but the user should now be in non synchronized state
+      $this->variable($user->fields['sync_field'])->isEqualTo(42);
+      $this->array($synchro)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_DELETED_LDAP)
+         ->variable['id']->isEqualTo($user->getID());
+
+      // sync after emptying the sync field
+      $synchro2 = $ldap->forceOneUserSynchronization($user, true);
+      $this->boolean($user->getFromDB($user->getID()))->isTrue();
+
+      // the sync field should have changed
+      // and the user is now synchronized again
+      $this->variable($user->fields['sync_field'])->isEqualTo(43);
+      $this->array($synchro2)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_SYNCHRONIZED)
+         ->variable['id']->isEqualTo($user->getID());
+
+      // reset attribute
+      $this->boolean(
+         ldap_mod_del(
+            $ldap->connect(),
+            'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
+            ['employeeNumber' => 43]
+         )
+      )->isTrue();
 
       global $DB;
       $DB->updateOrDie(

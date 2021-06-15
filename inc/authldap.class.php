@@ -2454,16 +2454,26 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Force synchronization for one user
     *
-    * @param User    $user    User to synchronize
-    * @param boolean $display Display message information on redirect (true by default)
+    * @param User    $user              User to synchronize
+    * @param boolean $clean_ldap_fields empty user_dn and sync_field before import user again
+    * @param boolean $display           Display message information on redirect (true by default)
     *
     * @return array|boolean  with state, else false
     */
-   static function forceOneUserSynchronization(User $user, $display = true) {
+   static function forceOneUserSynchronization(User $user, $clean_ldap_fields = false, $display = true) {
       $authldap = new AuthLDAP();
 
       //Get the LDAP server from which the user has been imported
       if ($authldap->getFromDB($user->fields['auths_id'])) {
+         // clean ldap fields if asked by admin
+         if ($clean_ldap_fields) {
+            $user->update([
+               'id'         => $user->fields['id'],
+               'user_dn'    => '',
+               'sync_field' => '',
+            ]);
+         }
+
          $user_field = 'name';
          $id_field = $authldap->fields['login_field'];
          if ($authldap->isSyncFieldEnabled() && !empty($user->fields['sync_field'])) {

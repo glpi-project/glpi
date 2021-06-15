@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  *  Identification class used to login
  */
-class Auth {
+class Auth extends CommonGLPI {
 
    /** @var array Array of errors */
    private $errors = [];
@@ -1361,6 +1361,7 @@ class Auth {
       if (Session::haveRight("user", User::UPDATEAUTHENT)) {
          echo "<form method='post' action='".Toolbox::getItemTypeFormURL('User')."'>";
          echo "<div class='firstbloc'>";
+         echo "<input type='hidden' name='id' value='".$user->getID()."'>";
 
          switch ($user->getField('authtype')) {
             case self::CAS :
@@ -1369,19 +1370,20 @@ class Auth {
             case self::LDAP :
                //Look it the auth server still exists !
                // <- Bad idea : id not exists unable to change anything
-               // SQL query
-               $result = $DB->request([
-                   'SELECT' => 'name',
-                   'FROM' => 'glpi_authldaps',
-                   'WHERE' => ['id' => $user->getField('auths_id'), 'is_active' => 1],
-               ]);
+               $authldap = new AuthLDAP;
+               if ($authldap->getFromDBByCrit([
+                  'id'        => $user->getField('auths_id'),
+                  'is_active' => 1,
+               ])) {
+                  echo Html::submit("<i class='fas fa-sync-alt'></i><span>".__s('Force synchronization')."</span>", [
+                     'name' => 'force_ldap_resynch'
+                  ]);
 
-               if ($result->numrows() > 0) {
-                  echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
-                  echo "<input type='hidden' name='id' value='".$user->getID()."'>";
-                  echo "<input class=submit type='submit' name='force_ldap_resynch' value='" .
-                         __s('Force synchronization') . "'>";
-                  echo "</td></tr></table>";
+                  if (strlen($authldap->fields['sync_field']) > 0) {
+                     echo Html::submit("<i class='fas fa-broom'></i><span>".__s('Clean LDAP fields and force synchronisation')."</span>", [
+                        'name' => 'clean_ldap_fields'
+                     ]);
+                  }
                }
                break;
 
@@ -1389,21 +1391,18 @@ class Auth {
             case self::MAIL :
                break;
          }
+
          echo "</div>";
 
          echo "<div class='spaced'>";
-         echo "<table class='tab_cadre'>";
-         echo "<tr><th>".__('Change of the authentication method')."</th></tr>";
-         echo "<tr class='tab_bg_2'><td class='center'>";
+         echo "<h3>".__('Change of the authentication method')."</h3>";
          $rand             = self::dropdown(['name' => 'authtype']);
          $paramsmassaction = ['authtype' => '__VALUE__',
                                    'name'     => 'change_auth_method'];
          Ajax::updateItemOnSelectEvent("dropdown_authtype$rand", "show_massiveaction_field",
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAuthMethods.php",
                                        $paramsmassaction);
-         echo "<input type='hidden' name='id' value='" . $user->getID() . "'>";
          echo "<span id='show_massiveaction_field'></span>";
-         echo "</td></tr></table>";
          echo "</div>";
          Html::closeForm();
       }
