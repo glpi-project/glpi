@@ -1,8 +1,11 @@
 name: "GLPI nightly build"
 
 on:
+  # Runs test suite every night
   schedule:
     - cron:  '0 0 * * *'
+  # Enable manual run
+  workflow_dispatch:
 
 jobs:
   build:
@@ -15,8 +18,8 @@ jobs:
       matrix:
         include:
           # build on lower supported version to ensure building tools are compatible with this version
-          - {branch: "9.4/bugfixes", php-version: "5.6"}
           - {branch: "9.5/bugfixes", php-version: "7.2"}
+          - {branch: "master", php-version: "7.3"}
     services:
       app:
         image: "ghcr.io/glpi-project/githubactions-php:${{ matrix.php-version }}"
