@@ -1611,7 +1611,7 @@ class Search extends DbTestCase {
                'testMyselfSearchCriteriaProvider 4',
             ]
          ],
-         // Case 1: Search for tickets of the current user (TU_USER)
+         // Case 3: Search for tickets of the current user (TU_USER)
          [
             'criteria' => [
                [
