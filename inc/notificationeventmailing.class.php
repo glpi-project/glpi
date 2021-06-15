@@ -362,7 +362,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
          $mime = mime_content_type($path);
          if ($mime == "message/rfc822") {
             // messages/rfc822 can't be encoded in base64 according to RFC2046
-            // https://datatracker.ietf.org/doc/html/rfc2046)
+            // https://datatracker.ietf.org/doc/html/rfc2046
             $encoding = PHPMailer::ENCODING_8BIT;
          }
 
