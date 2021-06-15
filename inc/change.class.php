@@ -1511,7 +1511,6 @@ class Change extends CommonITILObject {
           && !(!empty($withtemplate) && $withtemplate == 2)
           && (!isset($item->fields['is_template']) || $item->fields['is_template'] == 0)) {
          echo "<div class='firstbloc'>";
-         var_dump(Change::getFormURL());
 
          Html::showSimpleForm(
             Change::getFormURL(),
