@@ -1116,7 +1116,8 @@ class CommonDBTM extends CommonGLPI {
          }
       }
 
-      if (isset($input['name'])) {
+      //manage < > from template and autofill field
+      if (isset($input['name']) && !$this->getField('is_template')) {
          $input['name'] = strip_tags(Toolbox::unclean_cross_side_scripting_deep($input['name']));
       }
 
@@ -1493,7 +1494,8 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      if (isset($input['name'])) {
+      //manage < > from template and autofill field
+      if (isset($input['name']) && !$this->getField('is_template')) {
          $input['name'] = strip_tags(Toolbox::unclean_cross_side_scripting_deep($input['name']));
       }
 
@@ -5451,6 +5453,8 @@ class CommonDBTM extends CommonGLPI {
          if ($value === null) {
             $value = $this->getField($field);
          }
+
+         $value = htmlentities(Toolbox::unclean_cross_side_scripting_deep($value));
          $len = Toolbox::strlen($value);
          if ($len > 8
             && Toolbox::substr($value, 0, 4) === '&lt;'

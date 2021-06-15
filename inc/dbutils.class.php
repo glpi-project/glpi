@@ -1548,6 +1548,7 @@ final class DbUtils {
    public function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1) {
       global $DB, $CFG_GLPI;
 
+      $objectName = htmlentities(Toolbox::unclean_cross_side_scripting_deep($objectName));
       $len = Toolbox::strlen($objectName);
 
       if ($isTemplate
