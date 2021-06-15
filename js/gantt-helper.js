@@ -3,23 +3,54 @@ var url = '../ajax/gantt.php';
 
 function initGantt($ID) {
 
-   // >>>>> Configs
+   var project_subtypes = [
+      { key: gantt.config.types.project, label: "Project" },
+      { key: gantt.config.types.task, label: "Task" },
+      { key: gantt.config.types.milestone, label: "Milestone" }
+   ];
 
+   var task_subtypes = [
+      { key: gantt.config.types.task, label: "Task" },
+      { key: gantt.config.types.milestone, label: "Milestone" }
+   ];
+
+   var default_section = [
+      { name: "description", height: 70, map_to: "text", type: "textarea", focus: true, default_value: "New project" },
+      { name: "time", type: "duration", map_to: "auto" }
+   ];
+
+   var new_project_section = [
+      { name: "description", height: 70, map_to: "text", type: "textarea", focus: true, default_value: "New project" },
+      { name: "time", type: "duration", map_to: "auto" },
+      { name: "type", type: "radio", map_to: "type", options: project_subtypes, default_value: gantt.config.types.project }
+   ];
+
+   var new_item_section = [
+      { name: "description", height: 70, map_to: "text", type: "textarea", focus: true },
+      { name: "time", type: "duration", map_to: "auto" },
+      { name: "type", type: "radio", map_to: "type", options: task_subtypes, default_value: gantt.config.types.task }
+   ];
+
+   var filterValue = "";
+   var delay;
+
+   // >>>>> Configs
    gantt.config.grid_width = 600;
+   gantt.config.grid_resize = true;
    gantt.config.date_format = "%Y-%m-%d %H:%i";
 
-   gantt.config.sort = true;
-   gantt.config.order_branch = "marker"; // avoid reordering performance slowdown by showing only task name while dragging
+   gantt.config.order_branch = "marker";
+   gantt.config.order_branch_free = true;
    gantt.config.show_progress = true;
+   gantt.config.sort = true;
+
+   gantt.config.lightbox.project_sections = [
+      { name: "description", height: 70, map_to: "text", type: "textarea", focus: true },
+   ];
 
    gantt.config.lightbox.sections = [
       { name: "description", height: 70, map_to: "text", type: "textarea", focus: true },
       { name: "time", type: "duration", map_to: "auto" }
-   ];
-
-   gantt.config.lightbox.project_sections = [
-      { name: "description", height: 70, map_to: "text", type: "textarea", focus: true },
-      { name: "time", type: "duration", readonly: true, map_to: "auto" }
    ];
 
    gantt.config.lightbox.milestone_sections = [
@@ -53,19 +84,25 @@ function initGantt($ID) {
    gantt.plugins({ tooltip: true, fullscreen: true });
 
    gantt.templates.tooltip_text = function(start, end, task) {
-      return "<b><span class=\"capitalize\">" + task.type + ":</span></b> " + task.text + "<br/><b>Start date:</b> " +
+      var text = "<b><span class=\"capitalize\">" +
+         task.type + ":</span></b> " + task.text + "<br/><b>Start date:</b> " +
          gantt.templates.tooltip_date_format(start) +
          "<br/><b>End date:</b> " + gantt.templates.tooltip_date_format(end) +
          "<br/><b>Progress:</b> " + parseInt(task.progress * 100) + "%";
+      if (task.content && task.content.length > 0) {
+         text += "<br/><b>Description:</b><div style=\"padding-left:25px\">" + task.content + "</div>";
+      }
+      if (task.comment && task.comment.length > 0) {
+         text += "<br/><b>Comment:</b><div style=\"padding-left:25px\"" + task.comment + "</div>";
+      }
+      return text;
    };
 
    // columns definition
    gantt.config.columns = [
-      //{ name: "wbs", label: " ", width: 45, template: gantt.getWBSCode, align: "left" },
-      { name: "text", label: "Project / Task", width: 200, tree: true, align: "left" },
+      { name: "text", label: "Project / Task", width: 290, tree: true, align: "left" },
       { name: "start_date", label: "Start date", align: "left", width: 90 },
-      { name: "end_date", label: "End date", align: "left", width: 90 },
-      { name: "duration", label: "Duration", align: "center" },
+      { name: "duration", label: "Duration", align: "center", width: 40 },
       {
          name: "parent",
          label: "Parent",
@@ -77,8 +114,11 @@ function initGantt($ID) {
                parent = gantt.getTask(item.parent).text;
             return parent;
          }
-      }
+      },
+      { name: "add", align: "center" }
    ];
+
+   gantt.config.columns[4].sort = false;
 
    // specify fullscreen root element
    gantt.ext.fullscreen.getFullscreenElement = function() {
@@ -160,18 +200,25 @@ function initGantt($ID) {
       document.querySelector(".gantt_radio[value='" + config.name + "']").checked = true;
    });
 
-   var radios = document.getElementsByName("scale");
-   for (var i = 0; i < radios.length; i++) {
-      radios[i].onclick = function(event) {
-         gantt.ext.zoom.setLevel(event.target.value);
-      };
-   }
+   $("input[name='scale']").on('click', function(event) {
+      gantt.ext.zoom.setLevel(event.target.value);
+   });
 
-   // enable task reordering (on same level) between projects
-   gantt.attachEvent("onBeforeTaskMove", function(id, parent, tindex) {
-      var task = gantt.getTask(id);
-      if (task.parent != parent)
+   $("input[name='branch_level']").on('click', function(event) {
+      expandCollapse(event.target.value);
+   });
+
+   $("input[name='branch_state']").on('click', function() {
+      expandCollapse($("input[name='branch_level']:checked").val());
+   });
+
+   gantt.attachEvent("onBeforeRowDragEnd", function(id, target) {
+      var item = gantt.getTask(id);
+      var target = gantt.getTask(target);
+      if (item.type == gantt.config.types.project && target.type != gantt.config.types.project) {
          return false;
+      }
+      changeParent(item, target);
       return true;
    });
 
@@ -180,94 +227,60 @@ function initGantt($ID) {
       gantt.attachEvent("onAfterTaskDrag", function(id, mode, e) {
          var task = gantt.getTask(id);
          var progress = (Math.round(task.progress * 100 / 5) * 5) / 100; // prevent server side exception for wrong stepping
-         $.ajax({
-            url,
-            type: 'POST',
-            data: {
-               updateTask: 1,
-               task: {
-                  id: task.linktask_id,
-                  start_date: formatFunc(task.start_date),
-                  end_date: formatFunc(task.end_date),
-                  progress
-               }
-            },
-            success: function(resp) {
-               var json = JSON.parse(resp);
-               if (json.ok) {
-                  task.progress = progress;
-                  gantt.updateTask(task.id);
-               } else {
-                  console.log('Could not update Task[' + id + ']: ' + json.error);
-               }
-            }
-         });
+         onTaskDrag(id, task, progress);
       });
 
       gantt.attachEvent("onAfterTaskUpdate", function(id, task) {
          parentProgress(id);
       });
 
+      gantt.attachEvent("onTaskDblClick", function(id, e) {
+         openEditForm(gantt.getTask(id));
+      });
+
+      gantt.attachEvent("onBeforeLightbox", function(id) {
+         var task = gantt.getTask(id);
+         if (task.$new) {
+            if (task.parent && !isNaN(task.parent)) {
+               gantt.config.lightbox.sections = new_project_section;
+            } else if (isNaN(task.parent)) {
+               gantt.config.lightbox.sections = new_item_section;
+            } else {
+               gantt.config.lightbox.sections = default_section;
+            }
+            gantt.resetLightbox();
+         }
+         return true;
+      });
+
+      gantt.attachEvent("onLightbox", function(id) {
+         var task = gantt.getTask(id);
+         if (task.$new) {
+            gantt.getLightboxSection("time").setValue(new Date());
+            if (!isNaN(task.parent)) {
+               gantt.getLightboxSection("description").setValue('New project');
+            }
+         } else {
+            if (gantt.getLightboxSection("type")) {
+               gantt.getLightboxSection("type").setValue(task.type);
+            }
+         }
+      });
+
       // handle lightbox Save action
       gantt.attachEvent("onLightboxSave", function(id, item, is_new) {
-         // TODO add new item
-
-         // update item
-         if (item.type == 'project') {
-            $.ajax({
-               url,
-               type: 'POST',
-               data: {
-                  updateProject: 1,
-                  project: {
-                     id: item.id,
-                     name: item.text
-                  }
-               },
-               success: function(resp) {
-                  var json = JSON.parse(resp);
-                  if (json.ok) {
-                     var project = gantt.getTask(id);
-                     project.text = item.text;
-                     gantt.updateTask(id);
-                     gantt.hideLightbox();
-                  } else
-                     gantt.alert('Could not update Project[' + item.text + ']: ' + json.error);
-               },
-               error: function(resp) {
-                  gantt.alert(resp.responseText);
-               }
-            });
+         if (is_new) {
+            if (item.parent == 0 || (gantt.getLightboxSection("type") && gantt.getLightboxSection("type").getValue() == gantt.config.types.project)) {
+               addProject(id, item);
+            } else {
+               addTask(id, item);
+            }
+         } else if (item.type == 'project') {
+            updateProject(id, item);
          } else {
-            $.ajax({
-               url,
-               type: 'POST',
-               data: {
-                  updateTask: 1,
-                  task: {
-                     id: item.linktask_id,
-                     name: item.text,
-                     start_date: formatFunc(item.start_date),
-                     end_date: formatFunc(item.end_date)
-                  }
-               },
-               success: function(resp) {
-                  var json = JSON.parse(resp);
-                  if (json.ok) {
-                     var task = gantt.getTask(id);
-                     task.text = item.text;
-                     task.start_date = item.start_date;
-                     task.end_date = item.end_date;
-                     gantt.updateTask(id);
-                     gantt.hideLightbox();
-                  } else
-                     gantt.alert('Could not update Task[' + item.text + ']: ' + json.error);
-               },
-               error: function(resp) {
-                  gantt.alert(resp.responseText);
-               }
-            });
+            updateTask(id, item);
          }
+         return false;
       });
 
       // handle lightbox Delete action
@@ -290,47 +303,16 @@ function initGantt($ID) {
                callback: function(result) {
                   if (result) {
                      if (item.type == 'project') {
-                        // move project to trashbin
-                        $.ajax({
-                           url,
-                           type: 'POST',
-                           dataType: 'json',
-                           data: { putInTrashbin: 1, projectId: item.id },
-                           success: function(resp) {
-                              if (resp.ok) {
-                                 gantt.deleteTask(id);
-                                 gantt.hideLightbox();
-                              } else
-                                 gantt.alert(resp.error);
-                           },
-                           error: function(resp) {
-                              gantt.alert(resp.responseText);
-                           }
-                        });
+                        putInTrashbin(id, item);
                      } else {
-                        // delete task or milestone
-                        $.ajax({
-                           url,
-                           type: 'POST',
-                           dataType: 'json',
-                           data: { deleteTask: 1, taskId: item.linktask_id },
-                           success: function(resp) {
-                              if (resp.ok) {
-                                 gantt.deleteTask(id);
-                                 gantt.hideLightbox();
-                              } else
-                                 gantt.alert(resp.error);
-                           },
-                           error: function(resp) {
-                              gantt.alert(resp.responseText);
-                           }
-                        });
+                        deleteTask(id, item);
                      }
                   }
                }
             });
          }
       });
+
    }
 
    gantt.attachEvent("onBeforeLinkAdd", function(id, link) {
@@ -339,36 +321,7 @@ function initGantt($ID) {
       var targetTask = gantt.getTask(link.target);
 
       if (validateLink(sourceTask, targetTask, link.type)) {
-         $.ajax({
-            url,
-            type: 'POST',
-            data: {
-               addTaskLink: 1,
-               taskLink: {
-                  source_id: sourceTask.linktask_id,
-                  source_uuid: sourceTask.id,
-                  target_id: targetTask.linktask_id,
-                  target_uuid: targetTask.id,
-                  type: link.type,
-                  lag: link.lag,
-                  lead: link.lead
-               }
-            },
-            success: function(resp) {
-               var json = JSON.parse(resp);
-               if (json.ok) {
-                  var tempId = link.id;
-                  gantt.changeLinkId(tempId, json.id);
-               } else {
-                  gantt.alert(json.error);
-                  gantt.deleteLink(id);
-               }
-            },
-            error: function(resp) {
-               gantt.alert(resp.responseText);
-               gantt.deleteLink(id);
-            }
-         });
+         addTaskLink(id, sourceTask, targetTask, link);
       } else
          return false;
    });
@@ -477,6 +430,41 @@ function initGantt($ID) {
       return true;
    });
 
+   gantt.templates.grid_row_class = function(start, end, task) {
+      if (!filterValue || !$('#rb-find').is(':checked')) {
+         return "";
+      }
+      var normalizedText = task.text.toLowerCase();
+      var normalizedValue = filterValue.toLowerCase();
+      return (normalizedText.indexOf(normalizedValue) > -1) ? "highlight" : "";
+   };
+
+   gantt.attachEvent("onBeforeTaskDisplay", function(id, task) {
+      if (!filterValue || !$('#rb-filter').is(':checked')) {
+         return true;
+      }
+      var normalizedText = task.text.toLowerCase();
+      var normalizedValue = filterValue.toLowerCase();
+      return (normalizedText.indexOf(normalizedValue) > -1);
+   });
+
+   $('.gantt_radio[name=rb-optype]').on('change', function() {
+      gantt.render();
+   });
+
+   gantt.attachEvent("onGanttRender", function() {
+      $("#search").val(filterValue);
+   });
+
+   gantt.$doFilter = function(value) {
+      filterValue = value;
+      clearTimeout(delay);
+      delay = setTimeout(function() {
+         gantt.render();
+         $("#search").focus();
+      }, 500);
+   };
+
    $('.flatpickr').flatpickr();
 
    // <<<<< Event handlers
@@ -505,12 +493,15 @@ function initGantt($ID) {
                   expire: -1
                });
             }
+            expandCollapse(1);
+            calculateProgress();
+            gantt.sort('text', false);
          } else {
-            console.log(json.error);
+            gantt.alert(json.error);
          }
       },
       error: function(resp) {
-         console.log(resp.responseText);
+         gantt.alert(resp.responseText);
       }
    });
 }
@@ -532,6 +523,14 @@ function parentProgress(id) {
       task.progress = childProgress / children.length / 100;
    }, id);
    gantt.render();
+}
+
+function calculateProgress() {
+   gantt.eachTask(function(item) {
+      if (item.progress > 0) {
+         parentProgress(item.id);
+      }
+   });
 }
 
 function validateLink(source, target, type) {
@@ -559,6 +558,242 @@ function validateLink(source, target, type) {
    return valid;
 }
 
+function addTask(id, item) {
+   $.ajax({
+      url,
+      type: 'POST',
+      async: false,
+      data: {
+         addTask: 1,
+         task: {
+            parent: item.parent,
+            name: item.text,
+            type: item.type,
+            start_date: formatFunc(item.start_date),
+            end_date: formatFunc(item.end_date)
+         }
+      },
+      success: function(resp) {
+         var json = JSON.parse(resp);
+         if (json.ok) {
+            gantt.addTask(json.item);
+            gantt.hideLightbox();
+            gantt.deleteTask(id);
+         } else {
+            gantt.alert(json.error);
+         }
+      },
+      error: function(resp) {
+         gantt.alert(resp.responseText);
+      }
+   });
+}
+
+function updateTask(id, item) {
+   $.ajax({
+      url,
+      type: 'POST',
+      data: {
+         updateTask: 1,
+         task: {
+            id: item.linktask_id,
+            name: item.text,
+            type: item.type,
+            start_date: formatFunc(item.start_date),
+            end_date: formatFunc(item.end_date)
+         }
+      },
+      success: function(resp) {
+         var json = JSON.parse(resp);
+         if (json.ok) {
+            var task = gantt.getTask(id);
+            task.text = item.text;
+            task.type = item.type;
+            task.start_date = item.start_date;
+            task.end_date = item.end_date;
+            gantt.updateTask(id);
+            gantt.hideLightbox();
+         } else
+            gantt.alert('Could not update Task[' + item.text + ']: ' + json.error);
+      },
+      error: function(resp) {
+         gantt.alert(resp.responseText);
+      }
+   });
+}
+
+function onTaskDrag(id, task, progress) {
+   $.ajax({
+      url,
+      type: 'POST',
+      data: {
+         updateTask: 1,
+         task: {
+            id: task.linktask_id,
+            start_date: formatFunc(task.start_date),
+            end_date: formatFunc(task.end_date),
+            progress
+         }
+      },
+      success: function(resp) {
+         var json = JSON.parse(resp);
+         if (json.ok) {
+            task.progress = progress;
+            gantt.updateTask(task.id);
+         } else {
+            gantt.alert('Could not update Task[' + id + ']: ' + json.error);
+         }
+      }
+   });
+}
+
+function deleteTask(id, item) {
+   $.ajax({
+      url,
+      type: 'POST',
+      dataType: 'json',
+      data: { deleteTask: 1, taskId: item.linktask_id },
+      success: function(resp) {
+         if (resp.ok) {
+            gantt.deleteTask(id);
+            gantt.hideLightbox();
+         } else
+            gantt.alert(resp.error);
+      },
+      error: function(resp) {
+         gantt.alert(resp.responseText);
+      }
+   });
+}
+
+function changeParent(item, target) {
+   $.ajax({
+      url,
+      type: 'POST',
+      data: { changeItemParent: 1, item, target },
+      success: function(resp) {
+         var json = JSON.parse(resp);
+         if (!json.ok) {
+            gantt.alert(json.error);
+         } else if (item.progress > 0) {
+            parentProgress(item.id);
+         }
+      },
+      error: function(resp) {
+         gantt.alert(resp.responseText);
+      }
+   });
+}
+
+function addProject(id, item) {
+   $.ajax({
+      url,
+      type: 'POST',
+      async: false,
+      data: {
+         addProject: 1,
+         project: {
+            parent: item.parent,
+            name: item.text,
+            start_date: formatFunc(item.start_date),
+            end_date: formatFunc(item.end_date)
+         }
+      },
+      success: function(resp) {
+         var json = JSON.parse(resp);
+         if (json.ok) {
+            gantt.addTask(json.item);
+            gantt.hideLightbox();
+            gantt.deleteTask(id);
+         } else {
+            gantt.alert(json.error);
+         }
+      },
+      error: function(resp) {
+         gantt.alert(resp.responseText);
+      }
+   });
+}
+
+function updateProject(id, item) {
+   $.ajax({
+      url,
+      type: 'POST',
+      data: {
+         updateProject: 1,
+         project: {
+            id: item.id,
+            name: item.text
+         }
+      },
+      success: function(resp) {
+         var json = JSON.parse(resp);
+         if (json.ok) {
+            var project = gantt.getTask(id);
+            project.text = item.text;
+            gantt.updateTask(id);
+            gantt.hideLightbox();
+         } else
+            gantt.alert('Could not update Project[' + item.text + ']: ' + json.error);
+      },
+      error: function(resp) {
+         gantt.alert(resp.responseText);
+      }
+   });
+}
+
+function putInTrashbin(id, project) {
+   $.ajax({
+      url,
+      type: 'POST',
+      dataType: 'json',
+      data: { putInTrashbin: 1, projectId: project.id },
+      success: function(resp) {
+         if (resp.ok) {
+            gantt.deleteTask(id);
+            gantt.hideLightbox();
+         } else
+            gantt.alert(resp.error);
+      },
+      error: function(resp) {
+         gantt.alert(resp.responseText);
+      }
+   });
+}
+
+function addTaskLink(id, sourceTask, targetTask, link) {
+   $.ajax({
+      url,
+      type: 'POST',
+      data: {
+         addTaskLink: 1,
+         taskLink: {
+            source_id: sourceTask.linktask_id,
+            source_uuid: sourceTask.id,
+            target_id: targetTask.linktask_id,
+            target_uuid: targetTask.id,
+            type: link.type,
+            lag: link.lag,
+            lead: link.lead
+         }
+      },
+      success: function(resp) {
+         var json = JSON.parse(resp);
+         if (json.ok) {
+            var tempId = link.id;
+            gantt.changeLinkId(tempId, json.id);
+         } else {
+            gantt.alert(json.error);
+            gantt.deleteLink(id);
+         }
+      },
+      error: function(resp) {
+         gantt.alert(resp.responseText);
+         gantt.deleteLink(id);
+      }
+   });
+}
+
 function updateTaskLink(link, callback) {
    $.ajax({
       url,
@@ -575,11 +810,11 @@ function updateTaskLink(link, callback) {
          if (json.ok) {
             callback(); // close popup
          } else {
-            console.log(json.error);
+            gantt.alert(json.error);
          }
       },
       error: function(resp) {
-         console.log(resp.responseText);
+         gantt.alert(resp.responseText);
       }
    });
 }
@@ -598,13 +833,49 @@ function deleteTaskLink(linkId, callback) {
             gantt.deleteLink(linkId);
             callback(); // close popup
          } else {
-            console.log(json.error);
+            gantt.alert(json.error);
          }
       },
       error: function(resp) {
-         console.log(resp.responseText);
+         gantt.alert(resp.responseText);
       }
    });
+}
+
+function openEditForm(item) {
+   $.ajax({
+      url,
+      type: 'POST',
+      data: {
+         openEditForm: 1,
+         item
+      },
+      success: function(resp) {
+         var json = JSON.parse(resp);
+         if (json.ok) {
+            window.location = json.url;
+         } else {
+            gantt.alert(json.error);
+         }
+      },
+      error: function(resp) {
+         gantt.alert(resp.responseText);
+      }
+   });
+}
+
+function expandCollapse(level) {
+   var collapse = $('#collapse').is(':checked');
+   gantt.eachTask(function(item) {
+      var itemLevel = gantt.calculateTaskLevel(item);
+      item.$open = false;
+      if (collapse) {
+         item.$open = (itemLevel < level && item.type == gantt.config.types.project);
+      } else {
+         item.$open = (itemLevel <= level && item.type == gantt.config.types.project);
+      }
+   });
+   gantt.render();
 }
 
 // <<<<< Functions

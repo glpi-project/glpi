@@ -34,6 +34,7 @@
 namespace Glpi\Gantt;
 
 use \Exception;
+use Glpi\Gantt\DataFactory;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -44,19 +45,116 @@ if (!defined('GLPI_ROOT')) {
  */
 class TaskDAO {
 
+   function addTask($task) {
+      $t = new \ProjectTask();
+
+      $projectId = $task->parent;
+      $parentTask = null;
+      if (!is_numeric($task->parent)) {
+         if ($t->getFromDBByCrit(['uuid' => $task->parent])) {
+            $parentTask = $t;
+            $projectId = $parentTask->fields["projects_id"];
+         }
+      }
+
+      $input = [
+         'name' => $task->text,
+         'comment' => $task->note,
+         'projects_id' => $projectId,
+         'projecttasks_id' => ($parentTask != null) ? $parentTask->fields["id"] : 0,
+         'percent_done' => ($task->progress * 100),
+         'plan_start_date' => $task->start_date,
+         'plan_end_date' => $task->end_date,
+         'is_milestone' => ($task->type == "milestone") ? 1 : 0
+      ];
+
+      $newTask = new \ProjectTask();
+      $newTask->prepareInputForAdd($input);
+      $newTask->add($input);
+      return $newTask;
+   }
+
    function updateTask($task) {
-      global $DB;
       $t = new \ProjectTask();
       $t->getFromDB($task->id);
 
       $t->update([
          'id' => $task->id,
          'plan_start_date' => $task->start_date,
+         'real_start_date' => ($task->type == "milestone" && $t->fields["real_start_date"] == null) ? $task->start_date : $t->fields["real_start_date"],
          'plan_end_date' => $task->end_date,
          'percent_done' => ($task->progress * 100),
-         'name' => (isset($task->text) ? $task->text : $t->fields['name'])
+         'name' => (isset($task->text) ? $task->text : $t->fields['name']),
+         'is_milestone' => ($task->type == "milestone") ? 1 : 0
       ]);
       return true;
+   }
+
+   function updateParent($task) {
+       $t = new \ProjectTask();
+       $t->getFromDBByCrit(['uuid' => $task->id]);
+
+      if (!is_numeric($task->parent)) {
+          // change parent task
+          $p = new \ProjectTask();
+          $p->getFromDBByCrit(['uuid' => $task->parent]);
+
+          $updateSubtasks = ($t->fields["projects_id"] != $p->fields["projects_id"]);
+
+          $input = [
+           'id' => $t->fields["id"],
+           'projects_id' => $p->fields["projects_id"],
+           'projecttasks_id' => $p->fields["id"]
+          ];
+          $t->prepareInputForUpdate($input);
+          $t->update($input);
+
+          $itemArray = [];
+          if ($updateSubtasks) {
+
+             // change subtasks parent project
+             $factory = new DataFactory();
+             $factory->getSubtasks($itemArray, $t->fields["id"]);
+
+             foreach ($itemArray as $item) {
+                $itm = new \ProjectTask();
+                $itm->getFromDBByCrit(['uuid' => $item->id]);
+                $params = [
+                  'id' => $itm->fields["id"],
+                  'projects_id' => $p->fields["projects_id"]
+                ];
+                $itm->prepareInputForUpdate($params);
+                $itm->update($params);
+             }
+          }
+      } else if ($task->parent > 0) {
+         // change parent project
+         $input = [
+           'id' => $t->fields["id"],
+           'projects_id' => $task->parent,
+           'projecttasks_id' => 0
+         ];
+
+          $t->prepareInputForUpdate($input);
+          $t->update($input);
+
+          // change subtasks parent project
+          $itemArray = [];
+          $factory = new DataFactory();
+          $factory->getSubtasks($itemArray, $t->fields["id"]);
+
+         foreach ($itemArray as $item) {
+             $itm = new \ProjectTask();
+             $itm->getFromDBByCrit(['uuid' => $item->id]);
+             $params = [
+                'id' => $itm->fields["id"],
+                'projects_id' => $t->fields["projects_id"]
+             ];
+             $itm->prepareInputForUpdate($params);
+             $itm->update($params);
+         }
+      }
+       return true;
    }
 
    function deleteTask(&$failed, $taskId) {

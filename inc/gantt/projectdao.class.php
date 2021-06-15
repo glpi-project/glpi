@@ -42,6 +42,26 @@ if (!defined('GLPI_ROOT')) {
  */
 class ProjectDAO {
 
+   function addProject($project) {
+      global $DB;
+      $input = [
+         'name' => $project->text,
+         'comment' => $project->note,
+         'projects_id' => $project->parent,
+         'date' => $_SESSION['glpi_currenttime'],
+         'plan_start_date' => $project->start_date,
+         'plan_end_date' => $project->end_date,
+         'priority' => 3,  //medium
+         'projectstates_id' => 1,
+         'users_id' => \Session::getLoginUserID(),
+         'show_on_global_gantt' => 1
+      ];
+      $proj = new \Project();
+      $proj->prepareInputForAdd($input);
+      $proj->add($input);
+      return $proj;
+   }
+
    function updateProject($project) {
       global $DB;
       $p = new \Project();
@@ -52,6 +72,18 @@ class ProjectDAO {
          'name' => $project->text
       ]);
       return true;
+   }
+
+   function updateParent($project) {
+      global $DB;
+      $p = new \Project();
+      $p->getFromDB($project->id);
+      $input = [
+         'id' => $project->id,
+         'projects_id' => $project->parent
+      ];
+      $p->prepareInputForUpdate($input);
+      $p->update($input);
    }
 
    function putInTrashbin($projectId) {

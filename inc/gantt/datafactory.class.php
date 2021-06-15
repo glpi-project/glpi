@@ -51,7 +51,7 @@ class DataFactory {
    function getItemsForProject(&$itemArray, $id) {
       global $DB;
       $project = new \Project();
-      if ($id == - 1) {
+      if ($id == -1) {
          $iterator = $DB->request([
             'FROM' => 'glpi_projects',
             'WHERE' => [
@@ -106,7 +106,7 @@ class DataFactory {
     */
    function getSubprojects(&$itemArray, $projectId) {
       global $DB;
-      $iterator = $DB->request('glpi_projects', ['projects_id' => $projectId, 'is_deleted' => 0]);
+      $iterator = $DB->request('glpi_projects', ['projects_id' => $projectId, 'is_template' => 0, 'is_deleted' => 0]);
       while ($record = $iterator->next()) {
          array_push($itemArray, $this->populateGanttItem($record, "project"));
          $this->getSubprojects($itemArray, $record['id']);
@@ -123,6 +123,26 @@ class DataFactory {
    function getProjectTasks(&$itemArray, $projectId) {
       $taskRecords[] = \ProjectTask::getAllForProject($projectId);
       foreach ($taskRecords[0] as $record) {
+         if ($record['is_template'] == 1) {
+            continue;
+         }
+         array_push($itemArray, $this->populateGanttItem($record, "task"));
+      }
+   }
+
+   /**
+    * Function used to get all subtasks of a task
+    *
+    * @param array @itemArray Array holding the task items
+    * @param integer @taskId ID of the parent task
+    */
+   function getSubtasks(&$itemArray, $taskId) {
+      $taskRecords[] = \ProjectTask::getAllForProjectTask($taskId);
+      foreach ($taskRecords[0] as $record) {
+         $this->getSubtasks($itemArray, $record["id"]);
+         if ($record['is_template'] == 1) {
+            continue;
+         }
          array_push($itemArray, $this->populateGanttItem($record, "task"));
       }
    }
@@ -153,10 +173,11 @@ class DataFactory {
       $item->parent = ($type == "root-project") ? 0 : (($type == "project") ? $record['projects_id'] : ($record["projecttasks_id"] > 0 ? $parentTaskUid : $record['projects_id']));
       $item->linksource_id = ($item->type != "project") ? $record["projecttasks_id"] : 0;
       $item->linktask_id = ($item->type != "project") ? $record["id"] : 0; // parent task id to search for by child->linksource_id
-      $item->start_date = $record['plan_start_date'];
-      $item->end_date = $record['plan_end_date'];
+      $item->start_date = isset($record['plan_start_date']) ? $record['plan_start_date'] : $_SESSION['glpi_currenttime'];
+      $item->end_date = isset($record['plan_end_date']) ? $record['plan_end_date'] : date('Y-m-d H:i:s', strtotime($item->start_date . ' + 1 day'));
       $item->text = $record['name'];
-      $item->note = isset($record['code']) ? $record['code'] : "";
+      $item->content = isset($record['content']) ? html_entity_decode($record['content']) : "";
+      $item->comment = isset($record['comment']) ? $record['comment'] : "";
       $item->progress = $record['percent_done'] / 100;
 
       return $item;

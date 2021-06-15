@@ -54,6 +54,31 @@ if (isset($_REQUEST['getData'])) {
       'links' => $links
    ];
    echo json_encode($result);
+
+} else if (isset($_REQUEST["addTask"])) {
+   $result;
+   try {
+      $item = new Glpi\Gantt\Item();
+      $task = $_POST["task"];
+      $item->populateFrom($task);
+      $taskDAO = new Glpi\Gantt\TaskDAO();
+      $newTask = $taskDAO->addTask($item);
+      $factory = new Glpi\Gantt\DataFactory();
+      $ganttItem = $factory->populateGanttItem($newTask->fields, "task");
+
+      $result = (object)[
+         'ok' => true,
+         'item' => $ganttItem
+      ];
+
+   } catch (\Exception $ex) {
+      $result = (object)[
+         'ok' => false,
+         'error' => $ex->getMessage()
+      ];
+   }
+   echo json_encode($result);
+
 } else if (isset($_REQUEST["updateTask"])) {
    $result;
    try {
@@ -73,6 +98,7 @@ if (isset($_REQUEST['getData'])) {
       ];
    }
    echo json_encode($result);
+
 } else if (isset($_REQUEST["deleteTask"])) {
    $result;
    try {
@@ -95,6 +121,65 @@ if (isset($_REQUEST['getData'])) {
       ];
    }
    echo json_encode($result);
+
+} else if (isset($_REQUEST["changeItemParent"])) {
+   $result;
+   try {
+      $p_item = $_POST["item"];
+      $p_target = $_POST["target"];
+
+      if ($p_item["type"] == "project" && $p_target["type"] != "project") {
+         throw new \Exception("Target item must be of project type");
+      }
+
+      $item = new Glpi\Gantt\Item();
+      $item->populateFrom($p_item);
+      $target = new Glpi\Gantt\Item();
+      $target->populateFrom($p_target);
+
+      $item->parent = $target->id;
+      $dao;
+      if ($p_item["type"] == "project") {
+         $dao = new \Glpi\Gantt\ProjectDAO();
+      } else {
+         $dao = new \Glpi\Gantt\TaskDAO();
+      }
+      $dao->updateParent($item);
+
+      $result = (object)[
+         'ok' => true
+      ];
+   } catch (\Exception $ex) {
+      $result = (object)[
+         'ok' => false,
+         'error' => $ex->getMessage()
+      ];
+   }
+   echo json_encode($result);
+} else if (isset($_REQUEST["addProject"])) {
+   $result;
+   try {
+      $item = new Glpi\Gantt\Item();
+      $project = $_POST["project"];
+      $item->populateFrom($project);
+      $dao = new Glpi\Gantt\ProjectDAO();
+      $newProj = $dao->addProject($item);
+      $factory = new Glpi\Gantt\DataFactory();
+      $ganttItem = $factory->populateGanttItem($newProj->fields, "project");
+
+      $result = (object)[
+         'ok' => true,
+         'item' => $ganttItem
+      ];
+
+   } catch (\Exception $ex) {
+      $result = (object)[
+         'ok' => false,
+         'error' => $ex->getMessage()
+      ];
+   }
+   echo json_encode($result);
+
 } else if (isset($_REQUEST["updateProject"])) {
    $result;
    try {
@@ -114,6 +199,7 @@ if (isset($_REQUEST['getData'])) {
       ];
    }
    echo json_encode($result);
+
 } else if (isset($_REQUEST["putInTrashbin"])) {
    $result;
    try {
@@ -130,6 +216,7 @@ if (isset($_REQUEST['getData'])) {
       ];
    }
    echo json_encode($result);
+
 } else if (isset($_REQUEST["addTaskLink"])) {
    $result;
    try {
@@ -151,6 +238,7 @@ if (isset($_REQUEST['getData'])) {
       ];
    }
    echo json_encode($result);
+
 } else if (isset($_REQUEST["updateTaskLink"])) {
    $result;
    try {
@@ -166,6 +254,7 @@ if (isset($_REQUEST['getData'])) {
       ];
    }
    echo json_encode($result);
+
 } else if (isset($_REQUEST["deleteTaskLink"])) {
    $result;
    try {
@@ -174,6 +263,22 @@ if (isset($_REQUEST['getData'])) {
       $result = (object)[
          'ok' => true
       ];
+   } catch (\Exception $ex) {
+      $result = (object)[
+         'ok' => false,
+         'error' => $ex->getMessage()
+      ];
+   }
+   echo json_encode($result);
+} else if (isset($_REQUEST["openEditForm"])) {
+   $result = [];
+   $result["ok"] = true;
+   try {
+      if ($_POST["item"]["type"] == "project") {
+         $result["url"] = $CFG_GLPI["root_doc"]."/front/project.form.php?id=".$_POST["item"]["id"]."&forcetab=Project";
+      } else {
+         $result["url"] = $CFG_GLPI["root_doc"]."/front/projecttask.form.php?id=".$_POST["item"]["linktask_id"]."&forcetab=ProjectTask";
+      }
    } catch (\Exception $ex) {
       $result = (object)[
          'ok' => false,

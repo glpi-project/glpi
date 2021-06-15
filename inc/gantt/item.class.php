@@ -66,7 +66,12 @@ class Item implements \JsonSerializable {
     * @param $json Json data
     */
    public function populateFrom($json) {
-      $this->id = $json["id"];
+      if (isset($json["id"])) {
+         $this->id = $json["id"];
+      }
+      if (isset($json["parent"])) {
+         $this->parent = $json["parent"];
+      }
       if (isset($json["start_date"])) {
          $this->start_date = $json["start_date"];
       }
@@ -78,6 +83,9 @@ class Item implements \JsonSerializable {
       }
       if (isset($json["name"])) {
          $this->text = $json["name"];
+      }
+      if (isset($json["type"])) {
+         $this->type = $json["type"];
       }
    }
 
