@@ -33,8 +33,10 @@
 namespace tests\units;
 
 use CommonDBTM;
+use CommonITILActor;
 use DBConnection;
 use DbTestCase;
+use Ticket;
 
 /* Test for inc/search.class.php */
 
@@ -1533,6 +1535,125 @@ class Search extends DbTestCase {
       ob_end_clean();
 
       // Convert results to array and remove last row (always empty)
+      $names = explode("\n", $names);
+      array_pop($names);
+
+      // Check results
+      $this->array($names)->isEqualTo($expected);
+   }
+
+   protected function testMyselfSearchCriteriaProvider(): array {
+      $TU_USER_users_id = getItemByTypeName('User', TU_USER, true);
+      $tech_users_id = getItemByTypeName('User', 'tech', true);
+      $root_entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+      // Create test data
+      $to_create = [
+         [
+            'name' => 'testMyselfSearchCriteriaProvider 1',
+            'observer' => $TU_USER_users_id,
+         ],
+         [
+            'name' => 'testMyselfSearchCriteriaProvider 2',
+            'observer' => $TU_USER_users_id,
+         ],
+         [
+            'name' => 'testMyselfSearchCriteriaProvider 3',
+            'observer' => $TU_USER_users_id,
+         ],
+         [
+            'name' => 'testMyselfSearchCriteriaProvider 4',
+            'observer' => $tech_users_id,
+         ],
+      ];
+
+      foreach ($to_create as $params) {
+         $ticket = new Ticket();
+         $tickets_id = $ticket->add([
+            'name'               => $params['name'],
+            'content'            => 'testMyselfSearchCriteriaProvider',
+            '_users_id_observer' => $params['observer'],
+            'entities_id'        => $root_entity,
+         ]);
+         $this->integer($tickets_id)->isGreaterThan(0);
+         $actors = $ticket->getITILActors();
+         $this->integer($actors[$params['observer']][0])->isEqualTo(CommonITILActor::OBSERVER);
+      }
+
+      return [
+         // Case 1: Search for tickets of 'TU_USER'
+         [
+            'criteria' => [
+               [
+                  'link'       => 'AND',
+                  'field'      => 66, // Observer search option
+                  'searchtype' => 'equals',
+                  'value'      => $TU_USER_users_id,
+               ]
+            ],
+            'expected' => [
+               'testMyselfSearchCriteriaProvider 1',
+               'testMyselfSearchCriteriaProvider 2',
+               'testMyselfSearchCriteriaProvider 3',
+            ]
+         ],
+         // Case 2: Search for of 'tech' user
+         [
+            'criteria' => [
+               [
+                  'link'       => 'AND',
+                  'field'      => 66, // Observer search option
+                  'searchtype' => 'equals',
+                  'value'      => $tech_users_id,
+               ]
+            ],
+            'expected' => [
+               'testMyselfSearchCriteriaProvider 4',
+            ]
+         ],
+         // Case 1: Search for tickets of the current user (TU_USER)
+         [
+            'criteria' => [
+               [
+                  'link'       => 'AND',
+                  'field'      => 66, // Observer search option
+                  'searchtype' => 'equals',
+                  'value'      => 'myself',
+               ]
+            ],
+            'expected' => [
+               'testMyselfSearchCriteriaProvider 1',
+               'testMyselfSearchCriteriaProvider 2',
+               'testMyselfSearchCriteriaProvider 3',
+            ]
+         ],
+      ];
+   }
+
+   /**
+    * Functionnal test for the 'myself' search criteria.
+    * We use the output type "Search::NAMES_OUTPUT" during the test as it make
+    * it easy to parse the results.
+    *
+    * @dataProvider testMyselfSearchCriteriaProvider
+    */
+   public function testMyselfSearchCriteria(array $criteria, array $expected) {
+      $this->login();
+
+      // Run search and capture results
+      ob_start();
+      \Search::showList('Ticket', [
+         'display_type' => \Search::NAMES_OUTPUT,
+         'export_all'   => 1,
+         'criteria'     => $criteria,
+         'item_type'    => 'Ticket',
+         'is_deleted'   => 0,
+         'as_map'       => 0,
+      ]);
+      $names = ob_get_contents();
+      ob_end_clean();
+
+      // Convert results to array and remove last row (always empty for NAMES_OUTPUT)
       $names = explode("\n", $names);
       array_pop($names);
 
