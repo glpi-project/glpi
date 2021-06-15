@@ -70,18 +70,65 @@ class ModelExtension extends AbstractExtension implements ExtensionInterface {
       return "";
    }
 
-   public function getItemtypeOrModelPicture(CommonDBTM $item, string $picture_field = "picture_front") {
-      $itemtype  = $item->getType();
-      if (class_exists($itemtype)) {
-         if (isset($itemtype->fields[$picture_field])) {
-            if ($picture_field === 'pictures') {
-               return importArrayFromDB($itemtype->fields[$picture_field]);
-            }
-            return $itemtype->fields[$picture_field];
+   public function getItemtypeOrModelPicture(CommonDBTM $item, string $picture_field = "picture_front", $params = []): array {
+      $p = [
+         'thumbnail_w'  => 'auto',
+         'thumbnail_h'  => 'auto'
+      ];
+      $p = array_replace($p, $params);
+
+      $urls = [];
+      $itemtype = $item->getType();
+      $pictures = [];
+      $clearable = false;
+
+      if ($item->isField($picture_field)) {
+         if ($picture_field === 'pictures') {
+            $urls = importArrayFromDB($item->fields[$picture_field]);
+         } else {
+            $urls = [$item->fields[$picture_field]];
          }
-         return $this->getmodelPicture($item, $picture_field);
+         $clearable = $item::canUpdate();
+      } else {
+         $modeltype = $itemtype . "Model";
+         if (class_exists($modeltype)) {
+            /** @var CommonDBTM $model */
+            $model = new $modeltype;
+            if (!$model->isField($picture_field)) {
+               return [];
+            }
+
+            $fk = getForeignKeyFieldForItemType($modeltype);
+            if ($model->getFromDB(($item->fields[$fk]) ?? 0)) {
+               if ($picture_field === 'pictures') {
+                  $urls = importArrayFromDB($model->fields[$picture_field]);
+               } else {
+                  $urls = [$model->fields[$picture_field]];
+               }
+            }
+         }
       }
 
-      return '';
+      foreach ($urls as $url) {
+         if (!empty($url)) {
+            $resolved_url = \Toolbox::getPictureUrl($url);
+            $src_file = GLPI_DOC_DIR . '/_pictures/' . '/' . $url;
+            if (file_exists($src_file)) {
+               $size = getimagesize($src_file);
+               $pictures[] = [
+                     'src'       => $resolved_url,
+                     'w'         => $size[0],
+                     'h'         => $size[1],
+                     'clearable' => $clearable
+                  ] + $p;
+            } else {
+               $owner_type = isset($model) ? $model::getType() : $itemtype;
+               $owner_id = isset($model) ? $model->getID() : $item->getID();
+               \Toolbox::logWarning("The picture '{$src_file}' referenced by the {$owner_type} with ID {$owner_id} does not exist");
+            }
+         }
+      }
+
+      return $pictures;
    }
 }

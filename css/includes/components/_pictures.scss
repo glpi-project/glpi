@@ -29,31 +29,24 @@
  * ---------------------------------------------------------------------
  */
 
-@import "css/includes/base";
-@import "css/includes/global-variables";
+.picture_gallery {
+   max-height: 300px;
+}
 
-@import "css/includes/components/asset-form";
-@import "css/includes/components/debug-panel";
-@import "css/includes/components/floating-buttons";
-@import "css/includes/components/fuzzy";
-@import "css/includes/components/global-menu";
-@import "css/includes/components/mini-tabs";
-@import "css/includes/components/pictures";
-@import "css/includes/components/racks";
-@import "css/includes/components/richtext";
-@import "css/includes/components/saved-searches";
-@import "css/includes/components/scrollbars";
-@import "css/includes/components/select2";
-@import "css/includes/components/tabs";
-@import "css/includes/components/itilobject/footer";
-@import "css/includes/components/itilobject/layout";
-@import "css/includes/components/itilobject/timeline";
-@import "css/includes/components/itilobject/actors";
-@import "css/includes/components/itilobject/status";
-@import "css/includes/components/setup/dropdowns_list.scss";
+.pswp-horizontal-gallery {
+   figure {
+      max-height: 8em;
+      width: auto;
+      max-width: 200px;
+      min-width: 100px;
+      justify-content: flex-end;
 
-@import "css/includes/pages/search";
+      img {
+         max-height: 7em;
+      }
 
-@import 'css/legacy/includes/styles';
-@import 'css/legacy/includes/planning';
-@import 'css/legacy/includes/impact';
+      figcaption {
+         min-height: 1em;
+      }
+   }
+}

@@ -52,7 +52,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
    function getAdditionalFields() {
       global $DB;
 
-      $fields = [];
+      $fields = parent::getAdditionalFields();
       if ($DB->fieldExists($this->getTable(), 'product_number')) {
          $fields[] = [
             'name'   => 'product_number',
@@ -123,22 +123,6 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
          ];
       }
 
-      if ($DB->fieldExists($this->getTable(), 'picture_front')) {
-         $fields[] = [
-            'name'   => 'picture_front',
-            'type'   => 'picture',
-            'label'  => __('Front picture')
-         ];
-      }
-
-      if ($DB->fieldExists($this->getTable(), 'picture_rear')) {
-         $fields[] = [
-            'name'   => 'picture_rear',
-            'type'   => 'picture',
-            'label'  => __('Rear picture')
-         ];
-      }
-
       return $fields;
    }
 
@@ -146,16 +130,6 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
       global $DB;
       $options = parent::rawSearchOptions();
       $table   = $this->getTable();
-
-      if ($DB->fieldExists($table, 'product_number')) {
-         $options[] = [
-            'id'    => '130',
-            'table' => $table,
-            'field' => 'product_number',
-            'name'  => __('Product Number'),
-            'autocomplete' => true,
-         ];
-      }
 
       if ($DB->fieldExists($table, 'weight')) {
          $options[] = [
@@ -216,32 +190,6 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
          ];
       }
 
-      if ($DB->fieldExists($table, 'picture_front')) {
-         $options[] = [
-            'id'            => '137',
-            'table'         => $table,
-            'field'         => 'picture_front',
-            'name'          => __('Front picture'),
-            'datatype'      => 'specific',
-            'nosearch'      => true,
-            'massiveaction' => true,
-            'nosort'        => true,
-         ];
-      }
-
-      if ($DB->fieldExists($table, 'picture_rear')) {
-         $options[] = [
-            'id'            => '138',
-            'table'         => $table,
-            'field'         => 'picture_rear',
-            'name'          => __('Rear picture'),
-            'datatype'      => 'specific',
-            'nosearch'      => true,
-            'massiveaction' => true,
-            'nosort'        => true,
-         ];
-      }
-
       return $options;
    }
 
@@ -261,59 +209,6 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
       }
 
       return parent::getSpecificValueToDisplay($field, $values, $options);
-   }
-
-   function prepareInputForAdd($input) {
-      return $this->managePictures($input);
-   }
-
-   function prepareInputForUpdate($input) {
-      return $this->managePictures($input);
-   }
-
-   function cleanDBonPurge() {
-      Toolbox::deletePicture($this->fields['picture_front']);
-      Toolbox::deletePicture($this->fields['picture_rear']);
-   }
-
-   /**
-    * Add/remove front and rear pictures for models
-    * @param  array $input the form input
-    * @return array        the altered input
-    */
-   function managePictures($input) {
-      foreach (['picture_front', 'picture_rear'] as $name) {
-         if (isset($input["_blank_$name"])
-             && $input["_blank_$name"]) {
-            $input[$name] = '';
-
-            if (array_key_exists($name, $this->fields)) {
-               Toolbox::deletePicture($this->fields[$name]);
-            }
-         }
-
-         if (isset($input["_$name"])) {
-            $filename = array_shift($input["_$name"]);
-            $src      = GLPI_TMP_DIR . '/' . $filename;
-
-            $prefix   = null;
-            if (isset($input["_prefix_$name"])) {
-               $prefix = array_shift($input["_prefix_$name"]);
-            }
-
-            if ($dest = Toolbox::savePicture($src, $prefix)) {
-               $input[$name] = $dest;
-            } else {
-               Session::addMessageAfterRedirect(__('Unable to save picture file.'), true, ERROR);
-            }
-
-            if (array_key_exists($name, $this->fields)) {
-               Toolbox::deletePicture($this->fields[$name]);
-            }
-         }
-      }
-
-      return $input;
    }
 
    public function getSpecificTypeField(int $ID, array $field): string {

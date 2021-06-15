@@ -504,9 +504,9 @@ $CFG_GLPI['javascript'] = [
    'helpdesk'  => [
       'dashboard' => $dashboard_libs,
       'planning'  => ['clipboard', 'fullcalendar', 'tinymce', 'planning'],
-      'ticket'    => array_merge(['rateit', 'tinymce', 'photoswipe'], $dashboard_libs),
-      'problem'   => ['tinymce', 'photoswipe'],
-      'change'    => ['tinymce', 'photoswipe'],
+      'ticket'    => array_merge(['rateit', 'tinymce'], $dashboard_libs),
+      'problem'   => ['tinymce'],
+      'change'    => ['tinymce'],
       'stat'      => ['charts']
    ],
    'tools'     => [
@@ -538,7 +538,7 @@ $CFG_GLPI['javascript'] = [
    ],
    'admin'        => ['clipboard'],
    'preference'   => ['clipboard'],
-   'self-service' => ['tinymce', 'photoswipe']
+   'self-service' => ['tinymce']
 ];
 
 // push reservations libs to reservations itemtypes (they shoul in asset sector)

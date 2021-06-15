@@ -2152,15 +2152,15 @@ JAVASCRIPT;
       }
 
       if (!empty($this->fields["name"])) {
-         echo "<td rowspan='7'>" . __('Picture') . "</td>";
+         echo "<td rowspan='7'>" . _n('Picture', 'Pictures', 1) . "</td>";
          echo "<td rowspan='7'>";
          echo "<div class='user_picture_border_small' id='picture$rand'>";
-         echo "<img class='user_picture_small' alt=\"".__s('Picture')."\" src='".
+         echo "<img class='user_picture_small' alt=\""._sn('Picture', 'Pictures', 1)."\" src='".
                 User::getThumbnailURLForPicture($this->fields['picture'])."'>";
          // echo "<img src='".self::getURLForPicture($this->fields["picture"])."' class='user_picture'/>";
          echo "</div>";
          $full_picture = "<div class='user_picture_border'>";
-         $full_picture .= "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
+         $full_picture .= "<img class='user_picture' alt=\""._sn('Picture', 'Pictures', 1)."\" src='".
                             User::getURLForPicture($this->fields['picture'])."'>";
          $full_picture .= "</div>";
 
@@ -2634,14 +2634,14 @@ JAVASCRIPT;
          echo "</td>";
 
          if (!empty($this->fields["name"])) {
-            echo "<td rowspan='7'>" . __('Picture') . "</td>";
+            echo "<td rowspan='7'>" . _n('Picture', 'Pictures', 1) . "</td>";
             echo "<td rowspan='7'>";
             echo "<div class='user_picture_border_small' id='picture$rand'>";
-            echo "<img class='user_picture_small' alt=\"".__s('Picture')."\" src='".
+            echo "<img class='user_picture_small' alt=\""._sn('Picture', 'Pictures', 1)."\" src='".
                    User::getThumbnailURLForPicture($this->fields['picture'])."'>";
             echo "</div>";
             $full_picture  = "<div class='user_picture_border'>";
-            $full_picture .= "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
+            $full_picture .= "<img class='user_picture' alt=\""._sn('Picture', 'Pictures', 1)."\" src='".
                               User::getURLForPicture($this->fields['picture'])."'>";
             $full_picture .= "</div>";
 
@@ -3176,7 +3176,7 @@ JAVASCRIPT;
          'id'                 => '150',
          'table'              => $this->getTable(),
          'field'              => 'picture',
-         'name'               => __('Picture'),
+         'name'               => _n('Picture', 'Pictures', 1),
          'datatype'           => 'specific',
          'nosearch'           => true,
          'massiveaction'      => false
@@ -3541,7 +3541,7 @@ JAVASCRIPT;
          case 'picture':
             if (isset($options['html']) && $options['html']) {
                return Html::image(self::getThumbnailURLForPicture($values['picture']),
-                                  ['class' => 'user_picture_small', 'alt' => __('Picture')]);
+                                  ['class' => 'user_picture_small', 'alt' => _n('Picture', 'Pictures', 1)]);
             }
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);

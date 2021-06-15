@@ -314,14 +314,42 @@
             </a>
          {% endif %}
          {% if clearable %}
+            <input type="hidden" name="_blank_{{ name }}">
             <button type="button" class="btn p-2 position-absolute top-0 start-0" title="{{ __('Delete') }}"
-                    onclick="const blank_input = $('input[name=\'_blank_{{ field['name'] }}\']'); blank_input.val(blank_input.val() ? '' : true); $(this).toggleClass('btn-danger')">
+                    onclick="const blank_input = $('input[name=\'_blank_{{ name }}\']'); blank_input.val(blank_input.val() ? '' : true); $(this).toggleClass('btn-danger')">
                <i class='fas fa-times'></i>
             </button>
          {% endif %}
       </div>
    {% endset %}
    {{ _self.field(name, field, label, options) }}
+{% endmacro %}
+
+{% macro imageGalleryField(name, value, label = '', options = {}) %}
+   {% set field %}
+      <div class="picture_gallery d-flex flex-wrap overflow-auto">
+         {% for i, picture in value %}
+            <div style="position: relative; width: fit-content">
+               {{ _self.imageField(name ~ '_' ~ i, picture, '', {
+                  'style': 'max-width: 300px; max-height: 150px',
+                  'class': 'picture_square',
+                  'clearable': options['clearable'],
+               }) }}
+            </div>
+         {% endfor %}
+      </div>
+      {{ _self.fileField(name, null, '', {
+         'onlyimages': true,
+         'multiple': true,
+      }) }}
+   {% endset %}
+
+   {% set id = options.id|length > 0 ? options.id : (name ~ '_' ~ options.rand) %}
+   {{ _self.label(label, id, options) }}
+   {{ _self.field(name, field, label, options|merge({
+      'full_width': true,
+      'no_label': true
+   })) }}
 {% endmacro %}
 
 {% macro hiddenField(name, value, label = '', options = {}) %}

@@ -1,3 +1,4 @@
+<?php
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -28,32 +29,24 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
 
-@import "css/includes/base";
-@import "css/includes/global-variables";
+global $CFG_GLPI;
 
-@import "css/includes/components/asset-form";
-@import "css/includes/components/debug-panel";
-@import "css/includes/components/floating-buttons";
-@import "css/includes/components/fuzzy";
-@import "css/includes/components/global-menu";
-@import "css/includes/components/mini-tabs";
-@import "css/includes/components/pictures";
-@import "css/includes/components/racks";
-@import "css/includes/components/richtext";
-@import "css/includes/components/saved-searches";
-@import "css/includes/components/scrollbars";
-@import "css/includes/components/select2";
-@import "css/includes/components/tabs";
-@import "css/includes/components/itilobject/footer";
-@import "css/includes/components/itilobject/layout";
-@import "css/includes/components/itilobject/timeline";
-@import "css/includes/components/itilobject/actors";
-@import "css/includes/components/itilobject/status";
-@import "css/includes/components/setup/dropdowns_list.scss";
+$all_dropdowns = Dropdown::getStandardDropdownItemTypes();
+$dc_model_dropdowns = [];
 
-@import "css/includes/pages/search";
+foreach ($all_dropdowns as $group) {
+   foreach ($group as $dropdown => $dropdown_name) {
+      if (is_subclass_of($dropdown, CommonDCModelDropdown::class)) {
+         $dc_model_dropdowns[] = $dropdown;
+      }
+   }
+}
 
-@import 'css/legacy/includes/styles';
-@import 'css/legacy/includes/planning';
-@import 'css/legacy/includes/impact';
+foreach ($dc_model_dropdowns as $model_dropdown) {
+   $migration->changeSearchOption($model_dropdown, 130, 3);
+}

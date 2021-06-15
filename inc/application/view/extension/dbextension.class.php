@@ -34,6 +34,7 @@ namespace Glpi\Application\View\Extension;
 
 use DbUtils;
 use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 /**
@@ -50,7 +51,10 @@ class DBExtension extends AbstractExtension {
    }
 
    public function getFilters() {
-      return [];
+      $dbu = $this->getDBUtils();
+      return [
+         new TwigFilter('importArrayFromDB', [$dbu, 'importArrayFromDB'])
+      ];
    }
 
    public function getFunctions() {

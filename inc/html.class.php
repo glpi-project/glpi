@@ -1167,6 +1167,9 @@ class Html {
       }
       Html::requireJs('flatpickr');
 
+      $tpl_vars['css_files'][] = 'public/lib/photoswipe.css';
+      Html::requireJs('photoswipe');
+
       //on demand JS
       if ($sector != 'none' || $item != 'none' || $option != '') {
          $jslibs = [];
@@ -1255,11 +1258,6 @@ class Html {
          if (in_array('codemirror', $jslibs)) {
             $tpl_vars['css_files'][] = 'public/lib/codemirror.css';
             Html::requireJs('codemirror');
-         }
-
-         if (in_array('photoswipe', $jslibs)) {
-            $tpl_vars['css_files'][] = 'public/lib/photoswipe.css';
-            Html::requireJs('photoswipe');
          }
       }
 

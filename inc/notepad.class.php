@@ -307,7 +307,7 @@ class Notepad extends CommonDBChild {
             echo "<div class='boxnote' id='view$id'>";
 
             echo "<div class='boxnoteleft'>";
-            echo "<img class='user_picture_verysmall' alt=\"".__s('Picture')."\" src='".
+            echo "<img class='user_picture_verysmall' alt=\""._sn('Picture', 'Pictures', 1)."\" src='".
                 User::getThumbnailURLForPicture($note['picture'])."'>";
             echo "</div>"; // boxnoteleft
 
