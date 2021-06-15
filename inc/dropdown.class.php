@@ -3724,6 +3724,10 @@ class Dropdown {
          }
       }
 
+      foreach ($post['toadd'] ?? [] as $toadd) {
+         $results[] = $toadd;
+      }
+
       if (count($users)) {
          foreach ($users as $ID => $output) {
             $title = sprintf(__('%1$s - %2$s'), $output, $logins[$ID]);

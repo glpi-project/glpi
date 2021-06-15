@@ -1522,12 +1522,19 @@ class Provider {
          }
       }
 
-      if (isset($apply_filters['user_tech'])
-          && (int) $apply_filters['user_tech'] > 0) {
+      if (isset($apply_filters['user_tech'])) {
+         if ((int) $apply_filters['user_tech'] > 0) {
+            $users_id = (int) $apply_filters['user_tech'];
+         } else if ($apply_filters['user_tech'] == 'myself') {
+            $users_id = $_SESSION['glpiID'];
+         } else {
+            // Invalid value, should never happen
+            $users_id = -1;
+         }
 
          if ($DB->fieldExists($table, 'users_id_tech')) {
             $where += [
-               "$table.users_id_tech" => (int) $apply_filters['user_tech']
+               "$table.users_id_tech" => $users_id,
             ];
          } else if (in_array($table, [
             Ticket::getTable(),
@@ -1550,7 +1557,7 @@ class Provider {
             ];
             $where += [
                "ul.type"     => \CommonITILActor::ASSIGN,
-               "ul.users_id" => (int) $apply_filters['user_tech']
+               "ul.users_id" => $users_id,
             ];
          }
       }

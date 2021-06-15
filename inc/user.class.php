@@ -3989,7 +3989,6 @@ JAVASCRIPT;
     */
    static function dropdown($options = []) {
       global $CFG_GLPI;
-
       // Default values
       $p = [
          'name'                => 'users_id',
@@ -4014,6 +4013,7 @@ JAVASCRIPT;
          'url'                 => $CFG_GLPI['root_doc'] . "/ajax/getDropdownUsers.php",
          'inactive_deleted'    => 0,
          'with_no_right'       => 0,
+         'toadd'               => [],
       ];
 
       if (is_array($options) && count($options)) {
@@ -4028,7 +4028,7 @@ JAVASCRIPT;
       }
 
       // Check default value for dropdown : need to be a numeric
-      if ((strlen($p['value']) == 0) || !is_numeric($p['value'])) {
+      if ((strlen($p['value']) == 0) || (!is_numeric($p['value']) && $p['value'] != 'myself')) {
          $p['value'] = 0;
       }
 
@@ -4046,8 +4046,10 @@ JAVASCRIPT;
 
       $view_users = self::canView();
 
-      if (!empty($p['value']) && ($p['value'] > 0)) {
-          $default = $user["name"];
+      if ($p['value'] == 'myself') {
+         $default = __("Myself");
+      } else if (!empty($p['value']) && ($p['value'] > 0)) {
+         $default = $user["name"];
       } else {
          if ($p['all']) {
             $default = __('All');
@@ -4082,6 +4084,7 @@ JAVASCRIPT;
          'with_no_right'       => $p['with_no_right'],
          'entity_restrict'     => ($entity_restrict = (is_array($p['entity']) ? json_encode(array_values($p['entity'])) : $p['entity'])),
          'specific_tags'       => $p['specific_tags'],
+         'toadd'               => $p['toadd'],
          '_idor_token'         => Session::getNewIDORToken(__CLASS__, [
             'right'           => $p['right'],
             'entity_restrict' => $entity_restrict,
