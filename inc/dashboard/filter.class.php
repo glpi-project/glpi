@@ -153,7 +153,15 @@ JAVASCRIPT;
    }
 
    static function user_tech(string $value = ""): string {
-      return self::dropdown($value, 'user_tech', User::class, ['right' => 'own_ticket']);
+      return self::dropdown($value, 'user_tech', User::class, [
+         'right' => 'own_ticket',
+         'toadd' => [
+            [
+               'id'    => 'myself',
+               'text'  => __('Myself'),
+            ]
+         ]
+      ]);
    }
 
    static function dropdown(

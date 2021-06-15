@@ -1423,7 +1423,7 @@ final class DbUtils {
    /**
     * Get name of the user with ID=$ID (optional with link to user.form.php)
     *
-    * @param integer $ID   ID of the user.
+    * @param integer|string $ID   ID of the user.
     * @param integer $link 1 = Show link to user.form.php 2 = return array with comments and link
     *                      (default =0)
     *
@@ -1439,7 +1439,15 @@ final class DbUtils {
                   "comment" => ""];
       }
 
-      if ($ID) {
+      if ($ID == 'myself') {
+         $name = __('Myself');
+         if (isset($user['name'])) {
+            $user['name'] = $name;
+         } else {
+            $user = $name;
+         }
+
+      } else if ($ID) {
          $iterator = $DB->request(
             'glpi_users', [
                'WHERE' => ['id' => $ID]

@@ -4042,18 +4042,14 @@ JAVASCRIPT;
       }
 
       // Make a select box with all glpi users
-      if ($p['value'] == 'myself') {
-         $user = __("Myself");
-      } else {
-         $user = getUserName($p['value'], 2);
-      }
+      $user = getUserName($p['value'], 2);
 
       $view_users = self::canView();
 
       if ($p['value'] == 'myself') {
          $default = __("Myself");
       } else if (!empty($p['value']) && ($p['value'] > 0)) {
-          $default = $user["name"];
+         $default = $user["name"];
       } else {
          if ($p['all']) {
             $default = __('All');
@@ -4066,11 +4062,7 @@ JAVASCRIPT;
       $valuesnames = [];
       foreach ($p['values'] as $value) {
          if (!empty($value) && ($value > 0)) {
-            if ($value == 'myself') {
-               $user = __("Myself");
-            } else {
-               $user = getUserName($value, 2);
-            }
+            $user = getUserName($value, 2);
             $valuesnames[] = $user["name"];
          }
       }
