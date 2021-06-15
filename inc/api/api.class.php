@@ -2407,6 +2407,9 @@ abstract class API {
             $hclasses[] = "Item_Ticket";
             $hclasses[] = "ITILSolution";
             $hclasses[] = "ITILFollowup";
+            $hclasses[] = "Ticket_User";
+            $hclasses[] = "Group_Ticket";
+            $hclasses[] = "Supplier_Ticket";
             break;
 
          case 'Problem' :
@@ -2417,6 +2420,9 @@ abstract class API {
             $hclasses[] = "Item_Problem";
             $hclasses[] = "ITILSolution";
             $hclasses[] = "ITILFollowup";
+            $hclasses[] = "Problem_User";
+            $hclasses[] = "Group_Problem";
+            $hclasses[] = "Supplier_Problem";
             break;
 
          case 'Change' :
@@ -2428,6 +2434,9 @@ abstract class API {
             $hclasses[] = "Change_Item";
             $hclasses[] = "ITILSolution";
             $hclasses[] = "ITILFollowup";
+            $hclasses[] = "Change_User";
+            $hclasses[] = "Group_Change";
+            $hclasses[] = "Supplier_Change";
             break;
 
          case 'Project' :

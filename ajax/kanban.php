@@ -41,14 +41,6 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-   // Get AJAX input and load it into $_REQUEST
-   $input = file_get_contents('php://input');
-   parse_str($input, $_REQUEST);
-}
-
-$_REQUEST = Toolbox::clean_cross_side_scripting_deep($_REQUEST);
-
 if (!isset($_REQUEST['action'])) {
    Toolbox::logError("Missing action parameter");
    http_response_code(400);
@@ -129,7 +121,8 @@ if ($_REQUEST['action'] === 'update') {
    $item = new $itemtype();
    $inputs = [];
    parse_str($_REQUEST['inputs'], $inputs);
-   $item->add($inputs);
+
+   $item->add(Toolbox::clean_cross_side_scripting_deep($inputs));
 } else if ($_REQUEST['action'] === 'bulk_add_item') {
    $checkParams(['inputs']);
    $item = new $itemtype();
@@ -142,7 +135,7 @@ if ($_REQUEST['action'] === 'update') {
       foreach ($bulk_item_list as $item_entry) {
          $item_entry = trim($item_entry);
          if (!empty($item_entry)) {
-            $item->add($inputs + ['name' => $item_entry]);
+            $item->add(Toolbox::clean_cross_side_scripting_deep($inputs + ['name' => $item_entry]));
          }
       }
    }

@@ -818,7 +818,6 @@ class GLPIKanbanRights {
                   itemtype: self.item.itemtype,
                   items_id: items_id
                },
-               contentType: 'application/json',
                success: function(url) {
                   window.location = url;
                }
@@ -1097,7 +1096,6 @@ class GLPIKanbanRights {
                   column_field: self.column_field.id,
                   column_value: column_id
                },
-               contentType: 'application/json',
                error: function() {
                   $(sortable).sortable('cancel');
                   return false;
@@ -1145,7 +1143,6 @@ class GLPIKanbanRights {
                position: position,
                kanban: self.item
             },
-            contentType: 'application/json',
             error: function() {
                if (error) {
                   error();
@@ -1210,7 +1207,6 @@ class GLPIKanbanRights {
                column: column,
                kanban: self.item
             },
-            contentType: 'application/json',
             complete: function() {
                $.each(self.user_state.state, function(i, c) {
                   if (parseInt(c['column']) === parseInt(column)) {
@@ -1238,7 +1234,6 @@ class GLPIKanbanRights {
                column: column,
                kanban: self.item
             },
-            contentType: 'application/json',
             complete: function() {
                $(getColumnElementFromID(column)).remove();
                $.each(self.user_state.state, function(i, c) {
@@ -1267,8 +1262,7 @@ class GLPIKanbanRights {
                column: column,
                position: position,
                kanban: self.item
-            },
-            contentType: 'application/json'
+            }
          });
       };
 
@@ -1294,9 +1288,7 @@ class GLPIKanbanRights {
                   data: {
                      users_id: [items_id],
                      size: self.team_image_size,
-                  },
-                  contentType: 'application/json',
-                  dataType: 'json'
+                  }
                }).done(function(data) {
                   if (data[items_id] !== undefined) {
                      user_img = data[items_id];
@@ -1365,9 +1357,7 @@ class GLPIKanbanRights {
             data: {
                users_id: Object.keys(users),
                size: self.team_image_size
-            },
-            contentType: 'application/json',
-            dataType: 'json'
+            }
          }).done(function(data) {
             Object.keys(users).forEach(function(user_id) {
                const teammember = users[user_id];
@@ -1823,9 +1813,7 @@ class GLPIKanbanRights {
                   itemtype: self.item.itemtype,
                   items_id: self.item.items_id,
                   column_field: self.column_field.id
-               },
-               contentType: 'application/json',
-               dataType: 'json'
+               }
             }).done(function(columns, textStatus, jqXHR) {
                preloadBadgeCache({
                   trim_cache: true
@@ -2053,8 +2041,7 @@ class GLPIKanbanRights {
                action: action,
                column: getColumnIDFromElement(column_el),
                kanban: self.item
-            },
-            contentType: 'application/json'
+            }
          });
       };
 
@@ -2092,8 +2079,6 @@ class GLPIKanbanRights {
          $.ajax({
             method: 'GET',
             url: (self.ajax_root + "kanban.php"),
-            contentType: 'application/json',
-            dataType: 'json',
             async: false,
             data: {
                action: "get_column",
@@ -2133,8 +2118,6 @@ class GLPIKanbanRights {
          $.ajax({
             method: 'POST',
             url: (self.ajax_root + "kanban.php"),
-            contentType: 'application/json',
-            dataType: 'json',
             data: {
                action: "create_column",
                itemtype: self.item.itemtype,
@@ -2199,8 +2182,7 @@ class GLPIKanbanRights {
                itemtype: self.item.itemtype,
                items_id: self.item.items_id,
                last_load: self.last_refresh
-            },
-            contentType: 'application/json'
+            }
          }).done(function(state) {
             if (state['state'] === undefined || state['state'] === null || Object.keys(state['state']).length === 0) {
                if (callback) {
@@ -2274,8 +2256,7 @@ class GLPIKanbanRights {
                itemtype: self.item.itemtype,
                items_id: self.item.items_id,
                state: self.user_state.state
-            },
-            contentType: 'application/json'
+            }
          }).done(function(data, textStatus, jqXHR) {
             self.user_state.is_dirty = false;
             if (success) {
@@ -2333,7 +2314,6 @@ class GLPIKanbanRights {
                      itemtype: self.item.itemtype,
                      items_id: self.item.items_id
                   },
-                  contentType: 'application/json',
                   success: function($data) {
                      const switcher = $(self.element + " .kanban-toolbar select[name='kanban-board-switcher']");
                      switcher.replaceWith($data);
