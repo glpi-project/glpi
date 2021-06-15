@@ -1,8 +1,11 @@
 name: "GLPI nightly build"
 
 on:
+  # Runs test suite every night
   schedule:
     - cron:  '0 0 * * *'
+  # Enable manual run
+  workflow_dispatch:
 
 jobs:
   build:
@@ -11,11 +14,12 @@ jobs:
     runs-on: "ubuntu-latest"
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         include:
           # build on lower supported version to ensure building tools are compatible with this version
-          - {branch: "9.4/bugfixes", php-version: "5.6"}
           - {branch: "9.5/bugfixes", php-version: "7.2"}
+          - {branch: "master", php-version: "7.3"}
     services:
       app:
         image: "ghcr.io/glpi-project/githubactions-php:${{ matrix.php-version }}"
@@ -26,24 +30,69 @@ jobs:
         uses: "actions/checkout@v2"
         with:
           ref: ${{ matrix.branch }}
+      - name: "Build if updated during the last 24h"
+        id: updated
+        run: |
+          SHA=$( git rev-parse HEAD )
+          if [ -n "$( git rev-list -n 1 --after="24 hours" $SHA )" ]; then
+            echo "::set-output name=build::yes"
+          else
+            echo "::set-output name=build::no"
+          fi
       - name: "Deploy source into app container"
+        if: ${{ steps.updated.outputs.build == 'yes' }}
         run: |
           sudo cp --no-target-directory --preserve --recursive `pwd` /glpi
           sudo chown -R 1000:1000 /glpi
       - name: "Install dependencies"
+        if: ${{ steps.updated.outputs.build == 'yes' }}
         run: |
           docker exec ${{ job.services.app.id }} composer install --optimize-autoloader --prefer-dist --no-interaction --no-progress --no-suggest
       - name: "Define release name"
+        id: release-name
+        if: ${{ steps.updated.outputs.build == 'yes' }}
         run: |
           REF_NAME=$(echo ${{ matrix.branch }} | sed -E 's|/|-|')
+          echo "::set-output name=base::$REF_NAME"
           SHA=$(git rev-parse --short HEAD)
           echo "release_name=$REF_NAME.$SHA" >> $GITHUB_ENV
       - name: "Build"
+        if: ${{ steps.updated.outputs.build == 'yes' }}
         run: |
           echo "Y" | docker exec --interactive ${{ job.services.app.id }} tools/make_release.sh . ${{ env.release_name }}
           docker cp ${{ job.services.app.id }}:/tmp/glpi-${{ env.release_name }}.tgz ${{ github.workspace }}/${{ env.release_name }}.tar.gz
-      - name: "Store archive"
-        uses: actions/upload-artifact@v2
+      - uses: actions/checkout@v2
+        if: ${{ steps.updated.outputs.build == 'yes' }}
         with:
-            name: ${{ env.release_name }}.tar.gz
-            path: ${{ github.workspace }}/${{ env.release_name }}.tar.gz
+          repository: ${{ github.repository_owner }}/glpi-project.github.io
+          token: ${{ secrets.GH_PUBLISHING_TOKEN }}
+          fetch-depth: 0
+          path: nightly
+      - name: "Publish nightly"
+        if: ${{ steps.updated.outputs.build == 'yes' }}
+        id: publish-nightly
+        run: |
+          EMAIL="$(git log --format='%ae' HEAD^!)"
+          NAME="$(git log --format='%an' HEAD^!)"
+          chmod +x tools/github-nightly-description.sh
+          cd nightly
+          git config --local user.email "$EMAIL"
+          git config --local user.name "$NAME"
+          echo "Removing previous ${{ matrix.branch }} builds"
+          git filter-branch --prune-empty -f --index-filter 'git rm --cached --ignore-unmatch "glpi/${{ steps.release-name.outputs.basename}}.*.tar.gz"' HEAD
+          cp -vf "${{ github.workspace }}/${{ env.release_name }}.tar.gz" glpi
+          # script argument should be the ordered list of builds to index
+          ../tools/github-nightly-description.sh `ls -r glpi/*.tar.gz` >glpi/index.md
+          echo "Repository status:"
+          git status
+          ls -lt glpi
+          # Prepare commit
+          echo "Adding GLPI ${{ env.release_name }} build"
+          git add glpi/*
+          git commit -m "Add GLPI ${{ env.release_name }} nightly build"
+          # Force commit
+          git push --force
+          git status
+        shell: bash
+        env:
+          FILTER_BRANCH_SQUELCH_WARNING: 1

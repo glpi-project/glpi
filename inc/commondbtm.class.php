@@ -1116,14 +1116,6 @@ class CommonDBTM extends CommonGLPI {
          }
       }
 
-      if (isset($input['name'])) {
-         $input['name'] = strip_tags(Toolbox::unclean_cross_side_scripting_deep($input['name']));
-      }
-
-      if (isset($input['comments'])) {
-         $input['comments'] = strip_tags(Toolbox::unclean_cross_side_scripting_deep($input['comments']));
-      }
-
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
 
@@ -1491,14 +1483,6 @@ class CommonDBTM extends CommonGLPI {
 
       if (!$this->getFromDB($input[static::getIndexName()])) {
          return false;
-      }
-
-      if (isset($input['name'])) {
-         $input['name'] = strip_tags(Toolbox::unclean_cross_side_scripting_deep($input['name']));
-      }
-
-      if (isset($input['comments'])) {
-         $input['comments'] = strip_tags(Toolbox::unclean_cross_side_scripting_deep($input['comments']));
       }
 
       // Store input in the object to be available in all sub-method / hook
