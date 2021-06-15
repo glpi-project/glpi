@@ -1581,7 +1581,7 @@ class Search extends DbTestCase {
       }
 
       return [
-         // Case 1: Search for tickets of 'TU_USER'
+         // Case 1: Search for tickets where 'TU_USER' is an observer
          [
             'criteria' => [
                [
@@ -1597,7 +1597,7 @@ class Search extends DbTestCase {
                'testMyselfSearchCriteriaProvider 3',
             ]
          ],
-         // Case 2: Search for of 'tech' user
+         // Case 2: Search for tickets where 'tech' is an observer
          [
             'criteria' => [
                [
@@ -1611,7 +1611,7 @@ class Search extends DbTestCase {
                'testMyselfSearchCriteriaProvider 4',
             ]
          ],
-         // Case 3: Search for tickets of the current user (TU_USER)
+         // Case 3: Search for tickets where the current user (TU_USER) is an observer
          [
             'criteria' => [
                [
