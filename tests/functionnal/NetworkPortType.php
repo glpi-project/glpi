@@ -95,7 +95,7 @@ class NetworkPortType extends DbTestCase {
             'comment' => 'Multirate HDSL2 [Bob_Ray]',
             'is_importable' => 1,
             'instantiation_type' => 'NetworkPortEthernet',
-         ],
+         ]
       ];
 
       while ($row = $iterator->next()) {
