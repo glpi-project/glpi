@@ -14,6 +14,8 @@ The present file will list all changes made to the project; according to the
 
 ### Deprecated
 - Usage of XML-RPC API is deprecated.
+- `Netpoint` replaced by `Socket` and table `glpi_netpoints` renamed to `glpi_sockets`
+
 
 ### Removed
 - Usage of alternative DB connection encoding (`DB::$dbenc` property).
