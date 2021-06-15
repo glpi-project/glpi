@@ -53,7 +53,7 @@ jobs:
         if: ${{ steps.updated.outputs.build == 'yes' }}
         run: |
           REF_NAME=$(echo ${{ matrix.branch }} | sed -E 's|/|-|')
-          echo "::set-output name=base::$REF_NAME"
+          echo "::set-output name=basename::$REF_NAME"
           SHA=$(git rev-parse --short HEAD)
           echo "release_name=$REF_NAME.$SHA" >> $GITHUB_ENV
       - name: "Build"
