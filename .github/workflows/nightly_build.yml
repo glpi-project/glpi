@@ -58,12 +58,6 @@ jobs:
         run: |
           echo "Y" | docker exec --interactive ${{ job.services.app.id }} tools/make_release.sh . ${{ env.release_name }}
           docker cp ${{ job.services.app.id }}:/tmp/glpi-${{ env.release_name }}.tgz ${{ github.workspace }}/${{ env.release_name }}.tar.gz
-      - name: "Store archive"
-        if: ${{ steps.updated.outputs.build == 'yes' }}
-        uses: actions/upload-artifact@v2
-        with:
-            name: ${{ steps.release-name.outputs.basename}}
-            path: ${{ github.workspace }}/${{ env.release_name }}.tar.gz
       - uses: actions/checkout@v2
         if: ${{ steps.updated.outputs.build == 'yes' }}
         with:
