@@ -173,11 +173,11 @@ class DataFactory {
       $item->parent = ($type == "root-project") ? 0 : (($type == "project") ? $record['projects_id'] : ($record["projecttasks_id"] > 0 ? $parentTaskUid : $record['projects_id']));
       $item->linksource_id = ($item->type != "project") ? $record["projecttasks_id"] : 0;
       $item->linktask_id = ($item->type != "project") ? $record["id"] : 0; // parent task id to search for by child->linksource_id
-      $item->start_date = isset($record['plan_start_date']) ? $record['plan_start_date'] : $_SESSION['glpi_currenttime'];
-      $item->end_date = isset($record['plan_end_date']) ? $record['plan_end_date'] : date('Y-m-d H:i:s', strtotime($item->start_date . ' + 1 day'));
+      $item->start_date = $record['plan_start_date'] ?? $_SESSION['glpi_currenttime'];
+      $item->end_date = $record['plan_end_date'] ?? date('Y-m-d H:i:s', strtotime($item->start_date . ' + 1 day'));
       $item->text = $record['name'];
       $item->content = isset($record['content']) ? html_entity_decode($record['content']) : "";
-      $item->comment = isset($record['comment']) ? $record['comment'] : "";
+      $item->comment = $record['comment'] ?? "";
       $item->progress = $record['percent_done'] / 100;
 
       return $item;
