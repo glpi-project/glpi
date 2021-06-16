@@ -1,0 +1,11 @@
+{% set documents = entry['documents'] ?? [] %}
+<ul class="list-group list-group-hoverable sub-documents">
+   {% for document in documents %}
+      <li class="list-group-item border-0">
+         {% include "components/itilobject/timeline/form_document_item.html.twig" with {
+            'form_mode': 'view',
+            'entry_i': document['item'],
+         } %}
+      </li>
+   {% endfor %}
+</ul>

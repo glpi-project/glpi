@@ -422,6 +422,7 @@
 
          .content-part {
             flex-direction: row-reverse !important;
+            flex-wrap: wrap;
 
             .timeline-item-buttons {
                flex-direction: column;
@@ -461,6 +462,14 @@
                &:before,
                &:after {
                   display: none;
+               }
+            }
+
+            .sub-documents {
+               width: 100%;
+
+               .list-group-item {
+                  width: max-content;
                }
             }
          }
