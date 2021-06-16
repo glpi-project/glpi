@@ -6781,39 +6781,25 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return mixed[] Timeline items
     */
    function getTimelineItems(bool $with_logs = true) {
-
-      $objType = static::getType();
+      $objType    = static::getType();
       $foreignKey = static::getForeignKeyField();
-      $supportsValidation = $objType === "Ticket" || $objType === "Change";
-
       $timeline = [];
-
-      $user = new User();
-
-      $fupClass           = 'ITILFollowup';
-      $followup_obj       = new $fupClass;
-      $taskClass             = $objType."Task";
-      $task_obj              = new $taskClass;
-      $document_item_obj     = new Document_Item();
-      if ($supportsValidation) {
-         $validation_class    = $objType."Validation";
-         $valitation_obj     = new $validation_class;
-      }
 
       //checks rights
       $restrict_fup = $restrict_task = [];
       if (!Session::haveRight("followup", ITILFollowup::SEEPRIVATE)) {
          $restrict_fup = [
             'OR' => [
-               'is_private'   => 0,
-               'users_id'     => Session::getLoginUserID()
+               'is_private' => 0,
+               'users_id'   => Session::getLoginUserID()
             ]
          ];
       }
-
       $restrict_fup['itemtype'] = static::getType();
       $restrict_fup['items_id'] = $this->getID();
 
+      $taskClass = $objType."Task";
+      $task_obj  = new $taskClass;
       if ($task_obj->maybePrivate() && !Session::haveRight("task", CommonITILTask::SEEPRIVATE)) {
          $restrict_task = [
             'OR' => [
@@ -6826,14 +6812,18 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       //add followups to timeline
+      $fupClass     = 'ITILFollowup';
+      $followup_obj = new $fupClass;
       if ($followup_obj->canview()) {
          $followups = $followup_obj->find(['items_id'  => $this->getID()] + $restrict_fup, ['date DESC', 'id DESC']);
          foreach ($followups as $followups_id => $followup) {
             $followup_obj->getFromDB($followups_id);
-            $followup['can_edit']                                   = $followup_obj->canUpdateItem();;
-            $timeline[$followup['date']."_followup_".$followups_id] = ['type' => $fupClass,
-                                                                            'item' => $followup,
-                                                                            'itiltype' => 'Followup'];
+            $followup['can_edit'] = $followup_obj->canUpdateItem();;
+            $timeline["ITILFollowup_".$followups_id] = [
+               'type' => $fupClass,
+               'item' => $followup,
+               'itiltype' => 'Followup'
+            ];
          }
       }
 
@@ -6842,38 +6832,16 @@ abstract class CommonITILObject extends CommonDBTM {
          $tasks = $task_obj->find([$foreignKey => $this->getID()] + $restrict_task, 'date DESC');
          foreach ($tasks as $tasks_id => $task) {
             $task_obj->getFromDB($tasks_id);
-            $task['can_edit']                           = $task_obj->canUpdateItem();
-            $timeline[$task['date']."_task_".$tasks_id] = ['type' => $taskClass,
-                                                                'item' => $task,
-                                                                'itiltype' => 'Task'];
+            $task['can_edit'] = $task_obj->canUpdateItem();
+            $timeline[$task_obj::getType()."_".$tasks_id] = [
+               'type' => $taskClass,
+               'item' => $task,
+               'itiltype' => 'Task'
+            ];
          }
       }
 
-      //add documents to timeline
-      $document_obj   = new Document();
-      $document_items = $document_item_obj->find([
-         $this->getAssociatedDocumentsCriteria(),
-         'timeline_position'  => ['>', self::NO_TIMELINE]
-      ]);
-      foreach ($document_items as $document_item) {
-         $document_obj->getFromDB($document_item['documents_id']);
-
-         $date = $document_item['date'] ?? $document_item['date_creation'];
-
-         $item = $document_obj->fields;
-         $item['date'] = $date;
-         // #1476 - set date_mod and owner to attachment ones
-         $item['date_mod'] = $document_item['date_mod'];
-         $item['users_id'] = $document_item['users_id'];
-         $item['documents_item_id'] = $document_item['id'];
-
-         $item['timeline_position'] = $document_item['timeline_position'];
-
-         $timeline[$date."_document_".$document_item['documents_id']]
-            = ['type' => 'Document_Item', 'item' => $item];
-      }
-
-      $solution_obj = new ITILSolution();
+      $solution_obj   = new ITILSolution();
       $solution_items = $solution_obj->find([
          'itemtype'  => static::getType(),
          'items_id'  => $this->getID()
@@ -6884,7 +6852,7 @@ abstract class CommonITILObject extends CommonDBTM {
             return mb_convert_encoding($m[1], "UTF-8", "HTML-ENTITIES");
          }, $solution_item['content']);
 
-         $timeline[$solution_item['date_creation']."_solution_" . $solution_item['id'] ] = [
+         $timeline["ITILSolution_".$solution_item['id'] ] = [
             'type'     => 'Solution',
             'itiltype' => 'Solution',
             'item'     => [
@@ -6904,14 +6872,20 @@ abstract class CommonITILObject extends CommonDBTM {
          ];
       }
 
+      $supportsValidation = $objType === "Ticket" || $objType === "Change";
+      if ($supportsValidation) {
+         $validation_class = $objType."Validation";
+         $valitation_obj   = new $validation_class;
+      }
       if ($supportsValidation and $validation_class::canView()) {
          $validations = $valitation_obj->find([$foreignKey => $this->getID()]);
          foreach ($validations as $validations_id => $validation) {
             $canedit = $valitation_obj->can($validations_id, UPDATE);
             $cananswer = ($validation['users_id_validate'] === Session::getLoginUserID() &&
                $validation['status'] == CommonITILValidation::WAITING);
+            $user = new User();
             $user->getFromDB($validation['users_id_validate']);
-            $timeline[$validation['submission_date']."_validation_".$validations_id] = [
+            $timeline["CommonITILValidation__".$validations_id] = [
                'type' => $validation_class,
                'item' => [
                   'id'        => $validations_id,
@@ -6932,7 +6906,7 @@ abstract class CommonITILObject extends CommonDBTM {
             ];
 
             if (!empty($validation['validation_date'])) {
-               $timeline[$validation['validation_date']."_validation_".$validations_id] = [
+               $timeline["CommonITILValidation_".$validations_id] = [
                   'type' => $validation_class,
                   'item' => [
                      'id'        => $validations_id,
@@ -6952,6 +6926,42 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
+      //add documents to timeline
+      $document_item_obj = new Document_Item();
+      $document_obj      = new Document();
+      $document_items    = $document_item_obj->find([
+         $this->getAssociatedDocumentsCriteria(),
+         'timeline_position'  => ['>', self::NO_TIMELINE]
+      ]);
+      foreach ($document_items as $document_item) {
+         $document_obj->getFromDB($document_item['documents_id']);
+
+         $date = $document_item['date'] ?? $document_item['date_creation'];
+
+         $item = $document_obj->fields;
+         $item['date'] = $date;
+         // #1476 - set date_mod and owner to attachment ones
+         $item['date_mod'] = $document_item['date_mod'];
+         $item['users_id'] = $document_item['users_id'];
+         $item['documents_item_id'] = $document_item['id'];
+
+         $item['timeline_position'] = $document_item['timeline_position'];
+
+         $timeline_key = $document_item['itemtype']."_".$document_item['items_id'];
+         if ($document_item['itemtype'] == static::getType()) {
+            // document associated directly to itilobject
+            $timeline[$date."_document_".$document_item['documents_id']]
+               = ['type' => 'Document_Item', 'item' => $item];
+         } elseif (isset($timeline[$timeline_key])) {
+            // document associated to a sub item of itilobject
+            if (!isset($timeline[$timeline_key]['documents'])) {
+               $timeline[$timeline_key]['documents'] = [];
+            }
+
+            $timeline[$timeline_key]['documents'][] = ['type' => 'Document_Item', 'item' => $item];
+         }
+      }
+
       if ($with_logs && Session::getCurrentInterface() == "central") {
          //add logs to timeline
          $log_items = Log::getHistoryData($this, 0, 0, [
@@ -6964,7 +6974,7 @@ abstract class CommonITILObject extends CommonDBTM {
                $content = sprintf(__("%s: %s"), $log_item['field'], $content);
             }
             $content = "<i class='fas fa-history me-1' title='".__("Log entry")."' data-bs-toggle='tooltip'></i>".$content;
-            $timeline[$log_item['date_mod']."_log_" . $log_item['id'] ] = [
+            $timeline["Log_" . $log_item['id'] ] = [
                'type'     => 'Log',
                'class'    => 'text-muted d-none',
                'item'     => [

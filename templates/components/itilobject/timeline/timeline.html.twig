@@ -91,6 +91,10 @@
                      </div>
                   </div>
                </span>
+
+               {% if entry['documents'] is defined %}
+                  {% include "components/itilobject/timeline/sub_documents.html.twig" with {'entry': entry} %}
+               {% endif %}
             </div>
          </div>
       </div>
