@@ -6842,12 +6842,14 @@ abstract class CommonITILObject extends CommonDBTM {
          $followups = $followup_obj->find(['items_id'  => $this->getID()] + $restrict_fup, ['date DESC', 'id DESC']);
          foreach ($followups as $followups_id => $followup) {
             $followup_obj->getFromDB($followups_id);
-            $followup['can_edit'] = $followup_obj->canUpdateItem();
-            $timeline["ITILFollowup_".$followups_id] = [
-               'type' => $fupClass,
-               'item' => $followup,
-               'itiltype' => 'Followup'
-            ];
+            if ($followup_obj->canViewItem()) {
+               $followup['can_edit'] = $followup_obj->canUpdateItem();
+               $timeline["ITILFollowup_".$followups_id] = [
+                  'type' => $fupClass,
+                  'item' => $followup,
+                  'itiltype' => 'Followup'
+               ];
+            }
          }
       }
 
@@ -6856,12 +6858,14 @@ abstract class CommonITILObject extends CommonDBTM {
          $tasks = $task_obj->find([$foreignKey => $this->getID()] + $restrict_task, 'date DESC');
          foreach ($tasks as $tasks_id => $task) {
             $task_obj->getFromDB($tasks_id);
-            $task['can_edit'] = $task_obj->canUpdateItem();
-            $timeline[$task_obj::getType()."_".$tasks_id] = [
-               'type' => $taskClass,
-               'item' => $task,
-               'itiltype' => 'Task'
-            ];
+            if ($task_obj->canViewItem()) {
+               $task['can_edit'] = $task_obj->canUpdateItem();
+               $timeline[$task_obj::getType()."_".$tasks_id] = [
+                  'type' => $taskClass,
+                  'item' => $task,
+                  'itiltype' => 'Task'
+               ];
+            }
          }
       }
 
