@@ -360,17 +360,32 @@ class Plugin extends CommonDBTM {
          );
       }
 
-      $mofile = str_replace($locales_dir, GLPI_LOCAL_I18N_DIR . '/'.$plugin_key . '/', $mofile);
-      $phpfile = str_replace('.mo', '.php', $mofile);
+      $plugin_folders = scandir(GLPI_LOCAL_I18N_DIR);
+      $plugin_folders = array_filter($plugin_folders, function($dir) use ($plugin_key) {
+         if (!is_dir(GLPI_LOCAL_I18N_DIR . "/$dir")) {
+            return false;
+         }
 
-      // Load local PHP file if it exists
-      if (file_exists($phpfile)) {
-         $TRANSLATE->addTranslationFile('phparray', $phpfile, $plugin_key, $coretrytoload);
-      }
+         if ($dir == $plugin_key) {
+            return true;
+         }
 
-      // Load local MO file if it exists -- keep last so it gets precedence
-      if (file_exists($mofile)) {
-         $TRANSLATE->addTranslationFile('gettext', $mofile, $plugin_key, $coretrytoload);
+         return strpos($dir, $plugin_key . '_') !== false;
+      });
+
+      foreach ($plugin_folders as $plugin_folder) {
+         $mofile = str_replace($locales_dir, GLPI_LOCAL_I18N_DIR . '/'. $plugin_folder . '/', $mofile);
+         $phpfile = str_replace('.mo', '.php', $mofile);
+
+         // Load local PHP file if it exists
+         if (file_exists($phpfile)) {
+            $TRANSLATE->addTranslationFile('phparray', $phpfile, $plugin_key, $coretrytoload);
+         }
+
+         // Load local MO file if it exists -- keep last so it gets precedence
+         if (file_exists($mofile)) {
+            $TRANSLATE->addTranslationFile('gettext', $mofile, $plugin_key, $coretrytoload);
+         }
       }
    }
 
