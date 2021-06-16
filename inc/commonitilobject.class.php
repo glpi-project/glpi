@@ -6986,8 +6986,10 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      //reverse sort timeline items by key (date)
-      krsort($timeline);
+      //reverse sort timeline items by date
+      usort($timeline, function($a, $b) {
+         return strtotime($b['item']['date']) - strtotime($a['item']['date']);
+      });
 
       return $timeline;
    }
