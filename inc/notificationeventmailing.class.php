@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use PHPMailer\PHPMailer\PHPMailer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -355,9 +357,19 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                'mail'
             );
          }
+
+         $encoding = PHPMailer::ENCODING_BASE64;
+         $mime = mime_content_type($path);
+         if ($mime == "message/rfc822") {
+            // messages/rfc822 can't be encoded in base64 according to RFC2046
+            // https://datatracker.ietf.org/doc/html/rfc2046
+            $encoding = PHPMailer::ENCODING_8BIT;
+         }
+
          $mmail->addAttachment(
             $path,
-            $document->fields['filename']
+            $document->fields['filename'],
+            $encoding
          );
       }
    }
