@@ -6818,7 +6818,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $followups = $followup_obj->find(['items_id'  => $this->getID()] + $restrict_fup, ['date DESC', 'id DESC']);
          foreach ($followups as $followups_id => $followup) {
             $followup_obj->getFromDB($followups_id);
-            $followup['can_edit'] = $followup_obj->canUpdateItem();;
+            $followup['can_edit'] = $followup_obj->canUpdateItem();
             $timeline["ITILFollowup_".$followups_id] = [
                'type' => $fupClass,
                'item' => $followup,
