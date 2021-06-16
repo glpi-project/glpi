@@ -1856,10 +1856,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                   <li class=\"gantt-menu-item gantt-menu-item-right\">
                      <fieldset style=\"line-height:normal; text-align:center;\">
                         <legend style=\"margin:0 auto;\">
-                           <input type=\"radio\" id=\"collapse\" class=\"gantt_radio\" name=\"branch_state\" value=\"0\" checked />
+                           <input type=\"radio\" id=\"collapse\" class=\"gantt_radio hidden\" name=\"branch_state\" value=\"0\" checked />
                            <label for=\"collapse\">Collapse</label>
                            |
-                           <input type=\"radio\" id=\"expand\" class=\"gantt_radio\" name=\"branch_state\" value=\"1\" />
+                           <input type=\"radio\" id=\"expand\" class=\"gantt_radio hidden\" name=\"branch_state\" value=\"1\" />
                            <label for=\"expand\">Expand</label>
                         </legend>
                         <input type=\"radio\" id=\"level1\" class=\"gantt_radio hidden\" name=\"branch_level\" value=\"1\" checked />
@@ -1873,10 +1873,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                   <li class=\"gantt-menu-item gantt-menu-item-right\">
                      <fieldset style=\"line-height:normal; text-align:center;\">
                         <legend style=\"margin:0 auto;\">
-                           <input type=\"radio\" id=\"rb-find\" class=\"gantt_radio rb-optype\" name=\"rb-optype\" checked />
+                           <input type=\"radio\" id=\"rb-find\" class=\"gantt_radio hidden rb-optype\" name=\"rb-optype\" checked />
                            <label for=\"rb-find\">Find</label>
                            |
-                           <input type=\"radio\" id=\"rb-filter\" class=\"gantt_radio rb-optype\" name=\"rb-optype\" />
+                           <input type=\"radio\" id=\"rb-filter\" class=\"gantt_radio hidden rb-optype\" name=\"rb-optype\" />
                            <label for=\"rb-filter\">Filter</label>
                         </legend>
                         <input id=\"search\" data-text-filter type=\"field\" placeholder=\"by name\" style=\"width:150px; font-size:14px; height:22px;\" oninput=\"gantt.\$doFilter(this.value);\" />

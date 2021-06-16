@@ -482,7 +482,6 @@ function initGantt($ID) {
          var json = JSON.parse(resp);
          if (json.data) {
             gantt.parse(json);
-            gantt.sort("start_date", false);
             gantt.render();
 
             if (readonly) {
@@ -579,6 +578,7 @@ function addTask(id, item) {
             gantt.addTask(json.item);
             gantt.hideLightbox();
             gantt.deleteTask(id);
+            displayAjaxMessageAfterRedirect();
          } else {
             gantt.alert(json.error);
          }
@@ -613,6 +613,7 @@ function updateTask(id, item) {
             task.end_date = item.end_date;
             gantt.updateTask(id);
             gantt.hideLightbox();
+            displayAjaxMessageAfterRedirect();
          } else
             gantt.alert('Could not update Task[' + item.text + ']: ' + json.error);
       },
@@ -640,6 +641,7 @@ function onTaskDrag(id, task, progress) {
          if (json.ok) {
             task.progress = progress;
             gantt.updateTask(task.id);
+            displayAjaxMessageAfterRedirect();
          } else {
             gantt.alert('Could not update Task[' + id + ']: ' + json.error);
          }
@@ -657,8 +659,10 @@ function deleteTask(id, item) {
          if (resp.ok) {
             gantt.deleteTask(id);
             gantt.hideLightbox();
-         } else
+            displayAjaxMessageAfterRedirect();
+         } else {
             gantt.alert(resp.error);
+         }
       },
       error: function(resp) {
          gantt.alert(resp.responseText);
@@ -675,8 +679,11 @@ function changeParent(item, target) {
          var json = JSON.parse(resp);
          if (!json.ok) {
             gantt.alert(json.error);
-         } else if (item.progress > 0) {
-            parentProgress(item.id);
+         } else {
+            if (item.progress > 0) {
+               parentProgress(item.id);
+            }
+            displayAjaxMessageAfterRedirect();
          }
       },
       error: function(resp) {
@@ -705,6 +712,7 @@ function addProject(id, item) {
             gantt.addTask(json.item);
             gantt.hideLightbox();
             gantt.deleteTask(id);
+            displayAjaxMessageAfterRedirect();
          } else {
             gantt.alert(json.error);
          }
@@ -733,8 +741,10 @@ function updateProject(id, item) {
             project.text = item.text;
             gantt.updateTask(id);
             gantt.hideLightbox();
-         } else
+            displayAjaxMessageAfterRedirect();
+         } else {
             gantt.alert('Could not update Project[' + item.text + ']: ' + json.error);
+         }
       },
       error: function(resp) {
          gantt.alert(resp.responseText);
@@ -752,8 +762,10 @@ function putInTrashbin(id, project) {
          if (resp.ok) {
             gantt.deleteTask(id);
             gantt.hideLightbox();
-         } else
+            displayAjaxMessageAfterRedirect();
+         } else {
             gantt.alert(resp.error);
+         }
       },
       error: function(resp) {
          gantt.alert(resp.responseText);

@@ -190,6 +190,7 @@ fieldset {
 .gantt_radio {
    &:checked+label {
       @extend %radio_shared;
+      border-bottom: 2px solid #655;
    }
    &:not(:checked)+label {
       @extend %radio_shared;

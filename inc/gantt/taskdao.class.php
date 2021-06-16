@@ -84,7 +84,7 @@ class TaskDAO {
          'real_start_date' => ($task->type == "milestone" && $t->fields["real_start_date"] == null) ? $task->start_date : $t->fields["real_start_date"],
          'plan_end_date' => $task->end_date,
          'percent_done' => ($task->progress * 100),
-         'name' => (isset($task->text) ? $task->text : $t->fields['name']),
+         'name' => $task->text ?? $t->fields['name'],
          'is_milestone' => ($task->type == "milestone") ? 1 : 0
       ]);
       return true;
