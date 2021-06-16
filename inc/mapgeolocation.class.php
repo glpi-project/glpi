@@ -43,7 +43,9 @@ trait MapGeolocation {
     * get openstreetmap
     */
    public function showMap() {
-      echo "<div id='setlocation_container'></div>";
+      $rand = mt_rand();
+
+      echo "<div id='setlocation_container_{$rand}'></div>";
       $js = "var map_elt, _marker;
       var _setLocation = function(lat, lng) {
          if (_marker) {
@@ -83,7 +85,7 @@ trait MapGeolocation {
       }
 
       $(function(){
-         map_elt = initMap($('#setlocation_container'), 'setlocation', '200px');
+         map_elt = initMap($('#setlocation_container_{$rand}'), 'setlocation_{$rand}', '200px');
 
          var osmGeocoder = new L.Control.OSMGeocoder({
             collapsed: false,
