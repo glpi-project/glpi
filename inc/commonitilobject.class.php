@@ -6872,12 +6872,9 @@ abstract class CommonITILObject extends CommonDBTM {
          ];
       }
 
-      $supportsValidation = $objType === "Ticket" || $objType === "Change";
-      if ($supportsValidation) {
-         $validation_class = $objType."Validation";
+      $validation_class = $objType."Validation";
+      if (class_exists($validation_class) && $validation_class::canView()) {
          $valitation_obj   = new $validation_class;
-      }
-      if ($supportsValidation and $validation_class::canView()) {
          $validations = $valitation_obj->find([$foreignKey => $this->getID()]);
          foreach ($validations as $validations_id => $validation) {
             $canedit = $valitation_obj->can($validations_id, UPDATE);
