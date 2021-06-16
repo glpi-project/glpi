@@ -3,7 +3,7 @@
 
    {% set status_closed = (item.fields['status'] in item.getClosedStatusArray()) %}
 
-   {% for entry in timeline|reverse %}
+   {% for entry in timeline %}
       {% set entry_i = entry['item'] %}
       {% set users_id = entry_i['users_id'] %}
       {% set is_private = entry_i['is_private'] ?? false %}
