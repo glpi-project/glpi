@@ -232,18 +232,7 @@ class Common {
     */
    public function setHeader($name, $value): self {
       $propname = strtolower(str_replace('-', '_', $name));
-
-      if (!property_exists($this, $propname)) {
-         trigger_error(
-            sprintf(
-               'Unknown header %1$s',
-               $propname
-            ),
-            E_USER_ERROR
-         );
-      }
       $this->$propname = $value;
-
       return $this;
    }
 
