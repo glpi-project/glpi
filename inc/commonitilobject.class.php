@@ -6949,7 +6949,7 @@ abstract class CommonITILObject extends CommonDBTM {
             // document associated directly to itilobject
             $timeline["Document_".$document_item['documents_id']]
                = ['type' => 'Document_Item', 'item' => $item];
-         } elseif (isset($timeline[$timeline_key])) {
+         } else if (isset($timeline[$timeline_key])) {
             // document associated to a sub item of itilobject
             if (!isset($timeline[$timeline_key]['documents'])) {
                $timeline[$timeline_key]['documents'] = [];
