@@ -53,7 +53,7 @@ if ($_SERVER['HTTP_ACCEPT'] === 'text/plain') {
 header('Content-type: ' . $_SERVER['HTTP_ACCEPT']);
 
 if ($_SERVER['HTTP_ACCEPT'] === 'application/json') {
-   echo json_encode(StatusChecker::getServiceStatus(null, true, true));
+   echo json_encode(StatusChecker::getServiceStatus($_REQUEST['service'] ?? null, true, true));
 } else {
-   echo StatusChecker::getServiceStatus(null, true, false);
+   echo StatusChecker::getServiceStatus($_REQUEST['service'] ?? null, true, false);
 }
