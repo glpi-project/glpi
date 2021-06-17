@@ -36,8 +36,8 @@ layout: default
 title: GLPI Nightly Builds
 ---
 
-Built on $( date -u +'%F %H:%M:%S UTC' )
-
+Version|Archive|Build date|Size
+---|---|---|---
 HEADER
 
 for file in $*
@@ -45,12 +45,14 @@ do
     NAME="${file#glpi/}"
     BRANCH="${NAME%.*.tar.gz}"
     SIZE=$( stat -c %s "$file" )
+    read DATE TIME TZ <<<$(git log -n1 --pretty=%ci -- $file)
+    [ "$TZ" == "+0000" ] && TZ="UTC"
     cat <<DESCRIPTION
-## $BRANCH
-
-Archive|Size
----|---
-[$NAME]($NAME)|$SIZE
-
+$BRANCH|[$NAME]($NAME)|$DATE $TIME $TZ|$SIZE
 DESCRIPTION
 done
+
+cat <<FOOTER
+
+<font size="1">Page generated on $( date -u +'%F %H:%M:%S UTC' )</font>
+FOOTER
