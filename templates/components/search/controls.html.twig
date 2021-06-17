@@ -3,7 +3,7 @@
    {{ showMassiveActions(massiveactionparams)|raw }}
    {% endif %}
 
-   {% if count > 0 %}
+   {% if count > 0 or data['search']['as_map'] == 1 %}
    <label class="form-check form-switch btn btn-sm btn-ghost-info me-1 px-1 mb-0"
           data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Show as map') }}">
       <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
