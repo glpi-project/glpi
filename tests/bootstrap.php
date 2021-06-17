@@ -34,7 +34,7 @@ ini_set('display_errors', 'On');
 error_reporting(E_ALL);
 
 define('GLPI_ROOT', __DIR__ . '/../');
-define('GLPI_CONFIG_DIR', __DIR__);
+define('GLPI_CONFIG_DIR', __DIR__ . '/config');
 define('GLPI_VAR_DIR', __DIR__ . '/files');
 define('GLPI_URI', (getenv('GLPI_URI') ?: 'http://localhost:8088'));
 
@@ -54,7 +54,7 @@ global $CFG_GLPI, $GLPI_CACHE;
 include (GLPI_ROOT . "/inc/based_config.php");
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
-   die("\nConfiguration file for tests not found\n\nrun: bin/console glpi:database:install --config-dir=./tests ...\n\n");
+   die("\nConfiguration file for tests not found\n\nrun: bin/console glpi:database:install --config-dir=./tests/config ...\n\n");
 }
 
 // Create subdirectories of GLPI_VAR_DIR based on defined constants
