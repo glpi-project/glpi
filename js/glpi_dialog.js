@@ -335,8 +335,8 @@ var glpi_toast = function(title, message, css_class) {
    var toast = new bootstrap.Toast(document.querySelector('#toast_js_' + toast_id), {
       delay: 10000,
    });
-   toast.show()
-}
+   toast.show();
+};
 
 /**
  * Display an information toast
