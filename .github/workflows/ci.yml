@@ -157,11 +157,6 @@ jobs:
         if: env.skip != 'true'
         run: |
           .github/actions/init_show-versions.sh
-      - name: "Initialize fixtures"
-        if: env.skip != 'true'
-        run: |
-          .github/actions/init_initialize-old-dbs.sh
-          .github/actions/init_initialize-services-fixtures.sh
       - name: "Install dependencies"
         if: env.skip != 'true'
         run: |
@@ -173,6 +168,7 @@ jobs:
       - name: "Update DB tests"
         if: env.skip != 'true'
         run: |
+          .github/actions/init_initialize-old-dbs.sh
           docker-compose exec -T app .github/actions/test_update-from-older-version.sh
       - name: "Unit tests"
         if: env.skip != 'true'
@@ -185,10 +181,12 @@ jobs:
       - name: "LDAP tests"
         if: env.skip != 'true'
         run: |
+          .github/actions/init_initialize-ldap-fixtures.sh
           docker-compose exec -T app .github/actions/test_tests-ldap.sh
       - name: "IMAP tests"
         if: env.skip != 'true'
         run: |
+          .github/actions/init_initialize-imap-fixtures.sh
           docker-compose exec -T app .github/actions/test_tests-imap.sh
       - name: "WEB tests"
         if: env.skip != 'true'

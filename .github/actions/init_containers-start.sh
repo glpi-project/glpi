@@ -1,10 +1,5 @@
 #!/bin/bash -e
 
-# Import variables from .env file if it exists
-if [[ -f .env ]]; then
-  . .env
-fi
-
 echo "Init app container home"
 mkdir -p $APP_CONTAINER_HOME
 
@@ -15,7 +10,7 @@ docker-compose start
 
 if [[ "$UPDATE_FILES_ACL" = true ]]; then
   echo "Change files rights to give write access to app container user"
-  sudo apt-get install acl
+  sudo apt-get install --assume-yes --no-install-recommends --quiet acl
   setfacl --recursive --modify u:1000:rwx $APPLICATION_ROOT
   setfacl --recursive --modify u:1000:rwx $APP_CONTAINER_HOME
 fi

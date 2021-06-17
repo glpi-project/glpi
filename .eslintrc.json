@@ -10,7 +10,8 @@
         "/public/lib/*",
         "/public/build/*",
         "/tests/config/*",
-        "/vendor/*"
+        "/vendor/*",
+        "**/*.min.js"
     ],
     "env": {
         "browser": true,
