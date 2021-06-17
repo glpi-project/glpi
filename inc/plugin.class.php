@@ -370,7 +370,7 @@ class Plugin extends CommonDBTM {
             return true;
          }
 
-         return strpos($dir, $plugin_key . '_') !== false;
+         return Toolbox::startsWith($dir, $plugin_key . '_');
       });
 
       foreach ($plugin_folders as $plugin_folder) {

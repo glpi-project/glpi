@@ -647,7 +647,7 @@ class Session {
             return true;
          }
 
-         return strpos($dir, 'core_') !== false;
+         return Toolbox::startsWith($dir, 'core_');
       });
 
       foreach ($core_folders as $core_folder) {
