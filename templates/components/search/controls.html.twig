@@ -88,7 +88,7 @@
             {{ __("All pages in CSV") }}
          </a></li>
          {% if itemtype != 'Stat' %}
-         <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::NAMES_OUTPUT') }}">
+         <li id="copy_names_to_clipboard"><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::NAMES_OUTPUT') }}">
             <i class="fas fa-lg fa-copy"></i>
             {{ __("Copy names to clipboard") }}
          </a></li>
@@ -149,6 +149,27 @@ $(document).ready(function() {
             toggle_fold_search(show_search);
          }
       });
+   });
+
+   // Callbacks for copy success/failure
+   function copy_success() {
+      glpi_toast_info(__('Results copied to clipboard'));
+   }
+   function copy_error() {
+      glpi_toast_error(__('Unexpected error'));
+   }
+
+   $('#copy_names_to_clipboard').click(function(e) {
+      // Get target link
+      var link = $(this).find('a').prop('href');
+
+      // Prevent link from working
+      e.preventDefault();
+
+      // Get data using ajax
+      $.get(link, function (data) {
+         navigator.clipboard.writeText(data).then(copy_success, copy_error);
+      }).fail(copy_error);
    });
 });
 </script>

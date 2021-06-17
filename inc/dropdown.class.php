@@ -2168,64 +2168,6 @@ class Dropdown {
 
       $rand = mt_rand();
       Dropdown::showFromArray('display_type', $values, ['rand' => $rand]);
-
-      // Export button -> save to file
-      $export_label =  _sx('button', 'Export');
-      echo "<button type='submit' id='export$rand' name='export' class='unstyled pointer' title='$export_label'>";
-      echo "<i class='far fa-save'></i><span class='sr-only'>$export_label<span>";
-      echo "</button>";
-
-      // Copy button -> copy to clipboard
-      $copy_label =  _sx('button', 'Copy');
-      echo "<button type='submit' id='copy$rand' name='export' class='unstyled pointer starthidden' title='$copy_label'>";
-      echo "<i class='far fa-copy'></i><span class='sr-only'>$copy_label<span>";
-      echo "</button>";
-      echo "<span id='copy_loading_$rand' class='spinner-18'></span>";
-
-      echo Html::scriptBlock("
-         // Switch Export/Copy button depending on the selected option
-         $('#dropdown_display_type$rand').change(function() {
-            if ($('#dropdown_display_type$rand').val() == '-" . Search::NAMES_OUTPUT . "') {
-               $('#export$rand').hide();
-               $('#copy$rand').show();
-            } else {
-               $('#export$rand').show();
-               $('#copy$rand').hide();
-            }
-         });
-
-         // Callback to be used later if copy to clipboard is succesful
-         function copy_success() {
-            $('#copy_loading_$rand').hide();
-            $('#copy$rand').show();
-            showInfoMessage(__('Results copied to clipboard'));
-         }
-
-         // Callback to be used later if copy to clipboard fail
-         function copy_error() {
-            $('#copy_loading_$rand').hide();
-            $('#copy$rand').show();
-            showErrorMessage(__('Unexpected error'));
-         }
-
-         $('#copy$rand').click(function(e) {
-            // Get parent form
-            var form = $(e.target).closest('form');
-
-            // Prevent form submitting
-            e.preventDefault();
-
-            // Hide button, show loading incator
-            $('#copy$rand').hide();
-            $('#copy_loading_$rand').css({'display': 'inline-block'});
-
-            // Send form using ajax
-            $.get(form.prop('action') + '?' + $(form).serialize(), function (data) {
-               // Put result in clipboard
-               navigator.clipboard.writeText(data).then(copy_success, copy_error);
-            }).fail(copy_error);
-         });
-      ");
    }
 
 
