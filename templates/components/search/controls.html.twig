@@ -50,7 +50,7 @@
          <button class="dropdown-toggle btn btn-sm btn-icon btn-ghost-secondary" type="button" id="dropdown-export"
                data-bs-toggle="dropdown" aria-expanded="false" >
             <span class="py-1 px-2 my-n1 mx-n2"data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ _x('button', 'Export') }}">
-               <i class="fas fa-lg fa-file-download"></i>
+               <i id="export_dropdown_icon" class="fas fa-lg fa-file-download"></i>
             </span>
          </button>
       {% set exporthref = path('/front/report.dynamic.php') ~ '?item_type=' ~ itemtype ~ '&start=' ~ start ~ '&' ~ posthref %}
@@ -154,14 +154,25 @@ $(document).ready(function() {
    // Callbacks for copy success/failure
    function copy_success() {
       glpi_toast_info(__('Results copied to clipboard'));
+      $('#export_dropdown_icon').removeClass('fa-circle-notch');
+      $('#export_dropdown_icon').removeClass('fa-spin');
+      $('#export_dropdown_icon').addClass('fa-file-download');
    }
    function copy_error() {
       glpi_toast_error(__('Unexpected error'));
+      $('#export_dropdown_icon').removeClass('fa-circle-notch');
+      $('#export_dropdown_icon').removeClass('fa-spin');
+      $('#export_dropdown_icon').addClass('fa-file-download');
    }
 
    $('#copy_names_to_clipboard').click(function(e) {
       // Get target link
       var link = $(this).find('a').prop('href');
+
+      // Show loading indicator
+      $('#export_dropdown_icon').removeClass('fa-file-download');
+      $('#export_dropdown_icon').addClass('fa-circle-notch');
+      $('#export_dropdown_icon').addClass('fa-spin');
 
       // Prevent link from working
       e.preventDefault();
