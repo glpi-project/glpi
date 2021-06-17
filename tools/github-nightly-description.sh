@@ -36,6 +36,8 @@ layout: default
 title: GLPI Nightly Builds
 ---
 
+Version|Archive|Build date|Size
+---|---|---|---
 HEADER
 
 for file in $*
@@ -46,15 +48,11 @@ do
     read DATE TIME TZ <<<$(git log -n1 --pretty=%ci -- $file)
     [ "$TZ" == "+0000" ] && TZ="UTC"
     cat <<DESCRIPTION
-## $BRANCH
-
-Date|Archive|Size
----|---|---
-$DATE $TIME $TZ|[$NAME]($NAME)|$SIZE
-
+$BRANCH|[$NAME]($NAME)|$DATE $TIME $TZ|$SIZE
 DESCRIPTION
 done
 
 cat <<FOOTER
+
 <font size="1">Page generated on $( date -u +'%F %H:%M:%S UTC' )</font>
 FOOTER
