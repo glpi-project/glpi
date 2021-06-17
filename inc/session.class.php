@@ -637,17 +637,32 @@ class Session {
 
       $TRANSLATE->addTranslationFile('gettext', GLPI_I18N_DIR.$newfile, 'glpi', $trytoload);
 
-      $mofile = GLPI_LOCAL_I18N_DIR . '/core/' . $newfile;
-      $phpfile = str_replace('.mo', '.php', $mofile);
+      $core_folders = scandir(GLPI_LOCAL_I18N_DIR);
+      $core_folders = array_filter($core_folders, function($dir) {
+         if (!is_dir(GLPI_LOCAL_I18N_DIR . "/$dir")) {
+            return false;
+         }
 
-      // Load local PHP file if it exists
-      if (file_exists($phpfile)) {
-         $TRANSLATE->addTranslationFile('phparray', $phpfile, 'glpi', $trytoload);
-      }
+         if ($dir == 'core') {
+            return true;
+         }
 
-      // Load local MO file if it exists -- keep last so it gets precedence
-      if (file_exists($mofile)) {
-         $TRANSLATE->addTranslationFile('gettext', $mofile, 'glpi', $trytoload);
+         return Toolbox::startsWith($dir, 'core_');
+      });
+
+      foreach ($core_folders as $core_folder) {
+         $mofile = GLPI_LOCAL_I18N_DIR . "/$core_folder/" . $newfile;
+         $phpfile = str_replace('.mo', '.php', $mofile);
+
+         // Load local PHP file if it exists
+         if (file_exists($phpfile)) {
+            $TRANSLATE->addTranslationFile('phparray', $phpfile, 'glpi', $trytoload);
+         }
+
+         // Load local MO file if it exists -- keep last so it gets precedence
+         if (file_exists($mofile)) {
+            $TRANSLATE->addTranslationFile('gettext', $mofile, 'glpi', $trytoload);
+         }
       }
 
       // Load plugin dicts
