@@ -29,6 +29,8 @@
  * ---------------------------------------------------------------------
  */
 
+/* global bootstrap */
+
 /**
  * Create a dialog window
  *
@@ -306,6 +308,14 @@ var glpi_close_all_dialogs = function() {
 };
 
 var toast_id = 0;
+
+/**
+ * Create and show a "toast" (https://getbootstrap.com/docs/5.0/components/toasts/)
+ *
+ * @param {string} title      Header of the toast
+ * @param {string} message    Body of the toast
+ * @param {string} css_class  Css class to apply to the toasts
+ */
 var glpi_toast = function(title, message, css_class) {
    toast_id++;
 
@@ -328,14 +338,29 @@ var glpi_toast = function(title, message, css_class) {
    toast.show()
 }
 
+/**
+ * Display an information toast
+ *
+ * @param {string} message Message to display
+ */
 var glpi_toast_info = function(message) {
    glpi_toast(_n("Informations", "Information", 1), message, 'bg-info text-white border-0');
 };
 
+/**
+ * Display a warning toast
+ *
+ * @param {string} message Message to display
+ */
 var glpi_toast_warning = function(message) {
    glpi_toast(__("Warning"), message, 'bg-warning text-white border-0');
 };
 
+/**
+ * Display an error toast
+ *
+ * @param {string} message Message to display
+ */
 var glpi_toast_error = function(message) {
    glpi_toast(__("Error"), message, 'bg-danger text-white border-0');
 };
