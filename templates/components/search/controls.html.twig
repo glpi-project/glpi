@@ -157,12 +157,14 @@ $(document).ready(function() {
       $('#export_dropdown_icon').removeClass('fa-circle-notch');
       $('#export_dropdown_icon').removeClass('fa-spin');
       $('#export_dropdown_icon').addClass('fa-file-download');
+      $('#export_dropdown_icon').parent().parent().addClass('dropdown-toggle');
    }
    function copy_error() {
       glpi_toast_error(__('Unexpected error'));
       $('#export_dropdown_icon').removeClass('fa-circle-notch');
       $('#export_dropdown_icon').removeClass('fa-spin');
       $('#export_dropdown_icon').addClass('fa-file-download');
+      $('#export_dropdown_icon').parent().parent().addClass('dropdown-toggle');
    }
 
    $('#copy_names_to_clipboard').click(function(e) {
@@ -173,6 +175,7 @@ $(document).ready(function() {
       $('#export_dropdown_icon').removeClass('fa-file-download');
       $('#export_dropdown_icon').addClass('fa-circle-notch');
       $('#export_dropdown_icon').addClass('fa-spin');
+      $('#export_dropdown_icon').parent().parent().removeClass('dropdown-toggle');
 
       // Prevent link from working
       e.preventDefault();
