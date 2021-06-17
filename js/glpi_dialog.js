@@ -344,7 +344,7 @@ var glpi_toast = function(title, message, css_class) {
  * @param {string} message Message to display
  */
 var glpi_toast_info = function(message) {
-   glpi_toast(_n("Informations", "Information", 1), message, 'bg-info text-white border-0');
+   glpi_toast(_n("Information", "Information", 1), message, 'bg-info text-white border-0');
 };
 
 /**
