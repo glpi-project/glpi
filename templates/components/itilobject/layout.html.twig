@@ -7,7 +7,7 @@
    {% endif %}
 
    <div class="row d-flex flex-column align-items-stretch itil-object ">
-      <div class="itil-left-side col-12 col-md-8 order-last order-md-first pt-2 pe-2 pe-md-4 d-flex flex-column border-top border-4">
+      <div class="itil-left-side col-12 col-md-8 order-last order-md-first pt-2 pe-2 pe-md-4 d-flex flex-column-reverse border-top border-4">
          {% if item.isNewItem() %}
             {% include("components/itilobject/timeline/new_form.html.twig") %}
          {% else %}
