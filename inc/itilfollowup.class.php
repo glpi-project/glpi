@@ -337,8 +337,8 @@ class ITILFollowup  extends CommonDBChild {
 
          // don't notify on ITILObject - update event
          if (!$donotif
-             || (!in_array($this->input['_status'], $this->getSolvedStatusArray())
-                 && !in_array($this->input['_status'], $this->getClosedStatusArray()))) {
+             || (!in_array($this->input['_status'], $parentitem->getSolvedStatusArray())
+                 && !in_array($this->input['_status'], $parentitem->getClosedStatusArray()))) {
             $update['_disablenotif'] = true;
          }
 
