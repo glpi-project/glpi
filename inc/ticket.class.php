@@ -6061,11 +6061,8 @@ JAVASCRIPT;
                $link    = sprintf(__('%1$s (%2$s)'), $link,
                   sprintf(__('%1$s - %2$s'), $job->numberOfFollowups($showprivate),
                      $job->numberOfTasks($showprivate)));
-               $content = Toolbox::unclean_cross_side_scripting_deep(html_entity_decode($job->fields['content'],
-                  ENT_QUOTES,
-                  "UTF-8"));
                $link    = sprintf(__('%1$s %2$s'), $link,
-                  Html::showToolTip(nl2br(Html::Clean($content)),
+                  Html::showToolTip(RichText::getSafeHtml($job->fields['content'], true),
                      ['applyto' => 'ticket'.$job->fields["id"].$rand,
                         'display' => false]));
                $row['values'][] = $link;
