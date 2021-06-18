@@ -254,12 +254,6 @@ class ITILFollowup  extends CommonDBChild {
          ]);
       }
 
-      if ($donotif) {
-         $options = ['followup_id' => $this->fields["id"],
-                          'is_private'  => $this->fields['is_private']];
-         NotificationEvent::raiseEvent("add_followup", $parentitem, $options);
-      }
-
       if (isset($this->input["_close"])
           && $this->input["_close"]
           && ($parentitem->fields["status"] == CommonITILObject::SOLVED)) {
@@ -274,6 +268,12 @@ class ITILFollowup  extends CommonDBChild {
          // Use update method for history
          $this->input["_job"]->update($update);
          $donotif = false; // Done for ITILObject update (new status)
+      }
+
+      if ($donotif) {
+         $options = ['followup_id' => $this->fields["id"],
+                          'is_private'  => $this->fields['is_private']];
+         NotificationEvent::raiseEvent("add_followup", $parentitem, $options);
       }
 
       // Set parent status to pending
@@ -337,8 +337,8 @@ class ITILFollowup  extends CommonDBChild {
 
          // don't notify on ITILObject - update event
          if (!$donotif
-             || ($this->input['_status'] != CommonITILObject::SOLVED
-                 && $this->input['_status'] != CommonITILObject::CLOSED)) {
+             || (!in_array($this->input['_status'], $this->getSolvedStatusArray())
+                 && !in_array($this->input['_status'], $this->getClosedStatusArray()))) {
             $update['_disablenotif'] = true;
          }
 
