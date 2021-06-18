@@ -40,7 +40,6 @@
             <input type="hidden" name="itemtype" value="{{ item.getType() }}">
             <input type="hidden" name="items_id" value="{{ item.fields['id'] }}">
             <input type="hidden" name="_no_message_link" value="1">
-            {# TODO reopen #}
 
             {% if ticket_ticket.countOpenChildren(item.fields['id']) > 0 %}
                <div class="alert alert-important alert-info">

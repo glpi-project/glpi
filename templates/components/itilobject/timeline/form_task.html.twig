@@ -89,7 +89,6 @@
                action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true">
             <input type="hidden" name="itemtype" value="{{ item.getType() }}">
             <input type="hidden" name="{{ item|get_foreignkey_field }}" value="{{ item.fields['id'] }}">
-            {# TODO reopen #}
 
             <div class="row">
                <div class="col-12 col-md-9">
