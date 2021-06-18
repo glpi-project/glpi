@@ -32,7 +32,7 @@
 
 namespace GlpiTests;
 
-class Toolbox {
+class BootstrapUtils {
 
    /**
     * Create subdirectories of GLPI_VAR_DIR based on defined constants.
