@@ -4,7 +4,7 @@
 {% block timeline_card %}
    {% if form_mode == 'view' %}
       <div class="read-only-content">
-         {{ getHtmlToDisplay(entry_i['content']) }}
+         {{ getSafeHtml(entry_i['content']) }}
 
          <div class="timeline-badges">
             {% if entry_i['sourceitems_id'] %}

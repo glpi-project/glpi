@@ -55,6 +55,7 @@ use Glpi\Application\View\Extension\ItemtypeExtension;
 use Glpi\Application\View\Extension\ModelExtension;
 use Glpi\Application\View\Extension\NumberFormatExtension;
 use Glpi\Application\View\Extension\PluginExtension;
+use Glpi\Application\View\Extension\RichTextExtension;
 use Glpi\Application\View\Extension\RoutingExtension;
 use Glpi\Application\View\Extension\SearchExtension;
 use Glpi\Application\View\Extension\SessionExtension;
@@ -120,6 +121,7 @@ class TemplateRenderer {
       $this->environment->addExtension(new ModelExtension());
       $this->environment->addExtension(new NumberFormatExtension());
       $this->environment->addExtension(new PluginExtension());
+      $this->environment->addExtension(new RichTextExtension());
       $this->environment->addExtension(new RoutingExtension());
       $this->environment->addExtension(new SearchExtension());
       $this->environment->addExtension(new SessionExtension());

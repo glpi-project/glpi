@@ -11,8 +11,8 @@
          {% endif %}
 
          <div class="text-content" data-bs-html="true" data-bs-custom-class="todo-list-tooltip"
-              title="{{ getHtmlToDisplay(entry_i['content'])|escape('html_attr') }}" data-bs-toggle="tooltip">
-            {{ getHtmlToDisplay(entry_i['content']) }}
+              title="{{ getTextFromHtml(entry_i['content'])|escape('html_attr') }}" data-bs-toggle="tooltip">
+            {{ getSafeHtml(entry_i['content']) }}
          </div>
 
          <div class="timeline-badges">
