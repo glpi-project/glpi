@@ -61,13 +61,7 @@ if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
    die("\nConfiguration file for tests not found\n\nrun: bin/console glpi:database:install --config-dir=./tests ...\n\n");
 }
 
-// Create subdirectories of GLPI_VAR_DIR based on defined constants
-foreach (get_defined_constants() as $constant_name => $constant_value) {
-   if (preg_match('/^GLPI_[\w]+_DIR$/', $constant_name)
-       && preg_match('/^' . preg_quote(GLPI_VAR_DIR, '/') . '\//', $constant_value)) {
-      is_dir($constant_value) or mkdir($constant_value, 0755, true);
-   }
-}
+\GlpiTests\Toolbox::initVarDirectories();
 
 //init cache
 if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FILENAME)) {
