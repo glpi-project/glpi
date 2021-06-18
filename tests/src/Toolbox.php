@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 /**
  * ---------------------------------------------------------------------
@@ -31,24 +30,22 @@
  * ---------------------------------------------------------------------
  */
 
-define('GLPI_ROOT', dirname(dirname(__DIR__)));
-define('GLPI_CONFIG_DIR', GLPI_ROOT . '/tests');
-define('GLPI_VAR_DIR', GLPI_ROOT . '/tests/files');
-define(
-   'PLUGINS_DIRECTORIES',
-   [
-      GLPI_ROOT . '/plugins',
-      GLPI_ROOT . '/tests/fixtures/plugins',
-   ]
-);
+namespace GlpiTests;
 
-include_once(GLPI_ROOT . '/inc/includes.php');
+class Toolbox {
 
-\GlpiTests\Toolbox::initVarDirectories();
-
-$command = new \GlpiTests\Command\TestUpdatedDataCommand();
-
-$app = new \Symfony\Component\Console\Application('Test empty data', GLPI_VERSION);
-$app->add($command);
-$app->setDefaultCommand($command->getName(), true);
-$app->run();
+   /**
+    * Create subdirectories of GLPI_VAR_DIR based on defined constants.
+    *
+    * @return void
+    */
+   public static function initVarDirectories(): void {
+      foreach (get_defined_constants() as $name => $value) {
+         if (preg_match('/^GLPI_[\w]+_DIR$/', $name)
+             && preg_match('/^' . preg_quote(GLPI_VAR_DIR, '/') . '\//', $value)
+             && !is_dir($value)) {
+            mkdir($value, 0755, true);
+         }
+      }
+   }
+}
