@@ -231,6 +231,12 @@ class ITILFollowup  extends CommonDBChild {
          $this->input["users_id"]
       );
 
+      if ($donotif) {
+         $options = ['followup_id' => $this->fields["id"],
+                          'is_private'  => $this->fields['is_private']];
+         NotificationEvent::raiseEvent("add_followup", $parentitem, $options);
+      }
+
       if (isset($this->input["_close"])
           && $this->input["_close"]
           && ($parentitem->fields["status"] == CommonITILObject::SOLVED)) {
@@ -299,20 +305,14 @@ class ITILFollowup  extends CommonDBChild {
          $update['id']     = $parentitem->fields['id'];
 
          // don't notify on ITILObject - update event
-         $update['_disablenotif'] = true;
+         if (!$donotif
+             || ($this->input['_status'] != CommonITILObject::SOLVED
+                 && $this->input['_status'] != CommonITILObject::CLOSED)) {
+            $update['_disablenotif'] = true;
+         }
 
          // Use update method for history
          $parentitem->update($update);
-      }
-
-      if ($donotif) {
-         if (in_array($parentitem->fields["status"], $parentitem::getClosedStatusArray())) {
-            NotificationEvent::raiseEvent("closed", $parentitem);
-         } else {
-            $options = ['followup_id' => $this->fields["id"],
-                             'is_private'  => $this->fields['is_private']];
-            NotificationEvent::raiseEvent("add_followup", $parentitem, $options);
-         }
       }
 
       // Add log entry in the ITILObject
