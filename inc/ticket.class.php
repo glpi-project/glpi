@@ -4668,6 +4668,7 @@ JAVASCRIPT;
          'canpriority'        => $canpriority,
          'canassign'          => $canassign,
          'canassigntome'      => $canassigntome,
+         'load_kb_sol'        => $options['load_kb_sol'] ?? 0,
       ]);
 
       return true;

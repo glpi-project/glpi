@@ -125,9 +125,17 @@ class ITILSolution extends CommonDBChild {
          $this->getEmpty();
       }
 
+      if (isset($options['kb_id_toload']) && $options['kb_id_toload'] > 0) {
+         $kb = new KnowbaseItem();
+         if ($kb->getFromDB($options['kb_id_toload'])) {
+            $this->fields['content'] = $kb->getField('answer');
+         }
+      }
+
       TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_solution.html.twig', [
-         'item'      => $options['parent'],
-         'subitem'   => $this
+         'item'    => $options['parent'] ?? null,
+         'subitem' => $this,
+         'params'  => $options,
       ]);
       return;
 
@@ -154,13 +162,6 @@ class ITILSolution extends CommonDBChild {
       }
 
       $canedit = $item->maySolve();
-
-      if (isset($options['kb_id_toload']) && $options['kb_id_toload'] > 0) {
-         $kb = new KnowbaseItem();
-         if ($kb->getFromDB($options['kb_id_toload'])) {
-            $this->fields['content'] = $kb->getField('answer');
-         }
-      }
 
       // Alert if validation waiting
       $validationtype = $item->getType().'Validation';

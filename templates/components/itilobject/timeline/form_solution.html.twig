@@ -1,12 +1,11 @@
 {% extends 'components/itilobject/timeline/form_timeline_item.html.twig' %}
 {% import "components/form/fields_macros.html.twig" as fields %}
 {% set candedit = item.maySolve() %}
-{% set can_read_kb   = have_rights_or('knowbase', [constant("READ"), constant('KnowbaseItem::READFAQ')]) %}
-{% set can_update_kb   = have_rights_or('knowbase', [constant("READ"), constant('KnowbaseItem::READFAQ')]) %}
-{% set no_kb = params['nokb'] is defined %}
-{% set kb_id_toload = params['kb_id_toload'] ?? 0 %}
+{% set can_read_kb = have_rights_or('knowbase', [constant("READ"), constant('KnowbaseItem::READFAQ')]) %}
+{% set can_update_kb = have_rights_or('knowbase', [constant("READ"), constant('KnowbaseItem::READFAQ')]) %}
+{% set nokb = params['nokb'] is defined or params['nokb'] == true %}
+{% set noform = params['noform'] is defined or params['noform'] == true %}
 {% set disabled = (candedit == false) %}
-{# TODO kb_id_toload #}
 
 {% block timeline_card %}
    {% if form_mode == 'view' %}
@@ -24,7 +23,7 @@
             {% if entry_i['status'] != constant("CommonITILValidation::WAITING") and entry_i['status'] != constant("CommonITILValidation::NONE") %}
                <span class="badge bg-blue-lt">
                   {% set action = entry_i['status'] == constant("CommonITILValidation::ACCEPTED") ? __('Accepted') : _x('validation', 'Refused') %}
-                  {{ __('%1$s on %2$s by %3$s')|format(action, (entry_i['date_approval']|conv_datetime), User__getLink(entry_i['users_id_approval'])) }}
+                  {{ __('%1$s on %2$s by %3$s')|format(action, (entry_i['date_approval']|conv_datetime), User__getLink(entry_i['users_id_approval']))|raw }}
                </span>
             {% endif %}
          </div>
@@ -33,8 +32,11 @@
       <div class="itilsolution">
          {{ alertValidation(item, 'solution') }}
 
+         {% if not noform %}
          <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
                action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true">
+         {% endif %}
+
             <input type="hidden" name="itemtype" value="{{ item.getType() }}">
             <input type="hidden" name="items_id" value="{{ item.fields['id'] }}">
             <input type="hidden" name="_no_message_link" value="1">
@@ -76,7 +78,8 @@
                            {% set search_solution_button %}
                               <a href="{{ path("/front/knowbaseitem.php?item_itemtype=" ~ item.getType() ~ "&item_items_id=" ~ item.getID() ~ "&forcetab=Knowbase$1") }}"
                                  class="btn btn-secondary overflow-hidden text-nowrap" type="submit"
-                                 title="{{ __('Search a solution') }}">
+                                 title="{{ __('Search a solution') }}"
+                                 data-bs-toggle="tooltip" data-bs-placement="top">
                                  <i class="fas fa-search"></i>
                               </a>
                            {% endset %}
@@ -92,7 +95,7 @@
                         {% endif %}
 
                         {% set sol_template_lbl %}
-                           <i class="fas fa-reply fa-fw me-1"
+                           <i class="fas fa-reply fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
                               title="{{ _n('Solution template', 'Solution templates', getPluralNumber) }}"></i>
                         {% endset %}
                         {{ fields.dropdownField(
@@ -112,7 +115,8 @@
                      {% endif %}
 
                      {% set sol_type_lbl %}
-                        <i class="fas fa-tag fa-fw me-1" title="{{ "SolutionType"|itemtype_name }}"></i>
+                        <i class="fas fa-tag fa-fw me-1" title="{{ "SolutionType"|itemtype_name }}"
+                           data-bs-toggle="tooltip" data-bs-placement="top"></i>
                      {% endset %}
                      {{ fields.dropdownField(
                         "SolutionType",
@@ -129,7 +133,7 @@
 
                      {% if can_read_kb and kb_id_toload > 0 %}
                         {% set link_kb_lbl %}
-                           <i class="fas fa-link fa-fw me-1"
+                           <i class="fas fa-link fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
                               title="{{ __('Link to knowledge base entry #%id')|format("TODO kb id") }}"></i>
                         {% endset %}
                         {{ fields.sliderField(
@@ -144,9 +148,10 @@
                         ) }}
                      {% endif %}
 
-                     {% if candedit and can_update_kb %}
+                     {% if candedit and can_update_kb and not nokb %}
                         {% set sol_to_kb_lbl %}
-                           <i class="fas fa-save fa-fw me-1" title="{{ __('Save and add to the knowledge base') }}"></i>
+                           <i class="fas fa-save fa-fw me-1" title="{{ __('Save and add to the knowledge base') }}"
+                              data-bs-toggle="tooltip" data-bs-placement="top"></i>
                         {% endset %}
                         {{ fields.sliderField(
                            "_sol_to_kb",
@@ -163,23 +168,25 @@
                </div>
             </div>
 
-            <div class="d-flex card-footer mx-n3 mb-n3">
-               {% if subitem.fields['id'] <= 0 %}
-                  <button class="btn btn-primary me-2" type="submit" name="add">
-                     <i class='fas fa-plus'></i>
-                     <span>{{ _x('button', 'Add') }}</span>
-                  </button>
-               {% else %}
-                  <input type="hidden" name="id" value="{{ subitem.fields['id'] }}"/>
-                  <button class="btn btn-primary me-2" type="submit" name="update">
-                     <i class='fas fa-save'></i>
-                     <span>{{ _x('button', 'Save') }}</span>
-                  </button>
-               {% endif %}
-            </div>
+         {% if not noform %}
+               <div class="d-flex card-footer mx-n3 mb-n3">
+                  {% if subitem.fields['id'] <= 0 %}
+                     <button class="btn btn-primary me-2" type="submit" name="add">
+                        <i class='fas fa-plus'></i>
+                        <span>{{ _x('button', 'Add') }}</span>
+                     </button>
+                  {% else %}
+                     <input type="hidden" name="id" value="{{ subitem.fields['id'] }}"/>
+                     <button class="btn btn-primary me-2" type="submit" name="update">
+                        <i class='fas fa-save'></i>
+                        <span>{{ _x('button', 'Save') }}</span>
+                     </button>
+                  {% endif %}
+               </div>
 
-            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
-         </form>
+               <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+            </form>
+         {% endif %}
       </div>
 
       <script type="text/javascript">

@@ -65,6 +65,7 @@ class Ajax {
          'width'           => 800,
          'height'          => 400,
          'modal'           => true,
+         'modal_class'     => "modal-lg",
          'container'       => '',
          'title'           => '',
          'extraparams'     => [],
@@ -83,7 +84,8 @@ class Ajax {
       $html = TemplateRenderer::getInstance()->render(
          'components/modal.html.twig',
          [
-            'title' => $param['title'],
+            'title'       => $param['title'],
+            'modal_class' => $param['modal_class'],
          ]
       );
 

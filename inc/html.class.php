@@ -2511,7 +2511,8 @@ class Html {
                   'width'           => $p['width'],
                   'height'          => $p['height'],
                   'js_modal_fields' => $js_modal_fields,
-                  'display'         => false
+                  'display'         => false,
+                  'modal_class'     => "modal-xl",
                   ]
             );
          }

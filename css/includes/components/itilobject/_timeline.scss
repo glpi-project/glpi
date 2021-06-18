@@ -205,15 +205,19 @@
          background-color: $timeline-sol-bg;
          color: $timeline-sol-fg;
          border-color: $timeline-sol-border;
-         //border-left: 1em green solid;
+         border-left: 1em transparent solid;
 
-         /* &.waiting {
-            border-left-color: orange;
+         &.waiting {
+            border-left-color: rgb(221, 157, 39);
+         }
+
+         &.accepted {
+            border-left-color: rgb(52, 143, 52);
          }
 
          &.refused {
-            border-left: 1em red solid;
-         } */
+            border-left: 1em rgb(226, 80, 80) solid;
+         }
 
          .solimg {
             position: absolute;

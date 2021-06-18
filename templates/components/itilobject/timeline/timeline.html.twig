@@ -2,7 +2,6 @@
    {% include("components/itilobject/timeline/main_description.html.twig") %}
 
    {% set status_closed = (item.fields['status'] in item.getClosedStatusArray()) %}
-
    {% for entry in timeline %}
       {% set entry_i = entry['item'] %}
       {% set users_id = entry_i['users_id'] %}
@@ -45,6 +44,19 @@
          {% set state_class = "done" %}
       {% endif %}
 
+      {% set solution_class = "" %}
+      {% if itiltype == "ITILSolution"  %}
+         {% if entry_i['status'] is constant('CommonITILValidation::WAITING') %}
+            {% set solution_class = "waiting" %}
+         {% endif %}
+         {% if entry_i['status'] is constant('CommonITILValidation::ACCEPTED') %}
+            {% set solution_class = "accepted" %}
+         {% endif %}
+         {% if entry_i['status'] is constant('CommonITILValidation::REFUSED') %}
+            {% set solution_class = "refused" %}
+         {% endif %}
+      {% endif %}
+
       <div class="timeline-item mb-3 {{ itiltype }} {{ state_class }} {{ entry['class'] }} {{ "right" in item_position ? "ms-auto" : "" }}"
             data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}">
          <div class="row">
@@ -67,7 +79,7 @@
                }) }}
             </div>
             <div class="col-12 col-sm d-flex flex-column content-part">
-               <span class="row mt-2 timeline-content flex-grow-1 {{ item_position }} card">
+               <span class="row mt-2 timeline-content {{ solution_class }} flex-grow-1 {{ item_position }} card">
                   <div class="card-body">
                      {% include("components/itilobject/timeline/timeline_item_header.html.twig") %}
 
@@ -110,6 +122,7 @@
       <h3>{{ _n("Validation", "Validations", getPluralNumber()) }}</h3>
    </div>
 
+   {% include("components/itilobject/timeline/approbation_form.html.twig") %}
    {% include("components/itilobject/answer.html.twig") %}
 
 </div>

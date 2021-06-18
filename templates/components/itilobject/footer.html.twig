@@ -3,7 +3,7 @@
       {% if not item.isNewItem() %}
          <div class="col-md-8 ps-3 timeline-buttons">
             {% if item.isNotSolved() %}
-               <div class="btn-group me-2 main-actions">
+               <div class="btn-group me-2 main-actions" style="{{ load_kb_sol > 0 ? "display:none;" : "" }}">
                   {% set default_action_data = timeline_itemtypes|first %}
                   <button class="btn btn-primary answer-action" data-bs-toggle="collapse" data-bs-target="#new-{{ default_action_data.class }}-block">
                      <i class='{{ default_action_data.icon }}'></i>
@@ -76,8 +76,9 @@
                   } %}
                {% endif %}
 
-               {% set display_save_btn = (canupdate or can_requester or canpriority or canassign or canassigntome) %}
-               {% if display_save_btn and item.isNotSolved() %}
+               {% set is_locked = params['locked'] is defined and params['locked'] %}
+               {% set display_save_btn = not is_locked and (canupdate or can_requester or canpriority or canassign or canassigntome) %}
+               {% if display_save_btn %}
                   <button class="btn btn-primary" type="submit" name="update"
                         title="{{ _x('button', 'Save') }}">
                      <i class="fas fa-save"></i>

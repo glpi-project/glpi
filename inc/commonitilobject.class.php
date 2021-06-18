@@ -5134,22 +5134,16 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $entities_id
    **/
    static function showMassiveSolutionForm(CommonITILObject $item) {
-      echo "<table class='tab_cadre_fixe'>";
-      echo '<tr><th colspan=4>'.__('Solve tickets').'</th></tr>';
-
       $solution = new ITILSolution();
       $solution->showForm(
          null,
          [
-            'item'   => $item,
+            'parent' => $item,
             'entity' => $item->getEntityID(),
             'noform' => true,
             'nokb'   => true
          ]
       );
-
-      echo "</td></tr>";
-      echo '</table>';
    }
 
 
