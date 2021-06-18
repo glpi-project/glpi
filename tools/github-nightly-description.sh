@@ -47,6 +47,12 @@ do
     SIZE=$( stat -c %s "$file" )
     read DATE TIME TZ <<<$(git log -n1 --pretty=%ci -- $file)
     [ "$TZ" == "+0000" ] && TZ="UTC"
+    # Set current date if archive still not commited
+    if [ -z "$DATE" ]; then
+        DATE=$(date -u +"%F")
+        TIME=$(date -u +"%T")
+        TZ="UTC"
+    fi
     cat <<DESCRIPTION
 $BRANCH|[$NAME]($NAME)|$DATE $TIME $TZ|$SIZE
 DESCRIPTION
