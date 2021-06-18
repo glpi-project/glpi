@@ -436,6 +436,8 @@ class QueuedNotification extends CommonDBTM {
     */
    public function sendById($ID) {
       if ($this->getFromDB($ID)) {
+         $this->fields = Toolbox::unclean_cross_side_scripting_deep($this->fields);
+
          $mode = $this->getField('mode');
          $eventclass = 'NotificationEvent' . ucfirst($mode);
          $conf = Notification_NotificationTemplate::getMode($mode);
