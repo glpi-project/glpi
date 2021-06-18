@@ -42,9 +42,11 @@ define(
    ]
 );
 
-include_once(GLPI_ROOT . '/inc/includes.php');
+include_once(GLPI_ROOT . '/inc/based_config.php');
 
 \GlpiTests\Toolbox::initVarDirectories();
+
+include_once(GLPI_ROOT . '/inc/includes.php');
 
 $command = new \GlpiTests\Command\TestUpdatedDataCommand();
 
