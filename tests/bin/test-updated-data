@@ -44,7 +44,7 @@ define(
 
 include_once(GLPI_ROOT . '/inc/based_config.php');
 
-\GlpiTests\Toolbox::initVarDirectories();
+\GlpiTests\BootstrapUtils::initVarDirectories();
 
 include_once(GLPI_ROOT . '/inc/includes.php');
 
