@@ -21,11 +21,14 @@
                <div class="card-body">
                   {{ fields.textareaField(
                      'content',
-                     subitem.fields['content'],
+                     '',
                      __('Comments'),
                      {
                         'full_width': true,
                         'helper': __('Optional when approved'),
+                        'enable_richtext': true,
+                        'enable_fileupload': true,
+                        'enable_mentions': true,
                         'is_horizontal': false,
                      }
                   ) }}
