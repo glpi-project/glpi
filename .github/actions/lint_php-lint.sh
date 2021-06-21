@@ -1,7 +1,6 @@
 #!/bin/bash -e
 
 ROOT_DIR=$(readlink -f "$(dirname $0)/../..")
-echo $ROOT_DIR
 
 echo "Check for syntax errors"
 vendor/bin/parallel-lint \

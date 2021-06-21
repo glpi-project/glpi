@@ -1,22 +1,26 @@
 #!/bin/bash -e
 
+LOG_FILE="./tests/files/_log/install.log"
+mkdir -p $(dirname "$LOG_FILE")
+
 # Execute install
 bin/console glpi:database:install \
-  --config-dir=./tests --ansi --no-interaction \
+  --config-dir=./tests/config --ansi --no-interaction \
+  --force \
   --reconfigure --db-name=glpi --db-host=db --db-user=root \
   --log-deprecation-warnings \
-  | tee install.log
-if [[ -n $(grep "Warning" install.log) ]];
+  | tee $LOG_FILE
+if [[ -n $(grep "Warning" $LOG_FILE) ]];
   then echo "glpi:database:install command FAILED" && exit 1;
 fi
 
 # Check DB
-bin/console glpi:database:check_schema --config-dir=./tests --ansi --no-interaction --strict
-bin/console glpi:database:check_keys --config-dir=./tests --ansi --no-interaction --detect-useless-keys
+bin/console glpi:database:check_schema --config-dir=./tests/config --ansi --no-interaction --strict
+bin/console glpi:database:check_keys --config-dir=./tests/config --ansi --no-interaction --detect-useless-keys
 
 # Execute update
 ## Should do nothing.
-bin/console glpi:database:update --config-dir=./tests --ansi --no-interaction | tee migration.log
-if [[ -z $(grep "No migration needed." migration.log) ]];
+bin/console glpi:database:update --config-dir=./tests/config --ansi --no-interaction | tee $LOG_FILE
+if [[ -z $(grep "No migration needed." $LOG_FILE) ]];
   then echo "glpi:database:update command FAILED" && exit 1;
 fi

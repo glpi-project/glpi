@@ -22,6 +22,7 @@ phpunit.xml
 /tests/code-coverage/
 /tests/coverage-*/
 /tests/files/
+/tests/.env
 /tests/glpicrypt.key
 /config/based_config.php
 /config/config.php

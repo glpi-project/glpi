@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-define('GLPI_CONFIG_DIR', __DIR__);
+define('GLPI_CONFIG_DIR', __DIR__ . '/config');
 define('GLPI_VAR_DIR', __DIR__ . '/files');
 
 define(

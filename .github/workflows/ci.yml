@@ -156,11 +156,6 @@ jobs:
         if: env.skip != 'true'
         run: |
           .github/actions/init_show-versions.sh
-      - name: "Initialize fixtures"
-        if: env.skip != 'true'
-        run: |
-          .github/actions/init_initialize-old-dbs.sh
-          .github/actions/init_initialize-services-fixtures.sh
       - name: "Build dependencies / translations"
         if: env.skip != 'true'
         run: |
@@ -172,10 +167,12 @@ jobs:
       - name: "Update DB tests (from 0.80, not using utf8mb4)"
         if: env.skip != 'true'
         run: |
+          .github/actions/init_initialize-0.80-db.sh
           docker-compose exec -T app .github/actions/test_update-from-older-version.sh
       - name: "Update DB tests (from 9.5.3, using utf8mb4)"
         if: env.skip != 'true'
         run: |
+          .github/actions/init_initialize-9.5.3-db.sh
           docker-compose exec -T app .github/actions/test_update-from-9.5.sh
       - name: "Unit tests"
         if: env.skip != 'true'
@@ -192,10 +189,12 @@ jobs:
       - name: "LDAP tests"
         if: env.skip != 'true'
         run: |
+          .github/actions/init_initialize-ldap-fixtures.sh
           docker-compose exec -T app .github/actions/test_tests-ldap.sh
       - name: "IMAP tests"
         if: env.skip != 'true'
         run: |
+          .github/actions/init_initialize-imap-fixtures.sh
           docker-compose exec -T app .github/actions/test_tests-imap.sh
       - name: "WEB tests"
         if: env.skip != 'true'

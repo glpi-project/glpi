@@ -22,17 +22,17 @@ Creating a dedicated database
 -----------------------------
 
 Use the **glpi:database:install** CLI command to create a new database,
-only used for the test suite, using the `--config-dir=./tests` option:
+only used for the test suite, using the `--config-dir=./tests/config` option:
 
 ```bash
-$ bin/console glpi:database:install --config-dir=./tests --db-name=glpitests --db-user=root --db-password=xxxx
+$ bin/console glpi:database:install --config-dir=./tests/config --db-name=glpitests --db-user=root --db-password=xxxx
 Creating the database...
 Saving configuration file...
 Loading default schema...
 Installation done.
 ```
 
-The configuration file is saved as `tests/config_db.php`.
+The configuration file is saved as `tests/config/config_db.php`.
 
 The database is created using the default schema for current version.
 
@@ -43,14 +43,17 @@ If you need to recreate the database (e.g. for a new schema), you need to run
 Changing database configuration
 -------------------------------
 
-Using the same database than the web application is not recommended. Use the `tests/config_db.php` file to adjust connection settings.
+Using the same database than the web application is not recommended. Use the `tests/config/config_db.php` file to adjust connection settings.
 
-Running the test suite
-----------------------
+Running the test suite on developpement env
+-------------------------------------------
 
-There are two directories for tests:
-- `tests/units` for main core tests;
-- `tests/api` for API tests.
+There are multiple directories for tests:
+- `tests/units` for unit tests;
+- `tests/functionnal` for functionnal tests;
+- `tests/imap` for Mail collector tests;
+- `tests/LDAP` for LDAP connection tests;
+- `tests/web` for API tests.
 
 You can choose to run tests on a whole directory, on any file, or on any \<class::method>. You have to specify a bootstrap file each time:
 
@@ -85,3 +88,10 @@ Note that if you do not use the `-ncc` switch; coverage will be generated in the
 On first run, additional data are loaded into the test database. On following run, this step is skipped. Note that if the test dataset version changes; you'll have to reset your database using the **CliInstall** script again.
 
 Note: you may see a skipped tests regarding missing extension `event`; this is expected ;)
+
+Running the test suite on containerized env
+-------------------------------------------
+
+If you want to execute tests in an environment similar to what is done by CI, you can use the `tests/run_tests.sh`.
+This scripts requires both "docker" and "docker-compose" utilities to be installed.
+Run `tests/run_tests.sh --help` for more information about its usage.
