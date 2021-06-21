@@ -1046,7 +1046,7 @@ class Problem extends CommonITILObject {
                $link .= "'>";
                $link .= "<span class='b'>".$problem->fields["name"]."</span></a>";
                $link = sprintf(__('%1$s %2$s'), $link,
-                  Html::showToolTip($problem->fields['content'],
+                  Html::showToolTip(RichText::getSafeHtml($problem->fields['content'], true),
                      ['applyto' => 'problem'.$problem->fields["id"].$rand,
                         'display' => false]));
 
