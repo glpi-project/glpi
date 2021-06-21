@@ -10,7 +10,7 @@
 {% block timeline_card %}
    {% if form_mode == 'view' %}
       <div class="read-only-content">
-         {{ getSafeHtml(entry_i['content']) }}
+         {{ getSafeHtml(entry_i['content'], true) }}
 
          <div class="timeline-badges">
             {% if entry_i['solutiontypes_id'] %}

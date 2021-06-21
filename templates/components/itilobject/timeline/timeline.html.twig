@@ -95,7 +95,7 @@
                         {% include 'components/itilobject/timeline/form_document_item.html.twig' with {'form_mode': 'view'} %}
                      {% else %}
                         <div class="read-only-content">
-                           {{ getSafeHtml(entry_i['content']) }}
+                           {{ getSafeHtml(entry_i['content'], true) }}
                         </div>
                      {% endif %}
                      <div class="edit-content collapse">

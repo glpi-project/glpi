@@ -45,7 +45,7 @@
                      </div>
                   {% endif %}
                   {% if not itiltemplate.isHiddenField('content') %}
-                     {{ getSafeHtml(item.fields['content']) }}
+                     {{ getSafeHtml(item.fields['content'], true) }}
                   {% endif %}
                </div>
                <div class="edit-content collapse">

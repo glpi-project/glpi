@@ -12,7 +12,7 @@
 
          <div class="text-content" data-bs-html="true" data-bs-custom-class="todo-list-tooltip"
               title="{{ getTextFromHtml(entry_i['content'])|escape('html_attr') }}" data-bs-toggle="tooltip">
-            {{ getSafeHtml(entry_i['content']) }}
+            {{ getSafeHtml(entry_i['content'], true) }}
          </div>
 
          <div class="timeline-badges">
