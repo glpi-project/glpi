@@ -560,7 +560,7 @@ class Appliance extends CommonDBTM {
       switch ($ma->getAction()) {
          case 'add_item' :
             Appliance::dropdown([
-               'entity'  => $_POST['entity_restrict']
+               'entity'  => $_POST['entity_restrict'] ?? 0
             ]);
             echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
             return true;

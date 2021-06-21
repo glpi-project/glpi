@@ -33,6 +33,7 @@
 namespace tests\units\Glpi\Api;
 
 use APIBaseClass;
+use Computer;
 use Glpi\Tests\Web\Deprecated\Computer_SoftwareLicense;
 use Glpi\Tests\Web\Deprecated\Computer_SoftwareVersion;
 use Glpi\Tests\Web\Deprecated\TicketFollowup;
@@ -681,5 +682,341 @@ class APIRest extends APIBaseClass {
       );
       $this->string($deprecated_data['rawdata']['sql']['search'])
          ->isEqualTo($data['rawdata']['sql']['search']);
+   }
+
+
+   protected function testGetMassiveActionsProvider(): array {
+      // Create a computer with "is_deleted = 1" for our tests
+      $computer = new Computer();
+      $deleted_computers_id = $computer->add([
+         'name' => 'test deleted PC',
+         'entities_id' => getItemByTypeName("Entity", '_test_root_entity', true)
+      ]);
+      $this->integer($deleted_computers_id)->isGreaterThan(0);
+      $this->boolean($computer->delete(['id' => $deleted_computers_id]))->isTrue();
+      $this->boolean($computer->getFromDB($deleted_computers_id))->isTrue();
+      $this->integer($computer->fields['is_deleted'])->isEqualTo(1);
+
+      return [
+         [
+            'url' => 'getMassiveActions/Computersefjhfs',
+            'status' => 400,
+            'response' => [],
+            'error' => "ERROR_RESOURCE_NOT_FOUND_NOR_COMMONDBTM",
+         ],
+         [
+            'url' => 'getMassiveActions/Computer/40000000',
+            'status' => 400,
+            'response' => [],
+            'error' => "ERROR_ITEM_NOT_FOUND",
+         ],
+         [
+            'url' => 'getMassiveActions/Computer',
+            'status' => 200,
+            'response' => [
+               "MassiveAction:update"            => "Update",
+               "MassiveAction:clone"             => "Clone",
+               "Infocom:activate"                => "Enable the financial and administrative information",
+               "MassiveAction:delete"            => "Put in trashbin",
+               "ObjectLock:unlock"               => "Unlock items",
+               "MassiveAction:add_transfer_list" => "Add to transfer list",
+               "Appliance:add_item"              => "Associate to an appliance",
+               "Item_OperatingSystem:update"     => "Operating systems",
+               "Computer_Item:add"               => "Connect",
+               "Item_SoftwareVersion:add"        => "Install",
+               'KnowbaseItem_Item:add'           => "Link knowledgebase article",
+               "Document_Item:add"               => "Add a document",
+               "Document_Item:remove"            => "Remove a document",
+               'Contract_Item:add'               => "Add a contract",
+               'Contract_Item:remove'            => "Remove a contract",
+               "MassiveAction:amend_comment"     => "Amend comment",
+               "MassiveAction:add_note"          => "Add note",
+               "Lock:unlock"                     => "Unlock components"
+            ],
+         ],
+         [
+            'url' => 'getMassiveActions/Computer?is_deleted=1',
+            'status' => 200,
+            'response' => [
+               "MassiveAction:purge_item_but_devices" => "Delete permanently but keep devices",
+               "MassiveAction:purge"                  => "Delete permanently and remove devices",
+               "MassiveAction:restore"                => "Restore",
+               "Lock:unlock"                          => "Unlock components"
+            ],
+         ],
+         [
+            'url' => 'getMassiveActions/Computer/' . getItemByTypeName("Computer", '_test_pc01', true),
+            'status' => 200,
+            'response' => [
+               "MassiveAction:update"            => "Update",
+               "MassiveAction:clone"             => "Clone",
+               "Infocom:activate"                => "Enable the financial and administrative information",
+               "MassiveAction:delete"            => "Put in trashbin",
+               "ObjectLock:unlock"               => "Unlock items",
+               "MassiveAction:add_transfer_list" => "Add to transfer list",
+               "Appliance:add_item"              => "Associate to an appliance",
+               "Item_OperatingSystem:update"     => "Operating systems",
+               "Computer_Item:add"               => "Connect",
+               "Item_SoftwareVersion:add"        => "Install",
+               'KnowbaseItem_Item:add'           => "Link knowledgebase article",
+               "Document_Item:add"               => "Add a document",
+               "Document_Item:remove"            => "Remove a document",
+               'Contract_Item:add'               => "Add a contract",
+               'Contract_Item:remove'            => "Remove a contract",
+               "MassiveAction:amend_comment"     => "Amend comment",
+               "MassiveAction:add_note"          => "Add note",
+               "Lock:unlock"                     => "Unlock components"
+            ],
+         ],
+         [
+            'url' => "getMassiveActions/Computer/$deleted_computers_id",
+            'status' => 200,
+            'response' => [
+               "MassiveAction:purge_item_but_devices" => "Delete permanently but keep devices",
+               "MassiveAction:purge"                  => "Delete permanently and remove devices",
+               "MassiveAction:restore"                => "Restore",
+               "Lock:unlock"                          => "Unlock components"
+            ],
+         ],
+      ];
+   }
+
+   /**
+    * Tests for the "getMassiveActions" endpoint
+    *
+    * @dataProvider testGetMassiveActionsProvider
+    */
+   public function testGetMassiveActions(
+      string $url,
+      int $status,
+      ?array $response,
+      string $error = ""
+   ): void {
+      $headers = ['Session-Token' => $this->session_token];
+      $data    = $this->query($url, [
+         'headers' => $headers,
+      ], $status, $error);
+
+      // If no errors are expected, check results
+      if (empty($error)) {
+         unset($data['headers']);
+         $this->array($data)->isEqualTo($response);
+      }
+   }
+
+   protected function testGetMassiveActionParametersProvider(): array {
+      return [
+         [
+            'url' => 'getMassiveActionParameters/Computer',
+            'status' => 400,
+            'response' => [],
+            'error' => "ERROR_MASSIVEACTION_KEY"
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/MassiveAction:doesnotexist',
+            'status' => 400,
+            'response' => [],
+            'error' => "ERROR_MASSIVEACTION_KEY"
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/MassiveAction:update',
+            'status' => 200,
+            'response' => [],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/MassiveAction:clone',
+            'status' => 200,
+            'response' => [
+               "nb_copy" => "number",
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/Infocom:activate',
+            'status' => 200,
+            'response' => [],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/MassiveAction:delete',
+            'status' => 200,
+            'response' => [],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/ObjectLock:unlock',
+            'status' => 200,
+            'response' => [],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/MassiveAction:add_transfer_list',
+            'status' => 200,
+            'response' => [],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/Appliance:add_item',
+            'status' => 200,
+            'response' => [
+               'appliances_id' => 'dropdown',
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/Item_OperatingSystem:update',
+            'status' => 200,
+            'response' => [],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/Computer_Item:add',
+            'status' => 200,
+            'response' => [
+               'peer_computers_id' => 'dropdown',
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/Item_SoftwareVersion:add',
+            'status' => 200,
+            'response' => [
+               'softwares_id' => 'dropdown',
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/KnowbaseItem_Item:add',
+            'status' => 200,
+            'response' => [
+               'peer_knowbaseitems_id' => 'dropdown',
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/Document_Item:add',
+            'status' => 200,
+            'response' => [
+               '_rubdoc' => 'dropdown',
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/Document_Item:remove',
+            'status' => 200,
+            'response' => [
+               '_rubdoc' => 'dropdown',
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/Contract_Item:add',
+            'status' => 200,
+            'response' => [
+               'peer_contracts_id' => 'dropdown',
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/Contract_Item:remove',
+            'status' => 200,
+            'response' => [
+               'peer_contracts_id' => 'dropdown',
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/MassiveAction:amend_comment',
+            'status' => 200,
+            'response' => [
+               'amendment' => 'text',
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/MassiveAction:add_note',
+            'status' => 200,
+            'response' => [
+               'add_note' => 'text',
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/Lock:unlock',
+            'status' => 200,
+            'response' => [
+               'attached_item[]' => 'dropdown',
+            ],
+         ],
+      ];
+   }
+
+   /**
+    * Tests for the "getMassiveActionParameters" endpoint
+    *
+    * @dataProvider testGetMassiveActionParametersProvider
+    */
+   public function testGetMassiveActionParameters(
+      string $url,
+      int $status,
+      ?array $response,
+      string $error = ""
+   ): void {
+      $headers = ['Session-Token' => $this->session_token];
+      $data    = $this->query($url, [
+         'headers' => $headers,
+      ], $status, $error);
+
+      // If no errors are expected, check results
+      if (empty($error)) {
+         unset($data['headers']);
+         $this->array($data)->isEqualTo($response);
+      }
+   }
+
+   protected function testApplyMassiveActionProvider(): array {
+      return [
+         [
+            'url' => 'applyMassiveAction/Computer?ids[0]=2',
+            'status' => 400,
+            'response' => [],
+            'error' => "ERROR_MASSIVEACTION_KEY"
+         ],
+         [
+            'url' => 'applyMassiveAction/Computer/MassiveAction:doesnotexist?ids[0]=2',
+            'status' => 400,
+            'response' => [],
+            'error' => "ERROR_MASSIVEACTION_KEY"
+         ],
+         [
+            'url' => 'applyMassiveAction/Computer/MassiveAction:amend_comment',
+            'status' => 400,
+            'response' => [],
+            'error' => "ERROR_MASSIVEACTION_NO_IDS"
+         ],
+         [
+            'url' => 'applyMassiveAction/Computer/MassiveAction:amend_comment?ids[0]=200',
+            'status' => 400,
+            'response' => [],
+            'error' => "ERROR_ITEM_NOT_FOUND"
+         ],
+         [
+            'url' => 'applyMassiveAction/Computer/MassiveAction:amend_comment?ids[0]=1&ids[1]=2&amendment=newtexttoadd',
+            'status' => 200,
+            'response' => [
+               'ok'       => 2,
+               'ko'       => 0,
+               'noright'  => 0,
+               'messages' => [],
+            ],
+         ],
+      ];
+   }
+
+   /**
+    * Tests for the "applyMassiveAction" endpoint
+    *
+    * @dataProvider testApplyMassiveActionProvider
+    */
+   public function testApplyMassiveAction(
+      string $url,
+      int $status,
+      ?array $response,
+      string $error = ""
+   ): void {
+      $headers = ['Session-Token' => $this->session_token];
+      $data    = $this->query($url, [
+         'headers' => $headers,
+      ], $status, $error);
+
+      // If no errors are expected, check results
+      if (empty($error)) {
+         unset($data['headers']);
+         $this->array($data)->isEqualTo($response);
+      }
    }
 }

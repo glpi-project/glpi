@@ -56,6 +56,7 @@
         "simplepie/simplepie": "^1.5",
         "symfony/cache": "^5.2",
         "symfony/console": "^4.4",
+        "symfony/dom-crawler": "^5.3",
         "tecnickcom/tcpdf": "^6.2",
         "true/punycode": "^2.1",
         "wapmorgan/unified-archive": "^1.0"

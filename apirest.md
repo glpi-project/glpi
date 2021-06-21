@@ -24,6 +24,10 @@
 * [Add item(s)](#add-items)
 * [Update item(s)](#update-items)
 * [Delete item(s)](#delete-items)
+* [Get available massive actions for an itemtype](#get-available-massive-actions-for-an-itemtype)
+* [Get available massive actions for an item](#get-available-massive-actions-for-an-item)
+* [Get massive action parameters](#get-massive-action-parameters)
+* [Apply massive action](#apply-massive-action)
 * [Special cases](#special-cases)
 * [Errors](#errors)
 * [Servers configuration](#servers-configuration)
@@ -1220,6 +1224,197 @@ $ curl -X DELETE \
 [{"16":true, "message": ""},{"17":false, "message": "Item not found"}]
 ```
 
+## Get available massive actions for an itemtype
+
+* **URL**: apirest.php/getMassiveActions/:itemtype/
+* **Description**: Show the availables massive actions for a given itemtype.
+* **Method**: GET
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+* **Parameters**: (query string)
+  * *is_deleted* (default false): Show specific actions for items in the trashbin.
+* **Returns**:
+  * 200 (OK).
+  * 400 (Bad Request) with a message indicating an error in input parameter.
+  * 401 (UNAUTHORIZED).
+
+Example usage (CURL):
+
+```bash
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+'http://path/to/glpi/apirest.php/getMassiveActions/Computer'
+
+< 200 OK
+{
+  "MassiveAction:update": "Update",
+  "MassiveAction:clone": "Clone",
+  "Infocom:activate": "Enable the financial and administrative information",
+  "MassiveAction:delete": "Put in trashbin",
+  "MassiveAction:add_transfer_list": "Add to transfer list",
+  "Appliance:add_item": "Associate to an appliance",
+  "Item_OperatingSystem:update": "Operating systems",
+  "Computer_Item:add": "Connect",
+  "Item_SoftwareVersion:add": "Install",
+  "KnowbaseItem_Item:add": "Link knowledgebase article",
+  "Document_Item:add": "Add a document",
+  "Document_Item:remove": "Remove a document",
+  "Contract_Item:add": "Add a contract",
+  "Contract_Item:remove": "Remove a contract",
+  "MassiveAction:amend_comment": "Amend comment",
+  "MassiveAction:add_note": "Add note",
+  "Lock:unlock": "Unlock components"
+}
+
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+'http://path/to/glpi/apirest.php/getMassiveActions/Computer?is_deleted=1'
+
+< 200 OK
+{
+  "MassiveAction:purge_item_but_devices": "Delete permanently but keep devices",
+  "MassiveAction:purge": "Delete permanently and remove devices",
+  "MassiveAction:restore": "Restore",
+  "Lock:unlock": "Unlock components"
+}
+```
+
+## Get available massive actions for an item
+
+* **URL**: apirest.php/getMassiveActions/:itemtype/:id
+* **Description**: Show the availables massive actions for a given item.
+* **Method**: GET
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+* **Parameters**: (query string)
+* **Returns**:
+  * 200 (OK).
+  * 400 (Bad Request) with a message indicating an error in input parameter.
+  * 401 (UNAUTHORIZED).
+
+Example usage (CURL):
+
+```bash
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+'http://path/to/glpi/apirest.php/getMassiveActions/Computer/3'
+
+< 200 OK
+{
+  "MassiveAction:update": "Update",
+  "MassiveAction:clone": "Clone",
+  "Infocom:activate": "Enable the financial and administrative information",
+  "MassiveAction:delete": "Put in trashbin",
+  "MassiveAction:add_transfer_list": "Add to transfer list",
+  "Appliance:add_item": "Associate to an appliance",
+  "Item_OperatingSystem:update": "Operating systems",
+  "Computer_Item:add": "Connect",
+  "Item_SoftwareVersion:add": "Install",
+  "KnowbaseItem_Item:add": "Link knowledgebase article",
+  "Document_Item:add": "Add a document",
+  "Document_Item:remove": "Remove a document",
+  "Contract_Item:add": "Add a contract",
+  "Contract_Item:remove": "Remove a contract",
+  "MassiveAction:amend_comment": "Amend comment",
+  "MassiveAction:add_note": "Add note",
+  "Lock:unlock": "Unlock components"
+}
+
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+'http://path/to/glpi/apirest.php/getMassiveActions/Computer/4'
+
+< 200 OK
+{
+  "MassiveAction:purge_item_but_devices": "Delete permanently but keep devices",
+  "MassiveAction:purge": "Delete permanently and remove devices",
+  "MassiveAction:restore": "Restore",
+  "Lock:unlock": "Unlock components"
+}
+```
+
+## Get massive action parameters
+
+* **URL**: apirest.php/getMassiveActionParameters/:itemtype/
+* **Description**: Show the availables parameters for a given massive action.
+* **Method**: GET
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+* **Parameters**: (query string)
+* **Returns**:
+  * 200 (OK).
+  * 400 (Bad Request) with a message indicating an error in input parameter.
+  * 401 (UNAUTHORIZED).
+
+Example usage (CURL):
+
+```bash
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+'http://path/to/glpi/apirest.php/getMassiveActionParameters/Computer/MassiveAction:add_note'
+
+< 200 OK
+{"add_note":"text"}
+
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+'http://path/to/glpi/apirest.php/getMassiveActionParameters/Computer/Contract_Item:add'
+
+< 200 OK
+{"peer_contracts_id":"dropdown"}
+```
+
+## Apply massive action
+
+* **URL**: apirest.php/applyMassiveAction/:itemtype/
+* **Description**: Run the given massive action
+* **Method**: GET
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+* **Parameters**: (query string)
+  * *ids* items to execute the action on. Mandatory.
+  * *specific action parameters* some actions require specific parameters to run. You can check them through the 'getMassiveActionParameters' endpoint.
+* **Returns**:
+  * 200 (OK) All items were processed.
+  * 207 (Multi-Status) Not all items were successfully processed.
+  * 400 (Bad Request) with a message indicating an error in input parameter.
+  * 401 (UNAUTHORIZED).
+  * 422 (Unprocessable Entity) All items failed to be processed.
+
+Example usage (CURL):
+
+```bash
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+'http://path/to/glpi/apirest.php/applyMassiveAction/Computer/MassiveAction:amend_comment?ids[0]=1&ids[1]=3&amendment=newtext'
+
+< 200 OK
+{
+  "ok": 2,
+  "ko": 0,
+  "noright": 0,
+  "messages": []
+}
+```
+
 ## Special cases
 
 ### Upload a document file
@@ -1435,6 +1630,16 @@ Check the GLPI logs files (in files/_logs directory).
 
 Some of the objects you want to delete triggers an error, maybe a missing field or rights.
 You'll find with this error, a collection of results.
+
+### ERROR_MASSIVEACTION_KEY
+
+Missing or invalid massive action key.
+Run 'getMassiveActions' endpoint to see available keys.
+
+### ERROR_MASSIVEACTION_NO_IDS
+
+No ids supplied when trying to run a massive action.
+
 
 ## Servers configuration
 

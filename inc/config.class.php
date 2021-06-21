@@ -2069,6 +2069,8 @@ class Config extends CommonDBTM {
                  'check'   => 'Symfony\\Component\\Cache\\Psr16Cache' ],
                [ 'name'    => 'html2text/html2text',
                  'check'   => 'Html2Text\\Html2Text' ],
+               [ 'name'    => 'symfony/dom-crawler',
+                  'check'   => 'Symfony\\Component\\DomCrawler\\Crawler' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [

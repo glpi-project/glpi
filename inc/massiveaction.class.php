@@ -255,7 +255,7 @@ class MassiveAction {
                }
             }
          }
-         if ($this->nb_items == 0) {
+         if ($this->nb_items == 0 && !isAPI()) {
             throw new \Exception(__('No selected items'));
          }
 
@@ -278,7 +278,6 @@ class MassiveAction {
 
       // Add process elements
       if ($stage == 'process') {
-
          if (!isset($this->remainings)) {
             $this->remainings = $this->items;
          }
@@ -609,7 +608,7 @@ class MassiveAction {
 
       // Manage forbidden actions : try complete action name or MassiveAction:action_name
       $forbidden_actions = $item->getForbiddenStandardMassiveAction();
-      if (false !== $single) {
+      if ($single !== false && !isAPI()) { // Do no filter single actions for API
          $item->getFromDB($single);
          $forbidden_actions = array_merge(
             $forbidden_actions,
@@ -651,8 +650,8 @@ class MassiveAction {
          }
       }
 
-      // Remove icons as they are not displayed in list view
-      if (!$single) {
+      // Remove icons for outputs that doesn't expect html
+      if (!$single || isAPI()) {
          $actions = array_map(function($action) {
             return strip_tags($action);
          }, $actions);
@@ -784,7 +783,7 @@ class MassiveAction {
                   $common_options  = false;
                   $choose_itemtype = false;
                }
-               $choose_field = (count($options) >= 1);
+               $choose_field = is_countable($options) ? (count($options) >= 1) : false;
 
                // Beware: "class='tab_cadre_fixe'" induce side effects ...
                echo "<table width='100%'><tr>";
@@ -1377,7 +1376,6 @@ class MassiveAction {
                }
 
                $comment = $item->fields['comment'];
-
                if (is_null($comment) || $comment == "") {
                   // If the comment was empty, use directly the amendment
                   $comment = $amendment;
