@@ -160,14 +160,20 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
       } else {
          Html::nullHeader("UPDATE NEEDED", $CFG_GLPI["root_doc"]);
-         echo "<div class='center'>";
-         echo "<table class='tab_cadre tab_check'>";
+         echo "<div class='container-fluid mb-4'>";
+         echo "<div class='row justify-content-evenly'>";
+         echo "<div class='col-12 col-xxl-4'>";
+         echo "<div class='card text-center mb-4'>";
+         echo "<table class='table table-card'>";
          $error = Toolbox::commonCheckForUseGLPI();
          echo "</table><br>";
 
          if ($error) {
             echo "<form action='".$CFG_GLPI["root_doc"]."/index.php' method='post'>";
-            echo "<input type='submit' name='submit' class='submit' value=\"".__s('Try again')."\">";
+            echo Html::submit(__s('Try again'), [
+               'class' => "btn btn-primary",
+               'icon'  => "fas fa-redo",
+            ]);
             Html::closeForm();
          }
          if ($error < 2) {
@@ -208,20 +214,26 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                if ($dev === true) {
                   echo Config::agreeDevMessage();
                }
-               echo "<p class='red'>";
+               echo "<p class='mt-2 mb-n2 alert alert-important alert-warning'>";
                echo __('The version of the database is not compatible with the version of the installed files. An update is necessary.')."</p>";
-               echo "<input type='submit' name='from_update' value=\""._sx('button', 'Upgrade')."\"
-                      class='submit'>";
+               echo Html::submit(_sx('button', 'Upgrade'), [
+                  'name'  => 'from_update',
+                  'class' => "btn btn-primary",
+                  'icon'  => "fas fa-check",
+               ]);
                Html::closeForm();
             } else if ($newer === true) {
-               echo "<p class='red'>".
+               echo "<p class='mt-2 mb-n2 alert alert-important alert-warning'>".
                      __('You are trying to use GLPI with outdated files compared to the version of the database. Please install the correct GLPI files corresponding to the version of your database.')."</p>";
             } else if ($dev === true) {
-               echo "<p class='red'><strong>".
+               echo "<p class='mt-2 mb-n2 alert alert-important alert-warning'>".
                      __('You are trying to update to a development version from a development version. This is not supported.')."</strong></p>";
             }
          }
 
+         echo "</div>";
+         echo "</div>";
+         echo "</div>";
          echo "</div>";
          Html::nullFooter();
       }

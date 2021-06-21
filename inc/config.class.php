@@ -2802,7 +2802,7 @@ class Config extends CommonDBTM {
     * @return void
     */
    public static function agreeDevMessage($bg = false) {
-      $msg = '<p class="'.($bg ? 'mig' : '') .'red"><strong>' . __('You are using a development version, be careful!') . '</strong><br/>';
+      $msg = '<p class="'.($bg ? 'alert-important' : '') .' alert alert-warning"><strong>' . __('You are using a development version, be careful!') . '</strong><br/>';
       $msg .= "<input type='checkbox' required='required' id='agree_dev' name='agree_dev'/><label for='agree_dev'>" . __('I know I am using a unstable version.') . "</label></p>";
       $msg .= "<script type=text/javascript>
             $(function() {

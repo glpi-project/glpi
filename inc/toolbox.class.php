@@ -1010,7 +1010,7 @@ class Toolbox {
    static function commonCheckForUseGLPI($isInstall = false) {
       global $DB;
 
-      echo "<tr><th>".__('Test done')."</th><th >".__('Results')."</th></tr>";
+      echo "<thead><tr><th>".__('Test done')."</th><th >".__('Results')."</th></tr></thead>";
 
       $core_requirements = (new RequirementsManager())->getCoreRequirementList($isInstall ? null : $DB);
       /* @var \Glpi\System\Requirement\RequirementInterface $requirement */

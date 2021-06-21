@@ -5155,8 +5155,14 @@ JAVASCRIPT;
                Html::cleanInputText($image), Html::parseAttributes($options));
       }
 
+      $icon = "";
+      if (isset($options['icon'])) {
+         $icon = "<i class='{$options['icon']}'></i>";
+      }
+
       $button = "<button type='submit' value='%s' %s>
-               $caption
+               $icon
+               <span>$caption</span>
             </button>&nbsp;";
 
       return sprintf($button, Html::cleanInputText($caption), Html::parseAttributes($options));
