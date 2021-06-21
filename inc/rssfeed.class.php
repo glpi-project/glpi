@@ -31,12 +31,11 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\RichText;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
-
-use Glpi\Toolbox\RichText;
 
 // $feed = new SimplePie();
 // $feed->set_cache_location('../files/_rss');
