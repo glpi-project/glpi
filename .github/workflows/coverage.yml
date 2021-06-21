@@ -60,10 +60,6 @@ jobs:
       - name: "Build dependencies / translations"
         run: |
           docker-compose exec -T app .github/actions/init_build.sh
-      - name: "Initialize fixtures"
-        if: env.skip != 'true'
-        run: |
-          .github/actions/init_initialize-services-fixtures.sh
       - name: "Install database"
         run: |
           docker-compose exec -T app .github/actions/test_install.sh
@@ -75,9 +71,11 @@ jobs:
           docker-compose exec -T app .github/actions/test_tests-functionnal.sh
       - name: "LDAP tests"
         run: |
+          .github/actions/init_initialize-ldap-fixtures.sh
           docker-compose exec -T app .github/actions/test_tests-ldap.sh
       - name: "IMAP tests"
         run: |
+          .github/actions/init_initialize-imap-fixtures.sh
           docker-compose exec -T app .github/actions/test_tests-imap.sh
       - name: "Codecov"
         uses: "codecov/codecov-action@v1"
