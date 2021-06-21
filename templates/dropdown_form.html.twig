@@ -120,7 +120,7 @@
                            {{ fields.passwordField(field['name'], item.fields[field['name']], field['label'], params) }}
                         {% elseif type == 'tinymce' %}
                            {% set params = params|merge({'enable_richtext': true}) %}
-                           {{ fields.textareaField(field['name'], item.fields[field['name']], field['label'], params) }}
+                           {{ fields.textareaField(field['name'], getSafeHtml(item.fields[field['name']], true, true), field['label'], params) }}
                         {% elseif type == 'duration' %}
                            {% set toadd = [] %}
                            {% for i in 9..100 %}
