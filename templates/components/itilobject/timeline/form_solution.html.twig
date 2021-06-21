@@ -57,7 +57,7 @@
 
                   {{ fields.textareaField(
                      'content',
-                     content,
+                     getSafeHtml(content, true, true),
                      '',
                      {
                         'full_width': true,

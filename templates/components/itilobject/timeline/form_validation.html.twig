@@ -16,10 +16,18 @@
                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
 
                <div class="mb-3 comment-part">
-                  <label class="form-label">
-                     {{ _n('Comment', 'Comments', 1) }}
-                  </label>
-                  <textarea name="comment_validation" class="form-control"></textarea>
+                  {{ fields.textareaField(
+                     'comment_validation',
+                     '',
+                     _n('Comment', 'Comments', 1),
+                     {
+                        'full_width': true,
+                        'enable_richtext': true,
+                        'enable_fileupload': true,
+                        'enable_mentions': true,
+                        'rand': rand,
+                     }
+                  ) }}
                </div>
 
                <div class="validation-footer">
@@ -87,10 +95,13 @@
 
                   {{ fields.textareaField(
                      'comment_submission',
-                     subitem.fields['comment_submission'],
+                     getSafeHtml(subitem.fields['comment_submission'], true, true),
                      _n('Comment', 'Comments', getPluralNumber()),
                      {
                         'full_width': true,
+                        'enable_richtext': true,
+                        'enable_fileupload': false,
+                        'enable_mentions': true,
                         'rand': rand,
                      }
                   ) }}

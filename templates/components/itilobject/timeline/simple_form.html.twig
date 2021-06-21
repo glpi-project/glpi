@@ -24,7 +24,7 @@
 
       {{ fields.textareaField(
          "content",
-         item.fields['content'],
+         getSafeHtml(item.fields['content'], true, true),
          __('Description'),
          field_options|merge({
             'enable_richtext': true,
