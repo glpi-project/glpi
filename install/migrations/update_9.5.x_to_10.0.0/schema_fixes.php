@@ -250,7 +250,7 @@ foreach ($useless_keys as $table => $keys) {
    }
 }
 
-// Add missing keys (based on glpi:database:check_keys detection)
+// Add missing keys (based on glpi:tools:check_database_keys detection)
 $missing_keys = [
    'glpi_apiclients' => [
       'entities_id',

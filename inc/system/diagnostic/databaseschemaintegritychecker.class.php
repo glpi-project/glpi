@@ -42,7 +42,7 @@ use SebastianBergmann\Diff\Differ;
 /**
  * @since 10.0.0
  */
-class DatabaseSchemaChecker {
+class DatabaseSchemaIntegrityChecker {
 
    /**
     * DB instance.

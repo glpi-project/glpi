@@ -26,7 +26,7 @@ if [[ -z $(grep "No migration needed." $LOG_FILE) ]];
   then echo "bin/console glpi:database:update command FAILED" && exit 1;
 fi
 ## Check DB
-bin/console glpi:database:check_schema --config-dir=./tests/config --ansi --no-interaction --ignore-utf8mb4-migration
+bin/console glpi:database:check_schema_integrity --config-dir=./tests/config --ansi --no-interaction --ignore-utf8mb4-migration
 
 # Execute myisam_to_innodb migration
 ## First run should do nothing.
@@ -54,7 +54,7 @@ if [[ -z $(grep "No migration needed." $LOG_FILE) ]];
   then echo "bin/console glpi:migration:utf8mb4 command FAILED" && exit 1;
 fi
 # Check DB
-bin/console glpi:database:check_schema --config-dir=./tests/config --ansi --no-interaction
+bin/console glpi:database:check_schema_integrity --config-dir=./tests/config --ansi --no-interaction
 
 # Check updated data
 bin/console glpi:database:configure \
