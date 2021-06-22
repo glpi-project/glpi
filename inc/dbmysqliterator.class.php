@@ -285,6 +285,12 @@ class DBmysqlIterator implements Iterator, Countable {
          // WHERE criteria list
          if (!empty($crit)) {
             $this->sql .= " WHERE ".$this->analyseCrit($crit);
+            if ($where) {
+               trigger_error(
+                  'Criteria found both inside and outside "WHERE" key. Some of them will be ignored',
+                  E_USER_WARNING
+               );
+            }
          } else if ($where) {
             $this->sql .= " WHERE ".$this->analyseCrit($where);
          }
