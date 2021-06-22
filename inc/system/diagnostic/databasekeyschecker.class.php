@@ -36,6 +36,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use CommonDBTM;
+
 /**
  * @since 10.0.0
  */
@@ -58,7 +60,14 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker {
       $columns = $this->getColumnsNames($table_name);
       foreach ($columns as $column_name) {
          $column_name_matches = [];
-         if (preg_match('/^items_id(?<suffix>_.+)?/', $column_name, $column_name_matches)) {
+         if (is_a($itemtype = getItemTypeForTable($table_name), CommonDBTM::class, true)
+             && $column_name === $itemtype::getNameField()
+             && preg_match('/text$/', $this->getColumnType($table_name, $column_name)) !== 1) {
+            if (!$this->areFieldsCorrecltyIndexed($table_name, [$column_name], $column_name)) {
+               // Expect a key with same name as field.
+               $missing_keys[$column_name] = [$column_name];
+            }
+         } else if (preg_match('/^items_id(?<suffix>_.+)?/', $column_name, $column_name_matches)) {
             $suffix = $column_name_matches['suffix'] ?? '';
             $expected_key = 'item' . $suffix;
             if (in_array('itemtype' . $suffix, $columns)
@@ -178,6 +187,11 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker {
     */
    private function areFieldsCorrecltyIndexed(string $table_name, array $fields, string $expected_key): bool {
       $index = $this->getIndex($table_name);
+
+      // Check if primary key matches matches given fields.
+      if (array_key_exists('PRIMARY', $index) && $index['PRIMARY'] === $fields) {
+         return true;
+      }
 
       // Check if expected key exists and matches given fields.
       if (array_key_exists($expected_key, $index) && $index[$expected_key] === $fields) {

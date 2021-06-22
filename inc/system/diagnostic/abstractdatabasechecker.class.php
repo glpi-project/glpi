@@ -79,15 +79,46 @@ abstract class AbstractDatabaseChecker {
     * @return array
     */
    protected function getColumnsNames(string $table_name): array {
+      $this->fetchTableColumns($table_name);
+
+      return array_column($this->columns[$table_name], 'Field');
+   }
+
+   /**
+    * Return column type.
+    *
+    * @param string $table_name
+    * @param string $column_name
+    *
+    * @return null|string
+    */
+   protected function getColumnType(string $table_name, string $column_name): ?string {
+      $this->fetchTableColumns($table_name);
+
+      foreach ($this->columns[$table_name] as $column_specs) {
+         if ($column_specs['Field'] === $column_name) {
+            return $column_specs['Type'];
+         }
+      }
+
+      return null;
+   }
+
+   /**
+    * Return column type.
+    *
+    * @param string $table_name
+    *
+    * @return void
+    */
+   private function fetchTableColumns(string $table_name): void {
       if (!array_key_exists($table_name, $this->columns)) {
          if (($columns_res = $this->db->query('SHOW COLUMNS FROM ' . $this->db->quoteName($table_name))) === false) {
             throw new \Exception(sprintf('Unable to get table "%s" columns', $table_name));
          }
 
-         $this->columns[$table_name] = array_column($columns_res->fetch_all(MYSQLI_ASSOC), 'Field');
+         $this->columns[$table_name] = $columns_res->fetch_all(MYSQLI_ASSOC);
       }
-
-      return $this->columns[$table_name];
    }
 
    /**
