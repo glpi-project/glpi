@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "087449288541ba61dffffff4cc7ce073",
+    "content-hash": "b847c36ca3588eead2009c286119fbf3",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -207,16 +207,16 @@
         },
         {
             "name": "glpi-project/inventory_format",
-            "version": "1.0.8",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/inventory_format.git",
-                "reference": "6a69de14433a5e3a2a1d837d4e776ca2cb859fda"
+                "reference": "c740e12ced299222b48da236ccc26193a113dc37"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/6a69de14433a5e3a2a1d837d4e776ca2cb859fda",
-                "reference": "6a69de14433a5e3a2a1d837d4e776ca2cb859fda",
+                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/c740e12ced299222b48da236ccc26193a113dc37",
+                "reference": "c740e12ced299222b48da236ccc26193a113dc37",
                 "shasum": ""
             },
             "require": {
@@ -264,7 +264,7 @@
                 "issues": "https://github.com/glpi-project/inventory_format/issues",
                 "source": "https://github.com/glpi-project/inventory_format"
             },
-            "time": "2021-05-17T14:13:51+00:00"
+            "time": "2021-06-28T07:07:43+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",

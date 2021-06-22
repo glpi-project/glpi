@@ -112,7 +112,7 @@ class NetworkEquipment extends MainAsset
          $switches = $this->getStackedSwitches();
          foreach ($switches as $switch) {
             $stack = clone $val;
-            $stack->firmware = $switch->version;
+            $stack->firmware = $switch->firmware ?? $switch->version ?? '';
             $stack->serial = $switch->serial;
             $stack->model = $switch->model;
             $stack->$model_field = $switch->model;
@@ -151,7 +151,7 @@ class NetworkEquipment extends MainAsset
                $firmware->description = $ap->comment ?? '';
                $firmware->name = $ap->model ?? '';
                $firmware->devicefirmwaretypes_id = 'device';
-               $firmware->version = $ap->version ?? '';
+               $firmware->version = $ap->firware ?? $ap->version ?? '';
                $wcontrol->firmware = $firmware;
 
                $this->data[] = $wcontrol;

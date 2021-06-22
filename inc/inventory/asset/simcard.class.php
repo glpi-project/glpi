@@ -42,7 +42,16 @@ class Simcard extends Device
    }
 
    public function prepare() :array {
-      //no mapping needed
+      $mapping = [
+         'imsi' => 'serial'
+      ];
+      foreach ($this->data as $k => &$val) {
+         foreach ($mapping as $origin => $dest) {
+            if (property_exists($val, $origin)) {
+               $val->$dest = $val->$origin;
+            }
+         }
+      }
       return $this->data;
    }
 

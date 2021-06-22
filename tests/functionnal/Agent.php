@@ -36,6 +36,8 @@ use DbTestCase;
 
 class Agent extends DbTestCase {
 
+   const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
+
    public function testDefineTabs() {
       $expected = [
          'Agent$main'   => 'Agent',
@@ -65,7 +67,7 @@ class Agent extends DbTestCase {
 
    public function testAgentFeaturesFromItem() {
       //run an inventory
-      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1.json');
+      $json = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
       $inventory = new \Glpi\Inventory\Inventory($json);
 
       if ($inventory->inError()) {

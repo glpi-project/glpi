@@ -37,6 +37,7 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 /* Test for inc/inventory/asset/networkequipment.class.php */
 
 class NetworkEquipment extends AbstractInventoryAsset {
+   const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
 
    protected function assetProvider() :array {
       return [
@@ -79,7 +80,7 @@ class NetworkEquipment extends AbstractInventoryAsset {
   <DEVICEID>foo</DEVICEID>
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>",
-            'asset'  => '{"autoupdatesystems_id":"GLPI Native Inventory","comments":"Cisco NX-OS(tm) ucs, Software (ucs-6100-k9-system), Version 5.0(3)N2(4.02b), RELEASE SOFTWARE Copyright (c) 2002-2013 by Cisco Systems, Inc.   Compiled 1\\/16\\/2019 18:00:00","contact":"noc@glpi-project.org","cpu":4,"firmware":"5.0(3)N2(4.02b)","id":0,"location":"paris.pa3","mac":"8c:60:4f:8d:ae:fc","manufacturer":"Cisco","model":"UCS 6248UP 48-Port","name":"ucs6248up-cluster-pa3-B","serial":"SSI1912014B","type":"Networking","uptime":"482 days, 05:42:18.50","ips":["127.0.0.1","10.2.5.10","192.168.12.5"],"locations_id":"paris.pa3","networkequipmentmodels_id":"UCS 6248UP 48-Port","networkequipmenttypes_id":"Networking","manufacturers_id":"Cisco"}'
+            'asset'  => '{"autoupdatesystems_id":"GLPI Native Inventory","contact":"noc@glpi-project.org","cpu":4,"firmware":"5.0(3)N2(4.02b)","location":"paris.pa3","mac":"8c:60:4f:8d:ae:fc","manufacturer":"Cisco","model":"UCS 6248UP 48-Port","name":"ucs6248up-cluster-pa3-B","serial":"SSI1912014B","type":"Networking","uptime":"482 days, 05:42:18.50","ips":["127.0.0.1","10.2.5.10","192.168.12.5"],"locations_id":"paris.pa3","networkequipmentmodels_id":"UCS 6248UP 48-Port","networkequipmenttypes_id":"Networking","manufacturers_id":"Cisco"}'
          ], [
             'xml'   => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -148,7 +149,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
   <DEVICEID>foo</DEVICEID>
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>",
-            'asset'  => '{"autoupdatesystems_id":"GLPI Native Inventory","comments":"Cisco IOS Software, C3750 Software (C3750-IPSERVICESK9-M), Version 12.2(55)SE6, RELEASE SOFTWARE (fc1)\\nTechnical Support: http:\\/\\/www.cisco.com\\/techsupport\\nCopyright (c) 1986-2012 by Cisco Systems, Inc.\\nCompiled Mon 23-Jul-12 13:22 by prod_rel_team","cpu":47,"firmware":"12.2(55)SE6","id":0,"ips":["10.1.0.100","10.1.0.22","10.1.0.41","10.1.0.45","10.1.0.59","10.11.11.1","10.11.11.5","10.11.13.1","10.11.13.5","172.21.0.1","172.21.0.7","172.22.0.1","172.22.0.5","172.23.0.1","172.23.0.5","172.24.0.1","172.24.0.5","172.25.1.15","172.28.200.1","172.28.200.5","172.28.211.5","172.28.215.1","172.28.221.1","185.10.253.65","185.10.253.97","185.10.254.1","185.10.255.146","185.10.255.224","185.10.255.250"],"location":"paris.pa3","mac":"00:23:ac:6a:01:00","manufacturer":"Cisco","model":"Catalyst 3750-24\\/48","name":"3k-1-pa3.teclib.infra","ram":128,"serial":"FOC1243W0ED","type":"Networking","uptime":"103 days, 13:53:28.28","locations_id":"paris.pa3","networkequipmentmodels_id":"Catalyst 3750-24\\/48","networkequipmenttypes_id":"Networking","manufacturers_id":"Cisco"}'
+            'asset'  => '{"autoupdatesystems_id":"GLPI Native Inventory","cpu":47,"firmware":"12.2(55)SE6","ips":["10.1.0.100","10.1.0.22","10.1.0.41","10.1.0.45","10.1.0.59","10.11.11.1","10.11.11.5","10.11.13.1","10.11.13.5","172.21.0.1","172.21.0.7","172.22.0.1","172.22.0.5","172.23.0.1","172.23.0.5","172.24.0.1","172.24.0.5","172.25.1.15","172.28.200.1","172.28.200.5","172.28.211.5","172.28.215.1","172.28.221.1","185.10.253.65","185.10.253.97","185.10.254.1","185.10.255.146","185.10.255.224","185.10.255.250"],"location":"paris.pa3","mac":"00:23:ac:6a:01:00","manufacturer":"Cisco","model":"Catalyst 3750-24\\/48","name":"3k-1-pa3.teclib.infra","ram":128,"serial":"FOC1243W0ED","type":"Networking","uptime":"103 days, 13:53:28.28","locations_id":"paris.pa3","networkequipmentmodels_id":"Catalyst 3750-24\\/48","networkequipmenttypes_id":"Networking","manufacturers_id":"Cisco"}'
          ]
       ];
    }
@@ -170,7 +171,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
    public function testStacked() {
       //non stacked
-      $json_str = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/networkequipment_1.json');
+      $json_str = file_get_contents(self::INV_FIXTURES . 'networkequipment_1.json');
       $json = json_decode($json_str);
 
       $netequ = new \NetworkEquipment();
@@ -190,7 +191,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
       $this->boolean($main->isStackedSwitch())->isFalse();
 
       //stacked
-      $json_str = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/networkequipment_2.json');
+      $json_str = file_get_contents(self::INV_FIXTURES . 'networkequipment_2.json');
       $json = json_decode($json_str);
 
       $netequ = new \NetworkEquipment();
@@ -209,69 +210,59 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
       $expected_stack = [
          1001 => [
-            'containedinindex' => '1',
+            'contained_index' => 1,
             'description' => 'WS-C3750G-48TS',
-            'firmware' => '12.2(55)SE6',
             'fru' => 1,
             'index' => 1001,
             'model' => 'WS-C3750G-48TS-S',
             'name' => '1',
-            'revision' => 'V04',
             'serial' => 'FOC1243W0ED',
             'type' => 'chassis',
-            'version' => '12.2(55)SE6',
+            'firmware' => '12.2(55)SE6',
          ],
          2001 => [
-            'containedinindex' => '1',
+            'contained_index' => 1,
             'description' => 'WS-C3750G-48TS',
-            'firmware' => '12.2(55)SE6',
             'fru' => 1,
             'index' => 2001,
             'model' => 'WS-C3750G-48TS-S',
             'name' => '2',
-            'revision' => 'V04',
             'serial' => 'FOC1127Z4LH',
             'type' => 'chassis',
-            'version' => '12.2(55)SE6',
+            'firmware' => '12.2(55)SE6',
          ],
          3001 => [
-            'containedinindex' => '1',
+            'contained_index' => 1,
             'description' => 'WS-C3750G-48TS',
-            'firmware' => '12.2(55)SE6',
             'fru' => 1,
             'index' => 3001,
             'model' => 'WS-C3750G-48TS-S',
             'name' => '3',
-            'revision' => 'V04',
             'serial' => 'FOC1232W0JH',
             'type' => 'chassis',
-            'version' => '12.2(55)SE6',
+            'firmware' => '12.2(55)SE6',
          ],
          4001 => [
-            'containedinindex' => '1',
+            'contained_index' => 1,
             'description' => 'WS-C3750G-48TS',
-            'firmware' => '12.2(55)SE6',
             'fru' => 1,
             'index' => 4001,
             'model' => 'WS-C3750G-48TS-S',
             'name' => '4',
-            'revision' => 'V02',
             'serial' => 'FOC1033Y0M7',
             'type' => 'chassis',
-            'version' => '12.2(55)SE6',
+            'firmware' => '12.2(55)SE6',
          ],
          8001 => [
-            'containedinindex' => '1',
+            'contained_index' => 1,
             'description' => 'WS-C3750G-48TS',
-            'firmware' => '12.2(55)SE6',
             'fru' => 1,
             'index' => 8001,
             'model' => 'WS-C3750G-48TS-S',
             'name' => '8',
-            'revision' => '02',
             'serial' => 'FOC0929U1SR',
             'type' => 'chassis',
-            'version' => '12.2(55)SE6',
+            'firmware' => '12.2(55)SE6',
          ]
       ];
 
@@ -284,7 +275,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
    }
 
    public function testHandle() {
-      $json_str = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/networkequipment_2.json');
+      $json_str = file_get_contents(self::INV_FIXTURES . 'networkequipment_2.json');
       $json = json_decode($json_str);
 
       $netequ = new \NetworkEquipment();
