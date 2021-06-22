@@ -4761,11 +4761,11 @@ CREATE TABLE `glpi_objectlocks` (
   `itemtype` varchar(100) NOT NULL COMMENT 'Type of locked object',
   `items_id` int NOT NULL COMMENT 'RELATION to various tables, according to itemtype (ID)',
   `users_id` int NOT NULL COMMENT 'id of the locker',
-  `date_mod` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp of the lock',
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `item` (`itemtype`,`items_id`),
   KEY `users_id` (`users_id`),
-  KEY `date_mod` (`date_mod`)
+  KEY `date` (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -7533,12 +7533,12 @@ CREATE TABLE `glpi_knowbaseitems_revisions` (
   `answer` longtext,
   `language` varchar(10) DEFAULT NULL,
   `users_id` int NOT NULL DEFAULT '0',
-  `date_creation` timestamp NULL DEFAULT NULL,
+  `date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`knowbaseitems_id`,`revision`,`language`),
   KEY `revision` (`revision`),
   KEY `users_id` (`users_id`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date` (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_knowbaseitems_comments
@@ -8627,22 +8627,22 @@ CREATE TABLE `glpi_printerlogs` (
   `color_copies` int NOT NULL DEFAULT '0',
   `scanned` int NOT NULL DEFAULT '0',
   `faxed` int NOT NULL DEFAULT '0',
-  `date_creation` timestamp NULL DEFAULT NULL,
+  `date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `printers_id` (`printers_id`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date` (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
 DROP TABLE IF EXISTS `glpi_networkportconnectionlogs`;
 CREATE TABLE `glpi_networkportconnectionlogs` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `date_creation` timestamp NULL DEFAULT NULL,
+  `date` timestamp NULL DEFAULT NULL,
   `connected` tinyint NOT NULL DEFAULT '0',
   `networkports_id_source` int NOT NULL DEFAULT '0',
   `networkports_id_destination` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `date_creation` (`date_creation`),
+  KEY `date` (`date`),
   KEY `networkports_id_source` (`networkports_id_source`),
   KEY `networkports_id_destination` (`networkports_id_destination`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -8651,14 +8651,14 @@ CREATE TABLE `glpi_networkportconnectionlogs` (
 DROP TABLE IF EXISTS `glpi_networkportmetrics`;
 CREATE TABLE `glpi_networkportmetrics` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `date_creation` timestamp NULL DEFAULT NULL,
+  `date` timestamp NULL DEFAULT NULL,
   `ifinbytes` bigint NOT NULL DEFAULT '0',
   `ifinerrors` bigint NOT NULL DEFAULT '0',
   `ifoutbytes` bigint NOT NULL DEFAULT '0',
   `ifouterrors` bigint NOT NULL DEFAULT '0',
   `networkports_id` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `date_creation` (`date_creation`),
+  KEY `date` (`date`),
   KEY `networkports_id` (`networkports_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 

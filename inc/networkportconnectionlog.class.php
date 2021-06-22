@@ -133,7 +133,7 @@ class NetworkPortConnectionLog extends CommonDBChild {
          }
          echo "<i class='fas $co_class' title='$title'></i> <span class='sr-only'>$title</span>";
          echo "</td>";
-         echo "<td>" . $row['date_creation']  . "</td>";
+         echo "<td>" . $row['date']  . "</td>";
          echo "<td>";
 
          $is_source = $netport->fields['id'] == $row['networkports_id_source'];

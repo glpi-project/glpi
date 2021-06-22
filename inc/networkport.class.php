@@ -379,6 +379,7 @@ class NetworkPort extends CommonDBChild {
          'ifoutbytes'      => $this->fields['ifoutbytes'] ?? 0,
          'ifinerrors'      => $this->fields['ifinerrors'] ?? 0,
          'ifouterrors'     => $this->fields['ifouterrors'] ?? 0,
+         'date'            => $_SESSION['glpi_currenttime'],
       ], [], false);
    }
 

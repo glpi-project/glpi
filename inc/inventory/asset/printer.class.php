@@ -282,6 +282,7 @@ class Printer extends NetworkEquipment
       $metrics = new PrinterLog();
       $input = (array)$this->counters;
       $input['printers_id'] = $this->item->fields['id'];
+      $input['date'] = $_SESSION['glpi_currenttime'];
       $metrics->add($input, [], false);
    }
 }

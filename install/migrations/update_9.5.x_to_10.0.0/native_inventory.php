@@ -365,25 +365,23 @@ if (!$DB->tableExists('glpi_printerlogs')) {
          `color_copies` int NOT NULL DEFAULT '0',
          `scanned` int NOT NULL DEFAULT '0',
          `faxed` int NOT NULL DEFAULT '0',
-         `date_creation` timestamp NULL DEFAULT NULL,
+         `date` timestamp NULL DEFAULT NULL,
          PRIMARY KEY (`id`),
          KEY `printers_id` (`printers_id`),
-         KEY `date_creation` (`date_creation`)
+         KEY `date` (`date`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
    $DB->queryOrDie($query, "10.0 add table glpi_printerlogs");
-} else {
-   $migration->addKey('glpi_printerlogs', 'date_creation');
 }
 
 if (!$DB->tableExists('glpi_networkportconnectionlogs')) {
    $query = "CREATE TABLE `glpi_networkportconnectionlogs` (
          `id` int NOT NULL AUTO_INCREMENT,
-         `date_creation` timestamp NULL DEFAULT NULL,
+         `date` timestamp NULL DEFAULT NULL,
          `connected` tinyint NOT NULL DEFAULT '0',
          `networkports_id_source` int NOT NULL DEFAULT '0',
          `networkports_id_destination` int NOT NULL DEFAULT '0',
          PRIMARY KEY (`id`),
-         KEY `date_creation` (`date_creation`),
+         KEY `date` (`date`),
          KEY `networkports_id_destination` (`networkports_id_destination`),
          KEY `networkports_id_source` (`networkports_id_source`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
@@ -396,14 +394,14 @@ if (!$DB->tableExists('glpi_networkportconnectionlogs')) {
 if (!$DB->tableExists('glpi_networkportmetrics')) {
    $query = "CREATE TABLE `glpi_networkportmetrics` (
          `id` int NOT NULL AUTO_INCREMENT,
-         `date_creation` timestamp NULL DEFAULT NULL,
+         `date` timestamp NULL DEFAULT NULL,
          `ifinbytes` bigint NOT NULL DEFAULT '0',
          `ifinerrors` bigint NOT NULL DEFAULT '0',
          `ifoutbytes` bigint NOT NULL DEFAULT '0',
          `ifouterrors` bigint NOT NULL DEFAULT '0',
          `networkports_id` int NOT NULL DEFAULT '0',
          PRIMARY KEY (`id`),
-         KEY `date_creation` (`date_creation`),
+         KEY `date` (`date`),
          KEY `networkports_id` (`networkports_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
    $DB->queryOrDie($query, "10.0 add table glpi_networkportmetrics");

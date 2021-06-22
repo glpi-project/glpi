@@ -1408,7 +1408,7 @@ VCALENDAR
       ]);
       $this->integer($project_task_team_id)->isGreaterThan(0);
 
-      $creation_date = $project_task->fields['date'];
+      $creation_date = $project_task->fields['date_creation'];
 
       $project_task_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $project_task->fields['uuid'] . '.ics';
 
@@ -1459,7 +1459,7 @@ VCALENDAR
       $this->boolean($project_task->getFromDBByCrit(['uuid' => $project_task->fields['uuid']]))->isTrue();
       $this->array($project_task->fields)
          ->string['uuid']->isEqualTo($project_task->fields['uuid'])
-         ->string['date']->isEqualTo($creation_date) // be sure that creation date is not overrided
+         ->string['date_creation']->isEqualTo($creation_date) // be sure that creation date is not overrided
          ->string['content']->isEqualTo('Updated description.')
          ->integer['percent_done']->isEqualTo(35);
 
@@ -1494,7 +1494,7 @@ VCALENDAR
       $this->boolean($project_task->getFromDBByCrit(['uuid' => $project_task->fields['uuid']]))->isTrue();
       $this->array($project_task->fields)
          ->string['uuid']->isEqualTo($project_task->fields['uuid'])
-         ->string['date']->isEqualTo($creation_date) // be sure that creation date is not overrided
+         ->string['date_creation']->isEqualTo($creation_date) // be sure that creation date is not overrided
          ->string['content']->isEqualTo('Updated description.')
          ->integer['percent_done']->isEqualTo(100)
          ->string['plan_start_date']->isEqualTo('2019-11-01 08:00:00') // 1 hour offset between Europe/Paris and UTC

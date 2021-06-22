@@ -930,8 +930,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       $tab[] = [
          'id'                 => '115',
          'table'              => ProjectTask::getTable(),
-         'field'              => 'date',
-         'name'               => __('Opening date'),
+         'field'              => 'date_creation',
+         'name'               => __('Creation date'),
          'datatype'           => 'datetime',
          'massiveaction'      => false,
          'forcegroupby'       => true,

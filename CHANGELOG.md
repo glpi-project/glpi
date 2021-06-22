@@ -26,7 +26,12 @@ The present file will list all changes made to the project; according to the
 - Added `DB::truncate()` to replace raw SQL queries
 - Impact context `positions` field type changed from `TEXT` to `MEDIUMTEXT`
 - Field `date` of KnowbaseItem has been renamed to `date_creation`.
+- Field `date_creation` of KnowbaseItem_Revision has been renamed to `date`.
+- Field `date_creation` of NetworkPortConnectionLog has been renamed to `date`.
+- Field `date_creation` of NetworkPortMetrics has been renamed to `date`.
 - Field `date` of Notepad has been renamed to `date_creation`.
+- Field `date_mod` of ObjectLock has been renamed to `date`.
+- Field `date_creation` of PrinterLog has been renamed to `date`.
 - Field `date` of ProjectTask has been renamed to `date_creation`.
 
 #### Deprecated

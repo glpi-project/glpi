@@ -55,12 +55,18 @@ class DatabaseSchemaConsistencyChecker extends AbstractDatabaseChecker {
       foreach ($columns as $column_name) {
          switch ($column_name) {
             case 'date_creation':
-               if (!in_array('date_mod', $columns) && !$this->shouldIgnoreMissingDateMod($table_name)) {
+               if (!in_array('date_mod', $columns)) {
                   $missing_columns[] = 'date_mod';
                }
                break;
             case 'date_mod':
-               if (!in_array('date_creation', $columns) && !$this->shouldIgnoreMissingDateCreation($table_name)) {
+               if ($table_name === 'glpi_logs') {
+                  // Logs cannot be modified and their date is stored on `date_mod`.
+                  // FIXME It would be more logical to have a `date` instead, but renaming it is not so simple as table
+                  // can contains millions of rows.
+                  break;
+               }
+               if (!in_array('date_creation', $columns)) {
                   $missing_columns[] = 'date_creation';
                }
                break;
@@ -68,47 +74,5 @@ class DatabaseSchemaConsistencyChecker extends AbstractDatabaseChecker {
       }
 
       return $missing_columns;
-   }
-
-   /**
-    * Check if missing date_creation field should be ignored on given table.
-    *
-    * @param string $table_name
-    *
-    * @return bool
-    */
-   private function shouldIgnoreMissingDateCreation(string $table_name): bool {
-      return in_array(
-         $table_name,
-         [
-            // Logs cannot be modified and their date is stored on `date_mod`.
-            // It would be more logical to have a `date` instead, but renaming it is not so simple as table
-            // can contains millions of rows.
-            'glpi_logs',
-            // ObjectLocks cannot be modified and their date is stored on `date_mod`.
-            // It would be more logical to have a `date` instead, but renaming it is not so simple as field
-            // name may be used in notifications templates.
-            'glpi_objectlocks',
-         ]
-      );
-   }
-
-   /**
-    * Check if missing date_mod field should be ignored on given table.
-    *
-    * @param string $table_name
-    *
-    * @return bool
-    */
-   private function shouldIgnoreMissingDateMod(string $table_name): bool {
-      return in_array(
-         $table_name,
-         [
-            'glpi_knowbaseitems_revisions', // KB revisions should not be modified
-            'glpi_networkportconnectionlogs', // Network connections log should not be modified
-            'glpi_networkportmetrics', // Network metrics is kind of a log, should not be modified
-            'glpi_printerlogs', // Printer log should not be modified
-         ]
-      );
    }
 }

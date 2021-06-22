@@ -192,7 +192,7 @@ class Notepad extends CommonDBChild {
       $tab[] = [
          'id'                 => '201',
          'table'              => 'glpi_notepads',
-         'field'              => 'date',
+         'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
          'joinparams'         => [
