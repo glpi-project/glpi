@@ -25,7 +25,7 @@
         "ext-zlib": "*",
         "blueimp/jquery-file-upload": "^10.2",
         "elvanto/litemoji": "^4.0.0",
-        "glpi-project/inventory_format": "^1.0",
+        "glpi-project/inventory_format": "^1.1",
         "guzzlehttp/guzzle": "^7.2",
         "guzzlehttp/psr7": "^1.6",
         "html2text/html2text": "^4.3",

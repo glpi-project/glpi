@@ -38,6 +38,8 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 class Printer extends AbstractInventoryAsset {
 
+   const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
+
    protected function assetProvider() :array {
       return [
          [
@@ -81,7 +83,8 @@ class Printer extends AbstractInventoryAsset {
    }
 
    public function testSnmpPrinter() {
-      $json_str = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/printer_1.json');
+      $json_str = file_get_contents(self::INV_FIXTURES . 'printer_1.json');
+
       $json = json_decode($json_str);
 
       $printer = new \Printer();
@@ -99,9 +102,7 @@ class Printer extends AbstractInventoryAsset {
       $this->array($result)->hasSize(1);
       $this->array((array)$result[0])->isIdenticalTo([
          'autoupdatesystems_id' => 'GLPI Native Inventory',
-         'comments' => 'HP ETHERNET MULTI-ENVIRONMENT,ROM none,JETDIRECT,JD153,EEPROM JSI24090012,CIDATE 09/10/2019',
          'firmware' => '2409048_052887',
-         'id' => 8997,
          'ips' => ['10.59.29.175'],
          'mac' => '00:68:eb:f2:be:10',
          'manufacturer' => 'Hewlett-Packard',
@@ -133,10 +134,11 @@ class Printer extends AbstractInventoryAsset {
       ]);
 
       $pcounter = new \stdClass();
-      $pcounter->duplex = 831;
+      $pcounter->rectoverso = 831;
       $pcounter->rv_pages = 831;
       $pcounter->total = 1802;
       $pcounter->total_pages = 1802;
+      var_dump($main->getCounters());
       $this->object($main->getCounters())->isEqualTo($pcounter);
 
       $main->handle();

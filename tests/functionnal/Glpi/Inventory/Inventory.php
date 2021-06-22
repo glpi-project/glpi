@@ -39,6 +39,8 @@ use wapmorgan\UnifiedArchive\UnifiedArchive;
 
 class Inventory extends DbTestCase {
 
+   const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
+
    /**
     * Path to use to test inventory archive manipulations.
     * File will be removed before/after tests.
@@ -1129,7 +1131,7 @@ class Inventory extends DbTestCase {
    public function testImportComputer() {
       global $DB, $CFG_GLPI;
 
-      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1.json');
+      $json = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
 
       $CFG_GLPI["is_contact_autoupdate"] = 0;
 
@@ -1176,7 +1178,7 @@ class Inventory extends DbTestCase {
    public function testUpdateComputer() {
       global $DB, $CFG_GLPI;
 
-      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_3.json');
+      $json = file_get_contents(self::INV_FIXTURES . 'computer_3.json');
 
       $inventory = new \Glpi\Inventory\Inventory($json);
 
@@ -1432,7 +1434,7 @@ class Inventory extends DbTestCase {
       $this->array($types_count)->isIdenticalTo($expected_types_count);
 
       //update computer
-      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_3_updated.json');
+      $json = file_get_contents(self::INV_FIXTURES . 'computer_3_updated.json');
 
       $inventory = new \Glpi\Inventory\Inventory($json);
 
@@ -1612,7 +1614,7 @@ class Inventory extends DbTestCase {
    }
 
    public function testImportNetworkEquipment() {
-      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/networkequipment_1.json');
+      $json = file_get_contents(self::INV_FIXTURES . 'networkequipment_1.json');
 
       $inventory = new \Glpi\Inventory\Inventory($json);
 
@@ -1916,7 +1918,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
    }
 
    public function testImportStackedNetworkEquipment() {
-      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/networkequipment_2.json');
+      $json = file_get_contents(self::INV_FIXTURES . 'networkequipment_2.json');
 
       $inventory = new \Glpi\Inventory\Inventory($json);
 
@@ -2375,7 +2377,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
    }
 
    public function testImportNetworkEquipmentMultiConnections() {
-      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/networkequipment_3.json');
+      $json = file_get_contents(self::INV_FIXTURES . 'networkequipment_3.json');
 
       $inventory = new \Glpi\Inventory\Inventory($json);
 
@@ -3022,7 +3024,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
    }
 
    public function testImportNetworkEquipmentWireless() {
-      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/networkequipment_4.json');
+      $json = file_get_contents(self::INV_FIXTURES . 'networkequipment_4.json');
 
       $inventory = new \Glpi\Inventory\Inventory($json);
 
@@ -3369,7 +3371,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
    }
 
    public function testImportNetworkEquipmentWAggregatedPorts() {
-      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/networkequipment_5.json');
+      $json = file_get_contents(self::INV_FIXTURES . 'networkequipment_5.json');
 
       $inventory = new \Glpi\Inventory\Inventory($json);
 
@@ -3707,7 +3709,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       )->isTrue();
 
       //do inventory
-      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1.json');
+      $json = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
       $inventory = new \Glpi\Inventory\Inventory($json);
 
       //move rule back to accept computer inventory
@@ -3845,7 +3847,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          ])
       )->isGreaterThan(0);
 
-      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1.json');
+      $json = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
       $data = json_decode($json);
       unset($data->content->bios);
       unset($data->content->hardware->name);
@@ -3916,7 +3918,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $nbcomputers = countElementsInTable(\Computer::getTable());
       $nbprinters = countElementsInTable(\Printer::getTable());
 
-      $json_path = GLPI_ROOT . '/tests/fixtures/inventory/computer_1.json';
+      $json_path = self::INV_FIXTURES . 'computer_1.json';
       $files = [
          'importfile' => [
             'name' => 'computer_1.json',
@@ -3952,9 +3954,9 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $nbnetequps = countElementsInTable(\NetworkEquipment::getTable());
 
       $json_paths = [
-         GLPI_ROOT . '/tests/fixtures/inventory/computer_1.json',
-         GLPI_ROOT . '/tests/fixtures/inventory/networkequipment_1.json',
-         GLPI_ROOT . '/tests/fixtures/inventory/printer_1.json',
+         self::INV_FIXTURES . 'computer_1.json',
+         self::INV_FIXTURES . 'networkequipment_1.json',
+         self::INV_FIXTURES . 'printer_1.json',
       ];
 
       UnifiedArchive::archiveFiles($json_paths, self::INVENTORY_ARCHIVE_PATH);
@@ -3990,7 +3992,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
    public function testImportVirtualMachines() {
       global $DB;
 
-      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_2.json');
+      $json = file_get_contents(self::INV_FIXTURES . 'computer_2.json');
 
       $count_vms = count(json_decode($json)->content->virtualmachines);
       $this->integer($count_vms)->isIdenticalTo(6);
@@ -4044,7 +4046,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
 
       //partial inventory: postgres vm has been stopped
-      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_2_partial_vms.json');
+      $json = file_get_contents(self::INV_FIXTURES . 'computer_2_partial_vms.json');
       $CFG_GLPI["is_contact_autoupdate"] = 0;
       $inventory = new \Glpi\Inventory\Inventory($json);
       $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
@@ -4088,7 +4090,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
    public function testImportPhone() {
       global $DB, $CFG_GLPI;
 
-      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/phone_1.json');
+      $json = file_get_contents(self::INV_FIXTURES . 'phone_1.json');
 
       $CFG_GLPI["is_contact_autoupdate"] = 0;
 
@@ -4151,7 +4153,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          'entities_id' => 0,
          'name' => 'Mi9TPro-TéléphoneM',
          'date_mod' => $computer->fields['date_mod'],
-         'contact' => null,
+         'contact' => 'builder',
          'contact_num' => null,
          'users_id_tech' => 0,
          'groups_id_tech' => 0,
@@ -4586,7 +4588,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       //initial import
       $this->testImportComputer();
 
-      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1_partial_volumes.json');
+      $json = file_get_contents(self::INV_FIXTURES . 'computer_1_partial_volumes.json');
       $CFG_GLPI["is_contact_autoupdate"] = 0;
       $inventory = new \Glpi\Inventory\Inventory($json);
       $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
@@ -4633,7 +4635,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->checkComputer1Softwares($computer);
       $this->checkComputer1Batteries($computer);
 
-      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1_partial_softs.json');
+      $json = file_get_contents(self::INV_FIXTURES . 'computer_1_partial_softs.json');
       $CFG_GLPI["is_contact_autoupdate"] = 0;
       $inventory = new \Glpi\Inventory\Inventory($json);
       $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
@@ -4657,7 +4659,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       ];
       $this->checkComputer1Softwares($computer, $versions);
 
-      $json = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventory/computer_1_partial_batteries.json');
+      $json = file_get_contents(self::INV_FIXTURES . 'computer_1_partial_batteries.json');
       $CFG_GLPI["is_contact_autoupdate"] = 0;
       $inventory = new \Glpi\Inventory\Inventory($json);
       $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default

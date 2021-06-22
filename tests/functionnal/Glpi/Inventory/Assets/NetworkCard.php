@@ -59,7 +59,7 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "lo", "ipaddress": "127.0.0.1", "ipmask": "255.0.0.0", "ipsubnet": "127.0.0.0", "macaddr": "00:00:00:00:00:00", "status": "up", "type": "loopback", "virtualdev": true, "mac": "00:00:00:00:00:00"}'
+            'expected'  => '{"description": "lo", "ipaddress": "127.0.0.1", "ipmask": "255.0.0.0", "ipsubnet": "127.0.0.0", "status": "up", "type": "loopback", "virtualdev": true, "mac": "00:00:00:00:00:00"}'
          ], [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -79,7 +79,7 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "lo", "ipaddress6": "::1", "ipmask6": "fff0::", "ipsubnet6": "::", "macaddr": "00:00:00:00:00:00", "status": "up", "type": "loopback", "virtualdev": true, "mac": "00:00:00:00:00:00"}'
+            'expected'  => '{"description": "lo", "ipaddress6": "::1", "ipmask6": "fff0::", "ipsubnet6": "::", "status": "up", "type": "loopback", "virtualdev": true, "mac": "00:00:00:00:00:00"}'
          ], [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -107,7 +107,7 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress": "192.168.1.119", "ipgateway": "192.168.1.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.1.0", "macaddr": "44:85:00:2b:90:bc", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "trashylands", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}'
+            'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress": "192.168.1.119", "ipgateway": "192.168.1.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.1.0", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "trashylands", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}'
          ], [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -134,7 +134,7 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress6": "fe80::92a4:26c6:99dd:2d60", "ipmask6": "ffff:ffff:ffff:ffff::", "ipsubnet6": "fe80::", "macaddr": "44:85:00:2b:90:bc", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "trashylands", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}'
+            'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress6": "fe80::92a4:26c6:99dd:2d60", "ipmask6": "ffff:ffff:ffff:ffff::", "ipsubnet6": "fe80::", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "trashylands", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}'
          ], [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -155,7 +155,7 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "virbr0", "ipaddress": "192.168.122.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.122.0", "macaddr": "52:54:00:fa:20:0e", "status": "up", "type": "bridge", "virtualdev": true, "mac": "52:54:00:fa:20:0e"}'
+            'expected'  => '{"description": "virbr0", "ipaddress": "192.168.122.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.122.0", "status": "up", "type": "bridge", "virtualdev": true, "mac": "52:54:00:fa:20:0e"}'
          ], [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -172,7 +172,7 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "virbr0-nic", "macaddr": "52:54:00:fa:20:0e", "speed": "10", "status": "down", "virtualdev": true, "mac": "52:54:00:fa:20:0e"}'
+            'expected'  => '{"description": "virbr0-nic", "speed": "10", "status": "down", "virtualdev": true, "mac": "52:54:00:fa:20:0e"}'
          ], [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>

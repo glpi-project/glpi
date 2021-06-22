@@ -59,7 +59,7 @@ class Drive extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "PCI", "disksize": 250059, "firmware": "BXV77D0Q", "manufacturer": "Samsung", "model": "PM951NVMe SAMSUNG 256GB", "name": "nvme0n1", "serialnumber": "S29NNXAH146409", "type": "disk", "capacity": 250059, "manufacturers_id": "Samsung", "designation": "PM951NVMe SAMSUNG 256GB", "serial": "S29NNXAH146409"}'
+            'expected'  => '{"description": "PCI", "disksize": 250059, "firmware": "BXV77D0Q", "manufacturer": "Samsung", "model": "PM951NVMe SAMSUNG 256GB", "name": "nvme0n1", "type": "disk", "capacity": 250059, "manufacturers_id": "Samsung", "designation": "PM951NVMe SAMSUNG 256GB", "serial": "S29NNXAH146409"}'
          ], [ //cdrom
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
