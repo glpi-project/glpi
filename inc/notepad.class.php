@@ -84,7 +84,6 @@ class Notepad extends CommonDBChild {
 
       $input['users_id']             = Session::getLoginUserID();
       $input['users_id_lastupdater'] = Session::getLoginUserID();
-      $input['date']                 = $_SESSION['glpi_currenttime'];
       return $input;
    }
 
@@ -325,7 +324,7 @@ class Notepad extends CommonDBChild {
                $username = getUserName($note['users_id'], $showuserlink);
             }
             $create = sprintf(__('Create by %1$s on %2$s'), $username,
-                              Html::convDateTime($note['date']));
+                              Html::convDateTime($note['date_creation']));
             printf(__('%1$s / %2$s'), $update, $create);
             echo "</div>"; // floatright
 

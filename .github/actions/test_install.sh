@@ -17,6 +17,7 @@ fi
 # Check DB
 bin/console glpi:database:check_schema_integrity --config-dir=./tests/config --ansi --no-interaction --strict
 bin/console glpi:tools:check_database_keys --config-dir=./tests/config --ansi --no-interaction --detect-useless-keys
+bin/console glpi:tools:check_database_schema_consistency --config-dir=./tests/config --ansi --no-interaction
 
 # Execute update
 ## Should do nothing.

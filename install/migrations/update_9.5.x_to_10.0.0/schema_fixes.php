@@ -572,3 +572,53 @@ foreach ($missing_keys as $table => $fields) {
       $migration->addKey($table, $field, is_numeric($key) ? '' : $key);
    }
 }
+
+// Rename `date` fields to `date_creation` when value cannot be set by user
+$tables = [
+   'glpi_knowbaseitems',
+   'glpi_notepads',
+   'glpi_projecttasks',
+];
+foreach ($tables as $table) {
+   if ($DB->fieldExists($table, 'date', false)) {
+      $migration->dropKey($table, 'date');
+      $migration->migrationOneTable($table);
+      $migration->changeField($table, 'date', 'date_creation', 'timestamp');
+      $migration->addKey($table, 'date_creation');
+   }
+}
+$migration->addPostQuery(
+   $DB->buildUpdate(
+      'glpi_displaypreferences',
+      ['num' => '121'],
+      ['num' => '5', 'itemtype' => 'KnowbaseItem']
+   )
+);
+$migration->addPostQuery(
+   $DB->buildUpdate(
+      'glpi_displaypreferences',
+      ['num' => '121'],
+      ['num' => '15', 'itemtype' => 'KnowbaseItem']
+   )
+);
+
+// Add missing `date_creation` field on tables that already have `date_mod` field
+$tables = [
+   'glpi_apiclients',
+   'glpi_appliances',
+   'glpi_authmails',
+   'glpi_transfers',
+];
+foreach ($tables as $table) {
+   $migration->addField($table, 'date_creation', 'timestamp');
+   $migration->addKey($table, 'date_creation');
+}
+
+// Add missing `date_mod` field on tables that already have `date_creation` field
+$tables = [
+   'glpi_lockedfields',
+];
+foreach ($tables as $table) {
+   $migration->addField($table, 'date_mod', 'timestamp');
+   $migration->addKey($table, 'date_mod');
+}

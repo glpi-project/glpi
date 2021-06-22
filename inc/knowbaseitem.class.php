@@ -623,12 +623,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
 
    function prepareInputForAdd($input) {
 
-      // set new date if not exists
-      if (!isset($input["date"]) || empty($input["date"])) {
-         $input["date"] = $_SESSION["glpi_currenttime"];
-      }
-      // set users_id
-
       // set title for question if empty
       if (isset($input["name"]) && empty($input["name"])) {
          $input["name"] = __('New item');
@@ -735,9 +729,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       KnowbaseItemCategory::dropdown(['value' => $this->fields["knowbaseitemcategories_id"]]);
       echo "</td>";
       echo "<td>";
-      if ($this->fields["date"]) {
+      if ($this->fields["date_creation"]) {
          //TRANS: %s is the datetime of insertion
-         printf(__('Created on %s'), Html::convDateTime($this->fields["date"]));
+         printf(__('Created on %s'), Html::convDateTime($this->fields["date_creation"]));
       }
       echo "</td><td>";
       if ($this->fields["date_mod"]) {
@@ -1021,9 +1015,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          $out.= "<br>";
       }
 
-      if ($this->fields["date"]) {
+      if ($this->fields["date_creation"]) {
          //TRANS: %s is the datetime of update
-         $out.= sprintf(__('Created on %s'), Html::convDateTime($this->fields["date"]));
+         $out.= sprintf(__('Created on %s'), Html::convDateTime($this->fields["date_creation"]));
          $out.= "<br>";
       }
       if ($this->fields["date_mod"]) {
@@ -1860,15 +1854,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       ];
 
       $tab[] = [
-         'id'                 => '5',
-         'table'              => $this->getTable(),
-         'field'              => 'date',
-         'name'               => _n('Date', 'Dates', 1),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
-      ];
-
-      $tab[] = [
          'id'                 => '6',
          'table'              => $this->getTable(),
          'field'              => 'name',
@@ -1923,6 +1908,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          'table'              => $this->getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
+
+      $tab[] = [
+         'id'                 => '121',
+         'table'              => $this->getTable(),
+         'field'              => 'date_creation',
+         'name'               => __('Creation date'),
          'datatype'           => 'datetime',
          'massiveaction'      => false
       ];

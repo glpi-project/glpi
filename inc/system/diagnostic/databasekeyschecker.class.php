@@ -36,40 +36,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use DBmysql;
-
 /**
  * @since 10.0.0
  */
-class DatabaseKeysChecker {
-
-   /**
-    * DB instance.
-    *
-    * @var DBmysql
-    */
-   protected $db;
-
-   /**
-    * Local cache for tables columns.
-    *
-    * @var array
-    */
-   private $columns = [];
-
-   /**
-    * Local cache for tables indexes.
-    *
-    * @var array
-    */
-   private $indexes = [];
-
-   /**
-    * @param DBmysql $db   DB instance.
-    */
-   public function __construct(DBmysql $db) {
-      $this->db = $db;
-   }
+class DatabaseKeysChecker extends AbstractDatabaseChecker {
 
    /**
     * Get list of missing keys, basing detection on column names.
@@ -195,57 +165,6 @@ class DatabaseKeysChecker {
       }
 
       return $useless_keys;
-   }
-
-   /**
-    * Return list of column names for given table.
-    *
-    * @param string $table_name
-    *
-    * @return array
-    */
-   private function getColumnsNames(string $table_name): array {
-      if (!array_key_exists($table_name, $this->columns)) {
-         if (($columns_res = $this->db->query('SHOW COLUMNS FROM ' . $this->db->quoteName($table_name))) === false) {
-            throw new \Exception(sprintf('Unable to get table "%s" columns', $table_name));
-         }
-
-         $this->columns[$table_name] = array_column($columns_res->fetch_all(MYSQLI_ASSOC), 'Field');
-      }
-
-      return $this->columns[$table_name];
-   }
-
-   /**
-    * Return index for given table.
-    * Array keys are index key, and values are fields related to this key.
-    *
-    * @param string $table_name
-    *
-    * @return array
-    */
-   private function getIndex(string $table_name): array {
-      if (!array_key_exists($table_name, $this->indexes)) {
-         if (($keys_res = $this->db->query('SHOW INDEX FROM ' . $this->db->quoteName($table_name))) === false) {
-            throw new \Exception(sprintf('Unable to get table "%s" index', $table_name));
-         }
-
-         $index = [];
-         while ($key_specs = $keys_res->fetch_assoc()) {
-            if ($key_specs['Index_type'] === 'FULLTEXT') {
-               continue; // Ignore FULLTEXT keys
-            }
-            $key_name = $key_specs['Key_name'];
-            if (!array_key_exists($key_name, $index)) {
-               $index[$key_name] = [];
-            }
-            $index[$key_name][$key_specs['Seq_in_index'] - 1] = $key_specs['Column_name'];
-         }
-
-         $this->indexes[$table_name] = $index;
-      }
-
-      return $this->indexes[$table_name];
    }
 
    /**

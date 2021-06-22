@@ -406,9 +406,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
       if (!isset($input['users_id'])) {
          $input['users_id'] = Session::getLoginUserID();
       }
-      if (!isset($input['date'])) {
-         $input['date'] = $_SESSION['glpi_currenttime'];
-      }
 
       if (isset($input["plan"])) {
          $input["plan_start_date"] = $input['plan']["begin"];
@@ -640,7 +637,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Creation date')."</td>";
          echo "<td>";
-         echo sprintf(__('%1$s by %2$s'), Html::convDateTime($this->fields["date"]),
+         echo sprintf(__('%1$s by %2$s'), Html::convDateTime($this->fields["date_creation"]),
                                        getUserName($this->fields["users_id"], $showuserlink));
          echo "</td>";
          echo "<td>".__('Last update')."</td>";
@@ -957,10 +954,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
       ];
 
       $tab[] = [
-         'id'                 => '15',
+         'id'                 => '121',
          'table'              => $this->getTable(),
-         'field'              => 'date',
-         'name'               => __('Opening date'),
+         'field'              => 'date_creation',
+         'name'               => __('Creation date'),
          'datatype'           => 'datetime',
          'massiveaction'      => false
       ];
