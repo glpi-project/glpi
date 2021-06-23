@@ -390,7 +390,7 @@ class Html extends \GLPITestCase {
 
       //create test files
       foreach ($fake_files as $fake_file) {
-         touch(GLPI_TMP_DIR . '/' . $fake_file);
+         $this->boolean(touch(GLPI_TMP_DIR . '/' . $fake_file))->isTrue();
       }
 
       //expect minified file
