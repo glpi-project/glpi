@@ -39,14 +39,23 @@ use wapmorgan\UnifiedArchive\UnifiedArchive;
 
 class Inventory extends DbTestCase {
 
+   /**
+    * Path to use to test inventory archive manipulations.
+    * File will be removed before/after tests.
+    * @var string
+    */
+   private const INVENTORY_ARCHIVE_PATH = GLPI_TMP_DIR . '/to_inventory.zip';
+
    private $nblogs;
 
    public function beforeTestMethod($method) {
-      global $DB;
-
       parent::beforeTestMethod($method);
 
       $this->nblogs = countElementsInTable(\Log::getTable());
+
+      if (file_exists(self::INVENTORY_ARCHIVE_PATH)) {
+         unlink(self::INVENTORY_ARCHIVE_PATH);
+      }
    }
 
    public function afterTestMethod($method) {
@@ -94,6 +103,9 @@ class Inventory extends DbTestCase {
          $todo($fileinfo->getRealPath());
       }
 
+      if (file_exists(self::INVENTORY_ARCHIVE_PATH)) {
+         unlink(self::INVENTORY_ARCHIVE_PATH);
+      }
    }
 
    private function checkComputer1($computers_id) {
@@ -3945,19 +3957,15 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          GLPI_ROOT . '/tests/fixtures/inventory/printer_1.json',
       ];
 
-      $archive_path = GLPI_TMP_DIR . '/to_inventory.zip';
-      if (file_exists($archive_path)) {
-         unlink($archive_path);
-      }
-      UnifiedArchive::archiveFiles($json_paths, $archive_path);
+      UnifiedArchive::archiveFiles($json_paths, self::INVENTORY_ARCHIVE_PATH);
 
       $files = [
          'importfile' => [
             'name' => 'to_inventory.zip',
             'type' => 'application/zip',
-            'tmp_name' => GLPI_TMP_DIR . '/to_inventory.zip',
+            'tmp_name' => self::INVENTORY_ARCHIVE_PATH,
             'error' => 0,
-            'size' => filesize($archive_path)
+            'size' => filesize(self::INVENTORY_ARCHIVE_PATH)
          ]
       ];
 
