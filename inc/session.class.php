@@ -635,9 +635,8 @@ class Session {
          Toolbox::logWarning('Missing required intl PHP extension');
       }
 
-      $cache = Config::getTranslationCacheInstance(false);
       if (!defined('TU_USER')) {
-         $TRANSLATE->setCache($cache);
+         $TRANSLATE->setCache(Config::getTranslationCacheInstance(false));
       }
 
       $TRANSLATE->addTranslationFile('gettext', GLPI_I18N_DIR.$newfile, 'glpi', $trytoload);
