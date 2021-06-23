@@ -707,20 +707,8 @@ foreach ($tables as $table) {
       $migration->addKey($table, 'date_creation');
    }
 }
-$migration->addPostQuery(
-   $DB->buildUpdate(
-      'glpi_displaypreferences',
-      ['num' => '121'],
-      ['num' => '5', 'itemtype' => 'KnowbaseItem']
-   )
-);
-$migration->addPostQuery(
-   $DB->buildUpdate(
-      'glpi_displaypreferences',
-      ['num' => '121'],
-      ['num' => '15', 'itemtype' => 'KnowbaseItem']
-   )
-);
+$migration->changeSearchOption(KnowbaseItem::class, 5, 121);
+$migration->changeSearchOption(ProjectTask::class, 15, 121);
 
 // Rename `glpi_objectlocks` `date_mod` to `date`
 if ($DB->fieldExists('glpi_objectlocks', 'date_mod', false)) {
