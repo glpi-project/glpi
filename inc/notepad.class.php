@@ -95,7 +95,6 @@ class Notepad extends CommonDBChild {
       return $input;
    }
 
-   /**
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (Session::haveRight($item::$rightname, READNOTE)) {
