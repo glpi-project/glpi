@@ -65,9 +65,11 @@ class DataFactory {
             $this->getItemsForProject($itemArray, $data['id']);
          }
       } else if ($project->getFromDB($id)) {
-         array_push($itemArray, $this->populateGanttItem($project->fields, "root-project"));
-         $this->getProjectTasks($itemArray, $id);
-         $this->getSubprojects($itemArray, $id); // subproject tasks included
+         if ($project->canViewItem()) {
+            array_push($itemArray, $this->populateGanttItem($project->fields, "root-project"));
+            $this->getProjectTasks($itemArray, $id);
+            $this->getSubprojects($itemArray, $id); // subproject tasks included
+         }
       }
    }
 
@@ -107,10 +109,16 @@ class DataFactory {
    function getSubprojects(&$itemArray, $projectId) {
       global $DB;
       $iterator = $DB->request('glpi_projects', ['projects_id' => $projectId, 'is_template' => 0, 'is_deleted' => 0]);
+
       while ($record = $iterator->next()) {
-         array_push($itemArray, $this->populateGanttItem($record, "project"));
-         $this->getSubprojects($itemArray, $record['id']);
-         $this->getProjectTasks($itemArray, $record['id']);
+         $proj = new \Project();
+         $proj->getFromDB($record["id"]);
+
+         if ($proj->canViewItem()) {
+            array_push($itemArray, $this->populateGanttItem($record, "project"));
+            $this->getSubprojects($itemArray, $record['id']);
+            $this->getProjectTasks($itemArray, $record['id']);
+         }
       }
    }
 
@@ -123,7 +131,9 @@ class DataFactory {
    function getProjectTasks(&$itemArray, $projectId) {
       $taskRecords[] = \ProjectTask::getAllForProject($projectId);
       foreach ($taskRecords[0] as $record) {
-         if ($record['is_template'] == 1) {
+         $task = new \ProjectTask();
+         $task->getFromDB($record["id"]);
+         if (!$task->canViewItem() || $record['is_template'] == 1) {
             continue;
          }
          array_push($itemArray, $this->populateGanttItem($record, "task"));
@@ -140,7 +150,10 @@ class DataFactory {
       $taskRecords[] = \ProjectTask::getAllForProjectTask($taskId);
       foreach ($taskRecords[0] as $record) {
          $this->getSubtasks($itemArray, $record["id"]);
-         if ($record['is_template'] == 1) {
+
+         $task = new \ProjectTask();
+         $task->getFromDB($record["id"]);
+         if (!$task->canViewItem() || $record['is_template'] == 1) {
             continue;
          }
          array_push($itemArray, $this->populateGanttItem($record, "task"));

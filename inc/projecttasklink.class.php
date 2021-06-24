@@ -45,10 +45,10 @@ class ProjectTaskLink extends CommonDBRelation {
 
    // From CommonDBRelation
    static public $itemtype_1 = 'ProjectTask';
-   static public $items_id_1 = 'source_id';
+   static public $items_id_1 = 'projecttasks_id_source';
 
    static public $itemtype_2 = 'ProjectTask';
-   static public $items_id_2 = 'target_id';
+   static public $items_id_2 = 'projecttasks_id_target';
 
    public function getFromDBForItemIDs($projecttaskIds) {
       global $DB;
@@ -56,7 +56,7 @@ class ProjectTaskLink extends CommonDBRelation {
       $iterator = $DB->request([
          'SELECT' => ['glpi_projecttasklinks.*'],
          'FROM' => 'glpi_projecttasklinks',
-         'WHERE' => "source_id IN (" . $projecttaskIds . ") AND target_id IN (" . $projecttaskIds . ")"
+         'WHERE' => "projecttasks_id_source IN (" . $projecttaskIds . ") AND projecttasks_id_target IN (" . $projecttaskIds . ")"
       ]);
 
       return $iterator;
@@ -68,9 +68,9 @@ class ProjectTaskLink extends CommonDBRelation {
          'SELECT' => 'id',
          'FROM' => self::getTable(),
          'WHERE' => [
-            'AND' => ['source_id' => $taskLink['source_id']
+            'AND' => ['projecttasks_id_source' => $taskLink['projecttasks_id_source']
             ],
-            ['target_id' => $taskLink['target_id']],
+            ['projecttasks_id_target' => $taskLink['projecttasks_id_target']],
             ['type' => $taskLink['type']]
          ]
       ]);

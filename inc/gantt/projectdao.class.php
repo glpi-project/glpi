@@ -43,7 +43,11 @@ if (!defined('GLPI_ROOT')) {
 class ProjectDAO {
 
    function addProject($project) {
-      global $DB;
+
+      if (!\Project::canCreate()) {
+         throw new \Exception(__('Not enough rights'));
+      }
+
       $input = [
          'name' => $project->text,
          'comment' => $project->note,
@@ -57,15 +61,18 @@ class ProjectDAO {
          'show_on_global_gantt' => 1
       ];
       $proj = new \Project();
-      $proj->prepareInputForAdd($input);
       $proj->add($input);
       return $proj;
    }
 
    function updateProject($project) {
-      global $DB;
       $p = new \Project();
       $p->getFromDB($project->id);
+
+      if (!$p::canUpdate() || !$p->canUpdateItem()) {
+         throw new \Exception(__('Not enough rights'));
+      }
+
       $p->update([
          'id' => $project->id,
          'percent_done' => ($project->progress * 100),
@@ -75,25 +82,32 @@ class ProjectDAO {
    }
 
    function updateParent($project) {
-      global $DB;
       $p = new \Project();
       $p->getFromDB($project->id);
+
+      if (!$p::canUpdate() || !$p->canUpdateItem()) {
+         throw new \Exception(__('Not enough rights'));
+      }
+
       $input = [
          'id' => $project->id,
          'projects_id' => $project->parent
       ];
-      $p->prepareInputForUpdate($input);
       $p->update($input);
    }
 
    function putInTrashbin($projectId) {
-      global $DB;
       if ($projectId > 0) {
          $p = new \Project();
          $p->getFromDB($projectId);
+
+         if (!$p::canUpdate() || !$p::canDelete() || !$p->canUpdateItem()) {
+            throw new \Exception(__('Not enough rights'));
+         }
+
          $p->update([
             'id' => $projectId,
-            'is_deleted' => 1
+            'is_deleted' => 1    // only mark as deleted, allow later restore if needed
          ]);
       }
       return true;

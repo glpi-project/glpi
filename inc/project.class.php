@@ -1832,54 +1832,55 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
      * @param $ID ID of the project
    */
    static function showGantt($ID) {
-      echo "<div id=\"gantt-container\" style=\"width:100%; height:63vh;\"></div>";
-      echo "<div id=\"gantt-features\">
-               <ul class=\"gantt-controls\">
+      echo "<input type=\"hidden\" id=\"hf_gantt_item_state\" value=\"\" />";
+      echo "<div id=\"gantt-container\" class=\"gantt-block\" style=\"width:100%; height:63vh;\"></div>";
+      echo "<div class=\"gantt-block__features\">
+               <ul class=\"gantt-block__controls\">
                   <li class=\"gantt-menu-item gantt-menu-item-right\">
-                     <a href=\"#\" onclick=\"gantt.ext.fullscreen.toggle();\"><i class=\"fas fa-expand\"></i>Fullscreen</a>
+                     <a href=\"#\" onclick=\"gantt.ext.fullscreen.toggle();\"><i class=\"fas fa-expand\"></i>".__("Fullscreen")."</a>
                   </li>
                   <li class=\"gantt-menu-item gantt-menu-item-right\">
                      <fieldset style=\"line-height:normal\">
-                        <legend style=\"margin:0 auto;\">Time scale</legend>
+                        <legend style=\"margin:0 auto;\">".__("Time scale")."</legend>
                         <input type=\"radio\" id=\"scale1\" class=\"gantt_radio hidden\" name=\"scale\" value=\"day\" />
-                        <label for=\"scale1\">Days</label>
+                        <label for=\"scale1\">".__("Days")."</label>
                         <input type=\"radio\" id=\"scale2\" class=\"gantt_radio hidden\" name=\"scale\" value=\"week\" />
-                        <label for=\"scale2\">Weeks</label>
+                        <label for=\"scale2\">".__("Weeks")."</label>
                         <input type=\"radio\" id=\"scale3\" class=\"gantt_radio hidden\" name=\"scale\" value=\"month\" checked />
-                        <label for=\"scale3\">Months</label>
+                        <label for=\"scale3\">".__("Months")."</label>
                         <input type=\"radio\" id=\"scale4\" class=\"gantt_radio hidden\" name=\"scale\" value=\"quarter\" />
-                        <label for=\"scale4\">Quarters</label>
+                        <label for=\"scale4\">".__("Quarters")."</label>
                         <input type=\"radio\" id=\"scale5\" class=\"gantt_radio hidden\" name=\"scale\" value=\"year\" />
-                        <label for=\"scale5\">Years</label>
+                        <label for=\"scale5\">".__("Years")."</label>
                      </fieldset>
                   </li>
                   <li class=\"gantt-menu-item gantt-menu-item-right\">
                      <fieldset style=\"line-height:normal; text-align:center;\">
                         <legend style=\"margin:0 auto;\">
                            <input type=\"radio\" id=\"collapse\" class=\"gantt_radio hidden\" name=\"branch_state\" value=\"0\" checked />
-                           <label for=\"collapse\">Collapse</label>
+                           <label for=\"collapse\">".__("Collapse")."</label>
                            |
                            <input type=\"radio\" id=\"expand\" class=\"gantt_radio hidden\" name=\"branch_state\" value=\"1\" />
-                           <label for=\"expand\">Expand</label>
+                           <label for=\"expand\">".__("Expand")."</label>
                         </legend>
                         <input type=\"radio\" id=\"level1\" class=\"gantt_radio hidden\" name=\"branch_level\" value=\"1\" checked />
-                        <label for=\"level1\">Level1</label>
+                        <label for=\"level1\">".__("Level1")."</label>
                         <input type=\"radio\" id=\"level2\" class=\"gantt_radio hidden\" name=\"branch_level\" value=\"2\" />
-                        <label for=\"level2\">Level2</label>
+                        <label for=\"level2\">".__("Level2")."</label>
                         <input type=\"radio\" id=\"level3\" class=\"gantt_radio hidden\" name=\"branch_level\" value=\"3\" />
-                        <label for=\"level3\">Level3</label>
+                        <label for=\"level3\">".__("Level3")."</label>
                      </fieldset>
                   </li>
                   <li class=\"gantt-menu-item gantt-menu-item-right\">
                      <fieldset style=\"line-height:normal; text-align:center;\">
                         <legend style=\"margin:0 auto;\">
                            <input type=\"radio\" id=\"rb-find\" class=\"gantt_radio hidden rb-optype\" name=\"rb-optype\" checked />
-                           <label for=\"rb-find\">Find</label>
+                           <label for=\"rb-find\">".__("Find")."</label>
                            |
                            <input type=\"radio\" id=\"rb-filter\" class=\"gantt_radio hidden rb-optype\" name=\"rb-optype\" />
-                           <label for=\"rb-filter\">Filter</label>
+                           <label for=\"rb-filter\">".__("Filter")."</label>
                         </legend>
-                        <input id=\"search\" data-text-filter type=\"field\" placeholder=\"by name\" style=\"width:150px; font-size:14px; height:22px;\" oninput=\"gantt.\$doFilter(this.value);\" />
+                        <input id=\"search\" data-text-filter type=\"field\" placeholder=\"".__("by name")."\" style=\"width:150px; font-size:14px; height:22px;\" oninput=\"gantt.\$doFilter(this.value);\" />
                      </fieldset>
                   </li>
                </ul>
@@ -1898,9 +1899,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                      $('#gantt-loader, #gantt-loader-overlay').fadeOut('fast');
                   });
 
-                  initGantt(".$ID.");
+                  GlpiGantt.init(".$ID.");
 
-                  $('#gantt-container').append('<div id=\"gantt-loader\" class=\"spin-center\"></div>');
+                  $('.gantt-block').append('<div id=\"gantt-loader\" class=\"spin-center\"></div>');
                   $('#page').append('<div id=\"gantt-loader-overlay\" style=\"display: none;\"></div>');
 
                });

@@ -46,6 +46,11 @@ if (!defined('GLPI_ROOT')) {
 class TaskDAO {
 
    function addTask($task) {
+
+      if (!\ProjectTask::canCreate()) {
+         throw new \Exception(__('Not enough rights'));
+      }
+
       $t = new \ProjectTask();
 
       $projectId = $task->parent;
@@ -59,7 +64,6 @@ class TaskDAO {
 
       $input = [
          'name' => $task->text,
-         'comment' => $task->note,
          'projects_id' => $projectId,
          'projecttasks_id' => ($parentTask != null) ? $parentTask->fields["id"] : 0,
          'percent_done' => ($task->progress * 100),
@@ -69,7 +73,6 @@ class TaskDAO {
       ];
 
       $newTask = new \ProjectTask();
-      $newTask->prepareInputForAdd($input);
       $newTask->add($input);
       return $newTask;
    }
@@ -77,6 +80,10 @@ class TaskDAO {
    function updateTask($task) {
       $t = new \ProjectTask();
       $t->getFromDB($task->id);
+
+      if (!$t::canUpdate() || !$t->canUpdateItem()) {
+         throw new \Exception(__('Not enough rights'));
+      }
 
       $t->update([
          'id' => $task->id,
@@ -91,42 +98,44 @@ class TaskDAO {
    }
 
    function updateParent($task) {
-       $t = new \ProjectTask();
-       $t->getFromDBByCrit(['uuid' => $task->id]);
+      $t = new \ProjectTask();
+      $t->getFromDBByCrit(['uuid' => $task->id]);
+
+      if (!$t::canUpdate() || !$t->canUpdateItem()) {
+         throw new \Exception(__('Not enough rights'));
+      }
 
       if (!is_numeric($task->parent)) {
-          // change parent task
-          $p = new \ProjectTask();
-          $p->getFromDBByCrit(['uuid' => $task->parent]);
+         // change parent task
+         $p = new \ProjectTask();
+         $p->getFromDBByCrit(['uuid' => $task->parent]);
 
-          $updateSubtasks = ($t->fields["projects_id"] != $p->fields["projects_id"]);
+         $updateSubtasks = ($t->fields["projects_id"] != $p->fields["projects_id"]);
 
-          $input = [
-           'id' => $t->fields["id"],
-           'projects_id' => $p->fields["projects_id"],
-           'projecttasks_id' => $p->fields["id"]
-          ];
-          $t->prepareInputForUpdate($input);
-          $t->update($input);
+         $input = [
+            'id' => $t->fields["id"],
+            'projects_id' => $p->fields["projects_id"],
+            'projecttasks_id' => $p->fields["id"]
+         ];
+         $t->update($input);
 
-          $itemArray = [];
-          if ($updateSubtasks) {
+         $itemArray = [];
+         if ($updateSubtasks) {
 
-             // change subtasks parent project
-             $factory = new DataFactory();
-             $factory->getSubtasks($itemArray, $t->fields["id"]);
+            // change subtasks parent project
+            $factory = new DataFactory();
+            $factory->getSubtasks($itemArray, $t->fields["id"]);
 
-             foreach ($itemArray as $item) {
-                $itm = new \ProjectTask();
-                $itm->getFromDBByCrit(['uuid' => $item->id]);
-                $params = [
+            foreach ($itemArray as $item) {
+               $itm = new \ProjectTask();
+               $itm->getFromDBByCrit(['uuid' => $item->id]);
+               $params = [
                   'id' => $itm->fields["id"],
                   'projects_id' => $p->fields["projects_id"]
-                ];
-                $itm->prepareInputForUpdate($params);
-                $itm->update($params);
-             }
-          }
+               ];
+               $itm->update($params);
+            }
+         }
       } else if ($task->parent > 0) {
          // change parent project
          $input = [
@@ -135,31 +144,37 @@ class TaskDAO {
            'projecttasks_id' => 0
          ];
 
-          $t->prepareInputForUpdate($input);
-          $t->update($input);
+         $t->update($input);
 
-          // change subtasks parent project
-          $itemArray = [];
-          $factory = new DataFactory();
-          $factory->getSubtasks($itemArray, $t->fields["id"]);
+         // change subtasks parent project
+         $itemArray = [];
+         $factory = new DataFactory();
+         $factory->getSubtasks($itemArray, $t->fields["id"]);
 
          foreach ($itemArray as $item) {
-             $itm = new \ProjectTask();
-             $itm->getFromDBByCrit(['uuid' => $item->id]);
-             $params = [
-                'id' => $itm->fields["id"],
-                'projects_id' => $t->fields["projects_id"]
-             ];
-             $itm->prepareInputForUpdate($params);
-             $itm->update($params);
+            $itm = new \ProjectTask();
+            $itm->getFromDBByCrit(['uuid' => $item->id]);
+            $params = [
+               'id' => $itm->fields["id"],
+               'projects_id' => $t->fields["projects_id"]
+            ];
+            $itm->update($params);
          }
       }
-       return true;
+      return true;
    }
 
    function deleteTask(&$failed, $taskId) {
       global $DB;
+      $success = false;
       if ($taskId > 0) {
+
+         $t = new \ProjectTask();
+         $t->getFromDB($taskId);
+         if (!$t::canUpdate() || !$t::canDelete() || !$t->canUpdateItem()) {
+            throw new \Exception(__('Not enough rights'));
+         }
+
          foreach ($DB->request('glpi_projecttasks', ['projecttasks_id' => $taskId]) as $record) {
             if (isset($record['id'])) {
                if (!$this->deleteTask($failed, $record['id'])) {
@@ -168,11 +183,12 @@ class TaskDAO {
             }
          }
          try {
-            $DB->delete(\ProjectTask::getTable(), ['id' => $taskId]);
+            $projectTask = new \ProjectTask();
+            $success = $projectTask->delete(['id' => $taskId]);
          } catch (Exception $ex) {
-            return false;
+            $success = false;
          }
       }
-      return true;
+      return $success;
    }
 }

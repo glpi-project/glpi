@@ -33,6 +33,11 @@
 
 include ('../inc/includes.php');
 
+header("Content-Type: application/json; charset=UTF-8");
+Html::header_nocache();
+
+Session::checkLoginUser();
+
 $id = 0;
 
 if (isset($_REQUEST['id'])) {
@@ -49,7 +54,7 @@ if (isset($_REQUEST['getData'])) {
       return strlen($a->id) <=> strlen($b->id);
    });
 
-   $result = (object)[
+   $result = [
       'data' => $itemArray,
       'links' => $links
    ];
@@ -66,13 +71,13 @@ if (isset($_REQUEST['getData'])) {
       $factory = new Glpi\Gantt\DataFactory();
       $ganttItem = $factory->populateGanttItem($newTask->fields, "task");
 
-      $result = (object)[
+      $result = [
          'ok' => true,
          'item' => $ganttItem
       ];
 
    } catch (\Exception $ex) {
-      $result = (object)[
+      $result = [
          'ok' => false,
          'error' => $ex->getMessage()
       ];
@@ -88,11 +93,11 @@ if (isset($_REQUEST['getData'])) {
       $item->populateFrom($task);
       $taskDAO = new Glpi\Gantt\TaskDAO();
       $updated = $taskDAO->updateTask($item);
-      $result = (object)[
+      $result = [
          'ok' => $updated
       ];
    } catch (\Exception $ex) {
-      $result = (object)[
+      $result = [
          'ok' => false,
          'error' => $ex->getMessage()
       ];
@@ -108,14 +113,14 @@ if (isset($_REQUEST['getData'])) {
       $taskDAO->deleteTask($failed, $taskId);
 
       if (count($failed) > 0) {
-         throw new \Exception("Some tasks may have not been deleted");
+         throw new \Exception(__("Some tasks may have not been deleted"));
       }
 
-      $result = (object)[
+      $result = [
           'ok' => true
       ];
    } catch (\Exception $ex) {
-      $result = (object)[
+      $result = [
          'ok' => false,
          'error' => $ex->getMessage()
       ];
@@ -129,7 +134,7 @@ if (isset($_REQUEST['getData'])) {
       $p_target = $_POST["target"];
 
       if ($p_item["type"] == "project" && $p_target["type"] != "project") {
-         throw new \Exception("Target item must be of project type");
+         throw new \Exception(__("Target item must be of project type"));
       }
 
       $item = new Glpi\Gantt\Item();
@@ -146,11 +151,11 @@ if (isset($_REQUEST['getData'])) {
       }
       $dao->updateParent($item);
 
-      $result = (object)[
+      $result = [
          'ok' => true
       ];
    } catch (\Exception $ex) {
-      $result = (object)[
+      $result = [
          'ok' => false,
          'error' => $ex->getMessage()
       ];
@@ -167,13 +172,13 @@ if (isset($_REQUEST['getData'])) {
       $factory = new Glpi\Gantt\DataFactory();
       $ganttItem = $factory->populateGanttItem($newProj->fields, "project");
 
-      $result = (object)[
+      $result = [
          'ok' => true,
          'item' => $ganttItem
       ];
 
    } catch (\Exception $ex) {
-      $result = (object)[
+      $result = [
          'ok' => false,
          'error' => $ex->getMessage()
       ];
@@ -189,11 +194,11 @@ if (isset($_REQUEST['getData'])) {
       $item->populateFrom($project);
       $projectDAO = new Glpi\Gantt\ProjectDAO();
       $updated = $projectDAO->updateProject($item);
-      $result = (object)[
+      $result = [
          'ok' => $updated
       ];
    } catch (\Exception $ex) {
-      $result = (object)[
+      $result = [
          'ok' => false,
          'error' => $ex->getMessage()
       ];
@@ -206,11 +211,11 @@ if (isset($_REQUEST['getData'])) {
       $projectId = $_POST["projectId"];
       $projectDAO = new Glpi\Gantt\ProjectDAO();
       $projectDAO->putInTrashbin($projectId);
-      $result = (object)[
+      $result = [
          'ok' => true
       ];
    } catch (\Exception $ex) {
-      $result = (object)[
+      $result = [
          'ok' => false,
          'error' => $ex->getMessage()
       ];
@@ -223,16 +228,16 @@ if (isset($_REQUEST['getData'])) {
       $taskLink = new \ProjectTaskLink();
 
       if ($taskLink->checkIfExist($_POST["taskLink"])) {
-         throw new \Exception("Link already exist!");
+         throw new \Exception(__("Link already exist!"));
       }
 
       $id = $taskLink->add($_POST["taskLink"]);
-      $result = (object)[
+      $result = [
          'ok' => true,
          'id' => $id
       ];
    } catch (\Exception $ex) {
-      $result = (object)[
+      $result = [
          'ok' => false,
          'error' => $ex->getMessage()
       ];
@@ -244,11 +249,11 @@ if (isset($_REQUEST['getData'])) {
    try {
       $taskLink = new \ProjectTaskLink();
       $taskLink->update($_POST["taskLink"]);
-      $result = (object)[
+      $result = [
          'ok' => true
       ];
    } catch (\Exception $ex) {
-      $result = (object)[
+      $result = [
          'ok' => false,
          'error' => $ex->getMessage()
       ];
@@ -260,11 +265,11 @@ if (isset($_REQUEST['getData'])) {
    try {
       $taskLink = new \ProjectTaskLink();
       $taskLink->delete($_POST);
-      $result = (object)[
+      $result = [
          'ok' => true
       ];
    } catch (\Exception $ex) {
-      $result = (object)[
+      $result = [
          'ok' => false,
          'error' => $ex->getMessage()
       ];
@@ -280,7 +285,7 @@ if (isset($_REQUEST['getData'])) {
          $result["url"] = $CFG_GLPI["root_doc"]."/front/projecttask.form.php?id=".$_POST["item"]["linktask_id"]."&forcetab=ProjectTask";
       }
    } catch (\Exception $ex) {
-      $result = (object)[
+      $result = [
          'ok' => false,
          'error' => $ex->getMessage()
       ];

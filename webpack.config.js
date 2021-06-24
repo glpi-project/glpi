@@ -55,13 +55,13 @@ var glpiConfig = {
  * External libraries files build configuration.
  */
 var libsConfig = {
-   entry: function() {
+   entry: function () {
       // Create an entry per *.js file in lib/bundle directory.
       // Entry name will be name of the file (without ext).
       var entries = {};
 
       let files = glob.sync(path.resolve(__dirname, 'lib/bundles') + '/!(*.min).js');
-      files.forEach(function(file) {
+      files.forEach(function (file) {
          entries[path.basename(file, '.js')] = file;
       });
 
@@ -72,7 +72,8 @@ var libsConfig = {
       path: path.resolve(__dirname, libOutputPath),
    },
    module: {
-      rules: [{
+      rules: [
+         {
             // Load scripts with no compilation for packages that are directly providing "dist" files.
             // This prevents useless compilation pass and can also
             // prevents incompatibility issues with the webpack require feature.
@@ -103,7 +104,7 @@ var libsConfig = {
             use: {
                loader: 'file-loader',
                options: {
-                  name: function(filename) {
+                  name: function (filename) {
                      // Keep only relative path
                      var sanitizedPath = path.relative(__dirname, filename);
 
@@ -113,7 +114,7 @@ var libsConfig = {
                      // Remove the first directory (lib, node_modules, ...) and empty parts
                      // and replace directory separator by '/' (windows case)
                      sanitizedPath = sanitizedPath.split(path.sep)
-                        .filter(function(part, index) {
+                        .filter(function (part, index) {
                            return '' != part && index != 0;
                         }).join('/');
 
@@ -143,11 +144,14 @@ var libsConfig = {
 };
 
 var libs = {
-   '@fullcalendar': [{
-      context: 'core',
-      from: 'locales/*.js',
-   }],
-   'flatpickr': [{
+   '@fullcalendar': [
+      {
+         context: 'core',
+         from: 'locales/*.js',
+      }
+   ],
+   'flatpickr': [
+      {
          context: 'dist',
          from: 'l10n/*.js',
       },
@@ -156,17 +160,23 @@ var libs = {
          from: 'themes/*.css',
       }
    ],
-   'jquery-ui': [{
-      context: 'ui',
-      from: 'i18n/*.js',
-   }],
-   'select2': [{
-      context: 'dist',
-      from: 'js/i18n/*.js',
-   }],
-   'tinymce-i18n': [{
-      from: 'langs/*.js',
-   }],
+   'jquery-ui': [
+      {
+         context: 'ui',
+         from: 'i18n/*.js',
+      }
+   ],
+   'select2': [
+      {
+         context: 'dist',
+         from: 'js/i18n/*.js',
+      }
+   ],
+   'tinymce-i18n': [
+      {
+         from: 'langs/*.js',
+      }
+   ],
 };
 
 for (let packageName in libs) {
@@ -185,9 +195,9 @@ for (let packageName in libs) {
 
       let copyParams = {
          context: path.resolve(__dirname, context),
-         from: packageEntry.from,
-         to: path.resolve(__dirname, to),
-         toType: 'dir',
+         from:    packageEntry.from,
+         to:      path.resolve(__dirname, to),
+         toType:  'dir',
       };
 
       if (Object.prototype.hasOwnProperty.call(packageEntry, 'ignore')) {
@@ -197,7 +207,7 @@ for (let packageName in libs) {
       copyPatterns.push(copyParams);
    }
 
-   libsConfig.plugins.push(new CopyWebpackPlugin({ patterns: copyPatterns }));
+   libsConfig.plugins.push(new CopyWebpackPlugin({patterns:copyPatterns}));
 }
 
 module.exports = function() {
