@@ -1731,7 +1731,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       ];
 
       if ($type == "recent") {
-         $criteria['ORDERBY'] = 'date DESC';
+         $criteria['ORDERBY'] = 'date_creation DESC';
          $title   = __('Recent entries');
       } else if ($type == 'lastupdate') {
          $criteria['ORDERBY'] = 'date_mod DESC';
