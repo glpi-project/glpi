@@ -482,6 +482,12 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
       $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
 
+      if ($donotif) {
+         $options = ['task_id'             => $this->fields["id"],
+                          'is_private'          => $this->isPrivate()];
+         NotificationEvent::raiseEvent('add_task', $this->input["_job"], $options);
+      }
+
       if (isset($this->fields["begin"]) && !empty($this->fields["begin"])) {
          Planning::checkAlreadyPlanned($this->fields["users_id_tech"], $this->fields["begin"],
                                        $this->fields["end"],
@@ -532,9 +538,13 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          && ($this->input['_status'] != $this->input['_job']->fields['status'])) {
          $update = [
             'status'        => $this->input['_status'],
-            'id'            => $this->input['_job']->fields['id'],
-            '_disablenotif' => true
+            'id'            => $this->input['_job']->fields['id']
          ];
+         if (!$donotif
+             || (!in_array($this->input['_status'], $this->input['_job']::getSolvedStatusArray())
+                 && !in_array($this->input['_status'], $this->input['_job']::getClosedStatusArray()))) {
+            $update['_disablenotif'] = true;
+         }
          $this->input['_job']->update($update);
       }
 
@@ -549,12 +559,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             '_disablenotif' => true,
          ];
          $this->input["_job"]->update($input2);
-      }
-
-      if ($donotif) {
-         $options = ['task_id'             => $this->fields["id"],
-                          'is_private'          => $this->isPrivate()];
-         NotificationEvent::raiseEvent('add_task', $this->input["_job"], $options);
       }
 
       // Add log entry in the ITIL object
