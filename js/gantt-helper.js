@@ -44,7 +44,7 @@ var GlpiGantt = (function() {
          gantt.config.grid_width = 600;
          gantt.config.grid_resize = true;
          gantt.config.date_format = parseDateFormat;
-         gantt.config.date_grid = uiDateFormat
+         gantt.config.date_grid = uiDateFormat;
 
          gantt.config.order_branch = "marker";
          gantt.config.order_branch_free = true;
