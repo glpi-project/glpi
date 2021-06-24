@@ -236,8 +236,6 @@ class APIRest extends API {
          // Parse parameters
          $params = json_decode(json_encode($this->parameters), true);
          $ids = $params['ids'] ?? [];
-         unset($params['ids']);
-         unset($params['session_token']);
 
          if (empty($ids)) {
             $this->returnError("No ids supplied", 400, "ERROR_MASSIVEACTION_NO_IDS");
@@ -247,7 +245,7 @@ class APIRest extends API {
             $this->getItemtype(1, false, false),
             $this->url_elements[2] ?? null,
             $ids,
-            $params
+            $params['input'] ?? []
          );
       } else if (preg_match('%user/(\d+)/picture%i', $path_info, $matches)) {
          $this->userPicture($matches[1]);

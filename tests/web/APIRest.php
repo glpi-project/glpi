@@ -38,6 +38,7 @@ use Glpi\Tests\Web\Deprecated\Computer_SoftwareLicense;
 use Glpi\Tests\Web\Deprecated\Computer_SoftwareVersion;
 use Glpi\Tests\Web\Deprecated\TicketFollowup;
 use GuzzleHttp;
+use Notepad;
 
 /* Test for inc/api/api.class.php */
 
@@ -961,31 +962,52 @@ class APIRest extends APIBaseClass {
    protected function testApplyMassiveActionProvider(): array {
       return [
          [
-            'url' => 'applyMassiveAction/Computer?ids[0]=2',
+            'url' => 'applyMassiveAction/Computer',
+            'payload' => [
+               'ids' => [getItemByTypeName('Computer', '_test_pc01', true)],
+            ],
             'status' => 400,
             'response' => [],
             'error' => "ERROR_MASSIVEACTION_KEY"
          ],
          [
-            'url' => 'applyMassiveAction/Computer/MassiveAction:doesnotexist?ids[0]=2',
+            'url' => 'applyMassiveAction/Computer/MassiveAction:doesnotexist',
+            'payload' => [
+               'ids' => [getItemByTypeName('Computer', '_test_pc01', true)],
+            ],
             'status' => 400,
             'response' => [],
             'error' => "ERROR_MASSIVEACTION_KEY"
          ],
          [
             'url' => 'applyMassiveAction/Computer/MassiveAction:amend_comment',
+            'payload' => [
+               'ids' => [],
+            ],
             'status' => 400,
             'response' => [],
             'error' => "ERROR_MASSIVEACTION_NO_IDS"
          ],
          [
-            'url' => 'applyMassiveAction/Computer/MassiveAction:amend_comment?ids[0]=200',
+            'url' => 'applyMassiveAction/Computer/MassiveAction:amend_comment',
+            'payload' => [
+               'ids' => [200],
+            ],
             'status' => 400,
             'response' => [],
             'error' => "ERROR_ITEM_NOT_FOUND"
          ],
          [
-            'url' => 'applyMassiveAction/Computer/MassiveAction:amend_comment?ids[0]=1&ids[1]=2&amendment=newtexttoadd',
+            'url' => 'applyMassiveAction/Computer/MassiveAction:amend_comment',
+            'payload' => [
+               'ids' => [
+                  getItemByTypeName('Computer', '_test_pc01', true),
+                  getItemByTypeName('Computer', '_test_pc02', true)
+               ],
+               'input' => [
+                  'amendment' => "newtexttoadd",
+               ],
+            ],
             'status' => 200,
             'response' => [
                'ok'       => 2,
@@ -993,7 +1015,88 @@ class APIRest extends APIBaseClass {
                'noright'  => 0,
                'messages' => [],
             ],
+            'error' => "",
+            'before_test' => function() {
+               $computers = ['_test_pc01', '_test_pc02'];
+               foreach ($computers as $computer) {
+                  // Init "comment" field for all targets
+                  $computer = getItemByTypeName('Computer', $computer);
+                  $update = $computer->update([
+                     'id'      => $computer->getId(),
+                     'comment' => "test comment",
+                  ]);
+                  $this->boolean($update)->isTrue();
+                  $this->string($computer->fields['comment'])->isEqualTo("test comment");
+               }
+            },
+            'after_test' => function() {
+               $computers = ['_test_pc01', '_test_pc02'];
+               foreach ($computers as $computer) {
+                  // Check that "comment" field was modified as expected
+                  $computer = getItemByTypeName('Computer', $computer);
+                  $this->string($computer->fields['comment'])->isEqualTo("test comment\n\nnewtexttoadd");
+               }
+            }
          ],
+         [
+            'url' => 'applyMassiveAction/Computer/MassiveAction:add_note',
+            'payload' => [
+               'ids' => [
+                  getItemByTypeName('Computer', '_test_pc01', true),
+                  getItemByTypeName('Computer', '_test_pc02', true)
+               ],
+               'input' => [
+                  'add_note' => "new note",
+               ],
+            ],
+            'status' => 200,
+            'response' => [
+               'ok'       => 2,
+               'ko'       => 0,
+               'noright'  => 0,
+               'messages' => [],
+            ],
+            'error' => "",
+            'before_test' => function() {
+               $computers = ['_test_pc01', '_test_pc02'];
+               foreach ($computers as $computer) {
+                  $note = new Notepad();
+                  $existing_notes = $note->find([
+                     'itemtype' => 'Computer',
+                     'items_id' => getItemByTypeName('Computer', $computer, true),
+                  ]);
+
+                  // Delete all existing note for this item
+                  foreach ($existing_notes as $existing_note) {
+                     $deletion = $note->delete(['id' => $existing_note['id']]);
+                     $this->boolean($deletion)->isTrue();
+                  }
+
+                  // Check that the items have no notes remaining
+                  $this->array($note->find([
+                     'itemtype' => 'Computer',
+                     'items_id' => getItemByTypeName('Computer', $computer, true),
+                  ]))->hasSize(0);
+               }
+            },
+            'after_test' => function() {
+               $computers = ['_test_pc01', '_test_pc02'];
+               foreach ($computers as $computer) {
+                  $note = new Notepad();
+                  $existing_notes = $note->find([
+                     'itemtype' => 'Computer',
+                     'items_id' => getItemByTypeName('Computer', $computer, true),
+                  ]);
+
+                  // Check that the items have one note
+                  $this->array($existing_notes)->hasSize(1);
+
+                  foreach ($existing_notes as $existing_note) {
+                     $this->string($existing_note['content'])->isEqualTo("new note");
+                  }
+               }
+            }
+         ]
       ];
    }
 
@@ -1004,19 +1107,32 @@ class APIRest extends APIBaseClass {
     */
    public function testApplyMassiveAction(
       string $url,
+      array $payload,
       int $status,
       ?array $response,
-      string $error = ""
+      string $error = "",
+      ?callable $before_test = null,
+      ?callable $after_test = null
    ): void {
+      if (!is_null($before_test)) {
+         $before_test();
+      }
+
       $headers = ['Session-Token' => $this->session_token];
       $data    = $this->query($url, [
          'headers' => $headers,
+         'verb'    => 'POST',
+         'json'    => $payload,
       ], $status, $error);
 
       // If no errors are expected, check results
       if (empty($error)) {
          unset($data['headers']);
          $this->array($data)->isEqualTo($response);
+      }
+
+      if (!is_null($after_test)) {
+         $after_test();
       }
    }
 }

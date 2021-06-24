@@ -1383,11 +1383,11 @@ $ curl -X GET \
 
 * **URL**: apirest.php/applyMassiveAction/:itemtype/
 * **Description**: Run the given massive action
-* **Method**: GET
+* **Method**: POST
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
   * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
-* **Parameters**: (query string)
+* **Parameters**: (json payload)
   * *ids* items to execute the action on. Mandatory.
   * *specific action parameters* some actions require specific parameters to run. You can check them through the 'getMassiveActionParameters' endpoint.
 * **Returns**:
@@ -1400,11 +1400,12 @@ $ curl -X GET \
 Example usage (CURL):
 
 ```bash
-$ curl -X GET \
+$ curl -X POST \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/applyMassiveAction/Computer/MassiveAction:amend_comment?ids[0]=1&ids[1]=3&amendment=newtext'
+-d '{"ids": [2, 3],	"input": {"amendment": "newtext"}}'
+'http://path/to/glpi/apirest.php/applyMassiveAction/Computer/MassiveAction:amend_comment'
 
 < 200 OK
 {
