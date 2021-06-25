@@ -533,7 +533,7 @@ class Computer extends DbTestCase {
          $computer,
          [$cid]
       );
-      $transfer->moveItems(['Computer' => [$cid]], $entities_id, [$cid]);
+      $transfer->moveItems(['Computer' => [$cid]], $entities_id, [$cid, 'keep_software' => 1]);
       unset($_SESSION['glpitransfer_list']);
 
       $this->boolean($computer->getFromDB($cid))->isTrue();
