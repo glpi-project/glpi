@@ -816,12 +816,13 @@ class CommonDBTM extends DbTestCase {
       $_SESSION['glpi_currenttime'] = '2000-01-01 00:00:00';
 
       //test with date set
-      $computerID = $computer->add([
-         'name'            => 'Computer01',
+      $computerID = $computer->add(\Toolbox::addslashes_deep([
+         'name'            => 'Computer01 \'',
          'date_creation'   => '2018-01-01 11:22:33',
          'date_mod'        => '2018-01-01 22:33:44',
          'entities_id'     => $ent0
-      ]);
+      ]));
+      $this->string($computer->fields['name'])->isIdenticalTo("Computer01 '");
 
       $this->integer($computerID)->isGreaterThan(0);
       $this->boolean(
@@ -830,12 +831,14 @@ class CommonDBTM extends DbTestCase {
       // Verify you can override creation and modifcation dates from add
       $this->string($computer->fields['date_creation'])->isEqualTo('2018-01-01 11:22:33');
       $this->string($computer->fields['date_mod'])->isEqualTo('2018-01-01 22:33:44');
+      $this->string($computer->fields['name'])->isIdenticalTo("Computer01 '");
 
       //test with default date
-      $computerID = $computer->add([
-         'name'            => 'Computer01',
+      $computerID = $computer->add(\Toolbox::addslashes_deep([
+         'name'            => 'Computer01 \'',
          'entities_id'     => $ent0
-      ]);
+      ]));
+      $this->string($computer->fields['name'])->isIdenticalTo("Computer01 '");
 
       $this->integer($computerID)->isGreaterThan(0);
       $this->boolean(
@@ -844,6 +847,7 @@ class CommonDBTM extends DbTestCase {
       // Verify default date has been used
       $this->string($computer->fields['date_creation'])->isEqualTo('2000-01-01 00:00:00');
       $this->string($computer->fields['date_mod'])->isEqualTo('2000-01-01 00:00:00');
+      $this->string($computer->fields['name'])->isIdenticalTo("Computer01 '");
 
       $_SESSION['glpi_currenttime'] = $bkp_current;
    }
