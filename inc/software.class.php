@@ -35,11 +35,13 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\AssetImage;
 
 /** Software Class
 **/
 class Software extends CommonDBTM {
    use Glpi\Features\Clonable;
+   use AssetImage;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -130,6 +132,7 @@ class Software extends CommonDBTM {
       if (isset($input['is_update']) && !$input['is_update']) {
          $input['softwares_id'] = 0;
       }
+      $input = $this->managePictures($input);
       return $input;
    }
 
@@ -165,6 +168,7 @@ class Software extends CommonDBTM {
             $input["softwarecategories_id"] = 0;
          }
       }
+      $input = $this->managePictures($input);
       return $input;
    }
 

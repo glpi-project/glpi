@@ -35,6 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\AssetImage;
 
 //!  ConsumableItem Class
 /**
@@ -43,6 +44,8 @@ use Glpi\Application\View\TemplateRenderer;
  * @author Julien Dombre
 */
 class ConsumableItem extends CommonDBTM {
+   use AssetImage;
+
    // From CommonDBTM
    static protected $forward_entity_to = ['Consumable', 'Infocom'];
    public $dohistory                   = true;
@@ -78,6 +81,15 @@ class ConsumableItem extends CommonDBTM {
       return '';
    }
 
+   function prepareInputForAdd($input) {
+      $input = parent::prepareInputForAdd($input);
+      return $this->managePictures($input);
+   }
+
+   function prepareInputForUpdate($input) {
+      $input = parent::prepareInputForUpdate($input);
+      return $this->managePictures($input);
+   }
 
    function cleanDBonPurge() {
 

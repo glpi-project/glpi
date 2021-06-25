@@ -31,6 +31,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\AssetImage;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -40,6 +41,7 @@ if (!defined('GLPI_ROOT')) {
  * Datacenter Class
 **/
 class Datacenter extends CommonDBTM {
+   use AssetImage;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -48,6 +50,16 @@ class Datacenter extends CommonDBTM {
    static function getTypeName($nb = 0) {
       //TRANS: Test of comment for translation (mark : //TRANS)
       return _n('Data center', 'Data centers', $nb);
+   }
+
+   function prepareInputForAdd($input) {
+      $input = parent::prepareInputForAdd($input);
+      return $this->managePictures($input);
+   }
+
+   function prepareInputForUpdate($input) {
+      $input = parent::prepareInputForUpdate($input);
+      return $this->managePictures($input);
    }
 
    function defineTabs($options = []) {

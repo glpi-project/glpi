@@ -35,6 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\AssetImage;
 
 /**
  * CartridgeItem Class
@@ -42,6 +43,7 @@ use Glpi\Application\View\TemplateRenderer;
  * \see Cartridge
 **/
 class CartridgeItem extends CommonDBTM {
+   use AssetImage;
 
    // From CommonDBTM
    static protected $forward_entity_to = ['Cartridge', 'Infocom'];
@@ -78,6 +80,15 @@ class CartridgeItem extends CommonDBTM {
       return '';
    }
 
+   function prepareInputForAdd($input) {
+      $input = parent::prepareInputForAdd($input);
+      return $this->managePictures($input);
+   }
+
+   function prepareInputForUpdate($input) {
+      $input = parent::prepareInputForUpdate($input);
+      return $this->managePictures($input);
+   }
 
    function cleanDBonPurge() {
 
