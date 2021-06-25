@@ -13,6 +13,7 @@
    {% set params  = params ?? [] %}
    {% set target       = params['target'] ?? item.getFormURL() %}
    {% set withtemplate = params['withtemplate'] ?? "" %}
+   {% set item_type = item.getType() %}
 
    {# TODO form-select normal size for select2 #}
 
@@ -52,6 +53,19 @@
                      ) }}
                   {% endif %}
 
+                  {% if item.isField(item|get_foreignkey_field) %}
+                     {% set fk = item|get_foreignkey_field %}
+                     {{ fields.dropdownField(
+                        item_type,
+                        fk,
+                        item.fields[fk],
+                        __('As child of'),
+                        {
+                           'entity': item.fields['entities_id'],
+                        }
+                     ) }}
+                  {% endif %}
+
                   {% if item.isField('num') %}
                      {{ fields.autoNameField(
                         "num",
@@ -70,7 +84,8 @@
                      }) }}
                   {% endif %}
 
-                  {% if item.isField('is_helpdesk_visible') %}
+                  {% if item_type != 'SoftwareLicense' and item.isField('is_helpdesk_visible') %}
+                     {# TODO Drop unused 'is_helpdesk_visible' field in SoftwareLicense schema? #}
                      {{ fields.checkboxField(
                         "is_helpdesk_visible",
                         item.fields['is_helpdesk_visible'],
@@ -118,7 +133,7 @@
                      ) }}
                   {% endif %}
 
-                  {% if item.getType == 'Unmanaged' and item.isField('item_type') %}
+                  {% if item_type == 'Unmanaged' and item.isField('item_type') %}
                      {{ fields.dropdownArrayField('item_type', item.fields['itemtype'], _n('Type', 'Types', 1), [
                         'Computer', 'NetworkEquipment', 'Printer', 'Peripheral', 'Phone'
                      ]) }}
@@ -128,7 +143,7 @@
                      {{ fields.datetimeField('date_domaincreation', item.fields['date_domaincreation'], __('Creation date')) }}
                   {% endif %}
 
-                  {% set type_itemtype = item.getType ~ "Type" %}
+                  {% set type_itemtype = item_type ~ "Type" %}
                   {% set type_fk = type_itemtype|get_foreignkey_field %}
                   {% if item.isField(type_fk) %}
                      {{ fields.dropdownField(
@@ -238,7 +253,7 @@
                         "Manufacturer",
                         "manufacturers_id",
                         item.fields['manufacturers_id'],
-                        "Manufacturer"|itemtype_name
+                        (item_type starts with 'Software' ? __('Publisher') : "Manufacturer"|itemtype_name)
                      ) }}
                   {% endif %}
 
@@ -265,7 +280,7 @@
                   {% endif %}
 
                   {# TODO check dropdown value not selected #}
-                  {% set model_itemtype = item.getType ~ "Model" %}
+                  {% set model_itemtype = item_type ~ "Model" %}
                   {% set model_fk = model_itemtype|get_foreignkey_field %}
                   {% if item.isField(model_fk) %}
                      {{ fields.dropdownField(
@@ -276,7 +291,8 @@
                      ) }}
                   {% endif %}
 
-                  {% if item.isField('contact_num') %}
+                  {% if item_type != 'SoftwareLicense' and item.isField('contact_num') %}
+                     {# TODO Drop unused 'contact_num' field in Software License schema? #}
                      {{ fields.textField(
                         "contact_num",
                         item.fields['contact_num'],
@@ -300,7 +316,8 @@
                      {{ fields.dropdownYesNo('hub', item.fields['hub'], __('Network hub')) }}
                   {% endif %}
 
-                  {% if item.isField('contact') %}
+                  {% if item_type != 'SoftwareLicense' and item.isField('contact') %}
+                     {# TODO Drop unused 'contact' field in Software License schema? #}
                      {{ fields.textField(
                         "contact",
                         item.fields['contact'],
@@ -317,7 +334,7 @@
                      ) }}
                   {% endif %}
 
-                  {% if item.getType == 'Unmanaged' %}
+                  {% if item_type == 'Unmanaged' %}
                      {% if item.fields['ip'] is not empty or item.fields['mac'] is not empty %}
                         {{ fields.autoNameField("ip", item, __('IP'), withtemplate) }}
                      {% endif %}
@@ -533,6 +550,64 @@
                      ) }}
                   {% endif %}
 
+                  {% if item.isField('softwareversions_id_use') %}
+                     {% set field %}
+                        {{ SoftwareVersion__dropdownForOneSoftware({
+                        'name': 'softwareversions_id_use',
+                        'softwares_id': item.fields['softwares_id'],
+                        'value': item.fields['softwareversions_id_use'],
+                        'class': 'form-select',
+                        'width': '100%',
+                        }) }}
+                     {% endset %}
+                     {{ fields.field('softwareversions_id_use', field, __('Version in use')) }}
+                  {% endif %}
+
+                  {% if item.isField('softwareversions_id_buy') %}
+                     {% set field %}
+                        {{ SoftwareVersion__dropdownForOneSoftware({
+                           'name': 'softwareversions_id_buy',
+                           'softwares_id': item.fields['softwares_id'],
+                           'value': item.fields['softwareversions_id_buy'],
+                           'class': 'form-select',
+                           'width': '100%',
+                        }) }}
+                     {% endset %}
+                     {{ fields.field('softwareversions_id_buy', field, __('Purchase version')) }}
+                  {% endif %}
+
+                  {% if item.isField('number') %}
+                     {% set validity_msg = null %}
+                     {% if item_type == 'SoftwareLicense' %}
+                        {% set validity_msg %}
+                           {% if item.fields['is_valid'] %}
+                              <span class="green">{{ _x('adjective', 'Valid') }}</span>
+                           {% elseif not item.fields['is_valid'] and item.fields['allow_overquota'] %}
+                              <span class="green">{{ _x('adjective', 'Valid (Over Quota)') }}</span>
+                           {% else %}
+                              <span class="red">{{ _x('adjective', 'Invalid') }}</span>
+                           {% endif %}
+                        {% endset %}
+                     {% endif %}
+                     {{ fields.numberField('number', item.fields['number'], _x('quantity', 'Number'), {
+                        'min': 1,
+                        'max': 10000,
+                        'step': 1,
+                        'toadd': {'-1': __('Unlimited')},
+                        'add_field_html': validity_msg
+                     }) }}
+                  {% endif %}
+
+                  {% if item.isField('allow_overquota') %}
+                     {{ fields.dropdownYesNo('allow_overquota', item.fields['allow_overquota'], __('Allow Over-Quota')) }}
+                  {% endif %}
+
+                  {% if item.isField('expire') %}
+                     {{ fields.datetimeField('expire', item.fields['expire'], __('Expiration'), {
+                        'helper': __('On search engine, use "Expiration contains NULL" to search licenses with no expiration date')
+                     }) }}
+                  {% endif %}
+
                   {% if item.isField('is_autosign') %}
                      {{ fields.dropdownYesNo('is_autosign', item.fields['is_autosign'], __('Self-signed')) }}
                   {% endif %}
@@ -652,7 +727,7 @@
                      {% endset %}
                      {% set last_alert_html %}
                         <span class="text-muted">
-                           {{ displayLastAlert(item.getType(), item.fields['id']) }}
+                           {{ displayLastAlert(item_type, item.fields['id']) }}
                         </span>
                      {% endset %}
                      {{ fields.htmlField(
@@ -692,7 +767,7 @@
                      {{ fields.dateField('begin_date', item.fields['begin_date'], __('Start date')) }}
                   {% endif %}
 
-                  {% if item.getType == 'Contract' and item.isField('duration') %}
+                  {% if item_type == 'Contract' and item.isField('duration') %}
                      {% if item.fields['begin_date'] is not empty and item.fields['duration'] is not empty %}
                         {% set warranty_expiration %}
                            <i class="fas fa-arrow-right"></i>
@@ -856,7 +931,7 @@
       </div>
    </div> {# .card-body #}
 
-   {% if item.getType == 'Contract' %}
+   {% if item_type == 'Contract' %}
       {% include('components/form/support_hours.html.twig') %}
    {% endif %}
    {% include("components/form/buttons.html.twig") %}
