@@ -1,0 +1,214 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2021 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+@keyframes spin {
+   100% {
+      transform: rotate(360deg);
+   }
+}
+
+.gantt-block {
+
+   &__features {
+      height: 55px;
+      background-color: #efefef;
+      border-bottom-color: rgb(62, 67, 70);
+      border-left-color: rgb(62, 67, 70);
+      border-right-color: rgb(62, 67, 70);
+      opacity: 0.85;
+      z-index: 1000;
+
+      fieldset {
+         color: #655;
+         border: solid 1px #655;
+         border-radius: 5px;
+      }
+   }
+
+   &__controls {
+      background-color: #f5f5f5;
+      font-size: 14px !important;
+      list-style-type: none;
+      margin: 0;
+      overflow: visible;
+      padding: 0;
+      text-align: left;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+
+      %radio_shared {
+         position: relative;
+         cursor: pointer;
+         line-height: 20px;
+         display: inline-block;
+         color: #655;
+      }
+
+      .gantt_radio {
+         &:checked+label {
+            @extend %radio_shared;
+            border-bottom: 2px solid #655;
+         }
+         &:not(:checked)+label {
+            @extend %radio_shared;
+         }
+      }
+
+      fieldset {
+         height: 39px;
+
+         .hidden {
+            display: none;
+         }
+      }
+
+      .gantt-menu-item {
+         display: inline-block;
+         -webkit-box-sizing: border-box;
+         -moz-box-sizing: border-box;
+         box-sizing: border-box;
+         position: relative;
+         overflow: visible;
+         padding: 0 10px;
+         line-height: 60px;
+
+         a {
+            font-size: small !important;
+            display: block;
+            cursor: pointer;
+            color: #3d3d3d;
+            text-align: center;
+            padding: 0;
+            text-decoration: none;
+            text-decoration-color: currentcolor;
+         }
+
+         img {
+            vertical-align: middle;
+         }
+      }
+
+      .gantt-menu-item-right {
+         float: right;
+      }
+
+      .fas.fa-expand {
+         margin-right: 5px;
+      }
+   }
+
+   .highlight {
+      background-color: #8EC547 !important;
+   }
+
+   .gantt_task_progress {
+      text-align: left;
+      padding-left: 5px;
+      box-sizing: border-box;
+      color: rgba(255, 255, 255, 0.925);
+      font-weight: bold;
+   }
+
+   .no_progress_drag .gantt_task_progress_drag {
+      display: none !important;
+   }
+
+   .no_link_drag .gantt_link_control {
+      display: none;
+   }
+
+   .gantt_task_content {
+      padding-left: 15px;
+   }
+
+   .gantt_side_content.gantt_right {
+      padding-left: 22px;
+   }
+
+   #gantt-loader {
+      border: 12px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 12px solid #444444;
+      width: 70px;
+      height: 70px;
+      animation: spin 1s linear infinite;
+      display: block;
+      visibility: visible;
+   }
+
+   .spin-center {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: auto;
+      z-index: 10003;
+   }
+}
+
+.gantt_modal_box {
+   .lag-input {
+      font-size: 13px !important;
+      font-weight: normal;
+      width: 50px;
+   }
+}
+
+.gantt_cal_light input[type="radio"] {
+   margin: -3px 3px 0 7px;
+}
+
+.gantt_tooltip {
+   left: 350 !important;
+   box-sizing: border-box;
+   white-space: pre-line;
+   overflow-wrap: break-word;
+
+   .capitalize {
+      text-transform: capitalize !important;
+   }
+}
+
+#page {
+   #gantt-loader-overlay {
+      background-color: black;
+      height: 100%;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      z-index: 10002;
+      opacity: 0.15;
+   }
+}

@@ -3061,6 +3061,13 @@ class Toolbox {
                2 => __('MM-DD-YYYY')
             ];
             break;
+         case 'gantt':
+            $formats = [
+               0 => '%Y-%m-%d',
+               1 => '%d-%m-%Y',
+               2 => '%m-%d-%Y'
+            ];
+            break;
          default:
             throw new \RuntimeException("Unknown type $type to get date formats.");
       }
@@ -3072,7 +3079,7 @@ class Toolbox {
     *
     * @since 9.2
     *
-    * @param string $type Type for (either 'php' or 'js')
+    * @param string $type Type for (either 'php', 'js' or 'gantt')
     *
     * @return string
     */

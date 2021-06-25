@@ -1276,7 +1276,8 @@ class Html {
          }
 
          if (in_array('gantt', $jslibs)) {
-            echo Html::css('public/lib/jquery-gantt.css');
+            echo Html::css('public/lib/dhtmlx-gantt.css');
+            echo Html::scss('css/glpi-gantt');
             Html::requireJs('gantt');
          }
 
@@ -6517,7 +6518,8 @@ JAVASCRIPT;
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jstree.js';
             break;
          case 'gantt':
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jquery-gantt.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/dhtmlx-gantt.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'js/gantt-helper.js';
             break;
          case 'kanban':
             $_SESSION['glpi_js_toload'][$name][] = 'js/kanban.js';
@@ -6596,6 +6598,9 @@ JAVASCRIPT;
    static private function loadJavascript() {
       global $CFG_GLPI, $PLUGIN_HOOKS;
 
+      // transfer core variables to javascript side
+      echo self::getCoreVariablesForJavascript(true);
+
       //load on demand scripts
       if (isset($_SESSION['glpi_js_toload'])) {
          foreach ($_SESSION['glpi_js_toload'] as $key => $script) {
@@ -6619,9 +6624,6 @@ JAVASCRIPT;
             echo Html::script($filename);
          }
       }
-
-      // transfer core variables to javascript side
-      echo self::getCoreVariablesForJavascript(true);
 
       // Some Javascript-Functions which we may need later
       echo Html::script('js/common.js');
@@ -6685,9 +6687,14 @@ JAVASCRIPT;
    static function getCoreVariablesForJavascript(bool $full = false) {
       global $CFG_GLPI;
 
+      if (!isset($CFG_GLPI['gantt_date_format'])) {
+         $CFG_GLPI['gantt_date_format'] = Toolbox::getDateFormat('gantt');
+      }
+
       $cfg_glpi = "var CFG_GLPI  = {
          'url_base': '".(isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '')."',
          'root_doc': '".$CFG_GLPI["root_doc"]."',
+         'gantt_date_format': '".$CFG_GLPI["gantt_date_format"]."',
       };";
 
       if ($full) {

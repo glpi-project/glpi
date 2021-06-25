@@ -67,6 +67,22 @@ function update954to955() {
    }
    /* /Add `DEFAULT CURRENT_TIMESTAMP` to some date fields */
 
+   // Create table for project task links
+   if (!$DB->tableExists('glpi_projecttasklinks')) {
+      $query = "CREATE TABLE `glpi_projecttasklinks` (
+          `id` int(11) NOT NULL AUTO_INCREMENT,
+          `projecttasks_id_source` int(11) NOT NULL,
+          `source_uuid` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+          `projecttasks_id_target` int(11) NOT NULL,
+          `target_uuid` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+          `type` tinyint(4) NOT NULL DEFAULT '0',
+          `lag` smallint(6) DEFAULT '0',
+          `lead` smallint(6) DEFAULT '0',
+          PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+        $DB->queryOrDie($query, "Adding table glpi_projecttasklinks");
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
