@@ -410,7 +410,7 @@ var GlpiGantt = (function() {
 
          gantt.attachEvent("onCollapse", function() {
             $('#c_ssmenu2, #c_logo').fadeIn('fast');
-            $('#gantt-block__features').css({
+            $('.gantt-block__features').css({
                'position': 'initial',
                'bottom': '10px'
             });
