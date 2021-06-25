@@ -34,12 +34,14 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Features\AssetImage;
 use Sabre\VObject;
 
 /**
  * Contact class
 **/
 class Contact extends CommonDBTM{
+   use AssetImage;
 
    // From CommonDBTM
    public $dohistory           = true;
@@ -53,6 +55,15 @@ class Contact extends CommonDBTM{
       return _n('Contact', 'Contacts', $nb);
    }
 
+   function prepareInputForAdd($input) {
+      $input = parent::prepareInputForAdd($input);
+      return $this->managePictures($input);
+   }
+
+   function prepareInputForUpdate($input) {
+      $input = parent::prepareInputForUpdate($input);
+      return $this->managePictures($input);
+   }
 
    function cleanDBonPurge() {
 

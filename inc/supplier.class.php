@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\AssetImage;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -38,6 +40,7 @@ if (!defined('GLPI_ROOT')) {
  * Supplier class (suppliers)
 **/
 class Supplier extends CommonDBTM {
+   use AssetImage;
 
    // From CommonDBTM
    public $dohistory           = true;
@@ -56,6 +59,15 @@ class Supplier extends CommonDBTM {
       return _n('Supplier', 'Suppliers', $nb);
    }
 
+   function prepareInputForAdd($input) {
+      $input = parent::prepareInputForAdd($input);
+      return $this->managePictures($input);
+   }
+
+   function prepareInputForUpdate($input) {
+      $input = parent::prepareInputForUpdate($input);
+      return $this->managePictures($input);
+   }
 
    function cleanDBonPurge() {
 
