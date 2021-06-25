@@ -139,6 +139,73 @@
                      ) }}
                   {% endif %}
 
+                  {% if item.isField('phonenumber') %}
+                     {{ fields.autoNameField(
+                        "phonenumber",
+                        item,
+                        'Phone'|itemtype_name,
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('fax') %}
+                     {{ fields.autoNameField(
+                        "fax",
+                        item,
+                        __('Fax'),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('website') %}
+                     {{ fields.autoNameField(
+                        "website",
+                        item,
+                        __('Website'),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('email') %}
+                     {{ fields.autoNameField(
+                        "email",
+                        item,
+                        _n('Email', 'Emails', getPluralNumber()),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('address') %}
+                     {{ fields.textareaField('address', item.fields['address'], __('Address')) }}
+                  {% endif %}
+
+                  {% if item.isField('postalcode') %}
+                     {{ fields.autoNameField(
+                        "postalcode",
+                        item,
+                        __('Postal code'),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('town') %}
+                     {{ fields.autoNameField(
+                        "town",
+                        item,
+                        __('City'),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('country') %}
+                     {{ fields.autoNameField(
+                        "country",
+                        item,
+                        __('Country'),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
                   {% if item.isField('date_expiration') %}
                      {{ fields.datetimeField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
                         'helper': __('Empty for infinite')
@@ -760,6 +827,17 @@
                         flags_html,
                         _n('Port', 'Ports', getPluralNumber()),
                      ) }}
+                  {% endif %}
+
+                  {% if item.isField('pictures') %}
+                     {{ fields.fileField('pictures', null, _n('Picture', 'Pictures', getPluralNumber()), {
+                        'onlyimages': true,
+                        'multiple': true,
+                     }) }}
+                  {% endif %}
+
+                  {% if item.isField('is_active') %}
+                     {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active')) }}
                   {% endif %}
 
                   {% if item.fields['id'] > 0 and item.isField('is_dynamic') %}
