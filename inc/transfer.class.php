@@ -1574,42 +1574,43 @@ class Transfer extends CommonDBTM {
    function transferItemSoftwares($itemtype, $ID) {
       global $DB;
 
-      if (isset($this->noneedtobe_transfer['SoftwareVersion']) && count($this->noneedtobe_transfer['SoftwareVersion'])) {
-         // Get Installed version
-         $criteria = [
-            'FROM'   => 'glpi_items_softwareversions',
-            'WHERE'  => [
-               'items_id'     => $ID,
-               'itemtype'     => $itemtype,
-               'NOT'          => [
-                  'softwareversions_id' => $this->noneedtobe_transfer['SoftwareVersion'],
-               ]
-            ]
+      // Get Installed version
+      $criteria = [
+         'FROM'   => 'glpi_items_softwareversions',
+         'WHERE'  => [
+            'items_id'     => $ID,
+            'itemtype'     => $itemtype,
+         ]
+      ];
+
+      if (count($this->noneedtobe_transfer['SoftwareVersion'] ?? [])) {
+         $criteria['WHERE']['NOT'] = [
+            'softwareversions_id' => $this->noneedtobe_transfer['SoftwareVersion'],
          ];
-
-         $iterator = $DB->request($criteria);
-
-         while ($data = $iterator->next()) {
-            if ($this->options['keep_software']) {
-               $newversID = $this->copySingleVersion($data['softwareversions_id']);
-
-               if (($newversID > 0)
-                   && ($newversID != $data['softwareversions_id'])) {
-                  $DB->update(
-                     'glpi_items_softwareversions', [
-                        'softwareversions_id' => $newversID
-                     ], [
-                        'id' => $data['id']
-                     ]
-                  );
-               }
-
-            } else { // Do not keep
-               // Delete inst software for item
-               $DB->delete('glpi_items_softwareversions', ['id' => $data['id']]);
-            }
-         } // each installed version
       }
+
+      $iterator = $DB->request($criteria);
+
+      while ($data = $iterator->next()) {
+         if ($this->options['keep_software']) {
+            $newversID = $this->copySingleVersion($data['softwareversions_id']);
+
+            if (($newversID > 0)
+                  && ($newversID != $data['softwareversions_id'])) {
+               $DB->update(
+                  'glpi_items_softwareversions', [
+                     'softwareversions_id' => $newversID
+                  ], [
+                     'id' => $data['id']
+                  ]
+               );
+            }
+
+         } else { // Do not keep
+            // Delete inst software for item
+            $DB->delete('glpi_items_softwareversions', ['id' => $data['id']]);
+         }
+      } // each installed version
 
       // Affected licenses
       if ($this->options['keep_software']) {
