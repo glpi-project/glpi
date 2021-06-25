@@ -9,7 +9,7 @@
    {% set pictures_misc = getItemtypeOrModelPicture(item, 'pictures') %}
 
    {% if picture_single is not empty or picture_front is not empty or picture_rear is not empty or pictures_misc is not empty %}
-      <div class="{{ gallery_type == 'horizontal' ? 'col-12 me-n2' : ''}} d-flex">
+      <div class="{{ gallery_type == 'horizontal' ? 'col-12 me-n2' : '' }} d-flex">
          <h3 class="card-title">
             {{ _n("Picture", "Pictures", getPluralNumber()) }}
          </h3>
