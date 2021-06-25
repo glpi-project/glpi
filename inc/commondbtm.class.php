@@ -599,6 +599,7 @@ class CommonDBTM extends CommonGLPI {
             $params[$key] = $value;
          }
 
+         $this->fields = Toolbox::stripslashes_deep($this->fields);
          $result = $DB->insert($this->getTable(), $params);
          if ($result) {
             if (!isset($this->fields['id'])
