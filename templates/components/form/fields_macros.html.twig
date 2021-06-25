@@ -307,10 +307,10 @@
          {% set url = options['url'] %}
          {% set options = options|filter((v, k) => k != 'url' and k != 'clearable') %}
          {% if url is not empty %}
-            <a href="{{ url }}">
-         {% endif %}
-         <img src="{{ value }}" {{ Html__parseAttributes(options) }} {{ url is defined ? 'class="pointer"' : '' }}/>
-         {% if url is defined %}
+            <a href="{{ url }}" {{ Html__parseAttributes(options['link_attribs']|default('')) }}>
+               {% endif %}
+               <img src="{{ value }}" {{ Html__parseAttributes(options) }} {{ url is defined ? 'class="pointer"' : '' }}/>
+               {% if url is defined %}
             </a>
          {% endif %}
          {% if clearable %}

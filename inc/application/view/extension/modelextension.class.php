@@ -116,10 +116,11 @@ class ModelExtension extends AbstractExtension implements ExtensionInterface {
             if (file_exists($src_file)) {
                $size = getimagesize($src_file);
                $pictures[] = [
-                     'src'       => $resolved_url,
-                     'w'         => $size[0],
-                     'h'         => $size[1],
-                     'clearable' => $clearable
+                     'src'             => $resolved_url,
+                     'w'               => $size[0],
+                     'h'               => $size[1],
+                     'clearable'       => $clearable,
+                     '_is_model_img'   => isset($model)
                   ] + $p;
             } else {
                $owner_type = isset($model) ? $model::getType() : $itemtype;

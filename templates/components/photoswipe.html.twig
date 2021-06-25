@@ -1,4 +1,6 @@
+{% import "components/form/fields_macros.html.twig" as fields %}
 {% set rand = rand|default(random()) %}
+{% set field_name = field_name|default('psgallery' ~ rand) %}
 
 <div id="psgallery{{ rand }}" class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
    <div class="pswp__bg"></div>
@@ -70,11 +72,20 @@
 {% else %}
    <div class="pswp-img{{ rand }} {{ gallery_item_class }}" itemscope itemtype="https://schema.org/ImageGallery">
       {% for img in imgs %}
+         {% set clearable = not img['_is_model_img'] %}
          <figure itemprop="associatedMedia" itemscope itemtype="https://schema.org/ImageObject"
                  style="width: {{ img['thumbnail_w']|default('auto') }}; height: {{ img['thumbnail_h']|default('auto') }}">
-            <a href="{{ img['src']|escape }}" itemprop="contentUrl" data-index="0">
-               <img src="{{ img['thumbnail_src']|default(img['src'])|escape }}" itemprop="thumbnail" alt="{{ img['title']|default('') }}">
-            </a>
+            {{ fields.imageField((clearable ? 'pictures' : field_name) ~ '_' ~ loop.index0, img['thumbnail_src']|default(img['src']), '', {
+               'no_label': true,
+               'full_width': true,
+               'clearable': clearable,
+               'alt': img['title']|default(''),
+               'itemprop': 'thumbnail',
+               'link_attribs': {
+                  'itemprop': 'contentUrl',
+                  'data-index': '0'
+               }
+            }) }}
             <figcaption itemprop="caption description">{{ img['title']|default('') }}</figcaption>
          </figure>
       {% endfor %}
@@ -84,7 +95,7 @@
 <script>
    (($) => {
       const pswp = document.getElementById("psgallery{{ rand }}");
-      $(".pswp-img{{ rand }}").on('click', 'figure', function(event) {
+      $(".pswp-img{{ rand }}").on('click', 'figure img', function(event) {
          event.preventDefault();
          const options = {
             index: $(this).index(),
