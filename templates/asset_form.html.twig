@@ -26,7 +26,16 @@
                      {{ fields.autoNameField(
                         "name",
                         item,
-                        __('Name'),
+                        (item_type == 'Contact' ? __('Surname') : __('Name')),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('firstname') %}
+                     {{ fields.autoNameField(
+                        "firstname",
+                        item,
+                        __('First name'),
                         withtemplate
                      ) }}
                   {% endif %}
@@ -154,11 +163,50 @@
                      ) }}
                   {% endif %}
 
+                  {% if item.isField('usertitles_id') %}
+                     {{ fields.dropdownField(
+                        "UserTitle",
+                        "usertitles_id",
+                        item.fields['usertitles_id'],
+                        "UserTitle"|itemtype_name,
+                        {
+                           'entity': item.fields['entities_id'],
+                        }
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('phone') %}
+                     {{ fields.autoNameField(
+                        "phone",
+                        item,
+                        'Phone'|itemtype_name,
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('phone2') %}
+                     {{ fields.autoNameField(
+                        "phone2",
+                        item,
+                        __('Phone 2'),
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
                   {% if item.isField('phonenumber') %}
                      {{ fields.autoNameField(
                         "phonenumber",
                         item,
                         'Phone'|itemtype_name,
+                        withtemplate
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('mobile') %}
+                     {{ fields.autoNameField(
+                        "mobile",
+                        item,
+                        __('Mobile phone'),
                         withtemplate
                      ) }}
                   {% endif %}
@@ -185,7 +233,7 @@
                      {{ fields.autoNameField(
                         "email",
                         item,
-                        _n('Email', 'Emails', getPluralNumber()),
+                        _n('Email', 'Emails', 1),
                         withtemplate
                      ) }}
                   {% endif %}

@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssetImage;
 use Sabre\VObject;
 
@@ -170,88 +171,14 @@ class Contact extends CommonDBTM{
    function showForm($ID, $options = []) {
 
       $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Surname')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "name");
-      echo "</td>";
-      echo "<td rowspan='4' class='middle right'>".__('Comments')."</td>";
-      echo "<td class='middle' rowspan='4'>";
-      echo "<textarea cols='45' rows='7' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('First name')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "firstname");
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>". Phone::getTypeName(1)."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "phone");
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>". __('Phone 2')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "phone2");
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Mobile phone')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "mobile");
-      echo "</td>";
-      echo "<td class='middle'>".__('Address')."</td>";
-      echo "<td class='middle'>";
-      echo "<textarea cols='37' rows='3' name='address'>".$this->fields["address"]."</textarea>";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Fax')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "fax");
-      echo "</td>";
-      echo "<td>".__('Postal code')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "postcode", ['size' => 10]);
-      echo "&nbsp;&nbsp;". __('City'). "&nbsp;";
-      Html::autocompletionTextField($this, "town", ['size' => 23]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Email', 'Emails', 1)."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "email");
-      echo "</td>";
-      echo "<td>"._x('location', 'State')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "state");
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Type', 'Types', 1)."</td>";
-      echo "<td>";
-      ContactType::dropdown(['value' => $this->fields["contacttypes_id"]]);
-      echo "</td>";
-      echo "<td>".__('Country')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "country");
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'><td>" . _x('person', 'Title') . "</td><td>";
-      UserTitle::dropdown(['value' => $this->fields["usertitles_id"]]);
-      echo "<td>&nbsp;</td><td class='center'>";
-      if ($ID > 0) {
-         echo "<a target=''_blank' href='".$this->getFormURL().
-                "?getvcard=1&amp;id=$ID'>".__('Vcard')."</a>";
-      }
-      echo "</td></tr>";
-
-      $this->showFormButtons($options);
+      $vcard_url = $this->getFormURL().'?getvcard=1&id='.$ID;
+      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
+         'item'   => $this,
+         'params' => $options,
+         'header_toolbar'  => [
+            '<a href="'.$vcard_url.'" target="_blank" title="'.__('Vcard').'"><i class="fas fa-address-card"></i></a>'
+         ]
+      ]);
 
       return true;
    }

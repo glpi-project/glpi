@@ -55,6 +55,13 @@
                <span>
                {{ nametype|raw }}
                </span>
+               {% if header_toolbar %}
+                  <div class="d-inline-block toolbar ms-2">
+                     {% for raw_element in header_toolbar %}
+                        {{ raw_element|raw }}
+                     {% endfor %}
+                  </div>
+               {% endif %}
             </h3>
 
             {% if isMultiEntitiesMode() and not itemInstanceOf(item, 'Entity')  %}
