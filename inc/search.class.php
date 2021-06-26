@@ -182,7 +182,11 @@ class Search {
             ],
             '&amp;'
          );
-         $parameters = "as_map=0&amp;sort=".$data['search']['sort']."&amp;order=".$data['search']['order'].'&amp;'.
+         $sort_params = Toolbox::append_params([
+            'sort'   => $data['search']['sort'],
+            'order'  => $data['search']['order']
+         ], '&amp;');
+         $parameters = "as_map=0&amp;".$sort_params.'&amp;'.
                         $globallinkto;
 
          if (strpos($target, '?') == false) {
