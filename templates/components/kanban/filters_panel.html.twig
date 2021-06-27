@@ -1,0 +1,178 @@
+{% import "components/form/fields_macros.html.twig" as fields %}
+{% set rand = random() %}
+
+{% set criteria_boolean = {
+   'equals': _x('criteria', 'Equal to'),
+   'not_equals': _x('criteria', 'Not equal to'),
+} %}
+
+{% set criteria_text = {
+   'contains': _x('criteria', 'Contains'),
+   'not_contains': _x('criteria', 'Does not contain'),
+   'equals': _x('criteria', 'Equal to'),
+   'not_equals': _x('criteria', 'Not equal to'),
+   'starts_with': _x('criteria', 'Starts with'),
+   'ends_with': _x('criteria', 'Ends with'),
+   'matches': _x('criteria', 'Matches'),
+} %}
+
+{% set criteria_number = {
+   'equals': _x('criteria', 'Equal to'),
+   'not_equals': _x('criteria', 'Not equal to'),
+   'less_than': _x('criteria', 'Less than'),
+   'greater_than': _x('criteria', 'Greater than'),
+   'less_than_equals': _x('criteria', 'Less than or equal to'),
+   'greater_than_equals': _x('criteria', 'Greater than or equal to'),
+} %}
+
+{% set criteria_dropdown = {
+   'equals': _x('criteria', 'Equal to'),
+   'not_equals': _x('criteria', 'Not equal to'),
+} %}
+
+{% set criteria_dropdown_multiple = {
+   'contains_any': _x('criteria', 'Contains any of'),
+   'contains_all': _x('criteria', 'Contains all of'),
+   'not_contains_any': _x('criteria', 'Does not contain any of'),
+   'not_contains_all': _x('criteria', 'Does not contain all of'),
+} %}
+
+{% set criteria_datetime = {
+   'equals': _x('criteria', 'Equal to'),
+   'not_equals': _x('criteria', 'Not equal to'),
+   'on_date': _x('criteria', 'On date'),
+   'before': _x('criteria', 'Before'),
+   'after': _x('criteria', 'After'),
+} %}
+
+{% set criteria_duration = criteria_number %}
+
+{% macro filter_criteria(filter_name, criteria_options) %}
+   <div class="col-4">
+      {{ fields.dropdownArrayField(filter_name~'_criteria', null, criteria_options, '', {
+         'no_label': true,
+         'full_width': true,
+         'class': 'form-select filter-input-criteria',
+         'aria-label': __('Criteria')
+      }) }}
+   </div>
+{% endmacro %}
+
+<template id="template-kanban-filters-panel">
+   <form class="kanban-filters-panel kanban-form kanban-dropdown">
+      <div class="mb-3">
+         {% set filter_options = {} %}
+
+         {% for filter_group_name,filter_group in filters %}
+            {% set group_options = {} %}
+            {% for filter_input_name,filter_input in filter_group['inputs'] %}
+               {% set group_options = group_options|merge({
+                  (filter_input_name): filter_input['label']
+               }) %}
+            {% endfor %}
+            {% set filter_options = filter_options|merge({
+               (filter_group['label']): group_options
+            }) %}
+         {% endfor %}
+
+         {{ fields.dropdownArrayField('kanban_filters', null, filter_options, '', {
+            'no_label': true,
+            'full_width': true,
+            'class': 'form-select filter-input-criteria',
+            'aria-label': _n('Filter', 'Filters', getPluralNumber())
+         }) }}
+         <button class="btn btn-primary add-filter">{{ __('Add filter') }}</button>
+      </div>
+      <div id="#kanban_filters{{ rand }}" class="kanban-filter-inputs accordian accordion-flush">
+         {% for filter_group_name,filter_group in filters %}
+            {% set group_id = "kanban_filter_group_"~filter_group_name~"_"~rand %}
+            <div id="{{ group_id }}" class="filter-group accordion-item">
+               <h2 class="accordion-header" id="{{ group_id }}_header">
+                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{ group_id }}_content" aria-expanded="true" aria-controls="{{ group_id }}_content">
+                     {{ filter_group['label'] }}
+                  </button>
+               </h2>
+               <div id="{{ group_id }}_content" class="accordion-collapse collapse show" aria-labelledby="{{ group_id }}_header">
+                  <div class="accordion-body">
+                     {% for filter_input_name,filter_input in filter_group['inputs'] %}
+                        {% set filter_type = filter_input['type'] %}
+                        <div class="row filter-input" data-filter-name="{{ filter_input_name }}" data-filter-type="{{ filter_type }}">
+                           <div class="col-3">
+                              <span class="filter-input-label">{{ filter_input['label'] }}</span>
+                           </div>
+                           {% if filter_type == 'text' %}
+                              {{ _self.filter_criteria(filter_input_name, criteria_text) }}
+                              <div class="col-4">
+                                 {{ fields.textField(filter_input_name, '', '', {
+                                    'class': 'form-control filter-input-value',
+                                    'no_label': true,
+                                    'full_width': true,
+                                    'aria-label': __("%s filter value")|format(filter_input['label'])
+                                 }) }}
+                              </div>
+                           {% elseif filter_type == 'number' %}
+                              {{ _self.filter_criteria(filter_input_name, criteria_number) }}
+                              <div class="col-4">
+                                 {{ fields.numberField(filter_input_name, '', '', {
+                                    'class': 'form-control filter-input-value',
+                                    'no_label': true,
+                                    'full_width': true,
+                                    'aria-label': __("%s filter value")|format(filter_input['label'])
+                                 }) }}
+                              </div>
+                           {% elseif filter_type == 'dropdown' %}
+                              {% set multiple = filter_input['params']['multiple']|default(false) %}
+                              {{ _self.filter_criteria(filter_input_name,  (multiple ? criteria_dropdown_multiple : criteria_dropdown)) }}
+                              <div class="col-4">
+                                 {{ fields.dropdownArrayField(filter_input_name, null, filter_input['params']['values'], '', {
+                                    'class': 'form-control filter-input-value',
+                                    'no_label': true,
+                                    'full_width': true,
+                                    'multiple': multiple,
+                                    'aria-label': __("%s filter value")|format(filter_input['label'])
+                                 }) }}
+                              </div>
+                           {% elseif filter_type == 'boolean' %}
+                              {{ _self.filter_criteria(filter_input_name, criteria_boolean) }}
+                              <div class="col-4">
+                                 {{ fields.dropdownYesNo(filter_input_name, null, '', {
+                                    'class': 'form-control filter-input-value',
+                                    'no_label': true,
+                                    'full_width': true,
+                                    'aria-label': __("%s filter value")|format(filter_input['label'])
+                                 }) }}
+                              </div>
+                           {% elseif filter_type == 'datetime' %}
+                              {{ _self.filter_criteria(filter_input_name, criteria_datetime) }}
+                              <div class="col-4">
+                                 {{ fields.datetimeField(filter_input_name, null, '', {
+                                    'class': 'form-control filter-input-value',
+                                    'no_label': true,
+                                    'full_width': true,
+                                    'aria-label': __("%s filter value")|format(filter_input['label'])
+                                 }) }}
+                              </div>
+                           {% elseif filter_type == 'duration' %}
+                              {{ _self.filter_criteria(filter_input_name, criteria_duration) }}
+                              <div class="col-4">
+                                 {{ fields.dropdownHoursField(filter_input_name, null, '', {
+                                    'class': 'form-control filter-input-value',
+                                    'no_label': true,
+                                    'full_width': true,
+                                    'aria-label': __("%s filter value")|format(filter_input['label'])
+                                 }) }}
+                              </div>
+                           {% endif %}
+                           <div class="col-1">
+                              <i class="fas fa-trash-alt delete-filter pointer"></i>
+                           </div>
+                        </div>
+                     {% endfor %}
+                  </div>
+               </div>
+            </div>
+         {% endfor %}
+      </div>
+      <input type="submit" class="btn btn-primary" value="{{ __('Filter') }}"/>
+   </form>
+</template>

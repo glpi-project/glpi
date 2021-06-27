@@ -56,7 +56,7 @@
 
    {% set field %}
       <input type="{{ options.type }}" id="%id%"
-             class="form-control"
+             class="{{ options.class|default('form-control') }}"
              name="{{ name }}" value="{{ value }}"
              {{ options.readonly ? 'readonly' : '' }}
              {{ options.disabled ? 'disabled' : '' }}

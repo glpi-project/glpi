@@ -133,4 +133,35 @@ trait Kanban {
    public function canOrderKanbanCard($ID) {
       return true;
    }
+
+   /**
+    * @return array
+    */
+   public static function getKanbanFilters(): array {
+      $base_filters = [
+         'general'   => [
+            'label'  => __('General'),
+            'inputs' => [
+               'name'   => [
+                  'label'  => __('Name'),
+                  'type'   => 'text'
+               ],
+               'content'   => [
+                  'label'  => __('Content'),
+                  'type'   => 'text'
+               ]
+            ]
+         ]
+      ];
+      $plugin_filters = \Plugin::doHookFunction('kanban_filters', __CLASS__);
+      $filters = $base_filters;
+      if (is_array($plugin_filters)) {
+         $filters = array_merge($filters, $plugin_filters);
+      }
+      return array_merge_recursive($filters, self::getAdditionalKanbanFilters());
+   }
+
+   public static function getAdditionalKanbanFilters(): array {
+      return [];
+   }
 }
