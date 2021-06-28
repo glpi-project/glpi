@@ -187,4 +187,12 @@ class Pdu_Plug extends CommonDBRelation {
          }
       }
    }
+
+   function getForbiddenStandardMassiveAction() {
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'CommonDBConnexity:affect';
+      $forbidden[] = 'CommonDBConnexity:unaffect';
+      return $forbidden;
+   }
+
 }
