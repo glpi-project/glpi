@@ -32,7 +32,11 @@
 
 namespace tests\units;
 
+use Computer;
 use DbTestCase;
+use Item_SoftwareVersion;
+use Software;
+use SoftwareVersion;
 
 /* Test for inc/transfer.class.php */
 
@@ -248,6 +252,147 @@ class Transfer extends DbTestCase {
       $this->integer(count($records))->isidenticalTo(3);
       foreach ($records as $rec) {
          $this->integer((int)$rec['entities_id'])->isidenticalTo($dentity);
+      }
+   }
+
+   protected function testKeepSoftwareOptionProvider(): array {
+      $test_entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+      // Create test computers
+      $computers_to_create = [
+         'test_transfer_pc_1',
+         'test_transfer_pc_2',
+         'test_transfer_pc_3',
+         'test_transfer_pc_4',
+      ];
+      foreach ($computers_to_create as $computer_name) {
+         $computer = new Computer();
+         $computers_id = $computer->add([
+            'name'        => $computer_name,
+            'entities_id' => $test_entity,
+         ]);
+         $this->integer($computers_id)->isGreaterThan(0);
+      }
+
+      // Create test softwares
+      $softwares_to_create = [
+         'test_transfer_software_1',
+         'test_transfer_software_2',
+         'test_transfer_software_3',
+      ];
+      foreach ($softwares_to_create as $software_name) {
+         $software = new Software();
+         $softwares_id = $software->add([
+            'name'        => $software_name,
+            'entities_id' => $test_entity,
+         ]);
+         $this->integer($softwares_id)->isGreaterThan(0);
+      }
+
+      // Create test software versions
+      $software_versions_to_create = [
+         'test_transfer_software_1' => ['V1', 'V2'],
+         'test_transfer_software_2' => ['V1', 'V2'],
+         'test_transfer_software_3' => ['V1', 'V2'],
+      ];
+      foreach ($software_versions_to_create as $software_name => $versions) {
+         foreach ($versions as $version) {
+            $softwareversion = new SoftwareVersion();
+            $softwareversions_id = $softwareversion->add([
+               'name'         => $software_name . '::' . $version,
+               'softwares_id' => getItemByTypeName('Software', $software_name, true),
+               'entities_id'  => $test_entity,
+            ]);
+            $this->integer($softwareversions_id)->isGreaterThan(0);
+         }
+      }
+
+      // Link softwares and computers
+      $item_softwareversion_ids = [];
+      $item_softwareversion_to_create = [
+         'test_transfer_pc_1' => ['test_transfer_software_1::V1', 'test_transfer_software_2::V1'],
+         'test_transfer_pc_2' => ['test_transfer_software_1::V2', 'test_transfer_software_2::V2'],
+         'test_transfer_pc_3' => ['test_transfer_software_2::V1', 'test_transfer_software_3::V2'],
+         'test_transfer_pc_4' => ['test_transfer_software_1::V2', 'test_transfer_software_3::V1'],
+      ];
+      foreach ($item_softwareversion_to_create as $computer_name => $versions) {
+         foreach ($versions as $version) {
+            $item_softwareversion = new Item_SoftwareVersion();
+            $item_softwareversions_id = $item_softwareversion->add([
+               'items_id'     => getItemByTypeName('Computer', $computer_name, true),
+               'itemtype'     => 'Computer',
+               'softwareversions_id' => getItemByTypeName('SoftwareVersion', $version, true),
+               'entities_id'  => $test_entity,
+            ]);
+            $this->integer($item_softwareversions_id)->isGreaterThan(0);
+            $item_softwareversion_ids[] = $item_softwareversions_id;
+         }
+      }
+
+      return [
+         [
+            'items' => [
+               'Computer' => [
+                  getItemByTypeName('Computer', 'test_transfer_pc_1', true),
+                  getItemByTypeName('Computer', 'test_transfer_pc_2', true),
+               ]
+            ],
+            'entities_id_destination' => $test_entity,
+            'transfer_options'        => ['keep_software' => 1],
+            'expected_softwares_after_transfer' => [
+               'Computer' => [
+                  getItemByTypeName('Computer', 'test_transfer_pc_1', true) => [
+                     $item_softwareversion_ids[0],
+                     $item_softwareversion_ids[1]
+                  ],
+                  getItemByTypeName('Computer', 'test_transfer_pc_2', true) => [
+                     $item_softwareversion_ids[2],
+                     $item_softwareversion_ids[3]
+                  ],
+               ]
+            ]
+         ],
+         [
+            'items' => [
+               'Computer' => [
+                  getItemByTypeName('Computer', 'test_transfer_pc_3', true),
+                  getItemByTypeName('Computer', 'test_transfer_pc_4', true),
+               ]
+            ],
+            'entities_id_destination' => $test_entity,
+            'transfer_options'        => ['keep_software' => 0],
+            'expected_softwares_after_transfer' => [
+               'Computer' => [
+                  getItemByTypeName('Computer', 'test_transfer_pc_3', true) => [],
+                  getItemByTypeName('Computer', 'test_transfer_pc_4', true) => [],
+               ]
+            ]
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider testKeepSoftwareOptionProvider
+    */
+   public function testKeepSoftwareOption(
+      array $items,
+      int $entities_id_destination,
+      array $transfer_options,
+      array $expected_softwares_after_transfer
+   ): void {
+      $tranfer = new \Transfer();
+      $tranfer->moveItems($items, $entities_id_destination, $transfer_options);
+
+      foreach ($items as $itemtype => $ids) {
+         foreach ($ids as $id) {
+            $item_softwareversion = new Item_SoftwareVersion();
+            $data = $item_softwareversion->find([
+               'items_id' => $id,
+               'itemtype' => $itemtype
+            ]);
+            $found_ids = array_column($data, 'id');
+            $this->array($found_ids)->isEqualTo($expected_softwares_after_transfer[$itemtype][$id]);
+         }
       }
    }
 }

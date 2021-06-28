@@ -33,6 +33,12 @@
 
 include ('../inc/includes.php');
 
+global $CFG_GLPI;
+
+if ((int)$CFG_GLPI['use_anonymous_helpdesk'] === 0) {
+    Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
+}
+
 echo "<!DOCTYPE html>";
 echo "<html lang=\"{$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]}\">";
 ?>
