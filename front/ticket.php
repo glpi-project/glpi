@@ -40,7 +40,13 @@ if (Session::getCurrentInterface() == "helpdesk") {
    Html::header(Ticket::getTypeName(Session::getPluralNumber()), '', "helpdesk", "ticket");
 }
 
-echo Html::manageRefreshPage();
+$callback = <<<JS
+   if ($('div[role="dialog"]:visible').length === 0) {
+      window.location.reload();
+   }
+JS;
+
+echo Html::manageRefreshPage(false, $callback);
 
 if ($default = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('mini_ticket', true)) {
    $dashboard = new Glpi\Dashboard\Grid($default, 33, 2, 'mini_core');
