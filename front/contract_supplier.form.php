@@ -41,6 +41,12 @@ include ('../inc/includes.php');
 Session::checkCentralAccess();
 $contractsupplier = new Contract_Supplier();
 if (isset($_POST["add"])) {
+   if (!isset($_POST['contracts_id']) || empty($_POST['contracts_id'])) {
+      $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
+         _n('Contract', 'Contract', 1));
+      Session::addMessageAfterRedirect($message, false, ERROR);
+      Html::back();
+   }
    $contractsupplier->check(-1, CREATE, $_POST);
 
    if (isset($_POST["contracts_id"]) && ($_POST["contracts_id"] > 0)
