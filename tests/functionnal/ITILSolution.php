@@ -66,7 +66,7 @@ class ITILSolution extends DbTestCase {
       $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue();
 
       $this->variable($ticket->getField('status'))->isEqualTo($ticket::SOLVED);
-      $this->string($solution->getField('content'))->isIdenticalTo('Current friendly ticket\r\nis solved!');
+      $this->string($solution->getField('content'))->isIdenticalTo("Current friendly ticket\r\nis solved!");
 
       $this->boolean($solution->getFromDB($solution->getID()))->isTrue();
       $this->integer((int)$solution->fields['status'])->isIdenticalTo(\CommonITILValidation::WAITING);
@@ -168,7 +168,7 @@ class ITILSolution extends DbTestCase {
       $this->boolean($problem->getFromDB($problem->getID()))->isTrue();
 
       $this->variable($problem->getField('status'))->isEqualTo($problem::SOLVED);
-      $this->string($solution->getField('content'))->isIdenticalTo('Current friendly problem\r\nis solved!');
+      $this->string($solution->getField('content'))->isIdenticalTo("Current friendly problem\r\nis solved!");
 
       $this->boolean($solution->getFromDB($solution->getID()))->isTrue();
       $this->integer((int)$solution->fields['status'])->isIdenticalTo(\CommonITILValidation::ACCEPTED);
@@ -201,7 +201,7 @@ class ITILSolution extends DbTestCase {
       $this->boolean($change->getFromDB($change->getID()))->isTrue();
 
       $this->variable($change->getField('status'))->isEqualTo($change::SOLVED);
-      $this->string($solution->getField('content'))->isIdenticalTo('Current friendly change\r\nis solved!');
+      $this->string($solution->getField('content'))->isIdenticalTo("Current friendly change\r\nis solved!");
 
       $this->boolean($solution->getFromDB($solution->getID()))->isTrue();
       $this->integer((int)$solution->fields['status'])->isIdenticalTo(\CommonITILValidation::ACCEPTED);
