@@ -120,7 +120,10 @@ trait AssetImage {
             }
          }
       }
-      $input['pictures'] = exportArrayToDB(array_merge($pictures, $new_pictures));
+
+      if (count($pictures) || count($new_pictures)) {
+         $input['pictures'] = exportArrayToDB(array_merge($pictures, $new_pictures));
+      }
 
       return $input;
    }
