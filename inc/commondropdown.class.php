@@ -296,7 +296,7 @@ abstract class CommonDropdown extends CommonDBTM {
       if (isset($this->fields['picture_rear'])) {
          Toolbox::deletePicture($this->fields['picture_rear']);
       }
-      if (isset($this->fields['picturepictures_rear'])) {
+      if (isset($this->fields['pictures'])) {
          $pictures = importArrayFromDB($this->fields['pictures']);
          foreach ($pictures as $picture) {
             Toolbox::deletePicture($picture);
