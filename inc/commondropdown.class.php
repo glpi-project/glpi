@@ -290,11 +290,17 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
    function cleanDBonPurge() {
-      Toolbox::deletePicture($this->fields['picture_front']);
-      Toolbox::deletePicture($this->fields['picture_rear']);
-      $pictures = importArrayFromDB($this->fields['pictures']);
-      foreach ($pictures as $picture) {
-         Toolbox::deletePicture($picture);
+      if (isset($this->fields['picture_front'])) {
+         Toolbox::deletePicture($this->fields['picture_front']);
+      }
+      if (isset($this->fields['picture_rear'])) {
+         Toolbox::deletePicture($this->fields['picture_rear']);
+      }
+      if (isset($this->fields['picturepictures_rear'])) {
+         $pictures = importArrayFromDB($this->fields['pictures']);
+         foreach ($pictures as $picture) {
+            Toolbox::deletePicture($picture);
+         }
       }
    }
 
