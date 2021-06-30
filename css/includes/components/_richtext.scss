@@ -30,7 +30,11 @@
  */
 
 body.mce-content-body {
-   background: transparent;
+   margin: 15px 10px;
+
+   @if not $is-dark {
+      background: transparent;
+   }
 
    [data-user-mention="true"] {
       cursor: default !important; // Overrides "not-allowed" cursor on noneditable content

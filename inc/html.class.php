@@ -3667,6 +3667,7 @@ JS;
          'link',
          'lists',
          'paste',
+         'quickbars',
          'searchreplace',
          'tabfocus',
          'table',
@@ -3681,6 +3682,8 @@ JS;
       // init tinymce
       $js = <<<JS
          $(function() {
+            var is_dark = $('html').css('--is-dark').trim() === 'true';
+
             // init editor
             tinyMCE.init({
                selector: '#{$name}',
@@ -3691,16 +3694,21 @@ JS;
                language: '{$language}',
                language_url: '{$language_url}',
 
-               skin_url: $('html').css('--is-dark').trim() === 'true' ? CFG_GLPI['root_doc']+'/public/lib/tinymce/skins/ui/oxide-dark' :
-                  CFG_GLPI['root_doc']+'/public/lib/tinymce/skins/ui/oxide-dark',
+               skin_url: is_dark
+                  ? CFG_GLPI['root_doc']+'/public/lib/tinymce/skins/ui/oxide-dark'
+                  : CFG_GLPI['root_doc']+'/public/lib/tinymce/skins/ui/oxide',
                body_class: 'rich_text_container',
                content_css: '{$content_css}',
 
                min_height: '150px',
                resize: true,
 
+               // inline toolbar configuration
                menubar: false,
-               toolbar: 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | table link image | code fullscreen',
+               toolbar: false,
+               quickbars_insert_toolbar: 'quicktable quickimage quicklink | bullist numlist | outdent indent',
+               quickbars_selection_toolbar: 'bold italic | styleselect | forecolor backcolor ',
+               contextmenu: 'table image link | undo redo | code fullscreen',
 
                // Content settings
                entity_encoding: 'raw',
