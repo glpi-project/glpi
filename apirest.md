@@ -1249,25 +1249,76 @@ $ curl -X GET \
 'http://path/to/glpi/apirest.php/getMassiveActions/Computer'
 
 < 200 OK
-{
-  "MassiveAction:update": "Update",
-  "MassiveAction:clone": "Clone",
-  "Infocom:activate": "Enable the financial and administrative information",
-  "MassiveAction:delete": "Put in trashbin",
-  "MassiveAction:add_transfer_list": "Add to transfer list",
-  "Appliance:add_item": "Associate to an appliance",
-  "Item_OperatingSystem:update": "Operating systems",
-  "Computer_Item:add": "Connect",
-  "Item_SoftwareVersion:add": "Install",
-  "KnowbaseItem_Item:add": "Link knowledgebase article",
-  "Document_Item:add": "Add a document",
-  "Document_Item:remove": "Remove a document",
-  "Contract_Item:add": "Add a contract",
-  "Contract_Item:remove": "Remove a contract",
-  "MassiveAction:amend_comment": "Amend comment",
-  "MassiveAction:add_note": "Add note",
-  "Lock:unlock": "Unlock components"
-}
+[
+  {
+    "key": "MassiveAction:update",
+    "label": "Update"
+  },
+  {
+    "key": "MassiveAction:clone",
+    "label": "Clone"
+  },
+  {
+    "key": "Infocom:activate",
+    "label": "Enable the financial and administrative information"
+  },
+  {
+    "key": "MassiveAction:delete",
+    "label": "Put in trashbin"
+  },
+  {
+    "key": "MassiveAction:add_transfer_list",
+    "label": "Add to transfer list"
+  },
+  {
+    "key": "Appliance:add_item",
+    "label": "Associate to an appliance"
+  },
+  {
+    "key": "Item_OperatingSystem:update",
+    "label": "Operating systems"
+  },
+  {
+    "key": "Computer_Item:add",
+    "label": "Connect"
+  },
+  {
+    "key": "Item_SoftwareVersion:add",
+    "label": "Install"
+  },
+  {
+    "key": "KnowbaseItem_Item:add",
+    "label": "Link knowledgebase article"
+  },
+  {
+    "key": "Document_Item:add",
+    "label": "Add a document"
+  },
+  {
+    "key": "Document_Item:remove",
+    "label": "Remove a document"
+  },
+  {
+    "key": "Contract_Item:add",
+    "label": "Add a contract"
+  },
+  {
+    "key": "Contract_Item:remove",
+    "label": "Remove a contract"
+  },
+  {
+    "key": "MassiveAction:amend_comment",
+    "label": "Amend comment"
+  },
+  {
+    "key": "MassiveAction:add_note",
+    "label": "Add note"
+  },
+  {
+    "key": "Lock:unlock",
+    "label": "Unlock components"
+  }
+]
 
 $ curl -X GET \
 -H 'Content-Type: application/json' \
@@ -1276,12 +1327,24 @@ $ curl -X GET \
 'http://path/to/glpi/apirest.php/getMassiveActions/Computer?is_deleted=1'
 
 < 200 OK
-{
-  "MassiveAction:purge_item_but_devices": "Delete permanently but keep devices",
-  "MassiveAction:purge": "Delete permanently and remove devices",
-  "MassiveAction:restore": "Restore",
-  "Lock:unlock": "Unlock components"
-}
+[
+  {
+    "key": "MassiveAction:purge_item_but_devices",
+    "label": "Delete permanently but keep devices"
+  },
+  {
+    "key": "MassiveAction:purge",
+    "label": "Delete permanently and remove devices"
+  },
+  {
+    "key": "MassiveAction:restore",
+    "label": "Restore"
+  },
+  {
+    "key": "Lock:unlock",
+    "label": "Unlock components"
+  }
+]
 ```
 
 ## Get available massive actions for an item
@@ -1308,25 +1371,77 @@ $ curl -X GET \
 'http://path/to/glpi/apirest.php/getMassiveActions/Computer/3'
 
 < 200 OK
-{
-  "MassiveAction:update": "Update",
-  "MassiveAction:clone": "Clone",
-  "Infocom:activate": "Enable the financial and administrative information",
-  "MassiveAction:delete": "Put in trashbin",
-  "MassiveAction:add_transfer_list": "Add to transfer list",
-  "Appliance:add_item": "Associate to an appliance",
-  "Item_OperatingSystem:update": "Operating systems",
-  "Computer_Item:add": "Connect",
-  "Item_SoftwareVersion:add": "Install",
-  "KnowbaseItem_Item:add": "Link knowledgebase article",
-  "Document_Item:add": "Add a document",
-  "Document_Item:remove": "Remove a document",
-  "Contract_Item:add": "Add a contract",
-  "Contract_Item:remove": "Remove a contract",
-  "MassiveAction:amend_comment": "Amend comment",
-  "MassiveAction:add_note": "Add note",
-  "Lock:unlock": "Unlock components"
-}
+[
+  {
+    "key": "MassiveAction:update",
+    "label": "Update"
+  },
+  {
+    "key": "MassiveAction:clone",
+    "label": "Clone"
+  },
+  {
+    "key": "Infocom:activate",
+    "label": "Enable the financial and administrative information"
+  },
+  {
+    "key": "MassiveAction:delete",
+    "label": "Put in trashbin"
+  },
+  {
+    "key": "MassiveAction:add_transfer_list",
+    "label": "Add to transfer list"
+  },
+  {
+    "key": "Appliance:add_item",
+    "label": "Associate to an appliance"
+  },
+  {
+    "key": "Item_OperatingSystem:update",
+    "label": "Operating systems"
+  },
+  {
+    "key": "Computer_Item:add",
+    "label": "Connect"
+  },
+  {
+    "key": "Item_SoftwareVersion:add",
+    "label": "Install"
+  },
+  {
+    "key": "KnowbaseItem_Item:add",
+    "label": "Link knowledgebase article"
+  },
+  {
+    "key": "Document_Item:add",
+    "label": "Add a document"
+  },
+  {
+    "key": "Document_Item:remove",
+    "label": "Remove a document"
+  },
+  {
+    "key": "Contract_Item:add",
+    "label": "Add a contract"
+  },
+  {
+    "key": "Contract_Item:remove",
+    "label": "Remove a contract"
+  },
+  {
+    "key": "MassiveAction:amend_comment",
+    "label": "Amend comment"
+  },
+  {
+    "key": "MassiveAction:add_note",
+    "label": "Add note"
+  },
+  {
+    "key": "Lock:unlock",
+    "label": "Unlock components"
+  }
+]
+
 
 $ curl -X GET \
 -H 'Content-Type: application/json' \
@@ -1335,12 +1450,24 @@ $ curl -X GET \
 'http://path/to/glpi/apirest.php/getMassiveActions/Computer/4'
 
 < 200 OK
-{
-  "MassiveAction:purge_item_but_devices": "Delete permanently but keep devices",
-  "MassiveAction:purge": "Delete permanently and remove devices",
-  "MassiveAction:restore": "Restore",
-  "Lock:unlock": "Unlock components"
-}
+[
+  {
+    "key": "MassiveAction:purge_item_but_devices",
+    "label": "Delete permanently but keep devices"
+  },
+  {
+    "key": "MassiveAction:purge",
+    "label": "Delete permanently and remove devices"
+  },
+  {
+    "key": "MassiveAction:restore",
+    "label": "Restore"
+  },
+  {
+    "key": "Lock:unlock",
+    "label": "Unlock components"
+  }
+]
 ```
 
 ## Get massive action parameters
@@ -1367,7 +1494,12 @@ $ curl -X GET \
 'http://path/to/glpi/apirest.php/getMassiveActionParameters/Computer/MassiveAction:add_note'
 
 < 200 OK
-{"add_note":"text"}
+[
+  {
+    "name": "add_note",
+    "type": "text"
+  }
+]
 
 $ curl -X GET \
 -H 'Content-Type: application/json' \
@@ -1376,7 +1508,12 @@ $ curl -X GET \
 'http://path/to/glpi/apirest.php/getMassiveActionParameters/Computer/Contract_Item:add'
 
 < 200 OK
-{"peer_contracts_id":"dropdown"}
+[
+  {
+    "name": "peer_contracts_id",
+    "type": "dropdown"
+  }
+]
 ```
 
 ## Apply massive action

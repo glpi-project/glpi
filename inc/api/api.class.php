@@ -2911,11 +2911,9 @@ abstract class API {
    ) {
       if (is_null($id)) {
          // No id supplied, show massive actions for the given itemtype
-         return $this->returnResponse(
-            $this->getMassiveActionsForItemtype(
-               $itemtype,
-               $is_deleted
-            )
+         $actions = $this->getMassiveActionsForItemtype(
+            $itemtype,
+            $is_deleted
          );
       } else {
          $item = new $itemtype();
@@ -2930,10 +2928,18 @@ abstract class API {
 
          // Id supplied and item was loaded, show massive action for this
          // specific item
-         return $this->returnResponse(
-            $this->getMassiveActionsForItem($item)
-         );
+         $actions = $this->getMassiveActionsForItem($item);
       }
+
+      // Build response array
+      $response = [];
+      foreach ($actions as $key => $label) {
+         $response[] = [
+            'key'   => $key,
+            'label' => $label,
+         ];
+      }
+      $this->returnResponse($response);
    }
 
    /**
@@ -3022,7 +3028,10 @@ abstract class API {
       $crawler = new Crawler($html);
       $crawler->filterXPath('//input')->each(function (Crawler $node, $i) use (&$inputs) {
          if ($node->attr('type') != "hidden") {
-            $inputs[$node->attr('name')] = $node->attr('type');
+            $inputs[] = [
+               'name' => $node->attr('name'),
+               'type' => $node->attr('type'),
+            ];
          }
       });
       $crawler->filterXPath('//select')->each(function (Crawler $node, $i) use (&$inputs) {
@@ -3030,10 +3039,16 @@ abstract class API {
          if (Toolbox::startsWith($node->attr('id'), 'dropdown_')) {
             $type = 'dropdown';
          }
-         $inputs[$node->attr('name')] = $type;
+         $inputs[] = [
+            'name' => $node->attr('name'),
+            'type' => $type,
+         ];
       });
       $crawler->filterXPath('//textarea')->each(function (Crawler $node, $i) use (&$inputs) {
-         $inputs[$node->attr('name')] = 'text';
+         $inputs[] = [
+            'name' => $node->attr('name'),
+            'type' => 'text',
+         ];
       });
 
       return $this->returnResponse($inputs);
