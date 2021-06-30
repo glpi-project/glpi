@@ -574,6 +574,7 @@ class CommonDBTM extends CommonGLPI {
 
       if (count($oldvalues)) {
          Log::constructHistory($this, $oldvalues, $this->fields);
+         $this->getFromDB($this->fields['id']);
       }
 
       return true;
@@ -606,6 +607,8 @@ class CommonDBTM extends CommonGLPI {
                   || ($this->fields['id'] == 0)) {
                $this->fields['id'] = $DB->insertId();
             }
+
+            $this->getFromDB($this->fields['id']);
 
             return $this->fields['id'];
          }

@@ -180,7 +180,7 @@ class ProjectTask extends DbTestCase {
 
       $this->hasSessionMessages(
          WARNING, [
-            "The user $usr_str is busy at the selected timeframe.<br/>- Project task: from 2019-08-11  to 2019-08-12 :<br/><a href='".
+            "The user $usr_str is busy at the selected timeframe.<br/>- Project task: from 2019-08-11 00:00 to 2019-08-12 00:00:<br/><a href='".
             $ptask->getFormURLWithID($task_id)."'>first test, whole period</a><br/>"
          ]
       );
