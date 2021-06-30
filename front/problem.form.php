@@ -157,7 +157,8 @@ if (isset($_POST["add"])) {
    Event::log($id, "problem", 4, "tracking",
               //TRANS: %s is the user login
               sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
-              Problem} else {
+   Html::redirect(Problem::getFormURLWithID($id));
+} else {
    Html::header(Problem::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "problem");
    $problem->display($_REQUEST);
 
