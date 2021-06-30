@@ -139,6 +139,23 @@ if (isset($_POST["add"])) {
       }
    }
    Html::back();
+} else if (isset($_REQUEST['addme_as_actor'])) {
+   $id = (int) $_REQUEST['id'];
+   $change->check($id, READ);
+   $input = array_merge(Toolbox::addslashes_deep($change->fields), [
+      'id' => $id,
+      '_itil_'.$_REQUEST['actortype'] => [
+         '_type' => "user",
+         'users_id' => Session::getLoginUserID(),
+         'use_notification' => 1,
+      ]
+   ]);
+   $change->update($input);
+   Event::log($id, "change", 4, "tracking",
+              //TRANS: %s is the user login
+              sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
+   Html::redirect(Change::getFormURLWithID($id));
+
 } else {
    Html::header(Change::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "change");
    $change->display($_REQUEST);
