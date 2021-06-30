@@ -3083,21 +3083,10 @@ abstract class API {
       $action = explode(':', $action_key);
       $processor = $action[0];
 
-      // Guess "is_deleted" from an last item
-      $item = new $itemtype();
-      if (!$item->getFromDB(current($ids))) {
-         return $this->returnError(
-            "Failed to load item (itemtype = '$itemtype', id = '" . current($ids) . "')",
-            400,
-            "ERROR_ITEM_NOT_FOUND"
-         );
-      }
-      $is_deleted = $item->isDeleted();
       $ma = new MassiveAction([
          'action'      => $action[1],
          'action_name' => $action_key,
          'items'       => [$itemtype => $ids],
-         'is_deleted'  => $is_deleted,
          'processor'   => $processor,
       ] + $params, [], 'process');
 

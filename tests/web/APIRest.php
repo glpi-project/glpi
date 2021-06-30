@@ -991,15 +991,6 @@ class APIRest extends APIBaseClass {
          [
             'url' => 'applyMassiveAction/Computer/MassiveAction:amend_comment',
             'payload' => [
-               'ids' => [200],
-            ],
-            'status' => 400,
-            'response' => [],
-            'error' => "ERROR_ITEM_NOT_FOUND"
-         ],
-         [
-            'url' => 'applyMassiveAction/Computer/MassiveAction:amend_comment',
-            'payload' => [
                'ids' => [
                   getItemByTypeName('Computer', '_test_pc01', true),
                   getItemByTypeName('Computer', '_test_pc02', true)
