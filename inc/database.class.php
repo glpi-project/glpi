@@ -35,55 +35,33 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * DatabaseServer Class
+ * Database Class
 **/
-class DatabaseServer extends CommonDBTM {
-
-   use Glpi\Features\Clonable;
-   use Glpi\Features\Inventoriable;
+class Database extends CommonDBChild {
 
    // From CommonDBTM
-   public $dohistory                   = true;
+   public $auto_message_on_action   = true;
    static $rightname                   = 'database';
-   protected $usenotepad               = true;
 
-   public function getCloneRelations() :array {
-      return [
-         Appliance_Item::class,
-         Contract_Item::class,
-         Document_Item::class,
-         Infocom::class,
-         Notepad::class,
-         KnowbaseItem_Item::class,
-         Certificate_Item::class,
-         Domain_Item::class
-      ];
-   }
+   // From CommonDBChild
+   static public $itemtype       = 'DatabaseInstance';
+   static public $items_id       = 'databaseinstances_id';
 
    static function getTypeName($nb = 0) {
-      return _n('Database server', 'Databases servers', $nb);
+      return _n('Database', 'Databases', $nb);
    }
 
    function defineTabs($options = []) {
       $ong = [];
       $this->addDefaultFormTab($ong)
          ->addImpactTab($ong, $options)
-         ->addStandardTab('DatabaseServerInstance', $ong, $options)
-         ->addStandardTab(DatabaseServer_Item::class, $ong, $options)
-         ->addStandardTab('Infocom', $ong, $options)
-         ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
          ->addStandardTab('KnowbaseItem_Item', $ong, $options)
-         ->addStandardTab('Ticket', $ong, $options)
-         ->addStandardTab('Item_Problem', $ong, $options)
-         ->addStandardTab('Change_Item', $ong, $options)
-         ->addStandardTab('Certificate_Item', $ong, $options)
          ->addStandardTab('Notepad', $ong, $options)
-         ->addStandardTab('Domain_Item', $ong, $options)
-         ->addStandardTab('Appliance_Item', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
       return $ong;
    }
+
 
    function showForm($ID, $options = []) {
       $rand = mt_rand();
@@ -123,9 +101,9 @@ class DatabaseServer extends CommonDBTM {
          'entity' => $this->fields["entities_id"],
          'rand' => $rand]);
       echo "</td>";
-      echo "<td><label for='dropdown_databaseservertypes_id$rand'>".DatabaseServerType::getFieldLabel()."</label></td>";
+      echo "<td><label for='dropdown_databaseservertypes_id$rand'>".DatabaseInstanceType::getFieldLabel()."</label></td>";
       echo "<td>";
-      DatabaseServerType::dropdown(['value' => $this->fields["databaseservertypes_id"], 'rand' => $rand]);
+      DatabaseInstanceType::dropdown(['value' => $this->fields["databaseservertypes_id"], 'rand' => $rand]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -138,9 +116,9 @@ class DatabaseServer extends CommonDBTM {
          ]
       );
       echo "</td>";
-      echo "<td><label for='dropdown_databaseservercategories_id$rand'>".DatabaseServerCategory::getTypeName(1)."</label></td>";
+      echo "<td><label for='dropdown_databaseservercategories_id$rand'>".DatabaseInstanceCategory::getTypeName(1)."</label></td>";
       echo "<td>";
-      DatabaseServerCategory::dropdown(['value' => $this->fields["databaseservercategories_id"], 'rand' => $rand]);
+      DatabaseInstanceCategory::dropdown(['value' => $this->fields["databaseservercategories_id"], 'rand' => $rand]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -215,122 +193,12 @@ class DatabaseServer extends CommonDBTM {
       return true;
    }
 
-   function rawSearchOptions() {
-
-      $tab = parent::rawSearchOptions();
-
-      $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false, // implicit field is id
-         'datatype'           => 'number'
-      ];
-
-      $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
-
-      $tab[] = [
-         'id'                 => '4',
-         'table'              => DatabaseServerType::getTable(),
-         'field'              => 'name',
-         'name'               => _n('Type', 'Types', 1),
-         'datatype'           => 'dropdown'
-      ];
-
-      $tab[] = [
-         'id'            => '5',
-         'table'         =>  DatabaseServer_Item::getTable(),
-         'field'         => 'items_id',
-         'name'               => _n('Associated item', 'Associated items', 2),
-         'nosearch'           => true,
-         'massiveaction' => false,
-         'forcegroupby'  =>  true,
-         'additionalfields'   => ['itemtype'],
-         'joinparams'    => ['jointype' => 'child']
-      ];
-
-      $tab[] = [
-         'id'                 => '40',
-         'table'              => DatabaseServerCategory::getTable(),
-         'field'              => 'name',
-         'name'               => _n('Category', 'Categories', 1),
-         'datatype'           => 'dropdown'
-      ];
-
-      $tab[] = [
-         'id'                 => '41',
-         'table'              => State::getTable(),
-         'field'              => 'name',
-         'name'               => _n('State', 'States', 1),
-         'datatype'           => 'dropdown'
-      ];
-
-      $tab[] = [
-         'id'                 => '16',
-         'table'              => $this->getTable(),
-         'field'              => 'comment',
-         'name'               => __('Comments'),
-         'datatype'           => 'text'
-      ];
-
-      $tab[] = [
-         'id'                 => '19',
-         'table'              => $this->getTable(),
-         'field'              => 'date_mod',
-         'name'               => __('Last update'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
-      ];
-
-      $tab[] = [
-         'id'                 => '121',
-         'table'              => $this->getTable(),
-         'field'              => 'date_creation',
-         'name'               => __('Creation date'),
-         'datatype'           => 'datetime',
-         'massiveaction'      => false
-      ];
-
-      $tab[] = [
-         'id'                 => '23',
-         'table'              => Manufacturer::getTable(),
-         'field'              => 'name',
-         'name'               => Manufacturer::getTypeName(1),
-         'datatype'           => 'dropdown'
-      ];
-
-      $tab[] = [
-         'id'                 => '24',
-         'table'              => User::getTable(),
-         'field'              => 'name',
-         'linkfield'          => 'users_id_tech',
-         'name'               => __('Technician in charge'),
-         'datatype'           => 'dropdown',
-         'right'              => 'own_ticket'
-      ];
-
-      $tab[] = [
-         'id'                 => '49',
-         'table'              => Group::getTable(),
-         'field'              => 'completename',
-         'linkfield'          => 'groups_id_tech',
-         'name'               => __('Group in charge'),
-         'condition'          => ['is_assign' => 1],
-         'datatype'           => 'dropdown'
-      ];
-
-      $tab = array_merge($tab, DatabaseServerInstance::rawSearchOptionsToAdd());
-      $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
-
-      return $tab;
-   }
 
 
    function post_addItem() {
       //create default instance
       $this->getFromDB($this->fields['id']);
-      $instance = new DatabaseServerInstance();
+      $instance = new DatabaseInstance();
 
       if ((!isset($this->input['_instance_name']) || empty($this->input['_instance_name'])) && isset($this->input['name'])) {
          $this->input['_instance_name'] = sprintf(
@@ -348,7 +216,7 @@ class DatabaseServer extends CommonDBTM {
          'is_active' => ($this->input['_instance_is_active'] ?? $this->fields['is_active']),
          'entities_id' => $this->fields['entities_id'],
          'is_recursive' => $this->fields['is_recursive'],
-         'databaseservers_id' => $this->fields['id'],
+         'databaseinstances_id' => $this->fields['id'],
          'date_lastboot' => ($this->input['_instance_date_lastboot'] ?? null),
          'date_lastbackup' => ($this->input['_instance_date_lastbackup'] ?? null),
          'is_dynamic' => $this->fields['is_dynamic']
@@ -366,8 +234,8 @@ class DatabaseServer extends CommonDBTM {
       $instances = [];
 
       $iterator = $DB->request([
-         'FROM' => DatabaseServerInstance::getTable(),
-         'WHERE' => ['databaseservers_id' => $this->fields['id']]
+         'FROM' => DatabaseInstance::getTable(),
+         'WHERE' => ['databaseinstances_id' => $this->fields['id']]
       ]);
 
       while ($row = $iterator->next()) {
@@ -404,13 +272,107 @@ class DatabaseServer extends CommonDBTM {
    function cleanDBonPurge() {
       $this->deleteChildrenAndRelationsFromDb(
          [
-            DatabaseServerInstance::class,
-            DatabaseServer_Item::class
+            DatabaseInstance::class,
+            DatabaseInstance_Item::class
          ]
       );
    }
 
    public function pre_purgeInventory() {
       return true;
+   }
+
+   static public function rawSearchOptionsToAdd() {
+      $tab = [];
+      $name = self::getTypeName(Session::getPluralNumber());
+
+      $tab[] = [
+         'id'                 => 'database',
+         'name'               => $name
+      ];
+
+      $tab[] = [
+         'id'                 => '167',
+         'table'              => self::getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '166',
+         'table'              => self::getTable(),
+         'field'              => 'size',
+         'name'               => __('Size'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'integer',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '169',
+         'table'              => self::getTable(),
+         'field'              => 'is_active',
+         'linkfield'          => '',
+         'name'               => __('Active'),
+         'datatype'           => 'bool',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ],
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'searchtype'         => ['equals']
+      ];
+
+      $tab[] = [
+         'id'                 => '170',
+         'table'              => self::getTable(),
+         'field'              => 'is_onbackup',
+         'linkfield'          => '',
+         'name'               => __('Is on backup'),
+         'datatype'           => 'bool',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ],
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'searchtype'         => ['equals']
+      ];
+
+      $tab[] = [
+         'id'                 => '171',
+         'table'              => self::getTable(),
+         'field'              => 'date_lastboot',
+         'name'               => __('Last boot date'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'date',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '172',
+         'table'              => self::getTable(),
+         'field'              => 'date_lastbackup',
+         'name'               => __('Last backup date'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'date',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      return $tab;
    }
 }

@@ -30,7 +30,18 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
 
-$dropdown = new DatabaseServerType();
-include (GLPI_ROOT . "/front/dropdown.common.php");
+class DatabaseInstanceCategory extends CommonDropdown {
+
+   static function getTypeName($nb = 0) {
+      return _n('Database instance category', 'Database instance categories', $nb);
+   }
+
+   static function getFieldLabel() {
+      return _n('CAtegory', 'Categories', 1);
+   }
+
+}

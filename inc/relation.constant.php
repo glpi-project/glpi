@@ -79,12 +79,12 @@ $RELATION = [
        'glpi_appliances' => 'appliancetypes_id'
    ],
 
-   'glpi_databaseservers'     => [
-      'glpi_databaseservers_items' => 'databaseservers_id'
+   'glpi_databaseinstances'     => [
+      'glpi_databaseinstances_items' => 'databaseinstances_id'
    ],
 
-   'glpi_databaseservertypes' => [
-      'glpi_databaseservers' => 'databaseservertypes_id'
+   'glpi_databaseinstancetypes' => [
+      'glpi_databaseinstances' => 'databaseinstancetypes_id'
    ],
 
    'glpi_authldaps' => [
@@ -448,7 +448,7 @@ $RELATION = [
       'glpi_contacts'                    => 'entities_id',
       '_glpi_contractcosts'              => 'entities_id',
       'glpi_contracts'                   => 'entities_id',
-      'glpi_databaseservers'             => 'entities_id',
+      'glpi_databaseinstances'             => 'entities_id',
       'glpi_datacenters'                 => 'entities_id',
       'glpi_dcrooms'                     => 'entities_id',
       'glpi_devicebatteries'             => 'entities_id',
@@ -776,7 +776,7 @@ $RELATION = [
       'glpi_computerantiviruses' => 'manufacturers_id',
       'glpi_computers'           => 'manufacturers_id',
       'glpi_consumableitems'     => 'manufacturers_id',
-      'glpi_databaseservers'     => 'manufacturers_id',
+      'glpi_databaseinstances'     => 'manufacturers_id',
       'glpi_devicebatteries'     => 'manufacturers_id',
       'glpi_devicecases'         => 'manufacturers_id',
       'glpi_devicecontrols'      => 'manufacturers_id',
@@ -1427,7 +1427,7 @@ $RELATION = [
          'items_id',
          'itemtype',
       ],
-      'glpi_databaseservers_items' => [
+      'glpi_databaseinstances_items' => [
          'items_id',
          'itemtype'
       ],

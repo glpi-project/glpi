@@ -32,5 +32,10 @@
 
 include ('../inc/includes.php');
 
-$dropdown = new DatabaseServerCategory();
-include (GLPI_ROOT . "/front/dropdown.common.php");
+Session::checkRight('database', READ);
+
+Html::header(DatabaseInstance::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "database");
+
+Search::show('DatabaseInstance');
+
+Html::footer();

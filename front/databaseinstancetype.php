@@ -32,5 +32,5 @@
 
 include ('../inc/includes.php');
 
-$dropdown = new DatabaseServerCategory();
-include (GLPI_ROOT . "/front/dropdown.common.form.php");
+$dropdown = new DatabaseInstanceType();
+include (GLPI_ROOT . "/front/dropdown.common.php");

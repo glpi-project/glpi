@@ -34,11 +34,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class DatabaseServer_Item extends CommonDBRelation {
+class DatabaseInstance_Item extends CommonDBRelation {
    use Glpi\Features\Clonable;
 
-   static public $itemtype_1 = 'DatabaseServer';
-   static public $items_id_1 = 'databaseservers_id';
+   static public $itemtype_1 = 'DatabaseInstance';
+   static public $items_id_1 = 'databasinstances_id';
    static public $take_entity_1 = false;
 
    static public $itemtype_2 = 'itemtype';
@@ -51,33 +51,33 @@ class DatabaseServer_Item extends CommonDBRelation {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      if (!DatabaseServer::canView()) {
+      if (!DatabaseInstance::canView()) {
          return '';
       }
 
       $nb = 0;
-      if ($item->getType() == DatabaseServer::class) {
+      if ($item->getType() == DatabaseInstance::class) {
          if ($_SESSION['glpishow_count_on_tabs'] && !$item->isNewItem()) {
             $nb = self::countForMainItem($item);
          }
          return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
 
-      } else if (in_array($item->getType(), DatabaseServer::getTypes(true))) {
+      } else if (in_array($item->getType(), DatabaseInstance::getTypes(true))) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = self::countForItem($item);
          }
-         return self::createTabEntry(DatabaseServer::getTypeName(Session::getPluralNumber()), $nb);
+         return self::createTabEntry(DatabaseInstance::getTypeName(Session::getPluralNumber()), $nb);
       }
    }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
-         case DatabaseServer::class:
+         case DatabaseInstance::class:
             self::showItems($item);
             break;
          default :
-            if (in_array($item->getType(), DatabaseServer::getTypes())) {
+            if (in_array($item->getType(), DatabaseInstance::getTypes())) {
                self::showForItem($item, $withtemplate);
             }
       }
@@ -87,11 +87,11 @@ class DatabaseServer_Item extends CommonDBRelation {
    /**
     * Print database items
     *
-    * @param DatabaseServer $database  Database object wanted
+    * @param DatabaseInstance $database  Database object wanted
     *
     * @return void|boolean (display) Returns false if there is a rights error.
    **/
-   static function showItems(DatabaseServer $database) {
+   static function showItems(DatabaseInstance $database) {
       global $DB;
 
       $ID = $database->fields['id'];
@@ -135,7 +135,7 @@ class DatabaseServer_Item extends CommonDBRelation {
          echo "<tr class='tab_bg_1'><td class='center'>";
          Dropdown::showSelectItemFromItemtypes(
                ['items_id_name'   => 'items_id',
-                'itemtypes'       => DatabaseServer::getTypes(true),
+                'itemtypes'       => DatabaseInstance::getTypes(true),
                 'entity_restrict' => ($database->fields['is_recursive']
                                       ? getSonsOf('glpi_entities',
                                        $database->fields['entities_id'])
@@ -143,7 +143,7 @@ class DatabaseServer_Item extends CommonDBRelation {
                 'checkright'      => true,
                ]);
          echo "</td><td class='center' class='tab_bg_1'>";
-         echo Html::hidden('databaseservers_id', ['value' => $ID]);
+         echo Html::hidden('databaseinstances_id', ['value' => $ID]);
          echo Html::submit(_x('button', 'Add'), ['name' => 'add']);
          echo "</td></tr>";
          echo "</table>";
@@ -221,7 +221,7 @@ class DatabaseServer_Item extends CommonDBRelation {
       $itemtype = $item->getType();
       $ID       = $item->fields['id'];
 
-      if (!DatabaseServer::canView()
+      if (!DatabaseInstance::canView()
           || !$item->can($ID, READ)) {
          return;
       }
@@ -236,9 +236,9 @@ class DatabaseServer_Item extends CommonDBRelation {
       $used      = [];
       while ($data = $iterator->next()) {
          $databases[$data['id']] = $data;
-         $database = new DatabaseServer();
+         $database = new DatabaseInstance();
          $database->getFromDB($data['id']);
-         $instances = DatabaseServerInstance::getItemsAssociatedTo($database::getType(), $data['id']);
+         $instances = DatabaseInstance::getItemsAssociatedTo($database::getType(), $data['id']);
          $databases[$data['id']]['instances'] = $instances;
          $used[$data['id']]      = $data['id'];
       }
@@ -253,7 +253,7 @@ class DatabaseServer_Item extends CommonDBRelation {
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add link to a database')."</th></tr>";
 
          echo "<tr class='tab_bg_1'><td>";
-         DatabaseServer::dropdown([
+         DatabaseInstance::dropdown([
             'entity'  => $item->getEntityID(),
             'used'    => $used
          ]);
@@ -301,7 +301,7 @@ class DatabaseServer_Item extends CommonDBRelation {
             $cID         = $data["id"];
             Session::addToNavigateListItems(__CLASS__, $cID);
             $assocID     = $data["linkid"];
-            $database    = new DatabaseServer();
+            $database    = new DatabaseInstance();
             $database->getFromResultSet($data);
             $instances = $data['instances'];
             unset($data['instances']);
@@ -318,7 +318,7 @@ class DatabaseServer_Item extends CommonDBRelation {
                   || empty($database->fields["name"])) {
                   $name = sprintf(__('%1$s (%2$s)'), $name, $database->fields["id"]);
                }
-               echo "<a href='" . DatabaseServer::getFormURLWithID($cID) . "'>" . $name . "</a>";
+               echo "<a href='" . DatabaseInstance::getFormURLWithID($cID) . "'>" . $name . "</a>";
                echo "</td>";
                echo "<td>".$instance->fields['name']."</td>";
                echo "<td>".$instance->fields['port']."</td>";
@@ -391,7 +391,7 @@ class DatabaseServer_Item extends CommonDBRelation {
    }
 
    public static function countForMainItem(CommonDBTM $item, $extra_types_where = []) {
-      $types = DatabaseServer::getTypes();
+      $types = DatabaseInstance::getTypes();
       $clause = [];
       if (count($types)) {
          $clause = ['itemtype' => $types];
@@ -417,7 +417,7 @@ class DatabaseServer_Item extends CommonDBRelation {
       global $CFG_GLPI;
 
       $specificities              = parent::getRelationMassiveActionsSpecificities();
-      $specificities['itemtypes'] = DatabaseServer::getTypes();
+      $specificities['itemtypes'] = DatabaseInstance::getTypes();
 
       return $specificities;
    }

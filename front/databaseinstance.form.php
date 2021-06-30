@@ -34,22 +34,21 @@ use Glpi\Event;
 
 include ('../inc/includes.php');
 
-Session::checkCentralAccess();
+Session::checkRight('database', READ);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
-
-if (!isset($_GET["databaseservers_id"])) {
-   $_GET["databaseservers_id"] = "";
+if (!isset($_GET["withtemplate"])) {
+   $_GET["withtemplate"] = "";
 }
 
-$instance = new DatabaseServerInstance();
+$instance = new DatabaseInstance();
 if (isset($_POST["add"])) {
    $instance->check(-1, CREATE, $_POST);
 
-   if ($instance->add($_POST)) {
-      Event::log($_POST['databaseservers_id'], "databases", 4, "management",
+   if ($newID = $instance->add($_POST)) {
+      Event::log($newid, "databaseinstance", 4, "management",
                  //TRANS: %s is the user login
                  sprintf(__('%s adds a database instance'), $_SESSION["glpiname"]));
       if ($_SESSION['glpibackcreated']) {
@@ -61,18 +60,18 @@ if (isset($_POST["add"])) {
    $instance->check($_POST['id'], DELETE);
    $ok = $instance->delete($_POST);
    if ($ok) {
-      Event::log($_POST["id"], "instances", 4, "management",
+      Event::log($_POST["id"], "databaseinstance", 4, "management",
          //TRANS: %s is the user login
-         sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
+         sprintf(__('%s deletes a database instance'), $_SESSION["glpiname"]));
    }
    $instance->redirectToList();
 
 } else if (isset($_POST["restore"])) {
    $instance->check($_POST['id'], DELETE);
    if ($instance->restore($_POST)) {
-      Event::log($_POST["id"], "instances", 4, "management",
+      Event::log($_POST["id"], "databaseinstance", 4, "management",
          //TRANS: %s is the user login
-         sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
+         sprintf(__('%s restores a database instance'), $_SESSION["glpiname"]));
    }
    $instance->redirectToList();
 
@@ -80,29 +79,29 @@ if (isset($_POST["add"])) {
    $instance->check($_POST["id"], PURGE);
 
    if ($instance->delete($_POST, 1)) {
-      Event::log($instance->fields['databaseservers_id'], "databases", 4, "management",
+      Event::log($_POST['id'], "databaseinstance", 4, "management",
                  //TRANS: %s is the user login
                  sprintf(__('%s purges a database instance'), $_SESSION["glpiname"]));
    }
-   $database = new DatabaseServer();
-   $database->getFromDB($instance->fields['databaseservers_id']);
-   Html::redirect(Toolbox::getItemTypeFormURL('DatabaseServer').'?id='.$instance->fields['databaseservers_id'].
-                  ($database->fields['is_template']?"&withtemplate=1":""));
+   $instance->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $instance->check($_POST["id"], UPDATE);
 
    if ($instance->update($_POST)) {
-      Event::log($instance->fields['databaseservers_id'], "databases", 4, "management",
+      Event::log($_POST['id'], "databaseinstance", 4, "management",
                  //TRANS: %s is the user login
                  sprintf(__('%s updates a database instance'), $_SESSION["glpiname"]));
    }
    Html::back();
 
 } else {
-   Html::header(DatabaseServer::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "database");
-   $instance->display(['id'           => $_GET["id"],
-                        'databaseservers_id' => $_GET["databaseservers_id"]]);
+   Html::header(DatabaseInstance::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "database");
+   $options = [
+      'id'           => $_GET['id'],
+      'withtemplate' => $_GET['withtemplate']
+   ];
+   $instance->display($options);
    Html::footer();
 }
 

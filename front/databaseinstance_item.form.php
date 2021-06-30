@@ -30,13 +30,31 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
+include ('../inc/includes.php');
 
-class DatabaseServerCategory extends CommonDropdown {
+Session::checkCentralAccess();
 
-   static function getTypeName($nb = 0) {
-      return _n('Database server category', 'Database server categories', $nb);
+$idb = new \DatabaseInstance_Item();
+$database = new DatabaseInstance();
+
+if (isset($_POST['update'])) {
+   $idb->check($_POST['id'], UPDATE);
+   //update existing relation
+   if ($idb->update($_POST)) {
+      $url = $database->getFormURLWithID($_POST['databaseinstances_id']);
+   } else {
+      $url = $idb->getFormURLWithID($_POST['id']);
    }
+   Html::redirect($url);
+} else if (isset($_POST['add'])) {
+   $idb->check(-1, CREATE, $_POST);
+   $idb->add($_POST);
+   Html::back();
+} else if (isset($_POST['purge'])) {
+   $idb->check($_POST['id'], PURGE);
+   $idb->delete($_POST, 1);
+   $url = $database->getFormURLWithID($_POST['databaseinstances_id']);
+   Html::redirect($url);
 }
+
+Html::displayErrorAndDie("lost");

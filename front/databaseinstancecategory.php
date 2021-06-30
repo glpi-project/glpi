@@ -32,29 +32,5 @@
 
 include ('../inc/includes.php');
 
-Session::checkCentralAccess();
-
-$idb = new \DatabaseServer_Item();
-$database = new DatabaseServer();
-
-if (isset($_POST['update'])) {
-   $idb->check($_POST['id'], UPDATE);
-   //update existing relation
-   if ($idb->update($_POST)) {
-      $url = $database->getFormURLWithID($_POST['databaseservers_id']);
-   } else {
-      $url = $idb->getFormURLWithID($_POST['id']);
-   }
-   Html::redirect($url);
-} else if (isset($_POST['add'])) {
-   $idb->check(-1, CREATE, $_POST);
-   $idb->add($_POST);
-   Html::back();
-} else if (isset($_POST['purge'])) {
-   $idb->check($_POST['id'], PURGE);
-   $idb->delete($_POST, 1);
-   $url = $database->getFormURLWithID($_POST['databaseservers_id']);
-   Html::redirect($url);
-}
-
-Html::displayErrorAndDie("lost");
+$dropdown = new DatabaseInstanceCategory();
+include (GLPI_ROOT . "/front/dropdown.common.php");

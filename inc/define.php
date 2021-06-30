@@ -185,7 +185,7 @@ $CFG_GLPI["state_types"]                  = ['Computer', 'Monitor', 'NetworkEqui
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
                                                   'Certificate', 'Enclosure', 'PDU', 'Line',
                                                   'Rack', 'SoftwareVersion', 'Cluster', 'Contract',
-                                                  'Appliance', 'DatabaseServer'];
+                                                  'Appliance', 'DatabaseInstance'];
 
 $CFG_GLPI["asset_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
@@ -210,7 +210,7 @@ $CFG_GLPI["document_types"]               = ['Budget', 'CartridgeItem', 'Change'
                                                   'SoftwareLicense', 'Supplier', 'Ticket','User',
                                                   'Certificate', 'Cluster', 'ITILFollowup', 'ITILSolution',
                                                   'ChangeTask', 'ProblemTask', 'TicketTask', 'Appliance',
-                                                  'DatabaseServer'];
+                                                  'DatabaseInstance'];
 
 $CFG_GLPI["consumables_types"]            = ['Group', 'User'];
 
@@ -227,7 +227,7 @@ $CFG_GLPI["infocom_types"]                = ['Cartridge', 'CartridgeItem', 'Comp
                                                   'Printer', 'Software', 'SoftwareLicense',
                                                   'Line', 'Certificate', 'Domain', 'Appliance', 'Item_DeviceSimcard',
                                                   'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment',
-                                                  'DatabaseServer'];
+                                                  'DatabaseInstance'];
 
 $CFG_GLPI["reservation_types"]            = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software'];
@@ -242,11 +242,11 @@ $CFG_GLPI["linkgroup_types"]              = ['Computer', 'Consumable', 'Monitor'
 
 $CFG_GLPI["linkuser_tech_types"]          = ['Computer', 'ConsumableItem', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
-                                                  'SoftwareLicense', 'Certificate', 'Appliance', 'DatabaseServer'];
+                                                  'SoftwareLicense', 'Certificate', 'Appliance', 'DatabaseInstance'];
 
 $CFG_GLPI["linkgroup_tech_types"]         = ['Computer', 'ConsumableItem', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
-                                                  'SoftwareLicense', 'Certificate', 'Appliance', 'DatabaseServer'];
+                                                  'SoftwareLicense', 'Certificate', 'Appliance', 'DatabaseInstance'];
 
 $CFG_GLPI["location_types"]               = ['Budget', 'CartridgeItem', 'ConsumableItem',
                                                   'Computer', 'Monitor', 'Netpoint',
@@ -259,13 +259,13 @@ $CFG_GLPI["ticket_types"]                 = ['Computer', 'Monitor', 'NetworkEqui
                                                   'SoftwareLicense', 'Certificate',
                                                   'Line', 'DCRoom', 'Rack', 'Enclosure', 'Cluster', 'PDU',
                                                   'Domain', 'DomainRecord', 'Appliance', 'Item_DeviceSimcard', 'PassiveDCEquipment',
-                                                  'DatabaseServer', 'DatabaseServer_Item'];
+                                                  'DatabaseInstance', 'DatabaseInstance_Item'];
 
 $CFG_GLPI["link_types"]                   = ['Budget', 'CartridgeItem', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract', 'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
                                                   'Printer', 'Software', 'Supplier', 'User', 'Certificate', 'Cluster',
-                                                  'DCRoom', 'Domain', 'Appliance', 'DatabaseServer'];
+                                                  'DCRoom', 'Domain', 'Appliance', 'DatabaseInstance'];
 
 $CFG_GLPI["dictionnary_types"]            = ['ComputerModel', 'ComputerType', 'Manufacturer',
                                                   'MonitorModel', 'MonitorType',
@@ -277,9 +277,9 @@ $CFG_GLPI["dictionnary_types"]            = ['ComputerModel', 'ComputerType', 'M
                                                   'Software', 'OperatingSystemArchitecture',
                                                   'OperatingSystemKernel', 'OperatingSystemKernelVersion',
                                                   'OperatingSystemEdition', 'ImageResolution', 'ImageFormat',
-                                                  'DatabaseServerType'];
+                                                  'DatabaseInstanceType'];
 
-$CFG_GLPI["helpdesk_visible_types"]       = ['Software', 'Appliance', 'DatabaseServer'];
+$CFG_GLPI["helpdesk_visible_types"]       = ['Software', 'Appliance', 'DatabaseInstance'];
 
 $CFG_GLPI["networkport_types"]            = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
                                                   'Phone', 'Printer', 'Enclosure', 'PDU', 'Cluster', 'Unmanaged'];
@@ -351,7 +351,7 @@ $CFG_GLPI["contract_types"]               = array_merge(['Computer', 'Monitor', 
                                                   'Peripheral', 'Phone', 'Printer', 'Project', 'Line',
                                                   'Software', 'SoftwareLicense', 'Certificate',
                                                   'DCRoom', 'Rack', 'Enclosure', 'Cluster', 'PDU', 'Appliance', 'Domain',
-                                                  'DatabaseServer'],
+                                                  'DatabaseInstance'],
                                                   $CFG_GLPI['itemdevices']);
 
 
@@ -460,12 +460,12 @@ $CFG_GLPI["kb_types"]              = ['Budget', 'Change', 'Computer',
                                            'Problem', 'Project', 'Software',
                                            'SoftwareLicense', 'Supplier',
                                            'Ticket', 'Certificate', 'Appliance',
-                                           'DatabaseServer'];
+                                           'DatabaseInstance'];
 $CFG_GLPI["certificate_types"]     = ['Computer',
                                       'NetworkEquipment', 'Peripheral',
                                       'Phone', 'Printer',
                                       'SoftwareLicense', 'User', 'Domain', 'Appliance',
-                                      'DatabaseServer'];
+                                      'DatabaseInstance'];
 
 $CFG_GLPI["rackable_types"]        = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Enclosure', 'PDU', 'PassiveDCEquipment'];
 
@@ -478,10 +478,10 @@ $CFG_GLPI['software_types']      = $CFG_GLPI['operatingsystem_types'];
 $CFG_GLPI['kanban_types']        = ['Project'];
 
 $CFG_GLPI['domain_types']        = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
-                                       'Phone', 'Printer', 'Software', 'Appliance', 'Certificate', 'DatabaseServer'];
+                                       'Phone', 'Printer', 'Software', 'Appliance', 'Certificate', 'DatabaseInstance'];
 
 $CFG_GLPI['appliance_types']     = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
-                                       'Printer', 'Software', 'Cluster', 'DatabaseServer'];
+                                       'Printer', 'Software', 'Cluster', 'DatabaseInstance'];
 
 $CFG_GLPI['appliance_relation_types'] = ['Location', 'Network', 'Domain'];
 
@@ -580,7 +580,7 @@ $CFG_GLPI["default_impact_asset_types"] = [
    Printer::getType()            => "pics/impact/printer.png",
    Rack::getType()               => "pics/impact/rack.png",
    Software::getType()           => "pics/impact/software.png",
-   DatabaseServer::getType()           => "pics/impact/database.png",
+   DatabaseInstance::getType()           => "pics/impact/database.png",
 ];
 
 /**
