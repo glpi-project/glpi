@@ -65,7 +65,7 @@ if ($printers_id !== false) {
       $scanned += $scans;
 
       $input = [
-         'date_creation'  => $dt->format('Y-m-d'),
+         'date'           => $dt->format('Y-m-d'),
          'total_pages'    => $total_pages,
          'bw_pages'       => $bw_pages,
          'color_pages'    => $color_pages,
@@ -98,7 +98,7 @@ if ($networkports_id !== false) {
       $outerrors = random_int(0, 750);
 
       $input = [
-         'date_creation'   => $dt->format('Y-m-d'),
+         'date'            => $dt->format('Y-m-d'),
          'ifinbytes'       => $inbytes,
          'ifoutbytes'      => $outbytes,
          'ifinerrors'      => $inerrors,

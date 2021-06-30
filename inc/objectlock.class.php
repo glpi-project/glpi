@@ -268,7 +268,7 @@ class ObjectLock extends CommonDBTM {
       $msg = "<strong class='nowrap'>";
       $msg .= sprintf(__('Locked by %s'), "<a href='" . $user->getLinkURL() . "'>" . $userdata['name'] . "</a>");
       $msg .= "&nbsp;" . Html::showToolTip($userdata["comment"], ['link' => $userdata['link'], 'display' => false]);
-      $msg .= " -> " . Html::convDateTime($this->fields['date_mod']);
+      $msg .= " -> " . Html::convDateTime($this->fields['date']);
       $msg .= "</strong>";
       if ($showAskUnlock) {
          $msg .= "<a class='vsubmit' onclick='javascript:askUnlock();'>".__('Ask for unlock')."</a>";
@@ -556,7 +556,7 @@ class ObjectLock extends CommonDBTM {
          $tab[] = [
             'id'            => '206',
             'table'         => getTableForItemType('ObjectLock'),
-            'field'         => 'date_mod',
+            'field'         => 'date',
             'datatype'      => 'datetime',
             'name'          => __('Locked date'),
             'joinparams'    => ['jointype' => 'itemtype_item'],
@@ -626,7 +626,7 @@ class ObjectLock extends CommonDBTM {
 
       $lockedItems = getAllDataFromTable(
          getTableForItemType(__CLASS__), [
-            'date_mod' => ['<', date("Y-m-d H:i:s", time() - ($task->fields['param'] * HOUR_TIMESTAMP))]
+            'date' => ['<', date("Y-m-d H:i:s", time() - ($task->fields['param'] * HOUR_TIMESTAMP))]
          ]
       );
 

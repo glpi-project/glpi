@@ -229,6 +229,76 @@ SQL
             'expected_misnamed'  => [],
             'expected_useless'   => [],
          ],
+         [
+            // name field should be indexed (default name field)
+            'create_table_sql'   => <<<SQL
+CREATE TABLE `%s` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL
+            ,
+            'expected_missing'   => [
+               'name' => ['name'],
+            ],
+            'expected_misnamed'  => [],
+            'expected_useless'   => [],
+            'item_class'         => new class extends \CommonDBTM { },
+         ],
+         [
+            // name field should be indexed (custom name field)
+            'create_table_sql'   => <<<SQL
+CREATE TABLE `%s` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `test` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
+) ENGINE=InnoDB
+SQL
+            ,
+            'expected_missing'   => [
+               'test' => ['test'],
+            ],
+            'expected_misnamed'  => [],
+            'expected_useless'   => [],
+            'item_class'         => new class extends \CommonDBTM {
+               static function getNameField() {
+                  return 'test';
+               }
+            },
+         ],
+         [
+            // name field could be indexed in PRIMARY (default name field)
+            'create_table_sql'   => <<<SQL
+CREATE TABLE `%s` (
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  PRIMARY KEY (`name`)
+) ENGINE=InnoDB
+SQL
+            ,
+            'expected_missing'   => [],
+            'expected_misnamed'  => [],
+            'expected_useless'   => [],
+            'item_class'         => new class extends \CommonDBTM { },
+         ],
+         [
+            // name field cannot be indexed if it is a text field
+            'create_table_sql'   => <<<SQL
+CREATE TABLE `%s` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL
+            ,
+            'expected_missing'   => [],
+            'expected_misnamed'  => [],
+            'expected_useless'   => [],
+            'item_class'         => new class extends \CommonDBTM { },
+         ],
       ];
    }
 
@@ -239,12 +309,19 @@ SQL
       string $create_table_sql,
       array $expected_missing,
       array $expected_misnamed,
-      array $expected_useless
+      array $expected_useless,
+      $item_class = null
    ) {
 
       global $DB;
 
-      $table_name = sprintf('glpitests_%s', uniqid());
+      $itemtype = sprintf('Test%s', uniqid());
+      $table_name = getTableForItemType($itemtype);
+
+      if ($item_class === null) {
+         $item_class = new class { };
+      }
+      class_alias(get_class($item_class), $itemtype);
 
       $this->newTestedInstance($DB);
       $DB->query(sprintf($create_table_sql, $table_name));

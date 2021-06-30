@@ -37,12 +37,12 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\Console\AbstractCommand;
-use Glpi\System\Diagnostic\DatabaseSchemaChecker;
+use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CheckSchemaCommand extends AbstractCommand {
+class CheckSchemaIntegrityCommand extends AbstractCommand {
 
    /**
     * Error code returned when failed to read empty SQL file.
@@ -61,10 +61,10 @@ class CheckSchemaCommand extends AbstractCommand {
    protected function configure() {
       parent::configure();
 
-      $this->setName('glpi:database:check_schema');
+      $this->setName('glpi:database:check_schema_integrity');
       $this->setAliases(
          [
-            'db:check_schema',
+            'db:check_schema_integrity',
             'glpi:database:check', // old name
             'db:check', // old alias
          ]
@@ -109,7 +109,7 @@ class CheckSchemaCommand extends AbstractCommand {
 
    protected function execute(InputInterface $input, OutputInterface $output) {
 
-      $checker = new DatabaseSchemaChecker(
+      $checker = new DatabaseSchemaIntegrityChecker(
          $this->db,
          $input->getOption('strict'),
          $input->getOption('ignore-innodb-migration'),

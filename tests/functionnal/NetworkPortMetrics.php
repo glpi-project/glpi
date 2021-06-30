@@ -78,7 +78,7 @@ class NetworkPortMetrics extends DbTestCase {
             'ifouterrors'  => 50,
             'ifinbytes'    => 1076823325,
             'ifoutbytes'   => 2179528910,
-            'date_creation' => $value['date_creation'],
+            'date' => $value['date'],
             'id' => $value['id']
       ];
       $this->array($value)->isEqualTo($expected);
@@ -104,7 +104,7 @@ class NetworkPortMetrics extends DbTestCase {
             'ifouterrors'  => 0,
             'ifinbytes'    => 1056823325,
             'ifoutbytes'   => 2159528910,
-            'date_creation' => $value['date_creation'],
+            'date' => $value['date'],
             'id' => $value['id']
       ];
       $this->array($value1)->isIdenticalTo($value);

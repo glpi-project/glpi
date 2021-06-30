@@ -492,7 +492,7 @@ class DbUtils extends DbTestCase {
          ->if($this->newTestedInstance)
          ->then
             ->boolean($this->testedInstance->isIndex('glpi_configs', 'fakeField'))->isFalse()
-            ->boolean($this->testedInstance->isIndex('glpi_configs', 'name'))->isFalse()
+            ->boolean($this->testedInstance->isIndex('glpi_configs', 'name'))->isTrue()
             ->boolean($this->testedInstance->isIndex('glpi_configs', 'value'))->isFalse()
             ->boolean($this->testedInstance->isIndex('glpi_users', 'locations_id'))->isTrue()
             ->boolean($this->testedInstance->isIndex('glpi_users', 'unicityloginauth'))->isTrue()
@@ -506,7 +506,7 @@ class DbUtils extends DbTestCase {
 
       //keep testing old method from db.function
       $this->boolean(isIndex('glpi_configs', 'fakeField'))->isFalse();
-      $this->boolean(isIndex('glpi_configs', 'name'))->isFalse();
+      $this->boolean(isIndex('glpi_configs', 'name'))->isTrue();
       $this->boolean(isIndex('glpi_users', 'locations_id'))->isTrue();
       $this->boolean(isIndex('glpi_users', 'unicityloginauth'))->isTrue();
 

@@ -107,7 +107,7 @@ class PrinterLog extends CommonDBChild {
       $bdate = new DateTime();
       $bdate->sub(new DateInterval('P1Y'));
       $filters = [
-         'date_creation' => ['>', $bdate->format('Y-m-d')]
+         'date' => ['>', $bdate->format('Y-m-d')]
       ];
       $filters = array_merge($filters, $user_filters);
 
@@ -140,9 +140,9 @@ class PrinterLog extends CommonDBChild {
       $labels = [];
       $i = 0;
       foreach ($raw_metrics as $metrics) {
-         $date = new DateTime($metrics['date_creation']);
+         $date = new DateTime($metrics['date']);
          $labels[] = $date->format(__('Y-m-d'));
-         unset($metrics['id'], $metrics['date_creation'], $metrics['printers_id']);
+         unset($metrics['id'], $metrics['date'], $metrics['printers_id']);
 
          foreach ($metrics as $key => $value) {
             if ($value > 0) {

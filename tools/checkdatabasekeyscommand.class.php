@@ -40,24 +40,24 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CheckKeysCommand extends AbstractCommand {
+class CheckDatabaseKeysCommand extends AbstractCommand {
 
    /**
-    * Error code returned when missing keys found.
+    * Error code returned when missing keys are found.
     *
     * @var integer
     */
    const ERROR_FOUND_MISSING_KEYS = 1;
 
    /**
-    * Error code returned when misnamed keys found.
+    * Error code returned when misnamed keys are found.
     *
     * @var integer
     */
    const ERROR_FOUND_MISNAMED_KEYS = 2;
 
    /**
-    * Error code returned when useless keys found.
+    * Error code returned when useless keys are found.
     *
     * @var integer
     */
@@ -66,8 +66,8 @@ class CheckKeysCommand extends AbstractCommand {
    protected function configure() {
       parent::configure();
 
-      $this->setName('glpi:database:check_keys');
-      $this->setAliases(['db:check_keys']);
+      $this->setName('glpi:tools:check_database_keys');
+      $this->setAliases(['tools:check_database_keys']);
       $this->setDescription(__('Check database for missing and errounous keys.'));
 
       $this->addOption(

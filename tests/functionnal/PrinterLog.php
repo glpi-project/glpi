@@ -59,7 +59,7 @@ class PrinterLog extends DbTestCase {
          'color_pages' => 1799,
          'rv_pages' => 4389,
          'scanned' => 7846,
-         'date_creation' => $cdate1->format('Y-m-d')
+         'date' => $cdate1->format('Y-m-d')
       ];
       $this->integer($log->add($input))->isGreaterThan(0);
 
@@ -72,7 +72,7 @@ class PrinterLog extends DbTestCase {
          'color_pages' => 2151,
          'rv_pages' => 5987,
          'scanned' => 15542,
-         'date_creation' => $cdate2->format('Y-m-d')
+         'date' => $cdate2->format('Y-m-d')
       ];
       $this->integer($log->add($input))->isGreaterThan(0);
 
@@ -83,7 +83,7 @@ class PrinterLog extends DbTestCase {
          'color_pages' => 3041,
          'rv_pages' => 7654,
          'scanned' => 28177,
-         'date_creation' => $now->format('Y-m-d')
+         'date' => $now->format('Y-m-d')
       ];
       $this->integer($log->add($input))->isGreaterThan(0);
 
@@ -91,6 +91,6 @@ class PrinterLog extends DbTestCase {
       $this->array($log->getMetrics($printer))->hasSize(2);
 
       //change filter to include first one
-      $this->array($log->getMetrics($printer, ['date_creation' => ['>=', $cdate1->format('Y-m-d')]]))->hasSize(3);
+      $this->array($log->getMetrics($printer, ['date' => ['>=', $cdate1->format('Y-m-d')]]))->hasSize(3);
    }
 }

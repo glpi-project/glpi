@@ -77,6 +77,9 @@ $migration->changeField('glpi_notimportedemails', 'subject', 'subject', 'text', 
 
 // Drop malformed keys
 $malformed_keys = [
+   'glpi_ipaddresses' => [
+      'textual',
+   ],
    'glpi_items_softwareversions' => [
       'is_deleted',
       'is_template',
@@ -250,11 +253,12 @@ foreach ($useless_keys as $table => $keys) {
    }
 }
 
-// Add missing keys (based on glpi:database:check_keys detection)
+// Add missing keys (based on glpi:tools:check_database_keys detection)
 $missing_keys = [
    'glpi_apiclients' => [
       'entities_id',
       'is_recursive',
+      'name',
    ],
    'glpi_appliances' => [
       'date_mod',
@@ -262,6 +266,18 @@ $missing_keys = [
    ],
    'glpi_appliancetypes' => [
       'is_recursive',
+   ],
+   'glpi_authldapreplicates' => [
+      'name',
+   ],
+   'glpi_authldaps' => [
+      'name',
+   ],
+   'glpi_authmails' => [
+      'name',
+   ],
+   'glpi_blacklistedmailcontents' => [
+      'name',
    ],
    'glpi_businesscriticities' => [
       'entities_id',
@@ -280,12 +296,16 @@ $missing_keys = [
    'glpi_clusters' => [
       'date_creation',
       'date_mod',
+      'name',
    ],
    'glpi_computerantiviruses' => [
       'manufacturers_id',
    ],
    'glpi_computervirtualmachines' => [
       'virtualmachinetypes_id',
+   ],
+   'glpi_configs' => [
+      'name',
    ],
    'glpi_consumableitems' => [
       'is_recursive',
@@ -297,16 +317,24 @@ $missing_keys = [
       'is_recursive',
       'is_template',
    ],
+   'glpi_crontasks' => [
+      'name',
+   ],
+   'glpi_dashboards_dashboards' => [
+      'name',
+   ],
    'glpi_dashboards_rights' => [
       'item' => ['itemtype', 'items_id'],
    ],
    'glpi_datacenters' => [
       'date_creation',
       'date_mod',
+      'name',
    ],
    'glpi_dcrooms' => [
       'date_creation',
       'date_mod',
+      'name',
    ],
    'glpi_devicesensors' => [
       'devicesensormodels_id',
@@ -340,11 +368,13 @@ $missing_keys = [
    'glpi_enclosures' => [
       'date_creation',
       'date_mod',
+      'name',
    ],
    'glpi_entities' => [
       'authldaps_id',
       'calendars_id',
       'entities_id_software',
+      'name',
    ],
    'glpi_fieldblacklists' => [
       'entities_id',
@@ -354,6 +384,7 @@ $missing_keys = [
       'entities_id',
       'is_active',
       'is_recursive',
+      'name',
    ],
    'glpi_groups' => [
       'is_recursive',
@@ -364,6 +395,12 @@ $missing_keys = [
    'glpi_holidays' => [
       'entities_id',
       'is_recursive',
+   ],
+   'glpi_impactcompounds' => [
+      'name',
+   ],
+   'glpi_ipaddresses' => [
+      'name',
    ],
    'glpi_ipnetworks' => [
       'ipnetworks_id',
@@ -423,7 +460,6 @@ $missing_keys = [
    ],
    'glpi_knowbaseitems_revisions' => [
       'users_id',
-      'date_creation',
    ],
    'glpi_knowbaseitemtranslations' => [
       'date_creation',
@@ -437,9 +473,17 @@ $missing_keys = [
       'states_id',
       'date_creation',
       'date_mod',
+      'name',
    ],
    'glpi_links' => [
       'is_recursive',
+      'name',
+   ],
+   'glpi_mailcollectors' => [
+      'name',
+   ],
+   'glpi_manuallinks' => [
+      'name',
    ],
    'glpi_monitors' => [
       'date_mod',
@@ -450,12 +494,14 @@ $missing_keys = [
    'glpi_networkequipments' => [
       'is_recursive',
    ],
+   'glpi_networkports' => [
+      'name',
+   ],
    'glpi_networkportwifis' => [
       'networkportwifis_id',
    ],
    'glpi_objectlocks' => [
       'users_id',
-      'date_mod',
    ],
    'glpi_olalevels' => [
       'entities_id',
@@ -480,6 +526,7 @@ $missing_keys = [
    'glpi_passivedcequipments' => [
       'date_creation',
       'date_mod',
+      'name',
    ],
    'glpi_pdumodels' => [
       'date_creation',
@@ -488,6 +535,7 @@ $missing_keys = [
    'glpi_pdus' => [
       'date_creation',
       'date_mod',
+      'name',
    ],
    'glpi_pdus_plugs' => [
       'date_creation',
@@ -497,8 +545,23 @@ $missing_keys = [
       'date_creation',
       'date_mod',
    ],
+   'glpi_planningexternalevents' => [
+      'name',
+   ],
+   'glpi_planningexternaleventtemplates' => [
+      'name',
+   ],
+   'glpi_plugins' => [
+      'name',
+   ],
    'glpi_printers' => [
       'is_recursive',
+   ],
+   'glpi_profilerights' => [
+      'name',
+   ],
+   'glpi_profiles' => [
+      'name',
    ],
    'glpi_projects' => [
       'is_deleted',
@@ -513,9 +576,14 @@ $missing_keys = [
    'glpi_racks' => [
       'date_creation',
       'date_mod',
+      'name',
    ],
    'glpi_recurrentchanges' => [
       'calendars_id',
+      'name',
+   ],
+   'glpi_refusedequipments' => [
+      'name',
    ],
    'glpi_registeredids' => [
       'item' => ['itemtype', 'items_id'],
@@ -523,6 +591,21 @@ $missing_keys = [
    'glpi_remindertranslations' => [
       'date_creation',
       'date_mod',
+   ],
+   'glpi_reminders' => [
+      'name',
+   ],
+   'glpi_rulerightparameters' => [
+      'name',
+   ],
+   'glpi_rules' => [
+      'name',
+   ],
+   'glpi_savedsearches' => [
+      'name',
+   ],
+   'glpi_softwarecategories' => [
+      'name',
    ],
    'glpi_softwarelicenses' => [
       'is_recursive',
@@ -543,6 +626,9 @@ $missing_keys = [
       'entities_id',
       'is_recursive',
    ],
+   'glpi_ssovariables' => [
+      'name',
+   ],
    'glpi_states' => [
       'entities_id',
       'is_recursive',
@@ -552,13 +638,26 @@ $missing_keys = [
    ],
    'glpi_ticketrecurrents' => [
       'calendars_id',
+      'name',
    ],
    'glpi_tickets_tickets' => [
       'tickets_id_2',
    ],
+   'glpi_transfers' => [
+      'name',
+   ],
    'glpi_users' => [
       'auths_id',
       'default_requesttypes_id',
+   ],
+   'glpi_virtualmachinestates' => [
+      'name',
+   ],
+   'glpi_virtualmachinesystems' => [
+      'name',
+   ],
+   'glpi_virtualmachinetypes' => [
+      'name',
    ],
    'glpi_vlans' => [
       'is_recursive',
@@ -570,5 +669,67 @@ $missing_keys = [
 foreach ($missing_keys as $table => $fields) {
    foreach ($fields as $key => $field) {
       $migration->addKey($table, $field, is_numeric($key) ? '' : $key);
+   }
+}
+
+// Add missing `date_creation` field on tables that already have `date_mod` field
+$tables = [
+   'glpi_apiclients',
+   'glpi_appliances',
+   'glpi_authmails',
+   'glpi_transfers',
+];
+foreach ($tables as $table) {
+   $migration->addField($table, 'date_creation', 'timestamp');
+   $migration->addKey($table, 'date_creation');
+}
+
+// Add missing `date_mod` field on tables that already have `date_creation` field
+$tables = [
+   'glpi_lockedfields',
+];
+foreach ($tables as $table) {
+   $migration->addField($table, 'date_mod', 'timestamp');
+   $migration->addKey($table, 'date_mod');
+}
+
+// Rename `date` fields to `date_creation` when value is just a DB insert timestamp
+$tables = [
+   'glpi_knowbaseitems',
+   'glpi_notepads',
+   'glpi_projecttasks',
+];
+foreach ($tables as $table) {
+   if ($DB->fieldExists($table, 'date', false)) {
+      $migration->dropKey($table, 'date');
+      $migration->migrationOneTable($table);
+      $migration->changeField($table, 'date', 'date_creation', 'timestamp');
+      $migration->addKey($table, 'date_creation');
+   }
+}
+$migration->changeSearchOption(KnowbaseItem::class, 5, 121);
+$migration->changeSearchOption(ProjectTask::class, 15, 121);
+
+// Rename `glpi_objectlocks` `date_mod` to `date`
+if ($DB->fieldExists('glpi_objectlocks', 'date_mod', false)) {
+   $migration->dropKey('glpi_objectlocks', 'date_mod');
+   $migration->migrationOneTable('glpi_objectlocks');
+   $migration->changeField('glpi_objectlocks', 'date_mod', 'date', 'timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP');
+   $migration->addKey('glpi_objectlocks', 'date');
+}
+
+// Rename `date_creation` to `date` when field refers to a valuable date and not just to db insert timestamps
+$tables = [
+   'glpi_knowbaseitems_revisions',
+   'glpi_networkportconnectionlogs',
+   'glpi_networkportmetrics',
+   'glpi_printerlogs',
+];
+foreach ($tables as $table) {
+   if ($DB->fieldExists($table, 'date_creation', false)) {
+      $migration->dropKey($table, 'date_creation');
+      $migration->migrationOneTable($table);
+      $migration->changeField($table, 'date_creation', 'date', 'timestamp');
+      $migration->addKey($table, 'date');
    }
 }

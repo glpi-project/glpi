@@ -158,7 +158,7 @@ class Printer extends AbstractInventoryAsset {
       $result = $iterator->next();
 
       unset($result['id']);
-      unset($result['date_creation']);
+      unset($result['date']);
 
       $this->array($result)->isIdenticalTo([
          'printers_id' => $printer->fields['id'],

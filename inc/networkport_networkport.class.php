@@ -312,7 +312,8 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
       $input = [
          'networkports_id_source'      => $netports_id,
          'networkports_id_destination' => $opposite_port,
-         'connected'                   => ($action === 'add')
+         'connected'                   => ($action === 'add'),
+         'date'                        => $_SESSION['glpi_currenttime'],
       ];
 
       $log->add($input);

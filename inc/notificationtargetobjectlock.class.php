@@ -59,7 +59,8 @@ class NotificationTargetObjectLock extends NotificationTarget {
                     'objectlock.name'                 => __('Item Name'),
                     'objectlock.id'                   => __('Item ID'),
                     'objectlock.type'                 => __('Item Type'),
-                    'objectlock.date_mod'             => __('Lock date'),
+                    'objectlock.date'                 => __('Lock date'),
+                    'objectlock.date_mod'             => __('Lock date'), // old field name
                     'objectlock.lockedby.lastname'    => __('Lastname of locking user'),
                     'objectlock.lockedby.firstname'   => __('Firstname of locking user'),
                     'objectlock.requester.lastname'   => __('Requester Lastname'),
@@ -110,8 +111,9 @@ class NotificationTargetObjectLock extends NotificationTarget {
       $this->data['##objectlock.name##']     = $object->fields['name'];
       $this->data['##objectlock.id##']       = $options['item']->fields['items_id'];
       $this->data['##objectlock.type##']     = $options['item']->fields['itemtype'];
-      $this->data['##objectlock.date_mod##'] = Html::convDateTime($options['item']->fields['date_mod'],
+      $this->data['##objectlock.date##']     = Html::convDateTime($options['item']->fields['date_mod'],
                                                                    $user->fields['date_format']);
+      $this->data['##objectlock.date_mod##'] = $this->data['##objectlock.date##'];
       $this->data['##objectlock.lockedby.lastname##']
                                               = $user->fields['realname'];
       $this->data['##objectlock.lockedby.firstname##']

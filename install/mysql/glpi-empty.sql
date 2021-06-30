@@ -58,6 +58,7 @@ CREATE TABLE `glpi_authldapreplicates` (
   `name` varchar(255) DEFAULT NULL,
   `timeout` int NOT NULL DEFAULT '10',
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `authldaps_id` (`authldaps_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -117,6 +118,7 @@ CREATE TABLE `glpi_authldaps` (
   `use_bind` tinyint NOT NULL DEFAULT '1',
   `timeout` int NOT NULL DEFAULT '10',
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `is_default` (`is_default`),
   KEY `is_active` (`is_active`),
@@ -134,10 +136,13 @@ CREATE TABLE `glpi_authmails` (
   `connect_string` varchar(255) DEFAULT NULL,
   `host` varchar(255) DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
   `comment` text,
   `is_active` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`),
   KEY `is_active` (`is_active`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -150,6 +155,7 @@ CREATE TABLE `glpi_apiclients` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
   `is_active` tinyint NOT NULL DEFAULT '0',
   `ipv4_range_start` bigint DEFAULT NULL,
   `ipv4_range_end` bigint DEFAULT NULL,
@@ -159,7 +165,9 @@ CREATE TABLE `glpi_apiclients` (
   `dolog_method` tinyint NOT NULL DEFAULT '0',
   `comment` text,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`),
   KEY `is_active` (`is_active`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
@@ -189,6 +197,7 @@ CREATE TABLE `glpi_blacklistedmailcontents` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -232,6 +241,7 @@ CREATE TABLE `glpi_savedsearches` (
   `last_execution_date` timestamp NULL DEFAULT NULL,
   `counter` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `type` (`type`),
   KEY `itemtype` (`itemtype`),
   KEY `entities_id` (`entities_id`),
@@ -1204,7 +1214,8 @@ CREATE TABLE `glpi_configs` (
   `name` varchar(150) DEFAULT NULL,
   `value` text,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`context`,`name`)
+  UNIQUE KEY `unicity` (`context`,`name`),
+  KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_impacts
@@ -1229,7 +1240,8 @@ CREATE TABLE `glpi_impactcompounds` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT '',
   `color` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -1571,6 +1583,7 @@ CREATE TABLE `glpi_crontasks` (
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`name`),
+  KEY `name` (`name`),
   KEY `mode` (`mode`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
@@ -1585,7 +1598,8 @@ CREATE TABLE `glpi_dashboards_dashboards` (
   `name` varchar(100) NOT NULL,
   `context` varchar(100) NOT NULL DEFAULT 'core',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `key` (`key`)
+  UNIQUE KEY `key` (`key`),
+  KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_dashboards_items
@@ -2724,6 +2738,7 @@ CREATE TABLE `glpi_entities` (
   `transfers_id` int NOT NULL DEFAULT '-2',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`,`name`),
+  KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `tickettemplates_id` (`tickettemplates_id`),
@@ -2840,6 +2855,7 @@ CREATE TABLE `glpi_fieldunicities` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `is_active` (`is_active`),
@@ -3140,8 +3156,8 @@ CREATE TABLE `glpi_ipaddresses` (
   `mainitems_id` int NOT NULL DEFAULT '0',
   `mainitemtype` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
-  KEY `textual` (`name`),
   KEY `binary` (`binary_0`,`binary_1`,`binary_2`,`binary_3`),
   KEY `is_deleted` (`is_deleted`),
   KEY `is_dynamic` (`is_dynamic`),
@@ -3818,7 +3834,7 @@ CREATE TABLE `glpi_knowbaseitems` (
   `is_faq` tinyint NOT NULL DEFAULT '0',
   `users_id` int NOT NULL DEFAULT '0',
   `view` int NOT NULL DEFAULT '0',
-  `date` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `begin_date` timestamp NULL DEFAULT NULL,
   `end_date` timestamp NULL DEFAULT NULL,
@@ -3826,6 +3842,7 @@ CREATE TABLE `glpi_knowbaseitems` (
   KEY `users_id` (`users_id`),
   KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`),
   KEY `is_faq` (`is_faq`),
+  KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`),
   KEY `begin_date` (`begin_date`),
   KEY `end_date` (`end_date`),
@@ -3909,6 +3926,7 @@ CREATE TABLE `glpi_lines` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `comment` text,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `is_deleted` (`is_deleted`),
@@ -3973,6 +3991,7 @@ CREATE TABLE `glpi_links` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `date_mod` (`date_mod`),
@@ -4073,6 +4092,7 @@ CREATE TABLE `glpi_mailcollectors` (
   `add_cc_to_observer` tinyint NOT NULL DEFAULT '0',
   `collect_only_unread` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `is_active` (`is_active`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
@@ -4522,6 +4542,7 @@ CREATE TABLE `glpi_networkports` (
   `trunk` tinyint NOT NULL DEFAULT '0',
   `lastup` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
@@ -4608,7 +4629,7 @@ CREATE TABLE `glpi_notepads` (
   `id` int NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) DEFAULT NULL,
   `items_id` int NOT NULL DEFAULT '0',
-  `date` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `users_id` int NOT NULL DEFAULT '0',
   `users_id_lastupdater` int NOT NULL DEFAULT '0',
@@ -4616,7 +4637,7 @@ CREATE TABLE `glpi_notepads` (
   PRIMARY KEY (`id`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `date_mod` (`date_mod`),
-  KEY `date` (`date`),
+  KEY `date_creation` (`date_creation`),
   KEY `users_id_lastupdater` (`users_id_lastupdater`),
   KEY `users_id` (`users_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -4740,11 +4761,11 @@ CREATE TABLE `glpi_objectlocks` (
   `itemtype` varchar(100) NOT NULL COMMENT 'Type of locked object',
   `items_id` int NOT NULL COMMENT 'RELATION to various tables, according to itemtype (ID)',
   `users_id` int NOT NULL COMMENT 'id of the locker',
-  `date_mod` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp of the lock',
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `item` (`itemtype`,`items_id`),
   KEY `users_id` (`users_id`),
-  KEY `date_mod` (`date_mod`)
+  KEY `date` (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -4836,6 +4857,7 @@ CREATE TABLE `glpi_passivedcequipments` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `locations_id` (`locations_id`),
@@ -5137,6 +5159,7 @@ CREATE TABLE `glpi_plugins` (
   `license` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`directory`),
+  KEY `name` (`name`),
   KEY `state` (`state`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -5417,7 +5440,8 @@ CREATE TABLE `glpi_profilerights` (
   `name` varchar(255) DEFAULT NULL,
   `rights` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`profiles_id`,`name`)
+  UNIQUE KEY `unicity` (`profiles_id`,`name`),
+  KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_profiles
@@ -5442,6 +5466,7 @@ CREATE TABLE `glpi_profiles` (
   `managed_domainrecordtypes` text,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `interface` (`interface`),
   KEY `is_default` (`is_default`),
   KEY `date_mod` (`date_mod`),
@@ -5620,7 +5645,7 @@ CREATE TABLE `glpi_projecttasks` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `projects_id` int NOT NULL DEFAULT '0',
   `projecttasks_id` int NOT NULL DEFAULT '0',
-  `date` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `plan_start_date` timestamp NULL DEFAULT NULL,
   `plan_end_date` timestamp NULL DEFAULT NULL,
@@ -5644,7 +5669,7 @@ CREATE TABLE `glpi_projecttasks` (
   KEY `is_recursive` (`is_recursive`),
   KEY `projects_id` (`projects_id`),
   KEY `projecttasks_id` (`projecttasks_id`),
-  KEY `date` (`date`),
+  KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`),
   KEY `users_id` (`users_id`),
   KEY `plan_start_date` (`plan_start_date`),
@@ -5854,6 +5879,7 @@ CREATE TABLE `glpi_reminders` (
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
+  KEY `name` (`name`),
   KEY `date` (`date`),
   KEY `begin` (`begin`),
   KEY `end` (`end`),
@@ -6044,6 +6070,7 @@ CREATE TABLE `glpi_rulerightparameters` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -6068,6 +6095,7 @@ CREATE TABLE `glpi_rules` (
   `condition` int NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_active` (`is_active`),
   KEY `sub_type` (`sub_type`),
@@ -6294,6 +6322,7 @@ CREATE TABLE `glpi_softwarecategories` (
   `ancestors_cache` longtext,
   `sons_cache` longtext,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `softwarecategories_id` (`softwarecategories_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -6547,6 +6576,7 @@ CREATE TABLE `glpi_ssovariables` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -6786,6 +6816,7 @@ CREATE TABLE `glpi_ticketrecurrents` (
   `calendars_id` int NOT NULL DEFAULT '0',
   `end_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `is_active` (`is_active`),
@@ -6813,6 +6844,7 @@ CREATE TABLE `glpi_recurrentchanges` (
   `calendars_id` int NOT NULL DEFAULT '0',
   `end_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `is_active` (`is_active`),
@@ -7202,10 +7234,13 @@ CREATE TABLE `glpi_transfers` (
   `keep_cartridge` int NOT NULL DEFAULT '0',
   `keep_consumable` int NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
   `comment` text,
   `keep_disk` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `date_mod` (`date_mod`)
+  KEY `name` (`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -7388,6 +7423,7 @@ CREATE TABLE `glpi_virtualmachinestates` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -7403,6 +7439,7 @@ CREATE TABLE `glpi_virtualmachinesystems` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -7418,6 +7455,7 @@ CREATE TABLE `glpi_virtualmachinetypes` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -7495,12 +7533,12 @@ CREATE TABLE `glpi_knowbaseitems_revisions` (
   `answer` longtext,
   `language` varchar(10) DEFAULT NULL,
   `users_id` int NOT NULL DEFAULT '0',
-  `date_creation` timestamp NULL DEFAULT NULL,
+  `date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`knowbaseitems_id`,`revision`,`language`),
   KEY `revision` (`revision`),
   KEY `users_id` (`users_id`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date` (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_knowbaseitems_comments
@@ -7703,6 +7741,7 @@ CREATE TABLE `glpi_datacenters` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `locations_id` (`locations_id`),
@@ -7726,6 +7765,7 @@ CREATE TABLE `glpi_dcrooms` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `locations_id` (`locations_id`),
@@ -7800,6 +7840,7 @@ CREATE TABLE `glpi_racks` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `locations_id` (`locations_id`),
@@ -7878,6 +7919,7 @@ CREATE TABLE `glpi_enclosures` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `locations_id` (`locations_id`),
@@ -7969,6 +8011,7 @@ CREATE TABLE `glpi_pdus` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `locations_id` (`locations_id`),
@@ -8116,6 +8159,7 @@ CREATE TABLE `glpi_clusters` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `users_id_tech` (`users_id_tech`),
   KEY `group_id_tech` (`groups_id_tech`),
   KEY `is_deleted` (`is_deleted`),
@@ -8164,6 +8208,7 @@ CREATE TABLE `glpi_planningexternalevents` (
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
+  KEY `name` (`name`),
   KEY `planningexternaleventtemplates_id` (`planningexternaleventtemplates_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
@@ -8196,6 +8241,7 @@ CREATE TABLE `glpi_planningexternaleventtemplates` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `state` (`state`),
   KEY `planningeventcategories_id` (`planningeventcategories_id`),
@@ -8354,6 +8400,7 @@ CREATE TABLE `glpi_appliances` (
   `groups_id` int NOT NULL DEFAULT '0',
   `groups_id_tech` int NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
   `states_id` int NOT NULL DEFAULT '0',
   `externalidentifier` varchar(255) DEFAULT NULL,
   `serial` varchar(255) DEFAULT NULL,
@@ -8377,7 +8424,8 @@ CREATE TABLE `glpi_appliances` (
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
   KEY `is_helpdesk_visible` (`is_helpdesk_visible`),
-  KEY `date_mod` (`date_mod`)
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_appliances_items`;
@@ -8482,9 +8530,11 @@ CREATE TABLE `glpi_lockedfields` (
   `items_id` int NOT NULL DEFAULT '0',
   `field` varchar(50) NOT NULL,
   `value` varchar(255) DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`,`field`),
+  KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -8577,22 +8627,22 @@ CREATE TABLE `glpi_printerlogs` (
   `color_copies` int NOT NULL DEFAULT '0',
   `scanned` int NOT NULL DEFAULT '0',
   `faxed` int NOT NULL DEFAULT '0',
-  `date_creation` timestamp NULL DEFAULT NULL,
+  `date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `printers_id` (`printers_id`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date` (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
 DROP TABLE IF EXISTS `glpi_networkportconnectionlogs`;
 CREATE TABLE `glpi_networkportconnectionlogs` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `date_creation` timestamp NULL DEFAULT NULL,
+  `date` timestamp NULL DEFAULT NULL,
   `connected` tinyint NOT NULL DEFAULT '0',
   `networkports_id_source` int NOT NULL DEFAULT '0',
   `networkports_id_destination` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `date_creation` (`date_creation`),
+  KEY `date` (`date`),
   KEY `networkports_id_source` (`networkports_id_source`),
   KEY `networkports_id_destination` (`networkports_id_destination`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -8601,14 +8651,14 @@ CREATE TABLE `glpi_networkportconnectionlogs` (
 DROP TABLE IF EXISTS `glpi_networkportmetrics`;
 CREATE TABLE `glpi_networkportmetrics` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `date_creation` timestamp NULL DEFAULT NULL,
+  `date` timestamp NULL DEFAULT NULL,
   `ifinbytes` bigint NOT NULL DEFAULT '0',
   `ifinerrors` bigint NOT NULL DEFAULT '0',
   `ifoutbytes` bigint NOT NULL DEFAULT '0',
   `ifouterrors` bigint NOT NULL DEFAULT '0',
   `networkports_id` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `date_creation` (`date_creation`),
+  KEY `date` (`date`),
   KEY `networkports_id` (`networkports_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -8628,6 +8678,7 @@ CREATE TABLE `glpi_refusedequipments` (
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `agents_id` (`agents_id`),
   KEY `rules_id` (`rules_id`),
@@ -8738,6 +8789,7 @@ CREATE TABLE `glpi_manuallinks` (
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `items_id` (`items_id`),
   KEY `date_creation` (`date_creation`),
