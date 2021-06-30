@@ -6979,7 +6979,10 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($with_logs && Session::getCurrentInterface() == "central") {
          //add logs to timeline
          $log_items = Log::getHistoryData($this, 0, 0, [
-            'id_search_option' => ['>', 0]
+            'OR' => [
+               'id_search_option' => ['>', 0],
+               'itemtype_link'    => ['User', 'Group', 'Supplier'],
+            ]
          ]);
 
          foreach ($log_items as $log_item) {
