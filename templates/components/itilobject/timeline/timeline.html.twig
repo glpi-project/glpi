@@ -163,9 +163,8 @@ $(function() {
       timeline_item.find('.timeline-item-buttons').removeClass('d-none');
       timeline_item.find('.close-edit-content').addClass('d-none');
 
-      timeline_item
-         .find('.ajax-content').html('')
-         .siblings('.read-only-content').show();
+      timeline_item.find('.ajax-content').html('');
+      timeline_item.find('.read-only-content').show();
 
       $("#itil-footer .main-actions").show();
    });
