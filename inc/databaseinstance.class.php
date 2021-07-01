@@ -323,6 +323,15 @@ class DatabaseInstance extends CommonDBTM {
       ];
 
       $tab[] = [
+         'id'                 => '171',
+         'table'              => self::getTable(),
+         'field'              => 'date_lastboot',
+         'name'               => __('Last boot date'),
+         'massiveaction'      => false,
+         'datatype'           => 'date'
+      ];
+
+      $tab[] = [
          'id'                 => '23',
          'table'              => Manufacturer::getTable(),
          'field'              => 'name',

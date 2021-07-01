@@ -204,19 +204,6 @@ class Database extends CommonDBChild {
       ];
 
       $tab[] = [
-         'id'                 => '171',
-         'table'              => self::getTable(),
-         'field'              => 'date_lastboot',
-         'name'               => __('Last boot date'),
-         'forcegroupby'       => true,
-         'massiveaction'      => false,
-         'datatype'           => 'date',
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
-      ];
-
-      $tab[] = [
          'id'                 => '172',
          'table'              => self::getTable(),
          'field'              => 'date_lastbackup',
