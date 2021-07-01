@@ -124,7 +124,7 @@ class Database extends CommonDBChild {
          "date_lastbackup", [
          'value'      => $this->fields['date_lastbackup'],
          'maybeempty' => true
-      ]);
+         ]);
       echo "</td></tr>\n";
 
       $this->showFormButtons($options);
@@ -229,7 +229,7 @@ class Database extends CommonDBChild {
                self::getTable(), [
                'databaseinstances_id' => $item->getID(),
                'is_deleted' => 0
-            ]);
+               ]);
          }
          return self::createTabEntry(self::getTypeName(), $nb);
       }
