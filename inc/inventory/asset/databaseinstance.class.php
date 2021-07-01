@@ -42,7 +42,7 @@ class DatabaseInstance extends InventoryAsset
 {
    public function prepare() :array {
       $mapping = [
-         'type' => 'databaseservertypes_id',
+         'type' => 'databaseinstancetypes_id',
          'manufacturer' => 'manufacturers_id',
          'port' => 'instance_port',
          'size' => 'instance_size',
@@ -92,95 +92,76 @@ class DatabaseInstance extends InventoryAsset
 
       $rule = new RuleImportAssetCollection();
       $value = $this->data;
-      $database = new GDatabaseInstance();
-      $dbitem = new \DatabaseServer_Item();
-      $dbinstance = new DatabaseInstance();
+      $instance = new GDatabaseInstance();
+      $dbitem = new \DatabaseInstance_Item();
 
-      $db_servers = $this->getExisting();
+      $db_instances = $this->getExisting();
 
-      $servers = [];
+      $instances = [];
 
       foreach ($value as $key => $val) {
          $input = [
-            'itemtype'     => 'DatabaseServer',
+            'itemtype'     => 'DatabaseInstance',
             'name'         => $val->name ?? '',
             'entities_id'  => $this->item->fields['entities_id']
          ];
          $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
 
          if (isset($data['found_inventories'])) {
-            $instances = [];
-            $existing_instances = [];
+            $databases = $val->databases ?? [];
+            $input = (array)$val;
+            $existing_databases = [];
 
             $items_id = null;
-            $itemtype = 'DatabaseServer';
+            $itemtype = 'DatabaseInstance';
             if ($data['found_inventories'][0] == 0) {
-               // add server
+               // add instance
                $val->is_dynamic = 1;
                $val->entities_id = $this->entities_id;
-
-               $instances = $val->instances ?? [];
-               $input = (array)$val;
-
-               $default_inst = null;
-               if (count($instances)) {
-                  //GLPI will create a default instance if nothing provided adding server
-                  $default_inst = array_pop($instances);
-                  $input += [
-                     '_instance_name' => $default_inst->name,
-                     '_instance_port' => $default_inst->port,
-                     '_instance_size' => $default_inst->size ?? null,
-                     '_instance_is_onbackup' => ($default_inst->is_onbackup ?? false ? 1 : 0),
-                     '_instance_is_active' => ($default_inst->is_active ?? false ? 1 : 0),
-                     '_instance_date_lastboot' => $default_inst->date_lastboot ?? null,
-                     '_instance_date_lastbackup' => $default_inst->date_lastbackup ?? null
-                  ];
-               }
-               $items_id = $database->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
-
+               $items_id = $instance->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
             } else {
                $items_id = $data['found_inventories'][0];
-               $instances = $val->instances ?? [];
+               $databases = $val->databases ?? [];
 
-               $database->getFromDB($items_id);
-               $input = (array)$val + ['id' => $database->fields['id']];
-               $database->update($input, $this->withHistory());
+               $instance->getFromDB($items_id);
+               $input += ['id' => $instance->fields['id']];
+               $instance->update($input, $this->withHistory());
 
-               $existing_instances = $database->getInstances();
+               $existing_databases = $instance->getDatabases();
                //update, relying on instance name
-               foreach ($existing_instances as $dbkey => $existing_instance) {
-                  foreach ($instances as $key => $instance) {
-                     if ($existing_instance['name'] == $instance->name) {
-                        $instinput = (array)$instance;
-                        $instinput += ['id' => $dbkey];
-                        $dbinstance->update(Toolbox::addslashes_deep($instinput), [], $this->withHistory());
+               foreach ($existing_databases as $dbkey => $existing_database) {
+                  foreach ($databases as $key => $database) {
+                     if ($existing_database['name'] == $database->name) {
+                        $dbinput = (array)$database;
+                        $dbinput += ['id' => $dbkey];
+                        $dbinstance->update(Toolbox::addslashes_deep($dbinput), [], $this->withHistory());
                         unset(
-                           $existing_instances[$dbkey],
-                           $instances[$key]
+                           $existing_databases[$dbkey],
+                           $databases[$key]
                         );
                         break;
                      }
                   }
                }
 
-               if (count($existing_instances)) {
-                  foreach ($existing_instances as $existing_instance) {
-                     $dbinstance->delete(['id' => $existing_instance['id']], true, $this->withHistory());
+               if (count($existing_databases)) {
+                  foreach ($existing_databases as $existing_database) {
+                     $dbinstance->delete(['id' => $existing_database['id']], true, $this->withHistory());
                   }
                }
             }
 
-            //create instances
-            foreach ($instances as $instance) {
-               $instinput = (array)$instance;
-               $instinput += [
+            //create databases
+            foreach ($databses as $database) {
+               $dbinput = (array)$daytabse;
+               $dbinput += [
                   'is_dynamic' => 1,
-                  'databaseinstances_id' => $database->fields['id']
+                  'databaseinstances_id' => $instance->fields['id']
                ];
                $dbinstance->add(Toolbox::addslashes_deep($instinput), [], $this->withHistory());
             }
 
-            $servers[$items_id] = $items_id;
+            $instances[$items_id] = $items_id;
             $rulesmatched = new RuleMatchedLog();
             $agents_id = $this->agent->fields['id'];
             if (empty($agents_id)) {
@@ -199,27 +180,27 @@ class DatabaseInstance extends InventoryAsset
          }
       }
 
-      if (count($db_servers) && count($servers)) {
-         foreach ($db_servers as $keydb) {
-            foreach ($servers as $key) {
+      if (count($db_instances) && count($instances)) {
+         foreach ($db_instances as $keydb) {
+            foreach ($instances as $key) {
                if ($key == $keydb) {
-                  unset($servers[$key]);
-                  unset($db_servers[$keydb]);
+                  unset($instances[$key]);
+                  unset($db_instances[$keydb]);
                   break;
                }
             }
          }
       }
 
-      if (count($db_servers) != 0) {
+      if (count($db_instances) != 0) {
          //remove no longer existing databases
-         foreach ($db_servers as $idtmp => $data) {
+         foreach ($db_instances as $idtmp => $data) {
             $database->delete(['id' => $idtmp], 1);
          }
       }
 
-      if (count($servers) && $this->item) {
-         foreach ($servers as $servers_id) {
+      if (count($instances) && $this->item) {
+         foreach ($instances as $servers_id) {
             //link with main item
             $dbitem->add(
                [
