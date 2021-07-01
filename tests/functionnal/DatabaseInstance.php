@@ -66,6 +66,6 @@ class DatabaseInstance extends DbTestCase {
       $this->boolean($db->getFromDB($dbid))->isFalse();
 
       //ensure instance has been dropped aswell
-      $this->integer(countElementsInTable(\DatabaseServer_Item::getTable()))->isIdenticalTo(0);
+      $this->integer(countElementsInTable(\DatabaseInstance_Item::getTable()))->isIdenticalTo(0);
    }
 }

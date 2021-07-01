@@ -4225,9 +4225,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
 
       //check created databases & instances
-      $this->integer(countElementsInTable(\DatabaseServer::getTable()))->isIdenticalTo(2);
       $this->integer(countElementsInTable(\DatabaseInstance::getTable()))->isIdenticalTo(3);
-      $this->integer(countElementsInTable(\DatabaseServer_Item::getTable()))->isIdenticalTo(2);
+      $this->integer(countElementsInTable(\DatabaseInstance_Item::getTable()))->isIdenticalTo(2);
 
       //play an update - nothing should have changed
       $CFG_GLPI["is_contact_autoupdate"] = 0;
@@ -4246,9 +4245,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
 
       //check created databases & instances
-      $this->integer(countElementsInTable(\DatabaseServer::getTable()))->isIdenticalTo(2);
       $this->integer(countElementsInTable(\DatabaseInstance::getTable()))->isIdenticalTo(3);
-      $this->integer(countElementsInTable(\DatabaseServer_Item::getTable()))->isIdenticalTo(2);
+      $this->integer(countElementsInTable(\DatabaseInstance_Item::getTable()))->isIdenticalTo(2);
 
       //play an update with changes
       $json = json_decode($json);
@@ -4285,12 +4283,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->array($inventory->getErrors())->isEmpty();
 
       //check created databases & instances
-      $this->integer(countElementsInTable(\DatabaseServer::getTable()))->isIdenticalTo(1);
       $this->integer(countElementsInTable(\DatabaseInstance::getTable()))->isIdenticalTo(2);
-      $this->integer(countElementsInTable(\DatabaseServer_Item::getTable()))->isIdenticalTo(1);
+      $this->integer(countElementsInTable(\DatabaseInstance_Item::getTable()))->isIdenticalTo(1);
 
       //ensure database version has been updated
-      $database = new \DatabaseServer();
+      $database = new \DatabaseInstance();
       $this->boolean($database->getFromDBByCrit(['name' => 'MariaDB']))->isTrue();
       $this->string($database->fields['version'])->isIdenticalTo('Ver 15.1 Distrib 10.5.10-MariaDB-modified');
 
