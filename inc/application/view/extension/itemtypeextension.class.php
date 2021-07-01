@@ -64,9 +64,11 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
          new TwigFilter('getSearchUrl', [$this, 'getSearchUrl']),
          new TwigFilter('getLinkURL', [$this, 'getLinkURL'], ['is_safe' => ['html']]),
          new TwigFilter('getLink', [$this, 'getLink'], ['is_safe' => ['html']]),
-         new TwigFilter('isEntityAssign', [$this, 'isEntityAssign']),
-         new TwigFilter('showForm', [$this, 'showForm'], ['is_safe' => ['html']]),
          new TwigFilter('getTable', [$this, 'getTable'], ['is_safe' => ['html']]),
+         new TwigFilter('isEntityAssign', [$this, 'isEntityAssign']),
+         new TwigFilter('maybeDeleted', [$this, 'maybeDeleted']),
+         new TwigFilter('maybeLocated', [$this, 'maybeLocated']),
+         new TwigFilter('showForm', [$this, 'showForm'], ['is_safe' => ['html']]),
       ];
    }
 
@@ -207,6 +209,24 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
          $item = new $itemtype;
          $item->getFromDB($id);
          return $item->getLink($options);
+      }
+
+      return null;
+   }
+
+   public function maybeDeleted($itemtype): ?string {
+      if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
+         $item = new $itemtype;
+         return $item->maybeDeleted();
+      }
+
+      return null;
+   }
+
+   public function maybeLocated($itemtype): ?string {
+      if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
+         $item = new $itemtype;
+         return $item->maybeLocated();
       }
 
       return null;
