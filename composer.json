@@ -27,7 +27,7 @@
         "elvanto/litemoji": "^4.0.0",
         "glpi-project/inventory_format": "^1.1",
         "guzzlehttp/guzzle": "^7.2",
-        "guzzlehttp/psr7": "^1.6",
+        "guzzlehttp/psr7": "^2.0",
         "html2text/html2text": "^4.3",
         "htmlawed/htmlawed": "^1.2",
         "iamcal/lib_autolink": "^1.7",
