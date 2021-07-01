@@ -392,7 +392,7 @@ class DatabaseInstance extends CommonDBTM {
    function cleanDBonPurge() {
       $this->deleteChildrenAndRelationsFromDb(
          [
-            DatabaseInstance::class,
+            Database::class,
             DatabaseInstance_Item::class
          ]
       );
