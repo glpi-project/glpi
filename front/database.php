@@ -34,8 +34,8 @@ include ('../inc/includes.php');
 
 Session::checkRight('database', READ);
 
-Html::header(DatabaseServer::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "database");
+Html::header(Database::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "database");
 
-Search::show('DatabaseServer');
+Search::show('Database');
 
 Html::footer();

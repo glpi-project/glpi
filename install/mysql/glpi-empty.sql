@@ -8907,7 +8907,6 @@ CREATE TABLE `glpi_databaseinstances` (
   KEY `is_active` (`is_active`),
   KEY `is_deleted` (`is_deleted`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`),
   KEY `is_helpdesk_visible` (`is_helpdesk_visible`),
   KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

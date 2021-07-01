@@ -34,7 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-class DatabaseInstance extends CommonDBChild {
+class DatabaseInstance extends CommonDBTM {
 
    use Glpi\Features\Clonable;
    use Glpi\Features\Inventoriable;

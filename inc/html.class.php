@@ -1508,7 +1508,7 @@ JAVASCRIPT;
             'types' => [
                'SoftwareLicense','Budget', 'Supplier', 'Contact', 'Contract',
                'Document', 'Line', 'Certificate', 'Datacenter', 'Cluster', 'Domain',
-               'Appliance', 'DatabaseInstance'
+               'Appliance', 'Database'
             ]
          ],
          'tools' => [
