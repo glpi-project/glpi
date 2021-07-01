@@ -41,7 +41,8 @@ class Database extends CommonDBChild {
 
    // From CommonDBTM
    public $auto_message_on_action   = true;
-   static $rightname                   = 'database';
+   static $rightname                = 'database';
+   static public $mustBeAttached    = false;
 
    // From CommonDBChild
    static public $itemtype       = 'DatabaseInstance';
@@ -70,7 +71,6 @@ class Database extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'>";
 
-      $rand = mt_rand();
       $tplmark = $this->getAutofillMark('name', $options);
 
       echo "<td><label for='textfield_name$rand'>".__('Name') . "</label></td>";
@@ -79,114 +79,53 @@ class Database extends CommonDBChild {
          $this,
          'name',
          [
-            'value'     => $this->fields["name"],
+            'value'     => $this->fields['name'],
             'rand'      => $rand
          ]
       );
       echo "</td>";
-      echo "<td><label for='dropdown_states_id$rand'>".__('Status')."</label></td>";
-      echo "<td>";
-      State::dropdown([
-         'value'     => $this->fields["states_id"],
-         'entity'    => $this->fields["entities_id"],
-         'condition' => ['is_visible_database' => 1],
-         'rand'      => $rand
-      ]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_locations_id$rand'>".Location::getTypeName(1)."</label></td>";
-      echo "<td>";
-      Location::dropdown(['value'  => $this->fields["locations_id"],
-         'entity' => $this->fields["entities_id"],
-         'rand' => $rand]);
-      echo "</td>";
-      echo "<td><label for='dropdown_databaseservertypes_id$rand'>".DatabaseInstanceType::getFieldLabel()."</label></td>";
-      echo "<td>";
-      DatabaseInstanceType::dropdown(['value' => $this->fields["databaseservertypes_id"], 'rand' => $rand]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='version$rand'>"._n('Version', 'Versions', 1)."</label></td>";
-      echo "<td>";
-      echo Html::input(
-         'version', [
-            'id' => 'version'.$rand,
-            'value' => $this->fields['version']
-         ]
-      );
-      echo "</td>";
-      echo "<td><label for='dropdown_databaseservercategories_id$rand'>".DatabaseInstanceCategory::getTypeName(1)."</label></td>";
-      echo "<td>";
-      DatabaseInstanceCategory::dropdown(['value' => $this->fields["databaseservercategories_id"], 'rand' => $rand]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
       echo "<td><label for='is_active$rand'>".__('Is active')."</label></td>";
       echo "<td>";
       Dropdown::showYesNo('is_active', $this->fields['is_active']);
-      echo "<td>" . __('Associable to a ticket') . "</td><td>";
-      Dropdown::showYesNo('is_helpdesk_visible', $this->fields['is_helpdesk_visible']);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_groups_id_tech$rand'>".__('Group in charge of the hardware')."</label></td>";
+      $database = new DatabaseInstance();
+      $database->getFromDB($this->fields['databaseinstances_id']);
+      echo "<tr>";
+      echo "<td>".DatabaseInstance::getTypeName(1)."</td>";
       echo "<td>";
-      Group::dropdown([
-         'name'      => 'groups_id_tech',
-         'value'     => $this->fields['groups_id_tech'],
-         'entity'    => $this->fields['entities_id'],
-         'condition' => ['is_assign' => 1],
-         'rand' => $rand
-      ]);
-
-      echo "</td>";
-
-      $rowspan        = 3;
-
-      echo "<td rowspan='$rowspan'><label for='comment'>".__('Comments')."</label></td>";
-      echo "<td rowspan='$rowspan' class='middle'>";
-
-      echo "<textarea cols='45' rows='".($rowspan+2)."' id='comment' name='comment' >".
-         $this->fields["comment"];
-      echo "</textarea></td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_users_id_tech$rand'>".__('Technician in charge of the hardware')."</label></td>";
-      echo "<td>";
-      User::dropdown(['name'   => 'users_id_tech',
-         'value'  => $this->fields["users_id_tech"],
-         'right'  => 'own_ticket',
-         'entity' => $this->fields["entities_id"],
-         'rand'   => $rand]);
-      echo "</td></tr>";
-      echo "<tr><td><label for='dropdown_manufacturers_id$rand'>".Manufacturer::getTypeName(1)."</label></td>";
-      echo "<td>";
-      Manufacturer::dropdown(['value' => $this->fields["manufacturers_id"], 'rand' => $rand]);
-      echo "</td></tr>\n";
-
-      if ($this->isNewItem($ID)) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<th colspan='4' class='center'>".__('Default instance')."</th>";
-         echo "</tr>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<td><label for='_instance_port$rand'>"._n('Port', 'Ports', 1)."</label></td>";
-         echo "<td>";
-         echo Html::input(
-            '_instance_port', [
-               'type' => 'number',
-               'id' => '_instance_port'.$rand
-            ]
-         );
-
-         echo "</td>";
-         echo "<td><label for='dropdown__instance_is_onbackup$rand'>".__('Has backup')."</label></td>";
-         echo "<td>";
-         Dropdown::showYesNo('_instance_is_onbackup', 0, -1, ['rand' => $rand]);
-         echo "</td></tr>\n";
+      if (isset($_REQUEST['databaseinstances_id'])) {
+         echo $database->getLink();
+      } else {
+         $database::dropdown();
       }
+      echo Html::hidden('databaseinstances_id', ['value' => $this->fields['databaseinstances_id']]);
+      echo "</td>";
+      echo "<td><label for='size$rand'>".__('Size')."</label></td>";
+      echo "<td>";
+      echo Html::input(
+         'size', [
+            'id' => 'size'.$rand,
+            'type' => 'number',
+            'value' => $this->fields['size']
+         ]
+      );
+      echo "</td></tr>\n";
 
-      $this->showInventoryInfo();
+      echo "<tr class='tab_bg_1'>";
+      echo "<td><label for='is_onbackup$rand'>".__('Has backup')."</label></td>";
+      echo "<td>";
+      Dropdown::showYesNo('is_onbackup', $this->fields['is_onbackup']);
+      echo "</td>";
+      echo "<td><label for='date_lastbackup$rand'>".__('Last backup date')."</label></td>";
+      echo "<td>";
+      Html::showDateTimeField(
+         "date_lastbackup", [
+         'value'      => $this->fields['date_lastbackup'],
+         'maybeempty' => true
+      ]);
+      echo "</td></tr>\n";
 
       $this->showFormButtons($options);
 
@@ -194,93 +133,10 @@ class Database extends CommonDBChild {
    }
 
 
-
-   function post_addItem() {
-      //create default instance
-      $this->getFromDB($this->fields['id']);
-      $instance = new DatabaseInstance();
-
-      if ((!isset($this->input['_instance_name']) || empty($this->input['_instance_name'])) && isset($this->input['name'])) {
-         $this->input['_instance_name'] = sprintf(
-            //TRANS: first parameter is the database name
-            __('"%1$s" default instance'),
-            $this->input['name']
-         );
-      }
-
-      $instance->add([
-         'name' => ($this->input['_instance_name'] ?? $this->input['name']),
-         'port' => ($this->input['_instance_port'] ?? 0),
-         'size' => ($this->input['_instance_size'] ?? 0),
-         'is_onbackup' => ($this->input['_instance_is_onbackup'] ?? 0),
-         'is_active' => ($this->input['_instance_is_active'] ?? $this->fields['is_active']),
-         'entities_id' => $this->fields['entities_id'],
-         'is_recursive' => $this->fields['is_recursive'],
-         'databaseinstances_id' => $this->fields['id'],
-         'date_lastboot' => ($this->input['_instance_date_lastboot'] ?? null),
-         'date_lastbackup' => ($this->input['_instance_date_lastbackup'] ?? null),
-         'is_dynamic' => $this->fields['is_dynamic']
-      ]);
-
-      parent::post_addItem();
-   }
-
    static function getIcon() {
       return "fas fa-database";
    }
 
-   public function getInstances(): array {
-      global $DB;
-      $instances = [];
-
-      $iterator = $DB->request([
-         'FROM' => DatabaseInstance::getTable(),
-         'WHERE' => ['databaseinstances_id' => $this->fields['id']]
-      ]);
-
-      while ($row = $iterator->next()) {
-         $instances[] = $row;
-      }
-
-      return $instances;
-   }
-
-   /**
-    * Get item types that can be linked to a database
-    *
-    * @param boolean $all Get all possible types or only allowed ones
-    *
-    * @return array
-    */
-   public static function getTypes($all = false): array {
-      global $CFG_GLPI;
-
-      $types = $CFG_GLPI['database_types'];
-
-      foreach ($types as $key => $type) {
-         if (!class_exists($type)) {
-            continue;
-         }
-
-         if ($all === false && !$type::canView()) {
-            unset($types[$key]);
-         }
-      }
-      return $types;
-   }
-
-   function cleanDBonPurge() {
-      $this->deleteChildrenAndRelationsFromDb(
-         [
-            DatabaseInstance::class,
-            DatabaseInstance_Item::class
-         ]
-      );
-   }
-
-   public function pre_purgeInventory() {
-      return true;
-   }
 
    static public function rawSearchOptionsToAdd() {
       $tab = [];
@@ -375,4 +231,111 @@ class Database extends CommonDBChild {
 
       return $tab;
    }
+
+   public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      if (!$withtemplate
+         && ($item->getType() == DatabaseInstance::class)
+         && $item->canView()) {
+         $nb = 0;
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            $nb = countElementsInTable(
+               self::getTable(), [
+               'databaseinstances_id' => $item->getID(),
+               'is_deleted' => 0
+            ]);
+         }
+         return self::createTabEntry(self::getTypeName(), $nb);
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+      self::showForInstance($item);
+   }
+
+   /**
+    * Display instances for database
+    *
+    * @param DatabaseInstance $instance Database object
+    *
+    * @return void|boolean
+    **/
+   static function showForInstance(DatabaseInstance $instance) {
+
+      $ID = $instance->fields['id'];
+
+      if (!$instance->getFromDB($ID) || !$instance->can($ID, READ)) {
+         return false;
+      }
+      $canedit = $instance->canEdit($ID);
+
+      if ($canedit) {
+         echo "<div class='center firstbloc'>".
+            "<a class='vsubmit' href='".static::getFormURL()."?databaseinstances_id=$ID'>";
+         echo __('Add a database');
+         echo "</a></div>\n";
+      }
+
+      echo "<div class='center'>";
+
+      $databases = getAllDataFromTable(
+         self::getTable(), [
+            'WHERE'  => [
+               'databaseinstances_id' => $ID,
+            ],
+            'ORDER'  => 'name'
+         ]
+      );
+
+      echo "<table class='tab_cadre_fixehov'>";
+
+      Session::initNavigateListItems(
+         self::class,
+         sprintf(
+            __('%1$s = %2$s'), DatabaseInstance::getTypeName(1),
+            (empty($instance->fields['name']) ? "($ID)" : $instance->fields['name'])));
+
+      if (empty($databases)) {
+         echo "<tr><th>".__('No database')."</th></tr>";
+      } else {
+         echo "<tr class='noHover'><th colspan='10'>".self::getTypeName(Session::getPluralNumber())."</th></tr>";
+
+         $header = "<tr><th>".__('Name')."</th>";
+         $header .= "<th>".__('Size')."</th>";
+         $header .= "<th>".__('Is active')."</th>";
+         $header .= "<th>".__('Has backup')."</th>";
+         $header .= "</tr>";
+         echo $header;
+
+         $db = new self();
+         foreach ($databases as $row) {
+            $db->getFromDB($row['id']);
+            echo "<tr class='".((isset($row['is_deleted']) && $row['is_deleted'])?"tab_bg_2_2'":"tab_bg_2")."'>";
+            echo "<td>".$db->getLink()."</td>";
+            echo "<td>".Dropdown::getValueWithUnit().$row['size']."</td>";
+            echo "<td>".Dropdown::getYesNo($db->fields['is_active'])."</td>";
+            echo "<td>".Dropdown::getYesNo($db->fields['is_onbackup'])."</td>";
+            echo "</tr>";
+            Session::addToNavigateListItems('DatabaseInstance', $row['id']);
+
+         }
+         echo $header;
+      }
+      echo "</table>";
+      echo "</div>";
+   }
+
+   public function prepareInputForAdd($input) {
+      if (isset($input['date_lastbackup']) && empty($input['date_lastbackup'])) {
+         unset($input['date_lastbackup']);
+      }
+
+      if (isset($input['size']) && empty($input['size'])) {
+         unset($input['size']);
+      }
+
+      return $input;
+   }
+
 }

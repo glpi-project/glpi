@@ -39,8 +39,8 @@ Session::checkRight('database', READ);
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
 }
-if (!isset($_GET["withtemplate"])) {
-   $_GET["withtemplate"] = "";
+if (!isset($_GET['databaseinstances_id'])) {
+   $_GET['databaseinstances_id'] = '';
 }
 
 $database = new Database();
@@ -49,7 +49,7 @@ if (isset($_POST["add"])) {
    $database->check(-1, CREATE, $_POST);
 
    if ($newID = $database->add($_POST)) {
-      Event::log($newID, "database", 4, "inventory",
+      Event::log($newID, "database", 4, "management",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
       if ($_SESSION['glpibackcreated']) {
          Html::redirect($database->getLinkURL());
@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
    $database->check($_POST["id"], DELETE);
    $database->delete($_POST);
 
-   Event::log($_POST["id"], "database", 4, "inventory",
+   Event::log($_POST["id"], "database", 4, "management",
               //TRANS: %s is the user login
               sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
    $database->redirectToList();
@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
    $database->check($_POST["id"], DELETE);
 
    $database->restore($_POST);
-   Event::log($_POST["id"], "database", 4, "inventory",
+   Event::log($_POST["id"], "database", 4, "management",
               //TRANS: %s is the user login
               sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    $database->redirectToList();
@@ -79,7 +79,7 @@ if (isset($_POST["add"])) {
    $database->check($_POST["id"], PURGE);
 
    $database->delete($_POST, 1);
-   Event::log($_POST["id"], "database", 4, "inventory",
+   Event::log($_POST["id"], "database", 4, "management",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $database->redirectToList();
@@ -88,7 +88,7 @@ if (isset($_POST["add"])) {
    $database->check($_POST["id"], UPDATE);
 
    $database->update($_POST);
-   Event::log($_POST["id"], "database", 4, "inventory",
+   Event::log($_POST["id"], "database", 4, "management",
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
@@ -97,7 +97,7 @@ if (isset($_POST["add"])) {
    Html::header(Database::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "database");
    $options = [
       'id'           => $_GET['id'],
-      'withtemplate' => $_GET['withtemplate']
+      'databaseinstances_id' => $_GET['databaseinstances_id']
    ];
    $database->display($options);
    Html::footer();

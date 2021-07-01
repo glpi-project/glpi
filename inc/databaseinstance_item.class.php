@@ -38,7 +38,7 @@ class DatabaseInstance_Item extends CommonDBRelation {
    use Glpi\Features\Clonable;
 
    static public $itemtype_1 = 'DatabaseInstance';
-   static public $items_id_1 = 'databasinstances_id';
+   static public $items_id_1 = 'databaseinstances_id';
    static public $take_entity_1 = false;
 
    static public $itemtype_2 = 'itemtype';

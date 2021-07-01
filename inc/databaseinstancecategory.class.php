@@ -41,7 +41,7 @@ class DatabaseInstanceCategory extends CommonDropdown {
    }
 
    static function getFieldLabel() {
-      return _n('CAtegory', 'Categories', 1);
+      return _n('Category', 'Categories', 1);
    }
 
 }
