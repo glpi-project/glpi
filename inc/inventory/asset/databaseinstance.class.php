@@ -32,8 +32,7 @@
 
 namespace Glpi\Inventory\Asset;
 
-use DatabaseServer as GDatabaseInstance;
-use DatabaseInstance;
+use DatabaseInstance as GDatabaseInstance;
 use Glpi\Inventory\Conf;
 use RuleImportAssetCollection;
 use RuleMatchedLog;
