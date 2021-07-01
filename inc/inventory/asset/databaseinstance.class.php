@@ -32,14 +32,14 @@
 
 namespace Glpi\Inventory\Asset;
 
-use DatabaseServer as GDatabaseServer;
-use DatabaseServerInstance;
+use DatabaseServer as GDatabaseInstance;
+use DatabaseInstance;
 use Glpi\Inventory\Conf;
 use RuleImportAssetCollection;
 use RuleMatchedLog;
 use Toolbox;
 
-class DatabaseServer extends InventoryAsset
+class DatabaseInstance extends InventoryAsset
 {
    public function prepare() :array {
       $mapping = [
@@ -75,7 +75,7 @@ class DatabaseServer extends InventoryAsset
          'SELECT' => [
             'id'
          ],
-         'FROM'   => GDatabaseServer::getTable(),
+         'FROM'   => GDatabaseInstance::getTable(),
          'WHERE'  => [
             'is_dynamic'   => 1
          ]
@@ -93,9 +93,9 @@ class DatabaseServer extends InventoryAsset
 
       $rule = new RuleImportAssetCollection();
       $value = $this->data;
-      $database = new GDatabaseServer();
+      $database = new GDatabaseInstance();
       $dbitem = new \DatabaseServer_Item();
-      $dbinstance = new DatabaseServerInstance();
+      $dbinstance = new DatabaseInstance();
 
       $db_servers = $this->getExisting();
 
@@ -176,7 +176,7 @@ class DatabaseServer extends InventoryAsset
                $instinput = (array)$instance;
                $instinput += [
                   'is_dynamic' => 1,
-                  'databaseservers_id' => $database->fields['id']
+                  'databaseinstances_id' => $database->fields['id']
                ];
                $dbinstance->add(Toolbox::addslashes_deep($instinput), [], $this->withHistory());
             }
@@ -224,7 +224,7 @@ class DatabaseServer extends InventoryAsset
             //link with main item
             $dbitem->add(
                [
-                  'databaseservers_id' => $servers_id,
+                  'databaseinstances_id' => $servers_id,
                   'itemtype' => $this->item->getType(),
                   'items_id' => $this->item->fields['id']
                ],
