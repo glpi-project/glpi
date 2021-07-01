@@ -8889,6 +8889,7 @@ CREATE TABLE `glpi_databaseinstances` (
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_helpdesk_visible` tinyint NOT NULL DEFAULT '1',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
+  `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_lastboot` timestamp NULL DEFAULT NULL,
   `date_lastbackup` timestamp NULL DEFAULT NULL,
@@ -8906,6 +8907,7 @@ CREATE TABLE `glpi_databaseinstances` (
   KEY `states_id` (`states_id`),
   KEY `is_active` (`is_active`),
   KEY `is_deleted` (`is_deleted`),
+  KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`),
   KEY `is_helpdesk_visible` (`is_helpdesk_visible`),
   KEY `is_dynamic` (`is_dynamic`)
@@ -8932,9 +8934,15 @@ CREATE TABLE `glpi_databases` (
   `is_active` tinyint NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   `date_update` timestamp NULL DEFAULT NULL,
   `date_lastbackup` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `is_active` (`is_active`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`),
   KEY `databaseinstances_id` (`databaseinstances_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 

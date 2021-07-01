@@ -68,8 +68,8 @@ if (!$DB->tableExists('glpi_databaseinstancecategories')) {
    $DB->queryOrDie($query, "10.0 add table glpi_databaseinstancecategoriess");
 }
 
-if (!$DB->tableExists('glpi_databaseinstanceinstances')) {
-   $query = "CREATE TABLE `glpi_databaseinstanceinstances` (
+if (!$DB->tableExists('glpi_databaseinstances')) {
+   $query = "CREATE TABLE `glpi_databaseinstances` (
          `id` int NOT NULL AUTO_INCREMENT,
          `entities_id` int NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -90,6 +90,7 @@ if (!$DB->tableExists('glpi_databaseinstanceinstances')) {
          `is_deleted` tinyint NOT NULL DEFAULT '0',
          `is_helpdesk_visible` tinyint NOT NULL DEFAULT '1',
          `is_dynamic` tinyint NOT NULL DEFAULT '0',
+         `date_creation` timestamp NULL DEFAULT NULL,
          `date_mod` timestamp NULL DEFAULT NULL,
          `date_lastboot` timestamp NULL DEFAULT NULL,
          `date_lastbackup` timestamp NULL DEFAULT NULL,
@@ -107,12 +108,12 @@ if (!$DB->tableExists('glpi_databaseinstanceinstances')) {
          KEY `states_id` (`states_id`),
          KEY `is_active` (`is_active`),
          KEY `is_deleted` (`is_deleted`),
-         KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`),
+         KEY `date_mod` (`date_mod`),
          KEY `is_helpdesk_visible` (`is_helpdesk_visible`),
          KEY `is_dynamic` (`is_dynamic`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_databaseinstanceinstances");
+   $DB->queryOrDie($query, "10.0 add table glpi_databaseinstances");
 }
 
 if (!$DB->tableExists('glpi_databaseinstances_items')) {
@@ -138,9 +139,15 @@ if (!$DB->tableExists('glpi_databases')) {
          `is_active` tinyint NOT NULL DEFAULT '0',
          `is_deleted` tinyint NOT NULL DEFAULT '0',
          `date_creation` timestamp NULL DEFAULT NULL,
+         `date_mod` timestamp NULL DEFAULT NULL,
          `date_update` timestamp NULL DEFAULT NULL,
          `date_lastbackup` timestamp NULL DEFAULT NULL,
          PRIMARY KEY (`id`),
+         KEY `name` (`name`),
+         KEY `is_active` (`is_active`),
+         KEY `is_deleted` (`is_deleted`),
+         KEY `date_creation` (`date_creation`),
+         KEY `date_mod` (`date_mod`),
          KEY `databaseinstances_id` (`databaseinstances_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
    $DB->queryOrDie($query, "10.0 add table glpi_databases");
