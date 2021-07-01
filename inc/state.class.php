@@ -442,7 +442,7 @@ class State extends CommonTreeDropdown {
          'table'              => $this->getTable(),
          'field'              => 'is_visible_database',
          'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'),
-                                    DatabaseServer::getTypeName(Session::getPluralNumber())),
+                                    DatabaseInstance::getTypeName(Session::getPluralNumber())),
          'datatype'           => 'bool'
       ];
 

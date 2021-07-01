@@ -985,8 +985,8 @@ class Profile extends CommonDBTM {
                       ['itemtype'  => 'Appliance',
                             'label'     => Appliance::getTypeName(Session::getPluralNumber()),
                             'field'     => 'appliance'],
-                      ['itemtype'  => 'DatabaseServer',
-                            'label'     => DatabaseServer::getTypeName(Session::getPluralNumber()),
+                      ['itemtype'  => 'DatabaseInstance',
+                            'label'     => DatabaseInstance::getTypeName(Session::getPluralNumber()),
                             'field'     => 'database'],
 
                   ];
