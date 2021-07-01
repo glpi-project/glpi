@@ -482,6 +482,11 @@
       }
    }
 
+   .main-actions,
+   .open-timeline-filter-popover {
+      display: none;
+   }
+
    .timeline_stats,
    .todo-list-tooltip {
       display: block;
