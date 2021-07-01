@@ -39,7 +39,7 @@ use DbTestCase;
 class DatabaseInstance extends DbTestCase {
 
    public function testDelete() {
-      $db = new \DatabaseServer();
+      $db = new \DatabaseInstance();
 
       $dbid = $db->add([
          'name' => 'To be removed',
