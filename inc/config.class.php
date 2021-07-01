@@ -246,6 +246,10 @@ class Config extends CommonDBTM {
          $input[Impact::CONF_ENABLED] = exportArrayToDB($input[Impact::CONF_ENABLED]);
       }
 
+      if (isset($input['planning_work_days'])) {
+         $input['planning_work_days'] = exportArrayToDB($input['planning_work_days']);
+      }
+
       // Beware : with new management system, we must update each value
       unset($input['id']);
       unset($input['_glpi_csrf_token']);
@@ -934,7 +938,33 @@ class Config extends CommonDBTM {
       echo "</td></tr><tr class='tab_bg_2'><td><label for='dropdown_use_anonymous_followups$rand'>" . __('Allow anonymous followups (receiver)') . "</label></td><td>";
       Dropdown::showYesNo("use_anonymous_followups", $CFG_GLPI["use_anonymous_followups"], -1, ['rand' => $rand]);
       echo "</td><td colspan='2'></td></tr>";
+      echo "</td></tr>";
+      echo "<td></td></tr>";
 
+      echo "<tr>";
+      echo "<td>";
+      echo "<label for='dropdown_planning_work_days$rand'>" . __('Planning work days') . "</label>";
+      echo "</td>";
+      echo "<td colspan='3'>";
+      Dropdown::showFromArray(
+         "planning_work_days",
+         [
+            1 => __("Monday"),
+            2 => __("Tuesday"),
+            3 => __("Wednesday"),
+            4 => __("Thursday"),
+            5 => __("Friday"),
+            6 => __("Saturday"),
+            0 => __("Sunday"),
+         ],
+         [
+            'values'   => importArrayFromDB($CFG_GLPI["planning_work_days"]),
+            'multiple' => true,
+            'rand'     => $rand,
+         ]
+      );
+      echo "</td>";
+      echo "</tr>";
       echo "</table>";
 
       echo "<table class='tab_cadre_fixe'>";
