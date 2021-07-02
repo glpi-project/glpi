@@ -1683,10 +1683,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
       $WHERE = $ADDWHERE;
       if (isset($options['not_planned'])) {
          //not planned case
-         $bdate = "DATE_SUB(".$DB->quoteName($ttask->getTable() . '.date') .
+         $bdate = "DATE_SUB(".$DB->quoteName($ttask->getTable() . '.date_creation') .
             ", INTERVAL ".$DB->quoteName($ttask->getTable() . '.planned_duration')." SECOND)";
          $SELECT[] = new QueryExpression($bdate . ' AS ' . $DB->quoteName('notp_date'));
-         $edate = "DATE_ADD(".$DB->quoteName($ttask->getTable() . '.date') .
+         $edate = "DATE_ADD(".$DB->quoteName($ttask->getTable() . '.date_creation') .
             ", INTERVAL ".$DB->quoteName($ttask->getTable() . '.planned_duration')." SECOND)";
          $SELECT[] = new QueryExpression($edate . ' AS ' . $DB->quoteName('notp_edate'));
 
