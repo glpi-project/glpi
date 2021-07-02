@@ -1224,6 +1224,10 @@ HTML;
             Html::requireJs('gridstack');
          }
 
+         if (in_array('masonry', $jslibs)) {
+            Html::requireJs('masonry');
+         }
+
          if (in_array('sortable', $jslibs)) {
             Html::requireJs('sortable');
          }

@@ -5417,8 +5417,9 @@ JAVASCRIPT;
     * @param integer $start
     * @param string  $status             (default ''process)
     * @param boolean $showgrouptickets   (true by default)
+    * @param boolean $display            set to false to returne html
     */
-   static function showCentralList($start, $status = "process", $showgrouptickets = true) {
+   static function showCentralList($start, $status = "process", bool $showgrouptickets = true, bool $display = true) {
       global $DB;
 
       if (!Session::haveRightsOr(self::$rightname, [CREATE, self::READALL, self::READASSIGN])
@@ -5966,7 +5967,7 @@ JAVASCRIPT;
          }
 
          $twig_params = [
-            'class'        => 'table table-borderless table-striped table-hover',
+            'class'        => 'table table-borderless table-striped table-hover card-table',
             'header_rows'  => [
                [
                   [
@@ -6079,7 +6080,12 @@ JAVASCRIPT;
             $i++;
             $twig_params['rows'][] = $row;
          }
-         TemplateRenderer::getInstance()->display('components/table.html.twig', $twig_params);
+         $output = TemplateRenderer::getInstance()->render('components/table.html.twig', $twig_params);
+         if ($display) {
+            echo $output;
+         } else {
+            return $output;
+         }
       }
    }
 
@@ -6087,8 +6093,9 @@ JAVASCRIPT;
     * Get tickets count
     *
     * @param boolean $foruser  Only for current login user as requester (false by default)
+    * @param boolean $display  il false return html
    **/
-   static function showCentralCount($foruser = false) {
+   static function showCentralCount(bool $foruser = false, bool $display = true) {
       global $DB, $CFG_GLPI;
 
       // show a tab with count of jobs in the central and give link
@@ -6189,22 +6196,19 @@ JAVASCRIPT;
       $options['criteria'][0]['link']       = 'AND';
 
       $twig_params = [
-         'subtitle'  => [
-            'text'   => self::getTypeName(Session::getPluralNumber())
+         'title'  => [
+            'text' => self::getTypeName(Session::getPluralNumber()),
+            'link' => self::getSearchURL()."?".Toolbox::append_params($options),
+            'icon'   => self::getIcon(),
          ],
          'items'     => []
       ];
 
       if (Session::getCurrentInterface() != "central") {
-         $twig_params['title'] = [
+         $twig_params['title']['button'] = [
             'link'   => $CFG_GLPI["root_doc"].'/front/helpdesk.public.php?create_ticket=1',
-            'text'   => __('Create a ticket')."<i class='fa fa-plus mx-1'></i><span class='sr-only'>". __s('Add')."</span>",
-            '_raw'   => true
-         ];
-      } else {
-         $twig_params['title'] = [
-            'link'   => self::getSearchURL()."?".Toolbox::append_params($options),
-            'text'   => __('Ticket followup')
+            'text'   => "<i class='fa fa-plus mx-1'></i><span>".__('Create a ticket')."</span>",
+            '_raw'   => true,
          ];
       }
 
@@ -6227,7 +6231,9 @@ JAVASCRIPT;
 
            $twig_params['items'][] = [
               'link'    => self::getSearchURL()."?".Toolbox::append_params($opt),
-              'text'    => __('Ticket waiting for your approval'),
+              'text'    => "<span><i class='fas fa-check me-1'></i>".
+                           __('Ticket waiting for your approval').
+                           "</span>",
               'count'   => $number_waitapproval
            ];
       }
@@ -6236,7 +6242,10 @@ JAVASCRIPT;
          $options['criteria'][0]['value'] = $key;
          $twig_params['items'][] = [
             'link'   => self::getSearchURL()."?".Toolbox::append_params($options),
-            'text'   => self::getStatus($key),
+            'text'   => "<span>".
+                        self::getStatusIcon($key).
+                        self::getStatus($key).
+                        "</span>",
             'count'  => $val
          ];
       }
@@ -6245,11 +6254,16 @@ JAVASCRIPT;
       $options['is_deleted']  = 1;
       $twig_params['items'][] = [
          'link'   => self::getSearchURL()."?".Toolbox::append_params($options),
-         'text'   => __('Deleted'),
+         'text'   => "<span><i class='fas fa-trash bg-red-lt me-1'></i>".__('Deleted')."</span>",
          'count'  => $number_deleted
       ];
 
-      TemplateRenderer::getInstance()->display('central/lists/itemtype_count.html.twig', $twig_params);
+      $output = TemplateRenderer::getInstance()->render('central/lists/itemtype_count.html.twig', $twig_params);
+      if ($display) {
+         echo $output;
+      } else {
+         return $output;
+      }
    }
 
 

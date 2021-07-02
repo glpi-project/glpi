@@ -493,6 +493,7 @@ $CFG_GLPI['javascript'] = [
       'central' => array_merge([
          'fullcalendar',
          'planning',
+         'masonry',
          'tinymce',
       ], $dashboard_libs)
    ],

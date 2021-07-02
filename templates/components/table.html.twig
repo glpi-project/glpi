@@ -1,26 +1,28 @@
-<table class="{{ class|default('') }}">
-   <thead>
-   {% for header_row in header_rows %}
-      <tr>
-         {% for header in header_row %}
-            {% if header is not iterable %}
-               {% set header = {'content': header} %}
-            {% endif %}
-            <th colspan="{{ header.colspan|default(1) }}" style="{{ header.style|default('') }}">{{ header.content|raw }}</th>
-         {% endfor %}
-      </tr>
-   {% endfor %}
-   </thead>
-   <tbody>
-   {% for row in rows %}
-      <tr class="{{ row.class|default('') }}">
-         {% for value in row.values %}
-            {% if value is not iterable %}
-               {% set value = {'content': value} %}
-            {% endif %}
-            <td colspan="{{ value.colspan|default(1) }}" class="{{ value.class|default('') }}" style="{{ value.style|default('') }}">{{ value.content|raw }}</td>
-         {% endfor %}
-      </tr>
-   {% endfor %}
-   </tbody>
-</table>
+<div class="table-responsive">
+   <table class="{{ class|default('') }}">
+      <thead>
+      {% for header_row in header_rows %}
+         <tr>
+            {% for header in header_row %}
+               {% if header is not iterable %}
+                  {% set header = {'content': header} %}
+               {% endif %}
+               <th colspan="{{ header.colspan|default(1) }}" style="{{ header.style|default('') }}">{{ header.content|raw }}</th>
+            {% endfor %}
+         </tr>
+      {% endfor %}
+      </thead>
+      <tbody>
+      {% for row in rows %}
+         <tr class="{{ row.class|default('') }}">
+            {% for value in row.values %}
+               {% if value is not iterable %}
+                  {% set value = {'content': value} %}
+               {% endif %}
+               <td colspan="{{ value.colspan|default(1) }}" class="{{ value.class|default('') }}" style="{{ value.style|default('') }}">{{ value.content|raw }}</td>
+            {% endfor %}
+         </tr>
+      {% endfor %}
+      </tbody>
+   </table>
+</div>

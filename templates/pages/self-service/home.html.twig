@@ -1,0 +1,51 @@
+{% if password_alert|length %}
+   <div class="alert alert-warning alert-dismissible" role="alert">
+      <div class="d-flex mb-2">
+         <div>
+            <i class="fas fa-exclamation-triangle me-1"></i>
+         </div>
+         <div>
+            {{ password_alert }}
+         </div>
+      </div>
+
+      <div class="btn-list">
+         <a class="btn btn-outline-warning" href="{{ path('/front/updatepassword.php') }} ">
+            {{ __('Update my password') }}
+         </a>
+      </div>
+   </div>
+{% endif %}
+
+<table class='central'>
+   {{ hook_display_central() }}
+</table>
+
+{% set grid_items = [
+   ticket_summary,
+   "<div class='card'>" ~ survey_list ~ "</div>",
+   "<div class='card'>" ~ reminder_list ~ "</div>",
+   "<div class='card'>" ~ rss_feed ~ "</div>",
+] %}
+
+{% if kb_popular|length %}
+   {% set grid_items = grid_items|merge([
+      "<div class='card'>" ~ kb_popular ~ "</div>"
+   ]) %}
+{% endif %}
+
+{% if kb_recent|length %}
+   {% set grid_items = grid_items|merge([
+      "<div class='card'>" ~ kb_recent ~ "</div>"
+   ]) %}
+{% endif %}
+
+{% if kb_lastupdate|length %}
+   {% set grid_items = grid_items|merge([
+      "<div class='card'>" ~ kb_lastupdate ~ "</div>"
+   ]) %}
+{% endif %}
+
+{% include "components/masonry_grid.html.twig" with {
+   'grid_items': grid_items,
+} only %}

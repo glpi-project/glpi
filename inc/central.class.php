@@ -130,40 +130,30 @@ class Central extends CommonGLPI {
       $showproblem = Session::haveRight("problem", Problem::READALL);
       $show_change = Session::haveRight('change', Change::READALL);
 
-      echo "<table class='tab_cadre_central'><tr class='noHover'>";
-      echo "<td class='top' width='50%'>";
-      echo "<table class='central'>";
-      echo "<tr class='noHover'><td>";
-      if ($showticket) {
-         Ticket::showCentralCount();
-      } else {
-         Ticket::showCentralCount(true);
-      }
+      $grid_items = [];
+
+      $grid_items[] = Ticket::showCentralCount(!$showticket, false);
       if ($showproblem) {
-         Problem::showCentralCount();
+         $grid_items[] = Problem::showCentralCount(false, false);
       }
       if ($show_change) {
-         Change::showCentralCount();
+         $grid_items[] = Change::showCentralCount(false, false);
       }
       if (Contract::canView()) {
-         Contract::showCentral();
+         $grid_items[] = Contract::showCentral(false);
       }
-      echo "</td></tr>";
-      echo "</table></td>";
-
       if (Session::haveRight("logs", READ)) {
-         echo "<td class='top'  width='50%'>";
-
          //Show last add events
-         Event::showForUser($_SESSION["glpiname"]);
-         echo "</td>";
+         $grid_items[] = Event::showForUser($_SESSION["glpiname"], false);
       }
-      echo "</tr></table>";
 
       if ($_SESSION["glpishow_jobs_at_login"] && $showticket) {
-         echo "<br>";
          Ticket::showCentralNewList();
       }
+
+      TemplateRenderer::getInstance()->display('components/masonry_grid.html.twig', [
+         'grid_items' => $grid_items,
+      ]);
    }
 
 
@@ -460,8 +450,8 @@ class Central extends CommonGLPI {
                'itemtype'  => $list['itemtype'],
                'widget'    => 'central_list',
                'params'    => $card_params + [
-                     '_idor_token'  => $idor
-                  ]
+                  '_idor_token'  => $idor
+               ]
             ]
          ];
       }

@@ -4,10 +4,11 @@
 </table>
 
 {% include 'central/messages.html.twig' with {'messages': messages} %}
-<div id="home-dashboard{{ rand }}" class="row row-cols-2 .row-cols-md-2 mt-3">
+<div id="home-dashboard{{ rand }}" class="container-fluid">
+   {% set grid_items = [] %}
    {% for card in cards %}
-      <div class="col mb-4">
-         <div class="card h-100 {{ card.class|default('') }}">
+      {% set card_html %}
+         <div class="card {{ card.class|default('') }}">
             {% if card.title is defined %}
                <div class="card-header">
                   {% if card.icon is defined and card.icon is not null %}
@@ -27,14 +28,23 @@
                   } %}
                {% elseif card.type == 'lazy' %}
                   <div class="lazy-widget" data-itemtype="{{ card.content.itemtype }}" data-widget="{{ card.content.widget }}"
-                       data-params="{{ card.content.params|default({})|json_encode }}"
-                       data-idor="{{ card.content._idor_token }}">
+                     data-params="{{ card.content.params|default({})|json_encode }}"
+                     data-idor="{{ card.content._idor_token }}">
                   </div>
                {% endif %}
             </div>
          </div>
-      </div>
+      {% endset %}
+
+      {% set grid_items = grid_items|merge([
+         card_html
+      ]) %}
    {% endfor %}
+
+   {% include "components/masonry_grid.html.twig" with {
+      'grid_items': grid_items,
+   } only %}
+
    <script>
       $('#home-dashboard{{ rand }} .lazy-widget').each(function() {
          const this_obj = $(this);
@@ -46,8 +56,10 @@
          this_obj.html('<i class="fas fa-3x fa-spinner fa-spin ms-auto"></i>')
             .load('{{ path('/ajax/central.php') }}', params, function(response, status, xhr) {
                if (status === 'error' || !response) {
-                  this_obj.closest('.col').remove();
+                  this_obj.closest('.grid-item').remove();
                }
+
+               $('#home-dashboard{{ rand }} .masonry_grid').trigger("layout:refresh");
             });
       });
    </script>

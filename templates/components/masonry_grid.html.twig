@@ -1,0 +1,25 @@
+{% if grid_item_class is not defined %}
+   {% set grid_item_class = "col-xl-6 col-xxl-4" %}
+{% endif %}
+
+{% set rand = random() %}
+<div id="grid_{{ rand }}" class="masonry_grid row row-cards">
+   {% for item in grid_items %}
+      <div class="grid-item {{ grid_item_class }}">
+         {{ item|raw }}
+      </div>
+   {% endfor %}
+</div>
+
+<script type="text/javascript">
+$(function () {
+   var msnry = new Masonry('#grid_{{ rand }}', {
+      "percentPosition": true,
+      "horizontalOrder": true,
+   });
+
+   $('#grid_{{ rand }}').on("layout:refresh", function() {
+      msnry.layout();
+   });
+});
+</script>

@@ -830,9 +830,11 @@ class Contract extends CommonDBTM {
     * Show central contract resume
     * HTML array
     *
+    * @param bool $display if false, return html
+    *
     * @return void
     **/
-   static function showCentral() {
+   static function showCentral(bool $display = true) {
       global $DB,$CFG_GLPI;
 
       if (!Contract::canView()) {
@@ -906,7 +908,8 @@ class Contract extends CommonDBTM {
       $twig_params = [
          'title'     => [
             'link'   => $CFG_GLPI["root_doc"]."/front/contract.php?reset=reset",
-            'text'   =>  self::getTypeName(1)
+            'text'   =>  self::getTypeName(1),
+            'icon'   => self::getIcon(),
          ],
          'items'     => []
       ];
@@ -973,7 +976,12 @@ class Contract extends CommonDBTM {
          'count'  => $contractpre30
       ];
 
-      TemplateRenderer::getInstance()->display('central/lists/itemtype_count.html.twig', $twig_params);
+      $output = TemplateRenderer::getInstance()->render('central/lists/itemtype_count.html.twig', $twig_params);
+      if ($display) {
+         echo $output;
+      } else {
+         return $output;
+      }
    }
 
 

@@ -1490,7 +1490,7 @@ class Change extends CommonITILObject {
          }
 
          $twig_params = [
-            'class'        => 'table table-borderless table-striped table-hover',
+            'class'        => 'table table-borderless table-striped table-hover card-table',
             'header_rows'  => [
                [
                   [
@@ -1588,9 +1588,10 @@ class Change extends CommonITILObject {
     *
     * @since 10.0.0
     *
-    * @param $foruser boolean : only for current login user as requester (false by default)
+    * @param bool $foruser only for current login user as requester
+    * @param bool $display if false, return html
     **/
-   static function showCentralCount($foruser = false) {
+   static function showCentralCount(bool $foruser = false, bool $display = true) {
       global $DB, $CFG_GLPI;
 
       // show a tab with count of jobs in the central and give link
@@ -1674,10 +1675,8 @@ class Change extends CommonITILObject {
       $twig_params = [
          'title'     => [
             'link'   => $CFG_GLPI["root_doc"]."/front/change.php?".Toolbox::append_params($options),
-            'text'   => __('Change followup')
-         ],
-         'subtitle'  => [
-            'text'   => self::getTypeName(Session::getPluralNumber())
+            'text'   => self::getTypeName(Session::getPluralNumber()),
+            'icon'   => self::getIcon(),
          ],
          'items'     => []
       ];
@@ -1686,7 +1685,10 @@ class Change extends CommonITILObject {
          $options['criteria'][0]['value'] = $key;
          $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"]."/front/change.php?".Toolbox::append_params($options),
-            'text'   => self::getStatus($key),
+            'text'   => "<span>".
+                        self::getStatusIcon($key).
+                        self::getStatus($key).
+                        "</span>",
             'count'  => $val
          ];
       }
@@ -1695,11 +1697,16 @@ class Change extends CommonITILObject {
       $options['is_deleted']  = 1;
       $twig_params['items'][] = [
          'link'   => $CFG_GLPI["root_doc"]."/front/change.php?".Toolbox::append_params($options),
-         'text'   => __('Deleted'),
+         'text'   => "<span><i class='fas fa-trash bg-red-lt me-1'></i>".__('Deleted')."</span>",
          'count'  => $number_deleted
       ];
 
-      TemplateRenderer::getInstance()->display('central/lists/itemtype_count.html.twig', $twig_params);
+      $output = TemplateRenderer::getInstance()->render('central/lists/itemtype_count.html.twig', $twig_params);
+      if ($display) {
+         echo $output;
+      } else {
+         return $output;
+      }
    }
 
    /**

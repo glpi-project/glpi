@@ -1508,7 +1508,7 @@
       background: #e7e7e2;
    }
 
-   .accepted {
+   .accepted:not(.itilstatus) {
       background-color: #9FD6ED;
       color: #425B64;
    }

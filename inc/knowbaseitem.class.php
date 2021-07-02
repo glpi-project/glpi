@@ -1707,11 +1707,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
    /**
     * Print out list recent or popular kb/faq
     *
-    * @param string $type  type : recent / popular / not published
+    * @param string $type    type : recent / popular / not published
+    * @param bool   $display if false, return html
     *
     * @return void
    **/
-   static function showRecentPopular($type) {
+   static function showRecentPopular(string $type = "", bool $display = true) {
       global $DB;
 
       $faq = !Session::haveRight(self::$rightname, READ);
@@ -1798,26 +1799,33 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
 
       $iterator = $DB->request($criteria);
 
+      $output = "";
       if (count($iterator)) {
-         echo "<table class='tab_cadrehov'>";
-         echo "<tr class='noHover'><th>".$title."</th></tr>";
+         $output.= "<table class='tab_cadrehov'>";
+         $output.= "<tr class='noHover'><th>".$title."</th></tr>";
          while ($data = $iterator->next()) {
             $name = $data['name'];
 
             if (isset($data['transname']) && !empty($data['transname'])) {
                $name = $data['transname'];
             }
-            echo "<tr class='tab_bg_2'><td class='left'><div class='kb'>";
+            $output.= "<tr class='tab_bg_2'><td class='left'><div class='kb'>";
             if ($data['is_faq']) {
-               echo "<i class='fa fa-fw fa-question-circle faq' title='".__("This item is part of the FAQ")."'></i>";
+               $output.= "<i class='fa fa-fw fa-question-circle faq' title='".__("This item is part of the FAQ")."'></i>";
             }
-            echo Html::link(Html::resume_text($name, 80), KnowbaseItem::getFormURLWithID($data["id"]), [
+            $output.= Html::link(Html::resume_text($name, 80), KnowbaseItem::getFormURLWithID($data["id"]), [
                'class' => $data['is_faq'] ? 'faq' : 'knowbase',
                'title' => $data['is_faq'] ? __s("This item is part of the FAQ") : ''
             ]);
-            echo "</div></td></tr>";
+            $output.= "</div></td></tr>";
          }
-         echo "</table>";
+         $output.= "</table>";
+      }
+
+      if ($display) {
+         echo $output;
+      } else {
+         return $output;
       }
    }
 

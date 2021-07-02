@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 include ('../inc/includes.php');
 
 // Change profile system
@@ -95,81 +97,54 @@ if (isset($_GET['create_ticket'])) {
 
 } else {
    Html::helpHeader(__('Home'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
-   echo "<table class='tab_cadre_postonly'>";
 
+   $password_alert = "";
    $user = new User();
    $user->getFromDB(Session::getLoginUserID());
    if ($user->fields['authtype'] == Auth::DB_GLPI && $user->shouldChangePassword()) {
-      $expiration_msg = sprintf(
+      $password_alert = sprintf(
          __('Your password will expire on %s.'),
          Html::convDateTime(date('Y-m-d H:i:s', $user->getPasswordExpirationTime()))
       );
-      echo '<tr>';
-      echo '<th colspan="2">';
-      echo '<div class="warning">';
-      echo '<i class="fa fa-exclamation-triangle fa-5x"></i>';
-      echo '<ul>';
-      echo '<li>';
-      echo $expiration_msg . ' ';
-      echo '<a href="' . $CFG_GLPI['root_doc'] . '/front/updatepassword.php">';
-      echo __('Update my password');
-      echo '</a>';
-      echo '</li>';
-      echo '</ul>';
-      echo '<div class="sep"></div>';
-      echo '</div>';
-      echo '</th>';
-      echo '</tr>';
    }
 
-   echo "<tr class='noHover'>";
-   echo "<td class='top' width='50%'><br>";
-   echo "<table class='central'>";
-   Plugin::doHook('display_central');
+   $ticket_summary = "";
+   $survey_list    = "";
    if (Session::haveRight('ticket', CREATE)) {
-      echo "<tr class='noHover'><td class='top'>";
-      Ticket::showCentralCount(true);
-      echo "</td></tr>";
-      echo "<tr class='noHover'><td class='top'>";
-      Ticket::showCentralList(0, "survey", false);
-      echo "</td></tr>";
+      $ticket_summary = Ticket::showCentralCount(true, false);
+      $survey_list    = Ticket::showCentralList(0, "survey", false, false);
    }
 
+   $reminder_list = "";
    if (Session::haveRight("reminder_public", READ)) {
-      echo "<tr class='noHover'><td class='top'>";
-      Reminder::showListForCentral(false);
-      echo "</td></tr>";
+      $reminder_list = Reminder::showListForCentral(false, false);
    }
 
+   $rss_feed = "";
    if (Session::haveRight("rssfeed_public", READ)) {
-      echo "<tr class='noHover'><td class='top'>";
-      RSSFeed::showListForCentral(false);
-      echo "</td></tr>";
+      $rss_feed = RSSFeed::showListForCentral(false, false);
    }
-   echo "</table></td>";
 
-   echo "<td class='top' width='50%'><br>";
-   echo "<table class='central'>";
-
-   // Show KB items
+   $kb_popular    = "";
+   $kb_recent     = "";
+   $kb_lastupdate = "";
    if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
-      echo "<tr class='noHover'><td class='top'>";
-      KnowbaseItem::showRecentPopular("popular");
-      echo "</td></tr>";
-      echo "<tr class='noHover'><td class='top'><br>";
-      KnowbaseItem::showRecentPopular("recent");
-      echo "</td></tr>";
-      echo "<tr class='noHover'><td class='top'><br>";
-      KnowbaseItem::showRecentPopular("lastupdate");
-      echo "</td></tr>";
-   } else {
-      echo "<tr><td>&nbsp;</td></tr>";
+      $kb_popular    = KnowbaseItem::showRecentPopular("popular");
+      $kb_recent     = KnowbaseItem::showRecentPopular("recent");
+      $kb_lastupdate = KnowbaseItem::showRecentPopular("lastupdate");
    }
 
-   echo "</table>";
-   echo "</td>";
-   echo "</tr></table>";
-
+   Html::requireJs('masonry');
+   TemplateRenderer::getInstance()->display('pages/self-service/home.html.twig', [
+      'password_alert' => $password_alert,
+      'ticket_summary' => $ticket_summary,
+      'survey_list'    => $survey_list,
+      'reminder_list'  => $reminder_list,
+      'rss_feed'       => $rss_feed,
+      'kb_popular'     => $kb_popular,
+      'kb_recent'      => $kb_recent,
+      'kb_lastupdate'  => $kb_lastupdate,
+   ]);
 }
 
 Html::helpFooter();

@@ -228,9 +228,10 @@ class Event extends CommonDBTM {
     *
     * Print a great tab to present lasts events occured on glpi
     *
-    * @param $user   string  name user to search on message (default '')
+    * @param string $user  name user to search on message (default '')
+    * @param bool $display if false, return html
     **/
-   static function showForUser($user = "") {
+   static function showForUser(string $user = "", bool $display = true) {
       global $DB, $CFG_GLPI;
 
       // Show events from $result in table form
@@ -262,8 +263,13 @@ class Event extends CommonDBTM {
             ],
             'rows'         => []
          ];
-         TemplateRenderer::getInstance()->display('components/table.html.twig', $twig_params);
-         return;
+         $output = TemplateRenderer::getInstance()->render('components/table.html.twig', $twig_params);
+         if ($display) {
+            echo $output;
+            return;
+         } else {
+            return $output;
+         }
       }
 
       $twig_params = [
@@ -326,7 +332,14 @@ class Event extends CommonDBTM {
             ]
          ];
       }
-      TemplateRenderer::getInstance()->display('components/table.html.twig', $twig_params);
+
+      $output = TemplateRenderer::getInstance()->render('components/table.html.twig', $twig_params);
+      if ($display) {
+         echo $output;
+         return;
+      } else {
+         return $output;
+      }
    }
 
 
