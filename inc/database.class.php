@@ -322,7 +322,7 @@ class Database extends CommonDBChild {
          unset($input['size']);
       }
 
-      return $input;
+      return parent::prepareInputForAdd($input);
    }
 
 }
