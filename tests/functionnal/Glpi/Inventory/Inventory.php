@@ -4102,7 +4102,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          [
             'condition' => 0,
             'criteria'  => 'itemtype',
-            'pattern'   => 'DatabaseServer',
+            'pattern'   => 'DatabaseInstance',
          ], [
             'condition' => \RuleImportAsset::PATTERN_EXISTS,
             'criteria'  => 'name',
@@ -4155,7 +4155,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          [
             'condition' => 0,
             'criteria'  => 'itemtype',
-            'pattern'   => 'DatabaseServer',
+            'pattern'   => 'DatabaseInstance',
          ], [
             'condition' => \RuleImportAsset::PATTERN_FIND,
             'criteria'  => 'name',
@@ -4225,8 +4225,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
 
       //check created databases & instances
-      $this->integer(countElementsInTable(\DatabaseInstance::getTable()))->isIdenticalTo(3);
+      $this->integer(countElementsInTable(\DatabaseInstance::getTable()))->isIdenticalTo(2);
+      $this->integer(countElementsInTable(\DatabaseInstance::getTable(), ['is_dynamic' => 1]))->isIdenticalTo(2);
       $this->integer(countElementsInTable(\DatabaseInstance_Item::getTable()))->isIdenticalTo(2);
+      $this->integer(countElementsInTable(\Database::getTable()))->isIdenticalTo(3);
 
       //play an update - nothing should have changed
       $CFG_GLPI["is_contact_autoupdate"] = 0;
@@ -4245,30 +4247,29 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
 
       //check created databases & instances
-      $this->integer(countElementsInTable(\DatabaseInstance::getTable()))->isIdenticalTo(3);
+      $this->integer(countElementsInTable(\DatabaseInstance::getTable()))->isIdenticalTo(2);
       $this->integer(countElementsInTable(\DatabaseInstance_Item::getTable()))->isIdenticalTo(2);
+      $this->integer(countElementsInTable(\Database::getTable()))->isIdenticalTo(3);
 
       //play an update with changes
       $json = json_decode($json);
 
       //keep only mysql
-      $mysql = $json->content->databases_servers[0];
+      $mysql = $json->content->databases_services[0];
       //update version
       $mysql->version = 'Ver 15.1 Distrib 10.5.10-MariaDB-modified';
-      $instances = $mysql->instances;
+      $dbs = $mysql->databases;
 
-      $mysql_default = &$instances[0];
-      $mysql_default->size = 55000;
-      $mysql_default->last_backup_date = '2021-06-25 08:52:44';
-      $mysql_default->size = 44000;
-      $mysql_default->last_backup_date = '2021-06-25 07:52:44';
+      $db_glpi = &$dbs[0];
+      $db_glpi->size = 55000;
+      $db_glpi->last_backup_date = '2021-06-25 08:52:44';
 
-      $mysql_other = &$instances[1];
-      $mysql_other->name = 'My new instance for tests.';
-      $mysql_other->port = 3309;
+      $db_new = &$dbs[1];
+      $db_new->name = 'new_database';
+      $db_new->size = 2048;
 
-      $servers = [$mysql];
-      $json->content->databases_servers = $servers;
+      $services = [$mysql];
+      $json->content->databases_services = $services;
 
       $CFG_GLPI["is_contact_autoupdate"] = 0;
       $inventory = new \Glpi\Inventory\Inventory(json_encode($json));
@@ -4283,7 +4284,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->array($inventory->getErrors())->isEmpty();
 
       //check created databases & instances
-      $this->integer(countElementsInTable(\DatabaseInstance::getTable()))->isIdenticalTo(2);
+      $this->integer(countElementsInTable(\DatabaseInstance::getTable()))->isIdenticalTo(1);
       $this->integer(countElementsInTable(\DatabaseInstance_Item::getTable()))->isIdenticalTo(1);
 
       //ensure database version has been updated
@@ -4292,14 +4293,14 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->string($database->fields['version'])->isIdenticalTo('Ver 15.1 Distrib 10.5.10-MariaDB-modified');
 
       //- ensure existing instances has been updated
-      $instances = $database->getInstances();
-      $this->array($instances)->hasSize(2);
-      $this->array($instances[0])
-         ->string['name']->isIdenticalTo('default')
-         ->string['port']->isIdenticalTo('3306');
-      $this->array($instances[1])
-         ->string['name']->isIdenticalTo('My new instance for tests.')
-         ->string['port']->isIdenticalTo('3309');
+      $databases = $database->getDatabases();
+      $this->array($databases)->hasSize(2);
+      $this->array(array_pop($databases))
+         ->string['name']->isIdenticalTo('new_database')
+         ->integer['size']->isIdenticalTo(2048);
+      $this->array(array_pop($databases))
+         ->string['name']->isIdenticalTo('glpi')
+         ->integer['size']->isIdenticalTo(55000);
    }
 
    public function testImportPhone() {

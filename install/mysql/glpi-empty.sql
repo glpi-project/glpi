@@ -8927,6 +8927,8 @@ CREATE TABLE `glpi_databaseinstances_items` (
 DROP TABLE IF EXISTS `glpi_databases`;
 CREATE TABLE `glpi_databases` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `entities_id` int NOT NULL DEFAULT '0',
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) NOT NULL DEFAULT '',
   `size` int NOT NULL DEFAULT '0',
   `databaseinstances_id` int NOT NULL DEFAULT '0',
@@ -8938,6 +8940,8 @@ CREATE TABLE `glpi_databases` (
   `date_update` timestamp NULL DEFAULT NULL,
   `date_lastbackup` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
   KEY `name` (`name`),
   KEY `is_active` (`is_active`),
   KEY `is_deleted` (`is_deleted`),

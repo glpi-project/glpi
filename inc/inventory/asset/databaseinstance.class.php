@@ -43,10 +43,7 @@ class DatabaseInstance extends InventoryAsset
    public function prepare() :array {
       $mapping = [
          'type' => 'databaseinstancetypes_id',
-         'manufacturer' => 'manufacturers_id',
-         'port' => 'instance_port',
-         'size' => 'instance_size',
-         'is_onbackup' => 'instance_is_onbackup'
+         'manufacturer' => 'manufacturers_id'
       ];
 
       foreach ($this->data as &$val) {
@@ -54,6 +51,14 @@ class DatabaseInstance extends InventoryAsset
             if (property_exists($val, $origin)) {
                $val->$dest = $val->$origin;
             }
+         }
+
+         if (property_exists($val, 'is_onbackup')) {
+            $val->is_onbackup = $val->is_onbackup ? 1 : 0;
+         }
+
+         if (property_exists($val, 'is_active')) {
+            $val->is_active = $val->is_active ? 1 : 0;
          }
       }
 
@@ -94,6 +99,7 @@ class DatabaseInstance extends InventoryAsset
       $value = $this->data;
       $instance = new GDatabaseInstance();
       $dbitem = new \DatabaseInstance_Item();
+      $odatabase = new \Database();
 
       $db_instances = $this->getExisting();
 
@@ -116,8 +122,8 @@ class DatabaseInstance extends InventoryAsset
             $itemtype = 'DatabaseInstance';
             if ($data['found_inventories'][0] == 0) {
                // add instance
-               $val->is_dynamic = 1;
-               $val->entities_id = $this->entities_id;
+               $input['is_dynamic'] = 1;
+               $input['entities_id'] = $this->entities_id;
                $items_id = $instance->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
             } else {
                $items_id = $data['found_inventories'][0];
@@ -128,13 +134,13 @@ class DatabaseInstance extends InventoryAsset
                $instance->update($input, $this->withHistory());
 
                $existing_databases = $instance->getDatabases();
-               //update, relying on instance name
+               //update databases, relying on name
                foreach ($existing_databases as $dbkey => $existing_database) {
                   foreach ($databases as $key => $database) {
                      if ($existing_database['name'] == $database->name) {
                         $dbinput = (array)$database;
                         $dbinput += ['id' => $dbkey];
-                        $dbinstance->update(Toolbox::addslashes_deep($dbinput), [], $this->withHistory());
+                        $odatabase->update(Toolbox::addslashes_deep($dbinput), [], $this->withHistory());
                         unset(
                            $existing_databases[$dbkey],
                            $databases[$key]
@@ -144,21 +150,22 @@ class DatabaseInstance extends InventoryAsset
                   }
                }
 
+               //cleanup associated databases
                if (count($existing_databases)) {
                   foreach ($existing_databases as $existing_database) {
-                     $dbinstance->delete(['id' => $existing_database['id']], true, $this->withHistory());
+                     $odatabase->delete(['id' => $existing_database['id']], true, $this->withHistory());
                   }
                }
             }
 
-            //create databases
-            foreach ($databses as $database) {
-               $dbinput = (array)$daytabse;
+            //create new databases
+            foreach ($databases as $database) {
+               $dbinput = (array)$database;
                $dbinput += [
                   'is_dynamic' => 1,
                   'databaseinstances_id' => $instance->fields['id']
                ];
-               $dbinstance->add(Toolbox::addslashes_deep($instinput), [], $this->withHistory());
+               $odatabase->add(Toolbox::addslashes_deep($dbinput), [], $this->withHistory());
             }
 
             $instances[$items_id] = $items_id;
@@ -195,16 +202,16 @@ class DatabaseInstance extends InventoryAsset
       if (count($db_instances) != 0) {
          //remove no longer existing databases
          foreach ($db_instances as $idtmp => $data) {
-            $database->delete(['id' => $idtmp], 1);
+            $instance->delete(['id' => $idtmp], 1);
          }
       }
 
       if (count($instances) && $this->item) {
-         foreach ($instances as $servers_id) {
+         foreach ($instances as $instances_id) {
             //link with main item
             $dbitem->add(
                [
-                  'databaseinstances_id' => $servers_id,
+                  'databaseinstances_id' => $instances_id,
                   'itemtype' => $this->item->getType(),
                   'items_id' => $this->item->fields['id']
                ],

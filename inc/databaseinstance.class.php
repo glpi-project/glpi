@@ -93,7 +93,7 @@ class DatabaseInstance extends CommonDBTM {
       ]);
 
       while ($row = $iterator->next()) {
-         $dbs[] = $row;
+         $dbs[$row['id']] = $row;
       }
 
       return $dbs;
