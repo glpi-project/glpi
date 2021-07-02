@@ -34,6 +34,8 @@ namespace tests\units;
 
 use CommonITILObject;
 use \DbTestCase;
+use TicketValidation;
+use User;
 
 /* Test for inc/ticket.class.php */
 
@@ -3635,9 +3637,81 @@ HTML
    /**
     * @dataProvider convertContentForTicketProvider
     */
-   public function testConvertContentForTicket(string $content, array $files, array $tags, string $expected) {
+    public function testConvertContentForTicket(string $content, array $files, array $tags, string $expected) {
       $this->newTestedInstance();
 
       $this->string($this->testedInstance->convertContentForTicket($content, $files, $tags))->isEqualTo($expected);
+   }
+
+   protected function testIsValidatorProvider(): array {
+      $this->login();
+
+      // Existing ursers from databaser
+      $users_id_1 = getItemByTypeName(User::class, "glpi", true);
+      $users_id_2 = getItemByTypeName(User::class, "tech", true);
+
+      // Tickets to create before tests
+      $this->createItems(\Ticket::class, [
+         [
+            'name'    => 'testIsValidatorProvider 1',
+            'content' => 'testIsValidatorProvider 1',
+         ],
+         [
+            'name'    => 'testIsValidatorProvider 2',
+            'content' => 'testIsValidatorProvider 2',
+         ],
+      ]);
+
+      // Get id of created tickets to reuse later
+      $tickets_id_1 = getItemByTypeName(\Ticket::class, "testIsValidatorProvider 1", true);
+      $tickets_id_2 = getItemByTypeName(\Ticket::class, "testIsValidatorProvider 2", true);
+
+      // TicketValidation items to create before tests
+      $this->createItems(TicketValidation::class, [
+         [
+            'tickets_id'        => $tickets_id_1,
+            'users_id_validate' => $users_id_1,
+         ],
+         [
+            'tickets_id'        => $tickets_id_2,
+            'users_id_validate' => $users_id_2,
+         ],
+      ]);
+
+      return [
+         [
+            'tickets_id' => $tickets_id_1,
+            'users_id'   => $users_id_1,
+            'expected'   => true,
+         ],
+         [
+            'tickets_id' => $tickets_id_1,
+            'users_id'   => $users_id_2,
+            'expected'   => false,
+         ],
+         [
+            'tickets_id' => $tickets_id_2,
+            'users_id'   => $users_id_1,
+            'expected'   => false,
+         ],
+         [
+            'tickets_id' => $tickets_id_2,
+            'users_id'   => $users_id_2,
+            'expected'   => true,
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider testIsValidatorProvider
+    */
+   public function testIsValidator(
+      int $tickets_id,
+      int $users_id,
+      bool $expected
+   ) {
+      $ticket = new \Ticket();
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+      $this->boolean($ticket->isValidator($users_id))->isEqualTo($expected);
    }
 }

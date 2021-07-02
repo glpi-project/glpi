@@ -205,17 +205,56 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return boolean
     */
    function canAddFollowups() {
-      return ((Session::haveRight("followup", ITILFollowup::ADDMYTICKET)
-               && ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-                   || (isset($this->fields["users_id_recipient"])
-                        && ($this->fields["users_id_recipient"] == Session::getLoginUserID()))))
-              || Session::haveRight('followup', ITILFollowup::ADDALLTICKET)
-              || (Session::haveRight('followup', ITILFollowup::ADDGROUPTICKET)
-                  && isset($_SESSION["glpigroups"])
-                  && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups']))
-              || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-              || (isset($_SESSION["glpigroups"])
-                  && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
+      return (
+         (
+            Session::haveRight("followup", ITILFollowup::ADDMYTICKET)
+            && (
+               $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
+               || (
+                  isset($this->fields["users_id_recipient"])
+                  && ($this->fields["users_id_recipient"] == Session::getLoginUserID())
+               )
+            )
+         )
+         || Session::haveRight('followup', ITILFollowup::ADDALLTICKET)
+         || (
+            Session::haveRight('followup', ITILFollowup::ADDGROUPTICKET)
+            && isset($_SESSION["glpigroups"])
+            && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups'])
+         )
+         || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+         || (
+            isset($_SESSION["glpigroups"])
+            && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])
+         )
+         || $this->isValidator(Session::getLoginUserID())
+      );
+   }
+
+   /**
+    * Check if the given users is a validator
+    * @param int $users_id
+    * @return bool
+    */
+   public function isValidator($users_id): bool {
+      if (!$users_id) {
+         // Invalid parameter
+         return false;
+      }
+
+      if (!$this instanceof Ticket && !$this instanceof Change) {
+         // Not a valid validation target
+         return false;
+      }
+
+      $validation_class = static::class . "Validation";
+      $valitation_obj = new $validation_class;
+      $validation_requests = $valitation_obj->find([
+         getForeignKeyFieldForItemType(static::class) => $this->getID(),
+         'users_id_validate' => $users_id,
+      ]);
+
+      return count($validation_requests) > 0;
    }
 
 
