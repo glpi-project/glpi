@@ -956,7 +956,7 @@ class Config extends CommonDBTM {
             0 => __("Sunday"),
          ],
          [
-            'values'   => importArrayFromDB($CFG_GLPI["planning_work_days"]),
+            'values'   => $CFG_GLPI["planning_work_days"],
             'multiple' => true,
             'rand'     => $rand,
          ]
@@ -2701,6 +2701,10 @@ class Config extends CommonDBTM {
       // Path for icon of document type (web mode only)
       if (isset($CFG_GLPI['root_doc'])) {
          $CFG_GLPI['typedoc_icon_dir'] = $CFG_GLPI['root_doc'] . '/pics/icones';
+      }
+
+      if (isset($CFG_GLPI['planning_work_days'])) {
+         $CFG_GLPI['planning_work_days'] = importArrayFromDB($CFG_GLPI['planning_work_days']);
       }
 
       return true;
