@@ -1474,6 +1474,7 @@ $ curl -X GET \
 
 * **URL**: apirest.php/getMassiveActionParameters/:itemtype/
 * **Description**: Show the availables parameters for a given massive action.
+  * Warning: experimental endpoint, some required parameters may be missing from the returned content.
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
