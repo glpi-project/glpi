@@ -325,4 +325,32 @@ class Database extends CommonDBChild {
       return parent::prepareInputForAdd($input);
    }
 
+   static function getAdditionalMenuLinks() {
+      $links = [];
+      if (static::canView()) {
+         $insts = "<i class=\"fas fa-database pointer\" title=\"" . DatabaseInstance::getTypeName(Session::getPluralNumber()) .
+            "\"></i><span class=\"sr-only\">" . DatabaseInstance::getTypeName(Session::getPluralNumber()). "</span>";
+         $links[$insts] = DatabaseInstance::getSearchURL(false);
+
+      }
+      if (count($links)) {
+         return $links;
+      }
+      return false;
+   }
+
+   static function getAdditionalMenuOptions() {
+      if (static::canView()) {
+         return [
+            'databaseinstance' => [
+               'title' => DatabaseInstance::getTypeName(Session::getPluralNumber()),
+               'page'  => DatabaseInstance::getSearchURL(false),
+               'links' => [
+                  'add'    => '/front/databaseinstance.form.php',
+                  'search' => '/front/dabataseinstance.php',
+               ]
+            ]
+         ];
+      }
+   }
 }
