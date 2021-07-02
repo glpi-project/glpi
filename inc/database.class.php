@@ -99,7 +99,7 @@ class Database extends CommonDBChild {
          echo $database->getLink();
          echo Html::hidden('databaseinstances_id', ['value' => $this->fields['databaseinstances_id']]);
       } else {
-         $database::dropdown();
+         $database::dropdown(['value' => $this->fields['databaseinstances_id']]);
       }
       echo "</td>";
       echo "<td><label for='size$rand'>".__('Size')."</label></td>";
@@ -300,7 +300,7 @@ class Database extends CommonDBChild {
             $db->getFromDB($row['id']);
             echo "<tr class='".((isset($row['is_deleted']) && $row['is_deleted'])?"tab_bg_2_2'":"tab_bg_2")."'>";
             echo "<td>".$db->getLink()."</td>";
-            echo "<td>".Dropdown::getValueWithUnit().$row['size']."</td>";
+            echo "<td>".$row['size']."</td>";
             echo "<td>".Dropdown::getYesNo($db->fields['is_active'])."</td>";
             echo "<td>".Dropdown::getYesNo($db->fields['is_onbackup'])."</td>";
             echo "</tr>";
