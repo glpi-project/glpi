@@ -156,3 +156,9 @@ input[type="color"] {
 body .modal-content, body .modal-header {
    background-color: $dark-mode-lighten;
 }
+
+.page-anonymous {
+   .glpi-logo {
+      --logo: url(#{$logo-light}) !important;
+   }
+}

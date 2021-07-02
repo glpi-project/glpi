@@ -35,6 +35,14 @@ $danger: #d49696;
 $enable-negative-margins: true;
 $link-hover-decoration: none;
 
+$logo-light: "../pics/logos/logo-GLPI-100-white.png" !default;
+$logo-light-reduced: "../pics/logos/logo-G-100-white.png" !default;
+$logo-dark: "../pics/logos/logo-GLPI-100-black.png" !default;
+$logo-dark-reduced: "../pics/logos/logo-G-100-black.png" !default;
+
+$logo: $logo-light;
+$logo_reduced: $logo-light-reduced;
+
 @if $is-dark {
    @import "css/includes/dark";
 } @else {
@@ -58,8 +66,6 @@ $header-danger-bg: $danger !default;
 $header-badge-bg: tint-color($header-fg, 80%)!default;
 $header-badge-fg: darken($header-fg, 20%) !default;
 
-$logo: "../pics/logos/logo-GLPI-100-white.png" !default;
-$logo_reduced: "../pics/logos/logo-G-100-white.png" !default;
 $scrollbar-color-thumb: rgba($color: $secondary, $alpha: .8) !default;
 $scrollbar-color-track: transparent !default;
 
@@ -170,4 +176,13 @@ body.iframed {
 
 .img-overlay-wrapper {
    width: fit-content;
+}
+
+.page-anonymous {
+   .glpi-logo {
+      --logo: url(#{$logo-dark});
+      content: var(--logo);
+      width: 200px;
+      height: 110px;
+   }
 }
