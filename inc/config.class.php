@@ -938,8 +938,6 @@ class Config extends CommonDBTM {
       echo "</td></tr><tr class='tab_bg_2'><td><label for='dropdown_use_anonymous_followups$rand'>" . __('Allow anonymous followups (receiver)') . "</label></td><td>";
       Dropdown::showYesNo("use_anonymous_followups", $CFG_GLPI["use_anonymous_followups"], -1, ['rand' => $rand]);
       echo "</td><td colspan='2'></td></tr>";
-      echo "</td></tr>";
-      echo "<td></td></tr>";
 
       echo "<tr>";
       echo "<td>";
