@@ -95,7 +95,7 @@ class Database extends CommonDBChild {
       echo "<tr>";
       echo "<td>".DatabaseInstance::getTypeName(1)."</td>";
       echo "<td>";
-      if (isset($_REQUEST['databaseinstances_id'])) {
+      if (isset($_REQUEST['databaseinstances_id']) && !empty($_REQUEST['databaseinstances_id'])) {
          echo $database->getLink();
       } else {
          $database::dropdown();
