@@ -334,7 +334,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          //Also check if item status has changed
          if (!$proceed) {
             if (isset($this->input['_status'])
-               && $this->input['status'] != $item->getField('status')
+               && $this->input['_status'] != $item->getField('status')
             ) {
                $proceed = true;
             }
