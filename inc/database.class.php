@@ -97,10 +97,10 @@ class Database extends CommonDBChild {
       echo "<td>";
       if (isset($_REQUEST['databaseinstances_id']) && !empty($_REQUEST['databaseinstances_id'])) {
          echo $database->getLink();
+         echo Html::hidden('databaseinstances_id', ['value' => $this->fields['databaseinstances_id']]);
       } else {
          $database::dropdown();
       }
-      echo Html::hidden('databaseinstances_id', ['value' => $this->fields['databaseinstances_id']]);
       echo "</td>";
       echo "<td><label for='size$rand'>".__('Size')."</label></td>";
       echo "<td>";
