@@ -72,7 +72,7 @@
 {% else %}
    <div class="pswp-img{{ rand }} {{ gallery_item_class }}" itemscope itemtype="https://schema.org/ImageGallery">
       {% for img in imgs %}
-         {% set clearable = not img['_is_model_img'] %}
+         {% set clearable = img['clearable'] %}
          <figure itemprop="associatedMedia" itemscope itemtype="https://schema.org/ImageObject"
                  style="width: {{ img['thumbnail_w']|default('auto') }}; height: {{ img['thumbnail_h']|default('auto') }}">
             {{ fields.imageField((clearable ? 'pictures' : field_name) ~ '_' ~ loop.index0, img['thumbnail_src']|default(img['src']), '', {

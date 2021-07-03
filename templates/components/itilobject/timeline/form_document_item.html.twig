@@ -9,11 +9,25 @@
          {% set filename = entry_i['filename'] ?? entry_i['name'] %}
 
          {% if entry_i['filename'] %}
+            {% set docpath = path("front/document.send.php?docid=" ~ entry_i['id']) %}
+            {% set is_image = isImage(entry_i['filepath']) %}
             <div class="col text-truncate">
-               <a href="{{ path("front/document.send.php?docid=" ~ entry_i['id']) }}" target='_blank'>
-                  <img src="{{ getIconForFilename(filename) }}" alt="{{ __("File extension") }}">
-                  {{ name }}
-               </a>
+               {% if is_image %}
+                  {% include 'components/photoswipe.html.twig' with {
+                     'imgs': [{
+                        'title': '',
+                        'thumbnail_src': docpath ~ '&context=timeline',
+                        'src': docpath,
+                        'clearable': false,
+                     }]
+                  } %}
+                  <a href="{{ docpath }}" target='_blank'>{{ name }}</a>
+               {% else %}
+                  <a href="{{ docpath }}" target='_blank'>
+                     <img src="{{ getIconForFilename(filename) }}" alt="{{ __("File extension") }}">
+                     {{ name }}
+                  </a>
+               {% endif %}
             </div>
          {% endif %}
 
