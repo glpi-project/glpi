@@ -51,7 +51,7 @@ class DocumentExtension extends AbstractExtension implements ExtensionInterface 
          new TwigFunction('getMaxUploadSize', [Document::class, 'getMaxUploadSize'], ['is_safe' => ['html']]),
          new TwigFunction('showAvailableTypesLink', [DocumentType::class, 'showAvailableTypesLink'], ['is_safe' => ['html']]),
          new TwigFunction('isImage', [$this, 'isImage'], ['is_safe' => ['html']]),
-         new TwigFunction('getImage', [$this, 'getImage'], ['is_safe' => ['html']]),
+         new TwigFunction('getImageSize', [$this, 'getImageSize']),
       ];
    }
 
@@ -88,10 +88,10 @@ class DocumentExtension extends AbstractExtension implements ExtensionInterface 
       return Document::isImage($filepath);
    }
 
-   public function getImage(string $filepath, string $context, bool $is_relative = true, $mwidth = null, $mheight = null): string {
+   public function getImageSize(string $filepath, bool $is_relative = true): array {
       if ($is_relative) {
          $filepath = GLPI_VAR_DIR."/".$filepath;
       }
-      return Document::getImage($filepath, $context, $mwidth, $mheight);
+      return getimagesize($filepath);
    }
 }

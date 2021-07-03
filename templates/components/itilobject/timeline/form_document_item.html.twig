@@ -13,11 +13,16 @@
             {% set is_image = isImage(entry_i['filepath']) %}
             <div class="col text-truncate">
                {% if is_image %}
+                  {% set img_size = getImageSize(entry_i['filepath']) %}
                   {% include 'components/photoswipe.html.twig' with {
                      'imgs': [{
                         'title': '',
                         'thumbnail_src': docpath ~ '&context=timeline',
+                        'thumbnail_w': 'auto',
+                        'thumbnail_h': 'auto',
                         'src': docpath,
+                        'w': img_size[0],
+                        'h': img_size[1],
                         'clearable': false,
                      }]
                   } %}
