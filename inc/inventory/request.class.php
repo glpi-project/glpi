@@ -51,11 +51,13 @@ class Request
    const XML_MODE    = 0;
    const JSON_MODE   = 1;
 
+   //FusionInventory agent
    const PROLOG_QUERY = 'PROLOG';
    const INVENT_QUERY = 'INVENTORY';
    const SNMP_QUERY   = 'SNMP';
    const OLD_SNMP_QUERY   = 'SNMPQUERY';
 
+   //GLPI AGENT
    const CONTACT_ACTION = 'contact';
    const REGISTER_ACTION = 'register';
    const CONFI_ACTION = 'configuration';
@@ -525,13 +527,16 @@ class Request
      */
    public function handleContentType($type) {
       switch (strtolower($type)) {
+         case 'application/x-zlib':
          case 'application/x-compress-zlib':
             $this->compression = self::COMPRESS_ZLIB;
             break;
+         case 'application/x-gzip':
          case 'application/x-compress-gzip':
             $this->compression = self::COMPRESS_GZIP;
             break;
          case 'application/x-br':
+         case 'application/x-compress-br':
             $this->compression = self::COMPRESS_BR;
             break;
          case 'application/xml':
