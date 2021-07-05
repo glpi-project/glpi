@@ -1880,7 +1880,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                            <input type=\"radio\" id=\"rb-filter\" class=\"gantt_radio hidden rb-optype\" name=\"rb-optype\" />
                            <label for=\"rb-filter\">".__("Filter")."</label>
                         </legend>
-                        <input id=\"search\" data-text-filter type=\"field\" placeholder=\"".__("by name")."\" style=\"width:150px; font-size:14px; height:22px;\" oninput=\"gantt.\$doFilter(this.value);\" />
+                        <input id=\"search\" data-text-filter type=\"field\" placeholder=\"".__("by name")."\" oninput=\"gantt.\$doFilter(this.value);\" />
                      </fieldset>
                   </li>
                </ul>

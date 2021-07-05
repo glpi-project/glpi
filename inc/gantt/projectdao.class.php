@@ -96,20 +96,4 @@ class ProjectDAO {
       $p->update($input);
    }
 
-   function putInTrashbin($projectId) {
-      if ($projectId > 0) {
-         $p = new \Project();
-         $p->getFromDB($projectId);
-
-         if (!$p::canUpdate() || !$p::canDelete() || !$p->canUpdateItem()) {
-            throw new \Exception(__('Not enough rights'));
-         }
-
-         $p->update([
-            'id' => $projectId,
-            'is_deleted' => 1    // only mark as deleted, allow later restore if needed
-         ]);
-      }
-      return true;
-   }
 }

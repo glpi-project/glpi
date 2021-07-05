@@ -104,7 +104,7 @@ var GlpiGantt = (function() {
                text += "<br/><b>" + __("Description:") + "</b><div style=\"padding-left:25px\">" + task.content + "</div>";
             }
             if (task.comment && task.comment.length > 0) {
-               text += "<br/><b>" + __("Comment:") + "</b><div style=\"padding-left:25px\"" + task.comment + "</div>";
+               text += "<br/><b>" + __("Comment:") + "</b><div style=\"padding-left:25px\">" + task.comment + "</div>";
             }
             return text;
          };
@@ -169,7 +169,7 @@ var GlpiGantt = (function() {
                      },
                      {
                         unit: "week",
-                        format: "Week #%W"
+                        format: __("Week #%s").replace('%s', '%W')
                      }
                   ]
                },
@@ -231,12 +231,24 @@ var GlpiGantt = (function() {
 
          gantt.attachEvent("onBeforeRowDragEnd", function(id, target) {
             var item = gantt.getTask(id);
-            var target = gantt.getTask(target);
-            if (item.type == gantt.config.types.project && target.type != gantt.config.types.project) {
-               return false;
+            var parent = null;
+            var retval = true;
+            if (target == 0) {
+               if (item.type == gantt.config.types.project && item.parent != target) {
+                  item.parent = target;
+                  makeRootProject(item);
+               } else {
+                  retval = false;
+               }
+            } else {
+               parent = gantt.getTask(target);
+               if ((item.type == gantt.config.types.project && parent.type != gantt.config.types.project) || (item.parent == target)) {
+                  retval = false;
+               } else {
+                  changeParent(item, parent);
+               }
             }
-            changeParent(item, target);
-            return true;
+            return retval;
          });
 
          if (!readonly) {
@@ -300,102 +312,102 @@ var GlpiGantt = (function() {
                }
                return false;
             });
-         }
 
-         gantt.attachEvent("onBeforeLinkAdd", function(id, link) {
+            gantt.attachEvent("onBeforeLinkAdd", function(id, link) {
 
-            var sourceTask = gantt.getTask(link.source);
-            var targetTask = gantt.getTask(link.target);
+               var sourceTask = gantt.getTask(link.source);
+               var targetTask = gantt.getTask(link.target);
 
-            if (validateLink(sourceTask, targetTask, link.type)) {
-               addTaskLink(id, sourceTask, targetTask, link);
-            } else
-               return false;
-         });
-
-         // >>>>> link double click event to handle edit/save/delete actions
-         (function() {
-
-            var modal;
-            var editLinkId;
-            gantt.attachEvent("onLinkDblClick", function(id, e) {
-
-               editLinkId = id;
-               var link = gantt.getLink(id);
-               var linkTitle;
-
-               switch (parseInt(link.type)) {
-                  case parseInt(gantt.config.links.finish_to_start):
-                     linkTitle = __("Finish to Start: ");
-                     break;
-                  case parseInt(gantt.config.links.finish_to_finish):
-                     linkTitle = __("Finish to Finish: ");
-                     break;
-                  case parseInt(gantt.config.links.start_to_start):
-                     linkTitle = __("Start to Start: ");
-                     break;
-                  case parseInt(gantt.config.links.start_to_finish):
-                     linkTitle = __("Start to Finish: ");
-                     break;
-               }
-
-               linkTitle += " " + gantt.getTask(link.source).text + " -> " + gantt.getTask(link.target).text;
-
-               modal = gantt.modalbox({
-                  title: `<p class="gantt_cal_lsection" style="line-height:normal">${linkTitle}</p>`,
-                  text: `<div class="gantt_cal_lsection">
-                  <label>${__("Lag")} <input type="number" class="lag-input" /></label>
-                  </div>`,
-                  buttons: [
-                     { label: __("Save"), css: "gantt_save_btn", value: "save" },
-                     { label: __("Cancel"), css: "gantt_cancel_btn", value: "cancel" },
-                     { label: __("Delete"), css: "gantt_delete_btn", value: "delete" }
-                  ],
-                  width: "500px",
-                  callback: function(result) {
-                     switch (result) {
-                        case "save":
-                           saveLink();
-                           break;
-                        case "cancel":
-                           cancelEditLink();
-                           break;
-                        case "delete":
-                           deleteLink();
-                           break;
-                     }
-                  }
-               });
-
-               modal.querySelector(".lag-input").value = link.lag || 0;
-               return false;
+               if (validateLink(sourceTask, targetTask, link.type)) {
+                  addTaskLink(id, sourceTask, targetTask, link);
+               } else
+                  return false;
             });
 
-            function endPopup() {
-               modal = null;
-               editLinkId = null;
-            }
+            // >>>>> link double click event to handle edit/save/delete actions
+            (function() {
 
-            function cancelEditLink() {
-               endPopup();
-            }
+               var modal;
+               var editLinkId;
+               gantt.attachEvent("onLinkDblClick", function(id, e) {
 
-            function deleteLink() {
-               deleteTaskLink(editLinkId, endPopup);
-            }
+                  editLinkId = id;
+                  var link = gantt.getLink(id);
+                  var linkTitle;
 
-            function saveLink() {
-               var link = gantt.getLink(editLinkId);
-               var lagValue = modal.querySelector(".lag-input").value;
+                  switch (parseInt(link.type)) {
+                     case parseInt(gantt.config.links.finish_to_start):
+                        linkTitle = __("Finish to Start: ");
+                        break;
+                     case parseInt(gantt.config.links.finish_to_finish):
+                        linkTitle = __("Finish to Finish: ");
+                        break;
+                     case parseInt(gantt.config.links.start_to_start):
+                        linkTitle = __("Start to Start: ");
+                        break;
+                     case parseInt(gantt.config.links.start_to_finish):
+                        linkTitle = __("Start to Finish: ");
+                        break;
+                  }
 
-               if (!isNaN(parseInt(lagValue, 10))) {
-                  link.lag = parseInt(lagValue, 10);
+                  linkTitle += " " + gantt.getTask(link.source).text + " -> " + gantt.getTask(link.target).text;
+
+                  modal = gantt.modalbox({
+                     title: `<p class="gantt_cal_lsection" style="line-height:normal">${linkTitle}</p>`,
+                     text: `<div class="gantt_cal_lsection">
+                     <label>${__("Lag")} <input type="number" class="lag-input" /></label>
+                     </div>`,
+                     buttons: [
+                        { label: __("Save"), css: "gantt_save_btn", value: "save" },
+                        { label: __("Cancel"), css: "gantt_cancel_btn", value: "cancel" },
+                        { label: __("Delete"), css: "gantt_delete_btn", value: "delete" }
+                     ],
+                     width: "500px",
+                     callback: function(result) {
+                        switch (result) {
+                           case "save":
+                              saveLink();
+                              break;
+                           case "cancel":
+                              cancelEditLink();
+                              break;
+                           case "delete":
+                              deleteLink();
+                              break;
+                        }
+                     }
+                  });
+
+                  modal.querySelector(".lag-input").value = link.lag || 0;
+                  return false;
+               });
+
+               function endPopup() {
+                  modal = null;
+                  editLinkId = null;
                }
 
-               updateTaskLink(link, endPopup);
-            }
-         })();
-         // <<<<< link double click
+               function cancelEditLink() {
+                  endPopup();
+               }
+
+               function deleteLink() {
+                  deleteTaskLink(editLinkId, endPopup);
+               }
+
+               function saveLink() {
+                  var link = gantt.getLink(editLinkId);
+                  var lagValue = modal.querySelector(".lag-input").value;
+
+                  if (!isNaN(parseInt(lagValue, 10))) {
+                     link.lag = parseInt(lagValue, 10);
+                  }
+
+                  updateTaskLink(link, endPopup);
+               }
+            })();
+            // <<<<< link double click
+         }
 
          // adjust elements visibility on Fullscreen expand/collapse
          gantt.attachEvent("onBeforeExpand", function() {
@@ -595,7 +607,7 @@ var GlpiGantt = (function() {
                gantt.hideLightbox();
                displayAjaxMessageAfterRedirect();
             } else
-               gantt.alert(__('Could not update Task[%s]: ', item.text) + json.error);
+               gantt.alert(__('Could not update Task[%s]: ').replace('%s', item.text) + json.error);
          },
          error: function(resp) {
             gantt.alert(resp.responseText);
@@ -622,30 +634,9 @@ var GlpiGantt = (function() {
                gantt.updateTask(task.id);
                displayAjaxMessageAfterRedirect();
             } else {
-               gantt.alert(__('Could not update Task[%s]: ', id) + json.error);
+               gantt.alert(__('Could not update Task[%s]: ').replace('%s', id) + json.error);
                gantt.undo();
             }
-         }
-      });
-   }
-
-   function deleteTask(id, item) {
-      $.ajax({
-         url,
-         type: 'POST',
-         dataType: 'json',
-         data: { deleteTask: 1, taskId: item.linktask_id },
-         success: function(resp) {
-            if (resp.ok) {
-               gantt.deleteTask(id);
-               gantt.hideLightbox();
-               displayAjaxMessageAfterRedirect();
-            } else {
-               gantt.alert(resp.error);
-            }
-         },
-         error: function(resp) {
-            gantt.alert(resp.responseText);
          }
       });
    }
@@ -655,6 +646,31 @@ var GlpiGantt = (function() {
          url,
          type: 'POST',
          data: { changeItemParent: 1, item, target },
+         success: function(json) {
+            if (!json.ok) {
+               gantt.alert(json.error);
+               item.parent = $('#hf_gantt_item_state').val().split('|')[1];
+               $('#hf_gantt_item_state').val('');
+               gantt.updateTask(item.id);
+               gantt.render();
+            } else {
+               if (item.progress > 0) {
+                  parentProgress(item.id);
+               }
+               displayAjaxMessageAfterRedirect();
+            }
+         },
+         error: function(resp) {
+            gantt.alert(resp.responseText);
+         }
+      });
+   }
+
+   function makeRootProject(item) {
+      $.ajax({
+         url,
+         type: 'POST',
+         data: { makeRootProject: 1, item },
          success: function(json) {
             if (!json.ok) {
                gantt.alert(json.error);
@@ -724,28 +740,7 @@ var GlpiGantt = (function() {
                gantt.hideLightbox();
                displayAjaxMessageAfterRedirect();
             } else {
-               gantt.alert(__('Could not update Project[%s]: ', item.text) + json.error);
-            }
-         },
-         error: function(resp) {
-            gantt.alert(resp.responseText);
-         }
-      });
-   }
-
-   function putInTrashbin(id, project) {
-      $.ajax({
-         url,
-         type: 'POST',
-         dataType: 'json',
-         data: { putInTrashbin: 1, projectId: project.id },
-         success: function(resp) {
-            if (resp.ok) {
-               gantt.deleteTask(id);
-               gantt.hideLightbox();
-               displayAjaxMessageAfterRedirect();
-            } else {
-               gantt.alert(resp.error);
+               gantt.alert(__('Could not update Project[%s]: ').replace('%s', item.text) + json.error);
             }
          },
          error: function(resp) {

@@ -164,31 +164,4 @@ class TaskDAO {
       return true;
    }
 
-   function deleteTask(&$failed, $taskId) {
-      global $DB;
-      $success = false;
-      if ($taskId > 0) {
-
-         $t = new \ProjectTask();
-         $t->getFromDB($taskId);
-         if (!$t::canUpdate() || !$t::canDelete() || !$t->canUpdateItem()) {
-            throw new \Exception(__('Not enough rights'));
-         }
-
-         foreach ($DB->request('glpi_projecttasks', ['projecttasks_id' => $taskId]) as $record) {
-            if (isset($record['id'])) {
-               if (!$this->deleteTask($failed, $record['id'])) {
-                  $failed[] = $record;
-               }
-            }
-         }
-         try {
-            $projectTask = new \ProjectTask();
-            $success = $projectTask->delete(['id' => $taskId]);
-         } catch (Exception $ex) {
-            $success = false;
-         }
-      }
-      return $success;
-   }
 }

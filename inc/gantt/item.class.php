@@ -43,10 +43,12 @@ if (!defined('GLPI_ROOT')) {
  */
 class Item implements \JsonSerializable {
    public $id;
+   public $linktask_id;
    public $start_date; // format 2019-09-07 04:06:15
    public $end_date;
    public $text;
-   public $note;
+   public $content;
+   public $comment;
    public $type; // project / task / milestone
    public $progress;
    public $parent;

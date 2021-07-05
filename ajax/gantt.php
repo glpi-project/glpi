@@ -104,29 +104,6 @@ if (isset($_REQUEST['getData'])) {
    }
    echo json_encode($result);
 
-} else if (isset($_REQUEST["deleteTask"])) {
-   $result;
-   try {
-      $failed = [];
-      $taskId = $_POST["taskId"];
-      $taskDAO = new Glpi\Gantt\TaskDAO();
-      $taskDAO->deleteTask($failed, $taskId);
-
-      if (count($failed) > 0) {
-         throw new \Exception(__("Some tasks may have not been deleted"));
-      }
-
-      $result = [
-          'ok' => true
-      ];
-   } catch (\Exception $ex) {
-      $result = [
-         'ok' => false,
-         'error' => $ex->getMessage()
-      ];
-   }
-   echo json_encode($result);
-
 } else if (isset($_REQUEST["changeItemParent"])) {
    $result;
    try {
@@ -149,6 +126,31 @@ if (isset($_REQUEST['getData'])) {
       } else {
          $dao = new \Glpi\Gantt\TaskDAO();
       }
+      $dao->updateParent($item);
+
+      $result = [
+         'ok' => true
+      ];
+   } catch (\Exception $ex) {
+      $result = [
+         'ok' => false,
+         'error' => $ex->getMessage()
+      ];
+   }
+   echo json_encode($result);
+} else if (isset($_REQUEST["makeRootProject"])) {
+   $result;
+   try {
+      $p_item = $_POST["item"];
+
+      // double check for safety..
+      if ($p_item["type"] != "project") {
+         throw new \Exception(__("Item must be of project type"));
+      }
+
+      $item = new Glpi\Gantt\Item();
+      $item->populateFrom($p_item);
+      $dao = new \Glpi\Gantt\ProjectDAO();
       $dao->updateParent($item);
 
       $result = [
@@ -196,23 +198,6 @@ if (isset($_REQUEST['getData'])) {
       $updated = $projectDAO->updateProject($item);
       $result = [
          'ok' => $updated
-      ];
-   } catch (\Exception $ex) {
-      $result = [
-         'ok' => false,
-         'error' => $ex->getMessage()
-      ];
-   }
-   echo json_encode($result);
-
-} else if (isset($_REQUEST["putInTrashbin"])) {
-   $result;
-   try {
-      $projectId = $_POST["projectId"];
-      $projectDAO = new Glpi\Gantt\ProjectDAO();
-      $projectDAO->putInTrashbin($projectId);
-      $result = [
-         'ok' => true
       ];
    } catch (\Exception $ex) {
       $result = [
