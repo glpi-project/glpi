@@ -634,7 +634,7 @@ var GlpiGantt = (function() {
                gantt.updateTask(task.id);
                displayAjaxMessageAfterRedirect();
             } else {
-               gantt.alert(__('Could not update Task[%s]: ').replace('%s', id) + json.error);
+               gantt.alert(__('Could not update Task[%s]: ').replace('%s', task.text) + json.error);
                gantt.undo();
             }
          }
