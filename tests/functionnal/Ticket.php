@@ -3637,7 +3637,7 @@ HTML
    /**
     * @dataProvider convertContentForTicketProvider
     */
-    public function testConvertContentForTicket(string $content, array $files, array $tags, string $expected) {
+   public function testConvertContentForTicket(string $content, array $files, array $tags, string $expected) {
       $this->newTestedInstance();
 
       $this->string($this->testedInstance->convertContentForTicket($content, $files, $tags))->isEqualTo($expected);
