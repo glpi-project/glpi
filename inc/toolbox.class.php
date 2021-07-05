@@ -1344,7 +1344,7 @@ class Toolbox {
 
       switch ($img_type) {
          case IMAGETYPE_BMP :
-            $source_res = imagecreatefromwbmp($source_path);
+            $source_res = imagecreatefrombmp($source_path);
             break;
 
          case IMAGETYPE_GIF :
