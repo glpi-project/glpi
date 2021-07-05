@@ -38,6 +38,7 @@ use CommonITILActor;
 use CommonITILObject;
 use CommonITILValidation;
 use CommonTreeDropdown;
+use Config;
 use DBConnection;
 use Group;
 use Group_Ticket;
@@ -409,6 +410,297 @@ class Provider {
          'icon'       => $params['icon'],
          's_criteria' => $search_criteria,
          'itemtype'   => 'Ticket',
+      ];
+   }
+
+
+   public static function nbTicketsByAgreementStatusAndTechnician(
+      array $params = []
+   ):array {
+      $DBread = DBConnection::getReadConnection();
+
+      $default_params = [
+         'label'         => "",
+         'icon'          => 'fas fa-stopwatch',
+         'apply_filters' => [],
+      ];
+      $params = array_merge($default_params, $params);
+
+      $query_criteria  = [];
+
+      $table = Ticket::getTable();
+      $ticketUserTable = Ticket_User::getTable();
+      $userTable = User::getTable();
+
+      $ownExceeded = Ticket::generateSLAOLAComputation('time_to_own', $table);
+      $resolveExceeded = Ticket::generateSLAOLAComputation('time_to_resolve', $table);
+      $slaState = "IF ($ownExceeded AND $resolveExceeded, 3, IF ($resolveExceeded, 2, IF ($ownExceeded, 1, 0)))";
+      $config = Config::getConfigurationValues('core');
+      if ($config['names_format'] == User::FIRSTNAME_BEFORE) {
+         $first = "firstname";
+         $second = "realname";
+      } else {
+         $first = "realname";
+         $second = "firstname";
+      }
+
+      $friendlyName = "CONCAT(`$userTable`.$first, ' ', `$userTable`.$second)";
+      $query_criteria = [
+         'COUNT' => 'cpt',
+         'SELECT'    => [
+            new QueryExpression("$friendlyName as `username`"),
+            "$userTable.name",
+            new QueryExpression("$slaState as `sla_state`"),
+         ],
+         'FROM'   => $table,
+         'INNER JOIN' => [
+            "$ticketUserTable as gu" => [
+               'FKEY' => [
+                  'gu' => 'tickets_id',
+                  $table => 'id',
+                  [
+                     'AND' => [
+                        "gu.type" => Ticket_User::ASSIGN
+                     ]
+                  ]
+               ],
+            ],
+            $userTable => [
+               'FKEY' => [
+                  $userTable => 'id',
+                  'gu' => 'users_id',
+               ],
+            ],
+         ],
+         'WHERE'  => [
+            "$table.is_deleted" => 0,
+         ] + getEntitiesRestrictCriteria($table),
+         'GROUPBY' => [
+            'sla_state',
+            "$userTable.id",
+         ],
+         'ORDER' => [
+            'sla_state DESC',
+            'cpt DESC',
+            "$userTable.id",
+         ]
+      ];
+
+      unset($params['apply_filters']['group_tech']);
+      $query_filter = self::getFiltersCriteria($table, $params['apply_filters']);
+      unset($query_filter['LEFT JOIN']["$ticketUserTable as gu"]);
+
+      $query_criteria = array_merge_recursive(
+         $query_criteria,
+         Ticket::getCriteriaFromProfile(),
+         $query_filter
+      );
+
+      $allLate = [];
+      $resolveLate = [];
+      $ownLate = [];
+      $onTime = [];
+      $names = [];
+      $data = [];
+      // Get data and sort by is_late status
+      $iterator   = $DBread->request($query_criteria);
+      foreach ($iterator as $row) {
+         switch ($row['sla_state']) {
+            case 3: // Own and resolve are both late
+               $allLate[$row['name']] = $row['cpt'];
+               break;
+            case 2: // Resolve is late
+               $resolveLate[$row['name']] = $row['cpt'];
+               break;
+            case 1: // own is late
+               $ownLate[$row['name']] = $row['cpt'];
+               break;
+            case 0:
+               $onTime[$row['name']] = $row['cpt'];
+         }
+         $names[$row['name']] = $row['username'];
+      }
+
+      // set legend for each serie
+      $data['series'][0]['name'] = __('Late own and resolve');
+      $data['series'][1]['name'] = __('Late resolve');
+      $data['series'][2]['name'] = __('Late own');
+      $data['series'][3]['name'] = __('On time');
+      // ensure thare are 2 values per user (late and in time)
+      foreach ($names as $name => $username) {
+         if (!isset($allLate[$name])) {
+            $allLate[$name] = 0;
+         }
+         if (!isset($resolveLate[$name])) {
+            $resolveLate[$name] = 0;
+         }
+         if (!isset($ownLate[$name])) {
+            $ownLate[$name] = 0;
+         }
+         if (!isset($onTime[$name])) {
+            $onTime[$name] = 0;
+         }
+         $label = $username ?? $name;
+         $data['labels'][] = $label;
+         $data['series'][0]['data'][] = $allLate[$name];
+         $data['series'][1]['data'][] = $resolveLate[$name];
+         $data['series'][2]['data'][] = $ownLate[$name];
+         $data['series'][3]['data'][] = $onTime[$name];
+      }
+
+      if (!isset($data['series'][0]['data'])) {
+         $data['series'][0]['data'] = [];
+         $data['series'][1]['data'] = [];
+         $data['series'][2]['data'] = [];
+         $data['series'][3]['data'] = [];
+         $data['labels'] = [];
+         $data['nodata'] = true;
+      }
+
+      return [
+         'label' => __('Tickets by SLA status and by technician'),
+         'data' => $data,
+         'icon' => $params['icon'],
+      ];
+   }
+
+   public static function nbTicketsByAgreementStatusAndTechnicianGroup(
+      array $params = []
+   ):array {
+      $DBread = DBConnection::getReadConnection();
+
+      $default_params = [
+         'label'         => "",
+         'icon'          => 'fas fa-stopwatch',
+         'apply_filters' => [],
+      ];
+      $params = array_merge($default_params, $params);
+
+      $query_criteria  = [];
+
+      $table = Ticket::getTable();
+      $ticketGroupTable = Group_Ticket::getTable();
+      $groupTable = Group::getTable();
+
+      $ownExceeded = Ticket::generateSLAOLAComputation('time_to_own', $table);
+      $resolveExceeded = Ticket::generateSLAOLAComputation('time_to_resolve', $table);
+      $slaState = "IF ($ownExceeded AND $resolveExceeded, 3, IF ($resolveExceeded, 2, IF ($ownExceeded, 1, 0)))";
+
+      $query_criteria = [
+         'COUNT' => 'cpt',
+         'SELECT'    => [
+            "$groupTable.name",
+            new QueryExpression("$slaState as `sla_state`"),
+         ],
+         'FROM'   => $table,
+         'INNER JOIN' => [
+            "$ticketGroupTable as gl" => [
+               'FKEY' => [
+                  'gl' => 'tickets_id',
+                  $table => 'id',
+                  [
+                     'AND' => [
+                        "gl.type" => Ticket_User::ASSIGN
+                     ]
+                  ]
+               ],
+            ],
+            $groupTable => [
+               'FKEY' => [
+                  $groupTable => 'id',
+                  'gl' => 'groups_id',
+               ],
+            ],
+         ],
+         'WHERE'  => [
+            "$table.is_deleted" => 0,
+         ] + getEntitiesRestrictCriteria($table),
+         'GROUPBY' => [
+            'sla_state',
+            "$groupTable.id",
+         ],
+         'ORDER' => [
+            'sla_state DESC',
+            'cpt DESC',
+            "$groupTable.id",
+         ]
+      ];
+
+      unset($params['apply_filters']['user_tech']);
+      $query_filter = self::getFiltersCriteria($table, $params['apply_filters']);
+      unset($query_filter['LEFT JOIN']["$ticketGroupTable as gl"]);
+
+      $query_criteria = array_merge_recursive(
+         $query_criteria,
+         Ticket::getCriteriaFromProfile(),
+         $query_filter
+      );
+
+      $allLate = [];
+      $resolveLate = [];
+      $ownLate = [];
+      $onTime = [];
+      $names = [];
+      $data = [];
+      // Get data and sort by is_late status
+      $iterator   = $DBread->request($query_criteria);
+      foreach ($iterator as $row) {
+         switch ($row['sla_state']) {
+            case 3: // Own and resolve are both late
+               $allLate[$row['name']] = $row['cpt'];
+               break;
+            case 2: // Resolve is late
+               $resolveLate[$row['name']] = $row['cpt'];
+               break;
+            case 1: // own is late
+               $ownLate[$row['name']] = $row['cpt'];
+               break;
+            case 0:
+               $onTime[$row['name']] = $row['cpt'];
+         }
+         $names[$row['name']] = $row['name'];
+      }
+
+      // set legend for each serie
+      $data['series'][0]['name'] = __('Late own and resolve');
+      $data['series'][1]['name'] = __('Late resolve');
+      $data['series'][2]['name'] = __('Late own');
+      $data['series'][3]['name'] = __('On time');
+      // ensure thare are 2 values per user (late and in time)
+      foreach ($names as $name => $username) {
+         if (!isset($allLate[$name])) {
+            $allLate[$name] = 0;
+         }
+         if (!isset($resolveLate[$name])) {
+            $resolveLate[$name] = 0;
+         }
+         if (!isset($ownLate[$name])) {
+            $ownLate[$name] = 0;
+         }
+         if (!isset($onTime[$name])) {
+            $onTime[$name] = 0;
+         }
+         $label = $username ?? $name;
+         $data['labels'][] = $label;
+         $data['series'][0]['data'][] = $allLate[$name];
+         $data['series'][1]['data'][] = $resolveLate[$name];
+         $data['series'][2]['data'][] = $ownLate[$name];
+         $data['series'][3]['data'][] = $onTime[$name];
+      }
+
+      if (!isset($data['series'][0]['data'])) {
+         $data['series'][0]['data'] = [];
+         $data['series'][1]['data'] = [];
+         $data['series'][2]['data'] = [];
+         $data['series'][3]['data'] = [];
+         $data['labels'] = [];
+         $data['nodata'] = true;
+      }
+
+      return [
+         'label' => __('Tickets by SLA status and by technician group'),
+         'data' => $data,
+         'icon' => $params['icon'],
       ];
    }
 

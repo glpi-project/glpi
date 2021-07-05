@@ -157,10 +157,30 @@ class Widget {
             'width'    => 5,
             'height'   => 3,
          ],
+         'hBars' => [
+            'label'    => __("Multiple horizontal bars"),
+            'function' => 'Glpi\\Dashboard\\Widget::multipleHBars',
+            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/hbar.png',
+            'gradient' => true,
+            'limit'    => true,
+            'pointlbl' => true,
+            'width'    => 5,
+            'height'   => 3,
+         ],
          'stackedbars' => [
             'label'    => __("Stacked bars"),
             'function' => 'Glpi\\Dashboard\\Widget::StackedBars',
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/stacked.png',
+            'gradient' => true,
+            'limit'    => true,
+            'pointlbl' => true,
+            'width'    => 4,
+            'height'   => 3,
+         ],
+         'stackedHBars' => [
+            'label'    => __("Horizontal stacked bars"),
+            'function' => 'Glpi\\Dashboard\\Widget::stackedHBars',
+            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/hstacked.png',
             'gradient' => true,
             'limit'    => true,
             'pointlbl' => true,
@@ -847,6 +867,32 @@ JAVASCRIPT;
 
 
    /**
+    * Display a widget with a horizontal stacked multiple bars chart
+    * @see self::getBarsGraph for params
+    *
+    * @return string html
+    */
+   public static function stackedHBars(array $params = []): string {
+      return self::StackedBars(array_merge($params, [
+         'horizontal' => true,
+      ]));
+   }
+
+
+   /**
+    * Display a widget with a horizontal multiple bars chart
+    * @see self::getBarsGraph for params
+    *
+    * @return string html
+    */
+   public static function multipleHBars(array $params = []): string {
+      return self::multipleBars(array_merge($params, [
+         'horizontal' => true,
+      ]));
+   }
+
+
+   /**
     * Display a widget with a bars chart
     *
     * @param array $params contains these keys:
@@ -1149,8 +1195,14 @@ HTML;
                   labelY = data.y2 + 15;
 
                   // don't display label if height too short
-                  if (data.y1 - data.y2 < 15) {
-                     display_labels = false;
+                  if (is_horizontal) {
+                     if (data.x2 - data.x1 < 15) {
+                        display_labels = false;
+                     }
+                  } else {
+                     if (data.y1 - data.y2 < 15) {
+                        display_labels = false;
+                     }
                   }
                }
 

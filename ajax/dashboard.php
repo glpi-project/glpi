@@ -64,7 +64,16 @@ switch ($_REQUEST['action']) {
       exit;
 
    case 'save_rights':
+      $dashboard->setPrivate($_REQUEST['is_private'] != '0');
       echo $dashboard->saveRights($_REQUEST['rights'] ?? []);
+      exit;
+
+   case 'save_filter_data':
+      $dashboard->saveFilter($_REQUEST['filters'] ?? []);
+      exit;
+
+   case 'get_filter_data':
+      echo $dashboard->getFilter();
       exit;
 
    case 'delete_dashboard':

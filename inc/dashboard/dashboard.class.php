@@ -33,6 +33,7 @@
 namespace Glpi\Dashboard;
 
 use Ramsey\Uuid\Uuid;
+use Session;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -45,6 +46,7 @@ class Dashboard extends \CommonDBTM {
    protected $embed   = false;
    protected $items   = null;
    protected $rights  = null;
+   protected $filters  = "";
 
    static $all_dashboards = [];
    static $rightname = 'dashboard';
@@ -136,7 +138,7 @@ class Dashboard extends \CommonDBTM {
     */
    public function canViewCurrent(): bool {
       // check global (admin) right
-      if (self::canView()) {
+      if (self::canView() && !$this->isPrivate()) {
          return true;
       }
 
@@ -217,6 +219,7 @@ class Dashboard extends \CommonDBTM {
       $this->deleteChildrenAndRelationsFromDb([
          Item::class,
          Right::class,
+         Filter::class,
       ]);
    }
 
@@ -285,6 +288,32 @@ class Dashboard extends \CommonDBTM {
       Right::addForDashboard($this->fields['id'], $rights);
    }
 
+   /**
+    * Save filter in DB for the  curent dashboard
+    *
+    * @param string $filter filter parameters in JSON format
+    *
+    * @return void
+    */
+   public function saveFilter(string $filters = ''): void {
+      $this->load();
+      $this->filters = $filters;
+
+      Filter::addForDashboard($this->fields['id'], $filters);
+   }
+
+   /**
+    * Save filter in DB for the  curent dashboard
+    *
+    * @param string $filter filter parameters in JSON format
+    *
+    * @return string
+    */
+   public function getFilter(): string {
+      $this->load();
+      $this->filters = Filter::getForDashboard($this->fields['id']);
+      return $this->filters;
+   }
 
    /**
     * Clone current Dashboard.
@@ -356,7 +385,8 @@ class Dashboard extends \CommonDBTM {
          $d_rights = array_filter($rights, function($right_line) use($id) {
             return $right_line['dashboards_dashboards_id'] == $id;
          });
-         if ($check_rights && !self::checkRights(self::convertRights($d_rights))) {
+         $dashboardItem = new self($key);
+         if ($check_rights && !$dashboardItem->canViewCurrent()) {
             continue;
          }
          $dashboard['rights'] = self::convertRights($d_rights);
@@ -426,11 +456,6 @@ class Dashboard extends \CommonDBTM {
     * @return bool
     */
    static function checkRights(array $rights = []): bool {
-      // check global (admin) right
-      if (self::canView()) {
-         return true;
-      }
-
       $default_rights = [
          'entities_id' => [],
          'profiles_id' => [],
@@ -486,5 +511,33 @@ class Dashboard extends \CommonDBTM {
       }
 
       return true;
+   }
+
+   public function setPrivate($is_private) {
+      $this->load();
+
+      return $this->update([
+         'id'       => $this->fields['id'],
+         'key'      => $this->fields['key'],
+         'users_id' => ($is_private ? Session::getLoginUserID() : 0)
+      ]);
+   }
+
+   public function getPrivate() {
+      $this->load();
+      if (!isset($this->fields['users_id'])) {
+         return '0';
+      }
+      return $this->fields['users_id'] != '0' ? '1' : '0';
+   }
+
+   /**
+    * Is this dashboard private ?
+    *
+    * @return bool true if private; false otherwise
+    */
+   public function isPrivate(): bool {
+      $this->load();
+      return ($this->fields['users_id'] > 0 && $this->fields['users_id'] != Session::getLoginUserID());
    }
 }

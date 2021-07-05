@@ -199,16 +199,19 @@ HTML;
     * Do we have the right to view the specified dashboard int the current collection
     *
     * @param string $key the dashboard to check
+    * @param bool   $canViewAll Right to view all dashboards
     *
     * @return bool
     */
-   static function canViewSpecificicDashboard($key): bool {
+   static function canViewSpecificicDashboard($key, $canViewAll = false): bool {
+      self::loadAllDashboards();
+
+      $dashboard = new Dashboard($key);
+      $dashboard->load();
       // check global (admin) right
-      if (Dashboard::canView()) {
+      if (Dashboard::canView() && !$dashboard->isPrivate()) {
          return true;
       }
-
-      self::loadAllDashboards();
 
       return isset(self::$all_dashboards[$key]);
    }
@@ -961,6 +964,18 @@ HTML;
       ]);
       echo "<br><br>";
 
+      echo __('Personal') . "&nbsp;";
+      echo Html::showToolTip(__("A personal dashboard is not visible by other administrators unless you share explicitely the dashboard"))."&nbsp";
+      echo Dropdown::showYesNo(
+         'is_private',
+         (self::$all_dashboards[$this->current]['users_id'] == '0' ? '0' : '1'),
+         -1,
+         [
+            'display' => false
+         ]
+      );
+      echo "<br><br>";
+
       echo "<a href='#' class='vsubmit save_rights'>".__("Save")."</a>";
 
       Html::closeForm(true);
@@ -1374,6 +1389,31 @@ HTML;
          ]
       ];
 
+      $case = '';
+      $cards["bn_count_tickets_expired_by_tech"] = [
+         'widgettype' => ['hBars', 'stackedHBars'],
+         'itemtype'   => "\\Ticket",
+         'group'      => __('Assistance'),
+         'label'      => sprintf(__("Number of tickets by SLA status and technician")),
+         'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsByAgreementStatusAndTechnician",
+         'filters'    => [
+            'dates', 'dates_mod', 'itilcategory',
+            'user_tech', 'requesttype', 'location'
+         ]
+      ];
+
+      $cards["bn_count_tickets_expired_by_tech_group"] = [
+         'widgettype' => ['hBars', 'stackedHBars'],
+         'itemtype'   => "\\Ticket",
+         'group'      => __('Assistance'),
+         'label'      => sprintf(__("Number of tickets by SLA status and technician group")),
+         'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsByAgreementStatusAndTechnicianGroup",
+         'filters'    => [
+            'dates', 'dates_mod', 'itilcategory',
+            'group_tech', 'requesttype', 'location'
+         ]
+      ];
+
       foreach ([
          'ITILCategory' => __("Top ticket's categories"),
          'Entity'       => __("Top ticket's entities"),
@@ -1548,8 +1588,7 @@ HTML;
 
       $options_dashboards = [];
       foreach (self::$all_dashboards as $key => $dashboard) {
-         if ($can_view_all
-         || self::canViewSpecificicDashboard($key)) {
+         if (self::canViewSpecificicDashboard($key, $can_view_all)) {
             $options_dashboards[$key] = $dashboard['name'] ?? $key;;
          }
       }

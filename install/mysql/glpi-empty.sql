@@ -1597,9 +1597,22 @@ CREATE TABLE `glpi_dashboards_dashboards` (
   `key` varchar(100) NOT NULL,
   `name` varchar(100) NOT NULL,
   `context` varchar(100) NOT NULL DEFAULT 'core',
+  `users_id` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `key` (`key`),
-  KEY `name` (`name`)
+  KEY `name` (`name`),
+  KEY `users_id` (`users_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+### Dump table glpi_dashboards_filters
+
+DROP TABLE IF EXISTS `glpi_dashboards_filters`;
+CREATE TABLE `glpi_dashboards_filters` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `dashboards_dashboards_id` int NOT NULL DEFAULT '0',
+  `filter` longtext,
+  PRIMARY KEY (`id`),
+  KEY `dashboards_dashboards_id` (`dashboards_dashboards_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_dashboards_items
