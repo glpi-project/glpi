@@ -32,11 +32,8 @@
 
 namespace Glpi\Inventory;
 
-use DOMDocument;
-use DOMElement;
 use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Agent\Communication\Headers\Common;
-use Toolbox;
 use Unmanaged;
 
 /**

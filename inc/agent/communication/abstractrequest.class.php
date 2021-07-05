@@ -36,7 +36,6 @@ use DOMDocument;
 use DOMElement;
 use Glpi\Agent\Communication\Headers\Common;
 use Toolbox;
-use Unmanaged;
 
 /**
  * Handle agent requests
