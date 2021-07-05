@@ -93,7 +93,7 @@ class Common {
    /**
     * "GLPI-Request-ID" HTTP header
     *
-    * 8 digit hexadecimal string in higher case like 42E6A9AF1
+    * 8 digit hexadecimal string in higher case like 2E6A9AF1
     *
     * @var string
     */
