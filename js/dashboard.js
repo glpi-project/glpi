@@ -51,6 +51,7 @@ var Dashboard = {
    cell_margin: 3,
    cols: 26,
    cache_key: "",
+   filters: "{}",
 
    display: function(params) {
 
@@ -238,6 +239,7 @@ var Dashboard = {
 
          var button    = $(this);
          var form_data = {};
+         var is_private;
          $.each(button.closest('.display-rights-form').serializeArray(), function() {
             var current_val = this.value.split('-');
             var right_name  = current_val[0];
@@ -247,14 +249,16 @@ var Dashboard = {
             }
             form_data[right_name].push(value);
          });
+         is_private = button.closest('.display-rights-form').find('select[name="is_private"]').val();
 
          $.ajax({
             method: 'POST',
             url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
             data: {
-               action:    'save_rights',
-               dashboard: Dashboard.current_name,
-               rights:    form_data,
+               action:     'save_rights',
+               dashboard:  Dashboard.current_name,
+               rights:     form_data,
+               is_private: is_private,
             }
          });
       });
@@ -360,7 +364,7 @@ var Dashboard = {
       $(document).on("click", "#dashboard-"+options.rand+" .filters_toolbar .add-filter", function() {
          $(".ui-dialog-content").dialog("close");
 
-         var filters = Dashboard.getFiltersFromStorage();
+         var filters = Dashboard.getFiltersFromDB();
          var filter_names    = Object.keys(filters);
 
          $('<div title="'+__("Add a filter")+'"></div>')
@@ -396,9 +400,9 @@ var Dashboard = {
          filter.remove();
 
          // remove filter from storage and refresh cards
-         var filters = Dashboard.getFiltersFromStorage();
+         var filters = Dashboard.getFiltersFromDB();
          delete filters[filter_id];
-         Dashboard.setFiltersInStorage(filters);
+         Dashboard.setFiltersInDB(filters);
          Dashboard.refreshCardsImpactedByFilter(filter_id);
       });
 
@@ -659,9 +663,9 @@ var Dashboard = {
 
    saveFilter: function(filter_id, value) {
       // store current filter in localStorage
-      var filters = Dashboard.getFiltersFromStorage();
+      var filters = Dashboard.getFiltersFromDB();
       filters[filter_id] = value;
-      Dashboard.setFiltersInStorage(filters);
+      Dashboard.setFiltersInDB(filters);
 
       // refresh all card impacted by the changed filter
       Dashboard.refreshCardsImpactedByFilter(filter_id);
@@ -921,7 +925,7 @@ var Dashboard = {
          }
 
          // append filters
-         var filters = Dashboard.getFiltersFromStorage();
+         var filters = Dashboard.getFiltersFromDB();
          card_opt.apply_filters = filters;
 
          promises.push($.get(CFG_GLPI.root_doc+"/ajax/dashboard.php", {
@@ -1013,7 +1017,7 @@ var Dashboard = {
          return;
       }
 
-      var filters = Dashboard.getFiltersFromStorage();
+      var filters = Dashboard.getFiltersFromDB();
 
       // replace empty array by empty string to avoid jquery remove the corresponding key
       // when sending ajax query
@@ -1043,64 +1047,62 @@ var Dashboard = {
          })[0].addEventListener('sortupdate', function(e) {
             // after drag, save the order of filters in storage
             var items_after = $(e.detail.destination.items).filter('.filter');
-            var filters     = Dashboard.getFiltersFromStorage();
+            var filters     = Dashboard.getFiltersFromDB();
             var new_filters = {};
             $.each(items_after, function() {
                var filter_id = $(this).data('filter-id');
                new_filters[filter_id] = filters[filter_id];
             });
 
-            Dashboard.setFiltersInStorage(new_filters);
+            Dashboard.setFiltersInDB(new_filters);
          });
          sortable('.filters', 'disable');
       });
    },
 
    /**
-    * Return saved filter from LocalStorage
-    *
-    * @param {boolean} all_filters: do we return all filters
-    *    or only those for the current dashboard (default)
+    * Return saved filter from server side database
     */
-   getFiltersFromStorage: function(all_filters) {
-      all_filters = all_filters || false;
-
-      var filters = JSON.parse(localStorage.getItem('glpi_dashboard_filters'));
-      var save    = false;
-      if (filters == null) {
-         filters = {};
-         save = true;
-      }
-
-      if ('current_name' in Dashboard
-          && Dashboard.current_name != null
-          && !(Dashboard.current_name in filters)) {
-         filters[Dashboard.current_name] = {};
-         save = true;
-      }
-
-      if (save) {
-         localStorage.setItem('glpi_dashboard_filters', JSON.stringify(filters));
-      }
-
-      if (all_filters) {
-         return filters;
-      }
-
-      return filters[Dashboard.current_name];
+   getFiltersFromDB: function() {
+      var filters;
+      $.ajax({
+         method: 'GET',
+         url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+         async: false,
+         data: {
+            action:    'get_filter_data',
+            dashboard: Dashboard.current_name,
+         }
+      }).done(function(response) {
+         try {
+            filters = JSON.parse(response);
+         } catch (e) {
+            filters = JSON.parse('{}');
+         }
+      });
+      return filters;
    },
 
    /**
-    * Save an object of filters for the current dashboard into LocalStorage
+    * Save an object of filters for the current dashboard into serverside database
     *
     * @param {Object} sub_filters
     */
-   setFiltersInStorage: function(sub_filters) {
-      var filters = Dashboard.getFiltersFromStorage(true);
+   setFiltersInDB: function(sub_filters) {
+      var filters = [];
       if (Dashboard.current_name.length > 0) {
          filters[Dashboard.current_name] = sub_filters;
       }
-      return localStorage.setItem('glpi_dashboard_filters', JSON.stringify(filters));
+      $.ajax({
+         method: 'POST',
+         url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+         data: {
+            action:    'save_filter_data',
+            dashboard: Dashboard.current_name,
+            filters:   JSON.stringify(filters[Dashboard.current_name]),
+         }
+      });
+
    },
 
 };
