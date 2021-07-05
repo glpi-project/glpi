@@ -40,6 +40,7 @@ namespace Glpi\Api;
 use APIClient;
 use Auth;
 use Change;
+use CommonDBTM;
 use CommonDevice;
 use CommonITILObject;
 use Config;
@@ -50,6 +51,7 @@ use Html;
 use Infocom;
 use Item_Devices;
 use Log;
+use MassiveAction;
 use Michelf\MarkdownExtra;
 use NetworkEquipment;
 use NetworkPort;
@@ -60,6 +62,7 @@ use SavedSearch;
 use Search;
 use Session;
 use Software;
+use Symfony\Component\DomCrawler\Crawler;
 use Ticket;
 use Toolbox;
 use User;
@@ -2890,5 +2893,224 @@ abstract class API {
     */
    public function isDeprecated(): bool {
       return $this->deprecated_item !== null;
+   }
+
+   /**
+    * "getMassiveActions" endpoint.
+    * Return possible massive actions for a given item or itemtype.
+    *
+    * @param string $itemtype    Itemtype for which to show possible massive actions
+    * @param int    $id          If >0, will load given item and restrict massive actions to this item
+    * @param bool   $is_deleted  Should we show massive action in "deleted" mode ?
+    * @return array
+    */
+   public function getMassiveActions(
+      string $itemtype,
+      ?int $id = null,
+      bool $is_deleted = false
+   ) {
+      if (is_null($id)) {
+         // No id supplied, show massive actions for the given itemtype
+         $actions = $this->getMassiveActionsForItemtype(
+            $itemtype,
+            $is_deleted
+         );
+      } else {
+         $item = new $itemtype();
+         if (!$item->getFromDB($id)) {
+            // Id was supplied but item can't be loaded -> error
+            return $this->returnError(
+               "Failed to load item (itemtype = '$itemtype', id = '$id')",
+               400,
+               "ERROR_ITEM_NOT_FOUND"
+            );
+         }
+
+         // Id supplied and item was loaded, show massive action for this
+         // specific item
+         $actions = $this->getMassiveActionsForItem($item);
+      }
+
+      // Build response array
+      $response = [];
+      foreach ($actions as $key => $label) {
+         $response[] = [
+            'key'   => $key,
+            'label' => $label,
+         ];
+      }
+      $this->returnResponse($response);
+   }
+
+   /**
+    * Return possible massive actions for a given itemtype.
+    *
+    * @param string $itemtype    Itemtype for which to show possible massive actions
+    * @param bool   $is_deleted  Should we show massive action in "deleted" mode ?
+    * @return array
+    */
+   public function getMassiveActionsForItemtype(
+      string $itemtype,
+      bool $is_deleted = false
+   ): array {
+      // Return massive actions for a given itemtype
+      return MassiveAction::getAllMassiveActions($itemtype, $is_deleted);
+   }
+
+   /**
+    * Return possible massive actions for a given item.
+    *
+    * @param CommonDBTM $item    Item for which to show possible massive actions
+    * @return array
+    */
+   public function getMassiveActionsForItem(CommonDBTM $item): array {
+      // Return massive actions for a given item
+      return MassiveAction::getAllMassiveActions(
+         $item::getType(),
+         $item->isDeleted(),
+         $item,
+         true
+      );
+   }
+
+   /**
+    * "getMassiveActionParameters" endpoint.
+    * Return required parameters for a given massive action key.
+    *
+    * @param string        $itemtype      Target itemtype
+    * @param string|null   $action_key    Target massive action
+    * @param bool          $is_deleted    Is this massive action to be used on items in the trashbin ?
+    * @return array
+    */
+   public function getMassiveActionParameters(
+      string $itemtype,
+      ?string $action_key,
+      bool $is_deleted
+   ) {
+      if (is_null($action_key)) {
+         return $this->returnError(
+            "Missing action key, run 'getMassiveActions' endpoint to see available keys",
+            400,
+            "ERROR_MASSIVEACTION_KEY"
+         );
+      }
+
+      $action = explode(':', $action_key);
+      if (($action[1] ?? "") == 'update') {
+         // Specific case, update form call "exit" function so we don't want to run the actual code
+         return $this->returnResponse([]);
+      }
+
+      $actions = MassiveAction::getAllMassiveActions($itemtype, false, null, $is_deleted);
+      if (!isset($actions[$action_key])) {
+         return $this->returnError(
+            "Invalid action key parameter, run 'getMassiveActions' endpoint to see available keys",
+            400,
+            "ERROR_MASSIVEACTION_KEY"
+         );
+      }
+
+      // Get massive action for the given key
+      $ma = new MassiveAction([
+         'action'     => $action_key,
+         'actions'    => $actions,
+         'items'      => [],
+         'is_deleted' => $is_deleted
+      ], [], 'specialize');
+
+      // Capture form display
+      ob_start();
+      $ma->showSubForm();
+      $html = ob_get_clean();
+
+      // Parse html to find all non hidden inputs, textareas and select
+      $inputs = [];
+      $crawler = new Crawler($html);
+      $crawler->filterXPath('//input')->each(function (Crawler $node, $i) use (&$inputs) {
+         if ($node->attr('type') != "hidden") {
+            $inputs[] = [
+               'name' => $node->attr('name'),
+               'type' => $node->attr('type'),
+            ];
+         }
+      });
+      $crawler->filterXPath('//select')->each(function (Crawler $node, $i) use (&$inputs) {
+         $type = 'select';
+         if (Toolbox::startsWith($node->attr('id'), 'dropdown_')) {
+            $type = 'dropdown';
+         }
+         $inputs[] = [
+            'name' => $node->attr('name'),
+            'type' => $type,
+         ];
+      });
+      $crawler->filterXPath('//textarea')->each(function (Crawler $node, $i) use (&$inputs) {
+         $inputs[] = [
+            'name' => $node->attr('name'),
+            'type' => 'text',
+         ];
+      });
+
+      return $this->returnResponse($inputs);
+   }
+
+
+   /**
+    * "applyMassiveAction" endpoint.
+    * Execute the given massive action
+    *
+    * @param string        $itemtype      Target itemtype
+    * @param string|null   $action_key    Target massive action
+    * @param array         $ids           Ids of items to execute the action on
+    * @param array         $params        Action parameters
+    * @return array
+    */
+   public function applyMassiveAction(
+      string $itemtype,
+      ?string $action_key,
+      array $ids,
+      array $params
+   ) {
+      if (is_null($action_key)) {
+         return $this->returnError(
+            "Missing action key, run 'getMassiveActions' endpoint to see available keys",
+            400,
+            "ERROR_MASSIVEACTION_KEY"
+         );
+      }
+
+      // Get processor
+      $action = explode(':', $action_key);
+      $processor = $action[0];
+
+      $ma = new MassiveAction([
+         'action'      => $action[1],
+         'action_name' => $action_key,
+         'items'       => [$itemtype => $ids],
+         'processor'   => $processor,
+      ] + $params, [], 'process');
+
+      $results = $ma->process();
+      unset($results['redirect']);
+
+      if ($results['ok'] == 0 && $results['ko'] == 0 && $results['noright'] == 0) {
+         // No items were processed, invalid action key -> 400
+         return $this->returnError(
+            "Invalid action key parameter, run 'getMassiveActions' endpoint to see available keys",
+            400,
+            "ERROR_MASSIVEACTION_KEY"
+         );
+      } else if ($results['ok'] > 0 && $results['ko'] == 0) {
+         // Success -> 200
+         $code = 200;
+      } else if ($results['ko'] > 0 && $results['ok'] > 0) {
+         // Failure AND success -> 207
+         $code = 207;
+      } else {
+         // Failure -> 422
+         $code = 422;
+      }
+
+      return $this->returnResponse($results, $code);
    }
 }

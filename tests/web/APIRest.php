@@ -33,10 +33,12 @@
 namespace tests\units\Glpi\Api;
 
 use APIBaseClass;
+use Computer;
 use Glpi\Tests\Web\Deprecated\Computer_SoftwareLicense;
 use Glpi\Tests\Web\Deprecated\Computer_SoftwareVersion;
 use Glpi\Tests\Web\Deprecated\TicketFollowup;
 use GuzzleHttp;
+use Notepad;
 
 /* Test for inc/api/api.class.php */
 
@@ -681,5 +683,447 @@ class APIRest extends APIBaseClass {
       );
       $this->string($deprecated_data['rawdata']['sql']['search'])
          ->isEqualTo($data['rawdata']['sql']['search']);
+   }
+
+
+   protected function testGetMassiveActionsProvider(): array {
+      // Create a computer with "is_deleted = 1" for our tests
+      $computer = new Computer();
+      $deleted_computers_id = $computer->add([
+         'name' => 'test deleted PC',
+         'entities_id' => getItemByTypeName("Entity", '_test_root_entity', true)
+      ]);
+      $this->integer($deleted_computers_id)->isGreaterThan(0);
+      $this->boolean($computer->delete(['id' => $deleted_computers_id]))->isTrue();
+      $this->boolean($computer->getFromDB($deleted_computers_id))->isTrue();
+      $this->integer($computer->fields['is_deleted'])->isEqualTo(1);
+
+      return [
+         [
+            'url' => 'getMassiveActions/Computersefjhfs',
+            'status' => 400,
+            'response' => [],
+            'error' => "ERROR_RESOURCE_NOT_FOUND_NOR_COMMONDBTM",
+         ],
+         [
+            'url' => 'getMassiveActions/Computer/40000000',
+            'status' => 400,
+            'response' => [],
+            'error' => "ERROR_ITEM_NOT_FOUND",
+         ],
+         [
+            'url' => 'getMassiveActions/Computer',
+            'status' => 200,
+            'response' => [
+               ["key" => "MassiveAction:update",            "label" => "Update"],
+               ["key" => "MassiveAction:clone",             "label" => "Clone"],
+               ["key" => "Infocom:activate",                "label" => "Enable the financial and administrative information"],
+               ["key" => "MassiveAction:delete",            "label" => "Put in trashbin"],
+               ["key" => "ObjectLock:unlock",               "label" => "Unlock items"],
+               ["key" => "MassiveAction:add_transfer_list", "label" => "Add to transfer list"],
+               ["key" => "Appliance:add_item",              "label" => "Associate to an appliance"],
+               ["key" => "Item_OperatingSystem:update",     "label" => "Operating systems"],
+               ["key" => "Computer_Item:add",               "label" => "Connect"],
+               ["key" => "Item_SoftwareVersion:add",        "label" => "Install"],
+               ["key" => "KnowbaseItem_Item:add",           "label" => "Link knowledgebase article"],
+               ["key" => "Document_Item:add",               "label" => "Add a document"],
+               ["key" => "Document_Item:remove",            "label" => "Remove a document"],
+               ["key" => "Contract_Item:add",               "label" => "Add a contract"],
+               ["key" => "Contract_Item:remove",            "label" => "Remove a contract"],
+               ["key" => "MassiveAction:amend_comment",     "label" => "Amend comment"],
+               ["key" => "MassiveAction:add_note",          "label" => "Add note"],
+               ["key" => "Lock:unlock",                     "label" => "Unlock components"],
+            ],
+         ],
+         [
+            'url' => 'getMassiveActions/Computer?is_deleted=1',
+            'status' => 200,
+            'response' => [
+               ["key" => "MassiveAction:purge_item_but_devices",  "label" => "Delete permanently but keep devices"],
+               ["key" => "MassiveAction:purge",                   "label" => "Delete permanently and remove devices"],
+               ["key" => "MassiveAction:restore",                 "label" => "Restore"],
+               ["key" => "Lock:unlock",                           "label" => "Unlock components"],
+            ],
+         ],
+         [
+            'url' => 'getMassiveActions/Computer/' . getItemByTypeName("Computer", '_test_pc01', true),
+            'status' => 200,
+            'response' => [
+               ["key" => "MassiveAction:update",            "label" => "Update"],
+               ["key" => "MassiveAction:clone",             "label" => "Clone"],
+               ["key" => "Infocom:activate",                "label" => "Enable the financial and administrative information"],
+               ["key" => "MassiveAction:delete",            "label" => "Put in trashbin"],
+               ["key" => "ObjectLock:unlock",               "label" => "Unlock items"],
+               ["key" => "MassiveAction:add_transfer_list", "label" => "Add to transfer list"],
+               ["key" => "Appliance:add_item",              "label" => "Associate to an appliance"],
+               ["key" => "Item_OperatingSystem:update",     "label" => "Operating systems"],
+               ["key" => "Computer_Item:add",               "label" => "Connect"],
+               ["key" => "Item_SoftwareVersion:add",        "label" => "Install"],
+               ["key" => "KnowbaseItem_Item:add",           "label" => "Link knowledgebase article"],
+               ["key" => "Document_Item:add",               "label" => "Add a document"],
+               ["key" => "Document_Item:remove",            "label" => "Remove a document"],
+               ["key" => "Contract_Item:add",               "label" => "Add a contract"],
+               ["key" => "Contract_Item:remove",            "label" => "Remove a contract"],
+               ["key" => "MassiveAction:amend_comment",     "label" => "Amend comment"],
+               ["key" => "MassiveAction:add_note",          "label" => "Add note"],
+               ["key" => "Lock:unlock",                     "label" => "Unlock components"],
+            ],
+         ],
+         [
+            'url' => "getMassiveActions/Computer/$deleted_computers_id",
+            'status' => 200,
+            'response' => [
+               ["key" => "MassiveAction:purge_item_but_devices",  "label" => "Delete permanently but keep devices"],
+               ["key" => "MassiveAction:purge",                   "label" => "Delete permanently and remove devices"],
+               ["key" => "MassiveAction:restore",                 "label" => "Restore"],
+               ["key" => "Lock:unlock",                           "label" => "Unlock components"],
+            ],
+         ],
+      ];
+   }
+
+   /**
+    * Tests for the "getMassiveActions" endpoint
+    *
+    * @dataProvider testGetMassiveActionsProvider
+    */
+   public function testGetMassiveActions(
+      string $url,
+      int $status,
+      ?array $response,
+      string $error = ""
+   ): void {
+      $headers = ['Session-Token' => $this->session_token];
+      $data    = $this->query($url, [
+         'headers' => $headers,
+      ], $status, $error);
+
+      // If no errors are expected, check results
+      if (empty($error)) {
+         unset($data['headers']);
+         $this->array($data)->isEqualTo($response);
+      }
+   }
+
+   protected function testGetMassiveActionParametersProvider(): array {
+      return [
+         [
+            'url' => 'getMassiveActionParameters/Computer',
+            'status' => 400,
+            'response' => [],
+            'error' => "ERROR_MASSIVEACTION_KEY"
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/MassiveAction:doesnotexist',
+            'status' => 400,
+            'response' => [],
+            'error' => "ERROR_MASSIVEACTION_KEY"
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/MassiveAction:update',
+            'status' => 200,
+            'response' => [],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/MassiveAction:clone',
+            'status' => 200,
+            'response' => [
+               ["name" => "nb_copy", "type" => "number"],
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/Infocom:activate',
+            'status' => 200,
+            'response' => [],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/MassiveAction:delete',
+            'status' => 200,
+            'response' => [],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/ObjectLock:unlock',
+            'status' => 200,
+            'response' => [],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/MassiveAction:add_transfer_list',
+            'status' => 200,
+            'response' => [],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/Appliance:add_item',
+            'status' => 200,
+            'response' => [
+               ["name" => "appliances_id", "type" => "dropdown"],
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/Item_OperatingSystem:update',
+            'status' => 200,
+            'response' => [],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/Computer_Item:add',
+            'status' => 200,
+            'response' => [
+               ["name" => "peer_computers_id", "type" => "dropdown"],
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/Item_SoftwareVersion:add',
+            'status' => 200,
+            'response' => [
+               ["name" => "softwares_id", "type" => "dropdown"],
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/KnowbaseItem_Item:add',
+            'status' => 200,
+            'response' => [
+               ["name" => "peer_knowbaseitems_id", "type" => "dropdown"],
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/Document_Item:add',
+            'status' => 200,
+            'response' => [
+               ["name" => "_rubdoc", "type" => "dropdown"],
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/Document_Item:remove',
+            'status' => 200,
+            'response' => [
+               ["name" => "_rubdoc", "type" => "dropdown"],
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/Contract_Item:add',
+            'status' => 200,
+            'response' => [
+               ["name" => "peer_contracts_id", "type" => "dropdown"],
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/Contract_Item:remove',
+            'status' => 200,
+            'response' => [
+               ["name" => "peer_contracts_id", "type" => "dropdown"],
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/MassiveAction:amend_comment',
+            'status' => 200,
+            'response' => [
+               ["name" => "amendment", "type" => "text"],
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/MassiveAction:add_note',
+            'status' => 200,
+            'response' => [
+               ["name" => "add_note", "type" => "text"],
+            ],
+         ],
+         [
+            'url' => 'getMassiveActionParameters/Computer/Lock:unlock',
+            'status' => 200,
+            'response' => [
+               ["name" => "attached_item[]", "type" => "dropdown"],
+            ],
+         ],
+      ];
+   }
+
+   /**
+    * Tests for the "getMassiveActionParameters" endpoint
+    *
+    * @dataProvider testGetMassiveActionParametersProvider
+    */
+   public function testGetMassiveActionParameters(
+      string $url,
+      int $status,
+      ?array $response,
+      string $error = ""
+   ): void {
+      $headers = ['Session-Token' => $this->session_token];
+      $data    = $this->query($url, [
+         'headers' => $headers,
+      ], $status, $error);
+
+      // If no errors are expected, check results
+      if (empty($error)) {
+         unset($data['headers']);
+         $this->array($data)->isEqualTo($response);
+      }
+   }
+
+   protected function testApplyMassiveActionProvider(): array {
+      return [
+         [
+            'url' => 'applyMassiveAction/Computer',
+            'payload' => [
+               'ids' => [getItemByTypeName('Computer', '_test_pc01', true)],
+            ],
+            'status' => 400,
+            'response' => [],
+            'error' => "ERROR_MASSIVEACTION_KEY"
+         ],
+         [
+            'url' => 'applyMassiveAction/Computer/MassiveAction:doesnotexist',
+            'payload' => [
+               'ids' => [getItemByTypeName('Computer', '_test_pc01', true)],
+            ],
+            'status' => 400,
+            'response' => [],
+            'error' => "ERROR_MASSIVEACTION_KEY"
+         ],
+         [
+            'url' => 'applyMassiveAction/Computer/MassiveAction:amend_comment',
+            'payload' => [
+               'ids' => [],
+            ],
+            'status' => 400,
+            'response' => [],
+            'error' => "ERROR_MASSIVEACTION_NO_IDS"
+         ],
+         [
+            'url' => 'applyMassiveAction/Computer/MassiveAction:amend_comment',
+            'payload' => [
+               'ids' => [
+                  getItemByTypeName('Computer', '_test_pc01', true),
+                  getItemByTypeName('Computer', '_test_pc02', true)
+               ],
+               'input' => [
+                  'amendment' => "newtexttoadd",
+               ],
+            ],
+            'status' => 200,
+            'response' => [
+               'ok'       => 2,
+               'ko'       => 0,
+               'noright'  => 0,
+               'messages' => [],
+            ],
+            'error' => "",
+            'before_test' => function() {
+               $computers = ['_test_pc01', '_test_pc02'];
+               foreach ($computers as $computer) {
+                  // Init "comment" field for all targets
+                  $computer = getItemByTypeName('Computer', $computer);
+                  $update = $computer->update([
+                     'id'      => $computer->getId(),
+                     'comment' => "test comment",
+                  ]);
+                  $this->boolean($update)->isTrue();
+                  $this->string($computer->fields['comment'])->isEqualTo("test comment");
+               }
+            },
+            'after_test' => function() {
+               $computers = ['_test_pc01', '_test_pc02'];
+               foreach ($computers as $computer) {
+                  // Check that "comment" field was modified as expected
+                  $computer = getItemByTypeName('Computer', $computer);
+                  $this->string($computer->fields['comment'])->isEqualTo("test comment\n\nnewtexttoadd");
+               }
+            }
+         ],
+         [
+            'url' => 'applyMassiveAction/Computer/MassiveAction:add_note',
+            'payload' => [
+               'ids' => [
+                  getItemByTypeName('Computer', '_test_pc01', true),
+                  getItemByTypeName('Computer', '_test_pc02', true)
+               ],
+               'input' => [
+                  'add_note' => "new note",
+               ],
+            ],
+            'status' => 200,
+            'response' => [
+               'ok'       => 2,
+               'ko'       => 0,
+               'noright'  => 0,
+               'messages' => [],
+            ],
+            'error' => "",
+            'before_test' => function() {
+               $computers = ['_test_pc01', '_test_pc02'];
+               foreach ($computers as $computer) {
+                  $note = new Notepad();
+                  $existing_notes = $note->find([
+                     'itemtype' => 'Computer',
+                     'items_id' => getItemByTypeName('Computer', $computer, true),
+                  ]);
+
+                  // Delete all existing note for this item
+                  foreach ($existing_notes as $existing_note) {
+                     $deletion = $note->delete(['id' => $existing_note['id']]);
+                     $this->boolean($deletion)->isTrue();
+                  }
+
+                  // Check that the items have no notes remaining
+                  $this->array($note->find([
+                     'itemtype' => 'Computer',
+                     'items_id' => getItemByTypeName('Computer', $computer, true),
+                  ]))->hasSize(0);
+               }
+            },
+            'after_test' => function() {
+               $computers = ['_test_pc01', '_test_pc02'];
+               foreach ($computers as $computer) {
+                  $note = new Notepad();
+                  $existing_notes = $note->find([
+                     'itemtype' => 'Computer',
+                     'items_id' => getItemByTypeName('Computer', $computer, true),
+                  ]);
+
+                  // Check that the items have one note
+                  $this->array($existing_notes)->hasSize(1);
+
+                  foreach ($existing_notes as $existing_note) {
+                     $this->string($existing_note['content'])->isEqualTo("new note");
+                  }
+               }
+            }
+         ]
+      ];
+   }
+
+   /**
+    * Tests for the "applyMassiveAction" endpoint
+    *
+    * @dataProvider testApplyMassiveActionProvider
+    */
+   public function testApplyMassiveAction(
+      string $url,
+      array $payload,
+      int $status,
+      ?array $response,
+      string $error = "",
+      ?callable $before_test = null,
+      ?callable $after_test = null
+   ): void {
+      if (!is_null($before_test)) {
+         $before_test();
+      }
+
+      $headers = ['Session-Token' => $this->session_token];
+      $data    = $this->query($url, [
+         'headers' => $headers,
+         'verb'    => 'POST',
+         'json'    => $payload,
+      ], $status, $error);
+
+      // If no errors are expected, check results
+      if (empty($error)) {
+         unset($data['headers']);
+         $this->array($data)->isEqualTo($response);
+      }
+
+      if (!is_null($after_test)) {
+         $after_test();
+      }
    }
 }
