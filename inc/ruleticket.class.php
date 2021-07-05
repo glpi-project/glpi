@@ -246,6 +246,14 @@ class RuleTicket extends Rule {
                         // CommonItilObject::handleTaskTemplateInput
                         $output["_tasktemplates_id"][] = $template->getId();
                      }
+                  } else if ($action->fields["field"] == 'itilfollowup_template') {
+                     $template = new ITILFollowupTemplate();
+                     if ($template->getFromDB($action->fields["value"])) {
+                        // Store template id in '_tasktemplates_id' special
+                        // input so it can be handled in
+                        // CommonItilObject::handleITILFollowupTemplateInput
+                        $output["_itilfollowuptemplates_id"][] = $template->getId();
+                     }
                   }
 
                   // special case of appliance
@@ -845,6 +853,11 @@ class RuleTicket extends Rule {
       $actions['task_template']['type']                      = 'dropdown';
       $actions['task_template']['table']                     = TaskTemplate::getTable();
       $actions['task_template']['force_actions']             = ['assign'];
+
+      $actions['itilfollowup_template']['name']              = ITILFollowupTemplate::getTypeName(1);
+      $actions['itilfollowup_template']['type']              = 'dropdown';
+      $actions['itilfollowup_template']['table']             = ITILFollowupTemplate::getTable();
+      $actions['itilfollowup_template']['force_actions']     = ['assign'];
 
       $actions['global_validation']['name']                  = _n('Validation', 'Validations', 1);
       $actions['global_validation']['type']                  = 'dropdown_validation_status';

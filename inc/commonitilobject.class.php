@@ -1110,6 +1110,9 @@ abstract class CommonITILObject extends CommonDBTM {
       // Handle "_tasktemplates_id" special input
       $this->handleTaskTemplateInput();
 
+      // Handle "_itilfollowuptemplates_id" special input
+      $this->handleITILFollowupTemplateInput();
+
       // Handle files pasted in the file field
       $this->input = $this->addFiles($this->input);
 
@@ -1754,6 +1757,9 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Handle "_tasktemplates_id" special input
       $this->handleTaskTemplateInput();
+
+      // Handle "_itilfollowuptemplates_id" special input
+      $this->handleITILFollowupTemplateInput();
 
       // Add document if needed, without notification for file input
       $this->input = $this->addFiles($this->input, ['force_update' => true]);
@@ -8428,6 +8434,41 @@ abstract class CommonITILObject extends CommonDBTM {
             'users_id_tech'               => $tasktemplate->fields['users_id_tech'],
             'groups_id_tech'              => $tasktemplate->fields['groups_id_tech'],
             '_disablenotif'               => true
+         ]);
+      }
+   }
+
+   /**
+    * Handle "_itilfollowuptemplates_id" special input
+    */
+   public function handleITILFollowupTemplateInput(): void {
+      // Check input is valid
+      if (!isset($this->input['_itilfollowuptemplates_id'])
+         || !is_array($this->input['_itilfollowuptemplates_id'])
+         || !count($this->input['_itilfollowuptemplates_id'])
+      ) {
+         return;
+      }
+
+      // Add tasks in itilfollowup template if defined in itiltemplate
+      foreach ($this->input['_itilfollowuptemplates_id'] as $fup_templates_id) {
+         // Get template
+         $fup_template = new ITILFollowupTemplate();
+         if (!$fup_template->getFromDB($fup_templates_id)) {
+            // Ingore if unable to load
+            continue;
+         };
+
+         // Insert new followup from template
+         $fup = new ITILFollowup();
+         $new_fup_content = Toolbox::addslashes_deep($fup_template->fields["content"]);
+         $fup->add([
+            'itemtype'        => $this->getType(),
+            'items_id'        => $this->getID(),
+            'content'         => $new_fup_content,
+            'is_private'      => $fup_template->fields['is_private'],
+            'requesttypes_id' => $fup_template->fields['requesttypes_id'],
+            '_disablenotif'   => true,
          ]);
       }
    }

@@ -37,6 +37,8 @@ use Contract;
 use ContractType;
 use DbTestCase;
 use Group_User;
+use ITILFollowup;
+use ITILFollowupTemplate;
 use RuleAction;
 use RuleCriteria;
 use TaskTemplate;
@@ -785,6 +787,102 @@ class RuleTicket extends DbTestCase {
       $task_data = array_pop($ticket_tasks);
       $this->array($task_data)->hasKey('content');
       $this->string($task_data['content'])->isEqualTo('test content');
+   }
+
+   public function testFollowupTemplateAssignFromRule() {
+      $this->login();
+
+      // Create followup template
+      $followup_template = new ITILFollowupTemplate();
+      $followup_template_id = $followup_template->add([
+         'content' => "test testFollowupTemplateAssignFromRule"
+      ]);
+      $this->integer($followup_template_id)->isGreaterThan(0);
+
+      // Create rule
+      $rule_ticket = new \RuleTicket();
+      $rule_ticket_id = $rule_ticket->add([
+         'name'         => "test to assign ITILSolution",
+         'match'        => 'OR',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleTicket',
+         'condition'    => \RuleTicket::ONADD + \RuleTicket::ONUPDATE,
+         'is_recursive' => 1,
+      ]);
+      $this->integer($rule_ticket_id)->isGreaterThan(0);
+
+      // Add condition (priority = 5) to rule
+      $rule_criteria = new RuleCriteria();
+      $rule_criteria_id = $rule_criteria->add([
+         'rules_id'  => $rule_ticket_id,
+         'criteria'  => 'priority',
+         'condition' => \Rule::PATTERN_IS,
+         'pattern'   => 4,
+      ]);
+      $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+      // Add action to rule
+      $rule_action = new RuleAction();
+      $rule_action_id = $rule_action->add([
+         'rules_id'    => $rule_ticket_id,
+         'action_type' => 'assign',
+         'field'       => 'itilfollowup_template',
+         'value'       => $followup_template_id,
+      ]);
+      $this->integer($rule_action_id)->isGreaterThan(0);
+
+      // Test on creation
+      $ticket = new \Ticket();
+      $ticket_id = $ticket->add([
+         'name'     => 'test',
+         'content'  => 'test',
+         'priority' => 4,
+      ]);
+      $this->integer($ticket_id)->isGreaterThan(0);
+
+      $ticket_followups = new ITILFollowup();
+      $ticket_followups = $ticket_followups->find([
+         'items_id' => $ticket_id,
+         'itemtype' => "Ticket",
+      ]);
+
+      $this->array($ticket_followups)->hasSize(1);
+      $ticket_followups_data = array_pop($ticket_followups);
+      $this->array($ticket_followups_data)->hasKey('content');
+      $this->string($ticket_followups_data['content'])->isEqualTo('test testFollowupTemplateAssignFromRule');
+
+      // Test on update
+      $ticket = new \Ticket();
+      $ticket_id = $ticket->add([
+         'name'     => 'test',
+         'content'  => 'test',
+         'priority' => 3,
+      ]);
+      $this->integer($ticket_id)->isGreaterThan(0);
+
+      $ticket_followups = new ITILFollowup();
+      $ticket_followups = $ticket_followups->find([
+         'items_id' => $ticket_id,
+         'itemtype' => "Ticket",
+      ]);
+
+      $this->array($ticket_followups)->hasSize(0);
+
+      $ticket->update([
+         'id' => $ticket_id,
+         'priority' => 4,
+      ]);
+
+      $ticket_followups = new ITILFollowup();
+      $ticket_followups = $ticket_followups->find([
+         'items_id' => $ticket_id,
+         'itemtype' => "Ticket",
+      ]);
+
+      $this->array($ticket_followups)->hasSize(1);
+      $ticket_followups_data = array_pop($ticket_followups);
+      $this->array($ticket_followups_data)->hasKey('content');
+      $this->string($ticket_followups_data['content'])->isEqualTo('test testFollowupTemplateAssignFromRule');
    }
 
    public function testGroupRequesterAssignFromUserGroupsAndRegexOnUpdateTicketContent() {
