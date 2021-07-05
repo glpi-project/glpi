@@ -127,7 +127,7 @@ class Request extends AbstractRequest
     */
    public function inventory($data) {
       $this->inventory = new Inventory();
-      $this->inventory->setData($data, $this->mode);
+      $this->inventory->setData($data, $this->getMode());
       $this->inventory->doInventory($this->test_rules);
 
       if ($this->inventory->inError()) {

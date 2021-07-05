@@ -84,9 +84,7 @@ abstract class AbstractRequest
    /** @var boolean */
    private $error = false;
    /** @var boolean */
-   private $test_rules = false;
-   /** @var Inventory */
-   //private $inventory;
+   protected $test_rules = false;
    /** @var Glpi\Agent\Communication\Headers\Common */
    protected $headers;
    /** @var int */
