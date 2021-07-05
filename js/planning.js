@@ -76,6 +76,11 @@ var GLPIPlanning  = {
          $('#'+GLPIPlanning.dom_id).closest('.ui-tabs').width('98%');
       }
 
+      // Hide some days depending on GLPI configuration
+      var all_days = [0, 1, 2, 3, 4, 5, 6];
+      var enabled_days = CFG_GLPI.planning_work_days;
+      var hidden_days = all_days.filter(day => !enabled_days.some(n => n == day));
+
       this.calendar = new FullCalendar.Calendar(document.getElementById(GLPIPlanning.dom_id), {
          plugins:     options.plugins,
          height:      options.height,
@@ -96,6 +101,7 @@ var GLPIPlanning  = {
          listDayAltFormat: false,
          agendaEventMinHeight: 13,
          header: options.header,
+         hiddenDays: hidden_days,
          //resources: options.resources,
          resources: function(fetchInfo, successCallback) {
             // Filter resources by whether their id is in visible_res.
