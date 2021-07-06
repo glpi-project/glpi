@@ -742,7 +742,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
       $private_criteria['WHERE'] = [
          "$table.is_private"  => 1,
          "$table.users_id"    => Session::getLoginUserID()
-      ];
+      ] + getEntitiesRestrictCriteria($table, '', '', true);
       $private_iterator = $DB->request($private_criteria);
 
       // get saved searches
