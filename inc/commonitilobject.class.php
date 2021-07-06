@@ -5164,7 +5164,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if (isset($this->fields['takeintoaccount_delay_stat'])) {
          echo "<tr class='tab_bg_2'><td>".__('Take into account')."</td><td>";
          if ($this->fields['takeintoaccount_delay_stat'] > 0) {
-            echo Html::timestampToString($this->fields['takeintoaccount_delay_stat'], 0);
+            echo Html::timestampToString($this->fields['takeintoaccount_delay_stat'], 0, false);
          } else {
             echo '&nbsp;';
          }
@@ -5176,7 +5176,7 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td>".__('Resolution')."</td><td>";
 
          if ($this->fields['solve_delay_stat'] > 0) {
-            echo Html::timestampToString($this->fields['solve_delay_stat'], 0);
+            echo Html::timestampToString($this->fields['solve_delay_stat'], 0, false);
          } else {
             echo '&nbsp;';
          }
@@ -5186,7 +5186,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
          echo "<tr class='tab_bg_2'><td>".__('Closure')."</td><td>";
          if ($this->fields['close_delay_stat'] > 0) {
-            echo Html::timestampToString($this->fields['close_delay_stat']);
+            echo Html::timestampToString($this->fields['close_delay_stat'], true, false);
          } else {
             echo '&nbsp;';
          }
@@ -5195,7 +5195,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>".__('Pending')."</td><td>";
       if ($this->fields['waiting_duration'] > 0) {
-         echo Html::timestampToString($this->fields['waiting_duration'], 0);
+         echo Html::timestampToString($this->fields['waiting_duration'], 0, false);
       } else {
          echo '&nbsp;';
       }
