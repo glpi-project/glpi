@@ -28,7 +28,6 @@ jobs:
       DB_IMAGE: "githubactions-${{ matrix.db-image }}"
       PHP_IMAGE: "githubactions-php-coverage:${{ matrix.php-version }}"
       UPDATE_FILES_ACL: true
-      IGNORE_LOCK_FILES: true
       CODE_COVERAGE: true
     steps:
       - name: "Clean workspace"
