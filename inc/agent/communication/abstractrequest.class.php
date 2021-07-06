@@ -61,8 +61,8 @@ abstract class AbstractRequest
    const REGISTER_ACTION = 'register';
    const CONFI_ACTION = 'configuration';
    const INVENT_ACTION = 'inventory';
-   const NETDISCOVERY_ACTION = 'network-discovery';
-   const NETINV_ACTION = 'network-inventory';
+   const NETDISCOVERY_ACTION = 'netdiscovery';
+   const NETINV_ACTION = 'netinventory';
    const ESX_ACTION = 'esx';
    const COLLECT_ACTION = 'collect';
    const DEPLOY_ACTION = 'deploy';
