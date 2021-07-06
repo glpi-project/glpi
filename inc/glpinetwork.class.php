@@ -93,12 +93,12 @@ class GLPINetwork extends CommonGLPI {
       echo "</tr>";
 
       if ($registration_key !== "") {
-         $informations = self::getRegistrationInformations();
+         $informations = self::getRegistrationInformations(true);
          if (!empty($informations['validation_message'])) {
             echo "<tr class='tab_bg_2'>";
             echo "<td></td>";
             echo "<td>";
-            echo "<div class=' " . ($informations['is_valid'] ? 'ok' : 'red') . "'> ";
+            echo "<div class=' " . (($informations['is_valid'] && $informations['subscription']['is_running'] ?? false) ? 'ok' : 'red') . "'> ";
             echo "<i class='fa fa-info-circle'></i>";
             echo $informations['validation_message'];
             echo "</div>";
@@ -168,20 +168,22 @@ class GLPINetwork extends CommonGLPI {
    /**
     * Get GLPI Network registration information.
     *
+    * @param bool $force_refresh
+    *
     * @return array  Registration data:
     *    - is_valid (boolean):          indicates if key is valid;
     *    - validation_message (string): message related to validation state;
     *    - owner (array):               owner attributes;
     *    - subscription (array):        subscription attributes.
     */
-   public static function getRegistrationInformations() {
+   public static function getRegistrationInformations(bool $force_refresh = false) {
       global $GLPI_CACHE;
 
       $registration_key = self::getRegistrationKey();
       $lang = preg_replace('/^([a-z]+)_.+$/', '$1', $_SESSION["glpilanguage"]);
 
       $cache_key = sprintf('registration_%s_%s_informations', sha1($registration_key), $lang);
-      if (($informations = $GLPI_CACHE->get($cache_key)) !== null) {
+      if (!$force_refresh && ($informations = $GLPI_CACHE->get($cache_key)) !== null) {
          return $informations;
       }
 
@@ -227,10 +229,12 @@ class GLPINetwork extends CommonGLPI {
       $informations['is_valid']           = $registration_data['is_valid'];
       if (array_key_exists('validation_message', $registration_data)) {
          $informations['validation_message'] = $registration_data['validation_message'];
+      } else if (!$registration_data['is_valid']) {
+         $informations['validation_message'] = __('The registration key is invalid.');
+      } else if (!$registration_data['subscription']['is_running']) {
+         $informations['validation_message'] = __('The registration key refers to a terminated subscription.');
       } else {
-         $informations['validation_message'] = $registration_data['is_valid']
-            ? __('The registration key is valid.')
-            : __('The registration key is invalid.');
+         $informations['validation_message'] = __('The registration key is valid.');
       }
       $informations['owner']              = $registration_data['owner'];
       $informations['subscription']       = $registration_data['subscription'];
