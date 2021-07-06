@@ -161,7 +161,7 @@ class View extends CommonGLPI {
                __('and'). " ".
                "<a href='$config_url'>".__("fill your registration key in setup.")."</a>"
             );
-         } elseif (!$registration_info['subscription']['is_running']) {
+         } else if (!$registration_info['subscription']['is_running']) {
             $valid = false;
 
             array_push(
