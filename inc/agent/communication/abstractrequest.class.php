@@ -177,9 +177,6 @@ abstract class AbstractRequest
                $data = gzdecode($data);
                break;
             case self::COMPRESS_BR:
-               if (!function_exists('brotli_uncompress')) {
-                  throw new \UnexpectedValueException("You must install Brotli PHP extension.");
-               }
                $data = brotli_uncompress($data);
                break;
             default:
@@ -420,9 +417,6 @@ abstract class AbstractRequest
                 $data = gzencode($data);
                 break;
             case self::COMPRESS_BR:
-               if (!function_exists('brotli_compress')) {
-                   throw new \UnexpectedValueException("You must install Brotli PHP extension.");
-               }
                $data = brotli_compress($data);
                break;
             default:
@@ -498,7 +492,7 @@ abstract class AbstractRequest
          'deflate'
       ];
 
-      if (!function_exists('brotli_uncompress')) {
+      if (!function_exists('brotli_compress')) {
          $encodings[] = 'br';
       }
 
