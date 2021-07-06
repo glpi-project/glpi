@@ -50,7 +50,7 @@ class ProjectDAO {
 
       $input = [
          'name' => $project->text,
-         'comment' => $project->note,
+         'comment' => $project->comment,
          'projects_id' => $project->parent,
          'date' => $_SESSION['glpi_currenttime'],
          'plan_start_date' => $project->start_date,
