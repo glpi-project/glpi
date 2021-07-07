@@ -164,4 +164,19 @@ class DbTestCase extends \GLPITestCase {
       }
       return array_unique($classes);
    }
+
+   /**
+    * Create multiples items of the given class
+    *
+    * @param string $itemtype
+    * @param array $inputs
+    */
+   protected function createItems($itemtype, $inputs) {
+      foreach ($inputs as $input) {
+         $item = new $itemtype();
+         $id = $item->add($input);
+         $this->integer($id)->isGreaterThan(0);
+         $this->checkInput($item, $id, $input);
+      }
+   }
 }

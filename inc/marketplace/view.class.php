@@ -125,15 +125,15 @@ class View extends CommonGLPI {
 
 
    /**
-    * Check current reigstration status and display warning messages
+    * Check current registration status and display warning messages
     *
     * @return bool
     */
-   static function checkRegister() {
+   static function checkRegistrationStatus() {
       global $CFG_GLPI;
 
       $messages   = [];
-      $registered = false;
+      $valid = false;
 
       if (!GLPINetwork::isServicesAvailable()) {
          array_push(
@@ -145,8 +145,10 @@ class View extends CommonGLPI {
             __("or please check later")
          );
       } else {
-         $registered = GLPINetwork::isRegistered();
-         if (!$registered) {
+         $registration_info = GLPINetwork::getRegistrationInformations();
+         if (!$registration_info['is_valid']) {
+            $valid = false;
+
             $config_url = $CFG_GLPI['root_doc']."/front/config.form.php?forcetab=".
                         urlencode('GLPINetwork$1');
 
@@ -158,6 +160,16 @@ class View extends CommonGLPI {
                __('and'). " ".
                "<a href='$config_url'>".__("fill your registration key in setup.")."</a>"
             );
+         } else if (!$registration_info['subscription']['is_running']) {
+            $valid = false;
+
+            array_push(
+               $messages,
+               sprintf(__('Your %1$s subscription has been terminated.'), 'GLPI Network'),
+               "<a href='".GLPI_NETWORK_SERVICES."'>".sprintf(__('Renew it on %1$s.'), 'GLPI Network')."</a> "
+            );
+         } else {
+            $valid = true;
          }
       }
 
@@ -169,7 +181,7 @@ class View extends CommonGLPI {
          echo "</div>";
       }
 
-      return $registered;
+      return $valid;
    }
 
 
@@ -194,7 +206,7 @@ class View extends CommonGLPI {
       $installed   = $plugin_inst->getList();
 
       $apiplugins  = [];
-      if (self::checkRegister()) {
+      if (self::checkRegistrationStatus()) {
          $api         = self::getAPI();
          $apiplugins  = $api->getAllPlugins($force_refresh);
       }
@@ -249,7 +261,7 @@ class View extends CommonGLPI {
       int $page = 1,
       string $sort = 'sort-alpha-asc'
    ) {
-      if (!self::checkRegister()) {
+      if (!self::checkRegistrationStatus()) {
          return;
       }
 

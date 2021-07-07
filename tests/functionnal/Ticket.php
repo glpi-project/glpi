@@ -34,6 +34,8 @@ namespace tests\units;
 
 use CommonITILObject;
 use DbTestCase;
+use TicketValidation;
+use User;
 
 /* Test for inc/ticket.class.php */
 
@@ -3636,4 +3638,139 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
    }
 
+   protected function convertContentForTicketProvider(): iterable {
+      yield [
+         'content'  => '',
+         'files'    => [],
+         'tags'     => [],
+         'expected' => '',
+      ];
+
+      // Content with embedded image.
+      yield [
+         'content'  => <<<HTML
+Here is the screenshot:
+<img src="screenshot.png" />
+blabla
+HTML
+         ,
+         'files'    => [
+            'screenshot.png' => 'screenshot.png',
+         ],
+         'tags'     => [
+            'screenshot.png' => '9faff0a6-f37490bd-60e2af9721f420.96500246',
+         ],
+         'expected' => <<<HTML
+Here is the screenshot:
+<p>#9faff0a6-f37490bd-60e2af9721f420.96500246#</p>
+blabla
+HTML
+         ,
+      ];
+
+      // Content with leading external image that will not be replaced by a tag.
+      yield [
+         'content'  => <<<HTML
+<img src="http://test.glpi-project.org/logo.png" />
+Here is the screenshot:
+<img src="img.jpg" />
+blabla
+HTML
+         ,
+         'files'    => [
+            'img.jpg' => 'img.jpg',
+         ],
+         'tags'     => [
+            'img.jpg' => '3eaff0a6-f37490bd-60e2a59721f420.96500246',
+         ],
+         'expected' => <<<HTML
+<img src="http://test.glpi-project.org/logo.png" />
+Here is the screenshot:
+<p>#3eaff0a6-f37490bd-60e2a59721f420.96500246#</p>
+blabla
+HTML
+         ,
+      ];
+   }
+
+   /**
+    * @dataProvider convertContentForTicketProvider
+    */
+   public function testConvertContentForTicket(string $content, array $files, array $tags, string $expected) {
+      $this->newTestedInstance();
+
+      $this->string($this->testedInstance->convertContentForTicket($content, $files, $tags))->isEqualTo($expected);
+   }
+
+   protected function testIsValidatorProvider(): array {
+      $this->login();
+
+      // Existing ursers from databaser
+      $users_id_1 = getItemByTypeName(User::class, "glpi", true);
+      $users_id_2 = getItemByTypeName(User::class, "tech", true);
+
+      // Tickets to create before tests
+      $this->createItems(\Ticket::class, [
+         [
+            'name'    => 'testIsValidatorProvider 1',
+            'content' => 'testIsValidatorProvider 1',
+         ],
+         [
+            'name'    => 'testIsValidatorProvider 2',
+            'content' => 'testIsValidatorProvider 2',
+         ],
+      ]);
+
+      // Get id of created tickets to reuse later
+      $tickets_id_1 = getItemByTypeName(\Ticket::class, "testIsValidatorProvider 1", true);
+      $tickets_id_2 = getItemByTypeName(\Ticket::class, "testIsValidatorProvider 2", true);
+
+      // TicketValidation items to create before tests
+      $this->createItems(TicketValidation::class, [
+         [
+            'tickets_id'        => $tickets_id_1,
+            'users_id_validate' => $users_id_1,
+         ],
+         [
+            'tickets_id'        => $tickets_id_2,
+            'users_id_validate' => $users_id_2,
+         ],
+      ]);
+
+      return [
+         [
+            'tickets_id' => $tickets_id_1,
+            'users_id'   => $users_id_1,
+            'expected'   => true,
+         ],
+         [
+            'tickets_id' => $tickets_id_1,
+            'users_id'   => $users_id_2,
+            'expected'   => false,
+         ],
+         [
+            'tickets_id' => $tickets_id_2,
+            'users_id'   => $users_id_1,
+            'expected'   => false,
+         ],
+         [
+            'tickets_id' => $tickets_id_2,
+            'users_id'   => $users_id_2,
+            'expected'   => true,
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider testIsValidatorProvider
+    */
+   public function testIsValidator(
+      int $tickets_id,
+      int $users_id,
+      bool $expected
+   ) {
+      $ticket = new \Ticket();
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+      $this->boolean($ticket->isValidator($users_id))->isEqualTo($expected);
+   }
 }
