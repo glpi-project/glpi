@@ -387,13 +387,14 @@ class Plugins {
     * Inform plugins API that a plugin (by its key) has been downloaded
     * and the download counter must be incremented
     *
-    * @param string $key plugin system key
+    * @param string $key      plugin system key
+    * @param string $version  plugin version
     *
     * @return void we don't wait for a response, this a fire and forget request
     */
-   public function incrementPluginDownload(string $key = "") {
+   public function incrementPluginDownload(string $key, string $version) {
       $this->request(
-         "plugin/{$key}/download",
+         "plugin/{$key}/download/{$version}",
          [
             'allow_redirects' => false, // Prevent follow redirects to download page sent by Plugins API
          ]
