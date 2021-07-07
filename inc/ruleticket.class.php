@@ -238,10 +238,13 @@ class RuleTicket extends Rule {
                      }
                   }
 
-                  // Remove values that may have been added by any "append" rule action on same field.
+                  // Remove values that may have been added by any "append" rule action on same actor field.
+                  // Appended actors are stored on `_additional_*` keys.
                   $actions = $this->getActions();
                   $append_key = $actions[$action->fields["field"]]["appendto"] ?? null;
-                  if ($append_key !== null && array_key_exists($append_key, $output)) {
+                  if ($append_key !== null
+                      && preg_match('/^_additional_/', $append_key) === 1
+                      && array_key_exists($append_key, $output)) {
                      unset($output[$append_key]);
                   }
 
