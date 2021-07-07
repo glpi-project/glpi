@@ -2210,7 +2210,8 @@ JAVASCRIPT;
                'timezone',
                $timezones, [
                   'value'                 => $this->fields["timezone"],
-                  'display_emptychoice'   => true
+                  'display_emptychoice'   => true,
+                  'emptylabel'            => __('Use server configuration')
                ]
             );
          } else if (Session::haveRight("config", READ)) {
@@ -2694,7 +2695,8 @@ JAVASCRIPT;
                   'timezone',
                   $timezones, [
                      'value'                 => $this->fields["timezone"],
-                     'display_emptychoice'   => true
+                     'display_emptychoice'   => true,
+                     'emptylabel'            => __('Use server configuration')
                   ]
                );
             } else if (Session::haveRight("config", READ)) {
