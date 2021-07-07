@@ -8473,7 +8473,15 @@ abstract class CommonITILObject extends CommonDBTM {
       $itiltask   = new $itiltask_class;
       foreach ($this->input['_tasktemplates_id'] as $tasktemplates_id) {
          $tasktemplate->getFromDB($tasktemplates_id);
-         $tasktemplate_content = Toolbox::addslashes_deep($tasktemplate->fields["content"]);
+
+         // Parse twig template
+         $tasktemplate_content = $tasktemplate->getRenderedContent($this);
+
+         // Sanitize generated HTML before adding it in DB
+         $tasktemplate_content = Toolbox::clean_cross_side_scripting_deep(
+            Toolbox::addslashes_deep($tasktemplate_content)
+         );
+
          $itiltask->add([
             'tasktemplates_id'            => $tasktemplates_id,
             'content'                     => $tasktemplate_content,
@@ -8510,9 +8518,16 @@ abstract class CommonITILObject extends CommonDBTM {
             continue;
          };
 
+         // Parse twig template
+         $new_fup_content = $fup_template->getRenderedContent($this);
+
+         // Sanitize generated HTML before adding it in DB
+         $new_fup_content = Toolbox::clean_cross_side_scripting_deep(
+            Toolbox::addslashes_deep($new_fup_content)
+         );
+
          // Insert new followup from template
          $fup = new ITILFollowup();
-         $new_fup_content = Toolbox::addslashes_deep($fup_template->fields["content"]);
          $fup->add([
             'itemtype'        => $this->getType(),
             'items_id'        => $this->getID(),
@@ -8599,4 +8614,9 @@ abstract class CommonITILObject extends CommonDBTM {
       return $input;
    }
 
+   /**
+    * Parameter class to be use for this item (user templates)
+    * @return string class name
+    */
+   abstract public static function getContentTemplatesParametersClass(): string;
 }

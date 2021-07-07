@@ -900,6 +900,9 @@ class ITILFollowup  extends CommonDBChild {
          ]);
          echo "</div>";
 
+         $items_id = $item->fields['id'];
+         $itemtype = $item::getType();
+
          $ajax_url = $CFG_GLPI["root_doc"]."/ajax/itilfollowup.php";
          $JS = <<<JAVASCRIPT
             function itilfollowuptemplate_update{$rand}(value) {
@@ -907,7 +910,9 @@ class ITILFollowup  extends CommonDBChild {
                   url: '{$ajax_url}',
                   type: 'POST',
                   data: {
-                     itilfollowuptemplates_id: value
+                     itilfollowuptemplates_id: value,
+                     items_id: '{$items_id}',
+                     itemtype: '{$itemtype}',
                   }
                }).done(function(data) {
                   var requesttypes_id = isNaN(parseInt(data.requesttypes_id))
@@ -925,6 +930,8 @@ class ITILFollowup  extends CommonDBChild {
                      .prop("checked", data.is_private == "0"
                         ? false
                         : true);
+
+                  displayAjaxMessageAfterRedirect();
                });
             }
 JAVASCRIPT;

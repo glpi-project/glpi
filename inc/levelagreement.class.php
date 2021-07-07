@@ -197,10 +197,7 @@ abstract class LevelAgreement extends CommonDBChild {
       echo "<td>";
       Dropdown::showNumber("number_time", ['value' => $this->fields["number_time"],
                                            'min'   => 0]);
-      $possible_values = ['minute' => _n('Minute', 'Minutes', Session::getPluralNumber()),
-                          'hour'   => _n('Hour', 'Hours', Session::getPluralNumber()),
-                          'day'    => _n('Day', 'Days', Session::getPluralNumber()),
-                          'month'  => _n('Month', 'Months', Session::getPluralNumber())];
+      $possible_values = self::getDefinitionTimeValues();
       $rand = Dropdown::showFromArray('definition_time', $possible_values,
                                       ['value'     => $this->fields["definition_time"],
                                        'on_change' => 'appearhideendofworking()']);
@@ -236,6 +233,29 @@ abstract class LevelAgreement extends CommonDBChild {
       return true;
    }
 
+   /**
+    * Get possibles keys and labels for the definition_time field
+    *
+    * @return string
+    */
+   public static function getDefinitionTimeValues(): array {
+      return [
+         'minute' => _n('Minute', 'Minutes', Session::getPluralNumber()),
+         'hour'   => _n('Hour', 'Hours', Session::getPluralNumber()),
+         'day'    => _n('Day', 'Days', Session::getPluralNumber()),
+         'month'  => _n('Month', 'Months', Session::getPluralNumber())
+      ];
+   }
+
+   /**
+    * Get the matching label for a given key (definition_time field)
+    *
+    * @param string $value
+    * @return string
+    */
+   public static function getDefinitionTimeLabel(string $value): string {
+      return self::getDefinitionTimeValues()[$value] ?? "";
+   }
 
    /**
     * Show for ticket

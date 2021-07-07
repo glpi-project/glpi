@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -38,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
  * Template for followups
  * @since 9.5
 **/
-class ITILFollowupTemplate extends CommonDropdown {
+class ITILFollowupTemplate extends AbstractTemplate {
 
    // From CommonDBTM
    public $dohistory          = true;

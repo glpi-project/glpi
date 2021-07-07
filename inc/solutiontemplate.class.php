@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * SolutionTemplate Class
 **/
-class SolutionTemplate extends CommonDropdown {
+class SolutionTemplate extends AbstractTemplate {
 
    // From CommonDBTM
    public $dohistory = true;

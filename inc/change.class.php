@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\ContentTemplates\Parameters\ChangeParameters;
 use Glpi\Toolbox\RichText;
 
 /**
@@ -1669,5 +1670,9 @@ class Change extends CommonITILObject {
 
    public static function getTaskClass() {
       return ChangeTask::class;
+   }
+
+   public static function getContentTemplatesParametersClass(): string {
+      return ChangeParameters::class;
    }
 }

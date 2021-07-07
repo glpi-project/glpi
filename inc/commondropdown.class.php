@@ -282,6 +282,19 @@ abstract class CommonDropdown extends CommonDBTM {
          // Create item
          $this->check(-1, CREATE);
       }
+
+      // Specific code for templates classes, can't be run in lower classes
+      // because $this->check will override the fields property
+      if ($this instanceof AbstractTemplate) {
+         // Restore input if needed
+         $this->fields = $this->restoreInput($this->fields ?? []);
+         if ($this->isNewID($ID)) {
+            // Restore input lose the empty ID in cause of a new item so we need
+            // to set it back manually
+            $this->fields['id'] = $ID;
+         }
+      }
+
       $this->showFormHeader($options);
 
       $fields = $this->getAdditionalFields();

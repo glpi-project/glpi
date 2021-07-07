@@ -1385,13 +1385,19 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                                    'rand'      => $rand_template,
                                    'on_change' => 'tasktemplate_update(this.value)']);
       echo "</div>";
+
+      $items_id = $item->fields['id'];
+      $itemtype = $item::getType();
+
       echo Html::scriptBlock('
          function tasktemplate_update(value) {
             $.ajax({
                url: "' . $CFG_GLPI["root_doc"] . '/ajax/task.php",
                type: "POST",
                data: {
-                  tasktemplates_id: value
+                  tasktemplates_id: value,
+                  items_id: ' . $items_id . ',
+                  itemtype: "' . $itemtype . '",
                }
             }).done(function(data) {
                var taskcategories_id = isNaN(parseInt(data.taskcategories_id))
@@ -1426,6 +1432,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                $("#dropdown_groups_id_tech'.$rand_group.'").trigger("setValue", group_tech);
                // set state
                $("#dropdown_state'.$rand_state.'").trigger("setValue", data.state);
+
+               displayAjaxMessageAfterRedirect();
             });
          }
       ');

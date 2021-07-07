@@ -30,7 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\RichText;
 
 $AJAX_INCLUDE = 1;
 
@@ -40,14 +39,38 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_POST['solutiontemplates_id']) && $_POST['solutiontemplates_id'] > 0) {
-   $template = new SolutionTemplate();
-   $template->getFromDB($_POST['solutiontemplates_id']);
-
-   echo json_encode(
-      [
-         'content'          => RichText::getSafeHtml($template->fields['content'], true),
-         'solutiontypes_id' => $template->fields['solutiontypes_id'],
-      ]
-   );
+// Mandatory parameter: solutiontemplates_id
+$solutiontemplates_id = $_POST['solutiontemplates_id'] ?? 0;
+if ($solutiontemplates_id == 0) {
+   Toolbox::throwError(400, "Missing or invalid parameter: 'solutiontemplates_id'");
 }
+
+// Mandatory parameter: items_id
+$parents_id = $_POST['items_id'] ?? 0;
+if ($parents_id == 0) {
+   Toolbox::throwError(400, "Missing or invalid parameter: 'items_id'");
+}
+
+// Mandatory parameter: itemtype
+$parents_itemtype = $_POST['itemtype'] ?? '';
+if (empty($parents_itemtype) || !is_subclass_of($parents_itemtype, CommonITILObject::class)) {
+   Toolbox::throwError(400, "Missing or invalid parameter: 'itemtype'");
+}
+
+// Load solution template
+$template = new SolutionTemplate();
+if (!$template->getFromDB($solutiontemplates_id)) {
+   Toolbox::throwError(400, "Unable to load template: $solutiontemplates_id");
+}
+
+// Load parent item
+$parent = new $parents_itemtype();
+if (!$parent->getFromDB($parents_id)) {
+   Toolbox::throwError(400, "Unable to load parent item: $parents_itemtype $parents_id");
+}
+
+// Render template content using twig
+$template->fields['content'] = $template->getRenderedContent($parent);
+
+// Return json response with the template fields
+echo json_encode($template->fields);

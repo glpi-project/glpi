@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\ContentTemplates\Parameters\TicketParameters;
 use Glpi\Event;
 use Glpi\Toolbox\RichText;
 
@@ -7699,5 +7700,9 @@ JAVASCRIPT;
 
    public static function getTaskClass() {
       return TicketTask::class;
+   }
+
+   public static function getContentTemplatesParametersClass(): string {
+      return TicketParameters::class;
    }
 }
