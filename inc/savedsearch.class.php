@@ -282,22 +282,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
    public function prepareSearchUrlForDB(array $input): array {
       $taburl = parse_url(rawurldecode($input['url']));
 
-      $key = "plugins";
-      if (preg_match('/marketplace/i', $taburl["path"])) {
-         $key = "marketplace";
-      }
-
-      $index  = strpos($taburl["path"], $key);
-      if (!$index) {
-         $index = strpos($taburl["path"], "front");
-      }
-
-      $input['path'] = Toolbox::substr(
-         $taburl["path"],
-         $index,
-         Toolbox::strlen($taburl["path"]) - $index
-      );
-
       $query_tab = [];
 
       if (isset($taburl["query"])) {
@@ -601,12 +585,17 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
    function load($ID) {
       global $CFG_GLPI;
 
-      if ($params = $this->getParameters($ID)) {
-         $url  = $CFG_GLPI['root_doc']."/".rawurldecode($this->fields["path"]);
-         $url .= "?".Toolbox::append_params($params);
-
-         Html::redirect($url);
+      if (($params = $this->getParameters($ID)) === false) {
+         return;
       }
+      if ($this->fields['itemtype'] === 'AllAssets') {
+         $url = $CFG_GLPI['root_doc'].'/front/allassets.php';
+      } else {
+         $url = Toolbox::getItemTypeSearchURL($this->fields['itemtype']);
+      }
+      $url .= "?".Toolbox::append_params($params);
+
+      Html::redirect($url);
    }
 
 
@@ -619,15 +608,17 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
    **/
    function getParameters($ID) {
 
-      if ($this->getFromDB($ID)) {
-         $query_tab = [];
-         parse_str($this->fields["query"], $query_tab);
-         $query_tab['savedsearches_id'] = $ID;
-         if (class_exists($this->fields['itemtype']) || $this->fields['itemtype'] == 'AllAssets') {
-            return $this->prepareQueryToUse($this->fields["type"], $query_tab);
-         }
+      if ($this->getFromDB($ID) === false) {
+         return false;
       }
-      return false;
+      if (!class_exists($this->fields['itemtype']) && $this->fields['itemtype'] !== 'AllAssets') {
+         return false;
+      }
+
+      $query_tab = [];
+      parse_str($this->fields["query"], $query_tab);
+      $query_tab['savedsearches_id'] = $ID;
+      return $this->prepareQueryToUse($this->fields["type"], $query_tab);
    }
 
 

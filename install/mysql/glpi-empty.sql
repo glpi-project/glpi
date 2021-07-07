@@ -234,7 +234,6 @@ CREATE TABLE `glpi_savedsearches` (
   `is_private` tinyint NOT NULL DEFAULT '1',
   `entities_id` int NOT NULL DEFAULT '-1',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `path` varchar(255) DEFAULT NULL,
   `query` text,
   `last_execution_time` int DEFAULT NULL,
   `do_count` tinyint NOT NULL DEFAULT '2' COMMENT 'Do or do not count results on list display see SavedSearch::COUNT_* constants',
