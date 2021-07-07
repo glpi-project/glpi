@@ -153,7 +153,7 @@ class Controller extends CommonGLPI {
       $plugin_inst->getFromDBbyDir($this->plugin_key);
 
       // inform api the plugin has been downloaded
-      $api->incrementPluginDownload($this->plugin_key);
+      $api->incrementPluginDownload($this->plugin_key, $plugin_inst->fields['version']);
 
       // try to install (or update) directly the plugin
       return $this->installPlugin();
