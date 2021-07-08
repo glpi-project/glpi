@@ -451,7 +451,7 @@ class SynchronizeUsersCommand extends AbstractCommand {
                   sprintf(__('Unable to parse --%1$s value "%2$s".'), $option_name, $date)
                );
             }
-            $input->setOption($option_name, date('Y:m:d H:i:s', $parsed_date));
+            $input->setOption($option_name, date('Y-m-d H:i:s', $parsed_date));
          }
       }
 
