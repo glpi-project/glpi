@@ -5661,17 +5661,17 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param integer $ID ID of the item to get
     *
-    * @return static|boolean false on failure
+    * @return CommonDBTM|null false on failure
    */
-   public static function getById(?int $id) {
+   public static function getById(?int $id): ?CommonDBTM {
       if (is_null($id)) {
-         return false;
+         return null;
       }
 
       $item = new static();
 
       if (!$item->getFromDB($id)) {
-         return false;
+         return null;
       }
 
       return $item;
