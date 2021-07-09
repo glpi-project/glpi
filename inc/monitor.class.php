@@ -608,9 +608,6 @@ class Monitor extends CommonDBTM {
          'massiveaction'      => false
       ];
 
-      // add objectlock search options
-      $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
-
       $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
       $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
