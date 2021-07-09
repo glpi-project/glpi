@@ -273,6 +273,7 @@ JAVASCRIPT;
          'FROM'  => self::getTable(),
          'WHERE' => [
             'dashboards_dashboards_id' => $dashboards_id,
+            'users_id'                 => Session::getLoginUserID(),
          ]
       ]);
 
@@ -298,6 +299,7 @@ JAVASCRIPT;
             'filter'                   => $settings,
          ], [
             'dashboards_dashboards_id' => $dashboards_id,
+            'users_id'                 => Session::getLoginUserID(),
          ]
       );
    }
