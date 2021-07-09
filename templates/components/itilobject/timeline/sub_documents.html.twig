@@ -8,7 +8,7 @@
       {% for document in image_docs %}
          {% set docpath = path("front/document.send.php?docid=" ~ document['item']['id']) %}
          {% set fk = item.getForeignKeyField() %}
-         {% set delete_link = form_url(item.getType())~"?delete_document&documents_id="~document['item']['id']~"&"~fk~"="~item.fields['id'] %}
+         {% set delete_link = form_url(item.getType()) ~ "?delete_document&documents_id=" ~ document['item']['id'] ~ "&" ~ fk ~ "=" ~ item.fields['id'] %}
 
          {% set post_figure_content %}
             <div class="col-auto">
