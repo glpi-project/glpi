@@ -1079,4 +1079,33 @@ class CommonDBTM extends DbTestCase {
       // Reset session
       unset($_SESSION['glpiactiveentities']);
    }
+
+   public function testGetById() {
+      $itemtype = \Computer::class;
+
+      // test existing item
+      $instance = new $itemtype();
+      $instance->getFromDBByRequest([
+         'WHERE' => ['name' => '_test_pc01'],
+      ]);
+      $this->boolean($instance->isNewItem())->isFalse();
+      $output = $itemtype::getById($instance->getID());
+      $this->object($output)->isInstanceOf($itemtype);
+
+      // test non-existing item
+      $instance = new $itemtype();
+      $instance->add([
+         'name' => 'to be deleted',
+         'entities_id' => 0,
+      ]);
+      $this->boolean($instance->isNewItem())->isFalse();
+      $nonExistingId = $instance->getID();
+      $instance->delete([
+         'id' => $nonExistingId,
+      ], 1);
+      $this->boolean($instance->getFromDB($nonExistingId))->isFalse();
+
+      $output = $itemtype::getById($nonExistingId);
+      $this->boolean($output)->isFalse();
+   }
 }
