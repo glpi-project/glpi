@@ -53,19 +53,27 @@
 </div>
 
 {% set imgs = imgs|default({}) %}
-{% set gallery_item_class = gallery_item_class|default('') %}
+{% set galleryclass = gallery_class|default('') %}
 {% set gallery_type = gallery_type|default('') %}
 
 {% if gallery_type == 'horizontal' %}
    <div class="col-12">
       <div class="d-flex flex-row overflow-auto pswp-horizontal-gallery pswp-img{{ rand }} {{ gallery_item_class }}" itemscope itemtype="https://schema.org/ImageGallery">
          {% for img in imgs %}
+            <div class="{{ img['gallery_item_class']|default('') }}">
+            {% if img['pre_figure_content'] %}
+               {{ img['pre_figure_content']|raw }}
+            {% endif %}
             <figure itemprop="associatedMedia" itemscope itemtype="https://schema.org/ImageObject" class="d-flex flex-column me-2">
                <a href="{{ img['src']|escape }}" itemprop="contentUrl" data-index="0">
-                  <img src="{{ img['thumbnail_src']|default(img['src'])|escape }}" itemprop="thumbnail" alt="{{ img['title']|default('') }}">
+                  <img src="{{ img['thumbnail_src']|default(img['src'])|escape }}" itemprop="thumbnail" alt="{{ img['title']|default('') }}" class="{{ img['img_class']|default('') }}">
                </a>
                <figcaption itemprop="caption description">{{ img['title']|default('') }}</figcaption>
             </figure>
+            {% if img['post_figure_content'] %}
+               {{ img['post_figure_content']|raw }}
+            {% endif %}
+         </div>
          {% endfor %}
       </div>
    </div>

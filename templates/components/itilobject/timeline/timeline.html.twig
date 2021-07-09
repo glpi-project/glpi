@@ -105,7 +105,10 @@
                </span>
 
                {% if entry['documents'] is defined %}
-                  {% include "components/itilobject/timeline/sub_documents.html.twig" with {'entry': entry} %}
+                  {% include "components/itilobject/timeline/sub_documents.html.twig" with {
+                     'item': item,
+                     'entry': entry
+                  } %}
                {% endif %}
             </div>
          </div>

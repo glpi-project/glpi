@@ -1,7 +1,5 @@
 {% extends 'components/itilobject/timeline/form_timeline_item.html.twig' %}
 
-{# TODO image gallery #}
-
 {% block timeline_card %}
    {% if form_mode == 'view' %}
       <div class="row align-items-center m-n2">
@@ -10,29 +8,11 @@
 
          {% if entry_i['filename'] %}
             {% set docpath = path("front/document.send.php?docid=" ~ entry_i['id']) %}
-            {% set is_image = isImage(entry_i['filepath']) %}
             <div class="col text-truncate">
-               {% if is_image %}
-                  {% set img_size = getImageSize(entry_i['filepath']) %}
-                  {% include 'components/photoswipe.html.twig' with {
-                     'imgs': [{
-                        'title': '',
-                        'thumbnail_src': docpath ~ '&context=timeline',
-                        'thumbnail_w': 'auto',
-                        'thumbnail_h': 'auto',
-                        'src': docpath,
-                        'w': img_size[0],
-                        'h': img_size[1],
-                        'clearable': false,
-                     }]
-                  } %}
-                  <a href="{{ docpath }}" target='_blank'>{{ name }}</a>
-               {% else %}
-                  <a href="{{ docpath }}" target='_blank'>
-                     <img src="{{ getIconForFilename(filename) }}" alt="{{ __("File extension") }}">
-                     {{ name }}
-                  </a>
-               {% endif %}
+               <a href="{{ docpath }}" target='_blank'>
+                  <img src="{{ getIconForFilename(filename) }}" alt="{{ __("File extension") }}">
+                  {{ name }}
+               </a>
             </div>
          {% endif %}
 
@@ -64,7 +44,7 @@
                   <i class="fas fa-trash-alt"></i>
                </a>
             </div>
-            </div>
+         </div>
       </div>
    {% endif %}
 {% endblock %}
