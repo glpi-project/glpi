@@ -1375,7 +1375,7 @@ HTML;
          'plugins' => [
             'title' => _n('Plugin', 'Plugins', Session::getPluralNumber()),
             'types' => [],
-            'icon'  => 'fa-puzzle-piece'
+            'icon'  => 'fas fa-puzzle-piece'
          ],
          'admin' => [
             'title' => __('Administration'),
