@@ -3652,7 +3652,6 @@ JS;
       $plugins = [
          'autoresize',
          'code',
-         'colorpicker',
          'directionality',
          'fullscreen',
          'link',
@@ -3662,7 +3661,6 @@ JS;
          'searchreplace',
          'tabfocus',
          'table',
-         'textcolor',
       ];
       if ($enable_images) {
          $plugins[] = 'image';
