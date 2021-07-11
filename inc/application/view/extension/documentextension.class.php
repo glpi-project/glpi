@@ -42,7 +42,7 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class DocumentExtension extends AbstractExtension implements ExtensionInterface {
+class DocumentExtension extends AbstractExtension {
 
    public function getFunctions() {
       return [

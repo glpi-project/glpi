@@ -42,7 +42,7 @@ use User;
 /**
  * @since 10.0.0
  */
-class UserExtension extends AbstractExtension implements ExtensionInterface {
+class UserExtension extends AbstractExtension {
 
    public function getFunctions() {
       return [

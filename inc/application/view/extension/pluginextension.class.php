@@ -41,7 +41,7 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class PluginExtension extends AbstractExtension implements ExtensionInterface {
+class PluginExtension extends AbstractExtension {
    public function getFunctions() {
       return [
          new TwigFunction('displayLogin', [$this, 'displayLogin'], ['is_safe' => ['html']]),

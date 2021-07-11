@@ -41,7 +41,7 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class DropdownExtension extends AbstractExtension implements ExtensionInterface {
+class DropdownExtension extends AbstractExtension {
 
    public function getFunctions() {
       return [

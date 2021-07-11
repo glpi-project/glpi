@@ -43,7 +43,7 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class CommonITILObjectExtension extends AbstractExtension implements ExtensionInterface {
+class CommonITILObjectExtension extends AbstractExtension {
 
    public function getFilters() {
       return [
