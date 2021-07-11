@@ -49,7 +49,7 @@ use Twig\TwigFunction;
  */
 class ItemtypeExtension extends AbstractExtension {
 
-   public function getFilters() {
+   public function getFilters(): array {
       return [
          new TwigFilter('itemtype_name', [$this, 'itemtypeName']),
          new TwigFilter('get_foreignkey_field', [$this, 'getForeignKeyField']),
@@ -72,7 +72,7 @@ class ItemtypeExtension extends AbstractExtension {
       ];
    }
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('itemInstanceOf', [$this, 'itemInstanceOf']),
          new TwigFunction('maybeRecursive', [$this, 'maybeRecursive']),

@@ -41,7 +41,7 @@ use Twig\TwigFunction;
  */
 class I18nExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('__', '__'),
          new TwigFunction('_n', '_n'),

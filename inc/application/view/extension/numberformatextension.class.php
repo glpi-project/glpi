@@ -42,7 +42,7 @@ use Twig\TwigFilter;
  */
 class NumberFormatExtension extends AbstractExtension {
 
-   public function getFilters() {
+   public function getFilters(): array {
       return [
          new TwigFilter('format_binary', [Toolbox::class, 'getSize']),
       ];

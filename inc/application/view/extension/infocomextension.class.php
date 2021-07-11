@@ -43,7 +43,7 @@ use Twig\TwigFunction;
 class InfocomExtension extends AbstractExtension {
 
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('Infocom__Amort', [Infocom::class, 'Amort']),
          new TwigFunction('Infocom__dropdownAmortType', [Infocom::class, 'dropdownAmortType'], ['is_safe' => ['html']]),

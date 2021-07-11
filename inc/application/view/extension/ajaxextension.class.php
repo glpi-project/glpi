@@ -42,7 +42,7 @@ use Twig\TwigFunction;
  */
 class AjaxExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('updateItemOnSelectEvent', [Ajax::class, 'updateItemOnSelectEvent']),
       ];

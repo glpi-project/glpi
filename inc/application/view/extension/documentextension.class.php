@@ -44,7 +44,7 @@ use Twig\TwigFunction;
  */
 class DocumentExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('getIconForFilename', [$this, 'getIconForFilename']),
          new TwigFunction('getSizeForFilePath', [$this, 'getSizeForFilePath']),

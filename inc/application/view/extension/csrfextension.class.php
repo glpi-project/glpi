@@ -42,7 +42,7 @@ use Twig\TwigFunction;
  */
 class CsrfExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('csrf_token', [Session::class, 'getNewCSRFToken']),
       ];

@@ -41,7 +41,7 @@ use Twig\TwigFunction;
  * @since 10.0.0
  */
 class SearchExtension extends AbstractExtension {
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('showItem', [$this, 'showItem']),
          new TwigFunction('displayConfigItem', [$this, 'displayConfigItem']),

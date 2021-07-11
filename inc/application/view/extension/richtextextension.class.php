@@ -41,7 +41,7 @@ use Twig\TwigFunction;
  * @since 10.0.0
  */
 class RichTextExtension extends AbstractExtension {
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('getSafeHtml', [RichText::class, 'getSafeHtml'], ['is_safe' => ['html']]),
          new TwigFunction('getTextFromHtml', [RichText::class, 'getTextFromHtml']),

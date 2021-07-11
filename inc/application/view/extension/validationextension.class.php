@@ -46,7 +46,7 @@ use Twig\TwigFunction;
  */
 class ValidationExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('TicketValidation__dropdownStatus', [TicketValidation::class, 'dropdownStatus'], ['is_safe' => ['html']]),
          new TwigFunction('TicketValidation__dropdownValidator', [TicketValidation::class, 'dropdownValidator'], ['is_safe' => ['html']]),
