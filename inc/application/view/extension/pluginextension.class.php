@@ -42,7 +42,7 @@ use Twig\TwigFunction;
  * @since 10.0.0
  */
 class PluginExtension extends AbstractExtension {
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('displayLogin', [$this, 'displayLogin'], ['is_safe' => ['html']]),
          new TwigFunction('AutoInventoryInformation', [$this, 'AutoInventoryInformation'], ['is_safe' => ['html']]),

@@ -45,7 +45,7 @@ use Twig\TwigFunction;
  */
 class HtmlExtension extends AbstractExtension {
 
-   public function getFilters() {
+   public function getFilters(): array {
       return [
          new TwigFilter('conv_datetime', [$this, 'convDateTime'], ['is_safe' => ['html']]),
          new TwigFilter(
@@ -56,7 +56,7 @@ class HtmlExtension extends AbstractExtension {
       ];
    }
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('showMassiveActions', [$this, 'showMassiveActions']),
          new TwigFunction('isMassiveActionchecked', [$this, 'isMassiveActionchecked']),

@@ -48,7 +48,7 @@ use User;
  */
 class SessionExtension extends AbstractExtension implements GlobalsInterface {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('have_right', [Session::class, 'haveRight']),
          new TwigFunction('have_rights_and', [Session::class, 'haveRightsAnd']),

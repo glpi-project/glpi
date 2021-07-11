@@ -43,7 +43,7 @@ use Twig\TwigFunction;
  */
 class DropdownExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('getDropdownName', [Dropdown::class, 'getDropdownName'], ['is_safe' => ['html']]),
          new TwigFunction('Dropdown__showGlobalSwitch', [Dropdown::class, 'showGlobalSwitch']),

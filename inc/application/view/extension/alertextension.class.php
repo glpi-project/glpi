@@ -42,7 +42,7 @@ use Twig\TwigFunction;
  */
 class AlertExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('displayLastAlert', [Alert::class, 'displayLastAlert']),
       ];

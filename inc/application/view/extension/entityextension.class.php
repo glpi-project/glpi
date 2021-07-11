@@ -42,7 +42,7 @@ use Twig\TwigFunction;
  */
 class EntityExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('Entity_getUsedConfig', [Entity::class, 'getUsedConfig']),
       ];
