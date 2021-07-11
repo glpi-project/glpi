@@ -319,9 +319,9 @@ class ItemtypeExtension extends AbstractExtension {
     *
     * @param CommonDBTM $item
     *
-    * @return string
+    * @return ?array
     */
-   public function getDcBreadcrumb(CommonDBTM $item):?array {
+   public function getDcBreadcrumb(CommonDBTM $item): ?array {
       if (method_exists($item, "getDcBreadcrumb")) {
          return $item->getDcBreadcrumb();
       }
@@ -369,7 +369,7 @@ class ItemtypeExtension extends AbstractExtension {
       return $item::getTable();
    }
 
-   public function getSpecificTypeField(CommonDropdown $item, $ID, $field = []) {
+   public function getSpecificTypeField(CommonDropdown $item, $ID, $field = []): string {
       return $item->getSpecificTypeField((int) $ID, $field);
    }
 }

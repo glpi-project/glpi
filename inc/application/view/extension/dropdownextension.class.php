@@ -60,12 +60,12 @@ class DropdownExtension extends AbstractExtension {
       ];
    }
 
-   public function showHours($name, $options = []) {
+   public function showHours($name, $options = []): void {
       // Suppress returned ID value
       Dropdown::showHours($name, $options);
    }
 
-   public function dropdownForOneSoftware($options = []) {
+   public function dropdownForOneSoftware($options = []): void {
       // Suppress returned ID value
       \SoftwareVersion::dropdownForOneSoftware($options);
    }

@@ -57,7 +57,7 @@ class DBExtension extends AbstractExtension {
       ];
    }
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       $dbu = $this->getDBUtils();
       return [
          new TwigFunction('getPlural', [$dbu, 'getPlural']),

@@ -75,7 +75,7 @@ class SearchExtension extends AbstractExtension {
    }
 
 
-   public function computeTitle(array $data = []):string {
+   public function computeTitle(array $data = []): string {
       return Search::computeTitle($data);
    }
 }
