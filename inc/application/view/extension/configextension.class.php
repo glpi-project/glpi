@@ -86,7 +86,7 @@ class ConfigExtension extends AbstractExtension {
     *
     * @return void
     */
-   public function displayPasswordSecurityChecks($field = 'password') {
-      return Config::displayPasswordSecurityChecks($field);
+   public function displayPasswordSecurityChecks($field = 'password'): void {
+      Config::displayPasswordSecurityChecks($field);
    }
 }

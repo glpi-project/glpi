@@ -58,24 +58,24 @@ class PluginExtension extends AbstractExtension {
     *
     * @return void
     */
-   public function displayLogin() {
+   public function displayLogin(): void {
       Plugin::doHook('display_login');
    }
 
 
-   public function AutoInventoryInformation() {
+   public function AutoInventoryInformation(): void {
       Plugin::doHook('autoinventory_information');
    }
 
-   public function preItemForm(CommonDBTM $item, array $params = []) {
+   public function preItemForm(CommonDBTM $item, array $params = []): void {
       Plugin::doHook('pre_item_form', ['item' => $item, 'options' => $params]);
    }
 
-   public function postItemForm(CommonDBTM $item, array $params = []) {
+   public function postItemForm(CommonDBTM $item, array $params = []): void {
       Plugin::doHook('post_item_form', ['item' => $item, 'options' => $params]);
    }
 
-   public function hook_infocom(CommonDBTM $item) {
+   public function hook_infocom(CommonDBTM $item): void {
       Plugin::doHookFunction("infocom", $item);
    }
 

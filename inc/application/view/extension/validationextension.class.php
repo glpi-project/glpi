@@ -55,11 +55,11 @@ class ValidationExtension extends AbstractExtension {
    }
 
 
-   public function alertValidation(CommonITILObject $item, string $type = "status") {
+   public function alertValidation(CommonITILObject $item, string $type = "status"): void {
       if ($item instanceof Ticket) {
-         return TicketValidation::alertValidation($item, $type);
+         TicketValidation::alertValidation($item, $type);
       } else if ($item instanceof Change) {
-         return ChangeValidation::alertValidation($item, $type);
+         ChangeValidation::alertValidation($item, $type);
       }
    }
 }
