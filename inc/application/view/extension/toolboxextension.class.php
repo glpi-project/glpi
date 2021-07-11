@@ -40,7 +40,7 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class ToolboxExtension extends AbstractExtension implements ExtensionInterface {
+class ToolboxExtension extends AbstractExtension {
    public function getFunctions() {
       return [
          new TwigFunction('canUseLdap', [Toolbox::class, 'canUseLdap']),

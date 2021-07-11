@@ -40,7 +40,7 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class AjaxExtension extends AbstractExtension implements ExtensionInterface {
+class AjaxExtension extends AbstractExtension {
 
    public function getFunctions() {
       return [

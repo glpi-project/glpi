@@ -40,7 +40,7 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class ConfigExtension extends AbstractExtension implements ExtensionInterface {
+class ConfigExtension extends AbstractExtension {
 
    public function getFunctions() {
       return [

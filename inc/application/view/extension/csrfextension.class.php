@@ -40,7 +40,7 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class CsrfExtension extends AbstractExtension implements ExtensionInterface {
+class CsrfExtension extends AbstractExtension {
 
    public function getFunctions() {
       return [

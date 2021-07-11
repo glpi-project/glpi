@@ -44,7 +44,7 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class ValidationExtension extends AbstractExtension implements ExtensionInterface {
+class ValidationExtension extends AbstractExtension {
 
    public function getFunctions() {
       return [

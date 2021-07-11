@@ -43,7 +43,7 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class HtmlExtension extends AbstractExtension implements ExtensionInterface {
+class HtmlExtension extends AbstractExtension {
 
    public function getFilters() {
       return [

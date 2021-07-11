@@ -40,7 +40,7 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class RichTextExtension extends AbstractExtension implements ExtensionInterface {
+class RichTextExtension extends AbstractExtension {
    public function getFunctions() {
       return [
          new TwigFunction('getSafeHtml', [RichText::class, 'getSafeHtml'], ['is_safe' => ['html']]),

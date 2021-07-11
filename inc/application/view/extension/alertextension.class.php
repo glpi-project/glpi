@@ -40,7 +40,7 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class AlertExtension extends AbstractExtension implements ExtensionInterface {
+class AlertExtension extends AbstractExtension {
 
    public function getFunctions() {
       return [

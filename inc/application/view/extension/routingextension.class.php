@@ -43,7 +43,7 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class RoutingExtension extends AbstractExtension implements ExtensionInterface {
+class RoutingExtension extends AbstractExtension {
 
    public function getFunctions() {
       return [

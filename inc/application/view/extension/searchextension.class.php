@@ -40,7 +40,7 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class SearchExtension extends AbstractExtension implements ExtensionInterface {
+class SearchExtension extends AbstractExtension {
    public function getFunctions() {
       return [
          new TwigFunction('showItem', [$this, 'showItem']),

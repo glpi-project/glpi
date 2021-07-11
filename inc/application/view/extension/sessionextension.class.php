@@ -46,7 +46,7 @@ use User;
 /**
  * @since 10.0.0
  */
-class SessionExtension extends AbstractExtension implements ExtensionInterface, GlobalsInterface {
+class SessionExtension extends AbstractExtension implements GlobalsInterface {
 
    public function getFunctions() {
       return [

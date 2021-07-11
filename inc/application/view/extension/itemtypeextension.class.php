@@ -47,7 +47,7 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class ItemtypeExtension extends AbstractExtension implements ExtensionInterface {
+class ItemtypeExtension extends AbstractExtension {
 
    public function getFilters() {
       return [
