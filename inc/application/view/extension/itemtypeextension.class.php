@@ -352,7 +352,7 @@ class ItemtypeExtension extends AbstractExtension {
          $input['entity_restrict'] = $item->getEntityID();
       }
 
-      return $ma->getInput();
+      return $input;
    }
 
    public function showForm(CommonDBTM $item, $options = []): void {
