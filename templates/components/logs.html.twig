@@ -78,7 +78,7 @@
                <td>{{ entry['date_mod'] }}</td>
                <td>{{ entry['user_name'] }}</td>
                <td>{{ entry['field'] }}</td>
-               <td width='60%' colspan='2'>{{ entry['change']|raw }}</td>
+               <td colspan='2' style="width: 60%">{{ entry['change']|raw }}</td>
             </tr>
          {% endfor %}
       {% endif %}
