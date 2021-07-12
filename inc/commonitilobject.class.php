@@ -7973,7 +7973,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
             $categ = new ITILCategory();
             if ($categ->getFromDB($newitilcategories_id)) {
-               $field = $this->getTemplateFieldName($type);
+               $field = $this->getTemplateFieldName($newtype);
 
                if (isset($categ->fields[$field]) && $categ->fields[$field]) {
                   // without type and categ
