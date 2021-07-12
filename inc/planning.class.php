@@ -1421,7 +1421,7 @@ class Planning extends CommonGLPI {
          $end = date("Y-m-d H:i:s", strtotime($begin)+HOUR_TIMESTAMP);
       }
 
-      echo "<table class='card'>";
+      echo "<table class='planning_classic_card'>";
 
       if ($display_dates) {
          echo "<tr class='tab_bg_2'><td>".__('Start date')."</td><td>";
