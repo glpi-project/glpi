@@ -382,10 +382,14 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          $input["plan_end_date"]   = $input['plan']["end"];
       }
 
-      if (isset($input['is_milestone'])
-            && $input['is_milestone']) {
-         $input['plan_end_date'] = $input['plan_start_date'];
-         $input['real_end_date'] = $input['real_start_date'];
+      if (isset($input['is_milestone']) && $input['is_milestone']) {
+         // Milestone are a precise moment, start date and end dates should have same values.
+         if (array_key_exists('plan_start_date', $input)) {
+            $input['plan_end_date'] = $input['plan_start_date'];
+         }
+         if (array_key_exists('real_start_date', $input)) {
+            $input['real_end_date'] = $input['real_start_date'];
+         }
       }
 
       if (isset($input['projecttasks_id']) && $input['projecttasks_id'] > 0) {
@@ -434,10 +438,14 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          $input["plan_end_date"]   = $input['plan']["end"];
       }
 
-      if (isset($input['is_milestone'])
-            && $input['is_milestone']) {
-         $input['plan_end_date'] = $input['plan_start_date'];
-         $input['real_end_date'] = $input['real_start_date'];
+      if (isset($input['is_milestone']) && $input['is_milestone']) {
+         // Milestone are a precise moment, start date and end dates should have same values.
+         if (array_key_exists('plan_start_date', $input)) {
+            $input['plan_end_date'] = $input['plan_start_date'];
+         }
+         if (array_key_exists('real_start_date', $input)) {
+            $input['real_end_date'] = $input['real_start_date'];
+         }
       }
 
       return Project::checkPlanAndRealDates($input);
