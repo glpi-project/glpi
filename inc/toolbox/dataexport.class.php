@@ -43,17 +43,29 @@ class DataExport {
     * @param string $value
     *
     * @return string
-    *
-    * @TODO rich-text: Unit test
     */
    public static function normalizeValueForTextExport(string $value): string {
       $value = Toolbox::unclean_cross_side_scripting_deep($value);
 
       if (RichText::isRichTextHtmlContent($value)) {
          // Remove invisible contents (tooltips for instance)
-         $value = preg_replace('/<div[^>]*invisible[^>]*>.*?<\/div[^>]*>/si', '', $value);
+         libxml_use_internal_errors(true); // Silent errors
+         $document = new \DOMDocument();
+         $document->loadHTML(
+            mb_convert_encoding('<div>' . $value . '</div>', 'HTML-ENTITIES', 'UTF-8'),
+            LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+         );
 
-         $value = RichText::getTextFromHtml($value);
+         $xpath = new \DOMXPath($document);
+         $invisible_elements = $xpath->query('//div[contains(@class, "invisible")]');
+         foreach ($invisible_elements as $element) {
+            $element->parentNode->removeChild($element);
+         }
+
+         $value = $document->saveHTML();
+
+         // Transform into simple text
+         $value = RichText::getTextFromHtml($value, true, true);
       }
 
       return $value;
