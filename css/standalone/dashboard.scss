@@ -283,12 +283,9 @@ $break_tablet: 1400px;
          border: 2px solid var(--input-border);
          border-radius: 3px;
          min-width: 100px;
-         font-weight: bold;
-         color: var(--light);
          cursor: pointer;
 
          option {
-            color: var(--light);
             border-color: var(--input-border) !important;
          }
       }
@@ -1255,6 +1252,7 @@ $break_tablet: 1400px;
       & + label {
          background: rgba($color: #000, $alpha: .05);
          margin: 5px 5px 0 0;
+         padding: 5px;
          border: 2px solid transparent;
          border-radius: 3px;
          display: none;
