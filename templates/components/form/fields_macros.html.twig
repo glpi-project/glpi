@@ -267,7 +267,7 @@
 {% macro colorField(name, value, label = '', options = {}) %}
    {% set field %}
       <input type="color" id="%id%"
-             class="form-control"
+             class="form-control form-control-color"
              name="{{ name }}" value="{{ value }}"
          {{ options.readonly ? 'readonly' : '' }}
          {{ options.disabled ? 'disabled' : '' }}

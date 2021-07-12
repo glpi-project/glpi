@@ -3971,6 +3971,7 @@ JAVASCRIPT;
          'right'               => 'id',
          'all'                 => 0,
          'display_emptychoice' => true,
+         'emptylabel'          => Dropdown::EMPTY_VALUE,
          'placeholder'         => '',
          'on_change'           => '',
          'comments'            => 1,
@@ -4003,7 +4004,7 @@ JAVASCRIPT;
       }
 
       // Check default value for dropdown : need to be a numeric
-      if ((strlen($p['value']) == 0) || (!is_numeric($p['value']) && $p['value'] != 'myself')) {
+      if (strlen($p['value']) > 0 && !is_numeric($p['value']) && $p['value'] != 'myself') {
          $p['value'] = 0;
       }
 
@@ -4029,7 +4030,7 @@ JAVASCRIPT;
          if ($p['all']) {
             $default = __('All');
          } else {
-            $default = Dropdown::EMPTY_VALUE;
+            $default = $p['emptylabel'];
          }
       }
 

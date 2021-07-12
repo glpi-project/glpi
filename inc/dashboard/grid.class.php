@@ -35,6 +35,7 @@ namespace Glpi\Dashboard;
 use DBConnection;
 use Dropdown;
 use Entity;
+use Glpi\Application\View\TemplateRenderer;
 use Group;
 use Html;
 use Plugin;
@@ -327,7 +328,7 @@ HTML;
          if (!$mini) {
             $left_toolbar = <<<HTML
                <span class="toolbar left-toolbar">
-                  <div class="change-dashboard">
+                  <div class="change-dashboard d-flex">
                      $dropdown_dashboards
                      $l_tb_icons
                   </div>
@@ -684,134 +685,31 @@ HTML;
          $list_cards[$group][$index] = $data['label'] ?? $data['itemtype']::getTypeName();
       });
 
-      echo "<form class='card no-shadow display-widget-form'>";
-
-      echo "<div class='field'>";
-      echo "<label for='color_color$rand'>".__("Background color")."</label>";
-      echo "<div>";
-      Html::showColorField('color', [
-         'rand'  => $rand,
-         'value' => $color,
-      ]);
-      echo "</div>";
-      echo "</div>"; // .field
-
-      echo "<div class='field'>";
-      echo "<label for='dropdown_card_id$rand'>".__("Data")."</label>";
-      echo "<div>";
-      Dropdown::showFromArray('card_id', $list_cards, [
-         'display_emptychoice' => true,
-         'rand'                => $rand,
-         'value'               => $card_id
-      ]);
-      echo "</div>";
-      echo "</div>"; // .field
-
-      // display widget list
-      $displayed = "";
-      if (!$edit) {
-         $displayed = "style='display: none'";
-      }
-      echo "<div class='field widgettype_field' $displayed>";
-      echo "<label>".__("Widget")."</label>";
-      echo "<div class='widget-list'>";
-      foreach (Widget::getAllTypes() as $key => $current) {
-         $selected = '';
-         if ($key === $widgettype) {
-            $selected = 'checked';
-         }
-         $w_diplayed = "";
-         if ($edit && isset($card['widgettype']) && in_array($key, $card['widgettype'])) {
-            $w_diplayed = "style='display: inline-block;'";
-         }
-         echo "<input type='radio'
-                      {$selected}
-                      class='widget-select'
-                      name='widgettype'
-                      id='widgettype_{$key}_{$rand}'
-                      value='{$key}'>
-               <label for='widgettype_{$key}_{$rand}' {$w_diplayed}>
-                  <div>{$current['label']}</div>
-                  <img src='{$current['image']}'>
-               </label>";
-      }
-      echo "</div>";
-      echo "</div>"; // .field
-
-      // display checkbox to use gradient palette or not
-      $gradient_displayed = "";
-      if (!$edit || !isset($widget_def['gradient']) || !$widget_def['gradient']) {
-         $gradient_displayed = "style='display: none'";
-      }
-      echo "<div class='field gradient_field' $gradient_displayed>";
-      echo "<label for='check_gradient_$rand'>".__("Use gradient palette")."</label>";
-      echo "<div>";
-      Html::showCheckbox([
-         'label'   => "&nbsp;",
-         'name'    => "use_gradient",
-         'id'      => "check_gradient_$rand",
-         'checked' => $use_gradient,
-      ]);
-      echo "</div>";
-      echo "</div>"; // .field
-
-      // display checkbox to use point label or not
-      $point_labels_displayed = "";
-      if (!$edit || !isset($widget_def['pointlbl']) || !$widget_def['pointlbl']) {
-         $point_labels_displayed = "style='display: none'";
-      }
-      echo "<div class='field pointlbl_field' $point_labels_displayed>";
-      echo "<label for='check_point_labels_$rand'>".__("Display value labels on points/bars")."</label>";
-      echo "<div>";
-      Html::showCheckbox([
-         'label'   => "&nbsp;",
-         'name'    => "point_labels",
-         'id'      => "check_point_labels_$rand",
-         'checked' => $point_labels,
-      ]);
-      echo "</div>";
-      echo "</div>"; // .field
-
-      // show limit dropdown
-      $limit_displayed = "";
-      if (!$edit || !isset($widget_def['limit']) || !$widget_def['limit']) {
-         $limit_displayed = "style='display: none'";
-      }
-      echo "<div class='field limit_field' $limit_displayed>";
-      echo "<label for='dropdown_limit$rand'>".__("Limit number of data")."</label>";
-      echo "<div>";
-      Dropdown::showNumber('limit', [
-         'value' => $limit,
-         'rand'  => $rand,
-      ]);
-      echo "</div>";
-      echo "</div>"; // .field
-
-      $class_submit = "add-widget";
-      $label_submit = "<i class='fas fa-plus'></i>&nbsp;"._x('button', "Add");
-      if ($edit) {
-         $class_submit = "edit-widget";
-         $label_submit = "<i class='fas fa-save'></i>&nbsp;"._x('button', "Update");
-      }
-
       // manage autoescaping
       if (isset($cardopt['markdown_content'])) {
          $cardopt['markdown_content'] = Html::cleanPostForTextArea($cardopt['markdown_content']);
       }
 
-      echo Html::submit($label_submit, [
-         'class' => 'submit vsubmit '.$class_submit
+      TemplateRenderer::getInstance()->display('components/dashboard/widget_form.html.twig', [
+         'gridstack_id' => $gridstack_id,
+         'old_id'       => $old_id,
+         'x'            => $x,
+         'y'            => $y,
+         'width'        => $width,
+         'height'       => $height,
+         'edit'         => $edit,
+         'card'         => $card,
+         'widget_def'   => $widget_def,
+         'color'        => $color,
+         'card_id'      => $card_id,
+         'use_gradient' => $use_gradient,
+         'point_labels' => $point_labels,
+         'limit'        => $limit,
+         'list_cards'   => $list_cards,
+         'widget_types' => Widget::getAllTypes(),
+         'widgettype'   => $widgettype,
+         'card_options' => $cardopt,
       ]);
-
-      echo Html::hidden('gridstack_id', ['value' => $gridstack_id]);
-      echo Html::hidden('old_id', ['value' => $old_id]);
-      echo Html::hidden('x', ['value' => $x]);
-      echo Html::hidden('y', ['value' => $y]);
-      echo Html::hidden('width', ['value' => $width]);
-      echo Html::hidden('height', ['value' => $height]);
-      echo Html::hidden('card_options', ['value' => json_encode($cardopt, JSON_HEX_APOS | JSON_HEX_QUOT)]);
-
-      echo "</form>"; // .card.display-widget-form
    }
 
 
