@@ -1,0 +1,127 @@
+{% import "components/form/fields_macros.html.twig" as fields %}
+
+{% set field_options = {
+   full_width: true,
+} %}
+
+{% set rand = random() %}
+
+<form class="display-widget-form">
+
+   <input type="hidden" name="gridstack_id" value="{{ gridstack_id }}">
+   <input type="hidden" name="old_id" value="{{ old_id }}">
+   <input type="hidden" name="x" value="{{ x }}">
+   <input type="hidden" name="y" value="{{ y }}">
+   <input type="hidden" name="width" value="{{ width }}">
+   <input type="hidden" name="height" value="{{ height }}">
+   <input type="hidden" name="card_options" value="{{ card_options|json_encode(constant('JSON_HEX_APOS') b-or constant('JSON_HEX_QUOT')) }}">
+
+   {{ fields.colorField(
+      'color',
+      color,
+      __("Background color"),
+      field_options
+   ) }}
+
+   {{ fields.dropdownArrayField(
+      'card_id',
+      card_id,
+      list_cards,
+      __("Data"),
+      field_options
+   ) }}
+
+   {# display widget list #}
+   {% set widgets_list %}
+      <div class="widget-list">
+         {% for key, current in widget_types %}
+            {% set selected = "" %}
+            {% if key == widgettype %}
+               {% set selected = "checked" %}
+            {% endif %}
+
+            {% set w_diplayed = "" %}
+            {% if edit and card['widgettype'] is defined and key in card['widgettype'] %}
+               {% set w_diplayed = "style='display: inline-block;'" %}
+            {% endif %}
+
+            <input type="radio" {{ selected }}
+                  class="widget-select" id="widgettype_{{ key }}_{{ rand }}"
+                  name="widgettype"
+                  value="{{ key }}">
+               <label for="widgettype_{{ key }}_{{ rand }}" {{ w_diplayed|raw }}>
+                  <div>{{ current['label'] }}</div>
+                  <img src="{{ current['image'] }}">
+               </label>
+         {% endfor %}
+      </div>
+   {% endset %}
+
+   {% set displayed = "" %}
+   {% if not edit %}
+      {% set displayed = "style='display: none'" %}
+   {% endif %}
+   <div class="widgettype_field {{ displayed|raw }}">
+      {{ fields.field(
+         '',
+         widgets_list,
+         __("Widget"),
+         field_options
+      ) }}
+   </div>
+
+   {# display checkbox to use gradient palette or not #}
+   {% set gradient_displayed = "" %}
+   {% if not edit or widget_def['gradient'] is not defined or not widget_def['gradient'] %}
+      {% set gradient_displayed = "style='display: none'" %}
+   {% endif %}
+   <div class="gradient_field {{ gradient_displayed|raw }}">
+      {{ fields.checkboxField(
+         'use_gradient',
+         use_gradient,
+         __("Use gradient palette"),
+         field_options
+      ) }}
+   </div>
+
+   {# display checkbox to use point label or not #}
+   {% set point_labels_displayed = "" %}
+   {% if not edit or widget_def['pointlbl'] is not defined or not widget_def['pointlbl'] %}
+      {% set point_labels_displayed = "style='display: none'" %}
+   {% endif %}
+   <div class="pointlbl_field {{ point_labels_displayed|raw }}">
+      {{ fields.checkboxField(
+         'point_labels',
+         point_labels,
+         __("Display value labels on points/bars"),
+         field_options
+      ) }}
+   </div>
+
+   {# show limit #}
+   {% set limit_displayed = "" %}
+   {% if not edit or widget_def['limit'] is not defined or not widget_def['limit'] %}
+      {% set limit_displayed = "style='display: none'" %}
+   {% endif %}
+   <div class="pointlbl_field {{ limit_displayed|raw }}">
+      {{ fields.numberField(
+         'limit',
+         limit,
+         __("Limit number of data"),
+         field_options
+      ) }}
+   </div>
+
+   <div class="modal-footer">
+      <button type="submit" class="btn btn-primary {{ edit ? "edit-widget" : "add-widget" }}">
+         {% if edit %}
+            <i class='fas fa-save'></i>
+            <span>{{ _x('button', "Update") }}</span>
+         {% else %}
+            <i class='fas fa-plus'></i>
+            <span>{{ _x('button', "Add") }}</span>
+         {% endif %}
+      </button>
+   </div>
+
+</form>
