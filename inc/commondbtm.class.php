@@ -347,7 +347,7 @@ class CommonDBTM extends CommonGLPI {
       } else if (count($iter) > 1) {
          Toolbox::logWarning(
             sprintf(
-               'getFromDBByCrit expects to get one result, %1$s found!',
+               'getFromDBByCrit expects to get one result, %1$s found! '.$iter->getSql(),
                count($iter)
             )
          );
