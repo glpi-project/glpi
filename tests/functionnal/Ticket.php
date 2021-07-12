@@ -35,9 +35,9 @@ namespace tests\units;
 use CommonITILObject;
 use DbTestCase;
 use Glpi\Toolbox\Sanitizer;
+use Symfony\Component\DomCrawler\Crawler;
 use TicketValidation;
 use User;
-use Symfony\Component\DomCrawler\Crawler;
 
 /* Test for inc/ticket.class.php */
 
