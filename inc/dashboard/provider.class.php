@@ -454,13 +454,13 @@ class Provider {
          ],
          'FROM'   => $table,
          'INNER JOIN' => [
-            "$ticketUserTable as gu" => [
+            "$ticketUserTable as ul" => [
                'FKEY' => [
-                  'gu' => 'tickets_id',
+                  'ul' => 'tickets_id',
                   $table => 'id',
                   [
                      'AND' => [
-                        "gu.type" => Ticket_User::ASSIGN
+                        "ul.type" => Ticket_User::ASSIGN
                      ]
                   ]
                ],
@@ -468,7 +468,7 @@ class Provider {
             $userTable => [
                'FKEY' => [
                   $userTable => 'id',
-                  'gu' => 'users_id',
+                  'ul' => 'users_id',
                ],
             ],
          ],
@@ -488,7 +488,7 @@ class Provider {
 
       unset($params['apply_filters']['group_tech']);
       $query_filter = self::getFiltersCriteria($table, $params['apply_filters']);
-      unset($query_filter['LEFT JOIN']["$ticketUserTable as gu"]);
+      unset($query_filter['LEFT JOIN']["$ticketUserTable as ul"]);
 
       $query_criteria = array_merge_recursive(
          $query_criteria,
@@ -526,6 +526,10 @@ class Provider {
       $data['series'][1]['name'] = __('Late resolve');
       $data['series'][2]['name'] = __('Late own');
       $data['series'][3]['name'] = __('On time');
+      $data['series'][0]['data'] = [];
+      $data['series'][1]['data'] = [];
+      $data['series'][2]['data'] = [];
+      $data['series'][3]['data'] = [];
       // ensure thare are 2 values per user (late and in time)
       foreach ($names as $name => $username) {
          if (!isset($allLate[$name])) {
@@ -542,13 +546,13 @@ class Provider {
          }
          $label = $username ?? $name;
          $data['labels'][] = $label;
-         $data['series'][0]['data'][] = $allLate[$name];
-         $data['series'][1]['data'][] = $resolveLate[$name];
-         $data['series'][2]['data'][] = $ownLate[$name];
-         $data['series'][3]['data'][] = $onTime[$name];
+         array_unshift($data['series'][0]['data'], $allLate[$name]);
+         array_unshift($data['series'][1]['data'], $resolveLate[$name]);
+         array_unshift($data['series'][2]['data'], $ownLate[$name]);
+         array_unshift($data['series'][3]['data'], $onTime[$name]);
       }
 
-      if (!isset($data['series'][0]['data'])) {
+      if (count($data['series'][0]['data']) < 1) {
          $data['series'][0]['data'] = [];
          $data['series'][1]['data'] = [];
          $data['series'][2]['data'] = [];
@@ -666,6 +670,10 @@ class Provider {
       $data['series'][1]['name'] = __('Late resolve');
       $data['series'][2]['name'] = __('Late own');
       $data['series'][3]['name'] = __('On time');
+      $data['series'][0]['data'] = [];
+      $data['series'][1]['data'] = [];
+      $data['series'][2]['data'] = [];
+      $data['series'][3]['data'] = [];
       // ensure thare are 2 values per user (late and in time)
       foreach ($names as $name => $username) {
          if (!isset($allLate[$name])) {
@@ -682,13 +690,13 @@ class Provider {
          }
          $label = $username ?? $name;
          $data['labels'][] = $label;
-         $data['series'][0]['data'][] = $allLate[$name];
-         $data['series'][1]['data'][] = $resolveLate[$name];
-         $data['series'][2]['data'][] = $ownLate[$name];
-         $data['series'][3]['data'][] = $onTime[$name];
+         array_unshift($data['series'][0]['data'], $allLate[$name]);
+         array_unshift($data['series'][1]['data'], $resolveLate[$name]);
+         array_unshift($data['series'][2]['data'], $ownLate[$name]);
+         array_unshift($data['series'][3]['data'], $onTime[$name]);
       }
 
-      if (!isset($data['series'][0]['data'])) {
+      if (count($data['series'][0]['data']) < 1) {
          $data['series'][0]['data'] = [];
          $data['series'][1]['data'] = [];
          $data['series'][2]['data'] = [];
