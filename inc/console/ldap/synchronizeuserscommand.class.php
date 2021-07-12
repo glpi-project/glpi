@@ -151,6 +151,10 @@ class SynchronizeUsersCommand extends AbstractCommand {
       $only_create = $input->getOption('only-create-new');
       $only_update = $input->getOption('only-update-existing');
 
+      $ldap_filter = $input->getOption('ldap-filter');
+      $begin_date  = $input->getOption('begin-date');
+      $end_date    = $input->getOption('end-date');
+
       $actions = [];
       if ($only_create) {
          $actions = [
@@ -190,10 +194,6 @@ class SynchronizeUsersCommand extends AbstractCommand {
             $servers_id[] = $server['id'];
          }
       }
-
-      $ldap_filter = $input->getOption('ldap-filter');
-      $begin_date  = $input->getOption('begin-date');
-      $end_date    = $input->getOption('end-date');
 
       if (!$input->getOption('no-interaction')) {
          // Ask for confirmation (unless --no-interaction)
@@ -448,12 +448,17 @@ class SynchronizeUsersCommand extends AbstractCommand {
                   sprintf(__('Unable to parse --%1$s value "%2$s".'), $option_name, $date)
                );
             }
-            $input->setOption($option_name, date('Y:m:d H:i:s', $parsed_date));
+            $input->setOption($option_name, date('Y-m-d H:i:s', $parsed_date));
          }
       }
 
       $begin_date = $input->getOption('begin-date');
       $end_date   = $input->getOption('end-date');
+      if ($only_create === false && $only_update === false && ($begin_date !== null || $end_date !== null)) {
+         throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            __('Options --begin-date and --end-date can only be used with --only-create-new or --only-update-existing option.')
+         );
+      }
       if ($begin_date > $end_date) {
          throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
             __('Option --begin-date value has to be lower than option --end-date value.')

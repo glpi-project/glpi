@@ -673,9 +673,6 @@ class Software extends CommonDBTM {
          ],
       ];
 
-      // add objectlock search options
-      $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
-
       $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
       return $tab;

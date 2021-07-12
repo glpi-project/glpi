@@ -1352,11 +1352,21 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Manage come back to waiting state
       if (!is_null($this->fields['begin_waiting_date'])
-          && (($key = array_search('status', $this->updates)) !== false)
-          && (($this->oldvalues['status'] == self::WAITING)
-               // From solved to another state than closed
-              || (in_array($this->oldvalues["status"], $this->getSolvedStatusArray())
-                  && !in_array($this->fields["status"], $this->getClosedStatusArray())))) {
+         && ($key = array_search('status', $this->updates)) !== false
+         && (
+            $this->oldvalues['status'] == self::WAITING
+            // From solved to another state than closed
+            || (
+               in_array($this->oldvalues["status"], $this->getSolvedStatusArray())
+               && !in_array($this->fields["status"], $this->getClosedStatusArray())
+            )
+            // From closed to any open state
+            || (
+               in_array($this->oldvalues["status"], $this->getClosedStatusArray())
+               && in_array($this->fields["status"], $this->getNotSolvedStatusArray())
+            )
+         )
+      ) {
 
          // Compute ticket waiting time use calendar if exists
          $calendar     = new Calendar();
@@ -8054,7 +8064,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
             $categ = new ITILCategory();
             if ($categ->getFromDB($newitilcategories_id)) {
-               $field = $this->getTemplateFieldName($type);
+               $field = $this->getTemplateFieldName($newtype);
 
                if (isset($categ->fields[$field]) && $categ->fields[$field]) {
                   // without type and categ
