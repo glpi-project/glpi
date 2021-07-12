@@ -59,7 +59,7 @@ abstract class AbstractRequest
    //GLPI AGENT
    const CONTACT_ACTION = 'contact';
    const REGISTER_ACTION = 'register';
-   const CONFI_ACTION = 'configuration';
+   const CONFIG_ACTION = 'configuration';
    const INVENT_ACTION = 'inventory';
    const NETDISCOVERY_ACTION = 'netdiscovery';
    const NETINV_ACTION = 'netinventory';
