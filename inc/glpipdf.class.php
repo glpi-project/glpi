@@ -34,79 +34,65 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Mpdf\Config\FontVariables;
+use Mpdf\Mpdf;
+
 /**
- *  GLPIPDF class extends TCPDF
- *
- *  @since 0.85
-**/
-class GLPIPDF extends TCPDF {
+ * @since 0.85
+ */
+class GLPIPDF extends Mpdf {
+   /**
+    * @var int
+    */
    private $total_count;
 
-   /**
-    * Page header
-    *
-    * @see TCPDF::Header()
-   **/
-   public function Header() {
-      // Title
-      $this->Cell(0, 15, $this->title, 0, false, 'C', 0, '', 0, false, 'M', 'M');
+   public function __construct(array $config = []) {
+      parent::__construct($config);
+
+      $this->defineHeaderTemplate();
+      $this->definesFooterTemplate();
    }
 
-
-   /**
-    * Page footer
-    *
-    * @see TCPDF::Footer()
-   **/
-   public function Footer() {
-
-      // Position at 15 mm from bottom
-      $this->SetY(-15);
-      $text = "GLPI PDF export - ".Html::convDate(date("Y-m-d"));
-      if ($this->total_count != null) {
-         $text .= " - " . sprintf(_n('%s item', '%s items', $this->total_count), $this->total_count);
-      }
-      $text .= " - ".$this->getAliasNumPage()."/".$this->getAliasNbPages();
-
-      // Page number
-      $this->Cell(0, 10, $text, 0, false, 'C', 0, '', 0, false, 'T', 'M');
+   public function SetTitle($title) {
+      parent::SetTitle($title);
+      $this->defineHeaderTemplate();
    }
 
-
    /**
-    * Get the list of available fonts
+    * Get the list of available fonts.
     *
-    * @return Array of "filename" => "font name"
+    * @return Array of "font key" => "font name"
    **/
    public static function getFontList() {
 
       $list = [];
-      $path = TCPDF_FONTS::_getfontpath();
 
-      foreach (glob($path.'/*.php') as $font) {
-         unset($name, $type);
-         include $font;
-         unset($cbbox, $cidinfo, $cw, $dw);
-         $font = basename($font, '.php');
+      $mpdf = new Mpdf();
 
-         // skip subfonts
-         if (((substr($font, -1) == 'b') || (substr($font, -1) == 'i'))
-             && isset($list[substr($font, 0, -1)])) {
-            continue;
+      // Extract PDF core fonts
+      foreach ($mpdf->CoreFonts as $key => $name) {
+         if (preg_match('/(B|I)$/', $key)) {
+            continue; // Ignore Bold / Italic variants
          }
-         if (((substr($font, -2) == 'bi'))
-             && isset($list[substr($font, 0, -2)])) {
-            continue;
-         }
-         if (isset($name)) {
-            if (isset($type) && ($type == 'cidfont0')) {
-               // cidfont often have the same name (ArialUnicodeMS)
-               $list[$font] = sprintf(__('%1$s (%2$s)'), $name, $font);
-            } else {
-               $list[$font] = $name;
-            }
+         $key = preg_replace('/^c/', '', $key);
+         $list[$key] = $name;
+      }
+
+      // Extract embedded fonts
+      $default_font_config = (new FontVariables())->getDefaults();
+      foreach (array_keys($default_font_config['fontdata']) as $font_key) {
+         try {
+            $mpdf->AddFont($font_key);
+         } catch (\Exception $e) {
+            continue; // Ignore fonts that cannot be loaded.
          }
       }
+      foreach ($mpdf->fonts as $key => $font) {
+         $list[$key] = $font['name'];
+      }
+
+      asort($list);
+
       return $list;
    }
 
@@ -119,6 +105,52 @@ class GLPIPDF extends TCPDF {
     */
    public function setTotalCount($count) {
       $this->total_count = $count;
+      $this->definesFooterTemplate();
       return $this;
+   }
+
+   /**
+    * Defines the header template.
+    *
+    * @return void
+    */
+   private function defineHeaderTemplate(): void {
+
+      $html = <<<HTML
+<table width="100%">
+   <tr>
+      <td align="center">
+         <strong>{$this->title}</strong>
+      </td>
+   </tr>
+</table>
+HTML;
+
+      $this->SetHTMLHeader($html);
+   }
+
+   /**
+    * Defines the footer template.
+    *
+    * @return void
+    */
+   private function definesFooterTemplate(): void {
+
+      $date = Html::convDate(date("Y-m-d"));
+      $count = $this->total_count != null
+         ? ' - ' . sprintf(_n('%s item', '%s items', $this->total_count), $this->total_count)
+         : '';
+
+      $html = <<<HTML
+<table width="100%">
+   <tr>
+      <td align="center">
+         <strong>GLPI PDF export - {$date} {$count} - {PAGENO}/{nbpg}</strong>
+      </td>
+   </tr>
+</table>
+HTML;
+
+      $this->SetHTMLFooter($html);
    }
 }
