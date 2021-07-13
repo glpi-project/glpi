@@ -112,7 +112,7 @@ class Dropdown {
       $params['permit_select_parent'] = false;
       $params['addicon']              = true;
       $params['specific_tags']        = [];
-      $params['class']                = "form-select form-select-sm";
+      $params['class']                = "form-select";
       $params['url']                  = $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php";
 
       if (is_array($options) && count($options)) {
@@ -1074,7 +1074,6 @@ class Dropdown {
          'on_change'           => "var _value = this.options[this.selectedIndex].value; if (_value != 0) {window.location.href=_value;}",
          'value'               => $selected,
          'display_emptychoice' => true,
-         'class'               => 'form-select',
          'width'               => '300px',
       ]);
       echo "</div>";
@@ -1472,7 +1471,7 @@ class Dropdown {
          'on_change'       => '',
          'used'            => [],
          'specific_tags'   => [],
-         'class'           => "form-select form-select-sm",
+         'class'           => "form-select",
       ];
 
       if (is_array($options) && count($options)) {
@@ -2036,7 +2035,7 @@ class Dropdown {
       $params['value']               = 0;
       $params['name']                = 'is_global';
       $params['target']              = '';
-      $params['class']               = "form-select form-select-sm";
+      $params['class']               = "form-select";
       $params['width']               = "";
 
       foreach ($attrs as $key => $value) {

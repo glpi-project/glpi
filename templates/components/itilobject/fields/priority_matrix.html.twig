@@ -15,7 +15,6 @@
    item.dropdownUrgency({
       'value': item.fields["urgency"],
       'width': '100%',
-      'class': 'form-select',
       'display': false,
       'rand': rand,
    }|merge(urgency_options)),
@@ -35,7 +34,6 @@
    item.dropdownImpact({
       'value': item.fields["impact"],
       'width': '100%',
-      'class': 'form-select',
       'display': false,
       'rand': rand,
    }|merge(impact_options)),
@@ -57,7 +55,6 @@
    item.dropdownPriority({
       'value': item.fields["priority"],
       'width': '100%',
-      'class': 'form-select',
       'display': false,
       'rand': rand,
    }|merge(field_options|merge(priority_options))),
