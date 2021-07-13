@@ -520,7 +520,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
          'display'           => true,
          'templateResult'    => "templateValidation",
          'templateSelection' => "templateValidation",
-         'class'             => 'form-select',
          'width'             => '100%',
          'required'          => false,
       ];
@@ -1490,7 +1489,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
         'users_id_validate' => [],
         'applyto'           => 'show_validator_field',
         'display'           => true,
-        'class'             => 'form-select',
         'width'             => '100%',
         'required'          => false,
         'rand'              => mt_rand(),

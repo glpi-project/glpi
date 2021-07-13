@@ -15,8 +15,6 @@
    {% set withtemplate = params['withtemplate'] ?? "" %}
    {% set item_type = item.getType() %}
 
-   {# TODO form-select normal size for select2 #}
-
    <div class="card-body d-flex">
       <div class="col-9 flex-column">
          <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
@@ -541,7 +539,6 @@
                            'management_restrict': config('monitors_management_restrict'),
                            'target': target,
                            'width': '100%',
-                           'class': 'form-select',
                         }) }}
                      {% endset %}
                      {{ fields.htmlField(
@@ -604,7 +601,6 @@
                         'name': 'softwareversions_id_use',
                         'softwares_id': item.fields['softwares_id'],
                         'value': item.fields['softwareversions_id_use'],
-                        'class': 'form-select',
                         'width': '100%',
                         }) }}
                      {% endset %}
@@ -617,7 +613,6 @@
                            'name': 'softwareversions_id_buy',
                            'softwares_id': item.fields['softwares_id'],
                            'value': item.fields['softwareversions_id_buy'],
-                           'class': 'form-select',
                            'width': '100%',
                         }) }}
                      {% endset %}
@@ -747,7 +742,6 @@
                         {{ "Software"|dropdown({
                            'value': item.fields['softwares_id'],
                            'rand': rand,
-                           'class': 'form-select',
                         }) }}
                      {% endset %}
 
@@ -766,7 +760,6 @@
                            'display': false,
                            'rand': rand,
                            'width': '100%',
-                           'class': 'form-select',
                            'min': 0,
                            'max': 100,
                            'step': 1,

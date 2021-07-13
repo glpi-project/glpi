@@ -3579,7 +3579,7 @@ JS;
       if ($can_autocomplete && $CFG_GLPI["use_ajax_autocompletion"]) {
          $output .=  "<input ".$params['option']." id='text$name' type='{$params['type']}' name='".
                        $params['name']."' value=\"".self::cleanInputText($params['value'])."\"
-                       class='autocompletion-text-field form-control form-control-sm'";
+                       class='autocompletion-text-field form-control'";
 
          if ($params['required'] == true) {
             $output .= " required='required'";
@@ -3611,7 +3611,7 @@ JS;
          $output .= Html::scriptBlock($js);
 
       } else {
-         $output .=  "<input ".$params['option']." type='text' id='text$name' class='form-control form-control-sm' name='".$params['name']."'
+         $output .=  "<input ".$params['option']." type='text' id='text$name' class='form-control' name='".$params['name']."'
                 value=\"".self::cleanInputText($params['value'])."\">\n";
       }
 
@@ -4760,7 +4760,7 @@ JAVASCRIPT
       $output .= Html::scriptBlock('$(function() {' . $js . '});');
 
       // display select tag
-      $options['class'] = $params['class'] ?? 'form-select form-select-sm';
+      $options['class'] = $params['class'] ?? 'form-select';
       $output .= self::select($name, $values, $options);
 
       return $output;
@@ -5530,7 +5530,7 @@ JAVASCRIPT;
          $display .= "<span class='b'>".__('Drag and drop your file here, or').'</span><br>';
       }
       $display .= "<input id='fileupload{$p['rand']}' type='file' name='".$p['name']."[]'
-                      class='form-control form-control-sm'
+                      class='form-control'
                       data-url='".$CFG_GLPI["root_doc"]."/ajax/fileupload.php'
                       data-form-data='{\"name\": \"".$p['name']."\", \"showfilesize\": \"".$p['showfilesize']."\"}'"
                       .($p['multiple']?" multiple='multiple'":"")

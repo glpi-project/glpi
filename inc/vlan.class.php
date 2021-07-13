@@ -63,7 +63,6 @@ class Vlan extends CommonDropdown {
             'value'     => $this->fields['tag'],
             'min'       => 1,
             'max'       => (pow(2, 12) - 2),
-            'class'     => 'form-select',
             'width'     => '100%',
             'display'   => false,
          ]);

@@ -137,7 +137,6 @@ class Blacklist extends CommonDropdown {
          return self::dropdownType($field['name'], [
             'value'     => $this->fields['type'],
             'width'     => '100%',
-            'class'     => 'form-select',
             'display'   => false,
          ]);
       }
