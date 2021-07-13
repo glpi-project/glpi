@@ -247,7 +247,7 @@ class MailCollector  extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Password')."</td>";
-      echo "<td><input type='password' name='passwd' value='' size='20' autocomplete='new-password'>";
+      echo "<td><input type='password' name='passwd' value='' size='20' autocomplete='new-password' class='form-control'>";
       if ($ID > 0) {
          echo "<input type='checkbox' name='_blank_passwd'>&nbsp;".__('Clear');
       }
@@ -256,13 +256,13 @@ class MailCollector  extends CommonDBTM {
       if ($type != "pop") {
          echo "<tr class='tab_bg_1'><td>" . __('Accepted mail archive folder (optional)') . "</td>";
          echo "<td>";
-         echo "<input size='30' type='text' id='accepted_folder' name='accepted' value=\"".$this->fields['accepted']."\">";
+         echo "<input size='30' class='form-control' type='text' id='accepted_folder' name='accepted' value=\"".$this->fields['accepted']."\">";
          echo "<i class='fa fa-list pointer get-imap-folder'></i>";
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>" . __('Refused mail archive folder (optional)') . "</td>";
          echo "<td>";
-         echo "<input size='30' type='text' id='refused_folder' name='refused' value=\"".$this->fields['refused']."\">";
+         echo "<input size='30' class='form-control' type='text' id='refused_folder' name='refused' value=\"".$this->fields['refused']."\">";
          echo "<i class='fa fa-list pointer get-imap-folder'></i>";
          echo "</td></tr>\n";
       }

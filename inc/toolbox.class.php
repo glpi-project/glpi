@@ -1884,7 +1884,7 @@ class Toolbox {
       $tab = Toolbox::parseMailServerConnectString($value);
 
       echo "<tr class='tab_bg_1'><td>" . __('Server') . "</td>";
-      echo "<td><input size='30' type='text' name='mail_server' value=\"" .$tab['address']. "\">";
+      echo "<td><input size='30' class='form-control' type='text' name='mail_server' value=\"" .$tab['address']. "\">";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . __('Connection options') . "</td><td>";
@@ -1976,14 +1976,14 @@ class Toolbox {
       if ($tab['type'] != 'pop') {
          echo "<tr class='tab_bg_1'><td>". __('Incoming mail folder (optional, often INBOX)')."</td>";
          echo "<td>";
-         echo "<input size='30' type='text' id='server_mailbox' name='server_mailbox' value=\"" . $tab['mailbox'] . "\" >";
+         echo "<input size='30' class='form-control' type='text' id='server_mailbox' name='server_mailbox' value=\"" . $tab['mailbox'] . "\" >";
          echo "<i class='fa fa-list pointer get-imap-folder'></i>";
          echo "</td></tr>\n";
       }
 
       //TRANS: for mail connection system
       echo "<tr class='tab_bg_1'><td>" . __('Port (optional)') . "</td>";
-      echo "<td><input size='10' type='text' name='server_port' value='".$tab['port']."'></td></tr>\n";
+      echo "<td><input size='10' class='form-control' type='text' name='server_port' value='".$tab['port']."'></td></tr>\n";
       if (empty($value)) {
          $value = "&nbsp;";
       }
