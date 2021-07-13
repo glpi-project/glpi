@@ -345,6 +345,7 @@ HTML,
       yield [
          'content'                => \Toolbox::clean_cross_side_scripting_deep('<p>Some HTML text</p>'),
          'keep_presentation'      => false,
+         'compact'                => false,
          'sanitized_input'        => true,
          'encode_output_entities' => false,
          'expected_result'        => 'Some HTML text',
@@ -354,6 +355,7 @@ HTML,
       yield [
          'content'                => \Toolbox::clean_cross_side_scripting_deep('<div>This HTML is sanitized.</div>'),
          'keep_presentation'      => false,
+         'compact'                => false,
          'sanitized_input'        => false,
          'encode_output_entities' => false,
          'expected_result'        => '<div>This HTML is sanitized.</div>',
@@ -363,6 +365,7 @@ HTML,
       yield [
          'content'                => '<p>Some HTML content with special chars like &gt; &amp; &lt;.</p>',
          'keep_presentation'      => false,
+         'compact'                => false,
          'sanitized_input'        => false,
          'encode_output_entities' => true,
          'expected_result'        => 'Some HTML content with special chars like &gt; &amp; &lt;.',
@@ -381,6 +384,7 @@ XML;
             '<h1>XML example</h1>' . "\n" . htmlentities($xml_sample)
          ),
          'keep_presentation'      => false,
+         'compact'                => false,
          'sanitized_input'        => true,
          'encode_output_entities' => false,
          'expected_result'        => <<<PLAINTEXT
@@ -403,6 +407,7 @@ HTML;
       yield [
          'content'                => $content,
          'keep_presentation'      => false,
+         'compact'                => false,
          'sanitized_input'        => false,
          'encode_output_entities' => false,
          'expected_result'        => 'A title Text in a paragraph el 1 el 2',
@@ -413,6 +418,7 @@ HTML;
       yield [
          'content'                => $content,
          'keep_presentation'      => true,
+         'compact'                => false,
          'sanitized_input'        => false,
          'encode_output_entities' => false,
          'expected_result'        => <<<PLAINTEXT
@@ -426,6 +432,26 @@ Text in a paragraph
  [an image] [{$base_url}/glpi/front/computer.form.php?id=150] 
 PLAINTEXT,
       ];
+
+      // Text with presentation from complex HTML (compact mode)
+      $base_url = GLPI_URI;
+      yield [
+         'content'                => $content,
+         'keep_presentation'      => true,
+         'compact'                => true,
+         'sanitized_input'        => false,
+         'encode_output_entities' => false,
+         'expected_result'        => <<<PLAINTEXT
+A TITLE
+
+Text in a paragraph
+
+ 	* el 1
+ 	* el 2
+
+ [an image] 
+PLAINTEXT,
+      ];
    }
 
    /**
@@ -434,13 +460,14 @@ PLAINTEXT,
    public function testGetTextFromHtml(
       string $content,
       bool $keep_presentation,
+      bool $compact,
       bool $sanitized_input,
       bool $encode_output_entities,
       string $expected_result
    ) {
       $richtext = $this->newTestedInstance();
 
-      $this->string($richtext->getTextFromHtml($content, $keep_presentation, $sanitized_input, $encode_output_entities))
+      $this->string($richtext->getTextFromHtml($content, $keep_presentation, $compact, $sanitized_input, $encode_output_entities))
          ->isEqualTo($expected_result);
    }
 

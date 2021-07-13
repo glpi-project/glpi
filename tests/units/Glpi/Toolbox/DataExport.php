@@ -60,7 +60,7 @@ $(function(){\$('#Ticket1').qtip({
 //]]>
 </script>
 HTML),
-         'expected_result' => "Ticket title [{$base_url}/front/ticket.form.php?id=1] ",
+         'expected_result' => "Ticket title ",
       ];
    }
 
