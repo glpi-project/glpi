@@ -69,8 +69,8 @@
       }
    }
 
-   table.table tr:nth-of-type(even) {
-      background-color: $hc-tr-background-color;
+   table.table tr {
+      border: 1px solid $hc-border-color-contrast;
    }
 
    .actor-head, .actor-content {
@@ -253,8 +253,16 @@
       }
    }
 
-   .pagination .page-item, .navigationheader a {
+   .navigationheader a {
       border: 1px solid $hc-border-color-contrast;
+   }
+
+   .pagination .page-item {
+      border: 1px solid $hc-border-color-contrast;
+
+      .page-link {
+         border-radius: 0 !important;
+      }
    }
 
    .accordion-header {
