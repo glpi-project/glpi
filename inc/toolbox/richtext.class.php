@@ -93,13 +93,18 @@ class RichText {
     *
     * @param string  $content                HTML string to be made safe
     * @param boolean $keep_presentation      Indicates whether the presentation elements have to be replaced by plaintext equivalents
+    * @param boolean $compact                Indicates whether the output should be compact (limited line length, no links URL, ...)
     * @param boolean $sanitized_input        Indicates whether the input has been transformed by GLPI sanitize process
     * @param boolean $encode_output_entities Indicates whether the output should be encoded (encoding of HTML special chars)
     *
     * @return string
     */
    public static function getTextFromHtml(
-      string $content, bool $keep_presentation = true, bool $sanitized_input = false, bool $encode_output_entities = false
+      string $content,
+      bool $keep_presentation = true,
+      bool $compact = false,
+      bool $sanitized_input = false,
+      bool $encode_output_entities = false
    ): string {
       global $CFG_GLPI;
 
@@ -110,14 +115,20 @@ class RichText {
       $content = self::normalizeHtmlContent($content, false);
 
       if ($keep_presentation) {
-         // Convert domain relative links to absolute links
-         $content = preg_replace(
-            '/((?:href|src)=[\'"])(\/[^\/].*)([\'"])/',
-            '$1' . $CFG_GLPI['url_base'] . '$2$3',
-            $content
-         );
+         if ($compact) {
+            $options = ['do_links' => 'none', 'width' => 0,];
+         } else {
+            $options = ['width' => 0];
 
-         $html = new Html2Text($content, ['width' => 0]);
+            // Convert domain relative links to absolute links
+            $content = preg_replace(
+               '/((?:href|src)=[\'"])(\/[^\/].*)([\'"])/',
+               '$1' . $CFG_GLPI['url_base'] . '$2$3',
+               $content
+            );
+         }
+
+         $html = new Html2Text($content, $options);
          $content = $html->getText();
       } else {
          // Remove HTML tags using htmLawed

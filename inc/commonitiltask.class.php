@@ -1887,7 +1887,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          printf(
             __('%1$s %2$s'),
             $link,
-            Html::resume_text(RichText::getTextFromHtml($job->fields['content'], false, true), 50)
+            Html::resume_text(RichText::getTextFromHtml($job->fields['content'], false, true, true), 50)
          );
 
          echo "</a>";

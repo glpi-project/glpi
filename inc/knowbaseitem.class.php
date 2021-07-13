@@ -1611,11 +1611,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
                }
                echo Search::showItem($output_type,
                                        "<div class='kb'>$toadd <i class='fa fa-fw $fa_class' title='$fa_title'></i> <a $href>".Html::resume_text($name, 80)."</a></div>
-                                       <div class='kb_resume'>".Html::resume_text(RichText::getTextFromHtml($answer, false, true), 600)."</div>",
+                                       <div class='kb_resume'>".Html::resume_text(RichText::getTextFromHtml($answer, false, false, true), 600)."</div>",
                                        $item_num, $row_num);
             } else {
                echo Search::showItem($output_type, $name, $item_num, $row_num);
-               echo Search::showItem($output_type, RichText::getTextFromHtml($answer, true, true, true), $item_num, $row_num);
+               echo Search::showItem($output_type, RichText::getTextFromHtml($answer, true, false, true, true), $item_num, $row_num);
             }
 
             $showuserlink = 0;

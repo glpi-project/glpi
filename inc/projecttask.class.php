@@ -1558,7 +1558,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                            = ['id'      => $task->fields['uuid'],
                               'parent_id' => $parent_id,
                               'name'    => $task->fields['name'],
-                              'desc'    => RichText::getTextFromHtml($task->fields['content'], true, true),
+                              'desc'    => RichText::getTextFromHtml($task->fields['content'], true, false, true),
                               'link'    => $task->getlink(),
                               'type'    => 'task',
                               'percent' => $percent,

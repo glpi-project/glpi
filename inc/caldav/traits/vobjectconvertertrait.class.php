@@ -126,7 +126,7 @@ trait VobjectConverterTrait {
       }
       if ($description !== null) {
          // Transform HTML text to plain text
-         $vcomp->DESCRIPTION = RichText::getTextFromHtml($description, true, false);
+         $vcomp->DESCRIPTION = RichText::getTextFromHtml($description, true);
       }
 
       $vcomp->URL = $CFG_GLPI['url_base'] . $this->getFormURLWithID($fields['id'], false);
