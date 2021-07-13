@@ -879,7 +879,6 @@ class Item_Ticket extends CommonItilObject_Item {
          $out.= Dropdown::showFromArray('my_items', $my_devices, [
             'rand'    => $rand,
             'display' => $params['display'],
-            'class'   => 'form-select',
          ]);
          $rand2 = mt_rand();
          $out.= "<span id='item_ticket_selection_information$rand2' class='ms-1'></span>";

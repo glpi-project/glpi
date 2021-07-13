@@ -183,7 +183,6 @@ class TaskTemplate extends AbstractITILChildTemplate {
       switch ($field['type']) {
          case 'state' :
             return Planning::dropdownState("state", $this->fields["state"], false, [
-               'class'     => 'form-select',
                'width'     => '100%',
             ]);
          case 'users_id_tech' :
@@ -192,7 +191,6 @@ class TaskTemplate extends AbstractITILChildTemplate {
                'right'     => "own_ticket",
                'value'     => $this->fields["users_id_tech"],
                'entity'    => $this->fields["entities_id"],
-               'class'     => 'form-select',
                'width'     => '100%',
                'display'   => false,
             ]);
@@ -202,7 +200,6 @@ class TaskTemplate extends AbstractITILChildTemplate {
                'condition' => ['is_task' => 1],
                'value'     => $this->fields["groups_id_tech"],
                'entity'    => $this->fields["entities_id"],
-               'class'     => 'form-select',
                'width'     => '100%',
                'display'   => false,
             ]);
@@ -219,7 +216,6 @@ class TaskTemplate extends AbstractITILChildTemplate {
                   'addfirstminutes' => true,
                   'inhours'         => true,
                   'toadd'           => $toadd,
-                  'class'           => 'form-select',
                   'width'           => '100%',
                   'display'         => false,
                ]

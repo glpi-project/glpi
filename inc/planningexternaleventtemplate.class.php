@@ -90,8 +90,7 @@ class PlanningExternalEventTemplate extends CommonDropdown {
       switch ($field['type']) {
          case 'planningstate' :
             return Planning::dropdownState("state", $this->fields["state"], false, [
-               'class'  => 'form-select',
-               'width'  => '100%',
+               'width' => '100%',
             ]);
 
          case 'plan' :

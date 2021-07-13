@@ -4495,13 +4495,12 @@ abstract class CommonITILObject extends CommonDBTM {
          $actor_name = '_users_id_'.$typename.'[]';
       }
       $params = [
-         'name'        => $actor_name,
-         'value'       => $options["_users_id_".$typename],
-         'right'       => $right,
-         'rand'        => $rand,
-         'class'       => "form-select",
-         'width'       => "95%",
-         'entity'      => $options['entities_id'] ?? $options['entity_restrict']
+         'name'   => $actor_name,
+         'value'  => $options["_users_id_".$typename],
+         'right'  => $right,
+         'rand'   => $rand,
+         'width'  => "95%",
+         'entity' => $options['entities_id'] ?? $options['entity_restrict']
       ];
 
       //only for active ldap and corresponding right

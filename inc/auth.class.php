@@ -1710,7 +1710,6 @@ class Auth extends CommonGLPI {
       // show dropdown of login src only when multiple src
       $out.= Dropdown::showFromArray('auth', $elements, [
          'display'   => false,
-         'class'     => 'form-select',
          'rand'      => '1',
          'value'     => $default,
          'width'     => '100%'

@@ -53,7 +53,6 @@ if (isset($_POST["validatortype"])) {
             'entity' => $_POST['entity'],
             'value'  => $value,
             'right'  => $_POST['right'],
-            'class'  => 'form-select',
             'width'  => '100%',
          ]);
          break;
@@ -67,7 +66,6 @@ if (isset($_POST["validatortype"])) {
             'name'   => $name,
             'value'  => $value,
             'entity' => $_POST["entity"],
-            'class'  => 'form-select',
             'width'  => '100%',
          ]);
 

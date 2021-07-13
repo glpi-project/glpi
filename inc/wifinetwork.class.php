@@ -111,7 +111,6 @@ class WifiNetwork extends CommonDropdown {
          return Dropdown::showFromArray($field['name'], self::getWifiNetworkModes(),
             [
                'value'  => $this->fields[$field['name']],
-               'class'     => 'form-select',
                'width'     => '100%',
                'display'   => false,
             ]);

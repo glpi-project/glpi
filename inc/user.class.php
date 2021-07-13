@@ -3985,7 +3985,7 @@ JAVASCRIPT;
          'display'             => true,
          '_user_index'         => 0,
          'specific_tags'       => [],
-         'class'               => "form-select form-select-sm",
+         'class'               => "form-select",
          'url'                 => $CFG_GLPI['root_doc'] . "/ajax/getDropdownUsers.php",
          'inactive_deleted'    => 0,
          'with_no_right'       => 0,

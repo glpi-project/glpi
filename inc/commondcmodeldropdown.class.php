@@ -222,10 +222,9 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
                   '0.33'   => __('1/3'),
                   '0.25'   => __('1/4')
                ], [
-                  'value'                 => $this->fields[$field['name']],
-                  'width'                 => '100%',
-                  'class'                 => 'form-select',
-                  'display'               => false
+                  'value'   => $this->fields[$field['name']],
+                  'width'   => '100%',
+                  'display' => false
                ]
             );
          default:

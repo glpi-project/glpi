@@ -221,7 +221,6 @@ class Ticket_Ticket extends CommonDBRelation {
       $tmp[self::PARENT_OF]      = __('Parent of');
       Dropdown::showFromArray($myname, $tmp, [
          'value' => $value,
-         'class' => 'form-select',
       ]);
    }
 
