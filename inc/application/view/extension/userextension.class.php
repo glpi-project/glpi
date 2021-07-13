@@ -62,7 +62,7 @@ class UserExtension extends AbstractExtension implements ExtensionInterface {
          if ($this->getAnonymizedName($users_id) !== null) {
             return User::getThumbnailURLForPicture(null, false);
          }
-         return User::getThumbnailURLForPicture($user->fields['picture'], false);
+         return User::getThumbnailURLForPicture($user->fields['picture'], true);
       }
 
       return "";
