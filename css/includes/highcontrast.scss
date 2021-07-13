@@ -180,7 +180,7 @@
       }
    }
 
-   .select2-choice, .select2-container--default .select2-selection--single {
+   select, .select2-choice, .select2-container--default .select2-selection {
       border: 1px solid $hc-border-color-contrast !important;
    }
 
@@ -243,5 +243,33 @@
 
    #navbar-menu .dropdown-toggle {
       border: 1px solid $dark;
+   }
+
+   .nav.nav-tabs .nav-item .nav-link {
+      border-color: $hc-border-color-contrast !important;
+
+      &.active {
+         border: 2px solid $hc-border-color-contrast;
+      }
+   }
+
+   .pagination .page-item, .navigationheader a {
+      border: 1px solid $hc-border-color-contrast;
+   }
+
+   .accordion-header {
+      border: 1px solid $hc-border-color-contrast;
+   }
+
+   .timeline-item .timeline-content {
+      border: 1px solid $hc-border-color-contrast;
+
+      &:before, &:after {
+         border-color: $hc-border-color-contrast $hc-border-color-contrast transparent transparent;
+      }
+   }
+
+   .timeline-buttons .answer-action {
+      border: 1px solid $hc-border-color-contrast;
    }
 }
