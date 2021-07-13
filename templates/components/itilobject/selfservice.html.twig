@@ -83,7 +83,6 @@
                   item.dropdownType('type', {
                      'value': params["type"],
                      'width': '100%',
-                     'class': 'form-select',
                      'display': false,
                      'on_change': 'this.form.submit()',
                   }|merge(right_field_options)),
@@ -115,7 +114,6 @@
                   item.dropdownUrgency({
                      'value': params["urgency"],
                      'width': '100%',
-                     'class': 'form-select',
                      'display': false,
                      'required': right_field_options.fields_template.isMandatoryField('urgency'),
                   }),

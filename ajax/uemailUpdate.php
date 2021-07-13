@@ -91,7 +91,6 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
          <div class='ms-2'>
             ".Dropdown::showYesNo($_POST['field'].'[use_notification][]', $default_notif, -1, [
                'display' => false,
-               'class'   => 'form-select'
             ])."
          </div>
       </div>";

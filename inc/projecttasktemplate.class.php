@@ -208,7 +208,6 @@ class ProjectTaskTemplate extends CommonDropdown {
                'max'       => 100,
                'step'      => 5,
                'unit'      => '%',
-               'class'     => 'form-select',
                'width'     => '100%',
                'display'   => false,
             ]);
@@ -220,9 +219,8 @@ class ProjectTaskTemplate extends CommonDropdown {
                'value'           => $this->fields[$field["name"]],
                'addfirstminutes' => true,
                'inhours'         => true,
-               'class'     => 'form-select',
-               'width'     => '100%',
-               'display'   => false,
+               'width'           => '100%',
+               'display'         => false,
             ]);
       }
       return '';

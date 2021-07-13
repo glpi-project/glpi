@@ -132,7 +132,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                'value'      => $itemtype,
                'rand'       => $rand, 'display_emptychoice' => true,
                'display'    => $params['display'],
-               'class'      => 'form-select',
             ]);
             $p = [
                'itemtype'        => '__VALUE__',

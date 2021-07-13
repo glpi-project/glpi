@@ -630,7 +630,6 @@ class Infocom extends CommonDBChild {
          'display'             => $display,
          'display_emptychoice' => true,
          'width'               => '100%',
-         'class'               => 'form-select',
       ]);
    }
 

@@ -51,7 +51,6 @@ if ($room->getFromDB($id)) {
    Dropdown::showFromArray(
       'position',
       $positions, [
-         'class'                 => 'form-select',
          'value'                 => $current,
          'rand'                  => $rand,
          'display_emptychoice'   => true,
