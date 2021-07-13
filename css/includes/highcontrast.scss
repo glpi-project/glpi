@@ -69,12 +69,8 @@
       }
    }
 
-   .tab_bg_2 {
+   table.table tr:nth-of-type(even) {
       background-color: $hc-tr-background-color;
-   }
-
-   .tab_bg_1_2 td, .tab_bg_2_2 td {
-      border-color: #7b3e3e;
    }
 
    .actor-head, .actor-content {
