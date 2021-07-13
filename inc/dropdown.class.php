@@ -1616,7 +1616,7 @@ class Dropdown {
       $params['display']             = true;
       $params['display_emptychoice'] = true;
       $params['width']               = '';
-      $params['class']               = 'form-select-sm';
+      $params['class']               = 'form-select';
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1790,7 +1790,7 @@ class Dropdown {
 
       $param['value']               = '';
       $param['values']              = [''];
-      $param['class']               = 'form-select form-select-sm';
+      $param['class']               = 'form-select';
       $param['tooltip']             = '';
       $param['option_tooltips']     = [];
       $param['used']                = [];
