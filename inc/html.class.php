@@ -2806,10 +2806,10 @@ JS;
          : "";
 
       $output = <<<HTML
-         <div class="no-wrap flatpickr" id="showdate{$p['rand']}">
+         <div class="no-wrap flatpickr d-flex align-items-center" id="showdate{$p['rand']}">
             <input type="text" name="{$name}" value="{$p['value']}"
                    {$required} {$disabled} data-input>
-            <a class="input-button" data-toggle>
+            <a class="input-button ms-1" data-toggle>
                <i class="far fa-calendar-alt fa-lg pointer"></i>
             </a>
             $clear
