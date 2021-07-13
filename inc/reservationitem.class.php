@@ -420,11 +420,11 @@ class ReservationItem extends CommonDBChild {
 
       } else {
          echo "<div id='makesearch' class='center firstbloc'>".
-              "<a class='vsubmit pointer' href='reservation.php?reservationitems_id=0'>
+              "<a class='btn btn-secondary' href='reservation.php?reservationitems_id=0'>
                   <i class='far fa-calendar'></i>&nbsp;
                   ".__("View calendar for all items")."
                </a>
-               <a class='vsubmit pointer' onClick=\"javascript:showHideDiv('viewresasearch','','','');".
+               <a class='btn btn-secondary' onClick=\"javascript:showHideDiv('viewresasearch','','','');".
                 "showHideDiv('makesearch','','','')\">
                <i class='fas fa-search'></i>&nbsp;";
          echo __('Find a free item in a specific period')."</a></div>\n";
@@ -440,21 +440,23 @@ class ReservationItem extends CommonDBChild {
       echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
       echo "<th colspan='3'>".__('Find a free item in a specific period')."</th></tr>";
 
-      echo "<tr class='tab_bg_2'><td>".__('Start date')."</td><td>";
+      echo "<tr class='tab_bg_2'><td>".__('Start date')."</td><td class='d-flex'>";
       Html::showDateTimeField("reserve[begin]", ['value'      =>  $_POST['reserve']["begin"],
                                                       'maybeempty' => false]);
       echo "</td><td rowspan='3'>";
-      echo "<input type='submit' class='submit' name='submit' value=\""._sx('button', 'Search')."\">";
+      echo "<input type='submit' class='btn btn-primary' name='submit' value=\""._sx('button', 'Search')."\">";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>".__('Duration')."</td><td>";
       $default_delay = floor((strtotime($_POST['reserve']["end"]) - strtotime($_POST['reserve']["begin"]))
                              /$CFG_GLPI['time_step']/MINUTE_TIMESTAMP)
                        *$CFG_GLPI['time_step']*MINUTE_TIMESTAMP;
-      $rand = Dropdown::showTimeStamp("reserve[_duration]", ['min'        => 0,
-                                                          'max'        => 48*HOUR_TIMESTAMP,
-                                                          'value'      => $default_delay,
-                                                          'emptylabel' => __('Specify an end date')]);
+      $rand = Dropdown::showTimeStamp("reserve[_duration]", [
+         'min'        => 0,
+         'max'        => 48*HOUR_TIMESTAMP,
+         'value'      => $default_delay,
+         'emptylabel' => __('Specify an end date')
+      ]);
       echo "<br><div id='date_end$rand'></div>";
       $params = ['duration'     => '__VALUE__',
                      'end'          => $_POST['reserve']["end"],
@@ -512,9 +514,11 @@ class ReservationItem extends CommonDBChild {
          $values["Peripheral#$id"] = $ptype['name'];
       }
 
-      Dropdown::showFromArray("reservation_types", $values,
-                              ['value'               => $_POST['reservation_types'],
-                                    'display_emptychoice' => true]);
+      Dropdown::showFromArray("reservation_types", $values, [
+         'class'               => "form-select",
+         'value'               => $_POST['reservation_types'],
+         'display_emptychoice' => true,
+      ]);
 
       echo "</td></tr>";
       echo "</table>";
@@ -522,9 +526,9 @@ class ReservationItem extends CommonDBChild {
       echo "</div>";
 
       // GET method passed to form creation
-      echo "<div id='nosearch' class='center'>";
+      echo "<div id='nosearch' class='card'>";
       echo "<form name='form' method='GET' action='".Reservation::getFormURL()."'>";
-      echo "<table class='tab_cadre_fixehov'>";
+      echo "<table class='card-table table table-hover'>";
       echo "<tr>";
       echo "<th style='width: 30px;'>".Html::getCheckAllAsCheckbox('nosearch')."</th>";
       echo "<th>".self::getTypeName(Session::getPluralNumber())."</th>";
@@ -665,10 +669,10 @@ class ReservationItem extends CommonDBChild {
          echo "</th></tr>";
 
       }
-      echo "</table>\n";
+      echo "</table>";
       echo "<input type='hidden' name='id' value=''>";
       echo "</form>";// No CSRF token needed
-      echo "</div>\n";
+      echo "</div>";
    }
 
 
