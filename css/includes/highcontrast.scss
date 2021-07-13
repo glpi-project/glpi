@@ -218,6 +218,10 @@
       border-left: 0;
    }
 
+   .form-check {
+      border: 1px solid;
+   }
+
    /****** TinyMCE *****/
    .tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type) {
       border-right: 1px solid $hc-border-color-contrast;
