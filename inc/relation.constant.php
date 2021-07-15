@@ -510,7 +510,7 @@ $RELATION = [
       'glpi_links'                       => 'entities_id',
       'glpi_locations'                   => 'entities_id',
       'glpi_monitors'                    => 'entities_id',
-      'glpi_netpoints'                   => 'entities_id',
+      'glpi_sockets'                     => 'entities_id',
       '_glpi_networkaliases'             => 'entities_id',
       'glpi_networkequipments'           => 'entities_id',
       'glpi_networknames'                => 'entities_id',
@@ -560,6 +560,8 @@ $RELATION = [
       'glpi_users'                       => 'entities_id',
       'glpi_vlans'                       => 'entities_id',
       'glpi_wifinetworks'                => 'entities_id',
+      'glpi_sockets'                     => 'entities_id',
+      'glpi_cables'                     => 'entities_id',
    ],
 
    'glpi_filesystems' => [
@@ -742,7 +744,7 @@ $RELATION = [
       'glpi_lines'                     => 'locations_id',
       'glpi_locations'                 => 'locations_id',
       'glpi_monitors'                  => 'locations_id',
-      'glpi_netpoints'                 => 'locations_id',
+      'glpi_sockets'                   => 'locations_id',
       'glpi_networkequipments'         => 'locations_id',
       'glpi_passivedcequipments'       => 'locations_id',
       'glpi_pdus'                      => 'locations_id',
@@ -805,11 +807,6 @@ $RELATION = [
       'glpi_monitors' => 'monitortypes_id',
    ],
 
-   'glpi_netpoints' => [
-      'glpi_networkportethernets'     => 'netpoints_id',
-      'glpi_networkportfiberchannels' => 'netpoints_id',
-   ],
-
    'glpi_networkequipmentmodels' => [
       'glpi_networkequipments' => 'networkequipmentmodels_id',
    ],
@@ -838,6 +835,7 @@ $RELATION = [
       ],
       '_glpi_networkports_vlans'        => 'networkports_id',
       'glpi_networkportwifis'           => 'networkports_id',
+      'glpi_sockets'                    => 'networkports_id',
    ],
 
    'glpi_networkportwifis' => [
@@ -1167,6 +1165,7 @@ $RELATION = [
       'glpi_softwarelicenses'          => 'states_id',
       'glpi_softwareversions'          => 'states_id',
       'glpi_states'                    => 'states_id',
+      'glpi_cables'                    => 'states_id',
    ],
 
    'glpi_suppliers' => [
@@ -1380,6 +1379,7 @@ $RELATION = [
          'users_id_validate',
       ],
       '_glpi_useremails'              => 'users_id',
+      'glpi_cables'                   => 'users_id_tech',
    ],
 
    'glpi_usertitles' => [
@@ -1425,6 +1425,20 @@ $RELATION = [
          'items_id',
          'itemtype',
       ],
+   ],
+
+   'glpi_networkportfiberchanneltypes' => [
+      'glpi_networkportfiberchannels' => 'networkportfiberchanneltypes_id',
+   ],
+
+   'glpi_socketmodels' => [
+      'glpi_cables' => ['rear_socketmodels_id',
+                        'front_socketmodels_id']
+   ],
+
+   'glpi_sockets' => [
+      'glpi_cables' => ['rear_sockets_id',
+                        'front_sockets_id']
    ],
 
 ];

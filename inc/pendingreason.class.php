@@ -236,7 +236,7 @@ class PendingReason extends CommonDropdown
       ];
    }
 
-   public function displaySpecificTypeField($ID, $field = []) {
+   public function displaySpecificTypeField($ID, $field = [], $options = []) {
 
       if ($field['name'] == 'followup_frequency') {
          echo self::displayFollowupFrequencyfield($this->fields['followup_frequency'], "", [], false);

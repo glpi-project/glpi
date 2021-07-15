@@ -183,7 +183,7 @@ class TaskTemplate extends CommonDropdown {
    /**
     * @see CommonDropdown::displaySpecificTypeField()
    **/
-   function displaySpecificTypeField($ID, $field = []) {
+   function displaySpecificTypeField($ID, $field = [], $options = []) {
 
       switch ($field['type']) {
          case 'state' :

@@ -5524,6 +5524,7 @@ JAVASCRIPT;
             break;
 
          case "glpi_projectstates.color" :
+         case "glpi_cables.color" :
             $out = " style=\"background-color:".$data[$NAME][0]['name'].";\" ";
             break;
 
@@ -6174,6 +6175,10 @@ JAVASCRIPT;
                   }
                }
                return $out;
+
+            case 'glpi_cables.color' :
+               //do not display 'real' value (#.....)
+               return "";
 
             case 'glpi_ticketsatisfactions.satisfaction' :
                if (self::$output_type == self::HTML_OUTPUT) {

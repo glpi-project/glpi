@@ -211,7 +211,7 @@ class Fieldblacklist extends CommonDropdown {
     * @param integer $ID     Unused
     * @param array   $field  Array of fields
    **/
-   function displaySpecificTypeField($ID, $field = []) {
+   function displaySpecificTypeField($ID, $field = [], $options = []) {
 
       switch ($field['type']) {
          case 'blacklist_itemtype' :

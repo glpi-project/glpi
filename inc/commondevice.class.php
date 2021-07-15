@@ -138,7 +138,7 @@ abstract class CommonDevice extends CommonDropdown {
     * @since 0.85
     * @see CommonDropdown::displaySpecificTypeField()
    **/
-   function displaySpecificTypeField($ID, $field = []) {
+   function displaySpecificTypeField($ID, $field = [], $options = []) {
 
       switch ($field['type']) {
          case 'registeredIDChooser' :

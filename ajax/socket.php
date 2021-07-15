@@ -30,19 +30,29 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @since 0.85
- */
+include ('../inc/includes.php');
 
-// Direct access to file
-if (strpos($_SERVER['PHP_SELF'], "getDropdownNetpoint.php")) {
-   $AJAX_INCLUDE = 1;
-   include ('../inc/includes.php');
-   header("Content-Type: application/json; charset=UTF-8");
-   Html::header_nocache();
-} else if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
+// Send UTF8 Headers
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
 Session::checkLoginUser();
-echo Dropdown::getDropdownNetpoint($_POST);
+
+switch ($_POST['action']) {
+
+   case 'getItemsFromItemtype':
+      if ($_POST['itemtype'] && class_exists($_POST['itemtype'])) {
+         $_POST['itemtype']::dropdown(['name'                => $_POST['dom_name'],
+                                       'display_emptychoice' => true,
+                                       'rand' => $_POST['dom_rand']]);
+
+      }
+      break;
+
+   case 'getNetworkPortFromItem':
+      NetworkPort::dropdown(['name'                => 'networkports_id',
+                             'display_emptychoice' => true,
+                             'condition'           => ["items_id" => $_POST['items_id'],
+                                                       "itemtype" => $_POST['itemtype']]]);
+      break;
+}

@@ -515,7 +515,10 @@ abstract class CommonDropdown extends CommonDBTM {
                return false;
 
             default:
-               $this->displaySpecificTypeField($ID, $field);
+               //pass $options arg to allow the creation of an item from another
+               //see socket.class.php:607
+               //see socket.form.php:36
+               $this->displaySpecificTypeField($ID, $field, $options);
                break;
          }
          if (isset($field['unit'])) {
@@ -538,7 +541,7 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
-   function displaySpecificTypeField($ID, $field = []) {
+   function displaySpecificTypeField($ID, $field = [], $options = []) {
    }
 
 

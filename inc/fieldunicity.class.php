@@ -132,7 +132,7 @@ class FieldUnicity extends CommonDropdown {
     * @param $ID
     * @param $field array
    **/
-   function displaySpecificTypeField($ID, $field = []) {
+   function displaySpecificTypeField($ID, $field = [], $options = []) {
 
       switch ($field['type']) {
          case 'unicity_itemtype' :

@@ -98,6 +98,7 @@ class Printer  extends CommonDBTM {
       $this->addStandardTab('Item_Disk', $ong, $options);
       $this->addStandardTab('Computer_Item', $ong, $options);
       $this->addStandardTab('NetworkPort', $ong, $options);
+      $this->addStandardTab('Socket', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
       $this->addStandardTab('Contract_Item', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
@@ -795,6 +796,8 @@ class Printer  extends CommonDBTM {
       $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
       $tab = array_merge($tab, Item_Devices::rawSearchOptionsToAdd(get_class($this)));
+
+      $tab = array_merge($tab, Socket::rawSearchOptionsToAdd(get_class($this)));
 
       return $tab;
    }

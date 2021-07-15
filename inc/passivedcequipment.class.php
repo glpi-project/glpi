@@ -52,6 +52,7 @@ class PassiveDCEquipment extends CommonDBTM {
       $ong = [];
       $this->addDefaultFormTab($ong)
          ->addImpactTab($ong, $options)
+         ->addStandardTab('Socket', $ong, $options)
          ->addStandardTab('Infocom', $ong, $options)
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
@@ -331,6 +332,8 @@ class PassiveDCEquipment extends CommonDBTM {
       ];
 
       $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
+
+      $tab = array_merge($tab, Socket::rawSearchOptionsToAdd(get_class($this)));
 
       return $tab;
    }

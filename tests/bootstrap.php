@@ -293,11 +293,11 @@ function loadDataset() {
             'name'         => '_location02',
             'comment'      => 'Comment for location _sublocation02'
          ]
-      ], 'Netpoint' => [
+      ], 'Socket' => [
          [
-            'name'         => '_netpoint01',
+            'name'         => '_socket01',
             'locations_id' => '_location01',
-            'comment'      => 'Comment for netpoint _netpoint01'
+            'comment'      => 'Comment for socket _socket01'
          ]
       ], 'BudgetType' => [
          [
@@ -663,6 +663,7 @@ function loadDataset() {
                   }
                }
             }
+
             if (isset($input['name']) && $item = getItemByTypeName($type, $input['name'])) {
                $input['id'] = $ids[$type][$input['name']] = $item->getField('id');
                $item->update($input);

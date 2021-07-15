@@ -185,7 +185,7 @@ $CFG_GLPI["state_types"]                  = ['Computer', 'Monitor', 'NetworkEqui
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
                                                   'Certificate', 'Enclosure', 'PDU', 'Line',
                                                   'Rack', 'SoftwareVersion', 'Cluster', 'Contract',
-                                                  'Appliance'];
+                                                  'Appliance', 'Cable'];
 
 $CFG_GLPI["asset_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
@@ -225,7 +225,7 @@ $CFG_GLPI["infocom_types"]                = ['Cartridge', 'CartridgeItem', 'Comp
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
                                                   'Printer', 'Software', 'SoftwareLicense',
                                                   'Line', 'Certificate', 'Domain', 'Appliance', 'Item_DeviceSimcard',
-                                                  'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment'];
+                                                  'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment',  'Cable'];
 
 $CFG_GLPI["reservation_types"]            = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software'];
@@ -247,7 +247,7 @@ $CFG_GLPI["linkgroup_tech_types"]         = ['Computer', 'ConsumableItem', 'Moni
                                                   'SoftwareLicense', 'Certificate', 'Appliance'];
 
 $CFG_GLPI["location_types"]               = ['Budget', 'CartridgeItem', 'ConsumableItem',
-                                                  'Computer', 'Monitor', 'Netpoint',
+                                                  'Computer', 'Monitor', 'Socket',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
                                                   'Printer', 'Software', 'SoftwareLicense',
                                                   'Ticket', 'User', 'Certificate', 'Item_DeviceSimcard'];
@@ -256,7 +256,7 @@ $CFG_GLPI["ticket_types"]                 = ['Computer', 'Monitor', 'NetworkEqui
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
                                                   'SoftwareLicense', 'Certificate',
                                                   'Line', 'DCRoom', 'Rack', 'Enclosure', 'Cluster', 'PDU',
-                                                  'Domain', 'DomainRecord', 'Appliance', 'Item_DeviceSimcard', 'PassiveDCEquipment'];
+                                                  'Domain', 'DomainRecord', 'Appliance', 'Item_DeviceSimcard', 'PassiveDCEquipment', 'Cable'];
 
 $CFG_GLPI["link_types"]                   = ['Budget', 'CartridgeItem', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract', 'Monitor',
@@ -273,7 +273,8 @@ $CFG_GLPI["dictionnary_types"]            = ['ComputerModel', 'ComputerType', 'M
                                                   'Printer', 'PrinterModel', 'PrinterType',
                                                   'Software', 'OperatingSystemArchitecture',
                                                   'OperatingSystemKernel', 'OperatingSystemKernelVersion',
-                                                  'OperatingSystemEdition', 'ImageResolution', 'ImageFormat'];
+                                                  'OperatingSystemEdition', 'ImageResolution', 'ImageFormat',
+                                                  'SocketModel', 'CableType'];
 
 $CFG_GLPI["helpdesk_visible_types"]       = ['Software', 'Appliance'];
 
@@ -292,6 +293,10 @@ $CFG_GLPI['device_types']                 = ['DeviceMotherboard', 'DeviceFirmwar
                                                   'DeviceSoundCard', 'DeviceControl', 'DevicePci',
                                                   'DeviceCase', 'DevicePowerSupply', 'DeviceGeneric',
                                                   'DeviceSimcard', 'DeviceSensor', 'DeviceCamera'];
+
+
+$CFG_GLPI["socket_link_types"]                  = ['Computer','NetworkEquipment',
+                                             'Peripheral','Phone','Printer', 'PassiveDCEquipment'];
 
 $CFG_GLPI['itemdevices'] = [];
 foreach ($CFG_GLPI['device_types'] as $dtype) {
@@ -519,7 +524,8 @@ $CFG_GLPI['javascript'] = [
    'management' => [
       'datacenter' => [
          'dcroom' => ['gridstack', 'rack']
-      ]
+      ],
+      'cable' => ['cable'],
    ],
    'config' => [
       'commondropdown'  => [
@@ -527,6 +533,7 @@ $CFG_GLPI['javascript'] = [
          'ProjectTaskTemplate'   => ['tinymce'],
          'SolutionTemplate'      => ['tinymce'],
          'TaskTemplate'          => ['tinymce'],
+         'Socket'                => ['cable'],
       ],
       'notification' => [
          'notificationtemplate' => ['tinymce']
