@@ -154,11 +154,6 @@ $(function() {
       timeline_item.find('.close-edit-content').removeClass('d-none');
 
       $("#itil-footer").find(".main-actions").hide();
-
-      // scroll to edited element
-      $("#itil-object-container .itil-left-side").animate(
-         { scrollTop:  timeline_item.offset().top }, 'slow',
-      );
    });
 
    $(document).on("click", ".close-edit-content", function() {
