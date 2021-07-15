@@ -39,7 +39,6 @@
 
    &__features {
       height: 55px;
-      background-color: #efefef;
       border-bottom-color: rgb(62, 67, 70);
       border-left-color: rgb(62, 67, 70);
       border-right-color: rgb(62, 67, 70);
@@ -47,7 +46,6 @@
       z-index: 1000;
 
       fieldset {
-         color: #655;
          border: solid 1px #655;
          border-radius: 5px;
 
@@ -60,7 +58,6 @@
    }
 
    &__controls {
-      background-color: #f5f5f5;
       font-size: 14px !important;
       list-style-type: none;
       margin: 0;
@@ -72,31 +69,6 @@
       -ms-user-select: none;
       user-select: none;
 
-      %radio_shared {
-         position: relative;
-         cursor: pointer;
-         line-height: 20px;
-         display: inline-block;
-         color: #655;
-      }
-
-      .gantt_radio {
-         &:checked+label {
-            @extend %radio_shared;
-            border-bottom: 2px solid #655;
-         }
-         &:not(:checked)+label {
-            @extend %radio_shared;
-         }
-      }
-
-      fieldset {
-         height: 39px;
-
-         .hidden {
-            display: none;
-         }
-      }
 
       .gantt-menu-item {
          display: inline-block;
@@ -105,19 +77,7 @@
          box-sizing: border-box;
          position: relative;
          overflow: visible;
-         padding: 0 10px;
-         line-height: 60px;
-
-         a {
-            font-size: small !important;
-            display: block;
-            cursor: pointer;
-            color: #3d3d3d;
-            text-align: center;
-            padding: 0;
-            text-decoration: none;
-            text-decoration-color: currentcolor;
-         }
+         padding: 0 5px;
 
          img {
             vertical-align: middle;
