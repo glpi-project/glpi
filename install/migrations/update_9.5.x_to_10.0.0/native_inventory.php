@@ -93,6 +93,7 @@ if (!$DB->tableExists('glpi_agents')) {
    $migration->addKey('glpi_agents', 'is_recursive');
    $migration->addKey('glpi_agents', ['itemtype', 'items_id'], 'item');
 }
+$ADDTODISPLAYPREF['Agent'] = [2, 4, 10, 8, 11, 6];
 
 if (!$DB->tableExists('glpi_rulematchedlogs')) {
    $query = "CREATE TABLE `glpi_rulematchedlogs` (
