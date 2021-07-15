@@ -156,7 +156,7 @@
    var actors = {
       {% for actortype, actortypeint in actortypes %}
          {{ actortype }}: [
-            {% for actor in item.getActorsForType(actortypeint) %}
+            {% for actor in item.getActorsForType(actortypeint, params) %}
             {
                itemtype: "{{ actor['itemtype'] }}",
                items_id: "{{ actor['items_id'] }}",
