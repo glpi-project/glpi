@@ -648,7 +648,7 @@ class Html {
       }
 
       if ($ref_title != "") {
-         echo "<span class='btn btn-secondary pe-none' aria-disabled='true'>
+         echo "<span class='btn bg-blue-lt pe-none' aria-disabled='true'>
             $ref_title
          </span>";
       }
@@ -1193,7 +1193,6 @@ HTML;
 
          if (in_array('gantt', $jslibs)) {
             echo Html::css('public/lib/dhtmlx-gantt.css');
-            echo Html::scss('css/glpi-gantt');
             Html::requireJs('gantt');
          }
 
