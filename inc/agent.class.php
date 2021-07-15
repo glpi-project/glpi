@@ -153,9 +153,10 @@ class Agent extends CommonDBTM {
    function defineTabs($options = []) {
 
       $ong = [];
-      $this->addDefaultFormTab($ong);
-      $this->addStandardTab('Log', $ong, $options);
-
+      $this
+         ->addDefaultFormTab($ong)
+         ->addStandardTab(Log::class, $ong, $options)
+         ->addStandardTab(AgentTask::class, $ong, $options);
       return $ong;
    }
 

@@ -30,17 +30,32 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
+namespace Glpi\Agent\Credentials;
 
+class TokenCredential extends AbstractCredential
+{
+   private $token;
 
-/**
- * @since 10.0.0
- **/
-class AgentType extends CommonDBTM {
+   protected function declaredType(): int {
+      return self::TOKEN_TYPE;
+   }
+   public function load(array $credentials): self {
+      $this->path = $credentials['token'] ?? '';
+      return $this;
+   }
 
-   static function getTypeName($nb = 0) {
-      return _n('Agent type', 'Agents types', $nb);
+   public function getCredentials(): array {
+      return [
+         'token' => $this->token
+      ];
+   }
+
+   public function  showForm() {
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Token')."</td>";
+      echo "<td align='center'>";
+      \Html::input('token', ['value' => $this->token]);
+      echo "</td>";
+      echo "</tr>";
    }
 }

@@ -30,17 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
+include ('../inc/includes.php');
 
-
-/**
- * @since 10.0.0
- **/
-class AgentType extends CommonDBTM {
-
-   static function getTypeName($nb = 0) {
-      return _n('Agent type', 'Agents types', $nb);
-   }
-}
+$dropdown = new AgentType();
+include (GLPI_ROOT . "/front/dropdown.common.php");

@@ -83,6 +83,18 @@ $RELATION = [
       'glpi_databaseinstances' => 'databaseinstancetypes_id'
    ],
 
+   'glpi_agenttasks' => [
+      'glpi_agenttasks_credentials' => 'agenttasks_id'
+   ],
+
+   'glpi_agentcredentials' => [
+      'glpi_agenttasks_credentials' => 'agentcredentials_id'
+   ],
+
+   'glpi_agents' => [
+      'glpi_agenttasks' => 'agents_id'
+   ],
+
    'glpi_authldaps' => [
       'glpi_authldapreplicates' => 'authldaps_id',
       'glpi_entities'           => 'authldaps_id',

@@ -30,17 +30,12 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
+include ('../inc/includes.php');
 
+Session::checkRight("config", READ);
 
-/**
- * @since 10.0.0
- **/
-class AgentType extends CommonDBTM {
+Html::header(AgentTask::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "glpi\inventory\inventory", "agenttask");
 
-   static function getTypeName($nb = 0) {
-      return _n('Agent type', 'Agents types', $nb);
-   }
-}
+Search::show('AgentTask');
+
+Html::footer();

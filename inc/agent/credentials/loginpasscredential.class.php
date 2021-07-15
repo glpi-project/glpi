@@ -30,17 +30,42 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
+namespace Glpi\Agent\Credentials;
 
+class LoginPassCredential extends AbstractCredential
+{
+   private $login;
+   private $password;
 
-/**
- * @since 10.0.0
- **/
-class AgentType extends CommonDBTM {
-
-   static function getTypeName($nb = 0) {
-      return _n('Agent type', 'Agents types', $nb);
+   protected function declaredType(): int {
+      return self::LOGIN_TYPE;
    }
+
+   public function load(array $credentials): self {
+      $this->login = $credentials['login'] ?? '1';
+      $this->password = $credentials['password'] ?? 'public';
+
+      return $this;
+   }
+
+   public function getCredentials(): array {
+      return [
+         'login' => $this->login,
+         'password' => $this->password
+      ];
+   }
+
+   public function  showForm() {
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Login')."</td>";
+      echo "<td align='center'>";
+      \Html::input('login', ['value' => $this->login ?? '']);
+      echo "</td>";
+      echo "<td>".__('Password')."</td>";
+      echo "<td align='center'>";
+      echo \Html::input('password', ['type' => 'password²']);
+      echo "</td>";
+      echo "</tr>";
+   }
+
 }

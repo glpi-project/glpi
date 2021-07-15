@@ -562,4 +562,53 @@ if (countElementsInTable(Blacklist::getTable()) === 4) {
    }
 }
 
+if (!$DB->tableExists('glpi_agentcredentials')) {
+   $query = "CREATE TABLE `glpi_agentcredentials` (
+         `id` int NOT NULL AUTO_INCREMENT,
+         `name` varchar(255) DEFAULT NULL,
+         `type` varchar(255) DEFAULT NULL,
+         `credentials` text,
+         `date_creation` timestamp NULL DEFAULT NULL,
+         `date_mod` timestamp NULL DEFAULT NULL,
+         PRIMARY KEY (`id`),
+         KEY `name` (`name`),
+         KEY `date_mod` (`date_mod`),
+         KEY `date_creation` (`date_creation`)
+      ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+   $DB->queryOrDie($query, "10.0 add table glpi_agentcredentials");
+}
+//$ADDTODISPLAYPREF['AgentCredential'] = [];
+
+if (!$DB->tableExists('glpi_agenttasks')) {
+   $query = "CREATE TABLE `glpi_agenttasks` (
+         `id` int NOT NULL AUTO_INCREMENT,
+         `name` varchar(255) DEFAULT NULL,
+         `agents_id` int NOT NULL DEFAULT '0',
+         `start_date` timestamp NULL DEFAULT NULL,
+         `end_date` timestamp NULL DEFAULT NULL,
+         `periodicity` int NOT NULL DEFAULT '0',
+         `date_creation` timestamp NULL DEFAULT NULL,
+         `date_mod` timestamp NULL DEFAULT NULL,
+         PRIMARY KEY (`id`),
+         KEY `name` (`name`),
+         KEY `agents_id` (`agents_id`),
+         KEY `date_mod` (`date_mod`),
+         KEY `date_creation` (`date_creation`)
+      ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+   $DB->queryOrDie($query, "10.0 add table glpi_agenttasks");
+}
+//$ADDTODISPLAYPREF['AgentTask'] = [];
+
+if (!$DB->tableExists('glpi_agenttasks_credentials')) {
+   $query = "CREATE TABLE `glpi_agenttasks_credentials` (
+         `id` int NOT NULL AUTO_INCREMENT,
+         `agenttasks_id` int NOT NULL,
+         `agentcredentials_id` int NOT NULL,
+         PRIMARY KEY (`id`),
+         KEY `agenttasks_id` (`agenttasks_id`),
+         KEY `agentcredentials_id` (`agentcredentials_id`)
+      ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+   $DB->queryOrDie($query, "10.0 add table glpi_agenttasks_credentials");
+}
+
 $migration->addRight('inventory', READ);

@@ -30,17 +30,32 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
+namespace Glpi\Agent\Credentials;
 
+class FileCredential extends AbstractCredential
+{
+   private $path;
 
-/**
- * @since 10.0.0
- **/
-class AgentType extends CommonDBTM {
+   protected function declaredType(): int {
+      return self::FILE_TYPE;
+   }
+   public function load(array $credentials): self {
+      $this->path = $credentials['path'] ?? '';
+      return $this;
+   }
 
-   static function getTypeName($nb = 0) {
-      return _n('Agent type', 'Agents types', $nb);
+   public function getCredentials(): array {
+      return [
+         'path' => $this->path
+      ];
+   }
+
+   public function  showForm() {
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Path')."</td>";
+      echo "<td align='center'>";
+      \Html::input('path', ['value' => $this->path]);
+      echo "</td>";
+      echo "</tr>";
    }
 }
