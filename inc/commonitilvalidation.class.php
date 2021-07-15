@@ -1513,7 +1513,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
          'display_emptychoice' => true,
          'display'             => $params['display'],
          'rand'                => $params['rand'],
-         'class'               => $params['class'],
          'width'               => $params['width'],
          'required'            => $params['required'],
          ]);
