@@ -48,7 +48,7 @@
       width           : 100%;
       height          : 100%;
       background-color: white;
-      z-index         : 80;
+      z-index         : 1050;
    }
 }
 
@@ -122,7 +122,7 @@ i.fa-impact-manipulation {
    &.fullscreen {
       position: fixed;
       top     : 5px;
-      z-index : 81;
+      z-index : 1051;
    }
 }
 
@@ -369,7 +369,7 @@ i.fa-impact-manipulation {
    top             : 0;
    right           : 0;
    background-color: #fafafa;
-   z-index         : 80;
+   z-index         : 1050;
    border-left     : 1px solid #f1f1f1;
    border-right    : 1px solid #f1f1f1;
    display         : flex;
@@ -433,14 +433,14 @@ i.fa-impact-manipulation {
    &.fullscreen {
       position: fixed;
       // top     : 5px;
-      z-index : 81;
+      z-index : 1051;
    }
 }
 
 .impact-drop-preview {
    display : none;
    position: fixed;
-   z-index : 83;
+   z-index : 1053;
    opacity : 50%;
    width   : 48px;
    height  : 48px;
