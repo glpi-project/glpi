@@ -35,9 +35,11 @@ $is-dark: false !default;
 @import "css/includes/global-variables";
 
 @import "css/includes/components/asset-form";
+@import "css/includes/components/buttons-group";
 @import "css/includes/components/debug-panel";
 @import "css/includes/components/floating-buttons";
 @import "css/includes/components/fuzzy";
+@import "css/includes/components/gantt";
 @import "css/includes/components/global-menu";
 @import "css/includes/components/mini-tabs";
 @import "css/includes/components/pictures";
