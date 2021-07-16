@@ -34,6 +34,7 @@ namespace Glpi\Features;
 
 use Agent;
 use Computer_Item;
+use Glpi\Inventory\Conf;
 use Html;
 use Plugin;
 use RefusedEquipment;
@@ -48,7 +49,7 @@ trait Inventoriable {
          return true;
       }
 
-      return unlink(GLPI_INVENTORY_DIR . '/' . $file_name);
+      return unlink($file_name);
    }
 
 
@@ -57,15 +58,15 @@ trait Inventoriable {
          return;
       }
 
-      $download_file = Toolbox::slugify(static::getType()) . '/' . $this->fields['id'];
-      $inventory_file = GLPI_INVENTORY_DIR . '/' . $download_file;
-      if (file_exists($inventory_file . '.json')) {
-         $download_file .= '.json';
-      } else if (file_exists($inventory_file . '.xml')) {
-         $download_file .= '.xml';
-      } else {
-         Toolbox::logWarning('Inventory file missing: ' . $inventory_file);
-         $download_file = null;
+      $conf = new Conf();
+      //most files will be XML for now
+      $download_file = $conf->buildInventoryFileName(static::getType(), $this->fields['id'], 'xml');
+      if (!file_exists($download_file)) {
+         $download_file = $conf->buildInventoryFileName(static::getType(), $this->fields['id'], 'json');
+         if (!file_exists($download_file)) {
+            Toolbox::logWarning('Inventory file missing: ' . $download_file);
+            $download_file = null;
+         }
       }
 
       return $download_file;
