@@ -2097,16 +2097,10 @@ HTML;
          $rand = mt_rand();
       }
 
-      $out  = "<div class='form-group-checkbox'>
-                  <input title='".__s('Check all as')."' type='checkbox' class='new_checkbox' ".
-                   "name='_checkall_$rand' id='checkall_$rand' ".
-                    "onclick= \"if ( checkAsCheckboxes('checkall_$rand', '$container_id'))
-                                                   {return true;}\">
-                  <label class='label-checkbox' for='checkall_$rand' title='".__s('Check all as')."'>
-                     <span class='check'></span>
-                     <span class='box'></span>
-                  </label>
-               </div>";
+      $out  = "<input title='".__s('Check all as')."' type='checkbox' class='form-check-input'
+                      title='".__s('Check all as')."'
+                      name='_checkall_$rand' id='checkall_$rand'
+                      onclick= \"if ( checkAsCheckboxes('checkall_$rand', '$container_id')) {return true;}\">";
 
       // permit to shift select checkboxes
       $out.= Html::scriptBlock("\$(function() {\$('#$container_id input[type=\"checkbox\"]').shiftSelectable();});");
@@ -2208,8 +2202,12 @@ HTML;
          }
       }
 
-      $out = "<span class='form-group-checkbox'>";
-      $out.= "<input type='checkbox' class='new_checkbox' ";
+      $out = "";
+      $out.= "<input type='checkbox' class='form-check-input' title=\"".$params['title']."\" ";
+      if (isset($params['onclick'])) {
+         $params['onclick'] = htmlspecialchars($params['onclick'], ENT_QUOTES);
+         $out .= " onclick='{$params['onclick']}'";
+      }
 
       foreach (['id', 'name', 'title', 'value'] as $field) {
          if (!empty($params[$field])) {
@@ -2250,17 +2248,6 @@ HTML;
       }
 
       $out .= ">";
-      $out .= "<label class='label-checkbox' title=\"".$params['title']."\" for='".$params['id']."'>";
-      $out .= " <span class='check'></span>";
-      $out .= " <span class='box'";
-      if (isset($params['onclick'])) {
-         $params['onclick'] = htmlspecialchars($params['onclick'], ENT_QUOTES);
-         $out .= " onclick='{$params['onclick']}'";
-      }
-      $out .= "></span>";
-      $out .= "&nbsp;";
-      $out .= "</label>";
-      $out .= "</span>";
 
       if (!empty($criterion)) {
          $out .= Html::scriptBlock("\$(function() {\$('$criterion').shiftSelectable();});");
@@ -5100,6 +5087,9 @@ JAVASCRIPT;
       if (isset($options['type'])) {
          $type = $options['type'];
          unset($options['type']);
+      }
+      if (!isset($options['class'])) {
+         $options['class'] = "form-control";
       }
       return sprintf('<input type="%1$s" name="%2$s" %3$s />',
                      $type, Html::cleanInputText($fieldName), Html::parseAttributes($options));

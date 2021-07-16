@@ -29,19 +29,16 @@
  * ---------------------------------------------------------------------
  */
 
-$primary: #FEC95C;
-$secondary: #606f91;
-$fg-secondary: #f4f6fa;
+$primary: #8ec547;
+$secondary: #768363;
+$secondary-fg: #fcfcfc;
 
-$link-color: #3A5693;
+$link-color: #459436;
 
-$mainmenu_bg: #2f3f64;
+$mainmenu_bg: #459436;
 $mainmenu_fg: #f4f6fa;
 
 $logo: "../pics/logos/logo-GLPI-100-white.png";
 $logo_reduced: "../pics/logos/logo-G-100-white.png";
-
-$badge-bg: #d0d9f0;
-$badge-fg: rgb(58, 73, 102);
 
 @import "css/styles";
