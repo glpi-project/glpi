@@ -2149,6 +2149,9 @@
    }
 
    .copy_to_clipboard_wrapper {
+      display: flex;
+      align-items: center;
+
       input[type=text] {
          padding-right: 18px !important;
       }

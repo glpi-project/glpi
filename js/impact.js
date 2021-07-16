@@ -1578,6 +1578,7 @@ var GLPIImpact = {
          gridSpacing: 12,
          drawGrid: true,
          panGrid: true,
+         gridColor: getComputedStyle(document.documentElement).getPropertyValue('--input-border'),
       });
 
       // Disable box selection as we don't need it

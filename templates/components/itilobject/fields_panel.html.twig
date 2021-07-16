@@ -140,7 +140,7 @@
          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#actors" aria-expanded="true" aria-controls="actors">
             <i class="fa fa-users me-1"></i>
             <span>{{ __("Actors") }}</span>
-            <span class="badge bg-info ms-2">
+            <span class="badge bg-secondary ms-2">
                {{ item.countActors() }}
             </span>
          </button>
@@ -160,7 +160,7 @@
                <i class="fas fa-stopwatch me-1"></i>
                <span>{{ _n('Service level', 'Service levels', getPluralNumber()) }}</span>
                {% if nb_la > 0 %}
-                  <span class="badge bg-info ms-2">{{ nb_la }}</span>
+                  <span class="badge bg-secondary ms-2">{{ nb_la }}</span>
                {% endif %}
             </button>
          </h2>
@@ -181,7 +181,7 @@
                {% set nb_linked_tickets = linked_tickets|length %}
                <span>{{ "Ticket_Ticket"|itemtype_name(nb_linked_tickets) }}</span>
                {% if nb_linked_tickets > 0 %}
-                  <span class="badge bg-info ms-2">{{ nb_linked_tickets }}</span>
+                  <span class="badge bg-secondary ms-2">{{ nb_linked_tickets }}</span>
                {% endif %}
             </button>
          </h2>
