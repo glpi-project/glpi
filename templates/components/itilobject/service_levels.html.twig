@@ -70,7 +70,7 @@
                {% set nextaction = la_field.la.getNextActionForTicket(item, la_field.type) %}
                {% set level  = la_field.la.getLevelFromAction(nextaction) %}
                {% if level != false %}
-                  <span class="badge bg-info rounded-0 ms-2">
+                  <span class="badge bg-secondary rounded-0 ms-2">
                      <i class="fas fa-clock"
                         title="{{ __("Next escalation: %s")|format(convDateTime(nextaction.fields['date'])) }}"
                         data-bs-toggle="tooltip" data-bs-placement="top"></i>

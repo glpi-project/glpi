@@ -34,18 +34,20 @@ $table_header_bg: $dark !default;
 $input-focus-bg: #444444 !default;
 $input-focus-border-color: #868686 !default;
 
-$timeline-itilc-bg: #1a221a !default;
+$timeline-itilc-bg: #1a221a34 !default;
 $timeline-itilc-fg: #85bd81 !default;
 $timeline-itilc-border: #324132 !default;
 $timeline-fup-bg: #222222 !default;
-$timeline-fup-fg: #cecece !default;
+$timeline-fup-fg: #acacac !default;
 $timeline-fup-border: #3b3b3b !default;
-$timeline-task-bg: #272217 !default;
+$timeline-task-bg: #2722172f !default;
 $timeline-task-fg: #ccb686 !default;
 $timeline-task-border: #363532 !default;
 $timeline-sol-bg: #3a4d55 !default;
 $timeline-sol-fg: #89bfd3 !default;
 $timeline-sol-border: #435963 !default;
+$timeline-badge-bg: rgba(104, 104, 104, 0.15) !default;
+$timeline-badge-fg: rgba(236, 236, 236, 0.8) !default;
 
 $scrollbar-color-thumb: rgba($color: $secondary, $alpha: .2) !default;
 
@@ -101,23 +103,8 @@ $input-border: $dark-mode-text !default;
    }
 
    .card-body {
-      border-color: red;
+      border-color: $input-border;
    }
-}
-
-//additionnal fixes
-$primary-fg: $body-color !default;
-.btn-primary,
-.btn-outline-primary,
-.btn-ghost-primary {
-   --tblr-btn-color-text: #{$primary-fg};
-}
-
-$secondary-fg: $body-color !default;
-.btn-secondary,
-.btn-outline-secondary,
-.btn-ghost-secondary {
-   --tblr-btn-color-text: #{$secondary-fg};
 }
 
 input[type="color"] {
@@ -161,4 +148,4 @@ body .modal-content, body .modal-header {
    .glpi-logo {
       --logo: url(#{$logo-light}) !important;
    }
-}
+   }
