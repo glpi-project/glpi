@@ -363,11 +363,7 @@ class Inventory
          }
          $id = $item->fields['id'];
 
-         $dir = GLPI_INVENTORY_DIR . '/' . Toolbox::slugify($itemtype);
-         if (!is_dir($dir)) {
-            mkdir($dir);
-         }
-         $filename = sprintf('%s/%s.%s', $dir, $id, $ext);
+         $filename = $this->conf->buildInventoryFileName($itemtype, $id, $ext);
          copy($tmpfile, $filename);
       }
 

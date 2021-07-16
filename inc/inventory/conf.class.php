@@ -676,4 +676,35 @@ class Conf extends CommonGLPI
       return [ READ => __('Read')];
    }
 
+   /**
+    * Build inventroy file name
+    *
+    * @param string $itemtype Item type
+    * @param int    $items_id Item ID
+    * @param string $ext      File extension
+    *
+    * @return string
+    */
+   public function buildInventoryFileName($itemtype, $items_id, $ext): string {
+      $files_per_dir = 1000;
+      $num_subdir = floor($items_id / $files_per_dir);
+
+      $subdir = sprintf(
+         '%s/%s/%s',
+         GLPI_INVENTORY_DIR,
+         Toolbox::slugify($itemtype),
+         $num_subdir
+      );
+
+      if (!is_dir($subdir)) {
+         mkdir($subdir, 0755, true);
+      }
+
+      return sprintf(
+         '%s/%s.%s',
+         $subdir,
+         $items_id,
+         $ext
+      );
+   }
 }

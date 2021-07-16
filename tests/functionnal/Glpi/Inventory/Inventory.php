@@ -3792,7 +3792,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
       $inventory_request = new \Glpi\Inventory\Request();
       $inventory_request->handleContentType(false);
-      $contents = file_get_contents(GLPI_INVENTORY_DIR . '/' . $refused->getInventoryFileName());
+      $contents = file_get_contents($refused->getInventoryFileName());
       $inventory_request->handleRequest($contents);
 
       $redirect_url = $refused->handleInventoryRequest($inventory_request);
