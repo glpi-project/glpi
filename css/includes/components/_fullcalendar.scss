@@ -1,0 +1,34 @@
+.fc-unthemed  {
+   th,
+   td,
+   thead,
+   tbody,
+   .fc-divider,
+   .fc-row,
+   .fc-content,
+   .fc-popover,
+   .fc-list-view,
+   .fc-list-heading td {
+      border-color: $table_border;
+   }
+
+   .fc-list-empty {
+      background: transparent;
+   }
+
+   td.fc-today {
+      background: $table-active-bg;
+   }
+
+   .fc-divider,
+   .fc-popover .fc-header,
+   .fc-list-heading td {
+      background: $table-head-bg;
+      color: $table-head-color;
+   }
+
+   .fc-list-item:hover td {
+      background: $table-hover-bg;
+      color: $table-hover-color;
+   }
+}
