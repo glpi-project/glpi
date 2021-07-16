@@ -30,18 +30,16 @@
  */
 
 $primary: #FEC95C;
-$secondary: #606f91;
-$fg-secondary: #f4f6fa;
+$primary-fg: #8f5a0a;
+$secondary: #888373;
+$primary-fg: #8f5a0a;
 
-$link-color: #3A5693;
+$link-color: #659900;
 
-$mainmenu_bg: #2f3f64;
-$mainmenu_fg: #f4f6fa;
+$mainmenu_bg: #98A458;
+$mainmenu_fg: #000;
 
 $logo: "../pics/logos/logo-GLPI-100-white.png";
 $logo_reduced: "../pics/logos/logo-G-100-white.png";
-
-$badge-bg: #d0d9f0;
-$badge-fg: rgb(58, 73, 102);
 
 @import "css/styles";
