@@ -130,7 +130,7 @@
          lightbox.init();
 
          // Prevent dragging around cusotm HTML slide content
-         $(lightbox.container).find('.pswp__item :not(.pswp__zoom-wrap)').on('pointerdown MSPointerDown touchstart mousedown', function (e) {
+         $(lightbox.container).find('.pswp__item span').on('pointerdown MSPointerDown touchstart mousedown', function (e) {
             return false;
          });
          lightbox.listen('destroy', function() {
