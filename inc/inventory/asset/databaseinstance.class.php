@@ -139,7 +139,7 @@ class DatabaseInstance extends InventoryAsset
                   foreach ($databases as $key => $database) {
                      if ($existing_database['name'] == $database->name) {
                         $dbinput = (array)$database;
-                        $dbinput += ['id' => $dbkey];
+                        $dbinput += ['id' => $dbkey, 'is_deleted' => 0];
                         $odatabase->update(Toolbox::addslashes_deep($dbinput), [], $this->withHistory());
                         unset(
                            $existing_databases[$dbkey],
@@ -153,7 +153,7 @@ class DatabaseInstance extends InventoryAsset
                //cleanup associated databases
                if (count($existing_databases)) {
                   foreach ($existing_databases as $existing_database) {
-                     $odatabase->delete(['id' => $existing_database['id']], true, $this->withHistory());
+                     $odatabase->delete(['id' => $existing_database['id']], false, $this->withHistory());
                   }
                }
             }
