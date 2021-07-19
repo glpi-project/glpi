@@ -165,6 +165,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
          }
 
          $(ajax_container).load(CFG_GLPI.root_doc + '/ajax/search.php', search_data, () => {
+            this.getElement().trigger('search_refresh', [this.getElement()]);
             this.hideLoadingSpinner();
          });
       } catch (error) {
