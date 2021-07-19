@@ -1283,7 +1283,7 @@ HTML;
 
       //  CSS link
       if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
-         $tpl_vars['css_files'][] = 'css/legacy/highcontrast.scss';
+         $tpl_vars['high_contrast'] = true;
       }
       $tpl_vars['css_files'][] = 'css/palettes/' . $theme . '.scss';
 
