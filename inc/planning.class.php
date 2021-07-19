@@ -847,8 +847,8 @@ class Planning extends CommonGLPI {
          echo "</ul>";
          echo "</div>";
       }
-      echo "</div>";
-      echo "</div>";
+      echo "</div>"; // #planning_filter_content
+      echo "</div>"; // #planning_filter
    }
 
 
@@ -912,10 +912,13 @@ class Planning extends CommonGLPI {
       echo "<li event_type='".$filter_data['type']."'
                event_name='$filter_key'
                class='".$filter_data['type']."'>";
-      Html::showCheckbox(['name'          => 'filters[]',
-                               'value'         => $filter_key,
-                               'title'         => $title,
-                               'checked'       => $filter_data['display']]);
+      Html::showCheckbox([
+         'name'          => 'filters[]',
+         'value'         => $filter_key,
+         'id'            => $filter_key,
+         'title'         => $title,
+         'checked'       => $filter_data['display']
+      ]);
 
       if ($filter_data['type'] != 'event_filter') {
          $exploded = explode('_', $filter_data['type']);
@@ -934,6 +937,19 @@ class Planning extends CommonGLPI {
       } else {
          $params['filter_color_index']++;
          $color = self::getPaletteColor('bg', $params['filter_color_index']);
+      }
+
+      echo "<span class='ms-auto d-flex align-items-center'>";
+      // colors not for groups
+      if ($filter_data['type'] != 'group_users' && $filter_key != 'OnlyBgEvents') {
+         echo "<span class='color_input'>";
+         Html::showColorField($filter_key."_color",
+                              ['value' => $color]);
+         echo "</span>";
+      }
+
+      if ($filter_data['type'] == 'group_users') {
+         echo "<span class='toggle pointer'></span>";
       }
 
       if ($filter_data['type'] != 'event_filter') {
@@ -984,17 +1000,7 @@ class Planning extends CommonGLPI {
          echo "</ul>";
          echo "</span>";
       }
-
-      // colors not for groups
-      if ($filter_data['type'] != 'group_users' && $filter_key != 'OnlyBgEvents') {
-         echo "<span class='color_input'>";
-         Html::showColorField($filter_key."_color",
-                              ['value' => $color]);
-         echo "</span>";
-      }
-      if ($filter_data['type'] == 'group_users') {
-         echo "<span class='toggle pointer'></span>";
-      }
+      echo "</span>";
 
       if ($filter_data['type'] == 'group_users') {
          echo "<ul class='group_listofusers filters'>";
