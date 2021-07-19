@@ -238,8 +238,9 @@
                            });
                         }
                      </script>
-                     <button id="plan{{ rand }}" class="btn btn-secondary d-block" onclick="showPlanUpdate{{ rand }}()" type="button">
-                        {{ __('Plan this task') }}
+                     <button id="plan{{ rand }}" class="btn btn-outline-secondary d-block mb-2" onclick="showPlanUpdate{{ rand }}()" type="button">
+                        <i class="fas fa-calendar"></i>
+                        <span>{{ __('Plan this task') }}</span>
                      </button>
                      <div id="viewplan{{ rand }}"></div>
 
