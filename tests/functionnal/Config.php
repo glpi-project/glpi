@@ -423,11 +423,11 @@ class Config extends DbTestCase {
          'hipster'         => 'Hipster',
          'icecream'        => 'Icecream',
          'lightblue'       => 'Lightblue',
+         'midnight'        => 'Midnight',
          'premiumred'      => 'Premiumred',
          'purplehaze'      => 'Purplehaze',
          'teclib'          => 'Teclib',
          'vintage'         => 'Vintage',
-         'midnight'        => 'Midnight',
       ];
       $this
          ->if($this->newTestedInstance)
