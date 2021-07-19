@@ -1,5 +1,5 @@
 {% import "components/form/fields_macros.html.twig" as fields %}
-{% set rand = rand|default(random()) %}
+{% set rand = random() %}
 {% set field_name = field_name|default('psgallery' ~ rand) %}
 
 <div id="psgallery{{ rand }}" class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
@@ -65,9 +65,15 @@
                {{ img['pre_figure_content']|raw }}
             {% endif %}
             <figure itemprop="associatedMedia" itemscope itemtype="https://schema.org/ImageObject" class="d-flex flex-column me-2">
-               <a href="{{ img['src']|escape }}" itemprop="contentUrl" data-index="0">
-                  <img src="{{ img['thumbnail_src']|default(img['src'])|escape }}" itemprop="thumbnail" alt="{{ img['title']|default('') }}" class="{{ img['img_class']|default('') }}">
-               </a>
+                  {% if img['_video'] %}
+                     <span class="bg-black pswp-trigger pointer d-flex justify-content-center align-items-center">
+                        <i class="fas fa-video"></i>
+                     </span>
+                  {% else %}
+                     <a href="{{ img['src']|escape }}" itemprop="contentUrl" data-index="0">
+                        <img src="{{ img['thumbnail_src']|default(img['src'])|escape }}" itemprop="thumbnail" alt="{{ img['title']|default('') }}" class="{{ img['img_class']|default('') }} pointer pswp-trigger">
+                     </a>
+                  {% endif %}
                <figcaption itemprop="caption description">{{ img['title']|default('') }}</figcaption>
             </figure>
             {% if img['post_figure_content'] %}
@@ -87,6 +93,7 @@
                'no_label': true,
                'full_width': true,
                'clearable': clearable,
+               'class': 'pswp-trigger',
                'alt': img['title']|default(''),
                'itemprop': 'thumbnail',
                'link_attribs': {
@@ -103,7 +110,7 @@
 <script>
    (($) => {
       const pswp = document.getElementById("psgallery{{ rand }}");
-      $(".pswp-img{{ rand }}").on('click', 'figure img', function(event) {
+      $(".pswp-img{{ rand }}").on('click', 'figure .pswp-trigger', function(event) {
          event.preventDefault();
          const options = {
             index: $(this).index(),
@@ -121,6 +128,11 @@
          const lightbox = new PhotoSwipe(pswp, PhotoSwipeUI_Default, {{ imgs|json_encode|raw }}, options);
          $(pswp).closest('.card-tabs').css('z-index', 50); // Be sure that tabs are displayed above form in vsplit layout
          lightbox.init();
+
+         // Prevent dragging around cusotm HTML slide content
+         $(lightbox.container).find('.pswp__item span').on('pointerdown MSPointerDown touchstart mousedown', function (e) {
+            return false;
+         });
          lightbox.listen('destroy', function() {
             $(this.container).closest('.card-tabs').css('z-index', '');
          });
