@@ -238,7 +238,7 @@ class DatabaseInstance_Item extends CommonDBRelation {
          $databases[$data['id']] = $data;
          $database = new DatabaseInstance();
          $database->getFromDB($data['id']);
-         $instances = DatabaseInstance::getItemsAssociatedTo($database::getType(), $data['id']);
+         $instances = DatabaseInstance_Item::getItemsAssociatedTo($database::getType(), $data['id']);
          $databases[$data['id']]['instances'] = $instances;
          $used[$data['id']]      = $data['id'];
       }
@@ -303,29 +303,25 @@ class DatabaseInstance_Item extends CommonDBRelation {
             $assocID     = $data["linkid"];
             $database    = new DatabaseInstance();
             $database->getFromResultSet($data);
-            $instances = $data['instances'];
-            unset($data['instances']);
-            foreach ($instances as $instance) {
-               echo "<tr class='tab_bg_1" . ($database->fields["is_deleted"] ? "_2" : "") . "'>";
-               if ($canedit && ($withtemplate != 2)) {
-                  echo "<td width='10'>";
-                  Html::showMassiveActionCheckBox(__CLASS__, $assocID);
-                  echo "</td>";
-               }
-               echo "<td class='b'>";
-               $name = $database->fields["name"];
-               if ($_SESSION["glpiis_ids_visible"]
-                  || empty($database->fields["name"])) {
-                  $name = sprintf(__('%1$s (%2$s)'), $name, $database->fields["id"]);
-               }
-               echo "<a href='" . DatabaseInstance::getFormURLWithID($cID) . "'>" . $name . "</a>";
+            echo "<tr class='tab_bg_1" . ($database->fields["is_deleted"] ? "_2" : "") . "'>";
+            if ($canedit && ($withtemplate != 2)) {
+               echo "<td width='10'>";
+               Html::showMassiveActionCheckBox(__CLASS__, $assocID);
                echo "</td>";
-               echo "<td>".$instance->fields['name']."</td>";
-               echo "<td>".$instance->fields['port']."</td>";
-               echo "<td>".$instance->fields['size']."</td>";
-               echo "<td>".Dropdown::getYesNo($instance->fields['is_active'])."</td>";
-               echo "</tr>";
             }
+            echo "<td class='b'>";
+            $name = $database->fields["name"];
+            if ($_SESSION["glpiis_ids_visible"]
+               || empty($database->fields["name"])) {
+               $name = sprintf(__('%1$s (%2$s)'), $name, $database->fields["id"]);
+            }
+            echo "<a href='" . DatabaseInstance::getFormURLWithID($cID) . "'>" . $name . "</a>";
+            echo "</td>";
+            echo "<td>".$database->fields['name']."</td>";
+            echo "<td>".$database->fields['port']."</td>";
+            echo "<td>".$database->fields['size']."</td>";
+            echo "<td>".Dropdown::getYesNo($database->fields['is_active'])."</td>";
+            echo "</tr>";
          }
          echo $header;
          echo "</table>";
