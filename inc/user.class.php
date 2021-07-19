@@ -4004,7 +4004,8 @@ JAVASCRIPT;
       }
 
       // Check default value for dropdown : need to be a numeric
-      if (strlen($p['value']) > 0 && !is_numeric($p['value']) && $p['value'] != 'myself') {
+      if ($p['value'] !== null
+          && ((strlen($p['value']) == 0) || !is_numeric($p['value']) && $p['value'] != 'myself')) {
          $p['value'] = 0;
       }
 
