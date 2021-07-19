@@ -202,3 +202,10 @@ body.iframed {
       height: 110px;
    }
 }
+
+table {
+   td.active, td.tab_bg_4 {
+      background-color: $table-active-bg;
+      color: $table-active-color;
+   }
+}
