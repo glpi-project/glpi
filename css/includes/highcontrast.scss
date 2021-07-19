@@ -133,9 +133,11 @@
    /****** TABS ******/
 
    .card-tabs {
-      .nav-tabs {
-         border-bottom: 1px solid $hc-border-color-contrast;
-         padding: 0;
+      &:not(.horizontal) {
+         .nav-tabs {
+            border-bottom: 1px solid $hc-border-color-contrast;
+            padding: 0;
+         }
       }
 
       .nav-tabs li {
@@ -158,10 +160,6 @@
             border: 1px solid $hc-border-color-contrast !important;
          }
       }
-   }
-
-   .tab-content {
-      margin-top: 3px;
    }
 
    /****** CONTROLS ******/
@@ -204,6 +202,11 @@
 
    .btn.btn-secondary, .btn.btn-outline-secondary {
       border-color: $hc-border-color-contrast;
+   }
+
+   .btn.btn-ghost-secondary {
+      border-color: $hc-border-color-contrast;
+      border: 1px solid $hc-border-color-contrast;
    }
 
    .label-checkbox .box, .subheader .box, th .label-checkbox .box {
