@@ -1,11 +1,11 @@
 {% set documents = entry['documents'] ?? [] %}
 <ul class="list-group list-group-hoverable sub-documents">
-   {% set image_docs = documents|filter(d => d['_is_image']) %}
-   {% set other_docs = documents|filter(d => not d['_is_image']) %}
+   {% set media_docs = documents|filter(d => d['_is_image'] or d['item']['mime'] starts with 'video') %}
+   {% set other_docs = documents|filter(d => not (d['_is_image'] or d['item']['mime'] starts with 'video')) %}
 
-   {% if image_docs|length > 0 %}
+   {% if media_docs|length > 0 %}
       {% set imgs = [] %}
-      {% for document in image_docs %}
+      {% for document in media_docs %}
          {% set docpath = path("front/document.send.php?docid=" ~ document['item']['id']) %}
          {% set fk = item.getForeignKeyField() %}
          {% set delete_link = form_url(item.getType()) ~ "?delete_document&documents_id=" ~ document['item']['id'] ~ "&" ~ fk ~ "=" ~ item.fields['id'] %}
@@ -29,22 +29,39 @@
             </div>
          {% endset %}
 
-         {% set imgs = imgs|merge([{
-            'title': '',
-            'thumbnail_src': docpath ~ '&context=timeline',
-            'thumbnail_w': 'auto',
-            'thumbnail_h': 'auto',
-            'src': docpath,
-            'w': document['_size'][0],
-            'h': document['_size'][1],
-            'img_class': 'shadow',
-            'gallery_item_class': 'list-group-item border-0 d-flex',
-            'post_figure_content': post_figure_content
-         }]) %}
+         {% if document['_is_image'] %}
+            {% set imgs = imgs|merge([{
+               'title': '',
+               'thumbnail_src': docpath ~ '&context=timeline',
+               'thumbnail_w': 'auto',
+               'thumbnail_h': 'auto',
+               'src': docpath,
+               'w': document['_size'][0],
+               'h': document['_size'][1],
+               'img_class': 'shadow ',
+               'gallery_item_class': 'list-group-item border-0 d-flex',
+               'post_figure_content': post_figure_content
+            }]) %}
+         {% else %}
+            {% set video_html %}
+               <span class="d-flex justify-content-center align-items-center mt-5">
+                  <video controls="controls" width="90%" src="{{ docpath }}"></video>
+               </span>
+            {% endset %}
+            {% set imgs = imgs|merge([{
+               'title': '',
+               '_video': true,
+               'html': video_html,
+               'img_class': 'shadow',
+               'gallery_item_class': 'list-group-item border-0 d-flex',
+               'post_figure_content': post_figure_content
+            }]) %}
+         {% endif %}
       {% endfor %}
       {% include 'components/photoswipe.html.twig' with {
          'imgs': imgs,
          'gallery_type': 'horizontal',
+         'controls': {'close': true, 'share': true, 'fullscreen': true, 'zoom': true}
       } %}
    {% endif %}
 

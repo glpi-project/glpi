@@ -42,6 +42,12 @@
       min-width: 100px;
       justify-content: flex-end;
 
+      span.pswp-trigger {
+         height: 50px;
+         background-color: var(--dark);
+         color: var(--light);
+      }
+
       img {
          max-height: 7em;
       }
