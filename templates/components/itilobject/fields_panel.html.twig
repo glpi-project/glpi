@@ -67,11 +67,17 @@
             {% endif %}
 
             {% set cat_params = field_options|merge({
-               'on_change': 'this.form.submit()',
                'disabled': (not (canupdate or can_requester))
             }) %}
+            {% if item.isNewItem() %}
+               {% set cat_params = cat_params|merge({
+                  'on_change': 'this.form.submit()',
+               }) %}
+            {% endif %}
             {% if not item.isNewItem() and itiltemplate.isMandatoryField('itilcategories_id') and item.fields['itilcategories_id'] > 0 %}
-               {% set cat_params = cat_params|merge({'display_emptychoice': false}) %}
+               {% set cat_params = cat_params|merge({
+                  'display_emptychoice': false
+               }) %}
             {% endif %}
             {% if item.getType() == "Ticket" %}
                {% if item.fields['type'] == constant("Ticket::INCIDENT_TYPE") %}
