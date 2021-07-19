@@ -1,7 +1,7 @@
 {% set searchform_id = data['searchform_id']|default('search_' ~ rand) %}
 
 <div class="table-responsive-md">
-   <table class="search-results table card-table table-hover {{ data['search']['is_deleted'] ? "table-danger deleted-results" : "" }}"
+   <table class="search-results table table-striped card-table table-hover {{ data['search']['is_deleted'] ? "table-danger deleted-results" : "" }}"
           id="{{ searchform_id }}">
       <thead>
          <tr {{ count == 0 ? 'style="display: none;"' : '' }}>
