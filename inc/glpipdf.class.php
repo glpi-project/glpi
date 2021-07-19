@@ -47,7 +47,25 @@ class GLPIPDF extends Mpdf {
    private $total_count;
 
    public function __construct(array $config = []) {
+      $config += [
+         'mode'               => 'utf-8',
+         'format'             => 'A4',
+         'margin_left'        => 10,
+         'margin_right'       => 10,
+         'margin_top'         => 15,
+         'margin_bottom'      => 15,
+         'margin_header'      => 7,
+         'margin_footer'      => 7,
+
+         'useSubstitutions'   => true, // Substitute chars that are not available in current font
+         'packTableData'      => true, // Reduce memory usage processing tables
+      ];
+
       parent::__construct($config);
+
+      $this->SetCreator('GLPI');
+      $this->SetAuthor('GLPI');
+      $this->SetAutoPageBreak(true, 15);
 
       $this->defineHeaderTemplate();
       $this->definesFooterTemplate();

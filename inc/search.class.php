@@ -7467,29 +7467,16 @@ JAVASCRIPT;
 
             $pdf = new GLPIPDF(
                [
-                  'mode'               => 'utf-8',
-                  'format'             => 'A4',
                   'default_font_size'  => $fontsize,
                   'default_font'       => $font,
-                  'margin_left'        => 10,
-                  'margin_right'       => 10,
-                  'margin_top'         => 15,
-                  'margin_bottom'      => 15,
-                  'margin_header'      => 7,
-                  'margin_footer'      => 7,
                   'orientation'        => $type == self::PDF_OUTPUT_LANDSCAPE ? 'L' : 'P',
-
-                  'useSubstitutions'   => true, // Substitute chars that are not available in current font
                ]
             );
             if ($count !== null) {
                $pdf->setTotalCount($count);
             }
-            $pdf->SetCreator('GLPI');
-            $pdf->SetAuthor('GLPI');
             $pdf->SetTitle($title);
 
-            $pdf->SetAutoPageBreak(true, 15);
             $pdf->SetFont($font, '', $fontsize);
 
             $pdf->AddPage();
