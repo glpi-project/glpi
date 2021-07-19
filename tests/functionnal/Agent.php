@@ -80,10 +80,11 @@ class Agent extends DbTestCase {
 
       //check inventory metadata
       $metadata = $inventory->getMetadata();
-      $this->array($metadata)->hasSize(5)
+      $this->array($metadata)->hasSize(6)
          ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
          ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.5.2-1.fc31')
          ->string['itemtype']->isIdenticalTo('Computer')
+         ->string['action']->isIdenticalTo('inventory')
          ->string['tag']->isIdenticalTo('000005');
       $this->array($metadata['provider'])->hasSize(10);
 

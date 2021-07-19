@@ -200,12 +200,12 @@ abstract class AbstractRequest
     /**
      * Handle Query
      *
-     * @param string $query   Query mode (one of self::*_QUERY)
+     * @param string $action  Action (one of self::*_ACTION)
      * @param mixed  $content Contents, optionnal
      *
      * @return boolean
      */
-   abstract protected function handleQuery($query, $content = null) :bool;
+   abstract protected function handleAction($action, $content = null) :bool;
 
    /**
     * Handle XML request
@@ -229,12 +229,12 @@ abstract class AbstractRequest
       }
       $this->deviceid = (string)$xml->DEVICEID;
       //query is not mandatory. Defaults to inventory
-      $query = self::INVENT_QUERY;
+      $action = self::INVENT_QUERY;
       if (property_exists($xml, 'QUERY')) {
-         $query = (string)$xml->QUERY;
+         $action = (string)$xml->QUERY;
       }
 
-      return $this->handleQuery($query, $xml);
+      return $this->handleAction($action, $xml);
    }
 
    /**
@@ -247,13 +247,14 @@ abstract class AbstractRequest
    public function handleJSONRequest($data) :bool {
       $jdata = json_decode($data);
       $this->deviceid = $jdata->deviceid;
-      $query = self::INVENT_QUERY;
-      if (property_exists($jdata, 'query')) {
-         $query = $jdata->query;
-      } else if (property_exists($jdata, 'action')) {
-         $query = $jdata->action;
+      $action = self::INVENT_ACTION;
+      if (property_exists($jdata, 'action')) {
+         $action = $jdata->action;
+      } else if (property_exists($jdata, 'query')) {
+         $action = $jdata->query;
       }
-      return $this->handleQuery($query, $data);
+
+      return $this->handleAction($action, $data);
    }
 
     /**
