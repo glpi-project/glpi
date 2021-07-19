@@ -54,22 +54,19 @@ class GLPITestCase extends atoum {
       global $GLPI_CACHE;
       $GLPI_CACHE->clear();
 
-      global $PHPLOGGER;
-      $handlers = $PHPLOGGER->getHandlers();
-      foreach ($handlers as $handler) {
-         $records  = $handler->getRecords();
-         $messages = array_column($records, 'message');
-         $this->integer(count($records))
-            ->isEqualTo(
-               0,
-               sprintf(
-                  'Unexpected logs records found in %s::%s() test: %s',
-                  static::class,
-                  $method,
-                  "\n" . implode("\n", $messages)
-               )
-            );
-      }
+      global $PHP_LOG_HANDLER;
+      $records  = $PHP_LOG_HANDLER->getRecords();
+      $messages = array_column($records, 'message');
+      $this->integer(count($records))
+         ->isEqualTo(
+            0,
+            sprintf(
+               'Unexpected logs records found in %s::%s() test: %s',
+               static::class,
+               $method,
+               "\n" . implode("\n", $messages)
+            )
+         );
 
       if (isset($_SESSION['MESSAGE_AFTER_REDIRECT']) && !$this->has_failed) {
          unset($_SESSION['MESSAGE_AFTER_REDIRECT'][INFO]);
