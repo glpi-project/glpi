@@ -31,7 +31,6 @@
 @import "css/includes/components/fullcalendar";
 
 #planning_container {
-   display: flex;
    gap: 10px;
 
    &.folded {
@@ -221,6 +220,7 @@
 
    #planning {
       flex-grow: 1;
+      min-height: calc(100vh - 160px);
 
       .fc-time-grid-event {
          // TODO check new version,
@@ -435,5 +435,17 @@
       &:hover {
          background-color: #CCC;
       }
+   }
+}
+
+@media screen and (max-width:767px) {
+   .fc-toolbar.fc-header-toolbar {
+      flex-direction:column;
+   }
+
+   .fc-toolbar-chunk {
+      display: table-row;
+      text-align:center;
+      padding:5px 0;
    }
 }

@@ -606,7 +606,7 @@ class Planning extends CommonGLPI {
       // see https://fullcalendar.io/license
       $scheduler_key = Plugin::doHookFunction('planning_scheduler_key');
 
-      echo "<div" . ($fullview ? " id='planning_container'" : "") . ">";
+      echo "<div" . ($fullview ? " id='planning_container'" : "") . " class='d-flex flex-wrap flex-sm-nowrap'>";
 
       // define options for current page
       $rand = '';
