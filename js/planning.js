@@ -802,7 +802,7 @@ var GLPIPlanning  = {
       });
 
       $('#planning_filter li.group_users .toggle').on('click', function() {
-         $(this).parent().toggleClass('expanded');
+         $(this).closest('.group_users').toggleClass('expanded');
       });
 
       $('#planning_filter_toggle > a.toggle').on('click', function() {
