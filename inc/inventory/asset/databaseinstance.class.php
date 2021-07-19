@@ -202,7 +202,7 @@ class DatabaseInstance extends InventoryAsset
       if (count($db_instances) != 0) {
          //remove no longer existing databases
          foreach ($db_instances as $idtmp => $data) {
-            $instance->delete(['id' => $idtmp], 1);
+            $instance->delete(['id' => $idtmp]);
          }
       }
 

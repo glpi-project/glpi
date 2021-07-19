@@ -89,7 +89,10 @@ class DatabaseInstance extends CommonDBTM {
 
       $iterator = $DB->request([
          'FROM' => Database::getTable(),
-         'WHERE' => ['databaseinstances_id' => $this->fields['id']]
+         'WHERE' => [
+            'databaseinstances_id' => $this->fields['id'],
+            'is_deleted' => 0
+         ]
       ]);
 
       while ($row = $iterator->next()) {

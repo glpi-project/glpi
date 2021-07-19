@@ -4284,8 +4284,9 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->array($inventory->getErrors())->isEmpty();
 
       //check created databases & instances
-      $this->integer(countElementsInTable(\DatabaseInstance::getTable()))->isIdenticalTo(1);
-      $this->integer(countElementsInTable(\DatabaseInstance_Item::getTable()))->isIdenticalTo(1);
+      $this->integer(countElementsInTable(\DatabaseInstance::getTable(), ['is_deleted' => 0]))->isIdenticalTo(1);
+      $this->integer(countElementsInTable(\DatabaseInstance::getTable(), ['is_deleted' => 1]))->isIdenticalTo(1);
+      $this->integer(countElementsInTable(\DatabaseInstance_Item::getTable()))->isIdenticalTo(2);
 
       //ensure database version has been updated
       $database = new \DatabaseInstance();
