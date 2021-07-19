@@ -309,7 +309,7 @@
          {% if url is not empty %}
             <a href="{{ url }}" {{ Html__parseAttributes(options['link_attribs']|default('')) }}>
                {% endif %}
-               <img src="{{ value }}" {{ Html__parseAttributes(options) }} {{ url is defined ? 'class="pointer"' : '' }}/>
+               <img src="{{ value }}" {{ Html__parseAttributes(options) }}/>
                {% if url is defined %}
             </a>
          {% endif %}
