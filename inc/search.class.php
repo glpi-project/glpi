@@ -7265,7 +7265,7 @@ JAVASCRIPT;
          case self::PDF_OUTPUT_PORTRAIT :
             global $PDF_TABLE;
             $PDF_TABLE .= "<th $options>";
-            $PDF_TABLE .= $value;
+            $PDF_TABLE .= htmlspecialchars($value);
             $PDF_TABLE .= "</th>\n";
             break;
 
@@ -7322,6 +7322,7 @@ JAVASCRIPT;
          case self::PDF_OUTPUT_PORTRAIT :
             global $PDF_TABLE;
             $value = DataExport::normalizeValueForTextExport($value);
+            $value = htmlspecialchars($value);
             $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
             $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);
             $PDF_TABLE .= "<td $extraparam valign='top'>";
@@ -7457,43 +7458,30 @@ JAVASCRIPT;
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
          case self::PDF_OUTPUT_PORTRAIT :
             global $PDF_TABLE;
-            if ($type == self::PDF_OUTPUT_LANDSCAPE) {
-               $pdf = new GLPIPDF('L', 'mm', 'A4', true, 'UTF-8', false);
-            } else {
-               $pdf = new GLPIPDF('P', 'mm', 'A4', true, 'UTF-8', false);
-            }
-            if ($count !== null) {
-               $pdf->setTotalCount($count);
-            }
-            $pdf->SetCreator('GLPI');
-            $pdf->SetAuthor('GLPI');
-            $pdf->SetTitle($title);
-            $pdf->SetHeaderData('', '', $title, '');
+
             $font       = 'helvetica';
-            //$subsetting = true;
             $fontsize   = 8;
             if (isset($_SESSION['glpipdffont']) && $_SESSION['glpipdffont']) {
                $font       = $_SESSION['glpipdffont'];
-               //$subsetting = false;
             }
-            $pdf->setHeaderFont([$font, 'B', $fontsize]);
-            $pdf->setFooterFont([$font, 'B', $fontsize]);
 
-            //set margins
-            $pdf->SetMargins(10, 15, 10);
-            $pdf->SetHeaderMargin(10);
-            $pdf->SetFooterMargin(10);
+            $pdf = new GLPIPDF(
+               [
+                  'default_font_size'  => $fontsize,
+                  'default_font'       => $font,
+                  'orientation'        => $type == self::PDF_OUTPUT_LANDSCAPE ? 'L' : 'P',
+               ]
+            );
+            if ($count !== null) {
+               $pdf->setTotalCount($count);
+            }
+            $pdf->SetTitle($title);
 
-            //set auto page breaks
-            $pdf->SetAutoPageBreak(true, 15);
-
-            // For standard language
-            //$pdf->setFontSubsetting($subsetting);
-            // set font
             $pdf->SetFont($font, '', $fontsize);
+
             $pdf->AddPage();
             $PDF_TABLE .= '</table>';
-            $pdf->writeHTML($PDF_TABLE, true, false, true, false, '');
+            $pdf->writeHTML($PDF_TABLE);
             $pdf->Output('glpi.pdf', 'I');
             break;
 
@@ -7691,7 +7679,7 @@ JAVASCRIPT;
             if ($odd) {
                $style = " style=\"background-color:#DDDDDD;\" ";
             }
-            $PDF_TABLE .= "<tr $style nobr=\"true\">";
+            $PDF_TABLE .= "<tr $style>";
             break;
 
          case self::SYLK_OUTPUT : //sylk
