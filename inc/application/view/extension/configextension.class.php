@@ -40,9 +40,9 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class ConfigExtension extends AbstractExtension implements ExtensionInterface {
+class ConfigExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('config', [$this, 'config']),
          new TwigFunction('php_config', [$this, 'phpConfig']),
@@ -86,7 +86,7 @@ class ConfigExtension extends AbstractExtension implements ExtensionInterface {
     *
     * @return void
     */
-   public function displayPasswordSecurityChecks($field = 'password') {
-      return Config::displayPasswordSecurityChecks($field);
+   public function displayPasswordSecurityChecks($field = 'password'): void {
+      Config::displayPasswordSecurityChecks($field);
    }
 }

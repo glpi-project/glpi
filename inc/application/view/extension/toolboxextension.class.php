@@ -40,8 +40,8 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class ToolboxExtension extends AbstractExtension implements ExtensionInterface {
-   public function getFunctions() {
+class ToolboxExtension extends AbstractExtension {
+   public function getFunctions(): array {
       return [
          new TwigFunction('canUseLdap', [Toolbox::class, 'canUseLdap']),
          new TwigFunction('getMaxInputVar', [Toolbox::class, 'get_max_input_vars']),

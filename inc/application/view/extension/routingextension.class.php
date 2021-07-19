@@ -43,9 +43,9 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class RoutingExtension extends AbstractExtension implements ExtensionInterface {
+class RoutingExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('index', [$this, 'index']),
          new TwigFunction('path', [$this, 'path']),

@@ -40,9 +40,9 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class ModelExtension extends AbstractExtension implements ExtensionInterface {
+class ModelExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('getmodelPicture', [$this, 'getmodelPicture']),
          new TwigFunction('getItemtypeOrModelPicture', [$this, 'getItemtypeOrModelPicture'])

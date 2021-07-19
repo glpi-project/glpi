@@ -39,9 +39,9 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class I18nExtension extends AbstractExtension implements ExtensionInterface {
+class I18nExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('__', '__'),
          new TwigFunction('_n', '_n'),

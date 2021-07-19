@@ -44,9 +44,9 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class FrontEndAssetsExtension extends AbstractExtension implements ExtensionInterface {
+class FrontEndAssetsExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('asset_path', [$this, 'assetPath']),
          new TwigFunction('css_path', [$this, 'cssPath']),

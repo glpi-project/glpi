@@ -43,15 +43,15 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class CommonITILObjectExtension extends AbstractExtension implements ExtensionInterface {
+class CommonITILObjectExtension extends AbstractExtension {
 
-   public function getFilters() {
+   public function getFilters(): array {
       return [
          new TwigFilter('getTimelineStats', [$this, 'getTimelineStats'], ['is_safe' => ['html']]),
       ];
    }
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('Item_Ticket_itemAddForm', [Item_Ticket::class, 'itemAddForm']),
       ];

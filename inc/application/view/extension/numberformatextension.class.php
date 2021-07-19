@@ -40,9 +40,9 @@ use Twig\TwigFilter;
 /**
  * @since 10.0.0
  */
-class NumberFormatExtension extends AbstractExtension implements ExtensionInterface {
+class NumberFormatExtension extends AbstractExtension {
 
-   public function getFilters() {
+   public function getFilters(): array {
       return [
          new TwigFilter('format_binary', [Toolbox::class, 'getSize']),
       ];

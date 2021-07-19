@@ -41,14 +41,14 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class HtmlExtension extends AbstractExtension implements ExtensionInterface {
-   public function getFilters() {
+class HtmlExtension extends AbstractExtension {
+   public function getFilters(): array {
       return [
          new TwigFilter('conv_datetime', [$this, 'convDateTime'], ['is_safe' => ['html']]),
       ];
    }
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('showMassiveActions', [$this, 'showMassiveActions']),
          new TwigFunction('isMassiveActionchecked', [$this, 'isMassiveActionchecked']),
