@@ -224,6 +224,25 @@
                         }
                      ) }}
 
+                     <script type="text/javascript">
+                        function showPlanUpdate{{ rand }}(e) {
+                           $('#plan{{ rand }}').hide();
+                           $('#viewplan{{ rand }}').load('{{ path("/ajax/planning.php") }}', {
+                              action: "add_event_classic_form",
+                              form: "followups", // Was followups for tasks before. Can't find where this is used.
+                              entity: {{ item.fields['entities_id'] }},
+                              rand_user: {{ random() }},
+                              rand_group: {{ random() }},
+                              itemtype: "{{ subitem.type }}",
+                              items_id: {{ subitem.fields['id']|default(-1) }}
+                           });
+                        }
+                     </script>
+                     <button id="plan{{ rand }}" class="btn btn-secondary d-block" onclick="showPlanUpdate{{ rand }}()" type="button">
+                        {{ __('Plan this task') }}
+                     </button>
+                     <div id="viewplan{{ rand }}"></div>
+
                   </div>
                </div>
             </div>
