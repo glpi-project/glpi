@@ -59,6 +59,8 @@ class GLPIPDF extends Mpdf {
 
          'useSubstitutions'   => true, // Substitute chars that are not available in current font
          'packTableData'      => true, // Reduce memory usage processing tables
+
+         'tempDir'            => GLPI_TMP_DIR,
       ];
 
       parent::__construct($config);
