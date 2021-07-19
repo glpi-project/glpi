@@ -54,7 +54,6 @@
    table {
       width: 100%;
       table-layout: fixed;
-      background-color: #e0e0e0;
       border-collapse: collapse;
    }
 
@@ -64,17 +63,8 @@
 
    th, td {
       height: 2em;
-      border-bottom: 1px solid white;
       text-align: center;
       padding: 0;
-   }
-
-   th {
-      border: 1px solid white;
-   }
-
-   td[data-hpos="1"] {
-      border-left: 1px solid white;
    }
 
    .mini_toggle {

@@ -457,9 +457,9 @@ class PDU_Rack extends CommonDBRelation {
          }
          echo "</table>";
       }
-      echo "<a id='add_pdu' class='sub_action'>";
+      echo "<a id='add_pdu' class='btn btn-sm btn-ghost-secondary ms-auto'>";
       echo "<i class='fa fa-plus'></i>";
-      echo _sx('button', "Add");
+      echo "<span>"._sx('button', "Add")."</span>";
       echo "</a>";
       echo "</div>";
       echo "</div>";
