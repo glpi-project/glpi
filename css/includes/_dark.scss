@@ -61,6 +61,8 @@ $gray-700: #dee2e6 !default;
 $gray-800: #e9ecef !default;
 $gray-900: #f8f9fa !default;
 
+$table-striped-bg: rgba(#FFF, .05) !default;
+
 $toast-header-background-color: $gray-400;
 $toast-header-color: $light;
 
@@ -148,4 +150,4 @@ body .modal-content, body .modal-header {
    .glpi-logo {
       --logo: url(#{$logo-light}) !important;
    }
-   }
+}

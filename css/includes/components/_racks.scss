@@ -167,7 +167,6 @@ ul.indexes {
    margin: 10px 0 10px 10px;
    float: left;
    padding: 15px 0 0 15px;
-   overflow-y: hidden;
 
    *, ::before, ::after {
       box-sizing: content-box;
@@ -179,10 +178,17 @@ ul.indexes {
    }
 
    .racks_add {
-      border: 1px solid #EEEEEE;
+      border: 1px solid $table-border-color;
       border-width: 0 1px 1px 0;
       background-size: 40px 39px;
-      background-image: linear-gradient(to right, #EEEEEE 1px, transparent 1px), linear-gradient(to bottom, #EEEEEE 1px, transparent 1px);
+      background-image: linear-gradient(
+         to right,
+         $table-border-color 1px, transparent 1px
+      ),linear-gradient(
+         to bottom,
+         $table-border-color 1px,
+         transparent 1px
+         );
       margin-left: 15px;
 
       .cell_add {
@@ -258,7 +264,7 @@ ul.indexes {
       padding: 0;
       text-align: center;
       font-size: .7em;
-      color: silver;
+      color: $table-color;
       float: left;
 
       &.indexes-x {
@@ -302,14 +308,14 @@ ul.indexes {
 #viewgraph {
    .rooms a {
       &.fa {
-         color: white;
+         color: $table-color;
          position: absolute;
          right: 0;
          top: 0;
          padding: .5em;
 
          &:link {
-            color: white;
+            color: $table-color;
             position: absolute;
             right: 0;
             top: 0;
@@ -318,7 +324,7 @@ ul.indexes {
       }
 
       .fa {
-         color: white;
+         color: $table-color;
          position: absolute;
          right: 0;
          top: 0;
@@ -336,12 +342,12 @@ ul.indexes {
       }
 
       th {
-         color: white;
+         color: $table-head-color;
          background-color: SteelBlue;
       }
 
       td {
-         border-left: 1px solid white;
+         border-left: 1px solid $table-head-border-color;
 
          div {
             border: none !important;
@@ -390,15 +396,17 @@ ul.indexes {
 .rack_side {
    float: left;
    text-align: center;
-   background: #4C4C4C;
+   background: $table-bg;
+   border: 1px solid $table-border-color;
+   color: $table-color;
    padding-top: 18px;
 }
 
 .racks_col h2 {
    font-size: 14px;
    font-weight: bold;
-   color: #555;
-   background-color: #e6e6e6;
+   color: $table-head-color;
+   background-color: $table-head-bg;
    height: 30px;
    margin: 0;
    padding: 5px 0;
@@ -426,12 +434,13 @@ ul.indexes {
    }
 
    width: 217px;
-   background: #FFF repeating-linear-gradient(transparent,
-                                                transparent 21px,
-                                              rgba(0, 0, 0, .1) 21px,
-                                              rgba(0, 0, 0, .1) 42px);
+   background: $table-bg repeating-linear-gradient(
+      transparent,
+      transparent 21px,
+      $table-striped-bg 21px,
+      $table-striped-bg 42px);
    z-index: 1;
-   border: 1px solid #D4D4D4;
+   border: 1px solid $table-border-color;
    float: left;
 }
 
@@ -456,7 +465,7 @@ ul.indexes {
 }
 
 .side_pdus {
-   background-color: #575757;
+   background-color: $table-striped-bg;
    margin: 0 1px;
 
    .grid-stack-item:not(.lock-bottom) {
@@ -565,7 +574,7 @@ ul.indexes {
 }
 
 .grid-rack .grid-stack-item.lock-bottom {
-   background: #4C4C4C;
+   background: $table-bg;
    width: 101% !important;
    margin: 0 -1px;
 }
@@ -580,8 +589,9 @@ ul.indexes {
 
 .rack_side_block {
    width: 200px;
-   border: 1px solid #E6E6E6;
-   background-color: #F3F3F3;
+   border: 1px solid $table-border-color;
+   background-color: $table-head-bg;
+   color: $table-head-color;
    text-align: left;
    font-size: 11px;
    margin-bottom: 20px;
@@ -593,7 +603,7 @@ ul.indexes {
 
 .rack_side_block {
    h3 {
-      color: #6F6F6F;
+      color: $table-color;
       margin: 0;
       font-size: 11px;
       font-weight: bold;
@@ -613,22 +623,6 @@ ul.indexes {
    margin: 0 3px;
 }
 
-.rack_side_block .sub_action {
-   display: block;
-   color: #555;
-   cursor: pointer;
-   padding: 5px;
-   text-align: center;
-
-   &:hover {
-      background-color: #D1D1D1;
-   }
-
-   i {
-      margin-right: 3px;
-      color: #555;
-   }
-}
 
 div#viewgraph .rack_side_block .pdu_list {
    background: none;
