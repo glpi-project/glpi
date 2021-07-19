@@ -158,7 +158,11 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(Change::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "change");
-   $change->display($_REQUEST);
+   if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
+      $change::showKanban(0);
+   } else {
+      $change->display($_REQUEST);
+   }
 
    if (isset($_GET['id']) && ($_GET['id'] > 0) && isset($_GET['_sol_to_kb'])) {
       Ajax::createIframeModalWindow(
