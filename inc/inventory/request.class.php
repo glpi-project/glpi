@@ -62,7 +62,7 @@ class Request extends AbstractRequest
      *
      * @return boolean
      */
-   protected function handleQuery($query, $content = null) :bool {
+   protected function handleAction($query, $content = null) :bool {
       switch ($query) {
          case self::CONTACT_ACTION:
             $this->contact($content);
@@ -74,8 +74,16 @@ class Request extends AbstractRequest
          case self::INVENT_ACTION:
          case self::SNMP_QUERY:
          case self::OLD_SNMP_QUERY:
+         case self::NETDISCOVERY_ACTION:
+         case self::NETINV_ACTION:
             $this->inventory($content);
             break;
+         case self::REGISTER_ACTION:
+         case self::CONFIG_ACTION:
+         case self::ESX_ACTION:
+         case self::COLLECT_ACTION:
+         case self::DEPLOY_ACTION:
+         case self::WOL_ACTION:
          default:
             $this->addError("Query '$query' is not supported.", 400);
             return false;

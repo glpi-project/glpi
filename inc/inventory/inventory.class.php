@@ -150,7 +150,7 @@ class Inventory
          //new protocol
          $this->metadata = [
             'deviceid'  => $this->raw_data->deviceid,
-            'version'   => $this->raw_data->version,
+            'version'   => $this->raw_data->version ?? $this->raw_data->content->versionclient ?? null,
             'itemtype'   => $this->raw_data->itemtype ?? 'Computer',
          ];
 
