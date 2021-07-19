@@ -2554,7 +2554,8 @@
    /** objectlock message */
    div.objectlockmessage {
       @extend .navigationheader;
-      background-color: lightSalmon !important;
+      background-color: lightSalmon;
+      color: black;
       flex-wrap: wrap;
       align-items: center;
    }

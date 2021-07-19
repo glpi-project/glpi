@@ -2,9 +2,9 @@
    <div class="buttons-bar d-flex py-2">
       {% if not item.isNewItem() %}
          <div class="col-md-8 ps-3 timeline-buttons">
-            {% if item.isNotSolved() %}
+            {% set default_action_data = timeline_itemtypes|first %}
+            {% if item.isNotSolved() and default_action_data != false %}
                <div class="btn-group me-2 main-actions" style="{{ load_kb_sol > 0 ? "display:none;" : "" }}">
-                  {% set default_action_data = timeline_itemtypes|first %}
                   <button class="btn btn-primary answer-action" data-bs-toggle="collapse" data-bs-target="#new-{{ default_action_data.class }}-block">
                      <i class='{{ default_action_data.icon }}'></i>
                      <span>{{ default_action_data.label }}</span>
