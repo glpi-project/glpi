@@ -29,7 +29,7 @@
    {% endfor %}
    </select>
 
-   {% if not params['template_preview'] and not disable_assign_to_me %}
+   {% if not params['template_preview'] and not disable_assign_to_me and canupdate %}
       {% include "components/itilobject/actors/assign_to_me.html.twig" %}
    {% endif %}
 

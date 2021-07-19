@@ -25,6 +25,7 @@
             'right': validation_right,
             'users_id_validate': params['users_id_validate'],
             'display': false,
+            'disabled': (not canupdate),
          }|merge(required)),
          __('Approval request'),
          field_options
@@ -45,6 +46,7 @@
             'global': true,
             'value': item.fields['global_validation'],
             'display': false,
+            'disabled': (not canupdate),
          }|merge(required)),
          "CommonITILValidation"|itemtype_name,
          field_options
