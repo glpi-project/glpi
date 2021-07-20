@@ -53,8 +53,9 @@ class AssetParameters extends AbstractParameters
          'itemtype'    => 'Computer',
          'serial'      => 'abcd1234',
          'entity' => [
-            'id'   => $test_entity_id,
-            'name' => '_test_child_2',
+            'id'           => $test_entity_id,
+            'name'         => '_test_child_2',
+            'completename' => 'Root entity > _test_root_entity > _test_child_2',
          ]
       ]);
 

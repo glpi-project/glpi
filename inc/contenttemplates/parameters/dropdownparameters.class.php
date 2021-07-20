@@ -32,28 +32,36 @@
 
 namespace Glpi\ContentTemplates\Parameters;
 
-use Entity;
+use CommonDBTM;
+use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
+use Toolbox;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
 /**
- * Parameters for "Entity" items.
+ * Abstract parameters class for "CommonDropdown" items.
  *
  * @since 10.0.0
  */
-class EntityParameters extends TreeDropdownParameters
+abstract class DropdownParameters extends AbstractParameters
 {
-   public static function getDefaultNodeName(): string {
-      return 'entity';
+   protected function defineParameters(): array {
+      return [
+         new AttributeParameter("id", __('ID')),
+         new AttributeParameter("name", __('Name')),
+      ];
    }
 
-   public static function getObjectLabel(): string {
-      return Entity::getTypeName(1);
-   }
+   protected function defineValues(CommonDBTM $item): array {
 
-   protected function getTargetClasses(): array {
-      return [Entity::class];
+      // Output "unsanitized" values
+      $fields = Toolbox::unclean_cross_side_scripting_deep($item->fields);
+
+      return [
+         'id'   => $fields['id'],
+         'name' => $fields['name'],
+      ];
    }
 }

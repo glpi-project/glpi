@@ -47,8 +47,9 @@ class GroupParameters extends AbstractParameters
       $parameters = new CoreGroupParameters();
       $values = $parameters->getValues(getItemByTypeName('Group', 'group_testGetValues'));
       $this->array($values)->isEqualTo([
-         'id'   => getItemByTypeName('Group', 'group_testGetValues', true),
-         'name' => 'group_testGetValues',
+         'id'           => getItemByTypeName('Group', 'group_testGetValues', true),
+         'name'         => 'group_testGetValues',
+         'completename' => 'group_testGetValues',
       ]);
 
       $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());

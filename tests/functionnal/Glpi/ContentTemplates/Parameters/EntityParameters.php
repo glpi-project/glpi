@@ -42,6 +42,7 @@ class EntityParameters extends AbstractParameters
       $this->array($values)->isEqualTo([
          'id'   => getItemByTypeName('Entity', '_test_child_2', true),
          'name' => '_test_child_2',
+         'completename' => 'Root entity > _test_root_entity > _test_child_2',
       ]);
 
       $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());

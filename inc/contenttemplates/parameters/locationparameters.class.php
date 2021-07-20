@@ -32,10 +32,7 @@
 
 namespace Glpi\ContentTemplates\Parameters;
 
-use CommonDBTM;
-use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
 use Location;
-use Toolbox;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -46,7 +43,7 @@ if (!defined('GLPI_ROOT')) {
  *
  * @since 10.0.0
  */
-class LocationParameters extends AbstractParameters
+class LocationParameters extends TreeDropdownParameters
 {
    public static function getDefaultNodeName(): string {
       return 'location';
@@ -58,25 +55,5 @@ class LocationParameters extends AbstractParameters
 
    protected function getTargetClasses(): array {
       return [Location::class];
-   }
-
-   protected function defineParameters(): array {
-      return [
-         new AttributeParameter("id", __('ID')),
-         new AttributeParameter("name", __('Name')),
-         new AttributeParameter("completename", __('Complete name')),
-      ];
-   }
-
-   protected function defineValues(CommonDBTM $location): array {
-
-      // Output "unsanitized" values
-      $fields = Toolbox::unclean_cross_side_scripting_deep($location->fields);
-
-      return [
-         'id'           => $fields['id'],
-         'name'         => $fields['name'],
-         'completename' => $fields['completename'],
-      ];
    }
 }

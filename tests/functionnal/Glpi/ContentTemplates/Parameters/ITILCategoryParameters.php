@@ -47,8 +47,9 @@ class ITILCategoryParameters extends AbstractParameters
       $parameters = new CoreITILCategoryParameters();
       $values = $parameters->getValues(getItemByTypeName('ITILCategory', 'itilcategory_testGetValues'));
       $this->array($values)->isEqualTo([
-         'id'   => getItemByTypeName('ITILCategory', 'itilcategory_testGetValues', true),
-         'name' => 'itilcategory_testGetValues',
+         'id'           => getItemByTypeName('ITILCategory', 'itilcategory_testGetValues', true),
+         'name'         => 'itilcategory_testGetValues',
+         'completename' => 'itilcategory_testGetValues',
       ]);
 
       $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());

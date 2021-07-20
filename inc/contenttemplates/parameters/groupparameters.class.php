@@ -32,10 +32,7 @@
 
 namespace Glpi\ContentTemplates\Parameters;
 
-use CommonDBTM;
-use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
 use Group;
-use Toolbox;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -46,7 +43,7 @@ if (!defined('GLPI_ROOT')) {
  *
  * @since 10.0.0
  */
-class GroupParameters extends AbstractParameters
+class GroupParameters extends TreeDropdownParameters
 {
    public static function getDefaultNodeName(): string {
       return 'group';
@@ -58,23 +55,5 @@ class GroupParameters extends AbstractParameters
 
    protected function getTargetClasses(): array {
       return [Group::class];
-   }
-
-   protected function defineParameters(): array {
-      return [
-         new AttributeParameter("id", __('ID')),
-         new AttributeParameter("name", __('Name')),
-      ];
-   }
-
-   protected function defineValues(CommonDBTM $group): array {
-
-      // Output "unsanitized" values
-      $fields = Toolbox::unclean_cross_side_scripting_deep($group->fields);
-
-      return [
-         'id'   => $fields['id'],
-         'name' => $fields['name'],
-      ];
    }
 }

@@ -121,12 +121,14 @@ class TicketParameters extends AbstractParameters
          'impact'    => 'Medium',
          'priority'  => 'Medium',
          'entity'    => [
-            'id'   => $test_entity_id,
-            'name' => '_test_child_2',
+            'id'           => $test_entity_id,
+            'name'         => '_test_child_2',
+            'completename' => 'Root entity > _test_root_entity > _test_child_2',
          ],
          'itilcategory' => [
-            'id'   => $itilcategories_id,
-            'name' => 'category_testGetValues'
+            'id'           => $itilcategories_id,
+            'name'         => 'category_testGetValues',
+            'completename' => 'category_testGetValues',
          ],
          'requesters' => [
             'users'  => [

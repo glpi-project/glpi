@@ -32,10 +32,7 @@
 
 namespace Glpi\ContentTemplates\Parameters;
 
-use CommonDBTM;
-use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
 use ITILCategory;
-use Toolbox;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -46,7 +43,7 @@ if (!defined('GLPI_ROOT')) {
  *
  * @since 10.0.0
  */
-class ITILCategoryParameters extends AbstractParameters
+class ITILCategoryParameters extends TreeDropdownParameters
 {
    public static function getDefaultNodeName(): string {
       return 'itilcategory';
@@ -58,23 +55,5 @@ class ITILCategoryParameters extends AbstractParameters
 
    protected function getTargetClasses(): array {
       return [ITILCategory::class];
-   }
-
-   protected function defineParameters(): array {
-      return [
-         new AttributeParameter("id", __('ID')),
-         new AttributeParameter("name", __('Name')),
-      ];
-   }
-
-   protected function defineValues(CommonDBTM $itilcategory): array {
-
-      // Output "unsanitized" values
-      $fields = Toolbox::unclean_cross_side_scripting_deep($itilcategory->fields);
-
-      return [
-         'id'   => $fields['id'],
-         'name' => $fields['name'],
-      ];
    }
 }
