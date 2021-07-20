@@ -39,18 +39,17 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Handle user defined twig templates :
- *  - followup templates
- *  - tasks templates
- *  - solutions templates
+ * Abstract twig content templates parameters definition.
+ *
+ * @since 10.0.0
  */
 abstract class AbstractParameters implements TemplatesParametersInterface
 {
    /**
-    * To be defined in each subclasses, define all available parameters for one or
-    * more itemtypes.
-    * These parameters informations are meant to be used for autocompletion on
-    * the client side
+    * To be defined in each subclasses, define all available parameters for one or more itemtypes.
+    * These parameters informations are meant to be used for autocompletion on the client side.
+    *
+    * Result will be returned by `self::getAvailableParameters()`.
     *
     * @return \Glpi\ContentTemplates\Parameters\ParametersTypes\AbstractParameterType[]
     */
@@ -58,7 +57,9 @@ abstract class AbstractParameters implements TemplatesParametersInterface
 
    /**
     * To by defined in each subclasses, get the exposed values for a given item
-    * This values will be used as parameters when rendering a twig template.
+    * These values will be used as parameters when rendering a twig template.
+    *
+    * Result will be returned by `self::getValues()`.
     *
     * @param CommonDBTM $item
     *
@@ -67,20 +68,12 @@ abstract class AbstractParameters implements TemplatesParametersInterface
    abstract protected function defineValues(CommonDBTM $item): array;
 
    /**
-    * Get supported classes by this parameter type
+    * Get supported classes by this parameter type.
     *
     * @return array
     */
    abstract protected function getTargetClasses(): array;
 
-   /**
-    * "Wrapper" function for defineValues()
-    *  Validate the class of the given item before calling defineValues()
-    *
-    * @param CommonDBTM $item
-    *
-    * @return array
-    */
    public function getValues(CommonDBTM $item): array {
       $valid_class = false;
       foreach ($this->getTargetClasses() as $class) {
@@ -91,19 +84,13 @@ abstract class AbstractParameters implements TemplatesParametersInterface
       }
 
       if (!$valid_class) {
-         trigger_error(get_class($item) . " is not allowed for this parameter type");
+         trigger_error(get_class($item) . " is not allowed for this parameter type.", E_USER_WARNING);
          return [];
       }
 
       return $this->defineValues($item);
    }
 
-   /**
-    * "Wrapper" function for defineParameters()
-    * Get the parameters from defineParameters() and compute them
-    *
-    * @return array
-    */
    public function getAvailableParameters(): array {
       $parameters = [];
 

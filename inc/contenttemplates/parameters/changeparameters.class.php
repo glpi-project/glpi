@@ -39,7 +39,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Parameters for "Change" items
+ * Parameters for "Change" items.
+ *
+ * @since 10.0.0
  */
 class ChangeParameters extends CommonITILObjectParameters
 {

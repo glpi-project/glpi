@@ -42,7 +42,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Parameters for "Entity" items
+ * Parameters for "Entity" items.
+ *
+ * @since 10.0.0
  */
 class EntityParameters extends AbstractParameters
 {

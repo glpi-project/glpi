@@ -39,7 +39,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Parameters for "OLA" items
+ * Parameters for "OLA" items.
+ *
+ * @since 10.0.0
  */
 class OLAParameters extends LevelAgreementParameters
 {

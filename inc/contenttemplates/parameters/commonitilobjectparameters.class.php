@@ -50,7 +50,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Parameters for "CommonITILObject" items
+ * Parameters for "CommonITILObject" items.
+ *
+ * @since 10.0.0
  */
 abstract class CommonITILObjectParameters extends AbstractParameters
 {
@@ -137,8 +139,7 @@ abstract class CommonITILObjectParameters extends AbstractParameters
       ];
       foreach ($users_to_add as $key => $type) {
          foreach ($commonitil->getUsers($type) as $data) {
-            $user = User::getById($data['users_id']);
-            if ($user) {
+            if ($user = User::getById($data['users_id'])) {
                $values[$key]['users'][] = $user_parameters->getValues($user);
             }
          }
@@ -152,8 +153,7 @@ abstract class CommonITILObjectParameters extends AbstractParameters
       ];
       foreach ($groups_to_add as $key => $type) {
          foreach ($commonitil->getGroups($type) as $data) {
-            $group = Group::getById($data['groups_id']);
-            if ($group) {
+            if ($group = Group::getById($data['groups_id'])) {
                $values[$key]['groups'][] = $group_parameters->getValues($group);
             }
          }

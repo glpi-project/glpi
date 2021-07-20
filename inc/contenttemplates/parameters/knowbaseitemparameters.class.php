@@ -42,7 +42,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Parameters for "KnowbaseItem" items
+ * Parameters for "KnowbaseItem" items.
+ *
+ * @since 10.0.0
  */
 class KnowbaseItemParameters extends AbstractParameters
 {

@@ -42,7 +42,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Parameters for "Group" items
+ * Parameters for "Group" items.
+ *
+ * @since 10.0.0
  */
 class GroupParameters extends AbstractParameters
 {

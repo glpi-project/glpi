@@ -42,7 +42,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Parameters for "LevelAgreement" items
+ * Parameters for "LevelAgreement" items.
+ *
+ * @since 10.0.0
  */
 abstract class LevelAgreementParameters extends AbstractParameters
 {

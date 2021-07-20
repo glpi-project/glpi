@@ -39,7 +39,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Parameters for "Problem" items
+ * Parameters for "Problem" items.
+ *
+ * @since 10.0.0
  */
 class ProblemParameters extends CommonITILObjectParameters
 {

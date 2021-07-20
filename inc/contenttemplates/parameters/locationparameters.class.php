@@ -42,7 +42,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Parameters for "Location" items
+ * Parameters for "Location" items.
+ *
+ * @since 10.0.0
  */
 class LocationParameters extends AbstractParameters
 {

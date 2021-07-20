@@ -41,11 +41,13 @@ if (!defined('GLPI_ROOT')) {
 /**
  * ObjectParameter represent a whole object to use as a parameter.
  * For exemple, this entity of a ticket or its category.
+ *
+ * @since 10.0.0
  */
 class ObjectParameter extends AbstractParameterType
 {
    /**
-    * Parameters availables in the item that will be linked
+    * Parameters availables in the item that will be linked.
     *
     * @var AbstractParameters
     */
@@ -53,7 +55,7 @@ class ObjectParameter extends AbstractParameterType
 
    /**
     * @param AbstractParameters $template_parameters  Parameters to add
-    * @param null|string $key                              Key to access this value
+    * @param null|string $key                         Key to access this value
     */
    public function __construct(AbstractParameters $template_parameters, ?string $key = null) {
       $this->key = $key ?? $template_parameters->getDefaultNodeName();

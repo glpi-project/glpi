@@ -48,7 +48,9 @@ if (!defined('GLPI_ROOT')) {
  * Handle user defined twig templates :
  *  - followup templates
  *  - tasks templates
- *  - solutions templates
+ *  - solutions templates.
+ *
+ * @since 10.0.0
  */
 class TemplateManager
 {

@@ -53,7 +53,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Parameters for "Ticket" items
+ * Parameters for "Ticket" items.
+ *
+ * @since 10.0.0
  */
 class TicketParameters extends CommonITILObjectParameters
 {

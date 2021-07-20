@@ -44,7 +44,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Parameters for "User" items
+ * Parameters for "User" items.
+ *
+ * @since 10.0.0
  */
 class UserParameters extends AbstractParameters
 {

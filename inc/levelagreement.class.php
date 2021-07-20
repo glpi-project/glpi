@@ -237,6 +237,8 @@ abstract class LevelAgreement extends CommonDBChild {
     * Get possibles keys and labels for the definition_time field
     *
     * @return string
+    *
+    * @since 10.0.0
     */
    public static function getDefinitionTimeValues(): array {
       return [
@@ -251,7 +253,10 @@ abstract class LevelAgreement extends CommonDBChild {
     * Get the matching label for a given key (definition_time field)
     *
     * @param string $value
+    *
     * @return string
+    *
+    * @since 10.0.0
     */
    public static function getDefinitionTimeLabel(string $value): string {
       return self::getDefinitionTimeValues()[$value] ?? "";

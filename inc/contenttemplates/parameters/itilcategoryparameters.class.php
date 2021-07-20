@@ -42,7 +42,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Parameters for "ITILCategory" items
+ * Parameters for "ITILCategory" items.
+ *
+ * @since 10.0.0
  */
 class ITILCategoryParameters extends AbstractParameters
 {

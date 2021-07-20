@@ -43,7 +43,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Parameters for "Assets" items (Compute, Monitor, ...)
+ * Parameters for "Assets" items (Computer, Monitor, ...).
+ *
+ * @since 10.0.0
  */
 class AssetParameters extends AbstractParameters
 {

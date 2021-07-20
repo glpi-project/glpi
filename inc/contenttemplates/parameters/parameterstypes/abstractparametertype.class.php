@@ -37,7 +37,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Define the base interface for parameters types
+ * Define the base interface for parameters types.
+ *
+ * @since 10.0.0
  */
 abstract class AbstractParameterType
 {
@@ -57,8 +59,7 @@ abstract class AbstractParameterType
 
    /**
     * To be defined in each subclasses, convert the parameter data into an array
-    * that can be shared to the client side code as json and used for
-    * autocompletion.
+    * that can be shared to the client side code as json and used for autocompletion.
     */
    abstract public function compute(): array;
 }

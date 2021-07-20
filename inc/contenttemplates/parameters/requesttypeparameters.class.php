@@ -42,7 +42,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Parameters for "RequestType" items
+ * Parameters for "RequestType" items.
+ *
+ * @since 10.0.0
  */
 class RequestTypeParameters extends AbstractParameters
 {

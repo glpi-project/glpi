@@ -41,7 +41,9 @@ if (!defined('GLPI_ROOT')) {
 /**
  * ArrayParmameter represent a template parameter that contains multiple objets
  * of the same types.
- * For exemple the requester of a tickets or the users in a group.
+ * For example the requesters of a tickets or the users in a group.
+ *
+ * @since 10.0.0
  */
 class ArrayParameter extends AbstractParameterType
 {
@@ -54,7 +56,7 @@ class ArrayParameter extends AbstractParameterType
    protected $items_key;
 
    /**
-    * Types of the items contained in this array.
+    * Parameters of each item contained in this array.
     *
     * @var ObjectParameter
     */
@@ -62,7 +64,7 @@ class ArrayParameter extends AbstractParameterType
 
    /**
     * @param string              $key        Key to access this value
-    * @param AbstractParameters  $parameters Types of the item contained in this array
+    * @param AbstractParameters  $parameters Parameters of each item contained in this array
     * @param string              $label      Label to display in the autocompletion widget
     */
    public function __construct(

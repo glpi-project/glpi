@@ -39,7 +39,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Parameters for "SLA" items
+ * Parameters for "SLA" items.
+ *
+ * @since 10.0.0
  */
 class SLAParameters extends LevelAgreementParameters
 {

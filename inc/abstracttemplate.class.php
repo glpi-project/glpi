@@ -43,8 +43,9 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * Base template class
- * @since 9.5
-**/
+ *
+ * @since 10.0.0
+ */
 abstract class AbstractTemplate extends CommonDropdown
 {
    function showForm($ID, $options = []) {

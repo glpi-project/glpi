@@ -4064,6 +4064,8 @@ JAVASCRIPT
     * @param string $editor_id
     *
     * @return void
+    *
+    * @since 10.0.0
     */
    public static function activateUserTemplateAutocompletion(string $selector, array $values): void {
       $values = json_encode($values);

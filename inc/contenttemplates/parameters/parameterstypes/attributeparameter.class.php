@@ -39,7 +39,9 @@ if (!defined('GLPI_ROOT')) {
 /**
  * AttributeParameter represent a simple parameter value accessed by a key.
  * This can be a simple value from the database (e.g the title of a ticket) or a
- * computed value (e.g. the link to a ticket)
+ * computed value (e.g. the link to a ticket).
+ *
+ * @since 10.0.0
  */
 class AttributeParameter extends AbstractParameterType
 {

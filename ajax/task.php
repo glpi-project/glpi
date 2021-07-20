@@ -34,7 +34,6 @@
  * @since 9.1
  */
 
-
 $AJAX_INCLUDE = 1;
 
 include ('../inc/includes.php');
