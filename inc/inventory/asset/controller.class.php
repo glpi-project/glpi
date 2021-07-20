@@ -57,18 +57,16 @@ class Controller extends Device
                if (property_exists($val, $origin)) {
                   $val->$dest = $val->$origin;
                }
-
-               if (property_exists($val, 'pciid')) {
-                  $exploded = explode(":", $val->pciids);
-
-                  //manufacturer
-                  if ($pci_manufacturer = $pcivendor->getManufacturer($exploded[0])) {
-                     $val->manufacturers_id = $pci_manufacturer;
-                  }
-
-                  //product name
-                  if ($pci_product = $pcivendor->getProductName($exploded[0], $exploded[1])) {
-                     $val->designation = $pci_product;
+            }
+            if (property_exists($val, 'vendorid')) {
+               //manufacturer
+               if ($pci_manufacturer = $pcivendor->getManufacturer($val->vendor_id)) {
+                  $val->manufacturers_id = $pci_manufacturer;
+                  if (property_exists($val, 'productid')) {
+                     //product name
+                     if ($pci_product = $pcivendor->getProductName($val->vendor_id, $val->productid)) {
+                        $val->designation = $pci_product;
+                     }
                   }
                }
             }
