@@ -60,7 +60,7 @@ class LocationParameters extends AbstractParameters
       return [Location::class];
    }
 
-   public function defineParameters(): array {
+   protected function defineParameters(): array {
       return [
          new AttributeParameter("id", __('ID')),
          new AttributeParameter("name", __('Name')),

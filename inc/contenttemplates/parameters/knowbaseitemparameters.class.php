@@ -60,7 +60,7 @@ class KnowbaseItemParameters extends AbstractParameters
       return [KnowbaseItem::class];
    }
 
-   public function defineParameters(): array {
+   protected function defineParameters(): array {
       return [
          new AttributeParameter("id", __('ID')),
          new AttributeParameter("name", __('Subject')),

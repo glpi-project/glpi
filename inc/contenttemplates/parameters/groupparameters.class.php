@@ -60,7 +60,7 @@ class GroupParameters extends AbstractParameters
       return [Group::class];
    }
 
-   public function defineParameters(): array {
+   protected function defineParameters(): array {
       return [
          new AttributeParameter("id", __('ID')),
          new AttributeParameter("name", __('Name')),

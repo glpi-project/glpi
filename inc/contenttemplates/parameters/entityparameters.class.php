@@ -60,7 +60,7 @@ class EntityParameters extends AbstractParameters
       return [Entity::class];
    }
 
-   public function defineParameters(): array {
+   protected function defineParameters(): array {
       return [
          new AttributeParameter("id", __('ID')),
          new AttributeParameter("name", __('Name')),
