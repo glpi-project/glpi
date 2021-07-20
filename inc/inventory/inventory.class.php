@@ -146,43 +146,17 @@ class Inventory
          throw new \RuntimeException(print_r($this->getErrors(), true));
       }
 
-      if (property_exists($this->raw_data, 'action')) {
-         //new protocol
-         $this->metadata = [
-            'deviceid'  => $this->raw_data->deviceid,
-            'version'   => $this->raw_data->version ?? $this->raw_data->content->versionclient ?? null,
-            'itemtype'   => $this->raw_data->itemtype ?? 'Computer',
-         ];
+      $this->metadata = [
+         'deviceid'  => $this->raw_data->deviceid,
+         'version'   => $this->raw_data->version ?? $this->raw_data->content->versionclient ?? null,
+         'itemtype'   => $this->raw_data->itemtype ?? 'Computer',
+      ];
 
-         // Get tag if defined
-         $expecteds = ['action', 'name', 'installed-tasks', 'enabled-tasks', 'tag'];
-         foreach ($expecteds as $expected) {
-            if (property_exists($this->raw_data, $expected)) {
-               $this->metadata[$expected] = $this->raw_data->{$expected};
-            }
+      $expecteds = ['action', 'name', 'installed-tasks', 'enabled-tasks', 'tag'];
+      foreach ($expecteds as $expected) {
+         if (property_exists($this->raw_data, $expected)) {
+            $this->metadata[$expected] = $this->raw_data->{$expected};
          }
-      } else {
-         //old protocol
-         $this->metadata = [
-            'deviceid'  => $this->raw_data->deviceid,
-            'version'   => $this->raw_data->content->versionclient ?? $this->raw_data->version,
-            'itemtype'   => $this->raw_data->itemtype ?? 'Computer'
-         ];
-
-         // Get tag if defined
-         if (property_exists($this->raw_data, 'tag')) {
-            $this->metadata['tag'] = $this->raw_data->tag;
-         } else if (property_exists($this->raw_data->content, 'accountinfo')) {
-            $ainfos = $this->raw_data->content->accountinfo;
-            if (property_exists($ainfos, 'keyname')
-               && $ainfos->keyname == 'TAG'
-               && property_exists($ainfos, 'keyvalue')
-               && $ainfos->keyvalue != ''
-            ) {
-               $this->metadata['tag'] = $ainfos->keyvalue;
-            }
-         }
-
       }
 
       return $this->metadata;
@@ -504,7 +478,7 @@ class Inventory
             case 'versionprovider': //not provided see doInventory
             case 'licenseinfos': //not used - implemented in FI only
             case 'modems': //not used - implemented in FI only
-            case 'accountinfo': //handled from Asset\Computer
+            case 'accountinfo': //no longer existing, see tag at upper level
             case 'firewalls': //not used
             case 'hardware': //handled from Asset\Computer
             case 'inputs': //handled from Asset\Peripheral

@@ -49,7 +49,6 @@ abstract class MainAsset extends InventoryAsset
    /** @var array */
    protected $extra_data = [
       'hardware'     => null,
-      'accountinfo'  => null,
       'bios'         => null,
       'users'        => null,
       '\Glpi\Inventory\Asset\NetworkCard' => null
