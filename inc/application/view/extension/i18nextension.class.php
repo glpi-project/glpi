@@ -47,6 +47,11 @@ class I18nExtension extends AbstractExtension implements ExtensionInterface {
          new TwigFunction('_n', '_n'),
          new TwigFunction('_x', '_x'),
          new TwigFunction('_nx', '_nx'),
+         new TwigFunction('getCurrentLocale', [$this, 'getCurrentLocale']),
       ];
+   }
+
+   public function getCurrentLocale(): array {
+      return \Locale::parseLocale($_SESSION['glpilanguage'] ?? "en_GB");
    }
 }
