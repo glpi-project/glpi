@@ -1,0 +1,33 @@
+.fileupload:not(.only-uploaded-files) {
+   text-align: center;
+   border: 1px dashed #cccccc;
+   background: #cccccc1c;
+   min-height: 65px;
+   border-radius: 5px;
+   margin: .5em auto;
+   padding: .5em;
+   margin-top: 5px;
+   width: 100%;
+
+   input[type=file] {
+      width: auto;
+      margin-left: auto;
+      margin-right: auto;
+   }
+}
+
+.fileupload.only-uploaded-files input[type=file] {
+   display:none;
+}
+
+.fileupload_info {
+   margin-bottom: 10px;
+}
+
+.upload_rich_text {
+   display: none;
+}
+
+.draghover {
+   background: #FBF8DF;
+}
