@@ -68,9 +68,11 @@
                      'Group': 'Group'
                   }, __('Approver'), {
                      'display_emptychoice': true,
-                     'full_width': true,
                      'rand': rand,
-                     'add_field_html': '<span id="show_validator_field">&nbsp;</span>',
+                     'field_class': 'col-12',
+                     'label_class': 'col-xxl-4',
+                     'input_class': 'col-xxl-8 flex-wrap',
+                     'add_field_html': '<span id="show_validator_field" class="flex-grow-1">&nbsp;</span>',
                   }) }}
                   {% if subitem.fields['validatortype'] is not null %}
                      <script type="application/javascript">
