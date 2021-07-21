@@ -1239,38 +1239,8 @@ class Config extends CommonDBTM {
          $('label[for=theme-selector]').on('click', function(){ $('#theme-selector').select2('open'); });
       ");
       echo "</td>";
-      echo "<td><label for='layout-selector'>" . __('Content layout')."</label></td><td>";
+      echo "<td>";
 
-      $layout_options = [
-         'lefttab' => __("Tabs on left"),
-         'classic' => __("Classic view"),
-         'vsplit'  => __("Vertical split")
-      ];
-
-      echo Html::select(
-         'layout',
-         $layout_options,
-         [
-            'id'        => 'layout-selector',
-            'selected'  => $data['layout']
-         ]
-      );
-
-      echo Html::scriptBlock("
-         function formatLayout(layout) {
-             if (!layout.id) {
-                return layout.text;
-             }
-             return $('<span></span>').html('<img src=\'../pics/layout/layout_' + layout.id.toLowerCase() + '.png\'/>'
-                      + '&nbsp;' + layout.text);
-         }
-         $('#layout-selector').select2({
-             dropdownAutoWidth: true,
-             templateResult: formatLayout,
-             templateSelection: formatLayout
-         });
-         $('label[for=layout-selector]').on('click', function(){ $('#layout-selector').select2('open'); });
-      ");
       echo "</td>";
       echo "</tr>";
 
