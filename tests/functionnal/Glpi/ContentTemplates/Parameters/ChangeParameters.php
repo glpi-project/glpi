@@ -46,12 +46,15 @@ class ChangeParameters extends AbstractParameters
 
       $itilcategories_id = getItemByTypeName('ITILCategory', 'category_testGetValues', true);
 
+      $observer_groups_id = getItemByTypeName('Group', '_test_group_1', true);
+
       $this->createItem('Change', [
-         'name'              => 'change_testGetValues',
-         'content'           => '<p>change_testGetValues content</p>',
-         'entities_id'       => $test_entity_id,
-         'date'              => '2021-07-19 17:11:28',
-         'itilcategories_id' => $itilcategories_id,
+         'name'                => 'change_testGetValues',
+         'content'             => '<p>change_testGetValues content</p>',
+         'entities_id'         => $test_entity_id,
+         'date'                => '2021-07-19 17:11:28',
+         'itilcategories_id'   => $itilcategories_id,
+         '_groups_id_observer' => [$observer_groups_id],
       ]);
 
       $changes_id = getItemByTypeName('Change', 'change_testGetValues', true);
@@ -97,11 +100,18 @@ class ChangeParameters extends AbstractParameters
          ],
          'observers' => [
             'users'  => [],
-            'groups' => [],
+            'groups' => [
+               [
+                  'id'           => $observer_groups_id,
+                  'name'         => '_test_group_1',
+                  'completename' => '_test_group_1',
+               ],
+            ],
          ],
          'assignees' => [
-            'users'  => [],
-            'groups' => [],
+            'users'     => [],
+            'groups'    => [],
+            'suppliers' => [],
          ],
       ]);
 

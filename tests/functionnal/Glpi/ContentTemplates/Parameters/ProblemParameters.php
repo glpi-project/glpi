@@ -46,12 +46,18 @@ class ProblemParameters extends AbstractParameters
 
       $itilcategories_id = getItemByTypeName('ITILCategory', 'category_testGetValues', true);
 
+      $observer_groups_id1 = getItemByTypeName('Group', '_test_group_1', true);
+      $observer_groups_id2 = getItemByTypeName('Group', '_test_group_2', true);
+      $assigned_users_id   = getItemByTypeName('User', 'tech', true);
+
       $this->createItem('Problem', [
-         'name'              => 'problem_testGetValues',
-         'content'           => '<p>problem_testGetValues content</p>',
-         'entities_id'       => $test_entity_id,
-         'date'              => '2021-07-19 17:11:28',
-         'itilcategories_id' => $itilcategories_id,
+         'name'                  => 'problem_testGetValues',
+         'content'               => '<p>problem_testGetValues content</p>',
+         'entities_id'           => $test_entity_id,
+         'date'                  => '2021-07-19 17:11:28',
+         'itilcategories_id'     => $itilcategories_id,
+         '_groups_id_observer'   => [$observer_groups_id1, $observer_groups_id2],
+         '_users_id_assign'      => [$assigned_users_id],
       ]);
 
       $problems_id = getItemByTypeName('Problem', 'problem_testGetValues', true);
@@ -67,7 +73,7 @@ class ProblemParameters extends AbstractParameters
          'date'      => '2021-07-19 17:11:28',
          'solvedate' => null,
          'closedate' => null,
-         'status'    => 'New',
+         'status'    => 'Processing (assigned)',
          'urgency'   => 'Medium',
          'impact'    => 'Medium',
          'priority'  => 'Medium',
@@ -97,11 +103,33 @@ class ProblemParameters extends AbstractParameters
          ],
          'observers' => [
             'users'  => [],
-            'groups' => [],
+            'groups' => [
+               [
+                  'id'           => $observer_groups_id1,
+                  'name'         => '_test_group_1',
+                  'completename' => '_test_group_1',
+               ],
+               [
+                  'id'           => $observer_groups_id2,
+                  'name'         => '_test_group_2',
+                  'completename' => '_test_group_1 > _test_group_2',
+               ],
+            ],
          ],
          'assignees' => [
-            'users'  => [],
-            'groups' => [],
+            'users'     => [
+               [
+                  'id'       => $assigned_users_id,
+                  'login'    => 'tech',
+                  'fullname' => 'tech',
+                  'email'    => '',
+                  'phone'    => null,
+                  'phone2'   => null,
+                  'mobile'   => null,
+               ],
+            ],
+            'groups'    => [],
+            'suppliers' => [],
          ],
       ]);
 

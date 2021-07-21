@@ -88,7 +88,11 @@ class TicketParameters extends AbstractParameters
       $olas_id_tto = getItemByTypeName('OLA', 'ola_tto_testGetValue', true);
       $olas_id_ttr = getItemByTypeName('OLA', 'ola_ttr_testGetValue', true);
 
-      $suppliers_id = getItemByTypeName('Supplier', '_suplier01_name', true);
+      $requester_groups_id = getItemByTypeName('Group', '_test_group_1', true);
+      $observer_users_id1  = getItemByTypeName('User', 'normal', true);
+      $observer_users_id2  = getItemByTypeName('User', 'post-only', true);
+      $assigned_groups_id  = getItemByTypeName('Group', '_test_group_2', true);
+      $suppliers_id        = getItemByTypeName('Supplier', '_suplier01_name', true);
 
       $now = date('Y-m-d H:i:s');
       $this->createItem('Ticket', [
@@ -103,7 +107,10 @@ class TicketParameters extends AbstractParameters
          'olas_id_tto'           => $olas_id_tto,
          'olas_id_ttr'           => $olas_id_ttr,
          'date'                  => $now,
-         '_suppliers_id_assign'  => [$suppliers_id]
+         '_groups_id_requester'  => [$requester_groups_id],
+         '_users_id_observer'    => [$observer_users_id1, $observer_users_id2],
+         '_groups_id_assign'     => [$assigned_groups_id],
+         '_suppliers_id_assign'  => [$suppliers_id],
       ]);
 
       $tickets_id = getItemByTypeName('Ticket', 'ticket_testGetValues', true);
@@ -145,14 +152,39 @@ class TicketParameters extends AbstractParameters
                   'mobile'   => null,
                ],
             ],
-            'groups' => [],
+            'groups' => [
+               [
+                  'id'           => $requester_groups_id,
+                  'name'         => '_test_group_1',
+                  'completename' => '_test_group_1',
+               ],
+            ],
          ],
          'observers' => [
-            'users'  => [],
+            'users'  => [
+               [
+                  'id'       => $observer_users_id1,
+                  'login'    => 'normal',
+                  'fullname' => 'normal',
+                  'email'    => '',
+                  'phone'    => null,
+                  'phone2'   => null,
+                  'mobile'   => null,
+               ],
+               [
+                  'id'       => $observer_users_id2,
+                  'login'    => 'post-only',
+                  'fullname' => 'post-only',
+                  'email'    => '',
+                  'phone'    => null,
+                  'phone2'   => null,
+                  'mobile'   => null,
+               ],
+            ],
             'groups' => [],
          ],
          'assignees' => [
-            'users'  => [
+            'users'     => [
                [
                   'id'       => getItemByTypeName("User", TU_USER, true),
                   'login'    => TU_USER,
@@ -163,7 +195,13 @@ class TicketParameters extends AbstractParameters
                   'mobile'   => null,
                ],
             ],
-            'groups' => [],
+            'groups' => [
+               [
+                  'id'           => $assigned_groups_id,
+                  'name'         => '_test_group_2',
+                  'completename' => '_test_group_1 > _test_group_2',
+               ],
+            ],
             'suppliers' => [
                [
                   'id'       => $suppliers_id,

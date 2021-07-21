@@ -129,8 +129,9 @@ abstract class CommonITILObjectParameters extends AbstractParameters
          'groups' => [],
       ];
       $values['assignees'] = [
-         'users'  => [],
-         'groups' => [],
+         'users'     => [],
+         'groups'    => [],
+         'suppliers' => [],
       ];
 
       $user_parameters = new UserParameters();
