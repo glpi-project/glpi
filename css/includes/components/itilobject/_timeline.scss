@@ -137,8 +137,6 @@
          background-color: $timeline-itilc-bg;
          color: $timeline-itilc-fg;
          border-color: $timeline-itilc-border;
-         background-image: url(../pics/timeline/followup.png);
-         background-repeat: no-repeat;
 
          &::before {
             border-color: $timeline-itilc-border $timeline-itilc-border transparent transparent;
@@ -294,6 +292,14 @@
 
    .timeline-badges {
       margin-bottom: -0.5rem;
+   }
+}
+
+#new-itilobject-form {
+   min-width: 65%;
+
+   .timeline-item {
+      min-width: 100%;
    }
 }
 
