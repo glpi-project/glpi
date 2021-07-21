@@ -190,31 +190,40 @@
    {% endif %}
 {% endmacro %}
 
-
-{% macro dateField(name, value, label = '', options = {}) %}
-   {% set options = {'rand': random()}|merge(options) %}
+{% macro flatpickrHtmlInput(name, value, label = '', options = {}) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
+   <div class="input-group flex-grow-1 flatpickr" id="{{ options.id }}">
+      {# .rounded-start added to prevent issue with bootstrap .input-group #}
+      {# the first element is an input[type=hidden] added by flatpickr and so we don't have border-radius on the start #}
+      <input type="text" class="form-control rounded-start ps-2" data-input
+             name="{{ name }}" value="{{ value }}"
+             {{ options.required ? 'required' : "" }}
+             {{ options.disabled ? 'disabled' : "" }}>
+      <i class="input-group-text far fa-calendar" data-toggle role="button"></i>
+   </div>
+{% endmacro %}
+
+{% macro dateField(name, value, label = '', options = {}) %}
+   {% set options = {'rand': random()}|merge(options) %}
+   {% set options = {'id': name ~ '_' ~ options.rand}|merge(options) %}
+   {% set locale = getCurrentLocale() %}
+
    {% set field %}
-      <div class="input-icon flex-grow-1">
-         <input type="date" class="form-control" id="%id%"
-                name="{{ name }}" value="{{ value }}"
-                {{ options.required ? 'required' : '' }}
-                {{ options.disabled ? 'disabled' : '' }} />
-         <i class="input-icon-addon far fa-calendar"></i>
-      </div>
+      {{ _self.flatpickrHtmlInput(name, value, label, options) }}
       <script>
       $(function() {
-         $("#{{ id }}").flatpickr({
+         $("#{{ options.id }}").flatpickr({
+            wrap: true,
             altInput: true,
             altFormat: '{{ getDateFormat('js') }}',
             dateFormat: 'Y-m-d',
-            enableTime: true,
+            enableTime: false,
             weekNumbers: true,
             allowInput: true,
-            /* TODO locale */
+            locale: getFlatPickerLocale("{{ locale['language'] }}", "{{ locale['region'] }}"),
             onClose(dates, currentdatestring, picker) {
                picker.setDate(picker.altInput.value, true, picker.config.altFormat)
             }
@@ -228,31 +237,23 @@
 
 {% macro datetimeField(name, value, label = '', options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
-   {% set id = options.id|length > 0 ? options.id : (name ~ '_' ~ options.rand) %}
-   {% if options.fields_template.isMandatoryField(name) %}
-      {% set options = {'required': true}|merge(options) %}
-   {% endif %}
+   {% set options = {'id': name ~ '_' ~ options.rand}|merge(options) %}
+   {% set locale = getCurrentLocale() %}
 
    {% set field %}
-      <div class="input-icon flex-grow-1">
-         <input type="text" class="form-control" id="{{ id }}"
-                name="{{ name }}" value="{{ value }}"
-                {{ options.required ? 'required' : "" }}
-                {{ options.disabled ? 'disabled' : "" }}>
-         <i class="input-icon-addon far fa-calendar"></i>
-      </div>
+      {{ _self.flatpickrHtmlInput(name, value, label, options) }}
       <script>
       $(function() {
-         $('#{{ id }}').flatpickr({
-            //wrap: true,
+         $('#{{ options.id }}').flatpickr({
             altInput: true,
             dateFormat: 'Y-m-d H:i:S',
             altFormat: '{{ getDateFormat("js") }} H:i:S',
             enableTime: true,
+            wrap: true,
             enableSeconds: true,
             weekNumbers: true,
             allowInput: true,
-            /* TODO locale */
+            locale: getFlatPickerLocale("{{ locale['language'] }}", "{{ locale['region'] }}"),
             onClose(dates, currentdatestring, picker) {
                picker.setDate(picker.altInput.value, true, picker.config.altFormat)
             }
