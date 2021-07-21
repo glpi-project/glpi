@@ -29,6 +29,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
 namespace tests\units\Glpi;
 
 abstract class AbstractTemplate extends \DbTestCase {
@@ -38,8 +39,8 @@ abstract class AbstractTemplate extends \DbTestCase {
 
       $this->login();
 
-      $solution = $this->newTestedInstance;
-      $solution->fields['content'] = <<<TPL
+      $template = $this->newTestedInstance;
+      $template->fields['content'] = <<<TPL
 Itemtype: {{ itemtype }}
 {%if itemtype == 'Ticket' %}{{ ticket.link|raw }}{% endif %}
 {%if itemtype == 'Change' %}{{ change.link|raw }}{% endif %}
@@ -51,7 +52,7 @@ TPL;
          'content'      => '<p>test content</p>',
          'entities_id'  => getItemByTypeName('Entity', '_test_child_2', true),
       ]);
-      $this->string($solution->getRenderedContent($change))
+      $this->string($template->getRenderedContent($change))
          ->isEqualTo(<<<HTML
 Itemtype: Change
 <a href="{$CFG_GLPI['root_doc']}/front/change.form.php?id={$change->fields['id']}" title="test change">test change</a>
@@ -63,7 +64,7 @@ HTML
          'content'      => '<p>test content</p>',
          'entities_id'  => getItemByTypeName('Entity', '_test_child_2', true),
       ]);
-      $this->string($solution->getRenderedContent($problem))
+      $this->string($template->getRenderedContent($problem))
          ->isEqualTo(<<<HTML
 Itemtype: Problem
 <a href="{$CFG_GLPI['root_doc']}/front/problem.form.php?id={$problem->fields['id']}" title="test problem">test problem</a>
@@ -75,11 +76,65 @@ HTML
          'content'      => '<p>test content</p>',
          'entities_id'  => getItemByTypeName('Entity', '_test_child_2', true),
       ]);
-      $this->string($solution->getRenderedContent($ticket))
+      $this->string($template->getRenderedContent($ticket))
          ->isEqualTo(<<<HTML
 Itemtype: Ticket
 <a href="{$CFG_GLPI['root_doc']}/front/ticket.form.php?id={$ticket->fields['id']}" title="test ticket">test ticket</a>
 HTML
       );
+   }
+
+   protected function prepareInputProvider(): iterable {
+      yield [
+         'content'  => '{{ itemtype }}',
+         'is_valid' => true,
+      ];
+
+      yield [
+         'content'  => 'Invalid template {{',
+         'is_valid' => false,
+         'error'    => 'Content: Invalid twig template syntax',
+      ];
+
+      yield [
+         'content'  => 'Unauthorized tag {% set var = 15 %}',
+         'is_valid' => false,
+         'error'    => 'Content: Invalid twig template (Tag "set" is not allowed in "template" at line 1.)',
+      ];
+   }
+
+   /**
+    * @dataProvider prepareInputProvider
+    */
+   public function testPrepareInputForAdd(string $content, bool $is_valid, ?string $error = null) {
+      $this->login();
+
+      $template = $this->newTestedInstance;
+
+      $result = $template->add(['content' => $content]);
+      if ($is_valid) {
+         $this->integer($result)->isGreaterThan(0);
+      } else {
+         $this->boolean($result)->isFalse();
+         $this->hasSessionMessages(ERROR, [$error]);
+      }
+   }
+
+   /**
+    * @dataProvider prepareInputProvider
+    */
+   public function testPrepareInputForUpdate(string $content, bool $is_valid, ?string $error = null) {
+      $this->login();
+
+      $template = $this->newTestedInstance;
+
+      $template_id = $template->add(['content' => 'test']);
+      $this->integer($template_id)->isGreaterThan(0);
+
+      $result = $template->update(['id' => $template_id, 'content' => $content]);
+      $this->boolean($result)->isEqualTo($is_valid);
+      if (!$is_valid) {
+         $this->hasSessionMessages(ERROR, [$error]);
+      }
    }
 }

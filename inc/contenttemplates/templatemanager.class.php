@@ -33,7 +33,6 @@
 namespace Glpi\ContentTemplates;
 
 use Glpi\Toolbox\RichText;
-use Session;
 use Twig\Environment;
 use Twig\Extension\SandboxExtension;
 use Twig\Loader\ArrayLoader;
@@ -80,46 +79,25 @@ class TemplateManager
       // Use sandbox extension to restrict code execution
       $twig->addExtension(new SandboxExtension(self::getSecurityPolicy(), true));
 
-      try {
-         // Render the template
-         $html = $twig->render('template', $params);
+      // Render the template
+      $html = $twig->render('template', $params);
 
-         // Clean generated HTML to ensure both template and values are cleaned.
-         $html = RichText::getSafeHtml($html);
+      // Clean generated HTML to ensure both template and values are cleaned.
+      $html = RichText::getSafeHtml($html);
 
-         return $html;
-      } catch (\Twig\Sandbox\SecurityError $e) {
-         // Security policy error: the template use a forbidden tag/function/...
-         Session::addMessageAfterRedirect(
-            sprintf('%s: %s', __("Invalid twig template"), $e->getMessage()),
-            false,
-            ERROR
-         );
-         return "";
-      } catch (\Twig\Error\SyntaxError $e) {
-         // Syntax error, note that we do not show the exception message in the
-         // error sent to the users as it not really helpful and is more likely
-         // to confuse them that to help them fix the issue
-         Session::addMessageAfterRedirect(
-            __("Invalid twig template syntax"),
-            false,
-            ERROR
-         );
-         return "";
-      }
+      return $html;
    }
 
    /**
     * Boiler plate code to validate a template that user is trying to submit
     *
     * @param string $content           Template content (html + twig)
-    * @param string $field_label       Name of the field containing the template, may
-    *                                  be used in some error messages.
-    * @param bool $sanitized_content  Indicates whether the content has been transformed by GLPI sanitize process
+    * @param bool $sanitized_content   Indicates whether the content has been transformed by GLPI sanitize process
+    * @param null|string $err_msg      Reference to variable that will be filled by error message if validation fails
     *
     * @return bool
     */
-   public static function validate(string $content, string $field_label, bool $sanitized_content = false): bool {
+   public static function validate(string $content, bool $sanitized_content = false, ?string &$err_msg = null): bool {
       if ($sanitized_content) {
          $content = \Toolbox::unclean_cross_side_scripting_deep($content);
       }
@@ -135,34 +113,21 @@ class TemplateManager
          // need to actually try to render the template to validate them
          $twig->render('template', []);
 
-         return true;
       } catch (\Twig\Sandbox\SecurityError $e) {
          // Security policy error: the template use a forbidden tag/function/...
-         Session::addMessageAfterRedirect(
-            sprintf('%s: %s', __("Invalid twig template"), $e->getMessage()),
-            false,
-            ERROR
-         );
-
-         // Keep template in session to not lose the user's input
-         $_SESSION['twig_restore_input'] = $content;
+         $err_msg = sprintf(__("Invalid twig template (%s)"), $e->getMessage());
 
          return false;
       } catch (\Twig\Error\SyntaxError $e) {
          // Syntax error, note that we do not show the exception message in the
          // error sent to the users as it not really helpful and is more likely
          // to confuse them that to help them fix the issue
-         Session::addMessageAfterRedirect(
-            sprintf('%s: %s', "Invalid twig template syntax", $field_label),
-            false,
-            ERROR
-         );
-
-         // Keep template in session to not lose the user's input
-         $_SESSION['twig_restore_input'] = $content;
+         $err_msg = __("Invalid twig template syntax");
 
          return false;
       }
+
+      return true;
    }
 
    /**

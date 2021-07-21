@@ -73,7 +73,7 @@ class TemplateManager extends GLPITestCase
             'content'   => "Test forbidden tag: {% set var = 'value' %}",
             'params'    => [],
             'expected'  => "",
-            'error'     => 'Invalid twig template: Tag "set" is not allowed in "template" at line 1.',
+            'error'     => 'Invalid twig template (Tag "set" is not allowed in "template" at line 1.)',
          ],
          [
             'content'   => "Test syntax error {{",
@@ -136,16 +136,21 @@ class TemplateManager extends GLPITestCase
       bool $sanitized = false
    ): void {
       $manager = $this->newTestedInstance();
-      $html = $manager->render($content, $params, $sanitized);
-      $this->string($html)->isEqualTo($expected);
 
-      // Handle error if neeced
+      $html = null;
+
       if ($error !== null) {
-         $errors = $_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR];
-         unset($_SESSION['MESSAGE_AFTER_REDIRECT']);
-         $this->array($errors)->hasSize(1);
-         $this->string($errors[0])->isEqualTo($error);
+         $this->exception(
+            function () use ($manager, $content, $params, $sanitized, &$html) {
+               $html = $manager->render($content, $params, $sanitized);
+            }
+         );
+         return;
+      } else {
+         $html = $manager->render($content, $params, $sanitized);
       }
+
+      $this->string($html)->isEqualTo($expected);
    }
 
    /**
@@ -159,15 +164,13 @@ class TemplateManager extends GLPITestCase
       bool $sanitized = false
    ): void {
       $manager = $this->newTestedInstance();
-      $is_valid = $manager->validate($content, 'field', $sanitized);
+      $err_msg = null;
+      $is_valid = $manager->validate($content, $sanitized, $err_msg);
       $this->boolean($is_valid)->isEqualTo(empty($error));
 
       // Handle error if neeced
       if ($error !== null) {
-         $errors = $_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR];
-         unset($_SESSION['MESSAGE_AFTER_REDIRECT']);
-         $this->array($errors)->hasSize(1);
-         $this->string($errors[0])->contains($error);
+         $this->string($err_msg)->contains($error);
       }
    }
 

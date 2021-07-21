@@ -63,9 +63,7 @@ abstract class AbstractTemplate extends CommonDropdown
    function prepareInputForAdd($input) {
       $input = parent::prepareInputForUpdate($input);
 
-      // Validate twig template
-      if (isset($input['content']) && !TemplateManager::validate(stripslashes($input['content']), __('Content'), true)) {
-         $this->saveInput();
+      if (!$this->validateContentInput($input)) {
          return false;
       }
 
@@ -75,13 +73,37 @@ abstract class AbstractTemplate extends CommonDropdown
    function prepareInputForUpdate($input) {
       $input = parent::prepareInputForUpdate($input);
 
-      // Validate twig template
-      if (isset($input['content']) && !TemplateManager::validate(stripslashes($input['content']), __('Content'), true)) {
-         $this->saveInput();
+      if (!$this->validateContentInput($input)) {
          return false;
       }
 
       return $input;
+   }
+
+   /**
+    * Validate 'content' field from input.
+    *
+    * @param array $input
+    *
+    * @return bool
+    */
+   protected function validateContentInput(array $input): bool {
+      if (!isset($input['content'])) {
+         return true;
+      }
+
+      $err_msg = null;
+      if (!TemplateManager::validate(stripslashes($input['content']), true, $err_msg)) {
+         Session::addMessageAfterRedirect(
+            sprintf('%s: %s', __('Content'), $err_msg),
+            false,
+            ERROR
+         );
+         $this->saveInput();
+         return false;
+      }
+
+      return true;
    }
 
    /**
@@ -94,13 +116,21 @@ abstract class AbstractTemplate extends CommonDropdown
    public function getRenderedContent(CommonITILObject $itil_item): string {
       $parameters_class = $itil_item->getContentTemplatesParametersClass();
       $parameters = new $parameters_class();
-      return TemplateManager::render(
-         $this->fields['content'],
-         [
-            'itemtype' => $itil_item->getType(),
-            $parameters->getDefaultNodeName() => $parameters->getValues($itil_item),
-         ],
-         true
-      );
+
+      try {
+         $html = TemplateManager::render(
+            $this->fields['content'],
+            [
+               'itemtype' => $itil_item->getType(),
+               $parameters->getDefaultNodeName() => $parameters->getValues($itil_item),
+            ],
+            true
+         );
+      } catch (\Twig\Error\Error $e) {
+         $html = $this->fields['content'];
+         global $GLPI;
+         $GLPI->getErrorHandler()->handleException($e);
+      }
+      return $html;
    }
 }
