@@ -1583,7 +1583,7 @@ HTML;
       TemplateRenderer::getInstance()->display('layout/parts/page_header.html.twig', $tpl_vars);
 
       // TODO move to main_class
-      $main_class = "layout_".$_SESSION['glpilayout'];
+      $main_class = "";
       if ((strpos($_SERVER['REQUEST_URI'], ".form.php") !== false)
           && isset($_GET['id']) && ($_GET['id'] > 0)) {
          if (!CommonGLPI::isLayoutExcludedPage()) {
