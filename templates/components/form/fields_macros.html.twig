@@ -628,6 +628,7 @@
       'field_class': 'col-12 col-sm-6',
       'label_class': 'col-xxl-5',
       'input_class': 'col-xxl-7',
+      'add_field_class': '',
    }|merge(options) %}
 
    {% if options.full_width %}
@@ -656,9 +657,9 @@
       }) %}
    {% endif %}
 
-   <div class="form-field row {{ options.field_class }} {{ options.mb }}">
+   <div class="form-field row {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}">
       {{ _self.label(label, id, options, 'col-form-label ' ~ options.label_class) }}
-      <div class="{{ options.input_class }}">
+      <div class="{{ options.input_class }} d-flex align-items-center">
          {{ field|raw }}
          {{ add_field_html|raw }}
       </div>
@@ -669,17 +670,22 @@
 {% macro verticalField(label, field, id, add_field_html = '', options = {}) %}
    {% set options = {
       'full_width': false,
-      'mb': 'mb-2'
+      'mb': 'mb-2',
+      'field_class': 'col-12 col-sm-6',
+      'add_field_class': '',
    }|merge(options) %}
 
-   {% set class = "col-12 col-sm-6" %}
    {% if options.full_width %}
-      {% set class = 'col-12' %}
+      {% set options = options|merge({
+         field_class: 'col-12',
+      }) %}
    {% endif %}
 
-   <div class="form-field {{ class }} {{ options.mb }}">
-      {{ _self.label(label, id, options) }}
-      {{ field|raw }}
+   <div class="form-field {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}">
+      {{ _self.label(label, id, options, 'col-form-label ' ~ options.label_class) }}
+      <div class="{{ options.input_class }}">
+         {{ field|raw }}
+      </div>
       {{ add_field_html|raw }}
    </div>
 {% endmacro %}

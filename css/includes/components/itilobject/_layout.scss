@@ -59,6 +59,27 @@
          }
       }
    }
+
+   // fix entity and sla badge long display
+   .badge.itil-badge {
+      white-space: normal;
+      line-height: inherit;
+      height: auto;
+      text-align: left;
+      display: inline-flex;
+      //flex-direction: column;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: left;
+      gap: 0.5rem;
+      text-transform: none;
+      overflow: inherit;
+
+      .badge {
+         text-transform: none;
+         margin: calc(-.25rem + 1px) -0.25rem;
+      }
+   }
 }
 
 #itil-object-container ~ #debugajax {
@@ -88,11 +109,14 @@
 
                   .card-body {
                      height: 100%;
+                     display: flex;
+                     flex-direction: column;
 
                      .row {
+                        //height: calc(100% - 55px); // remove alert height
                         height: 100%;
 
-                        .form-field:nth-of-type(2) {
+                        .form-field.itil-textarea-content {
                            flex: 1;
                            display: flex;
                            flex-direction: column;

@@ -1,8 +1,8 @@
 {% import "components/form/fields_macros.html.twig" as fields %}
 {% set field_options = {
-   full_width: true,
-   fields_template: itiltemplate,
-   disabled: (not canupdate)
+   'full_width': true,
+   'fields_template': itiltemplate,
+   'disabled': (not canupdate)
 } %}
 
 <div class="accordion open accordion-flush" id="itil-data">
@@ -15,6 +15,31 @@
       </h2>
       <div id="ticket-main" class="accordion-collapse collapse show" aria-labelledby="heading-main-ticket">
          <div class="accordion-body row m-0 mt-n2">
+
+               {% set entity_html %}
+                  <span class="badge itil-badge bg-secondary">
+                     {{ getDropdownName('glpi_entities', item.fields['entities_id'])}}
+                  </span>
+               {% endset %}
+
+               {{ fields.field(
+                  '',
+                  entity_html,
+                  _n('Entity', 'Entities', 1),
+                  field_options|merge({
+                     'add_field_class': 'd-flex align-items-center',
+                  })
+               ) }}
+
+               {% if item.isField('is_recursive') %}
+                  {{ fields.dropdownYesNo(
+                     'is_recursive',
+                     item.fields["is_recursive"],
+                     __('Child entities'),
+                     field_options
+                  ) }}
+               {% endif %}
+
             {{ fields.datetimeField(
                'date',
                item.fields["date"],

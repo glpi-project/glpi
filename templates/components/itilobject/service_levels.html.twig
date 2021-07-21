@@ -52,41 +52,42 @@
    {% set la_html %}
       {% if la_field.la.getDataForTicket(item.fields['id'], la_field.type) %}
          {% if date_displayed %}
-            <div class="text-muted d-block">
+            <span class="text-muted">
                {{ convDateTime(item.fields[la_field.datefieldname]) }}
-            </div>
+            </span>
          {% endif %}
 
          {% if la_displayed %}
-            <span class="level_name badge bg-secondary">
-               <i class='fas fa-stopwatch slt'></i>
-               {% set level_texts = getDropdownName(la_field.la.getTable(), item.fields[la_field.lafieldname], true) %}
-               <span class="ms-2"
-                     title='{{ level_texts['comment'] }}'
-                     data-bs-toggle="tooltip" data-bs-placement="top">
-                  {{ level_texts['name'] }}
+            <span class="level_name badge itil-badge bg-secondary ms-1 flex-column flex-sm-row">
+               <span class="d-flex align-items-center">
+                  <i class='fas fa-stopwatch slt me-1'></i>
+                  {% set level_texts = getDropdownName(la_field.la.getTable(), item.fields[la_field.lafieldname], true) %}
+                  <span class="text-truncate"
+                        title='{{ level_texts['comment'] }}'
+                        data-bs-toggle="tooltip" data-bs-placement="top">
+                     {{ level_texts['name'] }}
+                  </span>
+
+                  {% if canupdate %}
+                     <i class="fa fa-times-circle ms-1" role="button"
+                        onclick="delete_date_{{ rand }}(event)"
+                        title="{{ _x('button', 'Delete permanently') }}"
+                        data-bs-toggle="tooltip" data-bs-placement="top"></i>
+                  {% endif %}
                </span>
 
                {% set nextaction = la_field.la.getNextActionForTicket(item, la_field.type) %}
                {% set level  = la_field.la.getLevelFromAction(nextaction) %}
                {% if level != false %}
-                  <span class="badge bg-secondary rounded-0 ms-2">
-                     <i class="fas fa-clock"
+                  <span class="badge bg-info ms-0 ms-sm-1">
+                     <i class="fas fa-clock me-1"
                         title="{{ __("Next escalation: %s")|format(convDateTime(nextaction.fields['date'])) }}"
                         data-bs-toggle="tooltip" data-bs-placement="top"></i>
-                     <span class="ms-1"
-                           title="{{ __('%1$s: %2$s')|format(_n('Escalation level', 'Escalation levels', 1), level.getName()) }}"
+                     <span title="{{ __('%1$s: %2$s')|format(_n('Escalation level', 'Escalation levels', 1), level.getName()) }}"
                            data-bs-toggle="tooltip" data-bs-placement="top">
                         {{ level.getName() }}
                      </span>
                   </span>
-               {% endif %}
-
-               {% if canupdate %}
-                  <i class="fa fa-times-circle pointer ms-2" role="button"
-                     onclick="delete_date_{{ rand }}(event)"
-                     title="{{ _x('button', 'Delete permanently') }}"
-                     data-bs-toggle="tooltip" data-bs-placement="top"></i>
                {% endif %}
             </span>
             <script type="text/javascript">
@@ -191,6 +192,7 @@
          mb: 'mb-2',
          label_class: 'col-auto',
          full_width: true,
+         is_horizontal: false
       }
    ) }}
 {% endfor %}
