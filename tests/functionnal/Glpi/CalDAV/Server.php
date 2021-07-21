@@ -41,41 +41,40 @@ class Server extends DbTestCase {
    protected function propfindMainEndpointsProvider() {
       $dataset = [];
 
-      $group = new \Group();
-      $group_1_id = (int)$group->add([
-         'name' => 'Test group 1'
-      ]);
-      $this->integer($group_1_id)->isGreaterThan(0);
-      $group_2_id = (int)$group->add([
-         'name' => 'Test group 2'
-      ]);
-      $this->integer($group_2_id)->isGreaterThan(0);
+      $all_groups_id = array_keys(getAllDataFromTable('glpi_groups', ['is_task' => 1]));
+      $group_1_id = getItemByTypeName('Group', '_test_group_1', true);
+      $group_2_id = getItemByTypeName('Group', '_test_group_2', true);
 
       $users = [
          getItemByTypeName('User', 'glpi', true) => [
             'name'   => 'glpi',
             'pass'   => 'glpi',
             'groups' => [$group_1_id, $group_2_id],
+            'seeall' => false,
          ],
          getItemByTypeName('User', 'tech', true) => [
             'name'   => 'tech',
             'pass'   => 'tech',
             'groups' => [$group_1_id],
+            'seeall' => false,
          ],
          getItemByTypeName('User', 'normal', true) => [
             'name'   => 'normal',
             'pass'   => 'normal',
             'groups' => [$group_2_id],
+            'seeall' => false,
          ],
          getItemByTypeName('User', 'post-only', true) => [
             'name'   => 'post-only',
             'pass'   => 'postonly',
             'groups' => [],
+            'seeall' => false,
          ],
          getItemByTypeName('User', TU_USER, true) => [
             'name'   => TU_USER,
             'pass'   => TU_PASS,
             'groups' => [],
+            'seeall' => true,
          ],
       ];
 
@@ -157,7 +156,7 @@ class Server extends DbTestCase {
       }
 
       // All users should be able to get "groups" principals properties
-      // but result will only contains data for user groups.
+      // but result will only contains data for user groups (or all groups if user has enough rights).
       foreach ($users as $user_data) {
          $groups_expected_results = [
             [
@@ -165,7 +164,8 @@ class Server extends DbTestCase {
                'resourcetype' => 'd:collection',
             ],
          ];
-         foreach ($user_data['groups'] as $group_id) {
+         $groups = $user_data['seeall'] ? $all_groups_id : $user_data['groups'];
+         foreach ($groups as $group_id) {
             // Group principal should be listed in 'principals/groups/' result
             $groups_expected_results[] = [
                'href'         => 'principals/groups/' . $group_id . '/',
@@ -310,7 +310,7 @@ class Server extends DbTestCase {
       }
 
       // All users should be able to get "groups" calendars properties
-      // but result will only contains data for user groups.
+      // but result will only contains data for user groups (or all groups if user has enough rights).
       foreach ($users as $user_data) {
          $groups_expected_results = [
             [
@@ -318,7 +318,8 @@ class Server extends DbTestCase {
                'resourcetype' => 'd:collection',
             ],
          ];
-         foreach ($user_data['groups'] as $group_id) {
+         $groups = $user_data['seeall'] ? $all_groups_id : $user_data['groups'];
+         foreach ($groups as $group_id) {
             // Group principal should be listed in 'calendars/groups/' result
             $groups_expected_results[] = [
                'href'         => 'calendars/groups/' . $group_id . '/',
