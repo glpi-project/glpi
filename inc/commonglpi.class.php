@@ -1101,7 +1101,7 @@ JAVASCRIPT;
     * @return boolean
     */
    public static function isLayoutWithMain() {
-      return (isset($_SESSION['glpilayout']) && in_array($_SESSION['glpilayout'], ['classic', 'vsplit']));
+      return false;
    }
 
 
