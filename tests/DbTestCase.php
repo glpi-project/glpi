@@ -170,8 +170,10 @@ class DbTestCase extends \GLPITestCase {
     *
     * @param string $itemtype
     * @param array $input
+    *
+    * @return CommonDBTM
     */
-   protected function createItem($itemtype, $input) {
+   protected function createItem($itemtype, $input): CommonDBTM {
       $item = new $itemtype();
       $input = Toolbox::sanitize($input);
       $id = $item->add($input);
@@ -183,6 +185,8 @@ class DbTestCase extends \GLPITestCase {
       }, ARRAY_FILTER_USE_KEY);
 
       $this->checkInput($item, $id, $input);
+
+      return $item;
    }
 
    /**
