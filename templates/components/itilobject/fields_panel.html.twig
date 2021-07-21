@@ -16,6 +16,7 @@
       <div id="ticket-main" class="accordion-collapse collapse show" aria-labelledby="heading-main-ticket">
          <div class="accordion-body row m-0 mt-n2">
 
+            {% if isMultiEntitiesMode() %}
                {% set entity_html %}
                   <span class="badge itil-badge bg-secondary">
                      {{ getDropdownName('glpi_entities', item.fields['entities_id'])}}
@@ -39,6 +40,7 @@
                      field_options
                   ) }}
                {% endif %}
+            {% endif %}
 
             {{ fields.datetimeField(
                'date',
