@@ -52,7 +52,7 @@
             <input type="hidden" name="{{ item|get_foreignkey_field }}" value="{{ item.fields['id'] }}">
 
             <div class="row">
-               <div class="col-12 col-md-9">
+               <div class="col-12">
                   {{ fields.readOnlyField(
                      'approval_requester',
                      User__getUserName(),
