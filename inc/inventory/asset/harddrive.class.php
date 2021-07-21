@@ -46,8 +46,7 @@ class HardDrive extends Device
          'disksize'      => 'capacity',
          'interface'     => 'interfacetypes_id',
          'manufacturer'  => 'manufacturers_id',
-         'model'         => 'designation',
-         'serialnumber'  => 'serial'
+         'model'         => 'designation'
       ];
 
       foreach ($this->data as &$val) {

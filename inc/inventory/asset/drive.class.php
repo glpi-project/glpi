@@ -46,7 +46,6 @@ class Drive extends Device
 
    public function prepare() :array {
       $mapping = [
-         'serialnumber' => 'serial',
          'name'         => 'designation',
          'type'         => 'interfacetypes_id',
          'manufacturer' => 'manufacturers_id',
