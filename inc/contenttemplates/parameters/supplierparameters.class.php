@@ -34,42 +34,45 @@ namespace Glpi\ContentTemplates\Parameters;
 
 use CommonDBTM;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
+use Supplier;
 use Toolbox;
-use User;
-use UserEmail;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
 /**
- * Parameters for "User" items.
+ * Parameters for "Supplier" items.
  *
  * @since 10.0.0
  */
-class UserParameters extends AbstractParameters
+class SupplierParameters extends TreeDropdownParameters
 {
    public static function getDefaultNodeName(): string {
-      return 'user';
+      return 'supplier';
    }
 
    public static function getObjectLabel(): string {
-      return User::getTypeName(1);
+      return Supplier::getTypeName(1);
    }
 
    protected function getTargetClasses(): array {
-      return [User::class];
+      return [Supplier::class];
    }
 
    protected function defineParameters(): array {
       return [
          new AttributeParameter("id", __('ID')),
-         new AttributeParameter("login", __('Login')),
-         new AttributeParameter("fullname", __('Name')),
-         new AttributeParameter("email", _n('Email', 'Emails', 1)),
+         new AttributeParameter("name", __('Name')),
+         new AttributeParameter("address", __('Address')),
+         new AttributeParameter("city", __('City')),
+         new AttributeParameter("postcode", __('Postal code')),
+         new AttributeParameter("state", _x('location', 'State')),
+         new AttributeParameter("country", __('Country')),
          new AttributeParameter("phone", _n('Phone', 'Phones', 1)),
-         new AttributeParameter("phone2", __('Phone 2')),
-         new AttributeParameter("mobile", __('Mobile')),
+         new AttributeParameter("fax", __('Fax')),
+         new AttributeParameter("email", _n('Email', 'Emails', 1)),
+         new AttributeParameter("website", __('Website')),
       ];
    }
 
@@ -79,13 +82,17 @@ class UserParameters extends AbstractParameters
       $fields = Toolbox::unclean_cross_side_scripting_deep($user->fields);
 
       return [
-         'id'    => $fields['id'],
-         'login' => $fields['name'],
-         'fullname'  => $user->getFriendlyName(),
-         'email' => UserEmail::getDefaultForUser($fields['id']),
-         'phone' => $fields['phone'],
-         'phone2' => $fields['phone2'],
-         'mobile' => $fields['mobile'],
+         'id'        => $fields['id'],
+         'name'      => $fields['name'],
+         'address'   => $fields['address'],
+         'city'      => $fields['town'],
+         'postcode'  => $fields['postcode'],
+         'state'     => $fields['state'],
+         'country'   => $fields['country'],
+         'phone'     => $fields['phonenumber'],
+         'fax'       => $fields['fax'],
+         'email'     => $fields['email'],
+         'website'   => $fields['website'],
       ];
    }
 }

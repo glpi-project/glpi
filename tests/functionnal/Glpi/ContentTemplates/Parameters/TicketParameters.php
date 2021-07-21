@@ -88,19 +88,22 @@ class TicketParameters extends AbstractParameters
       $olas_id_tto = getItemByTypeName('OLA', 'ola_tto_testGetValue', true);
       $olas_id_ttr = getItemByTypeName('OLA', 'ola_ttr_testGetValue', true);
 
+      $suppliers_id = getItemByTypeName('Supplier', '_suplier01_name', true);
+
       $now = date('Y-m-d H:i:s');
       $this->createItem('Ticket', [
-         'name'              => 'ticket_testGetValues',
-         'content'           => '<p>ticket_testGetValues content</p>',
-         'entities_id'       => $test_entity_id,
-         'date'              => '2021-07-19 17:11:28',
-         'itilcategories_id' => $itilcategories_id,
-         'locations_id'      => $locations_id,
-         'slas_id_tto'       => $slas_id_tto,
-         'slas_id_ttr'       => $slas_id_ttr,
-         'olas_id_tto'       => $olas_id_tto,
-         'olas_id_ttr'       => $olas_id_ttr,
-         'date'              => $now,
+         'name'                  => 'ticket_testGetValues',
+         'content'               => '<p>ticket_testGetValues content</p>',
+         'entities_id'           => $test_entity_id,
+         'date'                  => '2021-07-19 17:11:28',
+         'itilcategories_id'     => $itilcategories_id,
+         'locations_id'          => $locations_id,
+         'slas_id_tto'           => $slas_id_tto,
+         'slas_id_ttr'           => $slas_id_ttr,
+         'olas_id_tto'           => $olas_id_tto,
+         'olas_id_ttr'           => $olas_id_ttr,
+         'date'                  => $now,
+         '_suppliers_id_assign'  => [$suppliers_id]
       ]);
 
       $tickets_id = getItemByTypeName('Ticket', 'ticket_testGetValues', true);
@@ -161,6 +164,21 @@ class TicketParameters extends AbstractParameters
                ],
             ],
             'groups' => [],
+            'suppliers' => [
+               [
+                  'id'       => $suppliers_id,
+                  'name'     => '_suplier01_name',
+                  'address'  => null,
+                  'city'     => null,
+                  'postcode' => null,
+                  'state'    => null,
+                  'country'  => null,
+                  'phone'    => '0123456789',
+                  'fax'      => '0123456787',
+                  'email'    => 'info@_supplier01_name.com',
+                  'website'  => null,
+               ]
+            ],
          ],
          'type'      => 'Incident',
          'global_validation' => "Not subject to approval",

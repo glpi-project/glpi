@@ -42,6 +42,7 @@ use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
 use Group;
 use ITILCategory;
 use Session;
+use Supplier;
 use Toolbox;
 use User;
 
@@ -78,6 +79,7 @@ abstract class CommonITILObjectParameters extends AbstractParameters
          new ArrayParameter("requesters.groups", new GroupParameters(), _n('Requester group', 'Requester groups', Session::getPluralNumber())),
          new ArrayParameter("observers.groups", new GroupParameters(), _n('Watcher group', 'Watcher groups', Session::getPluralNumber())),
          new ArrayParameter("assignees.groups", new GroupParameters(), _n('Assigned group', 'Assigned groups', Session::getPluralNumber())),
+         new ArrayParameter("assignees.suppliers", new SupplierParameters(), _n('Assigned supplier', 'Assigned suppliers', Session::getPluralNumber())),
       ];
    }
 
@@ -156,6 +158,13 @@ abstract class CommonITILObjectParameters extends AbstractParameters
             if ($group = Group::getById($data['groups_id'])) {
                $values[$key]['groups'][] = $group_parameters->getValues($group);
             }
+         }
+      }
+
+      $supplier_parameters = new SupplierParameters();
+      foreach ($commonitil->getSuppliers(CommonITILActor::ASSIGN) as $data) {
+         if ($supplier = Supplier::getById($data['suppliers_id'])) {
+            $values['assignees']['suppliers'][] = $supplier_parameters->getValues($supplier);
          }
       }
 

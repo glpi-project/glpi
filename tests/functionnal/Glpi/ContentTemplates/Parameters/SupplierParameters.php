@@ -1,0 +1,74 @@
+<?php
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2021 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+namespace tests\units\Glpi\ContentTemplates\Parameters;
+
+use Glpi\ContentTemplates\Parameters\SupplierParameters as CoreSupplierParameters;
+
+class SupplierParameters extends AbstractParameters
+{
+   public function testGetValues(): void {
+      $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+
+      $this->createItem('Supplier', [
+         'name'        => 'supplier_testGetValues',
+         'entities_id' => $test_entity_id,
+         'address'     => '221B Baker Street',
+         'town'        => 'London',
+         'postcode'    => 'NW1 6XE',
+         'state'       => 'England',
+         'country'     => 'UK',
+         'phonenumber' => '+44 20 7224 ...0',
+         'fax'         => '+44 20 7224 ...1',
+         'email'       => 'test@glpi-project.org',
+         'website'     => 'https://glpi-project.org',
+      ]);
+
+      $parameters = new CoreSupplierParameters();
+      $values = $parameters->getValues(getItemByTypeName('Supplier', 'supplier_testGetValues'));
+      $this->array($values)->isEqualTo([
+         'id'       => getItemByTypeName('Supplier', 'supplier_testGetValues', true),
+         'name'     => 'supplier_testGetValues',
+         'address'  => '221B Baker Street',
+         'city'     => 'London',
+         'postcode' => 'NW1 6XE',
+         'state'    => 'England',
+         'country'  => 'UK',
+         'phone'    => '+44 20 7224 ...0',
+         'fax'      => '+44 20 7224 ...1',
+         'email'    => 'test@glpi-project.org',
+         'website'  => 'https://glpi-project.org',
+      ]);
+
+      $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
+   }
+}
