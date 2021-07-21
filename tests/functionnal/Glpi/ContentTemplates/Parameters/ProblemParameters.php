@@ -32,8 +32,6 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-use Glpi\ContentTemplates\Parameters\ProblemParameters as CoreProblemParameters;
-
 class ProblemParameters extends AbstractParameters
 {
    public function testGetValues(): void {
@@ -62,7 +60,7 @@ class ProblemParameters extends AbstractParameters
 
       $problems_id = getItemByTypeName('Problem', 'problem_testGetValues', true);
 
-      $parameters = new CoreProblemParameters();
+      $parameters = $this->newTestedInstance();
       $values = $parameters->getValues(getItemByTypeName('Problem', 'problem_testGetValues'));
       $this->array($values)->isEqualTo([
          'id'        => $problems_id,

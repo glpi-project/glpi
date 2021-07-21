@@ -32,8 +32,6 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-use Glpi\ContentTemplates\Parameters\ITILCategoryParameters as CoreITILCategoryParameters;
-
 class ITILCategoryParameters extends AbstractParameters
 {
    public function testGetValues(): void {
@@ -44,7 +42,7 @@ class ITILCategoryParameters extends AbstractParameters
          'entities_id' => $test_entity_id
       ]);
 
-      $parameters = new CoreITILCategoryParameters();
+      $parameters = $this->newTestedInstance();
       $values = $parameters->getValues(getItemByTypeName('ITILCategory', 'itilcategory_testGetValues'));
       $this->array($values)->isEqualTo([
          'id'           => getItemByTypeName('ITILCategory', 'itilcategory_testGetValues', true),

@@ -32,8 +32,6 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-use Glpi\ContentTemplates\Parameters\KnowbaseItemParameters as CoreKnowbaseItemParameters;
-
 class KnowbaseItemParameters extends AbstractParameters
 {
    public function testGetValues(): void {
@@ -46,7 +44,7 @@ class KnowbaseItemParameters extends AbstractParameters
 
       $kbi_id = getItemByTypeName('KnowbaseItem', 'kbi_testGetValues', true);
 
-      $parameters = new CoreKnowbaseItemParameters();
+      $parameters = $this->newTestedInstance();
       $values = $parameters->getValues(getItemByTypeName('KnowbaseItem', 'kbi_testGetValues'));
       $this->array($values)->isEqualTo([
          'id'     => $kbi_id,

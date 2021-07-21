@@ -32,8 +32,6 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-use Glpi\ContentTemplates\Parameters\TicketParameters as CoreTicketParameters;
-
 class TicketParameters extends AbstractParameters
 {
    public function testGetValues(): void {
@@ -115,7 +113,7 @@ class TicketParameters extends AbstractParameters
 
       $tickets_id = getItemByTypeName('Ticket', 'ticket_testGetValues', true);
 
-      $parameters = new CoreTicketParameters();
+      $parameters = $this->newTestedInstance();
       $values = $parameters->getValues(getItemByTypeName('Ticket', 'ticket_testGetValues'));
       $this->array($values)->isEqualTo([
          'id'        => $tickets_id,

@@ -32,8 +32,6 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-use Glpi\ContentTemplates\Parameters\ChangeParameters as CoreChangeParameters;
-
 class ChangeParameters extends AbstractParameters
 {
    public function testGetValues(): void {
@@ -59,7 +57,7 @@ class ChangeParameters extends AbstractParameters
 
       $changes_id = getItemByTypeName('Change', 'change_testGetValues', true);
 
-      $parameters = new CoreChangeParameters();
+      $parameters = $this->newTestedInstance();
       $values = $parameters->getValues(getItemByTypeName('Change', 'change_testGetValues'));
       $this->array($values)->isEqualTo([
          'id'        => $changes_id,

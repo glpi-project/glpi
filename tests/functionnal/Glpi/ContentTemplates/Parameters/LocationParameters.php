@@ -32,8 +32,6 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-use Glpi\ContentTemplates\Parameters\LocationParameters as CoreLocationParameters;
-
 class LocationParameters extends AbstractParameters
 {
    public function testGetValues(): void {
@@ -50,7 +48,7 @@ class LocationParameters extends AbstractParameters
          'locations_id' => getItemByTypeName('Location', 'location_testGetValues_parent', true)
       ]);
 
-      $parameters = new CoreLocationParameters();
+      $parameters = $this->newTestedInstance();
       $values = $parameters->getValues(getItemByTypeName('Location', 'location_testGetValues'));
       $this->array($values)->isEqualTo([
          'id'   => getItemByTypeName('Location', 'location_testGetValues', true),

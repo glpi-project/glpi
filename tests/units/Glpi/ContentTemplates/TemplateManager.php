@@ -32,7 +32,6 @@
 
 namespace tests\units\Glpi\ContentTemplates;
 
-use Glpi\ContentTemplates\TemplateManager as CoreTemplateManager;
 use GLPITestCase;
 use Twig\Sandbox\SecurityPolicy;
 
@@ -136,7 +135,8 @@ class TemplateManager extends GLPITestCase
       ?string $error = null,
       bool $sanitized = false
    ): void {
-      $html = CoreTemplateManager::render($content, $params, $sanitized);
+      $manager = $this->newTestedInstance();
+      $html = $manager->render($content, $params, $sanitized);
       $this->string($html)->isEqualTo($expected);
 
       // Handle error if neeced
@@ -158,7 +158,8 @@ class TemplateManager extends GLPITestCase
       ?string $error = null,
       bool $sanitized = false
    ): void {
-      $is_valid = CoreTemplateManager::validate($content, 'field', $sanitized);
+      $manager = $this->newTestedInstance();
+      $is_valid = $manager->validate($content, 'field', $sanitized);
       $this->boolean($is_valid)->isEqualTo(empty($error));
 
       // Handle error if neeced
@@ -172,6 +173,7 @@ class TemplateManager extends GLPITestCase
 
    public function testGetSecurityPolicy(): void {
       // Not much to test here, maybe keepk this for code coverage ?
-      $this->object(CoreTemplateManager::getSecurityPolicy())->isInstanceOf(SecurityPolicy::class);
+      $manager = $this->newTestedInstance();
+      $this->object($manager->getSecurityPolicy())->isInstanceOf(SecurityPolicy::class);
    }
 }

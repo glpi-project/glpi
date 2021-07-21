@@ -32,8 +32,6 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-use Glpi\ContentTemplates\Parameters\SupplierParameters as CoreSupplierParameters;
-
 class SupplierParameters extends AbstractParameters
 {
    public function testGetValues(): void {
@@ -53,7 +51,7 @@ class SupplierParameters extends AbstractParameters
          'website'     => 'https://glpi-project.org',
       ]);
 
-      $parameters = new CoreSupplierParameters();
+      $parameters = $this->newTestedInstance();
       $values = $parameters->getValues(getItemByTypeName('Supplier', 'supplier_testGetValues'));
       $this->array($values)->isEqualTo([
          'id'       => getItemByTypeName('Supplier', 'supplier_testGetValues', true),

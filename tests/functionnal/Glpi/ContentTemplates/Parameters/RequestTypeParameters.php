@@ -32,8 +32,6 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-use Glpi\ContentTemplates\Parameters\RequestTypeParameters as CoreITILRequestTypeParameters;
-
 class RequestTypeParameters extends AbstractParameters
 {
    public function testGetValues(): void {
@@ -41,7 +39,7 @@ class RequestTypeParameters extends AbstractParameters
          'name' => 'requesttype_testGetValues',
       ]);
 
-      $parameters = new CoreITILRequestTypeParameters();
+      $parameters = $this->newTestedInstance();
       $values = $parameters->getValues(getItemByTypeName('RequestType', 'requesttype_testGetValues'));
       $this->array($values)->isEqualTo([
          'id'   => getItemByTypeName('RequestType', 'requesttype_testGetValues', true),

@@ -32,12 +32,10 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-use Glpi\ContentTemplates\Parameters\EntityParameters as CoreEntityParameters;
-
 class EntityParameters extends AbstractParameters
 {
    public function testGetValues(): void {
-      $parameters = new CoreEntityParameters();
+      $parameters = $this->newTestedInstance();
       $values = $parameters->getValues(getItemByTypeName('Entity', '_test_child_2'));
       $this->array($values)->isEqualTo([
          'id'   => getItemByTypeName('Entity', '_test_child_2', true),

@@ -32,8 +32,6 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-use Glpi\ContentTemplates\Parameters\GroupParameters as CoreGroupParameters;
-
 class GroupParameters extends AbstractParameters
 {
    public function testGetValues(): void {
@@ -44,7 +42,7 @@ class GroupParameters extends AbstractParameters
          'entities_id' => $test_entity_id
       ]);
 
-      $parameters = new CoreGroupParameters();
+      $parameters = $this->newTestedInstance();
       $values = $parameters->getValues(getItemByTypeName('Group', 'group_testGetValues'));
       $this->array($values)->isEqualTo([
          'id'           => getItemByTypeName('Group', 'group_testGetValues', true),

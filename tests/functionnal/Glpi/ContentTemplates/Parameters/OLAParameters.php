@@ -32,8 +32,6 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-use Glpi\ContentTemplates\Parameters\OLAParameters as CoreOLAParameters;
-
 class OLAParameters extends AbstractParameters
 {
    public function testGetValues(): void {
@@ -47,7 +45,7 @@ class OLAParameters extends AbstractParameters
          'definition_time' => 'hour',
       ]);
 
-      $parameters = new CoreOLAParameters();
+      $parameters = $this->newTestedInstance();
       $values = $parameters->getValues(getItemByTypeName('OLA', 'ola_testGetValues'));
       $this->array($values)->isEqualTo([
          'id'       => getItemByTypeName('OLA', 'ola_testGetValues', true),

@@ -32,8 +32,6 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-use Glpi\ContentTemplates\Parameters\AssetParameters as CoreAssetParameters;
-
 class AssetParameters extends AbstractParameters
 {
    public function testGetValues(): void {
@@ -45,7 +43,7 @@ class AssetParameters extends AbstractParameters
          'entities_id' => $test_entity_id
       ]);
 
-      $parameters = new CoreAssetParameters();
+      $parameters = $this->newTestedInstance();
       $values = $parameters->getValues(getItemByTypeName('Computer', 'pc_testGetValues'));
       $this->array($values)->isEqualTo([
          'id'          => getItemByTypeName('Computer', 'pc_testGetValues', true),

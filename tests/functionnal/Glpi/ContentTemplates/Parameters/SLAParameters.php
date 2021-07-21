@@ -32,8 +32,6 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-use Glpi\ContentTemplates\Parameters\SLAParameters as CoreSLAParameters;
-
 class SLAParameters extends AbstractParameters
 {
    public function testGetValues(): void {
@@ -47,7 +45,7 @@ class SLAParameters extends AbstractParameters
          'definition_time' => 'hour',
       ]);
 
-      $parameters = new CoreSLAParameters();
+      $parameters = $this->newTestedInstance();
       $values = $parameters->getValues(getItemByTypeName('SLA', 'sla_testGetValues'));
       $this->array($values)->isEqualTo([
          'id'       => getItemByTypeName('SLA', 'sla_testGetValues', true),

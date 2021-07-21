@@ -32,8 +32,6 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-use Glpi\ContentTemplates\Parameters\UserParameters as CoreUserParameters;
-
 class UserParameters extends AbstractParameters
 {
    public function testGetValues(): void {
@@ -50,7 +48,7 @@ class UserParameters extends AbstractParameters
          'mobile'      => '0303030303',
       ]);
 
-      $parameters = new CoreUserParameters();
+      $parameters = $this->newTestedInstance();
       $values = $parameters->getValues(getItemByTypeName('User', 'user_testGetValues'));
       $this->array($values)->isEqualTo([
          'id'       => getItemByTypeName('User', 'user_testGetValues', true),
