@@ -106,7 +106,7 @@ abstract class AbstractRequest
     *
     * @throw RuntimeException
     */
-   private function setMode($mode) {
+   protected function setMode($mode) {
       $this->mode = $mode;
       switch ($mode) {
          case self::XML_MODE:
