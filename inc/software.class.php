@@ -240,7 +240,7 @@ class Software extends CommonDBTM {
       Location::dropdown(['value'  => $this->fields["locations_id"],
                                'entity' => $this->fields["entities_id"]]);
       echo "</td>";
-      echo "<td>" . __('Category') . "</td><td>";
+      echo "<td>" . _n('Category', 'Categories', 1) . "</td><td>";
       SoftwareCategory::dropdown(['value' => $this->fields["softwarecategories_id"]]);
       echo "</td></tr>\n";
 
@@ -449,7 +449,7 @@ class Software extends CommonDBTM {
          'id'                 => '62',
          'table'              => 'glpi_softwarecategories',
          'field'              => 'completename',
-         'name'               => __('Category'),
+         'name'               => _n('Category', 'Categories', 1),
          'datatype'           => 'dropdown'
       ];
 

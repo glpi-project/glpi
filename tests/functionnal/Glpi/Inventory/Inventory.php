@@ -4072,7 +4072,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
       $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
 
-      //check postgres has been turned off
       $iterator = $DB->request([
          'SELECT' => [
             \ComputerVirtualMachine::getTable() . '.id',
@@ -4094,6 +4093,215 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          ]
       ]);
       $this->integer(count($iterator))->isIdenticalTo(1);
+
+      //partial inventory: add databases
+      global $DB;
+
+      //IMPORT rule
+      $criteria = [
+         [
+            'condition' => 0,
+            'criteria'  => 'itemtype',
+            'pattern'   => 'DatabaseInstance',
+         ], [
+            'condition' => \RuleImportAsset::PATTERN_EXISTS,
+            'criteria'  => 'name',
+            'pattern'   => '1'
+         ]
+      ];
+      $action = [
+         'action_type' => 'assign',
+         'field'       => '_fusion',
+         'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT
+      ];
+      $rule = new \RuleImportAsset();
+      $collection = new \RuleImportAssetCollection();
+      $rulecriteria = new \RuleCriteria();
+
+      $input = [
+         'is_active' => 1,
+         'name'      => 'Database server import (by name)',
+         'match'     => 'AND',
+         'sub_type'  => 'RuleImportAsset',
+      ];
+
+      $rules_id = $rule->add($input);
+      $this->integer($rules_id)->isGreaterThan(0);
+      $this->boolean($collection->moveRule($rules_id, 0, $collection::MOVE_BEFORE))->isTrue();
+
+      // Add criteria
+      foreach ($criteria as $crit) {
+         $input = [
+            'rules_id'  => $rules_id,
+            'criteria'  => $crit['criteria'],
+            'pattern'   => $crit['pattern'],
+            'condition' => $crit['condition'],
+         ];
+         $this->integer((int)$rulecriteria->add($input))->isGreaterThan(0);
+      }
+
+      // Add action
+      $ruleaction = new \RuleAction();
+      $input = [
+         'rules_id'    => $rules_id,
+         'action_type' => $action['action_type'],
+         'field'       => $action['field'],
+         'value'       => $action['value'],
+      ];
+      $this->integer((int)$ruleaction->add($input))->isGreaterThan(0);
+
+      //UPDATE rule
+      $criteria = [
+         [
+            'condition' => 0,
+            'criteria'  => 'itemtype',
+            'pattern'   => 'DatabaseInstance',
+         ], [
+            'condition' => \RuleImportAsset::PATTERN_FIND,
+            'criteria'  => 'name',
+            'pattern'   => '1'
+         ], [
+            'condition' => \RuleImportAsset::PATTERN_EXISTS,
+            'criteria' => 'name',
+            'pattern' => '1'
+         ]
+      ];
+      $action = [
+         'action_type' => 'assign',
+         'field'       => '_fusion',
+         'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT
+      ];
+      $rule = new \RuleImportAsset();
+      $collection = new \RuleImportAssetCollection();
+      $rulecriteria = new \RuleCriteria();
+
+      $input = [
+         'is_active' => 1,
+         'name'      => 'Database server update (by name)',
+         'match'     => 'AND',
+         'sub_type'  => 'RuleImportAsset',
+      ];
+
+      $prev_rules_id = $rules_id;
+      $rules_id = $rule->add($input);
+      $this->integer($rules_id)->isGreaterThan(0);
+      $this->boolean($collection->moveRule($rules_id, $prev_rules_id, $collection::MOVE_BEFORE))->isTrue();
+
+      // Add criteria
+      foreach ($criteria as $crit) {
+         $input = [
+            'rules_id'  => $rules_id,
+            'criteria'  => $crit['criteria'],
+            'pattern'   => $crit['pattern'],
+            'condition' => $crit['condition'],
+         ];
+         $this->integer((int)$rulecriteria->add($input))->isGreaterThan(0);
+      }
+
+      // Add action
+      $ruleaction = new \RuleAction();
+      $input = [
+         'rules_id'    => $rules_id,
+         'action_type' => $action['action_type'],
+         'field'       => $action['field'],
+         'value'       => $action['value'],
+      ];
+      $this->integer((int)$ruleaction->add($input))->isGreaterThan(0);
+
+      $json = file_get_contents(self::INV_FIXTURES . 'computer_2_partial_dbs.json');
+      $CFG_GLPI["is_contact_autoupdate"] = 0;
+      $inventory = new \Glpi\Inventory\Inventory($json);
+      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+      if ($inventory->inError()) {
+         foreach ($inventory->getErrors() as $error) {
+            var_dump($error);
+         }
+      }
+      $this->boolean($inventory->inError())->isFalse();
+      $this->array($inventory->getErrors())->isEmpty();
+
+      //check nothing has changed
+      $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
+
+      //check created databases & instances
+      $this->integer(countElementsInTable(\DatabaseInstance::getTable()))->isIdenticalTo(2);
+      $this->integer(countElementsInTable(\DatabaseInstance::getTable(), ['is_dynamic' => 1]))->isIdenticalTo(2);
+      $this->integer(countElementsInTable(\DatabaseInstance_Item::getTable()))->isIdenticalTo(2);
+      $this->integer(countElementsInTable(\Database::getTable()))->isIdenticalTo(3);
+
+      //play an update - nothing should have changed
+      $CFG_GLPI["is_contact_autoupdate"] = 0;
+      $inventory = new \Glpi\Inventory\Inventory($json);
+      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+      if ($inventory->inError()) {
+         foreach ($inventory->getErrors() as $error) {
+            var_dump($error);
+         }
+      }
+      $this->boolean($inventory->inError())->isFalse();
+      $this->array($inventory->getErrors())->isEmpty();
+
+      //check nothing has changed
+      $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
+
+      //check created databases & instances
+      $this->integer(countElementsInTable(\DatabaseInstance::getTable()))->isIdenticalTo(2);
+      $this->integer(countElementsInTable(\DatabaseInstance_Item::getTable()))->isIdenticalTo(2);
+      $this->integer(countElementsInTable(\Database::getTable()))->isIdenticalTo(3);
+
+      //play an update with changes
+      $json = json_decode($json);
+
+      //keep only mysql
+      $mysql = $json->content->databases_services[0];
+      //update version
+      $mysql->version = 'Ver 15.1 Distrib 10.5.10-MariaDB-modified';
+      $dbs = $mysql->databases;
+
+      $db_glpi = &$dbs[0];
+      $db_glpi->size = 55000;
+      $db_glpi->last_backup_date = '2021-06-25 08:52:44';
+
+      $db_new = &$dbs[1];
+      $db_new->name = 'new_database';
+      $db_new->size = 2048;
+
+      $services = [$mysql];
+      $json->content->databases_services = $services;
+
+      $CFG_GLPI["is_contact_autoupdate"] = 0;
+      $inventory = new \Glpi\Inventory\Inventory(json_encode($json));
+      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+      if ($inventory->inError()) {
+         foreach ($inventory->getErrors() as $error) {
+            var_dump($error);
+         }
+      }
+      $this->boolean($inventory->inError())->isFalse();
+      $this->array($inventory->getErrors())->isEmpty();
+
+      //check created databases & instances
+      $this->integer(countElementsInTable(\DatabaseInstance::getTable(), ['is_deleted' => 0]))->isIdenticalTo(1);
+      $this->integer(countElementsInTable(\DatabaseInstance::getTable(), ['is_deleted' => 1]))->isIdenticalTo(1);
+      $this->integer(countElementsInTable(\DatabaseInstance_Item::getTable()))->isIdenticalTo(2);
+
+      //ensure database version has been updated
+      $database = new \DatabaseInstance();
+      $this->boolean($database->getFromDBByCrit(['name' => 'MariaDB']))->isTrue();
+      $this->string($database->fields['version'])->isIdenticalTo('Ver 15.1 Distrib 10.5.10-MariaDB-modified');
+
+      //- ensure existing instances has been updated
+      $databases = $database->getDatabases();
+      $this->array($databases)->hasSize(2);
+      $this->array(array_pop($databases))
+         ->string['name']->isIdenticalTo('new_database')
+         ->integer['size']->isIdenticalTo(2048);
+      $this->array(array_pop($databases))
+         ->string['name']->isIdenticalTo('glpi')
+         ->integer['size']->isIdenticalTo(55000);
    }
 
    public function testImportPhone() {

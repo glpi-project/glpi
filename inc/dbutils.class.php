@@ -1514,7 +1514,7 @@ final class DbUtils {
                }
 
                if ($data["usercategories_id"] > 0) {
-                  $comments[] = ['name'  => __('Category'),
+                  $comments[] = ['name'  => _n('Category', 'Categories', 1),
                                  'value' => Dropdown::getDropdownName("glpi_usercategories",
                                                                            $data["usercategories_id"])];
                }

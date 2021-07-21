@@ -503,7 +503,7 @@ class Blacklist extends CommonDropdown {
             && preg_match('/^.+models_id/', $key)
             && '' == $this->process(self::MODEL, $value->$key)
          ) {
-            unset($value[$key]);
+            unset($value->$key);
          }
       }
    }

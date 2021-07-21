@@ -85,9 +85,9 @@ $requester = ['user'               => ['title' => _n('Requester', 'Requesters', 
                    'group'              => ['title' => Group::getTypeName(1)],
                    'group_tree'         => ['title' => __('Group tree')],
                    'usertitles_id'      => ['title' => _x('person', 'Title')],
-                   'usercategories_id'  => ['title' => __('Category')]];
+                   'usercategories_id'  => ['title' => _n('Category', 'Categories', 1)]];
 
-$caract    = ['itilcategories_id'   => ['title' => __('Category')],
+$caract    = ['itilcategories_id'   => ['title' => _n('Category', 'Categories', 1)],
                    'itilcategories_tree' => ['title' => __('Category tree')],
                    'urgency'             => ['title' => __('Urgency')],
                    'impact'              => ['title' => __('Impact')],

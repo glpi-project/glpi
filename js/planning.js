@@ -363,7 +363,7 @@ var GLPIPlanning  = {
                                     $(this).dialog("close");
                                  }
                               }, {
-                                 text: $("<div/>").html(__("Instance")).text(), // html/text method to remove html entities
+                                 text: $("<div/>").html(_n("Instance", "Instances", 1)).text(), // html/text method to remove html entities
                                  icon: "ui-icon-trash",
                                  click: function() {
                                     ajaxDeleteEvent(true);
@@ -483,7 +483,7 @@ var GLPIPlanning  = {
                               GLPIPlanning.editEventTimes(info);
                            }
                         }, {
-                           text: __("Instance"),
+                           text: _n("Instance", "Instances", 1),
                            click: function() {
                               $(this).remove();
                               GLPIPlanning.editEventTimes(info, true);
@@ -531,7 +531,7 @@ var GLPIPlanning  = {
                               GLPIPlanning.editEventTimes(info);
                            }
                         }, {
-                           text: __("Instance"),
+                           text: _n("Instance", "Instances", 1),
                            click: function() {
                               $(this).remove();
                               GLPIPlanning.editEventTimes(info, true);
