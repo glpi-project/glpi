@@ -136,8 +136,8 @@ GLPI.RichText.ContentTemplatesParameters = class {
 
                   // Check if our item match the given pattern
                   // Search in both key and text
-                  const key = pattern.replace(/^(\{|%)\s*/, '');
-                  let match = item.key.includes(key) || item.text.includes(key);
+                  const key = pattern.replace(/^(\{|%)\s*/, '').toLowerCase();
+                  let match = item.key.toLowerCase().includes(key) || item.text.toLowerCase().includes(key);
 
                   // Text do not match item, skip
                   if (!match) {
