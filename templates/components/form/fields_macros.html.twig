@@ -150,7 +150,9 @@
    {% set id = options.id|length > 0 ? options.id : (name ~ "_" ~ options.rand) %}
 
    {% set field %}
+      {# 100% width is here to prevent width issues with tinymce #}
       <textarea class="form-control" id="{{ id }}" name="{{ name }}" rows="3"
+                style="width: 100%;"
                 {{ options.disabled ? 'disabled' : '' }}
                 {{ options.required ? 'required' : '' }}>{{ value|raw }}</textarea>
    {% endset %}
