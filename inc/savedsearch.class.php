@@ -242,16 +242,22 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
                 'searchtype'         => 'equals'
                ];
 
-      $tab[] = ['id'                 => 11,
-                'table'              => SavedSearch_User::getTable(),
-                'field'              => 'users_id',
-                'name'               => __('Default'),
-                'massiveaction'      => false,
-                'joinparams'         => ['jointype' => 'child'],
-                'datatype'           => 'specific',
-                'searchtype'         => [0 => 'equals',
-                                         1 => 'notequals']
-               ];
+      $tab[] = [
+         'id'            => 11,
+         'table'         => SavedSearch_User::getTable(),
+         'field'         => 'users_id',
+         'name'          => __('Default'),
+         'massiveaction' => false,
+         'joinparams'    => [
+            'jointype'  => 'child',
+            'condition' => "AND NEWTABLE.users_id = " . Session::getLoginUserID()
+         ],
+         'datatype'      => 'specific',
+         'searchtype'    => [
+            0 => 'equals',
+            1 => 'notequals'
+         ],
+      ];
 
       $tab[] = ['id'                 => 12,
                 'table'              => $this->getTable(),
@@ -1263,31 +1269,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
          ]
       );
       return $result;
-   }
-
-
-
-   /**
-    * Specific method to add where to a request
-    *
-    * @param string  $link       link string
-    * @param boolean $nott       is it a negative search ?
-    * @param string  $itemtype   item type
-    * @param integer $ID         ID of the item to search
-    * @param string  $searchtype searchtype used (equals or contains)
-    * @param mixed   $val        item num in the request
-    * @param integer $meta       is a meta search (meta=2 in search.class.php) (default 0)
-    *
-    * @return string where clause
-    */
-   public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0) {
-
-      if ($ID == 11) { //search for defaults/not defaults
-         if ($val == 0) {
-            return "$link glpi_savedsearches_users.users_id IS NULL";
-         }
-         return "$link glpi_savedsearches_users.users_id IS NOT NULL";
-      }
    }
 
 
