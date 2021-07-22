@@ -46,7 +46,6 @@ if (!defined('GLPI_ROOT')) {
 class GLPI {
 
    private $error_handler;
-   private $loggers;
    private $log_level;
 
    /**
@@ -55,7 +54,7 @@ class GLPI {
     * @return void
     */
    public function initLogger() {
-      global $PHPLOGGER, $SQLLOGGER;
+      global $PHPLOGGER, $PHP_LOG_HANDLER, $SQLLOGGER, $SQL_LOG_HANDLER;
 
       $this->log_level = Logger::WARNING;
       if (defined('TU_USER')) {
@@ -81,10 +80,17 @@ class GLPI {
             $handler->setFormatter($formatter);
          }
          $logger->pushHandler($handler);
-         $this->loggers[$type] = $logger;
+         switch ($type) {
+            case 'php':
+               $PHPLOGGER = $logger;
+               $PHP_LOG_HANDLER = $handler;
+               break;
+            case 'sql':
+               $SQLLOGGER = $logger;
+               $SQL_LOG_HANDLER = $handler;
+               break;
+         }
       }
-      $PHPLOGGER = $this->loggers['php'];
-      $SQLLOGGER = $this->loggers['sql'];
    }
 
    /**

@@ -800,6 +800,17 @@ PLAINTEXT,
       foreach ($expected_followups as $expected_followup) {
          $this->integer(countElementsInTable(ITILFollowup::getTable(), \Toolbox::sanitize($expected_followup)))->isEqualTo(1);
       }
+
+      // Check error log and clean it (to prevent test failure, see GLPITestCase::afterTestMethod()).
+      global $PHP_LOG_HANDLER;
+      $records  = $PHP_LOG_HANDLER->getRecords();
+      $messages = array_column($records, 'message');
+      $this->array($messages)->hasSize(2);
+      // 05-empty-from.eml
+      $this->string($messages[0])->contains('The input is not a valid email address. Use the basic format local-part@hostname');
+      // 17-malformed-email.eml
+      $this->string($messages[1])->contains('Header with Name date or date not found');
+      $PHP_LOG_HANDLER->clear();
    }
 
    protected function mailServerProtocolsProvider() {

@@ -672,7 +672,7 @@ class MailCollector  extends CommonDBTM {
     * @return string|void
    **/
    function collect($mailgateID, $display = 0) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $GLPI;
 
       if ($this->getFromDB($mailgateID)) {
          $this->uid          = -1;
@@ -719,7 +719,15 @@ class MailCollector  extends CommonDBTM {
                   $this->fetch_emails++;
                   $messages[$this->storage->getUniqueId($this->storage->key())] = $this->storage->current();
                } catch (\Exception $e) {
-                  Toolbox::logInFile('mailgate', sprintf(__('Message is invalid: %1$s').'<br/>', $e->getMessage()));
+                  $GLPI->getErrorHandler()->handleException($e);
+                  Toolbox::logInFile(
+                     'mailgate',
+                     sprintf(
+                        __('Message is invalid (%s). Check in "%s" for more details')."\n",
+                        $e->getMessage(),
+                        GLPI_LOG_DIR . '/php-errors.log'
+                     )
+                  );
                   ++$error;
                }
             } while ($this->fetch_emails < $this->maxfetch_emails);
@@ -765,7 +773,15 @@ class MailCollector  extends CommonDBTM {
                   }
                } catch (\Throwable $e) {
                   $error++;
-                  Toolbox::logInFile('mailgate', sprintf(__('Error during message parsing: %1$s').'<br/>', $e->getMessage()));
+                  $GLPI->getErrorHandler()->handleException($e);
+                  Toolbox::logInFile(
+                     'mailgate',
+                     sprintf(
+                        __('Error during message parsing (%s). Check in "%s" for more details')."\n",
+                        $e->getMessage(),
+                        GLPI_LOG_DIR . '/php-errors.log'
+                     )
+                  );
                   $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
                   $rejected->add($rejinput);
                   continue;

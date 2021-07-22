@@ -589,7 +589,7 @@ class NetworkPortInstantiation extends CommonDBChild {
       if (count($recursiveItems) > 0) {
          $lastItem = $recursiveItems[count($recursiveItems) - 1];
          Netpoint::dropdownNetpoint("netpoints_id", $this->fields["netpoints_id"],
-                                    $lastItem->fields['locations_id'], 1, $lastItem->getEntityID(),
+                                    $lastItem->fields['locations_id'] ?? -1, 1, $lastItem->getEntityID(),
                                     $netport->fields["itemtype"]);
       } else {
          echo __('item not linked to an object');
