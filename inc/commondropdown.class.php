@@ -285,7 +285,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
       // Specific code for templates classes, can't be run in lower classes
       // because $this->check will override the fields property
-      if ($this instanceof AbstractTemplate) {
+      if ($this instanceof AbstractITILChildTemplate) {
          // Restore input if needed
          $this->fields = $this->restoreInput($this->fields ?? []);
          if ($this->isNewID($ID)) {

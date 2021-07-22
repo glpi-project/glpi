@@ -32,12 +32,12 @@
 
 namespace tests\units;
 
-include_once __DIR__ . '/../abstracts/AbstractTemplate.php';
+include_once __DIR__ . '/../abstracts/AbstractITILChildTemplate.php';
 
-use tests\units\Glpi\AbstractTemplate;
+use tests\units\Glpi\AbstractITILChildTemplate;
 
 /* Test for inc/itilfollowuptemplate.class.php */
 
-class ITILFollowupTemplate extends AbstractTemplate {
+class ITILFollowupTemplate extends AbstractITILChildTemplate {
 
 }

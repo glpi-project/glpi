@@ -32,7 +32,7 @@
 
 namespace tests\units\Glpi;
 
-abstract class AbstractTemplate extends \DbTestCase {
+abstract class AbstractITILChildTemplate extends \DbTestCase {
 
    public function testGetRenderedContent() {
       global $CFG_GLPI;

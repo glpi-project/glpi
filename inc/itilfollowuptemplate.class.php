@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
  * Template for followups
  * @since 9.5
 **/
-class ITILFollowupTemplate extends AbstractTemplate {
+class ITILFollowupTemplate extends AbstractITILChildTemplate {
 
    // From CommonDBTM
    public $dohistory          = true;

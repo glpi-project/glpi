@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
  *
  * @since 10.0.0
  */
-abstract class AbstractTemplate extends CommonDropdown
+abstract class AbstractITILChildTemplate extends CommonDropdown
 {
    function showForm($ID, $options = []) {
       parent::showForm($ID, $options);
