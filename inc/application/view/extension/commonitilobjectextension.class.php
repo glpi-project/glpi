@@ -35,28 +35,18 @@ namespace Glpi\Application\View\Extension;
 use CommonITILObject;
 use Item_Ticket;
 use Planning;
-use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
-use Twig\TwigFilter;
-use Twig\TwigFunction;
 
 /**
  * @since 10.0.0
  */
 class CommonITILObjectExtension extends AbstractExtension implements ExtensionInterface {
 
-   public function getFilters() {
-      return [
-         new TwigFilter('getTimelineStats', [$this, 'getTimelineStats'], ['is_safe' => ['html']]),
-      ];
-   }
+   public function __construct() {
+      $this->registerFilter('getTimelineStats', [$this, 'getTimelineStats'], ['is_safe' => ['html']]);
 
-   public function getFunctions() {
-      return [
-         new TwigFunction('Item_Ticket_itemAddForm', [Item_Ticket::class, 'itemAddForm']),
-      ];
+      $this->registerFunction('Item_Ticket_itemAddForm', [Item_Ticket::class, 'itemAddForm']);
    }
-
 
    public function getTimelineStats(CommonITILObject $item): array {
       global $DB;
