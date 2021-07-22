@@ -32,19 +32,60 @@
 
 namespace Glpi\Application\View\Extension;
 
+use CommonITILObject;
 use Item_Ticket;
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
+use Planning;
 
 /**
  * @since 10.0.0
  */
 class CommonITILObjectExtension extends AbstractExtension {
 
-   public function getFunctions(): array {
-      return [
-         new TwigFunction('Item_Ticket_itemAddForm', [Item_Ticket::class, 'itemAddForm']),
+   public function __construct() {
+      $this->registerFilter('getTimelineStats', [$this, 'getTimelineStats'], ['is_safe' => ['html']]);
+
+      $this->registerFunction('Item_Ticket_itemAddForm', [Item_Ticket::class, 'itemAddForm']);
+   }
+
+   public function getTimelineStats(CommonITILObject $item): array {
+      global $DB;
+
+      $stats = [
+         'total_duration' => 0,
+         'percent_done'   => 0,
       ];
+
+      // compute itilobject duration
+      $taskClass  = $item::getType() . "Task";
+      $task_table = getTableForItemType($taskClass);
+      $foreignKey = $item::getForeignKeyField();
+      $criteria   = [
+         'SELECT'   => ['SUM' => 'actiontime AS actiontime'],
+         'FROM'     => $task_table,
+         'WHERE'    => [$foreignKey => $item->fields['id']]
+      ];
+
+      $req = $DB->request($criteria);
+      if ($row = $req->next()) {
+         $stats['total_duration'] = $row['actiontime'];
+      }
+
+      // compute itilobject percent done
+      $criteria    = [
+         $foreignKey => $item->fields['id'],
+         'state'     => [Planning::TODO, Planning::DONE]
+      ];
+      $total_tasks = countElementsInTable($task_table, $criteria);
+      $criteria    = [
+         $foreignKey => $item->fields['id'],
+         'state'     => Planning::DONE,
+      ];
+      $done_tasks = countElementsInTable($task_table, $criteria);
+      if ($total_tasks != 0) {
+         $stats['percent_done'] = floor(100 * $done_tasks / $total_tasks);
+      }
+
+      return $stats;
    }
 
 }

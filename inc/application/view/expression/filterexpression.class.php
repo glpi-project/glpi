@@ -30,17 +30,28 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Application\View\Extension;
+namespace Glpi\Application\View\Expression;
 
-use Session;
+use Twig\Compiler;
+use Twig\Node\Expression\FilterExpression as BaseExpression;
 
-/**
- * @since 10.0.0
- */
-class SecurityExtension extends AbstractExtension {
+class FilterExpression extends BaseExpression
+{
+   protected function compileArguments(Compiler $compiler, $isArray = false): void {
 
-   public function __construct() {
-      $this->registerFunction('csrf_token', [Session::class, 'getNewCSRFToken'], [], true);
-      $this->registerFunction('idor_token', [Session::class, 'getNewIDORToken'], [], true);
+      $compiler->raw($isArray ? '[' : '(');
+
+      // Add source as first argument
+      $compiler->raw('$this->source');
+
+      // Compile arguments in a dedicated compiler and print them after removing their surrounding `()` or `[]`
+      $args_compiler = new Compiler($compiler->getEnvironment());
+      parent::compileArguments($args_compiler);
+      if (strlen($args_source = substr($args_compiler->getSource(), 1, -1)) > 0) {
+         $compiler->raw(', ');
+         $compiler->raw($args_source);
+      }
+
+      $compiler->raw($isArray ? ']' : ')');
    }
 }
