@@ -446,17 +446,77 @@ class GLPIKanbanRights {
       const buildToolbar = function() {
          let toolbar = $("<div class='kanban-toolbar'></div>").appendTo(self.element);
          $("<select name='kanban-board-switcher'></select>").appendTo(toolbar);
-         let filter_input = $("<input name='filter' type='text' placeholder='" + __('Search or filter results') + "'/>").appendTo(toolbar);
+         let search_input = $("<input name='filter' type='text' placeholder='" + __('Search or filter results') + "'/>").appendTo(toolbar);
+         let filter_btn = $(`<button title="${__('Filter')}"><i class="fas fa-filter m-0"></i></button>`).appendTo(toolbar);
          if (self.rights.canModifyView()) {
             let add_column = "<input type='button' class='kanban-add-column submit' value='" + __('Add column') + "'/>";
             toolbar.append(add_column);
          }
-         filter_input.on('input', function() {
+         let filter_panel = $($('#template-kanban-filters-panel').html()).appendTo(self.element).hide();
+
+         search_input.on('input', function() {
             let text = $(this).val();
             if (text === null) {
                text = '';
             }
             self.filters._text = text;
+            self.filter();
+         });
+
+         filter_panel.find('.filter-group').hide();
+         filter_panel.find('.filter-input').hide();
+
+         const reposition_filter_dropdown = () => {
+            filter_panel.css({
+               position: 'fixed',
+               left: (filter_btn.offset().left + filter_btn.outerWidth(true)) - filter_panel.outerWidth(true),
+               top: filter_btn.offset().top + filter_btn.outerHeight(true)
+            });
+         };
+         filter_btn.on('click', () => {
+            if (filter_panel.is(':hidden')) {
+               reposition_filter_dropdown();
+            }
+            filter_panel.toggle();
+         });
+         filter_panel.find('.btn.add-filter').on('click', (e) => {
+            e.preventDefault();
+            const selected_filter = $('select[name="kanban_filters"]').val();
+            const filter_input = filter_panel.find(`.filter-input[data-filter-name="${selected_filter}"]`);
+            filter_input.show();
+            filter_input.closest('.filter-group').show();
+            reposition_filter_dropdown();
+         });
+         filter_panel.find('.filter-input .delete-filter').on('click', (e) => {
+            const filter_input = $(e.target).closest('.filter-input');
+            filter_input.hide();
+            const filter_group = filter_input.closest('.filter-group');
+            if (filter_group.find('.filter-input:visible').length === 0) {
+               filter_group.hide();
+            }
+            reposition_filter_dropdown();
+         });
+         filter_panel.find('button.accordion-button').on('click', () => {
+            // Doesn't seem to work if done immediately even when the CSS transition is disabled
+            window.setTimeout(() => {
+               reposition_filter_dropdown();
+            }, 1);
+         });
+         filter_panel.on('submit', (e) => {
+            e.preventDefault();
+
+            const inputs = filter_panel.find('.filter-input:visible');
+            $.each(inputs, (i, input) => {
+               const input_obj = $(input);
+               const filter_name = input_obj.data('filter-name');
+               const filter_params = {
+                  'criteria': input_obj.find('.filter-input-criteria').first().val(),
+                  'value': input_obj.find('.filter-input-value').first().val(),
+                  'type': input_obj.data('filter-type')
+               };
+               self.filters[filter_name] = filter_params;
+            });
+            filter_panel.hide();
             self.filter();
          });
       };
@@ -1977,7 +2037,13 @@ class GLPIKanbanRights {
             }
          }
          card_el += "</div></li>";
-         $(card_el).appendTo(col_body).data('form_link', card['_form_link'] || undefined);
+         const card_obj = $(card_el).appendTo(col_body);
+         card_obj.data('form_link', card['_form_link'] || undefined);
+         if (card['_metadata']) {
+            $.each(card['_metadata'], (k, v) => {
+               card_obj.data(k, v);
+            });
+         }
          self.updateColumnCount(column_el);
       };
 
@@ -2000,21 +2066,71 @@ class GLPIKanbanRights {
       this.filter = function() {
          // Unhide all items in case they are no longer filtered
          self.clearFiltered();
-         // Filter using built-in text filter (Check title)
+
          $(self.element + ' .kanban-item').each(function(i, item) {
-            const title = $(item).find(".kanban-item-header a").text();
-            try {
-               if (!title.match(new RegExp(self.filters._text, 'i'))) {
-                  $(item).addClass('filtered-out');
+            let shown = true;
+            const card = $(item);
+
+            // Check filters from form
+            $.each(self.filters, (filter_name, filter) => {
+               if (!card.data(filter_name)) {
+                  return; //continue
                }
-            } catch (err) {
-               // Probably not a valid regular expression. Use simple contains matching.
-               if (!title.toLowerCase().includes(self.filters._text.toLowerCase())) {
-                  $(item).addClass('filtered-out');
+               if (!filter_name.startsWith('_')) {
+                  const prop_value = card.data(filter_name);
+                  if (filter['value'].length === 0) {
+                     return;
+                  }
+
+                  switch (filter['type']) {
+                     case 'text':
+                        switch (filter['criteria']) {
+                           case 'contains':
+                              shown = prop_value.includes(filter['value']);
+                              break;
+                           case 'not_contains':
+                              shown = !prop_value.includes(filter['value']);
+                              break;
+                           case 'equals':
+                              shown = prop_value.toLowerCase() === filter['value'].toLowerCase();
+                              break;
+                           case 'not_equals':
+                              shown = prop_value.toLowerCase() !== filter['value'].toLowerCase();
+                              break;
+                           case 'starts_with':
+                              shown = prop_value.toLowerCase().startsWith(filter['value'].toLowerCase());
+                              break;
+                           case 'ends_with':
+                              shown = prop_value.toLowerCase().endsWith(filter['value'].toLowerCase());
+                              break;
+                           case 'matches':
+                              shown = prop_value.match(new RegExp(filter['value'], 'i'));
+                              break;
+                        }
+                  }
+               }
+            });
+
+            if (shown) {
+               // Filter using built-in text filter (Check title)
+               const title = card.find(".kanban-item-header a").text();
+               try {
+                  if (!title.match(new RegExp(self.filters._text, 'i'))) {
+                     shown = false;
+                  }
+               } catch (err) {
+                  // Probably not a valid regular expression. Use simple contains matching.
+                  if (!title.toLowerCase().includes(self.filters._text.toLowerCase())) {
+                     shown = false;
+                  }
                }
             }
+
+            // Apply class to filtered items
+            if (!shown) {
+               card.addClass('filtered-out');
+            }
          });
-         // Check specialized filters (By column item property). Not currently supported.
 
          // Update column counters
          $(self.element + ' .kanban-column').each(function(i, column) {

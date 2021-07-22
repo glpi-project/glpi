@@ -2217,6 +2217,14 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          $card['_team'] = $item['_team'];
          $card['_readonly'] = $item['_readonly'];
          $card['_form_link'] = $itemtype::getFormUrlWithID($item['id']);
+         $card['_metadata'] = [];
+         $metadata_values = ['name', 'content', 'is_milestone', 'plan_start_date', 'plan_end_date', 'real_start_date', 'real_end_date',
+            'planned_duration', 'effective_duration', 'percent_done'];
+         foreach ($metadata_values as $metadata_value) {
+            if (isset($item[$metadata_value])) {
+               $card['_metadata'][$metadata_value] = $item[$metadata_value];
+            }
+         }
          $columns[$item['projectstates_id']]['items'][] = $card;
       }
 
@@ -2336,43 +2344,28 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
             ]
          ]
       ];
-      $supported_itemtypes = json_encode($supported_itemtypes, JSON_FORCE_OBJECT);
-      $column_field = json_encode($column_field, JSON_FORCE_OBJECT);
 
-      echo "<div id='kanban' class='kanban'></div>";
-      $darkmode = ($_SESSION['glpipalette'] === 'darker') ? 'true' : 'false';
-      $canadd_item = json_encode($ID > 0 ? $project->canEdit($ID) && $project->can($ID, UPDATE) : self::canCreate() || ProjectTask::canCreate());
-      $canmodify_view = json_encode(($ID == 0 || $project->canModifyGlobalState()));
-      $rights = json_encode([
+      $rights = [
          'create_item'                    => self::canCreate() || ProjectTask::canCreate(),
          'delete_item'                    => self::canDelete() || ProjectTask::canDelete(),
-         'create_column'                  => (bool)ProjectState::canCreate(),
+         'create_column'                  => ProjectState::canCreate(),
          'modify_view'                    => $ID == 0 || $project->canModifyGlobalState(),
          'order_card'                     => (bool)$project->canOrderKanbanCard($ID),
-         'create_card_limited_columns'    => $canmodify_view ? [] : [0]
-      ]);
+         'create_card_limited_columns'    => ($ID == 0 || $project->canModifyGlobalState()) ? [] : [0]
+      ];
 
-      $js = <<<JAVASCRIPT
-         $(function(){
-            // Create Kanban
-            var kanban = new GLPIKanban({
-               element: "#kanban",
-               rights: $rights,
-               supported_itemtypes: $supported_itemtypes,
-               dark_theme: {$darkmode},
-               max_team_images: 3,
-               column_field: $column_field,
-               background_refresh_interval: {$_SESSION['glpirefresh_views']},
-               item: {
-                  itemtype: 'Project',
-                  items_id: $ID
-               }
-            });
-            // Create kanban elements and add data
-            kanban.init();
-         });
-JAVASCRIPT;
-      echo Html::scriptBlock($js);
+      TemplateRenderer::getInstance()->display('components/kanban/kanban.html.twig', [
+         'kanban_id'                   => 'kanban',
+         'rights'                      => $rights,
+         'supported_itemtypes'         => $supported_itemtypes,
+         'max_team_images'             => 3,
+         'column_field'                => $column_field,
+         'item'                        => [
+            'itemtype'  => 'Project',
+            'items_id'  => $ID
+         ],
+         'filters'                     => static::getKanbanFilters()
+      ]);
    }
 
    public function canOrderKanbanCard($ID) {
@@ -2380,6 +2373,51 @@ JAVASCRIPT;
          $this->getFromDB($ID);
       }
       return ($ID <= 0 || $this->canModifyGlobalState());
+   }
+
+   public static function getAdditionalKanbanFilters(): array {
+      return [
+         'general' => [
+            'inputs' => [
+               'is_milestone'       => [
+                  'label'  => __('Milestone'),
+                  'type'   => 'boolean'
+               ],
+               'plan_start_date'    => [
+                  'label'  => __('Planned start date'),
+                  'type'   => 'datetime'
+               ],
+               'plan_end_date'      => [
+                  'label'  => __('Planned end date'),
+                  'type'   => 'datetime'
+               ],
+               'real_start_date'    => [
+                  'label'  => __('Read start date'),
+                  'type'   => 'datetime'
+               ],
+               'real_end_date'      => [
+                  'label'  => __('Real end date'),
+                  'type'   => 'datetime'
+               ],
+               'planned_duration'   => [
+                  'label'  => __('Planned duration'),
+                  'type'   => 'duration'
+               ],
+               'effective_duration' => [
+                  'label'  => __('Effective duration'),
+                  'type'   => 'duration'
+               ],
+               'percent_done'       => [
+                  'label'  => __('Percent done'),
+                  'type'   => 'number',
+                  'params' => [
+                     'min' => 0,
+                     'max' => 100
+                  ]
+               ]
+            ]
+         ]
+      ];
    }
 
    /**
