@@ -75,6 +75,7 @@ $(function() {
             // prevent body clicking to hide menu
             if (!document.getElementById('menu_{{ rand }}').contains(orig_event.target)) {
                event.preventDefault();
+               return;
             }
 
             // prevent menu links to close menu (waiting the page redirection)
