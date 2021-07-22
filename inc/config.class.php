@@ -2098,6 +2098,8 @@ class Config extends CommonDBTM {
                  'check'   => 'Html2Text\\Html2Text' ],
                [ 'name'    => 'symfony/dom-crawler',
                   'check'   => 'Symfony\\Component\\DomCrawler\\Crawler' ],
+               [ 'name'    => 'twig/twig',
+                  'check'   => 'Twig\Environment' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [

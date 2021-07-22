@@ -228,11 +228,25 @@ class RuleTicket extends Rule {
                      //load template
                      $template = new SolutionTemplate();
                      if ($template->getFromDB($action->fields["value"]) && $output['id'] != null) {
+                        // Load parent item
+                        $parent = new Ticket();
+                        if (!$parent->getFromDB($output['id'])) {
+                           break;
+                        }
+
+                        // Parse twig template
+                        $solution_content = $template->getRenderedContent($parent);
+
+                        // Sanitize generated HTML before adding it in DB
+                        $solution_content = Toolbox::clean_cross_side_scripting_deep(
+                           Toolbox::addslashes_deep($solution_content)
+                        );
+
                         $solution = new ITILSolution();
                         $solution->add([
                            "itemtype" => "Ticket",
                            "solutiontypes_id" => $template->getField("solutiontypes_id"),
-                           "content" => Toolbox::addslashes_deep($template->getField('content')),
+                           "content" => $solution_content,
                            "status" => CommonITILValidation::WAITING,
                            "items_id" => $output['id']]);
                      }

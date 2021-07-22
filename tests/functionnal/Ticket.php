@@ -35,6 +35,7 @@ namespace tests\units;
 use CommonITILObject;
 use DbTestCase;
 use TicketValidation;
+use Toolbox;
 use User;
 
 /* Test for inc/ticket.class.php */
@@ -172,7 +173,7 @@ class Ticket extends DbTestCase {
       $tasktemplate = new \TaskTemplate;
       $ttA_id          = $tasktemplate->add([
          'name'              => 'my task template A',
-         'content'           => 'my task template A',
+         'content'           => '<p>my task template A</p>',
          'taskcategories_id' => $taskcat_id,
          'actiontime'        => 60,
          'is_private'        => true,
@@ -183,7 +184,7 @@ class Ticket extends DbTestCase {
       $this->boolean($tasktemplate->isNewItem())->isFalse();
       $ttB_id          = $tasktemplate->add([
          'name'              => 'my task template B',
-         'content'           => 'my task template B',
+         'content'           => '<p>my task template B</p>',
          'taskcategories_id' => $taskcat_id,
          'actiontime'        => 120,
          'is_private'        => false,
@@ -241,7 +242,7 @@ class Ticket extends DbTestCase {
 
       // 6.1 -> check first task
       $taskA = array_shift($found_tasks);
-      $this->string($taskA['content'])->isIdenticalTo('my task template A');
+      $this->string($taskA['content'])->isIdenticalTo(Toolbox::clean_cross_side_scripting_deep('<p>my task template A</p>'));
       $this->variable($taskA['taskcategories_id'])->isEqualTo($taskcat_id);
       $this->variable($taskA['actiontime'])->isEqualTo(60);
       $this->variable($taskA['is_private'])->isEqualTo(1);
@@ -251,7 +252,7 @@ class Ticket extends DbTestCase {
 
       // 6.2 -> check second task
       $taskB = array_shift($found_tasks);
-      $this->string($taskB['content'])->isIdenticalTo('my task template B');
+      $this->string($taskB['content'])->isIdenticalTo(Toolbox::clean_cross_side_scripting_deep('<p>my task template B</p>'));
       $this->variable($taskB['taskcategories_id'])->isEqualTo($taskcat_id);
       $this->variable($taskB['actiontime'])->isEqualTo(120);
       $this->variable($taskB['is_private'])->isEqualTo(0);

@@ -82,7 +82,7 @@ GLPI.RichText.UserMention = class {
     * @private
     *
     * @param {string} pattern
-    * 
+    *
     * @returns {tinymce.util.Promise}
     */
    fetchItems(pattern) {

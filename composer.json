@@ -59,6 +59,7 @@
         "symfony/console": "^4.4",
         "symfony/dom-crawler": "^5.3",
         "true/punycode": "^2.1",
+        "twig/twig": "^3.3",
         "wapmorgan/unified-archive": "^1.0"
     },
     "require-dev": {

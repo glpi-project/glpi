@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\ContentTemplates\Parameters\ProblemParameters;
 use Glpi\Toolbox\RichText;
 
 /**
@@ -2039,5 +2040,9 @@ class Problem extends CommonITILObject {
 
    public static function getTaskClass() {
       return ProblemTask::class;
+   }
+
+   public static function getContentTemplatesParametersClass(): string {
+      return ProblemParameters::class;
    }
 }

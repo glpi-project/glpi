@@ -1,0 +1,98 @@
+<?php
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2021 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+namespace Glpi\ContentTemplates\Parameters;
+
+use CommonDBTM;
+use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
+use Supplier;
+use Toolbox;
+
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
+
+/**
+ * Parameters for "Supplier" items.
+ *
+ * @since 10.0.0
+ */
+class SupplierParameters extends TreeDropdownParameters
+{
+   public static function getDefaultNodeName(): string {
+      return 'supplier';
+   }
+
+   public static function getObjectLabel(): string {
+      return Supplier::getTypeName(1);
+   }
+
+   protected function getTargetClasses(): array {
+      return [Supplier::class];
+   }
+
+   protected function defineParameters(): array {
+      return [
+         new AttributeParameter("id", __('ID')),
+         new AttributeParameter("name", __('Name')),
+         new AttributeParameter("address", __('Address')),
+         new AttributeParameter("city", __('City')),
+         new AttributeParameter("postcode", __('Postal code')),
+         new AttributeParameter("state", _x('location', 'State')),
+         new AttributeParameter("country", __('Country')),
+         new AttributeParameter("phone", _n('Phone', 'Phones', 1)),
+         new AttributeParameter("fax", __('Fax')),
+         new AttributeParameter("email", _n('Email', 'Emails', 1)),
+         new AttributeParameter("website", __('Website')),
+      ];
+   }
+
+   protected function defineValues(CommonDBTM $user): array {
+
+      // Output "unsanitized" values
+      $fields = Toolbox::unclean_cross_side_scripting_deep($user->fields);
+
+      return [
+         'id'        => $fields['id'],
+         'name'      => $fields['name'],
+         'address'   => $fields['address'],
+         'city'      => $fields['town'],
+         'postcode'  => $fields['postcode'],
+         'state'     => $fields['state'],
+         'country'   => $fields['country'],
+         'phone'     => $fields['phonenumber'],
+         'fax'       => $fields['fax'],
+         'email'     => $fields['email'],
+         'website'   => $fields['website'],
+      ];
+   }
+}

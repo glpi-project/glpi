@@ -176,13 +176,18 @@ class ITILSolution extends CommonDBChild {
             'on_change' => "solutiontemplate_update{$rand}(this.value)"
          ]);
 
+         $items_id = $item->fields['id'];
+         $itemtype = $item::getType();
+
          $JS = <<<JAVASCRIPT
             function solutiontemplate_update{$rand}(value) {
                $.ajax({
                   url: '{$CFG_GLPI['root_doc']}/ajax/solution.php',
                   type: 'POST',
                   data: {
-                     solutiontemplates_id: value
+                     solutiontemplates_id: value,
+                     items_id: '{$items_id}',
+                     itemtype: '{$itemtype}',
                   }
                }).done(function(data) {
                   tinymce.get("{$content_id}").setContent(data.content);
@@ -191,6 +196,8 @@ class ITILSolution extends CommonDBChild {
                      ? 0
                      : parseInt(data.solutiontypes_id);
                   $("#dropdown_solutiontypes_id{$rand}").trigger("setValue", solutiontypes_id);
+
+                  displayAjaxMessageAfterRedirect();
                });
             }
 JAVASCRIPT;

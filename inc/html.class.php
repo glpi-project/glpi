@@ -4059,6 +4059,33 @@ JAVASCRIPT
    }
 
    /**
+    * Activate autocompletion for user templates in rich text editor.
+    *
+    * @param string $editor_id
+    *
+    * @return void
+    *
+    * @since 10.0.0
+    */
+   public static function activateUserTemplateAutocompletion(string $selector, array $values): void {
+      $values = json_encode($values);
+
+      echo Html::scriptBlock(<<<JAVASCRIPT
+         $(
+            function() {
+               var editor_id = $('{$selector}').attr('id');
+               var user_templates_autocomplete = new GLPI.RichText.ContentTemplatesParameters(
+                  tinymce.get(editor_id),
+                  {$values}
+               );
+               user_templates_autocomplete.register();
+            }
+         );
+JAVASCRIPT
+      );
+   }
+
+   /**
     * Convert rich text content to simple text content
     *
     * @since 9.2
@@ -6559,6 +6586,7 @@ JAVASCRIPT;
          case 'tinymce':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/tinymce.js';
             $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/UserMention.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/ContentTemplatesParameters.js';
             break;
          case 'planning':
             $_SESSION['glpi_js_toload'][$name][] = 'js/planning.js';

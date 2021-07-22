@@ -79,6 +79,7 @@ include_once __DIR__ . '/DbTestCase.php';
 include_once __DIR__ . '/CsvTestCase.php';
 include_once __DIR__ . '/APIBaseClass.php';
 include_once __DIR__ . '/functionnal/CommonITILRecurrent.php';
+include_once __DIR__ . '/functionnal/Glpi/ContentTemplates/Parameters/AbstractParameters.php';
 
 // check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes
 if (file_exists(__DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {
@@ -104,7 +105,7 @@ function loadDataset() {
    // Unit test data definition
    $data = [
       // bump this version to force reload of the full dataset, when content change
-      '_version' => '4.6',
+      '_version' => '4.7',
 
       // Type => array of entries
       'Entity' => [
@@ -214,6 +215,26 @@ function loadDataset() {
             '_profiles_id'  => 4,
             '_is_recursive' => 1,
          ]
+      ], 'Group'   => [
+         [
+            'name'         => '_test_group_1',
+            'entities_id'  => '_test_root_entity',
+            'is_recursive' => 1,
+            'is_usergroup' => 1,
+            'is_requester' => 1,
+            'is_watcher'   => 1,
+            'is_assign'    => 1,
+         ],
+         [
+            'name'         => '_test_group_2',
+            'entities_id'  => '_test_root_entity',
+            'groups_id'    => '_test_group_1',
+            'is_recursive' => 1,
+            'is_usergroup' => 1,
+            'is_requester' => 1,
+            'is_watcher'   => 1,
+            'is_assign'    => 1,
+         ],
       ], 'TaskCategory' => [
          [
             'is_recursive' => 1,

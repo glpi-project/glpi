@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
  * Template for task
  * @since 9.1
 **/
-class TaskTemplate extends CommonDropdown {
+class TaskTemplate extends AbstractITILChildTemplate {
 
    // From CommonDBTM
    public $dohistory          = true;
