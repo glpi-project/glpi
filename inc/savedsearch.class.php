@@ -242,16 +242,22 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
                 'searchtype'         => 'equals'
                ];
 
-      $tab[] = ['id'                 => 11,
-                'table'              => SavedSearch_User::getTable(),
-                'field'              => 'users_id',
-                'name'               => __('Default'),
-                'massiveaction'      => false,
-                'joinparams'         => ['jointype' => 'child'],
-                'datatype'           => 'specific',
-                'searchtype'         => [0 => 'equals',
-                                         1 => 'notequals']
-               ];
+      $tab[] = [
+         'id'            => 11,
+         'table'         => SavedSearch_User::getTable(),
+         'field'         => 'users_id',
+         'name'          => __('Default'),
+         'massiveaction' => false,
+         'joinparams'    => [
+            'jointype'  => 'child',
+            'condition' => "AND NEWTABLE.users_id = " . Session::getLoginUserID()
+         ],
+         'datatype'      => 'specific',
+         'searchtype'    => [
+            0 => 'equals',
+            1 => 'notequals'
+         ],
+      ];
 
       $tab[] = ['id'                 => 12,
                 'table'              => $this->getTable(),
