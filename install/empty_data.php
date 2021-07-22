@@ -229,7 +229,6 @@ $default_prefs = [
    'attach_ticket_documents_to_mail'         => '0',
    'backcreated'                             => '0',
    'task_state'                              => '1',
-   'layout'                                  => 'lefttab',
    'palette'                                 => 'auror',
    'page_layout'                             => 'vertical',
    'fold_menu'                               => '0',
