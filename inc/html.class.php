@@ -1193,7 +1193,7 @@ HTML;
          }
 
          if (in_array('gantt', $jslibs)) {
-            echo Html::css('public/lib/dhtmlx-gantt.css');
+            $tpl_vars['css_files'][] = 'public/lib/dhtmlx-gantt.css';
             Html::requireJs('gantt');
          }
 
