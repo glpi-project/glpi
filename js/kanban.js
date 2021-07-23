@@ -777,7 +777,7 @@ class GLPIKanbanRights {
          });
          $('#kanban-add-dropdown li').on('click', function(e) {
             e.preventDefault();
-            const selection = $(e.target);
+            const selection = $(e.target).closest('li');
             // The add dropdown is a single-level dropdown, so the parent is the ul element
             const dropdown = selection.parent();
             // Get the button that triggered the dropdown and then get the column that it is a part of
@@ -1597,7 +1597,7 @@ class GLPIKanbanRights {
 
          const uniqueID = Math.floor(Math.random() * 999999);
          const formID = "form_add_" + itemtype + "_" + uniqueID;
-         let add_form = "<form id='" + formID + "' class='kanban-add-form kanban-form dropdown-menu no-track'>";
+         let add_form = "<form id='" + formID + "' class='kanban-add-form kanban-form no-track'>";
          let form_header = "<div class='kanban-item-header'>";
          form_header += `
             <span class='kanban-item-title'>
