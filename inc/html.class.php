@@ -4014,7 +4014,6 @@ JAVASCRIPT
 
          foreach ($tab as $key => $val) {
             $key = Sanitizer::sanitize($key);
-            echo "<tr class='tab_bg_1'><td class='top right'>";
             echo "<tr><td>";
             echo $key;
             $is_array = is_array($val);
