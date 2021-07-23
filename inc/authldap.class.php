@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
+
 /**
  *  Class used to manage Auth LDAP config
  */
@@ -1701,7 +1703,7 @@ class AuthLDAP extends CommonDBTM {
       $count    = 0;  //Store the number of results ldap_search
 
       do {
-         $filter = Toolbox::unclean_cross_side_scripting_deep(Toolbox::stripslashes_deep($filter));
+         $filter = Sanitizer::unsanitize($filter, true);
          if (self::isLdapPageSizeAvailable($config_ldap)) {
             if (version_compare(PHP_VERSION, '7.3') < 0) {
                //prior to PHP 7.3, use ldap_control_paged_result
@@ -2284,7 +2286,7 @@ class AuthLDAP extends CommonDBTM {
       $cookie = '';
       $count  = 0;
       do {
-         $filter = Toolbox::unclean_cross_side_scripting_deep(Toolbox::stripslashes_deep($filter));
+         $filter = Sanitizer::unsanitize($filter, true);
          if (self::isLdapPageSizeAvailable($config_ldap)) {
             if (version_compare(PHP_VERSION, '7.3') < 0) {
                //prior to PHP 7.3, use ldap_control_paged_result
@@ -3395,7 +3397,7 @@ class AuthLDAP extends CommonDBTM {
                   $field_counter++;
                   $field_value = '';
                   if (isset($_SESSION['ldap_import']['criterias'][$field])) {
-                     $field_value = Html::entities_deep(Toolbox::unclean_cross_side_scripting_deep(Toolbox::stripslashes_deep($_SESSION['ldap_import']['criterias'][$field])));
+                     $field_value = Html::entities_deep(Sanitizer::unsanitize($_SESSION['ldap_import']['criterias'][$field], true));
                   }
                   echo "<input type='text' id='criterias$field' name='criterias[$field]' value='$field_value'>";
                   echo "</td>";

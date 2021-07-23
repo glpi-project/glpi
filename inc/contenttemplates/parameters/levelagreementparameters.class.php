@@ -34,8 +34,8 @@ namespace Glpi\ContentTemplates\Parameters;
 
 use CommonDBTM;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
+use Glpi\Toolbox\Sanitizer;
 use LevelAgreement;
-use Toolbox;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -61,7 +61,7 @@ abstract class LevelAgreementParameters extends AbstractParameters
    protected function defineValues(CommonDBTM $sla): array {
 
       // Output "unsanitized" values
-      $fields = Toolbox::unclean_cross_side_scripting_deep($sla->fields);
+      $fields = Sanitizer::unsanitize($sla->fields);
 
       return [
          'id'       => $fields['id'],

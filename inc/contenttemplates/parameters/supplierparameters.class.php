@@ -34,8 +34,8 @@ namespace Glpi\ContentTemplates\Parameters;
 
 use CommonDBTM;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
+use Glpi\Toolbox\Sanitizer;
 use Supplier;
-use Toolbox;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -79,7 +79,7 @@ class SupplierParameters extends TreeDropdownParameters
    protected function defineValues(CommonDBTM $user): array {
 
       // Output "unsanitized" values
-      $fields = Toolbox::unclean_cross_side_scripting_deep($user->fields);
+      $fields = Sanitizer::unsanitize($user->fields);
 
       return [
          'id'        => $fields['id'],

@@ -32,6 +32,7 @@
 
 use Glpi\Event;
 use Glpi\Toolbox\RichText;
+use Glpi\Toolbox\Sanitizer;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -1290,7 +1291,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
 
          case 'search' :
             if (strlen($params["contains"]) > 0) {
-               $search  = Toolbox::unclean_cross_side_scripting_deep($params["contains"]);
+               $search  = Sanitizer::unsanitize($params["contains"]);
                $search_wilcard = explode(' ', $search);
                $search_wilcard = implode('* ', $search_wilcard).'*';
 

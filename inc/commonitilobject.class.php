@@ -35,6 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\Toolbox\RichText;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * CommonITILObject Class
@@ -1633,11 +1634,7 @@ abstract class CommonITILObject extends CommonDBTM {
          // Build name based on content
 
          // Unsanitize
-         //
-         // Using `Toolbox::stripslashes_deep()` on sanitized content will produce "r" and "n" instead of "\r" and \n",
-         // so newlines have to be removed before calling it.
-         $content = str_replace(['\r', '\n'], ' ', $input['content']);
-         $content = Toolbox::stripslashes_deep(Toolbox::unclean_cross_side_scripting_deep($content));
+         $content = Sanitizer::unsanitize($input['content'], true);
 
          // Get unformatted text
          $name = RichText::getTextFromHtml($content, false);
@@ -1646,7 +1643,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $name = Toolbox::substr(preg_replace('/\s{2,}/', ' ', $name), 0, 70);
 
          // Sanitize result
-         $input['name'] = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($name));
+         $input['name'] = Sanitizer::sanitize($name, true);
       }
 
       // Set default dropdown
@@ -8478,9 +8475,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $tasktemplate_content = $tasktemplate->getRenderedContent($this);
 
          // Sanitize generated HTML before adding it in DB
-         $tasktemplate_content = Toolbox::clean_cross_side_scripting_deep(
-            Toolbox::addslashes_deep($tasktemplate_content)
-         );
+         $tasktemplate_content = Sanitizer::sanitize($tasktemplate_content, true);
 
          $itiltask->add([
             'tasktemplates_id'            => $tasktemplates_id,
@@ -8522,9 +8517,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $new_fup_content = $fup_template->getRenderedContent($this);
 
          // Sanitize generated HTML before adding it in DB
-         $new_fup_content = Toolbox::clean_cross_side_scripting_deep(
-            Toolbox::addslashes_deep($new_fup_content)
-         );
+         $new_fup_content = Sanitizer::sanitize($new_fup_content, true);
 
          // Insert new followup from template
          $fup = new ITILFollowup();
