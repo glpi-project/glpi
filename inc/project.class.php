@@ -1916,8 +1916,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          $allstates = $projectstate->find($restrict, ['is_finished ASC', 'id']);
          foreach ($allstates as $state) {
             $columns['projectstates_id'][$state['id']] = [
-               'name'         => $state['name'],
-               'header_color' => $state['color']
+               'name'            => $state['name'],
+               'header_color'    => $state['color'],
+               'header_fg_color' => Toolbox::getFgColor($state['color'], 50),
             ];
          }
          return $columns['projectstates_id'];
@@ -2157,7 +2158,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          $card = [
             'id'              => "{$itemtype}-{$item['id']}",
             'title'           => '<span class="pointer">'.$item['name'].'</span>',
-            'title_tooltip'   => Html::resume_text(RichText::getTextFromHtml($item['content'], false, true, true), 100),
+            'title_tooltip'   => Html::resume_text(RichText::getTextFromHtml($item['content'] ?? "", false, true, true), 100),
             'is_deleted'      => $item['is_deleted'] ?? false,
          ];
 
