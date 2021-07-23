@@ -34,11 +34,11 @@ namespace Glpi\Application\View\Extension;
 
 use Glpi\Toolbox\Sanitizer;
 use Html;
+use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
-use Twig\Environment;
 
 /**
  * @since 10.0.0

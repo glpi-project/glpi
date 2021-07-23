@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\Sanitizer;
+
 /// Criteria Rule class
 class RuleCriteria extends CommonDBChild {
 
@@ -443,7 +445,7 @@ class RuleCriteria extends CommonDBChild {
          case Rule::REGEX_MATCH :
             $results = [];
             // Permit use < and >
-            $pattern = Toolbox::unclean_cross_side_scripting_deep($pattern);
+            $pattern = Sanitizer::unsanitize($pattern);
             if (preg_match_all($pattern."i", $field, $results)>0) {
                // Drop $result[0] : complete match result
                array_shift($results);
@@ -462,7 +464,7 @@ class RuleCriteria extends CommonDBChild {
 
          case Rule::REGEX_NOT_MATCH :
             // Permit use < and >
-            $pattern = Toolbox::unclean_cross_side_scripting_deep($pattern);
+            $pattern = Sanitizer::unsanitize($pattern);
             if (preg_match($pattern."i", $field) == 0) {
                $criterias_results[$criteria] = $pattern;
                return true;

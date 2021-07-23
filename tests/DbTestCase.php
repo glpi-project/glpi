@@ -1,4 +1,7 @@
 <?php
+
+use Glpi\Toolbox\Sanitizer;
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -175,7 +178,7 @@ class DbTestCase extends \GLPITestCase {
     */
    protected function createItem($itemtype, $input): CommonDBTM {
       $item = new $itemtype();
-      $input = Toolbox::sanitize($input);
+      $input = Sanitizer::sanitize($input, true);
       $id = $item->add($input);
       $this->integer($id)->isGreaterThan(0);
 
@@ -198,7 +201,7 @@ class DbTestCase extends \GLPITestCase {
    protected function updateItem($itemtype, $id, $input) {
       $item = new $itemtype();
       $input['id'] = $id;
-      $input = Toolbox::sanitize($input);
+      $input = Sanitizer::sanitize($input, true);
       $success = $item->update($input);
       $this->boolean($success)->isTrue();
 

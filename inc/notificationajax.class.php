@@ -1,4 +1,7 @@
 <?php
+
+use Glpi\Toolbox\Sanitizer;
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -86,7 +89,7 @@ class NotificationAjax implements NotificationInterface {
 
       $queue = new QueuedNotification();
 
-      if (!$queue->add(Toolbox::sanitize($data))) {
+      if (!$queue->add(Sanitizer::sanitize($data, true))) {
          Session::addMessageAfterRedirect(__('Error inserting browser notification to queue'), true, ERROR);
          return false;
       } else {

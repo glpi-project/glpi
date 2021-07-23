@@ -34,6 +34,7 @@ namespace tests\units;
 
 use Config;
 use DbTestCase;
+use Glpi\Toolbox\Sanitizer;
 use ITILFollowup;
 use Laminas\Mail\Storage\Message;
 use NotificationTarget;
@@ -713,7 +714,7 @@ PLAINTEXT,
             $name = $data['name'];
 
             if (array_key_exists($name, $tickets_contents)) {
-               $this->string(\Toolbox::unclean_cross_side_scripting_deep($data['content']))->isEqualTo($tickets_contents[$name]);
+               $this->string(Sanitizer::unsanitize($data['content']))->isEqualTo($tickets_contents[$name]);
             }
 
             $this->string($data['content'])->notContains('cid:'); // check that image were correctly imported
@@ -798,7 +799,7 @@ PLAINTEXT,
       ];
 
       foreach ($expected_followups as $expected_followup) {
-         $this->integer(countElementsInTable(ITILFollowup::getTable(), \Toolbox::sanitize($expected_followup)))->isEqualTo(1);
+         $this->integer(countElementsInTable(ITILFollowup::getTable(), Sanitizer::sanitize($expected_followup, true)))->isEqualTo(1);
       }
 
       // Check error log and clean it (to prevent test failure, see GLPITestCase::afterTestMethod()).

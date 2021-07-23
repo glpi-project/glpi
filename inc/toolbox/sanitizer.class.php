@@ -47,7 +47,7 @@ class Sanitizer {
       '>'  =>  '&gt;',
    ];
 
-   public static function sanitize($value, bool $add_slashes = false) {
+   public static function sanitize($value, bool $db_escape = false) {
       if (is_array($value)) {
          return array_map([__CLASS__, __METHOD__], $value);
       }
@@ -55,26 +55,20 @@ class Sanitizer {
          return $value;
       }
 
-      if ($add_slashes) {
-         // TODO Toolbox::addslashes_deep() should be moved in current class,
-         // but it is widely used, so it will be done later.
-         $value = Toolbox::addslashes_deep($value);
+      if ($db_escape) {
+         $value = self::dbEscape($value);
       }
 
       $mapping = self::CHARS_MAPPING;
       return str_replace(array_keys($mapping), array_values($mapping), $value);
    }
 
-   public static function unsanitize($value, bool $strip_slashes = false) {
+   public static function unsanitize($value, bool $db_unescape = false) {
       if (is_array($value)) {
          return array_map([__CLASS__, __METHOD__], $value);
       }
       if (!is_string($value)) {
          return $value;
-      }
-
-      if ($strip_slashes) {
-         $value = stripslashes($value);
       }
 
       $mapping = null;
@@ -85,14 +79,18 @@ class Sanitizer {
             break;
          }
       }
-
-      // Fallback to legacy chars mapping
       if ($mapping === null) {
-         $mapping = self::LEGACY_CHARS_MAPPING;
+         $mapping = self::LEGACY_CHARS_MAPPING; // Fallback to legacy chars mapping
       }
 
       $mapping = array_reverse($mapping);
-      return str_replace(array_values($mapping), array_keys($mapping), $value);
+      $value = str_replace(array_values($mapping), array_keys($mapping), $value);
+
+      if ($db_unescape) {
+         $value = self::dbUnescape($value);
+      }
+
+      return $value;
    }
 
    public static function isSanitized(string $value): bool {
@@ -101,5 +99,44 @@ class Sanitizer {
 
       return preg_match($special_chars_pattern, $value) === 0
          && preg_match($sanitized_chars_pattern, $value) === 1;
+   }
+
+   /**
+    * Escape special chars to protect DB queries.
+    *
+    * @param string $value
+    *
+    * @return string
+    */
+   private static function dbEscape(string $value): string {
+      // TODO Toolbox::addslashes_deep() should be moved in current class,
+      // but it is widely used, so it will be done later.
+      return Toolbox::addslashes_deep($value);;
+   }
+
+   /**
+    * Revert `mysqli::real_escape_string()` transformation.
+    * Inspired by https://stackoverflow.com/a/38769977
+    *
+    * @param string $value
+    *
+    * @return string
+    */
+   private static function dbUnescape(string $value): string {
+      // stripslashes cannot be used here as it would produce "r" and "n" instead of "\r" and \n".
+
+      $search  = ['x00', 'n', 'r', '\\', '\'', '"','x1a'];
+      $replace = ["\x00", "\n", "\r", "\\", "'", "\"", "\x1a"];
+      for ($i = 0; $i < strlen($value); $i++) {
+         if (substr($value, $i, 1) == '\\') {
+            foreach ($search as $index => $char) {
+               if ($i <= strlen($value) - strlen($char) && substr($value, $i + 1, strlen($char)) == $char) {
+                  $value = substr_replace($value, $replace[$index], $i, strlen($char) + 1);
+                  break;
+               }
+            }
+         }
+      }
+      return $value;
    }
 }
