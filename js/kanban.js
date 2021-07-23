@@ -1589,7 +1589,7 @@ class GLPIKanbanRights {
 
          const uniqueID = Math.floor(Math.random() * 999999);
          const formID = "form_add_" + itemtype + "_" + uniqueID;
-         let add_form = "<form id='" + formID + "' class='kanban-add-form kanban-form no-track'>";
+         let add_form = "<form id='" + formID + "' class='kanban-add-form card kanban-form no-track'>";
          let form_header = "<div class='kanban-item-header'>";
          form_header += `
             <span class='kanban-item-title'>
@@ -1605,7 +1605,7 @@ class GLPIKanbanRights {
             const value = options['value'] !== undefined ? options['value'] : '';
 
             if (input_type.toLowerCase() === 'textarea') {
-               add_form += "<textarea name='" + name + "'";
+               add_form += "<textarea class='form-control' name='" + name + "'";
                if (options['placeholder'] !== undefined) {
                   add_form += " placeholder='" + options['placeholder'] + "'";
                }
@@ -1616,7 +1616,7 @@ class GLPIKanbanRights {
             } else if (input_type.toLowerCase() === 'raw') {
                add_form += value;
             } else {
-               add_form += "<input type='" + input_type + "' name='" + name + "'";
+               add_form += "<input class='form-control' type='" + input_type + "' name='" + name + "'";
                if (options['placeholder'] !== undefined) {
                   add_form += " placeholder='" + options['placeholder'] + "'";
                }
@@ -1631,7 +1631,7 @@ class GLPIKanbanRights {
          const column_id_elements = column_el.prop('id').split('-');
          const column_value = column_id_elements[column_id_elements.length - 1];
          add_form += "<input type='hidden' name='" + self.column_field.id + "' value='" + column_value + "'/>";
-         add_form += "<input type='submit' value='" + __('Add') + "' name='add' class='submit'/>";
+         add_form += "<input type='submit' value='" + __('Add') + "' name='add' class='btn btn-primary'/>";
          add_form += "</form>";
          $(column_el.find('.kanban-body')[0]).append(add_form);
          $('#' + formID).get(0).scrollIntoView(false);
