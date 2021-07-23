@@ -358,6 +358,7 @@ class Toolbox {
     * @see unclean_cross_side_scripting_deep*
    **/
    static function clean_cross_side_scripting_deep($value) {
+      // TODO forward to Sanitizer::sanitize($value)
 
       if ((array) $value === $value) {
          return array_map([__CLASS__, 'clean_cross_side_scripting_deep'], $value);
@@ -382,6 +383,7 @@ class Toolbox {
     * @see clean_cross_side_scripting_deep()
    **/
    static function unclean_cross_side_scripting_deep($value) {
+      // TODO forward to Sanitizer::unsanitize
 
       if ((array) $value === $value) {
          return array_map([__CLASS__, 'unclean_cross_side_scripting_deep'], $value);
@@ -2591,6 +2593,8 @@ class Toolbox {
     * @return array
     */
    static public function sanitize($array) {
+      // TODO forward to Sanitizer::sanitize($value, true)
+
       $array = array_map('Toolbox::addslashes_deep', $array);
       $array = array_map('Toolbox::clean_cross_side_scripting_deep', $array);
       return $array;

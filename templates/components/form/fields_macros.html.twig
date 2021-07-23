@@ -57,7 +57,7 @@
    {% set field %}
       <input type="{{ options.type }}" id="%id%"
              class="form-control"
-             name="{{ name }}" value="{{ value }}"
+             name="{{ name }}" value="{{ value|safe_value }}"
              {{ options.readonly ? 'readonly' : '' }}
              {{ options.disabled ? 'disabled' : '' }}
              {{ options.required ? 'required' : '' }} />
@@ -136,7 +136,7 @@
    {% endif %}
 
    {% set value %}
-      <span class="form-control" readonly>{{ value|raw }}</span>
+      <span class="form-control" readonly>{{ value|safe_value }}</span>
    {% endset %}
    {{ _self.field(name, value, label, options) }}
 {% endmacro %}
@@ -154,7 +154,7 @@
       <textarea class="form-control" id="{{ id }}" name="{{ name }}" rows="3"
                 style="width: 100%;"
                 {{ options.disabled ? 'disabled' : '' }}
-                {{ options.required ? 'required' : '' }}>{{ value|raw }}</textarea>
+                {{ options.required ? 'required' : '' }}>{{ value|safe_value }}</textarea> {# TODO safe_html #}
    {% endset %}
 
    {% if options.enable_richtext %}
@@ -201,7 +201,7 @@
       {# .rounded-start added to prevent issue with bootstrap .input-group #}
       {# the first element is an input[type=hidden] added by flatpickr and so we don't have border-radius on the start #}
       <input type="text" class="form-control rounded-start ps-2" data-input
-             name="{{ name }}" value="{{ value }}"
+             name="{{ name }}" value="{{ value|safe_value }}"
              {{ options.required ? 'required' : "" }}
              {{ options.disabled ? 'disabled' : "" }}>
       <i class="input-group-text far fa-calendar" data-toggle role="button"></i>
@@ -271,7 +271,7 @@
    {% set field %}
       <input type="color" id="%id%"
              class="form-control form-control-color"
-             name="{{ name }}" value="{{ value }}"
+             name="{{ name }}" value="{{ value|safe_value }}"
          {{ options.readonly ? 'readonly' : '' }}
          {{ options.disabled ? 'disabled' : '' }}
          {{ options.required ? 'required' : '' }} />
@@ -284,7 +284,7 @@
    {% set field %}
       <input type="password" id="%id%"
              class="form-control"
-             name="{{ name }}" value="{{ value }}"
+             name="{{ name }}" value="{{ value|safe_value }}"
          {{ options.readonly ? 'readonly' : '' }}
          {{ options.disabled ? 'disabled' : '' }}
          {{ options.required ? 'required' : '' }} />
@@ -360,7 +360,7 @@
    {% set field %}
       <input type="hidden" id="%id%"
              class="form-control"
-             name="{{ name }}" value="{{ value }}"
+             name="{{ name }}" value="{{ value|safe_value }}"
          {{ options.readonly ? 'readonly' : '' }}
          {{ options.disabled ? 'disabled' : '' }}
          {{ options.required ? 'required' : '' }} />
