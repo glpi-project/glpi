@@ -6970,6 +6970,7 @@ CREATE TABLE `glpi_tickettasks` (
   `tasktemplates_id` int NOT NULL DEFAULT '0',
   `timeline_position` tinyint NOT NULL DEFAULT '0',
   `sourceitems_id` int NOT NULL DEFAULT '0',
+  `sourceof_items_id` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `date` (`date`),
@@ -6986,7 +6987,8 @@ CREATE TABLE `glpi_tickettasks` (
   KEY `begin` (`begin`),
   KEY `end` (`end`),
   KEY `tasktemplates_id` (`tasktemplates_id`),
-  KEY `sourceitems_id` (`sourceitems_id`)
+  KEY `sourceitems_id` (`sourceitems_id`),
+  KEY `sourceof_items_id` (`sourceof_items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
