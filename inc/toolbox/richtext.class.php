@@ -56,7 +56,7 @@ class RichText {
       }
 
       if ($sanitized_input) {
-         $content = Toolbox::unclean_cross_side_scripting_deep($content);
+         $content = Sanitizer::unsanitize($content);
       }
 
       $content = self::normalizeHtmlContent($content, true);
@@ -109,7 +109,7 @@ class RichText {
       global $CFG_GLPI;
 
       if ($sanitized_input) {
-         $content = Toolbox::unclean_cross_side_scripting_deep($content);
+         $content = Sanitizer::unsanitize($content);
       }
 
       $content = self::normalizeHtmlContent($content, false);

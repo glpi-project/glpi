@@ -36,6 +36,7 @@ use CommonDBTM;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ArrayParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
+use Glpi\Toolbox\Sanitizer;
 use Item_Ticket;
 use KnowbaseItem;
 use KnowbaseItem_Item;
@@ -46,7 +47,6 @@ use Session;
 use SLA;
 use Ticket;
 use TicketValidation;
-use Toolbox;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -92,7 +92,7 @@ class TicketParameters extends CommonITILObjectParameters
       /** @var Ticket $ticket  */
 
       // Output "unsanitized" values
-      $fields = Toolbox::unclean_cross_side_scripting_deep($ticket->fields);
+      $fields = Sanitizer::unsanitize($ticket->fields);
 
       $values = parent::defineValues($ticket);
 

@@ -36,6 +36,7 @@ use CommonITILValidation;
 use Contract;
 use ContractType;
 use DbTestCase;
+use Glpi\Toolbox\Sanitizer;
 use Group_User;
 use ITILFollowup;
 use ITILFollowupTemplate;
@@ -482,7 +483,7 @@ class RuleTicket extends DbTestCase {
       $this->boolean($itilSolution->getFromDBByCrit([
          'items_id' => $tickets_id,
          'itemtype' => 'Ticket',
-         'content'  => Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep("<p>content of solution template  white ' quote</p>"))
+         'content'  => Sanitizer::sanitize("<p>content of solution template  white ' quote</p>", true)
       ]))->isTrue();
 
       $this->integer((int)$itilSolution->getID())->isGreaterThan(0);
@@ -869,7 +870,7 @@ class RuleTicket extends DbTestCase {
       $this->array($ticket_tasks)->hasSize(1);
       $task_data = array_pop($ticket_tasks);
       $this->array($task_data)->hasKey('content');
-      $this->string($task_data['content'])->isEqualTo(Toolbox::clean_cross_side_scripting_deep('<p>test content</p>'));
+      $this->string($task_data['content'])->isEqualTo(Sanitizer::sanitize('<p>test content</p>'));
 
       // Test on update
       $ticket_em = new \Ticket();
@@ -898,7 +899,7 @@ class RuleTicket extends DbTestCase {
       $this->array($ticket_tasks)->hasSize(1);
       $task_data = array_pop($ticket_tasks);
       $this->array($task_data)->hasKey('content');
-      $this->string($task_data['content'])->isEqualTo(Toolbox::clean_cross_side_scripting_deep('<p>test content</p>'));
+      $this->string($task_data['content'])->isEqualTo(Sanitizer::sanitize('<p>test content</p>'));
    }
 
    public function testFollowupTemplateAssignFromRule() {
@@ -961,7 +962,7 @@ class RuleTicket extends DbTestCase {
       $this->array($ticket_followups)->hasSize(1);
       $ticket_followups_data = array_pop($ticket_followups);
       $this->array($ticket_followups_data)->hasKey('content');
-      $this->string($ticket_followups_data['content'])->isEqualTo(Toolbox::clean_cross_side_scripting_deep('<p>test testFollowupTemplateAssignFromRule</p>'));
+      $this->string($ticket_followups_data['content'])->isEqualTo(Sanitizer::sanitize('<p>test testFollowupTemplateAssignFromRule</p>'));
 
       // Test on update
       $ticket = new \Ticket();
@@ -994,7 +995,7 @@ class RuleTicket extends DbTestCase {
       $this->array($ticket_followups)->hasSize(1);
       $ticket_followups_data = array_pop($ticket_followups);
       $this->array($ticket_followups_data)->hasKey('content');
-      $this->string($ticket_followups_data['content'])->isEqualTo(Toolbox::clean_cross_side_scripting_deep('<p>test testFollowupTemplateAssignFromRule</p>'));
+      $this->string($ticket_followups_data['content'])->isEqualTo(Sanitizer::sanitize('<p>test testFollowupTemplateAssignFromRule</p>'));
    }
 
    public function testGroupRequesterAssignFromUserGroupsAndRegexOnUpdateTicketContent() {

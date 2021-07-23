@@ -33,6 +33,7 @@
 namespace Glpi\ContentTemplates;
 
 use Glpi\Toolbox\RichText;
+use Glpi\Toolbox\Sanitizer;
 use Twig\Environment;
 use Twig\Extension\SandboxExtension;
 use Twig\Loader\ArrayLoader;
@@ -69,7 +70,7 @@ class TemplateManager
    ): string {
       // Unclean input if needed
       if ($sanitized_content) {
-         $content = \Toolbox::unclean_cross_side_scripting_deep($content);
+         $content = Sanitizer::unsanitize($content);
       }
 
       // Init twig
@@ -99,7 +100,7 @@ class TemplateManager
     */
    public static function validate(string $content, bool $sanitized_content = false, ?string &$err_msg = null): bool {
       if ($sanitized_content) {
-         $content = \Toolbox::unclean_cross_side_scripting_deep($content);
+         $content = Sanitizer::unsanitize($content);
       }
 
       $twig = new Environment(new ArrayLoader(['template' => $content]));

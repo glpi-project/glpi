@@ -31,6 +31,7 @@
  */
 
 use Glpi\Features\Kanban;
+use Glpi\Toolbox\Sanitizer;
 
 $AJAX_INCLUDE = 1;
 
@@ -122,7 +123,7 @@ if ($_REQUEST['action'] === 'update') {
    $inputs = [];
    parse_str($_REQUEST['inputs'], $inputs);
 
-   $item->add(Toolbox::clean_cross_side_scripting_deep($inputs));
+   $item->add(Sanitizer::sanitize($inputs));
 } else if ($_REQUEST['action'] === 'bulk_add_item') {
    $checkParams(['inputs']);
    $item = new $itemtype();
@@ -135,7 +136,7 @@ if ($_REQUEST['action'] === 'update') {
       foreach ($bulk_item_list as $item_entry) {
          $item_entry = trim($item_entry);
          if (!empty($item_entry)) {
-            $item->add(Toolbox::clean_cross_side_scripting_deep($inputs + ['name' => $item_entry]));
+            $item->add(Sanitizer::sanitize($inputs + ['name' => $item_entry]));
          }
       }
    }

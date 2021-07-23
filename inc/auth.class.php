@@ -31,6 +31,7 @@
  */
 
 use Glpi\Event;
+use Glpi\Toolbox\Sanitizer;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -938,7 +939,7 @@ class Auth extends CommonGLPI {
       if (!$DB->isSlave()) {
          // GET THE IP OF THE CLIENT
          $ip = getenv("HTTP_X_FORWARDED_FOR")?
-            Toolbox::clean_cross_side_scripting_deep(getenv("HTTP_X_FORWARDED_FOR")):
+            Sanitizer::sanitize(getenv("HTTP_X_FORWARDED_FOR")):
             getenv("REMOTE_ADDR");
 
          if ($this->auth_succeded) {

@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Toolbox\DataExport;
 use Glpi\Toolbox\RichText;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * Search Class
@@ -7783,7 +7784,7 @@ JAVASCRIPT;
    **/
    static function makeTextSearchValue($val) {
       // Unclean to permit < and > search
-      $val = Toolbox::unclean_cross_side_scripting_deep($val);
+      $val = Sanitizer::unsanitize($val);
 
       // escape _ char used as wildcard in mysql likes
       $val = str_replace('_', '\\_', $val);

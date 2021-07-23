@@ -34,9 +34,9 @@ namespace tests\units;
 
 use CommonITILObject;
 use DbTestCase;
+use Glpi\Toolbox\Sanitizer;
 use Symfony\Component\DomCrawler\Crawler;
 use TicketValidation;
-use Toolbox;
 use User;
 
 /* Test for inc/ticket.class.php */
@@ -243,7 +243,7 @@ class Ticket extends DbTestCase {
 
       // 6.1 -> check first task
       $taskA = array_shift($found_tasks);
-      $this->string($taskA['content'])->isIdenticalTo(Toolbox::clean_cross_side_scripting_deep('<p>my task template A</p>'));
+      $this->string($taskA['content'])->isIdenticalTo(Sanitizer::sanitize('<p>my task template A</p>'));
       $this->variable($taskA['taskcategories_id'])->isEqualTo($taskcat_id);
       $this->variable($taskA['actiontime'])->isEqualTo(60);
       $this->variable($taskA['is_private'])->isEqualTo(1);
@@ -253,7 +253,7 @@ class Ticket extends DbTestCase {
 
       // 6.2 -> check second task
       $taskB = array_shift($found_tasks);
-      $this->string($taskB['content'])->isIdenticalTo(Toolbox::clean_cross_side_scripting_deep('<p>my task template B</p>'));
+      $this->string($taskB['content'])->isIdenticalTo(Sanitizer::sanitize('<p>my task template B</p>'));
       $this->variable($taskB['taskcategories_id'])->isEqualTo($taskcat_id);
       $this->variable($taskB['actiontime'])->isEqualTo(120);
       $this->variable($taskB['is_private'])->isEqualTo(0);

@@ -31,6 +31,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\Sanitizer;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -1126,7 +1127,7 @@ final class DbUtils {
          // Separator is not encoded in DB, and it could not be changed as this is mandatory to be able to split tree
          // correctly even if some tree elements are containing ">" char in their name (this one will be encoded).
          $separator = ' > ';
-         $name = implode(Toolbox::clean_cross_side_scripting_deep($separator), explode($separator, $name));
+         $name = implode(Sanitizer::sanitize($separator), explode($separator, $name));
 
          if ($tooltip) {
             $comment  = sprintf(__('%1$s: %2$s')."<br>",

@@ -31,6 +31,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\Sanitizer;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -164,7 +165,7 @@ class Dropdown {
       }
 
       if (!$item instanceof CommonTreeDropdown) {
-         $name = Toolbox::unclean_cross_side_scripting_deep($name);
+         $name = Sanitizer::unsanitize($name);
       }
       $p = ['value'                => $params['value'],
             'valuename'            => $name,
@@ -3002,7 +3003,7 @@ class Dropdown {
          }
       }
 
-      $ret['results'] = Toolbox::unclean_cross_side_scripting_deep($datas);
+      $ret['results'] = Sanitizer::unsanitize($datas);
       $ret['count']   = $count;
 
       return ($json === true) ? json_encode($ret) : $ret;

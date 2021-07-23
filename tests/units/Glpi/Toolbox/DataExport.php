@@ -32,6 +32,8 @@
 
 namespace tests\units\Glpi\Toolbox;
 
+use Glpi\Toolbox\Sanitizer;
+
 /**
  * Test class for src/Glpi/Toolbox/dataexport.class.php
  */
@@ -45,9 +47,8 @@ class DataExport extends \GLPITestCase {
       ];
 
       // Ticket title column
-      $base_url = GLPI_URI;
       yield [
-         'value'           => \Toolbox::clean_cross_side_scripting_deep(<<<HTML
+         'value'           => Sanitizer::sanitize(<<<HTML
 <a id="Ticket1" href="/front/ticket.form.php?id=1" data-hasqtip="0">Ticket title</a>
 <div id="contentTicket1" class="invisible"><div class="content"><p>Ticket content ...</p></div></div>
 <script type="text/javascript">

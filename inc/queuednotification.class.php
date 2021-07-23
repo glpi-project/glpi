@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\Sanitizer;
 
 /** QueuedNotification class
  *
@@ -436,7 +437,7 @@ class QueuedNotification extends CommonDBTM {
     */
    public function sendById($ID) {
       if ($this->getFromDB($ID)) {
-         $this->fields = Toolbox::unclean_cross_side_scripting_deep($this->fields);
+         $this->fields = Sanitizer::unsanitize($this->fields);
 
          $mode = $this->getField('mode');
          $eventclass = 'NotificationEvent' . ucfirst($mode);
@@ -558,7 +559,7 @@ class QueuedNotification extends CommonDBTM {
       );
 
       foreach ($pendings as $mode => $data) {
-         $data = Toolbox::unclean_cross_side_scripting_deep($data);
+         $data = Sanitizer::unsanitize($data);
 
          $eventclass = 'NotificationEvent' . ucfirst($mode);
          $conf = Notification_NotificationTemplate::getMode($mode);
@@ -631,7 +632,7 @@ class QueuedNotification extends CommonDBTM {
          );
 
          foreach ($pendings as $mode => $data) {
-            $data = Toolbox::unclean_cross_side_scripting_deep($data);
+            $data = Sanitizer::unsanitize($data);
 
             $eventclass = Notification_NotificationTemplate::getModeClass($mode, 'event');
             $eventclass::send($data);
@@ -745,7 +746,7 @@ class QueuedNotification extends CommonDBTM {
 
       echo "<tr class='tab_bg_1 top' >";
       echo "<td colspan='2' class='queuemail_preview'>";
-      echo self::cleanHtml(Toolbox::unclean_cross_side_scripting_deep($this->fields['body_html']));
+      echo self::cleanHtml(Sanitizer::unsanitize($this->fields['body_html']));
       echo "</td>";
       echo "<td colspan='2'>".nl2br($this->fields['body_text'], false)."</td>";
       echo "</tr>";

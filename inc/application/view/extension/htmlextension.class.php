@@ -32,7 +32,9 @@
 
 namespace Glpi\Application\View\Extension;
 
+use Glpi\Toolbox\Sanitizer;
 use Html;
+use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
 use Twig\TwigFilter;
@@ -42,9 +44,15 @@ use Twig\TwigFunction;
  * @since 10.0.0
  */
 class HtmlExtension extends AbstractExtension implements ExtensionInterface {
+
    public function getFilters() {
       return [
          new TwigFilter('conv_datetime', [$this, 'convDateTime'], ['is_safe' => ['html']]),
+         new TwigFilter(
+            'safe_value',
+            [$this, 'getSafeValue'],
+            ['needs_environment' => true, 'is_safe_callback' => 'twig_escape_filter_is_safe']
+         ),
       ];
    }
 
@@ -77,5 +85,29 @@ class HtmlExtension extends AbstractExtension implements ExtensionInterface {
 
    public function isMassiveActionchecked(string $itemtype = "", int $id = 0): bool {
       return isset($_SESSION['glpimassiveactionselected'][$itemtype][$id]);
+   }
+
+   /**
+    * Return safe value for an itemtype field.
+    * Value will be made safe, whenever it has been sanitize (value fetched from DB),
+    * or not (value computed during runtime).
+    * It will then be escaped like it would be by the `escape` Twig filter.
+    *
+    * @param Environment $env
+    * @param mixed  $string     The value to be escaped
+    * @param string $strategy   The escaping strategy
+    * @param string $charset    The charset
+    * @param bool   $autoescape Whether the function is called by the auto-escaping feature (true) or by the developer (false)
+    *
+    * @return mixed
+    *
+    * @see twig_escape_filter()
+    */
+   public function getSafeValue(Environment $env, $string, $strategy = 'html', $charset = null, $autoescape = false) {
+      if (is_string($string) && Sanitizer::isSanitized($string)) {
+         $string = Sanitizer::unsanitize($string);
+      }
+
+      return twig_escape_filter($env, $string, $strategy, $charset, $autoescape);
    }
 }

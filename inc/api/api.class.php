@@ -47,6 +47,7 @@ use Config;
 use Contract;
 use Document;
 use Dropdown;
+use Glpi\Toolbox\Sanitizer;
 use Html;
 use Infocom;
 use Item_Devices;
@@ -1726,7 +1727,7 @@ abstract class API {
                $object["_add"] = true;
 
                //add current item
-               $object = Toolbox::sanitize($object);
+               $object = Sanitizer::sanitize($object, true);
                $new_id = $item->add($object);
                if ($new_id === false) {
                   $failed++;
@@ -1853,7 +1854,7 @@ abstract class API {
                   }
 
                   //update item
-                  $object = Toolbox::sanitize((array)$object);
+                  $object = Sanitizer::sanitize((array)$object, true);
                   $update_return = $item->update($object);
                   if ($update_return === false) {
                      $failed++;

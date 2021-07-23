@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\Sanitizer;
 
 class RuleTicket extends Rule {
 
@@ -238,9 +239,7 @@ class RuleTicket extends Rule {
                         $solution_content = $template->getRenderedContent($parent);
 
                         // Sanitize generated HTML before adding it in DB
-                        $solution_content = Toolbox::clean_cross_side_scripting_deep(
-                           Toolbox::addslashes_deep($solution_content)
-                        );
+                        $solution_content = Sanitizer::sanitize($solution_content, true);
 
                         $solution = new ITILSolution();
                         $solution->add([

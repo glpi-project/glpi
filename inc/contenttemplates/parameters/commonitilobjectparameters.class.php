@@ -39,11 +39,11 @@ use Entity;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ArrayParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
+use Glpi\Toolbox\Sanitizer;
 use Group;
 use ITILCategory;
 use Session;
 use Supplier;
-use Toolbox;
 use User;
 
 if (!defined('GLPI_ROOT')) {
@@ -87,7 +87,7 @@ abstract class CommonITILObjectParameters extends AbstractParameters
       /** @var CommonITILObject $commonitil  */
 
       // Output "unsanitized" values
-      $fields = Toolbox::unclean_cross_side_scripting_deep($commonitil->fields);
+      $fields = Sanitizer::unsanitize($commonitil->fields);
 
       // Base values from ticket property
       $values = [
