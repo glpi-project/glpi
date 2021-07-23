@@ -55,4 +55,8 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
 
       return parent::canView();
    }
+
+   static function getIcon() {
+      return KnowbaseItem::getIcon();
+   }
 }

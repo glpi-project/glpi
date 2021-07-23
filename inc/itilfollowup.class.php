@@ -30,11 +30,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\RichText;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
-
-use Glpi\Toolbox\RichText;
 
 /**
  * @since 9.4.0
@@ -807,6 +808,14 @@ class ITILFollowup  extends CommonDBChild {
       if ($this->isNewItem()) {
          $this->getEmpty();
       }
+
+      TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_followup.html.twig', [
+         'item'      => $options['parent'],
+         'subitem'   => $this
+      ]);
+      return;
+
+      //TODO Legacy form rendering kept for reference only. Remove when twig template is complete.
 
       if (!isset($options['item']) && isset($options['parent'])) {
          //when we came from aja/viewsubitem.php

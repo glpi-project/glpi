@@ -81,4 +81,8 @@ class TaskCategory extends CommonTreeDropdown {
       return _n('Task category', 'Task categories', $nb);
    }
 
+   static function getIcon() {
+      return "fas fa-tags";
+   }
+
 }

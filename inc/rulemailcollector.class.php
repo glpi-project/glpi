@@ -323,4 +323,9 @@ class RuleMailCollector extends Rule {
       return $output;
    }
 
+
+   static function getIcon() {
+      return MailCollector::getIcon();
+   }
+
 }

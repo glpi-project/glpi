@@ -44,4 +44,8 @@ class BusinessCriticity  extends CommonTreeDropdown {
    static function getTypeName($nb = 0) {
       return _n('Business criticity', 'Business criticities', $nb);
    }
+
+   static function getIcon() {
+      return "fas fa-briefcase";
+   }
 }

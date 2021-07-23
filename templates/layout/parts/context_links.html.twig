@@ -1,0 +1,84 @@
+
+{% set links = menu[sector]['content'][item]['options'][option]['links'] ?? menu[sector]['content'][item]['links'] %}
+
+{# @TODO  border-start is not implemented in current boostrap beta (remove border-left when done)  #}
+<ul class="nav navbar-nav border-start border-left ps-2 flex-row">
+
+{% if links['add'] is defined %}
+<li class="nav-item">
+   <a href="{{ path(links['add']) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2" title="{{ __('Add') }}">
+      <i class="fas fa-plus"></i>
+      <span class="d-none d-md-block">{{ __('Add') }}</span>
+   </a>
+</li>
+{% endif %}
+
+{% if links['search'] is defined %}
+<li class="nav-item">
+   <a href="{{ path(links['search']) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2" title="{{ __('Search') }}">
+      <i class="fas fa-search"></i>
+      <span class="d-none d-md-block">{{ __('Search') }}</span>
+   </a>
+</li>
+{% endif %}
+
+{% if links['lists'] is defined %}
+<li class="nav-item">
+   <a href="#" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2 show-saved-searches"
+      data-itemtype="{{ item }}" title="{{ __('Lists') }}">
+      <i class="fas fa-star"></i>
+      <span class="d-none d-md-block">{{ __('Lists') }}</span>
+   </a>
+</li>
+{% endif %}
+
+{% for type, link in links %}
+   {% if type == 'add' or type == 'search' or type == 'lists' %}
+   {% elseif type == 'template' %}
+      <li class="nav-item">
+         <a href="{{ path(link) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2" title="{{ __("Manage templates...") }}">
+            <i class="fas fa-layer-group"></i>
+            <span class="d-none d-md-block">{{ __("Templates") }}</span>
+         </a>
+      </li>
+   {% elseif type == 'showall' %}
+      <li class="nav-item">
+         <a href="{{ path(link) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2" title="{{ __("Show all") }}">
+            <span class="fa-stack" style="vertical-align: middle; font-size: 0.8em">
+               <i class="fas fa-check fa-stack-1x" style="top: 1px; left: -7px; font-size: 1.2em"></i>
+               <i class="far fa-clock fa-stack-1x" style="top: 6px; left: -3px"></i>
+            </span>
+            <span class="d-none d-md-block">{{ __("Show all") }}</span>
+         </a>
+      </li>
+   {% elseif type == 'summary' %}
+      <li class="nav-item">
+         <a href="{{ path(link) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2" title="{{ __("Summary") }}">
+            <i class="fas fa-stream"></i>
+            <span class="d-none d-md-block">{{ __("Summary") }}</span>
+         </a>
+      </li>
+   {% elseif type == 'summary_kanban' %}
+      <li class="nav-item">
+         <a href="{{ path(link) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2" title="{{ __("Global Kanban") }}">
+            <i class="fas fa-columns"></i>
+            <span class="d-none d-md-block">{{ __("Global Kanban") }}</span>
+         </a>
+      </li>
+   {% elseif type == 'config' %}
+      <li class="nav-item">
+         <a href="{{ path(link) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2" title="{{ __("Setup") }}">
+            <img src="{{ path("/pics/menu_config.png") }}">
+            <span class="d-none d-md-block">{{ __("Setup") }}</span>
+         </a>
+      </li>
+   {% else %}
+      <li class="nav-item">
+         <a href="{{ path(link) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2">
+            {{ type|raw }}
+         </a>
+      </li>
+   {% endif %}
+
+{% endfor %}
+</ul>

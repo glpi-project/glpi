@@ -176,8 +176,10 @@ class ObjectLock extends CommonDBTM {
 
 
    private function getForceUnlockButton() {
-      $msg = "<a class='vsubmit floatright' onclick='javascript:unlockIt(this);'>"
-              .sprintf(__('Force unlock %1s #%2s'), $this->itemtypename, $this->itemid)."</a>";
+      $msg = "<a class='btn btn-sm btn-primary ms-2' onclick='javascript:unlockIt(this);'>
+               <i class='fas fa-unlock'></i>
+               <span>".sprintf(__('Force unlock %1s #%2s'), $this->itemtypename, $this->itemid)."</span>
+            </a>";
       return $msg;
    }
 
@@ -271,7 +273,10 @@ class ObjectLock extends CommonDBTM {
       $msg .= " -> " . Html::convDateTime($this->fields['date']);
       $msg .= "</strong>";
       if ($showAskUnlock) {
-         $msg .= "<a class='vsubmit' onclick='javascript:askUnlock();'>".__('Ask for unlock')."</a>";
+         $msg .= "<a class='btn btn-sm btn-primary ms-2' onclick='javascript:askUnlock();'>
+               <i class='fas fa-unlock'></i>
+               <span>".__('Ask for unlock')."</span>
+            </a>";
       }
       $msg .= "<label for='alertMe'>" . __('Alert me when unlocked') . "</label>";
       $msg .= Html::getCheckbox(['id' => 'alertMe']);
@@ -295,9 +300,10 @@ class ObjectLock extends CommonDBTM {
                }
          ");
 
-      $msg = "<span class=red style='padding-left:5px;'>";
-      $msg .= __('Warning: read-only!')."</span>";
-      $msg .= "<a class='vsubmit' onclick='javascript:requestLock();'>".
+      $msg = "<span class=red style='padding-left:5px;'>"
+         .__('Warning: read-only!').
+         "</span>";
+      $msg .= "<a class='btn btn-sm btn-primary ms-2' onclick='javascript:requestLock();'>".
                 __('Request write on ').$this->itemtypename." #".$this->itemid."</a>";
       $this->displayLockMessage($msg);
    }
@@ -495,7 +501,7 @@ class ObjectLock extends CommonDBTM {
    **/
    private function displayLockMessage($msg, $title = '') {
 
-      echo "<div id='message_after_lock' class='objectlockmessage' style='display:table;' >";
+      echo "<div id='message_after_lock' class='objectlockmessage' style='display:inline-block;' >";
       echo $msg;
       echo "</div>";
       echo Html::scriptBlock("$('#message_after_lock').hide();");

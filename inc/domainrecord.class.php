@@ -402,36 +402,21 @@ class DomainRecord extends CommonDBChild {
                      var domainrecordtypes_id = select.val();
                      var title = domainrecordtypes_id > 0 ? select.find('option:selected').html() : '';
 
-                     var container = $('<div></div>');
-                     container.dialog(
-                        {
-                           modal:    true,
-                           title:    title,
-                           height:   'auto',
-                           width:    400,
-                           open: function () {
-                              $(this).dialog('option', 'position', ['center', 'center']);
-                           },
-                           close: function() {
-                              $(this).remove();
-                           }
-                        }
-                     ).load(
-                        '{$CFG_GLPI["root_doc"]}/ajax/domainrecord_data_form.php',
-                        {
+                     glpi_ajax_dialog({
+                        id: 'modal_{$rand}',
+                        title: title,
+                        url: '{$CFG_GLPI["root_doc"]}/ajax/domainrecord_data_form.php',
+                        params: {
                            domainrecordtypes_id: domainrecordtypes_id,
                            str_input_id: 'data{$rand}',
                            obj_input_id: 'data_obj{$rand}'
                         },
-                        function() {
-                           $(this).find('form').on(
-                              'submit',
-                              function(event) {
-                                 container.dialog('close');
-                              }
-                           );
+                        done: function() {
+                           $('#modal_{$rand}').find('form').on('submit', function(event) {
+                              $('#modal_{$rand} + .modal-backdrop, #modal_{$rand}').remove();
+                           });
                         }
-                     );
+                     })
                   }
                );
             }
@@ -549,7 +534,7 @@ JAVASCRIPT;
          );
 
          echo "<span class='fa fa-plus-circle pointer' title=\"".__s('Add')."\"
-                        onClick=\"".Html::jsGetElementbyID('add_dropdowndomainrecords_id').".dialog('open');\"
+                     data-bs-toggle='modal' data-bs-target='#add_dropdowndomainrecords_id'
                      ><span class='sr-only'>" . __s('Add') . "</span></span>";
          echo Ajax::createIframeModalWindow(
             'add_dropdowndomainrecords_id',

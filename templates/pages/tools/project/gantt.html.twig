@@ -1,0 +1,78 @@
+<input type="hidden" id="hf_gantt_item_state" value="" />
+<div id="gantt-container" class="gantt-block" style="width:100%; height:63vh;"></div>
+<div class="gantt-block__features">
+   <ul class="gantt-block__controls mt-3">
+      <li class="gantt-menu-item gantt-menu-item-right">
+         <a href="#" class='btn btn-outline-secondary btn-icon' onclick="gantt.ext.fullscreen.toggle();"
+            title="{{ __("Fullscreen") }}" data-bs-toggle="tooltip">
+            <i class="fas fa-expand"></i>
+         </a>
+      </li>
+
+      <li class="gantt-menu-item gantt-menu-item-right">
+         <div class="btn-group" role="group">
+            <span class="btn bg-blue-lt pe-none" aria-disabled="true">
+               <i class="fas fa-search-plus"></i>
+               <span>{{ __("Zoom") }}</span>
+            </span>
+
+            <input type="radio" id="scale1" class="btn-check" name="scale" value="day" checked />
+            <label class="btn btn-outline-secondary" for="scale1">{{ __("Days") }}</label>
+
+            <input type="radio" id="scale2" class="btn-check" name="scale" value="week" />
+            <label class="btn btn-outline-secondary" for="scale2">{{ __("Weeks") }}</label>
+
+            <input type="radio" id="scale3" class="btn-check" name="scale" value="month" checked />
+            <label class="btn btn-outline-secondary" for="scale3">{{ __("Months") }}</label>
+
+            <input type="radio" id="scale4" class="btn-check" name="scale" value="quarter" />
+            <label class="btn btn-outline-secondary" for="scale4">{{ __("Quarters") }}</label>
+
+            <input type="radio" id="scale5" class="btn-check" name="scale" value="year" />
+            <label class="btn btn-outline-secondary" for="scale5">{{ __("Years") }}</label>
+         </div>
+
+      </li>
+
+      <li class="gantt-menu-item gantt-menu-item-right">
+         <div class="input-group" role="group">
+            <input type="radio" id="rb-find" class="btn-check rb-optype" name="rb-optype" checked />
+            <label class="btn btn-outline-secondary" for="rb-find">
+               <i class="fas fa-search"></i>
+               <span>{{ __("Find") }}</span>
+            </label>
+
+            <input type="radio" id="rb-filter" class="btn-check rb-optype" name="rb-optype" />
+            <label class="btn btn-outline-secondary" for="rb-filter">
+               <i class="fas fa-filter"></i>
+               <span>{{ __("Filter") }}</span>
+            </label>
+
+            <input id="search" data-text-filter type="field" placeholder="{{ __("by name") }}"
+                   class="form-control"
+                   oninput="gantt.$doFilter(this.value);" />
+         </div>
+      </li>
+   </ul>
+</div>
+
+<script type='text/javascript'>
+$(function() {
+
+   $(document).ajaxSend(function(event, request, settings) {
+      if (settings.url.indexOf('gantt.php') != -1) {
+         $('#gantt-loader, #gantt-loader-overlay').fadeIn('fast');
+      }
+   });
+
+   $(document).ajaxStop(function (event, request, settings) {
+      $('#gantt-loader, #gantt-loader-overlay').fadeOut('fast');
+   });
+
+   GlpiGantt.init("{{ id }}");
+
+   $('.gantt-block').append('<div id="gantt-loader" class="spin-center"></div>');
+   $('#page').append('<div id="gantt-loader-overlay" style="display: none;"></div>');
+
+});
+</script>

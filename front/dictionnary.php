@@ -30,28 +30,19 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 include ('../inc/includes.php');
 
 Session::checkSeveralRightsOr(['rule_dictionnary_dropdown' => READ,
                                     'rule_dictionnary_software' => READ]);
 
-Html::header(__('Administration'), $_SERVER['PHP_SELF'], "admin", "dictionnary", -1);
+Html::header(_n('Dictionary', 'Dictionaries', Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "dictionnary", -1);
 
-RuleCollection::titleBackup();
-$dictionnaries = RuleCollection::getDictionnaries();
-
-echo "<div class='center'><table class='tab_cadre'>";
-echo "<tr><th colspan='".count($dictionnaries)."'>" . __('Dictionaries') . "</th></tr>";
-echo "<tr class='tab_bg_1'>";
-foreach ($dictionnaries as $dictionnary) {
-   echo "<td class='top'><table class='tab_cadre'>";
-   echo "<tr><th>" . $dictionnary['type'] . "</th></tr>";
-   foreach ($dictionnary['entries'] as $entry) {
-      echo "<tr class='tab_bg_1'><td class='center b'>";
-      echo "<a href='".$entry['link']."'>" . $entry['label'] ."</a></td></tr>";
-   }
-   echo "</td></table>";
-}
-echo "</tr>";
-echo "</table></div>";
+echo TemplateRenderer::getInstance()->render(
+   'pages/admin/rules_list.html.twig',
+   [
+      'rules_group' => RuleCollection::getDictionnaries()
+   ]
+);
 Html::footer();

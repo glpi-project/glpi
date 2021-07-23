@@ -40,6 +40,10 @@ if (empty($_GET["id"])) {
 
 Session::checkLoginUser();
 
+if (isset($_UPOST['_actors'])) {
+   $_POST['_actors'] = json_decode($_UPOST['_actors'], true);
+}
+
 $problem = new Problem();
 if (isset($_POST["add"])) {
    $problem->check(-1, CREATE, $_POST);
@@ -138,6 +142,22 @@ if (isset($_POST["add"])) {
       }
    }
    Html::back();
+} else if (isset($_REQUEST['addme_as_actor'])) {
+   $id = (int) $_REQUEST['id'];
+   $problem->check($id, READ);
+   $input = array_merge(Toolbox::addslashes_deep($problem->fields), [
+      'id' => $id,
+      '_itil_'.$_REQUEST['actortype'] => [
+         '_type' => "user",
+         'users_id' => Session::getLoginUserID(),
+         'use_notification' => 1,
+      ]
+   ]);
+   $problem->update($input);
+   Event::log($id, "problem", 4, "tracking",
+              //TRANS: %s is the user login
+              sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
+   Html::redirect(Problem::getFormURLWithID($id));
 } else {
    Html::header(Problem::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "problem");
    $problem->display($_REQUEST);
@@ -149,9 +169,9 @@ if (isset($_POST["add"])) {
          [
             'title'         => __('Save solution to the knowledge base'),
             'reloadonclose' => false,
+            'autoopen'      => true,
          ]
       );
-      echo Html::scriptBlock('$(function() {' . Html::jsGetElementbyID('savetokb') . '.dialog("open"); });');
    }
 
    Html::footer();

@@ -50,4 +50,8 @@ class Plug extends CommonDropdown {
          ]
       );
    }
+
+   static function getIcon() {
+      return "fas fa-plug";
+   }
 }

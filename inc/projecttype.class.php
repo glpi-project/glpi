@@ -46,4 +46,8 @@ class ProjectType extends CommonDropdown {
       return _n('Project type', 'Project types', $nb);
    }
 
+   static function getIcon() {
+      return "fas fa-columns";
+   }
+
 }

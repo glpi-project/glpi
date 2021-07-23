@@ -35,15 +35,11 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class MonitorType
-class MonitorType extends CommonDropdown {
+class MonitorType extends CommonType {
 
 
    static function getTypeName($nb = 0) {
       return _n('Monitor type', 'Monitor types', $nb);
-   }
-
-   static function getFieldLabel() {
-      return _n('Type', 'Types', 1);
    }
 
 }

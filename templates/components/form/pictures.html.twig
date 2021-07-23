@@ -1,0 +1,43 @@
+{% set model_itemtype = item.getType ~ "Model" %}
+{% set model_fk = model_itemtype|get_foreignkey_field %}
+{% set gallery_type = gallery_type|default('') %}
+{% if item.isField(model_fk) or hasTrait(item, 'Glpi\\Features\\AssetImage') %}
+
+   {% set picture_single = getItemtypeOrModelPicture(item, 'picture') %}
+   {% set picture_front = getItemtypeOrModelPicture(item, 'picture_front') %}
+   {% set picture_rear = getItemtypeOrModelPicture(item, 'picture_rear') %}
+   {% set pictures_misc = getItemtypeOrModelPicture(item, 'pictures') %}
+
+   {% if picture_single is not empty or picture_front is not empty or picture_rear is not empty or pictures_misc is not empty %}
+      <div class="{{ gallery_type == 'horizontal' ? 'col-12 me-n2' : '' }} d-flex">
+         <h3 class="card-title">
+            {{ _n("Picture", "Pictures", getPluralNumber()) }}
+         </h3>
+
+         <div class="card-body">
+            <div class="d-flex">
+               {% if picture_single is not empty %}
+                  {% set picture_single = picture_single|first %}
+                  {% set imgs = [picture_single|merge({'title': _n('Picture', 'Pictures', 1)})] %}
+               {% else %}
+                  {% if picture_front is not empty or picture_rear is not empty or pictures_misc is not empty %}
+                     {% set imgs = [] %}
+                     {% if picture_front|length >= 1 %}
+                        {% set picture_front = picture_front|first %}
+                        {% set imgs = imgs|merge([picture_front|merge({'title': __('Front picture')})]) %}
+                     {% endif %}
+                     {% if picture_rear|length >= 1 %}
+                        {% set picture_rear = picture_rear|first %}
+                        {% set imgs = imgs|merge([picture_rear|merge({'title': __('Rear picture')})]) %}
+                     {% endif %}
+                     {% if pictures_misc is not empty %}
+                        {% set imgs = imgs|merge(pictures_misc) %}
+                     {% endif %}
+                  {% endif %}
+               {% endif %}
+               {% include 'components/photoswipe.html.twig' with {'imgs': imgs, 'gallery_type': gallery_type} %}
+            </div>
+         </div>
+      </div>
+   {% endif %}
+{% endif %}

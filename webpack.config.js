@@ -38,6 +38,7 @@ const glob = require('glob');
 const path = require('path');
 
 const libOutputPath = 'public/lib';
+const scssOutputPath = 'css/lib';
 
 /*
  * GLPI core files build configuration.
@@ -80,6 +81,7 @@ var libsConfig = {
             // It also removes existing sourcemaps that cannot be used correctly.
             test: /\.js$/,
             include: [
+               path.resolve(__dirname, 'node_modules/@fullcalendar'),
                path.resolve(__dirname, 'node_modules/@fullcalendar'),
                path.resolve(__dirname, 'node_modules/codemirror'),
                path.resolve(__dirname, 'node_modules/cystoscape'),
@@ -132,7 +134,14 @@ var libsConfig = {
             Buffer: ['buffer', 'Buffer'], // required in file-type.js
          }
       ),
-      new CleanWebpackPlugin(), // Clean lib dir content
+      new CleanWebpackPlugin(
+         {
+            cleanOnceBeforeBuildPatterns: [
+               path.join(process.cwd(), libOutputPath + '/**/*'),
+               path.join(process.cwd(), scssOutputPath + '/**/*')
+            ]
+         }
+      ), // Clean lib dir content
       new MiniCssExtractPlugin(), // Extract styles into CSS files
    ],
    resolve: {
@@ -146,94 +155,95 @@ var libsConfig = {
    },
 };
 
-var libs = {
-   '@fullcalendar': [
-      {
-         context: 'core',
-         from: 'locales/*.js',
-      }
-   ],
-   'flatpickr': [
-      {
-         context: 'dist',
-         from: 'l10n/*.js',
-      },
-      {
-         context: 'dist',
-         from: 'themes/*.css',
-      }
-   ],
-   'jquery-ui': [
-      {
-         context: 'ui',
-         from: 'i18n/*.js',
-      }
-   ],
-   'select2': [
-      {
-         context: 'dist',
-         from: 'js/i18n/*.js',
-      }
-   ],
-   'tinymce': [
-      {
-         from: 'skins/**/*',
-      }
-   ],
-   'tinymce-i18n': [
-      {
-         from: 'langs/*.js',
-      }
-   ],
-};
+// Copy raw JS and SCSS files
+var filesToCopy = [
+   // JS files
+   {
+      package: '@fullcalendar/core',
+      from: 'locales/*.js',
+   },
+   {
+      package: 'flatpickr',
+      context: 'dist',
+      from: 'l10n/*.js',
+   },
+   {
+      package: 'flatpickr',
+      context: 'dist',
+      from: 'themes/*.css',
+   },
+   {
+      package: 'jquery-ui',
+      context: 'ui',
+      from: 'i18n/*.js',
+   },
+   {
+      package: 'select2',
+      context: 'dist',
+      from: 'js/i18n/*.js',
+   },
+   {
+      package: 'tinymce',
+      from: 'skins/**/*',
+   },
+   {
+      package: 'tinymce-i18n',
+      from: 'langs/*.js',
+   },
+   // SCSS files
+   {
+      package: '@tabler/core',
+      from: 'src/scss/**/*.scss',
+      to: scssOutputPath,
+   },
+   {
+      package: 'bootstrap',
+      from: 'scss/**/*.scss',
+      to: scssOutputPath,
+   },
+   {
+      package: 'select2',
+      from: 'src/scss/**/*.scss',
+      to: scssOutputPath,
+   }
+];
 
-for (let packageName in libs) {
-   let libPackage = libs[packageName];
-   let to = libOutputPath + '/' + packageName.replace(/^@/, ''); // remove leading @ in case of prefixed package
+let copyPatterns = [];
+for (let s = 0; s < filesToCopy.length; s++) {
+   let specs = filesToCopy[s];
+   let to = (specs.to || libOutputPath) + '/' + specs.package.replace(/^@/, ''); // remove leading @ in case of prefixed package
 
-   let copyPatterns = [];
-
-   for (let e = 0; e < libPackage.length; e++) {
-      let packageEntry = libPackage[e];
-
-      let context = 'node_modules/' + packageName;
-      if (Object.prototype.hasOwnProperty.call(packageEntry, 'context')) {
-         context += '/' + packageEntry.context;
-      }
-
-      let copyParams = {
-         context: path.resolve(__dirname, context),
-         from:    packageEntry.from,
-         to:      path.resolve(__dirname, to),
-         toType:  'dir',
-      };
-
-      if (Object.prototype.hasOwnProperty.call(packageEntry, 'ignore')) {
-         copyParams.ignore = packageEntry.ignore;
-      }
-
-      copyPatterns.push(copyParams);
+   let context = 'node_modules/' + specs.package;
+   if (Object.prototype.hasOwnProperty.call(specs, 'context')) {
+      context += '/' + specs.context;
    }
 
-   libsConfig.plugins.push(new CopyWebpackPlugin({patterns:copyPatterns}));
+   let copyParams = {
+      context: path.resolve(__dirname, context),
+      from:    specs.from,
+      to:      path.resolve(__dirname, to),
+      toType:  'dir',
+   };
+
+   if (Object.prototype.hasOwnProperty.call(specs, 'ignore')) {
+      copyParams.ignore = specs.ignore;
+   }
+
+   copyPatterns.push(copyParams);
 }
 
 // Replace jstree images
-libsConfig.plugins.push(
-   new CopyWebpackPlugin(
-      {
-         patterns: [
-            {
-               context: path.resolve(__dirname, 'lib/jstree/themes/glpi'),
-               force:   true,
-               from:    '*.*',
-               to:      path.resolve(__dirname, libOutputPath + '/jstree/dist/themes/default'),
-               toType:  'dir',
-            }
-         ]
-      }
-   )
+copyPatterns.push(
+   {
+      context: path.resolve(__dirname, 'lib/jstree/themes/glpi'),
+      force:   true,
+      from:    '*.*',
+      to:      path.resolve(__dirname, libOutputPath + '/jstree/dist/themes/default'),
+      toType:  'dir',
+   }
 );
+
+libsConfig.plugins.push(new CopyWebpackPlugin({patterns:copyPatterns}));
 
 module.exports = function() {
    var configs = [glpiConfig, libsConfig];

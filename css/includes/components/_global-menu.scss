@@ -1,0 +1,210 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2021 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+.navbar .navbar-toggler {
+   color: $mainmenu-fg;
+}
+
+.sidebar, .topbar {
+   background-color: $mainmenu-bg;
+   color: $mainmenu-fg;
+
+   .btn-ghost-secondary {
+      color: rgba($color: $mainmenu-fg, $alpha: .8);
+   }
+   .btn-outline-secondary {
+      color: rgba($color: $mainmenu-fg, $alpha: .8);
+      border-color: rgba($color: $mainmenu-fg, $alpha: .8);
+
+      &:hover {
+         background-color: rgba($color: $mainmenu-fg, $alpha: .8);
+         color: rgba($color: $mainmenu-bg, $alpha: .8);
+         border-color: transparend;
+      }
+   }
+}
+
+.sidebar {
+
+   & ~ .page-wrapper, ~ .navbar {
+      transition: margin-inline-start var(--animate-duration);
+   }
+
+   #navbar-menu {
+      .nav-link.active + .dropdown-menu,
+      .nav-link.show + .dropdown-menu {
+         border-left: 4px solid rgba($color: #000000, $alpha: .5);
+         border-radius: unset;
+         background-color: rgba($color: #000000, $alpha: .1);
+
+         .dropdown-header {
+            display: none;
+         }
+      }
+
+      .nav-link {
+         color: rgba($color: $mainmenu-fg, $alpha: .8);
+
+         &.show, &.active {
+            color: rgba($color: $primary, $alpha: .9);
+            font-weight: bold;
+         }
+      }
+   }
+
+   .reduce-menu:before {
+      font-family: "Font Awesome 5 Free";
+      content: "\f100";
+      display: inline-block;
+      padding-right: 3px;
+      vertical-align: middle;
+      font-weight: 900;
+      font-size: 1.33333em;
+      line-height: 0.75em;
+   }
+}
+
+@include media-breakpoint-up(lg) {
+   .sidebar {
+      transition: width var(--animate-duration) !important;
+   }
+
+   body.navbar-collapsed {
+      .navbar-brand {
+         height: 65px;
+         min-width: 51px;
+
+         .glpi-logo {
+            background: url($logo_reduced) no-repeat;
+            background-size: contain;
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            top: 10px;
+            left: 16px;
+         }
+      }
+
+      .sidebar {
+         z-index: 1050;
+         $siderbar-collasped-width: 70px;
+         width: $siderbar-collasped-width;
+         overflow-x: visible;
+
+         & ~ .page-wrapper, ~ .navbar {
+            margin-inline-start: $siderbar-collasped-width;
+         }
+
+         .menu-label {
+            display: none;
+         }
+
+         #navbar-menu {
+            .dropdown-toggle::after {
+               display: none;
+            }
+
+            .dropdown-menu {
+               box-shadow: $card-shadow-hover;
+
+               &.show {
+                  display: none;
+               }
+
+               .dropdown-menu-columns {
+                  display: flex;
+                  flex-direction: row;
+
+                  .dropdown-item {
+                     padding: 0.5rem 0.75rem;;
+                  }
+               }
+            }
+
+            .nav-item  {
+               .nav-link {
+                  border-left: 3px solid transparent;
+                  border-radius: unset;
+                  z-index: 1060;
+
+                  & + .dropdown-menu {
+                     background-color: $mainmenu-fg;
+                     color: $mainmenu-bg;
+                     top: 0;
+                     left: calc(100% + 1px);
+                     border: 1px solid $mainmenu-bg;
+                     position: absolute;
+                     z-index: 1050;
+
+                     .dropdown-header {
+                        display: block;
+                     }
+
+                     .dropdown-item {
+                        border-left: 3px solid transparent;
+
+                        &.active {
+                           background-color: lighten($mainmenu-bg, 5%);
+                           border-left-color: $primary
+                        }
+                     }
+                  }
+
+                  &.show, &.active {
+                     color: inherit;
+                     font-weight: normal;
+                  }
+               }
+
+               &:hover {
+                  .nav-link {
+                     border-left-color: $primary;
+                     color: $primary;
+                     background-color: lighten($mainmenu-bg, 5%);
+
+                     & + .dropdown-menu {
+                        display: block;
+                     }
+                  }
+               }
+
+               &.active {
+                  background-color: lighten($mainmenu-bg, 5%);
+               }
+            }
+         }
+
+         .reduce-menu:before {
+            content: "\f101";
+         }
+      }
+   }
+}

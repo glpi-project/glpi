@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class SupplierType
-class SupplierType extends CommonDropdown {
+class SupplierType extends CommonType {
 
 
    static function getTypeName($nb = 0) {

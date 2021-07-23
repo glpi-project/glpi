@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class ContactType
-class ContactType extends CommonDropdown {
+class ContactType extends CommonType {
 
 
    static function getTypeName($nb = 0) {

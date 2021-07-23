@@ -43,4 +43,8 @@ class ImageFormat extends CommonDropdown {
       return _n('Image format', 'Image formats', $nb);
    }
 
+   static function getIcon() {
+      return "far fa-file-image";
+   }
+
 }

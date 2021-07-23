@@ -30,31 +30,14 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 include ('../inc/includes.php');
 
 Session::checkRight("config", READ);
 
 Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'], "config", "auth", -1);
 
-echo "<table class='tab_cadre'>";
-echo "<tr><th>&nbsp;" . __('External authentications') . "</th></tr>";
-if (Session::haveRight("config", UPDATE)) {
-   echo "<tr class='tab_bg_1'><td class='center b'>".
-        "<a href='auth.settings.php'>" .__('Setup')."</a></td></tr>";
-}
-echo "<tr class='tab_bg_1'><td class='center b'>";
-if (Toolbox::canUseLdap()) {
-   echo "<a href='authldap.php'>". AuthLDAP::getTypeName(Session::getPluralNumber())."</a>";
-} else {
-   echo "<p class='red'>".__("The LDAP extension of your PHP parser isn't installed") ."</p>";
-   echo "<p>".__('Impossible to use LDAP as external source of connection').'</p>';
-}
-echo "</td></tr>";
-echo "<tr class='tab_bg_1'><td class='center b'>";
-echo "<a href='authmail.php'>". AuthMail::getTypeName(Session::getPluralNumber())."</a>";
-echo "</td> </tr>";
-echo "<tr class='tab_bg_1'><td class='center'>".
-     "<a href='auth.others.php'>" . __('Others authentication methods') ."</a></td></tr>";
-echo "</table>";
+echo TemplateRenderer::getInstance()->render('pages/setup/authentication.html.twig');
 
 Html::footer();

@@ -1010,7 +1010,7 @@ class Toolbox {
    static function commonCheckForUseGLPI($isInstall = false) {
       global $DB;
 
-      echo "<tr><th>".__('Test done')."</th><th >".__('Results')."</th></tr>";
+      echo "<thead><tr><th>".__('Test done')."</th><th >".__('Results')."</th></tr></thead>";
 
       $core_requirements = (new RequirementsManager())->getCoreRequirementList($isInstall ? null : $DB);
       /* @var \Glpi\System\Requirement\RequirementInterface $requirement */
@@ -1925,7 +1925,7 @@ class Toolbox {
       $tab = Toolbox::parseMailServerConnectString($value);
 
       echo "<tr class='tab_bg_1'><td>" . __('Server') . "</td>";
-      echo "<td><input size='30' type='text' name='mail_server' value=\"" .$tab['address']. "\">";
+      echo "<td><input size='30' class='form-control' type='text' name='mail_server' value=\"" .$tab['address']. "\">";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . __('Connection options') . "</td><td>";
@@ -2017,14 +2017,14 @@ class Toolbox {
       if ($tab['type'] != 'pop') {
          echo "<tr class='tab_bg_1'><td>". __('Incoming mail folder (optional, often INBOX)')."</td>";
          echo "<td>";
-         echo "<input size='30' type='text' id='server_mailbox' name='server_mailbox' value=\"" . $tab['mailbox'] . "\" >";
+         echo "<input size='30' class='form-control' type='text' id='server_mailbox' name='server_mailbox' value=\"" . $tab['mailbox'] . "\" >";
          echo "<i class='fa fa-list pointer get-imap-folder'></i>";
          echo "</td></tr>\n";
       }
 
       //TRANS: for mail connection system
       echo "<tr class='tab_bg_1'><td>" . __('Port (optional)') . "</td>";
-      echo "<td><input size='10' type='text' name='server_port' value='".$tab['port']."'></td></tr>\n";
+      echo "<td><input size='10' class='form-control' type='text' name='server_port' value='".$tab['port']."'></td></tr>\n";
       if (empty($value)) {
          $value = "&nbsp;";
       }
@@ -3145,12 +3145,13 @@ class Toolbox {
     * Get picture URL.
     *
     * @param string $path
+    * @param bool  bool get full path
     *
     * @return null|string
     *
     * @since 9.5.0
     */
-   static function getPictureUrl($path) {
+   static function getPictureUrl($path, $full = true) {
       global $CFG_GLPI;
 
       $path = Html::cleanInputText($path); // prevent xss
@@ -3159,7 +3160,7 @@ class Toolbox {
          return null;
       }
 
-      return $CFG_GLPI["root_doc"] . '/front/document.send.php?file=_pictures/' . $path;
+      return ($full ? $CFG_GLPI["root_doc"] : "") . '/front/document.send.php?file=_pictures/' . $path;
    }
 
    /**

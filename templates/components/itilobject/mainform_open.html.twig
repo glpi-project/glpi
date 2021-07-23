@@ -1,0 +1,42 @@
+{% set enctype = (item.isNewItem() ? "multipart/form-data" : "application/x-www-form-urlencoded") %}
+{% set new_cls = item.isNewItem() ? "new-itil-object" : "" %}
+
+{% set form_url = item.getFormURL() %}
+{% if not item.isNewItem %}
+   {% set form_url = form_url ~ "?id=" ~ item.fields['id'] %}
+{% endif %}
+
+{% if selfservice %}
+   {% set form_url = path('front/tracking.injector.php') %}
+{% endif %}
+
+
+<form method="POST" action="{{ form_url }}" enctype="{{ enctype }}"
+      data-track-changes="true" id="itil-form" class="{{ new_cls }}">
+   <input type="hidden" name="id" value="{{ item.fields['id'] ?? 0 }}">
+   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+
+   {% if itiltemplate_key is defined %}
+      <input type="hidden" name="{{ itiltemplate_key }}" value="{{ itiltemplate.fields['id'] }}"/>
+   {% endif %}
+   {% if predefined_fields is defined %}
+      <input type="hidden" name="_predefined_fields" value="{{ prepareArrayForInput(predefined_fields) }}"/>
+   {% endif %}
+
+   {% if selfservice %}
+      <input type="hidden" name="_from_helpdesk" value="1"/>
+      {# TODO default requesttype #}
+   {% endif %}
+
+   {% if params['tickets_id'] is defined or params['_tickets_id'] is defined %}
+      <input type="hidden" name="_tickets_id" value="{{ params['tickets_id'] ?? params['_tickets_id'] }}"/>
+   {% endif %}
+
+   {% if params['problems_id'] is defined or params['_problems_id'] is defined %}
+      <input type="hidden" name="_problems_id" value="{{ params['problems_id'] ?? params['_problems_id'] }}"/>
+   {% endif %}
+
+   {% if params['_add_fromitem'] is defined %}
+      <input type="hidden" name="_from_items_id" value="{{ params['_from_items_id'] ?? 0 }}"/>
+      <input type="hidden" name="_from_itemtype" value="{{ params['_from_itemtype'] ?? "" }}"/>
+   {% endif %}

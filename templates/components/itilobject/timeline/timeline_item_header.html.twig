@@ -1,0 +1,69 @@
+<div class="d-flex timeline-header">
+   <div class="d-flex creator">
+      {% include "components/itilobject/timeline/timeline_item_header_badges.html.twig" with {
+         'creator': User__getLink(users_id),
+         'date_creation': date_creation,
+         'date_mod': date_mod,
+         'editor': User__getLink(entry_i['users_id_editor']),
+      } only %}
+   </div>
+
+   <div class="d-flex ms-auto timeline-item-buttons">
+      {% set actions = {} %}
+      {% if entry_i['can_edit'] and not status_closed and not (entry['type'] in ['Document_Item', 'Assign']) %}
+         {% set edit_btn %}
+            <li>
+               <a class="dropdown-item edit-timeline-item" href="#">
+                  <i class="fas fa-fw fa-edit"></i>
+                  <span>{{ __("Edit") }}</span>
+               </a>
+            </li>
+         {% endset %}
+         {% set actions = actions|merge({edit_btn}) %}
+      {% endif %}
+
+      {% if actions|length %}
+         <div class="dropdown ms-2">
+            <button class="btn btn-sm btn-ghost-secondary timeline-more-actions" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false">
+               <i class="fas fa-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="more-actions-{{ entry_rand }}">
+               {% for action in actions %}
+                  {{ action }}
+               {% endfor %}
+            </ul>
+         </div>
+      {% endif %}
+
+      {% if is_private %}
+         <span class="is-private ms-2" title="{{ __('Private') }}"
+               data-bs-toggle="tooltip" data-bs-placement="bottom">
+            <i class="fas fa-lock" aria-label="{{ __('Private') }}"></i>
+         </span>
+      {% endif %}
+
+      {% if is_promoted %}
+         <a href="{{ form_path('Ticket', entry_i['sourceof_items_id']) }}"
+            title="{{ __('Followup promoted to a ticket') }}" data-bs-toggle="tooltip"
+            class="ms-2">
+            <i class="fas code-branch" aria-label="{{ __('Followup promoted to a ticket') }}"></i>
+         </a>
+      {% endif %}
+
+      {% if item.getType() is same as 'Ticket' and entry['type'] is same as 'ITILFollowup' %}
+         {% set promote_btn %}
+            <li>
+               <a class="dropdown-item" href="{{ form_path('Ticket') ~ "?_promoted_fup_id=" ~ entry_i['id'] }}">
+                  <i class="fas fa-fw fa-code-branch"></i>
+                  <span>{{ __('Promote to Ticket') }}</span>
+               </a>
+            </li>
+         {% endset %}
+         {% set actions = actions|merge({promote_btn}) %}
+      {% endif %}
+   </div>
+
+   <button class="btn btn-sm btn-ghost-secondary float-end close-edit-content d-none ms-auto">
+      <i class="fas fa-times"></i>
+   </button>
+</div>

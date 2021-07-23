@@ -1,0 +1,214 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2021 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+// TODO Encapsulate into a class
+
+.form-check-input[name="as_map"]:checked {
+   background-color: $info;
+}
+.form-check-input[name="is_deleted"]:checked {
+   background-color: $danger;
+}
+
+.search_page {
+   @include media-breakpoint-up(sm) {
+      display: flex;
+      align-items: stretch;
+   }
+
+   .search-container {
+      @include media-breakpoint-up(sm) {
+         overflow: auto;
+         height: calc(100vh - #{$contextbar-height} - #{$content-margin});
+         padding: 0;
+         margin-left: calc(var(--tblr-gutter-x) / 2);
+         width: 100%;
+
+         .dashboard-card {
+            @include media-breakpoint-up(sm) {
+               position: sticky;
+               left: 0;
+            }
+         }
+
+         &.disable-overflow-y {
+            height: auto;
+         }
+      }
+
+      .search-form-container {
+         @include media-breakpoint-up(sm) {
+            position: sticky;
+            left: 0;
+         }
+
+         .search-form {
+            background-color: $search_bg;
+            color: $search_fg;
+            border-color: $search_border;
+
+            // try having same width on link dropdowns
+            .select2-container {
+               min-width:58px;
+            }
+
+            .sub_criteria {
+               background-color: darken($search_bg, 1%);
+            }
+         }
+      }
+
+      .search-card {
+         @include media-breakpoint-up(sm) {
+            min-width: 100%;
+            width: min-content;
+
+            .search-header {
+               border-bottom: 0;
+
+               .search-limit {
+                  position: sticky;
+                  right: 10px;
+               }
+            }
+         }
+
+
+         .table-responsive-md {
+            @include media-breakpoint-down(md) {
+               max-width: calc(100vw - 2rem);
+            }
+         }
+         .search-results {
+            border-collapse: separate;
+            border-spacing: 0;
+
+            @include media-breakpoint-up(sm) {
+               thead:first-child {
+                  th {
+                     z-index: 5;
+                     position: sticky;
+                     top: 0;
+                     border: 1px solid $card-border-color;
+                     border-left: 0;
+                     border-right: 0;
+                     background-color: $table_header_bg;
+                  }
+               }
+            }
+
+            &.deleted-results {
+               color: rgb(56, 13, 13);
+            }
+         }
+
+         .search-footer {
+            position: sticky;
+            bottom: 0;
+
+            @include media-breakpoint-up(sm) {
+               .search-pager {
+
+                  .page-infos {
+                     position: sticky;
+                     left: 10px;
+                  }
+
+                  .pagination {
+                     position: sticky;
+                     right: 10px;
+                  }
+               }
+            }
+         }
+      }
+
+      div.spinner-overlay {
+         position: absolute;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background: #80808033;
+         z-index: 20;
+
+         div.spinner-border {
+            width: 50px;
+            height: 50px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            border-width: 4px;
+         }
+      }
+   }
+}
+
+body.horizontal-layout {
+   .search_page {
+      .search-container {
+         @include media-breakpoint-up(sm) {
+            height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - #{$content-margin});
+         }
+      }
+   }
+}
+
+.priority_block {
+   white-space: nowrap;
+   border: 1px solid transparent;
+   padding-right: 6px;
+   border-radius: 2px;
+   display: inline-block;
+
+   span {
+      width: 20px;
+      height: 20px;
+      display: inline-block;
+      vertical-align: middle;
+   }
+}
+
+td.priority_block {
+   display: table-cell;
+}
+
+table.search-results {
+   thead th[data-searchopt-id]:not([data-searchopt-id=""]) {
+      cursor: pointer;
+
+      .sort-indicator {
+         vertical-align: super;
+         font-size: 1.2em;
+         white-space: nowrap;
+      }
+   }
+}

@@ -686,7 +686,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
       $field_name = $field_name."[$id]";
       if ($canedit) {
-         echo "<input type='text' size='40' name='$field_name' value='$value'>";
+         echo "<input type='text' size='40' name='$field_name' value='$value' class='form-select'>";
       } else {
          echo "<input type='hidden' name='$field_name' value='$value'>$value";
       }
@@ -754,7 +754,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
          return $result;
       }
    }
-
 
    /**
     * We can add several single CommonDBChild to a given Item. In such case, we display a "+"

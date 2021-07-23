@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class PDUType
-class PDUType extends CommonDropdown {
+class PDUType extends CommonType {
 
    static function getTypeName($nb = 0) {
       return _n('PDU type', 'PDU types', $nb);

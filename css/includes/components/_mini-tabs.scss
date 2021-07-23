@@ -1,0 +1,98 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2021 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+#switchview {
+   font-size: 2em;
+   text-align: right;
+   float: right;
+
+   i {
+      margin-left: .5em;
+
+      &.selected {
+         color: green;
+      }
+   }
+}
+
+#viewlist {
+   display: none;
+}
+
+#viewgraph {
+   width: calc(100% - 80px);
+   overflow-x: auto;
+
+   table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+   }
+
+   .tipcontent {
+      display: none;
+   }
+
+   th, td {
+      height: 2em;
+      text-align: center;
+      padding: 0;
+   }
+
+   .mini_toggle {
+      font-size: 11px;
+      opacity: .5;
+      cursor: pointer;
+      position: relative;
+      padding-left: 20px;
+      margin: 15px 5px;
+      float: left;
+
+      &:before {
+         content: "\f204";
+         left: 0;
+         top: 0;
+         font-size: 15px;
+         font-family: 'Font Awesome\ 5 Free';
+         position: absolute;
+         font-weight: 900;
+      }
+
+      &.active:before {
+         content: "\f205";
+         font-weight: 900;
+      }
+
+      &:hover {
+         opacity: 1;
+      }
+   }
+}

@@ -228,4 +228,8 @@ class FQDN extends CommonDropdown {
       }
       return true;
    }
+
+   static function getIcon() {
+      return "fas fa-globe";
+   }
 }

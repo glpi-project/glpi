@@ -133,11 +133,11 @@ class KnowbaseItem_Comment extends DbTestCase {
       $kbcom = new \KnowbaseItem_Comment();
 
       $name = $kbcom->getTabNameForItem($kb1, true);
-      $this->string($name)->isIdenticalTo('Comments <sup class=\'tab_nb\'>5</sup>');
+      $this->string($name)->isIdenticalTo('Comments <span class=\'badge\'>5</span>');
 
       $_SESSION['glpishow_count_on_tabs'] = 1;
       $name = $kbcom->getTabNameForItem($kb1);
-      $this->string($name)->isIdenticalTo('Comments <sup class=\'tab_nb\'>5</sup>');
+      $this->string($name)->isIdenticalTo('Comments <span class=\'badge\'>5</span>');
 
       $_SESSION['glpishow_count_on_tabs'] = 0;
       $name = $kbcom->getTabNameForItem($kb1);

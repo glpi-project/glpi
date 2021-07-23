@@ -646,4 +646,8 @@ class Calendar extends CommonDropdown {
    static function getDayNumberInWeek($date) {
       return (int)date('w', $date);
    }
+
+   static function getIcon() {
+      return "far fa-calendar-alt";
+   }
 }

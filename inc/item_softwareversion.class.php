@@ -679,6 +679,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
             Html::showMassiveActions($massiveactionparams);
          }
 
+         echo "<div class='table-responsive'>";
          echo "<table class='tab_cadre_fixehov'>";
 
          $header_begin  = "<tr>";
@@ -776,7 +777,8 @@ class Item_SoftwareVersion extends CommonDBRelation {
 
          echo $header_begin.$header_bottom.$header_end;
 
-         echo "</table>\n";
+         echo "</table>";
+         echo "</div>";
          if ($canedit) {
             $massiveactionparams['ontop'] =false;
             Html::showMassiveActions($massiveactionparams);
@@ -788,7 +790,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
       }
       Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
 
-      echo "</div>\n";
+      echo "</div>";
    }
 
 
@@ -989,6 +991,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
          echo "<div class='spaced'>";
          Html::printAjaxPager('', $start, $number);
 
+         echo "<div class='table-responsive'>";
          if ($canedit) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
@@ -1042,6 +1045,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
 
          echo $header_begin.$header_bottom.$header_end;
          echo "</table>";
+         echo "</div>";
          if ($canedit) {
             $massiveactionparams['ontop'] =false;
             Html::showMassiveActions($massiveactionparams);

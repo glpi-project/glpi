@@ -532,27 +532,27 @@ class Entity extends DbTestCase {
          [
             'interface' => 'central',
             'setting'   => \Entity::ANONYMIZE_DISABLED,
-            'expected'  => 'tech',
+            'expected'  => TU_USER,
          ],
          [
             'interface' => 'helpdesk',
             'setting'   => \Entity::ANONYMIZE_DISABLED,
-            'expected'  => 'tech',
+            'expected'  => TU_USER,
          ],
          [
             'interface' => 'central',
             'setting'   => \Entity::ANONYMIZE_USE_GENERIC,
-            'expected'  => 'tech',
+            'expected'  => TU_USER,
          ],
          [
             'interface' => 'helpdesk',
             'setting'   => \Entity::ANONYMIZE_USE_GENERIC,
-            'expected'  => "Helpdesk",
+            'expected'  => "Helpdesk user",
          ],
          [
             'interface' => 'central',
             'setting'   => \Entity::ANONYMIZE_USE_NICKNAME,
-            'expected'  => 'tech',
+            'expected'  => TU_USER,
             'user_nick' => 'user_nick_6436345654'
          ],
          [
@@ -564,7 +564,7 @@ class Entity extends DbTestCase {
          [
             'interface' => 'helpdesk',
             'setting'   => \Entity::ANONYMIZE_USE_NICKNAME,
-            'expected'  => 'tech',
+            'expected'  => TU_USER,
          ],
       ];
    }
@@ -581,7 +581,7 @@ class Entity extends DbTestCase {
       global $DB;
 
       $this->login();
-      $possible_values = ['tech', 'user_nick_6436345654', "Helpdesk"];
+      $possible_values = [TU_USER, 'user_nick_6436345654', "Helpdesk user"];
 
       // Set entity setting
       $entity = getItemByTypeName("Entity", "_test_root_entity");
@@ -592,7 +592,7 @@ class Entity extends DbTestCase {
       $this->boolean($update)->isTrue();
 
       // // Set user nickname
-      $user = getItemByTypeName('User', 'tech');
+      $user = getItemByTypeName('User', TU_USER);
 
       if ($user_nick == "" && $user->fields['nickname'] == null) {
          // Special case, glpi wont update null to "" so we need to set
@@ -615,16 +615,16 @@ class Entity extends DbTestCase {
       $this->string($user->fields['nickname'])->isEqualTo($user_nick);
 
       // Build test ticket
-      $this->login('tech', 'tech');
+      $this->login();
       $ticket = new Ticket();
       $tickets_id = $ticket->add($input = [
          'name'             => 'test',
          'content'          => 'test',
-         '_users_id_assign' => getItemByTypeName('User', 'tech', true),
+         '_users_id_assign' => getItemByTypeName('User', TU_USER, true),
          '_users_id_requester' => getItemByTypeName('User', 'post-only', true),
          'entities_id'      => $entity->getID(),
-         'users_id_recipient' => getItemByTypeName('User', 'tech', true),
-         'users_id_lastupdater' => getItemByTypeName('User', 'tech', true),
+         'users_id_recipient' => getItemByTypeName('User', TU_USER, true),
+         'users_id_lastupdater' => getItemByTypeName('User', TU_USER, true),
          // The default requesttype is "Helpdesk" and will mess up our tests,
          // we need another one to be sure the "Helpdesk" string will only be
          // printed by the anonymization code
@@ -653,7 +653,7 @@ class Entity extends DbTestCase {
          ],
          1 => [
             'tickets_id' => $tickets_id,
-            'users_id' => getItemByTypeName('User', 'tech', true),
+            'users_id' => getItemByTypeName('User', TU_USER, true),
             'type' => CommonITILActor::ASSIGN,
          ],
       ]);
@@ -662,8 +662,8 @@ class Entity extends DbTestCase {
       $fup = new ITILFollowup();
       $fup_id = $fup->add([
          'content' => 'test',
-         'users_id' => getItemByTypeName('User', 'tech', true),
-         'users_id_editor' => getItemByTypeName('User', 'tech', true),
+         'users_id' => getItemByTypeName('User', TU_USER, true),
+         'users_id_editor' => getItemByTypeName('User', TU_USER, true),
          'itemtype' => 'Ticket',
          'items_id' => $tickets_id,
       ]);
@@ -673,8 +673,8 @@ class Entity extends DbTestCase {
       $solution = new ITILSolution();
       $solutions_id = $solution->add([
          'content' => 'test',
-         'users_id' => getItemByTypeName('User', 'tech', true),
-         'users_id_editor' => getItemByTypeName('User', 'tech', true),
+         'users_id' => getItemByTypeName('User', TU_USER, true),
+         'users_id_editor' => getItemByTypeName('User', TU_USER, true),
          'itemtype' => 'Ticket',
          'items_id' => $tickets_id,
       ]);
@@ -710,18 +710,7 @@ class Entity extends DbTestCase {
          }
       }
 
-      // Case 3: test values recovered from CommonITILObject::showTimeline()
-      ob_start();
-      $ticket->showTimeline(mt_rand());
-      $html = ob_get_clean();
-
-      foreach ($possible_values as $value) {
-         if ($value == $expected) {
-            $this->string($html)->contains($value);
-         } else {
-            $this->string($html)->notContains($value);
-         }
-      }
+      // Case 3: removed (timeline merged with main form)
 
       // Case 4: test values recovered from NotificationTargetCommonITILObject::getDataForObject()
       $notification = new NotificationTargetTicket();
@@ -750,9 +739,15 @@ class Entity extends DbTestCase {
 
       foreach ($possible_values as $value) {
          if ($value == $expected) {
-            $this->string($html)->contains($value);
+            $this->string($html)->contains(
+               $value,
+               "Ticket form must contains '$value' in interface '$interface' with settings '$setting'"
+            );
          } else {
-            $this->string($html)->notContains($value);
+            $this->string($html)->notContains(
+               $value,
+               "Ticket form must not contains '$value' (expected '$expected') in interface '$interface' with settings '$setting'"
+            );
          }
       }
 

@@ -31,7 +31,7 @@
 
 /* global fuzzy */
 
-$(document).ready(function() {
+$(function() {
    var list = [];
 
    // prepapre options for fuzzy lib
@@ -44,22 +44,53 @@ $(document).ready(function() {
    };
 
    // when the shortcut for fuzzy is called
-   $(document).bind('keyup', 'alt+ctrl+g', function() {
+   $(document).on('keyup', null, 'alt+ctrl+g', function() {
+      trigger_fuzzy();
+   });
+
+   // when the button is clicked
+   $(document).on('click', '.trigger-fuzzy', function() {
+      trigger_fuzzy();
+   });
+
+   var fuzzy_started = false;
+   var trigger_fuzzy = function() {
+      // remove old fuzzy modal
+      removeFuzzy();
+
       // retrieve html of fuzzy input
       $.get(CFG_GLPI.root_doc+'/ajax/fuzzysearch.php', {
          'action': 'getHtml'
       }, function(html) {
+         // add modal to body and show it
          $(document.body).append(html);
+         $('#fuzzysearch').modal('show');
 
          // retrieve current menu data
          $.getJSON(CFG_GLPI.root_doc+'/ajax/fuzzysearch.php', {
             'action': 'getList'
          }, function(data) {
             list = data;
+
+            // start fuzzy after some time
+            setTimeout(function() {
+               if ($("#fuzzysearch .results li").length == 0) {
+                  startFuzzy();
+               }
+            }, 100);
          });
 
+         // focus input element
+         $("#fuzzysearch input").trigger("focus");
+
+         // don't bind key events twice
+         if (fuzzy_started) {
+            return;
+         }
+         fuzzy_started = true;
+
          // general key matches
-         $(document).bind('keyup', function(key) {
+         $(document).on('keyup', function(key) {
             switch (key.key) {
                case "Escape":
                   removeFuzzy();
@@ -75,7 +106,7 @@ $(document).ready(function() {
 
                case "Enter":
                   // find url, if one selected, go for it, else try to find first element
-                  var url = $("#fuzzysearch .results .selected a").attr('href');
+                  var url = $("#fuzzysearch .results .active a").attr('href');
                   if (url == undefined) {
                      url = $("#fuzzysearch .results li:first a").attr('href');
                   }
@@ -87,30 +118,19 @@ $(document).ready(function() {
          });
 
          // when a key is pressed in fuzzy input, launch match
-         $("#fuzzysearch input").focus()
-            .bind('keyup', function(key) {
-               if (key.key != "Escape"
+         $(document).on('keyup', "#fuzzysearch input", function(key) {
+            if (key.key != "Escape"
                    && key.key != "ArrowUp"
                    && key.key != "ArrowDown"
                    && key.key != "Enter") {
-                  startFuzzy();
-               }
-            });
-
-         // event for close icon
-         $("#fuzzysearch .fa-times").click(function() {
-            removeFuzzy();
-         });
-
-         setTimeout(function() {
-            if ($("#fuzzysearch .results li").length == 0) {
                startFuzzy();
             }
-         }, 100);
+         });
       });
-   });
+   };
 
    var startFuzzy = function() {
+
       // retrieve input
       var input_text = $("#fuzzysearch input").val();
 
@@ -124,7 +144,7 @@ $(document).ready(function() {
       results.map(function(el) {
          //console.log(el.string);
          $("#fuzzysearch .results")
-            .append("<li><a href='"+CFG_GLPI.root_doc+el.original.url+"'>"+el.string+"</a></li>");
+            .append("<li class='list-group-item'><a href='"+CFG_GLPI.root_doc+el.original.url+"'>"+el.string+"</a></li>");
       });
 
       selectFirst();
@@ -134,14 +154,14 @@ $(document).ready(function() {
     * Clean generated Html
     */
    var removeFuzzy = function() {
-      $("#fuzzysearch, .fuzzymodal").remove();
+      $("#fuzzysearch").remove();
    };
 
    /**
     * Select the first element in the results list
     */
    var selectFirst = function() {
-      $("#fuzzysearch .results li:first()").addClass("selected");
+      $("#fuzzysearch .results li:first()").addClass('active');
       scrollToSelected();
    };
 
@@ -149,7 +169,7 @@ $(document).ready(function() {
     * Select the last element in the results list
     */
    var selectLast = function() {
-      $("#fuzzysearch .results li:last()").addClass("selected");
+      $("#fuzzysearch .results li:last()").addClass('active');
       scrollToSelected();
    };
 
@@ -158,13 +178,13 @@ $(document).ready(function() {
     * If no selected, select the first.
     */
    var selectNext = function() {
-      if ($("#fuzzysearch .results .selected").length == 0) {
+      if ($("#fuzzysearch .results .active").length == 0) {
          selectFirst();
       } else {
-         $("#fuzzysearch .results .selected:not(:last-child)")
-            .removeClass('selected')
+         $("#fuzzysearch .results .active:not(:last-child)")
+            .removeClass('active')
             .next()
-            .addClass("selected");
+            .addClass("active");
          scrollToSelected();
       }
    };
@@ -174,13 +194,13 @@ $(document).ready(function() {
     * If no selected, select the last.
     */
    var selectPrev = function() {
-      if ($("#fuzzysearch .results .selected").length == 0) {
+      if ($("#fuzzysearch .results .active").length == 0) {
          selectLast();
       } else {
-         $("#fuzzysearch .results .selected:not(:first-child)")
-            .removeClass('selected')
+         $("#fuzzysearch .results .active:not(:first-child)")
+            .removeClass('active')
             .prev()
-            .addClass("selected");
+            .addClass("active");
          scrollToSelected();
       }
    };
@@ -190,8 +210,10 @@ $(document).ready(function() {
     */
    var scrollToSelected = function() {
       var results = $("#fuzzysearch .results");
-      var selected = results.find('.selected');
+      var selected = results.find('.active');
 
-      results.scrollTop(results.scrollTop() + selected.position().top - results.height()/2 + selected.height()/2);
+      if (selected.length) {
+         results.scrollTop(results.scrollTop() + selected.position().top - results.height()/2 + selected.height()/2 - 25);
+      }
    };
 });

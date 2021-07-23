@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class CartridgeItemType
-class CartridgeItemType extends CommonDropdown {
+class CartridgeItemType extends CommonType {
 
 
    static function getTypeName($nb = 0) {

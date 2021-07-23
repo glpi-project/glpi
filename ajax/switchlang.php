@@ -35,5 +35,5 @@ include ('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 $user = new User();
-echo $user->showSwitchLangForm(false, ['showbutton' => false, 'on_change' => 'this.form.submit()']);
+$user->showSwitchLangForm();
 Html::ajaxFooter();

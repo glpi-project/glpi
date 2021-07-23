@@ -846,7 +846,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<td><input type='text' name='language_field' value='".
                  $this->fields["language_field"]."'></td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . __('Picture') . "</td>";
+      echo "<tr class='tab_bg_2'><td>" . _n('Picture', 'Pictures', 1) . "</td>";
       echo "<td><input type='text' name='picture_field' value='".
                  $this->fields["picture_field"]."'></td>";
       echo "<td>" . Location::getTypeName(1) . "</td>";
@@ -3379,7 +3379,7 @@ class AuthLDAP extends CommonDBTM {
                                  'mobile_field'    => __('Mobile phone'),
                                  'title_field'     => _x('person', 'Title'),
                                  'category_field'  => __('Category'),
-                                 'picture_field'   => __('Picture')];
+                                 'picture_field'   => _n('Picture', 'Pictures', 1)];
                $available_fields = [];
                foreach ($fields as $field => $label) {
                   if (isset($authldap->fields[$field]) && ($authldap->fields[$field] != '')) {

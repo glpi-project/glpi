@@ -45,16 +45,15 @@ class Manufacturer extends CommonDropdown {
       return _n('Manufacturer', 'Manufacturers', $nb);
    }
 
-
-   function displaySpecificTypeField($ID, $field = []) {
-
+   public function getSpecificTypeField(int $ID, array $field): string {
       switch ($field['type']) {
          case 'registeredIDChooser':
+            ob_start();
             RegisteredID::showChildsForItemForm($this, '_registeredID');
-            break;
+            return ob_get_clean();
       }
+      return '';
    }
-
 
    function getAdditionalFields() {
 

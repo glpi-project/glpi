@@ -41,4 +41,8 @@ class UserTitle extends CommonDropdown {
    static function getTypeName($nb = 0) {
       return _n('User title', 'Users titles', $nb);
    }
+
+   static function getIcon() {
+      return "fas fa-user-tie";
+   }
 }
