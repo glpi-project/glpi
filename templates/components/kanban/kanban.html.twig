@@ -23,8 +23,6 @@
          element: "#{{ kanban_id|default('kanban') }}",
          rights: {{ rights|json_encode|raw }},
          supported_itemtypes: {{ supported_itemtypes|json_encode|raw }},
-         {# TODO Need better dark mode check #}
-         dark_theme: {{ session('glpipalette') == 'darker' ? 'true' : 'false' }},
          max_team_images: 3,
          column_field: {{ column_field|json_encode|raw }},
          background_refresh_interval: {{ background_refresh_interval|default(session('glpirefresh_views')) }},

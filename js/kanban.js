@@ -336,6 +336,9 @@ class GLPIKanbanRights {
             'column_field', 'allow_modify_view', 'limit_addcard_columns', 'allow_order_card', 'allow_create_column',
             'allow_delete_item'
          ];
+         // Use CSS variable check for dark theme detection by default
+         self.dark_theme = $('html').css('--is-dark').trim() === true;
+
          if (args.length === 1) {
             for (let i = 0; i < overridableParams.length; i++) {
                const param = overridableParams[i];
