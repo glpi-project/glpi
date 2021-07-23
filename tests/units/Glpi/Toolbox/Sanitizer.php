@@ -81,6 +81,11 @@ class Sanitizer extends \GLPITestCase {
          'value'           => [null, '<strong>string</strong>', 3.2, 'string', true, '<p>my</p>', 9798],
          'sanitized_value' => [null, '&#60;strong&#62;string&#60;/strong&#62;', 3.2, 'string', true, '&#60;p&#62;my&#60;/p&#62;', 9798],
       ];
+      yield [
+         'value'           => [null, "<strong>text with slashable chars ' \n \"</strong>", 3.2, 'string', true, '<p>my</p>', 9798],
+         'sanitized_value' => [null, "&#60;strong&#62;text with slashable chars \' \\n \\\"&#60;/strong&#62;", 3.2, 'string', true, '&#60;p&#62;my&#60;/p&#62;', 9798],
+         'add_slashes'     => true,
+      ];
    }
 
    /**
