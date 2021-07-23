@@ -2630,6 +2630,7 @@ class Ticket extends CommonITILObject {
                'rand'     => $rand,
                'on_change' => "solutiontemplate_update{$rand}(this.value)"
             ]);
+            echo Html::hidden("_render_twig", ['value' => true]);
 
             $JS = <<<JAVASCRIPT
                function solutiontemplate_update{$rand}(value) {

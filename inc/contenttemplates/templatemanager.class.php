@@ -32,6 +32,7 @@
 
 namespace Glpi\ContentTemplates;
 
+use CommonITILObject;
 use Glpi\Toolbox\RichText;
 use Glpi\Toolbox\Sanitizer;
 use Twig\Environment;
@@ -55,7 +56,7 @@ if (!defined('GLPI_ROOT')) {
 class TemplateManager
 {
    /**
-    * Boiler plate code to render a user template
+    * Boiler plate code to render a template
     *
     * @param string $content           Template content (html + twig)
     * @param array $params             Variables to be exposed to the templating engine
@@ -89,6 +90,37 @@ class TemplateManager
       return $html;
    }
 
+   /**
+    * Boiler plate for rendering a commonitilobject content from a template
+    *
+    * @param CommonITILObject $itil_item
+    * @param string $template
+    *
+    * @return string|null
+    */
+   public static function renderContentForCommonITIL(
+      CommonITILObject $itil_item,
+      string $template
+   ): ?string {
+      $parameters_class = $itil_item->getContentTemplatesParametersClass();
+      $parameters = new $parameters_class();
+
+      try {
+         $html = TemplateManager::render(
+            $template,
+            [
+               'itemtype' => $itil_item->getType(),
+               $parameters->getDefaultNodeName() => $parameters->getValues($itil_item),
+            ],
+            true
+         );
+      } catch (\Twig\Error\Error $e) {
+         global $GLPI;
+         $GLPI->getErrorHandler()->handleException($e);
+         return null;
+      }
+      return $html;
+   }
    /**
     * Boiler plate code to validate a template that user is trying to submit
     *

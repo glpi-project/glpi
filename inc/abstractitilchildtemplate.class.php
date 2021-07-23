@@ -114,23 +114,15 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
     * @return string
     */
    public function getRenderedContent(CommonITILObject $itil_item): string {
-      $parameters_class = $itil_item->getContentTemplatesParametersClass();
-      $parameters = new $parameters_class();
+      $html = TemplateManager::renderContentForCommonITIL(
+         $itil_item,
+         $this->fields['content']
+      );
 
-      try {
-         $html = TemplateManager::render(
-            $this->fields['content'],
-            [
-               'itemtype' => $itil_item->getType(),
-               $parameters->getDefaultNodeName() => $parameters->getValues($itil_item),
-            ],
-            true
-         );
-      } catch (\Twig\Error\Error $e) {
+      if (!$html) {
          $html = $this->fields['content'];
-         global $GLPI;
-         $GLPI->getErrorHandler()->handleException($e);
       }
+
       return $html;
    }
 }

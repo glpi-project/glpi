@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\ContentTemplates\TemplateManager;
 use Glpi\Toolbox\RichText;
 
 /**
@@ -334,6 +335,22 @@ JAVASCRIPT;
       }
 
       $input['status'] = $status;
+
+      // Render twig content, needed for massives action where we the content
+      // can't be rendered directly in the form
+      if (($input['_render_twig'] ?? false) && isset($input['content'])) {
+         $html = TemplateManager::renderContentForCommonITIL(
+            $this->item,
+            $input['content']
+         );
+
+         // Invalid template
+         if (!$html) {
+            return false;
+         }
+
+         $input['content'] = $html;
+      }
 
       return $input;
    }
