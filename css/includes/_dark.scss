@@ -104,8 +104,8 @@ $input-border: $dark-mode-text !default;
      border-color: $input-border;
    }
 
-   .card-body {
-      border-color: $input-border;
+   .card {
+      border: 1px solid $input-border;
    }
 }
 
