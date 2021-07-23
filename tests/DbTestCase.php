@@ -1,7 +1,4 @@
 <?php
-
-use Glpi\Toolbox\Sanitizer;
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,6 +29,8 @@ use Glpi\Toolbox\Sanitizer;
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Toolbox\Sanitizer;
 
 // Generic test classe, to be extended for CommonDBTM Object
 
