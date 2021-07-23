@@ -218,7 +218,7 @@
 
                {{ fields.textareaField(
                   "content",
-                  getSafeHtml(params['content'] ?? "", true, true),
+                  getSafeHtml(params['content'] ?? "", true),
                   __('Description'),
                   right_field_options|merge({
                      'enable_richtext': true,
