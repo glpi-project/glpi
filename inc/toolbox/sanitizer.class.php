@@ -47,9 +47,23 @@ class Sanitizer {
       '>'  =>  '&gt;',
    ];
 
+   /**
+    * Sanitize a value. Resulting value will have its HTML special chars converted into entities
+    * and would be printable in a HTML document without having to be escaped.
+    *
+    * @param mixed $value
+    * @param bool  $db_escape
+    *
+    * @return mixed
+    */
    public static function sanitize($value, bool $db_escape = false) {
       if (is_array($value)) {
-         return array_map([__CLASS__, __METHOD__], $value);
+         return array_map(
+            function ($val) use ($db_escape) {
+               return self::sanitize($val, $db_escape);
+            },
+            $value
+         );
       }
       if (!is_string($value)) {
          return $value;
@@ -63,9 +77,22 @@ class Sanitizer {
       return str_replace(array_keys($mapping), array_values($mapping), $value);
    }
 
+   /**
+    * Unsanitize a value. Reverts self::sanitize() transformation.
+    *
+    * @param mixed $value
+    * @param bool  $db_unescape
+    *
+    * @return mixed
+    */
    public static function unsanitize($value, bool $db_unescape = false) {
       if (is_array($value)) {
-         return array_map([__CLASS__, __METHOD__], $value);
+         return array_map(
+            function ($val) use ($db_unescape) {
+               return self::unsanitize($val, $db_unescape);
+            },
+            $value
+         );
       }
       if (!is_string($value)) {
          return $value;
@@ -93,6 +120,13 @@ class Sanitizer {
       return $value;
    }
 
+   /**
+    * Check if value is sanitized.
+    *
+    * @param string $value
+    *
+    * @return bool
+    */
    public static function isSanitized(string $value): bool {
       $special_chars_pattern   = '/(<|>|(&(?!#?[a-z0-9]+;)))/i';
       $sanitized_chars_pattern = '/(' . implode('|', array_merge(self::CHARS_MAPPING, self::LEGACY_CHARS_MAPPING)) . ')/';
@@ -111,7 +145,7 @@ class Sanitizer {
    private static function dbEscape(string $value): string {
       // TODO Toolbox::addslashes_deep() should be moved in current class,
       // but it is widely used, so it will be done later.
-      return Toolbox::addslashes_deep($value);;
+      return Toolbox::addslashes_deep($value);
    }
 
    /**
