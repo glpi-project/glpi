@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\Sanitizer;
+
 /**
  * RuleRight Class
  *
@@ -169,7 +171,7 @@ class RuleRight extends Rule {
                                     break;
 
                                  case "_affect_entity_by_completename" :
-                                    $res          = Toolbox::unclean_cross_side_scripting_deep($res);
+                                    $res          = Sanitizer::unsanitize($res);
                                     $entity_found = Entity::getEntityIDByCompletename(addslashes($res));
                                     break;
 

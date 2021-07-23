@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\Sanitizer;
 use Laminas\Mail\Address;
 use Laminas\Mail\Header\AbstractAddressList;
 use Laminas\Mail\Header\ContentDisposition;
@@ -1225,7 +1226,7 @@ class MailCollector  extends CommonDBTM {
          }
       }
 
-      $tkt = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($tkt));
+      $tkt = Sanitizer::sanitize($tkt, true);
       return $tkt;
    }
 
@@ -1285,7 +1286,7 @@ class MailCollector  extends CommonDBTM {
    **/
    function cleanSubject($text) {
       $text = str_replace("=20", "\n", $text);
-      $text =  Toolbox::clean_cross_side_scripting_deep($text);
+      $text =  Sanitizer::sanitize($text);
       return $text;
    }
 

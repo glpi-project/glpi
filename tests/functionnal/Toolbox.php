@@ -38,6 +38,7 @@ use Glpi\Features\Clonable;
 use Glpi\Features\DCBreadcrumb;
 use Glpi\Features\Kanban;
 use Glpi\Features\PlanningEvent;
+use Glpi\Toolbox\Sanitizer;
 use ITILFollowup;
 use Ticket;
 
@@ -468,46 +469,6 @@ class Toolbox extends DbTestCase {
       $this->string($result)->isEmpty();
    }
 
-   protected function cleanProvider() {
-      return [
-         ['mystring', 'mystring', null, 15, 0.56, false],
-         ['<strong>string</strong>', '&#60;strong&#62;string&#60;/strong&#62;', null, 15, 0.56, false],
-         [
-            [null, '<strong>string</strong>', 3.2, 'string', true, '<p>my</p>', 9798],
-            [null, '&#60;strong&#62;string&#60;/strong&#62;', 3.2, 'string', true, '&#60;p&#62;my&#60;/p&#62;', 9798]
-         ]
-      ];
-   }
-
-   protected function uncleanProvider() {
-      $dataset = $this->cleanProvider();
-
-      // Data produced by old XSS cleaning process
-      $dataset[] = ['<strong>string</strong>', '&lt;strong&gt;string&lt;/strong&gt;', null, 15, 0.56, false];
-      $dataset[] = [
-         [null, '<strong>string</strong>', 3.2, 'string', true, '<p>my</p>', 9798],
-         [null, '&lt;strong&gt;string&lt;/strong&gt;', 3.2, 'string', true, '&lt;p&gt;my&lt;/p&gt;', 9798]
-      ];
-
-      return $dataset;
-   }
-
-   /**
-    * @dataProvider cleanProvider
-    */
-   public function testClean_cross_side_scripting_deep($value, $expected) {
-      $this->variable(\Toolbox::clean_cross_side_scripting_deep($value))
-         ->isIdenticalTo($expected);
-   }
-
-   /**
-    * @dataProvider uncleanProvider
-    */
-   public function testUnclean_cross_side_scripting_deep($expected, $value) {
-      $this->variable(\Toolbox::unclean_cross_side_scripting_deep($value))
-         ->isIdenticalTo($expected);
-   }
-
    public function testSaveAndDeletePicture() {
       // Save an image twice
       $test_file = __DIR__ . '/../files/test.png';
@@ -633,7 +594,7 @@ class Toolbox extends DbTestCase {
 
       // Processed data is expected to be escaped
       $content_text = \Toolbox::addslashes_deep($content_text);
-      $expected_result = \Toolbox::clean_cross_side_scripting_deep($expected_result);
+      $expected_result = Sanitizer::sanitize($expected_result);
 
       $this->string(
          \Toolbox::convertTagToImage($content_text, $item, [$doc_id => ['tag' => $img_tag]])
@@ -689,7 +650,7 @@ class Toolbox extends DbTestCase {
 
       // Processed data is expected to be escaped
       $content_text = \Toolbox::addslashes_deep($content_text);
-      $expected_result = \Toolbox::clean_cross_side_scripting_deep($expected_result);
+      $expected_result = Sanitizer::sanitize($expected_result);
 
       // Save old config
       global $CFG_GLPI;
@@ -762,7 +723,7 @@ class Toolbox extends DbTestCase {
 
       // Processed data is expected to be escaped
       $content_text = \Toolbox::addslashes_deep($content_text);
-      $expected_result = \Toolbox::clean_cross_side_scripting_deep($expected_result);
+      $expected_result = Sanitizer::sanitize($expected_result);
 
       $this->string(
          \Toolbox::convertTagToImage($content_text, $item, $doc_data)
@@ -806,8 +767,8 @@ class Toolbox extends DbTestCase {
 
       // Processed data is expected to be escaped
       $content_text = \Toolbox::addslashes_deep($content_text);
-      $expected_result_1 = \Toolbox::clean_cross_side_scripting_deep($expected_result_1);
-      $expected_result_2 = \Toolbox::clean_cross_side_scripting_deep($expected_result_2);
+      $expected_result_1 = Sanitizer::sanitize($expected_result_1);
+      $expected_result_2 = Sanitizer::sanitize($expected_result_2);
 
       $this->string(
          \Toolbox::convertTagToImage($content_text, $item, [$doc_id_1 => ['tag' => $img_tag]])
@@ -846,7 +807,7 @@ class Toolbox extends DbTestCase {
 
       // Processed data is expected to be escaped
       $content_text = \Toolbox::addslashes_deep($content_text);
-      $expected_result = \Toolbox::clean_cross_side_scripting_deep($expected_result);
+      $expected_result = Sanitizer::sanitize($expected_result);
 
       $this->string(
          \Toolbox::convertTagToImage($content_text, $item, [$doc_id => ['tag' => $img_tag]])

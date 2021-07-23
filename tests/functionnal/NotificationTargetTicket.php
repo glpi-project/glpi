@@ -33,6 +33,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Toolbox\Sanitizer;
 
 /* Test for inc/notificationtargetticket.class.php */
 
@@ -79,7 +80,7 @@ class NotificationTargetTicket extends DbTestCase {
       // advanced test for ##task.categorycomment## and ##task.categoryid## tags
       // test of the getDataForObject for default language en_GB
       $taskcat = getItemByTypeName('TaskCategory', '_subcat_1');
-      $encoded_sep = \Toolbox::clean_cross_side_scripting_deep('>');
+      $encoded_sep = Sanitizer::sanitize('>');
       $expected = [
                      [
                      '##task.id##'              => 1,

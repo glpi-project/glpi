@@ -35,6 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\Exception\ForgetPasswordException;
+use Glpi\Toolbox\Sanitizer;
 use Sabre\VObject;
 
 class User extends CommonDBTM {
@@ -605,7 +606,7 @@ class User extends CommonDBTM {
             if ($input["password"] == $input["password2"]) {
                if (Config::validatePassword($input["password"])) {
                   $input["password"]
-                     = Auth::getPasswordHash(Toolbox::unclean_cross_side_scripting_deep(stripslashes($input["password"])));
+                     = Auth::getPasswordHash(Sanitizer::unsanitize(stripslashes($input["password"])));
 
                   $input['password_last_update'] = $_SESSION['glpi_currenttime'];
                } else {
@@ -801,7 +802,7 @@ class User extends CommonDBTM {
                                -strtotime($this->fields['password_forget_token_date'])) < DAY_TIMESTAMP)
                            && $this->isEmail($input['email'])))) {
                   $input["password"]
-                     = Auth::getPasswordHash(Toolbox::unclean_cross_side_scripting_deep(stripslashes($input["password"])));
+                     = Auth::getPasswordHash(Sanitizer::unsanitize($input["password"], true));
 
                   $input['password_last_update'] = $_SESSION["glpi_currenttime"];
                } else {
@@ -1810,7 +1811,7 @@ class User extends CommonDBTM {
       }
 
       //Perform the search
-      $filter = Toolbox::unclean_cross_side_scripting_deep($filter);
+      $filter = Sanitizer::unsanitize($filter);
       $sr     = ldap_search($ds, $ldap_base_dn, $filter, $attrs);
 
       //Get the result of the search as an array
@@ -5368,7 +5369,7 @@ JAVASCRIPT;
     */
    private static function getLdapFieldValue($map, array $res) {
 
-      $map = Toolbox::unclean_cross_side_scripting_deep($map);
+      $map = Sanitizer::unsanitize($map);
       $ret = preg_replace_callback('/%{(.*)}/U',
                                     function ($matches) use ($res) {
                                        return (isset($res[0][$matches[1]][0]) ? $res[0][$matches[1]][0] : '');

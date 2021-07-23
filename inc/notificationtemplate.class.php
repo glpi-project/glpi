@@ -35,6 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\Toolbox\RichText;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * NotificationTemplate Class
@@ -260,8 +261,8 @@ class NotificationTemplate extends CommonDBTM {
          if ($template_datas = $this->getByLanguage($language)) {
             //Template processing
 
-            $template_datas  = Toolbox::unclean_cross_side_scripting_deep($template_datas);
-            $data            = Toolbox::unclean_cross_side_scripting_deep($data);
+            $template_datas  = Sanitizer::unsanitize($template_datas);
+            $data            = Sanitizer::unsanitize($data);
 
             $lang['subject']      = $target->getSubjectPrefix($event)
                . self::process($template_datas['subject'], self::getDataForPlainText($data));

@@ -51,10 +51,13 @@ The present file will list all changes made to the project; according to the
 - `Html::weblink_extract()`
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
+- `Toolbox::clean_cross_side_scripting_deep()`
 - `Toolbox::doubleEncodeEmails()`
 - `Toolbox::getHtmlToDisplay()`
 - `Toolbox::useCache()`
+- `Toolbox::unclean_cross_side_scripting_deep()`
 - `Toolbox::unclean_html_cross_side_scripting_deep()`
+- `Toolbox::sanitize()`
 
 #### Removed
 - `Update::declareOldItems()`
