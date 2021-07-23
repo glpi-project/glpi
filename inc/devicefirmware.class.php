@@ -55,7 +55,7 @@ class DeviceFirmware extends CommonDevice {
             ],
             [
                'name'   => 'date',
-               'label'  => __('Installation date'),
+               'label'  => __('Release date'),
                'type'   => 'date'
             ],
             [
@@ -80,7 +80,7 @@ class DeviceFirmware extends CommonDevice {
          'id'                 => '11',
          'table'              => $this->getTable(),
          'field'              => 'date',
-         'name'               => __('Installation date'),
+         'name'               => __('Release date'),
          'datatype'           => 'date'
       ];
 
@@ -125,7 +125,7 @@ class DeviceFirmware extends CommonDevice {
          Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
          $base->addHeader('devicefirmware_type', _n('Type', 'Types', 1), $super, $father);
          $base->addHeader('version', _n('Version', 'Versions', 1), $super, $father);
-         $base->addHeader('date', __('Installation date'), $super, $father);
+         $base->addHeader('date', __('Release date'), $super, $father);
       }
    }
 
