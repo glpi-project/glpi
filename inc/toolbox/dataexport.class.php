@@ -32,8 +32,6 @@
 
 namespace Glpi\Toolbox;
 
-use Toolbox;
-
 class DataExport {
 
    /**
@@ -45,7 +43,7 @@ class DataExport {
     * @return string
     */
    public static function normalizeValueForTextExport(string $value): string {
-      $value = Toolbox::unclean_cross_side_scripting_deep($value);
+      $value = Sanitizer::unsanitize($value);
 
       if (RichText::isRichTextHtmlContent($value)) {
          // Remove invisible contents (tooltips for instance)

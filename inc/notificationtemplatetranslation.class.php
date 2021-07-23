@@ -35,6 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\Toolbox\RichText;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * NotificationTemplateTranslation Class
@@ -246,17 +247,13 @@ class NotificationTemplateTranslation extends CommonDBChild {
    static function cleanContentHtml(array $input) {
 
       // Unsanitize
-      //
-      // Using `Toolbox::stripslashes_deep()` on sanitized content will produce "r" and "n" instead of "\r" and \n",
-      // so newlines have to be removed before calling it.
-      $txt = str_replace(['\r', '\n'], ' ', $input['content_html']);
-      $txt = Toolbox::stripslashes_deep(Toolbox::unclean_cross_side_scripting_deep($txt));
+      $txt = Sanitizer::unsanitize($input['content_html'], true);
 
       // Get as text plain text
       $txt = RichText::getTextFromHtml($txt, true);
 
       // Sanitize result
-      $txt = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($txt));
+      $txt = Sanitizer::sanitize($txt, true);
 
       if (!$txt) {
          // No HTML (nothing to display)

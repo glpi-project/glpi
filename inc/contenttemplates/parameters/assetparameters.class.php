@@ -36,7 +36,7 @@ use CommonDBTM;
 use Entity;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
-use Toolbox;
+use Glpi\Toolbox\Sanitizer;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -75,7 +75,7 @@ class AssetParameters extends AbstractParameters
    protected function defineValues(CommonDBTM $asset): array {
 
       // Output "unsanitized" values
-      $fields = Toolbox::unclean_cross_side_scripting_deep($asset->fields);
+      $fields = Sanitizer::unsanitize($asset->fields);
 
       $values = [
          'id'       => $fields['id'],

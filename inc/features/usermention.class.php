@@ -36,11 +36,11 @@ use CommonITILActor;
 use CommonITILObject;
 use CommonITILTask;
 use CommonITILValidation;
+use Glpi\Toolbox\Sanitizer;
 use ITILFollowup;
 use ITILSolution;
 use NotificationEvent;
 use SimpleXMLElement;
-use Toolbox;
 use User;
 
 trait UserMention {
@@ -179,9 +179,7 @@ trait UserMention {
 
       try {
          if ($sanitized) {
-            $content = Toolbox::stripslashes_deep(
-               Toolbox::unclean_cross_side_scripting_deep($content)
-            );
+            $content = Sanitizer::unsanitize($content, true);
          }
          libxml_use_internal_errors(true);
          $content_as_xml = new SimpleXMLElement('<div>' . $content . '</div>');

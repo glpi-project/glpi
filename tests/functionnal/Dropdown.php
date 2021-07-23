@@ -33,6 +33,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Toolbox\Sanitizer;
 
 /* Test for inc/dropdown.class.php */
 
@@ -122,7 +123,7 @@ class Dropdown extends DbTestCase {
    public function testGetDropdownName() {
       global $CFG_GLPI;
 
-      $encoded_sep = \Toolbox::clean_cross_side_scripting_deep(' > ');
+      $encoded_sep = Sanitizer::sanitize(' > ');
 
       $ret = \Dropdown::getDropdownName('not_a_known_table', 1);
       $this->string($ret)->isIdenticalTo('&nbsp;');
@@ -795,7 +796,7 @@ class Dropdown extends DbTestCase {
    }
 
    protected function getDropdownConnectProvider() {
-      $encoded_sep = \Toolbox::clean_cross_side_scripting_deep('>');
+      $encoded_sep = Sanitizer::sanitize('>');
 
       return [
          [

@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\Sanitizer;
+
 /**
  *  GLPI security key
 **/
@@ -329,6 +331,6 @@ class GLPIKey {
          $result .= $char;
       }
 
-      return Toolbox::unclean_cross_side_scripting_deep($result);
+      return Sanitizer::unsanitize($result);
    }
 }

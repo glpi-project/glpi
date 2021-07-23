@@ -34,6 +34,7 @@ use Glpi\Console\Application;
 use Glpi\Event;
 use Glpi\Mail\Protocol\ProtocolInterface;
 use Glpi\System\RequirementsManager;
+use Glpi\Toolbox\Sanitizer;
 use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
 use Monolog\Logger;
@@ -356,19 +357,12 @@ class Toolbox {
     * @return array|string  clean item
     *
     * @see unclean_cross_side_scripting_deep*
+    *
+    * @deprecated 10.0.0
    **/
    static function clean_cross_side_scripting_deep($value) {
-
-      if ((array) $value === $value) {
-         return array_map([__CLASS__, 'clean_cross_side_scripting_deep'], $value);
-      }
-
-      if (!is_string($value)) {
-         return $value;
-      }
-
-      $mapping = self::getXssCleanCharsMapping();
-      return str_replace(array_keys($mapping), array_values($mapping), $value);
+      Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::sanitize()"');
+      return Sanitizer::sanitize($value);
    }
 
 
@@ -380,47 +374,12 @@ class Toolbox {
     * @return array|string  unclean item
     *
     * @see clean_cross_side_scripting_deep()
+    *
+    * @deprecated 10.0.0
    **/
    static function unclean_cross_side_scripting_deep($value) {
-
-      if ((array) $value === $value) {
-         return array_map([__CLASS__, 'unclean_cross_side_scripting_deep'], $value);
-      }
-
-      if (!is_string($value)) {
-         return $value;
-      }
-
-      $mapping = self::getXssCleanCharsMapping();
-      foreach ($mapping as $htmlentity) {
-         if (strpos($value, $htmlentity) !== false) {
-            // Value was cleaned using new char mapping, so it must be uncleaned with same mapping
-            $mapping = array_reverse(self::getXssCleanCharsMapping());
-            return str_replace(array_values($mapping), array_keys($mapping), $value);
-         }
-      }
-
-      // Fallback to old chars mapping
-      $in  = ['<', '>'];
-      $out = ['&lt;', '&gt;'];
-      return str_replace($out, $in, $value);
-   }
-
-   /**
-    * Get chars mapping used for XSS cleaning process.
-    * Keys are chars and values are corresponding html entities.
-    *
-    * @return string[]
-    */
-   private static function getXssCleanCharsMapping() {
-      // Order is important here.
-      // `str_replace` acts as a loop, so `&` replacement must be at first place, as other replacements
-      // will produce new `&` that should not be replaced.
-      return [
-         '&'  => '&#38;',
-         '<'  => '&#60;',
-         '>'  => '&#62;',
-      ];
+      Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::unsanitize()"');
+      return Sanitizer::unsanitize($value);
    }
 
 
@@ -2589,11 +2548,12 @@ class Toolbox {
     * @param array $array
     *
     * @return array
+    *
+    * @deprecated 10.0.0
     */
    static public function sanitize($array) {
-      $array = array_map('Toolbox::addslashes_deep', $array);
-      $array = array_map('Toolbox::clean_cross_side_scripting_deep', $array);
-      return $array;
+      Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::unsanitize($value, true)"');
+      return Sanitizer::sanitize($array, true);
    }
 
    /**
@@ -2691,11 +2651,11 @@ class Toolbox {
 
                   // 1 - Replace direct tag (with prefix and suffix) by the image
                   $content_text = preg_replace('/'.Document::getImageTag($image['tag']).'/',
-                                               self::clean_cross_side_scripting_deep($img), $content_text);
+                                               Sanitizer::sanitize($img), $content_text);
 
                   // 2 - Replace img with tag in id attribute by the image
                   $regex = '/<img[^>]+' . preg_quote($image['tag'], '/') . '[^<]+>/im';
-                  preg_match_all($regex, self::unclean_cross_side_scripting_deep($content_text), $matches);
+                  preg_match_all($regex, Sanitizer::unsanitize($content_text), $matches);
                   foreach ($matches[0] as $match_img) {
                      //retrieve dimensions
                      $width = $height = null;
@@ -2729,9 +2689,9 @@ class Toolbox {
                      $content_text = str_replace(
                         $match_img,
                         $new_image,
-                        self::unclean_cross_side_scripting_deep($content_text)
+                        Sanitizer::unsanitize($content_text)
                      );
-                     $content_text = self::clean_cross_side_scripting_deep($content_text);
+                     $content_text = Sanitizer::sanitize($content_text);
                   }
 
                   // If the tag is from another ticket : link document to ticket
@@ -2796,13 +2756,13 @@ class Toolbox {
     * @return string  html content
    **/
    static function cleanTagOrImage($content, array $tags) {
-      $content = Toolbox::unclean_cross_side_scripting_deep($content);
+      $content = Sanitizer::unsanitize($content);
 
       foreach ($tags as $tag) {
          $content = preg_replace("/<img.*alt=['|\"]".$tag."['|\"][^>]*\>/", "<p></p>", $content);
       }
 
-      $content = Toolbox::clean_cross_side_scripting_deep($content);
+      $content = Sanitizer::sanitize($content);
 
       return $content;
    }
@@ -2875,7 +2835,7 @@ class Toolbox {
     */
    public static function getRemoteIpAddress() {
       return (isset($_SERVER["HTTP_X_FORWARDED_FOR"]) ?
-         self::clean_cross_side_scripting_deep($_SERVER["HTTP_X_FORWARDED_FOR"]):
+         Sanitizer::sanitize($_SERVER["HTTP_X_FORWARDED_FOR"]):
          $_SERVER["REMOTE_ADDR"]);
    }
 
@@ -3065,7 +3025,7 @@ class Toolbox {
    public static function stripTags(string $str, bool $sanitized_input = false): string {
 
       if ($sanitized_input) {
-         $str = self::unclean_cross_side_scripting_deep($str);
+         $str = Sanitizer::unsanitize($str);
       }
 
       return strip_tags($str);

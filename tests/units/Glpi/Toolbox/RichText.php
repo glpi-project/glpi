@@ -32,6 +32,8 @@
 
 namespace tests\units\Glpi\Toolbox;
 
+use Glpi\Toolbox\Sanitizer;
+
 /**
  * Test class for src/Glpi/Toolbox/richtext.class.php
  */
@@ -54,7 +56,7 @@ class RichText extends \GLPITestCase {
 
       // Handling of sanitized content
       yield [
-         'content'                => \Toolbox::clean_cross_side_scripting_deep('<p>This HTML is safe !</p>'),
+         'content'                => Sanitizer::sanitize('<p>This HTML is safe !</p>'),
          'sanitized_input'        => true,
          'encode_output_entities' => false,
          'expected_result'        => '<p>This HTML is safe !</p>',
@@ -62,7 +64,7 @@ class RichText extends \GLPITestCase {
 
       //Bad usage of `sanitized_input` param would result in unexpected result
       yield [
-         'content'                => \Toolbox::clean_cross_side_scripting_deep('<div>This HTML is sanitized.</div>'),
+         'content'                => Sanitizer::sanitize('<div>This HTML is sanitized.</div>'),
          'sanitized_input'        => false,
          'encode_output_entities' => false,
          'expected_result'        => '<p>&#60;div&#62;This HTML is sanitized.&#60;/div&#62;</p>',
@@ -86,7 +88,7 @@ class RichText extends \GLPITestCase {
 XML;
       $content = '<h1>XML example</h1>' . "\n" . htmlentities($xml_sample);
       yield [
-         'content'                => \Toolbox::clean_cross_side_scripting_deep($content),
+         'content'                => Sanitizer::sanitize($content),
          'sanitized_input'        => true,
          'encode_output_entities' => false,
          'expected_result'        => $content,
@@ -343,7 +345,7 @@ HTML,
    protected function getTextFromHtmlProvider(): iterable {
       // Handling of sanitized content
       yield [
-         'content'                => \Toolbox::clean_cross_side_scripting_deep('<p>Some HTML text</p>'),
+         'content'                => Sanitizer::sanitize('<p>Some HTML text</p>'),
          'keep_presentation'      => false,
          'compact'                => false,
          'sanitized_input'        => true,
@@ -353,7 +355,7 @@ HTML,
 
       //Bad usage of `sanitized_input` param would result in unexpected result (HTML code will be considered as text).
       yield [
-         'content'                => \Toolbox::clean_cross_side_scripting_deep('<div>This HTML is sanitized.</div>'),
+         'content'                => Sanitizer::sanitize('<div>This HTML is sanitized.</div>'),
          'keep_presentation'      => false,
          'compact'                => false,
          'sanitized_input'        => false,
@@ -380,7 +382,7 @@ HTML,
 </root>
 XML;
       yield [
-         'content'                => \Toolbox::clean_cross_side_scripting_deep(
+         'content'                => Sanitizer::sanitize(
             '<h1>XML example</h1>' . "\n" . htmlentities($xml_sample)
          ),
          'keep_presentation'      => false,

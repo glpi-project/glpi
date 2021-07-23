@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,6 +34,8 @@
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
+
+use Glpi\Toolbox\Sanitizer;
 
 /**
  *  NotificationMailing class implements the NotificationInterface
@@ -156,7 +159,7 @@ class NotificationMailing implements NotificationInterface {
 
       $queue = new QueuedNotification();
 
-      if (!$queue->add(Toolbox::sanitize($data))) {
+      if (!$queue->add(Sanitizer::sanitize($data, true))) {
          Session::addMessageAfterRedirect(__('Error inserting email to queue'), true, ERROR);
          return false;
       } else {

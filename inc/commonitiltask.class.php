@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
 use Glpi\Toolbox\RichText;
+use Glpi\Toolbox\Sanitizer;
 use Sabre\VObject\Component\VCalendar;
 
 /// TODO extends it from CommonDBChild
@@ -1177,7 +1178,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                      $interv[$key]["end"] = $data["end"];
                   }
 
-                  $interv[$key]["name"]     = Toolbox::unclean_cross_side_scripting_deep($parentitem->fields['name']); // name is re-encoded on JS side
+                  $interv[$key]["name"]     = Sanitizer::unsanitize($parentitem->fields['name']); // name is re-encoded on JS side
                   $interv[$key]["content"]  = RichText::getSafeHtml($item->fields['content'], true);
                   $interv[$key]["status"]   = $parentitem->fields["status"];
                   $interv[$key]["priority"] = $parentitem->fields["priority"];

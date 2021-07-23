@@ -34,7 +34,7 @@ namespace Glpi\ContentTemplates\Parameters;
 
 use CommonDBTM;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
-use Toolbox;
+use Glpi\Toolbox\Sanitizer;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -57,7 +57,7 @@ abstract class DropdownParameters extends AbstractParameters
    protected function defineValues(CommonDBTM $item): array {
 
       // Output "unsanitized" values
-      $fields = Toolbox::unclean_cross_side_scripting_deep($item->fields);
+      $fields = Sanitizer::unsanitize($item->fields);
 
       return [
          'id'   => $fields['id'],

@@ -47,6 +47,7 @@ use DB;
 use Document_Item;
 use Domain;
 use Glpi\Console\AbstractCommand;
+use Glpi\Toolbox\Sanitizer;
 use Infocom;
 use Item_Problem;
 use Item_Project;
@@ -63,7 +64,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Toolbox;
 
 class AppliancesPluginToCoreCommand extends AbstractCommand {
 
@@ -403,12 +403,12 @@ class AppliancesPluginToCoreCommand extends AbstractCommand {
             OutputInterface::VERBOSITY_VERY_VERBOSE
          );
 
-         $app_fields = Toolbox::sanitize([
+         $app_fields = Sanitizer::sanitize([
             'id'            => $item['id'],
             'appliances_id' => $item['plugin_appliances_appliances_id'],
             'items_id'      => $item['items_id'],
             'itemtype'      => $item['itemtype']
-         ]);
+         ], true);
 
          $appi = new Appliance_Item();
          if (!($appi_id = $appi->getFromDBByCrit($app_fields))) {
@@ -462,11 +462,11 @@ class AppliancesPluginToCoreCommand extends AbstractCommand {
             OutputInterface::VERBOSITY_VERY_VERBOSE
          );
 
-         $app_fields = Toolbox::sanitize([
+         $app_fields = Sanitizer::sanitize([
             'id'      => $env['id'],
             'name'    => $env['name'],
             'comment' => $env['comment']
-         ]);
+         ], true);
 
          $appe = new ApplianceEnvironment();
          if (!($appe_id = $appe->getFromDBByCrit($app_fields))) {
@@ -519,7 +519,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand {
             OutputInterface::VERBOSITY_VERY_VERBOSE
          );
 
-         $app_fields = Toolbox::sanitize([
+         $app_fields = Sanitizer::sanitize([
             'id'                       => $appliance['id'],
             'entities_id'              => $appliance['entities_id'],
             'is_recursive'             => $appliance['is_recursive'],
@@ -540,7 +540,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand {
             'externalidentifier'       => $appliance['externalid'],
             'serial'                   => $appliance['serial'],
             'otherserial'              => $appliance['otherserial']
-         ]);
+         ], true);
 
          $app = new Appliance();
          if (!($app_id = $app->getFromDBByCrit($app_fields))) {
@@ -594,14 +594,14 @@ class AppliancesPluginToCoreCommand extends AbstractCommand {
             OutputInterface::VERBOSITY_VERY_VERBOSE
          );
 
-         $appt_fields = Toolbox::sanitize([
+         $appt_fields = Sanitizer::sanitize([
             'id'                 => $type['id'],
             'entities_id'        => $type['entities_id'],
             'is_recursive'       => $type['is_recursive'],
             'name'               => $type['name'],
             'comment'            => $type['comment'],
             'externalidentifier' => $type['externalid']
-         ]);
+         ], true);
 
          $appt = new ApplianceType();
          if (!($appt_id = $appt->getFromDBByCrit($appt_fields))) {
@@ -687,12 +687,12 @@ class AppliancesPluginToCoreCommand extends AbstractCommand {
             }
          }
 
-         $appr_fields = Toolbox::sanitize([
+         $appr_fields = Sanitizer::sanitize([
             'id'                  => $row['id'],
             'appliances_items_id' => $row['plugin_appliances_appliances_items_id'],
             'itemtype'            => $itemtype,
             'items_id'            => $row['relations_id']
-         ]);
+         ], true);
 
          $appr = new Appliance_Item_Relation();
          if (!($appr_id = $appr->getFromDBByCrit($appr_fields))) {

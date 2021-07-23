@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
 use ScssPhp\ScssPhp\Compiler;
 
 if (!defined('GLPI_ROOT')) {
@@ -4255,7 +4256,7 @@ JAVASCRIPT
          echo "<tr><th>KEY</th><th>=></th><th>VALUE</th></tr>";
 
          foreach ($tab as $key => $val) {
-            $key = Toolbox::clean_cross_side_scripting_deep($key);
+            $key = Sanitizer::sanitize($key);
             echo "<tr class='tab_bg_1'><td class='top right'>";
             echo $key;
             $is_array = is_array($val);

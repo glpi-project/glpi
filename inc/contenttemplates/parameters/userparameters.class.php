@@ -34,7 +34,7 @@ namespace Glpi\ContentTemplates\Parameters;
 
 use CommonDBTM;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
-use Toolbox;
+use Glpi\Toolbox\Sanitizer;
 use User;
 use UserEmail;
 
@@ -76,7 +76,7 @@ class UserParameters extends AbstractParameters
    protected function defineValues(CommonDBTM $user): array {
 
       // Output "unsanitized" values
-      $fields = Toolbox::unclean_cross_side_scripting_deep($user->fields);
+      $fields = Sanitizer::unsanitize($user->fields);
 
       return [
          'id'    => $fields['id'],

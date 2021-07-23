@@ -45,6 +45,7 @@ use DateTimeZone;
 use Dropdown;
 use Entity;
 use Glpi\Toolbox\RichText;
+use Glpi\Toolbox\Sanitizer;
 use Group_User;
 use Html;
 use Planning;
@@ -543,7 +544,7 @@ trait PlanningEvent {
                   'users_id'         => $data["users_id"],
                   'state'            => $data["state"],
                   'background'       => $has_bg ? $data['background'] : false,
-                  'name'             => Toolbox::unclean_cross_side_scripting_deep($data['name']), // name is re-encoded on JS side
+                  'name'             => Sanitizer::unsanitize($data['name']), // name is re-encoded on JS side
                   'text'             => $data['text'] !== null
                      ? RichText::getSafeHtml($data['text'], true)
                      : '',
