@@ -1057,8 +1057,7 @@ class Transfer extends CommonDBTM {
          if ($item->getFromDB($newID)) {
 
             // Network connection ? keep connected / keep_disconnected / delete
-            if (in_array($itemtype, ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
-                                          'Phone', 'Printer'])) {
+            if (in_array($itemtype, $CFG_GLPI['networkport_types'])) {
                $this->transferNetworkLink($itemtype, $ID, $newID);
             }
 
