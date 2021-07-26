@@ -44,9 +44,15 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 // Mandatory parameter: itilfollowuptemplates_id
-$itilfollowuptemplates_id = $_POST['itilfollowuptemplates_id'] ?? 0;
-if (!$itilfollowuptemplates_id) {
+$itilfollowuptemplates_id = $_POST['itilfollowuptemplates_id'] ?? null;
+if ($itilfollowuptemplates_id === null) {
    Toolbox::throwError(400, "Missing or invalid parameter: 'itilfollowuptemplates_id'");
+} else if ($itilfollowuptemplates_id == 0) {
+   // Reset form
+   echo json_encode([
+      'content' => ""
+   ]);
+   die;
 }
 
 // Mandatory parameter: items_id

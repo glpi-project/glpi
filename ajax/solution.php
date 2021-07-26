@@ -41,9 +41,15 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 // Mandatory parameter: solutiontemplates_id
-$solutiontemplates_id = $_POST['solutiontemplates_id'] ?? 0;
-if ($solutiontemplates_id == 0) {
+$solutiontemplates_id = $_POST['solutiontemplates_id'] ?? null;
+if ($solutiontemplates_id === null) {
    Toolbox::throwError(400, "Missing or invalid parameter: 'solutiontemplates_id'");
+} else if ($solutiontemplates_id == 0) {
+   // Reset form
+   echo json_encode([
+      'content' => ""
+   ]);
+   die;
 }
 
 // We can't render the twig template at this state for some cases (e.g. massive
