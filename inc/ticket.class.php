@@ -2678,7 +2678,7 @@ JAVASCRIPT;
                             'enable_images'     => false,
                             'cols'              => 12,
                             'rows'              => 80]);
-            Html::activateUserTemplateAutocompletion('textarea[name=content]' ,[
+            Html::activateUserTemplateAutocompletion('textarea[name=content]', [
                (new AttributeParameter('itemtype', __('Itemtype')))->compute(),
                (new ObjectParameter(new TicketParameters()))->compute(),
             ]);
