@@ -81,6 +81,37 @@ class Search extends DbTestCase {
       return $data;
    }
 
+   public function testMetaComputerOS() {
+      $search_params = ['is_deleted'   => 0,
+                        'start'        => 0,
+                        'criteria'     => [0 => ['field'      => 'view',
+                                                 'searchtype' => 'contains',
+                                                 'value'      => '']],
+                        'metacriteria' => [0 => ['link'       => 'AND',
+                                                 'itemtype'   => 'OperatingSystem',
+                                                 'field'      => 1, //name
+                                                 'searchtype' => 'contains',
+                                                 'value'      => 'windows']]];
+
+      $data = $this->doSearch('Computer', $search_params);
+
+      //try to find LEFT JOIN clauses
+      $this->string($data['sql']['search'])
+         ->matches("/"
+         ."LEFT\s*JOIN\s*`glpi_items_operatingsystems`\s*AS\s*`glpi_items_operatingsystems_OperatingSystem`\s*"
+         ."ON\s*\(`glpi_items_operatingsystems_OperatingSystem`\.`items_id`\s*=\s*`glpi_computers`\.`id`\s*"
+         ."AND `glpi_items_operatingsystems_OperatingSystem`\.`itemtype`\s*=\s*'Computer'\s*"
+         ."AND `glpi_items_operatingsystems_OperatingSystem`\.`is_deleted`\s*=\s*0\s*\)\s*"
+         ."LEFT\s*JOIN\s*`glpi_operatingsystems`\s*"
+         ."ON\s*\(`glpi_items_operatingsystems_OperatingSystem`\.`operatingsystems_id`\s*=\s*`glpi_operatingsystems`\.`id`\s*\)"
+         ."/im");
+
+      //try to match WHERE clause
+      $this->string($data['sql']['search'])
+         ->matches("/(\(`glpi_operatingsystems`\.`name`\s*LIKE\s*'%windows%'\s*\)\s*\))/im");
+   }
+
+
    public function testMetaComputerSoftwareLicense() {
       $search_params = ['is_deleted'   => 0,
                         'start'        => 0,
