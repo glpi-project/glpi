@@ -43,9 +43,15 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 // Mandatory parameter: tasktemplates_id
-$tasktemplates_id = $_POST['tasktemplates_id'] ?? 0;
-if (!$tasktemplates_id) {
+$tasktemplates_id = $_POST['tasktemplates_id'] ?? null;
+if ($tasktemplates_id === null) {
    Toolbox::throwError(400, "Missing or invalid parameter: 'tasktemplates_id'");
+} else if ($tasktemplates_id == 0) {
+   // Reset form
+   echo json_encode([
+      'content' => ""
+   ]);
+   die;
 }
 
 // Mandatory parameter: items_id

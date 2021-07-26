@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\RichText;
 
 $AJAX_INCLUDE = 1;
 
@@ -40,21 +41,32 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 // Mandatory parameter: solutiontemplates_id
-$solutiontemplates_id = $_POST['solutiontemplates_id'] ?? 0;
-if ($solutiontemplates_id == 0) {
+$solutiontemplates_id = $_POST['solutiontemplates_id'] ?? null;
+if ($solutiontemplates_id === null) {
    Toolbox::throwError(400, "Missing or invalid parameter: 'solutiontemplates_id'");
+} else if ($solutiontemplates_id == 0) {
+   // Reset form
+   echo json_encode([
+      'content' => ""
+   ]);
+   die;
 }
+
+// We can't render the twig template at this state for some cases (e.g. massive
+// actions: we don't have one but multiple items so it net possible to parse the
+// values yet).
+$apply_twig = true;
 
 // Mandatory parameter: items_id
 $parents_id = $_POST['items_id'] ?? 0;
 if ($parents_id == 0) {
-   Toolbox::throwError(400, "Missing or invalid parameter: 'items_id'");
+   $apply_twig  = false;
 }
 
 // Mandatory parameter: itemtype
 $parents_itemtype = $_POST['itemtype'] ?? '';
 if (empty($parents_itemtype) || !is_subclass_of($parents_itemtype, CommonITILObject::class)) {
-   Toolbox::throwError(400, "Missing or invalid parameter: 'itemtype'");
+   $apply_twig  = false;
 }
 
 // Load solution template
@@ -63,14 +75,18 @@ if (!$template->getFromDB($solutiontemplates_id)) {
    Toolbox::throwError(400, "Unable to load template: $solutiontemplates_id");
 }
 
-// Load parent item
-$parent = new $parents_itemtype();
-if (!$parent->getFromDB($parents_id)) {
-   Toolbox::throwError(400, "Unable to load parent item: $parents_itemtype $parents_id");
-}
+if ($apply_twig) {
+   // Load parent item
+   $parent = new $parents_itemtype();
+   if (!$parent->getFromDB($parents_id)) {
+      Toolbox::throwError(400, "Unable to load parent item: $parents_itemtype $parents_id");
+   }
 
-// Render template content using twig
-$template->fields['content'] = $template->getRenderedContent($parent);
+   // Render template content using twig
+   $template->fields['content'] = $template->getRenderedContent($parent);
+} else {
+   $template->fields['content'] = RichText::getSafeHtml($template->fields['content'], true);
+}
 
 // Return json response with the template fields
 echo json_encode($template->fields);

@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
+use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
 use Glpi\ContentTemplates\Parameters\TicketParameters;
 use Glpi\Event;
 use Glpi\Toolbox\RichText;
@@ -2630,6 +2632,7 @@ class Ticket extends CommonITILObject {
                'rand'     => $rand,
                'on_change' => "solutiontemplate_update{$rand}(this.value)"
             ]);
+            echo Html::hidden("_render_twig", ['value' => true]);
 
             $JS = <<<JAVASCRIPT
                function solutiontemplate_update{$rand}(value) {
@@ -2675,6 +2678,10 @@ JAVASCRIPT;
                             'enable_images'     => false,
                             'cols'              => 12,
                             'rows'              => 80]);
+            Html::activateUserTemplateAutocompletion('textarea[name=content]', [
+               (new AttributeParameter('itemtype', __('Itemtype')))->compute(),
+               (new ObjectParameter(new TicketParameters()))->compute(),
+            ]);
             echo '</div>'; // .form-row
 
             echo '</div>'; // .horizontal-form
