@@ -9113,6 +9113,7 @@ CREATE TABLE `glpi_agenttasks` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `agents_id` int NOT NULL DEFAULT '0',
+  `task_type` varchar(255) NOT NULL,
   `start_date` timestamp NULL DEFAULT NULL,
   `end_date` timestamp NULL DEFAULT NULL,
   `periodicity` int NOT NULL DEFAULT '0',

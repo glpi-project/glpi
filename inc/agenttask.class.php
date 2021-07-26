@@ -201,12 +201,17 @@ class AgentTask extends CommonDBChild {
       echo "</td>";
       echo "</tr>";
 
-      /*echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='agenttypes_id'>".__('Periodicity')."</label></td>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td><label for='periodicity'>".__('Periodicity')."</label></td>";
       echo "<td align='center'>";
-
+      Dropdown::showNumber('periodicity');
       echo "</td>";
-      echo "</tr>";*/
+      echo "<td><label for='task_type'>".__('Task type')."</label></td>";
+      echo "<td align='center'>";
+      Dropdown::showFromArray('task_type', $CFG_GLPI['agenttasks_types']);
+      echo "</td>";
+
+      echo "</tr>";
 
       $this->showFormButtons($options);
 
