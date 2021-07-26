@@ -627,7 +627,7 @@ class Provider extends CommonGLPI {
       $criteria = array_merge_recursive(
          [
             'SELECT' => [
-               'COUNT' => "$t_table.id as nb_tickets",
+               'COUNT DISTINCT' => "$t_table.id as nb_tickets",
                new QueryExpression("DATE_FORMAT(".$DB->quoteName("date").", '%Y-%m') AS ticket_month")
             ],
             'FROM'    => $t_table,
@@ -1062,7 +1062,7 @@ class Provider extends CommonGLPI {
       $criteria = array_merge_recursive(
          [
             'SELECT' => array_merge([
-               'COUNT' => "$t_table.id AS nb_tickets",
+               'COUNT DISTINCT' => "$t_table.id AS nb_tickets",
                "$ug_table.id as actor_id",
             ], $n_fields),
             'FROM' => $t_table,
