@@ -85,10 +85,12 @@ class UserExtension extends AbstractExtension implements ExtensionInterface {
             return strtoupper(substr($anon, 0, 2));
          }
 
-         return strtoupper(
-            substr($user->fields['firstname'], 0, 1).
-            substr($user->fields['realname'], 0, 1)
-         );
+         $initials = substr($user->fields['firstname'], 0, 1) .
+            substr($user->fields['realname'], 0, 1);
+         if (!$initials) {
+            $initials = substr($user->fields['name'], 0, 2);
+         }
+         return strtoupper($initials);
       }
 
       return "";

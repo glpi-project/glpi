@@ -2,7 +2,7 @@
 {% set user_color  = User__getBgColor(users_id) %}
 <a href="{{ User__getLinkUrl(users_id) }}">
    <span class="avatar avatar-md rounded"
-         style="background-image: url({{ user_picture }}); background-color: {{ user_color }}">
+         style="{% if user_picture|length != 0 %}background-image: url({{ user_picture }}); {% endif %}background-color: {{ user_color }}">
       {% if user_picture|length == 0 %}
             {{ User__getInitials(users_id) }}
       {% endif %}
