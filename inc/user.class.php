@@ -2156,19 +2156,7 @@ JAVASCRIPT;
       if (!empty($this->fields["name"])) {
          echo "<td rowspan='7'>" . _n('Picture', 'Pictures', 1) . "</td>";
          echo "<td rowspan='7'>";
-         echo "<span class='avatar avatar-md rounded' style='";
-
-         $uextension = new UserExtension();
-         $user_picture  = $uextension->getPicture($ID);
-         $user_color  = $uextension->getBgColor($ID);
-         if ($user_picture) {
-            echo "background-image: url({{ user_picture }});";
-         }
-         echo "background-color: $user_color'>";
-         if (!$user_picture) {
-            echo $uextension->getInitials($ID);
-         }
-         echo "</span>";
+         echo self::getPictureForUser($ID);
 
          echo Html::file(['name' => 'picture', 'display' => false, 'onlyimages' => true]);
          echo "<input type='checkbox' name='_blank_picture'>&nbsp;".__('Clear');
@@ -2595,19 +2583,7 @@ JAVASCRIPT;
          if (!empty($this->fields["name"])) {
             echo "<td rowspan='7'>" . _n('Picture', 'Pictures', 1) . "</td>";
             echo "<td rowspan='7'>";
-            echo "<span class='avatar avatar-md rounded' style='";
-
-            $uextension = new UserExtension();
-            $user_picture  = $uextension->getPicture($ID);
-            $user_color  = $uextension->getBgColor($ID);
-            if ($user_picture) {
-               echo "background-image: url({{ user_picture }});";
-            }
-            echo "background-color: $user_color'>";
-            if (!$user_picture) {
-               echo $uextension->getInitials($ID);
-            }
-            echo "</span>";
+            echo self::getPictureForUser($ID);
 
             echo Html::file(['name' => 'picture', 'display' => false, 'onlyimages' => true]);
 
@@ -5705,19 +5681,7 @@ JAVASCRIPT;
 
       echo "<td rowspan='3'>" . __('Picture') . "</td>";
       echo "<td rowspan='3'>";
-      echo "<span class='avatar avatar-md rounded' style='";
-
-      $uextension = new UserExtension();
-      $user_picture  = $uextension->getPicture($ID);
-      $user_color  = $uextension->getBgColor($ID);
-      if ($user_picture) {
-         echo "background-image: url({{ user_picture }});";
-      }
-      echo "background-color: $user_color'>";
-      if (!$user_picture) {
-         echo $uextension->getInitials($ID);
-      }
-      echo "</span>";
+      echo self::getPictureForUser($ID);
 
       echo Html::file(['name' => 'picture', 'display' => false, 'onlyimages' => true]);
       echo "<input type='checkbox' name='_blank_picture'>&nbsp;".__('Clear');
@@ -5740,5 +5704,22 @@ JAVASCRIPT;
       $this->showFormButtons($options);
 
       return true;
+   }
+
+   public function getPictureForUser(int $ID): string {
+      $output = "<span class='avatar avatar-md rounded' style='";
+
+      $uextension = new UserExtension();
+      $user_picture  = $uextension->getPicture($ID);
+      $user_color  = $uextension->getBgColor($ID);
+      if ($user_picture) {
+         $output .= "background-image: url($user_picture);";
+      }
+      $output .= "background-color: $user_color'>";
+      if (!$user_picture) {
+         $output .= $uextension->getInitials($ID);
+      }
+      $output .= "</span>";
+      return $output;
    }
 }
