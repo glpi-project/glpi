@@ -59,9 +59,9 @@ class UserExtension extends AbstractExtension {
       $user = new User;
       if ($user->getFromDB($users_id)) {
          if ($this->getAnonymizedName($users_id) !== null) {
-            return User::getThumbnailURLForPicture(null, false);
+            return User::getThumbnailURLForPicture(null);
          }
-         return User::getThumbnailURLForPicture($user->fields['picture'], false);
+         return User::getThumbnailURLForPicture($user->fields['picture']);
       }
 
       return "";
@@ -79,10 +79,17 @@ class UserExtension extends AbstractExtension {
    public function getInitials(int $users_id = 0): string {
       $user = new User;
       if ($user->getFromDB($users_id)) {
-         return strtoupper(
-            substr($user->fields['firstname'], 0, 1).
-            substr($user->fields['realname'], 0, 1)
-         );
+         if (($anon = $this->getAnonymizedName($users_id)) !== null) {
+            // if anonymized name active, return two first letters of the anon name
+            return strtoupper(substr($anon, 0, 2));
+         }
+
+         $initials = substr($user->fields['firstname'], 0, 1) .
+            substr($user->fields['realname'], 0, 1);
+         if (!$initials) {
+            $initials = substr($user->fields['name'], 0, 2);
+         }
+         return strtoupper($initials);
       }
 
       return "";
