@@ -1,0 +1,34 @@
+{% import "components/form/modals_macros.html.twig" as modals %}
+
+{% if rights is not defined %}
+   {% set rights = {
+      'create_item': false,
+      'delete_item': false,
+      'create_column': false,
+      'modify_view': false,
+      'order_card': false,
+      'create_card_limited_columns': [0],
+   } %}
+{% endif %}
+
+<div id='kanban' class='kanban'></div>
+{{ modals.modal('', '', {
+   'id': 'kanban-modal'
+}) }}
+
+<script>
+   $(function(){
+      // Create Kanban
+      var kanban = new GLPIKanban({
+         element: "#{{ kanban_id|default('kanban') }}",
+         rights: {{ rights|json_encode|raw }},
+         supported_itemtypes: {{ supported_itemtypes|json_encode|raw }},
+         max_team_images: 3,
+         column_field: {{ column_field|json_encode|raw }},
+         background_refresh_interval: {{ background_refresh_interval|default(session('glpirefresh_views')) }},
+         item: {{ item|json_encode|raw }}
+      });
+      // Create kanban elements and add data
+      kanban.init();
+   });
+</script>

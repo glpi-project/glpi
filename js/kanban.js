@@ -336,6 +336,9 @@ class GLPIKanbanRights {
             'column_field', 'allow_modify_view', 'limit_addcard_columns', 'allow_order_card', 'allow_create_column',
             'allow_delete_item'
          ];
+         // Use CSS variable check for dark theme detection by default
+         self.dark_theme = $('html').css('--is-dark').trim() === true;
+
          if (args.length === 1) {
             for (let i = 0; i < overridableParams.length; i++) {
                const param = overridableParams[i];
@@ -375,36 +378,36 @@ class GLPIKanbanRights {
          const kanban_container = $("<div class='kanban-container'><div class='kanban-columns'></div></div>").appendTo($(self.element));
 
          // Dropdown for single additions
-         let add_itemtype_dropdown = "<ul id='kanban-add-dropdown' class='kanban-dropdown' style='display: none'>";
+         let add_itemtype_dropdown = "<ul id='kanban-add-dropdown' class='kanban-dropdown dropdown-menu' style='display: none'>";
          Object.keys(self.supported_itemtypes).forEach(function(itemtype) {
-            add_itemtype_dropdown += "<li id='kanban-add-" + itemtype + "'><span>" + self.supported_itemtypes[itemtype]['name'] + '</span></li>';
+            add_itemtype_dropdown += "<li id='kanban-add-" + itemtype + "' class='dropdown-item'><span>" + self.supported_itemtypes[itemtype]['name'] + '</span></li>';
          });
          add_itemtype_dropdown += '</ul>';
          kanban_container.append(add_itemtype_dropdown);
 
          // Dropdown for overflow (Column)
-         let column_overflow_dropdown = "<ul id='kanban-overflow-dropdown' class='kanban-dropdown' style='display: none'>";
-         let add_itemtype_bulk_dropdown = "<ul id='kanban-bulk-add-dropdown' class='' style='display: none'>";
+         let column_overflow_dropdown = "<ul id='kanban-overflow-dropdown' class='kanban-dropdown  dropdown-menu' style='display: none'>";
+         let add_itemtype_bulk_dropdown = "<ul id='kanban-bulk-add-dropdown' class='dropdown-menu' style='display: none'>";
          Object.keys(self.supported_itemtypes).forEach(function(itemtype) {
-            add_itemtype_bulk_dropdown += "<li id='kanban-bulk-add-" + itemtype + "'><span>" + self.supported_itemtypes[itemtype]['name'] + '</span></li>';
+            add_itemtype_bulk_dropdown += "<li id='kanban-bulk-add-" + itemtype + "' class='dropdown-item'><span>" + self.supported_itemtypes[itemtype]['name'] + '</span></li>';
          });
          add_itemtype_bulk_dropdown += '</ul>';
          const add_itemtype_bulk_link = '<a href="#">' + '<i class="fas fa-list"></i>' + __('Bulk add') + '</a>';
-         column_overflow_dropdown += '<li class="dropdown-trigger">' + add_itemtype_bulk_link + add_itemtype_bulk_dropdown + '</li>';
+         column_overflow_dropdown += '<li class="dropdown-trigger dropdown-item">' + add_itemtype_bulk_link + add_itemtype_bulk_dropdown + '</li>';
          if (self.rights.canModifyView()) {
-            column_overflow_dropdown += "<li class='kanban-remove' data-forbid-protected='true'><span>"  + '<i class="fas fa-trash-alt"></i>' + __('Delete') + "</span></li>";
+            column_overflow_dropdown += "<li class='kanban-remove dropdown-item' data-forbid-protected='true'><span>"  + '<i class="fas fa-trash-alt"></i>' + __('Delete') + "</span></li>";
          }
          column_overflow_dropdown += '</ul>';
          kanban_container.append(column_overflow_dropdown);
 
          // Dropdown for overflow (Card)
-         let card_overflow_dropdown = "<ul id='kanban-item-overflow-dropdown' class='kanban-dropdown' style='display: none'>";
+         let card_overflow_dropdown = "<ul id='kanban-item-overflow-dropdown' class='kanban-dropdown  dropdown-menu' style='display: none'>";
          if (self.rights.canDeleteItem()) {
             card_overflow_dropdown += `
-                <li class='kanban-item-goto'>
+                <li class='kanban-item-goto dropdown-item'>
                    <a href="#"><i class="fas fa-share"></i>${__('Go to')}</a>
                 </li>
-                <li class='kanban-item-remove'>
+                <li class='kanban-item-remove dropdown-item'>
                    <span>
                       <i class="fas fa-trash-alt"></i>${__('Delete')}
                    </span>
@@ -444,11 +447,11 @@ class GLPIKanbanRights {
       };
 
       const buildToolbar = function() {
-         let toolbar = $("<div class='kanban-toolbar'></div>").appendTo(self.element);
+         let toolbar = $("<div class='kanban-toolbar card flex-row'></div>").appendTo(self.element);
          $("<select name='kanban-board-switcher'></select>").appendTo(toolbar);
-         let filter_input = $("<input name='filter' type='text' placeholder='" + __('Search or filter results') + "'/>").appendTo(toolbar);
+         let filter_input = $("<input name='filter' class='form-control ms-1' type='text' placeholder='" + __('Search or filter results') + "'/>").appendTo(toolbar);
          if (self.rights.canModifyView()) {
-            let add_column = "<input type='button' class='kanban-add-column submit' value='" + __('Add column') + "'/>";
+            let add_column = "<buttom rome='button' class='kanban-add-column btn btn-outline-secondary ms-1'>" + __('Add column') + "</button>";
             toolbar.append(add_column);
          }
          filter_input.on('input', function() {
@@ -777,7 +780,7 @@ class GLPIKanbanRights {
          });
          $('#kanban-add-dropdown li').on('click', function(e) {
             e.preventDefault();
-            const selection = $(e.target);
+            const selection = $(e.target).closest('li');
             // The add dropdown is a single-level dropdown, so the parent is the ul element
             const dropdown = selection.parent();
             // Get the button that triggered the dropdown and then get the column that it is a part of
@@ -875,19 +878,8 @@ class GLPIKanbanRights {
             e.preventDefault();
             const card = $(e.target).closest('.kanban-item');
             const [itemtype, items_id] = card.prop('id').split('-');
-            if ($('#kanban-dialog').length === 0) {
-               $(self.element).append('<div id="kanban-dialog"></div>');
-               // After initializing the dialog, it gets moved automatically outside the Kanban container. That's why it has an ID instead of a class.
-               $(self.element + ' #kanban-dialog').dialog({
-                  autoOpen: false,
-                  modal: true,
-                  resizable: true,
-                  draggable: true,
-                  height: 700,
-                  width: 800
-               });
-            }
-            $('#kanban-dialog').load((self.ajax_root + "kanban.php?action=show_card_edit_form&itemtype="+itemtype+"&card=" + items_id)).dialog("open");
+            $('#kanban-modal .modal-body').load((self.ajax_root + "kanban.php?action=show_card_edit_form&itemtype="+itemtype+"&card=" + items_id));
+            $('#kanban-modal').modal('show');
          });
       };
 
@@ -915,14 +907,14 @@ class GLPIKanbanRights {
          }).done(function(data) {
             const form_content = $(self.add_column_form + " .kanban-item-content");
             form_content.empty();
-            form_content.append("<input type='text' name='column-name-filter' placeholder='" + __('Search') + "'/>");
+            form_content.append("<input type='text' class='form-control' name='column-name-filter' placeholder='" + __('Search') + "'/>");
             let list = "<ul class='kanban-columns-list'>";
             $.each(data, function(column_id, column) {
                let list_item = "<li data-list-id='"+column_id+"'>";
                if (columns_used.includes(column_id)) {
-                  list_item += "<input type='checkbox' checked='true'/>";
+                  list_item += "<input type='checkbox' checked='true' class='form-check-input' />";
                } else {
-                  list_item += "<input type='checkbox'/>";
+                  list_item += "<input type='checkbox' class='form-check-input' />";
                }
                list_item += "<span class='kanban-color-preview' style='background-color: "+column['header_color']+"'></span>";
                list_item += column['name'] + "</li>";
@@ -1039,8 +1031,8 @@ class GLPIKanbanRights {
          let toolbar_el = "<span class='kanban-column-toolbar'>";
          const column_id = parseInt(getColumnIDFromElement(column['id']));
          if (self.rights.canCreateItem() && (self.rights.getAllowedColumnsForNewCards().length === 0 || self.rights.getAllowedColumnsForNewCards().includes(column_id))) {
-            toolbar_el += "<i id='kanban_add_" + column['id'] + "' class='kanban-add pointer fas fa-plus' title='" + __('Add') + "'></i>";
-            toolbar_el += "<i id='kanban_column_overflow_actions_" + column['id'] +"' class='kanban-column-overflow-actions pointer fas fa-ellipsis-h' title='" + __('More') + "'></i>";
+            toolbar_el += "<i id='kanban_add_" + column['id'] + "' class='kanban-add btn btn-sm btn-ghost-secondary fas fa-plus' title='" + __('Add') + "'></i>";
+            toolbar_el += "<i id='kanban_column_overflow_actions_" + column['id'] +"' class='kanban-column-overflow-actions btn btn-sm btn-ghost-secondary fas fa-ellipsis-h' title='" + __('More') + "'></i>";
          }
          toolbar_el += "</span>";
          return toolbar_el;
@@ -1597,7 +1589,7 @@ class GLPIKanbanRights {
 
          const uniqueID = Math.floor(Math.random() * 999999);
          const formID = "form_add_" + itemtype + "_" + uniqueID;
-         let add_form = "<form id='" + formID + "' class='kanban-add-form kanban-form no-track'>";
+         let add_form = "<form id='" + formID + "' class='kanban-add-form card kanban-form no-track'>";
          let form_header = "<div class='kanban-item-header'>";
          form_header += `
             <span class='kanban-item-title'>
@@ -1613,7 +1605,7 @@ class GLPIKanbanRights {
             const value = options['value'] !== undefined ? options['value'] : '';
 
             if (input_type.toLowerCase() === 'textarea') {
-               add_form += "<textarea name='" + name + "'";
+               add_form += "<textarea class='form-control' name='" + name + "'";
                if (options['placeholder'] !== undefined) {
                   add_form += " placeholder='" + options['placeholder'] + "'";
                }
@@ -1624,7 +1616,7 @@ class GLPIKanbanRights {
             } else if (input_type.toLowerCase() === 'raw') {
                add_form += value;
             } else {
-               add_form += "<input type='" + input_type + "' name='" + name + "'";
+               add_form += "<input class='form-control' type='" + input_type + "' name='" + name + "'";
                if (options['placeholder'] !== undefined) {
                   add_form += " placeholder='" + options['placeholder'] + "'";
                }
@@ -1639,7 +1631,7 @@ class GLPIKanbanRights {
          const column_id_elements = column_el.prop('id').split('-');
          const column_value = column_id_elements[column_id_elements.length - 1];
          add_form += "<input type='hidden' name='" + self.column_field.id + "' value='" + column_value + "'/>";
-         add_form += "<input type='submit' value='" + __('Add') + "' name='add' class='submit'/>";
+         add_form += "<input type='submit' value='" + __('Add') + "' name='add' class='btn btn-primary'/>";
          add_form += "</form>";
          $(column_el.find('.kanban-body')[0]).append(add_form);
          $('#' + formID).get(0).scrollIntoView(false);
@@ -1658,7 +1650,7 @@ class GLPIKanbanRights {
 
          const uniqueID = Math.floor(Math.random() * 999999);
          const formID = "form_add_" + itemtype + "_" + uniqueID;
-         let add_form = "<form id='" + formID + "' class='kanban-add-form kanban-bulk-add-form kanban-form no-track'>";
+         let add_form = "<form id='" + formID + "' class='kanban-add-form kanban-bulk-add-form kanban-form no-track dropdown-menu'>";
 
          add_form += `
             <div class='kanban-item-header'>
@@ -1729,7 +1721,7 @@ class GLPIKanbanRights {
          const formID = "form_add_column_" + uniqueID;
          self.add_column_form = '#' + formID;
          let add_form = `
-            <div id="${formID}" class="kanban-form kanban-add-column-form" style="display: none">
+            <div id="${formID}" class="kanban-form kanban-add-column-form dropdown-menu" style="display: none">
                 <form class='no-track'>
                     <div class='kanban-item-header'>
                         <span class='kanban-item-title'>${__('Add a column from existing status')}</span>
@@ -1739,7 +1731,7 @@ class GLPIKanbanRights {
          if (self.rights.canCreateColumn()) {
             add_form += `
                <hr>${__('Or add a new status')}
-               <input type='button' class='submit kanban-create-column' value="${__('Create status')}"/>
+               <button role='button' class='btn btn-primary kanban-create-column d-block'>${__('Create status')}</button>
             `;
          }
          add_form += "</form></div>";
@@ -1755,13 +1747,13 @@ class GLPIKanbanRights {
          const formID = "form_create_column_" + uniqueID;
          self.create_column_form = '#' + formID;
          let create_form = `
-            <div id='${formID}' class='kanban-form kanban-create-column-form' style='display: none'>
+            <div id='${formID}' class='kanban-form kanban-create-column-form dropdown-menu' style='display: none'>
                 <form class='no-track'>
                     <div class='kanban-item-header'>
                         <span class='kanban-item-title'>${__('Create status')}</span>
                     </div>
                     <div class='kanban-item-content'>
-                    <input name='name'/>
+                    <input name='name' class='form-control'/>
          `;
          $.each(self.column_field.extra_fields, function(name, field) {
             if (name === undefined) {
@@ -1778,7 +1770,7 @@ class GLPIKanbanRights {
             }
          });
          create_form += "</div>";
-         create_form += "<input type='submit' class='submit' value='" + __('Create status') + "'/>";
+         create_form += "<button type='submit' class='btn btn-primary'>" + __('Create status') + "</button>";
          create_form += "</form></div>";
          $(self.element).prepend(create_form);
       };
@@ -1875,10 +1867,10 @@ class GLPIKanbanRights {
             }
          });
          const _protected = column['_protected'] ? 'kanban-protected' : '';
-         const column_classes = "kanban-column " + collapse + " " + _protected;
+         const column_classes = "kanban-column card " + collapse + " " + _protected;
 
-         const column_top_color = (typeof column['header_color'] !== 'undefined') ? column['header_color'] : 'transparent';
-         const column_html = "<div id='" + column['id'] + "' style='border-top: 5px solid "+column_top_color+"' class='"+column_classes+"'></div>";
+         const column_top_color = (typeof column['header_color'] !== 'undefined') ? column['header_color'] : '';
+         const column_html = "<div id='" + column['id'] + "' style='border-top-color: "+column_top_color+"' class='"+column_classes+"'></div>";
          let column_el = null;
          if (position < 0) {
             column_el = $(column_html).appendTo(columns_container);
@@ -1902,14 +1894,14 @@ class GLPIKanbanRights {
          const column_left = $("<span class=''></span>").appendTo(column_content);
          const column_right = $("<span class=''></span>").appendTo(column_content);
          if (self.rights.canModifyView()) {
-            $(column_left).append("<i class='fas fa-caret-right fa-lg kanban-collapse-column pointer' title='" + __('Toggle collapse') + "'/>");
+            $(column_left).append("<i class='fas fa-caret-right fa-lg kanban-collapse-column btn btn-sm btn-ghost-secondary' title='" + __('Toggle collapse') + "'/>");
          }
-         $(column_left).append("<span class='kanban-column-title "+header_text_class+"' style='background-color: "+column['header_color']+";'>" + column['name'] + "</span></span>");
-         $(column_right).append("<span class='kanban_nb'>"+count+"</span>");
+         $(column_left).append("<span class='kanban-column-title badge "+header_text_class+"' style='background-color: "+column['header_color']+"; color: "+column['header_fg_color']+";'>" + column['name'] + "</span></span>");
+         $(column_right).append("<span class='kanban_nb badge bg-secondary'>"+count+"</span>");
          $(column_right).append(getColumnToolbarElement(column));
          $(column_el).prepend(column_header);
 
-         $("<ul class='kanban-body'></ul>").appendTo(column_el);
+         $("<ul class='kanban-body card-body'></ul>").appendTo(column_el);
 
          let added = [];
          $.each(self.user_state.state, function(i, c) {
@@ -1956,13 +1948,13 @@ class GLPIKanbanRights {
          const col_body = $(column_el).find('.kanban-body').first();
          const readonly = card['_readonly'] !== undefined && (card['_readonly'] === true || card['_readonly'] === 1);
          let card_el = `
-            <li id="${card['id']}" class="kanban-item ${readonly ? 'readonly' : ''} ${card['is_deleted'] ? 'deleted' : ''}">
+            <li id="${card['id']}" class="kanban-item card ${readonly ? 'readonly' : ''} ${card['is_deleted'] ? 'deleted' : ''}">
                 <div class="kanban-item-header">
                     <span class="kanban-item-title" title="${card['title_tooltip']}">
                     <i class="${self.supported_itemtypes[itemtype]['icon']}"></i>
                         ${card['title']}
                     </span>
-                    <i class="kanban-item-overflow-actions fas fa-ellipsis-h pointer"></i>
+                    <i class="kanban-item-overflow-actions fas fa-ellipsis-h btn btn-sm btn-ghost-secondary"></i>
                 </div>
                 <div class="kanban-item-content">${(card['content'] || '')}</div>
                 <div class="kanban-item-team">

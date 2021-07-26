@@ -1916,8 +1916,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          $allstates = $projectstate->find($restrict, ['is_finished ASC', 'id']);
          foreach ($allstates as $state) {
             $columns['projectstates_id'][$state['id']] = [
-               'name'         => $state['name'],
-               'header_color' => $state['color']
+               'name'            => $state['name'],
+               'header_color'    => $state['color'],
+               'header_fg_color' => Toolbox::getFgColor($state['color'], 50),
             ];
          }
          return $columns['projectstates_id'];
@@ -2157,7 +2158,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          $card = [
             'id'              => "{$itemtype}-{$item['id']}",
             'title'           => '<span class="pointer">'.$item['name'].'</span>',
-            'title_tooltip'   => Html::resume_text(RichText::getTextFromHtml($item['content'], false, true, true), 100),
+            'title_tooltip'   => Html::resume_text(RichText::getTextFromHtml($item['content'] ?? "", false, true, true), 100),
             'is_deleted'      => $item['is_deleted'] ?? false,
          ];
 
@@ -2336,43 +2337,28 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
             ]
          ]
       ];
-      $supported_itemtypes = json_encode($supported_itemtypes, JSON_FORCE_OBJECT);
-      $column_field = json_encode($column_field, JSON_FORCE_OBJECT);
 
-      echo "<div id='kanban' class='kanban'></div>";
-      $darkmode = ($_SESSION['glpipalette'] === 'darker') ? 'true' : 'false';
-      $canadd_item = json_encode($ID > 0 ? $project->canEdit($ID) && $project->can($ID, UPDATE) : self::canCreate() || ProjectTask::canCreate());
-      $canmodify_view = json_encode(($ID == 0 || $project->canModifyGlobalState()));
-      $rights = json_encode([
+      $canmodify_view = ($ID == 0 || $project->canModifyGlobalState());
+      $rights = [
          'create_item'                    => self::canCreate() || ProjectTask::canCreate(),
          'delete_item'                    => self::canDelete() || ProjectTask::canDelete(),
          'create_column'                  => (bool)ProjectState::canCreate(),
          'modify_view'                    => $ID == 0 || $project->canModifyGlobalState(),
          'order_card'                     => (bool)$project->canOrderKanbanCard($ID),
          'create_card_limited_columns'    => $canmodify_view ? [] : [0]
-      ]);
+      ];
 
-      $js = <<<JAVASCRIPT
-         $(function(){
-            // Create Kanban
-            var kanban = new GLPIKanban({
-               element: "#kanban",
-               rights: $rights,
-               supported_itemtypes: $supported_itemtypes,
-               dark_theme: {$darkmode},
-               max_team_images: 3,
-               column_field: $column_field,
-               background_refresh_interval: {$_SESSION['glpirefresh_views']},
-               item: {
-                  itemtype: 'Project',
-                  items_id: $ID
-               }
-            });
-            // Create kanban elements and add data
-            kanban.init();
-         });
-JAVASCRIPT;
-      echo Html::scriptBlock($js);
+      TemplateRenderer::getInstance()->display('components/kanban/kanban.html.twig', [
+         'kanban_id'                   => 'kanban',
+         'rights'                      => $rights,
+         'supported_itemtypes'         => $supported_itemtypes,
+         'max_team_images'             => 3,
+         'column_field'                => $column_field,
+         'item'                        => [
+            'itemtype'  => 'Project',
+            'items_id'  => $ID
+         ]
+      ]);
    }
 
    public function canOrderKanbanCard($ID) {

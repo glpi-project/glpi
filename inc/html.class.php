@@ -5223,15 +5223,26 @@ JAVASCRIPT;
       $p = array_replace($p, $params);
 
       $tooltip = trim($p['tooltip'] . ($p['append_percent'] ? " {$value}%" : ''));
-      // Hide element except when using a screen reader. This uses FontAwesome's sr-only class.
-      $html = "<progress id='progress{$p['rand']}' class='sr-only' max='$max' value='$value'
-            onchange='updateProgress(\"{$p['rand']}\")' title='{$tooltip}'></progress>";
-      // Custom progress control. Should be hidden for screen readers.
-      $html .= "<div aria-hidden='true' data-progressid='{$p['rand']}'
-         data-append-percent='{$p['append_percent']}' class='progress' title='{$tooltip}'>";
       $calcWidth = ($value / $max) * 100;
-      $html .= "<span aria-hidden='true' class='progress-fg' style='width: $calcWidth%'></span>";
-      $html .= "</div>";
+
+      $html = <<<HTML
+         <div class="progress" style="height: 12px"
+              id="{progress{$p['rand']}}"
+              data-progressid="{$p['rand']}"
+              data-append-percent="{$p['append_percent']}"
+              onchange="updateProgress('{$p['rand']}')"
+              max="{$max}"
+              value="{$value}"
+              title="{$tooltip}" data-bs-toggle="tooltip">
+            <div class="progress-bar progress-bar-striped bg-info progress-fg"
+                 role="progressbar"
+                 style="width: {$calcWidth}%;"
+                 aria-valuenow="{$value}"
+                 aria-valuemin="0"
+                 aria-valuemax="{$max}">
+            </div>
+         </div>
+      HTML;
       return $html;
    }
 

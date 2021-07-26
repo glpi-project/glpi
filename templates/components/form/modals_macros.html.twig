@@ -1,12 +1,27 @@
 {% macro confirm(modal_title = '', modal_body = '', options = {}) %}
+   {% set options = {
+      'buttons': {
+         'cancel': {
+            'label': options['cancel_label']|default(_x('button', 'Cancel')),
+            'event': options['cancel_event']|default('')
+         },
+         'confirm': {
+            'label': options['confirm_label']|default(_x('button', 'Ok')),
+            'event': options['confirm_event']|default(''),
+            'class': 'ms-auto'
+         }
+      },
+   }|merge(options) %}
+
+   {{ _self.modal(modal_title, modal_body, options) }}
+{% endmacro %}
+
+{% macro modal(modal_title, modal_body, options = {}) %}
    {% set rand = random() %}
    {% set options = {
       'id': 'modal' ~ rand,
       'rand': rand,
-      'confirm_label': _x('button', 'Ok'),
-      'cancel_label': _x('button', 'Cancel'),
-      'confirm_event': '',
-      'cancel_event': '',
+      'buttons': [],
    }|merge(options) %}
 
    <div class="modal fade" id="{{ options.id }}" tabindex="-1" role="dialog" aria-hidden="true">
@@ -16,30 +31,27 @@
                <h5 class="modal-title">{{ modal_title }}</h5>
                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _x('button', 'Close') }}"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body overflow-auto">
                {{ modal_body|raw }}
             </div>
             <div class="modal-footer">
-               <button type="button" class="btn btn-outline-secondary" id="cancel_{{ rand }}"
-                       data-bs-dismiss="modal">
-                  {{ options.cancel_label|raw }}
-               </button>
-               <button type="button" class="btn btn-primary ms-auto" id="confirm_{{ rand }}"
-                       data-bs-dismiss="modal">
-                  {{ options.confirm_label|raw }}
-               </button>
+               {% for button in options['buttons'] %}
+                  <button type="button" class="btn {{ options['primary'] ? 'btn-primary' : 'btn-outline-secondary' }} {{ button['class']|default('') }}"
+                          id="{{ button['id']|default(options.id ~ '_btn_' ~ (loop.index0)) }}" data-bs-dismiss="modal">
+                     {{ button['label']|default('')|raw }}
+                  </button>
+               {% endfor %}
             </div>
          </div>
       </div>
    </div>
    <script>
-   $(function () {
-      $(document).on('click', '#confirm_{{ rand }}', function (event) {
-         {{ options.confirm_event|raw }}
+      $(function () {
+         {% for button in options['buttons'] %}
+         $('#{{ options.id }}').on('click', '#{{ button['id']|default(options.id ~ '_btn_' ~ (loop.index0)) }}', function (event) {
+            {{ (button['event']|default('return true;'))|raw }}
+         });
+         {% endfor %}
       });
-      $(document).on('click', '#cancel_{{ rand }}', function (event) {
-         {{ options.cancel_event|raw }}
-      });
-   });
    </script>
 {% endmacro %}
