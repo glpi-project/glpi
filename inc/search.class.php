@@ -5388,6 +5388,24 @@ JAVASCRIPT;
          return $JOIN;
       }
 
+      if ($from_referencetype === 'Computer' && $to_type === 'OperatingSystem') {
+         // From OperatingSystem to glpi_items_operatingsystems
+         $operatingsystemitems_alias = "glpi_items_operatingsystems{$alias_suffix}";
+         if (!in_array($operatingsystemitems_alias, $already_link_tables2)) {
+            array_push($already_link_tables2, $operatingsystemitems_alias);
+            $JOIN .= "$LINK `glpi_items_operatingsystems` AS `$operatingsystemitems_alias`
+                         ON (`$from_table`.`id` = `$operatingsystemitems_alias`.`items_id` AND `$operatingsystemitems_alias`.`itemtype` = '$from_referencetype') ";
+         }
+         if (!in_array($to_table, $already_link_tables2)) {
+            array_push($already_link_tables2, $to_table);
+            $JOIN .= "$LINK `$to_table`
+                         ON (`$to_table`.`id` = `$operatingsystemitems_alias`.`operatingsystems_id`
+                             AND `$operatingsystemitems_alias`.`itemtype` = '$from_referencetype'
+                             $to_entity_restrict) ";
+         }
+         return $JOIN;
+      }
+
       // Generic JOIN
       $from_obj      = getItemForItemtype($from_referencetype);
       $to_obj        = getItemForItemtype($to_type);
