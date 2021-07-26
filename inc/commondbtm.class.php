@@ -4369,7 +4369,7 @@ class CommonDBTM extends CommonGLPI {
                                        'inventory',
                                        //TRANS: %1$s is the user login, %2$s the message
                                        sprintf(__('%1$s trying to add an item that already exists: %2$s'),
-                                               $_SESSION["glpiname"], $message_text));
+                                               Session::getLoginUserID(false), $message_text));
                         }
                      }
                      if ($fields['action_refuse']) {
