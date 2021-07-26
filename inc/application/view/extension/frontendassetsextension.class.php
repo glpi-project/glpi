@@ -38,7 +38,6 @@ use Html;
 use Plugin;
 use Session;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**

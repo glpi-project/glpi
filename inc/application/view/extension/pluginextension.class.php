@@ -35,7 +35,6 @@ namespace Glpi\Application\View\Extension;
 use CommonDBTM;
 use Plugin;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**

@@ -34,7 +34,6 @@ namespace Glpi\Application\View\Extension;
 
 use Session;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**

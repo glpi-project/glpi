@@ -36,7 +36,6 @@ use Document;
 use DocumentType;
 use Toolbox;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**

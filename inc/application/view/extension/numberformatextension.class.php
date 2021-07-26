@@ -34,7 +34,6 @@ namespace Glpi\Application\View\Extension;
 
 use Toolbox;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFilter;
 
 /**

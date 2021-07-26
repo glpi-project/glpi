@@ -33,7 +33,6 @@
 namespace Glpi\Application\View\Extension;
 
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**

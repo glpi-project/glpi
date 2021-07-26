@@ -40,7 +40,6 @@ use Computer;
 use Computer_Item;
 use MassiveAction;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 

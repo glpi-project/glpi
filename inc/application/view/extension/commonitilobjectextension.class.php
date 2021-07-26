@@ -36,7 +36,6 @@ use CommonITILObject;
 use Item_Ticket;
 use Planning;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 

@@ -34,7 +34,6 @@ namespace Glpi\Application\View\Extension;
 
 use Ajax;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**

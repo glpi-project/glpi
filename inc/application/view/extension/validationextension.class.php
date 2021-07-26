@@ -38,7 +38,6 @@ use CommonITILObject;
 use Ticket;
 use TicketValidation;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**
