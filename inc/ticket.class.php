@@ -1897,11 +1897,11 @@ class Ticket extends CommonITILObject {
          $tickettask = new TicketTask();
          $tickettask->getFromDB($this->input['_promoted_task_id']);
          $tickettask->update([
-            'id'                 => $this->input['_promoted_task_id'],
-            'sourceof_items_id'  => $this->getID()
-         ]);
+                                'id'                => $this->input['_promoted_task_id'],
+                                'sourceof_items_id' => $this->getID()
+                             ]);
          Event::log($this->getID(), "ticket", 4, "tracking",
-              sprintf(__('%s promotes a followup from ticket %s'), $_SESSION["glpiname"], $tickettask->fields['items_id']));
+                    sprintf(__('%s promotes a task from ticket %s'), $_SESSION["glpiname"], $tickettask->fields['items_id']));
       }
 
       // Add linked contract
@@ -4575,6 +4575,7 @@ JAVASCRIPT;
       if (!isset($options['_promoted_fup_id'])) {
          $options['_promoted_fup_id'] = 0;
       }
+
       if (!isset($options['_promoted_task_id'])) {
          $options['_promoted_task_id'] = 0;
       }

@@ -7167,10 +7167,10 @@ abstract class CommonITILObject extends CommonDBTM {
                if (isset($item_i['sourceof_items_id']) && $item_i['sourceof_items_id'] > 0) {
                   echo Html::link('', Ticket::getFormURLWithID($item_i['sourceof_items_id']), [
                      'class' => 'fa fa-code-branch control_item disabled',
-                     'title' => __('Followup was already promoted')
+                     'title' => __('Task was already promoted')
                   ]);
                } else {
-                  echo Html::link('', Ticket::getFormURL()."?_promoted_task_id=".$item_i['id'], [
+                  echo Html::link('', Ticket::getFormURL() . "?_promoted_task_id=" . $item_i['id'], [
                      'class' => 'fa fa-code-branch control_item',
                      'title' => __('Promote to Ticket')
                   ]);
