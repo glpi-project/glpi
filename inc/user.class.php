@@ -5211,7 +5211,7 @@ JAVASCRIPT;
          }
       }
 
-      return $CFG_GLPI["root_doc"]."/pics/picture_min.png";
+      return "";
    }
 
 
