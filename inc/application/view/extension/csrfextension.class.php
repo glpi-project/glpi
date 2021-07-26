@@ -34,15 +34,14 @@ namespace Glpi\Application\View\Extension;
 
 use Session;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**
  * @since 10.0.0
  */
-class CsrfExtension extends AbstractExtension implements ExtensionInterface {
+class CsrfExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('csrf_token', [Session::class, 'getNewCSRFToken']),
       ];

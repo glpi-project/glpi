@@ -35,15 +35,14 @@ namespace Glpi\Application\View\Extension;
 use Dropdown;
 use TicketValidation;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**
  * @since 10.0.0
  */
-class DropdownExtension extends AbstractExtension implements ExtensionInterface {
+class DropdownExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('getDropdownName', [Dropdown::class, 'getDropdownName'], ['is_safe' => ['html']]),
          new TwigFunction('Dropdown__showGlobalSwitch', [Dropdown::class, 'showGlobalSwitch']),
@@ -60,12 +59,12 @@ class DropdownExtension extends AbstractExtension implements ExtensionInterface 
       ];
    }
 
-   public function showHours($name, $options = []) {
+   public function showHours($name, $options = []): void {
       // Suppress returned ID value
       Dropdown::showHours($name, $options);
    }
 
-   public function dropdownForOneSoftware($options = []) {
+   public function dropdownForOneSoftware($options = []): void {
       // Suppress returned ID value
       \SoftwareVersion::dropdownForOneSoftware($options);
    }

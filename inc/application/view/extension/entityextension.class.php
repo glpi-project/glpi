@@ -34,15 +34,14 @@ namespace Glpi\Application\View\Extension;
 
 use Entity;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**
  * @since 10.0.0
  */
-class EntityExtension extends AbstractExtension implements ExtensionInterface {
+class EntityExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('Entity_getUsedConfig', [Entity::class, 'getUsedConfig']),
       ];

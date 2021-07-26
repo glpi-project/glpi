@@ -34,15 +34,14 @@ namespace Glpi\Application\View\Extension;
 
 use Ajax;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**
  * @since 10.0.0
  */
-class AjaxExtension extends AbstractExtension implements ExtensionInterface {
+class AjaxExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('updateItemOnSelectEvent', [Ajax::class, 'updateItemOnSelectEvent']),
       ];

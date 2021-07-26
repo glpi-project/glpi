@@ -34,15 +34,14 @@ namespace Glpi\Application\View\Extension;
 
 use Alert;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**
  * @since 10.0.0
  */
-class AlertExtension extends AbstractExtension implements ExtensionInterface {
+class AlertExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('displayLastAlert', [Alert::class, 'displayLastAlert']),
       ];

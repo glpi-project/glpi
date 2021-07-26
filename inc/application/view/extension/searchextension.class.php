@@ -34,14 +34,13 @@ namespace Glpi\Application\View\Extension;
 
 use Search;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**
  * @since 10.0.0
  */
-class SearchExtension extends AbstractExtension implements ExtensionInterface {
-   public function getFunctions() {
+class SearchExtension extends AbstractExtension {
+   public function getFunctions(): array {
       return [
          new TwigFunction('showItem', [$this, 'showItem']),
          new TwigFunction('displayConfigItem', [$this, 'displayConfigItem']),
@@ -75,7 +74,7 @@ class SearchExtension extends AbstractExtension implements ExtensionInterface {
    }
 
 
-   public function computeTitle(array $data = []):string {
+   public function computeTitle(array $data = []): string {
       return Search::computeTitle($data);
    }
 }

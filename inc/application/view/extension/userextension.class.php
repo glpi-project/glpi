@@ -35,16 +35,15 @@ namespace Glpi\Application\View\Extension;
 use Session;
 use Toolbox;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 use User;
 
 /**
  * @since 10.0.0
  */
-class UserExtension extends AbstractExtension implements ExtensionInterface {
+class UserExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('User__getPicture', [$this, 'getPicture']),
          new TwigFunction('User__getBgColor', [$this, 'getBgColor']),

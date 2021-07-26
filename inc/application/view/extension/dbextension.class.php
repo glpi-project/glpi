@@ -50,14 +50,14 @@ class DBExtension extends AbstractExtension {
       return $dbu;
    }
 
-   public function getFilters() {
+   public function getFilters(): array {
       $dbu = $this->getDBUtils();
       return [
          new TwigFilter('importArrayFromDB', [$dbu, 'importArrayFromDB'])
       ];
    }
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       $dbu = $this->getDBUtils();
       return [
          new TwigFunction('getPlural', [$dbu, 'getPlural']),

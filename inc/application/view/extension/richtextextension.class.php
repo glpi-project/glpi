@@ -34,14 +34,13 @@ namespace Glpi\Application\View\Extension;
 
 use Glpi\Toolbox\RichText;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**
  * @since 10.0.0
  */
-class RichTextExtension extends AbstractExtension implements ExtensionInterface {
-   public function getFunctions() {
+class RichTextExtension extends AbstractExtension {
+   public function getFunctions(): array {
       return [
          new TwigFunction('getSafeHtml', [RichText::class, 'getSafeHtml'], ['is_safe' => ['html']]),
          new TwigFunction('getTextFromHtml', [RichText::class, 'getTextFromHtml']),

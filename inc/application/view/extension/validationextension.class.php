@@ -38,15 +38,14 @@ use CommonITILObject;
 use Ticket;
 use TicketValidation;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**
  * @since 10.0.0
  */
-class ValidationExtension extends AbstractExtension implements ExtensionInterface {
+class ValidationExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('TicketValidation__dropdownStatus', [TicketValidation::class, 'dropdownStatus'], ['is_safe' => ['html']]),
          new TwigFunction('TicketValidation__dropdownValidator', [TicketValidation::class, 'dropdownValidator'], ['is_safe' => ['html']]),
@@ -55,11 +54,11 @@ class ValidationExtension extends AbstractExtension implements ExtensionInterfac
    }
 
 
-   public function alertValidation(CommonITILObject $item, string $type = "status") {
+   public function alertValidation(CommonITILObject $item, string $type = "status"): void {
       if ($item instanceof Ticket) {
-         return TicketValidation::alertValidation($item, $type);
+         TicketValidation::alertValidation($item, $type);
       } else if ($item instanceof Change) {
-         return ChangeValidation::alertValidation($item, $type);
+         ChangeValidation::alertValidation($item, $type);
       }
    }
 }

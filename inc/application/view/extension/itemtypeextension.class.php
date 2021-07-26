@@ -40,16 +40,15 @@ use Computer;
 use Computer_Item;
 use MassiveAction;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 /**
  * @since 10.0.0
  */
-class ItemtypeExtension extends AbstractExtension implements ExtensionInterface {
+class ItemtypeExtension extends AbstractExtension {
 
-   public function getFilters() {
+   public function getFilters(): array {
       return [
          new TwigFilter('itemtype_name', [$this, 'itemtypeName']),
          new TwigFilter('get_foreignkey_field', [$this, 'getForeignKeyField']),
@@ -72,7 +71,7 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
       ];
    }
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('itemInstanceOf', [$this, 'itemInstanceOf']),
          new TwigFunction('maybeRecursive', [$this, 'maybeRecursive']),
@@ -319,9 +318,9 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
     *
     * @param CommonDBTM $item
     *
-    * @return string
+    * @return ?array
     */
-   public function getDcBreadcrumb(CommonDBTM $item):?array {
+   public function getDcBreadcrumb(CommonDBTM $item): ?array {
       if (method_exists($item, "getDcBreadcrumb")) {
          return $item->getDcBreadcrumb();
       }
@@ -352,7 +351,7 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
          $input['entity_restrict'] = $item->getEntityID();
       }
 
-      return $ma->getInput();
+      return $input;
    }
 
    public function showForm(CommonDBTM $item, $options = []): void {
@@ -369,7 +368,7 @@ class ItemtypeExtension extends AbstractExtension implements ExtensionInterface 
       return $item::getTable();
    }
 
-   public function getSpecificTypeField(CommonDropdown $item, $ID, $field = []) {
+   public function getSpecificTypeField(CommonDropdown $item, $ID, $field = []): string {
       return $item->getSpecificTypeField((int) $ID, $field);
    }
 }

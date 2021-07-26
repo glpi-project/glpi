@@ -36,15 +36,14 @@ use Document;
 use DocumentType;
 use Toolbox;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**
  * @since 10.0.0
  */
-class DocumentExtension extends AbstractExtension implements ExtensionInterface {
+class DocumentExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('getIconForFilename', [$this, 'getIconForFilename']),
          new TwigFunction('getSizeForFilePath', [$this, 'getSizeForFilePath']),

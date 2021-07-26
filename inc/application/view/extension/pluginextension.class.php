@@ -35,14 +35,13 @@ namespace Glpi\Application\View\Extension;
 use CommonDBTM;
 use Plugin;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**
  * @since 10.0.0
  */
-class PluginExtension extends AbstractExtension implements ExtensionInterface {
-   public function getFunctions() {
+class PluginExtension extends AbstractExtension {
+   public function getFunctions(): array {
       return [
          new TwigFunction('displayLogin', [$this, 'displayLogin'], ['is_safe' => ['html']]),
          new TwigFunction('AutoInventoryInformation', [$this, 'AutoInventoryInformation'], ['is_safe' => ['html']]),
@@ -58,24 +57,24 @@ class PluginExtension extends AbstractExtension implements ExtensionInterface {
     *
     * @return void
     */
-   public function displayLogin() {
+   public function displayLogin(): void {
       Plugin::doHook('display_login');
    }
 
 
-   public function AutoInventoryInformation() {
+   public function AutoInventoryInformation(): void {
       Plugin::doHook('autoinventory_information');
    }
 
-   public function preItemForm(CommonDBTM $item, array $params = []) {
+   public function preItemForm(CommonDBTM $item, array $params = []): void {
       Plugin::doHook('pre_item_form', ['item' => $item, 'options' => $params]);
    }
 
-   public function postItemForm(CommonDBTM $item, array $params = []) {
+   public function postItemForm(CommonDBTM $item, array $params = []): void {
       Plugin::doHook('post_item_form', ['item' => $item, 'options' => $params]);
    }
 
-   public function hook_infocom(CommonDBTM $item) {
+   public function hook_infocom(CommonDBTM $item): void {
       Plugin::doHookFunction("infocom", $item);
    }
 

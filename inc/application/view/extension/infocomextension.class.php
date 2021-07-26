@@ -34,16 +34,15 @@ namespace Glpi\Application\View\Extension;
 
 use Infocom;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFunction;
 
 /**
  * @since 10.0.0
  */
-class InfocomExtension extends AbstractExtension implements ExtensionInterface {
+class InfocomExtension extends AbstractExtension {
 
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('Infocom__Amort', [Infocom::class, 'Amort']),
          new TwigFunction('Infocom__dropdownAmortType', [Infocom::class, 'dropdownAmortType'], ['is_safe' => ['html']]),

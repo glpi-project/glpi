@@ -38,7 +38,6 @@ use Html;
 use Profile_User;
 use Session;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\Extension\GlobalsInterface;
 use Twig\TwigFunction;
 use User;
@@ -46,9 +45,9 @@ use User;
 /**
  * @since 10.0.0
  */
-class SessionExtension extends AbstractExtension implements ExtensionInterface, GlobalsInterface {
+class SessionExtension extends AbstractExtension implements GlobalsInterface {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('have_right', [Session::class, 'haveRight']),
          new TwigFunction('have_rights_and', [Session::class, 'haveRightsAnd']),
@@ -154,6 +153,7 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
     * Get user preference.
     *
     * @param string $name
+    * @param bool   $decode
     *
     * @return null|mixed
     *
@@ -193,7 +193,7 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
     *
     * @TODO Add a unit test.
     */
-   public function haveAccessToEntity(int $entities_id):bool {
+   public function haveAccessToEntity(int $entities_id): bool {
       return Session::haveAccessToEntity($entities_id);
    }
 
@@ -216,7 +216,7 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
     *
     * @TODO Add a unit test.
     */
-   public function haveRecursiveAccessToEntity(int $entities_id):bool {
+   public function haveRecursiveAccessToEntity(int $entities_id): bool {
       return Session::haveRecursiveAccessToEntity($entities_id);
    }
 
@@ -242,7 +242,7 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
     *
     * @TODO Add a unit test.
     */
-   public function haveAccessToOneOfEntities(array $entities = [], int $is_recursive = 0):bool {
+   public function haveAccessToOneOfEntities(array $entities = [], int $is_recursive = 0): bool {
       return Session::haveAccessToOneOfEntities($entities, $is_recursive);
    }
 
@@ -250,14 +250,14 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
    /**
     * Check if a given user have access to current entity list
     *
-    * @param array $entities
+    * @param int $users_id
     * @param int $is_recursive
     *
     * @return bool
     *
     * @TODO Add a unit test.
     */
-   public function userhaveAccessToOneOfEntities(int $users_id = 0, int $is_recursive = 0):bool {
+   public function userhaveAccessToOneOfEntities(int $users_id = 0, int $is_recursive = 0): bool {
       return Session::haveAccessToOneOfEntities(Profile_User::getUserEntities($users_id, $is_recursive));
    }
 
@@ -269,7 +269,7 @@ class SessionExtension extends AbstractExtension implements ExtensionInterface, 
     *
     * @TODO Add a unit test.
     */
-   public function getMessagesAfterRedirect():array {
+   public function getMessagesAfterRedirect(): array {
       $messages = $_SESSION['MESSAGE_AFTER_REDIRECT'] ?? [];
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
 

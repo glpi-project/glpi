@@ -41,7 +41,7 @@ use Twig\TwigFunction;
  */
 class EventExtension extends AbstractExtension {
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('Event_displayItemLogID', [Event::class, 'displayItemLogID'], ['is_safe' => ['html']]),
       ];

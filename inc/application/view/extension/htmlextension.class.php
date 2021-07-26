@@ -36,16 +36,15 @@ use Glpi\Toolbox\Sanitizer;
 use Html;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 /**
  * @since 10.0.0
  */
-class HtmlExtension extends AbstractExtension implements ExtensionInterface {
+class HtmlExtension extends AbstractExtension {
 
-   public function getFilters() {
+   public function getFilters(): array {
       return [
          new TwigFilter('conv_datetime', [$this, 'convDateTime'], ['is_safe' => ['html']]),
          new TwigFilter(
@@ -56,7 +55,7 @@ class HtmlExtension extends AbstractExtension implements ExtensionInterface {
       ];
    }
 
-   public function getFunctions() {
+   public function getFunctions(): array {
       return [
          new TwigFunction('showMassiveActions', [$this, 'showMassiveActions']),
          new TwigFunction('isMassiveActionchecked', [$this, 'isMassiveActionchecked']),
