@@ -82,10 +82,9 @@ function update955to956() {
    }
    /* /Add `date` to glpi_documents_items */
 
-
    /* Add `sourceof_items_id` to some glpi_tickettasks */
    if (!$DB->fieldExists('glpi_tickettasks', 'sourceof_items_id')) {
-      $migration->addField('glpi_tickettasks', 'sourceof_items_id', 'int',['value' => 0]);
+      $migration->addField('glpi_tickettasks', 'sourceof_items_id', 'int', ['value' => 0]);
       $migration->addKey('glpi_tickettasks', 'sourceof_items_id');
    }
    // ************ Keep it at the end **************
