@@ -80,6 +80,11 @@ class UserExtension extends AbstractExtension implements ExtensionInterface {
    public function getInitials(int $users_id = 0): string {
       $user = new User;
       if ($user->getFromDB($users_id)) {
+         if (($anon = $this->getAnonymizedName($users_id)) !== null) {
+            // if anonymized name active, return two first letters of the anon name
+            return strtoupper(substr($anon, 0, 2));
+         }
+
          return strtoupper(
             substr($user->fields['firstname'], 0, 1).
             substr($user->fields['realname'], 0, 1)
