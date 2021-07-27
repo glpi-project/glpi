@@ -123,7 +123,7 @@ class Cable extends CommonDBTM {
          'id'                 => '7',
          'table'              => $this->getTable(),
          'field'              => 'rear_itemtype',
-         'name'               => _n('Associated item type', 'Associated item types', Session::getPluralNumber())." ".__('Rear'),
+         'name'               => sprintf(__('%s (%s)'), _n('Associated item type', 'Associated item types', 1), __('Rear')),
          'datatype'           => 'itemtypename',
          'itemtype_list'      => 'socket_link_types',
          'forcegroupby'       => true,
