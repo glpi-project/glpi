@@ -75,6 +75,11 @@ class AgentTask extends CommonDBChild {
       $this->addDefaultFormTab($ong);
       $this->addStandardTab(AgentTask_Credential::class, $ong, $options);
 
+      $ttype_class = $this->fields['task_type'];
+      if (!$this->isNewItem() && $ttype_class) {
+         $this->addSTandardTab($ttype_class, $ong, $options);
+      }
+
       return $ong;
    }
 
@@ -90,6 +95,7 @@ class AgentTask extends CommonDBChild {
          }
          return self::createTabEntry(self::getTypeName(), $nb);
       }
+
       return '';
    }
 
@@ -98,6 +104,9 @@ class AgentTask extends CommonDBChild {
       switch ($item->getType()) {
          case Agent::class:
             self::showTasks($item);
+            break;
+         case CommonTask::class:
+            $item->showTaskTab();
             break;
       }
       return true;
@@ -210,7 +219,6 @@ class AgentTask extends CommonDBChild {
       echo "<td align='center'>";
       Dropdown::showFromArray('task_type', $CFG_GLPI['agenttasks_types']);
       echo "</td>";
-
       echo "</tr>";
 
       $this->showFormButtons($options);
