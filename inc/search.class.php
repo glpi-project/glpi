@@ -5353,7 +5353,7 @@ JAVASCRIPT;
          return $JOIN;
       }
 
-      if ($from_referencetype === 'Computer' && $to_type === 'OperatingSystem') {
+      if ($to_type === 'OperatingSystem' && in_array($from_referencetype, $CFG_GLPI['operatingsystem_types'])) {
          // From OperatingSystem to glpi_items_operatingsystems
          $operatingsystemitems_alias = "glpi_items_operatingsystems{$alias_suffix}";
          if (!in_array($operatingsystemitems_alias, $already_link_tables2)) {

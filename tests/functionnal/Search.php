@@ -81,6 +81,34 @@ class Search extends DbTestCase {
       return $data;
    }
 
+   public function testMetaComputerOS() {
+      $search_params = ['is_deleted'   => 0,
+                        'start'        => 0,
+                        'criteria'     => [0 => ['field'      => 'view',
+                                                 'searchtype' => 'contains',
+                                                 'value'      => '']],
+                        'metacriteria' => [0 => ['link'       => 'AND',
+                                                 'itemtype'   => 'OperatingSystem',
+                                                 'field'      => 1, //name
+                                                 'searchtype' => 'contains',
+                                                 'value'      => 'windows']]];
+
+      $data = $this->doSearch('Computer', $search_params);
+
+      //try to find LEFT JOIN clause
+      $this->string($data['sql']['search'])
+         ->matches("/"
+         ."(LEFT\s*JOIN\s*`glpi_operatingsystems`\s*"
+         ."ON\s*\(`glpi_operatingsystems`\.`id`\s*=\s*`glpi_items_operatingsystems_OperatingSystem`\.`operatingsystems_id`\s*"
+         ."AND `glpi_items_operatingsystems_OperatingSystem`\.`itemtype`\s*=\s*'Computer'\s*\))"
+         ."/im");
+
+      //try to match WHERE clause
+      $this->string($data['sql']['search'])
+         ->matches("/(\(`glpi_operatingsystems`\.`name`\s*LIKE\s*'%windows%'\s*\)\s*\))/im");
+   }
+
+
    public function testMetaComputerSoftwareLicense() {
       $search_params = ['is_deleted'   => 0,
                         'start'        => 0,
