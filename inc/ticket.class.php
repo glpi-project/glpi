@@ -30,9 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
-use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
 use Glpi\ContentTemplates\Parameters\TicketParameters;
+use Glpi\ContentTemplates\ParametersPreset;
+use Glpi\ContentTemplates\TemplateManager;
 use Glpi\Event;
 use Glpi\Toolbox\RichText;
 
@@ -2666,7 +2666,11 @@ JAVASCRIPT;
 
             echo '<div class="form-row-vertical">';
             $label = __('Description');
-            echo "<label for='content'>$label</label>";
+
+            echo "<label for='content'>";
+            echo "$label&nbsp;&nbsp;";
+            Html::addTemplateDocumentationLink(ParametersPreset::TICKET_SOLUTION);
+            echo "</label>";
             Html::textarea(['name'              => 'content',
                             'value'             => '',
                             'rand'              => $rand,
@@ -2678,10 +2682,12 @@ JAVASCRIPT;
                             'enable_images'     => false,
                             'cols'              => 12,
                             'rows'              => 80]);
-            Html::activateUserTemplateAutocompletion('textarea[name=content]', [
-               (new AttributeParameter('itemtype', __('Itemtype')))->compute(),
-               (new ObjectParameter(new TicketParameters()))->compute(),
-            ]);
+            $parameters = ParametersPreset::getForTicketSolution();
+            Html::activateUserTemplateAutocompletion(
+               'textarea[name=content]',
+               TemplateManager::computeParameters($parameters)
+            );
+
             echo '</div>'; // .form-row
 
             echo '</div>'; // .horizontal-form

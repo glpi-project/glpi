@@ -47,7 +47,7 @@ if (!defined('GLPI_ROOT')) {
  */
 abstract class DropdownParameters extends AbstractParameters
 {
-   protected function defineParameters(): array {
+   public function defineParameters(): array {
       return [
          new AttributeParameter("id", __('ID')),
          new AttributeParameter("name", __('Name')),

@@ -71,7 +71,7 @@ class TicketParameters extends CommonITILObjectParameters
       return [Ticket::class];
    }
 
-   protected function defineParameters(): array {
+   public function defineParameters(): array {
       return array_merge(parent::defineParameters(), [
          new AttributeParameter("type", _n('Type', 'Types', 1)),
          new AttributeParameter("global_validation", _n('Approval', 'Approvals', 1)),

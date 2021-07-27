@@ -61,7 +61,7 @@ class UserParameters extends AbstractParameters
       return [User::class];
    }
 
-   protected function defineParameters(): array {
+   public function defineParameters(): array {
       return [
          new AttributeParameter("id", __('ID')),
          new AttributeParameter("login", __('Login')),

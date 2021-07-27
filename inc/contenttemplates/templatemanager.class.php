@@ -176,4 +176,30 @@ class TemplateManager
       $functions = ['date', 'max', 'min','random', 'range'];
       return new SecurityPolicy($tags, $filters, $methods, $properties, $functions);
    }
+
+   /**
+    * Generate the documentation of the given parameters
+    *
+    * @param array $parameters
+    *
+    * @return string
+    */
+   public static function generateMarkdownDocumentation(array $parameters): string {
+      $documentation = new TemplateDocumentation();
+      $documentation->addSection(__("Variables"), $parameters);
+      return $documentation->build();
+   }
+
+   /**
+    * Compute the given parameters
+    *
+    * @param array $parameters
+    *
+    * @return array
+    */
+   public static function computeParameters(array $parameters) {
+      return array_map(function($parameter) {
+         return $parameter->compute();
+      }, $parameters);
+   }
 }

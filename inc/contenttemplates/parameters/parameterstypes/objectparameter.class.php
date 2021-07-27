@@ -70,4 +70,25 @@ class ObjectParameter extends AbstractParameterType
          'properties' => $this->template_parameters->getAvailableParameters(),
       ];
    }
+
+   public function getTemplateParameters(): AbstractParameters {
+      return $this->template_parameters;
+   }
+
+   public function getDocumentationField(): string {
+      return $this->key;
+   }
+
+   public function getDocumentationLabel(): string {
+      return $this->template_parameters->getObjectLabel();
+   }
+
+   public function getDocumentationUsage(?string $parent = null): string {
+      $parent = !empty($parent) ? "$parent." : "";
+      return "{{ {$parent}{$this->key}.XXX }}";
+   }
+
+   public function getDocumentationReferences(): ?AbstractParameters {
+      return $this->template_parameters;
+   }
 }

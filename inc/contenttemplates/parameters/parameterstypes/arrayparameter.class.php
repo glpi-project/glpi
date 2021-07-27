@@ -87,4 +87,21 @@ class ArrayParameter extends AbstractParameterType
          'content'   => $this->content->compute(),
       ];
    }
+
+   public function getDocumentationField(): string {
+      return $this->key;
+   }
+
+   public function getDocumentationLabel(): string {
+      return $this->label;
+   }
+
+   public function getDocumentationUsage(?string $parent = null): string {
+      $parent = !empty($parent) ? "$parent." : "";
+      return "{% for {$this->items_key} in {$parent}{$this->key} %}";
+   }
+
+   public function getDocumentationReferences(): ?AbstractParameters {
+      return $this->content->getTemplateParameters();
+   }
 }

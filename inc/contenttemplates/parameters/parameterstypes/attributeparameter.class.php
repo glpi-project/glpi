@@ -32,6 +32,8 @@
 
 namespace Glpi\ContentTemplates\Parameters\ParametersTypes;
 
+use Glpi\ContentTemplates\Parameters\AbstractParameters;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -73,5 +75,23 @@ class AttributeParameter extends AbstractParameterType
          'label'  => $this->label,
          'filter' => $this->filter,
       ];
+   }
+
+   public function getDocumentationField(): string {
+      return $this->key;
+   }
+
+   public function getDocumentationLabel(): string {
+      return $this->label;
+   }
+
+   public function getDocumentationUsage(?string $parent = null): string {
+      $parent = !empty($parent)       ? "$parent."          : "";
+      $filter = !empty($this->filter) ? "| {$this->filter}" : "";
+      return "{{ {$parent}{$this->key} $filter }}";
+   }
+
+   public function getDocumentationReferences(): ?AbstractParameters {
+      return null;
    }
 }

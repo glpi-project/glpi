@@ -30,36 +30,35 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\ContentTemplates\Parameters;
+include ('../../inc/includes.php');
 
-use CommonDBTM;
-use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
-use Glpi\Toolbox\Sanitizer;
+use Glpi\ContentTemplates\ParametersPreset;
+use Glpi\ContentTemplates\TemplateManager;
+use Michelf\MarkdownExtra;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
+// Check mandatory parameter
+$preset = $_GET['preset'] ?? null;
+if (is_null($preset)) {
+   Toolbox::throwError(400, "Missing mandatory 'preset' parameter", "string");
 }
 
-/**
- * Abstract parameters class for "CommonTreeDropdown" items.
- *
- * @since 10.0.0
- */
-abstract class TreeDropdownParameters extends DropdownParameters
-{
-   public function defineParameters(): array {
-      $parameter = parent::defineParameters();
-      $parameter[] = new AttributeParameter("completename", __('Complete name'));
-      return $parameter;
-   }
+echo "<div id='page'>";
+echo Html::includeHeader(__("Template variables documentation"));
+echo "<div class='documentation documentation-large'>";
 
-   protected function defineValues(CommonDBTM $item): array {
+// Parse markdown
+$md = new MarkdownExtra();
+$md->header_id_func = function($headerName) {
+   $headerName = str_replace(['(', ')'], '', $headerName);
+   return rawurlencode(strtolower(strtr($headerName, [' ' => '-'])));
+};
+$parameters = ParametersPreset::getByKey($preset);
+echo $md->transform(TemplateManager::generateMarkdownDocumentation($parameters));
 
-      // Output "unsanitized" values
-      $fields = Sanitizer::unsanitize($item->fields);
+echo "</div>";
+echo "</div>";
 
-      $values = parent::defineValues($item);
-      $values['completename'] = $fields['completename'];
-      return $values;
-   }
-}
+echo "<div class='documentation-footer'>";
+echo "<div>";
+Html::nullFooter();
+echo "</div>";

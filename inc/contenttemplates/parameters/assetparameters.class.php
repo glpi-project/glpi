@@ -62,7 +62,7 @@ class AssetParameters extends AbstractParameters
       return $CFG_GLPI["asset_types"];
    }
 
-   protected function defineParameters(): array {
+   public function defineParameters(): array {
       return [
          new AttributeParameter("id", __('ID')),
          new AttributeParameter("name", __('Name')),

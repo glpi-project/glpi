@@ -1,0 +1,110 @@
+<?php
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2021 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+namespace Glpi\ContentTemplates;
+
+use Glpi\ContentTemplates\Parameters\ChangeParameters;
+use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
+use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
+use Glpi\ContentTemplates\Parameters\ProblemParameters;
+use Glpi\ContentTemplates\Parameters\TicketParameters;
+
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
+
+/**
+ * Helper class to get some predefined groups of twig parameters
+ */
+class ParametersPreset
+{
+   /**
+    * Twig parameters that will be avaiable in solution/task/followup form
+    */
+   public const ABSTRACT_TEMPLATE = 0;
+
+   /**
+    * Twig parameters that will be available in the solution massive actions
+    * form for tickets
+    */
+   public const TICKET_SOLUTION = 1;
+
+   /**
+    * Get parameters from their unique key (one of the contant above).
+    * This is useful when sending data through a form, the controller can
+    * receive a key value and fetch the parameters with this method.
+    *
+    * @param string $key
+    *
+    * @return array
+    */
+   public static function getByKey(string $key): array {
+      switch ($key) {
+         case self::ABSTRACT_TEMPLATE:
+            return self::getForAbstractTemplates();
+
+         case self::TICKET_SOLUTION:
+            return self::getForTicketSolution();
+
+         default:
+            return [];
+      }
+   }
+
+   /**
+    * Twig parameters that will be avaiable in solution/task/followup form
+    *
+    * @return array
+    */
+   public static function getForAbstractTemplates(): array {
+      return [
+         new AttributeParameter('itemtype', __('Itemtype')),
+         new ObjectParameter(new TicketParameters()),
+         new ObjectParameter(new ChangeParameters()),
+         new ObjectParameter(new ProblemParameters())
+      ];
+   }
+
+   /**
+    * Twig parameters that will be available in the solution massive actions
+    * form for tickets
+    *
+    * @return array
+    */
+   public static function getForTicketSolution(): array {
+      return [
+         new AttributeParameter('itemtype', __('Itemtype')),
+         new ObjectParameter(new TicketParameters()),
+      ];
+   }
+
+}

@@ -53,7 +53,7 @@ abstract class AbstractParameters implements TemplatesParametersInterface
     *
     * @return \Glpi\ContentTemplates\Parameters\ParametersTypes\AbstractParameterType[]
     */
-   abstract protected function defineParameters(): array;
+   abstract public function defineParameters(): array;
 
    /**
     * To by defined in each subclasses, get the exposed values for a given item
@@ -73,6 +73,13 @@ abstract class AbstractParameters implements TemplatesParametersInterface
     * @return array
     */
    abstract protected function getTargetClasses(): array;
+
+   /**
+    * Get label for the target itemtype of this parameter
+    *
+    * @return string
+    */
+   abstract static function getObjectLabel(): string;
 
    public function getValues(CommonDBTM $item): array {
       $valid_class = false;

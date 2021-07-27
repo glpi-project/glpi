@@ -5385,6 +5385,28 @@ tr.log_history_filter_row {
    dd {
       margin-left: 20px;
    }
+
+   td, th {
+      padding-right: 24px;
+      padding-bottom: 8px;
+      font-size: 12px;
+   }
+
+   th {
+      text-align: left;
+   }
+}
+
+.documentation-large {
+   max-width: 1000px;
+}
+
+.documentation-footer {
+   #footer-login {
+      position: unset;
+      text-align: center;
+      padding-bottom: 30px;
+   }
 }
 
 td.diff {
@@ -6519,7 +6541,7 @@ input[name=as_map] {
 }
 
 @media screen and (min-width: $break_lphones) {
-   .documentation #summary {
+   .documentation #summary, .documentation .summary {
       position: fixed;
       top: 40px;
       left: 15px;
@@ -6538,6 +6560,12 @@ input[name=as_map] {
 
 @media screen and (max-width: 1100px) {
    .documentation {
+      margin-left: 200px;
+   }
+}
+
+@media screen and (max-width: 1400px) {
+   .documentation-large {
       margin-left: 200px;
    }
 }

@@ -32,6 +32,8 @@
 
 namespace Glpi\ContentTemplates\Parameters\ParametersTypes;
 
+use Glpi\ContentTemplates\Parameters\AbstractParameters;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -60,6 +62,40 @@ abstract class AbstractParameterType
    /**
     * To be defined in each subclasses, convert the parameter data into an array
     * that can be shared to the client side code as json and used for autocompletion.
+    *
+    * @return array
     */
    abstract public function compute(): array;
+
+   /**
+    * Field name for this parameter's documentation
+    *
+    * @return string
+    */
+   abstract function getDocumentationField(): string;
+
+   /**
+    * Label to use for this parameter's documentation
+    *
+    * @return string
+    */
+   abstract function getDocumentationLabel(): string;
+
+   /**
+    * Recommended usage (twig code) to use for this parameter's documentation
+    *
+    * @param string|null $parent
+    *
+    * @return string
+    */
+   abstract function getDocumentationUsage(?string $parent = null): string;
+
+   /**
+    * Reference to others parameters for this parameter's documentation
+    *
+    * @return AbstractParameters|null
+    */
+   abstract function getDocumentationReferences(): ?AbstractParameters;
+
+
 }

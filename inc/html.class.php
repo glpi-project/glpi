@@ -4087,6 +4087,58 @@ JAVASCRIPT
    }
 
    /**
+    * Insert an html link to the twig template variables documentation page
+    *
+    * @param int $preset_traget Preset of parameters for which to show documentation
+    * @param string|null $link_id Useful if you need to interract with the link through client side code
+    */
+   public static function addTemplateDocumentationLink(
+      int $preset_target,
+      ?string $link_id = null
+   ) {
+      global $CFG_GLPI;
+
+      $url = "/front/contenttemplates/documentation.php?preset=$preset_target";
+      $params = [
+         'link' => $CFG_GLPI['root_doc'] . $url,
+         'linktarget' => '_blank',
+      ];
+
+      if (!is_null($link_id)) {
+         $params['linkid'] = $link_id;
+      }
+
+      Html::showToolTip("Documentation", $params);
+   }
+
+   /**
+    * Insert an html link to the twig template variables documentation page and
+    * move it before the given textarea.
+    * Useful if you don't have access to the form where you want to put this link at
+    *
+    * @param string $selector JQuery selector to find the target textarea
+    * @param int $preset_traget Preset of parameters for which to show documentation
+    */
+   public static function addTemplateDocumentationLinkJS(
+      string $selector,
+      int $preset_target
+   ) {
+      $link_id = "template_documentation_" . mt_rand();
+      self::addTemplateDocumentationLink($preset_target, $link_id);
+
+      // Move link before the given textarea
+      echo Html::scriptBlock(<<<JAVASCRIPT
+         $(
+            function() {
+               $('{$selector}').parent().prev().append("&nbsp;&nbsp;");
+               $('{$selector}').parent().prev().append($('#{$link_id}'));
+            }
+         );
+JAVASCRIPT
+      );
+   }
+
+   /**
     * Convert rich text content to simple text content
     *
     * @since 9.2
