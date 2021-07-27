@@ -54,7 +54,15 @@ class AgentTask extends CommonDBChild {
       return true;
    }
 
+   static function canUpdate() {
+      return true;
+   }
+
    function canCreateItem() {
+      return true;
+   }
+
+   function canUpdateItem() {
       return true;
    }
 
@@ -86,7 +94,7 @@ class AgentTask extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate
-         && ($item->getType() == 'Agent')
+         && ($item->getType() == Agent::getType())
          && Agent::canView()) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
@@ -151,8 +159,6 @@ class AgentTask extends CommonDBChild {
          $atask->getFromDB($task['id']);
          echo "<tr class='tab_bg_2'>";
          echo "<td>";
-         /*echo "<a href='".$agent->getFormURLWithID($agent->fields['id'])."'>";
-         echo $agent->fields['name']."</a>";*/
          echo $atask->getLink();
          echo "</td>";
          echo "<td>".Html::convDate($task['start_date'])."</td>";
@@ -213,11 +219,11 @@ class AgentTask extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='periodicity'>".__('Periodicity')."</label></td>";
       echo "<td align='center'>";
-      Dropdown::showNumber('periodicity');
+      Dropdown::showNumber('periodicity', ['value' => $this->fields['periodicity']]);
       echo "</td>";
       echo "<td><label for='task_type'>".__('Task type')."</label></td>";
       echo "<td align='center'>";
-      Dropdown::showFromArray('task_type', $CFG_GLPI['agenttasks_types']);
+      Dropdown::showFromArray('task_type', array_combine($CFG_GLPI['agenttasks_types'], $CFG_GLPI['agenttasks_types']), ['value' => $this->fields['task_type']]);
       echo "</td>";
       echo "</tr>";
 

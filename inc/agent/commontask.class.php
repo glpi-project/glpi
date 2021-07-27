@@ -36,6 +36,11 @@ abstract class CommonTask extends \CommonGLPI
 {
    private $credentials;
 
+   public static function displayTabContentForItem(\CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+      $instance = new static;
+      $instance->showTaskTab();
+   }
+
    abstract public function showTaskTab();
 
    public function setCredentials(AbstractCredential $credential): self {
