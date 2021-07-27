@@ -11,6 +11,7 @@ The present file will list all changes made to the project; according to the
 ### Changed
 - APCu and WinCache are not anymore use by GLPI, use `php bin/console cache:configure` command to configure cache system.
 - PDF export library has been changed from `TCPDF` to `mPDF`.
+- `transferDropdownNetpoint($netpoints_id)` rename to `transferDropdownSocket($sockets_id)`
 
 ### Deprecated
 - Usage of XML-RPC API is deprecated.
