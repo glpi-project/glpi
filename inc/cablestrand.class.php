@@ -151,8 +151,10 @@ class CableStrand extends CommonDropdown {
          echo "</tr>";
 
          while ($data = $iterator->next()) {
-            $item = getItemForItemtype($data['type']);
-            $item->getFromDB($data['id']);
+            if (!($item = getItemForItemtype($data['type']) || !$item->getFromDB($data['id'])) {
+               trigger_error(sprintf('Unable to load item %s (%s).', $data['type'], $data['id']), E_USER_WARNING);
+               continue;
+            }
             echo "<tr class='tab_bg_1'><td>".$item->getTypeName()."</td>";
             echo "<td>".Dropdown::getDropdownName("glpi_entities", $item->getEntityID())."</td>";
             echo "<td>".$item->getLink()."</td>";
