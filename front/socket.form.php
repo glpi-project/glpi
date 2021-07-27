@@ -33,7 +33,7 @@
 include ('../inc/includes.php');
 $dropdown = new Socket();
 // Add a socket from item : format data
-// see socket.class.php:607
+// see Socket::showNetworkPortForm()
 if (isset($_REQUEST['_add_fromitem'])
       && isset($_REQUEST['_from_itemtype'])
       && isset($_REQUEST['_from_items_id'])) {
