@@ -46,22 +46,24 @@ class GLPIPDF extends Mpdf {
     */
    private $total_count;
 
+   private static $default_config = [
+      'mode'               => 'utf-8',
+      'format'             => 'A4',
+      'margin_left'        => 10,
+      'margin_right'       => 10,
+      'margin_top'         => 15,
+      'margin_bottom'      => 15,
+      'margin_header'      => 7,
+      'margin_footer'      => 7,
+
+      'useSubstitutions'   => true, // Substitute chars that are not available in current font
+      'packTableData'      => true, // Reduce memory usage processing tables
+
+      'tempDir'            => GLPI_TMP_DIR,
+   ];
+
    public function __construct(array $config = []) {
-      $config += [
-         'mode'               => 'utf-8',
-         'format'             => 'A4',
-         'margin_left'        => 10,
-         'margin_right'       => 10,
-         'margin_top'         => 15,
-         'margin_bottom'      => 15,
-         'margin_header'      => 7,
-         'margin_footer'      => 7,
-
-         'useSubstitutions'   => true, // Substitute chars that are not available in current font
-         'packTableData'      => true, // Reduce memory usage processing tables
-
-         'tempDir'            => GLPI_TMP_DIR,
-      ];
+      $config += self::$default_config;
 
       parent::__construct($config);
 
@@ -87,7 +89,7 @@ class GLPIPDF extends Mpdf {
 
       $list = [];
 
-      $mpdf = new Mpdf();
+      $mpdf = new Mpdf(self::$default_config);
 
       // Extract PDF core fonts
       foreach ($mpdf->CoreFonts as $key => $name) {
