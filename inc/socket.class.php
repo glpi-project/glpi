@@ -91,7 +91,7 @@ class Socket extends CommonDropdown {
 
       if ($field['name'] == '_virtual_datacenter_position') {
          //DC position
-         echo "<span id='show_asset_breadcrumb'>";;
+         echo "<span id='show_asset_breadcrumb'>";
          if (!empty($this->fields['itemtype']) && !empty($this->fields['items_id'])) {
             if (method_exists($this->fields['itemtype'], 'getDcBreadcrumbSpecificValueToDisplay')) {
                echo $this->fields['itemtype']::getDcBreadcrumbSpecificValueToDisplay($this->fields['items_id']);
