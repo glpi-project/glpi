@@ -151,7 +151,7 @@ class CableStrand extends CommonDropdown {
          echo "</tr>";
 
          while ($data = $iterator->next()) {
-            if (!($item = getItemForItemtype($data['type']) || !$item->getFromDB($data['id'])) {
+            if (!($item = getItemForItemtype($data['type']) || !$item->getFromDB($data['id']))) {
                trigger_error(sprintf('Unable to load item %s (%s).', $data['type'], $data['id']), E_USER_WARNING);
                continue;
             }
@@ -161,7 +161,7 @@ class CableStrand extends CommonDropdown {
             echo "<td>".(isset($item->fields["otherserial"])? "".$item->fields["otherserial"]."" :"-")."</td>";
             echo "<td>";
             if ($item->fields["items_id_front"] > 0) {
-               if (!($front_item = getItemForItemtype($item->fields["itemtype_front"]) || !$front_item->getFromDB($item->fields["items_id_front"])) {
+               if (!($front_item = getItemForItemtype($item->fields["itemtype_front"]) || !$front_item->getFromDB($item->fields["items_id_front"]))) {
                   trigger_error(sprintf('Unable to load item %s (%s).', $item->fields["itemtype_front"], $item->fields["items_id_front"]), E_USER_WARNING);
                } else {
                   echo $front_item->getLink();
@@ -180,7 +180,7 @@ class CableStrand extends CommonDropdown {
             echo "</td>";
             echo "<td>";
             if ($item->fields["items_id_rear"] > 0) {
-               if (!($rear_item = getItemForItemtype($item->fields["itemtype_rear"]) || !$rear_item->getFromDB($item->fields["items_id_rear"])) {
+               if (!($rear_item = getItemForItemtype($item->fields["itemtype_rear"]) || !$rear_item->getFromDB($item->fields["items_id_rear"]))) {
                   trigger_error(sprintf('Unable to load item %s (%s).', $item->fields["itemtype_rear"], $item->fields["items_id_rear"]), E_USER_WARNING);
                } else {
                   echo $rear_item->getLink();
