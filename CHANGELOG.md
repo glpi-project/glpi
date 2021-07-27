@@ -15,7 +15,6 @@ The present file will list all changes made to the project; according to the
 
 ### Deprecated
 - Usage of XML-RPC API is deprecated.
-- `Netpoint` replaced by `Socket` and table `glpi_netpoints` renamed to `glpi_sockets`
 
 
 ### Removed
@@ -63,6 +62,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::unclean_cross_side_scripting_deep()`
 - `Toolbox::unclean_html_cross_side_scripting_deep()`
 - `Toolbox::sanitize()`
+- `Netpoint` replaced by `Socket` and table `glpi_netpoints` renamed to `glpi_sockets`
 
 #### Removed
 - `Update::declareOldItems()`
