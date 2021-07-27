@@ -1446,13 +1446,13 @@ $RELATION = [
    ],
 
    'glpi_socketmodels' => [
-      'glpi_cables' => ['rear_socketmodels_id',
+      'glpi_cables' => ['socketmodels_id_rear',
                         'front_socketmodels_id']
    ],
 
    'glpi_sockets' => [
-      'glpi_cables' => ['rear_sockets_id',
-                        'front_sockets_id']
+      'glpi_cables' => ['sockets_id_rear',
+                        'sockets_id_front']
    ],
 
 ];

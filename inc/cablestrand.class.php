@@ -160,37 +160,37 @@ class CableStrand extends CommonDropdown {
             echo "<td>".$item->getLink()."</td>";
             echo "<td>".(isset($item->fields["otherserial"])? "".$item->fields["otherserial"]."" :"-")."</td>";
             echo "<td>";
-            if ($item->fields["front_items_id"] > 0) {
-               if (!($front_item = getItemForItemtype($item->fields["front_itemtype"]) || !$front_item->getFromDB($item->fields["front_items_id"])) {
-                  trigger_error(sprintf('Unable to load item %s (%s).', $item->fields["front_itemtype"], $item->fields["front_items_id"]), E_USER_WARNING);
+            if ($item->fields["items_id_front"] > 0) {
+               if (!($front_item = getItemForItemtype($item->fields["itemtype_front"]) || !$front_item->getFromDB($item->fields["items_id_front"])) {
+                  trigger_error(sprintf('Unable to load item %s (%s).', $item->fields["itemtype_front"], $item->fields["items_id_front"]), E_USER_WARNING);
                } else {
                   echo $front_item->getLink();
                }
             }
             echo "</td>";
             echo "<td>";
-            if ($item->fields["front_sockets_id"] > 0) {
+            if ($item->fields["sockets_id_front"] > 0) {
                $front_socket = new Socket();
-               if (!$front_socket->getFromDB($item->fields["front_sockets_id"])) {
-                  trigger_error(sprintf('Unable to load item %s (%s).', Socket::getType(), $item->fields["front_sockets_id"]), E_USER_WARNING);
+               if (!$front_socket->getFromDB($item->fields["sockets_id_front"])) {
+                  trigger_error(sprintf('Unable to load item %s (%s).', Socket::getType(), $item->fields["sockets_id_front"]), E_USER_WARNING);
                } else {
                   echo $front_socket->getLink();
                }
             }
             echo "</td>";
             echo "<td>";
-            if ($item->fields["rear_items_id"] > 0) {
-               if (!($rear_item = getItemForItemtype($item->fields["rear_itemtype"]) || !$rear_item->getFromDB($item->fields["rear_items_id"])) {
-                  trigger_error(sprintf('Unable to load item %s (%s).', $item->fields["rear_itemtype"], $item->fields["rear_items_id"]), E_USER_WARNING);
+            if ($item->fields["items_id_rear"] > 0) {
+               if (!($rear_item = getItemForItemtype($item->fields["itemtype_rear"]) || !$rear_item->getFromDB($item->fields["items_id_rear"])) {
+                  trigger_error(sprintf('Unable to load item %s (%s).', $item->fields["itemtype_rear"], $item->fields["items_id_rear"]), E_USER_WARNING);
                } else {
                   echo $rear_item->getLink();
                }
             }
             echo "</td>";
             echo "<td>";
-            if ($item->fields["rear_sockets_id"] > 0) {
-               if (!$rear_socket->getFromDB($item->fields["rear_sockets_id"])) {
-                  trigger_error(sprintf('Unable to load item %s (%s).', Socket::getType(), $item->fields["rear_sockets_id"]), E_USER_WARNING);
+            if ($item->fields["sockets_id_rear"] > 0) {
+               if (!$rear_socket->getFromDB($item->fields["sockets_id_rear"])) {
+                  trigger_error(sprintf('Unable to load item %s (%s).', Socket::getType(), $item->fields["sockets_id_rear"]), E_USER_WARNING);
                } else {
                   echo $rear_socket->getLink();
                }

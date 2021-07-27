@@ -663,8 +663,8 @@ class Socket extends CommonDropdown {
          }
 
          $cable = new Cable();
-         if ($cable->getFromDBByCrit(['OR' => ['rear_sockets_id' => $socket->fields["id"],
-                                               'front_sockets_id' => $socket->fields["id"]
+         if ($cable->getFromDBByCrit(['OR' => ['sockets_id_rear' => $socket->fields["id"],
+                                               'sockets_id_front' => $socket->fields["id"]
                                               ]])) {
             echo "<td><a href='" . $cable->getLinkURL(). "'>".$cable->getName()."</a></td>";
          } else {
