@@ -144,7 +144,7 @@ class CableStrand extends CommonDropdown {
          echo "<th>".Entity::getTypeName(1)."</th>";
          echo "<th>".__('Name')."</th>";
          echo "<th>".__('Inventory number')."</th>";
-         echo "<th>"._n('Associated item', 'Associated items', 0)." (".__('Front').")"."</th>";
+         echo "<th>".sprintf(__('%s (%s)'), _n('Associated item', 'Associated items', 1), __('Front'))."</th>";
          echo "<th>".Socket::getTypeName(1)." (".__('Front').")"."</th>";
          echo "<th>"._n('Associated item', 'Associated items', 0)." (".__('Rear').")"."</th>";
          echo "<th>".Socket::getTypeName(1)." (".__('Rear').")"."</th>";
