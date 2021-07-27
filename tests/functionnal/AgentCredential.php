@@ -54,7 +54,7 @@ class AgentCredential extends DbTestCase {
 
       //create a task
       $task = new \AgentTask();
-      $tid = $task->add(['name' => 'For test']);
+      $tid = $task->add(['name' => 'For test', 'task_type' => '']);
       $this->integer($tid)->isGreaterThan(0);
 
       //create a login/password credential
