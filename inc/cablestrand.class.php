@@ -171,8 +171,11 @@ class CableStrand extends CommonDropdown {
             echo "<td>";
             if ($item->fields["front_sockets_id"] > 0) {
                $front_socket = new Socket();
-               $front_socket->getFromDB($item->fields["front_sockets_id"]);
-               echo $front_socket->getLink();
+               if (!$front_socket->getFromDB($item->fields["front_sockets_id"])) {
+                  trigger_error(sprintf('Unable to load item %s (%s).', Socket::getType(), $item->fields["front_sockets_id"]), E_USER_WARNING);
+               } else {
+                  echo $front_socket->getLink();
+               }
             }
             echo "</td>";
             echo "<td>";
