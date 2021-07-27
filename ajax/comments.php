@@ -101,7 +101,7 @@ if (isset($_POST["itemtype"])
             }
             $tmpname = Dropdown::getDropdownName($table, $_POST["value"], 1);
             if (is_array($tmpname) && isset($tmpname["comment"])) {
-                echo $tmpname["comment"]."<br />";
+                echo $tmpname["comment"];
             }
 
             if (isset($_POST['withlink'])) {
