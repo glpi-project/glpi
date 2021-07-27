@@ -60,10 +60,10 @@ if (class_exists($_POST["itemtype"])
                'glpi_networkports'           => 'id'
             ]
          ],
-         'glpi_netpoints'              => [
+         'glpi_sockets'              => [
             'ON'  => [
-               'glpi_networkportethernets'   => 'netpoints_id',
-               'glpi_netpoints'              => 'id'
+               'glpi_networkports'   => 'id',
+               'glpi_sockets'        => 'networkports_id'
             ]
          ]
       ];
