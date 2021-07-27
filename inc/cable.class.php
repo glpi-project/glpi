@@ -263,7 +263,7 @@ class Cable extends CommonDBTM {
             'rear_items_id',
             'rear_itemtype'
          ],
-         'name'               => __('Data center position')." (".__('Rear').")",
+         'name'               => sprintf(__('%s (%s)'), __('Data center position'), __('Rear')),
          'datatype'           => 'specific',
          'nosearch'           => true,
          'nosort'             => true,
