@@ -67,16 +67,6 @@ if (isset($_POST["add"])) {
    }
    $cable->redirectToList();
 
-} else if (isset($_POST["restore"])) {
-   $cable->check($_POST["id"], DELETE);
-
-   if ($cable->restore($_POST)) {
-      Event::log($_POST["id"], "cable", 4, "management",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
-   }
-   $cable->redirectToList();
-
 } else if (isset($_POST["update"])) {
    $cable->check($_POST["id"], UPDATE);
 
