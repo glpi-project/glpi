@@ -5318,10 +5318,8 @@ class CommonDBTM extends CommonGLPI {
          }
 
          // Check for duplicate
-         if ($doc->getFromDBbyContent($entities_id, $filename)) {
-            if (!$doc->fields['is_blacklisted']) {
-               $docID = $doc->fields["id"];
-            }
+         if ($doc->getDuplicateOf($entities_id, $filename)) {
+            $docID = $doc->fields["id"];
             // File already exist, we replace the tag by the existing one
             if (isset($input['_tag'][$key])
                 && ($docID > 0)
