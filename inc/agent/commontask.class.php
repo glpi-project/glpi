@@ -32,6 +32,8 @@
 
 namespace Glpi\Agent;
 
+use Glpi\Agent\Credentials\AbstractCredential;
+
 abstract class CommonTask extends \CommonGLPI
 {
    private $credentials;
