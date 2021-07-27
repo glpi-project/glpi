@@ -4295,8 +4295,8 @@ CREATE TABLE `glpi_cables` (
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `rear_item` (`itemtype_rear`),
-  KEY `front_item` (`itemtype_front`),
+  KEY `item_rear` (`itemtype_rear`,`items_id_rear`)
+  KEY `item_front` (`itemtype_front`,`items_id_front`)
   KEY `items_id_front` (`items_id_front`),
   KEY `items_id_rear` (`items_id_rear`),
   KEY `socketmodels_id_rear` (`socketmodels_id_rear`),
