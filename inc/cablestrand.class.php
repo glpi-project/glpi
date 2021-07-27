@@ -177,9 +177,11 @@ class CableStrand extends CommonDropdown {
             echo "</td>";
             echo "<td>";
             if ($item->fields["rear_items_id"] > 0) {
-               $rear_item = new $item->fields["rear_itemtype"]();
-               $res = $rear_item->getFromDB($item->fields["rear_items_id"]);
-               echo $rear_item->getLink();
+               if (!($rear_item = getItemForItemtype($item->fields["rear_itemtype"]) || !$rear_item->getFromDB($item->fields["rear_items_id"])) {
+                  trigger_error(sprintf('Unable to load item %s (%s).', $item->fields["rear_itemtype"], $item->fields["rear_items_id"]), E_USER_WARNING);
+               } else {
+                  echo $rear_item->getLink();
+               }
             }
             echo "</td>";
             echo "<td>";
