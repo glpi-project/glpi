@@ -156,7 +156,7 @@ class Cable extends CommonDBTM {
          'id'                 => '10',
          'table'              => $this->getTable(),
          'field'              => 'rear_items_id',
-         'name'               => _n('Associated item', 'Associated items', 0)." (".__('Rear').")",
+         'name'               => sprintf(__('%s (%s)'), _n('Associated item', 'Associated items', 1), __('Rear')),
          'massiveaction'      => false,
          'datatype'           => 'specific',
          'searchtype'         => 'equals',
