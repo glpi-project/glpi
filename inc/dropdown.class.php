@@ -196,7 +196,7 @@ class Dropdown {
          $comment_id      = Html::cleanId("comment_".$params['name'].$params['rand']);
          $link_id         = Html::cleanId("comment_link_".$params['name'].$params['rand']);
          $kblink_id       = Html::cleanId("kb_link_".$params['name'].$params['rand']);
-         $breadcrum_id    = Html::cleanId("dc_breadcrumb_".$params['name'].$params['rand']);
+         $breadcrumb_id   = Html::cleanId("dc_breadcrumb_".$params['name'].$params['rand']);
          $options_tooltip = ['contentid' => $comment_id,
                                   'linkid'    => $link_id,
                                   'display'   => false];
