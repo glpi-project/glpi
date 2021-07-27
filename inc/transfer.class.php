@@ -3597,7 +3597,7 @@ class Transfer extends CommonDBTM {
                         $nn->delete($data);
                      }
 
-                     //find socket attached to NetworkPortEthernet and transfert it
+                     //find socket attached to NetworkPortEthernet and transfer it
                      $socket = new Socket();
                      if ($socket->getFromDBByCrit(["networkports_id" => $data['id']])) {
                         if ($socket->getID()) {
