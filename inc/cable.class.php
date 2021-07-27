@@ -168,7 +168,7 @@ class Cable extends CommonDBTM {
          'table'              => SocketModel::getTable(),
          'field'              => 'name',
          'linkfield'          => 'rear_socketmodels_id',
-         'name'               => SocketModel::getTypeName(1)." (".__('Rear').")",
+         'name'               => sprintf(__('%s (%s)'), SocketModel::getTypeName(1), __('Rear')),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
       ];
