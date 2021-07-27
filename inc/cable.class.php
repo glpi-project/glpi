@@ -40,7 +40,6 @@ class Cable extends CommonDBTM {
    // From CommonDBTM
    public $dohistory         = true;
    static $rightname         = 'cable_management';
-   public $can_be_translated = false;
 
    static function getTypeName($nb = 0) {
       return _n('Cable', 'Cables', $nb);
