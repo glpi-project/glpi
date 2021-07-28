@@ -280,7 +280,7 @@ abstract class AbstractRequest
          $this->addToResponse([
             'status' => 'error',
             'message' => preg_replace(
-               '|\$ref\[file~2///var/www/html/private/glpi/vendor/glpi-project/inventory_format/inventory.schema.json\]|',
+               '|\$ref\[file~2//.*/vendor/glpi-project/inventory_format/inventory.schema.json\]|',
                '$ref[inventory.schema.json]',
                $message
             ),
