@@ -4400,7 +4400,7 @@ JAVASCRIPT;
                   case 'notold' :
                      $tocheck = $item::getNotSolvedStatusArray();
                      break;
-                     
+
                   case 'all' :
                      $tocheck = array_keys($item->getAllStatusArray());
                      break;
