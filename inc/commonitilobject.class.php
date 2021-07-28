@@ -8310,7 +8310,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $criteria = [];
       if (!empty($column_ids)) {
          $criteria = [
-            'status'   => $card_column_ids
+            'status'   => $column_ids
          ];
       }
       $items      = self::getDataToDisplayOnKanban($ID, $criteria);
