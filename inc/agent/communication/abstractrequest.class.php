@@ -279,7 +279,11 @@ abstract class AbstractRequest
       if ($this->headers->hasHeader('GLPI-Agent-ID')) {
          $this->addToResponse([
             'status' => 'error',
-            'message' => $message,
+            'message' => preg_replace(
+               '|\$ref\[file~2///var/www/html/private/glpi/vendor/glpi-project/inventory_format/inventory.schema.json\]|',
+               '$ref[inventory.schema.json]',
+               $message
+            ),
             'expiration' => self::DEFAULT_FREQUENCY
          ]);
       } else {
