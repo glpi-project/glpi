@@ -346,6 +346,7 @@ class Application extends BaseApplication {
 
       // Default value for use mode
       $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+      $_SESSION['glpiname'] = 'cli';
    }
 
    /**
