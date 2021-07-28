@@ -269,12 +269,17 @@
 
 {% macro colorField(name, value, label = '', options = {}) %}
    {% set field %}
-      <input type="color" id="%id%"
-             class="form-control form-control-color"
+      <input data-jscolor="" id="%id%"
+             class="form-control"
              name="{{ name }}" value="{{ value|safe_value }}"
          {{ options.readonly ? 'readonly' : '' }}
          {{ options.disabled ? 'disabled' : '' }}
          {{ options.required ? 'required' : '' }} />
+      <script>
+      $(function() {
+         jscolor.install();
+      });
+      </script>
    {% endset %}
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}

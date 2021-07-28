@@ -3265,12 +3265,26 @@ HTML;
     *
     * @param string $color the background color in hexadecimal notation (ex #FFFFFF) to compute
     * @param int $offset how much we need to darken/lighten the color
+    * @param bool $inherit_if_transparent if color contains an opacity value, and if this value is too transparent return 'inherit'
     *
     * @return string hexadecimal fg color (ex #FFFFFF)
     */
-   static function getFgColor(string $color = "", int $offset = 40): string {
+   static function getFgColor(string $color = "", int $offset = 40, bool $inherit_if_transparent = false): string {
       $fg_color = "FFFFFF";
       if ($color !== "") {
+         $color = str_replace("#", "", $color);
+
+         // if transparency present, get only the color part
+         if (strlen($color) === 8 && preg_match('/^[a-fA-F0-9]+$/', $color)) {
+            $tmp = $color;
+            $alpha = hexdec(substr($tmp, 6, 2));
+            $color = substr($color, 0, 6);
+
+            if ($alpha <= 100) {
+               return "inherit";
+            }
+         }
+
          $color_inst = new Color($color);
 
          // adapt luminance part

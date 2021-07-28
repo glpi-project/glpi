@@ -5,6 +5,7 @@
     "description": "GLPI dependencies",
     "license": "GPL-2.0",
     "dependencies": {
+        "@eastdesire/jscolor": "^2.4.5",
         "@fortawesome/fontawesome-free": "^5.12.1",
         "@fullcalendar/bootstrap": "^4.4.0",
         "@fullcalendar/core": "^4.4.0",

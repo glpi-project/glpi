@@ -580,7 +580,7 @@ HTML;
       }
 
       $color    = $data_option['color'] ?? "#FFFFFF";
-      $fg_color = Toolbox::getFgColor($color, 100);
+      $fg_color = Toolbox::getFgColor($color, 100, true);
 
       // add card options in data attribute
       $data_option_attr = "";
