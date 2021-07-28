@@ -1400,6 +1400,26 @@ class Inventory extends DbTestCase {
          $this->integer(count($components[$type]))->isIdenticalTo($count, "$type " . count($components[$type]));
       }
 
+      //check memory
+      $this->array($components['Item_DeviceMemory'])->hasSize(1);
+      $mem_component = array_pop($components['Item_DeviceMemory']);
+      $expected_mem_component = [
+         'items_id' => $mem_component['items_id'],
+         'itemtype' => "Computer",
+         'devicememories_id' => $mem_component['devicememories_id'],
+         'size' => 4096,
+         'serial' => "23853943",
+         'is_deleted' => 0,
+         'is_dynamic' => 1,
+         'entities_id' => 0,
+         'is_recursive' => 0,
+         'busID' => "1",
+         'otherserial' => null,
+         'locations_id' => 0,
+         'states_id' => 0
+      ];
+      $this->array($mem_component)->isIdenticalTo($expected_mem_component);
+
       //softwares
       $isoft = new \Item_SoftwareVersion();
       $iterator = $isoft->getFromItem($computer);
@@ -1579,6 +1599,26 @@ class Inventory extends DbTestCase {
          $this->integer(count($components[$type]))->isIdenticalTo($count, "$type " . count($components[$type]));
       }
 
+      //check memory
+      $this->array($components['Item_DeviceMemory'])->hasSize(1);
+      $mem_component = array_pop($components['Item_DeviceMemory']);
+      $expected_mem_component = [
+         'items_id' => $mem_component['items_id'],
+         'itemtype' => "Computer",
+         'devicememories_id' => $mem_component['devicememories_id'],
+         'size' => 8192,
+         'serial' => "23853943",
+         'is_deleted' => 0,
+         'is_dynamic' => 1,
+         'entities_id' => 0,
+         'is_recursive' => 0,
+         'busID' => "1",
+         'otherserial' => null,
+         'locations_id' => 0,
+         'states_id' => 0
+      ];
+      $this->array($mem_component)->isIdenticalTo($expected_mem_component);
+
       //softwares
       $isoft = new \Item_SoftwareVersion();
       $iterator = $isoft->getFromItem($computer);
@@ -1590,14 +1630,15 @@ class Inventory extends DbTestCase {
          'LIMIT' => countElementsInTable(\Log::getTable()),
          'OFFSET' => $nblogsnow,
       ]);
-      $this->integer(count($logs))->isIdenticalTo(43);
+      $this->integer(count($logs))->isIdenticalTo(45);
 
       $expected_types_count = [
-         0 => 6, //Agent version, disks usage
+         0 => 7, //Agent version, disks usage
          \Log::HISTORY_CREATE_ITEM => 15, //virtual machines, os, manufacturer, net ports, net names, ...
          \Log::HISTORY_DELETE_SUBITEM => 4,//net<orkport and networkname
          \Log::HISTORY_ADD_SUBITEM => 10,//network port/name, ip adrress, VMs
          \Log::HISTORY_UPDATE_SUBITEM => 4,//disks usage
+         \Log::HISTORY_UPDATE_DEVICE => 1, //device (memory) update
          \Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
          \Log::HISTORY_UPDATE_RELATION => 2,//kernel version
       ];
