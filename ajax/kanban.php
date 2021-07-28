@@ -51,8 +51,7 @@ $action = $_REQUEST['action'];
 
 $nonkanban_actions = ['update', 'bulk_add_item', 'add_item', 'move_item', 'show_card_edit_form', 'delete_item'];
 if (isset($_REQUEST['itemtype'])) {
-   $traits = class_uses($_REQUEST['itemtype'], true);
-   if (!in_array($_REQUEST['action'], $nonkanban_actions) && (!$traits || !in_array(Kanban::class, $traits, true))) {
+   if (!in_array($_REQUEST['action'], $nonkanban_actions) && !Toolbox::hasTrait($_REQUEST['itemtype'], Kanban::class)) {
       // Bad request
       // For all actions, except those in $nonkanban_actions, we expect to be manipulating the Kanban itself.
       Toolbox::logError("Invalid itemtype parameter");
@@ -128,7 +127,7 @@ if ($_REQUEST['action'] === 'update') {
    $checkParams(['inputs']);
    $item = new $itemtype();
    $inputs = [];
-   parse_str($_REQUEST['inputs'], $inputs);
+   parse_str(html_entity_decode($_REQUEST['inputs']), $inputs);
 
    $bulk_item_list = preg_split('/\r\n|[\r\n]/', $inputs['bulk_item_list']);
    if (!empty($bulk_item_list)) {

@@ -241,7 +241,12 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
        && isset($_REQUEST['items_id'])) {
       $_REQUEST['items_id'] = [$_REQUEST['itemtype'] => [$_REQUEST['items_id']]];
    }
-   $track->display($_REQUEST);
+
+   if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
+      $track::showKanban(0);
+   } else {
+      $track->display($_REQUEST);
+   }
 }
 
 

@@ -401,13 +401,15 @@ class GLPIKanbanRights {
          kanban_container.append(column_overflow_dropdown);
 
          // Dropdown for overflow (Card)
-         let card_overflow_dropdown = "<ul id='kanban-item-overflow-dropdown' class='kanban-dropdown  dropdown-menu' style='display: none'>";
+
+         let card_overflow_dropdown = "<ul id='kanban-item-overflow-dropdown' class='kanban-dropdown dropdown-menu' style='display: none'>";
+         card_overflow_dropdown += `
+            <li class='kanban-item-goto dropdown-item'>
+               <a href="#"><i class="fas fa-share"></i>${__('Go to')}</a>
+            </li>`;
          if (self.rights.canDeleteItem()) {
             card_overflow_dropdown += `
-                <li class='kanban-item-goto dropdown-item'>
-                   <a href="#"><i class="fas fa-share"></i>${__('Go to')}</a>
-                </li>
-                <li class='kanban-item-remove dropdown-item'>
+                <li class='kanban-item-remove  dropdown-item'>
                    <span>
                       <i class="fas fa-trash-alt"></i>${__('Delete')}
                    </span>
@@ -562,7 +564,9 @@ class GLPIKanbanRights {
          let already_processed = [];
          $.each(self.user_state.state, function(position, column) {
             if (column['visible'] !== false && column !== 'false') {
-               appendColumn(column['column'], self.columns[column['column']], columns_container);
+               if (self.columns[column['column']] !== undefined) {
+                  appendColumn(column['column'], self.columns[column['column']], columns_container);
+               }
             }
             already_processed.push(column['column']);
          });
@@ -794,7 +798,7 @@ class GLPIKanbanRights {
          });
          $('#kanban-bulk-add-dropdown li').on('click', function(e) {
             e.preventDefault();
-            const selection = $(e.target);
+            const selection = $(e.target).closest('li');
             // Traverse all the way up to the top-level overflow dropdown
             const dropdown = selection.closest('.kanban-dropdown');
             // Get the button that triggered the dropdown and then get the column that it is a part of
@@ -916,7 +920,11 @@ class GLPIKanbanRights {
                } else {
                   list_item += "<input type='checkbox' class='form-check-input' />";
                }
-               list_item += "<span class='kanban-color-preview' style='background-color: "+column['header_color']+"'></span>";
+               if (typeof column['color_class'] !== "undefined") {
+                  list_item += "<span class='kanban-color-preview "+column['color_class']+"'></span>";
+               } else {
+                  list_item += "<span class='kanban-color-preview' style='background-color: "+column['header_color']+"'></span>";
+               }
                list_item += column['name'] + "</li>";
                list += list_item;
             });
@@ -1268,7 +1276,7 @@ class GLPIKanbanRights {
       **/
       const getTeamBadge = function(teammember) {
          const itemtype = teammember["itemtype"];
-         const items_id = teammember["items_id"];
+         const items_id = teammember["id"];
 
          if (self.team_badge_cache[itemtype] === undefined ||
                  self.team_badge_cache[itemtype][items_id] === undefined) {
@@ -1331,8 +1339,8 @@ class GLPIKanbanRights {
                   if (card["_team"] !== undefined) {
                      Object.values(card["_team"]).slice(0, self.max_team_images).forEach(function(teammember) {
                         if (teammember['itemtype'] === 'User') {
-                           if (self.team_badge_cache['User'][teammember['items_id']] === undefined) {
-                              users[teammember['items_id']] = teammember;
+                           if (self.team_badge_cache['User'][teammember['id']] === undefined) {
+                              users[teammember['id']] = teammember;
                            }
                         }
                      });
@@ -1539,13 +1547,27 @@ class GLPIKanbanRights {
        * @returns {boolean} True if the color is more light.
        */
       const isLightColor = function(hex) {
-         const c = hex.substring(1);
+         const c = hex.startsWith('#') ? hex.substring(1) : hex;
          const rgb = parseInt(c, 16);
          const r = (rgb >> 16) & 0xff;
          const g = (rgb >>  8) & 0xff;
          const b = (rgb >>  0) & 0xff;
          const lightness = 0.2126 * r + 0.7152 * g + 0.0722 * b;
          return lightness > 110;
+      };
+
+      /**
+       * Convert a CSS RGB or RGBA string to a hex string including the '#' character.
+       * @param {string} rgb The RGB or RGBA string
+       * @returns {string} The hex color string
+       */
+      const rgbToHex = function(rgb) {
+         const pattern = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+\.?\d*))?\)$/;
+         const hex = rgb.match(pattern).slice(1).map((n, i) => (i === 3 ? Math.round(parseFloat(n) * 255) : parseFloat(n))
+            .toString(16).padStart(2, '0') // Convert to hex values
+            .replace('NaN', '') // Handle NaN values
+         ).join('');
+         return `#${hex}`;
       };
 
       /**
@@ -1650,7 +1672,7 @@ class GLPIKanbanRights {
 
          const uniqueID = Math.floor(Math.random() * 999999);
          const formID = "form_add_" + itemtype + "_" + uniqueID;
-         let add_form = "<form id='" + formID + "' class='kanban-add-form kanban-bulk-add-form kanban-form no-track dropdown-menu'>";
+         let add_form = "<form id='" + formID + "' class='kanban-add-form kanban-bulk-add-form kanban-form no-track'>";
 
          add_form += `
             <div class='kanban-item-header'>
@@ -1884,10 +1906,6 @@ class GLPIKanbanRights {
          }
          const cards = column['items'] !== undefined ? column['items'] : [];
 
-         const header_color = column['header_color'];
-         const is_header_light = header_color ? isLightColor(header_color) : !self.dark_theme;
-         const header_text_class = is_header_light ? 'kanban-text-dark' : 'kanban-text-light';
-
          const column_header = $("<header class='kanban-column-header'></header>");
          const column_content = $("<div class='kanban-column-header-content'></div>").appendTo(column_header);
          const count = column['items'] !== undefined ? column['items'].length : 0;
@@ -1896,33 +1914,50 @@ class GLPIKanbanRights {
          if (self.rights.canModifyView()) {
             $(column_left).append("<i class='fas fa-caret-right fa-lg kanban-collapse-column btn btn-sm btn-ghost-secondary' title='" + __('Toggle collapse') + "'/>");
          }
-         $(column_left).append("<span class='kanban-column-title badge "+header_text_class+"' style='background-color: "+column['header_color']+"; color: "+column['header_fg_color']+";'>" + column['name'] + "</span></span>");
+         $(column_left).append("<span class='kanban-column-title badge "+(column['color_class'] || '')+"' style='background-color: "+column['header_color']+"; color: "+column['header_fg_color']+";'>" + column['name'] + "</span></span>");
          $(column_right).append("<span class='kanban_nb badge bg-secondary'>"+count+"</span>");
          $(column_right).append(getColumnToolbarElement(column));
          $(column_el).prepend(column_header);
+         // Re-apply header text color to handle the actual background color now that the element is actually in the DOM.
+         const column_title = $('#'+column['id']).find('.kanban-column-title').eq(0);
+         let header_color = column_title.css('background-color') ? rgbToHex(column_title.css('background-color')) : '#ffffff';
+         const is_header_light = header_color ? isLightColor(header_color) : !self.dark_theme;
+         const header_text_class = is_header_light ? 'kanban-text-dark' : 'kanban-text-light';
+         column_title.removeClass('kanban-text-light kanban-text-dark');
+         column_title.addClass(header_text_class);
 
-         $("<ul class='kanban-body card-body'></ul>").appendTo(column_el);
+         const column_body = $("<ul class='kanban-body card-body'></ul>").appendTo(column_el);
 
-         let added = [];
-         $.each(self.user_state.state, function(i, c) {
-            if (c['column'] === column_id) {
-               $.each(c['cards'], function(i2, card) {
-                  $.each(cards, function(i3, card2) {
-                     if (card2['id'] === card) {
-                        appendCard(column_el, card2);
-                        added.push(card2['id']);
-                        return false;
-                     }
+         column_el.attr('data-drop-only', column['drop_only']);
+
+         if (!column['drop_only']) {
+            let added = [];
+            $.each(self.user_state.state, function (i, c) {
+               if (c['column'] === column_id) {
+                  $.each(c['cards'], function (i2, card) {
+                     $.each(cards, function (i3, card2) {
+                        if (card2['id'] === card) {
+                           appendCard(column_el, card2);
+                           added.push(card2['id']);
+                           return false;
+                        }
+                     });
                   });
-               });
-            }
-         });
+               }
+            });
 
-         $.each(cards, function(card_id, card) {
-            if (added.indexOf(card['id']) < 0) {
-               appendCard(column_el, card, revalidate);
-            }
-         });
+            $.each(cards, function (card_id, card) {
+               if (added.indexOf(card['id']) < 0) {
+                  appendCard(column_el, card, revalidate);
+               }
+            });
+         } else {
+            $(`
+               <li class="position-relative" style="width: 250px">
+                  ${__('This column cannot support showing cards due to how many cards would be shown. You can still drag cards into this column.')}
+               </li>
+            `).appendTo(column_body);
+         }
 
          refreshSortables();
       };
@@ -2080,7 +2115,7 @@ class GLPIKanbanRights {
                column_id: column_id
             }
          }).done(function(column) {
-            if (column !== undefined) {
+            if (column !== undefined && Object.keys(column).length > 0) {
                self.columns[column_id] = column[column_id];
                appendColumn(column_id, self.columns[column_id], null, revalidate);
             }

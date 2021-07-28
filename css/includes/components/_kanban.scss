@@ -56,17 +56,11 @@
       z-index: 10;
 
       input {
-         border-radius: unset !important;
-
          &[type="checkbox"] {
             margin-right: 5px;
          }
          &:not([type="checkbox"]) {
             display: block;
-         }
-         &:not([type="submit"]):not([type="checkbox"]) {
-            width: 90%;
-            padding: 5px 10px;
          }
          &[type="submit"] {
             margin: auto;
@@ -158,13 +152,18 @@
 
          .kanban-column {
             margin-right: 16px;
-            min-width: 200px;
+            width: 350px;
             height: 600px;
             border-radius: 5px;
             flex-direction: column;
             flex: 1 0 auto;
             text-align: center;
             border-top: 5px solid $header-border-color;
+
+            &[data-drop-only=true] .kanban-body {
+               background: #fffa90;
+               color: #777620;
+            }
 
             &.ui-sortable-helper {
                cursor: grab;
@@ -242,7 +241,7 @@
                }
 
                .kanban-column-title {
-                  margin-left: 15px;
+                  margin-left: 2px;
                   padding: 3px 12px;
                }
 
@@ -269,25 +268,11 @@
 
                .kanban-add-form {
                   input {
-                     border-radius: unset !important;
-                     display: block;
                      margin: 8px 0 0;
-                     padding: 5px 10px;
-
-                     &:not([type="submit"]) {
-                        width: 90%;
-                     }
-                     &[type="submit"] {
-                        margin: auto;
-                     }
                   }
 
                   textarea {
-                     border-radius: unset !important;
-                     width: 90%;
-                     resize: vertical;
                      margin: 8px 0;
-                     padding: 5px 10px;
                   }
                }
 
@@ -333,7 +318,6 @@
                      }
 
                      padding: 5px 10px 0;
-                     font-size: 1.1em;
                      font-weight: bold;
 
                      a:hover {
@@ -382,10 +366,54 @@
             min-width: 200px;
             height: 600px;
             margin: 0 8px 0 0;
-            border-radius: 5px;
+            border-radius: 5px
          }
       }
    }
+   .kanban-color-preview, .kanban-column-title {
+      &.itilstatus {
+         &.assigned, &.new {
+            background-color: #49bf4d;
+            color: #000f01;
+         }
+
+         &.accepted {
+            background-color: green;
+            color: rgb(255, 255, 255);
+         }
+
+         &.refused {
+            background-color: rgb(167, 47, 0);
+            color: rgb(19, 5, 0);
+         }
+
+         &.test, &.qualif, &.waiting {
+            background-color: orange;
+            color: rgb(27, 18, 0);
+         }
+
+         &.approval {
+            background-color: #8cabdb;
+            color: rgb(18, 24, 36)
+         }
+
+         &.eval {
+            background-color: lightblue;
+            color: rgb(30, 38, 41);
+         }
+
+         &.closed, &.solved, &.observe, &.canceled {
+            background-color: black;
+            color: white;
+         }
+
+         &.planned {
+            background-color: #1b2f62;
+            color: #f3f3f5;
+         }
+      }
+   }
+
    .kanban-color-preview {
       width: 1em;
       height: 1em;
@@ -400,7 +428,6 @@
       color: #777620;
       height: 40px;
       margin-top: 5px;
-
       &.invalid-position {
          border: 2px dashed #d3413c;
          background: #ff7370;

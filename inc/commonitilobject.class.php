@@ -45,6 +45,7 @@ abstract class CommonITILObject extends CommonDBTM {
    use \Glpi\Features\Clonable;
    use \Glpi\Features\UserMention;
    use \Glpi\Features\Timeline;
+   use \Glpi\Features\Kanban;
 
    /// Users by type
    protected $users       = [];
@@ -7405,6 +7406,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($tplclass::canView()) {
          $links['template'] = $tplclass::getSearchURL(false);
       }
+      $links['summary_kanban'] = static::getFormURL(false).'?showglobalkanban=1';
 
       return $links;
    }
@@ -8176,4 +8178,293 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return string class name
     */
    abstract public static function getContentTemplatesParametersClass(): string;
+
+   static function getDataToDisplayOnKanban($ID, $criteria = []) {
+      global $DB;
+
+      $items      = [];
+
+      $itil_table = static::getTable();
+      $request = [
+         'SELECT' => [
+            $itil_table.'.*',
+         ],
+         'FROM'   => $itil_table,
+         'WHERE'  => ['is_deleted' => 0] + $criteria,
+      ] + getEntitiesRestrictCriteria();
+
+      $iterator = $DB->request($request);
+      while ($data = $iterator->next()) {
+         // Create a fake item to get just the actors without loading all other information about items.
+         $temp_item = new static;
+         $temp_item->fields['id'] = $data['id'];
+         $temp_item->loadActors();
+
+         // Build team member data
+         $supported_teamtypes = [
+            'User' => ['id', 'firstname', 'realname'],
+            'Group' => ['id', 'name'],
+            'Supplier' => ['id', 'name'],
+         ];
+         $members = [
+            'User'      => $temp_item->getUsers(CommonITILActor::ASSIGN),
+            'Group'     => $temp_item->getGroups(CommonITILActor::ASSIGN),
+            'Supplier'   => $temp_item->getSuppliers(CommonITILActor::ASSIGN),
+         ];
+         $team = [];
+         foreach ($supported_teamtypes as $itemtype => $fields) {
+            $fields[] = 'id';
+            $fields[] = new QueryExpression($DB->quoteValue($itemtype).' AS '.$DB->quoteName('itemtype'));
+
+            $member_ids = array_map(static function($e) use($itemtype) {
+               return $e[$itemtype::getForeignKeyField()];
+            }, $members[$itemtype]);
+            if (count($member_ids)) {
+               $itemtable = $itemtype::getTable();
+               $all_items = $DB->request([
+                  'SELECT'    => $fields,
+                  'FROM'      => $itemtable,
+                  'WHERE'     => [
+                     "{$itemtable}.id"   => $member_ids
+                  ]
+               ]);
+               $all_members[$itemtype] = [];
+               while ($member_data = $all_items->next()) {
+                  $team[] = $member_data;
+               }
+            }
+         }
+
+         $data['_itemtype'] = static::class;
+         $data['_team'] = $team;
+         if (static::class === Ticket::class) {
+            $ticket_table = Ticket::getTable();
+            $tt_table = Ticket_Ticket::getTable();
+            $links = [];
+            $link_iterator = $DB->request([
+               'FROM'   => new \QueryUnion([
+                  [
+                     'SELECT' => [
+                        new QueryExpression($DB::quoteName('tickets_id_1').' AS '.$DB::quoteName('tickets_id')),
+                        'status'
+                     ],
+                     'FROM'   => $tt_table,
+                     'LEFT JOIN' => [
+                        $ticket_table => [
+                           'ON'  => [
+                              $ticket_table  => 'id',
+                              $tt_table      => 'tickets_id_1'
+                           ]
+                        ]
+                     ],
+                     'WHERE'  => [
+                        'tickets_id_1' => $data['id'],
+                        'link' => Ticket_Ticket::PARENT_OF
+                     ]
+                  ],
+                  [
+                     'SELECT' => [
+                        new QueryExpression($DB::quoteName('tickets_id_2').' AS '.$DB::quoteName('tickets_id')),
+                        'status'
+                     ],
+                     'FROM'   => $tt_table,
+                     'LEFT JOIN' => [
+                        $ticket_table => [
+                           'ON'  => [
+                              $ticket_table  => 'id',
+                              $tt_table      => 'tickets_id_1'
+                           ]
+                        ]
+                     ],
+                     'WHERE'  => [
+                        'tickets_id_2' => $data['id'],
+                        'link' => Ticket_Ticket::SON_OF
+                     ]
+                  ]
+               ])
+            ]);
+            while ($link_data = $link_iterator->next()) {
+               $links[$link_data['tickets_id']] = $link_data;
+            }
+            if ($links) {
+               if (count($links)) {
+                  $data['_steps'] = $links;
+               }
+            }
+         } else {
+            $data['_steps'] = [];
+         }
+         $data['_readonly'] = false;
+         $items[$data['id']] = $data;
+      }
+
+      return $items;
+   }
+
+   static function getKanbanColumns($ID, $column_field = null, $column_ids = [], $get_default = false) {
+      if (!in_array($column_field, ['status'])) {
+         return [];
+      }
+
+      $columns = [];
+      $criteria = [];
+      if (!empty($column_ids)) {
+         $criteria = [
+            'status'   => $column_ids
+         ];
+      }
+      $items      = self::getDataToDisplayOnKanban($ID, $criteria);
+
+      $extracolumns = self::getAllKanbanColumns($column_field, $column_ids, $get_default);
+      foreach ($extracolumns as $column_id => $column) {
+         $columns[$column_id] = $column;
+      }
+
+      foreach ($items as $item) {
+         if (!array_key_exists($item[$column_field], $columns)) {
+            continue;
+         }
+         $itemtype = $item['_itemtype'];
+         $card = [
+            'id'              => "{$itemtype}-{$item['id']}",
+            'title'           => Html::link($item['name'], $itemtype::getFormURLWithID($item['id'])),
+            'title_tooltip'   => Html::resume_text(RichText::getTextFromHtml($item['content'], false, true), 100),
+            'is_deleted'      => $item['is_deleted'] ?? false,
+         ];
+
+         $content = "<div class='kanban-plugin-content'>";
+         $plugin_content_pre = Plugin::doHookFunction('pre_kanban_content', [
+            'itemtype' => $itemtype,
+            'items_id' => $item['id'],
+         ]);
+         if (!empty($plugin_content_pre['content'])) {
+            $content .= $plugin_content_pre['content'];
+         }
+         $content .= "</div>";
+         // Core content
+         $content .= "<div class='kanban-core-content'>";
+         if (isset($item['_steps']) && count($item['_steps'])) {
+            $done = count(array_filter($item['_steps'], static function($l) {
+               return in_array($l['status'], static::getClosedStatusArray());
+            }));
+            $total = count($item['_steps']);
+            $content .= "<div class='flex-break'></div>";
+            $content .= sprintf(__('%s / %s tasks complete'), $done, $total);
+         }
+         $content .= "<div class='flex-break'></div>";
+
+         $content .= "</div>";
+         $content .= "<div class='kanban-plugin-content'>";
+         $plugin_content_post = Plugin::doHookFunction('post_kanban_content', [
+            'itemtype' => $itemtype,
+            'items_id' => $item['id'],
+         ]);
+         if (!empty($plugin_content_post['content'])) {
+            $content .= $plugin_content_post['content'];
+         }
+         $content .= "</div>";
+
+         $card['content'] = $content;
+         $card['_team'] = $item['_team'];
+         $card['_readonly'] = $item['_readonly'];
+         $card['_form_link'] = $itemtype::getFormUrlWithID($item['id']);
+         $columns[$item[$column_field]]['items'][] = $card;
+      }
+
+      // If no specific columns were asked for, drop empty columns.
+      // If specific columns were asked for, such as when loading a user's Kanban view, we must preserve them.
+      // We always preserve the 'No Status' column.
+      foreach ($columns as $column_id => $column) {
+         if ($column_id !== 0 && !in_array($column_id, $column_ids) &&
+            (!isset($column['items']) || !count($column['items']))) {
+            unset($columns[$column_id]);
+         }
+      }
+      return $columns;
+   }
+
+   static function showKanban($ID) {
+      $itilitem = new static();
+
+      if (($ID <= 0 && !Project::canView()) ||
+         ($ID > 0 && (!$itilitem->getFromDB($ID) || !$itilitem->canView()))) {
+         return false;
+      }
+
+      $supported_itemtypes = [];
+      if (static::canCreate()) {
+         $supported_itemtypes[static::class] = [
+            'name' => static::getTypeName(1),
+            'icon' => static::getIcon(),
+            'fields' => [
+               'name'   => [
+                  'placeholder'  => __('Name')
+               ],
+               'content'   => [
+                  'placeholder'  => __('Content'),
+                  'type'         => 'textarea'
+               ],
+               'users_id'  => [
+                  'type'         => 'hidden',
+                  'value'        => $_SESSION['glpiID']
+               ]
+            ]
+         ];
+      }
+      $column_field = [
+         'id' => 'status',
+         'extra_fields' => []
+      ];
+
+      $itemtype = static::class;
+      $rights = [
+         'create_item'                    => self::canCreate(),
+         'delete_item'                    => self::canDelete(),
+         'create_column'                  => false,
+         'modify_view'                    => true,
+         'order_card'                     => true,
+         'create_card_limited_columns'    => []
+      ];
+
+      TemplateRenderer::getInstance()->display('components/kanban/kanban.html.twig', [
+         'kanban_id'                   => 'kanban',
+         'rights'                      => $rights,
+         'supported_itemtypes'         => $supported_itemtypes,
+         'max_team_images'             => 3,
+         'column_field'                => $column_field,
+         'item'                        => [
+            'itemtype'  => $itemtype,
+            'items_id'  => $ID
+         ]
+      ]);
+   }
+
+   static function getAllForKanban($active = true, $current_id = -1) {
+      // ITIL items only have a global view
+      $items = [
+         -1 => __('Global')
+      ];
+      return $items;
+   }
+
+   static function getAllKanbanColumns($column_field = null, $column_ids = [], $get_default = false) {
+
+      if ($column_field === null) {
+         $column_field = 'status';
+      }
+      $columns = [];
+      if ($column_field === null || $column_field === 'status') {
+         $all_statuses = static::getAllStatusArray();
+         foreach ($all_statuses as $status_id => $status) {
+            $columns['status'][$status_id] = [
+               'name'         => $status,
+               'color_class'  => 'itilstatus '.static::getStatusKey($status_id),
+               'drop_only'    => (int) $status_id === self::CLOSED
+            ];
+         }
+      } else {
+         return [];
+      }
+      return $columns[$column_field];
+   }
 }
