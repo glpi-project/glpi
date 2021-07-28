@@ -4401,7 +4401,7 @@ JAVASCRIPT;
                      $tocheck = $item::getNotSolvedStatusArray();
                      break;
                      
-                  case 'all':
+                  case 'all' :
                      $tocheck = array_keys($item->getAllStatusArray());
                      break;
                }
