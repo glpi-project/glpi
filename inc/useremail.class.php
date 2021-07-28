@@ -56,9 +56,9 @@ class UserEmail  extends CommonDBChild {
    /**
     * Get default email for user. If no default email get first one
     *
-    * @param $users_id user ID
+    * @param int $users_id user ID
     *
-    * @return default email, empty if no email set
+    * @return string default email, empty if no email set
    **/
    static function getDefaultForUser($users_id) {
       global $DB;

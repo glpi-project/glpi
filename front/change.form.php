@@ -40,8 +40,10 @@ if (empty($_GET["id"])) {
 
 Session::checkLoginUser();
 
+// as _actors virtual field stores json, bypass automatic escaping
 if (isset($_UPOST['_actors'])) {
    $_POST['_actors'] = json_decode($_UPOST['_actors'], true);
+   $_REQUEST['_actors'] = $_POST['_actors'];
 }
 
 $change = new Change();

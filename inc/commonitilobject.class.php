@@ -130,18 +130,64 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
 
+   /**
+    * Return the list of actors for a given actor type
+    * We try to retrieve them by:
+    * - in case new ticket
+    *  - from virtual _actor field (present after a reload)
+    *  - from template (predefined actor field)
+    *  - from default actor if setting is defined in user preference
+    * - for existing ticket (with an id > 0), directly from saved actors
+    *
+    * @since 10.0
+    *
+    * @param int $actortype 1=requester, 2=assign, 3=observer
+    * @param array $params posted data of itil object
+    *
+    * @return array of actors
+    */
    function getActorsForType(int $actortype = 1, array $params = []): array {
       $actors = [];
 
-      $userobj      = new User;
-      $group_obj    = new Group;
-      $supplier_obj = new Supplier;
-
-      // load default actors from itiltemplate passed from showForm in `params` var
       $actortypestring = self::getActorFieldNameType($actortype);
+
       if ($this->isNewItem()) {
+         // existing actors (from a form reload)
+         if (isset($params['_actors'])) {
+            foreach ($params['_actors'] as $existing_actortype => $existing_actors) {
+               if ($existing_actortype != $actortypestring) {
+                  continue;
+               }
+               foreach ($existing_actors as &$existing_actor) {
+                  $actor_obj = new $existing_actor['itemtype'];
+                  if ($actor_obj->getFromDB($existing_actor['items_id'])) {
+                     if ($actor_obj instanceof User) {
+                        $name = formatUserName(
+                           $actor_obj->fields["id"],
+                           $actor_obj->fields["name"],
+                           $actor_obj->fields["realname"],
+                           $actor_obj->fields["firstname"]
+                        );
+                        $completename = $name;
+                     } else {
+                        $name         = $actor_obj->getName();
+                        $completename = $actor_obj->getRawCompleteName();
+                     }
+
+                     $actors[] = $existing_actor + [
+                        'text'  => $name,
+                        'title' => $completename,
+                     ];
+                  }
+               }
+            }
+            return $actors;
+         }
+
+         // load default actors from itiltemplate passed from showForm in `params` var
          // for user actor, we load firstly from template, else default actor
          $users_id = ($params['_users_id_'.$actortypestring] ?? false) ?: $this->getDefaultActor($actortype);
+         $userobj  = new User;
          if ($userobj->getFromDB($users_id)) {
             $name = formatUserName($userobj->fields["id"], $userobj->fields["name"], $userobj->fields["realname"],
                                     $userobj->fields["firstname"]);
@@ -157,24 +203,28 @@ abstract class CommonITILObject extends CommonDBTM {
          }
 
          if (isset($params['_groups_id_'.$actortypestring]) && $params['_groups_id_'.$actortypestring] > 0) {
-            $group_obj->getFromDB($params['_groups_id_'.$actortypestring]);
-            $actors[] = [
-               'items_id' => $group_obj->fields['groups_id'],
-               'itemtype' => 'Group',
-               'text'     => $group_obj->getName(),
-               'title'    => $group_obj->getRawCompleteName(),
-            ];
+            $group_obj = new Group;
+            if ($group_obj->getFromDB($params['_groups_id_'.$actortypestring])) {
+               $actors[] = [
+                  'items_id' => $group_obj->fields['groups_id'],
+                  'itemtype' => 'Group',
+                  'text'     => $group_obj->getName(),
+                  'title'    => $group_obj->getRawCompleteName(),
+               ];
+            }
          }
          if (isset($params['_suppliers_id_'.$actortypestring]) && $params['_suppliers_id_'.$actortypestring] > 0) {
-            $supplier_obj->getFromDB($params['_suppliers_id_'.$actortypestring]);
-            $actors[] = [
-               'items_id'          => $supplier_obj->fields['id'],
-               'itemtype'          => 'Supplier',
-               'text'              => $supplier_obj->fields['name'],
-               'title'             => $supplier_obj->fields['name'],
-               'use_notification'  => strlen($supplier_obj->fields['email']) > 0,
-               'alternative_email' => $supplier_obj->fields['email'],
-            ];
+            $supplier_obj = new Supplier;
+            if ($supplier_obj->getFromDB($params['_suppliers_id_'.$actortypestring])) {
+               $actors[] = [
+                  'items_id'          => $supplier_obj->fields['id'],
+                  'itemtype'          => 'Supplier',
+                  'text'              => $supplier_obj->fields['name'],
+                  'title'             => $supplier_obj->fields['name'],
+                  'use_notification'  => strlen($supplier_obj->fields['email']) > 0,
+                  'alternative_email' => $supplier_obj->fields['email'],
+               ];
+            }
          }
       }
 
@@ -195,14 +245,16 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       if (isset($this->groups[$actortype])) {
          foreach ($this->groups[$actortype] as $group) {
-            $group_obj->getFromDB($group['groups_id']);
-            $actors[] = [
-               'id'       => $group['id'],
-               'items_id' => $group['groups_id'],
-               'itemtype' => 'Group',
-               'text'     => $group_obj->getName(),
-               'title'    => $group_obj->getRawCompleteName(),
-            ];
+            $group_obj = new Group;
+            if ($group_obj->getFromDB($group['groups_id'])) {
+               $actors[] = [
+                  'id'       => $group['id'],
+                  'items_id' => $group['groups_id'],
+                  'itemtype' => 'Group',
+                  'text'     => $group_obj->getName(),
+                  'title'    => $group_obj->getRawCompleteName(),
+               ];
+            }
          }
       }
       if (isset($this->suppliers[$actortype])) {
@@ -221,6 +273,41 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       return $actors;
+   }
+
+
+   /**
+    * Retrieve all possible entities for an itilobject posted data.
+    * We try to retrieve requesters in the data:
+    * - from `_users_id_requester` (data from template or default actor)
+    * - from `_actors` (virtual field when the form is reloaded)
+    * By default, if none of these fields are present, entities are get from current active entity.
+    *
+    * @since 10.0
+    *
+    * @param array $params posted data by an itil object
+    * @return array of possible entities_id
+    */
+   function getEntitiesForRequesters(array $params = []) {
+      $requesters = [];
+      if ($params["_users_id_requester"]) {
+         $requesters = [$params["_users_id_requester"]];
+      }
+      if (isset($params['_actors']['requester'])) {
+         foreach ($params['_actors']['requester'] as $actor) {
+            if ($actor['itemtype'] == "User") {
+               $requesters[] = $actor['items_id'];
+            }
+         }
+      }
+
+      $entities = $_SESSION['glpiactiveentities'] ?? [];
+      foreach ($requesters as $users_id) {
+         $user_entities = Profile_User::getUserEntities($users_id, true, true);
+         $entities = array_intersect($entities, $user_entities);
+      }
+
+      return $entities;
    }
 
 

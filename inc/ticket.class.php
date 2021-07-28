@@ -4539,15 +4539,9 @@ JAVASCRIPT;
          $this->check(-1, CREATE, $options);
       }
 
+      $this->userentities = [];
       if (!$ID) {
-         $this->userentities = [];
-         if ($options["_users_id_requester"]) {
-            //Get all the user's entities
-            $requester_entities = Profile_User::getUserEntities($options["_users_id_requester"], true,
-                                                          true);
-            $user_entities = $_SESSION['glpiactiveentities'];
-            $this->userentities = array_intersect($requester_entities, $user_entities);
-         }
+         $this->userentities         = $this->getEntitiesForRequesters($options);
          $this->countentitiesforuser = count($this->userentities);
 
          if (($this->countentitiesforuser > 0)
@@ -4681,6 +4675,7 @@ JAVASCRIPT;
          'canassign'          => $canassign,
          'canassigntome'      => $canassigntome,
          'load_kb_sol'        => $options['load_kb_sol'] ?? 0,
+         'userentities'       => $this->userentities,
       ]);
 
       return true;

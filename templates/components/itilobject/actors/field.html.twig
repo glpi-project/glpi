@@ -15,6 +15,11 @@
    {% set is_actor_hidden = true %}
 {% endif %}
 
+{% set onchange = "" %}
+{% if item.isNewItem() %}
+   {% set onchange = 'this.form.submit();' %}
+{% endif %}
+
 {% if not is_actor_hidden %}
    <select class="form-select" multiple="true" id="actor_{{ rand }}">
    {% for actor in actors %}
@@ -215,9 +220,11 @@
       };
       $("#actor_{{ rand }}").on('select2:select', function () {
          updateActors{{ rand }}();
+         {{ onchange }}
       });
       $("#actor_{{ rand }}").on('select2:unselect', function () {
          updateActors{{ rand }}();
+         {{ onchange }}
       });
 
       // intercept event for edit notification button
