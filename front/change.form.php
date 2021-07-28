@@ -157,10 +157,11 @@ if (isset($_POST["add"])) {
    Html::redirect(Change::getFormURLWithID($id));
 
 } else {
-   Html::header(Change::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "change");
    if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
+      Html::header(sprintf(__('%s Kanban'), Change::getTypeName(1)), $_SERVER['PHP_SELF'], "helpdesk", "change");
       $change::showKanban(0);
    } else {
+      Html::header(Change::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "change");
       $change->display($_REQUEST);
    }
 

@@ -225,7 +225,6 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
       die;
    }
 
-   Html::header(__('New ticket'), '', "helpdesk", "ticket");
    unset($_REQUEST['id']);
    unset($_GET['id']);
    unset($_POST['id']);
@@ -243,8 +242,10 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
    }
 
    if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
+      Html::header(sprintf(__('%s Kanban'), Ticket::getTypeName(1)), '', "helpdesk", "ticket");
       $track::showKanban(0);
    } else {
+      Html::header(__('New ticket'), '', "helpdesk", "ticket");
       $track->display($_REQUEST);
    }
 }

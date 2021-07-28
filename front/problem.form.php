@@ -159,10 +159,11 @@ if (isset($_POST["add"])) {
               sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
    Html::redirect(Problem::getFormURLWithID($id));
 } else {
-   Html::header(Problem::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "problem");
    if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
+      Html::header(sprintf(__('%s Kanban'), Problem::getTypeName(1)), $_SERVER['PHP_SELF'], "helpdesk", "problem");
       $problem::showKanban(0);
    } else {
+      Html::header(Problem::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "problem");
       $problem->display($_REQUEST);
    }
 
