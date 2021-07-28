@@ -118,7 +118,17 @@ abstract class Device extends InventoryAsset
             } else {
                 $itemdevice->getFromDBByCrit([$fk => $device_id]);
                 $itemdevice->update(['id' => $itemdevice->fields['id']] + \Toolbox::addslashes_deep((array)$val));
+                unset($existing[$device_id]);
             }
+         }
+
+         foreach ($existing as $cid) {
+            $device->delete(['id' => $cid], true);
+            $DB->delete(
+               $itemdevice->getTable(), [
+                  $fk => 0
+               ]
+            );
          }
       }
    }

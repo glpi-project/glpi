@@ -1380,7 +1380,7 @@ class Inventory extends DbTestCase {
          'Item_DeviceMotherboard' => 0,
          'Item_DeviceFirmware' => 1,
          'Item_DeviceProcessor' => 1,
-         'Item_DeviceMemory' => 1,
+         'Item_DeviceMemory' => 2,
          'Item_DeviceHardDrive' => 1,
          'Item_DeviceNetworkCard' => 0,
          'Item_DeviceDrive' => 0,
@@ -1401,24 +1401,27 @@ class Inventory extends DbTestCase {
       }
 
       //check memory
-      $this->array($components['Item_DeviceMemory'])->hasSize(1);
-      $mem_component = array_pop($components['Item_DeviceMemory']);
+      $this->array($components['Item_DeviceMemory'])->hasSize(2);
+      $mem_component1 = array_pop($components['Item_DeviceMemory']);
+      $mem_component2 = array_pop($components['Item_DeviceMemory']);
       $expected_mem_component = [
-         'items_id' => $mem_component['items_id'],
+         'items_id' => $mem_component1['items_id'],
          'itemtype' => "Computer",
-         'devicememories_id' => $mem_component['devicememories_id'],
-         'size' => 4096,
+         'devicememories_id' => $mem_component1['devicememories_id'],
+         'size' => 2048,
          'serial' => "23853943",
          'is_deleted' => 0,
          'is_dynamic' => 1,
          'entities_id' => 0,
          'is_recursive' => 0,
-         'busID' => "1",
+         'busID' => "2",
          'otherserial' => null,
          'locations_id' => 0,
          'states_id' => 0
       ];
-      $this->array($mem_component)->isIdenticalTo($expected_mem_component);
+      $this->array($mem_component1)->isIdenticalTo($expected_mem_component);
+      $expected_mem_component['busID'] = "1";
+      $this->array($mem_component2)->isIdenticalTo($expected_mem_component);
 
       //softwares
       $isoft = new \Item_SoftwareVersion();
@@ -1432,10 +1435,10 @@ class Inventory extends DbTestCase {
          'LIMIT' => $nblogsnow,
          'OFFSET' => $this->nblogs,
       ]);
-      $this->integer(count($logs))->isIdenticalTo(113);
+      $this->integer(count($logs))->isIdenticalTo(115);
 
       $expected_types_count = [
-         \Log::HISTORY_CREATE_ITEM => 84,
+         \Log::HISTORY_CREATE_ITEM => 85,
          \Log::HISTORY_ADD_DEVICE => array_sum($expecteds_components),
          \Log::HISTORY_ADD_SUBITEM => count($expecteds_fs),
          0 => 1, // Change Monitor contact (is_contact_autoupdate)
@@ -1600,24 +1603,27 @@ class Inventory extends DbTestCase {
       }
 
       //check memory
-      $this->array($components['Item_DeviceMemory'])->hasSize(1);
-      $mem_component = array_pop($components['Item_DeviceMemory']);
+      $this->array($components['Item_DeviceMemory'])->hasSize(2);
+      $mem_component1 = array_pop($components['Item_DeviceMemory']);
+      $mem_component2 = array_pop($components['Item_DeviceMemory']);
       $expected_mem_component = [
-         'items_id' => $mem_component['items_id'],
+         'items_id' => $mem_component1['items_id'],
          'itemtype' => "Computer",
-         'devicememories_id' => $mem_component['devicememories_id'],
-         'size' => 8192,
-         'serial' => "23853943",
+         'devicememories_id' => $mem_component1['devicememories_id'],
+         'size' => 4096,
+         'serial' => "53853943",
          'is_deleted' => 0,
          'is_dynamic' => 1,
          'entities_id' => 0,
          'is_recursive' => 0,
-         'busID' => "1",
+         'busID' => "2",
          'otherserial' => null,
          'locations_id' => 0,
          'states_id' => 0
       ];
-      $this->array($mem_component)->isIdenticalTo($expected_mem_component);
+      $this->array($mem_component1)->isIdenticalTo($expected_mem_component);
+      $expected_mem_component['busID'] = "1";
+      $this->array($mem_component2)->isIdenticalTo($expected_mem_component);
 
       //softwares
       $isoft = new \Item_SoftwareVersion();
@@ -1630,15 +1636,16 @@ class Inventory extends DbTestCase {
          'LIMIT' => countElementsInTable(\Log::getTable()),
          'OFFSET' => $nblogsnow,
       ]);
-      $this->integer(count($logs))->isIdenticalTo(45);
+      $this->integer(count($logs))->isIdenticalTo(51);
 
       $expected_types_count = [
          0 => 7, //Agent version, disks usage
-         \Log::HISTORY_CREATE_ITEM => 15, //virtual machines, os, manufacturer, net ports, net names, ...
+         \Log::HISTORY_CREATE_ITEM => 18, //virtual machines, os, manufacturer, net ports, net names, ...
          \Log::HISTORY_DELETE_SUBITEM => 4,//net<orkport and networkname
          \Log::HISTORY_ADD_SUBITEM => 10,//network port/name, ip adrress, VMs
          \Log::HISTORY_UPDATE_SUBITEM => 4,//disks usage
-         \Log::HISTORY_UPDATE_DEVICE => 1, //device (memory) update
+         \Log::HISTORY_ADD_DEVICE => 2, //new memory
+         \Log::HISTORY_DELETE_DEVICE => 2, //new memory
          \Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
          \Log::HISTORY_UPDATE_RELATION => 2,//kernel version
       ];
