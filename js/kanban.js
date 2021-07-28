@@ -798,7 +798,7 @@ class GLPIKanbanRights {
          });
          $('#kanban-bulk-add-dropdown li').on('click', function(e) {
             e.preventDefault();
-            const selection = $(e.target).closest('li');;
+            const selection = $(e.target).closest('li');
             // Traverse all the way up to the top-level overflow dropdown
             const dropdown = selection.closest('.kanban-dropdown');
             // Get the button that triggered the dropdown and then get the column that it is a part of
