@@ -1637,16 +1637,15 @@ class Inventory extends DbTestCase {
          'LIMIT' => countElementsInTable(\Log::getTable()),
          'OFFSET' => $nblogsnow,
       ]);
-      $this->integer(count($logs))->isIdenticalTo(51);
+      $this->integer(count($logs))->isIdenticalTo(47);
 
       $expected_types_count = [
-         0 => 7, //Agent version, disks usage
+         0 => 5, //Agent version, disks usage
          \Log::HISTORY_CREATE_ITEM => 18, //virtual machines, os, manufacturer, net ports, net names, ...
          \Log::HISTORY_DELETE_SUBITEM => 4,//net<orkport and networkname
          \Log::HISTORY_ADD_SUBITEM => 10,//network port/name, ip adrress, VMs
          \Log::HISTORY_UPDATE_SUBITEM => 4,//disks usage
          \Log::HISTORY_ADD_DEVICE => 2, //new memory
-         \Log::HISTORY_DELETE_DEVICE => 2, //new memory
          \Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
          \Log::HISTORY_UPDATE_RELATION => 2,//kernel version
       ];

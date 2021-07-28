@@ -123,12 +123,12 @@ abstract class Device extends InventoryAsset
          }
 
          foreach ($existing as $cid) {
-            $device->delete(['id' => $cid], true);
             $DB->delete(
                $itemdevice->getTable(), [
-                  $fk => 0
+                  $fk => $cid
                ]
             );
+            $device->delete(['id' => $cid], true);
          }
       }
    }
