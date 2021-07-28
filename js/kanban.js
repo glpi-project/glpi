@@ -402,14 +402,14 @@ class GLPIKanbanRights {
 
          // Dropdown for overflow (Card)
 
-         let card_overflow_dropdown = "<ul id='kanban-item-overflow-dropdown' class='kanban-dropdown  dropdown-menu' style='display: none'>";
+         let card_overflow_dropdown = "<ul id='kanban-item-overflow-dropdown' class='kanban-dropdown dropdown-menu' style='display: none'>";
          card_overflow_dropdown += `
-            <li class='kanban-item-goto'>
+            <li class='kanban-item-goto dropdown-item'>
                <a href="#"><i class="fas fa-share"></i>${__('Go to')}</a>
             </li>`;
          if (self.rights.canDeleteItem()) {
             card_overflow_dropdown += `
-                <li class='kanban-item-remove'>
+                <li class='kanban-item-remove  dropdown-item'>
                    <span>
                       <i class="fas fa-trash-alt"></i>${__('Delete')}
                    </span>
@@ -1915,7 +1915,7 @@ class GLPIKanbanRights {
             $(column_left).append("<i class='fas fa-caret-right fa-lg kanban-collapse-column btn btn-sm btn-ghost-secondary' title='" + __('Toggle collapse') + "'/>");
          }
          $(column_left).append("<span class='kanban-column-title badge "+(column['color_class'] || '')+"' style='background-color: "+column['header_color']+"; color: "+column['header_fg_color']+";'>" + column['name'] + "</span></span>");
-         $(column_right).append("<span class='kanban_nb bg-secondary'>"+count+"</span>");
+         $(column_right).append("<span class='kanban_nb badge bg-secondary'>"+count+"</span>");
          $(column_right).append(getColumnToolbarElement(column));
          $(column_el).prepend(column_header);
          // Re-apply header text color to handle the actual background color now that the element is actually in the DOM.

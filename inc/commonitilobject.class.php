@@ -8180,7 +8180,7 @@ abstract class CommonITILObject extends CommonDBTM {
    abstract public static function getContentTemplatesParametersClass(): string;
 
    static function getDataToDisplayOnKanban($ID, $criteria = []) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $items      = [];
 
