@@ -82,6 +82,14 @@
    }
 }
 
+.horizontal-layout {
+   .itil-object {
+      @include media-breakpoint-up(sm) {
+         height: calc(100vh - 257px);
+      }
+   }
+}
+
 #itil-object-container ~ #debugajax {
    position: fixed;
    bottom: 10px;
