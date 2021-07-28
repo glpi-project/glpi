@@ -59,7 +59,7 @@ class LoginPassCredential extends AbstractCredential
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Login')."</td>";
       echo "<td align='center'>";
-      \Html::input('login', ['value' => $this->login ?? '']);
+      echo \Html::input('login', ['value' => $this->login ?? '']);
       echo "</td>";
       echo "<td>".__('Password')."</td>";
       echo "<td align='center'>";
