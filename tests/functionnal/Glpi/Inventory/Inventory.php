@@ -1404,6 +1404,7 @@ class Inventory extends DbTestCase {
       $this->array($components['Item_DeviceMemory'])->hasSize(2);
       $mem_component1 = array_pop($components['Item_DeviceMemory']);
       $mem_component2 = array_pop($components['Item_DeviceMemory']);
+      $this->integer($mem_component1['devicememories_id'])->isGreaterThan(0);
       $expected_mem_component = [
          'items_id' => $mem_component1['items_id'],
          'itemtype' => "Computer",
