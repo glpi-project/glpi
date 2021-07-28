@@ -116,12 +116,14 @@
                         //height: calc(100% - 55px); // remove alert height
                         height: 100%;
 
-                        .form-field.itil-textarea-content {
+                        .form-field.itil-textarea-content,
+                        .field-container {
                            flex: 1;
                            display: flex;
                            flex-direction: column;
 
                            .tox.tox-tinymce {
+                              display: flex;
                               flex: 1;
                            }
                         }
