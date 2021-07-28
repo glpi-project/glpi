@@ -38,7 +38,7 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (!isset($_POST["action"])) {
-   Toolbox::logError(__('No action definde')."\n");
+   Toolbox::logError(__('No action define')."\n");
    exit;
 }
 
@@ -57,7 +57,7 @@ switch ($_POST['action']) {
       if ((isset($_POST['itemtype'])&& class_exists($_POST['itemtype']))
          && isset($_POST['items_id'])) {
          Socket::dropdown(['name'         =>  $_POST['dom_name'],
-                           'condition'    => ['socketmodels_id'   => isset ($_POST['socketmodels_id']) ?2 : 0 ,
+                           'condition'    => ['socketmodels_id'   => isset ($_POST['socketmodels_id']) ?? 0 ,
                                              'itemtype'           => $_POST['itemtype'],
                                              'items_id'           => $_POST['items_id']],
                            'displaywith'  => ['itemtype', 'items_id', 'networkports_id'],

@@ -75,7 +75,7 @@ class Socket extends CommonDropdown {
          $params = ['value' => $this->fields[$field['name']]];
          $params['min'] = 0;
          $params['step'] = 1;
-         $params['toadd'] = ['auto' => __("Auto")];
+         $params['toadd'] = [-1 => __("Auto")];
          Dropdown::showNumber($field['name'], $params);
       }
 
@@ -250,7 +250,7 @@ class Socket extends CommonDropdown {
 
    function post_getEmpty() {
       $this->fields['itemtype'] = 'Computer';
-      $this->fields['position'] = 'auto';
+      $this->fields['position'] = -1;
    }
 
 
