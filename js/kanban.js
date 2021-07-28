@@ -798,7 +798,7 @@ class GLPIKanbanRights {
          });
          $('#kanban-bulk-add-dropdown li').on('click', function(e) {
             e.preventDefault();
-            const selection = $(e.target);
+            const selection = $(e.target).closest('li');;
             // Traverse all the way up to the top-level overflow dropdown
             const dropdown = selection.closest('.kanban-dropdown');
             // Get the button that triggered the dropdown and then get the column that it is a part of
@@ -1672,7 +1672,7 @@ class GLPIKanbanRights {
 
          const uniqueID = Math.floor(Math.random() * 999999);
          const formID = "form_add_" + itemtype + "_" + uniqueID;
-         let add_form = "<form id='" + formID + "' class='kanban-add-form kanban-bulk-add-form kanban-form no-track dropdown-menu'>";
+         let add_form = "<form id='" + formID + "' class='kanban-add-form kanban-bulk-add-form kanban-form no-track'>";
 
          add_form += `
             <div class='kanban-item-header'>
