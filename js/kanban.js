@@ -2115,7 +2115,7 @@ class GLPIKanbanRights {
                column_id: column_id
             }
          }).done(function(column) {
-            if (column !== undefined && column.length > 0) {
+            if (column !== undefined && Object.keys(column).length > 0) {
                self.columns[column_id] = column[column_id];
                appendColumn(column_id, self.columns[column_id], null, revalidate);
             }

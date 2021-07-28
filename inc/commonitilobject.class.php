@@ -8309,10 +8309,6 @@ abstract class CommonITILObject extends CommonDBTM {
       $columns = [];
       $criteria = [];
       if (!empty($column_ids)) {
-         $card_column_ids = array_filter($column_ids, static function($column_id) {
-            // Never show closed items since there would be too many items. This column will instead be a drop-zone only.
-            return (int) $column_id !== self::CLOSED;
-         }, ARRAY_FILTER_USE_BOTH);
          $criteria = [
             'status'   => $card_column_ids
          ];
