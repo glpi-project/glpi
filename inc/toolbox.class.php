@@ -3275,7 +3275,7 @@ HTML;
          $color = str_replace("#", "", $color);
 
          // if transparency present, get only the color part
-         if (preg_match('/^[a-fA-F0-9]+$/', $color) && strlen($color) === 8) {
+         if (strlen($color) === 8 && preg_match('/^[a-fA-F0-9]+$/', $color)) {
             $tmp = $color;
             $alpha = hexdec(substr($tmp, 6, 2));
             $color = substr($color, 0, 6);
