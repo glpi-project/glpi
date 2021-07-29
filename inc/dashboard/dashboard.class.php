@@ -68,9 +68,9 @@ class Dashboard extends \CommonDBTM {
     *
     * @param bool $force if true, don't use cache
     *
-    * @return int
+    * @return false|int Id of the loaded dashboard, or false on failure
     */
-   public function load(bool $force = false): int {
+   public function load(bool $force = false) {
       $loaded = true;
       if ($force
           || count($this->fields) == 0
