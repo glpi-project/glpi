@@ -44,6 +44,7 @@ use Html;
 use Plugin;
 use Profile;
 use Session;
+use ShareDashboardDropdown;
 use Telemetry;
 use Toolbox;
 use User;
@@ -899,69 +900,24 @@ HTML;
 
       echo "<form class='card no-shadow display-rights-form'>";
 
-      $profiles_value = self::$all_dashboards[$this->current]['rights']['profiles_id'] ?? [];
-      $profile_item = new Profile;
-      $profiles = $profile_item->find();
-      $profiles_items = [];
-      foreach ($profiles as $profile) {
-         $new_key = 'profiles_id-'.$profile['id'];
-         $profiles_items[$new_key] = $profile['name'];
-         if (in_array($profile['id'], $profiles_value)) {
-            $values[$new_key] = $new_key;
-         }
-      }
-
-      $entities_value = self::$all_dashboards[$this->current]['rights']['entities_id'] ?? [];
-      $entity_item = new Entity;
-      $entities = $entity_item->find(getEntitiesRestrictCriteria(Entity::getTable()));
-      $entities_items = [];
-      foreach ($entities as $entity) {
-         $new_key = 'entities_id-'.$entity['id'];
-         $entities_items[$new_key] = $entity['completename'];
-         if (in_array($entity['id'], $entities_value)) {
-            $values[$new_key] = $new_key;
-         }
-      }
-
-      $users_value = self::$all_dashboards[$this->current]['rights']['users_id'] ?? [];
-      $users = iterator_to_array(User::getSqlSearchResult(false));
-      $users_items = [];
-      foreach ($users as $user) {
-         $new_key = 'users_id-'.$user['id'];
-         $users_items[$new_key] = $user['name'];
-         if (in_array($user['id'], $users_value)) {
-            $values[$new_key] = $new_key;
-         }
-      }
-
-      $groups_value = self::$all_dashboards[$this->current]['rights']['groups_id'] ?? [];
-      $group_item = new Group;
-      $groups = $group_item->find(getEntitiesRestrictCriteria(Group::getTable()));
-      $groups_items = [];
-      foreach ($groups as $group) {
-         $new_key = 'groups_id-'.$group['id'];
-         $groups_items[$new_key] = $group['name'];
-         if (in_array($group['id'], $groups_value)) {
-            $values[$new_key] = $new_key;
-         }
-      }
-
-      $possible_rights = [
-         _n("Profile", "Profiles", 1) => $profiles_items,
-         _n("Entity", "Entities", 1)  => $entities_items,
-         _n("User", "Users", 1)       => $users_items,
-         _n("Group", "Groups", 1)     => $groups_items,
-      ];
-
       echo "<label for='dropdown_rights_id$rand'>".
            __("Or share the dashboard to these target objects:").
            "</label><br>";
-      Dropdown::showFromArray('rights_id', $possible_rights, [
-         'values'   => $values,
-         'multiple' => true,
-         'rand'     => $rand,
-         'width'    => '100%'
-      ]);
+
+      $values = [];
+      $raw_values = [
+         'profiles_id' => self::$all_dashboards[$this->current]['rights']['profiles_id'] ?? [],
+         'entities_id' => self::$all_dashboards[$this->current]['rights']['entities_id'] ?? [],
+         'users_id'    => self::$all_dashboards[$this->current]['rights']['users_id'] ?? [],
+         'groups_id'   => self::$all_dashboards[$this->current]['rights']['groups_id'] ?? [],
+      ];
+
+      foreach ($raw_values as $fkey => $ids) {
+         foreach ($ids as $id) {
+            $values[] = $fkey . "-" . $id;
+         }
+      }
+      echo ShareDashboardDropdown::show($rand, $values);
       echo "<br><br>";
 
       echo "<a href='#' class='vsubmit save_rights'>".__("Save")."</a>";
