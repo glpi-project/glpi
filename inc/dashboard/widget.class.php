@@ -1843,20 +1843,29 @@ JAVASCRIPT;
       string $css_dom_parent = "",
       bool $revert = true
    ) {
+      global $GLPI_CACHE;
+
       $palette = self::getGradientPalette($bgcolor, $nb_series, $revert);
 
       $series_names  = implode(',', $palette['names']);
       $series_colors = implode(',', $palette['colors']);
 
+      $hash = sha1($series_names.$series_colors);
+      if ($GLPI_CACHE->has($hash)) {
+         return $GLPI_CACHE->get($hash);
+      }
+
       $scss = new Compiler();
       $scss->addImportPath(GLPI_ROOT);
 
-      $palette_css = $scss->compile("{$css_dom_parent} {
+      $palette_css = $scss->compileString("{$css_dom_parent} {
          \$ct-series-names: ({$series_names});
          \$ct-series-colors: ({$series_colors});
 
          @import 'css/chartist/generate';
-      }");
+      }")->getCss();
+
+      $GLPI_CACHE->set($hash, $palette_css);
 
       return $palette_css;
    }
