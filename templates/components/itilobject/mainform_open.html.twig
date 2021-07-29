@@ -10,9 +10,13 @@
    {% set form_url = path('front/tracking.injector.php') %}
 {% endif %}
 
+{% set track_changes = "true" %}
+{% if item.isNewItem %}
+   {% set track_changes = "false" %}
+{% endif %}
 
 <form method="POST" action="{{ form_url }}" enctype="{{ enctype }}"
-      data-track-changes="true" id="itil-form" class="{{ new_cls }}">
+      data-track-changes="{{ track_changes }}" id="itil-form" class="{{ new_cls }}">
    <input type="hidden" name="id" value="{{ item.fields['id'] ?? 0 }}">
    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
 
