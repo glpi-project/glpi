@@ -1615,7 +1615,6 @@ class Inventory extends DbTestCase {
       $this->boolean($inventory->inError())->isFalse();
       $this->array($inventory->getErrors())->isEmpty();
 
-
       //real computer update
       $json = file_get_contents(self::INV_FIXTURES . 'computer_3_updated.json');
 
