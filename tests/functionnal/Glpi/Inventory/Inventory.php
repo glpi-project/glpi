@@ -1798,7 +1798,7 @@ class Inventory extends DbTestCase {
       $this->integer(count($logs))->isIdenticalTo(127);
 
       $expected_types_count = [
-         \Log::HISTORY_DELETE_SUBITEM => 5,//net<orkport and networkname
+         \Log::HISTORY_DELETE_SUBITEM => 5,//networkport and networkname
          \Log::HISTORY_ADD_DEVICE => 41,
          \Log::HISTORY_CREATE_ITEM => 57, //virtual machines, os, manufacturer, net ports, net names, ...
          0 => 6, //Agent version, disks usage
