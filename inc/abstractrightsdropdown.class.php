@@ -95,23 +95,23 @@ abstract class AbstractRightsDropdown
       $possible_rights = [];
 
       // Add profiles if enabled
-      if (self::isTypeEnabled(Profile::class)) {
-         $possible_rights[_n("Profile", "Profiles", 1)] = self::getProfiles($text);
+      if (self::isTypeEnabled(Profile::getType())) {
+         $possible_rights[Profile::getType()] = self::getProfiles($text);
       }
 
       // Add entities if enabled
-      if (self::isTypeEnabled(Entity::class)) {
-         $possible_rights[_n("Entity", "Entities", 1)] = self::getEntities($text);
+      if (self::isTypeEnabled(Entity::getType())) {
+         $possible_rights[Entity::getType()] = self::getEntities($text);
       }
 
       // Add users if enabled
-      if (self::isTypeEnabled(User::class)) {
-         $possible_rights[_n("User", "Users", 1)] = self::getUsers($text);
+      if (self::isTypeEnabled(User::getType())) {
+         $possible_rights[User::getType()] = self::getUsers($text);
       }
 
       // Add groups if enabled
-      if (self::isTypeEnabled(Group::class)) {
-         $possible_rights[_n("Group", "Groups", 1)] = self::getGroups($text);
+      if (self::isTypeEnabled(Group::getType())) {
+         $possible_rights[Group::getType()] = self::getGroups($text);
       }
 
       $results = [];
@@ -125,7 +125,7 @@ abstract class AbstractRightsDropdown
             ];
          }
          $results[] = [
-            "text" => $itemtype,
+            "text" => $itemtype::getTypeName(1),
             "children" => $new_group,
          ];
       }

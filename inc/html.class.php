@@ -4817,7 +4817,12 @@ JS;
       }
 
       // manage multiple select (with multiple values)
-      if (isset($params['values']) && count($params['values'])) {
+      if (isset($params['values'])
+         && (
+            count($params['values'])
+            || !isset($params['value'])
+         )
+      ) {
          $values = array_combine($params['values'], $params['valuesnames']);
          $options['multiple'] = 'multiple';
          $options['selected'] = $params['values'];
