@@ -73,7 +73,7 @@ abstract class AbstractRightsDropdown
       $field_id = $name . "_" . mt_rand();
 
       // Build url
-      $url = $CFG_GLPI['root_doc'] . "/ajax/getShareDashboardDropdownValue.php";
+      $url = $CFG_GLPI['root_doc'] . "/ajax/getRightDropdownValue.php";
 
       // Build params
       $params = [
