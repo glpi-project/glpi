@@ -1408,7 +1408,6 @@ class Html {
 
       echo Html::scss('css/palettes/' . $theme);
 
-
       // Custom CSS for active entity
       if ($DB instanceof DBmysql && $DB->connected) {
          $entity = new Entity();
