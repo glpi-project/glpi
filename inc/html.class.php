@@ -1369,7 +1369,6 @@ class Html {
       if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
          echo Html::scss('css/highcontrast');
       }
-      echo Html::scss('css/palettes/' . $theme);
 
       echo Html::css('css/print.css', ['media' => 'print']);
       echo "<link rel='shortcut icon' type='images/x-icon' href='".
@@ -1406,6 +1405,9 @@ class Html {
             }
          }
       }
+
+      echo Html::scss('css/palettes/' . $theme);
+
 
       // Custom CSS for active entity
       if ($DB instanceof DBmysql && $DB->connected) {
