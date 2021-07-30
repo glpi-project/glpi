@@ -4799,22 +4799,10 @@ JS;
          $allowclear = "true";
       }
 
-      unset($params['placeholder']);
-      unset($params['value']);
-      unset($params['valuename']);
-
       $options = [
          'id'        => $field_id,
          'selected'  => $value
       ];
-      if (!empty($params['specific_tags'])) {
-         foreach ($params['specific_tags'] as $tag => $val) {
-            if (is_array($val)) {
-               $val = implode(' ', $val);
-            }
-            $options[$tag] = $val;
-         }
-      }
 
       // manage multiple select (with multiple values)
       if (isset($params['values'])
@@ -4832,6 +4820,19 @@ JS;
          // simple select (multiple = no)
          if ($value !== null) {
             $values = ["$value" => $valuename];
+         }
+      }
+
+      unset($params['placeholder']);
+      unset($params['value']);
+      unset($params['valuename']);
+
+      if (!empty($params['specific_tags'])) {
+         foreach ($params['specific_tags'] as $tag => $val) {
+            if (is_array($val)) {
+               $val = implode(' ', $val);
+            }
+            $options[$tag] = $val;
          }
       }
 
