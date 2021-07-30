@@ -74,7 +74,7 @@ abstract class Device extends InventoryAsset
       ]);
 
       while ($row = $iterator->next()) {
-         $db_existing[$row[$fk]] = $row[$fk];
+         $db_existing[$row[$fk]][] = $row[$fk];
       }
 
       return $db_existing;
@@ -97,6 +97,7 @@ abstract class Device extends InventoryAsset
          $fk              = getForeignKeyFieldForTable($devicetable);
 
          $existing = $this->getExisting($itemdevicetable, $fk);
+         $deleted_items = [];
 
          foreach ($value as $val) {
             if (!isset($val->designation) || $val->designation == '') {
@@ -104,31 +105,43 @@ abstract class Device extends InventoryAsset
                $val->designation = $itemdevice->getTypeName(1);
             }
 
+            //create device or get existing device ID
             $device_id = $device->import(\Toolbox::addslashes_deep((array)$val));
-            if ($device_id && !in_array($device_id, $existing)) {
-               $itemdevice_data = [
-                  $fk                  => $device_id,
-                  'itemtype'           => $this->item->getType(),
-                  'items_id'           => $this->item->fields['id'],
-                  'is_dynamic'         => 1,
-               ] + (array)$val;
-               $itemdevice->add($itemdevice_data, [], $this->withHistory());
 
-               $this->itemdeviceAdded($itemdevice, $val);
-            } else {
-                $itemdevice->getFromDBByCrit([$fk => $device_id]);
-                $itemdevice->update(['id' => $itemdevice->fields['id']] + \Toolbox::addslashes_deep((array)$val));
-                unset($existing[$device_id]);
+            //remove all existing instances
+            if (!isset($deleted_items[$device_id])) {
+               $DB->delete(
+                  $itemdevice->getTable(), [
+                     $fk => $device_id,
+                     'items_id'     => $this->item->fields['id'],
+                     'itemtype'     => $this->item->getType(),
+                     'is_dynamic'   => 1
+
+                  ]
+               );
+               $deleted_items[$device_id] = $device_id;
             }
+
+            $itemdevice_data = \Toolbox::addslashes_deep([
+               $fk                  => $device_id,
+               'itemtype'           => $this->item->getType(),
+               'items_id'           => $this->item->fields['id'],
+               'is_dynamic'         => 1
+            ] + (array)$val);
+            $itemdevice->add($itemdevice_data, [], isset($existing[$device_id]) ? $this->withHistory() : false);
+            $this->itemdeviceAdded($itemdevice, $val);
+            unset($existing[$device_id]);
          }
 
-         foreach ($existing as $cid) {
+         foreach (array_keys($existing) as $deviceid) {
+            //first, remove items
             $DB->delete(
                $itemdevice->getTable(), [
-                  $fk => $cid
+                  $fk => $deviceid
                ]
             );
-            $device->delete(['id' => $cid], true);
+            //then device itself
+            $device->delete(['id' => $deviceid], true);
          }
       }
    }
