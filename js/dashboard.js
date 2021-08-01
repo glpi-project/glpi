@@ -959,8 +959,7 @@ var Dashboard = {
                if (crd.card_id === card_id) {
                   const html = card_result;
                   has_result = true;
-                  card.children('.grid-stack-item-content')
-                  .html(html);
+                  card.children('.grid-stack-item-content').html(html);
 
                   Dashboard.fitNumbers(card);
                   Dashboard.animateNumbers(card);
