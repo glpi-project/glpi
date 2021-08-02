@@ -3729,6 +3729,7 @@ class Dropdown {
 
       foreach ($post['toadd'] ?? [] as $toadd) {
          $results[] = $toadd;
+         $count++;
       }
 
       if (count($users)) {
