@@ -1858,12 +1858,12 @@ JAVASCRIPT;
       $scss = new Compiler();
       $scss->addImportPath(GLPI_ROOT);
 
-      $palette_css = $scss->compileString("{$css_dom_parent} {
+      $palette_css = $scss->compile("{$css_dom_parent} {
          \$ct-series-names: ({$series_names});
          \$ct-series-colors: ({$series_colors});
 
          @import 'css/chartist/generate';
-      }")->getCss();
+      }");
 
       $GLPI_CACHE->set($hash, $palette_css);
 
