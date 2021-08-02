@@ -87,7 +87,7 @@ trait Inventoriable {
       echo '<tr>';
       echo '<th colspan="4">'.__('Inventory information');
 
-      $download_file = $this->getInventoryFileName();
+      $download_file = str_replace(GLPI_INVENTORY_DIR . '/', '', $this->getInventoryFileName());
       if ($download_file !== null) {
           $href = sprintf(
              "%s/front/document.send.php?file=_inventory/%s",
