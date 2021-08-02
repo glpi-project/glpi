@@ -95,12 +95,15 @@ class Search extends DbTestCase {
 
       $data = $this->doSearch('Computer', $search_params);
 
-      //try to find LEFT JOIN clause
+      //try to find LEFT JOIN clauses
       $this->string($data['sql']['search'])
          ->matches("/"
-         ."(LEFT\s*JOIN\s*`glpi_operatingsystems`\s*"
-         ."ON\s*\(`glpi_operatingsystems`\.`id`\s*=\s*`glpi_items_operatingsystems_OperatingSystem`\.`operatingsystems_id`\s*"
-         ."AND `glpi_items_operatingsystems_OperatingSystem`\.`itemtype`\s*=\s*'Computer'\s*\))"
+         ."LEFT\s*JOIN\s*`glpi_items_operatingsystems`\s*AS\s*`glpi_items_operatingsystems_OperatingSystem`\s*"
+         ."ON\s*\(`glpi_items_operatingsystems_OperatingSystem`\.`items_id`\s*=\s*`glpi_computers`\.`id`\s*"
+         ."AND `glpi_items_operatingsystems_OperatingSystem`\.`itemtype`\s*=\s*'Computer'\s*"
+         ."AND `glpi_items_operatingsystems_OperatingSystem`\.`is_deleted`\s*=\s*0\s*\)\s*"
+         ."LEFT\s*JOIN\s*`glpi_operatingsystems`\s*"
+         ."ON\s*\(`glpi_items_operatingsystems_OperatingSystem`\.`operatingsystems_id`\s*=\s*`glpi_operatingsystems`\.`id`\s*\)"
          ."/im");
 
       //try to match WHERE clause
