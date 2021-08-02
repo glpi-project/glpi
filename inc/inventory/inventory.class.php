@@ -364,7 +364,7 @@ class Inventory
          $id = $item->fields['id'];
 
          $filename = GLPI_INVENTORY_DIR . '/' . $this->conf->buildInventoryFileName($itemtype, $id, $ext);
-         $subdir = dirname(dirname);
+         $subdir = dirname($filename);
          if (!is_dir($subdir)) {
             mkdir($subdir, 0755, true);
          }
