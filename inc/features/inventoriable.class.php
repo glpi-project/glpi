@@ -62,7 +62,7 @@ trait Inventoriable {
     */
    public function getInventoryFileName(bool $prepend_dir_path = true): ?string {
       if (!$this->isDynamic()) {
-         return;
+         return null;
       }
 
       $inventory_dir_path = GLPI_INVENTORY_DIR . '/';
