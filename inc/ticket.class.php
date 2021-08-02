@@ -2669,7 +2669,6 @@ JAVASCRIPT;
 
             echo "<label for='content'>";
             echo "$label&nbsp;&nbsp;";
-            Html::addTemplateDocumentationLink(ParametersPreset::TICKET_SOLUTION);
             echo "</label>";
             Html::textarea(['name'              => 'content',
                             'value'             => '',
@@ -2682,6 +2681,7 @@ JAVASCRIPT;
                             'enable_images'     => false,
                             'cols'              => 12,
                             'rows'              => 80]);
+            Html::addTemplateDocumentationLink(ParametersPreset::TICKET_SOLUTION);
             $parameters = ParametersPreset::getForTicketSolution();
             Html::activateUserTemplateAutocompletion(
                'textarea[name=content]',

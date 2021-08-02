@@ -37,6 +37,9 @@ use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
 use Glpi\ContentTemplates\Parameters\ProblemParameters;
 use Glpi\ContentTemplates\Parameters\TicketParameters;
+use SolutionTemplate;
+use TaskTemplate;
+use TicketTemplate;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -77,6 +80,32 @@ class ParametersPreset
 
          default:
             return [];
+      }
+   }
+
+   /**
+    * Get context to be displayed in the variable list page for each keys
+    *
+    * @param string $key
+    *
+    * @return string
+    */
+   public static function getContextByKey(string $key): string {
+      switch ($key) {
+         case self::ABSTRACT_TEMPLATE:
+            $types = [
+               TicketTemplate::getTypeName(0),
+               TaskTemplate::getTypeName(0),
+               SolutionTemplate::getTypeName(0),
+            ];
+
+            return strtolower(implode("/", $types));
+
+         case self::TICKET_SOLUTION:
+            return __("ticket solutions");
+
+         default:
+            return "";
       }
    }
 

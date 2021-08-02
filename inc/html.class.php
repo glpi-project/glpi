@@ -4099,16 +4099,19 @@ JAVASCRIPT
       global $CFG_GLPI;
 
       $url = "/front/contenttemplates/documentation.php?preset=$preset_target";
+      $link =  $CFG_GLPI['root_doc'] . $url;
       $params = [
-         'link' => $CFG_GLPI['root_doc'] . $url,
-         'linktarget' => '_blank',
+         'target' => '_blank',
+         'style'  => 'margin-top:6px; display: block'
       ];
 
       if (!is_null($link_id)) {
-         $params['linkid'] = $link_id;
+         $params['id'] = $link_id;
       }
 
-      Html::showToolTip("Documentation", $params);
+      $text = __('Available variables') . ' <i class="fas fa-question-circle"></i>';
+
+      echo Html::link($text, $link, $params);
    }
 
    /**
@@ -4130,8 +4133,7 @@ JAVASCRIPT
       echo Html::scriptBlock(<<<JAVASCRIPT
          $(
             function() {
-               $('{$selector}').parent().prev().append("&nbsp;&nbsp;");
-               $('{$selector}').parent().prev().append($('#{$link_id}'));
+               $('{$selector}').parent().append($('#{$link_id}'));
             }
          );
 JAVASCRIPT
@@ -5321,7 +5323,7 @@ JAVASCRIPT;
          unset($options['confirm']);
       }
       // Do not escape title if it is an image or a i tag (fontawesome)
-      if (!preg_match('/^<i(mg)?.*/', $text)) {
+      if (!preg_match('/<i(mg)?.*/', $text)) {
          $text = Html::cleanInputText($text);
       }
 

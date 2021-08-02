@@ -52,8 +52,7 @@ $md->header_id_func = function($headerName) {
    $headerName = str_replace(['(', ')'], '', $headerName);
    return rawurlencode(strtolower(strtr($headerName, [' ' => '-'])));
 };
-$parameters = ParametersPreset::getByKey($preset);
-echo $md->transform(TemplateManager::generateMarkdownDocumentation($parameters));
+echo $md->transform(TemplateManager::generateMarkdownDocumentation($preset));
 
 echo "</div>";
 echo "</div>";

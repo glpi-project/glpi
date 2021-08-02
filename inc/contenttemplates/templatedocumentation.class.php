@@ -60,7 +60,15 @@ class TemplateDocumentation
     */
    protected $sections;
 
-   public function __construct() {
+   /**
+    * Context of the displayed variables
+    *
+    * @var string
+    */
+   protected $context;
+
+   public function __construct(string $context) {
+      $this->context = $context;
       $this->sections = [];
       $this->summary = [];
    }
@@ -75,7 +83,7 @@ class TemplateDocumentation
 
       // Build header
       $header = new MarkdownBuilder();
-      $header->addH1(__("Templates variables documentation"));
+      $header->addH1(__("Available variables ($this->context)"));
       $content .= $header->getMarkdown();
 
       // Build summary
