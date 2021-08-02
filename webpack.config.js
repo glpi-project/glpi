@@ -40,21 +40,9 @@ const path = require('path');
 const libOutputPath = 'public/lib';
 
 /*
- * GLPI core files build configuration.
- */
-var glpiConfig = {
-   entry: {
-      'glpi': path.resolve(__dirname, 'js/main.js'),
-   },
-   output: {
-      path: path.resolve(__dirname, 'public/build'),
-   },
-};
-
-/*
  * External libraries files build configuration.
  */
-var libsConfig = {
+let config = {
    entry: function () {
       // Create an entry per *.js file in lib/bundle directory.
       // Entry name will be name of the file (without ext).
@@ -144,6 +132,18 @@ var libsConfig = {
          'stream': 'stream-browserify',
       },
    },
+   mode: 'none', // Force 'none' mode, as optimizations will be done on release process
+   devtool: 'source-map', // Add sourcemap to files
+   stats: {
+      // Limit verbosity to only usefull information
+      all: false,
+      errors: true,
+      errorDetails: true,
+      warnings: true,
+
+      entrypoints: true,
+      timings: true,
+   },
 };
 
 var libs = {
@@ -215,11 +215,11 @@ for (let packageName in libs) {
       copyPatterns.push(copyParams);
    }
 
-   libsConfig.plugins.push(new CopyWebpackPlugin({patterns:copyPatterns}));
+   config.plugins.push(new CopyWebpackPlugin({patterns:copyPatterns}));
 }
 
 // Replace jstree images
-libsConfig.plugins.push(
+config.plugins.push(
    new CopyWebpackPlugin(
       {
          patterns: [
@@ -235,24 +235,4 @@ libsConfig.plugins.push(
    )
 );
 
-module.exports = function() {
-   var configs = [glpiConfig, libsConfig];
-
-   for (let config of configs) {
-      config.mode = 'none'; // Force 'none' mode, as optimizations will be done on release process
-      config.devtool = 'source-map'; // Add sourcemap to files
-
-      // Limit verbosity to only usefull information
-      config.stats = {
-         all: false,
-         errors: true,
-         errorDetails: true,
-         warnings: true,
-
-         entrypoints: true,
-         timings: true,
-      };
-   }
-
-   return configs;
-};
+module.exports = config;
