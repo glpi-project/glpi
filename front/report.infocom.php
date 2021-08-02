@@ -91,7 +91,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
 
    $itemtable = getTableForItemType($itemtype);
    // report need name and ticket_tco, many asset type don't have it therefore are not compatible
-   if(!$DB->fieldExists($itemtable, "ticket_tco", false)){
+   if (!$DB->fieldExists($itemtable, "ticket_tco", false)) {
       return false;
    }
    $criteria = [
