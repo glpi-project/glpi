@@ -88,7 +88,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
    global $DB, $valeurtot, $valeurnettetot, $valeurnettegraphtot, $valeurgraphtot, $CFG_GLPI, $stat, $chart_opts;
 
    $itemtable = getTableForItemType($itemtype);
-   if($DB->fieldExists($itemtable, "ticket_tco", false)){ // those are in the std infocom report
+   if ($DB->fieldExists($itemtable, "ticket_tco", false) ){ // those are in the std infocom report
       return false;
    }
 
@@ -122,17 +122,17 @@ function display_infocoms_report($itemtype, $begin, $end) {
          $criteria['WHERE'] =  getEntitiesRestrictCriteria("glpi_softwarelicenses");
          break;
       default:
-         if (property_exists($itemtype, 'items_id') && property_exists($itemtype, 'itemtype')){
-            $childitemtype = $itemtype::$itemtype; // acces to child via $itemtype static 
+         if (property_exists($itemtype, 'items_id') && property_exists($itemtype, 'itemtype') ){
+            $childitemtype = $itemtype::$itemtype; // acces to child via $itemtype static
             $criteria['INNER JOIN'][$childitemtype::getTable()] = [
                'ON'  => [
-                  $itemtype::getTable()     
+                  $itemtype::getTable()
                      => $itemtype::$items_id,
                      $childitemtype::getTable() => 'id'
                ]
             ];
             $criteria['WHERE'] =  getEntitiesRestrictCriteria($itemtable);
-         }         
+         }
          break;
    }
 
