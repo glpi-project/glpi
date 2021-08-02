@@ -32,7 +32,6 @@
 
 include ('../../inc/includes.php');
 
-use Glpi\ContentTemplates\ParametersPreset;
 use Glpi\ContentTemplates\TemplateManager;
 use Michelf\MarkdownExtra;
 
