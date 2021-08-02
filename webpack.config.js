@@ -101,25 +101,23 @@ var libsConfig = {
          {
             // Copy images and fonts
             test: /\.((gif|png|jp(e?)g)|(eot|ttf|svg|woff2?))$/,
-            use: {
-               loader: 'file-loader',
-               options: {
-                  name: function (filename) {
-                     // Keep only relative path
-                     var sanitizedPath = path.relative(__dirname, filename);
+            type: 'asset/resource',
+            generator: {
+               filename: function (pathData) {
+                  // Keep only relative path
+                  var sanitizedPath = path.relative(__dirname, pathData.filename);
 
-                     // Sanitize name
-                     sanitizedPath = sanitizedPath.replace(/[^\\/\w-.]/, '');
+                  // Sanitize name
+                  sanitizedPath = sanitizedPath.replace(/[^\\/\w-.]/, '');
 
-                     // Remove the first directory (lib, node_modules, ...) and empty parts
-                     // and replace directory separator by '/' (windows case)
-                     sanitizedPath = sanitizedPath.split(path.sep)
-                        .filter(function (part, index) {
-                           return '' != part && index != 0;
-                        }).join('/');
+                  // Remove the first directory (lib, node_modules, ...) and empty parts
+                  // and replace directory separator by '/' (windows case)
+                  sanitizedPath = sanitizedPath.split(path.sep)
+                     .filter(function (part, index) {
+                        return '' != part && index != 0;
+                     }).join('/');
 
-                     return sanitizedPath;
-                  },
+                  return sanitizedPath;
                },
             },
          },
