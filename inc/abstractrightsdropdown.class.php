@@ -213,9 +213,7 @@ abstract class AbstractRightsDropdown
     * @return array
     */
    protected static function getUsers(string $text): array {
-      $users = iterator_to_array(
-         User::getSqlSearchResult(false, "all", -1, 0, [], $text, 0, self::LIMIT)
-      );
+      $users = User::getSqlSearchResult(false, "all", -1, 0, [], $text, 0, self::LIMIT);
       $users_items = [];
       foreach ($users as $user) {
          $new_key = 'users_id-'.$user['id'];
