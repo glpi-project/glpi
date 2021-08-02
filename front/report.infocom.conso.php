@@ -280,7 +280,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
 }
 
 
-$types = $CFG_GLPI["infocom_types"] ;
+$types = $CFG_GLPI["infocom_types"];
 
 $i = 0;
 echo "<table width='90%'><tr><td class='center top'>";
