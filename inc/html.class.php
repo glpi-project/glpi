@@ -1378,7 +1378,6 @@ class Html {
       if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
          echo Html::scss('css/highcontrast');
       }
-      echo Html::scss('css/palettes/' . $theme);
 
       echo Html::css('css/print.css', ['media' => 'print']);
       echo "<link rel='shortcut icon' type='images/x-icon' href='".
@@ -1415,6 +1414,8 @@ class Html {
             }
          }
       }
+
+      echo Html::scss('css/palettes/' . $theme);
 
       // Custom CSS for active entity
       if ($DB instanceof DBmysql && $DB->connected) {
@@ -4890,25 +4891,18 @@ JAVASCRIPT
          $allowclear = "true";
       }
 
-      unset($params['placeholder']);
-      unset($params['value']);
-      unset($params['valuename']);
-
       $options = [
          'id'        => $field_id,
          'selected'  => $value
       ];
-      if (!empty($params['specific_tags'])) {
-         foreach ($params['specific_tags'] as $tag => $val) {
-            if (is_array($val)) {
-               $val = implode(' ', $val);
-            }
-            $options[$tag] = $val;
-         }
-      }
 
       // manage multiple select (with multiple values)
-      if (isset($params['values']) && count($params['values'])) {
+      if (isset($params['values'])
+         && (
+            count($params['values'])
+            || !isset($params['value'])
+         )
+      ) {
          $values = array_combine($params['values'], $params['valuesnames']);
          $options['multiple'] = 'multiple';
          $options['selected'] = $params['values'];
@@ -4918,6 +4912,19 @@ JAVASCRIPT
          // simple select (multiple = no)
          if ($value !== null) {
             $values = ["$value" => $valuename];
+         }
+      }
+
+      unset($params['placeholder']);
+      unset($params['value']);
+      unset($params['valuename']);
+
+      if (!empty($params['specific_tags'])) {
+         foreach ($params['specific_tags'] as $tag => $val) {
+            if (is_array($val)) {
+               $val = implode(' ', $val);
+            }
+            $options[$tag] = $val;
          }
       }
 

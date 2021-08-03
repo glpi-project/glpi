@@ -4412,9 +4412,6 @@ JAVASCRIPT;
          case "glpi_tickets.status" :
          case "glpi_problems.status" :
          case "glpi_changes.status" :
-            if ($val == 'all') {
-               return "";
-            }
             $tocheck = [];
             if ($item = getItemForItemtype($itemtype)) {
                switch ($val) {
@@ -4439,6 +4436,10 @@ JAVASCRIPT;
 
                   case 'notold' :
                      $tocheck = $item::getNotSolvedStatusArray();
+                     break;
+
+                  case 'all' :
+                     $tocheck = array_keys($item->getAllStatusArray());
                      break;
                }
             }
