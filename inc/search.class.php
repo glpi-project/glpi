@@ -4467,6 +4467,8 @@ JAVASCRIPT;
 
          case "glpi_tickets.global_validation" :
          case "glpi_ticketvalidations.status" :
+         case "glpi_changes.global_validation" :
+         case "glpi_changevalidations.status" :
             if ($val == 'all') {
                return "";
             }
