@@ -126,9 +126,8 @@ function display_infocoms_report($itemtype, $begin, $end) {
             $childitemtype = $itemtype::$itemtype; // acces to child via $itemtype static
             $criteria['INNER JOIN'][$childitemtype::getTable()] = [
                'ON'  => [
-                  $itemtype::getTable()
-                     => $itemtype::$items_id,
-                     $childitemtype::getTable() => 'id'
+                  $itemtype::getTable() => $itemtype::$items_id,
+                  $childitemtype::getTable() => 'id'
                ]
             ];
             $criteria['WHERE'] =  getEntitiesRestrictCriteria($itemtable);
