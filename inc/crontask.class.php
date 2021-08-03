@@ -914,7 +914,7 @@ class CronTask extends CommonDBTM{
          }
       }
 
-      if (self::get_lock()) {
+      if ($mode === -CronTask::MODE_EXTERNAL || self::get_lock()) {
          for ($i=1; $i<=$max; $i++) {
             $msgprefix = sprintf(
                //TRANS: %1$s is mode (external or internal), %2$s is an order number,
