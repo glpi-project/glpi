@@ -74,7 +74,7 @@ trait Inventoriable {
          $filename = $conf->buildInventoryFileName(static::getType(), $this->fields['id'], 'json');
          if (!file_exists($inventory_dir_path . $filename)) {
             Toolbox::logWarning('Inventory file missing: ' . $filename);
-            $filename = null;
+            return null;
          }
       }
 
