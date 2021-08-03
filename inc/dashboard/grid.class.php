@@ -34,17 +34,13 @@ namespace Glpi\Dashboard;
 
 use DBConnection;
 use Dropdown;
-use Entity;
-use Group;
 use Html;
 use Plugin;
-use Profile;
 use Ramsey\Uuid\Uuid;
 use Session;
 use ShareDashboardDropdown;
 use Telemetry;
 use Toolbox;
-use User;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
