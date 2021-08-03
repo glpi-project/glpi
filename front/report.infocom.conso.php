@@ -122,7 +122,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
          $criteria['WHERE'] =  getEntitiesRestrictCriteria("glpi_softwarelicenses");
          break;
       default:
-         if (property_exists($itemtype, 'items_id') && property_exists($itemtype, 'itemtype')) {
+         if (is_a($itemtype, CommonDBChild::class, true)) {
             $childitemtype = $itemtype::$itemtype; // acces to child via $itemtype static
             $criteria['INNER JOIN'][$childitemtype::getTable()] = [
                'ON'  => [
