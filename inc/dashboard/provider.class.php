@@ -1667,7 +1667,7 @@ class Provider {
          $groups_id = null;
          if ((int) $apply_filters['group_tech'] > 0) {
             $groups_id =  (int) $apply_filters['group_tech'];
-         } else if ((int) $apply_filters['group_tech'] == -1) {
+         } else if ($apply_filters['group_tech'] == 'mygroups') {
             $groups_id =  'mygroups';
          }
 
@@ -1786,7 +1786,7 @@ class Provider {
          $groups_id = null;
          if ((int) $apply_filters['group_tech'] > 0) {
             $groups_id =  (int) $apply_filters['group_tech'];
-         } else if ((int) $apply_filters['group_tech'] == -1) {
+         } else if ($apply_filters['group_tech'] == 'mygroups') {
             $groups_id =  $_SESSION['glpigroups'];
          }
 
@@ -1829,7 +1829,7 @@ class Provider {
             $users_id = $_SESSION['glpiID'];
          } else {
             // Invalid value, should never happen
-            $users_id = -1;
+            $users_id = 'myself';
          }
 
          if ($DB->fieldExists($table, 'users_id_tech')) {
