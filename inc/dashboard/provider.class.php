@@ -1782,7 +1782,6 @@ class Provider {
       }
 
       if (isset($apply_filters['group_tech'])) {
-
          $groups_id = null;
          if ((int) $apply_filters['group_tech'] > 0) {
             $groups_id =  (int) $apply_filters['group_tech'];
@@ -1823,42 +1822,42 @@ class Provider {
       }
 
       if (isset($apply_filters['user_tech'])) {
+         $users_id = null;
          if ((int) $apply_filters['user_tech'] > 0) {
             $users_id = (int) $apply_filters['user_tech'];
          } else if ($apply_filters['user_tech'] == 'myself') {
             $users_id = $_SESSION['glpiID'];
-         } else {
-            // Invalid value, should never happen
-            $users_id = 'myself';
          }
 
-         if ($DB->fieldExists($table, 'users_id_tech')) {
-            $where += [
-               "$table.users_id_tech" => $users_id,
-            ];
-         } else if (in_array($table, [
-            Ticket::getTable(),
-            Change::getTable(),
-            Problem::getTable(),
-         ])) {
-            $itemtype  = getItemTypeForTable($table);
-            $main_item = getItemForItemtype($itemtype);
-            $userlink  = $main_item->userlinkclass;
-            $ul_table  = $userlink::getTable();
-            $fk        = $main_item->getForeignKeyField();
+         if ($users_id !== null) {
+            if ($DB->fieldExists($table, 'users_id_tech')) {
+               $where += [
+                  "$table.users_id_tech" => $users_id,
+               ];
+            } else if (in_array($table, [
+               Ticket::getTable(),
+               Change::getTable(),
+               Problem::getTable(),
+            ])) {
+               $itemtype  = getItemTypeForTable($table);
+               $main_item = getItemForItemtype($itemtype);
+               $userlink  = $main_item->userlinkclass;
+               $ul_table  = $userlink::getTable();
+               $fk        = $main_item->getForeignKeyField();
 
-            $join += [
-               "$ul_table as ul" => [
-                  'ON' => [
-                     'ul'   => $fk,
-                     $table => 'id',
+               $join += [
+                  "$ul_table as ul" => [
+                     'ON' => [
+                        'ul'   => $fk,
+                        $table => 'id',
+                     ]
                   ]
-               ]
-            ];
-            $where += [
-               "ul.type"     => \CommonITILActor::ASSIGN,
-               "ul.users_id" => $users_id,
-            ];
+               ];
+               $where += [
+                  "ul.type"     => \CommonITILActor::ASSIGN,
+                  "ul.users_id" => $users_id,
+               ];
+            }
          }
       }
 
