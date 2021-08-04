@@ -32,6 +32,7 @@
 
 namespace Glpi\Application\View\Extension;
 
+use Glpi\Toolbox\RichText;
 use Glpi\Toolbox\Sanitizer;
 use Html;
 use Twig\Environment;
@@ -47,11 +48,9 @@ class HtmlExtension extends AbstractExtension {
    public function getFilters(): array {
       return [
          new TwigFilter('conv_datetime', [$this, 'convDateTime'], ['is_safe' => ['html']]),
-         new TwigFilter(
-            'safe_value',
-            [$this, 'getSafeValue'],
-            ['needs_environment' => true, 'is_safe_callback' => 'twig_escape_filter_is_safe']
-         ),
+         new TwigFilter('html_to_text', [$this, 'getTextFromHtml']),
+         new TwigFilter('safe_html', [$this, 'getSafeHtml'], ['is_safe' => ['html']]),
+         new TwigFilter('verbatim_value', [$this, 'getVerbatimValue']),
       ];
    }
 
@@ -87,26 +86,62 @@ class HtmlExtension extends AbstractExtension {
    }
 
    /**
-    * Return safe value for an itemtype field.
+    * Return safe HTML (rich text).
     * Value will be made safe, whenever it has been sanitize (value fetched from DB),
     * or not (value computed during runtime).
-    * It will then be escaped like it would be by the `escape` Twig filter.
+    * Result will not be escaped, to prevent having to use `|raw` filter.
     *
-    * @param Environment $env
-    * @param mixed  $string     The value to be escaped
-    * @param string $strategy   The escaping strategy
-    * @param string $charset    The charset
-    * @param bool   $autoescape Whether the function is called by the auto-escaping feature (true) or by the developer (false)
+    * @param mixed $string
     *
     * @return mixed
-    *
-    * @see twig_escape_filter()
     */
-   public function getSafeValue(Environment $env, $string, $strategy = 'html', $charset = null, $autoescape = false) {
+   public function getSafeHtml($string) {
+      if (!is_string($string)) {
+         return $string;
+      }
+
+      if (Sanitizer::isSanitized($string)) {
+         $string = Sanitizer::unsanitize($string);
+      }
+
+      return RichText::getSafeHtml($string);
+   }
+
+   /**
+    * Return plain text from HTML (rich text).
+    *
+    * @param mixed $string             HTML string to be made safe
+    * @param bool  $keep_presentation  Indicates whether the presentation elements have to be replaced by plaintext equivalents
+    * @param bool  $compact            Indicates whether the output should be compact (limited line length, no links URL, ...)
+    *
+    * @return mixed
+    */
+   public function getTextFromHtml($string, bool $keep_presentation = true, bool $compact = false) {
+      if (!is_string($string)) {
+         return $string;
+      }
+
+      if (Sanitizer::isSanitized($string)) {
+         $string = Sanitizer::unsanitize($string);
+      }
+
+      return RichText::getTextFromHtml($string, $keep_presentation, $compact);
+   }
+
+   /**
+    * Return verbatim value for an itemtype field.
+    * Returned value will be unsanitized if it has been transformed by GLPI sanitizing process (value fetched from DB).
+    * Twig autoescaping system will then ensure that value is correctly escaped in redered HTML.
+    *
+    * @param mixed  $string
+    *
+    * @return mixed
+    */
+   public function getVerbatimValue($string) {
       if (is_string($string) && Sanitizer::isSanitized($string)) {
          $string = Sanitizer::unsanitize($string);
       }
 
-      return twig_escape_filter($env, $string, $strategy, $charset, $autoescape);
+      return $string;
    }
 }

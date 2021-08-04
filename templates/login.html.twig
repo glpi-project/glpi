@@ -70,7 +70,7 @@
             <div class="col offset-md-1 p-2 text-center">
                {% if text_login|length > 0 %}
                   <div class="rich_text_container">
-                     {{ text_login|raw }}
+                     {{ text_login|safe_html }}
                   </div>
                {% endif %}
 

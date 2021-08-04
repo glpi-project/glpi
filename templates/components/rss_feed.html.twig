@@ -50,7 +50,7 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
             </td>
             <td>
                {% set rand = random() %}
-               {% set preview = getTextFromHtml(rss_item.content) %}
+               {% set preview = rss_item.content|html_to_text %}
                {% set preview = preview|length > 1000 ? preview|slice(0, 1000) ~ ' (...)' : preview %}
                <span id="rssitem{{ rand }}" class="pointer">{{ preview }}</span>
                {{ Html__showToolTip(rss_item.content, {

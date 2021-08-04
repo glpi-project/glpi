@@ -19,7 +19,7 @@
 <a href="#" class="dropdown-item show_entity_modal">
    <i class="fa-fw fas fa-layer-group"></i>
    &nbsp;
-   {{ getTextFromHtml(active_entity_name)|u.truncate(35, '...') }}
+   {{ active_entity_name|verbatim_value|u.truncate(35, '...') }}
 </a>
 
 <script type="text/javascript">

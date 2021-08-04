@@ -16,7 +16,7 @@
             data-bs-toggle="dropdown" data-bs-auto-close="outside">
             <div class="pe-2 d-none d-xl-block">
                <div>{{ active_profile_name|u.truncate(35, '...') }}</div>
-               <div class="mt-1 small text-muted">{{ getTextFromHtml(active_entity_name)|u.truncate(35, '...') }}</div>
+               <div class="mt-1 small text-muted">{{ active_entity_name|verbatim_value|u.truncate(35, '...') }}</div>
             </div>
             {% if current_user_picture is not empty %}
                <span class="avatar" style="background-image: url({{ path(current_user_picture) }})"></span>

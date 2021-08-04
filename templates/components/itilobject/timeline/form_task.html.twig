@@ -11,8 +11,8 @@
          {% endif %}
 
          <div class="text-content" data-bs-html="true" data-bs-custom-class="todo-list-tooltip"
-              title="{{ getTextFromHtml(entry_i['content'])|escape('html_attr') }}" data-bs-toggle="tooltip">
-            {{ getSafeHtml(entry_i['content'], true) }}
+              title="{{ entry_i['content']|html_to_text }}" data-bs-toggle="tooltip">
+            {{ entry_i['content']|safe_html }}
          </div>
 
          <div class="timeline-badges">
@@ -94,7 +94,7 @@
                <div class="col-12 col-md-9">
                   {{ fields.textareaField(
                      'content',
-                     getSafeHtml(subitem.fields['content'], true),
+                     subitem.fields['content'],
                      '',
                      {
                         'full_width': true,

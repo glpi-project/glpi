@@ -44,7 +44,7 @@ class Sanitizer {
 
    private const LEGACY_CHARS_MAPPING = [
       '<'  => '&lt;',
-      '>'  =>  '&gt;',
+      '>'  => '&gt;',
    ];
 
    /**
@@ -129,7 +129,11 @@ class Sanitizer {
     */
    public static function isSanitized(string $value): bool {
       $special_chars_pattern   = '/(<|>|(&(?!#?[a-z0-9]+;)))/i';
-      $sanitized_chars_pattern = '/(' . implode('|', array_merge(self::CHARS_MAPPING, self::LEGACY_CHARS_MAPPING)) . ')/';
+      $sanitized_chars = array_merge(
+         array_values(self::CHARS_MAPPING),
+         array_values(self::LEGACY_CHARS_MAPPING)
+      );
+      $sanitized_chars_pattern = '/(' . implode('|', $sanitized_chars) . ')/';
 
       return preg_match($special_chars_pattern, $value) === 0
          && preg_match($sanitized_chars_pattern, $value) === 1;
