@@ -43,7 +43,6 @@ class SearchExtension extends AbstractExtension {
    public function getFunctions(): array {
       return [
          new TwigFunction('showItem', [$this, 'showItem']),
-         new TwigFunction('displayConfigItem', [$this, 'displayConfigItem']),
       ];
    }
 
@@ -54,19 +53,7 @@ class SearchExtension extends AbstractExtension {
       int $row = 0,
       string $extraparams = ""
    ): string {
+      // This is mandatory as Search::showItem expected third param to be passed by reference...
       return Search::showItem($displaytype, $value, $num, $row, $extraparams);
-   }
-
-   /**
-    * Return string with extra attributes for a td col.
-    *
-    * @param string $itemtype
-    * @param int $id
-    * @param array array
-    *
-    * @return string
-    */
-   public function displayConfigItem(string $itemtype, int $id, array $data = []): string {
-      return Search::displayConfigItem($itemtype, $id, $data);
    }
 }

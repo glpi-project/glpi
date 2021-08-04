@@ -1,6 +1,6 @@
 <div class="d-inline-flex align-items-center search-controls">
    {% if showmassiveactions and count > 0 %}
-   {{ showMassiveActions(massiveactionparams) }}
+   {% do call('Html::showMassiveActions', [massiveactionparams]) %}
    {% endif %}
 
    {% if may_be_located and (count > 0 or data['search']['as_map'] == 1) %}
