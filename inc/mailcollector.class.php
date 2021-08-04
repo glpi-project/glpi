@@ -1408,10 +1408,6 @@ class MailCollector  extends CommonDBTM {
 
       $sender_email = $this->getEmailFromHeader($message, 'from');
 
-      if (preg_match('/^(mailer-daemon|postmaster)@/i', $sender_email) === 1) {
-         return [];
-      }
-
       $to = $this->getEmailFromHeader($message, 'to');
 
       $reply_to_addr = Toolbox::strtolower($this->getEmailFromHeader($message, 'reply-to'));
