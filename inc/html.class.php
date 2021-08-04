@@ -4093,7 +4093,7 @@ JAVASCRIPT
     * @param string|null $link_id  Useful if you need to interract with the link through client side code
     */
    public static function addTemplateDocumentationLink(
-      string  $preset_target,
+      string $preset_target,
       ?string $link_id = null
    ) {
       global $CFG_GLPI;
