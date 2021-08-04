@@ -11,7 +11,7 @@
         "docs": "https://github.com/glpi-project/doc"
     },
     "require": {
-        "php": ">=7.3",
+        "php": ">=7.4",
         "ext-ctype": "*",
         "ext-curl": "*",
         "ext-fileinfo": "*",
@@ -56,7 +56,7 @@
         "sebastian/diff": "^4.0",
         "simplepie/simplepie": "^1.5",
         "symfony/cache": "^5.2",
-        "symfony/console": "^4.4",
+        "symfony/console": "^5.0",
         "symfony/dom-crawler": "^5.3",
         "true/punycode": "^2.1",
         "twig/twig": "^3.3",
@@ -68,7 +68,7 @@
         "consolidation/robo": "^3.0",
         "glpi-project/coding-standard": "^0.8",
         "glpi-project/tools": "^0.1.15",
-        "maglnet/composer-require-checker": "^2.0",
+        "maglnet/composer-require-checker": "^3.0",
         "mikey179/vfsstream": "^1.6",
         "natxet/cssmin": "^3.0",
         "php-parallel-lint/php-parallel-lint": "^1.1"
@@ -100,7 +100,7 @@
     "config": {
         "optimize-autoloader": true,
         "platform": {
-            "php": "7.3.0"
+            "php": "7.4.0"
         },
         "sort-packages": true
     },

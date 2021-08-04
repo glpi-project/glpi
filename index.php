@@ -32,8 +32,8 @@
 
 // Check PHP version not to have trouble
 // Need to be the very fist step before any include
-if (version_compare(PHP_VERSION, '7.3.0') < 0) {
-   die('PHP >= 7.3.0 required');
+if (version_compare(PHP_VERSION, '7.4.0') < 0) {
+   die('PHP >= 7.4.0 required');
 }
 
 use Glpi\Toolbox\RichText;

@@ -50,7 +50,7 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
 
 * A web server (Apache, Nginx, IIS, etc.)
 * MariaDB >= 10.2 or MySQL >= 5.7
-* PHP 7.3 or higher
+* PHP 7.4 or higher
 * Mandatory PHP extensions:
     - ctype
     - curl
