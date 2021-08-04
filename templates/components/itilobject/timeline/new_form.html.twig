@@ -4,12 +4,12 @@
    <div class="timeline-item ITILContent">
       <div class="row">
          <div class="col-auto d-flex flex-column picture-block">
-            {% include "components/user/picture.html.twig" with {'users_id': users_id} only %}
+            {{ include('components/user/picture.html.twig', {'users_id': users_id}, with_context = false) }}
          </div>
          <div class="col-12 col-sm content-block">
             <div class="d-flex">
                <div class="d-none d-md-block">
-                  <strong>{{ User__getLink(users_id) }}</strong>
+                  <strong>{{ get_item_link('User', users_id) }}</strong>
                </div>
             </div>
             <span class="row mt-2 timeline-content left card">
@@ -18,14 +18,14 @@
                      <div class="alert alert-info" role="alert">
                         {{ __('%1$s will be added in entity %2$s')|format(
                            item.getTypeName(1),
-                           "<span class='badge bg-secondary ms-1'>" ~ getDropdownName('glpi_entities', item.fields['entities_id']) ~ "</span>"
+                           '<span class="badge bg-secondary ms-1">' ~ get_item_name('Entity', item.fields['entities_id']) ~ '</span>'
                         )|raw }}
                      </div>
                   {% endif %}
 
-                  {% include "components/itilobject/timeline/simple_form.html.twig" with {
+                  {{ include('components/itilobject/timeline/simple_form.html.twig', {
                      'no_form': true
-                  } %}
+                  }) }}
                </div>
             </span>
          </div>

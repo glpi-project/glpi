@@ -1,28 +1,28 @@
 {% set global_pinned = user_pref('savedsearches_pinned', true) %}
-{% set pinned = (global_pinned[itemtype] ?? "0") == "1" %}
+{% set pinned = (global_pinned[itemtype] ?? '0') == '1' %}
 {% set itemtype_cls = itemtype|lower %}
 {% set rand = random() %}
 
-<div class="card col-2 d-flex flex-column responsive-toggle {{ pinned ? "pinned" : "d-none" }} saved-searches-panel {{ itemtype_cls }}"
+<div class="card col-2 d-flex flex-column responsive-toggle {{ pinned ? 'pinned' : 'd-none' }} saved-searches-panel {{ itemtype_cls }}"
      id="saved-searches-panel-{{ rand }}">
    <div class="card-header d-flex flex-nowrap pe-0 align-items-center text-muted">
       <i class="fas fa-star"></i>&nbsp;
       {{ _n('Saved search', 'Saved searches', 2) }}
 
       <li class="ms-auto btn-list me-1">
-         <a href="{{ path("front/savedsearch.php") }}" class="btn btn-sm btn-icon btn-ghost-secondary"
+         <a href="{{ path('front/savedsearch.php') }}" class="btn btn-sm btn-icon btn-ghost-secondary"
             data-bs-toggle="tooltip" data-bs-placement="bottom"
-            title="{{ __("Manage all saved searches") }}">
+            title="{{ __('Manage all saved searches') }}">
             <i class="fas fa-cog"></i>
          </a>
          <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1 d-none d-md-block pin-saved-searches-panel"
                  data-bs-toggle="tooltip" data-bs-placement="bottom"
-                 title="{{ __("Pin this panel for the current page") }}">
+                 title="{{ __('Pin this panel for the current page') }}">
             <i class="fas fa-thumbtack"></i>
          </button>
          <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1 close-saved-searches-panel"
                  data-bs-toggle="tooltip" data-bs-placement="bottom"
-                 title="{{ __("Close the panel") }}">
+                 title="{{ __('Close the panel') }}">
             <i class="fas fa-times"></i>
          </button>
       </li>
@@ -32,14 +32,14 @@
       <ul class="nav nav-tabs border-0" data-bs-toggle="tabs">
          <li class="nav-item">
             <a class="nav-link active" data-bs-target="#itemtype-filtered" data-bs-toggle="tab"
-               href="{{ path("ajax/savedsearch.php?action=display_mine&itemtype=" ~ itemtype) }}">
+               href="{{ path('ajax/savedsearch.php?action=display_mine&itemtype=' ~ itemtype) }}">
                {{ itemtype|itemtype_name }}
             </a>
          </li>
          <li class="nav-item">
             <a class="nav-link" data-bs-target="#all-savedsearches" data-bs-toggle="tab"
-               href="{{ path("ajax/savedsearch.php?action=display_mine&inverse=true&itemtype=" ~ itemtype) }}">
-               {{ __("Others") }}
+               href="{{ path('ajax/savedsearch.php?action=display_mine&inverse=true&itemtype=' ~ itemtype) }}">
+               {{ __('Others') }}
             </a>
          </li>
       </ul>
@@ -57,7 +57,7 @@
    <div class="card-footer">
       <div class="input-group input-group-flat filter_savedsearch">
          <input type="text" class="form-control form-control-sm"
-                placeholder="{{ __('Filter list') }}">
+                placeholder="{{ __('Filter list') }}" />
          <span class="input-group-text">
             <a href="#" class="link-secondary clear-text" role="button" title="Clear search">
                <i class="fa fa-times fa-xs"></i>

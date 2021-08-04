@@ -67,6 +67,10 @@ class Sanitizer extends \GLPITestCase {
          'sanitized_value' => 'mystring',
       ];
       yield [
+         'value'           => '5 > 1',
+         'sanitized_value' => '5 &#62; 1',
+      ];
+      yield [
          'value'           => '<strong>string</strong>',
          'sanitized_value' => '&#60;strong&#62;string&#60;/strong&#62;',
       ];

@@ -1,45 +1,45 @@
-{% import "components/form/fields_macros.html.twig" as fields %}
-{% import "components/form/modals_macros.html.twig" as modals %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/modals_macros.html.twig' as modals %}
 
 {% set la_fields = [] %}
 
 {% set la_fields = la_fields|merge([
    {
       'la': sla,
-      'type_str': "sla",
-      'type': constant("SLM::TTO"),
+      'type_str': 'sla',
+      'type': constant('SLM::TTO'),
       'datefieldname': 'time_to_own',
       'lafieldname': 'slas_id_tto',
-      'label': __("TTO"),
-      'helper': __("Time to own"),
+      'label': __('TTO'),
+      'helper': __('Time to own'),
    }, {
       'la': sla,
-      'type_str': "sla",
-      'type': constant("SLM::TTR"),
+      'type_str': 'sla',
+      'type': constant('SLM::TTR'),
       'datefieldname': 'time_to_resolve',
       'lafieldname': 'slas_id_ttr',
-      'label': __("TTR"),
-      'helper': __("Time to resolve"),
+      'label': __('TTR'),
+      'helper': __('Time to resolve'),
    }
 ]) %}
 
 {% set la_fields = la_fields|merge([
    {
       'la': ola,
-      'type_str': "ola",
-      'type': constant("SLM::TTO"),
+      'type_str': 'ola',
+      'type': constant('SLM::TTO'),
       'datefieldname': 'internal_time_to_own',
       'lafieldname': 'olas_id_tto',
-      'label': __("Internal TTO"),
-      'helper': __("Internal Time to own"),
+      'label': __('Internal TTO'),
+      'helper': __('Internal Time to own'),
    }, {
       'la': ola,
-      'type_str': "ola",
-      'type': constant("SLM::TTR"),
+      'type_str': 'ola',
+      'type': constant('SLM::TTR'),
       'datefieldname': 'internal_time_to_resolve',
       'lafieldname': 'olas_id_ttr',
-      'label': __("Internal TTR"),
-      'helper': __("Internal Time to resolve"),
+      'label': __('Internal TTR'),
+      'helper': __('Internal Time to resolve'),
    }
 ]) %}
 
@@ -53,19 +53,18 @@
       {% if la_field.la.getDataForTicket(item.fields['id'], la_field.type) %}
          {% if date_displayed %}
             <span class="text-muted">
-               {{ convDateTime(item.fields[la_field.datefieldname]) }}
+               {{ item.fields[la_field.datefieldname]|formatted_datetime }}
             </span>
          {% endif %}
 
          {% if la_displayed %}
             <span class="level_name badge itil-badge bg-secondary ms-1 flex-column flex-sm-row">
                <span class="d-flex align-items-center">
-                  <i class='fas fa-stopwatch slt me-1'></i>
-                  {% set level_texts = getDropdownName(la_field.la.getTable(), item.fields[la_field.lafieldname], true) %}
+                  <i class="fas fa-stopwatch slt me-1"></i>
                   <span class="text-truncate"
-                        title='{{ level_texts['comment'] }}'
+                        title="{{ get_item_comment(la_field.la.getType(), item.fields[la_field.lafieldname]) }}"
                         data-bs-toggle="tooltip" data-bs-placement="top">
-                     {{ level_texts['name'] }}
+                     {{ get_item_name(la_field.la.getType(), item.fields[la_field.lafieldname]) }}
                   </span>
 
                   {% if canupdate %}
@@ -81,11 +80,11 @@
                {% if level != false %}
                   <span class="badge bg-info ms-0 ms-sm-1">
                      <i class="fas fa-clock me-1"
-                        title="{{ __("Next escalation: %s")|format(convDateTime(nextaction.fields['date'])) }}"
+                        title="{{ __('Next escalation: %s')|format(nextaction.fields['date']|formatted_datetime) }}"
                         data-bs-toggle="tooltip" data-bs-placement="top"></i>
-                     <span title="{{ __('%1$s: %2$s')|format(_n('Escalation level', 'Escalation levels', 1), level.getName()) }}"
+                     <span title="{{ __('%1$s: %2$s')|format(_n('Escalation level', 'Escalation levels', 1), get_item_name(level)) }}"
                            data-bs-toggle="tooltip" data-bs-placement="top">
-                        {{ level.getName() }}
+                        {{ get_item_name(level) }}
                      </span>
                   </span>
                {% endif %}
@@ -95,13 +94,13 @@
                   e.preventDefault();
 
                   var delete_date = 0;
-                  if (confirm('{{ __("Also delete date?") }}')) {
+                  if (confirm('{{ __('Also delete date?') }}')) {
                      delete_date = 1;
                   }
 
                   submitGetLink('{{ item.getFormURL() }}', {
                      '{{ la_field.type_str }}_delete': 1,
-                     'id': {{ item.fields["id"] }},
+                     'id': {{ item.fields['id'] }},
                      'type': {{ la_field.type }},
                      '_glpi_csrf_token': '{{ csrf_token() }}',
                      '_glpi_simple_form': 1,
@@ -112,17 +111,17 @@
          {% endif %}
       {% else %}
          <div class="d-flex align-items-center flex-wrap">
-            {% set assign_la_id = "assign_la_" ~ rand %}
+            {% set assign_la_id = 'assign_la_' ~ rand %}
 
             {% if date_displayed %}
                <div class="la_datefield">
                   {{ fields.datetimeField(
                      la_field.datefieldname,
                      item.fields[la_field.datefieldname],
-                     "",
+                     '',
                      {
                         'include_field': false,
-                        'id': "date_" ~ assign_la_id,
+                        'id': 'date_' ~ assign_la_id,
                         'disabled': (not canupdate),
                      }
                   ) }}
@@ -135,7 +134,7 @@
                      la_field.la.getType(),
                      la_field.lafieldname,
                      item.fields[la_field.lafieldname],
-                     "",
+                     '',
                      {
                         'include_field': false,
                         'entity': item.fields['entities_id'],
@@ -150,17 +149,17 @@
                         id="button_{{ assign_la_id }}"
                         data-bs-toggle="modal" data-bs-target="#{{ assign_la_id }}"
                         aria-expanded="false" aria-controls="{{ assign_la_id }}">
-                     <i class='fas fa-stopwatch slt pointer'
-                        title='{{ __("Assign a SLA") }}'
+                     <i class="fas fa-stopwatch slt pointer"
+                        title="{{ __('Assign a SLA') }}"
                         data-bs-toggle="tooltip" data-bs-placement="top"></i>
                   </button>
 
                   {{ modals.confirm(
-                     __("Warning"),
-                     la_field.la.getAddConfirmation()|join("<br>"),
+                     __('Warning'),
+                     la_field.la.getAddConfirmation()|join('<br />'),
                      {
                         'id': assign_la_id,
-                        'confirm_label': "<i class='fas fa-stopwatch me-1'></i>" ~ __("Assign"),
+                        'confirm_label': '<i class="fas fa-stopwatch me-1"></i>' ~ __('Assign'),
                         'confirm_event': 'toggleAssignLA_' ~ rand ~ '()',
                      }
                   ) }}

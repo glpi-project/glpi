@@ -110,20 +110,6 @@ class Html extends \GLPITestCase {
       $this->string(\Html::resume_text($origin, 10))->isIdenticalTo($expected);
    }
 
-   public function testResume_name() {
-      $origin = 'This is a very long string which will be truncated by a dedicated method. ' .
-         'If the string is not truncated, well... We\'re wrong and got a very serious issue in our codebase!' .
-         'And if the string has been correctly truncated, well... All is ok then, let\'s show if all the other tests are OK :)';
-      $expected = 'This is a very long string which will be truncated by a dedicated method. ' .
-         'If the string is not truncated, well... We\'re wrong and got a very serious issue in our codebase!' .
-         'And if the string has been correctly truncated, well... All is ok then, let\'s show i...';
-      $this->string(\Html::resume_name($origin))->isIdenticalTo($expected);
-
-      $origin = 'A string that is longer than 10 characters.';
-      $expected = 'A string t...';
-      $this->string(\Html::resume_name($origin, 10))->isIdenticalTo($expected);
-   }
-
    public function testCleanPostForTextArea() {
       $origin = "A text that \\\"would\\\" be entered in a \\'textarea\\'\\nWith breakline\\r\\nand breaklines.";
       $expected = "A text that \"would\" be entered in a 'textarea'\nWith breakline\nand breaklines.";
@@ -148,14 +134,14 @@ class Html extends \GLPITestCase {
 
       $origin = '1207.3';
 
-      $expected = '1&nbsp;207.30';
+      $expected = '1 207.30';
       $this->string(\Html::formatNumber($origin))->isIdenticalTo($expected);
 
       $expected = '1207.30';
       $this->string(\Html::formatNumber($origin, true))->isIdenticalTo($expected);
 
       $origin = 124556.693;
-      $expected = '124&nbsp;556.69';
+      $expected = '124 556.69';
       $this->string(\Html::formatNumber($origin))->isIdenticalTo($expected);
 
       $origin = 120.123456789;
@@ -180,7 +166,7 @@ class Html extends \GLPITestCase {
       $_SESSION['glpinumber_format'] = 2;
 
       $origin = '1207.3';
-      $expected = '1&nbsp;207,30';
+      $expected = '1 207,30';
       $this->string(\Html::formatNumber($origin))->isIdenticalTo($expected);
 
       $_SESSION['glpinumber_format'] = 3;

@@ -449,7 +449,7 @@ class Rack extends CommonDBTM {
             $blueprint_ctrl
             <span class='mini_toggle active'
                   id='toggle_grid'>".__('Grid')."</span>
-            <div class='sep'></div>
+            <div class='clearfix'></div>
          </span>
          <ul class='indexes indexes-x'></ul>
          <ul class='indexes indexes-y'></ul>";
@@ -479,7 +479,6 @@ class Rack extends CommonDBTM {
       echo "</div>"; //.grid-stack
       echo $blueprint;
       echo "</div>"; //.grid-room
-      echo "<div class='sep'></div>";
       echo "</div>"; // #viewgraph
 
       $rack_add_tip = __s('Insert a rack here');

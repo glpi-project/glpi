@@ -37,31 +37,18 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\Application\ErrorHandler;
-use Glpi\Application\View\Extension\AjaxExtension;
-use Glpi\Application\View\Extension\AlertExtension;
-use Glpi\Application\View\Extension\CommonITILObjectExtension;
 use Glpi\Application\View\Extension\ConfigExtension;
-use Glpi\Application\View\Extension\CsrfExtension;
-use Glpi\Application\View\Extension\DBExtension;
+use Glpi\Application\View\Extension\DataHelpersExtension;
 use Glpi\Application\View\Extension\DocumentExtension;
-use Glpi\Application\View\Extension\DropdownExtension;
-use Glpi\Application\View\Extension\EntityExtension;
-use Glpi\Application\View\Extension\EventExtension;
 use Glpi\Application\View\Extension\FrontEndAssetsExtension;
-use Glpi\Application\View\Extension\HtmlExtension;
 use Glpi\Application\View\Extension\I18nExtension;
-use Glpi\Application\View\Extension\InfocomExtension;
 use Glpi\Application\View\Extension\ItemtypeExtension;
-use Glpi\Application\View\Extension\ModelExtension;
-use Glpi\Application\View\Extension\NumberFormatExtension;
+use Glpi\Application\View\Extension\PhpExtension;
 use Glpi\Application\View\Extension\PluginExtension;
-use Glpi\Application\View\Extension\RichTextExtension;
 use Glpi\Application\View\Extension\RoutingExtension;
 use Glpi\Application\View\Extension\SearchExtension;
+use Glpi\Application\View\Extension\SecurityExtension;
 use Glpi\Application\View\Extension\SessionExtension;
-use Glpi\Application\View\Extension\ToolboxExtension;
-use Glpi\Application\View\Extension\UserExtension;
-use Glpi\Application\View\Extension\ValidationExtension;
 use Plugin;
 use Session;
 use Twig\Environment;
@@ -103,31 +90,18 @@ class TemplateRenderer {
       $this->environment->addExtension(new DebugExtension());
       $this->environment->addExtension(new StringExtension());
       // GLPI extensions
-      $this->environment->addExtension(new AjaxExtension());
-      $this->environment->addExtension(new AlertExtension());
-      $this->environment->addExtension(new CommonITILObjectExtension());
       $this->environment->addExtension(new ConfigExtension());
-      $this->environment->addExtension(new CsrfExtension());
-      $this->environment->addExtension(new DBExtension());
+      $this->environment->addExtension(new SecurityExtension());
+      $this->environment->addExtension(new DataHelpersExtension());
       $this->environment->addExtension(new DocumentExtension());
-      $this->environment->addExtension(new DropdownExtension());
-      $this->environment->addExtension(new EntityExtension());
-      $this->environment->addExtension(new EventExtension());
       $this->environment->addExtension(new FrontEndAssetsExtension());
       $this->environment->addExtension(new I18nExtension());
-      $this->environment->addExtension(new InfocomExtension());
       $this->environment->addExtension(new ItemtypeExtension());
-      $this->environment->addExtension(new HtmlExtension());
-      $this->environment->addExtension(new ModelExtension());
-      $this->environment->addExtension(new NumberFormatExtension());
+      $this->environment->addExtension(new PhpExtension());
       $this->environment->addExtension(new PluginExtension());
-      $this->environment->addExtension(new RichTextExtension());
       $this->environment->addExtension(new RoutingExtension());
       $this->environment->addExtension(new SearchExtension());
       $this->environment->addExtension(new SessionExtension());
-      $this->environment->addExtension(new ToolboxExtension());
-      $this->environment->addExtension(new UserExtension());
-      $this->environment->addExtension(new ValidationExtension());
 
       // add superglobals
       $this->environment->addGlobal('_post', $_POST);
@@ -148,6 +122,15 @@ class TemplateRenderer {
       }
 
       return $instance;
+   }
+
+   /**
+    * Return Twig environment used to handle templates.
+    *
+    * @return Environment
+    */
+   public function getEnvironment(): Environment {
+      return $this->environment;
    }
 
    /**

@@ -32,7 +32,7 @@
 
 namespace Glpi\Application\View\Extension;
 
-use Config;
+use Entity;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -44,48 +44,38 @@ class ConfigExtension extends AbstractExtension {
    public function getFunctions(): array {
       return [
          new TwigFunction('config', [$this, 'config']),
-         new TwigFunction('php_config', [$this, 'phpConfig']),
-         new TwigFunction('displayPasswordSecurityChecks', [$this, 'displayPasswordSecurityChecks']),
+         new TwigFunction('entity_config', [$this, 'getEntityConfig']),
       ];
    }
 
    /**
     * Get GLPI configuration value.
     *
-    * @param string $name
+    * @param string $key
     *
     * @return mixed
-    *
-    * @TODO Add a unit test.
     */
-   public function config(string $name) {
+   public function config(string $key) {
       global $CFG_GLPI;
 
-      return $CFG_GLPI[$name] ?? null;
+      return $CFG_GLPI[$key] ?? null;
    }
 
    /**
-    * Get PHP configuration value.
+    * Get entity configuration value.
     *
-    * @param string $name
+    * @param string        $key              Configuration key.
+    * @param null|int      $entity_id        Entity ID, defaults to current entity.
+    * @param mixed         $default_value    Default value.
+    * @param null|string   $inheritence_key  Key to use for inheritence check if different than key used to get value.
     *
     * @return mixed
-    *
-    * @TODO Add a unit test.
     */
-   public function phpConfig(string $name) {
-      return ini_get($name);
-   }
+   public function getEntityConfig(string $key, ?int $entity_id = null, $default_value = -2, ?string $inheritence_key = null) {
+      if ($inheritence_key === null) {
+         $inheritence_key = $key;
+      }
 
-
-   /**
-    * Display security checks on password
-    *
-    * @param $field string id of the field containing password to check (default 'password')
-    *
-    * @return void
-    */
-   public function displayPasswordSecurityChecks($field = 'password'): void {
-      Config::displayPasswordSecurityChecks($field);
+      return Entity::getUsedConfig($inheritence_key, $entity_id, $key, $default_value);
    }
 }

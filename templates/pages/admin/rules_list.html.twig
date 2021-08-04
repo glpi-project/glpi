@@ -12,15 +12,15 @@
 <div class="container px-4">
    <div class="row g-3 justify-content-evenly">
       {% for rules_block in rules_group %}
-         <div class="col-12 {{ rules_group|length > 2 ? "col-xxl-3" : "col-xxl-5" }}">
+         <div class="col-12 {{ rules_group|length > 2 ? 'col-xxl-3' : 'col-xxl-5' }}">
             <div class="card">
                <div class="card-header">
                   <h3>{{ rules_block['type'] }}</h3>
                </div>
                <div class="list-group list-group-flush">
                   {% for rule in rules_block['entries'] %}
-                     <a class='list-group-item list-group-item-action' href="{{ rule['link'] }}">
-                        <i class='fa-fw {{ rule['icon'] }} me-1'></i>
+                     <a class="list-group-item list-group-item-action" href="{{ rule['link'] }}">
+                        <i class="fa-fw {{ rule['icon'] }} me-1"></i>
                         <span>{{ rule['label'] }}</span>
                      </a>
                   {% endfor %}

@@ -1,10 +1,10 @@
 
-{% if use_simplified_interface == false %}
+{% if get_current_interface() == 'central' %}
 <form action="{{ path('front/search.php') }}" role="search" method="get">
-   <div class='input-group'>
-      <input type="text" class="form-control" name="globalsearch" placeholder="{{ __("Search…") }}">
-      <button type="submit" class="btn btn-outline-secondary" title="{{ __("Search…") }}">
-         <span class='fas fa-search' aria-hidden='true'></span>
+   <div class="input-group">
+      <input type="text" class="form-control" name="globalsearch" placeholder="{{ __('Search…') }}" />
+      <button type="submit" class="btn btn-outline-secondary" title="{{ __('Search…') }}">
+         <span class="fas fa-search" aria-hidden="true"></span>
       </button>
    </div>
 </form>

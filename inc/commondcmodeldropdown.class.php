@@ -211,10 +211,10 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
-   public function getSpecificTypeField(int $ID, array $field): string {
+   function displaySpecificTypeField($ID, $field = []) {
       switch ($field['type']) {
          case 'depth':
-            return Dropdown::showFromArray(
+            Dropdown::showFromArray(
                $field['name'],
                [
                   '1'      => __('1'),
@@ -223,10 +223,10 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
                   '0.25'   => __('1/4')
                ], [
                   'value'   => $this->fields[$field['name']],
-                  'width'   => '100%',
-                  'display' => false
+                  'width'   => '100%'
                ]
             );
+            break;
          default:
             throw new \RuntimeException("Unknown {$field['type']}");
       }

@@ -1,10 +1,12 @@
-{% set user_picture  = User__getPicture(users_id) %}
-{% set user_color  = User__getBgColor(users_id) %}
-<a href="{{ User__getLinkUrl(users_id) }}">
+{% set enable_anonymization = enable_anonymization ?? false %}
+{% set anonymized = entity_config('anonymize_support_agents') != constant('Entity::ANONYMIZE_DISABLED') %}
+{% set user = get_item('User', users_id) %}
+{% set user_thumbnail = user.getThumbnailPicturePath(enable_anonymization) %}
+{% if not anonymized %}<a href="{{ user.getLinkURL() }}">{% endif %}
    <span class="avatar avatar-md rounded"
-         style="{% if user_picture|length != 0 %}background-image: url({{ user_picture }}); {% endif %}background-color: {{ user_color }}">
-      {% if user_picture|length == 0 %}
-            {{ User__getInitials(users_id) }}
+         style="{% if user_thumbnail is not null %}background-image: url({{ user_thumbnail }}); {% endif %}background-color: {{ user.getUserInitialsBgColor() }}">
+      {% if user_thumbnail is null %}
+            {{ user.getUserInitials(enable_anonymization) }}
       {% endif %}
    </span>
-</a>
+{% if not anonymized %}</a>{% endif %}

@@ -1472,8 +1472,8 @@ final class DbUtils {
          if (count($iterator) == 1) {
             $data     = $iterator->next();
 
-            if (Session::getCurrentInterface() == 'helpdesk'
-               && !empty($anon_name = User::getAnonymizedName($data["id"]))) {
+            $anon_name = Session::getCurrentInterface() == 'helpdesk' ? User::getAnonymizedNameForUser($ID) : null;
+            if ($anon_name !== null) {
                $username = $anon_name;
             } else {
                $username = $this->formatUserName($data["id"], $data["name"], $data["realname"],
@@ -1490,7 +1490,7 @@ final class DbUtils {
                   'user_name'          => $username,
                ];
 
-               if (empty($anon_name)) {
+               if ($anon_name === null) {
                   $user_params = array_merge($user_params, [
                      'email'              => UserEmail::getDefaultForUser($ID),
                      'phone'              => $data["phone"],
@@ -1507,7 +1507,8 @@ final class DbUtils {
                      $user_params['groups_id'] = $data["groups_id"];
                   }
                   $user['comment'] = TemplateRenderer::getInstance()->render('components/user/info_card.html.twig', [
-                     'user'   => $user_params
+                     'user'                 => $user_params,
+                     'enable_anonymization' => Session::getCurrentInterface() == 'helpdesk',
                   ]);
                }
             } else {

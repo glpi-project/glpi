@@ -34,6 +34,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 use Glpi\Features\CacheableListInterface;
 use Glpi\Toolbox\RichText;
+use Glpi\Toolbox\Sanitizer;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -1331,6 +1332,7 @@ class CommonDBTM extends CommonGLPI {
       $title = '';
       if (!preg_match('/title=/', $p['linkoption'])) {
          $thename = $this->getName(['complete' => true]);
+         $thename = Sanitizer::getVerbatimValue($thename); // Prevent double encoding of special chars
          if ($thename != NOT_AVAILABLE) {
             $title = ' title="' . htmlentities($thename, ENT_QUOTES, 'utf-8') . '"';
          }
@@ -2633,18 +2635,20 @@ class CommonDBTM extends CommonGLPI {
     *     - canedit boolean edit mode of form ?
     *     - formtitle specific form title
     *     - noid Set to true if ID should not be append (eg. already done in formtitle)
+    *     - header_toolbar Array of header toolbar elements (HTML code)
     *
     * @return void
    **/
    function showFormHeader($options = []) {
       $params = [
-         'target'       => $this->getFormURL(),
-         'colspan'      => 2,
-         'withtemplate' => '',
-         'formoptions'  => '',
-         'canedit'      => true,
-         'formtitle'    => null,
-         'noid'         => false
+         'target'         => $this->getFormURL(),
+         'colspan'        => 2,
+         'withtemplate'   => '',
+         'formoptions'    => '',
+         'canedit'        => true,
+         'formtitle'      => null,
+         'noid'           => false,
+         'header_toolbar' => [],
       ];
 
       if (is_array($options) && count($options)) {
@@ -2659,10 +2663,14 @@ class CommonDBTM extends CommonGLPI {
          $this->fields['entities_id']  = $_SESSION['glpiactive_entity'];
       }
 
+      $header_toolbar = $params['header_toolbar'];
+      unset($params['header_toolbar']);
+
       echo "<div class='asset'>";
       TemplateRenderer::getInstance()->display('components/form/header.html.twig', [
-         'item'   => $this,
-         'params' => $params,
+         'item'           => $this,
+         'params'         => $params,
+         'header_toolbar' => $header_toolbar,
       ]);
 
       echo "<table class='tab_cadre_fixe'>";
@@ -3800,7 +3808,7 @@ class CommonDBTM extends CommonGLPI {
 
       if (in_array(static::getType(), Appliance::getTypes(true)) && static::canUpdate()) {
          $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'] =
-            "<i class='ma-icon fas fa-cubes'></i>"._x('button', 'Associate to an appliance');
+            "<i class='fas fa-cubes'></i>"._x('button', 'Associate to an appliance');
       }
 
       return $actions;
@@ -5526,5 +5534,133 @@ class CommonDBTM extends CommonGLPI {
     */
    public function getNonLoggedFields(): array {
       return [];
+   }
+
+   /**
+    * Returns model class, or null if item has no model class.
+    *
+    * @return string|null
+    */
+   public function getModelClass(): ?string {
+      $model_class = get_called_class() . 'Model';
+      if (!is_a($model_class, CommonDBTM::class, true)) {
+         return null;
+      }
+
+      $model_fk = $model_class::getForeignKeyField();
+      return $this->isField($model_fk) ? $model_class : null;
+   }
+
+   /**
+    * Returns model class foreign key field name, or null if item has no model class.
+    *
+    * @return string|null
+    */
+   public function getModelForeignKeyField(): ?string {
+      $model_class = $this->getModelClass();
+      return $model_class !== null ? $model_class::getForeignKeyField() : null;
+   }
+
+   /**
+    * Returns type class, or null if item has no type class.
+    *
+    * @return string|null
+    */
+   public function getTypeClass(): ?string {
+      $type_class = get_called_class() . 'Type';
+      if (!is_a($type_class, CommonDBTM::class, true)) {
+         return null;
+      }
+
+      $type_fk = $type_class::getForeignKeyField();
+      return $this->isField($type_fk) ? $type_class : null;
+   }
+
+   /**
+    * Returns type class foreign key field name, or null if item has no type class.
+    *
+    * @return string|null
+    */
+   public function getTypeForeignKeyField(): ?string {
+      $type_class = $this->getTypeClass();
+      return $type_class !== null ? $type_class::getForeignKeyField() : null;
+   }
+
+   public function getItemtypeOrModelPicture(string $picture_field = 'picture_front', array $params = []): array {
+      $p = [
+         'thumbnail_w'  => 'auto',
+         'thumbnail_h'  => 'auto'
+      ];
+      $p = array_replace($p, $params);
+
+      $urls = [];
+      $itemtype = $this->getType();
+      $pictures = [];
+      $clearable = false;
+
+      if ($this->isField($picture_field)) {
+         if ($picture_field === 'pictures') {
+            $urls = importArrayFromDB($this->fields[$picture_field]);
+         } else {
+            $urls = [$this->fields[$picture_field]];
+         }
+         $clearable = $this->canUpdate();
+      } else {
+         $modeltype = $itemtype . "Model";
+         if (class_exists($modeltype)) {
+            /** @var CommonDBTM $model */
+            $model = new $modeltype;
+            if (!$model->isField($picture_field)) {
+               return [];
+            }
+
+            $fk = getForeignKeyFieldForItemType($modeltype);
+            if ($model->getFromDB(($this->fields[$fk]) ?? 0)) {
+               if ($picture_field === 'pictures') {
+                  $urls = importArrayFromDB($model->fields[$picture_field]);
+               } else {
+                  $urls = [$model->fields[$picture_field]];
+               }
+            }
+         }
+      }
+
+      foreach ($urls as $url) {
+         if (!empty($url)) {
+            $resolved_url = \Toolbox::getPictureUrl($url);
+            $src_file = GLPI_DOC_DIR . '/_pictures/' . '/' . $url;
+            if (file_exists($src_file)) {
+               $size = getimagesize($src_file);
+               $pictures[] = [
+                     'src'             => $resolved_url,
+                     'w'               => $size[0],
+                     'h'               => $size[1],
+                     'clearable'       => $clearable,
+                     '_is_model_img'   => isset($model)
+                  ] + $p;
+            } else {
+               $owner_type = isset($model) ? $model::getType() : $itemtype;
+               $owner_id = isset($model) ? $model->getID() : $this->getID();
+               \Toolbox::logWarning("The picture '{$src_file}' referenced by the {$owner_type} with ID {$owner_id} does not exist");
+            }
+         }
+      }
+
+      return $pictures;
+   }
+
+   public function getMassiveActionsForItem(): MassiveAction {
+      $params = [
+         'item' => [
+            $this->getType() => [
+               $this->fields['id'] => 1
+            ]
+         ]
+      ];
+      if ($this->isEntityAssign()) {
+         $params['entity_restrict'] = $this->getEntityID();
+      }
+
+      return new MassiveAction($params, [], 'initial', true);
    }
 }

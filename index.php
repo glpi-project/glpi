@@ -37,7 +37,6 @@ if (version_compare(PHP_VERSION, '7.3.0') < 0) {
 }
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\RichText;
 
 //Load GLPI constants
 define('GLPI_ROOT', __DIR__);
@@ -89,7 +88,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       'title'               => __('Authentication'),
       'noAuto'              => $_GET["noAUTO"] ?? 0,
       'redirect'            => Html::entities_deep($_GET['redirect'] ?? ""),
-      'text_login'          => RichText::getSafeHtml($CFG_GLPI['text_login'], true),
+      'text_login'          => $CFG_GLPI['text_login'],
       'namfield'            => ($_SESSION['namfield'] = uniqid('fielda')),
       'pwdfield'            => ($_SESSION['pwdfield'] = uniqid('fieldb')),
       'rmbfield'            => ($_SESSION['rmbfield'] = uniqid('fieldc')),

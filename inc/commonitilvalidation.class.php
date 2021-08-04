@@ -957,8 +957,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
          'item'      => $options['parent'],
          'subitem'   => $this
       ]);
-
-      return true;
    }
 
 

@@ -3166,150 +3166,6 @@ abstract class CommonITILObject extends CommonDBTM {
       }
    }
 
-
-   /**
-    * show groups asociated
-    *
-    * @param $type      integer : user type
-    * @param $canedit   boolean : can edit ?
-    * @param $options   array    options for default values ($options of showForm)
-    *
-    * @return void
-   **/
-   function showGroupsAssociated($type, $canedit, array $options = []) {
-
-      $groupicon = static::getActorIcon('group', $type);
-      $group     = new Group();
-      $linkclass = new $this->grouplinkclass();
-
-      $typename  = static::getActorFieldNameType($type);
-
-      $candelete = true;
-      $mandatory = '';
-      // For ticket templates : mandatories
-      $key = $this->getTemplateFormFieldName();
-      if (isset($options[$key])) {
-         $mandatory = $options[$key]->getMandatoryMark("_groups_id_".$typename);
-         if ($options[$key]->isMandatoryField("_groups_id_".$typename)
-             && isset($this->groups[$type]) && (count($this->groups[$type])==1)) {
-            $candelete = false;
-         }
-      }
-
-      if (isset($this->groups[$type]) && count($this->groups[$type])) {
-         foreach ($this->groups[$type] as $d) {
-            echo "<div class='actor_row'>";
-            $k = $d['groups_id'];
-            echo "$mandatory$groupicon&nbsp;";
-            if ($group->getFromDB($k)) {
-               if (Session::getCurrentInterface() == 'helpdesk'
-                  && $type == CommonITILActor::ASSIGN
-                  && !empty($anon_name = Group::getAnonymizedName($this->getEntityID()))
-               ) {
-                  echo $anon_name;
-               } else {
-                  echo $group->getLink(['comments' => true]);
-               }
-            }
-            if ($canedit && $candelete) {
-               Html::showSimpleForm($linkclass->getFormURL(), 'delete',
-                                    _x('button', 'Delete permanently'),
-                                    ['id' => $d['id']],
-                                    'fa-times-circle');
-            }
-            echo "</div>";
-         }
-      }
-   }
-
-   /**
-    * show suppliers associated
-    *
-    * @since 0.84
-    *
-    * @param $type      integer : user type
-    * @param $canedit   boolean : can edit ?
-    * @param $options   array    options for default values ($options of showForm)
-    *
-    * @return void
-   **/
-   function showSuppliersAssociated($type, $canedit, array $options = []) {
-      global $CFG_GLPI;
-
-      $showsupplierlink = 0;
-      if (Session::haveRight('contact_enterprise', READ)) {
-         $showsupplierlink = 2;
-      }
-
-      $suppliericon = static::getActorIcon('supplier', $type);
-      $supplier     = new Supplier();
-      $linksupplier = new $this->supplierlinkclass();
-
-      $typename     = static::getActorFieldNameType($type);
-
-      $candelete    = true;
-      $mandatory    = '';
-      // For ticket templates : mandatories
-      $key = $this->getTemplateFormFieldName();
-      if (isset($options[$key])) {
-         $mandatory = $options[$key]->getMandatoryMark("_suppliers_id_".$typename);
-         if ($options[$key]->isMandatoryField("_suppliers_id_".$typename)
-             && isset($this->suppliers[$type]) && (count($this->suppliers[$type])==1)) {
-            $candelete = false;
-         }
-      }
-
-      if (isset($this->suppliers[$type]) && count($this->suppliers[$type])) {
-         foreach ($this->suppliers[$type] as $d) {
-            echo "<div class='actor_row'>";
-            $suppliers_id = $d['suppliers_id'];
-
-            echo "$mandatory$suppliericon&nbsp;";
-
-            $email = $d['alternative_email'];
-            if ($suppliers_id) {
-               if ($supplier->getFromDB($suppliers_id)) {
-                  echo $supplier->getLink(['comments' => $showsupplierlink]);
-                  echo "&nbsp;";
-
-                  $tmpname = Dropdown::getDropdownName($supplier->getTable(), $suppliers_id, 1);
-                  Html::showToolTip($tmpname['comment']);
-
-                  if (empty($email)) {
-                     $email = $supplier->fields['email'];
-                  }
-               }
-            } else {
-               echo "<a href='mailto:$email'>$email</a>";
-            }
-
-            if ($CFG_GLPI['notifications_mailing']) {
-               $text = __('Email followup')
-                  . "&nbsp;" . Dropdown::getYesNo($d['use_notification'])
-                  . '<br />';
-
-               if ($d['use_notification']) {
-                  $text .= sprintf(__('%1$s: %2$s'), _n('Email', 'Emails', 1), $email);
-               }
-               if ($canedit) {
-                  $opt = ['awesome-class' => 'fa-envelope',
-                          'popup' => $linksupplier->getFormURLWithID($d['id'])];
-                  Html::showToolTip($text, $opt);
-               }
-            }
-
-            if ($canedit && $candelete) {
-               Html::showSimpleForm($linksupplier->getFormURL(), 'delete',
-                                    _x('button', 'Delete permanently'),
-                                    ['id' => $d['id']],
-                                    'fa-times-circle');
-            }
-
-            echo '</div>';
-         }
-      }
-   }
-
    /**
     * display a value according to a field
     *
@@ -4307,9 +4163,11 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $type         integer  user/group type
     *
     * @return string
+    *
+    * @deprecated 10.0.0
    **/
    static function getActorIcon($user_group, $type) {
-      global $CFG_GLPI;
+      Toolbox::deprecated();
 
       switch ($user_group) {
          case 'user' :
@@ -4355,110 +4213,6 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       return '';
 
-   }
-
-
-   /**
-    * show tooltip for user notification information
-    *
-    * @param $type      integer  user type
-    * @param $canedit   boolean  can edit ?
-    * @param $options   array    options for default values ($options of showForm)
-    *
-    * @return void
-   **/
-   function showUsersAssociated($type, $canedit, array $options = []) {
-      global $CFG_GLPI;
-
-      $showuserlink = 0;
-      if (User::canView()) {
-         $showuserlink = 2;
-      }
-      $usericon  = static::getActorIcon('user', $type);
-      $user      = new User();
-      $linkuser  = new $this->userlinkclass();
-
-      $typename  = static::getActorFieldNameType($type);
-
-      $candelete = true;
-      $mandatory = '';
-      // For ticket templates : mandatories
-      $key = $this->getTemplateFormFieldName();
-      if (isset($options[$key])) {
-         $mandatory = $options[$key]->getMandatoryMark("_users_id_".$typename);
-         if ($options[$key]->isMandatoryField("_users_id_".$typename)
-             && isset($this->users[$type]) && (count($this->users[$type])==1)) {
-            $candelete = false;
-         }
-      }
-
-      if (isset($this->users[$type]) && count($this->users[$type])) {
-         foreach ($this->users[$type] as $d) {
-            echo "<div class='actor_row'>";
-            $k = $d['users_id'];
-
-            echo "$mandatory$usericon&nbsp;";
-
-            if ($k) {
-               $userdata = getUserName($k, 2);
-            } else {
-               $email         = $d['alternative_email'];
-               $userdata      = "<a href='mailto:$email'>$email</a>";
-            }
-
-            if (Session::getCurrentInterface() == 'helpdesk'
-               && $type == CommonITILActor::ASSIGN
-               && !empty($anon_name = User::getAnonymizedName(
-                  $k,
-                  $this->getEntityID()
-               ))
-            ) {
-               echo $anon_name;
-            } else {
-               if ($k) {
-                  $param = ['display' => false];
-                  if ($showuserlink) {
-                     $param['link'] = $userdata["link"];
-                  }
-                  echo $userdata['name']."&nbsp;".Html::showToolTip($userdata["comment"], $param);
-               } else {
-                  echo $userdata;
-               }
-            }
-
-            if ($CFG_GLPI['notifications_mailing']) {
-               $text = __('Email followup')."&nbsp;".Dropdown::getYesNo($d['use_notification']).
-                       '<br>';
-
-               if ($d['use_notification']) {
-                  $uemail = $d['alternative_email'];
-                  if (empty($uemail) && $user->getFromDB($d['users_id'])) {
-                     $uemail = $user->getDefaultEmail();
-                  }
-                  $text .= sprintf(__('%1$s: %2$s'), _n('Email', 'Emails', 1), $uemail);
-                  if (!NotificationMailing::isUserAddressValid($uemail)) {
-                     $text .= "&nbsp;<span class='red'>".__('Invalid email address')."</span>";
-                  }
-               }
-
-               if ($canedit
-                   || ($d['users_id'] == Session::getLoginUserID())) {
-                  $opt      = ['awesome-class' => 'fa-envelope',
-                                    'popup' => $linkuser->getFormURLWithID($d['id'])];
-                  echo "&nbsp;";
-                  Html::showToolTip($text, $opt);
-               }
-            }
-
-            if ($canedit && $candelete) {
-               Html::showSimpleForm($linkuser->getFormURL(), 'delete',
-                                    _x('button', 'Delete permanently'),
-                                    ['id' => $d['id']],
-                                    'fa-times-circle');
-            }
-            echo "</div>";
-         }
-      }
    }
 
 
@@ -4713,518 +4467,6 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       return $rand;
-   }
-
-
-   /**
-    * show supplier add div on creation
-    *
-    * @param $options   array    options for default values ($options of showForm)
-    *
-    * @return void
-    **/
-   function showSupplierAddFormOnCreate(array $options) {
-      global $CFG_GLPI;
-
-      $itemtype = $this->getType();
-
-      echo static::getActorIcon('supplier', 'assign');
-      // For ticket templates : mandatories
-      $key = $this->getTemplateFormFieldName();
-      if (isset($options[$key])) {
-         echo $options[$key]->getMandatoryMark("_suppliers_id_assign");
-      }
-      echo "&nbsp;";
-
-      $rand   = mt_rand();
-      $params = ['name'        => '_suppliers_id_assign',
-                      'value'       => $options["_suppliers_id_assign"],
-                      'rand'        => $rand];
-
-      if ($CFG_GLPI['notifications_mailing']) {
-         $paramscomment = ['value'       => '__VALUE__',
-                                'field'       => "_suppliers_id_assign_notif",
-                                'allow_email' => true,
-                                'typefield'   => 'supplier',
-                                'use_notification'
-                                    => $options["_suppliers_id_assign_notif"]['use_notification']];
-         if (isset($options["_suppliers_id_assign_notif"]['alternative_email'])) {
-            $paramscomment['alternative_email']
-            = $options["_suppliers_id_assign_notif"]['alternative_email'];
-         }
-         $params['toupdate'] = ['value_fieldname'
-                                                  => 'value',
-                                     'to_update'  => "notif_assign_$rand",
-                                     'url'        => $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
-                                     'moreparams' => $paramscomment];
-
-      }
-
-      if ($itemtype == 'Ticket') {
-         $toupdate = [];
-         if (isset($params['toupdate']) && is_array($params['toupdate'])) {
-            $toupdate[] = $params['toupdate'];
-         }
-         $toupdate[] = ['value_fieldname' => 'value',
-                             'to_update'       => "countassign_$rand",
-                             'url'             => $CFG_GLPI["root_doc"].
-                                                      "/ajax/ticketassigninformation.php",
-                             'moreparams'      => ['suppliers_id_assign' => '__VALUE__']];
-         $params['toupdate'] = $toupdate;
-      }
-
-      Supplier::dropdown($params);
-
-      if ($itemtype == 'Ticket') {
-         // Display active tickets for a tech
-         // Need to update information on dropdown changes
-         echo "<span id='countassign_$rand'>";
-         echo "</span>";
-         echo "<script type='text/javascript'>";
-         echo "$(function() {";
-         Ajax::updateItemJsCode("countassign_$rand",
-                                $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
-                                ['suppliers_id_assign' => '__VALUE__'],
-                                "dropdown__suppliers_id_assign".$rand);
-         echo "});</script>";
-      }
-
-      if ($CFG_GLPI['notifications_mailing']) {
-         echo "<div id='notif_assign_$rand'>";
-         echo "</div>";
-
-         echo "<script type='text/javascript'>";
-         echo "$(function() {";
-         Ajax::updateItemJsCode("notif_assign_$rand",
-                                $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php", $paramscomment,
-                                "dropdown__suppliers_id_assign".$rand);
-         echo "});</script>";
-      }
-   }
-
-
-
-   /**
-    * show actor part in ITIL object form
-    *
-    * @param $ID        integer  ITIL object ID
-    * @param $options   array    options for default values ($options of showForm)
-    *
-    * @return void
-   **/
-   function showActorsPartForm($ID, array $options) {
-      global $CFG_GLPI;
-
-      $options['_default_use_notification'] = 1;
-
-      if (isset($options['entities_id'])) {
-         $options['_default_use_notification'] = Entity::getUsedConfig('is_notif_enable_default', $options['entities_id'], '', 1);
-      }
-
-      // check is_hidden fields
-      $is_hidden = [];
-      foreach (['_users_id_requester', '_groups_id_requester',
-                     '_users_id_observer', '_groups_id_observer',
-                     '_users_id_assign', '_groups_id_assign',
-                     '_suppliers_id_assign'] as $f) {
-         $is_hidden[$f] = false;
-         $key = $this->getTemplateFormFieldName();
-         if (isset($options[$key])
-             && $options[$key]->isHiddenField($f)) {
-            $is_hidden[$f] = true;
-         }
-      }
-      $can_admin = $this->canAdminActors();
-      // on creation can select actor
-      if (!$ID) {
-         $can_admin = true;
-      }
-
-      $can_assign     = $this->canAssign();
-      $can_assigntome = $this->canAssignToMe();
-
-      if (isset($options['_noupdate']) && !$options['_noupdate']) {
-         $can_admin       = false;
-         $can_assign      = false;
-         $can_assigntome  = false;
-      }
-
-      // Manage actors
-      echo "<div class='tab_actors tab_cadre_fixe' id='mainformtable5'>";
-      echo "<div class='responsive_hidden actor_title'>".__('Actor')."</div>";
-
-      // ====== Requesters BLOC ======
-      //
-      //
-      echo "<span class='actor-bloc'>";
-      echo "<div class='actor-head'>";
-      if (!$is_hidden['_users_id_requester'] || !$is_hidden['_groups_id_requester']) {
-         echo _n('Requester', 'Requesters', 1);
-      }
-      $rand_requester      = -1;
-      $candeleterequester  = false;
-
-      if ($ID
-          && $can_admin
-          && (!$is_hidden['_users_id_requester'] || !$is_hidden['_groups_id_requester'])
-          && !in_array($this->fields['status'], $this->getClosedStatusArray())
-      ) {
-         $rand_requester = mt_rand();
-         echo "&nbsp;";
-         echo "<span class='fa fa-plus pointer' title=\"".__s('Add')."\"
-                onClick=\"".Html::jsShow("itilactor$rand_requester")."\"
-                ><span class='sr-only'>" . __s('Add') . "</span></span>";
-         $candeleterequester = true;
-      }
-      echo "</div>"; // end .actor-head
-
-      echo "<div class='actor-content'>";
-      if ($rand_requester >= 0) {
-         $this->showActorAddForm(CommonITILActor::REQUESTER, $rand_requester,
-                                 $this->fields['entities_id'], $is_hidden);
-      }
-
-      // Requester
-      if (!$ID) {
-         $reqdisplay = false;
-         if ($can_admin
-             && !$is_hidden['_users_id_requester']) {
-            $this->showActorAddFormOnCreate(CommonITILActor::REQUESTER, $options);
-            $reqdisplay = true;
-         } else {
-            $delegating = User::getDelegateGroupsForUser($options['entities_id']);
-            if (count($delegating)
-                && !$is_hidden['_users_id_requester']) {
-               //$this->getDefaultActor(CommonITILActor::REQUESTER);
-               $options['_right'] = "delegate";
-               $this->showActorAddFormOnCreate(CommonITILActor::REQUESTER, $options);
-               $reqdisplay = true;
-            } else { // predefined value
-               if (isset($options["_users_id_requester"]) && $options["_users_id_requester"]) {
-                  echo static::getActorIcon('user', CommonITILActor::REQUESTER)."&nbsp;";
-                  echo Dropdown::getDropdownName("glpi_users", $options["_users_id_requester"]);
-                  echo "<input type='hidden' name='_users_id_requester' value=\"".
-                         $options["_users_id_requester"]."\">";
-                  echo '<br>';
-                  $reqdisplay=true;
-               }
-            }
-         }
-
-         //If user have access to more than one entity, then display a combobox : Ticket case
-         if ($this->userentity_oncreate
-             && isset($this->countentitiesforuser)
-             && ($this->countentitiesforuser > 1)) {
-            echo "<br>";
-            $rand = Entity::dropdown(['value'     => $this->fields["entities_id"],
-                                           'entity'    => $this->userentities,
-                                           'on_change' => 'this.form.submit()']);
-         } else {
-            echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
-         }
-         if ($reqdisplay) {
-            echo '<hr>';
-         }
-
-      } else if (!$is_hidden['_users_id_requester']) {
-         $this->showUsersAssociated(CommonITILActor::REQUESTER, $candeleterequester, $options);
-      }
-
-      // Requester Group
-      if (!$ID) {
-         if ($can_admin
-             && !$is_hidden['_groups_id_requester']) {
-            echo static::getActorIcon('group', CommonITILActor::REQUESTER);
-            /// For ticket templates : mandatories
-            $key = $this->getTemplateFormFieldName();
-            if (isset($options[$key])) {
-               echo $options[$key]->getMandatoryMark('_groups_id_requester');
-            }
-            echo "&nbsp;";
-
-            Group::dropdown([
-               'name'      => '_groups_id_requester',
-               'value'     => $options["_groups_id_requester"],
-               'entity'    => $this->fields["entities_id"],
-               'condition' => ['is_requester' => 1]
-            ]);
-
-         } else { // predefined value
-            if (isset($options["_groups_id_requester"]) && $options["_groups_id_requester"]) {
-               echo static::getActorIcon('group', CommonITILActor::REQUESTER)."&nbsp;";
-               echo Dropdown::getDropdownName("glpi_groups", $options["_groups_id_requester"]);
-               echo "<input type='hidden' name='_groups_id_requester' value=\"".
-                      $options["_groups_id_requester"]."\">";
-               echo '<br>';
-            }
-         }
-      } else if (!$is_hidden['_groups_id_requester']) {
-         $this->showGroupsAssociated(CommonITILActor::REQUESTER, $candeleterequester, $options);
-      }
-      echo "</div>"; // end .actor-content
-      echo "</span>"; // end .actor-bloc
-
-      // ====== Observers BLOC ======
-
-      echo "<span class='actor-bloc'>";
-      echo "<div class='actor-head'>";
-      if (!$is_hidden['_users_id_observer'] || !$is_hidden['_groups_id_observer']) {
-         echo _n('Watcher', 'Watchers', 1);
-      }
-      $rand_observer       = -1;
-      $candeleteobserver   = false;
-
-      if ($ID
-          && $can_admin
-          && (!$is_hidden['_users_id_observer'] || !$is_hidden['_groups_id_observer'])
-          && !in_array($this->fields['status'], $this->getClosedStatusArray())
-      ) {
-         $rand_observer = mt_rand();
-
-         echo "&nbsp;";
-         echo "<span class='fa fa-plus pointer' title=\"".__s('Add')."\"
-                onClick=\"".Html::jsShow("itilactor$rand_observer")."\"
-                ><span class='sr-only'>" . __s('Add') . "</span></span>";
-         $candeleteobserver = true;
-
-      }
-      if (($ID > 0)
-           && !in_array($this->fields['status'], $this->getClosedStatusArray())
-           && !$is_hidden['_users_id_observer']
-           && !$this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
-           && !$this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())) {
-         Html::showSimpleForm($this->getFormURL(), 'addme_observer',
-                              __('Associate myself'),
-                              [$this->getForeignKeyField() => $this->fields['id']],
-                              'fa-male');
-      }
-
-      echo "</div>"; // end .actor-head
-      echo "<div class='actor-content'>";
-      if ($rand_observer >= 0) {
-         $this->showActorAddForm(CommonITILActor::OBSERVER, $rand_observer,
-                                 $this->fields['entities_id'], $is_hidden);
-      }
-
-      // Observer
-      if (!$ID) {
-         if ($can_admin
-             && !$is_hidden['_users_id_observer']) {
-            $this->showActorAddFormOnCreate(CommonITILActor::OBSERVER, $options);
-            echo '<hr>';
-         } else { // predefined value
-            if (!is_array($options['_users_id_observer'])) {
-               $options['_users_id_observer'] = [$options['_users_id_observer']];
-            }
-            if (isset($options["_users_id_observer"][0]) && $options["_users_id_observer"][0]) {
-               echo static::getActorIcon('user', CommonITILActor::OBSERVER)."&nbsp;";
-               echo Dropdown::getDropdownName("glpi_users", $options["_users_id_observer"][0]);
-               echo "<input type='hidden' name='_users_id_observer' value=\"".
-                      $options["_users_id_observer"][0]."\">";
-               echo '<hr>';
-            }
-         }
-      } else if (!$is_hidden['_users_id_observer']) {
-         $this->showUsersAssociated(CommonITILActor::OBSERVER, $candeleteobserver, $options);
-      }
-
-      // Observer Group
-      if (!$ID) {
-         if ($can_admin
-             && !$is_hidden['_groups_id_observer']) {
-            echo static::getActorIcon('group', CommonITILActor::OBSERVER);
-            /// For ticket templates : mandatories
-            $key = $this->getTemplateFormFieldName();
-            if (isset($options[$key])) {
-               echo $options[$key]->getMandatoryMark('_groups_id_observer');
-            }
-            echo "&nbsp;";
-
-            Group::dropdown([
-               'name'      => '_groups_id_observer',
-               'value'     => $options["_groups_id_observer"],
-               'entity'    => $this->fields["entities_id"],
-               'condition' => ['is_requester' => 1]
-            ]);
-         } else { // predefined value
-            if (isset($options["_groups_id_observer"]) && $options["_groups_id_observer"]) {
-               echo static::getActorIcon('group', CommonITILActor::OBSERVER)."&nbsp;";
-               echo Dropdown::getDropdownName("glpi_groups", $options["_groups_id_observer"]);
-               echo "<input type='hidden' name='_groups_id_observer' value=\"".
-                      $options["_groups_id_observer"]."\">";
-               echo '<br>';
-            }
-         }
-      } else if (!$is_hidden['_groups_id_observer']) {
-         $this->showGroupsAssociated(CommonITILActor::OBSERVER, $candeleteobserver, $options);
-      }
-      echo "</div>"; // end .actor-content
-      echo "</span>"; // end .actor-bloc
-
-      // ====== Assign BLOC ======
-
-      echo "<span class='actor-bloc'>";
-      echo "<div class='actor-head'>";
-      if (!$is_hidden['_users_id_assign']
-          || !$is_hidden['_groups_id_assign']
-          || !$is_hidden['_suppliers_id_assign']) {
-         echo __('Assigned to');
-      }
-      $rand_assign      = -1;
-      $candeleteassign  = false;
-      if ($ID
-          && ($can_assign || $can_assigntome)
-          && (!$is_hidden['_users_id_assign']
-              || !$is_hidden['_groups_id_assign']
-              || !$is_hidden['_suppliers_id_assign'])
-          && $this->isAllowedStatus($this->fields['status'], CommonITILObject::ASSIGNED)) {
-         $rand_assign = mt_rand();
-
-         echo "&nbsp;";
-         echo "<span class='fa fa-plus pointer' title=\"".__s('Add')."\"
-                onClick=\"".Html::jsShow("itilactor$rand_assign")."\"
-                ><span class='sr-only'>" . __s('Add') . "</span></span>";
-      }
-      if ($ID
-          && $can_assigntome
-          && !in_array($this->fields['status'], $this->getClosedStatusArray())
-          && !$is_hidden['_users_id_assign']
-          && !$this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-          && $this->isAllowedStatus($this->fields['status'], CommonITILObject::ASSIGNED)) {
-         Html::showSimpleForm($this->getFormURL(), 'addme_assign', __('Associate myself'),
-                              [$this->getForeignKeyField() => $this->fields['id']],
-                              'fa-male');
-      }
-      if ($ID
-          && $can_assign) {
-         $candeleteassign = true;
-      }
-      echo "</div>"; // end .actor-head
-
-      echo "<div class='actor-content'>";
-      if ($rand_assign >= 0) {
-         $this->showActorAddForm(CommonITILActor::ASSIGN, $rand_assign, $this->fields['entities_id'],
-                                 $is_hidden, $this->canAssign(), $this->canAssign());
-      }
-
-      // Assign User
-      if (!$ID) {
-         if ($can_assign
-             && !$is_hidden['_users_id_assign']
-             && $this->isAllowedStatus(CommonITILObject::INCOMING, CommonITILObject::ASSIGNED)) {
-            $this->showActorAddFormOnCreate(CommonITILActor::ASSIGN, $options);
-            echo '<hr>';
-
-         } else if ($can_assigntome
-                    && !$is_hidden['_users_id_assign']
-                    && $this->isAllowedStatus(CommonITILObject::INCOMING, CommonITILObject::ASSIGNED)) {
-            echo static::getActorIcon('user', CommonITILActor::ASSIGN)."&nbsp;";
-            User::dropdown(['name'        => '_users_id_assign',
-                                 'value'       => $options["_users_id_assign"],
-                                 'entity'      => $this->fields["entities_id"],
-                                 'ldap_import' => true]);
-            echo '<hr>';
-
-         } else { // predefined value
-            if (isset($options["_users_id_assign"]) && $options["_users_id_assign"]
-                && $this->isAllowedStatus(CommonITILObject::INCOMING, CommonITILObject::ASSIGNED)) {
-               echo static::getActorIcon('user', CommonITILActor::ASSIGN)."&nbsp;";
-               echo Dropdown::getDropdownName("glpi_users", $options["_users_id_assign"]);
-               echo "<input type='hidden' name='_users_id_assign' value=\"".
-                      $options["_users_id_assign"]."\">";
-               echo '<hr>';
-            }
-         }
-
-      } else if (!$is_hidden['_users_id_assign']) {
-         $this->showUsersAssociated(CommonITILActor::ASSIGN, $candeleteassign, $options);
-      }
-
-      // Assign Groups
-      if (!$ID) {
-         if ($can_assign
-             && !$is_hidden['_groups_id_assign']
-             && $this->isAllowedStatus(CommonITILObject::INCOMING, CommonITILObject::ASSIGNED)) {
-            echo static::getActorIcon('group', CommonITILActor::ASSIGN);
-            /// For ticket templates : mandatories
-            $key = $this->getTemplateFormFieldName();
-            if (isset($options[$key])) {
-               echo $options[$key]->getMandatoryMark('_groups_id_assign');
-            }
-            echo "&nbsp;";
-            $rand   = mt_rand();
-            $params = [
-               'name'      => '_groups_id_assign',
-               'value'     => $options["_groups_id_assign"],
-               'entity'    => $this->fields["entities_id"],
-               'condition' => ['is_assign' => 1],
-               'rand'      => $rand
-            ];
-
-            if ($this->getType() == 'Ticket') {
-               $params['toupdate'] = ['value_fieldname' => 'value',
-                                           'to_update'       => "countgroupassign_$rand",
-                                           'url'             => $CFG_GLPI["root_doc"].
-                                                                "/ajax/ticketassigninformation.php",
-                                           'moreparams'      => ['groups_id_assign'
-                                                                        => '__VALUE__']];
-            }
-
-            Group::dropdown($params);
-            echo "<span id='countgroupassign_$rand'>";
-            echo "</span>";
-
-            echo "<script type='text/javascript'>";
-            echo "$(function() {";
-            Ajax::updateItemJsCode("countgroupassign_$rand",
-                                   $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
-                                   ['groups_id_assign' => '__VALUE__'],
-                                   "dropdown__groups_id_assign$rand");
-            echo "});</script>";
-
-            echo '<hr>';
-         } else { // predefined value
-            if (isset($options["_groups_id_assign"])
-                && $options["_groups_id_assign"]
-                && $this->isAllowedStatus(CommonITILObject::INCOMING, CommonITILObject::ASSIGNED)) {
-               echo static::getActorIcon('group', CommonITILActor::ASSIGN)."&nbsp;";
-               echo Dropdown::getDropdownName("glpi_groups", $options["_groups_id_assign"]);
-               echo "<input type='hidden' name='_groups_id_assign' value=\"".
-                      $options["_groups_id_assign"]."\">";
-               echo '<hr>';
-            }
-         }
-
-      } else if (!$is_hidden['_groups_id_assign']) {
-         $this->showGroupsAssociated(CommonITILActor::ASSIGN, $candeleteassign, $options);
-      }
-
-      // Assign Suppliers
-      if (!$ID) {
-         if ($can_assign
-             && !$is_hidden['_suppliers_id_assign']
-             && $this->isAllowedStatus(CommonITILObject::INCOMING, CommonITILObject::ASSIGNED)) {
-            $this->showSupplierAddFormOnCreate($options);
-         } else { // predefined value
-            if (isset($options["_suppliers_id_assign"])
-                && $options["_suppliers_id_assign"]
-                && $this->isAllowedStatus(CommonITILObject::INCOMING, CommonITILObject::ASSIGNED)) {
-               echo static::getActorIcon('supplier', CommonITILActor::ASSIGN)."&nbsp;";
-               echo Dropdown::getDropdownName("glpi_suppliers", $options["_suppliers_id_assign"]);
-               echo "<input type='hidden' name='_suppliers_id_assign' value=\"".
-                      $options["_suppliers_id_assign"]."\">";
-               echo '<hr>';
-            }
-         }
-
-      } else if (!$is_hidden['_suppliers_id_assign']) {
-         $this->showSuppliersAssociated(CommonITILActor::ASSIGN, $candeleteassign, $options);
-      }
-
-      echo "</div>"; // end .actor-content
-      echo "</span>"; // end .actor-bloc
-
-      echo "</div>"; // tab_actors
    }
 
 
@@ -6512,7 +5754,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          foreach ($item->getUsers(CommonITILActor::ASSIGN) as $d) {
             if (Session::getCurrentInterface() == 'helpdesk'
-               && !empty($anon_name = User::getAnonymizedName(
+               && !empty($anon_name = User::getAnonymizedNameForUser(
                   $d['users_id'],
                   $item->getEntityID()
                ))
@@ -7197,71 +6439,6 @@ abstract class CommonITILObject extends CommonDBTM {
          'canupdate'     => (Session::getCurrentInterface() == "central" && $item->canUpdateItem()),
          'can_requester' => $can_requester,
       ]);
-   }
-
-
-   function showFormHeader($options = []) {
-      $ID   = $this->fields['id'];
-      $rand = mt_rand();
-
-      if (!isset($options['template_preview']) || !$options['template_preview']) {
-         $output = "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".static::getFormURL()."'";
-         if ($ID) {
-            $output .= " data-track-changes='true'";
-         }
-         $output .= '>';
-         echo $output;
-
-         if (isset($options['_projecttasks_id'])) {
-            echo "<input type='hidden' name='_projecttasks_id' value='".$options['_projecttasks_id']."'>";
-         }
-         if (isset($this->fields['_tasktemplates_id'])) {
-            foreach ($this->fields['_tasktemplates_id'] as $tasktemplates_id) {
-               echo "<input type='hidden' name='_tasktemplates_id[]' value='$tasktemplates_id'>";
-            }
-         }
-      }
-      echo "<div class='spaced' id='tabsbody'>";
-
-      echo "<table class='tab_cadre_fixe' id='mainformtable'>";
-
-      // Optional line
-      $ismultientities = Session::isMultiEntitiesMode();
-      echo "<tr class='headerRow responsive_hidden'>";
-      echo "<th colspan='4'>";
-
-      if ($ID) {
-         $text = sprintf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
-         if ($ismultientities) {
-            $text = sprintf(__('%1$s (%2$s)'), $text,
-                            Dropdown::getDropdownName('glpi_entities',
-                                                      $this->fields['entities_id']));
-         }
-         echo $text;
-      } else {
-         if ($ismultientities) {
-            echo sprintf(
-               //TRANS first parameter is the type name, second the entity name
-               __('%1$s will be added in entity %2$s'),
-               static::getTypeName(1),
-               Dropdown::getDropdownName("glpi_entities", $this->fields['entities_id'])
-            );
-         } else {
-            echo sprintf(
-               __('New %s'),
-               static::getTypeName(1)
-            );
-         }
-      }
-
-      if ($this->maybeRecursive()) {
-         echo "&nbsp;<label for='dropdown_is_recursive$rand'>".__('Child entities')."</label>&nbsp;";
-         Dropdown::showYesNo("is_recursive", $this->fields["is_recursive"], -1, ['rand' => $rand]);
-      }
-      echo "</th>";
-      echo "</tr>";
-
-      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => &$options]);
    }
 
    /**
@@ -7964,20 +7141,6 @@ abstract class CommonITILObject extends CommonDBTM {
       ];
    }
 
-   public function displayHiddenItemsIdInput(array $options): void {
-      $input_items_id = $options['items_id'] ?? [];
-
-      if (empty($input_items_id)) {
-         return;
-      }
-
-      foreach ($input_items_id as $itemtype => $items) {
-         foreach ($items as $items_id) {
-            echo "<input type='hidden' name='items_id[$itemtype][$items_id]' value='$items_id'>";
-         }
-      }
-   }
-
    public function handleItemsIdInput(): void {
       if (!empty($this->input['items_id'])) {
          $item_link_class = static::getItemLinkClass();
@@ -8045,10 +7208,10 @@ abstract class CommonITILObject extends CommonDBTM {
          || !is_array($this->input['_itilfollowuptemplates_id'])
          || !count($this->input['_itilfollowuptemplates_id'])
       ) {
-          return;
+         return;
       }
 
-         // Add tasks in itilfollowup template if defined in itiltemplate
+      // Add tasks in itilfollowup template if defined in itiltemplate
       foreach ($this->input['_itilfollowuptemplates_id'] as $fup_templates_id) {
          // Get template
          $fup_template = new ITILFollowupTemplate();
@@ -8553,5 +7716,60 @@ abstract class CommonITILObject extends CommonDBTM {
          return [];
       }
       return $columns[$column_field];
+   }
+
+   public function getTimelineStats(): array {
+      global $DB;
+
+      $stats = [
+         'total_duration' => 0,
+         'percent_done'   => 0,
+      ];
+
+      // compute itilobject duration
+      $task_class  = $this->getType() . "Task";
+      $task_table  = getTableForItemType($task_class);
+      $foreign_key = $this->getForeignKeyField();
+
+      $criteria = [
+         'SELECT' => ['SUM' => 'actiontime AS actiontime'],
+         'FROM'   => $task_table,
+         'WHERE'  => [$foreign_key => $this->fields['id']]
+      ];
+
+      $req = $DB->request($criteria);
+      if ($row = $req->next()) {
+         $stats['total_duration'] = $row['actiontime'];
+      }
+
+      // compute itilobject percent done
+      $criteria    = [
+         $foreign_key => $this->fields['id'],
+         'state'     => [Planning::TODO, Planning::DONE]
+      ];
+      $total_tasks = countElementsInTable($task_table, $criteria);
+      $criteria    = [
+         $foreign_key => $this->fields['id'],
+         'state'      => Planning::DONE,
+      ];
+      $done_tasks = countElementsInTable($task_table, $criteria);
+      if ($total_tasks != 0) {
+         $stats['percent_done'] = floor(100 * $done_tasks / $total_tasks);
+      }
+
+      return $stats;
+   }
+
+   /**
+    * Returns an instance of validation class, if it exists.
+    *
+    * @return CommonITILValidation|null
+    */
+   public static function getValidationClassInstance(): ?CommonITILValidation {
+      $validation_class = static::class . 'Validation';
+      if (class_exists($validation_class)) {
+         return new $validation_class();
+      }
+      return null;
    }
 }

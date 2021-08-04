@@ -9,29 +9,25 @@
          <tr>
             <th>{{ param['first_cell']|raw }}</th>
             {% for col_name, column in columns %}
-               {% set col_id = Html__cleanId('col_label_' ~ col_name ~ '_' ~ param['rand']) %}
+               {% set col_id = call('Html::cleanId', ['col_label_' ~ col_name ~ '_' ~ param['rand']]) %}
                <th id="{{ col_id }}">
-                  <div class="{{ param['rotate_column_titles'] ? "rotate" : "" }}">
-                     {% if column is not iterable %}
-                        {{ column }}
+                  {% if column is not iterable %}
+                     {{ column }}
+                  {% else %}
+                     {% if column['short'] is defined and column['long'] is defined %}
+                        {{ column['short'] }}
+                        {% do call('Html::showToolTip', [column['long'], {'applyto': col_id}]) %}
                      {% else %}
-                        {% if column['short'] is defined and column['long'] is defined %}
-                           {{ column['short'] }}
-                           {{ Html__showToolTip(column['long'], {'applyto': col_id}) }}
-                        {% else %}
-                           {{ column['label'] }}
-                        {% endif %}
+                        {{ column['label'] }}
                      {% endif %}
-                  </div>
+                  {% endif %}
                </th>
             {% endfor %}
 
             {% if param['row_check_all'] %}
-               {% set col_id = Html__cleanId('col_of_table_' ~ param['rand']) %}
+               {% set col_id = call('Html::cleanId', ['col_of_table_' ~ param['rand']]) %}
                <th id="{{ col_id }}">
-                  <div class="{{ param['rotate_column_titles'] ? "rotate" : "" }}">
-                     {{ __('Select/unselect all') }}
-                  </div>
+                  {{ __('Select/unselect all') }}
                </th>
             {% endif %}
          </tr>
@@ -40,11 +36,11 @@
          {% for row_name, row in rows %}
             <tr>
                {% if row is not iterable %}
-                  <td colspan='{{ number_columns }}'>{{ row }}</td>
+                  <td colspan="{{ number_columns }}">{{ row }}</td>
                {% else %}
-                  {% set row_id = Html__cleanId('row_label_' ~ row_name ~ '_' ~ param['rand']) %}
-                  <td class='{{ row['class'] }}' id='{{ row_id }}'>
-                     {{ row['label'] ?? "&nbsp;" }}
+                  {% set row_id = call('Html::cleanId', ['row_label_' ~ row_name ~ '_' ~ param['rand']]) %}
+                  <td class="{{ row['class'] }}" id="{{ row_id }}">
+                     {{ row['label'] ?? '&nbsp;' }}
                   </td>
 
                   {% for col_name, column in columns %}
@@ -55,8 +51,8 @@
                               {% set content = content|merge({'readonly': false}) %}
                            {% endif %}
                            {% set content = content|merge({
-                              'name': row_name ~ "[" ~ col_name ~ "]",
-                              'id': Html__cleanId('cb_' ~ row_name ~ '_' ~ col_name ~ '_' ~ param['rand'])
+                              'name': row_name ~ '[' ~ col_name ~ ']',
+                              'id': call('Html::cleanId', ['cb_' ~ row_name ~ '_' ~ col_name ~ '_' ~ param['rand']])
                            }) %}
                            {% set massive_tags = [] %}
                            {% if param['row_check_all'] %}
@@ -77,7 +73,7 @@
                            {% set content = content|merge({
                               'massive_tags': massive_tags
                            }) %}
-                           {{ Html__showCheckbox(content) }}
+                           {% do call('Html::showCheckbox', [content]) %}
 
                         {% else %}
                            {% if content is not iterable %}
@@ -89,15 +85,15 @@
 
                   {% if param['row_check_all'] %}
                      <td>
-                        {{ Html__getCheckbox({
+                        {% do call('Html::showCheckbox', [{
                            'title': __('Check/uncheck all'),
                            'criterion': {
                               'tag_for_massive': 'row_' ~ row_name ~ '_' ~ param['rand']
                            },
                            'massive_tags': 'table_' ~ param['rand'],
-                           'id': Html__cleanId('cb_checkall_row_' ~ row_name ~ '_' ~ param['rand']),
+                           'id': call('Html::cleanId', ['cb_checkall_row_' ~ row_name ~ '_' ~ param['rand']]),
                            'checked': (nb_cb_per_row[row_name]['checked'] >= (nb_cb_per_row[row_name]['total'])),
-                        }) }}
+                        }]) %}
                      </td>
                   {% endif %}
                {% endif %}
@@ -110,29 +106,29 @@
                {% for col_name, column in columns %}
                   <td>
                      {% if nb_cb_per_col[col_name]['total'] >= 2 %}
-                        {{ Html__getCheckbox({
+                        {% do call('Html::showCheckbox', [{
                            'title': __('Check/uncheck all'),
                            'criterion': {
                               'tag_for_massive': 'col_' ~ col_name ~ '_' ~ param['rand']
                            },
                            'massive_tags': 'table_' ~ param['rand'],
-                           'id': Html__cleanId('cb_checkall_col_' ~ col_name ~ param['rand']),
+                           'id': call('Html::cleanId', ['cb_checkall_col_' ~ col_name ~ param['rand']]),
                            'checked': (nb_cb_per_col[col_name]['checked'] >= (nb_cb_per_col[col_name]['total'])),
-                        }) }}
+                        }]) %}
                      {% endif %}
                   </td>
                {% endfor %}
 
                {% if param['row_check_all'] %}
                   <td>
-                     {{ Html__getCheckbox({
+                     {% do call('Html::showCheckbox', [{
                         'title': __('Check/uncheck all'),
                         'criterion': {
                            'tag_for_massive': 'table_' ~ param['rand']
                         },
                         'massive_tags': '',
-                        'id': Html__cleanId('cb_checkall_table_' ~ param['rand']),
-                     }) }}
+                        'id': call('Html::cleanId', ['cb_checkall_table_' ~ param['rand']]),
+                     }]) %}
                   </td>
                {% endif %}
             </tr>

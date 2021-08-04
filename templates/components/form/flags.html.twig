@@ -19,9 +19,12 @@
    {% if item.isField(field) %}
       <div class="m-2">
          <label class="form-check">
-            {% set checked = (item.fields[field] == 1 ? 'checked' : '') %}
             <input type="hidden" name="{{ field }}" value="0" />
-            <input class="form-check-input" type="checkbox" name="{{ field }}" {{ checked }} value="1" />
+            <input class="form-check-input"
+                   type="checkbox"
+                   name="{{ field }}"
+                   {% if item.fields[field] == 1 %}checked="checked"{% endif %}
+                   value="1" />
             <span class="form-check-label">
                {{ label }}
             </span>

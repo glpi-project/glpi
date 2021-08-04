@@ -32,7 +32,6 @@
 
 namespace Glpi\Application\View\Extension;
 
-use CommonDBTM;
 use Plugin;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -43,42 +42,24 @@ use Twig\TwigFunction;
 class PluginExtension extends AbstractExtension {
    public function getFunctions(): array {
       return [
-         new TwigFunction('displayLogin', [$this, 'displayLogin'], ['is_safe' => ['html']]),
-         new TwigFunction('AutoInventoryInformation', [$this, 'AutoInventoryInformation'], ['is_safe' => ['html']]),
-         new TwigFunction('preItemForm', [$this, 'preItemForm'], ['is_safe' => ['html']]),
-         new TwigFunction('postItemForm', [$this, 'postItemForm'], ['is_safe' => ['html']]),
-         new TwigFunction('hook_infocom', [$this, 'hook_infocom'], ['is_safe' => ['html']]),
-         new TwigFunction('hook_display_central', [$this, 'hook_display_central'], ['is_safe' => ['html']]),
+         new TwigFunction('call_plugin_hook', [$this, 'callPluginHook']),
       ];
    }
 
    /**
-    * call display_login plugin hook to display aditionnal html on login page
+    * Call plugin hook with given params.
     *
-    * @return void
+    * @param string  $name          Hook name.
+    * @param mixed   $params        Hook parameters.
+    * @param bool    $return_result Indicates that the result should be returned.
+    *
+    * @return mixed|void
     */
-   public function displayLogin(): void {
-      Plugin::doHook('display_login');
-   }
+   public function callPluginHook(string $name, $params = null, bool $return_result = false) {
+      $result = Plugin::doHook($name, $params);
 
-
-   public function AutoInventoryInformation(): void {
-      Plugin::doHook('autoinventory_information');
-   }
-
-   public function preItemForm(CommonDBTM $item, array $params = []): void {
-      Plugin::doHook('pre_item_form', ['item' => $item, 'options' => $params]);
-   }
-
-   public function postItemForm(CommonDBTM $item, array $params = []): void {
-      Plugin::doHook('post_item_form', ['item' => $item, 'options' => $params]);
-   }
-
-   public function hook_infocom(CommonDBTM $item): void {
-      Plugin::doHookFunction("infocom", $item);
-   }
-
-   public function hook_display_central(): void {
-      Plugin::doHook('display_central');
+      if ($return_result) {
+         return $result;
+      }
    }
 }

@@ -61,8 +61,6 @@ class FrontEndAssetsExtension extends AbstractExtension {
     * @param string $path
     *
     * @return string
-    *
-    * @TODO Add a unit test.
     */
    public function assetPath(string $path): string {
       return Html::getPrefixedUrl($path);
@@ -74,8 +72,6 @@ class FrontEndAssetsExtension extends AbstractExtension {
     * @param string $path
     *
     * @return string
-    *
-    * @TODO Add a unit test.
     */
    public function cssPath(string $path): string {
       $is_debug = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
@@ -108,8 +104,6 @@ class FrontEndAssetsExtension extends AbstractExtension {
     * @param string $path
     *
     * @return string
-    *
-    * @TODO Add a unit test.
     */
    public function jsPath(string $path): string {
       $is_debug = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
@@ -145,8 +139,6 @@ class FrontEndAssetsExtension extends AbstractExtension {
     * Return custom CSS for active entity.
     *
     * @return string
-    *
-    * @TODO Add a unit test.
     */
    public function customCss(): string {
       global $DB;
@@ -172,8 +164,6 @@ class FrontEndAssetsExtension extends AbstractExtension {
     * Return locales JS code.
     *
     * @return string
-    *
-    * @TODO Add a unit test.
     */
    public function localesJs(): string {
       if (!isset($_SESSION['glpilanguage'])) {

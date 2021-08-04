@@ -1,18 +1,18 @@
-{% extends "layout/page_card_notlogged.html.twig" %}
+{% extends 'layout/page_card_notlogged.html.twig' %}
 
 {% block content_block %}
-   <form action="{{ path("front/login.php") }}" method="post" autocomplete="off">
-      <input type="hidden" name="noAUTO" value="{{ noAuto }}"/>
-      <input type="hidden" name="redirect" value="{{ redirect }}"/>
-      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+   <form action="{{ path('front/login.php') }}" method="post" autocomplete="off">
+      <input type="hidden" name="noAUTO" value="{{ noAuto }}" />
+      <input type="hidden" name="redirect" value="{{ redirect }}" />
+      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
 
       <div class="row justify-content-center">
          <div class="col-md-5">
 
-            <h2 class="card-header text-center mb-4">{{ __("Login to your account") }}</h2>
+            <h2 class="card-header text-center mb-4">{{ __('Login to your account') }}</h2>
             <div class="mb-3">
                <label class="form-label">{{ __('Login') }}</label>
-               <input type="text" class="form-control" id="login_name" name="{{ namfield }}" placeholder="" tabindex="1">
+               <input type="text" class="form-control" id="login_name" name="{{ namfield }}" placeholder="" tabindex="1" />
             </div>
             <div class="mb-4">
                <label class="form-label">
@@ -26,17 +26,17 @@
                      </span>
                   {% endif %}
                </label>
-               <input type="password" class="form-control" name="{{ pwdfield }}" placeholder="" autocomplete="off" tabindex="2">
+               <input type="password" class="form-control" name="{{ pwdfield }}" placeholder="" autocomplete="off" tabindex="2" />
             </div>
 
-            {% if constant("GLPI_DEMO_MODE") %}
+            {% if constant('GLPI_DEMO_MODE') %}
                <div class="mb-3">
                   <label class="form-label">{{ __('Language') }}</label>
                   {{ languages_dropdown|raw }}
                </div>
             {% endif %}
 
-            {% if config("display_login_source") %}
+            {% if config('display_login_source') %}
                <div class="mb-3">
                   <label class="form-label">{{ __('Login source') }}</label>
                   {{ auth_dropdown_login|raw }}
@@ -46,7 +46,7 @@
             {% if config('login_remember_time') %}
                <div class="mb-2">
                   <label class="form-check">
-                     <input type="checkbox" class="form-check-input" name="{{ rmbfield }}" {{ config('login_remember_default') ? "checked" : "" }}>
+                     <input type="checkbox" class="form-check-input" name="{{ rmbfield }}" {{ config('login_remember_default') ? 'checked' : '' }} />
                      <span class="form-check-label">{{ __('Remember me') }}</span>
                   </label>
                </div>
@@ -54,12 +54,12 @@
 
             <div class="form-footer">
                <button type="submit" name="submit" class="btn btn-primary w-100" tabindex="3">
-                  {{ __("Sign in") }}
+                  {{ __('Sign in') }}
                </button>
             </div>
 
             {% if errors|length > 0 %}
-               <hr>
+               <hr />
                <div class="alert alert-danger" role="alert">
                   {{ errors }}
                </div>
@@ -70,12 +70,12 @@
             <div class="col offset-md-1 p-2 text-center">
                {% if text_login|length > 0 %}
                   <div class="rich_text_container">
-                     {{ text_login|raw }}
+                     {{ text_login|safe_html }}
                   </div>
                {% endif %}
 
-               {% if config("use_public_faq") %}
-                  <hr>
+               {% if config('use_public_faq') %}
+                  <hr />
 
                   <a class="btn btn-outline-secondary btn-icon" href="front/helpdesk.faq.php">
                      <i class="fas fa-question"></i>&nbsp;
@@ -83,9 +83,9 @@
                   </a>
                {% endif %}
 
-               <hr>
+               <hr />
 
-               {{ displayLogin() }}
+               {{ call_plugin_hook('display_login') }}
             </div>
          {% endif %}
       </div>

@@ -106,17 +106,18 @@ class WifiNetwork extends CommonDropdown {
                          'list'  => true]];
    }
 
-   public function getSpecificTypeField(int $ID, array $field): string {
+
+   function displaySpecificTypeField($ID, $field = []) {
+
       if ($field['type'] == 'wifi_mode') {
-         return Dropdown::showFromArray($field['name'], self::getWifiNetworkModes(),
+         Dropdown::showFromArray($field['name'], self::getWifiNetworkModes(),
             [
-               'value'  => $this->fields[$field['name']],
-               'width'     => '100%',
-               'display'   => false,
+               'value' => $this->fields[$field['name']],
+               'width' => '100%',
             ]);
       }
-      return '';
    }
+
 
    function rawSearchOptions() {
       $tab = parent::rawSearchOptions();

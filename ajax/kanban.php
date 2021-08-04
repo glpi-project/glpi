@@ -127,7 +127,7 @@ if ($_REQUEST['action'] === 'update') {
    $checkParams(['inputs']);
    $item = new $itemtype();
    $inputs = [];
-   parse_str(html_entity_decode($_REQUEST['inputs']), $inputs);
+   parse_str($_REQUEST['inputs'], $inputs);
 
    $bulk_item_list = preg_split('/\r\n|[\r\n]/', $inputs['bulk_item_list']);
    if (!empty($bulk_item_list)) {

@@ -1,4 +1,4 @@
-{% import "components/form/fields_macros.html.twig" as fields %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 {% set rand = random() %}
 {% set field_name = field_name|default('psgallery' ~ rand) %}
 
@@ -71,7 +71,9 @@
                      </span>
                   {% else %}
                      <a href="{{ img['src']|escape }}" itemprop="contentUrl" data-index="0">
-                        <img src="{{ img['thumbnail_src']|default(img['src'])|escape }}" itemprop="thumbnail" alt="{{ img['title']|default('') }}" class="{{ img['img_class']|default('') }} pointer pswp-trigger">
+                        <img src="{{ img['thumbnail_src']|default(img['src']) }}"
+                             itemprop="thumbnail" alt="{{ img['title']|default('') }}"
+                             class="{{ img['img_class']|default('') }} pointer pswp-trigger" />
                      </a>
                   {% endif %}
                <figcaption itemprop="caption description">{{ img['title']|default('') }}</figcaption>
@@ -89,18 +91,23 @@
          {% set clearable = img['clearable'] %}
          <figure itemprop="associatedMedia" itemscope itemtype="https://schema.org/ImageObject"
                  style="width: {{ img['thumbnail_w']|default('auto') }}; height: {{ img['thumbnail_h']|default('auto') }}">
-            {{ fields.imageField((clearable ? 'pictures' : field_name) ~ '_' ~ loop.index0, img['thumbnail_src']|default(img['src']), '', {
-               'no_label': true,
-               'full_width': true,
-               'clearable': clearable,
-               'class': 'pswp-trigger',
-               'alt': img['title']|default(''),
-               'itemprop': 'thumbnail',
-               'link_attribs': {
-                  'itemprop': 'contentUrl',
-                  'data-index': '0'
-               }
-            }) }}
+            {{ fields.imageField(
+                  (clearable ? 'pictures' : field_name) ~ '_' ~ loop.index0,
+                  img['thumbnail_src']|default(img['src']),
+                  '',
+                  {
+                     'no_label': true,
+                     'full_width': true,
+                     'clearable': clearable,
+                     'class': 'pswp-trigger',
+                     'alt': img['title']|default(''),
+                     'itemprop': 'thumbnail'
+                  },
+                  {
+                     'itemprop': 'contentUrl',
+                     'data-index': '0'
+                  }
+            ) }}
             <figcaption itemprop="caption description">{{ img['title']|default('') }}</figcaption>
          </figure>
       {% endfor %}

@@ -911,7 +911,7 @@ class Reminder extends CommonDBVisible implements
 
       if (($personal && self::canCreate())
         || (!$personal && Session::haveRight(self::$rightname, CREATE))) {
-         $output.=  "<span class='floatright'>";
+         $output.=  "<span class='float-end'>";
          $output.=  "<a href='".Reminder::getFormURL()."'>";
          $output.=  "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."'
                 title=\"". __s('Add')."\"></a></span>";
@@ -946,7 +946,7 @@ class Reminder extends CommonDBVisible implements
                $tab      = explode(" ", $data["begin"]);
                $date_url = $tab[0];
                $output.=  "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url.
-                     "&amp;type=day' class='pointer floatright' title=\"".sprintf(__s('From %1$s to %2$s'),
+                     "&amp;type=day' class='pointer float-end' title=\"".sprintf(__s('From %1$s to %2$s'),
                                            Html::convDateTime($data["begin"]),
                                            Html::convDateTime($data["end"]))."\">";
                $output.= "<i class='fa fa-bell'></i>";

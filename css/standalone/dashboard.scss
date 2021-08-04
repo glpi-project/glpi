@@ -72,12 +72,6 @@ $break_tablet: 1400px;
    }
 }
 
-// replicate ui-tabs display
-.default_dashboard {
-   padding: 1em 1.4em;
-   margin: auto;
-}
-
 .dashboard {
    //font-family: Arial, Helvetica, sans-serif/*{ffDefault}*/; // for embed
    position: relative;
@@ -209,7 +203,7 @@ $break_tablet: 1400px;
                }
                border-color: #f0f0f0 !important;
 
-               input, .flatpickr, .select2, .no-wrap {
+               input, .flatpickr, .select2 {
                   display: none;
                }
 

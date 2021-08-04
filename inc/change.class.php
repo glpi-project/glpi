@@ -233,13 +233,6 @@ class Change extends CommonITILObject {
                case 4 :
                   $item->showStats();
                   break;
-               case 5 :
-                  echo "<div class='timeline_box'>";
-                  $rand = mt_rand();
-                  $item->showTimelineForm($rand);
-                  $item->showTimeline($rand);
-                  echo "</div>";
-                  break;
             }
             break;
       }
@@ -649,15 +642,10 @@ class Change extends CommonITILObject {
 
 
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
 
       if (!static::canView()) {
          return false;
       }
-
-      // In percent
-      $colsize1 = '13';
-      $colsize2 = '37';
 
       $default_values = self::getDefaultValues();
 
@@ -726,11 +714,6 @@ class Change extends CommonITILObject {
       }
 
       $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());
-
-      $showuserlink = 0;
-      if (User::canView()) {
-         $showuserlink = 1;
-      }
 
       if (!$this->isNewItem()) {
          $options['formtitle'] = sprintf(
@@ -840,7 +823,7 @@ class Change extends CommonITILObject {
          'timeline'           => $this->getTimelineItems(),
          'itiltemplate_key'   => $tpl_key,
          'itiltemplate'       => $tt,
-         'predefined_fields'  => $predefined_fields,
+         'predefined_fields'  => Toolbox::prepareArrayForInput($predefined_fields),
          'canupdate'          => $canupdate,
          'canpriority'        => $canupdate,
          'canassign'          => $canupdate,
@@ -1690,10 +1673,8 @@ class Change extends CommonITILObject {
          $options['criteria'][0]['value'] = $key;
          $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"]."/front/change.php?".Toolbox::append_params($options),
-            'text'   => "<span>".
-                        self::getStatusIcon($key).
-                        self::getStatus($key).
-                        "</span>",
+            'text'   => self::getStatus($key),
+            'icon'   => self::getStatusClass($key),
             'count'  => $val
          ];
       }
@@ -1702,7 +1683,8 @@ class Change extends CommonITILObject {
       $options['is_deleted']  = 1;
       $twig_params['items'][] = [
          'link'   => $CFG_GLPI["root_doc"]."/front/change.php?".Toolbox::append_params($options),
-         'text'   => "<span><i class='fas fa-trash bg-red-lt me-1'></i>".__('Deleted')."</span>",
+         'text'   => __('Deleted'),
+         'icon'   => 'fas fa-trash bg-red-lt',
          'count'  => $number_deleted
       ];
 
