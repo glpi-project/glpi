@@ -32,6 +32,8 @@
 
 namespace Glpi\Toolbox;
 
+use Toolbox;
+
 /**
  * Helper class to build markdown content
  */
@@ -42,11 +44,7 @@ class MarkdownBuilder
     *
     * @var string
     */
-   protected $content;
-
-   public function __construct() {
-      $this->content = "";
-   }
+   protected $content = "";
 
    /**
     * Get the generated markdown content
@@ -168,8 +166,7 @@ class MarkdownBuilder
     * @return string
     */
    public static function navigationLink($label) {
-      $link = strtolower($label);
-      $link = str_replace(" ", "-", $link);
+      $link = Toolbox::slugify($label, '');
       return "[$label](#$link)";
    }
 

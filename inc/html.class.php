@@ -4089,11 +4089,11 @@ JAVASCRIPT
    /**
     * Insert an html link to the twig template variables documentation page
     *
-    * @param int $preset_traget Preset of parameters for which to show documentation
-    * @param string|null $link_id Useful if you need to interract with the link through client side code
+    * @param string $preset_traget Preset of parameters for which to show documentation (key)
+    * @param string|null $link_id  Useful if you need to interract with the link through client side code
     */
    public static function addTemplateDocumentationLink(
-      int $preset_target,
+      string  $preset_target,
       ?string $link_id = null
    ) {
       global $CFG_GLPI;
@@ -4120,11 +4120,11 @@ JAVASCRIPT
     * Useful if you don't have access to the form where you want to put this link at
     *
     * @param string $selector JQuery selector to find the target textarea
-    * @param int $preset_traget Preset of parameters for which to show documentation
+    * @param string $preset_traget   Preset of parameters for which to show documentation (key)
     */
    public static function addTemplateDocumentationLinkJS(
       string $selector,
-      int $preset_target
+      string $preset_target
    ) {
       $link_id = "template_documentation_" . mt_rand();
       self::addTemplateDocumentationLink($preset_target, $link_id);

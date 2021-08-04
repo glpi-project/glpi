@@ -180,18 +180,18 @@ class TemplateManager
    /**
     * Generate the documentation of the given parameters
     *
-    * @param int $preset_parameters_key
+    * @param string $preset_parameters_key
     *
     * @return string
     */
    public static function generateMarkdownDocumentation(
-      int $preset_parameters_key
+      string $preset_parameters_key
    ): string {
       $parameters = ParametersPreset::getByKey($preset_parameters_key);
       $context = ParametersPreset::getContextByKey($preset_parameters_key);
 
       $documentation = new TemplateDocumentation($context);
-      $documentation->addSection(__("Variables"), $parameters);
+      $documentation->addSection(__("Root variables"), $parameters);
       return $documentation->build();
    }
 

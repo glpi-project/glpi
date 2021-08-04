@@ -74,13 +74,6 @@ abstract class AbstractParameters implements TemplatesParametersInterface
     */
    abstract protected function getTargetClasses(): array;
 
-   /**
-    * Get label for the target itemtype of this parameter
-    *
-    * @return string
-    */
-   abstract static function getObjectLabel(): string;
-
    public function getValues(CommonDBTM $item): array {
       $valid_class = false;
       foreach ($this->getTargetClasses() as $class) {

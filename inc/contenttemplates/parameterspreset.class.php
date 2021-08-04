@@ -37,6 +37,7 @@ use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
 use Glpi\ContentTemplates\Parameters\ProblemParameters;
 use Glpi\ContentTemplates\Parameters\TicketParameters;
+use ITILSolution;
 use SolutionTemplate;
 use TaskTemplate;
 use TicketTemplate;
@@ -53,13 +54,13 @@ class ParametersPreset
    /**
     * Twig parameters that will be avaiable in solution/task/followup form
     */
-   public const ABSTRACT_TEMPLATE = 0;
+   public const ITIL_CHILD_TEMPLATE = 'itilchildtemplate';
 
    /**
     * Twig parameters that will be available in the solution massive actions
     * form for tickets
     */
-   public const TICKET_SOLUTION = 1;
+   public const TICKET_SOLUTION = 'ticketsolution';
 
    /**
     * Get parameters from their unique key (one of the contant above).
@@ -72,7 +73,7 @@ class ParametersPreset
     */
    public static function getByKey(string $key): array {
       switch ($key) {
-         case self::ABSTRACT_TEMPLATE:
+         case self::ITIL_CHILD_TEMPLATE:
             return self::getForAbstractTemplates();
 
          case self::TICKET_SOLUTION:
@@ -92,17 +93,17 @@ class ParametersPreset
     */
    public static function getContextByKey(string $key): string {
       switch ($key) {
-         case self::ABSTRACT_TEMPLATE:
+         case self::ITIL_CHILD_TEMPLATE:
             $types = [
-               TicketTemplate::getTypeName(0),
-               TaskTemplate::getTypeName(0),
-               SolutionTemplate::getTypeName(0),
+               TicketTemplate::getTypeName(1),
+               TaskTemplate::getTypeName(1),
+               SolutionTemplate::getTypeName(1),
             ];
 
-            return strtolower(implode("/", $types));
+            return implode("/", $types);
 
          case self::TICKET_SOLUTION:
-            return __("ticket solutions");
+            return ITILSolution::getTypeName(1);
 
          default:
             return "";

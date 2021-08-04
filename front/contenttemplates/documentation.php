@@ -41,15 +41,14 @@ if (is_null($preset)) {
    Toolbox::throwError(400, "Missing mandatory 'preset' parameter", "string");
 }
 
-echo "<div id='page'>";
 echo Html::includeHeader(__("Template variables documentation"));
+echo "<div id='page'>";
 echo "<div class='documentation documentation-large'>";
 
 // Parse markdown
 $md = new MarkdownExtra();
 $md->header_id_func = function($headerName) {
-   $headerName = str_replace(['(', ')'], '', $headerName);
-   return rawurlencode(strtolower(strtr($headerName, [' ' => '-'])));
+   return Toolbox::slugify($headerName, '');
 };
 echo $md->transform(TemplateManager::generateMarkdownDocumentation($preset));
 
@@ -59,4 +58,3 @@ echo "</div>";
 echo "<div class='documentation-footer'>";
 echo "<div>";
 Html::nullFooter();
-echo "</div>";

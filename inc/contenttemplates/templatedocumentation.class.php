@@ -83,7 +83,7 @@ class TemplateDocumentation
 
       // Build header
       $header = new MarkdownBuilder();
-      $header->addH1(__("Available variables ($this->context)"));
+      $header->addH1(sprintf(__("Available variables (%s)"), $this->context));
       $content .= $header->getMarkdown();
 
       // Build summary
@@ -139,7 +139,7 @@ class TemplateDocumentation
 
       // Add a row for each parameters
       foreach ($parameters as $parameter) {
-         /** @var AbstractParameterType $parameter */
+         /** @var \Glpi\ContentTemplates\Parameters\ParametersTypes\AbstractParameterType $parameter */
          $row = [
             $parameter->getDocumentationField(),
             $parameter->getDocumentationLabel(),

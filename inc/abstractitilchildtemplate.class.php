@@ -57,7 +57,7 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
       // Add related documentation
       Html::addTemplateDocumentationLinkJS(
          'textarea[name=content]',
-         ParametersPreset::ABSTRACT_TEMPLATE
+         ParametersPreset::ITIL_CHILD_TEMPLATE
       );
    }
 

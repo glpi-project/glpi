@@ -72,14 +72,14 @@ abstract class AbstractParameterType
     *
     * @return string
     */
-   abstract function getDocumentationField(): string;
+   abstract public function getDocumentationField(): string;
 
    /**
     * Label to use for this parameter's documentation
     *
     * @return string
     */
-   abstract function getDocumentationLabel(): string;
+   abstract public function getDocumentationLabel(): string;
 
    /**
     * Recommended usage (twig code) to use for this parameter's documentation
@@ -88,14 +88,14 @@ abstract class AbstractParameterType
     *
     * @return string
     */
-   abstract function getDocumentationUsage(?string $parent = null): string;
+   abstract public function getDocumentationUsage(?string $parent = null): string;
 
    /**
     * Reference to others parameters for this parameter's documentation
     *
     * @return AbstractParameters|null
     */
-   abstract function getDocumentationReferences(): ?AbstractParameters;
+   abstract public function getDocumentationReferences(): ?AbstractParameters;
 
 
 }
