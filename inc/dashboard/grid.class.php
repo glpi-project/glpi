@@ -420,7 +420,7 @@ JAVASCRIPT;
 
 
    public function showDefault() {
-      echo "<div class='default_dashboard card'>";
+      echo "<div class='card p-3'>";
       $this->show();
       echo "</div>";
    }

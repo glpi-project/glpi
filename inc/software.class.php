@@ -254,14 +254,14 @@ class Software extends CommonDBTM {
       if ($isadmin
           && (countElementsInTable("glpi_rules", ['sub_type'=>'RuleSoftwareCategory']) > 0)) {
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'compute_software_category']
-            = "<i class='ma-icon fas fa-calculator'></i>".
+            = "<i class='fas fa-calculator'></i>".
               __('Recalculate the category');
       }
 
       if (Session::haveRightsOr("rule_dictionnary_software", [CREATE, UPDATE])
            && (countElementsInTable("glpi_rules", ['sub_type'=>'RuleDictionnarySoftware']) > 0)) {
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'replay_dictionnary']
-            = "<i class='ma-icon fas fa-undo'></i>".
+            = "<i class='fas fa-undo'></i>".
               __('Replay the dictionary rules');
       }
 

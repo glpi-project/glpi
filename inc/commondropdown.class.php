@@ -60,12 +60,6 @@ abstract class CommonDropdown extends CommonDBTM {
    static $rightname = 'dropdown';
 
 
-   public function __call($name, $arguments) {
-      if ($name === 'displaySpecificTypeField') {
-         Toolbox::deprecated();
-      }
-   }
-
    /**
     * @since 0.85
     *
@@ -361,15 +355,9 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
-   function getSpecificTypeField(int $ID, array $field): string {
-      if (method_exists($this, 'displaySpecificTypeField')) {
-         Toolbox::deprecated();
-         ob_start();
-         $this->displaySpecificTypeField($ID, $field);
-         return ob_get_clean();
-      }
-      return '';
+   function displaySpecificTypeField($ID, $field = []) {
    }
+
 
    function pre_deleteItem() {
 

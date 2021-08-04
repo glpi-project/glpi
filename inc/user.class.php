@@ -34,7 +34,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use Glpi\Application\View\Extension\UserExtension;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Toolbox\Sanitizer;
@@ -2095,6 +2094,7 @@ class User extends CommonDBTM {
 
       $formtitle = $this->getTypeName(1);
 
+      $header_toolbar = [];
       if ($ID > 0) {
          $vcard_lbl = __s('Download user VCard');
          $vcard_url = User::getFormURLWithID($ID)."&amp;getvcard=1";
@@ -2106,7 +2106,7 @@ class User extends CommonDBTM {
                <i class="far fa-address-card fa-lg"></i>
             </a>
          HTML;
-         $formtitle.= $vcard_btn;
+         $header_toolbar[] = $vcard_btn;
 
          if (Session::canImpersonate($ID)) {
             $impersonate_lbl = __s('Impersonate');
@@ -2118,7 +2118,6 @@ class User extends CommonDBTM {
                   <i class="fas fa-user-secret fa-lg"></i>
                </button>
             HTML;
-            $formtitle.= $impersonate_btn;
 
             // "impersonate" button type is set to "button" on form display to prevent it to be used
             // by default (as it is the first found in current form) when pressing "enter" key.
@@ -2132,12 +2131,13 @@ class User extends CommonDBTM {
                   );
                })(jQuery);
 JAVASCRIPT;
-            $formtitle .= Html::scriptBlock($impersonate_js);
+            $header_toolbar[] = $impersonate_btn . Html::scriptBlock($impersonate_js);
          }
       }
 
-      $options['formtitle']   = $formtitle;
-      $options['formoptions'] = ($options['formoptions'] ?? '') . " enctype='multipart/form-data'";
+      $options['formtitle']      = $formtitle;
+      $options['formoptions']    = ($options['formoptions'] ?? '') . " enctype='multipart/form-data'";
+      $options['header_toolbar'] = $header_toolbar;
       $this->showFormHeader($options);
       $rand = mt_rand();
 
@@ -2506,28 +2506,6 @@ JAVASCRIPT;
       $this->showFormButtons($options);
 
       return true;
-   }
-
-
-   /** Print the user personnal information for check.
-    *
-    * @param integer $userid ID of the user
-    *
-    * @return void|boolean false if user is not the current user, otherwise print form
-    *
-    * @since 0.84
-    */
-   static function showPersonalInformation($userid) {
-      $user = new self();
-      if (!$user->can($userid, READ)
-          && ($userid != Session::getLoginUserID())) {
-         return false;
-      }
-
-      TemplateRenderer::getInstance()->display('components/user/info_card.html.twig', [
-         'user'     => $user->fields,
-         'can_edit' => $userid == Session::getLoginUserID(),
-      ]);
    }
 
 
@@ -2961,25 +2939,25 @@ JAVASCRIPT;
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions['Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
-                                                         = "<i class='ma-icon fas fa-users'></i>".
+                                                         = "<i class='fas fa-users'></i>".
                                                            __('Associate to a group');
          $actions['Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'remove']
                                                          = __('Dissociate from a group');
          $actions['Profile_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
-                                                         = "<i class='ma-icon fas fa-user-shield'></i>".
+                                                         = "<i class='fas fa-user-shield'></i>".
                                                            __('Associate to a profile');
          $actions['Profile_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'remove']
                                                          = __('Dissociate from a profile');
          $actions['Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'change_group_user']
-                                                         = "<i class='ma-icon fas fa-users-cog'></i>".
+                                                         = "<i class='fas fa-users-cog'></i>".
                                                            __("Move to group");
       }
 
       if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
          $prefix                                    = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
-         $actions[$prefix.'change_authtype']        = "<i class='ma-icon fas fa-user-cog'></i>".
+         $actions[$prefix.'change_authtype']        = "<i class='fas fa-user-cog'></i>".
                                                       _x('button', 'Change the authentication method');
-         $actions[$prefix.'force_user_ldap_update'] = "<i class='ma-icon fas fa-sync'></i>".
+         $actions[$prefix.'force_user_ldap_update'] = "<i class='fas fa-sync'></i>".
                                                       __('Force synchronization');
       }
       return $actions;
@@ -5630,7 +5608,39 @@ JAVASCRIPT;
       }
    }
 
-   public static function getAnonymizedName(int $users_id, ?int $entities_id = null): ?string {
+   /**
+    * Get anonymized name for user instance.
+    *
+    * @param int $users_id
+    * @param int $entities_id
+    *
+    * @return string|null
+    */
+   public function getAnonymizedName(?int $entities_id = null): ?string {
+      switch (Entity::getAnonymizeConfig($entities_id)) {
+         default:
+         case Entity::ANONYMIZE_DISABLED:
+            return null;
+
+         case Entity::ANONYMIZE_USE_GENERIC:
+            return __("Helpdesk user");
+
+         case Entity::ANONYMIZE_USE_NICKNAME:
+            return $this->fields['nickname'];
+      }
+
+      return null;
+   }
+
+   /**
+    * Get anonymized name for user having given ID.
+    *
+    * @param int $users_id
+    * @param int $entities_id
+    *
+    * @return string|null
+    */
+   public static function getAnonymizedNameForUser(int $users_id, ?int $entities_id = null): ?string {
       switch (Entity::getAnonymizeConfig($entities_id)) {
          default:
          case Entity::ANONYMIZE_DISABLED:
@@ -5642,10 +5652,10 @@ JAVASCRIPT;
          case Entity::ANONYMIZE_USE_NICKNAME:
             $user = new User();
             if (!$user->getFromDB($users_id)) {
-               return "";
+               return '';
             }
 
-            return $user->fields['nickname'];
+            return $user->fields['nickname'] ?? '';
       }
 
       return null;
@@ -5709,17 +5719,107 @@ JAVASCRIPT;
    public function getPictureForUser(int $ID): string {
       $output = "<span class='avatar avatar-md rounded' style='";
 
-      $uextension = new UserExtension();
-      $user_picture  = $uextension->getPicture($ID);
-      $user_color  = $uextension->getBgColor($ID);
+      $user_picture  = $this->getThumbnailPicturePath();
+      $user_color  = $this->getUserInitialsBgColor($ID);
       if ($user_picture) {
          $output .= "background-image: url($user_picture);";
       }
       $output .= "background-color: $user_color'>";
       if (!$user_picture) {
-         $output .= $uextension->getInitials($ID);
+         $output .= $this->getUserInitials();
       }
       $output .= "</span>";
       return $output;
+   }
+
+   /**
+    * Get user link.
+    *
+    * @param bool $enable_anonymization
+    *
+    * @return string
+    */
+   public function getUserLink(bool $enable_anonymization = false): string {
+
+      if ($enable_anonymization && Session::getCurrentInterface() == 'helpdesk' && ($anon = $this->getAnonymizedName()) !== null) {
+         // if anonymized name active, return only the anonymized name
+         return $anon;
+      }
+
+      return $this->getLink();
+   }
+
+   /**
+    * Get user picture path.
+    *
+    * @param bool $enable_anonymization
+    *
+    * @return string
+    */
+   public function getPicturePath(bool $enable_anonymization = false): string {
+
+      if ($enable_anonymization && Session::getCurrentInterface() == 'helpdesk' && Entity::getAnonymizeConfig() !== Entity::ANONYMIZE_DISABLED) {
+         return '/pics/picture.png';
+      }
+
+      $path = Toolbox::getPictureUrl($this->fields['picture'], false);
+      if (!empty($path)) {
+         return $path;
+      }
+
+      return '/pics/picture.png';
+   }
+
+   /**
+    * Get user thumbnail picture path.
+    *
+    * @param bool $enable_anonymization
+    *
+    * @return null|string
+    */
+   public function getThumbnailPicturePath(bool $enable_anonymization = false): ?string {
+
+      if ($enable_anonymization && Session::getCurrentInterface() == 'helpdesk' && Entity::getAnonymizeConfig() !== Entity::ANONYMIZE_DISABLED) {
+         return null;
+      }
+
+      $path = User::getThumbnailURLForPicture($this->fields['picture']);
+      if (!empty($path)) {
+         return $path;
+      }
+
+      return null;
+   }
+
+   /**
+    * Get user initials.
+    *
+    * @param bool $enable_anonymization
+    *
+    * @return string
+    */
+   public function getUserInitials(bool $enable_anonymization = false): string {
+
+      if ($enable_anonymization && Session::getCurrentInterface() == 'helpdesk' && ($anon = $this->getAnonymizedName()) !== null) {
+         // if anonymized name active, return two first letters of the anon name
+         return mb_strtoupper(mb_substr($anon, 0, 2));
+      }
+
+      $initials = mb_substr($this->fields['firstname'], 0, 1) . mb_substr($this->fields['realname'], 0, 1);
+      if (!$initials) {
+         $initials = mb_substr($this->fields['name'], 0, 2);
+      }
+      return mb_strtoupper($initials);
+   }
+
+   /**
+    * Return background color corresponding to user initials.
+    *
+    * @param bool $enable_anonymization
+    *
+    * @return string
+    */
+   public function getUserInitialsBgColor(bool $enable_anonymization = false): string {
+      return Toolbox::getColorForString($this->getUserInitials($enable_anonymization));
    }
 }

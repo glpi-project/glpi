@@ -62,6 +62,7 @@ abstract class CommonITILActor extends CommonDBRelation {
       return static::$items_id_1;
    }
 
+
    /**
     * @since 0.84
     *

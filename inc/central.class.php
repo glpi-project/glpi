@@ -436,6 +436,9 @@ class Central extends CommonGLPI {
          ];
       }
 
+      $twig_params = [
+         'cards' => [],
+      ];
       foreach ($lists as $list) {
          $card_params = [
             'start'              => 0,
@@ -459,7 +462,7 @@ class Central extends CommonGLPI {
    }
 
 
-   public static function getMessages(): array {
+   private static function getMessages(): array {
       global $DB, $CFG_GLPI;
 
       $messages = [];

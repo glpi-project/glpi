@@ -32,65 +32,77 @@
 
 namespace Glpi\Application\View\Extension;
 
-use Html;
-use Session;
+use Toolbox;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+use Twig\TwigTest;
 
 /**
  * @since 10.0.0
  */
-class RoutingExtension extends AbstractExtension {
+class PhpExtension extends AbstractExtension {
 
    public function getFunctions(): array {
       return [
-         new TwigFunction('index_path', [$this, 'indexPath']),
-         new TwigFunction('path', [$this, 'path']),
-         new TwigFunction('url', [$this, 'url']),
+         new TwigFunction('php_config', [$this, 'phpConfig']),
+         new TwigFunction('call', [$this, 'call']),
+      ];
+   }
+
+   public function getTests(): array {
+      return [
+         new TwigTest('instanceof', [$this, 'isInstanceOf']),
+         new TwigTest('usingtrait', [$this, 'isUsingTrait']),
       ];
    }
 
    /**
-    * Return index path.
+    * Get PHP configuration value.
     *
-    * @return string
+    * @param string $name
+    *
+    * @return mixed
     */
-   public function indexPath(): string {
-      $index = '/index.php';
-      if (Session::getLoginUserID() !== false) {
-         $index = Session::getCurrentInterface() == 'helpdesk'
-            ? 'front/helpdesk.public.php'
-            : 'front/central.php';
-      }
-      return Html::getPrefixedUrl($index);
+   public function phpConfig(string $name) {
+      return ini_get($name);
    }
 
    /**
-    * Return domain-relative path of a resource.
+    * Call function of static method.
     *
-    * @param string $resource
+    * @param string $callable
+    * @param array $parameters
     *
-    * @return string
+    * @return mixed
     */
-   public function path(string $resource): string {
-      return Html::getPrefixedUrl($resource);
+   public function call(string $callable, array $parameters = []) {
+      if (is_callable($callable)) {
+         return call_user_func_array($callable, $parameters);
+      }
+      return null;
    }
 
    /**
-    * Return absolute URL of a resource.
+    * Checks if a given value is an instance of given class name.
     *
-    * @param string $resource
+    * @param mixed  $value
+    * @param string $classname
     *
-    * @return string
+    * @return bool
     */
-   public function url(string $resource): string {
-      global $CFG_GLPI;
+   public function isInstanceof($value, $classname): bool {
+      return is_object($value) && $value instanceof $classname;
+   }
 
-      $prefix = $CFG_GLPI['url_base'];
-      if (substr($resource, 0, 1) != '/') {
-         $prefix .= '/';
-      }
-
-      return $prefix . $resource;
+   /**
+    * Checks if a given value is an instance of class using given trait name.
+    *
+    * @param mixed  $value
+    * @param string $trait
+    *
+    * @return bool
+    */
+   public function isUsingTrait($value, $trait): bool {
+      return is_object($value) && Toolbox::hasTrait($value, $trait);
    }
 }

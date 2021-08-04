@@ -86,32 +86,29 @@ class PlanningExternalEventTemplate extends CommonDropdown {
       ];
    }
 
-   public function getSpecificTypeField(int $ID, array $field): string {
+
+   function displaySpecificTypeField($ID, $field = []) {
+
       switch ($field['type']) {
          case 'planningstate' :
-            return Planning::dropdownState("state", $this->fields["state"], false, [
+            Planning::dropdownState("state", $this->fields["state"], false, [
                'width' => '100%',
             ]);
+            break;
 
          case 'plan' :
-            ob_start();
             Planning::showAddEventClassicForm([
                'duration'       => $this->fields['duration'],
                'itemtype'       => self::getType(),
                'items_id'       => $this->fields['id'],
                '_display_dates' => false,
             ]);
-            return ob_get_clean();
+            break;
 
          case 'rrule' :
-            return self::showRepetitionForm($this->fields['rrule'] ?? '');
+            echo self::showRepetitionForm($this->fields['rrule'] ?? '');
+            break;
       }
-      return '';
-   }
-
-   function displaySpecificTypeField($ID, $field = []) {
-      Toolbox::deprecated();
-      echo $this->getSpecificTypeField($ID, $field);
    }
 
 

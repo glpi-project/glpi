@@ -1,20 +1,16 @@
+{% set enable_anonymization = enable_anonymization ?? false %}
+
 <div class="p-0 user-info-card">
    <div class="row">
       <div class="col pt-1">
-         {% include 'components/user/picture.html.twig' with {'users_id': user['id']} %}
+         {{ include('components/user/picture.html.twig', {'users_id': user['id'], 'enable_anonymization': enable_anonymization}) }}
       </div>
       <div class="col-auto ms-2">
          <h4 class="card-title mb-1">
-            {{ User__getUserName(user['id']) }}
+            {{ user['user_name'] }}
          </h4>
 
          <div class="text-muted">
-            {% if user['email'] is not defined %}
-               {% set user = user|merge({
-                  email: User__getDefaultEmail(user['id'])
-               }) %}
-            {% endif %}
-
             {% if user['email']|length > 0 %}
                <div>
                   <i class="fas fa-fw fa-envelope"></i>
@@ -36,25 +32,25 @@
             {% if user['locations_id'] > 0 %}
                <div title="{{ 'Location'|itemtype_name }}" data-bs-toggle="tooltip" data-bs-placement="top">
                   <i class="fas fa-fw fa-map-marker-alt"></i>
-                  {{ getDropdownName('glpi_locations', user['locations_id']) }}
+                  {{ get_item_name('Location', user['locations_id']) }}
                </div>
             {% endif %}
             {% if user['usertitles_id'] > 0 %}
                <div title="{{ _x('person', 'Title') }}" data-bs-toggle="tooltip" data-bs-placement="top">
                   <i class="fas fa-fw fa-user-tie"></i>
-                  {{ getDropdownName('glpi_usertitles', user['usertitles_id']) }}
+                  {{ get_item_name('UserTitle', user['usertitles_id']) }}
                </div>
             {% endif %}
             {% if user['usercategories_id'] > 0 %}
-               <div title="{{ __('Category') }}" data-bs-toggle="tooltip" data-bs-placement="top">
+               <div title="{{ _n('Category', 'Categories', 1) }}" data-bs-toggle="tooltip" data-bs-placement="top">
                   <i class="fas fa-fw fa-user-tag"></i>
-                  {{ getDropdownName('glpi_usercategories', user['usercategories_id']) }}
+                  {{ get_item_name('UserCategory', user['usercategories_id']) }}
                </div>
             {% endif %}
             {% if user['groups_id'] > 0 %}
                <div title="{{ __('Default group') }}" data-bs-toggle="tooltip" data-bs-placement="top">
                   <i class="fas fa-fw fa-users"></i>
-                  {{ getDropdownName('glpi_groups', user['groups_id']) }}
+                  {{ get_item_name('Group', user['groups_id']) }}
                </div>
             {% endif %}
          </div>
@@ -62,8 +58,8 @@
 
       {% if can_edit %}
          <div class="col">
-            <a class="btn btn-icon btn-sm btn-outline-secondary" href="{{ path("front/preference.php") }}"
-               title="{{ __("Edit") }}" data-bs-toggle="tooltip" data-bs-placement="right">
+            <a class="btn btn-icon btn-sm btn-outline-secondary" href="{{ path('front/preference.php') }}"
+               title="{{ __('Edit') }}" data-bs-toggle="tooltip" data-bs-placement="right">
                <i class="fas fa-user-edit"></i>
             </a>
          </div>

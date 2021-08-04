@@ -38,6 +38,11 @@ Session::checkRight("config", READ);
 
 Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'], "config", "auth", -1);
 
-echo TemplateRenderer::getInstance()->render('pages/setup/authentication.html.twig');
+echo TemplateRenderer::getInstance()->render(
+   'pages/setup/authentication.html.twig',
+   [
+      'can_use_ldap' => Toolbox::canUseLdap(),
+   ]
+);
 
 Html::footer();

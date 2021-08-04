@@ -1524,11 +1524,6 @@ class Search {
    static function displayData(array $data) {
       global $CFG_GLPI;
 
-      $item = null;
-      if (class_exists($data['itemtype'])) {
-         $item = new $data['itemtype']();
-      }
-
       if (!isset($data['data']) || !isset($data['data']['totalcount'])) {
          return false;
       }
@@ -1597,6 +1592,8 @@ class Search {
             DisplayPreference::PERSONAL,
             DisplayPreference::GENERAL
          ]),
+         'may_be_deleted'      => $item && $item->maybeDeleted(),
+         'may_be_located'      => $item && $item->maybeLocated(),
       ]);
 
       // Add items in item list
@@ -1746,31 +1743,6 @@ class Search {
 
       // Display footer (close table)
       echo self::showFooter($data['display_type'], $title, $data['data']['count']);
-   }
-
-
-   /**
-    * @since 0.90
-    *
-    * @param boolean $is_deleted
-    * @param string  $itemtype
-    *
-    * @return string
-   */
-   static function isDeletedSwitch($is_deleted, $itemtype = "") {
-      $rand = mt_rand();
-      return "<div class='switch grey_border pager_controls'>".
-             "<label for='is_deletedswitch$rand' title='".__s('Show the trashbin')."' >".
-                "<span class='sr-only'>" . __s('Show the trashbin') . "</span>" .
-                "<input type='hidden' name='is_deleted' value='0' /> ".
-                "<input type='checkbox' id='is_deletedswitch$rand' name='is_deleted' value='1' ".
-                  ($is_deleted?"checked='checked'":"").
-                  " onClick = \"toogle('is_deleted','','','');
-                              document.forms['searchform$itemtype'].submit();\" />".
-                "<span class='fa fa-trash-alt pointer'></span>".
-                "<span class='lever'></span>" .
-                "</label>".
-             "</div>";
    }
 
 
@@ -5557,7 +5529,7 @@ JAVASCRIPT;
                            ) {
                               if (Session::getCurrentInterface() == 'helpdesk'
                                  && $orig_id == 5 // -> Assigned user
-                                 && !empty($anon_name = User::getAnonymizedName(
+                                 && !empty($anon_name = User::getAnonymizedNameForUser(
                                     $data[$ID][$k]['name'],
                                     $itemtype::getById($data['id'])->getEntityId()
                                  ))
@@ -5987,19 +5959,19 @@ JAVASCRIPT;
 
             case 'glpi_changes.status':
                $status = Change::getStatus($data[$ID][0]['name']);
-               return "<span class='no-wrap'>".
+               return "<span class='text-nowrap'>".
                       Change::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status".
                       "</span>";
 
             case 'glpi_problems.status':
                $status = Problem::getStatus($data[$ID][0]['name']);
-               return "<span class='no-wrap'>".
+               return "<span class='text-nowrap'>".
                       Problem::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status".
                       "</span>";
 
             case 'glpi_tickets.status':
                $status = Ticket::getStatus($data[$ID][0]['name']);
-               return "<span class='no-wrap'>".
+               return "<span class='text-nowrap'>".
                       Ticket::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status".
                       "</span>";
 

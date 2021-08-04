@@ -33,6 +33,7 @@
 namespace Glpi\Features;
 
 use Agent;
+use Computer;
 use Computer_Item;
 use Glpi\Inventory\Conf;
 use Html;
@@ -124,28 +125,7 @@ trait Inventoriable {
       echo '</th>';
       echo '</tr>';
 
-      $agent = new Agent();
-      $has_agent = $agent->getFromDBByCrit([
-         'itemtype' => $this->getType(),
-         'items_id' => $this->fields['id']
-      ]);
-
-      //if no agent has been found, check if there is a linked item, and find its agent
-      if (!$has_agent && $this->getType() == 'Computer') {
-         $citem = new Computer_Item;
-         $has_relation = $citem->getFromDBByCrit([
-            'itemtype' => $this->getType(),
-            'items_id' => $this->fields['id']
-         ]);
-         if ($has_relation) {
-            $has_agent = $agent->getFromDBByCrit([
-               'itemtype' => \Computer::getType(),
-               'items_id' => $citem->fields['computers_id']
-            ]);
-         }
-      }
-
-      if (!$has_agent) {
+      if (($agent = $this->getInventoryAgent()) === null) {
          echo '<tr class="tab_bg_1">';
          echo '<td colspan="4">'.__('No agent has been linked.').'</td>';
          echo "</tr>";
@@ -219,5 +199,30 @@ JAVASCRIPT;
          Plugin::doHook("autoinventory_information", $this);
          echo "</td></tr>";
       }
+   }
+
+   public function getInventoryAgent(): ?Agent {
+      $agent = new Agent();
+      $has_agent = $agent->getFromDBByCrit([
+         'itemtype' => $this->getType(),
+         'items_id' => $this->fields['id']
+      ]);
+
+      //if no agent has been found, check if there is a linked item, and find its agent
+      if (!$has_agent && $this instanceof Computer) {
+         $citem = new Computer_Item();
+         $has_relation = $citem->getFromDBByCrit([
+            'itemtype' => $this->getType(),
+            'items_id' => $this->fields['id']
+         ]);
+         if ($has_relation) {
+            $has_agent = $agent->getFromDBByCrit([
+               'itemtype' => Computer::getType(),
+               'items_id' => $citem->fields['computers_id']
+            ]);
+         }
+      }
+
+      return $has_agent ? $agent : null;
    }
 }

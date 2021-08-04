@@ -1,4 +1,4 @@
-{% import "components/form/fields_macros.html.twig" as fields %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 {% set rand = random() %}
 
 {% set urgency_options = field_options|merge({
@@ -13,12 +13,12 @@
 {{ fields.field(
    'urgency',
    item.dropdownUrgency({
-      'value': item.fields["urgency"],
+      'value': item.fields['urgency'],
       'width': '100%',
       'display': false,
       'rand': rand,
    }|merge(urgency_options)),
-   __("Urgency"),
+   __('Urgency'),
    field_options
 ) }}
 
@@ -32,12 +32,12 @@
 {{ fields.field(
    'impact',
    item.dropdownImpact({
-      'value': item.fields["impact"],
+      'value': item.fields['impact'],
       'width': '100%',
       'display': false,
       'rand': rand,
    }|merge(impact_options)),
-   __("impact"),
+   __('impact'),
    field_options
 ) }}
 
@@ -53,12 +53,12 @@
 {{ fields.field(
    'priority',
    item.dropdownPriority({
-      'value': item.fields["priority"],
+      'value': item.fields['priority'],
       'width': '100%',
       'display': false,
       'rand': rand,
    }|merge(field_options|merge(priority_options))),
-   __("priority"),
+   __('priority'),
    field_options
 ) }}
 

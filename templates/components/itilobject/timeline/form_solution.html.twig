@@ -1,8 +1,8 @@
 {% extends 'components/itilobject/timeline/form_timeline_item.html.twig' %}
-{% import "components/form/fields_macros.html.twig" as fields %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 {% set candedit = item.maySolve() %}
-{% set can_read_kb = have_rights_or('knowbase', [constant("READ"), constant('KnowbaseItem::READFAQ')]) %}
-{% set can_update_kb = have_rights_or('knowbase', [constant("READ"), constant('KnowbaseItem::READFAQ')]) %}
+{% set can_read_kb = has_profile_right('knowbase', constant('READ')) or has_profile_right('knowbase', constant('KnowbaseItem::READFAQ')) %}
+{% set can_update_kb = has_profile_right('knowbase', constant('UPDATE')) %}
 {% set nokb = params['nokb'] is defined or params['nokb'] == true %}
 {% set noform = params['noform'] is defined or params['noform'] == true %}
 {% set disabled = (candedit == false) %}
@@ -10,36 +10,43 @@
 {% block timeline_card %}
    {% if form_mode == 'view' %}
       <div class="read-only-content">
-         {{ getSafeHtml(entry_i['content'], true) }}
+         {{ entry_i['content']|safe_html }}
 
          <div class="timeline-badges">
             {% if entry_i['solutiontypes_id'] %}
                <span class="badge bg-blue-lt">
                   <i class="fas fa-tag me-1"></i>
-                  {{ getDropdownName("glpi_solutiontypes", entry_i['solutiontypes_id']) }}
+                  {{ get_item_name('SolutionType', entry_i['solutiontypes_id']) }}
                </span>
             {% endif %}
 
-            {% if entry_i['status'] != constant("CommonITILValidation::WAITING") and entry_i['status'] != constant("CommonITILValidation::NONE") %}
+            {% if entry_i['status'] != constant('CommonITILValidation::WAITING') and entry_i['status'] != constant('CommonITILValidation::NONE') %}
                <span class="badge bg-blue-lt">
-                  {% set action = entry_i['status'] == constant("CommonITILValidation::ACCEPTED") ? __('Accepted') : _x('validation', 'Refused') %}
-                  {{ __('%1$s on %2$s by %3$s')|format(action, (entry_i['date_approval']|conv_datetime), User__getLink(entry_i['users_id_approval']))|raw }}
+                  {% set action = entry_i['status'] == constant('CommonITILValidation::ACCEPTED') ? __('Accepted') : _x('validation', 'Refused') %}
+                  {{ __('%1$s on %2$s by %3$s')|format(
+                     action,
+                     (entry_i['date_approval']|formatted_datetime),
+                     get_item_link('User', entry_i['users_id_approval'], {'enable_anonymization': true})
+                  )|raw }}
                </span>
             {% endif %}
          </div>
       </div>
    {% else %}
       <div class="itilsolution">
-         {{ alertValidation(item, 'solution') }}
+         {% set validation_class = item.getValidationClassInstance() %}
+         {% if validation_class is not null %}
+            {{ validation_class.alertValidation(item, 'solution') }}
+         {% endif %}
 
          {% if not noform %}
          <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
                action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true">
          {% endif %}
 
-            <input type="hidden" name="itemtype" value="{{ item.getType() }}">
-            <input type="hidden" name="items_id" value="{{ item.fields['id'] }}">
-            <input type="hidden" name="_no_message_link" value="1">
+            <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
+            <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
+            <input type="hidden" name="_no_message_link" value="1" />
 
             {% if ticket_ticket.countOpenChildren(item.fields['id']) > 0 %}
                <div class="alert alert-important alert-info">
@@ -52,12 +59,12 @@
                <div class="col-12 col-md-9">
                   {% set content = subitem.fields['content'] %}
                   {% if kb_id_toload > 0 %}
-                     {% set content = "TODO content" %}
+                     {% set content = 'TODO content' %}
                   {% endif %}
 
                   {{ fields.textareaField(
                      'content',
-                     getSafeHtml(content, true),
+                     content,
                      '',
                      {
                         'full_width': true,
@@ -75,7 +82,7 @@
                      {% if candedit %}
                         {% if can_read_kb %}
                            {% set search_solution_button %}
-                              <a href="{{ path("/front/knowbaseitem.php?item_itemtype=" ~ item.getType() ~ "&item_items_id=" ~ item.getID() ~ "&forcetab=Knowbase$1") }}"
+                              <a href="{{ path('/front/knowbaseitem.php?item_itemtype=' ~ item.getType() ~ '&item_items_id=' ~ item.getID() ~ '&forcetab=Knowbase$1') }}"
                                  class="btn btn-secondary overflow-hidden text-nowrap" type="submit"
                                  title="{{ __('Search a solution') }}"
                                  data-bs-toggle="tooltip" data-bs-placement="top">
@@ -83,9 +90,9 @@
                               </a>
                            {% endset %}
                            {{ fields.field(
-                              "",
+                              '',
                               search_solution_button,
-                              "",
+                              '',
                               {
                                  'full_width': true,
                                  'icon_label': true,
@@ -95,11 +102,11 @@
 
                         {% set sol_template_lbl %}
                            <i class="fas fa-reply fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
-                              title="{{ _n('Solution template', 'Solution templates', getPluralNumber) }}"></i>
+                              title="{{ _n('Solution template', 'Solution templates', get_plural_number()) }}"></i>
                         {% endset %}
                         {{ fields.dropdownField(
-                           "SolutionTemplate",
-                           "solutiontemplates_id",
+                           'SolutionTemplate',
+                           'solutiontemplates_id',
                            0,
                            sol_template_lbl,
                            {
@@ -114,12 +121,12 @@
                      {% endif %}
 
                      {% set sol_type_lbl %}
-                        <i class="fas fa-tag fa-fw me-1" title="{{ "SolutionType"|itemtype_name }}"
+                        <i class="fas fa-tag fa-fw me-1" title="{{ 'SolutionType'|itemtype_name }}"
                            data-bs-toggle="tooltip" data-bs-placement="top"></i>
                      {% endset %}
                      {{ fields.dropdownField(
-                        "SolutionType",
-                        "solutiontypes_id",
+                        'SolutionType',
+                        'solutiontypes_id',
                         subitem.fields['solutiontypes_id'],
                         sol_type_lbl,
                         {
@@ -133,10 +140,10 @@
                      {% if can_read_kb and kb_id_toload > 0 %}
                         {% set link_kb_lbl %}
                            <i class="fas fa-link fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
-                              title="{{ __('Link to knowledge base entry #%id')|format("TODO kb id") }}"></i>
+                              title="{{ __('Link to knowledge base entry #%id')|format('TODO kb id') }}"></i>
                         {% endset %}
                         {{ fields.sliderField(
-                           "kb_linked_id",
+                           'kb_linked_id',
                            kb_id_toload,
                            link_kb_lbl,
                            {
@@ -153,7 +160,7 @@
                               data-bs-toggle="tooltip" data-bs-placement="top"></i>
                         {% endset %}
                         {{ fields.sliderField(
-                           "_sol_to_kb",
+                           '_sol_to_kb',
                            0,
                            sol_to_kb_lbl,
                            {
@@ -171,19 +178,19 @@
                <div class="d-flex card-footer mx-n3 mb-n3">
                   {% if subitem.fields['id'] <= 0 %}
                      <button class="btn btn-primary me-2" type="submit" name="add">
-                        <i class='fas fa-plus'></i>
+                        <i class="fas fa-plus"></i>
                         <span>{{ _x('button', 'Add') }}</span>
                      </button>
                   {% else %}
-                     <input type="hidden" name="id" value="{{ subitem.fields['id'] }}"/>
+                     <input type="hidden" name="id" value="{{ subitem.fields['id'] }}" />
                      <button class="btn btn-primary me-2" type="submit" name="update">
-                        <i class='fas fa-save'></i>
+                        <i class="fas fa-save"></i>
                         <span>{{ _x('button', 'Save') }}</span>
                      </button>
                   {% endif %}
                </div>
 
-               <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+               <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
             </form>
          {% endif %}
       </div>
@@ -191,7 +198,7 @@
       <script type="text/javascript">
          function solutiontemplate_update{{ rand }}(value) {
             $.ajax({
-               url: '{{ path("/ajax/solution.php") }}',
+               url: '{{ path('/ajax/solution.php') }}',
                type: 'POST',
                data: {
                   solutiontemplates_id: value,

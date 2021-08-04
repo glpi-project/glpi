@@ -1,11 +1,11 @@
-<input type="hidden" name="_link[tickets_id_1]" value="{{ item.fields['id'] }}">
+<input type="hidden" name="_link[tickets_id_1]" value="{{ item.fields['id'] }}" />
 
 {% set linked_tickets = ticket_ticket.getLinkedTicketsTo(item.fields['id']) %}
 {% if linked_tickets|length %}
 <div class="card">
    <div class="list-group list-group-flush list-group-hoverable">
       {% for id, linked in linked_tickets %}
-      {% set new_ticket = "Ticket"|getFromDB(linked['tickets_id']) %}
+      {% set new_ticket = get_item('Ticket', linked['tickets_id']) %}
       <div class="list-group-item">
          <div class="row">
             <div class="col-auto">
@@ -20,18 +20,18 @@
                {% endif %}
             </div>
             <div class="col text-truncate">
-               <a href="{{ form_path('Ticket', linked['tickets_id']) }}" class="col-9 overflow-hidden text-nowrap">
+               <a href="{{ 'Ticket'|itemtype_form_path(linked['tickets_id']) }}" class="col-9 overflow-hidden text-nowrap">
                   {{ new_ticket.getStatusIcon(new_ticket.fields['status'])|raw }}
-                  <span title="{{ new_ticket.fields['name'] }}" data-bs-toggle="tooltip">
-                     {{ new_ticket.fields['name'] }}
+                  <span title="{{ new_ticket.fields['name']|verbatim_value }}" data-bs-toggle="tooltip">
+                     {{ new_ticket.fields['name']|verbatim_value }}
                   </span>
-                  &nbsp;({{ new_ticket.fields['id'] }})
+                  ({{ new_ticket.fields['id'] }})
                </a>
             </div>
 
             {% if canupdate %}
                <div class="col-auto">
-                  <a href="{{ form_path('Ticket_Ticket', id) }}&purge&tickets_id={{ item.fields['id'] }}"
+                  <a href="{{ 'Ticket_Ticket'|itemtype_form_path(id) }}&purge&tickets_id={{ item.fields['id'] }}"
                      class="btn btn-sm btn-ghost-danger" role="button" data-bs-toggle="tooltip" title="{{ _x('button', 'Delete permanently') }}">
                      <i class="fas fa-unlink"></i>
                   </a>
@@ -50,13 +50,13 @@
                data-bs-toggle="collapse" data-bs-target="#link_ticket_dropdowns"
                aria-expanded="false" aria-controls="link_ticket_dropdowns">
          <i class="fas fa-plus"></i>
-         <span>{{ __("Add") }}</span>
+         <span>{{ __('Add') }}</span>
       </button>
 
       <span class="collapse" id="link_ticket_dropdowns">
          {{ ticket_ticket.dropdownLinks(
             '_link[link]',
-            params["_link"]['link'] ?? ""
+            params['_link']['link'] ?? ''
          ) }}
 
          {{ item.dropdown({

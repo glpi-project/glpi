@@ -564,11 +564,11 @@ class Rule extends CommonDBTM {
          if ($isadmin
              && ($collection->orderby == "ranking")) {
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'move_rule']
-               = "<i class='ma-icon fas fa-arrows-alt-v'></i>".
+               = "<i class='fas fa-arrows-alt-v'></i>".
                  __('Move');
          }
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'export']
-            = "<i class='ma-icon fas fa-file-download'></i>".
+            = "<i class='fas fa-file-download'></i>".
               _x('button', 'Export');
       }
       return $actions;

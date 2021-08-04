@@ -876,7 +876,7 @@ JAVASCRIPT;
 
          $extraparamhtml = "&amp;".Toolbox::append_params($cleaned_options, '&amp;');
       }
-      //echo "<div class='".($this->isNewID($ID)?"new_form_tabs":"")."'>";
+
       $onglets     = $this->defineAllTabs($options);
       $display_all = true;
       if (isset($onglets['no_all_tab'])) {
@@ -908,7 +908,6 @@ JAVASCRIPT;
          Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType(), $ID,
                           $this->taborientation, $options);
       }
-      //echo "</div>";
    }
 
 

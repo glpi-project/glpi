@@ -12,10 +12,10 @@
                   {% if count > 0 %}
                      {% set limitdropdown = include('components/dropdown/limit.html.twig', {
                         'href': target ~ '?',
-                        'additional_params': "sort=" ~ sort ~ "&order=" ~ order
+                        'additional_params': 'sort=' ~ sort ~ '&order=' ~ order
                      }) %}
                      <div class="ms-auto d-inline-flex align-items-center d-none d-md-block search-limit">
-                        {{ __("Show %s entries")|format(limitdropdown)|raw }}
+                        {{ __('Show %s entries')|format(limitdropdown)|raw }}
                      </div>
                {% endif %}
                </div>
@@ -23,17 +23,17 @@
                   <table class="search-results table table-hover table-card">
                      <thead>
                         {% set headings = {
-                           "type": __('Source'),
-                           "items_id": __('ID'),
-                           "date": _n('Date', 'Dates', 1),
-                           "service": __('Service'),
-                           "level": __('Level'),
-                           "message": __('Message')
+                           'type': __('Source'),
+                           'items_id': __('ID'),
+                           'date': _n('Date', 'Dates', 1),
+                           'service': __('Service'),
+                           'level': __('Level'),
+                           'message': __('Message')
                         } %}
 
                         {% for field, label in headings %}
                            <th>
-                              <a href="{{ target }}?sort={{ field }}&amp;order={{ order == "ASC" ? "DESC" : "ASC" }}">
+                              <a href="{{ target }}?sort={{ field }}&amp;order={{ order == 'ASC' ? 'DESC' : 'ASC' }}">
                                  {% if sort == field %}
                                     {% set sort_icon = (order == 'ASC' ? 'fa-sort-up' : 'fa-sort-down') %}
                                     <i class="fas fa-lg {{ sort_icon }}"></i>
@@ -47,12 +47,12 @@
                         {% for event in events %}
                            <tr>
                               <td>
-                                 {% set itemtype = getSingular(event['type']) %}
-                                 <i class="fa-fw text-muted {{ itemtype|getIcon }}"></i>
+                                 {% set itemtype = call('getSingular', [event['type']]) %}
+                                 <i class="fa-fw text-muted {{ itemtype|itemtype_icon }}"></i>
                                  <span>{{ itemtypes[itemtype] ?? itemtype|itemtype_name }}</span>
                               </td>
-                              <td>{{ Event_displayItemLogID(event['type'], event['items_id']) }}</td>
-                              <td>{{ event['date']|conv_datetime }}</td>
+                              <td>{% do call('Event::displayItemLogID', [event['type'], event['items_id']]) %}</td>
+                              <td>{{ event['date']|formatted_datetime }}</td>
                               <td>{{ services[event['service']] ?? event['service'] }}</td>
                               <td>{{ event['level'] }}</td>
                               <td>{{ event['message'] }}</td>
@@ -63,9 +63,9 @@
                </div>
 
                <div class="search-footer card-footer">
-                  {% include 'components/search/pager.html.twig' with {
+                  {{ include('components/search/pager.html.twig', {
                      'count': count
-                  } %}
+                  }) }}
                </div>
             {% endif %}
          </div>

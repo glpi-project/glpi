@@ -1,4 +1,4 @@
-{% import "components/form/fields_macros.html.twig" as fields %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% set rand = random() %}
 {% set base_field_options = {
@@ -18,16 +18,16 @@
 
    {% if nb_tic_to_validate > 0 %}
       <div class="alert alert-warning" role="alert">
-      {{ __('There is some tickets awaiting approval') }} — <a href="{{ url_validate|raw }}" class="alert-link">{{ __("check it out!") }}</a>
+      {{ __('There is some tickets awaiting approval') }} — <a href="{{ url_validate }}" class="alert-link">{{ __('check it out!') }}</a>
       </div>
    {% endif %}
 
-   {% include("components/itilobject/mainform_open.html.twig") %}
+   {{ include('components/itilobject/mainform_open.html.twig') }}
 
    <div class="card card-lg">
       <div class="card-header">
          <h3 class="card-title">
-            {{ __("Describe the incident or request") }}
+            {{ __('Describe the incident or request') }}
          </h3>
       </div>
 
@@ -47,7 +47,7 @@
 
                   {{ fields.dropdownYesNo(
                      'nodelegate',
-                     params["nodelegate"],
+                     params['nodelegate'],
                      __('This ticket concerns me'),
                      base_field_options|merge({
                         'add_field_html': actor_add_form
@@ -59,11 +59,14 @@
                         {% set personal_information %}
                            <div class="d-inline-flex">
                               <div class="alert alert-info" id="user-info{{ rand }}">
-                                 {% set user = 'User'|getFromDB(getLoginUserID()) %}
-                                 {% include "components/user/info_card.html.twig" with {
-                                    'user': user.fields,
+                                 {% set user = get_current_user() %}
+                                 {% set user_fields = user.fields %}
+                                 {% set user_fields = user_fields|merge({user_name: user.getFriendlyName()|verbatim_value}) %}
+                                 {% set user_fields = user_fields|merge({email: user.getDefaultEmail()}) %}
+                                 {{ include('components/user/info_card.html.twig', {
+                                    'user': user_fields,
                                     'can_edit': true
-                                 } only %}
+                                 }, with_context = false) }}
                               </div>
                            </div>
                         {% endset %}
@@ -81,7 +84,7 @@
                {{ fields.field(
                   'type',
                   item.dropdownType('type', {
-                     'value': params["type"],
+                     'value': params['type'],
                      'width': '100%',
                      'display': false,
                      'on_change': 'this.form.submit()',
@@ -96,32 +99,32 @@
                {% set condition = {
                   'is_helpdeskvisible': 1
                } %}
-               {% if params['type'] == constant("Ticket::INCIDENT_TYPE") %}
+               {% if params['type'] == constant('Ticket::INCIDENT_TYPE') %}
                   {% set condition = condition|merge({'is_incident': 1}) %}
-               {% elseif params['type'] == constant("Ticket::DEMAND_TYPE") %}
+               {% elseif params['type'] == constant('Ticket::DEMAND_TYPE') %}
                   {% set condition = condition|merge({'is_request': 1}) %}
                {% endif %}
                {{ fields.dropdownField(
                   'ITILCategory',
                   'itilcategories_id',
-                  params["itilcategories_id"],
-                  __('Category'),
+                  params['itilcategories_id'],
+                  _n('Category', 'Categories', 1),
                   cat_params|merge({'condition': condition}),
                ) }}
 
                {{ fields.field(
                   'urgency',
                   item.dropdownUrgency({
-                     'value': params["urgency"],
+                     'value': params['urgency'],
                      'width': '100%',
                      'display': false,
                      'required': right_field_options.fields_template.isMandatoryField('urgency'),
                   }),
-                  __("Urgency"),
+                  __('Urgency'),
                   right_field_options
                ) }}
 
-               {% if session('glpiactiveprofile')['helpdesk_hardware'] and session('glpiactiveprofile')["helpdesk_item_type"]|length %}
+               {% if session('glpiactiveprofile')['helpdesk_hardware'] and session('glpiactiveprofile')['helpdesk_item_type']|length %}
                   {% set associated_items %}
                      <a class="btn btn-sm btn-ghost-secondary mt-2" role="button"
                         id="btn-collapse-items{{ rand }}"
@@ -130,18 +133,17 @@
                         <i class="fas fa-plus"></i>
                      </a>
                      <div class="collapse" id="collapse-items{{ rand }}">
-                        {{ Item_Ticket_itemAddForm(item, params|merge({
-                           '_canupdate': have_right('ticket', constant('CREATE')),
+                        {% do call('Item_Ticket::itemAddForm', [item, params|merge({
+                           '_canupdate': has_profile_right('ticket', constant('CREATE')),
                            '_tickettemplate': itiltemplate,
-                           'display': false,
-                        }))|raw }}
+                        })]) %}
                      </div>
                   {% endset %}
 
                   {{ fields.field(
                      'items_id',
                      associated_items,
-                     _n('Associated element', 'Associated elements', getPluralNumber()),
+                     _n('Associated element', 'Associated elements', get_plural_number()),
                      right_field_options
                   ) }}
                {% endif %}
@@ -159,13 +161,13 @@
                {{ fields.field(
                   'urgency',
                   observers_field,
-                  _n('Watcher', 'Watchers', getPluralNumber()),
+                  _n('Watcher', 'Watchers', get_plural_number()),
                   right_field_options
                ) }} #}
 
-               {% if not itiltemplate.isHiddenField("_users_id_observer") or not itiltemplate.isHiddenField("_groups_id_observer") %}
+               {% if not itiltemplate.isHiddenField('_users_id_observer') or not itiltemplate.isHiddenField('_groups_id_observer') %}
                   {% set observer_field %}
-                     {# {% include "components/itilobject/actors/field.html.twig" with {
+                     {# {{ include('components/itilobject/actors/field.html.twig', {
                         'item': item,
                         'actortypeint': constant('CommonITILActor::OBSERVER'),
                         'actortype': 'observer',
@@ -176,10 +178,10 @@
                         'canupdate': true,
                         'entity_restrict': session('glpiactive_entity'),
                         'returned_itemtypes': ['User'],
-                     } only %}
-                     <input type="hidden" name="_actors" id="_actors"> #}
+                     }, with_context = false) }}
+                     <input type="hidden" name="_actors" id="_actors" /> #}
 
-                     {% include "components/itilobject/actors/main.html.twig" with {
+                     {{ include('components/itilobject/actors/main.html.twig', {
                         'item': item,
                         'entities_id': params['entities_id'],
                         'itiltemplate': itiltemplate,
@@ -189,14 +191,14 @@
                         'display_actortypes': ['observer'],
                         'display_labels': false,
                         'disable_assign_to_me': true,
-                     } %}
+                     }) }}
                   {% endset %}
                   {{ fields.field(
                      'observer',
                      observer_field,
-                     _n("Watcher", "Watchers", getPluralNumber()),
+                     _n('Watcher', 'Watchers', get_plural_number()),
                      right_field_options|merge({
-                        required: itiltemplate.isMandatoryField("_users_id_observer") or itiltemplate.isMandatoryField("_groups_id_observer")
+                        required: itiltemplate.isMandatoryField('_users_id_observer') or itiltemplate.isMandatoryField('_groups_id_observer')
                      })
                   ) }}
                {% endif %}
@@ -204,21 +206,21 @@
                {{ fields.dropdownField(
                   'Location',
                   'locations_id',
-                  params["locations_id"],
-                  "Location"|itemtype_name,
+                  params['locations_id'],
+                  'Location'|itemtype_name,
                   right_field_options,
                ) }}
 
                {{ fields.textField(
-                  "name",
-               params['name'],
+                  'name',
+                  params['name'],
                   __('Title'),
                   right_field_options
                ) }}
 
                {{ fields.textareaField(
-                  "content",
-                  getSafeHtml(params['content'] ?? "", true),
+                  'content',
+                  params['content'],
                   __('Description'),
                   right_field_options|merge({
                      'enable_richtext': true,
@@ -232,12 +234,12 @@
       <div class="card-footer text-center">
          <button type="submit" class="btn btn-primary" name="add">
             <i class="fas fa-plus"></i>
-            <span>{{ __("Submit message") }}</span>
+            <span>{{ __('Submit message') }}</span>
          </button>
       </div>
    </div>
 
-   {% include("components/itilobject/mainform_close.html.twig") %}
+   {{ include('components/itilobject/mainform_close.html.twig') }}
 </div>
 
 <script type="text/javascript">
@@ -249,13 +251,13 @@ $(function () {
    $('#dropdown_nodelegate{{ rand }}').on('change', function() {
       $('#delegate_other{{ rand }}')
          .html("")
-         .load('{{ path("ajax/dropdownDelegationUsers.php") }}', {
+         .load('{{ path('ajax/dropdownDelegationUsers.php') }}', {
             'right': "delegate",
             'nodelegate': true,
-            '_users_id_requester': {{ params["_users_id_requester"] }},
-            '_users_id_requester_notif': {{ params["_users_id_requester_notif"]|json_encode()|raw }},
-            'use_notification': {{ params["_users_id_requester_notif"]["use_notification"] }},
-            'entity_restrict':  {{ session("glpiactive_entity") }}
+            '_users_id_requester': {{ params['_users_id_requester'] }},
+            '_users_id_requester_notif': {{ params['_users_id_requester_notif']|json_encode()|raw }},
+            'use_notification': {{ params['_users_id_requester_notif']['use_notification'] }},
+            'entity_restrict':  {{ session('glpiactive_entity') }}
          });
    })
 

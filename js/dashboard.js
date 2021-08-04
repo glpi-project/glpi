@@ -403,7 +403,7 @@ var Dashboard = {
       $(document).on('select2:select', '.display-widget-form select[name=card_id]', function(event) {
          var select2_data      = event.params.data;
          var selected          = select2_data.id;
-         var widgettype_field  = $(this).closest('.field').siblings('.widgettype_field');
+         var widgettype_field  = $(this).closest('.display-widget-form').find('.widgettype_field');
          var available_widgets = Dashboard.all_cards[selected].widgettype;
          var force_checked     = available_widgets.length === 1;
 
@@ -428,25 +428,13 @@ var Dashboard = {
          var width       = widget.width  || 2;
          var height      = widget.height || 2;
 
-         widgetdom
-            .closest('.field')
-            .siblings('.gradient_field')
-            .hide()
-            .toggle(usegradient).end()
-            .siblings('.pointlbl_field')
-            .hide()
-            .toggle(pointlabels).end()
-            .siblings('.limit_field')
-            .hide()
-            .toggle(uselimit).end();
+         var form = widgetdom.closest('.display-widget-form');
+         form.find('.gradient_field').toggle(usegradient);
+         form.find('.pointlbl_field').toggle(pointlabels);
+         form.find('.limit_field').toggle(uselimit);
 
-         var width_field =  widgetdom
-            .closest('.field')
-            .siblings('[name="width"]');
-         var height_field =  widgetdom
-            .closest('.field')
-            .siblings('[name="height"]');
-
+         var width_field = form.find('[name="width"]');
+         var height_field = form.find('[name="height"]');
          if (width_field.val() == 0) {
             width_field.val(width);
          }

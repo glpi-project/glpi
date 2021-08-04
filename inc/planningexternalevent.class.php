@@ -341,8 +341,14 @@ JAVASCRIPT;
       if ($is_ajax && $is_rrule) {
          $options['candel'] = false;
          $options['addbuttons'] = [
-            'purge'          => "<i class='fas fa-trash-alt'></i>&nbsp;".__("Delete serie"),
-            'purge_instance' => "<i class='far fa-trash-alt'></i>&nbsp;".__("Delete instance"),
+            'purge'          => [
+               'text' => __("Delete serie"),
+               'icon' => 'fas fa-trash-alt',
+            ],
+            'purge_instance' => [
+               'text' => __("Delete instance"),
+               'icon' => 'far fa-trash-alt',
+            ],
          ];
       }
 

@@ -199,20 +199,21 @@ class ProjectTaskTemplate extends CommonDropdown {
       return $tab;
    }
 
-   public function getSpecificTypeField(int $ID, array $field): string {
+
+   function displaySpecificTypeField($ID, $field = []) {
+
       switch ($field['type']) {
          case 'percent_done' :
-            return Dropdown::showNumber("percent_done", [
+            Dropdown::showNumber("percent_done", [
                'value'     => $this->fields['percent_done'],
                'min'       => 0,
                'max'       => 100,
                'step'      => 5,
                'unit'      => '%',
                'width'     => '100%',
-               'display'   => false,
             ]);
          case 'actiontime' :
-            return Dropdown::showTimeStamp($field["name"], [
+            Dropdown::showTimeStamp($field["name"], [
                'min'             => 0,
                'max'             => 100 * HOUR_TIMESTAMP,
                'step'            => HOUR_TIMESTAMP,
@@ -220,11 +221,10 @@ class ProjectTaskTemplate extends CommonDropdown {
                'addfirstminutes' => true,
                'inhours'         => true,
                'width'           => '100%',
-               'display'         => false,
             ]);
       }
-      return '';
    }
+
 
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 

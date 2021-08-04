@@ -1,18 +1,18 @@
-{% macro link_or_text(value, anchor_class = "") %}
-   {% set content = value._raw|default('false') ? value.text|raw : value.text %}
-   {% if value.count is defined %}
-      {% set content = content ~ "<span class='badge bg-secondary'>" ~ value.count ~ "</span>" %}
-   {% endif %}
-
+{% macro link_or_text(value, anchor_class = '') %}
    {% if value.link is defined %}
       <a class="{{ anchor_class }}" href="{{ value.link }}">
-         {% if value.icon is defined %}
-            <i class="{{ value.icon }}"></i>
+   {% endif %}
+         <span>
+            {% if value.icon is defined %}
+               <i class="{{ value.icon }}"></i>
+            {% endif %}
+            {{ value.text }}
+         </span>
+         {% if value.count is defined %}
+            <span class="badge bg-secondary">{{ value.count }}</span>
          {% endif %}
-         {{ content|raw }}
+   {% if value.link is defined %}
       </a>
-   {% else %}
-      {{ content|raw }}
    {% endif %}
 {% endmacro %}
 
@@ -22,7 +22,7 @@
          {{ _self.link_or_text(title) }}
 
          {% if title.button is defined %}
-            {{ _self.link_or_text(title.button, "ms-1 btn btn-sm btn-outline-secondary") }}
+            {{ _self.link_or_text(title.button, 'btn btn-sm btn-outline-secondary') }}
          {% endif %}
       </div>
 
@@ -36,7 +36,7 @@
 
    <ul class="list-group list-group-flush">
       {% for item in items %}
-         {{ _self.link_or_text(item, "list-group-item list-group-item-action d-flex justify-content-between align-items-center") }}
+         {{ _self.link_or_text(item, 'list-group-item list-group-item-action d-flex justify-content-between align-items-center') }}
       {% endfor %}
    </ul>
 </div>

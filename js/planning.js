@@ -75,11 +75,6 @@ var GLPIPlanning  = {
          return GLPIPlanning.all_resources[index].is_visible;
       });
 
-      // get more space for planning
-      if (options.full_view) {
-         $('#'+GLPIPlanning.dom_id).closest('.ui-tabs').width('98%');
-      }
-
       // Hide some days depending on GLPI configuration
       var all_days = [0, 1, 2, 3, 4, 5, 6];
       var enabled_days = CFG_GLPI.planning_work_days;
@@ -905,10 +900,6 @@ var GLPIPlanning  = {
       var _newheight = $(window).height() - 272;
       if ($('#debugajax').length > 0) {
          _newheight -= $('#debugajax').height();
-      }
-
-      if (CFG_GLPI.glpilayout == 'vsplit') {
-         _newheight = $('.ui-tabs-panel').height() - 30;
       }
 
       //minimal size

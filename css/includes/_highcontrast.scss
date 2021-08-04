@@ -73,26 +73,6 @@
       border: 1px solid $hc-border-color-contrast;
    }
 
-   .actor-head, .actor-content {
-      margin: 0;
-      min-height: 25px;
-      box-sizing: border-box;
-      border-collapse: collapse;
-   }
-
-   .tab_actors {
-      border-bottom: 1px solid $hc-border-color;
-   }
-
-   .actor-head {
-      border-right: 1px solid $hc-border-color;
-      border-bottom: 1px solid $hc-border-color;
-   }
-
-   .actor_title {
-      border-right: 1px solid $hc-border-color;
-   }
-
    .order_DESC:before {
       color: $dark;
    }
@@ -122,11 +102,6 @@
          &:hover {
             opacity: .5;
          }
-      }
-
-      .grey_border {
-         border: 1px dotted $hc-border-color-contrast;
-         margin-left: 2px;
       }
    }
 
@@ -209,16 +184,10 @@
       border: 1px solid $hc-border-color-contrast;
    }
 
-   .label-checkbox .box, .subheader .box, th .label-checkbox .box {
+   .subheader .box {
       background-color: $light;
       border: 2px solid $dark;
       margin-right: 2px;
-   }
-
-   .label-checkbox .check {
-      border: 3px solid $dark;
-      border-top: 0;
-      border-left: 0;
    }
 
    .form-check {
@@ -234,10 +203,6 @@
 
    .pointer {
       opacity: 1;
-   }
-
-   #c_ssmenu2 {
-      border-bottom: 1px solid $hc-border-color;
    }
 
    .dropdown-toggle {

@@ -32,6 +32,8 @@
 
 namespace Glpi\Application\View\Extension;
 
+use Locale;
+use Session;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -46,11 +48,12 @@ class I18nExtension extends AbstractExtension {
          new TwigFunction('_n', '_n'),
          new TwigFunction('_x', '_x'),
          new TwigFunction('_nx', '_nx'),
-         new TwigFunction('getCurrentLocale', [$this, 'getCurrentLocale']),
+         new TwigFunction('get_current_locale', [$this, 'getCurrentLocale']),
+         new TwigFunction('get_plural_number', [Session::class, 'getPluralNumber']),
       ];
    }
 
    public function getCurrentLocale(): array {
-      return \Locale::parseLocale($_SESSION['glpilanguage'] ?? "en_GB");
+      return Locale::parseLocale($_SESSION['glpilanguage'] ?? 'en_GB');
    }
 }

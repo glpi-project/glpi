@@ -191,13 +191,6 @@ class Problem extends CommonITILObject {
                case 4 :
                   $item->showStats();
                   break;
-               case 5 :
-                  echo "<div class='timeline_box'>";
-                  $rand = mt_rand();
-                  $item->showTimelineForm($rand);
-                  $item->showTimeline($rand);
-                  echo "</div>";
-                  break;
             }
       }
       return true;
@@ -1171,10 +1164,8 @@ class Problem extends CommonITILObject {
          $options['criteria'][0]['value'] = $key;
          $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"]."/front/problem.php?".Toolbox::append_params($options),
-            'text'   => "<span>".
-                        self::getStatusIcon($key).
-                        self::getStatus($key).
-                        "</span>",
+            'text'   => self::getStatus($key),
+            'icon'   => self::getStatusClass($key),
             'count'  => $val
          ];
       }
@@ -1183,7 +1174,8 @@ class Problem extends CommonITILObject {
       $options['is_deleted']  = 1;
       $twig_params['items'][] = [
          'link'   => $CFG_GLPI["root_doc"]."/front/problem.php?".Toolbox::append_params($options),
-         'text'   => "<span><i class='fas fa-trash bg-red-lt me-1'></i>".__('Deleted')."</span>",
+         'text'   => __('Deleted'),
+         'icon'   => 'fas fa-trash bg-red-lt',
          'count'  => $number_deleted
       ];
 
@@ -1287,10 +1279,6 @@ class Problem extends CommonITILObject {
          return false;
       }
 
-      // In percent
-      $colsize1 = '13';
-      $colsize2 = '37';
-
       $default_values = self::getDefaultValues();
 
       // Restore saved value or override with page parameter
@@ -1335,11 +1323,6 @@ class Problem extends CommonITILObject {
       $this->initForm($ID, $options);
 
       $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());
-
-      $showuserlink = 0;
-      if (User::canView()) {
-         $showuserlink = 1;
-      }
 
       if (!$this->isNewItem()) {
          $options['formtitle'] = sprintf(
@@ -1448,7 +1431,7 @@ class Problem extends CommonITILObject {
          'timeline'           => $this->getTimelineItems(),
          'itiltemplate_key'   => $tpl_key,
          'itiltemplate'       => $tt,
-         'predefined_fields'  => $predefined_fields,
+         'predefined_fields'  => Toolbox::prepareArrayForInput($predefined_fields),
          'canupdate'          => $canupdate,
          'canpriority'        => $canupdate,
          'canassign'          => $canupdate,

@@ -29,9 +29,7 @@
  * ---------------------------------------------------------------------
  */
 
-.itilstatus, .validationstatus{
-   margin-right: .4em;
-
+.itilstatus, .validationstatus {
    &.assigned, &.new {
       color: #49bf4d;
    }

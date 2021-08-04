@@ -94,32 +94,30 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                                       $entity_restrict = -1, $options = []) {
       global $CFG_GLPI;
 
-      $params = [
-         static::$items_id_1 => 0,
-         'used'       => [],
-         'multiple'   => 0,
-         'rand'       => mt_rand(),
-         'display'    => true,
-      ];
+      $params = [static::$items_id_1 => 0,
+                      'used'       => [],
+                      'multiple'   => 0,
+                      'rand'       => mt_rand()];
 
       foreach ($options as $key => $val) {
          $params[$key] = $val;
       }
 
       $rand = $params['rand'];
-      $out  = "";
 
       if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] == 0) {
-         $out.= "<input type='hidden' name='$myname' value=''>";
-         $out.= "<input type='hidden' name='items_id' value='0'>";
+         echo "<input type='hidden' name='$myname' value=''>";
+         echo "<input type='hidden' name='items_id' value='0'>";
 
       } else {
-         $out.= "<div id='tracking_all_devices$rand' class='input-group mb-1'>";
-         if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2, Ticket::HELPDESK_ALL_HARDWARE)) {
+         echo "<div id='tracking_all_devices$rand' class='input-group mb-1'>";
+         if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,
+                                                                     Ticket::HELPDESK_ALL_HARDWARE)) {
             // Display a message if view my hardware
             if ($users_id
-                &&($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2, Ticket::HELPDESK_MY_HARDWARE))) {
-               $out.= "<span class='input-group-text'>".__('Or complete search')."</span>";
+                &&($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,
+                                                                           Ticket::HELPDESK_MY_HARDWARE))) {
+               echo "<span class='input-group-text'>".__('Or complete search')."</span>";
             }
 
             $types = static::$itemtype_1::getAllTypesForHelpdesk();
@@ -127,67 +125,51 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             if ($params[static::$items_id_1] > 0) {
                $emptylabel = Dropdown::EMPTY_VALUE;
             }
-            $out.= Dropdown::showItemTypes($myname, array_keys($types), [
-               'emptylabel' => $emptylabel,
-               'value'      => $itemtype,
-               'rand'       => $rand, 'display_emptychoice' => true,
-               'display'    => $params['display'],
-            ]);
-            $p = [
-               'itemtype'        => '__VALUE__',
-               'entity_restrict' => $entity_restrict,
-               'admin'           => $admin,
-               'used'            => $params['used'],
-               'multiple'        => $params['multiple'],
-               'rand'            => $rand,
-               'myname'          => "add_items_id"
-            ];
-            $out.= Ajax::updateItemOnSelectEvent(
-               "dropdown_$myname$rand",
-               "results_$myname$rand",
-               $CFG_GLPI["root_doc"]."/ajax/dropdownTrackingDeviceType.php",
-               $p,
-               $params['display']
-            );
-            $out.= "<span id='results_$myname$rand'>";
+            Dropdown::showItemTypes($myname, array_keys($types),
+                                    ['emptylabel' => $emptylabel,
+                                          'value'      => $itemtype,
+                                          'rand'       => $rand, 'display_emptychoice' => true]);
+            $found_type = isset($types[$itemtype]);
+
+            $p = ['itemtype'        => '__VALUE__',
+                       'entity_restrict' => $entity_restrict,
+                       'admin'           => $admin,
+                       'used'            => $params['used'],
+                       'multiple'        => $params['multiple'],
+                       'rand'            => $rand,
+                       'myname'          => "add_items_id"];
+
+            Ajax::updateItemOnSelectEvent("dropdown_$myname$rand", "results_$myname$rand",
+                                          $CFG_GLPI["root_doc"].
+                                             "/ajax/dropdownTrackingDeviceType.php",
+                                          $p);
+            echo "<span id='results_$myname$rand'>\n";
 
             // Display default value if itemtype is displayed
-            $found_type = isset($types[$itemtype]);
             if ($found_type
                 && $itemtype) {
                if (($item = getItemForItemtype($itemtype))
                     && $items_id) {
                   if ($item->getFromDB($items_id)) {
-                     $out.= Dropdown::showFromArray('items_id', [$items_id => $item->getName()], [
-                        'value'   => $items_id,
-                        'display' => $params['display']
-                     ]);
+                     Dropdown::showFromArray('items_id', [$items_id => $item->getName()],
+                                             ['value' => $items_id]);
                   }
                } else {
                   $p['itemtype'] = $itemtype;
-                  $out.= "<script type='text/javascript' >";
-                  $out.= "$(function() {";
-                  $out.= Ajax::updateItemJsCode(
-                     "results_$myname$rand",
-                     $CFG_GLPI["root_doc"]."/ajax/dropdownTrackingDeviceType.php",
-                     $p,
-                     "",
-                     $params['display']
-                  );
-                  $out.= '});</script>';
+                  echo "<script type='text/javascript' >\n";
+                  echo "$(function() {";
+                  Ajax::updateItemJsCode("results_$myname$rand",
+                                         $CFG_GLPI["root_doc"].
+                                            "/ajax/dropdownTrackingDeviceType.php",
+                                         $p);
+                  echo '});</script>';
                }
             }
-            $out.= "</span>";
+            echo "</span>\n";
          }
-         $out.= "</div>";
+         echo "</div>";
       }
-
-      if ($params['display']) {
-         echo $out;
-         return $rand;
-      } else {
-         return $out;
-      }
+      return $rand;
    }
 
 }

@@ -118,23 +118,6 @@ trait DCBreadcrumb {
    }
 
    /**
-    * Display datacenter element breadcrumb
-    * @see CommonGLPI::showNavigationHeader()
-    *
-    * @return void
-    */
-   protected function showDcBreadcrumb() {
-      $breadcrumb = $this->getDcBreadcrumb();
-
-      if (count($breadcrumb)) {
-         echo "<tr class='tab_bg_1'>
-                  <td>" . __('Data center position') . "</td>
-                  <td colspan='3'>" . implode(' > ', array_reverse($breadcrumb)) . "</td>
-               </tr>";
-      }
-   }
-
-   /**
     * Check if an item is part of an Enclosure
     *
     * @param string  $itemtype Item type

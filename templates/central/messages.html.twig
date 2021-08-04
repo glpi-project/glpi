@@ -7,7 +7,6 @@
                <li>{{ error|raw }}</li>
             {% endfor %}
          </ul>
-         <div class="sep"></div>
       </div>
    {% endif %}
    {% if messages.warnings is defined and messages.warnings|length > 0 %}
@@ -18,7 +17,6 @@
                <li>{{ warning|raw }}</li>
             {% endfor %}
          </ul>
-         <div class="sep"></div>
       </div>
    {% endif %}
    {% if messages.infos is defined and messages.infos|length > 0 %}
@@ -29,7 +27,6 @@
                <li>{{ info|raw }}</li>
             {% endfor %}
          </ul>
-         <div class="sep"></div>
       </div>
    {% endif %}
 </div>

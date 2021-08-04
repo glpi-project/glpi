@@ -790,7 +790,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
       ];
       echo "<div class='firstbloc'>";
       if (!$feed || $feed->error()) {
-         $rss_feed['error'] = $feed->error();
+         $rss_feed['error'] = !$feed ? __('Error retrieving RSS feed') : $feed->error();
          $this->setError(true);
       } else {
          $this->setError(false);
@@ -972,7 +972,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
 
       if (($personal && self::canCreate())
             || (!$personal && Session::haveRight('rssfeed_public', CREATE))) {
-         $output.= "<span class='floatright'>";
+         $output.= "<span class='float-end'>";
          $output.= "<a href='".RSSFeed::getFormURL()."'>";
          $output.= "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."' title=\"".
                 __s('Add')."\"></a></span>";
@@ -996,7 +996,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
             $link = $item->get_permalink();
 
             $rand = mt_rand();
-            $output.= "<div id='rssitem$rand' class='pointer rss'>";
+            $output.= "<div id='rssitem$rand'>";
             if (!is_null($link)) {
                $output.= "<a target='_blank' href='$link'>";
             }

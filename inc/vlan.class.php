@@ -57,18 +57,19 @@ class Vlan extends CommonDropdown {
                          'list'     => true]];
    }
 
-   public function getSpecificTypeField(int $ID, array $field): string {
+
+   function displaySpecificTypeField($ID, $field = []) {
+
       if ($field['name'] == 'tag') {
-         return Dropdown::showNumber('tag', [
-            'value'     => $this->fields['tag'],
-            'min'       => 1,
-            'max'       => (pow(2, 12) - 2),
-            'width'     => '100%',
-            'display'   => false,
+         Dropdown::showNumber('tag', [
+            'value' => $this->fields['tag'],
+            'min'   => 1,
+            'max'   => (pow(2, 12) - 2),
+            'width' => '100%',
          ]);
       }
-      return '';
    }
+
 
    function rawSearchOptions() {
       $tab = parent::rawSearchOptions();

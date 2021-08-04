@@ -8,12 +8,12 @@
       <h4 class="card-title ps-4">
          {{ __('Inventory information') }}
       </h4>
-      {% set inventory_filename = getInventoryFileName(item) %}
-      {% if inventory_filename|length > 0 %}
+      {% set inventory_filename = item is usingtrait('Glpi\\Features\\Inventoriable') ? item.getInventoryFileName() : null %}
+      {% if inventory_filename is not null %}
          <a href="{{ path('front/document.send.php?file=_inventory/' ~ inventory_filename) }}"
             class="btn btn-sm btn-secondary ms-auto" target="_blank"
             data-bs-toggle="tooltip" data-bs-placement="right"
-            title="{{ __('Download "%1$s" inventory file')|format(item.getName()) }}">
+            title="{{ __('Download "%1$s" inventory file')|format(get_item_name(item)) }}">
             <i class="fas fa-download"></i>
          </a>
       {% else %}
@@ -24,32 +24,32 @@
       {% endif %}
    </div>
 
-   {% set agent = getAgentForItem(item) %}
-   {% if agent == false %}
+   {% set agent = item is usingtrait('Glpi\\Features\\Inventoriable') ? item.getInventoryAgent() : null %}
+   {% if agent is null %}
       {{ __('No agent has been linked.') }}
    {% else %}
       <div class="card-body row">
          <div class="mb-3 col-12 col-sm-6">
-            <label class="form-label" >{{ 'Agent'|itemtype_name }}</label>
+            <label class="form-label" >{{ agent.getTypeName() }}</label>
             <span>
                <i class="{{ agent.getIcon() }}"></i>
-               {{ agent.getLink()|raw }}
+               {{ get_item_link(agent) }}
             </span>
          </div>
 
          <div class="mb-3 col-12 col-sm-6">
             <label class="form-label" >{{ __('Useragent') }}</label>
-            <span>{{ agent.fields['useragent'] }}</span>
+            <span>{{ agent.fields['useragent']|verbatim_value }}</span>
          </div>
 
          <div class="mb-3 col-12 col-sm-6">
             <label class="form-label" >{{ __('Inventory tag') }}</label>
-            <span>{{ agent.fields['tag'] }}</span>
+            <span>{{ agent.fields['tag']|verbatim_value }}</span>
          </div>
 
          <div class="mb-3 col-12 col-sm-6">
             <label class="form-label" >{{ __('Last inventory') }}</label>
-            <span>{{ agent.fields['last_contact']|conv_datetime }}</span>
+            <span>{{ agent.fields['last_contact']|formatted_datetime }}</span>
          </div>
 
          <div class="mb-3 col-12 col-sm-6">

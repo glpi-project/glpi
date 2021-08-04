@@ -46,8 +46,7 @@ switch ($_GET['action']) {
       if (isset($_GET['items_id']) && isset($_GET['itemtype']) && !empty($_GET['items_id'])) {
          $_GET['params']['items_id'][$_GET['itemtype']][$_GET['items_id']] = $_GET['items_id'];
       }
-      $_GET['params']['display'] = filter_var($_GET['params']['display'] ?? true, FILTER_VALIDATE_BOOLEAN);
-      echo Item_Ticket::itemAddForm(new Ticket(), $_GET['params']);
+      Item_Ticket::itemAddForm(new Ticket(), $_GET['params']);
       break;
 
    case 'delete':
@@ -61,8 +60,7 @@ switch ($_GET['action']) {
          if ($deleted) {
             unset($_GET['params']['items_id'][$_GET['itemtype']][array_search($_GET['items_id'], $_GET['params']['items_id'][$_GET['itemtype']])]);
          }
-         $_GET['params']['display'] = filter_var($_GET['params']['display'] ?? true, FILTER_VALIDATE_BOOLEAN);
-         echo Item_Ticket::itemAddForm(new Ticket(), $_GET['params']);
+         Item_Ticket::itemAddForm(new Ticket(), $_GET['params']);
       }
 
       break;

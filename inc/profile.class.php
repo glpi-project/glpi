@@ -3256,8 +3256,7 @@ class Profile extends CommonDBTM {
       return Html::showCheckboxMatrix($columns, $rows,
                                       ['title'                => $param['title'],
                                             'row_check_all'        => count($columns) > 1,
-                                            'col_check_all'        => count($rows) > 1,
-                                            'rotate_column_titles' => false]);
+                                            'col_check_all'        => count($rows) > 1]);
    }
 
 

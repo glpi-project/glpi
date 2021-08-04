@@ -42,15 +42,19 @@ The present file will list all changes made to the project; according to the
 - Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
 - Usage of `CommonDBTM::notificationqueueonaction` property
 - Usage of `NotificationTarget::html_tags` property
-- `DBmysql::getTableSchema()`
+- `Ajax::createSlidePanel()`
 - `Calendar::duplicate()`
 - `CommonDBTM::clone()`
 - `CommonDBTM::prepareInputForClone()`
 - `CommonDBTM::post_clone()`
+- `CommonITILObject::getActorIcon()`
 - `Config::getCache()`
+- `DBmysql::getTableSchema()`
 - `Html::clean()`
+- `Html::displayImpersonateBanner()`
 - `Html::setSimpleTextContent()`
 - `Html::setRichTextContent()`
+- `Html::displayImpersonateBanner()`
 - `Html::weblink_extract()`
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
@@ -63,15 +67,37 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::sanitize()`
 
 #### Removed
-- `Update::declareOldItems()`
-- `Ajax::createFixedModalWindow()`
-
 - Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
 - `$LOADED_PLUGINS` global variable
-- `Computer_SoftwareLicense` class
-- `Computer_SoftwareVersion` class
 - `getAllDatasFromTable()`
 - `getRealQueryForTreeItem()`
+- `Ajax::createFixedModalWindow()`
+- `Calendar_Holiday::cloneCalendar()`
+- `CalendarSegment::cloneCalendar()`
+- `Change::getCommonLeftJoin()`
+- `Change::getCommonSelect()`
+- `CommonDBTM::getRawName()`
+- `CommonITILObject::displayHiddenItemsIdInput()`
+- `CommonITILObject::filterTimeline()`
+- `CommonITILObject::showActorsPartForm()`
+- `CommonITILObject::showFormHeader()`
+- `CommonITILObject::showGroupsAssociated()`
+- `CommonITILObject::showSupplierAddFormOnCreate()`
+- `CommonITILObject::showSuppliersAssociated()`
+- `CommonITILObject::showTimeline()`
+- `CommonITILObject::showTimelineForm()`
+- `CommonITILObject::showTimelineHeader()`
+- `CommonITILObject::showUsersAssociated()`
+- `Computer_Item::cloneComputer()`
+- `Computer_Item::cloneItem()`
+- `Computer_SoftwareLicense` class
+- `Computer_SoftwareVersion` class
+- `ComputerAntivirus::cloneComputer()`
+- `Contract::cloneItem()`
+- `Contract_Item::cloneItem()`
+- `ContractCost::cloneContract()`
+- `Config::checkWriteAccessToDirs()`
+- `Config::displayCheckExtensions()`
 - `DBMysql::affected_rows()`
 - `DBMysql::data_seek()`
 - `DBMysql::fetch_array()`
@@ -85,24 +111,21 @@ The present file will list all changes made to the project; according to the
 - `DBMysql::list_fields()`
 - `DBMysql::num_fields()`
 - `DbUtils::getRealQueryForTreeItem()`
-- `Calendar_Holiday::cloneCalendar()`
-- `CalendarSegment::cloneCalendar()`
-- `Change::getCommonLeftJoin()`
-- `Change::getCommonSelect()`
-- `CommonDBTM::getRawName()`
-- `Computer_Item::cloneComputer()`
-- `Computer_Item::cloneItem()`
-- `ComputerAntivirus::cloneComputer()`
-- `Config::checkWriteAccessToDirs()`
-- `Config::displayCheckExtensions()`
-- `Contract::cloneItem()`
-- `ContractCost::cloneContract()`
-- `Contract_Item::cloneItem()`
+- `DCBreadcrumb::showDcBreadcrumb()`
 - `Document_Item::cloneItem()`
+- `Html::displayMainMenu()`
+- `Html::displayMenuAll()`
+- `Html::displayTopMenu()`
 - `Html::jsDisable()`
 - `Html::jsEnable()`
+- `Html::resume_name()`
 - `Infocom::cloneItem()`
 - `Itil_Project::cloneItilProject()`
+- `ITILFollowup::showApprobationForm()`
+- `ITILTemplate::getBeginHiddenFieldText()`
+- `ITILTemplate::getBeginHiddenFieldValue()`
+- `ITILTemplate::getEndHiddenFieldText()`
+- `ITILTemplate::getEndHiddenFieldValue()`
 - `Item_Devices::cloneItem()`
 - `Item_Disk::cloneItem()`
 - `Item_OperatingSystem::cloneItem()`
@@ -113,8 +136,10 @@ The present file will list all changes made to the project; according to the
 - `Item_SoftwareVersion::showForComputer()`
 - `Item_SoftwareVersion::updateDatasForComputer()`
 - `KnowbaseItem_Item::cloneItem()`
+- `LevelAgreement::showForTicket()`
 - `NetworkPort::cloneItem()`
 - `Notepad::cloneItem()`
+- `NotificationTargetTicket::isAuthorMailingActivatedForHelpdesk()`
 - `Plugin::setLoaded()`
 - `Plugin::setUnloaded()`
 - `Plugin::setUnloadedByName()`
@@ -123,18 +148,22 @@ The present file will list all changes made to the project; according to the
 - `ProjectCost::cloneProject()`
 - `ProjectTeam::cloneProjectTask()`
 - `ProjectTask::cloneProjectTeam()`
+- `Reservation::displayReservationDay()`
+- `Reservation::displayReservationsForAnItem()`
+- `Search::isDeletedSwitch()`
 - `Ticket::getCommonLeftJoin()`
 - `Ticket::getCommonSelect()`
 - `Ticket::getTicketTemplateToUse()`
+- `Ticket::showDocumentAddButton()`
+- `Ticket_Ticket::displayLinkedTicketsTo()`
 - `TicketTemplate::getFromDBWithDatas()`
 - `Toolbox::canUseImapPop()`
 - `Toolbox::checkSELinux()`
 - `Toolbox::userErrorHandlerDebug()`
 - `Toolbox::userErrorHandlerNormal()`
 - `Transfer::transferComputerSoftwares()`
-
-- `Reservation::displayReservationDay()`
-- `Reservation::displayReservationsForAnItem()`
+- `Update::declareOldItems()`
+- `User::showPersonalInformation()`
 
 ## [9.5.6] unreleased
 

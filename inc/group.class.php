@@ -324,11 +324,11 @@ class Group extends CommonTreeDropdown {
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $prefix                            = 'Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR;
-         $actions[$prefix.'add']            = "<i class='ma-icon fas fa-user-plus'></i>".
+         $actions[$prefix.'add']            = "<i class='fas fa-user-plus'></i>".
                                               _x('button', 'Add a user');
-         $actions[$prefix.'add_supervisor'] = "<i class='ma-icon fas fa-user-tie'></i>".
+         $actions[$prefix.'add_supervisor'] = "<i class='fas fa-user-tie'></i>".
                                               _x('button', 'Add a manager');
-         $actions[$prefix.'add_delegatee']  = "<i class='ma-icon fas fa-user-check'></i>".
+         $actions[$prefix.'add_delegatee']  = "<i class='fas fa-user-check'></i>".
                                               _x('button', 'Add a delegatee');
          $actions[$prefix.'remove']         = _x('button', 'Remove a user');
       }
@@ -966,5 +966,22 @@ class Group extends CommonTreeDropdown {
 
    static function getIcon() {
       return "fas fa-users";
+   }
+
+   /**
+    * Get group link.
+    *
+    * @param bool $enable_anonymization
+    *
+    * @return string
+    */
+   public function getGroupLink(bool $enable_anonymization = false): string {
+
+      if ($enable_anonymization && Session::getCurrentInterface() == 'helpdesk' && ($anon = $this->getAnonymizedName()) !== null) {
+         // if anonymized name active, return only the anonymized name
+         return $anon;
+      }
+
+      return $this->getLink();
    }
 }

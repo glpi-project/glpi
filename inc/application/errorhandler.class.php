@@ -228,7 +228,7 @@ class ErrorHandler {
       $error_description = sprintf(
          '"%s" in %s at line %s',
          $error->getRawMessage(),
-         $context !== null ? sprintf('template "%s"', $context->getPath(), $context->getName()) : 'unknown template',
+         $context !== null ? sprintf('template "%s"', $context->getPath()) : 'unknown template',
          $error->getTemplateLine()
       );
       $error_trace = $this->getTraceAsString($error->getTrace());

@@ -132,15 +132,14 @@ class Blacklist extends CommonDropdown {
    }
 
 
-   public function getSpecificTypeField(int $ID, array $field): string {
+   function displaySpecificTypeField($ID, $field = []) {
+
       if ($field['name'] == 'type') {
-         return self::dropdownType($field['name'], [
-            'value'     => $this->fields['type'],
-            'width'     => '100%',
-            'display'   => false,
+         self::dropdownType($field['name'], [
+            'value' => $this->fields['type'],
+            'width' => '100%',
          ]);
       }
-      return '';
    }
 
 
