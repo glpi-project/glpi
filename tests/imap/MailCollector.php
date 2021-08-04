@@ -449,7 +449,7 @@ class MailCollector extends DbTestCase {
       $msg = $this->collector->collect($this->mailgate_id);
 
       $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
-      $expected_refused_count          = 2;
+      $expected_refused_count          = 3;
       $expected_error_count            = 2;
       $expected_blacklist_count        = 1;
       $expected_expected_already_seen  = 0;
