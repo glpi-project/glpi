@@ -2847,9 +2847,15 @@ class AuthLDAP extends CommonDBTM {
 
       //If no specific source is given, test all ldap directories
       if ($auths_id <= 0) {
+         $user_found = false;
+
          foreach ($auth->authtypes["ldap"] as $ldap_method) {
             if ($ldap_method['is_active']) {
                $auth = self::ldapAuth($auth, $login, $password, $ldap_method, $user_dn);
+
+               if ($auth->user_found) {
+                  $user_found = true;
+               }
 
                if ($auth->auth_succeded
                    && $break) {
@@ -2857,6 +2863,8 @@ class AuthLDAP extends CommonDBTM {
                }
             }
          }
+
+         $auth->user_found = $user_found;
 
       } else if (array_key_exists($auths_id, $auth->authtypes["ldap"])) {
          // Check if the ldap server indicated as the last good one still exists !
