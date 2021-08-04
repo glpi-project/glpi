@@ -43,9 +43,6 @@
     "// apache function",
     "getallheaders",
 
-    "// LDAP extension function removed in PHP 8.0",
-    "ldap_control_paged_result", "ldap_control_paged_result_response",
-
     "// OPCache extension (not installed on testing env)",
     "opcache_get_status", "opcache_invalidate", "opcache_reset",
 
