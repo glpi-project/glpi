@@ -79,10 +79,6 @@ class ObjectParameter extends AbstractParameterType
       return $this->template_parameters;
    }
 
-   public function getDocumentationField(): string {
-      return $this->key;
-   }
-
    public function getDocumentationLabel(): string {
       return $this->template_parameters->getObjectLabel();
    }

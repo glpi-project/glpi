@@ -53,26 +53,12 @@ abstract class AbstractParameterType
    protected $key;
 
    /**
-    * The parameter label, to be displayed in the client side autocompletion
-    *
-    * @var string
-    */
-   protected $label;
-
-   /**
     * To be defined in each subclasses, convert the parameter data into an array
     * that can be shared to the client side code as json and used for autocompletion.
     *
     * @return array
     */
    abstract public function compute(): array;
-
-   /**
-    * Field name for this parameter's documentation
-    *
-    * @return string
-    */
-   abstract public function getDocumentationField(): string;
 
    /**
     * Label to use for this parameter's documentation
@@ -97,5 +83,12 @@ abstract class AbstractParameterType
     */
    abstract public function getDocumentationReferences(): ?AbstractParameters;
 
-
+   /**
+    * Field name for this parameter's documentation
+    *
+    * @return string
+    */
+   public function getDocumentationField(): string {
+      return $this->key;
+   }
 }

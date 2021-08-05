@@ -58,6 +58,13 @@ class AttributeParameter extends AbstractParameterType
    protected $filter;
 
    /**
+    * The parameter label, to be displayed in the client side autocompletion
+    *
+    * @var string
+    */
+    protected $label;
+
+   /**
     * @param string $key    Key to access this value
     * @param string $label  Label to display in the autocompletion widget
     * @param string $filter Recommanded twig filter to apply on this value
@@ -75,10 +82,6 @@ class AttributeParameter extends AbstractParameterType
          'label'  => $this->label,
          'filter' => $this->filter,
       ];
-   }
-
-   public function getDocumentationField(): string {
-      return $this->key;
    }
 
    public function getDocumentationLabel(): string {

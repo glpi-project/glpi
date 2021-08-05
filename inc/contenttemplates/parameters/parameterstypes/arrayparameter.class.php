@@ -63,6 +63,13 @@ class ArrayParameter extends AbstractParameterType
    protected $content;
 
    /**
+    * The parameter label, to be displayed in the client side autocompletion
+    *
+    * @var string
+    */
+    protected $label;
+
+   /**
     * @param string              $key        Key to access this value
     * @param AbstractParameters  $parameters Parameters of each item contained in this array
     * @param string              $label      Label to display in the autocompletion widget
@@ -86,10 +93,6 @@ class ArrayParameter extends AbstractParameterType
          'items_key' => $this->items_key,
          'content'   => $this->content->compute(),
       ];
-   }
-
-   public function getDocumentationField(): string {
-      return $this->key;
    }
 
    public function getDocumentationLabel(): string {
