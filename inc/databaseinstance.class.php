@@ -58,6 +58,10 @@ class DatabaseInstance extends CommonDBTM {
       ];
    }
 
+   function useDeletedToLockIfDynamic() {
+      return false;
+   }
+
    static function getTypeName($nb = 0) {
       return _n('Database instance', 'Database instances', $nb);
    }
