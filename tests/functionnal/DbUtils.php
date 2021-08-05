@@ -1165,7 +1165,39 @@ class DbUtils extends DbTestCase {
             'itemtype'     => 'Computer',
             'entities_id'  => 2,
             'expected'     => '_test_pc14'
-         ]
+         ], [
+            // existing on entity, new XSS clean output
+            'name'         => '&#60;_test_pc##&#62;',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => 2,
+            'expected'     => '_test_pc14'
+         ], [
+            // existing on entity, not sanitized
+            'name'         => '<_test_pc##>',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => 2,
+            'expected'     => '_test_pc14'
+         ], [
+            // not existing on entity, new XSS clean output, and containing a special char
+            'name'         => '&#60;pc_&#60;_##&#62;',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => 2,
+            'expected'     => 'pc_&#60;_01'
+         ], [
+            // not existing on entity, not sanitized, and containing a special char
+            'name'         => '<pc_>_##>',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => 2,
+            'expected'     => 'pc_>_01'
+         ],
       ];
    }
 
