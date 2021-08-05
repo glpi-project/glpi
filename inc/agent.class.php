@@ -489,7 +489,7 @@ class Agent extends CommonDBTM {
     *
     * @return Response
     */
-   protected function requestAgent($endpoint): Response {
+   public function requestAgent($endpoint): Response {
       global $CFG_GLPI;
 
       if (self::$found_adress !== false) {
