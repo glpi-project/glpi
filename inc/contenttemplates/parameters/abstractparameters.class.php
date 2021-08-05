@@ -53,7 +53,7 @@ abstract class AbstractParameters implements TemplatesParametersInterface
     *
     * @return \Glpi\ContentTemplates\Parameters\ParametersTypes\AbstractParameterType[]
     */
-   abstract public function defineParameters(): array;
+   abstract public function getAvailableParameters(): array;
 
    /**
     * To by defined in each subclasses, get the exposed values for a given item
@@ -89,15 +89,5 @@ abstract class AbstractParameters implements TemplatesParametersInterface
       }
 
       return $this->defineValues($item);
-   }
-
-   public function getAvailableParameters(): array {
-      $parameters = [];
-
-      foreach ($this->defineParameters() as $parameter) {
-         $parameters[] = $parameter->compute();
-      }
-
-      return $parameters;
    }
 }

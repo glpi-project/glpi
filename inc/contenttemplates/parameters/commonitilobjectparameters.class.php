@@ -57,7 +57,7 @@ if (!defined('GLPI_ROOT')) {
  */
 abstract class CommonITILObjectParameters extends AbstractParameters
 {
-   public function defineParameters(): array {
+   public function getAvailableParameters(): array {
       return [
          new AttributeParameter("id", __('ID')),
          new AttributeParameter("ref", __("Reference (# + id)")),

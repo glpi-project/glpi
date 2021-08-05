@@ -33,10 +33,13 @@
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 use DbTestCase;
+use Glpi\ContentTemplates\TemplateManager;
 
 class AbstractParameters extends DbTestCase
 {
    protected function testGetAvailableParameters($values, $parameters): void {
+      $parameters = TemplateManager::computeParameters($parameters);
+
       $values_keys = array_keys($values);
       $parameters_keys = array_column($parameters, 'key');
 

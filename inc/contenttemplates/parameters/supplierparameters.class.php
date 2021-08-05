@@ -60,7 +60,7 @@ class SupplierParameters extends TreeDropdownParameters
       return [Supplier::class];
    }
 
-   public function defineParameters(): array {
+   public function getAvailableParameters(): array {
       return [
          new AttributeParameter("id", __('ID')),
          new AttributeParameter("name", __('Name')),

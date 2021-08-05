@@ -161,7 +161,7 @@ class TemplateDocumentation
       foreach ($references as $reference) {
          $this->addSection(
             $reference->getObjectLabel(),
-            $reference->defineParameters(),
+            $reference->getAvailableParameters(),
             $reference->getDefaultNodeName()
          );
       }

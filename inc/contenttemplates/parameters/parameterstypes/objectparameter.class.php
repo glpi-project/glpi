@@ -33,6 +33,7 @@
 namespace Glpi\ContentTemplates\Parameters\ParametersTypes;
 
 use Glpi\ContentTemplates\Parameters\AbstractParameters;
+use Glpi\ContentTemplates\TemplateManager;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -63,11 +64,14 @@ class ObjectParameter extends AbstractParameterType
    }
 
    public function compute(): array {
+      $sub_parameters = $this->template_parameters->getAvailableParameters();
+      $properties =  TemplateManager::computeParameters($sub_parameters);
+
       return [
          'type'       => "ObjectParameter",
          'key'        => $this->key,
          'label'      => $this->template_parameters->getObjectLabel(),
-         'properties' => $this->template_parameters->getAvailableParameters(),
+         'properties' => $properties,
       ];
    }
 
