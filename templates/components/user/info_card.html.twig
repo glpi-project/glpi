@@ -46,7 +46,7 @@
                </div>
             {% endif %}
             {% if user['usercategories_id'] > 0 %}
-               <div title="{{ __('Category') }}" data-bs-toggle="tooltip" data-bs-placement="top">
+               <div title="{{ _n('Category', 'Categories', 1) }}" data-bs-toggle="tooltip" data-bs-placement="top">
                   <i class="fas fa-fw fa-user-tag"></i>
                   {{ getDropdownName('glpi_usercategories', user['usercategories_id']) }}
                </div>

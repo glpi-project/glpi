@@ -129,7 +129,7 @@
 
                      {# Category #}
                      {% set task_category_lbl %}
-                        <i class="fas fa-tag fa-fw me-1" title="{{ __('Category') }}"></i>
+                        <i class="fas fa-tag fa-fw me-1" title="{{ _n('Category', 'Categories', 1) }}"></i>
                      {% endset %}
                      {{ fields.dropdownField(
                         "TaskCategory",

@@ -37,7 +37,6 @@ if (version_compare(PHP_VERSION, '7.3.0') < 0) {
 }
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\RichText;
 
 //Load GLPI constants
 define('GLPI_ROOT', __DIR__);

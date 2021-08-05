@@ -35,7 +35,6 @@ namespace Glpi\Application\View\Extension;
 use Glpi\Toolbox\RichText;
 use Glpi\Toolbox\Sanitizer;
 use Html;
-use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
