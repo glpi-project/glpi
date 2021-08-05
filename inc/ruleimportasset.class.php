@@ -2155,6 +2155,63 @@ class RuleImportAsset extends Rule {
          'action'    => '_deny'
       ];
 
+      $rules[] = [
+         'name'      => 'Database update (by name)',
+         'match'     => 'AND',
+         'is_active' => 1,
+         'criteria'  => [
+            [
+               'criteria'  => 'itemtype',
+               'condition' => Rule::PATTERN_IS,
+               'pattern'   => 'DatabaseInstance'
+            ],
+            [
+               'criteria'  => 'name',
+               'condition' => Rule::PATTERN_EXISTS,
+               'pattern'   => 1
+            ],
+            [
+               'criteria'  => 'name',
+               'condition' => Rule::PATTERN_FIND,
+               'pattern'   => 1
+            ]
+         ],
+         'action'    => '_link'
+      ];
+
+      $rules[] = [
+         'name'      => 'Database import (by name)',
+         'match'     => 'AND',
+         'is_active' => 1,
+         'criteria'  => [
+            [
+               'criteria'  => 'itemtype',
+               'condition' => Rule::PATTERN_IS,
+               'pattern'   => 'DatabaseInstance'
+            ],
+            [
+               'criteria'  => 'name',
+               'condition' => Rule::PATTERN_EXISTS,
+               'pattern'   => 1
+            ]
+         ],
+         'action'    => '_link'
+      ];
+
+      $rules[] = [
+         'name'      => 'Database import denied',
+         'match'     => 'AND',
+         'is_active' => 1,
+         'criteria'  => [
+            [
+               'criteria'  => 'itemtype',
+               'condition' => Rule::PATTERN_IS,
+               'pattern'   => 'DatabaseInstance'
+            ]
+         ],
+         'action'    => '_deny'
+      ];
+
       //load default rules from plugins
       if ($with_plugins && isset($PLUGIN_HOOKS['add_rules'])) {
          $ria = new self();
