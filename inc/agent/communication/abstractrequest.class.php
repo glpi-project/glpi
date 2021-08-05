@@ -305,9 +305,7 @@ abstract class AbstractRequest
             $this->addNode($root, $name, $content);
          }
       } else {
-         foreach ($entries as $name => $content) {
-             $this->addEntry($this->response, $name, $content);
-         }
+         $this->response = $entries;
       }
    }
 
@@ -340,28 +338,8 @@ abstract class AbstractRequest
       }
    }
 
+
    /**
-    * Add node to response for JSON_MODE
-    *
-    * @param array             $parent  Parent element
-    * @param string            $name    Element name to create
-    * @param string|array|null $content Element contents, if any
-    *
-    * @return void
-    */
-   private function addEntry(array &$parent, $name, $content) {
-      if (is_array($content)) {
-          $node = $parent[$name];
-         foreach ($content as $sname => $scontent) {
-            $this->addNode($node, $sname, $scontent);
-         }
-      } else {
-          $parent[$name] = $content;
-      }
-   }
-
-
-    /**
      * Get content-type
      *
      * @return string
