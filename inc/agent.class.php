@@ -424,7 +424,9 @@ class Agent extends CommonDBTM {
          ]);
          while ($row = $ports_iterator->next()) {
             if (!in_array($row['name'], $adresses)) {
-               $adresses[] = $row['name'];
+               if (filter_var($row['name'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+                  $adresses[] = $row['name'];
+               }
             }
          }
 
