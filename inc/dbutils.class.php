@@ -1564,143 +1564,152 @@ final class DbUtils {
    public function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1) {
       global $DB, $CFG_GLPI;
 
-      $len = Toolbox::strlen($objectName);
+      if (!$isTemplate) {
+         return $objectName;
+      }
 
-      if ($isTemplate
-         && ($len > 8)
-         && (Toolbox::substr($objectName, 0, 4) === '&lt;')
-         && (Toolbox::substr($objectName, $len - 4, 4) === '&gt;')) {
+      $base_name = $objectName;
 
-         $autoNum = Toolbox::substr($objectName, 4, $len - 8);
-         $mask    = '';
+      $is_sanitized = Sanitizer::isSanitized($objectName);
+      if ($is_sanitized) {
+         $objectName = Sanitizer::unsanitize($objectName);
+      }
 
-         if (preg_match( "/\\#{1,10}/", $autoNum, $mask)) {
-            $global  = ((strpos($autoNum, '\\g') !== false) && ($itemtype != 'Infocom')) ? 1 : 0;
+      $matches = [];
+      if (mb_ereg('^<[^#]*(#{1,10})[^#]*>$', $objectName, $matches) === false) {
+         return $base_name;
+      }
 
-            //do not add extra escapements for now
-            //substring position would be wrong if name contains "_"
-            $autoNum = str_replace(
-               [
-                  '\\y',
-                  '\\Y',
-                  '\\m',
-                  '\\d',
-                  '\\g'
-               ], [
-                  date('y'),
-                  date('Y'),
-                  date('m'),
-                  date('d'),
-                  ''
-               ],
-               $autoNum
-            );
+      $autoNum = Toolbox::substr($objectName, 1, Toolbox::strlen($objectName) - 2);
+      $mask    = $matches[1];
+      $global  = ((strpos($autoNum, '\\g') !== false) && ($itemtype != 'Infocom')) ? 1 : 0;
 
-            $mask = $mask[0];
-            $pos  = strpos($autoNum, $mask) + 1;
+      //do not add extra escapements for now
+      //substring position would be wrong if name contains "_"
+      $autoNum = str_replace(
+         [
+            '\\y',
+            '\\Y',
+            '\\m',
+            '\\d',
+            '\\g'
+         ], [
+            date('y'),
+            date('Y'),
+            date('m'),
+            date('d'),
+            ''
+         ],
+         $autoNum
+      );
 
-            //got substring position, add extra escapements
-            $autoNum = str_replace(
-               ['_', '%'],
-               ['\\_', '\\%'],
-               $autoNum
-            );
-            $len  = Toolbox::strlen($mask);
-            $like = str_replace('#', '_', $autoNum);
+      $pos  = strpos($autoNum, $mask) + 1;
 
-            if ($global == 1) {
-               $types = [
-                  'Computer',
-                  'Monitor',
-                  'NetworkEquipment',
-                  'Peripheral',
-                  'Phone',
-                  'Printer'
-               ];
+      //got substring position, add extra escapements
+      $autoNum = str_replace(
+         ['_', '%'],
+         ['\\_', '\\%'],
+         $autoNum
+      );
+      $len  = Toolbox::strlen($mask);
+      $like = str_replace('#', '_', $autoNum);
 
-               $subqueries = [];
-               foreach ($types as $t) {
-                  $table = $this->getTableForItemType($t);
-                  $criteria = [
-                     'SELECT' => ["$field AS code"],
-                     'FROM'   => $table,
-                     'WHERE'  => [
-                        $field         => ['LIKE', $like],
-                        'is_deleted'   => 0,
-                        'is_template'  => 0
-                     ]
-                  ];
+      if ($global == 1) {
+         $types = [
+            'Computer',
+            'Monitor',
+            'NetworkEquipment',
+            'Peripheral',
+            'Phone',
+            'Printer'
+         ];
 
-                  if ($CFG_GLPI["use_autoname_by_entity"]
-                     && ($entities_id >= 0)) {
-                     $criteria['WHERE']['entities_id'] = $entities_id;
-                  }
+         $subqueries = [];
+         foreach ($types as $t) {
+            $table = $this->getTableForItemType($t);
+            $criteria = [
+               'SELECT' => ["$field AS code"],
+               'FROM'   => $table,
+               'WHERE'  => [
+                  $field         => ['LIKE', $like],
+                  'is_deleted'   => 0,
+                  'is_template'  => 0
+               ]
+            ];
 
-                  $subqueries[] = new \QuerySubQuery($criteria);
-               }
-
-               $criteria = [
-                  'SELECT' => [
-                     new \QueryExpression(
-                        "CAST(SUBSTRING(".$DB->quoteName('code').", $pos, $len) AS " .
-                        "unsigned) AS " . $DB->quoteName('no')
-                     )
-                  ],
-                  'FROM'   => new \QueryUnion($subqueries, false, 'codes')
-               ];
-            } else {
-               $table = $this->getTableForItemType($itemtype);
-               $criteria = [
-                  'SELECT' => [
-                     new \QueryExpression(
-                        "CAST(SUBSTRING(".$DB->quoteName($field).", $pos, $len) AS " .
-                        "unsigned) AS " . $DB->quoteName('no')
-                     )
-                  ],
-                  'FROM'   => $table,
-                  'WHERE'  => [
-                     $field   => ['LIKE', $like]
-                  ]
-               ];
-
-               if ($itemtype != 'Infocom') {
-                  $criteria['WHERE']['is_deleted'] = 0;
-                  $criteria['WHERE']['is_template'] = 0;
-
-                  if ($CFG_GLPI["use_autoname_by_entity"]
-                     && ($entities_id >= 0)) {
-                     $criteria['WHERE']['entities_id'] = $entities_id;
-                  }
-               }
+            if ($CFG_GLPI["use_autoname_by_entity"]
+               && ($entities_id >= 0)) {
+               $criteria['WHERE']['entities_id'] = $entities_id;
             }
 
-            $subquery = new \QuerySubQuery($criteria, 'Num');
-            $iterator = $DB->request([
-               'SELECT' => ['MAX' => 'Num.no AS lastNo'],
-               'FROM'   => $subquery
-            ]);
+            $subqueries[] = new \QuerySubQuery($criteria);
+         }
 
-            if (count($iterator)) {
-               $result = $iterator->next();
-               $newNo = $result['lastNo'] + 1;
-            } else {
-               $newNo = 0;
+         $criteria = [
+            'SELECT' => [
+               new \QueryExpression(
+                  "CAST(SUBSTRING(".$DB->quoteName('code').", $pos, $len) AS " .
+                  "unsigned) AS " . $DB->quoteName('no')
+               )
+            ],
+            'FROM'   => new \QueryUnion($subqueries, false, 'codes')
+         ];
+      } else {
+         $table = $this->getTableForItemType($itemtype);
+         $criteria = [
+            'SELECT' => [
+               new \QueryExpression(
+                  "CAST(SUBSTRING(".$DB->quoteName($field).", $pos, $len) AS " .
+                  "unsigned) AS " . $DB->quoteName('no')
+               )
+            ],
+            'FROM'   => $table,
+            'WHERE'  => [
+               $field   => ['LIKE', $like]
+            ]
+         ];
+
+         if ($itemtype != 'Infocom') {
+            $criteria['WHERE']['is_deleted'] = 0;
+            $criteria['WHERE']['is_template'] = 0;
+
+            if ($CFG_GLPI["use_autoname_by_entity"]
+               && ($entities_id >= 0)) {
+               $criteria['WHERE']['entities_id'] = $entities_id;
             }
-
-            $objectName = str_replace(
-               [
-                  $mask,
-                  '\\_',
-                  '\\%'
-               ], [
-                  Toolbox::str_pad($newNo, $len, '0', STR_PAD_LEFT),
-                  '_',
-                  '%'
-               ],
-               $autoNum
-            );
          }
       }
+
+      $subquery = new \QuerySubQuery($criteria, 'Num');
+      $iterator = $DB->request([
+         'SELECT' => ['MAX' => 'Num.no AS lastNo'],
+         'FROM'   => $subquery
+      ]);
+
+      if (count($iterator)) {
+         $result = $iterator->next();
+         $newNo = $result['lastNo'] + 1;
+      } else {
+         $newNo = 0;
+      }
+
+      $objectName = str_replace(
+         [
+            $mask,
+            '\\_',
+            '\\%'
+         ], [
+            Toolbox::str_pad($newNo, $len, '0', STR_PAD_LEFT),
+            '_',
+            '%'
+         ],
+         $autoNum
+      );
+
+      if ($is_sanitized) {
+         $objectName = Sanitizer::sanitize($objectName);
+      }
+
       return $objectName;
    }
 
