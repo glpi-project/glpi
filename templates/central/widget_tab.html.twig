@@ -8,30 +8,11 @@
    {% set grid_items = [] %}
    {% for card in cards %}
       {% set card_html %}
-         <div class="card {{ card.class|default('') }}">
-            {% if card.title is defined %}
-               <div class="card-header">
-                  {% if card.icon is defined and card.icon is not null %}
-                     <i class="{{ card.icon }}"></i>
-                  {% endif %}
-                  {{ card.title }}
-               </div>
-            {% endif %}
-            <div class="card-body {{ card.body_class|default('') }}">
-               {% if card.type is not defined or card.type == 'raw' %}
-                  {{ card.content|raw }}
-               {% elseif card.type == 'table' %}
-                  {% include 'components/table.html.twig' with {
-                     'class': card.content.class|default(''),
-                     'header_rows': card.content.header_rows|default({}),
-                     'rows': card.content.rows|default({}),
-                  } %}
-               {% elseif card.type == 'lazy' %}
-                  <div class="lazy-widget" data-itemtype="{{ card.content.itemtype }}" data-widget="{{ card.content.widget }}"
-                     data-params="{{ card.content.params|default({})|json_encode }}"
-                     data-idor="{{ card.content._idor_token }}">
-                  </div>
-               {% endif %}
+         <div class="card">
+            <div class="card-body p-0">
+              <div class="lazy-widget" data-itemtype="{{ card.itemtype }}" data-widget="{{ card.widget }}"
+                 data-params="{{ card.params|default({})|json_encode }}">
+              </div>
             </div>
          </div>
       {% endset %}
