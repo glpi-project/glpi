@@ -56,7 +56,7 @@ abstract class AbstractRequest
    const SNMP_QUERY   = 'SNMP';
    const OLD_SNMP_QUERY   = 'SNMPQUERY';
 
-   //GLPI AGENT
+   //GLPI AGENT ACTION
    const CONTACT_ACTION = 'contact';
    const REGISTER_ACTION = 'register';
    const CONFIG_ACTION = 'configuration';
@@ -67,6 +67,10 @@ abstract class AbstractRequest
    const COLLECT_ACTION = 'collect';
    const DEPLOY_ACTION = 'deploy';
    const WOL_ACTION = 'wakeonlan';
+   const GET_PARAMS = 'get_params';
+
+   //GLPI AGENT TASK
+   const INVENT_TASK = 'inventory';
 
    const COMPRESS_NONE = 0;
    const COMPRESS_ZLIB = 1;
@@ -206,6 +210,15 @@ abstract class AbstractRequest
      * @return boolean
      */
    abstract protected function handleAction($action, $content = null) :bool;
+
+   /**
+   * Handle Task
+   *
+   * @param string $task  Task (one of self::*_tASK)
+   *
+   * @return array
+   */
+   abstract protected function handleTask($task) :array;
 
    /**
     * Handle XML request

@@ -345,6 +345,17 @@ class Inventory
       return $items;
    }
 
+
+   /**
+    * Get rawdata
+    *
+    * @return array
+    */
+    public function getRawData(): Object {
+      return $this->raw_data;
+   }
+
+
    /**
     * Handle inventory file
     *

@@ -34,6 +34,7 @@ namespace Glpi\Inventory;
 
 use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Agent\Communication\Headers\Common;
+use Plugin;
 use Unmanaged;
 
 /**
@@ -64,6 +65,9 @@ class Request extends AbstractRequest
      */
    protected function handleAction($query, $content = null) :bool {
       switch ($query) {
+         case self::GET_PARAMS:
+            $this->getParams($content);
+            break;
          case self::CONTACT_ACTION:
             $this->contact($content);
             break;
@@ -92,8 +96,47 @@ class Request extends AbstractRequest
    }
 
    /**
+     * Handle Task
+     * @param string $task  Task (one of self::*_tASK)
+     * @return array
+     */
+   protected function handleTask($task) :array {
+      switch ($task) {
+         case self::INVENT_TASK:
+            return $this->handleInventoryTask();
+            break;
+         default:
+            $this->addError("Task '$task' is not supported.", 400);
+            return [];
+      }
+       return [];
+   }
+
+
+   /**
+     * Handle agent GETPARAMS request
+     * @return void
+     */
+   public function getParams($data) {
+      $this->inventory = new Inventory();
+      $this->inventory->contact($data);
+
+      $response = [
+         'expiration'  => self::DEFAULT_FREQUENCY,
+         'status'     => 'ok',
+      ];
+
+      $params['options']['content'] = $data;
+      $params['options']['response'] = $response;
+      $params['item'] = $this->inventory->getAgent();
+      $params = Plugin::doHookFunction("inventory_get_params", $params);
+
+      $this->addToResponse($params['options']['response']);
+   }
+
+
+   /**
     * Handle agent prolog request
-    *
     * @return void
     */
    public function prolog() {
@@ -112,9 +155,10 @@ class Request extends AbstractRequest
        $this->addToResponse($response);
    }
 
-    /**
-     * Handle agent CONTACT request
-     */
+
+   /**
+   * Handle agent CONTACT request
+   */
    public function contact($data) {
       $this->inventory = new Inventory();
       $this->inventory->contact($data);
@@ -123,6 +167,16 @@ class Request extends AbstractRequest
          'expiration'  => self::DEFAULT_FREQUENCY,
          'status'     => 'ok'
       ];
+
+      //For the moment it's the Agent who informs us about the active tasks
+      if (property_exists($this->inventory->getRawData(), 'enabled-tasks')) {
+         foreach ($this->inventory->getRawData()->{'enabled-tasks'} as $task) {
+            if ((!empty($handle = $this->handleTask($task)))) {
+               $response['tasks'] = $handle;
+            }
+         }
+      }
+
       $this->addToResponse($response);
    }
 
@@ -154,6 +208,20 @@ class Request extends AbstractRequest
 
          $this->addToResponse($response);
       }
+   }
+
+   /**
+    * Handle agent inventory task request
+    *
+    * @return array
+    */
+   public function handleInventoryTask() {
+
+      $params['options']['response'] = [];
+      $params['item'] = $this->inventory->getAgent();
+      $params = Plugin::doHookFunction("handle_inventory_task", $params);
+
+      return $params['options']['response'];
    }
 
    /**
