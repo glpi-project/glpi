@@ -70,9 +70,10 @@ interface TemplatesParametersInterface
    public function getValues(CommonDBTM $item): array;
 
    /**
-    * Get the available parameters, used by autocomplete
+    * To be defined in each subclasses, define all available parameters for one or more itemtypes.
+    * These parameters informations are meant to be used for autocompletion on the client side.
     *
-    * @return array
+    * @return \Glpi\ContentTemplates\Parameters\ParametersTypes\AbstractParameterType[]
     */
    public function getAvailableParameters(): array;
 }
