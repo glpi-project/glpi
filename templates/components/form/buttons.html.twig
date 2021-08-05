@@ -87,7 +87,14 @@
          {% if canedit and params['addbuttons']|length > 0 %}
             {% for key, val in params['addbuttons'] %}
                <button class="btn btn-outline-secondary me-2" type="submit" name="{{ key }}" value="1">
-                  {{ val|raw }}
+                  {% if val is iterable %}
+                     {% if val.icon is defined %}
+                        <i class="{{ val.icon }}"></i>
+                     {% endif %}
+                     <span>{{ val.text|default('') }}</span>
+                  {% else %}
+                     {{ val }}
+                  {% endif %}
                </button>
             {% endfor %}
          {% endif %}
