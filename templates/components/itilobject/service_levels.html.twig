@@ -53,7 +53,7 @@
       {% if la_field.la.getDataForTicket(item.fields['id'], la_field.type) %}
          {% if date_displayed %}
             <span class="text-muted">
-               {{ convDateTime(item.fields[la_field.datefieldname]) }}
+               {{ item.fields[la_field.datefieldname]|formatted_datetime }}
             </span>
          {% endif %}
 
@@ -81,7 +81,7 @@
                {% if level != false %}
                   <span class="badge bg-info ms-0 ms-sm-1">
                      <i class="fas fa-clock me-1"
-                        title="{{ __("Next escalation: %s")|format(convDateTime(nextaction.fields['date'])) }}"
+                        title="{{ __("Next escalation: %s")|format(nextaction.fields['date']|formatted_datetime) }}"
                         data-bs-toggle="tooltip" data-bs-placement="top"></i>
                      <span title="{{ __('%1$s: %2$s')|format(_n('Escalation level', 'Escalation levels', 1), level.getName()) }}"
                            data-bs-toggle="tooltip" data-bs-placement="top">

@@ -49,7 +49,7 @@
 
          <div class="mb-3 col-12 col-sm-6">
             <label class="form-label" >{{ __('Last inventory') }}</label>
-            <span>{{ agent.fields['last_contact']|conv_datetime }}</span>
+            <span>{{ agent.fields['last_contact']|formatted_datetime }}</span>
          </div>
 
          <div class="mb-3 col-12 col-sm-6">

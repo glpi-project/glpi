@@ -52,7 +52,7 @@
                                  <span>{{ itemtypes[itemtype] ?? itemtype|itemtype_name }}</span>
                               </td>
                               <td>{{ Event_displayItemLogID(event['type'], event['items_id']) }}</td>
-                              <td>{{ event['date']|conv_datetime }}</td>
+                              <td>{{ event['date']|formatted_datetime }}</td>
                               <td>{{ services[event['service']] ?? event['service'] }}</td>
                               <td>{{ event['level'] }}</td>
                               <td>{{ event['message'] }}</td>

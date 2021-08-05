@@ -46,9 +46,9 @@
             {% if entry_i['begin'] %}
                <span class="planification badge bg-orange-lt">
                   <i class="fas fa-calendar me-1"></i>
-                  {{ entry_i['begin']|conv_datetime }}
+                  {{ entry_i['begin']|formatted_datetime }}
                   &rArr;
-                  {{ entry_i['end']|conv_datetime }}
+                  {{ entry_i['end']|formatted_datetime }}
                </span>
             {% endif %}
          </div>

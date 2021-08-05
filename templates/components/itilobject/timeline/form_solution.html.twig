@@ -23,7 +23,7 @@
             {% if entry_i['status'] != constant("CommonITILValidation::WAITING") and entry_i['status'] != constant("CommonITILValidation::NONE") %}
                <span class="badge bg-blue-lt">
                   {% set action = entry_i['status'] == constant("CommonITILValidation::ACCEPTED") ? __('Accepted') : _x('validation', 'Refused') %}
-                  {{ __('%1$s on %2$s by %3$s')|format(action, (entry_i['date_approval']|conv_datetime), User__getLink(entry_i['users_id_approval']))|raw }}
+                  {{ __('%1$s on %2$s by %3$s')|format(action, (entry_i['date_approval']|formatted_datetime), User__getLink(entry_i['users_id_approval']))|raw }}
                </span>
             {% endif %}
          </div>

@@ -1,6 +1,6 @@
 <span class="badge text-wrap d-none d-md-block">
    {% set date_span %}
-      <span title="{{ convDateTime(date_creation) }}"
+      <span title="{{ date_creation|formatted_datetime }}"
             data-bs-toggle="tooltip" data-bs-placement="bottom">
          <i class="far fa-clock me-1"></i>{{ time2str(date_creation) }}
       </span>
@@ -22,7 +22,7 @@
 {% if editor|length > 0 and date_creation != date_mod %}
    <span class="badge text-wrap ms-1 d-none d-md-block">
       {% set date_span %}
-         <span title="{{ convDateTime(date_mod) }}"
+         <span title="{{ date_mod|formatted_datetime }}"
                data-bs-toggle="tooltip" data-bs-placement="bottom">
             <i class="far fa-clock me-1"></i>{{ time2str(date_mod) }}
          </span>
