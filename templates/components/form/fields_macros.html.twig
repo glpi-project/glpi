@@ -308,17 +308,17 @@
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
 
-{% macro imageField(name, value, label = '', options = {}) %}
+{% macro imageField(name, value, label = '', options = {}, link_options = {}) %}
    {% set field %}
       <div class="img-overlay-wrapper position-relative">
          {% set clearable = options['clearable'] %}
-         {% set url = options['url'] %}
+         {% set url = options['url'] ?? null %}
          {% set options = options|filter((v, k) => k != 'url' and k != 'clearable') %}
          {% if url is not empty %}
-            <a href="{{ url }}" {{ Html__parseAttributes(options['link_attribs']|default('')) }}>
-               {% endif %}
-               <img src="{{ value }}" {{ Html__parseAttributes(options) }}/>
-               {% if url is defined %}
+            <a href="{{ url }}" {{ Html__parseAttributes(link_options) }}>
+         {% endif %}
+               <img src="{{ value|verbatim_value }}" {{ Html__parseAttributes(options) }}/>
+         {% if url is not empty %}
             </a>
          {% endif %}
          {% if clearable %}
