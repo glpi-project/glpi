@@ -36,12 +36,12 @@
 {% endmacro %}
 
 {% macro autoNameField(name, item, label = '', withtemplate, options = {}) %}
-   {% set tpl_value = option.value|length > 0 ? option.value : item.fields[name] %}
+   {% set tpl_value = option.value|length > 0 ? option.value : item.fields[name]|verbatim_value %}
    {% set tplmark = '' %}
    {% if item.isTemplate() %} {# TODO exluded types #}
       {% set tplmark = getAutofillMark(item, name, {'withtemplate': withtemplate}, tpl_value) %}
    {% endif %}
-   {% set value = autoName(item.fields[name], name, (withtemplate == 2), item.getType(), item.fields['entities_id']) %}
+   {% set value = autoName(item.fields[name]|verbatim_value, name, (withtemplate == 2), item.getType(), item.fields['entities_id']) %}
    {% set label = __('%1$s%2$s')|format(label, tplmark) %}
 
    {{ _self.textField(name, value, label, options) }}
@@ -408,7 +408,7 @@
 
    {% set field %}
       {{ Dropdown__showFromArray(name, elements, {
-         'value': value,
+         'value': value|verbatim_value,
          'display': false,
          'rand': rand,
          'width': '100%',
@@ -592,7 +592,7 @@
 
 {% macro ajaxField(id, value, label = '', options = {}) %}
    {% set field %}
-      <div id="{{ id|e }}" class="form-field-ajax">
+      <div id="{{ id }}" class="form-field-ajax">
          {% if value is not null %}
             {{ value|raw }}
          {% endif %}
