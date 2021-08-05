@@ -459,7 +459,7 @@ class Central extends CommonGLPI {
    }
 
 
-   public static function getMessages(): array {
+   private static function getMessages(): array {
       global $DB, $CFG_GLPI;
 
       $messages = [];
