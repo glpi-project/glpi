@@ -289,7 +289,7 @@
    {% set field %}
       <input type="password" id="%id%"
              class="form-control"
-             name="{{ name }}" value="{{ value|verbatim_value }}"
+             name="{{ name }}"
          {{ options.readonly ? 'readonly' : '' }}
          {{ options.disabled ? 'disabled' : '' }}
          {{ options.required ? 'required' : '' }} />
