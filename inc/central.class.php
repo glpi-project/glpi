@@ -255,14 +255,10 @@ class Central extends CommonGLPI {
          ];
          $idor = Session::getNewIDORToken($list['itemtype'], $card_params);
          $twig_params['cards'][] = [
-            'type'         => 'lazy',
-            'body_class'   => 'p-0',
-            'content'   => [
-               'itemtype'  => $list['itemtype'],
-               'widget'    => 'central_list',
-               'params'    => $card_params + [
-                  '_idor_token'  => $idor
-               ]
+            'itemtype'  => $list['itemtype'],
+            'widget'    => 'central_list',
+            'params'    => $card_params + [
+               '_idor_token'  => $idor
             ]
          ];
       }
@@ -272,27 +268,19 @@ class Central extends CommonGLPI {
       ];
       $idor = Session::getNewIDORToken(Planning::class, $card_params);
       $twig_params['cards'][] = [
-         'type'         => 'lazy',
-         'body_class'   => 'p-0',
-         'content'   => [
-            'itemtype'  => Planning::class,
-            'widget'    => 'central_list',
-            'params'    => $card_params + [
-               '_idor_token'  => $idor
-            ]
+         'itemtype'  => Planning::class,
+         'widget'    => 'central_list',
+         'params'    => $card_params + [
+            '_idor_token'  => $idor
          ]
       ];
 
       $idor = Session::getNewIDORToken(Reminder::class);
       $twig_params['cards'][] = [
-         'type'         => 'lazy',
-         'body_class'   => 'p-0',
-         'content'   => [
-            'itemtype'  => Reminder::class,
-            'widget'    => 'central_list',
-            'params'    => [
-               '_idor_token'  => $idor
-            ]
+         'itemtype'  => Reminder::class,
+         'widget'    => 'central_list',
+         'params'    => [
+            '_idor_token'  => $idor
          ]
       ];
       $idor = Session::getNewIDORToken(Reminder::class, [
@@ -300,15 +288,11 @@ class Central extends CommonGLPI {
       ]);
       if (Session::haveRight("reminder_public", READ)) {
          $twig_params['cards'][] = [
-            'type'         => 'lazy',
-            'body_class'   => 'p-0',
-            'content'   => [
-               'itemtype'  => Reminder::class,
-               'widget'    => 'central_list',
-               'params'    => [
-                  'personal'     => 'false',
-                  '_idor_token'  => $idor
-               ]
+            'itemtype'  => Reminder::class,
+            'widget'    => 'central_list',
+            'params'    => [
+               'personal'     => 'false',
+               '_idor_token'  => $idor
             ]
          ];
       }
@@ -331,15 +315,11 @@ class Central extends CommonGLPI {
          'messages'  => self::getMessages(),
          'cards'     => [
             [
-               'type'         => 'lazy',
-               'body_class'   => 'p-0',
-               'content'   => [
-                  'itemtype'  => RSSFeed::class,
-                  'widget'    => 'central_list',
-                  'params'    => [
-                     'personal'     => 'true',
-                     '_idor_token'  => $idor
-                  ]
+               'itemtype'  => RSSFeed::class,
+               'widget'    => 'central_list',
+               'params'    => [
+                  'personal'     => 'true',
+                  '_idor_token'  => $idor
                ]
             ]
          ]
@@ -349,15 +329,11 @@ class Central extends CommonGLPI {
             'personal'  => 'false'
          ]);
          $twig_params['cards'][] = [
-            'type'         => 'lazy',
-            'body_class'   => 'p-0',
-            'content'   => [
-               'itemtype'  => RSSFeed::class,
-               'widget'    => 'central_list',
-               'params'    => [
-                  'personal'     => 'false',
-                  '_idor_token'  => $idor
-               ]
+            'itemtype'  => RSSFeed::class,
+            'widget'    => 'central_list',
+            'params'    => [
+               'personal'     => 'false',
+               '_idor_token'  => $idor
             ]
          ];
       }
@@ -447,14 +423,10 @@ class Central extends CommonGLPI {
          ];
          $idor = Session::getNewIDORToken($list['itemtype'], $card_params);
          $twig_params['cards'][] = [
-            'type'         => 'lazy',
-            'body_class'   => 'p-0',
-            'content'   => [
-               'itemtype'  => $list['itemtype'],
-               'widget'    => 'central_list',
-               'params'    => $card_params + [
-                  '_idor_token'  => $idor
-               ]
+            'itemtype'  => $list['itemtype'],
+            'widget'    => 'central_list',
+            'params'    => $card_params + [
+               '_idor_token'  => $idor
             ]
          ];
       }
