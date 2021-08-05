@@ -1,18 +1,18 @@
 {% macro link_or_text(value, anchor_class = "") %}
-   {% set content = value._raw|default('false') ? value.text|raw : value.text %}
-   {% if value.count is defined %}
-      {% set content = content ~ "<span class='badge bg-secondary'>" ~ value.count ~ "</span>" %}
-   {% endif %}
-
    {% if value.link is defined %}
       <a class="{{ anchor_class }}" href="{{ value.link }}">
-         {% if value.icon is defined %}
-            <i class="{{ value.icon }}"></i>
+   {% endif %}
+         <span>
+            {% if value.icon is defined %}
+               <i class="{{ value.icon }}"></i>
+            {% endif %}
+            {{ value.text }}
+         </span>
+         {% if value.count is defined %}
+            <span class='badge bg-secondary'>{{  value.count  }}</span>
          {% endif %}
-         {{ content|raw }}
+   {% if value.link is defined %}
       </a>
-   {% else %}
-      {{ content|raw }}
    {% endif %}
 {% endmacro %}
 

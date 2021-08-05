@@ -1082,7 +1082,7 @@ var templateItilStatus = function(option) {
          break;
    }
 
-   return $(`<span><i class="itilstatus ${classes}"></i>${option.text}</span>`);
+   return $(`<span><i class="itilstatus ${classes}"></i> ${option.text}</span>`);
 };
 
 var templateValidation = function(option) {
@@ -1101,7 +1101,7 @@ var templateValidation = function(option) {
          break;
    }
 
-   return $(`<span><i class="validationstatus ${classes}"></i>${option.text}</span>`);
+   return $(`<span><i class="validationstatus ${classes}"></i> ${option.text}</span>`);
 };
 
 var templateItilPriority = function(option) {

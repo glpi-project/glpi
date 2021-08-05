@@ -5501,8 +5501,8 @@ JAVASCRIPT;
       if (Session::getCurrentInterface() != "central") {
          $twig_params['title']['button'] = [
             'link'   => $CFG_GLPI["root_doc"].'/front/helpdesk.public.php?create_ticket=1',
-            'text'   => "<i class='fa fa-plus mx-1'></i><span>".__('Create a ticket')."</span>",
-            '_raw'   => true,
+            'text'   => __('Create a ticket'),
+            'icon'   => 'fa fa-plus',
          ];
       }
 
@@ -5525,9 +5525,8 @@ JAVASCRIPT;
 
            $twig_params['items'][] = [
               'link'    => self::getSearchURL()."?".Toolbox::append_params($opt),
-              'text'    => "<span><i class='fas fa-check me-1'></i>".
-                           __('Ticket waiting for your approval').
-                           "</span>",
+              'text'    => __('Ticket waiting for your approval'),
+              'icon'    => 'fas fa-check',
               'count'   => $number_waitapproval
            ];
       }
@@ -5536,10 +5535,8 @@ JAVASCRIPT;
          $options['criteria'][0]['value'] = $key;
          $twig_params['items'][] = [
             'link'   => self::getSearchURL()."?".Toolbox::append_params($options),
-            'text'   => "<span>".
-                        self::getStatusIcon($key).
-                        self::getStatus($key).
-                        "</span>",
+            'text'   => self::getStatus($key),
+            'icon'   => self::getStatusClass($key),
             'count'  => $val
          ];
       }
@@ -5548,7 +5545,8 @@ JAVASCRIPT;
       $options['is_deleted']  = 1;
       $twig_params['items'][] = [
          'link'   => self::getSearchURL()."?".Toolbox::append_params($options),
-         'text'   => "<span><i class='fas fa-trash bg-red-lt me-1'></i>".__('Deleted')."</span>",
+         'text'   => __('Deleted'),
+         'icon'   => 'fas fa-trash bg-red-lt',
          'count'  => $number_deleted
       ];
 

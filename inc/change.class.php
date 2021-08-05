@@ -1690,10 +1690,8 @@ class Change extends CommonITILObject {
          $options['criteria'][0]['value'] = $key;
          $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"]."/front/change.php?".Toolbox::append_params($options),
-            'text'   => "<span>".
-                        self::getStatusIcon($key).
-                        self::getStatus($key).
-                        "</span>",
+            'text'   => self::getStatus($key),
+            'icon'   => self::getStatusClass($key),
             'count'  => $val
          ];
       }
@@ -1702,7 +1700,8 @@ class Change extends CommonITILObject {
       $options['is_deleted']  = 1;
       $twig_params['items'][] = [
          'link'   => $CFG_GLPI["root_doc"]."/front/change.php?".Toolbox::append_params($options),
-         'text'   => "<span><i class='fas fa-trash bg-red-lt me-1'></i>".__('Deleted')."</span>",
+         'text'   => __('Deleted'),
+         'icon'   => 'fas fa-trash bg-red-lt',
          'count'  => $number_deleted
       ];
 
