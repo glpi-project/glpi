@@ -436,6 +436,9 @@ class Central extends CommonGLPI {
          ];
       }
 
+      $twig_params = [
+         'cards' => [],
+      ];
       foreach ($lists as $list) {
          $card_params = [
             'start'              => 0,
