@@ -21,6 +21,7 @@ The present file will list all changes made to the project; according to the
 ### API changes
 
 #### Added
+- Added `DBMysql::setSavepoint` to create savepoints within a transaction.
 
 #### Changes
 - Format of `Message-Id` header sent in Tickets notifications changed to match format used by other items.
@@ -34,6 +35,7 @@ The present file will list all changes made to the project; according to the
 - Field `date_mod` of ObjectLock has been renamed to `date`.
 - Field `date_creation` of PrinterLog has been renamed to `date`.
 - Field `date` of ProjectTask has been renamed to `date_creation`.
+- `DBMysql::rollBack` supports a `name` parameter for rolling back to a savepoint.
 
 #### Deprecated
 - Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
