@@ -74,13 +74,18 @@ if (!$DB->tableExists('glpi_agents')) {
          `useragent` varchar(255) DEFAULT NULL,
          `tag` varchar(255) DEFAULT NULL,
          `port` varchar(6) DEFAULT NULL,
+         `ip_version` tinyint DEFAULT '0',
+         `ip_binary` varbinary(16) NOT NULL DEFAULT '0',
+         `ip_protocol` varchar(5) DEFAULT NULL,
          PRIMARY KEY (`id`),
          KEY `name` (`name`),
          KEY `entities_id` (`entities_id`),
          KEY `is_recursive` (`is_recursive`),
          KEY `item` (`itemtype`,`items_id`),
          UNIQUE KEY `deviceid` (`deviceid`),
-         KEY `agenttypes_id` (`agenttypes_id`),
+         KEY `ip_version` (`ip_version`),
+         KEY `ip_binary` (`ip_binary`),
+         KEY `ip_protocol` (`ip_protocol`),
          CONSTRAINT `agenttypes_id` FOREIGN KEY (`agenttypes_id`) REFERENCES `glpi_agenttypes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
    $DB->queryOrDie($query, "10.0 add table glpi_agents");
@@ -92,6 +97,22 @@ if (!$DB->tableExists('glpi_agents')) {
    $migration->addKey('glpi_agents', 'entities_id');
    $migration->addKey('glpi_agents', 'is_recursive');
    $migration->addKey('glpi_agents', ['itemtype', 'items_id'], 'item');
+
+   if (!$DB->fieldExists('glpi_agents', 'ip_version')) {
+      $migration->addField("glpi_agents", "ip_version", "tinyint(3) DEFAULT '0'");
+      $migration->addKey('glpi_agents', 'ip_version');
+   }
+
+   if (!$DB->fieldExists('glpi_agents', 'ip_binary')) {
+      $migration->addField("glpi_agents", "ip_binary", "varbinary(16) NOT NULL DEFAULT '0'");
+      $migration->addKey('glpi_agents', 'ip_binary');
+   }
+
+   if (!$DB->fieldExists('glpi_agents', 'ip_protocol')) {
+      $migration->addField("glpi_agents", "ip_protocol", "varchar(5) DEFAULT NULL");
+      $migration->addKey('glpi_agents', 'ip_protocol');
+   }
+
 }
 $ADDTODISPLAYPREF['Agent'] = [2, 4, 10, 8, 11, 6];
 
