@@ -54,7 +54,8 @@ if (!empty($_POST["date1"])
 $stat = new Stat();
 $chart_opts =  [
    'width'  => '90%',
-   'legend' => false
+   'legend' => false,
+   'title'  => ['Year','Value']
 ];
 
 Report::title();
