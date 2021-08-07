@@ -1892,7 +1892,7 @@ class Stat extends CommonGLPI {
             //$labels[$row_num] = $label;
             if (is_array($data) && count($data)) {
                // in case of simple series, we should not have the name
-               if(isset($serie['name'])) {
+               if (isset($serie['name'])) {
                   $headers[$row_num] = $serie['name'];
                }
                foreach ($data as $key => $val) {
