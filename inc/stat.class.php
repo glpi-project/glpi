@@ -1912,11 +1912,10 @@ class Stat extends CommonGLPI {
          ksort($values);
 
          if (!count($headers) && $options['title']) {
-            $headers[] = $options['title'];
+            $headers = $options['title'];
          }
 
          // Print labels
-         fwrite($fp, $_SESSION["glpicsv_delimiter"]);
          foreach ($headers as $val) {
             fwrite($fp, $val.$_SESSION["glpicsv_delimiter"]);
          }
