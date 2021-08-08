@@ -2128,11 +2128,13 @@ class Search {
          $p[$key] = $val;
       }
 
+      // Itemtype name used in JS function names, etc
+      $normalized_itemtype = strtolower(str_replace('\\', '', $itemtype));
       $rand_criteria = mt_rand();
       $main_block_class = '';
       $card_class = 'search-form card card-sm mb-4';
       if ($p['mainform']) {
-         echo "<form name='searchform$itemtype'  class='search-form-container' method='get' action='".$p['target']."'>";
+         echo "<form name='searchform$normalized_itemtype' class='search-form-container' method='get' action='".$p['target']."'>";
       } else {
          $main_block_class = "sub_criteria";
          $card_class = 'border d-inline-block ms-1';
@@ -2141,8 +2143,8 @@ class Search {
       echo "<div class='$card_class' $display>";
 
       echo "<div id='searchcriteria$rand_criteria' class='$main_block_class' >";
-      $nbsearchcountvar      = 'nbcriteria'.strtolower($itemtype).mt_rand();
-      $searchcriteriatableid = 'criteriatable'.strtolower($itemtype).mt_rand();
+      $nbsearchcountvar      = 'nbcriteria'.$normalized_itemtype.mt_rand();
+      $searchcriteriatableid = 'criteriatable'.$normalized_itemtype.mt_rand();
       // init criteria count
       echo Html::scriptBlock("
          var $nbsearchcountvar = ".count($p['criteria']).";

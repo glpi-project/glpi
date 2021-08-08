@@ -3,7 +3,10 @@
 <div class="ajax-container search-display-data">
 {% endif %}
 
-<form id="massform{{ itemtype }}" method="get" action="{{ path('front/massiveaction.php') }}"
+{# Remove namespace separators for use in HTML attributes #}
+{% set normalized_itemtype = itemtype|replace({'\\': ''}) %}
+
+<form id="massform{{ normalized_itemtype }}" method="get" action="{{ path("front/massiveaction.php") }}"
       data-search-itemtype="{{ data['itemtype'] }}" data-start="{{ start }}" data-count="{{ count }}" data-limit="{{ limit }}">
    <div class="card card-sm mt-0 search-card">
       <div class="card-header d-flex justify-content-between search-header">
@@ -50,7 +53,7 @@
 </div>
 <script>
     $(document).on('ready', () => {
-        new GLPI.Search.ResultsView("massform{{ itemtype }}", GLPI.Search.Table);
+        new GLPI.Search.ResultsView("massform{{ normalized_itemtype }}", GLPI.Search.Table);
     });
 </script>
 {% endif %}
