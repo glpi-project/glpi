@@ -202,9 +202,10 @@ class DropdownTranslation extends CommonDBChild {
     * @return integer the number of translations for this item
    **/
    static function getNumberOfTranslationsForItem($item) {
+      global $DB;
 
       return countElementsInTable(getTableForItemType(__CLASS__),
-                                  ['itemtype' => $item->getType(),
+                                  ['itemtype' => $DB->escape($item->getType()),
                                    'items_id' => $item->getID(),
                                    'NOT'      => ['field' => 'completename' ]]);
    }
@@ -319,30 +320,32 @@ class DropdownTranslation extends CommonDBChild {
       $rand    = mt_rand();
       $canedit = $item->can($item->getID(), UPDATE);
 
+      //Remove namespace separators
+      $normalized_itemtype = str_replace('\\', '', $item->getType());
       if ($canedit) {
-         echo "<div id='viewtranslation" . $item->getType().$item->getID() . "$rand'></div>\n";
+         echo "<div id='viewtranslation" . $normalized_itemtype.$item->getID() . "$rand'></div>\n";
 
          echo "<script type='text/javascript' >\n";
-         echo "function addTranslation" . $item->getType().$item->getID() . "$rand() {\n";
+         echo "function addTranslation" . $normalized_itemtype.$item->getID() . "$rand() {\n";
          $params = ['type'                       => __CLASS__,
                          'parenttype'                 => get_class($item),
                          $item->getForeignKeyField()  => $item->getID(),
                          'id'                         => -1];
-         Ajax::updateItemJsCode("viewtranslation" . $item->getType().$item->getID() . "$rand",
+         Ajax::updateItemJsCode("viewtranslation" . $normalized_itemtype.$item->getID() . "$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php",
                                 $params);
          echo "};";
          echo "</script>\n";
          echo "<div class='center'>".
               "<a class='vsubmit' href='javascript:addTranslation".
-                $item->getType().$item->getID()."$rand();'>". __('Add a new translation').
+              $normalized_itemtype.$item->getID()."$rand();'>". __('Add a new translation').
               "</a></div><br>";
       }
 
       $iterator = $DB->request([
          'FROM'   => getTableForItemType(__CLASS__),
          'WHERE'  => [
-            'itemtype'  => $item->getType(),
+            'itemtype'  => $DB->escape($item->getType()),
             'items_id'  => $item->getID(),
             'field'     => ['<>', 'completename']
          ],
@@ -369,7 +372,7 @@ class DropdownTranslation extends CommonDBChild {
             $onhover = '';
             if ($canedit) {
                $onhover = "style='cursor:pointer'
-                           onClick=\"viewEditTranslation".$data['itemtype'].$data['id']."$rand();\"";
+                           onClick=\"viewEditTranslation".$normalized_itemtype.$data['id']."$rand();\"";
             }
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
@@ -381,12 +384,12 @@ class DropdownTranslation extends CommonDBChild {
             echo "<td $onhover>";
             if ($canedit) {
                echo "\n<script type='text/javascript' >\n";
-               echo "function viewEditTranslation".$data['itemtype'].$data['id']."$rand() {\n";
+               echo "function viewEditTranslation".$normalized_itemtype.$data['id']."$rand() {\n";
                $params = ['type'                     => __CLASS__,
                               'parenttype'                => get_class($item),
                               $item->getForeignKeyField() => $item->getID(),
                               'id'                        => $data["id"]];
-               Ajax::updateItemJsCode("viewtranslation" . $item->getType().$item->getID() . "$rand",
+               Ajax::updateItemJsCode("viewtranslation" . $normalized_itemtype.$item->getID() . "$rand",
                                       $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php",
                                       $params);
                echo "};";
@@ -509,7 +512,7 @@ class DropdownTranslation extends CommonDBChild {
             'SELECT' => 'field',
             'FROM'   => self::getTable(),
             'WHERE'  => [
-               'itemtype'  => $item->getType(),
+               'itemtype'  => $DB->escape($item->getType()),
                'items_id'  => $item->getID(),
                'language'  => $language
             ]
