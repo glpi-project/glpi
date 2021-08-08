@@ -166,14 +166,13 @@ class Report extends CommonGLPI{
     * @since 0.84
    **/
    static function showDefaultReport() {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
       // Title
       echo "<span class='big b'>GLPI ".Report::getTypeName(Session::getPluralNumber())."</span><br><br>";
 
       // 1. Get counts of itemtype
-      $items     = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
-                         'Printer', 'Software'];
+      $items     = $CFG_GLPI["asset_types"];
 
       $linkitems = ['Monitor', 'Peripheral', 'Phone', 'Printer'];
 
