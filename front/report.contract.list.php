@@ -172,7 +172,7 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                ]
             ];
          } else {
-            $criteria['SELECT'] = array_merge($criteria['SELECT'], 
+            $criteria['SELECT'] = array_merge($criteria['SELECT'],
                [new QueryExpression("'' AS location")]);
          }
 
