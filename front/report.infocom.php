@@ -55,7 +55,7 @@ $stat = new Stat();
 $chart_opts =  [
    'width'  => '90%',
    'legend' => false,
-   'title'  => ['Year', 'Value'],
+   'title'  => 'Value',
 ];
 
 Report::title();
