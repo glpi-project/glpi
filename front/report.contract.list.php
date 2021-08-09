@@ -172,8 +172,7 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                ]
             ];
          } else {
-            $criteria['SELECT'] = array_merge($criteria['SELECT'],
-               [new QueryExpression("'' AS location")]);
+            $criteria['SELECT'][] = new QueryExpression("'' AS location");
          }
 
          if ($DB->fieldExists($itemtable, 'is_template')) {
