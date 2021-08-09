@@ -174,7 +174,7 @@ class Report extends CommonGLPI{
       // 1. Get counts of itemtype
       $items     = $CFG_GLPI["asset_types"];
 
-      $linkitems = ['Monitor', 'Peripheral', 'Phone', 'Printer'];
+      $linkitems = $CFG_GLPI['directconnect_types'];
 
       echo "<table class='tab_cadrehov'>";
 
