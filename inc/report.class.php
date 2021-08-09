@@ -243,7 +243,6 @@ class Report extends CommonGLPI{
       // Get counts of types
 
       $val   = array_flip($items);
-      unset($val["Software"]);
       $items = array_flip($val);
 
       foreach ($items as $itemtype) {
