@@ -164,7 +164,7 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
             ]
          ];
          if ($DB->fieldExists($itemtable, 'locations_id')) {
-            $criteria['SELECT'] = array_merge($criteria['SELECT'], ['glpi_locations.completename AS location']);
+            $criteria['SELECT'][] = 'glpi_locations.completename AS location';
             $criteria['LEFT JOIN']['glpi_locations'] = [
                'ON'  => [
                   $itemtable        => 'locations_id',
