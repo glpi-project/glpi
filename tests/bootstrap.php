@@ -34,7 +34,7 @@ ini_set('display_errors', 'On');
 error_reporting(E_ALL);
 
 define('GLPI_ROOT', __DIR__ . '/../');
-define('GLPI_CONFIG_DIR', __DIR__ . '/config');
+define('GLPI_CONFIG_DIR', getenv('GLPI_CONFIG_DIR') ?? __DIR__ . '/config');
 define('GLPI_VAR_DIR', __DIR__ . '/files');
 define('GLPI_URI', (getenv('GLPI_URI') ?: 'http://localhost:8088'));
 
