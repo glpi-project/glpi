@@ -24,7 +24,7 @@ Moreover, GLPI supports many [plugins](http://plugins.glpi-project.org) that pro
 
 ## Demonstration
 
-Check GLPI features by asking a free personal demonstration on **[glpi-network.cloud](https://www.glpi-network.cloud)**
+Check GLPI features by asking for a free personal demonstration on **[glpi-network.cloud](https://www.glpi-network.cloud)**
 
 ## License
 
