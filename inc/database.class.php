@@ -102,7 +102,7 @@ class Database extends CommonDBChild {
          $database::dropdown(['value' => $this->fields['databaseinstances_id']]);
       }
       echo "</td>";
-      echo "<td><label for='size$rand'>".__('Size')."</label></td>";
+      echo "<td><label for='size$rand'>".sprintf(__('%1$s (%2$s)'), __('Size'), __('Mio'))."</label></td>";
       echo "<td>";
       echo Html::input(
          'size', [
@@ -164,7 +164,7 @@ class Database extends CommonDBChild {
          'id'                 => '166',
          'table'              => self::getTable(),
          'field'              => 'size',
-         'name'               => __('Size'),
+         'name'               => sprintf(__('%1$s (%2$s)'), __('Size'), __('Mio')),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'integer',
@@ -289,7 +289,7 @@ class Database extends CommonDBChild {
          echo "<tr class='noHover'><th colspan='10'>".self::getTypeName(Session::getPluralNumber())."</th></tr>";
 
          $header = "<tr><th>".__('Name')."</th>";
-         $header .= "<th>".__('Size')."</th>";
+         $header .= "<th>".sprintf(__('%1$s (%2$s)'), __('Size'), __('Mio'))."</th>";
          $header .= "<th>".__('Is active')."</th>";
          $header .= "<th>".__('Has backup')."</th>";
          $header .= "</tr>";
