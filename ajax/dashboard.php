@@ -113,7 +113,7 @@ switch ($_REQUEST['action']) {
       session_write_close();
       header("Content-Type: application/json; charset=UTF-8");
       // Parse stringified JSON payload (Used to preserve integers)
-      $request_data = array_merge($_REQUEST, json_decode(html_entity_decode(stripslashes($_REQUEST['data'])), true));
+      $request_data = array_merge($_REQUEST, json_decode($_UREQUEST['data'], true));
       unset($request_data['data']);
       $cards = $request_data['cards'];
       unset($request_data['cards']);

@@ -1851,8 +1851,8 @@ JAVASCRIPT;
       $series_colors = implode(',', $palette['colors']);
 
       $hash = sha1($series_names.$series_colors);
-      if ($GLPI_CACHE->has($hash)) {
-         return $GLPI_CACHE->get($hash);
+      if (($palette_css = $GLPI_CACHE->get($hash)) !== null) {
+         return $palette_css;
       }
 
       $scss = new Compiler();

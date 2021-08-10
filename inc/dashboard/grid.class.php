@@ -1382,30 +1382,7 @@ HTML;
             ]
          ];
 
-         $case = '';
-         $cards["bn_count_tickets_expired_by_tech"] = [
-            'widgettype' => ['hBars', 'stackedHBars'],
-            'itemtype'   => "\\Ticket",
-            'group'      => __('Assistance'),
-            'label'      => sprintf(__("Number of tickets by SLA status and technician")),
-            'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsByAgreementStatusAndTechnician",
-            'filters'    => [
-               'dates', 'dates_mod', 'itilcategory',
-               'user_tech', 'requesttype', 'location'
-            ]
-         ];
 
-         $cards["bn_count_tickets_expired_by_tech_group"] = [
-            'widgettype' => ['hBars', 'stackedHBars'],
-            'itemtype'   => "\\Ticket",
-            'group'      => __('Assistance'),
-            'label'      => sprintf(__("Number of tickets by SLA status and technician group")),
-            'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsByAgreementStatusAndTechnicianGroup",
-            'filters'    => [
-               'dates', 'dates_mod', 'itilcategory',
-               'group_tech', 'requesttype', 'location'
-            ]
-         ];
 
          foreach ([
                      'ITILCategory' => __("Top ticket's categories"),
