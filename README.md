@@ -74,7 +74,7 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
 
  * Supported browsers:
     - Edge
-    - Firefox (including 2 latest ESR version)
+    - Firefox (including 2 latest ESR versions)
     - Chrome
 
 Please, consider using browsers on editor's supported version
