@@ -84,7 +84,6 @@ Please, consider using browsers on editor's supported version
 
 See :
 * [releases](https://github.com/glpi-project/glpi/releases) for tarball packages.
-* [Remi's RPM repository](http://rpms.remirepo.net/) for RPM packages (Fedora, RHEL, CentOS)
 
 
 ## Documentation
