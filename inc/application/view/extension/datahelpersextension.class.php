@@ -49,7 +49,7 @@ class DataHelpersExtension extends AbstractExtension {
 
    public function getFilters(): array {
       return [
-         new TwigFilter('formatted_datetime', [$this, 'getFormattedDatetime'], ['is_safe' => ['html']]),
+         new TwigFilter('formatted_datetime', [$this, 'getFormattedDatetime']),
          new TwigFilter('html_to_text', [$this, 'getTextFromHtml']),
          new TwigFilter('safe_html', [$this, 'getSafeHtml'], ['is_safe' => ['html']]),
          new TwigFilter('verbatim_value', [$this, 'getVerbatimValue']),
@@ -58,19 +58,23 @@ class DataHelpersExtension extends AbstractExtension {
 
    public function getFunctions(): array {
       return [
-         new TwigFunction('get_item_name', [$this, 'getItemName']),
          new TwigFunction('get_item_comment', [$this, 'getItemComment']),
+         new TwigFunction('get_item_link', [$this, 'getItemLink'], ['is_safe' => ['html']]),
+         new TwigFunction('get_item_name', [$this, 'getItemName']),
       ];
    }
 
    /**
     * Return date formatted to user preferred format.
     *
-    * @param string $datetime
+    * @param mixed $datetime
     *
-    * @return string
+    * @return string|null
     */
-   public function getFormattedDatetime(string $datetime): string {
+   public function getFormattedDatetime($datetime): ?string {
+      if (!is_string($datetime)) {
+         return null;
+      }
       return Html::convDateTime($datetime);
    }
 
@@ -138,41 +142,82 @@ class DataHelpersExtension extends AbstractExtension {
     * Returns name of the given item.
     * In case of a dropdown, it returns the translated name, otherwise, it returns the friendly name.
     *
+    * @param CommonDBTM|string $item   Item instance of itemtype of the item.
+    * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
+    *
     * @return string|null
     */
-   public function getItemName(string $itemtype, int $items_id): ?string {
-      $name = null;
-
-      if (is_a($itemtype, CommonDropdown::class, true)) {
-         $name = Dropdown::getDropdownName($itemtype::getTable(), $items_id, false, true, false, '');
-      }
-      if (is_a($itemtype, CommonDBTM::class, true)) {
-         $name = $itemtype::getFriendlyNameById($items_id);
+   public function getItemName($item, ?int $id = null): ?string {
+      if (is_a($item, CommonDropdown::class, true)) {
+         $items_id = $item instanceof CommonDBTM ? $item->fields[$item->getIndexName()] : $id;
+         $name = Dropdown::getDropdownName($item::getTable(), $items_id, false, true, false, '');
+         return $this->getVerbatimValue($name);
       }
 
-      return $this->getVerbatimValue($name);
+      if (($instance = $this->getItemInstance($item, $id)) === null) {
+         return null;
+      }
+
+      return $this->getVerbatimValue($instance->getFriendlyName());
    }
 
    /**
     * Returns comment of the given item.
     * In case of a dropdown, it returns the translated comment.
     *
+    * @param CommonDBTM|string $item   Item instance of itemtype of the item.
+    * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
+    *
     * @return string|null
     */
-   public function getItemComment(string $itemtype, int $items_id): ?string {
-      $comment = null;
-
-      if (is_a($itemtype, CommonDropdown::class, true)) {
-         $texts = Dropdown::getDropdownName($itemtype::getTable(), $items_id, true, true, false, '');
-         $comment = $texts['comment'];
-      }
-      if (is_a($itemtype, CommonDBTM::class, true)) {
-         $item = new $itemtype();
-         if ($item->getFromDB($items_id) && $item->isField('comment')) {
-            $comment = $item->fields['comment'];
-         }
+   public function getItemComment($item, ?int $id = null): ?string {
+      if (is_a($item, CommonDropdown::class, true)) {
+         $items_id = $item instanceof CommonDBTM ? $item->fields[$item->getIndexName()] : $id;
+         $texts = Dropdown::getDropdownName($item::getTable(), $items_id, true, true, false, '');
+         return $this->getVerbatimValue($texts['comment']);
       }
 
-      return $this->getVerbatimValue($comment);
+      if (($instance = $this->getItemInstance($item, $id)) === null) {
+         return null;
+      }
+
+      return $instance->isField('comment') ? $this->getVerbatimValue($instance->fields['comment']) : null;
+   }
+
+   /**
+    * Returns link of the given item.
+    *
+    * @param CommonDBTM|string $item   Item instance of itemtype of the item.
+    * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
+    *
+    * @return string|null
+    */
+   public function getItemLink($item, ?int $id = null): ?string {
+      if (($instance = $this->getItemInstance($item, $id)) === null) {
+         return null;
+      }
+
+      return $instance->getLink();
+   }
+
+   /**
+    * Returns instance of item with given ID.
+    *
+    * @param CommonDBTM|string $item   Item instance of itemtype of the item.
+    * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
+    *
+    * @return CommonDBTM|null
+    */
+   private function getItemInstance($item, ?int $id = null): ?CommonDBTM {
+      if (!is_a($item, CommonDBTM::class, true)) {
+         return null;
+      }
+
+      if ($item instanceof CommonDBTM && ($id === null || $item->fields[$item->getIndexName()] === $id)) {
+         return $item;
+      }
+
+      $instance = $id !== null ? $item::getById($id) : null;
+      return $instance ?: null;
    }
 }

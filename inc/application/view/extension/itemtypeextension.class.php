@@ -62,7 +62,6 @@ class ItemtypeExtension extends AbstractExtension {
          new TwigFilter('getIcon', [$this, 'getIcon']),
          new TwigFilter('getSearchUrl', [$this, 'getSearchUrl']),
          new TwigFilter('getLinkURL', [$this, 'getLinkURL'], ['is_safe' => ['html']]),
-         new TwigFilter('getLink', [$this, 'getLink'], ['is_safe' => ['html']]),
          new TwigFilter('getTable', [$this, 'getTable'], ['is_safe' => ['html']]),
          new TwigFilter('isEntityAssign', [$this, 'isEntityAssign']),
          new TwigFilter('maybeDeleted', [$this, 'maybeDeleted']),
@@ -201,16 +200,6 @@ class ItemtypeExtension extends AbstractExtension {
       }
 
       return false;
-   }
-
-   public function getLink($itemtype, int $id = 0, array $options = []): ?string {
-      if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
-         $item = new $itemtype;
-         $item->getFromDB($id);
-         return $item->getLink($options);
-      }
-
-      return null;
    }
 
    public function maybeDeleted($itemtype): ?string {

@@ -26,7 +26,7 @@
             {% if entry_i['groups_id_tech'] %}
                <span class="badge bg-orange-lt">
                   <i class="fas fa-users me-1"></i>
-                  {{ "Group"|getLink(entry_i['groups_id_tech']) }}
+                  {{ get_item_link("Group", entry_i['groups_id_tech']) }}
                </span>
             {% endif %}
 
