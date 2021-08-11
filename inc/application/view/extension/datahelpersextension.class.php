@@ -34,6 +34,7 @@ namespace Glpi\Application\View\Extension;
 
 use CommonDBTM;
 use CommonDropdown;
+use CommonGLPI;
 use Dropdown;
 use Glpi\Toolbox\RichText;
 use Glpi\Toolbox\Sanitizer;
@@ -51,6 +52,7 @@ class DataHelpersExtension extends AbstractExtension {
       return [
          new TwigFilter('formatted_datetime', [$this, 'getFormattedDatetime']),
          new TwigFilter('html_to_text', [$this, 'getTextFromHtml']),
+         new TwigFilter('itemtype_name', [$this, 'getItemtypeName']),
          new TwigFilter('safe_html', [$this, 'getSafeHtml'], ['is_safe' => ['html']]),
          new TwigFilter('verbatim_value', [$this, 'getVerbatimValue']),
       ];
@@ -79,6 +81,42 @@ class DataHelpersExtension extends AbstractExtension {
    }
 
    /**
+    * Return plain text from HTML (rich text).
+    *
+    * @param mixed $string             HTML string to be made safe
+    * @param bool  $keep_presentation  Indicates whether the presentation elements have to be replaced by plaintext equivalents
+    * @param bool  $compact            Indicates whether the output should be compact (limited line length, no links URL, ...)
+    *
+    * @return mixed
+    */
+   public function getTextFromHtml($string, bool $keep_presentation = true, bool $compact = false) {
+      if (!is_string($string)) {
+         return $string;
+      }
+
+      if (Sanitizer::isSanitized($string)) {
+         $string = Sanitizer::unsanitize($string);
+      }
+
+      return RichText::getTextFromHtml($string, $keep_presentation, $compact);
+   }
+
+   /**
+    * Returns typename of given itemtype.
+    *
+    * @param mixed $itemtype
+    * @param number $count
+    *
+    * @return string|null
+    */
+   public function getItemtypeName($itemtype, $count = 1): ?string {
+      if ($itemtype instanceof CommonGLPI || is_a($itemtype, CommonGLPI::class, true)) {
+         return $itemtype::getTypeName($count);
+      }
+      return null;
+   }
+
+   /**
     * Return safe HTML (rich text).
     * Value will be made safe, whenever it has been sanitize (value fetched from DB),
     * or not (value computed during runtime).
@@ -98,27 +136,6 @@ class DataHelpersExtension extends AbstractExtension {
       }
 
       return RichText::getSafeHtml($string);
-   }
-
-   /**
-    * Return plain text from HTML (rich text).
-    *
-    * @param mixed $string             HTML string to be made safe
-    * @param bool  $keep_presentation  Indicates whether the presentation elements have to be replaced by plaintext equivalents
-    * @param bool  $compact            Indicates whether the output should be compact (limited line length, no links URL, ...)
-    *
-    * @return mixed
-    */
-   public function getTextFromHtml($string, bool $keep_presentation = true, bool $compact = false) {
-      if (!is_string($string)) {
-         return $string;
-      }
-
-      if (Sanitizer::isSanitized($string)) {
-         $string = Sanitizer::unsanitize($string);
-      }
-
-      return RichText::getTextFromHtml($string, $keep_presentation, $compact);
    }
 
    /**

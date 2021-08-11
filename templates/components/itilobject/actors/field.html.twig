@@ -27,9 +27,9 @@
             data-itemtype="{{ actor['itemtype'] }}" data-items-id="{{ actor['items_id'] }}"
             data-use-notification="{{ actor['use_notification'] }}"
             data-alternative-email="{{ actor['alternative_email'] }}"
-            data-text="{{ actor['text'] }}" data-title="{{ actor['title'] }}"
+            data-text="{{ actor['text']|verbatim_value }}" data-title="{{ actor['title']|verbatim_value }}"
             {{ required ? 'required' : "" }}>
-         {{ actor['title'] }}
+         {{ actor['title']|verbatim_value }}
       </option>
    {% endfor %}
    </select>

@@ -50,7 +50,6 @@ class ItemtypeExtension extends AbstractExtension {
 
    public function getFilters(): array {
       return [
-         new TwigFilter('itemtype_name', [$this, 'itemtypeName']),
          new TwigFilter('dropdown', [$this, 'dropdown'], ['is_safe' => ['html']]),
          new TwigFilter('canCreate', [$this, 'canCreate']),
          new TwigFilter('canView', [$this, 'canView']),
@@ -80,23 +79,6 @@ class ItemtypeExtension extends AbstractExtension {
          new TwigFunction('getMassiveActions', [$this, 'getMassiveActions']),
          new TwigFunction('getSpecificTypeField', [$this, 'getSpecificTypeField']),
       ];
-   }
-
-   /**
-    * Return domain-relative path of a resource.
-    *
-    * @param string|CommonGLPI $itemtype
-    * @param number $count
-    *
-    * @return string
-    *
-    * @TODO Add a unit test.
-    */
-   public function itemtypeName($itemtype, $count = 1): ?string {
-      if ($itemtype instanceof CommonGLPI || is_a($itemtype, CommonGLPI::class, true)) {
-         return $itemtype::getTypeName($count);
-      }
-      return null;
    }
 
    public function dropdown($itemtype, array $options = []): bool {

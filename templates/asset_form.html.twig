@@ -701,7 +701,7 @@
                   {% endif %}
 
                   {% if item.isField('certificate_item') %}
-                     {{ fields.textareaField('certificate_item', item.fields['certificate_item'], item|itemtype_name) }}
+                     {{ fields.textareaField('certificate_item', item.fields['certificate_item'], 'Certificate'|itemtype_name) }}
                   {% endif %}
 
                   {% if item.isField('ram') %}
