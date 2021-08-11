@@ -32,11 +32,15 @@
 
 namespace Glpi\Application\View\Extension;
 
+use CommonDBTM;
+use CommonDropdown;
+use Dropdown;
 use Glpi\Toolbox\RichText;
 use Glpi\Toolbox\Sanitizer;
 use Html;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 /**
  * @since 10.0.0
@@ -52,8 +56,15 @@ class DataHelpersExtension extends AbstractExtension {
       ];
    }
 
+   public function getFunctions(): array {
+      return [
+         new TwigFunction('get_item_name', [$this, 'getItemName']),
+         new TwigFunction('get_item_comment', [$this, 'getItemComment']),
+      ];
+   }
+
    /**
-    * Retern date formatted to user preferred format.
+    * Return date formatted to user preferred format.
     *
     * @param string $datetime
     *
@@ -121,5 +132,47 @@ class DataHelpersExtension extends AbstractExtension {
       }
 
       return $string;
+   }
+
+   /**
+    * Returns name of the given item.
+    * In case of a dropdown, it returns the translated name, otherwise, it returns the friendly name.
+    *
+    * @return string|null
+    */
+   public function getItemName(string $itemtype, int $items_id): ?string {
+      $name = null;
+
+      if (is_a($itemtype, CommonDropdown::class, true)) {
+         $name = Dropdown::getDropdownName($itemtype::getTable(), $items_id, false, true, false, '');
+      }
+      if (is_a($itemtype, CommonDBTM::class, true)) {
+         $name = $itemtype::getFriendlyNameById($items_id);
+      }
+
+      return $this->getVerbatimValue($name);
+   }
+
+   /**
+    * Returns comment of the given item.
+    * In case of a dropdown, it returns the translated comment.
+    *
+    * @return string|null
+    */
+   public function getItemComment(string $itemtype, int $items_id): ?string {
+      $comment = null;
+
+      if (is_a($itemtype, CommonDropdown::class, true)) {
+         $texts = Dropdown::getDropdownName($itemtype::getTable(), $items_id, true, true, false, '');
+         $comment = $texts['comment'];
+      }
+      if (is_a($itemtype, CommonDBTM::class, true)) {
+         $item = new $itemtype();
+         if ($item->getFromDB($items_id) && $item->isField('comment')) {
+            $comment = $item->fields['comment'];
+         }
+      }
+
+      return $this->getVerbatimValue($comment);
    }
 }

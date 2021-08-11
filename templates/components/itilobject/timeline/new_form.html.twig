@@ -18,7 +18,7 @@
                      <div class="alert alert-info" role="alert">
                         {{ __('%1$s will be added in entity %2$s')|format(
                            item.getTypeName(1),
-                           "<span class='badge bg-secondary ms-1'>" ~ getDropdownName('glpi_entities', item.fields['entities_id']) ~ "</span>"
+                           "<span class='badge bg-secondary ms-1'>" ~ get_item_name('Entity', item.fields['entities_id']) ~ "</span>"
                         )|raw }}
                      </div>
                   {% endif %}

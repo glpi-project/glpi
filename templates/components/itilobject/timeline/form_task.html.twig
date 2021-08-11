@@ -32,7 +32,7 @@
 
             {% if entry_i['taskcategories_id'] %}
                <span class="badge bg-orange-lt">
-                  {{ getDropdownName("glpi_taskcategories", entry_i['taskcategories_id']) }}
+                  {{ get_item_name('TaskCategory', entry_i['taskcategories_id']) }}
                </span>
             {% endif %}
 

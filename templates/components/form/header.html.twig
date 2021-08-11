@@ -5,14 +5,15 @@
 {% set nametype     = params['formtitle'] ?? item.getTypeName(1) %}
 {% set no_id        = params['noid'] ?? false %}
 {% set id           = item.fields['id'] ?? -1 %}
+{% set formoptions  = params['formoptions'] ?? '' %}
 
-{% set entity = 0 %}
+{% set entity_id = 0 %}
 {% set entity_name = '' %}
 {% if item.isEntityAssign() %}
-   {% set entity = params['entities_id'] ?? item.fields['entities_id'] ?? session('glpiactive_entity') %}
+   {% set entity_id = params['entities_id'] ?? item.fields['entities_id'] ?? session('glpiactive_entity') %}
 
    {% if isMultiEntitiesMode() %}
-      {% set entity_name = getDropdownName('glpi_entities', item.fields['entities_id']) %}
+      {% set entity_name = get_item_name('Entity', item.fields['entities_id']) %}
    {% endif %}
 {% endif %}
 
@@ -23,19 +24,20 @@
    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
 </form>
 
-<form name="asset_form" method="post" action="{{ target }}" {{ formoptions }} enctype="multipart/form-data">
-   <input type="hidden" name="entities_id" value="{{ entity }}" />
+<form name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data">
+   <input type="hidden" name="entities_id" value="{{ entity_id }}" />
 {% endif %}
    <div id="mainformtable">
       <div class="card-header main-header d-flex flex-wrap mx-n2 mt-n2">
+         {%  set template_name = item.fields['template_name']|verbatim_value %}
          {% if withtemplate == 2 and not item.isNewItem() %}
-            <input type="hidden" name="template_name" value="{{ item.fields['template_name'] }}" />
-            {% set nametype = __('Created from the template %s')|format(item.fields['template_name']) %}
+            <input type="hidden" name="template_name" value="{{ template_name }}" />
+            {% set nametype = __('Created from the template %s')|format(template_name) %}
          {% elseif withtemplate == 1 %}
             <input type="hidden" name="is_template" value="1" />
             <input type="text" class="form-control" placeholder="{{ __('Template name') }}"
                   name="template_name" id="textfield_template_name{{ rand }}"
-                  value="{{ item.fields['template_name'] }}" />
+                  value="{{ template_name }}" />
          {% elseif item.isNewItem() %}
             {% set nametype = __('%1$s - %2$s')|format(__('New item'), nametype) %}
          {% else %}
@@ -53,7 +55,7 @@
                   </div>
                {% endif %}
                <span>
-               {{ nametype|raw }}
+               {{ nametype }}
                </span>
                {% if header_toolbar %}
                   <div class="d-inline-block toolbar ms-2">
@@ -76,36 +78,31 @@
                {% if item.maybeRecursive() %}
                   <span class="badge entity-name mx-1 px-2 py-3">
                      <label class="form-check mt-1">
-                        {% set disabled = '' %}
-                        {% set checked  = (item.fields['is_recursive'] ? 'checked' : '') %}
-                        {% set comment  = __('Change visibility in child entities') %}
-
-                        {% if canedit == false %}
-                           {% set disabled = 'disabled' %}
-                        {% endif %}
+                        {% set disabled = canedit == false %}
+                        {% set checked  = item.fields['is_recursive'] ? true : false %}
+                        {% set comment  = __('Change visibility in child entities.') %}
 
                         {% if is_dbchild %}
                            {% set comment  = __('Can՛t change this attribute. It՛s inherited from its parent.') %}
-                           {% set disabled = "disabled" %}
+                           {% set disabled = true %}
                         {% endif %}
 
                         {% if not item.can(id, 'recursive') %}
                            {% set comment  = __('You are not allowed to change the visibility flag for child entities.') %}
-                           {% set disabled = 'disabled' %}
+                           {% set disabled = true %}
                         {% endif %}
 
                         {% if not item.canUnrecurs() %}
                            {% set comment  = __('Flag change forbidden. Linked items found.') %}
-                           {% set disabled = 'disabled' %}
+                           {% set disabled = true %}
                         {% endif %}
 
                         <input class="form-check-input" type="checkbox" name="is_recursive" value="1"
-                              {{ checked }} {{ disabled }} />
+                              {% if checked %}checked="checked"{% endif %}
+                              {% if disabled %}disabled="disabled"{% endif %} />
                         <span class="form-check-label mt-1">
                            {{ __('Child entities') }}
-                           {% if comment|length > 0 %}
-                              <i class="fas fa-info ms-1" title="{{ comment }}"></i>
-                           {% endif %}
+                           <i class="fas fa-info ms-1" title="{{ comment }}"></i>
                         </span>
                      </label>
                   </span>

@@ -61,11 +61,10 @@
             <span class="level_name badge itil-badge bg-secondary ms-1 flex-column flex-sm-row">
                <span class="d-flex align-items-center">
                   <i class='fas fa-stopwatch slt me-1'></i>
-                  {% set level_texts = getDropdownName(la_field.la.getTable(), item.fields[la_field.lafieldname], true) %}
                   <span class="text-truncate"
-                        title='{{ level_texts['comment'] }}'
+                        title="{{ get_item_comment(la_field.la.getType(), item.fields[la_field.lafieldname]) }}"
                         data-bs-toggle="tooltip" data-bs-placement="top">
-                     {{ level_texts['name'] }}
+                     {{ get_item_name(la_field.la.getType(), item.fields[la_field.lafieldname]) }}
                   </span>
 
                   {% if canupdate %}
