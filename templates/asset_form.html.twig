@@ -60,8 +60,8 @@
                      ) }}
                   {% endif %}
 
-                  {% if item.isField(item|get_foreignkey_field) %}
-                     {% set fk = item|get_foreignkey_field %}
+                  {% set fk = item.getForeignKeyField() %}
+                  {% if item.isField(fk) %}
                      {{ fields.dropdownField(
                         item_type,
                         fk,
@@ -150,8 +150,8 @@
                      {{ fields.datetimeField('date_domaincreation', item.fields['date_domaincreation'], __('Creation date')) }}
                   {% endif %}
 
-                  {% set type_itemtype = item_type ~ "Type" %}
-                  {% set type_fk = type_itemtype|get_foreignkey_field %}
+                  {% set type_itemtype = item.getTypeClass() %}
+                  {% set type_fk = item.getTypeForeignKeyField() %}
                   {% if item.isField(type_fk) %}
                      {{ fields.dropdownField(
                         type_itemtype,
@@ -325,9 +325,8 @@
                      ) }}
                   {% endif %}
 
-                  {# TODO check dropdown value not selected #}
-                  {% set model_itemtype = item_type ~ "Model" %}
-                  {% set model_fk = model_itemtype|get_foreignkey_field %}
+                  {% set model_itemtype = item.getModelClass() %}
+                  {% set model_fk = item.getModelForeignKeyField() %}
                   {% if item.isField(model_fk) %}
                      {{ fields.dropdownField(
                         model_itemtype,

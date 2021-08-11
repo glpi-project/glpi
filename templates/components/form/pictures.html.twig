@@ -1,7 +1,6 @@
-{% set model_itemtype = item.getType ~ "Model" %}
-{% set model_fk = model_itemtype|get_foreignkey_field %}
+{% set model_itemtype = item.getModelClass() %}
 {% set gallery_type = gallery_type|default('') %}
-{% if item.isField(model_fk) or hasTrait(item, 'Glpi\\Features\\AssetImage') %}
+{% if model_itemtype is not null or hasTrait(item, 'Glpi\\Features\\AssetImage') %}
 
    {% set picture_single = getItemtypeOrModelPicture(item, 'picture') %}
    {% set picture_front = getItemtypeOrModelPicture(item, 'picture_front') %}

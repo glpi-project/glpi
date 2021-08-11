@@ -146,7 +146,7 @@ $(function() {
             'action'    : 'viewsubitem',
             'type'      : itemtype,
             'parenttype': '{{ item.getType() }}',
-            '{{ item.getType()|get_foreignkey_field }}': {{ item.fields['id'] }},
+            '{{ item.getForeignKeyField() }}': {{ item.fields['id'] }},
             'id'        : items_id
          });
 

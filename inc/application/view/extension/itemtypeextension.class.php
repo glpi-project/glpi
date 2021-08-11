@@ -51,7 +51,6 @@ class ItemtypeExtension extends AbstractExtension {
    public function getFilters(): array {
       return [
          new TwigFilter('itemtype_name', [$this, 'itemtypeName']),
-         new TwigFilter('get_foreignkey_field', [$this, 'getForeignKeyField']),
          new TwigFilter('dropdown', [$this, 'dropdown'], ['is_safe' => ['html']]),
          new TwigFilter('canCreate', [$this, 'canCreate']),
          new TwigFilter('canView', [$this, 'canView']),
@@ -98,15 +97,6 @@ class ItemtypeExtension extends AbstractExtension {
          return $itemtype::getTypeName($count);
       }
       return null;
-   }
-
-
-   public function getForeignKeyField($itemtype): ?string {
-      if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
-         return $itemtype::getForeignKeyField();
-      }
-
-      return "";
    }
 
    public function dropdown($itemtype, array $options = []): bool {

@@ -5527,4 +5527,54 @@ class CommonDBTM extends CommonGLPI {
    public function getNonLoggedFields(): array {
       return [];
    }
+
+   /**
+    * Returns model class, or null if item has no model class.
+    *
+    * @return string|null
+    */
+   public function getModelClass(): ?string {
+      $model_class = get_called_class() . 'Model';
+      if (!is_a($model_class, CommonDBTM::class, true)) {
+         return null;
+      }
+
+      $model_fk = $model_class::getForeignKeyField();
+      return $this->isField($model_fk) ? $model_class : null;
+   }
+
+   /**
+    * Returns model class foreign key field name, or null if item has no model class.
+    *
+    * @return string|null
+    */
+   public function getModelForeignKeyField(): ?string {
+      $model_class = $this->getModelClass();
+      return $model_class !== null ? $model_class::getForeignKeyField() : null;
+   }
+
+   /**
+    * Returns type class, or null if item has no type class.
+    *
+    * @return string|null
+    */
+   public function getTypeClass(): ?string {
+      $type_class = get_called_class() . 'Type';
+      if (!is_a($type_class, CommonDBTM::class, true)) {
+         return null;
+      }
+
+      $type_fk = $type_class::getForeignKeyField();
+      return $this->isField($type_fk) ? $type_class : null;
+   }
+
+   /**
+    * Returns type class foreign key field name, or null if item has no type class.
+    *
+    * @return string|null
+    */
+   public function getTypeForeignKeyField(): ?string {
+      $type_class = $this->getTypeClass();
+      return $type_class !== null ? $type_class::getForeignKeyField() : null;
+   }
 }

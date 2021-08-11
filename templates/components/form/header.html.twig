@@ -29,7 +29,7 @@
 {% endif %}
    <div id="mainformtable">
       <div class="card-header main-header d-flex flex-wrap mx-n2 mt-n2">
-         {%  set template_name = item.fields['template_name']|verbatim_value %}
+         {% set template_name = item.fields['template_name']|verbatim_value %}
          {% if withtemplate == 2 and not item.isNewItem() %}
             <input type="hidden" name="template_name" value="{{ template_name }}" />
             {% set nametype = __('Created from the template %s')|format(template_name) %}
