@@ -78,7 +78,7 @@ trait Inventoriable {
     * @return void
     */
    protected function showInventoryInfo() {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       if (!$this->isDynamic()) {
          return;
@@ -125,10 +125,19 @@ trait Inventoriable {
       echo '</tr>';
 
       $agent = new Agent();
-      $has_agent = $agent->getFromDBByCrit([
-         'itemtype' => $this->getType(),
-         'items_id' => $this->fields['id']
+      $iterator = $DB->request(Agent::getTable(), [
+         'WHERE'     => [
+            'itemtype' => $this->getType(),
+            'items_id' => $this->fields['id']
+         ],
+         'ORDERBY'    => ['last_contact DESC'],
       ]);
+
+      $has_agent = false;
+      if (count($iterator)) {
+         $has_agent = true;
+         $agent->getFromDB($iterator->next()['id']);
+      }
 
       //if no agent has been found, check if there is a linked item, and find its agent
       if (!$has_agent && $this->getType() == 'Computer') {
