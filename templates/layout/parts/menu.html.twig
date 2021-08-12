@@ -14,7 +14,6 @@
          data-bs-toggle="dropdown" role="button"
          aria-expanded="{{ firstlevel_shown ? 'true' : 'false' }}">
          <i class="fa-fw {{ firstlevel['icon'] ?? '' }}"></i>
-         &nbsp;
          <span class="menu-label">{{ firstlevel['title'] }}</span>
       </a>
       <div class="dropdown-menu {{ firstlevel_active and is_vertical != false ? '' : 'animate__animated' }} {{ is_vertical ? 'animate__fadeInLeft' : 'animate__zoomIn' }} {{ firstlevel_shown ? 'show' : '' }}">
@@ -54,7 +53,6 @@
        title="{{ firstlevel['title'] }}">
          <a class="nav-link" href="{{ path(firstlevel['default']) }}">
             <i class="fa-fw {{ firstlevel['icon'] ?? '' }}"></i>
-            &nbsp;
             <span class="menu-label">{{ firstlevel['title'] }}</span>
          </a>
       <li>

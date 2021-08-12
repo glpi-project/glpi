@@ -2,7 +2,6 @@
    <li class="breadcrumb-item">
       <a href="{{ path('/index.php') }}" title="{{ __('Home') }}">
          <i class="fas fa-home"></i>
-         &nbsp;
          {{ __('Home') }}
       </a>
    </li>
@@ -25,7 +24,6 @@
             class="{{ with_option ? '' : 'here' }}"
             title="{{ menu[sector]['content'][item]['title'] }}" >
             <i class="{{ menu[sector]['content'][item]['icon'] ?? '' }}"></i>
-            &nbsp;
             {{ menu[sector]['content'][item]['title'] }}
          </a>
       </li>
@@ -37,7 +35,6 @@
             class="here"
             title="{{ menu[sector]['content'][item]['options'][option]['title'] }}" >
             <i class="{{ menu[sector]['content'][item]['options'][option]['icon'] ?? '' }}"></i>
-            &nbsp;
             {{ menu[sector]['content'][item]['options'][option]['title']|u.truncate(17, '...') }}
          </a>
       </li>
