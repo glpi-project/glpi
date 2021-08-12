@@ -62,8 +62,6 @@ class ItemtypeExtension extends AbstractExtension {
          new TwigFilter('getLinkURL', [$this, 'getLinkURL'], ['is_safe' => ['html']]),
          new TwigFilter('getTable', [$this, 'getTable'], ['is_safe' => ['html']]),
          new TwigFilter('isEntityAssign', [$this, 'isEntityAssign']),
-         new TwigFilter('maybeDeleted', [$this, 'maybeDeleted']),
-         new TwigFilter('maybeLocated', [$this, 'maybeLocated']),
          new TwigFilter('showForm', [$this, 'showForm'], ['is_safe' => ['html']]),
       ];
    }
@@ -173,25 +171,6 @@ class ItemtypeExtension extends AbstractExtension {
 
       return false;
    }
-
-   public function maybeDeleted($itemtype): ?string {
-      if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
-         $item = new $itemtype;
-         return $item->maybeDeleted();
-      }
-
-      return null;
-   }
-
-   public function maybeLocated($itemtype): ?string {
-      if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
-         $item = new $itemtype;
-         return $item->maybeLocated();
-      }
-
-      return null;
-   }
-
 
    /**
     * chech an givent item is an instance of given class

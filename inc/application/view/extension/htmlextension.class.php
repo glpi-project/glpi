@@ -43,7 +43,7 @@ class HtmlExtension extends AbstractExtension {
 
    public function getFunctions(): array {
       return [
-         new TwigFunction('showMassiveActions', [$this, 'showMassiveActions']),
+         new TwigFunction('showMassiveActions', [$this, 'showMassiveActions'], ['is_safe' => ['html']]),
          new TwigFunction('isMassiveActionchecked', [$this, 'isMassiveActionchecked']),
          new TwigFunction('formatNumber', [Html::class, 'formatNumber'], ['is_safe' => ['html']]),
          new TwigFunction('time2str', [Html::class, 'time2str'], ['is_safe' => ['html']]),

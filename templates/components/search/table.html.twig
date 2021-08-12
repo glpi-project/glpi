@@ -1,10 +1,10 @@
 {% set searchform_id = data['searchform_id']|default('search_' ~ rand) %}
 
 <div class="table-responsive-md">
-   <table class="search-results table table-striped card-table table-hover {{ data['search']['is_deleted'] ? 'table-danger deleted-results' : '' }}"
+   <table class="search-results table table-striped card-table table-hover {% if data['search']['is_deleted'] %}table-danger deleted-results{% endif %}"
           id="{{ searchform_id }}">
       <thead>
-         <tr {{ count == 0 ? 'style="display: none;"' : '' }}>
+         <tr {% if count == 0 %}style="display: none;"{% endif %}>
             {% if showmassiveactions %}
             <th style="width: 30px;">
                <div>
@@ -46,8 +46,8 @@
                   {% set col_name = __('%1$s - %2$s')|format(col['itemtype']|itemtype_name, col_name) %}
                {% endif %}
 
-               <th data-searchopt-id="{{ col['id'] }}" {{ not can_sort ? 'data-nosort="true"' }} data-sort-order="{{ sort_order }}"
-                  {{ sort_num is not empty ? 'data-sort-num=' ~ (sort_num - 1) ~ '' : '' }}>
+               <th data-searchopt-id="{{ col['id'] }}" {% if not can_sort %}data-nosort="true"{% endif %} data-sort-order="{{ sort_order }}"
+                  {% if sort_num is not empty %}data-sort-num="{{ sort_num - 1 }}"{% endif %}>
                   {% set sort_icon = sort_order == 'ASC' ? 'fas fa-sort-up' : (sort_order == 'DESC' ? 'fas fa-sort-down' : '') %}
                   {{ col_name }}
                   {% if can_sort %}
@@ -84,9 +84,9 @@
                         {% elseif itemtype == 'User' and not canViewAllEntities() and not userhaveAccessToOneOfEntities(row['id'], false) %}
                         {% elseif itemInstanceOf(item, 'CommonDBTM') and maybeRecursive(item) and not haveAccessToEntity(row['entities_id'])  %}
                         {% else %}
-                           {% set checked = isMassiveActionchecked(itemtype, row['id']) ? 'checked' : '' %}
+                           {% set checked = isMassiveActionchecked(itemtype, row['id']) %}
                            <input class="form-check-input" type="checkbox" data-glpicore-ma-tags="common"
-                              value="1" aria-label="" {{ checked }}
+                              value="1" aria-label="" {% if checked %}checked="checked"{% endif %}
                               name="item[{{ row['TYPE'] ?? itemtype }}][{{ row['id'] }}]" />
                         {% endif %}
                      </div>

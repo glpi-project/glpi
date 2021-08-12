@@ -1524,11 +1524,6 @@ class Search {
    static function displayData(array $data) {
       global $CFG_GLPI;
 
-      $item = null;
-      if (class_exists($data['itemtype'])) {
-         $item = new $data['itemtype']();
-      }
-
       if (!isset($data['data']) || !isset($data['data']['totalcount'])) {
          return false;
       }
@@ -1597,6 +1592,8 @@ class Search {
             DisplayPreference::PERSONAL,
             DisplayPreference::GENERAL
          ]),
+         'may_be_deleted'      => $item && $item->maybeDeleted(),
+         'may_be_located'      => $item && $item->maybeLocated(),
       ]);
 
       // Add items in item list

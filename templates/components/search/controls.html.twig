@@ -1,9 +1,9 @@
 <div class="d-inline-flex align-items-center search-controls">
    {% if showmassiveactions and count > 0 %}
-   {{ showMassiveActions(massiveactionparams)|raw }}
+   {{ showMassiveActions(massiveactionparams) }}
    {% endif %}
 
-   {% if itemtype|maybeLocated() and (count > 0 or data['search']['as_map'] == 1) %}
+   {% if may_be_located and (count > 0 or data['search']['as_map'] == 1) %}
       <label class="form-check form-switch btn btn-sm btn-ghost-info me-1 px-1 mb-0"
              data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Show as map') }}">
          <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
@@ -16,7 +16,7 @@
       </label>
    {% endif %}
 
-   {% if itemtype|maybeDeleted() %}
+   {% if may_be_deleted %}
       <label class="form-check form-switch btn btn-sm btn-ghost-danger me-1 px-1 mb-0"
              data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Show the trashbin') }}">
          <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
