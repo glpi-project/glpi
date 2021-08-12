@@ -146,8 +146,7 @@
       ) }}
 
 
-      {% set amort %}
-         {{ Infocom__Amort(
+      {% set amort = infocom.Amort(
             infocom.fields['sink_type'],
             infocom.fields['value'],
             infocom.fields['sink_time'],
@@ -156,8 +155,7 @@
             infocom.fields['use_date'],
             config('date_tax'),
             'n'
-         ) }}
-      {% endset %}
+          ) %}
       {{ fields.readOnlyField(
          '',
          formatNumber(amort|trim),
@@ -165,11 +163,9 @@
       ) }}
 
       {% if withtemplate == 2 or disabled == true %}
-         {% set sink_type_field = Infocom__getAmortTypeName(infocom.fields['sink_type']) %}
+         {% set sink_type_field = infocom.getAmortTypeName(infocom.fields['sink_type']) %}
       {% else %}
-         {% set sink_type_field %}
-            {{ Infocom__dropdownAmortType('sink_type', infocom.fields['sink_type'], false) }}
-         {% endset %}
+         {% set sink_type_field = infocom.dropdownAmortType('sink_type', infocom.fields['sink_type'], false) %}
       {% endif %}
 
       {{ fields.field(
@@ -196,8 +192,8 @@
          {'disabled': disabled}
       ) }}
 
-      {% if item.getType() not in Infocom__getExcludedTypes()|merge(['Cartridge', 'Consumable', 'SoftwareLicense'])  %}
-         {% set ticket_tco_value = Infocom__showTco(item.fields['ticket_tco'], infocom.fields['value']) %}
+      {% if item.getType() not in infocom.getExcludedTypes()|merge(['Cartridge', 'Consumable', 'SoftwareLicense'])  %}
+         {% set ticket_tco_value = infocom.showTco(item.fields['ticket_tco'], infocom.fields['value']) %}
          {{ fields.readOnlyField(
             'ticket_tco',
             ticket_tco_value,
@@ -205,7 +201,7 @@
             {'disabled': disabled}
          ) }}
 
-         {% set ticket_tco2_value = Infocom__showTco(item.fields['ticket_tco'], infocom.fields['value'], infocom.fields['buy_date']) %}
+         {% set ticket_tco2_value = infocom.showTco(item.fields['ticket_tco'], infocom.fields['value'], infocom.fields['buy_date']) %}
          {{ fields.readOnlyField(
             'ticket_tco',
             ticket_tco2_value,
@@ -252,9 +248,7 @@
             {{ _n('%d month', '%d months', infocom.fields['warranty_duration'])|format(infocom.fields['warranty_duration']) }}
          {% endif %}
       {% else %}
-         {% set warrantyexpir %}
-            {{ Infocom__getWarrantyExpir(infocom.fields['warranty_date'], infocom.fields['warranty_duration'], 0, true) }}
-         {% endset %}
+         {% set warrantyexpir = infocom.getWarrantyExpir(infocom.fields['warranty_date'], infocom.fields['warranty_duration'], 0, true) %}
          {{ fields.dropdownNumberField(
             'warranty_duration',
             infocom.fields['warranty_duration'],
@@ -283,15 +277,13 @@
             {{ displayLastAlert('Infocom', infocom.fields['id']) }}
          {% endset %}
 
-         {% set alert_field %}
-            {{ Infocom__dropdownAlert({
+         {% set alert_field = infocom.dropdownAlert({
                'name'   : 'alert',
                'value'  : infocom.fields['alert'],
                'display': false,
                'width'  : '100%',
                'class'  : 'form-select'
-            }) }}
-         {% endset %}
+            }) %}
 
          {{ fields.field(
             'alert',
