@@ -3798,7 +3798,7 @@ JAVASCRIPT;
          $opt['criteria'][1]['value']      = Session::getLoginUserID();
          $opt['criteria'][1]['link']       = 'AND';
 
-         $url_validate = Ticket::getSearchURL()."?".Toolbox::append_params($opt, '&amp;');
+         $url_validate = Ticket::getSearchURL()."?".Toolbox::append_params($opt);
       }
 
       $email  = UserEmail::getDefaultForUser($ID);
