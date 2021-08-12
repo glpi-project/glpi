@@ -3,7 +3,7 @@
 <div class="ajax-container search-display-data">
 {% endif %}
 
-<form id="massform{{ itemtype }}" method="get" action="{{ path("front/massiveaction.php") }}"
+<form id="massform{{ itemtype }}" method="get" action="{{ path('front/massiveaction.php') }}"
       data-search-itemtype="{{ data['itemtype'] }}" data-start="{{ start }}" data-count="{{ count }}" data-limit="{{ limit }}">
    <div class="card card-sm mt-0 search-card">
       <div class="card-header d-flex justify-content-between search-header">
@@ -24,7 +24,7 @@
                {% set select_class = 'search-limit-dropdown' %}
                {% set limitdropdown = include('components/dropdown/limit.html.twig') %}
                <div class="d-inline-flex align-items-center d-none d-md-block search-limit">
-                  {{ __("Show %s entries")|format(limitdropdown)|raw }}
+                  {{ __('Show %s entries')|format(limitdropdown)|raw }}
                </div>
             {% endif %}
          {% endif %}

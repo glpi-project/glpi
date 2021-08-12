@@ -31,7 +31,7 @@
 
 {% set is_vertical = user_pref('page_layout') == 'vertical' %}
 
-<body class="{{ user_pref('dark_mode') ? 'theme-dark' : '' }} {{ user_pref('fold_menu') and is_vertical ? 'navbar-collapsed' : '' }} {{ is_vertical ? "vertical-layout" : "horizontal-layout" }} {{ is_debug_active ? "debug-active" }}">
+<body class="{{ user_pref('dark_mode') ? 'theme-dark' : '' }} {{ user_pref('fold_menu') and is_vertical ? 'navbar-collapsed' : '' }} {{ is_vertical ? 'vertical-layout' : 'horizontal-layout' }} {{ is_debug_active ? 'debug-active' : '' }}">
    {{ include('layout/parts/impersonate_banner.html.twig') }}
    {{ include('components/messages_after_redirect_toasts.html.twig') }}
 
@@ -50,9 +50,9 @@
             </a>
 
             {% if not use_simplified_interface != false %}
-            <button class="btn btn-icon btn-sm btn-outline-secondary trigger-fuzzy mb-md-2" title="{{ __("Ctrl+Alt+G") }}">
+            <button class="btn btn-icon btn-sm btn-outline-secondary trigger-fuzzy mb-md-2" title="{{ __('Ctrl+Alt+G') }}">
                <i class="fas fa-fw fa-lg fa-arrow-right"></i>
-               <span class="menu-label">{{ __("Go to...") }}</span>
+               <span class="menu-label">{{ __('Go to...') }}</span>
             </button>
             {% endif %}
 
@@ -65,7 +65,7 @@
 
                <p class="text-start">
                   <button class="btn btn-sm btn-ghost-secondary mb-2 reduce-menu d-none d-md-block">
-                     <span class="menu-label">{{ __("Collapse menu") }}</span>
+                     <span class="menu-label">{{ __('Collapse menu') }}</span>
                   </button>
                </p>
             </div>
@@ -98,9 +98,9 @@
                <div class="collapse navbar-collapse" id="navbar-menu">
                   {{ include('layout/parts/menu.html.twig') }}
                   {% if use_simplified_interface != false %}
-                  <button class="btn btn-outline-secondary mx-1 trigger-fuzzy" title="{{ __("Ctrl+Alt+G") }}">
+                  <button class="btn btn-outline-secondary mx-1 trigger-fuzzy" title="{{ __('Ctrl+Alt+G') }}">
                      <i class="fas fa-arrow-right"></i>
-                     {{ __("Go to...") }}
+                     {{ __('Go to...') }}
                   </button>
                   {% endif %}
                </div>

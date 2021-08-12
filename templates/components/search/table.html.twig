@@ -1,7 +1,7 @@
 {% set searchform_id = data['searchform_id']|default('search_' ~ rand) %}
 
 <div class="table-responsive-md">
-   <table class="search-results table table-striped card-table table-hover {{ data['search']['is_deleted'] ? "table-danger deleted-results" : "" }}"
+   <table class="search-results table table-striped card-table table-hover {{ data['search']['is_deleted'] ? 'table-danger deleted-results' : '' }}"
           id="{{ searchform_id }}">
       <thead>
          <tr {{ count == 0 ? 'style="display: none;"' : '' }}>
@@ -10,7 +10,7 @@
                <div>
                   <input class="form-check-input" type="checkbox" id="checkall_{{ rand }}"
                         value="" aria-label="{{ __('Check all as') }}"
-                        onclick="checkAsCheckboxes('checkall_{{ rand }}', 'search_{{ rand }}');">
+                        onclick="checkAsCheckboxes('checkall_{{ rand }}', 'search_{{ rand }}');" />
                </div>
             </th>
             {% endif %}
@@ -19,7 +19,7 @@
 
             {% for col in data['data']['cols'] %}
                {# construct header link (for sorting) #}
-               {% set linkto = "" %}
+               {% set linkto = '' %}
                {% set so_no_sort = col['searchopt']['nosort'] ?? false %}
                {% set meta = col['meta'] ?? false %}
                {% set sort_order = 'nosort' %}
@@ -82,19 +82,19 @@
                         {# disable massiveaction checkbox for some specific cases #}
                         {% if itemtype == 'Entity' and not haveAccessToEntity(row['id']) %}
                         {% elseif itemtype == 'User' and not canViewAllEntities() and not userhaveAccessToOneOfEntities(row['id'], false) %}
-                        {% elseif itemInstanceOf(item, 'CommonDBTM') and maybeRecursive(item) and not haveAccessToEntity(row["entities_id"])  %}
+                        {% elseif itemInstanceOf(item, 'CommonDBTM') and maybeRecursive(item) and not haveAccessToEntity(row['entities_id'])  %}
                         {% else %}
-                           {% set checked = isMassiveActionchecked(itemtype, row['id']) ? "checked" : "" %}
+                           {% set checked = isMassiveActionchecked(itemtype, row['id']) ? 'checked' : '' %}
                            <input class="form-check-input" type="checkbox" data-glpicore-ma-tags="common"
                               value="1" aria-label="" {{ checked }}
-                              name="item[{{ row['TYPE'] ?? itemtype }}][{{ row['id'] }}]">
+                              name="item[{{ row['TYPE'] ?? itemtype }}][{{ row['id'] }}]" />
                         {% endif %}
                      </div>
                   </td>
                   {% endif %}
 
                   {% for col in data['data']['cols'] %}
-                     {% set colkey = col['itemtype'] ~ "_" ~ col['id'] %}
+                     {% set colkey = col['itemtype'] ~ '_' ~ col['id'] %}
                      {# showItem function returns "<td ...>...</td>" #}
                      {{ showItem(0, row[colkey]['displayname'], 0, 0, displayConfigItem(itemtype, col['id'], row))|raw }}
                   {% endfor %}
@@ -102,7 +102,7 @@
                   {# display itemtype in AllAssets #}
                   {% if union_search_type[itemtype] is defined %}
                      <td>
-                        {{ row["TYPE"]|itemtype_name }}
+                        {{ row['TYPE']|itemtype_name }}
                      </td>
                   {% endif %}
                </tr>

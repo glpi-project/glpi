@@ -6,16 +6,16 @@
 {# TODO userentity_oncreate form submit #}
 
 {% set required = false %}
-{% if itiltemplate.isMandatoryField("TODO") %}
+{% if itiltemplate.isMandatoryField('TODO') %}
    {% set required = true %}
 {% endif %}
 
 {% set is_actor_hidden = false %}
-{% if itiltemplate.isMandatoryField("_users_id_" ~ actortype) and itiltemplate.isMandatoryField("_groups_id_" ~ actortype) and (actortype != "assign" or itiltemplate.isMandatoryField("_suppliers_id_" ~ actortype)) %}
+{% if itiltemplate.isMandatoryField('_users_id_' ~ actortype) and itiltemplate.isMandatoryField('_groups_id_' ~ actortype) and (actortype != 'assign' or itiltemplate.isMandatoryField('_suppliers_id_' ~ actortype)) %}
    {% set is_actor_hidden = true %}
 {% endif %}
 
-{% set onchange = "" %}
+{% set onchange = '' %}
 {% if item.isNewItem() %}
    {% set onchange = 'this.form.submit();' %}
 {% endif %}
@@ -23,19 +23,19 @@
 {% if not is_actor_hidden %}
    <select class="form-select" multiple="true" id="actor_{{ rand }}">
    {% for actor in actors %}
-      <option selected="true" value="{{ actor['itemtype'] ~ "_" ~ actor['items_id'] }}"
+      <option selected="true" value="{{ actor['itemtype'] ~ '_' ~ actor['items_id'] }}"
             data-itemtype="{{ actor['itemtype'] }}" data-items-id="{{ actor['items_id'] }}"
             data-use-notification="{{ actor['use_notification'] }}"
             data-alternative-email="{{ actor['alternative_email'] }}"
             data-text="{{ actor['text']|verbatim_value }}" data-title="{{ actor['title']|verbatim_value }}"
-            {{ required ? 'required' : "" }}>
+            {{ required ? 'required' : '' }}>
          {{ actor['title']|verbatim_value }}
       </option>
    {% endfor %}
    </select>
 
    {% if not params['template_preview'] and not disable_assign_to_me and canupdate %}
-      {% include "components/itilobject/actors/assign_to_me.html.twig" %}
+      {% include 'components/itilobject/actors/assign_to_me.html.twig' %}
    {% endif %}
 
    <script type="text/javascript">
@@ -50,7 +50,7 @@
          var text      = element.data('text') ?? option.text;
          var title     = element.data('title') ?? option.title;
          var use_notif = element.data('use-notification') ?? option.use_notification ?? 1;
-         var alt_email = element.data('alternative-email') ?? option.alternative_email ?? "";
+         var alt_email = element.data('alternative-email') ?? option.alternative_email ?? '';
 
          var icon = "";
          var size = is_selection ? "fa-lg" : ""
@@ -59,18 +59,18 @@
             case "User":
                if (items_id == 0) {
                   text = alt_email;
-                  icon = `<i class="fas ${size} fa-fw fa-envelope mx-1" title="{{ __("Direct email") }}"></i>`;
+                  icon = `<i class="fas ${size} fa-fw fa-envelope mx-1" title="{{ __('Direct email') }}"></i>`;
                } else {
-                  icon = `<i class="fas ${size} fa-fw fa-user mx-1" title="{{ "User"|itemtype_name }}"></i>`;
+                  icon = `<i class="fas ${size} fa-fw fa-user mx-1" title="{{ 'User'|itemtype_name }}"></i>`;
                }
                fk   = "users_id_assign";
                break;
             case "Group":
-               icon = `<i class="fas ${size} fa-fw fa-users mx-1" title="{{ "Group"|itemtype_name }}"></i>`;
+               icon = `<i class="fas ${size} fa-fw fa-users mx-1" title="{{ 'Group'|itemtype_name }}"></i>`;
                fk   = "groups_id_assign";
                break;
             case "Supplier":
-               icon = `<i class="fas ${size} fa-fw fa-pallet mx-1" title="{{ "Supplier"|itemtype_name }}"></i>`;
+               icon = `<i class="fas ${size} fa-fw fa-pallet mx-1" title="{{ 'Supplier'|itemtype_name }}"></i>`;
                fk   = "suppliers_id_assign";
                break;
          }
@@ -86,7 +86,7 @@
             }
             actions = `<button class="btn btn-sm btn-ghost-secondary edit-notify-user"
                               data-bs-toggle="tooltip" data-bs-placement="top"
-                              title="{{ __("Email followup") }}"
+                              title="{{ __('Email followup') }}"
                               type="button">
                <i class="${fa_class} fa-bell notify-icon"></i>
             </button>`;
@@ -110,7 +110,7 @@
          // manage ticket information (number of assigned ticket for an actor)
          if (is_selection && itemtype != "Email" && "{{ actortype }}" == "assign") {
             var already_assign_element = $(
-               `<span class="assign_infos ms-1" title="{{ __("Number of tickets already assigned") }}"
+               `<span class="assign_infos ms-1" title="{{ __('Number of tickets already assigned') }}"
                      data-bs-toggle="tooltip" data-bs-placement="top"
                      data-id="${items_id}" data-fk="${fk}">
                   <i class="fas fa-spinner fa-spin"></i>
@@ -145,7 +145,7 @@
          containerCssClass: 'actor-field',
          templateSelection: function(option) { return genericTemplate_{{ rand }}(option, true); },
          templateResult:    function(option) { return genericTemplate_{{ rand }}(option, false); },
-         disabled: {{ canupdate ? "false" : "true" }},
+         disabled: {{ canupdate ? 'false' : 'true' }},
          createTag: function (params) {
             var term = $.trim(params.term);
 
@@ -169,7 +169,7 @@
             }
          },
          ajax: {
-            url: '{{ path("/ajax/actors.php") }}',
+            url: '{{ path('/ajax/actors.php') }}',
             datatype: 'json',
             type: 'POST',
             data: function (params) {
@@ -198,7 +198,7 @@
             var itemtype  = selection.itemtype ?? element.data('itemtype');
             var items_id  = selection.items_id ?? element.data('items-id');
             var use_notif = selection.use_notification  ?? element.data('use-notification')  ?? false;
-            var alt_email = selection.alternative_email ?? element.data('alternative-email') ?? "";
+            var alt_email = selection.alternative_email ?? element.data('alternative-email') ?? '';
 
             if (itemtype == "Email") {
                itemtype  = "User";

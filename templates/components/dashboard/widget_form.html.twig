@@ -1,4 +1,4 @@
-{% import "components/form/fields_macros.html.twig" as fields %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% set field_options = {
    full_width: true,
@@ -8,18 +8,18 @@
 
 <form class="display-widget-form">
 
-   <input type="hidden" name="gridstack_id" value="{{ gridstack_id }}">
-   <input type="hidden" name="old_id" value="{{ old_id }}">
-   <input type="hidden" name="x" value="{{ x }}">
-   <input type="hidden" name="y" value="{{ y }}">
-   <input type="hidden" name="width" value="{{ width }}">
-   <input type="hidden" name="height" value="{{ height }}">
-   <input type="hidden" name="card_options" value="{{ card_options|json_encode(constant('JSON_HEX_QUOT')) }}">
+   <input type="hidden" name="gridstack_id" value="{{ gridstack_id }}" />
+   <input type="hidden" name="old_id" value="{{ old_id }}" />
+   <input type="hidden" name="x" value="{{ x }}" />
+   <input type="hidden" name="y" value="{{ y }}" />
+   <input type="hidden" name="width" value="{{ width }}" />
+   <input type="hidden" name="height" value="{{ height }}" />
+   <input type="hidden" name="card_options" value="{{ card_options|json_encode(constant('JSON_HEX_QUOT')) }}" />
 
    {{ fields.colorField(
       'color',
       color,
-      __("Background color"),
+      __('Background color'),
       field_options
    ) }}
 
@@ -27,7 +27,7 @@
       'card_id',
       card_id,
       list_cards,
-      __("Data"),
+      __('Data'),
       field_options
    ) }}
 
@@ -42,11 +42,11 @@
                   {% if selected %}checked="checked"{% endif %}
                   class="widget-select" id="widgettype_{{ key }}_{{ rand }}"
                   name="widgettype"
-                  value="{{ key }}">
+                  value="{{ key }}" />
                <label for="widgettype_{{ key }}_{{ rand }}"
                       {% if w_displayed %}style="display: inline-block;"{% endif %}>
                   <div>{{ current['label'] }}</div>
-                  <img src="{{ current['image'] }}">
+                  <img src="{{ current['image'] }}" />
                </label>
          {% endfor %}
       </div>
@@ -57,7 +57,7 @@
       {{ fields.field(
          '',
          widgets_list,
-         __("Widget"),
+         __('Widget'),
          field_options
       ) }}
    </div>
@@ -68,7 +68,7 @@
       {{ fields.checkboxField(
          'use_gradient',
          use_gradient,
-         __("Use gradient palette"),
+         __('Use gradient palette'),
          field_options
       ) }}
    </div>
@@ -79,7 +79,7 @@
       {{ fields.checkboxField(
          'point_labels',
          point_labels,
-         __("Display value labels on points/bars"),
+         __('Display value labels on points/bars'),
          field_options
       ) }}
    </div>
@@ -90,19 +90,19 @@
       {{ fields.numberField(
          'limit',
          limit,
-         __("Limit number of data"),
+         __('Limit number of data'),
          field_options
       ) }}
    </div>
 
    <div class="modal-footer">
-      <button type="submit" class="btn btn-primary {{ edit ? "edit-widget" : "add-widget" }}">
+      <button type="submit" class="btn btn-primary {{ edit ? 'edit-widget' : 'add-widget' }}">
          {% if edit %}
-            <i class='fas fa-save'></i>
-            <span>{{ _x('button', "Update") }}</span>
+            <i class="fas fa-save"></i>
+            <span>{{ _x('button', 'Update') }}</span>
          {% else %}
-            <i class='fas fa-plus'></i>
-            <span>{{ _x('button', "Add") }}</span>
+            <i class="fas fa-plus"></i>
+            <span>{{ _x('button', 'Add') }}</span>
          {% endif %}
       </button>
    </div>

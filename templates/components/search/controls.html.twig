@@ -9,7 +9,7 @@
          <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
                 name="as_map" value="1" autocomplete="off"
                 onclick="toogle('as_map','','',''); document.forms['searchform{{ itemtype }}'].submit();"
-                {{ data['search']['as_map'] == 1 ? 'checked' : '' }}>
+                {{ data['search']['as_map'] == 1 ? 'checked' : '' }} />
          <span class="form-check-label">
             <i class="fas fa-lg fa-globe-americas"></i>
          </span >
@@ -22,7 +22,7 @@
          <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
                 name="is_deleted" value="1" autocomplete="off"
                 onclick="toogle('is_deleted','','',''); document.forms['searchform{{ itemtype }}'].submit();"
-                {{ data['search']['is_deleted'] == 1 ? 'checked' : '' }}>
+                {{ data['search']['is_deleted'] == 1 ? 'checked' : '' }} />
          <span class="form-check-label">
             <i class="fas fa-lg fa-trash-alt"></i>
          </span>
@@ -33,7 +33,7 @@
           data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover"
           title="{{ __('Toggle search filters') }}">
       <input type="checkbox" class="form-check-input ms-0 me-1 mt-0 fold-search" role="button"
-             {{ session('glpifold_search') ? "" : "checked" }} autocomplete="off">
+             {{ session('glpifold_search') ? '' : 'checked' }} autocomplete="off" />
       <span class="form-check-label">
          <i class="fas fa-lg fa-search"></i>
       </span>
@@ -59,40 +59,40 @@
       <ul class="dropdown-menu" aria-labelledby="dropdown-export">
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::PDF_OUTPUT_LANDSCAPE') }}">
             <i class="fas fa-lg fa-file-pdf"></i>
-            {{ __("Current page in landscape PDF") }}
+            {{ __('Current page in landscape PDF') }}
          </a></li>
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::PDF_OUTPUT_PORTRAIT') }}">
             <i class="fas fa-lg fa-file-pdf"></i>
-            {{ __("Current page in portrait PDF") }}
+            {{ __('Current page in portrait PDF') }}
          </a></li>
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::SYLK_OUTPUT') }}">
             <i class="fas fa-lg fa-file-excel"></i>
-            {{ __("Current page in SLK") }}
+            {{ __('Current page in SLK') }}
          </a></li>
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::CSV_OUTPUT') }}">
             <i class="fas fa-lg fa-file-csv"></i>
-            {{ __("Current page in CSV") }}
+            {{ __('Current page in CSV') }}
          </a></li>
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::PDF_OUTPUT_LANDSCAPE') }}">
             <i class="fas fa-lg fa-file-pdf"></i>
-            {{ __("All pages in landscape PDF") }}
+            {{ __('All pages in landscape PDF') }}
          </a></li>
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::PDF_OUTPUT_PORTRAIT') }}">
             <i class="fas fa-lg fa-file-pdf"></i>
-            {{ __("All pages in portrait PDF") }}
+            {{ __('All pages in portrait PDF') }}
          </a></li>
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::SYLK_OUTPUT') }}">
             <i class="fas fa-lg fa-file-excel"></i>
-            {{ __("All pages in SLK") }}
+            {{ __('All pages in SLK') }}
          </a></li>
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::CSV_OUTPUT') }}">
             <i class="fas fa-lg fa-file-csv"></i>
-            {{ __("All pages in CSV") }}
+            {{ __('All pages in CSV') }}
          </a></li>
          {% if itemtype != 'Stat' %}
          <li id="copy_names_to_clipboard"><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::NAMES_OUTPUT') }}">
             <i class="fas fa-lg fa-copy"></i>
-            {{ __("Copy names to clipboard") }}
+            {{ __('Copy names to clipboard') }}
          </a></li>
          {% endif %}
       </ul>
@@ -109,12 +109,12 @@ $(document).ready(function() {
       modal += '<div class="modal-dialog modal-lg">';
       modal += '<div class="modal-content">';
       modal += '<div class="modal-header">';
-      modal += '<h4 class="modal-title">{{ __("Select default items to show") }}</h4>';
-      modal += '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __("Close modal") }}"></button>';
+      modal += '<h4 class="modal-title">{{ __('Select default items to show') }}</h4>';
+      modal += '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close modal') }}"></button>';
       modal += '</div>';
       modal += '<div class="modal-body">';
       modal += '<div class="ratio ratio-4x3">';
-      modal += '<iframe src="{{ path("front/displaypreference.form.php?itemtype=" ~ itemtype) }}"></iframe>'
+      modal += '<iframe src="{{ path('front/displaypreference.form.php?itemtype=' ~ itemtype) }}"></iframe>'
       modal += '</div>';
       modal += '</div>';
       modal += '</div>';
@@ -140,7 +140,7 @@ $(document).ready(function() {
 
       event.preventDefault();
       $.ajax({
-         url: '{{ path("/ajax/search.php") }}',
+         url: '{{ path('/ajax/search.php') }}',
          type: 'GET',
          datatype: 'json',
          data: {

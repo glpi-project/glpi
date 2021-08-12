@@ -1,4 +1,4 @@
-{% import "components/form/fields_macros.html.twig" as fields %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 {% set field_options = {
    'full_width': true,
    'fields_template': itiltemplate,
@@ -21,7 +21,7 @@
                   {{ fields.dropdownField(
                      'Entity',
                      'entities_id',
-                     item.fields["entities_id"],
+                     item.fields['entities_id'],
                      _n('Entity', 'Entities', 1),
                      field_options|merge({
                         'entity': userentities,
@@ -48,7 +48,7 @@
                {% if item.isField('is_recursive') %}
                   {{ fields.dropdownYesNo(
                      'is_recursive',
-                     item.fields["is_recursive"],
+                     item.fields['is_recursive'],
                      __('Child entities'),
                      field_options
                   ) }}
@@ -57,15 +57,15 @@
 
             {{ fields.datetimeField(
                'date',
-               item.fields["date"],
+               item.fields['date'],
                __('Opening date'),
                field_options
             ) }}
 
-            {% if item.getType() != "Ticket" %}
+            {% if item.getType() != 'Ticket' %}
                {{ fields.datetimeField(
                   'time_to_resolve',
-                  item.fields["time_to_resolve"],
+                  item.fields['time_to_resolve'],
                   __('Time to resolve'),
                   field_options
                ) }}
@@ -74,7 +74,7 @@
             {% if item.isSolved(true) %}
                {{ fields.datetimeField(
                'solvedate',
-               item.fields["solvedate"],
+               item.fields['solvedate'],
                __('Resolution date'),
                field_options
             ) }}
@@ -83,15 +83,15 @@
             {% if item.isClosed() %}
                {{ fields.datetimeField(
                'closedate',
-               item.fields["closedate"],
+               item.fields['closedate'],
                __('Close date'),
                field_options
             ) }}
             {% endif %}
 
-            {% if item.getType() == "Ticket" %}
+            {% if item.getType() == 'Ticket' %}
                {% set type_params = {
-                  'value': item.fields["type"],
+                  'value': item.fields['type'],
                   'width': '100%',
                   'display': false
                }|merge(field_options) %}
@@ -119,33 +119,33 @@
                   'display_emptychoice': false
                }) %}
             {% endif %}
-            {% if item.getType() == "Ticket" %}
-               {% if item.fields['type'] == constant("Ticket::INCIDENT_TYPE") %}
+            {% if item.getType() == 'Ticket' %}
+               {% if item.fields['type'] == constant('Ticket::INCIDENT_TYPE') %}
                   {% set cat_params = cat_params|merge({'condition': {'is_incident': 1}}) %}
-               {% elseif item.fields['type'] == constant("Ticket::DEMAND_TYPE") %}
+               {% elseif item.fields['type'] == constant('Ticket::DEMAND_TYPE') %}
                   {% set cat_params = cat_params|merge({'condition': {'is_request': 1}}) %}
                {% endif %}
-            {% elseif item.getType() == "Problem" %}
+            {% elseif item.getType() == 'Problem' %}
                {% set cat_params = cat_params|merge({'condition': {'is_problem': 1}}) %}
-            {% elseif item.getType() == "Change" %}
+            {% elseif item.getType() == 'Change' %}
                {% set cat_params = cat_params|merge({'condition': {'is_change': 1}}) %}
             {% endif %}
             {{ fields.dropdownField(
                'ITILCategory',
                'itilcategories_id',
-               item.fields["itilcategories_id"],
+               item.fields['itilcategories_id'],
                _n('Category', 'Categories', 1),
                cat_params
             ) }}
 
-            {% include("components/itilobject/fields/status.html.twig") %}
+            {% include 'components/itilobject/fields/status.html.twig' %}
 
             {% if item.isField('requesttypes_id') %}
                {{ fields.dropdownField(
                   'RequestType',
                   'requesttypes_id',
-                  item.fields["requesttypes_id"],
-                  "RequestType"|itemtype_name,
+                  item.fields['requesttypes_id'],
+                  'RequestType'|itemtype_name,
                   field_options|merge({
                      'condition': {
                         'is_active': 1,
@@ -155,24 +155,24 @@
                ) }}
             {% endif %}
 
-            {% include("components/itilobject/fields/priority_matrix.html.twig") %}
+            {% include 'components/itilobject/fields/priority_matrix.html.twig' %}
 
             {% if item.isField('locations_id') %}
                {{ fields.dropdownField(
                   'Location',
                   'locations_id',
-                  item.fields["locations_id"],
-                  "Location"|itemtype_name,
+                  item.fields['locations_id'],
+                  'Location'|itemtype_name,
                   field_options
                ) }}
             {% endif %}
 
-            {% include("components/itilobject/fields/global_validation.html.twig") %}
+            {% include 'components/itilobject/fields/global_validation.html.twig' %}
 
-            {% if item.getType() != "Ticket" %}
+            {% if item.getType() != 'Ticket' %}
                {{ fields.dropdownTimestampField(
                   'actiontime',
-                  item.fields["actiontime"],
+                  item.fields['actiontime'],
                   __('Total duration'),
                   field_options
                ) }}
@@ -185,7 +185,7 @@
       <h2 class="accordion-header" id="heading-actor">
          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#actors" aria-expanded="true" aria-controls="actors">
             <i class="fa fa-users me-1"></i>
-            <span>{{ __("Actors") }}</span>
+            <span>{{ __('Actors') }}</span>
             <span class="badge bg-secondary ms-2">
                {{ item.countActors() }}
             </span>
@@ -193,12 +193,12 @@
       </h2>
       <div id="actors" class="accordion-collapse collapse show" aria-labelledby="heading-actor">
          <div class="accordion-body accordion-actors row m-0 mt-n2">
-            {% include("components/itilobject/actors/main.html.twig") %}
+            {% include 'components/itilobject/actors/main.html.twig' %}
          </div>
       </div>
    </div>
 
-   {% if item.getType() == "Ticket" %}
+   {% if item.getType() == 'Ticket' %}
       {% set nb_la = (item.fields['slas_id_tto'] > 0 ? 1 : 0) + (item.fields['slas_id_ttr'] > 0 ? 1 : 0) + (item.fields['olas_id_tto'] > 0 ? 1 : 0) + (item.fields['olas_id_ttr'] > 0 ? 1 : 0) %}
       <div class="accordion-item">
          <h2 class="accordion-header" id="service-levels-heading">
@@ -212,7 +212,7 @@
          </h2>
          <div id="service-levels" class="accordion-collapse collapse" aria-labelledby="service-levels-heading">
             <div class="accordion-body row m-0 mt-n2">
-               {% include("components/itilobject/service_levels.html.twig") %}
+               {% include 'components/itilobject/service_levels.html.twig' %}
             </div>
          </div>
       </div>
@@ -225,7 +225,7 @@
                <i class="fas fa-link me-1"></i>
                {% set linked_tickets = ticket_ticket.getLinkedTicketsTo(item.fields['id']) %}
                {% set nb_linked_tickets = linked_tickets|length %}
-               <span>{{ "Ticket_Ticket"|itemtype_name(nb_linked_tickets) }}</span>
+               <span>{{ 'Ticket_Ticket'|itemtype_name(nb_linked_tickets) }}</span>
                {% if nb_linked_tickets > 0 %}
                   <span class="badge bg-secondary ms-2">{{ nb_linked_tickets }}</span>
                {% endif %}
@@ -233,7 +233,7 @@
          </h2>
          <div id="linked_tickets" class="accordion-collapse collapse" aria-labelledby="linked_tickets-heading">
             <div class="accordion-body">
-               {% include("components/itilobject/linked_tickets.html.twig") %}
+               {% include 'components/itilobject/linked_tickets.html.twig' %}
             </div>
          </div>
       </div>

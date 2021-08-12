@@ -1,5 +1,5 @@
 {% extends 'components/itilobject/timeline/form_timeline_item.html.twig' %}
-{% import "components/form/fields_macros.html.twig" as fields %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block timeline_card %}
    {% if form_mode == 'view' %}
@@ -7,13 +7,13 @@
          {{ entry_i['content']|safe_html }}
 
          {% if entry_i['can_answer'] %}
-            <hr class="my-2">
-            <form id='validationanswers_id_{{ entry_i['id'] }}'
-                  action='{{ form_path(entry['type']) }}' method='post'>
+            <hr class="my-2" />
+            <form id="validationanswers_id_{{ entry_i['id'] }}"
+                  action="{{ form_path(entry['type']) }}" method="post">
 
-               <input type="hidden" name="id" value="{{ entry_i['id'] }}"/>
-               <input type="hidden" name="users_id_validate" value="{{ entry_i['users_id_validate'] }}"/>
-               <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+               <input type="hidden" name="id" value="{{ entry_i['id'] }}" />
+               <input type="hidden" name="users_id_validate" value="{{ entry_i['users_id_validate'] }}" />
+               <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
 
                <div class="mb-3 comment-part">
                   {{ fields.textareaField(
@@ -48,8 +48,8 @@
       <div class="itilvalidation">
          <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
                action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true">
-            <input type="hidden" name="itemtype" value="{{ item.getType() }}">
-            <input type="hidden" name="{{ item.getForeignKeyField() }}" value="{{ item.fields['id'] }}">
+            <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
+            <input type="hidden" name="{{ item.getForeignKeyField() }}" value="{{ item.fields['id'] }}" />
 
             <div class="row">
                <div class="col-12">
@@ -100,7 +100,7 @@
                      {{ fields.dropdownField(
                         'User',
                         'users_id_validate',
-                        subitem.fields["users_id_validate"],
+                        subitem.fields['users_id_validate'],
                         __('Approver'),
                         {
                            'full_width': true,
@@ -113,27 +113,27 @@
             <div class="d-flex card-footer mx-n3 mb-n3">
                {% if subitem.fields['id'] <= 0 %}
                   <button class="btn btn-primary me-2" type="submit" name="add">
-                     <i class='fas fa-plus'></i>
+                     <i class="fas fa-plus"></i>
                      <span>{{ _x('button', 'Add') }}</span>
                   </button>
                {% else %}
-                  <input type="hidden" name="id" value="{{ subitem.fields['id'] }}"/>
+                  <input type="hidden" name="id" value="{{ subitem.fields['id'] }}" />
                   <button class="btn btn-primary me-2" type="submit" name="update">
-                     <i class='fas fa-save'></i>
+                     <i class="fas fa-save"></i>
                      <span>{{ _x('button', 'Save') }}</span>
                   </button>
 
                   {% if subitem.can(id, constant('PURGE')) %}
                      <button class="btn btn-outline-danger me-2" type="submit" name="purge"
-                             onclick='return confirm("{{ __('Confirm the final deletion?') }}");'>
-                        <i class='fas fa-trash-alt'></i>
+                             onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
+                        <i class="fas fa-trash-alt"></i>
                         <span>{{ _x('button', 'Delete permanently') }}</span>
                      </button>
                   {% endif %}
                {% endif %}
             </div>
 
-            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
          </form>
       </div>
    {% endif %}

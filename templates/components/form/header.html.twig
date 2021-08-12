@@ -72,7 +72,7 @@
                   {{ entity_name }}
                </span>
 
-               {% set is_dbchild = itemInstanceOf(item, "CommonDBChild") %}
+               {% set is_dbchild = itemInstanceOf(item, 'CommonDBChild') %}
                <input type="hidden" name="is_recursive"
                      value="{{ is_dbchild ? item.fields['is_recursive'] : '0' }}" />
                {% if item.maybeRecursive() %}
@@ -108,7 +108,7 @@
                   </span>
                {% endif %}
 
-               {% include('components/form/single-action.html.twig') %}
+               {% include 'components/form/single-action.html.twig' %}
             {% endif %}
          {% endif %}
       </div>

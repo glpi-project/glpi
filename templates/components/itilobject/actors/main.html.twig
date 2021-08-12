@@ -1,4 +1,4 @@
-{% import "components/form/fields_macros.html.twig" as fields %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% if display_actortypes is not defined %}
    {% set display_actortypes = ['requester', 'observer', 'assign'] %}
@@ -16,9 +16,9 @@
 
 {# TODO check allow_email params #}
 
-{% if 'requester' in display_actortypes and (not itiltemplate.isHiddenField("_users_id_requester") or not itiltemplate.isHiddenField("_groups_id_requester")) %}
+{% if 'requester' in display_actortypes and (not itiltemplate.isHiddenField('_users_id_requester') or not itiltemplate.isHiddenField('_groups_id_requester')) %}
    {% set requester_field %}
-      {% include "components/itilobject/actors/field.html.twig" with {
+      {% include 'components/itilobject/actors/field.html.twig' with {
          'item': item,
          'actortypeint': constant('CommonITILActor::REQUESTER'),
          'actortype': 'requester',
@@ -35,7 +35,7 @@
          requester_field,
          _n('Requester', 'Requesters', 1),
          actor_options|merge({
-            required: itiltemplate.isMandatoryField("_users_id_requester") or itiltemplate.isMandatoryField("_groups_id_requester")
+            required: itiltemplate.isMandatoryField('_users_id_requester') or itiltemplate.isMandatoryField('_groups_id_requester')
          })
       ) }}
    {% else %}
@@ -43,9 +43,9 @@
    {% endif %}
 {% endif %}
 
-{% if 'observer' in display_actortypes and (not itiltemplate.isHiddenField("_users_id_observer") or not itiltemplate.isHiddenField("_groups_id_observer")) %}
+{% if 'observer' in display_actortypes and (not itiltemplate.isHiddenField('_users_id_observer') or not itiltemplate.isHiddenField('_groups_id_observer')) %}
    {% set observer_field %}
-      {% include "components/itilobject/actors/field.html.twig" with {
+      {% include 'components/itilobject/actors/field.html.twig' with {
          'item': item,
          'actortypeint': constant('CommonITILActor::OBSERVER'),
          'actortype': 'observer',
@@ -60,9 +60,9 @@
       {{ fields.field(
          'observer',
          observer_field,
-         __("Observer"),
+         __('Observer'),
          actor_options|merge({
-            required: itiltemplate.isMandatoryField("_users_id_observer") or itiltemplate.isMandatoryField("_groups_id_observer")
+            required: itiltemplate.isMandatoryField('_users_id_observer') or itiltemplate.isMandatoryField('_groups_id_observer')
          })
       ) }}
    {% else %}
@@ -70,9 +70,9 @@
    {% endif %}
 {% endif %}
 
-{% if 'assign' in display_actortypes and (not itiltemplate.isHiddenField("_users_id_assign") or not itiltemplate.isHiddenField("_groups_id_assign") or not itiltemplate.isHiddenField("_supplier_id_assign")) %}
+{% if 'assign' in display_actortypes and (not itiltemplate.isHiddenField('_users_id_assign') or not itiltemplate.isHiddenField('_groups_id_assign') or not itiltemplate.isHiddenField('_supplier_id_assign')) %}
    {% set assign_field %}
-      {% include "components/itilobject/actors/field.html.twig" with {
+      {% include 'components/itilobject/actors/field.html.twig' with {
          'item': item,
          'actortypeint': constant('CommonITILActor::ASSIGN'),
          'actortype': 'assign',
@@ -87,9 +87,9 @@
       {{ fields.field(
          'assign',
          assign_field,
-         __("Assigned to"),
+         __('Assigned to'),
          actor_options|merge({
-            required: itiltemplate.isMandatoryField("_users_id_assign") or itiltemplate.isMandatoryField("_groups_id_assign") or itiltemplate.isMandatoryField("_supplier_id_assign")
+            required: itiltemplate.isMandatoryField('_users_id_assign') or itiltemplate.isMandatoryField('_groups_id_assign') or itiltemplate.isMandatoryField('_supplier_id_assign')
          })
       ) }}
    {% else %}
@@ -97,7 +97,7 @@
    {% endif %}
 {% endif %}
 
-<input type="hidden" name="_actors" id="_actors">
+<input type="hidden" name="_actors" id="_actors" />
 
 {# modal for edit notification setting for a user #}
 <div class="modal fade" id="editActorNotifySettings" tabindex="-1" aria-hidden="true">
@@ -106,34 +106,34 @@
       <div class="modal-header">
          <h5 class="modal-title">
             <i class="fas fa-envelope"></i>
-            &nbsp;{{ __("Edit notification settings") }}
+            &nbsp;{{ __('Edit notification settings') }}
          </h5>
-         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __("Close") }}"></button>
+         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
       </div>
       <div class="modal-body">
          <div class="mb-3">
-            <label class="form-label" for="actorname">{{ __("Actor") }}</label>
-            <input type="text" class="form-control" id="actorname" name="actorname">
-            <input type="hidden" name="actortype" value="">
-            <input type="hidden" name="actorindex" value="">
+            <label class="form-label" for="actorname">{{ __('Actor') }}</label>
+            <input type="text" class="form-control" id="actorname" name="actorname" />
+            <input type="hidden" name="actortype" value="" />
+            <input type="hidden" name="actorindex" value="" />
          </div>
          <div class="mb-3">
-            <label for="alternative_email" class="form-label">{{ __("Email address") }}</label>
+            <label for="alternative_email" class="form-label">{{ __('Email address') }}</label>
             <div class="form-check form-switch">
-               <input class="form-check-input" type="checkbox" id="use_notification" name="use_notification">
-               <label class="form-check-label" for="use_notification">{{ __("Email followup") }}</label>
+               <input class="form-check-input" type="checkbox" id="use_notification" name="use_notification" />
+               <label class="form-check-label" for="use_notification">{{ __('Email followup') }}</label>
             </div>
-            <input type="email" class="form-control" id="alternative_email" name="alternative_email">
+            <input type="email" class="form-control" id="alternative_email" name="alternative_email" />
          </div>
       </div>
       <div class="modal-footer">
          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
             <i class="fas fa-times"></i>
-            <span>{{ __("Close") }}<span>
+            <span>{{ __('Close') }}<span>
          </button>
          <button type="button" class="btn btn-primary" id="saveActorNotifySettings">
             <i class="fas fa-save"></i>
-            <span>{{ __("Save") }}</span>
+            <span>{{ __('Save') }}</span>
          </button>
       </div>
     </div>

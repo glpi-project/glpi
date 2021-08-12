@@ -67,7 +67,7 @@
 {% endmacro %}
 
 
-{% macro checkboxField(name, value, label = "", options = {}) %}
+{% macro checkboxField(name, value, label = '', options = {}) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
@@ -123,7 +123,7 @@
          {{ options.required ? 'required' : '' }}
          {{ options.min ? 'min=' ~ options.min : '' }}
          {{ options.max ? 'max=' ~ options.max : '' }}
-         {{ options.step ? 'step=' ~ options.step : '' }}/>
+         {{ options.step ? 'step=' ~ options.step : '' }} />
    {% endset %}
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
@@ -147,7 +147,7 @@
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
-   {% set id = options.id|length > 0 ? options.id : (name ~ "_" ~ options.rand) %}
+   {% set id = options.id|length > 0 ? options.id : (name ~ '_' ~ options.rand) %}
 
    {% set field %}
       {# 100% width is here to prevent width issues with tinymce #}
@@ -202,8 +202,8 @@
       {# the first element is an input[type=hidden] added by flatpickr and so we don't have border-radius on the start #}
       <input type="text" class="form-control rounded-start ps-2" data-input
              name="{{ name }}" value="{{ value|verbatim_value }}"
-             {{ options.required ? 'required' : "" }}
-             {{ options.disabled ? 'disabled' : "" }}>
+             {{ options.required ? 'required' : '' }}
+             {{ options.disabled ? 'disabled' : '' }} />
       <i class="input-group-text far fa-calendar" data-toggle role="button"></i>
    </div>
 {% endmacro %}
@@ -249,13 +249,13 @@
          $('#{{ options.id }}').flatpickr({
             altInput: true,
             dateFormat: 'Y-m-d H:i:S',
-            altFormat: '{{ getDateFormat("js") }} H:i:S',
+            altFormat: '{{ getDateFormat('js') }} H:i:S',
             enableTime: true,
             wrap: true,
             enableSeconds: true,
             weekNumbers: true,
             allowInput: true,
-            locale: getFlatPickerLocale("{{ locale['language'] }}", "{{ locale['region'] }}"),
+            locale: getFlatPickerLocale('{{ locale['language'] }}', '{{ locale['region'] }}'),
             onClose(dates, currentdatestring, picker) {
                picker.setDate(picker.altInput.value, true, picker.config.altFormat)
             }
@@ -317,15 +317,15 @@
          {% if url is not empty %}
             <a href="{{ url }}" {{ Html__parseAttributes(link_options) }}>
          {% endif %}
-               <img src="{{ value|verbatim_value }}" {{ Html__parseAttributes(options) }}/>
+               <img src="{{ value|verbatim_value }}" {{ Html__parseAttributes(options) }} />
          {% if url is not empty %}
             </a>
          {% endif %}
          {% if clearable %}
-            <input type="hidden" name="_blank_{{ name }}">
+            <input type="hidden" name="_blank_{{ name }}" />
             <button type="button" class="btn p-2 position-absolute top-0 start-0" title="{{ __('Delete') }}"
                     onclick="const blank_input = $('input[name=\'_blank_{{ name }}\']'); blank_input.val(blank_input.val() ? '' : true); $(this).toggleClass('btn-danger')">
-               <i class='fas fa-times'></i>
+               <i class="fas fa-times"></i>
             </button>
          {% endif %}
       </div>
@@ -576,7 +576,7 @@
    {% else %}
       {% set id    = options.id|length > 0 ? options.id : (name ~ '_' ~ options.rand) %}
       {% set field = field|replace({'%id%': id}) %}
-      {% set add_field_html = options.add_field_html|length > 0 ? options.add_field_html : "" %}
+      {% set add_field_html = options.add_field_html|length > 0 ? options.add_field_html : '' %}
 
       {% if options.fields_template is not defined or not options.fields_template.isHiddenField(name) %}
          {% if options.no_label %}
@@ -615,9 +615,9 @@
 {% macro noLabelField(field, id = '', add_field_html = '', options = {}) %}
    {% set options = {'full_width': false}|merge(options) %}
 
-   {% set class = "col-12 col-sm-6" %}
+   {% set class = 'col-12 col-sm-6' %}
    {% if options.full_width %}
-      {% set class = "col-12" %}
+      {% set class = 'col-12' %}
    {% endif %}
 
    <div class="{{ class }} mb-3">
@@ -700,7 +700,7 @@
 
 
 {% macro label(label, id, options = {}, class = 'form-label') %}
-   {% set required_mark = "" %}
+   {% set required_mark = '' %}
    {% if options.fields_template.isMandatoryField(options.name) or options.required %}
       {% set required_mark = '<span class="required">*</span>' %}
    {% endif %}

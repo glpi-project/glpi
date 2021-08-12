@@ -1,9 +1,9 @@
-{% import "components/form/fields_macros.html.twig" as fields %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% if canupdate %}
    {% set status_field %}
       {{ item.dropdownStatus({
-         'value': item.fields["status"],
+         'value': item.fields['status'],
          'showtype': 'allowed',
          'width': '100%',
          'display': false
@@ -29,6 +29,6 @@
 {{ fields.field(
    'status',
    status_field,
-   __("Status"),
+   __('Status'),
    field_options
 ) }}

@@ -1,12 +1,12 @@
 
-{% import "components/form/fields_macros.html.twig" as fields %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 
 <div class="asset">
-   {% include("components/form/header.html.twig") %}
+   {% include 'components/form/header.html.twig' %}
    {% set rand         = random() %}
    {% set params       = params ?? [] %}
    {% set target       = params['target'] ?? item.getFormURL() %}
-   {% set withtemplate = params['withtemplate'] ?? "" %}
+   {% set withtemplate = params['withtemplate'] ?? '' %}
 
    <div class="card-body">
       <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
@@ -25,7 +25,7 @@
 
                {% if item.isField('comment') %}
                   {{ fields.textareaField(
-                     "comment",
+                     'comment',
                      item.fields['comment'],
                      _n('Comment', 'Comments', getPluralNumber()),
                   ) }}
@@ -40,7 +40,7 @@
                         <tr class="tab_bg_1"><th colspan="2">{{ field['label'] }}</th></tr>
                      {% elseif type == 'UserDropdown' %}
                         {{ fields.dropdownField(
-                           "User",
+                           'User',
                            field['name'],
                            subitem.fields[field['name']],
                            _n('User', 'Users', getPluralNumber()),
@@ -101,7 +101,7 @@
                      {% elseif type == 'icon' %}
                         {{ fields.dropdownIcons(field['name'], item.fields[field['name']], field['label'], params) }}
                         {% if item.fields[field['name']] is not empty %}
-                           <img class="align-middle" alt="" src="{{ config('typedoc_icon_dir') ~ '/' ~ item.fields[field['name']] }}">
+                           <img class="align-middle" alt="" src="{{ config('typedoc_icon_dir') ~ '/' ~ item.fields[field['name']] }}" />
                         {% endif %}
                      {% elseif type == 'bool' %}
                         {{ fields.dropdownYesNo(field['name'], item.fields[field['name']], field['label'], params) }}
@@ -159,7 +159,7 @@
                   <tr class="tab_bg_1"><th colspan="2">{{ field['label'] }}</th></tr>
                {% elseif type == 'UserDropdown' %}
                   {{ fields.dropdownField(
-                     "User",
+                     'User',
                      field['name'],
                      subitem.fields[field['name']],
                      _n('User', 'Users', getPluralNumber()),
@@ -220,7 +220,7 @@
                {% elseif type == 'icon' %}
                   {{ fields.dropdownIcons(field['name'], item.fields[field['name']], field['label'], params) }}
                   {% if item.fields[field['name']] is not empty %}
-                     <img class="align-middle" alt="" src="{{ config('typedoc_icon_dir') ~ '/' ~ item.fields[field['name']] }}">
+                     <img class="align-middle" alt="" src="{{ config('typedoc_icon_dir') ~ '/' ~ item.fields[field['name']] }}" />
                   {% endif %}
                {% elseif type == 'bool' %}
                   {{ fields.dropdownYesNo(field['name'], item.fields[field['name']], field['label'], params) }}
@@ -294,5 +294,5 @@
          </div>
       </div>
    </div>
-   {% include("components/form/buttons.html.twig") %}
+   {% include 'components/form/buttons.html.twig' %}
 </div>

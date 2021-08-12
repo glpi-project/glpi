@@ -1,4 +1,4 @@
-{% set debug = is_debug_active ? "bg-red-lt" : "" %}
+{% set debug = is_debug_active ? 'bg-red-lt' : '' %}
 {% set rand_header = random() %}
 <div class="btn-group">
    {% if is_debug_active %}
@@ -33,7 +33,7 @@
 
             {% if has_global_right('Config', constant('UPDATE')) %}
                <a href="{{ path('/ajax/switchdebug.php') }}"
-                  class="dropdown-item {{ is_debug_active ? "bg-red-lt" : "" }}"
+                  class="dropdown-item {{ is_debug_active ? 'bg-red-lt' : '' }}"
                   title="{{ __('Change mode') }}">
                   <i class="fas fa-fw fa-bug debug"></i>
                   {{ is_debug_active ? __('Debug mode enabled') : __('Debug mode disabled') }}
@@ -84,8 +84,8 @@
       <div class="modal-dialog">
          <div class="modal-content">
             <div class="modal-header">
-               <h4 class="modal-title">{{ __("About") }}</h4>
-               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __("Close") }}"></button>
+               <h4 class="modal-title">{{ __('About') }}</h4>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
             </div>
             <div class="modal-body">
                <p><a href="http://glpi-project.org/" title="Powered by Teclib and contributors" class="copyright">
@@ -109,7 +109,7 @@
    </div>
 </div>
 
-{% elseif is_demo_active != "false" %}
+{% elseif is_demo_active != 'false' %}
    <a href="{{ path('/front/preference.php?forcetab=User$1') }}" class="dropdown-item" title="{{ language_name }}"
       data-language-selector>
       <i class="fas fa-fw fa-language"></i>

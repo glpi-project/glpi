@@ -1,4 +1,4 @@
-{% import "components/form/fields_macros.html.twig" as fields %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 {% set rand = random() %}
 {% set field_name = field_name|default('psgallery' ~ rand) %}
 
@@ -71,7 +71,9 @@
                      </span>
                   {% else %}
                      <a href="{{ img['src']|escape }}" itemprop="contentUrl" data-index="0">
-                        <img src="{{ img['thumbnail_src']|default(img['src'])|escape }}" itemprop="thumbnail" alt="{{ img['title']|default('') }}" class="{{ img['img_class']|default('') }} pointer pswp-trigger">
+                        <img src="{{ img['thumbnail_src']|default(img['src'])|escape }}"
+                             itemprop="thumbnail" alt="{{ img['title']|default('') }}"
+                             class="{{ img['img_class']|default('') }} pointer pswp-trigger" />
                      </a>
                   {% endif %}
                <figcaption itemprop="caption description">{{ img['title']|default('') }}</figcaption>

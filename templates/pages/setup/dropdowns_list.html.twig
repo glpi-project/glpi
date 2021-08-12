@@ -1,7 +1,7 @@
 {% set grid_items = [] %}
 
 {% for label, dropdown in optgroup %}
-   {% set card_id = "dropdowns_list_" ~ random() %}
+   {% set card_id = 'dropdowns_list_' ~ random() %}
    {% set card_html %}
       <div class="card">
          <div class="accordion accordion-flush">
@@ -12,11 +12,11 @@
                      {{ label }}
                   </button>
                </h2>
-               <div id="{{ card_id }}" class="accordion-collapse collapse" style='transition: none'>
+               <div id="{{ card_id }}" class="accordion-collapse collapse" style="transition: none">
                   <div class="list-group list-group-flush list-group-hoverable">
                      {% for itemtype, dropdown_label in dropdown %}
                         {% set is_entity_assign = itemtype|isEntityAssign() %}
-                        <a class="list-group-item list-group-item-action {{ is_entity_assign ? "" : "dropdown-no-entity" }}"
+                        <a class="list-group-item list-group-item-action {{ is_entity_assign ? '' : 'dropdown-no-entity' }}"
                            href="{{ itemtype|getSearchUrl() }}">
                            <div class="row">
                               <div class="col-auto">
@@ -27,9 +27,9 @@
                               </div>
                               <div class="col-1 text-muted">
                                  {% if is_entity_assign %}
-                                    <i class="{{ "Entity"|getIcon() }} fa-sm"
+                                    <i class="{{ 'Entity'|getIcon() }} fa-sm"
                                        data-bs-toggle="tooltip"
-                                       title="{{ __("Dropdown with entity management") }}"></i>
+                                       title="{{ __('Dropdown with entity management') }}"></i>
                                  {% endif %}
                               </div>
                            </div>
@@ -50,13 +50,13 @@
 
 <div class="container-fluid text-start mb-4 dropdowns-list">
    <div class="input-icon mb-3">
-      <input class="form-control" placeholder="filter dropdowns" id="filter-dropdown">
+      <input class="form-control" placeholder="filter dropdowns" id="filter-dropdown" />
       <span class="input-icon-addon">
          <i class="fas fa-search"></i>
       </span>
    </div>
 
-   {% include "components/masonry_grid.html.twig" with {
+   {% include 'components/masonry_grid.html.twig' with {
       'grid_items': grid_items,
       'grid_item_class': 'col-lg-6 col-xl-4 col-xxl-3',
    } only %}

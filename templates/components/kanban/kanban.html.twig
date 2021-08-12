@@ -1,4 +1,4 @@
-{% import "components/form/modals_macros.html.twig" as modals %}
+{% import 'components/form/modals_macros.html.twig' as modals %}
 
 {% if rights is not defined %}
    {% set rights = {
@@ -11,7 +11,7 @@
    } %}
 {% endif %}
 
-<div id='kanban' class='kanban'></div>
+<div id="kanban" class="kanban"></div>
 {{ modals.modal('', '', {
    'id': 'kanban-modal'
 }) }}

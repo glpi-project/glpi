@@ -4,20 +4,20 @@
          <div class="col-md-8 ps-3 timeline-buttons">
             {% set default_action_data = timeline_itemtypes|first %}
             {% if item.isNotSolved() and default_action_data != false %}
-               <div class="btn-group me-2 main-actions" style="{{ load_kb_sol > 0 ? "display:none;" : "" }}">
+               <div class="btn-group me-2 main-actions" style="{{ load_kb_sol > 0 ? 'display:none;' : '' }}">
                   <button class="btn btn-primary answer-action" data-bs-toggle="collapse" data-bs-target="#new-{{ default_action_data.class }}-block">
-                     <i class='{{ default_action_data.icon }}'></i>
+                     <i class="{{ default_action_data.icon }}"></i>
                      <span>{{ default_action_data.label }}</span>
                   </button>
                   <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                     <span class="visually-hidden">{{ __("View other actions") }}</span>
+                     <span class="visually-hidden">{{ __('View other actions') }}</span>
                   </button>
                   <ul class="dropdown-menu">
                      {% for action, timeline_itemtype in timeline_itemtypes %}
                         {% if loop.index0 > 0 %}
                            <li><a class="dropdown-item action-{{ action }} answer-action" href="#"
                               data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
-                              <i class='{{ timeline_itemtype.icon }}'></i>
+                              <i class="{{ timeline_itemtype.icon }}"></i>
                               <span>{{ timeline_itemtype.label }}</span>
                            </a></li>
                         {% endif %}
@@ -26,13 +26,13 @@
                </div>
             {% endif %}
 
-            {% include "components/itilobject/timeline/filter_timeline.html.twig" %}
+            {% include 'components/itilobject/timeline/filter_timeline.html.twig' %}
          </div>
       {% endif %}
 
       <div class="form-buttons col-md d-flex justify-content-end ms-auto ms-md-0 my-n2 py-2 pe-3 card-footer border-top-0 position-relative">
          <span class="d-none d-md-block position-absolute top-0 start-0"
-               data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __("Toggle panels width") }}">
+               data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Toggle panels width') }}">
             <button class="switch-panel-width btn btn-sm btn-square btn-icon btn-ghost-secondary">
                <i class="fas fa-caret-left"></i>
             </button>
@@ -51,27 +51,27 @@
                   {% if item.isDeleted() %}
                      <button class="btn btn-outline-secondary" type="submit" name="restore"
                            title="{{ _x('button', 'Restore') }}">
-                        <i class='fas fa-trash-restore-alt'></i>
+                        <i class="fas fa-trash-restore-alt"></i>
                         <span class="d-none d-md-block">{{ _x('button', 'Restore') }}</span>
                      </button>
 
                      <button class="btn btn-outline-danger" type="submit" name="purge"
                            title="{{ _x('button', 'Delete permanently') }}"
-                           onclick='return confirm("{{ __('Confirm the final deletion?') }}");'>
-                        <i class='fas fa-trash-alt'></i>
+                           onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
+                        <i class="fas fa-trash-alt"></i>
                         <span class="d-none d-md-block">{{ _x('button', 'Delete permanently') }}</span>
                      </button>
                   {% else %}
                      <button class="btn btn-outline-danger" type="submit" name="delete"
                            title="{{ _x('button', 'Put in trashbin') }}"
                            data-bs-toggle="tooltip" data-bs-placement="top">
-                        <i class='fas fa-trash-alt'></i>
+                        <i class="fas fa-trash-alt"></i>
                      </button>
                   {% endif %}
                {% endif %}
 
                {% if canupdate %}
-                  {% include"components/form/single-action.html.twig" with {
+                  {% include 'components/form/single-action.html.twig' with {
                      'onlyicon': true
                   } %}
                {% endif %}
@@ -111,7 +111,7 @@ $(function() {
    // form submit buttons
    $(document).on("click", "#itil-footer .form-buttons [type=submit]", function() {
       var button_name = $(this).attr('name');
-      $('#itil-form').append(`<input type='hidden' name='${button_name}' value='1'>`).submit();
+      $('#itil-form').append(`<input type="hidden" name="${button_name}" value="1" />`).submit();
    });
 
    var scrollToTimelineBottom = function() {

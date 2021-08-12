@@ -6,22 +6,22 @@
    {% if media_docs|length > 0 %}
       {% set imgs = [] %}
       {% for document in media_docs %}
-         {% set docpath = path("front/document.send.php?docid=" ~ document['item']['id']) %}
+         {% set docpath = path('front/document.send.php?docid=' ~ document['item']['id']) %}
          {% set fk = item.getForeignKeyField() %}
-         {% set delete_link = form_url(item.getType()) ~ "?delete_document&documents_id=" ~ document['item']['id'] ~ "&" ~ fk ~ "=" ~ item.fields['id'] %}
+         {% set delete_link = form_url(item.getType()) ~ '?delete_document&documents_id=' ~ document['item']['id'] ~ '&' ~ fk ~ '=' ~ item.fields['id'] %}
 
          {% set post_figure_content %}
             <div class="col-auto">
                <div class="list-group-item-actions d-flex flex-column">
-                  <a href="{{ form_path("Document", document['item']['id']) }}"
-                     class="btn btn-sm btn-ghost-secondary" title="{{ _x("button", "Edit") }}"
+                  <a href="{{ form_path('Document', document['item']['id']) }}"
+                     class="btn btn-sm btn-ghost-secondary" title="{{ _x('button', 'Edit') }}"
                      data-bs-toggle="tooltip" data-bs-placement="top">
                      <i class="fas fa-edit"></i>
                   </a>
 
                   {% set fk = item.getForeignKeyField() %}
                   <a href="{{ delete_link }}"
-                     class="btn btn-sm btn-ghost-secondary" title="{{ _x("button", "Delete permanently") }}"
+                     class="btn btn-sm btn-ghost-secondary" title="{{ _x('button', 'Delete permanently') }}"
                      data-bs-toggle="tooltip" data-bs-placement="top">
                      <i class="fas fa-trash-alt"></i>
                   </a>
@@ -67,7 +67,7 @@
 
    {% for document in other_docs %}
       <li class="list-group-item border-0">
-         {% include "components/itilobject/timeline/form_document_item.html.twig" with {
+         {% include 'components/itilobject/timeline/form_document_item.html.twig' with {
             'form_mode': 'view',
             'entry_i': document['item'],
          } %}

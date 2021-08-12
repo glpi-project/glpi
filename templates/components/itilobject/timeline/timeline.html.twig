@@ -1,5 +1,5 @@
 <div class="itil-timeline d-flex flex-column align-items-start mb-auto">
-   {% include("components/itilobject/timeline/main_description.html.twig") %}
+   {% include 'components/itilobject/timeline/main_description.html.twig' %}
 
    {% set status_closed = (item.fields['status'] in item.getClosedStatusArray()) %}
    {% for entry in timeline %}
@@ -16,7 +16,7 @@
       {% endif %}
 
       {% set can_edit_i  = entry_i['can_edit'] %}
-      {% set can_promote = entry['type'] == "ITILFollowup" and can_edit_i and not status_closed %}
+      {% set can_promote = entry['type'] == 'ITILFollowup' and can_edit_i and not status_closed %}
       {% set is_promoted = can_promote and entry_i['sourceof_items_id'] > 0 %}
 
       {% set timeline_position = entry_i['timeline_position'] %}
@@ -31,33 +31,33 @@
          {% set item_position = 't-right' %}
       {% endif %}
 
-      {% set itiltype = entry['itiltype'] is defined ? "ITIL" ~ entry['itiltype'] : entry['type'] %}
+      {% set itiltype = entry['itiltype'] is defined ? 'ITIL' ~ entry['itiltype'] : entry['type'] %}
 
-      {% set state_class = "" %}
+      {% set state_class = '' %}
       {% if entry_i['state'] is constant('Planning::INFO') %}
-         {% set state_class = "info" %}
+         {% set state_class = 'info' %}
       {% endif %}
       {% if entry_i['state'] is constant('Planning::TODO') %}
-         {% set state_class = "todo" %}
+         {% set state_class = 'todo' %}
       {% endif %}
       {% if entry_i['state'] is constant('Planning::DONE') %}
-         {% set state_class = "done" %}
+         {% set state_class = 'done' %}
       {% endif %}
 
-      {% set solution_class = "" %}
-      {% if itiltype == "ITILSolution"  %}
+      {% set solution_class = '' %}
+      {% if itiltype == 'ITILSolution'  %}
          {% if entry_i['status'] is constant('CommonITILValidation::WAITING') %}
-            {% set solution_class = "waiting" %}
+            {% set solution_class = 'waiting' %}
          {% endif %}
          {% if entry_i['status'] is constant('CommonITILValidation::ACCEPTED') %}
-            {% set solution_class = "accepted" %}
+            {% set solution_class = 'accepted' %}
          {% endif %}
          {% if entry_i['status'] is constant('CommonITILValidation::REFUSED') %}
-            {% set solution_class = "refused" %}
+            {% set solution_class = 'refused' %}
          {% endif %}
       {% endif %}
 
-      <div class="timeline-item mb-3 {{ itiltype }} {{ state_class }} {{ entry['class'] }} {{ "right" in item_position ? "ms-auto" : "" }}"
+      <div class="timeline-item mb-3 {{ itiltype }} {{ state_class }} {{ entry['class'] }} {{ 'right' in item_position ? 'ms-auto' : '' }}"
             data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}">
          <div class="row">
             <div class="col-auto todo-list-state d-none">
@@ -68,20 +68,20 @@
                {% endif %}
             </div>
 
-            <div class="col-auto d-flex flex-column user-part {{ "right" in item_position ? "ms-auto ms-0 order-sm-last" : "" }}">
+            <div class="col-auto d-flex flex-column user-part {{ 'right' in item_position ? 'ms-auto ms-0 order-sm-last' : '' }}">
                {% set avatar_rand = random() %}
                <span id="timeline-avatar{{ avatar_rand }}">
-                  {% include "components/user/picture.html.twig" with {'users_id': users_id} only %}
+                  {% include 'components/user/picture.html.twig' with {'users_id': users_id} only %}
                </span>
                {% set user = User__getUserName(users_id, 2) %}
                {{ Html__showToolTip(user['comment'], {
-                  'applyto': "timeline-avatar" ~ avatar_rand
+                  'applyto': 'timeline-avatar' ~ avatar_rand
                }) }}
             </div>
             <div class="col-12 col-sm d-flex flex-column content-part">
                <span class="row mt-2 timeline-content {{ solution_class }} flex-grow-1 {{ item_position }} card">
                   <div class="card-body">
-                     {% include("components/itilobject/timeline/timeline_item_header.html.twig") %}
+                     {% include 'components/itilobject/timeline/timeline_item_header.html.twig' %}
 
                      {% if itiltype is same as 'ITILValidation' %}
                         {% include 'components/itilobject/timeline/form_validation.html.twig' with {'form_mode': 'view'} %}
@@ -105,7 +105,7 @@
                </span>
 
                {% if entry['documents'] is defined %}
-                  {% include "components/itilobject/timeline/sub_documents.html.twig" with {
+                  {% include 'components/itilobject/timeline/sub_documents.html.twig' with {
                      'item': item,
                      'entry': entry
                   } %}
@@ -116,17 +116,17 @@
    {% endfor %}
 
    <div class="timeline-item tasks-title d-none">
-      <h3>{{ _n("Task", "Tasks", getPluralNumber()) }}</h3>
+      <h3>{{ _n('Task', 'Tasks', getPluralNumber()) }}</h3>
    </div>
 
-   {% include("components/itilobject/timeline/todo-list-summary.html.twig") %}
+   {% include 'components/itilobject/timeline/todo-list-summary.html.twig' %}
 
    <div class="timeline-item validations-title d-none mt-4">
-      <h3>{{ _n("Validation", "Validations", getPluralNumber()) }}</h3>
+      <h3>{{ _n('Validation', 'Validations', getPluralNumber()) }}</h3>
    </div>
 
-   {% include("components/itilobject/timeline/approbation_form.html.twig") %}
-   {% include("components/itilobject/answer.html.twig") %}
+   {% include 'components/itilobject/timeline/approbation_form.html.twig' %}
+   {% include 'components/itilobject/answer.html.twig' %}
 
 </div>
 
@@ -141,7 +141,7 @@ $(function() {
       content_block.find(".read-only-content").hide();
       content_block.find(".edit-content").show()
          .find(".ajax-content")
-         .html("<i class='fas fa-3x fa-spinner fa-spin ms-auto'></i>")
+         .html('<i class="fas fa-3x fa-spinner fa-spin ms-auto"></i>')
          .load("{{ path('/ajax/timeline.php') }}", {
             'action'    : 'viewsubitem',
             'type'      : itemtype,
