@@ -22,10 +22,10 @@
             <div class="col text-truncate">
                <a href="{{ form_path('Ticket', linked['tickets_id']) }}" class="col-9 overflow-hidden text-nowrap">
                   {{ new_ticket.getStatusIcon(new_ticket.fields['status'])|raw }}
-                  <span title="{{ new_ticket.fields['name'] }}" data-bs-toggle="tooltip">
-                     {{ new_ticket.fields['name'] }}
+                  <span title="{{ new_ticket.fields['name']|verbatim_value }}" data-bs-toggle="tooltip">
+                     {{ new_ticket.fields['name']|verbatim_value }}
                   </span>
-                  &nbsp;({{ new_ticket.fields['id'] }})
+                  ({{ new_ticket.fields['id'] }})
                </a>
             </div>
 
