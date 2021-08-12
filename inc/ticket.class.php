@@ -351,12 +351,12 @@ class Ticket extends CommonITILObject {
          }
          // Compute time_to_resolve
          $data[$dateField]             = $sla->computeDate($date);
-         $data['sla_waiting_duration'] = 0;
+         // $data['sla_waiting_duration'] = 0;
 
       } else {
          $data["slalevels_id_ttr"]     = 0;
          $data[$slaField]              = 0;
-         $data['sla_waiting_duration'] = 0;
+         // $data['sla_waiting_duration'] = 0;
       }
       return $data;
 
