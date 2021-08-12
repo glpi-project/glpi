@@ -283,7 +283,7 @@ class Log extends CommonDBTM {
          'additional_params' => $is_filtered ? http_build_query(['filters' => $filters]) : "",
          'is_tab'            => true,
          'items_id'          => $items_id,
-         'filters'           => $filters,
+         'filters'           => Toolbox::stripslashes_deep($filters),
          'user_names'        => $is_filtered
             ? Log::getDistinctUserNamesValuesInItemLog($item)
             : [],
@@ -697,7 +697,7 @@ class Log extends CommonDBTM {
                      }
                   }
                }
-               $tmp['change'] = sprintf(__('Change %1$s to %2$s'), "<s>$oldval</s>", $newval);
+               $tmp['change'] = sprintf(__('Change %1$s to %2$s'), "<del>$oldval</del>", "<ins>$newval</ins>");
             }
          }
          $changes[] = $tmp;
