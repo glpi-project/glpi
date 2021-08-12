@@ -3,14 +3,14 @@
    <button class="dropdown-item dropdown-toggle" type="button" data-bs-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false">
       <i class="fas fa-user-check"></i>
-      {{ active_profile_name }}
+      {{ active_profile_name|verbatim_value }}
    </button>
    <div class="dropdown-menu">
       <span class="dropdown-header">{{ __('Profiles') }}</span>
       {% for profile_id, profile in profiles %}
       <a class="dropdown-item {{ profile_id == active_profile_id ? 'active' : '' }}"
          href="{{ index() }}?newprofile={{ profile_id }}">
-         <i class="fas fa-user-check"></i>{{ profile['name'] }}
+         <i class="fas fa-user-check"></i>{{ profile['name']|verbatim_value }}
       </a>
       {% endfor %}
    </div>
@@ -18,7 +18,6 @@
 
 <a href="#" class="dropdown-item show_entity_modal">
    <i class="fa-fw fas fa-layer-group"></i>
-   &nbsp;
    {{ active_entity_name|verbatim_value|u.truncate(35, '...') }}
 </a>
 

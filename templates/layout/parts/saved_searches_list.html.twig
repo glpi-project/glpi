@@ -9,7 +9,7 @@
          data-id="{{ search['id'] }}">
       <a href="{{ getItemTypeSearchURL('SavedSearch') }}?action=load&amp;id={{ search['id'] }}"
          class="d-block saved-searches-link text-truncate">
-         {{ search['name'] }}
+         {{ search['name']|verbatim_value }}
       </a>
       <div class="{{ search['is_default'] > 0 ? '' : 'list-group-item-actions' }} ms-auto default-ctrl">
          <i class="{{ search['is_default'] > 0 ? 'fas' : 'far' }} fa-star fa-xs mark-default me-1"

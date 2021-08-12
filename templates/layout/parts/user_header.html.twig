@@ -15,7 +15,7 @@
          <a href="#" class="nav-link d-flex lh-1 text-reset p-1 dropdown-toggle {{ debug }}"
             data-bs-toggle="dropdown" data-bs-auto-close="outside">
             <div class="pe-2 d-none d-xl-block">
-               <div>{{ active_profile_name|u.truncate(35, '...') }}</div>
+               <div>{{ active_profile_name|verbatim_value|u.truncate(35, '...') }}</div>
                <div class="mt-1 small text-muted">{{ active_entity_name|verbatim_value|u.truncate(35, '...') }}</div>
             </div>
             {% if current_user_picture is not empty %}
@@ -25,7 +25,7 @@
             {% endif %}
          </a>
          <div class="dropdown-menu dropdown-menu-end mt-1 dropdown-menu-arrow animate__animated animate__fadeInRight">
-            <h6 class="dropdown-header">{{ current_user_name }}</h6>
+            <h6 class="dropdown-header">{{ current_user_name|verbatim_value }}</h6>
 
             {{ include('layout/parts/profile_selector.html.twig') }}
 

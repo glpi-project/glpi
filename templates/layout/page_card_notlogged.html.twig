@@ -11,15 +11,15 @@
 <body>
    <div class="page-anonymous">
       <div class="flex-fill d-flex flex-column justify-content-center py-4 mt-4">
-         {% set style = '' %}
+         {% set style = null %}
          {% if card_md_width is defined %}
-            {% set style = 'style="max-width: 40rem"' %}
+            {% set style = 'max-width: 40rem' %}
          {% endif %}
          {% if card_bg_width is defined %}
-            {% set style = 'style="max-width: 60rem"' %}
+            {% set style = 'max-width: 60rem' %}
          {% endif %}
 
-         <div class="container-tight py-6" {{ style|raw }}>
+         <div class="container-tight py-6" {% if style is not null %}style="{{ style }}"{% endif %}>
             <div class="text-center">
                <div class="col-md">
                   <span class="glpi-logo mb-4" title="GLPI"></span>
