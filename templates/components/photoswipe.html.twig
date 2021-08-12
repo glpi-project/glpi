@@ -71,7 +71,7 @@
                      </span>
                   {% else %}
                      <a href="{{ img['src']|escape }}" itemprop="contentUrl" data-index="0">
-                        <img src="{{ img['thumbnail_src']|default(img['src'])|escape }}"
+                        <img src="{{ img['thumbnail_src']|default(img['src']) }}"
                              itemprop="thumbnail" alt="{{ img['title']|default('') }}"
                              class="{{ img['img_class']|default('') }} pointer pswp-trigger" />
                      </a>
