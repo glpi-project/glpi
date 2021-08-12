@@ -790,7 +790,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
       ];
       echo "<div class='firstbloc'>";
       if (!$feed || $feed->error()) {
-         $rss_feed['error'] = $feed->error();
+         $rss_feed['error'] = !$feed ? __('Error retrieving RSS feed') : $feed->error();
          $this->setError(true);
       } else {
          $this->setError(false);
