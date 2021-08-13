@@ -42,6 +42,7 @@ if (is_null($preset)) {
 }
 
 echo Html::includeHeader(__("Template variables documentation"));
+echo "<body class='documentation-page'>";
 echo "<div id='page'>";
 echo "<div class='documentation documentation-large'>";
 
@@ -55,6 +56,7 @@ echo $md->transform(TemplateManager::generateMarkdownDocumentation($preset));
 echo "</div>";
 echo "</div>";
 
-echo "<div class='documentation-footer'>";
+// Footer closes main and div
+echo "<main>";
 echo "<div>";
 Html::nullFooter();
