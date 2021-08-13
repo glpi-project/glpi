@@ -151,6 +151,15 @@ class TemplateRenderer {
    }
 
    /**
+    * Return Twig environment used to handle templates.
+    *
+    * @return Environment
+    */
+   public function getEnvironment(): Environment {
+      return $this->environment;
+   }
+
+   /**
     * Renders a template.
     *
     * @param string $template
