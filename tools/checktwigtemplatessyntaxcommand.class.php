@@ -48,6 +48,8 @@ class CheckTwigTemplatesSyntaxCommand extends AbstractCommand {
     */
    const ERROR_INVALID_TEMPLATES = 1;
 
+   protected $requires_db = false;
+
    protected function configure() {
       parent::configure();
 
