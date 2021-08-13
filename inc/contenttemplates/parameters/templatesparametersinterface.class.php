@@ -63,7 +63,6 @@ interface TemplatesParametersInterface
     * Get values for a given item, used for template rendering
     *
     * @param CommonDBTM $item
-    * @param bool       $root
     *
     * @return array
     */
@@ -73,7 +72,7 @@ interface TemplatesParametersInterface
     * To be defined in each subclasses, define all available parameters for one or more itemtypes.
     * These parameters informations are meant to be used for autocompletion on the client side.
     *
-    * @return \Glpi\ContentTemplates\Parameters\ParametersTypes\AbstractParameterType[]
+    * @return \Glpi\ContentTemplates\Parameters\ParametersTypes\ParameterTypeInterface[]
     */
    public function getAvailableParameters(): array;
 }

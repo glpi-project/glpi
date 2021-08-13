@@ -32,45 +32,54 @@
 
 namespace Glpi\ContentTemplates\Parameters\ParametersTypes;
 
+use Glpi\ContentTemplates\Parameters\TemplatesParametersInterface;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
 /**
- * Define the base interface for parameters types.
+ * Interface for parameters types.
  *
  * @since 10.0.0
  */
-abstract class AbstractParameterType implements ParameterTypeInterface
+interface ParameterTypeInterface
 {
    /**
-    * The parameter key that need to be used to retrieve its value in a template.
+    * To be defined in each subclasses, convert the parameter data into an array
+    * that can be shared to the client side code as json and used for autocompletion.
     *
-    * @var string
+    * @return array
     */
-   protected $key;
+   public function compute(): array;
 
    /**
-    * The parameter label, to be displayed in the client side autocompletion.
+    * Label to use for this parameter's documentation
     *
-    * @var string
+    * @return string
     */
-    protected $label;
+   public function getDocumentationLabel(): string;
 
    /**
-    * @param string  $key     Key to access this value
-    * @param string  $label   Label to display in the autocompletion widget
+    * Recommended usage (twig code) to use for this parameter's documentation
+    *
+    * @param string|null $parent
+    *
+    * @return string
     */
-   public function __construct(string $key, string $label) {
-      $this->key = $key;
-      $this->label = $label;
-   }
+   public function getDocumentationUsage(?string $parent = null): string;
 
-   public function getDocumentationField(): string {
-      return $this->key;
-   }
+   /**
+    * Reference to others parameters for this parameter's documentation
+    *
+    * @return TemplatesParametersInterface|null
+    */
+   public function getDocumentationReferences(): ?TemplatesParametersInterface;
 
-   public function getDocumentationLabel(): string {
-      return $this->label;
-   }
+   /**
+    * Field name for this parameter's documentation
+    *
+    * @return string
+    */
+   public function getDocumentationField(): string;
 }

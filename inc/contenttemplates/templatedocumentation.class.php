@@ -139,7 +139,7 @@ class TemplateDocumentation
 
       // Add a row for each parameters
       foreach ($parameters as $parameter) {
-         /** @var \Glpi\ContentTemplates\Parameters\ParametersTypes\AbstractParameterType $parameter */
+         /** @var \Glpi\ContentTemplates\Parameters\ParametersTypes\ParameterTypeInterface $parameter */
          $row = [
             $parameter->getDocumentationField(),
             $parameter->getDocumentationLabel(),

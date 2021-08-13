@@ -32,7 +32,7 @@
 
 namespace Glpi\ContentTemplates\Parameters\ParametersTypes;
 
-use Glpi\ContentTemplates\Parameters\AbstractParameters;
+use Glpi\ContentTemplates\Parameters\TemplatesParametersInterface;
 use Glpi\ContentTemplates\TemplateManager;
 
 if (!defined('GLPI_ROOT')) {
@@ -50,16 +50,19 @@ class ObjectParameter extends AbstractParameterType
    /**
     * Parameters availables in the item that will be linked.
     *
-    * @var AbstractParameters
+    * @var TemplatesParametersInterface
     */
    protected $template_parameters;
 
    /**
-    * @param AbstractParameters $template_parameters  Parameters to add
-    * @param null|string $key                         Key to access this value
+    * @param TemplatesParametersInterface $template_parameters Parameters to add
+    * @param null|string                  $key                 Key to access this value
     */
-   public function __construct(AbstractParameters $template_parameters, ?string $key = null) {
-      $this->key = $key ?? $template_parameters->getDefaultNodeName();
+   public function __construct(TemplatesParametersInterface $template_parameters, ?string $key = null) {
+      parent::__construct(
+         $key ?? $template_parameters->getDefaultNodeName(),
+         $template_parameters->getObjectLabel()
+      );
       $this->template_parameters = $template_parameters;
    }
 
@@ -70,17 +73,9 @@ class ObjectParameter extends AbstractParameterType
       return [
          'type'       => "ObjectParameter",
          'key'        => $this->key,
-         'label'      => $this->template_parameters->getObjectLabel(),
+         'label'      => $this->label,
          'properties' => $properties,
       ];
-   }
-
-   public function getTemplateParameters(): AbstractParameters {
-      return $this->template_parameters;
-   }
-
-   public function getDocumentationLabel(): string {
-      return $this->template_parameters->getObjectLabel();
    }
 
    public function getDocumentationUsage(?string $parent = null): string {
@@ -88,7 +83,7 @@ class ObjectParameter extends AbstractParameterType
       return "{{ {$parent}{$this->key}.XXX }}";
    }
 
-   public function getDocumentationReferences(): ?AbstractParameters {
+   public function getDocumentationReferences(): ?TemplatesParametersInterface {
       return $this->template_parameters;
    }
 }

@@ -32,7 +32,7 @@
 
 namespace Glpi\ContentTemplates\Parameters\ParametersTypes;
 
-use Glpi\ContentTemplates\Parameters\AbstractParameters;
+use Glpi\ContentTemplates\Parameters\TemplatesParametersInterface;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -58,20 +58,12 @@ class AttributeParameter extends AbstractParameterType
    protected $filter;
 
    /**
-    * The parameter label, to be displayed in the client side autocompletion
-    *
-    * @var string
-    */
-    protected $label;
-
-   /**
     * @param string $key    Key to access this value
     * @param string $label  Label to display in the autocompletion widget
     * @param string $filter Recommanded twig filter to apply on this value
     */
    public function __construct(string $key, string $label, string $filter = "") {
-      $this->key = $key;
-      $this->label = $label;
+      parent::__construct($key, $label);
       $this->filter = $filter;
    }
 
@@ -84,17 +76,13 @@ class AttributeParameter extends AbstractParameterType
       ];
    }
 
-   public function getDocumentationLabel(): string {
-      return $this->label;
-   }
-
    public function getDocumentationUsage(?string $parent = null): string {
       $parent = !empty($parent)       ? "$parent."          : "";
       $filter = !empty($this->filter) ? "| {$this->filter}" : "";
       return "{{ {$parent}{$this->key} $filter }}";
    }
 
-   public function getDocumentationReferences(): ?AbstractParameters {
+   public function getDocumentationReferences(): ?TemplatesParametersInterface {
       return null;
    }
 }

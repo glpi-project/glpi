@@ -32,7 +32,7 @@
 
 namespace Glpi\ContentTemplates\Parameters\ParametersTypes;
 
-use Glpi\ContentTemplates\Parameters\AbstractParameters;
+use Glpi\ContentTemplates\Parameters\TemplatesParametersInterface;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -48,63 +48,43 @@ if (!defined('GLPI_ROOT')) {
 class ArrayParameter extends AbstractParameterType
 {
    /**
-    * This parameter will need to be handled in a loop, this key will be the
-    * suggested variable name when iterating on its children.
-    *
-    * @var string
-    */
-   protected $items_key;
-
-   /**
     * Parameters of each item contained in this array.
     *
-    * @var ObjectParameter
+    * @var TemplatesParametersInterface
     */
-   protected $content;
+   protected $template_parameters;
 
    /**
-    * The parameter label, to be displayed in the client side autocompletion
-    *
-    * @var string
-    */
-    protected $label;
-
-   /**
-    * @param string              $key        Key to access this value
-    * @param AbstractParameters  $parameters Parameters of each item contained in this array
-    * @param string              $label      Label to display in the autocompletion widget
+    * @param string                       $key        Key to access this value
+    * @param TemplatesParametersInterface $parameters Parameters of each item contained in this array
+    * @param string                       $label      Label to display in the autocompletion widget
     */
    public function __construct(
       string $key,
-      AbstractParameters $parameters,
+      TemplatesParametersInterface $parameters,
       string $label
    ) {
-      $this->key = $key;
-      $this->label = $label;
-      $this->items_key = $parameters->getDefaultNodeName();
-      $this->content = new ObjectParameter($parameters);
+      parent::__construct($key, $label);
+      $this->template_parameters = $parameters;
    }
 
    public function compute(): array {
+      $object_parameters = new ObjectParameter($this->template_parameters);
       return [
          'type'      => "ArrayParameter",
          'key'       => $this->key,
          'label'     => $this->label,
-         'items_key' => $this->items_key,
-         'content'   => $this->content->compute(),
+         'items_key' => $this->template_parameters->getDefaultNodeName(),
+         'content'   => $object_parameters->compute(),
       ];
-   }
-
-   public function getDocumentationLabel(): string {
-      return $this->label;
    }
 
    public function getDocumentationUsage(?string $parent = null): string {
       $parent = !empty($parent) ? "$parent." : "";
-      return "{% for {$this->items_key} in {$parent}{$this->key} %}";
+      return "{% for {$this->template_parameters->getDefaultNodeName()} in {$parent}{$this->key} %}";
    }
 
-   public function getDocumentationReferences(): ?AbstractParameters {
-      return $this->content->getTemplateParameters();
+   public function getDocumentationReferences(): ?TemplatesParametersInterface {
+      return $this->template_parameters;
    }
 }
