@@ -133,8 +133,7 @@
                         {{ Item_Ticket_itemAddForm(item, params|merge({
                            '_canupdate': have_right('ticket', constant('CREATE')),
                            '_tickettemplate': itiltemplate,
-                           'display': false,
-                        }))|raw }}
+                        })) }}
                      </div>
                   {% endset %}
 
