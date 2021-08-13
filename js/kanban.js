@@ -1176,7 +1176,6 @@ class GLPIKanbanRights {
                items_id: items_id,
                force: force ? 1 : 0
             },
-            contentType: 'application/json',
             error: function() {
                if (error) {
                   error();
