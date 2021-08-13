@@ -121,14 +121,14 @@ if ($_REQUEST['action'] === 'update') {
    $checkParams(['inputs']);
    $item = new $itemtype();
    $inputs = [];
-   parse_str($_REQUEST['inputs'], $inputs);
+   parse_str($_UPOST['inputs'], $inputs);
 
    $item->add(Sanitizer::sanitize($inputs));
 } else if ($_REQUEST['action'] === 'bulk_add_item') {
    $checkParams(['inputs']);
    $item = new $itemtype();
    $inputs = [];
-   parse_str($_REQUEST['inputs'], $inputs);
+   parse_str($_UPOST['inputs'], $inputs);
 
    $bulk_item_list = preg_split('/\r\n|[\r\n]/', $inputs['bulk_item_list']);
    if (!empty($bulk_item_list)) {
@@ -136,7 +136,7 @@ if ($_REQUEST['action'] === 'update') {
       foreach ($bulk_item_list as $item_entry) {
          $item_entry = trim($item_entry);
          if (!empty($item_entry)) {
-            $item->add(Sanitizer::sanitize($inputs + ['name' => $item_entry]));
+            $item->add(Sanitizer::sanitize($inputs + ['name' => $item_entry, 'content' => '']));
          }
       }
    }
