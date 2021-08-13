@@ -777,7 +777,7 @@ class GLPIKanbanRights {
          });
          $('#kanban-add-dropdown li').on('click', function(e) {
             e.preventDefault();
-            const selection = $(e.target);
+            const selection = $(this);
             // The add dropdown is a single-level dropdown, so the parent is the ul element
             const dropdown = selection.parent();
             // Get the button that triggered the dropdown and then get the column that it is a part of
@@ -791,7 +791,7 @@ class GLPIKanbanRights {
          });
          $('#kanban-bulk-add-dropdown li').on('click', function(e) {
             e.preventDefault();
-            const selection = $(e.target);
+            const selection = $(this);
             // Traverse all the way up to the top-level overflow dropdown
             const dropdown = selection.closest('.kanban-dropdown');
             // Get the button that triggered the dropdown and then get the column that it is a part of
