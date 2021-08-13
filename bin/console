@@ -56,9 +56,7 @@ if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SER
       exit($exit_code);
    }
 
-   // Unless "--npm-install" option is provided, use "npm ci" to do a clean install of locked components
-   // without any additionnal checks.
-   $npm_command = array_key_exists('npm-install', $options) ? 'npm install' : 'npm ci';
+   $npm_command = 'npm install';
    passthru($npm_command, $exit_code);
    if ($exit_code > 0) {
       exit($exit_code);
