@@ -94,6 +94,7 @@ class PlanningExternalEventTemplate extends CommonDropdown {
             Planning::dropdownState("state", $this->fields["state"], false, [
                'width' => '100%',
             ]);
+            break;
 
          case 'plan' :
             Planning::showAddEventClassicForm([

@@ -219,9 +219,7 @@ class Ticket_Ticket extends CommonDBRelation {
       $tmp[self::DUPLICATE_WITH] = __('Duplicates');
       $tmp[self::SON_OF]         = __('Son of');
       $tmp[self::PARENT_OF]      = __('Parent of');
-      Dropdown::showFromArray($myname, $tmp, [
-         'value' => $value,
-      ]);
+      Dropdown::showFromArray($myname, $tmp, ['value' => $value]);
    }
 
 
@@ -361,12 +359,12 @@ class Ticket_Ticket extends CommonDBRelation {
     *
     * @return integer
     */
-   public static function countOpenChildren($pid) {
+   public function countOpenChildren($pid) {
       global $DB;
 
       $result = $DB->request([
          'COUNT'        => 'cpt',
-         'FROM'         => self::getTable() . ' AS links',
+         'FROM'         => $this->getTable() . ' AS links',
          'INNER JOIN'   => [
             Ticket::getTable() . ' AS tickets' => [
                'ON' => [
