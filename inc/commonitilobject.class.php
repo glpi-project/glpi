@@ -8045,10 +8045,10 @@ abstract class CommonITILObject extends CommonDBTM {
          || !is_array($this->input['_itilfollowuptemplates_id'])
          || !count($this->input['_itilfollowuptemplates_id'])
       ) {
-          return;
+         return;
       }
 
-         // Add tasks in itilfollowup template if defined in itiltemplate
+      // Add tasks in itilfollowup template if defined in itiltemplate
       foreach ($this->input['_itilfollowuptemplates_id'] as $fup_templates_id) {
          // Get template
          $fup_template = new ITILFollowupTemplate();
