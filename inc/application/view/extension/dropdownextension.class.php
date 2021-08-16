@@ -33,7 +33,6 @@
 namespace Glpi\Application\View\Extension;
 
 use Dropdown;
-use TicketValidation;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
