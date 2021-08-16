@@ -52,8 +52,6 @@ class DropdownExtension extends AbstractExtension {
          new TwigFunction('Dropdown__showItemTypes', [Dropdown::class, 'showItemTypes'], ['is_safe' => ['html']]),
          new TwigFunction('Dropdown__showHours', [$this, 'showHours'], ['is_safe' => ['html']]),
          new TwigFunction('Dropdown__dropdownIcons', [Dropdown::class, 'dropdownIcons'], ['is_safe' => ['html']]),
-         new TwigFunction('TicketValidation__dropdownStatus', [TicketValidation::class, 'dropdownStatus'], ['is_safe' => ['html']]),
-         new TwigFunction('TicketValidation__dropdownValidator', [TicketValidation::class, 'dropdownValidator'], ['is_safe' => ['html']]),
          new TwigFunction('SoftwareVersion__dropdownForOneSoftware', [$this, 'dropdownForOneSoftware'], ['is_safe' => ['html']]),
       ];
    }
