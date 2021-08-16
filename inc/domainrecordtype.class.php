@@ -211,7 +211,7 @@ class DomainRecordType extends CommonDropdown
       ];
    }
 
-   public function getSpecificTypeField(int $ID, array $field): string {
+   public function displaySpecificTypeField($ID, $field = []) {
       $field_name  = $field['name'];
       $field_type  = $field['type'];
       $field_value = $this->fields[$field_name];
@@ -219,9 +219,9 @@ class DomainRecordType extends CommonDropdown
       switch ($field_type) {
          case 'fields':
             $printable = json_encode(json_decode($field_value), JSON_PRETTY_PRINT);
-            return '<textarea name="' . $field_name . '" cols="75" rows="25">' . $printable . '</textarea >';
+            echo '<textarea name="' . $field_name . '" cols="75" rows="25">' . $printable . '</textarea >';
+            break;
       }
-      return '';
    }
 
    public function prepareInputForAdd($input) {

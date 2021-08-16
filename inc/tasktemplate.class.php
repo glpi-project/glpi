@@ -179,36 +179,41 @@ class TaskTemplate extends AbstractITILChildTemplate {
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
-   public function getSpecificTypeField(int $ID, array $field): string {
+   /**
+    * @see CommonDropdown::displaySpecificTypeField()
+   **/
+   function displaySpecificTypeField($ID, $field = []) {
+
       switch ($field['type']) {
          case 'state' :
-            return Planning::dropdownState("state", $this->fields["state"], false, [
+            Planning::dropdownState("state", $this->fields["state"], false, [
                'width'     => '100%',
             ]);
+            break;
          case 'users_id_tech' :
-            return User::dropdown([
-               'name'      => "users_id_tech",
-               'right'     => "own_ticket",
-               'value'     => $this->fields["users_id_tech"],
-               'entity'    => $this->fields["entities_id"],
-               'width'     => '100%',
-               'display'   => false,
+            User::dropdown([
+               'name'   => "users_id_tech",
+               'right'  => "own_ticket",
+               'value'  => $this->fields["users_id_tech"],
+               'entity' => $this->fields["entities_id"],
+               'width'  => '100%',
             ]);
+            break;
          case 'groups_id_tech' :
-            return Group::dropdown([
+            Group::dropdown([
                'name'     => "groups_id_tech",
                'condition' => ['is_task' => 1],
                'value'     => $this->fields["groups_id_tech"],
                'entity'    => $this->fields["entities_id"],
                'width'     => '100%',
-               'display'   => false,
             ]);
+            break;
          case 'actiontime' :
             $toadd = [];
             for ($i=9; $i<=100; $i++) {
                $toadd[] = $i*HOUR_TIMESTAMP;
             }
-            return Dropdown::showTimeStamp(
+            Dropdown::showTimeStamp(
                "actiontime", [
                   'min'             => 0,
                   'max'             => 8*HOUR_TIMESTAMP,
@@ -217,11 +222,10 @@ class TaskTemplate extends AbstractITILChildTemplate {
                   'inhours'         => true,
                   'toadd'           => $toadd,
                   'width'           => '100%',
-                  'display'         => false,
                ]
             );
+            break;
       }
-      return '';
    }
 
    static function getIcon() {

@@ -504,12 +504,11 @@ class Location extends CommonTreeDropdown {
 
    }
 
-   public function getSpecificTypeField(int $ID, array $field): string {
+   function displaySpecificTypeField($ID, $field = []) {
       switch ($field['type']) {
          case 'setlocation':
-            ob_start();
             $this->showMap();
-            return ob_get_clean();
+            break;
          default:
             throw new \RuntimeException("Unknown {$field['type']}");
       }

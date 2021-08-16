@@ -75,7 +75,7 @@ class ItemtypeExtension extends AbstractExtension {
          new TwigFunction('getDcBreadcrumb', [$this, 'getDcBreadcrumb'], ['is_safe' => ['html']]),
          new TwigFunction('getAutofillMark', [$this, 'getAutofillMark'], ['is_safe' => ['html']]),
          new TwigFunction('getMassiveActions', [$this, 'getMassiveActions']),
-         new TwigFunction('getSpecificTypeField', [$this, 'getSpecificTypeField']),
+         new TwigFunction('displaySpecificTypeField', [$this, 'displaySpecificTypeField']),
       ];
    }
 
@@ -308,7 +308,7 @@ class ItemtypeExtension extends AbstractExtension {
       return $item::getTable();
    }
 
-   public function getSpecificTypeField(CommonDropdown $item, $ID, $field = []): string {
-      return $item->getSpecificTypeField((int) $ID, $field);
+   public function displaySpecificTypeField(CommonDropdown $item, $ID, $field = []) {
+      $item->displaySpecificTypeField($ID, $field);
    }
 }

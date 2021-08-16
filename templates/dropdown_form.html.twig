@@ -147,7 +147,9 @@
                         {% endif %}
                         {{ fields.dropdownItemTypes(field['name'], item.fields[field['name']], field['label'], params) }}
                      {% else %}
-                        {% set field_value = getSpecificTypeField(item, item.fields['id'], field) %}
+                        {% set field_value %}
+                           {{ displaySpecificTypeField(item, item.fields['id'], field) }}
+                        {% endset %}
                         {{ fields.field(field['name'], field_value, field['label']) }}
                      {% endif %}
                   {% elseif field['name'] in picture_fields %}
