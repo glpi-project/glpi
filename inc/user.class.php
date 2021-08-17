@@ -2095,6 +2095,7 @@ class User extends CommonDBTM {
 
       $formtitle = $this->getTypeName(1);
 
+      $header_toolbar = [];
       if ($ID > 0) {
          $vcard_lbl = __s('Download user VCard');
          $vcard_url = User::getFormURLWithID($ID)."&amp;getvcard=1";
@@ -2106,7 +2107,7 @@ class User extends CommonDBTM {
                <i class="far fa-address-card fa-lg"></i>
             </a>
          HTML;
-         $formtitle.= $vcard_btn;
+         $header_toolbar[] = $vcard_btn;
 
          if (Session::canImpersonate($ID)) {
             $impersonate_lbl = __s('Impersonate');
@@ -2118,7 +2119,6 @@ class User extends CommonDBTM {
                   <i class="fas fa-user-secret fa-lg"></i>
                </button>
             HTML;
-            $formtitle.= $impersonate_btn;
 
             // "impersonate" button type is set to "button" on form display to prevent it to be used
             // by default (as it is the first found in current form) when pressing "enter" key.
@@ -2132,12 +2132,13 @@ class User extends CommonDBTM {
                   );
                })(jQuery);
 JAVASCRIPT;
-            $formtitle .= Html::scriptBlock($impersonate_js);
+            $header_toolbar[] = $impersonate_btn . Html::scriptBlock($impersonate_js);
          }
       }
 
-      $options['formtitle']   = $formtitle;
-      $options['formoptions'] = ($options['formoptions'] ?? '') . " enctype='multipart/form-data'";
+      $options['formtitle']      = $formtitle;
+      $options['formoptions']    = ($options['formoptions'] ?? '') . " enctype='multipart/form-data'";
+      $options['header_toolbar'] = $header_toolbar;
       $this->showFormHeader($options);
       $rand = mt_rand();
 

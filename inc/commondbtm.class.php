@@ -2633,18 +2633,20 @@ class CommonDBTM extends CommonGLPI {
     *     - canedit boolean edit mode of form ?
     *     - formtitle specific form title
     *     - noid Set to true if ID should not be append (eg. already done in formtitle)
+    *     - header_toolbar Array of header toolbar elements (HTML code)
     *
     * @return void
    **/
    function showFormHeader($options = []) {
       $params = [
-         'target'       => $this->getFormURL(),
-         'colspan'      => 2,
-         'withtemplate' => '',
-         'formoptions'  => '',
-         'canedit'      => true,
-         'formtitle'    => null,
-         'noid'         => false
+         'target'         => $this->getFormURL(),
+         'colspan'        => 2,
+         'withtemplate'   => '',
+         'formoptions'    => '',
+         'canedit'        => true,
+         'formtitle'      => null,
+         'noid'           => false,
+         'header_toolbar' => [],
       ];
 
       if (is_array($options) && count($options)) {
@@ -2659,10 +2661,14 @@ class CommonDBTM extends CommonGLPI {
          $this->fields['entities_id']  = $_SESSION['glpiactive_entity'];
       }
 
+      $header_toolbar = $params['header_toolbar'];
+      unset($params['header_toolbar']);
+
       echo "<div class='asset'>";
       TemplateRenderer::getInstance()->display('components/form/header.html.twig', [
-         'item'   => $this,
-         'params' => $params,
+         'item'           => $this,
+         'params'         => $params,
+         'header_toolbar' => $header_toolbar,
       ]);
 
       echo "<table class='tab_cadre_fixe'>";
