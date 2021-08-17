@@ -2,10 +2,10 @@
 {% set gallery_type = gallery_type|default('') %}
 {% if model_itemtype is not null or hasTrait(item, 'Glpi\\Features\\AssetImage') %}
 
-   {% set picture_single = getItemtypeOrModelPicture(item, 'picture') %}
-   {% set picture_front = getItemtypeOrModelPicture(item, 'picture_front') %}
-   {% set picture_rear = getItemtypeOrModelPicture(item, 'picture_rear') %}
-   {% set pictures_misc = getItemtypeOrModelPicture(item, 'pictures') %}
+   {% set picture_single = item.getItemtypeOrModelPicture('picture') %}
+   {% set picture_front = item.getItemtypeOrModelPicture('picture_front') %}
+   {% set picture_rear = item.getItemtypeOrModelPicture('picture_rear') %}
+   {% set pictures_misc = item.getItemtypeOrModelPicture('pictures') %}
 
    {% if picture_single is not empty or picture_front is not empty or picture_rear is not empty or pictures_misc is not empty %}
       <div class="{{ gallery_type == 'horizontal' ? 'col-12 me-n2' : '' }} d-flex">

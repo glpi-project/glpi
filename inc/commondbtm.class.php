@@ -5583,4 +5583,67 @@ class CommonDBTM extends CommonGLPI {
       $type_class = $this->getTypeClass();
       return $type_class !== null ? $type_class::getForeignKeyField() : null;
    }
+
+   public function getItemtypeOrModelPicture(string $picture_field = 'picture_front', array $params = []): array {
+      $p = [
+         'thumbnail_w'  => 'auto',
+         'thumbnail_h'  => 'auto'
+      ];
+      $p = array_replace($p, $params);
+
+      $urls = [];
+      $itemtype = $this->getType();
+      $pictures = [];
+      $clearable = false;
+
+      if ($this->isField($picture_field)) {
+         if ($picture_field === 'pictures') {
+            $urls = importArrayFromDB($this->fields[$picture_field]);
+         } else {
+            $urls = [$this->fields[$picture_field]];
+         }
+         $clearable = $this->canUpdate();
+      } else {
+         $modeltype = $itemtype . "Model";
+         if (class_exists($modeltype)) {
+            /** @var CommonDBTM $model */
+            $model = new $modeltype;
+            if (!$model->isField($picture_field)) {
+               return [];
+            }
+
+            $fk = getForeignKeyFieldForItemType($modeltype);
+            if ($model->getFromDB(($this->fields[$fk]) ?? 0)) {
+               if ($picture_field === 'pictures') {
+                  $urls = importArrayFromDB($model->fields[$picture_field]);
+               } else {
+                  $urls = [$model->fields[$picture_field]];
+               }
+            }
+         }
+      }
+
+      foreach ($urls as $url) {
+         if (!empty($url)) {
+            $resolved_url = \Toolbox::getPictureUrl($url);
+            $src_file = GLPI_DOC_DIR . '/_pictures/' . '/' . $url;
+            if (file_exists($src_file)) {
+               $size = getimagesize($src_file);
+               $pictures[] = [
+                     'src'             => $resolved_url,
+                     'w'               => $size[0],
+                     'h'               => $size[1],
+                     'clearable'       => $clearable,
+                     '_is_model_img'   => isset($model)
+                  ] + $p;
+            } else {
+               $owner_type = isset($model) ? $model::getType() : $itemtype;
+               $owner_id = isset($model) ? $model->getID() : $this->getID();
+               \Toolbox::logWarning("The picture '{$src_file}' referenced by the {$owner_type} with ID {$owner_id} does not exist");
+            }
+         }
+      }
+
+      return $pictures;
+   }
 }
