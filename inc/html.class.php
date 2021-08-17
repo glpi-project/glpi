@@ -355,10 +355,10 @@ class Html {
       // Display : clean display
       switch ($_SESSION['glpinumber_format']) {
          case 0 : // French
-            return str_replace(' ', '&nbsp;', number_format($number, $decimal, '.', ' '));
+            return number_format($number, $decimal, '.', ' ');
 
          case 2 : // Other French
-            return str_replace(' ', '&nbsp;', number_format($number, $decimal, ',', ' '));
+            return number_format($number, $decimal, ',', ' ');
 
          case 3 : // No space with dot
             return number_format($number, $decimal, '.', '');

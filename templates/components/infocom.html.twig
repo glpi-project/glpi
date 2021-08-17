@@ -158,7 +158,7 @@
           ) %}
       {{ fields.readOnlyField(
          '',
-         formatNumber(amort|trim),
+         amort|formatted_number,
          __('Account net value'),
       ) }}
 

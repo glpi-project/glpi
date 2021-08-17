@@ -131,12 +131,14 @@
 
 {% macro readOnlyField(name, value, label = '', options = {}) %}
    {% set options = options|merge({'readonly': true}) %}
-   {% if value|length == 0 %}
-      {% set value = '&nbsp;' %}
-   {% endif %}
-
    {% set value %}
-      <span class="form-control" readonly>{{ value|verbatim_value }}</span>
+      <span class="form-control" readonly>
+         {% if value|length == 0 %}
+            &nbsp;
+         {% else %}
+            {{ value|verbatim_value }}
+         {% endif %}
+      </span>
    {% endset %}
    {{ _self.field(name, value, label, options) }}
 {% endmacro %}
