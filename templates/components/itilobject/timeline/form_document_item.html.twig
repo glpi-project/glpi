@@ -10,7 +10,7 @@
             {% set docpath = path('front/document.send.php?docid=' ~ entry_i['id']) %}
             <div class="col text-truncate">
                <a href="{{ docpath }}" target="_blank">
-                  <img src="{{ getIconForFilename(filename) }}" alt="{{ __('File extension') }}" />
+                  <img src="{{ filename|document_icon }}" alt="{{ __('File extension') }}" />
                   {{ name }}
                </a>
             </div>
@@ -26,7 +26,7 @@
          {% endif %}
 
          <div class="col-auto text-muted ms-2">
-            {{ getSizeForFilePath(entry_i['filepath']) }}
+            {{ entry_i['filepath']|document_size }}
          </div>
 
          <div class="col-auto">

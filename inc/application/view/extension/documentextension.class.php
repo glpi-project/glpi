@@ -32,65 +32,47 @@
 
 namespace Glpi\Application\View\Extension;
 
-use Document;
-use DocumentType;
 use Toolbox;
 use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
+use Twig\TwigFilter;
 
 /**
  * @since 10.0.0
  */
 class DocumentExtension extends AbstractExtension {
 
-   public function getFunctions(): array {
+   public function getFilters(): array {
       return [
-         new TwigFunction('getIconForFilename', [$this, 'getIconForFilename']),
-         new TwigFunction('getSizeForFilePath', [$this, 'getSizeForFilePath']),
-         new TwigFunction('getMaxUploadSize', [Document::class, 'getMaxUploadSize'], ['is_safe' => ['html']]),
-         new TwigFunction('showAvailableTypesLink', [DocumentType::class, 'showAvailableTypesLink'], ['is_safe' => ['html']]),
-         new TwigFunction('isImage', [$this, 'isImage'], ['is_safe' => ['html']]),
-         new TwigFunction('getImageSize', [$this, 'getImageSize']),
+         new TwigFilter('document_icon', [$this, 'getDocumentIcon']),
+         new TwigFilter('document_size', [$this, 'getDocumentSize']),
       ];
    }
 
-   public function getIconForFilename(string $filename = ""): string {
+   /**
+    * Returns icon URL for given document filename.
+    *
+    * @param string $filename
+    *
+    * @return string
+    */
+   public function getDocumentIcon(string $filename): string {
       global $CFG_GLPI;
 
-      $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+      $icon = sprintf('/pics/icones/%s-dist.png', strtolower(pathinfo($filename, PATHINFO_EXTENSION)));
 
-      if (file_exists(GLPI_ROOT."/pics/icones/$extension-dist.png")) {
-         return  $CFG_GLPI['root_doc']."/pics/icones/$extension-dist.png";
-      }
-
-      return $CFG_GLPI['root_doc']."/pics/timeline/file.png";
+      return $CFG_GLPI['root_doc'] . (file_exists(GLPI_ROOT . $icon) ? $icon : '/pics/timeline/file.png');
    }
 
+   /**
+    * Returns human readable size of file matching given path (relative to GLPI_VAR_DIR).
+    *
+    * @param string $filepath
+    *
+    * @return null|string
+    */
+   public function getDocumentSize(string $filepath): ?string {
+      $fullpath = GLPI_VAR_DIR . '/' . $filepath;
 
-   public function getSizeForFilePath(string $filepath = "", bool $is_relative = true): string {
-      if ($is_relative) {
-         $filepath = GLPI_VAR_DIR."/".$filepath;
-      }
-
-      if (file_exists($filepath)) {
-         $filesize = filesize($filepath);
-         return Toolbox::getSize($filesize);
-      }
-
-      return "";
-   }
-
-   public function isImage(string $filepath, bool $is_relative = true): bool {
-      if ($is_relative) {
-         $filepath = GLPI_VAR_DIR."/".$filepath;
-      }
-      return Document::isImage($filepath);
-   }
-
-   public function getImageSize(string $filepath, bool $is_relative = true): array {
-      if ($is_relative) {
-         $filepath = GLPI_VAR_DIR."/".$filepath;
-      }
-      return getimagesize($filepath);
+      return is_readable($fullpath) ? Toolbox::getSize(filesize($fullpath)) : null;
    }
 }
