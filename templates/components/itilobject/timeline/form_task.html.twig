@@ -39,7 +39,7 @@
             {% if entry_i['actiontime'] %}
                <span class="actiontime badge bg-orange-lt">
                   <i class="fas fa-stopwatch me-1"></i>
-                  {{ timestampToString(entry_i['actiontime']) }}
+                  {{ entry_i['actiontime']|formatted_duration }}
                </span>
             {% endif %}
 

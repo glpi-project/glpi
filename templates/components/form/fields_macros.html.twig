@@ -213,7 +213,7 @@
 {% macro dateField(name, value, label = '', options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
    {% set options = {'id': name ~ '_' ~ options.rand}|merge(options) %}
-   {% set locale = getCurrentLocale() %}
+   {% set locale = get_current_locale() %}
 
    {% set field %}
       {{ _self.flatpickrHtmlInput(name, value, label, options) }}
@@ -242,7 +242,7 @@
 {% macro datetimeField(name, value, label = '', options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
    {% set options = {'id': name ~ '_' ~ options.rand}|merge(options) %}
-   {% set locale = getCurrentLocale() %}
+   {% set locale = get_current_locale() %}
 
    {% set field %}
       {{ _self.flatpickrHtmlInput(name, value, label, options) }}

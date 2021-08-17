@@ -45,9 +45,6 @@ class HtmlExtension extends AbstractExtension {
       return [
          new TwigFunction('showMassiveActions', [$this, 'showMassiveActions'], ['is_safe' => ['html']]),
          new TwigFunction('formatNumber', [Html::class, 'formatNumber'], ['is_safe' => ['html']]),
-         new TwigFunction('time2str', [Html::class, 'time2str'], ['is_safe' => ['html']]),
-         new TwigFunction('timestampToString', [Html::class, 'timestampToString'], ['is_safe' => ['html']]),
-         new TwigFunction('Html__uploadedFiles', [Html::class , 'uploadedFiles'], ['is_safe' => ['html']]),
          new TwigFunction('Html__initEditorSystem', [Html::class , 'initEditorSystem'], ['is_safe' => ['html']]),
          new TwigFunction('Html__cleanId', [Html::class , 'cleanId'], ['is_safe' => ['html']]),
          new TwigFunction('Html__file', [Html::class , 'file'], ['is_safe' => ['html']]),

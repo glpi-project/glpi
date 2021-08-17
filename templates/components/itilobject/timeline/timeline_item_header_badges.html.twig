@@ -2,7 +2,7 @@
    {% set date_span %}
       <span title="{{ date_creation|formatted_datetime }}"
             data-bs-toggle="tooltip" data-bs-placement="bottom">
-         <i class="far fa-clock me-1"></i>{{ time2str(date_creation) }}
+         <i class="far fa-clock me-1"></i>{{ date_creation|relative_datetime }}
       </span>
    {% endset %}
 
@@ -24,7 +24,7 @@
       {% set date_span %}
          <span title="{{ date_mod|formatted_datetime }}"
                data-bs-toggle="tooltip" data-bs-placement="bottom">
-            <i class="far fa-clock me-1"></i>{{ time2str(date_mod) }}
+            <i class="far fa-clock me-1"></i>{{ date_mod|relative_datetime }}
          </span>
       {% endset %}
 

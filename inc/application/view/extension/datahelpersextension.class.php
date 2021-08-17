@@ -51,9 +51,11 @@ class DataHelpersExtension extends AbstractExtension {
    public function getFilters(): array {
       return [
          new TwigFilter('formatted_datetime', [$this, 'getFormattedDatetime']),
+         new TwigFilter('formatted_duration', [$this, 'getFormattedDuration']),
          new TwigFilter('formatted_number', [$this, 'getFormattedNumber']),
          new TwigFilter('html_to_text', [$this, 'getTextFromHtml']),
          new TwigFilter('itemtype_name', [$this, 'getItemtypeName']),
+         new TwigFilter('relative_datetime', [$this, 'getRelativeDatetime']),
          new TwigFilter('safe_html', [$this, 'getSafeHtml'], ['is_safe' => ['html']]),
          new TwigFilter('verbatim_value', [$this, 'getVerbatimValue']),
       ];
@@ -79,6 +81,34 @@ class DataHelpersExtension extends AbstractExtension {
          return null;
       }
       return Html::convDateTime($datetime);
+   }
+
+   /**
+    * Return relative representation of given date.
+    *
+    * @param mixed $datetime
+    *
+    * @return string|null
+    */
+   public function getRelativeDatetime($datetime): ?string {
+      if (!is_string($datetime)) {
+         return null;
+      }
+      return Html::timestampToRelativeStr($datetime);
+   }
+
+   /**
+    * Return human readable duration.
+    *
+    * @param mixed $duration
+    *
+    * @return string|null
+    */
+   public function getFormattedDuration($duration): ?string {
+      if (!is_numeric($duration)) {
+         return null;
+      }
+      return Html::timestampToString($duration);
    }
 
    /**

@@ -7435,7 +7435,7 @@ CSS;
     * @param mixed $ts
     * @return string
     */
-   static function time2str($ts) {
+   static function timestampToRelativeStr($ts) {
       if ($ts === null) {
          return __('Never');
       }
