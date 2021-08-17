@@ -2962,25 +2962,25 @@ JAVASCRIPT;
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions['Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
-                                                         = "<i class='ma-icon fas fa-users'></i>".
+                                                         = "<i class='fas fa-users'></i>".
                                                            __('Associate to a group');
          $actions['Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'remove']
                                                          = __('Dissociate from a group');
          $actions['Profile_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
-                                                         = "<i class='ma-icon fas fa-user-shield'></i>".
+                                                         = "<i class='fas fa-user-shield'></i>".
                                                            __('Associate to a profile');
          $actions['Profile_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'remove']
                                                          = __('Dissociate from a profile');
          $actions['Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'change_group_user']
-                                                         = "<i class='ma-icon fas fa-users-cog'></i>".
+                                                         = "<i class='fas fa-users-cog'></i>".
                                                            __("Move to group");
       }
 
       if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
          $prefix                                    = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
-         $actions[$prefix.'change_authtype']        = "<i class='ma-icon fas fa-user-cog'></i>".
+         $actions[$prefix.'change_authtype']        = "<i class='fas fa-user-cog'></i>".
                                                       _x('button', 'Change the authentication method');
-         $actions[$prefix.'force_user_ldap_update'] = "<i class='ma-icon fas fa-sync'></i>".
+         $actions[$prefix.'force_user_ldap_update'] = "<i class='fas fa-sync'></i>".
                                                       __('Force synchronization');
       }
       return $actions;

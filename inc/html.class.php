@@ -1582,18 +1582,6 @@ HTML;
 
       TemplateRenderer::getInstance()->display('layout/parts/page_header.html.twig', $tpl_vars);
 
-      // TODO move to main_class
-      $main_class = "";
-      if ((strpos($_SERVER['REQUEST_URI'], ".form.php") !== false)
-          && isset($_GET['id']) && ($_GET['id'] > 0)) {
-         if (!CommonGLPI::isLayoutExcludedPage()) {
-            $main_class.= " form";
-         } else {
-            $main_class = "";
-         }
-      }
-      echo "";
-
       if ($DB->isSlave()
           && !$DB->first_connection) {
          echo "<div id='dbslave-float'>";
@@ -2607,7 +2595,7 @@ HTML;
          : "";
 
       $output = <<<HTML
-      <div class="no-wrap flatpickr" id="showdate{$p['rand']}">
+      <div class="text-nowrap flatpickr" id="showdate{$p['rand']}">
          <input type="text" name="{$name}" size="{$p['size']}"
                 {$required} {$disabled} data-input placeholder="{$p['placeholder']}">
          $calendar_btn
@@ -2792,7 +2780,7 @@ JS;
          : "";
 
       $output = <<<HTML
-         <div class="no-wrap flatpickr d-flex align-items-center" id="showdate{$p['rand']}">
+         <div class="text-nowrap flatpickr d-flex align-items-center" id="showdate{$p['rand']}">
             <input type="text" name="{$name}" value="{$p['value']}"
                    {$required} {$disabled} data-input>
             <a class="input-button ms-1" data-toggle>
@@ -2923,7 +2911,7 @@ JS;
          : "";
 
       $output = <<<HTML
-         <div class="no-wrap flatpickr" id="showtime{$p['rand']}">
+         <div class="text-nowrap flatpickr" id="showtime{$p['rand']}">
             <input type="text" name="{$name}" value="{$p['value']}"
                    {$required} {$disabled} data-input>
             <a class="input-button" data-toggle>
@@ -5847,7 +5835,6 @@ JAVASCRIPT;
       $param['first_cell']           = '&nbsp;';
       $param['row_check_all']        = false;
       $param['col_check_all']        = false;
-      $param['rotate_column_titles'] = false;
       $param['rand']                 = mt_rand();
 
       if (is_array($options) && count($options)) {
@@ -7435,7 +7422,7 @@ CSS;
       echo '<form name="form" method="post" action="' . User::getFormURL() . '">';
       echo sprintf(__('You are impersonating %s.'), $_SESSION['glpiname']);
       echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
-      echo '<button type="submit" name="impersonate" class="btn-linkstyled" value="0">';
+      echo '<button type="submit" name="impersonate" class="btn btn-outline-danger" value="0">';
       echo __s('Stop impersonating');
       echo '</button>';
       echo '</form>';

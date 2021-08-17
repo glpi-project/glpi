@@ -177,7 +177,6 @@ class View extends CommonGLPI {
          echo "<div class='alert alert-important alert-warning d-flex'>";
          echo "<i class='fas fa-3x fa-exclamation-triangle '></i>";
          echo "<ul><li>" . implode('</li><li>', $messages) . "</li></ul>";
-         echo "<div class='sep'></div>";
          echo "</div>";
       }
 

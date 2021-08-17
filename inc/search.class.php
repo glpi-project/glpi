@@ -5959,19 +5959,19 @@ JAVASCRIPT;
 
             case 'glpi_changes.status':
                $status = Change::getStatus($data[$ID][0]['name']);
-               return "<span class='no-wrap'>".
+               return "<span class='text-nowrap'>".
                       Change::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status".
                       "</span>";
 
             case 'glpi_problems.status':
                $status = Problem::getStatus($data[$ID][0]['name']);
-               return "<span class='no-wrap'>".
+               return "<span class='text-nowrap'>".
                       Problem::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status".
                       "</span>";
 
             case 'glpi_tickets.status':
                $status = Ticket::getStatus($data[$ID][0]['name']);
-               return "<span class='no-wrap'>".
+               return "<span class='text-nowrap'>".
                       Ticket::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status".
                       "</span>";
 

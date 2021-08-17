@@ -3270,7 +3270,7 @@ class AuthLDAP extends CommonDBTM {
           && (!isset($_SESSION['ldap_import']['no_expert_mode'])
               || $_SESSION['ldap_import']['no_expert_mode'] != 1)) {
 
-         echo "</span>&nbsp;<span class='floatright'><a href='".$_SERVER['PHP_SELF']."?action=".
+         echo "</span>&nbsp;<span class='float-end'><a href='".$_SERVER['PHP_SELF']."?action=".
               $_SESSION['ldap_import']['action']."&amp;mode=".$_SESSION['ldap_import']['mode'];
 
          if ($_SESSION['ldap_import']['interface'] == self::SIMPLE_INTERFACE) {
