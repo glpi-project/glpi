@@ -1747,31 +1747,6 @@ class Search {
 
 
    /**
-    * @since 0.90
-    *
-    * @param boolean $is_deleted
-    * @param string  $itemtype
-    *
-    * @return string
-   */
-   static function isDeletedSwitch($is_deleted, $itemtype = "") {
-      $rand = mt_rand();
-      return "<div class='switch grey_border pager_controls'>".
-             "<label for='is_deletedswitch$rand' title='".__s('Show the trashbin')."' >".
-                "<span class='sr-only'>" . __s('Show the trashbin') . "</span>" .
-                "<input type='hidden' name='is_deleted' value='0' /> ".
-                "<input type='checkbox' id='is_deletedswitch$rand' name='is_deleted' value='1' ".
-                  ($is_deleted?"checked='checked'":"").
-                  " onClick = \"toogle('is_deleted','','','');
-                              document.forms['searchform$itemtype'].submit();\" />".
-                "<span class='fa fa-trash-alt pointer'></span>".
-                "<span class='lever'></span>" .
-                "</label>".
-             "</div>";
-   }
-
-
-   /**
     * Compute title (use case of PDF OUTPUT)
     *
     * @param array $data Array data of search
