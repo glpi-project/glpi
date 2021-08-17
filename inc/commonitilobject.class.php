@@ -8554,4 +8554,46 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       return $columns[$column_field];
    }
+
+   public function getTimelineStats(): array {
+      global $DB;
+
+      $stats = [
+         'total_duration' => 0,
+         'percent_done'   => 0,
+      ];
+
+      // compute itilobject duration
+      $task_class  = $this->getType() . "Task";
+      $task_table  = getTableForItemType($task_class);
+      $foreign_key = $this->getForeignKeyField();
+
+      $criteria = [
+         'SELECT' => ['SUM' => 'actiontime AS actiontime'],
+         'FROM'   => $task_table,
+         'WHERE'  => [$foreign_key => $this->fields['id']]
+      ];
+
+      $req = $DB->request($criteria);
+      if ($row = $req->next()) {
+         $stats['total_duration'] = $row['actiontime'];
+      }
+
+      // compute itilobject percent done
+      $criteria    = [
+         $foreign_key => $this->fields['id'],
+         'state'     => [Planning::TODO, Planning::DONE]
+      ];
+      $total_tasks = countElementsInTable($task_table, $criteria);
+      $criteria    = [
+         $foreign_key => $this->fields['id'],
+         'state'      => Planning::DONE,
+      ];
+      $done_tasks = countElementsInTable($task_table, $criteria);
+      if ($total_tasks != 0) {
+         $stats['percent_done'] = floor(100 * $done_tasks / $total_tasks);
+      }
+
+      return $stats;
+   }
 }

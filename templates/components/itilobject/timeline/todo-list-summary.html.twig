@@ -1,4 +1,4 @@
-{% set timeline_stats = item|getTimelineStats() %}
+{% set timeline_stats = item.getTimelineStats() %}
 {% set total_duration = timeline_stats['total_duration'] ?? 0 %}
 {% set todo_percent = timeline_stats['percent_done'] ?? 0 %}
 
