@@ -47,7 +47,6 @@ class ToolboxExtension extends AbstractExtension {
          new TwigFunction('getItemTypeSearchURL', [$this, 'getItemTypeSearchURL']),
          new TwigFunction('getPictureUrl', [Toolbox::class, 'getPictureUrl']),
          new TwigFunction('getDateFormat', [Toolbox::class, 'getDateFormat']),
-         new TwigFunction('getSize', [Toolbox::class, 'getSize']),
          new TwigFunction('autoName', 'autoName', ['is_safe' => ['html']]),
          new TwigFunction('prepareArrayForInput', [Toolbox::class, 'prepareArrayForInput'], ['is_safe' => ['html']]),
          new TwigFunction('file_exists', 'file_exists'),
