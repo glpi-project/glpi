@@ -148,14 +148,14 @@ class Html extends \GLPITestCase {
 
       $origin = '1207.3';
 
-      $expected = '1&nbsp;207.30';
+      $expected = '1 207.30';
       $this->string(\Html::formatNumber($origin))->isIdenticalTo($expected);
 
       $expected = '1207.30';
       $this->string(\Html::formatNumber($origin, true))->isIdenticalTo($expected);
 
       $origin = 124556.693;
-      $expected = '124&nbsp;556.69';
+      $expected = '124 556.69';
       $this->string(\Html::formatNumber($origin))->isIdenticalTo($expected);
 
       $origin = 120.123456789;
@@ -180,7 +180,7 @@ class Html extends \GLPITestCase {
       $_SESSION['glpinumber_format'] = 2;
 
       $origin = '1207.3';
-      $expected = '1&nbsp;207,30';
+      $expected = '1 207,30';
       $this->string(\Html::formatNumber($origin))->isIdenticalTo($expected);
 
       $_SESSION['glpinumber_format'] = 3;
