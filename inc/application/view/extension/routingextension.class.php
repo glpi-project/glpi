@@ -59,8 +59,6 @@ class RoutingExtension extends AbstractExtension {
     * Return index path.
     *
     * @return string
-    *
-    * @TODO Add a unit test.
     */
    public function indexPath(): string {
       $index = '/index.php';
@@ -78,8 +76,6 @@ class RoutingExtension extends AbstractExtension {
     * @param string $resource
     *
     * @return string
-    *
-    * @TODO Add a unit test.
     */
    public function path(string $resource): string {
       return Html::getPrefixedUrl($resource);
@@ -92,8 +88,6 @@ class RoutingExtension extends AbstractExtension {
     * @param null|int $id
     *
     * @return string
-    *
-    * @TODO Add a unit test.
     */
    public function formPath(string $itemtype, ?int $id = null): string {
       if (!is_a($itemtype, CommonGLPI::class, true)) {
@@ -109,8 +103,6 @@ class RoutingExtension extends AbstractExtension {
     * @param string $resource
     *
     * @return string
-    *
-    * @TODO Add a unit test.
     */
    public function url(string $resource): string {
       global $CFG_GLPI;
@@ -130,8 +122,6 @@ class RoutingExtension extends AbstractExtension {
     * @param null|int $id
     *
     * @return string
-    *
-    * @TODO Add a unit test.
     */
    public function formUrl(string $itemtype, ?int $id = null): string {
       if (!is_a($itemtype, CommonGLPI::class, true)) {
@@ -151,8 +141,6 @@ class RoutingExtension extends AbstractExtension {
     * @param string $shortcut the letter to underline
     *
     * @return string
-    *
-    * @TODO Add a unit test.
     */
    public function shortcut(string $string = "", string $shortcut = ""):string {
       if ($shortcut == "") {

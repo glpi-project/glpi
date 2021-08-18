@@ -5,7 +5,7 @@
 <div class="card">
    <div class="list-group list-group-flush list-group-hoverable">
       {% for id, linked in linked_tickets %}
-      {% set new_ticket = 'Ticket'|getFromDB(linked['tickets_id']) %}
+      {% set new_ticket = get_item('Ticket', linked['tickets_id']) %}
       <div class="list-group-item">
          <div class="row">
             <div class="col-auto">

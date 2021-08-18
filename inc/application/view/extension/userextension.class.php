@@ -81,15 +81,15 @@ class UserExtension extends AbstractExtension {
       if ($user->getFromDB($users_id)) {
          if (($anon = $this->getAnonymizedName($users_id)) !== null) {
             // if anonymized name active, return two first letters of the anon name
-            return strtoupper(substr($anon, 0, 2));
+            return mb_strtoupper(mb_substr($anon, 0, 2));
          }
 
-         $initials = substr($user->fields['firstname'], 0, 1) .
-            substr($user->fields['realname'], 0, 1);
+         $initials = mb_substr($user->fields['firstname'], 0, 1)
+            . mb_substr($user->fields['realname'], 0, 1);
          if (!$initials) {
-            $initials = substr($user->fields['name'], 0, 2);
+            $initials = mb_substr($user->fields['name'], 0, 2);
          }
-         return strtoupper($initials);
+         return mb_strtoupper($initials);
       }
 
       return "";
@@ -104,13 +104,13 @@ class UserExtension extends AbstractExtension {
       return "";
    }
 
-   public function getLink(int $users_id = null, array $options = []):string {
+   public function getLink(int $users_id = null):string {
       $user = new User;
       if ($user->getFromDB($users_id)) {
-         if (($anon_name = $this->getAnonymizedName($users_id, $options)) !== null) {
+         if (($anon_name = $this->getAnonymizedName($users_id)) !== null) {
             return $anon_name;
          }
-         return $user->getLink($options);
+         return $user->getLink();
       }
 
       return "";
@@ -147,11 +147,8 @@ class UserExtension extends AbstractExtension {
    }
 
 
-   public function getAnonymizedName(int $users_id = null, array $options = []): ?string {
+   private function getAnonymizedName(int $users_id = null): ?string {
       $entities_id = Session::getActiveEntity();
-      if (isset($options['timeline_item'])) {
-         $entities_id = $options['timeline_item']->getEntityID();
-      }
 
       return Session::getCurrentInterface() == 'helpdesk'
          ? User::getAnonymizedName($users_id, $entities_id)

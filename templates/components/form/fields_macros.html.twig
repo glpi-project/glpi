@@ -39,7 +39,7 @@
    {% set tpl_value = option.value|length > 0 ? option.value : item.fields[name]|verbatim_value %}
    {% set tplmark = '' %}
    {% if item.isTemplate() %} {# TODO exluded types #}
-      {% set tplmark = getAutofillMark(item, name, {'withtemplate': withtemplate}, tpl_value) %}
+      {% set tplmark = item.getAutofillMark(name, {'withtemplate': withtemplate}, tpl_value) %}
    {% endif %}
    {% set value = autoName(item.fields[name]|verbatim_value, name, (withtemplate == 2), item.getType(), item.fields['entities_id']) %}
    {% set label = __('%1$s%2$s')|format(label, tplmark) %}
@@ -182,10 +182,7 @@
                const user_mention = new GLPI.RichText.UserMention(
                   tinymce.get('{{ id }}'),
                   {{ session('glpiactive_entity') }},
-                  '{{ getNewIDORToken('User', {
-                     'right': 'all',
-                     'entity_restrict': session('glpiactive_entity')
-                  }) }}'
+                  '{{ idor_token('User', {'right': 'all', 'entity_restrict': session('glpiactive_entity')}) }}'
                );
                user_mention.register();
             }
@@ -543,7 +540,7 @@
    {% endif %}
 
    {% set field %}
-      {{ itemtype|dropdown({
+      {{ itemtype|itemtype_dropdown({
          'name': name,
          'value': value,
          'rand': rand,

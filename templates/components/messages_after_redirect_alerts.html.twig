@@ -1,4 +1,4 @@
-{% set messages = getMessagesAfterRedirect() %}
+{% set messages = pull_messages() %}
 {% if messages|length %}
 
    {% for type, message in messages %}

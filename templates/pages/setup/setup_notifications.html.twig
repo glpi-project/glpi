@@ -59,21 +59,21 @@
       {% if use_notifications and has_active_mode %}
          <div class="card col-12 col-lg-5 mt-4 mt-lg-0">
             <div class="card-header">
-               <h3>{{ _n('Notification', 'Notifications', getPluralNumber()) }}</h3>
+               <h3>{{ _n('Notification', 'Notifications', get_plural_number()) }}</h3>
             </div>
 
             <div class="list-group list-group-flush">
-               {% if have_right('config', constant('READ')) %}
+               {% if has_profile_right('config', constant('READ')) %}
                   <a href="{{ path('front/notificationtemplate.php') }}" class="list-group-item list-group-item-action">
                      <i class="fa-fw fas fa-layer-group"></i>
-                     <span>{{ _n('Notification template', 'Notification templates', getPluralNumber()) }}</span>
+                     <span>{{ _n('Notification template', 'Notification templates', get_plural_number()) }}</span>
                   </a>
                {% endif %}
 
-               {% if have_right('notification', constant('READ')) %}
+               {% if has_profile_right('notification', constant('READ')) %}
                   <a href="{{ path('front/notification.php') }}" class="list-group-item list-group-item-action">
                      <i class="fa-fw fas fa-bell "></i>
-                     <span>{{ _n('Notification', 'Notifications', getPluralNumber()) }}</span>
+                     <span>{{ _n('Notification', 'Notifications', get_plural_number()) }}</span>
                   </a>
                {% else %}
                   <div class="list-group-item">

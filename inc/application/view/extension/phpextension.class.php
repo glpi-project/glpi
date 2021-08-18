@@ -32,18 +32,61 @@
 
 namespace Glpi\Application\View\Extension;
 
-use Entity;
+use Toolbox;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+use Twig\TwigTest;
 
 /**
  * @since 10.0.0
  */
-class EntityExtension extends AbstractExtension {
+class PhpExtension extends AbstractExtension {
 
    public function getFunctions(): array {
       return [
-         new TwigFunction('Entity_getUsedConfig', [Entity::class, 'getUsedConfig']),
+         new TwigFunction('php_config', [$this, 'phpConfig']),
       ];
+   }
+
+   public function getTests(): array {
+      return [
+         new TwigTest('instanceof', [$this, 'isInstanceOf']),
+         new TwigTest('usingtrait', [$this, 'isUsingTrait']),
+      ];
+   }
+
+   /**
+    * Get PHP configuration value.
+    *
+    * @param string $name
+    *
+    * @return mixed
+    */
+   public function phpConfig(string $name) {
+      return ini_get($name);
+   }
+
+   /**
+    * Checks if a given value is an instance of given class name.
+    *
+    * @param mixed  $value
+    * @param string $classname
+    *
+    * @return bool
+    */
+   public function isInstanceof($value, $classname): bool {
+      return is_object($value) && $value instanceof $classname;
+   }
+
+   /**
+    * Checks if a given value is an instance of class using given trait name.
+    *
+    * @param mixed  $value
+    * @param string $trait
+    *
+    * @return bool
+    */
+   public function isUsingTrait($value, $trait): bool {
+      return is_object($value) && Toolbox::hasTrait($value, $trait);
    }
 }

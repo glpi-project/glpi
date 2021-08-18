@@ -44,7 +44,6 @@ class SearchExtension extends AbstractExtension {
       return [
          new TwigFunction('showItem', [$this, 'showItem']),
          new TwigFunction('displayConfigItem', [$this, 'displayConfigItem']),
-         new TwigFunction('computeTitle', [$this, 'computeTitle']),
       ];
    }
 
@@ -66,15 +65,8 @@ class SearchExtension extends AbstractExtension {
     * @param array array
     *
     * @return string
-    *
-    * @TODO Add a unit test.
     */
    public function displayConfigItem(string $itemtype, int $id, array $data = []): string {
       return Search::displayConfigItem($itemtype, $id, $data);
-   }
-
-
-   public function computeTitle(array $data = []): string {
-      return Search::computeTitle($data);
    }
 }

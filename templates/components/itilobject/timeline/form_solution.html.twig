@@ -1,8 +1,8 @@
 {% extends 'components/itilobject/timeline/form_timeline_item.html.twig' %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
 {% set candedit = item.maySolve() %}
-{% set can_read_kb = have_rights_or('knowbase', [constant('READ'), constant('KnowbaseItem::READFAQ')]) %}
-{% set can_update_kb = have_rights_or('knowbase', [constant('READ'), constant('KnowbaseItem::READFAQ')]) %}
+{% set can_read_kb = has_profile_right('knowbase', constant('READ')) or has_profile_right('knowbase', constant('KnowbaseItem::READFAQ')) %}
+{% set can_update_kb = has_profile_right('knowbase', constant('UPDATE')) %}
 {% set nokb = params['nokb'] is defined or params['nokb'] == true %}
 {% set noform = params['noform'] is defined or params['noform'] == true %}
 {% set disabled = (candedit == false) %}
@@ -30,7 +30,10 @@
       </div>
    {% else %}
       <div class="itilsolution">
-         {{ alertValidation(item, 'solution') }}
+         {% set validation_class = item.getValidationClassInstance() %}
+         {% if validation_class is not null %}
+            {{ validation_class.alertValidation(item, 'solution') }}
+         {% endif %}
 
          {% if not noform %}
          <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
@@ -95,7 +98,7 @@
 
                         {% set sol_template_lbl %}
                            <i class="fas fa-reply fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
-                              title="{{ _n('Solution template', 'Solution templates', getPluralNumber) }}"></i>
+                              title="{{ _n('Solution template', 'Solution templates', get_plural_number()) }}"></i>
                         {% endset %}
                         {{ fields.dropdownField(
                            'SolutionTemplate',

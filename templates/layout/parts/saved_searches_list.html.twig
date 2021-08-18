@@ -7,7 +7,7 @@
 {% for search in saved_searches %}
    <div class="savedsearches-item list-group-item search-line d-flex align-items-center pe-1 {{ active == search['id'] ? 'active' : '' }}"
          data-id="{{ search['id'] }}">
-      <a href="{{ getItemTypeSearchURL('SavedSearch') }}?action=load&amp;id={{ search['id'] }}"
+      <a href="{{ 'SavedSearch'|itemtype_search_url }}?action=load&amp;id={{ search['id'] }}"
          class="d-block saved-searches-link text-truncate">
          {{ search['name']|verbatim_value }}
       </a>

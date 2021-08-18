@@ -9,7 +9,10 @@
          'display': false
       }|merge(field_options))|raw }}
 
-      {{ alertValidation(item, 'status') }}
+      {% set validation_class = item.getValidationClassInstance() %}
+      {% if validation_class is not null %}
+         {{ validation_class.alertValidation(item, 'status') }}
+      {% endif %}
    {% endset %}
 {% else %}
    {% set status_field %}

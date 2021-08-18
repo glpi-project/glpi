@@ -15,19 +15,19 @@
                <div id="{{ card_id }}" class="accordion-collapse collapse" style="transition: none">
                   <div class="list-group list-group-flush list-group-hoverable">
                      {% for itemtype, dropdown_label in dropdown %}
-                        {% set is_entity_assign = itemtype|isEntityAssign() %}
+                        {% set is_entity_assign = itemtype|itemtype_class.isEntityAssign() %}
                         <a class="list-group-item list-group-item-action {{ is_entity_assign ? '' : 'dropdown-no-entity' }}"
-                           href="{{ itemtype|getSearchUrl() }}">
+                           href="{{ itemtype|itemtype_search_url }}">
                            <div class="row">
                               <div class="col-auto">
-                                 <i class="fa-fw {{ itemtype|getIcon() }}"></i>
+                                 <i class="fa-fw {{ itemtype|itemtype_icon }}"></i>
                               </div>
                               <div class="col text-truncate">
                                  {{ dropdown_label }}
                               </div>
                               <div class="col-1 text-muted">
                                  {% if is_entity_assign %}
-                                    <i class="{{ 'Entity'|getIcon() }} fa-sm"
+                                    <i class="{{ 'Entity'|itemtype_icon }} fa-sm"
                                        data-bs-toggle="tooltip"
                                        title="{{ __('Dropdown with entity management') }}"></i>
                                  {% endif %}

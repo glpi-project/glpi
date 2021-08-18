@@ -116,13 +116,13 @@
    {% endfor %}
 
    <div class="timeline-item tasks-title d-none">
-      <h3>{{ _n('Task', 'Tasks', getPluralNumber()) }}</h3>
+      <h3>{{ _n('Task', 'Tasks', get_plural_number()) }}</h3>
    </div>
 
    {% include 'components/itilobject/timeline/todo-list-summary.html.twig' %}
 
    <div class="timeline-item validations-title d-none mt-4">
-      <h3>{{ _n('Validation', 'Validations', getPluralNumber()) }}</h3>
+      <h3>{{ _n('Validation', 'Validations', get_plural_number()) }}</h3>
    </div>
 
    {% include 'components/itilobject/timeline/approbation_form.html.twig' %}

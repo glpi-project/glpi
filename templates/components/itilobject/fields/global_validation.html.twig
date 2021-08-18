@@ -3,10 +3,10 @@
 {% if item.isField('global_validation') %}
    {% if item.isNewItem() %}
       {% set validation_right = '' %}
-      {% if params['type'] == constant('Ticket::INCIDENT_TYPE') and have_right('ticketvalidation', constant('TicketValidation::CREATEINCIDENT')) %}
+      {% if params['type'] == constant('Ticket::INCIDENT_TYPE') and has_profile_right('ticketvalidation', constant('TicketValidation::CREATEINCIDENT')) %}
          {% set validation_right = 'validate_incident' %}
       {% endif %}
-      {% if params['type'] == constant('Ticket::DEMAND_TYPE') and have_right('ticketvalidation', constant('TicketValidation::CREATEREQUEST')) %}
+      {% if params['type'] == constant('Ticket::DEMAND_TYPE') and has_profile_right('ticketvalidation', constant('TicketValidation::CREATEREQUEST')) %}
          {% set validation_right = 'validate_request' %}
       {% endif %}
 

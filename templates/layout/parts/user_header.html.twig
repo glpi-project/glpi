@@ -1,5 +1,5 @@
-{% set debug = is_debug_active ? 'bg-red-lt' : '' %}
 {% set rand_header = random() %}
+
 <div class="btn-group">
    {% if is_debug_active %}
       <button class="btn btn-outline-danger d-none d-md-block see_debug" role="button">
@@ -9,31 +9,27 @@
       </button>
    {% endif %}
 
-   {% if is_user_connected %}
+   {% if user is not null %}
    <div class="navbar-nav flex-row order-md-last user-menu">
       <div class="nav-item dropdown">
-         <a href="#" class="nav-link d-flex lh-1 text-reset p-1 dropdown-toggle {{ debug }}"
+         <a href="#" class="nav-link d-flex lh-1 text-reset p-1 dropdown-toggle {% if is_debug_active %}bg-red-lt{% endif %}"
             data-bs-toggle="dropdown" data-bs-auto-close="outside">
             <div class="pe-2 d-none d-xl-block">
-               <div>{{ active_profile_name|verbatim_value|u.truncate(35, '...') }}</div>
-               <div class="mt-1 small text-muted">{{ active_entity_name|verbatim_value|u.truncate(35, '...') }}</div>
+               <div>{{ (session('glpiactiveprofile')['name'] ?? '')|verbatim_value|u.truncate(35, '...') }}</div>
+               <div class="mt-1 small text-muted">{{ session('glpiactive_entity_name')|verbatim_value|u.truncate(35, '...') }}</div>
             </div>
-            {% if current_user_picture is not empty %}
-               <span class="avatar" style="background-image: url({{ path(current_user_picture) }})"></span>
-            {% else %}
-               <i class="fas fa-2x fa-user"></i>
-            {% endif %}
+            <span class="avatar" style="background-image: url({{ path(user.getPicturePath()) }})"></span>
          </a>
          <div class="dropdown-menu dropdown-menu-end mt-1 dropdown-menu-arrow animate__animated animate__fadeInRight">
-            <h6 class="dropdown-header">{{ current_user_name|verbatim_value }}</h6>
+            <h6 class="dropdown-header">{{ get_item_name(user) }}</h6>
 
             {{ include('layout/parts/profile_selector.html.twig') }}
 
             <div class="dropdown-divider"></div>
 
-            {% if has_global_right('Config', constant('UPDATE')) %}
+            {% if has_itemtype_right('Config', constant('UPDATE')) %}
                <a href="{{ path('/ajax/switchdebug.php') }}"
-                  class="dropdown-item {{ is_debug_active ? 'bg-red-lt' : '' }}"
+                  class="dropdown-item {% if is_debug_active %}bg-red-lt{% endif %}"
                   title="{{ __('Change mode') }}">
                   <i class="fas fa-fw fa-bug debug"></i>
                   {{ is_debug_active ? __('Debug mode enabled') : __('Debug mode disabled') }}
@@ -72,7 +68,7 @@
                <i class="fas fa-fw fa-user-cog"></i>
                {{ __('My settings') }}
             </a>
-            <a href="{{ logout_path }}" class="dropdown-item" title="{{ __('Logout') }}">
+            <a href="{{ path('/front/logout.php' ~ ((session('glpiextauth') ?: false) ? '?noAUTO=1' : '')) }}" class="dropdown-item" title="{{ __('Logout') }}">
                <i class="fas fa-fw fa-sign-out-alt"></i>
                {{ __('Logout') }}
             </a>
@@ -109,7 +105,7 @@
    </div>
 </div>
 
-{% elseif is_demo_active != 'false' %}
+{% elseif constant('GLPI_DEMO_MODE') %}
    <a href="{{ path('/front/preference.php?forcetab=User$1') }}" class="dropdown-item" title="{{ language_name }}"
       data-language-selector>
       <i class="fas fa-fw fa-language"></i>

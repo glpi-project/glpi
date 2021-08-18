@@ -18,7 +18,7 @@
 {% endif %}
 
 <table class="central">
-   {{ hook_display_central() }}
+   {{ call_plugin_hook('display_central') }}
 </table>
 
 {% set grid_items = [

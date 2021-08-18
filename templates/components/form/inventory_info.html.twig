@@ -8,8 +8,8 @@
       <h4 class="card-title ps-4">
          {{ __('Inventory information') }}
       </h4>
-      {% set inventory_filename = getInventoryFileName(item) %}
-      {% if inventory_filename|length > 0 %}
+      {% set inventory_filename = item is usingtrait('Glpi\\Features\\Inventoriable') ? item.getInventoryFileName() : null %}
+      {% if inventory_filename is not null %}
          <a href="{{ path('front/document.send.php?file=_inventory/' ~ inventory_filename) }}"
             class="btn btn-sm btn-secondary ms-auto" target="_blank"
             data-bs-toggle="tooltip" data-bs-placement="right"
@@ -24,8 +24,8 @@
       {% endif %}
    </div>
 
-   {% set agent = getAgentForItem(item) %}
-   {% if agent == false %}
+   {% set agent = item is usingtrait('Glpi\\Features\\Inventoriable') ? item.getInventoryAgent() : null %}
+   {% if agent is null %}
       {{ __('No agent has been linked.') }}
    {% else %}
       <div class="card-body row">

@@ -8596,4 +8596,17 @@ abstract class CommonITILObject extends CommonDBTM {
 
       return $stats;
    }
+
+   /**
+    * Returns an instance of validation class, if it exists.
+    *
+    * @return CommonITILValidation|null
+    */
+   public static function getValidationClassInstance(): ?CommonITILValidation {
+      $validation_class = static::class . 'Validation';
+      if (class_exists($validation_class)) {
+         return new $validation_class();
+      }
+      return null;
+   }
 }

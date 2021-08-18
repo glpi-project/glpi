@@ -5646,4 +5646,19 @@ class CommonDBTM extends CommonGLPI {
 
       return $pictures;
    }
+
+   public function getMassiveActionsForItem(): MassiveAction {
+      $params = [
+         'item' => [
+            $this->getType() => [
+               $this->fields['id'] => 1
+            ]
+         ]
+      ];
+      if ($this->isEntityAssign()) {
+         $params['entity_restrict'] = $this->getEntityID();
+      }
+
+      return new MassiveAction($params, [], 'initial', true);
+   }
 }

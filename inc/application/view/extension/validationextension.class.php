@@ -32,10 +32,6 @@
 
 namespace Glpi\Application\View\Extension;
 
-use Change;
-use ChangeValidation;
-use CommonITILObject;
-use Ticket;
 use TicketValidation;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -49,16 +45,6 @@ class ValidationExtension extends AbstractExtension {
       return [
          new TwigFunction('TicketValidation__dropdownStatus', [TicketValidation::class, 'dropdownStatus'], ['is_safe' => ['html']]),
          new TwigFunction('TicketValidation__dropdownValidator', [TicketValidation::class, 'dropdownValidator'], ['is_safe' => ['html']]),
-         new TwigFunction('alertValidation', [$this, 'alertValidation'], ['is_safe' => ['html']]),
       ];
-   }
-
-
-   public function alertValidation(CommonITILObject $item, string $type = "status"): void {
-      if ($item instanceof Ticket) {
-         TicketValidation::alertValidation($item, $type);
-      } else if ($item instanceof Change) {
-         ChangeValidation::alertValidation($item, $type);
-      }
    }
 }

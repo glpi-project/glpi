@@ -32,13 +32,11 @@
 
 namespace Glpi\Application\View\Extension;
 
-use Agent;
 use CommonDBTM;
 use CommonDropdown;
 use CommonGLPI;
-use Computer;
-use Computer_Item;
-use MassiveAction;
+use Dropdown;
+use Glpi\Toolbox\Sanitizer;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -50,265 +48,177 @@ class ItemtypeExtension extends AbstractExtension {
 
    public function getFilters(): array {
       return [
-         new TwigFilter('dropdown', [$this, 'dropdown'], ['is_safe' => ['html']]),
-         new TwigFilter('canCreate', [$this, 'canCreate']),
-         new TwigFilter('canView', [$this, 'canView']),
-         new TwigFilter('canUpdate', [$this, 'canUpdate']),
-         new TwigFilter('canDelete', [$this, 'canDelete']),
-         new TwigFilter('canPurge', [$this, 'canPurge']),
-         new TwigFilter('getFromDB', [$this, 'getFromDB']),
-         new TwigFilter('getIcon', [$this, 'getIcon']),
-         new TwigFilter('getSearchUrl', [$this, 'getSearchUrl']),
-         new TwigFilter('getLinkURL', [$this, 'getLinkURL'], ['is_safe' => ['html']]),
-         new TwigFilter('getTable', [$this, 'getTable'], ['is_safe' => ['html']]),
-         new TwigFilter('isEntityAssign', [$this, 'isEntityAssign']),
-         new TwigFilter('showForm', [$this, 'showForm'], ['is_safe' => ['html']]),
+         new TwigFilter('itemtype_class', [$this, 'getItemtypeClass']),
+         new TwigFilter('itemtype_dropdown', [$this, 'getItemtypeDropdown'], ['is_safe' => ['html']]),
+         new TwigFilter('itemtype_icon', [$this, 'getItemtypeIcon']),
+         new TwigFilter('itemtype_name', [$this, 'getItemtypeName']),
+         new TwigFilter('itemtype_search_url', [$this, 'getItemtypeSearchUrl']),
       ];
    }
 
    public function getFunctions(): array {
       return [
-         new TwigFunction('itemInstanceOf', [$this, 'itemInstanceOf']),
-         new TwigFunction('maybeRecursive', [$this, 'maybeRecursive']),
-         new TwigFunction('getAgentForItem', [$this, 'getAgentForItem']),
-         new TwigFunction('getInventoryFileName', [$this, 'getInventoryFileName']),
-         new TwigFunction('getDcBreadcrumb', [$this, 'getDcBreadcrumb'], ['is_safe' => ['html']]),
-         new TwigFunction('getAutofillMark', [$this, 'getAutofillMark'], ['is_safe' => ['html']]),
-         new TwigFunction('getMassiveActions', [$this, 'getMassiveActions']),
-         new TwigFunction('displaySpecificTypeField', [$this, 'displaySpecificTypeField']),
+         new TwigFunction('get_item', [$this, 'getItem']),
+         new TwigFunction('get_item_comment', [$this, 'getItemComment']),
+         new TwigFunction('get_item_link', [$this, 'getItemLink'], ['is_safe' => ['html']]),
+         new TwigFunction('get_item_name', [$this, 'getItemName']),
       ];
    }
 
-   public function dropdown($itemtype, array $options = []): bool {
-      if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
-         $itemtype::dropdown($options);
-      }
-
-      return false;
+   /**
+    * Returns class instance of given itemtype.
+    *
+    * @param string $itemtype
+    *
+    * @return CommonGLPI|null
+    */
+   public function getItemtypeClass(string $itemtype): ?CommonGLPI {
+      return is_a($itemtype, CommonGLPI::class, true) ? new $itemtype() : null;
    }
 
-   public function canCreate($itemtype): bool {
-      if ($itemtype instanceof CommonGLPI || is_a($itemtype, CommonGLPI::class, true)) {
-         return $itemtype::canCreate();
-      }
-
-      return false;
+   /**
+    * Returns dropdwon HTML code for given itemtype.
+    *
+    * @param string $itemtype
+    *
+    * @return CommonGLPI|null
+    */
+   public function getItemtypeDropdown($itemtype, array $options = []): ?string {
+      $options['display'] = false;
+      return is_a($itemtype, CommonDBTM::class, true) ? $itemtype::dropdown($options) : null;
    }
 
-   public function canView($itemtype): bool {
-      if ($itemtype instanceof CommonGLPI || is_a($itemtype, CommonGLPI::class, true)) {
-         return $itemtype::canView();
-      }
-
-      return false;
+   /**
+    * Returns typename of given itemtype.
+    *
+    * @param string $itemtype
+    *
+    * @return string|null
+    */
+   public function getItemtypeIcon(string $itemtype): ?string {
+      return is_a($itemtype, CommonDBTM::class, true) ? $itemtype::getIcon() : null;
    }
 
-   public function canUpdate($itemtype): bool {
-      if ($itemtype instanceof CommonGLPI || is_a($itemtype, CommonGLPI::class, true)) {
-         return $itemtype::canUpdate();
-      }
-
-      return false;
+   /**
+    * Returns typename of given itemtype.
+    *
+    * @param string $itemtype
+    * @param number $count
+    *
+    * @return string|null
+    */
+   public function getItemtypeName(string $itemtype, $count = 1): ?string {
+      return is_a($itemtype, CommonGLPI::class, true) ? $itemtype::getTypeName($count) : null;
    }
 
-   public function canDelete($itemtype): bool {
-      if ($itemtype instanceof CommonGLPI || is_a($itemtype, CommonGLPI::class, true)) {
-         return $itemtype::canDelete();
-      }
-
-      return false;
+   /**
+    * Returns search URL of given itemtype.
+    *
+    * @param string $itemtype
+    *
+    * @return string|null
+    */
+   public function getItemtypeSearchUrl(string $itemtype): ?string {
+      return is_a($itemtype, CommonGLPI::class, true) ? $itemtype::getSearchURL() : null;
    }
 
-   public function canPurge($itemtype): bool {
-      if ($itemtype instanceof CommonGLPI || is_a($itemtype, CommonGLPI::class, true)) {
-         return $itemtype::canPurge();
+   /**
+    * Returns item from given itemtype having given ID.
+    *
+    * @param string  $itemtype Itemtype of the item.
+    * @param int     $id       ID of the item.
+    *
+    * @return CommonDBTM|null
+    */
+   public function getItem($itemtype, int $id): ?CommonDBTM {
+      if (is_a($itemtype, CommonDBTM::class, true) && ($item = $itemtype::getById($id)) !== false) {
+         return $item;
       }
-
-      return false;
+      return null;
    }
 
-   public function getFromDB($itemtype, int $id = 0): ?CommonDBTM {
-      if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
-         $item = new $itemtype;
-         $item->getFromDB($id);
+   /**
+    * Returns name of the given item.
+    * In case of a dropdown, it returns the translated name, otherwise, it returns the friendly name.
+    *
+    * @param CommonDBTM|string $item   Item instance of itemtype of the item.
+    * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
+    *
+    * @return string|null
+    */
+   public function getItemName($item, ?int $id = null): ?string {
+      if (is_a($item, CommonDropdown::class, true)) {
+         $items_id = $item instanceof CommonDBTM ? $item->fields[$item->getIndexName()] : $id;
+         $name = Dropdown::getDropdownName($item::getTable(), $items_id, false, true, false, '');
+         return Sanitizer::getVerbatimValue($name);
+      }
+
+      if (($instance = $this->getItemInstance($item, $id)) === null) {
+         return null;
+      }
+
+      return Sanitizer::getVerbatimValue($instance->getFriendlyName());
+   }
+
+   /**
+    * Returns comment of the given item.
+    * In case of a dropdown, it returns the translated comment.
+    *
+    * @param CommonDBTM|string $item   Item instance of itemtype of the item.
+    * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
+    *
+    * @return string|null
+    */
+   public function getItemComment($item, ?int $id = null): ?string {
+      if (is_a($item, CommonDropdown::class, true)) {
+         $items_id = $item instanceof CommonDBTM ? $item->fields[$item->getIndexName()] : $id;
+         $texts = Dropdown::getDropdownName($item::getTable(), $items_id, true, true, false, '');
+         return Sanitizer::getVerbatimValue($texts['comment']);
+      }
+
+      if (($instance = $this->getItemInstance($item, $id)) === null) {
+         return null;
+      }
+
+      $comment = $instance->isField('comment') ? $instance->fields['comment'] : null;
+
+      return $comment !== null ? Sanitizer::getVerbatimValue($comment) : null;
+   }
+
+   /**
+    * Returns link of the given item.
+    *
+    * @param CommonDBTM|string $item   Item instance of itemtype of the item.
+    * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
+    *
+    * @return string|null
+    */
+   public function getItemLink($item, ?int $id = null): ?string {
+      if (($instance = $this->getItemInstance($item, $id)) === null) {
+         return null;
+      }
+
+      return $instance->getLink();
+   }
+
+   /**
+    * Returns instance of item with given ID.
+    *
+    * @param CommonDBTM|string $item   Item instance of itemtype of the item.
+    * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
+    *
+    * @return CommonDBTM|null
+    */
+   private function getItemInstance($item, ?int $id = null): ?CommonDBTM {
+      if (!is_a($item, CommonDBTM::class, true)) {
+         return null;
+      }
+
+      if ($item instanceof CommonDBTM && ($id === null || $item->fields[$item->getIndexName()] === $id)) {
          return $item;
       }
 
-      return null;
-   }
-
-   public function getIcon($itemtype):? string {
-      if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
-         return $itemtype::getIcon();
-      }
-
-      return null;
-   }
-
-   public function getSearchUrl($itemtype):? string {
-      if ($itemtype instanceof CommonGLPI || is_a($itemtype, CommonGLPI::class, true)) {
-         return $itemtype::getSearchURL();
-      }
-
-      return null;
-   }
-
-   public function getLinkURL($itemtype, int $id = 0): ?string {
-      if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
-         $item = new $itemtype;
-         $item->getFromDB($id);
-         return $item->getLinkURL();
-      }
-
-      return null;
-   }
-
-   public function isEntityAssign($itemtype): bool {
-      if ($itemtype instanceof CommonDBTM || is_a($itemtype, CommonDBTM::class, true)) {
-         $item = new $itemtype;
-         return $item->isEntityAssign();
-      }
-
-      return false;
-   }
-
-   /**
-    * chech an givent item is an instance of given class
-    *
-    * @param mixed $item
-    * @param string $class
-    *
-    * @return bool
-    *
-    * @TODO Add a unit test.
-    */
-   public function itemInstanceOf($item, string $class = ""): ?bool {
-      return ($item instanceof $class);
-   }
-
-
-   /**
-    * Check given item can be entity recursive
-    *
-    * @param CommonDBTM $item
-    *
-    * @return bool
-    *
-    * @TODO Add a unit test.
-    */
-   public function maybeRecursive(CommonDBTM $item): ?bool {
-      return $item->maybeRecursive();
-   }
-
-   /**
-    * Retrieve agent for a given item
-    *
-    * @param CommonDBTM $item
-    *
-    * @return bool|Agent
-    *
-    * @TODO Add a unit test.
-    */
-   public function getAgentForItem(CommonDBTM $item) {
-      $agent = new Agent();
-      $has_agent = $agent->getFromDBByCrit([
-         'itemtype' => $item->getType(),
-         'items_id' => $item->fields['id']
-      ]);
-
-      if (!$has_agent && $item instanceof Computer) {
-         $citem = new Computer_Item;
-         $has_relation = $citem->getFromDBByCrit([
-            'itemtype' => $item->getType(),
-            'items_id' => $item->fields['id']
-         ]);
-         if ($has_relation) {
-            $has_agent = $agent->getFromDBByCrit([
-               'itemtype' => Computer::getType(),
-               'items_id' => $citem->fields['computers_id']
-            ]);
-         }
-      }
-
-      return $has_agent
-         ? $agent
-         : false;
-   }
-
-   /**
-    * Retrieve agent for a given item
-    *
-    * @param CommonDBTM $item
-    *
-    * @return bool|Agent
-    *
-    * @TODO Add a unit test.
-    */
-   public function getInventoryFileName(CommonDBTM $item):?string {
-      if (method_exists($item, "getInventoryFileName")) {
-         return $item->getInventoryFileName();
-      }
-
-      return "";
-   }
-
-
-   /**
-    * Retrieve Datacenter breadcrumbs for a given item
-    *
-    * @param CommonDBTM $item
-    *
-    * @return ?array
-    */
-   public function getDcBreadcrumb(CommonDBTM $item): ?array {
-      if (method_exists($item, "getDcBreadcrumb")) {
-         return $item->getDcBreadcrumb();
-      }
-
-      return [];
-   }
-
-
-   public function getAutofillMark(CommonDBTM $item, string $field, array $options, string $value = null):string {
-      return $item->getAutofillMark($field, $options, $value);
-   }
-
-   public function getMassiveActions(CommonDBTM $item):array {
-      $ma = new MassiveAction([
-            'item' => [
-               $item->getType() => [
-                  $item->fields['id'] => 1
-               ]
-            ]
-         ],
-         $_GET,
-         'initial',
-         $item->fields['id'] > 0
-      );
-
-      $input = $ma->getInput();
-      if ($item->isEntityAssign()) {
-         $input['entity_restrict'] = $item->getEntityID();
-      }
-
-      return $input;
-   }
-
-   public function showForm(CommonDBTM $item, $options = []): void {
-      if (method_exists($item, 'showForm')) {
-         $item->showForm($item->getID(), $options);
-      }
-   }
-
-   /**
-    * @param CommonDBTM|string $item A CommonDBTM child class name or instance
-    * @return string Table name
-    */
-   public function getTable($item): string {
-      return $item::getTable();
-   }
-
-   public function displaySpecificTypeField(CommonDropdown $item, $ID, $field = []) {
-      $item->displaySpecificTypeField($ID, $field);
+      $instance = $id !== null ? $item::getById($id) : null;
+      return $instance ?: null;
    }
 }

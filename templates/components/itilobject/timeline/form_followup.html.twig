@@ -55,7 +55,7 @@
 
                      {% set fup_template_lbl %}
                         <i class="fas fa-reply fa-fw me-1"
-                           title="{{ _n('Followup template', 'Followup templates', getPluralNumber) }}"></i>
+                           title="{{ _n('Followup template', 'Followup templates', get_plural_number()) }}"></i>
                      {% endset %}
                      {{ fields.dropdownField(
                         'ITILFollowupTemplate',

@@ -5723,4 +5723,20 @@ JAVASCRIPT;
       $output .= "</span>";
       return $output;
    }
+
+
+   /**
+    * Get user picture path.
+    *
+    * @return string
+    */
+   public function getPicturePath(): string {
+
+      $url = Toolbox::getPictureUrl($this->fields['picture'], false);
+      if (null !== $url) {
+         return $url;
+      }
+
+      return '/pics/picture.png';
+   }
 }

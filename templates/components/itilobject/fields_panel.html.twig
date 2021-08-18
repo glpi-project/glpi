@@ -16,7 +16,7 @@
       <div id="ticket-main" class="accordion-collapse collapse show" aria-labelledby="heading-main-ticket">
          <div class="accordion-body row m-0 mt-n2">
 
-            {% if isMultiEntitiesMode() %}
+            {% if is_multi_entities_mode() %}
                {% if item.isNewItem() %}
                   {{ fields.dropdownField(
                      'Entity',
@@ -204,7 +204,7 @@
          <h2 class="accordion-header" id="service-levels-heading">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#service-levels" aria-expanded="true" aria-controls="service-levels">
                <i class="fas fa-stopwatch me-1"></i>
-               <span>{{ _n('Service level', 'Service levels', getPluralNumber()) }}</span>
+               <span>{{ _n('Service level', 'Service levels', get_plural_number()) }}</span>
                {% if nb_la > 0 %}
                   <span class="badge bg-secondary ms-2">{{ nb_la }}</span>
                {% endif %}

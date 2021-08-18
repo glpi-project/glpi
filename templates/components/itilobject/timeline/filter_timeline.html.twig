@@ -1,43 +1,43 @@
 {% set filters_buttons = {
    'description': {
       'title': __('Description'),
-      'icon': item|getIcon(),
+      'icon': item.getIcon(),
       'itemtype': 'ITILContent',
       'checked': true,
    },
    'followups': {
-      'title': _n('Followup', 'Followups', getPluralNumber()),
+      'title': _n('Followup', 'Followups', get_plural_number()),
       'icon': 'far fa-comment',
       'itemtype': 'ITILFollowup',
       'checked': true,
    },
    'tasks': {
-      'title': _n('Task', 'Tasks', getPluralNumber()),
+      'title': _n('Task', 'Tasks', get_plural_number()),
       'icon': 'far fa-check-square',
       'itemtype': 'ITILTask',
       'checked': true,
    },
    'documents': {
-      'title': _n('Document', 'Documents', getPluralNumber()),
+      'title': _n('Document', 'Documents', get_plural_number()),
       'icon': 'fas fa-paperclip',
       'itemtype': 'Document_Item',
       'checked': true,
    },
    'validations': {
-      'title': _n('Validation', 'Validations', getPluralNumber()),
+      'title': _n('Validation', 'Validations', get_plural_number()),
       'icon': 'far fa-thumbs-up',
       'itemtype': 'ITILValidation',
       'checked': true,
    },
    'solutions': {
-      'title': _n('Solution', 'Solutions', getPluralNumber()),
+      'title': _n('Solution', 'Solutions', get_plural_number()),
       'icon': 'fas fa-check',
       'itemtype': 'ITILSolution',
       'checked': true,
    },
 } %}
 
-{% if getCurrentInterface() == 'central' %}
+{% if get_current_interface() == 'central' %}
    {% set filters_buttons = filters_buttons|merge({
       'logs': {
          'title': __('Historical'),
@@ -81,7 +81,7 @@
       </div>
    </div>
 
-   {% if getCurrentInterface() == 'central' %}
+   {% if get_current_interface() == 'central' %}
       <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('View TODO list') }}">
          <button type="button"
                class="btn btn-sm btn-icon btn-ghost-secondary view-timeline-todo-list me-1">

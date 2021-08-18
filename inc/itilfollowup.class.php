@@ -802,8 +802,6 @@ class ITILFollowup  extends CommonDBChild {
     *     - item Object : the ITILObject parent
    **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
-
       if ($this->isNewItem()) {
          $this->getEmpty();
       }

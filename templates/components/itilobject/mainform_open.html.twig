@@ -24,7 +24,7 @@
       <input type="hidden" name="{{ itiltemplate_key }}" value="{{ itiltemplate.fields['id'] }}" />
    {% endif %}
    {% if predefined_fields is defined %}
-      <input type="hidden" name="_predefined_fields" value="{{ prepareArrayForInput(predefined_fields) }}" />
+      <input type="hidden" name="_predefined_fields" value="{{ predefined_fields }}" />
    {% endif %}
 
    {% if selfservice %}

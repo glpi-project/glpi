@@ -1568,12 +1568,13 @@ HTML;
       $menu = Plugin::doHookFunction("redefine_menus", $menu);
 
       $tpl_vars = [
-         'menu'                   => $menu,
-         'sector'                 => $sector,
-         'item'                   => $item,
-         'option'                 => $option,
-         'menu_active'            => $menu_active,
+         'menu'        => $menu,
+         'sector'      => $sector,
+         'item'        => $item,
+         'option'      => $option,
+         'menu_active' => $menu_active,
       ];
+      $tpl_vars += self::getPageHeaderTplVars();
 
       $help_url_key = Session::getCurrentInterface() === 'central' ? 'central_doc_url' : 'helpdesk_doc_url';
       $help_url = !empty($CFG_GLPI[$help_url_key]) ? $CFG_GLPI[$help_url_key] : 'http://glpi-project.org/help-central';
@@ -1756,9 +1757,12 @@ HTML;
          ];
       }
 
-      TemplateRenderer::getInstance()->display('layout/parts/page_header.html.twig', [
-         'menu' => $menu
-      ]);
+      TemplateRenderer::getInstance()->display(
+         'layout/parts/page_header.html.twig',
+         [
+            'menu' => $menu,
+         ] + self::getPageHeaderTplVars()
+      );
 
       CronTask::callCron();
    }
@@ -1851,12 +1855,42 @@ HTML;
 
       //$menu = Plugin::doHookFunction("redefine_menus", $menu);
 
-      TemplateRenderer::getInstance()->display('layout/parts/page_header.html.twig', [
-         'menu' => $menu
-      ]);
+      TemplateRenderer::getInstance()->display(
+         'layout/parts/page_header.html.twig',
+         [
+            'menu' => $menu,
+         ] + self::getPageHeaderTplVars()
+      );
 
       // call static function callcron() every 5min
       CronTask::callCron();
+   }
+
+   /**
+    * Returns template variables that can be used for page header in any context.
+    *
+    * @return array
+    */
+   private static function getPageHeaderTplVars(): array {
+      global $CFG_GLPI;
+
+      $founded_new_version = null;
+      if (!empty($CFG_GLPI['founded_new_version'] ?? null)) {
+         $current_version     = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
+         $founded_new_version = version_compare($current_version, $CFG_GLPI['founded_new_version'], '<')
+            ? $CFG_GLPI['founded_new_version']
+            : null;
+      }
+
+      $user = Session::getLoginUserID() !== false ? User::getById(Session::getLoginUserID()) : null;
+
+      return [
+         'is_debug_active'       => $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE,
+         'is_impersonate_active' => Session::isImpersonateActive(),
+         'founded_new_version'   => $founded_new_version,
+         'language_name'         => Dropdown::getLanguageName($_SESSION['glpilanguage']),
+         'user'                  => $user instanceof User ? $user : null,
+      ];
    }
 
 

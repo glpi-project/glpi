@@ -140,6 +140,18 @@ class Sanitizer {
    }
 
    /**
+    * Return verbatim value for an itemtype field.
+    * Returned value will be unsanitized if it has been transformed by GLPI sanitizing process.
+    *
+    * @param string $value
+    *
+    * @return string
+    */
+   public static function getVerbatimValue(string $value): string {
+      return Sanitizer::isSanitized($value) ? Sanitizer::unsanitize($value) : $value;
+   }
+
+   /**
     * Escape special chars to protect DB queries.
     *
     * @param string $value

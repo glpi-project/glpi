@@ -4303,7 +4303,7 @@ JAVASCRIPT;
          'timeline'           => $this->getTimelineItems(),
          'itiltemplate_key'   => $tpl_key,
          'itiltemplate'       => $tt,
-         'predefined_fields'  => $predefined_fields,
+         'predefined_fields'  => Toolbox::prepareArrayForInput($predefined_fields),
          'ticket_ticket'      => new Ticket_Ticket,
          'sla'                => $sla,
          'ola'                => $ola,

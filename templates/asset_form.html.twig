@@ -83,7 +83,7 @@
                   {% endif %}
 
                   {% if item.isField('power_supplies') %}
-                     {{ fields.numberField('power_supplies', max(item.fields['power_supplies'], 1), 'DevicePowerSupply'|itemtype_name(getPluralNumber()), {
+                     {{ fields.numberField('power_supplies', max(item.fields['power_supplies'], 1), 'DevicePowerSupply'|itemtype_name(get_plural_number()), {
                         'rand': rand,
                         'min': 1,
                         'max': 6,
@@ -100,7 +100,7 @@
                      ) }}
                   {% endif %}
 
-                  {% set dc_breadcrumbs = getDcBreadcrumb(item) %}
+                  {% set dc_breadcrumbs = item is usingtrait('Glpi\\Features\\DCBreadcrumb') ? item.getDcBreadcrumb() : [] %}
                   {% if dc_breadcrumbs|length > 0 %}
                       {% set dc_breadcrumbs %}
                         <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
@@ -406,7 +406,7 @@
 
                      {% set initial_field %}
                         {% if item.fields['dcrooms_id'] > 0 %}
-                           {% set dcroom = 'DCRoom'|getFromDB(item.fields['dcrooms_id']) %}
+                           {% set dcroom = get_item('DCRoom', item.fields['dcrooms_id']) %}
                            {% if dcroom is not null %}
                               {% set used = dcroom.getFilled(current_position) %}
                               {% set positions = dcroom.getAllPositions() %}
@@ -658,7 +658,7 @@
                      {{ fields.textareaField(
                         'comment',
                         item.fields['comment'],
-                        _n('Comment', 'Comments', getPluralNumber()),
+                        _n('Comment', 'Comments', get_plural_number()),
                      ) }}
                   {% endif %}
 
@@ -738,7 +738,7 @@
 
                   {% if item.isField('is_update') %}
                      {% set dd_software %}
-                        {{ 'Software'|dropdown({
+                        {{ 'Software'|itemtype_dropdown({
                            'value': item.fields['softwares_id'],
                            'rand': rand,
                         }) }}
@@ -913,7 +913,7 @@
                      }) }}
                   {% endif %}
 
-                  {% if item.isField('alert') and Entity_getUsedConfig('use_contracts_alert') %}
+                  {% if item.isField('alert') and entity_config('use_contracts_alert') %}
                      {% set alert_html %}
                         {{ displayLastAlert('Contract', item.fields['id']) }}
                      {% endset %}
@@ -940,12 +940,12 @@
                      {{ fields.htmlField(
                         '',
                         flags_html,
-                        _n('Port', 'Ports', getPluralNumber()),
+                        _n('Port', 'Ports', get_plural_number()),
                      ) }}
                   {% endif %}
 
                   {% if item.isField('pictures') %}
-                     {{ fields.fileField('pictures', null, _n('Picture', 'Pictures', getPluralNumber()), {
+                     {{ fields.fileField('pictures', null, _n('Picture', 'Pictures', get_plural_number()), {
                         'onlyimages': true,
                         'multiple': true,
                      }) }}
@@ -957,7 +957,7 @@
 
                   {% if item.fields['id'] > 0 and item.isField('is_dynamic') %}
                      <div class="mb-3 col-12 col-sm-6">
-                        {{ AutoInventoryInformation() }}
+                        {{ call_plugin_hook('autoinventory_information', item) }}
                      </div>
                   {% endif %}
                </div> {# .row #}

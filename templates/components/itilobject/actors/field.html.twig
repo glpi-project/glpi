@@ -79,7 +79,7 @@
          {% if canupdate %}
          if (['User', 'Supplier', 'Email'].includes(itemtype)
             && is_selection
-            && {{ Entity_getUsedConfig('is_notif_enable_default', entities_id, '', 1) }}) {
+            && {{ entity_config('is_notif_enable_default', entities_id, 1) }}) {
             var fa_class = "far";
             if (use_notif) {
                fa_class = "fas";
@@ -178,7 +178,7 @@
                   actortype: actorytype,
                   entity_restrict: {{ entities_id }},
                   searchText: params.term,
-                  _idor_token: '{{ getNewIDORToken() }}',
+                  _idor_token: '{{ idor_token() }}',
                   itiltemplate_class: '{{ itiltemplate.getType() }}',
                   itiltemplates_id: {{ itiltemplate.fields['id'] ?? 0 }},
                   returned_itemtypes: {{ (returned_itemtypes ?? ['User', 'Group', 'Supplier'])|json_encode()|raw }},

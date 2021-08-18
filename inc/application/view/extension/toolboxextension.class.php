@@ -42,20 +42,8 @@ use Twig\TwigFunction;
 class ToolboxExtension extends AbstractExtension {
    public function getFunctions(): array {
       return [
-         new TwigFunction('canUseLdap', [Toolbox::class, 'canUseLdap']),
-         new TwigFunction('getMaxInputVar', [Toolbox::class, 'get_max_input_vars']),
-         new TwigFunction('getItemTypeSearchURL', [$this, 'getItemTypeSearchURL']),
-         new TwigFunction('getPictureUrl', [Toolbox::class, 'getPictureUrl']),
          new TwigFunction('getDateFormat', [Toolbox::class, 'getDateFormat']),
          new TwigFunction('autoName', 'autoName', ['is_safe' => ['html']]),
-         new TwigFunction('prepareArrayForInput', [Toolbox::class, 'prepareArrayForInput'], ['is_safe' => ['html']]),
-         new TwigFunction('file_exists', 'file_exists'),
-         new TwigFunction('getPhpUploadSizeLimit', [Toolbox::class, 'getPhpUploadSizeLimit'], ['is_safe' => ['html']]),
-         new TwigFunction('hasTrait', [Toolbox::class, 'hasTrait']),
       ];
-   }
-
-   public function getItemTypeSearchURL(string $itemtype = ""): string {
-      return Toolbox::getItemTypeSearchURL($itemtype, true);
    }
 }

@@ -24,7 +24,7 @@
                                  'kb_id_toload': load_kb_sol
                               }) %}
                            {% endif %}
-                           {{ timeline_itemtype.item|showForm(sf_options) }}
+                           {{ timeline_itemtype.item.showForm(item.getID(), sf_options) }}
                         {% endif %}
                      </div>
                   </div>

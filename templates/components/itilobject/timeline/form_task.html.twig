@@ -111,7 +111,7 @@
 
                      {% set task_template_lbl %}
                         <i class="fas fa-reply fa-fw me-1"
-                           title="{{ _n('Task template', 'Task templates', getPluralNumber) }}"></i>
+                           title="{{ _n('Task template', 'Task templates', get_plural_number()) }}"></i>
                      {% endset %}
                      {{ fields.dropdownField(
                         'TaskTemplate',

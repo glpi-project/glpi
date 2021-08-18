@@ -27,7 +27,7 @@
                   {{ fields.textareaField(
                      'comment',
                      item.fields['comment'],
-                     _n('Comment', 'Comments', getPluralNumber()),
+                     _n('Comment', 'Comments', get_plural_number()),
                   ) }}
                {% endif %}
 
@@ -43,7 +43,7 @@
                            'User',
                            field['name'],
                            subitem.fields[field['name']],
-                           _n('User', 'Users', getPluralNumber()),
+                           _n('User', 'Users', get_plural_number()),
                            {
                               'full_width': true,
                               'entity': item.fields['entities_id'],
@@ -96,7 +96,7 @@
                      {% elseif type == 'parent' %}
                         {% set restrict = field['name'] == 'entities_id' ? -1 : item.getEntityID() %}
                         {% set params = params|merge({'entity': restrict}) %}
-                        {% set params = params|merge({'used': (item.fields['id'] > 0 ? getSonsOf(item|getTable, item.fields['id']) : [])}) %}
+                        {% set params = params|merge({'used': (item.fields['id'] > 0 ? getSonsOf(item.getTable(), item.fields['id']) : [])}) %}
                         {{ fields.dropdownField(item, field['name'], item.fields[field['name']], field['label'], params) }}
                      {% elseif type == 'icon' %}
                         {{ fields.dropdownIcons(field['name'], item.fields[field['name']], field['label'], params) }}
@@ -113,7 +113,7 @@
                         {{ fields.datetimeField(field['name'], item.fields[field['name']], field['label'], params) }}
                      {% elseif type == 'picture' %}
                         {% if item.fields[field['name']] is not empty %}
-                           {{ fields.imageField(field['name'], getPictureUrl(item.fields[field['name']]), field['label'], params|merge({
+                           {{ fields.imageField(field['name'], item.fields[field['name']]|picture_url, field['label'], params|merge({
                               'clearable': item.canUpdateItem()
                            })) }}
                         {% else %}
@@ -125,7 +125,7 @@
                         {% set pictures = item.fields[field['name']]|importArrayFromDB %}
                         {% set picture_urls = [] %}
                         {% for picture in pictures %}
-                           {% set picture_urls = picture_urls|merge([getPictureUrl(picture)]) %}
+                           {% set picture_urls = picture_urls|merge([picture|picture_url]) %}
                         {% endfor %}
                         {{ fields.imageGalleryField(field['name'], picture_urls, field['label'], params|merge({
                            'clearable': item.canUpdateItem()
@@ -148,7 +148,7 @@
                         {{ fields.dropdownItemTypes(field['name'], item.fields[field['name']], field['label'], params) }}
                      {% else %}
                         {% set field_value %}
-                           {{ displaySpecificTypeField(item, item.fields['id'], field) }}
+                           {{ item.displaySpecificTypeField(item.fields['id'], field) }}
                         {% endset %}
                         {{ fields.field(field['name'], field_value, field['label']) }}
                      {% endif %}
@@ -164,7 +164,7 @@
                      'User',
                      field['name'],
                      subitem.fields[field['name']],
-                     _n('User', 'Users', getPluralNumber()),
+                     _n('User', 'Users', get_plural_number()),
                      {
                         'full_width': true,
                         'entity': item.fields['entities_id'],
@@ -217,7 +217,7 @@
                {% elseif type == 'parent' %}
                   {% set restrict = field['name'] == 'entities_id' ? -1 : item.getEntityID() %}
                   {% set params = params|merge({'entity': restrict}) %}
-                  {% set params = params|merge({'used': (item.fields['id'] > 0 ? getSonsOf(item|getTable, item.fields['id']) : [])}) %}
+                  {% set params = params|merge({'used': (item.fields['id'] > 0 ? getSonsOf(item.getTable(), item.fields['id']) : [])}) %}
                   {{ fields.dropdownField(item, field['name'], item.fields[field['name']], field['label'], params) }}
                {% elseif type == 'icon' %}
                   {{ fields.dropdownIcons(field['name'], item.fields[field['name']], field['label'], params) }}
@@ -234,7 +234,7 @@
                   {{ fields.datetimeField(field['name'], item.fields[field['name']], field['label'], params) }}
                {% elseif type == 'picture' %}
                   {% if item.fields[field['name']] is not empty %}
-                     {{ fields.imageField(field['name'], getPictureUrl(item.fields[field['name']]), field['label'], params) }}
+                     {{ fields.imageField(field['name'], item.fields[field['name']]|picture_url, field['label'], params) }}
                   {% else %}
                      {{ fields.fileField(field['name'], null, field['label'], {
                         'onlyimages': true
@@ -259,7 +259,7 @@
                {% endif %}
 
                {% if has_picture_field %}
-                  {{ fields.largeTitle(_n('Picture', 'Pictures', getPluralNumber()), 'fas fa-image') }}
+                  {{ fields.largeTitle(_n('Picture', 'Pictures', get_plural_number()), 'fas fa-image') }}
                {% endif %}
                {# Show pictures at the bottom of the form #}
                {% for field in additional_fields %}
@@ -267,10 +267,10 @@
                   {% if field['name'] in picture_fields %}
                      {% if type == 'picture' %}
                         {% if field['name'] == 'picture_front' %}
-                           {{ fields.smallTitle(__('Rack pictures'), 'Rack'|getIcon) }}
+                           {{ fields.smallTitle(__('Rack pictures'), 'Rack'|itemtype_icon) }}
                         {% endif %}
                         {% if item.fields[field['name']] is not empty %}
-                           {{ fields.imageField(field['name'], getPictureUrl(item.fields[field['name']]), field['label'], params|merge({
+                           {{ fields.imageField(field['name'], item.fields[field['name']]|picture_url, field['label'], params|merge({
                               'clearable': item.canUpdateItem()
                            })) }}
                         {% else %}
@@ -283,7 +283,7 @@
                         {% set pictures = item.fields[field['name']]|importArrayFromDB %}
                         {% set picture_urls = [] %}
                         {% for picture in pictures %}
-                           {% set picture_urls = picture_urls|merge([getPictureUrl(picture)]) %}
+                           {% set picture_urls = picture_urls|merge([picture|picture_url]) %}
                         {% endfor %}
                         {{ fields.imageGalleryField(field['name'], picture_urls, '', params|merge({
                            'clearable': item.canUpdateItem(),

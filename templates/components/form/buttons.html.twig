@@ -4,7 +4,7 @@
 {% set id           = item.fields['id'] ?? -1 %}
 
          <div class="row">
-         {{ postItemForm(item, params) }}
+         {{ call_plugin_hook('post_item_form', {'item': item, 'options': params}) }}
          </div>
 
 {% if canedit and item.canEdit(item.fields['id']) %}

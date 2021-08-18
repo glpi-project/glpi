@@ -6,14 +6,14 @@
                <h3>{{ __('External authentications') }}</h3>
             </div>
             <div class="list-group list-group-flush">
-               {% if have_right('config', constant('UPDATE')) %}
+               {% if has_profile_right('config', constant('UPDATE')) %}
                   <a class="list-group-item list-group-item-action" href="{{ path('front/auth.settings.php') }}">
                      <i class="fas fa-fw fa-cogs me-1"></i>
                      <span>{{ __('Setup') }}</span>
                   </a>
                {% endif %}
 
-               {% if canUseLdap() %}
+               {% if can_use_ldap %}
                   <a class="list-group-item list-group-item-action" href="{{ path('front/authldap.php') }}">
                      <i class="far fa-fw fa-address-book me-1"></i>
                      <span>{{ 'AuthLDAP'|itemtype_name }}</span>

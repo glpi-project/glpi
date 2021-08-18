@@ -48,7 +48,7 @@
                            <tr>
                               <td>
                                  {% set itemtype = getSingular(event['type']) %}
-                                 <i class="fa-fw text-muted {{ itemtype|getIcon }}"></i>
+                                 <i class="fa-fw text-muted {{ itemtype|itemtype_icon }}"></i>
                                  <span>{{ itemtypes[itemtype] ?? itemtype|itemtype_name }}</span>
                               </td>
                               <td>{{ Event_displayItemLogID(event['type'], event['items_id']) }}</td>

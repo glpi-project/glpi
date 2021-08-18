@@ -88,7 +88,7 @@
          }
       ) }}
 
-      {% if 'Budget'|canView %}
+      {% if has_itemtype_right('Budget', constant('READ')) %}
          {{ fields.dropdownField(
             'Budget',
             'budgets_id',
@@ -224,7 +224,7 @@
       {{ fields.textareaField(
          'comment',
          infocom.fields['comment'],
-         _n('Comment', 'Comments', getPluralNumber()),
+         _n('Comment', 'Comments', get_plural_number()),
          {'disabled': disabled}
       ) }}
 
@@ -293,7 +293,7 @@
          ) }}
       {% endif %}
 
-      {{ hook_infocom(item) }}
+      {{ call_plugin_hook('infocom', item) }}
 
       <div class="card-body mx-n2 mb-4  border-top">
          {% if can_global_update %}

@@ -32,16 +32,12 @@
 
 namespace Glpi\Application\View\Extension;
 
-use CommonDBTM;
-use CommonDropdown;
-use CommonGLPI;
-use Dropdown;
 use Glpi\Toolbox\RichText;
 use Glpi\Toolbox\Sanitizer;
 use Html;
+use Toolbox;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
-use Twig\TwigFunction;
 
 /**
  * @since 10.0.0
@@ -54,18 +50,10 @@ class DataHelpersExtension extends AbstractExtension {
          new TwigFilter('formatted_duration', [$this, 'getFormattedDuration']),
          new TwigFilter('formatted_number', [$this, 'getFormattedNumber']),
          new TwigFilter('html_to_text', [$this, 'getTextFromHtml']),
-         new TwigFilter('itemtype_name', [$this, 'getItemtypeName']),
+         new TwigFilter('picture_url', [$this, 'getPictureUrl']),
          new TwigFilter('relative_datetime', [$this, 'getRelativeDatetime']),
          new TwigFilter('safe_html', [$this, 'getSafeHtml'], ['is_safe' => ['html']]),
          new TwigFilter('verbatim_value', [$this, 'getVerbatimValue']),
-      ];
-   }
-
-   public function getFunctions(): array {
-      return [
-         new TwigFunction('get_item_comment', [$this, 'getItemComment']),
-         new TwigFunction('get_item_link', [$this, 'getItemLink'], ['is_safe' => ['html']]),
-         new TwigFunction('get_item_name', [$this, 'getItemName']),
       ];
    }
 
@@ -123,6 +111,21 @@ class DataHelpersExtension extends AbstractExtension {
    }
 
    /**
+    * Return URL for given picture.
+    *
+    * @param mixed $path
+    *
+    * @return null|string
+    */
+   public function getPictureUrl($path): ?string {
+      if (!is_string($path)) {
+         return null;
+      }
+
+      return Toolbox::getPictureUrl($path, true);
+   }
+
+   /**
     * Return plain text from HTML (rich text).
     *
     * @param mixed $string             HTML string to be made safe
@@ -136,26 +139,9 @@ class DataHelpersExtension extends AbstractExtension {
          return $string;
       }
 
-      if (Sanitizer::isSanitized($string)) {
-         $string = Sanitizer::unsanitize($string);
-      }
+      $string = Sanitizer::getVerbatimValue($string);
 
       return RichText::getTextFromHtml($string, $keep_presentation, $compact);
-   }
-
-   /**
-    * Returns typename of given itemtype.
-    *
-    * @param mixed $itemtype
-    * @param number $count
-    *
-    * @return string|null
-    */
-   public function getItemtypeName($itemtype, $count = 1): ?string {
-      if ($itemtype instanceof CommonGLPI || is_a($itemtype, CommonGLPI::class, true)) {
-         return $itemtype::getTypeName($count);
-      }
-      return null;
    }
 
    /**
@@ -173,9 +159,7 @@ class DataHelpersExtension extends AbstractExtension {
          return $string;
       }
 
-      if (Sanitizer::isSanitized($string)) {
-         $string = Sanitizer::unsanitize($string);
-      }
+      $string = Sanitizer::getVerbatimValue($string);
 
       return RichText::getSafeHtml($string);
    }
@@ -190,93 +174,10 @@ class DataHelpersExtension extends AbstractExtension {
     * @return mixed
     */
    public function getVerbatimValue($string) {
-      if (is_string($string) && Sanitizer::isSanitized($string)) {
-         $string = Sanitizer::unsanitize($string);
+      if (!is_string($string)) {
+         return $string;
       }
 
-      return $string;
-   }
-
-   /**
-    * Returns name of the given item.
-    * In case of a dropdown, it returns the translated name, otherwise, it returns the friendly name.
-    *
-    * @param CommonDBTM|string $item   Item instance of itemtype of the item.
-    * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
-    *
-    * @return string|null
-    */
-   public function getItemName($item, ?int $id = null): ?string {
-      if (is_a($item, CommonDropdown::class, true)) {
-         $items_id = $item instanceof CommonDBTM ? $item->fields[$item->getIndexName()] : $id;
-         $name = Dropdown::getDropdownName($item::getTable(), $items_id, false, true, false, '');
-         return $this->getVerbatimValue($name);
-      }
-
-      if (($instance = $this->getItemInstance($item, $id)) === null) {
-         return null;
-      }
-
-      return $this->getVerbatimValue($instance->getFriendlyName());
-   }
-
-   /**
-    * Returns comment of the given item.
-    * In case of a dropdown, it returns the translated comment.
-    *
-    * @param CommonDBTM|string $item   Item instance of itemtype of the item.
-    * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
-    *
-    * @return string|null
-    */
-   public function getItemComment($item, ?int $id = null): ?string {
-      if (is_a($item, CommonDropdown::class, true)) {
-         $items_id = $item instanceof CommonDBTM ? $item->fields[$item->getIndexName()] : $id;
-         $texts = Dropdown::getDropdownName($item::getTable(), $items_id, true, true, false, '');
-         return $this->getVerbatimValue($texts['comment']);
-      }
-
-      if (($instance = $this->getItemInstance($item, $id)) === null) {
-         return null;
-      }
-
-      return $instance->isField('comment') ? $this->getVerbatimValue($instance->fields['comment']) : null;
-   }
-
-   /**
-    * Returns link of the given item.
-    *
-    * @param CommonDBTM|string $item   Item instance of itemtype of the item.
-    * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
-    *
-    * @return string|null
-    */
-   public function getItemLink($item, ?int $id = null): ?string {
-      if (($instance = $this->getItemInstance($item, $id)) === null) {
-         return null;
-      }
-
-      return $instance->getLink();
-   }
-
-   /**
-    * Returns instance of item with given ID.
-    *
-    * @param CommonDBTM|string $item   Item instance of itemtype of the item.
-    * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
-    *
-    * @return CommonDBTM|null
-    */
-   private function getItemInstance($item, ?int $id = null): ?CommonDBTM {
-      if (!is_a($item, CommonDBTM::class, true)) {
-         return null;
-      }
-
-      if ($item instanceof CommonDBTM && ($id === null || $item->fields[$item->getIndexName()] === $id)) {
-         return $item;
-      }
-
-      $instance = $id !== null ? $item::getById($id) : null;
-      return $instance ?: null;
+      return Sanitizer::getVerbatimValue($string);
    }
 }

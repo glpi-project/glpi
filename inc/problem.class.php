@@ -1447,7 +1447,7 @@ class Problem extends CommonITILObject {
          'timeline'           => $this->getTimelineItems(),
          'itiltemplate_key'   => $tpl_key,
          'itiltemplate'       => $tt,
-         'predefined_fields'  => $predefined_fields,
+         'predefined_fields'  => Toolbox::prepareArrayForInput($predefined_fields),
          'canupdate'          => $canupdate,
          'canpriority'        => $canupdate,
          'canassign'          => $canupdate,

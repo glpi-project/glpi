@@ -118,8 +118,6 @@ class ITILSolution extends CommonDBChild {
     * @return boolean item found
    **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
-
       if ($this->isNewItem()) {
          $this->getEmpty();
       }

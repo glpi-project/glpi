@@ -59,7 +59,7 @@
                         {% set personal_information %}
                            <div class="d-inline-flex">
                               <div class="alert alert-info" id="user-info{{ rand }}">
-                                 {% set user = 'User'|getFromDB(getLoginUserID()) %}
+                                 {% set user = get_current_user() %}
                                  {% include 'components/user/info_card.html.twig' with {
                                     'user': user.fields,
                                     'can_edit': true
@@ -131,7 +131,7 @@
                      </a>
                      <div class="collapse" id="collapse-items{{ rand }}">
                         {{ Item_Ticket_itemAddForm(item, params|merge({
-                           '_canupdate': have_right('ticket', constant('CREATE')),
+                           '_canupdate': has_profile_right('ticket', constant('CREATE')),
                            '_tickettemplate': itiltemplate,
                         })) }}
                      </div>
@@ -140,7 +140,7 @@
                   {{ fields.field(
                      'items_id',
                      associated_items,
-                     _n('Associated element', 'Associated elements', getPluralNumber()),
+                     _n('Associated element', 'Associated elements', get_plural_number()),
                      right_field_options
                   ) }}
                {% endif %}
@@ -158,7 +158,7 @@
                {{ fields.field(
                   'urgency',
                   observers_field,
-                  _n('Watcher', 'Watchers', getPluralNumber()),
+                  _n('Watcher', 'Watchers', get_plural_number()),
                   right_field_options
                ) }} #}
 
@@ -193,7 +193,7 @@
                   {{ fields.field(
                      'observer',
                      observer_field,
-                     _n('Watcher', 'Watchers', getPluralNumber()),
+                     _n('Watcher', 'Watchers', get_plural_number()),
                      right_field_options|merge({
                         required: itiltemplate.isMandatoryField('_users_id_observer') or itiltemplate.isMandatoryField('_groups_id_observer')
                      })

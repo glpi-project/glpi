@@ -1,6 +1,6 @@
 {% set model_itemtype = item.getModelClass() %}
 {% set gallery_type = gallery_type|default('') %}
-{% if model_itemtype is not null or hasTrait(item, 'Glpi\\Features\\AssetImage') %}
+{% if model_itemtype is not null or item is usingtrait('Glpi\\Features\\AssetImage') %}
 
    {% set picture_single = item.getItemtypeOrModelPicture('picture') %}
    {% set picture_front = item.getItemtypeOrModelPicture('picture_front') %}
@@ -10,7 +10,7 @@
    {% if picture_single is not empty or picture_front is not empty or picture_rear is not empty or pictures_misc is not empty %}
       <div class="{{ gallery_type == 'horizontal' ? 'col-12 me-n2' : '' }} d-flex">
          <h3 class="card-title">
-            {{ _n('Picture', 'Pictures', getPluralNumber()) }}
+            {{ _n('Picture', 'Pictures', get_plural_number()) }}
          </h3>
 
          <div class="card-body">

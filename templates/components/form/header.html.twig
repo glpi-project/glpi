@@ -12,7 +12,7 @@
 {% if item.isEntityAssign() %}
    {% set entity_id = params['entities_id'] ?? item.fields['entities_id'] ?? session('glpiactive_entity') %}
 
-   {% if isMultiEntitiesMode() %}
+   {% if is_multi_entities_mode() %}
       {% set entity_name = get_item_name('Entity', item.fields['entities_id']) %}
    {% endif %}
 {% endif %}
@@ -66,13 +66,13 @@
                {% endif %}
             </h3>
 
-            {% if isMultiEntitiesMode() and not itemInstanceOf(item, 'Entity')  %}
+            {% if is_multi_entities_mode() and item is not instanceof('Entity') %}
                <span class="badge entity-name mx-1 px-2 py-3 ms-auto">
                   <i class="fas fa-layer-group me-2"></i>
                   {{ entity_name }}
                </span>
 
-               {% set is_dbchild = itemInstanceOf(item, 'CommonDBChild') %}
+               {% set is_dbchild = item is instanceof('CommonDBChild') %}
                <input type="hidden" name="is_recursive"
                      value="{{ is_dbchild ? item.fields['is_recursive'] : '0' }}" />
                {% if item.maybeRecursive() %}
@@ -113,7 +113,7 @@
          {% endif %}
       </div>
 
-      {{ preItemForm(item, params) }}
+      {{ call_plugin_hook('pre_item_form', {'item': item, 'options': params}) }}
 
       {# todo modal message #}
       {% if app.request.request('in_modal') == true %}
