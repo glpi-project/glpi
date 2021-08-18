@@ -9,7 +9,7 @@
       <span class="dropdown-header">{{ __('Profiles') }}</span>
       {% for profile_id, profile in profiles %}
       <a class="dropdown-item {{ profile_id == active_profile_id ? 'active' : '' }}"
-         href="{{ index() }}?newprofile={{ profile_id }}">
+         href="{{ index_path() }}?newprofile={{ profile_id }}">
          <i class="fas fa-user-check"></i>{{ profile['name']|verbatim_value }}
       </a>
       {% endfor %}

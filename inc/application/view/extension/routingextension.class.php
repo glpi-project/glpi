@@ -46,7 +46,7 @@ class RoutingExtension extends AbstractExtension {
 
    public function getFunctions(): array {
       return [
-         new TwigFunction('index', [$this, 'index']),
+         new TwigFunction('index_path', [$this, 'indexPath']),
          new TwigFunction('path', [$this, 'path']),
          new TwigFunction('form_path', [$this, 'formPath']),
          new TwigFunction('url', [$this, 'url']),
@@ -55,7 +55,6 @@ class RoutingExtension extends AbstractExtension {
       ];
    }
 
-
    /**
     * Return index path.
     *
@@ -63,13 +62,15 @@ class RoutingExtension extends AbstractExtension {
     *
     * @TODO Add a unit test.
     */
-   public function index(): string {
-      $index = (Session::getCurrentInterface() == 'helpdesk')
-         ? "helpdesk.public.php"
-         : "central.php";
-      return Html::getPrefixedUrl("front/$index");
+   public function indexPath(): string {
+      $index = '/index.php';
+      if (Session::getLoginUserID() !== false) {
+         $index = Session::getCurrentInterface() == 'helpdesk'
+            ? 'front/helpdesk.public.php'
+            : 'front/central.php';
+      }
+      return Html::getPrefixedUrl($index);
    }
-
 
    /**
     * Return domain-relative path of a resource.
