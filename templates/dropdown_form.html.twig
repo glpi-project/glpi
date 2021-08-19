@@ -2,7 +2,7 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 <div class="asset">
-   {% include 'components/form/header.html.twig' %}
+   {{ include('components/form/header.html.twig') }}
    {% set rand         = random() %}
    {% set params       = params ?? [] %}
    {% set target       = params['target'] ?? item.getFormURL() %}
@@ -296,5 +296,5 @@
          </div>
       </div>
    </div>
-   {% include 'components/form/buttons.html.twig' %}
+   {{ include('components/form/buttons.html.twig') }}
 </div>

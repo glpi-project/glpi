@@ -26,7 +26,7 @@
                </div>
             {% endif %}
 
-            {% include 'components/itilobject/timeline/filter_timeline.html.twig' %}
+            {{ include('components/itilobject/timeline/filter_timeline.html.twig') }}
          </div>
       {% endif %}
 
@@ -71,9 +71,9 @@
                {% endif %}
 
                {% if canupdate %}
-                  {% include 'components/form/single-action.html.twig' with {
+                  {{ include('components/form/single-action.html.twig', {
                      'onlyicon': true
-                  } %}
+                  }) }}
                {% endif %}
 
                {% set is_locked = params['locked'] is defined and params['locked'] %}

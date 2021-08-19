@@ -5,7 +5,7 @@
         id="new-{{ timeline_itemtype.class }}-block" aria-expanded="false" data-bs-parent="#new-itilobject-form">
          <div class="row">
             <div class="col-auto order-last d-none d-md-block">
-               {% include 'components/user/picture.html.twig' with {'users_id': session('glpiID')} only %}
+               {{ include('components/user/picture.html.twig', {'users_id': session('glpiID')}, with_context = false) }}
             </div>
             <div class="col">
                <div class="row timeline-content t-right card mt-4">

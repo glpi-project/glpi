@@ -138,7 +138,7 @@
                cat_params
             ) }}
 
-            {% include 'components/itilobject/fields/status.html.twig' %}
+            {{ include('components/itilobject/fields/status.html.twig') }}
 
             {% if item.isField('requesttypes_id') %}
                {{ fields.dropdownField(
@@ -155,7 +155,7 @@
                ) }}
             {% endif %}
 
-            {% include 'components/itilobject/fields/priority_matrix.html.twig' %}
+            {{ include('components/itilobject/fields/priority_matrix.html.twig') }}
 
             {% if item.isField('locations_id') %}
                {{ fields.dropdownField(
@@ -167,7 +167,7 @@
                ) }}
             {% endif %}
 
-            {% include 'components/itilobject/fields/global_validation.html.twig' %}
+            {{ include('components/itilobject/fields/global_validation.html.twig') }}
 
             {% if item.getType() != 'Ticket' %}
                {{ fields.dropdownTimestampField(
@@ -193,7 +193,7 @@
       </h2>
       <div id="actors" class="accordion-collapse collapse show" aria-labelledby="heading-actor">
          <div class="accordion-body accordion-actors row m-0 mt-n2">
-            {% include 'components/itilobject/actors/main.html.twig' %}
+            {{ include('components/itilobject/actors/main.html.twig') }}
          </div>
       </div>
    </div>
@@ -212,7 +212,7 @@
          </h2>
          <div id="service-levels" class="accordion-collapse collapse" aria-labelledby="service-levels-heading">
             <div class="accordion-body row m-0 mt-n2">
-               {% include 'components/itilobject/service_levels.html.twig' %}
+               {{ include('components/itilobject/service_levels.html.twig') }}
             </div>
          </div>
       </div>
@@ -233,7 +233,7 @@
          </h2>
          <div id="linked_tickets" class="accordion-collapse collapse" aria-labelledby="linked_tickets-heading">
             <div class="accordion-body">
-               {% include 'components/itilobject/linked_tickets.html.twig' %}
+               {{ include('components/itilobject/linked_tickets.html.twig') }}
             </div>
          </div>
       </div>

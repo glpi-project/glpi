@@ -56,10 +56,10 @@
       </span>
    </div>
 
-   {% include 'components/masonry_grid.html.twig' with {
+   {{ include('components/masonry_grid.html.twig', {
       'grid_items': grid_items,
       'grid_item_class': 'col-lg-6 col-xl-4 col-xxl-3',
-   } only %}
+   }, with_context = false) }}
 </div>
 
 <script>

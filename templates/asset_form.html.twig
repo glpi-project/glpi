@@ -7,7 +7,7 @@
 {% endif %}
 
 <div class="asset {{ bg }}">
-   {% include 'components/form/header.html.twig' %}
+   {{ include('components/form/header.html.twig') }}
 
    {% set rand = random() %}
    {% set params  = params ?? [] %}
@@ -932,7 +932,7 @@
                   {% endif %}
 
                   {% set flags_html %}
-                     {% include 'components/form/flags.html.twig' %}
+                     {{ include('components/form/flags.html.twig') }}
                   {% endset %}
 
                   {% if (flags_html|trim)|length %}
@@ -966,21 +966,21 @@
       </div>
       <div class="col-3 flex-column">
          <div class="flex-row asset-pictures">
-            {% include 'components/form/pictures.html.twig' with {'gallery_type': ''} %}
+            {{ include('components/form/pictures.html.twig', {'gallery_type': ''}) }}
          </div>
       </div>
    </div> {# .card-body #}
 
    {% if item_type == 'Contract' %}
-      {% include 'components/form/support_hours.html.twig' %}
+      {{ include('components/form/support_hours.html.twig') }}
    {% endif %}
-   {% include 'components/form/buttons.html.twig' %}
-   {% include 'components/form/inventory_info.html.twig' %}
+   {{ include('components/form/buttons.html.twig') }}
+   {{ include('components/form/inventory_info.html.twig') }}
 
 
    {% if params['formfooter'] == null %}
       <div class="card-footer mx-n2 mb-n2 mt-4">
-         {% include 'components/form/dates.html.twig' %}
+         {{ include('components/form/dates.html.twig') }}
       </div>
    {% endif %}
 </div>

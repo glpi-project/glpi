@@ -5,19 +5,19 @@
      data-itemtype="{{ item.getType() }}" data-items-id="{{ item.fields['id'] }}">
    <div class="row">
       <div class="col-auto d-flex flex-column ">
-         {% include 'components/user/picture.html.twig' with {'users_id': users_id} only %}
+         {{ include('components/user/picture.html.twig', {'users_id': users_id}, with_context = false) }}
       </div>
       <div class="col-12 col-sm">
          <span class="row mt-2 timeline-content left card">
             <div class="card-body">
                <div class="d-flex timeline-header">
                   <div class="d-flex creator">
-                     {% include 'components/itilobject/timeline/timeline_item_header_badges.html.twig' with {
+                     {{ include('components/itilobject/timeline/timeline_item_header_badges.html.twig', {
                         'creator': User__getLink(users_id),
                         'date_creation': item.fields['date_creation'],
                         'date_mod': item.fields['date_mod'],
                         'editor': User__getLink(item.fields['users_id_lastupdater']),
-                     } only %}
+                     }, with_context = false) }}
                   </div>
 
                   {# TODO canedit #}

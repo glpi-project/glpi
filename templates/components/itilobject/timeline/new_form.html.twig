@@ -4,7 +4,7 @@
    <div class="timeline-item ITILContent">
       <div class="row">
          <div class="col-auto d-flex flex-column picture-block">
-            {% include 'components/user/picture.html.twig' with {'users_id': users_id} only %}
+            {{ include('components/user/picture.html.twig', {'users_id': users_id}, with_context = false) }}
          </div>
          <div class="col-12 col-sm content-block">
             <div class="d-flex">
@@ -23,9 +23,9 @@
                      </div>
                   {% endif %}
 
-                  {% include 'components/itilobject/timeline/simple_form.html.twig' with {
+                  {{ include('components/itilobject/timeline/simple_form.html.twig', {
                      'no_form': true
-                  } %}
+                  }) }}
                </div>
             </span>
          </div>

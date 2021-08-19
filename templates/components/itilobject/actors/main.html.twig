@@ -18,7 +18,7 @@
 
 {% if 'requester' in display_actortypes and (not itiltemplate.isHiddenField('_users_id_requester') or not itiltemplate.isHiddenField('_groups_id_requester')) %}
    {% set requester_field %}
-      {% include 'components/itilobject/actors/field.html.twig' with {
+      {{ include('components/itilobject/actors/field.html.twig', {
          'item': item,
          'actortypeint': constant('CommonITILActor::REQUESTER'),
          'actortype': 'requester',
@@ -27,7 +27,7 @@
          'params': params,
          'canupdate': canupdate,
          'disable_assign_to_me': disable_assign_to_me ?? false,
-      } only %}
+      }, with_context = false) }}
    {% endset %}
    {% if display_labels %}
       {{ fields.field(
@@ -45,7 +45,7 @@
 
 {% if 'observer' in display_actortypes and (not itiltemplate.isHiddenField('_users_id_observer') or not itiltemplate.isHiddenField('_groups_id_observer')) %}
    {% set observer_field %}
-      {% include 'components/itilobject/actors/field.html.twig' with {
+      {{ include('components/itilobject/actors/field.html.twig', {
          'item': item,
          'actortypeint': constant('CommonITILActor::OBSERVER'),
          'actortype': 'observer',
@@ -54,7 +54,7 @@
          'params': params,
          'canupdate': canupdate,
          'disable_assign_to_me': disable_assign_to_me ?? false,
-      } only %}
+      }, with_context = false) }}
    {% endset %}
    {% if display_labels %}
       {{ fields.field(
@@ -72,7 +72,7 @@
 
 {% if 'assign' in display_actortypes and (not itiltemplate.isHiddenField('_users_id_assign') or not itiltemplate.isHiddenField('_groups_id_assign') or not itiltemplate.isHiddenField('_supplier_id_assign')) %}
    {% set assign_field %}
-      {% include 'components/itilobject/actors/field.html.twig' with {
+      {{ include('components/itilobject/actors/field.html.twig', {
          'item': item,
          'actortypeint': constant('CommonITILActor::ASSIGN'),
          'actortype': 'assign',
@@ -81,7 +81,7 @@
          'params': params,
          'canupdate': (canupdate or canassign),
          'disable_assign_to_me': disable_assign_to_me ?? false,
-      } only %}
+      }, with_context = false) }}
    {% endset %}
    {% if display_labels %}
       {{ fields.field(

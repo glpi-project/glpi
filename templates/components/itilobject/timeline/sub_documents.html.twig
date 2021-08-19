@@ -67,10 +67,10 @@
 
    {% for document in other_docs %}
       <li class="list-group-item border-0">
-         {% include 'components/itilobject/timeline/form_document_item.html.twig' with {
+         {{ include('components/itilobject/timeline/form_document_item.html.twig', {
             'form_mode': 'view',
             'entry_i': document['item'],
-         } %}
+         }) }}
       </li>
    {% endfor %}
 </ul>

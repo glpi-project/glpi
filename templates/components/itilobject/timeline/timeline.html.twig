@@ -1,5 +1,5 @@
 <div class="itil-timeline d-flex flex-column align-items-start mb-auto">
-   {% include 'components/itilobject/timeline/main_description.html.twig' %}
+   {{ include('components/itilobject/timeline/main_description.html.twig') }}
 
    {% set status_closed = (item.fields['status'] in item.getClosedStatusArray()) %}
    {% for entry in timeline %}
@@ -71,7 +71,7 @@
             <div class="col-auto d-flex flex-column user-part {{ 'right' in item_position ? 'ms-auto ms-0 order-sm-last' : '' }}">
                {% set avatar_rand = random() %}
                <span id="timeline-avatar{{ avatar_rand }}">
-                  {% include 'components/user/picture.html.twig' with {'users_id': users_id} only %}
+                  {{ include('components/user/picture.html.twig', {'users_id': users_id}, with_context = false) }}
                </span>
                {% set user = User__getUserName(users_id, 2) %}
                {{ Html__showToolTip(user['comment'], {
@@ -81,18 +81,18 @@
             <div class="col-12 col-sm d-flex flex-column content-part">
                <span class="row mt-2 timeline-content {{ solution_class }} flex-grow-1 {{ item_position }} card">
                   <div class="card-body">
-                     {% include 'components/itilobject/timeline/timeline_item_header.html.twig' %}
+                     {{ include('components/itilobject/timeline/timeline_item_header.html.twig') }}
 
                      {% if itiltype is same as 'ITILValidation' %}
-                        {% include 'components/itilobject/timeline/form_validation.html.twig' with {'form_mode': 'view'} %}
+                        {{ include('components/itilobject/timeline/form_validation.html.twig', {'form_mode': 'view'}) }}
                      {% elseif itiltype is same as 'ITILTask' %}
-                        {% include 'components/itilobject/timeline/form_task.html.twig' with {'form_mode': 'view'} %}
+                        {{ include('components/itilobject/timeline/form_task.html.twig', {'form_mode': 'view'}) }}
                      {% elseif itiltype is same as 'ITILFollowup' %}
-                        {% include 'components/itilobject/timeline/form_followup.html.twig' with {'form_mode': 'view'} %}
+                        {{ include('components/itilobject/timeline/form_followup.html.twig', {'form_mode': 'view'}) }}
                      {% elseif itiltype is same as 'ITILSolution' %}
-                        {% include 'components/itilobject/timeline/form_solution.html.twig' with {'form_mode': 'view'} %}
+                        {{ include('components/itilobject/timeline/form_solution.html.twig', {'form_mode': 'view'}) }}
                      {% elseif itiltype is same as 'Document_Item' %}
-                        {% include 'components/itilobject/timeline/form_document_item.html.twig' with {'form_mode': 'view'} %}
+                        {{ include('components/itilobject/timeline/form_document_item.html.twig', {'form_mode': 'view'}) }}
                      {% else %}
                         <div class="read-only-content">
                            {{ entry_i['content']|safe_html }}
@@ -105,10 +105,10 @@
                </span>
 
                {% if entry['documents'] is defined %}
-                  {% include 'components/itilobject/timeline/sub_documents.html.twig' with {
+                  {{ include('components/itilobject/timeline/sub_documents.html.twig', {
                      'item': item,
                      'entry': entry
-                  } %}
+                  }) }}
                {% endif %}
             </div>
          </div>
@@ -119,14 +119,14 @@
       <h3>{{ _n('Task', 'Tasks', get_plural_number()) }}</h3>
    </div>
 
-   {% include 'components/itilobject/timeline/todo-list-summary.html.twig' %}
+   {{ include('components/itilobject/timeline/todo-list-summary.html.twig') }}
 
    <div class="timeline-item validations-title d-none mt-4">
       <h3>{{ _n('Validation', 'Validations', get_plural_number()) }}</h3>
    </div>
 
-   {% include 'components/itilobject/timeline/approbation_form.html.twig' %}
-   {% include 'components/itilobject/answer.html.twig' %}
+   {{ include('components/itilobject/timeline/approbation_form.html.twig') }}
+   {{ include('components/itilobject/answer.html.twig') }}
 
 </div>
 

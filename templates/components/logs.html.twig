@@ -4,7 +4,7 @@
    </div>
 {% else %}
 
-   {% include 'components/search/pager.html.twig' with {count: filtered_number} %}
+   {{ include('components/search/pager.html.twig', {count: filtered_number}) }}
    <div class="table-responsive">
    <table class="table table-hover">
       <thead>

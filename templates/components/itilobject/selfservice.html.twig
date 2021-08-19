@@ -22,7 +22,7 @@
       </div>
    {% endif %}
 
-   {% include 'components/itilobject/mainform_open.html.twig' %}
+   {{ include('components/itilobject/mainform_open.html.twig') }}
 
    <div class="card card-lg">
       <div class="card-header">
@@ -60,10 +60,10 @@
                            <div class="d-inline-flex">
                               <div class="alert alert-info" id="user-info{{ rand }}">
                                  {% set user = get_current_user() %}
-                                 {% include 'components/user/info_card.html.twig' with {
+                                 {{ include('components/user/info_card.html.twig', {
                                     'user': user.fields,
                                     'can_edit': true
-                                 } only %}
+                                 }, with_context = false) }}
                               </div>
                            </div>
                         {% endset %}
@@ -164,7 +164,7 @@
 
                {% if not itiltemplate.isHiddenField('_users_id_observer') or not itiltemplate.isHiddenField('_groups_id_observer') %}
                   {% set observer_field %}
-                     {# {% include 'components/itilobject/actors/field.html.twig' with {
+                     {# {{ include('components/itilobject/actors/field.html.twig', {
                         'item': item,
                         'actortypeint': constant('CommonITILActor::OBSERVER'),
                         'actortype': 'observer',
@@ -175,10 +175,10 @@
                         'canupdate': true,
                         'entity_restrict': session('glpiactive_entity'),
                         'returned_itemtypes': ['User'],
-                     } only %}
+                     }, with_context = false) }}
                      <input type="hidden" name="_actors" id="_actors" /> #}
 
-                     {% include 'components/itilobject/actors/main.html.twig' with {
+                     {{ include('components/itilobject/actors/main.html.twig', {
                         'item': item,
                         'entities_id': params['entities_id'],
                         'itiltemplate': itiltemplate,
@@ -188,7 +188,7 @@
                         'display_actortypes': ['observer'],
                         'display_labels': false,
                         'disable_assign_to_me': true,
-                     } %}
+                     }) }}
                   {% endset %}
                   {{ fields.field(
                      'observer',
@@ -236,7 +236,7 @@
       </div>
    </div>
 
-   {% include 'components/itilobject/mainform_close.html.twig' %}
+   {{ include('components/itilobject/mainform_close.html.twig') }}
 </div>
 
 <script type="text/javascript">

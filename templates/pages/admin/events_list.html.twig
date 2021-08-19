@@ -63,9 +63,9 @@
                </div>
 
                <div class="search-footer card-footer">
-                  {% include 'components/search/pager.html.twig' with {
+                  {{ include('components/search/pager.html.twig', {
                      'count': count
-                  } %}
+                  }) }}
                </div>
             {% endif %}
          </div>

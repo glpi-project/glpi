@@ -34,7 +34,7 @@
                      {% endif %}
                   {% endif %}
                {% endif %}
-               {% include 'components/photoswipe.html.twig' with {'imgs': imgs, 'gallery_type': gallery_type} %}
+               {{ include('components/photoswipe.html.twig', {'imgs': imgs, 'gallery_type': gallery_type}) }}
             </div>
          </div>
       </div>

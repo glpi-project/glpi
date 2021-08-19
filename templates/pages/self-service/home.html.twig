@@ -46,6 +46,6 @@
    ]) %}
 {% endif %}
 
-{% include 'components/masonry_grid.html.twig' with {
+{{ include('components/masonry_grid.html.twig', {
    'grid_items': grid_items,
-} only %}
+}, with_context = false) }}
