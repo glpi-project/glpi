@@ -34,6 +34,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 use Glpi\Features\CacheableListInterface;
 use Glpi\Toolbox\RichText;
+use Glpi\Toolbox\Sanitizer;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -1331,6 +1332,7 @@ class CommonDBTM extends CommonGLPI {
       $title = '';
       if (!preg_match('/title=/', $p['linkoption'])) {
          $thename = $this->getName(['complete' => true]);
+         $thename = Sanitizer::getVerbatimValue($thename); // Prevent double encoding of special chars
          if ($thename != NOT_AVAILABLE) {
             $title = ' title="' . htmlentities($thename, ENT_QUOTES, 'utf-8') . '"';
          }

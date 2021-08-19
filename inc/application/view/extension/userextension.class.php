@@ -32,6 +32,7 @@
 
 namespace Glpi\Application\View\Extension;
 
+use Glpi\Toolbox\Sanitizer;
 use Session;
 use Toolbox;
 use Twig\Extension\AbstractExtension;
@@ -143,7 +144,16 @@ class UserExtension extends AbstractExtension {
          return $anon_name;
       }
 
-      return getUserName($users_id, $link);
+      $result = getUserName($users_id, $link);
+
+      // Unsanitize name
+      if ($link === 2) {
+         $result['name'] = Sanitizer::getVerbatimValue($result['name']);
+      } else {
+         $result = Sanitizer::getVerbatimValue($result);
+      }
+
+      return $result;
    }
 
 
