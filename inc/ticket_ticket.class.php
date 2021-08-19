@@ -167,45 +167,6 @@ class Ticket_Ticket extends CommonDBRelation {
 
 
    /**
-    * Display linked tickets to a ticket
-    *
-    * @param $ID ID of the ticket id
-    *
-    * @return void
-   **/
-   static function displayLinkedTicketsTo ($ID) {
-      $tickets   = self::getLinkedTicketsTo($ID);
-      $canupdate = Session::haveRight('ticket', UPDATE);
-
-      $ticket    = new Ticket();
-      $tick      = new Ticket();
-      if (is_array($tickets) && count($tickets)) {
-         foreach ($tickets as $linkid => $data) {
-            if ($ticket->getFromDB($data['tickets_id'])) {
-               $icons =  Ticket::getStatusIcon($ticket->fields['status']);
-               if ($canupdate) {
-                  if ($tick->getFromDB($ID)
-                      && ($tick->fields['status'] != CommonITILObject::CLOSED)) {
-                     $icons .= '&nbsp;'.Html::getSimpleForm(static::getFormURL(), 'purge',
-                                                            _x('button', 'Delete permanently'),
-                                                         ['id'         => $linkid,
-                                                          'tickets_id' => $ID],
-                                                         'fa-times-circle');
-                  }
-               }
-               $inverted = (isset($data['tickets_id_1']));
-               $text = sprintf(__('%1$s %2$s'), self::getLinkName($data['link'], $inverted),
-                               $ticket->getLink(['forceid' => true]));
-               printf(__('%1$s %2$s'), $text, $icons);
-
-            }
-            echo '<br>';
-         }
-      }
-   }
-
-
-   /**
     * Dropdown for links between tickets
     *
     * @param string  $myname select name

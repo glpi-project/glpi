@@ -684,18 +684,7 @@ class Entity extends DbTestCase {
       $old_interface = $_SESSION['glpiactiveprofile']['interface'];
       $_SESSION['glpiactiveprofile']['interface'] = $interface;
 
-      // Case 1: test values recovered from CommonITILObject::showUsersAssociated()
-      ob_start();
-      $ticket->showUsersAssociated(CommonITILActor::ASSIGN, false, []);
-      $html = ob_get_clean();
-
-      foreach ($possible_values as $value) {
-         if ($value == $expected) {
-            $this->string($html)->contains($value);
-         } else {
-            $this->string($html)->notContains($value);
-         }
-      }
+      // Case 1: removed (test values recovered from CommonITILObject::showUsersAssociated())
 
       // Case 2: test values recovered from CommonITILObject:::showShort()
       ob_start();

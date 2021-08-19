@@ -111,11 +111,11 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
       } else {
          echo "<div id='tracking_all_devices$rand' class='input-group mb-1'>";
-         if (true or $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,
+         if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,
                                                                      Ticket::HELPDESK_ALL_HARDWARE)) {
             // Display a message if view my hardware
             if ($users_id
-                &&(true or $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,
+                &&($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,
                                                                            Ticket::HELPDESK_MY_HARDWARE))) {
                echo "<span class='input-group-text'>".__('Or complete search')."</span>";
             }

@@ -429,7 +429,6 @@ var GlpiGantt = (function() {
 
          // adjust elements visibility on Fullscreen expand/collapse
          gantt.attachEvent("onBeforeExpand", function() {
-            $('#c_ssmenu2, #c_logo').fadeOut('fast');
             $('.gantt-block__features').css({
                'position': 'absolute',
                'bottom': '18px',
@@ -439,7 +438,6 @@ var GlpiGantt = (function() {
          });
 
          gantt.attachEvent("onCollapse", function() {
-            $('#c_ssmenu2, #c_logo').fadeIn('fast');
             $('.gantt-block__features').css({
                'position': 'initial',
                'bottom': '10px'

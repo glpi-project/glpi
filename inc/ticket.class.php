@@ -772,15 +772,6 @@ class Ticket extends CommonITILObject {
       switch ($item->getType()) {
          case __CLASS__ :
             switch ($tabnum) {
-
-               case 1 :
-                  echo "<div class='timeline_box'>";
-                  $rand = mt_rand();
-                  $item->showTimelineForm($rand);
-                  $item->showTimeline($rand);
-                  echo "</div>";
-                  break;
-
                case 3 :
                   $satisfaction = new TicketSatisfaction();
                   if (($item->fields['status'] == self::CLOSED)
@@ -4317,24 +4308,6 @@ JAVASCRIPT;
       ]);
 
       return true;
-   }
-
-
-   /**
-    * @param $size (default 25)
-   **/
-   static function showDocumentAddButton($size = 25) {
-      echo "<script type='text/javascript'>var nbfiles=1; var maxfiles = 5;</script>";
-      echo "<span id='addfilebutton' class='fa fa-plus pointer' title=\"".__s('Add')."\"".
-             "\" onClick=\"if (nbfiles<maxfiles){
-                           var row = ".Html::jsGetElementbyID('uploadfiles').";
-                           row.append('<br><input type=\'file\' name=\'filename[]\' size=\'$size\'>');
-                           nbfiles++;
-                           if (nbfiles==maxfiles) {
-                              ".Html::jsHide('addfilebutton')."
-                           }
-                        }\"
-              <span class='sr-only'>" . __s('Add') . "</span></span>";
    }
 
 

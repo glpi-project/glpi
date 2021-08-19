@@ -85,52 +85,6 @@ function cleanhide(id) {
 
 
 /**
- * masquer le menu actif par timeout
- *
- * @param idMenu
-**/
-function afterView(idMenu) {
-
-   setdisplay(idMenu,'none');
-}
-
-
-/**
- * @param id
- * @param idMenu
-**/
-function menuAff(id, idMenu) {
-
-   var m      = document.getElementById(idMenu);
-   var item   = m.getElementsByTagName('li');
-   var ssmenu = null;
-   for (var i=0; i<item.length; i++) {
-      if (item[i].id == id) {
-         ssmenu = item[i];
-      }
-   }
-   m = m.getElementsByTagName('ul');
-
-   if (ssmenu) {
-      var smenu = ssmenu.getElementsByTagName('ul');
-      if (smenu) {
-         //masquer tous les menus ouverts
-         for (i=0; i<m.length; i++) {
-            setdisplay(m[i],'none');
-         }
-         setdisplay(smenu[0],'block');
-         clearTimeout(timeoutglobalvar);
-         ssmenu.onmouseout = function() {
-            timeoutglobalvar = setTimeout(function() {
-               afterView(smenu[0]);
-            },300);
-         };
-      }
-   }
-}
-
-
-/**
  * @param Type
  * @param Id
 **/
@@ -621,10 +575,6 @@ $(function() {
    if ($('html').hasClass('loginpage')) {
       return;
    }
-   $('#menu.fullmenu li').on('mouseover', function() {
-      var _id = $(this).data('id');
-      menuAff('menu' + _id, 'menu');
-   });
 
    $("body").delegate('td','mouseover mouseleave', function(e) {
       var col = $(this).closest('tr').children().index($(this));
@@ -855,7 +805,7 @@ var initMap = function(parent_elt, map_id, height, initial_view = {position: [43
       var wheight = $(window).height();
       var _oSize = 0;
 
-      $('#header_top, #c_menu, #c_ssmenu2, #footer, .search_page').each(function(){
+      $('#footer, .search_page').each(function(){
          _oSize += _eltRealSize($(this));
       });
       _oSize += parseFloat($('#page').css('padding-top').replace('px', ''));

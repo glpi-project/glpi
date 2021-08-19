@@ -749,47 +749,6 @@ class ITILFollowup  extends CommonDBChild {
    }
 
 
-   /**
-    * form for soluce's approbation
-    *
-    * @param CommonITILObject $itilobject
-    */
-   function showApprobationForm($itilobject) {
-
-      if (($itilobject->fields["status"] == CommonITILObject::SOLVED)
-          && $itilobject->canApprove()
-          && $itilobject->isAllowedStatus($itilobject->fields['status'], CommonITILObject::CLOSED)) {
-         echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='4'>". __('Approval of the solution')."</th></tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2'>".__('Comments')."<br>(".__('Optional when approved').")</td>";
-         echo "<td class='center middle' colspan='2'>";
-         echo "<textarea name='content' cols='70' rows='6'></textarea>";
-         echo "<input type='hidden' name='itemtype' value='".$itilobject->getType()."'>";
-         echo "<input type='hidden' name='items_id' value='".$itilobject->getField('id')."'>";
-         echo "<input type='hidden' name='requesttypes_id' value='".
-                RequestType::getDefault('followup')."'>";
-         echo "</td></tr>\n";
-
-         echo "<tr class='tab_bg_2'>";
-         echo "<td class='tab_bg_2 center' colspan='2' width='200'>\n";
-         echo "<input type='submit' name='add_reopen' value=\"".__('Refuse the solution')."\"
-                class='submit'>";
-         echo "</td>\n";
-         echo "<td class='tab_bg_2 center' colspan='2'>\n";
-         echo "<input type='submit' name='add_close' value=\"".__('Approve the solution')."\"
-                class='submit'>";
-         echo "</td></tr>\n";
-         echo "</table>";
-         Html::closeForm();
-      }
-
-      return true;
-   }
-
-
    static function getFormURL($full = true) {
       return Toolbox::getItemTypeFormURL("ITILFollowup", $full);
    }

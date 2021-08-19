@@ -379,12 +379,8 @@
       background-color: #FFF;
       box-shadow: 0px 1px 2px 1px #D2D2D2;
 
-      .actor_title {
-         text-align: right;
-      }
-
       tr {
-         &:not(.headerRow):not(.footerRow) th:not(.actor-th) {
+         &:not(.headerRow):not(.footerRow) th {
             text-align: right;
          }
 
@@ -614,58 +610,6 @@
       font-size: 0.8em;
       padding-right: 5px;
       vertical-align: 1px;
-   }
-
-   .tab_actors {
-      display: table;
-   }
-
-   .actor_title {
-      width: 13%;
-      float: left;
-      font-weight: bold;
-      text-align: center;
-      padding-top: 30px;
-      font-size: 1.1em;
-      padding: 3px 5px;
-      background-color: #F1F1F1;
-   }
-
-   .actor-bloc {
-      width: 29%;
-   }
-
-   .actor_title, .actor-bloc {
-      display: table-cell;
-      float: none;
-      vertical-align: top;
-   }
-
-   .actor-head {
-      background-color: #F1F1F1;
-      margin: 0 0 0 5px;
-      padding: 4px 0;
-      height: 16px;
-      font-weight: bold;
-      text-align: center;
-      font-size: 1.1em;
-
-      .fa {
-         padding: 0 .2em;
-      }
-   }
-
-   .actor-content {
-      margin: 10px 15px;
-      padding: 4px 0;
-   }
-
-   .actor_row {
-      margin-bottom: 8px;
-   }
-
-   .tab_actors hr {
-      border: 0;
    }
 
    /* ################--------------- Pager  ---------------#################### */
@@ -949,7 +893,7 @@
       }
    }
 
-   .main_form .faqadd_entries table.tab_cadre_fixe th:not(.actor-th) {
+   .main_form .faqadd_entries table.tab_cadre_fixe th {
       display: block;
       text-align: center;
    }
@@ -1886,8 +1830,6 @@
    /** End badges */
 
    /* Primary color elements (white on blue BG) designed to be overridden from palettes */
-   /* Colors are same as #c_menu */
-
    .primary-bg {
       background: #3A5693;
    }

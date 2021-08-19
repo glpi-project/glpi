@@ -2510,28 +2510,6 @@ JAVASCRIPT;
    }
 
 
-   /** Print the user personnal information for check.
-    *
-    * @param integer $userid ID of the user
-    *
-    * @return void|boolean false if user is not the current user, otherwise print form
-    *
-    * @since 0.84
-    */
-   static function showPersonalInformation($userid) {
-      $user = new self();
-      if (!$user->can($userid, READ)
-          && ($userid != Session::getLoginUserID())) {
-         return false;
-      }
-
-      TemplateRenderer::getInstance()->display('components/user/info_card.html.twig', [
-         'user'     => $user->fields,
-         'can_edit' => $userid == Session::getLoginUserID(),
-      ]);
-   }
-
-
    /**
     * Print the user preference form.
     *

@@ -73,26 +73,6 @@
       border: 1px solid $hc-border-color-contrast;
    }
 
-   .actor-head, .actor-content {
-      margin: 0;
-      min-height: 25px;
-      box-sizing: border-box;
-      border-collapse: collapse;
-   }
-
-   .tab_actors {
-      border-bottom: 1px solid $hc-border-color;
-   }
-
-   .actor-head {
-      border-right: 1px solid $hc-border-color;
-      border-bottom: 1px solid $hc-border-color;
-   }
-
-   .actor_title {
-      border-right: 1px solid $hc-border-color;
-   }
-
    .order_DESC:before {
       color: $dark;
    }
@@ -223,10 +203,6 @@
 
    .pointer {
       opacity: 1;
-   }
-
-   #c_ssmenu2 {
-      border-bottom: 1px solid $hc-border-color;
    }
 
    .dropdown-toggle {

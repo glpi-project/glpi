@@ -191,13 +191,6 @@ class Problem extends CommonITILObject {
                case 4 :
                   $item->showStats();
                   break;
-               case 5 :
-                  echo "<div class='timeline_box'>";
-                  $rand = mt_rand();
-                  $item->showTimelineForm($rand);
-                  $item->showTimeline($rand);
-                  echo "</div>";
-                  break;
             }
       }
       return true;
@@ -1286,10 +1279,6 @@ class Problem extends CommonITILObject {
          return false;
       }
 
-      // In percent
-      $colsize1 = '13';
-      $colsize2 = '37';
-
       $default_values = self::getDefaultValues();
 
       // Restore saved value or override with page parameter
@@ -1334,11 +1323,6 @@ class Problem extends CommonITILObject {
       $this->initForm($ID, $options);
 
       $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());
-
-      $showuserlink = 0;
-      if (User::canView()) {
-         $showuserlink = 1;
-      }
 
       if (!$this->isNewItem()) {
          $options['formtitle'] = sprintf(

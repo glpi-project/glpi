@@ -233,13 +233,6 @@ class Change extends CommonITILObject {
                case 4 :
                   $item->showStats();
                   break;
-               case 5 :
-                  echo "<div class='timeline_box'>";
-                  $rand = mt_rand();
-                  $item->showTimelineForm($rand);
-                  $item->showTimeline($rand);
-                  echo "</div>";
-                  break;
             }
             break;
       }
@@ -649,15 +642,10 @@ class Change extends CommonITILObject {
 
 
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
 
       if (!static::canView()) {
          return false;
       }
-
-      // In percent
-      $colsize1 = '13';
-      $colsize2 = '37';
 
       $default_values = self::getDefaultValues();
 
@@ -726,11 +714,6 @@ class Change extends CommonITILObject {
       }
 
       $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());
-
-      $showuserlink = 0;
-      if (User::canView()) {
-         $showuserlink = 1;
-      }
 
       if (!$this->isNewItem()) {
          $options['formtitle'] = sprintf(

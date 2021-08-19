@@ -42,15 +42,19 @@ The present file will list all changes made to the project; according to the
 - Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
 - Usage of `CommonDBTM::notificationqueueonaction` property
 - Usage of `NotificationTarget::html_tags` property
-- `DBmysql::getTableSchema()`
+- `Ajax::createSlidePanel()`
 - `Calendar::duplicate()`
 - `CommonDBTM::clone()`
 - `CommonDBTM::prepareInputForClone()`
 - `CommonDBTM::post_clone()`
+- `CommonITILObject::getActorIcon()`
 - `Config::getCache()`
+- `DBmysql::getTableSchema()`
 - `Html::clean()`
+- `Html::displayImpersonateBanner()`
 - `Html::setSimpleTextContent()`
 - `Html::setRichTextContent()`
+- `Html::displayImpersonateBanner()`
 - `Html::weblink_extract()`
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
@@ -73,6 +77,17 @@ The present file will list all changes made to the project; according to the
 - `Change::getCommonLeftJoin()`
 - `Change::getCommonSelect()`
 - `CommonDBTM::getRawName()`
+- `CommonITILObject::displayHiddenItemsIdInput()`
+- `CommonITILObject::filterTimeline()`
+- `CommonITILObject::showActorsPartForm()`
+- `CommonITILObject::showFormHeader()`
+- `CommonITILObject::showGroupsAssociated()`
+- `CommonITILObject::showSupplierAddFormOnCreate()`
+- `CommonITILObject::showSuppliersAssociated()`
+- `CommonITILObject::showTimeline()`
+- `CommonITILObject::showTimelineForm()`
+- `CommonITILObject::showTimelineHeader()`
+- `CommonITILObject::showUsersAssociated()`
 - `Computer_Item::cloneComputer()`
 - `Computer_Item::cloneItem()`
 - `Computer_SoftwareLicense` class
@@ -96,11 +111,21 @@ The present file will list all changes made to the project; according to the
 - `DBMysql::list_fields()`
 - `DBMysql::num_fields()`
 - `DbUtils::getRealQueryForTreeItem()`
+- `DCBreadcrumb::showDcBreadcrumb()`
 - `Document_Item::cloneItem()`
+- `Html::displayMainMenu()`
+- `Html::displayMenuAll()`
+- `Html::displayTopMenu()`
 - `Html::jsDisable()`
 - `Html::jsEnable()`
+- `Html::resume_name()`
 - `Infocom::cloneItem()`
 - `Itil_Project::cloneItilProject()`
+- `ITILFollowup::showApprobationForm()`
+- `ITILTemplate::getBeginHiddenFieldText()`
+- `ITILTemplate::getBeginHiddenFieldValue()`
+- `ITILTemplate::getEndHiddenFieldText()`
+- `ITILTemplate::getEndHiddenFieldValue()`
 - `Item_Devices::cloneItem()`
 - `Item_Disk::cloneItem()`
 - `Item_OperatingSystem::cloneItem()`
@@ -111,8 +136,10 @@ The present file will list all changes made to the project; according to the
 - `Item_SoftwareVersion::showForComputer()`
 - `Item_SoftwareVersion::updateDatasForComputer()`
 - `KnowbaseItem_Item::cloneItem()`
+- `LevelAgreement::showForTicket()`
 - `NetworkPort::cloneItem()`
 - `Notepad::cloneItem()`
+- `NotificationTargetTicket::isAuthorMailingActivatedForHelpdesk()`
 - `Plugin::setLoaded()`
 - `Plugin::setUnloaded()`
 - `Plugin::setUnloadedByName()`
@@ -127,6 +154,8 @@ The present file will list all changes made to the project; according to the
 - `Ticket::getCommonLeftJoin()`
 - `Ticket::getCommonSelect()`
 - `Ticket::getTicketTemplateToUse()`
+- `Ticket::showDocumentAddButton()`
+- `Ticket_Ticket::displayLinkedTicketsTo()`
 - `TicketTemplate::getFromDBWithDatas()`
 - `Toolbox::canUseImapPop()`
 - `Toolbox::checkSELinux()`
@@ -134,6 +163,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::userErrorHandlerNormal()`
 - `Transfer::transferComputerSoftwares()`
 - `Update::declareOldItems()`
+- `User::showPersonalInformation()`
 
 ## [9.5.6] unreleased
 

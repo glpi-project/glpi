@@ -1,5 +1,4 @@
 <?php
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,6 +29,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
 use Glpi\Application\View\TemplateRenderer;
 
 if (!defined('GLPI_ROOT')) {
@@ -140,8 +140,12 @@ class Ajax {
     *          - icon_txt    Alternative text and title for aditional icon_
     *
     * @return void|string (see $options['display'])
+    *
+    * @deprecated 10.0.0.
     */
    static function createSlidePanel($name, $options = []) {
+      Toolbox::deprecated();
+
       global $CFG_GLPI;
 
       $param = [
