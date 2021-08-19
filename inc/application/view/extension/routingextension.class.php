@@ -32,10 +32,8 @@
 
 namespace Glpi\Application\View\Extension;
 
-use CommonGLPI;
 use Html;
 use Session;
-use Toolbox;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -48,10 +46,7 @@ class RoutingExtension extends AbstractExtension {
       return [
          new TwigFunction('index_path', [$this, 'indexPath']),
          new TwigFunction('path', [$this, 'path']),
-         new TwigFunction('form_path', [$this, 'formPath']),
          new TwigFunction('url', [$this, 'url']),
-         new TwigFunction('form_url', [$this, 'formUrl']),
-         new TwigFunction('shortcut', [$this, 'shortcut'], ['is_safe' => ['html']]),
       ];
    }
 
@@ -82,22 +77,6 @@ class RoutingExtension extends AbstractExtension {
    }
 
    /**
-    * Return domain-relative path of itemtype form.
-    *
-    * @param string $itemtype
-    * @param null|int $id
-    *
-    * @return string
-    */
-   public function formPath(string $itemtype, ?int $id = null): string {
-      if (!is_a($itemtype, CommonGLPI::class, true)) {
-         throw new \Exception(sprintf('Unable to generate form path of item "%s".', $itemtype));
-      }
-
-      return $id !== null ? $itemtype::getFormURLWithID($id) : $itemtype::getFormURL();
-   }
-
-   /**
     * Return absolute URL of a resource.
     *
     * @param string $resource
@@ -113,39 +92,5 @@ class RoutingExtension extends AbstractExtension {
       }
 
       return $prefix . $resource;
-   }
-
-   /**
-    * Return absolute URL of itemtype form.
-    *
-    * @param string $itemtype
-    * @param null|int $id
-    *
-    * @return string
-    */
-   public function formUrl(string $itemtype, ?int $id = null): string {
-      if (!is_a($itemtype, CommonGLPI::class, true)) {
-         throw new \Exception(sprintf('Unable to generate form path of item "%s".', $itemtype));
-      }
-
-      $resource = $id !== null ? $itemtype::getFormURLWithID($id, false) : $itemtype::getFormURL(false);
-
-      return $this->url($resource);
-   }
-
-
-   /**
-    * Create a string with the letter associated to a given shortcut is underlined
-    *
-    * @param string $string the string to underline the shortcut
-    * @param string $shortcut the letter to underline
-    *
-    * @return string
-    */
-   public function shortcut(string $string = "", string $shortcut = ""):string {
-      if ($shortcut == "") {
-         return $string;
-      }
-      return Toolbox::shortcut($string, $shortcut);
    }
 }

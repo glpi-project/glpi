@@ -54,6 +54,7 @@ class DataHelpersExtension extends AbstractExtension {
          new TwigFilter('relative_datetime', [$this, 'getRelativeDatetime']),
          new TwigFilter('safe_html', [$this, 'getSafeHtml'], ['is_safe' => ['html']]),
          new TwigFilter('verbatim_value', [$this, 'getVerbatimValue']),
+         new TwigFilter('shortcut', [$this, 'underlineShortcutLetter'], ['is_safe' => ['html']]),
       ];
    }
 
@@ -123,6 +124,21 @@ class DataHelpersExtension extends AbstractExtension {
       }
 
       return Toolbox::getPictureUrl($path, true);
+   }
+
+   /**
+    * Return string having its shortcut letter underlined.
+    *
+    * @param string $string
+    * @param string $shortcut
+    *
+    * @return string
+    */
+   public function underlineShortcutLetter(string $string, string $shortcut_letter):string {
+      if (empty($shortcut_letter)) {
+         return $string;
+      }
+      return Toolbox::shortcut($string, $shortcut_letter);
    }
 
    /**

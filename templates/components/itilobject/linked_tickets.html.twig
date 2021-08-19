@@ -20,7 +20,7 @@
                {% endif %}
             </div>
             <div class="col text-truncate">
-               <a href="{{ form_path('Ticket', linked['tickets_id']) }}" class="col-9 overflow-hidden text-nowrap">
+               <a href="{{ 'Ticket'|itemtype_form_path(linked['tickets_id']) }}" class="col-9 overflow-hidden text-nowrap">
                   {{ new_ticket.getStatusIcon(new_ticket.fields['status'])|raw }}
                   <span title="{{ new_ticket.fields['name']|verbatim_value }}" data-bs-toggle="tooltip">
                      {{ new_ticket.fields['name']|verbatim_value }}
@@ -31,7 +31,7 @@
 
             {% if canupdate %}
                <div class="col-auto">
-                  <a href="{{ form_path('Ticket_Ticket', id) }}&purge&tickets_id={{ item.fields['id'] }}"
+                  <a href="{{ 'Ticket_Ticket'|itemtype_form_path(id) }}&purge&tickets_id={{ item.fields['id'] }}"
                      class="btn btn-sm btn-ghost-danger" role="button" data-bs-toggle="tooltip" title="{{ _x('button', 'Delete permanently') }}">
                      <i class="fas fa-unlink"></i>
                   </a>

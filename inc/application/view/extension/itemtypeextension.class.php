@@ -50,6 +50,7 @@ class ItemtypeExtension extends AbstractExtension {
       return [
          new TwigFilter('itemtype_class', [$this, 'getItemtypeClass']),
          new TwigFilter('itemtype_dropdown', [$this, 'getItemtypeDropdown'], ['is_safe' => ['html']]),
+         new TwigFilter('itemtype_form_path', [$this, 'getItemtypeFormPath']),
          new TwigFilter('itemtype_icon', [$this, 'getItemtypeIcon']),
          new TwigFilter('itemtype_name', [$this, 'getItemtypeName']),
          new TwigFilter('itemtype_search_url', [$this, 'getItemtypeSearchUrl']),
@@ -86,6 +87,22 @@ class ItemtypeExtension extends AbstractExtension {
    public function getItemtypeDropdown($itemtype, array $options = []): ?string {
       $options['display'] = false;
       return is_a($itemtype, CommonDBTM::class, true) ? $itemtype::dropdown($options) : null;
+   }
+
+   /**
+    * Returns form path of given itemtype.
+    *
+    * @param string $itemtype
+    * @param null|int $id
+    *
+    * @return string|null
+    */
+   public function getItemtypeFormPath(string $itemtype, ?int $id = null): ?string {
+      if (!is_a($itemtype, CommonGLPI::class, true)) {
+         return null;
+      }
+
+      return $id !== null ? $itemtype::getFormURLWithID($id) : $itemtype::getFormURL();
    }
 
    /**

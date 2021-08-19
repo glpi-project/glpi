@@ -1,13 +1,13 @@
 {% set enctype = item.isNewItem() ? 'multipart/form-data' : 'application/x-www-form-urlencoded' %}
 {% set new_cls = item.isNewItem() ? 'new-itil-object' : '' %}
 
-{% set form_url = item.getFormURL() %}
+{% set form_path = item.getFormURL() %}
 {% if not item.isNewItem %}
-   {% set form_url = form_url ~ '?id=' ~ item.fields['id'] %}
+   {% set form_path = form_path ~ '?id=' ~ item.fields['id'] %}
 {% endif %}
 
 {% if selfservice %}
-   {% set form_url = path('front/tracking.injector.php') %}
+   {% set form_path = path('front/tracking.injector.php') %}
 {% endif %}
 
 {% set track_changes = 'true' %}
@@ -15,7 +15,7 @@
    {% set track_changes = 'false' %}
 {% endif %}
 
-<form method="POST" action="{{ form_url }}" enctype="{{ enctype }}"
+<form method="POST" action="{{ form_path }}" enctype="{{ enctype }}"
       data-track-changes="{{ track_changes }}" id="itil-form" class="{{ new_cls }}">
    <input type="hidden" name="id" value="{{ item.fields['id'] ?? 0 }}" />
    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
