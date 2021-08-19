@@ -53,7 +53,7 @@ class ItemtypeExtension extends AbstractExtension {
          new TwigFilter('itemtype_form_path', [$this, 'getItemtypeFormPath']),
          new TwigFilter('itemtype_icon', [$this, 'getItemtypeIcon']),
          new TwigFilter('itemtype_name', [$this, 'getItemtypeName']),
-         new TwigFilter('itemtype_search_url', [$this, 'getItemtypeSearchUrl']),
+         new TwigFilter('itemtype_search_path', [$this, 'getItemtypeSearchPath']),
       ];
    }
 
@@ -90,7 +90,7 @@ class ItemtypeExtension extends AbstractExtension {
    }
 
    /**
-    * Returns form path of given itemtype.
+    * Returns domain relative path of given itemtype form.
     *
     * @param string $itemtype
     * @param null|int $id
@@ -129,13 +129,13 @@ class ItemtypeExtension extends AbstractExtension {
    }
 
    /**
-    * Returns search URL of given itemtype.
+    * Returns domain relative path of given itemtype search.
     *
     * @param string $itemtype
     *
     * @return string|null
     */
-   public function getItemtypeSearchUrl(string $itemtype): ?string {
+   public function getItemtypeSearchPath(string $itemtype): ?string {
       return is_a($itemtype, CommonGLPI::class, true) ? $itemtype::getSearchURL() : null;
    }
 

@@ -17,7 +17,7 @@
                      {% for itemtype, dropdown_label in dropdown %}
                         {% set is_entity_assign = itemtype|itemtype_class.isEntityAssign() %}
                         <a class="list-group-item list-group-item-action {{ is_entity_assign ? '' : 'dropdown-no-entity' }}"
-                           href="{{ itemtype|itemtype_search_url }}">
+                           href="{{ itemtype|itemtype_search_path }}">
                            <div class="row">
                               <div class="col-auto">
                                  <i class="fa-fw {{ itemtype|itemtype_icon }}"></i>
