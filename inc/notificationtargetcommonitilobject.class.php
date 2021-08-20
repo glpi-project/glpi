@@ -1198,7 +1198,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             if ($user_tmp->getFromDB($uid)) {
                // Check if the user need to be anonymized
                if ($is_self_service
-                  && !empty($anon_name = User::getAnonymizedName(
+                  && !empty($anon_name = User::getAnonymizedNameForUser(
                      $uid,
                      $item->getField('entities_id')
                   ))
@@ -1321,7 +1321,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             // Check if the author need to be anonymized
             if (ITILFollowup::getById($followup['id'])->isFromSupportAgent()
                && $is_self_service
-               && !empty($anon_name = User::getAnonymizedName(
+               && !empty($anon_name = User::getAnonymizedNameForUser(
                   $followup['users_id'],
                   $item->getField('entities_id')
                ))

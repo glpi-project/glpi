@@ -1,20 +1,16 @@
+{% set enable_anonymization = enable_anonymization ?? false %}
+
 <div class="p-0 user-info-card">
    <div class="row">
       <div class="col pt-1">
-         {{ include('components/user/picture.html.twig', {'users_id': user['id']}) }}
+         {{ include('components/user/picture.html.twig', {'users_id': user['id'], 'enable_anonymization': enable_anonymization}) }}
       </div>
       <div class="col-auto ms-2">
          <h4 class="card-title mb-1">
-            {{ User__getUserName(user['id']) }}
+            {{ user['user_name'] }}
          </h4>
 
          <div class="text-muted">
-            {% if user['email'] is not defined %}
-               {% set user = user|merge({
-                  email: User__getDefaultEmail(user['id'])
-               }) %}
-            {% endif %}
-
             {% if user['email']|length > 0 %}
                <div>
                   <i class="fas fa-fw fa-envelope"></i>

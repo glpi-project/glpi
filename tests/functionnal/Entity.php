@@ -561,11 +561,6 @@ class Entity extends DbTestCase {
             'expected'  => 'user_nick_6436345654',
             'user_nick' => 'user_nick_6436345654'
          ],
-         [
-            'interface' => 'helpdesk',
-            'setting'   => \Entity::ANONYMIZE_USE_NICKNAME,
-            'expected'  => TU_USER,
-         ],
       ];
    }
 
@@ -693,9 +688,15 @@ class Entity extends DbTestCase {
 
       foreach ($possible_values as $value) {
          if ($value == $expected) {
-            $this->string($html)->contains($value);
+            $this->string($html)->contains(
+               $value,
+               "Ticket showShort must contains '$value' in interface '$interface' with settings '$setting'"
+            );
          } else {
-            $this->string($html)->notContains($value);
+            $this->string($html)->notContains(
+               $value,
+               "Ticket form must not contains '$value' (expected '$expected') in interface '$interface' with settings '$setting'"
+            );
          }
       }
 
@@ -725,6 +726,8 @@ class Entity extends DbTestCase {
       ob_start();
       $ticket->showForm($tickets_id);
       $html = ob_get_clean();
+      // Drop answers form, as new validation form contains current user name
+      $html = preg_replace('/<div id="new-itilobject-form".*$/s', '', $html);
 
       foreach ($possible_values as $value) {
          if ($value == $expected) {

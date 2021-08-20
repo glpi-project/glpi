@@ -37,9 +37,11 @@ use CommonDropdown;
 use CommonGLPI;
 use Dropdown;
 use Glpi\Toolbox\Sanitizer;
+use Group;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
+use User;
 
 /**
  * @since 10.0.0
@@ -205,14 +207,23 @@ class ItemtypeExtension extends AbstractExtension {
    /**
     * Returns link of the given item.
     *
-    * @param CommonDBTM|string $item   Item instance of itemtype of the item.
-    * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
+    * @param CommonDBTM|string   $item    Item instance of itemtype of the item.
+    * @param int|null            $id      ID of the item, useless first argument is an already loaded item instance.
+    * @param array               $options Available options:
+    *    - enable_anonymization (bool) Enable anonymization of helpdesk actors;
     *
     * @return string|null
     */
-   public function getItemLink($item, ?int $id = null): ?string {
+   public function getItemLink($item, ?int $id = null, array $options = []): ?string {
       if (($instance = $this->getItemInstance($item, $id)) === null) {
          return null;
+      }
+
+      if ($instance instanceof Group) {
+         return $instance->getGroupLink(true);
+      }
+      if ($instance instanceof User) {
+         return $instance->getUserLink(true);
       }
 
       return $instance->getLink();

@@ -13,10 +13,10 @@
                <div class="d-flex timeline-header">
                   <div class="d-flex creator">
                      {{ include('components/itilobject/timeline/timeline_item_header_badges.html.twig', {
-                        'creator': User__getLink(users_id),
+                        'creator': get_item_link('User', users_id, {'enable_anonymization': true}),
                         'date_creation': item.fields['date_creation'],
                         'date_mod': item.fields['date_mod'],
-                        'editor': User__getLink(item.fields['users_id_lastupdater']),
+                        'editor': get_item_link('User', item.fields['users_id_lastupdater'], {'enable_anonymization': true}),
                      }, with_context = false) }}
                   </div>
 

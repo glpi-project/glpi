@@ -19,14 +19,14 @@
             {% if entry_i['users_id_tech'] %}
                <span class="badge bg-orange-lt">
                   <i class="fas fa-user me-1"></i>
-                  {{ User__getLink(entry_i['users_id_tech']) }}
+                  {{ get_item_link('User', entry_i['users_id_tech'], {'enable_anonymization': true}) }}
                </span>
             {% endif %}
 
             {% if entry_i['groups_id_tech'] %}
                <span class="badge bg-orange-lt">
                   <i class="fas fa-users me-1"></i>
-                  {{ get_item_link('Group', entry_i['groups_id_tech']) }}
+                  {{ get_item_link('Group', entry_i['groups_id_tech'], {'enable_anonymization': true}) }}
                </span>
             {% endif %}
 

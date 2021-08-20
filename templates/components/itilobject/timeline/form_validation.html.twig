@@ -55,7 +55,7 @@
                <div class="col-12">
                   {{ fields.readOnlyField(
                      'approval_requester',
-                     User__getUserName(),
+                     get_current_user().getFriendlyName(),
                      _n('Requester', 'Requester', 1),
                      {
                         'full_width': true,

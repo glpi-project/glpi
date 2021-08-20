@@ -967,4 +967,21 @@ class Group extends CommonTreeDropdown {
    static function getIcon() {
       return "fas fa-users";
    }
+
+   /**
+    * Get group link.
+    *
+    * @param bool $enable_anonymization
+    *
+    * @return string
+    */
+   public function getGroupLink(bool $enable_anonymization = false): string {
+
+      if ($enable_anonymization && Session::getCurrentInterface() == 'helpdesk' && ($anon = $this->getAnonymizedName()) !== null) {
+         // if anonymized name active, return only the anonymized name
+         return $anon;
+      }
+
+      return $this->getLink();
+   }
 }

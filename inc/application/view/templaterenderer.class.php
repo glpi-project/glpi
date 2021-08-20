@@ -58,7 +58,6 @@ use Glpi\Application\View\Extension\SearchExtension;
 use Glpi\Application\View\Extension\SecurityExtension;
 use Glpi\Application\View\Extension\SessionExtension;
 use Glpi\Application\View\Extension\ToolboxExtension;
-use Glpi\Application\View\Extension\UserExtension;
 use Glpi\Application\View\Extension\ValidationExtension;
 use Plugin;
 use Session;
@@ -122,7 +121,6 @@ class TemplateRenderer {
       $this->environment->addExtension(new SearchExtension());
       $this->environment->addExtension(new SessionExtension());
       $this->environment->addExtension(new ToolboxExtension());
-      $this->environment->addExtension(new UserExtension());
       $this->environment->addExtension(new ValidationExtension());
 
       // add superglobals

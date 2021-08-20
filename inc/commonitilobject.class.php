@@ -5754,7 +5754,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          foreach ($item->getUsers(CommonITILActor::ASSIGN) as $d) {
             if (Session::getCurrentInterface() == 'helpdesk'
-               && !empty($anon_name = User::getAnonymizedName(
+               && !empty($anon_name = User::getAnonymizedNameForUser(
                   $d['users_id'],
                   $item->getEntityID()
                ))

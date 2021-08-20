@@ -70,13 +70,27 @@
 
             <div class="col-auto d-flex flex-column user-part {{ 'right' in item_position ? 'ms-auto ms-0 order-sm-last' : '' }}">
                {% set avatar_rand = random() %}
-               <span id="timeline-avatar{{ avatar_rand }}">
-                  {{ include('components/user/picture.html.twig', {'users_id': users_id}, with_context = false) }}
-               </span>
-               {% set user = User__getUserName(users_id, 2) %}
-               {{ Html__showToolTip(user['comment'], {
-                  'applyto': 'timeline-avatar' ~ avatar_rand
-               }) }}
+               {# log entries have no users_id #}
+               {% set entry_user = users_id is defined and users_id is not null ? get_item('User', users_id) : null %}
+               {% if entry_user is not null %}
+                  {% set user_fields = entry_user.fields %}
+                  {% set user_fields = user_fields|merge({user_name: entry_user.getFriendlyName()|verbatim_value}) %}
+                  {% set user_fields = user_fields|merge({email: entry_user.getDefaultEmail()}) %}
+                  <span id="timeline-avatar{{ avatar_rand }}">
+                     {{ include('components/user/picture.html.twig', {'users_id': users_id, 'enable_anonymization': true}, with_context = false) }}
+                  </span>
+                  {% if entity_config('anonymize_support_agents') == constant('Entity::ANONYMIZE_DISABLED') %}
+                     {{ Html__showToolTip(include('components/user/info_card.html.twig',
+                        {
+                           'user': user_fields,
+                           'enable_anonymization': true,
+                        },
+                        with_context = false),
+                        {'applyto': 'timeline-avatar' ~ avatar_rand}) }}
+                  {% endif %}
+               {% else %}
+                  <span id="timeline-avatar{{ avatar_rand }}"><span class="avatar avatar-md rounded"></span></span>
+               {% endif %}
             </div>
             <div class="col-12 col-sm d-flex flex-column content-part">
                <span class="row mt-2 timeline-content {{ solution_class }} flex-grow-1 {{ item_position }} card">
