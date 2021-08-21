@@ -4823,7 +4823,9 @@ JS;
             $values = ["$value" => $valuename];
          }
       }
+      $parentfieldid = $params['parentfieldid'] ?? '';
 
+      unset($params['parentfieldid']);
       unset($params['placeholder']);
       unset($params['value']);
       unset($params['valuename']);
@@ -4867,7 +4869,12 @@ JS;
                data: function (params) {
                   query = params;
                   return $.extend({}, params_$field_id, {
-                     searchText: params.term,
+                     searchText: params.term,";
+      if ($parentfieldid != '') {
+         $js .= "
+                     parentid : document.getElementById('".$parentfieldid."').value,";
+      }
+      $js .= "
                      page_limit: ".$CFG_GLPI['dropdown_max'].", // page size
                      page: params.page || 1, // page number
                   });

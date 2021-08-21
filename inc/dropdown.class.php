@@ -107,6 +107,7 @@ class Dropdown {
       $params['placeholder']          = '';
       $params['display']              = true;
       $params['permit_select_parent'] = false;
+      $params['parentfieldid']        = '';   
       $params['addicon']              = true;
       $params['specific_tags']        = [];
       $params['url']                  = $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php";
@@ -177,6 +178,7 @@ class Dropdown {
             'on_change'            => $params['on_change'],
             'permit_select_parent' => $params['permit_select_parent'],
             'specific_tags'        => $params['specific_tags'],
+            'parentfieldid'        => $params['parentfieldid'],
             '_idor_token'          => Session::getNewIDORToken($itemtype, [
                'entity_restrict' => $entity_restrict,
             ]),
@@ -2295,6 +2297,12 @@ class Dropdown {
       $count = 0;
 
       if ($item instanceof CommonTreeDropdown) {
+         if(isset($post['parentid']) && $post['parentid'] != '' ) {
+            $sons = getSonsOf($table, $post['parentid']);
+            if (count($sons) > 0) {
+               $where[] = [new \QueryExpression("$table.id IN (".implode(', ',$sons).")" )];
+            }
+         }         
          if ($one_item >= 0) {
             $where["$table.id"] = $one_item;
          } else {
