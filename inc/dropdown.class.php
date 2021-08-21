@@ -107,7 +107,7 @@ class Dropdown {
       $params['placeholder']          = '';
       $params['display']              = true;
       $params['permit_select_parent'] = false;
-      $params['parentfieldid']        = '';   
+      $params['parentfieldid']        = '';
       $params['addicon']              = true;
       $params['specific_tags']        = [];
       $params['url']                  = $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php";
@@ -2297,12 +2297,12 @@ class Dropdown {
       $count = 0;
 
       if ($item instanceof CommonTreeDropdown) {
-         if(isset($post['parentid']) && $post['parentid'] != '' ) {
+         if (isset($post['parentid']) && $post['parentid'] != '') {
             $sons = getSonsOf($table, $post['parentid']);
             if (count($sons) > 0) {
-               $where[] = [new \QueryExpression("$table.id IN (".implode(', ',$sons).")" )];
+               $where[] = [new \QueryExpression("$table.id IN (".implode(', ', $sons).")" )];
             }
-         }         
+         }
          if ($one_item >= 0) {
             $where["$table.id"] = $one_item;
          } else {
