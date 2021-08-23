@@ -2126,7 +2126,7 @@ class Dropdown {
     *
     * @since 0.83
    **/
-   static function showOutputFormat($itemtype) {
+   static function showOutputFormat($itemtype = null) {
       global $CFG_GLPI;
 
       $values[Search::PDF_OUTPUT_LANDSCAPE]     = __('Current page in landscape PDF');
