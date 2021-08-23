@@ -97,7 +97,7 @@ class Request extends AbstractRequest
 
    /**
      * Handle Task
-     * @param string $task  Task (one of self::*_tASK)
+     * @param string $task  Task (one of self::*_TASK)
      * @return array
      */
    protected function handleTask($task) :array {

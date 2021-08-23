@@ -214,7 +214,7 @@ abstract class AbstractRequest
    /**
    * Handle Task
    *
-   * @param string $task  Task (one of self::*_tASK)
+   * @param string $task  Task (one of self::*_TASK)
    *
    * @return array
    */
