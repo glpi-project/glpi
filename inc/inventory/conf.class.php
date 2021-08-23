@@ -687,22 +687,11 @@ class Conf extends CommonGLPI
     */
    public function buildInventoryFileName($itemtype, $items_id, $ext): string {
       $files_per_dir = 1000;
-      $num_subdir = floor($items_id / $files_per_dir);
-
-      $subdir = sprintf(
-         '%s/%s/%s',
-         GLPI_INVENTORY_DIR,
-         Toolbox::slugify($itemtype),
-         $num_subdir
-      );
-
-      if (!is_dir($subdir)) {
-         mkdir($subdir, 0755, true);
-      }
 
       return sprintf(
-         '%s/%s.%s',
-         $subdir,
+         '%s/%s/%s.%s',
+         Toolbox::slugify($itemtype),
+         floor($items_id / $files_per_dir),
          $items_id,
          $ext
       );

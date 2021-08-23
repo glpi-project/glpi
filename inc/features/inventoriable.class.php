@@ -53,23 +53,32 @@ trait Inventoriable {
    }
 
 
-   public function getInventoryFileName() {
+   /**
+    * Get inventory file name.
+    *
+    * @param bool $prepend_dir_path Indicated wether the GLPI_INVENTORY_DIR have to be prepend to returned value.
+    *
+    * @return void|string
+    */
+   public function getInventoryFileName(bool $prepend_dir_path = true): ?string {
       if (!$this->isDynamic()) {
-         return;
+         return null;
       }
+
+      $inventory_dir_path = GLPI_INVENTORY_DIR . '/';
 
       $conf = new Conf();
       //most files will be XML for now
-      $download_file = $conf->buildInventoryFileName(static::getType(), $this->fields['id'], 'xml');
-      if (!file_exists($download_file)) {
-         $download_file = $conf->buildInventoryFileName(static::getType(), $this->fields['id'], 'json');
-         if (!file_exists($download_file)) {
-            Toolbox::logWarning('Inventory file missing: ' . $download_file);
-            $download_file = null;
+      $filename = $conf->buildInventoryFileName(static::getType(), $this->fields['id'], 'xml');
+      if (!file_exists($inventory_dir_path . $filename)) {
+         $filename = $conf->buildInventoryFileName(static::getType(), $this->fields['id'], 'json');
+         if (!file_exists($inventory_dir_path . $filename)) {
+            Toolbox::logWarning('Inventory file missing: ' . $filename);
+            return null;
          }
       }
 
-      return $download_file;
+      return ($prepend_dir_path ? $inventory_dir_path : '') . $filename;
    }
 
    /**
@@ -87,7 +96,7 @@ trait Inventoriable {
       echo '<tr>';
       echo '<th colspan="4">'.__('Inventory information');
 
-      $download_file = $this->getInventoryFileName();
+      $download_file = $this->getInventoryFileName(false);
       if ($download_file !== null) {
           $href = sprintf(
              "%s/front/document.send.php?file=_inventory/%s",

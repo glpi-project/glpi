@@ -122,7 +122,7 @@ class RuleImportAssetCollection extends RuleCollection {
          $refused->getFromDB($refused_id);
 
          $inventory_request = new \Glpi\Inventory\Request();
-         $contents = file_get_contents(GLPI_INVENTORY_DIR . '/' . $refused->getInventoryFileName());
+         $contents = file_get_contents($refused->getInventoryFileName());
          $inventory_request
            ->testRules()
            ->handleRequest($contents);
