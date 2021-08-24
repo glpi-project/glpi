@@ -125,12 +125,15 @@ trait Inventoriable {
       echo '</tr>';
 
       $agent = new Agent();
-      $iterator = $DB->request(Agent::getTable(), [
+      $iterator = $DB->request([
+         'SELECT'    => ['id'],
+         'FROM'      => Agent::getTable(),
          'WHERE'     => [
             'itemtype' => $this->getType(),
             'items_id' => $this->fields['id']
          ],
-         'ORDERBY'    => ['last_contact DESC'],
+         'ORDERBY'   => ['last_contact DESC'],
+         'LIMIT'     => 1
       ]);
 
       $has_agent = false;
