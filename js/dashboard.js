@@ -910,7 +910,7 @@ var Dashboard = {
    getCardsAjax: function(specific_one) {
       specific_one = specific_one || "";
 
-      var filters = Dashboard.getFiltersFromStorage();
+      var filters = Dashboard.getFiltersFromDB();
 
       let requested_cards = [];
       let card_ajax_data = [];
