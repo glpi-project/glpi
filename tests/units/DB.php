@@ -502,33 +502,30 @@ SQL;
       global $DB;
 
       $DB->beginTransaction();
-      try {
-         $computer = new \Computer();
-         $DB->setSavepoint('save0', false);
-         $computers_id_0 = $computer->add([
-            'name'        => 'computer0',
-            'entities_id' => 0
-         ]);
-         $this->integer($computers_id_0)->isGreaterThan(0);
-         $DB->setSavepoint('save1', false);
-         $computers_id_1 = $computer->add([
-            'name'        => 'computer1',
-            'entities_id' => 0
-         ]);
-         $this->integer($computers_id_1)->isGreaterThan(0);
-         $this->boolean($computer->getFromDB($computers_id_1))->isTrue();
 
-         $DB->rollBack('save1');
-         $this->boolean($computer->getFromDB($computers_id_1))->isFalse();
-         $this->boolean($computer->getFromDB($computers_id_0))->isTrue();
+      $computer = new \Computer();
+      $DB->setSavepoint('save0', false);
+      $computers_id_0 = $computer->add([
+         'name'        => 'computer0',
+         'entities_id' => 0
+      ]);
+      $this->integer($computers_id_0)->isGreaterThan(0);
+      $DB->setSavepoint('save1', false);
+      $computers_id_1 = $computer->add([
+         'name'        => 'computer1',
+         'entities_id' => 0
+      ]);
+      $this->integer($computers_id_1)->isGreaterThan(0);
+      $this->boolean($computer->getFromDB($computers_id_1))->isTrue();
 
-         $DB->rollBack('save0');
-         $this->boolean($computer->getFromDB($computers_id_1))->isFalse();
-         $this->boolean($computer->getFromDB($computers_id_0))->isFalse();
-      } catch (\Exception $e) {
+      $DB->rollBack('save1');
+      $this->boolean($computer->getFromDB($computers_id_1))->isFalse();
+      $this->boolean($computer->getFromDB($computers_id_0))->isTrue();
 
-      } finally {
-         $DB->rollBack();
-      }
+      $DB->rollBack('save0');
+      $this->boolean($computer->getFromDB($computers_id_1))->isFalse();
+      $this->boolean($computer->getFromDB($computers_id_0))->isFalse();
+
+      $DB->rollBack();
    }
 }
