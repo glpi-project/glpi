@@ -1382,8 +1382,6 @@ HTML;
             ]
          ];
 
-
-
          foreach ([
                      'ITILCategory' => __("Top ticket's categories"),
                      'Entity'       => __("Top ticket's entities"),
