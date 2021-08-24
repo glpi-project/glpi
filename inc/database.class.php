@@ -157,15 +157,6 @@ class Database extends CommonDBChild {
       ];
 
       $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'datatype'           => 'number',
-         'massiveaction'      => false
-      ];
-
-      $tab[] = [
          'id'                 => '3',
          'table'              => $this->getTable(),
          'field'              => 'is_active',
