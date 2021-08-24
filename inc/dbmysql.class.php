@@ -1508,6 +1508,9 @@ class DBmysql {
       }
       if ($this->in_transaction) {
          $this->dbh->savepoint($name);
+      } else {
+         // Not already in transaction or failed to start one now
+         Toolbox::logError('Unable to set DB savepoint because no transaction was started');
       }
    }
 
