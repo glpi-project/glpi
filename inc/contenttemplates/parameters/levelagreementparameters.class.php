@@ -48,7 +48,7 @@ if (!defined('GLPI_ROOT')) {
  */
 abstract class LevelAgreementParameters extends AbstractParameters
 {
-   protected function defineParameters(): array {
+   public function getAvailableParameters(): array {
       return [
          new AttributeParameter("id", __('ID')),
          new AttributeParameter("name", __('Name')),

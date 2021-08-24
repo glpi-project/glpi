@@ -30,47 +30,33 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\ContentTemplates\Parameters\ParametersTypes;
+include ('../../inc/includes.php');
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
+use Glpi\ContentTemplates\TemplateManager;
+use Michelf\MarkdownExtra;
+
+// Check mandatory parameter
+$preset = $_GET['preset'] ?? null;
+if (is_null($preset)) {
+   Toolbox::throwError(400, "Missing mandatory 'preset' parameter", "string");
 }
 
-/**
- * Define the base interface for parameters types.
- *
- * @since 10.0.0
- */
-abstract class AbstractParameterType implements ParameterTypeInterface
-{
-   /**
-    * The parameter key that need to be used to retrieve its value in a template.
-    *
-    * @var string
-    */
-   protected $key;
+echo Html::includeHeader(__("Template variables documentation"));
+echo "<body class='documentation-page'>";
+echo "<div id='page'>";
+echo "<div class='documentation documentation-large'>";
 
-   /**
-    * The parameter label, to be displayed in the client side autocompletion.
-    *
-    * @var string
-    */
-    protected $label;
+// Parse markdown
+$md = new MarkdownExtra();
+$md->header_id_func = function($headerName) {
+   return Toolbox::slugify($headerName, '');
+};
+echo $md->transform(TemplateManager::generateMarkdownDocumentation($preset));
 
-   /**
-    * @param string  $key     Key to access this value
-    * @param string  $label   Label to display in the autocompletion widget
-    */
-   public function __construct(string $key, string $label) {
-      $this->key = $key;
-      $this->label = $label;
-   }
+echo "</div>";
+echo "</div>";
 
-   public function getDocumentationField(): string {
-      return $this->key;
-   }
-
-   public function getDocumentationLabel(): string {
-      return $this->label;
-   }
-}
+// Footer closes main and div
+echo "<main>";
+echo "<div>";
+Html::nullFooter();

@@ -4088,6 +4088,60 @@ JAVASCRIPT
    }
 
    /**
+    * Insert an html link to the twig template variables documentation page
+    *
+    * @param string $preset_traget Preset of parameters for which to show documentation (key)
+    * @param string|null $link_id  Useful if you need to interract with the link through client side code
+    */
+   public static function addTemplateDocumentationLink(
+      string $preset_target,
+      ?string $link_id = null
+   ) {
+      global $CFG_GLPI;
+
+      $url = "/front/contenttemplates/documentation.php?preset=$preset_target";
+      $link =  $CFG_GLPI['root_doc'] . $url;
+      $params = [
+         'target' => '_blank',
+         'style'  => 'margin-top:6px; display: block'
+      ];
+
+      if (!is_null($link_id)) {
+         $params['id'] = $link_id;
+      }
+
+      $text = __('Available variables') . ' <i class="fas fa-question-circle"></i>';
+
+      echo Html::link($text, $link, $params);
+   }
+
+   /**
+    * Insert an html link to the twig template variables documentation page and
+    * move it before the given textarea.
+    * Useful if you don't have access to the form where you want to put this link at
+    *
+    * @param string $selector JQuery selector to find the target textarea
+    * @param string $preset_traget   Preset of parameters for which to show documentation (key)
+    */
+   public static function addTemplateDocumentationLinkJS(
+      string $selector,
+      string $preset_target
+   ) {
+      $link_id = "template_documentation_" . mt_rand();
+      self::addTemplateDocumentationLink($preset_target, $link_id);
+
+      // Move link before the given textarea
+      echo Html::scriptBlock(<<<JAVASCRIPT
+         $(
+            function() {
+               $('{$selector}').parent().append($('#{$link_id}'));
+            }
+         );
+JAVASCRIPT
+      );
+   }
+
+   /**
     * Convert rich text content to simple text content
     *
     * @since 9.2
@@ -5276,7 +5330,7 @@ JAVASCRIPT;
          unset($options['confirm']);
       }
       // Do not escape title if it is an image or a i tag (fontawesome)
-      if (!preg_match('/^<i(mg)?.*/', $text)) {
+      if (!preg_match('/<i(mg)?.*/', $text)) {
          $text = Html::cleanInputText($text);
       }
 

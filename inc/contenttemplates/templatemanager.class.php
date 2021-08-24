@@ -176,4 +176,35 @@ class TemplateManager
       $functions = ['date', 'max', 'min','random', 'range'];
       return new SecurityPolicy($tags, $filters, $methods, $properties, $functions);
    }
+
+   /**
+    * Generate the documentation of the given parameters
+    *
+    * @param string $preset_parameters_key
+    *
+    * @return string
+    */
+   public static function generateMarkdownDocumentation(
+      string $preset_parameters_key
+   ): string {
+      $parameters = ParametersPreset::getByKey($preset_parameters_key);
+      $context = ParametersPreset::getContextByKey($preset_parameters_key);
+
+      $documentation = new TemplateDocumentation($context);
+      $documentation->addSection(__("Root variables"), $parameters);
+      return $documentation->build();
+   }
+
+   /**
+    * Compute the given parameters
+    *
+    * @param array $parameters
+    *
+    * @return array
+    */
+   public static function computeParameters(array $parameters) {
+      return array_map(function($parameter) {
+         return $parameter->compute();
+      }, $parameters);
+   }
 }

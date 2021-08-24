@@ -32,6 +32,8 @@
 
 namespace Glpi\ContentTemplates\Parameters\ParametersTypes;
 
+use Glpi\ContentTemplates\Parameters\TemplatesParametersInterface;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -61,8 +63,7 @@ class AttributeParameter extends AbstractParameterType
     * @param string $filter Recommanded twig filter to apply on this value
     */
    public function __construct(string $key, string $label, string $filter = "") {
-      $this->key = $key;
-      $this->label = $label;
+      parent::__construct($key, $label);
       $this->filter = $filter;
    }
 
@@ -73,5 +74,15 @@ class AttributeParameter extends AbstractParameterType
          'label'  => $this->label,
          'filter' => $this->filter,
       ];
+   }
+
+   public function getDocumentationUsage(?string $parent = null): string {
+      $parent = !empty($parent)       ? "$parent."          : "";
+      $filter = !empty($this->filter) ? "| {$this->filter}" : "";
+      return "{{ {$parent}{$this->key} $filter }}";
+   }
+
+   public function getDocumentationReferences(): ?TemplatesParametersInterface {
+      return null;
    }
 }

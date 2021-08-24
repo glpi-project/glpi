@@ -30,11 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\ContentTemplates\Parameters\ChangeParameters;
-use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
-use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
-use Glpi\ContentTemplates\Parameters\ProblemParameters;
-use Glpi\ContentTemplates\Parameters\TicketParameters;
+use Glpi\ContentTemplates\ParametersPreset;
 use Glpi\ContentTemplates\TemplateManager;
 
 if (!defined('GLPI_ROOT')) {
@@ -52,12 +48,17 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
       parent::showForm($ID, $options);
 
       // Add autocompletion for ticket properties (twig templates)
-      Html::activateUserTemplateAutocompletion('textarea[name=content]', [
-         (new AttributeParameter('itemtype', __('Itemtype')))->compute(),
-         (new ObjectParameter(new TicketParameters()))->compute(),
-         (new ObjectParameter(new ChangeParameters()))->compute(),
-         (new ObjectParameter(new ProblemParameters()))->compute(),
-      ]);
+      $parameters = ParametersPreset::getForAbstractTemplates();
+      Html::activateUserTemplateAutocompletion(
+         'textarea[name=content]',
+         TemplateManager::computeParameters($parameters)
+      );
+
+      // Add related documentation
+      Html::addTemplateDocumentationLinkJS(
+         'textarea[name=content]',
+         ParametersPreset::ITIL_CHILD_TEMPLATE
+      );
    }
 
    function prepareInputForAdd($input) {

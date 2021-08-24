@@ -46,16 +46,6 @@ if (!defined('GLPI_ROOT')) {
 abstract class AbstractParameters implements TemplatesParametersInterface
 {
    /**
-    * To be defined in each subclasses, define all available parameters for one or more itemtypes.
-    * These parameters informations are meant to be used for autocompletion on the client side.
-    *
-    * Result will be returned by `self::getAvailableParameters()`.
-    *
-    * @return \Glpi\ContentTemplates\Parameters\ParametersTypes\AbstractParameterType[]
-    */
-   abstract protected function defineParameters(): array;
-
-   /**
     * To by defined in each subclasses, get the exposed values for a given item
     * These values will be used as parameters when rendering a twig template.
     *
@@ -89,15 +79,5 @@ abstract class AbstractParameters implements TemplatesParametersInterface
       }
 
       return $this->defineValues($item);
-   }
-
-   public function getAvailableParameters(): array {
-      $parameters = [];
-
-      foreach ($this->defineParameters() as $parameter) {
-         $parameters[] = $parameter->compute();
-      }
-
-      return $parameters;
    }
 }

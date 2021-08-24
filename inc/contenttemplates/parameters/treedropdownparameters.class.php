@@ -47,8 +47,8 @@ if (!defined('GLPI_ROOT')) {
  */
 abstract class TreeDropdownParameters extends DropdownParameters
 {
-   protected function defineParameters(): array {
-      $parameter = parent::defineParameters();
+   public function getAvailableParameters(): array {
+      $parameter = parent::getAvailableParameters();
       $parameter[] = new AttributeParameter("completename", __('Complete name'));
       return $parameter;
    }
