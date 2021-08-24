@@ -163,4 +163,4 @@ $migration->addField('glpi_states', 'is_visible_database', 'bool', [
 $migration->addKey('glpi_states', 'is_visible_database');
 
 $migration->addRight('database', ALLSTANDARDRIGHT);
-//$ADDTODISPLAYPREF['Database'] = [2, 3, 4, 5];
+$ADDTODISPLAYPREF['Database'] = [2, 3, 6, 9, 10];
