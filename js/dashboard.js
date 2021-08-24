@@ -910,7 +910,10 @@ var Dashboard = {
    getCardsAjax: function(specific_one) {
       specific_one = specific_one || "";
 
-      var promises = [];
+      var filters = Dashboard.getFiltersFromStorage();
+
+      let requested_cards = [];
+      let card_ajax_data = [];
       $(".grid-stack-item:not(.lock-bottom)"+specific_one).each(function() {
          var card         = $(this);
          var card_opt     = card.data('card-options');
@@ -925,30 +928,57 @@ var Dashboard = {
          }
 
          // append filters
-         var filters = Dashboard.getFiltersFromDB();
          card_opt.apply_filters = filters;
 
-         promises.push($.get(CFG_GLPI.root_doc+"/ajax/dashboard.php", {
-            'action':      'get_card',
-            'dashboard':   Dashboard.current_name,
-            'card_id':     card_id,
-            'force':       (specific_one.length > 0 ? 1 : 0),
-            'embed':       (Dashboard.embed ? 1 : 0),
-            'args':        card_opt,
-            'd_cache_key': Dashboard.cache_key,
-            'c_cache_key': card_opt.cache_key || "",
-         }).then(function(html) {
-            card.children('.grid-stack-item-content')
-               .html(html);
-
-            Dashboard.fitNumbers(card);
-            Dashboard.animateNumbers(card);
-         }).fail(function() {
-            card.html("<div class='empty-card card-error'><i class='fas fa-exclamation-triangle'></i></div>");
-         }));
+         card_ajax_data.push({
+            'card_id': card_id,
+            'force': (specific_one.length > 0 ? 1 : 0),
+            'args': card_opt,
+            'c_cache_key': card_opt.cache_key || ""
+         });
+         requested_cards.push({
+            'card_el': card,
+            'card_id': card_id
+         });
       });
 
-      return promises;
+      return $.ajax({
+         url:CFG_GLPI.root_doc+"/ajax/dashboard.php",
+         method: 'POST',
+         data: {
+            'action': 'get_cards',
+            data: JSON.stringify({ //Preserve integers
+               'dashboard': Dashboard.current_name,
+               'force': (specific_one.length > 0 ? 1 : 0),
+               'embed': (Dashboard.embed ? 1 : 0),
+               'd_cache_key': Dashboard.cache_key,
+               'cards': card_ajax_data
+            })
+         }
+      }).then(function(results) {
+         $.each(requested_cards, (i2, crd) => {
+            let has_result = false;
+            const card = crd.card_el;
+            $.each(results, (card_id, card_result) => {
+               if (crd.card_id === card_id) {
+                  const html = card_result;
+                  has_result = true;
+                  card.children('.grid-stack-item-content').html(html);
+
+                  Dashboard.fitNumbers(card);
+                  Dashboard.animateNumbers(card);
+               }
+            });
+            if (!has_result) {
+               card.html("<div class='empty-card card-error'><i class='fas fa-exclamation-triangle'></i></div>");
+            }
+         });
+      }).fail(function() {
+         $.each(requested_cards, (i2, crd) => {
+            const card = crd.card_el;
+            card.html("<div class='empty-card card-error'><i class='fas fa-exclamation-triangle'></i></div>");
+         });
+      });
    },
 
    easter: function() {
