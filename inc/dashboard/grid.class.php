@@ -1346,8 +1346,8 @@ HTML;
             ]
          ];
 
-      $case = '';
-      $cards["bn_count_tickets_expired_by_tech"] = [
+         $case = '';
+         $cards["bn_count_tickets_expired_by_tech"] = [
          'widgettype' => ['hBars', 'stackedHBars'],
          'itemtype'   => "\\Ticket",
          'group'      => __('Assistance'),
@@ -1357,9 +1357,9 @@ HTML;
             'dates', 'dates_mod', 'itilcategory',
             'user_tech', 'requesttype', 'location'
          ]
-      ];
+         ];
 
-      $cards["bn_count_tickets_expired_by_tech_group"] = [
+         $cards["bn_count_tickets_expired_by_tech_group"] = [
          'widgettype' => ['hBars', 'stackedHBars'],
          'itemtype'   => "\\Ticket",
          'group'      => __('Assistance'),
@@ -1369,7 +1369,7 @@ HTML;
             'dates', 'dates_mod', 'itilcategory',
             'group_tech', 'requesttype', 'location'
          ]
-      ];
+         ];
 
          foreach ([
                      'ITILCategory' => __("Top ticket's categories"),
