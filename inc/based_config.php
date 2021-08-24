@@ -104,7 +104,7 @@ include_once (GLPI_ROOT . "/inc/autoload.function.php");
 
    // Define constants values based on server env variables (i.e. defined using apache SetEnv directive)
    foreach (array_keys($constants) as $name) {
-      if (($value = getenv($name)) !== false) {
+      if (!defined($name) && ($value = getenv($name)) !== false) {
          define($name, $value);
       }
    }
