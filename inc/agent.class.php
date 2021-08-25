@@ -157,11 +157,11 @@ class Agent extends CommonDBTM {
       }
       switch ($field) {
          case 'ip_binary':
-         if($ipadress = inet_ntop($values[$field])) {
-            return $ipadress;
-         } else{
-            return __('IP address not properly formatted');
-         }
+            if ($ipadress = inet_ntop($values[$field])) {
+               return $ipadress;
+            } else {
+               return __('IP address not properly formatted');
+            }
       }
 
       return parent::getSpecificValueToDisplay($field, $values, $options);
