@@ -62,7 +62,7 @@ class DatabaseInstance extends DbTestCase {
       )->isGreaterThan(0);
 
       //test removal
-      $this->boolean($db->delete(['id' => $dbid, 1]))->isTrue();
+      $this->boolean($db->delete(['id' => $dbid], 1))->isTrue();
       $this->boolean($db->getFromDB($dbid))->isFalse();
 
       //ensure instance has been dropped aswell
