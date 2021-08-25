@@ -49,8 +49,13 @@ class DBmysql {
    public $dbpassword         = "";
    //! Default Database
    public $dbdefault          = "";
-   //! Database Handler
+
+   /**
+    * The database handler
+    * @var mysqli
+    */
    protected $dbh;
+
    //! Database Error
    public $error              = 0;
 
@@ -1497,6 +1502,18 @@ class DBmysql {
       return $this->dbh->begin_transaction();
    }
 
+   public function setSavepoint(string $name, $force = false) {
+      if (!$this->in_transaction && $force) {
+         $this->beginTransaction();
+      }
+      if ($this->in_transaction) {
+         $this->dbh->savepoint($name);
+      } else {
+         // Not already in transaction or failed to start one now
+         Toolbox::logError('Unable to set DB savepoint because no transaction was started');
+      }
+   }
+
    /**
     * Commits a transaction
     *
@@ -1508,13 +1525,22 @@ class DBmysql {
    }
 
    /**
-    * Rollbacks a transaction
+    * Rollbacks a transaction completely or to a specified savepoint
     *
     * @return boolean
     */
-   public function rollBack() {
-      $this->in_transaction = false;
-      return $this->dbh->rollback();
+   public function rollBack($savepoint = null) {
+      if (!$savepoint) {
+         $this->in_transaction = false;
+         $this->dbh->rollback();
+      } else {
+         $this->rollbackTo($savepoint);
+      }
+   }
+
+   protected function rollbackTo($name) {
+      // No proper rollback to savepoint support in mysqli extension?
+      $this->query('ROLLBACK TO '.self::quoteName($name));
    }
 
    /**
