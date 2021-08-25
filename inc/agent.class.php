@@ -332,7 +332,7 @@ class Agent extends CommonDBTM {
          $input['tag'] = $metadata['tag'];
       }
 
-      if (!isset($metadata['httpd-port'])) {
+      if (isset($metadata['httpd-port'])) {
          $input['port'] = $metadata['httpd-port'];
       }
 
