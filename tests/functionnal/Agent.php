@@ -110,7 +110,7 @@ class Agent extends DbTestCase {
       $item = $this->testedInstance->getLinkedItem();
       $this->object($item)->isInstanceOf('Computer');
 
-      $this->array($this->testedInstance->guessAddresses())->isIdenticalTo([
+      $this->array($this->testedInstance->getAddress())->isIdenticalTo([
          'glpixps',
          '192.168.1.142',
          'fe80::b283:4fa3:d3f2:96b1',

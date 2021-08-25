@@ -157,7 +157,11 @@ class Agent extends CommonDBTM {
       }
       switch ($field) {
          case 'ip_binary':
-         return inet_ntop($values[$field]);
+         if($ipadress = inet_ntop($values[$field])) {
+            return $ipadress;
+         } else{
+            return __('IP address not properly formatted');
+         }
       }
 
       return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -314,13 +318,10 @@ class Agent extends CommonDBTM {
          'itemtype'     => $metadata['itemtype'] ?? 'Computer'
       ];
 
-      $input['ip_version'] = 4;
-      if (isset($_SERVER['REMOTE_ADDR']) && filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-         $input['ip_version'] = 6;
-      }
-
       if (isset($_SERVER['REMOTE_ADDR'])) {
-         $input['ip_binary'] = inet_pton($_SERVER['REMOTE_ADDR']);
+         if ($ip_binary = inet_pton($_SERVER['REMOTE_ADDR'])) {
+            $input['ip_binary'] = $ip_binary;
+         }
       }
 
       if (isset($metadata['provider']['version'])) {
@@ -404,7 +405,7 @@ class Agent extends CommonDBTM {
     *
     * @return string
     */
-   public function guessAddresse(): string {
+   public function getAddress(): string {
       return inet_ntop($this->fields['ip_binary']);
    }
 
@@ -419,12 +420,18 @@ class Agent extends CommonDBTM {
          $port = self::DEFAULT_PORT;
       }
 
-      return sprintf(
-         '%s://%s:%s',
-         $this->fields['ip_protocol'],
-         $this->guessAddresse(),
-         $port
-      );
+      if ($ipaddress = $this->getAddress()) {
+         return sprintf(
+            '%s://%s:%s',
+            $this->fields['ip_protocol'],
+            $ipaddress,
+            $port
+         );
+      }
+
+      trigger_error(__('Agent IP address not properly formatted'));
+      return false;
+
    }
 
    /**
