@@ -6590,6 +6590,9 @@ div.objectlockmessage {
    background-color: lightSalmon !important;
    flex-wrap: wrap;
    align-items: center;
+   position: sticky;
+   top: 0;
+   z-index: 1;
 }
 
 div.objectlockmessage a.vsubmit {
