@@ -784,7 +784,11 @@ class Infocom extends CommonDBChild {
 
       $elapsed_years = $now->format('Y') - $usedate->format('Y');
 
-      $annuity = $value * (1 / $duration);
+      $annuity = 0;
+      if ($duration){
+         $annuity = $value * (1 / $duration);
+      }
+
       $years = [];
       for ($i = 0; $i <= $elapsed_years; ++$i) {
          $begin_value      = $value;
