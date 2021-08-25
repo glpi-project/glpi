@@ -331,9 +331,16 @@ class Agent extends CommonDBTM {
          $input['tag'] = $metadata['tag'];
       }
 
+      if (!isset($metadata['httpd-port'])) {
+         $input['port'] = $metadata['httpd-port'];
+      }
+
       $input['ip_protocol'] = 'http';
-      if (!isset($metadata['httpd-plugins']['ssl'])) {
-         $input['ip_protocol'] = 'https';
+      if (isset($metadata['httpd-plugins']['ssl']['ports'])) {
+         $ssl_ports[] = $metadata['httpd-plugins']['ssl']['ports'];
+         if (in_array("0", $ssl_ports) || (isset($metadata['httpd-port']) && in_array($metadata['httpd-port'], $ssl_ports))) {
+            $input['ip_protocol'] = 'https';
+         }
       }
 
       if ($deviceid === 'foo') {
