@@ -351,7 +351,7 @@ class Inventory
     *
     * @return array
     */
-    public function getRawData(): Object {
+   public function getRawData(): Object {
       return $this->raw_data;
    }
 
