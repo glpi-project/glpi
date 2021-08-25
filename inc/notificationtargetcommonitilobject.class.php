@@ -1522,6 +1522,41 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          }
 
          $data["##$objettype.numberoftasks##"] = count($data['tasks']);
+
+
+         $data['timelineitems'] = [];
+         $timeline = $item->getTimelineItems(true);
+
+
+         foreach ($timeline as $timeline_data) {
+
+            if ($timeline_data['type'] == "Solution"){
+               $timeline_data['type'] = ITILSolution::getType();
+            }
+            $tmptimelineitems['##timelineitems.type##']        = $timeline_data['type']::getTypeName(0);
+            $tmptimelineitems['##timelineitems.date##']        = $timeline_data['item']['date'];
+            $tmptimelineitems['##timelineitems.description##'] = $timeline_data['item']['content'];
+            $tmptimelineitems['##timelineitems.position##']    = CommonITILObject::getUserPositionFromTimelineItemPosition($timeline_data['item']['timeline_position']);
+
+            if ($timeline_data['type'] == ITILFollowup::getType()) {
+               // Check if the author need to be anonymized
+               if (ITILFollowup::getById($timeline_data['item']['id'])->isFromSupportAgent()
+                  && $is_self_service
+                  && !empty($anon_name = User::getAnonymizedName(
+                     $timeline_data['item']['users_id'],
+                     $item->getField('entities_id')
+                  ))
+               ) {
+                  $tmptimelineitems['##timelineitems.author##'] = $anon_name;
+               } else {
+                  $tmptimelineitems['##timelineitems.author##'] = getUserName($timeline_data['item']['users_id']);
+               }
+            } else {
+               $tmptimelineitems['##timelineitems.author##'] = getUserName($timeline_data['item']['users_id']);
+            }
+            $data['timelineitems'][] = $tmptimelineitems;
+         }
+
       }
       return $data;
    }
@@ -1649,6 +1684,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                                                    Entity::getTypeName(1), _x('location', 'State')),
                     $objettype.'.entity.country'        => sprintf(__('%1$s (%2$s)'),
                                                                    Entity::getTypeName(1), __('Country')),
+                    'timelineitems.author'              => __('Writer'),
+                    'timelineitems.date'                => __('Opening date'),
+                    'timelineitems.type'                => __('Type'),
+                    'timelineitems.description'         => __('Description'),
+                    'timelineitems.position'         => __('Position'),
+
                    ];
 
       foreach ($tags as $tag => $label) {
@@ -1664,7 +1705,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'tasks'     => _n('Task', 'Tasks', Session::getPluralNumber()),
                     'costs'     => _n('Cost', 'Costs', Session::getPluralNumber()),
                     'authors'   => _n('Requester', 'Requesters', Session::getPluralNumber()),
-                    'suppliers' => _n('Supplier', 'Suppliers', Session::getPluralNumber())];
+                    'suppliers' => _n('Supplier', 'Suppliers', Session::getPluralNumber()),
+                    'timelineitems' => __('Processing '.strtolower($objettype))];
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(['tag'     => $tag,
@@ -1680,7 +1722,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.nocategoryassigned' => __('No defined category'),
                     $objettype.'.log'                => __('Historical'),
                     $objettype.'.tasks'              => _n('Task', 'Tasks', Session::getPluralNumber()),
-                    $objettype.'.costs'              => _n('Cost', 'Costs', Session::getPluralNumber())];
+                    $objettype.'.costs'              => _n('Cost', 'Costs', Session::getPluralNumber()),
+                    $objettype.'.timelineitems'       => __('Processing '.strtolower($objettype))];
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(['tag'   => $tag,

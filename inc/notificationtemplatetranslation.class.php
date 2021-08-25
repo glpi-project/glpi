@@ -162,6 +162,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
                          'enable_richtext'   => true,
                          'cols'              => 100,
                          'rows'              => 15]);
+
       echo "<input type='hidden' name='notificationtemplates_id' value='".
              $template->getField('id')."'>";
       echo "</td></tr>";
