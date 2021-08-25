@@ -441,7 +441,7 @@ class Agent extends CommonDBTM {
     *
     * @return Response
     */
-   public function requestAgent($endpoint): Response {
+   private function requestAgent($endpoint): Response {
       global $CFG_GLPI;
 
       $adress = $this->getAgentURL();
