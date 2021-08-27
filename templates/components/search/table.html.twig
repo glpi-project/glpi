@@ -96,7 +96,7 @@
                   {% for col in data['data']['cols'] %}
                      {% set colkey = col['itemtype'] ~ '_' ~ col['id'] %}
                      {# showItem function returns "<td ...>...</td>" #}
-                     {{ showItem(0, row[colkey]['displayname'], 0, 0, displayConfigItem(itemtype, col['id'], row))|raw }}
+                     {{ showItem(0, row[colkey]['displayname'], 0, 0, call('Search::displayConfigItem', [itemtype, col['id'], row]))|raw }}
                   {% endfor %}
 
                   {# display itemtype in AllAssets #}

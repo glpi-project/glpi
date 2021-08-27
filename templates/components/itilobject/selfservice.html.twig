@@ -133,10 +133,10 @@
                         <i class="fas fa-plus"></i>
                      </a>
                      <div class="collapse" id="collapse-items{{ rand }}">
-                        {{ Item_Ticket_itemAddForm(item, params|merge({
+                        {% do call('Item_Ticket::itemAddForm', [item, params|merge({
                            '_canupdate': has_profile_right('ticket', constant('CREATE')),
                            '_tickettemplate': itiltemplate,
-                        })) }}
+                        })]) %}
                      </div>
                   {% endset %}
 
