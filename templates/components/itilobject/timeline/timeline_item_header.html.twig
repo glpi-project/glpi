@@ -22,19 +22,6 @@
          {% set actions = actions|merge({edit_btn}) %}
       {% endif %}
 
-      {% if actions|length %}
-         <div class="dropdown ms-2">
-            <button class="btn btn-sm btn-ghost-secondary timeline-more-actions" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false">
-               <i class="fas fa-ellipsis-v"></i>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="more-actions-{{ entry_rand }}">
-               {% for action in actions %}
-                  {{ action }}
-               {% endfor %}
-            </ul>
-         </div>
-      {% endif %}
-
       {% if is_private %}
          <span class="is-private ms-2" title="{{ __('Private') }}"
                data-bs-toggle="tooltip" data-bs-placement="bottom">
@@ -50,16 +37,34 @@
          </a>
       {% endif %}
 
-      {% if item.getType() is same as 'Ticket' and entry['type'] is same as 'ITILFollowup' %}
+      {% if item.getType() is same as 'Ticket' and (entry['type'] is same as 'ITILFollowup' or entry['type'] is same as 'TicketTask')  %}
+         {% set promote_url =  '?_promoted_fup_id=' ~ entry_i['id'] %}
+         {% if entry['type'] is same as 'TicketTask' %}
+            {% set promote_url = '?_promoted_task_id=' ~ entry_i['id'] %}
+         {% endif %}
+
          {% set promote_btn %}
             <li>
-               <a class="dropdown-item" href="{{ 'Ticket'|itemtype_form_path ~ '?_promoted_fup_id=' ~ entry_i['id'] }}">
+               <a class="dropdown-item" href="{{ 'Ticket'|itemtype_form_path ~ promote_url }}">
                   <i class="fas fa-fw fa-code-branch"></i>
                   <span>{{ __('Promote to Ticket') }}</span>
                </a>
             </li>
          {% endset %}
          {% set actions = actions|merge({promote_btn}) %}
+      {% endif %}
+
+      {% if actions|length %}
+         <div class="dropdown ms-2">
+            <button class="btn btn-sm btn-ghost-secondary timeline-more-actions" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false">
+               <i class="fas fa-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="more-actions-{{ entry_rand }}">
+               {% for action in actions %}
+                  {{ action }}
+               {% endfor %}
+            </ul>
+         </div>
       {% endif %}
    </div>
 

@@ -44,3 +44,13 @@
       <input type="hidden" name="_from_items_id" value="{{ params['_from_items_id'] ?? 0 }}" />
       <input type="hidden" name="_from_itemtype" value="{{ params['_from_itemtype'] ?? '' }}" />
    {% endif %}
+
+   {% if params['_promoted_fup_id'] is defined and params['_promoted_fup_id'] > 0 %}
+      <input type="hidden" name="_promoted_fup_id" value="{{ params['_promoted_fup_id'] }}" />
+   {% endif %}
+   {% if params['_promoted_task_id'] is defined and params['_promoted_fup_id'] > 0 %}
+      <input type="hidden" name="_promoted_task_id" value="{{ params['_promoted_task_id'] }}" />
+   {% endif %}
+   {% if params['_skip_promoted_fields'] is defined and params['_skip_promoted_fields'] > 0 %}
+      <input type="hidden" name="_skip_promoted_fields" value="{{ params['_skip_promoted_fields'] }}" />
+   {% endif %}
