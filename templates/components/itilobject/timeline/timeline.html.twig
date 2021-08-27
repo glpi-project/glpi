@@ -80,13 +80,14 @@
                      {{ include('components/user/picture.html.twig', {'users_id': users_id, 'enable_anonymization': true}, with_context = false) }}
                   </span>
                   {% if entity_config('anonymize_support_agents') == constant('Entity::ANONYMIZE_DISABLED') %}
-                     {{ Html__showToolTip(include('components/user/info_card.html.twig',
-                        {
-                           'user': user_fields,
-                           'enable_anonymization': true,
-                        },
-                        with_context = false),
-                        {'applyto': 'timeline-avatar' ~ avatar_rand}) }}
+                     {% do call('Html::showToolTip', [
+                        include('components/user/info_card.html.twig',
+                           {
+                              'user': user_fields,
+                              'enable_anonymization': true,
+                           },
+                           with_context = false),
+                        {'applyto': 'timeline-avatar' ~ avatar_rand}]) %}
                   {% endif %}
                {% else %}
                   <span id="timeline-avatar{{ avatar_rand }}"><span class="avatar avatar-md rounded"></span></span>

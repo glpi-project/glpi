@@ -41,7 +41,7 @@
    {% if item.isTemplate() %} {# TODO exluded types #}
       {% set tplmark = item.getAutofillMark(name, {'withtemplate': withtemplate}, tpl_value) %}
    {% endif %}
-   {% set value = autoName(item.fields[name]|verbatim_value, name, (withtemplate == 2), item.getType(), item.fields['entities_id']) %}
+   {% set value = call('autoName', [item.fields[name]|verbatim_value, name, (withtemplate == 2), item.getType(), item.fields['entities_id']]) %}
    {% set label = __('%1$s%2$s')|format(label, tplmark) %}
 
    {{ _self.textField(name, value, label, options) }}
@@ -111,7 +111,7 @@
 {% macro numberField(name, value, label = '', options = {}) %}
    {% if options.step|round(0, 'floor') != options.step %}
       {# Only format number if not a whole number #}
-      {% set value = formatNumber(value, true) %}
+      {% set value = call('formatNumber', [value, true]) %}
    {% endif %}
 
    {% set field %}
@@ -160,15 +160,14 @@
    {% endset %}
 
    {% if options.enable_richtext %}
-      {{ Html__initEditorSystem(
+      {% do call('Html::initEditorSystem', [
          id,
-         options.rand,
-         false
-      ) }}
+         options.rand
+      ]) %}
    {% endif %}
    {% if options.enable_fileupload %}
       {% set add_html %}
-         {{ Html__file({}) }}
+         {% do call('Html::file') %}
       {% endset %}
 
       {% set options = options|merge({'add_field_html': add_html}) %}
@@ -219,7 +218,7 @@
          $("#{{ options.id }}").flatpickr({
             wrap: true,
             altInput: true,
-            altFormat: '{{ getDateFormat('js') }}',
+            altFormat: '{{ call('Toolbox::getDateFormat', ['js']) }}',
             dateFormat: 'Y-m-d',
             enableTime: false,
             weekNumbers: true,
@@ -248,7 +247,7 @@
          $('#{{ options.id }}').flatpickr({
             altInput: true,
             dateFormat: 'Y-m-d H:i:S',
-            altFormat: '{{ getDateFormat('js') }} H:i:S',
+            altFormat: '{{ call('Toolbox::getDateFormat', ['js']) }} H:i:S',
             enableTime: true,
             wrap: true,
             enableSeconds: true,
@@ -302,7 +301,7 @@
       'name': name,
    }|merge(options) %}
    {% set field %}
-      {{ Html__file(options) }}
+      {% do call('Html::file', [options]) %}
    {% endset %}
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
@@ -314,9 +313,9 @@
          {% set url = options['url'] ?? null %}
          {% set options = options|filter((v, k) => k != 'url' and k != 'clearable') %}
          {% if url is not empty %}
-            <a href="{{ url }}" {{ Html__parseAttributes(link_options) }}>
+            <a href="{{ url }}" {{ call('Html::parseAttributes', [link_options]) }}>
          {% endif %}
-               <img src="{{ value|verbatim_value }}" {{ Html__parseAttributes(options) }} />
+               <img src="{{ value|verbatim_value }}" {{ call('Html::parseAttributes', [options]) }} />
          {% if url is not empty %}
             </a>
          {% endif %}
@@ -383,12 +382,11 @@
    {% endif %}
 
    {% set field %}
-      {{ Dropdown__showNumber(name, {
+      {% do call('Dropdown::showNumber', [name, {
          'value': value,
-         'display': false,
          'rand': rand,
          'width': '100%',
-      }|merge(options)) }}
+      }|merge(options)]) %}
    {% endset %}
 
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
@@ -406,12 +404,11 @@
    {% endif %}
 
    {% set field %}
-      {{ Dropdown__showFromArray(name, elements, {
+      {% do call('Dropdown::showFromArray', [name, elements, {
          'value': value|verbatim_value,
-         'display': false,
          'rand': rand,
          'width': '100%',
-      }|merge(options)) }}
+      }|merge(options)]) %}
    {% endset %}
 
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
@@ -428,12 +425,11 @@
    {% endif %}
 
    {% set field %}
-      {{ Dropdown__showTimestamp(name, {
+      {% do call('Dropdown::showTimestamp', [name, {
          'value': value,
-         'display': false,
          'rand': rand,
          'width': '100%',
-      }|merge(options)) }}
+      }|merge(options)]) %}
    {% endset %}
 
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
@@ -450,11 +446,10 @@
    {% endif %}
 
    {% set field %}
-      {{ Dropdown__showYesNo(name, value, -1, {
-         'display': false,
+      {% do call('Dropdown::showYesNo', [name, value, -1, {
          'rand': rand,
          'width': '100%',
-      }|merge(options)) }}
+      }|merge(options)]) %}
    {% endset %}
 
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
@@ -473,12 +468,11 @@
    {% set types = options['types']|default([]) %}
 
    {% set field %}
-      {{ Dropdown__showItemTypes(name, types, {
-         'display': false,
+      {% do call('Dropdown::showItemTypes', [name, types, {
          'rand': rand,
          'width': '100%',
          'value': value
-      }|merge(options)) }}
+      }|merge(options)]) %}
    {% endset %}
 
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
@@ -495,11 +489,10 @@
    {% endif %}
 
    {% set field %}
-      {{ Dropdown__dropdownIcons(name, value, constant('GLPI_ROOT') ~ '/pics/icones', {
-         'display': false,
+      {% do call('Dropdown::dropdownIcons', [name, value, constant('GLPI_ROOT') ~ '/pics/icones', {
          'rand': rand,
          'width': '100%',
-      }|merge(options)) }}
+      }|merge(options)]) %}
    {% endset %}
 
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
@@ -518,12 +511,11 @@
    {% set types = options['types']|default([]) %}
 
    {% set field %}
-      {{ Dropdown__showHours(name, types, {
-         'display': false,
+      {% do call('Dropdown::showHours', [name, types, {
          'rand': rand,
          'width': '100%',
          'value': value
-      }|merge(options)) }}
+      }|merge(options)]) %}
    {% endset %}
 
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
