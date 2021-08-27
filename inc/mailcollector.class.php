@@ -1215,6 +1215,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       $tkt['content'] = LitEmoji::encodeShortcode($tkt['content']);
+      $tkt['name']    = LitEmoji::encodeShortcode($tkt['name']);
 
       $tkt = Toolbox::addslashes_deep($tkt);
       return $tkt;
