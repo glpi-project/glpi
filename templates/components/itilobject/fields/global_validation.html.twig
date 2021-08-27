@@ -19,14 +19,14 @@
 
       {{ fields.field(
          '_add_validation',
-         TicketValidation__dropdownValidator({
+         call('TicketValidation::dropdownValidator', [{
             'name': 'users_id_validate',
             'entity': item.fields['entities_id'],
             'right': validation_right,
             'users_id_validate': params['users_id_validate'],
             'display': false,
             'disabled': (not canupdate),
-         }|merge(required)),
+         }|merge(required)]),
          __('Approval request'),
          field_options
       ) }}
@@ -42,12 +42,12 @@
 
       {{ fields.field(
          'global_validation',
-         TicketValidation__dropdownStatus('global_validation', {
+         call('TicketValidation::dropdownStatus', ['global_validation', {
             'global': true,
             'value': item.fields['global_validation'],
             'display': false,
             'disabled': (not canupdate),
-         }|merge(required)),
+         }|merge(required)]),
          "CommonITILValidation"|itemtype_name,
          field_options
       ) }}

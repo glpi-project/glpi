@@ -274,7 +274,7 @@
 
       {% if config('use_notifications') %}
          {% set alert_html %}
-            {{ displayLastAlert('Infocom', infocom.fields['id']) }}
+            {% do call('Alert::displayLastAlert', ['Infocom', infocom.fields['id']]) %}
          {% endset %}
 
          {% set alert_field = infocom.dropdownAlert({

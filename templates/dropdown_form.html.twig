@@ -58,7 +58,7 @@
                         {% if field['condition'] is defined %}
                            {% set dropdown_params = dropdown_params|merge({'condition': field['condition']}) %}
                         {% endif %}
-                        {% set dropdown_itemtype = getItemtypeForForeignKeyField(field['name']) %}
+                        {% set dropdown_itemtype = call('getItemtypeForForeignKeyField', [field['name']]) %}
                         {{ fields.dropdownField(dropdown_itemtype, field['name'], item.fields[field['name']], field['label'], dropdown_params) }}
                      {% elseif type == 'text' %}
                         {{ fields.autoNameField(field['name'], item, field['label'], withtemplate, params) }}
@@ -96,7 +96,7 @@
                      {% elseif type == 'parent' %}
                         {% set restrict = field['name'] == 'entities_id' ? -1 : item.getEntityID() %}
                         {% set params = params|merge({'entity': restrict}) %}
-                        {% set params = params|merge({'used': (item.fields['id'] > 0 ? getSonsOf(item.getTable(), item.fields['id']) : [])}) %}
+                        {% set params = params|merge({'used': (item.fields['id'] > 0 ? call('getSonsOf', [item.getTable(), item.fields['id']]) : [])}) %}
                         {{ fields.dropdownField(item, field['name'], item.fields[field['name']], field['label'], params) }}
                      {% elseif type == 'icon' %}
                         {{ fields.dropdownIcons(field['name'], item.fields[field['name']], field['label'], params) }}
@@ -122,7 +122,7 @@
                            }) }}
                         {% endif %}
                      {% elseif type == 'picture_gallery' %}
-                        {% set pictures = item.fields[field['name']]|importArrayFromDB %}
+                        {% set pictures = call('importArrayFromDB', [item.fields[field['name']]]) %}
                         {% set picture_urls = [] %}
                         {% for picture in pictures %}
                            {% set picture_urls = picture_urls|merge([picture|picture_url]) %}
@@ -179,7 +179,7 @@
                   {% if field['condition'] is defined %}
                      {% set dropdown_params = dropdown_params|merge({'condition': field['condition']}) %}
                   {% endif %}
-                  {% set dropdown_itemtype = getItemtypeForForeignKeyField(field['name']) %}
+                  {% set dropdown_itemtype = call('getItemtypeForForeignKeyField', [field['name']]) %}
                   {{ fields.dropdownField(dropdown_itemtype, field['name'], item.fields[field['name']], field['label'], dropdown_params) }}
                {% elseif type == 'text' %}
                   {{ fields.autoNameField(field['name'], item, field['label'], withtemplate, params) }}
@@ -217,7 +217,7 @@
                {% elseif type == 'parent' %}
                   {% set restrict = field['name'] == 'entities_id' ? -1 : item.getEntityID() %}
                   {% set params = params|merge({'entity': restrict}) %}
-                  {% set params = params|merge({'used': (item.fields['id'] > 0 ? getSonsOf(item.getTable(), item.fields['id']) : [])}) %}
+                  {% set params = params|merge({'used': (item.fields['id'] > 0 ? call('getSonsOf', [item.getTable(), item.fields['id']]) : [])}) %}
                   {{ fields.dropdownField(item, field['name'], item.fields[field['name']], field['label'], params) }}
                {% elseif type == 'icon' %}
                   {{ fields.dropdownIcons(field['name'], item.fields[field['name']], field['label'], params) }}
@@ -280,7 +280,7 @@
                         {% endif %}
                      {% elseif type == 'picture_gallery' %}
                         {{ fields.smallTitle(__('Other pictures'), 'fas fa-images') }}
-                        {% set pictures = item.fields[field['name']]|importArrayFromDB %}
+                        {% set pictures = call('importArrayFromDB', [item.fields[field['name']]]) %}
                         {% set picture_urls = [] %}
                         {% for picture in pictures %}
                            {% set picture_urls = picture_urls|merge([picture|picture_url]) %}
