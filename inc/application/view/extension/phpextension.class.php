@@ -45,6 +45,7 @@ class PhpExtension extends AbstractExtension {
    public function getFunctions(): array {
       return [
          new TwigFunction('php_config', [$this, 'phpConfig']),
+         new TwigFunction('call', [$this, 'call']),
       ];
    }
 
@@ -64,6 +65,21 @@ class PhpExtension extends AbstractExtension {
     */
    public function phpConfig(string $name) {
       return ini_get($name);
+   }
+
+   /**
+    * Call function of static method.
+    *
+    * @param string $callable
+    * @param array $parameters
+    *
+    * @return mixed
+    */
+   public function call(string $callable, array $parameters = []) {
+      if (is_callable($callable)) {
+         return call_user_func_array($callable, $parameters);
+      }
+      return null;
    }
 
    /**

@@ -394,15 +394,27 @@
                         'rand': rand,
                      }) }}
                      {% set current_position = item.fields['position'] %}
-                     {{ updateItemOnSelectEvent('dropdown_dcrooms_id' ~ rand, 'room_positions', config('root_doc') ~ '/ajax/dcroom_size.php', {
-                        'id': '__VALUE__',
-                        'current': current_position,
-                        'rand': rand
-                     })|raw }}
-                     {{ updateItemOnSelectEvent('dropdown_dcrooms_id' ~ rand, 'dropdown_locations_id' ~ rand, config('root_doc') ~ '/ajax/dropdownLocation.php', {
-                        'items_id': '__VALUE__',
-                        'itemtype': 'DCRoom'
-                     })|raw }}
+                     {% do call('Ajax::updateItemOnSelectEvent',
+                        [
+                           'dropdown_dcrooms_id' ~ rand,
+                           'room_positions',
+                           config('root_doc') ~ '/ajax/dcroom_size.php',
+                           {
+                              'id': '__VALUE__',
+                              'current': current_position,
+                              'rand': rand
+                           }
+                        ]) %}
+                     {% do call('Ajax::updateItemOnSelectEvent',
+                        [
+                           'dropdown_dcrooms_id' ~ rand,
+                           'dropdown_locations_id' ~ rand,
+                           config('root_doc') ~ '/ajax/dropdownLocation.php',
+                           {
+                              'items_id': '__VALUE__',
+                              'itemtype': 'DCRoom'
+                           }
+                        ]) %}
 
                      {% set initial_field %}
                         {% if item.fields['dcrooms_id'] > 0 %}
@@ -532,13 +544,13 @@
 
                   {% if item.isField('is_global') %}
                      {% set dd_globalswitch %}
-                        {{ Dropdown__showGlobalSwitch(item.fields['id'], {
+                        {% do call('Dropdown::showGlobalSwitch', [item.fields['id'], {
                            'withtemplate': withtemplate,
                            'value': item.fields['is_global'],
                            'management_restrict': config('monitors_management_restrict'),
                            'target': target,
                            'width': '100%',
-                        }) }}
+                        }]) %}
                      {% endset %}
                      {{ fields.htmlField(
                         'is_global',
@@ -596,24 +608,24 @@
 
                   {% if item.isField('softwareversions_id_use') %}
                      {% set field %}
-                        {{ SoftwareVersion__dropdownForOneSoftware({
-                        'name': 'softwareversions_id_use',
-                        'softwares_id': item.fields['softwares_id'],
-                        'value': item.fields['softwareversions_id_use'],
-                        'width': '100%',
-                        }) }}
+                        {% do call('SoftwareVersion::dropdownForOneSoftware', [{
+                           'name': 'softwareversions_id_use',
+                           'softwares_id': item.fields['softwares_id'],
+                           'value': item.fields['softwareversions_id_use'],
+                           'width': '100%',
+                        }]) %}
                      {% endset %}
                      {{ fields.field('softwareversions_id_use', field, __('Version in use')) }}
                   {% endif %}
 
                   {% if item.isField('softwareversions_id_buy') %}
                      {% set field %}
-                        {{ SoftwareVersion__dropdownForOneSoftware({
-                           'name': 'softwareversions_id_buy',
-                           'softwares_id': item.fields['softwares_id'],
-                           'value': item.fields['softwareversions_id_buy'],
-                           'width': '100%',
-                        }) }}
+                        {% do call('SoftwareVersion::dropdownForOneSoftware', [{
+                        'name': 'softwareversions_id_buy',
+                        'softwares_id': item.fields['softwares_id'],
+                        'value': item.fields['softwareversions_id_buy'],
+                        'width': '100%',
+                        }]) %}
                      {% endset %}
                      {{ fields.field('softwareversions_id_buy', field, __('Purchase version')) }}
                   {% endif %}
@@ -754,20 +766,19 @@
 
                   {% if item.isField('alarm_threshold') %}
                      {% set dd_alarm_treshold %}
-                        {{ Dropdown__showNumber('alarm_threshold', {
+                        {% do call('Dropdown::showNumber', ['alarm_threshold', {
                            'value': item.fields['alarm_threshold'],
-                           'display': false,
                            'rand': rand,
                            'width': '100%',
                            'min': 0,
                            'max': 100,
                            'step': 1,
                            'toadd': {'-1': __('Never')}
-                        }) }}
+                        }|merge(options)]) %}
                      {% endset %}
                      {% set last_alert_html %}
                         <span class="text-muted">
-                           {{ displayLastAlert(item_type, item.fields['id']) }}
+                           {% do call('Alert::displayLastAlert', [item_type, item.fields['id']]) %}
                         </span>
                      {% endset %}
                      {{ fields.htmlField(
@@ -811,13 +822,13 @@
                      {% if item.fields['begin_date'] is not empty and item.fields['duration'] is not empty %}
                         {% set warranty_expiration %}
                            <i class="fas fa-arrow-right"></i>
-                           {{ Infocom__getWarrantyExpir(
+                           {{ call('Infocom::getWarrantyExpir', [
                               item.fields['begin_date'],
                               item.fields['duration'],
                               0,
                               true,
                               item.fields['renewal'] == constant('Contract::RENEWAL_TACIT')
-                           ) }}
+                           ]) }}
                         {% endset %}
                      {% endif %}
                      {{ fields.dropdownNumberField('duration', item.fields['duration'], __('Initial contract period'), {
@@ -835,12 +846,12 @@
                      {% if item.fields['begin_date'] is not empty and item.fields['notice'] > 0 and item.fields['duration'] is not empty %}
                         {% set notice_info %}
                            <i class="fas fa-arrow-right"></i>
-                           {{ Infocom__getWarrantyExpir(
+                           {{ call('Infocom::getWarrantyExpir', [
                               item.fields['begin_date'],
                               item.fields['duration'],
                               item.fields['notice'],
                               true
-                           ) }}
+                           ]) }}
                         {% endset %}
                      {% endif %}
                      {{ fields.dropdownNumberField('notice', item.fields['notice'], __('Notice'), {
@@ -915,7 +926,7 @@
 
                   {% if item.isField('alert') and entity_config('use_contracts_alert') %}
                      {% set alert_html %}
-                        {{ displayLastAlert('Contract', item.fields['id']) }}
+                        {% do call('Alert::displayLastAlert', ['Contract', item.fields['id']]) %}
                      {% endset %}
                      {{ fields.dropdownArrayField('alert', item.fields['alert'], item.getAlertName(), __('Email alarms'), {
                         'add_field_html': '<span class="text-muted">' ~ alert_html ~ '</span>'

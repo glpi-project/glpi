@@ -6,7 +6,7 @@
 {# Remove namespace separators for use in HTML attributes #}
 {% set normalized_itemtype = itemtype|replace({'\\': ''}) %}
 
-<form id="massform{{ normalized_itemtype }}" method="get" action="{{ path("front/massiveaction.php") }}"
+<form id="massform{{ normalized_itemtype }}" method="get" action="{{ path('front/massiveaction.php') }}"
       data-search-itemtype="{{ data['itemtype'] }}" data-start="{{ start }}" data-count="{{ count }}" data-limit="{{ limit }}">
    <div class="card card-sm mt-0 search-card">
       <div class="card-header d-flex justify-content-between search-header">

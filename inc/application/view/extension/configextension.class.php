@@ -32,7 +32,6 @@
 
 namespace Glpi\Application\View\Extension;
 
-use Config;
 use Entity;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -46,7 +45,6 @@ class ConfigExtension extends AbstractExtension {
       return [
          new TwigFunction('config', [$this, 'config']),
          new TwigFunction('entity_config', [$this, 'getEntityConfig']),
-         new TwigFunction('displayPasswordSecurityChecks', [$this, 'displayPasswordSecurityChecks']),
       ];
    }
 
@@ -79,16 +77,5 @@ class ConfigExtension extends AbstractExtension {
       }
 
       return Entity::getUsedConfig($inheritence_key, $entity_id, $key, $default_value);
-   }
-
-   /**
-    * Display security checks on password
-    *
-    * @param $field string id of the field containing password to check (default 'password')
-    *
-    * @return void
-    */
-   public function displayPasswordSecurityChecks($field = 'password'): void {
-      Config::displayPasswordSecurityChecks($field);
    }
 }
