@@ -520,7 +520,7 @@ class MailCollector extends DbTestCase {
             'users_id'      => $nuid,
             'actor_type'    => \CommonITILActor::REQUESTER,
             'tickets_names' => [
-               'Test import mail avec emoticons unicode 😃',
+               'Test import mail avec emoticons =F0=9F=98=83 unicode',
                'Test images',
                'Test\'ed issue',
                'Test Email from Outlook',
