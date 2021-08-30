@@ -38,7 +38,7 @@
       {% endif %}
 
       {% if item.getType() is same as 'Ticket' and (entry['type'] is same as 'ITILFollowup' or entry['type'] is same as 'TicketTask')  %}
-         {% set promote_url =  '?_promoted_fup_id=' ~ entry_i['id'] %}
+         {% set promote_url = '?_promoted_fup_id=' ~ entry_i['id'] %}
          {% if entry['type'] is same as 'TicketTask' %}
             {% set promote_url = '?_promoted_task_id=' ~ entry_i['id'] %}
          {% endif %}
