@@ -1668,7 +1668,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          echo "</td>";
          echo "<td width='20%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\"
-               class='submit'>";
+               class='btn btn-primary'>";
          echo "</td>";
          echo "</tr>";
          echo "</table>";

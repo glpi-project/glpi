@@ -393,7 +393,7 @@ class NotificationTarget extends CommonDBChild {
          echo "</td>";
          if ($canedit) {
             echo "<td width='20%'>";
-            echo "<input type='submit' class='submit' name='update' value=\""._x('button', 'Update')."\">";
+            echo "<input type='submit' class='btn btn-primary' name='update' value=\""._x('button', 'Update')."\">";
             echo "</td>";
 
          }

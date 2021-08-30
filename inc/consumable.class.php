@@ -432,7 +432,7 @@ class Consumable extends CommonDBChild {
                                               'min'   => 1,
                                               'max'   => 100]);
          echo " <input type='submit' name='add_several' value=\""._sx('button', 'Add consumables')."\"
-                class='submit'>";
+                class='btn btn-primary'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();

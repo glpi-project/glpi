@@ -129,7 +129,7 @@ if (isset($_POST['type']) && !empty($_POST['type'])
 
    if ($display && (!isset($_POST['nobutton']) || !$_POST['nobutton'])) {
       echo "<td><input type='submit' name='addvisibility' value=\""._sx('button', 'Add')."\"
-                   class='submit'></td>";
+                   class='btn btn-primary'></td>";
    } else {
       // For table w3c
       echo "<td>&nbsp;</td>";

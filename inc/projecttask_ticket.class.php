@@ -191,7 +191,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
          echo __('Create a ticket from this task');
          echo "</a>";
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>";
 
          echo "</table>";

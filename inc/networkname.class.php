@@ -739,7 +739,7 @@ class NetworkName extends FQDNLabel {
          ]);
          echo "</td><td class='left'>";
          echo "<input type='submit' name='assign_address' value='"._sx('button', 'Associate').
-                "' class='submit'>";
+                "' class='btn btn-primary'>";
          echo "</td>";
          if (static::canCreate()) {
             echo "<td class='right' width='30%'>";

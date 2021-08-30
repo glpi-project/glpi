@@ -425,7 +425,7 @@ class MailCollector  extends CommonDBTM {
       echo "<table class='tab_cadre'>";
       echo "<tr class='tab_bg_2'><td class='center'>";
       echo "<input type='submit' name='get_mails' value=\""._sx('button', 'Get email tickets now').
-             "\" class='submit'>";
+             "\" class='btn btn-primary'>";
       echo "<input type='hidden' name='id' value='$ID'>";
       echo "</td></tr>";
       echo "</table>";

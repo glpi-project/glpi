@@ -3415,7 +3415,7 @@ class Transfer extends CommonDBTM {
          echo "<div class='center'>";
          Entity::dropdown(['name' => 'to_entity']);
          echo "&nbsp;<input type='submit' name='transfer' value=\"".__s('Execute')."\"
-                      class='submit'></div>";
+                      class='btn btn-primary'></div>";
          echo "</td></tr>";
       }
 

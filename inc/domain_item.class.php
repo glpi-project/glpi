@@ -208,7 +208,7 @@ class Domain_Item extends CommonDBRelation {
          );
          echo "</td><td colspan='2' class='center' class='tab_bg_1'>";
          echo "<input type='hidden' name='domains_id' value='$instID'>";
-         echo "<input type='submit' name='additem' value=\"" . _sx('button', 'Add') . "\" class='submit'>";
+         echo "<input type='submit' name='additem' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
@@ -477,7 +477,7 @@ class Domain_Item extends CommonDBRelation {
 
             echo "</td><td class='center' width='20%'>";
             echo "<input type='submit' name='additem' value=\"" .
-                 __('Associate a domain') . "\" class='submit'>";
+                 __('Associate a domain') . "\" class='btn btn-primary'>";
             echo "</td>";
             echo "</tr>";
             echo "</table>";
