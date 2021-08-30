@@ -226,7 +226,7 @@ class AuthMail extends CommonDBTM {
                     autocomplete='new-password'></td></tr>";
 
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-         echo "<input type='submit' name='test' class='submit' value=\""._sx('button', 'Test')."\">".
+         echo "<input type='submit' name='test' class='btn btn-primary' value=\""._sx('button', 'Test')."\">".
               "</td>";
          echo "</tr></table></div>";
          Html::closeForm();

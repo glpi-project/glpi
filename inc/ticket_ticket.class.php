@@ -71,7 +71,7 @@ class Ticket_Ticket extends CommonDBRelation {
             printf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('ID'));
             echo "&nbsp;<input type='text' name='tickets_id_1' value='' size='10'>\n";
             echo "<br><br>";
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+            echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='".
                            _sx('button', 'Post')."'>";
             return true;
       }

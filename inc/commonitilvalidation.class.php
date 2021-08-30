@@ -801,7 +801,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          echo $item->getValueToSelect('validation_percent', 'validation_percent',
                                       $item->fields["validation_percent"]);
          echo "</td>";
-         echo "<td><input type='submit' name='update' class='submit' value='".
+         echo "<td><input type='submit' name='update' class='btn btn-primary' value='".
                     _sx('button', 'Save')."'>";
          if (!empty($tID)) {
             echo "<input type='hidden' name='id' value='$tID'>";

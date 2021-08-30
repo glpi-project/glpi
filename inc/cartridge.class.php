@@ -854,7 +854,7 @@ class Cartridge extends CommonDBRelation {
                                               'max'   => 100]);
          echo "</td><td>";
          echo " <input type='submit' name='add' value=\"".__s('Add cartridges')."\"
-                class='submit'>";
+                class='btn btn-primary'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
@@ -940,7 +940,7 @@ class Cartridge extends CommonDBRelation {
                                                  'min'   => 1,
                                                  'max'   => 5]);
             echo "</td><td><input type='submit' name='install' value=\""._sx('button', 'Install')."\"
-                                  class='submit'>";
+                                  class='btn btn-primary'>";
 
          } else {
             echo __('No cartridge available');

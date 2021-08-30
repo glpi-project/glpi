@@ -435,7 +435,7 @@ class Planning extends CommonGLPI {
       echo "<td class='center'>";
       echo "<input type='hidden' name='".$item->getForeignKeyField()."' value=\"".$item->getID()."\">";
       echo "<input type='hidden' name='itemtype' value=\"".$item->getType()."\">";
-      echo "<input type='submit' class='submit' name='checkavailability' value=\"".
+      echo "<input type='submit' class='btn btn-primary' name='checkavailability' value=\"".
              _sx('button', 'Search') ."\">";
       echo "</td>\n";
 
