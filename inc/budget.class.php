@@ -138,7 +138,7 @@ class Budget extends CommonDropdown{
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('price', 'Value')."</td>";
       echo "<td><input type='text' name='value' size='14'
-                 value='".Html::formatNumber($this->fields["value"], true)."'></td>";
+                 value='".Html::formatNumber($this->fields["value"], true)."' class='form-control'></td>";
 
                  echo "<td rowspan='$rowspan' class='middle right'>".__('Comments')."</td>";
                  echo "<td class='center middle' rowspan='$rowspan'>".

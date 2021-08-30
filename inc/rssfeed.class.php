@@ -684,7 +684,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
 
       echo "<tr class='tab_bg_1'><td>" . __('URL') . "</td>";
       echo "<td colspan='3'>";
-      echo "<input type='text' name='url' size='100' value='".$this->fields["url"]."'>";
+      echo "<input type='text' name='url' size='100' value='".$this->fields["url"]."' class='form-control'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
