@@ -520,7 +520,7 @@ JAVASCRIPT;
 
          echo "<span id='results_itemtype$rand'>\n";
          echo "</td>";
-         echo "<td><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<td><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>";
 
          echo "</table>";

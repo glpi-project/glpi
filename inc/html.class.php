@@ -2076,7 +2076,7 @@ HTML;
                if (is_array($confirm) && isset($confirm[$name])) {
                   echo self::addConfirmationOnAction($confirm[$name]);
                }
-               echo "value=\"".addslashes($label)."\" class='submit'>&nbsp;";
+               echo "value=\"".addslashes($label)."\" class='btn btn-primary'>&nbsp;";
             }
          }
       }
@@ -5222,7 +5222,7 @@ JAVASCRIPT;
                <span>$caption</span>
             </button>&nbsp;";
 
-      return sprintf($button, Html::cleanInputText($caption), Html::parseAttributes($options));
+      return sprintf($button, strip_tags(Html::cleanInputText($caption)), Html::parseAttributes($options));
    }
 
 

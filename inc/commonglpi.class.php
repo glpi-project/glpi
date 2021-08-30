@@ -1347,7 +1347,7 @@ JAVASCRIPT;
          echo "<table class='tab_cadre'>";
          echo "<tr><th colspan='2'>".__s('Display options')."</th></tr>\n";
          echo "<tr><td colspan='2'>";
-         echo "<input type='submit' class='submit' name='reset' value=\"".
+         echo "<input type='submit' class='btn btn-primary' name='reset' value=\"".
                 __('Reset display options')."\">";
          echo "</td></tr>\n";
 
@@ -1366,7 +1366,7 @@ JAVASCRIPT;
             }
          }
          echo "<tr><td colspan='2' class='center'>";
-         echo "<input type='submit' class='submit' name='update' value=\""._sx('button', 'Save')."\">";
+         echo "<input type='submit' class='btn btn-primary' name='update' value=\""._sx('button', 'Save')."\">";
          echo "</td></tr>\n";
          echo "</table>";
          echo "</form>";

@@ -1366,7 +1366,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       if ($this->maybePrivate()) {
          echo "<input type='hidden' name='is_private' value='".$_SESSION['glpitask_private']."'>";
       }
-      echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+      echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
       echo "</td>";
       echo "</tr>";
 

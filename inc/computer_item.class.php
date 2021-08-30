@@ -330,7 +330,7 @@ class Computer_Item extends CommonDBRelation{
          self::dropdownAllConnect('Computer', "items_id", $comp->fields["entities_id"],
                                   $withtemplate, $used);
          echo "</td><td class='center' width='20%'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Connect')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Connect')."\" class='btn btn-primary'>";
          echo "<input type='hidden' name='computers_id' value='".$comp->fields['id']."'>";
          echo "</td></tr>";
          echo "</table>";
@@ -482,7 +482,7 @@ class Computer_Item extends CommonDBRelation{
                                   $item->getEntityID(), 0, $used);
          }
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Connect')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Connect')."\" class='btn btn-primary'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();

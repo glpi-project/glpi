@@ -1006,7 +1006,7 @@ class RuleCollection extends CommonDBTM {
       echo "<input type='file' name='xml_file'>&nbsp;";
       echo "<input type='hidden' name='action' value='preview_import'>";
       echo "<input type='submit' name='import' value=\""._sx('button', 'Import').
-             "\" class='submit'>";
+             "\" class='btn btn-primary'>";
 
       // Close for Form
       echo "</div>";
@@ -1292,7 +1292,7 @@ class RuleCollection extends CommonDBTM {
       $class = ($odd?" class='tab_bg_1' ":" class='tab_bg_2' ");
       echo "<tr $class><td colspan='3' class='center'>";
       echo "<input type='submit' name='import' value=\""._sx('button', 'Post').
-             "\" class='submit'>";
+             "\" class='btn btn-primary'>";
       echo "</td></tr>";
 
       // Close for Form
@@ -1533,7 +1533,7 @@ class RuleCollection extends CommonDBTM {
 
          echo "<tr><td class='tab_bg_2 center' colspan='2'>";
          echo "<input type='submit' name='test_all_rules' value='". _sx('button', 'Test')."'
-                class='submit'>";
+                class='btn btn-primary'>";
          echo "<input type='hidden' name='sub_type' value='" . $this->getRuleClassName() . "'>";
          echo "<input type='hidden' name='condition' value='$condition'>";
          echo "</td></tr>\n";
