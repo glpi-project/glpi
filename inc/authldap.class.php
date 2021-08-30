@@ -359,7 +359,7 @@ class AuthLDAP extends CommonDBTM {
             echo "</a></td></tr>";
          }
          echo "<tr class='tab_bg_1'><td><label for='name'>" . __('Name') . "</label></td>";
-         echo "<td><input type='text' id='name' name='name' value='". $this->fields["name"] ."'></td>";
+         echo "<td><input type='text' id='name' name='name' value='". $this->fields["name"] ."' class='form-control'></td>";
          if ($ID > 0) {
             echo "<td>".__('Last update')."</td><td>".Html::convDateTime($this->fields["date_mod"]);
          } else {
@@ -379,9 +379,9 @@ class AuthLDAP extends CommonDBTM {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td><label for='host'>" . __('Server') . "</label></td>";
-         echo "<td><input type='text' id='host' name='host' value='" . $this->fields["host"] . "'></td>";
+         echo "<td><input type='text' id='host' name='host' value='" . $this->fields["host"] . "' class='form-control'></td>";
          echo "<td><label for='port'>" . __('Port (default=389)') . "</label></td>";
-         echo "<td><input id='port' type='text' id='port' name='port' value='".$this->fields["port"]."'>";
+         echo "<td><input id='port' type='number' id='port' name='port' value='".$this->fields["port"]."' class='form-control'>";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td><label for='condition'>" . __('Connection filter') . "</label></td>";
@@ -392,12 +392,12 @@ class AuthLDAP extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td><label for='basedn'>" . __('BaseDN') . "</label></td>";
          echo "<td colspan='3'>";
-         echo "<input type='text' id='basedn' name='basedn' size='100' value=\"".$this->fields["basedn"]."\">";
+         echo "<input type='text' id='basedn' name='basedn' size='100' value=\"".$this->fields["basedn"]."\" class='form-control'>";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td><label for='rootdn'>" . __('RootDN (for non anonymous binds)') . "</label></td>";
          echo "<td colspan='3'><input type='text' name='rootdn' id='rootdn' size='100' value=\"".
-                $this->fields["rootdn"]."\">";
+                $this->fields["rootdn"]."\" class='form-control'>";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td><label for='use_bind'>" . __('Use Bind') . "</label></td>";
@@ -407,7 +407,7 @@ class AuthLDAP extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td><label for='rootdn_passwd'>" .
             __('Password (for non-anonymous binds)') . "</label></td>";
-         echo "<td><input type='password' id='rootdn_passwd' name='rootdn_passwd' value='' autocomplete='new-password'>";
+         echo "<td><input type='password' id='rootdn_passwd' name='rootdn_passwd' value='' autocomplete='new-password' class='form-control'>";
          if ($ID) {
             echo "<input type='checkbox' name='_blank_passwd' id='_blank_passwd'>&nbsp;"
                . "<label for='_blank_passwd'>" . __('Clear') . "</label>";
@@ -420,13 +420,13 @@ class AuthLDAP extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'>";
          echo "<td><label for='login_field'>" . __('Login field') . "</label></td>";
-         echo "<td><input type='text' id='login_field' name='login_field' value='".$this->fields["login_field"]."'>";
+         echo "<td><input type='text' id='login_field' name='login_field' value='".$this->fields["login_field"]."' class='form-control'>";
          echo "</td></tr>";
 
          $info_message = __s('Synchronization field cannot be changed once in use.');
          echo "<tr class='tab_bg_1'>";
          echo "<td><label for='sync_field'>" . __('Synchronization field') . "<i class='pointer fa fa-info' title='$info_message'></i></td>";
-         echo "<td><input type='text' id='sync_field' name='sync_field' value='{$this->fields["sync_field"]}' title='$info_message'";
+         echo "<td><input type='text' id='sync_field' name='sync_field' value='{$this->fields["sync_field"]}' title='$info_message' class='form-control'";
          if ($this->isSyncFieldEnabled() && $this->isSyncFieldUsed()) {
             echo " disabled='disabled'";
          }
