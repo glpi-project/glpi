@@ -4166,7 +4166,7 @@ JAVASCRIPT;
                ];
 
                // Set entity from parent
-               $parent = new ticket();
+               $parent = new Ticket();
                if ($parent->getFromDB($tickettask->getField('tickets_id'))) {
                   $options['entities_id'] = $parent->getField('entities_id');
                }
