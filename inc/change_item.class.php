@@ -118,7 +118,7 @@ class Change_Item extends CommonItilObject_Item {
                                                                      $change->fields['entities_id'])
                                                           :$change->fields['entities_id'])]);
          echo "</td><td class='center' width='30%'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "<input type='hidden' name='changes_id' value='$instID'>";
          echo "</td></tr>";
          echo "</table>";

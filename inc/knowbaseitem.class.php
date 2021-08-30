@@ -1127,7 +1127,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          echo "<tr class='tab_bg_2'><td class='right' width='50%'>"._n('Category', 'Categories', 1)."&nbsp;";
          KnowbaseItemCategory::dropdown(['value' => $params["knowbaseitemcategories_id"]]);
          echo "</td><td class='left'>";
-         echo "<input type='submit' value=\""._sx('button', 'Post')."\" class='submit'></td>";
+         echo "<input type='submit' value=\""._sx('button', 'Post')."\" class='btn btn-primary'></td>";
          echo "</tr></table>";
          if (isset($options['item_itemtype'])
              && isset($options['item_items_id'])) {
@@ -1173,7 +1173,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       }
       Dropdown::showFromArray('unpublished', $values, ['value' => $params['unpublished']]);
       echo "</td><td class='left'>";
-      echo "<input type='submit' value=\""._sx('button', 'Post')."\" class='submit'></td>";
+      echo "<input type='submit' value=\""._sx('button', 'Post')."\" class='btn btn-primary'></td>";
       echo "</tr></table>";
       Html::closeForm();
       echo "</div>";

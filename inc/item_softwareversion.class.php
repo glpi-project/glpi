@@ -950,7 +950,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
          Software::dropdownSoftwareToInstall("softwareversions_id", $entities_id);
          echo "</td><td width='20%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Install')."\"
-                class='submit'>";
+                class='btn btn-primary'>";
          echo "</td>";
          echo "</tr>\n";
          echo "</table></div>\n";
@@ -1067,7 +1067,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
          echo "<input type='hidden' name='items_id' value='$items_id'>";
          Software::dropdownLicenseToInstall("softwarelicenses_id", $entities_id);
          echo "</td><td width='20%'>";
-         echo "<input type='submit' name='add' value=\"" ._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"" ._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>\n";
          echo "</table></div>\n";
          Html::closeForm();

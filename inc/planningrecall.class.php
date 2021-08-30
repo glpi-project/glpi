@@ -326,7 +326,7 @@ class PlanningRecall extends CommonDBChild {
       echo "<table width='100%'><tr><td>";
       self::dropdown($options);
       echo "&nbsp;";
-      echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
+      echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary'>";
       echo "</td></tr></table>";
       Html::closeForm();
    }

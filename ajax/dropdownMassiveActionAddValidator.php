@@ -51,7 +51,7 @@ if (isset($_POST["validatortype"])) {
          echo "<br><br>".__('Comments')." ";
          echo "<textarea name='comment_submission' cols='50' rows='6'></textarea>&nbsp;";
 
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          break;
 
       case 'group' :
@@ -121,7 +121,7 @@ if (isset($_POST["validatortype"])) {
          echo "<br><br>".__('Comments')." ";
          echo "<textarea name='comment_submission' cols='50' rows='6'></textarea>&nbsp;";
 
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          break;
    }
 

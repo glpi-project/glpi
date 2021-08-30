@@ -309,7 +309,7 @@ echo "<tr class='tab_bg_2'><td class='right'>".__('Start date')."</td><td>";
 Html::showDateField("date1", ['value' => $_POST["date1"]]);
 echo "</td><td rowspan='2' class='center'>";
 echo "<input type='hidden' name='itemtype' value=\"".$_GET['itemtype']."\">";
-echo "<input type='submit' class='submit' value=\"".__s('Display report')."\"></td></tr>";
+echo "<input type='submit' class='btn btn-primary' value=\"".__s('Display report')."\"></td></tr>";
 
 echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
 Html::showDateField("date2", ['value' => $_POST["date2"]]);

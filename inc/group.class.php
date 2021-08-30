@@ -359,7 +359,7 @@ class Group extends CommonTreeDropdown {
                         'used'      => [$group->fields["id"]],
                         'condition' => $condition
                      ]);
-                     echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                     echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='".
                                     _sx('button', 'Move')."'>";
                      return true;
                   }

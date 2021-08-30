@@ -613,7 +613,7 @@ class NetworkPort extends CommonDBChild {
          echo __('Add several ports');
          echo "&nbsp;<input type='checkbox' name='several' value='1'></td>\n";
          echo "<td>\n";
-         echo "<input type='submit' name='create' value=\""._sx('button', 'Add')."\" class='submit'>\n";
+         echo "<input type='submit' name='create' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>\n";
          echo "</td></tr></table></div>\n";
          Html::closeForm();
       }

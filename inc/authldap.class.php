@@ -561,7 +561,7 @@ class AuthLDAP extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".__s('Save')."\">";
+      echo "<input type='submit' name='update' class='btn btn-primary' value=\"".__s('Save')."\">";
       echo $hidden;
       echo "</td></tr>";
 
@@ -738,7 +738,7 @@ class AuthLDAP extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".__s('Save')."\">";
+      echo "<input type='submit' name='update' class='btn btn-primary' value=\"".__s('Save')."\">";
       echo "</td></tr>";
       echo "</table>";
       Html::closeForm();
@@ -769,7 +769,7 @@ class AuthLDAP extends CommonDBTM {
          }
 
          echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
-         echo "<input type='submit' name='test_ldap' class='submit' value=\"".
+         echo "<input type='submit' name='test_ldap' class='btn btn-primary' value=\"".
                 _sx('button', 'Test')."\">";
          echo "</td></tr>";
          echo "</table>";
@@ -864,7 +864,7 @@ class AuthLDAP extends CommonDBTM {
            " <br />".__('Example for location: %{city} > %{roomnumber}')."</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".__s('Save')."\">";
+      echo "<input type='submit' name='update' class='btn btn-primary' value=\"".__s('Save')."\">";
       echo "</td></tr>";
       echo "</table>";
       Html::closeForm();
@@ -899,7 +899,7 @@ class AuthLDAP extends CommonDBTM {
              size='100'></td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".__s('Save')."\">";
+      echo "<input type='submit' name='update' class='btn btn-primary' value=\"".__s('Save')."\">";
       echo "</td></tr>";
       echo "</table>";
       Html::closeForm();
@@ -2416,7 +2416,7 @@ class AuthLDAP extends CommonDBTM {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-         echo "<input class='submit' type='submit' name='ldap_showusers' value=\"".
+         echo "<input class='btn btn-primary' type='submit' name='ldap_showusers' value=\"".
                _sx('button', 'Post') . "\"></td></tr>";
 
       } else {
@@ -3313,7 +3313,7 @@ class AuthLDAP extends CommonDBTM {
                                   'condition'            => ['is_active' => 1],
                                   'display_emptychoice'  => false,
                                   'rand'                 => $rand]);
-                  echo "&nbsp;<input class='submit' type='submit' name='change_directory'
+                  echo "&nbsp;<input class='btn btn-primary' type='submit' name='change_directory'
                         value=\""._sx('button', 'Change')."\">";
                   echo "</td></tr>";
                }
@@ -3341,7 +3341,7 @@ class AuthLDAP extends CommonDBTM {
                                  'condition'            => ['is_active' => 1],
                                  'display_emptychoice'  => false,
                                  'rand'                 => $rand]);
-               echo "&nbsp;<input class='submit' type='submit' name='change_directory'
+               echo "&nbsp;<input class='btn btn-primary' type='submit' name='change_directory'
                      value=\""._sx('button', 'Change')."\">";
                echo "</td></tr>";
             }
@@ -3436,7 +3436,7 @@ class AuthLDAP extends CommonDBTM {
 
          if ($_SESSION['ldap_import']['authldaps_id']) {
             echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-            echo "<input class='submit' type='submit' name='search' value=\"".
+            echo "<input class='btn btn-primary' type='submit' name='search' value=\"".
                    _sx('button', 'Search')."\">";
             echo "</td></tr>";
          } else {

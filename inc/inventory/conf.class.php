@@ -110,8 +110,8 @@ class Conf extends CommonGLPI
 
       echo "<tr class='tab_bg_1'>";
       echo "<td align='center'>";
-      echo "<input type='file' name='importfile' value=''/>";
-      echo "&nbsp;<input type='submit' value='".__('Import')."' class='submit'/>";
+      echo "<input class='btn' type='file' name='importfile' value=''/>";
+      echo "&nbsp;<input type='submit' value='".__('Import')."' class='btn btn-primary'/>";
       echo "</td>";
       echo "</tr>";
 
@@ -595,7 +595,7 @@ class Conf extends CommonGLPI
       if ($canedit) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='7' class='center'>";
-         echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+         echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
          echo "</td></tr>";
       }
 
