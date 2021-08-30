@@ -30,14 +30,16 @@
       {% endif %}
 
       {% if is_promoted %}
-         <a href="{{ 'Ticket'|itemtype_form_path(entry_i['sourceof_items_id']) }}"
-            title="{{ __('Followup promoted to a ticket') }}" data-bs-toggle="tooltip"
-            class="ms-2">
-            <i class="fas code-branch" aria-label="{{ __('Followup promoted to a ticket') }}"></i>
-         </a>
-      {% endif %}
-
-      {% if item.getType() is same as 'Ticket' and (entry['type'] is same as 'ITILFollowup' or entry['type'] is same as 'TicketTask')  %}
+         {% set promoted_btn %}
+            <li>
+               <a class="dropdown-item text-warning" href="{{ 'Ticket'|itemtype_form_path(entry_i['sourceof_items_id']) }}">
+                  <i class="fas fa-fw fa-code-branch"></i>
+                  <span>{{ __('%s was already promoted')|format(entry['type']|itemtype_name) }}</span>
+               </a>
+            </li>
+         {% endset %}
+         {% set actions = actions|merge({promoted_btn}) %}
+      {% elseif item.getType() is same as 'Ticket' and (entry['type'] is same as 'ITILFollowup' or entry['type'] is same as 'TicketTask')  %}
          {% set promote_url = '?_promoted_fup_id=' ~ entry_i['id'] %}
          {% if entry['type'] is same as 'TicketTask' %}
             {% set promote_url = '?_promoted_task_id=' ~ entry_i['id'] %}
