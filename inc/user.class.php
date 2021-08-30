@@ -2147,10 +2147,10 @@ JAVASCRIPT;
           !empty($this->fields["password"])
           || ($this->fields["authtype"] == Auth::DB_GLPI)) {
          //display login field for new records, or if this is not external auth
-         echo "<td><input name='name' id='name' value=\"" . $this->fields["name"] . "\"></td>";
+         echo "<td><input name='name' id='name' value=\"" . $this->fields["name"] . "\" class='form-control'></td>";
       } else {
          echo "<td class='b'>" . $this->fields["name"];
-         echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\"></td>";
+         echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\" class='form-control'></td>";
       }
 
       if (!empty($this->fields["name"])) {
@@ -2205,11 +2205,11 @@ JAVASCRIPT;
          echo "<tr class='tab_bg_1'>";
          echo "<td><label for='password'>" . __('Password')."</label></td>";
          echo "<td><input id='password' type='password' name='password' value='' size='20'
-                    autocomplete='new-password' onkeyup=\"return passwordCheck();\"></td>";
+                    autocomplete='new-password' onkeyup=\"return passwordCheck();\" class='form-control'></td>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td><label for='password2'>" . __('Password confirmation') . "</label></td>";
-         echo "<td><input type='password' id='password2' name='password2' value='' size='20' autocomplete='new-password'>";
+         echo "<td><input type='password' id='password2' name='password2' value='' size='20' autocomplete='new-password' class='form-control'>";
          echo "</td></tr>";
 
          if ($CFG_GLPI["use_password_security"]) {
@@ -2628,13 +2628,13 @@ JAVASCRIPT;
 
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='password'>" . __('Password') . "</label></td>";
-            echo "<td><input id='password' type='password' name='password' value='' size='30' autocomplete='new-password' onkeyup=\"return passwordCheck();\">";
+            echo "<td><input id='password' type='password' name='password' value='' size='30' autocomplete='new-password' onkeyup=\"return passwordCheck();\" class='form-control'>";
             echo "</td>";
             echo "</tr>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='password2'>" . __('Password confirmation') . "</label></td>";
-            echo "<td><input type='password' name='password2' id='password2' value='' size='30' autocomplete='new-password'>";
+            echo "<td><input type='password' name='password2' id='password2' value='' size='30' autocomplete='new-password' class='form-control'>";
             echo "</td></tr>";
 
             if ($CFG_GLPI["use_password_security"]) {
@@ -4685,7 +4685,7 @@ JAVASCRIPT;
       echo '<label for="password">' . __('New password') . '</label>';
       echo '</td>';
       echo '<td>';
-      echo '<input type="password" id="password" name="password" autocomplete="new-password" onkeyup="return passwordCheck();" />';
+      echo '<input type="password" id="password" name="password" autocomplete="new-password" onkeyup="return passwordCheck();" class="form-control" />';
       echo '</td>';
       echo '</tr>';
 
@@ -4694,7 +4694,7 @@ JAVASCRIPT;
       echo '<label for="password2">' . __('New password confirmation') . '</label>';
       echo '</td>';
       echo '<td>';
-      echo '<input type="password" id="password2" name="password2" autocomplete="new-password" />';
+      echo '<input type="password" id="password2" name="password2" autocomplete="new-password" class="form-control" />';
       echo '</td>';
       echo '</tr>';
 

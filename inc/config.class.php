@@ -306,7 +306,7 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('General setup') . "</th></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='url_base'>" . __('URL of the application') . "</label></td>";
-      echo "<td colspan='3'><input type='text' name='url_base' id='url_base' size='80' value='".$CFG_GLPI["url_base"]."'>";
+      echo "<td colspan='3'><input type='text' name='url_base' id='url_base' size='80' value='".$CFG_GLPI["url_base"]."' class='form-control'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -320,7 +320,7 @@ class Config extends CommonDBTM {
       Dropdown::showYesNo("use_public_faq", $CFG_GLPI["use_public_faq"], -1, ['rand' => $rand]);
       echo "</td><td width='30%'><label for='helpdesk_doc_url'>" . __('Simplified interface help link') . "</label></td>";
       echo "<td><input size='22' type='text' name='helpdesk_doc_url' id='helpdesk_doc_url' value='" .
-                 $CFG_GLPI["helpdesk_doc_url"] . "'></td>";
+                 $CFG_GLPI["helpdesk_doc_url"] . "' class='form-control'></td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -332,7 +332,7 @@ class Config extends CommonDBTM {
                                               'rand'  => $rand]);
       echo "</td><td><label for='central_doc_url'>" . __('Standard interface help link') . "</label></td>";
       echo "<td><input size='22' type='text' name='central_doc_url' id='central_doc_url' value='" .
-                 $CFG_GLPI["central_doc_url"] . "'></td>";
+                 $CFG_GLPI["central_doc_url"] . "' class='form-control'></td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -807,7 +807,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='url_base_api'>" . __('URL of the API') . "</label></td>";
-      echo "<td colspan='3'><input type='text' name='url_base_api' id='url_base_api' size='80' value='".$CFG_GLPI["url_base_api"]."'></td>";
+      echo "<td colspan='3'><input type='text' name='url_base_api' id='url_base_api' size='80' value='".$CFG_GLPI["url_base_api"]."' class='form-control'></td>";
       echo "</tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='dropdown_enable_api$rand'>" . __("Enable Rest API") . "</label></td>";
@@ -1855,17 +1855,17 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='proxy_name'>" . __('Server') . "</label></td>";
-      echo "<td><input type='text' name='proxy_name' id='proxy_name' value='".$CFG_GLPI["proxy_name"]."'></td>";
+      echo "<td><input type='text' name='proxy_name' id='proxy_name' value='".$CFG_GLPI["proxy_name"]."' class='form-control'></td>";
       //TRANS: Proxy port
       echo "<td><label for='proxy_port'>" . _n('Port', 'Ports', 1) . "</label></td>";
-      echo "<td><input type='text' name='proxy_port' id='proxy_port' value='".$CFG_GLPI["proxy_port"]."'></td>";
+      echo "<td><input type='text' name='proxy_port' id='proxy_port' value='".$CFG_GLPI["proxy_port"]."' class='form-control'></td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='proxy_user'>" . __('Login') . "</label></td>";
-      echo "<td><input type='text' name='proxy_user' id='proxy_user' value='".$CFG_GLPI["proxy_user"]."'></td>";
+      echo "<td><input type='text' name='proxy_user' id='proxy_user' value='".$CFG_GLPI["proxy_user"]."' class='form-control'></td>";
       echo "<td><label for='proxy_passwd'>" . __('Password') . "</label></td>";
-      echo "<td><input type='password' name='proxy_passwd' id='proxy_passwd' value='' autocomplete='new-password'>";
+      echo "<td><input type='password' name='proxy_passwd' id='proxy_passwd' value='' autocomplete='new-password' class='form-control'>";
       echo "<br><input type='checkbox' name='_blank_proxy_passwd' id='_blank_proxy_passwd'><label for='_blank_proxy_passwd'>".__('Clear')."</label>";
       echo "</td></tr>";
 
