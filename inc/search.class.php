@@ -1232,7 +1232,11 @@ class Search {
          if (!$data['search']['no_search']
              || $data['search']['export_all']) {
             $first_row = $result->fetch_assoc();
-            $data['data']['totalcount'] = $first_row['_query_total'];
+            if (is_null($first_row)) {
+               $data['data']['totalcount'] = 0;
+            } else {
+               $data['data']['totalcount'] = $first_row['_query_total'];
+            }
          } else {
             if (!isset($data['sql']['count'])
                || (count($data['sql']['count']) == 0)) {
