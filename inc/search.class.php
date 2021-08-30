@@ -5642,7 +5642,13 @@ JAVASCRIPT;
                                                    $data[$ID][0]['firstname'], 1);
                   return sprintf(__('%1$s %2$s'), $usernameformat, $toadd);
                }
-               break;
+
+               return TemplateRenderer::getInstance()->render('components/user/picture.html.twig', [
+                  'users_id'      => $data['id'],
+                  'display_login' => true,
+                  'force_login'   => true,
+                  'avatar_size'   => "avatar-sm",
+               ]);
 
             case "glpi_profiles.name" :
                if (($itemtype == 'User')
