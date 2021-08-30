@@ -407,7 +407,7 @@ class Item_Ticket extends CommonItilObject_Item {
          self::dropdownAllDevices("itemtype", null, 0, 1, $dev_user_id, $ticket->fields["entities_id"], ['tickets_id' => $instID, 'used' => $used, 'rand' => $rand]);
          echo "<span id='item_ticket_selection_information$rand'></span>";
          echo "</td><td class='center' width='30%'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "<input type='hidden' name='tickets_id' value='$instID'>";
          echo "</td></tr>";
          echo "</table>";
@@ -965,7 +965,7 @@ class Item_Ticket extends CommonItilObject_Item {
                                                    'checkright'      => true,
                                                    'entity_restrict' => $_SESSION['glpiactive_entity']
                                                   ]);
-            echo "<br><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+            echo "<br><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
             break;
 
          case 'delete_item' :
@@ -976,7 +976,7 @@ class Item_Ticket extends CommonItilObject_Item {
                                                    'entity_restrict' => $_SESSION['glpiactive_entity']
                                                   ]);
 
-            echo "<br><input type='submit' name='delete' value=\"".__('Delete permanently')."\" class='submit'>";
+            echo "<br><input type='submit' name='delete' value=\"".__('Delete permanently')."\" class='btn btn-primary'>";
             break;
       }
 

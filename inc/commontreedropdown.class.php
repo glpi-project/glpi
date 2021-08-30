@@ -492,7 +492,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             echo "<input type='hidden' name='is_recursive' value='1'>";
          }
          echo "<input type='hidden' name='".$this->getForeignKeyField()."' value='$ID'></td>";
-         echo "<td><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<td><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>\n";
          echo "</table>";
          Html::closeForm();
@@ -599,7 +599,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                                             'comments' => 0,
                                             'entity'   => $_SESSION['glpiactive_entity'],
                                             'entity_sons' => $_SESSION['glpiactive_entity_recursive']]);
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+            echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='".
                            _sx('button', 'Move')."'>\n";
             return true;
 

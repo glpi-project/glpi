@@ -276,7 +276,7 @@ class Netpoint extends CommonDropdown {
          Html::autocompletionTextField($item, "name", ['value' => '']);
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
-         echo "<td><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<td><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>\n";
          echo "</table>\n";
          Html::closeForm();
@@ -300,7 +300,7 @@ class Netpoint extends CommonDropdown {
          echo "<input type='hidden' name='locations_id' value='$ID'>";
          echo "<input type='hidden' name='_method' value='AddMulti'></td>";
          echo "<td><input type='submit' name='execute' value=\""._sx('button', 'Add')."\"
-                    class='submit'>";
+                    class='btn btn-primary'>";
          echo "</td></tr>\n";
          echo "</table>\n";
          Html::closeForm();

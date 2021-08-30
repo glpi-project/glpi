@@ -612,7 +612,7 @@ class Rule extends CommonDBTM {
                'width'           => '50%',
                'order'           => 'ranking'
             ]);
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+            echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='".
                            _sx('button', 'Move')."'>\n";
             return true;
       }
@@ -2614,7 +2614,7 @@ class Rule extends CommonDBTM {
 
          echo "<tr><td class='tab_bg_2 center' colspan='3'>";
          echo "<input type='submit' name='test_rule' value=\""._sx('button', 'Test')."\"
-                class='submit'>";
+                class='btn btn-primary'>";
          echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
          echo "<input type='hidden' name='sub_type' value='" . $this->getType() . "'>";
          echo "</td></tr>\n";
@@ -2836,7 +2836,7 @@ class Rule extends CommonDBTM {
       echo "<input type=hidden name='entities_id' value='-1'>";
       echo "<input type=hidden name='affectentity' value='$ID'>";
       echo "<input type=hidden name='_method' value='AddRule'>";
-      echo "<input type='submit' name='execute' value=\""._sx('button', 'Add')."\" class='submit'>";
+      echo "<input type='submit' name='execute' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
       echo "</td></tr>\n";
       echo "</table>";
       Html::closeForm();
