@@ -5222,7 +5222,7 @@ JAVASCRIPT;
                <span>$caption</span>
             </button>&nbsp;";
 
-      return sprintf($button, Html::cleanInputText($caption), Html::parseAttributes($options));
+      return sprintf($button, strip_tags(Html::cleanInputText($caption)), Html::parseAttributes($options));
    }
 
 
