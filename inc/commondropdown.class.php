@@ -570,10 +570,10 @@ abstract class CommonDropdown extends CommonDBTM {
          echo "<td><input type='hidden' name='id' value='$ID'>";
          echo "<input type='hidden' name='itemtype' value='".$this->getType()."' />";
          echo "<input type='hidden' name='forcepurge' value='1'>";
-         echo "<input class='submit' type='submit' name='purge'
+         echo "<input class='btn btn-primary' type='submit' name='purge'
                 value=\""._sx('button', 'Confirm')."\">";
          echo "</td>";
-         echo "<td><input class='submit' type='submit' name='annuler'
+         echo "<td><input class='btn btn-primary' type='submit' name='annuler'
                     value=\""._sx('button', 'Cancel')."\">";
          echo "</td></tr></table>\n";
          Html::closeForm();
@@ -603,9 +603,9 @@ abstract class CommonDropdown extends CommonDBTM {
       echo "<input type='hidden' name='id' value='$ID' />";
       echo "<input type='hidden' name='itemtype' value='".$this->getType()."' />";
       echo "</td><td>";
-      echo "<input class='submit' type='submit' name='replace' value=\""._sx('button', 'Replace')."\">";
+      echo "<input class='btn btn-primary' type='submit' name='replace' value=\""._sx('button', 'Replace')."\">";
       echo "</td><td>";
-      echo "<input class='submit' type='submit' name='annuler' value=\""._sx('button', 'Cancel')."\">";
+      echo "<input class='btn btn-primary' type='submit' name='annuler' value=\""._sx('button', 'Cancel')."\">";
       echo "</td></tr></table>\n";
       Html::closeForm();
       echo "</div>";
