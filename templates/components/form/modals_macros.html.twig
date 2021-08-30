@@ -22,9 +22,10 @@
       'id': 'modal' ~ rand,
       'rand': rand,
       'buttons': [],
+      'modal_classes': ''
    }|merge(options) %}
 
-   <div class="modal fade" id="{{ options.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+   <div class="modal fade {{ options.modal_classes }}" id="{{ options.id }}" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog" role="document">
          <div class="modal-content">
             <div class="modal-header">
