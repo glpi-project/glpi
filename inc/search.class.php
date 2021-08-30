@@ -719,12 +719,10 @@ class Search {
          }
       }
 
-      $LIMIT   = "";
+      $LIMIT = " LIMIT ".(int)$data['search']['start'].", ".(int)$data['search']['list_limit'];
       $numrows = 0;
       //No search : count number of items using a simple count(ID) request and LIMIT search
       if ($data['search']['no_search']) {
-         $LIMIT = " LIMIT ".(int)$data['search']['start'].", ".(int)$data['search']['list_limit'];
-
          $count = "count(DISTINCT `$itemtable`.`id`)";
          // request currentuser for SQL supervision, not displayed
          $query_num = "SELECT $count,
@@ -911,6 +909,9 @@ class Search {
          $QUERY .= str_replace($CFG_GLPI["union_search_type"][$data['itemtype']].".", "", $ORDER) .
                    $LIMIT;
       } else {
+         if (!$data['search']['no_search']) {
+            $SELECT .= ", (SELECT COUNT(*) FROM (SELECT DISTINCT `$itemtable`.`id` $FROM $WHERE $GROUPBY $HAVING) as _query_tmp) AS _query_total";
+         }
          $QUERY = $SELECT.
                   $FROM.
                   $WHERE.
@@ -1230,7 +1231,8 @@ class Search {
          // if real search or complete export : get numrows from request
          if (!$data['search']['no_search']
              || $data['search']['export_all']) {
-            $data['data']['totalcount'] = $DBread->numrows($result);
+            $first_row = $result->fetch_assoc();
+            $data['data']['totalcount'] = $first_row['_query_total'];
          } else {
             if (!isset($data['sql']['count'])
                || (count($data['sql']['count']) == 0)) {
