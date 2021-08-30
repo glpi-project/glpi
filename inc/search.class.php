@@ -720,6 +720,11 @@ class Search {
       }
 
       $LIMIT = " LIMIT ".(int)$data['search']['start'].", ".(int)$data['search']['list_limit'];
+
+      // Can't use the one method "trick" to count + get limited results for this case, keep original code
+      if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
+         $LIMIT= "";
+      }
       $numrows = 0;
       //No search : count number of items using a simple count(ID) request and LIMIT search
       if ($data['search']['no_search']) {
@@ -1176,6 +1181,8 @@ class Search {
     * @return void
    **/
    static function constructData(array &$data, $onlycount = false) {
+      global $CFG_GLPI;
+
       if (!isset($data['sql']) || !isset($data['sql']['search'])) {
          return false;
       }
@@ -1229,14 +1236,19 @@ class Search {
 
          $data['data']['totalcount'] = 0;
          // if real search or complete export : get numrows from request
-         if (!$data['search']['no_search']
-             || $data['search']['export_all']) {
-            $first_row = $result->fetch_assoc();
-            if (is_null($first_row)) {
-               $data['data']['totalcount'] = 0;
+         if (!$data['search']['no_search'] || $data['search']['export_all']) {
+            if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
+               // Can't use the one method "trick" to count + get limited results for this case, keep original code
+               $data['data']['totalcount'] = $DBread->numrows($result);
             } else {
-               $data['data']['totalcount'] = $first_row['_query_total'];
+               $first_row = $result->fetch_assoc();
+               if (is_null($first_row)) {
+                  $data['data']['totalcount'] = 0;
+               } else {
+                  $data['data']['totalcount'] = $first_row['_query_total'];
+               }
             }
+
          } else {
             if (!isset($data['sql']['count'])
                || (count($data['sql']['count']) == 0)) {
