@@ -305,8 +305,6 @@ class NotificationTargetTicket extends DbTestCase {
 
       $this->array($ret['timelineitems'])->isIdenticalTo($expected);
 
-
-
       $auth = new \Auth();
       $this->boolean((boolean)$auth->login('post-only', 'postonly', true))->isTrue();
 
@@ -318,41 +316,40 @@ class NotificationTargetTicket extends DbTestCase {
 
       $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
 
-            //get only private task / solution / followup (because is post_only)
-            $expected = [
-               [
-                  "##timelineitems.type##"        => "TicketTask",
-                  "##timelineitems.typename##"    => "Ticket tasks",
-                  "##timelineitems.date##"        => $task_tech->fields['date'],
-                  "##timelineitems.description##" => $task_tech->fields['content'],
-                  "##timelineitems.position##"    => "right",
-                  "##timelineitems.author##"      => "tech",
-               ],[
-                  "##timelineitems.type##"        => "ITILSolution",
-                  "##timelineitems.typename##"    => "Solutions",
-                  "##timelineitems.date##"        => $solution->fields['date_creation'],
-                  "##timelineitems.description##" => $solution->fields['content'],
-                  "##timelineitems.position##"    => "right",
-                  "##timelineitems.author##"      => "", //empty
-               ],[
-                  "##timelineitems.type##"        => "ITILFollowup",
-                  "##timelineitems.typename##"    => "Followups",
-                  "##timelineitems.date##"        => $fup_post_only->fields['date'],
-                  "##timelineitems.description##" => $fup_post_only->fields['content'],
-                  "##timelineitems.position##"    => "left",
-                  "##timelineitems.author##"      => "post-only",
-               ],[
-                  "##timelineitems.type##" => "ITILFollowup",
-                  "##timelineitems.typename##" => "Followups",
-                  "##timelineitems.date##"        => $fup_tech->fields['date'],
-                  "##timelineitems.description##" => $fup_tech->fields['content'],
-                  "##timelineitems.position##" => "right",
-                  "##timelineitems.author##" => "tech",
-               ]
-            ];
-      
-            $this->array($ret['timelineitems'])->isIdenticalTo($expected);
+      //get only private task / solution / followup (because is post_only)
+      $expected = [
+         [
+            "##timelineitems.type##"        => "TicketTask",
+            "##timelineitems.typename##"    => "Ticket tasks",
+            "##timelineitems.date##"        => $task_tech->fields['date'],
+            "##timelineitems.description##" => $task_tech->fields['content'],
+            "##timelineitems.position##"    => "right",
+            "##timelineitems.author##"      => "tech",
+         ],[
+            "##timelineitems.type##"        => "ITILSolution",
+            "##timelineitems.typename##"    => "Solutions",
+            "##timelineitems.date##"        => $solution->fields['date_creation'],
+            "##timelineitems.description##" => $solution->fields['content'],
+            "##timelineitems.position##"    => "right",
+            "##timelineitems.author##"      => "", //empty
+         ],[
+            "##timelineitems.type##"        => "ITILFollowup",
+            "##timelineitems.typename##"    => "Followups",
+            "##timelineitems.date##"        => $fup_post_only->fields['date'],
+            "##timelineitems.description##" => $fup_post_only->fields['content'],
+            "##timelineitems.position##"    => "left",
+            "##timelineitems.author##"      => "post-only",
+         ],[
+            "##timelineitems.type##" => "ITILFollowup",
+            "##timelineitems.typename##" => "Followups",
+            "##timelineitems.date##"        => $fup_tech->fields['date'],
+            "##timelineitems.description##" => $fup_tech->fields['content'],
+            "##timelineitems.position##" => "right",
+            "##timelineitems.author##" => "tech",
+         ]
+      ];
 
-            
+      $this->array($ret['timelineitems'])->isIdenticalTo($expected);
+
    }
 }
