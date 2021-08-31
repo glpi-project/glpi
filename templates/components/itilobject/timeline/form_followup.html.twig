@@ -10,14 +10,24 @@
             {% if entry_i['sourceitems_id'] %}
                <span class="badge bg-blue-lt">
                   <i class="fas fa-code-branch me-1"></i>
-                  {{ __('Merged from Ticket %1$s')|format(get_item_link('Ticket', entry_i['sourceitems_id']))|raw }}
+                  {% set merged_badge %}
+                     <span class="badge ms-2 me-n2">
+                        {{ get_item_link('Ticket', entry_i['sourceitems_id']) }}
+                     </span>
+                  {% endset %}
+                  {{ __('Merged from Ticket %1$s')|format(merged_badge)|raw }}
                </span>
             {% endif %}
 
             {% if entry_i['sourceof_items_id'] %}
                <span class="badge bg-blue-lt">
                   <i class="fas fa-code-branch me-1"></i>
-                  {{ __('Promoted to Ticket %1$s')|format(get_item_link('Ticket', entry_i['sourceof_items_id']))|raw }}
+                  {% set promoted_badge %}
+                     <span class="badge ms-2 me-n2">
+                        {{ get_item_link('Ticket', entry_i['sourceof_items_id']) }}
+                     </span>
+                  {% endset %}
+                  {{ __('Promoted to Ticket %1$s')|format(promoted_badge)|raw }}
                </span>
             {% endif %}
          </div>
