@@ -3705,7 +3705,7 @@ JS;
                      editor.on('submit', function (e) {
                         if ($('#$name').val() == '') {
                            alert(__('The description field is mandatory'));
-                           evt.preventDefault();
+                           e.preventDefault();
                         }
                      });
                      editor.on('keyup', function (e) {
