@@ -4075,6 +4075,19 @@ $tables['glpi_notificationtemplatetranslations'] = [
  ##lang.followup.requesttype## ##followup.requesttype##
 
 ##ENDFOREACHfollowups##
+
+##FOREACHtimelineitems##
+
+ [##timelineitems.date##]
+ ##lang.timelineitems.author## ##timelineitems.author##
+ ##lang.timelineitems.description## ##timelineitems.description##
+ ##lang.timelineitems.date## ##timelineitems.date##
+ ##lang.timelineitems.position## ##timelineitems.position##
+ ##lang.timelineitems.type## ##timelineitems.type##
+ ##lang.timelineitems.typename## ##timelineitems.typename##
+
+##ENDFOREACHtimelineitems##
+
  ##lang.ticket.numberoftasks## : ##ticket.numberoftasks##
 
 ##FOREACHtasks##
@@ -4104,6 +4117,11 @@ $tables['glpi_notificationtemplatetranslations'] = [
 <p>##FOREACHfollowups##</p>
 <div class="description b"><br /> <strong> [##followup.date##] <em>##lang.followup.isprivate## : ##followup.isprivate## </em></strong><br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.followup.author## </span> ##followup.author##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.followup.description## </span> ##followup.description##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.followup.date## </span> ##followup.date##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.followup.requesttype## </span> ##followup.requesttype##</div>
 <p>##ENDFOREACHfollowups##</p>
+<p>##ENDFOREACHtimelineitems##</p>
+<div class="description b"><br /><strong> [##timelineitems.date##]</strong><br /><span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.timelineitems.author## </span> ##<span style="color: #000000; font-weight: bold; text-decoration: underline; background-color: #ffffff;">timelineitems</span>.author##<br /><span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.timelineitems.description## </span> ##<span style="color: #000000; font-weight: bold; text-decoration: underline;">timelineitems</span>.description##<br /><span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.timelineitems.date## </span> ##<span style="color: #000000; font-weight: bold; text-decoration: underline;">timelineitems</span>.date##<br /><span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">##lang.timelineitems.position## </span><span style="color: #000000;"> ##<span style="font-weight: bold; text-decoration: underline;">timelineitems</span>.<span style="font-weight: bold; text-decoration: underline;">position</span>##</span></div>
+<div class="description b"><span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">##lang.timelineitems.type## </span> ##<span style="color: #000000;"><span style="font-weight: bold; text-decoration: underline;">timelineitems</span>.<span style="font-weight: bold; text-decoration: underline;">type</span>##</span></div>
+<div class="description b"><span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">##lang.timelineitems.typename## </span> #<span style="color: #000000;">#<span style="font-weight: bold; text-decoration: underline;">timelineitems</span>.<span style="font-weight: bold; text-decoration: underline;">typename</span>##</span></div>
+<p>##ENDFOREACHtimelineitems##</p>
 <div class="description b">##lang.ticket.numberoftasks##&#160;: ##ticket.numberoftasks##</div>
 <p>##FOREACHtasks##</p>
 <div class="description b"><br /> <strong> [##task.date##] <em>##lang.task.isprivate## : ##task.isprivate## </em></strong><br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.task.author##</span> ##task.author##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.task.description##</span> ##task.description##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.task.time##</span> ##task.time##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.task.category##</span> ##task.category##</div>
