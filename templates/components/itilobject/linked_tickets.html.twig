@@ -53,7 +53,7 @@
          <span>{{ __('Add') }}</span>
       </button>
 
-      <span class="collapse" id="link_ticket_dropdowns">
+      <span class="collapse {{ params['_link']['tickets_id_2']|length > 0 ? "show" : "" }}" id="link_ticket_dropdowns">
          {{ ticket_ticket.dropdownLinks(
             '_link[link]',
             params['_link']['link'] ?? ''
@@ -64,6 +64,7 @@
             'used': [item.fields['id']],
             'displaywith': ['id'],
             'display': false,
+            'value': params['_link']['tickets_id_2'] ?? '',
          })|raw }}
       </span>
    </div>
