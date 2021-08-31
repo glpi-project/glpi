@@ -1366,7 +1366,7 @@ class Item_Devices extends CommonDBRelation {
          // Do the field needs a user action to display ?
          if (isset($attributs['protected']) && $attributs['protected']) {
             $protected = true;
-            $out.= '<span class="disclosablefield">';
+            $out.= '<span class="disclosablefield btn-group btn-group-sm">';
          } else {
             $protected = false;
          }
