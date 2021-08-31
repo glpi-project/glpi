@@ -1361,6 +1361,8 @@ class Item_Devices extends CommonDBRelation {
          }
          echo "</td><td>";
 
+         echo "<div class='btn-group btn-group-sm' role='group'>";
+
          // Do the field needs a user action to display ?
          if (isset($attributs['protected']) && $attributs['protected']) {
             $protected = true;
@@ -1398,7 +1400,7 @@ class Item_Devices extends CommonDBRelation {
                                                                           'size'     => $attributs['size'],
                                                                           'display'  => false]);
                   } else {
-                     $out.= '<input class="protected" type="password" autocomplete="new-password" name="' . $field . '" ';
+                     $out.= '<input class="protected form-control" type="password" autocomplete="new-password" name="' . $field . '" ';
                      $out.= 'id="' . $field . $rand . '" value="' . $value . '">';
                   }
             }
@@ -1411,19 +1413,19 @@ class Item_Devices extends CommonDBRelation {
                $out.= '&nbsp;'.Html::showToolTip($tooltip, $options_tooltip);
             }
             if ($protected) {
-               $out.= '<span><i class="far fa-eye pointer disclose" ';
+               $out.= '<div class="btn btn-outline-secondary"><i class="far fa-eye pointer disclose" ';
                $out.= 'onmousedown="showField(\'' . $field . $rand . '\')" ';
                $out.= 'onmouseup="hideField(\'' . $field . $rand . '\')" ';
-               $out.= 'onmouseout="hideField(\'' . $field . $rand . '\')"></i>';
-               $out.= '<i class="fa fa-paste pointer disclose" ';
+               $out.= 'onmouseout="hideField(\'' . $field . $rand . '\')"></i></div>';
+               $out.= '<div class="btn btn-outline-secondary"><i class="fa fa-paste pointer disclose" ';
                $out.= 'onclick="copyToClipboard(\'' . $field . $rand . '\')"></i>';
-               $out.= '</span>';
+               $out.= '</div>';
             }
             echo $out;
          } else {
             echo NOT_AVAILABLE;
          }
-         echo "</td>";
+         echo "</div></td>";
          $even ++;
          if (($even == $nb) && (($nb % 2) != 0) && $nb > 1) {
             echo "<td></td><td></td></tr>";
