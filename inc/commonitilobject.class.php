@@ -6866,7 +6866,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return mixed[] Timeline items
     */
-   function getTimelineItems($from_notification = false) {
+   function getTimelineItems($from_notification = false, $get_private = false) {
 
       $objType = static::getType();
       $foreignKey = static::getForeignKeyField();
@@ -6897,8 +6897,8 @@ abstract class CommonITILObject extends CommonDBTM {
          ];
       }
 
-      //is requested from notification only public
-      if ($from_notification) {
+      //is requested only public
+      if ($from_notification && $get_private) {
          $restrict_fup = [
             'is_private'   => 0,
          ];
@@ -6918,8 +6918,8 @@ abstract class CommonITILObject extends CommonDBTM {
          ];
       }
 
-      //is requested from notification only public
-      if ($from_notification) {
+      //is requested only public
+      if ($from_notification && $get_private) {
          $restrict_task = [
                'is_private'   => 0,
          ];

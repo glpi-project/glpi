@@ -1524,7 +1524,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $data["##$objettype.numberoftasks##"] = count($data['tasks']);
 
          $data['timelineitems'] = [];
-         $timeline = $item->getTimelineItems(true);
+         $timeline = $item->getTimelineItems(true, $show_private);
 
          foreach ($timeline as $timeline_data) {
 
