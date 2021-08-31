@@ -192,12 +192,11 @@ Associated item :
   No defined category 
  Description : 
  
- Number of followups : 0
 
 
- Number of tasks : 0
 
-
+Number of followups : 0
+Number of tasks : 0
 
 -- 
 

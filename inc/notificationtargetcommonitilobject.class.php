@@ -1523,16 +1523,14 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
          $data["##$objettype.numberoftasks##"] = count($data['tasks']);
 
-
          $data['timelineitems'] = [];
          $timeline = $item->getTimelineItems(true);
 
-
          foreach ($timeline as $timeline_data) {
 
-            if ($timeline_data['type'] == "Solution"){
+            if ($timeline_data['type'] == "Solution") {
                $tmptimelineitems['##timelineitems.type##'] = ITILSolution::getType();
-            }else{
+            } else {
                $tmptimelineitems['##timelineitems.type##'] = $timeline_data['type']::getType();
             }
 
@@ -1554,6 +1552,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                } else {
                   $tmptimelineitems['##timelineitems.author##'] = getUserName($timeline_data['item']['users_id']);
                }
+            } else if ($timeline_data['type'] == "Solution") {
+               //empty author like GLPI timeline
+               $tmptimelineitems['##timelineitems.author##'] = '';
             } else {
                $tmptimelineitems['##timelineitems.author##'] = getUserName($timeline_data['item']['users_id']);
             }
@@ -1690,7 +1691,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'timelineitems.author'              => __('Writer'),
                     'timelineitems.date'                => __('Opening date'),
                     'timelineitems.type'                => __('Internal type'),
-                    'timelineitems.typename'            => __('Type'),
+                    'timelineitems.typename'            => _n('Type', 'Types', 1),
                     'timelineitems.description'         => __('Description'),
                     'timelineitems.position'            => __('Position'),
 

@@ -6898,7 +6898,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       //is requested from notification only public
-      if ($from_notification){
+      if ($from_notification) {
          $restrict_fup = [
             'is_private'   => 0,
          ];
@@ -6919,7 +6919,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       //is requested from notification only public
-      if ($from_notification){
+      if ($from_notification) {
          $restrict_task = [
                'is_private'   => 0,
          ];
@@ -7145,7 +7145,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
          // set item position depending on field timeline_position
          $user_position = self::getUserPositionFromTimelineItemPosition($item_i['timeline_position']);
-
 
          //display solution in middle
          if (($item['type'] == "Solution") && $item_i['status'] != CommonITILValidation::REFUSED

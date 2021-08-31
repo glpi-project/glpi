@@ -169,7 +169,6 @@ class NotificationTargetTicket extends DbTestCase {
       // Check expected fields and reload object from DB
       $this->checkInput($ticket, $tickets_id, $input);
 
-
       // Add followup from tech
       $fup_tech = new \ITILFollowup();
       $fup1_id = $fup_tech->add([
@@ -181,7 +180,6 @@ class NotificationTargetTicket extends DbTestCase {
          'items_id' => $tickets_id,
       ]);
       $this->integer($fup1_id)->isGreaterThan(0);
-
 
       // Add followup from post_only
       $fup_post_only = new \ITILFollowup();
@@ -206,7 +204,6 @@ class NotificationTargetTicket extends DbTestCase {
          'items_id' => $tickets_id,
       ]);
       $this->integer($fup3_id)->isGreaterThan(0);
-
 
       //add private task from tech
       $task_private = new \TicketTask();
@@ -247,12 +244,9 @@ class NotificationTargetTicket extends DbTestCase {
       ]);
       $this->integer($solutions_id)->isGreaterThan(0);
 
-
-
-
       $auth = new \Auth();
       $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
-      
+
       $basic_options = [
          'additionnaloption' => [
             'usertype' => ''
@@ -277,7 +271,7 @@ class NotificationTargetTicket extends DbTestCase {
             "##timelineitems.date##"        => $solution->fields['date_creation'],
             "##timelineitems.description##" => $solution->fields['content'],
             "##timelineitems.position##"    => "right",
-            "##timelineitems.author##"      => "tech",
+            "##timelineitems.author##"      => "", //empty
          ],[
             "##timelineitems.type##"        => "ITILFollowup",
             "##timelineitems.typename##"    => "Followups",
