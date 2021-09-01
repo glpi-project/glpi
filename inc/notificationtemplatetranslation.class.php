@@ -118,7 +118,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       Ajax::createIframeModalWindow("tags".$rand,
                                     $CFG_GLPI['root_doc']."/front/notification.tags.php?sub_type=".
                                        addslashes($template->getField('itemtype')));
-      echo "<a class='vsubmit' href='#' data-bs-toggle='modal' data-bs-target='#tags$rand'>".__('Show list of available tags')."</a>";
+      echo "<a class='btn btn-primary' href='#' data-bs-toggle='modal' data-bs-target='#tags$rand'>".__('Show list of available tags')."</a>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -182,7 +182,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       if ($canedit) {
          echo "<div class='center'>".
-              "<a class='vsubmit' href='".Toolbox::getItemTypeFormURL('NotificationTemplateTranslation').
+              "<a class='btn btn-primary' href='".Toolbox::getItemTypeFormURL('NotificationTemplateTranslation').
                 "?notificationtemplates_id=".$nID."'>". __('Add a new translation')."</a></div><br>";
       }
 

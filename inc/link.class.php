@@ -537,7 +537,7 @@ class Link extends CommonDBTM {
       echo "<th>".self::getTypeName(Session::getPluralNumber())."</th>";
       echo "<th class='right'>";
       if (self::canUpdate()) {
-         echo '<a class="vsubmit" href="' . self::getSearchURL() . '">';
+         echo '<a class="btn btn-primary" href="' . self::getSearchURL() . '">';
          echo '<i class="fas fa-cog"></i>&nbsp;';
          echo __('Configure');
          echo '</a>';

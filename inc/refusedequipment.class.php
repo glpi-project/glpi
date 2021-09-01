@@ -199,7 +199,7 @@ class RefusedEquipment extends CommonDBTM {
 
       $rand = mt_rand();
       echo sprintf(
-         "<a class='vsubmit' style='float:right;' href='#' onClick=\"%s\">%s</a>",
+         "<a class='btn btn-primary' style='float:right;' href='#' onClick=\"%s\">%s</a>",
          Html::jsGetElementbyID('allruletest'.$rand).".dialog('open'); return false;",
          __('Test rules engine')
       );

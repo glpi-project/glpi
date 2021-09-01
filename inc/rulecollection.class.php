@@ -569,13 +569,13 @@ class RuleCollection extends CommonDBTM {
 
       //if rules provides an initRules method, then we're able to reset them
       if (method_exists($this->getRuleClass(), 'initRules')) {
-         echo "<a class='vsubmit' id='reset_rules' href='".$rule->getSearchURL()."?reinit=true' " .
+         echo "<a class='btn btn-primary' id='reset_rules' href='".$rule->getSearchURL()."?reinit=true' " .
             //does not work.
             //"onClick='if(confirm(\"" . __s('All rules will be erased and recreated from scratch. Are you sure?')."\")) { return true } else { return false; };' " .
             "title='".__s("Remove all equipment import rules and recreate from defaults")."'" .
             ">" . __('Reset rules') . "</a>&nbsp;";
       }
-      echo "<a class='vsubmit' href='#' data-bs-toggle='modal' data-bs-target='#allruletest$rand'>".
+      echo "<a class='btn btn-primary' href='#' data-bs-toggle='modal' data-bs-target='#allruletest$rand'>".
                   __('Test rules engine')."</a>";
       Ajax::createIframeModalWindow('allruletest'.$rand,
                                     $url."/front/rulesengine.test.php?".
@@ -586,7 +586,7 @@ class RuleCollection extends CommonDBTM {
 
       if ($this->can_replay_rules) {
          echo "<div class='spaced center'>";
-         echo "<a class='vsubmit' href='".$rule->getSearchURL()."?replay_rule=replay_rule'>".
+         echo "<a class='btn btn-primary' href='".$rule->getSearchURL()."?replay_rule=replay_rule'>".
                __s('Replay the dictionary rules')."</a>";
          echo "</div>";
       }
