@@ -35,29 +35,59 @@ namespace tests\units\Glpi\ContentTemplates\Parameters;
 class UserParameters extends AbstractParameters
 {
    public function testGetValues(): void {
-      $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+      $this->createItem('UserTitle', ['name' => 'test title']);
+      $this->createItem('UserCategory', ['name' => 'test category']);
+      $this->createItem('Location', ['name' => 'test location']);
+
+      $test_entity_id    = getItemByTypeName('Entity', '_test_child_2', true);
+      $test_user_id      = getItemByTypeName('User', TU_USER, true);
+      $test_usertitle    = getItemByTypeName('UserTitle', 'test title', true);
+      $test_usercategory = getItemByTypeName('UserCategory', 'test category', true);
+      $test_location     = getItemByTypeName('Location', 'test location', true);
 
       $this->createItem('User', [
-         'name'        => 'user_testGetValues',
-         'entities_id' => $test_entity_id,
-         'firstname'   => 'firstname',
-         'realname'    => 'lastname',
-         '_useremails' => ['test@email.com'],
-         'phone'       => '0101010101',
-         'phone2'      => '0202020202',
-         'mobile'      => '0303030303',
+         'name'                => 'user_testGetValues',
+         'entities_id'         => $test_entity_id,
+         'firstname'           => 'firstname',
+         'realname'            => 'lastname',
+         '_useremails'         => ['test@email.com'],
+         'phone'               => '0101010101',
+         'phone2'              => '0202020202',
+         'mobile'              => '0303030303',
+         'users_id_supervisor' => $test_user_id,
+         'usertitles_id'       => $test_usertitle,
+         'usercategories_id'   => $test_usercategory,
+         'locations_id'        => $test_location,
       ]);
 
       $parameters = $this->newTestedInstance();
       $values = $parameters->getValues(getItemByTypeName('User', 'user_testGetValues'));
+
       $this->array($values)->isEqualTo([
-         'id'       => getItemByTypeName('User', 'user_testGetValues', true),
-         'login'    => 'user_testGetValues',
-         'fullname' => 'lastname firstname',
-         'email'    => 'test@email.com',
-         'phone'    => '0101010101',
-         'phone2'   => '0202020202',
-         'mobile'   => '0303030303',
+         'id'          => getItemByTypeName('User', 'user_testGetValues', true),
+         'login'       => 'user_testGetValues',
+         'fullname'    => 'lastname firstname',
+         'email'       => 'test@email.com',
+         'phone'       => '0101010101',
+         'phone2'      => '0202020202',
+         'mobile'      => '0303030303',
+         'firstname'   => 'firstname',
+         'realname'    => 'lastname',
+         'responsible' => TU_USER,
+         'location' => [
+            'id'           => $test_location,
+            'name'         => 'test location',
+            'completename' => 'test location',
+         ],
+         'usertitle'  => [
+            'id'   => $test_usertitle,
+            'name' => 'test title',
+         ],
+         'usercategory'  => [
+            'id'   => $test_usercategory,
+            'name' => 'test category',
+         ],
+         'used_items'  => [],
       ]);
 
       $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
