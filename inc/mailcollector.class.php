@@ -256,15 +256,21 @@ class MailCollector  extends CommonDBTM {
       if ($type != "pop") {
          echo "<tr class='tab_bg_1'><td>" . __('Accepted mail archive folder (optional)') . "</td>";
          echo "<td>";
+         echo "<div class='btn-group btn-group-sm'>";
          echo "<input size='30' class='form-control' type='text' id='accepted_folder' name='accepted' value=\"".$this->fields['accepted']."\">";
+         echo "<div class='btn btn-outline-secondary'>";
          echo "<i class='fa fa-list pointer get-imap-folder'></i>";
-         echo "</td></tr>\n";
+         echo "</div>";
+         echo "</div></td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>" . __('Refused mail archive folder (optional)') . "</td>";
          echo "<td>";
+         echo "<div class='btn-group btn-group-sm'>";
          echo "<input size='30' class='form-control' type='text' id='refused_folder' name='refused' value=\"".$this->fields['refused']."\">";
+         echo "<div class='btn btn-outline-secondary'>";
          echo "<i class='fa fa-list pointer get-imap-folder'></i>";
-         echo "</td></tr>\n";
+         echo "</div>";
+         echo "</div></td></tr>\n";
       }
 
       echo "<tr class='tab_bg_1'>";
