@@ -2790,18 +2790,14 @@ JS;
          ? " disabled='disabled'"
          : "";
       $clear    = $p['maybeempty'] && $p['canedit']
-         ? "<a data-clear  title='".__s('Clear')."'>
-               <i class='fa fa-times-circle pointer'></i>
-            </a>"
+         ? "<i class='input-group-text fa fa-times-circle fa-lg pointer' data-clear role='button' title='".__s('Clear')."'>"
          : "";
 
       $output = <<<HTML
-         <div class="text-nowrap flatpickr d-flex align-items-center" id="showdate{$p['rand']}">
+         <div class="input-group flex-grow-1 flatpickr" id="showdate{$p['rand']}">
             <input type="text" name="{$name}" value="{$p['value']}"
-                   {$required} {$disabled} data-input>
-            <a class="input-button ms-1" data-toggle>
-               <i class="far fa-calendar-alt fa-lg pointer"></i>
-            </a>
+                   {$required} {$disabled} data-input class="form-control rounded-start ps-2">
+            <i class="input-group-text far fa-calendar-alt fa-lg pointer" data-toggle="" role="button"></i>
             $clear
          </div>
 HTML;
