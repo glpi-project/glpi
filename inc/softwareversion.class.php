@@ -300,7 +300,7 @@ class SoftwareVersion extends CommonDBChild {
 
       if ($canedit) {
          echo "<div class='center firstbloc'>";
-         echo "<a class='vsubmit' href='".SoftwareVersion::getFormURL()."?softwares_id=$softwares_id'>".
+         echo "<a class='btn btn-primary' href='".SoftwareVersion::getFormURL()."?softwares_id=$softwares_id'>".
                 _x('button', 'Add a version')."</a>";
          echo "</div>";
       }

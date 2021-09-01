@@ -530,7 +530,7 @@ abstract class CommonITILCost extends CommonDBChild {
          echo "</script>\n";
          if (static::canCreate()) {
             echo "<div class='center firstbloc'>".
-                   "<a class='vsubmit' href='javascript:viewAddCost".$ID."_$rand();'>";
+                   "<a class='btn btn-primary' href='javascript:viewAddCost".$ID."_$rand();'>";
             echo __('Add a new cost')."</a></div>\n";
          }
       }
