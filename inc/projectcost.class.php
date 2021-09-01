@@ -338,7 +338,7 @@ class ProjectCost extends CommonDBChild {
          echo "};";
          echo "</script>\n";
          echo "<div class='center firstbloc'>".
-               "<a class='vsubmit' href='javascript:viewAddCost".$ID."_$rand();'>";
+               "<a class='btn btn-primary' href='javascript:viewAddCost".$ID."_$rand();'>";
          echo __('Add a new cost')."</a></div>\n";
       }
       $total = 0;

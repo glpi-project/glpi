@@ -275,7 +275,7 @@ class NetworkAlias extends FQDNLabel {
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
          echo "</script>";
-         echo "<a class='vsubmit' href='javascript:viewAddAlias$rand();'>";
+         echo "<a class='btn btn-primary' href='javascript:viewAddAlias$rand();'>";
          echo __('Add a network alias')."</a>\n";
          echo "</div>\n";
       }
