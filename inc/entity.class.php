@@ -1453,7 +1453,11 @@ class Entity extends CommonTreeDropdown {
       echo "<td>".__('Postal code')."</td>";
       echo "<td>";
       Html::autocompletionTextField($entity, "postcode", ['size' => 7]);
-      echo "&nbsp;&nbsp;". __('City'). "&nbsp;";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('City')."</td>";
+      echo "<td>";
       Html::autocompletionTextField($entity, "town", ['size' => 27]);
       echo "</td></tr>";
 
