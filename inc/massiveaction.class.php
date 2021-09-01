@@ -387,8 +387,6 @@ class MassiveAction {
             if (isset($POST['check_items_id'])) {
                if (!$this->check_item->getFromDB($POST['check_items_id'])) {
                   exit();
-               } else {
-                  $this->check_item->getEmpty();
                }
             }
          } else {

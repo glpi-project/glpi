@@ -2485,32 +2485,41 @@ class Ticket extends CommonITILObject {
 
       $actions = [];
 
+      // if a ticket instance is passed , check if not solved/closed
+      $not_solved = true;
+      if ($checkitem != null && in_array($checkitem->fields["status"], array_merge(
+         $this->getSolvedStatusArray(),
+         $this->getClosedStatusArray())
+      )) {
+         $not_solved = false;
+      }
+
       if (Session::getCurrentInterface() == 'central') {
-         if (Ticket::canUpdate() && Ticket::canDelete()) {
+         if ($not_solved && Ticket::canUpdate() && Ticket::canDelete()) {
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'merge_as_followup']
                = "<i class='ma-icon fas fa-code-branch'></i>".
                  __('Merge as Followup');
          }
 
-         if (Item_Ticket::canCreate()) {
+         if ($not_solved && Item_Ticket::canCreate()) {
             $actions['Item_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add_item']
                = "<i class='ma-icon fas fa-plus'></i>".
                  _x('button', 'Add an item');
          }
 
-         if (ITILFollowup::canCreate()) {
+         if ($not_solved && ITILFollowup::canCreate()) {
             $actions['ITILFollowup'.MassiveAction::CLASS_ACTION_SEPARATOR.'add_followup']
                = "<i class='ma-icon far fa-comment'></i>".
                  __('Add a new followup');
          }
 
-         if (TicketTask::canCreate()) {
+         if ($not_solved && TicketTask::canCreate()) {
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_task']
                = "<i class='ma-icon far fa-check-square'></i>".
                  __('Add a new task');
          }
 
-         if (TicketValidation::canCreate()) {
+         if ($not_solved && TicketValidation::canCreate()) {
             $actions['TicketValidation'.MassiveAction::CLASS_ACTION_SEPARATOR.'submit_validation']
                = "<i class='ma-icon fas fa-check'></i>".
                  __('Approval request');
@@ -2521,7 +2530,7 @@ class Ticket extends CommonITILObject {
                = _x('button', 'Remove an item');
          }
 
-         if (Session::haveRight(self::$rightname, UPDATE)) {
+         if ($not_solved && Session::haveRight(self::$rightname, UPDATE)) {
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_actor']
                = "<i class='ma-icon fas fa-user'></i>".
                  __('Add an actor');
@@ -2538,7 +2547,9 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      $actions += parent::getSpecificMassiveActions($checkitem);
+      if ($not_solved) {
+         $actions += parent::getSpecificMassiveActions($checkitem);
+      }
 
       return $actions;
    }
@@ -7048,6 +7059,13 @@ class Ticket extends CommonITILObject {
          //for closed Tickets, only keep transfer and unlock
          $excluded[] = 'TicketValidation:submit_validation';
          $excluded[] = 'Ticket:*';
+      }
+
+      if (in_array($this->fields["status"], array_merge(
+         $this->getSolvedStatusArray(),
+         $this->getClosedStatusArray())
+      )) {
+         $excluded[] = 'Document_Item:add';
       }
       return $excluded;
    }

@@ -1039,7 +1039,9 @@ class CommonGLPI {
                   $this->getType() => [
                      $this->fields['id'] => 1
                   ]
-               ]
+               ],
+               'check_itemtype' => $this->getType(),
+               'check_items_id' => $this->fields['id'],
             ],
             $_GET,
             'initial',
