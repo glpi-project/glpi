@@ -33,10 +33,15 @@
 namespace Glpi\ContentTemplates\Parameters;
 
 use CommonDBTM;
+use Glpi\ContentTemplates\Parameters\ParametersTypes\ArrayParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
+use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
 use Glpi\Toolbox\Sanitizer;
+use Location;
 use User;
+use UserCategory;
 use UserEmail;
+use UserTitle;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -65,27 +70,74 @@ class UserParameters extends AbstractParameters
       return [
          new AttributeParameter("id", __('ID')),
          new AttributeParameter("login", __('Login')),
-         new AttributeParameter("fullname", __('Name')),
+         new AttributeParameter("fullname", __('Full name')),
          new AttributeParameter("email", _n('Email', 'Emails', 1)),
          new AttributeParameter("phone", _n('Phone', 'Phones', 1)),
          new AttributeParameter("phone2", __('Phone 2')),
          new AttributeParameter("mobile", __('Mobile')),
+         new AttributeParameter("firstname", __('First name')),
+         new AttributeParameter("realname", __('Surname')),
+         new AttributeParameter("responsible", __('Responsible')),
+         new ObjectParameter(new LocationParameters()),
+         new ObjectParameter(new UserTitleParameters()),
+         new ObjectParameter(new UserCategoryParameters()),
+         new ArrayParameter('used_items', new AssetParameters(), "Used items"),
       ];
    }
 
    protected function defineValues(CommonDBTM $user): array {
+      global $CFG_GLPI;
 
       // Output "unsanitized" values
       $fields = Sanitizer::unsanitize($user->fields);
 
-      return [
-         'id'    => $fields['id'],
-         'login' => $fields['name'],
+      $values = [
+         'id'        => $fields['id'],
+         'login'     => $fields['name'],
          'fullname'  => $user->getFriendlyName(),
-         'email' => UserEmail::getDefaultForUser($fields['id']),
-         'phone' => $fields['phone'],
-         'phone2' => $fields['phone2'],
-         'mobile' => $fields['mobile'],
+         'email'     => UserEmail::getDefaultForUser($fields['id']),
+         'phone'     => $fields['phone'],
+         'phone2'    => $fields['phone2'],
+         'mobile'    => $fields['mobile'],
+         'firstname' => $fields['firstname'],
+         'realname'  => $fields['realname'],
       ];
+
+      // Add responsible
+      if ($responsible = User::getById($fields['users_id_supervisor'])) {
+         $values['responsible'] = $responsible->getFriendlyName();
+      }
+
+      // Add location
+      if ($location = Location::getById($fields['locations_id'])) {
+         $location_parameters = new LocationParameters();
+         $values['location'] = $location_parameters->getValues($location);
+      }
+
+      // Add usertitle
+      if ($usertitle = UserTitle::getById($fields['usertitles_id'])) {
+         $usertitle_parameters = new UserTitleParameters();
+         $values['usertitle'] = $usertitle_parameters->getValues($usertitle);
+      }
+
+      // Add usercategory
+      if ($usercategory = UserCategory::getById($fields['usercategories_id'])) {
+         $usercategory_parameters = new UserCategoryParameters();
+         $values['usercategory'] = $usercategory_parameters->getValues($usercategory);
+      }
+
+      // Add assets
+      $values['used_items'] = [];
+      foreach ($CFG_GLPI["asset_types"] as $asset_type) {
+         $item = new $asset_type();
+         foreach ($item->find(['users_id' => $fields['id']]) as $asset_item_data) {
+            $asset_parameters = new AssetParameters();
+            if ($asset_item = $item::getById($asset_item_data['id'])) {
+               $values['used_items'][] = $asset_parameters->getValues($asset_item);
+            }
+         }
+      }
+
+      return $values;
    }
 }
