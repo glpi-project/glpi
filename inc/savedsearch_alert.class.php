@@ -230,7 +230,7 @@ class SavedSearch_Alert extends CommonDBChild {
       if ($canedit
           && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='firstbloc'>".
-               "<a class='vsubmit' href='" . self::getFormURL() . "?savedsearches_id=$ID&amp;withtemplate=".
+               "<a class='btn btn-primary' href='" . self::getFormURL() . "?savedsearches_id=$ID&amp;withtemplate=".
                   $withtemplate."'>";
          echo __('Add an alert');
          echo "</a></div>\n";

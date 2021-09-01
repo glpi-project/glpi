@@ -203,7 +203,7 @@ class Itil_Project extends CommonDBRelation {
             );
             echo '</td>';
             echo '<td class="center">';
-            echo '<input type="submit" name="add" value="' . _sx('button', 'Add') . '" class="submit" />';
+            echo '<input type="submit" name="add" value="' . _sx('button', 'Add') . '" class="btn btn-primary" />';
             echo '</td>';
             echo '</tr>';
             echo '</table>';
@@ -336,7 +336,7 @@ class Itil_Project extends CommonDBRelation {
          );
          echo '</td>';
          echo '<td class="center">';
-         echo '<input type="submit" name="add" value=" ' . _sx('button', 'Add') . '" class="submit" />';
+         echo '<input type="submit" name="add" value=" ' . _sx('button', 'Add') . '" class="btn btn-primary" />';
          echo '</td>';
          echo '</tr>';
          echo '</table>';
