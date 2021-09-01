@@ -2611,7 +2611,7 @@ HTML;
          : "";
 
       $output = <<<HTML
-      <div class="text-nowrap flatpickr" id="showdate{$p['rand']}">
+      <div class="text-nowrap flatpickr d-flex align-items-center" id="showdate{$p['rand']}">
          <input type="text" name="{$name}" size="{$p['size']}"
                 {$required} {$disabled} data-input placeholder="{$p['placeholder']}">
          $calendar_btn

@@ -1779,7 +1779,7 @@ class Impact extends CommonGLPI {
 
       // Submit button
       echo '<div style="text-align:center">';
-      echo Html::submit(__('Save'), ['name' => 'update']);
+      echo Html::submit(__('Save'), ['name' => 'update', 'class' => 'btn btn-primary']);
       echo '</div>';
 
       Html::closeForm();
