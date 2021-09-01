@@ -182,7 +182,7 @@ class Item_OperatingSystem extends CommonDBRelation {
       /*if ($canedit && $number >= 1
           && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='center firstbloc'>".
-            "<a class='vsubmit' href='" . Toolbox::getItemTypeFormURL(self::getType()) . "?items_id=" . $item->getID() .
+            "<a class='btn btn-primary' href='" . Toolbox::getItemTypeFormURL(self::getType()) . "?items_id=" . $item->getID() .
             "&amp;itemtype=" . $item->getType() . "&amp;withtemplate=" . $withtemplate."'>";
          echo __('Add an operating system');
          echo "</a></div>\n";

@@ -305,7 +305,7 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       if ($canedit) {
          echo "<div class='center firstbloc'>".
-                "<a class='vsubmit' href='".ComputerVirtualMachine::getFormURL()."?computers_id=$ID'>";
+                "<a class='btn btn-primary' href='".ComputerVirtualMachine::getFormURL()."?computers_id=$ID'>";
          echo __('Add a virtual machine');
          echo "</a></div>\n";
       }

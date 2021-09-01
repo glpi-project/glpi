@@ -4710,7 +4710,7 @@ JAVASCRIPT;
 
       echo '<tr class="tab_bg_2 center">';
       echo '<td colspan="2">';
-      echo '<input type="submit" name="update" value="' . __s('Save') . '" class="submit" />';
+      echo '<input type="submit" name="update" value="' . __s('Save') . '" class="btn btn-primary" />';
       echo '</td>';
       echo '</tr>';
 

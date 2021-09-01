@@ -917,7 +917,7 @@ class Rule extends CommonDBTM {
                $url = $CFG_GLPI["root_doc"];
             }
             echo "<tr><td class='tab_bg_2 center' colspan='4'>";
-            echo "<a class='vsubmit' href='#'
+            echo "<a class='btn btn-primary' href='#'
                      data-bs-toggle='modal' data-bs-target='#ruletest$rand'>".
                   _x('button', 'Test')."</a>";
             Ajax::createIframeModalWindow('ruletest'.$rand,
@@ -1075,7 +1075,7 @@ class Rule extends CommonDBTM {
          echo "};";
          echo "</script>\n";
          echo "<div class='center firstbloc'>".
-               "<a class='vsubmit' href='javascript:viewAddAction".$rules_id."$rand();'>";
+               "<a class='btn btn-primary' href='javascript:viewAddAction".$rules_id."$rand();'>";
          echo __('Add a new action')."</a></div>\n";
       }
 
@@ -1177,7 +1177,7 @@ class Rule extends CommonDBTM {
          echo "};";
          echo "</script>\n";
          echo "<div class='center firstbloc'>".
-               "<a class='vsubmit' href='javascript:viewAddCriteria".$rules_id."$rand();'>";
+               "<a class='btn btn-primary' href='javascript:viewAddCriteria".$rules_id."$rand();'>";
          echo __('Add a new criterion')."</a></div>\n";
       }
 

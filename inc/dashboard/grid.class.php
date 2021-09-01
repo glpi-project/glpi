@@ -729,7 +729,7 @@ HTML;
       $list_filters = array_diff_key(Filter::getAll(), $used);
 
       $rand = mt_rand();
-      echo "<form class='card no-shadow display-filter-form'>";
+      echo "<form class='display-filter-form'>";
 
       echo "<div class='field'>";
       echo "<label for='dropdown_card_id$rand'>".__("Filters")."</label>";
@@ -742,7 +742,7 @@ HTML;
       echo "</div>"; // .field
 
       echo Html::submit("<i class='fas fa-plus'></i>&nbsp;"._x('button', "Add"), [
-         'class' => 'submit vsubmit'
+         'class' => 'btn btn-primary mt-2'
       ]);
       echo "</form>"; // form.card.display-filter-form
    }

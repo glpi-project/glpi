@@ -933,7 +933,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
       if ($canedit) {
          echo "<div class='center firstbloc'>";
-         echo "<a class='vsubmit' href='".SoftwareLicense::getFormURL()."?softwares_id=$softwares_id'>".
+         echo "<a class='btn btn-primary' href='".SoftwareLicense::getFormURL()."?softwares_id=$softwares_id'>".
                 _x('button', 'Add a license')."</a>";
          echo "</div>";
       }

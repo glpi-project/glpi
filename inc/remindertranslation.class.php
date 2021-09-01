@@ -133,7 +133,7 @@ class ReminderTranslation extends CommonDBChild {
          echo "</script>\n";
 
          echo "<div class='center'>".
-              "<a class='vsubmit' href='javascript:addTranslation".$item->getID()."$rand();'>".
+              "<a class='btn btn-primary' href='javascript:addTranslation".$item->getID()."$rand();'>".
               __('Add a new translation')."</a></div><br>";
       }
 
