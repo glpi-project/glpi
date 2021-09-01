@@ -125,7 +125,7 @@ class Notification_NotificationTemplate extends CommonDBRelation {
       if ($canedit
           && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='center firstbloc'>".
-               "<a class='vsubmit' href='" . self::getFormURL() ."?notifications_id=$ID&amp;withtemplate=".
+               "<a class='btn btn-primary' href='" . self::getFormURL() ."?notifications_id=$ID&amp;withtemplate=".
                   $withtemplate."'>";
          echo __('Add a template');
          echo "</a></div>\n";

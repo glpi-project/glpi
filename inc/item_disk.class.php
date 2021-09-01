@@ -260,7 +260,7 @@ class Item_Disk extends CommonDBChild {
       if ($canedit
           && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='center firstbloc'>".
-               "<a class='vsubmit' href='".self::getFormURL()."?itemtype=$itemtype&items_id=$ID&amp;withtemplate=".
+               "<a class='btn btn-primary' href='".self::getFormURL()."?itemtype=$itemtype&items_id=$ID&amp;withtemplate=".
                   $withtemplate."'>";
          echo __('Add a volume');
          echo "</a></div>\n";

@@ -351,7 +351,7 @@ class Database extends CommonDBChild {
 
       if ($canedit) {
          echo "<div class='center firstbloc'>".
-            "<a class='vsubmit' href='".static::getFormURL()."?databaseinstances_id=$ID'>";
+            "<a class='btn btn-primary' href='".static::getFormURL()."?databaseinstances_id=$ID'>";
          echo __('Add a database');
          echo "</a></div>\n";
       }

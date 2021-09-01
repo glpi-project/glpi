@@ -681,7 +681,7 @@ class Reminder extends CommonDBVisible implements
                                                         Planning::READALL])) {
 
                echo "<div id='plan$rand' onClick='showPlan$rand()'>\n";
-               echo "<a href='#' class='vsubmit'>".__('Add to schedule')."</a>";
+               echo "<a href='#' class='btn btn-primary'>".__('Add to schedule')."</a>";
             }
 
          } else {
