@@ -2487,7 +2487,7 @@ class Ticket extends CommonITILObject {
 
       // if a ticket instance is passed , check if not solved/closed
       $not_solved = true;
-      if ($checkitem != null && in_array($checkitem->fields["status"], array_merge(
+      if ($checkitem !== null && in_array($checkitem->fields["status"], array_merge(
          $this->getSolvedStatusArray(),
          $this->getClosedStatusArray())
       )) {
