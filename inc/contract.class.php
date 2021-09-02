@@ -1348,6 +1348,7 @@ class Contract extends CommonDBTM {
          'display'        => true,
          'expired'        => false,
          'toadd'          => [],
+         'class'          => "form-select",
       ];
 
       if (is_array($options) && count($options)) {
@@ -1423,11 +1424,14 @@ class Contract extends CommonDBTM {
             $values[$group][$data['id']] = $tmp;
          }
       }
-      return Dropdown::showFromArray($p['name'], $values,
-                                     ['value'               => $p['value'],
-                                           'on_change'           => $p['on_change'],
-                                           'display'             => $p['display'],
-                                           'display_emptychoice' => true]);
+      return Dropdown::showFromArray($p['name'], $values, [
+         'value'               => $p['value'],
+         'on_change'           => $p['on_change'],
+         'display'             => $p['display'],
+         'display_emptychoice' => true,
+         'class'               => $p['class'],
+         'width'               => $p['width'],
+      ]);
    }
 
 
