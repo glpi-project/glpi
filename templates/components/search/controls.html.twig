@@ -141,7 +141,7 @@ $(document).ready(function() {
       event.preventDefault();
       $.ajax({
          url: '{{ path('/ajax/search.php') }}',
-         type: 'GET',
+         type: 'POST',
          datatype: 'json',
          data: {
             'action': 'fold_search',
