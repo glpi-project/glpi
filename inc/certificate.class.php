@@ -386,20 +386,6 @@ class Certificate extends CommonDBTM {
 
 
    /**
-    * @param $ID
-    * @param array $options
-    * @return bool
-    */
-   function showForm($ID, $options = []) {
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
-         'item'   => $this,
-         'params' => $options,
-      ]);
-      return true;
-   }
-
-   /**
     * @since 0.85
     *
     * @see CommonDBTM::getSpecificMassiveActions()

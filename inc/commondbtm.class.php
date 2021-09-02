@@ -35,6 +35,7 @@ use Glpi\Event;
 use Glpi\Features\CacheableListInterface;
 use Glpi\Toolbox\RichText;
 use Glpi\Toolbox\Sanitizer;
+use Psr\Log\InvalidArgumentException;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -430,6 +431,27 @@ class CommonDBTM extends CommonGLPI {
     * @return void
    **/
    function post_getFromDB() {
+   }
+
+
+   /**
+    * Print the item generic form
+    * Use a twig template to detect automatically fields and display them in a two column layout
+    *
+    * @param int   $ID        ID of the item
+    * @param array $options   possible optionnal options:
+    *     - target for the Form
+    *     - withtemplate : 1 for newtemplate, 2 for newobject from template
+    *
+    * @return bool true if displayed  false if item not found or not right to display
+    */
+   function showForm($ID, array $options = []) {
+      $this->initForm($ID, $options);
+      TemplateRenderer::getInstance()->display('generic_show_form.html.twig', [
+         'item'   => $this,
+         'params' => $options,
+      ]);
+      return true;
    }
 
 

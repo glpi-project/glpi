@@ -215,27 +215,6 @@ class Software extends CommonDBTM {
    }
 
 
-   /**
-    * Print the Software form
-    *
-    * @param $ID        integer  ID of the item
-    * @param $options   array    of possible options:
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    *@return boolean item found
-   **/
-   function showForm($ID, $options = []) {
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
-         'item'   => $this,
-         'params' => $options,
-      ]);
-
-      return true;
-   }
-
-
    function getEmpty() {
       global $CFG_GLPI;
       parent::getEmpty();

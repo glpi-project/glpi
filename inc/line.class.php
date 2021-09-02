@@ -77,25 +77,6 @@ class Line extends CommonDBTM {
       return $ong;
    }
 
-   /**
-    * Print the contact form
-    *
-    * @param $ID        integer ID of the item
-    * @param $options   array of possible options:
-    *     - target for the Form
-    *     - withtemplate : template or basic item
-    *
-    * @return void
-    **/
-   function showForm($ID, $options = []) {
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
-         'item'   => $this,
-         'params' => $options,
-      ]);
-      return true;
-   }
-
 
    function rawSearchOptions() {
       $tab = parent::rawSearchOptions();

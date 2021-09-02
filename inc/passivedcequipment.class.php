@@ -64,14 +64,6 @@ class PassiveDCEquipment extends CommonDBTM {
       return $ong;
    }
 
-   function showForm($ID, $options = []) {
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
-         'item'   => $this,
-         'params' => $options,
-      ]);
-      return true;
-   }
 
    function rawSearchOptions() {
       $tab = [];

@@ -128,27 +128,6 @@ class ConsumableItem extends CommonDBTM {
    }
 
 
-   /**
-    * Print the consumable type form
-    *
-    * @param integer $ID    ID of the item
-    * @param array $options
-    *    - target filename : where to go when done.
-    *    - withtemplate boolean : template or basic item
-    *
-    * @return true
-    */
-   function showForm($ID, $options = []) {
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
-         'item'   => $this,
-         'params' => $options,
-      ]);
-
-      return true;
-   }
-
-
    function rawSearchOptions() {
       $tab = parent::rawSearchOptions();
 

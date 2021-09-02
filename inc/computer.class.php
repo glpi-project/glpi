@@ -295,27 +295,6 @@ class Computer extends CommonDBTM {
    }
 
 
-   /**
-    * Print the computer form
-    *
-    * @param $ID        integer ID of the item
-    * @param $options   array
-    *     - target for the Form
-    *     - withtemplate template or basic computer
-    *
-    * @return boolean
-   **/
-   function showForm($ID, $options = []) {
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
-         'item'   => $this,
-         'params' => $options,
-      ]);
-
-      return true;
-   }
-
-
    function getLinkedItems() {
       global $DB;
 

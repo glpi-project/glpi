@@ -180,27 +180,6 @@ class CartridgeItem extends CommonDBTM {
    }
 
 
-   /**
-    * Print the cartridge type form
-    *
-    * @param $ID        integer ID of the item
-    * @param $options   array os possible options:
-    *     - target for the Form
-    *     - withtemplate : 1 for newtemplate, 2 for newobject from template
-    *
-    * @return boolean
-   **/
-   function showForm($ID, $options = []) {
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
-         'item'   => $this,
-         'params' => $options,
-      ]);
-
-      return true;
-   }
-
-
    function rawSearchOptions() {
       $tab = parent::rawSearchOptions();
 

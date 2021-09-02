@@ -109,27 +109,6 @@ class Supplier extends CommonDBTM {
    }
 
 
-   /**
-    * Print the enterprise form
-    *
-    * @param $ID Integer : Id of the computer or the template to print
-    * @param $options array
-    *     - target form target
-    *     - withtemplate boolean : template or basic item
-    *
-    *@return void
-   **/
-   function showForm($ID, $options = []) {
-
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
-         'item'   => $this,
-         'params' => $options,
-      ]);
-
-      return true;
-   }
-
    static function dropdown($options = []) {
       $condition = ['is_active' => true];
       $options['condition'] = (isset($options['condition']) ? $options['condition'] + $condition : $condition);
