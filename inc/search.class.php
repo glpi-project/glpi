@@ -482,8 +482,6 @@ class Search {
       }
       $data['search']['all_search']  = false;
       $data['search']['view_search'] = false;
-      // If no research limit research to display item and compute number of item using simple request
-      $data['search']['no_search']   = true;
 
       $data['toview'] = self::addDefaultToView($itemtype, $params);
       $data['meta_toview'] = [];
@@ -521,21 +519,12 @@ class Search {
                         $data['search']['view_search'] = true;
                      }
                   }
-
-                  if (isset($criterion['value'])
-                     && (strlen($criterion['value']) > 0)) {
-                     $data['search']['no_search'] = false;
-                  }
                }
             }
          };
 
          // call the closure
          $parse_criteria($p['criteria']);
-      }
-
-      if (count($p['metacriteria'])) {
-         $data['search']['no_search'] = false;
       }
 
       // Add order item
@@ -570,6 +559,31 @@ class Search {
       return $data;
    }
 
+   /**
+    * Parse the $criteria array to return a searchoption_id => value array
+    *
+    * @param array $criteria
+    *
+    * @return array
+    */
+   public static function getConditionSearchOptionsIds(array $criteria): array {
+      $condition_search_options_ids = [];
+      foreach ($criteria as $crit) {
+         if (isset($crit['criteria'])) {
+            // Recursion, parse child criteria
+            $child_criteria = self::getConditionSearchOptionsIds($crit['criteria']);
+            foreach (array_keys($child_criteria) as $child_crit) {
+               $condition_search_options_ids[$child_crit] = $child_crit['value'] ?? true;
+            }
+
+         } else if (isset($crit['field'])) {
+            $condition_search_options_ids[$crit['field']] = $crit['value'] ?? true;
+         }
+      }
+
+      return $condition_search_options_ids;
+   }
+
 
    /**
     * Construct SQL request depending of search parameters
@@ -596,6 +610,9 @@ class Search {
       $data['sql']['count']  = [];
       $data['sql']['search'] = '';
 
+      // Build criteria search options ids array
+      $data['condition_search_option_ids'] = self::getConditionSearchOptionsIds($data['search']['criteria']);
+
       $searchopt        = &self::getOptions($data['itemtype']);
 
       $blacklist_tables = [];
@@ -620,10 +637,18 @@ class Search {
       // request currentuser for SQL supervision, not displayed
       $SELECT = "SELECT DISTINCT `$itemtable`.`id` AS id, '".Toolbox::addslashes_deep($_SESSION['glpiname'])."' AS currentuser,
                         ".self::addDefaultSelect($data['itemtype']);
+      $COUNT_SELECT = $SELECT;
 
       // Add select for all toview item
       foreach ($data['toview'] as $val) {
          $SELECT .= self::addSelect($data['itemtype'], $val);
+
+         // Add to count query if part of the request condition.
+         // This is needed for request with HAVING clause as they need the
+         // referenced field to be present in the SELECT clause
+         if (isset($data['condition_search_option_ids'][$val])) {
+            $COUNT_SELECT .= self::addSelect($data['itemtype'], $val);
+         }
       }
 
       if (isset($data['search']['as_map']) && $data['search']['as_map'] == 1 && $data['itemtype'] != 'Entity') {
@@ -643,6 +668,10 @@ class Search {
       $COMMONLEFTJOIN = self::addDefaultJoin($data['itemtype'], $itemtable, $already_link_tables);
       $FROM          .= $COMMONLEFTJOIN;
 
+      // Build count query FROM clause and keep track of joined tables
+      $COUNT_FROM = $FROM;
+      $count_already_linked_tables = $already_link_tables;
+
       // Add all table for toview items
       foreach ($data['tocompute'] as $val) {
          if (!in_array($searchopt[$val]["table"], $blacklist_tables)) {
@@ -651,6 +680,27 @@ class Search {
                                        $searchopt[$val]["linkfield"], 0, 0,
                                        $searchopt[$val]["joinparams"],
                                        $searchopt[$val]["field"]);
+
+            // Add to count query if :
+            // - This searchoption is used in the request condition -> mandatory
+            //   join as the table will be referenced in the WHERE clause
+            // - We search on all visible field ('view' criteria) -> we cant
+            //   skip any join as all fields will be referenced in the WHERE clause
+            if (isset($data['condition_search_option_ids'][$val])
+               || !empty($data['condition_search_option_ids']['view'] ?? "")
+            ) {
+               $COUNT_FROM .= self::addLeftJoin(
+                  $data['itemtype'],
+                  $itemtable,
+                  $count_already_linked_tables,
+                  $searchopt[$val]["table"],
+                  $searchopt[$val]["linkfield"],
+                  0,
+                  0,
+                  $searchopt[$val]["joinparams"],
+                  $searchopt[$val]["field"]
+               );
+            }
          }
       }
 
@@ -660,11 +710,29 @@ class Search {
             // Do not search on Group Name
             if (is_array($val) && isset($val['table'])) {
                if (!in_array($searchopt[$key]["table"], $blacklist_tables)) {
-                  $FROM .= self::addLeftJoin($data['itemtype'], $itemtable, $already_link_tables,
-                                             $searchopt[$key]["table"],
-                                             $searchopt[$key]["linkfield"], 0, 0,
-                                             $searchopt[$key]["joinparams"],
-                                             $searchopt[$key]["field"]);
+                  $FROM .= self::addLeftJoin(
+                     $data['itemtype'],
+                     $itemtable,
+                     $already_link_tables,
+                     $searchopt[$key]["table"],
+                     $searchopt[$key]["linkfield"],
+                     0,
+                     0,
+                     $searchopt[$key]["joinparams"],
+                     $searchopt[$key]["field"]
+                  );
+
+                  $COUNT_FROM .= self::addLeftJoin(
+                     $data['itemtype'],
+                     $itemtable,
+                     $count_already_linked_tables,
+                     $searchopt[$key]["table"],
+                     $searchopt[$key]["linkfield"],
+                     0,
+                     0,
+                     $searchopt[$key]["joinparams"],
+                     $searchopt[$key]["field"]
+                  );
                }
             }
          }
@@ -724,8 +792,16 @@ class Search {
          $WHERE  = self::constructCriteriaSQL($data['search']['criteria'], $data, $searchopt);
          $HAVING = self::constructCriteriaSQL($data['search']['criteria'], $data, $searchopt, true);
 
+         // Since $data is passed by reference it might not be safe to send it
+         // twice so we are keeping a separate copy for the second call to the
+         // constructAdditionalSqlForMetacriteria function
+         $data_copy = $data;
+
          // if criteria (with meta flag) need additional join/from sql
          self::constructAdditionalSqlForMetacriteria($data['search']['criteria'], $SELECT, $FROM, $already_link_tables, $data);
+
+         // Build extra data for count query
+         self::constructAdditionalSqlForMetacriteria($data['search']['criteria'], $COUNT_SELECT, $COUNT_FROM, $count_already_linked_tables, $data_copy, true);
       }
 
       //// 4 - ORDER
@@ -747,6 +823,7 @@ class Search {
       }
 
       $SELECT = rtrim(trim($SELECT), ',');
+      $COUNT_SELECT = rtrim(trim($COUNT_SELECT), ',');
 
       //// 7 - Manage GROUP BY
       $GROUPBY = "";
@@ -773,85 +850,8 @@ class Search {
          }
       }
 
-      $LIMIT   = "";
+      $LIMIT = " LIMIT ".(int)$data['search']['start'].", ".(int)$data['search']['list_limit'];
       $numrows = 0;
-      //No search : count number of items using a simple count(ID) request and LIMIT search
-      if ($data['search']['no_search']) {
-         $LIMIT = " LIMIT ".(int)$data['search']['start'].", ".(int)$data['search']['list_limit'];
-
-         $count = "count(DISTINCT `$itemtable`.`id`)";
-         // request currentuser for SQL supervision, not displayed
-         $query_num = "SELECT $count,
-                              '".Toolbox::addslashes_deep($_SESSION['glpiname'])."' AS currentuser
-                       FROM `$itemtable`".
-                       $COMMONLEFTJOIN;
-
-         $first     = true;
-
-         if (!empty($COMMONWHERE)) {
-            $LINK = " AND ";
-            if ($first) {
-               $LINK  = " WHERE ";
-               $first = false;
-            }
-            $query_num .= $LINK.$COMMONWHERE;
-         }
-         // Union Search :
-         if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
-            $tmpquery = $query_num;
-
-            foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$data['itemtype']]] as $ctype) {
-               $ctable = $ctype::getTable();
-               if (($citem = getItemForItemtype($ctype))
-                   && $citem->canView()) {
-                  // State case
-                  if ($data['itemtype'] == 'AllAssets') {
-                     $query_num  = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
-                                               $ctable, $tmpquery);
-                     $query_num  = str_replace($data['itemtype'], $ctype, $query_num);
-                     $query_num .= " AND `$ctable`.`id` IS NOT NULL ";
-
-                     // Add deleted if item have it
-                     if ($citem && $citem->maybeDeleted()) {
-                        $query_num .= " AND `$ctable`.`is_deleted` = 0 ";
-                     }
-
-                     // Remove template items
-                     if ($citem && $citem->maybeTemplate()) {
-                        $query_num .= " AND `$ctable`.`is_template` = 0 ";
-                     }
-
-                  } else {// Ref table case
-                     $reftable = $data['itemtype']::getTable();
-                     if ($data['item'] && $data['item']->maybeDeleted()) {
-                        $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$data['itemtype']]."`.
-                                                   `is_deleted`",
-                                                "`$reftable`.`is_deleted`", $tmpquery);
-                     }
-                     $replace  = "FROM `$reftable`
-                                  INNER JOIN `$ctable`
-                                       ON (`$reftable`.`items_id` =`$ctable`.`id`
-                                           AND `$reftable`.`itemtype` = '$ctype')";
-
-                     $query_num = str_replace("FROM `".
-                                                $CFG_GLPI["union_search_type"][$data['itemtype']]."`",
-                                              $replace, $tmpquery);
-                     $query_num = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
-                                              $ctable, $query_num);
-
-                  }
-                  $query_num = str_replace("ENTITYRESTRICT",
-                                           getEntitiesRestrictRequest('', $ctable, '', '',
-                                                                      $citem->maybeRecursive()),
-                                           $query_num);
-                  $data['sql']['count'][] = $query_num;
-               }
-            }
-
-         } else {
-            $data['sql']['count'][] = $query_num;
-         }
-      }
 
       // If export_all reset LIMIT condition
       if ($data['search']['export_all']) {
@@ -875,6 +875,8 @@ class Search {
       if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
          $first = true;
          $QUERY = "";
+         $COUNT_QUERIES = [];
+
          foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$data['itemtype']]] as $ctype) {
             $ctable = $ctype::getTable();
             if (($citem = getItemForItemtype($ctype))
@@ -887,24 +889,44 @@ class Search {
                $tmpquery = "";
                // AllAssets case
                if ($data['itemtype'] == 'AllAssets') {
-                  $tmpquery = $SELECT.", '$ctype' AS TYPE ".
-                              $FROM.
-                              $WHERE;
-
-                  $tmpquery .= " AND `$ctable`.`id` IS NOT NULL ";
+                  $ADD_WHERE = "";
 
                   // Add deleted if item have it
                   if ($citem && $citem->maybeDeleted()) {
-                     $tmpquery .= " AND `$ctable`.`is_deleted` = 0 ";
+                     $ADD_WHERE .= " AND `$ctable`.`is_deleted` = 0 ";
                   }
 
                   // Remove template items
                   if ($citem && $citem->maybeTemplate()) {
-                     $tmpquery .= " AND `$ctable`.`is_template` = 0 ";
+                     $ADD_WHERE .= " AND `$ctable`.`is_template` = 0 ";
                   }
 
-                  $tmpquery.= $GROUPBY.
-                              $HAVING;
+                  $ADD_WHERE .= " AND `$ctable`.`id` IS NOT NULL ";
+
+                  $tmpquery = $SELECT.", '$ctype' AS TYPE ".
+                     $FROM.
+                     $WHERE.
+                     $ADD_WHERE.
+                     $GROUPBY.
+                     $HAVING;
+
+                  if (empty(trim($GROUPBY)) && empty(trim($HAVING))) {
+                     // No HAVING clause: we can keep a simple query
+                     $count_tmpquery = self::buildSimpleCountQuery(
+                        $COUNT_FROM,
+                        "$WHERE $ADD_WHERE"
+                     );
+                  } else {
+                     // HAVING clause: we need to wrap the query since the SELECT clause
+                     // will not be empty
+                     $count_tmpquery = self::buildWrappedCountQuery(
+                        $COUNT_SELECT,
+                        $COUNT_FROM,
+                        "$WHERE $ADD_WHERE",
+                        $GROUPBY,
+                        $HAVING
+                     );
+                  }
 
                   // Replace 'asset_types' by itemtype table name
                   $tmpquery = str_replace(
@@ -912,12 +934,23 @@ class Search {
                      $ctable,
                      $tmpquery
                   );
+                  $count_tmpquery = str_replace(
+                     $CFG_GLPI["union_search_type"][$data['itemtype']],
+                     $ctable,
+                     $count_tmpquery
+                  );
+
                   // Replace 'AllAssets' by itemtype
                   // Use quoted value to prevent replacement of AllAssets in column identifiers
                   $tmpquery = str_replace(
                      $DB->quoteValue('AllAssets'),
                      $DB->quoteValue($ctype),
                      $tmpquery
+                  );
+                  $count_tmpquery = str_replace(
+                     $DB->quoteValue('AllAssets'),
+                     $DB->quoteValue($ctype),
+                     $count_tmpquery
                   );
                } else {// Ref table case
                   $reftable = $data['itemtype']::getTable();
@@ -927,37 +960,101 @@ class Search {
                                       `$ctable`.`entities_id` AS ENTITY ".
                               $FROM.
                               $WHERE;
+
+                  if (empty(trim($GROUPBY)) && empty(trim($HAVING))) {
+                     // No HAVING clause: we can keep a simple query
+                     $count_tmpquery = self::buildSimpleCountQuery(
+                        $COUNT_FROM,
+                        $WHERE
+                     );
+                  } else {
+                     // HAVING clause: we need to wrap the query since the SELECT clause
+                     // will not be empty
+                     $count_tmpquery = self::buildWrappedCountQuery(
+                        $COUNT_SELECT,
+                        $COUNT_FROM,
+                        $WHERE,
+                        $GROUPBY,
+                        $HAVING
+                     );
+                  }
+
                   if ($data['item']->maybeDeleted()) {
-                     $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$data['itemtype']]."`.
-                                                `is_deleted`",
-                                             "`$reftable`.`is_deleted`", $tmpquery);
+                     $tmpquery = str_replace(
+                        "`".$CFG_GLPI["union_search_type"][$data['itemtype']]."`.`is_deleted`",
+                        "`$reftable`.`is_deleted`",
+                        $tmpquery
+                     );
+                     $count_tmpquery = str_replace(
+                        "`".$CFG_GLPI["union_search_type"][$data['itemtype']]."`.`is_deleted`",
+                        "`$reftable`.`is_deleted`",
+                        $count_tmpquery
+                     );
                   }
 
                   $replace = "FROM `$reftable`"."
                               INNER JOIN `$ctable`"."
                                  ON (`$reftable`.`items_id`=`$ctable`.`id`"."
                                      AND `$reftable`.`itemtype` = '$ctype')";
-                  $tmpquery = str_replace("FROM `".
-                                             $CFG_GLPI["union_search_type"][$data['itemtype']]."`",
-                                          $replace, $tmpquery);
-                  $tmpquery = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
-                                          $ctable, $tmpquery);
+                  $tmpquery = str_replace(
+                     "FROM `".$CFG_GLPI["union_search_type"][$data['itemtype']]."`",
+                     $replace,
+                     $tmpquery
+                  );
+                  $count_tmpquery = str_replace(
+                     "FROM `".$CFG_GLPI["union_search_type"][$data['itemtype']]."`",
+                     $replace,
+                     $count_tmpquery
+                  );
+
+                  $tmpquery = str_replace(
+                     $CFG_GLPI["union_search_type"][$data['itemtype']],
+                     $ctable,
+                     $tmpquery
+                  );
+                  $count_tmpquery = str_replace(
+                     $CFG_GLPI["union_search_type"][$data['itemtype']],
+                     $ctable,
+                     $count_tmpquery
+                  );
+
                   $name_field = $ctype::getNameField();
                   $tmpquery = str_replace("`$ctable`.`name`", "`$ctable`.`$name_field`", $tmpquery);
+                  $count_tmpquery = str_replace("`$ctable`.`name`", "`$ctable`.`$name_field`", $count_tmpquery);
                }
-               $tmpquery = str_replace("ENTITYRESTRICT",
-                                       getEntitiesRestrictRequest('', $ctable, '', '',
-                                                                  $citem->maybeRecursive()),
-                                       $tmpquery);
+               $tmpquery = str_replace(
+                  "ENTITYRESTRICT",
+                  getEntitiesRestrictRequest('', $ctable, '', '', $citem->maybeRecursive()),
+                  $tmpquery
+               );
+               $count_tmpquery = str_replace(
+                  "ENTITYRESTRICT",
+                  getEntitiesRestrictRequest('', $ctable, '', '', $citem->maybeRecursive()),
+                  $count_tmpquery
+               );
 
                // SOFTWARE HACK
                if ($ctype == 'Software') {
                   $tmpquery = str_replace("`glpi_softwares`.`serial`", "''", $tmpquery);
+                  $count_tmpquery = str_replace("`glpi_softwares`.`serial`", "''", $count_tmpquery);
+
                   $tmpquery = str_replace("`glpi_softwares`.`otherserial`", "''", $tmpquery);
+                  $count_tmpquery = str_replace("`glpi_softwares`.`otherserial`", "''", $count_tmpquery);
                }
+
                $QUERY .= $tmpquery;
+               $COUNT_QUERIES[] = $count_tmpquery;
             }
          }
+
+         // Combine all count queries into one
+         $COUNT_QUERY = "SELECT";
+         foreach ($COUNT_QUERIES as $tmp_count_query) {
+            $COUNT_QUERY .= " ($tmp_count_query) +";
+         }
+         // Remove last "+"
+         $COUNT_QUERY = substr($COUNT_QUERY, 0, -1);
+
          if (empty($QUERY)) {
             echo self::showError($data['display_type']);
             return;
@@ -972,8 +1069,26 @@ class Search {
                   $HAVING.
                   $ORDER.
                   $LIMIT;
+
+         if (empty(trim($GROUPBY)) && empty(trim($HAVING))) {
+            // No HAVING clause: we can keep a simple query
+            $COUNT_QUERY = self::buildSimpleCountQuery($COUNT_FROM, $WHERE);
+         } else {
+            // HAVING clause: we need to wrap the query since the SELECT clause
+            // will not be empty
+            $COUNT_QUERY = self::buildWrappedCountQuery(
+               $COUNT_SELECT,
+               $COUNT_FROM,
+               $WHERE,
+               $GROUPBY,
+               $HAVING
+            );
+         }
       }
       $data['sql']['search'] = $QUERY;
+      $data['sql']['count']  = $COUNT_QUERY;
+
+      unset($data['condition_search_option_ids']);
    }
 
    /**
@@ -1058,9 +1173,16 @@ class Search {
                   continue;
                }
 
-               $new_having = self::addHaving($LINK, $NOT, $itemtype,
-                                             $criterion['field'], $criterion['searchtype'],
-                                             $criterion['value']);
+               $is_meta =
+               $new_having = self::addHaving(
+                  $LINK,
+                  $NOT,
+                  $itemtype,
+                  $criterion['field'],
+                  $criterion['searchtype'],
+                  $criterion['value'],
+                  ($criterion['meta'] ?? 0) == true
+               );
                if ($new_having !== false) {
                   $sql .= $new_having;
                }
@@ -1158,14 +1280,18 @@ class Search {
     * @param  string &$FROM                TODO: should be a class property (output parameter)
     * @param  array  &$already_link_tables TODO: should be a class property (output parameter)
     * @param  array  &$data                TODO: should be a class property (output parameter)
+    * @param  bool   &$count_query         Are we building a could query ?
     *
     * @return void
     */
-   static function constructAdditionalSqlForMetacriteria($criteria = [],
-                                                         &$SELECT = "",
-                                                         &$FROM = "",
-                                                         &$already_link_tables = [],
-                                                         &$data = []) {
+   static function constructAdditionalSqlForMetacriteria(
+      $criteria = [],
+      &$SELECT = "",
+      &$FROM = "",
+      &$already_link_tables = [],
+      &$data = [],
+      bool $count_query = false
+   ) {
       $data['meta_toview'] = [];
       foreach ($criteria as $criterion) {
          // manage sub criteria
@@ -1175,7 +1301,8 @@ class Search {
                $SELECT,
                $FROM,
                $already_link_tables,
-               $data
+               $data,
+               $count_query
             );
             continue;
          }
@@ -1197,12 +1324,17 @@ class Search {
          //add toview for meta criterion
          $data['meta_toview'][$m_itemtype][] = $criterion['field'];
 
-         $SELECT .= self::addSelect(
-            $m_itemtype,
-            $criterion['field'],
-            true, // meta-criterion
-            $m_itemtype
-         );
+         // If this is a count query, only add this criteria to the SELECT
+         // clause if it referenced in the condition (it may be needed in case
+         // this field is an HAVING clause)
+         if (!$count_query || isset($data['condition_search_option_ids'][$criterion['field']])) {
+            $SELECT .= self::addSelect(
+               $m_itemtype,
+               $criterion['field'],
+               true, // meta-criterion
+               $m_itemtype
+            );
+         }
 
          $FROM .= self::addMetaLeftJoin($data['itemtype'], $m_itemtype,
                                         $already_link_tables,
@@ -1284,21 +1416,8 @@ class Search {
          }
 
          $data['data']['totalcount'] = 0;
-         // if real search or complete export : get numrows from request
-         if (!$data['search']['no_search']
-             || $data['search']['export_all']) {
-            $data['data']['totalcount'] = $DBread->numrows($result);
-         } else {
-            if (!isset($data['sql']['count'])
-               || (count($data['sql']['count']) == 0)) {
-               $data['data']['totalcount'] = $DBread->numrows($result);
-            } else {
-               foreach ($data['sql']['count'] as $sqlcount) {
-                  $result_num = $DBread->query($sqlcount);
-                  $data['data']['totalcount'] += $DBread->result($result_num, 0, 0);
-               }
-            }
-         }
+         $result_num = $DBread->query($data['sql']['count']);
+         $data['data']['totalcount'] += $DBread->result($result_num, 0, 0);
 
          if ($onlycount) {
             //we just want to coutn results; no need to continue process
@@ -1314,12 +1433,6 @@ class Search {
             $data['data']['end'] = $data['data']['totalcount']-1;
          }
 
-         // No search Case
-         if ($data['search']['no_search']) {
-            $data['data']['begin'] = 0;
-            $data['data']['end']   = min($data['data']['totalcount']-$data['search']['start'],
-                                         $data['search']['list_limit'])-1;
-         }
          // Export All case
          if ($data['search']['export_all']) {
             $data['data']['begin'] = 0;
@@ -1405,11 +1518,6 @@ class Search {
          }
 
          // Get rows
-
-         // if real search seek to begin of items to display (because of complete search)
-         if (!$data['search']['no_search']) {
-            $DBread->dataSeek($result, $data['search']['start']);
-         }
 
          $i = $data['data']['begin'];
          $data['data']['warning']
@@ -3029,11 +3137,19 @@ JAVASCRIPT;
     * @param integer $ID             ID of the item to search
     * @param string  $searchtype     search type ('contains' or 'equals')
     * @param string  $val            value search
+    * @param bool    $is_meta            value search
     *
     * @return select string
    **/
-   static function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val) {
-
+   static function addHaving(
+      $LINK,
+      $NOT,
+      $itemtype,
+      $ID,
+      $searchtype,
+      $val,
+      bool $is_meta = false
+   ) {
       global $DB;
 
       $searchopt  = &self::getOptions($itemtype);
@@ -3042,6 +3158,10 @@ JAVASCRIPT;
       }
       $table = $searchopt[$ID]["table"];
       $NAME = "ITEM_{$itemtype}_{$ID}";
+
+      if ($is_meta) {
+         $NAME = "META_$NAME";
+      }
 
       // Plugin can override core definition for its type
       if ($plug = isPluginItemType($itemtype)) {
@@ -3428,6 +3548,11 @@ JAVASCRIPT;
       $addtable    = "";
       $addtable2   = "";
       $NAME        = "ITEM_{$itemtype}_{$ID}";
+
+      if ($meta) {
+         $NAME = "META_$NAME";
+      }
+
       $complexjoin = '';
 
       if (isset($searchopt[$ID]['joinparams'])) {
@@ -7942,5 +8067,43 @@ JAVASCRIPT;
     */
    public static function getOrigTableName(string $itemtype): string {
       return (is_a($itemtype, CommonDBTM::class, true)) ? $itemtype::getTable() : getTableForItemType($itemtype);
+   }
+
+   /**
+    * Build a simple count query
+    *
+    * @param string $FROM
+    * @param string $WHERE
+    *
+    * @return string
+    */
+   public static function buildSimpleCountQuery(
+      string $FROM,
+      string $WHERE
+   ): string {
+      return "SELECT COUNT(*) $FROM $WHERE";
+   }
+
+   /**
+    * Build a wrapped count query (needed if HAVING criteria)
+    *
+    * @param string $SELECT
+    * @param string $FROM
+    * @param string $WHERE
+    * @param string $GROUPBY
+    * @param string $HAVING
+    *
+    * @return string
+    */
+   public static function buildWrappedCountQuery(
+      string $SELECT,
+      string $FROM,
+      string $WHERE,
+      string $GROUPBY,
+      string $HAVING
+   ): string {
+      return "SELECT COUNT(*) as _count_query_total FROM (
+         $SELECT $FROM $WHERE $GROUPBY $HAVING
+      ) as _count_query_tmp";
    }
 }

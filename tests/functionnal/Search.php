@@ -168,7 +168,7 @@ class Search extends DbTestCase {
       $data = $this->doSearch('Software', $search_params);
 
       $this->string($data['sql']['search'])
-         ->matches("/HAVING\s*\(`ITEM_Computer_2`\s+IS\s+NOT\s+NULL\s*\)/");
+         ->matches("/HAVING\s*\(`META_ITEM_Computer_2`\s+IS\s+NOT\s+NULL\s*\)/");
    }
 
    public function testMetaComputerUser() {
@@ -401,7 +401,7 @@ class Search extends DbTestCase {
          ->contains("(`glpi_users`.`id` = '2')")
          ->contains("OR (`glpi_users`.`id` = '3')")
          // match having
-         ->matches("/HAVING\s*\(`ITEM_Budget_2`\s+<>\s+5\)\s+AND\s+\(\(`ITEM_Printer_1`\s+NOT LIKE\s+'%HP%'\s+OR\s+`ITEM_Printer_1`\s+IS NULL\)\s*\)/");
+         ->matches("/HAVING\s*\(`META_ITEM_Budget_2`\s+<>\s+5\)\s+AND\s+\(\(`META_ITEM_Printer_1`\s+NOT LIKE\s+'%HP%'\s+OR\s+`META_ITEM_Printer_1`\s+IS NULL\)\s*\)/");
    }
 
    function testViewCriterion() {
