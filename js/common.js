@@ -539,7 +539,7 @@ var langSwitch = function(elt) {
 var switchFoldMenu = function() {
    $.ajax({
       url: CFG_GLPI.root_doc + '/ajax/switchfoldmenu.php',
-      type: 'GET',
+      type: 'POST',
       datatype: "json",
       success: function(data) {
          if (data.success === true) {
