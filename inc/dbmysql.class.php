@@ -1560,12 +1560,12 @@ class DBmysql {
     * @since 9.5.0
     */
    public function areTimezonesAvailable(string &$msg = '') {
-      global $GLPI_CACHE;
+      $cache = Config::getCache('cache_db');
 
-      if ($GLPI_CACHE->has('are_timezones_available')) {
-         return $GLPI_CACHE->get('are_timezones_available');
+      if ($cache->has('are_timezones_available')) {
+         return $cache->get('are_timezones_available');
       }
-      $GLPI_CACHE->set('are_timezones_available', false);
+      $cache->set('are_timezones_available', false);
 
       $mysql_db_res = $this->request('SHOW DATABASES LIKE ' . $this->quoteValue('mysql'));
       if ($mysql_db_res->count() === 0) {
@@ -1595,7 +1595,7 @@ class DBmysql {
          return false;
       }
 
-      $GLPI_CACHE->set('are_timezones_available', true);
+      $cache->set('are_timezones_available', true);
       return true;
    }
 
