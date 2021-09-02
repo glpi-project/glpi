@@ -1207,14 +1207,14 @@ class Entity extends CommonTreeDropdown {
              __s('Show all')."\">".str_replace(" ", "&nbsp;", __('Show all'))."</a></div>";
 
       echo "<div class='left' style='width:100%'>";
-      echo "<form id='entsearchform'>";
+      echo "<form id='entsearchform$rand'>";
       echo "<div class='input-group mb-3'>";
       echo Html::input('entsearchtext', [
-         'id'    => 'entsearchtext',
+         'id'    => "entsearchtext$rand",
          'class' => 'form-control',
       ]);
       echo Html::submit("<span class='fas fa-search' aria-hidden='true'></span>", [
-         'id'    => 'entsearch',
+         'id'    => "entsearch$rand",
          'class' => 'btn btn-secondary',
          'title' => __('Search'),
       ]);
@@ -1272,10 +1272,10 @@ class Entity extends CommonTreeDropdown {
             var searchTree = function() {
                ".Html::jsGetElementbyID("tree_projectcategory$rand").".jstree('close_all');;
                ".Html::jsGetElementbyID("tree_projectcategory$rand").
-               ".jstree('search',".Html::jsGetDropdownValue('entsearchtext').");
+               ".jstree('search',".Html::jsGetDropdownValue("entsearchtext$rand").");
             }
 
-            $('#entsearchform').submit(function( event ) {
+            $('#entsearchform$rand').submit(function( event ) {
                // cancel submit of entity search form
                event.preventDefault();
 
@@ -1284,7 +1284,7 @@ class Entity extends CommonTreeDropdown {
             });
 
             // autosearch on keypress (delayed and with min length)
-            $('#entsearchtext').keyup(function () {
+            $('#entsearchtext$rand').keyup(function () {
                var inputsearch = $(this);
                typewatch(function () {
                   if (inputsearch.val().length >= 3) {
