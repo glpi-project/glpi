@@ -1638,4 +1638,25 @@ class Document extends CommonDBTM {
    static function getIcon() {
       return "far fa-file";
    }
+
+
+   /**
+    * find and load a document which is a duplicate of a file, with respect of blacklisting
+    *
+    * @param integer $entity    entity of the document
+    * @param string  $path      path of the searched file
+    *
+    * @return boolean
+    */
+   public function getDuplicateOf(int $entities_id, string $filename): bool {
+      if (!$this->getFromDBbyContent($entities_id, $filename)) {
+         return false;
+      }
+
+      if ($this->fields['is_blacklisted']) {
+         return false;
+      }
+
+      return true;
+   }
 }

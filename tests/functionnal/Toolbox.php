@@ -1031,4 +1031,34 @@ class Toolbox extends DbTestCase {
    public function testHasTrait($class, $trait, $result) {
       $this->boolean(\Toolbox::hasTrait($class, $trait))->isIdenticalTo((bool)$result);
    }
+
+
+   public function testGetDocumentsFromTag() {
+      // No tag provided in the tested text
+      $output = \Toolbox::getDocumentsFromTag('');
+      $this->array($output)->hasSize(0);
+
+      // Create a document to emulate a document upload
+      $filename = 'foo.png';
+      copy(__DIR__ . '/../fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
+      $tag = \Rule::getUuid();
+      $input = [
+         'filename' => 'foo.png',
+         '_filename' => [
+            $filename,
+         ],
+         '_tag_filename' => [
+            $tag,
+         ],
+         '_prefix_filename' => [
+            '5e5e92ffd9bd91.11111111',
+         ]
+      ];
+      $document = new \Document();
+      $document->add($input);
+      $this->boolean($document->isnewItem())->isFalse();
+
+      $output = \Toolbox::getDocumentsFromTag("foo #$tag# bar ");
+      $this->array($output)->hasSize(1);
+   }
 }
