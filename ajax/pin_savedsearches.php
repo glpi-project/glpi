@@ -38,8 +38,8 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 $all_pinned = importArrayFromDB($_SESSION['glpisavedsearches_pinned']);
-$already_pinned = $all_pinned[$_REQUEST['itemtype']] ?? 0;
-$all_pinned[$_REQUEST['itemtype']] = $already_pinned ? 0 : 1;
+$already_pinned = $all_pinned[$_POST['itemtype']] ?? 0;
+$all_pinned[$_POST['itemtype']] = $already_pinned ? 0 : 1;
 $_SESSION['glpisavedsearches_pinned'] = exportArrayToDB($all_pinned);
 
 $user = new User();

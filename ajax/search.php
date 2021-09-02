@@ -48,7 +48,7 @@ switch ($_REQUEST['action']) {
       $user = new User();
       $success = $user->update([
          'id'          => (int) Session::getLoginUserID(),
-         'fold_search' => (int) !$_REQUEST['show_search'],
+         'fold_search' => (int) !$_POST['show_search'],
       ]);
 
       echo json_encode(['success' => $success]);
