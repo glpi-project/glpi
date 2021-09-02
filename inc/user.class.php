@@ -4049,7 +4049,7 @@ JAVASCRIPT;
 
       $view_users = self::canView();
 
-      if ($p['value'] == 'myself') {
+      if ($p['value'] === 'myself') {
          $default = __("Myself");
       } else if (!empty($p['value']) && ($p['value'] > 0)) {
          $default = $user["name"];
