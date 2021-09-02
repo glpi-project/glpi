@@ -1143,23 +1143,28 @@ JAVASCRIPT;
             $fup   = new self();
             foreach ($ids as $id) {
                if ($item->getFromDB($id)) {
-                  $input2 = [
-                     'items_id'        => $id,
-                     'itemtype'        => $item->getType(),
-                     'is_private'      => $input['is_private'],
-                     'requesttypes_id' => $input['requesttypes_id'],
-                     'content'         => $input['content']
-                  ];
-                  if ($fup->can(-1, CREATE, $input2)) {
-                     if ($fup->add($input2)) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
-                     }
-                  } else {
-                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                  if (in_array($item->fields['status'], $item->getClosedStatusArray())) {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                      $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                  } else {
+                     $input2 = [
+                        'items_id'        => $id,
+                        'itemtype'        => $item->getType(),
+                        'is_private'      => $input['is_private'],
+                        'requesttypes_id' => $input['requesttypes_id'],
+                        'content'         => $input['content']
+                     ];
+                     if ($fup->can(-1, CREATE, $input2)) {
+                        if ($fup->add($input2)) {
+                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        } else {
+                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                           $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        }
+                     } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                     }
                   }
                } else {
                   $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);

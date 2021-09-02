@@ -7048,6 +7048,8 @@ class Ticket extends CommonITILObject {
          //for closed Tickets, only keep transfer and unlock
          $excluded[] = 'TicketValidation:submit_validation';
          $excluded[] = 'Ticket:*';
+         $excluded[] = 'ITILFollowup:*';
+         $excluded[] = 'Document_Item:*';
       }
       return $excluded;
    }
