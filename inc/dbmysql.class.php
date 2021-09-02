@@ -1565,7 +1565,7 @@ class DBmysql {
       if ($cache->has('are_timezones_available')) {
          return $cache->get('are_timezones_available');
       }
-      $cache->set('are_timezones_available', false);
+      $cache->set('are_timezones_available', false, DAY_TIMESTAMP);
 
       $mysql_db_res = $this->request('SHOW DATABASES LIKE ' . $this->quoteValue('mysql'));
       if ($mysql_db_res->count() === 0) {
@@ -1591,7 +1591,7 @@ class DBmysql {
       $iterator = $this->request($criteria);
       $result = $iterator->next();
       if ($result['cpt'] == 0) {
-         $msg = __('Timezones seems not loaded, see https://glpi-install.readthedocs.io/en/latest/timezones.html and clear your cache.');
+         $msg = __('Timezones seems not loaded, see https://glpi-install.readthedocs.io/en/latest/timezones.html.');
          return false;
       }
 
