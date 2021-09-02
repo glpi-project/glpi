@@ -1560,6 +1560,13 @@ class DBmysql {
     * @since 9.5.0
     */
    public function areTimezonesAvailable(string &$msg = '') {
+      global $GLPI_CACHE;
+
+      if ($GLPI_CACHE->has('are_timezones_available')) {
+         return $GLPI_CACHE->get('are_timezones_available');
+      }
+      $GLPI_CACHE->set('are_timezones_available', false);
+
       $mysql_db_res = $this->request('SHOW DATABASES LIKE ' . $this->quoteValue('mysql'));
       if ($mysql_db_res->count() === 0) {
          $msg = __('Access to timezone database (mysql) is not allowed.');
@@ -1584,10 +1591,11 @@ class DBmysql {
       $iterator = $this->request($criteria);
       $result = $iterator->next();
       if ($result['cpt'] == 0) {
-         $msg = __('Timezones seems not loaded, see https://glpi-install.readthedocs.io/en/latest/timezones.html.');
+         $msg = __('Timezones seems not loaded, see https://glpi-install.readthedocs.io/en/latest/timezones.html and clear your cache.');
          return false;
       }
 
+      $GLPI_CACHE->set('are_timezones_available', true);
       return true;
    }
 
