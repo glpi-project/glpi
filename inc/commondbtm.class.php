@@ -35,7 +35,6 @@ use Glpi\Event;
 use Glpi\Features\CacheableListInterface;
 use Glpi\Toolbox\RichText;
 use Glpi\Toolbox\Sanitizer;
-use Psr\Log\InvalidArgumentException;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
