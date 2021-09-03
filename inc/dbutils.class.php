@@ -1472,7 +1472,7 @@ final class DbUtils {
          if (count($iterator) == 1) {
             $data     = $iterator->next();
 
-            $anon_name = Session::getCurrentInterface() == 'helpdesk' ? User::getAnonymizedNameForUser($ID) : null;
+            $anon_name = $ID != ($_SESSION['glpiID'] ?? 0) && Session::getCurrentInterface() == 'helpdesk' ? User::getAnonymizedNameForUser($ID) : null;
             if ($anon_name !== null) {
                $username = $anon_name;
             } else {
