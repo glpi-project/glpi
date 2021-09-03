@@ -10,8 +10,7 @@
       {% set date_mod = entry_i['date_mod'] %}
       {% set entry_rand = random() %}
       {% set is_current_user = users_id == session('glpiID') %}
-      {% set anonym_user = (not is_current_user and entity_config('anonymize_support_agents') != constant('Entity::ANONYMIZE_DISABLED')) %}
-      {# {% set anonym_user = (get_current_interface() == 'helpdesk' and not is_current_user and entity_config('anonymize_support_agents') != constant('Entity::ANONYMIZE_DISABLED')) %} #}
+      {% set anonym_user = (get_current_interface() == 'helpdesk' and not is_current_user and entity_config('anonymize_support_agents') != constant('Entity::ANONYMIZE_DISABLED')) %}
 
       {# Fix solution type #}
       {% if entry['type'] is same as 'Solution' %}
