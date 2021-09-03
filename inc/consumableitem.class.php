@@ -34,7 +34,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssetImage;
 
 //!  ConsumableItem Class
@@ -125,27 +124,6 @@ class ConsumableItem extends CommonDBTM {
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
-   }
-
-
-   /**
-    * Print the consumable type form
-    *
-    * @param integer $ID    ID of the item
-    * @param array $options
-    *    - target filename : where to go when done.
-    *    - withtemplate boolean : template or basic item
-    *
-    * @return true
-    */
-   function showForm($ID, $options = []) {
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
-         'item'   => $this,
-         'params' => $options,
-      ]);
-
-      return true;
    }
 
 
