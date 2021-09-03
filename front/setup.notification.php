@@ -52,6 +52,6 @@ if (count($_POST)) {
    Html::back();
 }
 
-$settingconfig->showForm();
+$settingconfig->showConfigForm();
 
 Html::footer();

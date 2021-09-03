@@ -34,8 +34,6 @@
  * @since 9.2
  */
 
-use Glpi\Application\View\TemplateRenderer;
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -75,25 +73,6 @@ class Line extends CommonDBTM {
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
-   }
-
-   /**
-    * Print the contact form
-    *
-    * @param $ID        integer ID of the item
-    * @param $options   array of possible options:
-    *     - target for the Form
-    *     - withtemplate : template or basic item
-    *
-    * @return void
-    **/
-   function showForm($ID, $options = []) {
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
-         'item'   => $this,
-         'params' => $options,
-      ]);
-      return true;
    }
 
 
