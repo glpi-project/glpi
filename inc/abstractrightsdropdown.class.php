@@ -79,6 +79,7 @@ abstract class AbstractRightsDropdown
       $params = [
          'values' => $values,
          'valuesnames' => self::getValueNames($values),
+         'multiple'    => true,
       ];
 
       return Html::jsAjaxDropdown($name, $field_id, $url, $params);

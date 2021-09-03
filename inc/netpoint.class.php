@@ -128,10 +128,10 @@ class Netpoint extends CommonDropdown {
 
       $field_id = Html::cleanId("dropdown_".$myname.$rand);
       $param    = ['value'               => $value,
-                        'valuename'           => $name,
-                        'entity_restrict'     => $entity_restrict,
-                        'devtype'             => $devtype,
-                        'locations_id'        => $locations_id];
+                   'valuename'           => $name,
+                   'entity_restrict'     => $entity_restrict,
+                   'devtype'             => $devtype,
+                   'locations_id'        => $locations_id];
       echo Html::jsAjaxDropdown($myname, $field_id,
                                 $CFG_GLPI['root_doc']."/ajax/getDropdownNetpoint.php",
                                 $param);
