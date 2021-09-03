@@ -34,8 +34,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use Glpi\Application\View\TemplateRenderer;
-
 /**
  *  Computer class
 **/
@@ -292,27 +290,6 @@ class Computer extends CommonDBTM {
 
       Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id'],
                                                   (!empty($this->input['keep_devices'])));
-   }
-
-
-   /**
-    * Print the computer form
-    *
-    * @param $ID        integer ID of the item
-    * @param $options   array
-    *     - target for the Form
-    *     - withtemplate template or basic computer
-    *
-    * @return boolean
-   **/
-   function showForm($ID, $options = []) {
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
-         'item'   => $this,
-         'params' => $options,
-      ]);
-
-      return true;
    }
 
 

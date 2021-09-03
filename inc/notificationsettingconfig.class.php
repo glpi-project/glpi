@@ -79,7 +79,7 @@ class NotificationSettingConfig extends CommonDBTM {
     *
     * @return string|void
     */
-   public function showForm($options = []) {
+   public function showConfigForm($options = []) {
       global $CFG_GLPI;
 
       if (!isset($options['display'])) {

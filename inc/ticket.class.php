@@ -781,7 +781,7 @@ class Ticket extends CommonITILObject {
                      $date2    = strtotime($satisfaction->fields['date_begin']);
                      if (($duration == 0)
                          || (time() - $date2) <= $duration * DAY_TIMESTAMP) {
-                        $satisfaction->showForm($item);
+                        $satisfaction->showSatisactionForm($item);
                      } else {
                         echo "<p class='center b'>".__('Satisfaction survey expired')."</p>";
                      }

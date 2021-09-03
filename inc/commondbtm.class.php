@@ -434,6 +434,27 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
+    * Print the item generic form
+    * Use a twig template to detect automatically fields and display them in a two column layout
+    *
+    * @param int   $ID        ID of the item
+    * @param array $options   possible optionnal options:
+    *     - target for the Form
+    *     - withtemplate : 1 for newtemplate, 2 for newobject from template
+    *
+    * @return bool true if displayed  false if item not found or not right to display
+    */
+   function showForm($ID, array $options = []) {
+      $this->initForm($ID, $options);
+      TemplateRenderer::getInstance()->display('generic_show_form.html.twig', [
+         'item'   => $this,
+         'params' => $options,
+      ]);
+      return true;
+   }
+
+
+   /**
     * Actions done to not show some fields when geting a single item from API calls
     *
     * @param array $fields Fields to unset undiscloseds

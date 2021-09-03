@@ -30,8 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -313,14 +311,6 @@ class Domain extends CommonDropdown {
       return $this->prepareInput($input);
    }
 
-   function showForm($ID, $options = []) {
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
-         'item'   => $this,
-         'params' => $options,
-      ]);
-      return true;
-   }
 
    /**
     * Make a select box for link domains
