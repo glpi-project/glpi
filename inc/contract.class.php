@@ -141,26 +141,6 @@ class Contract extends CommonDBTM {
    }
 
 
-   /**
-    * Print the contract form
-    *
-    * @param $ID        integer ID of the item
-    * @param $options   array
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    *@return boolean item found
-   **/
-   function showForm($ID, $options = []) {
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
-         'item'   => $this,
-         'params' => $options,
-      ]);
-      return true;
-   }
-
-
    static function rawSearchOptionsToAdd() {
       global $DB;
 

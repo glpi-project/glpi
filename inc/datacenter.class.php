@@ -30,7 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssetImage;
 
 if (!defined('GLPI_ROOT')) {
@@ -70,14 +69,6 @@ class Datacenter extends CommonDBTM {
       return $ong;
    }
 
-   function showForm($ID, $options = []) {
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
-         'item'   => $this,
-         'params' => $options,
-      ]);
-      return true;
-   }
 
    function rawSearchOptions() {
 

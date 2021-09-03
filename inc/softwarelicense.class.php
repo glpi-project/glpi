@@ -255,16 +255,6 @@ class SoftwareLicense extends CommonTreeDropdown {
    }
 
 
-   /**
-    * Print the Software / license form
-    *
-    * @param $ID        integer  Id of the version or the template to print
-    * @param $options   array    of possible options:
-    *     - target form target
-    *     - softwares_id ID of the software for add process
-    *
-    * @return true if displayed  false if item not found or not right to display
-   **/
    function showForm($ID, $options = []) {
       $softwares_id = -1;
       if (isset($options['softwares_id'])) {
@@ -284,7 +274,7 @@ class SoftwareLicense extends CommonTreeDropdown {
       }
 
       $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
+      TemplateRenderer::getInstance()->display('generic_show_form.html.twig', [
          'item'   => $this,
          'params' => $options,
       ]);

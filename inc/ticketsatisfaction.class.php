@@ -98,7 +98,7 @@ class TicketSatisfaction extends CommonDBTM {
     *
     * @param $ticket Object : the ticket
    **/
-   function showForm($ticket) {
+   function showSatisactionForm($ticket) {
 
       $tid                 = $ticket->fields['id'];
       $options             = [];

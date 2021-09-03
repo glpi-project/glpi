@@ -24,6 +24,7 @@ The present file will list all changes made to the project; according to the
 
 #### Added
 - Added `DBMysql::setSavepoint` to create savepoints within a transaction.
+- Added `CommonDBTM::showForm` to have a generic showForm for asset (based on a twig template).
 
 #### Changes
 - Format of `Message-Id` header sent in Tickets notifications changed to match format used by other items.
@@ -39,6 +40,9 @@ The present file will list all changes made to the project; according to the
 - Field `date` of ProjectTask has been renamed to `date_creation`.
 - `DBMysql::rollBack` supports a `name` parameter for rolling back to a savepoint.
 - `Search::addOrderBy()` signature changed.
+- `TicketSatisfaction::showForm()` renamed to `TicketSatisfaction::showSatisfactionForm()`.
+- `NotificationSettingConfig::showForm()` renamed to `NotificationSettingConfig::showConfigForm()`.
+- `RuleMatchedLog::showForm()` renamed to `RuleMatchedLog::showItemForm()`.
 
 #### Deprecated
 - Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
