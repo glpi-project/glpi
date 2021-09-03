@@ -5741,8 +5741,10 @@ JAVASCRIPT;
     * @return string
     */
    public function getUserLink(bool $enable_anonymization = false): string {
-
-      if ($enable_anonymization && Session::getCurrentInterface() == 'helpdesk' && ($anon = $this->getAnonymizedName()) !== null) {
+      if ($enable_anonymization
+          && $this->fields['id'] != $_SESSION['glpiID']
+          && Session::getCurrentInterface() == 'helpdesk'
+          && ($anon = $this->getAnonymizedName()) !== null) {
          // if anonymized name active, return only the anonymized name
          return $anon;
       }

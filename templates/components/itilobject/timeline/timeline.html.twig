@@ -9,6 +9,9 @@
       {% set date_creation = entry_i['date_creation'] ?? entry_i['date'] %}
       {% set date_mod = entry_i['date_mod'] %}
       {% set entry_rand = random() %}
+      {% set is_current_user = users_id == session('glpiID') %}
+      {% set anonym_user = (not is_current_user and entity_config('anonymize_support_agents') != constant('Entity::ANONYMIZE_DISABLED')) %}
+      {# {% set anonym_user = (get_current_interface() == 'helpdesk' and not is_current_user and entity_config('anonymize_support_agents') != constant('Entity::ANONYMIZE_DISABLED')) %} #}
 
       {# Fix solution type #}
       {% if entry['type'] is same as 'Solution' %}
@@ -77,17 +80,19 @@
                   {% set user_fields = user_fields|merge({user_name: entry_user.getFriendlyName()|verbatim_value}) %}
                   {% set user_fields = user_fields|merge({email: entry_user.getDefaultEmail()}) %}
                   <span id="timeline-avatar{{ avatar_rand }}">
-                     {{ include('components/user/picture.html.twig', {'users_id': users_id, 'enable_anonymization': true}, with_context = false) }}
+                     {{ include('components/user/picture.html.twig', {
+                        'users_id': users_id,
+                        'enable_anonymization': anonym_user
+                     }, with_context = false) }}
                   </span>
-                  {% if entity_config('anonymize_support_agents') == constant('Entity::ANONYMIZE_DISABLED') %}
+                  {% if not anonym_user %}
                      {% do call('Html::showToolTip', [
-                        include('components/user/info_card.html.twig',
-                           {
-                              'user': user_fields,
-                              'enable_anonymization': true,
-                           },
-                           with_context = false),
-                        {'applyto': 'timeline-avatar' ~ avatar_rand}]) %}
+                        include('components/user/info_card.html.twig', {
+                           'user': user_fields,
+                           'enable_anonymization': false,
+                        }, with_context = false), {
+                           'applyto': 'timeline-avatar' ~ avatar_rand
+                        }]) %}
                   {% endif %}
                {% else %}
                   <span id="timeline-avatar{{ avatar_rand }}"><span class="avatar avatar-md rounded"></span></span>
