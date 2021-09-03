@@ -34,7 +34,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssetImage;
 
 /**
@@ -177,27 +176,6 @@ class CartridgeItem extends CommonDBTM {
          }
       }
       return false;
-   }
-
-
-   /**
-    * Print the cartridge type form
-    *
-    * @param $ID        integer ID of the item
-    * @param $options   array os possible options:
-    *     - target for the Form
-    *     - withtemplate : 1 for newtemplate, 2 for newobject from template
-    *
-    * @return boolean
-   **/
-   function showForm($ID, $options = []) {
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
-         'item'   => $this,
-         'params' => $options,
-      ]);
-
-      return true;
    }
 
 

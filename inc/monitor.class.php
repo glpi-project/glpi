@@ -34,8 +34,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use Glpi\Application\View\TemplateRenderer;
-
 /**
  * Monitor Class
 **/
@@ -139,27 +137,6 @@ class Monitor extends CommonDBTM {
       Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id'],
                                                   (!empty($this->input['keep_devices'])));
 
-   }
-
-
-   /**
-    * Print the monitor form
-    *
-    * @param $ID        integer  ID of the item
-    * @param $options   array
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    * @return boolean item found
-    **/
-   function showForm($ID, $options = []) {
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
-         'item'   => $this,
-         'params' => $options,
-      ]);
-
-      return true;
    }
 
 

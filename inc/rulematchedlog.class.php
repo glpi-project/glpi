@@ -143,7 +143,7 @@ class RuleMatchedLog extends CommonDBTM {
          }
       } else if ($tabnum == '1') {
          if ($item->getID() > 0) {
-            $rulematched->showForm($item->getID(), $item->getType());
+            $rulematched->showItemForm($item->getID(), $item->getType());
             return true;
          }
       }
@@ -185,7 +185,7 @@ class RuleMatchedLog extends CommonDBTM {
     * @param string $itemtype
     * @return true
     */
-   function showForm($items_id, $itemtype) {
+   function showItemForm($items_id, $itemtype) {
       global $DB;
 
       $rule    = new RuleImportAsset();

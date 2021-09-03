@@ -158,21 +158,11 @@ class Contact extends CommonDBTM{
    }
 
 
-   /**
-    * Print the contact form
-    *
-    * @param $ID        integer ID of the item
-    * @param $options   array
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    * @return true
-   **/
    function showForm($ID, $options = []) {
 
       $this->initForm($ID, $options);
       $vcard_url = $this->getFormURL().'?getvcard=1&id='.$ID;
-      TemplateRenderer::getInstance()->display('asset_form.html.twig', [
+      TemplateRenderer::getInstance()->display('generic_show_form.html.twig', [
          'item'   => $this,
          'params' => $options,
          'header_toolbar'  => [
