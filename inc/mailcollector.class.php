@@ -1227,6 +1227,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       $tkt = Sanitizer::sanitize($tkt, true);
+      $tkt['name']    = LitEmoji::encodeShortcode($tkt['name']);
       return $tkt;
    }
 

@@ -867,6 +867,11 @@ class Planning extends CommonGLPI {
    static function showSingleLinePlanningFilter($filter_key, $filter_data, $options = []) {
       global $CFG_GLPI;
 
+      // Invalid data, skip
+      if (!isset($filter_data['type'])) {
+         return;
+      }
+
       $params['show_delete']        = true;
       $params['filter_color_index'] = 0;
       if (is_array($options) && count($options)) {
