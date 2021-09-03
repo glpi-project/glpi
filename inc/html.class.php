@@ -4643,25 +4643,28 @@ JAVASCRIPT
    static function jsAjaxDropdown($name, $field_id, $url, $params = []) {
       global $CFG_GLPI;
 
-      if (!array_key_exists('value', $params)) {
-         $value = 0;
-         $valuename = Dropdown::EMPTY_VALUE;
-      } else {
-         $value = $params['value'];
-         $valuename = $params['valuename'];
-      }
-      $on_change = '';
-      if (isset($params["on_change"])) {
-         $on_change = $params["on_change"];
-         unset($params["on_change"]);
-      }
-      $width = '80%';
-      if (isset($params["width"])) {
-         $width = $params["width"];
-         unset($params["width"]);
-      }
+      $default_options = [
+         'value'               => 0,
+         'valuename'           => Dropdown::EMPTY_VALUE,
+         'multiple'            => false,
+         'values'              => [],
+         'valuesnames'         => [],
+         'on_change'           => '',
+         'width'               => '80%',
+         'placeholder'         => '',
+         'display_emptychoice' => false,
+         'specific_tags'       => [],
+      ];
+      $params = array_merge($default_options, $params);
 
+      $value = $params['value'];
+      $width = $params["width"];
+      $valuename = $params['valuename'];
+      $on_change = $params["on_change"];
       $placeholder = $params['placeholder'] ?? '';
+      unset($params["on_change"]);
+      unset($params["width"]);
+
       $allowclear =  "false";
       if (strlen($placeholder) > 0 && !$params['display_emptychoice']) {
          $allowclear = "true";
@@ -4673,12 +4676,7 @@ JAVASCRIPT
       ];
 
       // manage multiple select (with multiple values)
-      if (isset($params['values'])
-         && (
-            count($params['values'])
-            || !isset($params['value'])
-         )
-      ) {
+      if ($params['multiple']) {
          $values = array_combine($params['values'], $params['valuesnames']);
          $options['multiple'] = 'multiple';
          $options['selected'] = $params['values'];
@@ -4695,13 +4693,11 @@ JAVASCRIPT
       unset($params['value']);
       unset($params['valuename']);
 
-      if (!empty($params['specific_tags'])) {
-         foreach ($params['specific_tags'] as $tag => $val) {
-            if (is_array($val)) {
-               $val = implode(' ', $val);
-            }
-            $options[$tag] = $val;
+      foreach ($params['specific_tags'] as $tag => $val) {
+         if (is_array($val)) {
+            $val = implode(' ', $val);
          }
+         $options[$tag] = $val;
       }
 
       $output = '';
