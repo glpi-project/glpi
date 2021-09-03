@@ -952,6 +952,26 @@ class Group extends CommonTreeDropdown {
       ) > 0;
    }
 
+   function getName($options = []) {
+      if (Session::getCurrentInterface() == 'helpdesk'
+          && ($anon = self::getAnonymizedName()) !== "") {
+         return $anon;
+      }
+
+      return parent::getName($options);
+   }
+
+
+   function getRawCompleteName() {
+      if (Session::getCurrentInterface() == 'helpdesk'
+         && ($anon = $this->getAnonymizedName()) !== null) {
+         return $anon;
+      }
+
+      return parent::getRawCompleteName();
+   }
+
+
    public static function getAnonymizedName(?int $entities_id = null): string {
       switch (Entity::getAnonymizeConfig($entities_id)) {
          default:
