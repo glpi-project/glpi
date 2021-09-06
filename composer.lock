@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bc9838df6fa33daf7dc2a1cb1c051be6",
+    "content-hash": "449be88a953ab1b9e28b3805f87fcfe1",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -615,16 +615,16 @@
         },
         {
             "name": "laminas/laminas-cache",
-            "version": "2.11.3",
+            "version": "2.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-cache.git",
-                "reference": "775cf8815cfd5a654f9b7b341ebaf28e72aa457d"
+                "reference": "566948e32f30881cb903ffbd0e3e20dac00cd83e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-cache/zipball/775cf8815cfd5a654f9b7b341ebaf28e72aa457d",
-                "reference": "775cf8815cfd5a654f9b7b341ebaf28e72aa457d",
+                "url": "https://api.github.com/repos/laminas/laminas-cache/zipball/566948e32f30881cb903ffbd0e3e20dac00cd83e",
+                "reference": "566948e32f30881cb903ffbd0e3e20dac00cd83e",
                 "shasum": ""
             },
             "require": {
@@ -651,6 +651,9 @@
                 "psr/cache": "^1.0",
                 "psr/simple-cache": "^1.0"
             },
+            "conflict": {
+                "symfony/console": "<5.1"
+            },
             "provide": {
                 "psr/cache-implementation": "1.0",
                 "psr/simple-cache-implementation": "1.0"
@@ -659,13 +662,17 @@
                 "zendframework/zend-cache": "^2.9.0"
             },
             "require-dev": {
+                "laminas/laminas-cli": "^1.0",
                 "laminas/laminas-coding-standard": "~1.0.0",
+                "laminas/laminas-config-aggregator": "^1.5",
+                "laminas/laminas-feed": "^2.14",
                 "laminas/laminas-serializer": "^2.6",
                 "phpbench/phpbench": "^1.0.0-beta2",
                 "phpspec/prophecy-phpunit": "^2.0",
                 "phpunit/phpunit": "^9.5"
             },
             "suggest": {
+                "laminas/laminas-cli": "The laminas-cli binary can be used to consume commands provided by this component",
                 "laminas/laminas-serializer": "Laminas\\Serializer component"
             },
             "type": "library",
@@ -709,7 +716,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2021-07-08T18:22:59+00:00"
+            "time": "2021-08-08T10:21:18+00:00"
         },
         {
             "name": "laminas/laminas-cache-storage-adapter-filesystem",

@@ -36,7 +36,8 @@ use Glpi\Exception\PasswordTooWeakException;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Sanitizer;
 use Laminas\Cache\Psr\SimpleCache\SimpleCacheDecorator;
-use Laminas\Cache\StorageFactory;
+use Laminas\Cache\Storage\Adapter\Filesystem;
+use Laminas\Cache\Storage\Plugin\Serializer;
 use PHPMailer\PHPMailer\PHPMailer;
 
 if (!defined('GLPI_ROOT')) {
@@ -2049,6 +2050,8 @@ class Config extends CommonDBTM {
                  'check'   => 'Sabre\\VObject\\Component' ],
                [ 'name'    => 'laminas/laminas-cache',
                  'check'   => 'Laminas\\Cache\\Module' ],
+               [ 'name'    => 'laminas/laminas-cache-storage-adapter-filesystem',
+                 'check'   => 'Laminas\\Cache\\Storage\\Adapter\\Filesystem' ],
                [ 'name'    => 'laminas/laminas-i18n',
                  'check'   => 'Laminas\\I18n\\Module' ],
                [ 'name'    => 'laminas/laminas-serializer',
@@ -2851,17 +2854,13 @@ class Config extends CommonDBTM {
       if (!is_dir($cache_dir)) {
          mkdir($cache_dir);
       }
-
-      $storage = StorageFactory::factory(
+      $storage  = new Filesystem(
          [
-            'adapter'   => 'filesystem',
-            'options'   => [
-               'cache_dir' => GLPI_CACHE_DIR . DIRECTORY_SEPARATOR . 'cache_trans',
-               'namespace' => 'glpi_cache_trans_' . GLPI_VERSION,
-            ],
-            'plugins'   => ['serializer']
+            'cache_dir' => GLPI_CACHE_DIR . DIRECTORY_SEPARATOR . 'cache_trans',
+            'namespace' => 'glpi_cache_trans_' . GLPI_VERSION,
          ]
       );
+      $storage->addPlugin(new Serializer());
 
       if ($psr16) {
          return new SimpleCacheDecorator($storage);
