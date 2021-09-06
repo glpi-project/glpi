@@ -2695,11 +2695,11 @@ class AuthLDAP extends CommonDBTM {
          @ldap_set_option($ds, LDAP_OPT_DEREF, $deref_options);
          @ldap_set_option($ds, LDAP_OPT_NETWORK_TIMEOUT, $timeout);
 
-         if (file_exists($tls_certfile)) {
+         if (!empty($tls_certfile) && file_exists($tls_certfile)) {
             @ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile);
          }
 
-         if ($tls_keyfile) {
+         if (!empty($tls_keyfile) && file_exists($tls_keyfile)) {
             @ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile);
          }
 

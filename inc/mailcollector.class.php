@@ -1074,7 +1074,7 @@ class MailCollector  extends CommonDBTM {
       try {
          $subject = $message->getHeader('subject')->getFieldValue();
       } catch (\Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
-         $subject = null;
+         $subject = '';
       }
       $tkt['_message']  = $message;
 
@@ -1413,7 +1413,7 @@ class MailCollector  extends CommonDBTM {
 
       $to = $this->getEmailFromHeader($message, 'to');
 
-      $reply_to_addr = Toolbox::strtolower($this->getEmailFromHeader($message, 'reply-to'));
+      $reply_to_addr = $this->getEmailFromHeader($message, 'reply-to');
 
       $date         = date("Y-m-d H:i:s", strtotime($message->date));
       $mail_details = [];
@@ -1449,8 +1449,8 @@ class MailCollector  extends CommonDBTM {
       $mail_details = [
          'from'       => Toolbox::strtolower($sender_email),
          'subject'    => $subject,
-         'reply-to'   => $reply_to_addr,
-         'to'         => Toolbox::strtolower($to),
+         'reply-to'   => $reply_to_addr !== null ? Toolbox::strtolower($reply_to_addr) : null,
+         'to'         => $to !== null ? Toolbox::strtolower($to) : null,
          'message_id' => $message->getHeader('message_id')->getFieldValue(),
          'tos'        => $tos,
          'ccs'        => $ccs,
@@ -1693,7 +1693,9 @@ class MailCollector  extends CommonDBTM {
          }
       }
 
-      $content = rtrim($content); // Remove extra ending spaces
+      $content = $content === null
+         ? ''
+         : rtrim($content); // Remove extra ending spaces
 
       return $content;
    }

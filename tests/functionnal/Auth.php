@@ -40,19 +40,19 @@ class Auth extends DbTestCase {
 
    protected function loginProvider() {
       return [
-         ['john', 1],
-         ['john doe', 1],
-         ['john_doe', 1],
-         ['john-doe', 1],
-         ['john.doe', 1],
-         ['john \'o doe', 1],
-         ['john@doe.com', 1],
-         ['@doe.com', 1],
-         ['john " doe', 0],
-         ['john^doe', 0],
-         ['john$doe', 0],
-         [null, 0],
-         ['', 0]
+         ['john', true],
+         ['john doe', true],
+         ['john_doe', true],
+         ['john-doe', true],
+         ['john.doe', true],
+         ['john \'o doe', true],
+         ['john@doe.com', true],
+         ['@doe.com', true],
+         ['john " doe', false],
+         ['john^doe', false],
+         ['john$doe', false],
+         [null, false],
+         ['', false]
       ];
    }
 
@@ -60,7 +60,7 @@ class Auth extends DbTestCase {
     * @dataProvider loginProvider
     */
    public function testIsValidLogin($login, $isvalid) {
-      $this->variable(\Auth::isValidLogin($login))->isIdenticalTo($isvalid);
+      $this->boolean(\Auth::isValidLogin($login))->isIdenticalTo($isvalid);
    }
 
    public function testGetLoginAuthMethods() {

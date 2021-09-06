@@ -128,9 +128,14 @@ class Html {
     * @return string|array
    **/
    static function entity_decode_deep($value) {
+      if (is_array($value)) {
+         return array_map([__CLASS__, 'entity_decode_deep'], $value);
+      }
+      if (!is_string($value)) {
+         return $value;
+      }
 
-      return (is_array($value) ? array_map([__CLASS__, 'entity_decode_deep'], $value)
-                               : html_entity_decode($value, ENT_QUOTES, "UTF-8"));
+      return html_entity_decode($value, ENT_QUOTES, "UTF-8");
    }
 
 
@@ -142,9 +147,14 @@ class Html {
     * @return string|array
    **/
    static function entities_deep($value) {
+      if (is_array($value)) {
+         return array_map([__CLASS__, 'entities_deep'], $value);
+      }
+      if (!is_string($value)) {
+         return $value;
+      }
 
-      return (is_array($value) ? array_map([__CLASS__, 'entities_deep'], $value)
-                               : htmlentities($value, ENT_QUOTES, "UTF-8"));
+      return htmlentities($value, ENT_QUOTES, "UTF-8");
    }
 
 
@@ -225,6 +235,9 @@ class Html {
     * @return string
    **/
    static function cleanInputText($string) {
+      if (!is_string($string)) {
+         return $string;
+      }
       return preg_replace( '/\'/', '&apos;', preg_replace('/\"/', '&quot;', $string));
    }
 

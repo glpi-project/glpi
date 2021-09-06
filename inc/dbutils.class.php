@@ -295,6 +295,10 @@ final class DbUtils {
     * @return object|false itemtype instance or false if class does not exists
     */
    public function getItemForItemtype($itemtype) {
+      if (empty($itemtype)) {
+         return false;
+      }
+
       if ($itemtype === 'Event') {
          //to avoid issues when pecl-event is installed...
          $itemtype = 'Glpi\\Event';
@@ -738,7 +742,8 @@ final class DbUtils {
          ]);
 
          if (count($iterator) > 0) {
-            $db_sons = trim($iterator->current()['sons_cache']);
+            $db_sons = $iterator->current()['sons_cache'];
+            $db_sons = $db_sons !== null ? trim($db_sons) : null;
             if (!empty($db_sons)) {
                $sons = $this->importArrayFromDB($db_sons, true);
             }
@@ -747,7 +752,9 @@ final class DbUtils {
 
       if (!is_array($sons)) {
          // IDs to be present in the final array
-         $sons[$IDf] = $IDf;
+         $sons = [
+            $IDf => $IDf,
+         ];
          // current ID found to be added
          $found = [];
          // First request init the  varriables
@@ -1017,7 +1024,7 @@ final class DbUtils {
 
          if ($translate && !empty($transcomment)) {
             $comment .= nl2br($transcomment);
-         } else {
+         } else if (!empty($result['comment'])) {
             $comment .= nl2br($result['comment']);
          }
       }
@@ -1164,7 +1171,7 @@ final class DbUtils {
          $transcomment = $result['transcomment'];
          if ($translate && !empty($transcomment)) {
             $comment .= nl2br($transcomment);
-         } else {
+         } else if (!empty($result['comment'])) {
             $comment .= nl2br($result['comment']);
          }
       }
@@ -1390,7 +1397,7 @@ final class DbUtils {
          $id_visible = $_SESSION["glpiis_ids_visible"];
       }
 
-      if (strlen($realname) > 0) {
+      if ($realname !== null && strlen($realname) > 0) {
          $formatted = $realname;
 
          if (strlen($firstname) > 0) {
@@ -1739,6 +1746,10 @@ final class DbUtils {
     * @return array containing datas
     */
    public function importArrayFromDB($data) {
+      if ($data === null) {
+         return [];
+      }
+
       $tab = json_decode($data, true);
 
       // Use old scheme to decode

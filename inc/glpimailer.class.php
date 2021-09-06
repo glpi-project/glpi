@@ -99,6 +99,9 @@ class GLPIMailer extends PHPMailer {
    }
 
    public static function validateAddress($address, $patternselect = "pcre8") {
+      if (empty($address)) {
+         return false;
+      }
       $isValid = parent::validateAddress($address, $patternselect);
       if (!$isValid && str_ends_with($address, '@localhost')) {
          //since phpmailer6, @localhost address are no longer valid...

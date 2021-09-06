@@ -401,6 +401,9 @@ class RuleCriteria extends CommonDBChild {
             return true;
 
          case Rule::PATTERN_END :
+            if (empty($pattern) || empty($field)) {
+               return false;
+            }
             $value = "/".$pattern."$/i";
             if (preg_match($value, $field) > 0) {
                $criterias_results[$criteria] = $pattern;
@@ -409,7 +412,7 @@ class RuleCriteria extends CommonDBChild {
             return false;
 
          case Rule::PATTERN_BEGIN :
-            if (empty($pattern)) {
+            if (empty($pattern) || empty($field)) {
                return false;
             }
             $value = mb_stripos($field, $pattern, 0, 'UTF-8');
@@ -420,7 +423,7 @@ class RuleCriteria extends CommonDBChild {
             return false;
 
          case Rule::PATTERN_CONTAIN :
-            if (empty($pattern)) {
+            if (empty($pattern) || empty($field)) {
                return false;
             }
             $value = mb_stripos($field, $pattern, 0, 'UTF-8');
@@ -434,7 +437,7 @@ class RuleCriteria extends CommonDBChild {
             if (empty($pattern)) {
                return false;
             }
-            $value = mb_stripos($field, $pattern, 0, 'UTF-8');
+            $value = mb_stripos($field ?? '', $pattern, 0, 'UTF-8');
             if ($value === false) {
                $criterias_results[$criteria] = $pattern;
                return true;
