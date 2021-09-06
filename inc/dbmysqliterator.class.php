@@ -722,6 +722,7 @@ class DBmysqlIterator implements SeekableIterator, Countable {
     *
     * @return mixed
     */
+   #[ReturnTypeWillChange]
    public function current() {
       return $this->row;
    }
@@ -731,6 +732,7 @@ class DBmysqlIterator implements SeekableIterator, Countable {
     *
     * @return mixed
     */
+   #[ReturnTypeWillChange]
    public function key() {
       return $this->row !== null ? ($this->row["id"] ?? $this->position) : null;
    }
