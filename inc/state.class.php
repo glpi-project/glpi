@@ -455,8 +455,6 @@ class State extends CommonTreeDropdown {
          'datatype'           => 'bool'
       ];
 
-
-
       return $tab;
    }
 
