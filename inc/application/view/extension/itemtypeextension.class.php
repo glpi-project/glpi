@@ -55,6 +55,7 @@ class ItemtypeExtension extends AbstractExtension {
          new TwigFilter('itemtype_form_path', [$this, 'getItemtypeFormPath']),
          new TwigFilter('itemtype_icon', [$this, 'getItemtypeIcon']),
          new TwigFilter('itemtype_name', [$this, 'getItemtypeName']),
+         new TwigFilter('itemtype_table', [$this, 'getItemtypeTable']),
          new TwigFilter('itemtype_search_path', [$this, 'getItemtypeSearchPath']),
       ];
    }
@@ -128,6 +129,17 @@ class ItemtypeExtension extends AbstractExtension {
     */
    public function getItemtypeName(string $itemtype, $count = 1): ?string {
       return is_a($itemtype, CommonGLPI::class, true) ? $itemtype::getTypeName($count) : null;
+   }
+
+   /**
+    * Returns table of given itemtype.
+    *
+    * @param string $itemtype
+    *
+    * @return string|null
+    */
+   public function getItemtypeTable(string $itemtype): ?string {
+      return is_a($itemtype, CommonGLPI::class, true) ? $itemtype::getTable() : null;
    }
 
    /**

@@ -157,7 +157,10 @@
 
             {{ include('components/itilobject/fields/priority_matrix.html.twig') }}
 
-            {% if item.isField('locations_id') %}
+            {% if item.isField('locations_id') and call('countElementsInTable', [
+               'Location'|itemtype_table,
+               {}
+            ]) > 0 %}
                {{ fields.dropdownField(
                   'Location',
                   'locations_id',
@@ -167,7 +170,10 @@
                ) }}
             {% endif %}
 
-            {% if item.isNewItem() and item.getType() == 'Ticket' %}
+            {% if item.isNewItem() and item.getType() == 'Ticket' and call('countElementsInTable', [
+               'Contract'|itemtype_table,
+               {'is_deleted': 0}
+            ]) > 0 %}
                {{ fields.dropdownField(
                   'Contract',
                   '_contracts_id',
