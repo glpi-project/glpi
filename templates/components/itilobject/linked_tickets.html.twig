@@ -9,15 +9,11 @@
       <div class="list-group-item">
          <div class="row">
             <div class="col-auto">
-               {% if linked['link'] == constant('Ticket_Ticket::LINK_TO') %}
-                  <i class="fas fa-link" title="{{ __('Linked to') }}" data-bs-toggle="tooltip"></i>
-               {% elseif linked['link'] == constant('Ticket_Ticket::DUPLICATE_WITH') %}
-                  <i class="fas fa-clone" title="{{ __('Duplicates') }}" data-bs-toggle="tooltip"></i>
-               {% elseif linked['link'] == constant('Ticket_Ticket::SON_OF') %}
-                  <i class="fas fa-level-down-alt" title="{{ __('Son of') }}" data-bs-toggle="tooltip"></i>
-               {% elseif linked['link'] == constant('Ticket_Ticket::PARENT_OF') %}
-                  <i class="fas fa-level-up-alt" title="{{ __('Parent of') }}" data-bs-toggle="tooltip"></i>
-               {% endif %}
+               {{ call('Ticket_Ticket::getLinkName', [
+                  linked['link'],
+                  linked['tickets_id_1'] is defined,
+                  true
+               ])|raw }}
             </div>
             <div class="col text-truncate">
                <a href="{{ 'Ticket'|itemtype_form_path(linked['tickets_id']) }}" class="col-9 overflow-hidden text-nowrap">
