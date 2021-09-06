@@ -179,9 +179,8 @@ class DBmysql {
    function connect($choice = null) {
       $this->connected = false;
       $this->dbh = @new mysqli();
-      $this->dbh->init();
       if ($this->dbssl) {
-          mysqli_ssl_set(
+          $this->dbh->ssl_set(
              $this->dbh,
              $this->dbsslkey,
              $this->dbsslcert,
@@ -772,7 +771,7 @@ class DBmysql {
       foreach ($queries as $query) {
          $query = trim($query);
          if ($query != '') {
-            $query = htmlentities($query);
+            $query = htmlentities($query, ENT_COMPAT, 'UTF-8');
             if (!$this->query($query)) {
                return false;
             }
