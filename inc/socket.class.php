@@ -242,8 +242,8 @@ class Socket extends CommonDropdown {
    **/
    static function getSides() {
       return [
-         self::REAR   => __('Rear'),
-         self::FRONT  => __('Front'),
+         self::REAR   => __('Endpoint A'),
+         self::FRONT  => __('Endpoint B'),
       ];
    }
 
@@ -661,8 +661,8 @@ class Socket extends CommonDropdown {
          }
 
          $cable = new Cable();
-         if ($cable->getFromDBByCrit(['OR' => ['sockets_id_rear' => $socket->fields["id"],
-                                               'sockets_id_front' => $socket->fields["id"]
+         if ($cable->getFromDBByCrit(['OR' => ['sockets_id_endpoint_a' => $socket->fields["id"],
+                                               'sockets_id_endpoint_b' => $socket->fields["id"]
                                               ]])) {
             echo "<td><a href='" . $cable->getLinkURL(). "'>".$cable->getName()."</a></td>";
          } else {
