@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Event;
+
 /// Socket class
 class Socket extends CommonDropdown {
 
@@ -835,6 +837,23 @@ class Socket extends CommonDropdown {
       echo "</div>\n";
    }
 
+   /**
+    * Handled Multi add item
+    *
+    * @since 0.83 (before addMulti)
+    *
+    * @param $input array of values
+   **/
+   function executeAddMulti(array $input) {
+
+      $this->check(-1, CREATE, $input);
+      for ($i=$input["_from"]; $i<=$input["_to"]; $i++) {
+         $input["name"] = $input["_before"].$i.$input["_after"];
+         $this->add($input);
+      }
+      Event::log(0, "dropdown", 5, "setup",
+               sprintf(__('%1$s adds several sockets'), $_SESSION["glpiname"]));
+   }
 
    /**
     * @since 0.84
