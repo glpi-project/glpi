@@ -1349,6 +1349,7 @@ class Contract extends CommonDBTM {
          'expired'        => false,
          'toadd'          => [],
          'class'          => "form-select",
+         'width'          => "",
       ];
 
       if (is_array($options) && count($options)) {
