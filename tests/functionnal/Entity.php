@@ -532,17 +532,17 @@ class Entity extends DbTestCase {
          [
             'interface' => 'central',
             'setting'   => \Entity::ANONYMIZE_DISABLED,
-            'expected'  => TU_USER,
+            'expected'  => 'test_anon_user',
          ],
          [
             'interface' => 'helpdesk',
             'setting'   => \Entity::ANONYMIZE_DISABLED,
-            'expected'  => TU_USER,
+            'expected'  => 'test_anon_user',
          ],
          [
             'interface' => 'central',
             'setting'   => \Entity::ANONYMIZE_USE_GENERIC,
-            'expected'  => TU_USER,
+            'expected'  => 'test_anon_user',
          ],
          [
             'interface' => 'helpdesk',
@@ -552,7 +552,7 @@ class Entity extends DbTestCase {
          [
             'interface' => 'central',
             'setting'   => \Entity::ANONYMIZE_USE_NICKNAME,
-            'expected'  => TU_USER,
+            'expected'  => 'test_anon_user',
             'user_nick' => 'user_nick_6436345654'
          ],
          [
@@ -576,7 +576,7 @@ class Entity extends DbTestCase {
       global $DB;
 
       $this->login();
-      $possible_values = [TU_USER, 'user_nick_6436345654', "Helpdesk user"];
+      $possible_values = ['test_anon_user', 'user_nick_6436345654', "Helpdesk user"];
 
       // Set entity setting
       $entity = getItemByTypeName("Entity", "_test_root_entity");
@@ -586,8 +586,15 @@ class Entity extends DbTestCase {
       ]);
       $this->boolean($update)->isTrue();
 
+      // create a user for this test (avoid using current logged user as we don't anonymize him)
+      $user_obj = new \User();
+      $user_obj->add([
+         'name'     => 'test_anon_user',
+         'password' => 'test_anon_user'
+      ]);
+
       // // Set user nickname
-      $user = getItemByTypeName('User', TU_USER);
+      $user = getItemByTypeName('User', 'test_anon_user');
 
       if ($user_nick == "" && $user->fields['nickname'] == null) {
          // Special case, glpi wont update null to "" so we need to set
@@ -613,17 +620,17 @@ class Entity extends DbTestCase {
       $this->login();
       $ticket = new Ticket();
       $tickets_id = $ticket->add($input = [
-         'name'             => 'test',
-         'content'          => 'test',
-         '_users_id_assign' => getItemByTypeName('User', TU_USER, true),
-         '_users_id_requester' => getItemByTypeName('User', 'post-only', true),
-         'entities_id'      => $entity->getID(),
-         'users_id_recipient' => getItemByTypeName('User', TU_USER, true),
+         'name'                 => 'test',
+         'content'              => 'test',
+         '_users_id_assign'     => getItemByTypeName('User', 'test_anon_user', true),
+         '_users_id_requester'  => getItemByTypeName('User', 'post-only', true),
+         'entities_id'          => $entity->getID(),
+         'users_id_recipient'   => getItemByTypeName('User', TU_USER, true),
          'users_id_lastupdater' => getItemByTypeName('User', TU_USER, true),
          // The default requesttype is "Helpdesk" and will mess up our tests,
          // we need another one to be sure the "Helpdesk" string will only be
          // printed by the anonymization code
-         'requesttypes_id'  => 4,
+         'requesttypes_id'      => 4,
       ]);
       $this->integer($tickets_id)->isGreaterThan(0);
 
@@ -643,13 +650,13 @@ class Entity extends DbTestCase {
       $this->array(iterator_to_array($ticket_users))->isEqualTo([
          0 => [
             'tickets_id' => $tickets_id,
-            'users_id' => getItemByTypeName('User', 'post-only', true),
-            'type' => CommonITILActor::REQUESTER,
+            'users_id'   => getItemByTypeName('User', 'post-only', true),
+            'type'       => CommonITILActor::REQUESTER,
          ],
          1 => [
             'tickets_id' => $tickets_id,
-            'users_id' => getItemByTypeName('User', TU_USER, true),
-            'type' => CommonITILActor::ASSIGN,
+            'users_id'   => getItemByTypeName('User', 'test_anon_user', true),
+            'type'       => CommonITILActor::ASSIGN,
          ],
       ]);
 
@@ -657,8 +664,8 @@ class Entity extends DbTestCase {
       $fup = new ITILFollowup();
       $fup_id = $fup->add([
          'content' => 'test',
-         'users_id' => getItemByTypeName('User', TU_USER, true),
-         'users_id_editor' => getItemByTypeName('User', TU_USER, true),
+         'users_id' => getItemByTypeName('User', 'test_anon_user', true),
+         'users_id_editor' => getItemByTypeName('User', 'test_anon_user', true),
          'itemtype' => 'Ticket',
          'items_id' => $tickets_id,
       ]);
@@ -668,8 +675,8 @@ class Entity extends DbTestCase {
       $solution = new ITILSolution();
       $solutions_id = $solution->add([
          'content' => 'test',
-         'users_id' => getItemByTypeName('User', TU_USER, true),
-         'users_id_editor' => getItemByTypeName('User', TU_USER, true),
+         'users_id' => getItemByTypeName('User', 'test_anon_user', true),
+         'users_id_editor' => getItemByTypeName('User', 'test_anon_user', true),
          'itemtype' => 'Ticket',
          'items_id' => $tickets_id,
       ]);
