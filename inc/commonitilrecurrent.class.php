@@ -364,12 +364,12 @@ abstract class CommonITILRecurrent extends CommonDropdown
       $now = time();
       $periodicity_pattern = '/([0-9]+)(MONTH|YEAR)/';
 
-      if (false === DateTime::createFromFormat('Y-m-d H:i:s', $begin_date)) {
+      if ($begin_date === null || DateTime::createFromFormat('Y-m-d H:i:s', $begin_date) === false) {
          // Invalid begin date.
          return 'NULL';
       }
 
-      $has_end_date = false !== DateTime::createFromFormat('Y-m-d H:i:s', $end_date);
+      $has_end_date = $end_date !== null && DateTime::createFromFormat('Y-m-d H:i:s', $end_date) !== false;
       if ($has_end_date && strtotime($end_date) < $now) {
          // End date is in past.
          return 'NULL';

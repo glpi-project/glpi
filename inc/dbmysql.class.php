@@ -274,6 +274,9 @@ class DBmysql {
     * @return string escaped string
     */
    function escape($string) {
+      if (!is_string($string)) {
+         return $string;
+      }
       return $this->dbh->real_escape_string($string);
    }
 

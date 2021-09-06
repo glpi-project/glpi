@@ -64,7 +64,7 @@ trait AssetImage {
             $filename = array_shift($input["_$name"]);
             $src      = GLPI_TMP_DIR . '/' . $filename;
 
-            $prefix   = null;
+            $prefix   = '';
             if (isset($input["_prefix_$name"])) {
                $prefix = array_shift($input["_prefix_$name"]);
             }
@@ -111,7 +111,7 @@ trait AssetImage {
             $filename = $input["_pictures"][$i];
             $src = GLPI_TMP_DIR . '/' . $filename;
 
-            $prefix = $input["_prefix_pictures"][$i] ?? null;
+            $prefix = $input["_prefix_pictures"][$i] ?? '';
 
             if ($dest = Toolbox::savePicture($src, $prefix)) {
                $new_pictures[$i] = $dest;

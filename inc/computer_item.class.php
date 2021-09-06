@@ -126,8 +126,8 @@ class Computer_Item extends CommonDBRelation{
              && (($comp->fields['contact'] != $item->getField('contact'))
                  || ($comp->fields['contact_num'] != $item->getField('contact_num')))) {
 
-            $updates['contact']     = addslashes($comp->fields['contact']);
-            $updates['contact_num'] = addslashes($comp->fields['contact_num']);
+            $updates['contact']     = addslashes($comp->fields['contact'] ?? '');
+            $updates['contact_num'] = addslashes($comp->fields['contact_num'] ?? '');
             Session::addMessageAfterRedirect(
                __('Alternate username updated. The connected items have been updated using this alternate username.'),
                                              true);

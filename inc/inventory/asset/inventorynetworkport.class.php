@@ -325,7 +325,12 @@ trait InventoryNetworkPort {
          if (preg_match("/[^a-zA-Z0-9 \-_\(\)]+/", $row['name'])) {
             $row['name'] = Toolbox::addslashes_deep($row['name']);
          }
-         $db_ports[$id] = array_map('strtolower', $row);
+         foreach (['name', 'mac', 'instantiation_type'] as $field) {
+            if ($row[$field] !== null) {
+               $row[$field] = strtolower($row[$field]);
+            }
+         }
+         $db_ports[$id] = $row;
       }
 
       $netname_stmt = null;

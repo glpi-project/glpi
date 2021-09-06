@@ -245,7 +245,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
             $filename = array_shift($input["_$name"]);
             $src      = GLPI_TMP_DIR . '/' . $filename;
 
-            $prefix   = null;
+            $prefix   = '';
             if (isset($input["_prefix_$name"])) {
                $prefix = array_shift($input["_prefix_$name"]);
             }

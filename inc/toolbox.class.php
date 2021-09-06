@@ -2091,7 +2091,7 @@ class Toolbox {
     * @return string  clean integer
    **/
    static function cleanInteger($integer) {
-      return preg_replace("/[^0-9-]/", "", $integer);
+      return preg_replace("/[^0-9-]/", "", (string)$integer);
    }
 
 
@@ -2776,7 +2776,7 @@ class Toolbox {
       while ((int) $index > 0) {
          $index--;
          $bij_str = chr($index%26 + ord("A")) . $bij_str;
-         $index /= 26;
+         $index = floor($index / 26);
       }
       return $bij_str;
    }
@@ -2842,7 +2842,7 @@ class Toolbox {
     *
     * @since 9.5.0
     */
-   static public function savePicture($src, $uniq_prefix = null) {
+   static public function savePicture($src, $uniq_prefix = '') {
 
       if (!Document::isImage($src)) {
          return false;

@@ -564,7 +564,7 @@ class User extends CommonDBTM {
          return false;
       }
 
-      if (!Auth::isValidLogin(stripslashes($input['name']))) {
+      if (empty($input['name']) || !Auth::isValidLogin(stripslashes($input['name']))) {
          Session::addMessageAfterRedirect(__('The login is not valid. Unable to add the user.'),
                                           false, ERROR);
          return false;
@@ -3901,7 +3901,7 @@ JAVASCRIPT;
       }
 
       if (!$count) {
-         if ((strlen($search) > 0)) {
+         if (strlen((string)$search) > 0) {
             $txt_search = Search::makeTextSearchValue($search);
 
             $firstname_field = $DB->quoteName(self::getTableField('firstname'));
@@ -5896,9 +5896,9 @@ JAVASCRIPT;
          return mb_strtoupper(mb_substr($anon, 0, 2));
       }
 
-      $initials = mb_substr($this->fields['firstname'], 0, 1) . mb_substr($this->fields['realname'], 0, 1);
-      if (!$initials) {
-         $initials = mb_substr($this->fields['name'], 0, 2);
+      $initials = mb_substr($this->fields['firstname'] ?? '', 0, 1) . mb_substr($this->fields['realname'] ?? '', 0, 1);
+      if (empty(!$initials)) {
+         $initials = mb_substr($this->fields['name'] ?? '', 0, 2);
       }
       return mb_strtoupper($initials);
    }

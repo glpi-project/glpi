@@ -264,7 +264,7 @@ class CommonDBTM extends CommonGLPI {
       // Make new database object and fill variables
 
       // != 0 because 0 is consider as empty
-      if (strlen($ID) == 0) {
+      if (strlen((string)$ID) == 0) {
          return false;
       }
 
@@ -1478,14 +1478,14 @@ class CommonDBTM extends CommonGLPI {
                      switch ($searchopt['datatype']) {
                         case 'string' :
                         case 'text' :
-                           $ischanged = (strcmp($DB->escape($this->fields[$key]),
-                                                $this->input[$key]) != 0);
+                           $ischanged = (strcmp((string)$DB->escape($this->fields[$key]),
+                                                (string)$this->input[$key]) != 0);
                            break;
 
                         case 'itemlink' :
                            if ($key == 'name') {
-                              $ischanged = (strcmp($DB->escape($this->fields[$key]),
-                                                               $this->input[$key]) != 0);
+                              $ischanged = (strcmp((string)$DB->escape($this->fields[$key]),
+                                                   (string)$this->input[$key]) != 0);
                               break;
                            } // else default
 
@@ -5101,6 +5101,10 @@ class CommonDBTM extends CommonGLPI {
    */
    private function assetBusinessRules($condition) {
       global $CFG_GLPI;
+
+      if ($this->input === false) {
+         return;
+      }
 
       //Only process itemtype that are assets
       if (in_array($this->getType(), $CFG_GLPI['asset_types'])) {
