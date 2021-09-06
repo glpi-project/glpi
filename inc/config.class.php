@@ -2050,6 +2050,8 @@ class Config extends CommonDBTM {
                  'check'   => 'Sabre\\VObject\\Component' ],
                [ 'name'    => 'laminas/laminas-cache',
                  'check'   => 'Laminas\\Cache\\Module' ],
+               [ 'name'    => 'laminas/laminas-cache-storage-adapter-filesystem',
+                 'check'   => 'Laminas\\Cache\\Storage\\Adapter\\Filesystem' ],
                [ 'name'    => 'laminas/laminas-i18n',
                  'check'   => 'Laminas\\I18n\\Module' ],
                [ 'name'    => 'laminas/laminas-serializer',
