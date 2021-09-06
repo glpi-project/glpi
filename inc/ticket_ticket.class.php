@@ -187,12 +187,13 @@ class Ticket_Ticket extends CommonDBRelation {
    /**
     * Get Link Name
     *
-    * @param integer $value    Current value
-    * @param boolean $inverted Whether to invert label
+    * @param integer $value     Current value
+    * @param boolean $inverted  Whether to invert label
+    * @param boolean $with_icon prefix label with an icon
     *
     * @return string
    **/
-   static function getLinkName($value, $inverted = false) {
+   static function getLinkName($value, bool $inverted = false, bool $with_icon = false):string {
       $tmp = [];
 
       if (!$inverted) {
@@ -205,6 +206,16 @@ class Ticket_Ticket extends CommonDBRelation {
          $tmp[self::DUPLICATE_WITH] = __('Duplicated by');
          $tmp[self::SON_OF]         = __('Parent of');
          $tmp[self::PARENT_OF]      = __('Son of');
+      }
+
+      if ($with_icon) {
+         $icon_tag = '<i class="fas %1$s me-1" title="%2$s" data-bs-toggle="tooltip"></i>%2$s';
+         $tmp[self::LINK_TO]        = sprintf($icon_tag, "fa-link", $tmp[self::LINK_TO]);
+         $tmp[self::DUPLICATE_WITH] = sprintf($icon_tag, "fa-clone", $tmp[self::DUPLICATE_WITH]);
+         $icon_son                  = $inverted ? "fa-level-down-alt" : "fa-level-up-alt fa-flip-horizontal";
+         $tmp[self::SON_OF]         = sprintf($icon_tag, $icon_son, $tmp[self::SON_OF]);
+         $icon_parent               = $inverted ? "fa-level-down-alt" : "fa-level-up-alt";
+         $tmp[self::PARENT_OF]      = sprintf($icon_tag, $icon_parent, $tmp[self::PARENT_OF]);
       }
 
       if (isset($tmp[$value])) {
