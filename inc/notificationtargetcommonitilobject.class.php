@@ -1708,7 +1708,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'costs'     => _n('Cost', 'Costs', Session::getPluralNumber()),
                     'authors'   => _n('Requester', 'Requesters', Session::getPluralNumber()),
                     'suppliers' => _n('Supplier', 'Suppliers', Session::getPluralNumber()),
-                    'timelineitems' => __('Processing '.strtolower($objettype))];
+                    'timelineitems' => sprintf(__('Processing %1$s'), strtolower($objettype))];
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(['tag'     => $tag,
