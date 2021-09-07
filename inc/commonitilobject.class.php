@@ -6615,18 +6615,14 @@ abstract class CommonITILObject extends CommonDBTM {
 
    function addDefaultFormTab(array &$ong) {
 
-      if (self::isLayoutExcludedPage()
-          || !self::isLayoutWithMain()
-          || !method_exists($this, "showForm")) {
-         $timeline    = $this->getTimelineItems(false);
-         $nb_elements = count($timeline);
-         $label = $this->getTypeName(1);
-         if ($nb_elements > 0) {
-            $label.= " <span class='badge'>$nb_elements</span>";
-         }
-
-         $ong[$this->getType().'$main'] = $label;
+      $timeline    = $this->getTimelineItems(false);
+      $nb_elements = count($timeline);
+      $label = $this->getTypeName(1);
+      if ($nb_elements > 0) {
+         $label.= " <span class='badge'>$nb_elements</span>";
       }
+
+      $ong[$this->getType().'$main'] = $label;
       return $this;
    }
 

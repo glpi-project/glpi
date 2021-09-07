@@ -74,6 +74,7 @@ The present file will list all changes made to the project; according to the
 
 #### Removed
 - Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
+- `$CFG_GLPI['layout_excluded_pages']` entry
 - `$LOADED_PLUGINS` global variable
 - `getAllDatasFromTable()`
 - `getRealQueryForTreeItem()`
@@ -83,6 +84,8 @@ The present file will list all changes made to the project; according to the
 - `Change::getCommonLeftJoin()`
 - `Change::getCommonSelect()`
 - `CommonDBTM::getRawName()`
+- `CommonGLPI::isLayoutExcludedPage()`
+- `CommonGLPI::isLayoutWithMain()`
 - `CommonITILObject::displayHiddenItemsIdInput()`
 - `CommonITILObject::filterTimeline()`
 - `CommonITILObject::showActorsPartForm()`

@@ -384,11 +384,7 @@ class CommonGLPI {
    **/
    function addDefaultFormTab(array &$ong) {
 
-      if (self::isLayoutExcludedPage()
-          || !self::isLayoutWithMain()
-          || !method_exists($this, "showForm")) {
-         $ong[$this->getType().'$main'] = $this->getTypeName(1);
-      }
+      $ong[$this->getType().'$main'] = $this->getTypeName(1);
       return $this;
    }
 
@@ -593,11 +589,6 @@ class CommonGLPI {
          case -1 :
             // get tabs and loop over
             $ong = $item->defineAllTabs(['withtemplate' => $withtemplate]);
-
-            if (!self::isLayoutExcludedPage() && self::isLayoutWithMain()) {
-               //on classical and vertical split; the main tab is always displayed
-               array_shift($ong);
-            }
 
             if (count($ong)) {
                foreach ($ong as $key => $val) {
@@ -1047,14 +1038,12 @@ JAVASCRIPT;
 
          }
          echo "<span class='center nav_title'>&nbsp;";
-         if (!self::isLayoutWithMain() || self::isLayoutExcludedPage()) {
-            if ($this instanceof CommonITILObject) {
-               echo "<span class='status'>";
-               echo $this->getStatusIcon($this->fields['status']);
-               echo "</span>";
-            }
-            echo $name;
+         if ($this instanceof CommonITILObject) {
+            echo "<span class='status'>";
+            echo $this->getStatusIcon($this->fields['status']);
+            echo "</span>";
          }
+         echo $name;
          echo "</span>";
 
          if ($current !== false) {
@@ -1089,39 +1078,6 @@ JAVASCRIPT;
 
          echo "</div>"; // .navigationheader
       }
-   }
-
-
-   /**
-    * check if main is always display in current Layout
-    *
-    * @since 0.90
-    *
-    * @return boolean
-    */
-   public static function isLayoutWithMain() {
-      return false;
-   }
-
-
-   /**
-    * check if page is excluded for splitted layouts
-    *
-    * @since 0.90
-    *
-    * @return boolean
-    */
-   public static function isLayoutExcludedPage() {
-      global $CFG_GLPI;
-
-      if (basename($_SERVER['SCRIPT_NAME']) == "updatecurrenttab.php") {
-         $base_referer = basename($_SERVER['HTTP_REFERER']);
-         $base_referer = explode("?", $base_referer);
-         $base_referer = $base_referer[0];
-         return in_array($base_referer, $CFG_GLPI['layout_excluded_pages']);
-      }
-
-      return in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages']);
    }
 
 
@@ -1176,14 +1132,6 @@ JAVASCRIPT;
       }
       echo "<div class='col'>";
       $this->showNavigationHeader($options);
-      if (!self::isLayoutExcludedPage() && self::isLayoutWithMain()) {
-
-         if (!isset($options['id'])) {
-            $options['id'] = 0;
-         }
-         $this->showPrimaryForm($options);
-      }
-
       $this->showTabsContent($options);
       echo "</div>";
       echo "</div>";
