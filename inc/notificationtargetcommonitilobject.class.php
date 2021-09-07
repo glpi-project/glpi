@@ -1725,7 +1725,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.log'                => __('Historical'),
                     $objettype.'.tasks'              => _n('Task', 'Tasks', Session::getPluralNumber()),
                     $objettype.'.costs'              => _n('Cost', 'Costs', Session::getPluralNumber()),
-                    $objettype.'.timelineitems'       => __('Processing '.strtolower($objettype))];
+                    $objettype.'.timelineitems'       => sprintf(__('Processing %1$s'), strtolower($objettype))];
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(['tag'   => $tag,
