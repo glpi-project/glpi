@@ -85,6 +85,6 @@
         "webpack-cli": "^4.1.0"
     },
     "resolutions": {
-        "bootstrap": "5.0.0"
+        "bootstrap": "5.1.0"
     }
 }
