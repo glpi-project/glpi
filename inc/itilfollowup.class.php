@@ -772,68 +772,6 @@ class ITILFollowup  extends CommonDBChild {
    }
 
 
-   function showFormButtons($options = []) {
-
-      // for single object like config
-      $ID = 1;
-      if (isset($this->fields['id'])) {
-         $ID = $this->fields['id'];
-      }
-
-      $params = [
-         'colspan'  => 2,
-         'candel'   => true,
-         'canedit'  => true,
-      ];
-
-      if (is_array($options) && count($options)) {
-         foreach ($options as $key => $val) {
-            $params[$key] = $val;
-         }
-      }
-
-      if (!$this->isNewID($ID)) {
-         echo "<input type='hidden' name='id' value='$ID'>";
-      }
-
-      Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$params]);
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td class='center' colspan='".($params['colspan']*2)."'>";
-
-      if ($this->isNewID($ID)) {
-         echo $params['item']::getSplittedSubmitButtonHtml($this->fields['items_id'], 'add');
-      } else {
-         if ($params['candel']
-             && !$this->can($ID, DELETE)
-             && !$this->can($ID, PURGE)) {
-            $params['candel'] = false;
-         }
-
-         if ($params['canedit'] && $this->can($ID, UPDATE)) {
-            echo $params['item']::getSplittedSubmitButtonHtml($this->fields['items_id'], 'update');
-            echo "</td></tr><tr class='tab_bg_2'>\n";
-         }
-
-         if ($params['candel']) {
-            echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
-            if ($this->can($ID, PURGE)) {
-               echo Html::submit(_x('button', 'Delete permanently'),
-                                 ['name'    => 'purge',
-                                       'confirm' => __('Confirm the final deletion?')]);
-            }
-         }
-
-         if ($this->isField('date_mod')) {
-            echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
-         }
-      }
-
-      echo "</td></tr></table></div>";
-      Html::closeForm();
-   }
-
-
    function getRights($interface = 'central') {
 
       $values = parent::getRights();
