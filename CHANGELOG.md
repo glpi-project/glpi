@@ -84,6 +84,7 @@ The present file will list all changes made to the project; according to the
 - `Change::getCommonLeftJoin()`
 - `Change::getCommonSelect()`
 - `CommonDBTM::getRawName()`
+- `CommonDBTM::showDates()`
 - `CommonGLPI::isLayoutExcludedPage()`
 - `CommonGLPI::isLayoutWithMain()`
 - `CommonGLPI::showPrimaryForm()`
