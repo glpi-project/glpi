@@ -415,14 +415,6 @@ class Config extends CommonDBTM {
       }
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td><label for='dropdown_allow_search_all$rand'>" . __('All') . "</label></td><td>";
-      $values = [0 => __('No'),
-                 1 => sprintf(__('%1$s (%2$s)'), __('Yes'), __('last criterion'))];
-      Dropdown::showFromArray('allow_search_all', $values,
-                              ['value' => $CFG_GLPI['allow_search_all'], 'rand' => $rand]);
-      echo "</td><td colspan='2'></td></tr>";
-
       echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Item locks')."</td></tr>";
 
       echo "<tr class='tab_bg_2'>";

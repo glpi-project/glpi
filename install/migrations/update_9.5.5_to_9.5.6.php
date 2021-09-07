@@ -82,6 +82,11 @@ function update955to956() {
    }
    /* /Add `date` to glpi_documents_items */
 
+   $DB->deleteOrDie('glpi_configs', [
+      'context' => 'core',
+      'name'    => 'allow_search_all',
+   ]);
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

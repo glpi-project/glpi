@@ -458,13 +458,6 @@ class Search {
 
       $data['display_type'] = $data['search']['display_type'];
 
-      if (!$CFG_GLPI['allow_search_all']) {
-         foreach ($p['criteria'] as $val) {
-            if (isset($val['field']) && $val['field'] == 'all') {
-               Html::displayRightError();
-            }
-         }
-      }
       if (!$CFG_GLPI['allow_search_view']) {
          foreach ($p['criteria'] as $val) {
             if (isset($val['field']) && $val['field'] == 'view') {
@@ -480,7 +473,6 @@ class Search {
       if (is_array($forcedisplay) && count($forcedisplay)) {
          $forcetoview = true;
       }
-      $data['search']['all_search']  = false;
       $data['search']['view_search'] = false;
 
       $data['toview'] = self::addDefaultToView($itemtype, $params);
@@ -513,8 +505,6 @@ class Search {
                         && (!isset($criterion['meta'])
                            || !$criterion['meta'])) {
                         array_push($data['toview'], $criterion['field']);
-                     } else if ($criterion['field'] == 'all') {
-                        $data['search']['all_search'] = true;
                      } else if ($criterion['field'] == 'view') {
                         $data['search']['view_search'] = true;
                      }
@@ -704,40 +694,6 @@ class Search {
          }
       }
 
-      // Search all case :
-      if ($data['search']['all_search']) {
-         foreach ($searchopt as $key => $val) {
-            // Do not search on Group Name
-            if (is_array($val) && isset($val['table'])) {
-               if (!in_array($searchopt[$key]["table"], $blacklist_tables)) {
-                  $FROM .= self::addLeftJoin(
-                     $data['itemtype'],
-                     $itemtable,
-                     $already_link_tables,
-                     $searchopt[$key]["table"],
-                     $searchopt[$key]["linkfield"],
-                     0,
-                     0,
-                     $searchopt[$key]["joinparams"],
-                     $searchopt[$key]["field"]
-                  );
-
-                  $COUNT_FROM .= self::addLeftJoin(
-                     $data['itemtype'],
-                     $itemtable,
-                     $count_already_linked_tables,
-                     $searchopt[$key]["table"],
-                     $searchopt[$key]["linkfield"],
-                     0,
-                     0,
-                     $searchopt[$key]["joinparams"],
-                     $searchopt[$key]["field"]
-                  );
-               }
-            }
-         }
-      }
-
       //// 3 - WHERE
 
       // default string
@@ -833,9 +789,9 @@ class Search {
                 && $criterion['meta'];
       });
       if ((count($data['search']['metacriteria']))
-          || count($criteria_with_meta)
-          || !empty($HAVING)
-          || $data['search']['all_search']) {
+         || count($criteria_with_meta)
+         || !empty($HAVING)
+      ) {
          $GROUPBY = " GROUP BY `$itemtable`.`id`";
       }
 
@@ -2597,9 +2553,6 @@ JAVASCRIPT;
       }
       if ($CFG_GLPI['allow_search_view'] == 1 && !isset($request['from_meta'])) {
          $values['view'] = __('Items seen');
-      }
-      if ($CFG_GLPI['allow_search_all'] && !isset($request['from_meta'])) {
-         $values['all'] = __('All');
       }
       $value = '';
 

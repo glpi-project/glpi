@@ -183,7 +183,6 @@ $default_prefs = [
    'refresh_views'                           => '0',
    'set_default_tech'                        => '1',
    'allow_search_view'                       => '2',
-   'allow_search_all'                        => '0',
    'allow_search_global'                     => '1',
    'display_count_on_home'                   => '5',
    'use_password_security'                   => '0',
