@@ -38,9 +38,9 @@
 
             {# @TODO Saved searches panel #}
 
-            <div class="dropdown-item" data-language-selector>
+            <div class="dropdown-item">
                <i class="fas fa-fw fa-language"></i>
-               {{ language_name|raw }}
+               {{ call('User::showSwitchLangForm')|raw }}
             </div>
 
             <div class="dropdown-divider"></div>
@@ -105,11 +105,10 @@
 </div>
 
 {% elseif constant('GLPI_DEMO_MODE') %}
-   <a href="{{ path('/front/preference.php?forcetab=User$1') }}" class="dropdown-item" title="{{ language_name }}"
-      data-language-selector>
+   <div class="dropdown-item">
       <i class="fas fa-fw fa-language"></i>
-      {{ language_name }}
-   </a>
+      {{ call('User::showSwitchLangForm')|raw }}
+   </div>
 
 {% endif %}
 
