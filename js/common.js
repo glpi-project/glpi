@@ -436,50 +436,6 @@ var read_more = function() {
    });
 };
 
-
-var split_button_fct_called = false;
-var split_button = function() {
-   if (split_button_fct_called) {
-      return true;
-   }
-   split_button_fct_called = true;
-
-   // unfold status list
-   $(document).on("click", '.x-button-drop', function() {
-      $(this).parents(".x-split-button").toggleClass('open');
-   });
-
-   $(document).on("click", '.x-split-button', function(event) {
-      event.stopPropagation();
-   });
-
-   //click on an element of status list
-   $(document).on("click", '.x-button-drop-menu li', function(event) {
-      var chosen_li = $(this);
-      if (event.target.children.length) {
-         var xBtnDrop = chosen_li.parent().siblings(".x-button-drop");
-         //clean old status class
-         xBtnDrop.attr('class','x-button x-button-drop');
-
-         //find status
-         var cstatus = chosen_li.data('status');
-
-         //add status to dropdown button
-         xBtnDrop.addClass(cstatus);
-
-         //fold status list
-         chosen_li.parents(".x-split-button").removeClass('open');
-      }
-   });
-
-   //fold status list on click on document
-   $(document).on("click", function() {
-      if ($('.x-split-button').hasClass('open')) {
-         $('.x-split-button').removeClass('open');
-      }
-   });
-};
-
 // Responsive header
 if ($(window).width() <= 700) {
    var didScroll;
