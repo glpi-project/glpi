@@ -1075,14 +1075,6 @@
       }
    }
 
-   .x-split-button {
-      position: relative;
-      width: 250px;
-      left: 40%;
-      word-wrap: normal;
-      white-space: normal;
-   }
-
    .x-button {
       position: relative;
       margin: 0;
@@ -1105,102 +1097,6 @@
       &.x-button-main {
          width: 100px;
          height: 26px;
-      }
-
-      &.x-button-drop {
-         border-left: 0;
-         width: 15px;
-         height: 16px;
-         background-repeat: no-repeat;
-         background-position: center;
-
-         &:after {
-            content: '\25BC';
-         }
-      }
-   }
-
-   .open .x-button.x-button-drop:after {
-      content: '\25B2';
-   }
-
-   .x-button-drop:after {
-      font-family: 'Font Awesome\ 5 Free';
-      font-weight: 900;
-   }
-
-   .x-button.x-button-drop {
-      &.new:after {
-         content: '\f111';
-         color: #49bf4d;
-      }
-
-      &.assigned:after {
-         content: '\f111';
-         font-weight: 400;
-         color: #49bf4d;
-      }
-
-      &.planned:after {
-         content: '\f073';
-         color: #1B2F62;
-      }
-
-      &.waiting:after {
-         content: '\f111';
-         color: orange;
-      }
-
-      &.solved:after {
-         content: '\f111';
-         font-weight: 400;
-         color: black;
-      }
-
-      &.closed:after {
-         content: '\f111';
-         color: black;
-      }
-   }
-
-   .open > .x-button-drop-menu {
-      display: block;
-   }
-
-   .x-button-drop-menu {
-      position: absolute;
-      top: 27px;
-      left: 0;
-      z-index: 1000;
-      display: none;
-      float: left;
-      min-width: 136px;
-      list-style: none;
-      border: 0;
-      text-align: left;
-
-      li {
-         input[type="radio"] {
-            position: absolute;
-            left: -9999px;
-         }
-
-         label {
-            background-color: #fddb6f;
-            padding: 4px;
-            color: #8f5a0a;
-            cursor: pointer;
-            display: block;
-            font-weight: bold;
-         }
-
-         &:hover label {
-            background-color: #ffb94b !important;
-         }
-
-         input[type="radio"]:checked + label {
-            background-color: #FEC95C;
-         }
       }
    }
 

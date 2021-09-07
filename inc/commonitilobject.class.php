@@ -6063,34 +6063,6 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
 
-   /**
-    * Gets submit button with a status dropdown
-    *
-    * @since 9.4.0
-    *
-    * @param integer $items_id
-    * @param string  $action
-    *
-    * @return string HTML code for splitted submit button
-   **/
-   static function getSplittedSubmitButtonHtml($items_id, $action = "add") {
-      global $CFG_GLPI;
-
-      $locale = _sx('button', 'Add');
-      if ($action == 'update') {
-         $locale = _x('button', 'Save');
-      }
-      $item       = new static();
-      $item->getFromDB($items_id);
-
-      $html = "<div class='x-split-button' id='x-split-button'>";
-      $html .= "<input type='submit' value='$locale' name='$action' class='x-button x-button-main'>";
-      $html .= "</div>";
-      $html .= "<script type='text/javascript'>$(function() {split_button();});</script>";
-      return $html;
-   }
-
-
    public function getTimelineItemtypes(): array {
       /** @var CommonITILObject $obj_type */
       $obj_type = static::getType();
