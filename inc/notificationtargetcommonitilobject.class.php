@@ -1552,9 +1552,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                } else {
                   $tmptimelineitems['##timelineitems.author##'] = getUserName($timeline_data['item']['users_id']);
                }
-            } else if ($timeline_data['type'] == "Solution") {
-               //empty author like GLPI timeline
-               $tmptimelineitems['##timelineitems.author##'] = '';
             } else {
                $tmptimelineitems['##timelineitems.author##'] = getUserName($timeline_data['item']['users_id']);
             }
