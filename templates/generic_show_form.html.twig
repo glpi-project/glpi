@@ -828,7 +828,7 @@
                               0,
                               true,
                               item.fields['renewal'] == constant('Contract::RENEWAL_TACIT')
-                           ]) }}
+                           ])|raw }}
                         {% endset %}
                      {% endif %}
                      {{ fields.dropdownNumberField('duration', item.fields['duration'], __('Initial contract period'), {
@@ -851,7 +851,7 @@
                               item.fields['duration'],
                               item.fields['notice'],
                               true
-                           ]) }}
+                           ])|raw }}
                         {% endset %}
                      {% endif %}
                      {{ fields.dropdownNumberField('notice', item.fields['notice'], __('Notice'), {
