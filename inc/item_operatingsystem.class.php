@@ -280,19 +280,6 @@ class Item_OperatingSystem extends CommonDBRelation {
       return parent::getConnexityItem($itemtype, $items_id, $getFromDB, $getEmpty, $getFromDBOrEmpty);
    }
 
-   function showPrimaryForm($options = []) {
-      //overrided to set expected values for new item
-      $fields = $options;
-      if (isset($fields['id']) && $fields['id'] == 0) {
-         unset($fields['id']);
-      }
-      foreach ($fields as $field => $value) {
-         $this->fields[$field] = $value;
-      }
-      parent::showPrimaryForm($options);
-   }
-
-
    function showForm($ID, $options = []) {
       $colspan = 4;
 
