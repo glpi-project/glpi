@@ -1258,10 +1258,6 @@ HTML;
       Html::requireJs('log_filters');
 
       $tpl_vars['css_files'][] = 'css/legacy/jquery-glpi.scss';
-      if (CommonGLPI::isLayoutWithMain()
-          && !CommonGLPI::isLayoutExcludedPage()) {
-         $tpl_vars['css_files'][] = 'public/lib/scrollable-tabs.css';
-      }
 
       if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
          $tpl_vars['high_contrast'] = true;
@@ -1294,12 +1290,6 @@ HTML;
       // Search
       $tpl_vars['js_modules'][] = 'js/modules/Search/ResultsView.js';
       $tpl_vars['js_modules'][] = 'js/modules/Search/Table.js';
-
-      // layout
-      if (CommonGLPI::isLayoutWithMain()
-          && !CommonGLPI::isLayoutExcludedPage()) {
-         $tpl_vars['js_files'][] = 'public/lib/scrollable-tabs.js';
-      }
 
       TemplateRenderer::getInstance()->display('layout/parts/head.html.twig', $tpl_vars);
 
