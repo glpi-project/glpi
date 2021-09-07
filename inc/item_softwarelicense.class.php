@@ -131,6 +131,37 @@ class Item_SoftwareLicense extends CommonDBRelation {
                }
             }
             return false;
+
+         case 'add' :
+            Software::dropdownLicenseToInstall('peer_softwarelicenses_id',
+                                                $_SESSION["glpiactive_entity"]);
+            echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction'])."</span>";
+            return true;
+
+         case 'add_item' :
+            global $CFG_GLPI;
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_2 center'>";
+            echo "<td>";
+            $rand = Dropdown::showItemTypes('itemtype', $CFG_GLPI['software_types'], [
+               'width'                 => 'unset'
+            ]);
+
+            $p = ['idtable'            => '__VALUE__',
+               'rand'                  => $rand,
+               'name'                  => "items_id",
+               'width'                 => 'unset'
+            ];
+
+            Ajax::updateItemOnSelectEvent("dropdown_itemtype$rand", "results_itemtype$rand",
+               $CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php", $p);
+
+            echo "<span id='results_itemtype$rand'>\n";
+            echo "</td><td>";
+            echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction'])."</span>";
+            echo "</td></tr>";
+
+            return true;
       }
       return parent::showMassiveActionsSubForm($ma);
    }
@@ -201,6 +232,27 @@ class Item_SoftwareLicense extends CommonDBRelation {
                   } else {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                   }
+               }
+            }
+            return;
+         
+         case 'add_item':
+            $item_licence = New Item_SoftwareLicense();
+            $input = $ma->getInput();
+            foreach ($ids as $id) {
+               $input = [
+                  'softwarelicenses_id'   => $id,
+                  'items_id'        => $input['items_id'],
+                  'itemtype'        => $input['itemtype']
+               ];
+               if ($item_licence->can(-1, UPDATE, $input)) {
+                  if ($item_licence->add($input)) {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                }
             }
             return;
