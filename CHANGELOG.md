@@ -90,6 +90,7 @@ The present file will list all changes made to the project; according to the
 - `CommonGLPI::showPrimaryForm()`
 - `CommonITILObject::displayHiddenItemsIdInput()`
 - `CommonITILObject::filterTimeline()`
+- `CommonITILObject::getSplittedSubmitButtonHtml()`
 - `CommonITILObject::showActorsPartForm()`
 - `CommonITILObject::showFormHeader()`
 - `CommonITILObject::showGroupsAssociated()`
