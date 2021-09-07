@@ -782,42 +782,6 @@ JAVASCRIPT;
 
 
    /**
-    * Show primary form
-    *
-    * @since 0.90
-    *
-    * @param array $options Options
-    *
-    * @return boolean
-   **/
-   function showPrimaryForm($options = []) {
-
-      if (!method_exists($this, "showForm")) {
-         return false;
-      }
-
-      $ong   = $this->defineAllTabs();
-      $class = "main_form";
-      if (count($ong) == 0) {
-         $class .= " no_tab";
-      }
-      if (!isset($_GET['id'])
-          || (($_GET['id'] <= 0) && !$this instanceof Entity )) {
-         $class .= " create_form";
-      } else {
-         $class .= " modify_form";
-      }
-      echo "<div class='form_content'>";
-      echo "<div class='$class'>";
-      Plugin::doHook('pre_show_item', ['item' => $this, 'options' => &$options]);
-      $this->showForm($options['id'], $options);
-      Plugin::doHook('post_show_item', ['item' => $this, 'options' => $options]);
-      echo "</div>";
-      echo "</div>";
-   }
-
-
-   /**
     * Show tabs content
     *
     * @since 0.85
