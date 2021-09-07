@@ -48,9 +48,7 @@
             <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
             <input type="hidden" name="_no_message_link" value="1" />
 
-
-            {% set ticket_ticket = "Ticket_Ticket"|itemtype_class %}
-            {% if ticket_ticket.countOpenChildren(item.fields['id']) > 0 %}
+            {% if call('Ticket_Ticket::countOpenChildren', [item.fields['id']]) > 0 %}
                <div class="alert alert-important alert-warning">
                   <i class="fas fa-2x fa-info me-2"></i>
                   <span>{{ __('Warning: non closed children tickets depends on current ticket. Are you sure you want to close it?') }}</span>
