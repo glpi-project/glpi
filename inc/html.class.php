@@ -1860,7 +1860,7 @@ HTML;
          'is_debug_active'       => $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE,
          'is_impersonate_active' => Session::isImpersonateActive(),
          'founded_new_version'   => $founded_new_version,
-         'language_name'         => Dropdown::getLanguageName($_SESSION['glpilanguage']),
+         'language_name'         => User::showSwitchLangForm(),
          'user'                  => $user instanceof User ? $user : null,
       ];
    }

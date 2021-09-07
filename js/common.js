@@ -475,23 +475,6 @@ if ($(window).width() <= 700) {
    };
 }
 
-var langSwitch = function(elt) {
-   $.ajax({
-      url: CFG_GLPI.root_doc + '/ajax/switchlang.php',
-      type: 'GET',
-      success: function(html) {
-         var new_elt = $('<div></div>');
-         new_elt.attr('class', elt.attr('class')); // Copy class from replaced element
-         new_elt.html(html);
-         new_elt.find('.debug-pannel').remove();
-         new_elt.find('#debugajax').remove();
-         new_elt.find('[name^="see_ajaxdebug"]').remove();
-         elt.replaceWith(new_elt);
-      }
-   });
-};
-
-
 var switchFoldMenu = function() {
    $.ajax({
       url: CFG_GLPI.root_doc + '/ajax/switchfoldmenu.php',
@@ -547,13 +530,6 @@ $(function() {
 
    // prevent jquery ui dialog to keep focus
    //$.ui.dialog.prototype._focusTabbable = function() {};
-
-   //quick lang switch
-   $('[data-language-selector]').on('click', function(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      langSwitch($(this));
-   });
 
    $('.reduce-menu').on('click', function(event) {
       event.preventDefault();
