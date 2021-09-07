@@ -244,9 +244,6 @@ class NotificationTargetTicket extends DbTestCase {
       ]);
       $this->integer($solutions_id)->isGreaterThan(0);
 
-      $auth = new \Auth();
-      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
-
       $basic_options = [
          'additionnaloption' => [
             'usertype' => ''
@@ -306,7 +303,7 @@ class NotificationTargetTicket extends DbTestCase {
       $this->array($ret['timelineitems'])->isIdenticalTo($expected);
 
       $auth = new \Auth();
-      $this->boolean((boolean)$auth->login('post-only', 'postonly', true))->isTrue();
+      $this->boolean((boolean)$this->login('post-only', 'postonly', true))->isTrue();
 
       $basic_options = [
          'additionnaloption' => [
