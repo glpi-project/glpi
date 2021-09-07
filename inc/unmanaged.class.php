@@ -299,7 +299,7 @@ class Unmanaged extends CommonDBTM {
       switch ($ma->getAction()) {
          case 'convert':
             echo __('Select an itemtype: ') . ' ';
-            Dropdown::showFromArray('itemtype', $CFG_GLPI['inventory_types']);
+            Dropdown::showFromArray('itemtype', array_combine($CFG_GLPI['inventory_types'], $CFG_GLPI['inventory_types']));
             break;
       }
       return parent::showMassiveActionsSubForm($ma);
