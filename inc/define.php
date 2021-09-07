@@ -422,19 +422,6 @@ $CFG_GLPI['user_pref_field'] = ['backcreated', 'csv_delimiter', 'date_format',
                                      'default_dashboard_helpdesk', 'default_dashboard_mini_ticket', 'default_central_tab',
                                      'fold_menu', 'fold_search', 'savedsearches_pinned', 'richtext_layout'];
 
-$CFG_GLPI['layout_excluded_pages'] = ["profile.form.php",
-                                           "knowbaseitem.php",
-                                           "knowbaseitem.form.php",
-                                           "bookmark.php",
-                                           "displaypreference.form.php",
-                                           "central.php",
-                                           "preference.php",
-                                           "config.form.php",
-                                           "common.tabs.php",
-                                           "transfer.form.php",
-                                           "entity.form.php",
-                                           "queuednotification.form.php"];
-
 $CFG_GLPI['lock_lockable_objects'] = ['Budget',  'Change', 'Contact', 'Contract', 'Document',
                                            'CartridgeItem', 'Computer', 'ConsumableItem', 'Entity',
                                            'Group', 'KnowbaseItem', 'Line', 'Link', 'Monitor',
