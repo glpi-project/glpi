@@ -167,6 +167,19 @@
                ) }}
             {% endif %}
 
+            {% if item.isNewItem() and item.getType() == 'Ticket' %}
+               {{ fields.dropdownField(
+                  'Contract',
+                  '_contracts_id',
+                  0,
+                  'Contract'|itemtype_name,
+                  field_options|merge({
+                     'entity': item.fields['entities_id'],
+                     'width': '100%',
+                  })
+               ) }}
+            {% endif %}
+
             {{ include('components/itilobject/fields/global_validation.html.twig') }}
 
             {% if item.getType() != 'Ticket' %}
