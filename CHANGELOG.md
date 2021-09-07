@@ -86,6 +86,7 @@ The present file will list all changes made to the project; according to the
 - `CommonDBTM::getRawName()`
 - `CommonGLPI::isLayoutExcludedPage()`
 - `CommonGLPI::isLayoutWithMain()`
+- `CommonGLPI::showPrimaryForm()`
 - `CommonITILObject::displayHiddenItemsIdInput()`
 - `CommonITILObject::filterTimeline()`
 - `CommonITILObject::showActorsPartForm()`

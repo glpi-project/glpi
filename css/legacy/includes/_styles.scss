@@ -377,22 +377,6 @@
    }
 
    /* ################--------------- Layout  ---------------#################### */
-   .main_form {
-      background-color: #FFF;
-      box-shadow: 0px 1px 2px 1px #D2D2D2;
-
-      tr {
-         &:not(.headerRow):not(.footerRow) th {
-            text-align: right;
-         }
-
-         &.headerRow th {
-            border-bottom: 1px solid #EFEFEF;
-            font-size: 1.5em;
-            padding: 8px 0;
-         }
-      }
-   }
    .headerRow th {
       & > .fa, & > .far, & > .fas, & > button {
          margin-left: 8px;
@@ -893,11 +877,6 @@
       tr {
          display: block;
       }
-   }
-
-   .main_form .faqadd_entries table.tab_cadre_fixe th {
-      display: block;
-      text-align: center;
    }
 
    /* ################--------------- Notepad  ---------------#################### */
