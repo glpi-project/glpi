@@ -14,7 +14,7 @@
         "@fullcalendar/list": "^4.4.0",
         "@fullcalendar/rrule": "^4.4.0",
         "@fullcalendar/timegrid": "^4.4.0",
-        "@tabler/core": "github:tabler/tabler#dev",
+        "@tabler/core": "github:tabler/tabler#de64c2d8f350039c76294398ec838305cb5d4126",
         "animate.css": "^4.1.1",
         "bootstrap": "^5.1.0",
         "chartist": "^0.11.4",
