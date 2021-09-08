@@ -2156,18 +2156,6 @@ class Search {
          return [];
       }
 
-      $key_to_itemtypes = [
-         'directconnect_types'  => ['Computer'],
-         'infocom_types'        => ['Budget', 'Infocom'],
-         'linkgroup_types'      => ['Group'],
-         // 'linkgroup_tech_types' => 'Group', // Cannot handle ambiguity with 'Group' from 'linkgroup_types'
-         'linkuser_types'       => ['User'],
-         // 'linkuser_tech_types'  => 'User', // Cannot handle ambiguity with 'User' from 'linkuser_types'
-         'project_asset_types'  => ['Project'],
-         'rackable_types'       => ['Enclosure', 'Rack'],
-         'ticket_types'         => ['Change', 'Problem', 'Ticket'],
-      ];
-
       $linked = [];
       foreach ($CFG_GLPI as $key => $values) {
          if ($key === 'link_types') {
@@ -2180,22 +2168,13 @@ class Search {
             continue;
          }
 
-         $matches = [];
-         if (preg_match('/^(.+)_types$/', $key, $matches)) {
-            $config_itemtypes = array_key_exists($key, $key_to_itemtypes)
-               ? $key_to_itemtypes[$key]
-               : [ucwords($matches[1])];
-            foreach ($config_itemtypes as $config_itemtype) {
-               if (!is_a($config_itemtype, CommonDBTM::class, true)) {
-                  continue;
-               }
-               if ($itemtype === $config_itemtype::getType()) {
-                  // List is related to source itemtype, all types of list are so linked
-                  $linked = array_merge($linked, $values);
-               } else if (in_array($itemtype, $values)) {
-                  // Source itemtype is inside list, type corresponding to list is so linked
-                  $linked[] = $config_itemtype::getType();
-               }
+         foreach (self::getMetaParentItemtypesForTypesConfig($key) as $config_itemtype) {
+            if ($itemtype === $config_itemtype::getType()) {
+               // List is related to source itemtype, all types of list are so linked
+               $linked = array_merge($linked, $values);
+            } else if (in_array($itemtype, $values)) {
+               // Source itemtype is inside list, type corresponding to list is so linked
+               $linked[] = $config_itemtype::getType();
             }
          }
       }
@@ -2203,7 +2182,69 @@ class Search {
       return array_unique($linked);
    }
 
+   /**
+    * Returns parents itemtypes having subitems defined in given config key.
+    * This list is filtered and is only valid in a "meta" search context.
+    *
+    * @param string $config_key
+    *
+    * @return string[]
+    */
+   private static function getMetaParentItemtypesForTypesConfig(string $config_key): array {
+      $matches = [];
+      if (preg_match('/^(.+)_types$/', $config_key, $matches) === 0) {
+         return [];
+      }
 
+      $key_to_itemtypes = [
+         'directconnect_types'  => ['Computer'],
+         'infocom_types'        => ['Budget', 'Infocom'],
+         'linkgroup_types'      => ['Group'],
+         // 'linkgroup_tech_types' => ['Group'], // Cannot handle ambiguity with 'Group' from 'linkgroup_types'
+         'linkuser_types'       => ['User'],
+         // 'linkuser_tech_types'  => ['User'], // Cannot handle ambiguity with 'User' from 'linkuser_types'
+         'project_asset_types'  => ['Project'],
+         'rackable_types'       => ['Enclosure', 'Rack'],
+         'ticket_types'         => ['Change', 'Problem', 'Ticket'],
+      ];
+
+      if (array_key_exists($config_key, $key_to_itemtypes)) {
+         return $key_to_itemtypes[$config_key];
+      }
+
+      $itemclass = $matches[1];
+      if (is_a($itemclass, CommonDBTM::class, true)) {
+         return [$itemclass::getType()];
+      }
+
+      return [];
+   }
+
+   /**
+    * Check if an itemtype is a possible subitem of another itemtype in a "meta" search context.
+    *
+    * @param string $parent_itemtype
+    * @param string $child_itemtype
+    *
+    * @return boolean
+    */
+   private static function isPossibleMetaSubitemOf(string $parent_itemtype, string $child_itemtype) {
+      global $CFG_GLPI;
+
+      if (is_a($parent_itemtype, CommonITILObject::class, true)
+          && in_array($child_itemtype, array_keys($parent_itemtype::getAllTypesForHelpdesk()))) {
+         return true;
+      }
+
+      foreach ($CFG_GLPI as $key => $values) {
+         if (in_array($parent_itemtype, self::getMetaParentItemtypesForTypesConfig($key))
+             && in_array($child_itemtype, $values)) {
+            return true;
+         }
+      }
+
+      return false;
+   }
 
    /**
     * @since 0.85
@@ -5393,15 +5434,22 @@ JAVASCRIPT;
 
       // Generic JOIN
       $from_obj      = getItemForItemtype($from_referencetype);
+      $from_item_obj = null;
       $to_obj        = getItemForItemtype($to_type);
-      $from_item_obj = getItemForItemtype($from_referencetype . '_Item');
-      if (!$from_item_obj) {
-         $from_item_obj = getItemForItemtype('Item_' . $from_referencetype);
+      $to_item_obj   = null;
+      if (self::isPossibleMetaSubitemOf($from_referencetype, $to_type)) {
+         $from_item_obj = getItemForItemtype($from_referencetype . '_Item');
+         if (!$from_item_obj) {
+            $from_item_obj = getItemForItemtype('Item_' . $from_referencetype);
+         }
       }
-      $to_item_obj   = getItemForItemtype($to_type . '_Item');
-      if (!$to_item_obj) {
-         $to_item_obj = getItemForItemtype('Item_' . $to_type);
+      if (self::isPossibleMetaSubitemOf($to_type, $from_referencetype)) {
+         $to_item_obj   = getItemForItemtype($to_type . '_Item');
+         if (!$to_item_obj) {
+            $to_item_obj = getItemForItemtype('Item_' . $to_type);
+         }
       }
+
       if ($from_obj && $from_obj->isField($to_fk)) {
          // $from_table has a foreign key corresponding to $to_table
          if (!in_array($to_table, $already_link_tables2)) {

@@ -65,7 +65,7 @@ class StatCsvExport implements ExportToCsvInterface
       foreach ($series as $serie) {
          $data = $serie['data'];
          if (is_array($data) && count($data)) {
-            $headers[$row_num] = $serie['name'];
+            $headers[$row_num] = $serie['name'] ?? '';
             foreach ($data as $key => $val) {
                if (!isset($values[$key])) {
                   $values[$key] = [];
