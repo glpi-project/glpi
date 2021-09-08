@@ -62,6 +62,7 @@
         "tinymce-i18n": "^20.4.4"
     },
     "scripts": {
+        "preinstall": "npx npm-force-resolutions",
         "build:patch_dependencies": "(patch -f -p1 -d node_modules/@tabler/core/ < tools/tabler-831.patch || echo 'Error applying patch')",
         "build:pack": "webpack --config webpack.config.js",
         "build": "npm run build:patch_dependencies && npm run build:pack"
@@ -82,5 +83,8 @@
         "terser": "^5.2.1",
         "webpack": "^5.3.2",
         "webpack-cli": "^4.1.0"
+    },
+    "resolutions": {
+        "bootstrap": "5.1.0"
     }
 }
