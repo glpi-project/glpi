@@ -1909,7 +1909,7 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td class='middle right'>" . __('Email signature') . "</td>";
       echo "<td colspan='3'>";
-      echo "<textarea cols='60' rows='5' name='mailing_signature'>".
+      echo "<textarea cols='60' rows='5' name='mailing_signature' class='form-control'>".
              $entity->fields["mailing_signature"]."</textarea>";
       if (strlen($entity->fields['mailing_signature']) == 0) {
          self::inheritedValue(self::getUsedConfig('mailing_signature', $ID, '', ''));
@@ -3452,9 +3452,10 @@ class Entity extends CommonTreeDropdown {
          return "";
       }
 
-      $out = "<div class='inherited ".($inline ? "inline" : "")."'
-                   title='".__("Value inherited from a parent entity")."'>
-         <i class='fas fa-level-down-alt'></i>
+      $out = "<div class='badge bg-azure-lt m-1 py-3 ".($inline ? "inline" : "")."'
+                   title='".__("Value inherited from a parent entity")."'
+                   data-bs-toggle='tooltip'>
+         <i class='fas fa-level-down-alt me-1'></i>
          $value
       </div>";
 
