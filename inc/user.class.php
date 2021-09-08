@@ -5275,21 +5275,18 @@ JAVASCRIPT;
     *
     * @return void
     */
-   function showSwitchLangForm() {
-
+   static function showSwitchLangForm() {
       $params = [
          'value'     => $_SESSION["glpilanguage"],
          'display'   => false,
          'on_change' => 'this.form.submit()'
       ];
 
-      $out = '';
-      $out .= '<i class="fas fa-fw fa-language"></i>&nbsp;';
-      $out .= "<form method='post' name='switchlang' action='".User::getFormURL()."' autocomplete='off'>";
+      $out = "<form method='post' name='switchlang' action='".User::getFormURL()."' autocomplete='off'>";
       $out .= Dropdown::showLanguages("language", $params);
       $out .= Html::closeForm(false);
 
-      echo $out;
+      return $out;
    }
 
    /**
