@@ -49,7 +49,12 @@ echo "Compile locale files"
 $WORKING_DIR/bin/console locales:compile
 
 echo "Minify stylesheets and javascripts"
-php -d memory_limit=2G $WORKING_DIR/vendor/bin/robo minify --load-from $WORKING_DIR/tools
+find $WORKING_DIR/css $WORKING_DIR/lib $WORKING_DIR/public/lib \( -iname "*.css" ! -iname "*.min.css" \) \
+    -exec sh -c 'echo "> {}" && $WORKING_DIR/node_modules/.bin/csso {} --output $(dirname {})/$(basename {} ".css").min.css' \;
+
+echo "Minify javascripts"
+find $WORKING_DIR/js $WORKING_DIR/lib $WORKING_DIR/public/lib \( -iname "*.js" ! -iname "*.min.js" \) \
+    -exec sh -c 'echo "> {}" && $WORKING_DIR/node_modules/.bin/terser {} --mangle --output $(dirname {})/$(basename {} ".js").min.js' \;
 
 echo "Compile SCSS"
 $WORKING_DIR/bin/console build:compile_scss
