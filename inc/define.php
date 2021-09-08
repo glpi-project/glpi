@@ -487,7 +487,7 @@ $CFG_GLPI['appliance_relation_types'] = ['Location', 'Network', 'Domain'];
 
 $CFG_GLPI['remote_management_types'] = ['Computer', 'Phone'];
 
-$CFG_GLPI['database_types'] = ['Computer'];
+$CFG_GLPI['databaseinstance_types'] = ['Computer'];
 
 $dashboard_libs = [
    'dashboard', 'gridstack',
