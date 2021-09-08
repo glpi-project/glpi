@@ -292,11 +292,7 @@ JAVASCRIPT;
    }
 
    function prepareInputForAdd($input) {
-<<<<<<< HEAD
       if (!isset($input['users_id']) && !(Session::isCron() || strpos($_SERVER['REQUEST_URI'], 'crontask.form.php') !== false)) {
-=======
-      if (!isset($input['users_id']) && (Session::isCron() || strpos($_SERVER['REQUEST_URI'], 'crontask.form.php') !== false)) {
->>>>>>> revert change from another PR
          $input['users_id'] = Session::getLoginUserID();
       }
 

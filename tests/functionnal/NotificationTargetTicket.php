@@ -275,7 +275,7 @@ class NotificationTargetTicket extends DbTestCase {
             "##timelineitems.date##"        => $solution->fields['date_creation'],
             "##timelineitems.description##" => $solution->fields['content'],
             "##timelineitems.position##"    => "right",
-            "##timelineitems.author##"      => "", //empty
+            "##timelineitems.author##"      => "tech", //empty
          ],[
             "##timelineitems.type##" => "ITILFollowup",
             "##timelineitems.typename##"=> "Followups",
@@ -302,7 +302,6 @@ class NotificationTargetTicket extends DbTestCase {
 
       $this->array($ret['timelineitems'])->isIdenticalTo($expected);
 
-      $auth = new \Auth();
       $this->boolean((boolean)$this->login('post-only', 'postonly', true))->isTrue();
 
       $basic_options = [
@@ -328,7 +327,7 @@ class NotificationTargetTicket extends DbTestCase {
             "##timelineitems.date##"        => $solution->fields['date_creation'],
             "##timelineitems.description##" => $solution->fields['content'],
             "##timelineitems.position##"    => "right",
-            "##timelineitems.author##"      => "", //empty
+            "##timelineitems.author##"      => "tech", //empty
          ],[
             "##timelineitems.type##"        => "ITILFollowup",
             "##timelineitems.typename##"    => "Followups",
