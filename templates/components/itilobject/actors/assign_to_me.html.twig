@@ -1,12 +1,9 @@
-<form method="POST" action="{{ item.getFormURL() }}" class="d-inline">
-   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-   <input type="hidden" name="addme_as_actor" value="1" />
-   <input type="hidden" name="actortype" value="{{ actortype }}" />
-   <input type="hidden" name="id" value="{{ item.fields['id'] }}" />
-   <button type="submit"
-           class="btn btn-icon btn-sm btn-ghost-secondary float-end mt-1 ms-1"
-           title="{{ __('Associate myself') }}"
-           data-bs-toggle="tooltip" data-bs-placement="top">
-      <i class="fas fa-male"></i>
-   </button>
-</form>
+<button type="submit"
+        form="addme_as_{{ actortype }}_{{ main_rand }}"
+        name="id"
+        value="{{ item.fields['id'] }}"
+        class="btn btn-icon btn-sm btn-ghost-secondary float-end mt-1 ms-1"
+        title="{{ __('Associate myself') }}"
+        data-bs-toggle="tooltip" data-bs-placement="top">
+   <i class="fas fa-male"></i>
+</button>

@@ -27,18 +27,15 @@
 
             {% if canupdate %}
                <div class="col-auto">
-                  <form method="POST" action="{{ 'Ticket_Ticket'|itemtype_form_path }}" class="d-inline">
-                     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-                     <input type="hidden" name="purge" value="1" />
-                     <input type="hidden" name="id" value="{{ id }}" />
-                     <input type="hidden" name="tickets_id" value="{{ item.fields['id'] }}" />
-                     <button type="submit"
-                             class="btn btn-sm btn-ghost-danger"
-                             title="{{ _x('button', 'Delete permanently') }}"
-                             data-bs-toggle="tooltip">
-                        <i class="fas fa-unlink"></i>
-                     </button>
-                  </form>
+                  <button type="submit"
+                          form="linked_tickets_{{ main_rand }}"
+                          name="id"
+                          value="{{ id }}"
+                          class="btn btn-sm btn-ghost-danger"
+                          title="{{ _x('button', 'Delete permanently') }}"
+                          data-bs-toggle="tooltip">
+                     <i class="fas fa-unlink"></i>
+                  </button>
                </div>
             {% endif %}
          </div>
