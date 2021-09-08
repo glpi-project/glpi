@@ -6897,11 +6897,9 @@ abstract class CommonITILObject extends CommonDBTM {
          ];
       }
 
-      //is requested only public
+      //if is from notif and if we want private too
       if ($from_notification && $get_private) {
-         $restrict_fup = [
-            'is_private'   => 0,
-         ];
+         $restrict_fup = [];
       }
 
       $restrict_fup['itemtype'] = static::getType();
@@ -6918,11 +6916,9 @@ abstract class CommonITILObject extends CommonDBTM {
          ];
       }
 
-      //is requested only public
+      //if is from notif and if we want private too
       if ($from_notification && $get_private) {
-         $restrict_task = [
-               'is_private'   => 0,
-         ];
+         $restrict_task = [];
       }
 
       //add followups to timeline
