@@ -382,7 +382,7 @@ class DatabaseInstance extends CommonDBTM {
    public static function getTypes($all = false): array {
       global $CFG_GLPI;
 
-      $types = $CFG_GLPI['database_types'];
+      $types = $CFG_GLPI['databaseinstance_types'];
 
       foreach ($types as $key => $type) {
          if (!class_exists($type)) {
