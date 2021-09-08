@@ -235,7 +235,7 @@ class Item_SoftwareLicense extends CommonDBRelation {
                }
             }
             return;
-         
+
          case 'add_item':
             $item_licence = New Item_SoftwareLicense();
             $input = $ma->getInput();

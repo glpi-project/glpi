@@ -47,13 +47,38 @@ class MassiveAction extends DbTestCase {
          [
             'itemtype'     => 'Computer',
             'items_id'     => '_test_pc01',
-            'allcount'     => 18,
+            'allcount'     => 19,
+            'singlecount'  => 12
+         ], [
+            'itemtype'     => 'Monitor',
+            'items_id'     => '_test_monitor_1',
+            'allcount'     => 17,
+            'singlecount'  => 11
+         ], [
+            'itemtype'     => 'SoftwareLicense',
+            'items_id'     => '_test_softlic_1',
+            'allcount'     => 15,
+            'singlecount'  => 9
+         ], [
+            'itemtype'     => 'NetworkEquipment',
+            'items_id'     => '_test_networkequipment_1',
+            'allcount'     => 15,
+            'singlecount'  => 10
+         ], [
+            'itemtype'     => 'Peripheral',
+            'items_id'     => '_test_peripheral_1',
+            'allcount'     => 17,
             'singlecount'  => 11
          ], [
             'itemtype'     => 'Printer',
             'items_id'     => '_test_printer_all',
-            'allcount'     => 16,
-            'singlecount'  => 10
+            'allcount'     => 17,
+            'singlecount'  => 11
+         ], [
+            'itemtype'     => 'Phone',
+            'items_id'     => '_test_phone_1',
+            'allcount'     => 17,
+            'singlecount'  => 11
          ], [
             'itemtype'     => 'Ticket',
             'items_id'     => '_ticket01',
