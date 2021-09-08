@@ -89,7 +89,6 @@ $(function() {
 
       // opening a sub menu close others
       menuDropdown.addEventListener('show.bs.dropdown', function (event) {
-         console.log(event);
          $('#menu_{{ rand }} .nav-link').removeClass('show active');
          $('#menu_{{ rand }} .nav-item').removeClass('active');
          $('#menu_{{ rand }} .dropdown-menu').removeClass('show');
