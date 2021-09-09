@@ -11,11 +11,9 @@ The present file will list all changes made to the project; according to the
 ### Changed
 - APCu and WinCache are not anymore use by GLPI, use `php bin/console cache:configure` command to configure cache system.
 - PDF export library has been changed from `TCPDF` to `mPDF`.
-- `transferDropdownNetpoint($netpoints_id)` rename to `transferDropdownSocket($sockets_id)`
 
 ### Deprecated
 - Usage of XML-RPC API is deprecated.
-
 
 ### Removed
 - Usage of alternative DB connection encoding (`DB::$dbenc` property).
@@ -37,12 +35,17 @@ The present file will list all changes made to the project; according to the
 - Field `date_mod` of ObjectLock has been renamed to `date`.
 - Field `date_creation` of PrinterLog has been renamed to `date`.
 - Field `date` of ProjectTask has been renamed to `date_creation`.
+- Table `glpi_netpoints` has been renamed to `glpi_sockets`.
 - `DBMysql::rollBack` supports a `name` parameter for rolling back to a savepoint.
+- `CommonDropdown::displaySpecificTypeField()` has a new `$options` parameter.
+- `NetworkPortInstantiation::showNetpointField()` has been renamed to `NetworkPortInstantiation::showSocketField()`.
+- `Transfer::transferDropdownNetpoint()` has been renamed to `Transfer::transferDropdownSocket()`.
 
 #### Deprecated
 - Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
 - Usage of `CommonDBTM::notificationqueueonaction` property
 - Usage of `NotificationTarget::html_tags` property
+- `Netpoint` has been deprecated and replaced by `Socket`
 - `DBmysql::getTableSchema()`
 - `Calendar::duplicate()`
 - `CommonDBTM::clone()`
@@ -62,8 +65,6 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::unclean_cross_side_scripting_deep()`
 - `Toolbox::unclean_html_cross_side_scripting_deep()`
 - `Toolbox::sanitize()`
-- `Netpoint` replaced by `Socket` and table `glpi_netpoints` renamed to `glpi_sockets`
-- `NetworkPortInstantiation::showNetpointField()` renamed to `NetworkPortInstantiation::showSocketField()`.
 
 #### Removed
 - `Update::declareOldItems()`
@@ -87,6 +88,7 @@ The present file will list all changes made to the project; according to the
 - `DBMysql::list_fields()`
 - `DBMysql::num_fields()`
 - `DbUtils::getRealQueryForTreeItem()`
+- `Dropdown::getDropdownNetpoint()`
 - `Calendar_Holiday::cloneCalendar()`
 - `CalendarSegment::cloneCalendar()`
 - `Change::getCommonLeftJoin()`
