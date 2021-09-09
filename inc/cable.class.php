@@ -600,6 +600,7 @@ class Cable extends CommonDBTM {
       ");
       echo "</td></tr>";
 
+      $options['colspan'] = 4;
       $this->showFormButtons($options);
       return true;
    }
