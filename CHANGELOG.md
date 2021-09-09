@@ -48,7 +48,6 @@ The present file will list all changes made to the project; according to the
 - Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
 - Usage of `CommonDBTM::notificationqueueonaction` property
 - Usage of `NotificationTarget::html_tags` property
-- `Ajax::createSlidePanel()`
 - `Calendar::duplicate()`
 - `CommonDBTM::clone()`
 - `CommonDBTM::prepareInputForClone()`
@@ -79,6 +78,7 @@ The present file will list all changes made to the project; according to the
 - `getAllDatasFromTable()`
 - `getRealQueryForTreeItem()`
 - `Ajax::createFixedModalWindow()`
+- `Ajax::createSlidePanel()`
 - `Calendar_Holiday::cloneCalendar()`
 - `CalendarSegment::cloneCalendar()`
 - `Change::getCommonLeftJoin()`
