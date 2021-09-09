@@ -167,6 +167,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::canUseImapPop()`
 - `Toolbox::checkSELinux()`
 - `Toolbox::doubleEncodeEmails()`
+- `Toolbox::removeHtmlSpecialChars()`
 - `Toolbox::sanitize()`
 - `Toolbox::unclean_html_cross_side_scripting_deep()`
 - `Toolbox::useCache()`

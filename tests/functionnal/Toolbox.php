@@ -55,14 +55,6 @@ class Toolbox extends DbTestCase {
       }
    }
 
-   public function testRemoveHtmlSpecialChars() {
-      $original = 'My - string èé  Ê À ß';
-      $expected = 'my - string ee  e a sz';
-      $result = \Toolbox::removeHtmlSpecialChars($original);
-
-      $this->string($result)->isIdenticalTo($expected);
-   }
-
    protected function slugifyProvider() {
       return [
          [
