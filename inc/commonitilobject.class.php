@@ -6900,7 +6900,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       //checks rights
       $restrict_fup = $restrict_task = [];
-      if (!Session::haveRight("followup", ITILFollowup::SEEPRIVATE)) {
+      if (!$params['expose_private'] && $task_obj->maybePrivate() && !Session::haveRight("followup", ITILFollowup::SEEPRIVATE)) {
          $restrict_fup = [
             'OR' => [
                'is_private'   => 0,
@@ -6909,15 +6909,11 @@ abstract class CommonITILObject extends CommonDBTM {
          ];
       }
 
-      //if is from notif and if we want private too
-      if (!Session::haveRight("followup", ITILFollowup::SEEPRIVATE) && $params['expose_private']) {
-         $restrict_fup = [];
-      }
 
       $restrict_fup['itemtype'] = static::getType();
       $restrict_fup['items_id'] = $this->getID();
 
-      if ($task_obj->maybePrivate() && !Session::haveRight("task", CommonITILTask::SEEPRIVATE)) {
+      if (!$params['expose_private'] && $task_obj->maybePrivate() && !Session::haveRight("task", CommonITILTask::SEEPRIVATE)) {
          $restrict_task = [
             'OR' => [
                'is_private'   => 0,
@@ -6926,11 +6922,6 @@ abstract class CommonITILObject extends CommonDBTM {
                                     : 0
             ]
          ];
-      }
-
-      //if is from notif and if we want private too
-      if (!Session::haveRight("task", CommonITILTask::SEEPRIVATE) && $params['expose_private']) {
-         $restrict_task = [];
       }
 
       //add followups to timeline
