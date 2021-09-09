@@ -38,7 +38,7 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (!isset($_POST["action"])) {
-   Toolbox::logError(__('No action define')."\n");
+   Toolbox::logError(__('No action defined')."\n");
    exit;
 }
 
@@ -46,9 +46,9 @@ switch ($_POST['action']) {
 
    case 'get_items_from_itemtype':
       if ($_POST['itemtype'] && class_exists($_POST['itemtype'])) {
-         $rand = $_POST['itemtype']::dropdown(['name'                => $_POST['dom_name'],
-                                               'rand'                => $_POST['dom_rand'],
-                                               'display_emptychoice' => true,
+         $_POST['itemtype']::dropdown(['name'                => $_POST['dom_name'],
+                                       'rand'                => $_POST['dom_rand'],
+                                       'display_emptychoice' => true,
          ]);
       }
       break;
