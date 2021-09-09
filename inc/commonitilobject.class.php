@@ -6861,11 +6861,29 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Retrieves all timeline items for this ITILObject
     *
+    * @param array $options Possible options:
+    * - with_documents : include documents elements
+    * - with_validations : include validation elements
+    * - expose_private : force presence of private items (followup/tasks), even if session does not allow it
+    * - bypass_rights : bypass current session rights
     * @since 9.4.0
     *
     * @return mixed[] Timeline items
     */
-   function getTimelineItems() {
+   function getTimelineItems(array $options = []) {
+
+      $params = [
+         'with_documents' => true,
+         'with_validations' => true,
+         'expose_private' => false,
+         'bypass_rights' => false,
+      ];
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
+      }
 
       $objType = static::getType();
       $foreignKey = static::getForeignKeyField();
@@ -6887,7 +6905,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       //checks rights
       $restrict_fup = $restrict_task = [];
-      if (!Session::haveRight("followup", ITILFollowup::SEEPRIVATE)) {
+      if (!$params['expose_private'] && !Session::haveRight("followup", ITILFollowup::SEEPRIVATE)) {
          $restrict_fup = [
             'OR' => [
                'is_private'   => 0,
@@ -6899,7 +6917,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $restrict_fup['itemtype'] = static::getType();
       $restrict_fup['items_id'] = $this->getID();
 
-      if ($task_obj->maybePrivate() && !Session::haveRight("task", CommonITILTask::SEEPRIVATE)) {
+      if (!$params['expose_private'] && $task_obj->maybePrivate() && !Session::haveRight("task", CommonITILTask::SEEPRIVATE)) {
          $restrict_task = [
             'OR' => [
                'is_private'   => 0,
@@ -6911,7 +6929,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       //add followups to timeline
-      if ($followup_obj->canview()) {
+      if ($followup_obj->canview() || $params['bypass_rights']) {
          $followups = $followup_obj->find(['items_id'  => $this->getID()] + $restrict_fup, ['date DESC', 'id DESC']);
          foreach ($followups as $followups_id => $followup) {
             $followup_obj->getFromDB($followups_id);
@@ -6923,7 +6941,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       //add tasks to timeline
-      if ($task_obj->canview()) {
+      if ($task_obj->canview() || $params['bypass_rights']) {
          $tasks = $task_obj->find([$foreignKey => $this->getID()] + $restrict_task, 'date DESC');
          foreach ($tasks as $tasks_id => $task) {
             $task_obj->getFromDB($tasks_id);
@@ -6934,28 +6952,29 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      //add documents to timeline
-      $document_obj   = new Document();
-      $document_items = $document_item_obj->find([
-         $this->getAssociatedDocumentsCriteria(),
-         'timeline_position'  => ['>', self::NO_TIMELINE]
-      ]);
-      foreach ($document_items as $document_item) {
-         $document_obj->getFromDB($document_item['documents_id']);
+      if ($params['with_documents']) {
+         $document_obj   = new Document();
+         $document_items = $document_item_obj->find([
+            $this->getAssociatedDocumentsCriteria($params['bypass_rights']),
+            'timeline_position'  => ['>', self::NO_TIMELINE]
+         ]);
+         foreach ($document_items as $document_item) {
+            $document_obj->getFromDB($document_item['documents_id']);
 
-         $date = $document_item['date'] ?? $document_item['date_creation'];
+            $date = $document_item['date'] ?? $document_item['date_creation'];
 
-         $item = $document_obj->fields;
-         $item['date'] = $date;
-         // #1476 - set date_mod and owner to attachment ones
-         $item['date_mod'] = $document_item['date_mod'];
-         $item['users_id'] = $document_item['users_id'];
-         $item['documents_item_id'] = $document_item['id'];
+            $item = $document_obj->fields;
+            $item['date'] = $date;
+            // #1476 - set date_mod and owner to attachment ones
+            $item['date_mod'] = $document_item['date_mod'];
+            $item['users_id'] = $document_item['users_id'];
+            $item['documents_item_id'] = $document_item['id'];
 
-         $item['timeline_position'] = $document_item['timeline_position'];
+            $item['timeline_position'] = $document_item['timeline_position'];
 
-         $timeline[$date."_document_".$document_item['documents_id']]
-            = ['type' => 'Document_Item', 'item' => $item];
+            $timeline[$date."_document_".$document_item['documents_id']]
+               = ['type' => 'Document_Item', 'item' => $item];
+         }
       }
 
       $solution_obj = new ITILSolution();
@@ -6983,7 +7002,8 @@ abstract class CommonITILObject extends CommonDBTM {
          ];
       }
 
-      if ($supportsValidation and $validation_class::canView()) {
+      if ($supportsValidation && $params['with_validations']
+          && ($validation_class::canView() || $params['bypass_rights'])) {
          $validations = $valitation_obj->find([$foreignKey => $this->getID()]);
          foreach ($validations as $validations_id => $validation) {
             $canedit = $valitation_obj->can($validations_id, UPDATE);
@@ -7032,6 +7052,29 @@ abstract class CommonITILObject extends CommonDBTM {
       return $timeline;
    }
 
+
+   static function getUserPositionFromTimelineItemPosition($position) {
+
+      switch ($position) {
+         case self::TIMELINE_LEFT:
+            $user_position = 'left';
+            break;
+         case self::TIMELINE_MIDLEFT:
+            $user_position = 'left middle';
+            break;
+         case self::TIMELINE_MIDRIGHT:
+            $user_position = 'right middle';
+            break;
+         case self::TIMELINE_RIGHT:
+            $user_position = 'right';
+            break;
+         default:
+            $user_position = 'left';
+      }
+
+      return $user_position;
+
+   }
 
    /**
     * Displays the timeline of items for this ITILObject
@@ -7099,23 +7142,7 @@ abstract class CommonITILObject extends CommonDBTM {
          }
 
          // set item position depending on field timeline_position
-         $user_position = 'left'; // default position
-         if (isset($item_i['timeline_position'])) {
-            switch ($item_i['timeline_position']) {
-               case self::TIMELINE_LEFT:
-                  $user_position = 'left';
-                  break;
-               case self::TIMELINE_MIDLEFT:
-                  $user_position = 'left middle';
-                  break;
-               case self::TIMELINE_MIDRIGHT:
-                  $user_position = 'right middle';
-                  break;
-               case self::TIMELINE_RIGHT:
-                  $user_position = 'right';
-                  break;
-            }
-         }
+         $user_position = self::getUserPositionFromTimelineItemPosition($item_i['timeline_position']);
 
          //display solution in middle
          if (($item['type'] == "Solution") && $item_i['status'] != CommonITILValidation::REFUSED

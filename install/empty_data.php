@@ -4064,28 +4064,19 @@ $tables['glpi_notificationtemplatetranslations'] = [
  ##lang.ticket.solution.type## : ##ticket.solution.type##
  ##lang.ticket.solution.description## : ##ticket.solution.description##
  ##ENDIFticket.storestatus##
- ##lang.ticket.numberoffollowups## : ##ticket.numberoffollowups##
 
-##FOREACHfollowups##
+##FOREACHtimelineitems##
+[##timelineitems.date##]
+##lang.timelineitems.author## ##timelineitems.author##
+##lang.timelineitems.description## ##timelineitems.description##
+##lang.timelineitems.date## ##timelineitems.date##
+##lang.timelineitems.position## ##timelineitems.position##
+##lang.timelineitems.type## ##timelineitems.type##
+##lang.timelineitems.typename## ##timelineitems.typename##
+##ENDFOREACHtimelineitems##
 
- [##followup.date##] ##lang.followup.isprivate## : ##followup.isprivate##
- ##lang.followup.author## ##followup.author##
- ##lang.followup.description## ##followup.description##
- ##lang.followup.date## ##followup.date##
- ##lang.followup.requesttype## ##followup.requesttype##
-
-##ENDFOREACHfollowups##
- ##lang.ticket.numberoftasks## : ##ticket.numberoftasks##
-
-##FOREACHtasks##
-
- [##task.date##] ##lang.task.isprivate## : ##task.isprivate##
- ##lang.task.author## ##task.author##
- ##lang.task.description## ##task.description##
- ##lang.task.time## ##task.time##
- ##lang.task.category## ##task.category##
-
-##ENDFOREACHtasks##',
+##lang.ticket.numberoffollowups## : ##ticket.numberoffollowups##
+##lang.ticket.numberoftasks## : ##ticket.numberoftasks##',
       'content_html'             => '<!-- description{ color: inherit; background: #ebebeb; border-style: solid;border-color: #8d8d8d; border-width: 0px 1px 1px 0px; }    -->
 <div>##IFticket.storestatus=5##</div>
 <div>##lang.ticket.url## : <a href="##ticket.urlapprove##">##ticket.urlapprove##</a> <strong>&#160;</strong></div>
@@ -4100,14 +4091,13 @@ $tables['glpi_notificationtemplatetranslations'] = [
 <p>##ENDFOREACHitems##</p>
 ##IFticket.assigntousers## <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.ticket.assigntousers##</span>&#160;: ##ticket.assigntousers## ##ENDIFticket.assigntousers##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">##lang.ticket.status## </span>&#160;: ##ticket.status##<br /> ##IFticket.assigntogroups## <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.ticket.assigntogroups##</span>&#160;: ##ticket.assigntogroups## ##ENDIFticket.assigntogroups##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.ticket.urgency##</span>&#160;: ##ticket.urgency##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.ticket.impact##</span>&#160;: ##ticket.impact##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.ticket.priority##</span>&#160;: ##ticket.priority## <br /> ##IFticket.user.email##<span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.ticket.user.email##</span>&#160;: ##ticket.user.email ##ENDIFticket.user.email##    <br /> ##IFticket.category##<span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">##lang.ticket.category## </span>&#160;:##ticket.category## ##ENDIFticket.category## ##ELSEticket.category## ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##    <br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.ticket.content##</span>&#160;: ##ticket.content##</p>
 <br />##IFticket.storestatus=6##<br /><span style="text-decoration: underline;"><strong><span style="color: #888888;">##lang.ticket.solvedate##</span></strong></span> : ##ticket.solvedate##<br /><span style="color: #888888;"><strong><span style="text-decoration: underline;">##lang.ticket.solution.type##</span></strong></span> : ##ticket.solution.type##<br /><span style="text-decoration: underline; color: #888888;"><strong>##lang.ticket.solution.description##</strong></span> : ##ticket.solution.description##<br />##ENDIFticket.storestatus##</p>
+<p>##ENDFOREACHtimelineitems##</p>
+<div class="description b"><br /><strong> [##timelineitems.date##]</strong><br /><span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.timelineitems.author## </span> ##<span style="color: #000000; font-weight: bold; text-decoration: underline; background-color: #ffffff;">timelineitems</span>.author##<br /><span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.timelineitems.description## </span> ##<span style="color: #000000; font-weight: bold; text-decoration: underline;">timelineitems</span>.description##<br /><span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.timelineitems.date## </span> ##<span style="color: #000000; font-weight: bold; text-decoration: underline;">timelineitems</span>.date##<br /><span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">##lang.timelineitems.position## </span><span style="color: #000000;"> ##<span style="font-weight: bold; text-decoration: underline;">timelineitems</span>.<span style="font-weight: bold; text-decoration: underline;">position</span>##</span></div>
+<div class="description b"><span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">##lang.timelineitems.type## </span> ##<span style="color: #000000;"><span style="font-weight: bold; text-decoration: underline;">timelineitems</span>.<span style="font-weight: bold; text-decoration: underline;">type</span>##</span></div>
+<div class="description b"><span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">##lang.timelineitems.typename## </span> #<span style="color: #000000;">#<span style="font-weight: bold; text-decoration: underline;">timelineitems</span>.<span style="font-weight: bold; text-decoration: underline;">typename</span>##</span></div>
+<p>##ENDFOREACHtimelineitems##</p>
 <div class="description b">##lang.ticket.numberoffollowups##&#160;: ##ticket.numberoffollowups##</div>
-<p>##FOREACHfollowups##</p>
-<div class="description b"><br /> <strong> [##followup.date##] <em>##lang.followup.isprivate## : ##followup.isprivate## </em></strong><br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.followup.author## </span> ##followup.author##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.followup.description## </span> ##followup.description##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.followup.date## </span> ##followup.date##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.followup.requesttype## </span> ##followup.requesttype##</div>
-<p>##ENDFOREACHfollowups##</p>
-<div class="description b">##lang.ticket.numberoftasks##&#160;: ##ticket.numberoftasks##</div>
-<p>##FOREACHtasks##</p>
-<div class="description b"><br /> <strong> [##task.date##] <em>##lang.task.isprivate## : ##task.isprivate## </em></strong><br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.task.author##</span> ##task.author##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.task.description##</span> ##task.description##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.task.time##</span> ##task.time##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.task.category##</span> ##task.category##</div>
-<p>##ENDFOREACHtasks##</p>',
+<div class="description b">##lang.ticket.numberoftasks##&#160;: ##ticket.numberoftasks##</div>',
    ], [
       'id'                       => '5',
       'notificationtemplates_id' => '12',

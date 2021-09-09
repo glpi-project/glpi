@@ -139,5 +139,213 @@ class NotificationTargetTicket extends DbTestCase {
 
       // switch back to default language
       $_SESSION["glpilanguage"] = \Session::loadLanguage('en_GB');
+
+   }
+
+
+   public function testTimelineTag() {
+
+      $entity = getItemByTypeName("Entity", "_test_root_entity");
+      global $DB;
+      // Build test ticket
+      $this->login('tech', 'tech');
+      $ticket = new \Ticket();
+      $tickets_id = $ticket->add($input = [
+         'name'             => 'test',
+         'content'          => 'test',
+         '_users_id_assign' => getItemByTypeName('User', 'tech', true),
+         '_users_id_requester' => getItemByTypeName('User', 'post-only', true),
+         'entities_id'      => $entity->getID(),
+         'users_id_recipient' => getItemByTypeName('User', 'tech', true),
+         'users_id_lastupdater' => getItemByTypeName('User', 'tech', true),
+         'requesttypes_id'  => 4,
+      ]);
+      $this->integer($tickets_id)->isGreaterThan(0);
+
+      // Unset temporary fields that will not be found in tickets table
+      unset($input['_users_id_assign']);
+      unset($input['_users_id_requester']);
+
+      // Check expected fields and reload object from DB
+      $this->checkInput($ticket, $tickets_id, $input);
+
+      // Add followup from tech
+      $fup_tech = new \ITILFollowup();
+      $fup1_id = $fup_tech->add([
+         'content' => 'test followup',
+         'users_id' => getItemByTypeName('User', 'tech', true),
+         'users_id_editor' => getItemByTypeName('User', 'tech', true),
+         'itemtype' => 'Ticket',
+         'is_private' => 0,
+         'items_id' => $tickets_id,
+      ]);
+      $this->integer($fup1_id)->isGreaterThan(0);
+
+      // Add followup from post_only
+      $fup_post_only = new \ITILFollowup();
+      $fup2_id = $fup_post_only->add([
+         'content' => 'test post_only',
+         'users_id' => getItemByTypeName('User', 'post-only', true),
+         'users_id_editor' => getItemByTypeName('User', 'post-only', true),
+         'itemtype' => 'Ticket',
+         'is_private' => 0,
+         'items_id' => $tickets_id,
+      ]);
+      $this->integer($fup2_id)->isGreaterThan(0);
+
+      // Add private followup to tech
+      $fup_private_tech = new \ITILFollowup();
+      $fup3_id = $fup_private_tech->add([
+         'content' => 'test private followup',
+         'users_id' => getItemByTypeName('User', 'tech', true),
+         'users_id_editor' => getItemByTypeName('User', 'tech', true),
+         'itemtype' => 'Ticket',
+         'is_private' => 1,
+         'items_id' => $tickets_id,
+      ]);
+      $this->integer($fup3_id)->isGreaterThan(0);
+
+      //add private task from tech
+      $task_private = new \TicketTask();
+      $task1_id = $task_private->add([
+         'state'             => \Planning::TODO,
+         'tickets_id'        => $tickets_id,
+         'tasktemplates_id'  => '0',
+         'is_private'        => 1,
+         'taskcategories_id' => '0',
+         'actiontime'        => "172800",                                  //1hours
+         'content'           => "Private Task",
+         'users_id_tech'     => getItemByTypeName('User', 'tech', true),
+      ]);
+      $this->integer($task1_id)->isGreaterThan(0);
+
+      //add task from tech
+      $task_tech = new \TicketTask();
+      $task2_id = $task_tech->add([
+         'state'             => \Planning::TODO,
+         'tickets_id'        => $tickets_id,
+         'tasktemplates_id'  => '0',
+         'taskcategories_id' => '0',
+         'is_private'        => 0,
+         'actiontime'        => "172800",                                  //1hours
+         'content'           => "Task",
+         'users_id_tech'     => getItemByTypeName('User', 'tech', true),
+      ]);
+      $this->integer($task2_id)->isGreaterThan(0);
+
+      // Add solution to test ticket
+      $solution = new \ITILSolution();
+      $solutions_id = $solution->add([
+         'content' => 'test',
+         'users_id' => getItemByTypeName('User', 'tech', true),
+         'users_id_editor' => getItemByTypeName('User', 'tech', true),
+         'itemtype' => 'Ticket',
+         'items_id' => $tickets_id,
+      ]);
+      $this->integer($solutions_id)->isGreaterThan(0);
+
+      $basic_options = [
+         'additionnaloption' => [
+            'usertype' => ''
+         ]
+      ];
+
+      $notiftargetticket = new \NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $ticket );
+      $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
+
+      //get all task / solution / followup (because is tech)
+      $expected = [
+         [
+            "##timelineitems.type##"        => "TicketTask",
+            "##timelineitems.typename##"    => "Ticket tasks",
+            "##timelineitems.date##"        => $task_tech->fields['date'],
+            "##timelineitems.description##" => $task_tech->fields['content'],
+            "##timelineitems.position##"    => "right",
+            "##timelineitems.author##"      => "tech",
+         ],[
+            "##timelineitems.type##"        => "TicketTask",
+            "##timelineitems.typename##"    => "Ticket tasks",
+            "##timelineitems.date##"        => $task_private->fields['date'],
+            "##timelineitems.description##" => $task_private->fields['content'],
+            "##timelineitems.position##"    => "right",
+            "##timelineitems.author##"      => "tech",
+         ],[
+            "##timelineitems.type##"        => "ITILSolution",
+            "##timelineitems.typename##"    => "Solutions",
+            "##timelineitems.date##"        => $solution->fields['date_creation'],
+            "##timelineitems.description##" => $solution->fields['content'],
+            "##timelineitems.position##"    => "right",
+            "##timelineitems.author##"      => "tech", //empty
+         ],[
+            "##timelineitems.type##" => "ITILFollowup",
+            "##timelineitems.typename##"=> "Followups",
+            "##timelineitems.date##"        => $fup_private_tech->fields['date'],
+            "##timelineitems.description##" => $fup_private_tech->fields['content'],
+            "##timelineitems.position##"=> "right",
+            "##timelineitems.author##"=> "tech",
+         ],[
+            "##timelineitems.type##"        => "ITILFollowup",
+            "##timelineitems.typename##"    => "Followups",
+            "##timelineitems.date##"        => $fup_post_only->fields['date'],
+            "##timelineitems.description##" => $fup_post_only->fields['content'],
+            "##timelineitems.position##"    => "left",
+            "##timelineitems.author##"      => "post-only",
+         ],[
+            "##timelineitems.type##" => "ITILFollowup",
+            "##timelineitems.typename##" => "Followups",
+            "##timelineitems.date##"        => $fup_tech->fields['date'],
+            "##timelineitems.description##" => $fup_tech->fields['content'],
+            "##timelineitems.position##" => "right",
+            "##timelineitems.author##" => "tech",
+         ]
+      ];
+
+      $this->array($ret['timelineitems'])->isIdenticalTo($expected);
+
+      $this->boolean((boolean)$this->login('post-only', 'postonly', true))->isTrue();
+
+      $basic_options = [
+         'additionnaloption' => [
+            'usertype' => ''
+         ]
+      ];
+
+      $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
+
+      //get only public task / followup (because is post_only)
+      $expected = [
+         [
+            "##timelineitems.type##"        => "TicketTask",
+            "##timelineitems.typename##"    => "Ticket tasks",
+            "##timelineitems.date##"        => $task_tech->fields['date'],
+            "##timelineitems.description##" => $task_tech->fields['content'],
+            "##timelineitems.position##"    => "right",
+            "##timelineitems.author##"      => "tech",
+         ],[
+            "##timelineitems.type##"        => "ITILSolution",
+            "##timelineitems.typename##"    => "Solutions",
+            "##timelineitems.date##"        => $solution->fields['date_creation'],
+            "##timelineitems.description##" => $solution->fields['content'],
+            "##timelineitems.position##"    => "right",
+            "##timelineitems.author##"      => "tech", //empty
+         ],[
+            "##timelineitems.type##"        => "ITILFollowup",
+            "##timelineitems.typename##"    => "Followups",
+            "##timelineitems.date##"        => $fup_post_only->fields['date'],
+            "##timelineitems.description##" => $fup_post_only->fields['content'],
+            "##timelineitems.position##"    => "left",
+            "##timelineitems.author##"      => "post-only",
+         ],[
+            "##timelineitems.type##" => "ITILFollowup",
+            "##timelineitems.typename##" => "Followups",
+            "##timelineitems.date##"        => $fup_tech->fields['date'],
+            "##timelineitems.description##" => $fup_tech->fields['content'],
+            "##timelineitems.position##" => "right",
+            "##timelineitems.author##" => "tech",
+         ]
+      ];
+
+      $this->array($ret['timelineitems'])->isIdenticalTo($expected);
+
    }
 }
