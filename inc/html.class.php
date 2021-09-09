@@ -460,23 +460,6 @@ class Html {
 
 
    /**
-    * Extract url from web link
-    *
-    * @param string $value
-    *
-    * @return string
-    *
-    * @deprecated 10.0.0
-   **/
-   static function weblink_extract($value) {
-      Toolbox::deprecated();
-
-      $value = preg_replace('/<a\s+href\="([^"]+)"[^>]*>[^<]*<\/a>/i', "$1", $value);
-      return $value;
-   }
-
-
-   /**
     * Redirection to $_SERVER['HTTP_REFERER'] page
     *
     * @return void

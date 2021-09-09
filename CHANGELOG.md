@@ -57,7 +57,6 @@ The present file will list all changes made to the project; according to the
 - `Html::clean()`
 - `Html::setSimpleTextContent()`
 - `Html::setRichTextContent()`
-- `Html::weblink_extract()`
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
 - `Toolbox::clean_cross_side_scripting_deep()`
@@ -130,6 +129,7 @@ The present file will list all changes made to the project; according to the
 - `Html::jsDisable()`
 - `Html::jsEnable()`
 - `Html::resume_name()`
+- `Html::weblink_extract()`
 - `Infocom::cloneItem()`
 - `Itil_Project::cloneItilProject()`
 - `ITILFollowup::showApprobationForm()`
