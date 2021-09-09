@@ -1530,21 +1530,22 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             'with_validations' => false,
             'expose_private' => $show_private,
          ];
-         $tmptimelineitems = [];
-         $timeline = $item->getTimelineItems(true, $options);
+         
+         $timeline = $item->getTimelineItems($options);
 
          foreach ($timeline as $timeline_data) {
+            $tmptimelineitem = [];
 
             if ($timeline_data['type'] == "Solution") {
-               $tmptimelineitems['##timelineitems.type##'] = ITILSolution::getType();
+               $tmptimelineitem['##timelineitems.type##'] = ITILSolution::getType();
             } else {
-               $tmptimelineitems['##timelineitems.type##'] = $timeline_data['type']::getType();
+               $tmptimelineitem['##timelineitems.type##'] = $timeline_data['type']::getType();
             }
 
-            $tmptimelineitems['##timelineitems.typename##']    = $tmptimelineitems['##timelineitems.type##']::getTypeName(0);
-            $tmptimelineitems['##timelineitems.date##']        = $timeline_data['item']['date'];
-            $tmptimelineitems['##timelineitems.description##'] = $timeline_data['item']['content'];
-            $tmptimelineitems['##timelineitems.position##']    = CommonITILObject::getUserPositionFromTimelineItemPosition($timeline_data['item']['timeline_position']);
+            $tmptimelineitem['##timelineitems.typename##']    = $tmptimelineitem['##timelineitems.type##']::getTypeName(0);
+            $tmptimelineitem['##timelineitems.date##']        = $timeline_data['item']['date'];
+            $tmptimelineitem['##timelineitems.description##'] = $timeline_data['item']['content'];
+            $tmptimelineitem['##timelineitems.position##']    = CommonITILObject::getUserPositionFromTimelineItemPosition($timeline_data['item']['timeline_position']);
 
             if ($timeline_data['type'] == ITILFollowup::getType()) {
                // Check if the author need to be anonymized
@@ -1555,14 +1556,14 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                      $item->getField('entities_id')
                   ))
                ) {
-                  $tmptimelineitems['##timelineitems.author##'] = $anon_name;
+                  $tmptimelineitem['##timelineitems.author##'] = $anon_name;
                } else {
-                  $tmptimelineitems['##timelineitems.author##'] = getUserName($timeline_data['item']['users_id']);
+                  $tmptimelineitem['##timelineitems.author##'] = getUserName($timeline_data['item']['users_id']);
                }
             } else {
-               $tmptimelineitems['##timelineitems.author##'] = getUserName($timeline_data['item']['users_id']);
+               $tmptimelineitem['##timelineitems.author##'] = getUserName($timeline_data['item']['users_id']);
             }
-            $data['timelineitems'][] = $tmptimelineitems;
+            $data['timelineitems'][] = $tmptimelineitem;
          }
 
       }

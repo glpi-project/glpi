@@ -6866,7 +6866,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return mixed[] Timeline items
     */
-   function getTimelineItems($options) {
+   function getTimelineItems(array $options = []) {
 
       $params = [
          'with_documents' => true,
@@ -6879,8 +6879,6 @@ abstract class CommonITILObject extends CommonDBTM {
             $params[$key] = $val;
          }
       }
-
-
 
       $objType = static::getType();
       $foreignKey = static::getForeignKeyField();
@@ -6931,7 +6929,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       //if is from notif and if we want private too
-      if (!Session::haveRight("followup", ITILFollowup::SEEPRIVATE) && $params['expose_private']) {
+      if (!Session::haveRight("task", CommonITILTask::SEEPRIVATE) && $params['expose_private']) {
          $restrict_task = [];
       }
 
