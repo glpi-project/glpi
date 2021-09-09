@@ -162,7 +162,7 @@ trait DCBreadcrumb {
     *
     * @return string
     */
-   public function getItemEnclosurePosition($itemtype, $items_id) {
+   private function getItemEnclosurePosition($itemtype, $items_id) {
       $position = 0;
       $ien = new Item_Enclosure();
 
@@ -185,15 +185,15 @@ trait DCBreadcrumb {
     *
     * @return string
     */
-   public function getItemRackPosition($itemtype, $items_id) {
+   private function getItemRackPosition($itemtype, $items_id) {
       $position = 0;
-      $ien = new Item_Rack();
+      $ira = new Item_Rack();
 
-      if ($ien->getFromDBByCrit([
+      if ($ira->getFromDBByCrit([
          'itemtype'  => $itemtype,
          'items_id'  => $items_id
       ])) {
-         $position = $ien->getField('position');
+         $position = $ira->getField('position');
       }
 
       $position = "&nbsp;".sprintf(__('(U%1$u)'), $position);
