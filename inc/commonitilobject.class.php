@@ -6954,7 +6954,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($params['with_documents']) {
          $document_obj   = new Document();
          $document_items = $document_item_obj->find([
-            $this->getAssociatedDocumentsCriteria(),
+            $this->getAssociatedDocumentsCriteria($params['bypass_rights']),
             'timeline_position'  => ['>', self::NO_TIMELINE]
          ]);
          foreach ($document_items as $document_item) {
@@ -7001,47 +7001,46 @@ abstract class CommonITILObject extends CommonDBTM {
          ];
       }
 
-      if ($params['with_validations']) {
-         if ($supportsValidation and $validation_class::canView()) {
-            $validations = $valitation_obj->find([$foreignKey => $this->getID()]);
-            foreach ($validations as $validations_id => $validation) {
-               $canedit = $valitation_obj->can($validations_id, UPDATE);
-               $cananswer = ($validation['users_id_validate'] === Session::getLoginUserID() &&
-                  $validation['status'] == CommonITILValidation::WAITING);
-               $user->getFromDB($validation['users_id_validate']);
-               $timeline[$validation['submission_date']."_validation_".$validations_id] = [
+      if ($supportsValidation && $params['with_validations']
+          && ($validation_class::canView() || $params['bypass_rights'])) {
+         $validations = $valitation_obj->find([$foreignKey => $this->getID()]);
+         foreach ($validations as $validations_id => $validation) {
+            $canedit = $valitation_obj->can($validations_id, UPDATE);
+            $cananswer = ($validation['users_id_validate'] === Session::getLoginUserID() &&
+               $validation['status'] == CommonITILValidation::WAITING);
+            $user->getFromDB($validation['users_id_validate']);
+            $timeline[$validation['submission_date']."_validation_".$validations_id] = [
+               'type' => $validation_class,
+               'item' => [
+                  'id'        => $validations_id,
+                  'date'      => $validation['submission_date'],
+                  'content'   => __('Validation request')." => ".$user->getlink().
+                                                "<br>".$validation['comment_submission'],
+                  'users_id'  => $validation['users_id'],
+                  'can_edit'  => $canedit,
+                  'can_answer'   => $cananswer,
+                  'users_id_validate'  => $validation['users_id_validate'],
+                  'timeline_position' => $validation['timeline_position']
+               ],
+               'itiltype' => 'Validation'
+            ];
+
+            if (!empty($validation['validation_date'])) {
+               $timeline[$validation['validation_date']."_validation_".$validations_id] = [
                   'type' => $validation_class,
                   'item' => [
                      'id'        => $validations_id,
-                     'date'      => $validation['submission_date'],
-                     'content'   => __('Validation request')." => ".$user->getlink().
-                                                   "<br>".$validation['comment_submission'],
-                     'users_id'  => $validation['users_id'],
+                     'date'      => $validation['validation_date'],
+                     'content'   => __('Validation request answer')." : ". _sx('status',
+                                                ucfirst($validation_class::getStatus($validation['status'])))
+                                                   ."<br>".$validation['comment_validation'],
+                     'users_id'  => $validation['users_id_validate'],
+                     'status'    => "status_".$validation['status'],
                      'can_edit'  => $canedit,
-                     'can_answer'   => $cananswer,
-                     'users_id_validate'  => $validation['users_id_validate'],
                      'timeline_position' => $validation['timeline_position']
                   ],
                   'itiltype' => 'Validation'
                ];
-
-               if (!empty($validation['validation_date'])) {
-                  $timeline[$validation['validation_date']."_validation_".$validations_id] = [
-                     'type' => $validation_class,
-                     'item' => [
-                        'id'        => $validations_id,
-                        'date'      => $validation['validation_date'],
-                        'content'   => __('Validation request answer')." : ". _sx('status',
-                                                   ucfirst($validation_class::getStatus($validation['status'])))
-                                                      ."<br>".$validation['comment_validation'],
-                        'users_id'  => $validation['users_id_validate'],
-                        'status'    => "status_".$validation['status'],
-                        'can_edit'  => $canedit,
-                        'timeline_position' => $validation['timeline_position']
-                     ],
-                     'itiltype' => 'Validation'
-                  ];
-               }
             }
          }
       }
