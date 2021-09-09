@@ -2970,20 +2970,6 @@ class Toolbox {
    }
 
    /**
-    * Should cache be used
-    *
-    * @since 9.2
-    *
-    * @return boolean
-    *
-    * @deprecated 10.0.0
-    */
-   public static function useCache() {
-      Toolbox::deprecated();
-      return true;
-   }
-
-   /**
     * Convert a integer index into an excel like alpha index (A, B, ..., AA, AB, ...)
     * @since 9.3
     * @param  integer $index the numeric index
