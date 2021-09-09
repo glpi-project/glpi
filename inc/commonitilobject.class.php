@@ -6865,6 +6865,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * - with_documents : include documents elements
     * - with_validations : include validation elements
     * - expose_private : force presence of private items (followup/tasks), even if session does not allow it
+    * - bypass_rights : bypass current session rights
     * @since 9.4.0
     *
     * @return mixed[] Timeline items
