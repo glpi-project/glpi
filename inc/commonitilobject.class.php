@@ -6861,7 +6861,10 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Retrieves all timeline items for this ITILObject
     *
-    * @param boolean $from_notification define if timeline is requested from notification
+    * @param array $options Possible options:
+    * - with_documents : include documents elements
+    * - with_validations : include validation elements
+    * - expose_private : force presence of private items (followup/tasks), even if session does not allow it
     * @since 9.4.0
     *
     * @return mixed[] Timeline items
@@ -6871,7 +6874,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $params = [
          'with_documents' => true,
          'with_validations' => true,
-         'expose_private' => false, // Force presence of private items (followup/tasks), even if session does not allow it
+         'expose_private' => false,
       ];
 
       if (is_array($options) && count($options)) {
@@ -6948,7 +6951,6 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      //add documents to timeline if it not requested from notification
       if ($params['with_documents']) {
          $document_obj   = new Document();
          $document_items = $document_item_obj->find([
@@ -6999,7 +7001,6 @@ abstract class CommonITILObject extends CommonDBTM {
          ];
       }
 
-      //add validation workflow to timeline if it not requested from notification
       if ($params['with_validations']) {
          if ($supportsValidation and $validation_class::canView()) {
             $validations = $valitation_obj->find([$foreignKey => $this->getID()]);
