@@ -556,14 +556,14 @@ class Search {
     *
     * @return array
     */
-   public static function getConditionSearchOptionsIds(array $criteria): array {
+   private static function getConditionSearchOptionsIds(array $criteria): array {
       $condition_search_options_ids = [];
       foreach ($criteria as $crit) {
          if (isset($crit['criteria'])) {
             // Recursion, parse child criteria
             $child_criteria = self::getConditionSearchOptionsIds($crit['criteria']);
-            foreach (array_keys($child_criteria) as $child_crit) {
-               $condition_search_options_ids[$child_crit] = $child_crit['value'] ?? true;
+            foreach ($child_criteria as $child_crit_id => $child_crit_value) {
+               $condition_search_options_ids[$child_crit_id] = $child_crit_value;
             }
 
          } else if (isset($crit['field'])) {
@@ -1129,7 +1129,6 @@ class Search {
                   continue;
                }
 
-               $is_meta =
                $new_having = self::addHaving(
                   $LINK,
                   $NOT,
@@ -1236,7 +1235,7 @@ class Search {
     * @param  string &$FROM                TODO: should be a class property (output parameter)
     * @param  array  &$already_link_tables TODO: should be a class property (output parameter)
     * @param  array  &$data                TODO: should be a class property (output parameter)
-    * @param  bool   &$count_query         Are we building a could query ?
+    * @param  bool   $count_query          Are we building a count query ?
     *
     * @return void
     */
@@ -8030,7 +8029,7 @@ JAVASCRIPT;
     *
     * @return string
     */
-   public static function buildSimpleCountQuery(
+   private static function buildSimpleCountQuery(
       string $FROM,
       string $WHERE
    ): string {
@@ -8048,7 +8047,7 @@ JAVASCRIPT;
     *
     * @return string
     */
-   public static function buildWrappedCountQuery(
+   private static function buildWrappedCountQuery(
       string $SELECT,
       string $FROM,
       string $WHERE,
