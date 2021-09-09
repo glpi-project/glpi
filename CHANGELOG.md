@@ -60,7 +60,6 @@ The present file will list all changes made to the project; according to the
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
 - `Toolbox::clean_cross_side_scripting_deep()`
-- `Toolbox::doubleEncodeEmails()`
 - `Toolbox::getHtmlToDisplay()`
 - `Toolbox::useCache()`
 - `Toolbox::unclean_cross_side_scripting_deep()`
@@ -170,6 +169,7 @@ The present file will list all changes made to the project; according to the
 - `TicketTemplate::getFromDBWithDatas()`
 - `Toolbox::canUseImapPop()`
 - `Toolbox::checkSELinux()`
+- `Toolbox::doubleEncodeEmails()`
 - `Toolbox::userErrorHandlerDebug()`
 - `Toolbox::userErrorHandlerNormal()`
 - `Transfer::transferComputerSoftwares()`

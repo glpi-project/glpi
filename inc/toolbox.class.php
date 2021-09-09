@@ -3381,29 +3381,6 @@ HTML;
    }
 
    /**
-    * Search for html encoded <email> (&lt;email&gt;) in the given string and
-    * encode them a second time
-    *
-    * @param string $string
-    *
-    * @return string
-    *
-    * @deprecated 10.0.0
-    */
-   public static function doubleEncodeEmails($string) {
-      Toolbox::deprecated();
-
-      // Search for strings that is an email surrounded by `<` and `>` but that cannot be an HTML tag:
-      // - absence of quotes indicate that values is not part of an HTML attribute,
-      // - absence of ; ensure that ending `&gt;` has not been reached.
-      $regex = "/((&lt;|&#60;)[^\"';]+?@[^\"';]+?(&gt;|&#62;))/";
-      $string = preg_replace_callback($regex, function($matches) {
-         return htmlentities($matches[1]);
-      }, $string);
-      return $string;
-   }
-
-   /**
     * Checks if the given class or object has the specified trait.
     * This function checks the class itself and all parent classes for the trait.
     * @since 10.0.0
