@@ -253,10 +253,10 @@ class Dropdown {
 
          if ($params['display_dc_position']) {
             if ($rack = $item->isRackPart($itemtype, $params['value'], true)) {
-               $output .= "<span id='".$breadcrum_id."' title='".__s('Display on datacenter')."'>";
+               $output .= "<span id='".$breadcrumb_id."' title='".__s('Display on datacenter')."'>";
                $output .= "&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL(). "'></a>";
                $output .= "</span>";
-               $paramscomment['with_dc_position'] = $breadcrum_id;
+               $paramscomment['with_dc_position'] = $breadcrumb_id;
             }
          }
 
