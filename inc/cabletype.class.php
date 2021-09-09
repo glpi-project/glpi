@@ -42,7 +42,7 @@ class CableType extends CommonDropdown {
    }
 
    static function getFieldLabel() {
-      return _n('Cable type', 'Cable types', 1);
+      return self::getTypeName(1);
    }
 
 }
