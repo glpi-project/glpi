@@ -89,13 +89,11 @@ class CableStrand extends CommonDropdown {
       return true;
    }
 
-      /**
-    * Print the HTML array of items for a location
-    *
-    * @since 0.85
+   /**
+    * Print the HTML array of items related to cable strand.
     *
     * @return void
-   **/
+    */
    function showItems() {
       global $DB;
 
@@ -105,27 +103,21 @@ class CableStrand extends CommonDropdown {
          return false;
       }
 
-      $queries = [];
-      $item = new Cable();
+      $cable = new Cable();
 
-      $table = getTableForItemType($item->getType());
-
-      $itemtype_criteria = [
+      $criteria = [
          'SELECT' => [
-            "$table.id",
-            new \QueryExpression($DB->quoteValue($item->getType()) . ' AS ' . $DB->quoteName('type')),
+            'id'
          ],
-         'FROM'   => $table,
+         'FROM'   => $cable->getTable(),
          'WHERE'  => [
-            "$table.cablestrands_id"   => $cablestrands_id,
+            'cablestrands_id' => $cablestrands_id,
          ]
       ];
-      if ($item->maybeDeleted()) {
-         $itemtype_criteria['WHERE']['is_deleted'] = 0;
+      if ($cable->maybeDeleted()) {
+         $criteria['WHERE']['is_deleted'] = 0;
       }
-      $queries[] = $itemtype_criteria;
 
-      $criteria = count($queries) === 1 ? $queries[0] : ['FROM' => new \QueryUnion($queries)];
       $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
       $criteria['START'] = $start;
       $criteria['LIMIT'] = $_SESSION['glpilist_limit'];
@@ -156,55 +148,53 @@ class CableStrand extends CommonDropdown {
          echo "</tr>";
 
          while ($data = $iterator->next()) {
-            $item = getItemForItemtype($data['type']);
-            if (!$item->getFromDB($data['id'])) {
-               trigger_error(sprintf('Unable to load item %s (%s).', $data['type'], $data['id']), E_USER_WARNING);
+            if (!$cable->getFromDB($data['id'])) {
+               trigger_error(sprintf('Unable to load item %s (%s).', $cable->getType(), $data['id']), E_USER_WARNING);
                continue;
             }
 
-            echo "<tr class='tab_bg_1'><td>".$item->getTypeName()."</td>";
-            echo "<td>".Dropdown::getDropdownName("glpi_entities", $item->getEntityID())."</td>";
-            echo "<td>".$item->getLink()."</td>";
-            echo "<td>".(isset($item->fields["otherserial"])? "".$item->fields["otherserial"]."" :"-")."</td>";
+            echo "<tr class='tab_bg_1'><td>".$cable->getTypeName()."</td>";
+            echo "<td>".Dropdown::getDropdownName("glpi_entities", $cable->getEntityID())."</td>";
+            echo "<td>".$cable->getLink()."</td>";
+            echo "<td>".(isset($cable->fields["otherserial"])? "".$cable->fields["otherserial"]."" :"-")."</td>";
             echo "<td>";
-            if ($item->fields["items_id_endpoint_b"] > 0) {
-               $item_endpoint_b = getItemForItemtype($item->fields["itemtype_endpoint_b"]);
-               if (!$item_endpoint_b->getFromDB($item->fields["items_id_endpoint_b"])) {
-                  trigger_error(sprintf('Unable to load item %s (%s).', $item->fields["itemtype_endpoint_b"], $item->fields["items_id_endpoint_b"]), E_USER_WARNING);
+            if ($cable->fields["items_id_endpoint_b"] > 0) {
+               $item_endpoint_b = getItemForItemtype($cable->fields["itemtype_endpoint_b"]);
+               if (!$item_endpoint_b->getFromDB($cable->fields["items_id_endpoint_b"])) {
+                  trigger_error(sprintf('Unable to load item %s (%s).', $cable->fields["itemtype_endpoint_b"], $cable->fields["items_id_endpoint_b"]), E_USER_WARNING);
                } else {
                   echo $item_endpoint_b->getLink();
                }
             }
             echo "</td>";
             echo "<td>";
-            if ($item->fields["sockets_id_endpoint_b"] > 0) {
+            if ($cable->fields["sockets_id_endpoint_b"] > 0) {
                $sockets_endpoint_b = new Socket();
-               if (!$sockets_endpoint_b->getFromDB($item->fields["sockets_id_endpoint_b"])) {
-                  trigger_error(sprintf('Unable to load item %s (%s).', Socket::getType(), $item->fields["sockets_id_endpoint_b"]), E_USER_WARNING);
+               if (!$sockets_endpoint_b->getFromDB($cable->fields["sockets_id_endpoint_b"])) {
+                  trigger_error(sprintf('Unable to load item %s (%s).', Socket::getType(), $cable->fields["sockets_id_endpoint_b"]), E_USER_WARNING);
                } else {
                   echo $sockets_endpoint_b->getLink();
                }
             }
             echo "</td>";
             echo "<td>";
-            if ($item->fields["items_id_endpoint_a"] > 0) {
-               $item_endpoint_a = getItemForItemtype($item->fields["itemtype_endpoint_a"]);
-               if (!$item_endpoint_a->getFromDB($item->fields["items_id_endpoint_a"])) {
-                  trigger_error(sprintf('Unable to load item %s (%s).', $item->fields["itemtype_endpoint_a"], $item->fields["items_id_endpoint_a"]), E_USER_WARNING);
+            if ($cable->fields["items_id_endpoint_a"] > 0) {
+               $item_endpoint_a = getItemForItemtype($cable->fields["itemtype_endpoint_a"]);
+               if (!$item_endpoint_a->getFromDB($cable->fields["items_id_endpoint_a"])) {
+                  trigger_error(sprintf('Unable to load item %s (%s).', $cable->fields["itemtype_endpoint_a"], $cable->fields["items_id_endpoint_a"]), E_USER_WARNING);
                } else {
                   echo $item_endpoint_a->getLink();
                }
             }
             echo "</td>";
             echo "<td>";
-            if ($item->fields["sockets_id_endpoint_a"] > 0) {
+            if ($cable->fields["sockets_id_endpoint_a"] > 0) {
                $sockets_endpoint_a = new Socket();
-               if (!$sockets_endpoint_a->getFromDB($item->fields["sockets_id_endpoint_a"])) {
-                  trigger_error(sprintf('Unable to load item %s (%s).', Socket::getType(), $item->fields["sockets_id_endpoint_a"]), E_USER_WARNING);
+               if (!$sockets_endpoint_a->getFromDB($cable->fields["sockets_id_endpoint_a"])) {
+                  trigger_error(sprintf('Unable to load item %s (%s).', Socket::getType(), $cable->fields["sockets_id_endpoint_a"]), E_USER_WARNING);
                } else {
                   echo $sockets_endpoint_a->getLink();
                }
-               echo $sockets_endpoint_a->getLink();
             }
             echo "</td>";
             echo"</tr>";
