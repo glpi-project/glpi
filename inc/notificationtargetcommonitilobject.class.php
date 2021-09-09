@@ -1530,7 +1530,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             'with_validations' => false,
             'expose_private' => $show_private,
          ];
-         
+
          $timeline = $item->getTimelineItems($options);
 
          foreach ($timeline as $timeline_data) {
