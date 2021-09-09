@@ -61,7 +61,6 @@ The present file will list all changes made to the project; according to the
 - `RuleImportComputerCollection` class
 - `Toolbox::clean_cross_side_scripting_deep()`
 - `Toolbox::getHtmlToDisplay()`
-- `Toolbox::sanitize()`
 - `Toolbox::unclean_cross_side_scripting_deep()`
 
 #### Removed
@@ -168,6 +167,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::canUseImapPop()`
 - `Toolbox::checkSELinux()`
 - `Toolbox::doubleEncodeEmails()`
+- `Toolbox::sanitize()`
 - `Toolbox::unclean_html_cross_side_scripting_deep()`
 - `Toolbox::useCache()`
 - `Toolbox::userErrorHandlerDebug()`

@@ -2499,20 +2499,6 @@ class Toolbox {
    }
 
    /**
-    * Sanitize received values
-    *
-    * @param array $array
-    *
-    * @return array
-    *
-    * @deprecated 10.0.0
-    */
-   static public function sanitize($array) {
-      Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::unsanitize($value, true)"');
-      return Sanitizer::sanitize($array, true);
-   }
-
-   /**
     * Remove accentued characters and return lower case string
     *
     * @param string $string String to handle
