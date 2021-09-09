@@ -504,7 +504,7 @@ class Location extends CommonTreeDropdown {
 
    }
 
-   function displaySpecificTypeField($ID, $field = [], $options = []) {
+   function displaySpecificTypeField($ID, $field = [], array $options = []) {
       switch ($field['type']) {
          case 'setlocation':
             $this->showMap();

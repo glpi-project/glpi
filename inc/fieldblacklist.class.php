@@ -204,14 +204,7 @@ class Fieldblacklist extends CommonDropdown {
       return $input;
    }
 
-
-   /**
-    * Display specific fields for FieldUnicity
-    *
-    * @param integer $ID     Unused
-    * @param array   $field  Array of fields
-   **/
-   function displaySpecificTypeField($ID, $field = [], $options = []) {
+   function displaySpecificTypeField($ID, $field = [], array $options = []) {
 
       switch ($field['type']) {
          case 'blacklist_itemtype' :

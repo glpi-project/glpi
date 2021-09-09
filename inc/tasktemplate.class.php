@@ -180,10 +180,7 @@ class TaskTemplate extends AbstractITILChildTemplate {
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
-   /**
-    * @see CommonDropdown::displaySpecificTypeField()
-   **/
-   function displaySpecificTypeField($ID, $field = [], $options = []) {
+   function displaySpecificTypeField($ID, $field = [], array $options = []) {
 
       switch ($field['type']) {
          case 'state' :

@@ -71,7 +71,7 @@ class Socket extends CommonDropdown {
                'type'  => ' ']];
    }
 
-   function displaySpecificTypeField($ID, $field = [], $options = []) {
+   function displaySpecificTypeField($ID, $field = [], array $options = []) {
 
       if ($field['name'] == 'position') {
          $params = ['value' => $this->fields[$field['name']]];

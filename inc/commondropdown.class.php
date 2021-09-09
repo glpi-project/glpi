@@ -551,7 +551,18 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
-   function displaySpecificTypeField($ID, $field = [], $options = []) {
+   /**
+    * Display specific field value.
+    *
+    * @param int $ID          ID of the item
+    * @param array $field     Field specs (see self::getAdditionalFields())
+    * @param array $options   Additionnal options
+    *
+    * @return void
+    *
+    * @since 10.0.0 $options param added
+    */
+   function displaySpecificTypeField($ID, $field = [], array $options = []) {
    }
 
 

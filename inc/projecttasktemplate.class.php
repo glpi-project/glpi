@@ -200,7 +200,7 @@ class ProjectTaskTemplate extends CommonDropdown {
    }
 
 
-   function displaySpecificTypeField($ID, $field = [], $options = []) {
+   function displaySpecificTypeField($ID, $field = [], array $options = []) {
 
       switch ($field['type']) {
          case 'percent_done' :
