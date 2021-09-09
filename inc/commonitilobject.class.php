@@ -6866,7 +6866,21 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return mixed[] Timeline items
     */
-   function getTimelineItems($from_notification = false, $get_private = false) {
+   function getTimelineItems($options) {
+
+      $params = [
+         'with_documents' => true,
+         'with_validations' => true,
+         'expose_private' => false, // Force presence of private items (followup/tasks), even if session does not allow it
+      ];
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
+      }
+
+
 
       $objType = static::getType();
       $foreignKey = static::getForeignKeyField();
@@ -6898,7 +6912,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       //if is from notif and if we want private too
-      if ($from_notification && $get_private) {
+      if (!Session::haveRight("followup", ITILFollowup::SEEPRIVATE) && $params['expose_private']) {
          $restrict_fup = [];
       }
 
@@ -6917,7 +6931,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       //if is from notif and if we want private too
-      if ($from_notification && $get_private) {
+      if (!Session::haveRight("followup", ITILFollowup::SEEPRIVATE) && $params['expose_private']) {
          $restrict_task = [];
       }
 
@@ -6946,7 +6960,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       //add documents to timeline if it not requested from notification
-      if (!$from_notification) {
+      if ($params['with_documents']) {
          $document_obj   = new Document();
          $document_items = $document_item_obj->find([
             $this->getAssociatedDocumentsCriteria(),
@@ -6997,7 +7011,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       //add validation workflow to timeline if it not requested from notification
-      if (!$from_notification) {
+      if ($params['with_validations']) {
          if ($supportsValidation and $validation_class::canView()) {
             $validations = $valitation_obj->find([$foreignKey => $this->getID()]);
             foreach ($validations as $validations_id => $validation) {
@@ -7051,23 +7065,21 @@ abstract class CommonITILObject extends CommonDBTM {
 
    static function getUserPositionFromTimelineItemPosition($position) {
 
-      // set item position depending on field timeline_position
-      $user_position = 'left'; // default position
-      if (isset($position)) {
-         switch ($position) {
-            case self::TIMELINE_LEFT:
-               $user_position = 'left';
-               break;
-            case self::TIMELINE_MIDLEFT:
-               $user_position = 'left middle';
-               break;
-            case self::TIMELINE_MIDRIGHT:
-               $user_position = 'right middle';
-               break;
-            case self::TIMELINE_RIGHT:
-               $user_position = 'right';
-               break;
-         }
+      switch ($position) {
+         case self::TIMELINE_LEFT:
+            $user_position = 'left';
+            break;
+         case self::TIMELINE_MIDLEFT:
+            $user_position = 'left middle';
+            break;
+         case self::TIMELINE_MIDRIGHT:
+            $user_position = 'right middle';
+            break;
+         case self::TIMELINE_RIGHT:
+            $user_position = 'right';
+            break;
+         default:
+            $user_position = 'left';
       }
 
       return $user_position;

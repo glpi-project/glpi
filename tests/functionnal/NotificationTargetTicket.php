@@ -312,7 +312,7 @@ class NotificationTargetTicket extends DbTestCase {
 
       $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
 
-      //get only private task / solution / followup (because is post_only)
+      //get only public task / followup (because is post_only)
       $expected = [
          [
             "##timelineitems.type##"        => "TicketTask",
