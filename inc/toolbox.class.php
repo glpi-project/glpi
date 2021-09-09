@@ -382,53 +382,6 @@ class Toolbox {
       return Sanitizer::unsanitize($value);
    }
 
-
-   /**
-    *  Invert fonction from clean_cross_side_scripting_deep to display HTML striping XSS code
-    *
-    * @since 0.83.3
-    *
-    * @param array|string $value  item to unclean from clean_cross_side_scripting_deep
-    *
-    * @return array|string  unclean item
-    *
-    * @see clean_cross_side_scripting_deep()
-    *
-    * @deprecated 10.0.0
-   **/
-   static function unclean_html_cross_side_scripting_deep($value) {
-      Toolbox::deprecated();
-
-      if ((array) $value === $value) {
-         $value = array_map([__CLASS__, 'unclean_html_cross_side_scripting_deep'], $value);
-      } else {
-         $value = self::unclean_cross_side_scripting_deep($value);
-      }
-
-      // revert unclean inside <pre>
-      if (is_string($value)) {
-         $matches = [];
-         $count = preg_match_all('/(<pre[^>]*>)(.*?)(<\/pre>)/is', $value, $matches);
-         for ($i = 0; $i < $count; ++$i) {
-            $complete       = $matches[0][$i];
-            $cleaned        = self::clean_cross_side_scripting_deep($matches[2][$i]);
-            $cleancomplete  = $matches[1][$i].$cleaned.$matches[3][$i];
-            $value          = str_replace($complete, $cleancomplete, $value);
-         }
-
-         $value = htmLawed($value, self::getHtmLawedSafeConfig());
-
-         // Special case : remove the 'denied:' for base64 img in case the base64 have characters
-         // combinaison introduce false positive
-         foreach (['png', 'gif', 'jpg', 'jpeg'] as $imgtype) {
-            $value = str_replace('src="denied:data:image/'.$imgtype.';base64,',
-                  'src="data:image/'.$imgtype.';base64,', $value);
-         }
-      }
-
-      return $value;
-   }
-
    /**
     * Returns a safe configuration for htmLawed.
     *

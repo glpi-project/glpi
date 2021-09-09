@@ -61,9 +61,8 @@ The present file will list all changes made to the project; according to the
 - `RuleImportComputerCollection` class
 - `Toolbox::clean_cross_side_scripting_deep()`
 - `Toolbox::getHtmlToDisplay()`
-- `Toolbox::unclean_cross_side_scripting_deep()`
-- `Toolbox::unclean_html_cross_side_scripting_deep()`
 - `Toolbox::sanitize()`
+- `Toolbox::unclean_cross_side_scripting_deep()`
 
 #### Removed
 - Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
@@ -169,6 +168,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::canUseImapPop()`
 - `Toolbox::checkSELinux()`
 - `Toolbox::doubleEncodeEmails()`
+- `Toolbox::unclean_html_cross_side_scripting_deep()`
 - `Toolbox::useCache()`
 - `Toolbox::userErrorHandlerDebug()`
 - `Toolbox::userErrorHandlerNormal()`
