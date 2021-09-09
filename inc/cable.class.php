@@ -322,20 +322,11 @@ class Cable extends CommonDBTM {
 
       switch ($field) {
          case 'items_id_endpoint_a' :
-            if (isset($values['itemtype_endpoint_a'])) {
-               if ($values[$field] > 0) {
-                  $item = new $values['itemtype_endpoint_a'];
-                  $item->getFromDB($values[$field]);
-                  return "<a href='" . $item->getLinkURL(). "'>".$item->fields['name']."</a>";
-               }
-            } else {
-               return ' ';
-            }
-            break;
          case 'items_id_endpoint_b' :
-            if (isset($values['itemtype_endpoint_b'])) {
+            $itemtype = $values[str_replace('items_id', 'itemtype', $field)] ?? null;
+            if ($itemtype !== null && class_exists($itemtype)) {
                if ($values[$field] > 0) {
-                  $item = new $values['itemtype_endpoint_b'];
+                  $item = new $itemtype();
                   $item->getFromDB($values[$field]);
                   return "<a href='" . $item->getLinkURL(). "'>".$item->fields['name']."</a>";
                }
