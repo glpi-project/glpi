@@ -6900,7 +6900,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       //checks rights
       $restrict_fup = $restrict_task = [];
-      if (!$params['expose_private'] && $task_obj->maybePrivate() && !Session::haveRight("followup", ITILFollowup::SEEPRIVATE)) {
+      if (!$params['expose_private'] && !Session::haveRight("followup", ITILFollowup::SEEPRIVATE)) {
          $restrict_fup = [
             'OR' => [
                'is_private'   => 0,
