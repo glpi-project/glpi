@@ -1529,6 +1529,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             'with_documents' => false,
             'with_validations' => false,
             'expose_private' => $show_private,
+            'bypass_rights' => true,
          ];
 
          $timeline = $item->getTimelineItems($options);

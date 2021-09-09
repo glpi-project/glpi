@@ -6875,6 +6875,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'with_documents' => true,
          'with_validations' => true,
          'expose_private' => false,
+         'bypass_rights' => false,
       ];
 
       if (is_array($options) && count($options)) {
@@ -6927,7 +6928,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       //add followups to timeline
-      if ($followup_obj->canview()) {
+      if ($followup_obj->canview() || $params['bypass_rights']) {
          $followups = $followup_obj->find(['items_id'  => $this->getID()] + $restrict_fup, ['date DESC', 'id DESC']);
          foreach ($followups as $followups_id => $followup) {
             $followup_obj->getFromDB($followups_id);
@@ -6939,7 +6940,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       //add tasks to timeline
-      if ($task_obj->canview()) {
+      if ($task_obj->canview() || $params['bypass_rights']) {
          $tasks = $task_obj->find([$foreignKey => $this->getID()] + $restrict_task, 'date DESC');
          foreach ($tasks as $tasks_id => $task) {
             $task_obj->getFromDB($tasks_id);
