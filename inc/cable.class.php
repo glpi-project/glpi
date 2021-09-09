@@ -401,7 +401,7 @@ class Cable extends CommonDBTM {
       echo "<td>";
       State::dropdown([
          'value'     => $this->fields["states_id"],
-         'condition' => ['is_visible_computer' => 1],
+         'condition' => ['is_visible_cable' => 1],
       ]);
       echo "</td><td colspan='2'></td></tr>";
 
