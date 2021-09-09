@@ -56,10 +56,8 @@ The present file will list all changes made to the project; according to the
 - `Config::getCache()`
 - `DBmysql::getTableSchema()`
 - `Html::clean()`
-- `Html::displayImpersonateBanner()`
 - `Html::setSimpleTextContent()`
 - `Html::setRichTextContent()`
-- `Html::displayImpersonateBanner()`
 - `Html::weblink_extract()`
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
@@ -125,6 +123,7 @@ The present file will list all changes made to the project; according to the
 - `DbUtils::getRealQueryForTreeItem()`
 - `DCBreadcrumb::showDcBreadcrumb()`
 - `Document_Item::cloneItem()`
+- `Html::displayImpersonateBanner()`
 - `Html::displayMainMenu()`
 - `Html::displayMenuAll()`
 - `Html::displayTopMenu()`
