@@ -6912,7 +6912,6 @@ abstract class CommonITILObject extends CommonDBTM {
          ];
       }
 
-
       $restrict_fup['itemtype'] = static::getType();
       $restrict_fup['items_id'] = $this->getID();
 
