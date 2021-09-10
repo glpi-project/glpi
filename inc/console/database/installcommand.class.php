@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 use DB;
 use DBConnection;
 use DBmysql;
-use Glpi\Console\Traits\TelemetryEnablementTrait;
+use Glpi\Console\Traits\TelemetryActivationTrait;
 use Glpi\System\Requirement\DbConfiguration;
 use GLPIKey;
 use Symfony\Component\Console\Input\InputInterface;
@@ -50,7 +50,7 @@ use Toolbox;
 
 class InstallCommand extends AbstractConfigureCommand {
 
-   use TelemetryEnablementTrait;
+   use TelemetryActivationTrait;
 
    /**
     * Error code returned when failing to create database.
@@ -110,7 +110,7 @@ class InstallCommand extends AbstractConfigureCommand {
          __('Force execution of installation, overriding existing database')
       );
 
-      $this->registerTelemetryEnablementOptions($this->getDefinition());
+      $this->registerTelemetryActivationOptions($this->getDefinition());
    }
 
    protected function initialize(InputInterface $input, OutputInterface $output) {
@@ -327,7 +327,7 @@ class InstallCommand extends AbstractConfigureCommand {
 
       $output->writeln('<info>' . __('Installation done.') . '</info>');
 
-      $this->handTelemetryEnablement($input, $output);
+      $this->handTelemetryActivation($input, $output);
 
       return 0; // Success
    }

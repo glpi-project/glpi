@@ -44,7 +44,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-trait TelemetryEnablementTrait {
+trait TelemetryActivationTrait {
 
    /**
     * Register options related to Telemetry service enablement.
@@ -53,7 +53,7 @@ trait TelemetryEnablementTrait {
     *
     * @return void
     */
-   protected function registerTelemetryEnablementOptions(InputDefinition $definition): void {
+   protected function registerTelemetryActivationOptions(InputDefinition $definition): void {
       $definition->addOption(
          new InputOption(
             'enable-telemetry',
@@ -81,7 +81,7 @@ trait TelemetryEnablementTrait {
     *
     * @return void
     */
-   protected function handTelemetryEnablement(InputInterface $input, OutputInterface $output): void {
+   protected function handTelemetryActivation(InputInterface $input, OutputInterface $output): void {
 
       $is_already_enabled = Telemetry::isEnabled();
 
