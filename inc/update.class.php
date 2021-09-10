@@ -537,11 +537,13 @@ class Update extends CommonGLPI {
          );
       }
 
-      // reset telemetry
-      $crontask_telemetry = new CronTask;
+      // Reset telemetry if its state is running, assuming it remained stuck due to telemetry service issue (see #7492).
+      $crontask_telemetry = new CronTask();
       $crontask_telemetry->getFromDBbyName("Telemetry", "telemetry");
-      $crontask_telemetry->resetDate();
-      $crontask_telemetry->resetState();
+      if ($crontask_telemetry->fields['state'] === CronTask::STATE_RUNNING) {
+         $crontask_telemetry->resetDate();
+         $crontask_telemetry->resetState();
+      }
 
       //generate security key if missing, and update db
       $glpikey = new GLPIKey();
