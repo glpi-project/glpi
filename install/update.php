@@ -324,7 +324,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
       if (strlen(GLPI_SCHEMA_VERSION) > 40) {
          echo Config::agreeDevMessage();
       }
-      echo "<button type='submit' class='btn btn-primary' name='continuer'>
+      echo "<button type='submit' class='btn btn-primary' name='continuer' value='1'>
          ".__('Continue')."
          <i class='fas fa-chevron-right ms-1'></i>
       </button>";
