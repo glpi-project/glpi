@@ -460,23 +460,6 @@ class Html {
 
 
    /**
-    * Extract url from web link
-    *
-    * @param string $value
-    *
-    * @return string
-    *
-    * @deprecated 10.0.0
-   **/
-   static function weblink_extract($value) {
-      Toolbox::deprecated();
-
-      $value = preg_replace('/<a\s+href\="([^"]+)"[^>]*>[^<]*<\/a>/i', "$1", $value);
-      return $value;
-   }
-
-
-   /**
     * Redirection to $_SERVER['HTTP_REFERER'] page
     *
     * @return void
@@ -6901,32 +6884,6 @@ CSS;
     */
    public static function getScssCompileDir() {
       return GLPI_ROOT . '/css_compiled';
-   }
-
-   /**
-    * Display impersonate banner if feature is currently used.
-    *
-    * @return void
-    *
-    * @deprecated 10.0.0
-    */
-   public static function displayImpersonateBanner() {
-
-      Toolbox::deprecated();
-
-      if (!Session::isImpersonateActive()) {
-         return;
-      }
-
-      echo '<div class="banner-impersonate">';
-      echo '<form name="form" method="post" action="' . User::getFormURL() . '">';
-      echo sprintf(__('You are impersonating %s.'), $_SESSION['glpiname']);
-      echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
-      echo '<button type="submit" name="impersonate" class="btn btn-outline-danger" value="0">';
-      echo __s('Stop impersonating');
-      echo '</button>';
-      echo '</form>';
-      echo '</div>';
    }
 
    /**
