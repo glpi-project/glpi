@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\System\Requirement\DbConfiguration;
 
 define('GLPI_ROOT', realpath('..'));
@@ -45,17 +46,15 @@ Config::detectRootDoc();
 
 //Print a correct  Html header for application
 function header_html($etape) {
-   global $CFG_GLPI;
-
    // Send UTF8 Headers
    header("Content-Type: text/html; charset=UTF-8");
 
    echo "<!DOCTYPE html'>";
    echo "<html lang='fr'>";
-    echo "<head>";
-    echo "<meta charset='utf-8'>";
+   echo "<head>";
+   echo "<meta charset='utf-8'>";
    echo "<meta http-equiv='Content-Script-Type' content='text/javascript'> ";
-    echo "<meta http-equiv='Content-Style-Type' content='text/css'> ";
+   echo "<meta http-equiv='Content-Style-Type' content='text/css'> ";
    echo "<title>Setup GLPI</title>";
 
    // CFG
@@ -68,7 +67,7 @@ function header_html($etape) {
 
     // CSS
    echo Html::css('public/lib/base.css');
-   echo Html::css("css/style_install.css");
+   echo Html::scss("css/style_install");
    echo "</head>";
    echo "<body>";
    echo "<div id='principal'>";
@@ -89,142 +88,52 @@ function footer_html() {
 function choose_language() {
    global $CFG_GLPI;
 
-   echo "<form action='install.php' method='post'>";
-   echo "<p class='center'>";
-
    // fix missing param for js drodpown
    $CFG_GLPI['ajax_limit_count'] = 15;
 
-   Dropdown::showLanguages("language", ['value' => $_SESSION['glpilanguage']]);
-   echo "</p>";
-   echo "";
-   echo "<p class='submit'><input type='hidden' name='install' value='lang_select'>";
-   echo "<input type='submit' name='submit' class='submit' value='OK'></p>";
-   Html::closeForm();
+   TemplateRenderer::getInstance()->display('install/choose_language.html.twig', [
+      'languages_dropdown'  => Dropdown::showLanguages('language', [
+         'display' => false,
+         'value'   => $_SESSION['glpilanguage'],
+         'width'   => '100%'
+      ])
+   ]);
 }
 
 
 function acceptLicense() {
-
-   echo "<div class='center'>";
-   echo "<textarea id='license' cols='85' rows='10' readonly='readonly'>";
-   readfile("../COPYING.txt");
-   echo "</textarea>";
-
-   echo "<br><a target='_blank' href='http://www.gnu.org/licenses/old-licenses/gpl-2.0-translations.html'>".
-         __('Unofficial translations are also available')."</a>";
-
-   echo "<form action='install.php' method='post'>";
-   echo "<p id='license'>";
-
-   echo "<label for='agree' class='radio'>";
-   echo "<input type='radio' name='install' id='agree' value='License'>";
-   echo "<span class='outer'><span class='inner'></span></span>";
-   echo __('I have read and ACCEPT the terms of the license written above.');
-   echo " </label>";
-
-   echo "<label for='disagree' class='radio'>";
-   echo "<input type='radio' name='install' value='lang_select' id='disagree' checked='checked'>";
-   echo "<span class='outer'><span class='inner'></span></span>";
-   echo __('I have read and DO NOT ACCEPT the terms of the license written above');
-   echo " </label>";
-
-   echo "<p><input type='submit' name='submit' class='submit' value=\"".__s('Continue')."\"></p>";
-   Html::closeForm();
-   echo "</div>";
+   TemplateRenderer::getInstance()->display('install/accept_license.html.twig', [
+      'copying' => file_get_contents("../COPYING.txt"),
+   ]);
 }
 
 
 //confirm install form
 function step0() {
-
-   echo "<h3>".__('Installation or update of GLPI')."</h3>";
-   echo "<p>".__s("Choose 'Install' for a completely new installation of GLPI.")."</p>";
-   echo "<p> ".__s("Select 'Upgrade' to update your version of GLPI from an earlier version")."</p>";
-   echo "<form action='install.php' method='post'>";
-   echo "<input type='hidden' name='update' value='no'>";
-   echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
-   echo "<input type='submit' name='submit' class='submit' value=\""._sx('button', 'Install')."\"></p>";
-   Html::closeForm();
-
-   echo "<form action='install.php' method='post'>";
-   echo "<input type='hidden' name='update' value='yes'>";
-   echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
-   echo "<input type='submit' name='submit' class='submit' value=\""._sx('button', 'Upgrade')."\"></p>";
-   Html::closeForm();
+   TemplateRenderer::getInstance()->display('install/step0.html.twig');
 }
 
 
 //Step 1 checking some compatibility issue and some write tests.
 function step1($update) {
-   echo "<h3>".__s('Checking of the compatibility of your environment with the execution of GLPI').
-        "</h3>";
-   echo "<table class='tab_check'>";
-
+   ob_start();
    $error = Toolbox::commonCheckForUseGLPI(true);
+   $checks = ob_get_contents();
+   ob_end_clean();
 
-   echo "</table>";
-   switch ($error) {
-      case 0 :
-         echo "<form action='install.php' method='post'>";
-         echo "<input type='hidden' name='update' value='". $update."'>";
-         echo "<input type='hidden' name='language' value='". $_SESSION['glpilanguage']."'>";
-         echo "<p class='submit'><input type='hidden' name='install' value='Etape_1'>";
-         echo "<input type='submit' name='submit' class='submit' value=\"".__('Continue')."\">";
-         echo "</p>";
-         Html::closeForm();
-         break;
-
-      case 1 :
-         echo "<h3>".__('Do you want to continue?')."</h3>";
-         echo "<div class='submit'><form action='install.php' method='post' class='inline'>";
-         echo "<input type='hidden' name='install' value='Etape_1'>";
-         echo "<input type='hidden' name='update' value='". $update."'>";
-         echo "<input type='hidden' name='language' value='". $_SESSION['glpilanguage']."'>";
-         echo "<input type='submit' name='submit' class='submit' value=\"".__('Continue')."\">";
-         Html::closeForm();
-         echo "&nbsp;&nbsp;";
-
-         echo "<form action='install.php' method='post' class='inline'>";
-         echo "<input type='hidden' name='update' value='". $update."'>";
-         echo "<input type='hidden' name='language' value='". $_SESSION['glpilanguage']."'>";
-         echo "<input type='hidden' name='install' value='Etape_0'>";
-         echo "<input type='submit' name='submit' class='submit' value=\"".__('Try again')."\">";
-         Html::closeForm();
-         echo "</div>";
-         break;
-
-      case 2 :
-         echo "<h3>".__('Do you want to continue?')."</h3>";
-         echo "<form action='install.php' method='post'>";
-         echo "<input type='hidden' name='update' value='".$update."'>";
-         echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
-         echo "<input type='submit' name='submit' class='submit' value=\"".__('Try again')."\">";
-         echo "</p>";
-         Html::closeForm();
-         break;
-   }
-
+   TemplateRenderer::getInstance()->display('install/step1.html.twig', [
+      'update' => $update,
+      'checks' => $checks,
+      'error'  => $error,
+   ]);
 }
 
 
 //step 2 import mysql settings.
 function step2($update) {
-
-   echo "<h3>".__('Database connection setup')."</h3>";
-   echo "<form action='install.php' method='post'>";
-   echo "<input type='hidden' name='update' value='".$update."'>";
-   echo "<fieldset><legend>".__('Database connection parameters')."</legend>";
-   echo "<p><label class='block'>".__('SQL server (MariaDB or MySQL)') ." </label>";
-   echo "<input type='text' name='db_host'><p>";
-   echo "<p><label class='block'>".__('SQL user') ." </label>";
-   echo "<input type='text' name='db_user'></p>";
-   echo "<p><label class='block'>".__('SQL password')." </label>";
-   echo "<input type='password' name='db_pass'></p></fieldset>";
-   echo "<input type='hidden' name='install' value='Etape_2'>";
-   echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
-         __('Continue')."'></p>";
-   Html::closeForm();
+   TemplateRenderer::getInstance()->display('install/step2.html.twig', [
+      'update' => $update,
+   ]);
 }
 
 
@@ -232,7 +141,6 @@ function step2($update) {
 function step3($host, $user, $password, $update) {
 
    error_reporting(16);
-   echo "<h3>".__('Test of the connection at the database')."</h3>";
 
    //Check if the port is in url
    $hostport = explode(":", $host);
@@ -242,38 +150,29 @@ function step3($host, $user, $password, $update) {
       $link = new mysqli($hostport[0], $user, $password, '', $hostport[1]);
    }
 
-   if ($link->connect_error
-       || empty($host)
-       || empty($user)) {
-      echo "<p>".__("Can't connect to the database")."\n <br>".
-           sprintf(__('The server answered: %s'), $link->connect_error)."</p>";
-
-      if (empty($host)
-          || empty($user)) {
-         echo "<p>".__('The server or/and user field is empty')."</p>";
-      }
-
-      echo "<form action='install.php' method='post'>";
-      echo "<input type='hidden' name='update' value='".$update."'>";
-      echo "<input type='hidden' name='install' value='Etape_1'>";
-      echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
-            __s('Back')."'></p>";
-      Html::closeForm();
-
-   } else {
-      $_SESSION['db_access'] = ['host'     => $host,
-                                     'user'     => $user,
-                                     'password' => $password];
-      echo  "<h3>".__('Database connection successful')."</h3>";
+   $dbversion_message = "";
+   $config_message    = "";
+   $dbversion         = "";
+   $config_valid      = false;
+   $dbversion_ok      = false;
+   if (!$link->connect_error) {
+      $_SESSION['db_access'] = [
+         'host'     => $host,
+         'user'     => $user,
+         'password' => $password
+      ];
 
       //get database raw version
       $DB_ver = $link->query("SELECT version()");
       $row = $DB_ver->fetch_array();
-      echo "<p class='center'>";
-      $checkdb = Config::displayCheckDbEngine(true, $row[0]);
-      echo "</p>";
-      if ($checkdb > 0) {
-         return;
+      $result = Config::checkDbEngine($row[0]);
+      $dbversion = key($result);
+
+      if (!$dbversion) {
+         $dbversion_message = sprintf(__('Your database engine version seems too old: %s.'), $dbversion);
+      } else {
+         $dbversion_message = sprintf(__('Database version seems correct (%s) - Perfect!'), $dbversion);
+         $dbversion_ok      = true;
       }
 
       // Check DB config
@@ -283,78 +182,39 @@ function step3($host, $user, $password, $update) {
          }
       };
       $config_requirement = new DbConfiguration($db);
-      if (!$config_requirement->isValidated()) {
-         global $CFG_GLPI;
-         echo '<p class="center">';
-         $message = __s('Database configuration is not compatible with "utf8mb4" usage.');
-         echo '<img src="' . $CFG_GLPI['root_doc'] . '/pics/ko_min.png"'
-            . ' alt="' . $message . '"'
-            . ' title="' . $message . '" />'
-            . $message
-            . '<br />';
-         echo implode('<br />', $config_requirement->getValidationMessages());
-         echo '</p>';
-         return;
-      }
+      $config_valid       = $config_requirement->isValidated();
+      $config_messages    = implode('<br />', $config_requirement->getValidationMessages());
+   }
 
-      if ($update == "no") {
-         echo "<p>".__('Please select a database:')."</p>";
-         echo "<form action='install.php' method='post'>";
-
-         if ($DB_list = $link->query("SHOW DATABASES")) {
-            while ($row = $DB_list->fetch_array()) {
-               if (!in_array($row['Database'], ["information_schema",
-                                                     "mysql",
-                                                     "performance_schema"] )) {
-                  echo "<p>";
-                  echo "<label class='radio'>";
-                  echo "<input type='radio' name='databasename' value='". $row['Database']."'>";
-
-                  echo "<span class='outer'><span class='inner'></span></span>";
-                  echo $row['Database'];
-                  echo " </label>";
-                  echo " </p>";
-               }
+   // get databases
+   $databases = [];
+   if ($config_valid) {
+      if ($DB_list = $link->query("SHOW DATABASES")) {
+         while ($row = $DB_list->fetch_array()) {
+            if (!in_array($row['Database'], [
+               "information_schema",
+               "mysql",
+               "performance_schema"
+            ])) {
+               $databases[] = $row['Database'];
             }
          }
-
-         echo "<p>";
-         echo "<label class='radio'>";
-         echo "<input type='radio' name='databasename' value='0'>";
-         echo __('Create a new database or use an existing one:');
-         echo "<span class='outer'><span class='inner'></span></span>";
-         echo "&nbsp;<input type='text' name='newdatabasename'>";
-         echo " </label>";
-         echo "</p>";
-         echo "<input type='hidden' name='install' value='Etape_3'>";
-         echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
-               __('Continue')."'></p>";
-         $link->close();
-         Html::closeForm();
-
-      } else if ($update == "yes") {
-         echo "<p>".__('Please select the database to update:')."</p>";
-         echo "<form action='install.php' method='post'>";
-
-         $DB_list = $link->query("SHOW DATABASES");
-         while ($row = $DB_list->fetch_array()) {
-            echo "<p>";
-            echo "<label class='radio'>";
-            echo "<input type='radio' name='databasename' value='". $row['Database']."'>";
-            echo "<span class='outer'><span class='inner'></span></span>";
-            echo $row['Database'];
-            echo " </label>";
-            echo "</p>";
-         }
-
-         echo "<input type='hidden' name='install' value='update_1'>";
-         echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
-                __('Continue')."'></p>";
-         $link->close();
-         Html::closeForm();
       }
-
    }
+
+   // display html
+   TemplateRenderer::getInstance()->display('install/step3.html.twig', [
+      'update'            => $update,
+      'link'              => $link,
+      'host'              => $host,
+      'user'              => $user,
+      'dbversion'         => $dbversion,
+      'dbversion_ok'      => $dbversion_ok,
+      'dbversion_message' => $dbversion_message,
+      'config_valid'      => $config_valid,
+      'config_messages'   => $config_messages,
+      'databases'         => $databases,
+   ]);
 }
 
 
@@ -386,8 +246,10 @@ function step4 ($databasename, $newdatabasename) {
 
       echo "<br><form action='install.php' method='post'>";
       echo "<input type='hidden' name='install' value='Etape_4'>";
-      echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
-             __('Continue')."'></p>";
+      echo "<button type='submit' name='submit' class='btn btn-primary'>
+         ".__('Continue')."
+         <i class='fas fa-chevron-right ms-1'></i>
+      </button>";
       Html::closeForm();
    }
 
@@ -487,38 +349,21 @@ function step4 ($databasename, $newdatabasename) {
 //send telemetry information
 function step6() {
    global $DB;
-   echo "<h3>".__('Collect data')."</h3>";
 
    include_once(GLPI_ROOT . "/inc/dbmysql.class.php");
    include_once(GLPI_CONFIG_DIR . "/config_db.php");
    $DB = new DB();
 
-   echo "<form action='install.php' method='post'>";
-   echo "<input type='hidden' name='install' value='Etape_5'>";
-
-   echo Telemetry::showTelemetry();
-   echo Telemetry::showReference();
-
-   echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
-            __('Continue')."'></p>";
-   Html::closeForm();
+   TemplateRenderer::getInstance()->display('install/step6.html.twig', [
+      'telemetry_info' => Telemetry::showTelemetry(),
+      'reference_info' => Telemetry::showReference(),
+   ]);
 }
 
 function step7() {
-   echo "<h3>".__('One last thing before starting')."</h3>";
-
-   echo "<form action='install.php' method='post'>";
-   echo "<input type='hidden' name='install' value='Etape_6'>";
-
-   echo GLPINetwork::showInstallMessage();
-
-   echo "<p class='submit'>";
-   echo "<a href='".GLPI_NETWORK_SERVICES."' target='_blank' class='vsubmit'>".
-            __('Donate')."</a>&nbsp;";
-   echo "<input type='submit' name='submit' class='submit' value='".
-            __('Continue')."'>";
-   echo "</p>";
-   Html::closeForm();
+   TemplateRenderer::getInstance()->display('install/step7.html.twig', [
+      'glpinetwork' => GLPINetwork::showInstallMessage(),
+   ]);
 }
 
 // finish installation
@@ -556,16 +401,7 @@ function step8() {
 
    Session::destroy(); // Remove session data (debug mode for instance) set by web installation
 
-   echo "<h2>".__('The installation is finished')."</h2>";
-
-   echo "<p>".__('Default logins / passwords are:')."</p>";
-   echo "<p><ul><li> ".__('glpi/glpi for the administrator account')."</li>";
-   echo "<li>".__('tech/tech for the technician account')."</li>";
-   echo "<li>".__('normal/normal for the normal account')."</li>";
-   echo "<li>".__('post-only/postonly for the postonly account')."</li></ul></p>";
-   echo "<p>".__('You can delete or modify these accounts as well as the initial data.')."</p>";
-   echo "<p class='center'><a class='vsubmit' href='../index.php'>".__('Use GLPI');
-   echo "</a></p>";
+   TemplateRenderer::getInstance()->display('install/step8.html.twig');
 }
 
 

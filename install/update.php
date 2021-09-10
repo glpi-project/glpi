@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 
 if (!defined('GLPI_ROOT')) {
@@ -293,7 +294,7 @@ echo "<title>Setup GLPI</title>";
 echo Html::script("public/lib/base.js");
 // CSS
 echo Html::css('public/lib/base.css');
-echo Html::css('css/style_install.css');
+echo Html::scss("css/style_install");
 echo "</head>";
 echo "<body>";
 echo "<div id='principal'>";
@@ -310,7 +311,9 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
       echo "<div class='center'>";
       echo "<h3><span class='migred'>".__('Impossible to accomplish an update by this way!')."</span>";
       echo "<p>";
-      echo "<a class='vsubmit' href='../index.php'>".__('Go back to GLPI')."</a></p>";
+      echo "<a class='btn btn-primary' href='../index.php'>
+            ".__('Go back to GLPI')."
+         </a></p>";
       echo "</div>";
 
    } else {
@@ -321,7 +324,10 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
       if (strlen(GLPI_SCHEMA_VERSION) > 40) {
          echo Config::agreeDevMessage();
       }
-      echo "<input type='submit' class='submit' name='continuer' value=\"".__('Continue')."\">";
+      echo "<button type='submit' class='btn btn-primary'>
+         ".__('Continue')."
+         <i class='fas fa-chevron-right ms-1'></i>
+      </button>";
       Html::closeForm();
       echo "</div>";
    }
@@ -354,28 +360,15 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
          }
          echo "<div class='center'>";
          doUpdateDb();
-
-         echo "<form action='".$CFG_GLPI["root_doc"]."/install/update.php' method='post'>";
-         echo "<input type='hidden' name='update_end' value='1'/>";
-
-         echo "<hr />";
-         echo "<h2>".__('One last thing before starting')."</h2>";
-         echo "<p>";
-         echo GLPINetwork::showInstallMessage();
-         echo "</p>";
-         echo "<a href='".GLPI_NETWORK_SERVICES."' target='_blank' class='vsubmit'>".
-            __('Donate')."</a><br /><br />";
-
-         if (!Telemetry::isEnabled()) {
-            echo "<hr />";
-            echo Telemetry::showTelemetry();
-         }
-         echo Telemetry::showReference();
-
-         echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
-               __('Use GLPI')."'></p>";
-         Html::closeForm();
          echo "</div>";
+
+         TemplateRenderer::getInstance()->display('install/update.html.twig', [
+            'glpinetwork'       => GLPINetwork::showInstallMessage(),
+            'glpinetwork_url'   => GLPI_NETWORK_SERVICES,
+            'telemetry_enabled' => Telemetry::isEnabled(),
+            'telemetry_info'    => Telemetry::showTelemetry(),
+            'reference_info'    => Telemetry::showReference(),
+         ]);
       }
 
    } else {

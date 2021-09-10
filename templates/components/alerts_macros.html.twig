@@ -1,0 +1,61 @@
+{% macro alert(alert_type = "", title = "", messages = "", icon = "", important = false) %}
+   <div class="alert alert-{{ alert_type }} {{ important ? "alert-important" : "" }}" role="alert">
+      <div class="d-flex">
+         <div>
+            <i class="{{ icon }} fa-2x alert-icon"></i>
+         </div>
+         <div>
+            {% if title|length %}
+               <h4 class="alert-title">
+                  {{ title }}
+               </h4>
+            {% endif %}
+            {% if messages|length %}
+               <div class="text-muted">
+                  {{ messages }}
+               </div>
+            {% endif %}
+         </div>
+      </div>
+   </div>
+{% endmacro %}
+
+{% macro alert_success(title = "", messages = "", important = false) %}
+   {{ _self.alert(
+      'success',
+      title,
+      messages,
+      "fas fa-check",
+      important
+   ) }}
+{% endmacro %}
+
+{% macro alert_info(title = "", messages = "", important = false) %}
+   {{ _self.alert(
+      'info',
+      title,
+      messages,
+      "fas fa-info-circle",
+      important
+   ) }}
+{% endmacro %}
+
+{% macro alert_warning(title = "", messages = "", important = false) %}
+   {{ _self.alert(
+      'warning',
+      title,
+      messages,
+      "fas fa-exclamation-triangle",
+      important
+   ) }}
+{% endmacro %}
+
+{% macro alert_danger(title = "", messages = "", important = false) %}
+   {{ _self.alert(
+      'danger',
+      title,
+      messages,
+      "fas fa-exclamation-circle",
+      important
+   ) }}
+{% endmacro %}

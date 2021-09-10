@@ -2454,7 +2454,7 @@ class Config extends CommonDBTM {
     *
     * @param string $raw Raw version to check (mainly from install), defaults to null
     *
-    * @return boolean
+    * @return array
    **/
    static function checkDbEngine($raw = null) {
       if ($raw === null) {
